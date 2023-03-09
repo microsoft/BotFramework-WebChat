@@ -65,7 +65,7 @@ export default function createDirectLineEmulator(
     });
   };
 
-  const actPostActivity = async fn => {
+  const actPostActivity = async (fn, { id: idFromOptions }) => {
     const postActivityCallDeferred = createDeferred();
 
     postActivityCallDeferreds.push(postActivityCallDeferred);
@@ -73,16 +73,20 @@ export default function createDirectLineEmulator(
     await fn();
 
     const { outgoingActivity, returnPostActivityDeferred } = await postActivityCallDeferred.promise;
-    const id = uniqueId();
+    const id = idFromOptions || uniqueId();
 
-    const echoBackActivity = { ...outgoingActivity, id, timestamp: getTimestamp() };
+    let echoBackActivity = { ...outgoingActivity, id, timestamp: getTimestamp() };
 
     const echoBack = async updater => {
-      activityDeferredObservable.next(typeof updater === 'function' ? updater(echoBackActivity) : echoBackActivity);
+      if (typeof updater === 'function') {
+        echoBackActivity = updater(echoBackActivity);
+      }
+
+      activityDeferredObservable.next(echoBackActivity);
 
       await became(
         'echo back activity appears in the store',
-        () => store.getState().activities.find(activity => activity.id === id),
+        () => store.getState().activities.find(activity => activity.id === echoBackActivity.id),
         1000
       );
     };
@@ -141,7 +145,7 @@ export default function createDirectLineEmulator(
         1000
       );
     },
-    emulateOutgoingActivity: activity => {
+    emulateOutgoingActivity: (activity, options) => {
       if (typeof activity === 'string') {
         activity = {
           from: { id: 'user', role: 'user' },
@@ -150,12 +154,14 @@ export default function createDirectLineEmulator(
         };
       }
 
-      return actPostActivity(() =>
-        store.dispatch({
-          meta: { method: 'code' },
-          payload: { activity },
-          type: 'DIRECT_LINE/POST_ACTIVITY'
-        })
+      return actPostActivity(
+        () =>
+          store.dispatch({
+            meta: { method: 'code' },
+            payload: { activity },
+            type: 'DIRECT_LINE/POST_ACTIVITY'
+          }),
+        options
       );
     }
   };

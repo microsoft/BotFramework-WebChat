@@ -9,32 +9,6 @@
   <body>
     <main id="webchat"></main>
     <script>
-      async function createDirectLineForTest(ponyfill) {
-        // TODO: [P2] Move to DirectLineEmulator.
-        const directLine = await testHelpers.createDirectLineWithTranscript([], {
-          overridePostActivity: activity => {
-            if (activity.type === 'message') {
-              ponyfill.setTimeout(() => {
-                directLine.activityDeferredObservable.next({
-                  ...activity,
-                  id: 'a00001',
-                  timestamp: new Date().toISOString()
-                });
-              }, 2000);
-
-              return new Observable(observer => {
-                ponyfill.setTimeout(() => observer.next('a00001'), 1000);
-              });
-            } else {
-              return workingDirectLine.postActivity(activity);
-            }
-          },
-          ponyfill
-        });
-
-        return directLine;
-      }
-
       function activityStatusInnerTextContained(expectedInnerTextPattern) {
         return pageConditions.became(
           `Activity status should contains "${expectedInnerTextPattern}"`,
@@ -68,25 +42,26 @@
       }
 
       run(async function () {
-        const clock = lolex.createClock();
+        const store = testHelpers.createStoreWithOptions();
+
+        const directLine = testHelpers.createDirectLineEmulator(store);
 
         WebChat.renderWebChat(
           {
-            directLine: await createDirectLineForTest(clock),
-            ponyfill: clock,
-            store: testHelpers.createStoreWithOptions({ ponyfill: clock }),
+            directLine,
+            store,
             styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
           },
           document.getElementById('webchat')
         );
 
-        await pageConditions.webChatRendered();
-
-        clock.tick(400);
-
         // SETUP: Send a message
         await pageConditions.uiConnected();
-        await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
+
+        const sendMessage = await directLine.actPostActivity(
+          () => pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false }),
+          { id: 'a00001' }
+        );
 
         // THEN: `channelData.state` should be "sending".
         await activityChannelDataStateBecame('sending');
@@ -97,8 +72,8 @@
         // THEN: The message should have status of "Sending".
         await activityStatusInnerTextContained('Sending');
 
-        // WHEN: After 1 seconds, the postActivity() call returned.
-        clock.tick(1000);
+        // WHEN: The call to postActivity() had returned.
+        sendMessage.resolvePostActivity();
 
         // THEN: `channelData.state` should be "sending".
         await activityChannelDataStateBecame('sending');
@@ -112,8 +87,8 @@
         // THEN: The activity object should not have an ID.
         expect('id' in pageObjects.getActivities()[0]).toBeFalsy();
 
-        // WHEN: After 1 seconds (t=2s), the echo back message arrived.
-        clock.tick(1000);
+        // WHEN: The echo back message had arrived.
+        await sendMessage.echoBack();
 
         // THEN: `channelData.state` should be "sent".
         await activityChannelDataStateBecame('sent');
