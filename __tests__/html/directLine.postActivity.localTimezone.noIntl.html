@@ -10,42 +10,26 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        await host.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'America/Los_Angeles' });
-
         const clock = lolex.createClock();
+
+        await host.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'America/Los_Angeles' });
 
         // Before running the test, the browser should have setup with time zone of GMT-08, at epoch time.
         // Note the getTimezoneOffset() is correctly returns positive number for a negative offset.
         expect(new Date().getTimezoneOffset()).toBe(480);
 
-        // Remove "Intl" object to disable local time zone name.
+        const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
+
+        const directLine = testHelpers.createDirectLineEmulator(store, { ponyfill: clock });
+
+        // GIVEN: Remove "Intl" object to disable local time zone name.
         window.Intl = undefined;
-
-        const directLine = testHelpers.createDirectLineWithTranscript([], {
-          overridePostActivity: activity => {
-            const id = '0';
-
-            // All activity-in-transit should not have timestamp.
-            expect(activity.timestamp).toBeUndefined();
-
-            // All activity-in-transit should have local timestamp.
-            expect(activity).toHaveProperty('localTimestamp', '1969-12-31T16:00:00.600-08:00');
-
-            // Without "Intl" object, local time zone name cannot be retrieved.
-            expect(activity.localTimezone).toBeUndefined();
-
-            directLine.activityDeferredObservable.next({ ...activity, id });
-
-            return Observable.from([id]);
-          },
-          ponyfill: clock
-        });
 
         WebChat.renderWebChat(
           {
             directLine,
             ponyfill: clock,
-            store: testHelpers.createStoreWithOptions({ ponyfill: clock })
+            store
           },
           document.getElementById('webchat')
         );
@@ -54,10 +38,22 @@
 
         clock.tick(600);
 
-        // Wait for "Connecting..." message to dismiss
+        // GIVEN: Wait for "Connecting..." message to dismiss
         await pageConditions.uiConnected();
 
-        await pageObjects.sendMessageViaSendBox('Hello, World!');
+        // WHEN: Sending a message.
+        const { activity } = await directLine.actPostActivity(() =>
+          pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false })
+        );
+
+        // THEN: The activity-in-transit should not have timestamp.
+        expect(activity.timestamp).toBeUndefined();
+
+        // THEN: The activity-in-transit should have local timestamp.
+        expect(activity).toHaveProperty('localTimestamp', '1969-12-31T16:00:00.600-08:00');
+
+        // THEN: The activity-in-transit should not have local time zone name.
+        expect(activity.localTimezone).toBeUndefined();
       });
     </script>
   </body>
