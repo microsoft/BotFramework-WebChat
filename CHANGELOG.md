@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolved [#4643](https://github.com/microsoft/BotFramework-WebChat/issues/4643). Decoupling `botframework-directlinejs` from business logic of Web Chat for better tree-shaking, by [@compulim](https://github.com/compulim), in PR [#4645](https://github.com/microsoft/BotFramework-WebChat/pull/4645) and PR [#4648](https://github.com/microsoft/BotFramework-WebChat/pull/4648)
 -  Related to [#4650](https://github.com/microsoft/BotFramework-WebChat/issues/4650). Added automated accessibility check using [`axe-core`](https://npmjs.com/package/axe-core)
    -  HTML test: using `<main>` for the root container, by [@compulim](https://github.com/compulim), in PR [#4684](https://github.com/microsoft/BotFramework-WebChat/pull/4684)
+   -  Added `ponyfill` prop to `<ReactWebChat>`/`<Composer>` and `createStoreWithOptions`, by [@compulim](https://github.com/compulim), in PR [#4662](https://github.com/microsoft/BotFramework-WebChat/pull/4662)
+      -  This is for development scenarios where fake timer is needed and will only applies to Web Chat only
 
 ### Fixed
 
