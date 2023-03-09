@@ -65,7 +65,7 @@ export default function createDirectLineEmulator(
     });
   };
 
-  const actPostActivity = async (fn, { id: idFromOptions }) => {
+  const actPostActivity = async (fn, { id: idFromOptions } = {}) => {
     const postActivityCallDeferred = createDeferred();
 
     postActivityCallDeferreds.push(postActivityCallDeferred);
