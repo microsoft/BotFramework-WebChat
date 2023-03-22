@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  HTML test: changed contrast ratio in tests that use different background colors, by [@compulim](https://github.com/compulim), in PR [#4686](https://github.com/microsoft/BotFramework-WebChat/pull/4686)
    -  Added `ponyfill` prop to `<ReactWebChat>`/`<Composer>` and `createStoreWithOptions`, by [@compulim](https://github.com/compulim), in PR [#4662](https://github.com/microsoft/BotFramework-WebChat/pull/4662)
       -  This is for development scenarios where fake timer is needed and will only applies to Web Chat only
+   -  HTML test: fix accessibility issues on HTML file, by [@compulim](https://github.com/compulim), in PR [#4685](https://github.com/microsoft/BotFramework-WebChat/pull/4685)
 
 ### Fixed
 
