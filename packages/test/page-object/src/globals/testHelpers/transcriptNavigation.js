@@ -79,9 +79,10 @@ function createInputCardActivity(index = 0) {
                   width: 1,
                   items: [
                     {
+                      altText: 'a diver under the sea',
+                      size: 'auto',
                       type: 'Image',
-                      url: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Diver_Silhouette%2C_Great_Barrier_Reef.jpg',
-                      size: 'auto'
+                      url: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Diver_Silhouette%2C_Great_Barrier_Reef.jpg'
                     }
                   ]
                 }
