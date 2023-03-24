@@ -30,6 +30,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Fixes [#4557](https://github.com/microsoft/BotFramework-WebChat/issues/4557). Flipper buttons in carousels and suggested actions is now renamed to "next/previous" from "left/right", by [@compulim](https://github.com/compulim), in PR [#4646](https://github.com/microsoft/BotFramework-WebChat/pull/4646)
 -  Fixes [#4652](https://github.com/microsoft/BotFramework-WebChat/issues/4652). Keyboard help screen, activity focus traps, and chat history terminator should not be hidden behind `aria-hidden` because they are focusable, by [@compulim](https://github.com/compulim), in PR [#4659](https://github.com/microsoft/BotFramework-WebChat/pull/4659)
+-  Related to [#4650](https://github.com/microsoft/BotFramework-WebChat/issues/4650). Added automated accessibility check using [`axe-core`](https://npmjs.com/package/axe-core)
+   -  HTML test: changed contrast ratio in tests that use different background colors, by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Changed
 

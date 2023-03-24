@@ -56,7 +56,14 @@
       run(async function () {
         const webChatElement = document.getElementById('webchat');
 
-        WebChat.renderWebChat({ directLine, store }, webChatElement);
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { subtle: '#666' }
+          },
+          webChatElement
+        );
 
         await pageConditions.uiConnected();
 

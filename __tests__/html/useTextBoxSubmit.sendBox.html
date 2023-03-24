@@ -23,7 +23,8 @@
           {
             activityMiddleware: testHelpers.createRunHookActivityMiddleware(),
             directLine,
-            store
+            store,
+            styleOptions: { subtle: '#666' }
           },
           document.getElementById('webchat')
         );

@@ -40,7 +40,8 @@
         WebChat.renderWebChat(
           {
             directLine,
-            store: testHelpers.createStore()
+            store: testHelpers.createStore(),
+            styleOptions: { subtle: '#666' }
           },
           document.getElementById('webchat')
         );
