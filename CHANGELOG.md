@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Resolved [#4643](https://github.com/microsoft/BotFramework-WebChat/issues/4643). Decoupling `botframework-directlinejs` from business logic of Web Chat for better tree-shaking, by [@compulim](https://github.com/compulim), in PR [#4645](https://github.com/microsoft/BotFramework-WebChat/pull/4645) and PR [#4648](https://github.com/microsoft/BotFramework-WebChat/pull/4648)
+-  Added `customTextBox` prop to the `BasicSendBox` component to allow developers to provide their own text field in place of the default one, by [@dawolff-ms](https://github.com/dawolff-ms), in PR [4688](https://github.com/microsoft/BotFramework-WebChat/pull/4688)
 
 ### Fixed
 

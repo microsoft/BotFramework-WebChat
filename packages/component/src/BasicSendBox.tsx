@@ -8,7 +8,7 @@ import DictationInterims from './SendBox/DictationInterims';
 import MicrophoneButton from './SendBox/MicrophoneButton';
 import SendButton from './SendBox/SendButton';
 import SuggestedActions from './SendBox/SuggestedActions';
-import TextBox from './SendBox/TextBox';
+import WebChatTextBox from './SendBox/TextBox';
 import UploadButton from './SendBox/UploadButton';
 import useErrorMessageId from './providers/internal/SendBox/useErrorMessageId';
 import useStyleSet from './hooks/useStyleSet';
@@ -50,9 +50,10 @@ function useSendBoxSpeechInterimsVisible(): [boolean] {
 
 type BasicSendBoxProps = {
   className?: string;
+  customTextBox?: React.ComponentType<Parameters<typeof WebChatTextBox>[0]>;
 };
 
-const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
+const BasicSendBox: FC<BasicSendBoxProps> = ({ className, customTextBox }) => {
   const [{ hideUploadButton, sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition = undefined } = {}] = useWebSpeechPonyfill();
@@ -70,6 +71,8 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
     'webchat__send-box__button--align-stretch': sendBoxButtonAlignment !== 'bottom' && sendBoxButtonAlignment !== 'top',
     'webchat__send-box__button--align-top': sendBoxButtonAlignment === 'top'
   });
+
+  const TextBox = customTextBox ?? WebChatTextBox;
 
   return (
     <div
@@ -98,11 +101,13 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
 };
 
 BasicSendBox.defaultProps = {
-  className: ''
+  className: '',
+  customTextBox: undefined
 };
 
 BasicSendBox.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  customTextBox: PropTypes.func
 };
 
 export default BasicSendBox;
