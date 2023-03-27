@@ -194,6 +194,12 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
       return;
     }
   }
+	
+	props.header = {
+		text: "Chatbot",
+		textWhenCollapsed: "Chatbot",
+		...props.header
+	}
 
   props.user.id = props.user.id ? String(props.user.id) : generateUserId()
   // localStorage is undefined in IE for file:// testing: https://stackoverflow.com/a/3392301/10467064
@@ -205,7 +211,7 @@ export const App = async (props: AppProps, container?: HTMLElement) => {
     : false;
   props.resize = props.hasOwnProperty("resize") ? props.resize : "detect";
   props.locale = props.hasOwnProperty("locale") ? props.locale : "cs-cz";
-
+  
   // FEEDYOU configurable theming
   if (props.theme || !container) {
     const theme = { mainColor: "#D83838", ...props.theme };
