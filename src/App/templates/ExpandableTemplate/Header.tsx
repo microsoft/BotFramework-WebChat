@@ -27,7 +27,7 @@ export const Header: React.StatelessComponent<Props> = ({
 				 {title}
 			</span>
 			
-			{extraHtml && <span className="feedbot-extra-html">{extraHtml}</span>}
+			{extraHtml && <span className="feedbot-extra-html" dangerouslySetInnerHTML={{ __html: extraHtml }}/>}
 			
 			<a
 				onClick={e => e.preventDefault()}
