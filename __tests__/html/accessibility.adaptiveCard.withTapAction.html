@@ -13,7 +13,7 @@
       run(async function () {
         const store = testHelpers.createStore();
         const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
-        const baseProps = { directLine, store };
+        const baseProps = { directLine, store, styleOptions: { subtle: '#666' } };
         const webChatElement = document.getElementById('webchat');
 
         WebChat.renderWebChat(baseProps, webChatElement);
