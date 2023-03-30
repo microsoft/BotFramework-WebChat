@@ -12,11 +12,11 @@
       run(async function () {
         const clock = lolex.createClock();
 
-        await host.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'America/Los_Angeles' });
+        await host.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'Asia/Hong_Kong' });
 
-        // Before running the test, the browser should have setup with time zone of GMT-08, at epoch time.
+        // Before running the test, the browser should have setup with time zone of GMT+08, at epoch time.
         // Note the getTimezoneOffset() is correctly returns positive number for a negative offset.
-        expect(new Date().getTimezoneOffset()).toBe(480);
+        expect(new Date().getTimezoneOffset()).toBe(-480);
 
         const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
@@ -45,8 +45,8 @@
         expect(activity.timestamp).toBeUndefined();
 
         // THEN: The activity-in-transit should have local timestamp and timezone.
-        expect(activity).toHaveProperty('localTimestamp', '1969-12-31T16:00:00.600-08:00');
-        expect(activity).toHaveProperty('localTimezone', 'America/Los_Angeles');
+        expect(activity).toHaveProperty('localTimestamp', '1970-01-01T08:00:00.600+08:00');
+        expect(activity).toHaveProperty('localTimezone', 'Asia/Hong_Kong');
       });
     </script>
   </body>
