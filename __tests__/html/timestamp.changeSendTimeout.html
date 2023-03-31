@@ -21,12 +21,15 @@
       }
 
       run(async function () {
-        const clock = lolex.install();
+        const clock = lolex.createClock();
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
         async function createWebChat() {
           let props = {
-            directLine: createDirectLineForTest({ token: await testHelpers.token.fetchDirectLineToken() }),
-            store: testHelpers.createStore(),
+            directLine,
+            ponyfill: clock,
+            store,
             styleOptions: {
               sendTimeout: 5000
             }
@@ -52,39 +55,49 @@
         clock.tick(1000);
 
         await pageConditions.uiConnected();
-        await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
 
+        // WHEN: Send a message without acknowledging it.
+        await directLine.actPostActivity(() =>
+          pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false })
+        );
+
+        // WHEN: After 5 seconds.
         clock.tick(5000);
 
+        // THEN: The activity status should become "Send failed. Retry."
         await pageConditions.became(
           'turn into "Send failed. Retry."',
           () => pageElements.activityStatuses()[0]?.innerText === 'Send failed. Retry.',
           1000
         );
 
-        // After 5 seconds, it should show timeout.
+        // THEN: The screen should show "Send failed. Retry."
         await host.snapshot();
 
+        // WHEN: The send timeout is changed to 10 seconds.
         updateProps(props => updateIn(props, ['styleOptions', 'sendTimeout'], () => 10000));
 
+        // THEN: The activity status should become "Sending."
         await pageConditions.became(
           'turn into "Sending"',
           () => pageElements.activityStatuses()[0]?.innerText === 'Sending',
           1000
         );
 
-        // After changing the send timeout to 10 seconds, it should show "sending".
+        // THEN: The screen should show "Sending."
         await host.snapshot();
 
+        // WHEN: After 5 seconds.
         clock.tick(5000);
 
+        // THEN: The activity status should become "Send failed. Retry."
         await pageConditions.became(
           'turn into "Send failed. Retry."',
           () => pageElements.activityStatuses()[0]?.innerText === 'Send failed. Retry.',
           1000
         );
 
-        // After 10 seconds, it should show timeout again.
+        // THEN: The screen should show "Send failed. Retry."
         await host.snapshot();
       });
     </script>

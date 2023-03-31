@@ -1,4 +1,4 @@
-import { By, logging } from 'selenium-webdriver';
+import { By } from 'selenium-webdriver';
 
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
@@ -16,18 +16,21 @@ jest.setTimeout(timeouts.test);
 test('card action "openUrl"', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
-      cardActionMiddleware: ({ dispatch }) => next => ({ cardAction }) => {
-        if (cardAction.type === 'openUrl') {
-          dispatch({
-            type: 'WEB_CHAT/SEND_MESSAGE',
-            payload: {
-              text: `Navigating to ${cardAction.value}`
-            }
-          });
-        } else {
-          return next(cardAction);
+      cardActionMiddleware:
+        ({ dispatch }) =>
+        next =>
+        ({ cardAction }) => {
+          if (cardAction.type === 'openUrl') {
+            dispatch({
+              type: 'WEB_CHAT/SEND_MESSAGE',
+              payload: {
+                text: `Navigating to ${cardAction.value}`
+              }
+            });
+          } else {
+            return next(cardAction);
+          }
         }
-      }
     }
   });
 
@@ -50,20 +53,23 @@ test('card action "openUrl"', async () => {
 test('card action "signin"', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
-      cardActionMiddleware: ({ dispatch }) => next => ({ cardAction, getSignInUrl }) => {
-        if (cardAction.type === 'signin') {
-          getSignInUrl().then(url => {
-            dispatch({
-              type: 'WEB_CHAT/SEND_MESSAGE',
-              payload: {
-                text: `Signing into ${new URL(url).host}`
-              }
+      cardActionMiddleware:
+        ({ dispatch }) =>
+        next =>
+        ({ cardAction, getSignInUrl }) => {
+          if (cardAction.type === 'signin') {
+            getSignInUrl().then(url => {
+              dispatch({
+                type: 'WEB_CHAT/SEND_MESSAGE',
+                payload: {
+                  text: `Signing into ${new URL(url).host}`
+                }
+              });
             });
-          });
-        } else {
-          return next(cardAction);
+          } else {
+            return next(cardAction);
+          }
         }
-      }
     },
     useProductionBot: true
   });
@@ -96,20 +102,23 @@ test('card action "signin" when directLine.getSessionId is falsy', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     disableNoMagicCode: true,
     props: {
-      cardActionMiddleware: ({ dispatch }) => next => ({ cardAction, getSignInUrl }) => {
-        if (cardAction.type === 'signin') {
-          Promise.resolve(getSignInUrl()).then(url => {
-            dispatch({
-              type: 'WEB_CHAT/SEND_MESSAGE',
-              payload: {
-                text: `Signing into ${new URL(url).host}`
-              }
+      cardActionMiddleware:
+        ({ dispatch }) =>
+        next =>
+        ({ cardAction, getSignInUrl }) => {
+          if (cardAction.type === 'signin') {
+            Promise.resolve(getSignInUrl()).then(url => {
+              dispatch({
+                type: 'WEB_CHAT/SEND_MESSAGE',
+                payload: {
+                  text: `Signing into ${new URL(url).host}`
+                }
+              });
             });
-          });
-        } else {
-          return next(cardAction);
+          } else {
+            return next(cardAction);
+          }
         }
-      }
     },
     useProductionBot: true
   });
@@ -136,8 +145,12 @@ test('card action "signin" when directLine.getSessionId is falsy', async () => {
   const base64PNG = await driver.takeScreenshot();
 
   expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-  expect(await pageObjects.getConsoleErrors()).toEqual([]);
-  expect(await pageObjects.getConsoleWarnings()).toEqual([
-    'botframework-webchat: OAuth is not supported on this Direct Line adapter.'
-  ]);
+
+  await expect(pageObjects.getConsoleErrors()).resolves.toEqual([]);
+
+  expect(
+    (await pageObjects.getConsoleWarnings()).includes(
+      'botframework-webchat: OAuth is not supported on this Direct Line adapter.'
+    )
+  ).toBe(true);
 });

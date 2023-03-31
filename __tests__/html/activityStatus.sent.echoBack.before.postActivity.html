@@ -9,30 +9,6 @@
   <body>
     <main id="webchat"></main>
     <script>
-      async function createDirectLineForTest() {
-        const directLine = await testHelpers.createDirectLineWithTranscript([], {
-          overridePostActivity: activity => {
-            if (activity.type === 'message') {
-              setTimeout(() => {
-                directLine.activityDeferredObservable.next({
-                  ...activity,
-                  id: 'a00001',
-                  timestamp: new Date().toISOString()
-                });
-              }, 1000);
-
-              return new Observable(observer => {
-                setTimeout(() => observer.next('a00001'), 2000);
-              });
-            } else {
-              return workingDirectLine.postActivity(activity);
-            }
-          }
-        });
-
-        return directLine;
-      }
-
       function activityStatusInnerTextContained(expectedInnerTextPattern) {
         return pageConditions.became(
           `Activity status should contains "${expectedInnerTextPattern}"`,
@@ -66,24 +42,24 @@
       }
 
       run(async function () {
-        const clock = lolex.install();
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         WebChat.renderWebChat(
           {
-            directLine: await createDirectLineForTest(),
-            store: testHelpers.createStore(),
+            directLine,
+            store,
             styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
           },
           document.getElementById('webchat')
         );
 
-        await pageConditions.webChatRendered();
-
-        clock.tick(400);
-
         // SETUP: Send a message
         await pageConditions.uiConnected();
-        await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
+
+        const sendMessage = await directLine.actPostActivity(
+          () => pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false }),
+          { id: 'a00001' }
+        );
 
         // THEN: `channelData.state` should be "sending".
         await activityChannelDataStateBecame('sending');
@@ -97,11 +73,15 @@
         // THEN: The activity object should not have an ID.
         expect('id' in pageObjects.getActivities()[0]).toBeFalsy();
 
-        // WHEN: After 1 seconds, the echo back message arrived.
-        clock.tick(1000);
+        // WHEN: The echo back message had arrived.
+        await sendMessage.echoBack();
 
-        // THEN: `channelData.state` should be "sending".
-        await activityChannelDataStateBecame('sending');
+        // THEN: `channelData.state` should be "undefined".
+        //       It is correct that the value is `undefined` and due to an existing bug on INCOMING_ACTIVITY.
+        //       When the echo back message is received before the return of the call `postActivity()`,
+        //       there is a temporal moment that the `activity.channelData.state` become `undefined`.
+        //       This bug is outlined in https://github.com/microsoft/BotFramework-WebChat/pull/4362.
+        await activityChannelDataStateBecame(undefined);
 
         // THEN: `channelData['webchat:send-status']` should be "sending".
         await activityChannelDataWebChatSendStatusBecame('sending');
@@ -112,8 +92,8 @@
         // THEN: The activity object should have an ID of "a00001".
         expect(pageObjects.getActivities()[0]).toHaveProperty('id', 'a00001');
 
-        // WHEN: After 1 seconds (t=2s), the postActivity() call returned.
-        clock.tick(1000);
+        // WHEN: The call to postActivity() had returned.
+        sendMessage.resolvePostActivity();
 
         // THEN: `channelData.state` should be "sent".
         await activityChannelDataStateBecame('sent');

@@ -30,14 +30,12 @@ import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
 import useLastAcknowledgedActivityKey from './useLastAcknowledgedActivityKey';
 import useLastReadActivityKey from './useLastReadActivityKey';
-import useLastTypingAt from './useLastTypingAt';
-import useLocalize from './useLocalize'; // Deprecated on or after 2022-02-12
-import useLocalizeDate from './useLocalizeDate'; // Deprecated on or after 2022-02-12
 import useLocalizer from './useLocalizer';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import useMarkActivityKeyAsRead from './useMarkActivityKeyAsRead';
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import usePerformCardAction from './usePerformCardAction';
+import usePonyfill from './usePonyfill';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
 import useRelativeTimeFormatter from './useRelativeTimeFormatter';
@@ -105,14 +103,12 @@ export {
   useLanguage,
   useLastAcknowledgedActivityKey,
   useLastReadActivityKey,
-  useLastTypingAt,
-  useLocalize,
-  useLocalizeDate,
   useLocalizer,
   useMarkActivityAsSpoken,
   useMarkActivityKeyAsRead,
   useMarkAllAsAcknowledged,
   usePerformCardAction,
+  usePonyfill,
   usePostActivity,
   useReferenceGrammarID,
   useRelativeTimeFormatter,

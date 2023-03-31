@@ -22,47 +22,14 @@
       // Because the user's activity was already in the transcript, the relaxation was not granted. Thus, the bot's activity is subject to "reply to ID" and a timeout.
 
       run(async function () {
-        const clock = lolex.install();
+        const clock = lolex.createClock();
 
-        const directLine = testHelpers.createDirectLineWithTranscript([], {
-          overridePostActivity: activity => {
-            return new Observable(observer => {
-              const id = '00001';
-
-              directLine.activityDeferredObservable.next({
-                channelData: activity.channelData,
-                from: {
-                  id: 'user',
-                  role: 'user'
-                },
-                id,
-                text: 'Aloha, bot!',
-                timestamp: new Date(Date.now() + 1).toISOString(),
-                type: 'message'
-              });
-
-              observer.next(id);
-              observer.complete();
-            });
-          }
-        });
-
-        const store = testHelpers.createStore({}, ({ dispatch }) => next => action => {
-          if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
-            dispatch({
-              payload: {
-                text: 'Aloha, bot!'
-              },
-              type: 'WEB_CHAT/SEND_MESSAGE'
-            });
-          }
-
-          return next(action);
-        });
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
         WebChat.renderWebChat(
           {
             directLine,
+            ponyfill: clock,
             store
           },
           document.getElementById('webchat')
@@ -75,7 +42,13 @@
 
         await pageConditions.uiConnected();
 
-        directLine.activityDeferredObservable.next({
+        const sendMessage = await directLine.actPostActivity(() =>
+          pageObjects.sendMessageViaSendBox('Aloha, bot!', { waitForSend: false })
+        );
+
+        await sendMessage.resolveAll();
+
+        await directLine.emulateIncomingActivity({
           from: {
             id: 'bot',
             role: 'bot'
@@ -83,7 +56,7 @@
           id: '00000',
           replyToId: 'ABCDE',
           text: 'Hello, John!',
-          timestamp: new Date(Date.now() + 0).toISOString(),
+          timestamp: new Date().toISOString(),
           type: 'message'
         });
 

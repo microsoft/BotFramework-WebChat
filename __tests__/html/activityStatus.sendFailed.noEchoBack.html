@@ -9,18 +9,6 @@
   <body>
     <main id="webchat"></main>
     <script>
-      function createDirectLineForTest() {
-        return testHelpers.createDirectLineWithTranscript([], {
-          overridePostActivity: activity => {
-            if (activity.type === 'message') {
-              return new Observable(observer => observer.next('a00001'));
-            } else {
-              return workingDirectLine.postActivity(activity);
-            }
-          }
-        });
-      }
-
       function activityStatusInnerTextContained(expectedInnerTextPattern) {
         return pageConditions.became(
           `Activity status should contains "${expectedInnerTextPattern}"`,
@@ -55,12 +43,15 @@
 
       run(
         async function () {
-          const clock = lolex.install();
+          const clock = lolex.createClock();
+
+          const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
           WebChat.renderWebChat(
             {
-              directLine: await createDirectLineForTest(),
-              store: testHelpers.createStore(),
+              directLine,
+              ponyfill: clock,
+              store,
               styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
             },
             document.getElementById('webchat')
@@ -70,9 +61,15 @@
 
           clock.tick(400);
 
-          // SETUP: Send a message
+          // SETUP: Send a message and resolve the call to `postActivity()`.
           await pageConditions.uiConnected();
-          await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
+
+          const sendMessage = await directLine.actPostActivity(
+            () => pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false }),
+            { id: 'a00001' }
+          );
+
+          sendMessage.resolvePostActivity();
 
           // THEN: `channelData.state` should be "sending".
           await activityChannelDataStateBecame('sending');

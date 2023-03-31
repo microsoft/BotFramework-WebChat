@@ -1,7 +1,10 @@
 import createDeferredObservable from '../../../../utils/createDeferredObservable';
 import shareObservable from '../../shareObservable';
 
-export default function createDirectLineForTest({ withReplyToId = true } = {}) {
+export default function createDirectLineForTest({
+  ponyfill: { Date } = { Date: window.Date },
+  withReplyToId = true
+} = {}) {
   const connectionStatusDeferred$ = createDeferredObservable(observer => observer.next(0));
   const activityDeferred$ = createDeferredObservable(() => {
     connectionStatusDeferred$.next(1);

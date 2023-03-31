@@ -3,16 +3,18 @@ import { useEffect } from 'react';
 import { useSelector } from './internal/WebChatReduxContext';
 import Typing from '../types/Typing';
 import useForceRender from './internal/useForceRender';
+import usePonyfill from './usePonyfill';
 import useStyleOptions from './useStyleOptions';
 
 function useActiveTyping(expireAfter?: number): [{ [userId: string]: Typing }] {
-  const now = Date.now();
-
+  const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
   const [{ typingAnimationDuration }] = useStyleOptions();
   const forceRender = useForceRender();
   const typing: { [userId: string]: { at: number; last: number; name: string; role: string } } = useSelector(
     ({ typing }) => typing
   );
+
+  const now = Date.now();
 
   if (typeof expireAfter !== 'number') {
     expireAfter = typingAnimationDuration;
@@ -40,7 +42,7 @@ function useActiveTyping(expireAfter?: number): [{ [userId: string]: Typing }] {
 
       return () => clearTimeout(timeout);
     }
-  }, [forceRender, timeToRender]);
+  }, [clearTimeout, forceRender, setTimeout, timeToRender]);
 
   return [activeTyping];
 }

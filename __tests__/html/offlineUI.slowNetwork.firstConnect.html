@@ -34,10 +34,11 @@
         };
       }
 
-      async function createWebChat() {
+      async function createWebChat(ponyfill) {
         let props = {
           directLine: createDirectLineForTest({ token: await testHelpers.token.fetchDirectLineToken() }),
-          store: testHelpers.createStore(),
+          ponyfill,
+          store: testHelpers.createStoreWithOptions({ ponyfill }),
           styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
         };
 
@@ -54,9 +55,9 @@
       }
 
       run(async function () {
-        const clock = lolex.install();
+        const clock = lolex.createClock();
 
-        const { updateProps } = await createWebChat();
+        const { updateProps } = await createWebChat(clock);
 
         await pageConditions.webChatRendered();
 

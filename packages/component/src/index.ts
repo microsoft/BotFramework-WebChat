@@ -1,4 +1,4 @@
-import { concatMiddleware, hooks as apiHooks, Localize, localize } from 'botframework-webchat-api';
+import { concatMiddleware, hooks as apiHooks, localize } from 'botframework-webchat-api';
 
 import ReactWebChat, { ReactWebChatProps } from './ReactWebChat';
 
@@ -55,7 +55,6 @@ const version = process.env.npm_package_version;
 const Components = {
   BasicWebChat,
   Composer,
-  Localize,
 
   // Components for restructuring BasicWebChat
   AccessKeySinkSurface,

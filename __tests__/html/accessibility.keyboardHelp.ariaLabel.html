@@ -10,9 +10,7 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const store = testHelpers.createStore();
-
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
@@ -30,7 +28,9 @@
         // THEN: The keyboard help screen dialog should have either `aria-label` or `aria-labelledby` saying "Keyboard controls".
         const dialogElement = pageElements.keyboardHelpScreenCloseButton().closest('[role="dialog"]');
 
-        const ariaLabel = dialogElement.getAttribute('aria-label') || document.getElementById(dialogElement.getAttribute('aria-labelledby'))?.innerText;
+        const ariaLabel =
+          dialogElement.getAttribute('aria-label') ||
+          document.getElementById(dialogElement.getAttribute('aria-labelledby'))?.innerText;
 
         expect(ariaLabel).toBe('Keyboard controls');
       });

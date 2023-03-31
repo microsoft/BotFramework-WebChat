@@ -5,11 +5,15 @@ import { useMemo } from 'react';
 import useDateFormatter from './useDateFormatter';
 import useLocalizedGlobalize from './internal/useLocalizedGlobalize';
 import useLocalizer from './useLocalizer';
+import usePonyfill from './usePonyfill';
 
+// False positive: we are using `Date` as a type.
+// eslint-disable-next-line no-restricted-globals
 export default function useRelativeTimeFormatter(): (dateOrString: Date | string) => string {
+  const [{ Date }] = usePonyfill();
+  const [globalize] = useLocalizedGlobalize();
   const formatDate = useDateFormatter();
   const localize = useLocalizer();
-  const [globalize] = useLocalizedGlobalize();
 
   return useMemo(() => {
     const relativeTimeFormatter = globalize.relativeTimeFormatter.bind(globalize);
@@ -45,5 +49,5 @@ export default function useRelativeTimeFormatter(): (dateOrString: Date | string
 
       return formatDate(date);
     };
-  }, [formatDate, globalize, localize]);
+  }, [Date, formatDate, globalize, localize]);
 }

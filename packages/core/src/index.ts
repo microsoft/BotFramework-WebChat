@@ -2,7 +2,10 @@ import * as ActivityClientState from './constants/ActivityClientState';
 import * as DictateState from './constants/DictateState';
 import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';
-import createStore, { withDevTools as createStoreWithDevTools } from './createStore';
+import createStore, {
+  withDevTools as createStoreWithDevTools,
+  withOptions as createStoreWithOptions
+} from './createStore';
 import disconnect from './actions/disconnect';
 import dismissNotification from './actions/dismissNotification';
 import emitTypingIndicator from './actions/emitTypingIndicator';
@@ -43,6 +46,7 @@ import type { DirectLineSignInCard } from './types/external/DirectLineSignInCard
 import type { DirectLineSuggestedAction } from './types/external/DirectLineSuggestedAction';
 import type { DirectLineThumbnailCard } from './types/external/DirectLineThumbnailCard';
 import type { DirectLineVideoCard } from './types/external/DirectLineVideoCard';
+import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 import type { WebChatActivity } from './types/WebChatActivity';
 
 const Constants = { ActivityClientState, DictateState };
@@ -54,6 +58,7 @@ export {
   Constants,
   createStore,
   createStoreWithDevTools,
+  createStoreWithOptions,
   disconnect,
   dismissNotification,
   emitTypingIndicator,
@@ -97,5 +102,6 @@ export type {
   DirectLineThumbnailCard,
   DirectLineVideoCard,
   OneOrMany,
+  GlobalScopePonyfill,
   WebChatActivity
 };

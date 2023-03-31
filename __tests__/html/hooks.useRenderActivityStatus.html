@@ -22,7 +22,7 @@
 
       run(
         async function () {
-          const clock = lolex.install();
+          const clock = lolex.createClock();
 
           const ActivityStatusTest = ({ activity }) => {
             const renderActivityStatus = useRenderActivityStatus({
@@ -48,12 +48,10 @@
             );
           };
 
-          const store = testHelpers.createStore();
-
-          const directLine = testHelpers.createDirectLineEmulator(store);
+          const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
           render(
-            <Composer directLine={directLine} store={store}>
+            <Composer directLine={directLine} ponyfill={clock} store={store}>
               <Test />
             </Composer>,
             document.getElementById('webchat')

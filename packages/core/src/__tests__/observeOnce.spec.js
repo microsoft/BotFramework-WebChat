@@ -38,6 +38,7 @@ describe('observeOnce', () => {
     new Promise((resolve, reject) => {
       runSaga(inputOutput, function* () {
         try {
+          // We are using call as a stub instead of expecting a Promise.
           const [result] = yield all([observeOnce(observable), call(() => onNext('Hello, World!'))]);
 
           expect(observable.subscribe).toHaveBeenCalledTimes(1);
@@ -56,6 +57,7 @@ describe('observeOnce', () => {
       runSaga(inputOutput, function* () {
         try {
           try {
+            // We are using call as a stub instead of expecting a Promise.
             yield all([observeOnce(observable), call(() => onError(new Error('Hello, World!')))]);
 
             reject(new Error('Should not succeed'));
@@ -77,6 +79,7 @@ describe('observeOnce', () => {
     new Promise((resolve, reject) => {
       runSaga(inputOutput, function* () {
         try {
+          // We are using call as a stub instead of expecting a Promise.
           const [result] = yield all([observeOnce(observable), call(() => onComplete())]);
 
           expect(observable.subscribe).toHaveBeenCalledTimes(1);

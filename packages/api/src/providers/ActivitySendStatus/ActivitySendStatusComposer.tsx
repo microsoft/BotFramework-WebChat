@@ -8,6 +8,7 @@ import useActivities from '../../hooks/useActivities';
 import useForceRender from '../../hooks/internal/useForceRender';
 import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
 import useGetSendTimeoutForActivity from '../../hooks/useGetSendTimeoutForActivity';
+import usePonyfill from '../../hooks/usePonyfill';
 
 import type { ActivitySendStatusContextType } from './private/Context';
 import type { FC, PropsWithChildren } from 'react';
@@ -19,6 +20,7 @@ const EXPIRY_SENT = Infinity;
 
 const ActivitySendStatusComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
   const [activities] = useActivities();
+  const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
   const forceRender = useForceRender();
   const getKeyByActivity = useGetKeyByActivity();
   const getSendTimeoutForActivity = useGetSendTimeoutForActivity();
@@ -67,7 +69,7 @@ const ActivitySendStatusComposer: FC<PropsWithChildren<{}>> = ({ children }) => 
           return expiryByActivityKey;
         }, new Map())
       ),
-    [activities, getKeyByActivity, getSendTimeoutForActivity]
+    [activities, Date, getKeyByActivity, getSendTimeoutForActivity]
   );
 
   /** Map of outgoing activities and their respective send status. */
@@ -117,7 +119,7 @@ const ActivitySendStatusComposer: FC<PropsWithChildren<{}>> = ({ children }) => 
 
       return () => clearTimeout(timeout);
     }
-  }, [forceRender, nextExpiry]);
+  }, [clearTimeout, Date, forceRender, nextExpiry, setTimeout]);
 
   return <ActivitySendStatusContext.Provider value={context}>{children}</ActivitySendStatusContext.Provider>;
 };

@@ -9,22 +9,6 @@
   <body>
     <main id="webchat"></main>
     <script>
-       async function createDirectLineForTest() {
-        const directLine = await testHelpers.createDirectLineWithTranscript([], {
-          overridePostActivity: activity => {
-            if (activity.type === 'message') {
-              return new Observable(observer => {
-                setTimeout(() => observer.error(new Error('artificial error')), 1000);
-              });
-            } else {
-              return workingDirectLine.postActivity(activity);
-            }
-          }
-        });
-
-        return directLine;
-      }
-
       function activityStatusInnerTextContained(expectedInnerTextPattern) {
         return pageConditions.became(
           `Activity status should contains "${expectedInnerTextPattern}"`,
@@ -59,24 +43,23 @@
 
       run(
         async function () {
-          const clock = lolex.install();
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
 
           WebChat.renderWebChat(
             {
-              directLine: await createDirectLineForTest(),
-              store: testHelpers.createStore(),
+              directLine,
+              store,
               styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
             },
             document.getElementById('webchat')
           );
 
-          await pageConditions.webChatRendered();
-
-          clock.tick(400);
-
           // SETUP: Send a message
           await pageConditions.uiConnected();
-          await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
+
+          const sendMessage = await directLine.actPostActivity(() =>
+            pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false })
+          );
 
           // THEN: `channelData.state` should be "sending".
           await activityChannelDataStateBecame('sending');
@@ -87,8 +70,8 @@
           // THEN: The message should have status of "Sending".
           await activityStatusInnerTextContained('Sending');
 
-          // WHEN: After 1 second.
-          clock.tick(1000);
+          // WHEN: `postActivity` is rejected.
+          sendMessage.rejectPostActivity(new Error('artificial error'));
 
           // THEN: The console should have an error message saying "artificial error"
           await pageConditions.errorMessageLogged('artificial error');

@@ -1,3 +1,4 @@
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
@@ -8,6 +9,8 @@ import LiveRegionTwinContext from './private/Context';
 import useValueRef from '../../hooks/internal/useValueRef';
 
 import type { StaticElement, StaticElementEntry } from './private/types';
+
+const { usePonyfill } = hooks;
 
 const DEFAULT_ARIA_LIVE = 'polite';
 const DEFAULT_FADE_AFTER = 1000;
@@ -62,6 +65,7 @@ const LiveRegionTwinComposer: FC<LiveRegionTwinComposerProps> = ({
   role,
   textElementClassName
 }) => {
+  const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [staticElementEntries, setStaticElementEntries] = useState<StaticElementEntry[]>([]);
   const fadeAfterRef = useValueRef(fadeAfter);
   const markAllAsRenderedTimeoutIdRef = useRef<any>();
@@ -88,12 +92,19 @@ const LiveRegionTwinComposer: FC<LiveRegionTwinComposerProps> = ({
       // we could replace it with just the setter function.
       staticElementEntriesRef.current.length && setStaticElementEntries([]);
     }, fadeAfterRef.current);
-  }, [fadeAfterRef, markAllAsRenderedTimeoutIdRef, setStaticElementEntries, staticElementEntriesRef]);
+  }, [
+    clearTimeout,
+    fadeAfterRef,
+    markAllAsRenderedTimeoutIdRef,
+    setStaticElementEntries,
+    setTimeout,
+    staticElementEntriesRef
+  ]);
 
   // When this component is unmounting, make sure all future `setTimeout` are cleared and should not be fired.
   useEffect(
     () => () => markAllAsRenderedTimeoutIdRef.current && clearTimeout(markAllAsRenderedTimeoutIdRef.current),
-    [markAllAsRenderedTimeoutIdRef]
+    [clearTimeout, markAllAsRenderedTimeoutIdRef]
   );
 
   const queueStaticElement = useCallback<(staticElement: StaticElement) => void>(

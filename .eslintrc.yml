@@ -18,9 +18,9 @@ parserOptions:
 
 overrides:
   - files:
-      - '__tests__/**/*.js'
-      - '*.spec.js'
-      - '*.test.js'
+    - '__tests__/**/*.js'
+    - '*.spec.js'
+    - '*.test.js'
 
     env:
       jest: true

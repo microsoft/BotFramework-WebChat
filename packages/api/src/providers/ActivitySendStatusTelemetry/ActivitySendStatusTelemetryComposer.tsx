@@ -27,13 +27,15 @@ const ActivitySendStatusTelemetryComposer = () => {
       // This telemetry data point only emit changes in outgoing activities.
       if (status && status !== prevStatus) {
         const activity = getActivityByKey(key);
+        const clientActivityID = activity?.channelData.clientActivityID;
+        const type = activity?.type;
 
         const telemetryPayload: TelemetrySendStatusChangePayload = {
-          clientActivityID: activity?.channelData.clientActivityID,
           hasAttachment: activity?.type === 'message' && activity.attachments?.length > 0 ? 'true' : 'false',
           key,
           status,
-          type: activity?.type
+          ...(clientActivityID ? { clientActivityID } : {}),
+          ...(type ? { type } : {})
         };
 
         // Only add prevStatus if it is NOT null/undefined

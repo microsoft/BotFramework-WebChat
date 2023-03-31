@@ -18,7 +18,7 @@ import useSubmit from '../providers/internal/SendBox/useSubmit';
 
 import type { MutableRefObject, ReactEventHandler } from 'react';
 
-const { useDisabled, useLocalizer, useSendBoxValue, useStopDictate, useStyleOptions } = hooks;
+const { useDisabled, useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__send-box-text-box': {
@@ -156,6 +156,7 @@ const TextBox = ({ className }) => {
   const [, setSendBox] = useSendBoxValue();
   const [{ sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [{ sendBoxTextWrap }] = useStyleOptions();
+  const [{ setTimeout }] = usePonyfill();
   const [disabled] = useDisabled();
   const [textBoxValue, setTextBoxValue] = useTextBoxValue();
   const inputElementRef: MutableRefObject<HTMLInputElement & HTMLTextAreaElement> = useRef();
@@ -358,6 +359,9 @@ const TextBox = ({ className }) => {
 
           current.setAttribute('readonly', 'readonly');
 
+          // TODO: [P2] We should update this logic to handle quickly-successive `focusCallback`.
+          //       If a succeeding `focusCallback` is being called, the `setTimeout` should run immediately.
+          //       Or the second `focusCallback` should not set `readonly` to `true`.
           setTimeout(() => {
             const { current } = inputElementRef;
 
@@ -371,7 +375,7 @@ const TextBox = ({ className }) => {
         }
       }
     },
-    [inputElementRef]
+    [inputElementRef, setTimeout]
   );
 
   useRegisterFocusSendBox(focusCallback);

@@ -25,7 +25,7 @@
     <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       run(async function () {
-        const clock = lolex.install();
+        const clock = lolex.createClock();
 
         await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
@@ -68,14 +68,13 @@
             return next(...args);
           };
 
-        const store = testHelpers.createStore();
-
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
         WebChat.renderWebChat(
           {
             activityStatusMiddleware,
             directLine,
+            ponyfill: clock,
             store
           },
           document.getElementById('webchat')

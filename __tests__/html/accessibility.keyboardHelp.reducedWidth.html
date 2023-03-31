@@ -13,9 +13,7 @@
         // SETUP: Browser window size with height of 480px.
         await host.windowSize(320, 800, document.getElementById('webchat'));
 
-        const store = testHelpers.createStore();
-
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         WebChat.renderWebChat(
           {

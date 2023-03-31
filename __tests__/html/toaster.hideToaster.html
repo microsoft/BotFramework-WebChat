@@ -10,9 +10,7 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const store = testHelpers.createStore();
-
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const updateProps = extraProps => {
           WebChat.renderWebChat({ directLine, store, ...extraProps }, document.getElementById('webchat'));

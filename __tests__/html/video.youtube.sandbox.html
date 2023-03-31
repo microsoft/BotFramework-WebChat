@@ -10,19 +10,19 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const store = testHelpers.createStore();
-
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
         await directLine.emulateIncomingActivity({
-          attachments: [{
-            contentType: 'video/*',
-            contentUrl: 'https://youtu.be/rIJRFHDr1QE'
-          }],
+          attachments: [
+            {
+              contentType: 'video/*',
+              contentUrl: 'https://youtu.be/rIJRFHDr1QE'
+            }
+          ],
           type: 'message'
         });
 
@@ -30,7 +30,7 @@
 
         await pageConditions.became('iframe has loaded', () => document.getElementsByTagName('iframe').length, 5000);
 
-        const sandboxAttributeValue = document.getElementsByTagName('iframe')[0].getAttribute('sandbox')
+        const sandboxAttributeValue = document.getElementsByTagName('iframe')[0].getAttribute('sandbox');
 
         expect(sandboxAttributeValue).toBeTruthy();
       });

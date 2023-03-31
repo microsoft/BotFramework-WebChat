@@ -10,9 +10,7 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const store = testHelpers.createStore();
-
-        const directLine = testHelpers.createDirectLineEmulator(store);
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         // GIVEN: Dark theme is activated.
         await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {

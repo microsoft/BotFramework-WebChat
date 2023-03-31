@@ -3,5 +3,5 @@
 import random from 'math-random';
 
 export default function uniqueID(): string {
-  return Date.now() + random().toString(36).substr(2);
+  return random().toString(36).substring(2);
 }

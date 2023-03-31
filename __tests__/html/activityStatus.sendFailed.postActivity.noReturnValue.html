@@ -9,28 +9,6 @@
   <body>
     <main id="webchat"></main>
     <script>
-      async function createDirectLineForTest() {
-        const directLine = await testHelpers.createDirectLineWithTranscript([], {
-          overridePostActivity: activity => {
-            if (activity.type === 'message') {
-              setTimeout(() => {
-                directLine.activityDeferredObservable.next({
-                  ...activity,
-                  id: 'a00001',
-                  timestamp: new Date().toISOString()
-                });
-              }, 5000);
-
-              return new Observable(() => {});
-            } else {
-              return workingDirectLine.postActivity(activity);
-            }
-          }
-        });
-
-        return directLine;
-      }
-
       function activityStatusInnerTextContained(expectedInnerTextPattern) {
         return pageConditions.became(
           `Activity status should contains "${expectedInnerTextPattern}"`,
@@ -65,12 +43,15 @@
 
       run(
         async function () {
-          const clock = lolex.install();
+          const clock = lolex.createClock();
+
+          const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
           WebChat.renderWebChat(
             {
-              directLine: await createDirectLineForTest(),
-              store: testHelpers.createStore(),
+              directLine,
+              ponyfill: clock,
+              store,
               styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
             },
             document.getElementById('webchat')
@@ -78,11 +59,14 @@
 
           await pageConditions.webChatRendered();
 
-          clock.tick(400);
+          clock.tick(600);
 
-          // SETUP: Send a message
+          // GIVEN: Send a message
           await pageConditions.uiConnected();
-          await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
+
+          const sendMessage = await directLine.actPostActivity(() =>
+            pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false })
+          );
 
           // THEN: `channelData.state` should be "sending".
           await activityChannelDataStateBecame('sending');
@@ -93,8 +77,8 @@
           // THEN: The message should have status of "Sending".
           await activityStatusInnerTextContained('Sending');
 
-          // WHEN: After 5 seconds, the echo back activity arrived.
-          clock.tick(5000);
+          // WHEN: The echo back activity arrived.
+          await sendMessage.echoBack();
 
           // THEN: `channelData.state` should be undefined.
           await activityChannelDataStateBecame(undefined);
@@ -105,8 +89,8 @@
           // THEN: The message should have status of "Sending".
           await activityStatusInnerTextContained('Sending');
 
-          // WHEN: After 15 seconds (at t=20s).
-          clock.tick(15000);
+          // WHEN: After 20 seconds (at t=20s).
+          clock.tick(20000);
 
           // THEN: `channelData.state` should be "send failed".
           await activityChannelDataStateBecame('send failed');
