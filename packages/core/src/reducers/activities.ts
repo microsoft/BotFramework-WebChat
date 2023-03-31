@@ -240,23 +240,6 @@ export default function activities(
           }
         }
 
-        // Bot will call updateActivityAsync to update the activity.
-        // And DL channel add a "updateActiviyId" to the activity's channelData.
-        // If the incoming activity contains a "updateActiviyId", it is an update to an existing activity.
-        if (activity.from.role === 'bot' && activity.channelData?.updateActiviyId) {
-          const activityToUpdate = state.find(({ id }) => id === activity.channelData.updateActiviyId);
-          if (activityToUpdate) {
-            const { channelData, id } = activityToUpdate;
-            // update the activity with the existing id and sequence id
-            // the existing activity will be covered by the new one
-            activity = updateIn(activity, ['id'], () => id);
-            activity = updateIn(
-              activity,
-              ['channelData', 'webchat:sequence-id'],
-              () => channelData['webchat:sequence-id']
-            );
-          }
-        }
         state = upsertActivityWithSort(state, activity);
       }
 

@@ -1,7 +1,8 @@
 import type { WebChatActivity } from 'botframework-webchat-core';
 
-import { useSelector } from './internal/WebChatReduxContext';
+import useActivitiesWithHistory from './useActivitiesWithHistory';
 
 export default function useActivities(): [WebChatActivity[]] {
-  return [useSelector(({ activities }) => activities)];
+  const [activitiesWithHistory] = useActivitiesWithHistory();
+  return [activitiesWithHistory.map((activities: WebChatActivity[]) => activities[activities.length - 1])];
 }
