@@ -57,8 +57,6 @@ const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
 
     activitiesWithHistory.forEach(activities => {
       const activity = activities[activities.length - 1];
-      const activityId = getActivityId(activity);
-      const clientActivityId = getClientActivityId(activity);
 
       let key = uniqueId();
       for (let i = 0; i < activities.length; i++) {
@@ -78,9 +76,18 @@ const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
         }
       }
 
-      activityId && nextActivityIdToKeyMap.set(activityId, key);
-      clientActivityId && nextClientActivityIdToKeyMap.set(clientActivityId, key);
-      nextActivityToKeyMap.set(activity, key);
+      // all activities in the same group should have the same key
+      for (let i = 0; i < activities.length; i++) {
+        // eslint-disable-next-line security/detect-object-injection
+        const activity = activities[i];
+        const activityId = getActivityId(activity);
+        const clientActivityId = getClientActivityId(activity);
+
+        activityId && nextActivityIdToKeyMap.set(activityId, key);
+        clientActivityId && nextClientActivityIdToKeyMap.set(clientActivityId, key);
+        nextActivityToKeyMap.set(activity, key);
+      }
+
       nextKeyToActivityMap.set(key, activity);
       nextActivityKeys.push(key);
     });
