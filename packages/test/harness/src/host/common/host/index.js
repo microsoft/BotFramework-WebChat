@@ -1,5 +1,6 @@
 const createDeferred = require('p-defer-es5');
 
+const checkAccessibility = require('./checkAccessibility');
 const click = require('./click');
 const clickAt = require('./clickAt');
 const done = require('./done');
@@ -25,6 +26,7 @@ module.exports = function createHost(webDriver) {
 
   // Modifying this map will also requires modifying the corresponding RPC dummy at /src/browser/proxies/host.js
   return {
+    checkAccessibility: checkAccessibility(webDriver),
     click: click(),
     clickAt: clickAt(webDriver),
     done: done(webDriver, doneDeferred.resolve),

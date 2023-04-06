@@ -1,6 +1,7 @@
 const { join } = require('path');
 
 const allImagesCompleted = require('../allImagesCompleted');
+const checkAccessibilty = require('./checkAccessibility');
 const takeStabilizedScreenshot = require('../takeStabilizedScreenshot');
 
 module.exports = webDriver =>
@@ -13,4 +14,6 @@ module.exports = webDriver =>
       // jest-image-snapshot does not support <rootDir>.
       customSnapshotsDir: join(__dirname, '../../../../../../../__tests__/__image_snapshots__/html/')
     });
+
+    await checkAccessibilty(webDriver)();
   };

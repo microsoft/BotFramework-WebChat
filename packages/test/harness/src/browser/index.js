@@ -1,3 +1,4 @@
+import 'axe-core';
 import expect from './globals/expect';
 import host from './globals/host';
 import imageAsLog from './globals/imageAsLog';

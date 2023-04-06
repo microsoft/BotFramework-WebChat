@@ -1,4 +1,5 @@
 const allImagesCompleted = require('../../common/allImagesCompleted');
+const checkAccessibility = require('../../common/host/checkAccessibility');
 const takeStabilizedScreenshot = require('../../common/takeStabilizedScreenshot');
 
 // In dev mode, we output the screenshot in console instead of checking against a PNG file.
@@ -27,4 +28,6 @@ module.exports = webDriver =>
       '[TESTHARNESS] Snapshot taken.',
       base64
     );
+
+    await checkAccessibility(webDriver)();
   };

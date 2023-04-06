@@ -69,6 +69,7 @@
   },
   "dependencies": {
     "abort-controller": "3.0.0",
+    "axe-core": "4.6.3",
     "core-js": "3.28.0",
     "event-target-shim": "6.0.2",
     "expect": "25.5.0",
