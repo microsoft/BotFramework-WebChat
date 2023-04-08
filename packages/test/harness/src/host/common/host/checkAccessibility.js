@@ -2,15 +2,19 @@
 
 module.exports = webDriver =>
   async function checkAccessibility() {
-    const errorMessage = await webDriver.executeAsyncScript(callback => {
+    const error = await webDriver.executeAsyncScript(callback => {
       try {
-        window.checkAccessibility().then(callback, ({ message }) => callback(message));
+        window.checkAccessibility().then(callback, ({ message, stack }) => callback({ message, stack }));
       } catch (error) {
-        return callback(error?.message);
+        return callback({ message: error?.message, stack: error?.stack });
       }
     });
 
-    if (errorMessage) {
-      throw new Error(errorMessage);
+    if (error) {
+      const errorObject = new Error(error.message);
+
+      errorObject.stack = error.stack;
+
+      throw errorObject;
     }
   };
