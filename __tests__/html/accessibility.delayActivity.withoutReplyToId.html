@@ -20,7 +20,7 @@
           {
             directLine,
             ponyfill: clock,
-            store: testHelpers.createStore({ ponyfill: clock })
+            store: testHelpers.createStoreWithOptions({ ponyfill: clock })
           },
           document.getElementById('webchat')
         );
