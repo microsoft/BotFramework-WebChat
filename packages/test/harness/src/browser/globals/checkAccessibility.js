@@ -52,12 +52,8 @@ export default function initializeCheckAccessibility() {
         console.groupEnd();
 
         throw new Error(`Accessibility violations found: ${violations.map(({ id }) => id).join(', ')}.`);
-      } catch (error) {
-        console.log(`[TESTHARNESS] Accessibility checks failed, took ${Date.now() - startTime} ms.`, error);
-
-        throw error;
       } finally {
-        console.log(`[TESTHARNESS] Accessibility checks completed, took ${Date.now() - startTime} ms.`);
+        console.log(`[TESTHARNESS] Accessibility checks took ${Date.now() - startTime} ms.`);
       }
     })();
 }
