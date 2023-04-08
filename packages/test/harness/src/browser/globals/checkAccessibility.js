@@ -55,5 +55,5 @@ export default function initializeCheckAccessibility() {
       } finally {
         console.log(`[TESTHARNESS] Accessibility checks took ${Date.now() - startTime} ms.`);
       }
-    })();
+    });
 }
