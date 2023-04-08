@@ -1,7 +1,10 @@
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
+
+const { useLocalizer } = hooks;
 
 type YouTubeContentProps = {
   alt?: string;
@@ -12,12 +15,14 @@ type YouTubeContentProps = {
 
 const YouTubeContent: FC<YouTubeContentProps> = ({ alt, autoPlay, embedID, loop }) => {
   const [{ youTubeContent: youTubeContentStyleSet }] = useStyleSet();
+  const localize = useLocalizer();
 
   const search = new URLSearchParams({
     autoplay: autoPlay ? '1' : '0',
     loop: loop ? '1' : '0',
     modestbranding: '1'
   }).toString();
+  const title = localize('ATTACHMENT_VIDEO');
 
   return (
     // TODO: We should encodeURI the URL
@@ -27,6 +32,7 @@ const YouTubeContent: FC<YouTubeContentProps> = ({ alt, autoPlay, embedID, loop 
       className={youTubeContentStyleSet}
       sandbox="allow-same-origin allow-scripts"
       src={`https://youtube.com/embed/${embedID}?${search}`}
+      title={title}
     />
   );
 };

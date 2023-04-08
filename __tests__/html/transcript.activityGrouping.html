@@ -27,7 +27,8 @@
             ActivityGroupingBadges,
             ActivityGroupingContext,
             ActivityGroupingPanel,
-            ActivityGroupingSurface
+            ActivityGroupingSurface,
+            customAdaptiveCardsHostConfig
           }
         },
         WebChat: {
@@ -52,6 +53,7 @@
               {!!directLine && (
                 <Composer
                   activityMiddleware={activityMiddleware}
+                  adaptiveCardsHostConfig={customAdaptiveCardsHostConfig}
                   directLine={directLine}
                   dir={rtl ? 'rtl' : undefined}
                   store={store}

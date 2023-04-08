@@ -1,7 +1,10 @@
+import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
+
+const { useLocalizer } = hooks;
 
 type VimeoContentProps = {
   alt?: string;
@@ -12,6 +15,7 @@ type VimeoContentProps = {
 
 const VimeoContent: FC<VimeoContentProps> = ({ alt, autoPlay, embedID, loop }) => {
   const [{ vimeoContent: vimeoContentStyleSet }] = useStyleSet();
+  const localize = useLocalizer();
 
   const search = new URLSearchParams({
     autoplay: autoPlay ? '1' : '0',
@@ -21,6 +25,7 @@ const VimeoContent: FC<VimeoContentProps> = ({ alt, autoPlay, embedID, loop }) =
     portrait: '0',
     title: '0'
   }).toString();
+  const title = localize('ATTACHMENT_VIDEO');
 
   return (
     <iframe
@@ -29,6 +34,7 @@ const VimeoContent: FC<VimeoContentProps> = ({ alt, autoPlay, embedID, loop }) =
       className={vimeoContentStyleSet}
       sandbox="allow-same-origin allow-scripts"
       src={`https://player.vimeo.com/video/${encodeURI(embedID)}?${search}`}
+      title={title}
     />
   );
 };
