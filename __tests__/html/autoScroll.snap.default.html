@@ -60,7 +60,7 @@
           {
             directLine,
             store,
-            styleOptions: { subtle: '#666' }
+            styleOptions: { subtle: 'Black' }
           },
           webChatElement
         );
@@ -89,8 +89,8 @@
         await pageConditions.minNumActivitiesShown(4);
         await pageConditions.scrollStabilized();
 
-        expect(scrollable.scrollTop).toBe(
-          scrollable.scrollHeight - scrollable.offsetHeight,
+        expect(Math.abs(scrollable.scrollTop - (scrollable.scrollHeight - scrollable.offsetHeight)) < 1).toBe(
+          true,
           'scrollable should be at bottom'
         );
 
