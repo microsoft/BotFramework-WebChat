@@ -27,15 +27,20 @@ function walkAllItems(node, fn) {
   }
 }
 
-const AdaptiveCardChoiceSetInput = ({ input: { choices, defaultValue } }) => {
+const AdaptiveCardChoiceSetInput = ({ input: { choices, defaultValue, label } }) => {
   const labelId = useUniqueId('webchat__id');
   const defaultChoice = choices.find(({ value }) => defaultValue === value || (!defaultValue && !value));
 
   return (
     <div>
-      <select aria-labelledby={defaultChoice ? labelId : undefined} defaultValue={defaultValue} tabIndex={-1}>
+      <select
+        aria-label={label}
+        aria-labelledby={!label && defaultChoice ? labelId : undefined}
+        defaultValue={defaultValue}
+        tabIndex={-1}
+      >
         {choices.map(choice => (
-          <option id={choice === defaultChoice ? labelId : undefined} key={choice.value} value={choice.value}>
+          <option id={!label && choice === defaultChoice ? labelId : undefined} key={choice.value} value={choice.value}>
             {choice.title}
           </option>
         ))}
@@ -53,6 +58,7 @@ AdaptiveCardChoiceSetInput.propTypes = {
       })
     ),
     defaultValue: PropTypes.any,
+    label: PropTypes.string,
     value: PropTypes.any
   }).isRequired
 };
@@ -117,13 +123,15 @@ const AdaptiveCardAttachment = ({ content }) => {
         input instanceof ChoiceSetInput ? (
           <AdaptiveCardChoiceSetInput input={input} key={index} />
         ) : input instanceof DateInput ? (
-          <div key={index}>
+          <label key={index}>
+            {input.title}
             <input placeholder={input.placeholder} tabIndex={-1} type="date" />
-          </div>
+          </label>
         ) : input instanceof NumberInput ? (
-          <div key={index}>
+          <label key={index}>
+            {input.title}
             <input placeholder={input.placeholder} tabIndex={-1} type="number" />
-          </div>
+          </label>
         ) : input instanceof OpenUrlAction || input instanceof ShowCardAction || input instanceof SubmitAction ? (
           <div key={index}>
             <button tabIndex={-1} type="button">
@@ -131,18 +139,20 @@ const AdaptiveCardAttachment = ({ content }) => {
             </button>
           </div>
         ) : input instanceof TextInput ? (
-          <div key={index}>
+          <label key={index}>
+            {input.title}
             <input placeholder={input.placeholder} tabIndex={-1} type="text" />
-          </div>
+          </label>
         ) : input instanceof TimeInput ? (
-          <div key={index}>
+          <label key={index}>
+            {input.title}
             <input placeholder={input.placeholder} tabIndex={-1} type="time" />
-          </div>
+          </label>
         ) : input instanceof ToggleInput ? (
-          <div key={index}>
+          <label key={index}>
             {input.title}
             <input defaultChecked={input.value === input.valueOn} tabIndex={-1} type="checkbox" />
-          </div>
+          </label>
         ) : (
           false
         )
