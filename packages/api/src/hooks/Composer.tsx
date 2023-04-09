@@ -768,7 +768,6 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
     // We have filtered out all forbidden properties.
     // eslint-disable-next-line security/detect-object-injection
     const differentKeys = Array.from(keys).filter(key => !ponyfillFunctionEquals(storePonyfill[key], ponyfill[key]));
-    // const differentKeys = Array.from(keys).filter(key => storePonyfill[key] !== ponyfill[key]);
 
     if (differentKeys.length) {
       console.warn(
@@ -776,8 +775,6 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
           ', '
         )}`
       );
-
-      throw new Error('TODO: Remove this.');
     }
 
     return nextStore;
