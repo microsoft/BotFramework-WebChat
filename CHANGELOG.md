@@ -22,10 +22,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  When `activity.channelData['webchat:fallback-text']` is present but empty, it will no longer applies `aria-hidden` to the activity
+   -  The activity will not be narrated through live region. However, when navigating the transcript, it will be narrated as empty
+   -  To make an activity presentational or hide from screen reader, please use `activityMiddleware` to customize the rendering
+
 ### Added
 
 -  Resolved [#4643](https://github.com/microsoft/BotFramework-WebChat/issues/4643). Decoupling `botframework-directlinejs` from business logic of Web Chat for better tree-shaking, by [@compulim](https://github.com/compulim), in PR [#4645](https://github.com/microsoft/BotFramework-WebChat/pull/4645) and PR [#4648](https://github.com/microsoft/BotFramework-WebChat/pull/4648)
--  Related to [#4650](https://github.com/microsoft/BotFramework-WebChat/issues/4650). Added automated accessibility check using [`axe-core`](https://npmjs.com/package/axe-core)
+-  Resolved [#4650](https://github.com/microsoft/BotFramework-WebChat/issues/4650). Added automated accessibility check using [`axe-core`](https://npmjs.com/package/axe-core)
+   -  Add `axe-core` in end-to-end tests, by [@compulim](https://github.com/compulim), in PR [#4704](https://github.com/microsoft/BotFramework-WebChat/pull/4704)
    -  HTML test: using `<main>` for the root container, by [@compulim](https://github.com/compulim), in PR [#4684](https://github.com/microsoft/BotFramework-WebChat/pull/4684)
    -  HTML test: changed contrast ratio in tests that use different background colors, by [@compulim](https://github.com/compulim), in PR [#4686](https://github.com/microsoft/BotFramework-WebChat/pull/4686)
    -  Added `ponyfill` prop to `<ReactWebChat>`/`<Composer>` and `createStoreWithOptions`, by [@compulim](https://github.com/compulim), in PR [#4662](https://github.com/microsoft/BotFramework-WebChat/pull/4662)
