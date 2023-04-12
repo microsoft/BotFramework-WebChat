@@ -759,10 +759,22 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
       keys.delete(key);
     });
 
+    const nativeFunction = (fn: (...args: unknown[]) => unknown): boolean =>
+      typeof fn === 'function' && ('' + fn).endsWith('() { [native code] }');
+
+    const ponyfillFunctionEquals = (x: (...args: unknown[]) => unknown, y: (...args: unknown[]) => unknown) =>
+      (nativeFunction(x) && nativeFunction(y)) || x === y;
+
     // We have filtered out all forbidden properties.
     // eslint-disable-next-line security/detect-object-injection
-    if (Array.from(keys).some(key => storePonyfill[key] !== ponyfill[key])) {
-      console.warn(`botframework-webchat: Ponyfill used in store should match the ponyfill passed in props.`);
+    const differentKeys = Array.from(keys).filter(key => !ponyfillFunctionEquals(storePonyfill[key], ponyfill[key]));
+
+    if (differentKeys.length) {
+      console.warn(
+        `botframework-webchat: Ponyfill used in store should match the ponyfill passed in props: ${differentKeys.join(
+          ', '
+        )}`
+      );
     }
 
     return nextStore;

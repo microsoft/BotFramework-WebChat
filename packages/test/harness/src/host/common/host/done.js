@@ -1,4 +1,5 @@
 const { logging } = require('selenium-webdriver');
+const checkAccessibility = require('./checkAccessibility');
 const getBrowserLogs = require('../getBrowserLogs');
 
 function isDeprecation(message) {
@@ -7,7 +8,9 @@ function isDeprecation(message) {
 }
 
 module.exports = (webDriver, resolve) =>
-  async function done({ expectDeprecations = false, ignoreErrors = false } = {}) {
+  async function done({ expectDeprecations = false, ignoreErrors = false, skipCheckAccessibility = false } = {}) {
+    skipCheckAccessibility || (await checkAccessibility(webDriver)());
+
     const entries = await getBrowserLogs(webDriver);
 
     if (expectDeprecations) {

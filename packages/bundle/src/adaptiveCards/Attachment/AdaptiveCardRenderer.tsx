@@ -24,6 +24,7 @@ import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import useDisabledModEffect from './AdaptiveCardHacks/useDisabledModEffect';
 import usePersistValuesModEffect from './AdaptiveCardHacks/usePersistValuesModEffect';
+import useRoleModEffect from './AdaptiveCardHacks/useRoleModEffect';
 import useValueRef from './AdaptiveCardHacks/private/useValueRef';
 
 const { ErrorBox } = Components;
@@ -172,6 +173,7 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
   const [applyActiveElementMod, undoActiveElementMod] = useActiveElementModEffect(adaptiveCard);
   const [applyDisabledMod, undoDisabledMod] = useDisabledModEffect(adaptiveCard);
   const [applyPersistValuesMod, undoPersistValuesMod] = usePersistValuesModEffect(adaptiveCard);
+  const [applyRoleMod, undoRoleMod] = useRoleModEffect(adaptiveCard);
 
   const { element, errors }: { element?: HTMLElement; errors?: Error[] } = useMemo(() => {
     undoActionShouldBePushButtonMod();
@@ -179,6 +181,7 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
     undoActiveElementMod();
     undoDisabledMod();
     undoPersistValuesMod();
+    undoRoleMod();
 
     return renderAdaptiveCard(adaptiveCard, {
       adaptiveCardsHostConfig,
@@ -197,7 +200,8 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
     undoActionSetShouldNotBeMenuBarMod,
     undoActiveElementMod,
     undoDisabledMod,
-    undoPersistValuesMod
+    undoPersistValuesMod,
+    undoRoleMod
   ]);
 
   useMemo(() => {
@@ -222,6 +226,7 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
     applyActiveElementMod(element);
     applyDisabledMod(element, disabled);
     applyPersistValuesMod(element);
+    applyRoleMod(element);
   }, [
     actionPerformedClassName,
     applyActionShouldBePushButtonMod,
@@ -229,6 +234,7 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
     applyActiveElementMod,
     applyDisabledMod,
     applyPersistValuesMod,
+    applyRoleMod,
     disabled,
     element
   ]);

@@ -41,6 +41,7 @@
       run(async function () {
         const directLine = await createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
+        const styleOptions = { subtle: 'Black' };
 
         const SendOnConnect = () => {
           const [connectivityStatus] = useConnectivityStatus();
@@ -58,7 +59,7 @@
         function renderWebChat(props) {
           return new Promise(resolve => {
             render(
-              <Composer directLine={directLine} store={store} {...props}>
+              <Composer directLine={directLine} store={store} styleOptions={styleOptions} {...props}>
                 <BasicWebChat />
                 <SendOnConnect />
               </Composer>,

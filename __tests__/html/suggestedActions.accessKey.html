@@ -36,7 +36,11 @@
   </head>
   <body>
     <main id="webchat"></main>
-    <input accesskey="S" class="form-input" type="text" value="This box is outside." />
+    <div aria-label="form" role="contentinfo">
+      <label aria-label="this box is outside" class="form-input">
+        <input accesskey="S" type="text" value="This box is outside" />
+      </label>
+    </div>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { useEffect },
@@ -52,7 +56,8 @@
         const directLine = await createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
         const styleOptions = {
-          internalLiveRegionFadeAfter: 60000
+          internalLiveRegionFadeAfter: 60000,
+          subtle: 'Black'
         };
 
         const SendOnConnect = () => {

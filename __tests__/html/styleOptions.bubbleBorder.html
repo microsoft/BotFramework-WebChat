@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      body {
+        overflow: hidden;
+      }
+
+      main {
+        zoom: 3;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        await host.windowSize(360 * 3, 640 * 3, document.getElementById('webchat'));
+
+        WebChat.renderWebChat(
+          {
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+            store: testHelpers.createStore(),
+            styleOptions: {
+              bubbleBorderColor: 'Red',
+              bubbleBorderRadius: 10,
+              bubbleBorderStyle: 'dashed',
+              bubbleBorderWidth: 2,
+
+              bubbleFromUserBorderColor: 'Green',
+              bubbleFromUserBorderRadius: 20,
+              bubbleFromUserBorderStyle: 'dotted',
+              bubbleFromUserBorderWidth: 3
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        // GIVEN: Connected.
+        await pageConditions.uiConnected();
+
+        // WHEN: "echo Hello, World!" message is sent.
+        await pageObjects.sendMessageViaSendBox('echo Hello, World!');
+
+        // THEN: Should show 3 activities.
+        await pageConditions.minNumActivitiesShown(3);
+
+        // THEN: Should show custom border styles.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

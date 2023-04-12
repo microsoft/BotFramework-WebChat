@@ -57,8 +57,8 @@ export default function ({
 
       '& .ac-pushButton, & input, & select, & textarea': {
         '&[aria-disabled="true"]': {
-          backgroundColor: '#EBEBE4',
-          borderColor: '#A9A9A9',
+          backgroundColor: 'rgba(239, 239, 239, 0.3)',
+          borderColor: 'rgba(118, 118, 118, 0.3)',
           borderStyle: 'solid',
           borderWidth: 1,
           color: '#545454'
@@ -66,8 +66,8 @@ export default function ({
       },
 
       '& .ac-pushButton[aria-disabled="true"]': {
-        backgroundColor: '#F0F0F0',
-        color: '#6D6D6D'
+        backgroundColor: '#EEE',
+        color: '#4F4F4F'
       },
 
       '& .ac-pushButton[aria-pressed="true"]': {

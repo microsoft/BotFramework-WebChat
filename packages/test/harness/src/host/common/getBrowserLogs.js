@@ -4,7 +4,9 @@ const IGNORE_CONSOLE_MESSAGE_FRAGMENTS = [
   '[TESTHARNESS]',
   'favicon.ico',
   'in-browser Babel transformer',
-  'react-devtools'
+  'react-devtools',
+  // TODO: [P2] When the next version of `axe-core` released, they should have fixed this warning.
+  'Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true.'
 ];
 
 module.exports = async function getBrowserLogs(webDriver, { clear = false } = {}) {

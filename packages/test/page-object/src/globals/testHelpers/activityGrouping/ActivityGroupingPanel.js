@@ -218,13 +218,16 @@ const ActivityGroupingPanel = () => {
           </div>
           <hr />
           <div className="activity-grouping-panel__combo-number-row">
-            <input
-              className="activity-grouping-panel__combo-number-input"
-              onChange={handleViewComboNumberChange}
-              onFocus={handleComboNumberFocus}
-              type="number"
-              value={viewComboNumber}
-            />
+            <label>
+              {'Combo number: '}
+              <input
+                className="activity-grouping-panel__combo-number-input"
+                onChange={handleViewComboNumberChange}
+                onFocus={handleComboNumberFocus}
+                type="number"
+                value={viewComboNumber}
+              />
+            </label>
             <button
               className="activity-grouping-panel__combo-number-button"
               onClick={handlePlusOneViewComboNumber}
@@ -266,13 +269,16 @@ const ActivityGroupingPanel = () => {
           </div>
           <hr />
           <div className="activity-grouping-panel__combo-number-row">
-            <input
-              className="activity-grouping-panel__combo-number-input"
-              onChange={handleGroupingComboNumberChange}
-              onFocus={handleComboNumberFocus}
-              type="number"
-              value={groupingComboNumber}
-            />
+            <label>
+              {'Combo number: '}
+              <input
+                className="activity-grouping-panel__combo-number-input"
+                onChange={handleGroupingComboNumberChange}
+                onFocus={handleComboNumberFocus}
+                type="number"
+                value={groupingComboNumber}
+              />
+            </label>
             <button
               className="activity-grouping-panel__combo-number-button"
               onClick={handlePlusOneGroupingComboNumber}
@@ -362,13 +368,16 @@ const ActivityGroupingPanel = () => {
           </div>
           <hr />
           <div className="activity-grouping-panel__combo-number-row">
-            <input
-              className="activity-grouping-panel__combo-number-input"
-              onChange={handleStyleComboNumberChange}
-              onFocus={handleComboNumberFocus}
-              type="number"
-              value={styleComboNumber}
-            />
+            <label>
+              {'Combo number: '}
+              <input
+                className="activity-grouping-panel__combo-number-input"
+                onChange={handleStyleComboNumberChange}
+                onFocus={handleComboNumberFocus}
+                type="number"
+                value={styleComboNumber}
+              />
+            </label>
             <button
               className="activity-grouping-panel__combo-number-button"
               onClick={handlePlusOneStyleComboNumber}

@@ -330,9 +330,10 @@ Currently, the [Bot Framework Activity spec](https://github.com/microsoft/botfra
 A new field `webchat:fallback-text` is added to `channelData` field with the following logic:
 
 1. If `channelData['webchat:fallback-text']` field present
-   1. If `channelData['webchat:fallback-text']` field is not an empty string, narrate the field, don't narrate attachments
-      -  The field should contains narration of attachments
-   2. If `channelData['webchat:fallback-text']` field is an empty string (`""`), don't narrate the whole activity, treat it as presentational (similar to `aria-hidden="true"`, `role="presentation"`, or `role="none"`)
+   -  The field should not be empty
+   -  The field should contains narration including activity text content and its attachments
+   -  If the field is empty, it will not narrate as live region. However, when navigating the transcript, it will continue narrating the activity
+   -  For presentational content, `activityMiddleware` should be used to customize the activity
 2. Otherwise
    -  If `textFormat` is `markdown`
       -  [Remove Markdown syntax from `text` field](#remove-markdown-syntax-from-text-field) with best effort

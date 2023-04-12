@@ -1,11 +1,14 @@
 // In dev mode, draw a green tick when test succeeded.
 
+const checkAccessibility = require('../../common/host/checkAccessibility');
 const dumpLogs = require('../../common/dumpLogs');
 const override = require('../utils/override');
 
 // Send the completion back to the browser console.
 module.exports = (webDriver, done) =>
   override(done, undefined, async () => {
+    await checkAccessibility(webDriver)();
+
     /* istanbul ignore next */
     await webDriver.executeScript(() => {
       console.log(
