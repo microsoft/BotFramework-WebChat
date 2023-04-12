@@ -8,8 +8,8 @@ function isDeprecation(message) {
 }
 
 module.exports = (webDriver, resolve) =>
-  async function done({ expectDeprecations = false, ignoreErrors = false } = {}) {
-    await checkAccessibility(webDriver)();
+  async function done({ expectDeprecations = false, ignoreErrors = false, skipCheckAccessibility = false } = {}) {
+    skipCheckAccessibility || (await checkAccessibility(webDriver)());
 
     const entries = await getBrowserLogs(webDriver);
 

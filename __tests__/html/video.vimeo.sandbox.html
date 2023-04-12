@@ -9,31 +9,36 @@
   <body>
     <main id="webchat"></main>
     <script>
-      run(async function () {
-        const { directLine, store } = testHelpers.createDirectLineEmulator();
+      run(
+        async function () {
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+          WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
-        await pageConditions.uiConnected();
+          await pageConditions.uiConnected();
 
-        await directLine.emulateIncomingActivity({
-          attachments: [
-            {
-              contentType: 'video/*',
-              contentUrl: 'https://vimeo.com/269316124'
-            }
-          ],
-          type: 'message'
-        });
+          await directLine.emulateIncomingActivity({
+            attachments: [
+              {
+                contentType: 'video/*',
+                contentUrl: 'https://vimeo.com/269316124'
+              }
+            ],
+            type: 'message'
+          });
 
-        await pageConditions.numActivitiesShown(1);
+          await pageConditions.numActivitiesShown(1);
 
-        await pageConditions.became('iframe has loaded', () => document.getElementsByTagName('iframe').length, 5000);
+          await pageConditions.became('iframe has loaded', () => document.getElementsByTagName('iframe').length, 5000);
 
-        const sandboxAttributeValue = document.getElementsByTagName('iframe')[0].getAttribute('sandbox');
+          const sandboxAttributeValue = document.getElementsByTagName('iframe')[0].getAttribute('sandbox');
 
-        expect(sandboxAttributeValue).toBeTruthy();
-      });
+          expect(sandboxAttributeValue).toBeTruthy();
+        },
+        // `axe-core` is accessing the IFRAME using `postMessage` and Vimeo does not like it.
+        // Nevertheless, we do not need to check accessibilty of Vimeo.
+        { skipCheckAccessibility: true }
+      );
     </script>
   </body>
 </html>
