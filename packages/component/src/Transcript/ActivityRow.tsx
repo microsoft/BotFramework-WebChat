@@ -2,8 +2,6 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, useCallback, useRef } from 'react';
-import type { MouseEventHandler, PropsWithChildren } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { android } from '../Utils/detectBrowser';
 import FocusTrap from './FocusTrap';
@@ -14,6 +12,9 @@ import useActivityAccessibleName from './useActivityAccessibleName';
 import useFocusByActivityKey from '../providers/TranscriptFocus/useFocusByActivityKey';
 import useGetDescendantIdByActivityKey from '../providers/TranscriptFocus/useGetDescendantIdByActivityKey';
 import useValueRef from '../hooks/internal/useValueRef';
+
+import type { MouseEventHandler, PropsWithChildren } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
@@ -58,7 +59,6 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
   return (
     // TODO: [P2] Add `aria-roledescription="message"` for better AX, need localization strings.
     <article
-      aria-hidden={activity.channelData?.['webchat:fallback-text'] === ''}
       className={classNames('webchat__basic-transcript__activity', {
         'webchat__basic-transcript__activity--acknowledged': acknowledged,
         'webchat__basic-transcript__activity--read': read
@@ -88,7 +88,6 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
           <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
         </div>
       )}
-      {/* Add tests for focus trap */}
       <FocusTrap onFocus={handleDescendantFocus} onLeave={handleLeaveFocusTrap}>
         <div className="webchat__basic-transcript__activity-body" ref={bodyRef}>
           {children}
