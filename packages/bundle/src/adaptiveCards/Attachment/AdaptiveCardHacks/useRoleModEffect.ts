@@ -28,7 +28,7 @@ import type { AdaptiveCard } from 'adaptivecards';
  *
  * This violates WAI-ARIA because "aria-label" must not be set on an element without a "role".
  *
- * We need to set "role" attribute to "form" (if any inputtable fields in the card), otherwise, "figure".
+ * We need to set "role" attribute to "form" if the card has any input fields, otherwise, "figure".
  */
 export default function useRoleModEffect(
   adaptiveCard: AdaptiveCard
