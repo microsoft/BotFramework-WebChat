@@ -28,7 +28,7 @@ import type { AdaptiveCard } from 'adaptivecards';
  *
  * This violates WAI-ARIA because "aria-label" must not be set on an element without a "role".
  *
- * We need to set "role" attribute to "form" if the card has any input fields, otherwise, "figure".
+ * We need to set "role" attribute to "form" if the card has any input fields and is valid as a "form" role, otherwise, "figure".
  */
 export default function useRoleModEffect(
   adaptiveCard: AdaptiveCard
@@ -38,7 +38,12 @@ export default function useRoleModEffect(
       setOrRemoveAttributeIfFalseWithUndo(
         cardElement,
         'role',
-        cardElement.querySelector('button, input, select, textarea') ? 'form' : 'figure'
+        // "form" role requires either "aria-label", "aria-labelledby", or "title".
+        (cardElement.querySelector('button, input, select, textarea') && cardElement.getAttribute('aria-label')) ||
+          cardElement.getAttribute('aria-labelledby') ||
+          cardElement.getAttribute('title')
+          ? 'form'
+          : 'figure'
       ),
     []
   );
