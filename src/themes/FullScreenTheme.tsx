@@ -60,7 +60,10 @@ export const FullScreenTheme = (theme: Theme) => `
     flex-direction: column;
 
     position: fixed;
-    inset: 0;
+    top: 2%;
+    left: 2%;
+    right: 2%;
+    bottom: 0;
   }
 
   @media screen and (min-width: 950px) {
