@@ -1,6 +1,8 @@
 import allOutgoingActivitiesSent from '../pageConditions/allOutgoingActivitiesSent';
+import became from '../pageConditions/became';
 import numActivitiesShown from '../pageConditions/numActivitiesShown';
 import getActivityElements from '../pageElements/activities';
+import getSendBoxTextBoxElement from '../pageElements/sendBoxTextBox';
 import typeInSendBox from './typeInSendBox';
 
 export default async function sendMessageViaSendBox(text, { waitForNumResponse = 0, waitForSend = true } = {}) {
@@ -14,6 +16,10 @@ export default async function sendMessageViaSendBox(text, { waitForNumResponse =
 
   await typeInSendBox(text, '\n');
 
-  waitForSend && (await allOutgoingActivitiesSent());
+  if (waitForSend) {
+    await became('send box to be emptied', () => !getSendBoxTextBoxElement()?.value, 1000);
+    await allOutgoingActivitiesSent();
+  }
+
   waitForNumResponse && (await numActivitiesShown(numActivitiesShownBeforeSend + 1 + waitForNumResponse));
 }

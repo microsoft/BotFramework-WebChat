@@ -91,7 +91,11 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   setErrorRef.current = setError;
 
   const submitErrorRef = useRefFrom<'empty' | 'offline' | undefined>(
-    connectivityStatus !== 'connected' ? 'offline' : !sendBoxValue ? 'empty' : undefined
+    connectivityStatus !== 'connected' && connectivityStatus !== 'reconnected'
+      ? 'offline'
+      : !sendBoxValue
+      ? 'empty'
+      : undefined
   );
 
   const submit = useCallback<ContextType['submit']>(

@@ -111,6 +111,13 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
       // This is a mock and will no-op on dispatch().
     },
     postActivity,
+    emulateReconnect: () => {
+      connectionStatusDeferredObservable.next(1);
+
+      return {
+        resolve: () => connectionStatusDeferredObservable.next(2)
+      };
+    },
     emulateConnected: connectedDeferred.resolve,
     emulateIncomingActivity: async activity => {
       if (typeof activity === 'string') {
