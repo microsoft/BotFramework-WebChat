@@ -748,7 +748,7 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
   const memoizedStore = useMemo(() => {
     const nextStore = store || createStoreWithOptions({ ponyfill });
 
-    const storePonyfill = store.getState().internal?.ponyfill || {};
+    const storePonyfill = nextStore.getState().internal?.ponyfill || {};
 
     const keys = new Set([...Object.keys(storePonyfill), ...Object.keys(ponyfill)]);
 
