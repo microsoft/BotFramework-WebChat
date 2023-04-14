@@ -50,7 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4652](https://github.com/microsoft/BotFramework-WebChat/issues/4652). Keyboard help screen, activity focus traps, and chat history terminator should not be hidden behind `aria-hidden` because they are focusable, by [@compulim](https://github.com/compulim), in PR [#4659](https://github.com/microsoft/BotFramework-WebChat/pull/4659)
 -  Fixes [#4665](https://github.com/microsoft/BotFramework-WebChat/issues/4665). Updated development server with latest ESBuild API, by [@compulim](https://github.com/compulim), in PR [#4662](https://github.com/microsoft/BotFramework-WebChat/pull/4662).
 -  Fixes [#4706](https://github.com/microsoft/BotFramework-WebChat/issues/4706). Send button and <kbd>ENTER</kbd> key should function after reconnected, by [@compulim](https://github.com/compulim), in PR [#4707](https://github.com/microsoft/BotFramework-WebChat/pull/4707).
--  Fixes [#4708](https://github.com/microsoft/BotFramework-WebChat/issues/4708). Should function properly in browsers without `setImmediate` or without passing `store` prop, by [@compulim](https://github.com/compulim), in PR [#4710](https://github.com/microsoft/BotFramework-WebChat/pull/4710).
+-  Fixes [#4708](https://github.com/microsoft/BotFramework-WebChat/issues/4708). Should function properly in browsers without `setImmediate` or without passing `store` prop, by [@compulim](https://github.com/compulim), in PR [#4709](https://github.com/microsoft/BotFramework-WebChat/pull/4709).
 
 ### Changed
 
