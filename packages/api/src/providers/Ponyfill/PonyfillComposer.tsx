@@ -24,31 +24,58 @@ const PonyfillComposer = ({ children, ponyfill: partialPonyfill }: Props) => {
 
   // TODO: [P2] Dedupe: when we have an utility package, move this code there and mark it as internal use.
   const ponyfill = useMemo<GlobalScopePonyfill>(
-    () => ({
-      // Using clock functions from global if not provided.
-      // eslint-disable-next-line no-restricted-globals
-      cancelAnimationFrame: partialPonyfill?.cancelAnimationFrame || cancelAnimationFrame.bind(globalThis),
-      // eslint-disable-next-line no-restricted-globals
-      cancelIdleCallback: partialPonyfill?.cancelIdleCallback || cancelIdleCallback.bind(globalThis),
-      // eslint-disable-next-line no-restricted-globals
-      clearImmediate: partialPonyfill?.clearImmediate || clearImmediate.bind(globalThis),
-      // eslint-disable-next-line no-restricted-globals
-      clearInterval: partialPonyfill?.clearInterval || clearInterval.bind(globalThis),
-      // eslint-disable-next-line no-restricted-globals
-      clearTimeout: partialPonyfill?.clearTimeout || clearTimeout.bind(globalThis),
-      // eslint-disable-next-line no-restricted-globals
-      Date: partialPonyfill?.Date || Date,
-      // eslint-disable-next-line no-restricted-globals
-      requestAnimationFrame: partialPonyfill?.requestAnimationFrame || requestAnimationFrame.bind(globalThis),
-      // eslint-disable-next-line no-restricted-globals
-      requestIdleCallback: partialPonyfill?.requestIdleCallback || requestIdleCallback.bind(globalThis),
-      // eslint-disable-next-line no-restricted-globals
-      setImmediate: partialPonyfill?.setImmediate || setImmediate.bind(globalThis),
-      // eslint-disable-next-line no-restricted-globals
-      setInterval: partialPonyfill?.setInterval || setInterval.bind(globalThis),
-      // eslint-disable-next-line no-restricted-globals
-      setTimeout: partialPonyfill?.setTimeout || setTimeout.bind(globalThis)
-    }),
+    // The complexity is introduced by the check of ponyfill.
+    // eslint-disable-next-line complexity
+    () => {
+      // IE Mode does not have `globalThis`.
+      const globalThisOrWindow = typeof globalThis === 'undefined' ? window : globalThis;
+
+      return {
+        cancelAnimationFrame:
+          partialPonyfill?.cancelAnimationFrame ||
+          // Using clock functions from global if not provided.
+          // eslint-disable-next-line no-restricted-globals
+          (typeof cancelAnimationFrame === 'function' ? cancelAnimationFrame.bind(globalThisOrWindow) : undefined),
+        cancelIdleCallback:
+          partialPonyfill?.cancelIdleCallback ||
+          // eslint-disable-next-line no-restricted-globals
+          (typeof cancelIdleCallback === 'function' ? cancelIdleCallback.bind(globalThisOrWindow) : undefined),
+        clearImmediate:
+          partialPonyfill?.clearImmediate ||
+          // eslint-disable-next-line no-restricted-globals
+          (typeof clearImmediate === 'function' ? clearImmediate.bind(globalThisOrWindow) : undefined),
+        clearInterval:
+          partialPonyfill?.clearInterval ||
+          // eslint-disable-next-line no-restricted-globals
+          (typeof clearInterval === 'function' ? clearInterval.bind(globalThisOrWindow) : undefined),
+        clearTimeout:
+          partialPonyfill?.clearTimeout ||
+          // eslint-disable-next-line no-restricted-globals
+          (typeof clearTimeout === 'function' ? clearTimeout.bind(globalThisOrWindow) : undefined),
+        // eslint-disable-next-line no-restricted-globals
+        Date: partialPonyfill?.Date || Date,
+        requestAnimationFrame:
+          partialPonyfill?.requestAnimationFrame ||
+          // eslint-disable-next-line no-restricted-globals
+          (typeof requestAnimationFrame === 'function' ? requestAnimationFrame.bind(globalThisOrWindow) : undefined),
+        requestIdleCallback:
+          partialPonyfill?.requestIdleCallback ||
+          // eslint-disable-next-line no-restricted-globals
+          (typeof requestIdleCallback === 'function' ? requestIdleCallback.bind(globalThisOrWindow) : undefined),
+        setImmediate:
+          partialPonyfill?.setImmediate ||
+          // eslint-disable-next-line no-restricted-globals
+          (typeof setImmediate === 'function' ? setImmediate.bind(globalThisOrWindow) : undefined),
+        setInterval:
+          partialPonyfill?.setInterval ||
+          // eslint-disable-next-line no-restricted-globals
+          (typeof setInterval === 'function' ? setInterval.bind(globalThisOrWindow) : undefined),
+        setTimeout:
+          partialPonyfill?.setTimeout ||
+          // eslint-disable-next-line no-restricted-globals
+          (typeof setTimeout === 'function' ? setTimeout.bind(globalThisOrWindow) : undefined)
+      };
+    },
     [partialPonyfill]
   );
 
