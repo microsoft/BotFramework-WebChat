@@ -10,8 +10,8 @@ export const popupMessageCss = `
     transform: translateX(-100%);
     margin-left: -10px;
     
-		padding: 20px 16px;
-    min-width: 250px;
+		padding: 20px 20px;
+    min-width: 265px;
     
     background: #385B75;
     color: #FFFFFF;
@@ -19,7 +19,7 @@ export const popupMessageCss = `
 		
     border: 1px solid #16364D;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.0452719);
-    border-radius: 10px 10px 10px 4px;
+    border-radius: 10px 10px 4px 10px;
 }
 
 .popup-message.popup-message--initial {
@@ -31,12 +31,13 @@ export const popupMessageCss = `
 .popup-message__title {
     font-size: 15px;
     font-weight: bold;
-    margin-bottom: 8px;
+		margin-bottom: 5px;
     padding-right: 20px;
 }
 
 .popup-message__message {
     font-size: 14px;
+    line-height: 1.5;
 }
 
 .popup-message__close-icon {
