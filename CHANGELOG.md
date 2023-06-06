@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.15.8] - 2023-06-06
+
 ### Breaking changes
 
 -  When `activity.channelData['webchat:fallback-text']` is present but empty, it will no longer applies `aria-hidden` to the activity
