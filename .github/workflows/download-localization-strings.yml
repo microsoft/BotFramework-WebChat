@@ -1,0 +1,78 @@
+name: Download localization strings
+
+on:
+  schedule:
+    # Loc handback is every Mon/Thu.
+    # We are running on every Tue/Fri 08:00 UTC, which is Tue/Fri 00:00 PST or 01:00 PST DST.
+    - cron: '0 8 * * 2,5'
+  workflow_dispatch: {}
+
+jobs:
+  download:
+    environment: localization-database
+    name: Download
+    runs-on: ubuntu-latest
+
+    steps:
+      # https://learn.microsoft.com/en-us/rest/api/azure/devops/git/items/get?view=azure-devops-rest-7.1&tabs=HTTP
+      - run: |
+          mkdir localization-files/
+
+          for locale in ar-SA bg-BG ca-ES cs-CZ da-DK de-DE el-GR es-ES et-EE eu-ES fi-FI fr-FR gl-ES he-IL hi-IN hr-HR hu-HU id-ID it-IT ja-JP kk-KZ ko-KR lt-LT lv-LV ms-MY nb-NO nl-NL pl-PL pt-BR pt-PT ro-RO ru-RU sk-SK sl-SI sr-Cyrl-CS sr-Latn-CS sv-SE th-TH tr-TR uk-UA vi-VN zh-CN zh-HK zh-TW
+          do
+            echo Downloading localization strings for "$locale".
+            curl --fail --output localization-files/$locale.json --user ${{ secrets.ADO_USERNAME }}:${{ secrets.ADO_TOKEN }} https://dev.azure.com/bagie/Production/_apis/git/repositories/D365_CE/items?api-version=7.0\&download=true\&path=/Feature/CustomerCare_Apps/UI/$locale/BotFramework-WebChat/packages/api/src/Localization/$locale.json
+          done
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: localization-files
+          path: localization-files/
+
+  create-pull-request:
+    environment: localization-database
+    name: Create pull request for new changes
+    needs:
+      - download
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3.3.0
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: localization-files
+          path: packages/api/src/localization
+
+      - id: checks
+        name: Check if contains new changes
+        run: |
+          if [ ! -z "$(git status --porcelain)" ];
+          then
+            echo has-changes=1 >> $GITHUB_OUTPUT
+            echo branch-name=loc-`date +"%Y%m%d-%H%M%S"` >> $GITHUB_OUTPUT
+          else
+            echo No new changes. >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - if: ${{ steps.checks.outputs.has-changes }}
+        name: Create branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git checkout -b ${{ steps.checks.outputs.branch-name }}
+          git add .
+          git commit --message="Localization sync"
+          git push --set-upstream origin HEAD
+
+      - env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN_FOR_PULL_REQUEST }}
+        if: ${{ steps.checks.outputs.has-changes }}
+        name: Create pull request
+        run: |
+          PULL_REQUEST_NUMBER=`gh api repos/${{ github.repository }}/pulls --field base=${{ github.ref }} --field head=${{ steps.checks.outputs.branch-name }} --field title="Localization sync" | jq -r '.number'`
+          gh api repos/${{ github.repository }}/issues/$PULL_REQUEST_NUMBER/assignees --field assignees[]=compulim
+          gh api repos/${{ github.repository }}/issues/$PULL_REQUEST_NUMBER/labels --field labels[]=area-localization --field labels[]=bot
+          echo Pull request created at https://github.com/${{ github.repository }}/pull/$PULL_REQUEST_NUMBER. >> $GITHUB_STEP_SUMMARY
