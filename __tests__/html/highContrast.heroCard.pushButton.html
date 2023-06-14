@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(
+        async function () {
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+          await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+            features: [{ name: 'forced-colors', value: 'active' }]
+          });
+
+          WebChat.renderWebChat(
+            {
+              directLine,
+              store
+            },
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.uiConnected();
+
+          await directLine.emulateIncomingActivity({
+            type: 'message',
+            text: '',
+            attachmentLayout: 'carousel',
+            attachments: [
+              {
+                contentType: 'application/vnd.microsoft.card.hero',
+                content: {
+                  title: 'Details about image 1',
+                  subtitle: 'This is the subtitle',
+                  text: 'Price: $XXX.XX USD',
+                  buttons: [
+                    {
+                      type: 'imBack',
+                      value: 'Place to buy',
+                      title: 'Places To Buy'
+                    },
+                    {
+                      type: 'imBack',
+                      value: 'Related Products',
+                      title: 'Related Products'
+                    }
+                  ]
+                }
+              }
+            ]
+          });
+
+          await pageConditions.numActivitiesShown(1);
+
+          (await directLine.actPostActivity(() => host.click(document.querySelector('.ac-pushButton')))).resolveAll();
+
+          await pageConditions.numActivitiesShown(2);
+          await pageConditions.allOutgoingActivitiesSent();
+
+          await host.snapshot();
+        },
+        { ignoreErrors: 'artificial error' }
+      );
+    </script>
+  </body>
+</html>
