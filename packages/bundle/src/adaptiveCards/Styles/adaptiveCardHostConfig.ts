@@ -135,7 +135,7 @@ export default function createAdaptiveCardsHostConfig(styleOptions: FullBundleSt
       spacing: 8
     },
     textBlock: {
-      headingLevel: 1
+      headingLevel: 2
     }
   };
 }
