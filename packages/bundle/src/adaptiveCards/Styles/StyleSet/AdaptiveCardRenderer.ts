@@ -73,7 +73,14 @@ export default function ({
       '& .ac-pushButton[aria-pressed="true"]': {
         backgroundColor: cardPushButtonBackgroundColor,
         borderColor: cardPushButtonBackgroundColor,
-        color: cardPushButtonTextColor
+        color: cardPushButtonTextColor,
+
+        '@media (forced-colors: active)': {
+          backgroundColor: 'Highlight',
+          borderColor: 'Highlight',
+          color: 'HighlightText',
+          forcedColorAdjust: 'none'
+        }
       },
 
       '& input[aria-disabled="true"]': {
