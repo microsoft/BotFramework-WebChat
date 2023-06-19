@@ -4,23 +4,6 @@ import 'axe-core';
 
 export default function initializeCheckAccessibility() {
   axe.configure({
-    checks: [
-      {
-        enabled: false,
-        id: 'page-has-heading-one'
-      },
-      {
-        evaluate: () => true,
-        id: 'webchat-has-no-heading-one-check',
-        metadata: {
-          impact: 'moderate',
-          messages: {
-            pass: 'Page contain no level-one heading',
-            fail: 'Page should not contain any level-one heading'
-          }
-        }
-      }
-    ],
     rules: [
       {
         id: 'webchat-has-no-heading-one',
@@ -29,9 +12,9 @@ export default function initializeCheckAccessibility() {
           help: 'No level-one heading is allowed in Web Chat',
           helpUrl: 'https://github.com/microsoft/BotFramework-WebChat/issues/4721'
         },
-        none: ['webchat-has-no-heading-one-check'],
-        selector: 'h1,[role="heading"][aria-level="1"]',
-        tags: ['webchat', 'wcag21a', 'wcag131']
+        none: ['page-has-heading-one'],
+        selector: '#webchat',
+        tags: ['webchat', 'cat.semantics', 'best-practice']
       }
     ]
   });
