@@ -122,7 +122,7 @@ const customAdaptiveCardsHostConfig = {
     spacing: 8
   },
   textBlock: {
-    headingLevel: 1
+    headingLevel: 2
   }
 };
 
