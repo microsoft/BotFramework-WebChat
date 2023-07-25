@@ -41,9 +41,9 @@ export default function useRelativeTimeFormatter(): (dateOrString: Date | string
         return localize('ACTIVITY_STATUS_TIMESTAMP_ONE_HOUR_AGO');
       } else if (deltaInHours < 5) {
         return relativeTimeFormatter('hour')(-deltaInHours);
-      } else if (deltaInHours <= 24) {
+      } else if (deltaInMs <= 24 * 3_600_000) {
         return localize('ACTIVITY_STATUS_TIMESTAMP_TODAY');
-      } else if (deltaInHours <= 48) {
+      } else if (deltaInMs <= 48 * 3_600_000) {
         return localize('ACTIVITY_STATUS_TIMESTAMP_YESTERDAY');
       }
 
