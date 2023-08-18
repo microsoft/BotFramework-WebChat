@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const now = Date.now();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: {
+              groupTimestamp: 0
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // We have a few loc strings to use:
+        // - Just now
+        // - A minute ago
+        // - X minutes ago
+        // - An hour ago
+        // - X hours ago
+        // - Today
+        // - Yesterday
+        // - "Jan 2 at 12:34 PM"
+
+        const TIME_AGO = [
+          ['49 hours passed', 49 * 60 * 60 * 1_000, expect.stringMatching(/\sat\s/u)],
+          ['48.1 hours passed', 48.1 * 60 * 60 * 1_000, expect.stringMatching(/\sat\s/u)],
+          ['48 hours passed', 48 * 60 * 60 * 1_000, expect.stringMatching(/\sat\s/u)],
+          ['47.9 hours passed', 47.9 * 60 * 60 * 1_000, 'Yesterday'],
+          ['36 hours passed', 36 * 60 * 60 * 1_000, 'Yesterday'],
+          ['24.1 hours passed', 24.1 * 60 * 60 * 1_000, 'Yesterday'],
+          ['24 hours passed', 24 * 60 * 60 * 1_000, 'Yesterday'],
+          ['23.9 hours passed', 23.9 * 60 * 60 * 1_000, 'Today'],
+          ['12 hours passed', 12 * 60 * 60 * 1_000, 'Today'],
+          ['5.1 hours passed', 5.1 * 60 * 60 * 1_000, 'Today'],
+          ['5 hours passed', 5 * 60 * 60 * 1_000, 'Today'],
+          ['4.9 hours passed', 4.9 * 60 * 60 * 1_000, '4 hours ago'],
+          ['2 hours passed', 2 * 60 * 60 * 1_000, '2 hours ago'],
+          ['1.1 hours passed', 1.1 * 60 * 60 * 1_000, 'An hour ago'],
+          ['1 hours passed', 1 * 60 * 60 * 1_000, 'An hour ago'],
+          ['59.9 minutes passed', 59.9 * 60 * 1_000, '59 minutes ago'],
+          ['59 minutes passed', 59 * 60 * 1_000, '59 minutes ago'],
+          ['30 minutes passed', 30 * 60 * 1_000, '30 minutes ago'],
+          ['2.2 minutes passed', 2.2 * 60 * 1_000, '2 minutes ago'],
+          ['2 minutes passed', 2 * 60 * 1_000, '2 minutes ago'],
+          ['1.8 minutes passed', 1.8 * 60 * 1_000, 'A minute ago'],
+          ['1.2 minutes passed', 1.2 * 60 * 1_000, 'A minute ago'],
+          ['A minute passed', 1 * 60 * 1_000, 'A minute ago'],
+          ['0.8 minutes passed', 0.8 * 60 * 1_000, 'Just now'],
+          ['30 seconds passed', 30 * 1_000, 'Just now'],
+          ['it is now', 0, 'Just now']
+        ];
+
+        for (const [text, delta, expectation] of TIME_AGO) {
+          await directLine.emulateIncomingActivity({
+            timestamp: new Date(now - delta).toISOString(),
+            text: `When ${text}, should show "${expectation}"`,
+            type: 'message'
+          });
+
+          const activityStatuses = pageElements.activityStatuses();
+          const lastActivityStatus = activityStatuses[activityStatuses.length - 1];
+          const lastTimestamp = lastActivityStatus.querySelector('[aria-hidden]').textContent;
+
+          expect(lastTimestamp).toEqual(expectation);
+        }
+      });
+    </script>
+  </body>
+</html>
