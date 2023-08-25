@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.15.9] - 2023-08-25
+
 ### Fixed
 
 -  Fixes [#4718](https://github.com/microsoft/BotFramework-WebChat/issues/4718). In high contrast mode, Adaptive Card buttons, when pushed, should highlighted properly, by [@compulim](https://github.com/compulim), in PR [#4746](https://github.com/microsoft/BotFramework-WebChat/pull/4746)
