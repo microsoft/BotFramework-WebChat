@@ -1,6 +1,6 @@
 {
   "name": "botframework-webchat-root",
-  "version": "4.15.9",
+  "version": "4.15.10-0",
   "private": true,
   "files": [
     "lib/**/*"
