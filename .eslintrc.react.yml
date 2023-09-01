@@ -102,3 +102,6 @@ rules:
   # react/jsx-one-expression-per-line:
   # - error
   # - allow: literal
+
+  # TODO [#4845]: We should enable readonly props. We are disabling during bump which is a timeboxed work.
+  react/prefer-read-only-props: off
