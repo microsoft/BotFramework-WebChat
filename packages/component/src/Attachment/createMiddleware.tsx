@@ -1,11 +1,19 @@
-import { AttachmentMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
-import AudioAttachment from '../../Attachment/AudioAttachment';
-import FileAttachment from '../../Attachment/FileAttachment';
-import ImageAttachment from '../../Attachment/ImageAttachment';
-import TextAttachment from '../../Attachment/TextAttachment';
-import VideoAttachment from '../../Attachment/VideoAttachment';
+import AudioAttachment from './AudioAttachment';
+import FileAttachment from './FileAttachment';
+import ImageAttachment from './ImageAttachment';
+import TextAttachment from './Text/TextAttachment';
+import VideoAttachment from './VideoAttachment';
+
+import { type AttachmentMiddleware } from 'botframework-webchat-api';
+import { type WebChatAttachment } from './private/types/WebChatAttachment';
+
+function isTextAttachment(
+  attachment: WebChatAttachment
+): attachment is WebChatAttachment & { contentType: `text/${string}` } {
+  return attachment.contentType.startsWith('text/');
+}
 
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function createCoreMiddleware(): AttachmentMiddleware[] {
@@ -22,7 +30,7 @@ export default function createCoreMiddleware(): AttachmentMiddleware[] {
           }
         ] = args;
 
-        const isText = /^text\//u.test(contentType);
+        const isText = isTextAttachment(attachment);
 
         return (isText ? !attachment.content : role === 'user' && !thumbnailUrl) ? (
           <FileAttachment activity={activity} attachment={attachment} />

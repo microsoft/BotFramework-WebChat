@@ -17,7 +17,7 @@ import createCSSKey from './Utils/createCSSKey';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
-import createDefaultAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
+import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import createDefaultAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
 import createDefaultCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createDefaultScrollToEndButtonMiddleware from './Middleware/ScrollToEndButton/createScrollToEndButtonMiddleware';
