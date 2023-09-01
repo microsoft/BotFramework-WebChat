@@ -24,16 +24,19 @@ function createStoreWithOptions(options = {}, initialState = {}, ...middleware) 
   return window.WebChat.createStoreWithOptions(
     options,
     initialState,
-    concatMiddleware(store => {
-      actionHistory = [];
-      activeStore = store;
+    concatMiddleware(
+      store => {
+        actionHistory = [];
+        activeStore = store;
 
-      return next => action => {
-        actionHistory.push(action);
+        return next => action => {
+          actionHistory.push(action);
 
-        return next(action);
-      };
-    }, ...middleware)
+          return next(action);
+        };
+      },
+      ...middleware
+    )
   );
 }
 
