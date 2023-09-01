@@ -8,8 +8,7 @@ import BasicToast from '../BasicToast';
 function createToastMiddleware(): ToastMiddleware {
   return () =>
     () =>
-    ({ notification }) =>
-      <BasicToast notification={notification} />;
+    ({ notification }) => <BasicToast notification={notification} />;
 }
 
 export default createToastMiddleware;
