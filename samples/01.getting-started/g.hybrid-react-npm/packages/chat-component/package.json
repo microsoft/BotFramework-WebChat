@@ -30,14 +30,14 @@
     ]
   },
   "dependencies": {
-    "botframework-webchat": "^4.15.7",
+    "botframework-webchat": "^4.15.9",
     "react": "16.14",
     "react-dom": "16.14"
   },
   "devDependencies": {
-    "@babel/cli": "^7.21.0",
-    "@babel/core": "^7.21.0",
-    "@babel/preset-env": "^7.20.2",
-    "@babel/preset-react": "^7.18.6"
+    "@babel/cli": "^7.22.10",
+    "@babel/core": "^7.22.11",
+    "@babel/preset-env": "^7.22.14",
+    "@babel/preset-react": "^7.22.5"
   }
 }

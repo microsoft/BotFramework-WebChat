@@ -16,9 +16,9 @@
   "author": "William Wong <compulim@hotmail.com> (http://compulim.info/)",
   "license": "MIT",
   "dependencies": {
-    "botbuilder": "^4.19.1",
-    "botbuilder-dialogs": "^4.19.1",
-    "dotenv": "^16.0.3",
+    "botbuilder": "^4.20.0",
+    "botbuilder-dialogs": "^4.20.0",
+    "dotenv": "^16.3.1",
     "restify": "^11.1.0",
     "string-similarity": "^4.0.4"
   },

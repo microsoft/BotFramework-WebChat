@@ -4,8 +4,8 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/e.extending-ui/",
   "dependencies": {
-    "botframework-webchat": "^4.15.7",
-    "botframework-webchat-component": "^4.15.7",
+    "botframework-webchat": "^4.15.9",
+    "botframework-webchat-component": "^4.15.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
