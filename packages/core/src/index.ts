@@ -48,6 +48,7 @@ import type { DirectLineSuggestedAction } from './types/external/DirectLineSugge
 import type { DirectLineThumbnailCard } from './types/external/DirectLineThumbnailCard';
 import type { DirectLineVideoCard } from './types/external/DirectLineVideoCard';
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import type { Observable } from './types/external/Observable';
 import type { OrgSchemaThing } from './types/external/OrgSchemaThing';
 import type { WebChatActivity } from './types/WebChatActivity';
 
@@ -104,6 +105,7 @@ export type {
   DirectLineSuggestedAction,
   DirectLineThumbnailCard,
   DirectLineVideoCard,
+  Observable,
   OneOrMany,
   GlobalScopePonyfill,
   OrgSchemaThing,
