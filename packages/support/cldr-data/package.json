@@ -52,6 +52,12 @@
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "node ../../../node_modules/eslint/bin/eslint.js --report-unused-disable-directives --max-warnings 0"
   },
+  "pinDependencies": {
+    "glob": [
+      "8",
+      "glob@10 updated the entrypoint, need funding to upgrade"
+    ]
+  },
   "dependencies": {
     "cldr-data-downloader": "0.3.5-0",
     "glob": "^8.1.0",
