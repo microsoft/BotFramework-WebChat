@@ -108,6 +108,10 @@
       "28",
       "jest-image-snapshot@5.2.0 does not support jest@29 yet"
     ],
+    "lerna": [
+      "6",
+      "lerna@7 use npm workspaces and we fund the migration work"
+    ],
     "node-fetch": [
       "2",
       "node-fetch@3 dropped support of CommonJS"
