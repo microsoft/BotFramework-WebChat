@@ -47,10 +47,10 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
 
-type ComposerCoreUIProps = {
+type ComposerCoreUIProps = Readonly<{
   // eslint-disable-next-line react/require-default-props
   children?: ReactNode;
-};
+}>;
 
 const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   const [{ cssCustomProperties }] = useStyleSet();
@@ -74,7 +74,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
 
 ComposerCoreUI.displayName = 'ComposerCoreUI';
 
-type ComposerCoreProps = {
+type ComposerCoreProps = Readonly<{
   children?: ReactNode;
   extraStyleSet?: any;
   nonce?: string;
@@ -86,7 +86,7 @@ type ComposerCoreProps = {
   styleSet?: any;
   suggestedActionsAccessKey?: boolean | string;
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
-};
+}>;
 
 const ComposerCore: FC<ComposerCoreProps> = ({
   children,
