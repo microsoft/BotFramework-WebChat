@@ -54,6 +54,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Production dependencies
       -  [`@emotion/css@11.11.2`](https://npmjs.com/package/@emotion/css)
       -  [`classnames@2.3.2`](https://npmjs.com/package/classnames)
+      -  [`core-js@3.32.1`](https://npmjs.com/package/core-js)
       -  [`redux-saga@1.2.3`](https://npmjs.com/package/redux-saga)
       -  [`sanitize-html@2.11.0`](https://npmjs.com/package/sanitize-html)
       -  [`use-ref-from@0.0.2`](https://npmjs.com/package/use-ref-from)
@@ -68,7 +69,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`babel-loader@9.1.3`](https://npmjs.com/package/babel-loader)
       -  [`chalk@5.3.0`](https://npmjs.com/package/chalk)
       -  [`concurrently@8.2.1`](https://npmjs.com/package/concurrently)
-      -  [`core-js@3.32.1`](https://npmjs.com/package/core-js)
       -  [`dotenv@16.3.1`](https://npmjs.com/package/dotenv)
       -  [`esbuild@0.19.2`](https://npmjs.com/package/esbuild)
       -  [`eslint-plugin-prettier@5.0.0`](https://npmjs.com/package/eslint-plugin-prettier)
