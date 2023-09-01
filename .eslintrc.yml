@@ -4,11 +4,13 @@ env:
   es6: true
 
 plugins:
+  - import
   - prettier
   - security
 
 extends:
   - eslint:recommended
+  - plugin:import/recommended
   - plugin:prettier/recommended
   - plugin:security/recommended
 
@@ -54,9 +56,6 @@ overrides:
       no-empty-function: off
       '@typescript-eslint/no-empty-function': error
 
-      no-duplicate-imports: off
-      '@typescript-eslint/no-duplicate-imports': error
-
       # TODO #4003: We will rework on these rules
       '@typescript-eslint/ban-ts-comment': off
       '@typescript-eslint/ban-types': off
@@ -66,6 +65,9 @@ overrides:
       '@typescript-eslint/indent': off
       '@typescript-eslint/interface-name-prefix': off
       '@typescript-eslint/no-explicit-any': off
+
+      no-duplicate-imports: off
+      'import/no-duplicates': error
 
 rules:
   # Only list rules that are not in *:recommended set
@@ -186,6 +188,9 @@ rules:
     - error
     - after
   yoda: error
+
+  # Only identify *.js, does not work with *.ts
+  'import/no-unresolved': off
 
   # We should review the rules below from time to time. Rules below are:
   # - From "recommended" ruleset but disabled for some reasons
