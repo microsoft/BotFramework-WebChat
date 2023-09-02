@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import createAdaptiveCardsAttachmentForScreenReaderMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentForScreenReaderMiddleware';
 import createAdaptiveCardsAttachmentMiddleware from './adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
 import createAdaptiveCardsStyleSet from './adaptiveCards/Styles/createAdaptiveCardsStyleSet';
-import defaultRenderMarkdown from './renderMarkdown';
+import defaultRenderMarkdown from './markdown/renderMarkdown';
 
 export default function useComposerProps({
   attachmentForScreenReaderMiddleware,
