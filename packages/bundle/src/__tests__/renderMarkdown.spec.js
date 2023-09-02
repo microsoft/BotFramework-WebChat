@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
-import renderMarkdown from '../renderMarkdown';
+import renderMarkdown from '../markdown/renderMarkdown';
 
 describe('renderMarkdown', () => {
   it('should render markdown', () => {
