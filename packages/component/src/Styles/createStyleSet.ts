@@ -19,6 +19,7 @@ import createImageAvatarStyle from './StyleSet/ImageAvatar';
 import createInitialsAvatarStyle from './StyleSet/InitialsAvatar';
 import createKeyboardHelpStyle from './StyleSet/KeyboardHelp';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
+import createModalDialog from './StyleSet/ModalDialog';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
 import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
@@ -69,6 +70,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     initialsAvatar: createInitialsAvatarStyle(strictStyleOptions),
     keyboardHelp: createKeyboardHelpStyle(strictStyleOptions),
     microphoneButton: createMicrophoneButtonStyle(strictStyleOptions),
+    modalDialog: createModalDialog(),
     options: { ...strictStyleOptions }, // Cloned to make sure no additional modifications will propagate up.
     root: createRootStyle(strictStyleOptions),
     scrollToEndButton: createScrollToEndButtonStyle(strictStyleOptions),

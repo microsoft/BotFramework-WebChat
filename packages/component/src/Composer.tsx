@@ -88,6 +88,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     () => markdown => {
       const tree = internalMarkdownIt.parseInline(markdown);
 
+      // TODO: Use "betterLink" plugin.
       // We should add rel="noopener noreferrer" and target="_blank"
       const patchedTree = addTargetBlankToHyperlinksMarkdown(tree);
 
@@ -330,38 +331,36 @@ const Composer: FC<ComposerProps> = ({
   );
 
   return (
-    <React.Fragment>
-      <APIComposer
-        activityMiddleware={patchedActivityMiddleware}
-        activityStatusMiddleware={patchedActivityStatusMiddleware}
-        attachmentForScreenReaderMiddleware={patchedAttachmentForScreenReaderMiddleware}
-        attachmentMiddleware={patchedAttachmentMiddleware}
-        avatarMiddleware={patchedAvatarMiddleware}
-        cardActionMiddleware={patchedCardActionMiddleware}
-        downscaleImageToDataURL={downscaleImageToDataURL}
-        // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
-        internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
-        nonce={nonce}
-        scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
-        toastMiddleware={patchedToastMiddleware}
-        typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
-        {...composerProps}
-      >
-        <ActivityTreeComposer>
-          <ComposerCore
-            extraStyleSet={extraStyleSet}
-            nonce={nonce}
-            renderMarkdown={renderMarkdown}
-            styleSet={styleSet}
-            suggestedActionsAccessKey={suggestedActionsAccessKey}
-            webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-          >
-            {children}
-            {onTelemetry && <UITracker />}
-          </ComposerCore>
-        </ActivityTreeComposer>
-      </APIComposer>
-    </React.Fragment>
+    <APIComposer
+      activityMiddleware={patchedActivityMiddleware}
+      activityStatusMiddleware={patchedActivityStatusMiddleware}
+      attachmentForScreenReaderMiddleware={patchedAttachmentForScreenReaderMiddleware}
+      attachmentMiddleware={patchedAttachmentMiddleware}
+      avatarMiddleware={patchedAvatarMiddleware}
+      cardActionMiddleware={patchedCardActionMiddleware}
+      downscaleImageToDataURL={downscaleImageToDataURL}
+      // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
+      internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
+      nonce={nonce}
+      scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
+      toastMiddleware={patchedToastMiddleware}
+      typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
+      {...composerProps}
+    >
+      <ActivityTreeComposer>
+        <ComposerCore
+          extraStyleSet={extraStyleSet}
+          nonce={nonce}
+          renderMarkdown={renderMarkdown}
+          styleSet={styleSet}
+          suggestedActionsAccessKey={suggestedActionsAccessKey}
+          webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+        >
+          {children}
+          {onTelemetry && <UITracker />}
+        </ComposerCore>
+      </ActivityTreeComposer>
+    </APIComposer>
   );
 };
 
