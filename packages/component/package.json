@@ -101,6 +101,8 @@
     "event-target-shim": "6.0.2",
     "markdown-it": "13.0.1",
     "math-random": "2.0.1",
+    "mdast": "3.0.0",
+    "mdast-util-from-markdown": "2.0.0",
     "memoize-one": "6.0.0",
     "prop-types": "15.8.1",
     "react-dictate-button": "2.0.1",

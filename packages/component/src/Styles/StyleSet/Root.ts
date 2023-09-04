@@ -1,6 +1,7 @@
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function ({
+  accent,
   backgroundColor,
   paddingRegular,
   primaryFont,
@@ -26,6 +27,7 @@ export default function ({
     //       - We MUST NOT put runtime variables here, e.g. sendTimeout
     //          - This is because we cannot programmatically know when the sendTimeout change
 
+    '--webchat__accent-color': accent,
     '--webchat__padding-regular': paddingRegular + 'px',
     '--webchat__primary-font': primaryFont
   };

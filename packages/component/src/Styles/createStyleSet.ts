@@ -18,6 +18,7 @@ import createFileContentStyle from './StyleSet/FileContent';
 import createImageAvatarStyle from './StyleSet/ImageAvatar';
 import createInitialsAvatarStyle from './StyleSet/InitialsAvatar';
 import createKeyboardHelpStyle from './StyleSet/KeyboardHelp';
+import createLinkDefinitionsStyle from './StyleSet/LinkDefinitions';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createModalDialog from './StyleSet/ModalDialog';
 import createRootStyle from './StyleSet/Root';
@@ -69,6 +70,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     imageAvatar: createImageAvatarStyle(strictStyleOptions),
     initialsAvatar: createInitialsAvatarStyle(strictStyleOptions),
     keyboardHelp: createKeyboardHelpStyle(strictStyleOptions),
+    linkDefinitions: createLinkDefinitionsStyle(),
     microphoneButton: createMicrophoneButtonStyle(strictStyleOptions),
     modalDialog: createModalDialog(),
     options: { ...strictStyleOptions }, // Cloned to make sure no additional modifications will propagate up.

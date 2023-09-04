@@ -79,26 +79,24 @@ export default function render(
 
   const markdownIt = new MarkdownIt(MARKDOWN_IT_INIT)
     .use(ariaLabel)
-    .use(betterLink, {
-      decorate: (href: string): BetterLinkDecoration | undefined => {
-        const decoration: BetterLinkDecoration = {
-          rel: 'noopener noreferrer',
-          target: '_blank'
-        };
+    .use(betterLink, (href: string): BetterLinkDecoration | undefined => {
+      const decoration: BetterLinkDecoration = {
+        rel: 'noopener noreferrer',
+        target: '_blank'
+      };
 
-        if (linkDefinitionURLs.includes(href)) {
-          decoration.linkClassName = 'webchat__markdown__link-definition webchat__markdown__link-definition--url';
-        }
-
-        const protocol = getURLProtocol(href);
-
-        if (protocol === 'http:' || protocol === 'https:') {
-          decoration.externalLinkAlt = externalLinkAlt;
-          decoration.iconClassName = 'webchat__markdown__external-link-icon';
-        }
-
-        return decoration;
+      if (linkDefinitionURLs.includes(href)) {
+        decoration.linkClassName = 'webchat__markdown__link-definition webchat__markdown__link-definition--url';
       }
+
+      const protocol = getURLProtocol(href);
+
+      if (protocol === 'http:' || protocol === 'https:') {
+        decoration.externalLinkAlt = externalLinkAlt;
+        decoration.iconClassName = 'webchat__markdown__external-link-icon';
+      }
+
+      return decoration;
     })
     .use(linkAsButton, 'webchat__markdown__link-definition webchat__markdown__link-definition--citation', href =>
       linkDefinitionURLs.includes(href)
