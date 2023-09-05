@@ -13,7 +13,7 @@ const ItemBody = memo(({ claim }: Props) => {
   return (
     <div className="webchat__link-definitions__list-item-body">
       {alternateName ? <Badge value={alternateName} /> : null}
-      <div className="webchat__link-definitions__item-text">{claim.name}</div>
+      <div className="webchat__link-definitions__list-item-text">{claim.name}</div>
     </div>
   );
 });

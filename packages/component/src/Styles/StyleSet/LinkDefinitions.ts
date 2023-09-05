@@ -50,16 +50,15 @@ export default function createLinkDefinitionsStyleSet() {
 
       '.webchat__link-definitions__badge': {
         alignItems: 'center',
-        aspectRatio: '1/1',
         borderRadius: '4px',
         borderStyle: 'solid',
         borderWidth: 1,
         display: 'flex',
         flexShrink: 0,
         fontSize: '75%',
-        height: '1em',
         justifyContent: 'center',
         margin: 4,
+        minWidth: '1em',
         overflow: 'hidden',
         padding: 2,
         whiteSpace: 'nowrap',
