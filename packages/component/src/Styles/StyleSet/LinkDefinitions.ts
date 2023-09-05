@@ -48,6 +48,11 @@ export default function createLinkDefinitionsStyleSet() {
         padding: 0
       },
 
+      '.webchat__link-definitions__list-item': {
+        display: 'flex', // This prevents the <button> from overflowing. Unsure why "overflow: hidden" doesn't work.
+        flexDirection: 'column'
+      },
+
       '.webchat__link-definitions__badge': {
         alignItems: 'center',
         borderRadius: '4px',
@@ -112,7 +117,6 @@ export default function createLinkDefinitionsStyleSet() {
       '.webchat__link-definitions__list-item-box--as-button': {
         appearance: 'none',
         background: 'transparent',
-        border: 0,
         cursor: 'pointer',
         fontFamily: 'inherit',
         fontSize: 'inherit',
@@ -125,7 +129,6 @@ export default function createLinkDefinitionsStyleSet() {
         display: 'flex',
         fontFamily: "Calibri, 'Helvetica Neue', Arial, 'sans-serif'",
         gap: 4,
-        overflow: 'hidden',
         padding: 4,
 
         [NOT_FORCED_COLORS_SELECTOR]: {

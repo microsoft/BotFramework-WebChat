@@ -23,7 +23,7 @@ export default function createCoreMiddleware(): AttachmentMiddleware[] {
       (...args) => {
         const [
           {
-            activity = {},
+            activity,
             activity: { from: { role = undefined } = {} } = {},
             attachment,
             attachment: { contentType = undefined, contentUrl = undefined, thumbnailUrl = undefined } = {}
@@ -43,7 +43,7 @@ export default function createCoreMiddleware(): AttachmentMiddleware[] {
         ) : contentUrl || contentType === 'application/octet-stream' ? (
           <FileAttachment activity={activity} attachment={attachment} />
         ) : isText ? (
-          <TextAttachment attachment={attachment} />
+          <TextAttachment activity={activity} attachment={attachment} />
         ) : (
           next(...args)
         );

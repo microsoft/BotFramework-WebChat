@@ -69,7 +69,7 @@ type LinkDescriptor = {
    * True, if the link is a pure identifier pointing to a link definition, such as [1] or [1][1].
    * In contrast, false, if it is [1](https://.../).
    */
-  isPureIdentifer: boolean;
+  isPureIdentifier: boolean;
   href: string;
   type: 'citation' | 'link' | 'unknown';
 };
@@ -97,17 +97,17 @@ export default function render(
       };
 
       const linkClasses: Set<string> = new Set();
-      const descriptor = linkDescriptors?.find(descriptor => descriptor.href === href);
+      const descriptor = linkDescriptors.find(descriptor => descriptor.href === href);
 
       if (descriptor) {
-        if (descriptor.isPureIdentifer) {
-          linkClasses.add('webchat__markdown__pure-identifier');
+        if (descriptor.isPureIdentifier) {
+          linkClasses.add('webchat__render-markdown__pure-identifier');
         }
 
         if (descriptor.type === 'citation') {
           decoration.asButton = true;
 
-          linkClasses.add('webchat__markdown__citation');
+          linkClasses.add('webchat__render-markdown__citation');
         }
       }
 
@@ -117,7 +117,7 @@ export default function render(
 
       if (protocol === 'http:' || protocol === 'https:') {
         decoration.externalLinkAlt = externalLinkAlt;
-        decoration.iconClassName = 'webchat__markdown__external-link-icon';
+        decoration.iconClassName = 'webchat__render-markdown__external-link-icon';
       }
 
       return decoration;

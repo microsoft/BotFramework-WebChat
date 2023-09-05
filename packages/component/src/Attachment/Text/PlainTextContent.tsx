@@ -12,9 +12,11 @@ const PlainTextContent: FC<Props> = memo(({ text }: Props) => {
 
   return (
     <Fragment>
-      {(text || '').split('\n').map((line, index) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <p className={classNames('plain', textContentStyleSet + '')} key={index}>
+      {(text || '').split('\n').map(line => (
+        <p
+          className={classNames('webchat__text-content', 'webchat__text-content--is-plain', textContentStyleSet + '')}
+          key={line}
+        >
           {line.trim()}
         </p>
       ))}

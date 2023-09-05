@@ -22,6 +22,7 @@ import createLinkDefinitionsStyle from './StyleSet/LinkDefinitions';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createModalDialog from './StyleSet/ModalDialog';
 import createOriginatorActivityStatusStyle from './StyleSet/OriginatorActivityStatus';
+import createRenderMarkdownStyle from './StyleSet/RenderMarkdown';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
 import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
@@ -73,9 +74,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     imageAvatar: createImageAvatarStyle(strictStyleOptions),
     initialsAvatar: createInitialsAvatarStyle(strictStyleOptions),
     keyboardHelp: createKeyboardHelpStyle(strictStyleOptions),
-    linkDefinitions: createLinkDefinitionsStyle(),
     microphoneButton: createMicrophoneButtonStyle(strictStyleOptions),
-    modalDialog: createModalDialog(),
     options: { ...strictStyleOptions }, // Cloned to make sure no additional modifications will propagate up.
     originatorActivityStatus: createOriginatorActivityStatusStyle(),
     root: createRootStyle(strictStyleOptions),
@@ -85,13 +84,10 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     sendBoxTextBox: createSendBoxTextBoxStyle(strictStyleOptions),
     sendStatus: createSendStatusStyle(strictStyleOptions),
     singleAttachmentActivity: createSingleAttachmentActivityStyle(strictStyleOptions),
-    slottedActivityStatus: createSlottedActivityStatusStyle(),
     spinnerAnimation: createSpinnerAnimationStyle(strictStyleOptions),
     stackedLayout: createStackedLayoutStyle(strictStyleOptions),
     suggestedAction: createSuggestedActionStyle(strictStyleOptions),
     suggestedActions: createSuggestedActionsStyle(strictStyleOptions),
-    textContent: createTextContentStyle(strictStyleOptions),
-    thumbButton: createThumbButtonStyle(),
     toast: createToastStyle(strictStyleOptions),
     toaster: createToasterStyle(strictStyleOptions),
     typingAnimation: createTypingAnimationStyle(strictStyleOptions),
@@ -101,6 +97,15 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     videoContent: createVideoContentStyle(strictStyleOptions),
     vimeoContent: createVimeoContentStyle(strictStyleOptions),
     warningNotification: createWarningNotificationStyle(strictStyleOptions),
-    youTubeContent: createYouTubeContentStyle(strictStyleOptions)
+    youTubeContent: createYouTubeContentStyle(strictStyleOptions),
+
+    // Following styles follows new house rules:
+    // - Use CSS var instead of strictStyleOptions
+    linkDefinitions: createLinkDefinitionsStyle(),
+    modalDialog: createModalDialog(),
+    renderMarkdown: createRenderMarkdownStyle(),
+    slottedActivityStatus: createSlottedActivityStatusStyle(),
+    textContent: createTextContentStyle(),
+    thumbButton: createThumbButtonStyle()
   };
 }

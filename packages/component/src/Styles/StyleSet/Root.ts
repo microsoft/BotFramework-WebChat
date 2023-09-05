@@ -3,6 +3,9 @@ import { StrictStyleOptions } from 'botframework-webchat-api';
 export default function ({
   accent,
   backgroundColor,
+  bubbleMaxWidth,
+  bubbleMinHeight,
+  markdownExternalLinkIconImage,
   paddingRegular,
   primaryFont,
   rootHeight: height,
@@ -28,6 +31,9 @@ export default function ({
     //          - This is because we cannot programmatically know when the sendTimeout change
 
     '--webchat__accent-color': accent,
+    '--webchat__bubble-max-width': bubbleMaxWidth,
+    '--webchat__bubble-min-height': bubbleMinHeight,
+    '--webchat__external-link-icon-url': markdownExternalLinkIconImage,
     '--webchat__padding-regular': paddingRegular + 'px',
     '--webchat__primary-font': primaryFont
   };

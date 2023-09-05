@@ -15,12 +15,12 @@ import { type WebChatActivity } from 'botframework-webchat-core';
 type Props = {
   // "defaultProps" is being deprecated.
   // eslint-disable-next-line react/require-default-props
-  activity?: WebChatActivity;
+  entities?: WebChatActivity['entities'];
   markdown: string;
 };
 
-const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
-  const [{ textContent: textContentStyleSet }] = useStyleSet();
+const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
+  const [{ renderMarkdown: renderMarkdownStyleSet, textContent: textContentStyleSet }] = useStyleSet();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   // const showCitationPopover = useShowCitationPopover();
   const showModal = useShowModal();
@@ -33,14 +33,14 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   // We are building a map for quick lookup.
   const citationMap = useMemo<Map<string, Claim & { text: string }>>(
     () =>
-      (activity?.entities || []).reduce<Map<string, Claim & { text: string }>>((citationMap, entity) => {
+      (entities || []).reduce<Map<string, Claim & { text: string }>>((citationMap, entity) => {
         if (isThing(entity) && isClaim(entity) && hasText(entity) && entity['@id']) {
           return citationMap.set(entity['@id'], entity);
         }
 
         return citationMap;
       }, new Map()),
-    [activity]
+    [entities]
   );
 
   // These are all the claims, including citation (claim with text) and links (claim without text but URL).
@@ -182,10 +182,14 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   return (
     <div
       // TODO: Fix this class name.
-      className={classNames('webchat__markdown', textContentStyleSet + '')}
+      className={classNames('webchat__text-content', 'webchat__text-content--is-markdown', textContentStyleSet + '')}
     >
       <div
-        className="webchat__markdown__body"
+        className={classNames(
+          'webchat__text-content__markdown',
+          'webchat__render-markdown',
+          renderMarkdownStyleSet + ''
+        )}
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={dangerouslySetInnerHTML}
         onClick={handleClick}

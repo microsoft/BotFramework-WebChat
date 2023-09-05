@@ -14,7 +14,7 @@ type LinkDescriptor = {
    * True, if the link is a pure identifier pointing to a link definition, such as [1] or [1][1].
    * In contrast, false, if it is [1](https://.../).
    */
-  isPureIdentifer: boolean;
+  isPureIdentifier: boolean;
   href: string;
   type: 'citation' | 'link' | 'unknown';
 };
@@ -98,7 +98,7 @@ export default function useRenderMarkdownAsHTML(): (
 
             linkDescriptors.push({
               href: url,
-              isPureIdentifer: !node.label || node.identifier === node.label,
+              isPureIdentifier: !node.label || node.identifier === node.label,
               type:
                 protocol === 'cite:' ? 'citation' : protocol === 'http:' || protocol === 'https:' ? 'link' : 'unknown'
             });
