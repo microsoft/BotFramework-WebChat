@@ -5,7 +5,7 @@ import stripMarkdown from './stripMarkdown';
 
 // import type { Reference } from '../types/Reference';
 import type { Claim as SchemaOrgClaim } from '../../../types/external/SchemaOrg/Claim';
-import type { Definition, LinkReference, Node, Parent, Root, Text } from 'mdast';
+import type { Definition, LinkReference, Node, Parent, Root } from 'mdast';
 
 function* walk(tree: Parent): Generator<Node> {
   for (const child of tree.children) {
@@ -63,15 +63,13 @@ export default function* getClaimsFromMarkdown(
         continue;
       }
 
-      const { identifier: id, title, url } = definition;
-      const getTextReferenced = () =>
-        node.children.find<Text>((node): node is Text => node.type === 'text')?.value || '';
+      const { identifier: id, label, title, url } = definition;
 
       const claim = claimsWithText.get(url);
 
       if (claim) {
         yield {
-          alternateName: claim.alternateName || getTextReferenced(),
+          alternateName: label,
           name:
             claim.name ||
             stripMarkdown(claim.text)
@@ -84,7 +82,7 @@ export default function* getClaimsFromMarkdown(
           '@context': 'https://schema.org/',
           '@id': id,
           '@type': 'Claim',
-          alternateName: getTextReferenced(),
+          alternateName: label,
           name: title || onErrorResumeNext(() => new URL(definition.url).host) || definition.url,
           type: 'https://schema.org/Claim',
           url: definition.url

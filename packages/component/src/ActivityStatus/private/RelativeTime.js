@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import ScreenReaderText from '../../ScreenReaderText';
 import useForceRenderAtInterval from '../../hooks/internal/useForceRenderAtInterval';
@@ -17,10 +17,10 @@ const RelativeTime = ({ value }) => {
   useForceRenderAtInterval(value, TIMER_INTERVAL);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <ScreenReaderText text={localize('ACTIVITY_STATUS_SEND_STATUS_ALT_SENT_AT', formatDate(value))} />
       <span aria-hidden={true}>{formatRelativeTime(value)}</span>
-    </React.Fragment>
+    </Fragment>
   );
 };
 

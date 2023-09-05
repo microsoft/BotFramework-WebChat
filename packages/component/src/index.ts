@@ -15,9 +15,9 @@ import BasicTranscript from './BasicTranscript';
 import Avatar from './Activity/Avatar';
 import Bubble from './Activity/Bubble';
 import ErrorBox from './ErrorBox';
-import SendStatus, { connectSendStatus } from './Middleware/ActivityStatus/SendStatus/SendStatus';
+import SendStatus, { connectSendStatus } from './ActivityStatus/SendStatus/SendStatus';
 import SpeakActivity, { connectSpeakActivity } from './Activity/Speak';
-import Timestamp from './Middleware/ActivityStatus/Timestamp';
+import Timestamp from './ActivityStatus/Timestamp';
 
 import AudioContent from './Attachment/AudioContent';
 import FileContent from './Attachment/FileContent';

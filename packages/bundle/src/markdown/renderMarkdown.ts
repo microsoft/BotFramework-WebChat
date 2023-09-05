@@ -5,12 +5,13 @@ import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
 import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdownItPlugins/ariaLabel';
 import betterLink from './markdownItPlugins/betterLink';
 import getURLProtocol from './private/getURLProtocol';
-import linkAsButton from './markdownItPlugins/linkAsButton';
 
 const SANITIZE_HTML_OPTIONS = Object.freeze({
   allowedAttributes: {
     a: ['aria-label', 'class', 'href', 'name', 'rel', 'target', 'title'],
-    button: ['class', { name: 'type', value: 'button' }, 'value'],
+    // TODO: Fix this.
+    // button: ['class', { name: 'type', value: 'button' }, 'value'],
+    button: ['class', 'type', 'value'],
     img: ['alt', 'class', 'src']
   },
   allowedSchemes: ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'],
@@ -63,13 +64,23 @@ const MARKDOWN_IT_INIT = Object.freeze({
   xhtmlOut: true
 });
 
+type LinkDescriptor = {
+  /**
+   * True, if the link is a pure identifier pointing to a link definition, such as [1] or [1][1].
+   * In contrast, false, if it is [1](https://.../).
+   */
+  isPureIdentifer: boolean;
+  href: string;
+  type: 'citation' | 'link' | 'unknown';
+};
+
 type BetterLinkDecoration = Exclude<ReturnType<Parameters<typeof betterLink>[1]>, undefined>;
-type RenderInit = { externalLinkAlt?: string; linkDefinitionURLs?: string[] };
+type RenderInit = { externalLinkAlt?: string; linkDescriptors?: Array<LinkDescriptor> };
 
 export default function render(
   markdown: string,
   { markdownRespectCRLF }: Readonly<{ markdownRespectCRLF: boolean }>,
-  { externalLinkAlt = '', linkDefinitionURLs = [] }: Readonly<RenderInit> = Object.freeze({})
+  { externalLinkAlt = '', linkDescriptors = [] }: Readonly<RenderInit> = Object.freeze({})
 ): string {
   if (markdownRespectCRLF) {
     markdown = respectCRLFPre(markdown);
@@ -85,9 +96,22 @@ export default function render(
         target: '_blank'
       };
 
-      if (linkDefinitionURLs.includes(href)) {
-        decoration.linkClassName = 'webchat__markdown__link-definition webchat__markdown__link-definition--url';
+      const linkClasses: Set<string> = new Set();
+      const descriptor = linkDescriptors?.find(descriptor => descriptor.href === href);
+
+      if (descriptor) {
+        if (descriptor.isPureIdentifer) {
+          linkClasses.add('webchat__markdown__pure-identifier');
+        }
+
+        if (descriptor.type === 'citation') {
+          decoration.asButton = true;
+
+          linkClasses.add('webchat__markdown__citation');
+        }
       }
+
+      decoration.linkClassName = Array.from(linkClasses).join(' ');
 
       const protocol = getURLProtocol(href);
 
@@ -97,10 +121,7 @@ export default function render(
       }
 
       return decoration;
-    })
-    .use(linkAsButton, 'webchat__markdown__link-definition webchat__markdown__link-definition--citation', href =>
-      linkDefinitionURLs.includes(href)
-    );
+    });
 
   let html = markdownIt.render(markdown);
 

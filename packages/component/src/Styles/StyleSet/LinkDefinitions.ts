@@ -117,9 +117,7 @@ export default function createLinkDefinitionsStyleSet() {
         fontFamily: 'inherit',
         fontSize: 'inherit',
         overflow: 'hidden',
-        padding: 0,
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap'
+        padding: 0
       },
 
       '.webchat__link-definitions__list-item-body': {
@@ -136,7 +134,10 @@ export default function createLinkDefinitionsStyleSet() {
       },
 
       '.webchat__link-definitions__list-item-text': {
-        textDecoration: 'underline'
+        overflow: 'hidden',
+        textDecoration: 'underline',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
       }
     }
   };

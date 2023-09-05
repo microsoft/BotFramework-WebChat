@@ -29,6 +29,26 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
     throw new Error('botframework-webchat: assert failed for renderMarkdownAsHTML');
   }
 
+  // Citations are claim with text.
+  // We are building a map for quick lookup.
+  const citationMap = useMemo<Map<string, Claim & { text: string }>>(
+    () =>
+      (activity?.entities || []).reduce<Map<string, Claim & { text: string }>>((citationMap, entity) => {
+        if (isEntity(entity) && isClaim(entity) && hasText(entity) && entity['@id']) {
+          return citationMap.set(entity['@id'], entity);
+        }
+
+        return citationMap;
+      }, new Map()),
+    [activity]
+  );
+
+  // These are all the claims, including citation (claim with text) and links (claim without text but URL).
+  const claims = useMemo(
+    () => Object.freeze(Array.from(getClaimsFromMarkdown(markdown, citationMap))),
+    [citationMap, markdown]
+  );
+
   // The content rendered by `renderMarkdownAsHTML` is sanitized.
   const dangerouslySetInnerHTML = useMemo(
     () => ({ __html: markdown ? renderMarkdownAsHTML(markdown) : '' }),
@@ -159,32 +179,13 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
     [showModal]
   );
 
-  // Citations are claim with text.
-  // We are building a map for quick lookup.
-  const citationMap = useMemo<Map<string, Claim & { text: string }>>(
-    () =>
-      (activity?.entities || []).reduce<Map<string, Claim & { text: string }>>((citationMap, entity) => {
-        if (isEntity(entity) && isClaim(entity) && hasText(entity) && entity['@id']) {
-          return citationMap.set(entity['@id'], entity);
-        }
-
-        return citationMap;
-      }, new Map()),
-    [activity]
-  );
-
-  // These are all the claims, including citation (claim with text) and links (claim without text but URL).
-  const claims = useMemo(
-    () => Object.freeze(Array.from(getClaimsFromMarkdown(markdown, citationMap))),
-    [citationMap, markdown]
-  );
-
   return (
     <div
       // TODO: Fix this class name.
-      className={classNames('markdown', textContentStyleSet + '')}
+      className={classNames('webchat__markdown', textContentStyleSet + '')}
     >
       <div
+        className="webchat__markdown__body"
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={dangerouslySetInnerHTML}
         onClick={handleClick}

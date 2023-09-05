@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import React, { FC, useCallback } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
-import { SENDING, SEND_FAILED, SENT } from '../../../types/internal/SendStatus';
-import connectToWebChat from '../../../connectToWebChat';
-import SendFailedRetry from './SendFailedRetry';
-import useFocus from '../../../hooks/useFocus';
-import useStyleSet from '../../../hooks/useStyleSet';
+import { SENDING, SEND_FAILED, SENT } from '../../types/internal/SendStatus';
+import connectToWebChat from '../../connectToWebChat';
+import SendFailedRetry from './private/SendFailedRetry';
+import useFocus from '../../hooks/useFocus';
+import useStyleSet from '../../hooks/useStyleSet';
 
-import type { SendStatus as SendStatusType } from '../../../types/internal/SendStatus';
+import type { SendStatus as SendStatusType } from '../../types/internal/SendStatus';
 
 const { useLocalizer, usePostActivity } = hooks;
 

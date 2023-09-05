@@ -2,20 +2,19 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
 
 import AbsoluteTime from './AbsoluteTime';
-import RelativeTime from './RelativeTime';
-import useStyleSet from '../../hooks/useStyleSet';
+import RelativeTime from './private/RelativeTime';
+import useStyleSet from '../hooks/useStyleSet';
 
 const { useStyleOptions } = hooks;
 
 type TimestampProps = {
-  activity: WebChatActivity;
   className?: string;
+  timestamp: string;
 };
 
-const Timestamp: FC<TimestampProps> = ({ activity: { timestamp }, className }) => {
+const Timestamp: FC<TimestampProps> = ({ className, timestamp }) => {
   const [{ timestampFormat }] = useStyleOptions();
   const [{ timestamp: timestampStyleSet, sendStatus: sendStatusStyleSet }] = useStyleSet();
 
@@ -25,13 +24,11 @@ const Timestamp: FC<TimestampProps> = ({ activity: { timestamp }, className }) =
     );
 
   return (
-    !!timestamp && (
-      <span
-        className={classNames((timestampStyleSet || '') + '', (sendStatusStyleSet || '') + '', (className || '') + '')}
-      >
-        {timestampFormat === 'relative' ? <RelativeTime value={timestamp} /> : <AbsoluteTime value={timestamp} />}
-      </span>
-    )
+    <span
+      className={classNames((timestampStyleSet || '') + '', (sendStatusStyleSet || '') + '', (className || '') + '')}
+    >
+      {timestampFormat === 'relative' ? <RelativeTime value={timestamp} /> : <AbsoluteTime value={timestamp} />}
+    </span>
   );
 };
 

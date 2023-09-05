@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import iterator from 'markdown-it-for-inline';
 import MarkdownIt from 'markdown-it';
 
@@ -16,7 +17,8 @@ const linkAsButton = (
     }
 
     token.tag = 'button';
-    token.attrSet('class', buttonClassName);
+
+    token.attrSet('class', classNames(token.attrGet('class'), buttonClassName));
     token.attrSet('type', 'button');
     token.attrSet('value', href);
 
