@@ -82,7 +82,6 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     sendBox: createSendBoxStyle(strictStyleOptions),
     sendBoxButton: createSendBoxButtonStyle(strictStyleOptions),
     sendBoxTextBox: createSendBoxTextBoxStyle(strictStyleOptions),
-    sendStatus: createSendStatusStyle(strictStyleOptions),
     singleAttachmentActivity: createSingleAttachmentActivityStyle(strictStyleOptions),
     spinnerAnimation: createSpinnerAnimationStyle(strictStyleOptions),
     stackedLayout: createStackedLayoutStyle(strictStyleOptions),
@@ -104,6 +103,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     linkDefinitions: createLinkDefinitionsStyle(),
     modalDialog: createModalDialog(),
     renderMarkdown: createRenderMarkdownStyle(),
+    sendStatus: createSendStatusStyle(),
     slottedActivityStatus: createSlottedActivityStatusStyle(),
     textContent: createTextContentStyle(),
     thumbButton: createThumbButtonStyle()

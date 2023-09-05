@@ -1,15 +1,7 @@
-import { StrictStyleOptions } from 'botframework-webchat-api';
-
-export default function createSendStatusStyle({
-  fontSizeSmall,
-  primaryFont,
-  subtle,
-  timestampColor
-}: StrictStyleOptions) {
+export default function createSendStatusStyle() {
   return {
-    color: timestampColor || subtle,
-    fontFamily: primaryFont,
-    fontSize: fontSizeSmall,
-    paddingTop: 5
+    color: 'var(--webchat__timestamp-color)',
+    fontFamily: 'var(--webchat__primary-font)',
+    fontSize: 'var(--webchat__font-size-small)'
   };
 }

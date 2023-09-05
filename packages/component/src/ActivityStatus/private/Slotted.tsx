@@ -17,7 +17,9 @@ const Slotted = memo(({ children, className }: Props) => {
       {Children.map(children, (child, index) =>
         index ? (
           <Fragment>
-            <span role="presentation">{'|'}</span>
+            <span className="webchat__slotted-activity-status__pipe" role="presentation">
+              {'|'}
+            </span>
             {child}
           </Fragment>
         ) : (

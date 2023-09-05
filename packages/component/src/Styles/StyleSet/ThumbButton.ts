@@ -6,7 +6,6 @@ export default function () {
       border: 0,
       borderRadius: 2,
       height: 16,
-      lineHeight: 0,
       /* The Fluent icon is larger than the button. We need to clip it.
       Without clipping, hover effect will appear on the edge of the button but not possible to click. */
       overflow: 'hidden',

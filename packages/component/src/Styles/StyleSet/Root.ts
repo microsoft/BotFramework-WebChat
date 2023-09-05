@@ -5,12 +5,15 @@ export default function ({
   backgroundColor,
   bubbleMaxWidth,
   bubbleMinHeight,
+  fontSizeSmall,
   markdownExternalLinkIconImage,
   paddingRegular,
   primaryFont,
   rootHeight: height,
   rootWidth: width,
-  rootZIndex: zIndex
+  rootZIndex: zIndex,
+  subtle,
+  timestampColor
 }: StrictStyleOptions) {
   return {
     backgroundColor,
@@ -30,11 +33,15 @@ export default function ({
     //       - We MUST NOT put runtime variables here, e.g. sendTimeout
     //          - This is because we cannot programmatically know when the sendTimeout change
 
+    // TODO: Should we rename this?
     '--webchat__accent-color': accent,
     '--webchat__bubble-max-width': bubbleMaxWidth,
     '--webchat__bubble-min-height': bubbleMinHeight,
     '--webchat__external-link-icon-url': markdownExternalLinkIconImage,
     '--webchat__padding-regular': paddingRegular + 'px',
-    '--webchat__primary-font': primaryFont
+    '--webchat__primary-font': primaryFont,
+    '--webchat__subtle-color': subtle,
+    '--webchat__font-size-small': fontSizeSmall,
+    '--webchat__timestamp-color': timestampColor || subtle
   };
 }
