@@ -3,29 +3,31 @@ import React, { memo } from 'react';
 
 import useStyleSet from '../../hooks/useStyleSet';
 
-import { type Person } from '../../types/external/SchemaOrg/Person';
+import { type ReplyAction } from '../../types/external/SchemaOrg/ReplyAction';
 
-type Props = { person: Person };
+type Props = { replyAction: ReplyAction };
 
-const Originator = memo(({ person }: Props) => {
+const Originator = memo(({ replyAction }: Props) => {
   const [{ originatorActivityStatus }] = useStyleSet();
+  const { description, provider } = replyAction;
 
-  return person.url ? (
+  const text = description || provider?.name;
+  const url = provider?.url;
+
+  return url ? (
     <a
       className={classNames(
         'webchat__originator-activity-status webchat__originator-activity-status--link',
         originatorActivityStatus + ''
       )}
-      href={person.url}
+      href={url}
       rel="noopener noreferrer"
       target="_blank"
     >
-      {person.description || person.text}
+      {text}
     </a>
   ) : (
-    <span className={classNames('webchat__originator-activity-status', originatorActivityStatus + '')}>
-      {person.description || person.text}
-    </span>
+    <span className={classNames('webchat__originator-activity-status', originatorActivityStatus + '')}>{text}</span>
   );
 });
 

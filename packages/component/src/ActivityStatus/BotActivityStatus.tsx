@@ -2,8 +2,8 @@ import React, { memo, type ReactNode, useMemo } from 'react';
 
 import { type WebChatActivity } from 'botframework-webchat-core';
 
-import { isEntity, type Entity } from '../types/external/SchemaOrg/Entity';
-import { isPerson, type Person } from '../types/external/SchemaOrg/Person';
+import { isReplyAction, type ReplyAction } from '../types/external/SchemaOrg/ReplyAction';
+import { isThing, type Thing } from '../types/external/SchemaOrg/Thing';
 
 import Feedback from './private/Feedback/Feedback';
 import Originator from './private/Originator';
@@ -29,11 +29,10 @@ function isUpvoteAction(voteAction: VoteAction): voteAction is UpvoteAction {
 type Props = { activity: WebChatActivity };
 
 const ActivityStatus = memo(({ activity }: Props) => {
-  const entities = activity.entities as Array<Entity | WebChatEntity>;
+  const entities = activity.entities as Array<Thing | WebChatEntity>;
 
-  const person = entities.find<Person>(
-    (entity): entity is Person =>
-      isEntity(entity) && isPerson(entity) && entity['@id'] === `ms-bf-channel-account-id:${activity.from.id}`
+  const replyAction = entities.find<ReplyAction>(
+    (entity): entity is ReplyAction => isThing(entity) && isReplyAction(entity)
   );
 
   const { timestamp } = activity;
@@ -45,7 +44,7 @@ const ActivityStatus = memo(({ activity }: Props) => {
           (entities || [])
             .filter<DownvoteAction | UpvoteAction>(
               (entity): entity is DownvoteAction | UpvoteAction =>
-                isEntity(entity) && isVoteAction(entity) && (isDownvoteAction(entity) || isUpvoteAction(entity))
+                isThing(entity) && isVoteAction(entity) && (isDownvoteAction(entity) || isUpvoteAction(entity))
             )
             .map(({ actionOption }) => actionOption)
         )
@@ -59,10 +58,10 @@ const ActivityStatus = memo(({ activity }: Props) => {
         () =>
           [
             timestamp && <Timestamp key="timestamp" timestamp={timestamp} />,
-            person && <Originator key="originator" person={person} />,
+            replyAction && <Originator key="originator" replyAction={replyAction} />,
             votes.size && <Feedback key="feedback" votes={votes} />
           ].filter(Boolean),
-        [person, timestamp, votes]
+        [replyAction, timestamp, votes]
       )}
     </Slotted>
   );

@@ -1,18 +1,15 @@
-import type { Entity } from './Entity';
+import { isThingOf, type Thing } from './Thing';
 
-// This is partial type of https://schema.org/VoteAction.
-export type VoteAction = Entity & {
-  '@context': 'https://schema.org/';
-  '@id'?: string;
-  '@type': 'VoteAction';
-  type: 'https://schema.org/VoteAction';
-
+/**
+ * The act of expressing a preference from a fixed/finite/structured set of choices/options.
+ *
+ * This is partial type of https://schema.org/VoteAction.
+ */
+export type VoteAction = Thing<'VoteAction'> & {
+  /** A sub property of object. The options subject to this action. Supersedes [option](https://schema.org/option). */
   actionOption?: string;
 };
 
-export function isVoteAction(entity: Entity): entity is VoteAction {
-  return (
-    entity.type === 'https://schema.org/VoteAction' ||
-    (entity['@context'] === 'https://schema.org/' && entity['@type'] === 'VoteAction')
-  );
+export function isVoteAction(thing: Thing): thing is VoteAction {
+  return isThingOf(thing, 'VoteAction');
 }

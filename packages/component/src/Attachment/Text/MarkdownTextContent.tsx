@@ -8,7 +8,7 @@ import useStyleSet from '../../hooks/useStyleSet';
 import useShowModal from '../../providers/ModalDialog/useShowModal';
 
 import { hasText, isClaim, type Claim } from '../../types/external/SchemaOrg/Claim';
-import { isEntity } from '../../types/external/SchemaOrg/Entity';
+import { isThing } from '../../types/external/SchemaOrg/Thing';
 
 import { type WebChatActivity } from 'botframework-webchat-core';
 
@@ -34,7 +34,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   const citationMap = useMemo<Map<string, Claim & { text: string }>>(
     () =>
       (activity?.entities || []).reduce<Map<string, Claim & { text: string }>>((citationMap, entity) => {
-        if (isEntity(entity) && isClaim(entity) && hasText(entity) && entity['@id']) {
+        if (isThing(entity) && isClaim(entity) && hasText(entity) && entity['@id']) {
           return citationMap.set(entity['@id'], entity);
         }
 
