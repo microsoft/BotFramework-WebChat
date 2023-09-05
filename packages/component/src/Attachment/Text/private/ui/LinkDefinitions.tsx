@@ -6,7 +6,6 @@ import { type Claim, hasText } from '../../../../types/external/SchemaOrg/Claim'
 import { useStyleSet } from '../../../../hooks';
 import Chevron from './private/Chevron';
 import CitationItem from './private/CitationItem';
-import Badge from './private/Badge';
 import URLItem from './private/URLItem';
 
 const { useLocalizer } = hooks;
@@ -36,14 +35,14 @@ const LinkDefinitions = memo(({ claims, onCitationClick }: Props) => {
       <summary className="webchat__link-definitions__header">
         {headerText} <Chevron />
       </summary>
-      <ul className="webchat__link-definitions__body">
+      <div className="webchat__link-definitions__list" role="list">
         {claims.map((claim, index) => (
-          <li className="webchat__link-definitions__item" key={claim['@id'] || index}>
-            {claim.alternateName && <Badge value={claim.alternateName} />}
+          <div className="webchat__link-definitions__list-item" key={claim['@id'] || index} role="listitem">
+            {/* {claim.alternateName && <Badge value={claim.alternateName} />} */}
             {hasText(claim) ? <CitationItem claim={claim} onClick={onCitationClick} /> : <URLItem claim={claim} />}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </details>
   ) : null;
 });

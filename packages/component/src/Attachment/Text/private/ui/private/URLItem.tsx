@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 
+import ItemBody from './ItemBody';
 import { type Claim } from '../../../../../types/external/SchemaOrg/Claim';
 
 type Props = {
@@ -8,12 +9,12 @@ type Props = {
 
 const URLItem = memo(({ claim }: Props) => (
   <a
-    className="webchat__link-definitions__item-body webchat__link-definitions__item-body--url"
+    className="webchat__link-definitions__list-item-box webchat__link-definitions__list-item-box--as-link"
     href={claim.url}
     rel="noopener noreferrer"
     target="_blank"
   >
-    {claim.name}
+    <ItemBody claim={claim} />
   </a>
 ));
 

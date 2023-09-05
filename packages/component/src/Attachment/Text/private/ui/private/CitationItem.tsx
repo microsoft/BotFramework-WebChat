@@ -1,6 +1,7 @@
 import { useRefFrom } from 'use-ref-from';
 import React, { memo, type MouseEventHandler, useCallback } from 'react';
 
+import ItemBody from './ItemBody';
 import { type Claim } from '../../../../../types/external/SchemaOrg/Claim';
 
 // Citation is claim with text.
@@ -23,11 +24,11 @@ const CitationItem = memo(({ onClick, claim }: Props) => {
 
   return (
     <button
-      className="webchat__link-definitions__item-body webchat__link-definitions__item-body--citation"
+      className="webchat__link-definitions__list-item-box webchat__link-definitions__list-item-box--as-button"
       onClick={handleClick}
       type="button"
     >
-      {claim.name}
+      <ItemBody claim={claim} />
     </button>
   );
 });

@@ -30,16 +30,17 @@ export default function createLinkDefinitionsStyleSet() {
 
       '.webchat__link-definitions__header-chevron': {
         height: '1.4em',
+        transition: 'transform .3s',
         verticalAlign: 'bottom',
         width: '1.4em'
       },
 
       '&:not([open]) .webchat__link-definitions__header-chevron': {
         marginBottom: '-0.1em',
-        transform: 'rotate(180deg)'
+        transform: 'rotate(-180deg)'
       },
 
-      '.webchat__link-definitions__body': {
+      '.webchat__link-definitions__list': {
         display: 'flex',
         flexDirection: 'column',
         gap: 4,
@@ -81,17 +82,11 @@ export default function createLinkDefinitionsStyleSet() {
         }
       },
 
-      '.webchat__link-definitions__item': {
+      '.webchat__link-definitions__list-item-box': {
         alignItems: 'center',
         borderRadius: 4,
         borderStyle: 'solid',
         borderWidth: 1,
-        display: 'flex',
-        fontFamily: "Calibri, 'Helvetica Neue', Arial, 'sans-serif'",
-        gap: 4,
-        listStyleType: 'none',
-        overflow: 'hidden',
-        padding: 4,
 
         [LIGHT_THEME_SELECTOR]: {
           backgroundColor: 'white',
@@ -110,7 +105,12 @@ export default function createLinkDefinitionsStyleSet() {
         }
       },
 
-      '.webchat__link-definitions__item-body--citation': {
+      '.webchat__link-definitions__list-item-box--as-link': {
+        display: 'block',
+        textDecoration: 'none'
+      },
+
+      '.webchat__link-definitions__list-item-box--as-button': {
         appearance: 'none',
         background: 'transparent',
         border: 0,
@@ -119,15 +119,25 @@ export default function createLinkDefinitionsStyleSet() {
         fontSize: 'inherit',
         overflow: 'hidden',
         padding: 0,
-        textDecoration: 'underline',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap'
       },
 
-      '.webchat__link-definitions__item-body': {
+      '.webchat__link-definitions__list-item-body': {
+        alignItems: 'center',
+        display: 'flex',
+        fontFamily: "Calibri, 'Helvetica Neue', Arial, 'sans-serif'",
+        gap: 4,
+        overflow: 'hidden',
+        padding: 4,
+
         [NOT_FORCED_COLORS_SELECTOR]: {
           color: 'var(--webchat__accent-color)'
         }
+      },
+
+      '.webchat__link-definitions__list-item-text': {
+        textDecoration: 'underline'
       }
     }
   };
