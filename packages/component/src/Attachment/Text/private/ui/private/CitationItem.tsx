@@ -22,7 +22,11 @@ const CitationItem = memo(({ onClick, claim }: Props) => {
   );
 
   return (
-    <button className="webchat__link-definitions__item-body--citation" onClick={handleClick} type="button">
+    <button
+      className="webchat__link-definitions__item-body webchat__link-definitions__item-body--citation"
+      onClick={handleClick}
+      type="button"
+    >
       {claim.name}
     </button>
   );

@@ -7,7 +7,12 @@ type Props = {
 };
 
 const URLItem = memo(({ claim }: Props) => (
-  <a className="webchat__link-definitions__item-body--url" href={claim.url} rel="noopener noreferrer" target="_blank">
+  <a
+    className="webchat__link-definitions__item-body webchat__link-definitions__item-body--url"
+    href={claim.url}
+    rel="noopener noreferrer"
+    target="_blank"
+  >
     {claim.name}
   </a>
 ));

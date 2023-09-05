@@ -1,4 +1,9 @@
-import { FORCED_COLORS_SELECTOR, NOT_FORCED_COLORS_SELECTOR } from './Constants';
+import {
+  DARK_THEME_SELECTOR,
+  FORCED_COLORS_SELECTOR,
+  LIGHT_THEME_SELECTOR,
+  NOT_FORCED_COLORS_SELECTOR
+} from './Constants';
 
 // TODO: Fix CSS var.
 export default function createLinkDefinitionsStyleSet() {
@@ -13,7 +18,12 @@ export default function createLinkDefinitionsStyleSet() {
         fontSize: '80%',
         listStyle: 'none',
 
-        [NOT_FORCED_COLORS_SELECTOR]: {
+        [LIGHT_THEME_SELECTOR]: {
+          color: '#616161'
+        },
+
+        [DARK_THEME_SELECTOR]: {
+          // TODO: Add dark theme color.
           color: '#616161'
         }
       },
@@ -53,8 +63,17 @@ export default function createLinkDefinitionsStyleSet() {
         padding: 2,
         whiteSpace: 'nowrap',
 
-        [NOT_FORCED_COLORS_SELECTOR]: {
-          borderColor: '#e0e0e0'
+        [LIGHT_THEME_SELECTOR]: {
+          backgroundColor: 'white',
+          borderColor: '#e0e0e0',
+          color: 'black'
+        },
+
+        [DARK_THEME_SELECTOR]: {
+          backgroundColor: 'black',
+          // TODO: Add dark theme color.
+          borderColor: '#e0e0e0',
+          color: 'white'
         },
 
         [FORCED_COLORS_SELECTOR]: {
@@ -74,11 +93,19 @@ export default function createLinkDefinitionsStyleSet() {
         overflow: 'hidden',
         padding: 4,
 
-        [NOT_FORCED_COLORS_SELECTOR]: {
-          border: '#d1d1d1'
+        [LIGHT_THEME_SELECTOR]: {
+          backgroundColor: 'white',
+          borderColor: '#d1d1d1'
+        },
+
+        [DARK_THEME_SELECTOR]: {
+          backgroundColor: 'black',
+          // TODO: Add dark theme color.
+          borderColor: '#d1d1d1'
         },
 
         [FORCED_COLORS_SELECTOR]: {
+          backgroundColor: 'canvas',
           borderColor: 'buttonborder'
         }
       },
