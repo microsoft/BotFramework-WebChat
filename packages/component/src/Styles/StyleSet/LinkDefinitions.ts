@@ -142,6 +142,11 @@ export default function createLinkDefinitionsStyleSet() {
         textDecoration: 'underline',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap'
+      },
+
+      '.webchat__link-definitions__open-in-new-window-icon': {
+        flexShrink: 0,
+        marginRight: 4
       }
     }
   };

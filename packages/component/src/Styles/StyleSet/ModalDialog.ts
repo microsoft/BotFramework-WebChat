@@ -5,10 +5,11 @@ import {
   NOT_FORCED_COLORS_SELECTOR
 } from './Constants';
 
-export default function createCitationPopoverStyleSet() {
+export default function createModalDialogStyleSet() {
   return {
     '&.webchat__modal-dialog': {
       fontFamily: 'var(--webchat__primary-font)',
+      width: '100%',
 
       [NOT_FORCED_COLORS_SELECTOR]: {
         backgroundColor: 'transparent',

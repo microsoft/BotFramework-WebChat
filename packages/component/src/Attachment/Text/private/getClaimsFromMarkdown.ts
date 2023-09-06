@@ -1,7 +1,6 @@
 import { fromMarkdown } from 'mdast-util-from-markdown';
 
 import onErrorResumeNext from './onErrorResumeNext';
-import stripMarkdown from './stripMarkdown';
 
 // import type { Reference } from '../types/Reference';
 import type { Claim as SchemaOrgClaim } from '../../../types/external/SchemaOrg/Claim';
@@ -63,26 +62,22 @@ export default function* getClaimsFromMarkdown(
         continue;
       }
 
-      const { identifier: id, label, title, url } = definition;
+      const { identifier, title, url } = definition;
 
       const claim = claimsWithText.get(url);
 
       if (claim) {
         yield {
-          alternateName: label,
-          name:
-            claim.name ||
-            stripMarkdown(claim.text)
-              .replace(/\r\n/gu, ' ')
-              .replace(/\s{2,}/gu, ' '),
+          alternateName: identifier,
+          name: title,
           ...claim
         };
       } else {
         yield {
           '@context': 'https://schema.org/',
-          '@id': id,
+          '@id': identifier,
           '@type': 'Claim',
-          alternateName: label,
+          alternateName: identifier,
           name: title || onErrorResumeNext(() => new URL(definition.url).host) || definition.url,
           type: 'https://schema.org/Claim',
           url: definition.url

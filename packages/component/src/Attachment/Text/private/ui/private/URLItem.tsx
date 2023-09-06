@@ -14,7 +14,7 @@ const URLItem = memo(({ claim }: Props) => (
     rel="noopener noreferrer"
     target="_blank"
   >
-    <ItemBody claim={claim} />
+    <ItemBody claim={claim} isExternal={true} />
   </a>
 ));
 

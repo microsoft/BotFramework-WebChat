@@ -20,7 +20,7 @@ import createInitialsAvatarStyle from './StyleSet/InitialsAvatar';
 import createKeyboardHelpStyle from './StyleSet/KeyboardHelp';
 import createLinkDefinitionsStyle from './StyleSet/LinkDefinitions';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
-import createModalDialog from './StyleSet/ModalDialog';
+import createModalDialogStyle from './StyleSet/ModalDialog';
 import createOriginatorActivityStatusStyle from './StyleSet/OriginatorActivityStatus';
 import createRenderMarkdownStyle from './StyleSet/RenderMarkdown';
 import createRootStyle from './StyleSet/Root';
@@ -101,7 +101,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     // Following styles follows new house rules:
     // - Use CSS var instead of strictStyleOptions
     linkDefinitions: createLinkDefinitionsStyle(),
-    modalDialog: createModalDialog(),
+    modalDialog: createModalDialogStyle(),
     renderMarkdown: createRenderMarkdownStyle(),
     sendStatus: createSendStatusStyle(),
     slottedActivityStatus: createSlottedActivityStatusStyle(),

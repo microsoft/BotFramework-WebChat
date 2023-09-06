@@ -29,6 +29,10 @@ export default function createTextContentStyle() {
 
       '& .webchat__text-content__markdown pre': {
         overflow: 'hidden'
+      },
+
+      '& .webchat__text-content__open-in-new-window-icon': {
+        height: '.75em'
       }
     }
   };

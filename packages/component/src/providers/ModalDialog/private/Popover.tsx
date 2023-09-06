@@ -10,17 +10,20 @@ const { useLocalizer } = hooks;
 type Props = PropsWithChildren<{
   // "defaultProps" is being deprecated.
   // eslint-disable-next-line react/require-default-props
-  onDismiss?: () => void;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
   'aria-label'?: string;
   // "defaultProps" is being deprecated.
   // eslint-disable-next-line react/require-default-props
   'aria-labelledby'?: string;
+  // "defaultProps" is being deprecated.
+  // eslint-disable-next-line react/require-default-props
+  className?: string;
+  // "defaultProps" is being deprecated.
+  // eslint-disable-next-line react/require-default-props
+  onDismiss?: () => void;
 }>;
 
 const ModalDialog = memo(
-  ({ 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledBy, children, onDismiss }: Props) => {
+  ({ 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledBy, children, className, onDismiss }: Props) => {
     const [{ modalDialog: modalDialogStyleSet }] = useStyleSet();
     const dialogRef = useRef<HTMLDialogElement>(null);
     const localize = useLocalizer();
@@ -38,7 +41,7 @@ const ModalDialog = memo(
         // When "aria-labelledby" is set, it must not set "aria-label".
         aria-label={!ariaLabelledBy ? ariaLabel : undefined}
         aria-labelledby={ariaLabelledBy}
-        className={classNames('webchat__modal-dialog', modalDialogStyleSet + '')}
+        className={classNames('webchat__modal-dialog', className, modalDialogStyleSet + '')}
         onClose={handleClose}
         open={false}
         ref={dialogRef}

@@ -35,6 +35,7 @@ const ModalDialogComposer = memo(({ children }: Props) => {
         <ModalDialog
           aria-label={renderFunctionAndDialogInit[1]?.['aria-label']}
           aria-labelledby={renderFunctionAndDialogInit[1]?.['aria-labelledby']}
+          className={renderFunctionAndDialogInit[1]?.className}
           onDismiss={close}
         >
           {renderFunctionAndDialogInit[0]()}

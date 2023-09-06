@@ -1,19 +1,19 @@
-import MarkdownIt from 'markdown-it';
+// import MarkdownIt from 'markdown-it';
 
-export default function stripMarkdown(markdown: string): string {
-  const markdownIt = new MarkdownIt({
-    breaks: false,
-    html: false,
-    linkify: true,
-    typographer: true,
-    xhtmlOut: true
-  });
+// export default function stripMarkdown(markdown: string): string {
+//   const markdownIt = new MarkdownIt({
+//     breaks: false,
+//     html: false,
+//     linkify: true,
+//     typographer: true,
+//     xhtmlOut: true
+//   });
 
-  const html = markdownIt.render(markdown);
+//   const html = markdownIt.render(markdown);
 
-  const element = document.createElement('div');
+//   const element = document.createElement('div');
 
-  element.innerHTML = html;
+//   element.innerHTML = html;
 
-  return element.textContent || '';
-}
+//   return element.textContent || '';
+// }
