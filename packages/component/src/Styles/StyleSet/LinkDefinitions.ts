@@ -111,6 +111,7 @@ export default function createLinkDefinitionsStyleSet() {
 
       '.webchat__link-definitions__list-item-box--as-link': {
         display: 'block',
+        outlineOffset: 0, // This will make sure focus indicator is same as <button>.
         textDecoration: 'none'
       },
 
