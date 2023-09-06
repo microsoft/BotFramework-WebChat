@@ -32,7 +32,11 @@ const ModalDialogComposer = memo(({ children }: Props) => {
     <Context.Provider value={context}>
       {children}
       {renderFunctionAndDialogInit && (
-        <ModalDialog labelId={renderFunctionAndDialogInit[1]?.labelId} onDismiss={close}>
+        <ModalDialog
+          aria-label={renderFunctionAndDialogInit[1]?.['aria-label']}
+          aria-labelledby={renderFunctionAndDialogInit[1]?.['aria-labelledby']}
+          onDismiss={close}
+        >
           {renderFunctionAndDialogInit[0]()}
         </ModalDialog>
       )}

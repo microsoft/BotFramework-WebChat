@@ -1,7 +1,8 @@
 import { type ReactNode, createContext } from 'react';
 
 type DialogInit = {
-  labelId?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
 };
 
 type RenderFunction = () => ReactNode;
