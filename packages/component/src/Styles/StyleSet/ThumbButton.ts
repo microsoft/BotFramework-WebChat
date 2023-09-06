@@ -13,18 +13,20 @@ export default function () {
       width: 16,
 
       '&:active': {
-        background: 'var(--pva__palette__neutral-light)'
+        // background: 'var(--pva__palette__neutral-light)'
+        background: '#EDEBE9'
       },
 
-      '&:focus-visible': {
+      '&:focus': {
         /* TODO: Verify with designer. This was #767676 (Gray ~120), this is now #8A8886 (Gray 110). */
 
-        outline: 'solid 1px var(--pva__palette__neutral-secondary-alt)'
+        // border: 'solid 1px var(--pva__palette__neutral-secondary-alt)'
+        outline: 'solid 1px #605E5C'
       },
 
       '& .webchat__thumb-button__image': {
         /* TODO: Remove "color" if we want a different hover color. */
-        color: 'var(--pva__semantic-colors__link)',
+        color: 'var(--webchat__accent-color)',
         width: 14
       },
 
