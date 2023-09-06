@@ -8,11 +8,12 @@ import getURLProtocol from './private/getURLProtocol';
 
 const SANITIZE_HTML_OPTIONS = Object.freeze({
   allowedAttributes: {
-    a: ['aria-label', 'class', 'href', 'name', 'rel', 'target', 'title'],
+    a: ['aria-label', 'class', 'href', 'name', 'rel', 'target'],
     // TODO: Fix this.
     // button: ['class', { name: 'type', value: 'button' }, 'value'],
-    button: ['class', 'type', 'value'],
-    img: ['alt', 'class', 'src']
+    button: ['aria-label', 'class', 'type', 'value'],
+    img: ['alt', 'class', 'src'],
+    span: ['aria-label']
   },
   allowedSchemes: ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'],
   allowedTags: [
@@ -71,6 +72,7 @@ type LinkDescriptor = {
    */
   isPureIdentifier: boolean;
   href: string;
+  title?: string;
   type: 'citation' | 'link' | 'unknown';
 };
 
@@ -90,16 +92,21 @@ export default function render(
 
   const markdownIt = new MarkdownIt(MARKDOWN_IT_INIT)
     .use(ariaLabel)
-    .use(betterLink, (href: string): BetterLinkDecoration | undefined => {
+    .use(betterLink, (href: string, textContent: string): BetterLinkDecoration | undefined => {
       const decoration: BetterLinkDecoration = {
         rel: 'noopener noreferrer',
         target: '_blank'
       };
 
       const linkClasses: Set<string> = new Set();
+      const linkAriaLabelSegments: string[] = [];
       const descriptor = linkDescriptors.find(descriptor => descriptor.href === href);
 
+      linkAriaLabelSegments.push(textContent);
+
       if (descriptor) {
+        linkAriaLabelSegments.push(descriptor.title);
+
         if (descriptor.isPureIdentifier) {
           linkClasses.add('webchat__render-markdown__pure-identifier');
         }
@@ -116,9 +123,13 @@ export default function render(
       const protocol = getURLProtocol(href);
 
       if (protocol === 'http:' || protocol === 'https:') {
-        decoration.externalLinkAlt = externalLinkAlt;
+        decoration.iconAlt = externalLinkAlt;
         decoration.iconClassName = 'webchat__render-markdown__external-link-icon';
+
+        linkAriaLabelSegments.push(externalLinkAlt);
       }
+
+      decoration.linkAriaLabel = linkAriaLabelSegments.join(' ');
 
       return decoration;
     });

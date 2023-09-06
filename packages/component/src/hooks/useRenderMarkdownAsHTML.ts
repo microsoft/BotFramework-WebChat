@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
-import type { Definition, LinkReference, Node, Parent } from 'mdast';
+import type { Definition, LinkReference, Node, Parent, Text } from 'mdast';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
@@ -16,6 +16,7 @@ type LinkDescriptor = {
    */
   isPureIdentifier: boolean;
   href: string;
+  title?: string;
   type: 'citation' | 'link' | 'unknown';
 };
 
@@ -92,13 +93,18 @@ export default function useRenderMarkdownAsHTML(): (
           const definition = definitions.get(node.identifier);
 
           if (definition) {
-            const { url } = definition;
+            const { title, url } = definition;
 
             const protocol = getURLProtocol(url);
+            const textContent = node.children
+              .filter<Text>((node): node is Text => node.type === 'text')
+              .map(({ value }) => value)
+              .join(' ');
 
             linkDescriptors.push({
               href: url,
-              isPureIdentifier: !node.label || node.identifier === node.label,
+              isPureIdentifier: node.identifier === textContent,
+              title,
               type:
                 protocol === 'cite:' ? 'citation' : protocol === 'http:' || protocol === 'https:' ? 'link' : 'unknown'
             });

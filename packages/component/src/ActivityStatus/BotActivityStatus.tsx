@@ -29,9 +29,9 @@ function isUpvoteAction(voteAction: VoteAction): voteAction is UpvoteAction {
 type Props = { activity: WebChatActivity };
 
 const ActivityStatus = memo(({ activity }: Props) => {
-  const entities = activity.entities as Array<Thing | WebChatEntity>;
+  const entities = activity.entities as Array<Thing | WebChatEntity> | undefined;
 
-  const replyAction = entities.find<ReplyAction>(
+  const replyAction = entities?.find<ReplyAction>(
     (entity): entity is ReplyAction => isThing(entity) && isReplyAction(entity)
   );
 
