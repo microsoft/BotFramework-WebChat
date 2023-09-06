@@ -5,18 +5,12 @@ import FeedbackVoteButton from './private/VoteButton';
 import { type Vote } from './types/Vote';
 
 type Props = PropsWithChildren<{
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
-  downvoteTooltip?: string;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
-  upvoteTooltip?: string;
   votes: ReadonlySet<Vote>;
 }>;
 
 const DEBOUNCE_TIMEOUT = 500;
 
-const Feedback = memo(({ downvoteTooltip, upvoteTooltip, votes }: Props) => {
+const Feedback = memo(({ votes }: Props) => {
   const [value, setValue] = useState<Vote>('initial');
 
   const handleChange = useCallback<(vote: Vote) => void>(
@@ -53,13 +47,7 @@ const Feedback = memo(({ downvoteTooltip, upvoteTooltip, votes }: Props) => {
   return (
     <Fragment>
       {Array.from(votes).map(vote => (
-        <FeedbackVoteButton
-          key={vote}
-          onClick={handleChange}
-          pressed={value === vote}
-          title={vote === 'downvote' ? downvoteTooltip : vote === 'upvote' ? upvoteTooltip : undefined}
-          vote={vote}
-        />
+        <FeedbackVoteButton key={vote} onClick={handleChange} pressed={value === vote} vote={vote} />
       ))}
     </Fragment>
   );

@@ -10,26 +10,16 @@ type Props = {
   // eslint-disable-next-line react/require-default-props
   onClick?: (vote: Vote) => void;
   pressed: boolean;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
-  title?: string;
   vote: Vote;
 };
 
-const FeedbackVoteButton = memo(({ onClick, pressed, title, vote }: Props) => {
+const FeedbackVoteButton = memo(({ onClick, pressed, vote }: Props) => {
   const onClickRef = useRefFrom(onClick);
   const voteRef = useRefFrom(vote);
 
   const handleClick = useCallback(() => onClickRef.current?.(voteRef.current), [onClickRef, voteRef]);
 
-  return (
-    <ThumbsButton
-      direction={vote === 'downvote' ? 'down' : 'up'}
-      onClick={handleClick}
-      pressed={pressed}
-      title={title}
-    />
-  );
+  return <ThumbsButton direction={vote === 'downvote' ? 'down' : 'up'} onClick={handleClick} pressed={pressed} />;
 });
 
 FeedbackVoteButton.displayName = 'FeedbackVoteButton';

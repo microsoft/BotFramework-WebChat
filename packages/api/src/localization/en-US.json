@@ -159,5 +159,9 @@
   "_TYPING_INDICATOR_SINGLE_TEXT.comment": "This shows when a single user is typing.",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 is typing.",
   "_TYPING_INDICATOR_MULTIPLE_TEXT.comment": "This shows when two or more users are typing simultaneously.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 and others are typing."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 and others are typing.",
+  "VOTE_AGREE_ALT": "Agree",
+  "_VOTE_AGREE_ALT.comment": "This is for screen reader. The label of a button with a thumb up icon and is placed next to the timestamp. The button is for giving feedback that the end-user agree the response is useful.",
+  "VOTE_DISAGREE_ALT": "Disagree",
+  "_VOTE_DISAGREE_ALT.comment": "This is for screen reader. The label of a button with a thumb up icon and is placed next to the timestamp. The button is for giving feedback that the end-user disagree the response is useful."
 }

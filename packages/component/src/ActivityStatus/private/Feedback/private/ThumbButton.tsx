@@ -3,6 +3,9 @@ import classNames from 'classnames';
 
 import ThumbButtonImage from './ThumbButton.Image';
 import useStyleSet from '../../../../hooks/useStyleSet';
+import { hooks } from 'botframework-webchat-api';
+
+const { useLocalizer } = hooks;
 
 type Props = {
   direction: 'down' | 'up';
@@ -12,13 +15,13 @@ type Props = {
   // "defaultProps" is being deprecated.
   // eslint-disable-next-line react/require-default-props
   pressed?: boolean;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
-  title?: string;
 };
 
-const ThumbButton = memo(({ direction, onClick, pressed, title }: Props) => {
+const ThumbButton = memo(({ direction, onClick, pressed }: Props) => {
   const [{ thumbButton }] = useStyleSet();
+  const localize = useLocalizer();
+
+  const title = localize(direction === 'down' ? 'VOTE_DISAGREE_ALT' : 'VOTE_AGREE_ALT');
 
   return (
     <button
@@ -34,13 +37,15 @@ const ThumbButton = memo(({ direction, onClick, pressed, title }: Props) => {
       type="button"
     >
       <ThumbButtonImage
-        className={classNames('webchat__thumb-button__image webchat__thumb-button__image--is-down')}
+        className={classNames('webchat__thumb-button__image', {
+          'webchat__thumb-button__image--is-down': direction === 'down'
+        })}
         direction={direction}
       />
       <ThumbButtonImage
-        className={classNames(
-          'webchat__thumb-button__image webchat__thumb-button__image--is-down webchat__thumb-button__image--is-filled'
-        )}
+        className={classNames('webchat__thumb-button__image', 'webchat__thumb-button__image--is-filled', {
+          'webchat__thumb-button__image--is-down': direction === 'down'
+        })}
         direction={direction}
         filled={true}
       />
