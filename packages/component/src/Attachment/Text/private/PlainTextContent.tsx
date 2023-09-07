@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { type FC, Fragment, memo } from 'react';
 
-import useStyleSet from '../../hooks/useStyleSet';
+import useStyleSet from '../../../hooks/useStyleSet';
 
 type Props = {
   text: string;

@@ -1,9 +1,8 @@
+import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { type FC, memo } from 'react';
 
-import TextContent from './TextContent';
-
-import { type WebChatActivity } from 'botframework-webchat-core';
 import { type WebChatAttachment } from '../private/types/WebChatAttachment';
+import TextContent from './TextContent';
 
 type Props = {
   activity: WebChatActivity;

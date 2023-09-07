@@ -2,18 +2,15 @@ import { useRefFrom } from 'use-ref-from';
 import classNames from 'classnames';
 import React, { memo, type MouseEventHandler, useCallback, useMemo } from 'react';
 
-import getClaimsFromMarkdown from './private/getClaimsFromMarkdown';
-import isHTMLButtonElement from './private/isHTMLButtonElement';
-import LinkDefinitions from './private/ui/LinkDefinitions';
-import useRenderMarkdownAsHTML from '../../hooks/useRenderMarkdownAsHTML';
-import useShowModal from '../../providers/ModalDialog/useShowModal';
-import useStyleSet from '../../hooks/useStyleSet';
-
-import { hasText, isClaim, type Claim } from '../../types/external/SchemaOrg/Claim';
-import { isThing } from '../../types/external/SchemaOrg/Thing';
-
-import { type PropsOf } from '../../types/PropsOf';
+import { isClaim, type Claim } from '../../../types/external/SchemaOrg/Claim';
+import { isThing } from '../../../types/external/SchemaOrg/Thing';
+import { type PropsOf } from '../../../types/PropsOf';
 import { type WebChatActivity } from 'botframework-webchat-core';
+import isHTMLButtonElement from './isHTMLButtonElement';
+import LinkDefinitions from './LinkDefinitions';
+import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
+import useShowModal from '../../../providers/ModalDialog/useShowModal';
+import useStyleSet from '../../../hooks/useStyleSet';
 
 type Props = {
   // "defaultProps" is being deprecated.
@@ -26,34 +23,12 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
   const [{ renderMarkdown: renderMarkdownStyleSet, textContent: textContentStyleSet }] = useStyleSet();
   const entitiesRef = useRefFrom(entities);
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
-  // const showCitationPopover = useShowCitationPopover();
   const showModal = useShowModal();
 
   if (!renderMarkdownAsHTML) {
     throw new Error('botframework-webchat: assert failed for renderMarkdownAsHTML');
   }
 
-  // Citations are claim with text.
-  // We are building a map for quick lookup.
-  const citationMap = useMemo<Map<string, Claim & { text: string }>>(
-    () =>
-      (entities || []).reduce<Map<string, Claim & { text: string }>>((citationMap, entity) => {
-        if (isThing(entity) && isClaim(entity) && hasText(entity) && entity['@id']) {
-          return citationMap.set(entity['@id'], entity);
-        }
-
-        return citationMap;
-      }, new Map()),
-    [entities]
-  );
-
-  // These are all the claims, including citation (claim with text) and links (claim without text but URL).
-  const claims = useMemo(
-    () => Object.freeze(Array.from(getClaimsFromMarkdown(markdown, citationMap))),
-    [citationMap, markdown]
-  );
-
-  // The content rendered by `renderMarkdownAsHTML` is sanitized.
   const dangerouslySetInnerHTML = useMemo(
     () => ({ __html: markdown ? renderMarkdownAsHTML(markdown) : '' }),
     [renderMarkdownAsHTML, markdown]
@@ -62,17 +37,14 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
   const showClaimModal = useCallback(
     (claim: Claim) => {
       showModal(
-        () => {
-          const dangerouslySetInnerHTML = { __html: renderMarkdownAsHTML(claim.text) };
-
-          return (
-            <div
-              className={classNames('webchat__render-markdown', renderMarkdownStyleSet + '')}
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={dangerouslySetInnerHTML}
-            />
-          );
-        },
+        () => (
+          <div
+            className={classNames('webchat__render-markdown', renderMarkdownStyleSet + '')}
+            // The content rendered by `renderMarkdownAsHTML` is sanitized.
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: renderMarkdownAsHTML(claim.text) }}
+          />
+        ),
         { 'aria-label': claim.alternateName || claim.name }
       );
     },
@@ -80,8 +52,14 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
   );
 
   const handleCitationClick = useCallback<PropsOf<typeof LinkDefinitions>['onCitationClick']>(
-    claim => showClaimModal(claim),
-    [showClaimModal]
+    url => {
+      const claim = entities.find<Claim>(
+        (entity): entity is Claim => isThing(entity) && isClaim(entity) && entity['@id'] === url
+      );
+
+      claim && showClaimModal(claim);
+    },
+    [entities, showClaimModal]
   );
 
   const handleClick = useCallback<MouseEventHandler<HTMLDivElement>>(
@@ -92,7 +70,7 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
         ? targetElement
         : (targetElement.closest('button') as HTMLButtonElement | undefined);
 
-      if (!buttonElement) {
+      if (!buttonElement || !targetElement.contains(buttonElement)) {
         return;
       }
 
@@ -114,7 +92,6 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
 
   return (
     <div
-      // TODO: Fix this class name.
       className={classNames('webchat__text-content', 'webchat__text-content--is-markdown', textContentStyleSet + '')}
     >
       <div
@@ -127,7 +104,7 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
         dangerouslySetInnerHTML={dangerouslySetInnerHTML}
         onClick={handleClick}
       />
-      <LinkDefinitions claims={claims} onCitationClick={handleCitationClick} />
+      <LinkDefinitions markdown={markdown} onCitationClick={handleCitationClick} />
     </div>
   );
 });

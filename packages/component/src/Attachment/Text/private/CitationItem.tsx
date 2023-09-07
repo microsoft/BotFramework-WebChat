@@ -2,24 +2,25 @@ import { useRefFrom } from 'use-ref-from';
 import React, { memo, type MouseEventHandler, useCallback } from 'react';
 
 import ItemBody from './ItemBody';
-import { type Claim } from '../../../../../types/external/SchemaOrg/Claim';
-
-// Citation is claim with text.
-type CitationClaim = Claim & { text: string };
 
 type Props = {
-  claim: CitationClaim;
+  identifier: string;
   // "defaultProps" is being deprecated.
   // eslint-disable-next-line react/require-default-props
-  onClick?: (citation: CitationClaim) => void;
+  onClick?: (url: string) => void;
+  // "defaultProps" is being deprecated.
+  // eslint-disable-next-line react/require-default-props
+  title?: string;
+  url: string;
 };
 
-const CitationItem = memo(({ onClick, claim }: Props) => {
+const CitationItem = memo(({ identifier, onClick, title, url }: Props) => {
   const onClickRef = useRefFrom(onClick);
+  const urlHref = useRefFrom(url);
 
   const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
-    () => onClickRef.current?.(claim),
-    [claim, onClickRef]
+    () => onClickRef.current?.(urlHref.current),
+    [onClickRef, urlHref]
   );
 
   return (
@@ -28,7 +29,7 @@ const CitationItem = memo(({ onClick, claim }: Props) => {
       onClick={handleClick}
       type="button"
     >
-      <ItemBody claim={claim} />
+      <ItemBody identifier={identifier} title={title} />
     </button>
   );
 });

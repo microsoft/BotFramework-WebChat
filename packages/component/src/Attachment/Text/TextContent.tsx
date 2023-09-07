@@ -1,7 +1,7 @@
 import React, { type FC, memo } from 'react';
 
-import MarkdownTextContent from './MarkdownTextContent';
-import PlainTextContent from './PlainTextContent';
+import MarkdownTextContent from './private/MarkdownTextContent';
+import PlainTextContent from './private/PlainTextContent';
 import useRenderMarkdownAsHTML from '../../hooks/useRenderMarkdownAsHTML';
 
 import { type WebChatActivity } from 'botframework-webchat-core';
