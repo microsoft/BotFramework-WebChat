@@ -23,11 +23,3 @@ export type Claim = Thing<'Claim'> & {
 export function isClaim(thing: Thing): thing is Claim {
   return isThingOf(thing, 'Claim');
 }
-
-export function hasText(claim: Claim): claim is Claim & { text: string } {
-  return !!claim.text;
-}
-
-export function hasName(claim: Claim): claim is Claim & { name: string } {
-  return !!claim.name;
-}
