@@ -18,11 +18,7 @@ const Timestamp: FC<TimestampProps> = ({ timestamp }) => {
 };
 
 Timestamp.propTypes = {
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  activity: PropTypes.shape({
-    timestamp: PropTypes.string
-  }).isRequired
+  timestamp: PropTypes.string.isRequired
 };
 
 export default Timestamp;
