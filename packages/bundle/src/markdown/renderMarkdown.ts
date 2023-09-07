@@ -6,6 +6,7 @@ import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdow
 import betterLink from './markdownItPlugins/betterLink';
 import getURLProtocol from './private/getURLProtocol';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
+import onErrorResumeNext from './private/onErrorResumeNext';
 
 const SANITIZE_HTML_OPTIONS = Object.freeze({
   allowedAttributes: {
@@ -96,7 +97,7 @@ export default function render(
       const protocol = getURLProtocol(href);
 
       if (linkDefinition) {
-        ariaLabelSegments.push(linkDefinition.title);
+        ariaLabelSegments.push(linkDefinition.title || onErrorResumeNext(() => new URL(linkDefinition.url).host));
 
         linkDefinition.identifier === textContent && classes.add('webchat__render-markdown__pure-identifier');
       }
