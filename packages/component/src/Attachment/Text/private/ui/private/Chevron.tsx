@@ -4,9 +4,9 @@ const Chevron = memo(() => (
   <svg
     className="webchat__link-definitions__header-chevron"
     fill="none"
-    height="12"
-    viewBox="0 0 12 12"
-    width="12"
+    height="10"
+    viewBox="1 3 10 7"
+    width="14"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path

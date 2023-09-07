@@ -28,11 +28,9 @@ export default function createLinkDefinitionsStyleSet() {
         }
       },
 
-      '.webchat__link-definitions__header-chevron': {
-        height: '1.4em',
-        verticalAlign: 'bottom',
-        width: '1.4em'
-      },
+      // '.webchat__link-definitions__header-chevron': {
+      //   verticalAlign: 'middle'
+      // },
 
       '&:not([open]) .webchat__link-definitions__header-chevron': {
         marginBottom: '-0.1em',
@@ -144,8 +142,8 @@ export default function createLinkDefinitionsStyleSet() {
       },
 
       '.webchat__link-definitions__open-in-new-window-icon': {
-        flexShrink: 0,
-        marginRight: 4
+        flexShrink: 0, // When text is too long, make sure the chevron is not squeezed.
+        paddingRight: 4 // When text is too long and chevron is on far right, this will align the chevron so it's not too far.
       }
     }
   };
