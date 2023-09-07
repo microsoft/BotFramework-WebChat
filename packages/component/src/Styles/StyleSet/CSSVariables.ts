@@ -28,7 +28,7 @@ export default function createCSSVariablesStyle({
       //          - This is because we cannot programmatically know when the sendTimeout change
 
       // TODO: Rename to `--webchat__color--accent`.
-      '--webchat__color--accent-color': accent,
+      '--webchat__color--accent': accent,
       '--webchat__color--timestamp': timestampColor || subtle,
       '--webchat__font--primary': primaryFont,
       '--webchat__font-size--small': fontSizeSmall,
