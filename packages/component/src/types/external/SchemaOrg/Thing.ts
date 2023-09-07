@@ -4,7 +4,7 @@
  * This is partial type of https://schema.org/Thing.
  */
 export type Thing<T extends 'Thing' | string = string> = {
-  '@context': 'https://schema.org/';
+  '@context': 'https://schema.org';
   '@id'?: string;
   '@type': T;
   type: `https://schema.org/${T}`;
@@ -23,6 +23,6 @@ export function isThing(entity: { type: string }): entity is Thing<string> {
 export function isThingOf<T extends string>(thing: Thing, type: T): thing is Thing<T> {
   return (
     thing.type === `https://schema.org/${type}` ||
-    (thing['@context'] === 'https://schema.org/' && thing['@type'] === type)
+    (thing['@context'] === 'https://schema.org' && thing['@type'] === type)
   );
 }
