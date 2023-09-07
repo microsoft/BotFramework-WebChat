@@ -112,7 +112,12 @@ export default function render(
         ariaLabelSegments.push(externalLinkAlt);
       }
 
-      decoration.ariaLabel = ariaLabelSegments.join(' ');
+      // The first segment is textContent. Putting textContent is aria-label is useless.
+      if (ariaLabelSegments.length > 1) {
+        // If "aria-label" is already applied, do not overwrite it.
+        decoration.ariaLabel = (value: string) => value || ariaLabelSegments.join(' ');
+      }
+
       decoration.className = Array.from(classes).join(' ');
 
       // By default, Markdown-It will set "title" to the link title in link definition.
@@ -128,7 +133,7 @@ export default function render(
       // Title makes it very difficult to control narrations by the screen reader. Thus, we are disabling it in favor of "aria-label".
       // This will not affect our accessibility compliance but UX. We could use a non-native tooltip or other forms of visual hint.
 
-      decoration.title = '';
+      decoration.title = false;
 
       return decoration;
     });

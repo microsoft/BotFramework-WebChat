@@ -4,15 +4,17 @@ import MarkdownIt from 'markdown-it';
 // Put a transparent pixel instead of the "open in new window" icon, so developers can easily modify the icon in CSS.
 const TRANSPARENT_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
+type AttributeSetter = false | string | ((value?: string) => string);
+
 type Decoration = {
   /** Value of "aria-label" attribute of the link. If set to `false`, remove existing attribute. */
-  ariaLabel?: false | string;
+  ariaLabel?: AttributeSetter;
 
   /** Turns this link into a <button> with "value" attribute instead of "href". */
   asButton?: boolean;
 
   /** Value of "class" attribute of the link. If set to `false`, remove existing attribute. */
-  className?: false | string;
+  className?: AttributeSetter;
 
   /** Alternate text of the image icon appended to the link. */
   iconAlt?: string;
@@ -21,19 +23,19 @@ type Decoration = {
   iconClassName?: string;
 
   /** Value of "rel" attribute of the link. If set to `false`, remove existing attribute. */
-  rel?: false | string;
+  rel?: AttributeSetter;
 
   /** Value of "target" attribute of the link. If set to `false`, remove existing attribute. */
-  target?: false | string;
+  target?: AttributeSetter;
 
   /** Value of "title" attribute of the link. If set to `false`, remove existing attribute. */
-  title?: false | string;
+  title?: AttributeSetter;
 };
 
 // This is used for parsing Markdown for external links.
 const internalMarkdownIt = new MarkdownIt();
 
-function setTokenAttribute(attrs: Array<[string, string]>, name: string, value?: false | string) {
+function setTokenAttribute(attrs: Array<[string, string]>, name: string, value?: AttributeSetter) {
   const index = attrs.findIndex(entry => entry[0] === name);
 
   if (value === false) {
@@ -43,6 +45,12 @@ function setTokenAttribute(attrs: Array<[string, string]>, name: string, value?:
       attrs[+index][1] = value;
     } else {
       attrs.push([name, value]);
+    }
+  } else if (typeof value === 'function') {
+    if (~index) {
+      attrs[+index][1] = value(attrs[+index][1]);
+    } else {
+      attrs.push([name, value()]);
     }
   }
 }
