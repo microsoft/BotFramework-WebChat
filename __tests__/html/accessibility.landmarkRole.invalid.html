@@ -23,7 +23,7 @@
           await pageConditions.uiConnected();
 
           // Should fallback to "complementary" if the role specified is not a valid landmark role.
-          await expect(document.querySelector('#webchat > *').getAttribute('role')).toBe('complementary');
+          await expect(document.querySelector('#webchat > * > *').getAttribute('role')).toBe('complementary');
         },
         { ignoreErrors: true }
       );

@@ -58,7 +58,10 @@
         const container = document.getElementById('webchat');
         expect(container?.firstChild).not.toBeUndefined();
 
-        const surface = container.firstChild;
+        const composer = container.firstChild;
+        expect(getComputedStyle(composer).getPropertyValue('--webchat__color--accent')).toBe('#0063B1');
+
+        const surface = composer.firstChild;
         expect(surface.className).toContain(classes.surface);
         expect(surface.role).toEqual(role);
 
