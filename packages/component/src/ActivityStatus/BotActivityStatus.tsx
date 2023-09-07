@@ -37,16 +37,14 @@ const ActivityStatus = memo(({ activity }: Props) => {
 
   const { timestamp } = activity;
 
-  const votes = useMemo(
+  const voteActions = useMemo<Set<VoteAction>>(
     () =>
       Object.freeze(
         new Set(
-          (entities || [])
-            .filter<DownvoteAction | UpvoteAction>(
-              (entity): entity is DownvoteAction | UpvoteAction =>
-                isThing(entity) && isVoteAction(entity) && (isDownvoteAction(entity) || isUpvoteAction(entity))
-            )
-            .map(({ actionOption }) => actionOption)
+          (entities || []).filter<DownvoteAction | UpvoteAction>(
+            (entity): entity is DownvoteAction | UpvoteAction =>
+              isThing(entity) && isVoteAction(entity) && (isDownvoteAction(entity) || isUpvoteAction(entity))
+          )
         )
       ),
     [entities]
@@ -59,9 +57,9 @@ const ActivityStatus = memo(({ activity }: Props) => {
           [
             timestamp && <Timestamp key="timestamp" timestamp={timestamp} />,
             replyAction && <Originator key="originator" replyAction={replyAction} />,
-            votes.size && <Feedback key="feedback" votes={votes} />
+            voteActions.size && <Feedback key="feedback" voteActions={voteActions} />
           ].filter(Boolean),
-        [replyAction, timestamp, votes]
+        [replyAction, timestamp, voteActions]
       )}
     </Slotted>
   );

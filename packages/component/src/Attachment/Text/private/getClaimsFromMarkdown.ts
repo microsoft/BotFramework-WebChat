@@ -74,7 +74,7 @@ export default function* getClaimsFromMarkdown(
         };
       } else {
         yield {
-          '@context': 'https://schema.org/',
+          '@context': 'https://schema.org',
           '@id': identifier,
           '@type': 'Claim',
           alternateName: identifier,

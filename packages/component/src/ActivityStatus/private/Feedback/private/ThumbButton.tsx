@@ -1,9 +1,9 @@
-import React, { memo } from 'react';
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
+import React, { memo } from 'react';
 
 import ThumbButtonImage from './ThumbButton.Image';
 import useStyleSet from '../../../../hooks/useStyleSet';
-import { hooks } from 'botframework-webchat-api';
 
 const { useLocalizer } = hooks;
 

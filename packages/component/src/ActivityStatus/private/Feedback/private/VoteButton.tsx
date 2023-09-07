@@ -1,24 +1,30 @@
 import React, { memo, useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import { type Vote } from '../types/Vote';
+import { type VoteAction } from '../../../../types/external/SchemaOrg/VoteAction';
 import ThumbsButton from './ThumbButton';
 
 type Props = {
   // "defaultProps" is being deprecated.
   // eslint-disable-next-line react/require-default-props
-  onClick?: (vote: Vote) => void;
+  onClick?: (voteAction: VoteAction) => void;
   pressed: boolean;
-  vote: Vote;
+  voteAction: VoteAction;
 };
 
-const FeedbackVoteButton = memo(({ onClick, pressed, vote }: Props) => {
+const FeedbackVoteButton = memo(({ onClick, pressed, voteAction }: Props) => {
   const onClickRef = useRefFrom(onClick);
-  const voteRef = useRefFrom(vote);
+  const voteActionRef = useRefFrom(voteAction);
 
-  const handleClick = useCallback(() => onClickRef.current?.(voteRef.current), [onClickRef, voteRef]);
+  const handleClick = useCallback(() => onClickRef.current?.(voteActionRef.current), [onClickRef, voteActionRef]);
 
-  return <ThumbsButton direction={vote === 'downvote' ? 'down' : 'up'} onClick={handleClick} pressed={pressed} />;
+  return (
+    <ThumbsButton
+      direction={voteAction.actionOption === 'downvote' ? 'down' : 'up'}
+      onClick={handleClick}
+      pressed={pressed}
+    />
+  );
 });
 
 FeedbackVoteButton.displayName = 'FeedbackVoteButton';
