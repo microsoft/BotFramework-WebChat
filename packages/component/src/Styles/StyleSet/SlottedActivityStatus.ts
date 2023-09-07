@@ -2,7 +2,7 @@ export default function createSlottedActivityStatus() {
   return {
     '&.webchat__slotted-activity-status': {
       alignItems: 'center',
-      display: 'flex',
+      display: 'inline-flex',
       gap: 4,
       marginTop: 'calc(var(--webchat__padding-regular) / 2)',
 
