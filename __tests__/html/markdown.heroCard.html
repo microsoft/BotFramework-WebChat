@@ -21,6 +21,7 @@
         await pageConditions.uiConnected();
         await pageObjects.sendMessageViaSendBox('herocard');
         await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
 
         await host.snapshot();
       });
