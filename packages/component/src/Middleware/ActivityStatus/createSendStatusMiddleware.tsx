@@ -3,6 +3,7 @@ import React from 'react';
 
 import { SENDING, SEND_FAILED } from '../../types/internal/SendStatus';
 import SendStatus from '../../ActivityStatus/SendStatus/SendStatus';
+import Slotted from '../../ActivityStatus/Slotted';
 
 export default function createSendStatusMiddleware(): ActivityStatusMiddleware {
   return () =>
@@ -13,7 +14,11 @@ export default function createSendStatusMiddleware(): ActivityStatusMiddleware {
       switch (sendState) {
         case SENDING:
         case SEND_FAILED:
-          return <SendStatus activity={activity} sendStatus={sendState} />;
+          return (
+            <Slotted>
+              <SendStatus activity={activity} sendStatus={sendState} />
+            </Slotted>
+          );
 
         default:
           return next({ activity, sendState, ...args });

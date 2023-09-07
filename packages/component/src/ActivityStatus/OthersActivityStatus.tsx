@@ -8,7 +8,7 @@ import { isVoteAction, type VoteAction } from '../types/external/SchemaOrg/VoteA
 import { type TypeOfArray } from '../types/internal/TypeOfArray';
 import Feedback from './private/Feedback/Feedback';
 import Originator from './private/Originator';
-import Slotted from './private/Slotted';
+import Slotted from './Slotted';
 import Timestamp from './Timestamp';
 
 type WebChatEntity = TypeOfArray<Exclude<WebChatActivity['entities'], undefined>>;

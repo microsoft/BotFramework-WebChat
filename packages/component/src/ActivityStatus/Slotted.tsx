@@ -1,7 +1,7 @@
 import React, { Children, Fragment, memo, type PropsWithChildren } from 'react';
 import classNames from 'classnames';
 
-import useStyleSet from '../../hooks/useStyleSet';
+import useStyleSet from '../hooks/useStyleSet';
 
 type Props = PropsWithChildren<{
   // "defaultProps" is being deprecated.
