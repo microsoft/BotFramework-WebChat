@@ -5,7 +5,9 @@ import { isThingOf, type Thing } from './Thing';
  *
  * Beyond [ClaimReview](https://schema.org/ClaimReview), the Claim type can be associated with related creative works - for example a [ScholarlyArticle](https://schema.org/ScholarlyArticle) or [Question](https://schema.org/Question) might be about some [Claim](https://schema.org/Claim).
  *
- * This is partial type of https://schema.org/Claim.
+ * This is partial implementation of https://schema.org/Claim.
+ *
+ * @see https://schema.org/Claim.
  */
 export type Claim = Thing<'Claim'> & {
   /** The textual content of this CreativeWork. */

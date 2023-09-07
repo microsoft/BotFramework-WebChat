@@ -4,7 +4,9 @@ import { type Project } from './Project';
 /**
  * The act of responding to a question/message asked/sent by the object. Related to [AskAction](https://schema.org/AskAction).
  *
- * This is partial type of https://schema.org/ReplyAction.
+ * This is partial implementation of https://schema.org/ReplyAction.
+ *
+ * @see https://schema.org/ReplyAction
  */
 export type ReplyAction = Thing<'ReplyAction'> & {
   /** A description of the item. */

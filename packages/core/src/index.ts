@@ -48,6 +48,7 @@ import type { DirectLineSuggestedAction } from './types/external/DirectLineSugge
 import type { DirectLineThumbnailCard } from './types/external/DirectLineThumbnailCard';
 import type { DirectLineVideoCard } from './types/external/DirectLineVideoCard';
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import type { SchemaOrgThing } from './types/external/SchemaOrgThing';
 import type { WebChatActivity } from './types/WebChatActivity';
 
 const Constants = { ActivityClientState, DictateState };
@@ -105,5 +106,6 @@ export type {
   DirectLineVideoCard,
   OneOrMany,
   GlobalScopePonyfill,
+  SchemaOrgThing,
   WebChatActivity
 };

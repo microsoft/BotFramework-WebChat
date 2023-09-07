@@ -1,13 +1,14 @@
+import { type SchemaOrgThing } from 'botframework-webchat-core';
+
 /**
  * The most generic type of item.
  *
- * This is partial type of https://schema.org/Thing.
+ * This is partial implementation of https://schema.org/Thing.
+ *
+ * @see https://schema.org/Thing
  */
-export type Thing<T extends 'Thing' | string = string> = {
-  '@context': 'https://schema.org';
+export type Thing<T extends string = string> = SchemaOrgThing<T> & {
   '@id'?: string;
-  '@type': T;
-  type: `https://schema.org/${T}`;
 
   /** An alias for the item. */
   alternateName?: string;
@@ -16,13 +17,35 @@ export type Thing<T extends 'Thing' | string = string> = {
   name?: string;
 };
 
-export function isThing(entity: { type: string }): entity is Thing<string> {
-  return entity.type.startsWith('https://schema.org/');
+export function isThing(thing: { '@context'?: string; '@type'?: string; type?: string }): thing is Thing<string> {
+  if (typeof thing === 'object' && thing) {
+    return (
+      '@context' in thing &&
+      '@type' in thing &&
+      'type' in thing &&
+      thing['@context'] === 'https://schema.org' &&
+      typeof thing['@type'] === 'string' &&
+      thing.type === `https://schema.org/${thing['@type']}`
+    );
+  }
+
+  return false;
 }
 
-export function isThingOf<T extends string>(thing: Thing, type: T): thing is Thing<T> {
-  return (
-    thing.type === `https://schema.org/${type}` ||
-    (thing['@context'] === 'https://schema.org' && thing['@type'] === type)
-  );
+export function isThingOf<T extends string>(
+  thing: { '@context'?: string; '@type'?: string; type?: string },
+  type: T
+): thing is Thing<T> {
+  if (typeof thing === 'object' && thing) {
+    return (
+      '@context' in thing &&
+      '@type' in thing &&
+      'type' in thing &&
+      thing['@context'] === 'https://schema.org' &&
+      thing['@type'] === type &&
+      thing.type === `https://schema.org/${type}`
+    );
+  }
+
+  return false;
 }
