@@ -1,18 +1,15 @@
+import { onErrorResumeNext } from 'botframework-webchat-core';
 import MarkdownIt from 'markdown-it';
 import sanitizeHTML from 'sanitize-html';
 
 import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
 import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdownItPlugins/ariaLabel';
 import betterLink from './markdownItPlugins/betterLink';
-import getURLProtocol from './private/getURLProtocol';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
-import onErrorResumeNext from './private/onErrorResumeNext';
 
 const SANITIZE_HTML_OPTIONS = Object.freeze({
   allowedAttributes: {
     a: ['aria-label', 'class', 'href', 'name', 'rel', 'target'],
-    // TODO: Fix this.
-    // button: ['class', { name: 'type', value: 'button' }, 'value'],
     button: ['aria-label', 'class', 'type', 'value'],
     img: ['alt', 'class', 'src', 'title'],
     span: ['aria-label']
@@ -94,10 +91,12 @@ export default function render(
       const ariaLabelSegments: string[] = [textContent];
       const classes: Set<string> = new Set();
       const linkDefinition = linkDefinitions.find(({ url }) => url === href);
-      const protocol = getURLProtocol(href);
+      const protocol = onErrorResumeNext(() => new URL(href).protocol);
 
       if (linkDefinition) {
-        ariaLabelSegments.push(linkDefinition.title || onErrorResumeNext(() => new URL(linkDefinition.url).host));
+        ariaLabelSegments.push(
+          linkDefinition.title || onErrorResumeNext(() => new URL(linkDefinition.url).host) || linkDefinition.url
+        );
 
         linkDefinition.identifier === textContent && classes.add('webchat__render-markdown__pure-identifier');
       }
