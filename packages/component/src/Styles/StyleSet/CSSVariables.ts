@@ -27,9 +27,8 @@ export default function createCSSVariablesStyle({
       //       - We MUST NOT put runtime variables here, e.g. sendTimeout
       //          - This is because we cannot programmatically know when the sendTimeout change
 
-      // TODO: Rename to `--webchat__color--accent`.
       '--webchat__color--accent': accent,
-      '--webchat__color--timestamp': timestampColor || subtle,
+      '--webchat__color--timestamp': timestampColor || subtle, // Maybe we should not need this if we allow web devs to override CSS variables for certain components.
       '--webchat__font--primary': primaryFont,
       '--webchat__font-size--small': fontSizeSmall,
       '--webchat__icon-url--external-link': markdownExternalLinkIconImage,
