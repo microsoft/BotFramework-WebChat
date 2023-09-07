@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4718](https://github.com/microsoft/BotFramework-WebChat/issues/4718). In high contrast mode, Adaptive Card buttons, when pushed, should highlighted properly, by [@compulim](https://github.com/compulim), in PR [#4746](https://github.com/microsoft/BotFramework-WebChat/pull/4746)
 -  Fixes [#4721](https://github.com/microsoft/BotFramework-WebChat/issues/4721) and [#4726](https://github.com/microsoft/BotFramework-WebChat/issues/4726). Adaptive Cards `TextBlock` heading elements should start at level 2, by [@compulim](https://github.com/compulim), in PR [#4747](https://github.com/microsoft/BotFramework-WebChat/issues/4747)
 -  Fixes [#3699](https://github.com/microsoft/BotFramework-WebChat/issues/3699). Correcting timestamp roundoff, by [@compulim](https://github.com/compulim), in PR [#4821](https://github.com/microsoft/BotFramework-WebChat/pull/4821)
+-  Fixes [#4849](https://github.com/microsoft/BotFramework-WebChat/issues/4849). Rendering an erroneous Adaptive Cards should bail out and not throw `MutationObserver` error, by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX)
 
 ## [4.15.8] - 2023-06-06
 

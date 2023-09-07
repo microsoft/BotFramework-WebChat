@@ -222,12 +222,14 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
   // Apply all mods regardless whether the element changed or not.
   // This is because we have undoed mods when we call the `useXXXModEffect` hook.
   useLayoutEffect(() => {
-    applyActionShouldBePushButtonMod(element, actionPerformedClassName);
-    applyActionSetShouldNotBeMenuBarMod(element);
-    applyActiveElementMod(element);
-    applyDisabledMod(element, disabled);
-    applyPersistValuesMod(element);
-    applyRoleMod(element);
+    if (element) {
+      applyActionShouldBePushButtonMod(element, actionPerformedClassName);
+      applyActionSetShouldNotBeMenuBarMod(element);
+      applyActiveElementMod(element);
+      applyDisabledMod(element, disabled);
+      applyPersistValuesMod(element);
+      applyRoleMod(element);
+    }
   }, [
     actionPerformedClassName,
     applyActionShouldBePushButtonMod,
@@ -239,6 +241,8 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
     disabled,
     element
   ]);
+
+  errors?.length && console.warn('botframework-webchat: Failed to render Adaptive Cards.', errors);
 
   return errors?.length ? (
     node_env === 'development' && <ErrorBox error={errors[0]} type={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')} />
