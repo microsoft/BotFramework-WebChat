@@ -3,8 +3,7 @@ import React, { Fragment } from 'react';
 
 import AbsoluteTime from '../../ActivityStatus/AbsoluteTime';
 import OthersActivityStatus from '../../ActivityStatus/OthersActivityStatus';
-import Slotted from '../../ActivityStatus/Slotted';
-import Timestamp from '../../ActivityStatus/Timestamp';
+import SelfActivityStatus from '../../ActivityStatus/SelfActivityStatus';
 
 export default function createTimestampMiddleware(): ActivityStatusMiddleware {
   return () =>
@@ -24,10 +23,6 @@ export default function createTimestampMiddleware(): ActivityStatusMiddleware {
         return <OthersActivityStatus activity={activity} />;
       }
 
-      return activity.timestamp ? (
-        <Slotted>
-          <Timestamp timestamp={activity.timestamp} />
-        </Slotted>
-      ) : null;
+      return <SelfActivityStatus activity={activity} />;
     };
 }

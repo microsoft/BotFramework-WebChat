@@ -15,10 +15,7 @@ const Originator = memo(({ replyAction }: Props) => {
 
   return url ? (
     <a
-      className={classNames(
-        'webchat__originator-activity-status webchat__originator-activity-status--link',
-        originatorActivityStatus + ''
-      )}
+      className="webchat__activity-status__originator webchat__activity-status__originator--has-link"
       href={url}
       rel="noopener noreferrer"
       target="_blank"
@@ -26,7 +23,7 @@ const Originator = memo(({ replyAction }: Props) => {
       {text}
     </a>
   ) : (
-    <span className={classNames('webchat__originator-activity-status', originatorActivityStatus + '')}>{text}</span>
+    <span className={classNames('webchat__activity-status__originator', originatorActivityStatus + '')}>{text}</span>
   );
 });
 

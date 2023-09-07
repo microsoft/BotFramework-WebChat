@@ -27,7 +27,6 @@ import isZeroOrPositive from './Utils/isZeroOrPositive';
 import KeyboardHelp from './Transcript/KeyboardHelp';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
 // TODO: [P2] #4133 Rename to "getTabbableElements".
-import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
 import tabbableElements from './Utils/tabbableElements';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
@@ -883,9 +882,7 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
     <TranscriptFocusComposer containerRef={containerRef}>
       <ReactScrollToBottomComposer scroller={scroller}>
         <KeyboardHelp />
-        <ModalDialogComposer>
-          <InternalTranscript activityElementMapRef={activityElementMapRef} className={className} ref={containerRef} />
-        </ModalDialogComposer>
+        <InternalTranscript activityElementMapRef={activityElementMapRef} className={className} ref={containerRef} />
       </ReactScrollToBottomComposer>
     </TranscriptFocusComposer>
   );

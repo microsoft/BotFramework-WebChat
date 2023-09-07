@@ -1,6 +1,6 @@
-import React, { memo, type ReactNode, useMemo } from 'react';
-
 import { type WebChatActivity } from 'botframework-webchat-core';
+import classNames from 'classnames';
+import React, { memo, type ReactNode, useMemo } from 'react';
 
 import { isReplyAction, type ReplyAction } from '../types/external/SchemaOrg/ReplyAction';
 import { isThing, type Thing } from '../types/external/SchemaOrg/Thing';
@@ -10,6 +10,7 @@ import Feedback from './private/Feedback/Feedback';
 import Originator from './private/Originator';
 import Slotted from './Slotted';
 import Timestamp from './Timestamp';
+import useStyleSet from '../hooks/useStyleSet';
 
 type WebChatEntity = TypeOfArray<Exclude<WebChatActivity['entities'], undefined>>;
 
@@ -27,6 +28,7 @@ function isUpvoteAction(voteAction: VoteAction): voteAction is UpvoteAction {
 type Props = { activity: WebChatActivity };
 
 const OthersActivityStatus = memo(({ activity }: Props) => {
+  const [{ sendStatus }] = useStyleSet();
   const entities = activity.entities as Array<Thing | WebChatEntity> | undefined;
 
   const replyAction = entities?.find<ReplyAction>(
@@ -49,7 +51,7 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
   );
 
   return (
-    <Slotted>
+    <Slotted className={classNames('webchat__activity-status', sendStatus + '')}>
       {useMemo<ReactNode[]>(
         () =>
           [

@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC, useCallback } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
@@ -52,7 +53,7 @@ const SendStatus: FC<SendStatusProps> = ({ activity, sendStatus }) => {
 
   return (
     <React.Fragment>
-      <span className={sendStatusStyleSet}>
+      <span className={classNames('webchat__activity-status', 'webchat__activity-status--sending', sendStatusStyleSet)}>
         {sendStatus === SENDING ? (
           sendingText
         ) : sendStatus === SEND_FAILED ? (

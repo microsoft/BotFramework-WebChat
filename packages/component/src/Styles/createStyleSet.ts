@@ -11,6 +11,7 @@ import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
 import createCarouselFilmStripAttachment from './StyleSet/CarouselFilmStripAttachment';
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createConnectivityNotification from './StyleSet/ConnectivityNotification';
+import createCSSVariablesStyle from './StyleSet/CSSVariables';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createErrorNotificationStyle from './StyleSet/ErrorNotification';
@@ -21,7 +22,6 @@ import createKeyboardHelpStyle from './StyleSet/KeyboardHelp';
 import createLinkDefinitionsStyle from './StyleSet/LinkDefinitions';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createModalDialogStyle from './StyleSet/ModalDialog';
-import createOriginatorActivityStatusStyle from './StyleSet/OriginatorActivityStatus';
 import createRenderMarkdownStyle from './StyleSet/RenderMarkdown';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
@@ -76,7 +76,6 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     keyboardHelp: createKeyboardHelpStyle(strictStyleOptions),
     microphoneButton: createMicrophoneButtonStyle(strictStyleOptions),
     options: { ...strictStyleOptions }, // Cloned to make sure no additional modifications will propagate up.
-    originatorActivityStatus: createOriginatorActivityStatusStyle(),
     root: createRootStyle(strictStyleOptions),
     scrollToEndButton: createScrollToEndButtonStyle(strictStyleOptions),
     sendBox: createSendBoxStyle(strictStyleOptions),
@@ -100,6 +99,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
 
     // Following styles follows new house rules:
     // - Use CSS var instead of strictStyleOptions
+    cssVariables: createCSSVariablesStyle(strictStyleOptions),
     linkDefinitions: createLinkDefinitionsStyle(),
     modalDialog: createModalDialogStyle(),
     renderMarkdown: createRenderMarkdownStyle(),
