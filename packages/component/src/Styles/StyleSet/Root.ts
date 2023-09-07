@@ -35,8 +35,8 @@ export default function ({
 
     // TODO: Should we rename this?
     '--webchat__accent-color': accent,
-    '--webchat__bubble-max-width': bubbleMaxWidth,
-    '--webchat__bubble-min-height': bubbleMinHeight,
+    '--webchat__bubble-max-width': bubbleMaxWidth + 'px',
+    '--webchat__bubble-min-height': bubbleMinHeight + 'px',
     '--webchat__external-link-icon-url': markdownExternalLinkIconImage,
     '--webchat__padding-regular': paddingRegular + 'px',
     '--webchat__primary-font': primaryFont,
