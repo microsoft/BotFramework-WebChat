@@ -5,6 +5,7 @@ import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
 import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdownItPlugins/ariaLabel';
 import betterLink from './markdownItPlugins/betterLink';
 import getURLProtocol from './private/getURLProtocol';
+import iterateLinkDefinitions from './private/iterateLinkDefinitions';
 
 const SANITIZE_HTML_OPTIONS = Object.freeze({
   allowedAttributes: {
@@ -12,7 +13,7 @@ const SANITIZE_HTML_OPTIONS = Object.freeze({
     // TODO: Fix this.
     // button: ['class', { name: 'type', value: 'button' }, 'value'],
     button: ['aria-label', 'class', 'type', 'value'],
-    img: ['alt', 'class', 'src'],
+    img: ['alt', 'class', 'src', 'title'],
     span: ['aria-label']
   },
   allowedSchemes: ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'],
@@ -65,25 +66,16 @@ const MARKDOWN_IT_INIT = Object.freeze({
   xhtmlOut: true
 });
 
-type LinkDescriptor = {
-  /**
-   * True, if the link is a pure identifier pointing to a link definition, such as [1] or [1][1].
-   * In contrast, false, if it is [1](https://.../).
-   */
-  isPureIdentifier: boolean;
-  href: string;
-  title?: string;
-  type: 'citation' | 'link' | 'unknown';
-};
-
 type BetterLinkDecoration = Exclude<ReturnType<Parameters<typeof betterLink>[1]>, undefined>;
-type RenderInit = { externalLinkAlt?: string; linkDescriptors?: Array<LinkDescriptor> };
+type RenderInit = { externalLinkAlt?: string };
 
 export default function render(
   markdown: string,
   { markdownRespectCRLF }: Readonly<{ markdownRespectCRLF: boolean }>,
-  { externalLinkAlt = '', linkDescriptors = [] }: Readonly<RenderInit> = Object.freeze({})
+  { externalLinkAlt = '' }: Readonly<RenderInit> = Object.freeze({})
 ): string {
+  const linkDefinitions = Array.from(iterateLinkDefinitions(markdown));
+
   if (markdownRespectCRLF) {
     markdown = respectCRLFPre(markdown);
   }
@@ -98,38 +90,45 @@ export default function render(
         target: '_blank'
       };
 
-      const linkClasses: Set<string> = new Set();
-      const linkAriaLabelSegments: string[] = [];
-      const descriptor = linkDescriptors.find(descriptor => descriptor.href === href);
-
-      linkAriaLabelSegments.push(textContent);
-
-      if (descriptor) {
-        linkAriaLabelSegments.push(descriptor.title);
-
-        if (descriptor.isPureIdentifier) {
-          linkClasses.add('webchat__render-markdown__pure-identifier');
-        }
-
-        if (descriptor.type === 'citation') {
-          decoration.asButton = true;
-
-          linkClasses.add('webchat__render-markdown__citation');
-        }
-      }
-
-      decoration.linkClassName = Array.from(linkClasses).join(' ');
-
+      const ariaLabelSegments: string[] = [textContent];
+      const classes: Set<string> = new Set();
+      const linkDefinition = linkDefinitions.find(({ url }) => url === href);
       const protocol = getURLProtocol(href);
 
-      if (protocol === 'http:' || protocol === 'https:') {
+      if (linkDefinition) {
+        ariaLabelSegments.push(linkDefinition.title);
+
+        linkDefinition.identifier === textContent && classes.add('webchat__render-markdown__pure-identifier');
+      }
+
+      if (protocol === 'cite:') {
+        decoration.asButton = true;
+
+        classes.add('webchat__render-markdown__citation');
+      } else if (protocol === 'http:' || protocol === 'https:') {
         decoration.iconAlt = externalLinkAlt;
         decoration.iconClassName = 'webchat__render-markdown__external-link-icon';
 
-        linkAriaLabelSegments.push(externalLinkAlt);
+        ariaLabelSegments.push(externalLinkAlt);
       }
 
-      decoration.linkAriaLabel = linkAriaLabelSegments.join(' ');
+      decoration.ariaLabel = ariaLabelSegments.join(' ');
+      decoration.className = Array.from(classes).join(' ');
+
+      // By default, Markdown-It will set "title" to the link title in link definition.
+
+      // However, "title" may be narrated by screen reader:
+      // - Edge
+      //   - <a> will narrate "aria-label" but not "title"
+      //   - <button> will narrate both "aria-label" and "title"
+      // - NVDA
+      //   - <a> will narrate both "aria-label" and "title"
+      //   - <button> will narrate both "aria-label" and "title"
+
+      // Title makes it very difficult to control narrations by the screen reader. Thus, we are disabling it in favor of "aria-label".
+      // This will not affect our accessibility compliance but UX. We could use a non-native tooltip or other forms of visual hint.
+
+      decoration.title = '';
 
       return decoration;
     });

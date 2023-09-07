@@ -5,23 +5,45 @@ import MarkdownIt from 'markdown-it';
 const TRANSPARENT_GIF = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 
 type Decoration = {
+  /** Value of "aria-label" attribute of the link. If set to `false`, remove existing attribute. */
+  ariaLabel?: false | string;
+
+  /** Turns this link into a <button> with "value" attribute instead of "href". */
   asButton?: boolean;
+
+  /** Alternate text of the image icon appended to the link. */
   iconAlt?: string;
+
+  /** Class name of the image icon appended to the link. */
   iconClassName?: string;
-  linkAriaLabel?: string;
-  linkClassName?: string;
-  rel?: string;
-  target?: string;
+
+  /** Value of "class" attribute of the link. If set to `false`, remove existing attribute. */
+  className?: false | string;
+
+  /** Value of "rel" attribute of the link. If set to `false`, remove existing attribute. */
+  rel?: false | string;
+
+  /** Value of "target" attribute of the link. If set to `false`, remove existing attribute. */
+  target?: false | string;
+
+  /** Value of "title" attribute of the link. If set to `false`, remove existing attribute. */
+  title?: false | string;
 };
 
 // This is used for parsing Markdown for external links.
 const internalMarkdownIt = new MarkdownIt();
 
-function attrDelete(attrs: Array<[string, string]>, name: string) {
-  const index = attrs.findIndex(token => token[0] === name);
+function setTokenAttribute(attrs: Array<[string, string]>, name: string, value?: false | string) {
+  const index = attrs.findIndex(entry => entry[0] === name);
 
-  if (~index) {
-    attrs.splice(index, 1);
+  if (value === false) {
+    ~index && attrs.splice(index, 1);
+  } else if (typeof value === 'string') {
+    if (~index) {
+      attrs[+index][1] = value;
+    } else {
+      attrs.push([name, value]);
+    }
   }
 }
 
@@ -43,52 +65,49 @@ const betterLink = (
 
     const decoration = decorate(href, textContent);
 
-    if (decoration) {
-      const { asButton, iconAlt, iconClassName, linkAriaLabel, linkClassName, rel, target } = decoration;
+    if (!decoration) {
+      return;
+    }
 
-      linkAriaLabel && token.attrSet('aria-label', linkAriaLabel);
-      linkClassName && token.attrSet('class', linkClassName);
+    const {
+      asButton,
+      iconAlt,
+      iconClassName,
+      ariaLabel: linkAriaLabel,
+      className: linkClassName,
+      title: linkTitle,
+      rel,
+      target
+    } = decoration;
 
-      // By default, Markdown-It will set "title" to the link title in link definition.
+    setTokenAttribute(token.attrs, 'aria-label', linkAriaLabel);
+    setTokenAttribute(token.attrs, 'class', linkClassName);
+    setTokenAttribute(token.attrs, 'title', linkTitle);
 
-      // However, "title" may be narrated by screen reader:
-      // - Edge
-      //   - <a> will narrate "aria-label" but not "title"
-      //   - <button> will narrate both "aria-label" and "title"
-      // - NVDA
-      //   - <a> will narrate both "aria-label" and "title"
-      //   - <button> will narrate both "aria-label" and "title"
+    if (iconClassName) {
+      const iconTokens = internalMarkdownIt.parseInline(`![](${TRANSPARENT_GIF})`)[0].children;
 
-      // Title makes it very difficult to control narrations by the screen reader. Thus, we are disabling it in favor of "aria-label".
+      setTokenAttribute(iconTokens[0].attrs, 'class', iconClassName);
+      setTokenAttribute(iconTokens[0].attrs, 'title', iconAlt);
 
-      attrDelete(token.attrs, 'title');
+      // Add an icon before </a>.
+      ~indexOfLinkCloseToken && tokens.splice(indexOfLinkCloseToken, 0, ...iconTokens);
+    }
 
-      if (iconClassName) {
-        // const iconTokens = internalMarkdownIt.parseInline(`![${iconAlt || ''}](${TRANSPARENT_GIF})`)[0].children;
-        const iconTokens = internalMarkdownIt.parseInline(`![](${TRANSPARENT_GIF})`)[0].children;
+    if (asButton) {
+      setTokenAttribute(token.attrs, 'href', false);
 
-        iconTokens[0].attrJoin('class', iconClassName);
-        iconAlt && iconTokens[0].attrSet('title', iconAlt);
+      token.tag = 'button';
 
-        // Add an icon before </a>.
-        ~indexOfLinkCloseToken && tokens.splice(indexOfLinkCloseToken, 0, ...iconTokens);
+      setTokenAttribute(token.attrs, 'type', 'button');
+      setTokenAttribute(token.attrs, 'value', href);
+
+      if (~indexOfLinkCloseToken) {
+        tokens[+indexOfLinkCloseToken].tag = 'button';
       }
-
-      if (asButton) {
-        token.tag = 'button';
-
-        token.attrs = token.attrs.filter(({ type }) => type !== 'href');
-
-        token.attrSet('type', 'button');
-        token.attrSet('value', href);
-
-        if (~indexOfLinkCloseToken) {
-          tokens[+indexOfLinkCloseToken].tag = 'button';
-        }
-      } else {
-        rel && token.attrSet('rel', rel);
-        target && token.attrSet('target', target);
-      }
+    } else {
+      setTokenAttribute(token.attrs, 'rel', rel);
+      setTokenAttribute(token.attrs, 'target', target);
     }
   });
 
