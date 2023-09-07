@@ -22,6 +22,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+-  Resolves [#4840](https://github.com/microsoft/BotFramework-WebChat/issues/4840). Added feedback buttons in activity status, by [@compulim](https://github.com/compulim), in PR [#4846](https://github.com/microsoft/BotFramework-WebChat/pull/4846)
+-  Resolves [#4841](https://github.com/microsoft/BotFramework-WebChat/issues/4841). Added link definitions UI in Markdown, by [@compulim](https://github.com/compulim), in PR [#4846](https://github.com/microsoft/BotFramework-WebChat/pull/4846)
+-  Resolves [#4842](https://github.com/microsoft/BotFramework-WebChat/issues/4842). Added provenance in activity status, by [@compulim](https://github.com/compulim), in PR [#4846](https://github.com/microsoft/BotFramework-WebChat/pull/4846)
+
 ## [4.15.9] - 2023-08-25
 
 ### Fixed
