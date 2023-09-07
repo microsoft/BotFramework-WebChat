@@ -11,14 +11,14 @@ type Decoration = {
   /** Turns this link into a <button> with "value" attribute instead of "href". */
   asButton?: boolean;
 
+  /** Value of "class" attribute of the link. If set to `false`, remove existing attribute. */
+  className?: false | string;
+
   /** Alternate text of the image icon appended to the link. */
   iconAlt?: string;
 
   /** Class name of the image icon appended to the link. */
   iconClassName?: string;
-
-  /** Value of "class" attribute of the link. If set to `false`, remove existing attribute. */
-  className?: false | string;
 
   /** Value of "rel" attribute of the link. If set to `false`, remove existing attribute. */
   rel?: false | string;
@@ -69,20 +69,11 @@ const betterLink = (
       return;
     }
 
-    const {
-      asButton,
-      iconAlt,
-      iconClassName,
-      ariaLabel: linkAriaLabel,
-      className: linkClassName,
-      title: linkTitle,
-      rel,
-      target
-    } = decoration;
+    const { ariaLabel, asButton, className, iconAlt, iconClassName, rel, target, title } = decoration;
 
-    setTokenAttribute(token.attrs, 'aria-label', linkAriaLabel);
-    setTokenAttribute(token.attrs, 'class', linkClassName);
-    setTokenAttribute(token.attrs, 'title', linkTitle);
+    setTokenAttribute(token.attrs, 'aria-label', ariaLabel);
+    setTokenAttribute(token.attrs, 'class', className);
+    setTokenAttribute(token.attrs, 'title', title);
 
     if (iconClassName) {
       const iconTokens = internalMarkdownIt.parseInline(`![](${TRANSPARENT_GIF})`)[0].children;

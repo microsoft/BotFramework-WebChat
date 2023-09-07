@@ -2,12 +2,37 @@ import MarkdownIt from 'markdown-it';
 
 import betterLink from './betterLink';
 
-test('should render "externalLinkAlt"', () => {
+// ariaLabel?: false | string;
+// asButton?: boolean;
+// iconAlt?: string;
+// iconClassName?: string;
+// className?: false | string;
+// rel?: false | string;
+// target?: false | string;
+// title?: false | string;
+
+test('should render "ariaLabel"', () => {
   const html = new MarkdownIt()
-    .use(betterLink, () => ({ externalLinkAlt: 'open in new window' }))
+    .use(betterLink, () => ({ ariaLabel: 'Hello, World!' }))
     .render('This is a [link](https://bing.com/).');
 
-  expect(html).toBe('<p>This is a <a href="https://bing.com/" title="open in new window">link</a>.</p>\n');
+  expect(html).toBe('<p>This is a <a href="https://bing.com/" aria-label="Hello, World!">link</a>.</p>\n');
+});
+
+test('should render "asButton"', () => {
+  const html = new MarkdownIt()
+    .use(betterLink, () => ({ asButton: true }))
+    .render('This is a [link](https://bing.com/).');
+
+  expect(html).toBe('<p>This is a <button type="button" value="https://bing.com/">link</button>.</p>\n');
+});
+
+test('should render "className"', () => {
+  const html = new MarkdownIt()
+    .use(betterLink, () => ({ className: 'link' }))
+    .render('This is a [link](https://bing.com/).');
+
+  expect(html).toBe('<p>This is a <a href="https://bing.com/" class="link">link</a>.</p>\n');
 });
 
 test('should render "iconClassName"', () => {
@@ -20,22 +45,14 @@ test('should render "iconClassName"', () => {
   );
 });
 
-test('should render "iconClassName" with "externalLinkAlt"', () => {
+test('should render "iconClassName" with "iconAlt"', () => {
   const html = new MarkdownIt()
-    .use(betterLink, () => ({ externalLinkAlt: 'open in new window', iconClassName: 'icon' }))
+    .use(betterLink, () => ({ iconAlt: 'open in new window', iconClassName: 'icon' }))
     .render('This is a [link](https://bing.com/).');
 
   expect(html).toBe(
-    '<p>This is a <a href="https://bing.com/" title="open in new window">link<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="open in new window" class="icon"></a>.</p>\n'
+    '<p>This is a <a href="https://bing.com/">link<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="icon" title="open in new window"></a>.</p>\n'
   );
-});
-
-test('should render "linkClassName"', () => {
-  const html = new MarkdownIt()
-    .use(betterLink, () => ({ linkClassName: 'link' }))
-    .render('This is a [link](https://bing.com/).');
-
-  expect(html).toBe('<p>This is a <a href="https://bing.com/" class="link">link</a>.</p>\n');
 });
 
 test('should render "rel"', () => {
@@ -52,4 +69,12 @@ test('should render "target"', () => {
     .render('This is a [link](https://bing.com/).');
 
   expect(html).toBe('<p>This is a <a href="https://bing.com/" target="_blank">link</a>.</p>\n');
+});
+
+test('should render "title"', () => {
+  const html = new MarkdownIt()
+    .use(betterLink, () => ({ title: 'Hello, World!' }))
+    .render('This is a [link](https://bing.com/).');
+
+  expect(html).toBe('<p>This is a <a href="https://bing.com/" title="Hello, World!">link</a>.</p>\n');
 });
