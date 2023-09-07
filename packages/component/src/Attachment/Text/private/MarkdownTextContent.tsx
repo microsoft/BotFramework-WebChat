@@ -1,3 +1,4 @@
+import { hooks } from 'botframework-webchat-api';
 import { useRefFrom } from 'use-ref-from';
 import classNames from 'classnames';
 import React, { memo, type MouseEventHandler, useCallback, useMemo } from 'react';
@@ -12,6 +13,8 @@ import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import useStyleSet from '../../../hooks/useStyleSet';
 
+const { useLocalizer } = hooks;
+
 type Props = {
   // "defaultProps" is being deprecated.
   // eslint-disable-next-line react/require-default-props
@@ -24,6 +27,10 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
   const entitiesRef = useRefFrom(entities);
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const showModal = useShowModal();
+
+  const localize = useLocalizer();
+
+  const citationModalDialogLabel = localize('CITATION_MODEL_DIALOG_ALT');
 
   if (!renderMarkdownAsHTML) {
     throw new Error('botframework-webchat: assert failed for renderMarkdownAsHTML');
@@ -45,10 +52,10 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
             dangerouslySetInnerHTML={{ __html: renderMarkdownAsHTML(claim.text) }}
           />
         ),
-        { 'aria-label': claim.alternateName || claim.name }
+        { 'aria-label': claim.alternateName || claim.name || citationModalDialogLabel }
       );
     },
-    [renderMarkdownAsHTML, renderMarkdownStyleSet, showModal]
+    [citationModalDialogLabel, renderMarkdownAsHTML, renderMarkdownStyleSet, showModal]
   );
 
   const handleCitationClick = useCallback<PropsOf<typeof LinkDefinitions>['onCitationClick']>(
