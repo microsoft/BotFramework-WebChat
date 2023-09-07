@@ -30,7 +30,6 @@ export default function createLinkDefinitionsStyleSet() {
 
       '.webchat__link-definitions__header-chevron': {
         height: '1.4em',
-        transition: 'transform .3s',
         verticalAlign: 'bottom',
         width: '1.4em'
       },
