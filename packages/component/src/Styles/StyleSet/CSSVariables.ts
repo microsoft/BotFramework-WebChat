@@ -28,15 +28,14 @@ export default function createCSSVariablesStyle({
       //          - This is because we cannot programmatically know when the sendTimeout change
 
       // TODO: Rename to `--webchat__color--accent`.
-      '--webchat__accent-color': accent,
-      '--webchat__bubble-max-width': bubbleMaxWidth + 'px',
-      '--webchat__bubble-min-height': bubbleMinHeight + 'px',
-      '--webchat__external-link-icon-url': markdownExternalLinkIconImage,
-      '--webchat__padding-regular': paddingRegular + 'px',
-      '--webchat__primary-font': primaryFont,
-      '--webchat__subtle-color': subtle,
-      '--webchat__font-size-small': fontSizeSmall,
-      '--webchat__timestamp-color': timestampColor || subtle
+      '--webchat__color--accent-color': accent,
+      '--webchat__color--timestamp': timestampColor || subtle,
+      '--webchat__font--primary': primaryFont,
+      '--webchat__font-size--small': fontSizeSmall,
+      '--webchat__icon-url--external-link': markdownExternalLinkIconImage,
+      '--webchat__max-width--bubble': bubbleMaxWidth + 'px',
+      '--webchat__min-height--bubble': bubbleMinHeight + 'px',
+      '--webchat__padding--regular': paddingRegular + 'px'
     }
   };
 }

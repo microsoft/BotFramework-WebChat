@@ -9,7 +9,7 @@ export default function createMarkdownStyle() {
   return {
     '&.webchat__render-markdown': {
       '& .webchat__render-markdown__external-link-icon': {
-        backgroundImage: 'var(--webchat__external-link-icon-url)',
+        backgroundImage: 'var(--webchat__icon-url--external-link)',
         height: '.75em',
         marginLeft: '.25em'
       },
@@ -27,7 +27,7 @@ export default function createMarkdownStyle() {
         },
 
         [NOT_FORCED_COLORS_SELECTOR]: {
-          color: 'var(--webchat__accent-color)'
+          color: 'var(--webchat__color--accent)'
         }
       },
 

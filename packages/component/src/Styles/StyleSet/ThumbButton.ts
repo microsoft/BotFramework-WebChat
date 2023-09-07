@@ -26,7 +26,7 @@ export default function () {
 
       '& .webchat__thumb-button__image': {
         /* TODO: Remove "color" if we want a different hover color. */
-        color: 'var(--webchat__accent-color)',
+        color: 'var(--webchat__color--accent)',
         width: 14
       },
 

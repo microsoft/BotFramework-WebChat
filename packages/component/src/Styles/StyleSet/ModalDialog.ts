@@ -8,7 +8,7 @@ import {
 export default function createModalDialogStyleSet() {
   return {
     '&.webchat__modal-dialog': {
-      fontFamily: 'var(--webchat__primary-font)',
+      fontFamily: 'var(--webchat__font--primary)',
       width: '100%',
 
       [NOT_FORCED_COLORS_SELECTOR]: {
@@ -18,11 +18,11 @@ export default function createModalDialogStyleSet() {
 
       '& .webchat__modal-dialog__box': {
         borderRadius: 2,
-        height: 'calc(100% - var(--webchat__padding-regular) * 2)',
+        height: 'calc(100% - var(--webchat__padding--regular) * 2)',
         overflow: 'hidden',
         margin: 'auto',
         maxWidth: '60%',
-        width: 'calc(100% - var(--webchat__padding-regular) * 2)',
+        width: 'calc(100% - var(--webchat__padding--regular) * 2)',
 
         [LIGHT_THEME_SELECTOR]: {
           // From Power BI:
@@ -49,7 +49,7 @@ export default function createModalDialogStyleSet() {
 
       '& .webchat__modal-dialog__close-button-layout': {
         float: 'right',
-        padding: 'var(--webchat__padding-regular)'
+        padding: 'var(--webchat__padding--regular)'
       },
 
       '& .webchat__modal-dialog__close-button': {
@@ -112,7 +112,7 @@ export default function createModalDialogStyleSet() {
       },
 
       '& .webchat__modal-dialog__body': {
-        margin: 'calc(var(--webchat__padding-regular) * 2)'
+        margin: 'calc(var(--webchat__padding--regular) * 2)'
       }
     }
   };

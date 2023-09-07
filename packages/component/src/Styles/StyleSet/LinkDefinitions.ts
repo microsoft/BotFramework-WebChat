@@ -130,7 +130,7 @@ export default function createLinkDefinitionsStyleSet() {
         padding: 4,
 
         [NOT_FORCED_COLORS_SELECTOR]: {
-          color: 'var(--webchat__accent-color)'
+          color: 'var(--webchat__color--accent)'
         }
       },
 

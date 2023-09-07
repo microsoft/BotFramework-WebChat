@@ -3,15 +3,15 @@
 export default function createTextContentStyle() {
   return {
     '&.webchat__text-content': {
-      fontFamily: 'var(--webchat__primary-font)',
+      fontFamily: 'var(--webchat__font--primary)',
       margin: 0,
-      minHeight: 'calc(var(--webchat__bubble-min-height) - var(--webchat__padding-regular) * 2)',
-      padding: 'var(--webchat__padding-regular)',
+      minHeight: 'calc(var(--webchat__min-height--bubble) - var(--webchat__padding--regular) * 2)',
+      padding: 'var(--webchat__padding--regular)',
 
       '&.webchat__text-content--is-markdown': {
         display: 'flex',
         flexDirection: 'column',
-        gap: 'var(--webchat__padding-regular)'
+        gap: 'var(--webchat__padding--regular)'
       },
 
       '& .webchat__text-content__markdown > :first-child': {
@@ -23,7 +23,7 @@ export default function createTextContentStyle() {
       },
 
       '& .webchat__text-content__markdown img:not(.webchat__render-markdown__external-link-icon)': {
-        maxWidth: 'var(--webchat__bubble-max-width)',
+        maxWidth: 'var(--webchat__max-width--bubble)',
         width: '100%'
       },
 
