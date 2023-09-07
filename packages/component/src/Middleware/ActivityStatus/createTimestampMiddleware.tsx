@@ -2,8 +2,8 @@ import { ActivityStatusMiddleware } from 'botframework-webchat-api';
 import React, { Fragment } from 'react';
 
 import AbsoluteTime from '../../ActivityStatus/AbsoluteTime';
-import BotActivityStatus from '../../ActivityStatus/BotActivityStatus';
-import Timestamp from '../../ActivityStatus/Timestamp';
+import OthersActivityStatus from '../../ActivityStatus/OthersActivityStatus';
+import SelfActivityStatus from '../../ActivityStatus/SelfActivityStatus';
 
 export default function createTimestampMiddleware(): ActivityStatusMiddleware {
   return () =>
@@ -20,9 +20,9 @@ export default function createTimestampMiddleware(): ActivityStatusMiddleware {
         // If "hideTimestamp" is set, we will not render the visual timestamp. But continue to render the screen reader only version.
         return <AbsoluteTime hide={true} value={activity.timestamp} />;
       } else if (activity.from.role === 'bot') {
-        return <BotActivityStatus activity={activity} />;
+        return <OthersActivityStatus activity={activity} />;
       }
 
-      return <Timestamp timestamp={activity.timestamp} />;
+      return <SelfActivityStatus activity={activity} />;
     };
 }

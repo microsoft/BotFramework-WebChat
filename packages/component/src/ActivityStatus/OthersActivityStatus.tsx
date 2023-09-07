@@ -26,7 +26,7 @@ function isUpvoteAction(voteAction: VoteAction): voteAction is UpvoteAction {
 
 type Props = { activity: WebChatActivity };
 
-const ActivityStatus = memo(({ activity }: Props) => {
+const OthersActivityStatus = memo(({ activity }: Props) => {
   const entities = activity.entities as Array<Thing | WebChatEntity> | undefined;
 
   const replyAction = entities?.find<ReplyAction>(
@@ -63,6 +63,6 @@ const ActivityStatus = memo(({ activity }: Props) => {
   );
 });
 
-ActivityStatus.displayName = 'ActivityStatus';
+OthersActivityStatus.displayName = 'OthersActivityStatus';
 
-export default ActivityStatus;
+export default OthersActivityStatus;
