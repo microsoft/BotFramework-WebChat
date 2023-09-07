@@ -21,7 +21,7 @@ const ThumbButton = memo(({ direction, onClick, pressed }: Props) => {
   const [{ thumbButton }] = useStyleSet();
   const localize = useLocalizer();
 
-  const title = localize(direction === 'down' ? 'VOTE_DISAGREE_ALT' : 'VOTE_AGREE_ALT');
+  const title = localize(direction === 'down' ? 'VOTE_DISLIKE_ALT' : 'VOTE_LIKE_ALT');
 
   return (
     <button

@@ -1,9 +1,8 @@
 import React, { memo, useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import ThumbsButton from './ThumbButton';
-
 import { type Vote } from '../types/Vote';
+import ThumbsButton from './ThumbButton';
 
 type Props = {
   // "defaultProps" is being deprecated.

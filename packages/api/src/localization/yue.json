@@ -104,6 +104,6 @@
   "TRANSCRIPT_NEW_MESSAGES": "新訊息",
   "TRANSCRIPT_TERMINATOR_TEXT": "聊天記錄結束",
   "TYPING_INDICATOR_ALT": "對方打緊字",
-  "VOTE_AGREE_ALT": "啱",
-  "VOTE_DISAGREE_ALT": "唔啱"
+  "VOTE_DISLIKE_ALT": "唔啱",
+  "VOTE_LIKE_ALT": "啱"
 }

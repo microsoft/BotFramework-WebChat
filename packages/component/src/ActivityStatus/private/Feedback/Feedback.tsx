@@ -1,8 +1,11 @@
-import React, { Fragment, memo, type PropsWithChildren, useCallback, useState, useEffect, useRef } from 'react';
+import { useRefFrom } from 'use-ref-from';
+import React, { Fragment, memo, type PropsWithChildren, useCallback, useState, useEffect } from 'react';
 
+import { hooks } from 'botframework-webchat-api';
+import { type Vote } from './types/Vote';
 import FeedbackVoteButton from './private/VoteButton';
 
-import { type Vote } from './types/Vote';
+const { usePonyfill, usePostActivity } = hooks;
 
 type Props = PropsWithChildren<{
   votes: ReadonlySet<Vote>;
@@ -11,43 +14,35 @@ type Props = PropsWithChildren<{
 const DEBOUNCE_TIMEOUT = 500;
 
 const Feedback = memo(({ votes }: Props) => {
-  const [value, setValue] = useState<Vote>('initial');
+  const [{ clearTimeout, setTimeout }] = usePonyfill();
+  const [selectedVote, setSelectedVote] = useState<Vote | undefined>(undefined);
+  const postActivity = usePostActivity();
 
-  const handleChange = useCallback<(vote: Vote) => void>(
-    nextVote => setValue(vote => (nextVote === vote ? 'initial' : nextVote)),
-    [setValue]
-  );
-
-  const feedbackPayloadRef = useRef({});
-  // TODO
-  // eslint-disable-next-line
-  const postFeedback = console.log.bind(console);
+  const handleChange = useCallback<(vote: Vote) => void>(vote => setSelectedVote(vote), [setSelectedVote]);
+  const postActivityRef = useRefFrom(postActivity);
 
   useEffect(() => {
-    // In the future, we should handle when the user "uncheck" the vote (`vote === 'unset'`).
-    if (value === 'downvote' || value === 'upvote') {
-      // TODO
-      // eslint-disable-next-line
-      const timeout = setTimeout(
-        () =>
-          postFeedback({
-            ...feedbackPayloadRef.current,
-            category: 'gptanswers',
-            userResponse: value === 'downvote' ? 0 : 1
-          }),
-        DEBOUNCE_TIMEOUT
-      );
-
-      // TODO
-      // eslint-disable-next-line
-      return () => clearTimeout(timeout);
+    if (!selectedVote) {
+      return;
     }
-  }, [feedbackPayloadRef, postFeedback, value]);
+
+    const timeout = setTimeout(
+      () =>
+        postActivityRef.current({
+          entities: [selectedVote],
+          name: 'webchat:activity-status/feedback',
+          type: 'event'
+        } as any),
+      DEBOUNCE_TIMEOUT
+    );
+
+    return () => clearTimeout(timeout);
+  }, [clearTimeout, postActivityRef, selectedVote, setTimeout]);
 
   return (
     <Fragment>
       {Array.from(votes).map(vote => (
-        <FeedbackVoteButton key={vote} onClick={handleChange} pressed={value === vote} vote={vote} />
+        <FeedbackVoteButton key={vote} onClick={handleChange} pressed={selectedVote === vote} vote={vote} />
       ))}
     </Fragment>
   );
