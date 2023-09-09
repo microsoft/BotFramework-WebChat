@@ -54,7 +54,7 @@ describe('renderMarkdown', () => {
 
     expect(renderMarkdown('[example](https://sample.com){aria-label="Sample label"}', styleOptions))
       .toMatchInlineSnapshot(`
-      "<p><a href=\\"https://sample.com\\" aria-label=\\"Sample label\\" rel=\\"noopener noreferrer\\" target=\\"_blank\\">example<img src=\\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\\" alt class=\\"webchat__render-markdown__external-link-icon\\" title /></a></p>
+      "<p><a href=\\"https://sample.com\\" aria-label=\\"Sample label\\" rel=\\"noopener noreferrer\\" target=\\"_blank\\">example<img src=\\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\\" class=\\"webchat__render-markdown__external-link-icon\\" /></a></p>
       "
     `);
   });
