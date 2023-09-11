@@ -13,19 +13,14 @@ export default function () {
       width: 16,
 
       '&:active': {
-        // background: 'var(--pva__palette__neutral-light)'
         background: '#EDEBE9'
       },
 
       '&:focus': {
-        /* TODO: Verify with designer. This was #767676 (Gray ~120), this is now #8A8886 (Gray 110). */
-
-        // border: 'solid 1px var(--pva__palette__neutral-secondary-alt)'
         outline: 'solid 1px #605E5C'
       },
 
       '& .webchat__thumb-button__image': {
-        /* TODO: Remove "color" if we want a different hover color. */
         color: 'var(--webchat__color--accent)',
         width: 14
       },
@@ -46,48 +41,3 @@ export default function () {
     }
   };
 }
-
-// .webchat__thumb-button {
-//   appearance: none;
-//   background: Transparent;
-//   border: 0;
-//   border-radius: 2px;
-//   height: 16px;
-//   line-height: 0;
-//   /* The Fluent icon is larger than the button. We need to clip it.
-//   Without clipping, hover effect will appear on the edge of the button but not possible to click. */
-//   overflow: hidden;
-//   padding: 0;
-//   width: 16px;
-// }
-
-// .webchat__thumb-button:active {
-//   background: var(--pva__palette__neutral-light);
-// }
-
-// .webchat__thumb-button:focus-visible {
-//   /* TODO: Verify with designer. This was #767676 (Gray ~120), this is now #8A8886 (Gray 110). */
-
-//   outline: solid 1px var(--pva__palette__neutral-secondary-alt);
-// }
-
-// .webchat__thumb-button__image {
-//   /* TODO: Remove "color" if we want a different hover color. */
-//   color: var(--pva__semantic-colors__link);
-//   width: 14px;
-// }
-
-// .webchat__thumb-button:hover
-//   .webchat__thumb-button__image:not(.webchat__thumb-button__image--is-filled) {
-//   display: none;
-// }
-
-// .webchat__thumb-button--is-pressed
-//   .webchat__thumb-button__image:not(.webchat__thumb-button__image--is-filled) {
-//   display: none;
-// }
-
-// .webchat__thumb-button:not(:hover):not(.webchat__thumb-button--is-pressed)
-//   .webchat__thumb-button__image--is-filled {
-//   display: none;
-// }
