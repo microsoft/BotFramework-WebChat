@@ -6,8 +6,8 @@ const useMinimalStyleSet = hooks.useStyleSet;
 
 type MinimalStyleSet = ReturnType<typeof useMinimalStyleSet>[0];
 
-export default function useStyleSet(): [MinimalStyleSet & AdaptiveCardsStyleSet] {
+export default function useStyleSet(): readonly [MinimalStyleSet & AdaptiveCardsStyleSet] {
   const [styleOptions] = useMinimalStyleSet();
 
-  return [styleOptions as MinimalStyleSet & AdaptiveCardsStyleSet];
+  return Object.freeze([styleOptions as MinimalStyleSet & AdaptiveCardsStyleSet] as const);
 }

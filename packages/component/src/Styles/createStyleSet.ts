@@ -55,7 +55,7 @@ import createYouTubeContentStyle from './StyleSet/YouTubeContent';
 export default function createStyleSet(styleOptions: StyleOptions) {
   const strictStyleOptions = normalizeStyleOptions(styleOptions);
 
-  return {
+  return Object.freeze({
     activities: createActivitiesStyle(),
     audioAttachment: createAudioAttachmentStyle(strictStyleOptions),
     audioContent: createAudioContentStyle(),
@@ -107,5 +107,5 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     slottedActivityStatus: createSlottedActivityStatusStyle(),
     textContent: createTextContentStyle(),
     thumbButton: createThumbButtonStyle()
-  };
+  } as const);
 }
