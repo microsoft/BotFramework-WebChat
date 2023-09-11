@@ -1,5 +1,4 @@
 import { hooks } from 'botframework-webchat-api';
-import { useRefFrom } from 'use-ref-from';
 import classNames from 'classnames';
 import React, { memo, type PropsWithChildren, useCallback, useEffect, useRef } from 'react';
 
@@ -27,12 +26,10 @@ const ModalDialog = memo(
     const [{ modalDialog: modalDialogStyleSet }] = useStyleSet();
     const dialogRef = useRef<HTMLDialogElement>(null);
     const localize = useLocalizer();
-    const onDismissRef = useRefFrom(onDismiss);
 
     const closeButtonAlt = localize('KEYBOARD_HELP_CLOSE_BUTTON_ALT');
 
     const handleCloseButtonClick = useCallback(() => dialogRef.current?.close(), [dialogRef]);
-    const handleClose = useCallback(() => onDismissRef.current?.(), [onDismissRef]);
 
     useEffect(() => dialogRef.current?.showModal(), [dialogRef]);
 
@@ -42,7 +39,7 @@ const ModalDialog = memo(
         aria-label={!ariaLabelledBy ? ariaLabel : undefined}
         aria-labelledby={ariaLabelledBy}
         className={classNames('webchat__modal-dialog', className, modalDialogStyleSet + '')}
-        onClose={handleClose}
+        onClose={onDismiss}
         open={false}
         ref={dialogRef}
         role="dialog"
