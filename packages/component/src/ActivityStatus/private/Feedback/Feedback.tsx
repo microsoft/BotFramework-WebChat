@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import { useRefFrom } from 'use-ref-from';
-import React, { Fragment, memo, type PropsWithChildren, useCallback, useState, useEffect } from 'react';
+import React, { Fragment, memo, type PropsWithChildren, useState, useEffect } from 'react';
 
 import { type VoteAction } from '../../../types/external/OrgSchema/VoteAction';
 import FeedbackVoteButton from './private/VoteButton';
@@ -15,13 +15,8 @@ const DEBOUNCE_TIMEOUT = 500;
 
 const Feedback = memo(({ voteActions }: Props) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
-  const [selectedVoteAction, setSelectedVoteAction] = useState<VoteAction | undefined>(undefined);
+  const [selectedVoteAction, setSelectedVoteAction] = useState<VoteAction | undefined>();
   const postActivity = usePostActivity();
-
-  const handleChange = useCallback<(voteAction: VoteAction) => void>(
-    voteAction => setSelectedVoteAction(voteAction),
-    [setSelectedVoteAction]
-  );
 
   const postActivityRef = useRefFrom(postActivity);
 
@@ -48,7 +43,7 @@ const Feedback = memo(({ voteActions }: Props) => {
       {Array.from(voteActions).map((voteAction, index) => (
         <FeedbackVoteButton
           key={voteAction['@id'] || voteAction.actionOption || index}
-          onClick={handleChange}
+          onClick={setSelectedVoteAction}
           pressed={selectedVoteAction === voteAction}
           voteAction={voteAction}
         />
