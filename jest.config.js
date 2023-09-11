@@ -106,7 +106,7 @@ module.exports = {
     // jest-environment-jsdom import packages as browser.
     // Packages, such as "uuid", export itself for browser as ES5 + ESM.
     // Since jest@28 cannot consume ESM yet, we need to transpile these packages.
-    '/node_modules/(?!(uuid)/)',
+    '/node_modules/(?!(character-entities|decode-named-character-reference|micromark|micromark-core-commonmark|micromark-factory-destination|micromark-factory-label|micromark-factory-space|micromark-factory-title|micromark-factory-whitespace|micromark-util-resolve-all|micromark-util-character|micromark-util-chunked|micromark-util-classify-character|micromark-util-combine-extensions|micromark-util-decode-numeric-character-reference|micromark-util-decode-string|micromark-util-encode|micromark-util-html-tag-name|micromark-util-normalize-identifier|micromark-util-sanitize-uri|micromark-util-subtokenize|mdast-util-from-markdown|mdast-util-to-string|unist-util-stringify-position|uuid)/)',
     ...defaults.transformIgnorePatterns.filter(pattern => pattern !== '/node_modules/')
   ]
 };

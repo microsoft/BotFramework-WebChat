@@ -1,42 +1,38 @@
 /* eslint no-magic-numbers: "off" */
 
-import { StrictStyleOptions } from 'botframework-webchat-api';
-
-export default function createTextContentStyle({
-  bubbleMaxWidth,
-  bubbleMinHeight,
-  markdownExternalLinkIconImage,
-  primaryFont,
-  paddingRegular
-}: StrictStyleOptions) {
+export default function createTextContentStyle() {
   return {
-    fontFamily: primaryFont,
-    margin: 0,
-    minHeight: bubbleMinHeight - paddingRegular * 2,
-    padding: paddingRegular,
+    '&.webchat__text-content': {
+      fontFamily: 'var(--webchat__font--primary)',
+      margin: 0,
+      minHeight: 'calc(var(--webchat__min-height--bubble) - var(--webchat__padding--regular) * 2)',
+      padding: 'var(--webchat__padding--regular)',
 
-    '& > :first-child': {
-      marginTop: 0
-    },
+      '&.webchat__text-content--is-markdown': {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--webchat__padding--regular)'
+      },
 
-    '& > :last-child': {
-      marginBottom: 0
-    },
+      '& .webchat__text-content__markdown > :first-child': {
+        marginTop: 0
+      },
 
-    '&.markdown': {
-      '& img:not(.webchat__markdown__external-link-icon)': {
-        maxWidth: bubbleMaxWidth,
+      '& .webchat__text-content__markdown > :last-child': {
+        marginBottom: 0
+      },
+
+      '& .webchat__text-content__markdown img:not(.webchat__render-markdown__external-link-icon)': {
+        maxWidth: 'var(--webchat__max-width--bubble)',
         width: '100%'
       },
 
-      '& img.webchat__markdown__external-link-icon': {
-        backgroundImage: markdownExternalLinkIconImage,
-        height: '.75em',
-        marginLeft: '.25em'
+      '& .webchat__text-content__markdown pre': {
+        overflow: 'hidden'
       },
 
-      '& pre': {
-        overflow: 'hidden'
+      '& .webchat__text-content__open-in-new-window-icon': {
+        height: '.75em'
       }
     }
   };

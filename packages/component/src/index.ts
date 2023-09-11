@@ -15,15 +15,15 @@ import BasicTranscript from './BasicTranscript';
 import Avatar from './Activity/Avatar';
 import Bubble from './Activity/Bubble';
 import ErrorBox from './ErrorBox';
-import SendStatus, { connectSendStatus } from './Middleware/ActivityStatus/SendStatus/SendStatus';
+import SendStatus, { connectSendStatus } from './ActivityStatus/SendStatus/SendStatus';
 import SpeakActivity, { connectSpeakActivity } from './Activity/Speak';
-import Timestamp from './Middleware/ActivityStatus/Timestamp';
+import Timestamp from './ActivityStatus/Timestamp';
 
 import AudioContent from './Attachment/AudioContent';
 import FileContent from './Attachment/FileContent';
 import HTMLVideoContent from './Attachment/HTMLVideoContent';
 import ImageContent from './Attachment/ImageContent';
-import TextContent from './Attachment/TextContent';
+import TextContent from './Attachment/Text/TextContent';
 import VideoContent from './Attachment/VideoContent';
 import VimeoContent from './Attachment/VimeoContent';
 import YouTubeContent from './Attachment/YouTubeContent';
@@ -39,7 +39,7 @@ import connectToWebChat from './connectToWebChat';
 import Context from './hooks/internal/WebChatUIContext';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
-import createCoreAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
+import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 

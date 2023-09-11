@@ -22,7 +22,7 @@ import HeroCardContent from './adaptiveCards/Attachment/HeroCardContent';
 import OAuthCardContent from './adaptiveCards/Attachment/OAuthCardContent';
 import ReactWebChat from './FullReactWebChat';
 import ReceiptCardContent from './adaptiveCards/Attachment/ReceiptCardContent';
-import renderMarkdown from './renderMarkdown';
+import renderMarkdown from './markdown/renderMarkdown';
 import SignInCardContent from './adaptiveCards/Attachment/SignInCardContent';
 import ThumbnailCardContent from './adaptiveCards/Attachment/ThumbnailCardContent';
 import useAdaptiveCardsHostConfig from './adaptiveCards/hooks/useAdaptiveCardsHostConfig';

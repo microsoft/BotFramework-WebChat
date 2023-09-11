@@ -6,6 +6,7 @@ import activityStatuses from './activityStatuses';
 import connectivityStatus from './connectivityStatus';
 import focusedActivity from './focusedActivity';
 import keyboardHelpScreenCloseButton from './keyboardHelpScreenCloseButton';
+import linkDefinitions from './linkDefinitions';
 import microphoneButton from './microphoneButton';
 import scrollToEndButton from './scrollToEndButton';
 import sendBoxTextBox from './sendBoxTextBox';
@@ -28,6 +29,7 @@ export {
   connectivityStatus,
   focusedActivity,
   keyboardHelpScreenCloseButton,
+  linkDefinitions,
   microphoneButton,
   scrollToEndButton,
   sendBoxTextBox,

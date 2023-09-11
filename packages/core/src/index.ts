@@ -12,6 +12,7 @@ import emitTypingIndicator from './actions/emitTypingIndicator';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import markActivity from './actions/markActivity';
 import OneOrMany from './types/OneOrMany';
+import onErrorResumeNext from './utils/onErrorResumeNext';
 import postActivity from './actions/postActivity';
 import sendEvent from './actions/sendEvent';
 import sendFiles from './actions/sendFiles';
@@ -47,6 +48,7 @@ import type { DirectLineSuggestedAction } from './types/external/DirectLineSugge
 import type { DirectLineThumbnailCard } from './types/external/DirectLineThumbnailCard';
 import type { DirectLineVideoCard } from './types/external/DirectLineVideoCard';
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import type { SchemaOrgThing } from './types/external/SchemaOrgThing';
 import type { WebChatActivity } from './types/WebChatActivity';
 
 const Constants = { ActivityClientState, DictateState };
@@ -64,6 +66,7 @@ export {
   emitTypingIndicator,
   isForbiddenPropertyName,
   markActivity,
+  onErrorResumeNext,
   postActivity,
   sendEvent,
   sendFiles,
@@ -103,5 +106,6 @@ export type {
   DirectLineVideoCard,
   OneOrMany,
   GlobalScopePonyfill,
+  SchemaOrgThing,
   WebChatActivity
 };

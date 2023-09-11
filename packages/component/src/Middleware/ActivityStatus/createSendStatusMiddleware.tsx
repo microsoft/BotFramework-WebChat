@@ -2,7 +2,7 @@ import { ActivityStatusMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
 import { SENDING, SEND_FAILED } from '../../types/internal/SendStatus';
-import SendStatus from './SendStatus/SendStatus';
+import SendStatus from '../../ActivityStatus/SendStatus/SendStatus';
 
 export default function createSendStatusMiddleware(): ActivityStatusMiddleware {
   return () =>

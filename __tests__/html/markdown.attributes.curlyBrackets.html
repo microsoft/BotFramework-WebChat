@@ -77,7 +77,7 @@
         await pageConditions.uiConnected();
         await pageConditions.minNumActivitiesShown(1);
 
-        const { children } = document.querySelector('.webchat__bubble__content .markdown');
+        const { children } = document.querySelector('.webchat__bubble__content .webchat__text-content__markdown');
 
         const [
           regressionItems,
@@ -85,7 +85,7 @@
           notRecognizedItems,
           otherCasesNotProcessedItems,
           otherCasesProcessedItems
-        ] = [].map.call(document.querySelectorAll('.webchat__bubble__content .markdown ul'), list => [
+        ] = [].map.call(document.querySelectorAll('.webchat__bubble__content .webchat__text-content__markdown ul'), list => [
           ...list.querySelectorAll('li')
         ]);
 

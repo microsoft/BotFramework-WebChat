@@ -11,6 +11,7 @@ import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
 import createCarouselFilmStripAttachment from './StyleSet/CarouselFilmStripAttachment';
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createConnectivityNotification from './StyleSet/ConnectivityNotification';
+import createCSSVariablesStyle from './StyleSet/CSSVariables';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createErrorNotificationStyle from './StyleSet/ErrorNotification';
@@ -18,7 +19,10 @@ import createFileContentStyle from './StyleSet/FileContent';
 import createImageAvatarStyle from './StyleSet/ImageAvatar';
 import createInitialsAvatarStyle from './StyleSet/InitialsAvatar';
 import createKeyboardHelpStyle from './StyleSet/KeyboardHelp';
+import createLinkDefinitionsStyle from './StyleSet/LinkDefinitions';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
+import createModalDialogStyle from './StyleSet/ModalDialog';
+import createRenderMarkdownStyle from './StyleSet/RenderMarkdown';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
 import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
@@ -26,11 +30,13 @@ import createSendBoxStyle from './StyleSet/SendBox';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
 import createSingleAttachmentActivityStyle from './StyleSet/SingleAttachmentActivity';
+import createSlottedActivityStatusStyle from './StyleSet/SlottedActivityStatus';
 import createSpinnerAnimationStyle from './StyleSet/SpinnerAnimation';
 import createStackedLayoutStyle from './StyleSet/StackedLayout';
 import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
 import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
+import createThumbButtonStyle from './StyleSet/ThumbButton';
 import createToasterStyle from './StyleSet/Toaster';
 import createToastStyle from './StyleSet/Toast';
 import createTypingAnimationStyle from './StyleSet/TypingAnimation';
@@ -75,13 +81,11 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     sendBox: createSendBoxStyle(strictStyleOptions),
     sendBoxButton: createSendBoxButtonStyle(strictStyleOptions),
     sendBoxTextBox: createSendBoxTextBoxStyle(strictStyleOptions),
-    sendStatus: createSendStatusStyle(strictStyleOptions),
     singleAttachmentActivity: createSingleAttachmentActivityStyle(strictStyleOptions),
     spinnerAnimation: createSpinnerAnimationStyle(strictStyleOptions),
     stackedLayout: createStackedLayoutStyle(strictStyleOptions),
     suggestedAction: createSuggestedActionStyle(strictStyleOptions),
     suggestedActions: createSuggestedActionsStyle(strictStyleOptions),
-    textContent: createTextContentStyle(strictStyleOptions),
     toast: createToastStyle(strictStyleOptions),
     toaster: createToasterStyle(strictStyleOptions),
     typingAnimation: createTypingAnimationStyle(strictStyleOptions),
@@ -91,6 +95,17 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     videoContent: createVideoContentStyle(strictStyleOptions),
     vimeoContent: createVimeoContentStyle(strictStyleOptions),
     warningNotification: createWarningNotificationStyle(strictStyleOptions),
-    youTubeContent: createYouTubeContentStyle(strictStyleOptions)
+    youTubeContent: createYouTubeContentStyle(strictStyleOptions),
+
+    // Following styles follows new house rules:
+    // - Use CSS var instead of strictStyleOptions
+    cssVariables: createCSSVariablesStyle(strictStyleOptions),
+    linkDefinitions: createLinkDefinitionsStyle(),
+    modalDialog: createModalDialogStyle(),
+    renderMarkdown: createRenderMarkdownStyle(),
+    sendStatus: createSendStatusStyle(),
+    slottedActivityStatus: createSlottedActivityStatusStyle(),
+    textContent: createTextContentStyle(),
+    thumbButton: createThumbButtonStyle()
   };
 }

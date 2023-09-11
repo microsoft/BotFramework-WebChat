@@ -1,11 +1,12 @@
 import { Composer as APIComposer, hooks, WebSpeechPonyfillFactory } from 'botframework-webchat-api';
 import { Composer as SayComposer } from 'react-say';
 import { singleToArray } from 'botframework-webchat-core';
+import classNames from 'classnames';
 import createEmotion from '@emotion/css/create-instance';
 import createStyleSet from './Styles/createStyleSet';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 
 import {
   speechSynthesis as bypassSpeechSynthesis,
@@ -17,7 +18,7 @@ import createCSSKey from './Utils/createCSSKey';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
-import createDefaultAttachmentMiddleware from './Middleware/Attachment/createCoreMiddleware';
+import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import createDefaultAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
 import createDefaultCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createDefaultScrollToEndButtonMiddleware from './Middleware/ScrollToEndButton/createScrollToEndButtonMiddleware';
@@ -27,8 +28,10 @@ import Dictation from './Dictation';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import ErrorBox from './ErrorBox';
 import mapMap from './Utils/mapMap';
+import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
 import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
 import UITracker from './hooks/internal/UITracker';
+import useStyleSet from './hooks/useStyleSet';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
 import type { ComposerProps as APIComposerProps } from 'botframework-webchat-api';
@@ -43,6 +46,33 @@ const emotionPool = {};
 function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
+
+type ComposerCoreUIProps = {
+  // eslint-disable-next-line react/require-default-props
+  children?: ReactNode;
+};
+
+const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
+  const [{ cssVariables }] = useStyleSet();
+
+  const dictationOnError = useCallback(err => {
+    console.error(err);
+  }, []);
+
+  return (
+    <div className={classNames('webchat__css-variables', cssVariables)}>
+      <ModalDialogComposer>
+        {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+        <SendBoxComposer>
+          {children}
+          <Dictation onError={dictationOnError} />
+        </SendBoxComposer>
+      </ModalDialogComposer>
+    </div>
+  );
+});
+
+ComposerCoreUI.displayName = 'ComposerCoreUI';
 
 type ComposerCoreProps = {
   children?: ReactNode;
@@ -80,14 +110,11 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   // The first argument tells whether it should go "up" or "down".
   const scrollRelativeCallbacksRef = useRef([]);
 
-  const dictationOnError = useCallback(err => {
-    console.error(err);
-  }, []);
-
   const internalRenderMarkdownInline = useMemo(
     () => markdown => {
       const tree = internalMarkdownIt.parseInline(markdown);
 
+      // TODO: Use "betterLink" plugin.
       // We should add rel="noopener noreferrer" and target="_blank"
       const patchedTree = addTargetBlankToHyperlinksMarkdown(tree);
 
@@ -228,11 +255,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   return (
     <SayComposer ponyfill={webSpeechPonyfill}>
       <WebChatUIContext.Provider value={context}>
-        {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-        <SendBoxComposer>
-          {children}
-          <Dictation onError={dictationOnError} />
-        </SendBoxComposer>
+        <ComposerCoreUI>{children}</ComposerCoreUI>
       </WebChatUIContext.Provider>
     </SayComposer>
   );
@@ -330,38 +353,36 @@ const Composer: FC<ComposerProps> = ({
   );
 
   return (
-    <React.Fragment>
-      <APIComposer
-        activityMiddleware={patchedActivityMiddleware}
-        activityStatusMiddleware={patchedActivityStatusMiddleware}
-        attachmentForScreenReaderMiddleware={patchedAttachmentForScreenReaderMiddleware}
-        attachmentMiddleware={patchedAttachmentMiddleware}
-        avatarMiddleware={patchedAvatarMiddleware}
-        cardActionMiddleware={patchedCardActionMiddleware}
-        downscaleImageToDataURL={downscaleImageToDataURL}
-        // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
-        internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
-        nonce={nonce}
-        scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
-        toastMiddleware={patchedToastMiddleware}
-        typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
-        {...composerProps}
-      >
-        <ActivityTreeComposer>
-          <ComposerCore
-            extraStyleSet={extraStyleSet}
-            nonce={nonce}
-            renderMarkdown={renderMarkdown}
-            styleSet={styleSet}
-            suggestedActionsAccessKey={suggestedActionsAccessKey}
-            webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-          >
-            {children}
-            {onTelemetry && <UITracker />}
-          </ComposerCore>
-        </ActivityTreeComposer>
-      </APIComposer>
-    </React.Fragment>
+    <APIComposer
+      activityMiddleware={patchedActivityMiddleware}
+      activityStatusMiddleware={patchedActivityStatusMiddleware}
+      attachmentForScreenReaderMiddleware={patchedAttachmentForScreenReaderMiddleware}
+      attachmentMiddleware={patchedAttachmentMiddleware}
+      avatarMiddleware={patchedAvatarMiddleware}
+      cardActionMiddleware={patchedCardActionMiddleware}
+      downscaleImageToDataURL={downscaleImageToDataURL}
+      // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
+      internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
+      nonce={nonce}
+      scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
+      toastMiddleware={patchedToastMiddleware}
+      typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
+      {...composerProps}
+    >
+      <ActivityTreeComposer>
+        <ComposerCore
+          extraStyleSet={extraStyleSet}
+          nonce={nonce}
+          renderMarkdown={renderMarkdown}
+          styleSet={styleSet}
+          suggestedActionsAccessKey={suggestedActionsAccessKey}
+          webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+        >
+          {children}
+          {onTelemetry && <UITracker />}
+        </ComposerCore>
+      </ActivityTreeComposer>
+    </APIComposer>
   );
 };
 
