@@ -2,7 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import { useRefFrom } from 'use-ref-from';
 import React, { Fragment, memo, type PropsWithChildren, useCallback, useState, useEffect } from 'react';
 
-import { type VoteAction } from '../../../types/external/SchemaOrg/VoteAction';
+import { type VoteAction } from '../../../types/external/OrgSchema/VoteAction';
 import FeedbackVoteButton from './private/VoteButton';
 
 const { usePonyfill, usePostActivity } = hooks;

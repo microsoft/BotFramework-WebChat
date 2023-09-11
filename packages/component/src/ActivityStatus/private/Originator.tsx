@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { memo } from 'react';
 
-import { type ReplyAction } from '../../types/external/SchemaOrg/ReplyAction';
+import { type ReplyAction } from '../../types/external/OrgSchema/ReplyAction';
 import useStyleSet from '../../hooks/useStyleSet';
 
 type Props = { replyAction: ReplyAction };

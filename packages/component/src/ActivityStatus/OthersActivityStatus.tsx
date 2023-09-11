@@ -2,9 +2,9 @@ import { type WebChatActivity } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo, type ReactNode, useMemo } from 'react';
 
-import { isReplyAction, type ReplyAction } from '../types/external/SchemaOrg/ReplyAction';
-import { isThing, type Thing } from '../types/external/SchemaOrg/Thing';
-import { isVoteAction, type VoteAction } from '../types/external/SchemaOrg/VoteAction';
+import { isReplyAction, type ReplyAction } from '../types/external/OrgSchema/ReplyAction';
+import { isThing, type Thing } from '../types/external/OrgSchema/Thing';
+import { isVoteAction, type VoteAction } from '../types/external/OrgSchema/VoteAction';
 import { type TypeOfArray } from '../types/internal/TypeOfArray';
 import Feedback from './private/Feedback/Feedback';
 import Originator from './private/Originator';

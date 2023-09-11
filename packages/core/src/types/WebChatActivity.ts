@@ -10,7 +10,7 @@
 import type { AnyAnd } from './AnyAnd';
 import type { DirectLineAttachment } from './external/DirectLineAttachment';
 import type { DirectLineSuggestedAction } from './external/DirectLineSuggestedAction';
-import type { SchemaOrgThing } from './external/SchemaOrgThing';
+import type { OrgSchemaThing } from './external/OrgSchemaThing';
 
 type SupportedRole = 'bot' | 'channel' | 'user';
 type SupportedSendStatus = 'sending' | 'send failed' | 'sent';
@@ -111,7 +111,7 @@ type ClientCapabilitiesEntity = {
 
 type Entity =
   | ClientCapabilitiesEntity
-  | SchemaOrgThing
+  | OrgSchemaThing
   | AnyAnd<{ type: Exclude<string, 'ClientCapabilities' | `https://schema.org/${string}`> }>;
 
 // Channel account - https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#channel-account

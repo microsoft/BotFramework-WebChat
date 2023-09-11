@@ -1,7 +1,7 @@
 import React, { memo, useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import { type VoteAction } from '../../../../types/external/SchemaOrg/VoteAction';
+import { type VoteAction } from '../../../../types/external/OrgSchema/VoteAction';
 import ThumbsButton from './ThumbButton';
 
 type Props = {
