@@ -18,7 +18,7 @@ type Props = { children?: ReactNode };
 const ModalDialogComposer = memo(({ children }: Props) => {
   const [renderFunctionAndDialogInit, setRenderFunctionAndDialogInit] = useState<
     RenderFunctionAndDialogInit | undefined
-  >(undefined);
+  >();
 
   const close = useCallback(() => setRenderFunctionAndDialogInit(undefined), [setRenderFunctionAndDialogInit]);
   const showModal = useCallback<(render: RenderFunction, init?: DialogInit) => void>(
