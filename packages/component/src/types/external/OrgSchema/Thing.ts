@@ -1,4 +1,4 @@
-import { type SchemaOrgThing } from 'botframework-webchat-core';
+import { type OrgSchemaThing } from 'botframework-webchat-core';
 
 /**
  * The most generic type of item.
@@ -7,7 +7,7 @@ import { type SchemaOrgThing } from 'botframework-webchat-core';
  *
  * @see https://schema.org/Thing
  */
-export type Thing<T extends string = string> = SchemaOrgThing<T> & {
+export type Thing<T extends string = string> = OrgSchemaThing<T> & {
   '@id'?: string;
 
   /** An alias for the item. */
