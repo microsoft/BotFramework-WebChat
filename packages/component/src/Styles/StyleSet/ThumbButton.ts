@@ -1,3 +1,5 @@
+import CSSTokens from '../CSSTokens';
+
 export default function () {
   return {
     '&.webchat__thumb-button': {
@@ -21,7 +23,7 @@ export default function () {
       },
 
       '& .webchat__thumb-button__image': {
-        color: 'var(--webchat__color--accent)',
+        color: CSSTokens.ColorAccent,
         width: 14
       },
 

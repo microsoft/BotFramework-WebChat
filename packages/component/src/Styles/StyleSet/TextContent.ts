@@ -1,17 +1,17 @@
-/* eslint no-magic-numbers: "off" */
+import CSSTokens from '../CSSTokens';
 
 export default function createTextContentStyle() {
   return {
     '&.webchat__text-content': {
-      fontFamily: 'var(--webchat__font--primary)',
+      fontFamily: CSSTokens.FontPrimary,
       margin: 0,
-      minHeight: 'calc(var(--webchat__min-height--bubble) - var(--webchat__padding--regular) * 2)',
-      padding: 'var(--webchat__padding--regular)',
+      minHeight: `calc(${CSSTokens.MinHeightBubble} - ${CSSTokens.PaddingRegular} * 2)`,
+      padding: CSSTokens.PaddingRegular,
 
       '&.webchat__text-content--is-markdown': {
         display: 'flex',
         flexDirection: 'column',
-        gap: 'var(--webchat__padding--regular)'
+        gap: CSSTokens.PaddingRegular
       },
 
       '& .webchat__text-content__markdown > :first-child': {
@@ -23,7 +23,7 @@ export default function createTextContentStyle() {
       },
 
       '& .webchat__text-content__markdown img:not(.webchat__render-markdown__external-link-icon)': {
-        maxWidth: 'var(--webchat__max-width--bubble)',
+        maxWidth: CSSTokens.MaxWidthBubble,
         width: '100%'
       },
 

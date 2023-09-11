@@ -53,14 +53,14 @@ type ComposerCoreUIProps = {
 };
 
 const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
-  const [{ cssVariables }] = useStyleSet();
+  const [{ cssCustomProperties }] = useStyleSet();
 
   const dictationOnError = useCallback(err => {
     console.error(err);
   }, []);
 
   return (
-    <div className={classNames('webchat__css-variables', cssVariables)}>
+    <div className={classNames('webchat__css-custom-properties', cssCustomProperties)}>
       <ModalDialogComposer>
         {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
         <SendBoxComposer>

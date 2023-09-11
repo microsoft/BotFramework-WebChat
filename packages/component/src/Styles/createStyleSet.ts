@@ -11,7 +11,7 @@ import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
 import createCarouselFilmStripAttachment from './StyleSet/CarouselFilmStripAttachment';
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createConnectivityNotification from './StyleSet/ConnectivityNotification';
-import createCSSVariablesStyle from './StyleSet/CSSVariables';
+import createCSSCustomPropertiesStyle from './StyleSet/CSSCustomProperties';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createErrorNotificationStyle from './StyleSet/ErrorNotification';
@@ -99,7 +99,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
 
     // Following styles follows new house rules:
     // - Use CSS var instead of strictStyleOptions
-    cssVariables: createCSSVariablesStyle(strictStyleOptions),
+    cssCustomProperties: createCSSCustomPropertiesStyle(strictStyleOptions),
     linkDefinitions: createLinkDefinitionsStyle(),
     modalDialog: createModalDialogStyle(),
     renderMarkdown: createRenderMarkdownStyle(),

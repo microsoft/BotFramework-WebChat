@@ -5,7 +5,8 @@ import {
   NOT_FORCED_COLORS_SELECTOR
 } from './Constants';
 
-// TODO: Fix CSS var.
+import CSSTokens from '../CSSTokens';
+
 export default function createLinkDefinitionsStyleSet() {
   return {
     '&.webchat__link-definitions': {
@@ -27,10 +28,6 @@ export default function createLinkDefinitionsStyleSet() {
           color: '#616161'
         }
       },
-
-      // '.webchat__link-definitions__header-chevron': {
-      //   verticalAlign: 'middle'
-      // },
 
       '&:not([open]) .webchat__link-definitions__header-chevron': {
         marginBottom: '-0.1em',
@@ -130,7 +127,7 @@ export default function createLinkDefinitionsStyleSet() {
         padding: 4,
 
         [NOT_FORCED_COLORS_SELECTOR]: {
-          color: 'var(--webchat__color--accent)'
+          color: CSSTokens.ColorAccent
         }
       },
 
