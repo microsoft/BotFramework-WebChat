@@ -25,10 +25,11 @@ import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import useDisabledModEffect from './AdaptiveCardHacks/useDisabledModEffect';
 import usePersistValuesModEffect from './AdaptiveCardHacks/usePersistValuesModEffect';
 import useRoleModEffect from './AdaptiveCardHacks/useRoleModEffect';
+import useStyleSet from '../../hooks/useStyleSet';
 import useValueRef from './AdaptiveCardHacks/private/useValueRef';
 
 const { ErrorBox } = Components;
-const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useStyleSet } = hooks;
+const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd } = hooks;
 
 const node_env = process.env.node_env || process.env.NODE_ENV;
 

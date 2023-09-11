@@ -1,13 +1,13 @@
 /* eslint react/no-array-index-key: "off" */
 
-import { Components, hooks } from 'botframework-webchat-component';
+import { Components } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
 import type { DirectLineVideoCard } from 'botframework-webchat-core';
 
 import CommonCard from './CommonCard';
+import useStyleSet from '../../hooks/useStyleSet';
 
-const { useStyleSet } = hooks;
 const { VideoContent } = Components;
 
 type VideoCardContentProps = {
