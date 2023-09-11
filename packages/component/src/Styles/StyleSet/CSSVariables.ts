@@ -1,4 +1,5 @@
 import { StrictStyleOptions } from 'botframework-webchat-api';
+import * as CustomPropertyName from '../CustomPropertyName';
 
 export default function createCSSVariablesStyle({
   accent,
@@ -15,6 +16,10 @@ export default function createCSSVariablesStyle({
     '&.webchat__css-variables': {
       display: 'contents',
 
+      // TODO: Should we register the CSS property for inheritance, type checking, and initial value?
+      //       Registrations need to be done on global level, and duplicate registration will throw.
+      //       https://developer.mozilla.org/en-US/docs/Web/CSS/@property
+
       // TODO: This is ongoing work. We are slowly adding CSS variables to ease calculations and stuff.
       //
       //       We need to build a story to let web devs override these CSS variables.
@@ -26,15 +31,14 @@ export default function createCSSVariablesStyle({
       //       - We should put styling varibles here, e.g. paddingRegular
       //       - We MUST NOT put runtime variables here, e.g. sendTimeout
       //          - This is because we cannot programmatically know when the sendTimeout change
-
-      '--webchat__color--accent': accent,
-      '--webchat__color--timestamp': timestampColor || subtle, // Maybe we should not need this if we allow web devs to override CSS variables for certain components.
-      '--webchat__font--primary': primaryFont,
-      '--webchat__font-size--small': fontSizeSmall,
-      '--webchat__icon-url--external-link': markdownExternalLinkIconImage,
-      '--webchat__max-width--bubble': bubbleMaxWidth + 'px',
-      '--webchat__min-height--bubble': bubbleMinHeight + 'px',
-      '--webchat__padding--regular': paddingRegular + 'px'
+      [CustomPropertyName.ColorAccent]: accent,
+      [CustomPropertyName.ColorTimestamp]: timestampColor || subtle, // Maybe we should not need this if we allow web devs to override CSS variables for certain components.
+      [CustomPropertyName.FontPrimary]: primaryFont,
+      [CustomPropertyName.FontSizeSmall]: fontSizeSmall,
+      [CustomPropertyName.IconURLExternalLink]: markdownExternalLinkIconImage,
+      [CustomPropertyName.MaxWidthBubble]: bubbleMaxWidth + 'px',
+      [CustomPropertyName.MinHeightBubble]: bubbleMinHeight + 'px',
+      [CustomPropertyName.PaddingRegular]: paddingRegular + 'px'
     }
   };
 }
