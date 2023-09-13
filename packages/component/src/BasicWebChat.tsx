@@ -8,11 +8,13 @@ import React, { FC } from 'react';
 
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 import BasicConnectivityStatus from './BasicConnectivityStatus';
-import BasicSendBox from './BasicSendBox';
+// import BasicSendBox from './BasicSendBox';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import InputModalityProvider from './InputModality/Provider';
+import InputModalityUI from './InputModality/Input';
 
 const { useStyleOptions } = hooks;
 
@@ -25,9 +27,9 @@ const CONNECTIVITY_STATUS_STYLE = {
   flexShrink: 0
 };
 
-const SEND_BOX_CSS = {
-  flexShrink: 0
-};
+// const SEND_BOX_CSS = {
+//   flexShrink: 0
+// };
 
 const TOASTER_STYLE = {
   flexShrink: 0
@@ -52,7 +54,7 @@ const BasicWebChat: FC<BasicWebChatProps> = ({ className, role }) => {
 
   const connectivityStatusClassName = styleToEmotionObject(CONNECTIVITY_STATUS_STYLE) + '';
   const rootClassName = styleToEmotionObject(ROOT_STYLE) + '';
-  const sendBoxClassName = styleToEmotionObject(SEND_BOX_CSS) + '';
+  // const sendBoxClassName = styleToEmotionObject(SEND_BOX_CSS) + '';
   const toasterClassName = styleToEmotionObject(TOASTER_STYLE) + '';
   const transcriptClassName = styleToEmotionObject(TRANSCRIPT_STYLE) + '';
 
@@ -63,10 +65,13 @@ const BasicWebChat: FC<BasicWebChatProps> = ({ className, role }) => {
 
   return (
     <AccessKeySinkSurface className={classNames(rootClassName, rootStyleSet + '', (className || '') + '')} role={role}>
-      {!options.hideToaster && <BasicToaster className={toasterClassName} />}
-      <BasicTranscript className={transcriptClassName} />
-      <BasicConnectivityStatus className={connectivityStatusClassName} />
-      {!options.hideSendBox && <BasicSendBox className={sendBoxClassName} />}
+      <InputModalityProvider>
+        {!options.hideToaster && <BasicToaster className={toasterClassName} />}
+        <BasicTranscript className={transcriptClassName} />
+        <BasicConnectivityStatus className={connectivityStatusClassName} />
+        {/* {!options.hideSendBox && <BasicSendBox className={sendBoxClassName} />} */}
+        <InputModalityUI />
+      </InputModalityProvider>
     </AccessKeySinkSurface>
   );
 };

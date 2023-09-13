@@ -105,11 +105,13 @@
     "mdast-util-from-markdown": "2.0.0",
     "memoize-one": "6.0.0",
     "prop-types": "15.8.1",
+    "react-chain-of-responsibility": "^0.0.1",
     "react-dictate-button": "2.0.1",
     "react-film": "3.1.1-main.df870ea",
     "react-redux": "7.2.9",
     "react-say": "2.1.0",
     "react-scroll-to-bottom": "4.2.0",
+    "react-wrap-with": "0.0.2",
     "redux": "4.2.1",
     "simple-update-in": "2.2.0",
     "use-ref-from": "0.0.1"
