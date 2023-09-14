@@ -8,7 +8,7 @@ const CustomPropertyNames = Object.freeze({
   MaxWidthBubble: '--webchat__max-width--bubble',
   MinHeightBubble: '--webchat__min-height--bubble',
   PaddingRegular: '--webchat__padding--regular'
-} as const);
+});
 
 // This is for type-checking only to make sure the CSS custom property names is `--webchat__${string}`.
 const _TypeChecking: Readonly<Record<string, `--webchat__${string}`>> = CustomPropertyNames;
