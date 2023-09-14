@@ -1,7 +1,7 @@
-import { onErrorResumeNext } from 'botframework-webchat-core';
 import React, { memo } from 'react';
 
 import ItemBody from './ItemBody';
+import shortenURL from './shortenURL';
 
 type Props = {
   identifier: string;
@@ -18,11 +18,7 @@ const URLItem = memo(({ identifier, title, url }: Props) => (
     rel="noopener noreferrer"
     target="_blank"
   >
-    <ItemBody
-      identifier={identifier}
-      isExternal={true}
-      title={title || onErrorResumeNext(() => new URL(url).host) || url}
-    />
+    <ItemBody identifier={identifier} isExternal={true} title={title || shortenURL(url)} />
   </a>
 ));
 
