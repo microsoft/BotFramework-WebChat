@@ -1,13 +1,10 @@
-import classNames from 'classnames';
 import React, { memo } from 'react';
 
-import { type ReplyAction } from '../../types/external/SchemaOrg/ReplyAction';
-import useStyleSet from '../../hooks/useStyleSet';
+import { type ReplyAction } from '../../types/external/OrgSchema/ReplyAction';
 
 type Props = { replyAction: ReplyAction };
 
 const Originator = memo(({ replyAction }: Props) => {
-  const [{ originatorActivityStatus }] = useStyleSet();
   const { description, provider } = replyAction;
 
   const text = description || provider?.name;
@@ -23,7 +20,7 @@ const Originator = memo(({ replyAction }: Props) => {
       {text}
     </a>
   ) : (
-    <span className={classNames('webchat__activity-status__originator', originatorActivityStatus + '')}>{text}</span>
+    <span className="webchat__activity-status__originator">{text}</span>
   );
 });
 

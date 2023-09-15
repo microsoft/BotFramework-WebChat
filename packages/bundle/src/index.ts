@@ -28,6 +28,7 @@ import ThumbnailCardContent from './adaptiveCards/Attachment/ThumbnailCardConten
 import useAdaptiveCardsHostConfig from './adaptiveCards/hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from './adaptiveCards/hooks/useAdaptiveCardsPackage';
 import useStyleOptions from './hooks/useStyleOptions';
+import useStyleSet from './hooks/useStyleSet';
 import VideoCardContent from './adaptiveCards/Attachment/VideoCardContent';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
@@ -56,7 +57,8 @@ const patchedHooks = {
   ...hooks,
   useAdaptiveCardsHostConfig,
   useAdaptiveCardsPackage,
-  useStyleOptions
+  useStyleOptions,
+  useStyleSet
 };
 
 const AdditionalComponents = {

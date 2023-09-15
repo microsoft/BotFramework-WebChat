@@ -3,8 +3,8 @@ import { useRefFrom } from 'use-ref-from';
 import classNames from 'classnames';
 import React, { memo, type MouseEventHandler, useCallback, useMemo } from 'react';
 
-import { isClaim, type Claim } from '../../../types/external/SchemaOrg/Claim';
-import { isThing } from '../../../types/external/SchemaOrg/Thing';
+import { isClaim, type Claim } from '../../../types/external/OrgSchema/Claim';
+import { isThing } from '../../../types/external/OrgSchema/Thing';
 import { type PropsOf } from '../../../types/PropsOf';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import isHTMLButtonElement from './isHTMLButtonElement';

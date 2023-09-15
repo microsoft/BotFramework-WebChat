@@ -11,7 +11,7 @@ import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
 import createCarouselFilmStripAttachment from './StyleSet/CarouselFilmStripAttachment';
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createConnectivityNotification from './StyleSet/ConnectivityNotification';
-import createCSSVariablesStyle from './StyleSet/CSSVariables';
+import createCSSCustomPropertiesStyle from './StyleSet/CSSCustomProperties';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createErrorNotificationStyle from './StyleSet/ErrorNotification';
@@ -55,7 +55,7 @@ import createYouTubeContentStyle from './StyleSet/YouTubeContent';
 export default function createStyleSet(styleOptions: StyleOptions) {
   const strictStyleOptions = normalizeStyleOptions(styleOptions);
 
-  return {
+  return Object.freeze({
     activities: createActivitiesStyle(),
     audioAttachment: createAudioAttachmentStyle(strictStyleOptions),
     audioContent: createAudioContentStyle(),
@@ -99,7 +99,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
 
     // Following styles follows new house rules:
     // - Use CSS var instead of strictStyleOptions
-    cssVariables: createCSSVariablesStyle(strictStyleOptions),
+    cssCustomProperties: createCSSCustomPropertiesStyle(strictStyleOptions),
     linkDefinitions: createLinkDefinitionsStyle(),
     modalDialog: createModalDialogStyle(),
     renderMarkdown: createRenderMarkdownStyle(),
@@ -107,5 +107,5 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     slottedActivityStatus: createSlottedActivityStatusStyle(),
     textContent: createTextContentStyle(),
     thumbButton: createThumbButtonStyle()
-  };
+  } as const);
 }

@@ -5,7 +5,7 @@
  *
  * @see https://schema.org/Thing
  */
-export type SchemaOrgThing<T extends string = string> = {
+export type OrgSchemaThing<T extends string = string> = {
   '@context': 'https://schema.org';
   '@type': T;
   type: `https://schema.org/${T}`;
