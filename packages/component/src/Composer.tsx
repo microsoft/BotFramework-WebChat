@@ -130,6 +130,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     const emotion =
       // Prefix "id-" to prevent object injection attack.
       emotionPool[`id-${nonce}`] ||
+      // @ts-expect-error TS1479 should be fixed when bumping to typescript@5.
       (emotionPool[`id-${nonce}`] = createEmotion({ key: `webchat--css-${createCSSKey()}`, nonce }));
 
     return style => emotion.css(style);
