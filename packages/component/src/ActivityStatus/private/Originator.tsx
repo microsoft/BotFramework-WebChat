@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 
 import { type ReplyAction } from '../../types/external/OrgSchema/ReplyAction';
 
-type Props = { replyAction: ReplyAction };
+type Props = Readonly<{ replyAction: ReplyAction }>;
 
 const Originator = memo(({ replyAction }: Props) => {
   const { description, provider } = replyAction;

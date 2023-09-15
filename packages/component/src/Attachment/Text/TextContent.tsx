@@ -6,13 +6,11 @@ import useRenderMarkdownAsHTML from '../../hooks/useRenderMarkdownAsHTML';
 
 import { type WebChatActivity } from 'botframework-webchat-core';
 
-type Props = {
+type Props = Readonly<{
   contentType?: string;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
   entities?: WebChatActivity['entities'];
   text: string;
-};
+}>;
 
 const TextContent: FC<Props> = memo(({ contentType = 'text/plain', entities, text }: Props) => {
   const supportMarkdown = !!useRenderMarkdownAsHTML();

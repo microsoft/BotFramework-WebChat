@@ -4,13 +4,11 @@ import { useRefFrom } from 'use-ref-from';
 import { type VoteAction } from '../../../../types/external/OrgSchema/VoteAction';
 import ThumbsButton from './ThumbButton';
 
-type Props = {
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
+type Props = Readonly<{
   onClick?: (voteAction: VoteAction) => void;
   pressed: boolean;
   voteAction: VoteAction;
-};
+}>;
 
 const FeedbackVoteButton = memo(({ onClick, pressed, voteAction }: Props) => {
   const onClickRef = useRefFrom(onClick);

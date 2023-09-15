@@ -7,9 +7,11 @@ import FeedbackVoteButton from './private/VoteButton';
 
 const { usePonyfill, usePostActivity } = hooks;
 
-type Props = PropsWithChildren<{
-  voteActions: ReadonlySet<VoteAction>;
-}>;
+type Props = Readonly<
+  PropsWithChildren<{
+    voteActions: ReadonlySet<VoteAction>;
+  }>
+>;
 
 const DEBOUNCE_TIMEOUT = 500;
 

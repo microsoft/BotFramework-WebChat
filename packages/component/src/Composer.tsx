@@ -47,10 +47,7 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
 
-type ComposerCoreUIProps = Readonly<{
-  // eslint-disable-next-line react/require-default-props
-  children?: ReactNode;
-}>;
+type ComposerCoreUIProps = Readonly<{ children?: ReactNode }>;
 
 const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   const [{ cssCustomProperties }] = useStyleSet();

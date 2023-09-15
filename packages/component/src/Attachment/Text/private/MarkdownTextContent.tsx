@@ -15,12 +15,10 @@ import useStyleSet from '../../../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
 
-type Props = {
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
+type Props = Readonly<{
   entities?: WebChatActivity['entities'];
   markdown: string;
-};
+}>;
 
 const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
   const [{ renderMarkdown: renderMarkdownStyleSet, textContent: textContentStyleSet }] = useStyleSet();

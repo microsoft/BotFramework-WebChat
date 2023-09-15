@@ -13,12 +13,10 @@ import useStyleSet from '../../../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
 
-type Props = {
+type Props = Readonly<{
   markdown: string;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
   onCitationClick?: (url: string) => void;
-};
+}>;
 
 const REFERENCE_LIST_HEADER_IDS = {
   one: 'REFERENCE_LIST_HEADER_ONE',

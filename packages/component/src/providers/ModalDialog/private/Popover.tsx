@@ -6,20 +6,14 @@ import useStyleSet from '../../../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
 
-type Props = PropsWithChildren<{
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
-  'aria-label'?: string;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
-  'aria-labelledby'?: string;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
-  className?: string;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
-  onDismiss?: () => void;
-}>;
+type Props = Readonly<
+  PropsWithChildren<{
+    'aria-label'?: string;
+    'aria-labelledby'?: string;
+    className?: string;
+    onDismiss?: () => void;
+  }>
+>;
 
 const ModalDialog = memo(
   ({ 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledBy, children, className, onDismiss }: Props) => {

@@ -1,9 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 
-// "defaultProps" is being deprecated.
-// eslint-disable-next-line react/require-default-props
-type Props = { className?: string };
+type Props = Readonly<{ className?: string }>;
 
 const OpenInNewWindowIcon = ({ className }: Props) => (
   <svg
