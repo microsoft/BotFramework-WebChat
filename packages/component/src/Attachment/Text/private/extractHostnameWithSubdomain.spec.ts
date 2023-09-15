@@ -1,4 +1,4 @@
-import shortenURL from './shortenURL';
+import extractHostnameWithSubdomain from './extractHostnameWithSubdomain';
 
 test.each([
   ['https://www.example.com/', 'example.com'],
@@ -15,6 +15,6 @@ test.each([
   ['https://www2.example.com/index.html', 'www2.example.com'],
   ['ftp://www.example.com/', 'ftp://www.example.com/'],
   ['www/index.html', 'www/index.html']
-])('should shorten %s into %s', (url, expected) => {
-  expect(shortenURL(url)).toBe(expected);
+])('should extract %s into %s', (url, expected) => {
+  expect(extractHostnameWithSubdomain(url)).toBe(expected);
 });

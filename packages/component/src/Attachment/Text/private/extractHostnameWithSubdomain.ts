@@ -1,4 +1,4 @@
-export default function shortenURL(urlString: string): string {
+export default function extractHostnameWithSubdomain(urlString: string): string {
   try {
     const { host, port, protocol } = new URL(urlString);
 
