@@ -31,7 +31,7 @@ import YouTubeContent from './Attachment/YouTubeContent';
 import DictationInterims, { connectDictationInterims } from './SendBox/DictationInterims';
 import MicrophoneButton, { connectMicrophoneButton } from './SendBox/MicrophoneButton';
 import SendButton, { connectSendButton } from './SendBox/SendButton';
-import SendTextBox, { connectSendTextBox } from './SendBox/TextBox';
+import SendTextBox from './SendBox/TextBox';
 import SuggestedActions, { connectSuggestedActions } from './SendBox/SuggestedActions';
 import UploadButton, { connectUploadButton } from './SendBox/UploadButton';
 
@@ -95,7 +95,6 @@ const Components = {
   connectDictationInterims,
   connectMicrophoneButton,
   connectSendButton,
-  connectSendTextBox,
   connectSuggestedActions,
   connectUploadButton
 };
