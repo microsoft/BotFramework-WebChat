@@ -40,8 +40,6 @@ function WithEmojiController<
   innerRef?: Ref<H>;
   onChange?: (value: string | undefined) => void;
 }>) {
-  // type H = P extends InputTargetProps<infer H> ? H : never;
-
   const inputElementRef = useRef<H>(null);
   const placeCheckpointOnChangeRef = useRef<boolean>(false);
   const prevInputStateRef = useRef<SelectionAndValue>(new SelectionAndValue('', Infinity, Infinity));
