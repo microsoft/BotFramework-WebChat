@@ -218,7 +218,7 @@ const TextBox = ({ className }) => {
           className="webchat__send-box-text-box__input"
           data-id="webchat-sendbox-input"
           disabled={disabled}
-          emojiSet={emojiMap}
+          emojiMap={emojiMap}
           enterKeyHint="send"
           inputMode="text"
           onChange={setValue}
@@ -236,7 +236,7 @@ const TextBox = ({ className }) => {
           className="webchat__send-box-text-box__text-area"
           data-id="webchat-sendbox-input"
           disabled={disabled}
-          emojiSet={emojiMap}
+          emojiMap={emojiMap}
           enterKeyHint="send"
           inputMode="text"
           onChange={setValue}

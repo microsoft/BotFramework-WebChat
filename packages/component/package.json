@@ -104,6 +104,7 @@
     "mdast": "3.0.0",
     "mdast-util-from-markdown": "2.0.0",
     "memoize-one": "6.0.0",
+    "merge-refs": "1.2.1",
     "prop-types": "15.8.1",
     "react-dictate-button": "2.0.1",
     "react-film": "3.1.1-main.df870ea",
