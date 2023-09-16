@@ -41,12 +41,26 @@
 
         await host.sendKeys('Hello!');
         expect(inputElement.value).toBe('Hello!');
+        expect(inputElement.selectionStart).toBe(6);
+        expect(inputElement.selectionEnd).toBe(6);
 
         await host.sendKeys(':)');
         expect(inputElement.value).toBe('Hello!🙂');
+        expect(inputElement.selectionStart).toBe(8);
+        expect(inputElement.selectionEnd).toBe(8);
 
         await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
         expect(inputElement.value).toBe('Hello!:)');
+        expect(inputElement.selectionStart).toBe(8);
+        expect(inputElement.selectionEnd).toBe(8);
+
+        await host.sendKeys('LEFT', 'LEFT');
+        await host.sendKeys('DELETE', ':');
+        expect(inputElement.value).toBe('Hello!:)');
+        expect(inputElement.selectionStart).toBe(7);
+        expect(inputElement.selectionEnd).toBe(7);
+
+        await host.sendKeys('DELETE', ')');
       });
     </script>
   </body>
