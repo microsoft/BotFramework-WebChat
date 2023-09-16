@@ -2,7 +2,7 @@ const { Key } = require('selenium-webdriver');
 
 const KEY_DOWN_PATTERN = /^\+(.*)/u;
 const KEY_MAP = new Map(Object.entries(Key));
-const KEY_UP_PATTERN = /^\+(.*)/u;
+const KEY_UP_PATTERN = /^-(.*)/u;
 
 module.exports = webDriver =>
   function sendKeys(...keys) {
