@@ -9,6 +9,7 @@ import React, {
   type SyntheticEvent,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   type Ref
 } from 'react';
@@ -22,6 +23,8 @@ export type InputTargetProps<H> = {
   onSelect?: (event: SyntheticEvent<H>) => void;
   value?: string;
 };
+
+type PropsOf<T> = T extends ComponentType<infer P> ? P : never;
 
 function WithEmojiController<
   T extends ComponentType<P>,
@@ -40,11 +43,14 @@ function WithEmojiController<
   innerRef?: Ref<H>;
   onChange?: (value: string | undefined) => void;
 }>) {
+  const { value } = componentProps;
+
+  const committingValueRef = useRef<string>(value);
   const inputElementRef = useRef<H>(null);
   const placeCheckpointOnChangeRef = useRef<boolean>(false);
   const prevInputStateRef = useRef<SelectionAndValue>(new SelectionAndValue('', Infinity, Infinity));
   const undoStackRef = useRef<SelectionAndValue[]>([]);
-  const valueRef = useRefFrom(componentProps.value);
+  const valueRef = useRefFrom(value);
 
   const rememberInputState = useCallback(() => {
     const { current } = inputElementRef;
@@ -70,6 +76,7 @@ function WithEmojiController<
         current.selectionEnd = selectionEnd;
       }
 
+      committingValueRef.current = value;
       onChange?.(value);
     },
     [inputElementRef, onChange]
@@ -155,13 +162,19 @@ function WithEmojiController<
     [placeCheckpointOnChangeRef, prevInputStateRef]
   );
 
-  useEffect(rememberInputState, [rememberInputState]);
+  useMemo(() => {
+    if (committingValueRef.current !== value) {
+      if (placeCheckpointOnChangeRef.current) {
+        undoStackRef.current.push(prevInputStateRef.current);
+      }
 
-  // TODO: Fix this:
-  //       1. Type "ABC"
-  //       2. Send props.value as "XYZ"
-  //       3. Press CTRL-Z should revert to "ABC", instead of empty
-  //       Cause: we did not checkpoint when receiving a new props.value.
+      prevInputStateRef.current = new SelectionAndValue(value, value.length, value.length);
+      placeCheckpointOnChangeRef.current = true;
+      committingValueRef.current = value;
+    }
+  }, [placeCheckpointOnChangeRef, undoStackRef, value]);
+
+  useEffect(rememberInputState, [rememberInputState]);
 
   return React.createElement(componentType, {
     ...componentProps,
@@ -172,8 +185,6 @@ function WithEmojiController<
     ref: mergeRefs(inputElementRef, innerRef)
   } as P);
 }
-
-type PropsOf<T> = T extends ComponentType<infer P> ? P : never;
 
 export default function withEmoji<
   T extends ComponentType<P>,
