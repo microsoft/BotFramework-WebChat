@@ -20,7 +20,6 @@ export type InputTargetProps<H> = {
   onFocus?: (event: FocusEvent<H>) => void;
   onKeyDown?: (event: KeyboardEvent<H>) => void;
   onSelect?: (event: SyntheticEvent<H>) => void;
-  placeholder?: string;
   value?: string;
 };
 
@@ -172,8 +171,7 @@ function WithEmojiController<
     onFocus: handleFocus,
     onKeyDown: handleKeyDown,
     onSelect: handleSelect,
-    ref: mergeRefs(inputElementRef, innerRef),
-    placeholder: 'With emoji 2'
+    ref: mergeRefs(inputElementRef, innerRef)
   } as P);
 }
 
