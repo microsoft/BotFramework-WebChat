@@ -42,6 +42,7 @@ import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/crea
 import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
+import withEmoji from './withEmoji/withEmoji';
 
 import * as componentHooks from './hooks/index';
 
@@ -113,7 +114,8 @@ export {
   getTabIndex,
   hooks,
   localize,
-  version
+  version,
+  withEmoji
 };
 
 export type { BasicWebChatProps, ComposerProps, ReactWebChatProps };
