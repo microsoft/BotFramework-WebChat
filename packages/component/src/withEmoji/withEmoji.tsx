@@ -8,18 +8,18 @@ import React, {
   type KeyboardEvent,
   type SyntheticEvent,
   useCallback,
-  useEffect,
   useMemo,
   useRef,
   type Ref
 } from 'react';
 
-import SelectionAndValue from './private/SelectionAndValue';
+import useUndoReducer from './private/useUndoReducer';
 
 export type InputTargetProps<H> = {
   onChange?: (event: ChangeEvent<H>) => void;
   onFocus?: (event: FocusEvent<H>) => void;
   onKeyDown?: (event: KeyboardEvent<H>) => void;
+  onKeyUp?: (event: KeyboardEvent<H>) => void;
   onSelect?: (event: SyntheticEvent<H>) => void;
   value?: string;
 };
@@ -45,50 +45,44 @@ function WithEmojiController<
 }>) {
   const { value } = componentProps;
 
-  const committingValueRef = useRef<string>(value);
   const inputElementRef = useRef<H>(null);
-  const placeCheckpointOnChangeRef = useRef<boolean>(false);
-  const prevInputStateRef = useRef<SelectionAndValue>(new SelectionAndValue('', Infinity, Infinity));
-  const undoStackRef = useRef<SelectionAndValue[]>([]);
+  const onChangeRef = useRefFrom(onChange);
   const valueRef = useRefFrom(value);
 
-  const rememberInputState = useCallback(() => {
-    const { current } = inputElementRef;
-
-    if (current) {
-      const { selectionEnd, selectionStart, value } = current;
-
-      prevInputStateRef.current = new SelectionAndValue(value, selectionStart, selectionEnd);
-    }
-  }, [inputElementRef, prevInputStateRef]);
+  const [undoState, { checkpoint, moveCaret, undo }] = useUndoReducer(inputElementRef);
+  const undoStateRef = useRefFrom(undoState);
 
   // This is for moving the selection while setting the send box value.
   // If we only use setSendBox, we will need to wait for the next render cycle to get the value in, before we can set selectionEnd/Start.
-  const setSelectionRangeAndValue = useCallback(
-    (value: string, selectionStart: number | null, selectionEnd: number | null) => {
-      const { current } = inputElementRef;
+  // const setSelectionRangeAndValue = useCallback(
+  //   (value: string, selectionStart: number | null, selectionEnd: number | null) => {
+  //     const { current } = inputElementRef;
 
-      if (current) {
-        // We need to set the value, before selectionStart/selectionEnd.
-        current.value = value;
+  //     if (current) {
+  //       // We need to set the value, before selectionStart/selectionEnd.
+  //       current.value = value;
 
-        current.selectionStart = selectionStart;
-        current.selectionEnd = selectionEnd;
-      }
+  //       current.selectionStart = selectionStart;
+  //       current.selectionEnd = selectionEnd;
+  //     }
 
-      committingValueRef.current = value;
-      onChange?.(value);
-    },
-    [inputElementRef, onChange]
-  );
+  //     committingValueRef.current = value;
+  //     onChangeRef.current?.(value);
+  //   },
+  //   [inputElementRef, onChangeRef]
+  // );
+
+  const ignoreNextChangeRef = useRef<boolean>(false);
 
   const handleChange = useCallback<(event: ChangeEvent<H>) => void>(
-    ({ currentTarget: { selectionEnd, selectionStart, value } }) => {
-      if (placeCheckpointOnChangeRef.current) {
-        undoStackRef.current.push(prevInputStateRef.current);
+    ({ currentTarget }) => {
+      const { selectionEnd, selectionStart, value } = currentTarget;
 
-        placeCheckpointOnChangeRef.current = false;
-      }
+      // if (ignoreNextChangeRef.current) {
+      //   ignoreNextChangeRef.current = false;
+      // } else {
+      //   checkpoint('change');
+      // }
 
       // Currently, we cannot detect whether the change is due to clipboard paste or pressing a key on the keyboard.
       // We should not change to emoji when the user is pasting text.
@@ -104,84 +98,143 @@ function WithEmojiController<
           const { length } = emoticon;
 
           if (value.slice(selectionEnd - length, selectionEnd) === emoticon) {
-            undoStackRef.current.push(new SelectionAndValue(value, selectionStart, selectionEnd));
+            checkpoint('move caret');
 
-            placeCheckpointOnChangeRef.current = true;
+            const nextValue = `${value.slice(0, selectionEnd - length)}${emoji}${value.slice(selectionEnd)}`;
+            const nextSelectionEnd = selectionEnd + emoji.length - length;
 
-            value = `${value.slice(0, selectionEnd - length)}${emoji}${value.slice(selectionEnd)}`;
-            selectionEnd = selectionEnd += emoji.length - length;
+            currentTarget.value = nextValue;
+
+            currentTarget.selectionStart = selectionStart;
+            currentTarget.selectionEnd = nextSelectionEnd;
           }
         }
       }
 
-      setSelectionRangeAndValue(value, selectionStart, selectionEnd);
+      if (!value) {
+        checkpoint('move caret');
+      }
+
+      onChangeRef.current?.(currentTarget.value);
     },
-    [emojiMap, placeCheckpointOnChangeRef, prevInputStateRef, setSelectionRangeAndValue, undoStackRef, valueRef]
+    [checkpoint, emojiMap, onChangeRef, valueRef]
   );
 
-  const handleFocus = useCallback<(event: FocusEvent<H>) => void>(() => {
-    rememberInputState();
+  // const handleFocus = useCallback<(event: FocusEvent<H>) => void>(() => checkpoint('focus'), [checkpoint]);
+  const handleFocus = useCallback<(event: FocusEvent<H>) => void>(() => moveCaret(), [moveCaret]);
 
-    placeCheckpointOnChangeRef.current = true;
-  }, [placeCheckpointOnChangeRef, rememberInputState]);
+  const checkpointOnChangeRef = useRef<boolean>(false);
 
   const handleKeyDown = useCallback<(event: KeyboardEvent<H>) => void>(
+    // eslint-disable-next-line complexity
     event => {
       const { ctrlKey, key, metaKey } = event;
+
+      // eslint-disable-next-line no-console
+      console.log('key down', key);
 
       if ((ctrlKey || metaKey) && (key === 'Z' || key === 'z')) {
         event.preventDefault();
 
-        const poppedInputState = undoStackRef.current.pop();
+        undo();
+        onChangeRef.current?.(event.currentTarget.value);
+      } else if (ctrlKey && (key === 'g' || key === 'G')) {
+        // TODO: Remove this.
+        event.preventDefault();
 
-        prevInputStateRef.current = poppedInputState || new SelectionAndValue('', 0, 0);
-
-        setSelectionRangeAndValue(
-          prevInputStateRef.current.value,
-          prevInputStateRef.current.selectionStart,
-          prevInputStateRef.current.selectionEnd
-        );
+        // eslint-disable-next-line no-console
+        console.log(undoStateRef.current.undoStack.map(entry => entry.toString()).join('\n'));
+      } else if (key === 'Backspace') {
+        checkpoint('backspace');
+        // checkpoint('move caret');
+        ignoreNextChangeRef.current = true;
+      } else if (key === 'Delete') {
+        checkpoint('delete');
+        // checkpoint('move caret');
+        ignoreNextChangeRef.current = true;
+      } else if (
+        key === 'ArrowLeft' ||
+        key === 'ArrowRight' ||
+        key === 'ArrowUp' ||
+        key === 'ArrowDown' ||
+        key === 'Home' ||
+        key === 'End' ||
+        key === 'PageUp' ||
+        key === 'PageDown' ||
+        ((ctrlKey || metaKey) && (key === 'a' || key === 'A'))
+      ) {
+        moveCaret();
+        checkpointOnChangeRef.current = true;
+      } else if ((ctrlKey || metaKey) && (key === 'v' || key === 'V' || key === 'x' || key === 'X')) {
+        moveCaret();
+        // } else if (checkpointOnChangeRef.current) {
+      } else {
+        // eslint-disable-next-line no-console
+        console.log(event.currentTarget.value);
+        checkpoint('change');
+        // checkpoint(checkpointOnChangeRef.current ? 'move caret' : 'change');
+        checkpointOnChangeRef.current = false;
       }
     },
-    [prevInputStateRef, setSelectionRangeAndValue, undoStackRef]
+    [checkpoint, moveCaret, onChangeRef, undo, undoStateRef]
   );
 
-  const handleSelect = useCallback(
-    (event: SyntheticEvent<H>): void => {
-      const {
-        currentTarget: { selectionEnd, selectionStart, value }
-      } = event;
+  const handleKeyUp = useCallback<(event: KeyboardEvent<H>) => void>(
+    event => {
+      const { key } = event;
 
-      if (value === prevInputStateRef.current.value) {
-        // When caret move, we should push to undo stack on change.
-        placeCheckpointOnChangeRef.current = true;
+      // eslint-disable-next-line no-console
+      console.log('key press', key);
+
+      if (
+        key === 'ArrowLeft' ||
+        key === 'ArrowRight' ||
+        key === 'ArrowUp' ||
+        key === 'ArrowDown' ||
+        key === 'Home' ||
+        key === 'End' ||
+        key === 'PageUp' ||
+        key === 'PageDown'
+      ) {
+        // checkpointOnChangeRef.current = true;
+        // console.log(
+        //   key,
+        //   event.currentTarget.value,
+        //   event.currentTarget.selectionStart,
+        //   event.currentTarget.selectionEnd
+        // );
+        // moveCaret();
+      } else {
+        // TODO: Only checkpoint if there is a visible change.
+        // checkpoint('change');
       }
-
-      prevInputStateRef.current = new SelectionAndValue(value, selectionStart, selectionEnd);
     },
-    [placeCheckpointOnChangeRef, prevInputStateRef]
+    []
+    // [checkpoint, moveCaret]
   );
+
+  // const handleSelect = useCallback(
+  //   (event: SyntheticEvent<H>): void =>
+  //     // When caret move, we should push to undo stack on change.
+  //     event.currentTarget.value === valueRef.current && moveCaret(),
+  //   [moveCaret, valueRef]
+  // );
 
   useMemo(() => {
-    if (committingValueRef.current !== value) {
-      if (placeCheckpointOnChangeRef.current) {
-        undoStackRef.current.push(prevInputStateRef.current);
-      }
-
-      prevInputStateRef.current = new SelectionAndValue(value, value.length, value.length);
-      placeCheckpointOnChangeRef.current = true;
-      committingValueRef.current = value;
+    if (!inputElementRef.current || inputElementRef.current.value !== value) {
+      checkpoint('set value');
     }
-  }, [placeCheckpointOnChangeRef, undoStackRef, value]);
+  }, [checkpoint, inputElementRef, value]);
 
-  useEffect(rememberInputState, [rememberInputState]);
+  // useEffect(() => checkpoint('change'), [checkpoint]);
 
   return React.createElement(componentType, {
     ...componentProps,
     onChange: handleChange,
     onFocus: handleFocus,
     onKeyDown: handleKeyDown,
-    onSelect: handleSelect,
+    onKeyUp: handleKeyUp,
+    // onSelect: handleSelect,
     ref: mergeRefs(inputElementRef, innerRef)
   } as P);
 }
@@ -201,6 +254,7 @@ export default function withEmoji<
     >
   >(({ emojiMap, onChange, ...props }, ref) => (
     <WithEmojiController<T, P, H>
+      // TODO: Do we have a type bug here?
       componentProps={props as unknown as P}
       componentType={componentType}
       emojiMap={emojiMap}

@@ -20,4 +20,9 @@ export default class SelectionAndValue {
   get selectionStart(): number | null {
     return this.#selectionStart;
   }
+
+  // TODO: Remove this.
+  toString(): string {
+    return `${this.#value} (${this.#selectionStart}, ${this.#selectionEnd})`;
+  }
 }
