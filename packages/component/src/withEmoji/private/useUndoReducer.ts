@@ -1,14 +1,12 @@
 import { type RefObject, useCallback, useReducer } from 'react';
 import UndoEntry from './UndoEntry';
 
-type CheckpointAction = { payload: { reason: string }; type: 'CHECKPOINT' };
-type MoveCaretAction = { type: 'MOVE_CARET' };
+type CheckpointAction = { payload: { group: string }; type: 'CHECKPOINT' };
 type UndoAction = { type: 'UNDO' };
 
-type Action = CheckpointAction | MoveCaretAction | UndoAction;
+type Action = CheckpointAction | UndoAction;
 
 type State = {
-  caretMoved: boolean;
   elementRef: RefObject<HTMLInputElement | HTMLTextAreaElement>;
   undoStack: UndoEntry[];
 };
@@ -20,49 +18,18 @@ function undoReducer(state: State, action: Action): State {
 
   if (element) {
     if (action.type === 'CHECKPOINT') {
-      // const [lastEntry] = state.undoStack;
-      // const lastReason = lastEntry ? lastEntry.reason : 'change';
       const { selectionEnd, selectionStart, value } = element;
       const {
-        payload: { reason }
+        payload: { group }
       } = action;
 
-      let shouldPush = false;
-
-      // if (state.caretMoved) {
-      //   if (valueChanged) {
-      //     shouldPush = true;
-      //   }
-
-      //   state.caretMoved = false;
-      // } else if (reasonChanged) {
-      //   shouldPush = true;
-      // }
-
-      shouldPush = true;
-
-      // if (reason !== 'move caret' && (lastEntry?.value || '') === value) {
-      //   shouldPush = false;
-      // }
-
-      // eslint-disable-next-line no-console
-      console.log('checkpoint', reason, value);
-
-      shouldPush = reason === 'move caret' || reason !== state.undoStack[0]?.reason;
-
-      if (shouldPush) {
+      if (group === 'move caret' || group !== state.undoStack[0]?.group) {
         if (value === state.undoStack[0]?.value) {
           state.undoStack.shift();
         }
 
-        state.undoStack.unshift(new UndoEntry(value, selectionStart, selectionEnd, reason));
-        // eslint-disable-next-line no-console
-        console.log('checkpoint', new UndoEntry(value, selectionStart, selectionEnd, reason).toString());
+        state.undoStack.unshift(new UndoEntry(value, selectionStart, selectionEnd, group));
       }
-    } else if (action.type === 'MOVE_CARET') {
-      // eslint-disable-next-line no-console
-      console.log('move caret');
-      state.caretMoved = true;
     } else if (action.type === 'UNDO') {
       let lastEntry: UndoEntry;
 
@@ -71,8 +38,6 @@ function undoReducer(state: State, action: Action): State {
 
         if (lastEntry.value === element.value) {
           state.undoStack.shift();
-          // } else if (lastEntry.reason === 'change') {
-          //   state.undoStack.shift();
         } else {
           break;
         }
@@ -81,9 +46,6 @@ function undoReducer(state: State, action: Action): State {
       [lastEntry] = state.undoStack;
 
       if (lastEntry) {
-        // eslint-disable-next-line no-console
-        console.log(lastEntry.toString());
-
         element.value = lastEntry.value;
 
         element.selectionStart = lastEntry.selectionStart;
@@ -91,9 +53,6 @@ function undoReducer(state: State, action: Action): State {
       } else {
         element.value = '';
       }
-
-      // eslint-disable-next-line no-console
-      console.log(state.undoStack.map(entry => entry.toString()));
     }
   }
 
@@ -108,11 +67,10 @@ function undoReducer(state: State, action: Action): State {
 
 export default function useUndoReducer(
   ref: RefObject<HTMLInputElement | HTMLTextAreaElement>
-): readonly [State, Readonly<{ checkpoint: (reason: string) => void; moveCaret: () => void; undo: () => void }>] {
-  const [state, dispatch] = useReducer(undoReducer, { caretMoved: false, elementRef: ref, undoStack: [] });
+): readonly [State, Readonly<{ checkpoint: (group: string) => void; moveCaret: () => void; undo: () => void }>] {
+  const [state, dispatch] = useReducer(undoReducer, { elementRef: ref, undoStack: [] });
 
-  const checkpoint = useCallback((reason: string) => dispatch({ payload: { reason }, type: 'CHECKPOINT' }), [dispatch]);
-  // const moveCaret = useCallback(() => dispatch({ type: 'MOVE_CARET' }), [dispatch]);
+  const checkpoint = useCallback((group: string) => dispatch({ payload: { group }, type: 'CHECKPOINT' }), [dispatch]);
   const undo = useCallback(() => dispatch({ type: 'UNDO' }), [dispatch]);
 
   return Object.freeze([

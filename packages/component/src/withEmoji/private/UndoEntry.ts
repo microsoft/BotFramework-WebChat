@@ -1,18 +1,18 @@
 export default class UndoEntry {
-  constructor(value: string, selectionStart: number | null, selectionEnd: number | null, reason: string) {
-    this.#reason = reason;
+  constructor(value: string, selectionStart: number | null, selectionEnd: number | null, group: string) {
+    this.#group = group;
     this.#selectionEnd = selectionEnd;
     this.#selectionStart = selectionStart;
     this.#value = value;
   }
 
-  #reason: string;
+  #group: string;
   #selectionEnd: number | null;
   #selectionStart: number | null;
   #value: string;
 
-  get reason(): string {
-    return this.#reason;
+  get group(): string {
+    return this.#group;
   }
 
   get selectionStart(): number | null {
@@ -22,6 +22,7 @@ export default class UndoEntry {
   get selectionEnd(): number | null {
     return this.#selectionEnd;
   }
+
   get value(): string {
     return this.#value;
   }
@@ -37,6 +38,6 @@ export default class UndoEntry {
       tokens.splice(this.selectionStart, 0, '[');
     }
 
-    return `${tokens.join('')} (${this.reason})`;
+    return `${tokens.join('')} (${this.group})`;
   }
 }
