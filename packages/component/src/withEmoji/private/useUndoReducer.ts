@@ -56,12 +56,6 @@ function undoReducer(state: State, action: Action): State {
     }
   }
 
-  const pre = document.querySelector('pre');
-
-  if (pre) {
-    pre.textContent = state.undoStack.map(entry => entry.toString()).join('\n');
-  }
-
   return state;
 }
 
