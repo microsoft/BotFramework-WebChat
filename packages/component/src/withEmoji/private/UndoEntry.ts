@@ -1,17 +1,17 @@
 export default class UndoEntry {
-  constructor(value: string, selectionStart: number | null, selectionEnd: number | null, group: string) {
+  constructor(value: string, selectionStart: number | null, selectionEnd: number | null, group: string | undefined) {
     this.#group = group;
     this.#selectionEnd = selectionEnd;
     this.#selectionStart = selectionStart;
     this.#value = value;
   }
 
-  #group: string;
+  #group: string | undefined;
   #selectionEnd: number | null;
   #selectionStart: number | null;
   #value: string;
 
-  get group(): string {
+  get group(): string | undefined {
     return this.#group;
   }
 
@@ -25,19 +25,5 @@ export default class UndoEntry {
 
   get value(): string {
     return this.#value;
-  }
-
-  // TODO: Remove this.
-  toString(): string {
-    const tokens = this.value.split('');
-
-    if (this.selectionStart === this.selectionEnd) {
-      tokens.splice(this.selectionStart, 0, '|');
-    } else {
-      tokens.splice(this.selectionEnd, 0, ']');
-      tokens.splice(this.selectionStart, 0, '[');
-    }
-
-    return `${tokens.join('')} (${this.group})`;
   }
 }

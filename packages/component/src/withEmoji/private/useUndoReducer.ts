@@ -1,7 +1,7 @@
 import { type RefObject, useCallback, useReducer } from 'react';
 import UndoEntry from './UndoEntry';
 
-type CheckpointAction = { payload: { group: string }; type: 'CHECKPOINT' };
+type CheckpointAction = { payload: { group: string | undefined }; type: 'CHECKPOINT' };
 type UndoAction = { type: 'UNDO' };
 
 type Action = CheckpointAction | UndoAction;
@@ -23,7 +23,7 @@ function undoReducer(state: State, action: Action): State {
         payload: { group }
       } = action;
 
-      if (group === 'move caret' || group !== state.undoStack[0]?.group) {
+      if (!group || group !== state.undoStack[0]?.group) {
         if (value === state.undoStack[0]?.value) {
           state.undoStack.shift();
         }
@@ -67,7 +67,7 @@ function undoReducer(state: State, action: Action): State {
 
 export default function useUndoReducer(
   ref: RefObject<HTMLInputElement | HTMLTextAreaElement>
-): readonly [State, Readonly<{ checkpoint: (group: string) => void; moveCaret: () => void; undo: () => void }>] {
+): readonly [State, Readonly<{ checkpoint: (group?: string) => void; undo: () => void }>] {
   const [state, dispatch] = useReducer(undoReducer, { elementRef: ref, undoStack: [] });
 
   const checkpoint = useCallback((group: string) => dispatch({ payload: { group }, type: 'CHECKPOINT' }), [dispatch]);
@@ -77,7 +77,6 @@ export default function useUndoReducer(
     state,
     Object.freeze({
       checkpoint,
-      moveCaret: () => checkpoint('move caret'),
       undo
     })
   ] as const);

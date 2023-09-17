@@ -48,7 +48,7 @@ function WithEmojiController<
   const onChangeRef = useRefFrom(onChange);
   const valueRef = useRefFrom(value);
 
-  const [_, { checkpoint, moveCaret, undo }] = useUndoReducer(inputElementRef);
+  const [_, { checkpoint, undo }] = useUndoReducer(inputElementRef);
 
   const handleChange = useCallback<(event: ChangeEvent<H>) => void>(
     ({ currentTarget }) => {
@@ -87,7 +87,7 @@ function WithEmojiController<
     [checkpoint, emojiMap, onChangeRef, valueRef]
   );
 
-  const handleFocus = useCallback<(event: FocusEvent<H>) => void>(() => moveCaret(), [moveCaret]);
+  const handleFocus = useCallback<(event: FocusEvent<H>) => void>(() => checkpoint(), [checkpoint]);
 
   const handleKeyDown = useCallback<(event: KeyboardEvent<H>) => void>(
     // eslint-disable-next-line complexity
@@ -115,14 +115,14 @@ function WithEmojiController<
         key === 'PageDown' ||
         ((ctrlKey || metaKey) && (key === 'a' || key === 'A'))
       ) {
-        moveCaret();
+        checkpoint();
       } else if ((ctrlKey || metaKey) && (key === 'v' || key === 'V' || key === 'x' || key === 'X')) {
-        moveCaret();
+        checkpoint();
       } else {
         checkpoint('change');
       }
     },
-    [checkpoint, moveCaret, onChangeRef, undo]
+    [checkpoint, onChangeRef, undo]
   );
 
   useMemo(() => {
