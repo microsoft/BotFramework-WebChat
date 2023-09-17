@@ -67,11 +67,5 @@ export default function useUndoReducer(
   const checkpoint = useCallback((group: string) => dispatch({ payload: { group }, type: 'CHECKPOINT' }), [dispatch]);
   const undo = useCallback(() => dispatch({ type: 'UNDO' }), [dispatch]);
 
-  return Object.freeze([
-    state,
-    Object.freeze({
-      checkpoint,
-      undo
-    })
-  ] as const);
+  return Object.freeze([state, Object.freeze({ checkpoint, undo })] as const);
 }

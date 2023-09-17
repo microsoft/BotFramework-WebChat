@@ -43,12 +43,11 @@ function WithEmojiController<
   onChange?: (value: string | undefined) => void;
 }>) {
   const { value } = componentProps;
-
   const inputElementRef = useRef<H>(null);
   const onChangeRef = useRefFrom(onChange);
-  const valueRef = useRefFrom(value);
 
   const [_, { checkpoint, undo }] = useUndoReducer(inputElementRef);
+  const valueRef = useRefFrom(value);
 
   const handleChange = useCallback<(event: ChangeEvent<H>) => void>(
     ({ currentTarget }) => {
@@ -65,7 +64,7 @@ function WithEmojiController<
           const { length } = emoticon;
 
           if (value.slice(selectionEnd - length, selectionEnd) === emoticon) {
-            checkpoint('move caret');
+            checkpoint();
 
             const nextValue = `${value.slice(0, selectionEnd - length)}${emoji}${value.slice(selectionEnd)}`;
             const nextSelectionEnd = selectionEnd + emoji.length - length;
@@ -78,9 +77,7 @@ function WithEmojiController<
         }
       }
 
-      if (!value) {
-        checkpoint('move caret');
-      }
+      value || checkpoint();
 
       onChangeRef.current?.(currentTarget.value);
     },
@@ -94,7 +91,9 @@ function WithEmojiController<
     event => {
       const { ctrlKey, key, metaKey } = event;
 
-      if ((ctrlKey || metaKey) && (key === 'Z' || key === 'z')) {
+      const uppercaseKey = key.toUpperCase();
+
+      if ((ctrlKey || metaKey) && uppercaseKey === 'Z') {
         event.preventDefault();
 
         undo();
@@ -113,10 +112,9 @@ function WithEmojiController<
         key === 'End' ||
         key === 'PageUp' ||
         key === 'PageDown' ||
-        ((ctrlKey || metaKey) && (key === 'a' || key === 'A'))
+        ((ctrlKey || metaKey) && uppercaseKey === 'A') ||
+        ((ctrlKey || metaKey) && (uppercaseKey === 'V' || uppercaseKey === 'X'))
       ) {
-        checkpoint();
-      } else if ((ctrlKey || metaKey) && (key === 'v' || key === 'V' || key === 'x' || key === 'X')) {
         checkpoint();
       } else {
         checkpoint('change');
@@ -125,11 +123,10 @@ function WithEmojiController<
     [checkpoint, onChangeRef, undo]
   );
 
-  useMemo(() => {
-    if (!inputElementRef.current || inputElementRef.current.value !== value) {
-      checkpoint('set value');
-    }
-  }, [checkpoint, inputElementRef, value]);
+  useMemo(
+    () => (!inputElementRef.current || inputElementRef.current.value !== value) && checkpoint('set value'),
+    [checkpoint, inputElementRef, value]
+  );
 
   return React.createElement(componentType, {
     ...componentProps,
