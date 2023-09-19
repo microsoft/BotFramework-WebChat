@@ -124,7 +124,7 @@ function WithEmojiController<
   );
 
   useMemo(
-    () => (!inputElementRef.current || inputElementRef.current.value !== value) && checkpoint('set value'),
+    () => (!inputElementRef.current || inputElementRef.current.value !== value) && checkpoint(),
     [checkpoint, inputElementRef, value]
   );
 
