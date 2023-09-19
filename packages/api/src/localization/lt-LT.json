@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Vaizdo įrašas",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Pirmyn",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Atgal",
+  "CITATION_MODEL_DIALOG_ALT": "Citata",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Prijungta",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Jungiamasi…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Nepavyko prijungti.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Mokestis",
   "RECEIPT_CARD_TOTAL": "Iš viso",
   "RECEIPT_CARD_VAT": "PVM",
+  "REFERENCE_LIST_HEADER_ONE": "$1 nuoroda",
+  "REFERENCE_LIST_HEADER_FEW": "$1 nuorodos",
+  "REFERENCE_LIST_HEADER_MANY": "$1 nuorodos",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 nuorodų",
+  "REFERENCE_LIST_HEADER_TWO": "$1 nuorodos",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Negali siųsti tuščio pranešimo.",
   "SPEECH_INPUT_LISTENING": "Klausomasi…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofonas išjungtas",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Pokalbio retrospektyvos pabaiga",
   "TYPING_INDICATOR_ALT": "Rodomas teksto įvedimo indikatorius",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 rašo.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "Rašo $1 ir kiti."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "Rašo $1 ir kiti.",
+  "VOTE_DISLIKE_ALT": "Nepatinka",
+  "VOTE_LIKE_ALT": "Patinka"
 }
