@@ -29,7 +29,7 @@
               autoFocus: true,
               emojiMap: new Map([
                 [':o)', '🤡'],
-                [':o', '😮'],
+                [':o', '😮']
               ]),
               onChange: setValue,
               value
@@ -57,7 +57,25 @@
         };
 
         await host.sendKeys(':o)');
+        expect(getTextWithCaret()).toBe('😮)|');
+
+        await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
+        expect(getTextWithCaret()).toBe('😮|');
+
+        await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
+        expect(getTextWithCaret()).toBe(':o|');
+
+        await host.sendKeys(')');
         expect(getTextWithCaret()).toBe('🤡|');
+
+        await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
+        expect(getTextWithCaret()).toBe(':o)|');
+
+        await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
+        expect(getTextWithCaret()).toBe(':o|');
+
+        await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
+        expect(getTextWithCaret()).toBe('|');
       });
     </script>
   </body>
