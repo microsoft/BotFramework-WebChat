@@ -23,11 +23,11 @@ function undoReducer(state: State, action: Action): State {
 
   if (element) {
     if (action.type === 'CHECKPOINT') {
-      const { selectionEnd, selectionStart, value } = element;
+      const [firstEntry] = state.undoStack;
       const {
         payload: { group }
       } = action;
-      const [firstEntry] = state.undoStack;
+      const { selectionEnd, selectionStart, value } = element;
 
       if (!group || group !== firstEntry?.group) {
         value === firstEntry?.value && state.undoStack.shift();
