@@ -74,6 +74,8 @@ function WithEmojiController<
             currentTarget.selectionStart = selectionStart;
             currentTarget.selectionEnd = nextSelectionEnd;
           }
+
+          break;
         }
       }
 
