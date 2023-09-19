@@ -55,48 +55,49 @@
         const [inputElement] = document.getElementsByTagName('input');
         const [button1, button2] = document.getElementsByTagName('button');
 
-        expect(inputElement.value).toBe('');
+        const getTextWithCaret = () => {
+          const tokens = inputElement.value.split('');
+
+          if (inputElement.selectionStart === inputElement.selectionEnd) {
+            tokens.splice(inputElement.selectionStart, 0, '|');
+          } else {
+            tokens.splice(inputElement.selectionEnd, 0, ']');
+            tokens.splice(inputElement.selectionStart, 0, '[');
+          }
+
+          return tokens.join('');
+        };
+
+        expect(getTextWithCaret()).toBe('|');
 
         await host.sendKeys('Hello, World!:)');
-        expect(inputElement.value).toBe('Hello, World!🙂');
-        expect(inputElement.selectionStart).toBe(15);
-        expect(inputElement.selectionEnd).toBe(15);
+        expect(getTextWithCaret()).toBe('Hello, World!🙂|');
 
         await host.click(button1);
-        expect(inputElement.value).toBe('Aloha!');
+        expect(getTextWithCaret()).toBe('|Aloha!');
 
         await host.click(button2);
-        expect(inputElement.value).toBe('Morning!');
+        expect(getTextWithCaret()).toBe('|Morning!');
 
         await host.click(document.getElementsByTagName('input')[0]);
         await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
-        expect(inputElement.value).toBe('Aloha!');
-        expect(inputElement.selectionStart).toBe(6);
-        expect(inputElement.selectionEnd).toBe(6);
+        expect(getTextWithCaret()).toBe('Aloha!|');
 
         await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
-        expect(inputElement.value).toBe('Hello, World!🙂');
-        expect(inputElement.selectionStart).toBe(15);
-        expect(inputElement.selectionEnd).toBe(15);
+        expect(getTextWithCaret()).toBe('Hello, World!🙂|');
 
         await host.click(button1);
-        expect(inputElement.value).toBe('Aloha!');
+        expect(getTextWithCaret()).toBe('Aloha!|');
 
         await host.click(document.getElementsByTagName('input')[0]);
         await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
-        expect(inputElement.value).toBe('Hello, World!🙂');
-        expect(inputElement.selectionStart).toBe(15);
-        expect(inputElement.selectionEnd).toBe(15);
+        expect(getTextWithCaret()).toBe('Hello, World!🙂|');
 
         await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
-        expect(inputElement.value).toBe('Hello, World!:)');
-        expect(inputElement.selectionStart).toBe(15);
-        expect(inputElement.selectionEnd).toBe(15);
+        expect(getTextWithCaret()).toBe('Hello, World!:)|');
 
         await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
-        expect(inputElement.value).toBe('');
-        expect(inputElement.selectionStart).toBe(0);
-        expect(inputElement.selectionEnd).toBe(0);
+        expect(getTextWithCaret()).toBe('|');
       });
     </script>
   </body>

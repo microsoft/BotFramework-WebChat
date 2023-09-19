@@ -9,12 +9,15 @@
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <main></main>
+    <div>
+      <main></main>
+    </div>
     <script>
       run(async function () {
-        const { withEmoji } = WebChat;
-        const Input = React.forwardRef((props, ref) => React.createElement('input', { ...props, ref }));
-        const InputWithEmoji = withEmoji(Input);
+        const InputWithEmoji = WebChat.withEmoji(
+          React.forwardRef((props, ref) => React.createElement('input', { ...props, ref }))
+        );
+
         const App = () => {
           const [value, setValue] = React.useState('');
 
@@ -24,7 +27,7 @@
             'Input: ',
             React.createElement(InputWithEmoji, {
               autoFocus: true,
-              emojiMap: new Map([[':)', '🙂']]),
+              emojiMap: new Map([]),
               onChange: setValue,
               value
             })
@@ -37,30 +40,33 @@
 
         const [inputElement] = document.getElementsByTagName('input');
 
-        expect(inputElement.value).toBe('');
+        const getTextWithCaret = () => {
+          const tokens = inputElement.value.split('');
 
-        await host.sendKeys('Hello!');
-        expect(inputElement.value).toBe('Hello!');
-        expect(inputElement.selectionStart).toBe(6);
-        expect(inputElement.selectionEnd).toBe(6);
+          if (inputElement.selectionStart === inputElement.selectionEnd) {
+            tokens.splice(inputElement.selectionStart, 0, '|');
+          } else {
+            tokens.splice(inputElement.selectionEnd, 0, ']');
+            tokens.splice(inputElement.selectionStart, 0, '[');
+          }
 
-        await host.sendKeys(':)');
-        expect(inputElement.value).toBe('Hello!🙂');
-        expect(inputElement.selectionStart).toBe(8);
-        expect(inputElement.selectionEnd).toBe(8);
+          return tokens.join('');
+        };
+
+        await host.sendKeys('ABC');
+        expect(getTextWithCaret()).toBe('ABC|');
+
+        await host.sendKeys('+CONTROL', 'A', '-CONTROL');
+        expect(getTextWithCaret()).toBe('[ABC]');
+
+        await host.sendKeys('XYZ');
+        expect(getTextWithCaret()).toBe('XYZ|');
 
         await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
-        expect(inputElement.value).toBe('Hello!:)');
-        expect(inputElement.selectionStart).toBe(8);
-        expect(inputElement.selectionEnd).toBe(8);
+        expect(getTextWithCaret()).toBe('[ABC]');
 
-        await host.sendKeys('LEFT', 'LEFT');
-        await host.sendKeys('DELETE', ':');
-        expect(inputElement.value).toBe('Hello!:)');
-        expect(inputElement.selectionStart).toBe(7);
-        expect(inputElement.selectionEnd).toBe(7);
-
-        await host.sendKeys('DELETE', ')');
+        await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
+        expect(getTextWithCaret()).toBe('|');
       });
     </script>
   </body>
