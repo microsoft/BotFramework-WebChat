@@ -11,6 +11,11 @@ type State = {
   undoStack: UndoEntry[];
 };
 
+type ReadonlyState = Readonly<{
+  elementRef: State['elementRef'];
+  undoStack: readonly UndoEntry[];
+}>;
+
 function undoReducer(state: State, action: Action): State {
   const {
     elementRef: { current: element }
@@ -24,9 +29,7 @@ function undoReducer(state: State, action: Action): State {
       } = action;
 
       if (!group || group !== state.undoStack[0]?.group) {
-        if (value === state.undoStack[0]?.value) {
-          state.undoStack.shift();
-        }
+        value === state.undoStack[0]?.value && state.undoStack.shift();
 
         state.undoStack.unshift(new UndoEntry(value, selectionStart, selectionEnd, group));
       }
@@ -42,8 +45,6 @@ function undoReducer(state: State, action: Action): State {
           break;
         }
       }
-
-      [lastEntry] = state.undoStack;
 
       if (lastEntry) {
         element.value = lastEntry.value;
@@ -61,11 +62,14 @@ function undoReducer(state: State, action: Action): State {
 
 export default function useUndoReducer(
   ref: RefObject<HTMLInputElement | HTMLTextAreaElement>
-): readonly [State, Readonly<{ checkpoint: (group?: string) => void; undo: () => void }>] {
+): readonly [ReadonlyState, Readonly<{ checkpoint: (group?: string) => void; undo: () => void }>] {
   const [state, dispatch] = useReducer(undoReducer, { elementRef: ref, undoStack: [] });
 
   const checkpoint = useCallback((group: string) => dispatch({ payload: { group }, type: 'CHECKPOINT' }), [dispatch]);
   const undo = useCallback(() => dispatch({ type: 'UNDO' }), [dispatch]);
 
-  return Object.freeze([state, Object.freeze({ checkpoint, undo })] as const);
+  return Object.freeze([
+    Object.freeze({ elementRef: state.elementRef, undoStack: Object.freeze([...state.undoStack]) }),
+    Object.freeze({ checkpoint, undo })
+  ] as const);
 }
