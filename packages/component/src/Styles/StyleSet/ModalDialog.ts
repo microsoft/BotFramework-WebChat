@@ -1,9 +1,8 @@
-import {
-  DARK_THEME_SELECTOR,
-  FORCED_COLORS_SELECTOR,
-  LIGHT_THEME_SELECTOR,
-  NOT_FORCED_COLORS_SELECTOR
-} from './Constants';
+import { FORCED_COLORS_SELECTOR, NOT_FORCED_COLORS_SELECTOR } from './Constants';
+
+// TODO: Temporarily disable dark theme until we defined the link color and stuff for Markdown.
+const DARK_THEME_SELECTOR = '@media (forced-colors: none) and not (forced-colors: none)'; // Always return false
+const LIGHT_THEME_SELECTOR = '@media (forced-colors: none)';
 
 import CSSTokens from '../CSSTokens';
 
