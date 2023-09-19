@@ -54,10 +54,11 @@
         // In WebDriver, CTRL + X do not cut to clipboard.
         // We cannot do CTRL + A followed by CTRL + X here.
         // Instead, we are writing to clipboard directly.
-        await host.sendKeys('+CONTROL', 'A', '-CONTROL', 'BACK_SPACE');
-        expect(getTextWithCaret()).toBe('|');
+        await host.sendKeys('+CONTROL', 'A', '-CONTROL');
+        document.execCommand('copy');
 
-        await navigator.clipboard.writeText('ABC');
+        await host.sendKeys('BACK_SPACE');
+        expect(getTextWithCaret()).toBe('|');
 
         await host.sendKeys('123');
         expect(getTextWithCaret()).toBe('123|');
