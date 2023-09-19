@@ -81,13 +81,13 @@
 
         await host.click(document.getElementsByTagName('input')[0]);
         await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
-        expect(getTextWithCaret()).toBe('Aloha!|');
+        expect(getTextWithCaret()).toBe('|Aloha!');
 
         await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
         expect(getTextWithCaret()).toBe('Hello, World!🙂|');
 
         await host.click(button1);
-        expect(getTextWithCaret()).toBe('Aloha!|');
+        expect(getTextWithCaret()).toBe('|Aloha!');
 
         await host.click(document.getElementsByTagName('input')[0]);
         await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
