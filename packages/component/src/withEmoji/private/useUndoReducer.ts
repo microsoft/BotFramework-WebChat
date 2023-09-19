@@ -27,9 +27,10 @@ function undoReducer(state: State, action: Action): State {
       const {
         payload: { group }
       } = action;
+      const [firstEntry] = state.undoStack;
 
-      if (!group || group !== state.undoStack[0]?.group) {
-        value === state.undoStack[0]?.value && state.undoStack.shift();
+      if (!group || group !== firstEntry?.group) {
+        value === firstEntry?.value && state.undoStack.shift();
 
         state.undoStack.unshift(new UndoEntry(value, selectionStart, selectionEnd, group));
       }
