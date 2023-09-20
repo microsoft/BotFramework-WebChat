@@ -13,7 +13,7 @@ import React, {
   type Ref
 } from 'react';
 
-import useUndoReducer from './private/useUndoReducer';
+import useUndoStack from './private/useUndoStack';
 
 export type InputTargetProps<H> = {
   onChange?: (event: ChangeEvent<H>) => void;
@@ -46,7 +46,7 @@ function WithEmojiController<
   const inputElementRef = useRef<H>(null);
   const onChangeRef = useRefFrom(onChange);
 
-  const [_, { checkpoint, undo }] = useUndoReducer(inputElementRef);
+  const { push, undo } = useUndoStack(inputElementRef);
   const valueRef = useRefFrom(value);
 
   const handleChange = useCallback<(event: ChangeEvent<H>) => void>(
@@ -64,7 +64,7 @@ function WithEmojiController<
           const { length } = emoticon;
 
           if (value.slice(selectionEnd - length, selectionEnd) === emoticon) {
-            checkpoint();
+            push();
 
             const nextValue = `${value.slice(0, selectionEnd - length)}${emoji}${value.slice(selectionEnd)}`;
             const nextSelectionEnd = selectionEnd + emoji.length - length;
@@ -79,14 +79,14 @@ function WithEmojiController<
         }
       }
 
-      value || checkpoint();
+      value || push();
 
       onChangeRef.current?.(currentTarget.value);
     },
-    [checkpoint, emojiMap, onChangeRef, valueRef]
+    [push, emojiMap, onChangeRef, valueRef]
   );
 
-  const handleFocus = useCallback<(event: FocusEvent<H>) => void>(() => checkpoint(), [checkpoint]);
+  const handleFocus = useCallback<(event: FocusEvent<H>) => void>(() => push(), [push]);
 
   const handleKeyDown = useCallback<(event: KeyboardEvent<H>) => void>(
     // eslint-disable-next-line complexity
@@ -102,9 +102,9 @@ function WithEmojiController<
 
         onChangeRef.current?.(event.currentTarget.value);
       } else if (key === 'Backspace') {
-        checkpoint('backspace');
+        push('backspace');
       } else if (key === 'Delete') {
-        checkpoint('delete');
+        push('delete');
       } else if (
         key === 'ArrowLeft' ||
         key === 'ArrowRight' ||
@@ -117,17 +117,17 @@ function WithEmojiController<
         ((ctrlKey || metaKey) && uppercaseKey === 'A') ||
         ((ctrlKey || metaKey) && (uppercaseKey === 'V' || uppercaseKey === 'X'))
       ) {
-        checkpoint();
+        push();
       } else {
-        checkpoint('change');
+        push('change');
       }
     },
-    [checkpoint, onChangeRef, undo]
+    [push, onChangeRef, undo]
   );
 
   useMemo(
-    () => (!inputElementRef.current || inputElementRef.current.value !== value) && checkpoint(),
-    [checkpoint, inputElementRef, value]
+    () => (!inputElementRef.current || inputElementRef.current.value !== value) && push(),
+    [push, inputElementRef, value]
   );
 
   return React.createElement(componentType, {
