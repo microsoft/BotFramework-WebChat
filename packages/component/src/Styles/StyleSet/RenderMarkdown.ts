@@ -17,6 +17,8 @@ export default function createMarkdownStyle() {
         background: 'transparent',
         border: 0,
         cursor: 'pointer',
+        fontFamily: 'unset',
+        fontSize: 'unset',
         padding: 0,
         textDecoration: 'underline',
         whiteSpace: 'nowrap',
@@ -28,11 +30,6 @@ export default function createMarkdownStyle() {
         [NOT_FORCED_COLORS_SELECTOR]: {
           color: CSSTokens.ColorAccent
         }
-      },
-
-      '& .webchat__render-markdown__pure-identifier': {
-        fontFamily: 'unset',
-        fontSize: 'unset'
       },
 
       '& .webchat__render-markdown__pure-identifier::after': {
