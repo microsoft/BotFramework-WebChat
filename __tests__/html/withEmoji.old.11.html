@@ -67,7 +67,9 @@
         await host.sendKeys('123');
         expect(getTextWithCaret()).toBe('abc:)123|');
 
-        await host.sendKeys('+CONTROL', 'a', 'x', 'v', '-CONTROL');
+        await host.sendKeys('+CONTROL', 'a', '-CONTROL');
+        document.execCommand('cut');
+        await host.sendKeys('+CONTROL', 'v', '-CONTROL');
         expect(getTextWithCaret()).toBe('abc:)123|');
       });
     </script>
