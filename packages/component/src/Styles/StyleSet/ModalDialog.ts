@@ -28,7 +28,7 @@ export default function createModalDialogStyleSet() {
 
         '@media screen and (min-width: 640px)': {
           maxWidth: '60%',
-          minWidth: 601, // At screen width 639px, the dialog width is 601px.
+          minWidth: 'calc(640px - 6px - 2em)', // Chromium calculation of default dialog width. At 640px, width is 602px.
           width: '60%'
         },
 
