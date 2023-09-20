@@ -19,11 +19,18 @@ export default function createModalDialogStyleSet() {
 
       '& .webchat__modal-dialog__box': {
         borderRadius: 2,
-        height: `calc(100% - ${CSSTokens.PaddingRegular} * 2)`,
         overflow: 'hidden',
         margin: 'auto',
-        maxWidth: '60%',
-        width: `calc(100% - ${CSSTokens.PaddingRegular} * 2)`,
+
+        '@media screen and (max-width: 639px)': {
+          maxWidth: 'unset'
+        },
+
+        '@media screen and (min-width: 640px)': {
+          maxWidth: '60%',
+          minWidth: 601, // At screen width 639px, the dialog width is 601px.
+          width: '60%'
+        },
 
         [LIGHT_THEME_SELECTOR]: {
           // From Power BI:
