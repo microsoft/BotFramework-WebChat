@@ -30,6 +30,11 @@ export default function createMarkdownStyle() {
         }
       },
 
+      '& .webchat__render-markdown__pure-identifier': {
+        fontFamily: 'unset',
+        fontSize: 'unset'
+      },
+
       '& .webchat__render-markdown__pure-identifier::after': {
         content: "']'"
       },
