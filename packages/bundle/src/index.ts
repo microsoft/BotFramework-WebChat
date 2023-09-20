@@ -3,7 +3,7 @@
 
 export * from './index-minimal';
 
-import { Components as MinimalComponents, hooks, version } from './index-minimal';
+import { Components as MinimalComponents, hooks, version, withEmoji } from './index-minimal';
 import AdaptiveCardContent from './adaptiveCards/Attachment/AdaptiveCardContent';
 import addVersion from './addVersion';
 import AnimationCardContent from './adaptiveCards/Attachment/AnimationCardContent';
@@ -93,7 +93,8 @@ export {
   createStyleSet,
   patchedHooks as hooks,
   renderMarkdown,
-  renderWebChat
+  renderWebChat,
+  withEmoji
 };
 
 export type { StyleOptions, StrictStyleOptions };
@@ -111,7 +112,8 @@ window['WebChat'] = {
   hooks: patchedHooks,
   ReactWebChat,
   renderMarkdown,
-  renderWebChat
+  renderWebChat,
+  withEmoji
 };
 
 addVersion('full');

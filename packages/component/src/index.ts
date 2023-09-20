@@ -31,7 +31,7 @@ import YouTubeContent from './Attachment/YouTubeContent';
 import DictationInterims, { connectDictationInterims } from './SendBox/DictationInterims';
 import MicrophoneButton, { connectMicrophoneButton } from './SendBox/MicrophoneButton';
 import SendButton, { connectSendButton } from './SendBox/SendButton';
-import SendTextBox, { connectSendTextBox } from './SendBox/TextBox';
+import SendTextBox from './SendBox/TextBox';
 import SuggestedActions, { connectSuggestedActions } from './SendBox/SuggestedActions';
 import UploadButton, { connectUploadButton } from './SendBox/UploadButton';
 
@@ -42,6 +42,7 @@ import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/crea
 import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
+import withEmoji from './withEmoji/withEmoji';
 
 import * as componentHooks from './hooks/index';
 
@@ -95,7 +96,6 @@ const Components = {
   connectDictationInterims,
   connectMicrophoneButton,
   connectSendButton,
-  connectSendTextBox,
   connectSuggestedActions,
   connectUploadButton
 };
@@ -114,7 +114,8 @@ export {
   getTabIndex,
   hooks,
   localize,
-  version
+  version,
+  withEmoji
 };
 
 export type { BasicWebChatProps, ComposerProps, ReactWebChatProps };

@@ -15,7 +15,8 @@ import ReactWebChat, {
   concatMiddleware,
   connectToWebChat,
   createStyleSet,
-  hooks
+  hooks,
+  withEmoji
 } from 'botframework-webchat-component';
 
 import addVersion from './addVersion';
@@ -58,7 +59,8 @@ export {
   createStyleSet,
   hooks,
   renderWebChat,
-  version
+  version,
+  withEmoji
 };
 
 export type { StyleOptions, StrictStyleOptions };
@@ -77,7 +79,8 @@ window['WebChat'] = {
   createStyleSet,
   hooks,
   ReactWebChat,
-  renderWebChat
+  renderWebChat,
+  withEmoji
 };
 
 addVersion('minimal');

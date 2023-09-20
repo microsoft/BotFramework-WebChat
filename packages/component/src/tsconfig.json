@@ -7,10 +7,13 @@
     "downlevelIteration": true,
     "emitDeclarationOnly": true,
     "jsx": "react",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "preserveWatchOutput": true,
     "pretty": true,
     "skipLibCheck": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "target": "ESNext"
   },
   "files": ["index.ts"]
 }

@@ -1,3 +1,4 @@
+// @ts-expect-error TS1479 should be fixed when bumping to typescript@5.
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { hooks } from 'botframework-webchat-api';
 import { onErrorResumeNext } from 'botframework-webchat-core';

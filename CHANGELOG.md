@@ -22,8 +22,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  `useTextBoxValue` setter will no longer replace emoticon with emoji, in PR [#4861](https://github.com/microsoft/BotFramework-WebChat/issues/pull/4861)
+
 ### Fixed
 
+-  Fixes [#4865](https://github.com/microsoft/BotFramework-WebChat/issues/4865). Fixed <kbd>CTRL</kbd> + <kbd>Z</kbd> should undo correctly, by [@compulim](https://github.com/compulim), in PR [#4861](https://github.com/microsoft/BotFramework-WebChat/issues/pull/4861)
 -  Fixes [#4863](https://github.com/microsoft/BotFramework-WebChat/issues/4863). Disable dark theme for link references until chat history has dark theme support, by [@compulim](https://github.com/compulim), in PR [#4864](https://github.com/microsoft/BotFramework-WebChat/pull/4864)
 
 ### Added
