@@ -44,7 +44,9 @@
                 onClick: handleClick2
               },
               'Set 2'
-            )
+            ),
+            React.createElement('br'),
+            React.createElement('div', { 'data-test-id': 'get-value' }, value)
           );
         };
 
@@ -52,10 +54,13 @@
           ReactDOM.render(React.createElement(App), document.getElementsByTagName('main')[0], resolve)
         );
 
-        const [inputElement] = document.getElementsByTagName('input');
         const [button1, button2] = document.getElementsByTagName('button');
+        const [inputElement] = document.getElementsByTagName('input');
+        const getValueElement = document.querySelector('[data-test-id]');
 
         const getTextWithCaret = () => {
+          expect(inputElement.value).toBe(getValueElement.textContent);
+
           const tokens = inputElement.value.split('');
 
           if (inputElement.selectionStart === inputElement.selectionEnd) {

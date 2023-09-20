@@ -30,7 +30,9 @@
               emojiMap: new Map([[':)', '🙂']]),
               onChange: setValue,
               value
-            })
+            }),
+            React.createElement('br'),
+            React.createElement('div', { 'data-test-id': 'get-value' }, value)
           );
         };
 
@@ -39,8 +41,11 @@
         );
 
         const [inputElement] = document.getElementsByTagName('input');
+        const getValueElement = document.querySelector('[data-test-id]');
 
         const getTextWithCaret = () => {
+          expect(inputElement.value).toBe(getValueElement.textContent);
+
           const tokens = inputElement.value.split('');
 
           if (inputElement.selectionStart === inputElement.selectionEnd) {
@@ -63,7 +68,7 @@
         // We cannot do CTRL + A followed by CTRL + X here.
         // Instead, we are writing to clipboard directly.
         await host.sendKeys('+CONTROL', 'A', '-CONTROL');
-        navigator.clipboard?.writeText(document.activeElement.value) || document.execCommand('copy');
+        document.execCommand('copy');
 
         await host.sendKeys('BACK_SPACE');
         expect(getTextWithCaret()).toBe('|');
