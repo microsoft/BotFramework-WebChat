@@ -42,7 +42,7 @@ export default function useUndoStack(
     while (undoStack.length) {
       [lastEntry] = undoStack;
 
-      if (lastEntry.value === element.value) {
+      if (lastEntry?.value === element.value) {
         undoStack.shift();
       } else {
         break;
