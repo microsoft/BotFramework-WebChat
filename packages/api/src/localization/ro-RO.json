@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Un videoclip",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Înainte",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Înapoi",
+  "CITATION_MODEL_DIALOG_ALT": "Mențiune",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Conectat",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Se conectează…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Imposibil de conectat.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Impozit",
   "RECEIPT_CARD_TOTAL": "Total",
   "RECEIPT_CARD_VAT": "TVA",
+  "REFERENCE_LIST_HEADER_ONE": "$1 referință",
+  "REFERENCE_LIST_HEADER_FEW": "$1 referințe",
+  "REFERENCE_LIST_HEADER_MANY": "$1 referințe",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 referințe",
+  "REFERENCE_LIST_HEADER_TWO": "$1 referințe",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Nu se poate trimite un mesaj gol.",
   "SPEECH_INPUT_LISTENING": "Se ascultă…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Microfon dezactivat",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Sfârșit istoric chat",
   "TYPING_INDICATOR_ALT": "Se afișează indicatorul de tastare",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 tastează.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 și alții tastează."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 și alții tastează.",
+  "VOTE_DISLIKE_ALT": "Nu apreciez",
+  "VOTE_LIKE_ALT": "Apreciez"
 }

@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Un clip vidéo",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Suivant",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Précédent",
+  "CITATION_MODEL_DIALOG_ALT": "Citation",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Connecté",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Connexion en cours...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Impossible de se connecter.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Taxe",
   "RECEIPT_CARD_TOTAL": "Total",
   "RECEIPT_CARD_VAT": "TVA",
+  "REFERENCE_LIST_HEADER_ONE": "$1 référence",
+  "REFERENCE_LIST_HEADER_FEW": "$1 références",
+  "REFERENCE_LIST_HEADER_MANY": "$1 références",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 références",
+  "REFERENCE_LIST_HEADER_TWO": "$1 références",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Impossible d’envoyer un message vide.",
   "SPEECH_INPUT_LISTENING": "Écoute en cours...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Microphone désactivé",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Fin de l’historique des conversations instantanées",
   "TYPING_INDICATOR_ALT": "Affichage de l'indicateur de saisie",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 effectue une saisie.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 et d’autres effectuent une saisie."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 et d’autres effectuent une saisie.",
+  "VOTE_DISLIKE_ALT": "Je n’aime pas",
+  "VOTE_LIKE_ALT": "J’aime"
 }
