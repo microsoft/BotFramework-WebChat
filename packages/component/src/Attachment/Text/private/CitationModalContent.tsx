@@ -4,12 +4,10 @@ import React, { Fragment, memo } from 'react';
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 
-type Props = {
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
+type Props = Readonly<{
   headerText?: string;
   markdown: string;
-};
+}>;
 
 const CitationModalContent = memo(({ headerText, markdown }: Props) => {
   const [{ renderMarkdown: renderMarkdownStyleSet }] = useStyleSet();
