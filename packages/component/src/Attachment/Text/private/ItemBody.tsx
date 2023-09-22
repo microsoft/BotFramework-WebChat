@@ -3,13 +3,11 @@ import React, { memo } from 'react';
 import Badge from './Badge';
 import OpenInNewWindowIcon from './OpenInNewWindowIcon';
 
-type Props = {
+type Props = Readonly<{
   identifier: string;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
   isExternal?: boolean;
   title: string;
-};
+}>;
 
 const ItemBody = memo(({ identifier, isExternal, title }: Props) => (
   <div className="webchat__link-definitions__list-item-body">

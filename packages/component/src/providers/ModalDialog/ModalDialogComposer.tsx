@@ -11,9 +11,7 @@ type DialogInit = Exclude<Parameters<ContextType['showModal']>[1], undefined>;
 
 type RenderFunctionAndDialogInit = Readonly<[RenderFunction, DialogInit | undefined]>;
 
-// "defaultProps" is being deprecated.
-// eslint-disable-next-line react/require-default-props
-type Props = { children?: ReactNode };
+type Props = Readonly<{ children?: ReactNode }>;
 
 const ModalDialogComposer = memo(({ children }: Props) => {
   const [renderFunctionAndDialogInit, setRenderFunctionAndDialogInit] = useState<

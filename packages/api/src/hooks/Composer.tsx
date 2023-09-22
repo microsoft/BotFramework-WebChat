@@ -187,8 +187,7 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
 // Since we set both TypeScript `Props` class and `ComposerCore.propTypes`, this check will be done there as well.
 // Ignoring it in TypeScript version should be safe, as we have `propTypes` version to protect us.
 
-/* eslint-disable react/require-default-props */
-type ComposerCoreProps = {
+type ComposerCoreProps = Readonly<{
   activityMiddleware?: OneOrMany<ActivityMiddleware>;
   activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware>;
   attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
@@ -236,8 +235,7 @@ type ComposerCoreProps = {
   toastRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
   /** @deprecated Please use "typingIndicatorRenderer" instead. */
   typingIndicatorRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
-};
-/* eslint-enable react/require-default-props */
+}>;
 
 const ComposerCore = ({
   activityMiddleware,
@@ -722,9 +720,10 @@ ComposerCore.propTypes = {
   username: PropTypes.string
 };
 
-type ComposerWithStoreProps = ComposerCoreProps & {
-  store?: any;
-};
+type ComposerWithStoreProps = ComposerCoreProps &
+  Readonly<{
+    store?: any;
+  }>;
 
 type ComposerProps = ComposerWithStoreProps & {
   internalRenderErrorBox?: any;

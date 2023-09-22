@@ -25,7 +25,7 @@ function isUpvoteAction(voteAction: VoteAction): voteAction is UpvoteAction {
   return voteAction.actionOption === 'upvote';
 }
 
-type Props = { activity: WebChatActivity };
+type Props = Readonly<{ activity: WebChatActivity }>;
 
 const OthersActivityStatus = memo(({ activity }: Props) => {
   const [{ sendStatus }] = useStyleSet();

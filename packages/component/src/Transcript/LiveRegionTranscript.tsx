@@ -37,9 +37,9 @@ const ROOT_STYLE = {
 
 type RenderingActivities = Map<string, WebChatActivity>;
 
-type LiveRegionTranscriptCoreProps = {
+type LiveRegionTranscriptCoreProps = Readonly<{
   activityElementMapRef: RefObject<ActivityElementMap>;
-};
+}>;
 
 const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityElementMapRef }) => {
   // We are looking for all activities instead of just those will be rendered.

@@ -47,10 +47,7 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
 
-type ComposerCoreUIProps = {
-  // eslint-disable-next-line react/require-default-props
-  children?: ReactNode;
-};
+type ComposerCoreUIProps = Readonly<{ children?: ReactNode }>;
 
 const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   const [{ cssCustomProperties }] = useStyleSet();
@@ -74,7 +71,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
 
 ComposerCoreUI.displayName = 'ComposerCoreUI';
 
-type ComposerCoreProps = {
+type ComposerCoreProps = Readonly<{
   children?: ReactNode;
   extraStyleSet?: any;
   nonce?: string;
@@ -86,7 +83,7 @@ type ComposerCoreProps = {
   styleSet?: any;
   suggestedActionsAccessKey?: boolean | string;
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
-};
+}>;
 
 const ComposerCore: FC<ComposerCoreProps> = ({
   children,
@@ -130,7 +127,6 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     const emotion =
       // Prefix "id-" to prevent object injection attack.
       emotionPool[`id-${nonce}`] ||
-      // @ts-expect-error TS1479 should be fixed when bumping to typescript@5.
       (emotionPool[`id-${nonce}`] = createEmotion({ key: `webchat--css-${createCSSKey()}`, nonce }));
 
     return style => emotion.css(style);

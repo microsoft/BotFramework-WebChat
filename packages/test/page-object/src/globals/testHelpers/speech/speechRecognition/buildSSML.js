@@ -16,8 +16,8 @@ export default function buildSSML({ lang, pitch = 1, rate = 1, text, voice, volu
   return `<speak version="1.0" xml:lang="${lang}">
   <voice xml:lang="${lang}" name="${voice}">
     <prosody pitch="${relativePercentage(pitch)}" rate="${relativePercentage(rate)}" volume="${relativePercentage(
-    volume
-  )}">
+      volume
+    )}">
       ${text}
     </prosody>
   </voice>

@@ -3,9 +3,7 @@ import React, { type FC, Fragment, memo } from 'react';
 
 import useStyleSet from '../../../hooks/useStyleSet';
 
-type Props = {
-  text: string;
-};
+type Props = Readonly<{ text: string }>;
 
 const PlainTextContent: FC<Props> = memo(({ text }: Props) => {
   const [{ textContent: textContentStyleSet }] = useStyleSet();

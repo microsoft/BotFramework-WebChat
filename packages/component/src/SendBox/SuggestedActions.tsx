@@ -1,6 +1,7 @@
 /* eslint react/no-array-index-key: "off" */
 
 import { hooks } from 'botframework-webchat-api';
+// eslint-disable-next-line import/no-named-as-default
 import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';

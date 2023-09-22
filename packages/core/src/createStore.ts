@@ -1,4 +1,4 @@
-import { applyMiddleware, createStore as createReduxStore, Store } from 'redux';
+import { applyMiddleware, createStore as createReduxStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 
@@ -28,6 +28,8 @@ type CreateStoreOptions = {
    */
   ponyfill?: Partial<GlobalScopePonyfill>;
 };
+
+type Store = ReturnType<typeof createReduxStore>;
 
 function createEnhancerAndSagaMiddleware(getStore, ...middlewares) {
   const sagaMiddleware = createSagaMiddleware({

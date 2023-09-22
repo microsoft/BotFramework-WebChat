@@ -99,14 +99,13 @@ export default function useCreateActivityStatusRenderer(): ActivityStatusRendere
   return useMemo<ActivityStatusRenderer>(
     () =>
       ({ activity, nextVisibleActivity }) =>
-      ({ hideTimestamp } = {}) =>
-        (
-          <ActivityStatusContainer
-            activity={activity}
-            hideTimestamp={hideTimestamp}
-            nextVisibleActivity={nextVisibleActivity}
-          />
-        ),
+      ({ hideTimestamp } = {}) => (
+        <ActivityStatusContainer
+          activity={activity}
+          hideTimestamp={hideTimestamp}
+          nextVisibleActivity={nextVisibleActivity}
+        />
+      ),
     []
   );
 }

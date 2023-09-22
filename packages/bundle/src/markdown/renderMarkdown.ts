@@ -53,7 +53,10 @@ const SANITIZE_HTML_OPTIONS = Object.freeze({
     'thead',
     'tr',
     'ul'
-  ]
+  ],
+  // Bug of https://github.com/apostrophecms/sanitize-html/issues/633.
+  // They should not remove `alt=""` even though it is empty.
+  nonBooleanAttributes: []
 });
 
 const MARKDOWN_IT_INIT = Object.freeze({

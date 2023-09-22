@@ -48,6 +48,52 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#3699](https://github.com/microsoft/BotFramework-WebChat/issues/3699). Correcting timestamp roundoff, by [@compulim](https://github.com/compulim), in PR [#4821](https://github.com/microsoft/BotFramework-WebChat/pull/4821)
 -  Fixes [#4849](https://github.com/microsoft/BotFramework-WebChat/issues/4849). Rendering an erroneous Adaptive Cards should bail out and not throw `MutationObserver` error, by [@compulim](https://github.com/compulim), in PR [#4852](https://github.com/microsoft/BotFramework-WebChat/issues/4852)
 
+### Changed
+
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4843](https://github.com/microsoft/BotFramework-WebChat/pull/4843)
+   -  Production dependencies
+      -  [`@emotion/css@11.11.2`](https://npmjs.com/package/@emotion/css)
+      -  [`classnames@2.3.2`](https://npmjs.com/package/classnames)
+      -  [`core-js@3.32.1`](https://npmjs.com/package/core-js)
+      -  [`redux-saga@1.2.3`](https://npmjs.com/package/redux-saga)
+      -  [`sanitize-html@2.11.0`](https://npmjs.com/package/sanitize-html)
+      -  [`use-ref-from@0.0.2`](https://npmjs.com/package/use-ref-from)
+      -  [`whatwg-fetch@3.6.18`](https://npmjs.com/package/whatwg-fetch)
+   -  Development dependencies
+      -  [`@types/node@20.5.8`](https://npmjs.com/package/@types/node)
+      -  [`@types/react@18.2.21`](https://npmjs.com/package/@types/react)
+      -  [`@typescript-eslint/eslint-plugin@6.5.0`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
+      -  [`@typescript-eslint/parser@6.5.0`](https://npmjs.com/package/@typescript-eslint/parser)
+      -  [`axe-core@4.7.2`](https://npmjs.com/package/axe-core)
+      -  [`babel-jest@29.6.4`](https://npmjs.com/package/babel-jest)
+      -  [`babel-loader@9.1.3`](https://npmjs.com/package/babel-loader)
+      -  [`chalk@5.3.0`](https://npmjs.com/package/chalk)
+      -  [`concurrently@8.2.1`](https://npmjs.com/package/concurrently)
+      -  [`dotenv@16.3.1`](https://npmjs.com/package/dotenv)
+      -  [`esbuild@0.19.2`](https://npmjs.com/package/esbuild)
+      -  [`eslint-plugin-prettier@5.0.0`](https://npmjs.com/package/eslint-plugin-prettier)
+      -  [`eslint-plugin-react@7.33.2`](https://npmjs.com/package/eslint-plugin-react)
+      -  [`eslint@8.48.0`](https://npmjs.com/package/eslint)
+      -  [`jest-image-snapshot@6.2.0`](https://npmjs.com/package/jest-image-snapshot)
+      -  [`jest-junit@16.0.0`](https://npmjs.com/package/jest-junit)
+      -  [`jest-trx-results-processor@3.0.2`](https://npmjs.com/package/jest-trx-results-processor)
+      -  [`lerna@6.6.2`](https://npmjs.com/package/lerna)
+      -  [`lint-staged@14.0.1`](https://npmjs.com/package/lint-staged)
+      -  [`node-fetch@2.7.0`](https://npmjs.com/package/node-fetch)
+      -  [`nodemon@3.0.1`](https://npmjs.com/package/nodemon)
+      -  [`nopt@7.2.0`](https://npmjs.com/package/nopt)
+      -  [`prettier@3.0.3`](https://npmjs.com/package/prettier)
+      -  [`read-pkg-up@10.1.0`](https://npmjs.com/package/read-pkg-up)
+      -  [`read-pkg@8.1.0`](https://npmjs.com/package/read-pkg)
+      -  [`selenium-webdriver@4.12.0`](https://npmjs.com/package/selenium-webdriver)
+      -  [`serve@14.2.1`](https://npmjs.com/package/serve)
+      -  [`terser-webpack-plugin@5.3.9`](https://npmjs.com/package/terser-webpack-plugin)
+      -  [`typescript@5.2.2`](https://npmjs.com/package/typescript)
+      -  [`url-search-params-polyfill@8.2.4`](https://npmjs.com/package/url-search-params-polyfill)
+      -  [`webpack-cli@5.1.4`](https://npmjs.com/package/webpack-cli)
+      -  [`webpack-stats-plugin@1.1.3`](https://npmjs.com/package/webpack-stats-plugin)
+      -  [`webpack@5.88.2`](https://npmjs.com/package/webpack)
+
 ## [4.15.8] - 2023-06-06
 
 ### Breaking changes

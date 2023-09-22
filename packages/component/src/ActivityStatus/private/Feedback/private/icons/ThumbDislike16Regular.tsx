@@ -1,8 +1,6 @@
 import React, { memo } from 'react';
 
-// "defaultProps" is being deprecated.
-// eslint-disable-next-line react/require-default-props
-type Props = { className?: string };
+type Props = Readonly<{ className?: string }>;
 
 const ThumbDislike16Regular = memo(({ className }: Props) => (
   <svg className={className} fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">

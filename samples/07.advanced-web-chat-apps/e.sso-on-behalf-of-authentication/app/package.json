@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "base64-arraybuffer": "^1.0.2",
-    "botframework-webchat": "^4.15.7",
+    "botframework-webchat": "^4.15.9",
     "math-random": "^2.0.1",
-    "msal": "^1.4.17",
+    "msal": "^1.4.18",
     "office-ui-fabric-react": "^7.204.0",
     "prop-types": "^15.8.1",
     "react": "16.14",

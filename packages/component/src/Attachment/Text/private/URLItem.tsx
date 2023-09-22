@@ -3,13 +3,11 @@ import React, { memo } from 'react';
 import extractHostnameWithSubdomain from './extractHostnameWithSubdomain';
 import ItemBody from './ItemBody';
 
-type Props = {
+type Props = Readonly<{
   identifier: string;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
   title?: string;
   url: string;
-};
+}>;
 
 const URLItem = memo(({ identifier, title, url }: Props) => (
   <a

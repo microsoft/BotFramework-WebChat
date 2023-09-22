@@ -1,11 +1,9 @@
 import { createContext } from 'react';
-import type { DirectLineJSBotConnection, WebChatActivity } from 'botframework-webchat-core';
 
 import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
 import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
 import { GroupActivities } from '../../types/GroupActivitiesMiddleware';
 import { LegacyActivityRenderer } from '../../types/ActivityMiddleware';
-import { Observable } from 'redux';
 import { PerformCardAction } from '../../types/CardActionMiddleware';
 import { RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
 import { RenderAttachment } from '../../types/AttachmentMiddleware';
@@ -15,6 +13,8 @@ import { StrictStyleOptions } from '../../StyleOptions';
 import LocalizedStrings from '../../types/LocalizedStrings';
 import PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
 import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
+
+import type { DirectLineJSBotConnection, Observable, WebChatActivity } from 'botframework-webchat-core';
 
 type WebChatAPIContext = {
   activityRenderer?: LegacyActivityRenderer;

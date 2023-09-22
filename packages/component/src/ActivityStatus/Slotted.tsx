@@ -1,11 +1,7 @@
 import React, { Children, Fragment, memo, type PropsWithChildren } from 'react';
 import classNames from 'classnames';
 
-type Props = PropsWithChildren<{
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
-  className?: string;
-}>;
+type Props = Readonly<PropsWithChildren<{ className?: string }>>;
 
 const Slotted = memo(({ children, className }: Props) => (
   <span className={classNames('webchat__activity-status--slotted', className)}>

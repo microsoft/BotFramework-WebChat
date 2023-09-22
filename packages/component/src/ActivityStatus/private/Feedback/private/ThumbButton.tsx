@@ -7,15 +7,11 @@ import useStyleSet from '../../../../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
 
-type Props = {
+type Props = Readonly<{
   direction: 'down' | 'up';
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
   onClick?: () => void;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
   pressed?: boolean;
-};
+}>;
 
 const ThumbButton = memo(({ direction, onClick, pressed }: Props) => {
   const [{ thumbButton }] = useStyleSet();

@@ -6,7 +6,7 @@ import Slotted from './Slotted';
 import Timestamp from './Timestamp';
 import useStyleSet from '../hooks/useStyleSet';
 
-type Props = { activity: WebChatActivity };
+type Props = Readonly<{ activity: WebChatActivity }>;
 
 const SelftActivityStatus = memo(({ activity }: Props) => {
   const [{ sendStatus }] = useStyleSet();

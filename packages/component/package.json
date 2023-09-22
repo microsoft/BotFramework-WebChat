@@ -82,17 +82,17 @@
     "@babel/preset-env": "^7.19.1",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
-    "@types/node": "^18.14.1",
-    "@types/react": "^18.0.28",
+    "@types/node": "^20.5.8",
+    "@types/react": "^18.2.21",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "concurrently": "^7.6.0",
-    "core-js": "^3.28.0",
+    "concurrently": "^8.2.1",
+    "core-js": "^3.32.1",
     "node-dev": "^8.0.0",
-    "typescript": "^4.9.5"
+    "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@emotion/css": "11.10.6",
+    "@emotion/css": "11.11.2",
     "base64-js": "1.5.1",
     "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
@@ -113,7 +113,7 @@
     "react-scroll-to-bottom": "4.2.0",
     "redux": "4.2.1",
     "simple-update-in": "2.2.0",
-    "use-ref-from": "0.0.1"
+    "use-ref-from": "0.0.2"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",

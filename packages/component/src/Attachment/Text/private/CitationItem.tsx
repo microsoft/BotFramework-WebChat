@@ -3,16 +3,12 @@ import React, { memo, type MouseEventHandler, useCallback } from 'react';
 
 import ItemBody from './ItemBody';
 
-type Props = {
+type Props = Readonly<{
   identifier: string;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
   onClick?: (url: string) => void;
-  // "defaultProps" is being deprecated.
-  // eslint-disable-next-line react/require-default-props
   title?: string;
   url: string;
-};
+}>;
 
 const CitationItem = memo(({ identifier, onClick, title, url }: Props) => {
   const onClickRef = useRefFrom(onClick);
