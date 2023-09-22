@@ -10,6 +10,7 @@ import createBubbleStyle from './StyleSet/Bubble';
 import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
 import createCarouselFilmStripAttachment from './StyleSet/CarouselFilmStripAttachment';
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
+import createCitationModalDialogStyle from './StyleSet/CitationModalDialog';
 import createConnectivityNotification from './StyleSet/ConnectivityNotification';
 import createCSSCustomPropertiesStyle from './StyleSet/CSSCustomProperties';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
@@ -99,6 +100,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
 
     // Following styles follows new house rules:
     // - Use CSS var instead of strictStyleOptions
+    citationModalDialog: createCitationModalDialogStyle(),
     cssCustomProperties: createCSSCustomPropertiesStyle(strictStyleOptions),
     linkDefinitions: createLinkDefinitionsStyle(),
     modalDialog: createModalDialogStyle(),

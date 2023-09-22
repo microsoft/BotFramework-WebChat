@@ -10,6 +10,8 @@ export default function createModalDialogStyleSet() {
   return {
     '&.webchat__modal-dialog': {
       fontFamily: CSSTokens.FontPrimary,
+      maxHeight: 'calc(100% - 32px)',
+      maxWidth: 'calc(100% - 32px)',
       width: '100%',
 
       [NOT_FORCED_COLORS_SELECTOR]: {
@@ -28,7 +30,7 @@ export default function createModalDialogStyleSet() {
 
         '@media screen and (min-width: 640px)': {
           maxWidth: '60%',
-          minWidth: 'calc(640px - 6px - 2em)', // Chromium calculation of default dialog width. At 640px, width is 602px.
+          minWidth: 'calc(640px - 32px)',
           width: '60%'
         },
 
