@@ -56,12 +56,16 @@
     "@types/react": "^18.2.21",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "cldr-data": "36.0.0-0",
+    "cldr-core": "^37.0.0",
+    "cldr-dates-full": "^37.0.0",
+    "cldr-numbers-full": "^37.0.0",
+    "cldr-units-full": "^37.0.0",
     "concurrently": "^8.2.1",
     "core-js": "^3.32.1",
     "globalize-compiler": "^1.1.1",
     "iana-tz-data": "^2019.1.0",
     "node-dev": "^8.0.0",
+    "resolve-pkg": "^2.0.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
@@ -79,9 +83,6 @@
   },
   "localPeerDependencies": {
     "botframework-webchat-core": "0.0.0-0"
-  },
-  "localPeerDevDependencies": {
-    "cldr-data": "36.0.0-0"
   },
   "pinDependencies": {
     "@babel/cli": [
