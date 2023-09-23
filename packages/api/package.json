@@ -105,6 +105,22 @@
       "7.18.6",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
+    "cldr-core": [
+      "37.0.0",
+      "globalize does not support CLDR v38"
+    ],
+    "cldr-dates-full": [
+      "37.0.0",
+      "globalize does not support CLDR v38"
+    ],
+    "cldr-numbers-full": [
+      "37.0.0",
+      "globalize does not support CLDR v38"
+    ],
+    "cldr-units-full": [
+      "37.0.0",
+      "globalize does not support CLDR v38"
+    ],
     "react-redux": [
       "7"
     ]
