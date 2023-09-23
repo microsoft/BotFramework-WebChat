@@ -220,7 +220,7 @@ exports[`use globalize with locale "et" should format positive relative time in 
 
 exports[`use globalize with locale "et" should format positive relative time in minute 1`] = `"10 minuti pärast"`;
 
-exports[`use globalize with locale "eu" should format date 1`] = `"iraila 22 12:34 PM"`;
+exports[`use globalize with locale "eu" should format date 1`] = `"irailak 22 12:34 PM"`;
 
 exports[`use globalize with locale "eu" should format negative relative time in hour 1`] = `"Duela 10 ordu"`;
 
