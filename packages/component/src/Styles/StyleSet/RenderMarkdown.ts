@@ -17,6 +17,8 @@ export default function createMarkdownStyle() {
         background: 'transparent',
         border: 0,
         cursor: 'pointer',
+        fontFamily: 'unset',
+        fontSize: 'unset',
         padding: 0,
         textDecoration: 'underline',
         whiteSpace: 'nowrap',

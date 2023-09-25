@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': 'cite:1',
+              '@type': 'Claim',
+              type: 'https://schema.org/Claim',
+              text: 'Reprehenderit exercitation laborum labore ut. Nostrud do et ut nostrud nisi excepteur labore adipisicing nostrud nostrud ipsum id dolore. Anim aliquip incididunt incididunt sunt sit proident consectetur exercitation qui aliqua aliquip adipisicing nisi et. Id commodo labore sunt quis do aute cillum laborum veniam [proident](https://bing.com/).'
+            }
+          ],
+          text: `Sure, you should override the default proxy settings[1]\u200C[2], when your proxy server requires authentication[3].
+
+[1]: https://support.microsoft.com/en-us/windows/use-a-proxy-server-in-windows-03096c53-0554-4ffe-b6ab-8b1deee8dae1
+[2]: https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-proxy-server-settings "Configure proxy server settings - Windows Server"
+[3]: cite:1 "Citation-1"
+`,
+          type: 'message'
+        });
+
+        await host.snapshot();
+
+        const markdownElement = pageElements.activities()[0].querySelector('.webchat__text-content__markdown');
+        const markdownButtons = markdownElement.querySelectorAll('button');
+
+        await host.click(markdownButtons[0]);
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

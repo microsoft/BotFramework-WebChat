@@ -10,6 +10,8 @@ export default function createModalDialogStyleSet() {
   return {
     '&.webchat__modal-dialog': {
       fontFamily: CSSTokens.FontPrimary,
+      maxHeight: 'calc(100% - 32px)',
+      maxWidth: 'calc(100% - 32px)',
       width: '100%',
 
       [NOT_FORCED_COLORS_SELECTOR]: {
@@ -19,11 +21,18 @@ export default function createModalDialogStyleSet() {
 
       '& .webchat__modal-dialog__box': {
         borderRadius: 2,
-        height: `calc(100% - ${CSSTokens.PaddingRegular} * 2)`,
         overflow: 'hidden',
         margin: 'auto',
-        maxWidth: '60%',
-        width: `calc(100% - ${CSSTokens.PaddingRegular} * 2)`,
+
+        '@media screen and (max-width: 639px)': {
+          maxWidth: 'unset'
+        },
+
+        '@media screen and (min-width: 640px)': {
+          maxWidth: '60%',
+          minWidth: 'calc(640px - 32px)',
+          width: '60%'
+        },
 
         [LIGHT_THEME_SELECTOR]: {
           // From Power BI:
