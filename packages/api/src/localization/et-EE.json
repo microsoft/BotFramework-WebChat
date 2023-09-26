@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Videoklipp",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Järgmine",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Eelmine",
+  "CITATION_MODEL_DIALOG_ALT": "Tsitaat",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Ühendatud",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Ühenduse loomine…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Ühendamine nurjus.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Maks",
   "RECEIPT_CARD_TOTAL": "Kokku",
   "RECEIPT_CARD_VAT": "KM",
+  "REFERENCE_LIST_HEADER_ONE": "$1 viide",
+  "REFERENCE_LIST_HEADER_FEW": "$1 viidet",
+  "REFERENCE_LIST_HEADER_MANY": "$1 viidet",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 viidet",
+  "REFERENCE_LIST_HEADER_TWO": "$1 viidet",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Tühja sõnumit ei saa saata.",
   "SPEECH_INPUT_LISTENING": "Kuulamine…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon väljas",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Vestluse ajaloo lõpp",
   "TYPING_INDICATOR_ALT": "Tippimise näidiku kuvamine",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 kirjutab.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 ja teised kirjutavad."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 ja teised kirjutavad.",
+  "VOTE_DISLIKE_ALT": "Ei meeldi",
+  "VOTE_LIKE_ALT": "Meeldib"
 }

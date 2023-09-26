@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Videoisječak",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Sljedeće",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Prethodno",
+  "CITATION_MODEL_DIALOG_ALT": "Citat",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Povezano",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Povezivanje u tijeku...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Povezivanje nije moguće.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Porez",
   "RECEIPT_CARD_TOTAL": "Ukupno",
   "RECEIPT_CARD_VAT": "PDV",
+  "REFERENCE_LIST_HEADER_ONE": "$1 referenca",
+  "REFERENCE_LIST_HEADER_FEW": "$1 reference",
+  "REFERENCE_LIST_HEADER_MANY": "$1 reference",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 reference",
+  "REFERENCE_LIST_HEADER_TWO": "$1 reference",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Prazna poruka se ne može poslati.",
   "SPEECH_INPUT_LISTENING": "Slušanje...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon je isključen",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Kraj povijesti čavrljanja",
   "TYPING_INDICATOR_ALT": "Prikaz pokazatelja tipkanja",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 tipka.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 i drugi tipkaju."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 i drugi tipkaju.",
+  "VOTE_DISLIKE_ALT": "Ne sviđa mi se",
+  "VOTE_LIKE_ALT": "Sviđa mi se"
 }

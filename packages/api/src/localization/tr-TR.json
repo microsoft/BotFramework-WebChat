@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Video klibi",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Sonraki",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Önceki",
+  "CITATION_MODEL_DIALOG_ALT": "Alıntı",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Bağlı",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Bağlantı kuruluyor...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Bağlantı kurulamadı.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Vergi",
   "RECEIPT_CARD_TOTAL": "Toplam",
   "RECEIPT_CARD_VAT": "KDV",
+  "REFERENCE_LIST_HEADER_ONE": "$1 başvuru",
+  "REFERENCE_LIST_HEADER_FEW": "$1 başvuru",
+  "REFERENCE_LIST_HEADER_MANY": "$1 başvuru",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 başvuru",
+  "REFERENCE_LIST_HEADER_TWO": "$1 başvuru",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Boş ileti gönderilemez.",
   "SPEECH_INPUT_LISTENING": "Dinliyor…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon kapalı",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Sohbet geçmişinin sonu",
   "TYPING_INDICATOR_ALT": "Yazma göstergesi gösteriliyor",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 yazıyor.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 ve diğer kişiler yazıyor."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 ve diğer kişiler yazıyor.",
+  "VOTE_DISLIKE_ALT": "Beğenme",
+  "VOTE_LIKE_ALT": "Beğen"
 }
