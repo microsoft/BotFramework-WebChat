@@ -6,7 +6,8 @@ export default function createSendStatusStyle() {
       color: CSSTokens.ColorTimestamp,
       fontFamily: CSSTokens.FontPrimary,
       fontSize: CSSTokens.FontSizeSmall,
-      marginTop: `calc(${CSSTokens.PaddingRegular} / 2)`
+      marginTop: `calc(${CSSTokens.PaddingRegular} / 2)`,
+      overflow: 'hidden'
     },
 
     '&.webchat__activity-status--slotted': {
@@ -15,7 +16,10 @@ export default function createSendStatusStyle() {
     },
 
     '& .webchat__activity-status__originator': {
-      alignItems: 'center',
+      flex: 1,
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap',
 
       '&.webchat__activity-status__originator--has-link': {
         color: CSSTokens.ColorAccent
