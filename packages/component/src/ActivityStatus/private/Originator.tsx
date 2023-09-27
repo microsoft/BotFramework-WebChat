@@ -16,6 +16,7 @@ const Originator = memo(({ replyAction }: Props) => {
       href={url}
       rel="noopener noreferrer"
       target="_blank"
+      title={text} // In case the content is clipped with ellipsis, customers can hover to see the full text.
     >
       {text}
     </a>
