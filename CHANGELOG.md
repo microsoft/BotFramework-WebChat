@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Fixed [#4875](https://github.com/microsoft/BotFramework-WebChat/issues/4875). Replaced [`mdast`](https://npmjs.com/package/mdast/) with [`@types/mdast`](https://npmjs.com/package/@types/mdast/), by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Fixed [#4875](https://github.com/microsoft/BotFramework-WebChat/issues/4875). Replaced [`mdast`](https://npmjs.com/package/mdast/) with [`@types/mdast`](https://npmjs.com/package/@types/mdast/), by [@compulim](https://github.com/compulim), in PR [#4882](https://github.com/microsoft/BotFramework-WebChat/pull/4882)
 
 ## [4.15.9] - 2023-08-25
 
