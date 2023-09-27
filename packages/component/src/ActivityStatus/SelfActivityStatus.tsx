@@ -8,7 +8,7 @@ import useStyleSet from '../hooks/useStyleSet';
 
 type Props = Readonly<{ activity: WebChatActivity }>;
 
-const SelftActivityStatus = memo(({ activity }: Props) => {
+const SelfActivityStatus = memo(({ activity }: Props) => {
   const [{ sendStatus }] = useStyleSet();
   const { timestamp } = activity;
 
@@ -19,6 +19,6 @@ const SelftActivityStatus = memo(({ activity }: Props) => {
   ) : null;
 });
 
-SelftActivityStatus.displayName = 'SelftActivityStatus';
+SelfActivityStatus.displayName = 'SelfActivityStatus';
 
-export default SelftActivityStatus;
+export default SelfActivityStatus;
