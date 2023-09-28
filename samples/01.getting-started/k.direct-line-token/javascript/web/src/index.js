@@ -31,7 +31,7 @@ server.post('/api/messages', require('./routes/botMessages'));
 // We will use the REST API server to serve static web content to simplify deployment for demonstration purposes.
 STATIC_FILES &&
   server.get(
-    '/**/*',
+    '/*',
     restify.plugins.serveStatic({
       default: 'index.html',
       directory: join(__dirname, '..', '..', '..', STATIC_FILES)
@@ -41,5 +41,5 @@ STATIC_FILES &&
 server.listen(PORT, () => {
   STATIC_FILES && console.log(`Will serve static content from ${STATIC_FILES}`);
 
-  console.log(`Rest API server is listening to port ${PORT}`);
+  console.log(`Rest API server is listening to port http://localhost:${PORT}`);
 });
