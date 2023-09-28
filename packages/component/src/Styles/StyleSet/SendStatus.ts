@@ -7,7 +7,7 @@ export default function createSendStatusStyle() {
       fontFamily: CSSTokens.FontPrimary,
       fontSize: CSSTokens.FontSizeSmall,
       marginTop: `calc(${CSSTokens.PaddingRegular} / 2)`,
-      overflow: 'hidden'
+      maxWidth: '100%'
     },
 
     '&.webchat__activity-status--slotted': {
