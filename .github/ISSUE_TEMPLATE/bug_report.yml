@@ -18,9 +18,9 @@ body:
       label: Is it an issue related to Adaptive Cards?
       description: If yes, please verify if this issue repro on [Adaptive Cards Designer](https://adaptivecards.io/designer/). If it repro on their designer, please [file an issue to their repository](https://github.com/microsoft/AdaptiveCards/issues/new/choose).
       options:
-        - ""
+        - ''
         - Yes, this is an Adaptive Card issue, however it only repro on Web Chat.
-        - "No"
+        - 'No'
     validations:
       required: true
   - type: dropdown
@@ -28,8 +28,8 @@ body:
       label: Is this an accessibility issue?
       description: For accessibility issue, please use [this issue template](https://github.com/microsoft/BotFramework-WebChat/issues/new?template=accessibility.yml).
       options:
-        - ""
-        - "No"
+        - ''
+        - 'No'
     validations:
       required: true
   - type: dropdown
@@ -85,28 +85,29 @@ body:
       description: Please make sure the issue continued to repro on latest version of the browser.
       multiple: true
       options:
-        - "Browser: Edge (latest)"
-        - "Browser: Chrome (latest)"
-        - "Browser: Firefox (latest)"
-        - "Browser: Safari (latest)"
-        - "Browser: IE Mode (latest)"
-        - "Platform: Windows"
-        - "Platform: macOS"
-        - "Platform: iOS/iPadOS"
-        - "Platform: Android"
+        - 'Browser: Edge (latest)'
+        - 'Browser: Chrome (latest)'
+        - 'Browser: Firefox (latest)'
+        - 'Browser: Safari (latest)'
+        - 'Browser: IE Mode (latest)'
+        - 'Platform: Windows'
+        - 'Platform: macOS'
+        - 'Platform: iOS/iPadOS'
+        - 'Platform: Android'
         - Others or unrelated
   - type: dropdown
     id: area
     attributes:
       label: Which area does this issue affect?
       options:
-        - ""
-        - "Attachment: Adaptive Card"
-        - "Attachment: OAuth card"
-        - "Attachment: Other rich cards"
+        - ''
+        - 'Attachment: Adaptive Card'
+        - 'Attachment: OAuth card'
+        - 'Attachment: Other rich cards'
         - Chat history
-        - "Customization: Branding"
-        - "Customization: Others"
+        - Citation
+        - 'Customization: Branding'
+        - 'Customization: Others'
         - Development experience
         - Hooks
         - Notification
@@ -123,7 +124,7 @@ body:
     attributes:
       label: What is the public URL for the website?
       description: If the bot is not intended for public use, please leave this blank. It will be helpful if we can test the bot to understand the issue.
-      placeholder: https://
+      value: https://compulim.github.io/webchat-loader/
   - type: textarea
     id: describe-the-bug
     attributes:
@@ -142,9 +143,7 @@ body:
     attributes:
       label: How to reproduce the issue?
       value: |
-        1. Navigate to ...
-        2. Click on ...
-        3. Type "..." in the send box
+        1. Type "..." in the send box
     validations:
       required: true
   - type: textarea
