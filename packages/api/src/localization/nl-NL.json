@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Een videoclip",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Volgende",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Vorige",
+  "CITATION_MODEL_DIALOG_ALT": "Citaat",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Verbonden",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Verbinding maken...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Kan geen verbinding maken.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Belastingen",
   "RECEIPT_CARD_TOTAL": "Totaal",
   "RECEIPT_CARD_VAT": "Btw",
+  "REFERENCE_LIST_HEADER_ONE": "$1 verwijzing",
+  "REFERENCE_LIST_HEADER_FEW": "$1 verwijzingen",
+  "REFERENCE_LIST_HEADER_MANY": "$1 verwijzingen",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 verwijzingen",
+  "REFERENCE_LIST_HEADER_TWO": "$1 verwijzingen",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Kan geen leeg bericht verzenden.",
   "SPEECH_INPUT_LISTENING": "Luisteren...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Microfoon uit",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Einde chatgeschiedenis",
   "TYPING_INDICATOR_ALT": "Indicator voor typen weergeven",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 is bezig met typen.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 en anderen zijn bezig met typen."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 en anderen zijn bezig met typen.",
+  "VOTE_DISLIKE_ALT": "Niet leuk",
+  "VOTE_LIKE_ALT": "Leuk"
 }
