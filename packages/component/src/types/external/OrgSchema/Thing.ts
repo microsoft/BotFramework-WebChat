@@ -17,34 +17,27 @@ export type Thing<T extends string = string> = OrgSchemaThing<T> & {
   name?: string;
 };
 
-export function isThing(thing: { '@context'?: string; '@type'?: string; type?: string }): thing is Thing<string> {
+export function isThing(thing: any, currentContext?: string): thing is Thing<string> {
   if (typeof thing === 'object' && thing) {
-    return (
-      '@context' in thing &&
-      '@type' in thing &&
-      'type' in thing &&
-      thing['@context'] === 'https://schema.org' &&
-      typeof thing['@type'] === 'string' &&
-      thing.type === `https://schema.org/${thing['@type']}`
-    );
+    const context = thing['@context'] || currentContext;
+
+    if (context) {
+      return context === 'https://schema.org' && typeof thing['@type'] === 'string';
+    }
+
+    return typeof thing.type === 'string' && thing.type.startsWith(`https://schema.org/`);
   }
 
   return false;
 }
 
-export function isThingOf<T extends string>(
-  thing: { '@context'?: string; '@type'?: string; type?: string },
-  type: T
-): thing is Thing<T> {
-  if (typeof thing === 'object' && thing) {
-    return (
-      '@context' in thing &&
-      '@type' in thing &&
-      'type' in thing &&
-      thing['@context'] === 'https://schema.org' &&
-      thing['@type'] === type &&
-      thing.type === `https://schema.org/${type}`
-    );
+export function isThingOf<T extends string>(thing: any, type: T, currentContext?: string): thing is Thing<T> {
+  if (isThing(thing, currentContext)) {
+    if ((thing['@context'] || currentContext) === 'https://schema.org' && thing['@type']) {
+      return thing['@type'] === type;
+    }
+
+    return thing.type === `https://schema.org/${type}`;
   }
 
   return false;

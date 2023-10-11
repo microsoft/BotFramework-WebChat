@@ -9,12 +9,15 @@ import { isThingOf, type Thing } from './Thing';
  */
 export type Project = Thing<'Project'> & {
   /** The name of the item. */
-  name: string;
+  name?: string;
+
+  /** 	A slogan or motto associated with the item. */
+  slogan?: string;
 
   /** URL of the item. */
-  url: string;
+  url?: string;
 };
 
-export function isProject(thing: Thing): thing is Project {
+export function isProject(thing: any): thing is Project {
   return isThingOf(thing, 'Project');
 }

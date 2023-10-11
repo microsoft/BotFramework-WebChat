@@ -16,6 +16,6 @@ export type ReplyAction = Thing<'ReplyAction'> & {
   provider?: Project;
 };
 
-export function isReplyAction(thing: Thing): thing is ReplyAction {
+export function isReplyAction(thing: any): thing is ReplyAction {
   return isThingOf(thing, 'ReplyAction');
 }

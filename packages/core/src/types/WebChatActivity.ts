@@ -111,7 +111,8 @@ type ClientCapabilitiesEntity = {
 
 type Entity =
   | ClientCapabilitiesEntity
-  | OrgSchemaThing
+  // Schema.org thing in the first level of entities field must have "type" field of "string".
+  | (OrgSchemaThing & { type: string })
   | AnyAnd<{ type: Exclude<string, 'ClientCapabilities' | `https://schema.org/${string}`> }>;
 
 // Channel account - https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#channel-account
