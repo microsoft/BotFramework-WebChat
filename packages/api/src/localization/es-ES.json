@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Clip de vídeo",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Siguiente",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Anterior",
+  "CITATION_MODEL_DIALOG_ALT": "Cita",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Conectado",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Conectando…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "No se puede conectar.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Impuesto",
   "RECEIPT_CARD_TOTAL": "Total",
   "RECEIPT_CARD_VAT": "IVA",
+  "REFERENCE_LIST_HEADER_ONE": "$1 referencia",
+  "REFERENCE_LIST_HEADER_FEW": "$1 referencias",
+  "REFERENCE_LIST_HEADER_MANY": "$1 referencias",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 referencias",
+  "REFERENCE_LIST_HEADER_TWO": "$1 referencias",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "No se puede enviar un mensaje vacío.",
   "SPEECH_INPUT_LISTENING": "Escuchando…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Micrófono desactivado",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Final del historial de chats",
   "TYPING_INDICATOR_ALT": "Mostrando indicador de escritura",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 está escribiendo.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 y otros usuarios están escribiendo."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 y otros usuarios están escribiendo.",
+  "VOTE_DISLIKE_ALT": "No me gusta",
+  "VOTE_LIKE_ALT": "Me gusta"
 }

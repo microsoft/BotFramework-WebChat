@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Ett videoklipp",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Nästa",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Föregående",
+  "CITATION_MODEL_DIALOG_ALT": "Hänvisning",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Ansluten",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Ansluter ...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Det gick inte att ansluta.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Skatt",
   "RECEIPT_CARD_TOTAL": "Summa",
   "RECEIPT_CARD_VAT": "Moms",
+  "REFERENCE_LIST_HEADER_ONE": "$1 referens",
+  "REFERENCE_LIST_HEADER_FEW": "$1 referenser",
+  "REFERENCE_LIST_HEADER_MANY": "$1 referenser",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 referenser",
+  "REFERENCE_LIST_HEADER_TWO": "$1 referenser",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Det går inte att skicka ett tomt meddelande.",
   "SPEECH_INPUT_LISTENING": "Lyssnar ...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon av",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Slut på chatthistorik",
   "TYPING_INDICATOR_ALT": "Visar skrivindikatorn",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 skriver.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 och andra skriver."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 och andra skriver.",
+  "VOTE_DISLIKE_ALT": "Ogilla",
+  "VOTE_LIKE_ALT": "Gilla"
 }

@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Бейнеклип",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Келесі",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Алдыңғы",
+  "CITATION_MODEL_DIALOG_ALT": "Дәйексөз",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Қосылған",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Қосылуда...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Қосу мүмкін емес.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Салық",
   "RECEIPT_CARD_TOTAL": "Барлығы",
   "RECEIPT_CARD_VAT": "VAT",
+  "REFERENCE_LIST_HEADER_ONE": "$1 сілтеме",
+  "REFERENCE_LIST_HEADER_FEW": "$1 сілтеме",
+  "REFERENCE_LIST_HEADER_MANY": "$1 сілтеме",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 сілтеме",
+  "REFERENCE_LIST_HEADER_TWO": "$1 сілтеме",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Бос хабар жіберу мүмкін емес.",
   "SPEECH_INPUT_LISTENING": "Тыңдалуда...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Микрофон өшірулі",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Сөйлесу журналының соңы",
   "TYPING_INDICATOR_ALT": "Мәтін теру индикаторын көрсету",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 теруде.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 және басқалар теруде."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 және басқалар теруде.",
+  "VOTE_DISLIKE_ALT": "Ұнамайды",
+  "VOTE_LIKE_ALT": "Ұнайды"
 }
