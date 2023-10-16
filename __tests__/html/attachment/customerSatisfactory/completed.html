@@ -47,8 +47,6 @@
           ]
         });
 
-        await host.snapshot();
-
         const [firstActivity] = pageElements.activities();
         const buttons = firstActivity.querySelectorAll('[role="radio"]');
         const submitButton = firstActivity.querySelector('[type="submit"]');
