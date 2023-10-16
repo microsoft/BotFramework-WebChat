@@ -100,7 +100,7 @@ Followings are supported protocol and their query parameters:
 | `ms-directline-imback:`      | `value`       | If `title` parameter is not specified, will send this value as `activity.text`.                                                       |
 | `ms-directline-messageback:` | `value`       | Send as complex object via `activity.value`.                                                                                          |
 | `ms-directline-messageback:` | `text`        | Send as string via `activity.text`.                                                                                                   |
-| `ms-directline-messageback:` | `displayText` | String to display as in the sent message.                                                                                             |
+| `ms-directline-messageback:` | `displaytext` | String to display as in the sent message.                                                                                             |
 
 > `http:`/`https:` are not supported at the moment.
 
