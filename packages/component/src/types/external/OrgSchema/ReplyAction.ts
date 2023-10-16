@@ -8,14 +8,15 @@ import { type Project } from './Project';
  *
  * @see https://schema.org/ReplyAction
  */
-export type ReplyAction = Thing<'ReplyAction'> & {
-  /** A description of the item. */
-  description?: string;
+export type ReplyAction = Thing<'ReplyAction'> &
+  Readonly<{
+    /** A description of the item. */
+    description?: string;
 
-  /** The service provider, service operator, or service performer; the goods producer. Another party (a seller) may offer those services or goods on behalf of the provider. A provider may also serve as the seller. Supersedes [carrier](https://schema.org/carrier). */
-  provider?: Project;
-};
+    /** The service provider, service operator, or service performer; the goods producer. Another party (a seller) may offer those services or goods on behalf of the provider. A provider may also serve as the seller. Supersedes [carrier](https://schema.org/carrier). */
+    provider?: Project;
+  }>;
 
-export function isReplyAction(thing: Thing): thing is ReplyAction {
+export function isReplyAction(thing: any): thing is ReplyAction {
   return isThingOf(thing, 'ReplyAction');
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import AudioAttachment from './AudioAttachment';
+import customerSatisfactoryMiddleware from './CustomerSatisfactory/customerSatisfactoryMiddleware';
 import FileAttachment from './FileAttachment';
 import ImageAttachment from './ImageAttachment';
 import TextAttachment from './Text/TextAttachment';
@@ -18,6 +19,7 @@ function isTextAttachment(
 // TODO: [P4] Rename this file or the whole middleware, it looks either too simple or too comprehensive now
 export default function createCoreMiddleware(): AttachmentMiddleware[] {
   return [
+    customerSatisfactoryMiddleware,
     () =>
       next =>
       (...args) => {
