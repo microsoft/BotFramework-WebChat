@@ -3,8 +3,8 @@ import useContext from './private/useContext';
 
 import type { MutableRefObject } from 'react';
 
-export default function useItemRef<T extends HTMLElement>(itemIndex: number): MutableRefObject<T | undefined> {
-  const ref = useRef<T>();
+export default function useItemRef<T extends HTMLElement>(itemIndex: number): MutableRefObject<T | null> {
+  const ref = useRef<T>(null);
 
   const { itemEffector } = useContext();
 
