@@ -31,7 +31,7 @@ const StarButton = ({ checked, disabled, onClick, value }: Props) => {
 
   return (
     <button
-      aria-checked={checked}
+      aria-checked={checked || false}
       aria-disabled={disabled}
       aria-label={getRatingAltText(value)}
       className="webchat__customer-satisfactory__star-button"
