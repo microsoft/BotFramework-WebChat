@@ -46,9 +46,9 @@ const CustomerSatisfactory = ({ initialReviewAction }: Props) => {
       setReviewAction(reviewAction => ({
         ...reviewAction,
         resultReview: {
-          ...reviewAction.resultReview,
+          ...(reviewAction.resultReview || { '@type': 'Review' }),
           reviewRating: {
-            ...reviewAction.resultReview.reviewRating,
+            ...(reviewAction.resultReview?.reviewRating || { '@type': 'Rating' }),
             ratingValue
           }
         }
