@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import React, { memo, type MouseEventHandler, useCallback, useMemo } from 'react';
 
 import { isClaim, type Claim } from '../../../types/external/OrgSchema/Claim';
-import { isThing } from '../../../types/external/OrgSchema/Thing';
+import { type AsEntity, isThing } from '../../../types/external/OrgSchema/Thing';
 import { type PropsOf } from '../../../types/PropsOf';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import CitationModalContext from './CitationModalContent';
@@ -15,6 +15,8 @@ import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import useStyleSet from '../../../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
+
+type ClaimAsEntity = AsEntity<Claim>;
 
 type Props = Readonly<{
   entities?: WebChatActivity['entities'];
@@ -58,13 +60,13 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
 
   const handleCitationClick = useCallback<PropsOf<typeof LinkDefinitions>['onCitationClick']>(
     url => {
-      const claim = entities.find<Claim>(
-        (entity): entity is Claim => isThing(entity) && isClaim(entity) && entity['@id'] === url
+      const claim = entitiesRef.current?.find<ClaimAsEntity>(
+        (entity): entity is ClaimAsEntity => isThing(entity) && isClaim(entity) && entity['@id'] === url
       );
 
       claim && showClaimModal(claim);
     },
-    [entities, showClaimModal]
+    [entitiesRef, showClaimModal]
   );
 
   const handleClick = useCallback<MouseEventHandler<HTMLDivElement>>(
@@ -79,8 +81,8 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
         return;
       }
 
-      const claim = entitiesRef.current?.find<Claim>(
-        (entity): entity is Claim => isThing(entity) && isClaim(entity) && entity['@id'] === buttonElement.value
+      const claim = entitiesRef.current?.find<ClaimAsEntity>(
+        (entity): entity is ClaimAsEntity => isThing(entity) && isClaim(entity) && entity['@id'] === buttonElement.value
       );
 
       if (!claim) {
