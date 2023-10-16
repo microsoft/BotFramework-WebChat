@@ -16,6 +16,6 @@ export type Project = Thing<'Project'> &
     url: string;
   }>;
 
-export function isProject(thing: any): thing is Project {
+export function isProject(thing: unknown): thing is Project {
   return isThingOf(thing, 'Project');
 }

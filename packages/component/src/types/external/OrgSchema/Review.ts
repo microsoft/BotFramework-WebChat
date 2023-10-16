@@ -18,6 +18,6 @@ export type Review = Thing<'Review'> &
     reviewRating?: Rating | undefined;
   }>;
 
-export function isReview(thing: any, currentContext?: string): thing is Review {
+export function isReview(thing: unknown, currentContext?: string): thing is Review {
   return isThingOf(thing, 'Review', currentContext);
 }

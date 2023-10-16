@@ -25,6 +25,6 @@ export type ReviewAction = Thing<'ReviewAction'> &
     target?: EntryPoint | string | undefined;
   }>;
 
-export function isReviewAction(thing: any, currentContext?: string): thing is ReviewAction {
+export function isReviewAction(thing: unknown, currentContext?: string): thing is ReviewAction {
   return isThingOf(thing, 'ReviewAction', currentContext);
 }

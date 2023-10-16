@@ -13,6 +13,6 @@ export type VoteAction = Thing<'VoteAction'> &
     actionOption?: string;
   }>;
 
-export function isVoteAction(thing: any): thing is VoteAction {
+export function isVoteAction(thing: unknown): thing is VoteAction {
   return isThingOf(thing, 'VoteAction');
 }

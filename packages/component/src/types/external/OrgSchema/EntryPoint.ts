@@ -16,6 +16,6 @@ export type EntryPoint = Thing<'EntryPoint'> &
     urlTemplate?: string | undefined;
   }>;
 
-export function isEntryPoint(thing: any, currentContext?: string): thing is EntryPoint {
+export function isEntryPoint(thing: unknown, currentContext?: string): thing is EntryPoint {
   return isThingOf(thing, 'EntryPoint', currentContext);
 }

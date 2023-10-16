@@ -24,25 +24,33 @@ export type AsEntity<T extends Thing> = T &
     type: `https://schema.org/${T['@type']}`;
   }>;
 
-export function isThing(thing: any, currentContext?: string): thing is Thing<string> {
+export function isThing(thing: unknown, currentContext?: string): thing is Thing<string> {
   if (typeof thing === 'object' && thing) {
     const context = thing['@context'] || currentContext;
 
     if (context) {
       return context === 'https://schema.org' && typeof thing['@type'] === 'string';
     }
-
-    return typeof thing.type === 'string' && thing.type.startsWith(`https://schema.org/`);
   }
 
   return false;
 }
 
-export function isThingOf<T extends string>(thing: any, type: T, currentContext?: string): thing is Thing<T> {
+export function isThingOf<T extends string>(thing: unknown, type: T, currentContext?: string): thing is Thing<T> {
   if (isThing(thing, currentContext)) {
     if ((thing['@context'] || currentContext) === 'https://schema.org' && thing['@type']) {
       return thing['@type'] === type;
     }
+  }
+
+  return false;
+}
+
+export function isThingAsEntity(thing: unknown, currentContext?: string): thing is AsEntity<Thing<string>> {
+  // Needs bracket notation for TypeScript checking against `unknown`.
+  // eslint-disable-next-line dot-notation
+  if (typeof thing['type'] === 'string' && thing['type'].startsWith(`https://schema.org/`)) {
+    return isThing(thing, currentContext);
   }
 
   return false;

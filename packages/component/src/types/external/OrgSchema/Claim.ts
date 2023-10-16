@@ -21,6 +21,6 @@ export type Claim = Thing<'Claim'> &
     url?: string;
   }>;
 
-export function isClaim(thing: any): thing is Claim {
+export function isClaim(thing: unknown): thing is Claim {
   return isThingOf(thing, 'Claim');
 }

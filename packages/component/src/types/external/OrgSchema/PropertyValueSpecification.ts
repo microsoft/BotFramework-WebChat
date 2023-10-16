@@ -18,6 +18,9 @@ export type WithInput<T extends Record<string, unknown>> = T &
     [K in keyof T as K extends string ? `${K}-input` : K]?: PropertyValueSpecification | undefined;
   }>;
 
-export function isPropertyValueSpecification(thing: any, currentContext?: string): thing is PropertyValueSpecification {
+export function isPropertyValueSpecification(
+  thing: unknown,
+  currentContext?: string
+): thing is PropertyValueSpecification {
   return isThingOf(thing, 'PropertyValueSpecification', currentContext);
 }

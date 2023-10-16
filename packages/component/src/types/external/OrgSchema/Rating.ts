@@ -23,6 +23,6 @@ export type Rating = Thing<'Rating'> &
     }>
   >;
 
-export function isRating(thing: any, currentContext?: string): thing is Rating {
+export function isRating(thing: unknown, currentContext?: string): thing is Rating {
   return isThingOf(thing, 'Rating', currentContext);
 }

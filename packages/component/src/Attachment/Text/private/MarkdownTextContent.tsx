@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import React, { memo, type MouseEventHandler, useCallback, useMemo } from 'react';
 
 import { isClaim, type Claim } from '../../../types/external/OrgSchema/Claim';
-import { type AsEntity, isThing } from '../../../types/external/OrgSchema/Thing';
+import { type AsEntity, isThingAsEntity } from '../../../types/external/OrgSchema/Thing';
 import { type PropsOf } from '../../../types/PropsOf';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import CitationModalContext from './CitationModalContent';
@@ -61,7 +61,7 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
   const handleCitationClick = useCallback<PropsOf<typeof LinkDefinitions>['onCitationClick']>(
     url => {
       const claim = entitiesRef.current?.find<ClaimAsEntity>(
-        (entity): entity is ClaimAsEntity => isThing(entity) && isClaim(entity) && entity['@id'] === url
+        (entity): entity is ClaimAsEntity => isThingAsEntity(entity) && isClaim(entity) && entity['@id'] === url
       );
 
       claim && showClaimModal(claim);
@@ -82,7 +82,8 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
       }
 
       const claim = entitiesRef.current?.find<ClaimAsEntity>(
-        (entity): entity is ClaimAsEntity => isThing(entity) && isClaim(entity) && entity['@id'] === buttonElement.value
+        (entity): entity is ClaimAsEntity =>
+          isThingAsEntity(entity) && isClaim(entity) && entity['@id'] === buttonElement.value
       );
 
       if (!claim) {
