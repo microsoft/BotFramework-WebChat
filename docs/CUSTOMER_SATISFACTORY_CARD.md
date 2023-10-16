@@ -70,10 +70,10 @@ We are using https://schema.org/ReviewAction for the representation of the CSAT 
 
 Current designs and limitations:
 
--  Subclasses are not supported. `resultReview` must be `"Review"`. `"UserReview"` or other subclass of `"Review"` is not supported
+-  Subclasses are not supported. `resultReview` must be thing of [`"Review"`](https://schema.org/Review). [`"UserReview"`](https://schema.org/UserReview) and other subclass of `"Review"` is not supported
 -  Rating must be 1 to 5 stars. [`resultReview.reviewRating.bestRating`](https://schema.org/bestRating) and [`resultReview.reviewRating.worstRating`](https://schema.org/worstRating) are ignored
--  If `actionStatus` is [`CompletedActionStatus`](https://schema.org/ActionStatusType) (review is submitted), `target` is optional. Otherwise, review is ready to submit and `target` must be specified
--  Despite `target` could be URL, it is highly recommended `target` is a thing of [`EntryPoint`](https://schema.org/EntryPoint)
+-  If `actionStatus` is [`CompletedActionStatus`](https://schema.org/ActionStatusType), it indicates the review is submitted, thus, `target` is optional. Otherwise, review should be submittable and `target` must be specified
+-  Despite `target` could be a non-templated URL, it is highly recommended `target` is a thing of [`EntryPoint`](https://schema.org/EntryPoint)
 
 ### Target URL
 
