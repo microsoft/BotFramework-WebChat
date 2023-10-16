@@ -3,6 +3,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 
+import isNumber from './private/isNumber';
 import RovingTabIndexContext from './private/Context';
 
 import type { MutableRefObject, PropsWithChildren } from 'react';
@@ -111,12 +112,9 @@ const RovingTabIndexComposer = ({ children, onEscapeKey, orientation }: RovingTa
             // Thus, the next item may not be immediately next to the current one.
             const itemIndices = itemRefsRef.current.map((_, index) => index);
             const nextIndex = itemIndices.indexOf(value) - 1;
+            const nextActiveItemIndex = nextIndex < 0 ? itemIndices[itemIndices.length - 1] : itemIndices[+nextIndex];
 
-            if (nextIndex < 0) {
-              return itemIndices[itemIndices.length - 1] as number;
-            }
-
-            return itemIndices[+nextIndex] as number;
+            return isNumber(nextActiveItemIndex) ? nextActiveItemIndex : undefined;
           });
 
           break;
