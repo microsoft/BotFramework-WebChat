@@ -4,7 +4,6 @@ import React, { ReactEventHandler, useCallback } from 'react';
 
 import { type RatingValue } from './RatingValue';
 import Star from './Star';
-import StarFilled from './StarFilled';
 import useItemRef from '../../../providers/RovingTabIndex/useItemRef';
 import useStrings from './useStrings';
 
@@ -47,7 +46,7 @@ const StarButton = ({ checked, className, disabled, onClick, value }: Props) => 
       tabIndex={disabled ? -1 : undefined}
       type="button"
     >
-      {checked ? <StarFilled /> : <Star />}
+      <Star filled={checked} />
     </button>
   );
 };
