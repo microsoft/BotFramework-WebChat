@@ -37,7 +37,7 @@ export default function useOpenURL() {
           }
         }
 
-        sendMessageBack(value, searchParams.get('text') || undefined, searchParams.get('displayText') || undefined);
+        sendMessageBack(value, searchParams.get('text') || undefined, searchParams.get('displaytext') || undefined);
       } else if (protocol === 'ms-directline-postback:') {
         const value = searchParams.get('value');
 
