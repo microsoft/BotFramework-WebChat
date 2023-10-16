@@ -31,5 +31,5 @@ export default function useStrings(): Readonly<{
     getRatingAltText,
     submitButtonText,
     submittedText
-  } as const);
+  });
 }
