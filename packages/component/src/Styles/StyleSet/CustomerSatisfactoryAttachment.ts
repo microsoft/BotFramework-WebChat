@@ -47,7 +47,6 @@ export default function CustomerSatisfactoryAttachment() {
 
     '& .webchat__customer-satisfactory__star-button': {
       backgroundColor: 'transparent',
-      color: 'unset',
       border: 0,
       borderRadius: 5.33,
       height: 32,
