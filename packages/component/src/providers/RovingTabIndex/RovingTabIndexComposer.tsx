@@ -37,7 +37,7 @@ const RovingTabIndexComposer = ({ children, onEscapeKey, orientation }: RovingTa
       let nextActiveItemIndex;
 
       if (typeof valueOrFunction === 'number') {
-        nextActiveItemIndex = valueOrFunction;
+        nextActiveItemIndex = valueOrFunction === Infinity ? itemRefsRef.current.length - 1 : valueOrFunction;
       } else {
         nextActiveItemIndex = valueOrFunction(activeItemIndexRef.current);
       }
