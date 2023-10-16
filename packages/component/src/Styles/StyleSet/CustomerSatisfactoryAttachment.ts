@@ -123,6 +123,10 @@ export default function CustomerSatisfactoryAttachment() {
       paddingRight: 0
     },
 
+    '&.webchat__customer-satisfactory--submitted .webchat__customer-satisfactory__submit-check-mark': {
+      color: '#107C10'
+    },
+
     '&:not(.webchat__customer-satisfactory--submitted) .webchat__customer-satisfactory__submit-button': {
       [DISABLED_SELECTOR]: {
         [FORCED_COLORS_SELECTOR]: {
