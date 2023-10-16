@@ -1,5 +1,4 @@
 import { useRefFrom } from 'use-ref-from';
-import classNames from 'classnames';
 import React, { ReactEventHandler, useCallback } from 'react';
 
 import { type RatingValue } from './RatingValue';
@@ -9,13 +8,12 @@ import useStrings from './useStrings';
 
 type Props = Readonly<{
   checked?: boolean | undefined;
-  className?: boolean | undefined;
   disabled?: boolean | undefined;
   onClick?: (index: RatingValue) => void;
   value: RatingValue;
 }>;
 
-const StarButton = ({ checked, className, disabled, onClick, value }: Props) => {
+const StarButton = ({ checked, disabled, onClick, value }: Props) => {
   const { getRatingAltText } = useStrings();
   const disabledRef = useRefFrom(disabled);
   const onClickRef = useRefFrom(onClick);
@@ -36,7 +34,7 @@ const StarButton = ({ checked, className, disabled, onClick, value }: Props) => 
       aria-checked={checked}
       aria-disabled={disabled}
       aria-label={getRatingAltText(value)}
-      className={classNames(className, 'webchat__customer-satisfactory__star-button')}
+      className="webchat__customer-satisfactory__star-button"
       onClick={handleClickAndFocus}
       onFocus={handleClickAndFocus}
       ref={ref}
