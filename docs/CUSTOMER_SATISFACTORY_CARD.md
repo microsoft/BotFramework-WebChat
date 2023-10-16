@@ -50,29 +50,30 @@ We are using https://schema.org/ReviewAction for the representation of the CSAT 
 
 ### Explanation of fields
 
-| Property                                                           | Description                                                                                                                         |
-| ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `content['@context']`                                              | Must be `"https://schema.org"`.                                                                                                     |
-| `content['@type']`                                                 | Must be [`"ReviewAction"`](https://schema.org/ReviewAction).                                                                        |
-| `content.actionStatus`                                             | If value is `"CompletedActionStatus"`, the card is submitted. Otherwise, the card is ready to submit.                               |
-| `content.description`                                              | Text of prompting the user for rating.                                                                                              |
-| `content.resultReview['@type']`                                    | Must be [`"Review"`](https://schema.org/Review).                                                                                    |
-| `content.resultReview.reviewRating['@type']`                       | Must be [`"Rating"`](https://schema.org/Rating).                                                                                    |
-| `content.resultReview.reviewRating.ratingValue`                    | Initial value of rating, must be `1` to `5` or `undefined`, default to `undefined`.                                                 |
-| `content.resultReview.reviewRating['ratingValue-input']`           | How `ratingValue` should be used as "input" parameters (a.k.a. request body). See https://schema.org/docs/actions.html for details. |
-| `content.resultReview.reviewRating['ratingValue-input']['@type']`  | Must be [`"PropertyValueSpecification"`](https://schema.org/PropertyValueSpecification).                                            |
-| `content.resultReview.reviewRating['ratingValue-input'].valueName` | The name used in URL template.                                                                                                      |
-| `content.target`                                                   | Must be URL or thing of `"EntryPoint"`.                                                                                             |
-| `content.target['@type']`                                          | Must be [`"EntryPoint"`](https://schema.org/EntryPoint).                                                                            |
-| `content.target.actionPlatform`                                    | Must be `"https://directline.botframework.com"`.                                                                                    |
-| `content.target.urlTemplate`                                       | [RFC 6570 URL template](https://datatracker.ietf.org/doc/html/rfc6570) to send the action, see below.                               |
-| `contentType`                                                      | Must be `"application/ld+json"`.                                                                                                    |
+| Property                                                           | Description                                                                                                                                  |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `content['@context']`                                              | Must be `"https://schema.org"`.                                                                                                              |
+| `content['@type']`                                                 | Must be [`"ReviewAction"`](https://schema.org/ReviewAction).                                                                                 |
+| `content.actionStatus`                                             | If value is [`"CompletedActionStatus"`](https://schema.org/ActionStatusType), the card is submitted. Otherwise, the card is ready to submit. |
+| `content.description`                                              | Text of prompting the user for rating.                                                                                                       |
+| `content.resultReview['@type']`                                    | Must be [`"Review"`](https://schema.org/Review).                                                                                             |
+| `content.resultReview.reviewRating['@type']`                       | Must be [`"Rating"`](https://schema.org/Rating).                                                                                             |
+| `content.resultReview.reviewRating.ratingValue`                    | Initial value of rating, must be `1` to `5` or `undefined`, default to `undefined`.                                                          |
+| `content.resultReview.reviewRating['ratingValue-input']`           | How `ratingValue` should be used as "input" parameters (a.k.a. request body). See https://schema.org/docs/actions.html for details.          |
+| `content.resultReview.reviewRating['ratingValue-input']['@type']`  | Must be [`"PropertyValueSpecification"`](https://schema.org/PropertyValueSpecification).                                                     |
+| `content.resultReview.reviewRating['ratingValue-input'].valueName` | The name used in URL template.                                                                                                               |
+| `content.target`                                                   | Must be URL or thing of `"EntryPoint"`.                                                                                                      |
+| `content.target['@type']`                                          | Must be [`"EntryPoint"`](https://schema.org/EntryPoint).                                                                                     |
+| `content.target.actionPlatform`                                    | Must be `"https://directline.botframework.com"`.                                                                                             |
+| `content.target.urlTemplate`                                       | [RFC 6570 URL template](https://datatracker.ietf.org/doc/html/rfc6570) to send the action, see below.                                        |
+| `contentType`                                                      | Must be `"application/ld+json"`.                                                                                                             |
 
-> Currently, rating must be 1 to 5 stars. [`resultReview.reviewRating.bestRating`](https://schema.org/bestRating) and [`resultReview.reviewRating.worstRating`](https://schema.org/worstRating) are ignored.
+Current designs and limitations:
 
-> If `actionStatus` is [`CompletedActionStatus`](https://schema.org/ActionStatusType) (review is submitted), `target` is optional. Otherwise, review is ready to submit and `target` must be specified.
-
-> Despite `target` could be URL, it is highly recommended `target` is a thing of [`EntryPoint`](https://schema.org/EntryPoint).
+-  Subclasses are not supported. `resultReview` must be `"Review"`. `"UserReview"` or other subclass of `"Review"` is not supported
+-  Rating must be 1 to 5 stars. [`resultReview.reviewRating.bestRating`](https://schema.org/bestRating) and [`resultReview.reviewRating.worstRating`](https://schema.org/worstRating) are ignored
+-  If `actionStatus` is [`CompletedActionStatus`](https://schema.org/ActionStatusType) (review is submitted), `target` is optional. Otherwise, review is ready to submit and `target` must be specified
+-  Despite `target` could be URL, it is highly recommended `target` is a thing of [`EntryPoint`](https://schema.org/EntryPoint)
 
 ### Target URL
 
