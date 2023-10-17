@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Klip video",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Berikutnya",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Sebelumnya",
+  "CITATION_MODEL_DIALOG_ALT": "Kutipan",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Tersambung",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Menyambungkan…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Tidak dapat menyambungkan.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Pajak",
   "RECEIPT_CARD_TOTAL": "Total",
   "RECEIPT_CARD_VAT": "PPN",
+  "REFERENCE_LIST_HEADER_ONE": "$1 referensi",
+  "REFERENCE_LIST_HEADER_FEW": "$1 referensi",
+  "REFERENCE_LIST_HEADER_MANY": "$1 referensi",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 referensi",
+  "REFERENCE_LIST_HEADER_TWO": "$1 referensi",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Tidak dapat mengirim pesan kosong.",
   "SPEECH_INPUT_LISTENING": "Mendengarkan…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon tidak aktif",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Akhir riwayat obrolan",
   "TYPING_INDICATOR_ALT": "Menampilkan indikator pengetikan",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 sedang mengetik.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 dan lainnya sedang mengetik."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 dan lainnya sedang mengetik.",
+  "VOTE_DISLIKE_ALT": "Tidak suka",
+  "VOTE_LIKE_ALT": "Suka"
 }
