@@ -134,7 +134,11 @@ export default function createLinkDefinitionsStyleSet() {
         overflow: 'hidden',
         textDecoration: 'underline',
         textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+
+        [FORCED_COLORS_SELECTOR]: {
+          color: 'LinkText'
+        }
       },
 
       '.webchat__link-definitions__open-in-new-window-icon': {

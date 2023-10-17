@@ -43,7 +43,7 @@ export default function initializeCheckAccessibility() {
       try {
         console.log('[TESTHARNESS] Accessibility checks started.');
 
-        const results = await axe.run();
+        const results = await axe.run(window.checkAccessibilityRunOptions);
         const { violations } = results;
 
         if (!violations?.length) {
