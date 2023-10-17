@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4863](https://github.com/microsoft/BotFramework-WebChat/issues/4863). Disable dark theme for link references until chat history has dark theme support, by [@compulim](https://github.com/compulim), in PR [#4864](https://github.com/microsoft/BotFramework-WebChat/pull/4864)
 -  Fixes [#4866](https://github.com/microsoft/BotFramework-WebChat/issues/4866). Citation modal show fill screen width on mobile device and various fit-and-finish, by [@compulim](https://github.com/compulim), in PR [#4867](https://github.com/microsoft/BotFramework-WebChat/pull/4867)
 -  Fixes [#4878](https://github.com/microsoft/BotFramework-WebChat/issues/4878). `createStore` should return type of `Redux.Store`, by [@compulim](https://github.com/compulim), in PR [#4877](https://github.com/microsoft/BotFramework-WebChat/pull/4877)
+-  Fixes [#4907](https://github.com/microsoft/BotFramework-WebChat/issues/4907). Link references in high contrast mode should use `LinkText` color, by [@compulim](https://github.com/compulim), in PR [#4908](https://github.com/microsoft/BotFramework-WebChat/pull/4908)
 
 ### Added
 
