@@ -10,6 +10,11 @@ import disconnect from './actions/disconnect';
 import dismissNotification from './actions/dismissNotification';
 import emitTypingIndicator from './actions/emitTypingIndicator';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
+import {
+  isThing as isOrgSchemaThing,
+  isThingAsEntity as isOrgSchemaThingAsEntity,
+  isThingOf as isOrgSchemaThingOf
+} from './types/external/OrgSchema/Thing';
 import markActivity from './actions/markActivity';
 import OneOrMany from './types/OneOrMany';
 import onErrorResumeNext from './utils/onErrorResumeNext';
@@ -49,7 +54,10 @@ import type { DirectLineThumbnailCard } from './types/external/DirectLineThumbna
 import type { DirectLineVideoCard } from './types/external/DirectLineVideoCard';
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 import type { Observable } from './types/external/Observable';
-import type { OrgSchemaThing } from './types/external/OrgSchemaThing';
+import type { AsEntity as OrgSchemaAsEntity, Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
+import type { Claim as OrgSchemaClaim } from './types/external/OrgSchema/Claim';
+import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Project';
+import type { VoteAction as OrgSchemaVoteAction } from './types/external/OrgSchema/VoteAction';
 import type { WebChatActivity } from './types/WebChatActivity';
 
 const Constants = { ActivityClientState, DictateState };
@@ -66,6 +74,9 @@ export {
   dismissNotification,
   emitTypingIndicator,
   isForbiddenPropertyName,
+  isOrgSchemaThing,
+  isOrgSchemaThingAsEntity,
+  isOrgSchemaThingOf,
   markActivity,
   onErrorResumeNext,
   postActivity,
@@ -108,6 +119,10 @@ export type {
   Observable,
   OneOrMany,
   GlobalScopePonyfill,
+  OrgSchemaAsEntity,
+  OrgSchemaClaim,
+  OrgSchemaProject,
   OrgSchemaThing,
+  OrgSchemaVoteAction,
   WebChatActivity
 };

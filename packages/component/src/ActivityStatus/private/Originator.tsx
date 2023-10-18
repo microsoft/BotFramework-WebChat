@@ -1,14 +1,13 @@
 import React, { memo } from 'react';
 
-import { type ReplyAction } from '../../types/external/OrgSchema/ReplyAction';
+import { OrgSchemaProject } from 'botframework-webchat-core';
 
-type Props = Readonly<{ replyAction: ReplyAction }>;
+type Props = Readonly<{ claimInterpreter: OrgSchemaProject }>;
 
-const Originator = memo(({ replyAction }: Props) => {
-  const { description, provider } = replyAction;
+const Originator = memo(({ claimInterpreter }: Props) => {
+  const { name, slogan, url } = claimInterpreter;
 
-  const text = description || provider?.name;
-  const url = provider?.url;
+  const text = slogan || name;
 
   return url ? (
     <a

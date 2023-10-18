@@ -1,13 +1,13 @@
 import React, { memo, useCallback } from 'react';
+import { type OrgSchemaVoteAction } from 'botframework-webchat-core';
 import { useRefFrom } from 'use-ref-from';
 
-import { type VoteAction } from '../../../../types/external/OrgSchema/VoteAction';
 import ThumbsButton from './ThumbButton';
 
 type Props = Readonly<{
-  onClick?: (voteAction: VoteAction) => void;
+  onClick?: (voteAction: OrgSchemaVoteAction) => void;
   pressed: boolean;
-  voteAction: VoteAction;
+  voteAction: OrgSchemaVoteAction;
 }>;
 
 const FeedbackVoteButton = memo(({ onClick, pressed, voteAction }: Props) => {

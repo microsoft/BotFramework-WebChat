@@ -1,15 +1,15 @@
 import { hooks } from 'botframework-webchat-api';
+import { type OrgSchemaVoteAction } from 'botframework-webchat-core';
 import { useRefFrom } from 'use-ref-from';
 import React, { Fragment, memo, type PropsWithChildren, useState, useEffect } from 'react';
 
-import { type VoteAction } from '../../../types/external/OrgSchema/VoteAction';
 import FeedbackVoteButton from './private/VoteButton';
 
 const { usePonyfill, usePostActivity } = hooks;
 
 type Props = Readonly<
   PropsWithChildren<{
-    voteActions: ReadonlySet<VoteAction>;
+    voteActions: ReadonlySet<OrgSchemaVoteAction>;
   }>
 >;
 
@@ -17,7 +17,7 @@ const DEBOUNCE_TIMEOUT = 500;
 
 const Feedback = memo(({ voteActions }: Props) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
-  const [selectedVoteAction, setSelectedVoteAction] = useState<VoteAction | undefined>();
+  const [selectedVoteAction, setSelectedVoteAction] = useState<OrgSchemaVoteAction | undefined>();
   const postActivity = usePostActivity();
 
   const postActivityRef = useRefFrom(postActivity);

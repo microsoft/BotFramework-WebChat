@@ -3,10 +3,14 @@ import { useRefFrom } from 'use-ref-from';
 import classNames from 'classnames';
 import React, { memo, type MouseEventHandler, useCallback, useMemo } from 'react';
 
-import { isClaim, type Claim } from '../../../types/external/OrgSchema/Claim';
-import { isThing } from '../../../types/external/OrgSchema/Thing';
 import { type PropsOf } from '../../../types/PropsOf';
-import { type WebChatActivity } from 'botframework-webchat-core';
+import {
+  isOrgSchemaThingAsEntity,
+  isOrgSchemaThingOf,
+  type OrgSchemaAsEntity,
+  type OrgSchemaClaim,
+  type WebChatActivity
+} from 'botframework-webchat-core';
 import CitationModalContext from './CitationModalContent';
 import isHTMLButtonElement from './isHTMLButtonElement';
 import LinkDefinitions from './LinkDefinitions';
@@ -29,10 +33,20 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
       textContent: textContentStyleSet
     }
   ] = useStyleSet();
-  const entitiesRef = useRefFrom(entities);
+  const claims = useMemo<readonly OrgSchemaClaim[]>(
+    () =>
+      Object.freeze(
+        (entities || []).filter<OrgSchemaAsEntity<OrgSchemaClaim>>(
+          (entity): entity is OrgSchemaAsEntity<OrgSchemaClaim> =>
+            isOrgSchemaThingAsEntity(entity) && isOrgSchemaThingOf<OrgSchemaClaim>(entity, 'Claim')
+        )
+      ),
+    [entities]
+  );
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const showModal = useShowModal();
 
+  const claimsRef = useRefFrom(claims);
   const localize = useLocalizer();
 
   const citationModalDialogLabel = localize('CITATION_MODEL_DIALOG_ALT');
@@ -47,7 +61,7 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
   );
 
   const showClaimModal = useCallback(
-    (claim: Claim) => {
+    (claim: OrgSchemaClaim) => {
       showModal(() => <CitationModalContext headerText={claim.name} markdown={claim.text} />, {
         'aria-label': claim.alternateName || claim.name || citationModalDialogLabel,
         className: classNames('webchat__citation-modal-dialog', citationModalDialogStyleSet)
@@ -58,13 +72,11 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
 
   const handleCitationClick = useCallback<PropsOf<typeof LinkDefinitions>['onCitationClick']>(
     url => {
-      const claim = entities.find<Claim>(
-        (entity): entity is Claim => isThing(entity) && isClaim(entity) && entity['@id'] === url
-      );
+      const claim = claimsRef.current.find(({ '@id': id }) => id === url);
 
       claim && showClaimModal(claim);
     },
-    [entities, showClaimModal]
+    [claimsRef, showClaimModal]
   );
 
   const handleClick = useCallback<MouseEventHandler<HTMLDivElement>>(
@@ -79,9 +91,7 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
         return;
       }
 
-      const claim = entitiesRef.current?.find<Claim>(
-        (entity): entity is Claim => isThing(entity) && isClaim(entity) && entity['@id'] === buttonElement.value
-      );
+      const claim = claimsRef.current.find(({ '@id': id }) => id === buttonElement.value);
 
       if (!claim) {
         return;
@@ -92,7 +102,7 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
 
       showClaimModal(claim);
     },
-    [entitiesRef, showClaimModal]
+    [claimsRef, showClaimModal]
   );
 
   return (
