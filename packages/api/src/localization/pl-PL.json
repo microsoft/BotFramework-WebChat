@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Klip wideo",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Dalej",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Wstecz",
+  "CITATION_MODEL_DIALOG_ALT": "Cytat",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Połączono",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Trwa nawiązywanie połączenia...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Nie można nawiązać połączenia.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Podatek",
   "RECEIPT_CARD_TOTAL": "Suma",
   "RECEIPT_CARD_VAT": "Podatek VAT",
+  "REFERENCE_LIST_HEADER_ONE": "$1 odwołanie",
+  "REFERENCE_LIST_HEADER_FEW": "$1 odwołania",
+  "REFERENCE_LIST_HEADER_MANY": "$1 odwołań",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 odwołania",
+  "REFERENCE_LIST_HEADER_TWO": "$1 odwołania",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Nie można wysłać pustej wiadomości.",
   "SPEECH_INPUT_LISTENING": "Trwa słuchanie...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon wyłączony",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Koniec historii czatu",
   "TYPING_INDICATOR_ALT": "Wyświetlanie wskaźnika wpisywania",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 pisze.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 i inni piszą."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 i inni piszą.",
+  "VOTE_DISLIKE_ALT": "Nie podoba mi się",
+  "VOTE_LIKE_ALT": "Podoba mi się"
 }
