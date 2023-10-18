@@ -20,7 +20,7 @@ test.each([
   // Permute "currentContext".
   [false, 'https://example.com', 'Person', 'https://schema.org'],
   [true, 'https://schema.org', 'Person', 'https://schema.org'],
-  [false, undefined, 'Person', 'https://schema.org'],
+  [true, undefined, 'Person', 'https://schema.org'],
 
   [false, 'https://example.com', 'Organization', 'https://schema.org'],
   [false, 'https://schema.org', 'Organization', 'https://schema.org'],
