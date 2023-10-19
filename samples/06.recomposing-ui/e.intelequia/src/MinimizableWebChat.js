@@ -66,7 +66,26 @@ const MinimizableWebChat = (parameters) => {
                 setMinimized(true);
                 setNewMessage(false);
               case 'ChangeLanguage':
-                setLanguage(action.payload.activity.value)
+                setLanguage(action.payload.activity.value);
+              case 'Geolocation':
+                if(navigator.geolocation){
+                  function success(pos) {
+                    const crd = pos.coords;
+
+                    let gps = {
+                      latitude : crd.latitude,
+                      longitude : crd.longitude
+                    };
+                    dispatch({
+                      type: 'WEB_CHAT/SEND_EVENT',
+                      payload: {
+                        name: 'GeolocationEvent',
+                        value: gps
+                      }
+                    });            
+                  }
+                  navigator.geolocation.getCurrentPosition(success); 
+                }      
             }
           }
         } else if(action.type === 'WEB_CHAT/SEND_MESSAGE'){
