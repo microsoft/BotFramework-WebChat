@@ -26,7 +26,7 @@ export default function () {
 
       document.body.prepend(header);
 
-      window.checkAccessibilityRunOptions = doneOptions.axeCoreRunOptions || {};
+      window.checkAccessibilityRunOptions = doneOptions?.axeCoreRunOptions || {};
 
       window.addEventListener('error', event => host.error(event.error));
 
