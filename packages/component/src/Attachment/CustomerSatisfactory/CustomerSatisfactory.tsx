@@ -123,7 +123,7 @@ const CustomerSatisfactory = ({ initialReviewAction }: Props) => {
           {initialReviewAction.description}
         </p>
         <RovingTabIndexComposer>
-          <StarBar disabled={submitted} onChange={setRating} value={ratingValue} />
+          <StarBar disabled={submitted} onChange={setRating} reviewAction={reviewAction} value={ratingValue} />
         </RovingTabIndexComposer>
       </div>
       <button

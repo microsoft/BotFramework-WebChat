@@ -1,4 +1,19 @@
-import { custom, enumType, maxValue, minValue, number, optional, string, union, url } from 'valibot';
+import {
+  array,
+  custom,
+  enumType,
+  length,
+  maxValue,
+  minValue,
+  number,
+  optional,
+  string,
+  type ArraySchema,
+  type Output,
+  type StringSchema,
+  union,
+  url
+} from 'valibot';
 
 import { ActionStatusType } from '../../../../types/external/OrgSchema/ActionStatusType';
 import exactString from './exactString';
@@ -25,6 +40,24 @@ const reviewActionSchema = thing(
       thing('Review', {
         reviewRating: optional(
           thing('Rating', {
+            description: optional(
+              array(
+                string(),
+                `"resultReview.reviewRating.description" must be an array with 5 elements of type "string"`,
+                // Currently, we expect 5 tooltips for rating 1-5.
+                // eslint-disable-next-line no-magic-numbers
+                [length(5)]
+              ) as ArraySchema<
+                StringSchema,
+                [
+                  Output<StringSchema>,
+                  Output<StringSchema>,
+                  Output<StringSchema>,
+                  Output<StringSchema>,
+                  Output<StringSchema>
+                ]
+              >
+            ),
             ratingValue: optional(
               number(`"resultReview.reviewRating.ratingValue" must be of type "number" and between 1 and 5`, [
                 minValue(1),

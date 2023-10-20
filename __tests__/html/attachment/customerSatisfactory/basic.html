@@ -38,6 +38,7 @@
                   '@type': 'Review',
                   reviewRating: {
                     '@type': 'Rating',
+                    description: ['Bad', 'Poor', 'Average', 'Good', 'Excellent'],
                     'ratingValue-input': {
                       '@type': 'PropertyValueSpecification',
                       valueName: 'rate'
@@ -61,6 +62,12 @@
         const [firstActivity] = pageElements.activities();
         const buttons = firstActivity.querySelectorAll('[role="radio"]');
         const submitButton = firstActivity.querySelector('[type="submit"]');
+
+        expect(buttons[0]).toHaveProperty('title', 'Bad');
+        expect(buttons[1]).toHaveProperty('title', 'Poor');
+        expect(buttons[2]).toHaveProperty('title', 'Average');
+        expect(buttons[3]).toHaveProperty('title', 'Good');
+        expect(buttons[4]).toHaveProperty('title', 'Excellent');
 
         pageElements.sendBoxTextBox().focus();
 

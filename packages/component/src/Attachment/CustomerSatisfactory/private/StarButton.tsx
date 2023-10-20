@@ -10,10 +10,11 @@ type Props = Readonly<{
   checked?: boolean | undefined;
   disabled?: boolean | undefined;
   onClick?: (index: RatingValue) => void;
+  title?: string | undefined;
   value: RatingValue;
 }>;
 
-const StarButton = ({ checked, disabled, onClick, value }: Props) => {
+const StarButton = ({ checked, disabled, onClick, title, value }: Props) => {
   const { getRatingAltText } = useStrings();
   const disabledRef = useRefFrom(disabled);
   const onClickRef = useRefFrom(onClick);
@@ -42,6 +43,7 @@ const StarButton = ({ checked, disabled, onClick, value }: Props) => {
       // "-1" for disabling TAB key.
       // eslint-disable-next-line no-magic-numbers
       tabIndex={disabled ? -1 : undefined}
+      title={title}
       type="button"
     >
       <Star filled={checked} />
