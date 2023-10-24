@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Videoklip",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Další",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Předchozí",
+  "CITATION_MODEL_DIALOG_ALT": "Citace",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Připojeno",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Připojování…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Nelze navázat připojení.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Daň",
   "RECEIPT_CARD_TOTAL": "Celkem",
   "RECEIPT_CARD_VAT": "DPH",
+  "REFERENCE_LIST_HEADER_ONE": "$1 odkaz",
+  "REFERENCE_LIST_HEADER_FEW": "$1 odkazy",
+  "REFERENCE_LIST_HEADER_MANY": "$1 odkazů",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 odkazů",
+  "REFERENCE_LIST_HEADER_TWO": "$1 odkazy",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Prázdnou zprávu nelze odeslat.",
   "SPEECH_INPUT_LISTENING": "Naslouchání…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon vypnout",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Konec historie chatu",
   "TYPING_INDICATOR_ALT": "Zobrazuje se indikátor psaní",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 píše.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 a další píšou."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 a další píšou.",
+  "VOTE_DISLIKE_ALT": "To se mi nelíbí",
+  "VOTE_LIKE_ALT": "To se mi líbí"
 }
