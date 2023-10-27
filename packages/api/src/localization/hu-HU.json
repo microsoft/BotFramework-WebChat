@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Egy videoklip",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Következő",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Előző",
+  "CITATION_MODEL_DIALOG_ALT": "Idézet",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Csatlakoztatva",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Csatlakozás...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Nem lehet csatlakozni.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Adó",
   "RECEIPT_CARD_TOTAL": "Összesen",
   "RECEIPT_CARD_VAT": "ÁFA",
+  "REFERENCE_LIST_HEADER_ONE": "$1 hivatkozás",
+  "REFERENCE_LIST_HEADER_FEW": "$1 hivatkozás",
+  "REFERENCE_LIST_HEADER_MANY": "$1 hivatkozás",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 hivatkozás",
+  "REFERENCE_LIST_HEADER_TWO": "$1 hivatkozás",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Nem lehet üres üzenetet küldeni.",
   "SPEECH_INPUT_LISTENING": "Hallgatás...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon kikapcsolva",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "A csevegési előzmények vége",
   "TYPING_INDICATOR_ALT": "Gépelésjelző megjelenítése",
   "TYPING_INDICATOR_SINGLE_TEXT": "1 $ és ír.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "1 $ és mások még írnak."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "1 $ és mások még írnak.",
+  "VOTE_DISLIKE_ALT": "Nem tetszik",
+  "VOTE_LIKE_ALT": "Tetszik"
 }
