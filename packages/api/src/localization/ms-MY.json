@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Klip video",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Seterusnya",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Sebelumnya",
+  "CITATION_MODEL_DIALOG_ALT": "Petikan",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Disambungkan",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Bersambung…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Tidak dapat bersambung.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Cukai",
   "RECEIPT_CARD_TOTAL": "Jumlah",
   "RECEIPT_CARD_VAT": "VAT",
+  "REFERENCE_LIST_HEADER_ONE": "$1 rujukan",
+  "REFERENCE_LIST_HEADER_FEW": "$1 rujukan",
+  "REFERENCE_LIST_HEADER_MANY": "$1 rujukan",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 rujukan",
+  "REFERENCE_LIST_HEADER_TWO": "$1 rujukan",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Tidak boleh menghantar mesej kosong.",
   "SPEECH_INPUT_LISTENING": "Mendengar…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon dimatikan",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Tamat sejarah sembang",
   "TYPING_INDICATOR_ALT": "Menunjukkan penunjuk menaip",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 sedang menaip.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 dan lain-lain sedang menaip."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 dan lain-lain sedang menaip.",
+  "VOTE_DISLIKE_ALT": "Tidak suka",
+  "VOTE_LIKE_ALT": "Suka"
 }
