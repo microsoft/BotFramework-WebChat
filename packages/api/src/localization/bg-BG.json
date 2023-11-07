@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Видеоклип",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Следващо",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Предишно",
+  "CITATION_MODEL_DIALOG_ALT": "Цитат",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Установена връзка",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Свързване...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Свързването не е възможно.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Данък",
   "RECEIPT_CARD_TOTAL": "Обща сума",
   "RECEIPT_CARD_VAT": "ДДС",
+  "REFERENCE_LIST_HEADER_ONE": "$1 препратка",
+  "REFERENCE_LIST_HEADER_FEW": "$1 препратки",
+  "REFERENCE_LIST_HEADER_MANY": "$1 препратки",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 препратки",
+  "REFERENCE_LIST_HEADER_TWO": "$1 препратки",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Не може да се изпрати празно съобщение.",
   "SPEECH_INPUT_LISTENING": "Слушане...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Микрофонът е изключен",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Край на хронологията на чата",
   "TYPING_INDICATOR_ALT": "Показване на индикатор за въвеждане",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 пише.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 и други пишат."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 и други пишат.",
+  "VOTE_DISLIKE_ALT": "Не харесвам",
+  "VOTE_LIKE_ALT": "Харесвам"
 }

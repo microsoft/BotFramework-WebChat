@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "คลิปวิดีโอ",
   "CAROUSEL_FLIPPER_NEXT_ALT": "ถัดไป",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "ก่อนหน้า",
+  "CITATION_MODEL_DIALOG_ALT": "การอ้างอิงถึงแหล่งที่มา",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "เชื่อมต่อแล้ว",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "กำลังเชื่อมต่อ...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "ไม่สามารถเชื่อมต่อได้",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "ภาษี",
   "RECEIPT_CARD_TOTAL": "ยอดรวม",
   "RECEIPT_CARD_VAT": "ภาษีมูลค่าเพิ่ม",
+  "REFERENCE_LIST_HEADER_ONE": "การอ้างอิง $1 รายการ",
+  "REFERENCE_LIST_HEADER_FEW": "การอ้างอิง $1 รายการ",
+  "REFERENCE_LIST_HEADER_MANY": "การอ้างอิง$1รายการ",
+  "REFERENCE_LIST_HEADER_OTHER": "การอ้างอิง$1",
+  "REFERENCE_LIST_HEADER_TWO": "การอ้างอิง $1 รายการ",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "ไม่สามารถส่งข้อความที่ว่างเปล่า",
   "SPEECH_INPUT_LISTENING": "กำลังฟัง...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "ปิดไมโครโฟน",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "สิ้นสุดประวัติการแชท",
   "TYPING_INDICATOR_ALT": "แสดงตัวแสดงการพิมพ์",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 กำลังพิมพ์",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 และคนอื่นๆ กำลังพิมพ์"
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 และคนอื่นๆ กำลังพิมพ์",
+  "VOTE_DISLIKE_ALT": "ไม่ถูกใจ",
+  "VOTE_LIKE_ALT": "ถูกใจ"
 }

@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Clip video",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Avanti",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Indietro",
+  "CITATION_MODEL_DIALOG_ALT": "Citazione",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Connesso",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Connessione in corso…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Impossibile connettersi.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Imposte",
   "RECEIPT_CARD_TOTAL": "Totali",
   "RECEIPT_CARD_VAT": "IVA",
+  "REFERENCE_LIST_HEADER_ONE": "Riferimento $1",
+  "REFERENCE_LIST_HEADER_FEW": "Riferimenti $1",
+  "REFERENCE_LIST_HEADER_MANY": "Riferimenti $1",
+  "REFERENCE_LIST_HEADER_OTHER": "Riferimenti $1",
+  "REFERENCE_LIST_HEADER_TWO": "Riferimenti $1",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Impossibile inviare un messaggio vuoto.",
   "SPEECH_INPUT_LISTENING": "In ascolto…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Microfono disattivato",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Fine della cronologia chat",
   "TYPING_INDICATOR_ALT": "Visualizzazione dell'indicatore di digitazione in corso",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 sta digitando.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 e altri stanno digitando."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 e altri stanno digitando.",
+  "VOTE_DISLIKE_ALT": "Non mi piace",
+  "VOTE_LIKE_ALT": "Mi piace"
 }
