@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Et videoklip",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Næste",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Forrige",
+  "CITATION_MODEL_DIALOG_ALT": "Citat",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Forbundet",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Opretter forbindelse ...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Det var ikke muligt at oprette forbindelse.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Moms",
   "RECEIPT_CARD_TOTAL": "I alt",
   "RECEIPT_CARD_VAT": "Moms",
+  "REFERENCE_LIST_HEADER_ONE": "$1 reference",
+  "REFERENCE_LIST_HEADER_FEW": "$1 referencer",
+  "REFERENCE_LIST_HEADER_MANY": "$1 referencer",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 referencer",
+  "REFERENCE_LIST_HEADER_TWO": "$1 referencer",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Der kan ikke sendes en tom meddelelse.",
   "SPEECH_INPUT_LISTENING": "Lytter ...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon Fra",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Slut på chathistorik",
   "TYPING_INDICATOR_ALT": "Viser indtastningsindikator",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 skriver.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 og andre skriver."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 og andre skriver.",
+  "VOTE_DISLIKE_ALT": "Synes ikke om",
+  "VOTE_LIKE_ALT": "Synes om"
 }

@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Ein Videoclip",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Weiter",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Zurück",
+  "CITATION_MODEL_DIALOG_ALT": "Zitat",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Verbunden",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Verbindung wird hergestellt ...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Verbindung konnte nicht aufgebaut werden.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Steuer",
   "RECEIPT_CARD_TOTAL": "Gesamt",
   "RECEIPT_CARD_VAT": "Umsatzsteuer",
+  "REFERENCE_LIST_HEADER_ONE": "$1 Verweis",
+  "REFERENCE_LIST_HEADER_FEW": "$1 Verweise",
+  "REFERENCE_LIST_HEADER_MANY": "$1 Verweise",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 Verweise",
+  "REFERENCE_LIST_HEADER_TWO": "$1 Verweise",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Eine leere Nachricht kann nicht gesendet werden.",
   "SPEECH_INPUT_LISTENING": "Zuhören ...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon aus",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Ende des Chatverlaufs",
   "TYPING_INDICATOR_ALT": "Anzeigen des Eingabeindikators",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 gibt gerade ein.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 und weitere geben gerade ein."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 und weitere geben gerade ein.",
+  "VOTE_DISLIKE_ALT": "Mit „Gefällt mir nicht“ markieren",
+  "VOTE_LIKE_ALT": "Mit „Gefällt mir“ markieren"
 }

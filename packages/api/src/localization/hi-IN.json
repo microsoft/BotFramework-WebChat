@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "एक वीडियो क्लिप",
   "CAROUSEL_FLIPPER_NEXT_ALT": "अगला",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "पिछला",
+  "CITATION_MODEL_DIALOG_ALT": "उद्धरण",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "कनेक्ट किया गया",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "कनेक्ट किया जा रहा है...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "कनेक्ट करने में असमर्थ.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "कर",
   "RECEIPT_CARD_TOTAL": "योग",
   "RECEIPT_CARD_VAT": "VAT",
+  "REFERENCE_LIST_HEADER_ONE": "$1 संदर्भ",
+  "REFERENCE_LIST_HEADER_FEW": "$1 संदर्भ",
+  "REFERENCE_LIST_HEADER_MANY": "$1 संदर्भ",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 संदर्भ",
+  "REFERENCE_LIST_HEADER_TWO": "$1 संदर्भ",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "रिक्त संदेश भेज नहीं सकते.",
   "SPEECH_INPUT_LISTENING": "सुन रहा है...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "माइक्रोफ़ोन बंद करें",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "चैट इतिहास का अंत",
   "TYPING_INDICATOR_ALT": "टाइप करने वाला संकेतक दिखा रहा है",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 टाइप कर रहा है.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 और अन्य लिख रहे हैं."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 और अन्य लिख रहे हैं.",
+  "VOTE_DISLIKE_ALT": "नापसंद करें",
+  "VOTE_LIKE_ALT": "पसंद करें"
 }
