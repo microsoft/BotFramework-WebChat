@@ -51,7 +51,7 @@
     "@types/node": "^20.5.8",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "botframework-directlinejs": "^0.15.4",
+    "botframework-directlinejs": "^0.15.5",
     "concurrently": "^8.2.1",
     "typescript": "^5.2.2"
   },
