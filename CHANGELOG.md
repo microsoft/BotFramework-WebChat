@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.15.10] - 2023-11-16
+
 ### Breaking changes
 
 -  `useTextBoxValue` setter will no longer replace emoticon with emoji, in PR [#4861](https://github.com/microsoft/BotFramework-WebChat/issues/pull/4861)
