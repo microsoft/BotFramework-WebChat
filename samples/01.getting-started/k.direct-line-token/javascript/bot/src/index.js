@@ -19,10 +19,12 @@ const adapter = createBotAdapter();
 const bot = createBot();
 const server = createServer();
 
-server.post('/api/messages', (req, res) => {
-  adapter.processActivity(req, res, context => bot.run(context));
+server.post('/api/messages', async (req, res) => {
+  await adapter.processActivity(req, res, async context => {
+    await bot.run(context);
+  });
 });
 
 server.listen(PORT, () => {
-  console.log(`Bot is now listening to port ${PORT}`);
+  console.log(`Bot is now listening to port http://localhost:${PORT}`);
 });
