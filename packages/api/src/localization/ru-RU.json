@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Видеоклип",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Далее",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Назад",
+  "CITATION_MODEL_DIALOG_ALT": "Цитата",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Подключено",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Подключение…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Не удается подключиться.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Налог",
   "RECEIPT_CARD_TOTAL": "Итого",
   "RECEIPT_CARD_VAT": "НДС",
+  "REFERENCE_LIST_HEADER_ONE": "$1 ссылка",
+  "REFERENCE_LIST_HEADER_FEW": "$1 ссылок",
+  "REFERENCE_LIST_HEADER_MANY": "$1 ссылок",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 ссылки",
+  "REFERENCE_LIST_HEADER_TWO": "$1 ссылки",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Невозможно отправить пустое сообщение.",
   "SPEECH_INPUT_LISTENING": "Слушаю…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Микрофон выкл.",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Конец истории чата",
   "TYPING_INDICATOR_ALT": "Отображение индикатора ввода",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 вводит текст.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 и другие вводят текст."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 и другие вводят текст.",
+  "VOTE_DISLIKE_ALT": "Не нравится",
+  "VOTE_LIKE_ALT": "Нравится"
 }
