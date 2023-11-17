@@ -22,10 +22,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [4.15.10] - 2023-11-16
+## [4.16.0] - 2023-11-16
 
-### Breaking changes
+### Breaking changes.
 
+-  Starting from 4.16.0, Internet Explorer is no longer supported
+   -  After more than a year of the Internet Explorer 11 officially retirement, we decided to stop supporting Internet Explorer. This will help us to bring new features to Web Chat
+   -  4.15.9 is the last version which supports Internet Explorer in limited fashion
 -  `useTextBoxValue` setter will no longer replace emoticon with emoji, in PR [#4861](https://github.com/microsoft/BotFramework-WebChat/issues/pull/4861)
 
 ### Fixed
