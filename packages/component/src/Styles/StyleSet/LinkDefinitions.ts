@@ -28,6 +28,10 @@ export default function createLinkDefinitionsStyleSet() {
         }
       },
 
+      '.webchat__link-definitions__header::-webkit-details-marker': {
+        display: 'none'
+      },
+
       '&:not([open]) .webchat__link-definitions__header-chevron': {
         marginBottom: '-0.1em',
         transform: 'rotate(-180deg)'
