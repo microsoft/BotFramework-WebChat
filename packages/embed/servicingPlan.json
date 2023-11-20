@@ -501,6 +501,26 @@
       "private": true,
       "versionFamily": "4"
     },
+    "4.15.9": {
+      "assets": [
+        [
+          "https://cdn.botframework.com/botframework-webchat/4.15.9/webchat-es5.js",
+          "sha384-04jpTOxuj3fbYmyDC2/jU3rdwhoC4OWnNbo6zh6RNEq+qvzNggRWDzdN788GnXs6"
+        ]
+      ],
+      "private": true,
+      "versionFamily": "4"
+    },
+    "4.16.0": {
+      "assets": [
+        [
+          "https://cdn.botframework.com/botframework-webchat/4.16.0/webchat-es5.js",
+          "sha384-fhdXAQj5PD+9CBeiZ3dGYjJ3mzH1DePD30cKtJKWzGxyioYiNYOaw5oRw7+AMg+e"
+        ]
+      ],
+      "private": true,
+      "versionFamily": "4"
+    },
     "hosted": {
       "assets": [
         [
