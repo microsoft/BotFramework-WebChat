@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Et videoklipp",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Neste",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Forrige",
+  "CITATION_MODEL_DIALOG_ALT": "Referanse",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Tilkoblet",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Kobler til ...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Kan ikke koble til.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Avgift",
   "RECEIPT_CARD_TOTAL": "Totalt",
   "RECEIPT_CARD_VAT": "Merverdiavgift",
+  "REFERENCE_LIST_HEADER_ONE": "$1 referanse",
+  "REFERENCE_LIST_HEADER_FEW": "$1 referanser",
+  "REFERENCE_LIST_HEADER_MANY": "$1 referanser",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 referanser",
+  "REFERENCE_LIST_HEADER_TWO": "$1 referanser",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Kan ikke sende tom melding.",
   "SPEECH_INPUT_LISTENING": "Lytter ...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon av",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Slutten på chatteloggen",
   "TYPING_INDICATOR_ALT": "Viser skriveindikatoren",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 skriver.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 og andre skriver."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 og andre skriver.",
+  "VOTE_DISLIKE_ALT": "Mislik",
+  "VOTE_LIKE_ALT": "Lik"
 }

@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Đoạn video",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Tiếp theo",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Trước",
+  "CITATION_MODEL_DIALOG_ALT": "Trích dẫn",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Đã kết nối",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Đang kết nối...",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Không thể kết nối.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Thuế",
   "RECEIPT_CARD_TOTAL": "Tổng số",
   "RECEIPT_CARD_VAT": "Thuế GTGT",
+  "REFERENCE_LIST_HEADER_ONE": "$1 tham chiếu",
+  "REFERENCE_LIST_HEADER_FEW": "$1 tham chiếu",
+  "REFERENCE_LIST_HEADER_MANY": "$1 tham chiếu",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 tham chiếu",
+  "REFERENCE_LIST_HEADER_TWO": "$1 tham chiếu",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Không thể gửi tin nhắn.",
   "SPEECH_INPUT_LISTENING": "Đang nghe…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Tắt micrô",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Kết thúc lịch sử trò chuyện",
   "TYPING_INDICATOR_ALT": "Hiển thị chỉ báo đang nhập",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 đang nhập.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 và những người khác đang nhập."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 và những người khác đang nhập.",
+  "VOTE_DISLIKE_ALT": "Không thích",
+  "VOTE_LIKE_ALT": "Thích"
 }
