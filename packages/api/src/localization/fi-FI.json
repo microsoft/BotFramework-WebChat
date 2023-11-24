@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Videoleike",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Seuraava",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Edellinen",
+  "CITATION_MODEL_DIALOG_ALT": "Lainaus",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Yhdistetty",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Muodostetaan yhteyttä…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Yhdistäminen ei onnistu.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Vero",
   "RECEIPT_CARD_TOTAL": "Yhteensä",
   "RECEIPT_CARD_VAT": "ALV",
+  "REFERENCE_LIST_HEADER_ONE": "$1 viite",
+  "REFERENCE_LIST_HEADER_FEW": "$1 viitettä",
+  "REFERENCE_LIST_HEADER_MANY": "$1 viitettä",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 viitettä",
+  "REFERENCE_LIST_HEADER_TWO": "$1 viitettä",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Tyhjää viestiä ei voi lähettää.",
   "SPEECH_INPUT_LISTENING": "Kuunnellaan…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofoni pois päältä",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Keskusteluhistorian loppu",
   "TYPING_INDICATOR_ALT": "Näytetään kirjoittamisen ilmaisin",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 kirjoittaa.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 ja muut kirjoittavat."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 ja muut kirjoittavat.",
+  "VOTE_DISLIKE_ALT": "Älä tykkää",
+  "VOTE_LIKE_ALT": "Tykkää"
 }
