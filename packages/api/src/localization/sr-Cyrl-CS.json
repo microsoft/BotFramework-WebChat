@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Видео клип",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Даље",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Претходно",
+  "CITATION_MODEL_DIALOG_ALT": "Цитат",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Повезано",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Повезивање…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Повезивање није могуће.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Порез",
   "RECEIPT_CARD_TOTAL": "Укупно",
   "RECEIPT_CARD_VAT": "ПДВ",
+  "REFERENCE_LIST_HEADER_ONE": "$1 референца",
+  "REFERENCE_LIST_HEADER_FEW": "$1 референци",
+  "REFERENCE_LIST_HEADER_MANY": "$1 референци",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 референци",
+  "REFERENCE_LIST_HEADER_TWO": "$1 референце",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Није могуће послати празну поруку.",
   "SPEECH_INPUT_LISTENING": "Слушамо...",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Микрофон је искључен",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Крај историје ћаскања",
   "TYPING_INDICATOR_ALT": "Приказује се индикатор куцања",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 куца.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 и други куцају."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 и други куцају.",
+  "VOTE_DISLIKE_ALT": "Не свиђа ми се",
+  "VOTE_LIKE_ALT": "Свиђа ми се"
 }

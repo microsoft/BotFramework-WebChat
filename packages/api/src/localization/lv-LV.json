@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Videoklips",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Tālāk",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Atpakaļ",
+  "CITATION_MODEL_DIALOG_ALT": "Citāts",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Izveidots savienojums",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Notiek savienojuma izveide…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Nevar izveidot savienojumu.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Nodoklis",
   "RECEIPT_CARD_TOTAL": "Kopā",
   "RECEIPT_CARD_VAT": "PVN",
+  "REFERENCE_LIST_HEADER_ONE": "$1 atsauce",
+  "REFERENCE_LIST_HEADER_FEW": "$1 atsauces",
+  "REFERENCE_LIST_HEADER_MANY": "$1 atsauces",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 atsauces",
+  "REFERENCE_LIST_HEADER_TWO": "$1 atsauces",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Nevar nosūtīt tukšu ziņojumu.",
   "SPEECH_INPUT_LISTENING": "Notiek klausīšanās…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Izslēgt mikrofonu",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Tērzēšanas vēstures beigas",
   "TYPING_INDICATOR_ALT": "Rāda rakstīšanas indikatoru",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 raksta.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 un citi raksta."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 un citi raksta.",
+  "VOTE_DISLIKE_ALT": "Nepatīk",
+  "VOTE_LIKE_ALT": "Patīk"
 }
