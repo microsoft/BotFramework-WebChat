@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Відеокліп",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Далі",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Назад",
+  "CITATION_MODEL_DIALOG_ALT": "Цитування",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Підключено",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Підключення…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Не вдалося підключити.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Податок",
   "RECEIPT_CARD_TOTAL": "Усього",
   "RECEIPT_CARD_VAT": "ПДВ",
+  "REFERENCE_LIST_HEADER_ONE": "$1 посилання",
+  "REFERENCE_LIST_HEADER_FEW": "$1 посилань",
+  "REFERENCE_LIST_HEADER_MANY": "$1 посилань",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 посилання",
+  "REFERENCE_LIST_HEADER_TWO": "$1 посилання",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Не можна надсилати пусті повідомлення.",
   "SPEECH_INPUT_LISTENING": "Слухання…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Мікрофон вимкнуто",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Кінець історії чату",
   "TYPING_INDICATOR_ALT": "Показує індикатор набору",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 вводить повідомлення.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 та інші вводять повідомлення."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 та інші вводять повідомлення.",
+  "VOTE_DISLIKE_ALT": "Не подобається",
+  "VOTE_LIKE_ALT": "Подобається"
 }
