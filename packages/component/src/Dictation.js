@@ -35,7 +35,7 @@ const Dictation = ({ onError }) => {
   const [, setSendBox] = useSendBoxValue();
   const [, setShouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
   const [{ SpeechGrammarList, SpeechRecognition } = {}] = useWebSpeechPonyfill();
-  const [activities] = useActivities();
+  const [activities] = useActivities({ mode: 'latest revision' });
   const [dictateState] = useDictateState();
   const [disabled] = useDisabled();
   const [sendTypingIndicator] = useSendTypingIndicator();

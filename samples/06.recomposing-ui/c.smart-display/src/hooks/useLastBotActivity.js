@@ -3,7 +3,7 @@ import { hooks } from 'botframework-webchat';
 const { useActivities } = hooks;
 
 export default function useLastBotActivity() {
-  const [activities] = useActivities();
+  const [activities] = useActivities({ mode: 'latest revision' });
 
   return [
     activities

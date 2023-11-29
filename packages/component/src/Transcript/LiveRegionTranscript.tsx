@@ -1,9 +1,8 @@
-import { hooks } from 'botframework-webchat-api';
+import { type ActivityKey, hooks } from 'botframework-webchat-api';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useRef } from 'react';
-import type { FC, RefObject, VFC } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import React, { type RefObject, useEffect, useMemo, useRef } from 'react';
 
 import isPresentational from './LiveRegion/isPresentational';
 import LiveRegionActivity from '../LiveRegion/LiveRegionActivity';
@@ -35,17 +34,18 @@ const ROOT_STYLE = {
   }
 };
 
-type RenderingActivities = Map<string, WebChatActivity>;
+type RenderingActivities = Map<ActivityKey, WebChatActivity>;
 
 type LiveRegionTranscriptCoreProps = Readonly<{
   activityElementMapRef: RefObject<ActivityElementMap>;
 }>;
 
-const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityElementMapRef }) => {
+const LiveRegionTranscriptCore = ({ activityElementMapRef }: LiveRegionTranscriptCoreProps) => {
   // We are looking for all activities instead of just those will be rendered.
   // This is because some activities that chosen not be rendered in the chat history,
   // we might still need to be read by screen reader. Such as, suggested actions without text content.
   const [accessKey] = useSuggestedActionsAccessKey();
+  // TODO: We need to revisit how live region should work with intermediate revisions.
   const [activities] = useActivities();
   const [typistNames] = useTypistNames();
   const getKeyByActivity = useGetKeyByActivity();
@@ -79,7 +79,7 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
           }
 
           return intermediate;
-        }, new Map<string, WebChatActivity>())
+        }, new Map<ActivityKey, WebChatActivity>())
       ),
     [activities, getKeyByActivity]
   );
@@ -88,7 +88,7 @@ const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityE
 
   useEffect(() => {
     const { current: prevRenderingActivities } = prevRenderingActivitiesRef;
-    const appendedActivities: { activity: WebChatActivity; key: string }[] = [];
+    const appendedActivities: { activity: WebChatActivity; key: ActivityKey }[] = [];
 
     // Bottom-up, find activities which are recently appended (i.e. new activity will have a new key).
     // We only consider new activities added to the bottom of the chat history.
@@ -158,7 +158,7 @@ type LiveRegionTranscriptProps = {
   activityElementMapRef: RefObject<ActivityElementMap>;
 };
 
-const LiveRegionTranscript: VFC<LiveRegionTranscriptProps> = ({ activityElementMapRef }) => {
+const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptProps) => {
   const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';

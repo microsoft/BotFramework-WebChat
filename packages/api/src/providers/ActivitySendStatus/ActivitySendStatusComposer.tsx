@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { type ReactNode, useEffect, useMemo, useRef } from 'react';
 
 import { SENDING, SEND_FAILED, SENT } from '../../types/internal/SendStatus';
 import ActivitySendStatusContext from './private/Context';
@@ -6,30 +6,30 @@ import freezeArray from '../../utils/freezeArray';
 import isMapEqual from './private/isMapEqual';
 import useActivities from '../../hooks/useActivities';
 import useForceRender from '../../hooks/internal/useForceRender';
-import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
+import useGetKeyByActivity from '../Activities/useGetKeyByActivity';
 import useGetSendTimeoutForActivity from '../../hooks/useGetSendTimeoutForActivity';
 import usePonyfill from '../../hooks/usePonyfill';
 
-import type { ActivitySendStatusContextType } from './private/Context';
-import type { FC, PropsWithChildren } from 'react';
-import type { SendStatus } from '../../types/internal/SendStatus';
+import { type ActivityKey } from '../../types/ActivityKey';
+import { type ActivitySendStatusContextType } from './private/Context';
+import { type SendStatus } from '../../types/internal/SendStatus';
+
+type Props = Readonly<{ children?: ReactNode }>;
 
 // Magic numbers for `expiryByActivityKey`.
 const EXPIRY_SEND_FAILED = -Infinity;
 const EXPIRY_SENT = Infinity;
 
-const ActivitySendStatusComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
-  const [activities] = useActivities();
+const ActivitySendStatusComposer = ({ children }: Props) => {
   const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
+  const [activities] = useActivities({ mode: 'latest revision' });
   const forceRender = useForceRender();
   const getKeyByActivity = useGetKeyByActivity();
   const getSendTimeoutForActivity = useGetSendTimeoutForActivity();
-  const sendStatusByActivityKeyRef = useRef<ReadonlyMap<string, SendStatus>>(Object.freeze(new Map()));
+  const sendStatusByActivityKeyRef = useRef<ReadonlyMap<ActivityKey, SendStatus>>(Object.freeze(new Map()));
 
   /**
    * Map of outgoing activities and their respective expiry.
-   *
-   * The key is the activity key.
    *
    * The value is:
    *
@@ -37,11 +37,11 @@ const ActivitySendStatusComposer: FC<PropsWithChildren<{}>> = ({ children }) => 
    * - `-Infinity` if the activity failed to send (a.k.a. already expired), otherwise;
    * - An epoch time of when the activity will be expired.
    */
-  const expiryByActivityKey = useMemo<ReadonlyMap<string, number>>(
+  const expiryByActivityKey = useMemo<ReadonlyMap<ActivityKey, number>>(
     // We could build a `useMemoMap()` hook to memoize mapper function more efficiently.
     () =>
       Object.freeze(
-        activities.reduce<Map<string, number>>((expiryByActivityKey, activity) => {
+        activities.reduce<Map<ActivityKey, number>>((expiryByActivityKey, activity) => {
           if (activity.from.role === 'user') {
             const key = getKeyByActivity(activity);
 
@@ -73,7 +73,7 @@ const ActivitySendStatusComposer: FC<PropsWithChildren<{}>> = ({ children }) => 
   );
 
   /** Map of outgoing activities and their respective send status. */
-  const nextSendStatusByActivityKey = new Map<string, SendStatus>();
+  const nextSendStatusByActivityKey = new Map<ActivityKey, SendStatus>();
   const now = Date.now();
 
   // Turns the expiry (epoch time) into `SendStatus`, which is based on current clock.
@@ -89,7 +89,7 @@ const ActivitySendStatusComposer: FC<PropsWithChildren<{}>> = ({ children }) => 
   // Gets/realizes the `current` from `ref` because we need to use it for `deps` array in hooks for memoization.
   const { current: sendStatusByActivityKey } = sendStatusByActivityKeyRef;
 
-  const sendStatusByActivityKeyState = useMemo<readonly [ReadonlyMap<string, SendStatus>]>(
+  const sendStatusByActivityKeyState = useMemo<readonly [ReadonlyMap<ActivityKey, SendStatus>]>(
     () => freezeArray([sendStatusByActivityKey]),
     [sendStatusByActivityKey]
   );

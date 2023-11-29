@@ -1,3 +1,3 @@
-import useActivityKeys from '../providers/ActivityKeyer/useActivityKeys';
+import useActivityKeys from '../providers/Activities/useActivityKeys';
 
 export default useActivityKeys;

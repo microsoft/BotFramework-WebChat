@@ -39,16 +39,16 @@ declare class Subscription {
  */
 declare class Observer<T> {
   /** Receives the subscription object when `subscribe` is called */
-  start(subscription: Subscription);
+  start?(subscription: Subscription);
 
   /** Receives the next value in the sequence */
-  next: NextFunction<T>;
+  next?: NextFunction<T>;
 
   /** Receives the sequence error */
-  error: ErrorFunction;
+  error?: ErrorFunction;
 
   /** Receives a completion notification */
-  complete: CompleteFunction;
+  complete?: CompleteFunction;
 }
 
 /** A `SubscriptionObserver` is a normalized `Observer` which wraps the observer object supplied to `subscribe`. */

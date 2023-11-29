@@ -1,7 +1,3 @@
-import type { WebChatActivity } from 'botframework-webchat-core';
+import useActivities from '../providers/Activities/useActivities';
 
-import { useSelector } from './internal/WebChatReduxContext';
-
-export default function useActivities(): [WebChatActivity[]] {
-  return [useSelector(({ activities }) => activities)];
-}
+export default useActivities;

@@ -1,4 +1,5 @@
-import { hooks } from 'botframework-webchat-api';
+import { type ActivityComponentFactory, type ActivityKey, hooks } from 'botframework-webchat-api';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import {
   Composer as ReactScrollToBottomComposer,
   Panel as ReactScrollToBottomPanel,
@@ -11,12 +12,17 @@ import {
 } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { forwardRef, Fragment, useCallback, useMemo, useRef } from 'react';
-
-import type { ActivityComponentFactory } from 'botframework-webchat-api';
-import type { ActivityElementMap } from './Transcript/types';
-import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import React, {
+  forwardRef,
+  Fragment,
+  type FC,
+  type KeyboardEventHandler,
+  type MutableRefObject,
+  type ReactNode,
+  useCallback,
+  useMemo,
+  useRef
+} from 'react';
 
 import { android } from './Utils/detectBrowser';
 import ActivityRow from './Transcript/ActivityRow';
@@ -29,6 +35,7 @@ import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
 // TODO: [P2] #4133 Rename to "getTabbableElements".
 import tabbableElements from './Utils/tabbableElements';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
+import type { ActivityElementMap } from './Transcript/types';
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
 import useActivityTreeWithRenderer from './providers/ActivityTree/useActivityTreeWithRenderer';
 import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
@@ -172,7 +179,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           entriesWithSameSenderAndStatus.forEach(({ activity, renderActivity }, indexWithinSenderAndStatusGroup) => {
             // We only show the timestamp at the end of the sender group. But we always show the "Send failed, retry" prompt.
             const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
-            const key: string = getKeyByActivity(activity);
+            const key = getKeyByActivity(activity);
             const lastInSenderAndStatusGroup =
               indexWithinSenderAndStatusGroup === entriesWithSameSenderAndStatus.length - 1;
             const renderActivityStatus = createActivityStatusRenderer({
@@ -356,7 +363,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         // Find the activity just above scroll view bottom.
         // If the scroll view is already on top, get the first activity.
         const activityElements = Array.from(activityElementMapRef.current.entries());
-        const activityKeyJustAboveScrollBottom: string | undefined = (
+        const activityKeyJustAboveScrollBottom: ActivityKey | undefined = (
           scrollableElement.scrollTop
             ? activityElements
                 .reverse()

@@ -1,3 +1,3 @@
-import useGetKeyByActivity from '../providers/ActivityKeyer/useGetKeyByActivity';
+import useGetKeyByActivity from '../providers/Activities/useGetKeyByActivity';
 
 export default useGetKeyByActivity;

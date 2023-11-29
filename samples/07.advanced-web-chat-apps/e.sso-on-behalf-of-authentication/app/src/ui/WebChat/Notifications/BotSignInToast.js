@@ -18,7 +18,7 @@ export const BotSignInToast = ({ notification }) => {
   const { connectionName, tokenExchangeResource: { id: oauthId, uri } = {} } = content;
   const { current: invokeId } = useRef(random().toString(36).substr(2, 10));
 
-  const [activities] = useActivities();
+  const [activities] = useActivities({ mode: 'latest revision' });
   const dismissNotification = useDismissNotification();
   const postActivity = usePostActivity();
   const setNotification = useSetNotification();

@@ -2,7 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import React, { useMemo } from 'react';
 
 import type { ActivityComponentFactory } from 'botframework-webchat-api';
-import type { FC, PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { ActivityWithRenderer, ReadonlyActivityTree } from './private/types';
@@ -18,14 +18,14 @@ type ActivityTreeComposerProps = PropsWithChildren<{}>;
 
 const { useActivities, useCreateActivityRenderer } = hooks;
 
-const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
+const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
   const existingContext = useActivityTreeContext(false);
 
   if (existingContext) {
     throw new Error('botframework-webchat internal: <ActivityTreeComposer> should not be nested.');
   }
 
-  const [activities]: [WebChatActivity[]] = useActivities();
+  const [activities]: readonly [readonly Readonly<WebChatActivity>[]] = useActivities({ mode: 'latest revision' });
   const createActivityRenderer: ActivityComponentFactory = useCreateActivityRenderer();
 
   const activitiesWithRenderer = useActivitiesWithRenderer(activities, createActivityRenderer);

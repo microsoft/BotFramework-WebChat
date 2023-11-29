@@ -20,11 +20,13 @@ import WebSpeechPonyfill from './types/WebSpeechPonyfill';
 import WebSpeechPonyfillFactory from './types/WebSpeechPonyfillFactory';
 
 import type { ActivityStatusMiddleware, RenderActivityStatus } from './types/ActivityStatusMiddleware';
+import type { ActivityKey } from './types/ActivityKey';
 
 export { Composer, concatMiddleware, defaultStyleOptions, hooks, localize, normalizeStyleOptions };
 
 export type {
   ActivityComponentFactory,
+  ActivityKey,
   ActivityMiddleware,
   ActivityStatusMiddleware,
   AttachmentForScreenReaderComponentFactory,

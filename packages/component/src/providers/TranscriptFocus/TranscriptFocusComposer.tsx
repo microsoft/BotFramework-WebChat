@@ -1,8 +1,9 @@
-import { hooks } from 'botframework-webchat-api';
+import { type ActivityKey, hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import random from 'math-random';
-import React, { useCallback, useMemo } from 'react';
+import React, { type MutableRefObject, type PropsWithChildren, useCallback, useMemo } from 'react';
 
+import { type TranscriptFocusContextType } from './private/Context';
 import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
 import TranscriptFocusContext from './private/Context';
 import useActivityTreeWithRenderer from '../ActivityTree/useActivityTreeWithRenderer';
@@ -10,10 +11,7 @@ import usePrevious from '../../hooks/internal/usePrevious';
 import useStateRef from '../../hooks/internal/useStateRef';
 import useValueRef from '../../hooks/internal/useValueRef';
 
-import type { FC, MutableRefObject, PropsWithChildren } from 'react';
-import type { TranscriptFocusContextType } from './private/Context';
-
-const { useGetKeyByActivity } = hooks;
+const { useGetKeyByActivity, useGetActivitiesByKey, useActivityKeys } = hooks;
 
 type TranscriptFocusComposerProps = PropsWithChildren<{
   containerRef: MutableRefObject<HTMLElement>;
@@ -33,9 +31,9 @@ function uniqueId(count = Infinity) {
   );
 }
 
-const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, containerRef }) => {
+const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComposerProps) => {
   const [flattenedActivityTree] = useActivityTreeWithRenderer({ flat: true });
-  const [_, setRawFocusedActivityKey, rawFocusedActivityKeyRef] = useStateRef<string | undefined>();
+  const [_, setRawFocusedActivityKey, rawFocusedActivityKeyRef] = useStateRef<ActivityKey | undefined>();
   const getKeyByActivity = useGetKeyByActivity();
 
   // As we need to use IDREF for `aria-activedescendant`,
@@ -48,12 +46,12 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
     [prefix]
   );
 
-  const renderingActivityKeys = useMemo<readonly string[]>(
+  const renderingActivityKeys = useMemo<readonly ActivityKey[]>(
     () => Object.freeze(flattenedActivityTree.map(({ activity }) => getKeyByActivity(activity))),
     [flattenedActivityTree, getKeyByActivity]
   );
 
-  const renderingActivityKeysRef = useValueRef<readonly string[]>(renderingActivityKeys);
+  const renderingActivityKeysRef = useValueRef<readonly ActivityKey[]>(renderingActivityKeys);
 
   // While the transcript or any descendants are not focused, if the transcript is updated, reset the user-selected active descendant.
   // This will assume the last activity, if any, will be the active descendant.
@@ -65,7 +63,7 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
 
   const { current: rawFocusedActivityKey } = rawFocusedActivityKeyRef;
 
-  const focusedActivityKey = useMemo<string>(
+  const focusedActivityKey = useMemo<ActivityKey>(
     () => (renderingActivityKeys.includes(rawFocusedActivityKey) ? rawFocusedActivityKey : last(renderingActivityKeys)),
     [renderingActivityKeys, rawFocusedActivityKey]
   );
@@ -78,9 +76,9 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
   );
 
   const focusByActivityKey = useCallback<
-    (activityKey: boolean | string | undefined, withFocus: boolean | undefined) => void
+    (activityKey: ActivityKey | boolean | undefined, withFocus: boolean | undefined) => void
   >(
-    (activityKey: boolean | string | undefined, withFocus: boolean | undefined = true) => {
+    (activityKey: ActivityKey | boolean | undefined, withFocus: boolean | undefined = true) => {
       if (activityKey === false) {
         // `false` means set it to nothing.
         setRawFocusedActivityKey(undefined);
@@ -148,11 +146,11 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
 
   const contextValue = useMemo<TranscriptFocusContextType>(
     () => ({
-      activeDescendantIdState: Object.freeze([activeDescendantId]) as readonly [string],
+      activeDescendantIdState: Object.freeze([activeDescendantId] as const),
       getDescendantIdByActivityKey,
       focusByActivityKey,
-      focusedActivityKeyState: Object.freeze([focusedActivityKey]) as readonly [string],
-      focusedExplicitlyState: Object.freeze([!!rawFocusedActivityKey]) as readonly [boolean],
+      focusedActivityKeyState: Object.freeze([focusedActivityKey] as const),
+      focusedExplicitlyState: Object.freeze([!!rawFocusedActivityKey] as const),
       focusRelativeActivity
     }),
     [
@@ -164,6 +162,16 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
       rawFocusedActivityKey
     ]
   );
+
+  const getActivitiesByKey = useGetActivitiesByKey();
+  const [activityKeys] = useActivityKeys();
+
+  // eslint-disable-next-line no-console
+  console.log(`TranscriptFocusComposer: render`, {
+    focusedActivityKey: focusedActivityKeyRef.current,
+    allActivityKeys: activityKeys,
+    activities: getActivitiesByKey(focusedActivityKeyRef.current)
+  });
 
   return <TranscriptFocusContext.Provider value={contextValue}>{children}</TranscriptFocusContext.Provider>;
 };

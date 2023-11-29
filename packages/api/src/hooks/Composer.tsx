@@ -32,11 +32,10 @@ import {
 } from 'botframework-webchat-core';
 
 import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
-import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
-import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
 import ActivityMiddleware from '../types/ActivityMiddleware';
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
+import APIProvider from '../providers/APIProvider';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
 import AttachmentMiddleware from '../types/AttachmentMiddleware';
 import AvatarMiddleware from '../types/AvatarMiddleware';
@@ -781,11 +780,9 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
 
   return (
     <Provider context={WebChatReduxContext} store={memoizedStore}>
-      <ActivityKeyerComposer>
-        <ActivityAcknowledgementComposer>
-          <ComposerCore onTelemetry={onTelemetry} {...props} />
-        </ActivityAcknowledgementComposer>
-      </ActivityKeyerComposer>
+      <APIProvider directLine={props.directLine} initialUserId={props.userID}>
+        <ComposerCore onTelemetry={onTelemetry} {...props} />
+      </APIProvider>
     </Provider>
   );
 };

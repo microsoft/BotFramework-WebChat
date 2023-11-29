@@ -146,6 +146,7 @@ type MessageActivityEssence = {
 
 // https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#typing-activity
 type TypingActivityEssence = {
+  text?: string;
   type: 'typing';
 };
 

@@ -21,6 +21,9 @@
     "src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
+  "imports": {
+    "#ActivityKey": "./src/types/ActivityKey.js"
+  },
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "npm run build:globalize && npm run build:typescript && npm run build:babel",
@@ -51,6 +54,7 @@
     "@babel/preset-env": "^7.19.1",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
+    "@testing-library/react": "^14.0.0",
     "@types/dom-speech-recognition": "^0.0.1",
     "@types/node": "^20.5.8",
     "@types/react": "^18.2.21",
@@ -67,15 +71,17 @@
   "dependencies": {
     "botframework-webchat-core": "0.0.0-0",
     "globalize": "1.7.0",
+    "jwt-decode": "3.1.2",
     "math-random": "2.0.1",
     "prop-types": "15.8.1",
     "react-redux": "7.2.9",
+    "react-wrap-with": "^0.0.4",
     "redux": "4.2.1",
-    "simple-update-in": "2.2.0"
+    "simple-update-in": "2.2.0",
+    "use-ref-from": "0.0.3"
   },
   "peerDependencies": {
-    "react": ">= 16.8.6",
-    "react-dom": ">= 16.8.6"
+    "react": ">= 16.8.6"
   },
   "localPeerDependencies": {
     "botframework-webchat-core": "0.0.0-0"

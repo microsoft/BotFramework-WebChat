@@ -10,7 +10,7 @@ console.log(hooks);
 const { useActivities, useSendMessage } = hooks;
 
 const PlainWebChat = () => {
-  const [activities] = useActivities();
+  const [activities] = useActivities({ mode: 'latest revision' });
   const sendMessage = useSendMessage();
 
   const [sendBoxValue, setSendBoxValue] = useState('');

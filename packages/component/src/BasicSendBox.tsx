@@ -39,7 +39,7 @@ function activityIsSpeakingOrQueuedToSpeak(activity: WebChatActivity) {
 }
 
 function useSendBoxSpeechInterimsVisible(): [boolean] {
-  const [activities] = useActivities();
+  const [activities] = useActivities({ mode: 'latest revision' });
   const [dictateState] = useDictateState();
 
   return [

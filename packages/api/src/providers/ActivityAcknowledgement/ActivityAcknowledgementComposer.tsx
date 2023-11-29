@@ -2,22 +2,22 @@ import React, { useCallback, useMemo, useState } from 'react';
 
 import type { FC, PropsWithChildren } from 'react';
 
+import { type ActivityAcknowledgement } from './private/types';
+import { type ActivityKey } from '../../types/ActivityKey';
 import ActivityAcknowledgementContext, { ActivityAcknowledgementContextType } from './private/Context';
 import findLastIndex from '../../utils/findLastIndex';
 import useActivities from '../../hooks/useActivities';
-import useActivityKeys from '../ActivityKeyer/useActivityKeys';
+import useActivityKeys from '../Activities/useActivityKeys';
 import usePrevious from '../../hooks/internal/usePrevious';
 import useValueRef from '../../hooks/internal/useValueRef';
-
-import type { ActivityAcknowledgement } from './private/types';
 
 type ActivityAcknowledgementComposerProps = PropsWithChildren<{}>;
 
 function findClosestActivityKeyIfNotExists(
-  activityKey: string,
-  keys: readonly string[],
-  prevKeys: readonly string[]
-): string | undefined {
+  activityKey: ActivityKey,
+  keys: readonly ActivityKey[],
+  prevKeys: readonly ActivityKey[]
+): ActivityKey | undefined {
   if (keys.includes(activityKey)) {
     return activityKey;
   } else if (!prevKeys || !activityKey) {
@@ -43,10 +43,10 @@ function findClosestActivityKeyIfNotExists(
 }
 
 const ActivityAcknowledgementComposer: FC<ActivityAcknowledgementComposerProps> = ({ children }) => {
-  const [activities] = useActivities();
+  const [activities] = useActivities({ mode: 'latest revision' });
   const [allActivityKeys] = useActivityKeys();
-  const [rawLastAcknowledgedActivityKey, setRawLastAcknowledgedActivityKey] = useState<string | undefined>();
-  const [rawLastReadActivityKey, setRawLastReadActivityKey] = useState<string | undefined>();
+  const [rawLastAcknowledgedActivityKey, setRawLastAcknowledgedActivityKey] = useState<ActivityKey | undefined>();
+  const [rawLastReadActivityKey, setRawLastReadActivityKey] = useState<ActivityKey | undefined>();
 
   const allActivityKeysRef = useValueRef(allActivityKeys);
   const prevAllActivityKeys = usePrevious(allActivityKeys);
@@ -93,8 +93,8 @@ const ActivityAcknowledgementComposer: FC<ActivityAcknowledgementComposerProps> 
     );
   }, [allActivityKeys, lastOutgoingActivityKeyIndex, prevAllActivityKeys, rawLastAcknowledgedActivityKey]);
 
-  const activityAcknowledgements = useMemo<Readonly<Map<string, ActivityAcknowledgement>>>(() => {
-    const activityAcknowledgements = new Map<string, ActivityAcknowledgement>();
+  const activityAcknowledgements = useMemo<Readonly<Map<ActivityKey, ActivityAcknowledgement>>>(() => {
+    const activityAcknowledgements = new Map<ActivityKey, ActivityAcknowledgement>();
     const lastAcknowledgedIndex = allActivityKeys.indexOf(lastAcknowledgedActivityKey);
     const lastReadIndex = allActivityKeys.indexOf(lastReadActivityKey);
 
@@ -110,19 +110,19 @@ const ActivityAcknowledgementComposer: FC<ActivityAcknowledgementComposerProps> 
 
   const activityAcknowledgementsRef = useValueRef(activityAcknowledgements);
 
-  const getHasAcknowledgedByActivityKey = useCallback<(activityKey: string) => boolean>(
-    (activityKey: string) => activityAcknowledgementsRef.current.get(activityKey)?.acknowledged,
+  const getHasAcknowledgedByActivityKey = useCallback<(activityKey: ActivityKey) => boolean>(
+    (activityKey: ActivityKey) => activityAcknowledgementsRef.current.get(activityKey)?.acknowledged,
     [activityAcknowledgementsRef]
   );
 
   // TODO: [P2] Memoize with `useMemoWithPrevious` for better memoization of arrays.
-  const activityKeysByReadState = useMemo<readonly [readonly string[], readonly string[]]>(() => {
+  const activityKeysByReadState = useMemo<readonly [readonly ActivityKey[], readonly ActivityKey[]]>(() => {
     const index = allActivityKeys.indexOf(lastReadActivityKey);
 
     return Object.freeze([
       Object.freeze(allActivityKeys.slice(0, index + 1)),
       Object.freeze(allActivityKeys.slice(index + 1))
-    ]) as readonly [readonly string[], readonly string[]];
+    ] as const);
   }, [allActivityKeys, lastReadActivityKey]);
 
   const markAllAsAcknowledged = useCallback((): void => {
@@ -132,7 +132,7 @@ const ActivityAcknowledgementComposer: FC<ActivityAcknowledgementComposerProps> 
   }, [allActivityKeysRef, setRawLastAcknowledgedActivityKey]);
 
   const markActivityKeyAsRead = useCallback(
-    (activityKey: string): void => {
+    (activityKey: ActivityKey): void => {
       const { current: allActivityKeys } = allActivityKeysRef;
       const index = allActivityKeys.indexOf(activityKey);
 
@@ -157,8 +157,8 @@ const ActivityAcknowledgementComposer: FC<ActivityAcknowledgementComposerProps> 
     () => ({
       activityKeysByReadState,
       getHasAcknowledgedByActivityKey,
-      lastAcknowledgedActivityKeyState: Object.freeze([lastAcknowledgedActivityKey]) as readonly [string],
-      lastReadActivityKeyState: Object.freeze([lastReadActivityKey]) as readonly [string],
+      lastAcknowledgedActivityKeyState: Object.freeze([lastAcknowledgedActivityKey] as const),
+      lastReadActivityKeyState: Object.freeze([lastReadActivityKey] as const),
       markActivityKeyAsRead,
       markAllAsAcknowledged
     }),

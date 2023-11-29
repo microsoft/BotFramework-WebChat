@@ -1,7 +1,8 @@
-import { hooks } from 'botframework-webchat-api';
+import { type ActivityKey, hooks } from 'botframework-webchat-api';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { forwardRef, useCallback, useRef } from 'react';
+import React, { forwardRef, type MouseEventHandler, type PropsWithChildren, useCallback, useRef } from 'react';
 
 import { android } from '../Utils/detectBrowser';
 import FocusTrap from './FocusTrap';
@@ -12,9 +13,6 @@ import useActivityAccessibleName from './useActivityAccessibleName';
 import useFocusByActivityKey from '../providers/TranscriptFocus/useFocusByActivityKey';
 import useGetDescendantIdByActivityKey from '../providers/TranscriptFocus/useGetDescendantIdByActivityKey';
 import useValueRef from '../hooks/internal/useValueRef';
-
-import type { MouseEventHandler, PropsWithChildren } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
@@ -33,7 +31,7 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
   const activityKey = getKeyByActivity(activity);
 
   const acknowledged = useGetHasAcknowledgedByActivityKey()(activityKey);
-  const activityKeyRef = useValueRef<string>(activityKey);
+  const activityKeyRef = useValueRef<ActivityKey>(activityKey);
   const descendantId = useGetDescendantIdByActivityKey()(activityKey);
   const descendantLabelId = `webchat__basic-transcript__active-descendant-label--${activityKey}`;
 

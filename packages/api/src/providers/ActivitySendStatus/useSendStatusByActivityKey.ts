@@ -1,6 +1,7 @@
 import useActivitySendStatusContext from './private/useContext';
 
-import type { SendStatus } from '../../types/internal/SendStatus';
+import { type ActivityKey } from '../../types/ActivityKey';
+import { type SendStatus } from '../../types/internal/SendStatus';
 
 /**
  * Returns a key/value map which stores the outgoing activity send status by activity key:
@@ -21,6 +22,6 @@ import type { SendStatus } from '../../types/internal/SendStatus';
  *
  * If the activity key does not exists in this map, the activity is not an outgoing activity.
  */
-export default function useSendStatus(): readonly [ReadonlyMap<string, SendStatus>] {
+export default function useSendStatus(): readonly [ReadonlyMap<ActivityKey, SendStatus>] {
   return useActivitySendStatusContext().sendStatusByActivityKeyState;
 }

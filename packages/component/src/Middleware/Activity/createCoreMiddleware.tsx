@@ -3,6 +3,7 @@ import React from 'react';
 
 import CarouselLayout from '../../Activity/CarouselLayout';
 import StackedLayout from '../../Activity/StackedLayout';
+import { WebChatActivity } from 'botframework-webchat-core';
 
 export default function createCoreMiddleware(): ActivityMiddleware[] {
   return [
@@ -16,7 +17,12 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
         const { type } = activity;
 
         // Filter out activities that should not be visible
-        if (type === 'conversationUpdate' || type === 'event' || type === 'invoke' || type === 'typing') {
+        if (
+          type === 'conversationUpdate' ||
+          type === 'event' ||
+          type === 'invoke' ||
+          (type === 'typing' && !activity.text)
+        ) {
           return false;
         } else if (type === 'message') {
           const { attachments, channelData, text } = activity;
@@ -53,6 +59,17 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
                 );
 
               return <CarouselLayout activity={activity} renderAttachment={renderAttachment} {...props} />;
+            };
+          } else if (type === 'typing') {
+            return function renderCarouselLayout(renderAttachment, props) {
+              const typingAsMessageActivity: WebChatActivity = {
+                ...activity,
+                type: 'message'
+              } as WebChatActivity;
+
+              return (
+                <StackedLayout activity={typingAsMessageActivity} renderAttachment={renderAttachment} {...props} />
+              );
             };
           }
 
