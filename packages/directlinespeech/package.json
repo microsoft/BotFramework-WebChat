@@ -39,26 +39,6 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "pinDependencies": {
-    "x@babel/cli": [
-      "7.18.10",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "x@babel/core": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "x@babel/plugin-transform-runtime": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "x@babel/preset-env": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "x@babel/runtime": [
-      "7.19.0",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
     "microsoft-cognitiveservices-speech-sdk": [
       "1.17.0",
       "needs to bump manually"
