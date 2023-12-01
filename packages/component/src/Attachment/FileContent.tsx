@@ -93,8 +93,8 @@ const FileContent: FC<FileContentProps> = ({ className, href, fileName, size }) 
         ? 'FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT'
         : 'FILE_CONTENT_DOWNLOADABLE_ALT'
       : localizedSize
-      ? 'FILE_CONTENT_WITH_SIZE_ALT'
-      : 'FILE_CONTENT_ALT',
+        ? 'FILE_CONTENT_WITH_SIZE_ALT'
+        : 'FILE_CONTENT_ALT',
     fileName,
     localizedSize
   );

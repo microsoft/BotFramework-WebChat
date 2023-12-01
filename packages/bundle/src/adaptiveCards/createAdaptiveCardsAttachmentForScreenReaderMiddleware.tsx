@@ -28,7 +28,7 @@ export default function createAdaptiveCardsAttachmentMiddleware(): AttachmentFor
       return content && RICH_CARD_CONTENT_TYPES.includes(contentType)
         ? () => <RichCardAttachment content={content} />
         : content && contentType === 'application/vnd.microsoft.card.adaptive'
-        ? () => <AdaptiveCardAttachment content={content} />
-        : next(...args);
+          ? () => <AdaptiveCardAttachment content={content} />
+          : next(...args);
     };
 }
