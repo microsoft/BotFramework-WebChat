@@ -777,14 +777,14 @@ const useScroller = (activityElementMapRef: MutableRefObject<ActivityElementMap>
         typeof autoScrollSnapOnActivity === 'number'
           ? Math.max(0, autoScrollSnapOnActivity)
           : autoScrollSnapOnActivity
-          ? 1
-          : 0;
+            ? 1
+            : 0;
       const patchedAutoScrollSnapOnPage =
         typeof autoScrollSnapOnPage === 'number'
           ? Math.max(0, Math.min(1, autoScrollSnapOnPage))
           : autoScrollSnapOnPage
-          ? 1
-          : 0;
+            ? 1
+            : 0;
       const patchedAutoScrollSnapOnActivityOffset =
         typeof autoScrollSnapOnActivityOffset === 'number' ? autoScrollSnapOnActivityOffset : 0;
       const patchedAutoScrollSnapOnPageOffset =

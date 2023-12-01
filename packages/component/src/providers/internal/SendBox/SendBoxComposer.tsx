@@ -94,8 +94,8 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
     connectivityStatus !== 'connected' && connectivityStatus !== 'reconnected'
       ? 'offline'
       : !sendBoxValue
-      ? 'empty'
-      : undefined
+        ? 'empty'
+        : undefined
   );
 
   const submit = useCallback<ContextType['submit']>(

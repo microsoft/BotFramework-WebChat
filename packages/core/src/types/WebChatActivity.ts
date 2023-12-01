@@ -190,10 +190,10 @@ type CoreActivityEssence<
   (Type extends 'event'
     ? EventActivityEssence
     : Type extends 'message'
-    ? MessageActivityEssence
-    : Type extends 'typing'
-    ? TypingActivityEssence
-    : { type: Type });
+      ? MessageActivityEssence
+      : Type extends 'typing'
+        ? TypingActivityEssence
+        : { type: Type });
 
 // Concrete
 

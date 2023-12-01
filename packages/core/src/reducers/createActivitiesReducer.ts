@@ -78,11 +78,11 @@ function patchActivity(
     typeof sequenceId === 'number'
       ? sequenceId
       : typeof activity.timestamp !== 'undefined'
-      ? +new Date(activity.timestamp)
-      : // We assume there will be no more than 1,000 messages sent before receiving server response.
-        // If there are more than 1,000 messages, some messages will get reordered and appear jumpy after receiving server response.
-        // eslint-disable-next-line no-magic-numbers
-        (lastActivity?.channelData?.['webchat:sequence-id'] || 0) + 0.001
+        ? +new Date(activity.timestamp)
+        : // We assume there will be no more than 1,000 messages sent before receiving server response.
+          // If there are more than 1,000 messages, some messages will get reordered and appear jumpy after receiving server response.
+          // eslint-disable-next-line no-magic-numbers
+          (lastActivity?.channelData?.['webchat:sequence-id'] || 0) + 0.001
   );
 
   // TODO: [P1] #3953 We should move this patching logic to a DLJS wrapper for simplicity.
