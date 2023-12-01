@@ -84,6 +84,26 @@
     "cldr-data": "36.0.0-0"
   },
   "pinDependencies": {
+    "x@babel/cli": [
+      "7.18.10",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "x@babel/core": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "x@babel/preset-env": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "x@babel/preset-react": [
+      "7.18.6",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "x@babel/preset-typescript": [
+      "7.18.6",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
     "react-redux": [
       "7"
     ]

@@ -30,6 +30,22 @@
     "start:esbuild": "npm run build:esbuild -- --watch"
   },
   "pinDependencies": {
+    "x@babel/cli": [
+      "7.18.10",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "x@babel/core": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "x@babel/preset-env": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "x@babel/preset-react": [
+      "7.18.6",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
     "microsoft-cognitiveservices-speech-sdk": [
       "1.23.0",
       "needs to bump manually"

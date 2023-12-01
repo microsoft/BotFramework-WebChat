@@ -34,6 +34,18 @@
     "test": "node node_modules/.bin/jest --maxWorkers=4"
   },
   "pinDependencies": {
+    "x@babel/cli": [
+      "7.18.10",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "x@babel/core": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "x@babel/preset-env": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
     "expect": [
       "25",
       "expect@26 does not support pure JavaScript environment without node:fs and other packages"
