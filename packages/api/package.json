@@ -46,11 +46,11 @@
     "start:typescript": "npm run build:typescript -- --watch"
   },
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
-    "@babel/preset-react": "^7.18.6",
-    "@babel/preset-typescript": "^7.18.6",
+    "@babel/cli": "^7.23.4",
+    "@babel/core": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
+    "@babel/preset-react": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
     "@types/dom-speech-recognition": "^0.0.4",
     "@types/node": "^20.10.1",
     "@types/react": "^18.2.39",
@@ -84,23 +84,23 @@
     "cldr-data": "36.0.0-0"
   },
   "pinDependencies": {
-    "@babel/cli": [
+    "x@babel/cli": [
       "7.18.10",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
-    "@babel/core": [
+    "x@babel/core": [
       "7.19.1",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
-    "@babel/preset-env": [
+    "x@babel/preset-env": [
       "7.19.1",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
-    "@babel/preset-react": [
+    "x@babel/preset-react": [
       "7.18.6",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
-    "@babel/preset-typescript": [
+    "x@babel/preset-typescript": [
       "7.18.6",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],

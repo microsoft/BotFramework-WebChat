@@ -34,15 +34,15 @@
     "test": "node node_modules/.bin/jest --maxWorkers=4"
   },
   "pinDependencies": {
-    "@babel/cli": [
+    "x@babel/cli": [
       "7.18.10",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
-    "@babel/core": [
+    "x@babel/core": [
       "7.19.1",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
-    "@babel/preset-env": [
+    "x@babel/preset-env": [
       "7.19.1",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
@@ -77,9 +77,9 @@
     "math-random": "2.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
+    "@babel/cli": "^7.23.4",
+    "@babel/core": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
     "babel-plugin-istanbul": "^6.1.1",
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.8",

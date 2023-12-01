@@ -43,11 +43,11 @@
     "start:typescript": "npm run build:typescript -- --watch"
   },
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/plugin-transform-runtime": "^7.19.1",
-    "@babel/plugin-transform-typescript": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
+    "@babel/cli": "^7.23.4",
+    "@babel/core": "^7.23.5",
+    "@babel/plugin-transform-runtime": "^7.23.4",
+    "@babel/plugin-transform-typescript": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
     "@types/node": "^20.10.1",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
@@ -56,7 +56,7 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
-    "@babel/runtime": "7.19.0",
+    "@babel/runtime": "7.23.5",
     "jwt-decode": "4.0.0",
     "math-random": "2.0.1",
     "mime": "4.0.0",
@@ -71,27 +71,27 @@
     "node": ">=12.0.0"
   },
   "pinDependencies": {
-    "@babel/cli": [
+    "x@babel/cli": [
       "7.18.10",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
-    "@babel/core": [
+    "x@babel/core": [
       "7.19.1",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
-    "@babel/plugin-transform-runtime": [
+    "x@babel/plugin-transform-runtime": [
       "7.19.1",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
-    "@babel/plugin-transform-typescript": [
+    "x@babel/plugin-transform-typescript": [
       "7.19.1",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
-    "@babel/preset-env": [
+    "x@babel/preset-env": [
       "7.19.1",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
-    "@babel/runtime": [
+    "x@babel/runtime": [
       "7.19.0",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ]
