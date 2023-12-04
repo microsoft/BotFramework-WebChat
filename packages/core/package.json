@@ -48,18 +48,18 @@
     "@babel/plugin-transform-runtime": "^7.19.1",
     "@babel/plugin-transform-typescript": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
-    "@types/node": "^20.10.1",
+    "@types/node": "^20.5.8",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "botframework-directlinejs": "^0.15.5",
-    "concurrently": "^8.2.2",
-    "typescript": "^5.3.2"
+    "concurrently": "^8.2.1",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "@babel/runtime": "7.19.0",
-    "jwt-decode": "4.0.0",
+    "jwt-decode": "3.1.2",
     "math-random": "2.0.1",
-    "mime": "4.0.0",
+    "mime": "3.0.0",
     "p-defer": "4.0.0",
     "p-defer-es5": "2.0.1",
     "redux": "4.2.1",
