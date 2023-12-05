@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@emotion/react": "11.11.1",
-    "@fluentui/react": "8.111.2",
+    "@fluentui/react": "8.112.9",
     "adaptivecards": "2.11.0",
     "botframework-directlinejs": "0.15.5",
     "botframework-webchat": "0.0.0-0",
@@ -29,7 +29,7 @@
     "rxjs": "5.5.12"
   },
   "devDependencies": {
-    "prettier": "^3.0.3",
+    "prettier": "^3.1.0",
     "react-scripts": "^5.0.1"
   },
   "localPeerDependencies": {
