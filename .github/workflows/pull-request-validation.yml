@@ -79,7 +79,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
-          cache: npm
 
       - if: "env.skip-secure-feed != 'true'"
         name: Enable secure feed
