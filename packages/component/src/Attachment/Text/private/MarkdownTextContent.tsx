@@ -7,6 +7,7 @@ import { isClaim, type Claim } from '../../../types/external/OrgSchema/Claim';
 import { isThing } from '../../../types/external/OrgSchema/Thing';
 import { type PropsOf } from '../../../types/PropsOf';
 import { type WebChatActivity } from 'botframework-webchat-core';
+import CitationModalContext from './CitationModalContent';
 import isHTMLButtonElement from './isHTMLButtonElement';
 import LinkDefinitions from './LinkDefinitions';
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
@@ -21,7 +22,13 @@ type Props = Readonly<{
 }>;
 
 const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
-  const [{ renderMarkdown: renderMarkdownStyleSet, textContent: textContentStyleSet }] = useStyleSet();
+  const [
+    {
+      citationModalDialog: citationModalDialogStyleSet,
+      renderMarkdown: renderMarkdownStyleSet,
+      textContent: textContentStyleSet
+    }
+  ] = useStyleSet();
   const entitiesRef = useRefFrom(entities);
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const showModal = useShowModal();
@@ -41,19 +48,12 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
 
   const showClaimModal = useCallback(
     (claim: Claim) => {
-      showModal(
-        () => (
-          <div
-            className={classNames('webchat__render-markdown', renderMarkdownStyleSet + '')}
-            // The content rendered by `renderMarkdownAsHTML` is sanitized.
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: renderMarkdownAsHTML(claim.text) }}
-          />
-        ),
-        { 'aria-label': claim.alternateName || claim.name || citationModalDialogLabel }
-      );
+      showModal(() => <CitationModalContext headerText={claim.name} markdown={claim.text} />, {
+        'aria-label': claim.alternateName || claim.name || citationModalDialogLabel,
+        className: classNames('webchat__citation-modal-dialog', citationModalDialogStyleSet)
+      });
     },
-    [citationModalDialogLabel, renderMarkdownAsHTML, renderMarkdownStyleSet, showModal]
+    [citationModalDialogStyleSet, citationModalDialogLabel, showModal]
   );
 
   const handleCitationClick = useCallback<PropsOf<typeof LinkDefinitions>['onCitationClick']>(

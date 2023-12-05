@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Videoposnetek",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Naprej",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Nazaj",
+  "CITATION_MODEL_DIALOG_ALT": "Citat",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Povezava je vzpostavljena.",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Povezovanje …",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Povezave ni mogoče vzpostaviti.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Davek",
   "RECEIPT_CARD_TOTAL": "Skupaj",
   "RECEIPT_CARD_VAT": "DDV",
+  "REFERENCE_LIST_HEADER_ONE": "$1 sklic",
+  "REFERENCE_LIST_HEADER_FEW": "$1 sklici",
+  "REFERENCE_LIST_HEADER_MANY": "$1 sklicev",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 sklicev",
+  "REFERENCE_LIST_HEADER_TWO": "$1 sklica",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Praznega sporočila ni mogoče poslati.",
   "SPEECH_INPUT_LISTENING": "Poslušanje …",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofon je izklopljen",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Konec zgodovine klepeta",
   "TYPING_INDICATOR_ALT": "Prikaz indikatorja tipkanja",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 tipka.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 in drugi tipkajo."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 in drugi tipkajo.",
+  "VOTE_DISLIKE_ALT": "Ni mi všeč",
+  "VOTE_LIKE_ALT": "Všeč mi je"
 }

@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Bideo zati bat",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Hurrengoa",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Aurrekoa",
+  "CITATION_MODEL_DIALOG_ALT": "Aipua",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Konektatu da",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "Konektatzen…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "Ezin da konektatu.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Zerga",
   "RECEIPT_CARD_TOTAL": "Guztira",
   "RECEIPT_CARD_VAT": "BEZ",
+  "REFERENCE_LIST_HEADER_ONE": "$1 erreferentzia",
+  "REFERENCE_LIST_HEADER_FEW": "$1 erreferentzia",
+  "REFERENCE_LIST_HEADER_MANY": "$1 erreferentzia",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 erreferentzia",
+  "REFERENCE_LIST_HEADER_TWO": "$1 erreferentzia",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "Ezin da mezu hutsik bidali.",
   "SPEECH_INPUT_LISTENING": "Entzuten…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Mikrofonoa desaktibatuta dago",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Berriketa-historiaren amaiera",
   "TYPING_INDICATOR_ALT": "Idazketa-adierazlea ikusgai dago",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 idazten ari da.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 eta beste batzuk idazten ari dira."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 eta beste batzuk idazten ari dira.",
+  "VOTE_DISLIKE_ALT": "Ez dut atsegin",
+  "VOTE_LIKE_ALT": "Atsegin dut"
 }
