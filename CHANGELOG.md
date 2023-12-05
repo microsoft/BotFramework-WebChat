@@ -22,6 +22,46 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4972](https://github.com/microsoft/BotFramework-WebChat/pull/4972)
+   -  Production dependencies
+      -  [`core-js@3.33.3`](https://npmjs.com/package/core-js)
+      -  [`jwt-decode@4.0.0`](https://npmjs.com/package/jwt-decode)
+      -  [`markdown-it@13.0.2`](https://npmjs.com/package/markdown-it)
+      -  [`markdown-it-for-inline@2.0.1`](https://npmjs.com/package/markdown-it-for-inline)
+      -  [`merge-refs@1.2.2`](https://npmjs.com/package/merge-refs)
+      -  [`mime@4.0.0`](https://npmjs.com/package/mime)
+      -  [`redux@5.0.0`](https://npmjs.com/package/redux)
+      -  [`url-search-params-polyfill@8.2.5`](https://npmjs.com/package/url-search-params-polyfill)
+      -  [`use-ref-from@0.0.3`](https://npmjs.com/package/use-ref-from)
+      -  [`whatwg-fetch@3.6.19`](https://npmjs.com/package/whatwg-fetch)
+   -  Development dependencies
+      -  [`@types/dom-speech-recognition@0.0.4`](https://npmjs.com/package/@types/dom-speech-recognition)
+      -  [`@types/node@20.10.3`](https://npmjs.com/package/@types/node)
+      -  [`@types/react@18.2.42`](https://npmjs.com/package/@types/react)
+      -  [`@typescript-eslint/eslint-plugin@6.13.2`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
+      -  [`@typescript-eslint/parser@6.13.2`](https://npmjs.com/package/@typescript-eslint/parser)
+      -  [`axe-core@4.8.2`](https://npmjs.com/package/axe-core)
+      -  [`babel-jest@29.7.0`](https://npmjs.com/package/babel-jest)
+      -  [`concurrently@8.2.2`](https://npmjs.com/package/concurrently)
+      -  [`esbuild@0.19.8`](https://npmjs.com/package/esbuild)
+      -  [`eslint-config-prettier@9.1.0`](https://npmjs.com/package/eslint-config-prettier)
+      -  [`eslint-plugin-import@2.29.0`](https://npmjs.com/package/eslint-plugin-import)
+      -  [`eslint-plugin-prettier@5.0.1`](https://npmjs.com/package/eslint-plugin-prettier)
+      -  [`eslint@8.55.0`](https://npmjs.com/package/eslint)
+      -  [`istanbul-lib-coverage@3.2.2`](https://npmjs.com/package/istanbul-lib-coverage)
+      -  [`jest-image-snapshot@6.3.0`](https://npmjs.com/package/jest-image-snapshot)
+      -  [`jest@29.7.0`](https://npmjs.com/package/jest)
+      -  [`lint-staged@15.2.0`](https://npmjs.com/package/lint-staged)
+      -  [`nodemon@3.0.2`](https://npmjs.com/package/nodemon)
+      -  [`prettier@3.1.0`](https://npmjs.com/package/prettier)
+      -  [`read-pkg-up@11.0.0`](https://npmjs.com/package/read-pkg-up)
+      -  [`read-pkg@9.0.1`](https://npmjs.com/package/read-pkg)
+      -  [`selenium-webdriver@4.15.0`](https://npmjs.com/package/selenium-webdriver)
+      -  [`typescript@5.3.2`](https://npmjs.com/package/typescript)
+      -  [`webpack@5.89.0`](https://npmjs.com/package/webpack)
+
 ## [4.16.0] - 2023-11-16
 
 ### Breaking changes
