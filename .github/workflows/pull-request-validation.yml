@@ -51,7 +51,7 @@ jobs:
 
       - name: Pack ./__tests__
         run: |
-          echo <<EOF
+          zip docker.zip -r@ <<EOF
           ./docker-compose-wsl2.yml
           ./__tests__/
           ./jest.config.js
@@ -59,7 +59,7 @@ jobs:
           ./packages/bundle/dist/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
-          EOF | zip docker.zip -r@
+          EOF
 
       - run: ls -l docker.zip
 
