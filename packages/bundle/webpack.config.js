@@ -61,10 +61,6 @@ let config = {
   ],
   resolve: {
     alias: {
-      // TODO: For unknown reasons, Webpack is not able to resolve `markdown-it-for-inline`.
-      //       ./node_modules/markdown-it-for-inline/package.json looks good.
-      'markdown-it-for-inline': resolve(__dirname, 'node_modules/markdown-it-for-inline/index.mjs'),
-
       // TODO: [P1] #3914 It is smaller to use /lib/ instead of /es2015/ with Webpack.
       //       Verifies if /es2015/ is better when moving to esbuild.
       'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports': resolve(
