@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/04.api/f.selectable-activity/",
   "dependencies": {
-    "botframework-webchat": "^4.15.9",
+    "botframework-webchat": "^4.16.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
