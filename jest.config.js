@@ -39,7 +39,7 @@ module.exports = {
     '!<rootDir>/packages/playground/**',
     '!<rootDir>/samples/**'
   ],
-  coverageProvider: 'v8',
+  // coverageProvider: 'v8',
   coverageReporters: ['json', 'lcov', 'text-summary', 'clover', 'cobertura'],
   globals: {
     npm_package_version: '0.0.0-0.jest'
