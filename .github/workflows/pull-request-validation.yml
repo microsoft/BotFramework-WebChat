@@ -70,6 +70,8 @@ jobs:
           retention-days: 1
 
   test:
+    needs:
+      - build
     runs-on: ubuntu-latest
     steps:
       - name: Use Node.js ${{ env.node-version }}
