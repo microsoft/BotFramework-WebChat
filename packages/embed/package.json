@@ -82,7 +82,7 @@
   },
   "dependencies": {
     "@babel/runtime": "7.17.2",
-    "core-js": "3.33.3",
+    "core-js": "3.34.0",
     "url-search-params-polyfill": "8.2.5",
     "whatwg-fetch": "3.6.19"
   }

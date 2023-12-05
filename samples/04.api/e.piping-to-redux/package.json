@@ -7,7 +7,7 @@
     "botframework-webchat": "^4.16.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-redux": "^9.0.1",
+    "react-redux": "^9.0.2",
     "redux": "^5.0.0"
   },
   "devDependencies": {

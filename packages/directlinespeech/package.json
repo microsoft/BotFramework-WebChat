@@ -102,7 +102,7 @@
     "abort-controller": "3.0.0",
     "abort-controller-es5": "2.0.1",
     "base64-arraybuffer": "1.0.2",
-    "core-js": "3.33.3",
+    "core-js": "3.34.0",
     "event-as-promise": "1.0.5",
     "event-target-shim": "6.0.2",
     "math-random": "2.0.1",
