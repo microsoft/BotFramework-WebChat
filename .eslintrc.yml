@@ -20,12 +20,24 @@ parserOptions:
 
 overrides:
   - files:
-    - '__tests__/**/*.js'
-    - '*.spec.js'
-    - '*.test.js'
+      - '__tests__/**/*.js'
+      - '*.spec.js'
+      - '*.test.js'
 
     env:
       jest: true
+
+  - files:
+      - 'jest.config.js'
+
+    env:
+      node: true
+
+    parserOptions:
+      sourceType: commonjs
+
+    rules:
+      no-magic-numbers: off
 
   - files:
       - '*.ts'
