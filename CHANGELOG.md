@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4972](https://github.com/microsoft/BotFramework-WebChat/pull/4972)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4973](https://github.com/microsoft/BotFramework-WebChat/pull/4973)
    -  Production dependencies
       -  [`core-js@3.33.3`](https://npmjs.com/package/core-js)
       -  [`jwt-decode@4.0.0`](https://npmjs.com/package/jwt-decode)
