@@ -39,23 +39,23 @@
   "pinDependencies": {
     "@babel/cli": [
       "7.17.6",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+      "@babel/*@7.23 is causing out-of-memory (OOM) issues when running under Jest"
     ],
     "@babel/core": [
       "7.17.5",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+      "@babel/*@7.23 is causing out-of-memory (OOM) issues when running under Jest"
     ],
     "@babel/plugin-transform-runtime": [
       "7.17.0",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+      "@babel/*@7.23 is causing out-of-memory (OOM) issues when running under Jest"
     ],
     "@babel/preset-env": [
       "7.16.11",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+      "@babel/*@7.23 is causing out-of-memory (OOM) issues when running under Jest"
     ],
     "@babel/runtime": [
       "7.17.2",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+      "@babel/*@7.23 is causing out-of-memory (OOM) issues when running under Jest"
     ],
     "node-fetch": [
       "2",

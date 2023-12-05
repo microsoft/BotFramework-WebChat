@@ -30,15 +30,15 @@
   "pinDependencies": {
     "@babel/cli": [
       "7.18.10",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+      "@babel/*@7.23 is causing out-of-memory (OOM) issues when running under Jest"
     ],
     "@babel/core": [
       "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+      "@babel/*@7.23 is causing out-of-memory (OOM) issues when running under Jest"
     ],
     "@babel/preset-env": [
       "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+      "@babel/*@7.23 is causing out-of-memory (OOM) issues when running under Jest"
     ]
   },
   "devDependencies": {
