@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+-  Fixes [#4403](https://github.com/microsoft/BotFramework-WebChat/issues/4403). Bump to CLDR v37 and remove adopted `cldr-data` and `cldr-data-downloader` packages, by [@compulim](https://github.com/compulim), in PR [#4874](https://github.com/microsoft/BotFramework-WebChat/issues/pull/4874)
+
 ## [4.16.0] - 2023-11-16
 
 ### Breaking changes

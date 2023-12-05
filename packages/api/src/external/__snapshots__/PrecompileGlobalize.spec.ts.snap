@@ -1,0 +1,981 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`use globalize with locale "ar-EG" should format date 1`] = `"٢٢ سبتمبر ١٢:٣٤ م"`;
+
+exports[`use globalize with locale "ar-EG" should format negative relative time in hour 1`] = `"قبل ١٠ ساعات"`;
+
+exports[`use globalize with locale "ar-EG" should format negative relative time in minute 1`] = `"قبل ١٠ دقائق"`;
+
+exports[`use globalize with locale "ar-EG" should format number in byte with long format 1`] = `"١٠ بايت"`;
+
+exports[`use globalize with locale "ar-EG" should format number in gigabyte with short format 1`] = `"١٠ غيغابايت"`;
+
+exports[`use globalize with locale "ar-EG" should format number in kilobyte with short format 1`] = `"١٠ كيلوبايت"`;
+
+exports[`use globalize with locale "ar-EG" should format number in megabyte with short format 1`] = `"١٠ ميغابايت"`;
+
+exports[`use globalize with locale "ar-EG" should format plural 1`] = `"many"`;
+
+exports[`use globalize with locale "ar-EG" should format positive relative time in hour 1`] = `"خلال ١٠ ساعات"`;
+
+exports[`use globalize with locale "ar-EG" should format positive relative time in minute 1`] = `"خلال ١٠ دقائق"`;
+
+exports[`use globalize with locale "ar-SA" should format date 1`] = `"٢٢ سبتمبر ١٢:٣٤ م"`;
+
+exports[`use globalize with locale "ar-SA" should format negative relative time in hour 1`] = `"قبل ١٠ ساعات"`;
+
+exports[`use globalize with locale "ar-SA" should format negative relative time in minute 1`] = `"قبل ١٠ دقائق"`;
+
+exports[`use globalize with locale "ar-SA" should format number in byte with long format 1`] = `"١٠ بايت"`;
+
+exports[`use globalize with locale "ar-SA" should format number in gigabyte with short format 1`] = `"١٠ غيغابايت"`;
+
+exports[`use globalize with locale "ar-SA" should format number in kilobyte with short format 1`] = `"١٠ كيلوبايت"`;
+
+exports[`use globalize with locale "ar-SA" should format number in megabyte with short format 1`] = `"١٠ ميغابايت"`;
+
+exports[`use globalize with locale "ar-SA" should format plural 1`] = `"many"`;
+
+exports[`use globalize with locale "ar-SA" should format positive relative time in hour 1`] = `"خلال ١٠ ساعات"`;
+
+exports[`use globalize with locale "ar-SA" should format positive relative time in minute 1`] = `"خلال ١٠ دقائق"`;
+
+exports[`use globalize with locale "bg" should format date 1`] = `"22 септември, 12:34 сл.об."`;
+
+exports[`use globalize with locale "bg" should format negative relative time in hour 1`] = `"преди 10 часа"`;
+
+exports[`use globalize with locale "bg" should format negative relative time in minute 1`] = `"преди 10 минути"`;
+
+exports[`use globalize with locale "bg" should format number in byte with long format 1`] = `"10 байта"`;
+
+exports[`use globalize with locale "bg" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "bg" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "bg" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "bg" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "bg" should format positive relative time in hour 1`] = `"след 10 часа"`;
+
+exports[`use globalize with locale "bg" should format positive relative time in minute 1`] = `"след 10 минути"`;
+
+exports[`use globalize with locale "ca" should format date 1`] = `"22 de setembre a les 12:34 p. m."`;
+
+exports[`use globalize with locale "ca" should format negative relative time in hour 1`] = `"fa 10 hores"`;
+
+exports[`use globalize with locale "ca" should format negative relative time in minute 1`] = `"fa 10 minuts"`;
+
+exports[`use globalize with locale "ca" should format number in byte with long format 1`] = `"10 bytes"`;
+
+exports[`use globalize with locale "ca" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "ca" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "ca" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "ca" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "ca" should format positive relative time in hour 1`] = `"d’aquí a 10 hores"`;
+
+exports[`use globalize with locale "ca" should format positive relative time in minute 1`] = `"d’aquí a 10 minuts"`;
+
+exports[`use globalize with locale "cs" should format date 1`] = `"22. září 12:34 odp."`;
+
+exports[`use globalize with locale "cs" should format negative relative time in hour 1`] = `"před 10 hodinami"`;
+
+exports[`use globalize with locale "cs" should format negative relative time in minute 1`] = `"před 10 minutami"`;
+
+exports[`use globalize with locale "cs" should format number in byte with long format 1`] = `"10 bajtů"`;
+
+exports[`use globalize with locale "cs" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "cs" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "cs" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "cs" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "cs" should format positive relative time in hour 1`] = `"za 10 hodin"`;
+
+exports[`use globalize with locale "cs" should format positive relative time in minute 1`] = `"za 10 minut"`;
+
+exports[`use globalize with locale "da" should format date 1`] = `"22. september kl. 12.34 PM"`;
+
+exports[`use globalize with locale "da" should format negative relative time in hour 1`] = `"for 10 timer siden"`;
+
+exports[`use globalize with locale "da" should format negative relative time in minute 1`] = `"for 10 minutter siden"`;
+
+exports[`use globalize with locale "da" should format number in byte with long format 1`] = `"10 bytes"`;
+
+exports[`use globalize with locale "da" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "da" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "da" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "da" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "da" should format positive relative time in hour 1`] = `"om 10 timer"`;
+
+exports[`use globalize with locale "da" should format positive relative time in minute 1`] = `"om 10 minutter"`;
+
+exports[`use globalize with locale "de" should format date 1`] = `"22. September um 12:34 PM"`;
+
+exports[`use globalize with locale "de" should format negative relative time in hour 1`] = `"vor 10 Stunden"`;
+
+exports[`use globalize with locale "de" should format negative relative time in minute 1`] = `"vor 10 Minuten"`;
+
+exports[`use globalize with locale "de" should format number in byte with long format 1`] = `"10 Bytes"`;
+
+exports[`use globalize with locale "de" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "de" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "de" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "de" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "de" should format positive relative time in hour 1`] = `"in 10 Stunden"`;
+
+exports[`use globalize with locale "de" should format positive relative time in minute 1`] = `"in 10 Minuten"`;
+
+exports[`use globalize with locale "el" should format date 1`] = `"22 Σεπτεμβρίου - 12:34 μ.μ."`;
+
+exports[`use globalize with locale "el" should format negative relative time in hour 1`] = `"πριν από 10 ώρες"`;
+
+exports[`use globalize with locale "el" should format negative relative time in minute 1`] = `"πριν από 10 λεπτά"`;
+
+exports[`use globalize with locale "el" should format number in byte with long format 1`] = `"10 byte"`;
+
+exports[`use globalize with locale "el" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "el" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "el" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "el" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "el" should format positive relative time in hour 1`] = `"σε 10 ώρες"`;
+
+exports[`use globalize with locale "el" should format positive relative time in minute 1`] = `"σε 10 λεπτά"`;
+
+exports[`use globalize with locale "en" should format date 1`] = `"September 22 at 12:34 PM"`;
+
+exports[`use globalize with locale "en" should format negative relative time in hour 1`] = `"10 hours ago"`;
+
+exports[`use globalize with locale "en" should format negative relative time in minute 1`] = `"10 minutes ago"`;
+
+exports[`use globalize with locale "en" should format number in byte with long format 1`] = `"10 bytes"`;
+
+exports[`use globalize with locale "en" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "en" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "en" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "en" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "en" should format positive relative time in hour 1`] = `"in 10 hours"`;
+
+exports[`use globalize with locale "en" should format positive relative time in minute 1`] = `"in 10 minutes"`;
+
+exports[`use globalize with locale "es" should format date 1`] = `"22 de septiembre, 12:34 p. m."`;
+
+exports[`use globalize with locale "es" should format negative relative time in hour 1`] = `"hace 10 horas"`;
+
+exports[`use globalize with locale "es" should format negative relative time in minute 1`] = `"hace 10 minutos"`;
+
+exports[`use globalize with locale "es" should format number in byte with long format 1`] = `"10 bytes"`;
+
+exports[`use globalize with locale "es" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "es" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "es" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "es" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "es" should format positive relative time in hour 1`] = `"dentro de 10 horas"`;
+
+exports[`use globalize with locale "es" should format positive relative time in minute 1`] = `"dentro de 10 minutos"`;
+
+exports[`use globalize with locale "et" should format date 1`] = `"22. september 12:34 PM"`;
+
+exports[`use globalize with locale "et" should format negative relative time in hour 1`] = `"10 tunni eest"`;
+
+exports[`use globalize with locale "et" should format negative relative time in minute 1`] = `"10 minuti eest"`;
+
+exports[`use globalize with locale "et" should format number in byte with long format 1`] = `"10 baiti"`;
+
+exports[`use globalize with locale "et" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "et" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "et" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "et" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "et" should format positive relative time in hour 1`] = `"10 tunni pärast"`;
+
+exports[`use globalize with locale "et" should format positive relative time in minute 1`] = `"10 minuti pärast"`;
+
+exports[`use globalize with locale "eu" should format date 1`] = `"irailak 22 12:34 PM"`;
+
+exports[`use globalize with locale "eu" should format negative relative time in hour 1`] = `"Duela 10 ordu"`;
+
+exports[`use globalize with locale "eu" should format negative relative time in minute 1`] = `"Duela 10 minutu"`;
+
+exports[`use globalize with locale "eu" should format number in byte with long format 1`] = `"10 byte"`;
+
+exports[`use globalize with locale "eu" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "eu" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "eu" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "eu" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "eu" should format positive relative time in hour 1`] = `"10 ordu barru"`;
+
+exports[`use globalize with locale "eu" should format positive relative time in minute 1`] = `"10 minutu barru"`;
+
+exports[`use globalize with locale "fi" should format date 1`] = `"22. syyskuuta klo 12.34 ip."`;
+
+exports[`use globalize with locale "fi" should format negative relative time in hour 1`] = `"10 tuntia sitten"`;
+
+exports[`use globalize with locale "fi" should format negative relative time in minute 1`] = `"10 minuuttia sitten"`;
+
+exports[`use globalize with locale "fi" should format number in byte with long format 1`] = `"10 tavua"`;
+
+exports[`use globalize with locale "fi" should format number in gigabyte with short format 1`] = `"10 Gt"`;
+
+exports[`use globalize with locale "fi" should format number in kilobyte with short format 1`] = `"10 kt"`;
+
+exports[`use globalize with locale "fi" should format number in megabyte with short format 1`] = `"10 Mt"`;
+
+exports[`use globalize with locale "fi" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "fi" should format positive relative time in hour 1`] = `"10 tunnin päästä"`;
+
+exports[`use globalize with locale "fi" should format positive relative time in minute 1`] = `"10 minuutin päästä"`;
+
+exports[`use globalize with locale "fr" should format date 1`] = `"22 septembre à 12:34 PM"`;
+
+exports[`use globalize with locale "fr" should format negative relative time in hour 1`] = `"il y a 10 heures"`;
+
+exports[`use globalize with locale "fr" should format negative relative time in minute 1`] = `"il y a 10 minutes"`;
+
+exports[`use globalize with locale "fr" should format number in byte with long format 1`] = `"10 octets"`;
+
+exports[`use globalize with locale "fr" should format number in gigabyte with short format 1`] = `"10 Go"`;
+
+exports[`use globalize with locale "fr" should format number in kilobyte with short format 1`] = `"10 ko"`;
+
+exports[`use globalize with locale "fr" should format number in megabyte with short format 1`] = `"10 Mo"`;
+
+exports[`use globalize with locale "fr" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "fr" should format positive relative time in hour 1`] = `"dans 10 heures"`;
+
+exports[`use globalize with locale "fr" should format positive relative time in minute 1`] = `"dans 10 minutes"`;
+
+exports[`use globalize with locale "gl" should format date 1`] = `"12:34 p.m. do 22 de setembro"`;
+
+exports[`use globalize with locale "gl" should format negative relative time in hour 1`] = `"hai 10 horas"`;
+
+exports[`use globalize with locale "gl" should format negative relative time in minute 1`] = `"hai 10 minutos"`;
+
+exports[`use globalize with locale "gl" should format number in byte with long format 1`] = `"10 bytes"`;
+
+exports[`use globalize with locale "gl" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "gl" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "gl" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "gl" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "gl" should format positive relative time in hour 1`] = `"en 10 horas"`;
+
+exports[`use globalize with locale "gl" should format positive relative time in minute 1`] = `"en 10 minutos"`;
+
+exports[`use globalize with locale "he" should format date 1`] = `"22 בספטמבר בשעה 12:34 אחה״צ"`;
+
+exports[`use globalize with locale "he" should format negative relative time in hour 1`] = `"לפני 10 שעות"`;
+
+exports[`use globalize with locale "he" should format negative relative time in minute 1`] = `"לפני 10 דקות"`;
+
+exports[`use globalize with locale "he" should format number in byte with long format 1`] = `"10 בייט"`;
+
+exports[`use globalize with locale "he" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "he" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "he" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "he" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "he" should format positive relative time in hour 1`] = `"בעוד 10 שעות"`;
+
+exports[`use globalize with locale "he" should format positive relative time in minute 1`] = `"בעוד 10 דקות"`;
+
+exports[`use globalize with locale "hi" should format date 1`] = `"22 सितंबर को 12:34 pm"`;
+
+exports[`use globalize with locale "hi" should format negative relative time in hour 1`] = `"10 घंटे पहले"`;
+
+exports[`use globalize with locale "hi" should format negative relative time in minute 1`] = `"10 मिनट पहले"`;
+
+exports[`use globalize with locale "hi" should format number in byte with long format 1`] = `"10 बाइट"`;
+
+exports[`use globalize with locale "hi" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "hi" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "hi" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "hi" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "hi" should format positive relative time in hour 1`] = `"10 घंटे में"`;
+
+exports[`use globalize with locale "hi" should format positive relative time in minute 1`] = `"10 मिनट में"`;
+
+exports[`use globalize with locale "hr" should format date 1`] = `"22. rujna u 12:34 PM"`;
+
+exports[`use globalize with locale "hr" should format negative relative time in hour 1`] = `"prije 10 sati"`;
+
+exports[`use globalize with locale "hr" should format negative relative time in minute 1`] = `"prije 10 minuta"`;
+
+exports[`use globalize with locale "hr" should format number in byte with long format 1`] = `"10 bajtova"`;
+
+exports[`use globalize with locale "hr" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "hr" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "hr" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "hr" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "hr" should format positive relative time in hour 1`] = `"za 10 sati"`;
+
+exports[`use globalize with locale "hr" should format positive relative time in minute 1`] = `"za 10 minuta"`;
+
+exports[`use globalize with locale "hu" should format date 1`] = `"szeptember 22. du. 12:34"`;
+
+exports[`use globalize with locale "hu" should format negative relative time in hour 1`] = `"10 órával ezelőtt"`;
+
+exports[`use globalize with locale "hu" should format negative relative time in minute 1`] = `"10 perccel ezelőtt"`;
+
+exports[`use globalize with locale "hu" should format number in byte with long format 1`] = `"10 bájt"`;
+
+exports[`use globalize with locale "hu" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "hu" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "hu" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "hu" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "hu" should format positive relative time in hour 1`] = `"10 óra múlva"`;
+
+exports[`use globalize with locale "hu" should format positive relative time in minute 1`] = `"10 perc múlva"`;
+
+exports[`use globalize with locale "id" should format date 1`] = `"22 September 12.34 PM"`;
+
+exports[`use globalize with locale "id" should format negative relative time in hour 1`] = `"10 jam yang lalu"`;
+
+exports[`use globalize with locale "id" should format negative relative time in minute 1`] = `"10 menit yang lalu"`;
+
+exports[`use globalize with locale "id" should format number in byte with long format 1`] = `"10 byte"`;
+
+exports[`use globalize with locale "id" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "id" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "id" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "id" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "id" should format positive relative time in hour 1`] = `"dalam 10 jam"`;
+
+exports[`use globalize with locale "id" should format positive relative time in minute 1`] = `"dalam 10 menit"`;
+
+exports[`use globalize with locale "it" should format date 1`] = `"22 settembre 12:34 PM"`;
+
+exports[`use globalize with locale "it" should format negative relative time in hour 1`] = `"10 ore fa"`;
+
+exports[`use globalize with locale "it" should format negative relative time in minute 1`] = `"10 minuti fa"`;
+
+exports[`use globalize with locale "it" should format number in byte with long format 1`] = `"10 byte"`;
+
+exports[`use globalize with locale "it" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "it" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "it" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "it" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "it" should format positive relative time in hour 1`] = `"tra 10 ore"`;
+
+exports[`use globalize with locale "it" should format positive relative time in minute 1`] = `"tra 10 minuti"`;
+
+exports[`use globalize with locale "ja" should format date 1`] = `"9月22日 午後0:34"`;
+
+exports[`use globalize with locale "ja" should format negative relative time in hour 1`] = `"10 時間前"`;
+
+exports[`use globalize with locale "ja" should format negative relative time in minute 1`] = `"10 分前"`;
+
+exports[`use globalize with locale "ja" should format number in byte with long format 1`] = `"10 バイト"`;
+
+exports[`use globalize with locale "ja" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "ja" should format number in kilobyte with short format 1`] = `"10 KB"`;
+
+exports[`use globalize with locale "ja" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "ja" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "ja" should format positive relative time in hour 1`] = `"10 時間後"`;
+
+exports[`use globalize with locale "ja" should format positive relative time in minute 1`] = `"10 分後"`;
+
+exports[`use globalize with locale "kk" should format date 1`] = `"22 қыркүйек, 12:34 PM"`;
+
+exports[`use globalize with locale "kk" should format negative relative time in hour 1`] = `"10 сағат бұрын"`;
+
+exports[`use globalize with locale "kk" should format negative relative time in minute 1`] = `"10 минут бұрын"`;
+
+exports[`use globalize with locale "kk" should format number in byte with long format 1`] = `"10 байт"`;
+
+exports[`use globalize with locale "kk" should format number in gigabyte with short format 1`] = `"10 ГБ"`;
+
+exports[`use globalize with locale "kk" should format number in kilobyte with short format 1`] = `"10 кБ"`;
+
+exports[`use globalize with locale "kk" should format number in megabyte with short format 1`] = `"10 MБ"`;
+
+exports[`use globalize with locale "kk" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "kk" should format positive relative time in hour 1`] = `"10 сағаттан кейін"`;
+
+exports[`use globalize with locale "kk" should format positive relative time in minute 1`] = `"10 минуттан кейін"`;
+
+exports[`use globalize with locale "ko" should format date 1`] = `"9월 22일 오후 12:34"`;
+
+exports[`use globalize with locale "ko" should format negative relative time in hour 1`] = `"10시간 전"`;
+
+exports[`use globalize with locale "ko" should format negative relative time in minute 1`] = `"10분 전"`;
+
+exports[`use globalize with locale "ko" should format number in byte with long format 1`] = `"10바이트"`;
+
+exports[`use globalize with locale "ko" should format number in gigabyte with short format 1`] = `"10GB"`;
+
+exports[`use globalize with locale "ko" should format number in kilobyte with short format 1`] = `"10kB"`;
+
+exports[`use globalize with locale "ko" should format number in megabyte with short format 1`] = `"10MB"`;
+
+exports[`use globalize with locale "ko" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "ko" should format positive relative time in hour 1`] = `"10시간 후"`;
+
+exports[`use globalize with locale "ko" should format positive relative time in minute 1`] = `"10분 후"`;
+
+exports[`use globalize with locale "lt" should format date 1`] = `"rugsėjo 22 d. 12:34 popiet"`;
+
+exports[`use globalize with locale "lt" should format negative relative time in hour 1`] = `"prieš 10 valandų"`;
+
+exports[`use globalize with locale "lt" should format negative relative time in minute 1`] = `"prieš 10 minučių"`;
+
+exports[`use globalize with locale "lt" should format number in byte with long format 1`] = `"10 baitų"`;
+
+exports[`use globalize with locale "lt" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "lt" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "lt" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "lt" should format plural 1`] = `"few"`;
+
+exports[`use globalize with locale "lt" should format positive relative time in hour 1`] = `"po 10 valandų"`;
+
+exports[`use globalize with locale "lt" should format positive relative time in minute 1`] = `"po 10 minučių"`;
+
+exports[`use globalize with locale "lv" should format date 1`] = `"22. septembris 12:34 pēcpusdienā"`;
+
+exports[`use globalize with locale "lv" should format negative relative time in hour 1`] = `"pirms 10 stundām"`;
+
+exports[`use globalize with locale "lv" should format negative relative time in minute 1`] = `"pirms 10 minūtēm"`;
+
+exports[`use globalize with locale "lv" should format number in byte with long format 1`] = `"10 baitu"`;
+
+exports[`use globalize with locale "lv" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "lv" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "lv" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "lv" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "lv" should format positive relative time in hour 1`] = `"pēc 10 stundām"`;
+
+exports[`use globalize with locale "lv" should format positive relative time in minute 1`] = `"pēc 10 minūtēm"`;
+
+exports[`use globalize with locale "ms" should format date 1`] = `"22 September 12:34 PTG"`;
+
+exports[`use globalize with locale "ms" should format negative relative time in hour 1`] = `"10 jam lalu"`;
+
+exports[`use globalize with locale "ms" should format negative relative time in minute 1`] = `"10 minit lalu"`;
+
+exports[`use globalize with locale "ms" should format number in byte with long format 1`] = `"10 bait"`;
+
+exports[`use globalize with locale "ms" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "ms" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "ms" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "ms" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "ms" should format positive relative time in hour 1`] = `"dalam 10 jam"`;
+
+exports[`use globalize with locale "ms" should format positive relative time in minute 1`] = `"dalam 10 minit"`;
+
+exports[`use globalize with locale "nb" should format date 1`] = `"22. september kl. 12:34 p.m."`;
+
+exports[`use globalize with locale "nb" should format negative relative time in hour 1`] = `"for 10 timer siden"`;
+
+exports[`use globalize with locale "nb" should format negative relative time in minute 1`] = `"for 10 minutter siden"`;
+
+exports[`use globalize with locale "nb" should format number in byte with long format 1`] = `"10 byte"`;
+
+exports[`use globalize with locale "nb" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "nb" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "nb" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "nb" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "nb" should format positive relative time in hour 1`] = `"om 10 timer"`;
+
+exports[`use globalize with locale "nb" should format positive relative time in minute 1`] = `"om 10 minutter"`;
+
+exports[`use globalize with locale "nl" should format date 1`] = `"22 september om 12:34 p.m."`;
+
+exports[`use globalize with locale "nl" should format negative relative time in hour 1`] = `"10 uur geleden"`;
+
+exports[`use globalize with locale "nl" should format negative relative time in minute 1`] = `"10 minuten geleden"`;
+
+exports[`use globalize with locale "nl" should format number in byte with long format 1`] = `"10 byte"`;
+
+exports[`use globalize with locale "nl" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "nl" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "nl" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "nl" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "nl" should format positive relative time in hour 1`] = `"over 10 uur"`;
+
+exports[`use globalize with locale "nl" should format positive relative time in minute 1`] = `"over 10 minuten"`;
+
+exports[`use globalize with locale "pl" should format date 1`] = `"22 września 12:34 PM"`;
+
+exports[`use globalize with locale "pl" should format negative relative time in hour 1`] = `"10 godzin temu"`;
+
+exports[`use globalize with locale "pl" should format negative relative time in minute 1`] = `"10 minut temu"`;
+
+exports[`use globalize with locale "pl" should format number in byte with long format 1`] = `"10 bajtów"`;
+
+exports[`use globalize with locale "pl" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "pl" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "pl" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "pl" should format plural 1`] = `"many"`;
+
+exports[`use globalize with locale "pl" should format positive relative time in hour 1`] = `"za 10 godzin"`;
+
+exports[`use globalize with locale "pl" should format positive relative time in minute 1`] = `"za 10 minut"`;
+
+exports[`use globalize with locale "pt" should format date 1`] = `"22 de setembro 12:34 PM"`;
+
+exports[`use globalize with locale "pt" should format negative relative time in hour 1`] = `"há 10 horas"`;
+
+exports[`use globalize with locale "pt" should format negative relative time in minute 1`] = `"há 10 minutos"`;
+
+exports[`use globalize with locale "pt" should format number in byte with long format 1`] = `"10 bytes"`;
+
+exports[`use globalize with locale "pt" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "pt" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "pt" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "pt" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "pt" should format positive relative time in hour 1`] = `"em 10 horas"`;
+
+exports[`use globalize with locale "pt" should format positive relative time in minute 1`] = `"em 10 minutos"`;
+
+exports[`use globalize with locale "pt-PT" should format date 1`] = `"22 de setembro às 12:34 da tarde"`;
+
+exports[`use globalize with locale "pt-PT" should format negative relative time in hour 1`] = `"há 10 horas"`;
+
+exports[`use globalize with locale "pt-PT" should format negative relative time in minute 1`] = `"há 10 minutos"`;
+
+exports[`use globalize with locale "pt-PT" should format number in byte with long format 1`] = `"10 bytes"`;
+
+exports[`use globalize with locale "pt-PT" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "pt-PT" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "pt-PT" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "pt-PT" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "pt-PT" should format positive relative time in hour 1`] = `"dentro de 10 horas"`;
+
+exports[`use globalize with locale "pt-PT" should format positive relative time in minute 1`] = `"dentro de 10 minutos"`;
+
+exports[`use globalize with locale "ro" should format date 1`] = `"22 septembrie, 12:34 p.m."`;
+
+exports[`use globalize with locale "ro" should format negative relative time in hour 1`] = `"acum 10 ore"`;
+
+exports[`use globalize with locale "ro" should format negative relative time in minute 1`] = `"acum 10 minute"`;
+
+exports[`use globalize with locale "ro" should format number in byte with long format 1`] = `"10 byți"`;
+
+exports[`use globalize with locale "ro" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "ro" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "ro" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "ro" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "ro" should format positive relative time in hour 1`] = `"peste 10 ore"`;
+
+exports[`use globalize with locale "ro" should format positive relative time in minute 1`] = `"peste 10 minute"`;
+
+exports[`use globalize with locale "ru" should format date 1`] = `"22 сентября, 12:34 PM"`;
+
+exports[`use globalize with locale "ru" should format negative relative time in hour 1`] = `"10 часов назад"`;
+
+exports[`use globalize with locale "ru" should format negative relative time in minute 1`] = `"10 минут назад"`;
+
+exports[`use globalize with locale "ru" should format number in byte with long format 1`] = `"10 байт"`;
+
+exports[`use globalize with locale "ru" should format number in gigabyte with short format 1`] = `"10 ГБ"`;
+
+exports[`use globalize with locale "ru" should format number in kilobyte with short format 1`] = `"10 кБ"`;
+
+exports[`use globalize with locale "ru" should format number in megabyte with short format 1`] = `"10 МБ"`;
+
+exports[`use globalize with locale "ru" should format plural 1`] = `"many"`;
+
+exports[`use globalize with locale "ru" should format positive relative time in hour 1`] = `"через 10 часов"`;
+
+exports[`use globalize with locale "ru" should format positive relative time in minute 1`] = `"через 10 минут"`;
+
+exports[`use globalize with locale "sk" should format date 1`] = `"22. septembra, 12:34 PM"`;
+
+exports[`use globalize with locale "sk" should format negative relative time in hour 1`] = `"pred 10 hodinami"`;
+
+exports[`use globalize with locale "sk" should format negative relative time in minute 1`] = `"pred 10 minútami"`;
+
+exports[`use globalize with locale "sk" should format number in byte with long format 1`] = `"10 bajtov"`;
+
+exports[`use globalize with locale "sk" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "sk" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "sk" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "sk" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "sk" should format positive relative time in hour 1`] = `"o 10 hodín"`;
+
+exports[`use globalize with locale "sk" should format positive relative time in minute 1`] = `"o 10 minút"`;
+
+exports[`use globalize with locale "sl" should format date 1`] = `"22. september 12:34 pop."`;
+
+exports[`use globalize with locale "sl" should format negative relative time in hour 1`] = `"pred 10 urami"`;
+
+exports[`use globalize with locale "sl" should format negative relative time in minute 1`] = `"pred 10 minutami"`;
+
+exports[`use globalize with locale "sl" should format number in byte with long format 1`] = `"10 bajtov"`;
+
+exports[`use globalize with locale "sl" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "sl" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "sl" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "sl" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "sl" should format positive relative time in hour 1`] = `"čez 10 ur"`;
+
+exports[`use globalize with locale "sl" should format positive relative time in minute 1`] = `"čez 10 minut"`;
+
+exports[`use globalize with locale "sr-Cyrl" should format date 1`] = `"22. септембар 12:34 по подне"`;
+
+exports[`use globalize with locale "sr-Cyrl" should format negative relative time in hour 1`] = `"пре 10 сати"`;
+
+exports[`use globalize with locale "sr-Cyrl" should format negative relative time in minute 1`] = `"пре 10 минута"`;
+
+exports[`use globalize with locale "sr-Cyrl" should format number in byte with long format 1`] = `"10 бајтова"`;
+
+exports[`use globalize with locale "sr-Cyrl" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "sr-Cyrl" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "sr-Cyrl" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "sr-Cyrl" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "sr-Cyrl" should format positive relative time in hour 1`] = `"за 10 сати"`;
+
+exports[`use globalize with locale "sr-Cyrl" should format positive relative time in minute 1`] = `"за 10 минута"`;
+
+exports[`use globalize with locale "sr-Latn" should format date 1`] = `"22. septembar 12:34 po podne"`;
+
+exports[`use globalize with locale "sr-Latn" should format negative relative time in hour 1`] = `"pre 10 sati"`;
+
+exports[`use globalize with locale "sr-Latn" should format negative relative time in minute 1`] = `"pre 10 minuta"`;
+
+exports[`use globalize with locale "sr-Latn" should format number in byte with long format 1`] = `"10 bajtova"`;
+
+exports[`use globalize with locale "sr-Latn" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "sr-Latn" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "sr-Latn" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "sr-Latn" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "sr-Latn" should format positive relative time in hour 1`] = `"za 10 sati"`;
+
+exports[`use globalize with locale "sr-Latn" should format positive relative time in minute 1`] = `"za 10 minuta"`;
+
+exports[`use globalize with locale "sv" should format date 1`] = `"22 september 12:34 em"`;
+
+exports[`use globalize with locale "sv" should format negative relative time in hour 1`] = `"för 10 timmar sedan"`;
+
+exports[`use globalize with locale "sv" should format negative relative time in minute 1`] = `"för 10 minuter sedan"`;
+
+exports[`use globalize with locale "sv" should format number in byte with long format 1`] = `"10 byte"`;
+
+exports[`use globalize with locale "sv" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "sv" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "sv" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "sv" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "sv" should format positive relative time in hour 1`] = `"om 10 timmar"`;
+
+exports[`use globalize with locale "sv" should format positive relative time in minute 1`] = `"om 10 minuter"`;
+
+exports[`use globalize with locale "th" should format date 1`] = `"22 กันยายน 12:34 หลังเที่ยง"`;
+
+exports[`use globalize with locale "th" should format negative relative time in hour 1`] = `"10 ชั่วโมงที่ผ่านมา"`;
+
+exports[`use globalize with locale "th" should format negative relative time in minute 1`] = `"10 นาทีที่ผ่านมา"`;
+
+exports[`use globalize with locale "th" should format number in byte with long format 1`] = `"10 ไบต์"`;
+
+exports[`use globalize with locale "th" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "th" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "th" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "th" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "th" should format positive relative time in hour 1`] = `"ในอีก 10 ชั่วโมง"`;
+
+exports[`use globalize with locale "th" should format positive relative time in minute 1`] = `"ในอีก 10 นาที"`;
+
+exports[`use globalize with locale "tr" should format date 1`] = `"22 Eylül ÖS 12:34"`;
+
+exports[`use globalize with locale "tr" should format negative relative time in hour 1`] = `"10 saat önce"`;
+
+exports[`use globalize with locale "tr" should format negative relative time in minute 1`] = `"10 dakika önce"`;
+
+exports[`use globalize with locale "tr" should format number in byte with long format 1`] = `"10 bayt"`;
+
+exports[`use globalize with locale "tr" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "tr" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "tr" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "tr" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "tr" should format positive relative time in hour 1`] = `"10 saat sonra"`;
+
+exports[`use globalize with locale "tr" should format positive relative time in minute 1`] = `"10 dakika sonra"`;
+
+exports[`use globalize with locale "uk" should format date 1`] = `"22 вересня о 12:34 пп"`;
+
+exports[`use globalize with locale "uk" should format negative relative time in hour 1`] = `"10 годин тому"`;
+
+exports[`use globalize with locale "uk" should format negative relative time in minute 1`] = `"10 хвилин тому"`;
+
+exports[`use globalize with locale "uk" should format number in byte with long format 1`] = `"10 байтів"`;
+
+exports[`use globalize with locale "uk" should format number in gigabyte with short format 1`] = `"10 ГБ"`;
+
+exports[`use globalize with locale "uk" should format number in kilobyte with short format 1`] = `"10 кБ"`;
+
+exports[`use globalize with locale "uk" should format number in megabyte with short format 1`] = `"10 МБ"`;
+
+exports[`use globalize with locale "uk" should format plural 1`] = `"many"`;
+
+exports[`use globalize with locale "uk" should format positive relative time in hour 1`] = `"через 10 годин"`;
+
+exports[`use globalize with locale "uk" should format positive relative time in minute 1`] = `"через 10 хвилин"`;
+
+exports[`use globalize with locale "vi" should format date 1`] = `"12:34 CH 22 tháng 9"`;
+
+exports[`use globalize with locale "vi" should format negative relative time in hour 1`] = `"10 giờ trước"`;
+
+exports[`use globalize with locale "vi" should format negative relative time in minute 1`] = `"10 phút trước"`;
+
+exports[`use globalize with locale "vi" should format number in byte with long format 1`] = `"10 byte"`;
+
+exports[`use globalize with locale "vi" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "vi" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "vi" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "vi" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "vi" should format positive relative time in hour 1`] = `"sau 10 giờ nữa"`;
+
+exports[`use globalize with locale "vi" should format positive relative time in minute 1`] = `"sau 10 phút nữa"`;
+
+exports[`use globalize with locale "yue" should format date 1`] = `"9月22日 下午12:34"`;
+
+exports[`use globalize with locale "yue" should format negative relative time in hour 1`] = `"10 小時前"`;
+
+exports[`use globalize with locale "yue" should format negative relative time in minute 1`] = `"10 分鐘前"`;
+
+exports[`use globalize with locale "yue" should format number in byte with long format 1`] = `"10 byte"`;
+
+exports[`use globalize with locale "yue" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "yue" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "yue" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "yue" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "yue" should format positive relative time in hour 1`] = `"10 小時後"`;
+
+exports[`use globalize with locale "yue" should format positive relative time in minute 1`] = `"10 分鐘後"`;
+
+exports[`use globalize with locale "zh-Hans" should format date 1`] = `"9月22日 下午12:34"`;
+
+exports[`use globalize with locale "zh-Hans" should format negative relative time in hour 1`] = `"10小时前"`;
+
+exports[`use globalize with locale "zh-Hans" should format negative relative time in minute 1`] = `"10分钟前"`;
+
+exports[`use globalize with locale "zh-Hans" should format number in byte with long format 1`] = `"10字节"`;
+
+exports[`use globalize with locale "zh-Hans" should format number in gigabyte with short format 1`] = `"10吉字节"`;
+
+exports[`use globalize with locale "zh-Hans" should format number in kilobyte with short format 1`] = `"10千字节"`;
+
+exports[`use globalize with locale "zh-Hans" should format number in megabyte with short format 1`] = `"10兆字节"`;
+
+exports[`use globalize with locale "zh-Hans" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "zh-Hans" should format positive relative time in hour 1`] = `"10小时后"`;
+
+exports[`use globalize with locale "zh-Hans" should format positive relative time in minute 1`] = `"10分钟后"`;
+
+exports[`use globalize with locale "zh-Hans-SG" should format date 1`] = `"9月22日 下午12:34"`;
+
+exports[`use globalize with locale "zh-Hans-SG" should format negative relative time in hour 1`] = `"10小时前"`;
+
+exports[`use globalize with locale "zh-Hans-SG" should format negative relative time in minute 1`] = `"10分钟前"`;
+
+exports[`use globalize with locale "zh-Hans-SG" should format number in byte with long format 1`] = `"10字节"`;
+
+exports[`use globalize with locale "zh-Hans-SG" should format number in gigabyte with short format 1`] = `"10吉字节"`;
+
+exports[`use globalize with locale "zh-Hans-SG" should format number in kilobyte with short format 1`] = `"10千字节"`;
+
+exports[`use globalize with locale "zh-Hans-SG" should format number in megabyte with short format 1`] = `"10兆字节"`;
+
+exports[`use globalize with locale "zh-Hans-SG" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "zh-Hans-SG" should format positive relative time in hour 1`] = `"10小时后"`;
+
+exports[`use globalize with locale "zh-Hans-SG" should format positive relative time in minute 1`] = `"10分钟后"`;
+
+exports[`use globalize with locale "zh-Hant" should format date 1`] = `"9月22日 下午12:34"`;
+
+exports[`use globalize with locale "zh-Hant" should format negative relative time in hour 1`] = `"10 小時前"`;
+
+exports[`use globalize with locale "zh-Hant" should format negative relative time in minute 1`] = `"10 分鐘前"`;
+
+exports[`use globalize with locale "zh-Hant" should format number in byte with long format 1`] = `"10 byte"`;
+
+exports[`use globalize with locale "zh-Hant" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "zh-Hant" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "zh-Hant" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "zh-Hant" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "zh-Hant" should format positive relative time in hour 1`] = `"10 小時後"`;
+
+exports[`use globalize with locale "zh-Hant" should format positive relative time in minute 1`] = `"10 分鐘後"`;
+
+exports[`use globalize with locale "zh-Hant-HK" should format date 1`] = `"9月22日 下午12:34"`;
+
+exports[`use globalize with locale "zh-Hant-HK" should format negative relative time in hour 1`] = `"10 小時前"`;
+
+exports[`use globalize with locale "zh-Hant-HK" should format negative relative time in minute 1`] = `"10 分鐘前"`;
+
+exports[`use globalize with locale "zh-Hant-HK" should format number in byte with long format 1`] = `"10 位元組"`;
+
+exports[`use globalize with locale "zh-Hant-HK" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "zh-Hant-HK" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "zh-Hant-HK" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "zh-Hant-HK" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "zh-Hant-HK" should format positive relative time in hour 1`] = `"10 小時後"`;
+
+exports[`use globalize with locale "zh-Hant-HK" should format positive relative time in minute 1`] = `"10 分鐘後"`;
+
+exports[`use globalize with locale "zh-Hant-MO" should format date 1`] = `"9月22日 下午12:34"`;
+
+exports[`use globalize with locale "zh-Hant-MO" should format negative relative time in hour 1`] = `"10 小時前"`;
+
+exports[`use globalize with locale "zh-Hant-MO" should format negative relative time in minute 1`] = `"10 分鐘前"`;
+
+exports[`use globalize with locale "zh-Hant-MO" should format number in byte with long format 1`] = `"10 位元組"`;
+
+exports[`use globalize with locale "zh-Hant-MO" should format number in gigabyte with short format 1`] = `"10 GB"`;
+
+exports[`use globalize with locale "zh-Hant-MO" should format number in kilobyte with short format 1`] = `"10 kB"`;
+
+exports[`use globalize with locale "zh-Hant-MO" should format number in megabyte with short format 1`] = `"10 MB"`;
+
+exports[`use globalize with locale "zh-Hant-MO" should format plural 1`] = `"other"`;
+
+exports[`use globalize with locale "zh-Hant-MO" should format positive relative time in hour 1`] = `"10 小時後"`;
+
+exports[`use globalize with locale "zh-Hant-MO" should format positive relative time in minute 1`] = `"10 分鐘後"`;
