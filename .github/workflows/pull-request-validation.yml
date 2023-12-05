@@ -53,6 +53,8 @@ jobs:
         run: |
           zip docker.zip -r@ <<EOF
           ./docker-compose-wsl2.yml
+          ./babel-passthru-transformer.js
+          ./babel-jest-config.js
           ./__tests__/
           ./jest.config.js
           ./node_modules/
@@ -97,7 +99,7 @@ jobs:
 
       - run: docker-compose up --detach --scale chrome=1 -f docker-compose-wsl2.yml
 
-      - run: npx jest@29 --bail=20 --ci --coverage true --forceExit --logHeapUsage --runInBand
+      - run: npx --package jest@29 --package babel-jest jest --bail=20 --ci --coverage true --forceExit --logHeapUsage --runInBand
 
       - continue-on-error: true
         run: docker-compose down -f docker-compose-wsl2.yml --rmi -all
