@@ -46,21 +46,22 @@ jobs:
 
       - run: npm run build --if-present
 
-      - name: Pack docker.zip
-        run: zip -r docker.zip . -x .git
+      # - name: Pack docker.zip
+      #   run: zip -r docker.zip . -x .git
 
-      # - name: Pack ./__tests__
-      #   run: |
-      #     echo <<EOF
-      #     ./docker-compose-wsl2.yml
-      #     ./__tests__/
-      #     ./__tests__/html/
-      #     ./jest.config.js
-      #     ./node_modules/
-      #     ./packages/bundle/dist/
-      #     ./packages/test/harness/dist/
-      #     ./packages/test/page-object/dist/
-      #     EOF | zip docker.zip -r@
+      - name: Pack ./__tests__
+        run: |
+          echo <<EOF
+          ./docker-compose-wsl2.yml
+          ./__tests__/
+          ./jest.config.js
+          ./node_modules/
+          ./packages/bundle/dist/
+          ./packages/test/harness/
+          ./packages/test/page-object/dist/
+          EOF | zip docker.zip -r@
+
+      - run: ls -l docker.zip
 
       - name: Upload Docker artifact
         uses: actions/upload-artifact@v3
