@@ -1,0 +1,101 @@
+name: Pull request validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+    paths-ignore:
+      - .github
+      - .vscode
+
+  push:
+    branches:
+      - feat-github-workflow
+
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  node-version: 20.x
+  skip-secure-feed: true # TODO: Turn this off.
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+
+      - run: npm clean-install
+
+      - run: npm run bootstrap
+
+      - run: npm run build --if-present
+
+      - name: Pack docker.zip
+        run: zip -r docker.zip . -x .git
+
+      # - name: Pack ./__tests__
+      #   run: |
+      #     echo <<EOF
+      #     ./docker-compose-wsl2.yml
+      #     ./__tests__/
+      #     ./__tests__/html/
+      #     ./jest.config.js
+      #     ./node_modules/
+      #     ./packages/bundle/dist/
+      #     ./packages/test/harness/dist/
+      #     ./packages/test/page-object/dist/
+      #     EOF | zip docker.zip -r@
+
+      - name: Upload Docker artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker
+          path: docker.zip
+          retention-days: 1
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+
+      - name: Download Docker artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: docker
+
+      - run: unzip docker.zip
+
+      - run: rm docker.zip
+
+      - run: docker-compose build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library -f docker-compose-wsl2.yml
+
+      - run: docker-compose up --detach --scale chrome=1 -f docker-compose-wsl2.yml
+
+      - run: npx jest@29 --bail=20 --ci --coverage true --forceExit --logHeapUsage --runInBand
+
+      - continue-on-error: true
+        run: docker-compose down -f docker-compose-wsl2.yml --rmi -all
