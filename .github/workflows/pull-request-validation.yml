@@ -100,7 +100,7 @@ jobs:
       - run: npm run build --if-present
 
       - name: Run jest@${{ env.jest-version }} --testPathPattern packages/
-        run: node_modules/.bin/jest@${{ env.jest-version }} --testPathPattern packages/
+        run: npx jest@${{ env.jest-version }} --testPathPattern packages/
 
   html-test:
     name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
