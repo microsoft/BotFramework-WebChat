@@ -20,6 +20,7 @@ defaults:
     shell: bash
 
 env:
+  jest-version: 28
   node-version: 20.x
   skip-secure-feed: true # TODO: Turn this off.
 
@@ -98,8 +99,8 @@ jobs:
 
       - run: npm run build --if-present
 
-      - name: Run jest --testPathPattern packages/
-        run: node_modules/.bin/jest --testPathPattern packages/
+      - name: Run jest@${{ env.jest-version }} --testPathPattern packages/
+        run: node_modules/.bin/jest@${{ env.jest-version }} --testPathPattern packages/
 
   html-test:
     name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
@@ -136,15 +137,15 @@ jobs:
       - name: Run docker-compose up
         run: docker-compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
 
-      - name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
+      - name: Run jest@${{ env.jest-version }} --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
         run: |
           npx \
-            --package jest@28 \
+            --package jest@${{ env.jest-version }} \
             --package @babel/plugin-transform-runtime \
             --package @babel/preset-env \
             --package @babel/preset-react \
             --package @babel/preset-typescript \
-            --package babel-jest \
+            --package babel-jest@${{ env.jest-version }} \
             jest
             --bail=20 \
             --ci \
