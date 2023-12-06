@@ -249,7 +249,7 @@ jobs:
 
       - if: failure()
         name: Upload test snapshot diffs
-        uses: action/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           name: test-snapshot-diff
           path: ./__tests__/__image_snapshots__/*/__diff_output__/*
