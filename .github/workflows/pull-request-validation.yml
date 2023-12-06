@@ -21,7 +21,7 @@ defaults:
 
 env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
-  jest-version: 29
+  jest-version: 28
   node-version: 20.x
   skip-secure-feed: true # TODO: Turn this off.
 
@@ -147,7 +147,7 @@ jobs:
             --package @babel/preset-react \
             --package @babel/preset-typescript \
             --package babel-jest@${{ env.jest-version }} \
-            jest
+            jest \
             --bail=20 \
             --ci \
             --coverage true \
