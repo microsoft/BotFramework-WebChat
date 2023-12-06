@@ -105,6 +105,7 @@ jobs:
 
       - name: Run jest --testPathPattern packages/
         run: ./node_modules/.bin/jest --testPathPattern packages/
+        timeout-minutes: 10
 
       - if: always()
         name: Append ID to test result
