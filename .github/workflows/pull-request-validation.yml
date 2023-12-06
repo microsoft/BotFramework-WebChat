@@ -314,6 +314,16 @@ jobs:
       #   name: Print Cobertura branch coverage
       #   run: gcovr cobertura-coverage.xml --branches --txt
 
+      # - name: Report coverage to pull request
+      #   uses: zgosalvez/github-actions-report-lcov@77c3fa1e20d891bc83ec63b6b0e5ecf5ee1ced1e # 4.1.1
+      #   with:
+      #     coverage-files: lcov-*.info
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     update-comment: true
+
+      - name: Install lcov
+        run: sudo apt install -y lcov
+
       - name: Merge lcov-*.info
         run: |
           lcov \
