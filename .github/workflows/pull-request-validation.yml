@@ -103,19 +103,19 @@ jobs:
       - run: docker-compose up --detach --scale chrome=1 -f docker-compose-wsl2.yml
 
       - run: |
-        npx \
-          --package jest@29 \
-          --package @babel/plugin-transform-runtime \
-          --package @babel/preset-env \
-          --package @babel/preset-react \
-          --package @babel/preset-typescript \
-          --package babel-jest \
-          --bail=20 \
-          --ci \
-          --coverage true \
-          --forceExit \
-          --logHeapUsage \
-          --runInBand
+          npx \
+            --package jest@29 \
+            --package @babel/plugin-transform-runtime \
+            --package @babel/preset-env \
+            --package @babel/preset-react \
+            --package @babel/preset-typescript \
+            --package babel-jest \
+            --bail=20 \
+            --ci \
+            --coverage true \
+            --forceExit \
+            --logHeapUsage \
+            --runInBand
 
       - continue-on-error: true
         run: docker-compose down -f docker-compose-wsl2.yml --rmi -all
