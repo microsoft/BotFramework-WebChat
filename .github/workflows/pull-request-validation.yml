@@ -52,16 +52,19 @@ jobs:
       - name: Pack ./__tests__
         run: |
           zip docker.zip -r@ <<EOF
-          ./docker-compose-wsl2.yml
-          ./babel.config.json
-          ./babel-passthru-transformer.js
-          ./babel-jest-config.js
           ./__tests__/
+          ./babel-jest-config.js
+          ./babel-passthru-transformer.js
+          ./babel.config.json
+          ./chrome.dockerfile
+          ./docker-compose-wsl2.yml
           ./jest.config.js
           ./node_modules/
           ./packages/bundle/dist/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
+          ./testharness.dockerfile
+          ./testharness2.dockerfile
           EOF
 
       - run: ls -l docker.zip
