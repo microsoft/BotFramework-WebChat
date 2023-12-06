@@ -23,7 +23,7 @@ env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
   NODE_ENV: test # Add instrumentation code
   node-version: 18.x
-  skip-secure-feed: true # TODO: Turn this off.
+  skip-secure-feed: false
 
 jobs:
   build:
@@ -267,17 +267,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: test-result
-
-      - run: ls -laR
-
-      # - name: Use Node.js ${{ env.node-version }}
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: ${{ env.node-version }}
-
-      # - if: "env.skip-secure-feed != 'true'"
-      #   name: Enable secure feed
-      #   run: npx https://aka.ms/EnableSecureFeed
 
       - name: Install lcov
         run: sudo apt install -y lcov
