@@ -83,6 +83,11 @@ jobs:
     needs:
       - build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        total: [10]
+
     steps:
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -106,7 +111,8 @@ jobs:
 
       - run: docker-compose -f docker-compose-wsl2.yml up --detach --scale chrome=1
 
-      - run: |
+      - name: Run jest
+        run: |
           npx \
             --package jest@29 \
             --package @babel/plugin-transform-runtime \
@@ -120,7 +126,8 @@ jobs:
             --coverage true \
             --forceExit \
             --logHeapUsage \
-            --runInBand
+            --runInBand \
+            --shard=${{ format('{0}/{1}', matrix.index, matrix.total) }}
 
       - continue-on-error: true
         run: docker-compose -f docker-compose-wsl2.yml down --rmi -all
