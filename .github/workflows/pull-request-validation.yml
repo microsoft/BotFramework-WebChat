@@ -21,6 +21,7 @@ defaults:
 
 env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
+  NODE_ENV: test # Add instrumentation code
   node-version: 20.x
   skip-secure-feed: true # TODO: Turn this off.
 
@@ -135,6 +136,7 @@ jobs:
 
           mv cobertura-coverage.xml cobertura-coverage-unit.xml
           mv jest.json jest-unit.json
+          mv lcov.info lcov-unit.info
           mv nunit3.xml nunit3-unit.xml
           mv result.trx result-unit.trx
         working-directory: ./coverage
@@ -147,6 +149,7 @@ jobs:
           path: |
             ./coverage/cobertura-coverage-*.xml
             ./coverage/jest-*.json
+            ./coverage/lcov-*.info
             ./coverage/nunit3-*.xml
             ./coverage/result-*.trx
 
@@ -206,6 +209,7 @@ jobs:
 
           mv cobertura-coverage.xml cobertura-coverage-${{ matrix.shard-index }}.xml
           mv jest.json jest-${{ matrix.shard-index }}.json
+          mv lcov.json lcov-${{ matrix.shard-index }}.json
           mv nunit3.xml nunit3-${{ matrix.shard-index }}.xml
           mv result.trx result-${{ matrix.shard-index }}.trx
         working-directory: ./coverage
@@ -218,6 +222,7 @@ jobs:
           path: |
             ./coverage/cobertura-coverage-*.xml
             ./coverage/jest-*.json
+            ./coverage/lcov-*.info
             ./coverage/nunit3-*.xml
             ./coverage/result-*.trx
 
@@ -252,40 +257,80 @@ jobs:
       - name: Merge cobertura-coverage-*.xml
         run: |
           gcovr \
-          -a cobertura-coverage-1.json \
-          -a cobertura-coverage-2.json \
-          -a cobertura-coverage-3.json \
-          -a cobertura-coverage-4.json \
-          -a cobertura-coverage-5.json \
-          -a cobertura-coverage-6.json \
-          -a cobertura-coverage-7.json \
-          -a cobertura-coverage-8.json \
-          -a cobertura-coverage-9.json \
-          -a cobertura-coverage-10.json \
-          -a cobertura-coverage-11.json \
-          -a cobertura-coverage-12.json \
-          -a cobertura-coverage-13.json \
-          -a cobertura-coverage-14.json \
-          -a cobertura-coverage-15.json \
-          -a cobertura-coverage-16.json \
-          -a cobertura-coverage-17.json \
-          -a cobertura-coverage-18.json \
-          -a cobertura-coverage-19.json \
-          -a cobertura-coverage-20.json \
-          --xml cobertura-coverage.xml
+            -a cobertura-coverage-1.xml \
+            -a cobertura-coverage-2.xml \
+            -a cobertura-coverage-3.xml \
+            -a cobertura-coverage-4.xml \
+            -a cobertura-coverage-5.xml \
+            -a cobertura-coverage-6.xml \
+            -a cobertura-coverage-7.xml \
+            -a cobertura-coverage-8.xml \
+            -a cobertura-coverage-9.xml \
+            -a cobertura-coverage-10.xml \
+            -a cobertura-coverage-11.xml \
+            -a cobertura-coverage-12.xml \
+            -a cobertura-coverage-13.xml \
+            -a cobertura-coverage-14.xml \
+            -a cobertura-coverage-15.xml \
+            -a cobertura-coverage-16.xml \
+            -a cobertura-coverage-17.xml \
+            -a cobertura-coverage-18.xml \
+            -a cobertura-coverage-19.xml \
+            -a cobertura-coverage-20.xml \
+            -a cobertura-coverage-unit.xml \
+            --xml cobertura-coverage.xml
 
-      - name: Upload merged test results
+      - if: always()
+        name: Print Cobertura line coverage
+        run: gcovr cobertura-coverage.xml --txt
+
+      - if: always()
+        name: Print Cobertura branch coverage
+        run: gcovr cobertura-coverage.xml --branches --txt
+
+      - name: Merge lcov-*.info
+        run: |
+          lcov \
+            --rc lcov_branch_coverage=1 \
+            --add-tracefile lcov-1.info \
+            --add-tracefile lcov-2.info \
+            --add-tracefile lcov-3.info \
+            --add-tracefile lcov-4.info \
+            --add-tracefile lcov-5.info \
+            --add-tracefile lcov-6.info \
+            --add-tracefile lcov-7.info \
+            --add-tracefile lcov-8.info \
+            --add-tracefile lcov-9.info \
+            --add-tracefile lcov-10.info \
+            --add-tracefile lcov-11.info \
+            --add-tracefile lcov-12.info \
+            --add-tracefile lcov-13.info \
+            --add-tracefile lcov-14.info \
+            --add-tracefile lcov-15.info \
+            --add-tracefile lcov-16.info \
+            --add-tracefile lcov-17.info \
+            --add-tracefile lcov-18.info \
+            --add-tracefile lcov-19.info \
+            --add-tracefile lcov-20.info \
+            --add-tracefile lcov-unit.info \
+            --output-file lcov.info
+
+      - if: always()
+        name: Print lcov coverage list
+        run: lcov --list lcov.info
+
+      - if: always()
+        name: Print lcov coverage summary
+        run: lcov --summary lcov.info
+
+      - if: always()
+        name: Upload merged test results
         uses: actions/upload-artifact@v3
         with:
           name: merged-test-result
           path: |
             cobertura-coverage.xml
-
-      - name: Display line coverage
-        run: gcovr cobertura-coverage.xml --txt
-
-      - name: Display branch coverage
-        run: gcovr cobertura-coverage.xml --branches --txt
+            lcov.info
 
         # run: reportgenerator "-reports:cobertura-coverage-*.xml" "-targetdir:./merged/" -reporttypes:Cobertura
 
