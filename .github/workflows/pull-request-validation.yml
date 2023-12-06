@@ -97,6 +97,9 @@ jobs:
 
       - run: npm clean-install
 
+      - run: npm clean-install
+        working-directory: ./packages/test/harness/
+
       - run: npm run bootstrap
 
       - run: npm run build --if-present
