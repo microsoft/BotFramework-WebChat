@@ -20,7 +20,8 @@ defaults:
     shell: bash
 
 env:
-  jest-version: 28
+  CI_PULL_REQUEST: 1 # Skip nightly tests
+  jest-version: 29
   node-version: 20.x
   skip-secure-feed: true # TODO: Turn this off.
 
