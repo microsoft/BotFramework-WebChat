@@ -103,9 +103,28 @@ jobs:
 
       - run: npm run build --if-present
 
-      - continue-on-error: true
-        name: Run jest --testPathPattern packages/
+      - name: Run jest --testPathPattern packages/
         run: ./node_modules/.bin/jest --testPathPattern packages/
+
+      - if: always()
+        name: Append ID to test result
+        run: |
+          ls -laR .
+
+          mv jest.json jest-unit.json
+          mv nunit3.xml nunit3-unit.xml
+          mv result.trx result-unit.trx
+        working-directory: ./coverage
+
+      - if: always()
+        name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-result
+          path: |
+            ./coverage/jest-*.json
+            ./coverage/nunit3-*.xml
+            ./coverage/result-*.trx
 
   html-test:
     name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
@@ -144,8 +163,7 @@ jobs:
       - name: Run docker-compose up
         run: docker-compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
 
-      - continue-on-error: true
-        name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
+      - name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
         run: |
           ./node_modules/.bin/jest \
             --bail=20 \
@@ -156,7 +174,9 @@ jobs:
             --runInBand \
             --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
 
-      - run: |
+      - if: always()
+        name: Append ID to test result
+        run: |
           ls -laR .
 
           mv jest.json jest-${{ matrix.shard-index }}.json
@@ -164,7 +184,8 @@ jobs:
           mv result.trx result-${{ matrix.shard-index }}.trx
         working-directory: ./coverage
 
-      - name: Upload test results
+      - if: always()
+        name: Upload test results
         uses: actions/upload-artifact@v3
         with:
           name: test-result
@@ -173,10 +194,12 @@ jobs:
             ./coverage/nunit3-*.xml
             ./coverage/result-*.trx
 
-      - name: Run docker-compose down
+      - if: always()
+        name: Run docker-compose down
         run: docker-compose -f docker-compose-wsl2.yml down --rmi all
 
   merge-test-result:
+    if: always()
     name: Merge test result
     needs:
       - html-test
