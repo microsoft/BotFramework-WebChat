@@ -196,9 +196,10 @@ jobs:
       - name: Run docker-compose up
         run: docker-compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
 
-      - name: Ping Web Driver hub
+      - name: Wait for Docker to be ready
         run: |
-          set +eo pipefail
+          set +e # Disable per-command fail, we will handle cURL fail.
+
           while true
           do
             curl http://localhost:4444/wd/hub/status > /tmp/wd-status.json
