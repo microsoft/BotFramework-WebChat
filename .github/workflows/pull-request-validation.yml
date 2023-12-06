@@ -352,12 +352,12 @@ jobs:
             --output-file lcov.info
 
       - if: always()
-        name: Print lcov coverage list
-        run: lcov --list lcov.info
+        name: Print coverage list
+        run: lcov --rc lcov_branch_coverage=1 --list lcov.info
 
       - if: always()
-        name: Print lcov coverage summary
-        run: lcov --summary lcov.info
+        name: Print coverage summary
+        run: lcov --rc lcov_branch_coverage=1 --summary lcov.info | tee $GITHUB_STEP_SUMMARY
 
       - if: always()
         name: Upload merged test results
