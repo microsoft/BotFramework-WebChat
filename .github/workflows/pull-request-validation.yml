@@ -197,15 +197,8 @@ jobs:
           do
             curl http://localhost:4444/wd/hub/status > /tmp/wd-status.json
 
-            if [[ $? -eq 0 ]]
-            then
-              cat /tmp/wd-status.json | jq -r 'if (.value.ready != true) then halt_error(1) else empty end'
-
-              if [[ $? -eq 0 ]]
-              then
-                break
-              fi
-            fi
+            [[ $? -eq 0 ]] && cat /tmp/wd-status.json | jq -r 'if (.value.ready != true) then halt_error(1) else empty end'
+            [[ $? -eq 0 ]] && break
 
             sleep 1
           done
