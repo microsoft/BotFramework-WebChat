@@ -98,9 +98,9 @@ jobs:
 
       - run: rm docker.zip
 
-      - run: docker-compose build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library -f docker-compose-wsl2.yml
+      - run: docker-compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
 
-      - run: docker-compose up --detach --scale chrome=1 -f docker-compose-wsl2.yml
+      - run: docker-compose -f docker-compose-wsl2.yml up --detach --scale chrome=1
 
       - run: |
           npx \
@@ -119,4 +119,4 @@ jobs:
             --runInBand
 
       - continue-on-error: true
-        run: docker-compose down -f docker-compose-wsl2.yml --rmi -all
+        run: docker-compose -f docker-compose-wsl2.yml down --rmi -all
