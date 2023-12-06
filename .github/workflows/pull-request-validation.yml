@@ -22,7 +22,7 @@ defaults:
 env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
   NODE_ENV: test # Add instrumentation code
-  node-version: 18.x
+  node-version: 20.x
   skip-secure-feed: false
 
 jobs:

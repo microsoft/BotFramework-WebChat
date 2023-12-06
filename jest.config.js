@@ -90,7 +90,8 @@ module.exports = {
     '<rootDir>/__tests__/setup/setupCryptoGetRandomValues.js',
     '<rootDir>/__tests__/setup/setupImageSnapshot.js',
     '<rootDir>/__tests__/setup/setupTestNightly.js',
-    '<rootDir>/__tests__/setup/setupTimeout.js'
+    '<rootDir>/__tests__/setup/setupTimeout.js',
+    '<rootDir>/__tests__/setup/setupMutablePerformance.js'
   ],
   testPathIgnorePatterns: [
     '/lib/',
