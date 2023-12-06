@@ -53,6 +53,7 @@ jobs:
         run: |
           zip docker.zip -r@ <<EOF
           ./docker-compose-wsl2.yml
+          ./babel.config.json
           ./babel-passthru-transformer.js
           ./babel-jest-config.js
           ./__tests__/
@@ -71,6 +72,8 @@ jobs:
           name: docker
           path: docker.zip
           retention-days: 1
+
+  # Add run unit tests
 
   test:
     needs:
