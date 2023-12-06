@@ -275,27 +275,7 @@ jobs:
         run: |
           lcov \
             --rc lcov_branch_coverage=1 \
-            --add-tracefile lcov-1.info \
-            --add-tracefile lcov-2.info \
-            --add-tracefile lcov-3.info \
-            --add-tracefile lcov-4.info \
-            --add-tracefile lcov-5.info \
-            --add-tracefile lcov-6.info \
-            --add-tracefile lcov-7.info \
-            --add-tracefile lcov-8.info \
-            --add-tracefile lcov-9.info \
-            --add-tracefile lcov-10.info \
-            --add-tracefile lcov-11.info \
-            --add-tracefile lcov-12.info \
-            --add-tracefile lcov-13.info \
-            --add-tracefile lcov-14.info \
-            --add-tracefile lcov-15.info \
-            --add-tracefile lcov-16.info \
-            --add-tracefile lcov-17.info \
-            --add-tracefile lcov-18.info \
-            --add-tracefile lcov-19.info \
-            --add-tracefile lcov-20.info \
-            --add-tracefile lcov-unit.info \
+            --add-tracefile lcov-*.info \
             --output-file lcov.info
 
       - if: always()
