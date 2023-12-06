@@ -281,8 +281,11 @@ jobs:
           path: |
             cobertura-coverage.xml
 
-      - name: Display coverage
+      - name: Display line coverage
         run: gcovr cobertura-coverage.xml --txt
+
+      - name: Display branch coverage
+        run: gcovr cobertura-coverage.xml --branches --txt
 
         # run: reportgenerator "-reports:cobertura-coverage-*.xml" "-targetdir:./merged/" -reporttypes:Cobertura
 
