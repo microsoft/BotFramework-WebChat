@@ -76,8 +76,8 @@ jobs:
           path: docker.zip
           retention-days: 1
 
-  lint:
-    name: Lint
+  static-code-analysis:
+    name: Static code analysis
     runs-on: ubuntu-latest
 
     steps:
