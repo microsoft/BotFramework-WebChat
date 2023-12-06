@@ -110,6 +110,7 @@ jobs:
             --package @babel/preset-react \
             --package @babel/preset-typescript \
             --package babel-jest \
+            jest
             --bail=20 \
             --ci \
             --coverage true \
