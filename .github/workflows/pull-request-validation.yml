@@ -209,7 +209,7 @@ jobs:
 
           mv cobertura-coverage.xml cobertura-coverage-${{ matrix.shard-index }}.xml
           mv jest.json jest-${{ matrix.shard-index }}.json
-          mv lcov.json lcov-${{ matrix.shard-index }}.json
+          mv lcov.info lcov-${{ matrix.shard-index }}.info
           mv nunit3.xml nunit3-${{ matrix.shard-index }}.xml
           mv result.trx result-${{ matrix.shard-index }}.trx
         working-directory: ./coverage
