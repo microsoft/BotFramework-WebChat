@@ -63,6 +63,7 @@ jobs:
           ./packages/bundle/dist/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
+          ./serve-test.json
           ./testharness.dockerfile
           ./testharness2.dockerfile
           EOF
