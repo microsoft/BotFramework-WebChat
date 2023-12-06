@@ -143,7 +143,8 @@ jobs:
       - name: Run docker-compose up
         run: docker-compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
 
-      - name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
+      - continue-on-error: true
+        name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
         run: |
           ./node_modules/.bin/jest \
             --bail=20 \
@@ -154,6 +155,34 @@ jobs:
             --runInBand \
             --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
 
-      - continue-on-error: true
-        name: Run docker-compose down
+      - run: |
+          ls -laR .
+
+          mv jest.json jest-${{ matrix.shard-index }}.json
+          mv nunit3.xml nunit3-${{ matrix.shard-index }}.xml
+          mv result.trx result-${{ matrix.shard-index }}.trx
+        working-directory: ./coverage
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-result
+          path: |
+            ./coverage/jest-*.json
+            ./coverage/nunit3-*.xml
+            ./coverage/result-*.trx
+
+      - name: Run docker-compose down
         run: docker-compose -f docker-compose-wsl2.yml down --rmi -all
+
+  merge-test-result:
+    name: Merge test result
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download test results
+        uses: actions/download-artifact@v3
+        with:
+          name: test-result
+
+      - run: ls -laR
