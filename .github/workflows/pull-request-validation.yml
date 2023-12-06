@@ -247,6 +247,13 @@ jobs:
             ./coverage/nunit3-*.xml
             ./coverage/result-*.trx
 
+      - if: failure()
+        name: Upload test snapshot diffs
+        uses: action/upload-artifact@v3
+        with:
+          name: test-snapshot-diff
+          path: ./__tests__/__image_snapshots__/*/__diff_output__/*
+
   merge-test-result:
     if: always()
     name: Merge test result
