@@ -59,7 +59,8 @@ jobs:
           ./chrome.dockerfile
           ./docker-compose-wsl2.yml
           ./jest.config.js
-          ./node_modules/
+          ./package.json
+          ./package-lock.json
           ./packages/bundle/dist/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
@@ -132,6 +133,8 @@ jobs:
 
       - run: rm docker.zip
 
+      - run: npm clean-install
+
       - name: Run docker-compose build
         run: docker-compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
 
@@ -140,14 +143,7 @@ jobs:
 
       - name: Run jest@${{ env.jest-version }} --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
         run: |
-          npx \
-            --package jest@${{ env.jest-version }} \
-            --package @babel/plugin-transform-runtime \
-            --package @babel/preset-env \
-            --package @babel/preset-react \
-            --package @babel/preset-typescript \
-            --package babel-jest@${{ env.jest-version }} \
-            jest \
+          ./node_modules/.bin/jest \
             --bail=20 \
             --ci \
             --coverage true \
