@@ -177,6 +177,9 @@ jobs:
 
   merge-test-result:
     name: Merge test result
+    needs:
+      - html-test
+      - unit-test
     runs-on: ubuntu-latest
 
     steps:
