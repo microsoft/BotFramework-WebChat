@@ -133,7 +133,7 @@ jobs:
             --forceExit \
             --logHeapUsage \
             --runInBand \
-            --testPathPattern packages/\|__tests__/types/
+            --testPathPattern=/packages/\
         timeout-minutes: 10
 
       - if: always()

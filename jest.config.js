@@ -99,7 +99,8 @@ module.exports = {
     '<rootDir>/__tests__/html/__jest__',
     '<rootDir>/__tests__/html/assets',
     '<rootDir>/__tests__/setup/',
-    '<rootDir>/__tests__/types/__typescript__',
+    '<rootDir>/packages/bundle/__tests__/types/__typescript__/',
+    '<rootDir>/packages/core/__tests__/types/__typescript__/',
     '<rootDir>/packages/directlinespeech/__tests__/utilities/',
     '<rootDir>/packages/playground/',
     '<rootDir>/samples/'
