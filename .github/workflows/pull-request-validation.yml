@@ -142,7 +142,7 @@ jobs:
       - name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
         run: |
           npx \
-            --package jest@29 \
+            --package jest@28 \
             --package @babel/plugin-transform-runtime \
             --package @babel/preset-env \
             --package @babel/preset-react \
