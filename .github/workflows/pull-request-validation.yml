@@ -126,7 +126,14 @@ jobs:
       - run: npm run build --if-present
 
       - name: Run jest --testPathPattern packages/
-        run: ./node_modules/.bin/jest --testPathPattern packages/
+        run: |
+          ./node_modules/.bin/jest \
+            --ci \
+            --coverage true \
+            --forceExit \
+            --logHeapUsage \
+            --runInBand \
+            --testPathPattern packages/
         timeout-minutes: 10
 
       - if: always()
