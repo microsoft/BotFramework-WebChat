@@ -193,6 +193,7 @@ jobs:
 
       - name: Ping Web Driver hub
         run: |
+          set +eo pipefail
           while true
           do
             curl http://localhost:4444/wd/hub/status > /tmp/wd-status.json
