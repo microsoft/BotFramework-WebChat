@@ -25,6 +25,7 @@ env:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -78,6 +79,7 @@ jobs:
           retention-days: 1
 
   unit-test:
+    name: Unit test
     runs-on: ubuntu-latest
 
     steps:
@@ -99,10 +101,11 @@ jobs:
 
       - run: npm run build --if-present
 
-      - run: node_modules/.bin/jest --testPathPatterns packages/
+      - name: Run jest --testPathPatterns packages/
+        run: node_modules/.bin/jest --testPathPatterns packages/
 
   html-test:
-    name: Run HTML tests (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
+    name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
     needs:
       - build
     runs-on: ubuntu-latest
@@ -130,11 +133,13 @@ jobs:
 
       - run: rm docker.zip
 
-      - run: docker-compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
+      - name: Run docker-compose build
+        run: docker-compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
 
-      - run: docker-compose -f docker-compose-wsl2.yml up --detach --scale chrome=1
+      - name: Run docker-compose up
+        run: docker-compose -f docker-compose-wsl2.yml up --detach --scale chrome=1
 
-      - name: Run jest
+      - name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
         run: |
           npx \
             --package jest@29 \
@@ -153,4 +158,5 @@ jobs:
             --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
 
       - continue-on-error: true
+        name: Run docker-compose down
         run: docker-compose -f docker-compose-wsl2.yml down --rmi -all
