@@ -141,7 +141,6 @@ jobs:
         run: |
           ls -laR .
 
-          mv cobertura-coverage.xml cobertura-coverage-unit.xml
           mv jest.json jest-unit.json
           mv lcov.info lcov-unit.info
           mv nunit3.xml nunit3-unit.xml
@@ -152,9 +151,8 @@ jobs:
         name: Upload test results
         uses: actions/upload-artifact@v3
         with:
-          name: sharded-test-result
+          name: test-result
           path: |
-            ./coverage/cobertura-coverage-*.xml
             ./coverage/jest-*.json
             ./coverage/lcov-*.info
             ./coverage/nunit3-*.xml
@@ -231,7 +229,6 @@ jobs:
         run: |
           ls -laR .
 
-          mv cobertura-coverage.xml cobertura-coverage-${{ matrix.shard-index }}.xml
           mv jest.json jest-${{ matrix.shard-index }}.json
           mv lcov.info lcov-${{ matrix.shard-index }}.info
           mv nunit3.xml nunit3-${{ matrix.shard-index }}.xml
@@ -242,9 +239,8 @@ jobs:
         name: Upload test results
         uses: actions/upload-artifact@v3
         with:
-          name: sharded-test-result
+          name: test-result
           path: |
-            ./coverage/cobertura-coverage-*.xml
             ./coverage/jest-*.json
             ./coverage/lcov-*.info
             ./coverage/nunit3-*.xml
@@ -262,7 +258,7 @@ jobs:
       - name: Download test results
         uses: actions/download-artifact@v3
         with:
-          name: sharded-test-result
+          name: test-result
 
       - run: ls -laR
 
@@ -274,52 +270,6 @@ jobs:
       # - if: "env.skip-secure-feed != 'true'"
       #   name: Enable secure feed
       #   run: npx https://aka.ms/EnableSecureFeed
-
-      # TODO: Gcovr doesn't know how to load XML.
-
-      # - name: Install Gcovr
-      #   run: pip install gcovr
-
-      # - name: Merge cobertura-coverage-*.xml
-      #   run: |
-      #     gcovr \
-      #       -a cobertura-coverage-1.xml \
-      #       -a cobertura-coverage-2.xml \
-      #       -a cobertura-coverage-3.xml \
-      #       -a cobertura-coverage-4.xml \
-      #       -a cobertura-coverage-5.xml \
-      #       -a cobertura-coverage-6.xml \
-      #       -a cobertura-coverage-7.xml \
-      #       -a cobertura-coverage-8.xml \
-      #       -a cobertura-coverage-9.xml \
-      #       -a cobertura-coverage-10.xml \
-      #       -a cobertura-coverage-11.xml \
-      #       -a cobertura-coverage-12.xml \
-      #       -a cobertura-coverage-13.xml \
-      #       -a cobertura-coverage-14.xml \
-      #       -a cobertura-coverage-15.xml \
-      #       -a cobertura-coverage-16.xml \
-      #       -a cobertura-coverage-17.xml \
-      #       -a cobertura-coverage-18.xml \
-      #       -a cobertura-coverage-19.xml \
-      #       -a cobertura-coverage-20.xml \
-      #       -a cobertura-coverage-unit.xml \
-      #       --xml cobertura-coverage.xml
-
-      # - if: always()
-      #   name: Print Cobertura line coverage
-      #   run: gcovr cobertura-coverage.xml --txt
-
-      # - if: always()
-      #   name: Print Cobertura branch coverage
-      #   run: gcovr cobertura-coverage.xml --branches --txt
-
-      # - name: Report coverage to pull request
-      #   uses: zgosalvez/github-actions-report-lcov@77c3fa1e20d891bc83ec63b6b0e5ecf5ee1ced1e # 4.1.1
-      #   with:
-      #     coverage-files: lcov-*.info
-      #     github-token: ${{ secrets.GITHUB_TOKEN }}
-      #     update-comment: true
 
       - name: Install lcov
         run: sudo apt install -y lcov
@@ -361,39 +311,3 @@ jobs:
           echo \`\`\` >> $GITHUB_STEP_SUMMARY
           lcov --rc lcov_branch_coverage=1 --summary lcov.info | tee --append $GITHUB_STEP_SUMMARY
           echo \`\`\` >> $GITHUB_STEP_SUMMARY
-
-      - if: always()
-        name: Upload merged test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: merged-test-result
-          path: |
-            cobertura-coverage.xml
-            lcov.info
-
-        # run: reportgenerator "-reports:cobertura-coverage-*.xml" "-targetdir:./merged/" -reporttypes:Cobertura
-
-        # run:
-        #   npx cobertura-coverage \
-        #     -o cobertura-coverage.xml \
-        #     unit=cobertura-coverage-unit.xml \
-        #     shard1=cobertura-coverage-1.xml \
-        #     shard2=cobertura-coverage-2.xml \
-        #     shard3=cobertura-coverage-3.xml \
-        #     shard4=cobertura-coverage-4.xml \
-        #     shard5=cobertura-coverage-5.xml \
-        #     shard6=cobertura-coverage-6.xml \
-        #     shard7=cobertura-coverage-7.xml \
-        #     shard8=cobertura-coverage-8.xml \
-        #     shard9=cobertura-coverage-9.xml \
-        #     shard10=cobertura-coverage-10.xml \
-        #     shard11=cobertura-coverage-11.xml \
-        #     shard12=cobertura-coverage-12.xml \
-        #     shard13=cobertura-coverage-13.xml \
-        #     shard14=cobertura-coverage-14.xml \
-        #     shard15=cobertura-coverage-15.xml \
-        #     shard16=cobertura-coverage-16.xml \
-        #     shard17=cobertura-coverage-17.xml \
-        #     shard18=cobertura-coverage-18.xml \
-        #     shard19=cobertura-coverage-19.xml \
-        #     shard20=cobertura-coverage-20.xml
