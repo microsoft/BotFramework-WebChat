@@ -47,9 +47,6 @@ jobs:
 
       - run: npm run build --if-present
 
-      # - name: Pack docker.zip
-      #   run: zip -r docker.zip . -x .git
-
       - name: Pack ./__tests__
         run: |
           zip docker.zip -r@ <<EOF
@@ -101,8 +98,8 @@ jobs:
 
       - run: npm run build --if-present
 
-      - name: Run jest --testPathPatterns packages/
-        run: node_modules/.bin/jest --testPathPatterns packages/
+      - name: Run jest --testPathPattern packages/
+        run: node_modules/.bin/jest --testPathPattern packages/
 
   html-test:
     name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
