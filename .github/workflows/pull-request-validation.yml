@@ -77,9 +77,32 @@ jobs:
           path: docker.zip
           retention-days: 1
 
-  # Add run unit tests
+  unit-test:
+    runs-on: ubuntu-latest
 
-  test:
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+
+      - run: npm clean-install
+
+      - run: npm run bootstrap
+
+      - run: npm run build --if-present
+
+      - run: node_modules/.bin/jest --testPathPatterns packages/
+
+  html-test:
+    name: Run HTML tests (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
     needs:
       - build
     runs-on: ubuntu-latest
