@@ -48,14 +48,13 @@ jobs:
 
       - run: npm run build --if-present
 
-      - name: Pack ./__tests__
+      - name: Pack Docker artifact
         run: |
           zip docker.zip -r@ <<EOF
           ./__tests__/
           ./babel-jest-config.js
           ./babel-passthru-transformer.js
           ./babel.config.json
-          ./chrome.dockerfile
           ./docker-compose-wsl2.yml
           ./jest.config.js
           ./package.json

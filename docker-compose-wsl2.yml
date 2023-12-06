@@ -4,9 +4,7 @@ services:
   # On Windows, run with COMPOSE_CONVERT_WINDOWS_PATHS=1
 
   chrome:
-    build:
-      context: ./
-      dockerfile: chrome.dockerfile
+    image: selenium/node-chrome:110.0
     depends_on:
       - selenium-hub
       - webchat
@@ -18,6 +16,8 @@ services:
       SE_OPTS: '--log-level WARNING'
       SE_NODE_SESSION_TIMEOUT: '300'
     shm_size: '2.5gb'
+    volumes:
+      - ./__tests__/html/assets/uploads/:/home/seluser/Downloads
 
   selenium-hub:
     image: selenium/hub:4.8.1
