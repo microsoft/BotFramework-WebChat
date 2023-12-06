@@ -191,6 +191,25 @@ jobs:
       - name: Run docker-compose up
         run: docker-compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
 
+      - name: Ping Web Driver hub
+        run: |
+          while true
+          do
+            curl http://localhost:4444/wd/hub/status > /tmp/wd-status.json
+
+            if [[ $? -eq 0 ]]
+            then
+              cat /tmp/wd-status.json | jq -r 'if (.value.ready != true) then halt_error(1) else empty end'
+
+              if [[ $? -eq 0 ]]
+              then
+                break
+              fi
+            fi
+
+            sleep 1
+          done
+
       - name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
         run: |
           ./node_modules/.bin/jest \
