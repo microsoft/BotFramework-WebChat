@@ -275,42 +275,44 @@ jobs:
       #   name: Enable secure feed
       #   run: npx https://aka.ms/EnableSecureFeed
 
-      - name: Install Gcovr
-        run: pip install gcovr
+      # TODO: Gcovr doesn't know how to load XML.
 
-      - name: Merge cobertura-coverage-*.xml
-        run: |
-          gcovr \
-            -a cobertura-coverage-1.xml \
-            -a cobertura-coverage-2.xml \
-            -a cobertura-coverage-3.xml \
-            -a cobertura-coverage-4.xml \
-            -a cobertura-coverage-5.xml \
-            -a cobertura-coverage-6.xml \
-            -a cobertura-coverage-7.xml \
-            -a cobertura-coverage-8.xml \
-            -a cobertura-coverage-9.xml \
-            -a cobertura-coverage-10.xml \
-            -a cobertura-coverage-11.xml \
-            -a cobertura-coverage-12.xml \
-            -a cobertura-coverage-13.xml \
-            -a cobertura-coverage-14.xml \
-            -a cobertura-coverage-15.xml \
-            -a cobertura-coverage-16.xml \
-            -a cobertura-coverage-17.xml \
-            -a cobertura-coverage-18.xml \
-            -a cobertura-coverage-19.xml \
-            -a cobertura-coverage-20.xml \
-            -a cobertura-coverage-unit.xml \
-            --xml cobertura-coverage.xml
+      # - name: Install Gcovr
+      #   run: pip install gcovr
 
-      - if: always()
-        name: Print Cobertura line coverage
-        run: gcovr cobertura-coverage.xml --txt
+      # - name: Merge cobertura-coverage-*.xml
+      #   run: |
+      #     gcovr \
+      #       -a cobertura-coverage-1.xml \
+      #       -a cobertura-coverage-2.xml \
+      #       -a cobertura-coverage-3.xml \
+      #       -a cobertura-coverage-4.xml \
+      #       -a cobertura-coverage-5.xml \
+      #       -a cobertura-coverage-6.xml \
+      #       -a cobertura-coverage-7.xml \
+      #       -a cobertura-coverage-8.xml \
+      #       -a cobertura-coverage-9.xml \
+      #       -a cobertura-coverage-10.xml \
+      #       -a cobertura-coverage-11.xml \
+      #       -a cobertura-coverage-12.xml \
+      #       -a cobertura-coverage-13.xml \
+      #       -a cobertura-coverage-14.xml \
+      #       -a cobertura-coverage-15.xml \
+      #       -a cobertura-coverage-16.xml \
+      #       -a cobertura-coverage-17.xml \
+      #       -a cobertura-coverage-18.xml \
+      #       -a cobertura-coverage-19.xml \
+      #       -a cobertura-coverage-20.xml \
+      #       -a cobertura-coverage-unit.xml \
+      #       --xml cobertura-coverage.xml
 
-      - if: always()
-        name: Print Cobertura branch coverage
-        run: gcovr cobertura-coverage.xml --branches --txt
+      # - if: always()
+      #   name: Print Cobertura line coverage
+      #   run: gcovr cobertura-coverage.xml --txt
+
+      # - if: always()
+      #   name: Print Cobertura branch coverage
+      #   run: gcovr cobertura-coverage.xml --branches --txt
 
       - name: Merge lcov-*.info
         run: |
