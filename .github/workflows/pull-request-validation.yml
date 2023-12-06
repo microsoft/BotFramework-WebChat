@@ -133,6 +133,7 @@ jobs:
         run: |
           ls -laR .
 
+          mv cobertura-coverage.xml cobertura-coverage-unit.xml
           mv jest.json jest-unit.json
           mv nunit3.xml nunit3-unit.xml
           mv result.trx result-unit.trx
@@ -144,6 +145,7 @@ jobs:
         with:
           name: test-result
           path: |
+            ./coverage/cobertura-coverage-*.xml
             ./coverage/jest-*.json
             ./coverage/nunit3-*.xml
             ./coverage/result-*.trx
@@ -202,6 +204,7 @@ jobs:
         run: |
           ls -laR .
 
+          mv cobertura-coverage.xml cobertura-coverage-${{ matrix.shard-index }}.xml
           mv jest.json jest-${{ matrix.shard-index }}.json
           mv nunit3.xml nunit3-${{ matrix.shard-index }}.xml
           mv result.trx result-${{ matrix.shard-index }}.trx
@@ -213,6 +216,7 @@ jobs:
         with:
           name: test-result
           path: |
+            ./coverage/cobertura-coverage-*.xml
             ./coverage/jest-*.json
             ./coverage/nunit3-*.xml
             ./coverage/result-*.trx
