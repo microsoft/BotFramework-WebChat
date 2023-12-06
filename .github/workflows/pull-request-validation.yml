@@ -357,7 +357,10 @@ jobs:
 
       - if: always()
         name: Print coverage summary
-        run: lcov --rc lcov_branch_coverage=1 --summary lcov.info | tee $GITHUB_STEP_SUMMARY
+        run: |
+          echo \`\`\` >> $GITHUB_STEP_SUMMARY
+          lcov --rc lcov_branch_coverage=1 --summary lcov.info | tee --append $GITHUB_STEP_SUMMARY
+          echo \`\`\` >> $GITHUB_STEP_SUMMARY
 
       - if: always()
         name: Upload merged test results
