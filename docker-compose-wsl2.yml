@@ -17,7 +17,7 @@ services:
       SE_NODE_SESSION_TIMEOUT: '300'
     shm_size: '2.5gb'
     volumes:
-      - ./__tests__/html/assets/uploads/:/home/seluser/Downloads
+      - ./__tests__/setup/local/:/home/seluser/Downloads
 
   selenium-hub:
     image: selenium/hub:4.8.1
