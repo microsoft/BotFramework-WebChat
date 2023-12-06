@@ -143,7 +143,7 @@ jobs:
         name: Upload test results
         uses: actions/upload-artifact@v3
         with:
-          name: test-result
+          name: sharded-test-result
           path: |
             ./coverage/cobertura-coverage-*.xml
             ./coverage/jest-*.json
@@ -214,7 +214,7 @@ jobs:
         name: Upload test results
         uses: actions/upload-artifact@v3
         with:
-          name: test-result
+          name: sharded-test-result
           path: |
             ./coverage/cobertura-coverage-*.xml
             ./coverage/jest-*.json
@@ -233,6 +233,80 @@ jobs:
       - name: Download test results
         uses: actions/download-artifact@v3
         with:
-          name: test-result
+          name: sharded-test-result
 
       - run: ls -laR
+
+      # - name: Use Node.js ${{ env.node-version }}
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: ${{ env.node-version }}
+
+      # - if: "env.skip-secure-feed != 'true'"
+      #   name: Enable secure feed
+      #   run: npx https://aka.ms/EnableSecureFeed
+
+      - name: Install Gcovr
+        run: pip install gcovr
+
+      - name: Merge cobertura-coverage-*.xml
+        run: |
+          gcovr \
+          -a cobertura-coverage-1.json \
+          -a cobertura-coverage-2.json \
+          -a cobertura-coverage-3.json \
+          -a cobertura-coverage-4.json \
+          -a cobertura-coverage-5.json \
+          -a cobertura-coverage-6.json \
+          -a cobertura-coverage-7.json \
+          -a cobertura-coverage-8.json \
+          -a cobertura-coverage-9.json \
+          -a cobertura-coverage-10.json \
+          -a cobertura-coverage-11.json \
+          -a cobertura-coverage-12.json \
+          -a cobertura-coverage-13.json \
+          -a cobertura-coverage-14.json \
+          -a cobertura-coverage-15.json \
+          -a cobertura-coverage-16.json \
+          -a cobertura-coverage-17.json \
+          -a cobertura-coverage-18.json \
+          -a cobertura-coverage-19.json \
+          -a cobertura-coverage-20.json \
+          --xml cobertura-coverage.xml
+
+      - name: Upload merged test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: merged-test-result
+          path: |
+            cobertura-coverage.xml
+
+      - name: Display coverage
+        run: gcovr cobertura-coverage.xml --txt
+
+        # run: reportgenerator "-reports:cobertura-coverage-*.xml" "-targetdir:./merged/" -reporttypes:Cobertura
+
+        # run:
+        #   npx cobertura-coverage \
+        #     -o cobertura-coverage.xml \
+        #     unit=cobertura-coverage-unit.xml \
+        #     shard1=cobertura-coverage-1.xml \
+        #     shard2=cobertura-coverage-2.xml \
+        #     shard3=cobertura-coverage-3.xml \
+        #     shard4=cobertura-coverage-4.xml \
+        #     shard5=cobertura-coverage-5.xml \
+        #     shard6=cobertura-coverage-6.xml \
+        #     shard7=cobertura-coverage-7.xml \
+        #     shard8=cobertura-coverage-8.xml \
+        #     shard9=cobertura-coverage-9.xml \
+        #     shard10=cobertura-coverage-10.xml \
+        #     shard11=cobertura-coverage-11.xml \
+        #     shard12=cobertura-coverage-12.xml \
+        #     shard13=cobertura-coverage-13.xml \
+        #     shard14=cobertura-coverage-14.xml \
+        #     shard15=cobertura-coverage-15.xml \
+        #     shard16=cobertura-coverage-16.xml \
+        #     shard17=cobertura-coverage-17.xml \
+        #     shard18=cobertura-coverage-18.xml \
+        #     shard19=cobertura-coverage-19.xml \
+        #     shard20=cobertura-coverage-20.xml
