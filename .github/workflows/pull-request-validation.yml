@@ -60,6 +60,10 @@ jobs:
           ./jest.config.js
           ./package.json
           ./package-lock.json
+          ./packages/core/package.json
+          ./packages/core/src/
+          ./packages/bundle/package.json
+          ./packages/bundle/src/
           ./packages/bundle/dist/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
