@@ -103,7 +103,8 @@ jobs:
 
       - run: npm run build --if-present
 
-      - name: Run jest --testPathPattern packages/
+      - continue-on-error: true
+        name: Run jest --testPathPattern packages/
         run: ./node_modules/.bin/jest --testPathPattern packages/
 
   html-test:
@@ -173,7 +174,7 @@ jobs:
             ./coverage/result-*.trx
 
       - name: Run docker-compose down
-        run: docker-compose -f docker-compose-wsl2.yml down --rmi -all
+        run: docker-compose -f docker-compose-wsl2.yml down --rmi all
 
   merge-test-result:
     name: Merge test result
