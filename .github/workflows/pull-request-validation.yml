@@ -11,7 +11,7 @@ on:
 
   push:
     branches:
-      - feat-github-workflow
+      - feat-github-workflow # Keeping the branch here so we can try out something later quickly
 
   workflow_dispatch: {}
 
