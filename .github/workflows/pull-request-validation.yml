@@ -33,15 +33,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
           cache: npm
-
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
 
       - run: npm clean-install
 
@@ -84,15 +84,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
           cache: npm
-
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
 
       - run: npm clean-install
 
@@ -109,15 +109,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
           cache: npm
-
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
 
       - run: npm clean-install
 
@@ -170,14 +170,14 @@ jobs:
         shard-count: [20]
 
     steps:
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
-
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
 
       - name: Download Docker artifact
         uses: actions/download-artifact@v3
