@@ -7,14 +7,15 @@ import { isThingOf, type Thing } from './Thing';
  *
  * @see https://schema.org/Project
  */
-export type Project = Thing<'Project'> & {
-  /** The name of the item. */
-  name: string;
+export type Project = Thing<'Project'> &
+  Readonly<{
+    /** The name of the item. */
+    name: string;
 
-  /** URL of the item. */
-  url: string;
-};
+    /** URL of the item. */
+    url: string;
+  }>;
 
-export function isProject(thing: Thing): thing is Project {
+export function isProject(thing: unknown): thing is Project {
   return isThingOf(thing, 'Project');
 }

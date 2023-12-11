@@ -1,6 +1,7 @@
 import { AttachmentForScreenReaderMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
+import { forScreenReader as customerSatisfactoryForScreenReader } from '../../Attachment/CustomerSatisfactory/customerSatisfactoryMiddleware';
 import AudioAttachment from './AudioAttachment';
 import FileAttachment from './FileAttachment';
 import ImageAttachment from './ImageAttachment';
@@ -9,6 +10,7 @@ import VideoAttachment from './VideoAttachment';
 
 export default function createCoreMiddleware(): AttachmentForScreenReaderMiddleware[] {
   return [
+    customerSatisfactoryForScreenReader,
     () =>
       next =>
       (...args) => {

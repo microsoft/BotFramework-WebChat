@@ -3,7 +3,7 @@ import { createContext } from 'react';
 import type { MutableRefObject } from 'react';
 
 type RovingTabIndexContextType = {
-  itemEffector: <T extends HTMLElement>(ref: MutableRefObject<T>, index: number) => () => void;
+  itemEffector: <T extends HTMLElement | null>(ref: MutableRefObject<T>, index: number) => () => void;
 };
 
 const RovingTabIndexContext = createContext<RovingTabIndexContextType>({

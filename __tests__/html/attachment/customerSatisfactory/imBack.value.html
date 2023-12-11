@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          from: {
+            role: 'bot'
+          },
+          type: 'message',
+          attachments: [
+            {
+              content: {
+                '@context': 'https://schema.org',
+                '@type': 'ReviewAction',
+                actionStatus: 'PotentialActionStatus',
+                description: 'Great! Please rate your experience.',
+                resultReview: {
+                  '@type': 'Review',
+                  reviewRating: {
+                    '@type': 'Rating',
+                    'ratingValue-input': {
+                      '@type': 'PropertyValueSpecification',
+                      valueName: 'rate'
+                    }
+                  }
+                },
+                target: {
+                  '@type': 'EntryPoint',
+                  actionPlatform: 'https://directline.botframework.com',
+                  urlTemplate: 'ms-directline-imback:?value={rate}'
+                }
+              },
+              contentType: 'application/ld+json'
+            }
+          ]
+        });
+
+        const [firstActivity] = pageElements.activities();
+        const buttons = firstActivity.querySelectorAll('[role="radio"]');
+        const submitButton = firstActivity.querySelector('[type="submit"]');
+
+        pageElements.sendBoxTextBox().focus();
+
+        expect(submitButton).toHaveProperty('ariaDisabled', 'true');
+
+        await host.click(buttons[4]);
+
+        const { activity, resolveAll } = await directLine.actPostActivity(() => host.click(submitButton));
+
+        expect(activity).toHaveProperty('text', '5');
+        expect(activity).toHaveProperty('type', 'message');
+        await resolveAll();
+      });
+    </script>
+  </body>
+</html>

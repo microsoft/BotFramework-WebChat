@@ -7,11 +7,12 @@ import { isThingOf, type Thing } from './Thing';
  *
  * @see https://schema.org/VoteAction
  */
-export type VoteAction = Thing<'VoteAction'> & {
-  /** A sub property of object. The options subject to this action. Supersedes [option](https://schema.org/option). */
-  actionOption?: string;
-};
+export type VoteAction = Thing<'VoteAction'> &
+  Readonly<{
+    /** A sub property of object. The options subject to this action. Supersedes [option](https://schema.org/option). */
+    actionOption?: string;
+  }>;
 
-export function isVoteAction(thing: Thing): thing is VoteAction {
+export function isVoteAction(thing: unknown): thing is VoteAction {
   return isThingOf(thing, 'VoteAction');
 }

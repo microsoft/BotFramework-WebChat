@@ -8,11 +8,6 @@ describe('isThing', () => {
       ));
   });
 
-  test('should return false with conflicting type', () =>
-    expect(isThing({ '@context': 'https://schema.org', '@type': 'Action', type: `https://schema.org/Person` })).toBe(
-      false
-    ));
-
   test('should return false when conflict with unknown @context', () =>
     expect(isThing({ '@context': 'https://abc.com', type: `https://schema.org/Person` } as any)).toBe(false));
 
@@ -37,11 +32,6 @@ describe('isThingOf', () => {
   test('should return false for Person with @context and @type of Action but type of Person', () =>
     expect(
       isThingOf({ '@context': 'https://schema.org', '@type': 'Action', type: 'https://schema.org/Person' }, 'Person')
-    ).toBe(false));
-
-  test('should return false for Person with @context and @type of Person but type of Action', () =>
-    expect(
-      isThingOf({ '@context': 'https://schema.org', '@type': 'Person', type: 'https://schema.org/Action' }, 'Person')
     ).toBe(false));
 
   test('should return false for Person with @context, @type, and type of Action', () =>

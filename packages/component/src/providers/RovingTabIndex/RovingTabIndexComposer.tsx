@@ -3,19 +3,24 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 
+import isNumber from './private/isNumber';
 import RovingTabIndexContext from './private/Context';
 
-import type { FC, MutableRefObject, PropsWithChildren } from 'react';
+import type { MutableRefObject, PropsWithChildren } from 'react';
 import type { RovingTabIndexContextType } from './private/Context';
 
-type ItemRef = MutableRefObject<HTMLElement | undefined>;
+type ItemRef = MutableRefObject<HTMLElement | null>;
 
 type RovingTabIndexContextProps = PropsWithChildren<{
   onEscapeKey?: () => void;
   orientation?: 'horizontal' | 'vertical';
 }>;
 
-const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEscapeKey, orientation }) => {
+function isDisabled(element: HTMLElement) {
+  return element.ariaDisabled === 'true' || element.hasAttribute('disabled');
+}
+
+const RovingTabIndexComposer = ({ children, onEscapeKey, orientation }: RovingTabIndexContextProps) => {
   const activeItemIndexRef = useRef(0);
   const itemRefsRef = useRef<ItemRef[]>([]);
 
@@ -23,7 +28,7 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEs
     const { current: activeItemIndex } = activeItemIndexRef;
 
     itemRefsRef.current.forEach(({ current }, index) => {
-      current?.setAttribute('tabindex', activeItemIndex === index ? '0' : '-1');
+      current?.setAttribute('tabindex', activeItemIndex === index && !isDisabled(current) ? '0' : '-1');
     });
   }, [activeItemIndexRef]);
 
@@ -33,7 +38,7 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEs
       let nextActiveItemIndex;
 
       if (typeof valueOrFunction === 'number') {
-        nextActiveItemIndex = valueOrFunction;
+        nextActiveItemIndex = valueOrFunction === Infinity ? itemRefsRef.current.length - 1 : valueOrFunction;
       } else {
         nextActiveItemIndex = valueOrFunction(activeItemIndexRef.current);
       }
@@ -55,7 +60,7 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEs
   );
 
   const handleFocus = useCallback(
-    event => {
+    (event: Event) => {
       const { target } = event;
 
       const index = itemRefsRef.current.findIndex(({ current }) => current === target);
@@ -86,10 +91,10 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEs
             const nextIndex = itemIndices.indexOf(value) + 1;
 
             if (nextIndex >= itemIndices.length) {
-              return itemIndices[0];
+              return itemIndices[0] as number;
             }
 
-            return itemIndices[+nextIndex];
+            return itemIndices[+nextIndex] as number;
           });
 
           break;
@@ -107,12 +112,9 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEs
             // Thus, the next item may not be immediately next to the current one.
             const itemIndices = itemRefsRef.current.map((_, index) => index);
             const nextIndex = itemIndices.indexOf(value) - 1;
+            const nextActiveItemIndex = nextIndex < 0 ? itemIndices[itemIndices.length - 1] : itemIndices[+nextIndex];
 
-            if (nextIndex < 0) {
-              return itemIndices[itemIndices.length - 1];
-            }
-
-            return itemIndices[+nextIndex];
+            return isNumber(nextActiveItemIndex) ? nextActiveItemIndex : undefined;
           });
 
           break;
@@ -144,20 +146,20 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEs
     [setActiveItemIndex, onEscapeKey, orientation]
   );
 
-  const itemEffector = useCallback(
+  const itemEffector = useCallback<RovingTabIndexContextType['itemEffector']>(
     (ref, index) => {
       const { current } = ref;
 
       itemRefsRef.current[+index] = ref;
 
-      current.addEventListener('focus', handleFocus);
-      current.addEventListener('keydown', handleKeyDown);
+      current?.addEventListener('focus', handleFocus);
+      current?.addEventListener('keydown', handleKeyDown);
 
-      current.setAttribute('tabindex', activeItemIndexRef.current === index ? '0' : '-1');
+      current?.setAttribute('tabindex', activeItemIndexRef.current === index && !isDisabled(current) ? '0' : '-1');
 
       return () => {
-        current.removeEventListener('focus', handleFocus);
-        current.removeEventListener('keydown', handleKeyDown);
+        current?.removeEventListener('focus', handleFocus);
+        current?.removeEventListener('keydown', handleKeyDown);
 
         delete itemRefsRef.current[+index];
       };
@@ -179,11 +181,6 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEs
   });
 
   return <RovingTabIndexContext.Provider value={contextValue}>{children}</RovingTabIndexContext.Provider>;
-};
-
-RovingTabIndexComposer.defaultProps = {
-  onEscapeKey: undefined,
-  orientation: 'horizontal'
 };
 
 RovingTabIndexComposer.propTypes = {

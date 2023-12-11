@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import React, { memo, type ReactNode, useMemo } from 'react';
 
 import { isReplyAction, type ReplyAction } from '../types/external/OrgSchema/ReplyAction';
-import { isThing, type Thing } from '../types/external/OrgSchema/Thing';
+import { isThingAsEntity, type Thing } from '../types/external/OrgSchema/Thing';
 import { isVoteAction, type VoteAction } from '../types/external/OrgSchema/VoteAction';
 import { type TypeOfArray } from '../types/internal/TypeOfArray';
 import Feedback from './private/Feedback/Feedback';
@@ -32,7 +32,7 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
   const entities = activity.entities as Array<Thing | WebChatEntity> | undefined;
 
   const replyAction = entities?.find<ReplyAction>(
-    (entity): entity is ReplyAction => isThing(entity) && isReplyAction(entity)
+    (entity): entity is ReplyAction => isThingAsEntity(entity) && isReplyAction(entity)
   );
 
   const { timestamp } = activity;
@@ -43,7 +43,7 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
         new Set(
           (entities || []).filter<DownvoteAction | UpvoteAction>(
             (entity): entity is DownvoteAction | UpvoteAction =>
-              isThing(entity) && isVoteAction(entity) && (isDownvoteAction(entity) || isUpvoteAction(entity))
+              isThingAsEntity(entity) && isVoteAction(entity) && (isDownvoteAction(entity) || isUpvoteAction(entity))
           )
         )
       ),

@@ -12,6 +12,7 @@ import createCarouselFilmStripAttachment from './StyleSet/CarouselFilmStripAttac
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createCitationModalDialogStyle from './StyleSet/CitationModalDialog';
 import createConnectivityNotification from './StyleSet/ConnectivityNotification';
+import createCustomerSatisfactoryAttachment from './StyleSet/CustomerSatisfactoryAttachment';
 import createCSSCustomPropertiesStyle from './StyleSet/CSSCustomProperties';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
@@ -102,6 +103,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     // - Use CSS var instead of strictStyleOptions
     citationModalDialog: createCitationModalDialogStyle(),
     cssCustomProperties: createCSSCustomPropertiesStyle(strictStyleOptions),
+    customerSatisfactoryAttachment: createCustomerSatisfactoryAttachment(),
     linkDefinitions: createLinkDefinitionsStyle(),
     modalDialog: createModalDialogStyle(),
     renderMarkdown: createRenderMarkdownStyle(),

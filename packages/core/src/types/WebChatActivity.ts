@@ -109,12 +109,10 @@ type ClientCapabilitiesEntity = {
   type: 'ClientCapabilities';
 };
 
-type Entity =
-  | ClientCapabilitiesEntity
-  | OrgSchemaThing
-  | AnyAnd<{ type: Exclude<string, 'ClientCapabilities' | `https://schema.org/${string}`> }>;
+type Entity = ClientCapabilitiesEntity | OrgSchemaThing | { type: string };
 
 // Channel account - https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#channel-account
+
 type ChannelAcount<Role extends SupportedRole> = {
   id: string;
   name?: string;

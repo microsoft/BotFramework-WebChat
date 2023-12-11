@@ -9,17 +9,18 @@ import { isThingOf, type Thing } from './Thing';
  *
  * @see https://schema.org/Claim.
  */
-export type Claim = Thing<'Claim'> & {
-  /** The textual content of this CreativeWork. */
-  text?: string;
+export type Claim = Thing<'Claim'> &
+  Readonly<{
+    /** The textual content of this CreativeWork. */
+    text?: string;
 
-  /** The name of the item. */
-  name?: string;
+    /** The name of the item. */
+    name?: string;
 
-  /** URL of the item. */
-  url?: string;
-};
+    /** URL of the item. */
+    url?: string;
+  }>;
 
-export function isClaim(thing: Thing): thing is Claim {
+export function isClaim(thing: unknown): thing is Claim {
   return isThingOf(thing, 'Claim');
 }
