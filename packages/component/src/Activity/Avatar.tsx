@@ -3,11 +3,11 @@ import React, { type ReactNode } from 'react';
 
 import { DefaultAvatar } from '../Middleware/Avatar/createCoreMiddleware';
 
-type AvatarProps = {
+type AvatarProps = Readonly<{
   'aria-hidden'?: boolean;
   className?: string;
   fromUser?: boolean;
-};
+}>;
 
 /** @deprecated Please use `useRenderAvatar` hook instead. */
 const Avatar = ({ 'aria-hidden': ariaHidden, className, fromUser }: AvatarProps): ReactNode => {

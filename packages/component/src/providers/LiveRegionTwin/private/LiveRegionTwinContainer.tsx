@@ -4,14 +4,14 @@ import React, { type ReactNode, Fragment } from 'react';
 import useMarkAllAsRenderedEffect from './useMarkAllAsRenderedEffect';
 import useStaticElementEntries from './useStaticElementEntries';
 
-type LiveRegionTwinContainerProps = {
+type LiveRegionTwinContainerProps = Readonly<{
   'aria-label'?: string;
   'aria-live': 'assertive' | 'polite';
   'aria-roledescription'?: string;
   className?: string;
   role?: string;
   textElementClassName?: string;
-};
+}>;
 
 // This container is marked as private because we assume there is only one instance under the <LiveRegionTwinContext>.
 const LiveRegionTwinContainer = ({

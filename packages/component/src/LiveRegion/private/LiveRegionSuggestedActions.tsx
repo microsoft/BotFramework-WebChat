@@ -5,9 +5,9 @@ import computeSuggestedActionText from '../../Utils/computeSuggestedActionText';
 
 import { type DirectLineSuggestedAction } from 'botframework-webchat-core';
 
-type LiveRegionSuggestedActionsProps = {
-  suggestedActions: DirectLineSuggestedAction;
-};
+type LiveRegionSuggestedActionsProps = Readonly<{
+  suggestedActions: Readonly<DirectLineSuggestedAction>;
+}>;
 
 const LiveRegionSuggestedActions = ({ suggestedActions }: LiveRegionSuggestedActionsProps): ReactNode =>
   suggestedActions.actions?.length && (

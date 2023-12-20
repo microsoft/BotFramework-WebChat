@@ -28,9 +28,9 @@ const ROOT_STYLE = {
   }
 };
 
-type LiveRegionActivityProps = {
+type LiveRegionActivityProps = Readonly<{
   activity: WebChatActivity;
-};
+}>;
 
 const LiveRegionActivity = ({ activity }: LiveRegionActivityProps): ReactNode => {
   const [{ initials: botInitials }] = useAvatarForBot();

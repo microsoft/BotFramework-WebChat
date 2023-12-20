@@ -33,12 +33,12 @@ const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML
 
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
-type AdaptiveCardRendererProps = {
+type AdaptiveCardRendererProps = Readonly<{
   actionPerformedClassName?: string;
   adaptiveCard: AdaptiveCard;
   disabled?: boolean;
   tapAction?: DirectLineCardAction;
-};
+}>;
 
 const AdaptiveCardRenderer = ({
   actionPerformedClassName,

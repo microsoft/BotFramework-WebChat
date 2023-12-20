@@ -31,9 +31,9 @@ const connectDictationInterims = (...selectors) =>
     ...selectors
   );
 
-type DictationInterimsProps = {
+type DictationInterimsProps = Readonly<{
   className?: string;
-};
+}>;
 
 const DictationInterims = ({ className }: DictationInterimsProps): ReactNode => {
   const [dictateInterims] = useDictateInterims();

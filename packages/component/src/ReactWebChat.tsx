@@ -15,10 +15,12 @@ import Composer, { ComposerProps } from './Composer';
 // Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
 const ARIA_LANDMARK_ROLES = ['complementary', 'contentinfo', 'form', 'main', 'region'];
 
-type ReactWebChatProps = Omit<ComposerProps, 'children'> & {
-  className?: string;
-  role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
-};
+type ReactWebChatProps = Readonly<
+  Omit<ComposerProps, 'children'> & {
+    className?: string;
+    role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
+  }
+>;
 
 const ReactWebChat = ({ className, role, ...composerProps }: ReactWebChatProps): ReactNode => (
   <Composer {...composerProps}>

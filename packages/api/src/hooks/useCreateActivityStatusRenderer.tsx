@@ -13,12 +13,12 @@ import { type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
 import { type SendStatus } from '../types/internal/SendStatus';
 import { type WebChatActivity } from 'botframework-webchat-core';
 
-type ActivityStatusContainerCoreProps = {
+type ActivityStatusContainerCoreProps = Readonly<{
   activity: WebChatActivity;
   hideTimestamp: boolean;
   nextVisibleActivity: WebChatActivity;
   sendStatus: SendStatus;
-};
+}>;
 
 const ActivityStatusContainerCoreInner = ({
   activity,
@@ -52,11 +52,11 @@ ActivityStatusContainerCoreInner.propTypes = {
 
 const ActivityStatusContainerCore = memo(ActivityStatusContainerCoreInner);
 
-type ActivityStatusContainerProps = {
+type ActivityStatusContainerProps = Readonly<{
   activity: WebChatActivity;
   hideTimestamp: boolean;
   nextVisibleActivity: WebChatActivity;
-};
+}>;
 
 const ActivityStatusContainerInner = ({
   activity,

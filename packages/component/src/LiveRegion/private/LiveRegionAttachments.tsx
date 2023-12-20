@@ -14,9 +14,9 @@ const ACTIVITY_NUM_ATTACHMENTS_ALT_IDS = {
   two: 'ACTIVITY_NUM_ATTACHMENTS_TWO_ALT'
 };
 
-type LiveRegionAttachmentsProps = {
-  activity: WebChatActivity & { type: 'message' };
-};
+type LiveRegionAttachmentsProps = Readonly<{
+  activity: Readonly<WebChatActivity & { type: 'message' }>;
+}>;
 
 // When "renderAttachments" is false, we will not render the content of attachments.
 // That means, it will only render "2 attachments", instead of "image attachment".

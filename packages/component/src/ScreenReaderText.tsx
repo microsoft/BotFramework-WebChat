@@ -21,11 +21,11 @@ const ROOT_STYLE = {
   width: 1
 };
 
-type ScreenReaderTextProps = {
+type ScreenReaderTextProps = Readonly<{
   'aria-hidden'?: boolean;
   id?: string;
   text: string;
-};
+}>;
 
 const ScreenReaderText = forwardRef<HTMLDivElement, ScreenReaderTextProps>(
   ({ 'aria-hidden': ariaHidden, id, text }, ref): ReactNode => {

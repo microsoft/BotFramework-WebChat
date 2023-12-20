@@ -38,7 +38,7 @@ const connectSuggestedAction = (...selectors) =>
     ...selectors
   );
 
-type SuggestedActionProps = {
+type SuggestedActionProps = Readonly<{
   buttonText: string;
   className?: string;
   displayText?: string;
@@ -59,7 +59,7 @@ type SuggestedActionProps = {
     | 'showImage'
     | 'signin';
   value?: any;
-};
+}>;
 
 const SuggestedAction = ({
   buttonText,

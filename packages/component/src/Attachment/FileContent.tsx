@@ -76,12 +76,12 @@ FileContentBadge.propTypes = {
   size: PropTypes.number
 };
 
-type FileContentProps = {
+type FileContentProps = Readonly<{
   className?: string;
   fileName: string;
   href?: string;
   size?: number;
-};
+}>;
 
 const FileContent = ({ className, href, fileName, size }: FileContentProps): ReactNode => {
   const [{ fileContent: fileContentStyleSet }] = useStyleSet();
