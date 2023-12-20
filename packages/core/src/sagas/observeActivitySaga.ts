@@ -4,9 +4,9 @@ import updateIn from 'simple-update-in';
 import observeEach from './effects/observeEach';
 import queueIncomingActivity from '../actions/queueIncomingActivity';
 import whileConnected from './effects/whileConnected';
-import type { DirectLineActivity } from '../types/external/DirectLineActivity';
-import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
-import type { WebChatActivity } from '../types/WebChatActivity';
+import { type DirectLineActivity } from '../types/external/DirectLineActivity';
+import { type DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
+import { type WebChatActivity } from '../types/WebChatActivity';
 
 const PASSTHRU_FN = (value: unknown) => value;
 

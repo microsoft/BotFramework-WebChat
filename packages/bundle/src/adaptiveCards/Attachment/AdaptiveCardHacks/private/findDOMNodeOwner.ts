@@ -1,4 +1,4 @@
-import type { AdaptiveCard, CardObject, ShowCardAction } from 'adaptivecards';
+import { type AdaptiveCard, type CardObject, type ShowCardAction } from 'adaptivecards';
 
 // TODO: [P2] Remove this when Adaptive Card fixed their bug #7606.
 //            https://github.com/microsoft/AdaptiveCards/issues/7606

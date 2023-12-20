@@ -16,7 +16,7 @@ import sendTypingIndicator from './reducers/sendTypingIndicator';
 import shouldSpeakIncomingActivity from './reducers/shouldSpeakIncomingActivity';
 import suggestedActions from './reducers/suggestedActions';
 
-import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import { type GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 
 export default function createReducer(ponyfill: GlobalScopePonyfill) {
   return combineReducers({

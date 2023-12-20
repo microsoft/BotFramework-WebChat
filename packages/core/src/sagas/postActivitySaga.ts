@@ -17,19 +17,19 @@ import sleep from '../utils/sleep';
 import uniqueID from '../utils/uniqueID';
 import whileConnected from './effects/whileConnected';
 
-import type { DirectLineActivity } from '../types/external/DirectLineActivity';
-import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
-import type { IncomingActivityAction } from '../actions/incomingActivity';
-import type {
-  PostActivityAction,
-  PostActivityFulfilledAction,
-  PostActivityImpededAction,
-  PostActivityPendingAction,
-  PostActivityRejectedAction
+import { type DirectLineActivity } from '../types/external/DirectLineActivity';
+import { type DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
+import { type GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+import { type IncomingActivityAction } from '../actions/incomingActivity';
+import {
+  type PostActivityAction,
+  type PostActivityFulfilledAction,
+  type PostActivityImpededAction,
+  type PostActivityPendingAction,
+  type PostActivityRejectedAction
 } from '../actions/postActivity';
-import type { WebChatActivity } from '../types/WebChatActivity';
-import type { WebChatOutgoingActivity } from '../types/internal/WebChatOutgoingActivity';
+import { type WebChatActivity } from '../types/WebChatActivity';
+import { type WebChatOutgoingActivity } from '../types/internal/WebChatOutgoingActivity';
 
 // After 5 minutes, the saga will stop from listening for echo backs and consider the outgoing message as permanently undeliverable.
 // This value must be equals to or larger than the user-defined `styleOptions.sendTimeout`.

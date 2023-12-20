@@ -14,7 +14,7 @@ import LocalizedStrings from '../../types/LocalizedStrings';
 import PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
 import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
 
-import type { DirectLineJSBotConnection, Observable, WebChatActivity } from 'botframework-webchat-core';
+import { type DirectLineJSBotConnection, type Observable, type WebChatActivity } from 'botframework-webchat-core';
 
 type WebChatAPIContext = {
   activityRenderer?: LegacyActivityRenderer;

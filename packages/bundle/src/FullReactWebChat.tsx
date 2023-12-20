@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
-import React, { VFC } from 'react';
+import React, { type ReactNode } from 'react';
 import ReactWebChat, { ReactWebChatProps } from 'botframework-webchat-component';
 
 import AddFullBundle, { AddFullBundleProps } from './AddFullBundle';
 
-type FullReactWebChatProps = ReactWebChatProps & Omit<AddFullBundleProps, 'children'>;
+type FullReactWebChatProps = Readonly<ReactWebChatProps & Omit<AddFullBundleProps, 'children'>>;
 
 // Add additional props to <WebChat>, so it support additional features
-const FullReactWebChat: VFC<FullReactWebChatProps> = props => (
+const FullReactWebChat = (props: FullReactWebChatProps): ReactNode => (
   <AddFullBundle {...props}>{extraProps => <ReactWebChat {...props} {...extraProps} />}</AddFullBundle>
 );
 

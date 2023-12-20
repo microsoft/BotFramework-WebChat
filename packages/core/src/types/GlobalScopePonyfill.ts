@@ -1,4 +1,4 @@
-import type { GlobalScopeClock } from './internal/GlobalScopeClock';
+import { type GlobalScopeClock } from './internal/GlobalScopeClock';
 
 // TODO: Should we rename this to "globalThisOverrides"?
 

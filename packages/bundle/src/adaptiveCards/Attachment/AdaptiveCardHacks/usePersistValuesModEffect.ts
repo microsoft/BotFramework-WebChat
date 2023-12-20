@@ -3,7 +3,7 @@ import { useMemo, useRef } from 'react';
 import useAdaptiveCardModEffect from './private/useAdaptiveCardModEffect';
 import usePrevious from './private/usePrevious';
 
-import type { AdaptiveCard, CardObject } from 'adaptivecards';
+import { type AdaptiveCard, type CardObject } from 'adaptivecards';
 
 /**
  * Gets all user-inputted values under a DOM node.

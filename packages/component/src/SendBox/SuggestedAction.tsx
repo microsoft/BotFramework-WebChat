@@ -1,8 +1,8 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { MouseEventHandler, useCallback, VFC } from 'react';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import React, { MouseEventHandler, useCallback, type ReactNode } from 'react';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
 
 import AccessibleButton from '../Utils/AccessibleButton';
 import connectToWebChat from '../connectToWebChat';
@@ -61,7 +61,7 @@ type SuggestedActionProps = {
   value?: any;
 };
 
-const SuggestedAction: VFC<SuggestedActionProps> = ({
+const SuggestedAction = ({
   buttonText,
   className,
   displayText,
@@ -72,7 +72,7 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
   textClassName,
   type,
   value
-}) => {
+}: SuggestedActionProps): ReactNode => {
   const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();

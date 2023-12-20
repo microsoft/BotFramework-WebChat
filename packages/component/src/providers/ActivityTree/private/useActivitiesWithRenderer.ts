@@ -1,8 +1,8 @@
 import { useCallback, useRef } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import useMemoize from '../../../hooks/internal/useMemoize';
-import type { ActivityWithRenderer } from './types';
+import { type ActivityWithRenderer } from './types';
 
 export default function useActivitiesWithRenderer(
   activities: readonly WebChatActivity[],

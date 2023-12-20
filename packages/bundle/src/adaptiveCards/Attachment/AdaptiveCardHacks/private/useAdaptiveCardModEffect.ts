@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import useLazyRef from './useLazyRef';
 import useValueRef from './useValueRef';
 
-import type { AdaptiveCard } from 'adaptivecards';
+import { type AdaptiveCard } from 'adaptivecards';
 
 type ModFunction<TArgs extends unknown[] = []> = (
   adaptiveCard: AdaptiveCard,

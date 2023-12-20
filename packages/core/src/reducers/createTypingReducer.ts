@@ -6,10 +6,10 @@ import updateIn from 'simple-update-in';
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
 import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
 
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
-import type { IncomingActivityAction } from '../actions/incomingActivity';
-import type { PostActivityPendingAction } from '../actions/postActivity';
-import type { Reducer } from 'redux';
+import { type GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+import { type IncomingActivityAction } from '../actions/incomingActivity';
+import { type PostActivityPendingAction } from '../actions/postActivity';
+import { type Reducer } from 'redux';
 
 type TypingState = Record<
   string,

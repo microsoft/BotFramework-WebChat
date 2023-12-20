@@ -1,4 +1,4 @@
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+import { type GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 
 /**
  * Creates a Redux reducer to store the ponyfill.

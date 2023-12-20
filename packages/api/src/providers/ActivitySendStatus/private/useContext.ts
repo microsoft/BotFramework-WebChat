@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import ActivitySendStatusContext from './Context';
 
-import type { ActivitySendStatusContextType } from './Context';
+import { type ActivitySendStatusContextType } from './Context';
 
 export default function useActivitySendStatusContext(thrownOnUndefined = true): ActivitySendStatusContextType {
   const contextValue = useContext(ActivitySendStatusContext);

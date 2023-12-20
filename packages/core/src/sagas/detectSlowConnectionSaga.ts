@@ -4,7 +4,7 @@ import { CONNECT_FULFILLED, CONNECT_PENDING, CONNECT_REJECTED, CONNECT_STILL_PEN
 import { RECONNECT_FULFILLED, RECONNECT_PENDING, RECONNECT_REJECTED } from '../actions/reconnect';
 import sleep from '../utils/sleep';
 
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+import { type GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 
 const SLOW_CONNECTION_AFTER = 15000;
 

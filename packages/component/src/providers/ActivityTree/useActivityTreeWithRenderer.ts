@@ -1,6 +1,6 @@
 import useActivityTreeContext from './private/useContext';
 
-import type { ActivityWithRenderer, ReadonlyActivityTree } from './private/types';
+import { type ActivityWithRenderer, type ReadonlyActivityTree } from './private/types';
 
 export default function useActivityTreeWithRenderer(options?: { flat?: false }): readonly [ReadonlyActivityTree];
 export default function useActivityTreeWithRenderer(options: {

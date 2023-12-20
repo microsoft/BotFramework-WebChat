@@ -11,9 +11,9 @@ import React, {
   useLayoutEffect,
   useMemo,
   useRef,
-  VFC
+  type ReactNode
 } from 'react';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
 
 import { BotFrameworkCardAction } from './AdaptiveCardBuilder';
 import renderAdaptiveCard from './private/renderAdaptiveCard';
@@ -40,12 +40,12 @@ type AdaptiveCardRendererProps = {
   tapAction?: DirectLineCardAction;
 };
 
-const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
+const AdaptiveCardRenderer = ({
   actionPerformedClassName,
   adaptiveCard,
   disabled: disabledFromProps,
   tapAction
-}) => {
+}: AdaptiveCardRendererProps): ReactNode => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();

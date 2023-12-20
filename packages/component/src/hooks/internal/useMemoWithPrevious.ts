@@ -1,6 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
-
-import type { DependencyList } from 'react';
+import { type DependencyList, useEffect, useMemo, useRef } from 'react';
 
 export default function useMemoWithPrevious<T>(factory: (prevValue: T) => T, deps: DependencyList): T {
   const prevValueRef = useRef<T>();

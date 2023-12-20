@@ -1,11 +1,10 @@
 import { hooks } from 'botframework-webchat-api';
-import { useCallback, useState } from 'react';
+import { type Dispatch, type SetStateAction, useCallback, useState } from 'react';
 import random from 'math-random';
 
 import useTimer from './useTimer';
 
-import type { Dispatch, SetStateAction } from 'react';
-import type { GlobalScopePonyfill } from 'botframework-webchat-core';
+import { type GlobalScopePonyfill } from 'botframework-webchat-core';
 
 const { usePonyfill } = hooks;
 

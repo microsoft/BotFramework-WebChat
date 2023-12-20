@@ -2,7 +2,7 @@ import getAttributeOrFalse from './private/getAttributeOrFalse';
 import noOp from './private/noOp';
 import setOrRemoveAttributeIfFalse from './private/setOrRemoveAttributeIfFalse';
 
-import type { UndoFunction } from './types/UndoFunction';
+import { type UndoFunction } from './types/UndoFunction';
 
 /**
  * Sets or removes an attribute from an element with an undo function.

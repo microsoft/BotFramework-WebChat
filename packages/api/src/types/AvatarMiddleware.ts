@@ -1,7 +1,8 @@
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import { StrictStyleOptions } from '../StyleOptions';
-import ComponentMiddleware, { ComponentFactory } from './ComponentMiddleware';
+import type ComponentMiddleware from './ComponentMiddleware';
+import { type ComponentFactory } from './ComponentMiddleware';
 
 type AvatarComponentFactoryArguments = [
   {

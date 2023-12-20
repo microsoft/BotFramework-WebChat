@@ -15,7 +15,7 @@ import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useTypistNames from './useTypistNames';
 
-import type { ActivityElementMap } from './types';
+import { type ActivityElementMap } from './types';
 
 const { useActivities, useGetKeyByActivity, useLocalizer, useStyleOptions } = hooks;
 

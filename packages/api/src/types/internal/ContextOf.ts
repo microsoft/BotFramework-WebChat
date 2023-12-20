@@ -1,4 +1,4 @@
-import type { Context } from 'react';
+import { type Context } from 'react';
 
 type ContextOf<T> = T extends Context<infer P> ? P : never;
 

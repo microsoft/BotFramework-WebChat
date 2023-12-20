@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import useWebChatUIContext from './internal/useWebChatUIContext';
 

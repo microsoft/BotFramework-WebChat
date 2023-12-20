@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { VFC } from 'react';
+import React, { type ReactNode } from 'react';
 
 import BasicWebChat from './BasicWebChat';
 import Composer, { ComposerProps } from './Composer';
@@ -20,7 +20,7 @@ type ReactWebChatProps = Omit<ComposerProps, 'children'> & {
   role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
 };
 
-const ReactWebChat: VFC<ReactWebChatProps> = ({ className, role, ...composerProps }) => (
+const ReactWebChat = ({ className, role, ...composerProps }: ReactWebChatProps): ReactNode => (
   <Composer {...composerProps}>
     <BasicWebChat className={className} role={role} />
   </Composer>

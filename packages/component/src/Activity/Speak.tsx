@@ -2,7 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import React, { type ReactNode, useCallback, useMemo } from 'react';
 import Say, { SayUtterance } from 'react-say';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import connectToWebChat from '../connectToWebChat';
 import SayAlt from './SayAlt';

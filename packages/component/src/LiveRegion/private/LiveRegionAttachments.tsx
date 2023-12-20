@@ -1,9 +1,8 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { Fragment } from 'react';
+import React, { type ReactNode, Fragment } from 'react';
 
-import type { VFC } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 const { useCreateAttachmentForScreenReaderRenderer, useLocalizer } = hooks;
 
@@ -22,7 +21,7 @@ type LiveRegionAttachmentsProps = {
 // When "renderAttachments" is false, we will not render the content of attachments.
 // That means, it will only render "2 attachments", instead of "image attachment".
 // This is used in the visual transcript, where we render "Press ENTER to interact."
-const LiveRegionAttachments: VFC<LiveRegionAttachmentsProps> = ({ activity }) => {
+const LiveRegionAttachments = ({ activity }: LiveRegionAttachmentsProps): ReactNode => {
   const { attachments = [] } = activity;
   const createAttachmentForScreenReaderRenderer = useCreateAttachmentForScreenReaderRenderer();
   const localizeWithPlural = useLocalizer({ plural: true });

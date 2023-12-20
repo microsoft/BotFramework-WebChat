@@ -6,7 +6,7 @@ import createReducer from './createReducer';
 import createSagas from './createSagas';
 import sagaError from './actions/sagaError';
 
-import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import { type GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 
 type CreateStoreOptions = {
   /**

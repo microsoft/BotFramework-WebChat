@@ -6,7 +6,7 @@ import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } fro
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { type ReactNode, type PropsWithChildren, useCallback, useMemo, useRef } from 'react';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
 
 import computeSuggestedActionText from '../Utils/computeSuggestedActionText';
 import connectToWebChat from '../connectToWebChat';

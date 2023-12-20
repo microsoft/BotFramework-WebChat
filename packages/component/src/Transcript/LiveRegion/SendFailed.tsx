@@ -1,6 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { useEffect, useMemo } from 'react';
-import type { VFC } from 'react';
+import { type ReactNode, useEffect, useMemo } from 'react';
 
 import { SEND_FAILED } from '../../types/internal/SendStatus';
 import isPresentational from './isPresentational';
@@ -19,7 +18,7 @@ const { useGetActivityByKey, useLocalizer, useSendStatusByActivityKey } = hooks;
  *
  * Thus, we need to use a live region "footnote" to indicate the message was failed to send.
  */
-const LiveRegionSendFailed: VFC<{}> = () => {
+const LiveRegionSendFailed = (): ReactNode => {
   const [sendStatusByActivityKey] = useSendStatusByActivityKey();
   const getActivityByKey = useGetActivityByKey();
   const localize = useLocalizer();

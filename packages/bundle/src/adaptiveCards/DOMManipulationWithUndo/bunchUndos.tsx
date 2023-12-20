@@ -1,4 +1,4 @@
-import type { UndoFunction } from './types/UndoFunction';
+import { type UndoFunction } from './types/UndoFunction';
 
 export default function bunchUndos(fns: UndoFunction[]): UndoFunction {
   let called: boolean;

@@ -9,8 +9,8 @@ import useScrollToEnd from '../../../hooks/useScrollToEnd';
 import useStyleToEmotionObject from '../../../hooks/internal/useStyleToEmotionObject';
 import useUniqueId from '../../../hooks/internal/useUniqueId';
 
-import type { ContextType, SendError } from './private/types';
-import type { PropsWithChildren } from 'react';
+import { type ContextType, type SendError } from './private/types';
+import { type PropsWithChildren } from 'react';
 
 const { useConnectivityStatus, useLocalizer, usePonyfill, useSendBoxValue, useSubmitSendBox } = hooks;
 

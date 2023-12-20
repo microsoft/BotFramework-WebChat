@@ -3,7 +3,7 @@ import bunchUndos from './bunchUndos';
 import noOp from './private/noOp';
 import setOrRemoveAttributeIfFalseWithUndo from './setOrRemoveAttributeIfFalseWithUndo';
 
-import type { UndoFunction } from './types/UndoFunction';
+import { type UndoFunction } from './types/UndoFunction';
 
 /**
  * An event handler for disabling event bubbling and propagation.

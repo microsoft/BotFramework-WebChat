@@ -1,4 +1,4 @@
-import type { WebChatActivity } from '../types/WebChatActivity';
+import { type WebChatActivity } from '../types/WebChatActivity';
 
 type PostActivityActionType = 'DIRECT_LINE/POST_ACTIVITY';
 type PostActivityFulfilledActionType = 'DIRECT_LINE/POST_ACTIVITY_FULFILLED';

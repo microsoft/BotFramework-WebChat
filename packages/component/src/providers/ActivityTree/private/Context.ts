@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import type { ActivityWithRenderer, ReadonlyActivityTree } from './types';
+import { type ActivityWithRenderer, type ReadonlyActivityTree } from './types';
 
 type ActivityTreeContextType = {
   activityTreeWithRendererState: readonly [ReadonlyActivityTree];

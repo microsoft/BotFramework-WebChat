@@ -1,5 +1,5 @@
 import Observable from 'core-js/features/observable';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 

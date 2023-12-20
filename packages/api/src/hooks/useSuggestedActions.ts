@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { DirectLineSuggestedAction } from 'botframework-webchat-core';
+import { type DirectLineSuggestedAction } from 'botframework-webchat-core';
 
 import { useSelector } from './internal/WebChatReduxContext';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';

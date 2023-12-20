@@ -15,7 +15,7 @@ import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 const {
   DictateState: { DICTATING, STARTING }

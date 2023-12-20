@@ -2,17 +2,16 @@
 /* eslint react/require-default-props: "off" */
 
 import PropTypes from 'prop-types';
-import React, { memo, useMemo } from 'react';
+import React, { type ReactNode, memo, useMemo } from 'react';
 
 import { SENDING, SEND_FAILED, SENT } from '../types/internal/SendStatus';
 import useGetKeyByActivity from '../hooks/useGetKeyByActivity';
 import useSendStatusByActivityKey from '../hooks/useSendStatusByActivityKey';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
-import type { ReactNode, VFC } from 'react';
-import type { RenderActivityStatus } from '../types/ActivityStatusMiddleware';
-import type { SendStatus } from '../types/internal/SendStatus';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
+import { type SendStatus } from '../types/internal/SendStatus';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 type ActivityStatusContainerCoreProps = {
   activity: WebChatActivity;
@@ -21,22 +20,25 @@ type ActivityStatusContainerCoreProps = {
   sendStatus: SendStatus;
 };
 
-const ActivityStatusContainerCore: VFC<ActivityStatusContainerCoreProps> = memo(
-  ({ activity, hideTimestamp, nextVisibleActivity, sendStatus }) => {
-    const { activityStatusRenderer: createActivityStatusRenderer }: { activityStatusRenderer: RenderActivityStatus } =
-      useWebChatAPIContext();
+const ActivityStatusContainerCoreInner = ({
+  activity,
+  hideTimestamp,
+  nextVisibleActivity,
+  sendStatus
+}: ActivityStatusContainerCoreProps): ReactNode => {
+  const { activityStatusRenderer: createActivityStatusRenderer }: { activityStatusRenderer: RenderActivityStatus } =
+    useWebChatAPIContext();
 
-    return createActivityStatusRenderer({
-      activity,
-      hideTimestamp,
-      nextVisibleActivity, // "nextVisibleActivity" is for backward compatibility, please remove this line on or after 2022-07-22.
-      sameTimestampGroup: hideTimestamp, // "sameTimestampGroup" is for backward compatibility, please remove this line on or after 2022-07-22.
-      sendState: sendStatus === SEND_FAILED || sendStatus === SENT ? sendStatus : SENDING
-    });
-  }
-);
+  return createActivityStatusRenderer({
+    activity,
+    hideTimestamp,
+    nextVisibleActivity, // "nextVisibleActivity" is for backward compatibility, please remove this line on or after 2022-07-22.
+    sameTimestampGroup: hideTimestamp, // "sameTimestampGroup" is for backward compatibility, please remove this line on or after 2022-07-22.
+    sendState: sendStatus === SEND_FAILED || sendStatus === SENT ? sendStatus : SENDING
+  });
+};
 
-ActivityStatusContainerCore.propTypes = {
+ActivityStatusContainerCoreInner.propTypes = {
   // PropTypes cannot fully capture TypeScript types.
   // @ts-ignore
   activity: PropTypes.shape({
@@ -48,38 +50,42 @@ ActivityStatusContainerCore.propTypes = {
   sendStatus: PropTypes.oneOf([SENDING, SEND_FAILED, SENT])
 };
 
+const ActivityStatusContainerCore = memo(ActivityStatusContainerCoreInner);
+
 type ActivityStatusContainerProps = {
   activity: WebChatActivity;
   hideTimestamp: boolean;
   nextVisibleActivity: WebChatActivity;
 };
 
-const ActivityStatusContainer: VFC<ActivityStatusContainerProps> = memo(
-  ({ activity, hideTimestamp, nextVisibleActivity }) => {
-    const [sendStatusByActivityKey] = useSendStatusByActivityKey();
-    const getKeyByActivity = useGetKeyByActivity();
+const ActivityStatusContainerInner = ({
+  activity,
+  hideTimestamp,
+  nextVisibleActivity
+}: ActivityStatusContainerProps): ReactNode => {
+  const [sendStatusByActivityKey] = useSendStatusByActivityKey();
+  const getKeyByActivity = useGetKeyByActivity();
 
-    const key = getKeyByActivity(activity);
+  const key = getKeyByActivity(activity);
 
-    const sendStatus = (typeof key === 'string' && sendStatusByActivityKey.get(key)) || SENT;
+  const sendStatus = (typeof key === 'string' && sendStatusByActivityKey.get(key)) || SENT;
 
-    return (
-      <ActivityStatusContainerCore
-        activity={activity}
-        hideTimestamp={hideTimestamp}
-        nextVisibleActivity={nextVisibleActivity}
-        sendStatus={sendStatus}
-      />
-    );
-  }
-);
+  return (
+    <ActivityStatusContainerCore
+      activity={activity}
+      hideTimestamp={hideTimestamp}
+      nextVisibleActivity={nextVisibleActivity}
+      sendStatus={sendStatus}
+    />
+  );
+};
 
-ActivityStatusContainer.defaultProps = {
+ActivityStatusContainerInner.defaultProps = {
   hideTimestamp: false,
   nextVisibleActivity: undefined
 };
 
-ActivityStatusContainer.propTypes = {
+ActivityStatusContainerInner.propTypes = {
   // PropTypes cannot fully capture TypeScript types.
   // @ts-ignore
   activity: PropTypes.shape({
@@ -89,6 +95,8 @@ ActivityStatusContainer.propTypes = {
   hideTimestamp: PropTypes.bool,
   nextVisibleActivity: PropTypes.any
 };
+
+const ActivityStatusContainer = memo(ActivityStatusContainerInner);
 
 type ActivityStatusRenderer = (renderOptions: {
   activity: WebChatActivity;

@@ -9,8 +9,8 @@ import setOrRemoveAttributeIfFalseWithUndo from '../../DOMManipulationWithUndo/s
 import useAdaptiveCardModEffect from './private/useAdaptiveCardModEffect';
 import usePrevious from './private/usePrevious';
 
-import type { AdaptiveCard, CardObject } from 'adaptivecards';
-import type { UndoFunction } from '../../DOMManipulationWithUndo/types/UndoFunction';
+import { type AdaptiveCard, type CardObject } from 'adaptivecards';
+import { type UndoFunction } from '../../DOMManipulationWithUndo/types/UndoFunction';
 
 /**
  * Accessibility: Action in ActionSet/CardElement should be push button.

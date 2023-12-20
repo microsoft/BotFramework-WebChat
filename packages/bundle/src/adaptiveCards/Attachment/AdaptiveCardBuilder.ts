@@ -16,7 +16,7 @@ import {
   TextWeight
 } from 'adaptivecards';
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
 
 import AdaptiveCardsPackage from '../../types/AdaptiveCardsPackage';
 import AdaptiveCardsStyleOptions from '../AdaptiveCardsStyleOptions';

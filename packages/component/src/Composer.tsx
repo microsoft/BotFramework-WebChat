@@ -34,7 +34,7 @@ import UITracker from './hooks/internal/UITracker';
 import useStyleSet from './hooks/useStyleSet';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
-import type { ComposerProps as APIComposerProps } from 'botframework-webchat-api';
+import { type ComposerProps as APIComposerProps } from 'botframework-webchat-api';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 

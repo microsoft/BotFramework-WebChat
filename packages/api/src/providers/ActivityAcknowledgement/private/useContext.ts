@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import ActivityAcknowledgementContext from './Context';
 
-import type { ActivityAcknowledgementContextType } from './Context';
+import { type ActivityAcknowledgementContextType } from './Context';
 
 export default function useActivityAcknowledgementContext(
   thrownOnUndefined = true

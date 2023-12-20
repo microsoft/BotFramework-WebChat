@@ -1,7 +1,7 @@
 import { addClass } from './private/addClass';
 import noOp from './private/noOp';
 
-import type { UndoFunction } from './types/UndoFunction';
+import { type UndoFunction } from './types/UndoFunction';
 
 /**
  * Adds a class to the `HTMLElement` and re-add on mutations.

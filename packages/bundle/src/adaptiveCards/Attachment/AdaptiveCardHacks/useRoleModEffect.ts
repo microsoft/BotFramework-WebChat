@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import setOrRemoveAttributeIfFalseWithUndo from '../../DOMManipulationWithUndo/setOrRemoveAttributeIfFalseWithUndo';
 import useAdaptiveCardModEffect from './private/useAdaptiveCardModEffect';
 
-import type { AdaptiveCard } from 'adaptivecards';
+import { type AdaptiveCard } from 'adaptivecards';
 
 /**
  * Accessibility: "role" attribute must be set if "aria-label" is set.

@@ -19,7 +19,7 @@ import TypingIndicatorMiddleware, { RenderTypingIndicator } from './types/Typing
 import WebSpeechPonyfill from './types/WebSpeechPonyfill';
 import WebSpeechPonyfillFactory from './types/WebSpeechPonyfillFactory';
 
-import type { ActivityStatusMiddleware, RenderActivityStatus } from './types/ActivityStatusMiddleware';
+import { type ActivityStatusMiddleware, type RenderActivityStatus } from './types/ActivityStatusMiddleware';
 
 export { Composer, concatMiddleware, defaultStyleOptions, hooks, localize, normalizeStyleOptions };
 

@@ -1,6 +1,6 @@
 import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import updateIn from 'simple-update-in';
 import {
   clearSuggestedActions,
@@ -76,15 +76,14 @@ import applyMiddleware, {
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 
-import type { ActivityStatusMiddleware, RenderActivityStatus } from '../types/ActivityStatusMiddleware';
-import type { ContextOf } from '../types/internal/ContextOf';
-import type {
-  DirectLineJSBotConnection,
-  OneOrMany,
-  GlobalScopePonyfill,
-  WebChatActivity
+import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
+import { type ContextOf } from '../types/internal/ContextOf';
+import {
+  type DirectLineJSBotConnection,
+  type OneOrMany,
+  type GlobalScopePonyfill,
+  type WebChatActivity
 } from 'botframework-webchat-core';
-import type { ReactNode } from 'react';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {

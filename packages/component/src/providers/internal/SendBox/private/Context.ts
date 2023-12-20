@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import type { ContextType } from './types';
+import { type ContextType } from './types';
 
 const SendBoxContext = createContext<ContextType | undefined>(undefined);
 

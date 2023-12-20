@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import useMarkActivity from './internal/useMarkActivity';
 

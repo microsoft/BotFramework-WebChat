@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import { type ReactElement } from 'react';
 
 type StaticElement = Exclude<ReactElement | string, undefined>;
 

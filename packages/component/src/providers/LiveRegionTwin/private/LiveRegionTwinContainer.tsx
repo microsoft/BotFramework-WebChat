@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Fragment } from 'react';
-
-import type { VFC } from 'react';
+import React, { type ReactNode, Fragment } from 'react';
 
 import useMarkAllAsRenderedEffect from './useMarkAllAsRenderedEffect';
 import useStaticElementEntries from './useStaticElementEntries';
@@ -16,14 +14,14 @@ type LiveRegionTwinContainerProps = {
 };
 
 // This container is marked as private because we assume there is only one instance under the <LiveRegionTwinContext>.
-const LiveRegionTwinContainer: VFC<LiveRegionTwinContainerProps> = ({
+const LiveRegionTwinContainer = ({
   'aria-label': ariaLabel,
   'aria-live': ariaLive,
   'aria-roledescription': ariaRoleDescription,
   className,
   role,
   textElementClassName
-}) => {
+}: LiveRegionTwinContainerProps): ReactNode => {
   const [staticElementEntries] = useStaticElementEntries();
 
   // We assume there is only one instance under the <LiveRegionTwinContext>.

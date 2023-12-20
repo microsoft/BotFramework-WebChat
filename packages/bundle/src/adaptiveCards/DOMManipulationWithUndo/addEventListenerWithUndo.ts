@@ -1,6 +1,6 @@
 import noOp from './private/noOp';
 
-import type { UndoFunction } from './types/UndoFunction';
+import { type UndoFunction } from './types/UndoFunction';
 
 /**
  * Listens to event. Returns a function, when called, will stop listening.

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { VFC } from 'react';
+import React, { type ReactNode } from 'react';
 
 import { DefaultAvatar } from '../Middleware/Avatar/createCoreMiddleware';
 
@@ -10,7 +10,7 @@ type AvatarProps = {
 };
 
 /** @deprecated Please use `useRenderAvatar` hook instead. */
-const Avatar: VFC<AvatarProps> = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
+const Avatar = ({ 'aria-hidden': ariaHidden, className, fromUser }: AvatarProps): ReactNode => {
   console.warn(
     'botframework-webchat: <Avatar> component is deprecated and will be removed on or after 2022-02-25. Please use `useRenderAvatar` hook instead.'
   );

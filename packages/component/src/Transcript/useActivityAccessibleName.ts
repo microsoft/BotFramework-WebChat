@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { useEffect, useMemo, useState } from 'react';
-import type { RefObject } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type RefObject } from 'react';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import { SEND_FAILED } from '../types/internal/SendStatus';
 import activityAltText from '../Utils/activityAltText';

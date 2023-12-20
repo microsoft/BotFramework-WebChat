@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import useStyleOptions from './useStyleOptions';
 
