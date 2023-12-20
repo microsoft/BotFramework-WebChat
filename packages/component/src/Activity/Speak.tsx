@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { type ReactNode, useCallback, useMemo } from 'react';
 import Say, { SayUtterance } from 'react-say';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
@@ -23,11 +23,11 @@ const connectSpeakActivity = (...selectors) =>
     ...selectors
   );
 
-type SpeakProps = {
-  activity: WebChatActivity;
-};
+type SpeakProps = Readonly<{
+  activity: Readonly<WebChatActivity>;
+}>;
 
-const Speak: FC<SpeakProps> = ({ activity }) => {
+const Speak = ({ activity }: SpeakProps): ReactNode => {
   const [{ showSpokenText }] = useStyleOptions();
   const markActivityAsSpoken = useMarkActivityAsSpoken();
   const selectVoice = useVoiceSelector(activity);

@@ -1,18 +1,25 @@
 import PropTypes from 'prop-types';
-import React, { Fragment, useCallback, useRef } from 'react';
-
-import type { FC, KeyboardEventHandler, PropsWithChildren } from 'react';
+import React, {
+  type KeyboardEventHandler,
+  type PropsWithChildren,
+  type ReactNode,
+  Fragment,
+  useCallback,
+  useRef
+} from 'react';
 
 import FocusRedirector from '../Utils/FocusRedirector';
 import tabbableElements from '../Utils/tabbableElements';
 import useValueRef from '../hooks/internal/useValueRef';
 
-type FocusTrapProps = PropsWithChildren<{
-  onFocus: () => void;
-  onLeave: () => void;
-}>;
+type FocusTrapProps = Readonly<
+  PropsWithChildren<{
+    onFocus: () => void;
+    onLeave: () => void;
+  }>
+>;
 
-const FocusTrap: FC<FocusTrapProps> = ({ children, onFocus, onLeave }) => {
+const FocusTrap = ({ children, onFocus, onLeave }: FocusTrapProps): ReactNode => {
   const bodyRef = useRef<HTMLDivElement>();
   const onLeaveRef = useValueRef<() => void>(onLeave);
 

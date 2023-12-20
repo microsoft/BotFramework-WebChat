@@ -2,8 +2,8 @@
 
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React, { FC, useMemo } from 'react';
-import type { DirectLineReceiptCard } from 'botframework-webchat-core';
+import React, { type ReactNode, useMemo } from 'react';
+import { type DirectLineReceiptCard } from 'botframework-webchat-core';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
@@ -16,13 +16,13 @@ function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
 }
 
-type ReceiptCardContentProps = {
+type ReceiptCardContentProps = Readonly<{
   actionPerformedClassName?: string;
   content: DirectLineReceiptCard;
   disabled?: boolean;
-};
+}>;
 
-const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const ReceiptCardContent = ({ actionPerformedClassName, content, disabled }: ReceiptCardContentProps): ReactNode => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();

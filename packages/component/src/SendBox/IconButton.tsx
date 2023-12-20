@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, MouseEventHandler, ReactNode, useRef } from 'react';
+import React, { type ReactNode, type PropsWithChildren, MouseEventHandler, useRef } from 'react';
 
 import AccessibleButton from '../Utils/AccessibleButton';
 import useFocusVisible from '../hooks/internal/useFocusVisible';
@@ -9,15 +9,16 @@ import useStyleSet from '../hooks/useStyleSet';
 
 const { useStyleOptions } = hooks;
 
-type IconButtonProps = {
-  alt?: string;
-  children?: ReactNode;
-  className?: string;
-  disabled?: boolean;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-};
+type IconButtonProps = Readonly<
+  PropsWithChildren<{
+    alt?: string;
+    className?: string;
+    disabled?: boolean;
+    onClick?: MouseEventHandler<HTMLButtonElement>;
+  }>
+>;
 
-const IconButton: FC<IconButtonProps> = ({ alt, children, className, disabled, onClick }) => {
+const IconButton = ({ alt, children, className, disabled, onClick }: IconButtonProps): ReactNode => {
   const [{ sendBoxButton: sendBoxButtonStyleSet }] = useStyleSet();
   const [{ sendBoxButtonAlignment }] = useStyleOptions();
   const buttonRef = useRef<HTMLButtonElement>();

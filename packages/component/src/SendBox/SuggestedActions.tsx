@@ -5,7 +5,7 @@ import { hooks } from 'botframework-webchat-api';
 import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, useCallback, useMemo, useRef } from 'react';
+import React, { type ReactNode, type PropsWithChildren, useCallback, useMemo, useRef } from 'react';
 import type { DirectLineCardAction } from 'botframework-webchat-core';
 
 import computeSuggestedActionText from '../Utils/computeSuggestedActionText';
@@ -43,7 +43,20 @@ const connectSuggestedActions = (...selectors) =>
     ...selectors
   );
 
-const SuggestedActionCarouselContainer = ({ children, className, label }) => {
+type SuggestedContainerProps = Readonly<
+  PropsWithChildren<{
+    className?: string;
+    label: string;
+  }>
+>;
+
+type SuggestedActionCarouselContainerProps = SuggestedContainerProps;
+
+const SuggestedActionCarouselContainer = ({
+  children,
+  className,
+  label
+}: SuggestedActionCarouselContainerProps): ReactNode => {
   const [
     {
       suggestedActionsCarouselFlipperBoxWidth,
@@ -131,7 +144,9 @@ SuggestedActionCarouselContainer.propTypes = {
   label: PropTypes.string.isRequired
 };
 
-const SuggestedActionFlowContainer = ({ children, className, label }) => {
+type SuggestedActionFlowContainerProps = SuggestedContainerProps;
+
+const SuggestedActionFlowContainer = ({ children, className, label }: SuggestedActionFlowContainerProps): ReactNode => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -209,12 +224,12 @@ SuggestedActionStackedContainer.propTypes = {
   label: PropTypes.string.isRequired
 };
 
-type SuggestedActionsProps = {
+type SuggestedActionsProps = Readonly<{
   className?: string;
   suggestedActions?: DirectLineCardAction[];
-};
+}>;
 
-const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActions = [] }) => {
+const SuggestedActions = ({ className, suggestedActions = [] }: SuggestedActionsProps): ReactNode => {
   const [{ suggestedActionLayout, suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const localize = useLocalizer();
   const focus = useFocus();

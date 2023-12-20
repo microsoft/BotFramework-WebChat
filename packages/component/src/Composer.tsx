@@ -6,7 +6,7 @@ import createEmotion from '@emotion/css/create-instance';
 import createStyleSet from './Styles/createStyleSet';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import React, { type ReactNode, type PropsWithChildren, memo, useCallback, useMemo, useRef, useState } from 'react';
 
 import {
   speechSynthesis as bypassSpeechSynthesis,
@@ -35,7 +35,6 @@ import useStyleSet from './hooks/useStyleSet';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 
 import type { ComposerProps as APIComposerProps } from 'botframework-webchat-api';
-import type { FC, ReactNode } from 'react';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -49,7 +48,7 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
 
 type ComposerCoreUIProps = Readonly<{ children?: ReactNode }>;
 
-const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
+const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps): ReactNode => {
   const [{ cssCustomProperties }] = useStyleSet();
 
   const dictationOnError = useCallback(err => {
@@ -71,21 +70,22 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
 
 ComposerCoreUI.displayName = 'ComposerCoreUI';
 
-type ComposerCoreProps = Readonly<{
-  children?: ReactNode;
-  extraStyleSet?: any;
-  nonce?: string;
-  renderMarkdown?: (
-    markdown: string,
-    newLineOptions: { markdownRespectCRLF: boolean },
-    linkOptions: { externalLinkAlt: string }
-  ) => string;
-  styleSet?: any;
-  suggestedActionsAccessKey?: boolean | string;
-  webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
-}>;
+type ComposerCoreProps = Readonly<
+  PropsWithChildren<{
+    extraStyleSet?: any;
+    nonce?: string;
+    renderMarkdown?: (
+      markdown: string,
+      newLineOptions: { markdownRespectCRLF: boolean },
+      linkOptions: { externalLinkAlt: string }
+    ) => string;
+    styleSet?: any;
+    suggestedActionsAccessKey?: boolean | string;
+    webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
+  }>
+>;
 
-const ComposerCore: FC<ComposerCoreProps> = ({
+const ComposerCore = ({
   children,
   extraStyleSet,
   nonce,
@@ -93,7 +93,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   styleSet,
   suggestedActionsAccessKey,
   webSpeechPonyfillFactory
-}) => {
+}: ComposerCoreProps): ReactNode => {
   const [dictateAbortable, setDictateAbortable] = useState();
   const [referenceGrammarID] = useReferenceGrammarID();
   const [styleOptions] = useStyleOptions();
@@ -259,7 +259,6 @@ const ComposerCore: FC<ComposerCoreProps> = ({
 };
 
 ComposerCore.defaultProps = {
-  children: undefined,
   extraStyleSet: undefined,
   nonce: undefined,
   renderMarkdown: undefined,
@@ -279,7 +278,7 @@ ComposerCore.propTypes = {
 
 type ComposerProps = APIComposerProps & ComposerCoreProps;
 
-const Composer: FC<ComposerProps> = ({
+const Composer = ({
   activityMiddleware,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
@@ -296,7 +295,7 @@ const Composer: FC<ComposerProps> = ({
   typingIndicatorMiddleware,
   webSpeechPonyfillFactory,
   ...composerProps
-}) => {
+}: ComposerProps): ReactNode => {
   const { nonce, onTelemetry } = composerProps;
 
   const patchedActivityMiddleware = useMemo(

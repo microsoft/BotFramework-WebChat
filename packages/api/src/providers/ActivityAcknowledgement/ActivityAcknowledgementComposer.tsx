@@ -1,6 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
-
-import type { FC, PropsWithChildren } from 'react';
+import React, { useCallback, useMemo, useState, type PropsWithChildren, type ReactNode } from 'react';
 
 import ActivityAcknowledgementContext, { ActivityAcknowledgementContextType } from './private/Context';
 import findLastIndex from '../../utils/findLastIndex';
@@ -9,9 +7,9 @@ import useActivityKeys from '../ActivityKeyer/useActivityKeys';
 import usePrevious from '../../hooks/internal/usePrevious';
 import useValueRef from '../../hooks/internal/useValueRef';
 
-import type { ActivityAcknowledgement } from './private/types';
+import { type ActivityAcknowledgement } from './private/types';
 
-type ActivityAcknowledgementComposerProps = PropsWithChildren<{}>;
+type ActivityAcknowledgementComposerProps = Readonly<PropsWithChildren<{}>>;
 
 function findClosestActivityKeyIfNotExists(
   activityKey: string,
@@ -42,7 +40,7 @@ function findClosestActivityKeyIfNotExists(
   // If nothing is found, return `undefined`.
 }
 
-const ActivityAcknowledgementComposer: FC<ActivityAcknowledgementComposerProps> = ({ children }) => {
+const ActivityAcknowledgementComposer = ({ children }: ActivityAcknowledgementComposerProps): ReactNode => {
   const [activities] = useActivities();
   const [allActivityKeys] = useActivityKeys();
   const [rawLastAcknowledgedActivityKey, setRawLastAcknowledgedActivityKey] = useState<string | undefined>();

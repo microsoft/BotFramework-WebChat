@@ -1,21 +1,30 @@
 /* eslint complexity: ["error", 50] */
 
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, {
+  type MutableRefObject,
+  type PropsWithChildren,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef
+} from 'react';
 
 import RovingTabIndexContext from './private/Context';
 
-import type { FC, MutableRefObject, PropsWithChildren } from 'react';
-import type { RovingTabIndexContextType } from './private/Context';
+import { type RovingTabIndexContextType } from './private/Context';
 
 type ItemRef = MutableRefObject<HTMLElement | undefined>;
 
-type RovingTabIndexContextProps = PropsWithChildren<{
-  onEscapeKey?: () => void;
-  orientation?: 'horizontal' | 'vertical';
-}>;
+type RovingTabIndexContextProps = Readonly<
+  PropsWithChildren<{
+    onEscapeKey?: () => void;
+    orientation?: 'horizontal' | 'vertical';
+  }>
+>;
 
-const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEscapeKey, orientation }) => {
+const RovingTabIndexComposer = ({ children, onEscapeKey, orientation }: RovingTabIndexContextProps): ReactNode => {
   const activeItemIndexRef = useRef(0);
   const itemRefsRef = useRef<ItemRef[]>([]);
 
