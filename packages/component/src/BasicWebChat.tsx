@@ -4,7 +4,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { type ReactNode } from 'react';
 
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 import BasicConnectivityStatus from './BasicConnectivityStatus';
@@ -40,12 +40,12 @@ const TRANSCRIPT_STYLE = {
 // Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
 const ARIA_LANDMARK_ROLES = ['complementary', 'contentinfo', 'form', 'main', 'region'];
 
-type BasicWebChatProps = {
+type BasicWebChatProps = Readonly<{
   className?: string;
   role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
-};
+}>;
 
-const BasicWebChat: FC<BasicWebChatProps> = ({ className, role }) => {
+const BasicWebChat = ({ className, role }: BasicWebChatProps): ReactNode => {
   const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();
   const styleToEmotionObject = useStyleToEmotionObject();

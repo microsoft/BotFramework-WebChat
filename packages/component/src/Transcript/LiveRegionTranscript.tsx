@@ -1,9 +1,8 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useRef } from 'react';
-import type { FC, RefObject, VFC } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import React, { type RefObject, type ReactNode, useEffect, useMemo, useRef } from 'react';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import isPresentational from './LiveRegion/isPresentational';
 import LiveRegionActivity from '../LiveRegion/LiveRegionActivity';
@@ -41,7 +40,7 @@ type LiveRegionTranscriptCoreProps = Readonly<{
   activityElementMapRef: RefObject<ActivityElementMap>;
 }>;
 
-const LiveRegionTranscriptCore: FC<LiveRegionTranscriptCoreProps> = ({ activityElementMapRef }) => {
+const LiveRegionTranscriptCore = ({ activityElementMapRef }: LiveRegionTranscriptCoreProps): ReactNode => {
   // We are looking for all activities instead of just those will be rendered.
   // This is because some activities that chosen not be rendered in the chat history,
   // we might still need to be read by screen reader. Such as, suggested actions without text content.
@@ -158,7 +157,7 @@ type LiveRegionTranscriptProps = {
   activityElementMapRef: RefObject<ActivityElementMap>;
 };
 
-const LiveRegionTranscript: VFC<LiveRegionTranscriptProps> = ({ activityElementMapRef }) => {
+const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptProps) => {
   const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';

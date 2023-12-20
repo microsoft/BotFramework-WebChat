@@ -1,48 +1,56 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
-import type { FC, PropsWithChildren } from 'react';
+import React, {
+  type PropsWithChildren,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 
 import LiveRegionTwinContainer from './private/LiveRegionTwinContainer';
 import LiveRegionTwinContext from './private/Context';
 import useValueRef from '../../hooks/internal/useValueRef';
 
-import type { StaticElement, StaticElementEntry } from './private/types';
+import { type StaticElement, type StaticElementEntry } from './private/types';
 
 const { usePonyfill } = hooks;
 
 const DEFAULT_ARIA_LIVE = 'polite';
 const DEFAULT_FADE_AFTER = 1000;
 
-type LiveRegionTwinComposerProps = PropsWithChildren<{
-  /** Optional "aria-label" attribute for the live region twin container. */
-  'aria-label'?: string;
+type LiveRegionTwinComposerProps = Readonly<
+  PropsWithChildren<{
+    /** Optional "aria-label" attribute for the live region twin container. */
+    'aria-label'?: string;
 
-  /** "aria-live" attribute for the live region twin container, defaults to `'polite'`. */
-  'aria-live'?: 'assertive' | 'polite';
+    /** "aria-live" attribute for the live region twin container, defaults to `'polite'`. */
+    'aria-live'?: 'assertive' | 'polite';
 
-  /** Optional "aria-roledescription" attribute for the live region twin container. */
-  'aria-roledescription'?: string;
+    /** Optional "aria-roledescription" attribute for the live region twin container. */
+    'aria-roledescription'?: string;
 
-  /** Optional "className" attribute for the live region twin container. */
-  className?: string;
+    /** Optional "className" attribute for the live region twin container. */
+    className?: string;
 
-  /**
-   * Static elements will fade out after this timeout value specified in milliseconds, defaults to `1000`.
-   *
-   * When lowering this value, make sure screen reader can continue to pick up new static elements before fading out.
-   *
-   * If this prop is updated, it will be reflected in next queueing elements.
-   */
-  fadeAfter?: number;
+    /**
+     * Static elements will fade out after this timeout value specified in milliseconds, defaults to `1000`.
+     *
+     * When lowering this value, make sure screen reader can continue to pick up new static elements before fading out.
+     *
+     * If this prop is updated, it will be reflected in next queueing elements.
+     */
+    fadeAfter?: number;
 
-  /** Optional "role" attribute for the live region twin container. */
-  role?: string;
+    /** Optional "role" attribute for the live region twin container. */
+    role?: string;
 
-  /** Optional "className" attribute for static text element. */
-  textElementClassName?: string;
-}>;
+    /** Optional "className" attribute for static text element. */
+    textElementClassName?: string;
+  }>
+>;
 
 /**
  * Live region twin is an UI component for queueing texts or elements to the screen reader using
@@ -55,7 +63,7 @@ type LiveRegionTwinComposerProps = PropsWithChildren<{
  * By default, the live region is visible. If is is not desirable, the caller can use `className` prop to
  * hide its visuals.
  */
-const LiveRegionTwinComposer: FC<LiveRegionTwinComposerProps> = ({
+const LiveRegionTwinComposer = ({
   'aria-label': ariaLabel,
   'aria-live': ariaLive = DEFAULT_ARIA_LIVE,
   'aria-roledescription': ariaRoleDescription,
@@ -64,7 +72,7 @@ const LiveRegionTwinComposer: FC<LiveRegionTwinComposerProps> = ({
   fadeAfter = DEFAULT_FADE_AFTER,
   role,
   textElementClassName
-}) => {
+}: LiveRegionTwinComposerProps): ReactNode => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [staticElementEntries, setStaticElementEntries] = useState<StaticElementEntry[]>([]);
   const fadeAfterRef = useValueRef(fadeAfter);

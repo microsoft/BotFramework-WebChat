@@ -1,9 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
-
-import type { FC } from 'react';
+import React, { type ReactNode, useCallback, useState } from 'react';
 
 import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
@@ -11,12 +9,12 @@ import useUniqueId from '../hooks/internal/useUniqueId';
 
 const { useLocalizer } = hooks;
 
-type NotesBodyProps = {
+type NotesBodyProps = Readonly<{
   header: string;
   text: string;
-};
+}>;
 
-const Notes: FC<NotesBodyProps> = ({ header, text }) => (
+const Notes = ({ header, text }: NotesBodyProps): ReactNode => (
   <section className="webchat__keyboard-help__notes">
     <h4 className="webchat__keyboard-help__notes-header">{header}</h4>
     {text.split('\n').map((line, index) => (
@@ -34,7 +32,7 @@ Notes.propTypes = {
   text: PropTypes.string.isRequired
 };
 
-const KeyboardHelp: FC<{}> = () => {
+const KeyboardHelp = (): ReactNode => {
   const [{ keyboardHelp: keyboardHelpStyleSet }] = useStyleSet();
   const [shown, setShown] = useState(false);
   const focus = useFocus();

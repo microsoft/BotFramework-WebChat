@@ -3,7 +3,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, ReactNode } from 'react';
+import React, { type PropsWithChildren, type ReactNode } from 'react';
 
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import useStyleSet from '../hooks/useStyleSet';
@@ -29,7 +29,7 @@ const ROOT_STYLE = {
   }
 };
 
-function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
+function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false): ReactNode {
   if (typeof nubSize !== 'number') {
     return false;
   }
@@ -62,15 +62,16 @@ function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
   );
 }
 
-type BubbleProps = {
-  'aria-hidden'?: boolean;
-  children?: ReactNode;
-  className?: string;
-  fromUser?: boolean;
-  nub?: boolean | 'hidden';
-};
+type BubbleProps = Readonly<
+  PropsWithChildren<{
+    'aria-hidden'?: boolean;
+    className?: string;
+    fromUser?: boolean;
+    nub?: boolean | 'hidden';
+  }>
+>;
 
-const Bubble: FC<BubbleProps> = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }) => {
+const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }: BubbleProps): ReactNode => {
   const [{ bubble: bubbleStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const [

@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, useCallback, useRef } from 'react';
+import React, { type ReactNode, useCallback, useRef } from 'react';
 
 import AttachmentIcon from './Assets/AttachmentIcon';
 import connectToWebChat from '../connectToWebChat';
@@ -89,11 +89,11 @@ const connectUploadButton = (...selectors) =>
     ...selectors
   );
 
-type UploadButtonProps = {
+type UploadButtonProps = Readonly<{
   className?: string;
-};
+}>;
 
-const UploadButton: FC<UploadButtonProps> = ({ className }) => {
+const UploadButton = ({ className }: UploadButtonProps): ReactNode => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const inputRef = useRef<HTMLInputElement>();

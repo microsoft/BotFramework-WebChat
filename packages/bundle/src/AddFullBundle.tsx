@@ -1,7 +1,7 @@
 import { AttachmentForScreenReaderMiddleware, AttachmentMiddleware, StyleOptions } from 'botframework-webchat-api';
 import { OneOrMany, singleToArray, warnOnce } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
-import React, { FC, ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import { StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
@@ -9,9 +9,9 @@ import AdaptiveCardsPackage from './types/AdaptiveCardsPackage';
 import AdaptiveCardsStyleOptions from './adaptiveCards/AdaptiveCardsStyleOptions';
 import useComposerProps from './useComposerProps';
 
-type AddFullBundleProps = {
+type AddFullBundleProps = Readonly<{
   adaptiveCardsHostConfig?: any;
-  adaptiveCardsPackage?: AdaptiveCardsPackage;
+  adaptiveCardsPackage?: Readonly<AdaptiveCardsPackage>;
   attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
   attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
   children: ({ extraStyleSet }: { extraStyleSet: any }) => ReactNode;
@@ -20,18 +20,18 @@ type AddFullBundleProps = {
     newLineOptions: { markdownRespectCRLF: boolean },
     linkOptions: { externalLinkAlt: string }
   ) => string;
-  styleOptions?: StyleOptions & AdaptiveCardsStyleOptions;
-  styleSet?: any & { options: StrictFullBundleStyleOptions };
+  styleOptions?: Readonly<StyleOptions & AdaptiveCardsStyleOptions>;
+  styleSet?: any & Readonly<{ options: StrictFullBundleStyleOptions }>;
 
   /** @deprecated Rename to "adaptiveCardsHostConfig" */
   adaptiveCardHostConfig?: any;
-};
+}>;
 
 const adaptiveCardHostConfigDeprecation = warnOnce(
   '"adaptiveCardHostConfig" is deprecated. Please use "adaptiveCardsHostConfig" instead. "adaptiveCardHostConfig" will be removed on or after 2022-01-01.'
 );
 
-const AddFullBundle: FC<AddFullBundleProps> = ({
+const AddFullBundle = ({
   adaptiveCardHostConfig,
   adaptiveCardsHostConfig,
   adaptiveCardsPackage,
@@ -41,7 +41,7 @@ const AddFullBundle: FC<AddFullBundleProps> = ({
   renderMarkdown,
   styleOptions,
   styleSet
-}) => {
+}: AddFullBundleProps): ReactNode => {
   adaptiveCardHostConfig && adaptiveCardHostConfigDeprecation();
 
   const patchedProps = useComposerProps({

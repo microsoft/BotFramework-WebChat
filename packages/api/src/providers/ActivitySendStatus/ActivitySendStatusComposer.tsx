@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, type PropsWithChildren, type ReactNode } from 'react';
 
 import { SENDING, SEND_FAILED, SENT } from '../../types/internal/SendStatus';
 import ActivitySendStatusContext from './private/Context';
@@ -10,15 +10,16 @@ import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
 import useGetSendTimeoutForActivity from '../../hooks/useGetSendTimeoutForActivity';
 import usePonyfill from '../../hooks/usePonyfill';
 
-import type { ActivitySendStatusContextType } from './private/Context';
-import type { FC, PropsWithChildren } from 'react';
-import type { SendStatus } from '../../types/internal/SendStatus';
+import { type ActivitySendStatusContextType } from './private/Context';
+import { type SendStatus } from '../../types/internal/SendStatus';
 
 // Magic numbers for `expiryByActivityKey`.
 const EXPIRY_SEND_FAILED = -Infinity;
 const EXPIRY_SENT = Infinity;
 
-const ActivitySendStatusComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
+type ActivitySendStatusComposerProps = Readonly<PropsWithChildren<{}>>;
+
+const ActivitySendStatusComposer = ({ children }: ActivitySendStatusComposerProps): ReactNode => {
   const [activities] = useActivities();
   const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
   const forceRender = useForceRender();
