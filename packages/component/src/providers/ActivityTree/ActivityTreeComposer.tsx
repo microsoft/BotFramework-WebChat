@@ -13,7 +13,7 @@ import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';
 
 import { type ActivityTreeContextType } from './private/Context';
 
-type ActivityTreeComposerProps = Readonly<PropsWithChildren<{}>>;
+type ActivityTreeComposerProps = Readonly<PropsWithChildren>;
 
 const { useActivities, useCreateActivityRenderer } = hooks;
 

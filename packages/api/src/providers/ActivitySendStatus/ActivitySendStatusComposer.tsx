@@ -17,7 +17,7 @@ import { type SendStatus } from '../../types/internal/SendStatus';
 const EXPIRY_SEND_FAILED = -Infinity;
 const EXPIRY_SENT = Infinity;
 
-type ActivitySendStatusComposerProps = Readonly<PropsWithChildren<{}>>;
+type ActivitySendStatusComposerProps = Readonly<PropsWithChildren>;
 
 const ActivitySendStatusComposer = ({ children }: ActivitySendStatusComposerProps): ReactNode => {
   const [activities] = useActivities();

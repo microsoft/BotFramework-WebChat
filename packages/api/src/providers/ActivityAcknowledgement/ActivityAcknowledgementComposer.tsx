@@ -9,7 +9,7 @@ import useValueRef from '../../hooks/internal/useValueRef';
 
 import { type ActivityAcknowledgement } from './private/types';
 
-type ActivityAcknowledgementComposerProps = Readonly<PropsWithChildren<{}>>;
+type ActivityAcknowledgementComposerProps = Readonly<PropsWithChildren>;
 
 function findClosestActivityKeyIfNotExists(
   activityKey: string,

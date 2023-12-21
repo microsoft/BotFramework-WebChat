@@ -55,8 +55,10 @@ const TIME_TO_RESET_ERROR_MESSAGE = 50;
 
 type ErrorMessageStringMap = ReadonlyMap<SendError, string>;
 
+type SendBoxComposerProps = Readonly<PropsWithChildren>;
+
 // TODO: [P2] Complete this component.
-const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
+const SendBoxComposer = ({ children }: SendBoxComposerProps) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [connectivityStatus] = useConnectivityStatus();
   const [error, setError] = useState<SendError | false>(false);
