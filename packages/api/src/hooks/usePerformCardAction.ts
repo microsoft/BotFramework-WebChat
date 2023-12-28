@@ -1,4 +1,4 @@
-import { PerformCardAction } from '../types/CardActionMiddleware';
+import { type PerformCardAction } from '../types/CardActionMiddleware';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 export default function usePerformCardAction(): PerformCardAction {

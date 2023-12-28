@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { MouseEventHandler, useCallback, type ReactNode } from 'react';
+import React, { type MouseEventHandler, useCallback, type ReactNode } from 'react';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 
 import AccessibleButton from '../Utils/AccessibleButton';

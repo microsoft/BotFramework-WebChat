@@ -1,6 +1,6 @@
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
 
-import LocalizedStrings from '../types/LocalizedStrings';
+import type LocalizedStrings from '../types/LocalizedStrings';
 
 type LocalizedStringsMap = { [language: string]: LocalizedStrings };
 

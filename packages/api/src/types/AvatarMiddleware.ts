@@ -1,6 +1,6 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 
-import { StrictStyleOptions } from '../StyleOptions';
+import { type StrictStyleOptions } from '../StyleOptions';
 import type ComponentMiddleware from './ComponentMiddleware';
 import { type ComponentFactory } from './ComponentMiddleware';
 

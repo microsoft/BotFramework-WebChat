@@ -1,4 +1,4 @@
-import Observable from 'core-js/features/observable';
+import type Observable from 'core-js/features/observable';
 
 import { type GlobalScopePonyfill } from 'botframework-webchat-core';
 

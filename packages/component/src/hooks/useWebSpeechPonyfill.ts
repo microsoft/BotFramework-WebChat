@@ -1,4 +1,4 @@
-import { WebSpeechPonyfill } from 'botframework-webchat-api';
+import { type WebSpeechPonyfill } from 'botframework-webchat-api';
 
 import useWebChatUIContext from './internal/useWebChatUIContext';
 

@@ -1,4 +1,9 @@
-import { Composer as APIComposer, hooks, WebSpeechPonyfillFactory } from 'botframework-webchat-api';
+import {
+  Composer as APIComposer,
+  hooks,
+  type WebSpeechPonyfillFactory,
+  type ComposerProps as APIComposerProps
+} from 'botframework-webchat-api';
 import { Composer as SayComposer } from 'react-say';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
@@ -33,8 +38,6 @@ import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
 import UITracker from './hooks/internal/UITracker';
 import useStyleSet from './hooks/useStyleSet';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
-
-import { type ComposerProps as APIComposerProps } from 'botframework-webchat-api';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { type ReactNode } from 'react';
 
 import BasicWebChat from './BasicWebChat';
-import Composer, { ComposerProps } from './Composer';
+import Composer, { type ComposerProps } from './Composer';
 
 // Please keep this file as simple as possible. This is for setting up the surface (a.k.a. <Composer>) and <BasicWebChat> only.
 

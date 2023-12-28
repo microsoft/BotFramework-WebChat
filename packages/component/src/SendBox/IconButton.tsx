@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { type ReactNode, type PropsWithChildren, MouseEventHandler, useRef } from 'react';
+import React, { type ReactNode, type PropsWithChildren, type MouseEventHandler, useRef } from 'react';
 
 import AccessibleButton from '../Utils/AccessibleButton';
 import useFocusVisible from '../hooks/internal/useFocusVisible';

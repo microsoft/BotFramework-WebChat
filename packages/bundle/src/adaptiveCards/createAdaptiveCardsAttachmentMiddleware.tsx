@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { AttachmentMiddleware } from 'botframework-webchat-api';
+import { type AttachmentMiddleware } from 'botframework-webchat-api';
 
 import AdaptiveCardAttachment from './Attachment/AdaptiveCardAttachment';
 import AnimationCardAttachment from './Attachment/AnimationCardAttachment';

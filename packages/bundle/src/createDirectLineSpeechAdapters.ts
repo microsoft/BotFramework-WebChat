@@ -1,11 +1,11 @@
-import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
+import { type AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 import { createAdapters } from 'botframework-directlinespeech-sdk';
-import { WebSpeechPonyfill } from 'botframework-webchat-api';
+import { type WebSpeechPonyfill } from 'botframework-webchat-api';
 import { type DirectLineJSBotConnection } from 'botframework-webchat-core';
 
-import CognitiveServicesAudioOutputFormat from './types/CognitiveServicesAudioOutputFormat';
-import CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
-import CognitiveServicesTextNormalization from './types/CognitiveServicesTextNormalization';
+import type CognitiveServicesAudioOutputFormat from './types/CognitiveServicesAudioOutputFormat';
+import type CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
+import type CognitiveServicesTextNormalization from './types/CognitiveServicesTextNormalization';
 import createMicrophoneAudioConfigAndAudioContext from './speech/createMicrophoneAudioConfigAndAudioContext';
 
 const DEFAULT_LANGUAGE = 'en-US';

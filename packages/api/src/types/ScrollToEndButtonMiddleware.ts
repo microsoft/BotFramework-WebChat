@@ -1,5 +1,6 @@
-import { StrictStyleOptions } from '../StyleOptions';
-import ComponentMiddleware, { ComponentFactory } from './ComponentMiddleware';
+import { type StrictStyleOptions } from '../StyleOptions';
+import { type ComponentFactory } from './ComponentMiddleware';
+import type ComponentMiddleware from './ComponentMiddleware';
 
 /**
  * @type {object}

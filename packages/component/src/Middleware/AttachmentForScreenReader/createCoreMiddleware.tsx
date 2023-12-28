@@ -1,4 +1,4 @@
-import { AttachmentForScreenReaderMiddleware } from 'botframework-webchat-api';
+import { type AttachmentForScreenReaderMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
 import AudioAttachment from './AudioAttachment';

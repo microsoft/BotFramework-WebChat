@@ -1,18 +1,18 @@
 import { createContext } from 'react';
 
-import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
-import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
-import { GroupActivities } from '../../types/GroupActivitiesMiddleware';
-import { LegacyActivityRenderer } from '../../types/ActivityMiddleware';
-import { PerformCardAction } from '../../types/CardActionMiddleware';
-import { RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
-import { RenderAttachment } from '../../types/AttachmentMiddleware';
-import { RenderToast } from '../../types/ToastMiddleware';
-import { ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButtonMiddleware';
-import { StrictStyleOptions } from '../../StyleOptions';
-import LocalizedStrings from '../../types/LocalizedStrings';
-import PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
-import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
+import { type AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
+import { type AvatarComponentFactory } from '../../types/AvatarMiddleware';
+import { type GroupActivities } from '../../types/GroupActivitiesMiddleware';
+import { type LegacyActivityRenderer } from '../../types/ActivityMiddleware';
+import { type PerformCardAction } from '../../types/CardActionMiddleware';
+import { type RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
+import { type RenderAttachment } from '../../types/AttachmentMiddleware';
+import { type RenderToast } from '../../types/ToastMiddleware';
+import { type ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButtonMiddleware';
+import { type StrictStyleOptions } from '../../StyleOptions';
+import type LocalizedStrings from '../../types/LocalizedStrings';
+import type PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
+import type TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
 
 import { type DirectLineJSBotConnection, type Observable, type WebChatActivity } from 'botframework-webchat-core';
 

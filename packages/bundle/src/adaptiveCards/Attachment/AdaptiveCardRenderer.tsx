@@ -1,12 +1,17 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
-import { Action as AdaptiveCardAction, AdaptiveCard, OpenUrlAction, SubmitAction } from 'adaptivecards';
+import {
+  type Action as AdaptiveCardAction,
+  type AdaptiveCard,
+  type OpenUrlAction,
+  type SubmitAction
+} from 'adaptivecards';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {
-  KeyboardEventHandler,
-  MouseEventHandler,
+  type KeyboardEventHandler,
+  type MouseEventHandler,
   useCallback,
   useLayoutEffect,
   useMemo,
@@ -15,7 +20,7 @@ import React, {
 } from 'react';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 
-import { BotFrameworkCardAction } from './AdaptiveCardBuilder';
+import { type BotFrameworkCardAction } from './AdaptiveCardBuilder';
 import renderAdaptiveCard from './private/renderAdaptiveCard';
 import useActionSetShouldNotBeMenuBarModEffect from './AdaptiveCardHacks/useActionSetShouldNotBeMenuBarModEffect';
 import useActionShouldBePushButtonModEffect from './AdaptiveCardHacks/useActionShouldBePushButtonModEffect';

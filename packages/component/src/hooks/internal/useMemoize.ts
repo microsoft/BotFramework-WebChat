@@ -1,4 +1,4 @@
-import { DependencyList, useMemo } from 'react';
+import { type DependencyList, useMemo } from 'react';
 
 type Cache<TArgs, TResult> = { args: TArgs[]; result: TResult };
 type Fn<TArgs, TResult> = (...args: TArgs[]) => TResult;

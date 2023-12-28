@@ -1,4 +1,4 @@
-import { ScrollToEndButtonMiddleware } from 'botframework-webchat-api';
+import { type ScrollToEndButtonMiddleware } from 'botframework-webchat-api';
 
 import ScrollToEndButton from './ScrollToEndButton';
 

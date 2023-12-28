@@ -3,7 +3,7 @@
 
 import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 
-import CustomAudioInputStream, { AudioStreamNode, DeviceInfo, Format } from './CustomAudioInputStream';
+import CustomAudioInputStream, { type AudioStreamNode, type DeviceInfo, type Format } from './CustomAudioInputStream';
 
 type AttachFunction = (audioNodeId: string) => Promise<{
   audioStreamNode: AudioStreamNode;

@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: ["off"] */
 
-import { StrictStyleOptions } from 'botframework-webchat-api';
+import { type StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createToasterStyle({
   primaryFont,

@@ -1,6 +1,6 @@
 import {
-  AdaptiveCard,
-  CardElement,
+  type AdaptiveCard,
+  type CardElement,
   Column,
   ColumnSet,
   Container,
@@ -18,8 +18,8 @@ import {
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 
-import AdaptiveCardsPackage from '../../types/AdaptiveCardsPackage';
-import AdaptiveCardsStyleOptions from '../AdaptiveCardsStyleOptions';
+import type AdaptiveCardsPackage from '../../types/AdaptiveCardsPackage';
+import type AdaptiveCardsStyleOptions from '../AdaptiveCardsStyleOptions';
 
 export interface BotFrameworkCardAction {
   __isBotFrameworkCardAction: true;

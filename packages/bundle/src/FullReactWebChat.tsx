@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { type ReactNode } from 'react';
-import ReactWebChat, { ReactWebChatProps } from 'botframework-webchat-component';
+import ReactWebChat, { type ReactWebChatProps } from 'botframework-webchat-component';
 
-import AddFullBundle, { AddFullBundleProps } from './AddFullBundle';
+import AddFullBundle, { type AddFullBundleProps } from './AddFullBundle';
 
 type FullReactWebChatProps = ReactWebChatProps & Omit<AddFullBundleProps, 'children'>;
 

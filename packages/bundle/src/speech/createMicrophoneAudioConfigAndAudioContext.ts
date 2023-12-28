@@ -1,7 +1,7 @@
 import { ChunkedArrayBufferStream } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Exports';
 import { PcmRecorder } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports';
 
-import { AudioStreamNode, DeviceInfo, Format } from './CustomAudioInputStream';
+import { type AudioStreamNode, type DeviceInfo, type Format } from './CustomAudioInputStream';
 import bytesPerSample from './bytesPerSample';
 import createAudioConfig from './createAudioConfig';
 import createAudioContext from './createAudioContext';

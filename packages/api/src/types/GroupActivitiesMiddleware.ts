@@ -1,6 +1,7 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 
-import FunctionMiddleware, { CallFunction } from './FunctionMiddleware';
+import { type CallFunction } from './FunctionMiddleware';
+import type FunctionMiddleware from './FunctionMiddleware';
 
 type GroupActivities = CallFunction<
   [{ activities: WebChatActivity[] }],

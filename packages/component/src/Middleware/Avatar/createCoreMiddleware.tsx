@@ -1,4 +1,4 @@
-import { AvatarMiddleware } from 'botframework-webchat-api';
+import { type AvatarMiddleware } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { type ReactNode } from 'react';

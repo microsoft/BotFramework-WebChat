@@ -1,6 +1,6 @@
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 
-import FunctionMiddleware from './FunctionMiddleware';
+import type FunctionMiddleware from './FunctionMiddleware';
 
 type PerformCardAction = (cardAction: DirectLineCardAction, event?: { target: EventTarget }) => void;
 

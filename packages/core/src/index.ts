@@ -11,7 +11,7 @@ import dismissNotification from './actions/dismissNotification';
 import emitTypingIndicator from './actions/emitTypingIndicator';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import markActivity from './actions/markActivity';
-import OneOrMany from './types/OneOrMany';
+import type OneOrMany from './types/OneOrMany';
 import onErrorResumeNext from './utils/onErrorResumeNext';
 import postActivity from './actions/postActivity';
 import sendEvent from './actions/sendEvent';

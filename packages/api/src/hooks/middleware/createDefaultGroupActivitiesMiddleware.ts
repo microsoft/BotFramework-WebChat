@@ -1,5 +1,5 @@
 import { SENDING, SENT } from '../../types/internal/SendStatus';
-import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
+import type GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
 import { type GlobalScopePonyfill, type WebChatActivity } from 'botframework-webchat-core';
 import { type SendStatus } from '../../types/internal/SendStatus';

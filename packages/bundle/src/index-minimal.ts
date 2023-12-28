@@ -8,7 +8,7 @@ import {
   createStoreWithOptions,
   version
 } from 'botframework-webchat-core';
-import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
+import { type StrictStyleOptions, type StyleOptions } from 'botframework-webchat-api';
 
 import ReactWebChat, {
   Components,

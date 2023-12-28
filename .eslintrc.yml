@@ -67,6 +67,10 @@ overrides:
 
       no-empty-function: off
       '@typescript-eslint/no-empty-function': error
+    
+      '@typescript-eslint/consistent-type-imports':
+        - error
+        - fixStyle: inline-type-imports
 
       # TODO #4003: We will rework on these rules
       '@typescript-eslint/ban-ts-comment': off

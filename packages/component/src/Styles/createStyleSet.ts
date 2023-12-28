@@ -1,4 +1,4 @@
-import { normalizeStyleOptions, StyleOptions } from 'botframework-webchat-api';
+import { normalizeStyleOptions, type StyleOptions } from 'botframework-webchat-api';
 
 import createActivitiesStyle from './StyleSet/Activities';
 import createAudioAttachmentStyle from './StyleSet/AudioAttachment';

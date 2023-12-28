@@ -1,4 +1,4 @@
-import { hooks, TypingIndicatorMiddleware } from 'botframework-webchat-api';
+import { hooks, type TypingIndicatorMiddleware } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React from 'react';
 

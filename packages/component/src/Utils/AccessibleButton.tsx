@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
 
 import PropTypes from 'prop-types';
-import React, { forwardRef, MouseEventHandler, ReactNode, useRef } from 'react';
+import React, { forwardRef, type MouseEventHandler, type ReactNode, useRef } from 'react';
 
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 

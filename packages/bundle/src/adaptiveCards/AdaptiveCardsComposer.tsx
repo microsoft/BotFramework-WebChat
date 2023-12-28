@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { type ReactNode, useMemo } from 'react';
 
 import AdaptiveCardsContext from './AdaptiveCardsContext';
-import AdaptiveCardsPackage from '../types/AdaptiveCardsPackage';
+import type AdaptiveCardsPackage from '../types/AdaptiveCardsPackage';
 
 type AdaptiveCardsComposerProps = Readonly<{
   adaptiveCardsHostConfig: any;

@@ -1,12 +1,16 @@
-import { AttachmentForScreenReaderMiddleware, AttachmentMiddleware, StyleOptions } from 'botframework-webchat-api';
-import { OneOrMany, singleToArray, warnOnce } from 'botframework-webchat-core';
+import {
+  type AttachmentForScreenReaderMiddleware,
+  type AttachmentMiddleware,
+  type StyleOptions
+} from 'botframework-webchat-api';
+import { type OneOrMany, singleToArray, warnOnce } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { type ReactNode } from 'react';
 
-import { StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
+import { type StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
-import AdaptiveCardsPackage from './types/AdaptiveCardsPackage';
-import AdaptiveCardsStyleOptions from './adaptiveCards/AdaptiveCardsStyleOptions';
+import type AdaptiveCardsPackage from './types/AdaptiveCardsPackage';
+import type AdaptiveCardsStyleOptions from './adaptiveCards/AdaptiveCardsStyleOptions';
 import useComposerProps from './useComposerProps';
 
 type AddFullBundleProps = Readonly<{

@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState, type PropsWithChildren, type ReactNode } from 'react';
 
-import ActivityAcknowledgementContext, { ActivityAcknowledgementContextType } from './private/Context';
+import ActivityAcknowledgementContext, { type ActivityAcknowledgementContextType } from './private/Context';
 import findLastIndex from '../../utils/findLastIndex';
 import useActivities from '../../hooks/useActivities';
 import useActivityKeys from '../ActivityKeyer/useActivityKeys';

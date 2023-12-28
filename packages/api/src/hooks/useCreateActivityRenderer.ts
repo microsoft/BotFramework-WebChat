@@ -1,4 +1,4 @@
-import { ActivityComponentFactory } from '../types/ActivityMiddleware';
+import { type ActivityComponentFactory } from '../types/ActivityMiddleware';
 import useCreateActivityRendererInternal from './internal/useCreateActivityRendererInternal';
 
 // The newer useCreateActivityRenderer() hook does not support override renderAttachment().
