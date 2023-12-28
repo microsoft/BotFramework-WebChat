@@ -4,7 +4,7 @@ import ReactWebChat, { ReactWebChatProps } from 'botframework-webchat-component'
 
 import AddFullBundle, { AddFullBundleProps } from './AddFullBundle';
 
-type FullReactWebChatProps = Readonly<ReactWebChatProps & Omit<AddFullBundleProps, 'children'>>;
+type FullReactWebChatProps = ReactWebChatProps & Omit<AddFullBundleProps, 'children'>;
 
 // Add additional props to <WebChat>, so it support additional features
 const FullReactWebChat = (props: FullReactWebChatProps): ReactNode => (

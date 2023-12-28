@@ -9,7 +9,7 @@ import { type ComposerProps } from 'botframework-webchat-component';
 
 const { Composer } = Components;
 
-type FullComposerProps = Readonly<ComposerProps & AddFullBundleProps>;
+type FullComposerProps = ComposerProps & Readonly<AddFullBundleProps>;
 
 const FullComposer = (props: FullComposerProps): ReactNode => (
   <AddFullBundle {...props}>
