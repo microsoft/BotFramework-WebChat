@@ -11,7 +11,7 @@ export default async function fetchProfilePhotoInBase64(accessToken) {
     });
 
     if (!res.ok) {
-      if (res.status === 401) {
+      if (res.status === 401 || res.status === 404) {
         // Personal account does not have profile photo
         return 'images/Microsoft-Graph-64px.png';
       } else {

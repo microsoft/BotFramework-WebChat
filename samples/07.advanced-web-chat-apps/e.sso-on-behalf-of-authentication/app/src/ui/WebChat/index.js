@@ -72,7 +72,7 @@ const WebChat = () => {
   useEffect(() => {
     (async function() {
       const { token } = await fetchJSON('/api/directline/token');
-      setDirectLine(createDirectLine({ token }));
+      setDirectLine(createDirectLine({ token, domain: "https://directline.scratch.botframework.com/v3/directline" }));
     })().catch(error => console.log(error));
   }, []);
 
