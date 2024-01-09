@@ -7,7 +7,7 @@ import OAuthContext from '../../oauth/Context';
 import './index.css';
 
 const WebChat = () => {
-  const [directLine, setDirectLine] = useState(createDirectLine({}));
+  const [directLine, setDirectLine] = useState(null);
   const { onSignIn } = useContext(OAuthContext);
 
   const styleOptions = useMemo(
@@ -76,7 +76,7 @@ const WebChat = () => {
     })().catch(error => console.log(error));
   }, []);
 
-  return (
+  return (directLine &&
     <div className="webchat">
       <ReactWebChat
         directLine={directLine}
