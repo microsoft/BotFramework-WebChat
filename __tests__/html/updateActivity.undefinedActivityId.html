@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -60,6 +60,9 @@
 
         // WHEN: All images are loaded.
         await pageConditions.allImagesLoaded();
+
+        // WHEN: Scroll to bottom completed.
+        await pageConditions.scrollToBottomCompleted();
 
         // THEN: It should show 5 messages in total.
         await host.snapshot();
