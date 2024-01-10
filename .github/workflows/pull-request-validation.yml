@@ -1,0 +1,310 @@
+name: Pull request validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+    paths-ignore:
+      - .github
+      - .vscode
+
+  push:
+    branches:
+      - feat-github-workflow # Keeping the branch here so we can try out something later quickly
+
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  CI_PULL_REQUEST: 1 # Skip nightly tests
+  NODE_ENV: test # Add instrumentation code
+  node-version: 18.18 # Need to bump jest@29 to resolve something in https://github.com/facebook/react-native/issues/35701
+  skip-secure-feed: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install
+
+      - run: npm run bootstrap
+
+      - run: npm run build --if-present
+
+      - name: Pack Docker artifact
+        run: |
+          zip docker.zip -r@ <<EOF
+          ./__tests__/
+          ./babel-jest-config.js
+          ./babel-passthru-transformer.js
+          ./babel.config.json
+          ./docker-compose-wsl2.yml
+          ./jest.config.js
+          ./package.json
+          ./package-lock.json
+          ./packages/bundle/dist/
+          ./packages/test/harness/
+          ./packages/test/page-object/dist/
+          ./serve-test.json
+          ./testharness.dockerfile
+          ./testharness2.dockerfile
+          EOF
+
+      - run: ls -l docker.zip
+
+      - name: Upload Docker artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker
+          path: docker.zip
+          retention-days: 1
+
+  static-code-analysis:
+    name: Static code analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install
+
+      - run: npm run bootstrap
+
+      - run: npm run build --if-present
+
+      - run: npm run precommit --if-present
+
+  unit-test:
+    name: Unit test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install
+
+      - run: npm run bootstrap
+
+      - run: npm run build --if-present
+
+      - name: Run jest --testPathPattern packages/
+        run: |
+          ./node_modules/.bin/jest \
+            --ci \
+            --coverage true \
+            --forceExit \
+            --logHeapUsage \
+            --runInBand \
+            --testPathPattern=/packages/\
+        timeout-minutes: 10
+
+      - if: always()
+        name: Append ID to test result
+        run: |
+          ls -laR .
+
+          mv jest.json jest-unit.json
+          mv lcov.info lcov-unit.info
+          mv nunit3.xml nunit3-unit.xml
+          mv result.trx result-unit.trx
+        working-directory: ./coverage
+
+      - if: always()
+        name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-result
+          path: |
+            ./coverage/jest-*.json
+            ./coverage/lcov-*.info
+            ./coverage/nunit3-*.xml
+            ./coverage/result-*.trx
+
+  html-test:
+    name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard-index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        shard-count: [20]
+
+    steps:
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+
+      - name: Download Docker artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: docker
+
+      - run: unzip docker.zip
+
+      - run: rm docker.zip
+
+      - run: npm clean-install
+
+      - name: Run docker-compose build
+        run: docker-compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
+
+      - name: Run docker-compose up
+        run: docker-compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
+
+      - name: Wait for Docker to be ready
+        run: |
+          set +e # Disable per-command fail, we will handle cURL fail.
+
+          while true
+          do
+            curl http://localhost:4444/wd/hub/status > /tmp/wd-status.json
+
+            [[ $? -eq 0 ]] && cat /tmp/wd-status.json | jq -r 'if (.value.ready != true) then halt_error(1) else empty end'
+            [[ $? -eq 0 ]] && break
+
+            sleep 1
+          done
+
+      - name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
+        run: |
+          ./node_modules/.bin/jest \
+            --ci \
+            --coverage true \
+            --forceExit \
+            --logHeapUsage \
+            --runInBand \
+            --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
+        timeout-minutes: 10
+
+      - if: always()
+        name: Print Docker logs
+        run: docker-compose -f docker-compose-wsl2.yml logs
+
+      - if: always()
+        name: Append ID to test result
+        run: |
+          ls -laR .
+
+          mv jest.json jest-${{ matrix.shard-index }}.json
+          mv lcov.info lcov-${{ matrix.shard-index }}.info
+          mv nunit3.xml nunit3-${{ matrix.shard-index }}.xml
+          mv result.trx result-${{ matrix.shard-index }}.trx
+        working-directory: ./coverage
+
+      - if: always()
+        name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-result
+          path: |
+            ./coverage/jest-*.json
+            ./coverage/lcov-*.info
+            ./coverage/nunit3-*.xml
+            ./coverage/result-*.trx
+
+      - if: failure()
+        name: Upload test snapshot diffs
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-snapshot-diff
+          path: ./__tests__/__image_snapshots__/*/__diff_output__/*
+
+  merge-test-result:
+    if: always()
+    name: Merge test result
+    needs:
+      - html-test
+      - unit-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download test results
+        uses: actions/download-artifact@v3
+        with:
+          name: test-result
+
+      - name: Install lcov
+        run: sudo apt install -y lcov
+
+      - name: Merge lcov-*.info
+        run: |
+          lcov \
+            --rc lcov_branch_coverage=1 \
+            --add-tracefile lcov-1.info \
+            --add-tracefile lcov-2.info \
+            --add-tracefile lcov-3.info \
+            --add-tracefile lcov-4.info \
+            --add-tracefile lcov-5.info \
+            --add-tracefile lcov-6.info \
+            --add-tracefile lcov-7.info \
+            --add-tracefile lcov-8.info \
+            --add-tracefile lcov-9.info \
+            --add-tracefile lcov-10.info \
+            --add-tracefile lcov-11.info \
+            --add-tracefile lcov-12.info \
+            --add-tracefile lcov-13.info \
+            --add-tracefile lcov-14.info \
+            --add-tracefile lcov-15.info \
+            --add-tracefile lcov-16.info \
+            --add-tracefile lcov-17.info \
+            --add-tracefile lcov-18.info \
+            --add-tracefile lcov-19.info \
+            --add-tracefile lcov-20.info \
+            --add-tracefile lcov-unit.info \
+            --output-file lcov.info
+
+      - if: always()
+        name: Print coverage list
+        run: lcov --rc lcov_branch_coverage=1 --list lcov.info
+
+      - if: always()
+        name: Print coverage summary
+        run: |
+          echo \`\`\` >> $GITHUB_STEP_SUMMARY
+          lcov --rc lcov_branch_coverage=1 --summary lcov.info | tee --append $GITHUB_STEP_SUMMARY
+          echo \`\`\` >> $GITHUB_STEP_SUMMARY
