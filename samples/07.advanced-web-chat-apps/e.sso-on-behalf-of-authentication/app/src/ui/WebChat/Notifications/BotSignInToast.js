@@ -92,7 +92,7 @@ export const BotSignInToast = ({ notification }) => {
                 body: JSON.stringify(
                   {
                     token: token,
-                    type: "TokenExchangeInvoke",
+                    type: "TokenExchangeRequest",
                     exchangeResourceId: oauthId
                   }
                 )
