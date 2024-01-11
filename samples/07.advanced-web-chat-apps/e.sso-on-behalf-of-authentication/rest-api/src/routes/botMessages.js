@@ -11,13 +11,13 @@ if (PROXY_BOT_URL) {
 
   console.log(`Will redirect /api/messages to ${new URL('api/messages', PROXY_BOT_URL).href}`);
 
-  module.exports = (req, res) => {
+  module.exports = (req, res, next) => {
     proxy.web(req, res, { target: PROXY_BOT_URL });
   };
 } else {
   let warningShown;
 
-  module.exports = (_, res) => {
+  module.exports = (req, res, next) => {
     if (!warningShown) {
       warningShown = true;
       console.warn('PROXY_BOT_URL is not set, we are not reverse-proxying /api/messages.');

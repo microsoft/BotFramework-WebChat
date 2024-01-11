@@ -107,7 +107,6 @@
 }
 
 .sso__profileAvatarBadge__microsoft {
-  background-image: url(/images/Microsoft-32px.png);
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: contain;

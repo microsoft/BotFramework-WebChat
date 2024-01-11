@@ -22,7 +22,8 @@
   },
   "devDependencies": {
     "http-proxy-middleware": "^2.0.6",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "@babel/preset-env": "^7.22.3"
   },
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",

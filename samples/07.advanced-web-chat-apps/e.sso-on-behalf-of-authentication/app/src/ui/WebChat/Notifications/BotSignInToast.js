@@ -5,6 +5,7 @@ import random from 'math-random';
 
 import './index.css';
 import OAuthContext from '../../../oauth/Context';
+import fetchJSON from '../../../utils/fetchJSON';
 
 const { useActivities, useDismissNotification, usePostActivity, useSetNotification } = hooks;
 
@@ -15,7 +16,7 @@ export const BotSignInToast = ({ notification }) => {
   } = notification;
   const [authenticating, setAuthenticating] = useState();
   const { acquireToken, getAccount, onSignIn } = useContext(OAuthContext);
-  const { connectionName, tokenExchangeResource: { id: oauthId, uri } = {} } = content;
+  const { connectionName, tokenExchangeResource: { id: oauthId, uri } = {}, tokenPostResource: {sasUrl} = {} } = content;
   const { current: invokeId } = useRef(random().toString(36).substr(2, 10));
 
   const [activities] = useActivities();
@@ -69,17 +70,51 @@ export const BotSignInToast = ({ notification }) => {
       (async function () {
         try {
           const token = await exchangeToken(uri);
-          token &&
-            postActivity({
-              channelData: { invokeId },
-              type: 'invoke',
-              name: 'signin/tokenExchange',
-              value: {
-                id: oauthId,
-                connectionName,
-                token
+          if (token) {
+          //   postActivity({
+          //   channelData: { invokeId },
+          //   type: 'invoke',
+          //   name: 'signin/tokenExchange',
+          //   value: {
+          //     id: oauthId,
+          //     connectionName,
+          //     token
+          //   }
+          // });
+          // Check https://github.com/microsoft/botbuilder-dotnet/blob/c0917dd7332e5cd0b621e34f2024692bddfe548a/libraries/Microsoft.Bot.Builder.Dialogs/Prompts/OAuthPrompt.cs#L277
+            const { failureDetail } = await fetchJSON(
+              sasUrl,
+              {
+                method: "POST",
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(
+                  {
+                    token: token,
+                    type: "TokenExchangeRequest",
+                    exchangeResourceId: oauthId
+                  }
+                )
               }
-            });
+            );
+            if (failureDetail) {
+              dismissNotification(id);
+              setNotification({
+                id: 'traditionalbotauthentication',
+                data: { content },
+                level: 'error',
+                message: 'There was an error authenticating the bot.'
+              });
+            } else {
+              dismissNotification(id);
+              setNotification({
+                id: 'signinsuccessful',
+                level: 'success',
+                message: 'The bot was authenticated successfully.'
+              });
+            }
+          }          
         } catch (error) {
           dismissNotification(id);
           setNotification({
@@ -102,7 +137,8 @@ export const BotSignInToast = ({ notification }) => {
     oauthId,
     postActivity,
     setNotification,
-    uri
+    uri,
+    sasUrl
   ]);
 
   const handleAgreeClick = useCallback(() => {

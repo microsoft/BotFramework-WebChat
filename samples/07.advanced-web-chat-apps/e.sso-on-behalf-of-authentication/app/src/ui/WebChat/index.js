@@ -7,7 +7,7 @@ import OAuthContext from '../../oauth/Context';
 import './index.css';
 
 const WebChat = () => {
-  const [directLine, setDirectLine] = useState(createDirectLine({}));
+  const [directLine, setDirectLine] = useState(null);
   const { onSignIn } = useContext(OAuthContext);
 
   const styleOptions = useMemo(
@@ -72,11 +72,11 @@ const WebChat = () => {
   useEffect(() => {
     (async function() {
       const { token } = await fetchJSON('/api/directline/token');
-      setDirectLine(createDirectLine({ token }));
+      setDirectLine(createDirectLine({ token, domain: "https://directline.scratch.botframework.com/v3/directline" }));
     })().catch(error => console.log(error));
   }, []);
 
-  return (
+  return (directLine &&
     <div className="webchat">
       <ReactWebChat
         directLine={directLine}
