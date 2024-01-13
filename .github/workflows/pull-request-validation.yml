@@ -131,10 +131,10 @@ jobs:
       - run: npm run build --if-present
 
       - name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }} --testPathPattern packages/
+        # --coverage true \
         run: |
           ./node_modules/.bin/jest \
             --ci \
-            --coverage true \
             --forceExit \
             --logHeapUsage \
             --runInBand \
