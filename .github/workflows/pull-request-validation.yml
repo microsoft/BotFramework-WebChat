@@ -105,6 +105,11 @@ jobs:
   unit-test:
     name: Unit test
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard-index: [1, 2, 3]
+        shard-count: [3]
 
     steps:
       - uses: actions/checkout@v4
@@ -125,7 +130,7 @@ jobs:
 
       - run: npm run build --if-present
 
-      - name: Run jest --testPathPattern packages/
+      - name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }} --testPathPattern packages/
         run: |
           ./node_modules/.bin/jest \
             --ci \
@@ -133,6 +138,7 @@ jobs:
             --forceExit \
             --logHeapUsage \
             --runInBand \
+            --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }} \
             --testPathPattern=/packages/\
         timeout-minutes: 10
 
