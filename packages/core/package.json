@@ -3,6 +3,7 @@
   "version": "0.0.0-0",
   "description": "Core of botframework-webchat",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
@@ -20,6 +21,17 @@
     "src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/packages/core#readme",
+  "tsd": {
+    "compilerOptions": {
+      "allowSyntheticDefaultImports": true,
+      "downlevelIteration": true,
+      "jsx": "react",
+      "noImplicitAny": false,
+      "resolveJsonModule": true,
+      "skipLibCheck": true,
+      "strict": false
+    }
+  },
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "npm run build:typescript && npm run build:babel",
@@ -53,6 +65,8 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "botframework-directlinejs": "^0.15.5",
     "concurrently": "^8.2.2",
+    "tsd": "^0.30.3",
+    "type-fest": "^4.9.0",
     "typescript": "^5.3.2"
   },
   "dependencies": {

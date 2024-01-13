@@ -158,6 +158,37 @@ jobs:
             ./coverage/nunit3-*.xml
             ./coverage/result-*.trx
 
+  type-definitions-test:
+    name: Type definitions test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install
+
+      - run: npm run bootstrap
+
+      - run: npm run build --if-present
+
+      - name: Run tsd under packages/bundle
+        run: ./node_modules/.bin/tsd
+        working-directory: ./packages/bundle
+
+      - name: Run tsd under packages/core
+        run: ./node_modules/.bin/tsd
+        working-directory: ./packages/core
+
   html-test:
     name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
     needs:

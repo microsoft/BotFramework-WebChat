@@ -3,7 +3,7 @@
   "version": "0.0.0-0",
   "description": "A highly-customizable web-based chat client for Azure Bot Services.",
   "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "types": "lib/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
@@ -23,6 +23,17 @@
     "lib/**/*",
     "src/**/*"
   ],
+  "tsd": {
+    "compilerOptions": {
+      "allowSyntheticDefaultImports": true,
+      "downlevelIteration": true,
+      "jsx": "react",
+      "noImplicitAny": false,
+      "resolveJsonModule": true,
+      "skipLibCheck": true,
+      "strict": false
+    }
+  },
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "npm run build:typescript && npm run build:babel && npm run build:webpack",
@@ -132,6 +143,8 @@
     "isomorphic-react-dom": "^0.0.0-0",
     "source-map-loader": "^4.0.1",
     "terser-webpack-plugin": "^5.3.9",
+    "tsd": "^0.30.3",
+    "type-fest": "^4.9.0",
     "typescript": "^5.3.2",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
