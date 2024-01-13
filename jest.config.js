@@ -136,8 +136,7 @@ module.exports = {
   ],
   transform: {
     '[\\/]__tests__[\\/]html[\\/]': './babel-passthru-transformer.js',
-    // '\\.[jt]sx?$': './babel-jest-config.js'
-    '\\.[jt]sx?$': 'babel-jest'
+    '\\.[jt]sx?$': './babel-jest-config.js'
   },
   transformIgnorePatterns: [
     // jest-environment-jsdom import packages as browser.
