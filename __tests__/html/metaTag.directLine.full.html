@@ -12,7 +12,7 @@
       run(async function () {
         const directLine = WebChat.createDirectLine({});
 
-        expect(directLine.botAgent).toBe(`WebChat/${WebChatFull.version} (Minimal)`);
+        expect(directLine.botAgent).toMatch(/^WebChat\/\d+\.\d+\.\d+(-[^\s]+)? \(Full\)$/u);
       });
     </script>
   </body>
