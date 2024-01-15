@@ -36,6 +36,7 @@ jobs:
       - if: "env.skip-secure-feed != 'true'"
         name: Enable secure feed
         run: npx https://aka.ms/EnableSecureFeed
+        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -87,6 +88,7 @@ jobs:
       - if: "env.skip-secure-feed != 'true'"
         name: Enable secure feed
         run: npx https://aka.ms/EnableSecureFeed
+        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -103,7 +105,7 @@ jobs:
       - run: npm run precommit --if-present
 
   unit-test:
-    name: Unit test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
+    name: Unit test
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -117,6 +119,7 @@ jobs:
       - if: "env.skip-secure-feed != 'true'"
         name: Enable secure feed
         run: npx https://aka.ms/EnableSecureFeed
+        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -130,7 +133,7 @@ jobs:
 
       - run: npm run build --if-present
 
-      - name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }} --testPathPattern packages/
+      - name: Run jest --testPathPattern packages/
         run: |
           ./node_modules/.bin/jest \
           --ci \
@@ -138,7 +141,6 @@ jobs:
           --forceExit \
           --logHeapUsage \
           --runInBand \
-          --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }} \
           --testPathPattern=/packages/\
         timeout-minutes: 10
 
@@ -174,6 +176,7 @@ jobs:
       - if: "env.skip-secure-feed != 'true'"
         name: Enable secure feed
         run: npx https://aka.ms/EnableSecureFeed
+        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -210,6 +213,7 @@ jobs:
       - if: "env.skip-secure-feed != 'true'"
         name: Enable secure feed
         run: npx https://aka.ms/EnableSecureFeed
+        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -329,9 +333,6 @@ jobs:
             --add-tracefile lcov-15.info \
             --add-tracefile lcov-16.info \
             --add-tracefile lcov-17.info \
-            --add-tracefile lcov-18.info \
-            --add-tracefile lcov-19.info \
-            --add-tracefile lcov-20.info \
             --add-tracefile lcov-unit.info \
             --output-file lcov.info
 
