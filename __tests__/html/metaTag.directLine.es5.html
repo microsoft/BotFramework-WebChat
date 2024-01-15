@@ -12,7 +12,7 @@
       run(async function () {
         const directLine = WebChat.createDirectLine({});
 
-        expect(directLine.botAgent).toMatch(/^WebChat\/\d+\.\d+\.\d+(-[^\s]+)? \(ES5\)$/u);
+        expect(directLine._botAgent).toMatch(/(^|\s)WebChat\/\d+\.\d+\.\d+(-[^\s]+)? \(ES5\)/u);
       });
     </script>
   </body>
