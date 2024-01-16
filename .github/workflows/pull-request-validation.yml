@@ -107,11 +107,6 @@ jobs:
   unit-test:
     name: Unit test
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shard-index: [1]
-        shard-count: [1]
 
     steps:
       - uses: actions/checkout@v4
