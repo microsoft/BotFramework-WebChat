@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+  <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <style>
+    .custom-activity {
+      border: thick solid red;
+    }
+  </style>
+</head>
+
+<body>
+  <main id="webchat"></main>
+  <script type="text/babel" data-presets="env,stage-3,react">
+    const {
+      ReactDOM: { render },
+      WebChat: {
+        Components: { BasicWebChat, Composer },
+      }
+    } = window;
+
+    const NOW = Date.now();
+
+    const CustomActivity = ({ children }) => {
+      return (<div className="custom-activity">
+        {children}
+      </div>)
+    }
+
+    run(
+      async function () {
+        await new Promise(resolve =>
+          render(
+            <Composer
+              activityMiddleware={[
+                () => next => (...args) => {
+                  const [ { activity } ] = args;
+                  if (activity.text.includes('second')) {
+                    const Next = next(...args)
+
+                    return 
+                      <CustomActivity activity={activity}>
+                        <Next />
+                      </CustomActivity>
+                  }
+                  return next(...args);
+                }
+              ]}
+              directLine={testHelpers.createDirectLineWithTranscript([
+                {
+                  from: {
+                    id: 'bot',
+                    role: 'bot'
+                  },
+                  id: '0',
+                  text: 'This is the first message.',
+                  timestamp: new Date(NOW).toISOString(),
+                  type: 'message'
+                },
+                {
+                  from: {
+                    id: 'bot',
+                    role: 'bot'
+                  },
+                  id: '1',
+                  text: 'This is the second message.',
+                  timestamp: new Date(NOW).toISOString(),
+                  type: 'message'
+                },
+              ])}
+              store={testHelpers.createStore()}
+            >
+              <BasicWebChat />
+            </Composer>,
+            document.getElementById('webchat'),
+            resolve
+          )
+        );
+
+        await pageConditions.uiConnected();
+        await host.snapshot();
+      },
+      { ignoreErrors: true }
+    );
+  </script>
+</body>
+
+</html>
