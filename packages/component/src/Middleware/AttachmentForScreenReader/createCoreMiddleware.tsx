@@ -25,16 +25,16 @@ export default function createCoreMiddleware(): AttachmentForScreenReaderMiddlew
         return (isText ? !attachment.content : role === 'user' && !thumbnailUrl)
           ? () => <FileAttachment attachment={attachment} />
           : /^audio\//u.test(contentType)
-          ? () => <AudioAttachment />
-          : /^image\//u.test(contentType)
-          ? () => <ImageAttachment />
-          : /^video\//u.test(contentType)
-          ? () => <VideoAttachment />
-          : contentUrl || contentType === 'application/octet-stream'
-          ? () => <FileAttachment attachment={attachment} />
-          : isText
-          ? () => <TextAttachment attachment={attachment} />
-          : next(...args);
+            ? () => <AudioAttachment />
+            : /^image\//u.test(contentType)
+              ? () => <ImageAttachment />
+              : /^video\//u.test(contentType)
+                ? () => <VideoAttachment />
+                : contentUrl || contentType === 'application/octet-stream'
+                  ? () => <FileAttachment attachment={attachment} />
+                  : isText
+                    ? () => <TextAttachment attachment={attachment} />
+                    : next(...args);
       }
   ];
 }

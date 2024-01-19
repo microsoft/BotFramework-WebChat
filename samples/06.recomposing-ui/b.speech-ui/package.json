@@ -4,12 +4,12 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/",
   "dependencies": {
-    "botframework-webchat": "^4.15.9",
+    "botframework-webchat": "^4.16.0",
     "classnames": "^2.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-redux": "^8.1.2",
-    "redux": "^4.2.1"
+    "react-redux": "^9.0.2",
+    "redux": "^5.0.0"
   },
   "devDependencies": {
     "react-scripts": "^5.0.1"

@@ -135,8 +135,8 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
           typeof timestamp === 'number'
             ? new Date(now + timestamp).toISOString()
             : typeof timestamp === 'undefined'
-            ? getTimestamp()
-            : timestamp
+              ? getTimestamp()
+              : timestamp
         );
         activity = updateIn(activity, ['type'], type => type || 'message');
       }

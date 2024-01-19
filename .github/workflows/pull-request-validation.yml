@@ -36,6 +36,7 @@ jobs:
       - if: "env.skip-secure-feed != 'true'"
         name: Enable secure feed
         run: npx https://aka.ms/EnableSecureFeed
+        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -87,6 +88,7 @@ jobs:
       - if: "env.skip-secure-feed != 'true'"
         name: Enable secure feed
         run: npx https://aka.ms/EnableSecureFeed
+        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -112,6 +114,7 @@ jobs:
       - if: "env.skip-secure-feed != 'true'"
         name: Enable secure feed
         run: npx https://aka.ms/EnableSecureFeed
+        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -128,12 +131,12 @@ jobs:
       - name: Run jest --testPathPattern packages/
         run: |
           ./node_modules/.bin/jest \
-            --ci \
-            --coverage true \
-            --forceExit \
-            --logHeapUsage \
-            --runInBand \
-            --testPathPattern=/packages/\
+          --ci \
+          --coverage true \
+          --forceExit \
+          --logHeapUsage \
+          --runInBand \
+          --testPathPattern=/packages/\
         timeout-minutes: 10
 
       - if: always()
@@ -158,6 +161,38 @@ jobs:
             ./coverage/nunit3-*.xml
             ./coverage/result-*.trx
 
+  type-definitions-test:
+    name: Type definitions test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - if: "env.skip-secure-feed != 'true'"
+        name: Enable secure feed
+        run: npx https://aka.ms/EnableSecureFeed
+        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install
+
+      - run: npm run bootstrap
+
+      - run: npm run build --if-present
+
+      - name: Run tsd under packages/bundle
+        run: ./node_modules/.bin/tsd
+        working-directory: ./packages/bundle
+
+      - name: Run tsd under packages/core
+        run: ./node_modules/.bin/tsd
+        working-directory: ./packages/core
+
   html-test:
     name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
     needs:
@@ -166,13 +201,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard-index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-        shard-count: [20]
+        shard-index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+        shard-count: [17]
 
     steps:
       - if: "env.skip-secure-feed != 'true'"
         name: Enable secure feed
         run: npx https://aka.ms/EnableSecureFeed
+        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -292,9 +328,6 @@ jobs:
             --add-tracefile lcov-15.info \
             --add-tracefile lcov-16.info \
             --add-tracefile lcov-17.info \
-            --add-tracefile lcov-18.info \
-            --add-tracefile lcov-19.info \
-            --add-tracefile lcov-20.info \
             --add-tracefile lcov-unit.info \
             --output-file lcov.info
 

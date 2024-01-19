@@ -33,18 +33,18 @@
   },
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^2.2.1",
-    "botbuilder": "^4.20.0",
-    "botbuilder-dialogs": "^4.20.0",
+    "botbuilder": "^4.21.2",
+    "botbuilder-dialogs": "^4.21.2",
     "dotenv": "^16.3.1",
     "restify": "^11.1.0"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-standard": "^5.0.0",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.2"
   }
 }

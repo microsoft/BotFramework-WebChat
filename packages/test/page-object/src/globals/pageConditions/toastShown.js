@@ -7,10 +7,10 @@ export default function toastShown(message) {
     typeof message === 'number'
       ? `for number of visible toasts equals to ${message}`
       : !message
-      ? 'for any toast to show'
-      : message instanceof RegExp
-      ? `for toast that match ${message}`
-      : `for toast "${message}"`;
+        ? 'for any toast to show'
+        : message instanceof RegExp
+          ? `for toast that match ${message}`
+          : `for toast "${message}"`;
 
   return became(
     conditionMessage,

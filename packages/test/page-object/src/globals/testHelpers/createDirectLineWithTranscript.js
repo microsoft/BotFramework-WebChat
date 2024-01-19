@@ -52,8 +52,8 @@ export default function createDirectLineWithTranscript(
         !activitiesOrFilename
           ? []
           : Array.isArray(activitiesOrFilename)
-          ? activitiesOrFilename
-          : await loadTranscriptAsset(activitiesOrFilename)
+            ? activitiesOrFilename
+            : await loadTranscriptAsset(activitiesOrFilename)
       ).map(patchActivity);
 
       setTimeout(() => {

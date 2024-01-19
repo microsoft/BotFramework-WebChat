@@ -2,7 +2,7 @@
 
 import { call, cancel, cancelled, fork, put, race, take } from 'redux-saga/effects';
 
-import decode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 import { CONNECT } from '../actions/connect';
 import createPromiseQueue from '../createPromiseQueue';
@@ -45,7 +45,7 @@ function rectifyUserID(directLine, userIDFromAction) {
 
   // TODO: Add test to make sure "jwt-decode" work as expected.
   try {
-    userIDFromToken = (decode(token) || {}).user;
+    userIDFromToken = (jwtDecode(token) || {}).user;
     // eslint-disable-next-line no-empty
   } catch (err) {}
 
