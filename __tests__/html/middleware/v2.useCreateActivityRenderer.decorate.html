@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style>
+      .custom-activity {
+        border: thick solid red;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        ReactDOM: { render },
+        WebChat: {
+          Components: { Composer },
+          hooks: { useActivities, useCreateActivityRenderer }, v2Middleware
+        }
+      } = window;
+
+      run(
+        async function () {
+          const CustomActivity = ({ children }) => {
+            return (<div className="custom-activity">
+              {children}
+            </div>)
+          };
+
+          const Test = () => {
+            const [activities] = useActivities();
+            const createActivityRenderer = useCreateActivityRenderer();
+
+            return <React.Fragment>
+              {activities.map(activity => {
+                const renderActivity = createActivityRenderer({ activity });
+    
+                return (
+                  <React.Fragment key={activity.id}>
+                    {renderActivity && renderActivity({ renderActivityStatus: () => 'Custom activity status' })}
+                  </React.Fragment>
+                );
+              })}
+              {!!activities.length && <div className="done" />}
+            </React.Fragment>;
+          };
+
+          const directLine = await testHelpers.createDirectLineWithTranscript([
+            {
+              from: { role: 'bot' },
+              id: '1.0',
+              text: 'Nostrud in dolor Lorem nulla esse anim nisi adipisicing do nisi.',
+              timestamp: 0,
+              type: 'message'
+            },
+            {
+              from: { role: 'bot' },
+              id: '1.1',
+              text: 'Nostrud in dolor Lorem nulla esse anim nisi adipisicing do nisi decorated.',
+              timestamp: 0,
+              type: 'message'
+            }
+          ]);
+
+          const store = testHelpers.createStore();
+
+          const middleware = [
+            v2Middleware(() => next => props => {
+              const { activity } = props;
+              if (activity.text.includes('decorated')) {
+                const Next = next(props);
+                if (!Next) return Next;
+                return (props) => (
+                  <CustomActivity>
+                    <Next {...props} />
+                  </CustomActivity>
+                );
+              }
+              return next(props);
+            })
+          ];
+
+          render(
+            <Composer activityMiddleware={middleware} directLine={directLine} store={store}>
+              <Test />
+            </Composer>,
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.uiConnected();
+          await pageConditions.became('Done', () => document.querySelector('.done'), 1000);
+
+          await host.snapshot();
+        },
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>

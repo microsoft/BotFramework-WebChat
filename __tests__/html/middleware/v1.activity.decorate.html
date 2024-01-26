@@ -43,10 +43,12 @@
               activityMiddleware={[
                 () => next => (...args) => {
                   const [ { activity } ] = args;
-                  if (activity.text.includes('second')) {
+                  if (activity.text.includes('decorated')) {
+                    const renderActivity = next(...args)
+                    if (!renderActivity) return renderActivity;
                     return (...args) => (
                       <CustomActivity activity={activity}>
-                        { activity.text }
+                        {renderActivity.call ? renderActivity(...args) : renderActivity}
                       </CustomActivity>
                     );
                   }
@@ -70,7 +72,17 @@
                     role: 'bot'
                   },
                   id: '1',
-                  text: 'This is the second message.',
+                  text: 'This is the decorated custom message.',
+                  timestamp: new Date(NOW).toISOString(),
+                  type: 'custom-message'
+                },
+                {
+                  from: {
+                    id: 'bot',
+                    role: 'bot'
+                  },
+                  id: '2',
+                  text: 'This is the decorated message.',
                   timestamp: new Date(NOW).toISOString(),
                   type: 'message'
                 },

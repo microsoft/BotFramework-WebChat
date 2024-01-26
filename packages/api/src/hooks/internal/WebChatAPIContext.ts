@@ -69,6 +69,7 @@ type WebChatAPIContext = {
   typingIndicatorRenderer?: any; // TODO
   userID?: string;
   username?: string;
+  isUsingActivityMiddlewareV2: boolean;
 };
 
 const context = createContext<WebChatAPIContext>(undefined);

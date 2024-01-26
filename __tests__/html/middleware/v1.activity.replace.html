@@ -43,15 +43,12 @@
               activityMiddleware={[
                 () => next => (...args) => {
                   const [ { activity } ] = args;
-                  if (activity.text.includes('second')) {
-                    return (props) => {
-                      expect(activity).toEqual(props.activity);
-                      return (
-                        <CustomActivity activity={props.activity}>
-                          { props.activity.text }
-                        </CustomActivity>
-                      )
-                    }
+                  if (activity.text.includes('replace')) {
+                    return (...args) => (
+                      <CustomActivity>
+                        { activity.text }
+                      </CustomActivity>
+                    );
                   }
                   return next(...args);
                 }
@@ -73,7 +70,7 @@
                     role: 'bot'
                   },
                   id: '1',
-                  text: 'This is the second message.',
+                  text: 'This is the activity to replace.',
                   timestamp: new Date(NOW).toISOString(),
                   type: 'message'
                 },

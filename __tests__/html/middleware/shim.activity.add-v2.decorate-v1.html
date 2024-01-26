@@ -11,7 +11,7 @@
   <script crossorigin="anonymous" src="/test-page-object.js"></script>
   <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   <style>
-    .custom-activity {
+    .decorated-activity {
       border: thick solid red;
     }
   </style>
@@ -23,15 +23,22 @@
     const {
       ReactDOM: { render },
       WebChat: {
-        Components: { BasicWebChat, Composer },
+        Components: { BasicWebChat, Composer }, v2Middleware
       }
     } = window;
 
     const NOW = Date.now();
 
-    const CustomActivity = ({ children }) => {
-      return (<div className="custom-activity">
+    const DecoratedActivity = ({ children }) => {
+      return (<div className="decorated-activity">
         {children}
+      </div>)
+    }
+
+    const CustomActivity = ({ activity }) => {
+      return (<div>
+        <h2>{activity.data.heading}</h2>
+        <p>{activity.text}</p>
       </div>)
     }
 
@@ -42,17 +49,25 @@
             <Composer
               activityMiddleware={[
                 () => next => (...args) => {
-                  const [ { activity } ] = args;
-                  if (activity.text.includes('second')) {
-                    const renderActivity = next(...args)
+                  const [ { activity } ] = args;                  
+                  if (activity.text.includes('decorated')) {
+                    const renderActivity = next(...args);
+                    if (!renderActivity) return renderActivity;
                     return (...args) => (
-                      <CustomActivity activity={activity}>
-                        {renderActivity(...args)}
-                      </CustomActivity>
+                      <DecoratedActivity>
+                        {renderActivity.call ? renderActivity(...args) : renderActivity}
+                      </DecoratedActivity>
                     );
                   }
-                  return next(...args);
-                }
+                  return next(...args)
+                },
+                v2Middleware(() => next => props => {
+                  const { activity } = props;
+                  if (activity.type === 'custom-activity') {
+                    return CustomActivity;
+                  }
+                  return next(props);
+                })
               ]}
               directLine={testHelpers.createDirectLineWithTranscript([
                 {
@@ -71,9 +86,35 @@
                     role: 'bot'
                   },
                   id: '1',
-                  text: 'This is the second message.',
+                  text: 'This is the decorated activity.',
                   timestamp: new Date(NOW).toISOString(),
                   type: 'message'
+                },
+                {
+                  from: {
+                    id: 'bot',
+                    role: 'bot'
+                  },
+                  id: '2',
+                  data: {
+                    heading: 'Custom Activity',
+                  },
+                  text: 'Custom activity text',
+                  timestamp: new Date(NOW).toISOString(),
+                  type: 'custom-activity'
+                },
+                {
+                  from: {
+                    id: 'bot',
+                    role: 'bot'
+                  },
+                  id: '3',
+                  data: {
+                    heading: 'Custom Activity',
+                  },
+                  text: 'Custom decorated activity text',
+                  timestamp: new Date(NOW).toISOString(),
+                  type: 'custom-activity'
                 },
               ])}
               store={testHelpers.createStore()}

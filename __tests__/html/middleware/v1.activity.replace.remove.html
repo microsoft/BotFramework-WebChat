@@ -10,6 +10,11 @@
   <script crossorigin="anonymous" src="/test-harness.js"></script>
   <script crossorigin="anonymous" src="/test-page-object.js"></script>
   <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <style>
+    .custom-activity {
+      border: thick solid red;
+    }
+  </style>
 </head>
 
 <body>
@@ -25,8 +30,8 @@
     const NOW = Date.now();
 
     const CustomActivity = ({ children }) => {
-      return (<div className="removed-activity">
-        Activity removed
+      return (<div className="custom-activity">
+        {children}
       </div>)
     }
 
@@ -40,6 +45,17 @@
                   const [ { activity } ] = args;
                   if (activity.text.includes('removed')) {
                     return false;
+                  }
+                  return next(...args);
+                },
+                () => next => (...args) => {
+                  const [ { activity } ] = args;
+                  if (activity.text.includes('replace')) {
+                    return (...args) => (
+                      <CustomActivity>
+                        { activity.text }
+                      </CustomActivity>
+                    );
                   }
                   return next(...args);
                 }
@@ -62,6 +78,26 @@
                   },
                   id: '1',
                   text: 'This is the removed message.',
+                  timestamp: new Date(NOW).toISOString(),
+                  type: 'message'
+                },
+                {
+                  from: {
+                    id: 'bot',
+                    role: 'bot'
+                  },
+                  id: '2',
+                  text: 'This is the activity to replace.',
+                  timestamp: new Date(NOW).toISOString(),
+                  type: 'message'
+                },
+                {
+                  from: {
+                    id: 'bot',
+                    role: 'bot'
+                  },
+                  id: '3',
+                  text: 'This is the replaced activity to be removed.',
                   timestamp: new Date(NOW).toISOString(),
                   type: 'message'
                 },

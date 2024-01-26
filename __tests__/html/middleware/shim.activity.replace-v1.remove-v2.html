@@ -10,6 +10,11 @@
   <script crossorigin="anonymous" src="/test-harness.js"></script>
   <script crossorigin="anonymous" src="/test-page-object.js"></script>
   <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <style>
+    .custom-activity {
+      border: thick solid red;
+    }
+  </style>
 </head>
 
 <body>
@@ -24,10 +29,9 @@
 
     const NOW = Date.now();
 
-    const CustomActivity = ({ activity }) => {
-      return (<div>
-        <h2>{activity.data.heading}</h2>
-        <p>{activity.data.text}</p>
+    const CustomActivity = ({ children }) => {
+      return (<div className="custom-activity">
+        {children}
       </div>)
     }
 
@@ -37,10 +41,21 @@
           render(
             <Composer
               activityMiddleware={[
+                v2Middleware(() => next => (props) => {
+                  const { activity } = props;
+                  if (activity.text.includes('removed')) {
+                    return false;
+                  }
+                  return next(props);
+                }),
                 () => next => (...args) => {
                   const [ { activity } ] = args;
-                  if (activity.type === 'custom-activity') {
-                    return CustomActivity;
+                  if (activity.text.includes('replace')) {
+                    return (...args) => (
+                      <CustomActivity>
+                        { activity.text }
+                      </CustomActivity>
+                    );
                   }
                   return next(...args);
                 }
@@ -62,12 +77,29 @@
                     role: 'bot'
                   },
                   id: '1',
-                  data: {
-                    heading: 'Custom Activity',
-                    text: 'Custom activity text'
-                  },
+                  text: 'This is the removed message.',
                   timestamp: new Date(NOW).toISOString(),
-                  type: 'custom-activity'
+                  type: 'message'
+                },
+                {
+                  from: {
+                    id: 'bot',
+                    role: 'bot'
+                  },
+                  id: '2',
+                  text: 'This is the activity to replace.',
+                  timestamp: new Date(NOW).toISOString(),
+                  type: 'message'
+                },
+                {
+                  from: {
+                    id: 'bot',
+                    role: 'bot'
+                  },
+                  id: '3',
+                  text: 'This is the replaced activity to be removed.',
+                  timestamp: new Date(NOW).toISOString(),
+                  type: 'message'
                 },
               ])}
               store={testHelpers.createStore()}

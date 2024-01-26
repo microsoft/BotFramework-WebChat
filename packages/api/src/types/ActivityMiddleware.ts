@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import type { RenderAttachment } from './AttachmentMiddleware';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
-type ActivityProps = {
+export type ActivityProps = {
   hideTimestamp: boolean;
   renderActivityStatus: (options: { hideTimestamp: boolean }) => ReactNode;
   renderAvatar: false | (() => Exclude<ReactNode, boolean | null | undefined>);
@@ -11,7 +11,7 @@ type ActivityProps = {
 
 type ActivityComponent = (props: ActivityProps) => Exclude<ReactNode, boolean | null | undefined>;
 
-type ActivityComponentFactoryOptions = {
+export type ActivityComponentFactoryOptions = {
   activity: WebChatActivity;
   nextVisibleActivity: WebChatActivity;
 };

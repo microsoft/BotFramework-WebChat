@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style>
+      .custom-activity {
+        border: thick solid red;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        ReactDOM: { render },
+        WebChat: {
+          Components: { BasicWebChat, Composer },
+          hooks: { useActivities, useRenderAttachment }
+        }
+      } = window;
+
+      run(async function () {
+        const CustomActivity = ({ children }) => {
+          return (<div className="custom-activity">
+            {children}
+          </div>)
+        };
+
+        const directLine = await testHelpers.createDirectLineWithTranscript([
+          {
+            attachments: [
+              {
+                contentType: 'image/png',
+                contentUrl:
+                  'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+              }
+            ],
+            from: { role: 'bot' },
+            id: '1.0',
+            text: 'Nostrud in dolor Lorem nulla esse anim nisi adipisicing do nisi.',
+            timestamp: 0,
+            type: 'message'
+          },
+          {
+            attachments: [
+              {
+                contentType: 'image/png',
+                contentUrl:
+                  'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+              }
+            ],
+            from: { role: 'bot' },
+            id: '1.1',
+            text: 'Nostrud in dolor Lorem nulla esse anim nisi adipisicing do nisi decorated.',
+            timestamp: 0,
+            type: 'message'
+          }
+        ]);
+
+        const store = testHelpers.createStore();
+
+        const middleware = [
+          () => next => (...args) => {
+            const [ { activity } ] = args;
+            if (activity.text.includes('decorated')) {
+              const renderActivity = next(...args)
+              if (!renderActivity) return renderActivity;
+              return (...args) => (
+                <CustomActivity activity={activity}>
+                  {renderActivity.call ? renderActivity(...args) : renderActivity}
+                </CustomActivity>
+              );
+            }
+            return next(...args);
+          },
+          () => next => ({ activity }) => {
+            const Attachment = () => {
+              const renderAttachment = useRenderAttachment();
+              const attachment = renderAttachment({ activity, attachment: activity.attachments[0] });
+              return attachment;
+            } 
+            return <Attachment />
+          }
+        ];
+
+        render(
+          <Composer activityMiddleware={middleware} directLine={directLine} store={store}>
+            <BasicWebChat />
+          </Composer>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.allImagesLoaded();
+
+        await host.snapshot();
+      }, { ignoreErrors: true });
+    </script>
+  </body>
+</html>

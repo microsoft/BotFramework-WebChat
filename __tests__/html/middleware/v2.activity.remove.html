@@ -10,11 +10,6 @@
   <script crossorigin="anonymous" src="/test-harness.js"></script>
   <script crossorigin="anonymous" src="/test-page-object.js"></script>
   <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-  <style>
-    .custom-activity {
-      border: thick solid red;
-    }
-  </style>
 </head>
 
 <body>
@@ -23,17 +18,11 @@
     const {
       ReactDOM: { render },
       WebChat: {
-        Components: { BasicWebChat, Composer },
+        Components: { BasicWebChat, Composer }, v2Middleware
       }
     } = window;
 
     const NOW = Date.now();
-
-    const CustomActivity = ({ children }) => {
-      return (<div className="custom-activity">
-        {children}
-      </div>)
-    }
 
     run(
       async function () {
@@ -41,18 +30,13 @@
           render(
             <Composer
               activityMiddleware={[
-                () => next => (...args) => {
-                  const [ { activity } ] = args;
-                  if (activity.text.includes('second')) {
-                    const Next = next(...args)
-
-                    return 
-                      <CustomActivity activity={activity}>
-                        <Next />
-                      </CustomActivity>
+                v2Middleware(() => next => (props) => {
+                  const { activity } = props;
+                  if (activity.text.includes('removed')) {
+                    return false;
                   }
-                  return next(...args);
-                }
+                  return next(props);
+                })
               ]}
               directLine={testHelpers.createDirectLineWithTranscript([
                 {
@@ -71,7 +55,7 @@
                     role: 'bot'
                   },
                   id: '1',
-                  text: 'This is the second message.',
+                  text: 'This is the removed message.',
                   timestamp: new Date(NOW).toISOString(),
                   type: 'message'
                 },

@@ -10,6 +10,11 @@
   <script crossorigin="anonymous" src="/test-harness.js"></script>
   <script crossorigin="anonymous" src="/test-page-object.js"></script>
   <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <style>
+    .decorated-activity {
+      border: thick solid red;
+    }
+  </style>
 </head>
 
 <body>
@@ -18,15 +23,22 @@
     const {
       ReactDOM: { render },
       WebChat: {
-        Components: { BasicWebChat, Composer },
+        Components: { BasicWebChat, Composer }, v2Middleware
       }
     } = window;
 
     const NOW = Date.now();
 
-    const CustomActivity = ({ children }) => {
-      return (<div className="removed-activity">
-        Activity removed
+    const DecoratedActivity = ({ children }) => {
+      return (<div className="decorated-activity">
+        {children}
+      </div>)
+    }
+
+    const CustomActivity = ({ activity }) => {
+      return (<div>
+        <h2>{activity.data.heading}</h2>
+        <p>{activity.text}</p>
       </div>)
     }
 
@@ -38,8 +50,21 @@
               activityMiddleware={[
                 () => next => (...args) => {
                   const [ { activity } ] = args;
-                  if (activity.text.includes('removed')) {
-                    return false;
+                  if (activity.text.includes('decorated')) {
+                    const renderActivity = next(...args);
+                    if (!renderActivity) return renderActivity;
+                    return (...args) => (
+                      <DecoratedActivity activity={activity}>
+                        {renderActivity.call ? renderActivity(...args) : renderActivity}
+                      </DecoratedActivity>
+                    );
+                  }
+                  return next(...args);
+                },
+                () => next => (...args) => {
+                  const [ { activity } ] = args;
+                  if (activity.type === 'custom-activity') {
+                    return <CustomActivity activity={activity} />;
                   }
                   return next(...args);
                 }
@@ -61,9 +86,35 @@
                     role: 'bot'
                   },
                   id: '1',
-                  text: 'This is the removed message.',
+                  text: 'This is the decorated activity.',
                   timestamp: new Date(NOW).toISOString(),
                   type: 'message'
+                },
+                {
+                  from: {
+                    id: 'bot',
+                    role: 'bot'
+                  },
+                  id: '2',
+                  data: {
+                    heading: 'Custom Activity',
+                  },
+                  text: 'Custom activity text',
+                  timestamp: new Date(NOW).toISOString(),
+                  type: 'custom-activity'
+                },
+                {
+                  from: {
+                    id: 'bot',
+                    role: 'bot'
+                  },
+                  id: '3',
+                  data: {
+                    heading: 'Custom Activity',
+                  },
+                  text: 'Custom decorated activity text',
+                  timestamp: new Date(NOW).toISOString(),
+                  type: 'custom-activity'
                 },
               ])}
               store={testHelpers.createStore()}

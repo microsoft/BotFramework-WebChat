@@ -27,7 +27,7 @@
     const CustomActivity = ({ activity }) => {
       return (<div>
         <h2>{activity.data.heading}</h2>
-        <p>{activity.data.text}</p>
+        <p>{activity.text}</p>
       </div>)
     }
 
@@ -64,8 +64,8 @@
                   id: '1',
                   data: {
                     heading: 'Custom Activity',
-                    text: 'Custom activity text'
                   },
+                  text: 'Custom activity text',
                   timestamp: new Date(NOW).toISOString(),
                   type: 'custom-activity'
                 },

@@ -66,6 +66,7 @@ import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import usePonyfill from '../hooks/usePonyfill';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
+import { applyV2MiddlewareShim, isV2Middleware, middlewareTypeShim } from '../utils/v2Middleware';
 
 import applyMiddleware, {
   forLegacyRenderer as applyMiddlewareForLegacyRenderer,
@@ -85,6 +86,7 @@ import type {
   WebChatActivity
 } from 'botframework-webchat-core';
 import type { ReactNode } from 'react';
+import { ActivityMiddlewareProvider } from '../providers/ActivityMiddleware/ActivityMiddleware';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -581,9 +583,11 @@ const ComposerCore = ({
       trackDimension,
       typingIndicatorRenderer: patchedTypingIndicatorRenderer,
       userID,
-      username
+      username,
+      isUsingActivityMiddlewareV2: singleToArray(activityMiddleware).some(md => isV2Middleware(md))
     }),
     [
+      activityMiddleware,
       cardActionContext,
       directLine,
       disabled,
@@ -609,21 +613,36 @@ const ComposerCore = ({
       renderMarkdown,
       scrollToEndButtonRenderer,
       sendTypingIndicator,
-      telemetryDimensionsRef,
       trackDimension,
       userID,
       username
     ]
   );
 
+  const ActivityMiddlewareV2Provider = useMemo(
+    () =>
+      context.isUsingActivityMiddlewareV2
+        ? ({ children }) => (
+            <ActivityMiddlewareProvider
+              middleware={applyV2MiddlewareShim(singleToArray(activityMiddleware), middlewareTypeShim.activity)}
+            >
+              {children}
+            </ActivityMiddlewareProvider>
+          )
+        : ({ children }) => <React.Fragment>{children}</React.Fragment>,
+    [activityMiddleware, context.isUsingActivityMiddlewareV2]
+  );
+
   return (
-    <WebChatAPIContext.Provider value={context}>
-      <ActivitySendStatusComposer>
-        {typeof children === 'function' ? children(context) : children}
-        <ActivitySendStatusTelemetryComposer />
-      </ActivitySendStatusComposer>
-      {onTelemetry && <Tracker />}
-    </WebChatAPIContext.Provider>
+    <ActivityMiddlewareV2Provider>
+      <WebChatAPIContext.Provider value={context}>
+        <ActivitySendStatusComposer>
+          {typeof children === 'function' ? children(context) : children}
+          <ActivitySendStatusTelemetryComposer />
+        </ActivitySendStatusComposer>
+        {onTelemetry && <Tracker />}
+      </WebChatAPIContext.Provider>
+    </ActivityMiddlewareV2Provider>
   );
 };
 
