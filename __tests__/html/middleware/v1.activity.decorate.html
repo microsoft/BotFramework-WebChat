@@ -44,7 +44,7 @@
                 () => next => (...args) => {
                   const [ { activity } ] = args;
                   if (activity.text.includes('decorated')) {
-                    const renderActivity = next(...args)
+                    const renderActivity = next(...args);
                     if (!renderActivity) return renderActivity;
                     return (...args) => (
                       <CustomActivity activity={activity}>

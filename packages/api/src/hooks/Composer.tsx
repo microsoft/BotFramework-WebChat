@@ -66,7 +66,7 @@ import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import usePonyfill from '../hooks/usePonyfill';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
-import { applyV2MiddlewareShim, isV2Middleware, middlewareTypeShim } from '../utils/v2Middleware';
+import { isV2Middleware } from '../utils/v2Middleware';
 
 import applyMiddleware, {
   forLegacyRenderer as applyMiddlewareForLegacyRenderer,
@@ -619,30 +619,16 @@ const ComposerCore = ({
     ]
   );
 
-  const ActivityMiddlewareV2Provider = useMemo(
-    () =>
-      context.isUsingActivityMiddlewareV2
-        ? ({ children }) => (
-            <ActivityMiddlewareProvider
-              middleware={applyV2MiddlewareShim(singleToArray(activityMiddleware), middlewareTypeShim.activity)}
-            >
-              {children}
-            </ActivityMiddlewareProvider>
-          )
-        : ({ children }) => <React.Fragment>{children}</React.Fragment>,
-    [activityMiddleware, context.isUsingActivityMiddlewareV2]
-  );
-
   return (
-    <ActivityMiddlewareV2Provider>
-      <WebChatAPIContext.Provider value={context}>
+    <WebChatAPIContext.Provider value={context}>
+      <ActivityMiddlewareProvider middleware={activityMiddleware}>
         <ActivitySendStatusComposer>
           {typeof children === 'function' ? children(context) : children}
           <ActivitySendStatusTelemetryComposer />
         </ActivitySendStatusComposer>
         {onTelemetry && <Tracker />}
-      </WebChatAPIContext.Provider>
-    </ActivityMiddlewareV2Provider>
+      </ActivityMiddlewareProvider>
+    </WebChatAPIContext.Provider>
   );
 };
 

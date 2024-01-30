@@ -40,7 +40,6 @@
             return <React.Fragment>
               {activities.map(activity => {
                 const renderActivity = createActivityRenderer({ activity });
-    
                 return (
                   <React.Fragment key={activity.id}>
                     {renderActivity && renderActivity({ renderActivityStatus: () => 'Custom activity status' })}
