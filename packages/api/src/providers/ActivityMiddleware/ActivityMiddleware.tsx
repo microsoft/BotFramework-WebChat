@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { OneOrMany, singleToArray } from 'botframework-webchat-core';
 // TODO: fix the import location
@@ -11,7 +11,7 @@ import ActivityMiddleware, {
 import { applyV2MiddlewareShim, middlewareTypeShim } from '../../utils/v2Middleware';
 import useWebChatAPIContext from '../../hooks/internal/useWebChatAPIContext';
 
-const { Provider: ActivityMiddlewareProviderInner, Proxy: ActivityMiddlewareProxy } = createChainOfResponsibility<
+const { Provider: ActivityMiddlewareProviderInner, useBuildComponentCallback } = createChainOfResponsibility<
   ActivityComponentFactoryOptions,
   ActivityProps & ActivityComponentFactoryOptions
 >();
@@ -23,14 +23,14 @@ type ActivityMiddlewareProviderProps = Readonly<{
 
 const ActivityMiddlewareProvider = ({ middleware, children }: ActivityMiddlewareProviderProps): ReactNode => {
   const { isUsingActivityMiddlewareV2 } = useWebChatAPIContext();
-  return isUsingActivityMiddlewareV2 ? (
+  return (
     <ActivityMiddlewareProviderInner
-      middleware={applyV2MiddlewareShim(singleToArray(middleware), middlewareTypeShim.activity)}
+      middleware={
+        isUsingActivityMiddlewareV2 ? applyV2MiddlewareShim(singleToArray(middleware), middlewareTypeShim.activity) : []
+      }
     >
       {children}
     </ActivityMiddlewareProviderInner>
-  ) : (
-    <React.Fragment>{children}</React.Fragment>
   );
 };
 
@@ -46,11 +46,20 @@ ActivityMiddlewareProvider.propTypes = {
   middleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func])
 };
 
-ActivityMiddlewareProxy.displayName = 'ActivityMiddlewareProxy';
+function useCreateActivityRendererV2(): ActivityComponentFactory {
+  const enhancer = useBuildComponentCallback();
+  return useMemo(
+    () => createActivityRendererOptions => {
+      const Component = enhancer(createActivityRendererOptions);
 
-const useCreateActivityRendererV2: ActivityComponentFactory = options =>
-  function ActivityRendererV2(props) {
-    return <ActivityMiddlewareProxy request={options} {...props} {...options} />;
-  };
+      if (!Component) {
+        return false;
+      }
+
+      return props => <Component {...props} {...createActivityRendererOptions} />;
+    },
+    [enhancer]
+  );
+}
 
 export { ActivityMiddlewareProvider, useCreateActivityRendererV2 };

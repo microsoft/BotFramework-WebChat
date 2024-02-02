@@ -30,7 +30,7 @@
           render(
             <Composer
               activityMiddleware={[
-                v2Middleware(() => next => (props) => {
+                v2Middleware(() => next => props => {
                   const { activity } = props;
                   if (activity.text.includes('removed')) {
                     return false;
