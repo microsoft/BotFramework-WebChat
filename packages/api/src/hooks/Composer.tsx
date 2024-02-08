@@ -380,30 +380,34 @@ const ComposerCore = ({
     [telemetryDimensionsRef]
   );
 
+  const isUsingActivityMiddlewareV2 = useMemo(
+    () => singleToArray(activityMiddleware).some(md => isV2Middleware(md)),
+    [activityMiddleware]
+  );
+
   const patchedActivityRenderer = useMemo(() => {
     activityRenderer &&
       console.warn(
         'Web Chat: "activityRenderer" is deprecated and will be removed on 2022-06-15, please use "activityMiddleware" instead.'
       );
 
-    return (
-      activityRenderer ||
-      applyMiddlewareForRenderer(
-        'activity',
-        { strict: false },
-        ...singleToArray(activityMiddleware),
-        () =>
+    return activityRenderer || isUsingActivityMiddlewareV2
+      ? undefined
+      : applyMiddlewareForRenderer(
+          'activity',
+          { strict: false },
+          ...singleToArray(activityMiddleware),
           () =>
-          ({ activity }) => {
-            if (activity) {
-              throw new Error(`No renderer for activity of type "${activity.type}"`);
-            } else {
-              throw new Error('No activity to render');
+            () =>
+            ({ activity }) => {
+              if (activity) {
+                throw new Error(`No renderer for activity of type "${activity.type}"`);
+              } else {
+                throw new Error('No activity to render');
+              }
             }
-          }
-      )({})
-    );
-  }, [activityMiddleware, activityRenderer]);
+        )({});
+  }, [activityMiddleware, activityRenderer, isUsingActivityMiddlewareV2]);
 
   const patchedActivityStatusRenderer = useMemo<RenderActivityStatus>(() => {
     activityStatusRenderer &&
@@ -584,10 +588,9 @@ const ComposerCore = ({
       typingIndicatorRenderer: patchedTypingIndicatorRenderer,
       userID,
       username,
-      isUsingActivityMiddlewareV2: singleToArray(activityMiddleware).some(md => isV2Middleware(md))
+      isUsingActivityMiddlewareV2
     }),
     [
-      activityMiddleware,
       cardActionContext,
       directLine,
       disabled,
@@ -615,7 +618,8 @@ const ComposerCore = ({
       sendTypingIndicator,
       trackDimension,
       userID,
-      username
+      username,
+      isUsingActivityMiddlewareV2
     ]
   );
 
