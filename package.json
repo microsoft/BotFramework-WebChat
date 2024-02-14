@@ -24,7 +24,7 @@
     "auditfix": "npm run auditfix:packages && npm run auditfix:samples",
     "auditfix:packages": "for i in `find packages -name package.json ! -path */node_modules/* | xargs realpath | xargs dirname`; do echo \u001b[32m--- Audit-fixing $i/package.json ---\u001b[0m; cd $i; npm run auditfix; if [ $? -ne 0 ]; then echo \u001b[31m--- Error while audit-fixing $i/package.json ---\u001b[0m; break; fi; cd $OLDPWD; done; echo \u001b[32m--- Audit-fix completed ---\u001b[0m && lerna clean --yes && lerna bootstrap",
     "auditfix:samples": "for i in `find samples -name package.json ! -path */node_modules/* | xargs realpath | xargs dirname`; do echo \u001b[32m--- Audit-fixing $i/package.json ---\u001b[0m; cd $i; npm run auditfix; if [ $? -ne 0 ]; then echo \u001b[31m--- Error while audit-fixing $i/package.json ---\u001b[0m; break; fi; cd $OLDPWD; done; echo \u001b[32m--- Audit-fix completed ---\u001b[0m",
-    "bootstrap": "lerna bootstrap --ci",
+    "bootstrap": "lerna bootstrap --ci --hoist --nohoist=babel-loader",
     "browser": "node ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html/",
     "browser:watch": "node-dev --no-notify --respawn ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html/",
     "build": "lerna run --ignore playground --stream build",

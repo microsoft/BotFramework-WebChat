@@ -35,8 +35,9 @@
     }
   },
   "scripts": {
+    "tsup": "tsup --config tsup.config.ts",
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
-    "build": "npm run build:typescript && npm run build:babel && npm run build:webpack",
+    "build": "npm run tsup && npm run build:typescript && npm run build:babel && npm run build:webpack",
     "build:babel": "babel src --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --verbose",
     "build:typescript": "tsc --project src/tsconfig.json",
     "build:webpack": "webpack-cli",
@@ -100,7 +101,10 @@
     ]
   },
   "dependencies": {
-    "@babel/runtime": "7.19.0",
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
+  },
+  "devDependencies": {
     "adaptivecards": "2.11.1",
     "botframework-directlinejs": "0.15.5",
     "botframework-directlinespeech-sdk": "0.0.0-0",
@@ -122,15 +126,13 @@
     "url-search-params-polyfill": "8.2.5",
     "uuid": "8.3.2",
     "web-speech-cognitive-services": "7.1.3",
-    "whatwg-fetch": "3.6.19"
-  },
-  "devDependencies": {
+    "whatwg-fetch": "3.6.19",
     "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
     "@babel/plugin-transform-runtime": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
+    "@babel/runtime": "7.19.0",
     "@types/mdast": "^4.0.3",
     "@types/node": "^20.10.3",
     "@types/react": "^18.2.42",
@@ -144,6 +146,7 @@
     "source-map-loader": "^4.0.1",
     "terser-webpack-plugin": "^5.3.9",
     "tsd": "^0.30.3",
+    "tsup": "8.0.2",
     "type-fest": "^4.9.0",
     "typescript": "^5.3.2",
     "webpack": "^5.89.0",
