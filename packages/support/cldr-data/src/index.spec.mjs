@@ -1,6 +1,6 @@
 // This file is not processed by Jest, instead, will be run thru a wrapper named "index.spec.js".
 
-import { expect } from 'expect';
+import expect from 'expect';
 import fs from 'fs';
 
 import cldrData from './index.js';
