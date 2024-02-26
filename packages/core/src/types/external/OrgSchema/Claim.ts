@@ -1,3 +1,4 @@
+import { type MediaObject } from './MediaObject';
 import { type Project } from './Project';
 import { type Thing } from './Thing';
 
@@ -11,6 +12,9 @@ import { type Thing } from './Thing';
  * @see https://schema.org/Claim.
  */
 export type Claim = Thing<'Claim'> & {
+  /** A media object that encodes this CreativeWork. This property is a synonym for encoding. */
+  associatedMedia?: MediaObject;
+
   /**
    * For a [Claim](https://schema.org/Claim) interpreted from [MediaObject](https://schema.org/MediaObject) content sed to indicate a claim contained, implied or refined from the content of a [MediaObject](https://schema.org/MediaObject).
    *
