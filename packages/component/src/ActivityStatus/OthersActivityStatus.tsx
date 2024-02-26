@@ -1,19 +1,21 @@
 import {
   isOrgSchemaThingAsEntity,
   isOrgSchemaThingOf,
+  warnOnce,
   type OrgSchemaAsEntity,
   type OrgSchemaClaim,
+  type OrgSchemaReplyAction,
   type OrgSchemaVoteAction,
   type WebChatActivity
 } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import React, { memo, type ReactNode, useMemo } from 'react';
+import React, { memo, useMemo, type ReactNode } from 'react';
 
+import useStyleSet from '../hooks/useStyleSet';
 import Feedback from './private/Feedback/Feedback';
 import Originator from './private/Originator';
 import Slotted from './Slotted';
 import Timestamp from './Timestamp';
-import useStyleSet from '../hooks/useStyleSet';
 
 type DownvoteAction = OrgSchemaVoteAction & { actionOption: 'downvote' };
 type UpvoteAction = OrgSchemaVoteAction & { actionOption: 'upvote' };
@@ -28,9 +30,12 @@ function isUpvoteAction(voteAction: OrgSchemaVoteAction): voteAction is UpvoteAc
 
 type Props = Readonly<{ activity: WebChatActivity }>;
 
+const warnDeprecatedReplyAction = warnOnce(
+  '"ReplyAction" for originator is being deprecated, please use "claimInterpreter" instead. This feature will be removed in 2025-02-26.'
+);
+
 const OthersActivityStatus = memo(({ activity }: Props) => {
   const [{ sendStatus }] = useStyleSet();
-  // const entities = activity.entities as Array<OrgSchemaThing | WebChatEntity> | undefined;
   const { entities, timestamp } = activity;
 
   const firstClaim = useMemo<OrgSchemaClaim>(
@@ -38,6 +43,15 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
       (entities || []).find<OrgSchemaAsEntity<OrgSchemaClaim>>(
         (entity): entity is OrgSchemaAsEntity<OrgSchemaClaim> =>
           isOrgSchemaThingAsEntity(entity) && isOrgSchemaThingOf<OrgSchemaClaim>(entity, 'Claim')
+      ),
+    [entities]
+  );
+
+  const replyAction = useMemo<OrgSchemaReplyAction>(
+    () =>
+      (entities || []).find<OrgSchemaAsEntity<OrgSchemaReplyAction>>(
+        (entity): entity is OrgSchemaAsEntity<OrgSchemaReplyAction> =>
+          isOrgSchemaThingAsEntity(entity) && isOrgSchemaThingOf<OrgSchemaReplyAction>(entity, 'ReplyAction')
       ),
     [entities]
   );
@@ -57,18 +71,22 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
     [entities]
   );
 
+  replyAction && warnDeprecatedReplyAction();
+
   return (
     <Slotted className={classNames('webchat__activity-status', sendStatus + '')}>
       {useMemo<ReactNode[]>(
         () =>
           [
             timestamp && <Timestamp key="timestamp" timestamp={timestamp} />,
-            firstClaim?.claimInterpreter && (
-              <Originator claimInterpreter={firstClaim?.claimInterpreter} key="originator" />
+            firstClaim?.claimInterpreter ? (
+              <Originator key="originator" project={firstClaim.claimInterpreter} />
+            ) : (
+              replyAction?.provider && <Originator key="originator" project={replyAction.provider} />
             ),
             voteActions.size && <Feedback key="feedback" voteActions={voteActions} />
           ].filter(Boolean),
-        [firstClaim, timestamp, voteActions]
+        [firstClaim, replyAction, timestamp, voteActions]
       )}
     </Slotted>
   );
