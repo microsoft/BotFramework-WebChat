@@ -2,10 +2,10 @@ import React, { memo } from 'react';
 
 import { OrgSchemaProject } from 'botframework-webchat-core';
 
-type Props = Readonly<{ claimInterpreter: OrgSchemaProject }>;
+type Props = Readonly<{ project: OrgSchemaProject }>;
 
-const Originator = memo(({ claimInterpreter }: Props) => {
-  const { name, slogan, url } = claimInterpreter;
+const Originator = memo(({ project }: Props) => {
+  const { name, slogan, url } = project;
 
   const text = slogan || name;
 

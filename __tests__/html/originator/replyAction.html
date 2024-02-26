@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -26,11 +26,12 @@
           entities: [
             {
               '@context': 'https://schema.org',
-              '@type': 'Claim',
-              type: 'https://schema.org/Claim',
-              claimInterpreter: {
+              '@type': 'ReplyAction',
+              type: 'https://schema.org/ReplyAction',
+              provider: {
+                '@context': 'https://schema.org',
                 '@type': 'Project',
-                slogan: 'Surfaced by Azure OpenAI',
+                name: 'Surfaced by Azure OpenAI',
                 url: 'https://www.microsoft.com/en-us/ai/responsible-ai'
               }
             }
@@ -42,12 +43,14 @@
         await host.snapshot();
 
         const [activityStatus] = pageElements.activityStatuses();
-        const provenanceLink = activityStatus.querySelector('a');
+        const originatorLink = activityStatus.querySelector('a');
 
-        expect(provenanceLink).toBeTruthy();
-        expect(provenanceLink.getAttribute('href')).toBe('https://www.microsoft.com/en-us/ai/responsible-ai');
-        expect(provenanceLink.getAttribute('rel')).toBe('noopener noreferrer');
-        expect(provenanceLink.getAttribute('target')).toBe('_blank');
+        expect(originatorLink).toBeTruthy();
+        expect(originatorLink.getAttribute('href')).toBe('https://www.microsoft.com/en-us/ai/responsible-ai');
+        expect(originatorLink.getAttribute('rel')).toBe('noopener noreferrer');
+        expect(originatorLink.getAttribute('target')).toBe('_blank');
+
+        // TODO: Check for deprecation message.
       });
     </script>
   </body>

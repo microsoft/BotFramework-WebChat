@@ -57,6 +57,7 @@ import type { Observable } from './types/external/Observable';
 import type { AsEntity as OrgSchemaAsEntity, Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
 import type { Claim as OrgSchemaClaim } from './types/external/OrgSchema/Claim';
 import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Project';
+import type { ReplyAction as OrgSchemaReplyAction } from './types/external/OrgSchema/ReplyAction';
 import type { VoteAction as OrgSchemaVoteAction } from './types/external/OrgSchema/VoteAction';
 import type { WebChatActivity } from './types/WebChatActivity';
 
@@ -122,6 +123,7 @@ export type {
   OrgSchemaAsEntity,
   OrgSchemaClaim,
   OrgSchemaProject,
+  OrgSchemaReplyAction,
   OrgSchemaThing,
   OrgSchemaVoteAction,
   WebChatActivity
