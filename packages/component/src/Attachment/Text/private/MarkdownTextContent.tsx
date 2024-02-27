@@ -1,9 +1,4 @@
 import { hooks } from 'botframework-webchat-api';
-import { useRefFrom } from 'use-ref-from';
-import classNames from 'classnames';
-import React, { memo, type MouseEventHandler, useCallback, useMemo } from 'react';
-
-import { type PropsOf } from '../../../types/PropsOf';
 import {
   isOrgSchemaThingAsEntity,
   isOrgSchemaThingOf,
@@ -11,12 +6,17 @@ import {
   type OrgSchemaClaim,
   type WebChatActivity
 } from 'botframework-webchat-core';
+import classNames from 'classnames';
+import React, { memo, useCallback, useMemo, type MouseEventHandler } from 'react';
+import { useRefFrom } from 'use-ref-from';
+
+import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
+import useStyleSet from '../../../hooks/useStyleSet';
+import useShowModal from '../../../providers/ModalDialog/useShowModal';
+import { type PropsOf } from '../../../types/PropsOf';
 import CitationModalContext from './CitationModalContent';
 import isHTMLButtonElement from './isHTMLButtonElement';
 import LinkDefinitions from './LinkDefinitions';
-import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
-import useShowModal from '../../../providers/ModalDialog/useShowModal';
-import useStyleSet from '../../../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
 
@@ -119,7 +119,7 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
         dangerouslySetInnerHTML={dangerouslySetInnerHTML}
         onClick={handleClick}
       />
-      <LinkDefinitions markdown={markdown} onCitationClick={handleCitationClick} />
+      <LinkDefinitions entities={entities} markdown={markdown} onCitationClick={handleCitationClick} />
     </div>
   );
 });

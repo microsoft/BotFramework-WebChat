@@ -52,6 +52,7 @@ export default function createLinkDefinitionsStyleSet() {
 
       '.webchat__link-definitions__badge': {
         alignItems: 'center',
+        alignSelf: 'flex-start',
         borderRadius: '4px',
         borderStyle: 'solid',
         borderWidth: 1,
@@ -127,23 +128,52 @@ export default function createLinkDefinitionsStyleSet() {
         display: 'flex',
         fontFamily: "Calibri, 'Helvetica Neue', Arial, 'sans-serif'",
         gap: 4,
-        padding: 4,
+        padding: 4
+      },
+
+      '.webchat__link-definitions__list-item-body-main': {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        overflow: 'hidden'
+      },
+
+      '.webchat__link-definitions__list-item-main-text': {
+        alignItems: 'baseline',
+        display: 'flex',
+        gap: 4
+      },
+
+      '.webchat__link-definitions__list-item-sensitivity-label, .webchat__link-definitions__list-item-text': {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+      },
+
+      '.webchat__link-definitions__list-item-text': {
+        textDecoration: 'underline',
 
         [NOT_FORCED_COLORS_SELECTOR]: {
           color: CSSTokens.ColorAccent
         }
       },
 
-      '.webchat__link-definitions__list-item-text': {
-        overflow: 'hidden',
-        textDecoration: 'underline',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap'
+      '.webchat__link-definitions__list-item-sensitivity-label': {
+        alignSelf: 'flex-start',
+        fontSize: CSSTokens.FontSizeSmall,
+
+        [NOT_FORCED_COLORS_SELECTOR]: {
+          color: CSSTokens.ColorSubtle
+        }
       },
 
       '.webchat__link-definitions__open-in-new-window-icon': {
         flexShrink: 0, // When text is too long, make sure the chevron is not squeezed.
-        paddingRight: 4 // When text is too long and chevron is on far right, this will align the chevron so it's not too far.
+        paddingRight: 4, // When text is too long and chevron is on far right, this will align the chevron so it's not too far.
+
+        [NOT_FORCED_COLORS_SELECTOR]: {
+          color: CSSTokens.ColorAccent
+        }
       }
     }
   };

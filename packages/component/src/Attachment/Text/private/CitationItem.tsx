@@ -1,16 +1,18 @@
+import type { OrgSchemaClaim } from 'botframework-webchat-core';
+import React, { memo, useCallback, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import React, { memo, type MouseEventHandler, useCallback } from 'react';
 
 import ItemBody from './ItemBody';
 
 type Props = Readonly<{
+  claim: OrgSchemaClaim;
   identifier: string;
   onClick?: (url: string) => void;
   title?: string;
   url: string;
 }>;
 
-const CitationItem = memo(({ identifier, onClick, title, url }: Props) => {
+const CitationItem = memo(({ claim, identifier, onClick, title, url }: Props) => {
   const onClickRef = useRefFrom(onClick);
   const urlHref = useRefFrom(url);
 
@@ -25,7 +27,7 @@ const CitationItem = memo(({ identifier, onClick, title, url }: Props) => {
       onClick={handleClick}
       type="button"
     >
-      <ItemBody identifier={identifier} title={title} />
+      <ItemBody claim={claim} identifier={identifier} title={title} />
     </button>
   );
 });
