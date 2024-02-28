@@ -33,7 +33,10 @@ const ItemBody = memo(({ claim, identifier, isExternal, title }: Props) => {
           {isExternal ? <OpenInNewWindowIcon className="webchat__link-definitions__open-in-new-window-icon" /> : null}
         </div>
         {certification && (
-          <div className="webchat__link-definitions__list-item-sensitivity-label" title={certification.description}>
+          <div
+            className="webchat__link-definitions__list-item-badge"
+            title={[certification.name, certification.description].filter(Boolean).join('\n')}
+          >
             {certification.name}
           </div>
         )}

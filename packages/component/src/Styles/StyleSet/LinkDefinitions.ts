@@ -120,7 +120,8 @@ export default function createLinkDefinitionsStyleSet() {
         fontFamily: 'inherit',
         fontSize: 'inherit',
         overflow: 'hidden',
-        padding: 0
+        padding: 0,
+        textAlign: 'initial' // By default, texts inside button are centered.
       },
 
       '.webchat__link-definitions__list-item-body': {
@@ -144,7 +145,7 @@ export default function createLinkDefinitionsStyleSet() {
         gap: 4
       },
 
-      '.webchat__link-definitions__list-item-sensitivity-label, .webchat__link-definitions__list-item-text': {
+      '.webchat__link-definitions__list-item-badge, .webchat__link-definitions__list-item-text': {
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap'
@@ -158,8 +159,7 @@ export default function createLinkDefinitionsStyleSet() {
         }
       },
 
-      '.webchat__link-definitions__list-item-sensitivity-label': {
-        alignSelf: 'flex-start',
+      '.webchat__link-definitions__list-item-badge': {
         fontSize: CSSTokens.FontSizeSmall,
 
         [NOT_FORCED_COLORS_SELECTOR]: {
