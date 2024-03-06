@@ -14,4 +14,8 @@ describe('orgSchemaProperty', () => {
   test('should convert invalid type to undefined', () => {
     expect(parse(orgSchemaProperty(string()), null)).toBeUndefined();
   });
+
+  test('should take the first item from an array', () => {
+    expect(parse(orgSchemaProperty(string()), ['abc', 'def', 'xyz'])).toBe('abc');
+  });
 });
