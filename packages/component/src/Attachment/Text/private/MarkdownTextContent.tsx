@@ -1,24 +1,33 @@
 import { hooks } from 'botframework-webchat-api';
 import {
-  isOrgSchemaThingAsEntity,
-  isOrgSchemaThingOf,
-  type OrgSchemaAsEntity,
-  type OrgSchemaClaim,
+  parseClaim,
+  parseCreativeWork,
+  parseThing,
+  type OrgSchemaClaim2,
   type WebChatActivity
 } from 'botframework-webchat-core';
 import classNames from 'classnames';
+import type { Definition } from 'mdast';
+// @ts-expect-error TS1479 should be fixed when bumping to typescript@5.
+import { fromMarkdown } from 'mdast-util-from-markdown';
 import React, { memo, useCallback, useMemo, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
+import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
-import { type PropsOf } from '../../../types/PropsOf';
 import CitationModalContext from './CitationModalContent';
 import isHTMLButtonElement from './isHTMLButtonElement';
-import LinkDefinitions from './LinkDefinitions';
 
 const { useLocalizer } = hooks;
+
+type Entry = {
+  claim: OrgSchemaClaim2;
+  handleClick?: (() => void) | undefined;
+  id: string;
+  markdownDefinition?: Definition | undefined;
+};
 
 type Props = Readonly<{
   entities?: WebChatActivity['entities'];
@@ -33,21 +42,34 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
       textContent: textContentStyleSet
     }
   ] = useStyleSet();
-  const claims = useMemo<readonly OrgSchemaClaim[]>(
-    () =>
-      Object.freeze(
-        (entities || []).filter<OrgSchemaAsEntity<OrgSchemaClaim>>(
-          (entity): entity is OrgSchemaAsEntity<OrgSchemaClaim> =>
-            isOrgSchemaThingAsEntity(entity) && isOrgSchemaThingOf<OrgSchemaClaim>(entity, 'Claim')
-        )
-      ),
-    [entities]
-  );
+  // const claims = useMemo<readonly OrgSchemaClaim[]>(
+  //   () =>
+  //     Object.freeze(
+  //       (entities || []).filter<OrgSchemaAsEntity<OrgSchemaClaim>>(
+  //         (entity): entity is OrgSchemaAsEntity<OrgSchemaClaim> =>
+  //           isOrgSchemaThingAsEntity(entity) && isOrgSchemaThingOf<OrgSchemaClaim>(entity, 'Claim')
+  //       )
+  //     ),
+  //   [entities]
+  // );
+  const currentMessage = useMemo(() => {
+    const messageEntity = (entities || []).find(entity => {
+      const isThing = entity.type?.startsWith('https://schema.org/');
+
+      if (isThing) {
+        const thing = parseThing(entity);
+
+        return thing['@id'] === '';
+      }
+    });
+
+    const message = messageEntity && parseCreativeWork(messageEntity);
+
+    return message && parseCreativeWork(message);
+  }, [entities]);
+  const localize = useLocalizer();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const showModal = useShowModal();
-
-  const claimsRef = useRefFrom(claims);
-  const localize = useLocalizer();
 
   const citationModalDialogLabel = localize('CITATION_MODEL_DIALOG_ALT');
 
@@ -60,24 +82,41 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
     [renderMarkdownAsHTML, markdown]
   );
 
+  const markdownDefinitions = useMemo(
+    () => fromMarkdown(markdown).children.filter((node): node is Definition => node.type === 'definition'),
+    [markdown]
+  );
+
   const showClaimModal = useCallback(
-    (claim: OrgSchemaClaim) => {
-      showModal(() => <CitationModalContext headerText={claim.name} markdown={claim.text} />, {
-        'aria-label': claim.alternateName || claim.name || citationModalDialogLabel,
+    (title, text, altText) => {
+      showModal(() => <CitationModalContext headerText={title} markdown={text} />, {
+        'aria-label': altText || title || citationModalDialogLabel,
         className: classNames('webchat__citation-modal-dialog', citationModalDialogStyleSet)
       });
     },
     [citationModalDialogStyleSet, citationModalDialogLabel, showModal]
   );
 
-  const handleCitationClick = useCallback<PropsOf<typeof LinkDefinitions>['onCitationClick']>(
-    url => {
-      const claim = claimsRef.current.find(({ '@id': id }) => id === url);
+  const entries = useMemo<readonly Entry[]>(
+    () =>
+      Object.freeze(
+        (currentMessage?.citation || []).map(parseClaim).map<Entry>(claim => {
+          const markdownDefinition = markdownDefinitions.find(({ url }) => url === claim['@id']);
 
-      claim && showClaimModal(claim);
-    },
-    [claimsRef, showClaimModal]
+          return {
+            claim,
+            id: claim['@id'],
+            markdownDefinition,
+            handleClick: claim.appearance?.url
+              ? undefined
+              : () => showClaimModal(markdownDefinition.title, claim.appearance?.text, claim.alternateName)
+          };
+        }) || []
+      ),
+    [currentMessage, markdownDefinitions, showClaimModal]
   );
+
+  const entriesRef = useRefFrom(entries);
 
   const handleClick = useCallback<MouseEventHandler<HTMLDivElement>>(
     event => {
@@ -91,18 +130,16 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
         return;
       }
 
-      const claim = claimsRef.current.find(({ '@id': id }) => id === buttonElement.value);
+      const entry = entriesRef.current.find(({ claim: { '@id': id } }) => id === buttonElement.value);
 
-      if (!claim) {
-        return;
+      if (entry?.handleClick) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        entry.handleClick();
       }
-
-      event.preventDefault();
-      event.stopPropagation();
-
-      showClaimModal(claim);
     },
-    [claimsRef, showClaimModal]
+    [entriesRef]
   );
 
   return (
@@ -119,7 +156,21 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
         dangerouslySetInnerHTML={dangerouslySetInnerHTML}
         onClick={handleClick}
       />
-      <LinkDefinitions entities={entities} markdown={markdown} onCitationClick={handleCitationClick} />
+      {!!entries.length && (
+        <LinkDefinitions>
+          {entries.map(entry => (
+            <LinkDefinitionItem
+              badgeName={entry.claim.appearance?.usageInfo?.name}
+              badgeTitle={entry.claim.appearance?.usageInfo?.description}
+              identifier={entry.markdownDefinition?.identifier}
+              key={entry.claim['@id']}
+              onClick={entry.handleClick}
+              title={entry.markdownDefinition?.title}
+              url={entry.claim.appearance?.url}
+            />
+          ))}
+        </LinkDefinitions>
+      )}
     </div>
   );
 });
