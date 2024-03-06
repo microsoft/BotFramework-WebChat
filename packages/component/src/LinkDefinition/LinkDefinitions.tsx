@@ -6,6 +6,7 @@ import useStyleSet from '../hooks/useStyleSet';
 import Chevron from './private/Chevron';
 
 const { useLocalizer } = hooks;
+const { count: childrenCount, map: childrenMap } = Children;
 
 type Props = Readonly<{
   children?: ReactNode | undefined;
@@ -23,7 +24,7 @@ const LinkDefinitions = memo(({ children }: Props) => {
   const [{ linkDefinitions }] = useStyleSet();
   const localizeWithPlural = useLocalizer({ plural: true });
 
-  const headerText = localizeWithPlural(REFERENCE_LIST_HEADER_IDS, Children.count(children));
+  const headerText = localizeWithPlural(REFERENCE_LIST_HEADER_IDS, childrenCount(children));
 
   return (
     <details className={classNames(linkDefinitions, 'webchat__link-definitions')} open={true}>
@@ -31,7 +32,7 @@ const LinkDefinitions = memo(({ children }: Props) => {
         {headerText} <Chevron />
       </summary>
       <div className="webchat__link-definitions__list" role="list">
-        {Children.map(children, child => (
+        {childrenMap(children, child => (
           <div className="webchat__link-definitions__list-item" role="listitem">
             {child}
           </div>
