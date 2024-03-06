@@ -1,14 +1,14 @@
 import React, { memo, useCallback, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import extractHostnameWithSubdomain from './private/extractHostnameWithSubdomain';
 import ItemBody from './private/ItemBody';
+import extractHostnameWithSubdomain from './private/extractHostnameWithSubdomain';
 
 type Props = Readonly<{
-  badgeText?: string;
-  badgeTooltip?: string;
+  badgeText?: string; // TODO: Should we name this "badgeBody"?
+  badgeTooltip?: string; // TODO: Should we name this "badgeTitle"?
   identifier?: string;
-  onClick?: () => void;
+  onClick?: (event: Pick<CustomEvent, 'defaultPrevented' | 'preventDefault' | 'type'>) => void;
   text?: string;
   url?: string;
 }>;
@@ -21,10 +21,11 @@ const LinkDefinitionItem = memo(({ badgeText, badgeTooltip, identifier, onClick,
       const { current } = onClickRef;
 
       if (current) {
-        event.preventDefault();
-        event.stopPropagation();
+        const customEvent = new CustomEvent('click');
 
-        current();
+        current(customEvent);
+
+        customEvent.defaultPrevented && event.preventDefault();
       }
     },
     [onClickRef]
