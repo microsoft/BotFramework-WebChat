@@ -1,14 +1,17 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { Children, memo, type ReactNode } from 'react';
+import React, { Children, memo, type ComponentType, type ReactNode } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
+import { type PropsOf } from '../types/PropsOf';
 import Chevron from './private/Chevron';
 
 const { useLocalizer } = hooks;
 const { count: childrenCount, map: childrenMap } = Children;
 
-type Props = Readonly<{
+type Props<TAccessory extends ComponentType> = Readonly<{
+  accessory: TAccessory;
+  accessoryProps: PropsOf<TAccessory>;
   children?: ReactNode | undefined;
 }>;
 
@@ -20,7 +23,11 @@ const REFERENCE_LIST_HEADER_IDS = {
   two: 'REFERENCE_LIST_HEADER_TWO'
 };
 
-const LinkDefinitions = memo(({ children }: Props) => {
+const LinkDefinitions = <TAccessory extends ComponentType>({
+  accessory,
+  accessoryProps,
+  children
+}: Props<TAccessory>) => {
   const [{ linkDefinitions }] = useStyleSet();
   const localizeWithPlural = useLocalizer({ plural: true });
 
@@ -29,7 +36,14 @@ const LinkDefinitions = memo(({ children }: Props) => {
   return (
     <details className={classNames(linkDefinitions, 'webchat__link-definitions')} open={true}>
       <summary className="webchat__link-definitions__header">
-        {headerText} <Chevron />
+        <div className="webchat__link-definitions__header-text">{headerText}</div>
+        <Chevron />
+        <div className="webchat__link-definitions__header-filler" />
+        {accessory && (
+          <div className="webchat__link-definitions__header-accessory">
+            {React.createElement(accessory, accessoryProps)}
+          </div>
+        )}
       </summary>
       <div className="webchat__link-definitions__list" role="list">
         {childrenMap(children, child => (
@@ -40,8 +54,8 @@ const LinkDefinitions = memo(({ children }: Props) => {
       </div>
     </details>
   );
-});
+};
 
 LinkDefinitions.displayName = 'LinkDefinitions';
 
-export default LinkDefinitions;
+export default memo(LinkDefinitions);

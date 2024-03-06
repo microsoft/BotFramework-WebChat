@@ -9,23 +9,30 @@ import CSSTokens from '../CSSTokens';
 export default function createLinkDefinitionsStyleSet() {
   return {
     '&.webchat__link-definitions': {
-      '&[open] .webchat__link-definitions__header::after': {
-        transform: 'rotate(0deg)'
-      },
+      // '&[open] .webchat__link-definitions__header::after': {
+      //   transform: 'rotate(0deg)'
+      // },
 
       '.webchat__link-definitions__header': {
-        fontFamily: "Calibri, 'Helvetica Neue', Arial, 'sans-serif'",
-        fontSize: '80%',
+        alignItems: 'center',
+        display: 'flex',
+        fontFamily: CSSTokens.FontPrimary,
+        fontSize: CSSTokens.FontSizeSmall,
+        gap: 4,
         listStyle: 'none',
 
         [LIGHT_THEME_SELECTOR]: {
-          color: '#616161'
+          color: '#616161' // TODO: Should we use subtle color instead?
         },
 
         [DARK_THEME_SELECTOR]: {
           // TODO: Add dark theme color.
           color: '#616161'
         }
+      },
+
+      '.webchat__link-definitions__header-text': {
+        flexShrink: 0
       },
 
       '.webchat__link-definitions__header::-webkit-details-marker': {
@@ -35,6 +42,30 @@ export default function createLinkDefinitionsStyleSet() {
       '&:not([open]) .webchat__link-definitions__header-chevron': {
         marginBottom: '-0.1em',
         transform: 'rotate(-180deg)'
+      },
+
+      '.webchat__link-definitions__header-filler': {
+        flexGrow: 1
+      },
+
+      '.webchat__link-definitions__header-accessory': {
+        overflow: 'hidden'
+      },
+
+      '.webchat__link-definitions__message-sensitivity-label': {
+        display: 'flex',
+        gap: 4
+      },
+
+      '.webchat__link-definitions__message-sensitivity-label-icon': {
+        color: 'CanvasText',
+        flexShrink: 0
+      },
+
+      '.webchat__link-definitions__message-sensitivity-label-text': {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
       },
 
       '.webchat__link-definitions__list': {

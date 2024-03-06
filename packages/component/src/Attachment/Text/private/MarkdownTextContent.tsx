@@ -18,6 +18,7 @@ import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import CitationModalContext from './CitationModalContent';
+import MessageSensitivityLabel from './MessageSensitivityLabel';
 import isHTMLButtonElement from './isHTMLButtonElement';
 
 const { useLocalizer } = hooks;
@@ -157,7 +158,7 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
         onClick={handleClick}
       />
       {!!entries.length && (
-        <LinkDefinitions>
+        <LinkDefinitions accessory={MessageSensitivityLabel} accessoryProps={{}}>
           {entries.map(entry => (
             <LinkDefinitionItem
               badgeText={entry.claim.appearance?.usageInfo?.name}

@@ -9,7 +9,7 @@ type Props = Readonly<{
   badgeTooltip?: string;
   identifier?: string;
   onClick?: () => void;
-  text: string;
+  text?: string;
   url?: string;
 }>;
 
