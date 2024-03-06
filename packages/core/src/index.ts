@@ -34,6 +34,12 @@ import {
   isThingAsEntity as isOrgSchemaThingAsEntity,
   isThingOf as isOrgSchemaThingOf
 } from './types/external/OrgSchema/Thing';
+import { parseAction } from './types/external/OrgSchema2/Action';
+import { parseClaim } from './types/external/OrgSchema2/Claim';
+import { parseCreativeWork } from './types/external/OrgSchema2/CreativeWork';
+import { parseDefinedTerm } from './types/external/OrgSchema2/DefinedTerm';
+import { parseProject } from './types/external/OrgSchema2/Project';
+import { parseThing } from './types/external/OrgSchema2/Thing';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import onErrorResumeNext from './utils/onErrorResumeNext';
 import singleToArray from './utils/singleToArray';
@@ -61,6 +67,12 @@ import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Pro
 import type { ReplyAction as OrgSchemaReplyAction } from './types/external/OrgSchema/ReplyAction';
 import type { AsEntity as OrgSchemaAsEntity, Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
 import type { VoteAction as OrgSchemaVoteAction } from './types/external/OrgSchema/VoteAction';
+import type { Action as OrgSchemaAction2 } from './types/external/OrgSchema2/Action';
+import type { Claim as OrgSchemaClaim2 } from './types/external/OrgSchema2/Claim';
+import type { CreativeWork as OrgSchemaCreativeWork2 } from './types/external/OrgSchema2/CreativeWork';
+import type { DefinedTerm as OrgSchemaDefinedTerm2 } from './types/external/OrgSchema2/DefinedTerm';
+import type { Project as OrgSchemaProject2 } from './types/external/OrgSchema2/Project';
+import type { Thing as OrgSchemaThing2 } from './types/external/OrgSchema2/Thing';
 
 const Constants = { ActivityClientState, DictateState };
 const version = process.env.npm_package_version;
@@ -81,6 +93,12 @@ export {
   isOrgSchemaThingOf,
   markActivity,
   onErrorResumeNext,
+  parseAction,
+  parseClaim,
+  parseCreativeWork,
+  parseDefinedTerm,
+  parseProject,
+  parseThing,
   postActivity,
   sendEvent,
   sendFiles,
@@ -121,12 +139,18 @@ export type {
   GlobalScopePonyfill,
   Observable,
   OneOrMany,
+  OrgSchemaAction2,
   OrgSchemaAsEntity,
   OrgSchemaCertification,
   OrgSchemaClaim,
+  OrgSchemaClaim2,
+  OrgSchemaCreativeWork2,
+  OrgSchemaDefinedTerm2,
   OrgSchemaProject,
+  OrgSchemaProject2,
   OrgSchemaReplyAction,
   OrgSchemaThing,
+  OrgSchemaThing2,
   OrgSchemaVoteAction,
   WebChatActivity
 };
