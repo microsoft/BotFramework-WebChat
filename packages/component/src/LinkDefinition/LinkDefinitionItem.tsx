@@ -5,15 +5,15 @@ import extractHostnameWithSubdomain from './private/extractHostnameWithSubdomain
 import ItemBody from './private/ItemBody';
 
 type Props = Readonly<{
-  badgeName?: string;
-  badgeTitle?: string;
+  badgeText?: string;
+  badgeTooltip?: string;
   identifier?: string;
   onClick?: () => void;
-  title: string;
+  text: string;
   url?: string;
 }>;
 
-const LinkDefinitionItem = memo(({ badgeName, badgeTitle, identifier, onClick, title, url }: Props) => {
+const LinkDefinitionItem = memo(({ badgeText, badgeTooltip, identifier, onClick, text, url }: Props) => {
   const onClickRef = useRefFrom(onClick);
 
   const handleClick = useCallback<MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>>(
@@ -31,7 +31,6 @@ const LinkDefinitionItem = memo(({ badgeName, badgeTitle, identifier, onClick, t
   );
 
   return url ? (
-    // TODO: Add role="listitem".
     <a
       className="webchat__link-definitions__list-item-box webchat__link-definitions__list-item-box--as-link"
       href={url}
@@ -40,21 +39,20 @@ const LinkDefinitionItem = memo(({ badgeName, badgeTitle, identifier, onClick, t
       target="_blank"
     >
       <ItemBody
-        badgeName={badgeName}
-        badgeTitle={badgeTitle}
+        badgeText={badgeText}
+        badgeTooltip={badgeTooltip}
         identifier={identifier}
         isExternal={true}
-        title={title || extractHostnameWithSubdomain(url)}
+        text={text || extractHostnameWithSubdomain(url)}
       />
     </a>
   ) : (
-    // TODO: Add role="listitem".
     <button
       className="webchat__link-definitions__list-item-box webchat__link-definitions__list-item-box--as-button"
       onClick={handleClick}
       type="button"
     >
-      <ItemBody badgeName={badgeName} badgeTitle={badgeTitle} identifier={identifier} title={title} />
+      <ItemBody badgeText={badgeText} badgeTooltip={badgeTooltip} identifier={identifier} text={text} />
     </button>
   );
 });

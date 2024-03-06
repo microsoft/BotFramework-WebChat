@@ -160,12 +160,12 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
         <LinkDefinitions>
           {entries.map(entry => (
             <LinkDefinitionItem
-              badgeName={entry.claim.appearance?.usageInfo?.name}
-              badgeTitle={entry.claim.appearance?.usageInfo?.description}
+              badgeText={entry.claim.appearance?.usageInfo?.name}
+              badgeTooltip={entry.claim.appearance?.usageInfo?.description}
               identifier={entry.markdownDefinition?.identifier}
               key={entry.claim['@id']}
               onClick={entry.handleClick}
-              title={entry.markdownDefinition?.title}
+              text={entry.markdownDefinition?.title}
               url={entry.claim.appearance?.url}
             />
           ))}
