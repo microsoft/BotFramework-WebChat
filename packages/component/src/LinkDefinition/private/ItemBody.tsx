@@ -22,10 +22,7 @@ const ItemBody = memo(({ badgeText, badgeTooltip, identifier, isExternal, text }
         {isExternal ? <OpenInNewWindowIcon className="webchat__link-definitions__open-in-new-window-icon" /> : null}
       </div>
       {badgeText && (
-        <div
-          className="webchat__link-definitions__list-item-badge"
-          title={[badgeText, badgeTooltip].filter(Boolean).join('\n')}
-        >
+        <div className="webchat__link-definitions__list-item-badge" title={badgeTooltip}>
           {badgeText}
         </div>
       )}

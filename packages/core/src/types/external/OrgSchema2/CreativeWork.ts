@@ -1,8 +1,9 @@
 import { lazy, parse, string, type ObjectEntries } from 'valibot';
 
-import { thing, type Thing } from './Thing';
+import { definedTerm, type DefinedTerm } from './DefinedTerm';
 import orgSchemaProperties from './private/orgSchemaProperties';
 import orgSchemaProperty from './private/orgSchemaProperty';
+import { thing, type Thing } from './Thing';
 
 /**
  * The most generic kind of creative work, including books, movies, photographs, software programs, etc.
@@ -16,6 +17,8 @@ export type CreativeWork = Thing & {
   abstract?: string;
   author?: string;
   citation?: readonly CreativeWork[] | undefined;
+  keywords?: readonly DefinedTerm[] | undefined;
+  pattern?: DefinedTerm | undefined;
   text?: string;
   usageInfo?: CreativeWork | undefined;
 };
@@ -30,6 +33,12 @@ export const creativeWork = <TEntries extends ObjectEntries>(entries?: TEntries 
 
     /** A citation or reference to another creative work, such as another publication, web page, scholarly article, etc. */
     citation: orgSchemaProperties(lazy(() => creativeWork())),
+
+    /** Keywords or tags used to describe some item. Multiple textual entries in a keywords list are typically delimited by commas, or by repeating the property. */
+    keywords: orgSchemaProperties(lazy(() => definedTerm())),
+
+    /** A pattern that something has, for example 'polka dot', 'striped', 'Canadian flag'. Values are typically expressed as text, although links to controlled value schemes are also supported. */
+    pattern: orgSchemaProperty(lazy(() => definedTerm())),
 
     /** The textual content of this CreativeWork. */
     text: orgSchemaProperty(string()),

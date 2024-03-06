@@ -143,6 +143,23 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
     [entriesRef]
   );
 
+  const messageSensitivityLabelProps = useMemo(() => {
+    const usageInfo = currentMessage?.usageInfo;
+    const pattern = usageInfo?.pattern;
+    const encryptionStatus = usageInfo?.keywords?.find(({ name }) => name === 'encryptionStatus')?.termCode;
+
+    return {
+      color:
+        pattern &&
+        pattern.inDefinedTermSet === 'https://www.w3.org/TR/css-color-4/' &&
+        pattern.name === 'color' &&
+        pattern.termCode,
+      isEncrypted: encryptionStatus === 'encrypted',
+      text: usageInfo?.name,
+      tooltip: usageInfo?.description
+    };
+  }, [currentMessage]);
+
   return (
     <div
       className={classNames('webchat__text-content', 'webchat__text-content--is-markdown', textContentStyleSet + '')}
@@ -158,11 +175,13 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
         onClick={handleClick}
       />
       {!!entries.length && (
-        <LinkDefinitions accessory={MessageSensitivityLabel} accessoryProps={{}}>
+        <LinkDefinitions accessory={MessageSensitivityLabel} accessoryProps={messageSensitivityLabelProps}>
           {entries.map(entry => (
             <LinkDefinitionItem
               badgeText={entry.claim.appearance?.usageInfo?.name}
-              badgeTooltip={entry.claim.appearance?.usageInfo?.description}
+              badgeTooltip={[entry.claim.appearance?.usageInfo?.name, entry.claim.appearance?.usageInfo?.description]
+                .filter(Boolean)
+                .join('\n\n')}
               identifier={entry.markdownDefinition?.identifier}
               key={entry.claim['@id']}
               onClick={entry.handleClick}
