@@ -40,6 +40,15 @@ export const thing = <TEntries extends ObjectEntries>(entries?: TEntries | undef
       ...thingEntries,
       ...entries
     },
+    // Forward compatibility is the reason why we use unknown() here and not adhere to JSON-LD which drop unknown fields.
+    //
+    // Example:
+    // - CreativeWork.editor must be type of Person (or any of its subtypes, Patient)
+    // - Without unknown(), when we parse the CreativeWork, we will drop Patient.diagnosis
+    // - That means, CreativeWork.editor.diagnosis will be unset despite CreativeWork.editor is of type Patient
+    //
+    // We can drop unknown() if there is a way to keep CreativeWork.editor.diagnosis.
+    // It is okay to drop future/unsupported properties. But not today/supported properties.
     unknown()
   );
 

@@ -25,6 +25,9 @@ export type CreativeWork = Thing & {
 
 export const creativeWork = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
   thing({
+    // For forward compatibility, we did not enforce @type must be "CreativeWork" or any other subtypes.
+    // In future, if Schema.org introduced a new subtype of CreativeWork, we should still able to parse that one as a CreativeWork.
+
     /** An abstract is a short description that summarizes a [CreativeWork](https://schema.org/CreativeWork). */
     abstract: orgSchemaProperty(string()),
 

@@ -1,11 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import {
-  parseClaim,
-  parseCreativeWork,
-  parseThing,
-  type OrgSchemaClaim2,
-  type WebChatActivity
-} from 'botframework-webchat-core';
+import { getOrgSchemaMessage, parseClaim, type OrgSchemaClaim2, type WebChatActivity } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import type { Definition } from 'mdast';
 // @ts-expect-error TS1479 should be fixed when bumping to typescript@5.
@@ -31,11 +25,11 @@ type Entry = {
 };
 
 type Props = Readonly<{
-  entities?: WebChatActivity['entities'];
+  activity: WebChatActivity;
   markdown: string;
 }>;
 
-const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
+const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   const [
     {
       citationModalDialog: citationModalDialogStyleSet,
@@ -43,32 +37,8 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
       textContent: textContentStyleSet
     }
   ] = useStyleSet();
-  // const claims = useMemo<readonly OrgSchemaClaim[]>(
-  //   () =>
-  //     Object.freeze(
-  //       (entities || []).filter<OrgSchemaAsEntity<OrgSchemaClaim>>(
-  //         (entity): entity is OrgSchemaAsEntity<OrgSchemaClaim> =>
-  //           isOrgSchemaThingAsEntity(entity) && isOrgSchemaThingOf<OrgSchemaClaim>(entity, 'Claim')
-  //       )
-  //     ),
-  //   [entities]
-  // );
-  const currentMessage = useMemo(() => {
-    const messageEntity = (entities || []).find(entity => {
-      const isThing = entity.type?.startsWith('https://schema.org/');
-
-      if (isThing) {
-        const thing = parseThing(entity);
-
-        return thing['@id'] === '';
-      }
-    });
-
-    const message = messageEntity && parseCreativeWork(messageEntity);
-
-    return message && parseCreativeWork(message);
-  }, [entities]);
   const localize = useLocalizer();
+  const messageThing = useMemo(() => getOrgSchemaMessage(activity), [activity]);
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const showModal = useShowModal();
 
@@ -101,7 +71,7 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
   const entries = useMemo<readonly Entry[]>(
     () =>
       Object.freeze(
-        (currentMessage?.citation || []).map(parseClaim).map<Entry>(claim => {
+        (messageThing?.citation || []).map(parseClaim).map<Entry>(claim => {
           const markdownDefinition = markdownDefinitions.find(({ url }) => url === claim['@id']);
 
           return {
@@ -114,7 +84,7 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
           };
         }) || []
       ),
-    [currentMessage, markdownDefinitions, showClaimModal]
+    [markdownDefinitions, messageThing, showClaimModal]
   );
 
   const entriesRef = useRefFrom(entries);
@@ -144,7 +114,7 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
   );
 
   const messageSensitivityLabelProps = useMemo(() => {
-    const usageInfo = currentMessage?.usageInfo;
+    const usageInfo = messageThing?.usageInfo;
     const pattern = usageInfo?.pattern;
     const encryptionStatus = usageInfo?.keywords?.find(({ name }) => name === 'encryptionStatus')?.termCode;
 
@@ -158,7 +128,7 @@ const MarkdownTextContent = memo(({ entities, markdown }: Props) => {
       text: usageInfo?.name,
       tooltip: usageInfo?.description
     };
-  }, [currentMessage]);
+  }, [messageThing]);
 
   return (
     <div

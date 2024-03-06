@@ -40,6 +40,7 @@ import { parseCreativeWork } from './types/external/OrgSchema2/CreativeWork';
 import { parseDefinedTerm } from './types/external/OrgSchema2/DefinedTerm';
 import { parseProject } from './types/external/OrgSchema2/Project';
 import { parseThing } from './types/external/OrgSchema2/Thing';
+import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import onErrorResumeNext from './utils/onErrorResumeNext';
 import singleToArray from './utils/singleToArray';
@@ -87,6 +88,7 @@ export {
   disconnect,
   dismissNotification,
   emitTypingIndicator,
+  getOrgSchemaMessage,
   isForbiddenPropertyName,
   isOrgSchemaThing,
   isOrgSchemaThingAsEntity,
