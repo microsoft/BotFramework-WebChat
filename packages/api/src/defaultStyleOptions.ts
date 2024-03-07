@@ -95,6 +95,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   hideUploadButton: false,
   microphoneButtonColorOnDictate: '#F33',
   sendBoxBackground: 'White',
+  attachmentAccept: '*',
 
   // Send box buttons
   sendBoxButtonColor: undefined,

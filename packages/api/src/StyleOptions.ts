@@ -258,6 +258,11 @@ type StyleOptions = {
   hideUploadButton?: boolean;
   microphoneButtonColorOnDictate?: string;
   sendBoxBackground?: string;
+  /**
+   * The file type that the attachment button should accept.
+   * @example 'image/*,.pdf'
+   */
+  attachmentAccept?: string;
 
   /** Send box button: Icon color, defaults to subtle */
   sendBoxButtonColor?: string;

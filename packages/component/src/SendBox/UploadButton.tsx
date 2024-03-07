@@ -3,13 +3,14 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC, useCallback, useRef } from 'react';
 
-import AttachmentIcon from './Assets/AttachmentIcon';
-import connectToWebChat from '../connectToWebChat';
+import { useStyleOptions } from 'botframework-webchat-api/lib/hooks';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
-import IconButton from './IconButton';
+import connectToWebChat from '../connectToWebChat';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import AttachmentIcon from './Assets/AttachmentIcon';
+import IconButton from './IconButton';
 
 const { useDisabled, useLocalizer } = hooks;
 
@@ -95,6 +96,7 @@ type UploadButtonProps = {
 
 const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
+  const [{ attachmentAccept }] = useStyleOptions();
   const [disabled] = useDisabled();
   const inputRef = useRef<HTMLInputElement>();
   const localize = useLocalizer();
@@ -122,6 +124,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   return (
     <div className={classNames(rootClassName, 'webchat__upload-button', uploadButtonStyleSet + '', className)}>
       <input
+        accept={attachmentAccept}
         aria-disabled={disabled}
         aria-hidden="true"
         className="webchat__upload-button--file-input"
