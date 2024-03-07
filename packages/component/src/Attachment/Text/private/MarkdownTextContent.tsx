@@ -1,5 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
-import { getOrgSchemaMessage, parseClaim, type OrgSchemaClaim2, type WebChatActivity } from 'botframework-webchat-core';
+import {
+  getOrgSchemaMessage,
+  onErrorResumeNext,
+  parseClaim,
+  type OrgSchemaClaim2,
+  type WebChatActivity
+} from 'botframework-webchat-core';
 import classNames from 'classnames';
 import type { Definition } from 'mdast';
 // @ts-expect-error TS1479 should be fixed when bumping to typescript@5.
@@ -23,12 +29,17 @@ type Entry = {
   handleClick?: (() => void) | undefined;
   key: string;
   markdownDefinition: Definition;
+  url?: string | undefined;
 };
 
 type Props = Readonly<{
   activity: WebChatActivity;
   markdown: string;
 }>;
+
+function isCitationURL(url: string): boolean {
+  return onErrorResumeNext(() => new URL(url))?.protocol === 'cite:';
+}
 
 const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   const [
@@ -73,20 +84,52 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
     () =>
       Object.freeze(
         markdownDefinitions.map<Entry>(markdownDefinition => {
-          const claim = messageThing?.citation?.map(parseClaim).find(({ '@id': id }) => id === markdownDefinition.url);
+          const messageCitation = messageThing?.citation
+            ?.map(parseClaim)
+            .find(({ '@id': id }) => id === markdownDefinition.url);
+
+          if (messageCitation) {
+            return {
+              claim: messageCitation,
+              key: markdownDefinition.url,
+              handleClick:
+                messageCitation?.appearance && !messageCitation.appearance.url
+                  ? () =>
+                      showClaimModal(
+                        markdownDefinition.title,
+                        messageCitation.appearance.text,
+                        messageCitation.alternateName
+                      )
+                  : undefined,
+              markdownDefinition,
+              url: messageCitation?.appearance ? messageCitation.appearance.url : markdownDefinition.url
+            };
+          }
+
+          const rootLevelClaim = (activity.entities || [])
+            .filter(({ type }) => type === 'https://schema.org/Claim')
+            .map(parseClaim)
+            .find(({ '@id': id }) => id === markdownDefinition.url);
+
+          if (rootLevelClaim) {
+            return {
+              claim: rootLevelClaim,
+              key: markdownDefinition.url,
+              handleClick: isCitationURL(rootLevelClaim['@id'])
+                ? () => showClaimModal(markdownDefinition.title, rootLevelClaim.text, rootLevelClaim.alternateName)
+                : undefined,
+              markdownDefinition
+            };
+          }
 
           return {
-            claim,
             key: markdownDefinition.url,
             markdownDefinition,
-            handleClick:
-              claim?.appearance && !claim.appearance.url
-                ? () => showClaimModal(markdownDefinition.title, claim.appearance.text, claim.alternateName)
-                : undefined
+            url: markdownDefinition.url
           };
         })
       ),
-    [markdownDefinitions, messageThing, showClaimModal]
+    [activity, markdownDefinitions, messageThing, showClaimModal]
   );
 
   const entriesRef = useRefFrom(entries);
@@ -164,7 +207,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
               key={entry.key}
               onClick={entry.handleClick}
               text={entry.markdownDefinition.title}
-              url={entry.claim?.appearance ? entry.claim.appearance.url : entry.markdownDefinition.url}
+              url={entry.url}
             />
           ))}
         </LinkDefinitions>
