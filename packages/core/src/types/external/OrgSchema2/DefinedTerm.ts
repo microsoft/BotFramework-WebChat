@@ -1,11 +1,11 @@
-import { parse, string, type ObjectEntries, type Output } from 'valibot';
+import { parse, string, type ObjectEntries } from 'valibot';
 
-import { thing } from './Thing';
+import { thing, type Thing } from './Thing';
 import orgSchemaProperty from './private/orgSchemaProperty';
 
 export const definedTerm = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
   thing({
-    /** A code that identifies this [DefinedTerm](https://schema.org/DefinedTerm) within a [DefinedTermSet](https://schema.org/DefinedTermSet). */
+    inDefinedTermSet: orgSchemaProperty(string()),
     termCode: orgSchemaProperty(string()),
 
     ...entries
@@ -18,6 +18,20 @@ export const definedTerm = <TEntries extends ObjectEntries>(entries?: TEntries |
  *
  * @see https://schema.org/DefinedTerm
  */
-export type DefinedTerm = Output<ReturnType<typeof definedTerm>>;
+export type DefinedTerm = Thing & {
+  /**
+   * A [DefinedTermSet](https://schema.org/DefinedTermSet) that contains this term.
+   *
+   * @see https://schema.org/inDefinedTermSet
+   */
+  inDefinedTermSet?: string | undefined;
+
+  /**
+   * A code that identifies this [DefinedTerm](https://schema.org/DefinedTerm) within a [DefinedTermSet](https://schema.org/DefinedTermSet).
+   *
+   * @see https://schema.org/termCode
+   */
+  termCode?: string | undefined;
+};
 
 export const parseDefinedTerm = (data: unknown): DefinedTerm => parse(definedTerm(), data);

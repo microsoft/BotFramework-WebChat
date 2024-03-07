@@ -8,7 +8,7 @@
 // - "conversationUpdate" activity is never sent to Web Chat, thus, it is not defined
 
 import type { AnyAnd } from './AnyAnd';
-import type { AsEntity, Thing } from './external/OrgSchema/Thing';
+// import type { AsEntity, Thing } from './external/OrgSchema/Thing';
 import type { DirectLineAttachment } from './external/DirectLineAttachment';
 import type { DirectLineSuggestedAction } from './external/DirectLineSuggestedAction';
 
@@ -112,7 +112,7 @@ type ClientCapabilitiesEntity = {
 type Entity =
   | ClientCapabilitiesEntity
   // Schema.org thing in the first level of entities field must have "type" field of "string".
-  | AsEntity<Thing>
+  // | AsEntity<Thing>
   | { type: string };
 
 // Channel account - https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#channel-account
@@ -191,10 +191,10 @@ type CoreActivityEssence<
   (Type extends 'event'
     ? EventActivityEssence
     : Type extends 'message'
-      ? MessageActivityEssence
-      : Type extends 'typing'
-        ? TypingActivityEssence
-        : { type: Type });
+    ? MessageActivityEssence
+    : Type extends 'typing'
+    ? TypingActivityEssence
+    : { type: Type });
 
 // Concrete
 

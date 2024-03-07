@@ -1,11 +1,10 @@
-import { parse, string, type ObjectEntries, type Output } from 'valibot';
+import { parse, string, type ObjectEntries } from 'valibot';
 
-import { thing } from './Thing';
+import { thing, type Thing } from './Thing';
 import orgSchemaProperty from './private/orgSchemaProperty';
 
 export const project = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
   thing({
-    /** A slogan or motto associated with the item. */
     slogan: orgSchemaProperty(string()),
 
     ...entries
@@ -18,6 +17,13 @@ export const project = <TEntries extends ObjectEntries>(entries?: TEntries | und
  *
  * @see https://schema.org/Project
  */
-export type Project = Output<ReturnType<typeof project>>;
+export type Project = Thing & {
+  /**
+   * A slogan or motto associated with the item.
+   *
+   * @see https://schema.org/slogan
+   */
+  slogan?: string | undefined;
+};
 
 export const parseProject = (data: unknown): Project => parse(project(), data);

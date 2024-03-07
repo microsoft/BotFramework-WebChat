@@ -1,28 +1,34 @@
-import React, { memo, useCallback } from 'react';
-import { type OrgSchemaVoteAction } from 'botframework-webchat-core';
+import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction2 } from 'botframework-webchat-core';
+import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import ThumbsButton from './ThumbButton';
 
 type Props = Readonly<{
-  onClick?: (voteAction: OrgSchemaVoteAction) => void;
+  action: OrgSchemaAction2;
+  onClick?: (action: OrgSchemaAction2) => void;
   pressed: boolean;
-  voteAction: OrgSchemaVoteAction;
 }>;
 
-const FeedbackVoteButton = memo(({ onClick, pressed, voteAction }: Props) => {
+const FeedbackVoteButton = memo(({ action, onClick, pressed }: Props) => {
   const onClickRef = useRefFrom(onClick);
-  const voteActionRef = useRefFrom(voteAction);
+  const voteActionRef = useRefFrom(action);
+
+  const direction = useMemo(() => {
+    if (
+      action['@type'] === 'DislikeAction' ||
+      (action['@type'] === 'VoteAction' &&
+        onErrorResumeNext(() => parseVoteAction(action))?.actionOption === 'downvote')
+    ) {
+      return 'down';
+    }
+
+    return 'up';
+  }, [action]);
 
   const handleClick = useCallback(() => onClickRef.current?.(voteActionRef.current), [onClickRef, voteActionRef]);
 
-  return (
-    <ThumbsButton
-      direction={voteAction.actionOption === 'downvote' ? 'down' : 'up'}
-      onClick={handleClick}
-      pressed={pressed}
-    />
-  );
+  return <ThumbsButton direction={direction} onClick={handleClick} pressed={pressed} />;
 });
 
 FeedbackVoteButton.displayName = 'FeedbackVoteButton';

@@ -1,8 +1,7 @@
+import { type OrgSchemaProject2 } from 'botframework-webchat-core';
 import React, { memo } from 'react';
 
-import { OrgSchemaProject } from 'botframework-webchat-core';
-
-type Props = Readonly<{ project: OrgSchemaProject }>;
+type Props = Readonly<{ project: OrgSchemaProject2 }>;
 
 const Originator = memo(({ project }: Props) => {
   const { name, slogan, url } = project;

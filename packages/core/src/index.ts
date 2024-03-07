@@ -29,17 +29,13 @@ import createStore, {
   withOptions as createStoreWithOptions
 } from './createStore';
 import OneOrMany from './types/OneOrMany';
-import {
-  isThing as isOrgSchemaThing,
-  isThingAsEntity as isOrgSchemaThingAsEntity,
-  isThingOf as isOrgSchemaThingOf
-} from './types/external/OrgSchema/Thing';
 import { parseAction } from './types/external/OrgSchema2/Action';
 import { parseClaim } from './types/external/OrgSchema2/Claim';
 import { parseCreativeWork } from './types/external/OrgSchema2/CreativeWork';
 import { parseDefinedTerm } from './types/external/OrgSchema2/DefinedTerm';
 import { parseProject } from './types/external/OrgSchema2/Project';
 import { parseThing } from './types/external/OrgSchema2/Thing';
+import { parseVoteAction } from './types/external/OrgSchema2/VoteAction';
 import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import onErrorResumeNext from './utils/onErrorResumeNext';
@@ -62,12 +58,6 @@ import type { DirectLineSuggestedAction } from './types/external/DirectLineSugge
 import type { DirectLineThumbnailCard } from './types/external/DirectLineThumbnailCard';
 import type { DirectLineVideoCard } from './types/external/DirectLineVideoCard';
 import type { Observable } from './types/external/Observable';
-import type { Certification as OrgSchemaCertification } from './types/external/OrgSchema/Certification';
-import type { Claim as OrgSchemaClaim } from './types/external/OrgSchema/Claim';
-import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Project';
-import type { ReplyAction as OrgSchemaReplyAction } from './types/external/OrgSchema/ReplyAction';
-import type { AsEntity as OrgSchemaAsEntity, Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
-import type { VoteAction as OrgSchemaVoteAction } from './types/external/OrgSchema/VoteAction';
 import type { Action as OrgSchemaAction2 } from './types/external/OrgSchema2/Action';
 import type { Claim as OrgSchemaClaim2 } from './types/external/OrgSchema2/Claim';
 import type { CreativeWork as OrgSchemaCreativeWork2 } from './types/external/OrgSchema2/CreativeWork';
@@ -90,9 +80,6 @@ export {
   emitTypingIndicator,
   getOrgSchemaMessage,
   isForbiddenPropertyName,
-  isOrgSchemaThing,
-  isOrgSchemaThingAsEntity,
-  isOrgSchemaThingOf,
   markActivity,
   onErrorResumeNext,
   parseAction,
@@ -101,6 +88,7 @@ export {
   parseDefinedTerm,
   parseProject,
   parseThing,
+  parseVoteAction,
   postActivity,
   sendEvent,
   sendFiles,
@@ -142,17 +130,10 @@ export type {
   Observable,
   OneOrMany,
   OrgSchemaAction2,
-  OrgSchemaAsEntity,
-  OrgSchemaCertification,
-  OrgSchemaClaim,
   OrgSchemaClaim2,
   OrgSchemaCreativeWork2,
   OrgSchemaDefinedTerm2,
-  OrgSchemaProject,
   OrgSchemaProject2,
-  OrgSchemaReplyAction,
-  OrgSchemaThing,
   OrgSchemaThing2,
-  OrgSchemaVoteAction,
   WebChatActivity
 };

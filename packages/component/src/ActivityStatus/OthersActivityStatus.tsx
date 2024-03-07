@@ -1,11 +1,10 @@
 import {
-  isOrgSchemaThingAsEntity,
-  isOrgSchemaThingOf,
+  getOrgSchemaMessage,
+  OrgSchemaAction2,
+  OrgSchemaProject2,
+  parseAction,
+  parseClaim,
   warnOnce,
-  type OrgSchemaAsEntity,
-  type OrgSchemaClaim,
-  type OrgSchemaReplyAction,
-  type OrgSchemaVoteAction,
   type WebChatActivity
 } from 'botframework-webchat-core';
 import classNames from 'classnames';
@@ -17,61 +16,63 @@ import Originator from './private/Originator';
 import Slotted from './Slotted';
 import Timestamp from './Timestamp';
 
-type DownvoteAction = OrgSchemaVoteAction & { actionOption: 'downvote' };
-type UpvoteAction = OrgSchemaVoteAction & { actionOption: 'upvote' };
-
-function isDownvoteAction(voteAction: OrgSchemaVoteAction): voteAction is DownvoteAction {
-  return voteAction.actionOption === 'downvote';
-}
-
-function isUpvoteAction(voteAction: OrgSchemaVoteAction): voteAction is UpvoteAction {
-  return voteAction.actionOption === 'upvote';
-}
-
 type Props = Readonly<{ activity: WebChatActivity }>;
 
-const warnDeprecatedReplyAction = warnOnce(
-  '"ReplyAction" for originator is being deprecated, please use "claimInterpreter" instead. This feature will be removed in 2025-02-26.'
+const warnRootLevelThings = warnOnce(
+  'Root-level things are being deprecated, please relate all things to `entities[@id=""]` instead. This feature will be removed in 2025-03-06.'
 );
 
 const OthersActivityStatus = memo(({ activity }: Props) => {
   const [{ sendStatus }] = useStyleSet();
-  const { entities, timestamp } = activity;
+  const { timestamp } = activity;
+  const entities = useMemo(() => activity.entities || [], [activity]);
+  const messageThing = useMemo(() => getOrgSchemaMessage(activity), [activity]);
 
-  const firstClaim = useMemo<OrgSchemaClaim>(
-    () =>
-      (entities || []).find<OrgSchemaAsEntity<OrgSchemaClaim>>(
-        (entity): entity is OrgSchemaAsEntity<OrgSchemaClaim> =>
-          isOrgSchemaThingAsEntity(entity) && isOrgSchemaThingOf<OrgSchemaClaim>(entity, 'Claim')
-      ),
-    [entities]
-  );
+  const claimInterpreter = useMemo<OrgSchemaProject2 | undefined>(() => {
+    try {
+      if (messageThing) {
+        return parseClaim((messageThing?.citation || [])[0])?.claimInterpreter;
+      }
 
-  const replyAction = useMemo<OrgSchemaReplyAction>(
-    () =>
-      (entities || []).find<OrgSchemaAsEntity<OrgSchemaReplyAction>>(
-        (entity): entity is OrgSchemaAsEntity<OrgSchemaReplyAction> =>
-          isOrgSchemaThingAsEntity(entity) && isOrgSchemaThingOf<OrgSchemaReplyAction>(entity, 'ReplyAction')
-      ),
-    [entities]
-  );
+      const [firstClaim] = entities.filter(({ type }) => type === 'https://schema.org/Claim').map(parseClaim);
 
-  const voteActions = useMemo<ReadonlySet<OrgSchemaVoteAction>>(
-    () =>
-      Object.freeze(
-        new Set<OrgSchemaVoteAction>(
-          (entities || []).filter<OrgSchemaAsEntity<OrgSchemaVoteAction>>(
-            (entity): entity is OrgSchemaAsEntity<OrgSchemaVoteAction> =>
-              isOrgSchemaThingAsEntity(entity) &&
-              isOrgSchemaThingOf<OrgSchemaVoteAction>(entity, 'VoteAction') &&
-              (isDownvoteAction(entity) || isUpvoteAction(entity))
-          )
-        )
-      ),
-    [entities]
-  );
+      if (firstClaim) {
+        warnRootLevelThings();
 
-  replyAction && warnDeprecatedReplyAction();
+        return firstClaim?.claimInterpreter;
+      }
+
+      const replyAction = parseAction(entities.find(({ type }) => type === 'https://schema.org/ReplyAction'));
+
+      if (replyAction) {
+        warnRootLevelThings();
+
+        return replyAction?.provider;
+      }
+    } catch {
+      // Intentionally left blank.
+    }
+  }, [entities, messageThing]);
+
+  const feedbackActions = useMemo<ReadonlySet<OrgSchemaAction2> | undefined>(() => {
+    try {
+      const reactActions = (messageThing?.potentialAction || []).filter(
+        ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
+      );
+
+      if (reactActions) {
+        return Object.freeze(new Set(reactActions));
+      }
+
+      const voteActions = entities.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction);
+
+      if (voteActions) {
+        return Object.freeze(new Set(voteActions));
+      }
+    } catch {
+      // Intentionally left blank.
+    }
+  }, [entities, messageThing]);
 
   return (
     <Slotted className={classNames('webchat__activity-status', sendStatus + '')}>
@@ -79,14 +80,10 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
         () =>
           [
             timestamp && <Timestamp key="timestamp" timestamp={timestamp} />,
-            firstClaim?.claimInterpreter ? (
-              <Originator key="originator" project={firstClaim.claimInterpreter} />
-            ) : (
-              replyAction?.provider && <Originator key="originator" project={replyAction.provider} />
-            ),
-            voteActions.size && <Feedback key="feedback" voteActions={voteActions} />
+            claimInterpreter && <Originator key="originator" project={claimInterpreter} />,
+            feedbackActions.size && <Feedback actions={feedbackActions} key="feedback" />
           ].filter(Boolean),
-        [firstClaim, replyAction, timestamp, voteActions]
+        [claimInterpreter, timestamp, feedbackActions]
       )}
     </Slotted>
   );
