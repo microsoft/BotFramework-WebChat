@@ -11,6 +11,7 @@ import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/ind
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
+import { type PropsOf } from '../../../types/PropsOf';
 import CitationModalContext from './CitationModalContent';
 import MessageSensitivityLabel from './MessageSensitivityLabel';
 import isHTMLButtonElement from './isHTMLButtonElement';
@@ -113,21 +114,24 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
     [entriesRef]
   );
 
-  const messageSensitivityLabelProps = useMemo(() => {
+  const messageSensitivityLabelProps = useMemo<PropsOf<typeof MessageSensitivityLabel> | undefined>(() => {
     const usageInfo = messageThing?.usageInfo;
-    const pattern = usageInfo?.pattern;
-    const encryptionStatus = usageInfo?.keywords?.find(({ name }) => name === 'encryptionStatus')?.termCode;
 
-    return {
-      color:
-        pattern &&
-        pattern.inDefinedTermSet === 'https://www.w3.org/TR/css-color-4/' &&
-        pattern.name === 'color' &&
-        pattern.termCode,
-      isEncrypted: encryptionStatus === 'encrypted',
-      text: usageInfo?.name,
-      tooltip: usageInfo?.description
-    };
+    if (usageInfo) {
+      const { pattern } = usageInfo;
+      const encryptionStatus = usageInfo.keywords?.find(({ name }) => name === 'encryptionStatus')?.termCode;
+
+      return {
+        color:
+          pattern &&
+          pattern.inDefinedTermSet === 'https://www.w3.org/TR/css-color-4/' &&
+          pattern.name === 'color' &&
+          pattern.termCode,
+        isEncrypted: encryptionStatus === 'encrypted',
+        text: usageInfo.name,
+        tooltip: usageInfo.description
+      };
+    }
   }, [messageThing]);
 
   return (
@@ -145,7 +149,10 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
         onClick={handleClick}
       />
       {!!entries.length && (
-        <LinkDefinitions accessory={MessageSensitivityLabel} accessoryProps={messageSensitivityLabelProps}>
+        <LinkDefinitions
+          accessoryComponentType={messageSensitivityLabelProps && MessageSensitivityLabel}
+          accessoryProps={messageSensitivityLabelProps}
+        >
           {entries.map(entry => (
             <LinkDefinitionItem
               badgeText={entry.claim.appearance?.usageInfo?.name}

@@ -10,7 +10,7 @@ const { useLocalizer } = hooks;
 const { count: childrenCount, map: childrenMap } = Children;
 
 type Props<TAccessory extends ComponentType> = Readonly<{
-  accessory: TAccessory;
+  accessoryComponentType: TAccessory;
   accessoryProps: PropsOf<TAccessory>;
   children?: ReactNode | undefined;
 }>;
@@ -24,7 +24,7 @@ const REFERENCE_LIST_HEADER_IDS = {
 };
 
 const LinkDefinitions = <TAccessory extends ComponentType>({
-  accessory,
+  accessoryComponentType,
   accessoryProps,
   children
 }: Props<TAccessory>) => {
@@ -39,9 +39,9 @@ const LinkDefinitions = <TAccessory extends ComponentType>({
         <div className="webchat__link-definitions__header-text">{headerText}</div>
         <Chevron />
         <div className="webchat__link-definitions__header-filler" />
-        {accessory && (
+        {accessoryComponentType && (
           <div className="webchat__link-definitions__header-accessory">
-            {React.createElement(accessory, accessoryProps)}
+            {React.createElement(accessoryComponentType, accessoryProps)}
           </div>
         )}
       </summary>
