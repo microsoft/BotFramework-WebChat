@@ -1,6 +1,6 @@
+import classNames from 'classnames';
 import React, { memo, useMemo } from 'react';
 
-import classNames from 'classnames';
 import ShieldIcon from './ShieldIcon';
 
 type Props = Readonly<{
