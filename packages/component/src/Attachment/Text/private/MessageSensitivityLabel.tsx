@@ -7,21 +7,21 @@ type Props = Readonly<{
   className?: string | undefined;
   color?: string | undefined;
   isEncrypted?: boolean | undefined;
-  text?: string | undefined;
-  tooltip?: string | undefined; // TODO: Should we change it to "title" instead?
+  name?: string | undefined;
+  title?: string | undefined;
 }>;
 
-const MessageSensitivityLabel = memo(({ className, color, isEncrypted, text, tooltip }: Props) => (
+const MessageSensitivityLabel = memo(({ className, color, isEncrypted, name, title }: Props) => (
   <div
     className={classNames('webchat__link-definitions__message-sensitivity-label', className)}
-    title={useMemo(() => [text, tooltip].filter(Boolean).join('\n\n'), [text, tooltip])}
+    title={useMemo(() => [name, title].filter(Boolean).join('\n\n'), [name, title])}
   >
     <ShieldIcon
       className="webchat__link-definitions__message-sensitivity-label-icon"
       fillColor={color}
       hasLock={isEncrypted}
     />
-    <span className="webchat__link-definitions__message-sensitivity-label-text">{text}</span>
+    <span className="webchat__link-definitions__message-sensitivity-label-text">{name}</span>
   </div>
 ));
 

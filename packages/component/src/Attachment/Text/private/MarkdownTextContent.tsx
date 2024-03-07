@@ -129,8 +129,8 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
           pattern.name === 'color' &&
           pattern.termCode,
         isEncrypted: encryptionStatus === 'encrypted',
-        text: usageInfo.name,
-        tooltip: usageInfo.description
+        name: usageInfo.name,
+        title: usageInfo.description
       };
     }
   }, [messageThing]);
@@ -156,8 +156,8 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
         >
           {entries.map(entry => (
             <LinkDefinitionItem
-              badgeText={entry.claim?.appearance?.usageInfo?.name}
-              badgeTooltip={[entry.claim?.appearance?.usageInfo?.name, entry.claim?.appearance?.usageInfo?.description]
+              badgeName={entry.claim?.appearance?.usageInfo?.name}
+              badgeTitle={[entry.claim?.appearance?.usageInfo?.name, entry.claim?.appearance?.usageInfo?.description]
                 .filter(Boolean)
                 .join('\n\n')}
               identifier={entry.markdownDefinition.identifier}

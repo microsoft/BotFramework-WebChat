@@ -5,15 +5,15 @@ import ItemBody from './private/ItemBody';
 import extractHostnameWithSubdomain from './private/extractHostnameWithSubdomain';
 
 type Props = Readonly<{
-  badgeText?: string; // TODO: Should we name this "badgeBody"?
-  badgeTooltip?: string; // TODO: Should we name this "badgeTitle"?
+  badgeName?: string; // TODO: Should we name this "badgeBody"?
+  badgeTitle?: string; // TODO: Should we name this "badgeTitle"?
   identifier?: string;
   onClick?: (event: Pick<CustomEvent, 'defaultPrevented' | 'preventDefault' | 'type'>) => void;
   text?: string;
   url?: string;
 }>;
 
-const LinkDefinitionItem = memo(({ badgeText, badgeTooltip, identifier, onClick, text, url }: Props) => {
+const LinkDefinitionItem = memo(({ badgeName, badgeTitle, identifier, onClick, text, url }: Props) => {
   const onClickRef = useRefFrom(onClick);
 
   const handleClick = useCallback<MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>>(
@@ -40,8 +40,8 @@ const LinkDefinitionItem = memo(({ badgeText, badgeTooltip, identifier, onClick,
       target="_blank"
     >
       <ItemBody
-        badgeText={badgeText}
-        badgeTooltip={badgeTooltip}
+        badgeName={badgeName}
+        badgeTitle={badgeTitle}
         identifier={identifier}
         isExternal={true}
         text={text || extractHostnameWithSubdomain(url)}
@@ -53,7 +53,7 @@ const LinkDefinitionItem = memo(({ badgeText, badgeTooltip, identifier, onClick,
       onClick={handleClick}
       type="button"
     >
-      <ItemBody badgeText={badgeText} badgeTooltip={badgeTooltip} identifier={identifier} text={text} />
+      <ItemBody badgeName={badgeName} badgeTitle={badgeTitle} identifier={identifier} text={text} />
     </button>
   );
 });
