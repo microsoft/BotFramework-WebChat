@@ -129,6 +129,10 @@
         ).toBe('Adipisicing enim nulla');
         expect(linkDefinitions[3].querySelector('.webchat__link-definitions__list-item-badge')).toBeNull();
 
+        const accordionText = document.querySelector('.webchat__link-definitions__header-text');
+
+        expect(accordionText).toHaveProperty('textContent', '4 references');
+
         const messageSensitivityLabel = document.querySelector(
           '.webchat__link-definitions__message-sensitivity-label-text'
         );
