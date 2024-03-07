@@ -19,10 +19,10 @@ import isHTMLButtonElement from './isHTMLButtonElement';
 const { useLocalizer } = hooks;
 
 type Entry = {
-  claim: OrgSchemaClaim2;
+  claim?: OrgSchemaClaim2 | undefined;
   handleClick?: (() => void) | undefined;
-  id: string;
-  markdownDefinition?: Definition | undefined;
+  key: string;
+  markdownDefinition: Definition;
 };
 
 type Props = Readonly<{
@@ -72,18 +72,19 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   const entries = useMemo<readonly Entry[]>(
     () =>
       Object.freeze(
-        (messageThing?.citation || []).map(parseClaim).map<Entry>(claim => {
-          const markdownDefinition = markdownDefinitions.find(({ url }) => url === claim['@id']);
+        markdownDefinitions.map<Entry>(markdownDefinition => {
+          const claim = messageThing?.citation?.map(parseClaim).find(({ '@id': id }) => id === markdownDefinition.url);
 
           return {
             claim,
-            id: claim['@id'],
+            key: markdownDefinition.url,
             markdownDefinition,
-            handleClick: claim.appearance?.url
-              ? undefined
-              : () => showClaimModal(markdownDefinition.title, claim.appearance?.text, claim.alternateName)
+            handleClick:
+              claim?.appearance && !claim.appearance.url
+                ? () => showClaimModal(markdownDefinition.title, claim.appearance.text, claim.alternateName)
+                : undefined
           };
-        }) || []
+        })
       ),
     [markdownDefinitions, messageThing, showClaimModal]
   );
@@ -102,7 +103,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
         return;
       }
 
-      const entry = entriesRef.current.find(({ claim: { '@id': id } }) => id === buttonElement.value);
+      const entry = entriesRef.current.find(({ key }) => key === buttonElement.value);
 
       if (entry?.handleClick) {
         event.preventDefault();
@@ -155,15 +156,15 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
         >
           {entries.map(entry => (
             <LinkDefinitionItem
-              badgeText={entry.claim.appearance?.usageInfo?.name}
-              badgeTooltip={[entry.claim.appearance?.usageInfo?.name, entry.claim.appearance?.usageInfo?.description]
+              badgeText={entry.claim?.appearance?.usageInfo?.name}
+              badgeTooltip={[entry.claim?.appearance?.usageInfo?.name, entry.claim?.appearance?.usageInfo?.description]
                 .filter(Boolean)
                 .join('\n\n')}
-              identifier={entry.markdownDefinition?.identifier}
-              key={entry.claim['@id']}
+              identifier={entry.markdownDefinition.identifier}
+              key={entry.key}
               onClick={entry.handleClick}
-              text={entry.markdownDefinition?.title}
-              url={entry.claim.appearance?.url}
+              text={entry.markdownDefinition.title}
+              url={entry.claim?.appearance ? entry.claim.appearance.url : entry.markdownDefinition.url}
             />
           ))}
         </LinkDefinitions>
