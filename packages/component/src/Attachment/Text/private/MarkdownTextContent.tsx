@@ -203,7 +203,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
               badgeTitle={[entry.claim?.appearance?.usageInfo?.name, entry.claim?.appearance?.usageInfo?.description]
                 .filter(Boolean)
                 .join('\n\n')}
-              identifier={entry.markdownDefinition.identifier}
+              identifier={entry.markdownDefinition.label}
               key={entry.key}
               onClick={entry.handleClick}
               text={entry.markdownDefinition.title}
