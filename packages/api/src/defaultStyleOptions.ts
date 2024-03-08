@@ -97,7 +97,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   sendBoxBackground: 'White',
   uploadAccept: undefined,
   uploadMultiple: true,
-  attachmentAccept: '*',
+  uploadFileTypes: '*',
 
   // Send box buttons
   sendBoxButtonColor: undefined,
