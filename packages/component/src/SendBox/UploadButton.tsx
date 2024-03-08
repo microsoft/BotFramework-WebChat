@@ -96,7 +96,7 @@ type UploadButtonProps = {
 
 const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
-  const [{ attachmentAccept }] = useStyleOptions();
+  const [{ uploadFileTypes, uploadMultiple }] = useStyleOptions();
   const [disabled] = useDisabled();
   const inputRef = useRef<HTMLInputElement>();
   const localize = useLocalizer();
@@ -124,11 +124,11 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   return (
     <div className={classNames(rootClassName, 'webchat__upload-button', uploadButtonStyleSet + '', className)}>
       <input
-        accept={attachmentAccept}
+        accept={uploadFileTypes}
         aria-disabled={disabled}
         aria-hidden="true"
         className="webchat__upload-button--file-input"
-        multiple={true}
+        multiple={uploadMultiple}
         onChange={disabled ? undefined : handleFileChange}
         onClick={disabled ? PREVENT_DEFAULT_HANDLER : undefined}
         readOnly={disabled}
