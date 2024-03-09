@@ -23,6 +23,28 @@
         await pageConditions.uiConnected();
 
         await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              citation: [
+                {
+                  '@type': 'Claim',
+                  '@id': 'https://example.com/1/'
+                },
+                {
+                  '@type': 'Claim',
+                  '@id': 'https://example.com/2/'
+                },
+                {
+                  '@type': 'Claim',
+                  '@id': 'https://example.com/3/'
+                }
+              ],
+              type: 'https://schema.org/Message'
+            }
+          ],
           text: 'Ipsum[Abc] dolore[DEF] cupidatat[xyz] magna consectetur do tempor est excepteur.\n\n[Abc]: https://example.com/1/ "Sint amet id officia dolor ex eiusmod ipsum ipsum magna fugiat"\n[DEF]: https://example.com/2/ "Laboris cupidatat voluptate"\n[xyz]: https://example.com/3/ "Velit nulla culpa eu ea consectetur consectetur dolore velit"',
           type: 'message'
         });

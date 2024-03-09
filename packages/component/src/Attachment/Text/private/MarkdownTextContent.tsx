@@ -82,36 +82,32 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
 
   const entries = useMemo<readonly Entry[]>(
     () =>
-      Object.freeze(
-        markdownDefinitions.map<Entry>(markdownDefinition => {
-          const messageCitation = messageThing?.citation
-            ?.map(parseClaim)
-            .find(({ '@id': id }) => id === markdownDefinition.url);
+      Object.freeze([
+        ...(messageThing?.citation || []).map(parseClaim).map<Entry>(messageCitation => {
+          const markdownDefinition = markdownDefinitions.find(({ url }) => url === messageCitation['@id']);
 
-          if (messageCitation) {
-            return {
-              claim: messageCitation,
-              key: markdownDefinition.url,
-              handleClick:
-                messageCitation?.appearance && !messageCitation.appearance.url
-                  ? () =>
-                      showClaimModal(
-                        markdownDefinition.title,
-                        messageCitation.appearance.text,
-                        messageCitation.alternateName
-                      )
-                  : undefined,
-              markdownDefinition,
-              url: messageCitation?.appearance ? messageCitation.appearance.url : markdownDefinition.url
-            };
-          }
+          return {
+            claim: messageCitation,
+            key: markdownDefinition.url,
+            handleClick:
+              messageCitation?.appearance && !messageCitation.appearance.url
+                ? () =>
+                    showClaimModal(
+                      markdownDefinition.title,
+                      messageCitation.appearance.text,
+                      messageCitation.alternateName
+                    )
+                : undefined,
+            markdownDefinition,
+            url: messageCitation?.appearance ? messageCitation.appearance.url : markdownDefinition.url
+          };
+        }),
+        ...(activity.entities || [])
+          .filter(({ type }) => type === 'https://schema.org/Claim')
+          .map(parseClaim)
+          .map<Entry>(rootLevelClaim => {
+            const markdownDefinition = markdownDefinitions.find(({ url }) => url === rootLevelClaim['@id']);
 
-          const rootLevelClaim = (activity.entities || [])
-            .filter(({ type }) => type === 'https://schema.org/Claim')
-            .map(parseClaim)
-            .find(({ '@id': id }) => id === markdownDefinition.url);
-
-          if (rootLevelClaim) {
             return {
               claim: rootLevelClaim,
               key: markdownDefinition.url,
@@ -120,15 +116,8 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
                 : undefined,
               markdownDefinition
             };
-          }
-
-          return {
-            key: markdownDefinition.url,
-            markdownDefinition,
-            url: markdownDefinition.url
-          };
-        })
-      ),
+          })
+      ]),
     [activity, markdownDefinitions, messageThing, showClaimModal]
   );
 

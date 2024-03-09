@@ -23,6 +23,20 @@
         await pageConditions.uiConnected();
 
         await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              citation: [
+                {
+                  '@type': 'Claim',
+                  '@id': 'https://example.com/1/'
+                }
+              ],
+              type: 'https://schema.org/Message'
+            }
+          ],
           text: 'Ut pariatur non pariatur nostrud et laborum[1]. Quis commodo et proident [1]pariatur consequat nulla nostrud incididunt consequat.\n\nThe "laborum", "[1]", and "pariatur" should break onto different lines.\n\n[1]: https://example.com/1/ "Sint amet id officia dolor ex eiusmod ipsum ipsum magna fugiat"',
           type: 'message'
         });
