@@ -60,13 +60,13 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
         ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
       );
 
-      if (reactActions) {
+      if (reactActions.length) {
         return Object.freeze(new Set(reactActions));
       }
 
       const voteActions = entities.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction);
 
-      if (voteActions) {
+      if (voteActions.length) {
         return Object.freeze(new Set(voteActions));
       }
     } catch {
