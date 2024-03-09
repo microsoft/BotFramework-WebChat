@@ -81,7 +81,7 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
           [
             timestamp && <Timestamp key="timestamp" timestamp={timestamp} />,
             claimInterpreter && <Originator key="originator" project={claimInterpreter} />,
-            feedbackActions.size && <Feedback actions={feedbackActions} key="feedback" />
+            feedbackActions?.size && <Feedback actions={feedbackActions} key="feedback" />
           ].filter(Boolean),
         [claimInterpreter, timestamp, feedbackActions]
       )}
