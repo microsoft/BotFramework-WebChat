@@ -88,7 +88,8 @@ export default function render(
     .use(betterLink, (href: string, textContent: string): BetterLinkDecoration | undefined => {
       const decoration: BetterLinkDecoration = {
         rel: 'noopener noreferrer',
-        target: '_blank'
+        target: '_blank',
+        wrapZeroWidthSpace: true
       };
 
       const ariaLabelSegments: string[] = [textContent];

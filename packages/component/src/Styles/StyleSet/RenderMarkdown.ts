@@ -1,5 +1,5 @@
-import { FORCED_COLORS_SELECTOR, NOT_FORCED_COLORS_SELECTOR } from './Constants';
 import CSSTokens from '../CSSTokens';
+import { FORCED_COLORS_SELECTOR, NOT_FORCED_COLORS_SELECTOR } from './Constants';
 
 // This style is for accompanying result of `renderMarkdown()`.
 // Mostly, it should only styles elements that are generated/modified during `renderMarkdown()`.
