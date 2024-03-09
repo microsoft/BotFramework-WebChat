@@ -44,7 +44,6 @@ export default function createLinkDefinitionsStyleSet() {
       },
 
       '&:not([open]) .webchat__link-definitions__header-chevron': {
-        marginBottom: '-0.1em',
         transform: 'rotate(-180deg)'
       },
 

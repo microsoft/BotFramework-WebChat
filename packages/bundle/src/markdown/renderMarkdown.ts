@@ -105,7 +105,8 @@ export default function render(
         linkDefinition.label === textContent && classes.add('webchat__render-markdown__pure-identifier');
       }
 
-      if (protocol === 'cite:') {
+      // For links that would be sanitized out, let's turn them into a button so we could handle them later.
+      if (!SANITIZE_HTML_OPTIONS.allowedSchemes.map(scheme => `${scheme}:`).includes(protocol)) {
         decoration.asButton = true;
 
         classes.add('webchat__render-markdown__citation');
