@@ -32,6 +32,10 @@ export default function createMarkdownStyle() {
         }
       },
 
+      '& .webchat__render-markdown__pure-identifier': {
+        whiteSpace: 'nowrap'
+      },
+
       '& .webchat__render-markdown__pure-identifier::after': {
         content: "']'"
       },
