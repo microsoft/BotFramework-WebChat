@@ -261,16 +261,6 @@ type StyleOptions = {
 
   /**
    * The comma-delimited file types that the upload button should accept.
-   * @example 'image/*,.pdf'
-   */
-  uploadFileTypes?: string;
-  /**
-   * If true, the upload button will accept multiple files.
-   */
-  uploadMultiple?: boolean;
-
-  /**
-   * The comma-delimited file types that the upload button should accept.
    * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept
    * @example 'image/*,.pdf'
    */
