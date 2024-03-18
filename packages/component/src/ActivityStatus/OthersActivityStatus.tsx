@@ -11,6 +11,7 @@ import classNames from 'classnames';
 import React, { memo, useMemo, type ReactNode } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
+import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
 import Feedback from './private/Feedback/Feedback';
 import Originator from './private/Originator';
 import Slotted from './Slotted';
@@ -25,8 +26,8 @@ const warnRootLevelThings = warnOnce(
 const OthersActivityStatus = memo(({ activity }: Props) => {
   const [{ sendStatus }] = useStyleSet();
   const { timestamp } = activity;
-  const entities = useMemo(() => activity.entities || [], [activity]);
-  const messageThing = useMemo(() => getOrgSchemaMessage(activity), [activity]);
+  const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
+  const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
 
   const claimInterpreter = useMemo<OrgSchemaProject2 | undefined>(() => {
     try {
@@ -34,7 +35,7 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
         return parseClaim((messageThing?.citation || [])[0])?.claimInterpreter;
       }
 
-      const [firstClaim] = entities.filter(({ type }) => type === 'https://schema.org/Claim').map(parseClaim);
+      const [firstClaim] = graph.filter(({ type }) => type === 'https://schema.org/Claim').map(parseClaim);
 
       if (firstClaim) {
         warnRootLevelThings();
@@ -42,7 +43,7 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
         return firstClaim?.claimInterpreter;
       }
 
-      const replyAction = parseAction(entities.find(({ type }) => type === 'https://schema.org/ReplyAction'));
+      const replyAction = parseAction(graph.find(({ type }) => type === 'https://schema.org/ReplyAction'));
 
       if (replyAction) {
         warnRootLevelThings();
@@ -52,7 +53,7 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
     } catch {
       // Intentionally left blank.
     }
-  }, [entities, messageThing]);
+  }, [graph, messageThing]);
 
   const feedbackActions = useMemo<ReadonlySet<OrgSchemaAction2> | undefined>(() => {
     try {
@@ -64,7 +65,7 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
         return Object.freeze(new Set(reactActions));
       }
 
-      const voteActions = entities.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction);
+      const voteActions = graph.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction);
 
       if (voteActions.length) {
         return Object.freeze(new Set(voteActions));
@@ -72,7 +73,7 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
     } catch {
       // Intentionally left blank.
     }
-  }, [entities, messageThing]);
+  }, [graph, messageThing]);
 
   return (
     <Slotted className={classNames('webchat__activity-status', sendStatus + '')}>

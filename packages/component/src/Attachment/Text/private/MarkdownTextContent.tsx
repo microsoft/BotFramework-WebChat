@@ -14,6 +14,7 @@ import React, { memo, useCallback, useMemo, type MouseEventHandler } from 'react
 import { useRefFrom } from 'use-ref-from';
 
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
+import dereferenceBlankNodes from '../../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
@@ -50,9 +51,11 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
     }
   ] = useStyleSet();
   const localize = useLocalizer();
-  const messageThing = useMemo(() => getOrgSchemaMessage(activity), [activity]);
+  const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const showModal = useShowModal();
+
+  const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
 
   const citationModalDialogLabel = localize('CITATION_MODEL_DIALOG_ALT');
 
@@ -106,7 +109,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
             };
           }
 
-          const rootLevelClaim = (activity.entities || [])
+          const rootLevelClaim = graph
             .filter(({ type }) => type === 'https://schema.org/Claim')
             .map(parseClaim)
             .find(({ '@id': id }) => id === markdownDefinition.url);
@@ -129,7 +132,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
           };
         })
       ),
-    [activity, markdownDefinitions, messageThing, showClaimModal]
+    [graph, markdownDefinitions, messageThing, showClaimModal]
   );
 
   const entriesRef = useRefFrom(entries);

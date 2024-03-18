@@ -36,10 +36,18 @@
                     '@type': 'DigitalDocument',
                     url: 'https://example.com/1/',
                     usageInfo: {
+                      '@id': '_:1',
                       '@type': 'CreativeWork',
                       description:
                         'Nisi quis ut sint elit est nulla enim eiusmod. Deserunt commodo pariatur nostrud culpa aliquip esse pariatur exercitation nulla do proident. Est qui eiusmod aliquip deserunt labore consequat fugiat. Ullamco reprehenderit nostrud eiusmod nisi nulla esse id. Reprehenderit aliqua quis consectetur sit cupidatat fugiat Lorem ex labore. Eiusmod velit laborum quis tempor incididunt excepteur culpa esse nulla.',
-                      name: 'Sit veniam do irure velit est et quis ut Lorem reprehenderit commodo cillum occaecat'
+                      keywords: ['encrypted-content'],
+                      name: 'Sit veniam do irure velit est et quis ut Lorem reprehenderit commodo cillum occaecat',
+                      pattern: {
+                        '@type': 'DefinedTerm',
+                        inDefinedTermSet: 'https://www.w3.org/TR/css-color-4/',
+                        name: 'color',
+                        termCode: 'orange'
+                      }
                     }
                   }
                 },
@@ -51,7 +59,13 @@
                     text: 'Incididunt amet dolore anim commodo fugiat occaecat elit nulla do consequat. Quis incididunt occaecat labore adipisicing. Cillum sunt velit consequat irure ipsum ullamco sint ea aute. Sunt et eu ut enim aliqua cupidatat non adipisicing dolore commodo dolor magna enim. Commodo reprehenderit excepteur ad nostrud ex id aliquip deserunt eiusmod. Esse non labore nulla voluptate.',
                     usageInfo: {
                       '@type': 'CreativeWork',
-                      name: 'Velit exercitation'
+                      name: 'Velit exercitation',
+                      pattern: {
+                        '@type': 'DefinedTerm',
+                        inDefinedTermSet: 'https://www.w3.org/TR/css-color-4/',
+                        name: 'color',
+                        termCode: 'Yellow'
+                      }
                     }
                   }
                 },
@@ -65,26 +79,7 @@
                 }
               ],
               type: 'https://schema.org/Message',
-              usageInfo: {
-                '@type': 'CreativeWork',
-                description:
-                  'Cillum elit cupidatat anim nulla reprehenderit proident excepteur aute consectetur culpa ad deserunt do aliquip.',
-                keywords: [
-                  {
-                    '@type': 'DefinedTerm',
-                    additionalType: 'https://copilotstudio.microsoft.com/encryption-status/v1',
-                    name: 'encryptionStatus',
-                    termCode: 'encrypted'
-                  }
-                ],
-                name: 'Enim deserunt irure ut proident sunt eiusmod dolor laboris sunt nulla occaecat.',
-                pattern: {
-                  '@type': 'DefinedTerm',
-                  inDefinedTermSet: 'https://www.w3.org/TR/css-color-4/',
-                  name: 'color',
-                  termCode: 'orange'
-                }
-              }
+              usageInfo: { '@id': '_:1' }
             }
           ],
           text: 'Ipsum[1] dolore[2] cupidatat[3] magna[4] consectetur[5] do tempor est excepteur.\n\n[1]: https://example.com/1/ "Sint amet id officia dolor ex eiusmod ipsum ipsum magna fugiat"\n[2]: https://example.com/2/ "Laboris cupidatat voluptate"\n[3]: _:3 "Velit nulla culpa eu ea consectetur consectetur dolore velit"\n[4]: _:4 "Adipisicing enim nulla"\n[5]: https://example.com/5',
@@ -136,12 +131,12 @@
 
         expect(document.querySelector('.webchat__link-definitions__message-sensitivity-label-text')).toHaveProperty(
           'textContent',
-          'Enim deserunt irure ut proident sunt eiusmod dolor laboris sunt nulla occaecat.'
+          'Sit veniam do irure velit est et quis ut Lorem reprehenderit commodo cillum occaecat'
         );
 
         expect(document.querySelector('.webchat__link-definitions__message-sensitivity-label')).toHaveProperty(
           'title',
-          'Enim deserunt irure ut proident sunt eiusmod dolor laboris sunt nulla occaecat.\n\nCillum elit cupidatat anim nulla reprehenderit proident excepteur aute consectetur culpa ad deserunt do aliquip.'
+          'Sit veniam do irure velit est et quis ut Lorem reprehenderit commodo cillum occaecat\n\nNisi quis ut sint elit est nulla enim eiusmod. Deserunt commodo pariatur nostrud culpa aliquip esse pariatur exercitation nulla do proident. Est qui eiusmod aliquip deserunt labore consequat fugiat. Ullamco reprehenderit nostrud eiusmod nisi nulla esse id. Reprehenderit aliqua quis consectetur sit cupidatat fugiat Lorem ex labore. Eiusmod velit laborum quis tempor incididunt excepteur culpa esse nulla.'
         );
       });
     </script>

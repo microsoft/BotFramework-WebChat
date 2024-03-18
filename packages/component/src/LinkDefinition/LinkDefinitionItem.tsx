@@ -5,8 +5,8 @@ import ItemBody from './private/ItemBody';
 import extractHostnameWithSubdomain from './private/extractHostnameWithSubdomain';
 
 type Props = Readonly<{
-  badgeName?: string; // TODO: Should we name this "badgeBody"?
-  badgeTitle?: string; // TODO: Should we name this "badgeTitle"?
+  badgeName?: string;
+  badgeTitle?: string;
   identifier?: string;
   onClick?: (event: Pick<CustomEvent, 'defaultPrevented' | 'preventDefault' | 'type'>) => void;
   text?: string;
