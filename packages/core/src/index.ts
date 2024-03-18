@@ -29,13 +29,13 @@ import createStore, {
   withOptions as createStoreWithOptions
 } from './createStore';
 import OneOrMany from './types/OneOrMany';
-import { parseAction } from './types/external/OrgSchema2/Action';
-import { parseClaim } from './types/external/OrgSchema2/Claim';
-import { parseCreativeWork } from './types/external/OrgSchema2/CreativeWork';
-import { parseDefinedTerm } from './types/external/OrgSchema2/DefinedTerm';
-import { parseProject } from './types/external/OrgSchema2/Project';
-import { parseThing } from './types/external/OrgSchema2/Thing';
-import { parseVoteAction } from './types/external/OrgSchema2/VoteAction';
+import { parseAction } from './types/external/OrgSchema/Action';
+import { parseClaim } from './types/external/OrgSchema/Claim';
+import { parseCreativeWork } from './types/external/OrgSchema/CreativeWork';
+import { parseDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
+import { parseProject } from './types/external/OrgSchema/Project';
+import { parseThing } from './types/external/OrgSchema/Thing';
+import { parseVoteAction } from './types/external/OrgSchema/VoteAction';
 import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import onErrorResumeNext from './utils/onErrorResumeNext';
@@ -58,12 +58,12 @@ import type { DirectLineSuggestedAction } from './types/external/DirectLineSugge
 import type { DirectLineThumbnailCard } from './types/external/DirectLineThumbnailCard';
 import type { DirectLineVideoCard } from './types/external/DirectLineVideoCard';
 import type { Observable } from './types/external/Observable';
-import type { Action as OrgSchemaAction2 } from './types/external/OrgSchema2/Action';
-import type { Claim as OrgSchemaClaim2 } from './types/external/OrgSchema2/Claim';
-import type { CreativeWork as OrgSchemaCreativeWork2 } from './types/external/OrgSchema2/CreativeWork';
-import type { DefinedTerm as OrgSchemaDefinedTerm2 } from './types/external/OrgSchema2/DefinedTerm';
-import type { Project as OrgSchemaProject2 } from './types/external/OrgSchema2/Project';
-import type { Thing as OrgSchemaThing2 } from './types/external/OrgSchema2/Thing';
+import type { Action as OrgSchemaAction } from './types/external/OrgSchema/Action';
+import type { Claim as OrgSchemaClaim } from './types/external/OrgSchema/Claim';
+import type { CreativeWork as OrgSchemaCreativeWork } from './types/external/OrgSchema/CreativeWork';
+import type { DefinedTerm as OrgSchemaDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
+import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Project';
+import type { Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
 
 const Constants = { ActivityClientState, DictateState };
 const version = process.env.npm_package_version;
@@ -129,11 +129,11 @@ export type {
   GlobalScopePonyfill,
   Observable,
   OneOrMany,
-  OrgSchemaAction2,
-  OrgSchemaClaim2,
-  OrgSchemaCreativeWork2,
-  OrgSchemaDefinedTerm2,
-  OrgSchemaProject2,
-  OrgSchemaThing2,
+  OrgSchemaAction,
+  OrgSchemaClaim,
+  OrgSchemaCreativeWork,
+  OrgSchemaDefinedTerm,
+  OrgSchemaProject,
+  OrgSchemaThing,
   WebChatActivity
 };

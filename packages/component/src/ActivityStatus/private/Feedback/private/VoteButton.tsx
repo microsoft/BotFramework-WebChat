@@ -1,12 +1,12 @@
-import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction2 } from 'botframework-webchat-core';
+import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import ThumbsButton from './ThumbButton';
 
 type Props = Readonly<{
-  action: OrgSchemaAction2;
-  onClick?: (action: OrgSchemaAction2) => void;
+  action: OrgSchemaAction;
+  onClick?: (action: OrgSchemaAction) => void;
   pressed: boolean;
 }>;
 

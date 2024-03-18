@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { type OrgSchemaAction2 } from 'botframework-webchat-core';
+import { type OrgSchemaAction } from 'botframework-webchat-core';
 import React, { Fragment, memo, useEffect, useState, type PropsWithChildren } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
@@ -9,7 +9,7 @@ const { usePonyfill, usePostActivity } = hooks;
 
 type Props = Readonly<
   PropsWithChildren<{
-    actions: ReadonlySet<OrgSchemaAction2>;
+    actions: ReadonlySet<OrgSchemaAction>;
   }>
 >;
 
@@ -17,7 +17,7 @@ const DEBOUNCE_TIMEOUT = 500;
 
 const Feedback = memo(({ actions }: Props) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
-  const [selectedAction, setSelectedAction] = useState<OrgSchemaAction2 | undefined>();
+  const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
   const postActivity = usePostActivity();
 
   const postActivityRef = useRefFrom(postActivity);

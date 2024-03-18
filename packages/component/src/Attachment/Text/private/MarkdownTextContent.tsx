@@ -3,7 +3,7 @@ import {
   getOrgSchemaMessage,
   onErrorResumeNext,
   parseClaim,
-  type OrgSchemaClaim2,
+  type OrgSchemaClaim,
   type WebChatActivity
 } from 'botframework-webchat-core';
 import classNames from 'classnames';
@@ -26,7 +26,7 @@ import isHTMLButtonElement from './isHTMLButtonElement';
 const { useLocalizer } = hooks;
 
 type Entry = {
-  claim?: OrgSchemaClaim2 | undefined;
+  claim?: OrgSchemaClaim | undefined;
   handleClick?: (() => void) | undefined;
   key: string;
   markdownDefinition: Definition;

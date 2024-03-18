@@ -1,7 +1,7 @@
 import {
   getOrgSchemaMessage,
-  OrgSchemaAction2,
-  OrgSchemaProject2,
+  OrgSchemaAction,
+  OrgSchemaProject,
   parseAction,
   parseClaim,
   warnOnce,
@@ -27,9 +27,10 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
   const [{ sendStatus }] = useStyleSet();
   const { timestamp } = activity;
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
+
   const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
 
-  const claimInterpreter = useMemo<OrgSchemaProject2 | undefined>(() => {
+  const claimInterpreter = useMemo<OrgSchemaProject | undefined>(() => {
     try {
       if (messageThing) {
         return parseClaim((messageThing?.citation || [])[0])?.claimInterpreter;
@@ -55,7 +56,7 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
     }
   }, [graph, messageThing]);
 
-  const feedbackActions = useMemo<ReadonlySet<OrgSchemaAction2> | undefined>(() => {
+  const feedbackActions = useMemo<ReadonlySet<OrgSchemaAction> | undefined>(() => {
     try {
       const reactActions = (messageThing?.potentialAction || []).filter(
         ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
