@@ -166,7 +166,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
 
     if (usageInfo) {
       const { pattern } = usageInfo;
-      const encryptionStatus = usageInfo.keywords?.find(({ name }) => name === 'encryptionStatus')?.termCode;
+      const encryptionStatus = !!usageInfo.keywords?.find(keyword => keyword === 'encrypted-content');
 
       return {
         color:
@@ -174,7 +174,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
           pattern.inDefinedTermSet === 'https://www.w3.org/TR/css-color-4/' &&
           pattern.name === 'color' &&
           pattern.termCode,
-        isEncrypted: encryptionStatus === 'encrypted',
+        isEncrypted: encryptionStatus,
         name: usageInfo.name,
         title: usageInfo.description
       };

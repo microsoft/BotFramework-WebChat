@@ -13,7 +13,13 @@ type Props = Readonly<{
 
 const MessageSensitivityLabel = memo(({ className, color, isEncrypted, name, title }: Props) => (
   <div
-    className={classNames('webchat__link-definitions__message-sensitivity-label', className)}
+    className={classNames(
+      'webchat__link-definitions__message-sensitivity-label',
+      {
+        'webchat__link-definitions__message-sensitivity-label--is-encrypted': isEncrypted
+      },
+      className
+    )}
     title={useMemo(() => [name, title].filter(Boolean).join('\n\n'), [name, title])}
   >
     <ShieldIcon

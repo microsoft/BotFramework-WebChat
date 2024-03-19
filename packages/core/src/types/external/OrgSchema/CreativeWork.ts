@@ -1,4 +1,4 @@
-import { lazy, parse, string, type ObjectEntries } from 'valibot';
+import { lazy, parse, string, union, type ObjectEntries } from 'valibot';
 
 import { definedTerm, type DefinedTerm } from './DefinedTerm';
 import orgSchemaProperties from './private/orgSchemaProperties';
@@ -40,7 +40,7 @@ export type CreativeWork = Thing & {
    *
    * @see https://schema.org/keywords
    */
-  keywords?: readonly DefinedTerm[] | undefined;
+  keywords?: readonly (DefinedTerm | string)[] | undefined;
 
   /**
    * A pattern that something has, for example 'polka dot', 'striped', 'Canadian flag'. Values are typically expressed as text, although links to controlled value schemes are also supported.
@@ -72,7 +72,7 @@ export const creativeWork = <TEntries extends ObjectEntries>(entries?: TEntries 
     abstract: orgSchemaProperty(string()),
     author: orgSchemaProperties(string()),
     citation: orgSchemaProperties(lazy(() => creativeWork())),
-    keywords: orgSchemaProperties(lazy(() => definedTerm())),
+    keywords: orgSchemaProperties(union([lazy(() => definedTerm()), string()])),
     pattern: orgSchemaProperty(lazy(() => definedTerm())),
     text: orgSchemaProperty(string()),
     usageInfo: orgSchemaProperty(lazy(() => creativeWork())),
