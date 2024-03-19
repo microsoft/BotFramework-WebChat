@@ -19,6 +19,7 @@ import transcript from './transcript';
 import transcriptLiveRegion from './transcriptLiveRegion';
 import transcriptScrollable from './transcriptScrollable';
 import transcriptTerminator from './transcriptTerminator';
+import uploadButton from './uploadButton';
 
 export {
   activeActivity,
@@ -41,5 +42,6 @@ export {
   transcript,
   transcriptLiveRegion,
   transcriptScrollable,
-  transcriptTerminator
+  transcriptTerminator,
+  uploadButton
 };
