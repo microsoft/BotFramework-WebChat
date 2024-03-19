@@ -96,8 +96,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   microphoneButtonColorOnDictate: '#F33',
   sendBoxBackground: 'White',
   uploadAccept: undefined,
-  uploadMultiple: true,
-  uploadFileTypes: '*',
+  uploadMultiple: undefined,
 
   // Send box buttons
   sendBoxButtonColor: undefined,
