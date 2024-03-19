@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          text: "Hi! I'm Cody, the devbot. How can I help?"
+        });
+
+        await directLine.emulateIncomingActivity({
+          from: { role: 'user' },
+          text: "Can you explain how to configure PAD's proxy settings?"
+        });
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              citation: [
+                {
+                  '@id':
+                    'https://learn.microsoft.com/en-us/entra/identity/app-proxy/conceptual-deployment-plan#application-discovery',
+                  '@type': 'Claim',
+                  appearance: {
+                    '@type': 'DigitalDocument',
+                    url: 'https://learn.microsoft.com/en-us/entra/identity/app-proxy/conceptual-deployment-plan',
+                    usageInfo: {
+                      '@type': 'CreativeWork',
+                      additionalType: 'https://copilotstudio.microsoft.com/sensitivity-labels/v1',
+                      name: 'General'
+                    }
+                  },
+                  claimInterpreter: {
+                    '@type': 'Project',
+                    slogan: 'Surfaced with Azure OpenAI',
+                    url: 'https://learn.microsoft.com/en-us/azure/ai-services/openai/overview'
+                  }
+                },
+                {
+                  '@id':
+                    'https://support.microsoft.com/en-us/windows/use-a-proxy-server-in-windows-03096c53-0554-4ffe-b6ab-8b1deee8dae1#ID0EFD=Windows_11',
+                  '@type': 'Claim',
+                  appearance: {
+                    '@type': 'DigitalDocument',
+                    url: 'https://support.microsoft.com/en-us/windows/use-a-proxy-server-in-windows-03096c53-0554-4ffe-b6ab-8b1deee8dae1'
+                  },
+                  claimInterpreter: {
+                    '@type': 'Project',
+                    slogan: 'Surfaced with Azure OpenAI',
+                    url: 'https://learn.microsoft.com/en-us/azure/ai-services/openai/overview'
+                  }
+                },
+                {
+                  '@id': 'https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens',
+                  '@type': 'Claim',
+                  appearance: {
+                    '@type': 'DigitalDocument',
+                    name: 'How to renew authentication token',
+                    url: 'https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens',
+                    usageInfo: {
+                      '@id': '_:s1',
+                      '@type': 'CreativeWork',
+                      additionalType: 'https://copilotstudio.microsoft.com/sensitivity-labels/v1',
+                      description:
+                        'Data is classified as Confidential but is NOT PROTECTED to allow access by approved NDA business partners. If a higher level of protection is needed please change the sensitivity level of the cited content.',
+                      keywords: ['encrypted-content'],
+                      name: 'Confidential\\Any User (No Protection)',
+                      pattern: {
+                        '@type': 'DefinedTerm',
+                        inDefinedTermSet: 'https://www.w3.org/TR/css-color-4/',
+                        name: 'color',
+                        termCode: 'orange'
+                      }
+                    }
+                  },
+                  claimInterpreter: {
+                    '@type': 'Project',
+                    slogan: 'Surfaced with Azure OpenAI',
+                    url: 'https://learn.microsoft.com/en-us/azure/ai-services/openai/overview'
+                  }
+                }
+              ],
+              keywords: ['ai-generated-content'],
+              type: 'https://schema.org/Message',
+              usageInfo: { '@id': '_:s1' }
+            }
+          ],
+          text: 'Sure, you should override the default proxy settings[1]​[2], when your proxy server requires authentication[3].\n\n[1]: https://learn.microsoft.com/en-us/entra/identity/app-proxy/conceptual-deployment-plan#application-discovery "IT - Proxy Settings for external access"\n[2]: https://support.microsoft.com/en-us/windows/use-a-proxy-server-in-windows-03096c53-0554-4ffe-b6ab-8b1deee8dae1#ID0EFD=Windows_11 "Changing proxy settings - Windows 11"\n[3]: https://learn.microsoft.com/en-us/entra/identity-platform/refresh-tokens "How to renew authentication token"\n',
+          type: 'message'
+        });
+
+        await host.snapshot();
+
+        const [firstActivityElement] = pageElements.activities();
+
+        const linkDefinitions = firstActivityElement.querySelectorAll('.webchat__link-definitions__list-item');
+
+        expect(linkDefinitions).toHaveProperty('length', 5);
+
+        expect(linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(
+          linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+        ).toBe('Sint amet id officia dolor ex eiusmod ipsum ipsum magna fugiat');
+        expect(
+          linkDefinitions[0].querySelector('.webchat__link-definitions__list-item-badge').getAttribute('title')
+        ).toBe(
+          'Sit veniam do irure velit est et quis ut Lorem reprehenderit commodo cillum occaecat\n\nNisi quis ut sint elit est nulla enim eiusmod. Deserunt commodo pariatur nostrud culpa aliquip esse pariatur exercitation nulla do proident. Est qui eiusmod aliquip deserunt labore consequat fugiat. Ullamco reprehenderit nostrud eiusmod nisi nulla esse id. Reprehenderit aliqua quis consectetur sit cupidatat fugiat Lorem ex labore. Eiusmod velit laborum quis tempor incididunt excepteur culpa esse nulla.'
+        );
+
+        expect(linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('A');
+        expect(
+          linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+        ).toBe('Laboris cupidatat voluptate');
+        expect(linkDefinitions[1].querySelector('.webchat__link-definitions__list-item-badge')).toBeNull();
+
+        expect(linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('BUTTON');
+        expect(
+          linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+        ).toBe('Velit nulla culpa eu ea consectetur consectetur dolore velit');
+        expect(
+          linkDefinitions[2].querySelector('.webchat__link-definitions__list-item-badge').getAttribute('title')
+        ).toBe('Velit exercitation');
+
+        expect(linkDefinitions[3].querySelector('.webchat__link-definitions__list-item-box').tagName).toBe('BUTTON');
+        expect(
+          linkDefinitions[3].querySelector('.webchat__link-definitions__list-item-text').getAttribute('title')
+        ).toBe('Adipisicing enim nulla');
+        expect(linkDefinitions[3].querySelector('.webchat__link-definitions__list-item-badge')).toBeNull();
+
+        expect(document.querySelector('.webchat__link-definitions__header-text')).toHaveProperty(
+          'textContent',
+          '5 references'
+        );
+
+        expect(document.querySelector('.webchat__link-definitions__message-sensitivity-label-text')).toHaveProperty(
+          'textContent',
+          'Sit veniam do irure velit est et quis ut Lorem reprehenderit commodo cillum occaecat'
+        );
+
+        expect(document.querySelector('.webchat__link-definitions__message-sensitivity-label')).toHaveProperty(
+          'title',
+          'Sit veniam do irure velit est et quis ut Lorem reprehenderit commodo cillum occaecat\n\nNisi quis ut sint elit est nulla enim eiusmod. Deserunt commodo pariatur nostrud culpa aliquip esse pariatur exercitation nulla do proident. Est qui eiusmod aliquip deserunt labore consequat fugiat. Ullamco reprehenderit nostrud eiusmod nisi nulla esse id. Reprehenderit aliqua quis consectetur sit cupidatat fugiat Lorem ex labore. Eiusmod velit laborum quis tempor incididunt excepteur culpa esse nulla.'
+        );
+
+        expect(
+          document.querySelector('.webchat__link-definitions__message-sensitivity-label--is-encrypted')
+        ).toBeTruthy();
+      });
+    </script>
+  </body>
+</html>
