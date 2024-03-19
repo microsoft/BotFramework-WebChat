@@ -18,7 +18,7 @@
             directLine,
             store: testHelpers.createStore(),
             styleOptions: {
-              uploadFileTypes: 'image/*',
+              uploadAccept: 'image/*',
               uploadMultiple: false
             }
           },
@@ -28,7 +28,7 @@
         await pageConditions.uiConnected();
         
         // Validate the <input> element has the correct file types
-        const input = document.querySelector('input[type="file"]');
+        const input = pageElements.uploadButton()
         expect(input).toHaveProperty('accept', 'image/*');
         expect(input).toHaveProperty('multiple', false);
         
