@@ -270,6 +270,10 @@ type StyleOptions = {
    * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#multiple
    */
   uploadMultiple?: boolean;
+  /**
+   * Send the attachments and message text together as a single activity
+   */
+  combineAttachmentsAndText?: boolean;
 
   /** Send box button: Icon color, defaults to subtle */
   sendBoxButtonColor?: string;
