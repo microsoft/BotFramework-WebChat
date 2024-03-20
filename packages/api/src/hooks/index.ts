@@ -19,6 +19,7 @@ import useDirection from './useDirection';
 import useDisabled from './useDisabled';
 import useDismissNotification from './useDismissNotification';
 import useEmitTypingIndicator from './useEmitTypingIndicator';
+import useFiles from './useFiles';
 import useGetActivityByKey from './useGetActivityByKey';
 import useGetHasAcknowledgedByActivityKey from './useGetHasAcknowledgedByActivityKey';
 import useGetKeyByActivity from './useGetKeyByActivity';
@@ -92,6 +93,7 @@ export {
   useDisabled,
   useDismissNotification,
   useEmitTypingIndicator,
+  useFiles,
   useGetActivityByKey,
   useGetHasAcknowledgedByActivityKey,
   useGetKeyByActivity,
