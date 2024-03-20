@@ -5,13 +5,14 @@ import React, { FC, useCallback, useRef } from 'react';
 
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
 import connectToWebChat from '../connectToWebChat';
+import { useFocus } from '../hooks';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
 import AttachmentIcon from './Assets/AttachmentIcon';
 import IconButton from './IconButton';
 
-const { useDisabled, useLocalizer, useStyleOptions } = hooks;
+const { useDisabled, useFiles, useLocalizer, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__upload-button': {
@@ -95,12 +96,14 @@ type UploadButtonProps = {
 
 const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
-  const [{ uploadAccept, uploadMultiple }] = useStyleOptions();
+  const [{ uploadAccept, uploadMultiple, combineAttachmentsAndText }] = useStyleOptions();
   const [disabled] = useDisabled();
   const inputRef = useRef<HTMLInputElement>();
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const sendFiles = useSendFiles();
+  const [{ files, setFiles }] = useFiles();
+  const focus = useFocus();
 
   const { current } = inputRef;
   const uploadFileString = localize('TEXT_INPUT_UPLOAD_BUTTON_ALT');
@@ -111,13 +114,21 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
 
   const handleFileChange = useCallback(
     ({ target: { files } }) => {
+      setFiles(files);
+
+      if (combineAttachmentsAndText) {
+        current.blur();
+        focus('sendBox');
+        return;
+      }
+
       sendFiles(files);
 
       if (current) {
         current.value = null;
       }
     },
-    [current, sendFiles]
+    [combineAttachmentsAndText, current, focus, sendFiles, setFiles]
   );
 
   return (
@@ -138,6 +149,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
       />
       <IconButton alt={uploadFileString} aria-label={uploadFileString} disabled={disabled} onClick={handleClick}>
         <AttachmentIcon />
+        {files?.length ? '✔️' : null}
       </IconButton>
     </div>
   );
