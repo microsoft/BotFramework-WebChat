@@ -29,6 +29,7 @@ type WebChatAPIContext = {
   dismissNotification?: (id: string) => void;
   downscaleImageToDataURL?: (blob: Blob, maxWidth: number, maxHeight: number, type: string, quality: number) => string;
   emitTypingIndicator?: () => void;
+  files?: File[];
   grammars?: any;
   groupActivities?: GroupActivities;
   internalErrorBoxClass?: React.Component | Function;
@@ -47,7 +48,7 @@ type WebChatAPIContext = {
   scrollToEndButtonRenderer?: ScrollToEndButtonComponentFactory;
   selectVoice?: (voices: (typeof window.SpeechSynthesisVoice)[], activity: WebChatActivity) => void;
   sendEvent?: (name: string, value: any) => void;
-  sendFiles?: (files: File[]) => void;
+  sendFiles?: (files: File[], text?: string) => void;
   sendMessage?: (text: string, method?: string, { channelData }?: { channelData?: any }) => void;
   sendMessageBack?: (value: any, text?: string, displayText?: string) => void;
   sendPostBack?: (value?: any) => void;
