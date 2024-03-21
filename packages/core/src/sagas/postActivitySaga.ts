@@ -83,11 +83,11 @@ function* postActivity(
           text: activity.text
         }
       : activity.type === 'event'
-      ? {
-          name: activity.name,
-          value: activity.value
-        }
-      : {})
+        ? {
+            name: activity.name,
+            value: activity.value
+          }
+        : {})
   };
 
   if (!numActivitiesPosted) {

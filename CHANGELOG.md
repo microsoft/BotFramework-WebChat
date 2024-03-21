@@ -22,8 +22,54 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+-  Moved pull request validation pipeline to GitHub Actions, by [@compulim](https://github.com/compulim), in PR [#4976](https://github.com/microsoft/BotFramework-WebChat/pull/4976)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4973](https://github.com/microsoft/BotFramework-WebChat/pull/4973)
+   -  Production dependencies
+      -  [`core-js@3.33.3`](https://npmjs.com/package/core-js)
+      -  [`jwt-decode@4.0.0`](https://npmjs.com/package/jwt-decode)
+      -  [`markdown-it@13.0.2`](https://npmjs.com/package/markdown-it)
+      -  [`markdown-it-for-inline@2.0.1`](https://npmjs.com/package/markdown-it-for-inline)
+      -  [`merge-refs@1.2.2`](https://npmjs.com/package/merge-refs)
+      -  [`mime@4.0.0`](https://npmjs.com/package/mime)
+      -  [`redux@5.0.0`](https://npmjs.com/package/redux)
+      -  [`url-search-params-polyfill@8.2.5`](https://npmjs.com/package/url-search-params-polyfill)
+      -  [`use-ref-from@0.0.3`](https://npmjs.com/package/use-ref-from)
+      -  [`whatwg-fetch@3.6.19`](https://npmjs.com/package/whatwg-fetch)
+   -  Development dependencies
+      -  [`@types/dom-speech-recognition@0.0.4`](https://npmjs.com/package/@types/dom-speech-recognition)
+      -  [`@types/node@20.10.3`](https://npmjs.com/package/@types/node)
+      -  [`@types/react@18.2.42`](https://npmjs.com/package/@types/react)
+      -  [`@typescript-eslint/eslint-plugin@6.13.2`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
+      -  [`@typescript-eslint/parser@6.13.2`](https://npmjs.com/package/@typescript-eslint/parser)
+      -  [`axe-core@4.8.2`](https://npmjs.com/package/axe-core)
+      -  [`babel-jest@29.7.0`](https://npmjs.com/package/babel-jest)
+      -  [`concurrently@8.2.2`](https://npmjs.com/package/concurrently)
+      -  [`esbuild@0.19.8`](https://npmjs.com/package/esbuild)
+      -  [`eslint-config-prettier@9.1.0`](https://npmjs.com/package/eslint-config-prettier)
+      -  [`eslint-plugin-import@2.29.0`](https://npmjs.com/package/eslint-plugin-import)
+      -  [`eslint-plugin-prettier@5.0.1`](https://npmjs.com/package/eslint-plugin-prettier)
+      -  [`eslint@8.55.0`](https://npmjs.com/package/eslint)
+      -  [`istanbul-lib-coverage@3.2.2`](https://npmjs.com/package/istanbul-lib-coverage)
+      -  [`jest-image-snapshot@6.3.0`](https://npmjs.com/package/jest-image-snapshot)
+      -  [`jest@29.7.0`](https://npmjs.com/package/jest)
+      -  [`lint-staged@15.2.0`](https://npmjs.com/package/lint-staged)
+      -  [`nodemon@3.0.2`](https://npmjs.com/package/nodemon)
+      -  [`prettier@3.1.0`](https://npmjs.com/package/prettier)
+      -  [`read-pkg-up@11.0.0`](https://npmjs.com/package/read-pkg-up)
+      -  [`read-pkg@9.0.1`](https://npmjs.com/package/read-pkg)
+      -  [`selenium-webdriver@4.15.0`](https://npmjs.com/package/selenium-webdriver)
+      -  [`typescript@5.3.2`](https://npmjs.com/package/typescript)
+      -  [`webpack@5.89.0`](https://npmjs.com/package/webpack)
+
+## [4.16.0] - 2023-11-16
+
 ### Breaking changes
 
+-  Starting from 4.16.0, Internet Explorer is no longer supported
+   -  After more than a year of the Internet Explorer 11 officially retirement, we decided to stop supporting Internet Explorer. This will help us to bring new features to Web Chat
+   -  4.15.9 is the last version which supports Internet Explorer in limited fashion
 -  `useTextBoxValue` setter will no longer replace emoticon with emoji, in PR [#4861](https://github.com/microsoft/BotFramework-WebChat/issues/pull/4861)
 
 ### Fixed
@@ -33,6 +79,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4866](https://github.com/microsoft/BotFramework-WebChat/issues/4866). Citation modal show fill screen width on mobile device and various fit-and-finish, by [@compulim](https://github.com/compulim), in PR [#4867](https://github.com/microsoft/BotFramework-WebChat/pull/4867)
 -  Fixes [#4878](https://github.com/microsoft/BotFramework-WebChat/issues/4878). `createStore` should return type of `Redux.Store`, by [@compulim](https://github.com/compulim), in PR [#4877](https://github.com/microsoft/BotFramework-WebChat/pull/4877)
 -  Fixes [#4907](https://github.com/microsoft/BotFramework-WebChat/issues/4907). Link references in high contrast mode should use `LinkText` color, by [@compulim](https://github.com/compulim), in PR [#4908](https://github.com/microsoft/BotFramework-WebChat/pull/4908)
+-  Fixes [#4957](https://github.com/microsoft/BotFramework-WebChat/issues/4957). Native chevron of the accordion in citation should be hidden, by [@compulim](https://github.com/compulim), in PR [#4958](https://github.com/microsoft/BotFramework-WebChat/pull/4958)
 
 ### Added
 
@@ -41,6 +88,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#4841](https://github.com/microsoft/BotFramework-WebChat/issues/4841). Added link definitions UI in Markdown, by [@compulim](https://github.com/compulim), in PR [#4846](https://github.com/microsoft/BotFramework-WebChat/pull/4846)
 -  Resolves [#4842](https://github.com/microsoft/BotFramework-WebChat/issues/4842). Added provenance in activity status, by [@compulim](https://github.com/compulim), in PR [#4846](https://github.com/microsoft/BotFramework-WebChat/pull/4846)
 -  Resolves [#4856](https://github.com/microsoft/BotFramework-WebChat/issues/4856). Added types for `useStyleSet`, by [@compulim](https://github.com/compulim), in PR [#4857](https://github.com/microsoft/BotFramework-WebChat/pull/4857)
+
+### Changed
+
+-  Fixed [#4875](https://github.com/microsoft/BotFramework-WebChat/issues/4875). Replaced [`mdast`](https://npmjs.com/package/mdast/) with [`@types/mdast`](https://npmjs.com/package/@types/mdast/), by [@compulim](https://github.com/compulim), in PR [#4882](https://github.com/microsoft/BotFramework-WebChat/pull/4882)
 
 ## [4.15.9] - 2023-08-25
 

@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { adaptiveCardRenderer, animationCardAttachment, audioCardAttachment } = WebChat.createStyleSet();
+
+        expect(adaptiveCardRenderer).not.toBeFalsy();
+        expect(animationCardAttachment).not.toBeFalsy();
+        expect(audioCardAttachment).not.toBeFalsy();
+      });
+    </script>
+  </body>
+</html>

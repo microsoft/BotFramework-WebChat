@@ -34,6 +34,7 @@
   "ATTACHMENT_VIDEO": "Un clip de vídeo",
   "CAROUSEL_FLIPPER_NEXT_ALT": "Següent",
   "CAROUSEL_FLIPPER_PREVIOUS_ALT": "Anterior",
+  "CITATION_MODEL_DIALOG_ALT": "Cita",
   "CONNECTIVITY_STATUS_ALT_CONNECTED": "Connectat",
   "CONNECTIVITY_STATUS_ALT_CONNECTING": "S'està connectant…",
   "CONNECTIVITY_STATUS_ALT_FATAL": "No es pot connectar.",
@@ -65,6 +66,11 @@
   "RECEIPT_CARD_TAX": "Impost",
   "RECEIPT_CARD_TOTAL": "Total",
   "RECEIPT_CARD_VAT": "IVA",
+  "REFERENCE_LIST_HEADER_ONE": "$1 referència",
+  "REFERENCE_LIST_HEADER_FEW": "$1 referències",
+  "REFERENCE_LIST_HEADER_MANY": "$1 referències",
+  "REFERENCE_LIST_HEADER_OTHER": "$1 referències",
+  "REFERENCE_LIST_HEADER_TWO": "$1 referències",
   "SEND_BOX_IS_EMPTY_TOOLTIP_ALT": "No es pot enviar un missatge buit.",
   "SPEECH_INPUT_LISTENING": "Escoltant…",
   "SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT": "Micròfon desactivat",
@@ -100,5 +106,7 @@
   "TRANSCRIPT_TERMINATOR_TEXT": "Fi de l'historial de xat",
   "TYPING_INDICATOR_ALT": "S'està mostrant l'indicador d'escriptura",
   "TYPING_INDICATOR_SINGLE_TEXT": "$1 està escrivint.",
-  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 i altres persones estan escrivint."
+  "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 i altres persones estan escrivint.",
+  "VOTE_DISLIKE_ALT": "No m'agrada",
+  "VOTE_LIKE_ALT": "M'agrada"
 }
