@@ -89,7 +89,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
         markdownDefinitions.map<Entry>(markdownDefinition => {
           const messageCitation = messageThing?.citation
             ?.map(parseClaim)
-            .find(({ '@id': id }) => id === markdownDefinition.url);
+            .find(({ position }) => '' + position === markdownDefinition.identifier);
 
           if (messageCitation) {
             return {
