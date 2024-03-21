@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb)
+
 ### Changed
 
 -  Moved pull request validation pipeline to GitHub Actions, by [@compulim](https://github.com/compulim), in PR [#4976](https://github.com/microsoft/BotFramework-WebChat/pull/4976)
