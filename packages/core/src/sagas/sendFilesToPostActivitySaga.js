@@ -19,7 +19,7 @@ function* postActivityWithFiles({ payload: { files, text } }) {
       channelData: {
         attachmentSizes: [].map.call(files, ({ size }) => size)
       },
-      text,
+      text: text || undefined,
       type: 'message'
     })
   );
