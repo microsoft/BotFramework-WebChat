@@ -94,7 +94,7 @@
     "node-fetch": "^2.7.0",
     "p-defer": "^4.0.0",
     "p-defer-es5": "^2.0.1",
-    "selenium-webdriver": "^4.15.0",
+    "selenium-webdriver": "4.15.0",
     "serve": "^14.2.1",
     "strip-ansi": "^6.0.1"
   }

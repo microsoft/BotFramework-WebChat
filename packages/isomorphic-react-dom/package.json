@@ -2,7 +2,7 @@
   "name": "isomorphic-react-dom",
   "description": "Exports window.ReactDOM if available, otherwise, exports require('react-dom').",
   "version": "0.0.0-0",
-  "main": "dist/react.js",
+  "main": "dist/react-dom.js",
   "private": true,
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",

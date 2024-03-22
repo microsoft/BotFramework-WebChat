@@ -31,8 +31,6 @@ import useValueRef from './AdaptiveCardHacks/private/useValueRef';
 const { ErrorBox } = Components;
 const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd } = hooks;
 
-const node_env = process.env.node_env || process.env.NODE_ENV;
-
 type AdaptiveCardRendererProps = {
   actionPerformedClassName?: string;
   adaptiveCard: AdaptiveCard;
@@ -245,7 +243,9 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
   errors?.length && console.warn('botframework-webchat: Failed to render Adaptive Cards.', errors);
 
   return errors?.length ? (
-    node_env === 'development' && <ErrorBox error={errors[0]} type={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')} />
+    process.env.NODE_ENV === 'development' && (
+      <ErrorBox error={errors[0]} type={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')} />
+    )
   ) : (
     <div
       className={classNames(adaptiveCardRendererStyleSet + '', 'webchat__adaptive-card-renderer')}
