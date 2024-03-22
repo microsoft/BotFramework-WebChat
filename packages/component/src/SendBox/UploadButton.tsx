@@ -4,13 +4,15 @@ import PropTypes from 'prop-types';
 import React, { FC, useCallback, useRef } from 'react';
 
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
-import IconButton from './IconButton';
+import connectToWebChat from '../connectToWebChat';
+import { useFocus } from '../hooks';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
 import AttachmentIcon from './Assets/AttachmentIcon';
 import IconButton from './IconButton';
 
-const { useDisabled, useLocalizer } = hooks;
+const { useDisabled, useFiles, useLocalizer, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__upload-button': {
@@ -94,6 +96,7 @@ type UploadButtonProps = {
 
 const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
+  const [{ uploadAccept, uploadMultiple, combineAttachmentsAndText }] = useStyleOptions();
   const [disabled] = useDisabled();
   const inputRef = useRef<HTMLInputElement>();
   const localize = useLocalizer();
