@@ -10,6 +10,7 @@ import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
 import AttachmentIcon from './Assets/AttachmentIcon';
+import CheckIcon from './Assets/CheckIcon';
 import IconButton from './IconButton';
 
 const { useDisabled, useFiles, useLocalizer, useStyleOptions } = hooks;
@@ -148,8 +149,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
         type="file"
       />
       <IconButton alt={uploadFileString} aria-label={uploadFileString} disabled={disabled} onClick={handleClick}>
-        <AttachmentIcon />
-        {files?.length ? '✔️' : null}
+        {files?.length ? <CheckIcon /> : <AttachmentIcon />}
       </IconButton>
     </div>
   );
