@@ -1,54 +1,80 @@
-import { type WebChatActivity } from 'botframework-webchat-core';
+import {
+  getOrgSchemaMessage,
+  OrgSchemaAction,
+  OrgSchemaProject,
+  parseAction,
+  parseClaim,
+  warnOnce,
+  type WebChatActivity
+} from 'botframework-webchat-core';
 import classNames from 'classnames';
-import React, { memo, type ReactNode, useMemo } from 'react';
+import React, { memo, useMemo, type ReactNode } from 'react';
 
-import { isReplyAction, type ReplyAction } from '../types/external/OrgSchema/ReplyAction';
-import { isThing, type Thing } from '../types/external/OrgSchema/Thing';
-import { isVoteAction, type VoteAction } from '../types/external/OrgSchema/VoteAction';
-import { type TypeOfArray } from '../types/internal/TypeOfArray';
+import useStyleSet from '../hooks/useStyleSet';
+import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
 import Feedback from './private/Feedback/Feedback';
 import Originator from './private/Originator';
 import Slotted from './Slotted';
 import Timestamp from './Timestamp';
-import useStyleSet from '../hooks/useStyleSet';
-
-type WebChatEntity = TypeOfArray<Exclude<WebChatActivity['entities'], undefined>>;
-
-type DownvoteAction = VoteAction & { actionOption: 'downvote' };
-type UpvoteAction = VoteAction & { actionOption: 'upvote' };
-
-function isDownvoteAction(voteAction: VoteAction): voteAction is DownvoteAction {
-  return voteAction.actionOption === 'downvote';
-}
-
-function isUpvoteAction(voteAction: VoteAction): voteAction is UpvoteAction {
-  return voteAction.actionOption === 'upvote';
-}
 
 type Props = Readonly<{ activity: WebChatActivity }>;
 
+const warnRootLevelThings = warnOnce(
+  'Root-level things are being deprecated, please relate all things to `entities[@id=""]` instead. This feature will be removed in 2025-03-06.'
+);
+
 const OthersActivityStatus = memo(({ activity }: Props) => {
   const [{ sendStatus }] = useStyleSet();
-  const entities = activity.entities as Array<Thing | WebChatEntity> | undefined;
-
-  const replyAction = entities?.find<ReplyAction>(
-    (entity): entity is ReplyAction => isThing(entity) && isReplyAction(entity)
-  );
-
   const { timestamp } = activity;
+  const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
 
-  const voteActions = useMemo<Set<VoteAction>>(
-    () =>
-      Object.freeze(
-        new Set(
-          (entities || []).filter<DownvoteAction | UpvoteAction>(
-            (entity): entity is DownvoteAction | UpvoteAction =>
-              isThing(entity) && isVoteAction(entity) && (isDownvoteAction(entity) || isUpvoteAction(entity))
-          )
-        )
-      ),
-    [entities]
-  );
+  const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
+
+  const claimInterpreter = useMemo<OrgSchemaProject | undefined>(() => {
+    try {
+      if (messageThing) {
+        return parseClaim((messageThing?.citation || [])[0])?.claimInterpreter;
+      }
+
+      const [firstClaim] = graph.filter(({ type }) => type === 'https://schema.org/Claim').map(parseClaim);
+
+      if (firstClaim) {
+        warnRootLevelThings();
+
+        return firstClaim?.claimInterpreter;
+      }
+
+      const replyAction = parseAction(graph.find(({ type }) => type === 'https://schema.org/ReplyAction'));
+
+      if (replyAction) {
+        warnRootLevelThings();
+
+        return replyAction?.provider;
+      }
+    } catch {
+      // Intentionally left blank.
+    }
+  }, [graph, messageThing]);
+
+  const feedbackActions = useMemo<ReadonlySet<OrgSchemaAction> | undefined>(() => {
+    try {
+      const reactActions = (messageThing?.potentialAction || []).filter(
+        ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
+      );
+
+      if (reactActions.length) {
+        return Object.freeze(new Set(reactActions));
+      }
+
+      const voteActions = graph.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction);
+
+      if (voteActions.length) {
+        return Object.freeze(new Set(voteActions));
+      }
+    } catch {
+      // Intentionally left blank.
+    }
+  }, [graph, messageThing]);
 
   return (
     <Slotted className={classNames('webchat__activity-status', sendStatus + '')}>
@@ -56,10 +82,10 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
         () =>
           [
             timestamp && <Timestamp key="timestamp" timestamp={timestamp} />,
-            replyAction && <Originator key="originator" replyAction={replyAction} />,
-            voteActions.size && <Feedback key="feedback" voteActions={voteActions} />
+            claimInterpreter && <Originator key="originator" project={claimInterpreter} />,
+            feedbackActions?.size && <Feedback actions={feedbackActions} key="feedback" />
           ].filter(Boolean),
-        [replyAction, timestamp, voteActions]
+        [claimInterpreter, timestamp, feedbackActions]
       )}
     </Slotted>
   );

@@ -33,6 +33,7 @@ export default function createCSSCustomPropertiesStyle({
       //       - We MUST NOT put runtime variables here, e.g. sendTimeout
       //          - This is because we cannot programmatically know when the sendTimeout change
       [CustomPropertyNames.ColorAccent]: accent,
+      [CustomPropertyNames.ColorSubtle]: subtle,
       [CustomPropertyNames.ColorTimestamp]: timestampColor || subtle, // Maybe we should not need this if we allow web devs to override CSS variables for certain components.
       [CustomPropertyNames.FontPrimary]: primaryFont,
       [CustomPropertyNames.FontSizeSmall]: fontSizeSmall,

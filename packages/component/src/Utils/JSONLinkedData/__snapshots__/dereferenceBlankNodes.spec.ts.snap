@@ -1,0 +1,92 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should dereference unconnected blank nodes in array in cyclic fashion 1`] = `
+Object {
+  "@type": "Book",
+  "about": Array [
+    Object {
+      "@id": "_:isaac",
+      "@type": "Person",
+      "name": "Isaac Stevens",
+      "worksFor": Object {
+        "@id": "_:uw",
+        "@type": "Organization",
+        "founder": [Circular],
+        "name": "University of Washington",
+      },
+    },
+    Object {
+      "@id": "_:uw",
+      "@type": "Organization",
+      "founder": Object {
+        "@id": "_:isaac",
+        "@type": "Person",
+        "name": "Isaac Stevens",
+        "worksFor": [Circular],
+      },
+      "name": "University of Washington",
+    },
+  ],
+  "author": Object {
+    "@type": "Person",
+    "name": "Edmond S. Meany",
+  },
+  "name": "Governors of Washington: territorial and state",
+}
+`;
+
+exports[`should dereference unconnected blank nodes in cyclic fashion 1`] = `
+Object {
+  "@type": "Book",
+  "author": Object {
+    "@id": "_:isaac",
+    "@type": "Person",
+    "name": "Isaac Stevens",
+    "worksFor": Object {
+      "@id": "_:uw",
+      "@type": "Organization",
+      "founder": [Circular],
+      "name": "University of Washington",
+    },
+  },
+  "name": "Report of Explorations for a Route for the Pacific Railroad near the 47th and 49th Parallels of North Latitude, from St. Paul, Minnesota, to Puget Sound",
+  "sourceOrganization": Object {
+    "@id": "_:uw",
+    "@type": "Organization",
+    "founder": Object {
+      "@id": "_:isaac",
+      "@type": "Person",
+      "name": "Isaac Stevens",
+      "worksFor": [Circular],
+    },
+    "name": "University of Washington",
+  },
+}
+`;
+
+exports[`should dereference unconnected blank nodes in the graph 1`] = `
+Array [
+  Object {
+    "@id": "_:isaac",
+    "@type": "Person",
+    "name": "Isaac Stevens",
+    "worksFor": Object {
+      "@id": "_:uw",
+      "@type": "Organization",
+      "founder": [Circular],
+      "name": "University of Washington",
+    },
+  },
+  Object {
+    "@id": "_:uw",
+    "@type": "Organization",
+    "founder": Object {
+      "@id": "_:isaac",
+      "@type": "Person",
+      "name": "Isaac Stevens",
+      "worksFor": [Circular],
+    },
+    "name": "University of Washington",
+  },
+]
+`;

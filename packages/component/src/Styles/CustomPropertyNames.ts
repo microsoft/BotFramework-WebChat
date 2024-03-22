@@ -1,6 +1,7 @@
 const CustomPropertyNames = Object.freeze({
   // Make sure key names does not have JavaScript forbidden names.
   ColorAccent: '--webchat__color--accent',
+  ColorSubtle: '--webchat__color--subtle',
   ColorTimestamp: '--webchat__color--timestamp',
   FontPrimary: '--webchat__font--primary',
   FontSizeSmall: '--webchat__font-size--small',

@@ -1,5 +1,5 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { type FC, memo } from 'react';
+import React, { memo, type FC } from 'react';
 
 import { type WebChatAttachment } from '../private/types/WebChatAttachment';
 import TextContent from './TextContent';
@@ -12,7 +12,7 @@ type Props = Readonly<{
 }>;
 
 const TextAttachment: FC<Props> = memo(({ activity, attachment: { content, contentType } }: Props) => (
-  <TextContent contentType={contentType} entities={activity.entities} text={content} />
+  <TextContent activity={activity} contentType={contentType} text={content} />
 ));
 
 TextAttachment.displayName = 'TextAttachment';

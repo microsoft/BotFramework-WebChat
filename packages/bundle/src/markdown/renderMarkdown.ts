@@ -2,9 +2,9 @@ import { onErrorResumeNext } from 'botframework-webchat-core';
 import MarkdownIt from 'markdown-it';
 import sanitizeHTML from 'sanitize-html';
 
-import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
 import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdownItPlugins/ariaLabel';
 import betterLink from './markdownItPlugins/betterLink';
+import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
 
 const SANITIZE_HTML_OPTIONS = Object.freeze({
@@ -88,7 +88,8 @@ export default function render(
     .use(betterLink, (href: string, textContent: string): BetterLinkDecoration | undefined => {
       const decoration: BetterLinkDecoration = {
         rel: 'noopener noreferrer',
-        target: '_blank'
+        target: '_blank',
+        wrapZeroWidthSpace: true
       };
 
       const ariaLabelSegments: string[] = [textContent];
@@ -101,10 +102,12 @@ export default function render(
           linkDefinition.title || onErrorResumeNext(() => new URL(linkDefinition.url).host) || linkDefinition.url
         );
 
-        linkDefinition.identifier === textContent && classes.add('webchat__render-markdown__pure-identifier');
+        // linkDefinition.identifier is uppercase, while linkDefinition.label is as-is.
+        linkDefinition.label === textContent && classes.add('webchat__render-markdown__pure-identifier');
       }
 
-      if (protocol === 'cite:') {
+      // For links that would be sanitized out, let's turn them into a button so we could handle them later.
+      if (!SANITIZE_HTML_OPTIONS.allowedSchemes.map(scheme => `${scheme}:`).includes(protocol)) {
         decoration.asButton = true;
 
         classes.add('webchat__render-markdown__citation');
