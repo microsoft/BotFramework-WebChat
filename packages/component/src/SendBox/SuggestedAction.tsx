@@ -1,20 +1,20 @@
 import { hooks } from 'botframework-webchat-api';
+import type { DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { MouseEventHandler, useCallback, VFC } from 'react';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
 
-import AccessibleButton from '../Utils/AccessibleButton';
 import connectToWebChat from '../connectToWebChat';
-import useFocus from '../hooks/useFocus';
-import useFocusAccessKeyEffect from '../Utils/AccessKeySink/useFocusAccessKeyEffect';
 import useFocusVisible from '../hooks/internal/useFocusVisible';
-import useItemRef from '../providers/RovingTabIndex/useItemRef';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
-import useScrollToEnd from '../hooks/useScrollToEnd';
-import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
+import useFocus from '../hooks/useFocus';
+import useScrollToEnd from '../hooks/useScrollToEnd';
+import useStyleSet from '../hooks/useStyleSet';
+import useItemRef from '../providers/RovingTabIndex/useItemRef';
+import AccessibleButton from '../Utils/AccessibleButton';
+import useFocusAccessKeyEffect from '../Utils/AccessKeySink/useFocusAccessKeyEffect';
 
 const { useDirection, useDisabled, usePerformCardAction, useStyleOptions, useSuggestedActions } = hooks;
 
@@ -90,15 +90,21 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
 
   const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
     ({ target }) => {
-      // TODO: [P3] #XXX We should not destruct DirectLineCardAction into React props and pass them in. It makes typings difficult.
-      //       Instead, we should pass a "cardAction" props.
-      performCardAction({ displayText, text, type, value } as DirectLineCardAction, { target });
+      (async function () {
+        // We need to focus to the send box before we are performing this card action.
+        // The will make sure the focus is always on Web Chat.
+        // Otherwise, the focus may momentarily send to `document.body` and screen reader will be confused.
+        await focus('sendBoxWithoutKeyboard');
 
-      // Since "openUrl" action do not submit, the suggested action buttons do not hide after click.
-      type === 'openUrl' && setSuggestedActions([]);
+        // TODO: [P3] #XXX We should not destruct DirectLineCardAction into React props and pass them in. It makes typings difficult.
+        //       Instead, we should pass a "cardAction" props.
+        performCardAction({ displayText, text, type, value } as DirectLineCardAction, { target });
 
-      focus('sendBoxWithoutKeyboard');
-      scrollToEnd();
+        // Since "openUrl" action do not submit, the suggested action buttons do not hide after click.
+        type === 'openUrl' && setSuggestedActions([]);
+
+        scrollToEnd();
+      })();
     },
     [displayText, focus, performCardAction, scrollToEnd, setSuggestedActions, text, type, value]
   );
