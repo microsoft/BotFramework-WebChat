@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
--  Fixes [#5050](https://github.com/microsoft/BotFramework-WebChat/issues/5050). Fixed focus should not blur briefly after tapping on a suggested action, by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/pull/XXX)
+-  Fixes [#5050](https://github.com/microsoft/BotFramework-WebChat/issues/5050). Fixed focus should not blur briefly after tapping on a suggested action, by [@compulim](https://github.com/compulim), in PR [#5097](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5097)
 
 ### Changed
 
