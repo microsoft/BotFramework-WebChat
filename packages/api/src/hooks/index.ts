@@ -67,6 +67,7 @@ import useTrackDimension from './useTrackDimension';
 import useTrackEvent from './useTrackEvent';
 import useTrackException from './useTrackException';
 import useTrackTiming from './useTrackTiming';
+import useUploadButtonRef from './useUploadButtonRef';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
@@ -141,6 +142,7 @@ export {
   useTrackEvent,
   useTrackException,
   useTrackTiming,
+  useUploadButtonRef,
   useUserID,
   useUsername,
   useVoiceSelector
