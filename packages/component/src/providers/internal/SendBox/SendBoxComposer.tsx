@@ -20,7 +20,8 @@ const {
   usePonyfill,
   useSendBoxValue,
   useStyleOptions,
-  useSubmitSendBox
+  useSubmitSendBox,
+  useUploadButtonRef
 } = hooks;
 
 const SUBMIT_ERROR_MESSAGE_STYLE = {
@@ -72,6 +73,7 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   const [sendBoxValue, setSendBoxValue] = useSendBoxValue();
   const apiSubmitSendBox = useSubmitSendBox();
   const [{ files, setFiles }] = useFiles();
+  const [{ setUploadButtonRef }] = useUploadButtonRef();
   const sendFiles = useSendFiles();
   const focus = useFocus();
   const localize = useLocalizer();
@@ -134,6 +136,7 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
           sendFiles(files, sendBoxValue);
           setFiles([]);
           setSendBoxValue('');
+          setUploadButtonRef(null);
         } else {
           apiSubmitSendBox();
         }
@@ -151,6 +154,7 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
       setFiles,
       setSendBoxValue,
       setTimeout,
+      setUploadButtonRef,
       submitErrorRef
     ]
   );

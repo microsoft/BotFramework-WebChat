@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, useCallback, useRef } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
 import connectToWebChat from '../connectToWebChat';
@@ -13,7 +13,7 @@ import AttachmentIcon from './Assets/AttachmentIcon';
 import CheckIcon from './Assets/CheckIcon';
 import IconButton from './IconButton';
 
-const { useDisabled, useFiles, useLocalizer, useStyleOptions } = hooks;
+const { useDisabled, useFiles, useLocalizer, useStyleOptions, useUploadButtonRef } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__upload-button': {
@@ -99,14 +99,14 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
   const [{ uploadAccept, uploadMultiple, combineAttachmentsAndText }] = useStyleOptions();
   const [disabled] = useDisabled();
-  const inputRef = useRef<HTMLInputElement>();
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const sendFiles = useSendFiles();
   const [{ files, setFiles }] = useFiles();
+  const [{ setUploadButtonRef, uploadButtonRef }] = useUploadButtonRef();
   const focus = useFocus();
 
-  const { current } = inputRef;
+  const { current } = uploadButtonRef;
   const uploadFileString = localize('TEXT_INPUT_UPLOAD_BUTTON_ALT');
 
   const handleClick = useCallback(() => {
@@ -132,6 +132,12 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
     [combineAttachmentsAndText, current, focus, sendFiles, setFiles]
   );
 
+  useEffect(() => {
+    if (current) {
+      setUploadButtonRef(current);
+    }
+  }, [current, setUploadButtonRef]);
+
   return (
     <div className={classNames(rootClassName, 'webchat__upload-button', uploadButtonStyleSet + '', className)}>
       <input
@@ -143,7 +149,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
         onChange={disabled ? undefined : handleFileChange}
         onClick={disabled ? PREVENT_DEFAULT_HANDLER : undefined}
         readOnly={disabled}
-        ref={inputRef}
+        ref={uploadButtonRef}
         role="button"
         tabIndex={-1}
         type="file"
