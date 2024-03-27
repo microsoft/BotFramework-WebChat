@@ -23,6 +23,11 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
     // TODO: [P2] #3953 Rename to "webchat:client-activity-id".
     clientActivityID?: string;
 
+    // Bot will call updateActivityAsync to update the activity.
+    // And DL channel add a "updateActivityId" to the activity's channelData.
+    // If the incoming activity contains a "updateActivityId", it is an update to an existing activity.
+    updateActivityId?: string;
+
     // Sequence ID must be available when chat adapter send it to Web Chat.
     'webchat:sequence-id': number;
   } & (SendStatus extends SupportedSendStatus

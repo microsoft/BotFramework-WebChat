@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        React: { useMemo },
+        WebChat: {
+          hooks: { useDirection }
+        }
+      } = window;
+
+      run(async function () {
+        await host.windowSize(undefined, 1280, document.getElementById('webchat'));
+
+        WebChat.renderWebChat(
+          {
+            directLine: await testHelpers.createDirectLineWithTranscript([
+            {
+                from: { role: 'bot' },
+                channelData: { updateActivityId: '1.0' },
+                id: '0.1',
+                text: 'contains updateActivityId but sent before 1.0, will not be merged',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                id: '1.0',
+                text: 'message 1.0 from bot',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                id: '1.1',
+                text: 'message 1.1 from bot',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '2.0',
+                text: 'message 2.0 from user',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '2.1',
+                text: 'message 2.1 from user',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                id: '3.0',
+                text: 'message 3.0 from bot',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                id: '3.1',
+                text: 'message 3.1 from bot',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                channelData: { updateActivityId: '3.0' },
+                id: '3.2',
+                text: 'message 3.2 will update 3.0',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                channelData: { updateActivityId: '3.0' },
+                id: '3.3',
+                text: 'this message will cover 3.0 and 3.2, sorted by timestamp',
+                timestamp: -300000,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '4.0',
+                text: 'message 4.0 from user',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '4.1',
+                text:
+                  'message 4.1 from user',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                id: '5.1',
+                text:
+                  'message 5.1',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                channelData: { updateActivityId: '1.0' },
+                id: '5.2',
+                text: '1.0 updated by 5.2',
+                timestamp: 0,
+                type: 'message'
+              }
+            ]),
+            store: testHelpers.createStore(),
+            styleOptions: {
+              groupTimestamp: 5000,
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.allImagesLoaded();
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

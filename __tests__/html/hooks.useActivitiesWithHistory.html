@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/activityGrouping.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .bot-activity-badge {
+        font-size: 12px;
+        color: white;
+        background: #104d92;
+        padding: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat"></div>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        React: { useCallback, useState },
+        WebChat: {
+          hooks: { useRenderActivityStatus, useSendPostBack, useActivitiesWithHistory, useCreateActivityRenderer }
+        }
+      } = window;
+
+      const BotActivityDecorator = ({ activityID, children }) => {
+        const [activities] = useActivitiesWithHistory();
+        const activitiesWithHistory = activities.find((item) => item[item.length-1].id === activityID);
+        const createActivityRenderer = useCreateActivityRenderer();
+
+        return (
+          <div>
+            {activitiesWithHistory.length > 1 
+              && <div className="bot-activity-badge">
+                History
+                {activitiesWithHistory.map((activity, index) => {
+              if(index === activitiesWithHistory.length - 1) return false;
+              return <div key={index}>{activity.text}</div>;
+            })}
+              </div>
+            }
+            {children}
+          </div>
+        )
+      };
+
+      const activityMiddleware = () => next => (...args) => {
+        const [
+          {
+            activity,
+            activity: {
+              from: { role }
+            }
+          }
+        ] = args;
+
+        if (role === 'bot') {
+          const { id } = activity;
+
+          return (...renderArgs) => (
+            <BotActivityDecorator key={id} activityID={id}>
+              {next(...args)(...renderArgs)}
+            </BotActivityDecorator>
+          );
+        }
+
+        return next(...args);
+      };
+
+      run(async function () {
+        const now = Date.now();
+
+        WebChat.renderWebChat(
+          {
+            activityMiddleware,
+            directLine: await testHelpers.createDirectLineWithTranscript([
+              {
+                from: { role: 'bot' },
+                id: '1.0',
+                text: 'message 1.0 from bot',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                id: '1.1',
+                text: 'message 1.1 from bot',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '2.0',
+                text: 'message 2.0 from user',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '2.1',
+                text: 'message 2.1 from user',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                channelData: { updateActivityId: '1.0' },
+                id: '3.2',
+                text: '1.0 updated by 3.2',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                channelData: { updateActivityId: '1.0' },
+                id: '3.3',
+                text: '1.0 updated by 3.3',
+                timestamp: 1,
+                type: 'message'
+              }
+            ]),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

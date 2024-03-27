@@ -5,7 +5,7 @@ import ActivityKeyerContext from './private/Context';
 import getActivityId from './private/getActivityId';
 import getClientActivityId from './private/getClientActivityId';
 import uniqueId from './private/uniqueId';
-import useActivities from '../../hooks/useActivities';
+import useActivitiesWithHistory from '../../hooks/useActivitiesWithHistory';
 import useActivityKeyerContext from './private/useContext';
 
 import type { ActivityKeyerContextType } from './private/Context';
@@ -38,7 +38,7 @@ const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
     throw new Error('botframework-webchat internal: <ActivityKeyerComposer> should not be nested.');
   }
 
-  const [activities] = useActivities();
+  const [activitiesWithHistory] = useActivitiesWithHistory();
   const activityIdToKeyMapRef = useRef<Readonly<ActivityIdToKeyMap>>(Object.freeze(new Map()));
   const activityToKeyMapRef = useRef<Readonly<ActivityToKeyMap>>(Object.freeze(new Map()));
   const clientActivityIdToKeyMapRef = useRef<Readonly<ClientActivityIdToKeyMap>>(Object.freeze(new Map()));
@@ -55,19 +55,39 @@ const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
     const nextClientActivityIdToKeyMap: ClientActivityIdToKeyMap = new Map();
     const nextKeyToActivityMap: KeyToActivityMap = new Map();
 
-    activities.forEach(activity => {
-      const activityId = getActivityId(activity);
-      const clientActivityId = getClientActivityId(activity);
+    activitiesWithHistory.forEach(activities => {
+      const activity = activities[activities.length - 1];
 
-      const key =
-        (clientActivityId && clientActivityIdToKeyMap.get(clientActivityId)) ||
-        (activityId && activityIdToKeyMap.get(activityId)) ||
-        activityToKeyMap.get(activity) ||
-        uniqueId();
+      let key = uniqueId();
+      for (let i = 0; i < activities.length; i++) {
+        // eslint-disable-next-line security/detect-object-injection
+        const activity = activities[i];
+        const activityId = getActivityId(activity);
+        const clientActivityId = getClientActivityId(activity);
 
-      activityId && nextActivityIdToKeyMap.set(activityId, key);
-      clientActivityId && nextClientActivityIdToKeyMap.set(clientActivityId, key);
-      nextActivityToKeyMap.set(activity, key);
+        const existingKey =
+          (clientActivityId && clientActivityIdToKeyMap.get(clientActivityId)) ||
+          (activityId && activityIdToKeyMap.get(activityId)) ||
+          activityToKeyMap.get(activity);
+
+        if (existingKey) {
+          key = existingKey;
+          break;
+        }
+      }
+
+      // all activities in the same group should have the same key
+      for (let i = 0; i < activities.length; i++) {
+        // eslint-disable-next-line security/detect-object-injection
+        const activity = activities[i];
+        const activityId = getActivityId(activity);
+        const clientActivityId = getClientActivityId(activity);
+
+        activityId && nextActivityIdToKeyMap.set(activityId, key);
+        clientActivityId && nextClientActivityIdToKeyMap.set(clientActivityId, key);
+        nextActivityToKeyMap.set(activity, key);
+      }
+
       nextKeyToActivityMap.set(key, activity);
       nextActivityKeys.push(key);
     });
@@ -76,10 +96,15 @@ const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
     activityToKeyMapRef.current = Object.freeze(nextActivityToKeyMap);
     clientActivityIdToKeyMapRef.current = Object.freeze(nextClientActivityIdToKeyMap);
     keyToActivityMapRef.current = Object.freeze(nextKeyToActivityMap);
-
     // `nextActivityKeys` could potentially same as `prevActivityKeys` despite reference differences, we should memoize it.
     return Object.freeze([Object.freeze(nextActivityKeys)]) as readonly [readonly string[]];
-  }, [activities, activityIdToKeyMapRef, activityToKeyMapRef, clientActivityIdToKeyMapRef, keyToActivityMapRef]);
+  }, [
+    activitiesWithHistory,
+    activityIdToKeyMapRef,
+    activityToKeyMapRef,
+    clientActivityIdToKeyMapRef,
+    keyToActivityMapRef
+  ]);
 
   const getActivityByKey: (key?: string) => undefined | WebChatActivity = useCallback(
     (key?: string): undefined | WebChatActivity => key && keyToActivityMapRef.current.get(key),
@@ -106,7 +131,7 @@ const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
     [activityKeysState, getActivityByKey, getKeyByActivity, getKeyByActivityId]
   );
 
-  const { length: numActivities } = activities;
+  const { length: numActivities } = activitiesWithHistory;
 
   if (activityIdToKeyMapRef.current.size > numActivities) {
     console.warn(

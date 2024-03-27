@@ -1,5 +1,6 @@
 import useActiveTyping from './useActiveTyping';
 import useActivities from './useActivities';
+import useActivitiesWithHistory from './useActivitiesWithHistory';
 import useActivityKeys from './useActivityKeys';
 import useActivityKeysByRead from './useActivityKeysByRead';
 import useAvatarForBot from './useAvatarForBot';
@@ -73,6 +74,7 @@ import useVoiceSelector from './useVoiceSelector';
 export {
   useActiveTyping,
   useActivities,
+  useActivitiesWithHistory,
   useActivityKeys,
   useActivityKeysByRead,
   useAvatarForBot,

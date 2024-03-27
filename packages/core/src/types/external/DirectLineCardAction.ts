@@ -34,6 +34,7 @@ type DownloadFileCardAction = CardActionWithImageAndTitle & {
 type IMBackCardAction = CardActionWithImageAndTitle & {
   type: 'imBack';
   value: string;
+  replyToId?: string;
 };
 
 /**
@@ -46,6 +47,7 @@ type MessageBackCardAction = CardActionWithImageAndTitle & {
   text?: string;
   type: 'messageBack';
   value?: { [key: string]: any };
+  replyToId?: string;
 };
 
 /**
@@ -86,6 +88,7 @@ type PlayVideoCardAction = CardActionWithImageAndTitle & {
 type PostBackCardAction = CardActionWithImageAndTitle & {
   type: 'postBack';
   value: any; // For legacy reason, postBack support any.
+  replyToId?: string;
 };
 
 /**
