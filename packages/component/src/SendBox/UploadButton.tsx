@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
 import connectToWebChat from '../connectToWebChat';
@@ -103,7 +103,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const sendFiles = useSendFiles();
   const [{ files, setFiles }] = useFiles();
-  const [{ setUploadButtonRef, uploadButtonRef }] = useUploadButtonRef();
+  const [{ uploadButtonRef }] = useUploadButtonRef();
   const focus = useFocus();
 
   const { current } = uploadButtonRef;
@@ -131,12 +131,6 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
     },
     [combineAttachmentsAndText, current, focus, sendFiles, setFiles]
   );
-
-  useEffect(() => {
-    if (current) {
-      setUploadButtonRef(current);
-    }
-  }, [current, setUploadButtonRef]);
 
   return (
     <div className={classNames(rootClassName, 'webchat__upload-button', uploadButtonStyleSet + '', className)}>

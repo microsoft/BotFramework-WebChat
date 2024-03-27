@@ -73,7 +73,7 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   const [sendBoxValue, setSendBoxValue] = useSendBoxValue();
   const apiSubmitSendBox = useSubmitSendBox();
   const [{ files, setFiles }] = useFiles();
-  const [{ setUploadButtonRef }] = useUploadButtonRef();
+  const [{ uploadButtonRef }] = useUploadButtonRef();
   const sendFiles = useSendFiles();
   const focus = useFocus();
   const localize = useLocalizer();
@@ -136,7 +136,9 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
           sendFiles(files, sendBoxValue);
           setFiles([]);
           setSendBoxValue('');
-          setUploadButtonRef(null);
+          if (uploadButtonRef?.current) {
+            uploadButtonRef.current.value = null;
+          }
         } else {
           apiSubmitSendBox();
         }
@@ -154,8 +156,8 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
       setFiles,
       setSendBoxValue,
       setTimeout,
-      setUploadButtonRef,
-      submitErrorRef
+      submitErrorRef,
+      uploadButtonRef
     ]
   );
 
