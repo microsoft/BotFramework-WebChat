@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
-import React, { FC } from 'react';
-import type { DirectLineSignInCard } from 'botframework-webchat-core';
+import React, { type ReactNode } from 'react';
+import { type DirectLineSignInCard } from 'botframework-webchat-core';
 
 import CommonCard from './CommonCard';
 import useStyleSet from '../../hooks/useStyleSet';
 
-type SignInCardContentProps = {
+type SignInCardContentProps = Readonly<{
   actionPerformedClassName?: string;
   content: DirectLineSignInCard;
   disabled?: boolean;
-};
+}>;
 
-const SignInCardContent: FC<SignInCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const SignInCardContent = ({ actionPerformedClassName, content, disabled }: SignInCardContentProps): ReactNode => {
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
   return (

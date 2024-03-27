@@ -1,9 +1,7 @@
 /* eslint react/forbid-dom-props: ["off"] */
 
 import PropTypes from 'prop-types';
-import React, { forwardRef } from 'react';
-
-import type { VFC } from 'react';
+import React, { type ReactNode, forwardRef } from 'react';
 
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 
@@ -23,14 +21,14 @@ const ROOT_STYLE = {
   width: 1
 };
 
-type ScreenReaderTextProps = {
+type ScreenReaderTextProps = Readonly<{
   'aria-hidden'?: boolean;
   id?: string;
   text: string;
-};
+}>;
 
-const ScreenReaderText: VFC<ScreenReaderTextProps> = forwardRef<HTMLDivElement, ScreenReaderTextProps>(
-  ({ 'aria-hidden': ariaHidden, id, text }, ref) => {
+const ScreenReaderText = forwardRef<HTMLDivElement, ScreenReaderTextProps>(
+  ({ 'aria-hidden': ariaHidden, id, text }, ref): ReactNode => {
     const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
     if (ariaHidden && !id) {

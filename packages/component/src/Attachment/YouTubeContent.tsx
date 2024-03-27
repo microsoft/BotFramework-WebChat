@@ -1,19 +1,19 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { type ReactNode } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
 
-type YouTubeContentProps = {
+type YouTubeContentProps = Readonly<{
   alt?: string;
   autoPlay?: boolean;
   embedID: string;
   loop?: boolean;
-};
+}>;
 
-const YouTubeContent: FC<YouTubeContentProps> = ({ alt, autoPlay, embedID, loop }) => {
+const YouTubeContent = ({ alt, autoPlay, embedID, loop }: YouTubeContentProps): ReactNode => {
   const [{ youTubeContent: youTubeContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
 

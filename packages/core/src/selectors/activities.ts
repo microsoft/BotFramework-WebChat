@@ -1,5 +1,5 @@
-import type { ReduxState } from '../types/internal/ReduxState';
-import type { WebChatActivity } from '../types/WebChatActivity';
+import { type ReduxState } from '../types/internal/ReduxState';
+import { type WebChatActivity } from '../types/WebChatActivity';
 
 const activities = ({ activities }: ReduxState) => activities;
 

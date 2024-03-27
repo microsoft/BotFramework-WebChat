@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import ScrollPosition from '../types/ScrollPosition';
+import type ScrollPosition from '../types/ScrollPosition';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 
 export default function useScrollTo(): (

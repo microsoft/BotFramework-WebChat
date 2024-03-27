@@ -7,10 +7,10 @@
 //    - However, we do not expect the server to return "localTimestamp" as they may not have capability to store this information
 // - "conversationUpdate" activity is never sent to Web Chat, thus, it is not defined
 
-import type { AnyAnd } from './AnyAnd';
-import type { DirectLineAttachment } from './external/DirectLineAttachment';
-import type { DirectLineSuggestedAction } from './external/DirectLineSuggestedAction';
-import type { OrgSchemaThing } from './external/OrgSchemaThing';
+import { type AnyAnd } from './AnyAnd';
+import { type DirectLineAttachment } from './external/DirectLineAttachment';
+import { type DirectLineSuggestedAction } from './external/DirectLineSuggestedAction';
+import { type OrgSchemaThing } from './external/OrgSchemaThing';
 
 type SupportedRole = 'bot' | 'channel' | 'user';
 type SupportedSendStatus = 'sending' | 'send failed' | 'sent';

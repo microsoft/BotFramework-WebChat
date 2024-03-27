@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import Notification from './Notification';
+import type Notification from './Notification';
 
 type ToastProps = {
   notification: Notification;

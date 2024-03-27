@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useSelector } from './internal/WebChatReduxContext';
-import Typing from '../types/Typing';
+import type Typing from '../types/Typing';
 import useForceRender from './internal/useForceRender';
 import usePonyfill from './usePonyfill';
 import useStyleOptions from './useStyleOptions';

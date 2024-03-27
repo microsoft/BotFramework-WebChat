@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import AdaptiveCardsPackage from '../types/AdaptiveCardsPackage';
+import type AdaptiveCardsPackage from '../types/AdaptiveCardsPackage';
 
 type AdaptiveCardsContext = {
   adaptiveCardsPackage: AdaptiveCardsPackage;

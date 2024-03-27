@@ -1,7 +1,7 @@
 import { isValidElement, useMemo } from 'react';
 
-import { ActivityComponentFactory } from '../../types/ActivityMiddleware';
-import { RenderAttachment } from '../../types/AttachmentMiddleware';
+import { type ActivityComponentFactory } from '../../types/ActivityMiddleware';
+import { type RenderAttachment } from '../../types/AttachmentMiddleware';
 import useRenderAttachment from '../useRenderAttachment';
 import useWebChatAPIContext from './useWebChatAPIContext';
 

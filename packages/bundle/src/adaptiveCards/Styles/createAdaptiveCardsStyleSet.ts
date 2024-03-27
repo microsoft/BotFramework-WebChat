@@ -1,7 +1,8 @@
-import { normalizeStyleOptions, StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
+import { normalizeStyleOptions, type StrictStyleOptions, type StyleOptions } from 'botframework-webchat-api';
 
-import AdaptiveCardsStyleOptions, { StrictAdaptiveCardsStyleOptions } from '../AdaptiveCardsStyleOptions';
-import AdaptiveCardsStyleSet from '../AdaptiveCardsStyleSet';
+import { type StrictAdaptiveCardsStyleOptions } from '../AdaptiveCardsStyleOptions';
+import type AdaptiveCardsStyleOptions from '../AdaptiveCardsStyleOptions';
+import type AdaptiveCardsStyleSet from '../AdaptiveCardsStyleSet';
 import createAdaptiveCardRendererStyle from './StyleSet/AdaptiveCardRenderer';
 import createAnimationCardAttachmentStyle from './StyleSet/AnimationCardAttachment';
 import createAudioCardAttachmentStyle from './StyleSet/AudioCardAttachment';

@@ -1,4 +1,4 @@
-import Notification from '../types/Notification';
+import type Notification from '../types/Notification';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 export default function useSetNotification(): (notification: Notification) => void {

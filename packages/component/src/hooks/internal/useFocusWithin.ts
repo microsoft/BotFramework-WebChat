@@ -1,6 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
-
-import type { RefObject } from 'react';
+import { type RefObject, useCallback, useEffect, useState } from 'react';
 
 export default function useFocusWithin(targetRef: RefObject<HTMLElement>): readonly [boolean] {
   const [focusWithin, setFocusWithin] = useState(false);

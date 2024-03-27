@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import random from 'math-random';
-import React, { useCallback, useMemo } from 'react';
+import React, { type ReactNode, type MutableRefObject, type PropsWithChildren, useCallback, useMemo } from 'react';
 
 import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
 import TranscriptFocusContext from './private/Context';
@@ -10,14 +10,15 @@ import usePrevious from '../../hooks/internal/usePrevious';
 import useStateRef from '../../hooks/internal/useStateRef';
 import useValueRef from '../../hooks/internal/useValueRef';
 
-import type { FC, MutableRefObject, PropsWithChildren } from 'react';
-import type { TranscriptFocusContextType } from './private/Context';
+import { type TranscriptFocusContextType } from './private/Context';
 
 const { useGetKeyByActivity } = hooks;
 
-type TranscriptFocusComposerProps = PropsWithChildren<{
-  containerRef: MutableRefObject<HTMLElement>;
-}>;
+type TranscriptFocusComposerProps = Readonly<
+  PropsWithChildren<{
+    containerRef: MutableRefObject<HTMLElement>;
+  }>
+>;
 
 function last<T>(array: ArrayLike<T>) {
   return array[array.length - 1];
@@ -33,7 +34,7 @@ function uniqueId(count = Infinity) {
   );
 }
 
-const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, containerRef }) => {
+const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComposerProps): ReactNode => {
   const [flattenedActivityTree] = useActivityTreeWithRenderer({ flat: true });
   const [_, setRawFocusedActivityKey, rawFocusedActivityKeyRef] = useStateRef<string | undefined>();
   const getKeyByActivity = useGetKeyByActivity();

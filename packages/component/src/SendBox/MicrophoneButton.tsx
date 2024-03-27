@@ -6,7 +6,7 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React, { FC, useCallback, useState } from 'react';
+import React, { type ReactNode, useCallback, useState } from 'react';
 
 import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
@@ -155,11 +155,11 @@ function useMicrophoneButtonDisabled(): [boolean] {
   ];
 }
 
-type MicrophoneButtonProps = {
+type MicrophoneButtonProps = Readonly<{
   className?: string;
-};
+}>;
 
-const MicrophoneButton: FC<MicrophoneButtonProps> = ({ className }) => {
+const MicrophoneButton = ({ className }: MicrophoneButtonProps): ReactNode => {
   const [{ microphoneButton: microphoneButtonStyleSet }] = useStyleSet();
   const [dictateState] = useDictateState();
   const [disabled] = useMicrophoneButtonDisabled();

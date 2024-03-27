@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { type ReactNode } from 'react';
 
 import DownloadIcon from './Assets/DownloadIcon';
 import useStyleSet from '../hooks/useStyleSet';
@@ -34,7 +34,13 @@ function isAllowedProtocol(url) {
   }
 }
 
-const FileContentBadge = ({ downloadIcon, fileName, size }) => {
+type FileContentBadgeProps = Readonly<{
+  downloadIcon?: boolean;
+  fileName: string;
+  size?: number;
+}>;
+
+const FileContentBadge = ({ downloadIcon, fileName, size }: FileContentBadgeProps): ReactNode => {
   const [direction] = useDirection();
   const formatByte = useByteFormatter();
 
@@ -70,14 +76,14 @@ FileContentBadge.propTypes = {
   size: PropTypes.number
 };
 
-type FileContentProps = {
+type FileContentProps = Readonly<{
   className?: string;
   fileName: string;
   href?: string;
   size?: number;
-};
+}>;
 
-const FileContent: FC<FileContentProps> = ({ className, href, fileName, size }) => {
+const FileContent = ({ className, href, fileName, size }: FileContentProps): ReactNode => {
   const [{ fileContent: fileContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
   const localizeBytes = useByteFormatter();

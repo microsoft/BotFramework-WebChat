@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React, { FC, useMemo } from 'react';
-import type { DirectLineOAuthCard } from 'botframework-webchat-core';
+import React, { type ReactNode, useMemo } from 'react';
+import { type DirectLineOAuthCard } from 'botframework-webchat-core';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
@@ -10,13 +10,13 @@ import useStyleOptions from '../../hooks/useStyleOptions';
 
 const { useDirection } = hooks;
 
-type OAuthCardContentProps = {
+type OAuthCardContentProps = Readonly<{
   actionPerformedClassName?: string;
   content: DirectLineOAuthCard;
   disabled?: boolean;
-};
+}>;
 
-const OAuthCardContent: FC<OAuthCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const OAuthCardContent = ({ actionPerformedClassName, content, disabled }: OAuthCardContentProps): ReactNode => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();

@@ -3,7 +3,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { type ReactNode } from 'react';
 
 import Bubble from './Bubble';
 import connectToWebChat from '../connectToWebChat';
@@ -14,9 +14,8 @@ import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useUniqueId from '../hooks/internal/useUniqueId';
 
-import type { FC, ReactNode } from 'react';
-import type { RenderAttachment } from 'botframework-webchat-api';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type RenderAttachment } from 'botframework-webchat-api';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
 
@@ -90,23 +89,23 @@ const connectStackedLayout = (...selectors) =>
     ...selectors
   );
 
-type StackedLayoutProps = {
-  activity: WebChatActivity;
+type StackedLayoutProps = Readonly<{
+  activity: Readonly<WebChatActivity>;
   hideTimestamp?: boolean;
   renderActivityStatus?: (options: { hideTimestamp: boolean }) => ReactNode;
   renderAttachment?: RenderAttachment;
   renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>);
   showCallout?: boolean;
-};
+}>;
 
-const StackedLayout: FC<StackedLayoutProps> = ({
+const StackedLayout = ({
   activity,
   hideTimestamp,
   renderActivityStatus,
   renderAttachment,
   renderAvatar,
   showCallout
-}) => {
+}: StackedLayoutProps): ReactNode => {
   const [styleOptions] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();

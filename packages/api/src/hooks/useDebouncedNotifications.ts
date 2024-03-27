@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import updateIn from 'simple-update-in';
 
 import findMin from '../utils/findMin';
-import Notification from '../types/Notification';
+import type Notification from '../types/Notification';
 import useForceRender from './internal/useForceRender';
 import useNotifications from './useNotifications';
 import usePonyfill from './usePonyfill';

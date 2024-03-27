@@ -1,4 +1,4 @@
-import { StrictStyleOptions } from 'botframework-webchat-api';
+import { type StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createErrorBoxStyle({ monospaceFont, primaryFont }: StrictStyleOptions) {
   return {

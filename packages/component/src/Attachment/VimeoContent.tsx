@@ -1,19 +1,19 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { type ReactNode } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
 
-type VimeoContentProps = {
+type VimeoContentProps = Readonly<{
   alt?: string;
   autoPlay?: boolean;
   embedID: string;
   loop?: boolean;
-};
+}>;
 
-const VimeoContent: FC<VimeoContentProps> = ({ alt, autoPlay, embedID, loop }) => {
+const VimeoContent = ({ alt, autoPlay, embedID, loop }: VimeoContentProps): ReactNode => {
   const [{ vimeoContent: vimeoContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
 

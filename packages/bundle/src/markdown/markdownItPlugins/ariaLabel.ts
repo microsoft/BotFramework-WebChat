@@ -1,4 +1,4 @@
-import MarkdownIt from 'markdown-it';
+import type MarkdownIt from 'markdown-it';
 import markdownItAttrs from 'markdown-it-attrs-es5';
 
 const MARKDOWN_ATTRS_LEFT_DELIMITER = '⟬';

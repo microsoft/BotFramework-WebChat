@@ -1,7 +1,7 @@
 // Numbers are commonly used in CSS.
 /* eslint-disable no-magic-numbers */
 
-import { StrictStyleOptions } from 'botframework-webchat-api';
+import { type StrictStyleOptions } from 'botframework-webchat-api';
 
 const DARK_THEME_SELECTOR = '@media (forced-colors: none) and (prefers-color-scheme: dark)';
 const LIGHT_THEME_SELECTOR = '@media (forced-colors: none) and (prefers-color-scheme: light)';

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { VFC } from 'react';
+import React, { type ReactNode } from 'react';
 
 import BasicWebChat from './BasicWebChat';
-import Composer, { ComposerProps } from './Composer';
+import Composer, { type ComposerProps } from './Composer';
 
 // Please keep this file as simple as possible. This is for setting up the surface (a.k.a. <Composer>) and <BasicWebChat> only.
 
@@ -15,21 +15,24 @@ import Composer, { ComposerProps } from './Composer';
 // Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
 const ARIA_LANDMARK_ROLES = ['complementary', 'contentinfo', 'form', 'main', 'region'];
 
-type ReactWebChatProps = Omit<ComposerProps, 'children'> & {
-  className?: string;
-  role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
-};
+type ReactWebChatProps = Omit<ComposerProps, 'children'> &
+  Readonly<{
+    className?: string;
+    role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
+  }>;
 
-const ReactWebChat: VFC<ReactWebChatProps> = ({ className, role, ...composerProps }) => (
+const ReactWebChat = ({ className, role, ...composerProps }: ReactWebChatProps): ReactNode => (
   <Composer {...composerProps}>
     <BasicWebChat className={className} role={role} />
   </Composer>
 );
 
+const { children: __, ...composerDefaultProps } = Composer.defaultProps;
+
 ReactWebChat.defaultProps = {
   className: undefined,
   role: undefined,
-  ...Composer.defaultProps
+  ...composerDefaultProps
 };
 
 const {

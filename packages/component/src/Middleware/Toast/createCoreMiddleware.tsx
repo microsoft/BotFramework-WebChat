@@ -1,4 +1,4 @@
-import { ToastMiddleware } from 'botframework-webchat-api';
+import { type ToastMiddleware } from 'botframework-webchat-api';
 
 import createToastMiddleware from '../../Toast/createToastMiddleware';
 

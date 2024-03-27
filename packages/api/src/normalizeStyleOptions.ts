@@ -1,7 +1,8 @@
 import { warnOnce } from 'botframework-webchat-core';
 
 import defaultStyleOptions from './defaultStyleOptions';
-import StyleOptions, { StrictStyleOptions } from './StyleOptions';
+import { type StrictStyleOptions } from './StyleOptions';
+import type StyleOptions from './StyleOptions';
 
 const hideScrollToEndButtonDeprecation = warnOnce(
   '"styleOptions.hideScrollToEndButton" has been deprecated. To hide scroll to end button, set "scrollToEndBehavior" to false. This deprecation migration will be removed on or after 2023-06-02.'

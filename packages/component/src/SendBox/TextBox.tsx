@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { type MutableRefObject, useCallback, useMemo, useRef } from 'react';
 
 import { ie11 } from '../Utils/detectBrowser';
 import AccessibleInputText from '../Utils/AccessibleInputText';
@@ -14,8 +14,6 @@ import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import withEmoji from '../withEmoji/withEmoji';
-
-import type { MutableRefObject } from 'react';
 
 const { useDisabled, useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions } = hooks;
 

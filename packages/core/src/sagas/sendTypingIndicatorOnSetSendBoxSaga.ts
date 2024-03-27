@@ -11,7 +11,7 @@ import sendTypingIndicatorSelector from '../selectors/sendTypingIndicator';
 import sleep from '../utils/sleep';
 import whileConnected from './effects/whileConnected';
 
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+import { type GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type setSendTypingIndicator from '../actions/setSendTypingIndicator';
 
 type SetSendTypingIndicatorAction = ReturnType<typeof setSendTypingIndicator>;
