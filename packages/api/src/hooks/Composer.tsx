@@ -540,6 +540,12 @@ const ComposerCore = ({
     [scrollToEndButtonMiddleware]
   );
 
+  // For useFiles hook
+  const [files, setFiles] = useState<File[]>([]);
+
+  // For useUploadButtonRef
+  const uploadButtonRef = useRef<HTMLInputElement>();
+
   /**
    * This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
    * - User ID changed, causing all send* functions to be updated
@@ -565,6 +571,7 @@ const ComposerCore = ({
       directLine,
       disabled,
       downscaleImageToDataURL,
+      files,
       grammars: patchedGrammars,
       internalErrorBoxClass,
       language: locale,
@@ -575,11 +582,13 @@ const ComposerCore = ({
       scrollToEndButtonRenderer,
       selectVoice: patchedSelectVoice,
       sendTypingIndicator,
+      setFiles,
       styleOptions: patchedStyleOptions,
       telemetryDimensionsRef,
       toastRenderer: patchedToastRenderer,
       trackDimension,
       typingIndicatorRenderer: patchedTypingIndicatorRenderer,
+      uploadButtonRef,
       userID,
       username
     }),
@@ -588,6 +597,7 @@ const ComposerCore = ({
       directLine,
       disabled,
       downscaleImageToDataURL,
+      files,
       groupActivitiesContext,
       hoistedDispatchers,
       internalErrorBoxClass,
@@ -609,7 +619,7 @@ const ComposerCore = ({
       renderMarkdown,
       scrollToEndButtonRenderer,
       sendTypingIndicator,
-      telemetryDimensionsRef,
+      setFiles,
       trackDimension,
       userID,
       username

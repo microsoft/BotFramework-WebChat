@@ -1,9 +1,9 @@
 const SEND_FILES = 'WEB_CHAT/SEND_FILES';
 
-export default function sendFiles(files) {
+export default function sendFiles(files, text) {
   return {
     type: SEND_FILES,
-    payload: { files }
+    payload: { files, text }
   };
 }
 

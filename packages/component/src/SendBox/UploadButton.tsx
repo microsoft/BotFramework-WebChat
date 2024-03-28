@@ -1,17 +1,19 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, useCallback, useRef } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
 import connectToWebChat from '../connectToWebChat';
+import { useFocus } from '../hooks';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSendFiles from '../hooks/useSendFiles';
 import useStyleSet from '../hooks/useStyleSet';
 import AttachmentIcon from './Assets/AttachmentIcon';
+import CheckIcon from './Assets/CheckIcon';
 import IconButton from './IconButton';
 
-const { useDisabled, useLocalizer, useStyleOptions } = hooks;
+const { useDisabled, useFiles, useLocalizer, useStyleOptions, useUploadButtonRef } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__upload-button': {
@@ -95,14 +97,16 @@ type UploadButtonProps = {
 
 const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
-  const [{ uploadAccept, uploadMultiple }] = useStyleOptions();
+  const [{ uploadAccept, uploadMultiple, combineAttachmentsAndText }] = useStyleOptions();
   const [disabled] = useDisabled();
-  const inputRef = useRef<HTMLInputElement>();
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const sendFiles = useSendFiles();
+  const [{ setFiles }] = useFiles();
+  const [{ uploadButtonRef }] = useUploadButtonRef();
+  const focus = useFocus();
 
-  const { current } = inputRef;
+  const { current } = uploadButtonRef;
   const uploadFileString = localize('TEXT_INPUT_UPLOAD_BUTTON_ALT');
 
   const handleClick = useCallback(() => {
@@ -111,13 +115,21 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
 
   const handleFileChange = useCallback(
     ({ target: { files } }) => {
+      setFiles(files);
+
+      if (combineAttachmentsAndText) {
+        current.blur();
+        focus('sendBox');
+        return;
+      }
+
       sendFiles(files);
 
       if (current) {
         current.value = null;
       }
     },
-    [current, sendFiles]
+    [combineAttachmentsAndText, current, focus, sendFiles, setFiles]
   );
 
   return (
@@ -131,13 +143,13 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
         onChange={disabled ? undefined : handleFileChange}
         onClick={disabled ? PREVENT_DEFAULT_HANDLER : undefined}
         readOnly={disabled}
-        ref={inputRef}
+        ref={uploadButtonRef}
         role="button"
         tabIndex={-1}
         type="file"
       />
       <IconButton alt={uploadFileString} aria-label={uploadFileString} disabled={disabled} onClick={handleClick}>
-        <AttachmentIcon />
+        {uploadButtonRef.current?.value ? <CheckIcon /> : <AttachmentIcon />}
       </IconButton>
     </div>
   );

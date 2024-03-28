@@ -17,7 +17,7 @@ async function makeThumbnail(file, width, height, contentType, quality) {
   }
 }
 
-export default function useSendFiles(): (files: File[]) => void {
+export default function useSendFiles(): (files: File[], text?: string) => void {
   const sendFiles = useAPISendFiles();
   const [
     {
@@ -31,7 +31,7 @@ export default function useSendFiles(): (files: File[]) => void {
   const trackTiming = useTrackTiming();
 
   return useCallback(
-    async files => {
+    async (files, text) => {
       if (files && files.length) {
         files = [].slice.call(files);
 
@@ -69,7 +69,7 @@ export default function useSendFiles(): (files: File[]) => void {
           })
         );
 
-        sendFiles(attachments);
+        sendFiles(attachments, text);
       }
     },
     [
