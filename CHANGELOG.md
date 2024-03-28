@@ -24,7 +24,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb)
+-  Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb)
+
+### Fixed
+
+-  Fixes [#5050](https://github.com/microsoft/BotFramework-WebChat/issues/5050). Fixed focus should not blur briefly after tapping on a suggested action, by [@compulim](https://github.com/compulim), in PR [#5097](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5097)
 
 ### Changed
 
