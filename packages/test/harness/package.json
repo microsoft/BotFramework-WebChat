@@ -83,7 +83,7 @@
     "babel-plugin-istanbul": "^6.1.1",
     "concurrently": "^8.2.2",
     "esbuild": "^0.19.8",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "global-agent": "^3.0.0",
     "http-proxy-middleware": "^2.0.6",
     "istanbul-lib-coverage": "^3.2.2",
