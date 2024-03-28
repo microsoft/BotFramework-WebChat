@@ -102,7 +102,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const sendFiles = useSendFiles();
-  const [{ files, setFiles }] = useFiles();
+  const [{ setFiles }] = useFiles();
   const [{ uploadButtonRef }] = useUploadButtonRef();
   const focus = useFocus();
 
@@ -149,7 +149,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
         type="file"
       />
       <IconButton alt={uploadFileString} aria-label={uploadFileString} disabled={disabled} onClick={handleClick}>
-        {files?.length ? <CheckIcon /> : <AttachmentIcon />}
+        {uploadButtonRef.current?.value ? <CheckIcon /> : <AttachmentIcon />}
       </IconButton>
     </div>
   );
