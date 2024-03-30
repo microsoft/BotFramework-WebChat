@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                type: 'AdaptiveCard',
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                version: '1.5',
+                actions: [
+                  { type: 'Action.Submit', title: 'Button 1' },
+                  {
+                    type: 'Action.ShowCard',
+                    title: 'Show card',
+                    card: {
+                      type: 'AdaptiveCard',
+                      $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                      version: '1.5',
+                      actions: [{ type: 'Action.Submit', title: 'Button 2' }]
+                    }
+                  }
+                ]
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ]
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const [firstPushButton, secondPushButton] = Array.from(document.querySelectorAll('.ac-pushButton'));
+
+        expect(firstPushButton).toHaveProperty('textContent', 'Button 1');
+        expect(firstPushButton.getAttribute('aria-pressed')).toBe('false');
+        expect(firstPushButton.hasAttribute('aria-posinset')).toBe(false);
+        expect(firstPushButton.hasAttribute('aria-setsize')).toBe(false);
+        expect(firstPushButton.hasAttribute('role')).toBe(false);
+
+        expect(secondPushButton).toHaveProperty('textContent', 'Show card');
+        expect(secondPushButton.hasAttribute('aria-pressed')).toBe(false);
+        expect(secondPushButton.hasAttribute('aria-posinset')).toBe(false);
+        expect(secondPushButton.hasAttribute('aria-setsize')).toBe(false);
+        expect(secondPushButton.hasAttribute('role')).toBe(false);
+
+        await (await directLine.actPostActivity(() => host.click(firstPushButton))).resolveAll();
+
+        expect(firstPushButton.getAttribute('aria-pressed')).toBe('true');
+
+        await host.click(secondPushButton);
+
+        const [, , thirdPushButton] = Array.from(document.querySelectorAll('.ac-pushButton'));
+
+        expect(thirdPushButton).toHaveProperty('textContent', 'Button 2');
+        expect(thirdPushButton.getAttribute('aria-pressed')).toBe('false');
+        expect(thirdPushButton.hasAttribute('aria-posinset')).toBe(false);
+        expect(thirdPushButton.hasAttribute('aria-setsize')).toBe(false);
+        expect(thirdPushButton.hasAttribute('role')).toBe(false);
+
+        await (await directLine.actPostActivity(() => host.click(thirdPushButton))).resolveAll();
+
+        expect(thirdPushButton.getAttribute('aria-pressed')).toBe('true');
+
+        // TODO: Add disabled.
+      });
+    </script>
+  </body>
+</html>
