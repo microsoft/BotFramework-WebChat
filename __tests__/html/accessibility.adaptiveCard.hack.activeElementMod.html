@@ -35,11 +35,16 @@
 
         await pageConditions.numActivitiesShown(1);
 
+        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'Hello, World!\n');
+
         const pushButton1 = document.querySelector('.ac-pushButton');
 
         pushButton1.focus();
 
         expect(document.activeElement).toBe(pushButton1);
+
+        // Modifying "adaptiveCardsHostConfig" props will cause the Adaptive Card to be re-rendered.
+        WebChat.renderWebChat({ adaptiveCardsHostConfig: {}, directLine, store }, document.getElementById('webchat'));
 
         await directLine.emulateIncomingActivity({
           attachments: [adaptiveCard],
@@ -47,6 +52,8 @@
           text: 'Aloha!',
           type: 'message'
         });
+
+        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'Aloha!\n');
 
         const pushButton2 = document.querySelector('.ac-pushButton');
 

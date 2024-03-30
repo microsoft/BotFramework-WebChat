@@ -52,6 +52,9 @@
         await host.click(textInput1);
         await host.sendKeys('John Doe');
 
+        // Modifying "adaptiveCardsHostConfig" props will cause the Adaptive Card to be re-rendered.
+        WebChat.renderWebChat({ adaptiveCardsHostConfig: {}, directLine, store }, document.getElementById('webchat'));
+
         await directLine.emulateIncomingActivity({
           attachments: [adaptiveCard],
           id: 'a-00001',

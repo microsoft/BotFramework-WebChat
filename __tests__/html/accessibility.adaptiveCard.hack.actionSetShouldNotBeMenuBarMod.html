@@ -21,9 +21,23 @@
             {
               content: {
                 type: 'AdaptiveCard',
-                body: [],
                 $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
                 version: '1.5',
+                body: [
+                  {
+                    type: 'ActionSet',
+                    actions: [
+                      {
+                        type: 'Action.Submit',
+                        title: 'Button 0'
+                      }
+                    ]
+                  },
+                  {
+                    type: 'TextBlock',
+                    text: 'Laborum sit incididunt ea laboris incididunt minim commodo Lorem excepteur sit ipsum eu.'
+                  }
+                ],
                 actions: [
                   {
                     type: 'Action.Submit',
@@ -48,6 +62,7 @@
 
         const actionSets = Array.from(document.querySelectorAll('.ac-actionSet'));
 
+        expect(actionSets).toHaveLength(2);
         expect(actionSets.every(actionSet => !actionSet.hasAttribute('role'))).toBe(true);
       });
     </script>
