@@ -23,7 +23,19 @@
                 type: 'AdaptiveCard',
                 $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
                 version: '1.5',
-                actions: [{ type: 'Action.Submit', title: 'Button' }]
+                actions: [
+                  { type: 'Action.Submit', title: 'Button' },
+                  {
+                    type: 'Action.ShowCard',
+                    title: 'Show card',
+                    card: {
+                      type: 'AdaptiveCard',
+                      $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                      version: '1.5',
+                      body: [{ type: 'TextBlock', text: 'Hello, World!' }]
+                    }
+                  }
+                ]
               },
               contentType: 'application/vnd.microsoft.card.adaptive'
             }
@@ -52,6 +64,13 @@
 
         // Once focused to another element, the button should not be focusable.
         expect(document.activeElement).not.toBe(pushButton2);
+
+        const showCardButton = Array.from(document.querySelectorAll('.ac-pushButton'))[1];
+
+        await host.click(showCardButton);
+
+        expect(showCardButton.hasAttribute('aria-disabled')).toBe(false);
+        expect(showCardButton.getAttribute('aria-expanded')).toBe('true');
       });
     </script>
   </body>
