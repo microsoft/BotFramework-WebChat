@@ -33,9 +33,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 -  Moved pull request validation pipeline to GitHub Actions, by [@compulim](https://github.com/compulim), in PR [#4976](https://github.com/microsoft/BotFramework-WebChat/pull/4976)
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4973](https://github.com/microsoft/BotFramework-WebChat/pull/4973) and PR [#XXX](https://github.com/microsoft/BotFramework-WebCHat/pull/XXX)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4973](https://github.com/microsoft/BotFramework-WebChat/pull/4973) and PR [#5115](https://github.com/microsoft/BotFramework-WebChat/pull/5115)
+   -  Notes: Some components/features in Adaptive Cards are in preview and not ready for production use. Web Chat does not support these components and features
    -  Production dependencies
-      -  [`adaptivecards@3.0.2](https://npmjs.com/package/adaptivecards)
+      -  [`adaptivecards@3.0.2`](https://npmjs.com/package/adaptivecards)
       -  [`core-js@3.33.3`](https://npmjs.com/package/core-js)
       -  [`jwt-decode@4.0.0`](https://npmjs.com/package/jwt-decode)
       -  [`markdown-it@13.0.2`](https://npmjs.com/package/markdown-it)
