@@ -32,7 +32,10 @@
                       type: 'AdaptiveCard',
                       $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
                       version: '1.5',
-                      actions: [{ type: 'Action.Submit', title: 'Button 2' }]
+                      actions: [
+                        { type: 'Action.Submit', title: 'Button 2' },
+                        { type: 'Action.Submit', title: 'Button 3' }
+                      ]
                     }
                   }
                 ]
@@ -64,7 +67,7 @@
 
         await host.click(secondPushButton);
 
-        const [, , thirdPushButton] = Array.from(document.querySelectorAll('.ac-pushButton'));
+        const [, , thirdPushButton, fourthPushButton] = Array.from(document.querySelectorAll('.ac-pushButton'));
 
         expect(thirdPushButton).toHaveProperty('textContent', 'Button 2');
         expect(thirdPushButton.getAttribute('aria-pressed')).toBe('false');
@@ -76,7 +79,11 @@
 
         expect(thirdPushButton.getAttribute('aria-pressed')).toBe('true');
 
-        // TODO: Add disabled.
+        await WebChat.renderWebChat({ directLine, disabled: true, store }, document.getElementById('webchat'));
+
+        await host.click(fourthPushButton);
+
+        expect(fourthPushButton.getAttribute('aria-pressed')).toBe('false');
       });
     </script>
   </body>
