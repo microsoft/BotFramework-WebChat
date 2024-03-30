@@ -10,5 +10,5 @@ test('formatting a time in Cananda, Newfoundland timezone', () => {
   const date = new Date(Date.UTC(2000, 0, 1, 0, 12, 34, 567));
   const actual = dateToLocaleISOString(date);
 
-  expect(actual).toMatchInlineSnapshot(`"2000-01-01T09:12:34.567-03:30"`);
+  expect(actual).toMatchInlineSnapshot(`"1999-12-31T20:42:34.567-03:30"`);
 });
