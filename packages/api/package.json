@@ -70,6 +70,7 @@
     "math-random": "2.0.1",
     "prop-types": "15.8.1",
     "react-redux": "7.2.9",
+    "react-chain-of-responsibility": "0.1.0",
     "redux": "5.0.0",
     "simple-update-in": "2.2.0"
   },

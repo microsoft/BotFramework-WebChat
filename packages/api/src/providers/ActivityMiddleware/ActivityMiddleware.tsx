@@ -2,7 +2,7 @@ import React, { ReactNode, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { OneOrMany, singleToArray } from 'botframework-webchat-core';
 // TODO: fix the import location
-import createChainOfResponsibility from '../../hooks/internal/react-chain-of-responsibility/packages/react-chain-of-responsibility/src/createChainOfResponsibility';
+import { createChainOfResponsibility } from 'react-chain-of-responsibility';
 import ActivityMiddleware, {
   ActivityComponentFactory,
   ActivityComponentFactoryOptions,
