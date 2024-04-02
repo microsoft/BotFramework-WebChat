@@ -90,6 +90,7 @@
     "concurrently": "^8.2.2",
     "core-js": "^3.34.0",
     "node-dev": "^8.0.0",
+    "type-fest": "^4.14.0",
     "typescript": "^5.3.2"
   },
   "dependencies": {
