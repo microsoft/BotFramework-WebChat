@@ -1,25 +1,22 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1024] }] */
 
+import { type WebChatPostActivityAttachment } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 
-import useTrackEvent from './useTrackEvent';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
+import useTrackEvent from './useTrackEvent';
 
-type PostActivityFile = {
-  name: string;
-  size: number;
-  thumbnail?: string;
-  url: string;
-};
-
-export default function useSendFiles(): (files: PostActivityFile[], text?: string) => void {
+/**
+ * @deprecated This hook will be removed on or after 2026-04-03. Please use `useSendMessage` instead.
+ */
+export default function useSendFiles(): (files: readonly WebChatPostActivityAttachment[]) => void {
   const { sendFiles } = useWebChatAPIContext();
   const trackEvent = useTrackEvent();
 
   return useCallback(
-    (files, text) => {
+    files => {
       if (files && files.length) {
-        sendFiles(files, text);
+        sendFiles(files);
 
         trackEvent('sendFiles', {
           numFiles: files.length,

@@ -10,19 +10,10 @@ import useScrollToEnd from '../../../hooks/useScrollToEnd';
 import SendBoxContext from './private/Context';
 
 import type { PropsWithChildren } from 'react';
-import useSendFiles from '../../../hooks/useSendFiles';
 import type { ContextType, SendError } from './private/types';
 
-const {
-  useConnectivityStatus,
-  useFiles,
-  useLocalizer,
-  usePonyfill,
-  useSendBoxValue,
-  useStyleOptions,
-  useSubmitSendBox,
-  useUploadButtonRef
-} = hooks;
+const { useConnectivityStatus, useLocalizer, usePonyfill, useSendBoxAttachments, useSendBoxValue, useSubmitSendBox } =
+  hooks;
 
 const SUBMIT_ERROR_MESSAGE_STYLE = {
   '&.webchat__submit-error-message': {
@@ -68,20 +59,17 @@ type ErrorMessageStringMap = ReadonlyMap<SendError, string>;
 // TODO: [P2] Complete this component.
 const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
+  const [attachments] = useSendBoxAttachments();
   const [connectivityStatus] = useConnectivityStatus();
   const [error, setError] = useState<SendError | false>(false);
-  const [sendBoxValue, setSendBoxValue] = useSendBoxValue();
+  const [sendBoxValue] = useSendBoxValue();
   const apiSubmitSendBox = useSubmitSendBox();
-  const [{ files, setFiles }] = useFiles();
-  const [{ uploadButtonRef }] = useUploadButtonRef();
-  const sendFiles = useSendFiles();
   const focus = useFocus();
   const localize = useLocalizer();
   const scrollToEnd = useScrollToEnd();
   const styleToEmotionObject = useStyleToEmotionObject();
   const submitErrorMessageId = useUniqueId('webchat__send-box__error-message-id');
   const timeoutRef = useRef<readonly [Timeout, Timeout] | undefined>(undefined);
-  const [{ combineAttachmentsAndText }] = useStyleOptions();
 
   const errorMessageStringMap = useMemo<ErrorMessageStringMap>(
     () =>
@@ -107,11 +95,9 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   const submitErrorRef = useRefFrom<'empty' | 'offline' | undefined>(
     connectivityStatus !== 'connected' && connectivityStatus !== 'reconnected'
       ? 'offline'
-      : // If combineAttachments is enabled, allow sending if either there is a message or files
-        // Otherwise, require message text only
-        (combineAttachmentsAndText && (sendBoxValue || files.length)) || (!combineAttachmentsAndText && sendBoxValue)
-        ? undefined
-        : 'empty'
+      : !sendBoxValue && !attachments.length
+        ? 'empty'
+        : undefined
   );
 
   const submit = useCallback<ContextType['submit']>(
@@ -132,33 +118,11 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
         ]) as readonly [Timeout, Timeout];
       } else {
         scrollToEndRef.current?.();
-        if (combineAttachmentsAndText && files.length) {
-          sendFiles(files, sendBoxValue);
-          setFiles([]);
-          setSendBoxValue('');
-          if (uploadButtonRef?.current) {
-            uploadButtonRef.current.value = null;
-          }
-        } else {
-          apiSubmitSendBox();
-        }
+
+        apiSubmitSendBox();
       }
     },
-    [
-      apiSubmitSendBox,
-      clearTimeout,
-      combineAttachmentsAndText,
-      files,
-      focusRef,
-      scrollToEndRef,
-      sendBoxValue,
-      sendFiles,
-      setFiles,
-      setSendBoxValue,
-      setTimeout,
-      submitErrorRef,
-      uploadButtonRef
-    ]
+    [apiSubmitSendBox, clearTimeout, focusRef, scrollToEndRef, setTimeout, submitErrorRef]
   );
 
   useEffect(

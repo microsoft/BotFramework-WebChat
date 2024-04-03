@@ -1,10 +1,10 @@
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
 
-export default function createCustomEvent<T>(
-  name: string,
+export default function createCustomEvent<T, N extends string>(
+  name: N,
   eventInitDict: T
 ): {
-  type: string;
+  type: N;
 } & T {
   let event: Event;
 

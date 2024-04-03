@@ -1,9 +1,30 @@
-import useWebChatAPIContext from './internal/useWebChatAPIContext';
+import { useCallback } from 'react';
 
-export default function useSendMessage(): (
-  text: string,
+import type { WebChatPostActivityAttachment } from 'botframework-webchat-core';
+import useWebChatAPIContext from './internal/useWebChatAPIContext';
+import useTrackEvent from './useTrackEvent';
+
+// type SendMessage = (...args: Parameters<ReturnType<typeof useWebChatAPIContext>['sendMessage']>) => void;
+type SendMessage = (
+  text?: string,
   method?: string,
-  { channelData }?: { channelData?: any }
-) => void {
-  return useWebChatAPIContext().sendMessage;
+  init?: { attachments?: readonly WebChatPostActivityAttachment[] | undefined; channelData?: any }
+) => void;
+
+export default function useSendMessage(): SendMessage {
+  const { sendMessage } = useWebChatAPIContext();
+  const trackEvent = useTrackEvent();
+
+  return useCallback<SendMessage>(
+    (text, method, { attachments, channelData } = {}) => {
+      trackEvent('sendMessage', {
+        numAttachments: attachments?.length || 0,
+        // eslint-disable-next-line no-magic-numbers
+        sumSizeInKB: Math.round(attachments?.reduce((total, { size }) => total + size, 0) / 1024)
+      });
+
+      sendMessage(text, method, { attachments, channelData });
+    },
+    [sendMessage, trackEvent]
+  );
 }
