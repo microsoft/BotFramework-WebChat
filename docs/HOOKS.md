@@ -104,7 +104,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useScrollUp`](#usescrollup)
 -  [`useSendBoxValue`](#usesendboxvalue)
 -  [`useSendEvent`](#usesendevent)
--  [`useSendFiles`](#usesendfiles)
+-  [`useSendFiles`](#usesendfiles) (Deprecated)
 -  [`useSendMessage`](#usesendmessage)
 -  [`useSendMessageBack`](#usesendmessageback)
 -  [`useSendPostBack`](#usesendpostback)
@@ -999,6 +999,8 @@ When called, this function will send an event activity to the bot.
 
 ## `useSendFiles`
 
+> This function is deprecated. Developers should migrate to [`useSendMessage`](#usesendmessage).
+
 <!-- prettier-ignore-start -->
 ```js
 useSendFiles(): (files: (Blob | File)[]) => void
@@ -1016,13 +1018,23 @@ If you are using an `ArrayBuffer`, you can use `FileReader` to convert it into a
 
 <!-- prettier-ignore-start -->
 ```js
-useSendMessage(): (text: string, method: string) => void
+useSendMessage(): (
+  text?: string,
+  method: string,
+  {
+    files?: Iterable<Blob | File> | undefined
+  }
+) => void
 ```
 <!-- prettier-ignore-end -->
 
 When called, this function will send a text message activity to the bot.
 
 You can optionally include the input method how the text message was collected. Currently, if specified, only `speech` is supported.
+
+For media attachments, thumbnail can be optionally provided and should be a data URL.
+
+Either `text` or `files` must be defined. If none of them are defined, the function will be no-op.
 
 ## `useSendMessageBack`
 
