@@ -270,10 +270,13 @@ type StyleOptions = {
    * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#multiple
    */
   uploadMultiple?: boolean;
+
   /**
-   * Send the attachments and message text together as a single activity
+   * If set to `send` (default), attachment will be sent when the send button is clicked, or when the message is being sent.
+   *
+   * Otherwise, if set to `upload`, attachment will be sent immediately after upload.
    */
-  combineAttachmentsAndText?: boolean;
+  sendAttachmentOn?: 'upload' | 'send';
 
   /** Send box button: Icon color, defaults to subtle */
   sendBoxButtonColor?: string;

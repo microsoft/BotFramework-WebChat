@@ -15,6 +15,7 @@ import setDictateState from './actions/setDictateState';
 import setLanguage from './actions/setLanguage';
 import setNotification from './actions/setNotification';
 import setSendBox from './actions/setSendBox';
+import setSendBoxAttachments from './actions/setSendBoxAttachments';
 import setSendTimeout from './actions/setSendTimeout';
 import setSendTypingIndicator from './actions/setSendTypingIndicator';
 import startDictate from './actions/startDictate';
@@ -44,6 +45,7 @@ import warnOnce from './utils/warnOnce';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 import type { WebChatActivity } from './types/WebChatActivity';
+import type { WebChatPostActivityAttachment } from './types/WebChatPostActivityAttachment';
 import type { DirectLineActivity } from './types/external/DirectLineActivity';
 import type { DirectLineAnimationCard } from './types/external/DirectLineAnimationCard';
 import type { DirectLineAttachment } from './types/external/DirectLineAttachment';
@@ -100,6 +102,7 @@ export {
   setLanguage,
   setNotification,
   setSendBox,
+  setSendBoxAttachments,
   setSendTimeout,
   setSendTypingIndicator,
   singleToArray,
@@ -112,28 +115,32 @@ export {
   warnOnce
 };
 
-export type {
-  DirectLineActivity,
-  DirectLineAnimationCard,
-  DirectLineAttachment,
-  DirectLineAudioCard,
-  DirectLineCardAction,
-  DirectLineHeroCard,
-  DirectLineJSBotConnection,
-  DirectLineOAuthCard,
-  DirectLineReceiptCard,
-  DirectLineSignInCard,
-  DirectLineSuggestedAction,
-  DirectLineThumbnailCard,
-  DirectLineVideoCard,
-  GlobalScopePonyfill,
-  Observable,
-  OneOrMany,
-  OrgSchemaAction,
-  OrgSchemaClaim,
-  OrgSchemaCreativeWork,
-  OrgSchemaDefinedTerm,
-  OrgSchemaProject,
-  OrgSchemaThing,
-  WebChatActivity
-};
+  export type {
+    DirectLineActivity,
+    DirectLineAnimationCard,
+    DirectLineAttachment,
+    DirectLineAudioCard,
+    DirectLineCardAction,
+    DirectLineHeroCard,
+    DirectLineJSBotConnection,
+    DirectLineOAuthCard,
+    DirectLineReceiptCard,
+    DirectLineSignInCard,
+    DirectLineSuggestedAction,
+    DirectLineThumbnailCard,
+    DirectLineVideoCard,
+    GlobalScopePonyfill,
+    Observable,
+    OneOrMany,
+
+    OrgSchemaAction,
+    OrgSchemaClaim,
+    OrgSchemaCreativeWork,
+    OrgSchemaDefinedTerm,
+    OrgSchemaProject,
+
+
+    OrgSchemaThing,
+    WebChatActivity,
+    WebChatPostActivityAttachment
+  };

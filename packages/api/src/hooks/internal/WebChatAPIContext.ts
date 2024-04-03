@@ -1,27 +1,35 @@
-import { createContext } from 'react';
+import { createContext, type Dispatch, type SetStateAction } from 'react';
 
-import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
-import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
-import { GroupActivities } from '../../types/GroupActivitiesMiddleware';
-import { LegacyActivityRenderer } from '../../types/ActivityMiddleware';
-import { PerformCardAction } from '../../types/CardActionMiddleware';
-import { RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
-import { RenderAttachment } from '../../types/AttachmentMiddleware';
-import { RenderToast } from '../../types/ToastMiddleware';
-import { ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButtonMiddleware';
 import { StrictStyleOptions } from '../../StyleOptions';
+import { LegacyActivityRenderer } from '../../types/ActivityMiddleware';
+import { RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
+import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
+import { RenderAttachment } from '../../types/AttachmentMiddleware';
+import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
+import { PerformCardAction } from '../../types/CardActionMiddleware';
+import { GroupActivities } from '../../types/GroupActivitiesMiddleware';
 import LocalizedStrings from '../../types/LocalizedStrings';
+import Notification from '../../types/Notification';
 import PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
+import { ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButtonMiddleware';
 import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
+import { RenderToast } from '../../types/ToastMiddleware';
 
-import type { DirectLineJSBotConnection, Observable, WebChatActivity } from 'botframework-webchat-core';
+import type {
+  DirectLineJSBotConnection,
+  Observable,
+  sendFiles,
+  sendMessage,
+  WebChatActivity,
+  WebChatPostActivityAttachment
+} from 'botframework-webchat-core';
 
 type WebChatAPIContext = {
   activityRenderer?: LegacyActivityRenderer;
   activityStatusRenderer: RenderActivityStatus;
   attachmentForScreenReaderRenderer?: AttachmentForScreenReaderComponentFactory;
   attachmentRenderer?: RenderAttachment;
-  avatarRenderer?: AvatarComponentFactory;
+  avatarRenderer: AvatarComponentFactory;
   clearSuggestedActions?: () => void;
   dir?: string;
   directLine?: DirectLineJSBotConnection;
@@ -29,7 +37,6 @@ type WebChatAPIContext = {
   dismissNotification?: (id: string) => void;
   downscaleImageToDataURL?: (blob: Blob, maxWidth: number, maxHeight: number, type: string, quality: number) => string;
   emitTypingIndicator?: () => void;
-  files?: File[];
   grammars?: any;
   groupActivities?: GroupActivities;
   internalErrorBoxClass?: React.Component | Function;
@@ -46,10 +53,13 @@ type WebChatAPIContext = {
     linkOptions: { externalLinkAlt: string }
   ) => string;
   scrollToEndButtonRenderer?: ScrollToEndButtonComponentFactory;
-  selectVoice?: (voices: (typeof window.SpeechSynthesisVoice)[], activity: WebChatActivity) => void;
+  selectVoice?: (
+    voices: (typeof window.SpeechSynthesisVoice)[],
+    activity: WebChatActivity
+  ) => typeof window.SpeechSynthesisVoice;
   sendEvent?: (name: string, value: any) => void;
-  sendFiles?: (files: File[], text?: string) => void;
-  sendMessage?: (text: string, method?: string, { channelData }?: { channelData?: any }) => void;
+  sendFiles?: typeof sendFiles;
+  sendMessage?: typeof sendMessage;
   sendMessageBack?: (value: any, text?: string, displayText?: string) => void;
   sendPostBack?: (value?: any) => void;
   sendTypingIndicator?: boolean;
@@ -57,6 +67,7 @@ type WebChatAPIContext = {
   setDictateState?: (dictateState: number) => void;
   setNotification?: (notification: Notification) => void;
   setSendBox?: (value: string) => void;
+  setSendBoxAttachments?: Dispatch<SetStateAction<readonly WebChatPostActivityAttachment[]>>;
   setSendTimeout?: (timeout: number) => void;
   startDictate?: () => void;
   startSpeakingActivity?: () => void;

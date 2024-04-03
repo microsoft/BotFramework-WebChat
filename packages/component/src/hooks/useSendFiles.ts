@@ -1,85 +1,26 @@
 import { hooks } from 'botframework-webchat-api';
 import { useCallback } from 'react';
 
-import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
+import useConvertFileToAttachment from './internal/useConvertFileToAttachment';
 
-const { useSendFiles: useAPISendFiles, useStyleOptions, useTrackTiming } = hooks;
+const { useSendFiles: useAPISendFiles } = hooks;
 
-function canMakeThumbnail({ name }) {
-  return /\.(gif|jpe?g|png)$/iu.test(name);
-}
-
-async function makeThumbnail(file, width, height, contentType, quality) {
-  try {
-    return await downscaleImageToDataURL(file, width, height, contentType, quality);
-  } catch (error) {
-    console.warn(`Web Chat: Failed to downscale image due to ${error}.`);
-  }
-}
-
-export default function useSendFiles(): (files: File[], text?: string) => void {
+/**
+ * @deprecated This hook will be removed on or after 2026-04-03. Please use `useSendMessage` instead.
+ */
+export default function useSendFiles(): (files: readonly File[]) => void {
   const sendFiles = useAPISendFiles();
-  const [
-    {
-      enableUploadThumbnail,
-      uploadThumbnailContentType,
-      uploadThumbnailHeight,
-      uploadThumbnailQuality,
-      uploadThumbnailWidth
-    }
-  ] = useStyleOptions();
-  const trackTiming = useTrackTiming();
+  const convertFileToAttachment = useConvertFileToAttachment();
 
   return useCallback(
-    async (files, text) => {
-      if (files && files.length) {
-        files = [].slice.call(files);
-
-        // TODO: [P3] We need to find revokeObjectURL on the UI side
-        //       Redux store should not know about the browser environment
-        //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
-        const attachments: {
-          name: string;
-          size: number;
-          url: string;
-          thumbnail?: string;
-        }[] = await Promise.all(
-          Array.from(files).map(async file => {
-            let thumbnail;
-
-            if (downscaleImageToDataURL && enableUploadThumbnail && canMakeThumbnail(file)) {
-              thumbnail = await trackTiming(
-                'sendFiles:makeThumbnail',
-                makeThumbnail(
-                  file,
-                  uploadThumbnailWidth,
-                  uploadThumbnailHeight,
-                  uploadThumbnailContentType,
-                  uploadThumbnailQuality
-                )
-              );
-            }
-
-            return {
-              name: file.name,
-              size: file.size,
-              url: window.URL.createObjectURL(file),
-              ...(thumbnail && { thumbnail })
-            };
-          })
-        );
-
-        sendFiles(attachments, text);
-      }
+    files => {
+      // We intentionally not returning a Promise.
+      // This is the because the Promise returned never tell if the message has successfully sent or not.
+      // Until we have that signal, we should not return Promise.
+      (async function () {
+        files && files.length && sendFiles(await Promise.all([...files].map(convertFileToAttachment)));
+      })();
     },
-    [
-      enableUploadThumbnail,
-      sendFiles,
-      trackTiming,
-      uploadThumbnailContentType,
-      uploadThumbnailHeight,
-      uploadThumbnailQuality,
-      uploadThumbnailWidth
-    ]
+    [convertFileToAttachment, sendFiles]
   );
 }
