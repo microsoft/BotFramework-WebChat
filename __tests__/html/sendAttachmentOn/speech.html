@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      const {
+        testHelpers: {
+          createStore,
+          speech: { createQueuedArrayBufferAudioSource, fetchSpeechData },
+          token: { fetchDirectLineToken, fetchSpeechServicesCredentials }
+        }
+      } = window;
+
+      run(
+        async function () {
+          const { authorizationToken, region } = await fetchSpeechServicesCredentials();
+
+          const speechCredentials = {
+            authorizationToken,
+            region
+          };
+
+          const audioConfig = createQueuedArrayBufferAudioSource();
+
+          WebChat.renderWebChat(
+            {
+              directLine: WebChat.createDirectLine({ token: await fetchDirectLineToken() }),
+              webSpeechPonyfillFactory: WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+                audioConfig,
+                credentials: speechCredentials,
+                speechSynthesisOutputFormat: 'raw-16khz-16bit-mono-pcm'
+              }),
+              store: testHelpers.createStore()
+            },
+            document.getElementById('webchat')
+          );
+
+          // WHEN: Upload button is clicked and a JPEG file is selected.
+          await host.upload(pageElements.uploadButton(), 'seaofthieves.jpg');
+
+          // THEN: A checkmark should show next to the "upload button".
+          await host.snapshot();
+
+          // WHEN: Send message via microphone.
+          audioConfig.push(
+            await fetchSpeechData({
+              fetchCredentials: () => speechCredentials,
+              text: 'A quick brown fox jumped over the lazy dogs.'
+            })
+          );
+
+          await pageObjects.clickMicrophoneButton();
+
+          // THEN: A thumbnail with the bot reply should show.
+          await pageConditions.numActivitiesShown(2);
+          await host.snapshot();
+        },
+        {
+          ignoreErrors: true
+        }
+      );
+    </script>
+  </body>
+</html>
