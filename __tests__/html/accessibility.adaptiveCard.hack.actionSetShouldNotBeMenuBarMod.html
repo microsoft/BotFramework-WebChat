@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                type: 'AdaptiveCard',
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                version: '1.5',
+                body: [
+                  {
+                    type: 'ActionSet',
+                    actions: [
+                      {
+                        type: 'Action.Submit',
+                        title: 'Button 0'
+                      }
+                    ]
+                  },
+                  {
+                    type: 'TextBlock',
+                    text: 'Laborum sit incididunt ea laboris incididunt minim commodo Lorem excepteur sit ipsum eu.'
+                  }
+                ],
+                actions: [
+                  {
+                    type: 'Action.Submit',
+                    title: 'Button 1'
+                  },
+                  {
+                    type: 'Action.Submit',
+                    title: 'Button 2'
+                  },
+                  {
+                    type: 'Action.Submit',
+                    title: 'Button 3'
+                  }
+                ]
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ]
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const actionSets = Array.from(document.querySelectorAll('.ac-actionSet'));
+
+        expect(actionSets).toHaveLength(2);
+        expect(actionSets.every(actionSet => !actionSet.hasAttribute('role'))).toBe(true);
+      });
+    </script>
+  </body>
+</html>
