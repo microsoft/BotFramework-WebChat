@@ -134,7 +134,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
 
         setSendBoxAttachments(Object.freeze(await Promise.all([...files].map(convertFileToAttachment))));
 
-        sendAttachmentOnRef.current === 'upload' && submit();
+        sendAttachmentOnRef.current === 'attach' && submit();
       })();
     },
     [convertFileToAttachment, focus, sendAttachmentOnRef, setSendBoxAttachments, submit]

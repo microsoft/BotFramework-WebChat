@@ -274,9 +274,9 @@ type StyleOptions = {
   /**
    * If set to `send` (default), attachment will be sent when the send button is clicked, or when the message is being sent.
    *
-   * Otherwise, if set to `upload`, attachment will be sent immediately after upload.
+   * Otherwise, if set to `attach`, attachment will be sent immediately after file is selected.
    */
-  sendAttachmentOn?: 'upload' | 'send';
+  sendAttachmentOn?: 'attach' | 'send';
 
   /** Send box button: Icon color, defaults to subtle */
   sendBoxButtonColor?: string;
