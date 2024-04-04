@@ -8,7 +8,7 @@ import {
   createStoreWithOptions,
   version
 } from 'botframework-webchat-core';
-import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions, StyleOptions, v2Middleware } from 'botframework-webchat-api';
 
 import ReactWebChat, {
   Components,
@@ -60,7 +60,8 @@ export {
   hooks,
   renderWebChat,
   version,
-  withEmoji
+  withEmoji,
+  v2Middleware
 };
 
 export type { StyleOptions, StrictStyleOptions };
@@ -80,7 +81,8 @@ window['WebChat'] = {
   hooks,
   ReactWebChat,
   renderWebChat,
-  withEmoji
+  withEmoji,
+  v2Middleware
 };
 
 addVersion('minimal');

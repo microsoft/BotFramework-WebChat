@@ -66,6 +66,7 @@ import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import usePonyfill from '../hooks/usePonyfill';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
+import { isV2Middleware } from '../utils/v2Middleware';
 
 import applyMiddleware, {
   forLegacyRenderer as applyMiddlewareForLegacyRenderer,
@@ -85,6 +86,7 @@ import type {
   WebChatActivity
 } from 'botframework-webchat-core';
 import type { ReactNode } from 'react';
+import { ActivityMiddlewareProvider } from '../providers/ActivityMiddleware/ActivityMiddleware';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -378,30 +380,34 @@ const ComposerCore = ({
     [telemetryDimensionsRef]
   );
 
+  const isUsingActivityMiddlewareV2 = useMemo(
+    () => singleToArray(activityMiddleware).some(md => isV2Middleware(md)),
+    [activityMiddleware]
+  );
+
   const patchedActivityRenderer = useMemo(() => {
     activityRenderer &&
       console.warn(
         'Web Chat: "activityRenderer" is deprecated and will be removed on 2022-06-15, please use "activityMiddleware" instead.'
       );
 
-    return (
-      activityRenderer ||
-      applyMiddlewareForRenderer(
-        'activity',
-        { strict: false },
-        ...singleToArray(activityMiddleware),
-        () =>
+    return activityRenderer || isUsingActivityMiddlewareV2
+      ? undefined
+      : applyMiddlewareForRenderer(
+          'activity',
+          { strict: false },
+          ...singleToArray(activityMiddleware),
           () =>
-          ({ activity }) => {
-            if (activity) {
-              throw new Error(`No renderer for activity of type "${activity.type}"`);
-            } else {
-              throw new Error('No activity to render');
+            () =>
+            ({ activity }) => {
+              if (activity) {
+                throw new Error(`No renderer for activity of type "${activity.type}"`);
+              } else {
+                throw new Error('No activity to render');
+              }
             }
-          }
-      )({})
-    );
-  }, [activityMiddleware, activityRenderer]);
+        )({});
+  }, [activityMiddleware, activityRenderer, isUsingActivityMiddlewareV2]);
 
   const patchedActivityStatusRenderer = useMemo<RenderActivityStatus>(() => {
     activityStatusRenderer &&
@@ -581,7 +587,8 @@ const ComposerCore = ({
       trackDimension,
       typingIndicatorRenderer: patchedTypingIndicatorRenderer,
       userID,
-      username
+      username,
+      isUsingActivityMiddlewareV2
     }),
     [
       cardActionContext,
@@ -609,20 +616,22 @@ const ComposerCore = ({
       renderMarkdown,
       scrollToEndButtonRenderer,
       sendTypingIndicator,
-      telemetryDimensionsRef,
       trackDimension,
       userID,
-      username
+      username,
+      isUsingActivityMiddlewareV2
     ]
   );
 
   return (
     <WebChatAPIContext.Provider value={context}>
-      <ActivitySendStatusComposer>
-        {typeof children === 'function' ? children(context) : children}
-        <ActivitySendStatusTelemetryComposer />
-      </ActivitySendStatusComposer>
-      {onTelemetry && <Tracker />}
+      <ActivityMiddlewareProvider middleware={activityMiddleware}>
+        <ActivitySendStatusComposer>
+          {typeof children === 'function' ? children(context) : children}
+          <ActivitySendStatusTelemetryComposer />
+        </ActivitySendStatusComposer>
+        {onTelemetry && <Tracker />}
+      </ActivityMiddlewareProvider>
     </WebChatAPIContext.Provider>
   );
 };

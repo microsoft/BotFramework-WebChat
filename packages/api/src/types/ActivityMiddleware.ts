@@ -33,4 +33,4 @@ type ActivityMiddleware = () => ActivityEnhancer;
 
 export default ActivityMiddleware;
 
-export type { ActivityComponentFactory, LegacyActivityRenderer };
+export type { ActivityProps, ActivityComponentFactoryOptions, ActivityComponentFactory, LegacyActivityRenderer };
