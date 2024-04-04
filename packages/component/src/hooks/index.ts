@@ -9,13 +9,14 @@ import useScrollTo from './useScrollTo';
 import useScrollToEnd from './useScrollToEnd';
 import useScrollUp from './useScrollUp';
 import useSendFiles from './useSendFiles';
+import useSendMessage from './useSendMessage';
 import useStyleSet from './useStyleSet';
 import useWebSpeechPonyfill from './useWebSpeechPonyfill';
 
-import { useMicrophoneButtonClick, useMicrophoneButtonDisabled } from '../SendBox/MicrophoneButton';
 import { useSendBoxSpeechInterimsVisible } from '../BasicSendBox';
-import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
 import { useTypingIndicatorVisible } from '../BasicTypingIndicator';
+import { useMicrophoneButtonClick, useMicrophoneButtonDisabled } from '../SendBox/MicrophoneButton';
+import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
 
 export {
   useDictateAbortable,
@@ -34,6 +35,8 @@ export {
   useSendBoxSpeechInterimsVisible,
   // We are overwriting the `useSendFiles` hook from bf-wc-api and adding thumbnailing support.
   useSendFiles,
+  // We are overwriting the `useSendMessage` hook from bf-wc-api and adding thumbnailing support.
+  useSendMessage,
   useStyleSet,
   useTextBoxSubmit,
   useTextBoxValue,
