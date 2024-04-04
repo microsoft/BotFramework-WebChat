@@ -1,5 +1,10 @@
-import { localize } from './localization/Localize';
+import StyleOptions, { StrictStyleOptions } from './StyleOptions';
+import defaultStyleOptions from './defaultStyleOptions';
 import * as hooks from './hooks';
+import Composer, { ComposerProps } from './hooks/Composer';
+import concatMiddleware from './hooks/middleware/concatMiddleware';
+import { localize } from './localization/Localize';
+import normalizeStyleOptions from './normalizeStyleOptions';
 import ActivityMiddleware, { ActivityComponentFactory } from './types/ActivityMiddleware';
 import AttachmentForScreenReaderMiddleware, {
   AttachmentForScreenReaderComponentFactory
@@ -7,13 +12,8 @@ import AttachmentForScreenReaderMiddleware, {
 import AttachmentMiddleware, { RenderAttachment } from './types/AttachmentMiddleware';
 import AvatarMiddleware, { AvatarComponentFactory } from './types/AvatarMiddleware';
 import CardActionMiddleware, { PerformCardAction } from './types/CardActionMiddleware';
-import Composer, { ComposerProps } from './hooks/Composer';
-import concatMiddleware from './hooks/middleware/concatMiddleware';
-import defaultStyleOptions from './defaultStyleOptions';
 import GroupActivitiesMiddleware, { GroupActivities } from './types/GroupActivitiesMiddleware';
-import normalizeStyleOptions from './normalizeStyleOptions';
 import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from './types/ScrollToEndButtonMiddleware';
-import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import ToastMiddleware, { RenderToast } from './types/ToastMiddleware';
 import TypingIndicatorMiddleware, { RenderTypingIndicator } from './types/TypingIndicatorMiddleware';
 import WebSpeechPonyfill from './types/WebSpeechPonyfill';

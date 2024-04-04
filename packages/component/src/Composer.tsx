@@ -29,6 +29,7 @@ import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator
 import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
 import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
 import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
+import useTheme from './providers/Theme/useTheme';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import createCSSKey from './Utils/createCSSKey';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
@@ -293,6 +294,7 @@ const Composer: FC<ComposerProps> = ({
   extraStyleSet,
   renderMarkdown,
   scrollToEndButtonMiddleware,
+  styleOptions,
   styleSet,
   suggestedActionsAccessKey,
   toastMiddleware,
@@ -301,55 +303,82 @@ const Composer: FC<ComposerProps> = ({
   ...composerProps
 }) => {
   const { nonce, onTelemetry } = composerProps;
+  const theme = useTheme();
 
   const patchedActivityMiddleware = useMemo(
-    () => [...singleToArray(activityMiddleware), ...createDefaultActivityMiddleware()],
-    [activityMiddleware]
+    () => [...singleToArray(activityMiddleware), ...theme.activityMiddleware, ...createDefaultActivityMiddleware()],
+    [activityMiddleware, theme.activityMiddleware]
   );
 
   const patchedActivityStatusMiddleware = useMemo(
-    () => [...singleToArray(activityStatusMiddleware), ...createDefaultActivityStatusMiddleware()],
-    [activityStatusMiddleware]
+    () => [
+      ...singleToArray(activityStatusMiddleware),
+      ...theme.activityStatusMiddleware,
+      ...createDefaultActivityStatusMiddleware()
+    ],
+    [activityStatusMiddleware, theme.activityStatusMiddleware]
   );
 
   const patchedAttachmentForScreenReaderMiddleware = useMemo(
     () => [
       ...singleToArray(attachmentForScreenReaderMiddleware),
+      ...theme.attachmentForScreenReaderMiddleware,
       ...createDefaultAttachmentForScreenReaderMiddleware()
     ],
-    [attachmentForScreenReaderMiddleware]
+    [attachmentForScreenReaderMiddleware, theme.attachmentForScreenReaderMiddleware]
   );
 
   const patchedAttachmentMiddleware = useMemo(
-    () => [...singleToArray(attachmentMiddleware), ...createDefaultAttachmentMiddleware()],
-    [attachmentMiddleware]
+    () => [
+      ...singleToArray(attachmentMiddleware),
+      ...theme.attachmentMiddleware,
+      ...createDefaultAttachmentMiddleware()
+    ],
+    [attachmentMiddleware, theme.attachmentMiddleware]
   );
 
   const patchedAvatarMiddleware = useMemo(
-    () => [...singleToArray(avatarMiddleware), ...createDefaultAvatarMiddleware()],
-    [avatarMiddleware]
+    () => [...singleToArray(avatarMiddleware), ...theme.avatarMiddleware, ...createDefaultAvatarMiddleware()],
+    [avatarMiddleware, theme.avatarMiddleware]
   );
 
   const patchedCardActionMiddleware = useMemo(
-    () => [...singleToArray(cardActionMiddleware), ...createDefaultCardActionMiddleware()],
-    [cardActionMiddleware]
+    () => [
+      ...singleToArray(cardActionMiddleware),
+      ...theme.cardActionMiddleware,
+      ...createDefaultCardActionMiddleware()
+    ],
+    [cardActionMiddleware, theme.cardActionMiddleware]
   );
 
   const patchedToastMiddleware = useMemo(
-    () => [...singleToArray(toastMiddleware), ...createDefaultToastMiddleware()],
-    [toastMiddleware]
+    () => [...singleToArray(toastMiddleware), ...theme.toastMiddleware, ...createDefaultToastMiddleware()],
+    [toastMiddleware, theme.toastMiddleware]
   );
 
   const patchedTypingIndicatorMiddleware = useMemo(
-    () => [...singleToArray(typingIndicatorMiddleware), ...createDefaultTypingIndicatorMiddleware()],
-    [typingIndicatorMiddleware]
+    () => [
+      ...singleToArray(typingIndicatorMiddleware),
+      ...theme.typingIndicatorMiddleware,
+      ...createDefaultTypingIndicatorMiddleware()
+    ],
+    [typingIndicatorMiddleware, theme.typingIndicatorMiddleware]
   );
 
   const defaultScrollToEndButtonMiddleware = useMemo(() => createDefaultScrollToEndButtonMiddleware(), []);
 
   const patchedScrollToEndButtonMiddleware = useMemo(
-    () => [...singleToArray(scrollToEndButtonMiddleware), ...defaultScrollToEndButtonMiddleware],
-    [defaultScrollToEndButtonMiddleware, scrollToEndButtonMiddleware]
+    () => [
+      ...singleToArray(scrollToEndButtonMiddleware),
+      ...theme.scrollToEndButtonMiddleware,
+      ...defaultScrollToEndButtonMiddleware
+    ],
+    [defaultScrollToEndButtonMiddleware, scrollToEndButtonMiddleware, theme.scrollToEndButtonMiddleware]
+  );
+
+  const patchedStyleOptions = useMemo(
+    () => ({ ...theme.styleOptions, ...styleOptions }),
+    [styleOptions, theme.styleOptions]
   );
 
   return (
@@ -365,6 +394,7 @@ const Composer: FC<ComposerProps> = ({
       internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
       nonce={nonce}
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
+      styleOptions={patchedStyleOptions}
       toastMiddleware={patchedToastMiddleware}
       typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
       {...composerProps}
