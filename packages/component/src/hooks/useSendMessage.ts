@@ -11,9 +11,6 @@ type SendMessage = (
   init?: { channelData?: any; files?: Iterable<File> | undefined }
 ) => void;
 
-/**
- * @deprecated This hook will be removed on or after 2026-04-03. Please use `useSendMessage` instead.
- */
 export default function useSendMessage(): SendMessage {
   const convertFileToAttachment = useConvertFileToAttachment();
   const sendMessage = useAPISendMessage();
