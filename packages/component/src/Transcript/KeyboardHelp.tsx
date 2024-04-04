@@ -5,9 +5,9 @@ import React, { useCallback, useState } from 'react';
 
 import type { FC } from 'react';
 
+import useUniqueId from '../hooks/internal/useUniqueId';
 import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
-import useUniqueId from '../hooks/internal/useUniqueId';
 
 const { useLocalizer } = hooks;
 
@@ -17,16 +17,16 @@ type NotesBodyProps = {
 };
 
 const Notes: FC<NotesBodyProps> = ({ header, text }) => (
-  <section className="webchat__keyboard-help__notes">
-    <h4 className="webchat__keyboard-help__notes-header">{header}</h4>
+  <dl className="webchat__keyboard-help__notes">
+    <dt className="webchat__keyboard-help__notes-header">{header}</dt>
     {text.split('\n').map((line, index) => (
       // We are splitting lines into paragraphs, index as key is legitimate here.
       // eslint-disable-next-line react/no-array-index-key
-      <p className="webchat__keyboard-help__notes-text" key={index}>
+      <dd className="webchat__keyboard-help__notes-text" key={index}>
         {line}
-      </p>
+      </dd>
     ))}
-  </section>
+  </dl>
 );
 
 Notes.propTypes = {
