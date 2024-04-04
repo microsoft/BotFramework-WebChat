@@ -7,7 +7,7 @@ import whileConnected from './effects/whileConnected';
 
 const getType = mime.getType.bind(mime);
 
-// TODO: We should obsolete this saga. Everyone should use sendMessageToPostActivitySaga.
+// TODO: [P1] We should obsolete this saga. Everyone should use sendMessageToPostActivitySaga.
 function* postActivityWithFiles({ payload: { files, text } }) {
   yield put(
     postActivity({

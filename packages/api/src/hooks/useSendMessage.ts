@@ -4,7 +4,6 @@ import type { WebChatPostActivityAttachment } from 'botframework-webchat-core';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 import useTrackEvent from './useTrackEvent';
 
-// type SendMessage = (...args: Parameters<ReturnType<typeof useWebChatAPIContext>['sendMessage']>) => void;
 type SendMessage = (
   text?: string,
   method?: string,

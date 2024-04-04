@@ -2,7 +2,7 @@ import type { WebChatPostActivityAttachment } from '../types/WebChatPostActivity
 
 const SEND_FILES = 'WEB_CHAT/SEND_FILES';
 
-// TODO: We could obsolete this or dispatch { type: SEND_MESSAGE } insetad.
+// TODO: [P1] We could obsolete this or dispatch { type: SEND_MESSAGE } insetad.
 export default function sendFiles(files: readonly WebChatPostActivityAttachment[]) {
   return {
     type: SEND_FILES,
