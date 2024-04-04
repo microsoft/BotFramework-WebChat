@@ -1,7 +1,7 @@
 const { join, win32 } = require('path');
 
 module.exports = webDriver => async (element, filename) => {
-  let path = join(process.env.PWD, '__tests__/html/assets/uploads/', filename);
+  let path = join(process.cwd(), '__tests__/html/assets/uploads/', filename);
 
   const { WSL_DISTRO_NAME } = process.env;
 
