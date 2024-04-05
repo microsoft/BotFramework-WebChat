@@ -19,6 +19,14 @@ Web Chat supports [Content Security Policy (CSP)](https://developer.mozilla.org/
 
 > This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/CHANGELOG.md)
 
+### 4.16.1 notable changes
+
+Web Chat now supports [Adaptive Cards schema up to 1.6](https://adaptivecards.io/explorer/). Some features in Adaptive Cards are in preview or designed to use outside of Bot Framework. Web Chat does not support these features.
+
+### 4.16.0 notable changes
+
+Starting from 4.16.0, Internet Explorer is no longer supported. After more than a year of the Internet Explorer 11 officially retirement, we decided to stop supporting Internet Explorer. This will help us to bring new features to Web Chat. 4.15.9 is the last version which supports Internet Explorer in limited fashion.
+
 ### 4.12.1 patch: New style property `adaptiveCardsParserMaxVersion`
 
 Web Chat 4.12.1 patch includes a new style property allowing developers to choose the max Adaptive Cards schema version. See [PR #3778](https://github.com/microsoft/BotFramework-WebChat/pull/3778) for code changes.

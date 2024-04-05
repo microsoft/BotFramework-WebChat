@@ -3,17 +3,17 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
 
-import { ie11 } from '../Utils/detectBrowser';
 import AccessibleInputText from '../Utils/AccessibleInputText';
-import AutoResizeTextArea from './AutoResizeTextArea';
 import navigableEvent from '../Utils/TypeFocusSink/navigableEvent';
+import { ie11 } from '../Utils/detectBrowser';
 import useRegisterFocusSendBox from '../hooks/internal/useRegisterFocusSendBox';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useScrollDown from '../hooks/useScrollDown';
 import useScrollUp from '../hooks/useScrollUp';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import withEmoji from '../withEmoji/withEmoji';
+import AutoResizeTextArea from './AutoResizeTextArea';
 
 import type { MutableRefObject } from 'react';
 
@@ -163,8 +163,9 @@ const TextBox = ({ className }) => {
     [scrollDown, scrollUp]
   );
 
-  const focusCallback = useCallback<(options?: { noKeyboard?: boolean }) => void>(
-    ({ noKeyboard } = {}) => {
+  const focusCallback = useCallback<Parameters<typeof useRegisterFocusSendBox>[0]>(
+    options => {
+      const { noKeyboard } = options;
       const { current } = inputElementRef;
 
       if (current) {
@@ -178,17 +179,19 @@ const TextBox = ({ className }) => {
 
           current.setAttribute('readonly', 'readonly');
 
-          // TODO: [P2] We should update this logic to handle quickly-successive `focusCallback`.
-          //       If a succeeding `focusCallback` is being called, the `setTimeout` should run immediately.
-          //       Or the second `focusCallback` should not set `readonly` to `true`.
-          setTimeout(() => {
-            const { current } = inputElementRef;
+          options.waitUntil(
+            (async function () {
+              // TODO: [P2] We should update this logic to handle quickly-successive `focusCallback`.
+              //       If a succeeding `focusCallback` is being called, the `setTimeout` should run immediately.
+              //       Or the second `focusCallback` should not set `readonly` to `true`.
+              await new Promise(resolve => setTimeout(resolve, 0));
 
-            if (current) {
-              current.focus();
-              readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
-            }
-          }, 0);
+              if (current) {
+                current.focus();
+                readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
+              }
+            })()
+          );
         } else {
           current.focus();
         }

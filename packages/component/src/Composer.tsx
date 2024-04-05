@@ -1,41 +1,44 @@
+import createEmotion from '@emotion/css/create-instance';
 import { Composer as APIComposer, hooks, WebSpeechPonyfillFactory } from 'botframework-webchat-api';
-import { Composer as SayComposer } from 'react-say';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import createEmotion from '@emotion/css/create-instance';
-import createStyleSet from './Styles/createStyleSet';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { Composer as SayComposer } from 'react-say';
+import createStyleSet from './Styles/createStyleSet';
 
+import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
+import Dictation from './Dictation';
+import ErrorBox from './ErrorBox';
 import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
-import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
-import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
-import createCSSKey from './Utils/createCSSKey';
+import UITracker from './hooks/internal/UITracker';
+import WebChatUIContext from './hooks/internal/WebChatUIContext';
+import useStyleSet from './hooks/useStyleSet';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
-import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import createDefaultAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
 import createDefaultCardActionMiddleware from './Middleware/CardAction/createCoreMiddleware';
 import createDefaultScrollToEndButtonMiddleware from './Middleware/ScrollToEndButton/createScrollToEndButtonMiddleware';
 import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
-import Dictation from './Dictation';
-import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
-import ErrorBox from './ErrorBox';
-import mapMap from './Utils/mapMap';
-import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
+import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
 import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
-import UITracker from './hooks/internal/UITracker';
-import useStyleSet from './hooks/useStyleSet';
-import WebChatUIContext from './hooks/internal/WebChatUIContext';
+import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
+import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
+import createCSSKey from './Utils/createCSSKey';
+import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
+import mapMap from './Utils/mapMap';
 
 import type { ComposerProps as APIComposerProps } from 'botframework-webchat-api';
 import type { FC, ReactNode } from 'react';
+import type { ContextOf } from './types/ContextOf';
+import { type FocusSendBoxInit } from './types/internal/FocusSendBoxInit';
+import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -97,8 +100,8 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   const [dictateAbortable, setDictateAbortable] = useState();
   const [referenceGrammarID] = useReferenceGrammarID();
   const [styleOptions] = useStyleOptions();
-  const focusSendBoxCallbacksRef = useRef([]);
-  const focusTranscriptCallbacksRef = useRef([]);
+  const focusSendBoxCallbacksRef = useRef<((init: FocusSendBoxInit) => Promise<void>)[]>([]);
+  const focusTranscriptCallbacksRef = useRef<((init: FocusTranscriptInit) => Promise<void>)[]>([]);
   const internalMarkdownIt = useMemo(() => new MarkdownIt(), []);
   const scrollToCallbacksRef = useRef([]);
   const scrollToEndCallbacksRef = useRef([]);
@@ -202,7 +205,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     [transcriptFocusObserversRef, setNumTranscriptFocusObservers]
   );
 
-  const context = useMemo(
+  const context = useMemo<ContextOf<typeof WebChatUIContext>>(
     () => ({
       dictateAbortable,
       dispatchScrollPosition,
