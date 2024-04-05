@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -85,9 +85,10 @@
           notRecognizedItems,
           otherCasesNotProcessedItems,
           otherCasesProcessedItems
-        ] = [].map.call(document.querySelectorAll('.webchat__bubble__content .webchat__text-content__markdown ul'), list => [
-          ...list.querySelectorAll('li')
-        ]);
+        ] = [].map.call(
+          document.querySelectorAll('.webchat__bubble__content .webchat__text-content__markdown ul'),
+          list => [...list.querySelectorAll('li')]
+        );
 
         // THEN: Hello {World} and Hello {1} should be kept as-is.
         expect(regressionItems.shift()).toHaveProperty('innerText', 'Hello {World}');
@@ -100,33 +101,33 @@
         // [Link](https://bing.com/){aria-label="This is a label"} should return `<a aria-label="This is a label">
         expect(supportedItems.shift()).toHaveProperty(
           'innerText',
-          'Link should return <a aria-label="This is a label">'
+          '\u200BLink\u200B should return <a aria-label="This is a label">'
         );
         expect(anchors.shift()).toHaveAttributes({ 'aria-label': 'This is a label' });
 
         // [Link](https://bing.com/){aria-label=Hello} should return `<a aria-label="Hello">`
-        expect(supportedItems.shift()).toHaveProperty('innerText', 'Link should return <a aria-label="Hello">');
+        expect(supportedItems.shift()).toHaveProperty('innerText', '\u200BLink\u200B should return <a aria-label="Hello">');
         expect(anchors.shift()).toHaveAttributes({ 'aria-label': 'Hello' });
 
         // [Link](https://bing.com/){aria-label=} should return `<a aria-label>`
-        expect(supportedItems.shift()).toHaveProperty('innerText', 'Link should return <a aria-label>');
+        expect(supportedItems.shift()).toHaveProperty('innerText', '\u200BLink\u200B should return <a aria-label>');
         expect(anchors.shift()).toHaveAttributes({ 'aria-label': 0 });
 
         // [Link](https://bing.com/){aria-label} should return `<a aria-label>`
-        expect(supportedItems.shift()).toHaveProperty('innerText', 'Link should return <a aria-label>');
+        expect(supportedItems.shift()).toHaveProperty('innerText', '\u200BLink\u200B should return <a aria-label>');
         expect(anchors.shift()).toHaveAttributes({ 'aria-label': 0 });
 
         // [Link](https://bing.com/){  aria-label="  This is a label with many whitespaces  "  } should return `<a aria-label="  This is a label with many whitespaces  ">`
         // Spaces before `aria-label` or after the last quote, is supported by `markdown-it-attrs`.
         expect(supportedItems.shift()).toHaveProperty(
           'innerText',
-          'Link should return <a aria-label=" This is a label with many whitespaces ">'
+          '\u200BLink\u200B should return <a aria-label=" This is a label with many whitespaces ">'
         );
         expect(anchors.shift()).toHaveAttributes({ 'aria-label': '  This is a label with many whitespaces  ' });
 
         // [Link](https://bing.com/){aria-label=a"b"c} should return `<a aria-label="a"b"c">`
         // `aria-label=a"b"c` is supported by `markdown-it-attrs`, will turn into `aria-label="a&quot;b&quot;c"`.
-        expect(supportedItems.shift()).toHaveProperty('innerText', 'Link should return <a aria-label="a"b"c">');
+        expect(supportedItems.shift()).toHaveProperty('innerText', '\u200BLink\u200B should return <a aria-label="a"b"c">');
         expect(anchors.shift()).toHaveAttributes({ 'aria-label': 'a"b"c' });
 
         // THEN: Invalid or unrecognized curly brackets should left untouched.
@@ -137,16 +138,16 @@
         // Although "aria-label=This" is recognized, "is ignored" is not valid. The whole bracelet is ignored.
         expect(notRecognizedItems.shift()).toHaveProperty(
           'innerText',
-          'Link{aria-label=This is ignored} should left untouched'
+          '\u200BLink\u200B{aria-label=This is ignored} should left untouched'
         );
 
         // [Link](https://bing.com/){aria-label ="This is a label with whitespace before equal sign"} should left untouched
         // A space between or after the equal sign (=) is not valid in `markdown-it-attrs`.
         expect(notRecognizedItems.shift()).toHaveProperty(
           'innerText',
-          'Link{aria-label =“This is a label with whitespace before equal sign”} should left untouched'
+          '\u200BLink\u200B{aria-label =“This is a label with whitespace before equal sign”} should left untouched'
         );
-        expect(notRecognizedItems.shift()).toHaveProperty('innerText', 'Link{.ignored} should left untouched');
+        expect(notRecognizedItems.shift()).toHaveProperty('innerText', '\u200BLink\u200B{.ignored} should left untouched');
 
         // [Link](https://bing.com/){.ignored} should left untouched
         // Class is not supported in Web Chat.
@@ -156,7 +157,7 @@
         // "onload" is not a recognized attribute.
         expect(notRecognizedItems.shift()).toHaveProperty(
           'innerText',
-          'Link{onload=“javascript:void()”} should left untouched'
+          '\u200BLink\u200B{onload=“javascript:void()”} should left untouched'
         );
 
         // THEN: Curly brackets not processed by `markdown-it-attrs` should left untouched.
