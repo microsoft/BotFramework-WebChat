@@ -984,7 +984,7 @@ This hook will return a function that, when called, will scroll elements up the 
 ```js
 type SendBoxAttachment = {
   blob: Blob | File;
-  thumbnailURL?: URL;
+  thumbnailURL?: URL | undefined;
 };
 
 useSendBoxAttachments(): readonly [
@@ -996,7 +996,7 @@ useSendBoxAttachments(): readonly [
 
 This hook will return the attachments in the send box and the setter function to change the attachments.
 
-Thumbnail can be provided for each attachment. They should be [data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs).
+Thumbnails are optional. They should be [data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs).
 
 ## `useSendBoxValue`
 
@@ -1020,7 +1020,7 @@ When called, this function will send an event activity to the bot.
 
 ## `useSendFiles`
 
-> This function is deprecated. Developers should migrate to [`useSendMessage`](#usesendmessage).
+> This function is deprecated and will be removed on or after 2026-04-03. Developers should migrate to [`useSendMessage`](#usesendmessage).
 
 <!-- prettier-ignore-start -->
 ```js
