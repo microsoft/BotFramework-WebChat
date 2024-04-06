@@ -118,7 +118,6 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
         ]) as readonly [Timeout, Timeout];
       } else {
         scrollToEndRef.current?.();
-
         apiSubmitSendBox();
       }
     },
