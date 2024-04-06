@@ -58,8 +58,8 @@ type WebChatAPIContext = {
     activity: WebChatActivity
   ) => typeof window.SpeechSynthesisVoice;
   sendEvent?: (name: string, value: any) => void;
-  sendFiles?: typeof sendFiles;
-  sendMessage?: typeof sendMessage;
+  sendFiles?: (...args: Parameters<typeof sendFiles>) => void;
+  sendMessage?: (...args: Parameters<typeof sendMessage>) => void;
   sendMessageBack?: (value: any, text?: string, displayText?: string) => void;
   sendPostBack?: (value?: any) => void;
   sendTypingIndicator?: boolean;
