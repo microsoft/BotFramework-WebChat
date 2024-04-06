@@ -7,8 +7,7 @@ import whileConnected from './effects/whileConnected';
 
 const getType = mime.getType.bind(mime);
 
-// TODO: [P1] We should obsolete this saga. Everyone should use sendMessageToPostActivitySaga.
-function* postActivityWithFiles({ payload: { files, text } }) {
+function* postActivityWithFiles({ payload: { files } }) {
   yield put(
     postActivity({
       attachments: [].map.call(files, ({ name, thumbnail, url }) => ({
@@ -20,7 +19,6 @@ function* postActivityWithFiles({ payload: { files, text } }) {
       channelData: {
         attachmentSizes: [].map.call(files, ({ size }) => size)
       },
-      text: text || undefined,
       type: 'message'
     })
   );
