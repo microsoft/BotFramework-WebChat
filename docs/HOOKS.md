@@ -1039,23 +1039,28 @@ If you are using an `ArrayBuffer`, you can use `FileReader` to convert it into a
 
 <!-- prettier-ignore-start -->
 ```js
+type SendBoxAttachment = {
+  blob: Blob | File;
+  thumbnailURL?: URL | undefined;
+};
+
 useSendMessage(): (
   text?: string,
   method: string | undefined,
   {
-    files?: Iterable<Blob | File> | undefined
+    attachments?: Iterable<SendBoxAttachment> | undefined
   }
 ) => void
 ```
 <!-- prettier-ignore-end -->
 
-> New in 4.17.0: `files` are added to support attaching files.
+> New in 4.17.0: `attachments` are added to support attaching files.
 
 When called, this function will send a text message activity to the bot.
 
 You can optionally include the input method how the text message was collected. Currently, if specified, only `speech` is supported.
 
-Either `text` or `files` must be defined. If none of them are defined, the function will be no-op.
+Either `text` or `attachments` must be defined. If none of them are defined, the function will be no-op.
 
 ## `useSendMessageBack`
 

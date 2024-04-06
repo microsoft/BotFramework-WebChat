@@ -23,15 +23,15 @@
         await pageConditions.uiConnected();
 
         // SETUP: An empty file blob.
-        const fileBlob = new File([new ArrayBuffer(1024)], 'empty.zip');
+        const blob = new File([new ArrayBuffer(1024)], 'empty.zip');
 
         // WHEN: Call useSendMessage hook to send a file with message.
         await pageObjects.runHook(({ useSendMessage }) =>
-          useSendMessage()('Hello, World!', 'keyboard', { files: [fileBlob] })
+          useSendMessage()('Hello, World!', 'keyboard', { attachments: [{ blob }] })
         );
 
         // THEN: It should send the file.
-        await pageConditions.numActivitiesShown(2);
+        await pageConditions.numActivitiesShown(3);
         await host.snapshot();
       });
     </script>

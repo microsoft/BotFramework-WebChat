@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { type SendBoxAttachment } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 
 import useMakeThumbnail from './internal/useMakeThumbnail';
@@ -8,7 +9,10 @@ const { useSendMessage: useAPISendMessage } = hooks;
 type SendMessage = (
   text?: string,
   method?: string,
-  init?: { channelData?: any; files?: Iterable<File> | undefined }
+  init?: {
+    attachments?: Iterable<SendBoxAttachment> | undefined;
+    channelData?: any;
+  }
 ) => void;
 
 export default function useSendMessage(): SendMessage {
@@ -16,13 +20,17 @@ export default function useSendMessage(): SendMessage {
   const sendMessage = useAPISendMessage();
 
   return useCallback<SendMessage>(
-    async (text, method, { channelData, files } = {}) => {
+    async (text, method, { channelData, attachments } = {}) => {
       sendMessage(text, method, {
-        attachments: files
+        attachments: attachments
           ? await Promise.all(
-              await Promise.all(
-                [...files].map(blob => makeThumbnail(blob).then(thumbnailURL => ({ blob, thumbnailURL })))
-              )
+              [...attachments].map(async ({ blob, thumbnailURL }) => {
+                if (!thumbnailURL && blob instanceof File) {
+                  thumbnailURL = await makeThumbnail(blob);
+                }
+
+                return { blob, thumbnailURL };
+              })
             )
           : [],
         channelData
