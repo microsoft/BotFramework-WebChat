@@ -115,7 +115,7 @@
     "react-scroll-to-bottom": "4.2.0",
     "redux": "5.0.0",
     "simple-update-in": "2.2.0",
-    "use-ref-from": "^0.1.0"
+    "use-ref-from": "0.1.0"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",
