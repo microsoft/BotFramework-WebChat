@@ -78,7 +78,6 @@ type WebChatAPIContext = {
   toastRenderer?: RenderToast;
   trackDimension?: (name: string, data: any) => void;
   typingIndicatorRenderer?: any; // TODO
-  uploadButtonRef?: React.MutableRefObject<HTMLInputElement>;
   userID?: string;
   username?: string;
 };
