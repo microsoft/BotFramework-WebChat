@@ -41,6 +41,8 @@
             document.getElementById('webchat')
           );
 
+          await pageConditions.uiConnected();
+
           // WHEN: Upload button is clicked and a JPEG file is selected.
           await host.upload(pageElements.uploadButton(), 'seaofthieves.jpg');
 

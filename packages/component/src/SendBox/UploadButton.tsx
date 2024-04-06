@@ -12,7 +12,6 @@ import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import AttachmentIcon from './Assets/AttachmentIcon';
-import CheckIcon from './Assets/CheckIcon';
 import IconButton from './IconButton';
 
 const { useDisabled, useSendBoxAttachments, useLocalizer, useStyleOptions } = hooks;
@@ -30,14 +29,6 @@ const ROOT_STYLE = {
       position: 'absolute',
       left: 0,
       top: 0
-    },
-    '& .webchat__icon-button--file-attached': {
-      position: 'absolute',
-      left: '45%',
-      top: '50%',
-      // White border around the check icon
-      border: '2px solid white',
-      borderRadius: '50%'
     }
   }
 };
@@ -157,9 +148,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
         type="file"
       />
       <IconButton alt={uploadFileString} aria-label={uploadFileString} disabled={disabled} onClick={handleClick}>
-        <AttachmentIcon />
-        {/* When a file is attached, overlay the check icon */}
-        {!!sendBoxAttachments.length && <CheckIcon />}
+        <AttachmentIcon checked={!!sendBoxAttachments.length} />
       </IconButton>
     </div>
   );
