@@ -118,8 +118,8 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
       // We should change the focus synchronously for accessibility reason.
       focus('sendBox');
 
-      // TODO: We should disable send button while we are creating thumbnails.
-      //       Otherwise, if the user click the send button too quickly, it will not attach any files.
+      // TODO: [P2] We should disable send button while we are creating thumbnails.
+      //            Otherwise, if the user click the send button too quickly, it will not attach any files.
       (async function () {
         const files = [...currentTarget.files];
 
