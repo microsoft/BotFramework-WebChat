@@ -1,3 +1,11 @@
+import {
+  type DirectLineJSBotConnection,
+  type Observable,
+  type WebChatActivity,
+  type WebChatPostActivityAttachment,
+  type sendFiles,
+  type sendMessage
+} from 'botframework-webchat-core';
 import { createContext, type Dispatch, type SetStateAction } from 'react';
 
 import { StrictStyleOptions } from '../../StyleOptions';
@@ -14,15 +22,6 @@ import PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
 import { ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButtonMiddleware';
 import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
 import { RenderToast } from '../../types/ToastMiddleware';
-
-import type {
-  DirectLineJSBotConnection,
-  Observable,
-  sendFiles,
-  sendMessage,
-  WebChatActivity,
-  WebChatPostActivityAttachment
-} from 'botframework-webchat-core';
 
 type WebChatAPIContext = {
   activityRenderer?: LegacyActivityRenderer;
