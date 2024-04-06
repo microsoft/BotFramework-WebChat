@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import useStyleToEmotionObject from '../../../hooks/internal/useStyleToEmotionObject';
@@ -8,9 +8,7 @@ import useUniqueId from '../../../hooks/internal/useUniqueId';
 import useFocus from '../../../hooks/useFocus';
 import useScrollToEnd from '../../../hooks/useScrollToEnd';
 import SendBoxContext from './private/Context';
-
-import type { PropsWithChildren } from 'react';
-import type { ContextType, SendError } from './private/types';
+import { type ContextType, type SendError } from './private/types';
 
 const { useConnectivityStatus, useLocalizer, usePonyfill, useSendBoxAttachments, useSendBoxValue, useSubmitSendBox } =
   hooks;
