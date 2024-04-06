@@ -25,10 +25,14 @@ import {
   startSpeakingActivity,
   stopDictate,
   stopSpeakingActivity,
-  submitSendBox
+  submitSendBox,
+  type DirectLineJSBotConnection,
+  type GlobalScopePonyfill,
+  type OneOrMany,
+  type WebChatActivity
 } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
@@ -43,6 +47,7 @@ import ActivitySendStatusComposer from '../providers/ActivitySendStatus/Activity
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
 import ActivityMiddleware from '../types/ActivityMiddleware';
+import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
 import AttachmentMiddleware from '../types/AttachmentMiddleware';
 import AvatarMiddleware from '../types/AvatarMiddleware';
@@ -54,6 +59,7 @@ import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from '
 import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
 import ToastMiddleware from '../types/ToastMiddleware';
 import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
+import { type ContextOf } from '../types/internal/ContextOf';
 import createCustomEvent from '../utils/createCustomEvent';
 import isObject from '../utils/isObject';
 import mapMap from '../utils/mapMap';
@@ -62,30 +68,19 @@ import Tracker from './internal/Tracker';
 import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
 import defaultSelectVoice from './internal/defaultSelectVoice';
+import applyMiddleware, {
+  forLegacyRenderer as applyMiddlewareForLegacyRenderer,
+  forRenderer as applyMiddlewareForRenderer
+} from './middleware/applyMiddleware';
 import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
 import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
 
-import applyMiddleware, {
-  forLegacyRenderer as applyMiddlewareForLegacyRenderer,
-  forRenderer as applyMiddlewareForRenderer
-} from './middleware/applyMiddleware';
-
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
-
-import type {
-  DirectLineJSBotConnection,
-  GlobalScopePonyfill,
-  OneOrMany,
-  WebChatActivity
-} from 'botframework-webchat-core';
-import type { ReactNode } from 'react';
-import type { ActivityStatusMiddleware, RenderActivityStatus } from '../types/ActivityStatusMiddleware';
-import type { ContextOf } from '../types/internal/ContextOf';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
