@@ -1,11 +1,11 @@
-import { type WebChatPostActivityAttachment } from '../types/WebChatPostActivityAttachment';
+import { type SendBoxAttachment } from '../types/SendBoxAttachment';
 
 const SEND_MESSAGE = 'WEB_CHAT/SEND_MESSAGE';
 
 export default function sendMessage(
   text: string | undefined,
   method: string | undefined,
-  { attachments, channelData }: { attachments?: readonly WebChatPostActivityAttachment[]; channelData?: any } = {}
+  { attachments, channelData }: { attachments?: readonly SendBoxAttachment[]; channelData?: any } = {}
 ) {
   return {
     type: SEND_MESSAGE,

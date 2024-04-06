@@ -814,9 +814,9 @@ type StyleOptions = {
 
   enableUploadThumbnail?: boolean;
   uploadThumbnailContentType?: string;
-  uploadThumbnailHeight?: number | string;
+  uploadThumbnailHeight?: number;
   uploadThumbnailQuality?: number;
-  uploadThumbnailWidth?: number | string;
+  uploadThumbnailWidth?: number;
 
   /**
    * Video

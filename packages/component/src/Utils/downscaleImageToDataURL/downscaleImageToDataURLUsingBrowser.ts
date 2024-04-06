@@ -1,4 +1,9 @@
-function keepAspectRatio(width, height, maxWidth, maxHeight) {
+function keepAspectRatio(
+  width: number,
+  height: number,
+  maxWidth: number,
+  maxHeight: number
+): { height: number; width: number } {
   if (width < maxWidth && height < maxHeight) {
     // Photo is smaller than both maximum dimensions, take it as-is
     return {
@@ -24,7 +29,7 @@ function keepAspectRatio(width, height, maxWidth, maxHeight) {
   };
 }
 
-function createCanvas(width, height) {
+function createCanvas(width: number, height: number): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
 
   canvas.height = height;
@@ -33,10 +38,10 @@ function createCanvas(width, height) {
   return canvas;
 }
 
-function loadImageFromBlob(blob) {
+function loadImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
   const blobURL = URL.createObjectURL(blob);
 
-  return new Promise((resolve, reject) => {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
     const image = document.createElement('img');
 
     image.addEventListener('error', ({ error }) => reject(error));
@@ -47,13 +52,23 @@ function loadImageFromBlob(blob) {
   });
 }
 
-export default async function downscaleImageToDataURLUsingBrowser(blob, maxWidth, maxHeight, type, quality) {
+export default async function downscaleImageToDataURLUsingBrowser(
+  blob: Blob,
+  maxWidth: number,
+  maxHeight: number,
+  type: string,
+  quality: number
+): Promise<URL> {
   const image = await loadImageFromBlob(blob);
   const { height, width } = keepAspectRatio(image.width, image.height, maxWidth, maxHeight);
   const canvas = createCanvas(width, height);
   const context = canvas.getContext('2d');
 
+  if (!context) {
+    throw new Error('botframework-webchat: Failed to get 2D context.');
+  }
+
   context.drawImage(image, 0, 0, width, height);
 
-  return canvas.toDataURL(type, quality);
+  return new URL(canvas.toDataURL(type, quality));
 }

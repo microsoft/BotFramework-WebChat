@@ -1,11 +1,11 @@
-import blobToArrayBuffer from './blobToArrayBuffer';
 import workerFunction from './downscaleImageToDataURLUsingWorker.worker';
+import { type WorkerJob, type WorkerReturnValue } from './WorkerJob';
 
-function createWorker(fn) {
+function createWorker(fn: Function | string): Promise<Worker> {
   const blob = new Blob([`(${fn})()`], { type: 'text/javascript' });
   const url = window.URL.createObjectURL(blob);
 
-  return new Promise((resolve, reject) => {
+  return new Promise<Worker>((resolve, reject) => {
     const worker = new Worker(url);
 
     worker.onerror = ({ error, message }) => reject(error || new Error(message));
@@ -17,7 +17,7 @@ function createWorker(fn) {
 
 let workerPromise;
 
-async function getWorker() {
+async function getWorker(): Promise<Worker> {
   let worker;
 
   if (workerPromise) {
@@ -44,7 +44,8 @@ const checkSupportOffscreenCanvas = () => {
   const hasOffscreenCanvas =
     typeof window.OffscreenCanvas !== 'undefined' &&
     (typeof window.OffscreenCanvas.prototype.convertToBlob !== 'undefined' ||
-      typeof window.OffscreenCanvas.prototype.toBlob !== 'undefined');
+      // Firefox quirks: 68.0.1 call named OffscreenCanvas.convertToBlob as OffscreenCanvas.toBlob.
+      typeof (window.OffscreenCanvas.prototype as any).toBlob !== 'undefined');
   let isOffscreenCanvasSupportGetContext2D;
 
   if (hasOffscreenCanvas) {
@@ -61,7 +62,7 @@ const checkSupportOffscreenCanvas = () => {
 
 let checkSupportWebWorkerPromise;
 
-function checkSupportWebWorker() {
+function checkSupportWebWorker(): Promise<boolean> {
   return (
     checkSupportWebWorkerPromise ||
     (checkSupportWebWorkerPromise = (async () => {
@@ -84,9 +85,9 @@ function checkSupportWebWorker() {
   );
 }
 
-let checkSupportPromise;
+let checkSupportPromise: Promise<boolean>;
 
-function checkSupport() {
+function checkSupport(): Promise<boolean> {
   return (
     checkSupportPromise ||
     (checkSupportPromise = (async () => {
@@ -101,27 +102,35 @@ function checkSupport() {
   );
 }
 
-export default function downscaleImageToDataURLUsingWorker(blob, maxWidth, maxHeight, type, quality) {
-  return new Promise((resolve, reject) => {
+export default function downscaleImageToDataURLUsingWorker(
+  blob: Blob | File,
+  maxWidth: number,
+  maxHeight: number,
+  type: string,
+  quality: number
+): Promise<URL> {
+  return new Promise<URL>((resolve, reject) => {
     const { port1, port2 } = new MessageChannel();
 
-    port1.onmessage = ({ data: { error, result } }) => {
-      if (error) {
-        const err = new Error(error.message);
+    port1.onmessage = ({ data }: MessageEvent<WorkerReturnValue>) => {
+      if ('error' in data) {
+        const { message, stack } = data.error;
 
-        err.stack = error.stack;
+        const err = new Error(message);
+
+        err.stack = stack;
 
         reject(err);
       } else {
-        resolve(result);
+        resolve(new URL(data.result));
       }
 
       port1.close();
       port2.close();
     };
 
-    Promise.all([blobToArrayBuffer(blob), getWorker()]).then(([arrayBuffer, worker]) =>
-      worker.postMessage({ arrayBuffer, maxHeight, maxWidth, quality, type }, [arrayBuffer, port2])
+    Promise.all([blob.arrayBuffer(), getWorker()]).then(([arrayBuffer, worker]) =>
+      worker.postMessage({ arrayBuffer, maxHeight, maxWidth, quality, type } as WorkerJob, [arrayBuffer, port2])
     );
   });
 }

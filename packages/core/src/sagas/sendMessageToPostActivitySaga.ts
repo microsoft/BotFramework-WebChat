@@ -1,11 +1,8 @@
-import mime from 'mime';
 import { put, takeEvery } from 'redux-saga/effects';
 
 import postActivity from '../actions/postActivity';
 import sendMessage, { SEND_MESSAGE } from '../actions/sendMessage';
 import whileConnected from './effects/whileConnected';
-
-const getType = mime.getType.bind(mime);
 
 function* postActivityWithMessage({
   payload: { attachments = [], channelData, method, text }
@@ -13,15 +10,15 @@ function* postActivityWithMessage({
   yield put(
     postActivity(
       {
-        attachments: attachments.map(({ name, thumbnail, url }) => ({
-          contentType: getType(name) || 'application/octet-stream',
-          contentUrl: url,
-          name,
-          thumbnailUrl: thumbnail
+        attachments: attachments.map(({ blob, thumbnailURL }) => ({
+          contentType: (blob instanceof File && blob.type) || 'application/octet-stream',
+          contentUrl: URL.createObjectURL(blob),
+          name: blob instanceof File ? blob.name : undefined,
+          thumbnailUrl: thumbnailURL?.toString()
         })),
         channelData: {
           ...channelData,
-          attachmentSizes: attachments.map(({ size }) => size)
+          attachmentSizes: attachments.map(({ blob: { size } }) => size)
         },
         text: text || undefined,
         textFormat: 'plain',

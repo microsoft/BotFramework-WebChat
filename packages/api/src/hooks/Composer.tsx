@@ -195,7 +195,13 @@ type ComposerCoreProps = Readonly<{
   dir?: string;
   directLine: DirectLineJSBotConnection;
   disabled?: boolean;
-  downscaleImageToDataURL?: (blob: Blob, maxWidth: number, maxHeight: number, type: string, quality: number) => string;
+  downscaleImageToDataURL?: (
+    blob: Blob,
+    maxWidth: number,
+    maxHeight: number,
+    type: string,
+    quality: number
+  ) => Promise<URL>;
   grammars?: any;
   groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware>;
   internalErrorBoxClass?: React.Component | Function;

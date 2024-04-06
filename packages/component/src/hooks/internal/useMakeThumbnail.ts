@@ -1,5 +1,4 @@
 import { hooks } from 'botframework-webchat-api';
-import type { WebChatPostActivityAttachment } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
@@ -7,11 +6,13 @@ import downscaleImageToDataURL from '../../Utils/downscaleImageToDataURL/index';
 
 const { useStyleOptions, useTrackTiming } = hooks;
 
-function canMakeThumbnail({ name }) {
-  return /\.(gif|jpe?g|png)$/iu.test(name);
-}
-
-async function makeThumbnail(file, width, height, contentType, quality) {
+async function makeThumbnail(
+  file: File,
+  width: number,
+  height: number,
+  contentType: string,
+  quality: number
+): Promise<URL | undefined> {
   try {
     return await downscaleImageToDataURL(file, width, height, contentType, quality);
   } catch (error) {
@@ -19,17 +20,17 @@ async function makeThumbnail(file, width, height, contentType, quality) {
   }
 }
 
-export default function useConvertFileToAttachment(): (file: File) => Promise<WebChatPostActivityAttachment> {
+export default function useMakeThumbnail(): (file: File) => Promise<undefined | URL> {
   const [styleOptions] = useStyleOptions();
-  const trackTiming = useTrackTiming();
+  const trackTiming = useTrackTiming<undefined | URL>();
 
   const styleOptionsRef = useRefFrom(styleOptions);
 
   // TODO: [P3] We need to find revokeObjectURL on the UI side
   //       Redux store should not know about the browser environment
   //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
-  return useCallback<(file: File) => Promise<WebChatPostActivityAttachment>>(
-    async file => {
+  return useCallback<(file: File) => Promise<undefined | URL>>(
+    (file: File): Promise<undefined | URL> => {
       const {
         current: {
           enableUploadThumbnail,
@@ -40,10 +41,8 @@ export default function useConvertFileToAttachment(): (file: File) => Promise<We
         }
       } = styleOptionsRef;
 
-      let thumbnail;
-
-      if (enableUploadThumbnail && canMakeThumbnail(file)) {
-        thumbnail = await trackTiming(
+      if (enableUploadThumbnail && file instanceof File && file.type.startsWith('image/')) {
+        return trackTiming(
           'sendFiles:makeThumbnail',
           makeThumbnail(
             file,
@@ -55,12 +54,7 @@ export default function useConvertFileToAttachment(): (file: File) => Promise<We
         );
       }
 
-      return {
-        name: file.name,
-        size: file.size,
-        url: window.URL.createObjectURL(file),
-        ...(thumbnail && { thumbnail })
-      };
+      return Promise.resolve<undefined>(undefined);
     },
     [styleOptionsRef, trackTiming]
   );

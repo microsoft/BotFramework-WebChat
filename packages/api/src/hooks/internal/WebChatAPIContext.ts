@@ -2,11 +2,11 @@ import {
   type DirectLineJSBotConnection,
   type Observable,
   type WebChatActivity,
-  type WebChatPostActivityAttachment,
   type sendFiles,
-  type sendMessage
+  type sendMessage,
+  type setSendBoxAttachments
 } from 'botframework-webchat-core';
-import { createContext, type Dispatch, type SetStateAction } from 'react';
+import { createContext } from 'react';
 
 import { StrictStyleOptions } from '../../StyleOptions';
 import { LegacyActivityRenderer } from '../../types/ActivityMiddleware';
@@ -34,7 +34,13 @@ type WebChatAPIContext = {
   directLine?: DirectLineJSBotConnection;
   disabled?: boolean;
   dismissNotification?: (id: string) => void;
-  downscaleImageToDataURL?: (blob: Blob, maxWidth: number, maxHeight: number, type: string, quality: number) => string;
+  downscaleImageToDataURL?: (
+    blob: Blob,
+    maxWidth: number,
+    maxHeight: number,
+    type: string,
+    quality: number
+  ) => Promise<URL>;
   emitTypingIndicator?: () => void;
   grammars?: any;
   groupActivities?: GroupActivities;
@@ -66,7 +72,7 @@ type WebChatAPIContext = {
   setDictateState?: (dictateState: number) => void;
   setNotification?: (notification: Notification) => void;
   setSendBox?: (value: string) => void;
-  setSendBoxAttachments?: Dispatch<SetStateAction<readonly WebChatPostActivityAttachment[]>>;
+  setSendBoxAttachments?: (...args: Parameters<typeof setSendBoxAttachments>) => void;
   setSendTimeout?: (timeout: number) => void;
   startDictate?: () => void;
   startSpeakingActivity?: () => void;

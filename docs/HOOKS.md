@@ -102,6 +102,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useScrollTo`](#usescrollto)
 -  [`useScrollToEnd`](#usescrolltoend)
 -  [`useScrollUp`](#usescrollup)
+-  [`useSendBoxAttachments`](#usesendboxattachments)
 -  [`useSendBoxValue`](#usesendboxvalue)
 -  [`useSendEvent`](#usesendevent)
 -  [`useSendFiles`](#usesendfiles) (Deprecated)
@@ -977,6 +978,26 @@ useScrollUp(): () => void
 
 This hook will return a function that, when called, will scroll elements up the transcript. This is an important feature for AT accessibility.
 
+## `useSendBoxAttachments`
+
+<!-- prettier-ignore-start -->
+```js
+type SendBoxAttachment = {
+  blob: Blob | File;
+  thumbnailURL?: URL;
+};
+
+useSendBoxAttachments(): readonly [
+  readonly SendBoxAttachment[],
+  (attachments: readonly SendBoxAttachment[]) => void
+]
+```
+<!-- prettier-ignore-end -->
+
+This hook will return the attachments in the send box and the setter function to change the attachments.
+
+Thumbnail can be provided for each attachment. They should be [data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs).
+
 ## `useSendBoxValue`
 
 <!-- prettier-ignore-start -->
@@ -1020,7 +1041,7 @@ If you are using an `ArrayBuffer`, you can use `FileReader` to convert it into a
 ```js
 useSendMessage(): (
   text?: string,
-  method: string,
+  method: string | undefined,
   {
     files?: Iterable<Blob | File> | undefined
   }
@@ -1028,11 +1049,11 @@ useSendMessage(): (
 ```
 <!-- prettier-ignore-end -->
 
+> New in 4.17.0: `files` are added to support attaching files.
+
 When called, this function will send a text message activity to the bot.
 
 You can optionally include the input method how the text message was collected. Currently, if specified, only `speech` is supported.
-
-For media attachments, thumbnail can be optionally provided and should be a data URL.
 
 Either `text` or `files` must be defined. If none of them are defined, the function will be no-op.
 

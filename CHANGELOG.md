@@ -22,9 +22,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  `useSendMessage` hook is updated to support sending attachments with a message. To reduce complexity, the `useSendFiles` hook is being deprecated. The hook will be removed on or after 2026-04-03
+-  `styleOptions.uploadThumbnailHeight` and `styleOptions.uploadThumbnailWidth` must be a `number` of pixels
+
 ### Added
 
 -  Resolves [#5083](https://github.com/microsoft/BotFramework-WebChat/issues/5083). Added `sendAttachmentOn` style option to send attachments and text in a single activity, by [@ms-jb](https://github.com/ms-jb) and [@compulim](https://github.com/compulim)
+   -  `useSendMessage` hook is updated to support sending attachments with a message
+   -  `useSendBoxAttachments` hook is added to get/set attachments in the send box
 -  Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb)
 
 ### Fixed

@@ -20,7 +20,7 @@ export default function useSubmitSendBox(): (method?: string, { channelData }?: 
         ...(method ? { method } : {}),
         numFiles: sendBoxAttachments.length,
         // eslint-disable-next-line no-magic-numbers
-        sumSizeInKB: Math.round(sendBoxAttachments.reduce((total, { size }) => total + size, 0) / 1024)
+        sumSizeInKB: Math.round(sendBoxAttachments.reduce((total, { blob: { size } }) => total + size, 0) / 1024)
       });
 
       return submitSendBox(method, channelData && { channelData });

@@ -6,7 +6,7 @@ import { useRefFrom } from 'use-ref-from';
 
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
 import connectToWebChat from '../connectToWebChat';
-import useConvertFileToAttachment from '../hooks/internal/useConvertFileToAttachment';
+import useMakeThumbnail from '../hooks/internal/useMakeThumbnail';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
@@ -101,10 +101,10 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachments();
-  const convertFileToAttachment = useConvertFileToAttachment();
   const focus = useFocus();
   const inputRef = useRef<HTMLInputElement>();
   const localize = useLocalizer();
+  const makeThumbnail = useMakeThumbnail();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const submit = useSubmit();
 
@@ -121,14 +121,18 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
       // TODO: [P2] We should disable send button while we are creating thumbnails.
       //            Otherwise, if the user click the send button too quickly, it will not attach any files.
       (async function () {
-        const files = [...currentTarget.files];
-
-        setSendBoxAttachments(Object.freeze(await Promise.all([...files].map(convertFileToAttachment))));
+        setSendBoxAttachments(
+          Object.freeze(
+            await Promise.all(
+              [...currentTarget.files].map(blob => makeThumbnail(blob).then(thumbnailURL => ({ blob, thumbnailURL })))
+            )
+          )
+        );
 
         sendAttachmentOnRef.current === 'attach' && submit();
       })();
     },
-    [convertFileToAttachment, focus, sendAttachmentOnRef, setSendBoxAttachments, submit]
+    [focus, makeThumbnail, sendAttachmentOnRef, setSendBoxAttachments, submit]
   );
 
   return (

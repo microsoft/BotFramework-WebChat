@@ -35,18 +35,10 @@
         const res = await fetch(
           'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
         );
-        const blob1 = await res.blob();
+        const blob = new File([await res.blob()], 'surface1.jpg', { type: 'image/jpeg' });
 
         // WHEN: `useSendBoxAttachments` hook is called to set an attachment.
-        await pageObjects.runHook(({ useSendBoxAttachments }) =>
-          useSendBoxAttachments()[1]([
-            {
-              name: 'surface1.jpg',
-              size: blob1.size,
-              url: URL.createObjectURL(blob1)
-            }
-          ])
-        );
+        await pageObjects.runHook(({ useSendBoxAttachments }) => useSendBoxAttachments()[1]([{ blob }]));
 
         // THEN: It should show checkmark on the button.
         await host.snapshot();
@@ -56,11 +48,7 @@
 
         // THEN: It should return 1 attachment.
         expect(sendBoxAttachments).toHaveLength(1);
-        expect(sendBoxAttachments[0]).toHaveProperty('name', 'surface1.jpg');
-
-        const blob2 = await (await fetch(sendBoxAttachments[0].url)).blob();
-
-        expect(blob2.size).toBe(blob1.size);
+        expect(sendBoxAttachments[0].blob).toBe(blob);
 
         // WHEN: Send button is clicked.
         await host.click(pageElements.sendButton());

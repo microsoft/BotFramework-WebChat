@@ -44,8 +44,8 @@ import singleToArray from './utils/singleToArray';
 import warnOnce from './utils/warnOnce';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import type { SendBoxAttachment } from './types/SendBoxAttachment';
 import type { WebChatActivity } from './types/WebChatActivity';
-import type { WebChatPostActivityAttachment } from './types/WebChatPostActivityAttachment';
 import type { DirectLineActivity } from './types/external/DirectLineActivity';
 import type { DirectLineAnimationCard } from './types/external/DirectLineAnimationCard';
 import type { DirectLineAttachment } from './types/external/DirectLineAttachment';
@@ -115,32 +115,29 @@ export {
   warnOnce
 };
 
-  export type {
-    DirectLineActivity,
-    DirectLineAnimationCard,
-    DirectLineAttachment,
-    DirectLineAudioCard,
-    DirectLineCardAction,
-    DirectLineHeroCard,
-    DirectLineJSBotConnection,
-    DirectLineOAuthCard,
-    DirectLineReceiptCard,
-    DirectLineSignInCard,
-    DirectLineSuggestedAction,
-    DirectLineThumbnailCard,
-    DirectLineVideoCard,
-    GlobalScopePonyfill,
-    Observable,
-    OneOrMany,
-
-    OrgSchemaAction,
-    OrgSchemaClaim,
-    OrgSchemaCreativeWork,
-    OrgSchemaDefinedTerm,
-    OrgSchemaProject,
-
-
-    OrgSchemaThing,
-    WebChatActivity,
-    WebChatPostActivityAttachment
-  };
+export type {
+  DirectLineActivity,
+  DirectLineAnimationCard,
+  DirectLineAttachment,
+  DirectLineAudioCard,
+  DirectLineCardAction,
+  DirectLineHeroCard,
+  DirectLineJSBotConnection,
+  DirectLineOAuthCard,
+  DirectLineReceiptCard,
+  DirectLineSignInCard,
+  DirectLineSuggestedAction,
+  DirectLineThumbnailCard,
+  DirectLineVideoCard,
+  GlobalScopePonyfill,
+  Observable,
+  OneOrMany,
+  OrgSchemaAction,
+  OrgSchemaClaim,
+  OrgSchemaCreativeWork,
+  OrgSchemaDefinedTerm,
+  OrgSchemaProject,
+  OrgSchemaThing,
+  SendBoxAttachment,
+  WebChatActivity
+};
