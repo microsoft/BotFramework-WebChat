@@ -14,7 +14,7 @@
           {
             directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
             store: testHelpers.createStore(),
-            styleOptions: { sendAttachmentOn: 'upload' }
+            styleOptions: { sendAttachmentOn: 'attach' }
           },
           document.getElementById('webchat')
         );
