@@ -1,6 +1,6 @@
+import type { WebChatPostActivityAttachment } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 
-import type { WebChatPostActivityAttachment } from 'botframework-webchat-core';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 import useTrackEvent from './useTrackEvent';
 
