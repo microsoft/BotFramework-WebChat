@@ -1,5 +1,5 @@
+import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
-import { Constants, type WebChatActivity } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
@@ -10,10 +10,12 @@ import SendButton from './SendBox/SendButton';
 import SuggestedActions from './SendBox/SuggestedActions';
 import TextBox from './SendBox/TextBox';
 import UploadButton from './SendBox/UploadButton';
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
-import useStyleSet from './hooks/useStyleSet';
-import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 import useErrorMessageId from './providers/internal/SendBox/useErrorMessageId';
+import useStyleSet from './hooks/useStyleSet';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
+
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 const {
   DictateState: { DICTATING, STARTING }
