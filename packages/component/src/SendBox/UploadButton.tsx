@@ -108,8 +108,8 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const submit = useSubmit();
 
-  const uploadFileString = localize('TEXT_INPUT_UPLOAD_BUTTON_ALT');
   const sendAttachmentOnRef = useRefFrom(sendAttachmentOn);
+  const uploadFileString = localize('TEXT_INPUT_UPLOAD_BUTTON_ALT');
 
   const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(() => inputRef.current?.click(), [inputRef]);
 
