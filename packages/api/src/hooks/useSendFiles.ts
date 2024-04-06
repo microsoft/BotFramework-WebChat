@@ -1,9 +1,8 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1024] }] */
 
-import { type WebChatPostActivityAttachment } from 'botframework-webchat-core';
+import { warnOnce, type WebChatPostActivityAttachment } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 
-import { warnOnce } from 'botframework-webchat-core';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 import useTrackEvent from './useTrackEvent';
 
