@@ -122,7 +122,7 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
         apiSubmitSendBox();
       }
     },
-    [apiSubmitSendBox, clearTimeout, focusRef, scrollToEndRef, setTimeout, submitErrorRef]
+    [apiSubmitSendBox, clearTimeout, focusRef, scrollToEndRef, setErrorRef, setTimeout, submitErrorRef, timeoutRef]
   );
 
   useEffect(
