@@ -20,6 +20,7 @@
             directLine,
             store,
             styleOptions: {
+              sendAttachmentOn: 'attach',
               uploadThumbnailContentType: 'image/png',
               uploadThumbnailHeight: 60,
               uploadThumbnailWidth: 120
@@ -31,7 +32,6 @@
         await pageConditions.uiConnected();
 
         await pageObjects.uploadFile('seaofthieves.jpg');
-        await host.click(pageElements.sendButton());
 
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allImagesLoaded();

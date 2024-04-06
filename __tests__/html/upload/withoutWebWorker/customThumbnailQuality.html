@@ -20,6 +20,7 @@
             directLine,
             store,
             styleOptions: {
+              sendAttachmentOn: 'attach',
               uploadThumbnailQuality: 0.1
             }
           },
@@ -29,7 +30,6 @@
         await pageConditions.uiConnected();
 
         await pageObjects.uploadFile('seaofthieves.jpg');
-        await host.click(pageElements.sendButton());
 
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allImagesLoaded();

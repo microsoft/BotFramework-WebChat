@@ -18,7 +18,10 @@
         WebChat.renderWebChat(
           {
             directLine,
-            store
+            store,
+            styleOptions: {
+              sendAttachmentOn: 'attach'
+            }
           },
           document.getElementById('webchat')
         );
@@ -26,7 +29,6 @@
         await pageConditions.uiConnected();
 
         await pageObjects.uploadFile('seaofthieves.jpg');
-        await host.click(pageElements.sendButton());
 
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allImagesLoaded();
