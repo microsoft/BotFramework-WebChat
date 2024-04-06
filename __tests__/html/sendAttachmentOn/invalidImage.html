@@ -24,7 +24,7 @@
           await pageConditions.uiConnected();
 
           // SETUP: An empty file blob.
-          const blob = new File([new ArrayBuffer(1024)], 'empty.zip', { type: 'image/jpg' });
+          const blob = new File([new ArrayBuffer(1024)], 'empty.zip', { type: 'image/jpeg' });
 
           // WHEN: Call useSendMessage hook to send a file a custom thumbnail.
           await pageObjects.runHook(({ useSendMessage }) =>

@@ -23,7 +23,7 @@
         await pageConditions.uiConnected();
 
         // SETUP: An empty file blob.
-        const fileBlob = new File([new ArrayBuffer(1024)], 'empty.zip', { type: 'image/jpg' });
+        const fileBlob = new File([new ArrayBuffer(1024)], 'empty.zip', { type: 'image/jpeg' });
         const imageBlob = await (
           await fetch(
             'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
