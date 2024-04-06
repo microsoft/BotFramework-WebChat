@@ -542,9 +542,6 @@ const ComposerCore = ({
     [scrollToEndButtonMiddleware]
   );
 
-  // For useUploadButtonRef
-  const uploadButtonRef = useRef<HTMLInputElement>();
-
   /**
    * This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
    * - User ID changed, causing all send* functions to be updated
@@ -585,7 +582,6 @@ const ComposerCore = ({
       toastRenderer: patchedToastRenderer,
       trackDimension,
       typingIndicatorRenderer: patchedTypingIndicatorRenderer,
-      uploadButtonRef,
       userID,
       username
     }),
