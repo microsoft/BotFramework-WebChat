@@ -7,7 +7,7 @@ import Composer, { ComposerProps } from './Composer';
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 
 import BasicConnectivityStatus from './BasicConnectivityStatus';
-import BasicSendBox from './BasicSendBox';
+import BasicSendBox from './SendBox/BasicSendBox';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
 import BasicWebChat, { BasicWebChatProps } from './BasicWebChat';

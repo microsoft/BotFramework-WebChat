@@ -64,6 +64,8 @@ import createCustomEvent from '../utils/createCustomEvent';
 import isObject from '../utils/isObject';
 import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
+import { SendBoxMiddlewareProvider, type SendBoxMiddleware } from './internal/SendBoxMiddleware';
+import { SendBoxToolbarMiddlewareProvider, type SendBoxToolbarMiddleware } from './internal/SendBoxToolbarMiddleware';
 import Tracker from './internal/Tracker';
 import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
@@ -215,6 +217,8 @@ type ComposerCoreProps = Readonly<{
   ) => string;
   scrollToEndButtonMiddleware?: OneOrMany<ScrollToEndButtonMiddleware>;
   selectVoice?: (voices: (typeof window.SpeechSynthesisVoice)[], activity: WebChatActivity) => void;
+  sendBoxMiddleware?: readonly SendBoxMiddleware[] | undefined;
+  sendBoxToolbarMiddleware?: readonly SendBoxToolbarMiddleware[] | undefined;
   sendTypingIndicator?: boolean;
   styleOptions?: StyleOptions;
   toastMiddleware?: OneOrMany<ToastMiddleware>;
@@ -244,6 +248,8 @@ const ComposerCore = ({
   renderMarkdown,
   scrollToEndButtonMiddleware,
   selectVoice,
+  sendBoxMiddleware,
+  sendBoxToolbarMiddleware,
   sendTypingIndicator,
   styleOptions,
   toastMiddleware,
@@ -563,8 +569,12 @@ const ComposerCore = ({
   return (
     <WebChatAPIContext.Provider value={context}>
       <ActivitySendStatusComposer>
-        {typeof children === 'function' ? children(context) : children}
-        <ActivitySendStatusTelemetryComposer />
+        <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || Object.freeze([])}>
+          <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || Object.freeze([])}>
+            {typeof children === 'function' ? children(context) : children}
+            <ActivitySendStatusTelemetryComposer />
+          </SendBoxToolbarMiddlewareProvider>
+        </SendBoxMiddlewareProvider>
       </ActivitySendStatusComposer>
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>

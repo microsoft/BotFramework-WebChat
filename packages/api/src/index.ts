@@ -2,10 +2,25 @@ import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import defaultStyleOptions from './defaultStyleOptions';
 import * as hooks from './hooks';
 import Composer, { ComposerProps } from './hooks/Composer';
+import {
+  SendBoxMiddlewareProxy,
+  rectifySendBoxMiddleware,
+  type SendBoxMiddleware,
+  type SendBoxMiddlewareProps,
+  type SendBoxMiddlewareRequest
+} from './hooks/internal/SendBoxMiddleware';
+import {
+  SendBoxToolbarMiddlewareProxy,
+  rectifySendBoxToolbarMiddleware,
+  type SendBoxToolbarMiddleware,
+  type SendBoxToolbarMiddlewareProps,
+  type SendBoxToolbarMiddlewareRequest
+} from './hooks/internal/SendBoxToolbarMiddleware';
 import concatMiddleware from './hooks/middleware/concatMiddleware';
 import { localize } from './localization/Localize';
 import normalizeStyleOptions from './normalizeStyleOptions';
 import ActivityMiddleware, { ActivityComponentFactory } from './types/ActivityMiddleware';
+import { type ActivityStatusMiddleware, type RenderActivityStatus } from './types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware, {
   AttachmentForScreenReaderComponentFactory
 } from './types/AttachmentForScreenReaderMiddleware';
@@ -19,9 +34,18 @@ import TypingIndicatorMiddleware, { RenderTypingIndicator } from './types/Typing
 import WebSpeechPonyfill from './types/WebSpeechPonyfill';
 import WebSpeechPonyfillFactory from './types/WebSpeechPonyfillFactory';
 
-import type { ActivityStatusMiddleware, RenderActivityStatus } from './types/ActivityStatusMiddleware';
-
-export { Composer, concatMiddleware, defaultStyleOptions, hooks, localize, normalizeStyleOptions };
+export {
+  Composer,
+  SendBoxMiddlewareProxy,
+  SendBoxToolbarMiddlewareProxy,
+  concatMiddleware,
+  defaultStyleOptions,
+  hooks,
+  localize,
+  normalizeStyleOptions,
+  rectifySendBoxMiddleware,
+  rectifySendBoxToolbarMiddleware
+};
 
 export type {
   ActivityComponentFactory,
@@ -43,6 +67,12 @@ export type {
   RenderTypingIndicator,
   ScrollToEndButtonComponentFactory,
   ScrollToEndButtonMiddleware,
+  SendBoxMiddleware,
+  SendBoxMiddlewareProps,
+  SendBoxMiddlewareRequest,
+  SendBoxToolbarMiddleware,
+  SendBoxToolbarMiddlewareProps,
+  SendBoxToolbarMiddlewareRequest,
   StrictStyleOptions,
   StyleOptions,
   ToastMiddleware,

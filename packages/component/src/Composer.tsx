@@ -1,12 +1,23 @@
 import createEmotion from '@emotion/css/create-instance';
-import { Composer as APIComposer, hooks, WebSpeechPonyfillFactory } from 'botframework-webchat-api';
+import type {
+  ComposerProps as APIComposerProps,
+  SendBoxMiddleware,
+  SendBoxToolbarMiddleware
+} from 'botframework-webchat-api';
+import {
+  Composer as APIComposer,
+  hooks,
+  rectifySendBoxMiddleware,
+  rectifySendBoxToolbarMiddleware,
+  WebSpeechPonyfillFactory
+} from 'botframework-webchat-api';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
+import type { FC, ReactNode } from 'react';
 import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { Composer as SayComposer } from 'react-say';
-import createStyleSet from './Styles/createStyleSet';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import Dictation from './Dictation';
@@ -30,16 +41,15 @@ import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer'
 import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
 import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
 import useTheme from './providers/Theme/useTheme';
+import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
+import createStyleSet from './Styles/createStyleSet';
+import { type ContextOf } from './types/ContextOf';
+import { type FocusSendBoxInit } from './types/internal/FocusSendBoxInit';
+import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import createCSSKey from './Utils/createCSSKey';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
-
-import type { ComposerProps as APIComposerProps } from 'botframework-webchat-api';
-import type { FC, ReactNode } from 'react';
-import type { ContextOf } from './types/ContextOf';
-import { type FocusSendBoxInit } from './types/internal/FocusSendBoxInit';
-import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -294,6 +304,8 @@ const Composer: FC<ComposerProps> = ({
   extraStyleSet,
   renderMarkdown,
   scrollToEndButtonMiddleware,
+  sendBoxMiddleware: sendBoxMiddlewareFromProps,
+  sendBoxToolbarMiddleware: sendBoxToolbarMiddlewareFromProps,
   styleOptions,
   styleSet,
   suggestedActionsAccessKey,
@@ -381,6 +393,16 @@ const Composer: FC<ComposerProps> = ({
     [styleOptions, theme.styleOptions]
   );
 
+  const sendBoxMiddleware = useMemo<readonly SendBoxMiddleware[]>(
+    () => Object.freeze([...rectifySendBoxMiddleware(sendBoxMiddlewareFromProps), ...createDefaultSendBoxMiddleware()]),
+    [sendBoxMiddlewareFromProps]
+  );
+
+  const sendBoxToolbarMiddleware = useMemo<readonly SendBoxToolbarMiddleware[]>(
+    () => Object.freeze([...rectifySendBoxToolbarMiddleware(sendBoxToolbarMiddlewareFromProps)]),
+    [sendBoxToolbarMiddlewareFromProps]
+  );
+
   return (
     <APIComposer
       activityMiddleware={patchedActivityMiddleware}
@@ -394,6 +416,8 @@ const Composer: FC<ComposerProps> = ({
       internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
       nonce={nonce}
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
+      sendBoxMiddleware={sendBoxMiddleware}
+      sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}
       styleOptions={patchedStyleOptions}
       toastMiddleware={patchedToastMiddleware}
       typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}

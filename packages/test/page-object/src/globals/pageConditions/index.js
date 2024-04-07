@@ -22,6 +22,7 @@ import toastShown from './toastShown';
 import typingIndicatorHidden from './typingIndicatorHidden';
 import typingIndicatorShown from './typingIndicatorShown';
 import uiConnected from './uiConnected';
+import warnMessageLogged from './warnMessageLogged';
 import webChatRendered from './webChatRendered';
 
 export {
@@ -49,5 +50,6 @@ export {
   typingIndicatorHidden,
   typingIndicatorShown,
   uiConnected,
+  warnMessageLogged,
   webChatRendered
 };

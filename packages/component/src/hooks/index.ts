@@ -13,8 +13,8 @@ import useSendMessage from './useSendMessage';
 import useStyleSet from './useStyleSet';
 import useWebSpeechPonyfill from './useWebSpeechPonyfill';
 
-import { useSendBoxSpeechInterimsVisible } from '../BasicSendBox';
 import { useTypingIndicatorVisible } from '../BasicTypingIndicator';
+import { useSendBoxSpeechInterimsVisible } from '../SendBox/BasicSendBox';
 import { useMicrophoneButtonClick, useMicrophoneButtonDisabled } from '../SendBox/MicrophoneButton';
 import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
 
