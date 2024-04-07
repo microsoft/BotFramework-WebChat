@@ -20,7 +20,7 @@ async function makeThumbnail(
   }
 }
 
-export default function useMakeThumbnail(): (file: File) => Promise<undefined | URL> {
+export default function useMakeThumbnail(): (file: File, contentType?: string | undefined) => Promise<undefined | URL> {
   const [styleOptions] = useStyleOptions();
   const trackTiming = useTrackTiming<undefined | URL>();
 
@@ -29,8 +29,8 @@ export default function useMakeThumbnail(): (file: File) => Promise<undefined | 
   // TODO: [P3] We need to find revokeObjectURL on the UI side
   //       Redux store should not know about the browser environment
   //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
-  return useCallback<(file: File) => Promise<undefined | URL>>(
-    (file: File): Promise<undefined | URL> => {
+  return useCallback(
+    (file: File, contentType?: string | undefined): Promise<undefined | URL> => {
       const {
         current: {
           enableUploadThumbnail,
@@ -41,7 +41,7 @@ export default function useMakeThumbnail(): (file: File) => Promise<undefined | 
         }
       } = styleOptionsRef;
 
-      if (enableUploadThumbnail && file instanceof File && file.type.startsWith('image/')) {
+      if (enableUploadThumbnail && file instanceof File && (contentType || file.type).startsWith('image/')) {
         return trackTiming(
           'sendFiles:makeThumbnail',
           makeThumbnail(
