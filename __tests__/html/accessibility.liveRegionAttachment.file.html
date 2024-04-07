@@ -30,7 +30,7 @@
 
           useEffect(() => {
             if (connectivityStatus === 'connected') {
-              const blob = new Blob([testHelpers.stringToArrayBuffer('Hello, World!')], 'hello.zip');
+              const blob = new File([testHelpers.stringToArrayBuffer('Hello, World!')], 'hello.zip');
 
               sendFiles([blob]);
             }
