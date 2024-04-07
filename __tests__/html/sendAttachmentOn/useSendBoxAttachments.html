@@ -32,13 +32,34 @@
         expect(initialSendBoxAttachments).toHaveLength(0);
 
         // SETUP: An empty file blob.
-        const res = await fetch(
-          'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+        const blob = new File(
+          [
+            await (
+              await fetch(
+                'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+              )
+            ).blob()
+          ],
+          'surface1.jpg',
+          { type: 'image/jpeg' }
         );
-        const blob = new File([await res.blob()], 'surface1.jpg', { type: 'image/jpeg' });
+
+        const thumbnailBlob = await (
+          await fetch(
+            'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg'
+          )
+        ).blob();
+
+        const thumbnailURL = await new Promise((resolve, reject) => {
+          const fileReader = new FileReader();
+
+          fileReader.onerror = reject;
+          fileReader.onload = () => resolve(fileReader.result);
+          fileReader.readAsDataURL(thumbnailBlob);
+        });
 
         // WHEN: `useSendBoxAttachments` hook is called to set an attachment.
-        await pageObjects.runHook(({ useSendBoxAttachments }) => useSendBoxAttachments()[1]([{ blob }]));
+        await pageObjects.runHook(({ useSendBoxAttachments }) => useSendBoxAttachments()[1]([{ blob, thumbnailURL }]));
 
         // THEN: It should show checkmark on the button.
         await host.snapshot();
