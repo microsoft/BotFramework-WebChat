@@ -27,7 +27,7 @@ test('calling sendFile should send files', async () => {
     sendFiles([blob1, blob2]);
   });
 
-  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
+  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
   await driver.wait(allOutgoingActivitiesSent(), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
