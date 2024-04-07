@@ -24,20 +24,17 @@ export default function useSendFiles(): (files: readonly File[]) => void {
           files.length &&
           sendFiles(
             await Promise.all(
-              files.map(file =>
+              files.map<Promise<PostActivityFile>>(file =>
                 // To maintain backward compatibility, this hook should loko at file extension instead of MIME type.
                 makeThumbnail(
                   file,
                   /\.(gif|jpe?g|png)$/iu.test(file.name) ? 'image/*' : 'application/octet-stream'
-                ).then(
-                  thumbnailURL =>
-                    ({
-                      name: file.name,
-                      size: file.size,
-                      thumbnail: thumbnailURL?.toString(),
-                      url: URL.createObjectURL(file)
-                    }) satisfies PostActivityFile
-                )
+                ).then(thumbnailURL => ({
+                  name: file.name,
+                  size: file.size,
+                  thumbnail: thumbnailURL?.toString(),
+                  url: URL.createObjectURL(file)
+                }))
               )
             )
           );
