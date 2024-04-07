@@ -22,14 +22,16 @@ export default function useSendFiles(): (files: readonly File[]) => void {
           files.length &&
           sendFiles(
             await Promise.all(
-              files.map(blob =>
+              files.map(file =>
                 // To maintain backward compatibility, this hook should loko at file extension instead of MIME type.
                 makeThumbnail(
-                  blob,
-                  /\.(gif|jpe?g|png)$/iu.test(blob.name) ? 'image/*' : 'application/octet-stream'
+                  file,
+                  /\.(gif|jpe?g|png)$/iu.test(file.name) ? 'image/*' : 'application/octet-stream'
                 ).then(thumbnailURL => ({
-                  blob,
-                  thumbnailURL
+                  name: file.name,
+                  size: file.size,
+                  url: URL.createObjectURL(file),
+                  thumbnail: thumbnailURL?.toString()
                 }))
               )
             )

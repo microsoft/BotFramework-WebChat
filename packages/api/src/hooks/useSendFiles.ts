@@ -1,19 +1,23 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1024] }] */
 
-import { warnOnce, type SendBoxAttachment } from 'botframework-webchat-core';
+import { warnOnce } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 import useTrackEvent from './useTrackEvent';
 
+type PostActivityFile = {
+  name: string;
+  size: number;
+  thumbnail?: string;
+  url: string;
+};
+
 const warnDeprecation = warnOnce(
   'This hook will be removed on or after 2026-04-03. Please use `useSendMessage` instead.'
 );
 
-/**
- * @deprecated This hook will be removed on or after 2026-04-03. Please use `useSendMessage` instead.
- */
-export default function useSendFiles(): (files: readonly SendBoxAttachment[]) => void {
+export default function useSendFiles(): (files: PostActivityFile[]) => void {
   const { sendFiles } = useWebChatAPIContext();
   const trackEvent = useTrackEvent();
 
@@ -21,19 +25,11 @@ export default function useSendFiles(): (files: readonly SendBoxAttachment[]) =>
     files => {
       if (files && files.length) {
         warnDeprecation();
-        sendFiles(
-          files.map(({ blob, thumbnailURL }) => ({
-            // Maintains backward compatible behavior by reading from `Blob.name` instead of `File.name`.
-            name: (blob as { name?: string }).name,
-            size: blob.size,
-            url: URL.createObjectURL(blob),
-            thumbnail: thumbnailURL?.toString()
-          }))
-        );
+        sendFiles(files);
 
         trackEvent('sendFiles', {
           numFiles: files.length,
-          sumSizeInKB: Math.round(files.reduce((total, { blob: { size } }) => total + size, 0) / 1024)
+          sumSizeInKB: Math.round(files.reduce((total, { size }) => total + size, 0) / 1024)
         });
       }
     },

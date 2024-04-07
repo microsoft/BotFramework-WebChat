@@ -41,7 +41,7 @@ export default function useMakeThumbnail(): (file: File, contentType?: string | 
         }
       } = styleOptionsRef;
 
-      if (enableUploadThumbnail && file instanceof File && (contentType || file.type).startsWith('image/')) {
+      if (enableUploadThumbnail && (contentType || (file instanceof File ? file.type : '')).startsWith('image/')) {
         return trackTiming(
           'sendFiles:makeThumbnail',
           makeThumbnail(
