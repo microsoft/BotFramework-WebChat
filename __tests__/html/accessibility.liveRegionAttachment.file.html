@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -30,9 +30,7 @@
 
           useEffect(() => {
             if (connectivityStatus === 'connected') {
-              const blob = new Blob([testHelpers.stringToArrayBuffer('Hello, World!')]);
-
-              blob.name = 'hello.zip';
+              const blob = new Blob([testHelpers.stringToArrayBuffer('Hello, World!')], 'hello.zip');
 
               sendFiles([blob]);
             }
