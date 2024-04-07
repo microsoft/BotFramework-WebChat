@@ -1062,6 +1062,8 @@ You can optionally include the input method how the text message was collected. 
 
 Either `text` or `attachments` must be defined. If none of them are defined, the function will be no-op.
 
+Image attachments (`Blob.type` returning `image/*`) will have their thumbnail automatically generated.
+
 ## `useSendMessageBack`
 
 <!-- prettier-ignore-start -->
