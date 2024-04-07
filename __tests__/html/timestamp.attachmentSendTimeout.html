@@ -59,7 +59,9 @@
           await pageConditions.uiConnected();
 
           // SETUP: An empty file blob.
-          const fileBlob = new File([new ArrayBuffer(0)], 'empty.zip');
+          const fileBlob = new Blob([new ArrayBuffer(0)]);
+
+          fileBlob.name = 'empty.zip';
 
           // WHEN: Sending out the file.
           await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));

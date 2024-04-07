@@ -23,7 +23,8 @@ export default function useSendFiles(): (files: readonly SendBoxAttachment[]) =>
         warnDeprecation();
         sendFiles(
           files.map(({ blob, thumbnailURL }) => ({
-            name: blob instanceof File ? blob.name : undefined,
+            // Maintains backward compatible behavior by reading from `Blob.name` instead of `File.name`.
+            name: (blob as { name?: string }).name,
             size: blob.size,
             url: URL.createObjectURL(blob),
             thumbnail: thumbnailURL?.toString()
