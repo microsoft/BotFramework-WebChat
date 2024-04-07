@@ -5,6 +5,8 @@ import useMakeThumbnail from './internal/useMakeThumbnail';
 
 const { useSendFiles: useAPISendFiles } = hooks;
 
+type PostActivityFile = Parameters<ReturnType<typeof useAPISendFiles>>[0][0];
+
 /**
  * @deprecated This hook will be removed on or after 2026-04-03. Please use `useSendMessage` instead.
  */
@@ -27,12 +29,15 @@ export default function useSendFiles(): (files: readonly File[]) => void {
                 makeThumbnail(
                   file,
                   /\.(gif|jpe?g|png)$/iu.test(file.name) ? 'image/*' : 'application/octet-stream'
-                ).then(thumbnailURL => ({
-                  name: file.name,
-                  size: file.size,
-                  url: URL.createObjectURL(file),
-                  thumbnail: thumbnailURL?.toString()
-                }))
+                ).then(
+                  thumbnailURL =>
+                    ({
+                      name: file.name,
+                      size: file.size,
+                      thumbnail: thumbnailURL?.toString(),
+                      url: URL.createObjectURL(file)
+                    }) satisfies PostActivityFile
+                )
               )
             )
           );
