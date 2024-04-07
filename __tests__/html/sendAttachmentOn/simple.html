@@ -28,6 +28,7 @@
         await host.click(pageElements.sendButton());
 
         // THEN: A thumbnail with the bot reply should show.
+        await pageConditions.allOutgoingActivitiesSent();
         await pageConditions.numActivitiesShown(2);
         await host.snapshot();
       });

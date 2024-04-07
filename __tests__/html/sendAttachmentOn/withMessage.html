@@ -30,6 +30,7 @@
         // await host.click(pageElements.sendButton());
 
         // THEN: A thumbnail with a message and bot reply should show.
+        await pageConditions.allOutgoingActivitiesSent();
         await pageConditions.numActivitiesShown(2);
         await host.snapshot();
       });

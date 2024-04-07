@@ -32,6 +32,7 @@
           );
 
           // THEN: It should send the file.
+          await pageConditions.allOutgoingActivitiesSent();
           await pageConditions.numActivitiesShown(3);
           await host.snapshot();
         },

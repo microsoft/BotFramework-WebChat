@@ -54,7 +54,8 @@
         await host.click(pageElements.sendButton());
 
         // THEN: It should send the attachment (each "run hook" is an activity).
-        await pageConditions.numActivitiesShown(4);
+        await pageConditions.allOutgoingActivitiesSent();
+        await pageConditions.numActivitiesShown(5);
         await host.snapshot();
 
         // WHEN: `useSendBoxAttachments` hook is called to get the attachments.
