@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function DialpadIcon(props: Readonly<{ readonly className?: string }>) {
+export function TelephoneKeypadIcon(props: Readonly<{ readonly className?: string }>) {
   return (
     <svg
       aria-hidden="true"

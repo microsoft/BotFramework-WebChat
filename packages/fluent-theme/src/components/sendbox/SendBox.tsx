@@ -8,7 +8,7 @@ import { SuggestedActions } from './SuggestedActions';
 import { AddAttachmentButton, Attachments } from './Attachments';
 import DropZone from './DropZone';
 import { TextArea } from './TextArea';
-import { DialpadIcon } from '../../icons/DialpadIcon';
+import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
 import { useStyles } from '../../styles';
 
 const { useLocalizer } = hooks;
@@ -164,7 +164,7 @@ export default function SendBox(
           )}
           <Toolbar>
             <ToolbarButton aria-label={localize('TEXT_INPUT_DIALPAD_BUTTON_ALT')}>
-              <DialpadIcon />
+              <TelephoneKeypadIcon />
             </ToolbarButton>
             <AddAttachmentButton onFilesAdded={handleAddFiles} />
             <ToolbarSeparator />
