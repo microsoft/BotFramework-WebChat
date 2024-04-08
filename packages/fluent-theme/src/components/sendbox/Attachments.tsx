@@ -1,9 +1,4 @@
-import React, {
-  type ChangeEventHandler,
-  type DragEventHandler,
-  type ReactNode,
-  useCallback,
-  useRef} from 'react';
+import React, { type ChangeEventHandler, type ReactNode, useCallback, useRef } from 'react';
 import { hooks } from 'botframework-webchat-api';
 import { ToolbarButton } from './Toolbar';
 import { AttachmentIcon } from '../../icons/AttachmentIcon';
@@ -28,23 +23,6 @@ export const styles = {
     cursor: 'default',
     padding: '6px 8px',
     width: 'fit-content'
-  },
-
-  'webchat__sendbox__attachment-dropzone': {
-    backgroundColor: 'var(--colorNeutralBackground4)',
-    borderRadius: 'inherit',
-    cursor: 'copy',
-    display: 'grid',
-    gap: '8px',
-    inset: '0',
-    placeContent: 'center',
-    placeItems: 'center',
-    position: 'absolute'
-  },
-
-  'webchat__sendbox__attachment-dropzone-icon': {
-    height: '36px',
-    width: '36px'
   }
 };
 
@@ -104,12 +82,3 @@ export function Attachments({ files }: Readonly<{ readonly files: File[] }>) {
     </div>
   ) : null;
 }
-
-export const handleDragOver: DragEventHandler<HTMLDivElement> = event => {
-  event.stopPropagation();
-  event.preventDefault();
-};
-
-export const isFilesTransferEvent = (event: DragEvent) => !!event?.dataTransfer?.types?.includes?.('Files');
-
-
