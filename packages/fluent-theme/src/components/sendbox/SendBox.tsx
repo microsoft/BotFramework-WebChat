@@ -81,7 +81,7 @@ export default function SendBox(
 ) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState('');
-  const [files, setFiles] = useState<Readonly<File[]>>([]);
+  const [files, setFiles] = useState<readonly File[]>([]);
   const isMessageLengthExceeded = !!props.maxMessageLength && message.length > props.maxMessageLength;
   const classNames = useStyles(styles);
   const localize = useLocalizer();
