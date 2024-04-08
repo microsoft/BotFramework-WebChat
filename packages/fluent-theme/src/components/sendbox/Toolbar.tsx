@@ -28,16 +28,16 @@ const styles = {
     },
 
     '@media (hover: hover)': {
-      '&:not(:disabled):hover': {
+      '&:not([aria-disabled="true"]):hover': {
         backgroundColor: 'var(--colorSubtleBackgroundHover)',
         color: 'var(--colorNeutralForeground2BrandHover)'
       }
     },
-    '&:not(:disabled):active': {
+    '&:not([aria-disabled="true"]):active': {
       backgroundColor: 'var(--colorSubtleBackgroundPressed)',
       color: 'var(--colorNeutralForeground2BrandPressed)'
     },
-    '&:disabled': {
+    '&[aria-disabled="true"]': {
       color: ' var(--colorNeutralForegroundDisabled)',
       cursor: 'not-allowed'
     }
@@ -60,6 +60,7 @@ export function ToolbarButton(
     readonly className?: string | undefined;
     readonly disabled?: boolean | undefined;
     readonly onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
+    readonly submit?: boolean | undefined;
   }>
 ) {
   const classNames = useStyles(styles);
@@ -67,7 +68,11 @@ export function ToolbarButton(
     <button
       className={cx(classNames['webchat-fluent__sendbox__toolbar-button'], props.className)}
       onClick={props.onClick}
-      type="button"
+      type={props.submit ? 'submit' : 'button'}
+      {...(props.disabled && {
+        'aria-disabled': 'true',
+        tabIndex: -1
+      })}
     >
       {props.children}
     </button>
