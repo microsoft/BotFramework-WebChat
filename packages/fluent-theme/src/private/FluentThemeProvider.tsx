@@ -1,7 +1,9 @@
+import { Components } from 'botframework-webchat-component';
 import React, { memo, type ReactNode } from 'react';
 
-import ThemeProvider from '../external/ThemeProvider';
 import SendBox from './SendBox';
+
+const { ThemeProvider } = Components;
 
 type Props = Readonly<{ children?: ReactNode | undefined }>;
 
