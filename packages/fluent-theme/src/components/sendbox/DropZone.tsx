@@ -6,7 +6,7 @@ import { useStyles } from '../../styles';
 const { useLocalizer } = hooks;
 
 const styles = {
-  'webchat__sendbox__attachment-dropzone': {
+  'webchat__sendbox__attachment-drop-zone': {
     backgroundColor: 'var(--colorNeutralBackground4)',
     borderRadius: 'inherit',
     cursor: 'copy',
@@ -18,7 +18,7 @@ const styles = {
     position: 'absolute'
   },
 
-  'webchat__sendbox__attachment-dropzone-icon': {
+  'webchat__sendbox__attachment-drop-zone-icon': {
     height: '36px',
     width: '36px'
   }
@@ -71,11 +71,11 @@ export default function AttachmentDropZone(props: { readonly onFilesAdded: (file
 
   return showDropZone ? (
     <div
-      className={classNames['webchat__sendbox__attachment-dropzone']}
+      className={classNames['webchat__sendbox__attachment-drop-zone']}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <AddDocumentIcon className={classNames['webchat__sendbox__attachment-dropzone-icon']} />
+      <AddDocumentIcon className={classNames['webchat__sendbox__attachment-drop-zone-icon']} />
       {localize('TEXT_INPUT_DROP_ZONE')}
     </div>
   ) : null;
