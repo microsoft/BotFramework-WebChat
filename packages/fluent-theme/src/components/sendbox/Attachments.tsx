@@ -52,13 +52,15 @@ const styles = {
   }
 };
 
-export function AddAttachmentButton(props: {
-  readonly disabled?: boolean | undefined;
-  readonly icon?: ReactNode | undefined;
-  readonly onFilesAdded: ((files: File[]) => void) | undefined;
-}) {
+export function AddAttachmentButton(
+  props: Readonly<{
+    readonly disabled?: boolean | undefined;
+    readonly icon?: ReactNode | undefined;
+    readonly onFilesAdded: ((files: File[]) => void) | undefined;
+  }>
+) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const classnames = useStyles(styles);
+  const classNames = useStyles(styles);
   const localize = useLocalizer();
 
   const handleClick = useCallback(() => {
@@ -96,7 +98,7 @@ export function AddAttachmentButton(props: {
   );
 }
 
-export function Attachments({ files }: { readonly files: File[] }) {
+export function Attachments({ files }: Readonly<{ readonly files: File[] }>) {
   const classNames = useStyles(styles);
   const localize = useLocalizer();
   return files.length ? (

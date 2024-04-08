@@ -25,7 +25,6 @@ const styles = {
     borderRadius: 'var(--borderRadiusLarge)',
     border: '1px solid var(--colorNeutralStroke1)',
     display: 'grid',
-    gridTemplateAreas: ``,
     position: 'relative',
     gap: '6px',
     fontSize: '14px',
@@ -69,14 +68,16 @@ const styles = {
   }
 };
 
-export function Sendbox(props: {
-  readonly className?: string | undefined;
-  readonly placeholder?: string | undefined;
-  readonly maxMessageLength?: number | undefined;
-  readonly suggestedActions?: Partial<DirectLineCardAction>[] | undefined;
-  readonly errorMessageId?: string | undefined;
-  readonly onPostMessage?: ((activity: Partial<WebChatActivity>) => void) | undefined;
-}) {
+export function Sendbox(
+  props: Readonly<{
+    readonly className?: string | undefined;
+    readonly placeholder?: string | undefined;
+    readonly maxMessageLength?: number | undefined;
+    readonly suggestedActions?: Partial<DirectLineCardAction>[] | undefined;
+    readonly errorMessageId?: string | undefined;
+    readonly onPostMessage?: ((activity: Partial<WebChatActivity>) => void) | undefined;
+  }>
+) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState('');
   const [files, setFiles] = useState<File[]>([]);

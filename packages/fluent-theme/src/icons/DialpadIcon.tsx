@@ -1,6 +1,6 @@
 import React, { SVGAttributes } from 'react';
 
-export function DialpadIcon(props: SVGAttributes<SVGElement>) {
+export function DialpadIcon(props: Readonly<SVGAttributes<SVGElement>>) {
   return (
     <svg
       aria-hidden="true"

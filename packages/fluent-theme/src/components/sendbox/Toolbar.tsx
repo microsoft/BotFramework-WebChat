@@ -55,19 +55,19 @@ const styles = {
   }
 };
 
-export function ToolbarButton(props: ButtonHTMLAttributes<HTMLButtonElement>) {
+export function ToolbarButton(props: Readonly<ButtonHTMLAttributes<HTMLButtonElement>>) {
   const classNames = useStyles(styles);
   return (
     <button type="button" {...props} className={cx(classNames['webchat__sendbox__toolbar-button'], props.className)} />
   );
 }
 
-export function Toolbar(props: HTMLAttributes<HTMLDivElement>) {
+export function Toolbar(props: Readonly<HTMLAttributes<HTMLDivElement>>) {
   const classNames = useStyles(styles);
   return <div {...props} className={cx(classNames.webchat__sendbox__toolbar, props.className)} />;
 }
 
-export function ToolbarSeparator(props: HTMLAttributes<HTMLDivElement>) {
+export function ToolbarSeparator(props: Readonly<HTMLAttributes<HTMLDivElement>>) {
   const classNames = useStyles(styles);
   return (
     <div

@@ -1,6 +1,6 @@
 import React, { SVGAttributes } from 'react';
 
-export function AddDocumentIcon(props: SVGAttributes<SVGElement>) {
+export function AddDocumentIcon(props: Readonly<SVGAttributes<SVGElement>>) {
   return (
     <svg
       aria-hidden="true"

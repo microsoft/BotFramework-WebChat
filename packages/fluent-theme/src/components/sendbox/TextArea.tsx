@@ -58,9 +58,11 @@ const styles = {
 
 export const TextArea = forwardRef<
   HTMLTextAreaElement,
-  TextareaHTMLAttributes<HTMLTextAreaElement> & {
-    readonly className?: string | undefined;
-  }
+  Readonly<
+    TextareaHTMLAttributes<HTMLTextAreaElement> & {
+      readonly className?: string | undefined;
+    }
+  >
 >((props, ref) => {
   const classNames = useStyles(styles);
   return (

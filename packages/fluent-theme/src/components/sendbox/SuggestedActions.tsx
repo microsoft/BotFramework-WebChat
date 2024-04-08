@@ -26,10 +26,12 @@ const styles = {
 };
 
 // TODO: this is a stub for actions. We must reuse the existing SuggestedActions implementation
-export function SuggestedActions(props: {
-  readonly suggestedActions: Partial<DirectLineCardAction>[];
-  readonly onActionClick: (action: Partial<DirectLineCardAction>) => void;
-}) {
+export function SuggestedActions(
+  props: Readonly<{
+    readonly suggestedActions: Partial<DirectLineCardAction>[];
+    readonly onActionClick: (action: Partial<DirectLineCardAction>) => void;
+  }>
+) {
   const classNames = useStyles(styles);
   return (
     <div className={classNames['webchat__sendbox__suggested-actions']}>

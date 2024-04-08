@@ -1,6 +1,6 @@
 import React, { SVGAttributes } from 'react';
 
-export function SendIcon(props: SVGAttributes<SVGElement>) {
+export function SendIcon(props: Readonly<SVGAttributes<SVGElement>>) {
   return (
     <svg
       aria-hidden="true"

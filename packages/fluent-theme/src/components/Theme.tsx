@@ -37,7 +37,7 @@ const styles = {
   }
 };
 
-export function WebchatTheme(props: { readonly children: ReactNode | undefined }) {
+export default function WebchatTheme(props: Readonly<{ readonly children: ReactNode | undefined }>) {
   const classNames = useStyles(styles);
   return <div className={classNames.webchat__theme} {...props} />;
 }

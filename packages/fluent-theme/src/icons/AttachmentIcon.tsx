@@ -1,6 +1,6 @@
 import React, { SVGAttributes } from 'react';
 
-export function AttachmentIcon(props: SVGAttributes<SVGElement>) {
+export function AttachmentIcon(props: Readonly<SVGAttributes<SVGElement>>) {
   return (
     <svg
       aria-hidden="true"
