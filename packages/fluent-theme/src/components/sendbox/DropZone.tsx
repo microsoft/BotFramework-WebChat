@@ -76,7 +76,7 @@ export default function AttachmentDropZone(props: { readonly onFilesAdded: (file
       onDrop={handleDrop}
     >
       <AddDocumentIcon className={classNames['webchat__sendbox__attachment-dropzone-icon']} />
-      <span>{localize('TEXT_INPUT_DROP_ZONE')}</span>
+      {localize('TEXT_INPUT_DROP_ZONE')}
     </div>
   ) : null;
 }
