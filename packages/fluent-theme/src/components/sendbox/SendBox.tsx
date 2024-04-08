@@ -14,13 +14,13 @@ import { useStyles } from '../../styles';
 const { useLocalizer } = hooks;
 
 const styles = {
-  webchat__sendbox: {
+  'webchat-fluent__sendbox': {
     color: 'var(--colorNeutralForeground1)',
     fontFamily: 'var(--fontFamilyBase)',
     textRendering: 'optimizeLegibility'
   },
 
-  webchat__sendbox__sendbox: {
+  'webchat-fluent__sendbox__sendbox': {
     backgroundColor: 'var(--colorNeutralBackground1)',
     border: '1px solid var(--colorNeutralStroke1)',
     borderRadius: 'var(--borderRadiusLarge)',
@@ -38,7 +38,7 @@ const styles = {
     }
   },
 
-  'webchat__sendbox__sendbox-text': {
+  'webchat-fluent__sendbox__sendbox-text': {
     backgroundColor: 'transparent',
     border: 'none',
     flex: 'auto',
@@ -50,13 +50,13 @@ const styles = {
     resize: 'none'
   },
 
-  'webchat__sendbox__sendbox-controls': {
+  'webchat-fluent__sendbox__sendbox-controls': {
     alignItems: 'center',
     display: 'flex',
     paddingInlineStart: '4px'
   },
 
-  'webchat__sendbox__text-counter': {
+  'webchat-fluent__sendbox__text-counter': {
     color: 'var(--colorNeutralForeground4)',
     cursor: 'default',
     fontFamily: 'var(--fontFamilyNumeric)',
@@ -64,7 +64,7 @@ const styles = {
     lineHeight: '14px'
   },
 
-  'webchat__sendbox__text-counter--error': {
+  'webchat-fluent__sendbox__text-counter--error': {
     color: 'var(--colorStatusDangerForeground1)'
   }
 };
@@ -136,24 +136,24 @@ export default function SendBox(
   };
 
   return (
-    <div className={cx(classNames.webchat__sendbox, props.className)} {...aria}>
+    <div className={cx(classNames['webchat-fluent__sendbox'], props.className)} {...aria}>
       {props.suggestedActions && (
         <SuggestedActions onActionClick={handleReplyClick} suggestedActions={props.suggestedActions} />
       )}
-      <div className={cx(classNames.webchat__sendbox__sendbox)} onClickCapture={handleSendBoxClick}>
+      <div className={cx(classNames['webchat-fluent__sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
         <TextArea
-          className={cx(classNames['webchat__sendbox__sendbox-text'])}
+          className={cx(classNames['webchat-fluent__sendbox__sendbox-text'])}
           onInput={handleMessageChange}
           placeholder={props.placeholder ?? localize('TEXT_INPUT_PLACEHOLDER')}
           ref={inputRef}
           value={message}
         />
         <Attachments files={files} />
-        <div className={cx(classNames['webchat__sendbox__sendbox-controls'])}>
+        <div className={cx(classNames['webchat-fluent__sendbox__sendbox-controls'])}>
           {props.maxMessageLength && (
             <div
-              className={cx(classNames['webchat__sendbox__text-counter'], {
-                [classNames['webchat__sendbox__text-counter--error']]: isMessageLengthExceeded
+              className={cx(classNames['webchat-fluent__sendbox__text-counter'], {
+                [classNames['webchat-fluent__sendbox__text-counter--error']]: isMessageLengthExceeded
               })}
             >
               {`${message.length}/${props.maxMessageLength}`}

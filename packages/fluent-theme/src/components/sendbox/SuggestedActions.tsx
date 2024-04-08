@@ -3,7 +3,7 @@ import { useStyles } from '../../styles';
 import React from 'react';
 
 const styles = {
-  'webchat__sendbox__suggested-actions': {
+  'webchat-fluent__sendbox__suggested-actions': {
     alignItems: 'flex-end',
     alignSelf: 'flex-end',
     display: 'flex',
@@ -13,7 +13,7 @@ const styles = {
     paddingInlineStart: '4px'
   },
 
-  webchat__sendbox__action: {
+  'webchat-fluent__sendbox__action': {
     background: 'transparent',
     border: '1px solid var(--colorBrandStroke2)',
     borderRadius: '8px',
@@ -34,10 +34,10 @@ export function SuggestedActions(
 ) {
   const classNames = useStyles(styles);
   return (
-    <div className={classNames['webchat__sendbox__suggested-actions']}>
+    <div className={classNames['webchat-fluent__sendbox__suggested-actions']}>
       {props.suggestedActions.map(action => (
         <button
-          className={classNames.webchat__sendbox__action}
+          className={classNames['webchat-fluent__sendbox__action']}
           key={action.value}
           // TODO: how to fix?
           // eslint-disable-next-line react/jsx-no-bind

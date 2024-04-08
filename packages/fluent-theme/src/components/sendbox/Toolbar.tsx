@@ -3,13 +3,13 @@ import cx from 'classnames';
 import { useStyles } from '../../styles';
 
 const styles = {
-  webchat__sendbox__toolbar: {
+  'webchat-fluent__sendbox__toolbar': {
     display: 'flex',
     gap: '4px',
     marginInlineStart: 'auto'
   },
 
-  'webchat__sendbox__toolbar-button': {
+  'webchat-fluent__sendbox__toolbar-button': {
     alignItems: 'center',
     appearance: 'none',
     aspectRatio: '1',
@@ -43,7 +43,7 @@ const styles = {
     }
   },
 
-  'webchat__sendbox__toolbar-separator': {
+  'webchat-fluent__sendbox__toolbar-separator': {
     alignSelf: 'center',
     borderRight: '1px solid var(--colorNeutralStroke2)',
     height: '28px',
@@ -65,7 +65,7 @@ export function ToolbarButton(
   const classNames = useStyles(styles);
   return (
     <button
-      className={cx(classNames['webchat__sendbox__toolbar-button'], props.className)}
+      className={cx(classNames['webchat-fluent__sendbox__toolbar-button'], props.className)}
       onClick={props.onClick}
       type="button"
     >
@@ -78,7 +78,7 @@ export function Toolbar(
   props: Readonly<{ readonly children?: ReactNode | undefined; readonly className?: string | undefined }>
 ) {
   const classNames = useStyles(styles);
-  return <div className={cx(classNames.webchat__sendbox__toolbar, props.className)}>{props.children}</div>;
+  return <div className={cx(classNames['webchat-fluent__sendbox__toolbar'], props.className)}>{props.children}</div>;
 }
 
 export function ToolbarSeparator(
@@ -88,7 +88,7 @@ export function ToolbarSeparator(
   return (
     <div
       aria-orientation="vertical"
-      className={cx(classNames['webchat__sendbox__toolbar-separator'], props.className)}
+      className={cx(classNames['webchat-fluent__sendbox__toolbar-separator'], props.className)}
       role="separator"
     />
   );

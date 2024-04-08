@@ -2,7 +2,7 @@ import React, { type ReactNode } from 'react';
 import { useStyles } from '../styles';
 
 const styles = {
-  webchat__theme: {
+  'webchat-fluent__theme': {
     '--colorNeutralForeground1': '#242424',
     '--colorNeutralForeground2': '#424242',
     '--colorNeutralForeground4': '#707070',
@@ -39,5 +39,5 @@ const styles = {
 
 export default function WebchatTheme(props: Readonly<{ readonly children: ReactNode | undefined }>) {
   const classNames = useStyles(styles);
-  return <div className={classNames.webchat__theme}>{props.children}</div>;
+  return <div className={classNames['webchat-fluent__theme']}>{props.children}</div>;
 }

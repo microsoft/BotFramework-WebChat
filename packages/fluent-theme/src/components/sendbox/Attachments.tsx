@@ -7,17 +7,17 @@ import { useStyles } from '../../styles';
 const { useLocalizer } = hooks;
 
 export const styles = {
-  'webchat__sendbox__add-attachment': {
+  'webchat-fluent__sendbox__add-attachment': {
     display: 'grid'
   },
 
-  'webchat__sendbox__add-attachment-input': {
+  'webchat-fluent__sendbox__add-attachment-input': {
     fontSize: 0,
     height: 0,
     width: 0
   },
 
-  webchat__sendbox__attachment: {
+  'webchat-fluent__sendbox__attachment': {
     border: '1px solid var(--colorNeutralStroke1)',
     borderRadius: 'var(--borderRadiusLarge)',
     cursor: 'default',
@@ -53,11 +53,11 @@ export function AddAttachmentButton(
   );
 
   return (
-    <div className={classNames['webchat__sendbox__add-attachment']}>
+    <div className={classNames['webchat-fluent__sendbox__add-attachment']}>
       <input
         aria-disabled={props.disabled}
         aria-hidden="true"
-        className={classNames['webchat__sendbox__add-attachment-input']}
+        className={classNames['webchat-fluent__sendbox__add-attachment-input']}
         multiple={true}
         onInput={props.disabled ? undefined : handleFileChange}
         readOnly={props.disabled}
@@ -77,7 +77,7 @@ export function Attachments({ files }: Readonly<{ readonly files: Readonly<File[
   const classNames = useStyles(styles);
   const localize = useLocalizer();
   return files.length ? (
-    <div className={classNames.webchat__sendbox__attachment}>
+    <div className={classNames['webchat-fluent__sendbox__attachment']}>
       {files.length} {localize('TEXT_INPUT_ATTACHMENTS')}
     </div>
   ) : null;

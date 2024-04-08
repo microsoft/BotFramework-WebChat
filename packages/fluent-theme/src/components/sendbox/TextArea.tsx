@@ -3,14 +3,14 @@ import React, { type FormEventHandler, forwardRef } from 'react';
 import { useStyles } from '../../styles';
 
 const styles = {
-  'webchat__sendbox__text-area': {
+  'webchat-fluent__sendbox__text-area': {
     display: 'grid',
     gridTemplateAreas: `'main'`,
     maxHeight: '200px',
     overflow: 'hidden'
   },
 
-  'webchat__sendbox__text-area-shared': {
+  'webchat-fluent__sendbox__text-area-shared': {
     border: 'none',
     font: 'inherit',
     gridArea: 'main',
@@ -20,17 +20,17 @@ const styles = {
     scrollbarGutter: 'stable'
   },
 
-  'webchat__sendbox__text-area-doppelganger': {
+  'webchat-fluent__sendbox__text-area-doppelganger': {
     overflow: 'hidden',
     visibility: 'hidden',
     whiteSpace: 'pre-wrap'
   },
 
-  'webchat__sendbox__text-area-input': {
+  'webchat-fluent__sendbox__text-area-input': {
     height: '100%'
   },
 
-  'webchat__sendbox__text-area-input--scroll': {
+  'webchat-fluent__sendbox__text-area-input--scroll': {
     /* Firefox */
     MozScrollbarColor: 'var(--colorNeutralBackground5) var(--colorNeutralForeground2)',
     MozScrollbarWidth: 'thin',
@@ -67,20 +67,20 @@ export const TextArea = forwardRef<
 >((props, ref) => {
   const classNames = useStyles(styles);
   return (
-    <div className={cx(classNames['webchat__sendbox__text-area'], props.className)}>
+    <div className={cx(classNames['webchat-fluent__sendbox__text-area'], props.className)}>
       <div
         className={cx(
-          classNames['webchat__sendbox__text-area-doppelganger'],
-          classNames['webchat__sendbox__text-area-shared']
+          classNames['webchat-fluent__sendbox__text-area-doppelganger'],
+          classNames['webchat-fluent__sendbox__text-area-shared']
         )}
       >
         {props.value || props.placeholder}{' '}
       </div>
       <textarea
         className={cx(
-          classNames['webchat__sendbox__text-area-input'],
-          classNames['webchat__sendbox__text-area-shared'],
-          classNames['webchat__sendbox__text-area-input--scroll']
+          classNames['webchat-fluent__sendbox__text-area-input'],
+          classNames['webchat-fluent__sendbox__text-area-shared'],
+          classNames['webchat-fluent__sendbox__text-area-input--scroll']
         )}
         ref={ref}
       />
