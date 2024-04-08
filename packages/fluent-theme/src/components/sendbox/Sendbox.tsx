@@ -71,11 +71,11 @@ const styles = {
 export function Sendbox(
   props: Readonly<{
     readonly className?: string | undefined;
-    readonly placeholder?: string | undefined;
-    readonly maxMessageLength?: number | undefined;
-    readonly suggestedActions?: Partial<DirectLineCardAction>[] | undefined;
     readonly errorMessageId?: string | undefined;
+    readonly maxMessageLength?: number | undefined;
     readonly onPostMessage?: ((activity: Partial<WebChatActivity>) => void) | undefined;
+    readonly placeholder?: string | undefined;
+    readonly suggestedActions?: Partial<DirectLineCardAction>[] | undefined;
   }>
 ) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
