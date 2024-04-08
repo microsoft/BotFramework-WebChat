@@ -1,7 +1,6 @@
 import React, { type MouseEventHandler, type FormEventHandler, useCallback, useRef, useState } from 'react';
 import cx from 'classnames';
 import { hooks } from 'botframework-webchat-api';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
 import { SendIcon } from '../../icons/SendIcon';
 import { ToolbarButton, ToolbarSeparator, Toolbar } from './Toolbar';
 import { SuggestedActions } from './SuggestedActions';
