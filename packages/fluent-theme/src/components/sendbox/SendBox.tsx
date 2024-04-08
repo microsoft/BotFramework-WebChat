@@ -122,9 +122,9 @@ export default function SendBox(
         )
       );
 
-      setAttachments(attachments.concat(newAttachments));
+      setAttachments(attachments => attachments.concat(newAttachments));
     },
-    [attachments, makeThumbnail]
+    [makeThumbnail, setAttachments]
   );
 
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
