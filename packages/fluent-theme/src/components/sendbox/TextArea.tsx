@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import React, { type TextareaHTMLAttributes, forwardRef } from 'react';
+import React, { type FormEventHandler, forwardRef } from 'react';
 import { useStyles } from '../../styles';
 
 const styles = {
@@ -58,11 +58,12 @@ const styles = {
 
 export const TextArea = forwardRef<
   HTMLTextAreaElement,
-  Readonly<
-    TextareaHTMLAttributes<HTMLTextAreaElement> & {
-      readonly className?: string | undefined;
-    }
-  >
+  Readonly<{
+    readonly className?: string | undefined;
+    readonly placeholder?: string | undefined;
+    readonly value?: string | undefined;
+    readonly onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
+  }>
 >((props, ref) => {
   const classNames = useStyles(styles);
   return (
@@ -76,7 +77,6 @@ export const TextArea = forwardRef<
         {props.value || props.placeholder}{' '}
       </div>
       <textarea
-        {...props}
         className={cx(
           classNames['webchat__sendbox__text-area-input'],
           classNames['webchat__sendbox__text-area-shared'],

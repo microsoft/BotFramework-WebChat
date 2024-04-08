@@ -1,4 +1,4 @@
-import React, { type ButtonHTMLAttributes, type HTMLAttributes } from 'react';
+import React, { type ReactNode, type MouseEventHandler } from 'react';
 import cx from 'classnames';
 import { useStyles } from '../../styles';
 
@@ -54,26 +54,42 @@ const styles = {
   }
 };
 
-export function ToolbarButton(props: Readonly<ButtonHTMLAttributes<HTMLButtonElement>>) {
+export function ToolbarButton(
+  props: Readonly<{
+    readonly children?: ReactNode | undefined;
+    readonly className?: string | undefined;
+    readonly disabled?: boolean | undefined;
+    readonly onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
+  }>
+) {
   const classNames = useStyles(styles);
   return (
-    <button type="button" {...props} className={cx(classNames['webchat__sendbox__toolbar-button'], props.className)} />
+    <button
+      className={cx(classNames['webchat__sendbox__toolbar-button'], props.className)}
+      onClick={props.onClick}
+      type="button"
+    >
+      {props.children}
+    </button>
   );
 }
 
-export function Toolbar(props: Readonly<HTMLAttributes<HTMLDivElement>>) {
+export function Toolbar(
+  props: Readonly<{ readonly children?: ReactNode | undefined; readonly className?: string | undefined }>
+) {
   const classNames = useStyles(styles);
-  return <div {...props} className={cx(classNames.webchat__sendbox__toolbar, props.className)} />;
+  return <div className={cx(classNames.webchat__sendbox__toolbar, props.className)}>{props.children}</div>;
 }
 
-export function ToolbarSeparator(props: Readonly<HTMLAttributes<HTMLDivElement>>) {
+export function ToolbarSeparator(
+  props: Readonly<{ readonly children?: ReactNode | undefined; readonly className?: string | undefined }>
+) {
   const classNames = useStyles(styles);
   return (
     <div
       aria-orientation="vertical"
-      role="separator"
-      {...props}
       className={cx(classNames['webchat__sendbox__toolbar-separator'], props.className)}
+      role="separator"
     />
   );
 }
