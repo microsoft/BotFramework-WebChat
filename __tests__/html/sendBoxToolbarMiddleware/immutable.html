@@ -6,6 +6,13 @@
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      :focus {
+        background-color: Yellow;
+        outline: dashed 2px Red;
+        outline-offset: -6px;
+      }
+    </style>
   </head>
   <body>
     <main id="webchat"></main>
@@ -27,25 +34,37 @@
           );
         };
 
-        WebChat.renderWebChat(
-          { directLine, store, sendBoxToolbarMiddleware: [() => next => request => CustomSendBoxToolbar] },
-          document.getElementById('webchat')
-        );
+        const sendBoxToolbarMiddleware = [() => next => request => CustomSendBoxToolbar];
+
+        const render = bubbleBackground =>
+          WebChat.renderWebChat(
+            { directLine, store, sendBoxToolbarMiddleware, styleOptions: { bubbleBackground } },
+            document.getElementById('webchat')
+          );
+
+        render('#fee');
 
         await pageConditions.uiConnected();
 
         await directLine.emulateIncomingActivity('Consectetur ut veniam est veniam eu eu commodo.');
 
+        // WHEN: Focus on the custom send box toolbar.
+        pageElements.sendBoxTextBox().focus();
+        await host.sendShiftTab();
+
         // THEN: Should render the custom send box toolbar.
         await pageConditions.numActivitiesShown(1);
         await host.snapshot();
 
-        // WHEN: The "Hello" button is clicked.
-        pageElements.sendBoxTextBox().focus();
-        await host.sendShiftTab();
-        await (await directLine.actPostActivity(() => host.sendKeys(' '))).resolveAll();
+        sendBoxToolbarMiddleware.pop();
 
-        // THEN: Should send a "Hello, World!" messaeg.
+        render('#efe');
+
+        await directLine.emulateIncomingActivity(
+          'Proident ut ea consectetur fugiat amet in laborum culpa quis velit incididunt.'
+        );
+
+        // THEN: Should not change the send box toolbar and continue to focus on the custom send box toolbar.
         await pageConditions.numActivitiesShown(2);
         await host.snapshot();
       });
