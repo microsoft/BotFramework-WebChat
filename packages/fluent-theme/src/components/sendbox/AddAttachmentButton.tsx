@@ -29,7 +29,6 @@ export default function AddAttachmentButton(
   const classNames = useStyles(styles);
   const localize = useLocalizer();
   const [{ uploadAccept, uploadMultiple }] = useStyleOptions();
-  
 
   const handleClick = useCallback(() => inputRef.current?.click(), [inputRef]);
 
