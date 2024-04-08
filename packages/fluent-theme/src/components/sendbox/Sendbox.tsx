@@ -14,7 +14,7 @@ import { useStyles } from '../../styles';
 const { useLocalizer } = hooks;
 
 const styles = {
-  webchat__sendbox__root: {
+  webchat__sendbox: {
     color: 'var(--colorNeutralForeground1)',
     fontFamily: 'var(--fontFamilyBase)',
     textRendering: 'optimizeLegibility'
@@ -138,7 +138,7 @@ export function Sendbox(
   };
 
   return (
-    <div className={cx(classNames.webchat__sendbox__root, props.className)} {...aria}>
+    <div className={cx(classNames.webchat__sendbox, props.className)} {...aria}>
       {props.suggestedActions && (
         <SuggestedActions onActionClick={handleReplyClick} suggestedActions={props.suggestedActions} />
       )}
