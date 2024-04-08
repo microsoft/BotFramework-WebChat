@@ -130,6 +130,8 @@
   "_TEXT_INPUT_ATTACHMENTS_FEW.comment": "$1 is the number of attachments. This is for plural rule of \"few\".",
   "TEXT_INPUT_ATTACHMENTS_MANY": "$1 attachments",
   "_TEXT_INPUT_ATTACHMENTS_MANY.comment": "$1 is the number of attachments. This is for plural rule of \"many\".",
+  "TEXT_INPUT_ATTACHMENTS_ONE": "1 attachment",
+  "_TEXT_INPUT_ATTACHMENTS_ONE.comment": "$1 is the number of attachments. This is for plural rule of \"one\".",
   "TEXT_INPUT_ATTACHMENTS_OTHER": "$1 attachments",
   "_TEXT_INPUT_ATTACHMENTS_OTHER.comment": "$1 is the number of attachments. This is for plural rule of \"other\".",
   "TEXT_INPUT_ATTACHMENTS_TWO": "$1 attachments",
