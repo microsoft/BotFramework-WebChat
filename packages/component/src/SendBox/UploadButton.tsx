@@ -1,17 +1,20 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, useCallback, useRef } from 'react';
+import React, { useCallback, useRef, type FC, type FormEventHandler, type MouseEventHandler } from 'react';
+import { useRefFrom } from 'use-ref-from';
 
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
 import connectToWebChat from '../connectToWebChat';
+import useMakeThumbnail from '../hooks/internal/useMakeThumbnail';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
-import useSendFiles from '../hooks/useSendFiles';
+import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
+import useSubmit from '../providers/internal/SendBox/useSubmit';
 import AttachmentIcon from './Assets/AttachmentIcon';
 import IconButton from './IconButton';
 
-const { useDisabled, useLocalizer, useStyleOptions } = hooks;
+const { useDisabled, useSendBoxAttachments, useLocalizer, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__upload-button': {
@@ -94,30 +97,42 @@ type UploadButtonProps = {
 };
 
 const UploadButton: FC<UploadButtonProps> = ({ className }) => {
+  const [{ sendAttachmentOn, uploadAccept, uploadMultiple }] = useStyleOptions();
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
-  const [{ uploadAccept, uploadMultiple }] = useStyleOptions();
   const [disabled] = useDisabled();
+  const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachments();
+  const focus = useFocus();
   const inputRef = useRef<HTMLInputElement>();
   const localize = useLocalizer();
+  const makeThumbnail = useMakeThumbnail();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
-  const sendFiles = useSendFiles();
+  const submit = useSubmit();
 
-  const { current } = inputRef;
+  const sendAttachmentOnRef = useRefFrom(sendAttachmentOn);
   const uploadFileString = localize('TEXT_INPUT_UPLOAD_BUTTON_ALT');
 
-  const handleClick = useCallback(() => {
-    current && current.click();
-  }, [current]);
+  const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(() => inputRef.current?.click(), [inputRef]);
 
-  const handleFileChange = useCallback(
-    ({ target: { files } }) => {
-      sendFiles(files);
+  const handleFileChange = useCallback<FormEventHandler<HTMLInputElement>>(
+    ({ currentTarget }) => {
+      // We should change the focus synchronously for accessibility reason.
+      focus('sendBox');
 
-      if (current) {
-        current.value = null;
-      }
+      // TODO: [P2] We should disable send button while we are creating thumbnails.
+      //            Otherwise, if the user click the send button too quickly, it will not attach any files.
+      (async function () {
+        setSendBoxAttachments(
+          Object.freeze(
+            await Promise.all(
+              [...currentTarget.files].map(blob => makeThumbnail(blob).then(thumbnailURL => ({ blob, thumbnailURL })))
+            )
+          )
+        );
+
+        sendAttachmentOnRef.current === 'attach' && submit();
+      })();
     },
-    [current, sendFiles]
+    [focus, makeThumbnail, sendAttachmentOnRef, setSendBoxAttachments, submit]
   );
 
   return (
@@ -137,7 +152,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
         type="file"
       />
       <IconButton alt={uploadFileString} aria-label={uploadFileString} disabled={disabled} onClick={handleClick}>
-        <AttachmentIcon />
+        <AttachmentIcon checked={!!sendBoxAttachments.length} />
       </IconButton>
     </div>
   );

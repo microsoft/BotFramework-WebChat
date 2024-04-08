@@ -26,12 +26,12 @@
         );
 
         await pageConditions.uiConnected();
-        
+
         // Validate the <input> element has the correct file types
-        const uploadButton = pageElements.uploadButton()
+        const uploadButton = pageElements.uploadButton();
+
         expect(uploadButton).toHaveProperty('accept', 'image/*');
         expect(uploadButton).toHaveProperty('multiple', false);
-        
       });
     </script>
   </body>

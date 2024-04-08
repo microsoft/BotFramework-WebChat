@@ -15,6 +15,7 @@ import setDictateState from './actions/setDictateState';
 import setLanguage from './actions/setLanguage';
 import setNotification from './actions/setNotification';
 import setSendBox from './actions/setSendBox';
+import setSendBoxAttachments from './actions/setSendBoxAttachments';
 import setSendTimeout from './actions/setSendTimeout';
 import setSendTypingIndicator from './actions/setSendTypingIndicator';
 import startDictate from './actions/startDictate';
@@ -43,6 +44,7 @@ import singleToArray from './utils/singleToArray';
 import warnOnce from './utils/warnOnce';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import type { SendBoxAttachment } from './types/SendBoxAttachment';
 import type { WebChatActivity } from './types/WebChatActivity';
 import type { DirectLineActivity } from './types/external/DirectLineActivity';
 import type { DirectLineAnimationCard } from './types/external/DirectLineAnimationCard';
@@ -100,6 +102,7 @@ export {
   setLanguage,
   setNotification,
   setSendBox,
+  setSendBoxAttachments,
   setSendTimeout,
   setSendTypingIndicator,
   singleToArray,
@@ -135,5 +138,6 @@ export type {
   OrgSchemaDefinedTerm,
   OrgSchemaProject,
   OrgSchemaThing,
+  SendBoxAttachment,
   WebChatActivity
 };

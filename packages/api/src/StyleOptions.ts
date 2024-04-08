@@ -271,6 +271,13 @@ type StyleOptions = {
    */
   uploadMultiple?: boolean;
 
+  /**
+   * If set to `send` (default), attachment will be sent when the send button is clicked, or when the message is being sent.
+   *
+   * Otherwise, if set to `attach`, attachment will be sent immediately after file is selected.
+   */
+  sendAttachmentOn?: 'attach' | 'send';
+
   /** Send box button: Icon color, defaults to subtle */
   sendBoxButtonColor?: string;
 
@@ -807,9 +814,9 @@ type StyleOptions = {
 
   enableUploadThumbnail?: boolean;
   uploadThumbnailContentType?: string;
-  uploadThumbnailHeight?: number | string;
+  uploadThumbnailHeight?: number;
   uploadThumbnailQuality?: number;
-  uploadThumbnailWidth?: number | string;
+  uploadThumbnailWidth?: number;
 
   /**
    * Video

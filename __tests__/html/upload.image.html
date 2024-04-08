@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -13,7 +13,8 @@
         WebChat.renderWebChat(
           {
             directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
-            store: testHelpers.createStore()
+            store: testHelpers.createStore(),
+            styleOptions: { sendAttachmentOn: 'attach' }
           },
           document.getElementById('webchat')
         );
