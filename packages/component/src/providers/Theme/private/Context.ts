@@ -7,6 +7,8 @@ import type {
   CardActionMiddleware,
   GroupActivitiesMiddleware,
   ScrollToEndButtonMiddleware,
+  SendBoxMiddleware,
+  SendBoxToolbarMiddleware,
   StyleOptions,
   ToastMiddleware,
   TypingIndicatorMiddleware
@@ -25,6 +27,8 @@ export type ContextType = {
   cardActionMiddleware: readonly CardActionMiddleware[];
   groupActivitiesMiddleware: readonly GroupActivitiesMiddleware[];
   scrollToEndButtonMiddleware: readonly ScrollToEndButtonMiddleware[];
+  sendBoxMiddleware: readonly SendBoxMiddleware[];
+  sendBoxToolbarMiddleware: readonly SendBoxToolbarMiddleware[];
   styleOptions: StyleOptions;
   toastMiddleware: readonly ToastMiddleware[];
   typingIndicatorMiddleware: readonly TypingIndicatorMiddleware[];
@@ -39,6 +43,8 @@ export default createContext<ContextType>({
   cardActionMiddleware: EMPTY_ARRAY,
   groupActivitiesMiddleware: EMPTY_ARRAY,
   scrollToEndButtonMiddleware: EMPTY_ARRAY,
+  sendBoxMiddleware: EMPTY_ARRAY,
+  sendBoxToolbarMiddleware: EMPTY_ARRAY,
   styleOptions: EMPTY_OBJECT,
   toastMiddleware: EMPTY_ARRAY,
   typingIndicatorMiddleware: EMPTY_ARRAY

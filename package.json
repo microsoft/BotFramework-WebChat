@@ -45,6 +45,7 @@
     "precommit:eslint:component": "cd packages && cd component && npm run precommit:eslint",
     "precommit:eslint:core": "cd packages && cd core && npm run precommit:eslint",
     "precommit:eslint:directlinespeech": "cd packages && cd directlinespeech && npm run precommit:eslint",
+    "precommit:eslint:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:eslint",
     "precommit:eslint:isomorphic-react-dom": "cd packages && cd isomorphic-react-dom && npm run precommit:eslint",
     "precommit:eslint:isomorphic-react": "cd packages && cd isomorphic-react && npm run precommit:eslint",
     "precommit:eslint:support-cldr-data-downloader": "cd packages && cd support && cd cldr-data-downloader && npm run precommit:eslint",

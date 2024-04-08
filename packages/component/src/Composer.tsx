@@ -398,18 +398,20 @@ const Composer: FC<ComposerProps> = ({
     () =>
       Object.freeze([
         ...rectifySendBoxMiddlewareProps(sendBoxMiddlewareFromProps),
+        ...rectifySendBoxMiddlewareProps(theme.sendBoxMiddleware),
         ...createDefaultSendBoxMiddleware()
       ]),
-    [sendBoxMiddlewareFromProps]
+    [sendBoxMiddlewareFromProps, theme.sendBoxMiddleware]
   );
 
   const sendBoxToolbarMiddleware = useMemo<readonly SendBoxToolbarMiddleware[]>(
     () =>
       Object.freeze([
         ...rectifySendBoxToolbarMiddlewareProps(sendBoxToolbarMiddlewareFromProps),
+        ...rectifySendBoxToolbarMiddlewareProps(theme.sendBoxToolbarMiddleware),
         ...createDefaultSendBoxToolbarMiddleware()
       ]),
-    [sendBoxToolbarMiddlewareFromProps]
+    [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]
   );
 
   return (

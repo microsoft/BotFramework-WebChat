@@ -8,7 +8,7 @@ const { useStyleOptions } = hooks;
 const HideableSendBox = ({ className }: SendBoxMiddlewareProps) => {
   const [{ hideSendBox }] = useStyleOptions();
 
-  return hideSendBox ? false : <BasicSendBox className={className} />;
+  return hideSendBox ? null : <BasicSendBox className={className} />;
 };
 
 const createMiddleware = (): readonly SendBoxMiddleware[] => Object.freeze([() => () => () => HideableSendBox]);

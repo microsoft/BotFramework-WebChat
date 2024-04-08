@@ -16,6 +16,8 @@ const ThemeProvider = ({
   cardActionMiddleware,
   groupActivitiesMiddleware,
   scrollToEndButtonMiddleware,
+  sendBoxMiddleware,
+  sendBoxToolbarMiddleware,
   styleOptions,
   toastMiddleware,
   typingIndicatorMiddleware
@@ -67,6 +69,16 @@ const ThemeProvider = ({
     [scrollToEndButtonMiddleware, existingContext.scrollToEndButtonMiddleware]
   );
 
+  const mergedSendBoxMiddleware = useMemo<ContextType['sendBoxMiddleware']>(
+    () => Object.freeze([...(sendBoxMiddleware || EMPTY_ARRAY), ...existingContext.sendBoxMiddleware]),
+    [sendBoxMiddleware, existingContext.sendBoxMiddleware]
+  );
+
+  const mergedSendBoxToolbarMiddleware = useMemo<ContextType['sendBoxToolbarMiddleware']>(
+    () => Object.freeze([...(sendBoxToolbarMiddleware || EMPTY_ARRAY), ...existingContext.sendBoxToolbarMiddleware]),
+    [sendBoxToolbarMiddleware, existingContext.sendBoxToolbarMiddleware]
+  );
+
   const mergedStyleOptions = useMemo<ContextType['styleOptions']>(
     () => Object.freeze({ ...styleOptions, ...existingContext.styleOptions }),
     [styleOptions, existingContext.styleOptions]
@@ -92,6 +104,8 @@ const ThemeProvider = ({
       cardActionMiddleware: mergedCardActionMiddleware,
       groupActivitiesMiddleware: mergedGroupActivitiesMiddleware,
       scrollToEndButtonMiddleware: mergedScrollToEndButtonMiddleware,
+      sendBoxMiddleware: mergedSendBoxMiddleware,
+      sendBoxToolbarMiddleware: mergedSendBoxToolbarMiddleware,
       styleOptions: mergedStyleOptions,
       toastMiddleware: mergedToastMiddleware,
       typingIndicatorMiddleware: mergedTypingIndicatorMiddleware
@@ -105,6 +119,8 @@ const ThemeProvider = ({
       mergedCardActionMiddleware,
       mergedGroupActivitiesMiddleware,
       mergedScrollToEndButtonMiddleware,
+      mergedSendBoxMiddleware,
+      mergedSendBoxToolbarMiddleware,
       mergedStyleOptions,
       mergedToastMiddleware,
       mergedTypingIndicatorMiddleware
