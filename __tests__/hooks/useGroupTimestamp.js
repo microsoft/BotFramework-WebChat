@@ -19,18 +19,6 @@ test('getter should return group timestamp set in styleOptions', async () => {
   expect(groupTimestamp).toMatchInlineSnapshot(`1000`);
 });
 
-test('getter should return group timestamp set in props (deprecated)', async () => {
-  const { pageObjects } = await setupWebDriver({
-    props: {
-      groupTimestamp: 1000
-    }
-  });
-
-  const [groupTimestamp] = await pageObjects.runHook('useGroupTimestamp');
-
-  expect(groupTimestamp).toMatchInlineSnapshot(`1000`);
-});
-
 test('getter should return default group timestamp if not set in styleOptions', async () => {
   const { pageObjects } = await setupWebDriver();
 
