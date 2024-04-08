@@ -24,6 +24,7 @@ const ThemeProvider = ({
 }: Props) => {
   const existingContext = useContext(Context);
 
+  // TODO: [P1] We should reduce boilerplate code.
   const mergedActivityMiddleware = useMemo<ContextType['activityMiddleware']>(
     () => Object.freeze([...(activityMiddleware || []), ...existingContext.activityMiddleware]),
     [activityMiddleware, existingContext.activityMiddleware]
