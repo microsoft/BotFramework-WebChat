@@ -164,7 +164,7 @@ export default function SendBox(
             </div>
           )}
           <Toolbar>
-            <ToolbarButton aria-label={localize('TEXT_INPUT_DIALPAD_BUTTON_ALT')}>
+            <ToolbarButton aria-label={localize('TEXT_INPUT_TELEPHON_KEYPAD_BUTTON_ALT')}>
               <TelephoneKeypadIcon />
             </ToolbarButton>
             <AddAttachmentButton onFilesAdded={handleAddFiles} />
