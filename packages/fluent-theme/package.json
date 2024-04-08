@@ -55,6 +55,7 @@
   "pinDependencies": {},
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.5",
+    "@types/math-random": "^1.0.2",
     "@types/node": "^20.10.3",
     "@types/react": "^18.2.74",
     "tsup": "^8.0.2",
@@ -62,17 +63,18 @@
   },
   "dependencies": {
     "@emotion/css": "^11.11.2",
-    "botframework-webchat-api":  "0.0.0-0",
+    "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "^2.5.1",
-    "inject-meta-tag": "^0.0.1"
+    "inject-meta-tag": "^0.0.1",
+    "math-random": "^2.0.1"
   },
   "peerDependencies": {
     "react": ">= 16.8.6"
   },
   "localPeerDependencies": {
-    "botframework-webchat-api":  "0.0.0-0",
+    "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0"
   }

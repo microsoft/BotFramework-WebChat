@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import useStyleToEmotionObject from 'botframework-webchat-component/lib/hooks/internal/useStyleToEmotionObject';
+
+import useStyleToEmotionObject from '../private/useStyleToEmotionObject';
 
 export function useStyles<T extends Record<`webchat-fluent__${string}`, any>>(styles: T): Record<keyof T, string> {
   const getClassName = useStyleToEmotionObject();

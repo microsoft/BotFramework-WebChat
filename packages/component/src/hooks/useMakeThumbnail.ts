@@ -2,7 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import { useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import downscaleImageToDataURL from '../../Utils/downscaleImageToDataURL/index';
+import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
 
 const { useStyleOptions, useTrackTiming } = hooks;
 

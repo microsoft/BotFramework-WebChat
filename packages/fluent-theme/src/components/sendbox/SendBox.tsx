@@ -1,17 +1,16 @@
-import React, { type MouseEventHandler, type FormEventHandler, useCallback, useRef, useState } from 'react';
+import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
-import { hooks } from 'botframework-webchat-api';
+import React, { useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
 import { SendIcon } from '../../icons/SendIcon';
-import { ToolbarButton, ToolbarSeparator, Toolbar } from './Toolbar';
-import { SuggestedActions } from './SuggestedActions';
-import { AddAttachmentButton, Attachments } from './Attachments';
-import DropZone from './DropZone';
-import { TextArea } from './TextArea';
 import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
 import { useStyles } from '../../styles';
-import useMakeThumbnail from 'botframework-webchat-component/lib/hooks/internal/useMakeThumbnail';
+import { AddAttachmentButton, Attachments } from './Attachments';
+import DropZone from './DropZone';
+import { SuggestedActions } from './SuggestedActions';
+import { TextArea } from './TextArea';
+import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
 
-const { useLocalizer, useSendMessage } = hooks;
+const { useMakeThumbnail, useLocalizer, useSendMessage } = hooks;
 
 const styles = {
   'webchat-fluent__sendbox': {

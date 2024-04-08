@@ -1,13 +1,15 @@
-import { hooks } from 'botframework-webchat-api';
+import { hooks } from 'botframework-webchat-component';
+// import SuggestedAction from 'botframework-webchat-component/lib/SendBox/SuggestedAction';
 import type { DirectLineCardAction } from 'botframework-webchat-core';
-import { useStyles } from '../../styles';
-import React, { type ReactNode } from 'react';
 import cx from 'classnames';
-import useStyleSet from 'botframework-webchat-component/lib/hooks/useStyleSet';
-import computeSuggestedActionText from 'botframework-webchat-component/lib//Utils/computeSuggestedActionText';
-import SuggestedAction from 'botframework-webchat-component/lib/SendBox/SuggestedAction';
+import React, { type ReactNode } from 'react';
+import { useStyles } from '../../styles';
+import computeSuggestedActionText from './private/computeSuggestedActionText';
 
-const { useLocalizer, useSuggestedActions } = hooks;
+const { useLocalizer, useStyleSet, useSuggestedActions } = hooks;
+
+// TODO: FIX ME.
+const SuggestedAction = () => <div>{'Fix me'}</div>;
 
 const styles = {
   'webchat-fluent__sendbox__suggested-actions': {

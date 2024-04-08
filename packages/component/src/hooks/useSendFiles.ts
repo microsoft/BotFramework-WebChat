@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { useCallback } from 'react';
 
-import useMakeThumbnail from './internal/useMakeThumbnail';
+import useMakeThumbnail from './useMakeThumbnail';
 
 const { useSendFiles: useAPISendFiles } = hooks;
 
