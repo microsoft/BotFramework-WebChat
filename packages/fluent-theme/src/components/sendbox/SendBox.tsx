@@ -69,7 +69,7 @@ const styles = {
   }
 };
 
-export function Sendbox(
+export default function SendBox(
   props: Readonly<{
     readonly className?: string | undefined;
     readonly errorMessageId?: string | undefined;
@@ -81,7 +81,7 @@ export function Sendbox(
 ) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState('');
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<Readonly<File[]>>([]);
   const isMessageLengthExceeded = !!props.maxMessageLength && message.length > props.maxMessageLength;
   const classNames = useStyles(styles);
   const localize = useLocalizer();
@@ -92,7 +92,7 @@ export function Sendbox(
     }
   }, []);
 
-  const handleSendboxClick = useCallback<MouseEventHandler>(
+  const handleSendBoxClick = useCallback<MouseEventHandler>(
     event => {
       if ('tabIndex' in event.target && typeof event.target.tabIndex === 'number' && event.target.tabIndex >= 0) {
         return;
@@ -103,9 +103,7 @@ export function Sendbox(
   );
 
   const handleMessageChange: React.FormEventHandler<HTMLTextAreaElement> = useCallback(
-    event => {
-      setMessage(event.currentTarget.value);
-    },
+    event => setMessage(event.currentTarget.value),
     [setMessage]
   );
 
@@ -142,7 +140,7 @@ export function Sendbox(
       {props.suggestedActions && (
         <SuggestedActions onActionClick={handleReplyClick} suggestedActions={props.suggestedActions} />
       )}
-      <div className={cx(classNames.webchat__sendbox__sendbox)} onClickCapture={handleSendboxClick}>
+      <div className={cx(classNames.webchat__sendbox__sendbox)} onClickCapture={handleSendBoxClick}>
         <TextArea
           className={cx(classNames['webchat__sendbox__sendbox-text'])}
           onInput={handleMessageChange}

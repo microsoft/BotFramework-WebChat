@@ -73,7 +73,7 @@ export function AddAttachmentButton(
   );
 }
 
-export function Attachments({ files }: Readonly<{ readonly files: File[] }>) {
+export function Attachments({ files }: Readonly<{ readonly files: Readonly<File[]> }>) {
   const classNames = useStyles(styles);
   const localize = useLocalizer();
   return files.length ? (
