@@ -151,7 +151,7 @@ export default function SendBox(
 
   return (
     <form className={cx(classNames['webchat-fluent__sendbox'], props.className)} onSubmit={handleFormSubmit} {...aria}>
-      {props.suggestedActions && <SuggestedActions suggestedActions={props.suggestedActions} />}
+      {props.suggestedActions && <SuggestedActions />}
       <div className={cx(classNames['webchat-fluent__sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
         <TextArea
           ariaLabel={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : null}
