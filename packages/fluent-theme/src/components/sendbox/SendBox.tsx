@@ -1,4 +1,4 @@
-import React, { type MouseEventHandler, useCallback, useRef, useState } from 'react';
+import React, { type MouseEventHandler, type FormEventHandler, useCallback, useRef, useState } from 'react';
 import cx from 'classnames';
 import { hooks } from 'botframework-webchat-api';
 import type { DirectLineCardAction, WebChatActivity } from 'botframework-webchat-core';
@@ -114,20 +114,23 @@ export default function SendBox(
     [setFiles]
   );
 
-  const handleSendClick = useCallback(() => {
-    props.onPostMessage?.({
-      text: message,
-      attachments: files.map(file => ({
-        contentType: file.type,
-        name: file.name
-      }))
-    });
-    setMessage('');
-    setFiles([]);
-  }, [props, message, files, setMessage, setFiles]);
+  const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
+    event => {
+      event.preventDefault();
+      props.onPostMessage?.({
+        text: message,
+        attachments: files.map(file => ({
+          contentType: file.type,
+          name: file.name
+        }))
+      });
+      setMessage('');
+      setFiles([]);
+    },
+    [props, message, files, setMessage, setFiles]
+  );
 
   const aria = {
-    role: 'form',
     'aria-invalid': 'false' as const,
     ...(props.errorMessageId && {
       'aria-invalid': 'true' as const,
@@ -136,7 +139,7 @@ export default function SendBox(
   };
 
   return (
-    <div className={cx(classNames['webchat-fluent__sendbox'], props.className)} {...aria}>
+    <form className={cx(classNames['webchat-fluent__sendbox'], props.className)} onSubmit={handleFormSubmit} {...aria}>
       {props.suggestedActions && (
         <SuggestedActions onActionClick={handleReplyClick} suggestedActions={props.suggestedActions} />
       )}
@@ -168,7 +171,7 @@ export default function SendBox(
             <ToolbarButton
               aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
               disabled={isMessageLengthExceeded}
-              onClick={handleSendClick}
+              submit={true}
             >
               <SendIcon />
             </ToolbarButton>
@@ -176,6 +179,6 @@ export default function SendBox(
         </div>
         <DropZone onFilesAdded={handleAddFiles} />
       </div>
-    </div>
+    </form>
   );
 }
