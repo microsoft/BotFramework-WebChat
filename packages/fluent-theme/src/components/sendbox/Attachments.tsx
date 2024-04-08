@@ -29,6 +29,7 @@ export function Attachments({
 }>) {
   const classNames = useStyles(styles);
   const localizeWithPlural = useLocalizer({ plural: true });
+
   return attachments.length ? (
     <div className={classNames['webchat-fluent__sendbox__attachment']}>
       {localizeWithPlural(attachmentsPluralStringIds, attachments.length)}

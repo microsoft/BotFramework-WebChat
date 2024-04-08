@@ -22,7 +22,13 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        const App = () => <ReactWebChat directLine={directLine} locale="yue" store={store} />;
+        const App = () => (
+          <ReactWebChat
+            activityMiddleware={testHelpers.createRunHookActivityMiddleware()}
+            directLine={directLine}
+            store={store}
+          />
+        );
 
         render(
           <FluentThemeProvider>
@@ -33,15 +39,40 @@
 
         await pageConditions.uiConnected();
 
-        await pageObjects.uploadFile('seaofthieves.jpg');
+        const blob1 = new File(
+          [
+            await (
+              await fetch(
+                'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+              )
+            ).blob()
+          ],
+          'surface1.jpg',
+          { type: 'image/jpeg' }
+        );
+
+        const blob2 = new File(
+          [
+            await (
+              await fetch(
+                'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg'
+              )
+            ).blob()
+          ],
+          'surface2.jpg',
+          { type: 'image/jpeg' }
+        );
+
+        await pageObjects.runHook(({ useSendBoxAttachments }) =>
+          useSendBoxAttachments()[1]([{ blob: blob1 }, { blob: blob2 }])
+        );
 
         await pageConditions.became(
-          'attachment count change to 1',
+          'attachment count change to 2',
           () => {
             try {
-              // It seems "yue" doesn't use plural form of "one".
               expect(document.querySelector('.webchat-fluent__sendbox__attachment').textContent.trim()).toBe(
-                '1 件附件'
+                '2 attachments'
               );
 
               return true;
