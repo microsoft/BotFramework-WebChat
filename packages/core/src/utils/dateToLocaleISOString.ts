@@ -45,9 +45,11 @@ export default function dateToLocaleISOString(date: Date): string {
   // "yyyy-MM-DDTHH:mm:ss.fff+08:00" for GMT+08
   // "yyyy-MM-DDTHH:mm:ss.fffZ" for UTC
 
+  const absoluteTimezoneOffset = ~~Math.abs(timezoneOffset);
+
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(
     date.getMinutes()
   )}:${pad(date.getSeconds())}.${pad(date.getMilliseconds(), 3)}${
-    timezoneOffset ? `${timezoneSign}${pad(~~(Math.abs(timezoneOffset) / 60))}:${pad(timezoneOffset % 60)}` : 'Z'
+    timezoneOffset ? `${timezoneSign}${pad(~~(absoluteTimezoneOffset / 60))}:${pad(absoluteTimezoneOffset % 60)}` : 'Z'
   }`;
 }
