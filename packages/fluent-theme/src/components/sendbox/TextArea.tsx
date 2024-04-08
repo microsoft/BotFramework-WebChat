@@ -62,13 +62,13 @@ export const TextArea = forwardRef<
     readonly className?: string | undefined;
   }
 >((props, ref) => {
-  const classnames = useStyles(styles);
+  const classNames = useStyles(styles);
   return (
-    <div className={cx(classnames['webchat__sendbox__text-area'], props.className)}>
+    <div className={cx(classNames['webchat__sendbox__text-area'], props.className)}>
       <div
         className={cx(
-          classnames['webchat__sendbox__text-area-doppelganger'],
-          classnames['webchat__sendbox__text-area-shared']
+          classNames['webchat__sendbox__text-area-doppelganger'],
+          classNames['webchat__sendbox__text-area-shared']
         )}
       >
         {props.value || props.placeholder}{' '}
@@ -76,9 +76,9 @@ export const TextArea = forwardRef<
       <textarea
         {...props}
         className={cx(
-          classnames['webchat__sendbox__text-area-input'],
-          classnames['webchat__sendbox__text-area-shared'],
-          classnames['webchat__sendbox__text-area-input--scroll']
+          classNames['webchat__sendbox__text-area-input'],
+          classNames['webchat__sendbox__text-area-shared'],
+          classNames['webchat__sendbox__text-area-input--scroll']
         )}
         ref={ref}
       />

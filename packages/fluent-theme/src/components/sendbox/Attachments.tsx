@@ -76,11 +76,11 @@ export function AddAttachmentButton(props: {
   }, []);
 
   return (
-    <div className={classnames['webchat__sendbox__add-attachment']}>
+    <div className={classNames['webchat__sendbox__add-attachment']}>
       <input
         aria-disabled={props.disabled}
         aria-hidden="true"
-        className={classnames['webchat__sendbox__add-attachment-input']}
+        className={classNames['webchat__sendbox__add-attachment-input']}
         multiple={true}
         onInput={props.disabled ? undefined : handleFileChange}
         readOnly={props.disabled}
@@ -97,10 +97,10 @@ export function AddAttachmentButton(props: {
 }
 
 export function Attachments({ files }: { readonly files: File[] }) {
-  const classnames = useStyles(styles);
+  const classNames = useStyles(styles);
   const localize = useLocalizer();
   return files.length ? (
-    <div className={classnames.webchat__sendbox__attachment}>
+    <div className={classNames.webchat__sendbox__attachment}>
       {files.length} {localize('TEXT_INPUT_ATTACHMENTS')}
     </div>
   ) : null;
@@ -114,7 +114,7 @@ const handleDragOver: DragEventHandler<HTMLDivElement> = event => {
 const isFilesTransferEvent = (event: DragEvent) => !!event?.dataTransfer?.types?.includes?.('Files');
 
 export function AttachmentDropzone(props: { readonly onFilesAdded: (files: File[]) => void }) {
-  const classnames = useStyles(styles);
+  const classNames = useStyles(styles);
   const [showDropZone, setShowDropZone] = useState<boolean>(false);
   const localize = useLocalizer();
 
@@ -152,11 +152,11 @@ export function AttachmentDropzone(props: { readonly onFilesAdded: (files: File[
 
   return showDropZone ? (
     <div
-      className={classnames['webchat__sendbox__attachment-dropzone']}
+      className={classNames['webchat__sendbox__attachment-dropzone']}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <AddDocumentIcon className={classnames['webchat__sendbox__attachment-dropzone-icon']} />
+      <AddDocumentIcon className={classNames['webchat__sendbox__attachment-dropzone-icon']} />
       <span>{localize('TEXT_INPUT_DROP_ZONE')}</span>
     </div>
   ) : null;

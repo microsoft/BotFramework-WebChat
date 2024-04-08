@@ -81,7 +81,7 @@ export function Sendbox(props: {
   const [message, setMessage] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const isMessageLengthExceeded = !!props.maxMessageLength && message.length > props.maxMessageLength;
-  const classnames = useStyles(styles);
+  const classNames = useStyles(styles);
   const localize = useLocalizer();
 
   const handleReplyClick = useCallback((action: Partial<DirectLineCardAction>) => {
@@ -127,24 +127,24 @@ export function Sendbox(props: {
   };
 
   return (
-    <div className={cx(classnames.webchat__sendbox__root, props.className)} {...aria}>
+    <div className={cx(classNames.webchat__sendbox__root, props.className)} {...aria}>
       {props.suggestedActions && (
         <SuggestedActions onActionClick={handleReplyClick} suggestedActions={props.suggestedActions} />
       )}
-      <div className={cx(classnames.webchat__sendbox__sendbox)} onClickCapture={handleSendboxClick}>
+      <div className={cx(classNames.webchat__sendbox__sendbox)} onClickCapture={handleSendboxClick}>
         <TextArea
-          className={cx(classnames['webchat__sendbox__sendbox-text'])}
+          className={cx(classNames['webchat__sendbox__sendbox-text'])}
           onInput={handleMessageChange}
           placeholder={props.placeholder ?? localize('TEXT_INPUT_PLACEHOLDER')}
           ref={inputRef}
           value={message}
         />
         <Attachments files={files} />
-        <div className={cx(classnames['webchat__sendbox__sendbox-controls'])}>
+        <div className={cx(classNames['webchat__sendbox__sendbox-controls'])}>
           {props.maxMessageLength && (
             <div
-              className={cx(classnames['webchat__sendbox__text-counter'], {
-                [classnames['webchat__sendbox__text-counter--error']]: isMessageLengthExceeded
+              className={cx(classNames['webchat__sendbox__text-counter'], {
+                [classNames['webchat__sendbox__text-counter--error']]: isMessageLengthExceeded
               })}
             >
               {`${message.length}/${props.maxMessageLength}`}

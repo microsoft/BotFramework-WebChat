@@ -30,12 +30,12 @@ export function SuggestedActions(props: {
   readonly suggestedActions: Partial<DirectLineCardAction>[];
   readonly onActionClick: (action: Partial<DirectLineCardAction>) => void;
 }) {
-  const classnames = useStyles(styles);
+  const classNames = useStyles(styles);
   return (
-    <div className={classnames['webchat__sendbox__suggested-actions']}>
+    <div className={classNames['webchat__sendbox__suggested-actions']}>
       {props.suggestedActions.map(action => (
         <button
-          className={classnames.webchat__sendbox__action}
+          className={classNames.webchat__sendbox__action}
           key={action.value}
           // TODO: how to fix?
           // eslint-disable-next-line react/jsx-no-bind
