@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import useStlyeToEmotionObject from 'botframework-webchat-component/lib/hooks/internal/useStyleToEmotionObject';
+import useStyleToEmotionObject from 'botframework-webchat-component/lib/hooks/internal/useStyleToEmotionObject';
 
 export function useStyles<T extends Record<`webchat-fluent__${string}`, any>>(styles: T): Record<keyof T, string> {
-  const getClassName = useStlyeToEmotionObject();
+  const getClassName = useStyleToEmotionObject();
   // @ts-expect-error: entries/fromEntries don't allow to specify keys type
   return useMemo(
     () =>
