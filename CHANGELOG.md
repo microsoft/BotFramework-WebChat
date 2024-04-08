@@ -32,7 +32,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#5083](https://github.com/microsoft/BotFramework-WebChat/issues/5083). Added `sendAttachmentOn` style option to send attachments and text in a single activity, by [@ms-jb](https://github.com/ms-jb) and [@compulim](https://github.com/compulim)
    -  `useSendMessage` hook is updated to support sending attachments with a message
    -  `useSendBoxAttachments` hook is added to get/set attachments in the send box
--  Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb)
+-  Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb), in PR [#5048](https://github.com/microsoft/BotFramework-WebChat/pull/5048)
+-  Added `sendBoxMiddleware` and `sendBoxToolbarMiddleware`, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
+-  Added `botframework-webchat-fluent-theme` package for applying Fluent UI theme to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
+-  Added `<ThemeProvider>` component to apply theme pack to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
 
 ### Fixed
 
