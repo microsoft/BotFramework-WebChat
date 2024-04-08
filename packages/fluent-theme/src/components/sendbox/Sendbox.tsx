@@ -6,7 +6,7 @@ import { SendIcon } from '../../icons/SendIcon';
 import { ToolbarButton, ToolbarSeparator, Toolbar } from './Toolbar';
 import { SuggestedActions } from './SuggestedActions';
 import { AddAttachmentButton, Attachments } from './Attachments';
-import AttachmentDropZone from './DropZone';
+import DropZone from './DropZone';
 import { TextArea } from './TextArea';
 import { DialpadIcon } from '../../icons/DialpadIcon';
 import { useStyles } from '../../styles';
@@ -176,7 +176,7 @@ export function Sendbox(
             </ToolbarButton>
           </Toolbar>
         </div>
-        <AttachmentDropZone onFilesAdded={handleAddFiles} />
+        <DropZone onFilesAdded={handleAddFiles} />
       </div>
     </div>
   );

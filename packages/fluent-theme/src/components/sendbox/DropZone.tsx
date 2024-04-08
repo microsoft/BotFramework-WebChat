@@ -31,7 +31,7 @@ const handleDragOver: DragEventHandler<HTMLDivElement> = event => {
 
 const isFilesTransferEvent = (event: DragEvent) => !!event?.dataTransfer?.types?.includes?.('Files');
 
-export default function AttachmentDropZone(props: { readonly onFilesAdded: (files: File[]) => void }) {
+export default function DropZone(props: { readonly onFilesAdded: (files: File[]) => void }) {
   const classNames = useStyles(styles);
   const [showDropZone, setShowDropZone] = useState<boolean>(false);
   const localize = useLocalizer();
