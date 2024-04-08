@@ -25,7 +25,7 @@ export default function useSendFiles(): (files: readonly File[]) => void {
           sendFiles(
             await Promise.all(
               files.map<Promise<PostActivityFile>>(file =>
-                // To maintain backward compatibility, this hook should loko at file extension instead of MIME type.
+                // To maintain backward compatibility, this hook should look at file extension instead of MIME type.
                 makeThumbnail(
                   file,
                   /\.(gif|jpe?g|png)$/iu.test(file.name) ? 'image/*' : 'application/octet-stream'

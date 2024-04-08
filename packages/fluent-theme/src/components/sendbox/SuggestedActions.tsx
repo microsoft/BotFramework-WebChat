@@ -28,7 +28,6 @@ const styles = {
 // TODO: this is a stub for actions. We must reuse the existing SuggestedActions implementation
 export function SuggestedActions(
   props: Readonly<{
-    readonly onActionClick: (action: Partial<DirectLineCardAction>) => void;
     readonly suggestedActions: Partial<DirectLineCardAction>[];
   }>
 ) {
@@ -41,7 +40,6 @@ export function SuggestedActions(
           key={action.value}
           // TODO: how to fix?
           // eslint-disable-next-line react/jsx-no-bind
-          onClick={() => props.onActionClick(action)}
           type="button"
         >
           {'displayText' in action ? action.displayText : null}

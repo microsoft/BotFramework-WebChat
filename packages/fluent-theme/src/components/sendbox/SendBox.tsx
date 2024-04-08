@@ -1,7 +1,7 @@
 import React, { type MouseEventHandler, type FormEventHandler, useCallback, useRef, useState } from 'react';
 import cx from 'classnames';
 import { hooks } from 'botframework-webchat-api';
-import type { DirectLineCardAction, WebChatActivity } from 'botframework-webchat-core';
+import type { DirectLineCardAction } from 'botframework-webchat-core';
 import { SendIcon } from '../../icons/SendIcon';
 import { ToolbarButton, ToolbarSeparator, Toolbar } from './Toolbar';
 import { SuggestedActions } from './SuggestedActions';
@@ -10,8 +10,9 @@ import DropZone from './DropZone';
 import { TextArea } from './TextArea';
 import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
 import { useStyles } from '../../styles';
+import useMakeThumbnail from 'botframework-webchat-component/lib/hooks/internal/useMakeThumbnail';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useSendMessage } = hooks;
 
 const styles = {
   'webchat-fluent__sendbox': {
@@ -74,23 +75,23 @@ export default function SendBox(
     readonly className?: string | undefined;
     readonly errorMessageId?: string | undefined;
     readonly maxMessageLength?: number | undefined;
-    readonly onPostMessage?: ((activity: Partial<WebChatActivity>) => void) | undefined;
     readonly placeholder?: string | undefined;
     readonly suggestedActions?: Partial<DirectLineCardAction>[] | undefined;
   }>
 ) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState('');
-  const [files, setFiles] = useState<readonly File[]>([]);
+  const [attachments, setAttachments] = useState<
+    Readonly<{
+      blob: File;
+      thumbnailURL: URL | undefined;
+    }>[]
+  >([]);
   const isMessageLengthExceeded = !!props.maxMessageLength && message.length > props.maxMessageLength;
   const classNames = useStyles(styles);
   const localize = useLocalizer();
-
-  const handleReplyClick = useCallback((action: Partial<DirectLineCardAction>) => {
-    if ('displayText' in action) {
-      props.onPostMessage?.({ text: action.displayText });
-    }
-  }, []);
+  const sendMessage = useSendMessage();
+  const makeThumbnail = useMakeThumbnail();
 
   const handleSendBoxClick = useCallback<MouseEventHandler>(
     event => {
@@ -108,26 +109,36 @@ export default function SendBox(
   );
 
   const handleAddFiles = useCallback(
-    (inputFiles: File[]) => {
-      setFiles(files => files.concat(inputFiles));
+    async (inputFiles: File[]) => {
+      const newAttachments = Object.freeze(
+        await Promise.all(
+          inputFiles.map(file =>
+            makeThumbnail(file, /\.(gif|jpe?g|png)$/iu.test(file.name) ? 'image/*' : 'application/octet-stream').then(
+              thumbnailURL =>
+                Object.freeze({
+                  blob: file,
+                  thumbnailURL
+                })
+            )
+          )
+        )
+      );
+
+      setAttachments(attachments.concat(newAttachments));
     },
-    [setFiles]
+    [attachments, makeThumbnail]
   );
 
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     event => {
       event.preventDefault();
-      props.onPostMessage?.({
-        text: message,
-        attachments: files.map(file => ({
-          contentType: file.type,
-          name: file.name
-        }))
+      sendMessage(message, undefined, {
+        attachments
       });
       setMessage('');
-      setFiles([]);
+      setAttachments([]);
     },
-    [props, message, files, setMessage, setFiles]
+    [attachments, sendMessage, message]
   );
 
   const aria = {
@@ -140,9 +151,7 @@ export default function SendBox(
 
   return (
     <form className={cx(classNames['webchat-fluent__sendbox'], props.className)} onSubmit={handleFormSubmit} {...aria}>
-      {props.suggestedActions && (
-        <SuggestedActions onActionClick={handleReplyClick} suggestedActions={props.suggestedActions} />
-      )}
+      {props.suggestedActions && <SuggestedActions suggestedActions={props.suggestedActions} />}
       <div className={cx(classNames['webchat-fluent__sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
         <TextArea
           ariaLabel={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : null}
@@ -152,7 +161,7 @@ export default function SendBox(
           ref={inputRef}
           value={message}
         />
-        <Attachments files={files} />
+        <Attachments attachments={attachments} />
         <div className={cx(classNames['webchat-fluent__sendbox__sendbox-controls'])}>
           {props.maxMessageLength && (
             <div

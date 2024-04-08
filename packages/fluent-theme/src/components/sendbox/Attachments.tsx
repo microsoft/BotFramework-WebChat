@@ -73,12 +73,16 @@ export function AddAttachmentButton(
   );
 }
 
-export function Attachments({ files }: Readonly<{ readonly files: Readonly<File[]> }>) {
+export function Attachments({
+  attachments
+}: Readonly<{
+  readonly attachments: Readonly<{ blob: File; thumbnailURL: URL | undefined }>[];
+}>) {
   const classNames = useStyles(styles);
   const localize = useLocalizer();
-  return files.length ? (
+  return attachments.length ? (
     <div className={classNames['webchat-fluent__sendbox__attachment']}>
-      {files.length} {localize('TEXT_INPUT_ATTACHMENTS')}
+      {attachments.length} {localize('TEXT_INPUT_ATTACHMENTS')}
     </div>
   ) : null;
 }
