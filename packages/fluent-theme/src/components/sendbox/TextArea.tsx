@@ -59,6 +59,7 @@ const styles = {
 export const TextArea = forwardRef<
   HTMLTextAreaElement,
   Readonly<{
+    readonly ariaLabel?: string | undefined;
     readonly className?: string | undefined;
     readonly placeholder?: string | undefined;
     readonly value?: string | undefined;
@@ -77,6 +78,7 @@ export const TextArea = forwardRef<
         {props.value || props.placeholder}{' '}
       </div>
       <textarea
+        aria-label={props.ariaLabel}
         className={cx(
           classNames['webchat-fluent__sendbox__text-area-input'],
           classNames['webchat-fluent__sendbox__text-area-shared'],

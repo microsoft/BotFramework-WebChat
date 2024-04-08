@@ -145,6 +145,7 @@ export default function SendBox(
       )}
       <div className={cx(classNames['webchat-fluent__sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
         <TextArea
+          ariaLabel={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : null}
           className={cx(classNames['webchat-fluent__sendbox__sendbox-text'])}
           onInput={handleMessageChange}
           placeholder={props.placeholder ?? localize('TEXT_INPUT_PLACEHOLDER')}
