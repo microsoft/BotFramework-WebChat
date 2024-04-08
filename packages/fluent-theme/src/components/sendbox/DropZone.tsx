@@ -29,6 +29,7 @@ const handleDragOver: DragEventHandler<HTMLDivElement> = event => {
   event.preventDefault();
 };
 
+// TODO: respect style options for the files type and cout
 const isFilesTransferEvent = (event: DragEvent) => !!event?.dataTransfer?.types?.includes?.('Files');
 
 export default function DropZone(props: { readonly onFilesAdded: (files: File[]) => void }) {

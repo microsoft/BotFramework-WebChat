@@ -4,7 +4,7 @@ import { ToolbarButton } from './Toolbar';
 import { AttachmentIcon } from '../../icons/AttachmentIcon';
 import { useStyles } from '../../styles';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useStyleOptions } = hooks;
 
 const styles = {
   'webchat-fluent__sendbox__add-attachment': {
@@ -28,6 +28,8 @@ export default function AddAttachmentButton(
   const inputRef = useRef<HTMLInputElement>(null);
   const classNames = useStyles(styles);
   const localize = useLocalizer();
+  const [{ uploadAccept, uploadMultiple }] = useStyleOptions();
+  
 
   const handleClick = useCallback(() => inputRef.current?.click(), [inputRef]);
 
@@ -47,10 +49,11 @@ export default function AddAttachmentButton(
   return (
     <div className={classNames['webchat-fluent__sendbox__add-attachment']}>
       <input
+        accept={uploadAccept}
         aria-disabled={props.disabled}
         aria-hidden="true"
         className={classNames['webchat-fluent__sendbox__add-attachment-input']}
-        multiple={true}
+        multiple={uploadMultiple}
         onInput={props.disabled ? undefined : handleFileChange}
         readOnly={props.disabled}
         ref={inputRef}
