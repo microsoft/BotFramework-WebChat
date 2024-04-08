@@ -76,7 +76,7 @@ export function AddAttachmentButton(
 export function Attachments({
   attachments
 }: Readonly<{
-  readonly attachments: Readonly<{ blob: File; thumbnailURL: URL | undefined }>[];
+  readonly attachments: Readonly<{ blob: File; thumbnailURL?: URL | undefined }>[];
 }>) {
   const classNames = useStyles(styles);
   const localize = useLocalizer();

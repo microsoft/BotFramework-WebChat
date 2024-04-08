@@ -81,7 +81,7 @@ export default function SendBox(
   const [attachments, setAttachments] = useState<
     Readonly<{
       blob: File;
-      thumbnailURL: URL | undefined;
+      thumbnailURL?: URL;
     }>[]
   >([]);
   const isMessageLengthExceeded = !!props.maxMessageLength && message.length > props.maxMessageLength;
@@ -114,7 +114,7 @@ export default function SendBox(
               thumbnailURL =>
                 Object.freeze({
                   blob: file,
-                  thumbnailURL
+                  ...(thumbnailURL && { thumbnailURL })
                 })
             )
           )
