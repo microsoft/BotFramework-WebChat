@@ -1,36 +1,37 @@
 import { hooks } from 'botframework-webchat-api';
+import { type OrgSchemaAction } from 'botframework-webchat-core';
+import React, { Fragment, memo, useEffect, useState, type PropsWithChildren } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import React, { Fragment, memo, type PropsWithChildren, useState, useEffect } from 'react';
 
-import { type VoteAction } from '../../../types/external/OrgSchema/VoteAction';
 import FeedbackVoteButton from './private/VoteButton';
 
 const { usePonyfill, usePostActivity } = hooks;
 
 type Props = Readonly<
   PropsWithChildren<{
-    voteActions: ReadonlySet<VoteAction>;
+    actions: ReadonlySet<OrgSchemaAction>;
   }>
 >;
 
 const DEBOUNCE_TIMEOUT = 500;
 
-const Feedback = memo(({ voteActions }: Props) => {
+const Feedback = memo(({ actions }: Props) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
-  const [selectedVoteAction, setSelectedVoteAction] = useState<VoteAction | undefined>();
+  const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
   const postActivity = usePostActivity();
 
   const postActivityRef = useRefFrom(postActivity);
 
   useEffect(() => {
-    if (!selectedVoteAction) {
+    if (!selectedAction) {
       return;
     }
 
     const timeout = setTimeout(
       () =>
+        // TODO: We should update this to use W3C Hydra.1
         postActivityRef.current({
-          entities: [selectedVoteAction],
+          entities: [selectedAction],
           name: 'webchat:activity-status/feedback',
           type: 'event'
         } as any),
@@ -38,16 +39,16 @@ const Feedback = memo(({ voteActions }: Props) => {
     );
 
     return () => clearTimeout(timeout);
-  }, [clearTimeout, postActivityRef, selectedVoteAction, setTimeout]);
+  }, [clearTimeout, postActivityRef, selectedAction, setTimeout]);
 
   return (
     <Fragment>
-      {Array.from(voteActions).map((voteAction, index) => (
+      {Array.from(actions).map((action, index) => (
         <FeedbackVoteButton
-          key={voteAction['@id'] || voteAction.actionOption || index}
-          onClick={setSelectedVoteAction}
-          pressed={selectedVoteAction === voteAction}
-          voteAction={voteAction}
+          action={action}
+          key={action['@id'] || index}
+          onClick={setSelectedAction}
+          pressed={selectedAction === action}
         />
       ))}
     </Fragment>

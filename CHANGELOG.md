@@ -22,11 +22,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  `useSendMessage` hook is updated to support sending attachments with a message. To reduce complexity, the `useSendFiles` hook is being deprecated. The hook will be removed on or after 2026-04-03
+-  `styleOptions.uploadThumbnailHeight` and `styleOptions.uploadThumbnailWidth` must be a `number` of pixels
+
+### Added
+
+-  Resolves [#5083](https://github.com/microsoft/BotFramework-WebChat/issues/5083). Added `sendAttachmentOn` style option to send attachments and text in a single activity, by [@ms-jb](https://github.com/ms-jb) and [@compulim](https://github.com/compulim)
+   -  `useSendMessage` hook is updated to support sending attachments with a message
+   -  `useSendBoxAttachments` hook is added to get/set attachments in the send box
+-  Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb), in PR [#5048](https://github.com/microsoft/BotFramework-WebChat/pull/5048)
+-  Added `sendBoxMiddleware` and `sendBoxToolbarMiddleware`, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
+-  Added `botframework-webchat-fluent-theme` package for applying Fluent UI theme to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
+-  Added `<ThemeProvider>` component to apply theme pack to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
+
+### Fixed
+
+-  Fixes [#5050](https://github.com/microsoft/BotFramework-WebChat/issues/5050). Fixed focus should not blur briefly after tapping on a suggested action, by [@compulim](https://github.com/compulim), in PR [#5097](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5097)
+-  Fixes [#5111](https://github.com/microsoft/BotFramework-WebChat/issues/5111). Fixed keyboard help screen to use HTML description list, by [@compulim](https://github.com/compulim), in PR [#5116](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5116)
+-  Fixes [#5080](https://github.com/microsoft/BotFramework-WebChat/issues/5080). Fixed `dateToLocaleISOString` for handling sub-hour, by [@marclundgren](https://github.com/marclundgren), in PR [#5114](https://github.com/microsoft/BotFramework-WebChat/pull/5114)
+
 ### Changed
 
 -  Moved pull request validation pipeline to GitHub Actions, by [@compulim](https://github.com/compulim), in PR [#4976](https://github.com/microsoft/BotFramework-WebChat/pull/4976)
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4973](https://github.com/microsoft/BotFramework-WebChat/pull/4973)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4973](https://github.com/microsoft/BotFramework-WebChat/pull/4973) and PR [#5115](https://github.com/microsoft/BotFramework-WebChat/pull/5115)
+   -  Notes: Some components/features in Adaptive Cards are in preview and not ready for production use. Web Chat does not support these components and features
    -  Production dependencies
+      -  [`adaptivecards@3.0.2`](https://npmjs.com/package/adaptivecards)
       -  [`core-js@3.33.3`](https://npmjs.com/package/core-js)
       -  [`jwt-decode@4.0.0`](https://npmjs.com/package/jwt-decode)
       -  [`markdown-it@13.0.2`](https://npmjs.com/package/markdown-it)
@@ -79,6 +102,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#4866](https://github.com/microsoft/BotFramework-WebChat/issues/4866). Citation modal show fill screen width on mobile device and various fit-and-finish, by [@compulim](https://github.com/compulim), in PR [#4867](https://github.com/microsoft/BotFramework-WebChat/pull/4867)
 -  Fixes [#4878](https://github.com/microsoft/BotFramework-WebChat/issues/4878). `createStore` should return type of `Redux.Store`, by [@compulim](https://github.com/compulim), in PR [#4877](https://github.com/microsoft/BotFramework-WebChat/pull/4877)
 -  Fixes [#4957](https://github.com/microsoft/BotFramework-WebChat/issues/4957). Native chevron of the accordion in citation should be hidden, by [@compulim](https://github.com/compulim), in PR [#4958](https://github.com/microsoft/BotFramework-WebChat/pull/4958)
+-  Fixes [#4870](https://github.com/microsoft/BotFramework-WebChat/issues/4870). Originator should use `claimInterpreter` instead of `ReplyAction/provider`, by [@compulim](https://github.com/compulim), in PR [#4910](https://github.com/microsoft/BotFramework-WebChat/pull/4910)
 
 ### Added
 

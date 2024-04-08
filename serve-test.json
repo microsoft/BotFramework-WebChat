@@ -20,6 +20,10 @@
       "destination": "__tests__/html/assets/transcripts/:filename"
     },
     {
+      "source": "/__dist__/botframework-webchat-fluent-theme.production.min.js",
+      "destination": "packages/fluent-theme/dist/botframework-webchat-fluent-theme.production.min.js"
+    },
+    {
       "source": "/__dist__/webchat.js",
       "destination": "packages/bundle/dist/webchat.js"
     },

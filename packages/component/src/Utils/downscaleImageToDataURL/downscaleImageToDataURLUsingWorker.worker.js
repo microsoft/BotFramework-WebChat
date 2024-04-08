@@ -61,7 +61,7 @@ export default function () {
 
     return Promise.resolve()
       .then(function () {
-        return createImageBitmap(new Blob([arrayBuffer], { resizeQuality: 'high' }));
+        return createImageBitmap(new Blob([arrayBuffer]), { resizeQuality: 'high' });
       })
       .then(function (imageBitmap) {
         const dimension = keepAspectRatio(imageBitmap.width, imageBitmap.height, maxWidth, maxHeight);

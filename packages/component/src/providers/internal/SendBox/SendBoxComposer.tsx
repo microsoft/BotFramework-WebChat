@@ -1,18 +1,17 @@
 import { hooks } from 'botframework-webchat-api';
-import { useRefFrom } from 'use-ref-from';
 import classNames from 'classnames';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
+import { useRefFrom } from 'use-ref-from';
 
-import SendBoxContext from './private/Context';
-import useFocus from '../../../hooks/useFocus';
-import useScrollToEnd from '../../../hooks/useScrollToEnd';
 import useStyleToEmotionObject from '../../../hooks/internal/useStyleToEmotionObject';
 import useUniqueId from '../../../hooks/internal/useUniqueId';
+import useFocus from '../../../hooks/useFocus';
+import useScrollToEnd from '../../../hooks/useScrollToEnd';
+import SendBoxContext from './private/Context';
+import { type ContextType, type SendError } from './private/types';
 
-import type { ContextType, SendError } from './private/types';
-import type { PropsWithChildren } from 'react';
-
-const { useConnectivityStatus, useLocalizer, usePonyfill, useSendBoxValue, useSubmitSendBox } = hooks;
+const { useConnectivityStatus, useLocalizer, usePonyfill, useSendBoxAttachments, useSendBoxValue, useSubmitSendBox } =
+  hooks;
 
 const SUBMIT_ERROR_MESSAGE_STYLE = {
   '&.webchat__submit-error-message': {
@@ -58,6 +57,7 @@ type ErrorMessageStringMap = ReadonlyMap<SendError, string>;
 // TODO: [P2] Complete this component.
 const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
+  const [attachments] = useSendBoxAttachments();
   const [connectivityStatus] = useConnectivityStatus();
   const [error, setError] = useState<SendError | false>(false);
   const [sendBoxValue] = useSendBoxValue();
@@ -93,7 +93,7 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   const submitErrorRef = useRefFrom<'empty' | 'offline' | undefined>(
     connectivityStatus !== 'connected' && connectivityStatus !== 'reconnected'
       ? 'offline'
-      : !sendBoxValue
+      : !sendBoxValue && !attachments.length
         ? 'empty'
         : undefined
   );

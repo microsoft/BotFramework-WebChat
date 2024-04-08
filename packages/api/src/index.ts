@@ -1,27 +1,51 @@
-import { localize } from './localization/Localize';
+import StyleOptions, { StrictStyleOptions } from './StyleOptions';
+import defaultStyleOptions from './defaultStyleOptions';
 import * as hooks from './hooks';
+import Composer, { ComposerProps } from './hooks/Composer';
+import {
+  SendBoxMiddlewareProxy,
+  rectifySendBoxMiddlewareProps,
+  type SendBoxMiddleware,
+  type SendBoxMiddlewareProps,
+  type SendBoxMiddlewareRequest
+} from './hooks/internal/SendBoxMiddleware';
+import {
+  SendBoxToolbarMiddlewareProxy,
+  rectifySendBoxToolbarMiddlewareProps,
+  type SendBoxToolbarMiddleware,
+  type SendBoxToolbarMiddlewareProps,
+  type SendBoxToolbarMiddlewareRequest
+} from './hooks/internal/SendBoxToolbarMiddleware';
+import concatMiddleware from './hooks/middleware/concatMiddleware';
+import { localize } from './localization/Localize';
+import normalizeStyleOptions from './normalizeStyleOptions';
 import ActivityMiddleware, { ActivityComponentFactory } from './types/ActivityMiddleware';
+import { type ActivityStatusMiddleware, type RenderActivityStatus } from './types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware, {
   AttachmentForScreenReaderComponentFactory
 } from './types/AttachmentForScreenReaderMiddleware';
 import AttachmentMiddleware, { RenderAttachment } from './types/AttachmentMiddleware';
 import AvatarMiddleware, { AvatarComponentFactory } from './types/AvatarMiddleware';
 import CardActionMiddleware, { PerformCardAction } from './types/CardActionMiddleware';
-import Composer, { ComposerProps } from './hooks/Composer';
-import concatMiddleware from './hooks/middleware/concatMiddleware';
-import defaultStyleOptions from './defaultStyleOptions';
 import GroupActivitiesMiddleware, { GroupActivities } from './types/GroupActivitiesMiddleware';
-import normalizeStyleOptions from './normalizeStyleOptions';
 import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from './types/ScrollToEndButtonMiddleware';
-import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import ToastMiddleware, { RenderToast } from './types/ToastMiddleware';
 import TypingIndicatorMiddleware, { RenderTypingIndicator } from './types/TypingIndicatorMiddleware';
 import WebSpeechPonyfill from './types/WebSpeechPonyfill';
 import WebSpeechPonyfillFactory from './types/WebSpeechPonyfillFactory';
 
-import type { ActivityStatusMiddleware, RenderActivityStatus } from './types/ActivityStatusMiddleware';
-
-export { Composer, concatMiddleware, defaultStyleOptions, hooks, localize, normalizeStyleOptions };
+export {
+  Composer,
+  SendBoxMiddlewareProxy,
+  SendBoxToolbarMiddlewareProxy,
+  concatMiddleware,
+  defaultStyleOptions,
+  hooks,
+  localize,
+  normalizeStyleOptions,
+  rectifySendBoxMiddlewareProps,
+  rectifySendBoxToolbarMiddlewareProps
+};
 
 export type {
   ActivityComponentFactory,
@@ -43,6 +67,12 @@ export type {
   RenderTypingIndicator,
   ScrollToEndButtonComponentFactory,
   ScrollToEndButtonMiddleware,
+  SendBoxMiddleware,
+  SendBoxMiddlewareProps,
+  SendBoxMiddlewareRequest,
+  SendBoxToolbarMiddleware,
+  SendBoxToolbarMiddlewareProps,
+  SendBoxToolbarMiddlewareRequest,
   StrictStyleOptions,
   StyleOptions,
   ToastMiddleware,

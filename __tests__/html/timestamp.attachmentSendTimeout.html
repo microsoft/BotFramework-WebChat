@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -65,6 +65,7 @@
 
           // WHEN: Sending out the file.
           await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
+          await pageConditions.numActivitiesShown(2);
 
           // THEN: It should show "Sending".
           //       Note the first activity is reserved for "run hook", we are checking activity status from the second activity.

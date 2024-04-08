@@ -45,6 +45,7 @@ import useRenderAttachment from './useRenderAttachment';
 import useRenderAvatar from './useRenderAvatar';
 import useRenderToast from './useRenderToast';
 import useRenderTypingIndicator from './useRenderTypingIndicator';
+import useSendBoxAttachments from './useSendBoxAttachments';
 import useSendBoxValue from './useSendBoxValue';
 import useSendEvent from './useSendEvent';
 import useSendFiles from './useSendFiles';
@@ -118,6 +119,7 @@ export {
   useRenderAvatar,
   useRenderToast,
   useRenderTypingIndicator,
+  useSendBoxAttachments,
   useSendBoxValue,
   useSendEvent,
   useSendFiles,
