@@ -4,32 +4,32 @@ import React from 'react';
 
 const styles = {
   'webchat__sendbox__suggested-actions': {
-    display: 'flex',
-    alignSelf: 'flex-end',
-    flexDirection: 'column',
     alignItems: 'flex-end',
+    alignSelf: 'flex-end',
+    display: 'flex',
+    flexDirection: 'column',
     gap: '8px',
-    paddingInlineStart: '4px',
-    paddingBlockEnd: '8px'
+    paddingBlockEnd: '8px',
+    paddingInlineStart: '4px'
   },
 
   webchat__sendbox__action: {
-    padding: '6px 8px 4px',
+    background: 'transparent',
     border: '1px solid var(--colorBrandStroke2)',
     borderRadius: '8px',
     cursor: 'pointer',
-    textAlign: 'start',
     fontSize: '12px',
     lineHeight: '12px',
-    background: 'transparent'
+    padding: '6px 8px 4px',
+    textAlign: 'start'
   }
 };
 
 // TODO: this is a stub for actions. We must reuse the existing SuggestedActions implementation
 export function SuggestedActions(
   props: Readonly<{
-    readonly suggestedActions: Partial<DirectLineCardAction>[];
     readonly onActionClick: (action: Partial<DirectLineCardAction>) => void;
+    readonly suggestedActions: Partial<DirectLineCardAction>[];
   }>
 ) {
   const classNames = useStyles(styles);

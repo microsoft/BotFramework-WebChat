@@ -11,18 +11,18 @@ const styles = {
   },
 
   'webchat__sendbox__text-area-shared': {
-    font: 'inherit',
     border: 'none',
-    outline: 'inherit',
-    resize: 'inherit',
+    font: 'inherit',
     gridArea: 'main',
+    outline: 'inherit',
     overflowWrap: 'anywhere',
+    resize: 'inherit',
     scrollbarGutter: 'stable'
   },
 
   'webchat__sendbox__text-area-doppelganger': {
-    visibility: 'hidden',
     overflow: 'hidden',
+    visibility: 'hidden',
     whiteSpace: 'pre-wrap'
   },
 
@@ -32,8 +32,8 @@ const styles = {
 
   'webchat__sendbox__text-area-input--scroll': {
     /* Firefox */
-    MozScrollbarWidth: 'thin',
     MozScrollbarColor: 'var(--colorNeutralBackground5) var(--colorNeutralForeground2)',
+    MozScrollbarWidth: 'thin',
 
     /* Chrome, Edge, and Safari */
     '&::-webkit-scrollbar': {

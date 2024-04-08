@@ -10,28 +10,27 @@ const styles = {
   },
 
   'webchat__sendbox__toolbar-button': {
-    display: 'flex',
-    appearance: 'none',
-    background: 'transparent',
     alignItems: 'center',
-    justifyContent: 'center',
+    appearance: 'none',
+    aspectRatio: '1',
+    background: 'transparent',
     border: 'none',
+    borderRadius: 'var(--borderRadiusSmall)',
     cursor: 'pointer',
+    display: 'flex',
+    justifyContent: 'center',
     padding: '3px',
     width: '32px',
-    aspectRatio: '1',
-    borderRadius: 'var(--borderRadiusSmall)',
 
     '> svg': {
-      width: '20px',
-      height: '20px',
+      fontSize: '20px',
       pointerEvents: 'none'
     },
 
     '@media (hover: hover)': {
       '&:not(:disabled):hover': {
-        color: 'var(--colorNeutralForeground2BrandHover)',
-        backgroundColor: 'var(--colorSubtleBackgroundHover)'
+        backgroundColor: 'var(--colorSubtleBackgroundHover)',
+        color: 'var(--colorNeutralForeground2BrandHover)'
       }
     },
     '&:not(:disabled):active': {
@@ -45,9 +44,9 @@ const styles = {
   },
 
   'webchat__sendbox__toolbar-separator': {
+    alignSelf: 'center',
     borderRight: '1px solid var(--colorNeutralStroke2)',
     height: '28px',
-    alignSelf: 'center',
 
     '&:first-child, &:last-child, &:only-child': {
       display: 'none'

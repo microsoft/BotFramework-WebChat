@@ -22,33 +22,33 @@ const styles = {
 
   'webchat__sendbox__add-attachment-input': {
     fontSize: 0,
-    width: 0,
-    height: 0
+    height: 0,
+    width: 0
   },
 
   webchat__sendbox__attachment: {
     border: '1px solid var(--colorNeutralStroke1)',
-    padding: '6px 8px',
     borderRadius: 'var(--borderRadiusLarge)',
     cursor: 'default',
+    padding: '6px 8px',
     width: 'fit-content'
   },
 
   'webchat__sendbox__attachment-dropzone': {
-    position: 'absolute',
-    inset: '0',
     backgroundColor: 'var(--colorNeutralBackground4)',
-    display: 'grid',
-    placeItems: 'center',
-    placeContent: 'center',
-    gap: '8px',
     borderRadius: 'inherit',
-    cursor: 'copy'
+    cursor: 'copy',
+    display: 'grid',
+    gap: '8px',
+    inset: '0',
+    placeContent: 'center',
+    placeItems: 'center',
+    position: 'absolute'
   },
 
   'webchat__sendbox__attachment-dropzone-icon': {
-    width: '36px',
-    height: '36px'
+    height: '36px',
+    width: '36px'
   }
 };
 

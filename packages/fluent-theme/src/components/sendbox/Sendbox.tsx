@@ -14,22 +14,22 @@ const { useLocalizer } = hooks;
 
 const styles = {
   webchat__sendbox__root: {
-    fontFamily: 'var(--fontFamilyBase)',
     color: 'var(--colorNeutralForeground1)',
+    fontFamily: 'var(--fontFamilyBase)',
     textRendering: 'optimizeLegibility'
   },
 
   webchat__sendbox__sendbox: {
-    fontFamily: 'var(--fontFamilyBase)',
-    padding: '8px',
-    borderRadius: 'var(--borderRadiusLarge)',
-    border: '1px solid var(--colorNeutralStroke1)',
-    display: 'grid',
-    position: 'relative',
-    gap: '6px',
-    fontSize: '14px',
-    lineHeight: '20px',
     backgroundColor: 'var(--colorNeutralBackground1)',
+    border: '1px solid var(--colorNeutralStroke1)',
+    borderRadius: 'var(--borderRadiusLarge)',
+    display: 'grid',
+    fontFamily: 'var(--fontFamilyBase)',
+    fontSize: '14px',
+    gap: '6px',
+    lineHeight: '20px',
+    padding: '8px',
+    position: 'relative',
 
     '&:focus-within': {
       borderColor: 'var(--colorNeutralStroke1Selected)',
@@ -38,29 +38,29 @@ const styles = {
   },
 
   'webchat__sendbox__sendbox-text': {
+    backgroundColor: 'transparent',
+    border: 'none',
+    flex: 'auto',
+    fontFamily: 'var(--fontFamilyBase)',
     fontSize: '14px',
     lineHeight: '20px',
-    padding: '4px 4px 0',
-    flex: 'auto',
     outline: 'none',
-    border: 'none',
-    resize: 'none',
-    backgroundColor: 'transparent',
-    fontFamily: 'var(--fontFamilyBase)'
+    padding: '4px 4px 0',
+    resize: 'none'
   },
 
   'webchat__sendbox__sendbox-controls': {
+    alignItems: 'center',
     display: 'flex',
-    paddingInlineStart: '4px',
-    alignItems: 'center'
+    paddingInlineStart: '4px'
   },
 
   'webchat__sendbox__text-counter': {
     color: 'var(--colorNeutralForeground4)',
+    cursor: 'default',
     fontFamily: 'var(--fontFamilyNumeric)',
     fontSize: '10px',
-    lineHeight: '14px',
-    cursor: 'default'
+    lineHeight: '14px'
   },
 
   'webchat__sendbox__text-counter--error': {
