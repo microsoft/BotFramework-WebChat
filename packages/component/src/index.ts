@@ -1,4 +1,4 @@
-import { concatMiddleware, hooks as apiHooks, localize } from 'botframework-webchat-api';
+import { hooks as apiHooks, concatMiddleware, localize } from 'botframework-webchat-api';
 
 import ReactWebChat, { ReactWebChatProps } from './ReactWebChat';
 
@@ -6,18 +6,19 @@ import Composer, { ComposerProps } from './Composer';
 
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 
-import BasicWebChat, { BasicWebChatProps } from './BasicWebChat';
 import BasicConnectivityStatus from './BasicConnectivityStatus';
-import BasicSendBox from './BasicSendBox';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
+import BasicWebChat, { BasicWebChatProps } from './BasicWebChat';
+import BasicSendBox from './SendBox/BasicSendBox';
+import BasicSendBoxToolbar from './SendBoxToolbar/BasicSendBoxToolbar';
 
 import Avatar from './Activity/Avatar';
 import Bubble from './Activity/Bubble';
-import ErrorBox from './ErrorBox';
-import SendStatus, { connectSendStatus } from './ActivityStatus/SendStatus/SendStatus';
 import SpeakActivity, { connectSpeakActivity } from './Activity/Speak';
+import SendStatus, { connectSendStatus } from './ActivityStatus/SendStatus/SendStatus';
 import Timestamp from './ActivityStatus/Timestamp';
+import ErrorBox from './ErrorBox';
 
 import AudioContent from './Attachment/AudioContent';
 import FileContent from './Attachment/FileContent';
@@ -31,17 +32,18 @@ import YouTubeContent from './Attachment/YouTubeContent';
 import DictationInterims, { connectDictationInterims } from './SendBox/DictationInterims';
 import MicrophoneButton, { connectMicrophoneButton } from './SendBox/MicrophoneButton';
 import SendButton, { connectSendButton } from './SendBox/SendButton';
-import SendTextBox from './SendBox/TextBox';
 import SuggestedActions, { connectSuggestedActions } from './SendBox/SuggestedActions';
-import UploadButton, { connectUploadButton } from './SendBox/UploadButton';
+import SendTextBox from './SendBox/TextBox';
+import UploadButton, { connectUploadButton } from './SendBoxToolbar/UploadButton';
 
-import connectToWebChat from './connectToWebChat';
-import Context from './hooks/internal/WebChatUIContext';
+import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
-import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
+import connectToWebChat from './connectToWebChat';
+import Context from './hooks/internal/WebChatUIContext';
+import ThemeProvider from './providers/Theme/ThemeProvider';
 import withEmoji from './withEmoji/withEmoji';
 
 import * as componentHooks from './hooks/index';
@@ -56,11 +58,13 @@ const version = process.env.npm_package_version;
 const Components = {
   BasicWebChat,
   Composer,
+  ThemeProvider,
 
   // Components for restructuring BasicWebChat
   AccessKeySinkSurface,
   BasicConnectivityStatus,
   BasicSendBox,
+  BasicSendBoxToolbar,
   BasicToaster,
   BasicTranscript,
 
@@ -104,9 +108,9 @@ export default ReactWebChat;
 
 export {
   Components,
+  Context,
   concatMiddleware,
   connectToWebChat,
-  Context,
   createCoreActivityMiddleware,
   createCoreActivityStatusMiddleware,
   createCoreAttachmentMiddleware,

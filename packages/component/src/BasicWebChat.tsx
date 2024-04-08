@@ -1,18 +1,17 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
 /* eslint react/no-unsafe: off */
 
-import { hooks } from 'botframework-webchat-api';
+import { SendBoxMiddlewareProxy, hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
 
-import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 import BasicConnectivityStatus from './BasicConnectivityStatus';
-import BasicSendBox from './BasicSendBox';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
-import useStyleSet from './hooks/useStyleSet';
+import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import useStyleSet from './hooks/useStyleSet';
 
 const { useStyleOptions } = hooks;
 
@@ -66,7 +65,7 @@ const BasicWebChat: FC<BasicWebChatProps> = ({ className, role }) => {
       {!options.hideToaster && <BasicToaster className={toasterClassName} />}
       <BasicTranscript className={transcriptClassName} />
       <BasicConnectivityStatus className={connectivityStatusClassName} />
-      {!options.hideSendBox && <BasicSendBox className={sendBoxClassName} />}
+      <SendBoxMiddlewareProxy className={sendBoxClassName} request={undefined} />
     </AccessKeySinkSurface>
   );
 };

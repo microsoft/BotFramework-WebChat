@@ -62,6 +62,7 @@
     "globalize-compiler": "^1.1.1",
     "iana-tz-data": "^2019.1.0",
     "node-dev": "^8.0.0",
+    "type-fest": "^4.15.0",
     "typescript": "^5.3.2"
   },
   "dependencies": {
@@ -69,10 +70,12 @@
     "globalize": "1.7.0",
     "math-random": "2.0.1",
     "prop-types": "15.8.1",
+    "react-chain-of-responsibility": "^0.1.0",
     "react-redux": "7.2.9",
     "redux": "5.0.0",
     "simple-update-in": "2.2.0",
-    "use-ref-from": "^0.1.0"
+    "use-ref-from": "^0.1.0",
+    "valibot": "^0.30.0"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",

@@ -108,6 +108,7 @@
     "memoize-one": "6.0.0",
     "merge-refs": "1.2.2",
     "prop-types": "15.8.1",
+    "react-chain-of-responsibility": "^0.1.0",
     "react-dictate-button": "2.0.1",
     "react-film": "3.1.1-main.df870ea",
     "react-redux": "7.2.9",
@@ -115,7 +116,8 @@
     "react-scroll-to-bottom": "4.2.0",
     "redux": "5.0.0",
     "simple-update-in": "2.2.0",
-    "use-ref-from": "0.1.0"
+    "use-ref-from": "^0.1.0",
+    "valibot": "^0.30.0"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",

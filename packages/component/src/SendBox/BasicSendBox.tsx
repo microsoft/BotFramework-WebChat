@@ -1,19 +1,17 @@
+import { SendBoxToolbarMiddlewareProxy, hooks } from 'botframework-webchat-api';
 import { Constants } from 'botframework-webchat-core';
-import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { FC } from 'react';
 
-import DictationInterims from './SendBox/DictationInterims';
-import MicrophoneButton from './SendBox/MicrophoneButton';
-import SendButton from './SendBox/SendButton';
-import SuggestedActions from './SendBox/SuggestedActions';
-import TextBox from './SendBox/TextBox';
-import UploadButton from './SendBox/UploadButton';
-import useErrorMessageId from './providers/internal/SendBox/useErrorMessageId';
-import useStyleSet from './hooks/useStyleSet';
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
-import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import useStyleSet from '../hooks/useStyleSet';
+import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
+import useErrorMessageId from '../providers/internal/SendBox/useErrorMessageId';
+import DictationInterims from './DictationInterims';
+import MicrophoneButton from './MicrophoneButton';
+import SendButton from './SendButton';
+import SuggestedActions from './SuggestedActions';
+import TextBox from './TextBox';
 
 import type { WebChatActivity } from 'botframework-webchat-core';
 
@@ -48,12 +46,12 @@ function useSendBoxSpeechInterimsVisible(): [boolean] {
   ];
 }
 
-type BasicSendBoxProps = {
+type BasicSendBoxProps = Readonly<{
   className?: string;
-};
+}>;
 
 const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
-  const [{ hideUploadButton, sendBoxButtonAlignment }] = useStyleOptions();
+  const [{ sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition = undefined } = {}] = useWebSpeechPonyfill();
   const [direction] = useDirection();
@@ -81,7 +79,7 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
     >
       <SuggestedActions />
       <div className="webchat__send-box__main">
-        {!hideUploadButton && <UploadButton className={buttonClassName} />}
+        <SendBoxToolbarMiddlewareProxy className={buttonClassName} request={undefined} />
         {speechInterimsVisible ? (
           <DictationInterims className="webchat__send-box__dictation-interims" />
         ) : (
@@ -95,14 +93,6 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
       </div>
     </div>
   );
-};
-
-BasicSendBox.defaultProps = {
-  className: ''
-};
-
-BasicSendBox.propTypes = {
-  className: PropTypes.string
 };
 
 export default BasicSendBox;
