@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useRef, type FC, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
+import IconButton from '../SendBox/IconButton';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
 import connectToWebChat from '../connectToWebChat';
 import useMakeThumbnail from '../hooks/internal/useMakeThumbnail';
@@ -12,7 +13,6 @@ import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import AttachmentIcon from './Assets/AttachmentIcon';
-import IconButton from './IconButton';
 
 const { useDisabled, useSendBoxAttachments, useLocalizer, useStyleOptions } = hooks;
 
@@ -102,7 +102,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const [disabled] = useDisabled();
   const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachments();
   const focus = useFocus();
-  const inputRef = useRef<HTMLInputElement>();
+  const inputRef = useRef<HTMLInputElement>(null);
   const localize = useLocalizer();
   const makeThumbnail = useMakeThumbnail();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';

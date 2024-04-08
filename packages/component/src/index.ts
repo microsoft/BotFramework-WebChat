@@ -33,7 +33,7 @@ import MicrophoneButton, { connectMicrophoneButton } from './SendBox/MicrophoneB
 import SendButton, { connectSendButton } from './SendBox/SendButton';
 import SuggestedActions, { connectSuggestedActions } from './SendBox/SuggestedActions';
 import SendTextBox from './SendBox/TextBox';
-import UploadButton, { connectUploadButton } from './SendBox/UploadButton';
+import UploadButton, { connectUploadButton } from './SendBoxToolbar/UploadButton';
 
 import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';

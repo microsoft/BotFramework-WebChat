@@ -42,6 +42,7 @@ import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
 import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
 import useTheme from './providers/Theme/useTheme';
 import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
+import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import { type ContextOf } from './types/ContextOf';
 import { type FocusSendBoxInit } from './types/internal/FocusSendBoxInit';
@@ -403,7 +404,11 @@ const Composer: FC<ComposerProps> = ({
   );
 
   const sendBoxToolbarMiddleware = useMemo<readonly SendBoxToolbarMiddleware[]>(
-    () => Object.freeze([...rectifySendBoxToolbarMiddlewareProps(sendBoxToolbarMiddlewareFromProps)]),
+    () =>
+      Object.freeze([
+        ...rectifySendBoxToolbarMiddlewareProps(sendBoxToolbarMiddlewareFromProps),
+        ...createDefaultSendBoxToolbarMiddleware()
+      ]),
     [sendBoxToolbarMiddlewareFromProps]
   );
 

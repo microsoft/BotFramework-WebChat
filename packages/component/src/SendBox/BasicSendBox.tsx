@@ -1,4 +1,4 @@
-import { hooks } from 'botframework-webchat-api';
+import { SendBoxToolbarMiddlewareProxy, hooks } from 'botframework-webchat-api';
 import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { FC } from 'react';
@@ -12,7 +12,6 @@ import MicrophoneButton from './MicrophoneButton';
 import SendButton from './SendButton';
 import SuggestedActions from './SuggestedActions';
 import TextBox from './TextBox';
-import UploadButton from './UploadButton';
 
 import type { WebChatActivity } from 'botframework-webchat-core';
 
@@ -52,7 +51,7 @@ type BasicSendBoxProps = Readonly<{
 }>;
 
 const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
-  const [{ hideUploadButton, sendBoxButtonAlignment }] = useStyleOptions();
+  const [{ sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition = undefined } = {}] = useWebSpeechPonyfill();
   const [direction] = useDirection();
@@ -80,7 +79,7 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
     >
       <SuggestedActions />
       <div className="webchat__send-box__main">
-        {!hideUploadButton && <UploadButton className={buttonClassName} />}
+        <SendBoxToolbarMiddlewareProxy className={buttonClassName} request={undefined} />
         {speechInterimsVisible ? (
           <DictationInterims className="webchat__send-box__dictation-interims" />
         ) : (
