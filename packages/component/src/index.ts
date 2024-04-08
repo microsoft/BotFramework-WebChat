@@ -7,10 +7,11 @@ import Composer, { ComposerProps } from './Composer';
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 
 import BasicConnectivityStatus from './BasicConnectivityStatus';
-import BasicSendBox from './SendBox/BasicSendBox';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
 import BasicWebChat, { BasicWebChatProps } from './BasicWebChat';
+import BasicSendBox from './SendBox/BasicSendBox';
+import BasicSendBoxToolbar from './SendBoxToolbar/BasicSendBoxToolbar';
 
 import Avatar from './Activity/Avatar';
 import Bubble from './Activity/Bubble';
@@ -63,6 +64,7 @@ const Components = {
   AccessKeySinkSurface,
   BasicConnectivityStatus,
   BasicSendBox,
+  BasicSendBoxToolbar,
   BasicToaster,
   BasicTranscript,
 
