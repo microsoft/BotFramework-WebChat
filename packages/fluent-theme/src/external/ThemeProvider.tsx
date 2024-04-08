@@ -13,4 +13,5 @@ const {
   WebChat: { Components: { ThemeProvider: ThemeProviderType } };
 };
 
-export default ThemeProvider;
+// TODO: fix this nonsense
+export default ThemeProvider as any;

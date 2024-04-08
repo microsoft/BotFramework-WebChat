@@ -86,6 +86,10 @@ export function SuggestedActions() {
       value?: { [key: string]: any } | string;
     };
 
+    if (!suggestedActions?.length) {
+      return null;
+    }
+
     return (
       // eslint-disable-next-line react/no-array-index-key
       <div className="webchat__suggested-actions__item-box" key={index}>
