@@ -1,3 +1,3 @@
 import { FluentThemeProvider } from './index';
 
-globalThis.WebChat = { ...globalThis.WebChat, FluentThemeProvider };
+(globalThis as any).WebChat = { ...(globalThis as any).WebChat, FluentThemeProvider };
