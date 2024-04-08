@@ -1,14 +1,15 @@
 import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, { useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
-import { SendIcon } from '../../icons/SendIcon';
-import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
-import { useStyles } from '../../styles';
-import { AddAttachmentButton, Attachments } from './Attachments';
+import { Attachments } from './Attachments';
+import AddAttachmentButton from './AddAttachmentButton';
 import DropZone from './DropZone';
 import { SuggestedActions } from './SuggestedActions';
 import { TextArea } from './TextArea';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
+import { useStyles } from '../../styles';
+import { SendIcon } from '../../icons/SendIcon';
+import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
 
 const { useMakeThumbnail, useLocalizer, useSendMessage } = hooks;
 
