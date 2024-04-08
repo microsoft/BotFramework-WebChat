@@ -3,19 +3,15 @@ import React, {
   type DragEventHandler,
   type ReactNode,
   useCallback,
-  useEffect,
-  useRef,
-  useState
-} from 'react';
+  useRef} from 'react';
 import { hooks } from 'botframework-webchat-api';
 import { ToolbarButton } from './Toolbar';
 import { AttachmentIcon } from '../../icons/AttachmentIcon';
-import { AddDocumentIcon } from '../../icons/AddDocumentIcon';
 import { useStyles } from '../../styles';
 
 const { useLocalizer } = hooks;
 
-const styles = {
+export const styles = {
   'webchat__sendbox__add-attachment': {
     display: 'grid'
   },
@@ -63,19 +59,20 @@ export function AddAttachmentButton(
   const classNames = useStyles(styles);
   const localize = useLocalizer();
 
-  const handleClick = useCallback(() => {
-    inputRef.current?.click();
-  }, []);
+  const handleClick = useCallback(() => inputRef.current?.click(), [inputRef]);
 
-  const handleFileChange = useCallback<ChangeEventHandler<HTMLInputElement>>(({ target: { files } }) => {
-    if (files) {
-      props.onFilesAdded?.(Array.from(files));
-    }
+  const handleFileChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    ({ target: { files } }) => {
+      if (files) {
+        props.onFilesAdded?.([...files]);
+      }
 
-    if (inputRef.current) {
-      inputRef.current.value = '';
-    }
-  }, []);
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
+    },
+    [inputRef]
+  );
 
   return (
     <div className={classNames['webchat__sendbox__add-attachment']}>
@@ -108,58 +105,11 @@ export function Attachments({ files }: Readonly<{ readonly files: File[] }>) {
   ) : null;
 }
 
-const handleDragOver: DragEventHandler<HTMLDivElement> = event => {
+export const handleDragOver: DragEventHandler<HTMLDivElement> = event => {
   event.stopPropagation();
   event.preventDefault();
 };
 
-const isFilesTransferEvent = (event: DragEvent) => !!event?.dataTransfer?.types?.includes?.('Files');
+export const isFilesTransferEvent = (event: DragEvent) => !!event?.dataTransfer?.types?.includes?.('Files');
 
-export function AttachmentDropzone(props: { readonly onFilesAdded: (files: File[]) => void }) {
-  const classNames = useStyles(styles);
-  const [showDropZone, setShowDropZone] = useState<boolean>(false);
-  const localize = useLocalizer();
 
-  useEffect(() => {
-    const handleDragEnd = () => {
-      setShowDropZone(false);
-    };
-    const handleDragStart = (event: DragEvent) => {
-      if (!isFilesTransferEvent(event)) {
-        return;
-      }
-      setShowDropZone(true);
-      document.addEventListener('click', handleDragEnd, {
-        once: true,
-        capture: true
-      });
-    };
-
-    document.addEventListener('dragenter', handleDragStart, false);
-    document.addEventListener('dragend', handleDragEnd, false);
-    return () => {
-      document.removeEventListener('dragenter', handleDragStart);
-      document.removeEventListener('dragend', handleDragEnd);
-    };
-  }, []);
-
-  const handleDrop = useCallback<DragEventHandler<HTMLDivElement>>(event => {
-    event.preventDefault();
-    setShowDropZone(false);
-    if (!isFilesTransferEvent(event.nativeEvent)) {
-      return;
-    }
-    props.onFilesAdded(Array.from(event.dataTransfer.files));
-  }, []);
-
-  return showDropZone ? (
-    <div
-      className={classNames['webchat__sendbox__attachment-dropzone']}
-      onDragOver={handleDragOver}
-      onDrop={handleDrop}
-    >
-      <AddDocumentIcon className={classNames['webchat__sendbox__attachment-dropzone-icon']} />
-      <span>{localize('TEXT_INPUT_DROP_ZONE')}</span>
-    </div>
-  ) : null;
-}

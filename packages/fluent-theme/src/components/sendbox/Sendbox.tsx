@@ -5,7 +5,8 @@ import type { DirectLineCardAction, WebChatActivity } from 'botframework-webchat
 import { SendIcon } from '../../icons/SendIcon';
 import { ToolbarButton, ToolbarSeparator, Toolbar } from './Toolbar';
 import { SuggestedActions } from './SuggestedActions';
-import { AddAttachmentButton, AttachmentDropzone, Attachments } from './Attachments';
+import { AddAttachmentButton, Attachments } from './Attachments';
+import { AttachmentDropzone } from './AttachmentDropzone';
 import { TextArea } from './TextArea';
 import { DialpadIcon } from '../../icons/DialpadIcon';
 import { useStyles } from '../../styles';
@@ -91,20 +92,29 @@ export function Sendbox(
     }
   }, []);
 
-  const handleSendboxClick = useCallback<MouseEventHandler>(event => {
-    if ('tabIndex' in event.target && typeof event.target.tabIndex === 'number' && event.target.tabIndex >= 0) {
-      return;
-    }
-    inputRef.current?.focus();
-  }, []);
+  const handleSendboxClick = useCallback<MouseEventHandler>(
+    event => {
+      if ('tabIndex' in event.target && typeof event.target.tabIndex === 'number' && event.target.tabIndex >= 0) {
+        return;
+      }
+      inputRef.current?.focus();
+    },
+    [inputRef]
+  );
 
-  const handleMessageChange: React.FormEventHandler<HTMLTextAreaElement> = useCallback(ev => {
-    setMessage(ev.currentTarget.value);
-  }, []);
+  const handleMessageChange: React.FormEventHandler<HTMLTextAreaElement> = useCallback(
+    event => {
+      setMessage(event.currentTarget.value);
+    },
+    [setMessage]
+  );
 
-  const handleAddFiles = useCallback((inputFiles: File[]) => {
-    setFiles(files => files.concat(inputFiles));
-  }, []);
+  const handleAddFiles = useCallback(
+    (inputFiles: File[]) => {
+      setFiles(files => files.concat(inputFiles));
+    },
+    [setFiles]
+  );
 
   const handleSendClick = useCallback(() => {
     props.onPostMessage?.({
@@ -116,7 +126,7 @@ export function Sendbox(
     });
     setMessage('');
     setFiles([]);
-  }, [props, message, files]);
+  }, [props, message, files, setMessage, setFiles]);
 
   const aria = {
     role: 'form',
