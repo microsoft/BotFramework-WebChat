@@ -124,7 +124,7 @@
   "TEXT_INPUT_SPEAK_BUTTON_ALT": "Speak",
   "TEXT_INPUT_UPLOAD_BUTTON_ALT": "Upload file",
   "TEXT_INPUT_DIALPAD_BUTTON_ALT": "Dialpad",
-  "TEXT_INPUT_DROPZONE": "Drop files",
+  "TEXT_INPUT_DROP_ZONE": "Drop files",
   "TEXT_INPUT_ATTACHMENTS": "attachments",
   "TOAST_ACCORDION_FEW": "$1 Notifications: Click here to see details",
   "_TOAST_ACCORDION_FEW.comment": "$1 is the number of notifications. This is for plural rule of \"few\".",

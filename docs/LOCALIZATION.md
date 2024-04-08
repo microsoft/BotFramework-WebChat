@@ -260,7 +260,7 @@ function convertFromOldStringId(js) {
     TEXT_INPUT_SPEAK_BUTTON_ALT: js.Speak,
     TEXT_INPUT_UPLOAD_BUTTON_ALT: js['Upload file'],
     TEXT_INPUT_DIALPAD_BUTTON_ALT: js['Dialpad'],
-    TEXT_INPUT_DROPZONE: js['Drop files'],
+    TEXT_INPUT_DROP_ZONE: js['Drop files'],
     // TODO: To be changed based on the final attachments design:
     // - Either should be pluralized
     // - Or the design to be changed
