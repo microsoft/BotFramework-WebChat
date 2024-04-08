@@ -28,9 +28,9 @@ export const styles = {
 
 export function AddAttachmentButton(
   props: Readonly<{
-    readonly disabled?: boolean | undefined;
-    readonly icon?: ReactNode | undefined;
-    readonly onFilesAdded: ((files: File[]) => void) | undefined;
+    disabled?: boolean | undefined;
+    icon?: ReactNode | undefined;
+    onFilesAdded: ((files: File[]) => void) | undefined;
   }>
 ) {
   const inputRef = useRef<HTMLInputElement>(null);

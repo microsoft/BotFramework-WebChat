@@ -59,11 +59,11 @@ const styles = {
 export const TextArea = forwardRef<
   HTMLTextAreaElement,
   Readonly<{
-    readonly ariaLabel?: string | undefined;
-    readonly className?: string | undefined;
-    readonly placeholder?: string | undefined;
-    readonly value?: string | undefined;
-    readonly onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
+    ariaLabel?: string | undefined;
+    className?: string | undefined;
+    placeholder?: string | undefined;
+    value?: string | undefined;
+    onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
   }>
 >((props, ref) => {
   const classNames = useStyles(styles);

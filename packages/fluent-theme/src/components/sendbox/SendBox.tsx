@@ -72,11 +72,11 @@ const styles = {
 
 export default function SendBox(
   props: Readonly<{
-    readonly className?: string | undefined;
-    readonly errorMessageId?: string | undefined;
-    readonly maxMessageLength?: number | undefined;
-    readonly placeholder?: string | undefined;
-    readonly suggestedActions?: Partial<DirectLineCardAction>[] | undefined;
+    className?: string | undefined;
+    errorMessageId?: string | undefined;
+    maxMessageLength?: number | undefined;
+    placeholder?: string | undefined;
+    suggestedActions?: Partial<DirectLineCardAction>[] | undefined;
   }>
 ) {
   const inputRef = useRef<HTMLTextAreaElement>(null);

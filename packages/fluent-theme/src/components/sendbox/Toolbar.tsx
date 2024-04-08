@@ -56,11 +56,11 @@ const styles = {
 
 export function ToolbarButton(
   props: Readonly<{
-    readonly children?: ReactNode | undefined;
-    readonly className?: string | undefined;
-    readonly disabled?: boolean | undefined;
-    readonly onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
-    readonly submit?: boolean | undefined;
+    children?: ReactNode | undefined;
+    className?: string | undefined;
+    disabled?: boolean | undefined;
+    onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
+    submit?: boolean | undefined;
   }>
 ) {
   const classNames = useStyles(styles);
@@ -79,15 +79,13 @@ export function ToolbarButton(
   );
 }
 
-export function Toolbar(
-  props: Readonly<{ readonly children?: ReactNode | undefined; readonly className?: string | undefined }>
-) {
+export function Toolbar(props: Readonly<{ children?: ReactNode | undefined; className?: string | undefined }>) {
   const classNames = useStyles(styles);
   return <div className={cx(classNames['webchat-fluent__sendbox__toolbar'], props.className)}>{props.children}</div>;
 }
 
 export function ToolbarSeparator(
-  props: Readonly<{ readonly children?: ReactNode | undefined; readonly className?: string | undefined }>
+  props: Readonly<{ children?: ReactNode | undefined; className?: string | undefined }>
 ) {
   const classNames = useStyles(styles);
   return (
