@@ -109,7 +109,19 @@ const DISPATCHERS = {
   submitSendBox
 };
 
-function createCardActionContext({ cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill }) {
+function createCardActionContext({
+  cardActionMiddleware,
+  directLine,
+  dispatch,
+  markAllAsAcknowledged,
+  ponyfill
+}: {
+  cardActionMiddleware: readonly CardActionMiddleware[];
+  directLine: DirectLineJSBotConnection;
+  dispatch: Function;
+  markAllAsAcknowledged: () => void;
+  ponyfill: GlobalScopePonyfill;
+}) {
   const runMiddleware = applyMiddleware(
     'card action',
     ...cardActionMiddleware,
@@ -149,7 +161,15 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch, m
   };
 }
 
-function createGroupActivitiesContext({ groupActivitiesMiddleware, groupTimestamp, ponyfill }) {
+function createGroupActivitiesContext({
+  groupActivitiesMiddleware,
+  groupTimestamp,
+  ponyfill
+}: {
+  groupActivitiesMiddleware: readonly GroupActivitiesMiddleware[];
+  groupTimestamp: boolean | number;
+  ponyfill: GlobalScopePonyfill;
+}) {
   const runMiddleware = applyMiddleware(
     'group activities',
     ...groupActivitiesMiddleware,
