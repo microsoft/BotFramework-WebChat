@@ -17,6 +17,7 @@ const styles = {
   'webchat-fluent__sendbox': {
     color: 'var(--colorNeutralForeground1)',
     fontFamily: 'var(--fontFamilyBase)',
+    padding: 10,
     textRendering: 'optimizeLegibility'
   },
 
