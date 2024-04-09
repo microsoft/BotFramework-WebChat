@@ -1,8 +1,10 @@
-import React, { type ChangeEventHandler, type ReactNode, useCallback, useRef } from 'react';
 import { hooks } from 'botframework-webchat-api';
-import { ToolbarButton } from './Toolbar';
+import React, { useCallback, useRef, type ChangeEventHandler, type ReactNode } from 'react';
+import { useRefFrom } from 'use-ref-from';
 import { AttachmentIcon } from '../../icons/AttachmentIcon';
 import { useStyles } from '../../styles';
+import testIds from '../../testIds';
+import { ToolbarButton } from './Toolbar';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
@@ -29,20 +31,21 @@ export default function AddAttachmentButton(
   const classNames = useStyles(styles);
   const localize = useLocalizer();
   const [{ uploadAccept, uploadMultiple }] = useStyleOptions();
+  const onFilesAddedRef = useRefFrom(props.onFilesAdded);
 
   const handleClick = useCallback(() => inputRef.current?.click(), [inputRef]);
 
   const handleFileChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ target: { files } }) => {
       if (files) {
-        props.onFilesAdded?.([...files]);
-      }
+        onFilesAddedRef.current?.([...files]);
 
-      if (inputRef.current) {
-        inputRef.current.value = '';
+        if (inputRef.current) {
+          inputRef.current.value = '';
+        }
       }
     },
-    [inputRef]
+    [inputRef, onFilesAddedRef]
   );
 
   return (
@@ -60,7 +63,11 @@ export default function AddAttachmentButton(
         tabIndex={-1}
         type="file"
       />
-      <ToolbarButton aria-label={localize('TEXT_INPUT_UPLOAD_BUTTON_ALT')} onClick={handleClick}>
+      <ToolbarButton
+        aria-label={localize('TEXT_INPUT_UPLOAD_BUTTON_ALT')}
+        data-testid={testIds.sendBoxUploadButton}
+        onClick={handleClick}
+      >
         {props.icon ?? <AttachmentIcon />}
       </ToolbarButton>
     </div>

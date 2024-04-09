@@ -59,6 +59,7 @@ export function ToolbarButton(
     'aria-label'?: string | undefined;
     children?: ReactNode | undefined;
     className?: string | undefined;
+    'data-testid'?: string | undefined;
     disabled?: boolean | undefined;
     onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
     submit?: boolean | undefined;
@@ -70,6 +71,7 @@ export function ToolbarButton(
     <button
       aria-label={props['aria-label']}
       className={cx(classNames['webchat-fluent__sendbox__toolbar-button'], props.className)}
+      data-testid={props['data-testid']}
       onClick={props.onClick}
       type={props.submit ? 'submit' : 'button'}
       {...(props.disabled && {

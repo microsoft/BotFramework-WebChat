@@ -39,14 +39,42 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        // THEN: Fluent theme should be loaded.
-        expect(
-          document.querySelector('meta[name="botframework-webchat-fluent-theme:version"]').getAttribute('name')
-        ).toBeTruthy();
+        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
 
-        expect(window.WebChat.FluentThemeProvider).toBeTruthy();
+        // THEN: Should have a focus indicator on the send box text area.
+        await host.snapshot();
 
-        // THEN: Should render the activity.
+        // WHEN: SHIFT-TAB key is pressed.
+        await host.sendShiftTab();
+
+        // THEN: Should focus on the chat history.
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed.
+        await host.sendTab(2);
+
+        // THEN: Should focus on the telephone keypad button
+        expect(document.activeElement).toBe(
+          document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTelephoneKeypadButton}"]`)
+        );
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed.
+        await host.sendTab();
+
+        // THEN: Should focus on the upload button
+        expect(document.activeElement).toBe(
+          document.querySelector(`[data-testid="${WebChat.testIds.sendBoxUploadButton}"]`)
+        );
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed.
+        await host.sendTab();
+
+        // THEN: Should focus on the send button
+        expect(document.activeElement).toBe(
+          document.querySelector(`[data-testid="${WebChat.testIds.sendBoxSendButton}"]`)
+        );
         await host.snapshot();
       });
     </script>

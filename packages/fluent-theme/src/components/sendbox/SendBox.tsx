@@ -4,6 +4,7 @@ import React, { useCallback, useRef, useState, type FormEventHandler, type Mouse
 import { SendIcon } from '../../icons/SendIcon';
 import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
 import { useStyles } from '../../styles';
+import testIds from '../../testIds';
 import AddAttachmentButton from './AddAttachmentButton';
 import { Attachments } from './Attachments';
 import DropZone from './DropZone';
@@ -155,6 +156,7 @@ export default function SendBox(
         <TextArea
           aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
           className={cx(classNames['webchat-fluent__sendbox__sendbox-text'])}
+          data-testid={testIds.sendBoxTextBox}
           onInput={handleMessageChange}
           placeholder={props.placeholder ?? localize('TEXT_INPUT_PLACEHOLDER')}
           ref={inputRef}
@@ -172,13 +174,17 @@ export default function SendBox(
             </div>
           )}
           <Toolbar>
-            <ToolbarButton aria-label={localize('TEXT_INPUT_TELEPHONE_KEYPAD_BUTTON_ALT')}>
+            <ToolbarButton
+              aria-label={localize('TEXT_INPUT_TELEPHONE_KEYPAD_BUTTON_ALT')}
+              data-testid={testIds.sendBoxTelephoneKeypadButton}
+            >
               <TelephoneKeypadIcon />
             </ToolbarButton>
             <AddAttachmentButton onFilesAdded={handleAddFiles} />
             <ToolbarSeparator />
             <ToolbarButton
               aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
+              data-testid={testIds.sendBoxSendButton}
               disabled={isMessageLengthExceeded}
               submit={true}
             >
