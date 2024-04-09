@@ -1,6 +1,7 @@
 import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, { useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
+import { useRefFrom } from 'use-ref-from';
 import { SendIcon } from '../../icons/SendIcon';
 import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
 import { useStyles } from '../../styles';
@@ -93,6 +94,9 @@ export default function SendBox(
   const sendMessage = useSendMessage();
   const makeThumbnail = useMakeThumbnail();
 
+  const attachmentsRef = useRefFrom(attachments);
+  const messageRef = useRefFrom(message);
+
   const handleSendBoxClick = useCallback<MouseEventHandler>(
     event => {
       if ('tabIndex' in event.target && typeof event.target.tabIndex === 'number' && event.target.tabIndex >= 0) {
@@ -132,13 +136,13 @@ export default function SendBox(
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     event => {
       event.preventDefault();
-      sendMessage(message, undefined, {
-        attachments
-      });
+
+      sendMessage(messageRef.current, undefined, { attachments: attachmentsRef.current });
+
       setMessage('');
       setAttachments([]);
     },
-    [attachments, sendMessage, message]
+    [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage]
   );
 
   const aria = {
