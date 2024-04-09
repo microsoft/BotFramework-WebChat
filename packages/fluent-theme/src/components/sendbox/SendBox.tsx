@@ -98,6 +98,7 @@ export default function SendBox(
         return;
       }
 
+      // TODO: Should call `useFocus('sendBox')`.
       inputRef.current?.focus();
     },
     [inputRef]
@@ -154,7 +155,7 @@ export default function SendBox(
   };
 
   return (
-    <form className={cx(classNames['webchat-fluent__sendbox'], props.className)} onSubmit={handleFormSubmit} {...aria}>
+    <form {...aria} className={cx(classNames['webchat-fluent__sendbox'], props.className)} onSubmit={handleFormSubmit}>
       <SuggestedActions />
       <div className={cx(classNames['webchat-fluent__sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
         <TextArea
