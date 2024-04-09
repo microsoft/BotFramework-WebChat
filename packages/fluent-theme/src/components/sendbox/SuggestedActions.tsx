@@ -36,7 +36,7 @@ const styles = {
 
 function SuggestedActionStackedContainer(
   props: Readonly<{
-    label?: string | undefined;
+    'aria-label'?: string | undefined;
     children?: ReactNode | undefined;
     className?: string | undefined;
   }>
@@ -46,7 +46,7 @@ function SuggestedActionStackedContainer(
 
   return (
     <div
-      aria-label={props.label}
+      aria-label={props['aria-label']}
       aria-live="polite"
       aria-orientation="vertical"
       className={cx(
@@ -112,7 +112,7 @@ export function SuggestedActions() {
     );
   });
   return (
-    <SuggestedActionStackedContainer label={localize('SUGGESTED_ACTIONS_LABEL_ALT')}>
+    <SuggestedActionStackedContainer aria-label={localize('SUGGESTED_ACTIONS_LABEL_ALT')}>
       {children}
     </SuggestedActionStackedContainer>
   );
