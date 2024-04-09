@@ -25,7 +25,7 @@ const attachmentsPluralStringIds = {
 export function Attachments({
   attachments
 }: Readonly<{
-  readonly attachments: Readonly<{ blob: File; thumbnailURL?: URL | undefined }>[];
+  readonly attachments: readonly Readonly<{ blob: Blob | File; thumbnailURL?: URL | undefined }>[];
 }>) {
   const classNames = useStyles(styles);
   const localizeWithPlural = useLocalizer({ plural: true });

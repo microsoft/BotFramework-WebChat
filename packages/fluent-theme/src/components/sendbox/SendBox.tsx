@@ -13,7 +13,7 @@ import { SuggestedActions } from './SuggestedActions';
 import { TextArea } from './TextArea';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
 
-const { useMakeThumbnail, useLocalizer, useSendMessage } = hooks;
+const { useMakeThumbnail, useLocalizer, useSendBoxAttachments, useSendMessage } = hooks;
 
 const styles = {
   'webchat-fluent__sendbox': {
@@ -82,12 +82,7 @@ export default function SendBox(
 ) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState('');
-  const [attachments, setAttachments] = useState<
-    Readonly<{
-      blob: File;
-      thumbnailURL?: URL;
-    }>[]
-  >([]);
+  const [attachments, setAttachments] = useSendBoxAttachments();
   const isMessageLengthExceeded = !!props.maxMessageLength && message.length > props.maxMessageLength;
   const classNames = useStyles(styles);
   const localize = useLocalizer();
@@ -102,6 +97,7 @@ export default function SendBox(
       if ('tabIndex' in event.target && typeof event.target.tabIndex === 'number' && event.target.tabIndex >= 0) {
         return;
       }
+
       inputRef.current?.focus();
     },
     [inputRef]
@@ -117,18 +113,22 @@ export default function SendBox(
       const newAttachments = Object.freeze(
         await Promise.all(
           inputFiles.map(file =>
-            makeThumbnail(file, /\.(gif|jpe?g|png)$/iu.test(file.name) ? 'image/*' : 'application/octet-stream').then(
-              thumbnailURL =>
-                Object.freeze({
-                  blob: file,
-                  ...(thumbnailURL && { thumbnailURL })
-                })
+            makeThumbnail(file).then(thumbnailURL =>
+              Object.freeze({
+                blob: file,
+                ...(thumbnailURL && { thumbnailURL })
+              })
             )
           )
         )
       );
 
-      setAttachments(attachments => attachments.concat(newAttachments));
+      setAttachments(newAttachments);
+
+      // TODO: Currently in the UX, we have no way to remove attachments.
+      //       Keep concatenating doesn't make sense in current UX.
+      //       When end-user can remove attachment, we should enable the code again.
+      // setAttachments(attachments => attachments.concat(newAttachments));
     },
     [makeThumbnail, setAttachments]
   );
