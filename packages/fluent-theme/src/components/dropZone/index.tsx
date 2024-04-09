@@ -1,5 +1,7 @@
-import React, { type DragEventHandler, useCallback, useEffect, useState } from 'react';
 import { hooks } from 'botframework-webchat-api';
+import React, { useCallback, useEffect, useState, type DragEventHandler } from 'react';
+
+import { useRefFrom } from 'use-ref-from';
 import { AddDocumentIcon } from '../../icons/AddDocumentIcon';
 import { useStyles } from '../../styles';
 
@@ -36,6 +38,7 @@ export default function DropZone(props: { readonly onFilesAdded: (files: File[])
   const classNames = useStyles(styles);
   const [showDropZone, setShowDropZone] = useState<boolean>(false);
   const localize = useLocalizer();
+  const onFilesAddedRef = useRefFrom(props.onFilesAdded);
 
   useEffect(() => {
     const handleDragEnd = () => setShowDropZone(false);
@@ -61,13 +64,16 @@ export default function DropZone(props: { readonly onFilesAdded: (files: File[])
   const handleDrop = useCallback<DragEventHandler<HTMLDivElement>>(
     event => {
       event.preventDefault();
+
       setShowDropZone(false);
+
       if (!isFilesTransferEvent(event.nativeEvent)) {
         return;
       }
-      props.onFilesAdded([...event.dataTransfer.files]);
+
+      onFilesAddedRef.current([...event.dataTransfer.files]);
     },
-    [setShowDropZone]
+    [onFilesAddedRef, setShowDropZone]
   );
 
   return showDropZone ? (
