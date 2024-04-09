@@ -62,7 +62,7 @@ export function ToolbarButton(
     'data-testid'?: string | undefined;
     disabled?: boolean | undefined;
     onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
-    submit?: boolean | undefined;
+    type?: 'button' | 'submit' | undefined;
   }>
 ) {
   const classNames = useStyles(styles);
@@ -73,7 +73,7 @@ export function ToolbarButton(
       className={cx(classNames['webchat-fluent__sendbox__toolbar-button'], props.className)}
       data-testid={props['data-testid']}
       onClick={props.onClick}
-      type={props.submit ? 'submit' : 'button'}
+      type={props.type === 'submit' ? 'submit' : 'button'}
       {...(props.disabled && {
         'aria-disabled': 'true',
         tabIndex: -1
