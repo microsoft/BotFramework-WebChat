@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import React, { type FormEventHandler, forwardRef } from 'react';
+import React, { forwardRef, type FormEventHandler } from 'react';
 import { useStyles } from '../../styles';
 
 const styles = {
@@ -59,7 +59,7 @@ const styles = {
 export const TextArea = forwardRef<
   HTMLTextAreaElement,
   Readonly<{
-    ariaLabel?: string | undefined;
+    'aria-label'?: string | undefined;
     className?: string | undefined;
     placeholder?: string | undefined;
     value?: string | undefined;
@@ -67,6 +67,7 @@ export const TextArea = forwardRef<
   }>
 >((props, ref) => {
   const classNames = useStyles(styles);
+
   return (
     <div className={cx(classNames['webchat-fluent__sendbox__text-area'], props.className)}>
       <div
@@ -78,7 +79,7 @@ export const TextArea = forwardRef<
         {props.value || props.placeholder}{' '}
       </div>
       <textarea
-        aria-label={props.ariaLabel}
+        aria-label={props['aria-label']}
         className={cx(
           classNames['webchat-fluent__sendbox__text-area-input'],
           classNames['webchat-fluent__sendbox__text-area-shared'],
