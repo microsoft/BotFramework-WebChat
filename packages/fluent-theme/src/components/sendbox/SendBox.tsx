@@ -191,7 +191,7 @@ export default function SendBox(
               aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
               data-testid={testIds.sendBoxSendButton}
               disabled={isMessageLengthExceeded}
-              submit={true}
+              type="submit"
             >
               <SendIcon />
             </ToolbarButton>
