@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import React, { forwardRef, type FormEventHandler } from 'react';
+import React, { forwardRef, useCallback, type FormEventHandler, type KeyboardEventHandler } from 'react';
 
 import { useStyles } from '../../styles';
 
@@ -70,6 +70,15 @@ export const TextArea = forwardRef<
 >((props, ref) => {
   const classNames = useStyles(styles);
 
+  const handleKeyDown = useCallback<KeyboardEventHandler<HTMLTextAreaElement>>(event => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+
+      // TODO: Unsure why form.onSubmit is not capturing the event.
+      // event.currentTarget.form?.submit();
+    }
+  }, []);
+
   return (
     <div className={cx(classNames['webchat-fluent__sendbox__text-area'], props.className)}>
       <div
@@ -88,6 +97,7 @@ export const TextArea = forwardRef<
           classNames['webchat-fluent__sendbox__text-area-input--scroll']
         )}
         data-testid={props['data-testid']}
+        onKeyDown={handleKeyDown}
         ref={ref}
       />
     </div>
