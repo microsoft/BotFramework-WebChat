@@ -1,15 +1,15 @@
 import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, { useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
-import { Attachments } from './Attachments';
+import { SendIcon } from '../../icons/SendIcon';
+import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
+import { useStyles } from '../../styles';
 import AddAttachmentButton from './AddAttachmentButton';
+import { Attachments } from './Attachments';
 import DropZone from './DropZone';
 import { SuggestedActions } from './SuggestedActions';
 import { TextArea } from './TextArea';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
-import { useStyles } from '../../styles';
-import { SendIcon } from '../../icons/SendIcon';
-import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
 
 const { useMakeThumbnail, useLocalizer, useSendMessage } = hooks;
 
@@ -152,7 +152,7 @@ export default function SendBox(
       <SuggestedActions />
       <div className={cx(classNames['webchat-fluent__sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
         <TextArea
-          ariaLabel={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : null}
+          aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
           className={cx(classNames['webchat-fluent__sendbox__sendbox-text'])}
           onInput={handleMessageChange}
           placeholder={props.placeholder ?? localize('TEXT_INPUT_PLACEHOLDER')}
@@ -171,7 +171,7 @@ export default function SendBox(
             </div>
           )}
           <Toolbar>
-            <ToolbarButton aria-label={localize('TEXT_INPUT_TELEPHON_KEYPAD_BUTTON_ALT')}>
+            <ToolbarButton aria-label={localize('TEXT_INPUT_TELEPHONE_KEYPAD_BUTTON_ALT')}>
               <TelephoneKeypadIcon />
             </ToolbarButton>
             <AddAttachmentButton onFilesAdded={handleAddFiles} />
