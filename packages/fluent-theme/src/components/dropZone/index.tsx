@@ -1,7 +1,8 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { useCallback, useEffect, useState, type DragEventHandler } from 'react';
-
+import cx from 'classnames';
+import React, { memo, useCallback, useEffect, useRef, useState, type DragEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
+
 import { AddDocumentIcon } from '../../icons/AddDocumentIcon';
 import { useStyles } from '../../styles';
 
@@ -20,6 +21,10 @@ const styles = {
     position: 'absolute'
   },
 
+  'webchat-fluent__sendbox__attachment-drop-zone--droppable': {
+    backgroundColor: 'Red'
+  },
+
   'webchat-fluent__sendbox__attachment-drop-zone-icon': {
     height: '36px',
     width: '36px'
@@ -27,45 +32,71 @@ const styles = {
 };
 
 const handleDragOver: DragEventHandler<HTMLDivElement> = event => {
-  event.stopPropagation();
+  // This is for preventing the browser from opening the dropped file in a new tab.
   event.preventDefault();
 };
 
-// TODO: respect style options for the files type and cout
-const isFilesTransferEvent = (event: DragEvent) => !!event?.dataTransfer?.types?.includes?.('Files');
+// Notes: For files dragging from outside of browser, it only tell us if it is a "File" instead of "text/plain" or "text/uri-list".
+//        For images dragging inside of browser, it only tell us that it is "text/plain", "text/uri-list" and "text/html". But not "image/*".
+//        So we cannot whitelist what is droppable.
+const isFilesTransferEvent = (event: DragEvent) => !!event.dataTransfer?.types?.includes('Files');
 
-export default function DropZone(props: { readonly onFilesAdded: (files: File[]) => void }) {
+function isDescendantOf(target: Node, ancestor: Node): boolean {
+  let current = target.parentNode;
+
+  while (current) {
+    if (current === ancestor) {
+      return true;
+    }
+
+    current = current.parentNode;
+  }
+
+  return false;
+}
+
+const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => {
+  const [dropZoneState, setDropZoneState] = useState<false | 'visible' | 'droppable'>(false);
   const classNames = useStyles(styles);
-  const [showDropZone, setShowDropZone] = useState<boolean>(false);
+  const dropZoneRef = useRef<HTMLDivElement>(null);
   const localize = useLocalizer();
   const onFilesAddedRef = useRefFrom(props.onFilesAdded);
 
   useEffect(() => {
-    const handleDragEnd = () => setShowDropZone(false);
-    const handleDragStart = (event: DragEvent) => {
+    let entranceCounter = 0;
+
+    const handleDragEnter = (event: DragEvent) => {
+      entranceCounter++;
+
       if (!isFilesTransferEvent(event)) {
         return;
       }
-      setShowDropZone(true);
-      document.addEventListener('click', handleDragEnd, {
-        once: true,
-        capture: true
-      });
+
+      setDropZoneState(
+        dropZoneRef.current &&
+          (event.target === dropZoneRef.current ||
+            (event.target instanceof HTMLElement && isDescendantOf(event.target, dropZoneRef.current)))
+          ? 'droppable'
+          : 'visible'
+      );
     };
 
-    document.addEventListener('dragenter', handleDragStart, false);
-    document.addEventListener('dragend', handleDragEnd, false);
+    const handleDragLeave = () => --entranceCounter <= 0 && setDropZoneState(false);
+
+    document.addEventListener('dragenter', handleDragEnter, false);
+    document.addEventListener('dragleave', handleDragLeave, false);
+
     return () => {
-      document.removeEventListener('dragenter', handleDragStart);
-      document.removeEventListener('dragend', handleDragEnd);
+      document.removeEventListener('dragenter', handleDragEnter);
+      document.removeEventListener('dragleave', handleDragLeave);
     };
-  }, []);
+  }, [setDropZoneState]);
 
   const handleDrop = useCallback<DragEventHandler<HTMLDivElement>>(
     event => {
       event.preventDefault();
 
-      setShowDropZone(false);
+      setDropZoneState(false);
 
       if (!isFilesTransferEvent(event.nativeEvent)) {
         return;
@@ -73,17 +104,24 @@ export default function DropZone(props: { readonly onFilesAdded: (files: File[])
 
       onFilesAddedRef.current([...event.dataTransfer.files]);
     },
-    [onFilesAddedRef, setShowDropZone]
+    [onFilesAddedRef, setDropZoneState]
   );
 
-  return showDropZone ? (
+  return dropZoneState ? (
     <div
-      className={classNames['webchat-fluent__sendbox__attachment-drop-zone']}
+      className={cx(classNames['webchat-fluent__sendbox__attachment-drop-zone'], {
+        [classNames['webchat-fluent__sendbox__attachment-drop-zone--droppable']]: dropZoneState === 'droppable'
+      })}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
+      ref={dropZoneRef}
     >
       <AddDocumentIcon className={classNames['webchat-fluent__sendbox__attachment-drop-zone-icon']} />
       {localize('TEXT_INPUT_DROP_ZONE')}
     </div>
   ) : null;
-}
+};
+
+DropZone.displayName = 'DropZone';
+
+export default memo(DropZone);
