@@ -3,6 +3,8 @@ import { useStyles } from '../styles';
 
 const styles = {
   'webchat-fluent__theme': {
+    display: 'contents',
+
     '--colorNeutralForeground1': '#242424',
     '--colorNeutralForeground2': '#424242',
     '--colorNeutralForeground4': '#707070',

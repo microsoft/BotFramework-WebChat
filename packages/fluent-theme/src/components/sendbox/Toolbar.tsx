@@ -1,5 +1,5 @@
-import React, { type ReactNode, type MouseEventHandler } from 'react';
 import cx from 'classnames';
+import React, { type MouseEventHandler, type ReactNode } from 'react';
 import { useStyles } from '../../styles';
 
 const styles = {
@@ -56,6 +56,7 @@ const styles = {
 
 export function ToolbarButton(
   props: Readonly<{
+    'aria-label'?: string | undefined;
     children?: ReactNode | undefined;
     className?: string | undefined;
     disabled?: boolean | undefined;
@@ -64,8 +65,10 @@ export function ToolbarButton(
   }>
 ) {
   const classNames = useStyles(styles);
+
   return (
     <button
+      aria-label={props['aria-label']}
       className={cx(classNames['webchat-fluent__sendbox__toolbar-button'], props.className)}
       onClick={props.onClick}
       type={props.submit ? 'submit' : 'button'}
@@ -81,6 +84,7 @@ export function ToolbarButton(
 
 export function Toolbar(props: Readonly<{ children?: ReactNode | undefined; className?: string | undefined }>) {
   const classNames = useStyles(styles);
+
   return <div className={cx(classNames['webchat-fluent__sendbox__toolbar'], props.className)}>{props.children}</div>;
 }
 
@@ -88,6 +92,7 @@ export function ToolbarSeparator(
   props: Readonly<{ children?: ReactNode | undefined; className?: string | undefined }>
 ) {
   const classNames = useStyles(styles);
+
   return (
     <div
       aria-orientation="vertical"
