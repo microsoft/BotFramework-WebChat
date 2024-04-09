@@ -8,15 +8,15 @@ const umdResolvePlugin = {
   name: 'umd-resolve',
   setup(build) {
     build.onResolve({ filter: /^react$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.browser/react.ts')
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/react.ts')
     }));
 
     build.onResolve({ filter: /^botframework-webchat-api$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.browser/botframework-webchat-api.ts')
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api.ts')
     }));
 
     build.onResolve({ filter: /^botframework-webchat-component$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.browser/botframework-webchat-component.ts')
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component.ts')
     }));
   }
 };
@@ -33,7 +33,6 @@ export default defineConfig([
     target
   },
   {
-    conditions: ['browser'],
     entry: {
       'botframework-webchat-fluent-theme.development': './src/bundle.ts'
     },
@@ -52,7 +51,6 @@ export default defineConfig([
     target
   },
   {
-    conditions: ['browser'],
     entry: {
       'botframework-webchat-fluent-theme.production.min': './src/bundle.ts'
     },
