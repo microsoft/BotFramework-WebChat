@@ -71,11 +71,14 @@ export const TextArea = forwardRef<
   const classNames = useStyles(styles);
 
   const handleKeyDown = useCallback<KeyboardEventHandler<HTMLTextAreaElement>>(event => {
-    if (event.key === 'Enter') {
+    // Shift+Enter adds a new line
+    // Enter requests related form submission
+    if (!event.shiftKey && event.key === 'Enter') {
       event.preventDefault();
 
-      // TODO: Unsure why form.onSubmit is not capturing the event.
-      // event.currentTarget.form?.submit();
+      if ('form' in event.target && event.target.form instanceof HTMLFormElement) {
+        event.target?.form?.requestSubmit();
+      }
     }
   }, []);
 
@@ -97,8 +100,11 @@ export const TextArea = forwardRef<
           classNames['webchat-fluent__sendbox__text-area-input--scroll']
         )}
         data-testid={props['data-testid']}
+        onInput={props.onInput}
         onKeyDown={handleKeyDown}
+        placeholder={props.placeholder}
         ref={ref}
+        value={props.value}
       />
     </div>
   );
