@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
-import React, { useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
+import React, { useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler, memo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { SendIcon } from '../../icons/SendIcon';
 import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
@@ -8,9 +8,9 @@ import { useStyles } from '../../styles';
 import testIds from '../../testIds';
 import DropZone from '../DropZone';
 import AddAttachmentButton from './AddAttachmentButton';
-import { Attachments } from './Attachments';
-import { SuggestedActions } from './SuggestedActions';
-import { TextArea } from './TextArea';
+import Attachments from './Attachments';
+import SuggestedActions from '../SuggestedActions';
+import TextArea from './TextArea';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
 
 const { useMakeThumbnail, useLocalizer, useSendBoxAttachments, useSendMessage } = hooks;
@@ -72,7 +72,7 @@ const styles = {
   }
 };
 
-export default function SendBox(
+function SendBox(
   props: Readonly<{
     className?: string | undefined;
     errorMessageId?: string | undefined;
@@ -202,3 +202,5 @@ export default function SendBox(
     </form>
   );
 }
+
+export default memo(SendBox);

@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import React from 'react';
+import React, { memo } from 'react';
 import { useStyles } from '../../styles';
 
 const { useLocalizer } = hooks;
@@ -22,7 +22,7 @@ const attachmentsPluralStringIds = {
   other: 'TEXT_INPUT_ATTACHMENTS_OTHER'
 };
 
-export function Attachments({
+function Attachments({
   attachments
 }: Readonly<{
   readonly attachments: readonly Readonly<{ blob: Blob | File; thumbnailURL?: URL | undefined }>[];
@@ -36,3 +36,5 @@ export function Attachments({
     </div>
   ) : null;
 }
+
+export default memo(Attachments);

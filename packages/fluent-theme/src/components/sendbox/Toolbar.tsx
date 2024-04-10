@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import React, { type MouseEventHandler, type ReactNode } from 'react';
+import React, { memo, type MouseEventHandler, type ReactNode } from 'react';
 import { useStyles } from '../../styles';
 
 const styles = {
@@ -54,52 +54,60 @@ const styles = {
   }
 };
 
-export function ToolbarButton(
-  props: Readonly<{
-    'aria-label'?: string | undefined;
-    children?: ReactNode | undefined;
-    className?: string | undefined;
-    'data-testid'?: string | undefined;
-    disabled?: boolean | undefined;
-    onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
-    type?: 'button' | 'submit' | undefined;
-  }>
-) {
-  const classNames = useStyles(styles);
+export const ToolbarButton = memo(
+  (
+    props: Readonly<{
+      'aria-label'?: string | undefined;
+      children?: ReactNode | undefined;
+      className?: string | undefined;
+      'data-testid'?: string | undefined;
+      disabled?: boolean | undefined;
+      onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
+      type?: 'button' | 'submit' | undefined;
+    }>
+  ) => {
+    const classNames = useStyles(styles);
 
-  return (
-    <button
-      aria-label={props['aria-label']}
-      className={cx(classNames['webchat-fluent__sendbox__toolbar-button'], props.className)}
-      data-testid={props['data-testid']}
-      onClick={props.onClick}
-      type={props.type === 'submit' ? 'submit' : 'button'}
-      {...(props.disabled && {
-        'aria-disabled': 'true',
-        tabIndex: -1
-      })}
-    >
-      {props.children}
-    </button>
-  );
-}
+    return (
+      <button
+        aria-label={props['aria-label']}
+        className={cx(classNames['webchat-fluent__sendbox__toolbar-button'], props.className)}
+        data-testid={props['data-testid']}
+        onClick={props.onClick}
+        type={props.type === 'submit' ? 'submit' : 'button'}
+        {...(props.disabled && {
+          'aria-disabled': 'true',
+          tabIndex: -1
+        })}
+      >
+        {props.children}
+      </button>
+    );
+  }
+);
 
-export function Toolbar(props: Readonly<{ children?: ReactNode | undefined; className?: string | undefined }>) {
+ToolbarButton.displayName = 'ToolbarButton';
+
+export const Toolbar = memo((props: Readonly<{ children?: ReactNode | undefined; className?: string | undefined }>) => {
   const classNames = useStyles(styles);
 
   return <div className={cx(classNames['webchat-fluent__sendbox__toolbar'], props.className)}>{props.children}</div>;
-}
+});
 
-export function ToolbarSeparator(
-  props: Readonly<{ children?: ReactNode | undefined; className?: string | undefined }>
-) {
-  const classNames = useStyles(styles);
+Toolbar.displayName = 'Toolbar';
 
-  return (
-    <div
-      aria-orientation="vertical"
-      className={cx(classNames['webchat-fluent__sendbox__toolbar-separator'], props.className)}
-      role="separator"
-    />
-  );
-}
+export const ToolbarSeparator = memo(
+  (props: Readonly<{ children?: ReactNode | undefined; className?: string | undefined }>) => {
+    const classNames = useStyles(styles);
+
+    return (
+      <div
+        aria-orientation="vertical"
+        className={cx(classNames['webchat-fluent__sendbox__toolbar-separator'], props.className)}
+        role="separator"
+      />
+    );
+  }
+);
+
+ToolbarSeparator.displayName = 'ToolbarSeparator';

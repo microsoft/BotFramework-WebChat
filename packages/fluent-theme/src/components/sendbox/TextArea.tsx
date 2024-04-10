@@ -57,7 +57,7 @@ const styles = {
   }
 };
 
-export const TextArea = forwardRef<
+const TextArea = forwardRef<
   HTMLTextAreaElement,
   Readonly<{
     'aria-label'?: string | undefined;
@@ -109,3 +109,7 @@ export const TextArea = forwardRef<
     </div>
   );
 });
+
+TextArea.displayName = 'TextArea';
+
+export default TextArea;

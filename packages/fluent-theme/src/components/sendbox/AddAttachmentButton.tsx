@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { useCallback, useRef, type ChangeEventHandler, type ReactNode } from 'react';
+import React, { useCallback, useRef, type ChangeEventHandler, type ReactNode, memo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { AttachmentIcon } from '../../icons/AttachmentIcon';
 import { useStyles } from '../../styles';
@@ -20,7 +20,7 @@ const styles = {
   }
 };
 
-export default function AddAttachmentButton(
+function AddAttachmentButton(
   props: Readonly<{
     disabled?: boolean | undefined;
     icon?: ReactNode | undefined;
@@ -73,3 +73,5 @@ export default function AddAttachmentButton(
     </div>
   );
 }
+
+export default memo(AddAttachmentButton);
