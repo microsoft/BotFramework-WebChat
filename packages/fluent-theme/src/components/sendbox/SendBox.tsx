@@ -12,6 +12,9 @@ import Attachments from './Attachments';
 import SuggestedActions from '../SuggestedActions';
 import TextArea from './TextArea';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
+import ErrorMessage from './ErrorMessage';
+import useUniqueId from './private/useUniqueId';
+import useSubmitError from './private/useSubmitError';
 
 const { useMakeThumbnail, useLocalizer, useSendBoxAttachments, useSendMessage } = hooks;
 
@@ -75,7 +78,6 @@ const styles = {
 function SendBox(
   props: Readonly<{
     className?: string | undefined;
-    errorMessageId?: string | undefined;
     maxMessageLength?: number | undefined;
     placeholder?: string | undefined;
   }>
@@ -88,6 +90,8 @@ function SendBox(
   const localize = useLocalizer();
   const sendMessage = useSendMessage();
   const makeThumbnail = useMakeThumbnail();
+  const errorMessageId = useUniqueId('webchat-fluent__sendbox__error-message-id');
+  const [errorRef, errorMessage] = useSubmitError({ message, attachments });
 
   const attachmentsRef = useRefFrom(attachments);
   const messageRef = useRefFrom(message);
@@ -138,19 +142,23 @@ function SendBox(
     event => {
       event.preventDefault();
 
+      if (errorRef.current) {
+        return;
+      }
+
       sendMessage(messageRef.current, undefined, { attachments: attachmentsRef.current });
 
       setMessage('');
       setAttachments([]);
     },
-    [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage]
+    [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage, errorRef]
   );
 
   const aria = {
     'aria-invalid': 'false' as const,
-    ...(props.errorMessageId && {
+    ...(errorMessage && {
       'aria-invalid': 'true' as const,
-      'aria-errormessage': props.errorMessageId
+      'aria-errormessage': errorMessageId
     })
   };
 
@@ -198,6 +206,7 @@ function SendBox(
           </Toolbar>
         </div>
         <DropZone onFilesAdded={handleAddFiles} />
+        <ErrorMessage error={errorMessage} id={errorMessageId} />
       </div>
     </form>
   );
