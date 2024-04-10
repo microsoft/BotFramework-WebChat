@@ -41,7 +41,7 @@
 
         document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
 
-        host.sendKeys('Hello, World!');
+        await host.sendKeys('Hello, World!');
 
         // Send non-empty message using enter on Send button
         document.querySelector(`[data-testid="${WebChat.testIds.sendBoxSendButton}"]`).focus();
@@ -61,7 +61,7 @@
 
         // Send empty message using enter on Send button
         document.querySelector(`[data-testid="${WebChat.testIds.sendBoxSendButton}"]`).focus();
-        host.sendKeys('\n')
+        await host.sendKeys('\n')
 
         await host.snapshot();
         expect(document.activeElement).toEqual(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));

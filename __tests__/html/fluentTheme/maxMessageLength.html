@@ -40,9 +40,9 @@
         await pageConditions.numActivitiesShown(1);
 
         document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
-        host.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris '.repeat(12));
+        await host.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris '.repeat(12));
         
-        host.sendKeys('\n');
+        await host.sendKeys('\n');
         host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxSendButton}"]`));
 
         // THEN: Should not send the activity.

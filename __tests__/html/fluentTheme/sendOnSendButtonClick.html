@@ -41,7 +41,7 @@
 
         document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
 
-        host.sendKeys('Hello, World!');
+        await host.sendKeys('Hello, World!');
 
         await (
           await directLine.actPostActivity(() =>

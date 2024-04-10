@@ -42,17 +42,17 @@
 
         // With new lines
         document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).value = ['One', 'Two', 'Three'].join('\n');
-        host.sendKeys(' ');
+        await host.sendKeys(' ');
         await host.snapshot();
 
         // With a single long line
         document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).value = '';
-        host.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris '.repeat(2));
+        await host.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris '.repeat(2));
         await host.snapshot();
 
         // With a scroll-bar when passed 10 lines
         document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).value += ['', 'One', 'Two', 'Three'].join('\n');
-        host.sendKeys(' ');
+        await host.sendKeys(' ');
         await host.snapshot();
       });
     </script>
