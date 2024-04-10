@@ -29,6 +29,8 @@ const styles = {
 
   'webchat-fluent__sendbox__attachment-drop-zone-icon': {
     height: '36px',
+    // Set "pointer-events: none" to ignore dragging over the icon. Otherwise, when dragging over the icon, it would disable the "--droppable" modifier.
+    pointerEvents: 'none',
     width: '36px'
   }
 };
