@@ -28,7 +28,8 @@ const styles = {
   },
 
   'webchat-fluent__sendbox__text-area-input': {
-    height: '100%'
+    height: '100%',
+    padding: 0
   },
 
   'webchat-fluent__sendbox__text-area-input--scroll': {
@@ -63,9 +64,10 @@ const TextArea = forwardRef<
     'aria-label'?: string | undefined;
     className?: string | undefined;
     'data-testid'?: string | undefined;
-    placeholder?: string | undefined;
-    value?: string | undefined;
     onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
+    placeholder?: string | undefined;
+    startRows?: number | undefined;
+    value?: string | undefined;
   }>
 >((props, ref) => {
   const classNames = useStyles(styles);
@@ -104,6 +106,7 @@ const TextArea = forwardRef<
         onKeyDown={handleKeyDown}
         placeholder={props.placeholder}
         ref={ref}
+        rows={props.startRows ?? 1}
         value={props.value}
       />
     </div>
