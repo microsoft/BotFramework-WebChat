@@ -74,17 +74,15 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
     const handleDragEnter = (event: DragEvent) => {
       entranceCounter++;
 
-      if (!isFilesTransferEvent(event)) {
-        return;
+      if (isFilesTransferEvent(event)) {
+        setDropZoneState(
+          dropZoneRef.current &&
+            (event.target === dropZoneRef.current ||
+              (event.target instanceof HTMLElement && isDescendantOf(event.target, dropZoneRef.current)))
+            ? 'droppable'
+            : 'visible'
+        );
       }
-
-      setDropZoneState(
-        dropZoneRef.current &&
-          (event.target === dropZoneRef.current ||
-            (event.target instanceof HTMLElement && isDescendantOf(event.target, dropZoneRef.current)))
-          ? 'droppable'
-          : 'visible'
-      );
     };
 
     const handleDragLeave = () => --entranceCounter <= 0 && setDropZoneState(false);

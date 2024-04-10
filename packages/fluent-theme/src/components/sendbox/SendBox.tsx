@@ -146,16 +146,13 @@ function SendBox(
     event => {
       event.preventDefault();
 
-      if (errorRef.current === 'empty') {
-        // TODO: Should call `useFocus('sendBox')`.
-        inputRef.current?.focus();
-        return;
+      if (errorRef.current !== 'empty') {
+        sendMessage(messageRef.current, undefined, { attachments: attachmentsRef.current });
+
+        setMessage('');
+        setAttachments([]);
       }
 
-      sendMessage(messageRef.current, undefined, { attachments: attachmentsRef.current });
-
-      setMessage('');
-      setAttachments([]);
       // TODO: Should call `useFocus('sendBox')`.
       inputRef.current?.focus();
     },
