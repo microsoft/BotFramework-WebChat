@@ -454,7 +454,7 @@
   <body>
     <main class="fluent-theme" id="webchat"></main>
     <script type="text/babel">
-      (async function () {
+      run(async function () {
         const {
           React,
           ReactDOM: { render },
@@ -474,6 +474,16 @@
 
         await pageConditions.uiConnected();
 
+        await directLine.emulateIncomingActivity(
+          'Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
+        );
+
+        await pageConditions.numActivitiesShown(1);
+
+        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
+
+        await (await directLine.actPostActivity(() => host.sendKeys('Hello, World!\n'))).resolveAll();
+
         await directLine.emulateIncomingActivity({
           type: 'message',
           textFormat: 'plain',
@@ -481,53 +491,7 @@
           suggestedActions: {
             actions: [
               {
-                image: `https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/square-icon.png`,
-                imageAltText: 'a blue square',
-                title: 'IM back as string',
-                type: 'imBack',
-                value: 'postback imback-string'
-              },
-              {
-                image: `https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/square-icon-red.png`,
-                imageAltText: 'a red square',
-                title: 'Post back as string',
-                type: 'postBack',
-                value: 'postback postback-string'
-              },
-              {
-                image: `https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/square-icon-green.png`,
-                imageAltText: 'a green square',
-                title: 'Post back as JSON',
-                text: 'Some text',
-                type: 'postBack',
-                value: {
-                  hello: 'World!'
-                }
-              },
-              {
-                image: `https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/square-icon-purple.png`,
-                imageAltText: 'a purple square',
-                displayText: 'say Hello World!',
-                title: 'Message back as JSON with display text',
-                text: 'Some text',
-                type: 'messageBack',
-                value: {
-                  hello: 'World!'
-                }
-              },
-              {
-                image: `https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/square-icon-purple.png`,
-                imageAltText: 'a purple square',
-                title: 'Message back as JSON without display text',
-                type: 'messageBack',
-                value: {
-                  hello: 'World!'
-                }
-              },
-              {
                 displayText: 'Aloha',
-                image: `https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/square-icon-purple.png`,
-                imageAltText: 'a purple square',
                 text: 'echo Hello',
                 title: 'Message back as string with display text',
                 type: 'messageBack'
@@ -536,10 +500,11 @@
             to: []
           }
         });
-
-        // THEN: Should render the activity.
-        // await host.snapshot();
-      })();
+        // THEN: Should send the activity.
+        await pageConditions.numActivitiesShown(3);
+        await pageConditions.allOutgoingActivitiesSent();
+        await host.snapshot();
+      });
     </script>
   </body>
 </html>

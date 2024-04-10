@@ -20,11 +20,11 @@ const styles = {
     flexDirection: 'column',
     display: 'flex',
     justifyContent: 'center',
-    background: 'var(--colorNeutralBackground1)',
-    borderRadius: 'var(--borderRadiusXLarge)',
-    boxShadow: 'var(--shadow16)',
-    fontFamily: 'var(--fontFamilyBase)',
-    margin: 'var(--spacingHorizontalMNudge)'
+    background: 'var(--webchat-colorNeutralBackground1)',
+    borderRadius: 'var(--webchat-borderRadiusXLarge)',
+    boxShadow: 'var(--webchat-shadow16)',
+    fontFamily: 'var(--webchat-fontFamilyBase)',
+    margin: 'var(--webchat-spacingHorizontalMNudge)'
   },
 
   'webchat__telephone-keypad__box': {

@@ -6,8 +6,8 @@ const { useLocalizer } = hooks;
 
 const styles = {
   'webchat-fluent__sendbox__attachment': {
-    border: '1px solid var(--colorNeutralStroke1)',
-    borderRadius: 'var(--borderRadiusLarge)',
+    border: '1px solid var(--webchat-colorNeutralStroke1)',
+    borderRadius: 'var(--webchat-borderRadiusLarge)',
     cursor: 'default',
     padding: '6px 8px',
     width: 'fit-content'

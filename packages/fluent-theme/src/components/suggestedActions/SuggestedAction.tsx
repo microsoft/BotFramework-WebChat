@@ -32,7 +32,7 @@ type SuggestedActionProps = Readonly<{
 const styles = {
   'webchat-fluent__suggested-action': {
     background: 'transparent',
-    border: '1px solid var(--colorBrandStroke2)',
+    border: '1px solid var(--webchat-colorBrandStroke2)',
     borderRadius: '8px',
     cursor: 'pointer',
     fontSize: '12px',
@@ -46,16 +46,16 @@ const styles = {
 
     '@media (hover: hover)': {
       '&:not([aria-disabled="true"]):hover': {
-        backgroundColor: 'var(--colorBrandBackground2Hover)',
-        color: 'var(--colorBrandForeground2Hover)'
+        backgroundColor: 'var(--webchat-colorBrandBackground2Hover)',
+        color: 'var(--webchat-colorBrandForeground2Hover)'
       }
     },
     '&:not([aria-disabled="true"]):active': {
-      backgroundColor: 'var(--colorBrandBackground2Pressed)',
-      color: 'var(--colorBrandForeground2Pressed)'
+      backgroundColor: 'var(--webchat-colorBrandBackground2Pressed)',
+      color: 'var(--webchat-colorBrandForeground2Pressed)'
     },
     '&[aria-disabled="true"]': {
-      color: ' var(--colorNeutralForegroundDisabled)',
+      color: ' var(--webchat-colorNeutralForegroundDisabled)',
       cursor: 'not-allowed'
     }
   },

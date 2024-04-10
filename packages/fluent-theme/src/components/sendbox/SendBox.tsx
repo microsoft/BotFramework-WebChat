@@ -21,18 +21,18 @@ const { useStyleOptions, useMakeThumbnail, useLocalizer, useSendBoxAttachments, 
 
 const styles = {
   'webchat-fluent__sendbox': {
-    color: 'var(--colorNeutralForeground1)',
-    fontFamily: 'var(--fontFamilyBase)',
+    color: 'var(--webchat-colorNeutralForeground1)',
+    fontFamily: 'var(--webchat-fontFamilyBase)',
     padding: '0 10px 10px',
     textRendering: 'optimizeLegibility'
   },
 
   'webchat-fluent__sendbox__sendbox': {
-    backgroundColor: 'var(--colorNeutralBackground1)',
-    border: '1px solid var(--colorNeutralStroke1)',
-    borderRadius: 'var(--borderRadiusLarge)',
+    backgroundColor: 'var(--webchat-colorNeutralBackground1)',
+    border: '1px solid var(--webchat-colorNeutralStroke1)',
+    borderRadius: 'var(--webchat-borderRadiusLarge)',
     display: 'grid',
-    fontFamily: 'var(--fontFamilyBase)',
+    fontFamily: 'var(--webchat-fontFamilyBase)',
     fontSize: '14px',
     gap: '6px',
     lineHeight: '20px',
@@ -40,12 +40,12 @@ const styles = {
     position: 'relative',
 
     '&:focus-within': {
-      borderColor: 'var(--colorNeutralStroke1Selected)',
+      borderColor: 'var(--webchat-colorNeutralStroke1Selected)',
       // TODO clarify with design the color:
       // - Teams is using colorCompoundBrandForeground1
       // - Fluent is using colorCompoundBrandStroke
       // - we are using colorCompoundBrandForeground1Hover
-      boxShadow: 'inset 0 -6px 0 -3px var(--colorCompoundBrandForeground1Hover)'
+      boxShadow: 'inset 0 -6px 0 -3px var(--webchat-colorCompoundBrandForeground1Hover)'
     }
   },
 
@@ -53,7 +53,7 @@ const styles = {
     backgroundColor: 'transparent',
     border: 'none',
     flex: 'auto',
-    fontFamily: 'var(--fontFamilyBase)',
+    fontFamily: 'var(--webchat-fontFamilyBase)',
     fontSize: '14px',
     lineHeight: '20px',
     outline: 'none',
@@ -68,15 +68,15 @@ const styles = {
   },
 
   'webchat-fluent__sendbox__text-counter': {
-    color: 'var(--colorNeutralForeground4)',
+    color: 'var(--webchat-colorNeutralForeground4)',
     cursor: 'default',
-    fontFamily: 'var(--fontFamilyNumeric)',
+    fontFamily: 'var(--webchat-fontFamilyNumeric)',
     fontSize: '10px',
     lineHeight: '14px'
   },
 
   'webchat-fluent__sendbox__text-counter--error': {
-    color: 'var(--colorStatusDangerForeground1)'
+    color: 'var(--webchat-colorStatusDangerForeground1)'
   }
 };
 

@@ -15,7 +15,7 @@ const styles = {
     aspectRatio: '1',
     background: 'transparent',
     border: 'none',
-    borderRadius: 'var(--borderRadiusSmall)',
+    borderRadius: 'var(--webchat-borderRadiusSmall)',
     cursor: 'pointer',
     display: 'flex',
     justifyContent: 'center',
@@ -29,23 +29,23 @@ const styles = {
 
     '@media (hover: hover)': {
       '&:not([aria-disabled="true"]):hover': {
-        backgroundColor: 'var(--colorSubtleBackgroundHover)',
-        color: 'var(--colorCompoundBrandForeground1Hover)'
+        backgroundColor: 'var(--webchat-colorSubtleBackgroundHover)',
+        color: 'var(--webchat-colorCompoundBrandForeground1Hover)'
       }
     },
     '&:not([aria-disabled="true"]):active': {
-      backgroundColor: 'var(--colorSubtleBackgroundPressed)',
-      color: 'var(--colorCompoundBrandForeground1Pressed)'
+      backgroundColor: 'var(--webchat-colorSubtleBackgroundPressed)',
+      color: 'var(--webchat-colorCompoundBrandForeground1Pressed)'
     },
     '&[aria-disabled="true"]': {
-      color: ' var(--colorNeutralForegroundDisabled)',
+      color: ' var(--webchat-colorNeutralForegroundDisabled)',
       cursor: 'not-allowed'
     }
   },
 
   'webchat-fluent__sendbox__toolbar-separator': {
     alignSelf: 'center',
-    borderRight: '1px solid var(--colorNeutralStroke2)',
+    borderInlineEnd: '1px solid var(--webchat-colorNeutralStroke2)',
     height: '28px',
 
     '&:first-child, &:last-child, &:only-child': {

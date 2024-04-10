@@ -34,7 +34,7 @@ const styles = {
 
   'webchat-fluent__sendbox__text-area-input--scroll': {
     /* Firefox */
-    MozScrollbarColor: 'var(--colorNeutralBackground5) var(--colorNeutralForeground2)',
+    MozScrollbarColor: 'var(--webchat-colorNeutralBackground5) var(--webchat-colorNeutralForeground2)',
     MozScrollbarWidth: 'thin',
 
     /* Chrome, Edge, and Safari */
@@ -43,17 +43,17 @@ const styles = {
     },
 
     '&::-webkit-scrollbar-track': {
-      backgroundColor: ' var(--colorNeutralBackground5)',
+      backgroundColor: ' var(--webchat-colorNeutralBackground5)',
       borderRadius: '16px'
     },
 
     '&::-webkit-scrollbar-thumb': {
-      backgroundColor: 'var(--colorNeutralForeground2)',
+      backgroundColor: 'var(--webchat-colorNeutralForeground2)',
       borderRadius: '16px'
     },
 
     '&::-webkit-scrollbar-corner': {
-      backgroundColor: 'var(--colorNeutralBackground5)'
+      backgroundColor: 'var(--webchat-colorNeutralBackground5)'
     }
   }
 };

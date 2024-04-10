@@ -11,7 +11,7 @@ const { useLocalizer } = hooks;
 
 const styles = {
   'webchat-fluent__sendbox__attachment-drop-zone': {
-    backgroundColor: 'var(--colorNeutralBackground4)',
+    backgroundColor: 'var(--webchat-colorNeutralBackground4)',
     borderRadius: 'inherit',
     cursor: 'copy',
     display: 'grid',

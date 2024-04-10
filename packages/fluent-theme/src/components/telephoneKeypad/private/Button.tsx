@@ -18,9 +18,9 @@ const styles = {
     // border: `solid 1px ${isHighContrastTheme() ? white : isDarkTheme() ? gray160 : gray40}`,
     // color: 'inherit',
 
-    border: 'solid 1px var(--colorNeutralStroke1)',
-    color: 'var(--colorNeutralForeground1)',
-    fontWeight: 'var(--fontWeightSemibold)',
+    border: 'solid 1px var(--webchat-colorNeutralStroke1)',
+    color: 'var(--webchat-colorNeutralForeground1)',
+    fontWeight: 'var(--webchat-fontWeightSemibold)',
 
     cursor: 'pointer',
     display: 'flex',
@@ -35,13 +35,13 @@ const styles = {
 
     '&:hover': {
       // backgroundColor: isHighContrastTheme() ? gray210 : isDarkTheme() ? gray150 : gray30
-      backgroundColor: 'var(--colorGray30)'
+      backgroundColor: 'var(--webchat-colorGray30)'
     }
   },
 
   'webchat__telephone-keypad__button__ruby': {
     // color: isHighContrastTheme() ? white : isDarkTheme() ? gray40 : gray160,
-    color: 'var(--colorGray160)',
+    color: 'var(--webchat-colorGray160)',
     fontSize: 10
   },
 
