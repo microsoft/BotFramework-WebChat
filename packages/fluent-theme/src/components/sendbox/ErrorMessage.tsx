@@ -6,6 +6,9 @@ const styles = {
     fontSize: 0,
     height: 0,
     width: 0,
+    position: 'absolute',
+    top: 0,
+    left: 0,
     color: 'transparent'
   }
 };
