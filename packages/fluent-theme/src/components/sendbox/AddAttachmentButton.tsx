@@ -24,7 +24,6 @@ const styles = {
 function AddAttachmentButton(
   props: Readonly<{
     disabled?: boolean | undefined;
-    icon?: ReactNode | undefined;
     onFilesAdded: ((files: File[]) => void) | undefined;
   }>
 ) {
@@ -69,7 +68,7 @@ function AddAttachmentButton(
         data-testid={testIds.sendBoxUploadButton}
         onClick={handleClick}
       >
-        {props.icon ?? <AttachmentIcon />}
+        <AttachmentIcon />
       </ToolbarButton>
     </div>
   );
