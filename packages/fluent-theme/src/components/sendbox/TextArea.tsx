@@ -89,7 +89,8 @@ const TextArea = forwardRef<
       <div
         className={cx(
           classNames['webchat-fluent__sendbox__text-area-doppelganger'],
-          classNames['webchat-fluent__sendbox__text-area-shared']
+          classNames['webchat-fluent__sendbox__text-area-shared'],
+          classNames['webchat-fluent__sendbox__text-area-input--scroll']
         )}
       >
         {props.value || props.placeholder}{' '}
