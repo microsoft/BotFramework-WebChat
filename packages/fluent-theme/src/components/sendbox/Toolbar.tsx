@@ -54,6 +54,8 @@ const styles = {
   }
 };
 
+const preventDefaultHandler: MouseEventHandler<HTMLButtonElement> = event => event.preventDefault();
+
 export const ToolbarButton = memo(
   (
     props: Readonly<{
@@ -73,7 +75,7 @@ export const ToolbarButton = memo(
         aria-label={props['aria-label']}
         className={cx(classNames['webchat-fluent__sendbox__toolbar-button'], props.className)}
         data-testid={props['data-testid']}
-        onClick={props.onClick}
+        onClick={props.disabled ? preventDefaultHandler : props.onClick}
         type={props.type === 'submit' ? 'submit' : 'button'}
         {...(props.disabled && {
           'aria-disabled': 'true',
