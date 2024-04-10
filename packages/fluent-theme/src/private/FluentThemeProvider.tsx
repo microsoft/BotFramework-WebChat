@@ -3,7 +3,7 @@ import React, { memo, type ReactNode } from 'react';
 
 import { TelephoneKeypadProvider } from '../components/TelephoneKeypad';
 import WebChatTheme from '../components/Theme';
-import SendBox from '../components/sendbox/SendBox';
+import SendBox from '../components/SendBox';
 
 const { ThemeProvider } = Components;
 
