@@ -262,10 +262,12 @@ function convertFromOldStringId(js) {
     TEXT_INPUT_TELEPHON_KEYPAD_BUTTON_ALT: js['Telephone keypad'],
     TEXT_INPUT_DROP_ZONE: js['Drop files'],
     TEXT_INPUT_LENGTH_EXCEEDED_ALT: js['Message lengths exceeded'],
-    // TODO: To be changed based on the final attachments design:
-    // - Either should be pluralized
-    // - Or the design to be changed
-    TEXT_INPUT_ATTACHMENTS: js['attachments'],
+
+    TEXT_INPUT_ATTACHMENTS_FEW: js['attachments'],
+    TEXT_INPUT_ATTACHMENTS_MANY: js['attachments'],
+    TEXT_INPUT_ATTACHMENTS_ONE: js['attachment'],
+    TEXT_INPUT_ATTACHMENTS_OTHER: js['attachments'],
+    TEXT_INPUT_ATTACHMENTS_TWO: js['attachments'],
 
     TRANSCRIPT_NEW_MESSAGES: js['New messages'],
 
