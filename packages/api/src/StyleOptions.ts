@@ -823,6 +823,13 @@ type StyleOptions = {
    */
 
   videoHeight?: number | string;
+
+  /**
+   * Maximum message length in characters
+   *
+   * @default 2000
+   */
+  maxMessageLength?: number;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

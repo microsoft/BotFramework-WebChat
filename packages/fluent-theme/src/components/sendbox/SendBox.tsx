@@ -16,7 +16,7 @@ import ErrorMessage from './ErrorMessage';
 import useUniqueId from './private/useUniqueId';
 import useSubmitError from './private/useSubmitError';
 
-const { useMakeThumbnail, useLocalizer, useSendBoxAttachments, useSendMessage } = hooks;
+const { useStyleOptions, useMakeThumbnail, useLocalizer, useSendBoxAttachments, useSendMessage } = hooks;
 
 const styles = {
   'webchat-fluent__sendbox': {
@@ -82,14 +82,14 @@ const styles = {
 function SendBox(
   props: Readonly<{
     className?: string | undefined;
-    maxMessageLength?: number | undefined;
     placeholder?: string | undefined;
   }>
 ) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState('');
   const [attachments, setAttachments] = useSendBoxAttachments();
-  const isMessageLengthExceeded = !!props.maxMessageLength && message.length > props.maxMessageLength;
+  const [{ maxMessageLength }] = useStyleOptions();
+  const isMessageLengthExceeded = !!maxMessageLength && message.length > maxMessageLength;
   const classNames = useStyles(styles);
   const localize = useLocalizer();
   const sendMessage = useSendMessage();
@@ -182,13 +182,13 @@ function SendBox(
         />
         <Attachments attachments={attachments} />
         <div className={cx(classNames['webchat-fluent__sendbox__sendbox-controls'])}>
-          {props.maxMessageLength && (
+          {maxMessageLength && (
             <div
               className={cx(classNames['webchat-fluent__sendbox__text-counter'], {
                 [classNames['webchat-fluent__sendbox__text-counter--error']]: isMessageLengthExceeded
               })}
             >
-              {`${message.length}/${props.maxMessageLength}`}
+              {`${message.length}/${maxMessageLength}`}
             </div>
           )}
           <Toolbar>
