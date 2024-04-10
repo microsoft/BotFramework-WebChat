@@ -5,6 +5,7 @@ import { useRefFrom } from 'use-ref-from';
 
 import { AddDocumentIcon } from '../../icons/AddDocumentIcon';
 import { useStyles } from '../../styles';
+import testIds from '../../testIds';
 
 const { useLocalizer } = hooks;
 
@@ -22,7 +23,8 @@ const styles = {
   },
 
   'webchat-fluent__sendbox__attachment-drop-zone--droppable': {
-    backgroundColor: 'Red'
+    backgroundColor: '#e00',
+    color: 'White'
   },
 
   'webchat-fluent__sendbox__attachment-drop-zone-icon': {
@@ -39,7 +41,9 @@ const handleDragOver: DragEventHandler<HTMLDivElement> = event => {
 // Notes: For files dragging from outside of browser, it only tell us if it is a "File" instead of "text/plain" or "text/uri-list".
 //        For images dragging inside of browser, it only tell us that it is "text/plain", "text/uri-list" and "text/html". But not "image/*".
 //        So we cannot whitelist what is droppable.
-const isFilesTransferEvent = (event: DragEvent) => !!event.dataTransfer?.types?.includes('Files');
+//        We are using case-insensitive of type "files" so we can drag in WebDriver.
+const isFilesTransferEvent = (event: DragEvent) =>
+  !!event.dataTransfer?.types?.some(type => type.toLowerCase() === 'files');
 
 function isDescendantOf(target: Node, ancestor: Node): boolean {
   let current = target.parentNode;
@@ -112,6 +116,7 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
       className={cx(classNames['webchat-fluent__sendbox__attachment-drop-zone'], {
         [classNames['webchat-fluent__sendbox__attachment-drop-zone--droppable']]: dropZoneState === 'droppable'
       })}
+      data-testid={testIds.sendBoxDropZone}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       ref={dropZoneRef}

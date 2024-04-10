@@ -4,12 +4,14 @@ const checkAccessibility = require('./checkAccessibility');
 const click = require('./click');
 const clickAt = require('./clickAt');
 const done = require('./done');
+const dragAndHold = require('./dragAndHold');
 const error = require('./error');
 const getLogs = require('./getLogs');
 const hover = require('./hover');
 const moveTo = require('./moveTo');
 const pressAndHold = require('./pressAndHold');
 const ready = require('./ready');
+const release = require('./release');
 const sendAccessKey = require('./sendAccessKey');
 const sendDevToolsCommand = require('./sendDevToolsCommand');
 const sendKeys = require('./sendKeys');
@@ -31,6 +33,7 @@ module.exports = function createHost(webDriver) {
     clickAt: clickAt(webDriver),
     done: done(webDriver, doneDeferred.resolve),
     donePromise: doneDeferred.promise,
+    dragAndHold: dragAndHold(webDriver),
     error: error(doneDeferred.reject),
     getLogs: getLogs(webDriver),
     hover: hover(webDriver),
@@ -38,6 +41,7 @@ module.exports = function createHost(webDriver) {
     pressAndHold: pressAndHold(webDriver),
     ready: ready(readyDeferred.resolve),
     readyPromise: readyDeferred.promise,
+    release: release(webDriver),
     sendAccessKey: sendAccessKey(webDriver),
     sendDevToolsCommand: sendDevToolsCommand(webDriver),
     sendKeys: sendKeys(webDriver),

@@ -1,4 +1,5 @@
 const testIds = {
+  sendBoxDropZone: 'send box drop zone',
   sendBoxSendButton: 'send box send button',
   sendBoxTelephoneKeypadButton: 'send box telephone keypad button',
   sendBoxTextBox: 'send box text area',
