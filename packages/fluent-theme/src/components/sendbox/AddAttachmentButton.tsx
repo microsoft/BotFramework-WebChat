@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { useCallback, useRef, type ChangeEventHandler, type ReactNode, memo } from 'react';
+import React, { useCallback, useRef, type ChangeEventHandler, memo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { AttachmentIcon } from '../../icons/AttachmentIcon';
 import { useStyles } from '../../styles';
