@@ -22,13 +22,7 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        const App = () => (
-          <ReactWebChat
-            activityMiddleware={testHelpers.createRunHookActivityMiddleware()}
-            directLine={directLine}
-            store={store}
-          />
-        );
+        const App = () => <ReactWebChat directLine={directLine} store={store} />;
 
         render(
           <FluentThemeProvider>
@@ -39,50 +33,19 @@
 
         await pageConditions.uiConnected();
 
-        const blob1 = new File(
-          [
-            await (
-              await fetch(
-                'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
-              )
-            ).blob()
-          ],
-          'surface1.jpg',
-          { type: 'image/jpeg' }
+        await directLine.emulateIncomingActivity(
+          'Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
         );
 
-        const blob2 = new File(
-          [
-            await (
-              await fetch(
-                'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg'
-              )
-            ).blob()
-          ],
-          'surface2.jpg',
-          { type: 'image/jpeg' }
-        );
+        await pageConditions.numActivitiesShown(1);
 
-        await pageObjects.runHook(({ useSendBoxAttachments }) =>
-          useSendBoxAttachments()[1]([{ blob: blob1 }, { blob: blob2 }])
-        );
+        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
+        host.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris '.repeat(12));
+        
+        host.sendKeys('\n');
+        host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxSendButton}"]`));
 
-        await pageConditions.became(
-          'attachment count change to 2',
-          () => {
-            try {
-              expect(document.querySelector('.webchat-fluent__sendbox__attachment').textContent.trim()).toBe(
-                '2 attachments'
-              );
-
-              return true;
-            } catch {
-              return false;
-            }
-          },
-          1000
-        );
-
+        // THEN: Should not send the activity.
         await host.snapshot();
       });
     </script>
