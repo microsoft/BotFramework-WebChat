@@ -142,7 +142,9 @@ function SendBox(
     event => {
       event.preventDefault();
 
-      if (errorRef.current) {
+      if (errorRef.current === 'empty') {
+        // TODO: Should call `useFocus('sendBox')`.
+        inputRef.current?.focus();
         return;
       }
 
@@ -150,8 +152,10 @@ function SendBox(
 
       setMessage('');
       setAttachments([]);
+      // TODO: Should call `useFocus('sendBox')`.
+      inputRef.current?.focus();
     },
-    [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage, errorRef]
+    [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage, errorRef, inputRef]
   );
 
   const aria = {
