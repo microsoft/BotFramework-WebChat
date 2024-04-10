@@ -37,13 +37,30 @@ const styles = {
 
     '--colorStatusDangerForeground1': '#b10e1c',
 
+    // https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/colors.ts
+    '--colorGray30': '#edebe9',
+    '--colorGray160': '#323130',
+    '--colorGray200': '#1b1a19',
+
+    // https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/borderRadius.ts
     '--borderRadiusSmall': '2px',
     '--borderRadiusLarge': '6px',
+    '--borderRadiusXLarge': '8px',
 
+    // https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/utils/shadows.ts
+    '--shadow16': '0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)',
+
+    // https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/spacings.ts
+    '--spacingHorizontalMNudge': '10px',
+
+    // https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts
     '--fontFamilyBase': `'Segoe UI', 'Segoe UI Web (West European)', -apple-system,
       BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif`,
     '--fontFamilyNumeric': `Bahnschrift, 'Segoe UI', 'Segoe UI Web (West European)',
-      -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif`
+      -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif`,
+
+    // https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts
+    '--fontWeightSemibold': 600
   }
 };
 
