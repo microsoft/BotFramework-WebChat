@@ -1,5 +1,4 @@
 import { hooks } from 'botframework-webchat-component';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, { memo, type ReactNode } from 'react';
 import { useStyles } from '../../styles';
@@ -49,9 +48,7 @@ function SuggestedActionStackedContainer(
 function SuggestedActions() {
   const classNames = useStyles(styles);
   const localize = useLocalizer();
-  // TODO: fix either how we use the suggestedActions or the type of useSuggestedActions
-  const [suggestedActions]: [DirectLineCardAction[]] = useSuggestedActions() as any;
-
+  const [suggestedActions] = useSuggestedActions();
   const children = suggestedActions.map((cardAction, index) => {
     const { displayText, image, imageAltText, text, type, value } = cardAction as {
       displayText?: string;
