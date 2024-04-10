@@ -146,7 +146,7 @@ function SendBox(
     event => {
       event.preventDefault();
 
-      if (errorRef.current !== 'empty') {
+      if (errorRef.current !== 'empty' && !isMessageLengthExceeded) {
         sendMessage(messageRef.current, undefined, { attachments: attachmentsRef.current });
 
         setMessage('');
@@ -156,7 +156,7 @@ function SendBox(
       // TODO: Should call `useFocus('sendBox')`.
       inputRef.current?.focus();
     },
-    [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage, errorRef, inputRef]
+    [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage, isMessageLengthExceeded, errorRef, inputRef]
   );
 
   const aria = {
