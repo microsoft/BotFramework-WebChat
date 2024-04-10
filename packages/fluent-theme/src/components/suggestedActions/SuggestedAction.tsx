@@ -63,7 +63,8 @@ const styles = {
   'webchat-fluent__suggested-action__image': {
     width: '1em',
     height: '1em',
-    fontSize: '20px'
+    fontSize: '20px',
+    translate: '0 -1px'
   }
 };
 
