@@ -1,20 +1,21 @@
 import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
-import React, { useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler, memo } from 'react';
+import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { SendIcon } from '../../icons/SendIcon';
-import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
 import { useStyles } from '../../styles';
 import testIds from '../../testIds';
 import DropZone from '../DropZone';
+import SuggestedActions from '../SuggestedActions';
+import { TelephoneKeypadSurrogate, type DTMF } from '../TelephoneKeypad';
 import AddAttachmentButton from './AddAttachmentButton';
 import Attachments from './Attachments';
-import SuggestedActions from '../SuggestedActions';
+import ErrorMessage from './ErrorMessage';
+import TelephoneKeypadToolbarButton from './TelephoneKeypadToolbarButton';
 import TextArea from './TextArea';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
-import ErrorMessage from './ErrorMessage';
-import useUniqueId from './private/useUniqueId';
 import useSubmitError from './private/useSubmitError';
+import useUniqueId from './private/useUniqueId';
 
 const { useStyleOptions, useMakeThumbnail, useLocalizer, useSendBoxAttachments, useSendMessage } = hooks;
 
@@ -159,6 +160,11 @@ function SendBox(
     [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage, isMessageLengthExceeded, errorRef, inputRef]
   );
 
+  const handleTelephoneKeypadButtonClick = useCallback((dtmf: DTMF) => {
+    // eslint-disable-next-line no-alert
+    alert(dtmf);
+  }, []);
+
   const aria = {
     'aria-invalid': 'false' as const,
     ...(errorMessage && {
@@ -170,6 +176,11 @@ function SendBox(
   return (
     <form {...aria} className={cx(classNames['webchat-fluent__sendbox'], props.className)} onSubmit={handleFormSubmit}>
       <SuggestedActions />
+      <TelephoneKeypadSurrogate
+        autoFocus={true}
+        isHorizontal={false}
+        onButtonClick={handleTelephoneKeypadButtonClick}
+      />
       <div className={cx(classNames['webchat-fluent__sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
         <TextArea
           aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
@@ -192,12 +203,7 @@ function SendBox(
             </div>
           )}
           <Toolbar>
-            <ToolbarButton
-              aria-label={localize('TEXT_INPUT_TELEPHONE_KEYPAD_BUTTON_ALT')}
-              data-testid={testIds.sendBoxTelephoneKeypadButton}
-            >
-              <TelephoneKeypadIcon />
-            </ToolbarButton>
+            <TelephoneKeypadToolbarButton />
             <AddAttachmentButton onFilesAdded={handleAddFiles} />
             <ToolbarSeparator />
             <ToolbarButton

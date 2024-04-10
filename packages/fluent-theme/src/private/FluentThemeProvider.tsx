@@ -1,8 +1,9 @@
 import { Components } from 'botframework-webchat-component';
 import React, { memo, type ReactNode } from 'react';
 
-import SendBox from '../components/sendbox/SendBox';
+import { TelephoneKeypadProvider } from '../components/TelephoneKeypad';
 import WebChatTheme from '../components/Theme';
+import SendBox from '../components/sendbox/SendBox';
 
 const { ThemeProvider } = Components;
 
@@ -12,7 +13,9 @@ const sendBoxMiddleware = [() => () => () => SendBox];
 
 const FluentThemeProvider = ({ children }: Props) => (
   <WebChatTheme>
-    <ThemeProvider sendBoxMiddleware={sendBoxMiddleware}>{children}</ThemeProvider>
+    <TelephoneKeypadProvider>
+      <ThemeProvider sendBoxMiddleware={sendBoxMiddleware}>{children}</ThemeProvider>
+    </TelephoneKeypadProvider>
   </WebChatTheme>
 );
 
