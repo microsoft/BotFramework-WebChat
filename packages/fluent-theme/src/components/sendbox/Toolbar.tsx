@@ -30,12 +30,12 @@ const styles = {
     '@media (hover: hover)': {
       '&:not([aria-disabled="true"]):hover': {
         backgroundColor: 'var(--colorSubtleBackgroundHover)',
-        color: 'var(--colorNeutralForeground2BrandHover)'
+        color: 'var(--colorCompoundBrandForeground1Hover)'
       }
     },
     '&:not([aria-disabled="true"]):active': {
       backgroundColor: 'var(--colorSubtleBackgroundPressed)',
-      color: 'var(--colorNeutralForeground2BrandPressed)'
+      color: 'var(--colorCompoundBrandForeground1Pressed)'
     },
     '&[aria-disabled="true"]': {
       color: ' var(--colorNeutralForegroundDisabled)',

@@ -24,17 +24,17 @@ const styles = {
 
     '--colorBrandStroke2': '#9edcf7',
 
-    // TODO Pull from design
-    '--colorBrandForeground2Hover': '#3b91b0',
-    '--colorBrandForeground2Pressed': '#254c5b',
+    '--colorBrandForeground2Hover': '#015a7a',
+    '--colorBrandForeground2Pressed': '#01384d',
 
-    // TODO Pull from design
-    '--colorBrandBackground2Hover': '#ccf1ff',
-    '--colorBrandBackground2Pressed': '#47bfeb',
+    '--colorBrandBackground2Hover': '#bee7fa',
+    '--colorBrandBackground2Pressed': '#7fd2f5',
 
-    '--colorCompoundBrandForeground2': '#02729c',
-    '--colorNeutralForeground2BrandHover': '#02729c',
-    '--colorNeutralForeground2BrandPressed': '#01678c',
+    '--colorCompoundBrandForeground1': '#077fab',
+
+    '--colorCompoundBrandForeground1Hover': '#02729c',
+    '--colorCompoundBrandForeground1Pressed': '#01678c',
+
     '--colorStatusDangerForeground1': '#b10e1c',
 
     '--borderRadiusSmall': '2px',

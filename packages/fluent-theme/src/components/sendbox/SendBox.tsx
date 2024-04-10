@@ -40,7 +40,11 @@ const styles = {
 
     '&:focus-within': {
       borderColor: 'var(--colorNeutralStroke1Selected)',
-      boxShadow: 'inset 0 -6px 0 -3px var(--colorCompoundBrandForeground2)'
+      // TODO clarify with design the color:
+      // - Teams is using and colorCompoundBrandForeground1
+      // - Fluent are using colorCompoundBrandStroke
+      // - we are using colorCompoundBrandForeground1Hover
+      boxShadow: 'inset 0 -6px 0 -3px var(--colorCompoundBrandForeground1Hover)'
     }
   },
 
