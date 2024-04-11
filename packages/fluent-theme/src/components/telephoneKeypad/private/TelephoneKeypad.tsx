@@ -16,8 +16,8 @@ const styles = {
     // boxShadow: '-3px 0px 7px 0px rgba(0, 0, 0, 0.13), -0.6px 0px 1.8px 0px rgba(0, 0, 0, 0.10)',
 
     alignItems: 'center',
-    // border: isHighContrastTheme() ? `1px solid ${white}` : 'none',
     background: 'var(--webchat-colorNeutralBackground1)',
+    // border: isHighContrastTheme() ? `1px solid ${white}` : 'none',
     border: 'none',
     borderRadius: 'var(--webchat-borderRadiusXLarge)',
     // boxShadow: 'var(--shadow16)',

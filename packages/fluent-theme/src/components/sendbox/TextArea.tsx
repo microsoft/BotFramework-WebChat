@@ -12,7 +12,9 @@ const styles = {
   },
 
   'webchat-fluent__sendbox__text-area--hidden': {
-    visibility: 'hidden'
+    // TODO: Not perfect way of hiding the text box.
+    height: 0,
+    visibility: 'collapse'
   },
 
   'webchat-fluent__sendbox__text-area-shared': {

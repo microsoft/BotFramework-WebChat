@@ -61,10 +61,6 @@ const styles = {
     resize: 'none'
   },
 
-  'webchat-fluent__sendbox__sendbox-text--hidden': {
-    visibility: 'hidden'
-  },
-
   'webchat-fluent__sendbox__sendbox-controls': {
     alignItems: 'center',
     display: 'flex',
