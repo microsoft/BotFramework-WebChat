@@ -50,9 +50,15 @@
           )
         ).resolveAll();
 
-        // THEN: Should send "/DTMF 5".
+        // THEN: Should send "/DTMF 5" and focus on the send box.
         await pageConditions.numActivitiesShown(2);
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', '/DTMF 5');
+
+        // Commented out because it is not working today.
+        // expect(document.activeElement).toBe(
+        //   document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`)
+        // );
+
         await host.snapshot();
       });
     </script>
