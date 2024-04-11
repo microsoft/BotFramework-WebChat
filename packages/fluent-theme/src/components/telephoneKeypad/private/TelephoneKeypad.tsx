@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef, type ReactNode } from 'react';
+import React, { KeyboardEventHandler, memo, useCallback, useEffect, useRef, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { useStyles } from '../../../styles';
@@ -6,6 +6,7 @@ import Button from './Button';
 // import HorizontalDialPadController from './HorizontalDialPadController';
 import testIds from '../../../testIds';
 import { type DTMF } from '../types';
+import useShown from '../useShown';
 
 const styles = {
   'webchat__telephone-keypad': {
@@ -16,15 +17,15 @@ const styles = {
 
     alignItems: 'center',
     // border: isHighContrastTheme() ? `1px solid ${white}` : 'none',
-    border: 'none',
-    flexDirection: 'column',
-    display: 'flex',
-    justifyContent: 'center',
     background: 'var(--webchat-colorNeutralBackground1)',
+    border: 'none',
     borderRadius: 'var(--webchat-borderRadiusXLarge)',
-    boxShadow: 'var(--webchat-shadow16)',
+    // boxShadow: 'var(--shadow16)',
+    display: 'flex',
+    flexDirection: 'column',
     fontFamily: 'var(--webchat-fontFamilyBase)',
-    margin: 'var(--webchat-spacingHorizontalMNudge)'
+    justifyContent: 'center'
+    // margin: 'var(--spacingHorizontalMNudge)'
   },
 
   'webchat__telephone-keypad__box': {
@@ -65,6 +66,7 @@ const TelephoneKeypad = memo(({ autoFocus, onButtonClick, isHorizontal }: Props)
   const classNames = useStyles(styles);
   const firstButtonRef = useRef<HTMLButtonElement>(null);
   const onButtonClickRef = useRefFrom(onButtonClick);
+  const [, setShown] = useShown();
 
   const handleButton1Click = useCallback(() => onButtonClickRef.current?.('1'), [onButtonClickRef]);
   const handleButton2Click = useCallback(() => onButtonClickRef.current?.('2'), [onButtonClickRef]);
@@ -78,13 +80,22 @@ const TelephoneKeypad = memo(({ autoFocus, onButtonClick, isHorizontal }: Props)
   const handleButton0Click = useCallback(() => onButtonClickRef.current?.('0'), [onButtonClickRef]);
   const handleButtonStarClick = useCallback(() => onButtonClickRef.current?.('star'), [onButtonClickRef]);
   const handleButtonPoundClick = useCallback(() => onButtonClickRef.current?.('pound'), [onButtonClickRef]);
+  const handleKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
+    event => {
+      if (event.key === 'Escape') {
+        // TODO: Should send focus to the send box.
+        setShown(false);
+      }
+    },
+    [setShown]
+  );
 
   useEffect(() => {
     autoFocusRef.current && firstButtonRef.current?.focus();
   }, [autoFocusRef, firstButtonRef]);
 
   return (
-    <div className={classNames['webchat__telephone-keypad']}>
+    <div className={classNames['webchat__telephone-keypad']} onKeyDown={handleKeyDown}>
       <Orientation isHorizontal={isHorizontal}>
         <Button
           button="1"

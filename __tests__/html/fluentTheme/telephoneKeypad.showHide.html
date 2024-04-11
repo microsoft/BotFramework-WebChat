@@ -49,6 +49,18 @@
           document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTelephoneKeypadButton1}"]`)
         );
         await host.snapshot();
+
+        // WHEN: ESCAPE key is pressed.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: Focus should send back to the text box.
+
+        // Commented out because it is not working today.
+        // expect(document.activeElement).toBe(
+        //   document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`)
+        // );
+
+        await host.snapshot();
       });
     </script>
   </body>

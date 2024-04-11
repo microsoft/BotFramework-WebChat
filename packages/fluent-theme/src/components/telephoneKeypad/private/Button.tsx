@@ -27,11 +27,11 @@ const styles = {
     flexDirection: 'column',
     height: 60,
     opacity: 0.7,
+    padding: 0,
     position: 'relative',
     touchAction: 'none',
     userSelect: 'none',
     width: 60,
-    padding: 0,
 
     '&:hover': {
       // backgroundColor: isHighContrastTheme() ? gray210 : isDarkTheme() ? gray150 : gray30

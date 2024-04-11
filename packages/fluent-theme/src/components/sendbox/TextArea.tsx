@@ -11,6 +11,10 @@ const styles = {
     overflow: 'hidden'
   },
 
+  'webchat-fluent__sendbox__text-area--hidden': {
+    visibility: 'hidden'
+  },
+
   'webchat-fluent__sendbox__text-area-shared': {
     border: 'none',
     font: 'inherit',
@@ -64,6 +68,16 @@ const TextArea = forwardRef<
     'aria-label'?: string | undefined;
     className?: string | undefined;
     'data-testid'?: string | undefined;
+
+    /**
+     * `true`, if the text area should be hidden but stay in the DOM, otherwise, `false`.
+     *
+     * Keeping the element in the DOM while making it invisible to users and PWDs is useful in these scenarios:
+     *
+     * - When the DTMF keypad is going away, we need to send focus to the text area before we unmount DTMF keypad,
+     *   This ensures the flow of focus did not sent to document body
+     */
+    hidden?: boolean | undefined;
     onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
     placeholder?: string | undefined;
     startRows?: number | undefined;
@@ -85,7 +99,16 @@ const TextArea = forwardRef<
   }, []);
 
   return (
-    <div className={cx(classNames['webchat-fluent__sendbox__text-area'], props.className)}>
+    <div
+      className={cx(
+        classNames['webchat-fluent__sendbox__text-area'],
+        {
+          [classNames['webchat-fluent__sendbox__text-area--hidden']]: props.hidden
+        },
+        props.className
+      )}
+      role={props.hidden ? 'hidden' : undefined}
+    >
       <div
         className={cx(
           classNames['webchat-fluent__sendbox__text-area-doppelganger'],
@@ -108,6 +131,8 @@ const TextArea = forwardRef<
         placeholder={props.placeholder}
         ref={ref}
         rows={props.startRows ?? 1}
+        // eslint-disable-next-line no-magic-numbers
+        tabIndex={props.hidden ? -1 : undefined}
         value={props.value}
       />
     </div>

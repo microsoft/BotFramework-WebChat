@@ -7,7 +7,7 @@ import { useStyles } from '../../styles';
 import testIds from '../../testIds';
 import DropZone from '../DropZone';
 import SuggestedActions from '../SuggestedActions';
-import { TelephoneKeypadSurrogate, type DTMF } from '../TelephoneKeypad';
+import { TelephoneKeypadSurrogate, useTelephoneKeypadShown, type DTMF } from '../TelephoneKeypad';
 import AddAttachmentButton from './AddAttachmentButton';
 import Attachments from './Attachments';
 import ErrorMessage from './ErrorMessage';
@@ -61,6 +61,10 @@ const styles = {
     resize: 'none'
   },
 
+  'webchat-fluent__sendbox__sendbox-text--hidden': {
+    visibility: 'hidden'
+  },
+
   'webchat-fluent__sendbox__sendbox-controls': {
     alignItems: 'center',
     display: 'flex',
@@ -97,6 +101,7 @@ function SendBox(
   const makeThumbnail = useMakeThumbnail();
   const errorMessageId = useUniqueId('webchat-fluent__sendbox__error-message-id');
   const [errorRef, errorMessage] = useSubmitError({ message, attachments });
+  const [telephoneKeypadShown, setTelephoneKeypadShown] = useTelephoneKeypadShown();
 
   const attachmentsRef = useRefFrom(attachments);
   const messageRef = useRefFrom(message);
@@ -160,10 +165,16 @@ function SendBox(
     [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage, isMessageLengthExceeded, errorRef, inputRef]
   );
 
-  const handleTelephoneKeypadButtonClick = useCallback((dtmf: DTMF) => {
-    // eslint-disable-next-line no-alert
-    alert(dtmf);
-  }, []);
+  const handleTelephoneKeypadButtonClick = useCallback(
+    (dtmf: DTMF) => {
+      // TODO: We need more official way of sending DTMF.
+      sendMessage(`/DTMF ${dtmf}`);
+
+      // TODO: In the future when we work on input modality, it should manage the focus in a better way.
+      setTelephoneKeypadShown(false);
+    },
+    [sendMessage, setTelephoneKeypadShown]
+  );
 
   const aria = {
     'aria-invalid': 'false' as const,
@@ -176,16 +187,17 @@ function SendBox(
   return (
     <form {...aria} className={cx(classNames['webchat-fluent__sendbox'], props.className)} onSubmit={handleFormSubmit}>
       <SuggestedActions />
-      <TelephoneKeypadSurrogate
-        autoFocus={true}
-        isHorizontal={false}
-        onButtonClick={handleTelephoneKeypadButtonClick}
-      />
       <div className={cx(classNames['webchat-fluent__sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
+        <TelephoneKeypadSurrogate
+          autoFocus={true}
+          isHorizontal={false}
+          onButtonClick={handleTelephoneKeypadButtonClick}
+        />
         <TextArea
           aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
-          className={cx(classNames['webchat-fluent__sendbox__sendbox-text'])}
+          className={classNames['webchat-fluent__sendbox__sendbox-text']}
           data-testid={testIds.sendBoxTextBox}
+          hidden={telephoneKeypadShown}
           onInput={handleMessageChange}
           placeholder={props.placeholder ?? localize('TEXT_INPUT_PLACEHOLDER')}
           ref={inputRef}
