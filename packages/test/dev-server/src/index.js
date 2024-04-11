@@ -61,6 +61,16 @@ const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../
     )
   );
 
+  app.use(
+    '/__dist__/botframework-webchat-fluent-theme.production.min.css',
+    express.static(
+      resolve(
+        fileURLToPath(import.meta.url),
+        '../../../../fluent-theme/dist/botframework-webchat-fluent-theme.production.min.css'
+      )
+    )
+  );
+
   // /__dist__/ will be serve from ESBuild development server.
   app.use(
     '/__dist__/',

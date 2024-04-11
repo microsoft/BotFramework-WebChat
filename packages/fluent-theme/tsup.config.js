@@ -25,6 +25,9 @@ export default defineConfig([
   {
     dts: true,
     entry: ['./src/index.ts'],
+    loader: {
+      '.css': 'local-css'
+    },
     esbuildOptions(options) {
       options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
     },
@@ -35,6 +38,9 @@ export default defineConfig([
   {
     entry: {
       'botframework-webchat-fluent-theme.development': './src/bundle.ts'
+    },
+    loader: {
+      '.css': 'local-css'
     },
     esbuildOptions(options) {
       options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
@@ -53,6 +59,9 @@ export default defineConfig([
   {
     entry: {
       'botframework-webchat-fluent-theme.production.min': './src/bundle.ts'
+    },
+    loader: {
+      '.css': 'local-css'
     },
     esbuildOptions(options) {
       options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);

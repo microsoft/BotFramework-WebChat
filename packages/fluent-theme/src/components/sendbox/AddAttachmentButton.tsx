@@ -1,25 +1,21 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { useCallback, useRef, type ChangeEventHandler, memo } from 'react';
+import React, { useCallback, useRef, type ChangeEventHandler, memo, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { AttachmentIcon } from '../../icons/AttachmentIcon';
-import { useStyles } from '../../styles';
 import testIds from '../../testIds';
 import { ToolbarButton } from './Toolbar';
+import styles from './AddAttachmentButton.css';
+
+const useStyles = (styles: Record<`webchat-fluent__${string}`, string>) =>
+  useMemo(
+    () =>
+      Object.freeze(
+        Object.fromEntries(Object.entries(styles).map(([baseCls, resultCls]) => [baseCls, `${baseCls} ${resultCls}`]))
+      ),
+    [styles]
+  );
 
 const { useLocalizer, useStyleOptions } = hooks;
-
-const styles = {
-  'webchat-fluent__sendbox__add-attachment': {
-    display: 'grid'
-  },
-
-  'webchat-fluent__sendbox__add-attachment-input': {
-    fontSize: 0,
-    height: 0,
-    opacity: 0,
-    width: 0
-  }
-};
 
 function AddAttachmentButton(
   props: Readonly<{
