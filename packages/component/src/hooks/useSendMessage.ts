@@ -2,7 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 
-import useMakeThumbnail from './internal/useMakeThumbnail';
+import useMakeThumbnail from './useMakeThumbnail';
 
 const { useSendMessage: useAPISendMessage } = hooks;
 

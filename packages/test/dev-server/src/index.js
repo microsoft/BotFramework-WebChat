@@ -22,11 +22,41 @@ const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../
   app.use(compression());
 
   app.use(
+    '/__dist__/botframework-webchat-fluent-theme.development.js',
+    express.static(
+      resolve(
+        fileURLToPath(import.meta.url),
+        '../../../../fluent-theme/dist/botframework-webchat-fluent-theme.development.js'
+      )
+    )
+  );
+
+  app.use(
+    '/__dist__/botframework-webchat-fluent-theme.development.js.map',
+    express.static(
+      resolve(
+        fileURLToPath(import.meta.url),
+        '../../../../fluent-theme/dist/botframework-webchat-fluent-theme.development.js.map'
+      )
+    )
+  );
+
+  app.use(
     '/__dist__/botframework-webchat-fluent-theme.production.min.js',
     express.static(
       resolve(
         fileURLToPath(import.meta.url),
         '../../../../fluent-theme/dist/botframework-webchat-fluent-theme.production.min.js'
+      )
+    )
+  );
+
+  app.use(
+    '/__dist__/botframework-webchat-fluent-theme.production.min.js.map',
+    express.static(
+      resolve(
+        fileURLToPath(import.meta.url),
+        '../../../../fluent-theme/dist/botframework-webchat-fluent-theme.production.min.js.map'
       )
     )
   );

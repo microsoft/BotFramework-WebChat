@@ -1,13 +1,10 @@
 import { useCallback } from 'react';
-import type { DirectLineSuggestedAction } from 'botframework-webchat-core';
+import type { DirectLineCardAction } from 'botframework-webchat-core';
 
 import { useSelector } from './internal/WebChatReduxContext';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
-export default function useSuggestedActions(): [
-  DirectLineSuggestedAction[],
-  (suggestedActions: DirectLineSuggestedAction[]) => void
-] {
+export default function useSuggestedActions(): [DirectLineCardAction[], (suggestedActions: never[]) => void] {
   const value = useSelector(({ suggestedActions }) => suggestedActions);
   const { clearSuggestedActions } = useWebChatAPIContext();
 
