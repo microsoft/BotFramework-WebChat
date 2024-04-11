@@ -26,16 +26,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  `useSendMessage` hook is updated to support sending attachments with a message. To reduce complexity, the `useSendFiles` hook is being deprecated. The hook will be removed on or after 2026-04-03
 -  `styleOptions.uploadThumbnailHeight` and `styleOptions.uploadThumbnailWidth` must be a `number` of pixels
+-  `useSuggestedActions` type is updated to align with its actual implementation, by [@OEvgeny](https://github.com/OEvgeny), in PR [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
 
 ### Added
 
--  Resolves [#5083](https://github.com/microsoft/BotFramework-WebChat/issues/5083). Added `sendAttachmentOn` style option to send attachments and text in a single activity, by [@ms-jb](https://github.com/ms-jb) and [@compulim](https://github.com/compulim)
+-  Resolves [#5083](https://github.com/microsoft/BotFramework-WebChat/issues/5083). Added `sendAttachmentOn` style option to send attachments and text in a single activity, by [@ms-jb](https://github.com/ms-jb) and [@compulim](https://github.com/compulim), in PR [#5123](https://github.com/microsoft/BotFramework-WebChat/pull/5123)
    -  `useSendMessage` hook is updated to support sending attachments with a message
    -  `useSendBoxAttachments` hook is added to get/set attachments in the send box
 -  Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb), in PR [#5048](https://github.com/microsoft/BotFramework-WebChat/pull/5048)
 -  Added `sendBoxMiddleware` and `sendBoxToolbarMiddleware`, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
--  Added `botframework-webchat-fluent-theme` package for applying Fluent UI theme to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
+-  Added `botframework-webchat-fluent-theme` package for applying Fluent UI theme to Web Chat, by [@compulim](https://github.com/compulim) and [@OEvgeny](https://github.com/OEvgeny), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
+   -  New send box with Fluent look-and-feel, in PR [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
 -  Added `<ThemeProvider>` component to apply theme pack to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
+-  Added `useMakeThumbnail` hook option to create a thumbnail from the file given, by [@compulim](https://github.com/compulim), in PR [#5123](https://github.com/microsoft/BotFramework-WebChat/pull/5123) and [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
 
 ### Fixed
 
