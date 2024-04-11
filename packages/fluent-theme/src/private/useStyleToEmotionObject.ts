@@ -28,5 +28,5 @@ export default function useStyleToEmotionObject() {
       (emotionPool[`id-${nonce}`] = createEmotion({ key: `webchat--css-${createCSSKey()}`, nonce }));
 
     return (style: TemplateStringsArray) => emotion.css(style);
-  }, [nonce]);
+  }, []);
 }
