@@ -16,10 +16,8 @@ const styles = {
     cursor: 'copy',
     display: 'grid',
     gap: '8px',
-    inset: '0',
     placeContent: 'center',
-    placeItems: 'center',
-    position: 'absolute'
+    placeItems: 'center'
   },
 
   'webchat-fluent__sendbox__attachment-drop-zone--droppable': {

@@ -34,10 +34,29 @@ const styles = {
     display: 'grid',
     fontFamily: 'var(--webchat-fontFamilyBase)',
     fontSize: '14px',
-    gap: '6px',
     lineHeight: '20px',
-    padding: '8px',
-    position: 'relative',
+    gridTemplateColumns: '[drop-zone-start] 0 8px [keypad text-area attachments controls error] 1fr 8px [drop-zone-end]',
+    gridTemplateRows: '[drop-zone-start] 8px [keypad-start text-area] min-content 6px [attachments] min-content [keypad-end] 6px [controls] min-content [error] 0 8px [drop-zone-end]',
+
+    '> .webchat__telephone-keypad': {
+      gridArea: 'keypad'
+    },
+
+    '> .webchat-fluent__sendbox__text-area': {
+      gridArea: 'text-area'
+    },
+
+    '> .webchat-fluent__sendbox__attachment': {
+      gridArea: 'attachments'
+    },
+
+    '> .webchat-fluent__sendbox__sendbox-controls': {
+      gridArea: 'controls'
+    },
+
+    '> .webchat-fluent__sendbox__attachment-drop-zone': {
+      gridArea: 'drop-zone'
+    },
 
     '&:focus-within': {
       borderColor: 'var(--webchat-colorNeutralStroke1Selected)',
@@ -184,11 +203,6 @@ function SendBox(
     <form {...aria} className={cx(classNames['webchat-fluent__sendbox'], props.className)} onSubmit={handleFormSubmit}>
       <SuggestedActions />
       <div className={cx(classNames['webchat-fluent__sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
-        <TelephoneKeypadSurrogate
-          autoFocus={true}
-          isHorizontal={false}
-          onButtonClick={handleTelephoneKeypadButtonClick}
-        />
         <TextArea
           aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
           className={classNames['webchat-fluent__sendbox__sendbox-text']}
@@ -224,8 +238,13 @@ function SendBox(
             </ToolbarButton>
           </Toolbar>
         </div>
-        <DropZone onFilesAdded={handleAddFiles} />
         <ErrorMessage error={errorMessage} id={errorMessageId} />
+        <TelephoneKeypadSurrogate
+          autoFocus={true}
+          isHorizontal={false}
+          onButtonClick={handleTelephoneKeypadButtonClick}
+        />
+        <DropZone onFilesAdded={handleAddFiles} />
       </div>
     </form>
   );
