@@ -2,8 +2,8 @@
   "name": "botframework-webchat-fluent-theme",
   "version": "0.0.0-0",
   "description": "Fluent theme for Bot Framework Web Chat",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
@@ -32,7 +32,9 @@
   "files": [
     "dist/**/*.js",
     "dist/**/*.map",
-    "lib/**/*",
+    "dist/**/*.mjs",
+    "dist/**/*.mts",
+    "dist/**/*.ts",
     "src/**/*"
   ],
   "scripts": {
