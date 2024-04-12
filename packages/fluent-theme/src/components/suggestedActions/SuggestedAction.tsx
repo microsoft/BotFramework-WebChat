@@ -5,7 +5,7 @@ import React, { MouseEventHandler, memo, useCallback, useRef } from 'react';
 import { useStyles } from '../../styles';
 import AccessibleButton from './AccessibleButton';
 
-const { useScrollToEnd, useStyleSet, usePerformCardAction, useFocus, useSuggestedActions, useDisabled } = hooks;
+const { useDisabled, useFocus, usePerformCardAction, useScrollToEnd, useStyleSet, useSuggestedActions } = hooks;
 
 type SuggestedActionProps = Readonly<{
   buttonText: string | undefined;
@@ -49,10 +49,12 @@ const styles = {
         color: 'var(--webchat-colorBrandForeground2Hover)'
       }
     },
+
     '&:not([aria-disabled="true"]):active': {
       backgroundColor: 'var(--webchat-colorBrandBackground2Pressed)',
       color: 'var(--webchat-colorBrandForeground2Pressed)'
     },
+
     '&[aria-disabled="true"]': {
       color: 'var(--webchat-colorNeutralForegroundDisabled)',
       cursor: 'not-allowed'
