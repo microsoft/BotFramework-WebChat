@@ -19,7 +19,7 @@ const styles = {
     // color: 'inherit',
 
     border: 'solid 1px var(--webchat-colorNeutralStroke1)',
-    color: 'var(--webchat-colorNeutralForeground1)',
+    color: 'var(--webchat-colorGray200)',
     fontWeight: 'var(--webchat-fontWeightSemibold)',
 
     cursor: 'pointer',
@@ -41,7 +41,7 @@ const styles = {
 
   'webchat__telephone-keypad__button__ruby': {
     // color: isHighContrastTheme() ? white : isDarkTheme() ? gray40 : gray160,
-    color: 'var(--webchat-colorGray160)',
+    color: 'var(--webchat-colorGray190)',
     fontSize: 10
   },
 
