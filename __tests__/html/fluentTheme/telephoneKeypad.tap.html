@@ -22,7 +22,9 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        const App = () => <ReactWebChat directLine={directLine} store={store} />;
+        const App = () => (
+          <ReactWebChat directLine={directLine} store={store} styleOptions={{ hideTelephoneKeypadButton: false }} />
+        );
 
         render(
           <FluentThemeProvider>
@@ -40,24 +42,21 @@
         await pageConditions.numActivitiesShown(1);
 
         // WHEN: Telephone keypad button is clicked.
-        await host.click(
-          document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTelephoneKeypadToolbarButton}"]`)
-        );
+        await host.click(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadToolbarButton));
 
         await (
           await directLine.actPostActivity(() =>
-            host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTelephoneKeypadButton5}"]`))
+            host.click(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadButton5))
           )
         ).resolveAll();
 
-        // THEN: Should send "/DTMF 5" and focus on the send box.
+        // THEN: Should send "/DTMF 5".
         await pageConditions.numActivitiesShown(2);
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', '/DTMF 5');
 
-        // Commented out because it is not working today.
-        // expect(document.activeElement).toBe(
-        //   document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`)
-        // );
+        // THEN: Should not close the keypad and keep focusing on the button "5".
+        expect(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadButton5)).toBeTruthy();
+        expect(document.activeElement).toBe(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadButton5));
 
         await host.snapshot();
       });
