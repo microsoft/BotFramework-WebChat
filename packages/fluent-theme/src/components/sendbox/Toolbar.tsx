@@ -38,7 +38,7 @@ const styles = {
       color: 'var(--webchat-colorCompoundBrandForeground1Pressed)'
     },
     '&[aria-disabled="true"]': {
-      color: ' var(--webchat-colorNeutralForegroundDisabled)',
+      color: 'var(--webchat-colorNeutralForegroundDisabled)',
       cursor: 'not-allowed'
     }
   },

@@ -89,7 +89,7 @@ function SendBox(
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [message, setMessage] = useState('');
   const [attachments, setAttachments] = useSendBoxAttachments();
-  const [{ maxMessageLength }] = useStyleOptions();
+  const [{ hideTelephoneKeypadButton, hideUploadButton, maxMessageLength }] = useStyleOptions();
   const isMessageLengthExceeded = !!maxMessageLength && message.length > maxMessageLength;
   const classNames = useStyles(styles);
   const localize = useLocalizer();
@@ -97,7 +97,7 @@ function SendBox(
   const makeThumbnail = useMakeThumbnail();
   const errorMessageId = useUniqueId('webchat-fluent__sendbox__error-message-id');
   const [errorRef, errorMessage] = useSubmitError({ message, attachments });
-  const [telephoneKeypadShown, setTelephoneKeypadShown] = useTelephoneKeypadShown();
+  const [telephoneKeypadShown] = useTelephoneKeypadShown();
 
   const attachmentsRef = useRefFrom(attachments);
   const messageRef = useRefFrom(message);
@@ -162,14 +162,9 @@ function SendBox(
   );
 
   const handleTelephoneKeypadButtonClick = useCallback(
-    (dtmf: DTMF) => {
-      // TODO: We need more official way of sending DTMF.
-      sendMessage(`/DTMF ${dtmf}`);
-
-      // TODO: In the future when we work on input modality, it should manage the focus in a better way.
-      setTelephoneKeypadShown(false);
-    },
-    [sendMessage, setTelephoneKeypadShown]
+    // TODO: We need more official way of sending DTMF.
+    (dtmf: DTMF) => sendMessage(`/DTMF ${dtmf}`),
+    [sendMessage]
   );
 
   const aria = {
@@ -211,8 +206,8 @@ function SendBox(
             </div>
           )}
           <Toolbar>
-            <TelephoneKeypadToolbarButton />
-            <AddAttachmentButton onFilesAdded={handleAddFiles} />
+            {!hideTelephoneKeypadButton && <TelephoneKeypadToolbarButton />}
+            {!hideUploadButton && <AddAttachmentButton onFilesAdded={handleAddFiles} />}
             <ToolbarSeparator />
             <ToolbarButton
               aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
