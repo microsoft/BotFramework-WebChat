@@ -23,7 +23,7 @@
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const App = () => (
-          <ReactWebChat directLine={directLine} store={store} styleOptions={{ hideTelephoneKeypadButton: false }} />
+          <ReactWebChat directLine={directLine} store={store} styleOptions={{ hideUploadButton: true }} />
         );
 
         render(
@@ -35,29 +35,8 @@
 
         await pageConditions.uiConnected();
 
-        await directLine.emulateIncomingActivity(
-          'Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
-        );
-
-        await pageConditions.numActivitiesShown(1);
-
-        // WHEN: Telephone keypad button is clicked.
-        await host.click(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadToolbarButton));
-
-        await (
-          await directLine.actPostActivity(() =>
-            host.click(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadButton5))
-          )
-        ).resolveAll();
-
-        // THEN: Should send "/DTMF 5".
-        await pageConditions.numActivitiesShown(2);
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', '/DTMF 5');
-
-        // THEN: Should not close the keypad and keep focusing on the button "5".
-        expect(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadButton5)).toBeTruthy();
-        expect(document.activeElement).toBe(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadButton5));
-
+        // THEN: No attach button should be render.
+        expect(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton)).toBeFalsy();
         await host.snapshot();
       });
     </script>

@@ -41,6 +41,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  `styleOptions.maxMessageLength` to specify maximum length of the outgoing message
    -  Drag-and-drop file support, in PR [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
    -  Added telephone keypad (DTMF keypad), in PR [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
+   -  Added support of `styleOptions.hideUploadButton`, in PR [#5132](https://github.com/microsoft/BotFramework-WebChat/pull/5132)
+   -  Added `styleOptions.hideTelephoneKeypadButton` and default to `true`, in PR [#5132](https://github.com/microsoft/BotFramework-WebChat/pull/5132)
+   -  Fit-and-finish on suggested actions and telephone keypad, in PR [#5132](https://github.com/microsoft/BotFramework-WebChat/pull/5132)
+   -  Fixed to keep telephone keypad on-screen on click, in PR [#5132](https://github.com/microsoft/BotFramework-WebChat/pull/5132)
 -  Added `<ThemeProvider>` component to apply theme pack to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
 -  Added `useMakeThumbnail` hook option to create a thumbnail from the file given, by [@compulim](https://github.com/compulim), in PR [#5123](https://github.com/microsoft/BotFramework-WebChat/pull/5123) and [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
 

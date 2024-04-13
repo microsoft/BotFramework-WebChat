@@ -49,7 +49,7 @@ const styles = {
     },
 
     '&::-webkit-scrollbar-track': {
-      backgroundColor: ' var(--webchat-colorNeutralBackground5)',
+      backgroundColor: 'var(--webchat-colorNeutralBackground5)',
       borderRadius: '16px'
     },
 

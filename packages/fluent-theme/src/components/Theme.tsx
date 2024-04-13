@@ -37,9 +37,10 @@ const styles = {
 
     '--webchat-colorStatusDangerForeground1': 'var(--colorStatusDangerForeground1, #b10e1c)',
 
-    // https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/colors.ts
+    // https://github.com/microsoft/fluentui/blob/master/packages/theme/src/colors/FluentColors.ts
     '--webchat-colorGray30': 'var(--colorGray30, #edebe9)',
     '--webchat-colorGray160': 'var(--colorGray160, #323130)',
+    '--webchat-colorGray190': 'var(--colorGray190, #201f1e)',
     '--webchat-colorGray200': 'var(--colorGray200, #1b1a19)',
 
     // https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/borderRadius.ts

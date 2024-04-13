@@ -2,10 +2,10 @@ import { hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, { MouseEventHandler, memo, useCallback, useRef } from 'react';
-import AccessibleButton from './AccessibleButton';
 import { useStyles } from '../../styles';
+import AccessibleButton from './AccessibleButton';
 
-const { useScrollToEnd, useStyleSet, usePerformCardAction, useFocus, useSuggestedActions, useDisabled } = hooks;
+const { useDisabled, useFocus, usePerformCardAction, useScrollToEnd, useStyleSet, useSuggestedActions } = hooks;
 
 type SuggestedActionProps = Readonly<{
   buttonText: string | undefined;
@@ -31,17 +31,16 @@ type SuggestedActionProps = Readonly<{
 
 const styles = {
   'webchat-fluent__suggested-action': {
+    alignItems: 'center',
     background: 'transparent',
     border: '1px solid var(--webchat-colorBrandStroke2)',
     borderRadius: '8px',
     cursor: 'pointer',
-    fontSize: '12px',
-    lineHeight: '14px',
-    padding: '6px 8px 4px',
-    textAlign: 'start',
     display: 'flex',
+    fontSize: '12px',
     gap: '4px',
-    alignItems: 'center',
+    padding: '4px 8px 4px',
+    textAlign: 'start',
     transition: 'all .15s ease-out',
 
     '@media (hover: hover)': {
@@ -50,21 +49,20 @@ const styles = {
         color: 'var(--webchat-colorBrandForeground2Hover)'
       }
     },
+
     '&:not([aria-disabled="true"]):active': {
       backgroundColor: 'var(--webchat-colorBrandBackground2Pressed)',
       color: 'var(--webchat-colorBrandForeground2Pressed)'
     },
+
     '&[aria-disabled="true"]': {
-      color: ' var(--webchat-colorNeutralForegroundDisabled)',
+      color: 'var(--webchat-colorNeutralForegroundDisabled)',
       cursor: 'not-allowed'
     }
   },
 
   'webchat-fluent__suggested-action__image': {
-    width: '1em',
-    height: '1em',
-    fontSize: '20px',
-    translate: '0 -1px'
+    height: '12px'
   }
 };
 

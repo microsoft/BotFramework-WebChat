@@ -2,33 +2,43 @@ import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, { memo, type ReactNode } from 'react';
 import { useStyles } from '../../styles';
-import computeSuggestedActionText from './private/computeSuggestedActionText';
 import SuggestedAction from './SuggestedAction';
+import computeSuggestedActionText from './private/computeSuggestedActionText';
 
-const { useLocalizer, useStyleSet, useSuggestedActions } = hooks;
+const { useLocalizer, useStyleOptions, useStyleSet, useSuggestedActions } = hooks;
 
 const styles = {
   'webchat-fluent__suggested-actions': {
     alignItems: 'flex-end',
     alignSelf: 'flex-end',
     display: 'flex',
-    flexDirection: 'column',
     gap: '8px',
 
     '&:not(:empty)': {
       paddingBlockEnd: '8px',
       paddingInlineStart: '4px'
+    },
+
+    '&.webchat-fluent__suggested-actions--flow': {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'flex-end'
+    },
+
+    '&.webchat-fluent__suggested-actions--stacked': {
+      flexDirection: 'column'
     }
   }
 };
 
-function SuggestedActionStackedContainer(
+function SuggestedActionStackedOrFlowContainer(
   props: Readonly<{
     'aria-label'?: string | undefined;
     children?: ReactNode | undefined;
     className?: string | undefined;
   }>
 ) {
+  const [{ suggestedActionLayout }] = useStyleOptions();
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const classNames = useStyles(styles);
 
@@ -37,7 +47,15 @@ function SuggestedActionStackedContainer(
       aria-label={props['aria-label']}
       aria-live="polite"
       aria-orientation="vertical"
-      className={cx(classNames['webchat-fluent__suggested-actions'], suggestedActionsStyleSet + '', props.className)}
+      className={cx(
+        classNames['webchat-fluent__suggested-actions'],
+        suggestedActionsStyleSet + '',
+        {
+          'webchat-fluent__suggested-actions--flow': suggestedActionLayout === 'flow',
+          'webchat-fluent__suggested-actions--stacked': suggestedActionLayout !== 'flow'
+        },
+        props.className
+      )}
       role="toolbar"
     >
       {!!props.children && !!React.Children.count(props.children) && props.children}
@@ -91,12 +109,12 @@ function SuggestedActions() {
     );
   });
   return (
-    <SuggestedActionStackedContainer
+    <SuggestedActionStackedOrFlowContainer
       aria-label={localize('SUGGESTED_ACTIONS_LABEL_ALT')}
       className={classNames['webchat-fluent__suggested-actions']}
     >
       {children}
-    </SuggestedActionStackedContainer>
+    </SuggestedActionStackedOrFlowContainer>
   );
 }
 
