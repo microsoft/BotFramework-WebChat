@@ -22,7 +22,9 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        const App = () => <ReactWebChat directLine={directLine} store={store} />;
+        const App = () => (
+          <ReactWebChat directLine={directLine} store={store} styleOptions={{ hideTelephoneKeypadButton: false }} />
+        );
 
         render(
           <FluentThemeProvider>
