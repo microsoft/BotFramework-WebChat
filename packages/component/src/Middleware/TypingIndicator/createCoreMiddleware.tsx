@@ -13,7 +13,7 @@ const DotIndicator = () => {
   const localize = useLocalizer();
 
   return (
-    <div className={classNames(typingIndicatorStyleSet + '', direction === 'rtl' && 'webchat__typingIndicator--rtl')}>
+    <div className={classNames(typingIndicatorStyleSet + '', direction === 'rtl' && 'webchat__typing-indicator--rtl')}>
       <TypingAnimation aria-label={localize('TYPING_INDICATOR_ALT')} />
     </div>
   );
