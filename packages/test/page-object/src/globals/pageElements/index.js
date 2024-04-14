@@ -20,6 +20,7 @@ import transcript from './transcript';
 import transcriptLiveRegion from './transcriptLiveRegion';
 import transcriptScrollable from './transcriptScrollable';
 import transcriptTerminator from './transcriptTerminator';
+import typingIndicator from './typingIndicator';
 import uploadButton from './uploadButton';
 
 export {
@@ -45,5 +46,6 @@ export {
   transcriptLiveRegion,
   transcriptScrollable,
   transcriptTerminator,
+  typingIndicator,
   uploadButton
 };
