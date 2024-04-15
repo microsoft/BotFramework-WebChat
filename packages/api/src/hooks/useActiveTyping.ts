@@ -1,18 +1,16 @@
 import { useEffect } from 'react';
 
-import { useSelector } from './internal/WebChatReduxContext';
 import Typing from '../types/Typing';
 import useForceRender from './internal/useForceRender';
+import useAllTyping from './private/useAllTyping';
 import usePonyfill from './usePonyfill';
 import useStyleOptions from './useStyleOptions';
 
 function useActiveTyping(expireAfter?: number): [{ [userId: string]: Typing }] {
   const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
   const [{ typingAnimationDuration }] = useStyleOptions();
+  const [typing] = useAllTyping();
   const forceRender = useForceRender();
-  const typing: { [userId: string]: { at: number; last: number; name: string; role: string } } = useSelector(
-    ({ typing }) => typing
-  );
 
   const now = Date.now();
 
@@ -20,7 +18,7 @@ function useActiveTyping(expireAfter?: number): [{ [userId: string]: Typing }] {
     expireAfter = typingAnimationDuration;
   }
 
-  const activeTyping: { [userId: string]: Typing } = Object.entries(typing).reduce(
+  const activeTyping: { [userId: string]: Typing } = [...typing.entries()].reduce(
     (activeTyping, [id, { at, last, name, role }]) => {
       const until = last + expireAfter;
 

@@ -43,6 +43,7 @@ import normalizeStyleOptions from '../normalizeStyleOptions';
 import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
+import ActivityListenerComposer from '../providers/ActivityListener/ActivityListenerComposer';
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
@@ -588,14 +589,16 @@ const ComposerCore = ({
 
   return (
     <WebChatAPIContext.Provider value={context}>
-      <ActivitySendStatusComposer>
-        <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || Object.freeze([])}>
-          <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || Object.freeze([])}>
-            {typeof children === 'function' ? children(context) : children}
-            <ActivitySendStatusTelemetryComposer />
-          </SendBoxToolbarMiddlewareProvider>
-        </SendBoxMiddlewareProvider>
-      </ActivitySendStatusComposer>
+      <ActivityListenerComposer>
+        <ActivitySendStatusComposer>
+          <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || Object.freeze([])}>
+            <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || Object.freeze([])}>
+              {typeof children === 'function' ? children(context) : children}
+              <ActivitySendStatusTelemetryComposer />
+            </SendBoxToolbarMiddlewareProvider>
+          </SendBoxMiddlewareProvider>
+        </ActivitySendStatusComposer>
+      </ActivityListenerComposer>
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>
   );
