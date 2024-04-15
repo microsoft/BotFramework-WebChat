@@ -1,4 +1,3 @@
-/* eslint-disable security/detect-non-literal-fs-filename */
 import { join } from 'path';
 import { defineConfig } from 'tsup';
 import { fileURLToPath } from 'url';
