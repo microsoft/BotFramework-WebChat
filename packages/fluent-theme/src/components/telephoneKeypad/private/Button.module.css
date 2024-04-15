@@ -46,9 +46,9 @@
 :global(.webchat-fluent) .telephone-keypad--horizontal {
   & .telephone-keypad__button {
     height: 32px;
-    width: 32px;
-    margin: 8px 4px;
     justify-content: center;
+    margin: 8px 4px;
+    width: 32px;
   };
 
   .telephone-keypad__button__ruby {

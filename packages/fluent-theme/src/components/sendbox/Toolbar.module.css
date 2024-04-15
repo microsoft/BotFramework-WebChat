@@ -9,8 +9,8 @@
   appearance: none;
   aspect-ratio: 1;
   background: transparent;
-  border: none;
   border-radius: var(--webchat-borderRadiusSmall);
+  border: none;
   cursor: pointer;
   display: flex;
   justify-content: center;

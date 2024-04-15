@@ -1,14 +1,14 @@
 :global(.webchat-fluent) .suggested-action {
   align-items: center;
   background: transparent;
-  border: 1px solid var(--webchat-colorBrandStroke2);
   border-radius: 8px;
+  border: 1px solid var(--webchat-colorBrandStroke2);
   cursor: pointer;
   display: flex;
   font-size: 12px;
+  gap: 4px;
   padding: 4px 8px 4px;
   text-align: start;
-  gap: 4px;
   transition: all .15s ease-out;
 
   @media (hover: hover) {
@@ -28,7 +28,7 @@
 }
 
 :global(.webchat-fluent) .suggested-action__image {
-  width: 1em;
-  height: 1em;
   font-size: 12px;
+  height: 1em;
+  width: 1em;
 }

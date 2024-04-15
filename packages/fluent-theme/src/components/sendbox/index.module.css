@@ -7,8 +7,8 @@
 
 :global(.webchat-fluent) .sendbox__sendbox {
   background-color: var(--webchat-colorNeutralBackground1);
-  border: 1px solid var(--webchat-colorNeutralStroke1);
   border-radius: var(--webchat-borderRadiusLarge);
+  border: 1px solid var(--webchat-colorNeutralStroke1);
   display: grid;
   font-family: var(--webchat-fontFamilyBase);
   font-size: 14px;
