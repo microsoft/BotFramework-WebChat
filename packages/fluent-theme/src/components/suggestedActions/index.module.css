@@ -11,13 +11,13 @@
     padding-inline-start: 4px
   }
 
-  &:global(.webchat-fluent) .suggested-actions--flow {
+  &.suggested-actions--flow {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-end;
   }
 
-  &:global(.webchat-fluent) .suggested-actions--stacked {
+  &.suggested-actions--stacked {
     flex-direction: column
   }
 }
