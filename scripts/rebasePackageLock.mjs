@@ -26,12 +26,13 @@ async function readAllStdin() {
 function rebaseV1Inline(name, dependency, baseURL) {
   const { resolved: actual, version: versionFromDependency } = dependency;
   let version = versionFromDependency;
+  const npmPrefix = 'npm:';
 
-  if (versionFromDependency.startsWith('npm:')) {
+  if (versionFromDependency.startsWith(npmPrefix)) {
     const lastAt = versionFromDependency.lastIndexOf('@');
 
     // eslint-disable-next-line no-magic-numbers
-    name = versionFromDependency.slice(4, lastAt);
+    name = versionFromDependency.slice(npmPrefix.length, lastAt);
     version = versionFromDependency.slice(lastAt + 1);
   }
 
