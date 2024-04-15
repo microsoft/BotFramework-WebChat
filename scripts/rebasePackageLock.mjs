@@ -56,16 +56,8 @@ function rebaseV1InlineAll({ dependencies }, baseURL) {
 }
 
 function rebaseV2Inline(path, dependency, baseURL) {
-  const { name: nameFromDependency, resolved: actual, version: versionFromDependency } = dependency;
+  const { name: nameFromDependency, resolved: actual, version } = dependency;
   const name = nameFromDependency || path.split('node_modules/').reverse()[0];
-  let version = versionFromDependency;
-
-  if (versionFromDependency.startsWith('npm:')) {
-    const lastAt = versionFromDependency.lastIndexOf('@');
-
-    // eslint-disable-next-line no-magic-numbers
-    version = versionFromDependency.slice(lastAt + 1);
-  }
 
   const singleName = name.split('/').reverse()[0];
 
