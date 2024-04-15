@@ -1,11 +1,11 @@
-.webchat-fluent__sendbox {
+:global(.webchat-fluent) .sendbox {
   color: var(--webchat-colorNeutralForeground1);
   font-family: var(--webchat-fontFamilyBase);
   padding: 0 10px 10px;
   text-rendering: optimizeLegibility;
 }
 
-.webchat-fluent__sendbox__sendbox {
+:global(.webchat-fluent) .sendbox__sendbox {
   background-color: var(--webchat-colorNeutralBackground1);
   border: 1px solid var(--webchat-colorNeutralStroke1);
   border-radius: var(--webchat-borderRadiusLarge);
@@ -27,7 +27,7 @@
   }
 }
 
-.webchat-fluent__sendbox__sendbox-text {
+:global(.webchat-fluent) .sendbox__sendbox-text {
   background-color: transparent;
   border: none;
   flex: auto;
@@ -39,13 +39,13 @@
   resize: none;
 }
 
-.webchat-fluent__sendbox__sendbox-controls {
+:global(.webchat-fluent) .sendbox__sendbox-controls {
   align-items: center;
   display: flex;
   padding-inline-start: 4px;
 }
 
-.webchat-fluent__sendbox__text-counter {
+:global(.webchat-fluent) .sendbox__text-counter {
   color: var(--webchat-colorNeutralForeground4);
   cursor: default;
   font-family: var(--webchat-fontFamilyNumeric);
@@ -53,6 +53,6 @@
   line-height: 14px;
 }
 
-.webchat-fluent__sendbox__text-counter--error {
+:global(.webchat-fluent) .sendbox__text-counter--error {
   color: var(--webchat-colorStatusDangerForeground1);
 }

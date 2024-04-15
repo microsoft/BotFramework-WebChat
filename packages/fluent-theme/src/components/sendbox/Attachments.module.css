@@ -1,4 +1,4 @@
-.webchat-fluent__sendbox__attachment {
+:global(.webchat-fluent) .sendbox__attachment {
   border: 1px solid var(--webchat-colorNeutralStroke1);
   border-radius: var(--webchat-borderRadiusLarge);
   cursor: default;

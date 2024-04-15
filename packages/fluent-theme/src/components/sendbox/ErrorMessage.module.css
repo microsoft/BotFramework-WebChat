@@ -1,5 +1,5 @@
 
-.webchat-fluent___sendbox__error-message {
+:global(.webchat-fluent) .sendbox__error-message {
   font-size: 0;
   height: 0;
   width: 0;

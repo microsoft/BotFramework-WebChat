@@ -1,5 +1,5 @@
 
-.webchat-fluent__telephone-keypad__button {
+:global(.webchat-fluent) .telephone-keypad__button {
   -webkit-user-select: none;
   align-items: center;
   appearance: none;
@@ -18,13 +18,13 @@
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  height: 60;
+  height: 60px;
   opacity: 0.7;
   padding: 0;
   position: relative;
   touch-action: none;
   user-select: none;
-  width: 60;
+  width: 60px;
 
   &:hover {
     /* backgroundColor: isHighContrastTheme() ? gray210 : isDarkTheme() ? gray150 : gray30 */
@@ -32,31 +32,31 @@
   }
 }
 
-.webchat-fluent__telephone-keypad__button__ruby {
+:global(.webchat-fluent) .telephone-keypad__button__ruby {
   /* color: isHighContrastTheme() ? white : isDarkTheme() ? gray40 : gray160, */
   color: var(--webchat-colorGray190);
-  font-size: 10;
+  font-size: 10px;
 }
 
-.webchat-fluent__telephone-keypad__button__text {
-  font-size: 2;
-  margin-top: 8;
+:global(.webchat-fluent) .telephone-keypad__button__text {
+  font-size: 24px;
+  margin-top: 8px;
 }
 
-.webchat-fluent__telephone-keypad--horizontal {
-  & .webchat-fluent__telephone-keypad__button {
-    height: 32;
-    width: 32;
+:global(.webchat-fluent) .telephone-keypad--horizontal {
+  & .telephone-keypad__button {
+    height: 32px;
+    width: 32px;
     margin: 8px 4px;
     justify-content: center;
   };
 
-  .webchat-fluent__telephone-keypad__button__ruby {
+  .telephone-keypad__button__ruby {
     display: none;
   }
 
-  & .webchat-fluent__telephone-keypad__button__text {
-    font-size: 20;
+  & .telephone-keypad__button__text {
+    font-size: 20px;
     margin-top: 0;
   }
 }

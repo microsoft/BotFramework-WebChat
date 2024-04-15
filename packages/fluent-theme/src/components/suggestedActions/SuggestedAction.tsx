@@ -72,17 +72,13 @@ function SuggestedAction({
 
   return (
     <AccessibleButton
-      className={cx(
-        classNames['webchat-fluent__suggested-action'],
-        suggestedActionStyleSet + '',
-        (className || '') + ''
-      )}
+      className={cx(classNames['suggested-action'], suggestedActionStyleSet + '', (className || '') + '')}
       disabled={disabled}
       onClick={handleClick}
       ref={focusRef}
       type="button"
     >
-      {image && <img alt={imageAlt} className={classNames['webchat-fluent__suggested-action__image']} src={image} />}
+      {image && <img alt={imageAlt} className={classNames['suggested-action__image']} src={image} />}
       <span>{buttonText}</span>
     </AccessibleButton>
   );

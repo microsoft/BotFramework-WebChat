@@ -1,5 +1,5 @@
 
-.webchat-fluent__suggested-actions {
+:global(.webchat-fluent) .suggested-actions {
   align-items: flex-end;
   align-self: flex-end;
   display: flex;
@@ -11,13 +11,13 @@
     padding-inline-start: 4px
   }
 
-  &.webchat-fluent__suggested-actions--flow {
+  &:global(.webchat-fluent) .suggested-actions--flow {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-end;
   }
 
-  &.webchat-fluent__suggested-actions--stacked {
+  &:global(.webchat-fluent) .suggested-actions--stacked {
     flex-direction: column
   }
 }

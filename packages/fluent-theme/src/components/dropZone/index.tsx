@@ -88,15 +88,15 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
 
   return dropZoneState ? (
     <div
-      className={cx(classNames['webchat-fluent__sendbox__attachment-drop-zone'], {
-        [classNames['webchat-fluent__sendbox__attachment-drop-zone--droppable']]: dropZoneState === 'droppable'
+      className={cx(classNames['sendbox__attachment-drop-zone'], {
+        [classNames['sendbox__attachment-drop-zone--droppable']]: dropZoneState === 'droppable'
       })}
       data-testid={testIds.sendBoxDropZone}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       ref={dropZoneRef}
     >
-      <AddDocumentIcon className={classNames['webchat-fluent__sendbox__attachment-drop-zone-icon']} />
+      <AddDocumentIcon className={classNames['sendbox__attachment-drop-zone-icon']} />
       {localize('TEXT_INPUT_DROP_ZONE')}
     </div>
   ) : null;

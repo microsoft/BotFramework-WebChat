@@ -25,11 +25,11 @@ function SuggestedActionStackedOrFlowContainer(
       aria-live="polite"
       aria-orientation="vertical"
       className={cx(
-        classNames['webchat-fluent__suggested-actions'],
+        classNames['suggested-actions'],
         suggestedActionsStyleSet + '',
         {
-          'webchat-fluent__suggested-actions--flow': suggestedActionLayout === 'flow',
-          'webchat-fluent__suggested-actions--stacked': suggestedActionLayout !== 'flow'
+          [classNames['suggested-actions--flow']]: suggestedActionLayout === 'flow',
+          [classNames['suggested-actions--stacked']]: suggestedActionLayout !== 'flow'
         },
         props.className
       )}
@@ -88,7 +88,7 @@ function SuggestedActions() {
   return (
     <SuggestedActionStackedOrFlowContainer
       aria-label={localize('SUGGESTED_ACTIONS_LABEL_ALT')}
-      className={classNames['webchat-fluent__suggested-actions']}
+      className={classNames['suggested-actions']}
     >
       {children}
     </SuggestedActionStackedOrFlowContainer>

@@ -1,10 +1,10 @@
-.webchat-fluent__sendbox__toolbar {
+:global(.webchat-fluent) .sendbox__toolbar {
   display: flex;
   gap: 4px;
   margin-inline-start: auto;
 }
 
-.webchat-fluent__sendbox__toolbar-button {
+:global(.webchat-fluent) .sendbox__toolbar-button {
   align-items: center;
   appearance: none;
   aspect-ratio: 1;
@@ -38,7 +38,7 @@
   }
 }
 
-.webchat-fluent__sendbox__toolbar-separator {
+:global(.webchat-fluent) .sendbox__toolbar-separator {
   align-self: center;
   border-inline-end: 1px solid var(--webchat-colorNeutralStroke2);
   height: 28px;

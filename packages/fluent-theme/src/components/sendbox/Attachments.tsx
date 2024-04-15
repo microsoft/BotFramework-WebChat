@@ -22,7 +22,7 @@ function Attachments({
   const localizeWithPlural = useLocalizer({ plural: true });
 
   return attachments.length ? (
-    <div className={classNames['webchat-fluent__sendbox__attachment']}>
+    <div className={classNames.sendbox__attachment}>
       {localizeWithPlural(attachmentsPluralStringIds, attachments.length)}
     </div>
   ) : null;

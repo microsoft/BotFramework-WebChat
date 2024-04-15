@@ -37,12 +37,12 @@ function AddAttachmentButton(
   );
 
   return (
-    <div className={classNames['webchat-fluent__sendbox__add-attachment']}>
+    <div className={classNames['sendbox__add-attachment']}>
       <input
         accept={uploadAccept}
         aria-disabled={props.disabled}
         aria-hidden="true"
-        className={classNames['webchat-fluent__sendbox__add-attachment-input']}
+        className={classNames['sendbox__add-attachment-input']}
         multiple={uploadMultiple}
         onInput={props.disabled ? undefined : handleFileChange}
         readOnly={props.disabled}

@@ -1,5 +1,5 @@
 
-.webchat-fluent__theme {
+:global(.webchat-fluent).theme {
   display: contents;
 
   --webchat-colorNeutralForeground1: var(--colorNeutralForeground1, #242424);

@@ -25,16 +25,16 @@ const Button = memo(
 
     return (
       <button
-        className={classNames['webchat-fluent__telephone-keypad__button']}
+        className={classNames['telephone-keypad__button']}
         data-testid={dataTestId}
         onClick={handleClick}
         ref={ref}
         type="button"
       >
-        <span className={classNames['webchat-fluent__telephone-keypad__button__text']}>
+        <span className={classNames['telephone-keypad__button__text']}>
           {button === 'star' ? '\u2217' : button === 'pound' ? '#' : button}
         </span>
-        {!!ruby && <ruby className={classNames['webchat-fluent__telephone-keypad__button__ruby']}>{ruby}</ruby>}
+        {!!ruby && <ruby className={classNames['telephone-keypad__button__ruby']}>{ruby}</ruby>}
       </button>
     );
   })

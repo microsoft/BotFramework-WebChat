@@ -1,19 +1,10 @@
-.webchat-fluent__sendbox__add-attachment {
+:global(.webchat-fluent) .sendbox__add-attachment {
   display: grid
 }
 
-.webchat-fluent__sendbox__add-attachment-input {
+:global(.webchat-fluent) .sendbox__add-attachment-input {
   font-size: 0;
   height: 0;
   opacity: 0;
   width: 0;
-}
-
-.button {
-}
-
-.button-text {
-}
-
-.button--hover .button-text {
 }

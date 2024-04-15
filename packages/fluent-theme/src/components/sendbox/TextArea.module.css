@@ -1,17 +1,17 @@
-.webchat-fluent__sendbox__text-area {
+:global(.webchat-fluent) .sendbox__text-area {
   display: grid;
   grid-template-areas: 'main';
   max-height: 200px;
   overflow: hidden;
 }
 
-.webchat-fluent__sendbox__text-area--hidden {
+:global(.webchat-fluent) .sendbox__text-area--hidden {
   /* TODO: Not perfect way of hiding the text box. */
   height: 0;
   visibility: collapse;
 }
 
-.webchat-fluent__sendbox__text-area-shared {
+:global(.webchat-fluent) .sendbox__text-area-shared {
   border: none;
   font: inherit;
   grid-area: main;
@@ -21,18 +21,18 @@
   scrollbar-gutter: stable;
 }
 
-.webchat-fluent__sendbox__text-area-doppelganger {
+:global(.webchat-fluent) .sendbox__text-area-doppelganger {
   overflow: hidden;
   visibility: hidden;
   white-space: pre-wrap;
 }
 
-.webchat-fluent__sendbox__text-area-input {
+:global(.webchat-fluent) .sendbox__text-area-input {
   height: 100%;
   padding: 0
 }
 
-.webchat-fluent__sendbox__text-area-input--scroll {
+:global(.webchat-fluent) .sendbox__text-area-input--scroll {
   /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
   scrollbar-color: unset;
   scrollbar-width: unset;

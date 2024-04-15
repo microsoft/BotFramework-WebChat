@@ -1,4 +1,3 @@
-
 export const injectedStyles = '@--INJECTED-STYLES-CONTENT--@';
 
 export default function injectStyles() {

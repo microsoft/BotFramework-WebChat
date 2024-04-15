@@ -42,9 +42,9 @@ const TextArea = forwardRef<
   return (
     <div
       className={cx(
-        classNames['webchat-fluent__sendbox__text-area'],
+        classNames['sendbox__text-area'],
         {
-          [classNames['webchat-fluent__sendbox__text-area--hidden']]: props.hidden
+          [classNames['sendbox__text-area--hidden']]: props.hidden
         },
         props.className
       )}
@@ -52,9 +52,9 @@ const TextArea = forwardRef<
     >
       <div
         className={cx(
-          classNames['webchat-fluent__sendbox__text-area-doppelganger'],
-          classNames['webchat-fluent__sendbox__text-area-shared'],
-          classNames['webchat-fluent__sendbox__text-area-input--scroll']
+          classNames['sendbox__text-area-doppelganger'],
+          classNames['sendbox__text-area-shared'],
+          classNames['sendbox__text-area-input--scroll']
         )}
       >
         {props.value || props.placeholder}{' '}
@@ -62,9 +62,9 @@ const TextArea = forwardRef<
       <textarea
         aria-label={props['aria-label']}
         className={cx(
-          classNames['webchat-fluent__sendbox__text-area-input'],
-          classNames['webchat-fluent__sendbox__text-area-shared'],
-          classNames['webchat-fluent__sendbox__text-area-input--scroll']
+          classNames['sendbox__text-area-input'],
+          classNames['sendbox__text-area-shared'],
+          classNames['sendbox__text-area-input--scroll']
         )}
         data-testid={props['data-testid']}
         onInput={props.onInput}

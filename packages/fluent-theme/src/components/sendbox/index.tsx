@@ -35,7 +35,7 @@ function SendBox(
   const localize = useLocalizer();
   const sendMessage = useSendMessage();
   const makeThumbnail = useMakeThumbnail();
-  const errorMessageId = useUniqueId('webchat-fluent__sendbox__error-message-id');
+  const errorMessageId = useUniqueId('sendbox__error-message-id');
   const [errorRef, errorMessage] = useSubmitError({ message, attachments });
   const [telephoneKeypadShown] = useTelephoneKeypadShown();
 
@@ -116,9 +116,9 @@ function SendBox(
   };
 
   return (
-    <form {...aria} className={cx(classNames['webchat-fluent__sendbox'], props.className)} onSubmit={handleFormSubmit}>
+    <form {...aria} className={cx(classNames.sendbox, props.className)} onSubmit={handleFormSubmit}>
       <SuggestedActions />
-      <div className={cx(classNames['webchat-fluent__sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
+      <div className={cx(classNames.sendbox__sendbox)} onClickCapture={handleSendBoxClick}>
         <TelephoneKeypadSurrogate
           autoFocus={true}
           isHorizontal={false}
@@ -126,7 +126,7 @@ function SendBox(
         />
         <TextArea
           aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
-          className={classNames['webchat-fluent__sendbox__sendbox-text']}
+          className={classNames['sendbox__sendbox-text']}
           data-testid={testIds.sendBoxTextBox}
           hidden={telephoneKeypadShown}
           onInput={handleMessageChange}
@@ -135,11 +135,11 @@ function SendBox(
           value={message}
         />
         <Attachments attachments={attachments} />
-        <div className={cx(classNames['webchat-fluent__sendbox__sendbox-controls'])}>
+        <div className={cx(classNames['sendbox__sendbox-controls'])}>
           {maxMessageLength && (
             <div
-              className={cx(classNames['webchat-fluent__sendbox__text-counter'], {
-                [classNames['webchat-fluent__sendbox__text-counter--error']]: isMessageLengthExceeded
+              className={cx(classNames['sendbox__text-counter'], {
+                [classNames['sendbox__text-counter--error']]: isMessageLengthExceeded
               })}
             >
               {`${message.length}/${maxMessageLength}`}

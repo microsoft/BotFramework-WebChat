@@ -1,5 +1,5 @@
 
-.webchat-fluent__telephone-keypad {
+:global(.webchat-fluent) .telephone-keypad {
   /* Commented out whitelabel styles for now. */
   /* background: getHighContrastDarkThemeColor(highContrastColor: black, darkThemeColor: gray190, string, defaultColor: gray10), */
   /* borderRadius: '8px 8px 0px 0px; */
@@ -18,7 +18,7 @@
   /* margin: var(--spacingHorizontalMNudge)' */
 }
 
-.webchat-fluent__telephone-keypad__box {
+:global(.webchat-fluent) .telephone-keypad__box {
   box-sizing: border-box;
   display: grid;
   gap: 16px;

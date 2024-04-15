@@ -23,7 +23,7 @@ const Orientation = memo(
       // <HorizontalDialPadController>{children}</HorizontalDialPadController>
       false
     ) : (
-      <div className={classNames['webchat-fluent__telephone-keypad__box']}>{children}</div>
+      <div className={classNames['telephone-keypad__box']}>{children}</div>
     );
   }
 );
@@ -64,7 +64,7 @@ const TelephoneKeypad = memo(({ autoFocus, onButtonClick, isHorizontal }: Props)
   }, [autoFocusRef, firstButtonRef]);
 
   return (
-    <div className={classNames['webchat-fluent__telephone-keypad']} onKeyDown={handleKeyDown}>
+    <div className={classNames['telephone-keypad']} onKeyDown={handleKeyDown}>
       <Orientation isHorizontal={isHorizontal}>
         <Button
           button="1"

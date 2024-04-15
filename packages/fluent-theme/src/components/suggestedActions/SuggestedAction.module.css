@@ -1,4 +1,4 @@
-.webchat-fluent__suggested-action {
+:global(.webchat-fluent) .suggested-action {
   align-items: center;
   background: transparent;
   border: 1px solid var(--webchat-colorBrandStroke2);
@@ -27,7 +27,7 @@
   }
 }
 
-.webchat-fluent__suggested-action__image {
+:global(.webchat-fluent) .suggested-action__image {
   width: 1em;
   height: 1em;
   font-size: 12px;

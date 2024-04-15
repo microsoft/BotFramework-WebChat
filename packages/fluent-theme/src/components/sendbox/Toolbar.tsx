@@ -22,7 +22,7 @@ export const ToolbarButton = memo(
     return (
       <button
         aria-label={props['aria-label']}
-        className={cx(classNames['webchat-fluent__sendbox__toolbar-button'], props.className)}
+        className={cx(classNames['sendbox__toolbar-button'], props.className)}
         data-testid={props['data-testid']}
         onClick={props.disabled ? preventDefaultHandler : props.onClick}
         type={props.type === 'submit' ? 'submit' : 'button'}
@@ -42,7 +42,7 @@ ToolbarButton.displayName = 'ToolbarButton';
 export const Toolbar = memo((props: Readonly<{ children?: ReactNode | undefined; className?: string | undefined }>) => {
   const classNames = useStyles(styles);
 
-  return <div className={cx(classNames['webchat-fluent__sendbox__toolbar'], props.className)}>{props.children}</div>;
+  return <div className={cx(classNames.sendbox__toolbar, props.className)}>{props.children}</div>;
 });
 
 Toolbar.displayName = 'Toolbar';
@@ -54,7 +54,7 @@ export const ToolbarSeparator = memo(
     return (
       <div
         aria-orientation="vertical"
-        className={cx(classNames['webchat-fluent__sendbox__toolbar-separator'], props.className)}
+        className={cx(classNames['sendbox__toolbar-separator'], props.className)}
         role="separator"
       />
     );
