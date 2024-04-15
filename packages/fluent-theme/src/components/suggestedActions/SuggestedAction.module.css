@@ -1,5 +1,5 @@
 .webchat-fluent__suggested-action {
-  allign-items: center;
+  align-items: center;
   background: transparent;
   border: 1px solid var(--webchat-colorBrandStroke2);
   border-radius: 8px;
