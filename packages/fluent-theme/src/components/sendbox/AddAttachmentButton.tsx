@@ -1,19 +1,11 @@
-import { hooks } from 'botframework-webchat-api';
-import React, { useCallback, useRef, type ChangeEventHandler, memo, useMemo } from 'react';
+import { hooks } from 'botframework-webchat-component';
+import React, { useCallback, useRef, type ChangeEventHandler, memo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { AttachmentIcon } from '../../icons/AttachmentIcon';
 import testIds from '../../testIds';
 import { ToolbarButton } from './Toolbar';
-import styles from './AddAttachmentButton.css';
-
-const useStyles = (styles: Record<`webchat-fluent__${string}`, string>) =>
-  useMemo(
-    () =>
-      Object.freeze(
-        Object.fromEntries(Object.entries(styles).map(([baseCls, resultCls]) => [baseCls, `${baseCls} ${resultCls}`]))
-      ),
-    [styles]
-  );
+import styles from './AddAttachmentButton.module.css';
+import { useStyles } from '../../styles';
 
 const { useLocalizer, useStyleOptions } = hooks;
 

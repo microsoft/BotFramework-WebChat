@@ -1,35 +1,12 @@
 import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, { memo, type ReactNode } from 'react';
-import { useStyles } from '../../styles';
 import SuggestedAction from './SuggestedAction';
 import computeSuggestedActionText from './private/computeSuggestedActionText';
+import styles from './index.module.css';
+import { useStyles } from '../../styles';
 
 const { useLocalizer, useStyleOptions, useStyleSet, useSuggestedActions } = hooks;
-
-const styles = {
-  'webchat-fluent__suggested-actions': {
-    alignItems: 'flex-end',
-    alignSelf: 'flex-end',
-    display: 'flex',
-    gap: '8px',
-
-    '&:not(:empty)': {
-      paddingBlockEnd: '8px',
-      paddingInlineStart: '4px'
-    },
-
-    '&.webchat-fluent__suggested-actions--flow': {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'flex-end'
-    },
-
-    '&.webchat-fluent__suggested-actions--stacked': {
-      flexDirection: 'column'
-    }
-  }
-};
 
 function SuggestedActionStackedOrFlowContainer(
   props: Readonly<{

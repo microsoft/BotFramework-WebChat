@@ -64,7 +64,6 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
-    "@emotion/css": "^11.11.2",
     "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",

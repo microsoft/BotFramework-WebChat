@@ -1,0 +1,14 @@
+
+.webchat-fluent__suggested-actions {
+  align-items: flex-end;
+  align-self: flex-end;
+  display: flex;
+  gap: 8px;
+
+  &:not(:empty) {
+    padding-block-end: 8px;
+    padding-inline-start: 4px
+  }
+
+
+}

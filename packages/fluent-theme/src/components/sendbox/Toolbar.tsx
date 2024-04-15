@@ -1,58 +1,7 @@
 import cx from 'classnames';
 import React, { memo, type MouseEventHandler, type ReactNode } from 'react';
+import styles from './Toolbar.module.css';
 import { useStyles } from '../../styles';
-
-const styles = {
-  'webchat-fluent__sendbox__toolbar': {
-    display: 'flex',
-    gap: '4px',
-    marginInlineStart: 'auto'
-  },
-
-  'webchat-fluent__sendbox__toolbar-button': {
-    alignItems: 'center',
-    appearance: 'none',
-    aspectRatio: '1',
-    background: 'transparent',
-    border: 'none',
-    borderRadius: 'var(--webchat-borderRadiusSmall)',
-    cursor: 'pointer',
-    display: 'flex',
-    justifyContent: 'center',
-    padding: '3px',
-    width: '32px',
-
-    '> svg': {
-      fontSize: '20px',
-      pointerEvents: 'none'
-    },
-
-    '@media (hover: hover)': {
-      '&:not([aria-disabled="true"]):hover': {
-        backgroundColor: 'var(--webchat-colorSubtleBackgroundHover)',
-        color: 'var(--webchat-colorCompoundBrandForeground1Hover)'
-      }
-    },
-    '&:not([aria-disabled="true"]):active': {
-      backgroundColor: 'var(--webchat-colorSubtleBackgroundPressed)',
-      color: 'var(--webchat-colorCompoundBrandForeground1Pressed)'
-    },
-    '&[aria-disabled="true"]': {
-      color: 'var(--webchat-colorNeutralForegroundDisabled)',
-      cursor: 'not-allowed'
-    }
-  },
-
-  'webchat-fluent__sendbox__toolbar-separator': {
-    alignSelf: 'center',
-    borderInlineEnd: '1px solid var(--webchat-colorNeutralStroke2)',
-    height: '28px',
-
-    '&:first-child, &:last-child, &:only-child': {
-      display: 'none'
-    }
-  }
-};
 
 const preventDefaultHandler: MouseEventHandler<HTMLButtonElement> = event => event.preventDefault();
 

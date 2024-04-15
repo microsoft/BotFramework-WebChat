@@ -3,7 +3,6 @@ import cx from 'classnames';
 import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { SendIcon } from '../../icons/SendIcon';
-import { useStyles } from '../../styles';
 import testIds from '../../testIds';
 import DropZone from '../DropZone';
 import SuggestedActions from '../SuggestedActions';
@@ -16,69 +15,10 @@ import TextArea from './TextArea';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
 import useSubmitError from './private/useSubmitError';
 import useUniqueId from './private/useUniqueId';
+import styles from './index.module.css';
+import { useStyles } from '../../styles';
 
 const { useStyleOptions, useMakeThumbnail, useLocalizer, useSendBoxAttachments, useSendMessage } = hooks;
-
-const styles = {
-  'webchat-fluent__sendbox': {
-    color: 'var(--webchat-colorNeutralForeground1)',
-    fontFamily: 'var(--webchat-fontFamilyBase)',
-    padding: '0 10px 10px',
-    textRendering: 'optimizeLegibility'
-  },
-
-  'webchat-fluent__sendbox__sendbox': {
-    backgroundColor: 'var(--webchat-colorNeutralBackground1)',
-    border: '1px solid var(--webchat-colorNeutralStroke1)',
-    borderRadius: 'var(--webchat-borderRadiusLarge)',
-    display: 'grid',
-    fontFamily: 'var(--webchat-fontFamilyBase)',
-    fontSize: '14px',
-    gap: '6px',
-    lineHeight: '20px',
-    padding: '8px',
-    position: 'relative',
-
-    '&:focus-within': {
-      borderColor: 'var(--webchat-colorNeutralStroke1Selected)',
-      // TODO clarify with design the color:
-      // - Teams is using colorCompoundBrandForeground1
-      // - Fluent is using colorCompoundBrandStroke
-      // - we are using colorCompoundBrandForeground1Hover
-      boxShadow: 'inset 0 -6px 0 -3px var(--webchat-colorCompoundBrandForeground1Hover)'
-    }
-  },
-
-  'webchat-fluent__sendbox__sendbox-text': {
-    backgroundColor: 'transparent',
-    border: 'none',
-    flex: 'auto',
-    fontFamily: 'var(--webchat-fontFamilyBase)',
-    fontSize: '14px',
-    lineHeight: '20px',
-    outline: 'none',
-    padding: '4px 4px 0',
-    resize: 'none'
-  },
-
-  'webchat-fluent__sendbox__sendbox-controls': {
-    alignItems: 'center',
-    display: 'flex',
-    paddingInlineStart: '4px'
-  },
-
-  'webchat-fluent__sendbox__text-counter': {
-    color: 'var(--webchat-colorNeutralForeground4)',
-    cursor: 'default',
-    fontFamily: 'var(--webchat-fontFamilyNumeric)',
-    fontSize: '10px',
-    lineHeight: '14px'
-  },
-
-  'webchat-fluent__sendbox__text-counter--error': {
-    color: 'var(--webchat-colorStatusDangerForeground1)'
-  }
-};
 
 function SendBox(
   props: Readonly<{

@@ -1,0 +1,58 @@
+.webchat-fluent__sendbox {
+  color: var(--webchat-colorNeutralForeground1);
+  font-family: var(--webchat-fontFamilyBase);
+  padding: 0 10px 10px;
+  text-rendering: optimizeLegibility;
+}
+
+.webchat-fluent__sendbox__sendbox {
+  background-color: var(--webchat-colorNeutralBackground1);
+  border: 1px solid var(--webchat-colorNeutralStroke1);
+  border-radius: var(--webchat-borderRadiusLarge);
+  display: grid;
+  font-family: var(--webchat-fontFamilyBase);
+  font-size: 14px;
+  gap: 6px;
+  line-height: 20px;
+  padding: 8px;
+  position: relative;
+
+  &:focus-within {
+    border-color: var(--webchat-colorNeutralStroke1Selected);
+    /* TODO clarify with design the color:
+      - Teams is using colorCompoundBrandForeground1
+      - Fluent is using colorCompoundBrandStroke
+      - we are using colorCompoundBrandForeground1Hover */
+    box-shadow: inset 0 -6px 0 -3px var(--webchat-colorCompoundBrandForeground1Hover);
+  }
+}
+
+.webchat-fluent__sendbox__sendbox-text {
+  background-color: transparent;
+  border: none;
+  flex: auto;
+  font-family: var(--webchat-fontFamilyBase);
+  font-size: 14px;
+  line-height: 20px;
+  outline: none;
+  padding: 4px 4px 0;
+  resize: none;
+}
+
+.webchat-fluent__sendbox__sendbox-controls {
+  align-items: center;
+  display: flex;
+  padding-inline-start: 4px;
+}
+
+.webchat-fluent__sendbox__text-counter {
+  color: var(--webchat-colorNeutralForeground4);
+  cursor: default;
+  font-family: var(--webchat-fontFamilyNumeric);
+  font-size: 10px;
+  line-height: 14px;
+}
+
+.webchat-fluent__sendbox__text-counter--error {
+  color: var(--webchat-colorStatusDangerForeground1);
+}

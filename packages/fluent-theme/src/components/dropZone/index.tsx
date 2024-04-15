@@ -1,39 +1,14 @@
-import { hooks } from 'botframework-webchat-api';
+import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, { memo, useCallback, useEffect, useRef, useState, type DragEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { AddDocumentIcon } from '../../icons/AddDocumentIcon';
-import { useStyles } from '../../styles';
 import testIds from '../../testIds';
+import styles from './index.module.css';
+import { useStyles } from '../../styles';
 
 const { useLocalizer } = hooks;
-
-const styles = {
-  'webchat-fluent__sendbox__attachment-drop-zone': {
-    backgroundColor: 'var(--webchat-colorNeutralBackground4)',
-    borderRadius: 'inherit',
-    cursor: 'copy',
-    display: 'grid',
-    gap: '8px',
-    inset: '0',
-    placeContent: 'center',
-    placeItems: 'center',
-    position: 'absolute'
-  },
-
-  'webchat-fluent__sendbox__attachment-drop-zone--droppable': {
-    backgroundColor: '#e00',
-    color: 'White'
-  },
-
-  'webchat-fluent__sendbox__attachment-drop-zone-icon': {
-    height: '36px',
-    // Set "pointer-events: none" to ignore dragging over the icon. Otherwise, when dragging over the icon, it would disable the "--droppable" modifier.
-    pointerEvents: 'none',
-    width: '36px'
-  }
-};
 
 const handleDragOver: DragEventHandler<HTMLDivElement> = event => {
   // This is for preventing the browser from opening the dropped file in a new tab.

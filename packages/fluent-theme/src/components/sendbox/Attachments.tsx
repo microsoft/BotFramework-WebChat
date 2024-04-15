@@ -1,18 +1,9 @@
-import { hooks } from 'botframework-webchat-api';
+import { hooks } from 'botframework-webchat-component';
 import React, { memo } from 'react';
+import styles from './Attachments.module.css';
 import { useStyles } from '../../styles';
 
 const { useLocalizer } = hooks;
-
-const styles = {
-  'webchat-fluent__sendbox__attachment': {
-    border: '1px solid var(--webchat-colorNeutralStroke1)',
-    borderRadius: 'var(--webchat-borderRadiusLarge)',
-    cursor: 'default',
-    padding: '6px 8px',
-    width: 'fit-content'
-  }
-};
 
 const attachmentsPluralStringIds = {
   one: 'TEXT_INPUT_ATTACHMENTS_ONE',

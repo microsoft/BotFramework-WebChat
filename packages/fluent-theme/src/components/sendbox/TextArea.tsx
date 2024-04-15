@@ -1,68 +1,7 @@
 import cx from 'classnames';
 import React, { forwardRef, useCallback, type FormEventHandler, type KeyboardEventHandler } from 'react';
-
 import { useStyles } from '../../styles';
-
-const styles = {
-  'webchat-fluent__sendbox__text-area': {
-    display: 'grid',
-    gridTemplateAreas: `'main'`,
-    maxHeight: '200px',
-    overflow: 'hidden'
-  },
-
-  'webchat-fluent__sendbox__text-area--hidden': {
-    // TODO: Not perfect way of hiding the text box.
-    height: 0,
-    visibility: 'collapse'
-  },
-
-  'webchat-fluent__sendbox__text-area-shared': {
-    border: 'none',
-    font: 'inherit',
-    gridArea: 'main',
-    outline: 'inherit',
-    overflowWrap: 'anywhere',
-    resize: 'inherit',
-    scrollbarGutter: 'stable'
-  },
-
-  'webchat-fluent__sendbox__text-area-doppelganger': {
-    overflow: 'hidden',
-    visibility: 'hidden',
-    whiteSpace: 'pre-wrap'
-  },
-
-  'webchat-fluent__sendbox__text-area-input': {
-    height: '100%',
-    padding: 0
-  },
-
-  'webchat-fluent__sendbox__text-area-input--scroll': {
-    /* Firefox */
-    MozScrollbarColor: 'var(--webchat-colorNeutralBackground5) var(--webchat-colorNeutralForeground2)',
-    MozScrollbarWidth: 'thin',
-
-    /* Chrome, Edge, and Safari */
-    '&::-webkit-scrollbar': {
-      width: '8px'
-    },
-
-    '&::-webkit-scrollbar-track': {
-      backgroundColor: 'var(--webchat-colorNeutralBackground5)',
-      borderRadius: '16px'
-    },
-
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: 'var(--webchat-colorNeutralForeground2)',
-      borderRadius: '16px'
-    },
-
-    '&::-webkit-scrollbar-corner': {
-      backgroundColor: 'var(--webchat-colorNeutralBackground5)'
-    }
-  }
-};
+import styles from './TextArea.module.css';
 
 const TextArea = forwardRef<
   HTMLTextAreaElement,

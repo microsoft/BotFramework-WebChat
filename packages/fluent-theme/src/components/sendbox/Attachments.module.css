@@ -1,0 +1,7 @@
+.webchat-fluent__sendbox__attachment {
+  border: 1px solid var(--webchat-colorNeutralStroke1);
+  border-radius: var(--webchat-borderRadiusLarge);
+  cursor: default;
+  padding: 6px 8px;
+  width: fit-content
+}
