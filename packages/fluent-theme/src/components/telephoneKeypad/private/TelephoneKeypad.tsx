@@ -1,44 +1,13 @@
 import React, { KeyboardEventHandler, memo, useCallback, useEffect, useRef, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import { useStyles } from '../../../styles';
 import Button from './Button';
 // import HorizontalDialPadController from './HorizontalDialPadController';
 import testIds from '../../../testIds';
 import { type DTMF } from '../types';
 import useShown from '../useShown';
-
-const styles = {
-  'webchat__telephone-keypad': {
-    /* Commented out whitelabel styles for now. */
-    // background: getHighContrastDarkThemeColor(highContrastColor: black, darkThemeColor: gray190, string, defaultColor: gray10),
-    // borderRadius: '8px 8px 0px 0px',
-    // boxShadow: '-3px 0px 7px 0px rgba(0, 0, 0, 0.13), -0.6px 0px 1.8px 0px rgba(0, 0, 0, 0.10)',
-
-    alignItems: 'center',
-    background: 'var(--webchat-colorNeutralBackground1)',
-    // border: isHighContrastTheme() ? `1px solid ${white}` : 'none',
-    border: 'none',
-    borderRadius: 'var(--webchat-borderRadiusXLarge)',
-    // boxShadow: 'var(--shadow16)',
-    display: 'flex',
-    flexDirection: 'column',
-    fontFamily: 'var(--webchat-fontFamilyBase)',
-    justifyContent: 'center'
-    // margin: 'var(--spacingHorizontalMNudge)'
-  },
-
-  'webchat__telephone-keypad__box': {
-    boxSizing: 'border-box',
-    display: 'grid',
-    gap: '16px',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gridTemplateRows: 'repeat(4, 1fr)',
-    justifyItems: 'center',
-    padding: '16px',
-    width: '100%'
-  }
-};
+import styles from './TelephoneKeypad.module.css';
+import { useStyles } from '../../../styles';
 
 type Props = Readonly<{
   autoFocus?: boolean | undefined;
@@ -54,7 +23,7 @@ const Orientation = memo(
       // <HorizontalDialPadController>{children}</HorizontalDialPadController>
       false
     ) : (
-      <div className={classNames['webchat__telephone-keypad__box']}>{children}</div>
+      <div className={classNames['telephone-keypad__box']}>{children}</div>
     );
   }
 );
@@ -95,7 +64,7 @@ const TelephoneKeypad = memo(({ autoFocus, onButtonClick, isHorizontal }: Props)
   }, [autoFocusRef, firstButtonRef]);
 
   return (
-    <div className={classNames['webchat__telephone-keypad']} onKeyDown={handleKeyDown}>
+    <div className={classNames['telephone-keypad']} onKeyDown={handleKeyDown}>
       <Orientation isHorizontal={isHorizontal}>
         <Button
           button="1"

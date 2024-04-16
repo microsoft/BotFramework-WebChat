@@ -1,0 +1,34 @@
+:global(.webchat-fluent) .suggested-action {
+  align-items: center;
+  background: transparent;
+  border-radius: 8px;
+  border: 1px solid var(--webchat-colorBrandStroke2);
+  cursor: pointer;
+  display: flex;
+  font-size: 12px;
+  gap: 4px;
+  padding: 4px 8px 4px;
+  text-align: start;
+  transition: all .15s ease-out;
+
+  @media (hover: hover) {
+    &:not([aria-disabled="true"]):hover {
+      background-color: var(--webchat-colorBrandBackground2Hover);
+      color: var(--webchat-colorBrandForeground2Hover)
+    }
+  }
+  &:not([aria-disabled="true"]):active {
+    background-color: var(--webchat-colorBrandBackground2Pressed);
+    color: var(--webchat-colorBrandForeground2Pressed)
+  }
+  &[aria-disabled="true"] {
+    color: var(--webchat-colorNeutralForegroundDisabled);
+    cursor: not-allowed
+  }
+}
+
+:global(.webchat-fluent) .suggested-action__image {
+  font-size: 12px;
+  height: 1em;
+  width: 1em;
+}

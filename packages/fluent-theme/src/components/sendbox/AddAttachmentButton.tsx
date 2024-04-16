@@ -1,25 +1,13 @@
-import { hooks } from 'botframework-webchat-api';
+import { hooks } from 'botframework-webchat-component';
 import React, { useCallback, useRef, type ChangeEventHandler, memo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { AttachmentIcon } from '../../icons/AttachmentIcon';
-import { useStyles } from '../../styles';
 import testIds from '../../testIds';
 import { ToolbarButton } from './Toolbar';
+import styles from './AddAttachmentButton.module.css';
+import { useStyles } from '../../styles';
 
 const { useLocalizer, useStyleOptions } = hooks;
-
-const styles = {
-  'webchat-fluent__sendbox__add-attachment': {
-    display: 'grid'
-  },
-
-  'webchat-fluent__sendbox__add-attachment-input': {
-    fontSize: 0,
-    height: 0,
-    opacity: 0,
-    width: 0
-  }
-};
 
 function AddAttachmentButton(
   props: Readonly<{
@@ -49,12 +37,12 @@ function AddAttachmentButton(
   );
 
   return (
-    <div className={classNames['webchat-fluent__sendbox__add-attachment']}>
+    <div className={classNames['sendbox__add-attachment']}>
       <input
         accept={uploadAccept}
         aria-disabled={props.disabled}
         aria-hidden="true"
-        className={classNames['webchat-fluent__sendbox__add-attachment-input']}
+        className={classNames['sendbox__add-attachment-input']}
         multiple={uploadMultiple}
         onInput={props.disabled ? undefined : handleFileChange}
         readOnly={props.disabled}

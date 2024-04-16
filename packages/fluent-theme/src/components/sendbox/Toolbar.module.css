@@ -1,0 +1,49 @@
+:global(.webchat-fluent) .sendbox__toolbar {
+  display: flex;
+  gap: 4px;
+  margin-inline-start: auto;
+}
+
+:global(.webchat-fluent) .sendbox__toolbar-button {
+  align-items: center;
+  appearance: none;
+  aspect-ratio: 1;
+  background: transparent;
+  border-radius: var(--webchat-borderRadiusSmall);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  padding: 3px;
+  width: 32px;
+
+  > svg {
+    font-size: 20px;
+    pointer-events: none;
+  }
+
+  @media (hover: hover) {
+    &:not([aria-disabled="true"]):hover {
+      background-color: var(--webchat-colorSubtleBackgroundHover);
+      color: var(--webchat-colorCompoundBrandForeground1Hover);
+    }
+  }
+  &:not([aria-disabled="true"]):active {
+    background-color: var(--webchat-colorSubtleBackgroundPressed);
+    color: var(--webchat-colorCompoundBrandForeground1Pressed);
+  }
+  &[aria-disabled="true"] {
+    color: var(--webchat-colorNeutralForegroundDisabled);
+    cursor: not-allowed;
+  }
+}
+
+:global(.webchat-fluent) .sendbox__toolbar-separator {
+  align-self: center;
+  border-inline-end: 1px solid var(--webchat-colorNeutralStroke2);
+  height: 28px;
+
+  &:first-child, &:last-child, &:only-child {
+    display: none
+  }
+}

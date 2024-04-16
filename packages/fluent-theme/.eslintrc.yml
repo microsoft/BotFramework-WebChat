@@ -9,3 +9,4 @@ env:
 rules:
   react/destructuring-assignment: off
   react/require-default-props: off
+  dot-notation: off

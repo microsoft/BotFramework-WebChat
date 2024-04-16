@@ -2,6 +2,7 @@ import { hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, { MouseEventHandler, memo, useCallback, useRef } from 'react';
+import styles from './SuggestedAction.module.css';
 import { useStyles } from '../../styles';
 import AccessibleButton from './AccessibleButton';
 
@@ -28,43 +29,6 @@ type SuggestedActionProps = Readonly<{
     | 'signin';
   value?: any;
 }>;
-
-const styles = {
-  'webchat-fluent__suggested-action': {
-    alignItems: 'center',
-    background: 'transparent',
-    border: '1px solid var(--webchat-colorBrandStroke2)',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    display: 'flex',
-    fontSize: '12px',
-    gap: '4px',
-    padding: '4px 8px 4px',
-    textAlign: 'start',
-    transition: 'all .15s ease-out',
-
-    '@media (hover: hover)': {
-      '&:not([aria-disabled="true"]):hover': {
-        backgroundColor: 'var(--webchat-colorBrandBackground2Hover)',
-        color: 'var(--webchat-colorBrandForeground2Hover)'
-      }
-    },
-
-    '&:not([aria-disabled="true"]):active': {
-      backgroundColor: 'var(--webchat-colorBrandBackground2Pressed)',
-      color: 'var(--webchat-colorBrandForeground2Pressed)'
-    },
-
-    '&[aria-disabled="true"]': {
-      color: 'var(--webchat-colorNeutralForegroundDisabled)',
-      cursor: 'not-allowed'
-    }
-  },
-
-  'webchat-fluent__suggested-action__image': {
-    height: '12px'
-  }
-};
 
 function SuggestedAction({
   buttonText,
@@ -108,17 +72,13 @@ function SuggestedAction({
 
   return (
     <AccessibleButton
-      className={cx(
-        classNames['webchat-fluent__suggested-action'],
-        suggestedActionStyleSet + '',
-        (className || '') + ''
-      )}
+      className={cx(classNames['suggested-action'], suggestedActionStyleSet + '', (className || '') + '')}
       disabled={disabled}
       onClick={handleClick}
       ref={focusRef}
       type="button"
     >
-      {image && <img alt={imageAlt} className={classNames['webchat-fluent__suggested-action__image']} src={image} />}
+      {image && <img alt={imageAlt} className={classNames['suggested-action__image']} src={image} />}
       <span>{buttonText}</span>
     </AccessibleButton>
   );

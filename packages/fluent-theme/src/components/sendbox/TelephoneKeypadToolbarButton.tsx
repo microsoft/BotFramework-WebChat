@@ -1,6 +1,6 @@
 import React, { memo, useCallback } from 'react';
 
-import { hooks } from 'botframework-webchat-api';
+import { hooks } from 'botframework-webchat-component';
 import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
 import testIds from '../../testIds';
 import { useTelephoneKeypadShown } from '../TelephoneKeypad';

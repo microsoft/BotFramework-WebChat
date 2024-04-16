@@ -1,6 +1,7 @@
 import { join } from 'path';
 import { defineConfig } from 'tsup';
 import { fileURLToPath } from 'url';
+import { injectedStyles as injectedStylesPlaceholder } from './src/styles/injectStyle';
 
 const target = ['chrome100', 'safari16'];
 
@@ -21,10 +22,27 @@ const umdResolvePlugin = {
   }
 };
 
+const injectCSSPlugin = {
+  name: 'inject-css-plugin',
+  setup(build) {
+    build.onEnd(result => {
+      const js = result.outputFiles.find(f => f.path.match(/(\.js|\.mjs)$/u));
+      const css = result.outputFiles.find(f => f.path.match(/(\.css)$/u));
+      if (css && js?.text.includes(injectedStylesPlaceholder)) {
+        js.contents = Buffer.from(js.text.replace(`"${injectedStylesPlaceholder}"`, JSON.stringify(css.text)));
+      }
+    });
+  }
+};
+
 export default defineConfig([
   {
     dts: true,
     entry: ['./src/index.ts'],
+    loader: {
+      '.css': 'local-css'
+    },
+    esbuildPlugins: [injectCSSPlugin],
     esbuildOptions(options) {
       options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
     },
@@ -36,11 +54,14 @@ export default defineConfig([
     entry: {
       'botframework-webchat-fluent-theme.development': './src/bundle.ts'
     },
+    loader: {
+      '.css': 'local-css'
+    },
     esbuildOptions(options) {
       options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
       options.define['process.env.NODE_ENV'] = '"development"';
     },
-    esbuildPlugins: [umdResolvePlugin],
+    esbuildPlugins: [injectCSSPlugin, umdResolvePlugin],
     format: 'iife',
     outExtension() {
       return {
@@ -54,11 +75,14 @@ export default defineConfig([
     entry: {
       'botframework-webchat-fluent-theme.production.min': './src/bundle.ts'
     },
+    loader: {
+      '.css': 'local-css'
+    },
     esbuildOptions(options) {
       options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
       options.define['process.env.NODE_ENV'] = '"production"';
     },
-    esbuildPlugins: [umdResolvePlugin],
+    esbuildPlugins: [injectCSSPlugin, umdResolvePlugin],
     format: 'iife',
     minify: true,
     outExtension() {
