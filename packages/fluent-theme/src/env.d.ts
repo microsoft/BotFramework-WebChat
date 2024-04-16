@@ -1,5 +1,5 @@
 // CSS modules
-type CSSModuleClasses<Key = string> = { readonly [key: Key]: string };
+type CSSModuleClasses = { readonly [key: string]: any };
 
 declare module '*.module.css' {
   const classes: CSSModuleClasses;

@@ -42,7 +42,7 @@ ToolbarButton.displayName = 'ToolbarButton';
 export const Toolbar = memo((props: Readonly<{ children?: ReactNode | undefined; className?: string | undefined }>) => {
   const classNames = useStyles(styles);
 
-  return <div className={cx(classNames.sendbox__toolbar, props.className)}>{props.children}</div>;
+  return <div className={cx(classNames['sendbox__toolbar'], props.className)}>{props.children}</div>;
 });
 
 Toolbar.displayName = 'Toolbar';

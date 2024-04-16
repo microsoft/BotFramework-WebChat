@@ -116,9 +116,9 @@ function SendBox(
   };
 
   return (
-    <form {...aria} className={cx(classNames.sendbox, props.className)} onSubmit={handleFormSubmit}>
+    <form {...aria} className={cx(classNames['sendbox'], props.className)} onSubmit={handleFormSubmit}>
       <SuggestedActions />
-      <div className={cx(classNames.sendbox__sendbox)} onClickCapture={handleSendBoxClick}>
+      <div className={cx(classNames['sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
         <TelephoneKeypadSurrogate
           autoFocus={true}
           isHorizontal={false}
