@@ -29,8 +29,7 @@ const injectCSSPlugin = {
       const js = result.outputFiles.find(f => f.path.match(/(\.js|\.mjs)$/u));
       const css = result.outputFiles.find(f => f.path.match(/(\.css)$/u));
       if (js && css && js.text.includes(injectedStylesPlaceholder)) {
-        const cssText = css.text;
-        js.contents = Buffer.from(js.text.replace(`"${injectedStylesPlaceholder}"`, JSON.stringify(cssText)));
+        js.contents = Buffer.from(js.text.replace(`"${injectedStylesPlaceholder}"`, JSON.stringify(css.text)));
       }
     });
   }
