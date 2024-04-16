@@ -5,7 +5,12 @@ function useStyles<T extends CSSModuleClasses>(styles: T): T {
   return useMemo(
     () =>
       Object.freeze(
-        Object.fromEntries(Object.entries(styles).map(([baseCls, resultCls]) => [baseCls, `${baseCls} ${resultCls}`]))
+        Object.fromEntries(
+          Object.entries(styles).map(([baseClassName, resultClassName]) => [
+            baseClassName,
+            `${baseClassName} ${resultClassName}`
+          ])
+        )
       ),
     [styles]
   );
