@@ -4,10 +4,8 @@
   cursor: copy;
   display: grid;
   gap: 8px;
-  inset: 0;
   place-content: center;
   place-items: center;
-  position: absolute;
 }
 
 :global(.webchat-fluent) .sendbox__attachment-drop-zone--droppable {

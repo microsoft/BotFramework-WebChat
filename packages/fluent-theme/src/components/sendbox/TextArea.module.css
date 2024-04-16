@@ -5,12 +5,6 @@
   overflow: hidden;
 }
 
-:global(.webchat-fluent) .sendbox__text-area--hidden {
-  /* TODO: Not perfect way of hiding the text box. */
-  height: 0;
-  visibility: collapse;
-}
-
 :global(.webchat-fluent) .sendbox__text-area-shared {
   border: none;
   font: inherit;

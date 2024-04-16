@@ -1,4 +1,5 @@
 import React, { KeyboardEventHandler, memo, useCallback, useEffect, useRef, type ReactNode } from 'react';
+import cx from 'classnames';
 import { useRefFrom } from 'use-ref-from';
 
 import Button from './Button';
@@ -11,6 +12,7 @@ import { useStyles } from '../../../styles';
 
 type Props = Readonly<{
   autoFocus?: boolean | undefined;
+  className?: string | undefined;
   isHorizontal: boolean;
   onButtonClick: (button: DTMF) => void;
 }>;
@@ -30,7 +32,7 @@ const Orientation = memo(
 
 Orientation.displayName = 'TelephoneKeypad:Orientation';
 
-const TelephoneKeypad = memo(({ autoFocus, onButtonClick, isHorizontal }: Props) => {
+const TelephoneKeypad = memo(({ autoFocus, className, onButtonClick, isHorizontal }: Props) => {
   const autoFocusRef = useRefFrom(autoFocus);
   const classNames = useStyles(styles);
   const firstButtonRef = useRef<HTMLButtonElement>(null);
@@ -64,7 +66,7 @@ const TelephoneKeypad = memo(({ autoFocus, onButtonClick, isHorizontal }: Props)
   }, [autoFocusRef, firstButtonRef]);
 
   return (
-    <div className={classNames['telephone-keypad']} onKeyDown={handleKeyDown}>
+    <div className={cx(classNames['telephone-keypad'], className)} onKeyDown={handleKeyDown}>
       <Orientation isHorizontal={isHorizontal}>
         <Button
           button="1"

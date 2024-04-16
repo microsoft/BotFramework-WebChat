@@ -3,6 +3,11 @@
   font-family: var(--webchat-fontFamilyBase);
   padding: 0 10px 10px;
   text-rendering: optimizeLegibility;
+
+  --webchat-sendbox-column-gap: 6px;
+  --webchat-sendbox-row-gap: 6px;
+  --webchat-sendbox-spacing-block: 8px;
+  --webchat-sendbox-spacing-inline: 8px;
 }
 
 :global(.webchat-fluent) .sendbox__sendbox {
@@ -10,11 +15,15 @@
   border-radius: var(--webchat-borderRadiusLarge);
   border: 1px solid var(--webchat-colorNeutralStroke1);
   display: grid;
+  column-gap: var(--webchat-sendbox-column-gap);
+  grid-template: 
+    [drop-zone-start telephone-keypad-start] "text-area"
+    "attachment" [telephone-keypad-end] 
+    "controls" [drop-zone-end] / [drop-zone telephone-keypad text-area attachment controls] 1fr
+  ;
   font-family: var(--webchat-fontFamilyBase);
   font-size: 14px;
-  gap: 6px;
   line-height: 20px;
-  padding: 8px;
   position: relative;
 
   &:focus-within {
@@ -24,6 +33,30 @@
       - Fluent is using colorCompoundBrandStroke
       - we are using colorCompoundBrandForeground1Hover */
     box-shadow: inset 0 -6px 0 -3px var(--webchat-colorCompoundBrandForeground1Hover);
+  }
+
+  > .sendbox__text-area--in-grid {
+    grid-area: text-area;
+    margin: var(--webchat-sendbox-spacing-block) var(--webchat-sendbox-spacing-inline) var(--webchat-sendbox-row-gap);
+  }
+
+  > .sendbox__attachment--in-grid {
+    grid-area: attachment;
+    margin: 0 var(--webchat-sendbox-spacing-inline) var(--webchat-sendbox-row-gap);
+  }
+
+  > .sendbox__sendbox-controls--in-grid {
+    grid-area: controls;
+    margin: 0 var(--webchat-sendbox-spacing-inline) var(--webchat-sendbox-spacing-block);
+  }
+
+  > .sendbox__telephone-keypad--in-grid {
+    grid-area: telephone-keypad;
+    margin: var(--webchat-sendbox-spacing-block) var(--webchat-sendbox-spacing-inline) var(--webchat-sendbox-row-gap);
+  }
+
+  > .sendbox__attachment-drop-zone--in-grid {
+    grid-area: drop-zone;
   }
 }
 
@@ -51,6 +84,7 @@
   font-family: var(--webchat-fontFamilyNumeric);
   font-size: 10px;
   line-height: 14px;
+  margin-inline-end: 4px;
 }
 
 :global(.webchat-fluent) .sendbox__text-counter--error {
