@@ -1,3 +1,4 @@
+import type { WebChatActivity } from 'botframework-webchat-core';
 import { useMemo, useState } from 'react';
 import useActivityUpsertCallback from '../../providers/ActivityListener/useActivityUpsertCallback';
 import usePonyfill from '../usePonyfill';
@@ -5,6 +6,7 @@ import usePonyfill from '../usePonyfill';
 type Typing = {
   at: number;
   last: number;
+  lastActivity: Readonly<WebChatActivity>;
   name: string;
   role: string;
 };
@@ -15,26 +17,29 @@ export default function useAllTyping(): readonly [ReadonlyMap<string, Typing>] {
 
   useActivityUpsertCallback(activities => {
     const now = Date.now();
-    let nextTyping = typing;
+    const nextTyping = new Map(typing);
+    let changed = false;
 
-    for (const {
-      from,
-      from: { id }
-    } of activities.filter(({ type }) => type === 'typing')) {
+    for (const activity of activities.filter(({ type }) => type === 'typing')) {
+      const {
+        from,
+        from: { id }
+      } = activity;
+
       const currentTyping = nextTyping.get(id);
 
-      nextTyping = {
-        ...nextTyping,
-        [id]: {
-          at: currentTyping?.at || now,
-          last: now,
-          name: from.name,
-          role: from.role
-        }
-      };
+      changed = true;
+
+      nextTyping.set(id, {
+        at: currentTyping?.at || now,
+        last: now,
+        lastActivity: activity,
+        name: from.name,
+        role: from.role
+      });
     }
 
-    nextTyping === typing || setTyping(nextTyping);
+    changed && setTyping(nextTyping);
   });
 
   return useMemo(() => Object.freeze([typing]), [typing]);
