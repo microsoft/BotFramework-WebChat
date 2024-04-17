@@ -160,7 +160,7 @@ function SendBox(
             </ToolbarButton>
           </Toolbar>
         </div>
-        <DropZone className={classNames['sendbox__attachment-drop-zone--in-grid']} onFilesAdded={handleAddFiles} />
+        <DropZone onFilesAdded={handleAddFiles} />
         <ErrorMessage error={errorMessage} id={errorMessageId} />
       </div>
     </form>
