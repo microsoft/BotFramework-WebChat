@@ -5,10 +5,6 @@
   text-rendering: optimizeLegibility;
 
   --webchat-sendbox-attachment-area-active: ;
-  --webchat-sendbox-column-gap: 6px;
-  --webchat-sendbox-row-gap: 6px;
-  --webchat-sendbox-spacing-block: 8px;
-  --webchat-sendbox-spacing-inline: 8px;
 }
 
 :global(.webchat-fluent) .sendbox__sendbox {
@@ -16,16 +12,16 @@
   border-radius: var(--webchat-borderRadiusLarge);
   border: 1px solid var(--webchat-colorNeutralStroke1);
   display: grid;
-  gap:  var(--webchat-sendbox-row-gap) var(--webchat-sendbox-column-gap);
-  grid-template: 
+  gap: 6px;
+  grid-template:
     [telephone-keypad-start] 'text-area'
-    var(--webchat-sendbox-attachment-area-active) [telephone-keypad-end] 
+    var(--webchat-sendbox-attachment-area-active) [telephone-keypad-end]
     'controls' / [telephone-keypad] 1fr
   ;
   font-family: var(--webchat-fontFamilyBase);
   font-size: 14px;
   line-height: 20px;
-  padding: var(--webchat-sendbox-spacing-block) var(--webchat-sendbox-spacing-inline);
+  padding: 8px;
   position: relative;
 
   &:has(.sendbox__attachment--in-grid) {
