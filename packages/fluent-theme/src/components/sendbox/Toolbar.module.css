@@ -11,6 +11,7 @@
   background: transparent;
   border-radius: var(--webchat-borderRadiusSmall);
   border: none;
+  color: currentColor;
   cursor: pointer;
   display: flex;
   justify-content: center;

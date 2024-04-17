@@ -3,6 +3,7 @@
   background: transparent;
   border-radius: 8px;
   border: 1px solid var(--webchat-colorBrandStroke2);
+  color: currentColor;
   cursor: pointer;
   display: flex;
   font-size: 12px;
