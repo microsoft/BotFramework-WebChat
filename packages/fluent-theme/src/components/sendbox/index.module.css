@@ -4,6 +4,7 @@
   padding: 0 10px 10px;
   text-rendering: optimizeLegibility;
 
+  --webchat-sendbox-attachment-area-active: ;
   --webchat-sendbox-column-gap: 6px;
   --webchat-sendbox-row-gap: 6px;
   --webchat-sendbox-spacing-block: 8px;
@@ -15,16 +16,21 @@
   border-radius: var(--webchat-borderRadiusLarge);
   border: 1px solid var(--webchat-colorNeutralStroke1);
   display: grid;
-  column-gap: var(--webchat-sendbox-column-gap);
+  gap:  var(--webchat-sendbox-row-gap) var(--webchat-sendbox-column-gap);
   grid-template: 
-    [drop-zone-start telephone-keypad-start] "text-area"
-    "attachment" [telephone-keypad-end] 
-    "controls" [drop-zone-end] / [drop-zone telephone-keypad text-area attachment controls] 1fr
+    [telephone-keypad-start] 'text-area'
+    var(--webchat-sendbox-attachment-area-active) [telephone-keypad-end] 
+    'controls' / [telephone-keypad] 1fr
   ;
   font-family: var(--webchat-fontFamilyBase);
   font-size: 14px;
   line-height: 20px;
+  padding: var(--webchat-sendbox-spacing-block) var(--webchat-sendbox-spacing-inline);
   position: relative;
+
+  &:has(.sendbox__attachment--in-grid) {
+    --webchat-sendbox-attachment-area-active: 'attachment'
+  }
 
   &:focus-within {
     border-color: var(--webchat-colorNeutralStroke1Selected);
@@ -37,26 +43,18 @@
 
   > .sendbox__text-area--in-grid {
     grid-area: text-area;
-    margin: var(--webchat-sendbox-spacing-block) var(--webchat-sendbox-spacing-inline) var(--webchat-sendbox-row-gap);
   }
 
   > .sendbox__attachment--in-grid {
     grid-area: attachment;
-    margin: 0 var(--webchat-sendbox-spacing-inline) var(--webchat-sendbox-row-gap);
   }
 
   > .sendbox__sendbox-controls--in-grid {
     grid-area: controls;
-    margin: 0 var(--webchat-sendbox-spacing-inline) var(--webchat-sendbox-spacing-block);
   }
 
   > .sendbox__telephone-keypad--in-grid {
     grid-area: telephone-keypad;
-    margin: var(--webchat-sendbox-spacing-block) var(--webchat-sendbox-spacing-inline) var(--webchat-sendbox-row-gap);
-  }
-
-  > .sendbox__attachment-drop-zone--in-grid {
-    grid-area: drop-zone;
   }
 }
 

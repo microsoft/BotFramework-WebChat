@@ -36,10 +36,7 @@ function isDescendantOf(target: Node, ancestor: Node): boolean {
   return false;
 }
 
-const DropZone = (props: {
-  readonly className?: string | undefined;
-  readonly onFilesAdded: (files: File[]) => void;
-}) => {
+const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => {
   const [dropZoneState, setDropZoneState] = useState<false | 'visible' | 'droppable'>(false);
   const classNames = useStyles(styles);
   const dropZoneRef = useRef<HTMLDivElement>(null);
@@ -91,7 +88,7 @@ const DropZone = (props: {
 
   return dropZoneState ? (
     <div
-      className={cx(classNames['sendbox__attachment-drop-zone'], props.className, {
+      className={cx(classNames['sendbox__attachment-drop-zone'], {
         [classNames['sendbox__attachment-drop-zone--droppable']]: dropZoneState === 'droppable'
       })}
       data-testid={testIds.sendBoxDropZone}
