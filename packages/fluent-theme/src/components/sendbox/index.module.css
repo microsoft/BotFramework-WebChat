@@ -12,14 +12,14 @@
   border-radius: var(--webchat-borderRadiusLarge);
   border: 1px solid var(--webchat-colorNeutralStroke1);
   display: grid;
+  font-family: var(--webchat-fontFamilyBase);
+  font-size: 14px;
   gap: 6px;
   grid-template:
     [telephone-keypad-start] 'text-area'
     var(--webchat-sendbox-attachment-area-active) [telephone-keypad-end]
     'controls' / [telephone-keypad] 1fr
   ;
-  font-family: var(--webchat-fontFamilyBase);
-  font-size: 14px;
   line-height: 20px;
   padding: 8px;
   position: relative;
