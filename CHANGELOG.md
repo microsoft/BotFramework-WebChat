@@ -35,7 +35,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  `useSendBoxAttachments` hook is added to get/set attachments in the send box
 -  Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb), in PR [#5048](https://github.com/microsoft/BotFramework-WebChat/pull/5048)
 -  Added `sendBoxMiddleware` and `sendBoxToolbarMiddleware`, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
--  (Experimental) Added `botframework-webchat-fluent-theme` package for applying Fluent UI theme to Web Chat, by [@compulim](https://github.com/compulim) and [@OEvgeny](https://github.com/OEvgeny), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
+-  (Experimental) Added `botframework-webchat-fluent-theme` package for applying Fluent UI theme to Web Chat, by [@compulim](https://github.com/compulim) and [@OEvgeny](https://github.com/OEvgeny)
+   -  Initial commit, in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
    -  Inherits Fluent CSS palette if available, in PR [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
    -  New send box with Fluent look-and-feel, in PR [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
       -  `styleOptions.maxMessageLength` to specify maximum length of the outgoing message
