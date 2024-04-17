@@ -19,11 +19,24 @@ function useActiveTyping(expireAfter?: number): [{ [userId: string]: Typing }] {
   }
 
   const activeTyping: { [userId: string]: Typing } = [...typing.entries()].reduce(
-    (activeTyping, [id, { at, last, name, role }]) => {
-      const until = last + expireAfter;
+    (
+      activeTyping,
+      [id, { firstTypingActivity, firstAppearAt, lastTypingActivity, lastAppearAt, name, role }]
+    ): Record<string, Typing> => {
+      const until = lastAppearAt + expireAfter;
 
       if (until > now) {
-        return { ...activeTyping, [id]: { at, expireAt: until, name, role } };
+        return {
+          ...activeTyping,
+          [id]: {
+            at: firstAppearAt,
+            firstTypingActivity,
+            expireAt: until,
+            lastTypingActivity,
+            name,
+            role
+          }
+        };
       }
 
       return activeTyping;
