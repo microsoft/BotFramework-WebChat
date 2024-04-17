@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Added `styleOptions.hideTelephoneKeypadButton` and default to `true`, in PR [#5132](https://github.com/microsoft/BotFramework-WebChat/pull/5132)
    -  Fit-and-finish on suggested actions and telephone keypad, in PR [#5132](https://github.com/microsoft/BotFramework-WebChat/pull/5132)
    -  Fixed to keep telephone keypad on-screen on click, in PR [#5132](https://github.com/microsoft/BotFramework-WebChat/pull/5132)
+   -  Disable send button and hide message length when telephone keypad is shown, in PR [#5136](https://github.com/microsoft/BotFramework-WebChat/pull/5136)
 -  Added `<ThemeProvider>` component to apply theme pack to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
 -  Added `useMakeThumbnail` hook option to create a thumbnail from the file given, by [@compulim](https://github.com/compulim), in PR [#5123](https://github.com/microsoft/BotFramework-WebChat/pull/5123) and [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
 
