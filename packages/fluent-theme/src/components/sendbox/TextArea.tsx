@@ -40,7 +40,16 @@ const TextArea = forwardRef<
   }, []);
 
   return (
-    <div className={cx(classNames['sendbox__text-area'], props.className)} role={props.hidden ? 'hidden' : undefined}>
+    <div
+      className={cx(
+        classNames['sendbox__text-area'],
+        {
+          [classNames['sendbox__text-area--hidden']]: props.hidden
+        },
+        props.className
+      )}
+      role={props.hidden ? 'hidden' : undefined}
+    >
       <div
         className={cx(
           classNames['sendbox__text-area-doppelganger'],
