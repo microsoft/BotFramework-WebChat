@@ -3,6 +3,8 @@
   font-family: var(--webchat-fontFamilyBase);
   padding: 0 10px 10px;
   text-rendering: optimizeLegibility;
+
+  --webchat-sendbox-attachment-area-active: ;
 }
 
 :global(.webchat-fluent) .sendbox__sendbox {
@@ -13,9 +15,18 @@
   font-family: var(--webchat-fontFamilyBase);
   font-size: 14px;
   gap: 6px;
+  grid-template:
+    [telephone-keypad-start] 'text-area'
+    var(--webchat-sendbox-attachment-area-active) [telephone-keypad-end]
+    'controls' / [telephone-keypad] 1fr
+  ;
   line-height: 20px;
   padding: 8px;
   position: relative;
+
+  &:has(.sendbox__attachment--in-grid) {
+    --webchat-sendbox-attachment-area-active: 'attachment'
+  }
 
   &:focus-within {
     border-color: var(--webchat-colorNeutralStroke1Selected);
@@ -24,6 +35,22 @@
       - Fluent is using colorCompoundBrandStroke
       - we are using colorCompoundBrandForeground1Hover */
     box-shadow: inset 0 -6px 0 -3px var(--webchat-colorCompoundBrandForeground1Hover);
+  }
+
+  > .sendbox__text-area--in-grid {
+    grid-area: text-area;
+  }
+
+  > .sendbox__attachment--in-grid {
+    grid-area: attachment;
+  }
+
+  > .sendbox__sendbox-controls--in-grid {
+    grid-area: controls;
+  }
+
+  > .sendbox__telephone-keypad--in-grid {
+    grid-area: telephone-keypad;
   }
 }
 
@@ -51,6 +78,7 @@
   font-family: var(--webchat-fontFamilyNumeric);
   font-size: 10px;
   line-height: 14px;
+  margin-inline-end: 4px;
 }
 
 :global(.webchat-fluent) .sendbox__text-counter--error {

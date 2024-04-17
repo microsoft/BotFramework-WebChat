@@ -119,14 +119,9 @@ function SendBox(
     <form {...aria} className={cx(classNames['sendbox'], props.className)} onSubmit={handleFormSubmit}>
       <SuggestedActions />
       <div className={cx(classNames['sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
-        <TelephoneKeypadSurrogate
-          autoFocus={true}
-          isHorizontal={false}
-          onButtonClick={handleTelephoneKeypadButtonClick}
-        />
         <TextArea
           aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
-          className={classNames['sendbox__sendbox-text']}
+          className={cx(classNames['sendbox__sendbox-text'], classNames['sendbox__text-area--in-grid'])}
           data-testid={testIds.sendBoxTextBox}
           hidden={telephoneKeypadShown}
           onInput={handleMessageChange}
@@ -134,9 +129,15 @@ function SendBox(
           ref={inputRef}
           value={message}
         />
-        <Attachments attachments={attachments} />
-        <div className={cx(classNames['sendbox__sendbox-controls'])}>
-          {maxMessageLength && (
+        <TelephoneKeypadSurrogate
+          autoFocus={true}
+          className={classNames['sendbox__telephone-keypad--in-grid']}
+          isHorizontal={false}
+          onButtonClick={handleTelephoneKeypadButtonClick}
+        />
+        <Attachments attachments={attachments} className={classNames['sendbox__attachment--in-grid']} />
+        <div className={cx(classNames['sendbox__sendbox-controls'], classNames['sendbox__sendbox-controls--in-grid'])}>
+          {!telephoneKeypadShown && maxMessageLength && (
             <div
               className={cx(classNames['sendbox__text-counter'], {
                 [classNames['sendbox__text-counter--error']]: isMessageLengthExceeded
@@ -152,7 +153,7 @@ function SendBox(
             <ToolbarButton
               aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
               data-testid={testIds.sendBoxSendButton}
-              disabled={isMessageLengthExceeded}
+              disabled={isMessageLengthExceeded || telephoneKeypadShown}
               type="submit"
             >
               <SendIcon />

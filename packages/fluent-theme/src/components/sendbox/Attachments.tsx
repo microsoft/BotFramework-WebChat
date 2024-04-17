@@ -1,5 +1,6 @@
 import { hooks } from 'botframework-webchat-component';
 import React, { memo } from 'react';
+import cx from 'classnames';
 import styles from './Attachments.module.css';
 import { useStyles } from '../../styles';
 
@@ -14,15 +15,17 @@ const attachmentsPluralStringIds = {
 };
 
 function Attachments({
-  attachments
+  attachments,
+  className
 }: Readonly<{
   readonly attachments: readonly Readonly<{ blob: Blob | File; thumbnailURL?: URL | undefined }>[];
+  readonly className?: string | undefined;
 }>) {
   const classNames = useStyles(styles);
   const localizeWithPlural = useLocalizer({ plural: true });
 
   return attachments.length ? (
-    <div className={classNames['sendbox__attachment']}>
+    <div className={cx(classNames['sendbox__attachment'], className)}>
       {localizeWithPlural(attachmentsPluralStringIds, attachments.length)}
     </div>
   ) : null;
