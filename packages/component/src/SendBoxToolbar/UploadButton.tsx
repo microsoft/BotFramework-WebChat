@@ -7,7 +7,7 @@ import { useRefFrom } from 'use-ref-from';
 import IconButton from '../SendBox/IconButton';
 import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
 import connectToWebChat from '../connectToWebChat';
-import useMakeThumbnail from '../hooks/internal/useMakeThumbnail';
+import useMakeThumbnail from '../hooks/useMakeThumbnail';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';

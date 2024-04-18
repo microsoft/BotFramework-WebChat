@@ -256,6 +256,14 @@ type StyleOptions = {
 
   hideSendBox?: boolean;
   hideUploadButton?: boolean;
+
+  /**
+   * (EXPERIMENTAL) `true`, if the telephone keypad button should be shown, otherwise, `false`. Defaults to `true`.
+   *
+   * @deprecated This is an experimental style options and should not be used without understanding its risk.
+   */
+  hideTelephoneKeypadButton?: boolean | undefined;
+
   microphoneButtonColorOnDictate?: string;
   sendBoxBackground?: string;
 
@@ -823,6 +831,13 @@ type StyleOptions = {
    */
 
   videoHeight?: number | string;
+
+  /**
+   * Maximum message length in characters
+   *
+   * @default 2000
+   */
+  maxMessageLength?: number;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

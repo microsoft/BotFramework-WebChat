@@ -1,18 +1,22 @@
+import { Components } from 'botframework-webchat-component';
 import React, { memo, type ReactNode } from 'react';
 
-import ThemeProvider from '../external/ThemeProvider';
-import SendBox from './SendBox';
+import { TelephoneKeypadProvider } from '../components/TelephoneKeypad';
+import WebChatTheme from '../components/Theme';
+import SendBox from '../components/SendBox';
+
+const { ThemeProvider } = Components;
 
 type Props = Readonly<{ children?: ReactNode | undefined }>;
-
-const STYLE_OPTIONS = { bubbleBackground: '#fee' };
 
 const sendBoxMiddleware = [() => () => () => SendBox];
 
 const FluentThemeProvider = ({ children }: Props) => (
-  <ThemeProvider sendBoxMiddleware={sendBoxMiddleware} styleOptions={STYLE_OPTIONS}>
-    {children}
-  </ThemeProvider>
+  <WebChatTheme>
+    <TelephoneKeypadProvider>
+      <ThemeProvider sendBoxMiddleware={sendBoxMiddleware}>{children}</ThemeProvider>
+    </TelephoneKeypadProvider>
+  </WebChatTheme>
 );
 
 export default memo(FluentThemeProvider);

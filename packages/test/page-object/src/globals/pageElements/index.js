@@ -3,6 +3,7 @@ import activities from './activities';
 import activityActiveDescendantLabels from './activityActiveDescendantLabels';
 import activityContents from './activityContents';
 import activityStatuses from './activityStatuses';
+import byTestId from './byTestId';
 import connectivityStatus from './connectivityStatus';
 import focusedActivity from './focusedActivity';
 import keyboardHelpScreenCloseButton from './keyboardHelpScreenCloseButton';
@@ -27,6 +28,7 @@ export {
   activityActiveDescendantLabels,
   activityContents,
   activityStatuses,
+  byTestId,
   connectivityStatus,
   focusedActivity,
   keyboardHelpScreenCloseButton,

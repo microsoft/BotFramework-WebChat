@@ -5,3 +5,8 @@ extends:
 # TODO: #3212 When we move to React Native, we should disable this.
 env:
   browser: true
+
+rules:
+  react/destructuring-assignment: off
+  react/require-default-props: off
+  dot-notation: off

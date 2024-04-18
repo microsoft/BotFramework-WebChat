@@ -5,7 +5,8 @@
     "jsx": "react",
     "moduleResolution": "Bundler",
     "skipLibCheck": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
   "extends": "@tsconfig/strictest/tsconfig.json"
 }
