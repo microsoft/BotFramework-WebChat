@@ -28,8 +28,10 @@
 }
 
 :global(.webchat-fluent) .sendbox__text-area-input {
+  background-color: inherit;
+  color: currentColor;
   height: 100%;
-  padding: 0
+  padding: 0;
 }
 
 :global(.webchat-fluent) .sendbox__text-area-input--scroll {
