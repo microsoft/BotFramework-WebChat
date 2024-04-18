@@ -14,6 +14,7 @@ export const ToolbarButton = memo(
       'data-testid'?: string | undefined;
       disabled?: boolean | undefined;
       onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
+      selected?: boolean | undefined;
       type?: 'button' | 'submit' | undefined;
     }>
   ) => {
@@ -22,7 +23,9 @@ export const ToolbarButton = memo(
     return (
       <button
         aria-label={props['aria-label']}
-        className={cx(classNames['sendbox__toolbar-button'], props.className)}
+        className={cx(classNames['sendbox__toolbar-button'], props.className, {
+          [classNames['sendbox__toolbar-button--selected']]: props.selected
+        })}
         data-testid={props['data-testid']}
         onClick={props.disabled ? preventDefaultHandler : props.onClick}
         type={props.type === 'submit' ? 'submit' : 'button'}
