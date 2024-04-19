@@ -10,7 +10,7 @@ import { type DTMF } from '../types';
 import useShown from '../useShown';
 import styles from './TelephoneKeypad.module.css';
 import { useStyles } from '../../../styles';
-import { InfoSmallIcon } from '../../../icons/InfoSmallIcon';
+import InfoSmallIcon from '../../../icons/InfoSmallIcon';
 
 const { LocalizedString } = Components;
 

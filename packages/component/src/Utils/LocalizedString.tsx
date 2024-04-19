@@ -2,7 +2,7 @@
 
 import { onErrorResumeNext } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import MarkdownIt from 'markdown-it';
 import betterLinks, { type BetterLinkEnv, type LinkOptions } from './betterLinks';
 
@@ -96,22 +96,31 @@ type Plural = {
 
 const markdownIt = new MarkdownIt().use(betterLinks);
 
+type PluralProps = Readonly<{
+  pluralStringIds?: Plural | undefined;
+  values?: readonly [number, ...(number | string)[]] | undefined;
+}>;
+
+type SingularProps = Readonly<{
+  stringId?: string;
+  values?: readonly (number | string)[] | undefined;
+}>;
+
 const LocalizedString = ({
   className,
   stringId,
-  stringIds,
-  count,
+  pluralStringIds,
+  values,
   linkClassName,
   onDecorateLink = defaultDecorateLink
 }: Readonly<{
   className?: string | undefined;
-  stringId?: string | undefined;
-  stringIds?: Plural | undefined;
-  count?: number | undefined;
   linkClassName?: string | undefined;
-  onDecorateLink?: (href: string, textContent: string) => LinkOptions | undefined;
-}>) => {
-  const localize = useLocalizer(stringIds && { plural: true });
+  onDecorateLink?: ((href: string, textContent: string) => LinkOptions | undefined) | undefined;
+}> &
+  SingularProps &
+  PluralProps) => {
+  const localize = useLocalizer(pluralStringIds && { plural: true });
   const env = useMemo<BetterLinkEnv>(
     () => ({
       linkOptions: {
@@ -124,12 +133,15 @@ const LocalizedString = ({
 
   const html = useMemo(
     () => ({
-      __html: markdownIt.renderer.render(markdownIt.parseInline(localize(stringId ?? stringIds ?? '', count), env), env)
+      __html: markdownIt.renderer.render(
+        markdownIt.parseInline(localize(stringId ?? pluralStringIds ?? '', ...(values ?? [])), env),
+        env
+      )
     }),
-    [count, env, localize, stringId, stringIds]
+    [values, env, localize, pluralStringIds, stringId]
   );
 
   return <span className={className} dangerouslySetInnerHTML={html} />;
 };
 
-export default LocalizedString;
+export default memo(LocalizedString);
