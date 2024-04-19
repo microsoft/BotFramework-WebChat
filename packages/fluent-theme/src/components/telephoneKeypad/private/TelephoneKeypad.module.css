@@ -28,3 +28,32 @@
   padding: 16px;
   width: 100%;
 }
+
+:global(.webchat-fluent) .telephone-keypad__info-message {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--webchat-colorNeutralForeground4);
+  margin-block-end: 6px;
+}
+
+:global(.webchat-fluent) .telephone-keypad__info-message-link {
+  color: var(--webchat-colorBrandForegroundLink);
+  text-decoration-color: transparent;
+
+  &:target {
+    color: var(--webchat-colorBrandForegroundLinkSelected);
+  }
+  &:hover {
+    color: var(--webchat-colorBrandForegroundLinkHover);
+    text-decoration: underline 1px currentColor;
+  }
+  &:active {
+    color: var(--webchat-colorBrandForegroundLinkPressed);
+  }
+  &:focus-visible {
+    outline: none;
+    text-decoration: underline 1px double var(--webchat-colorStrokeFocus2);
+  }
+}
