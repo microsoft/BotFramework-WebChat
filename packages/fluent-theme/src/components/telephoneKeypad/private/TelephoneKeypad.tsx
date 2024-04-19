@@ -1,6 +1,7 @@
 import React, { KeyboardEventHandler, memo, useCallback, useEffect, useRef, type ReactNode } from 'react';
 import cx from 'classnames';
 import { useRefFrom } from 'use-ref-from';
+import { Components } from 'botframework-webchat-component';
 
 import Button from './Button';
 // import HorizontalDialPadController from './HorizontalDialPadController';
@@ -9,6 +10,9 @@ import { type DTMF } from '../types';
 import useShown from '../useShown';
 import styles from './TelephoneKeypad.module.css';
 import { useStyles } from '../../../styles';
+import InfoSmallIcon from '../../../icons/InfoSmallIcon';
+
+const { LocalizedString } = Components;
 
 type Props = Readonly<{
   autoFocus?: boolean | undefined;
@@ -130,6 +134,13 @@ const TelephoneKeypad = memo(({ autoFocus, className, onButtonClick, isHorizonta
           onClick={handleButtonPoundClick}
         />
       </Orientation>
+      <div className={classNames['telephone-keypad__info-message']}>
+        <InfoSmallIcon />
+        <LocalizedString
+          linkClassName={classNames['telephone-keypad__info-message-link']}
+          stringIds="TELEPHONE_KEYPAD_INPUT_MESSAGE"
+        />
+      </div>
     </div>
   );
 });

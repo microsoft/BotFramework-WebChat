@@ -20,6 +20,8 @@ import SendStatus, { connectSendStatus } from './ActivityStatus/SendStatus/SendS
 import Timestamp from './ActivityStatus/Timestamp';
 import ErrorBox from './ErrorBox';
 
+import LocalizedString from './Utils/LocalizedString';
+
 import AudioContent from './Attachment/AudioContent';
 import FileContent from './Attachment/FileContent';
 import HTMLVideoContent from './Attachment/HTMLVideoContent';
@@ -101,7 +103,10 @@ const Components = {
   connectMicrophoneButton,
   connectSendButton,
   connectSuggestedActions,
-  connectUploadButton
+  connectUploadButton,
+
+  // Components for localization
+  LocalizedString
 };
 
 export default ReactWebChat;
