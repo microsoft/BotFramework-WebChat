@@ -51,7 +51,6 @@
         await pageConditions.uiConnected();
 
         // SETUP: Bot sent a message.
-
         await directLine.emulateIncomingActivity({
           id: 'a-00001',
           text: 'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.',
@@ -61,7 +60,6 @@
         let firstActivityKey = currentActivityKeys[0];
 
         // WHEN: Bot typing a message.
-
         const firstTypingActivityId = 't-00001';
 
         await directLine.emulateIncomingActivity({
@@ -73,7 +71,6 @@
         });
 
         // THEN: Should display 2 messages.
-
         await pageConditions.numActivitiesShown(2);
         // await pageConditions.typingIndicatorHidden();
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick\n');
@@ -91,7 +88,6 @@
         // ---
 
         // WHEN: Bot continue typing the message.
-
         let typingActivityKey = currentActivityKeys[1];
 
         await directLine.emulateIncomingActivity({
