@@ -2,21 +2,21 @@ import { hooks } from 'botframework-webchat-api';
 import React, { useMemo } from 'react';
 
 import type { ActivityComponentFactory } from 'botframework-webchat-api';
-import type { FC, PropsWithChildren } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
+import type { FC, PropsWithChildren } from 'react';
 
-import { ActivityWithRenderer, ReadonlyActivityTree } from './private/types';
-import ActivityTreeContext from './private/Context';
-import useActivitiesWithRenderer from './private/useActivitiesWithRenderer';
-import useActivityTreeContext from './private/useContext';
-import useActivityTreeWithRenderer from './private/useActivityTreeWithRenderer';
 import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';
+import ActivityTreeContext from './private/Context';
+import { ActivityWithRenderer, ReadonlyActivityTree } from './private/types';
+import useActivitiesWithRenderer from './private/useActivitiesWithRenderer';
+import useActivityTreeWithRenderer from './private/useActivityTreeWithRenderer';
+import useActivityTreeContext from './private/useContext';
 
 import type { ActivityTreeContextType } from './private/Context';
 
 type ActivityTreeComposerProps = PropsWithChildren<{}>;
 
-const { useActivities, useCreateActivityRenderer } = hooks;
+const { useActiveTyping, useActivities, useCreateActivityRenderer } = hooks;
 
 const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
   const existingContext = useActivityTreeContext(false);
@@ -25,7 +25,24 @@ const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
     throw new Error('botframework-webchat internal: <ActivityTreeComposer> should not be nested.');
   }
 
-  const [activities]: [WebChatActivity[]] = useActivities();
+  const [rawActivities]: [WebChatActivity[]] = useActivities();
+  const [typings] = useActiveTyping();
+  const typingMap = useMemo(() => new Map(Object.entries(typings)), [typings]);
+
+  const activities = useMemo(() => {
+    const activities = [];
+    const lastTypingActivities = [...typingMap.values()].map(({ lastTypingActivity }) => lastTypingActivity);
+
+    for (const activity of rawActivities) {
+      // Display all activities except typing activity without text.
+      if (activity.type !== 'typing' || (activity.text && lastTypingActivities.includes(activity))) {
+        activities.push(activity);
+      }
+    }
+
+    return Object.freeze(activities);
+  }, [rawActivities, typingMap]);
+
   const createActivityRenderer: ActivityComponentFactory = useCreateActivityRenderer();
 
   const activitiesWithRenderer = useActivitiesWithRenderer(activities, createActivityRenderer);
