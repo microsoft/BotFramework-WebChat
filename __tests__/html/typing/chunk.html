@@ -18,17 +18,23 @@
           ReactDOM: { render },
           WebChat: {
             Components: { BasicWebChat, Composer },
-            hooks: { useActivityKeys, useGetActivityByKey },
+            hooks: { useActivityKeys, useGetActivitiesByKey },
             ReactWebChat
           }
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
+        let currentActivityKeys = [];
+        let currentActivityKeysWithId = [];
+
         const Monitor = () => {
           const [activityKeys] = useActivityKeys();
-          const getActivityByKey = useGetActivityByKey();
+          const getActivitiesByKey = useGetActivitiesByKey();
 
-          console.log(activityKeys, { activities: activityKeys.map(getActivityByKey) });
+          currentActivityKeys = Object.freeze([...activityKeys]);
+          currentActivityKeysWithId = Object.freeze(
+            activityKeys.map(key => [key, getActivitiesByKey(key).map(({ id }) => id)])
+          );
 
           return false;
         };
@@ -44,9 +50,17 @@
 
         await pageConditions.uiConnected();
 
-        await directLine.emulateIncomingActivity(
-          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
-        );
+        // SETUP: Bot sent a message.
+
+        await directLine.emulateIncomingActivity({
+          id: 'a-00001',
+          text: 'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.',
+          type: 'message'
+        });
+
+        let firstActivityKey = currentActivityKeys[0];
+
+        // WHEN: Bot typing a message.
 
         const firstTypingActivityId = 't-00001';
 
@@ -58,10 +72,27 @@
           type: 'typing'
         });
 
+        // THEN: Should display 2 messages.
+
         await pageConditions.numActivitiesShown(2);
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick\n');
         // await pageConditions.typingIndicatorHidden();
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick\n');
         await host.snapshot();
+
+        // THEN: Should have 2 activity keys.
+        let firstTypingActivityKey = currentActivityKeys[1];
+
+        expect(currentActivityKeys).toHaveLength(2);
+        expect(currentActivityKeysWithId).toEqual([
+          [firstActivityKey, ['a-00001']],
+          [firstTypingActivityKey, ['t-00001']]
+        ]);
+
+        // ---
+
+        // WHEN: Bot continue typing the message.
+
+        let typingActivityKey = currentActivityKeys[1];
 
         await directLine.emulateIncomingActivity({
           channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
@@ -71,11 +102,23 @@
           type: 'typing'
         });
 
+        // THEN: Should display 2 messages.
         await pageConditions.numActivitiesShown(2);
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox\n');
         // await pageConditions.typingIndicatorHidden();
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox\n');
+        expect(currentActivityKeys[1]).toBe(typingActivityKey);
         await host.snapshot();
 
+        // THEN: Should have 2 activity keys only.
+        expect(currentActivityKeys).toHaveLength(2);
+        expect(currentActivityKeysWithId).toEqual([
+          [firstActivityKey, ['a-00001']],
+          [firstTypingActivityKey, ['t-00001', 't-00002']]
+        ]);
+
+        // ---
+
+        // WHEN: Bot continue typing the message.
         await directLine.emulateIncomingActivity({
           channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
@@ -84,11 +127,21 @@
           type: 'typing'
         });
 
+        // THEN: Should display 2 messages.
         await pageConditions.numActivitiesShown(2);
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over\n');
         // await pageConditions.typingIndicatorHidden();
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over\n');
         await host.snapshot();
 
+        // THEN: Should have 2 activity keys.
+        expect(currentActivityKeys).toHaveLength(2);
+        expect(currentActivityKeys[1]).toBe(typingActivityKey);
+        expect(currentActivityKeysWithId).toEqual([
+          [firstActivityKey, ['a-00001']],
+          [firstTypingActivityKey, ['t-00001', 't-00002', 't-00003']]
+        ]);
+
+        // WHEN: Bot finished typing the message.
         await directLine.emulateIncomingActivity({
           channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
@@ -97,13 +150,22 @@
           type: 'message'
         });
 
+        // THEN: Should display 2 messages.
         await pageConditions.numActivitiesShown(2);
+        await pageConditions.typingIndicatorHidden();
         expect(pageElements.activityContents()[1]).toHaveProperty(
           'textContent',
           'A quick brown fox jumped over the lazy dogs.\n'
         );
-        await pageConditions.typingIndicatorHidden();
         await host.snapshot();
+
+        // THEN: Should have 2 activity keys.
+        expect(currentActivityKeys).toHaveLength(2);
+        expect(currentActivityKeys[1]).toBe(typingActivityKey);
+        expect(currentActivityKeysWithId).toEqual([
+          [firstActivityKey, ['a-00001']],
+          [firstTypingActivityKey, ['t-00001', 't-00002', 't-00003', 'a-00002']]
+        ]);
       });
     </script>
   </body>
