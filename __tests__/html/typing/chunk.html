@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            hooks: { useActivityKeys, useGetActivityByKey },
+            ReactWebChat
+          }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const Monitor = () => {
+          const [activityKeys] = useActivityKeys();
+          const getActivityByKey = useGetActivityByKey();
+
+          console.log(activityKeys, { activities: activityKeys.map(getActivityByKey) });
+
+          return false;
+        };
+
+        const App = () => (
+          <Composer directLine={directLine} store={store}>
+            <BasicWebChat />
+            <Monitor />
+          </Composer>
+        );
+
+        render(<App />, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity(
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
+        );
+
+        const firstTypingActivityId = 't-00001';
+
+        await directLine.emulateIncomingActivity({
+          channelData: { streamMode: 'chunk' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: firstTypingActivityId,
+          text: 'A quick',
+          type: 'typing'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick\n');
+        // await pageConditions.typingIndicatorHidden();
+        await host.snapshot();
+
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 't-00002',
+          text: 'A quick brown fox',
+          type: 'typing'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox\n');
+        // await pageConditions.typingIndicatorHidden();
+        await host.snapshot();
+
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 't-00003',
+          text: 'A quick brown fox jumped over',
+          type: 'typing'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over\n');
+        // await pageConditions.typingIndicatorHidden();
+        await host.snapshot();
+
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00002',
+          text: 'A quick brown fox jumped over the lazy dogs.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(2);
+        expect(pageElements.activityContents()[1]).toHaveProperty(
+          'textContent',
+          'A quick brown fox jumped over the lazy dogs.\n'
+        );
+        await pageConditions.typingIndicatorHidden();
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>
