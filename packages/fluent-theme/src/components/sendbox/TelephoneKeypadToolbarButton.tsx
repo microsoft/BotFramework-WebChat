@@ -9,7 +9,7 @@ import { ToolbarButton } from './Toolbar';
 const { useLocalizer } = hooks;
 
 const TelephoneKeypadToolbarButton = memo(() => {
-  const [, setTelephoneKeypadShown] = useTelephoneKeypadShown();
+  const [telephoneKeypadShown, setTelephoneKeypadShown] = useTelephoneKeypadShown();
   const localize = useLocalizer();
 
   const handleClick = useCallback(() => setTelephoneKeypadShown(shown => !shown), [setTelephoneKeypadShown]);
@@ -19,6 +19,7 @@ const TelephoneKeypadToolbarButton = memo(() => {
       aria-label={localize('TEXT_INPUT_TELEPHONE_KEYPAD_BUTTON_ALT')}
       data-testid={testIds.sendBoxTelephoneKeypadToolbarButton}
       onClick={handleClick}
+      selected={telephoneKeypadShown}
     >
       <TelephoneKeypadIcon />
     </ToolbarButton>

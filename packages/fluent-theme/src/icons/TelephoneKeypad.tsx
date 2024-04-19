@@ -5,7 +5,6 @@ export function TelephoneKeypadIcon(props: Readonly<{ readonly className?: strin
     <svg
       aria-hidden="true"
       className={props.className}
-      fill="currentColor"
       height="1em"
       viewBox="0 0 20 20"
       width="1em"

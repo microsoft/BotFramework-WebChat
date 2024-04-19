@@ -16,8 +16,8 @@
   font-size: 14px;
   gap: 6px;
   grid-template:
-    [telephone-keypad-start] 'text-area'
-    var(--webchat-sendbox-attachment-area-active) [telephone-keypad-end]
+    [telephone-keypad-start] 'text-area' [telephone-keypad-end]
+    var(--webchat-sendbox-attachment-area-active)
     'controls' / [telephone-keypad] 1fr
   ;
   line-height: 20px;
