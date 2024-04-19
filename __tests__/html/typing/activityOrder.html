@@ -200,7 +200,7 @@
         });
 
         // THEN: Should display 3 messages.
-        await pageConditions.numActivitiesShown(2);
+        await pageConditions.numActivitiesShown(3);
         await pageConditions.typingIndicatorHidden();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
@@ -217,10 +217,11 @@
         await host.snapshot();
 
         // THEN: Should have 2 activity keys.
-        expect(currentActivityKeys).toHaveLength(2);
+        expect(currentActivityKeys).toHaveLength(3);
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
-          [secondActivityKey, ['t-00001', 't-00002', 'a-00002']]
+          [secondActivityKey, ['t-00001', 't-00002', 't-00003', 'a-00002']],
+          [thirdActivityKey, ['a-00003']]
         ]);
       });
     </script>
