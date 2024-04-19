@@ -108,11 +108,11 @@ type SingularProps = Readonly<{
 
 const LocalizedString = ({
   className,
-  stringId,
-  pluralStringIds,
-  values,
   linkClassName,
-  onDecorateLink = defaultDecorateLink
+  onDecorateLink = defaultDecorateLink,
+  pluralStringIds,
+  stringId,
+  values
 }: Readonly<{
   className?: string | undefined;
   linkClassName?: string | undefined;
