@@ -33,12 +33,12 @@ const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
     const activities: WebChatActivity[] = [];
 
     for (const activity of rawActivities) {
-      // If an activity has multiple revisions, display the latest revision only.
+      // If an activity has multiple revisions, display the latest revision only at the position of the first revision.
 
       // "Activities with same key" means "multiple revisions of same activity."
       const activitiesWithSameKey = getActivitiesByKey(getKeyByActivity(activity));
 
-      activitiesWithSameKey[activitiesWithSameKey.length - 1] === activity && activities.push(activity);
+      activitiesWithSameKey[0] === activity && activities.push(activitiesWithSameKey[activitiesWithSameKey.length - 1]);
     }
 
     return Object.freeze(activities);
