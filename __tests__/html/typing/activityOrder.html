@@ -24,14 +24,12 @@
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
-        let currentActivityKeys = [];
         let currentActivityKeysWithId = [];
 
         const Monitor = () => {
           const [activityKeys] = useActivityKeys();
           const getActivitiesByKey = useGetActivitiesByKey();
 
-          currentActivityKeys = Object.freeze([...activityKeys]);
           currentActivityKeysWithId = Object.freeze(
             activityKeys.map(key => [key, getActivitiesByKey(key).map(({ id }) => id)])
           );
@@ -57,7 +55,7 @@
           type: 'message'
         });
 
-        let firstActivityKey = currentActivityKeys[0];
+        let firstActivityKey = currentActivityKeysWithId[0][0];
 
         // WHEN: Bot is typing a message.
         const firstTypingActivityId = 't-00001';
@@ -70,7 +68,7 @@
           type: 'typing'
         });
 
-        let secondActivityKey = currentActivityKeys[1];
+        let secondActivityKey = currentActivityKeysWithId[1][0];
 
         // THEN: Should display 2 messages.
         await pageConditions.numActivitiesShown(2);
@@ -83,7 +81,6 @@
         await host.snapshot();
 
         // THEN: Should have 2 activity keys.
-        expect(currentActivityKeys).toHaveLength(2);
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
           [secondActivityKey, ['t-00001']]
@@ -98,7 +95,7 @@
           type: 'message'
         });
 
-        let thirdActivityKey = currentActivityKeys[2];
+        let thirdActivityKey = currentActivityKeysWithId[2][0];
 
         // THEN: Should display 3 messages.
         await pageConditions.numActivitiesShown(3);
@@ -115,7 +112,6 @@
         await host.snapshot();
 
         // THEN: Should have 3 activity keys only.
-        expect(currentActivityKeys).toHaveLength(3);
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
           [secondActivityKey, ['t-00001']],
@@ -148,7 +144,6 @@
         await host.snapshot();
 
         // THEN: Should have 3 activity keys only.
-        expect(currentActivityKeys).toHaveLength(3);
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
           [secondActivityKey, ['t-00001', 't-00002']],
@@ -181,7 +176,6 @@
         await host.snapshot();
 
         // THEN: Should have 3 activity keys only.
-        expect(currentActivityKeys).toHaveLength(3);
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
           [secondActivityKey, ['t-00001', 't-00002', 't-00003']],
@@ -217,7 +211,6 @@
         await host.snapshot();
 
         // THEN: Should have 2 activity keys.
-        expect(currentActivityKeys).toHaveLength(3);
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
           [secondActivityKey, ['t-00001', 't-00002', 't-00003', 'a-00002']],
