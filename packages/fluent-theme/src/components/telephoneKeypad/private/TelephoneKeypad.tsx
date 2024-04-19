@@ -138,7 +138,7 @@ const TelephoneKeypad = memo(({ autoFocus, className, onButtonClick, isHorizonta
         <InfoSmallIcon />
         <LocalizedString
           linkClassName={classNames['telephone-keypad__info-message-link']}
-          stringId="TELEPHONE_KEYPAD_INPUT_MESSAGE"
+          stringIds="TELEPHONE_KEYPAD_INPUT_MESSAGE"
         />
       </div>
     </div>
