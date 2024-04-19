@@ -1,9 +1,9 @@
 /* eslint react/no-danger: "off" */
 
-import { onErrorResumeNext } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
-import React, { memo, useMemo } from 'react';
+import { onErrorResumeNext } from 'botframework-webchat-core';
 import MarkdownIt from 'markdown-it';
+import React, { memo, useMemo } from 'react';
 import betterLinks, { type BetterLinkEnv, type LinkOptions } from './betterLinks';
 
 const allowedSchemes = ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'];
@@ -97,30 +97,29 @@ type Plural = {
 const markdownIt = new MarkdownIt().use(betterLinks);
 
 type PluralProps = Readonly<{
-  pluralStringIds?: Plural | undefined;
-  values?: readonly [number, ...(number | string)[]] | undefined;
+  stringIds: Plural;
+  values: readonly [number, ...(number | string)[]] | undefined;
 }>;
 
 type SingularProps = Readonly<{
-  stringId?: string;
+  stringIds: string;
   values?: readonly (number | string)[] | undefined;
 }>;
 
-const LocalizedString = ({
-  className,
-  linkClassName,
-  onDecorateLink = defaultDecorateLink,
-  pluralStringIds,
-  stringId,
-  values
-}: Readonly<{
+type Props = Readonly<{
   className?: string | undefined;
   linkClassName?: string | undefined;
   onDecorateLink?: ((href: string, textContent: string) => LinkOptions | undefined) | undefined;
 }> &
-  SingularProps &
-  PluralProps) => {
-  const localize = useLocalizer(pluralStringIds && { plural: true });
+  (SingularProps | PluralProps);
+
+function isPlural(props: Props): props is PluralProps {
+  return typeof props.stringIds !== 'string';
+}
+
+const LocalizedString = (props: Props) => {
+  const { className, linkClassName, onDecorateLink = defaultDecorateLink, stringIds, values } = props;
+  const localize = useLocalizer(isPlural(props) && { plural: true });
   const env = useMemo<BetterLinkEnv>(
     () => ({
       linkOptions: {
@@ -133,12 +132,9 @@ const LocalizedString = ({
 
   const html = useMemo(
     () => ({
-      __html: markdownIt.renderer.render(
-        markdownIt.parseInline(localize(stringId ?? pluralStringIds ?? '', ...(values ?? [])), env),
-        env
-      )
+      __html: markdownIt.renderer.render(markdownIt.parseInline(localize(stringIds, ...(values ?? [])), env), env)
     }),
-    [values, env, localize, pluralStringIds, stringId]
+    [env, localize, stringIds, values]
   );
 
   return <span className={className} dangerouslySetInnerHTML={html} />;
