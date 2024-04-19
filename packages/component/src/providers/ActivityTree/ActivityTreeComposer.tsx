@@ -16,7 +16,7 @@ import type { ActivityTreeContextType } from './private/Context';
 
 type ActivityTreeComposerProps = PropsWithChildren<{}>;
 
-const { useActiveTyping, useActivities, useCreateActivityRenderer } = hooks;
+const { useActivities, useCreateActivityRenderer, useGetActivitiesByKey, useGetKeyByActivity } = hooks;
 
 const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
   const existingContext = useActivityTreeContext(false);
@@ -26,22 +26,23 @@ const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
   }
 
   const [rawActivities]: [WebChatActivity[]] = useActivities();
-  const [typings] = useActiveTyping();
-  const typingMap = useMemo(() => new Map(Object.entries(typings)), [typings]);
+  const getActivitiesByKey = useGetActivitiesByKey();
+  const getKeyByActivity = useGetKeyByActivity();
 
   const activities = useMemo(() => {
-    const activities = [];
-    const lastTypingActivities = [...typingMap.values()].map(({ lastTypingActivity }) => lastTypingActivity);
+    const activities: WebChatActivity[] = [];
 
     for (const activity of rawActivities) {
-      // Display all activities except typing activity without text.
-      if (activity.type !== 'typing' || (activity.text && lastTypingActivities.includes(activity))) {
-        activities.push(activity);
-      }
+      // If an activity has multiple revisions, display the latest revision only.
+
+      // "Activities with same key" means "multiple revisions of same activity."
+      const activitiesWithSameKey = getActivitiesByKey(getKeyByActivity(activity));
+
+      activitiesWithSameKey[activitiesWithSameKey.length - 1] === activity && activities.push(activity);
     }
 
     return Object.freeze(activities);
-  }, [rawActivities, typingMap]);
+  }, [getActivitiesByKey, getKeyByActivity, rawActivities]);
 
   const createActivityRenderer: ActivityComponentFactory = useCreateActivityRenderer();
 
