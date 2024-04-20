@@ -102,6 +102,7 @@ export default function useAllTyping(): readonly [ReadonlyMap<string, Typing>] {
             tryParseAsNumber(currentTyping?.lastTypingActivity.channelData.streamSequence) || 0;
           const streamSequence = tryParseAsNumber(activity.channelData.streamSequence) || 0;
 
+          // TODO: Add tests for "streamSequence".
           if (streamSequence >= currentStreamSequence) {
             nextTyping.set(id, {
               firstTypingActivity: currentTyping?.firstTypingActivity || activity,
