@@ -1,12 +1,30 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { Fragment, VFC } from 'react';
+import { type WebChatActivity } from 'botframework-webchat-core';
+import React, { Fragment, useMemo, type VFC } from 'react';
 
 const { useActiveTyping, useRenderTypingIndicator } = hooks;
 
-function useTypingIndicatorVisible(): [boolean] {
+function isChunkedTyping(activity: WebChatActivity): boolean {
+  return activity.type === 'typing' && !!activity.text;
+}
+
+function isFromUser({ from: { role } }: WebChatActivity): boolean {
+  return role === 'user';
+}
+
+function useTypingIndicatorVisible(): readonly [boolean] {
   const [activeTyping] = useActiveTyping();
 
-  return [!!Object.values(activeTyping).filter(({ role }) => role !== 'user').length];
+  return useMemo(
+    () =>
+      Object.freeze([
+        !!Object.values(activeTyping).some(
+          // Display typing indicator for non-chunked typing from bot.
+          ({ lastTypingActivity }) => !isFromUser(lastTypingActivity) && !isChunkedTyping(lastTypingActivity)
+        )
+      ]),
+    [activeTyping]
+  );
 }
 
 const BasicTypingIndicator: VFC<{}> = () => {

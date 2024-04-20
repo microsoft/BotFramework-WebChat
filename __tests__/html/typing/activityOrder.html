@@ -72,7 +72,7 @@
 
         // THEN: Should display 2 messages.
         await pageConditions.numActivitiesShown(2);
-        // await pageConditions.typingIndicatorHidden();
+        expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
@@ -99,7 +99,7 @@
 
         // THEN: Should display 3 messages.
         await pageConditions.numActivitiesShown(3);
-        // await pageConditions.typingIndicatorHidden();
+        expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
@@ -131,7 +131,7 @@
 
         // THEN: Should display 3 messages, the order should kept the same.
         await pageConditions.numActivitiesShown(3);
-        // await pageConditions.typingIndicatorHidden();
+        expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
@@ -163,7 +163,7 @@
 
         // THEN: Should display 3 messages, the order should kept the same.
         await pageConditions.numActivitiesShown(3);
-        // await pageConditions.typingIndicatorHidden();
+        expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
