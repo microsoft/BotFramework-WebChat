@@ -16,6 +16,10 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
         const { type } = activity;
 
         if (type === 'typing') {
+          if (!activity.text) {
+            return false;
+          }
+
           // Should show if this is useActiveTyping()[0][*].firstActivity, and render it with the content of lastActivity.
           return function renderStackedLayout(renderAttachment, props) {
             typeof props === 'undefined' &&
