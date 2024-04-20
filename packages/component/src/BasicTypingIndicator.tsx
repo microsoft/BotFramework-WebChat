@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { Fragment, useMemo, type VFC } from 'react';
+import React, { Fragment, useMemo } from 'react';
 
 const { useActiveTyping, useRenderTypingIndicator } = hooks;
 
@@ -27,7 +27,7 @@ function useTypingIndicatorVisible(): readonly [boolean] {
   );
 }
 
-const BasicTypingIndicator: VFC<{}> = () => {
+const BasicTypingIndicator = () => {
   const [activeTyping] = useActiveTyping();
   const [visible] = useTypingIndicatorVisible();
   const [typing] = useActiveTyping(Infinity);
