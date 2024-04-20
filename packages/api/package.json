@@ -101,7 +101,6 @@
     "react-redux": "7.2.9",
     "redux": "5.0.1",
     "simple-update-in": "2.2.0",
-    "use-propagate": "^0.1.0-main.89e6ee8",
     "use-ref-from": "0.1.0",
     "valibot": "0.30.0"
   },
