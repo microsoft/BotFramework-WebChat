@@ -1,31 +1,28 @@
 import type { WebChatActivity } from 'botframework-webchat-core';
-import { memo, useEffect, type ReactNode } from 'react';
+import React, { memo, useMemo, type ReactNode } from 'react';
 import usePrevious from '../../hooks/internal/usePrevious';
 import useActivities from '../../hooks/useActivities';
-import { usePropagate } from './private/propagation';
+import ActivityListenerContext, { type ActivityListenerContextType } from './private/Context';
 
 type Props = Readonly<{ children?: ReactNode | undefined }>;
 
-// Typings are preferred over defaultProps/propTypes.
-// eslint-disable-next-line react/prop-types
 const ActivityListenerComposer = memo(({ children }: Props) => {
   const [activities] = useActivities();
   const prevActivities = usePrevious(activities);
-  const propagate = usePropagate();
 
-  useEffect(() => {
-    if (prevActivities !== activities) {
-      const upserts: WebChatActivity[] = [];
+  const upsertedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(() => {
+    const upserts: WebChatActivity[] = [];
 
-      for (const activity of activities) {
-        prevActivities.includes(activity) || upserts.push(activity);
-      }
-
-      propagate(Object.freeze(upserts));
+    for (const activity of activities) {
+      prevActivities.includes(activity) || upserts.push(activity);
     }
-  }, [activities, prevActivities, propagate]);
 
-  return children;
+    return Object.freeze([Object.freeze(upserts)]);
+  }, [activities, prevActivities]);
+
+  const context = useMemo<ActivityListenerContextType>(() => ({ upsertedActivitiesState }), [upsertedActivitiesState]);
+
+  return <ActivityListenerContext.Provider value={context}>{children}</ActivityListenerContext.Provider>;
 });
 
 export default ActivityListenerComposer;

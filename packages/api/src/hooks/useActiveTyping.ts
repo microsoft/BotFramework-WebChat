@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import type { Typing } from '../types/Typing';
+import { type Typing } from '../types/Typing';
 import useForceRender from './internal/useForceRender';
 import useAllTyping from './private/useAllTyping';
 import usePonyfill from './usePonyfill';

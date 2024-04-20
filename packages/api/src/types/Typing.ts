@@ -1,6 +1,6 @@
 import type { WebChatActivity } from 'botframework-webchat-core';
 
-type Typing = {
+export type Typing = {
   at: number;
   expireAt: number;
   firstTypingActivity: Readonly<WebChatActivity & { type: 'typing' }>;
@@ -9,5 +9,3 @@ type Typing = {
   name: string;
   role: 'bot' | 'user';
 };
-
-export type { Typing };
