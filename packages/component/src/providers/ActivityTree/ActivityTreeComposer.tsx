@@ -1,9 +1,6 @@
-import { hooks } from 'botframework-webchat-api';
-import React, { useMemo } from 'react';
-
-import type { ActivityComponentFactory } from 'botframework-webchat-api';
+import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
 import type { WebChatActivity } from 'botframework-webchat-core';
-import type { FC, PropsWithChildren } from 'react';
+import React, { useMemo, type ReactNode } from 'react';
 
 import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';
 import ActivityTreeContext from './private/Context';
@@ -14,11 +11,11 @@ import useActivityTreeContext from './private/useContext';
 
 import type { ActivityTreeContextType } from './private/Context';
 
-type ActivityTreeComposerProps = PropsWithChildren<{}>;
+type ActivityTreeComposerProps = Readonly<{ children?: ReactNode | undefined }>;
 
 const { useActivities, useCreateActivityRenderer, useGetActivitiesByKey, useGetKeyByActivity } = hooks;
 
-const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
+const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
   const existingContext = useActivityTreeContext(false);
 
   if (existingContext) {
@@ -29,7 +26,7 @@ const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
   const getActivitiesByKey = useGetActivitiesByKey();
   const getKeyByActivity = useGetKeyByActivity();
 
-  const activities = useMemo(() => {
+  const activities = useMemo<readonly WebChatActivity[]>(() => {
     const activities: WebChatActivity[] = [];
 
     for (const activity of rawActivities) {
