@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
+import useAllTyping from '../providers/ActivityTyping/useAllTyping';
 import { type Typing } from '../types/Typing';
 import useForceRender from './internal/useForceRender';
-import useAllTyping from './private/useAllTyping';
 import usePonyfill from './usePonyfill';
 import useStyleOptions from './useStyleOptions';
 

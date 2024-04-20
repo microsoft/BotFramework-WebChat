@@ -46,6 +46,7 @@ import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerCompo
 import ActivityListenerComposer from '../providers/ActivityListener/ActivityListenerComposer';
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
+import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
 import ActivityMiddleware from '../types/ActivityMiddleware';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
@@ -592,12 +593,14 @@ const ComposerCore = ({
     <WebChatAPIContext.Provider value={context}>
       <ActivityListenerComposer>
         <ActivitySendStatusComposer>
-          <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || Object.freeze([])}>
-            <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || Object.freeze([])}>
-              {typeof children === 'function' ? children(context) : children}
-              <ActivitySendStatusTelemetryComposer />
-            </SendBoxToolbarMiddlewareProvider>
-          </SendBoxMiddlewareProvider>
+          <ActivityTypingComposer>
+            <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || Object.freeze([])}>
+              <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || Object.freeze([])}>
+                {typeof children === 'function' ? children(context) : children}
+                <ActivitySendStatusTelemetryComposer />
+              </SendBoxToolbarMiddlewareProvider>
+            </SendBoxMiddlewareProvider>
+          </ActivityTypingComposer>
         </ActivitySendStatusComposer>
       </ActivityListenerComposer>
       {onTelemetry && <Tracker />}

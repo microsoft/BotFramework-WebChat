@@ -1,18 +1,11 @@
-import type { WebChatActivity } from 'botframework-webchat-core';
+import React, { memo, useMemo, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import useActivities from '../../hooks/useActivities';
+import usePonyfill from '../../hooks/usePonyfill';
 import useUpsertedActivities from '../../providers/ActivityListener/useUpsertedActivities';
-import useActivities from '../useActivities';
-import usePonyfill from '../usePonyfill';
-import useMemoWithPrevious from './useMemoWithPrevious';
-
-type Typing = {
-  firstAppearAt: number;
-  firstTypingActivity: Readonly<WebChatActivity & { type: 'typing' }>;
-  lastAppearAt: number;
-  lastTypingActivity: Readonly<WebChatActivity & { type: 'typing' }>;
-  name: string;
-  role: string;
-};
+import ActivityTypingContext, { ActivityTypingContextType } from './private/Context';
+import useMemoWithPrevious from './private/useMemoWithPrevious';
+import { type Typing } from './types/Typing';
 
 const INITIAL_ALL_TYPING_STATE = Object.freeze([Object.freeze(new Map())] as const);
 
@@ -22,7 +15,9 @@ function tryParseAsNumber(value: unknown): number | undefined {
   }
 }
 
-export default function useAllTyping(): readonly [ReadonlyMap<string, Typing>] {
+type Props = Readonly<{ children?: ReactNode | undefined }>;
+
+const ActivityTypingComposer = ({ children }: Props) => {
   const [{ Date }] = usePonyfill();
   // const [typing, setTyping] = useState<ReadonlyMap<string, Typing>>(Object.freeze(new Map()));
 
@@ -72,7 +67,8 @@ export default function useAllTyping(): readonly [ReadonlyMap<string, Typing>] {
   const [upsertedActivities] = useUpsertedActivities();
   const activitiesRef = useRefFrom(activities);
 
-  return useMemoWithPrevious<readonly [ReadonlyMap<string, Typing>]>(
+  // TODO: We should save this to a Context.
+  const allTypingState = useMemoWithPrevious<readonly [ReadonlyMap<string, Typing>]>(
     (prevAllTypingState = INITIAL_ALL_TYPING_STATE) => {
       const { current: activities } = activitiesRef;
       const now = Date.now();
@@ -126,4 +122,12 @@ export default function useAllTyping(): readonly [ReadonlyMap<string, Typing>] {
     },
     [activities, activitiesRef, upsertedActivities]
   );
-}
+
+  const context = useMemo<ActivityTypingContextType>(() => ({ allTypingState }), [allTypingState]);
+
+  return <ActivityTypingContext.Provider value={context}>{children}</ActivityTypingContext.Provider>;
+};
+
+ActivityTypingComposer.displayName = 'ActivityTypingComposer';
+
+export default memo(ActivityTypingComposer);
