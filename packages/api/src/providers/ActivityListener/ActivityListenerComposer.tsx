@@ -1,5 +1,5 @@
 import type { WebChatActivity } from 'botframework-webchat-core';
-import { memo, type ReactNode } from 'react';
+import { memo, useEffect, type ReactNode } from 'react';
 import usePrevious from '../../hooks/internal/usePrevious';
 import useActivities from '../../hooks/useActivities';
 import { usePropagate } from './private/propagation';
@@ -13,15 +13,17 @@ const ActivityListenerComposer = memo(({ children }: Props) => {
   const prevActivities = usePrevious(activities);
   const propagate = usePropagate();
 
-  if (prevActivities !== activities) {
-    const upserts: WebChatActivity[] = [];
+  useEffect(() => {
+    if (prevActivities !== activities) {
+      const upserts: WebChatActivity[] = [];
 
-    for (const activity of activities) {
-      prevActivities.includes(activity) || upserts.push(activity);
+      for (const activity of activities) {
+        prevActivities.includes(activity) || upserts.push(activity);
+      }
+
+      propagate(Object.freeze(upserts));
     }
-
-    propagate(Object.freeze(upserts));
-  }
+  }, [activities, prevActivities, propagate]);
 
   return children;
 });

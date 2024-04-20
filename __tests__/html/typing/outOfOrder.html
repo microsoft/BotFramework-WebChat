@@ -18,21 +18,25 @@
           ReactDOM: { render },
           WebChat: {
             Components: { BasicWebChat, Composer },
-            hooks: { useActivityKeys, useGetActivitiesByKey },
+            hooks: { useActiveTyping, useActivityKeys, useGetActivitiesByKey },
             ReactWebChat
           }
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         let currentActivityKeysWithId = [];
+        let currentActiveTyping = {};
 
         const Monitor = () => {
           const [activityKeys] = useActivityKeys();
+          const [activeTyping] = useActiveTyping();
           const getActivitiesByKey = useGetActivitiesByKey();
 
           currentActivityKeysWithId = Object.freeze(
             activityKeys.map(key => [key, getActivitiesByKey(key).map(({ id }) => id)])
           );
+
+          currentActiveTyping = activeTyping;
 
           return false;
         };
@@ -88,6 +92,12 @@
           [secondActivityKey, ['t-00001']]
         ]);
 
+        // THEN: Should have active typing.
+        expect(currentActiveTyping).toHaveProperty('u-00001.firstTypingActivity.id', 't-00001');
+        expect(currentActiveTyping).toHaveProperty('u-00001.lastTypingActivity.id', 't-00001');
+        expect(currentActiveTyping).toHaveProperty('u-00001.name', 'Bot');
+        expect(currentActiveTyping).toHaveProperty('u-00001.role', 'bot');
+
         // ---
 
         // WHEN: Bot send typing message in out-of-order fashion.
@@ -115,6 +125,12 @@
           [firstActivityKey, ['a-00001']],
           [secondActivityKey, ['t-00001', 't-00003']]
         ]);
+
+        // THEN: Should have active typing.
+        expect(currentActiveTyping).toHaveProperty('u-00001.firstTypingActivity.id', 't-00001');
+        expect(currentActiveTyping).toHaveProperty('u-00001.lastTypingActivity.id', 't-00003');
+        expect(currentActiveTyping).toHaveProperty('u-00001.name', 'Bot');
+        expect(currentActiveTyping).toHaveProperty('u-00001.role', 'bot');
 
         // ---
 
@@ -144,6 +160,14 @@
           [secondActivityKey, ['t-00001', 't-00002', 't-00003']]
         ]);
 
+        // THEN: Should have active typing.
+        expect(currentActiveTyping).toHaveProperty('u-00001.firstTypingActivity.id', 't-00001');
+        expect(currentActiveTyping).toHaveProperty('u-00001.lastTypingActivity.id', 't-00003');
+        expect(currentActiveTyping).toHaveProperty('u-00001.name', 'Bot');
+        expect(currentActiveTyping).toHaveProperty('u-00001.role', 'bot');
+
+        // ---
+
         // WHEN: Bot finished typing the message.
         await directLine.emulateIncomingActivity({
           channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
@@ -171,6 +195,9 @@
           [firstActivityKey, ['a-00001']],
           [secondActivityKey, ['t-00001', 't-00002', 't-00003', 'a-00002']]
         ]);
+
+        // THEN: Should have no typing.
+        expect(currentActiveTyping).toHaveProperty('u-00001', undefined);
       });
     </script>
   </body>

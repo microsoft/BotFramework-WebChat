@@ -165,9 +165,9 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
     );
   }
 
-  if (activityKeysState[0].length !== numActivities) {
+  if (activityKeysState[0].length !== keyToActivitiesMapRef.current.size) {
     console.warn(
-      'botframework-webchat internal assertion: "activityKeys.length" should be same as "activities.length".'
+      'botframework-webchat internal assertion: "activityKeys.length" should be same as "keyToActivitiesMap.size".'
     );
   }
 
