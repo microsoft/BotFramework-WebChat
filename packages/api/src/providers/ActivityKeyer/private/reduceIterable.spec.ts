@@ -24,8 +24,8 @@ describe('when called with an empty array', () => {
 
   beforeEach(() => {
     reducer = jest.fn();
-    actual = reduceIterable([], reducer, 0);
+    actual = reduceIterable([], reducer, 100);
   });
 
-  test('should return initial value', () => expect(actual).toBe(0));
+  test('should return initial value', () => expect(actual).toBe(100));
 });
