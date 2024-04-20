@@ -22,7 +22,7 @@ const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
     throw new Error('botframework-webchat internal: <ActivityTreeComposer> should not be nested.');
   }
 
-  const [rawActivities]: [WebChatActivity[]] = useActivities();
+  const [rawActivities] = useActivities();
   const getActivitiesByKey = useGetActivitiesByKey();
   const getKeyByActivity = useGetKeyByActivity();
 
