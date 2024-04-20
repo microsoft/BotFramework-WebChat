@@ -58,12 +58,10 @@
         let firstActivityKey = currentActivityKeysWithId[0][0];
 
         // WHEN: Bot is typing a message.
-        const firstTypingActivityId = 't-00001';
-
         await directLine.emulateIncomingActivity({
           channelData: { streamMode: 'chunk' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: firstTypingActivityId,
+          id: 't-00001',
           text: 'A quick',
           type: 'typing'
         });
@@ -88,11 +86,13 @@
 
         // ---
 
-        // WHEN: Bot send another message.
+        // WHEN: Bot is typing another message.
         await directLine.emulateIncomingActivity({
-          id: 'a-00003',
-          text: 'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.',
-          type: 'message'
+          channelData: { streamMode: 'chunk' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 't-10001',
+          text: 'Falsches Üben',
+          type: 'typing'
         });
 
         let thirdActivityKey = currentActivityKeysWithId[2][0];
@@ -105,24 +105,21 @@
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick\n');
-        expect(pageElements.activityContents()[2]).toHaveProperty(
-          'textContent',
-          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.\n'
-        );
+        expect(pageElements.activityContents()[2]).toHaveProperty('textContent', 'Falsches Üben\n');
         await host.snapshot();
 
         // THEN: Should have 3 activity keys only.
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
           [secondActivityKey, ['t-00001']],
-          [thirdActivityKey, ['a-00003']]
+          [thirdActivityKey, ['t-10001']]
         ]);
 
         // ---
 
         // WHEN: Bot continue typing the message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
+          channelData: { streamId: 't-00001', streamMode: 'chunk' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 't-00002',
           text: 'A quick brown fox',
@@ -137,27 +134,24 @@
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox\n');
-        expect(pageElements.activityContents()[2]).toHaveProperty(
-          'textContent',
-          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.\n'
-        );
+        expect(pageElements.activityContents()[2]).toHaveProperty('textContent', 'Falsches Üben\n');
         await host.snapshot();
 
         // THEN: Should have 3 activity keys only.
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
           [secondActivityKey, ['t-00001', 't-00002']],
-          [thirdActivityKey, ['a-00003']]
+          [thirdActivityKey, ['t-10001']]
         ]);
 
         // ---
 
-        // WHEN: Bot continue typing the message.
+        // WHEN: Bot continue typing the third message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
+          channelData: { streamId: 't-10001', streamMode: 'chunk' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 't-00003',
-          text: 'A quick brown fox jumped over',
+          id: 't-10002',
+          text: 'Falsches Üben von Xylophonmusik',
           type: 'typing'
         });
 
@@ -168,25 +162,22 @@
           'textContent',
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over\n');
-        expect(pageElements.activityContents()[2]).toHaveProperty(
-          'textContent',
-          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.\n'
-        );
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox\n');
+        expect(pageElements.activityContents()[2]).toHaveProperty('textContent', 'Falsches Üben von Xylophonmusik\n');
         await host.snapshot();
 
         // THEN: Should have 3 activity keys only.
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
-          [secondActivityKey, ['t-00001', 't-00002', 't-00003']],
-          [thirdActivityKey, ['a-00003']]
+          [secondActivityKey, ['t-00001', 't-00002']],
+          [thirdActivityKey, ['t-10001', 't-10002']]
         ]);
 
         // ---
 
-        // WHEN: Bot finished typing the message.
+        // WHEN: Bot finished typing the second message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
+          channelData: { streamId: 't-00001', streamMode: 'chunk' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 'a-00002',
           text: 'A quick brown fox jumped over the lazy dogs.',
@@ -203,9 +194,41 @@
           'textContent',
           'A quick brown fox jumped over the lazy dogs.\n'
         );
+        expect(pageElements.activityContents()[2]).toHaveProperty('textContent', 'Falsches Üben von Xylophonmusik\n');
+        expect(pageElements.typingIndicator()).toBeFalsy();
+        await host.snapshot();
+
+        // THEN: Should have 3 activity keys.
+        expect(currentActivityKeysWithId).toEqual([
+          [firstActivityKey, ['a-00001']],
+          [secondActivityKey, ['t-00001', 't-00002', 'a-00002']],
+          [thirdActivityKey, ['t-10001', 't-10002']]
+        ]);
+
+        // ---
+
+        // WHEN: Bot finished typing the third message.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: 't-10001', streamMode: 'chunk' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00003',
+          text: 'Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.',
+          type: 'message'
+        });
+
+        // THEN: Should display 3 messages.
+        await pageConditions.numActivitiesShown(3);
+        expect(pageElements.activityContents()[0]).toHaveProperty(
+          'textContent',
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
+        );
+        expect(pageElements.activityContents()[1]).toHaveProperty(
+          'textContent',
+          'A quick brown fox jumped over the lazy dogs.\n'
+        );
         expect(pageElements.activityContents()[2]).toHaveProperty(
           'textContent',
-          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.\n'
+          'Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.\n'
         );
         expect(pageElements.typingIndicator()).toBeFalsy();
         await host.snapshot();
@@ -213,8 +236,8 @@
         // THEN: Should have 3 activity keys.
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
-          [secondActivityKey, ['t-00001', 't-00002', 't-00003', 'a-00002']],
-          [thirdActivityKey, ['a-00003']]
+          [secondActivityKey, ['t-00001', 't-00002', 'a-00002']],
+          [thirdActivityKey, ['t-10001', 't-10002', 'a-00003']]
         ]);
       });
     </script>
