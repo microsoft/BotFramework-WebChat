@@ -14,7 +14,7 @@ const ActivityListenerComposer = memo(({ children }: Props) => {
     const upserts: WebChatActivity[] = [];
 
     for (const activity of activities) {
-      prevActivities.includes(activity) || upserts.push(activity);
+      prevActivities?.includes(activity) || upserts.push(activity);
     }
 
     return Object.freeze([Object.freeze(upserts)]);
