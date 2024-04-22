@@ -53,16 +53,17 @@ jobs:
       - name: Pack Docker artifact
         run: |
           zip docker.zip -r@ <<EOF
-          ./__tests__/
           ./babel-jest-config.js
           ./babel-passthru-transformer.js
           ./babel.config.json
           ./docker-compose-wsl2.yml
           ./jest.config.js
-          ./package.json
           ./package-lock.json
+          ./package.json
+          ./__tests__/
           ./packages/bundle/dist/
           ./packages/fluent-theme/dist/
+          ./packages/test/fluent-bundle/dist/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
           ./serve-test.json
