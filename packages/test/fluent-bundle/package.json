@@ -1,0 +1,32 @@
+{
+  "name": "@webchat/fluent-bundle",
+  "version": "0.0.0-0",
+  "description": "Test Fluent and React bundle for Web Chat",
+  "main": "./dist/fluent-bundle.js",
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
+    "build": "tsup",
+    "bump:auditfix": "npm audit fix --legacy-peer-deps || exit 0",
+    "bump:dev": "if [ `cat package.json | jq -r '.devDependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
+    "bump:prod": "if [ `cat package.json | jq -r '.dependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
+    "bump": "npm run bump:prod && npm run bump:dev && npm run bump:auditfix",
+    "postauditfix": "npm run postbump",
+    "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
+    "preauditfix": "npm run prebump",
+    "prebump": "cat package.json | jq '(((.localPeerDependencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDependencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@fluentui/react-components": "9.48.0",
+    "@tsconfig/strictest": "^2.0.5",
+    "@types/react-dom": "^18.2.25",
+    "react-dom": "18.2.0",
+    "react": "18.2.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {}
+}
