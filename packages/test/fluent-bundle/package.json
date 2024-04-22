@@ -1,5 +1,5 @@
 {
-  "name": "@webchat/fluent-bundle",
+  "name": "fluent-bundle",
   "version": "0.0.0-0",
   "description": "Test Fluent and React bundle for Web Chat",
   "main": "./dist/fluent-bundle.js",
