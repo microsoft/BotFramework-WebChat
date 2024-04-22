@@ -72,11 +72,11 @@ const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../
   );
 
   app.use(
-    '/__dist__/fluent-bundle.production.min.js.map',
+    '/__dist__/fluent-bundle.development.js.map',
     express.static(
       resolve(
         fileURLToPath(import.meta.url),
-        '../../../../test/fluent-bundle/dist/fluent-bundle.production.min.js.map'
+        '../../../../test/fluent-bundle/dist/fluent-bundle.development.js.map'
       )
     )
   );
@@ -87,6 +87,17 @@ const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../
       resolve(
         fileURLToPath(import.meta.url),
         '../../../../test/fluent-bundle/dist/fluent-bundle.production.min.js'
+      )
+    )
+  );
+
+
+  app.use(
+    '/__dist__/fluent-bundle.production.min.js.map',
+    express.static(
+      resolve(
+        fileURLToPath(import.meta.url),
+        '../../../../test/fluent-bundle/dist/fluent-bundle.production.min.js.map'
       )
     )
   );
