@@ -91,7 +91,6 @@ const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../
     )
   );
 
-
   app.use(
     '/__dist__/fluent-bundle.production.min.js.map',
     express.static(
