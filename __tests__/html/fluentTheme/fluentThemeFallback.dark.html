@@ -22,7 +22,7 @@
           React,
           ReactDOMClient: { createRoot },
           WebChat: { FluentThemeProvider, ReactWebChat },
-          Fluent: { FluentProvider, webDarkTheme}
+          Fluent: { FluentProvider, createDarkTheme }
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
@@ -40,8 +40,26 @@
 
         const root = createRoot(document.getElementById('webchat'));
 
+        const customBrandRamp = {
+          10: '#124C32',
+          20: '#1A5B3E',
+          30: '#216A4A',
+          40: '#297956',
+          50: '#308861',
+          60: '#38976D',
+          70: '#40A779',
+          80: '#158051',
+          90: '#4FC590',
+          100: '#56D49C',
+          110: '#5EE3A8',
+          120: '#79E8B7',
+          130: '#94ECC5',
+          140: '#AFF1D3',
+          150: '#C9F6E2',
+          160: '#c014903'
+        };
         root.render(
-          <FluentProvider theme={webDarkTheme}>
+          <FluentProvider theme={createDarkTheme(customBrandRamp)}>
             <FluentThemeProvider>
               <App />
             </FluentThemeProvider>
