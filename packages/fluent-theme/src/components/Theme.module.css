@@ -62,4 +62,19 @@
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts */
   --webchat-fontWeightSemibold: var(--fontWeightSemibold, 600);
+  
+  --webchat-strokeWidthThicker: var(--strokeWidthThicker, 3px);
+
+  --webchat-durationUltraFast: var(--durationUltraFast, 0);
+  --webchat-durationNormal: var(--durationNormal, 200ms);
+
+  --webchat-curveAccelerateMid: var(--curveAccelerateMid, cubic-bezier(1,0,1,1));
+  --webchat-curveDecelerateMid: var(--curveDecelerateMid, cubic-bezier(0,0,0,1));
+}
+
+@media (prefers-reduced-motion) {
+  :global(.webchat-fluent).theme {
+    --webchat-durationUltraFast: 0.01ms;
+    --webchat-durationNormal: 0.01ms;
+  }
 }
