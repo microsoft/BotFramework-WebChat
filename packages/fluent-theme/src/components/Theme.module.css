@@ -74,7 +74,7 @@
 
 @media (prefers-reduced-motion) {
   :global(.webchat-fluent).theme {
-    --webchat-durationUltraFast: var(--durationUltraFast, 0);
-    --webchat-durationNormal: var(--durationNormal, 0);
+    --webchat-durationUltraFast: 0.01ms;
+    --webchat-durationNormal: 0.01ms;
   }
 }
