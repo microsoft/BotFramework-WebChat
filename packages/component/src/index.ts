@@ -15,8 +15,8 @@ import BasicSendBoxToolbar from './SendBoxToolbar/BasicSendBoxToolbar';
 
 import Avatar from './Activity/Avatar';
 import Bubble from './Activity/Bubble';
-import SpeakActivity, { connectSpeakActivity } from './Activity/Speak';
-import SendStatus, { connectSendStatus } from './ActivityStatus/SendStatus/SendStatus';
+import SpeakActivity from './Activity/Speak';
+import SendStatus from './ActivityStatus/SendStatus/SendStatus';
 import Timestamp from './ActivityStatus/Timestamp';
 import ErrorBox from './ErrorBox';
 
@@ -31,19 +31,19 @@ import VideoContent from './Attachment/VideoContent';
 import VimeoContent from './Attachment/VimeoContent';
 import YouTubeContent from './Attachment/YouTubeContent';
 
-import DictationInterims, { connectDictationInterims } from './SendBox/DictationInterims';
-import MicrophoneButton, { connectMicrophoneButton } from './SendBox/MicrophoneButton';
-import SendButton, { connectSendButton } from './SendBox/SendButton';
-import SuggestedActions, { connectSuggestedActions } from './SendBox/SuggestedActions';
+import DictationInterims from './SendBox/DictationInterims';
+import MicrophoneButton from './SendBox/MicrophoneButton';
+import SendButton from './SendBox/SendButton';
+import SuggestedActions from './SendBox/SuggestedActions';
 import SendTextBox from './SendBox/TextBox';
-import UploadButton, { connectUploadButton } from './SendBoxToolbar/UploadButton';
+import UploadButton from './SendBoxToolbar/UploadButton';
 
+import { type WebChatActivity } from 'botframework-webchat-core';
 import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
-import connectToWebChat from './connectToWebChat';
 import Context from './hooks/internal/WebChatUIContext';
 import ThemeProvider from './providers/Theme/ThemeProvider';
 import withEmoji from './withEmoji/withEmoji';
@@ -88,9 +88,6 @@ const Components = {
   SpeakActivity,
   Timestamp,
 
-  connectSendStatus,
-  connectSpeakActivity,
-
   // Components for recomposing send box
   DictationInterims,
   MicrophoneButton,
@@ -98,12 +95,6 @@ const Components = {
   SendTextBox,
   SuggestedActions,
   UploadButton,
-
-  connectDictationInterims,
-  connectMicrophoneButton,
-  connectSendButton,
-  connectSuggestedActions,
-  connectUploadButton,
 
   // Components for localization
   LocalizedString
@@ -115,7 +106,6 @@ export {
   Components,
   Context,
   concatMiddleware,
-  connectToWebChat,
   createCoreActivityMiddleware,
   createCoreActivityStatusMiddleware,
   createCoreAttachmentMiddleware,
@@ -127,4 +117,4 @@ export {
   withEmoji
 };
 
-export type { BasicWebChatProps, ComposerProps, ReactWebChatProps };
+export type { BasicWebChatProps, ComposerProps, ReactWebChatProps, WebChatActivity };
