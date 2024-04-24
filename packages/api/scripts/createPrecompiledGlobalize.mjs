@@ -40,7 +40,7 @@ import Prettier from 'prettier';
   }, []);
 
   const code = await Prettier.format(globalizeCompiler.compile(formattersAndParsers), { parser: 'babel' });
-  const outputFileURL = new URL('../lib/external/PrecompiledGlobalize.js', import.meta.url);
+  const outputFileURL = new URL('../src/external/PrecompiledGlobalize.js', import.meta.url);
 
   // globalize-compiler is emitting AMD code, pointing to "globalize-runtime" instead of "globalize/dist/globalize-runtime"
   const patchedCode = code.replace(/"globalize-runtime\//gu, '"globalize/dist/globalize-runtime/');
