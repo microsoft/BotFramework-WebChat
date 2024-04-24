@@ -1,24 +1,22 @@
 /* eslint react/no-array-index-key: "off" */
 
 import { hooks } from 'botframework-webchat-api';
-// eslint-disable-next-line import/no-named-as-default
-import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, useCallback, useMemo, useRef } from 'react';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import React, { useCallback, useMemo, useRef } from 'react';
+// eslint-disable-next-line import/no-named-as-default
+import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
 
 import computeSuggestedActionText from '../Utils/computeSuggestedActionText';
-import connectToWebChat from '../connectToWebChat';
-import RovingTabIndexComposer from '../providers/RovingTabIndex/RovingTabIndexComposer';
-import SuggestedAction from './SuggestedAction';
-import useFocus from '../hooks/useFocus';
 import useFocusWithin from '../hooks/internal/useFocusWithin';
 import useNonce from '../hooks/internal/useNonce';
-import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import useFocus from '../hooks/useFocus';
+import useStyleSet from '../hooks/useStyleSet';
+import RovingTabIndexComposer from '../providers/RovingTabIndex/RovingTabIndexComposer';
+import SuggestedAction from './SuggestedAction';
 
-const { useDirection, useLocalizer, useStyleOptions } = hooks;
+const { useDirection, useLocalizer, useStyleOptions, useSuggestedActions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__suggested-actions': {
@@ -33,15 +31,6 @@ const ROOT_STYLE = {
     }
   }
 };
-
-const connectSuggestedActions = (...selectors) =>
-  connectToWebChat(
-    ({ language, suggestedActions }) => ({
-      language,
-      suggestedActions
-    }),
-    ...selectors
-  );
 
 const SuggestedActionCarouselContainer = ({ children, className, label }) => {
   const [
@@ -209,12 +198,12 @@ SuggestedActionStackedContainer.propTypes = {
   label: PropTypes.string.isRequired
 };
 
-type SuggestedActionsProps = {
+type SuggestedActionsProps = Readonly<{
   className?: string;
-  suggestedActions?: DirectLineCardAction[];
-};
+}>;
 
-const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActions = [] }) => {
+const SuggestedActions = ({ className }: SuggestedActionsProps) => {
+  const [suggestedActions] = useSuggestedActions();
   const [{ suggestedActionLayout, suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const localize = useLocalizer();
   const focus = useFocus();
@@ -301,28 +290,4 @@ const SuggestedActions: FC<SuggestedActionsProps> = ({ className, suggestedActio
   );
 };
 
-SuggestedActions.defaultProps = {
-  className: ''
-};
-
-SuggestedActions.propTypes = {
-  className: PropTypes.string,
-
-  // TypeScript class is not mappable to PropTypes.func
-  // @ts-ignore
-  suggestedActions: PropTypes.arrayOf(
-    PropTypes.shape({
-      displayText: PropTypes.string,
-      image: PropTypes.string,
-      imageAltText: PropTypes.string,
-      text: PropTypes.string,
-      title: PropTypes.string,
-      type: PropTypes.string.isRequired,
-      value: PropTypes.any
-    })
-  ).isRequired
-};
-
-export default connectSuggestedActions()(SuggestedActions);
-
-export { connectSuggestedActions };
+export default SuggestedActions;

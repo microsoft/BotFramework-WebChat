@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import Bubble from './Bubble';
-import connectToWebChat from '../connectToWebChat';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
@@ -68,27 +67,6 @@ const ROOT_STYLE = {
     }
   }
 };
-
-const connectStackedLayout = (...selectors) =>
-  connectToWebChat(
-    (
-      {
-        language,
-        styleSet: {
-          options: { botAvatarInitials, userAvatarInitials }
-        }
-      },
-      { activity: { from: { role = undefined } = {} } = {} }
-    ) => ({
-      avatarInitials: role === 'user' ? userAvatarInitials : botAvatarInitials,
-      language,
-
-      // TODO: [P4] We want to deprecate botAvatarInitials/userAvatarInitials because they are not as helpful as avatarInitials
-      botAvatarInitials,
-      userAvatarInitials
-    }),
-    ...selectors
-  );
 
 type StackedLayoutProps = {
   activity: WebChatActivity;
@@ -267,5 +245,3 @@ StackedLayout.propTypes = {
 };
 
 export default StackedLayout;
-
-export { connectStackedLayout };

@@ -1,20 +1,19 @@
 // This is required for aria-controls.
 /* eslint react/forbid-dom-props: "off" */
 
-import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
+import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
 import React, { FC, useCallback, useState } from 'react';
 
-import connectToWebChat from '../connectToWebChat';
-import IconButton from './IconButton';
-import MicrophoneIcon from './Assets/MicrophoneIcon';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useDictateAbortable from '../hooks/useDictateAbortable';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
+import MicrophoneIcon from './Assets/MicrophoneIcon';
+import IconButton from './IconButton';
 
 const { DictateState } = Constants;
 
@@ -44,53 +43,6 @@ const ROOT_STYLE = {
     whiteSpace: 'nowrap',
     width: 1
   }
-};
-
-const connectMicrophoneButton = (...selectors) => {
-  const primeSpeechSynthesis = memoize((speechSynthesis, SpeechSynthesisUtterance) => {
-    if (speechSynthesis && SpeechSynthesisUtterance) {
-      const utterance = new SpeechSynthesisUtterance('');
-
-      [utterance.voice] = speechSynthesis.getVoices();
-      speechSynthesis.speak(utterance);
-    }
-  });
-
-  return connectToWebChat(
-    ({
-      disabled,
-      dictateInterims,
-      dictateState,
-      language,
-      setSendBox,
-      startDictate,
-      stopDictate,
-      stopSpeakingActivity,
-      webSpeechPonyfill
-    }) => {
-      const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
-
-      return {
-        click: () => {
-          if (dictateState === DictateState.WILL_START) {
-            stopSpeakingActivity();
-          } else if (dictateState === DictateState.DICTATING) {
-            stopDictate();
-            setSendBox(dictateInterims.join(' '));
-          } else {
-            stopSpeakingActivity();
-            startDictate();
-          }
-
-          primeSpeechSynthesis(speechSynthesis, SpeechSynthesisUtterance);
-        },
-        dictating: dictateState === DictateState.DICTATING,
-        disabled: disabled || (dictateState === DictateState.STARTING && dictateState === DictateState.STOPPING),
-        language
-      };
-    },
-    ...selectors
-  );
 };
 
 function useMicrophoneButtonClick(): () => void {
@@ -205,4 +157,4 @@ MicrophoneButton.propTypes = {
 
 export default MicrophoneButton;
 
-export { connectMicrophoneButton, useMicrophoneButtonClick, useMicrophoneButtonDisabled };
+export { useMicrophoneButtonClick, useMicrophoneButtonDisabled };

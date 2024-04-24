@@ -5,8 +5,6 @@ import React, { useCallback, useRef, type FC, type FormEventHandler, type MouseE
 import { useRefFrom } from 'use-ref-from';
 
 import IconButton from '../SendBox/IconButton';
-import downscaleImageToDataURL from '../Utils/downscaleImageToDataURL/index';
-import connectToWebChat from '../connectToWebChat';
 import useMakeThumbnail from '../hooks/useMakeThumbnail';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useFocus from '../hooks/useFocus';
@@ -34,63 +32,6 @@ const ROOT_STYLE = {
 };
 
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
-
-async function makeThumbnail(file, width, height, contentType, quality) {
-  if (/\.(gif|jpe?g|png)$/iu.test(file.name)) {
-    try {
-      return await downscaleImageToDataURL(file, width, height, contentType, quality);
-    } catch (error) {
-      console.warn(`Web Chat: Failed to downscale image due to ${error}.`);
-    }
-  }
-}
-
-const connectUploadButton = (...selectors) =>
-  connectToWebChat(
-    ({
-      disabled,
-      language,
-      sendFiles,
-      styleSet: {
-        options: {
-          enableUploadThumbnail,
-          uploadThumbnailContentType,
-          uploadThumbnailHeight,
-          uploadThumbnailQuality,
-          uploadThumbnailWidth
-        }
-      }
-    }) => ({
-      disabled,
-      language,
-      sendFiles: async files => {
-        if (files && files.length) {
-          // TODO: [P3] We need to find revokeObjectURL on the UI side
-          //       Redux store should not know about the browser environment
-          //       One fix is to use ArrayBuffer instead of object URL, but that would requires change to DirectLineJS
-          sendFiles(
-            await Promise.all(
-              [].map.call(files, async file => ({
-                name: file.name,
-                size: file.size,
-                url: window.URL.createObjectURL(file),
-                ...(enableUploadThumbnail && {
-                  thumbnail: await makeThumbnail(
-                    file,
-                    uploadThumbnailWidth,
-                    uploadThumbnailHeight,
-                    uploadThumbnailContentType,
-                    uploadThumbnailQuality
-                  )
-                })
-              }))
-            )
-          );
-        }
-      }
-    }),
-    ...selectors
-  );
 
 type UploadButtonProps = {
   className?: string;
@@ -167,5 +108,3 @@ UploadButton.propTypes = {
 };
 
 export default UploadButton;
-
-export { connectUploadButton };
