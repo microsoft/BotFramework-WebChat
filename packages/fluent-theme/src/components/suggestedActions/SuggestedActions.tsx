@@ -3,7 +3,7 @@ import cx from 'classnames';
 import React, { memo, type ReactNode } from 'react';
 import SuggestedAction from './SuggestedAction';
 import computeSuggestedActionText from './private/computeSuggestedActionText';
-import styles from './index.module.css';
+import styles from './SuggestedActions.module.css';
 import { useStyles } from '../../styles';
 
 const { useLocalizer, useStyleOptions, useStyleSet, useSuggestedActions } = hooks;

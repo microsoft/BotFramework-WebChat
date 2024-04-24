@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": false,
     "checkJs": false,
     "jsx": "react",
     "moduleResolution": "Bundler",

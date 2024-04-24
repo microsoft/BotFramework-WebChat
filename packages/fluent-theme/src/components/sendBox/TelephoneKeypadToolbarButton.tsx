@@ -1,9 +1,9 @@
 import React, { memo, useCallback } from 'react';
 
 import { hooks } from 'botframework-webchat-component';
-import { TelephoneKeypadIcon } from '../../icons/TelephoneKeypad';
+import { TelephoneKeypadIcon } from '../../icons';
 import testIds from '../../testIds';
-import { useTelephoneKeypadShown } from '../TelephoneKeypad';
+import { useTelephoneKeypadShown } from '../telephoneKeypad';
 import { ToolbarButton } from './Toolbar';
 
 const { useLocalizer } = hooks;

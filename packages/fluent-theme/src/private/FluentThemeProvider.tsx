@@ -1,9 +1,9 @@
 import { Components } from 'botframework-webchat-component';
 import React, { memo, type ReactNode } from 'react';
 
-import { TelephoneKeypadProvider } from '../components/TelephoneKeypad';
-import WebChatTheme from '../components/Theme';
-import SendBox from '../components/SendBox';
+import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
+import { WebChatTheme } from '../components/theme';
+import { SendBox } from '../components/sendBox';
 
 const { ThemeProvider } = Components;
 

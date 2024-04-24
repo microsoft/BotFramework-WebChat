@@ -5,12 +5,12 @@ import { useRefFrom } from 'use-ref-from';
 
 import Button from './Button';
 // import HorizontalDialPadController from './HorizontalDialPadController';
-import InfoSmallIcon from '../../../icons/InfoSmallIcon';
-import { useStyles } from '../../../styles';
 import testIds from '../../../testIds';
 import { type DTMF } from '../types';
 import useShown from '../useShown';
 import styles from './TelephoneKeypad.module.css';
+import { useStyles } from '../../../styles';
+import { InfoSmallIcon } from '../../../icons';
 
 const { LocalizedString } = Components;
 
