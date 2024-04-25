@@ -18,7 +18,7 @@ export default function createBasicTranscriptStyleSet({
 }: StrictStyleOptions) {
   return {
     '&.webchat__basic-transcript': {
-      '&:focus': {
+      '&:focus-visible': {
         outline: 0,
 
         '& .webchat__basic-transcript__activity-indicator.webchat__basic-transcript__activity-indicator--focus': {
@@ -39,7 +39,7 @@ export default function createBasicTranscriptStyleSet({
         }
       },
 
-      '&:focus .webchat__basic-transcript__focus-indicator, .webchat__basic-transcript__terminator:focus + .webchat__basic-transcript__focus-indicator':
+      '&:focus-visible .webchat__basic-transcript__focus-indicator, .webchat__basic-transcript__terminator:focus + .webchat__basic-transcript__focus-indicator':
         {
           height: '100%',
           borderColor: transcriptVisualKeyboardIndicatorColor,
