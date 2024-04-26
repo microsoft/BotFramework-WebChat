@@ -1,5 +1,5 @@
 import useWebChatAPIContext from './useWebChatAPIContext';
 
-export default function useSetDictateState() {
+export default function useSetDictateState(): (dictateState: number) => void {
   return useWebChatAPIContext().setDictateState;
 }

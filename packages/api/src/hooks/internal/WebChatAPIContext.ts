@@ -17,7 +17,7 @@ import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
 import { PerformCardAction } from '../../types/CardActionMiddleware';
 import { GroupActivities } from '../../types/GroupActivitiesMiddleware';
 import LocalizedStrings from '../../types/LocalizedStrings';
-import Notification from '../../types/Notification';
+import { type Notification } from '../../types/Notification';
 import PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
 import { ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButtonMiddleware';
 import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';

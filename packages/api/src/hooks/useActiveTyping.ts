@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
 
+import type { Typing } from '../types/Typing';
+import { usePonyfill, useStyleOptions } from './index';
 import { useSelector } from './internal/WebChatReduxContext';
-import Typing from '../types/Typing';
 import useForceRender from './internal/useForceRender';
-import usePonyfill from './usePonyfill';
-import useStyleOptions from './useStyleOptions';
 
 function useActiveTyping(expireAfter?: number): [{ [userId: string]: Typing }] {
   const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
