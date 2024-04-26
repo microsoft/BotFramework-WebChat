@@ -8,7 +8,6 @@ import {
 } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import type { Definition } from 'mdast';
-// @ts-expect-error TS1479 should be fixed when bumping to typescript@5.
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import React, { memo, useCallback, useMemo, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
