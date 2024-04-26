@@ -46,7 +46,7 @@
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "npm run build:globalize && npm run build:tsup && npm run build:typescript && npm run build:babel",
-    "build:babel": "babel src --copy-files --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --no-copy-ignored --out-dir lib --verbose",
+    "build:babel": "module_format=commonjs transpiler=babel babel src --copy-files --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --no-copy-ignored --out-dir lib --verbose",
     "build:globalize": "node scripts/createPrecompiledGlobalize.mjs",
     "build:tsup": "tsup --config ./tsup.config.ts",
     "build:typescript": "tsc --project src/tsconfig.json",

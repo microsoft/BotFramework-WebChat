@@ -68,10 +68,17 @@ import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Pro
 import type { Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
 
 const Constants = { ActivityClientState, DictateState };
+const moduleFormat = process.env.module_format;
+// No object destructuring for process.env because of how transpiler define variables.
+// eslint-disable-next-line prefer-destructuring
+const transpiler = process.env.transpiler;
 const version = process.env.npm_package_version;
+
+const buildInfo = { moduleFormat, transpiler, version };
 
 export {
   Constants,
+  buildInfo,
   clearSuggestedActions,
   connect,
   createStore,
@@ -83,6 +90,7 @@ export {
   getOrgSchemaMessage,
   isForbiddenPropertyName,
   markActivity,
+  moduleFormat,
   onErrorResumeNext,
   parseAction,
   parseClaim,

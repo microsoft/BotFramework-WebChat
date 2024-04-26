@@ -16,13 +16,24 @@ const resolveCognitiveServicesToES2015 = {
 export default defineConfig({
   ...baseConfig,
   entry: {
-    'botframework-webchat': './src/index.ts'
+    'botframework-webchat': './src/index.ts',
+    'botframework-webchat.minimal': './src/index-minimal.ts'
+  },
+  env: {
+    ...baseConfig.env,
+    module_format: 'esmodules',
+    transpiler: 'tsup',
+
+    // Followings are required by microsoft-cognitiveservices-speech-sdk:
+    NODE_TLS_REJECT_UNAUTHORIZED: '',
+    SPEECH_CONDUCT_OCSP_CHECK: '',
+    SPEECH_OCSP_CACHE_ROOT: ''
   },
   esbuildPlugins: [resolveCognitiveServicesToES2015],
   noExternal: [
     '@babel/runtime',
     'memoize-one',
-    'microsoft-cognitiveservices-speech-sdk',
+    // 'microsoft-cognitiveservices-speech-sdk',
     'web-speech-cognitive-services'
   ]
 });

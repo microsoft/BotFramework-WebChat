@@ -4,7 +4,7 @@ import { AbortController } from 'abort-controller-es5';
 import { createSpeechRecognitionPonyfillFromRecognizer } from 'web-speech-cognitive-services/lib/SpeechServices/SpeechToText.js';
 
 import createTaskQueue from './createTaskQueue';
-import EventTarget, { Event, getEventAttributeValue, setEventAttributeValue } from 'event-target-shim/es5';
+import EventTarget, { Event, getEventAttributeValue, setEventAttributeValue } from 'event-target-shim';
 import playCognitiveServicesStream from './playCognitiveServicesStream';
 import playWhiteNoise from './playWhiteNoise';
 import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtterance';

@@ -10,7 +10,7 @@
     [
       "babel-plugin-transform-inline-environment-variables",
       {
-        "include": ["NODE_ENV", "node_env", "npm_package_version"]
+        "include": ["module_format", "NODE_ENV", "node_env", "npm_package_version", "transpiler"]
       }
     ]
   ],

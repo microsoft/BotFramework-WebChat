@@ -3,8 +3,7 @@ import baseConfig from '../../tsup.base.config';
 
 export default defineConfig({
   ...baseConfig,
-  dts: true,
-  experimentalDts: false,
+  env: { ...baseConfig.env, module_format: 'esmodules', transpiler: 'tsup' },
   entry: {
     'botframework-webchat-component': './src/index.ts'
   },

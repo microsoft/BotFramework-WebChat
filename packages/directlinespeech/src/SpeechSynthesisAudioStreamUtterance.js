@@ -1,4 +1,4 @@
-import EventTarget, { getEventAttributeValue, setEventAttributeValue } from 'event-target-shim/es5';
+import EventTarget, { getEventAttributeValue, setEventAttributeValue } from 'event-target-shim';
 
 class SpeechSynthesisAudioStreamUtterance extends EventTarget {
   constructor(audioStream) {

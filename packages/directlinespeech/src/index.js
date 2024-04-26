@@ -1,17 +1,26 @@
-import 'core-js/features/object/entries';
+/* global process:readonly */
+import 'core-js/features/object/entries.js';
 
 import createAdapters from './createAdapters';
 
 export { createAdapters };
 
 if (typeof HTMLDocument !== 'undefined' && typeof document !== 'undefined' && document instanceof HTMLDocument) {
-  const meta = document.createElement('meta');
+  const version = process.env.npm_package_version;
+  const versionMeta = document.createElement('meta');
 
-  meta.setAttribute('name', 'botframework-directlinespeech:version');
+  versionMeta.setAttribute('name', 'botframework-directlinespeech:version');
+  versionMeta.setAttribute('content', version);
 
-  // We injected "process.env.npm_package_version" during compilation.
-  // eslint-disable-next-line no-undef
-  meta.setAttribute('content', process.env.npm_package_version);
+  document.head.appendChild(versionMeta);
 
-  document.head.appendChild(meta);
+  const packageMeta = document.createElement('meta');
+
+  packageMeta.setAttribute('name', 'botframework-directlinespeech');
+  packageMeta.setAttribute(
+    'content',
+    `version=${version}; format=${process.env.module_format}; transpiler=${process.env.transpiler}`
+  );
+
+  document.head.appendChild(packageMeta);
 }

@@ -9,9 +9,9 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 let config = {
   entry: {
-    webchat: './lib/index.js',
-    'webchat-es5': './lib/index-es5.js',
-    'webchat-minimal': './lib/index-minimal.js'
+    webchat: './dist/botframework-webchat.mjs',
+    'webchat-es5': './dist/botframework-webchat.mjs',
+    'webchat-minimal': './dist/botframework-webchat.minimal.mjs'
   },
   mode: 'production',
   module: {
