@@ -1,6 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
 
 import AccessibleInputText from '../Utils/AccessibleInputText';
@@ -79,7 +78,7 @@ const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 const SingleLineTextBox = withEmoji(AccessibleInputText);
 const MultiLineTextBox = withEmoji(AutoResizeTextArea);
 
-const TextBox = ({ className }) => {
+const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }>) => {
   const [value, setValue] = useSendBoxValue();
   const [{ sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [{ emojiSet, sendBoxTextWrap }] = useStyleOptions();
@@ -202,7 +201,7 @@ const TextBox = ({ className }) => {
 
   useRegisterFocusSendBox(focusCallback);
 
-  const emojiMap = useMemo(() => new Map(Object.entries(emojiSet)), [emojiSet]);
+  const emojiMap = useMemo(() => new Map<string, string>(Object.entries(emojiSet)), [emojiSet]);
 
   return (
     <form
@@ -256,14 +255,6 @@ const TextBox = ({ className }) => {
       {disabled && <div className="webchat__send-box-text-box__glass" />}
     </form>
   );
-};
-
-TextBox.defaultProps = {
-  className: ''
-};
-
-TextBox.propTypes = {
-  className: PropTypes.string
 };
 
 export default TextBox;
