@@ -1,4 +1,4 @@
-import AdaptiveCardsPackage from '../../types/AdaptiveCardsPackage';
+import { type AdaptiveCardsPackage } from '../../types/AdaptiveCardsPackage';
 import useAdaptiveCardsContext from './internal/useAdaptiveCardsContext';
 
 export default function useAdaptiveCardsPackage(): [AdaptiveCardsPackage] {
