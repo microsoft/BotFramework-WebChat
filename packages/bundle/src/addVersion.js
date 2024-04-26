@@ -1,4 +1,4 @@
-/* global global:readonly, process:readonly */
+/* global globalThis:readonly, process:readonly */
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
 
 import { version as componentVersion } from 'botframework-webchat-component';
@@ -6,7 +6,7 @@ import { version as coreVersion } from 'botframework-webchat-core';
 
 function setMetaTag(name, content) {
   try {
-    const { document } = global;
+    const { document } = globalThis;
 
     if (typeof document !== 'undefined' && document.createElement && document.head && document.head.appendChild) {
       const meta = document.querySelector(`html meta[name="${encodeURI(name)}"]`) || document.createElement('meta');
