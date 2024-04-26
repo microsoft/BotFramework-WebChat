@@ -57,6 +57,7 @@
     "precommit:typecheck:bundle": "cd packages && cd bundle && npm run precommit:typecheck",
     "precommit:typecheck:component": "cd packages && cd component && npm run precommit:typecheck",
     "precommit:typecheck:core": "cd packages && cd core && npm run precommit:typecheck",
+    "precommit:typecheck:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:typecheck",
     "prepare": "husky install",
     "start": "concurrently --kill-others --raw \"serve -p 5000\" \"lerna run --ignore playground --parallel --stream start\"",
     "start:docker": "echo This command has been renamed to \"npm run docker\" && npm run docker",
