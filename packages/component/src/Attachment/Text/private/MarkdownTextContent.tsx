@@ -19,7 +19,7 @@ import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import { type PropsOf } from '../../../types/PropsOf';
 import CitationModalContext from './CitationModalContent';
-import MessageSensitivityLabel from './MessageSensitivityLabel';
+import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './MessageSensitivityLabel';
 import isHTMLButtonElement from './isHTMLButtonElement';
 
 const { useLocalizer } = hooks;
@@ -195,7 +195,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
         onClick={handleClick}
       />
       {!!entries.length && (
-        <LinkDefinitions
+        <LinkDefinitions<MessageSensitivityLabelProps>
           accessoryComponentType={messageSensitivityLabelProps && MessageSensitivityLabel}
           accessoryProps={messageSensitivityLabelProps}
         >

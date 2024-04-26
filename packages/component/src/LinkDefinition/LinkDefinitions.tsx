@@ -1,17 +1,16 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { Children, memo, type ComponentType, type ReactNode } from 'react';
+import React, { Children, type ComponentType, type ReactNode } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
-import { type PropsOf } from '../types/PropsOf';
 import Chevron from './private/Chevron';
 
 const { useLocalizer } = hooks;
 const { count: childrenCount, map: childrenMap } = Children;
 
-type Props<TAccessory extends ComponentType> = Readonly<{
-  accessoryComponentType: TAccessory;
-  accessoryProps: PropsOf<TAccessory>;
+type Props<TAccessoryProps> = Readonly<{
+  accessoryComponentType: ComponentType<TAccessoryProps>;
+  accessoryProps: TAccessoryProps;
   children?: ReactNode | undefined;
 }>;
 
@@ -23,11 +22,11 @@ const REFERENCE_LIST_HEADER_IDS = {
   two: 'REFERENCE_LIST_HEADER_TWO'
 };
 
-const LinkDefinitions = <TAccessory extends ComponentType>({
+const LinkDefinitions = <TAccessoryProps extends object>({
   accessoryComponentType,
   accessoryProps,
   children
-}: Props<TAccessory>) => {
+}: Props<TAccessoryProps>) => {
   const [{ linkDefinitions }] = useStyleSet();
   const localizeWithPlural = useLocalizer({ plural: true });
 
@@ -58,4 +57,5 @@ const LinkDefinitions = <TAccessory extends ComponentType>({
 
 LinkDefinitions.displayName = 'LinkDefinitions';
 
-export default memo(LinkDefinitions);
+// TODO: [P1] Add memo().
+export default LinkDefinitions;
