@@ -1,16 +1,16 @@
-import React, { KeyboardEventHandler, memo, useCallback, useEffect, useRef, type ReactNode } from 'react';
-import cx from 'classnames';
-import { useRefFrom } from 'use-ref-from';
 import { Components } from 'botframework-webchat-component';
+import cx from 'classnames';
+import React, { KeyboardEventHandler, memo, useCallback, useEffect, useRef, type ReactNode } from 'react';
+import { useRefFrom } from 'use-ref-from';
 
 import Button from './Button';
 // import HorizontalDialPadController from './HorizontalDialPadController';
+import InfoSmallIcon from '../../../icons/InfoSmallIcon';
+import { useStyles } from '../../../styles';
 import testIds from '../../../testIds';
 import { type DTMF } from '../types';
 import useShown from '../useShown';
 import styles from './TelephoneKeypad.module.css';
-import { useStyles } from '../../../styles';
-import InfoSmallIcon from '../../../icons/InfoSmallIcon';
 
 const { LocalizedString } = Components;
 
@@ -25,10 +25,7 @@ const Orientation = memo(
   ({ children, isHorizontal }: Readonly<{ children?: ReactNode | undefined; isHorizontal: boolean }>) => {
     const classNames = useStyles(styles);
 
-    return isHorizontal ? (
-      // <HorizontalDialPadController>{children}</HorizontalDialPadController>
-      false
-    ) : (
+    return isHorizontal ? null : ( // <HorizontalDialPadController>{children}</HorizontalDialPadController>
       <div className={classNames['telephone-keypad__box']}>{children}</div>
     );
   }
