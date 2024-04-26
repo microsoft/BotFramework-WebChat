@@ -1,4 +1,5 @@
 import { hooks as apiHooks, concatMiddleware, localize } from 'botframework-webchat-api';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import ReactWebChat, { ReactWebChatProps } from './ReactWebChat';
 
@@ -38,7 +39,6 @@ import SuggestedActions from './SendBox/SuggestedActions';
 import SendTextBox from './SendBox/TextBox';
 import UploadButton from './SendBoxToolbar/UploadButton';
 
-import { type WebChatActivity } from 'botframework-webchat-core';
 import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
