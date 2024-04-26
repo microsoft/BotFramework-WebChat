@@ -50,6 +50,7 @@
         expect(document.activeElement).toBe(
           document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTelephoneKeypadButton1}"]`)
         );
+        await pageConditions.scrollToBottomCompleted();
         await host.snapshot();
 
         // WHEN: ESCAPE key is pressed.

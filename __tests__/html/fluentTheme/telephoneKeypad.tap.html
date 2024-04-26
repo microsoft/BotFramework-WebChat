@@ -58,6 +58,7 @@
         expect(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadButton5)).toBeTruthy();
         expect(document.activeElement).toBe(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadButton5));
 
+        await pageConditions.scrollToBottomCompleted();
         await host.snapshot();
       });
     </script>
