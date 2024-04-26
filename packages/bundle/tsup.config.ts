@@ -6,7 +6,7 @@ import baseConfig from '../../tsup.base.config';
 // to point to es2015 distribution for all importing modules
 const resolveCognitiveServicesToES2015 = {
   name: 'microsoft-cognitiveservices-speech-sdk',
-  setup(build) {k
+  setup(build) {
     build.onResolve({ filter: /microsoft-cognitiveservices-speech-sdk.+/u }, args => ({
       path: path.join(process.cwd(), 'node_modules', args.path.replace('distrib/lib', 'distrib/es2015') + '.js')
     }));
