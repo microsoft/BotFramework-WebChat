@@ -82,7 +82,7 @@ import observableToPromise from './utils/observableToPromise';
 
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
-import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+import PrecompiledGlobalize from '../external/PrecompiledGlobalize.cjs';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {

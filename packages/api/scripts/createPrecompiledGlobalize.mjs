@@ -1,12 +1,12 @@
-import { cwd } from 'process';
-import { existsSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { mkdir, readFile, writeFile } from 'fs/promises';
-import { relative } from 'path';
 import cldrData from 'cldr-data';
+import { existsSync } from 'fs';
+import { mkdir, readFile, writeFile } from 'fs/promises';
 import Globalize from 'globalize';
 import globalizeCompiler from 'globalize-compiler';
+import { relative } from 'path';
 import Prettier from 'prettier';
+import { cwd } from 'process';
+import { fileURLToPath } from 'url';
 
 (async function () {
   const overridesJSON = JSON.parse(
@@ -39,11 +39,22 @@ import Prettier from 'prettier';
     ];
   }, []);
 
-  const code = await Prettier.format(globalizeCompiler.compile(formattersAndParsers), { parser: 'babel' });
-  const outputFileURL = new URL('../src/external/PrecompiledGlobalize.js', import.meta.url);
+  const code = await Prettier.format(
+    globalizeCompiler.compile(formattersAndParsers, {
+      template: ({ code, dependencies }) =>
+        `
+const Globalize = require('globalize/dist/globalize-runtime');
 
-  // globalize-compiler is emitting AMD code, pointing to "globalize-runtime" instead of "globalize/dist/globalize-runtime"
-  const patchedCode = code.replace(/"globalize-runtime\//gu, '"globalize/dist/globalize-runtime/');
+${dependencies.map(name => `require('globalize/dist/${name}');`).join('\n')}
+
+${code}
+
+module.exports = Globalize;
+`
+    }),
+    { parser: 'babel' }
+  );
+  const outputFileURL = new URL('../src/external/PrecompiledGlobalize.cjs', import.meta.url);
 
   // False-positive: import.meta.url is fixed and should be secure.
   // eslint-disable-next-line security/detect-non-literal-fs-filename
@@ -55,7 +66,7 @@ import Prettier from 'prettier';
 
   // False-positive: import.meta.url is fixed and should be secure.
   // eslint-disable-next-line security/detect-non-literal-fs-filename
-  await writeFile(outputFileURL, patchedCode);
+  await writeFile(outputFileURL, code);
 
   // eslint-disable-next-line no-console
   console.log(`Successfully compiled globalize to ${relative(cwd(), fileURLToPath(outputFileURL))}.`);
