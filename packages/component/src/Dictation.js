@@ -1,15 +1,14 @@
-import { Composer as DictateComposer } from 'react-dictate-button';
-import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
+// TODO: [P1] #3350 No /lib/, we need to move setDictateState from bf-wc-core (Redux) to React Context.
+import { useSetDictateState } from 'botframework-webchat-api/internal';
+import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo } from 'react';
+import { Composer as DictateComposer } from 'react-dictate-button';
 
 import useResumeAudioContext from './hooks/internal/useResumeAudioContext';
 import useSettableDictateAbortable from './hooks/internal/useSettableDictateAbortable';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
-
-// TODO: [P1] #3350 No /lib/, we need to move setDictateState from bf-wc-core (Redux) to React Context.
-import useSetDictateState from 'botframework-webchat-api/lib/hooks/internal/useSetDictateState';
 
 const {
   useActivities,
