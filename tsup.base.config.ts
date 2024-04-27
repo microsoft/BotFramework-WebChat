@@ -1,4 +1,5 @@
 import { esbuildPluginIstanbul } from 'esbuild-plugin-istanbul';
+import { readFile } from 'fs/promises';
 import { defineConfig, type Options } from 'tsup';
 
 const env = process.env.NODE_ENV || 'development';
@@ -17,6 +18,16 @@ export default defineConfig({
   esbuildPlugins:
     env === 'test'
       ? [
+          // Skip *.worker.js from adding instrumentation code.
+          {
+            name: 'worker-file',
+            setup(build) {
+              build.onLoad({ filter: /\.worker\.[cm]?js$/u }, async args => ({
+                // eslint-disable-next-line security/detect-non-literal-fs-filename
+                contents: await readFile(args.path, 'utf-8')
+              }));
+            }
+          },
           esbuildPluginIstanbul({ filter: /\.[cm]?js$/u, loader: 'jsx', name: 'istanbul-loader-js' }),
           esbuildPluginIstanbul({ filter: /\.jsx$/u, loader: 'jsx', name: 'istanbul-loader-jsx' }),
           esbuildPluginIstanbul({ filter: /\.[cm]?ts$/u, loader: 'ts', name: 'istanbul-loader-ts' }),
