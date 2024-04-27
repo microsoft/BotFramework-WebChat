@@ -10,7 +10,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 let config = {
   entry: {
     webchat: './dist/botframework-webchat.mjs',
-    'webchat-es5': './dist/botframework-webchat.mjs',
+    'webchat-es5': './dist/botframework-webchat.es5.mjs',
     'webchat-minimal': './dist/botframework-webchat.minimal.mjs'
   },
   mode: 'production',
