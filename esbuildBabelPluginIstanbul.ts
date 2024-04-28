@@ -1,6 +1,7 @@
 import { transformFileAsync } from '@babel/core';
-import babelPluginIstanbul from 'babel-plugin-istanbul';
 import { OnLoadArgs, OnLoadOptions, OnLoadResult, Plugin } from 'esbuild';
+import { join } from 'path';
+import { fileURLToPath } from 'url';
 
 export type Predicate = (args: OnLoadArgs) => boolean;
 
@@ -13,12 +14,7 @@ export type IstanbulPluginConfig = {
 
 export const defaultPredicate: Predicate = args => !args.path.includes('/node_modules/');
 
-export const plugin = ({
-  filter,
-  loader,
-  name,
-  predicate = defaultPredicate
-}: IstanbulPluginConfig): Plugin => ({
+export const plugin = ({ filter, loader, name, predicate = defaultPredicate }: IstanbulPluginConfig): Plugin => ({
   name,
   setup(build) {
     build.onLoad({ filter }, async args => {
@@ -27,7 +23,9 @@ export const plugin = ({
       }
 
       const result = await transformFileAsync(args.path, {
-        plugins: [babelPluginIstanbul]
+        configFile: join(fileURLToPath(import.meta.url), '../babel.profile.config.json'),
+        rootMode: 'root',
+        sourceFileName: args.path
       });
 
       if (!result?.code) {
