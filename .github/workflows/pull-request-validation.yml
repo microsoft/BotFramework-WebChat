@@ -21,7 +21,7 @@ defaults:
 
 env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
-  # NODE_ENV: test # Add instrumentation code
+  NODE_ENV: test # Add instrumentation code
   node-version: 18.18 # Need to bump jest@29 to resolve something in https://github.com/facebook/react-native/issues/35701
   skip-secure-feed: true # Terrapin service is degrading and their team told us to disable Terrapin to unblock ourselves
 
@@ -48,7 +48,7 @@ jobs:
 
       - run: npm run bootstrap
 
-      - run: NODE_ENV=test npm run build --if-present # Add instrumentation code
+      - run: npm run build --if-present # Add instrumentation code
 
       - name: Pack Docker artifact
         run: |
