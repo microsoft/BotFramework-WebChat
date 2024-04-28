@@ -4,9 +4,7 @@ import FluentThemeProvider from './private/FluentThemeProvider';
 import testIds from './testIds';
 import { injectStyle } from './styles';
 
-declare const NPM_PACKAGE_VERSION: string;
-
-injectMetaTag('botframework-webchat-fluent-theme:version', NPM_PACKAGE_VERSION);
+injectMetaTag('botframework-webchat-fluent-theme:version', process.env['npm_package_version']);
 
 injectStyle();
 

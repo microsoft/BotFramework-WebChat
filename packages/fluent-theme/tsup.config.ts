@@ -1,9 +1,8 @@
 import { join } from 'path';
 import { defineConfig } from 'tsup';
 import { fileURLToPath } from 'url';
+import baseConfig from '../../tsup.base.config';
 import { injectedStyles as injectedStylesPlaceholder } from './src/styles/injectStyle';
-
-const target = ['chrome100', 'safari16'];
 
 const umdResolvePlugin = {
   name: 'umd-resolve',
@@ -37,60 +36,51 @@ const injectCSSPlugin = {
 
 export default defineConfig([
   {
-    dts: true,
-    entry: ['./src/index.ts'],
+    ...baseConfig,
+    entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
     loader: {
+      ...baseConfig.loader,
       '.css': 'local-css'
     },
-    esbuildPlugins: [injectCSSPlugin],
-    esbuildOptions(options) {
-      options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
-    },
-    format: ['cjs', 'esm'],
-    sourcemap: true,
-    target
+    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin],
+    // esbuildOptions(options) {
+    //   options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
+    // },
+    format: ['cjs', 'esm']
   },
   {
-    entry: {
-      'botframework-webchat-fluent-theme.development': './src/bundle.ts'
-    },
+    ...baseConfig,
+    entry: { 'botframework-webchat-fluent-theme.development': './src/bundle.ts' },
     loader: {
+      ...baseConfig.loader,
       '.css': 'local-css'
     },
-    esbuildOptions(options) {
-      options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
-      options.define['process.env.NODE_ENV'] = '"development"';
-    },
-    esbuildPlugins: [injectCSSPlugin, umdResolvePlugin],
+    // esbuildOptions(options) {
+    //   options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
+    //   options.define['process.env.NODE_ENV'] = '"development"';
+    // },
+    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin, umdResolvePlugin],
     format: 'iife',
     outExtension() {
-      return {
-        js: '.js'
-      };
-    },
-    sourcemap: true,
-    target
+      return { js: '.js' };
+    }
   },
   {
-    entry: {
-      'botframework-webchat-fluent-theme.production.min': './src/bundle.ts'
-    },
+    ...baseConfig,
+    entry: { 'botframework-webchat-fluent-theme.production.min': './src/bundle.ts' },
     loader: {
+      ...baseConfig.loader,
       '.css': 'local-css'
     },
-    esbuildOptions(options) {
-      options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
-      options.define['process.env.NODE_ENV'] = '"production"';
-    },
-    esbuildPlugins: [injectCSSPlugin, umdResolvePlugin],
+    // esbuildOptions(options) {
+    //   options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
+    //   options.define['process.env.NODE_ENV'] = '"production"';
+    // },
+    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin, umdResolvePlugin],
     format: 'iife',
     minify: true,
     outExtension() {
-      return {
-        js: '.js'
-      };
-    },
-    sourcemap: true,
-    target
+      return { js: '.js' };
+    }
   }
 ]);
