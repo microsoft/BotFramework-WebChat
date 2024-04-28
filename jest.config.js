@@ -37,6 +37,7 @@ module.exports = {
     '!<rootDir>/*.json',
     '!<rootDir>/node_modules/**',
     '!<rootDir>/packages/playground/**',
+    '!<rootDir>/packages/test/**',
     '!<rootDir>/samples/**'
   ],
   coverageReporters: ['json', 'lcov', 'text-summary', 'clover', 'cobertura'],
