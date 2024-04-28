@@ -51,7 +51,11 @@
       "needs to bump manually"
     ]
   },
+  "localPeerDependencies": {
+    "botframework-webchat": "0.0.0-0"
+  },
   "dependencies": {
+    "botframework-webchat": "0.0.0-0",
     "base64-arraybuffer": "1.0.2",
     "classnames": "2.3.2",
     "core-js": "3.34.0",
