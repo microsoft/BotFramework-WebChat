@@ -30,11 +30,6 @@ export default defineConfig({
     SPEECH_CONDUCT_OCSP_CHECK: '',
     SPEECH_OCSP_CACHE_ROOT: ''
   },
-  esbuildPlugins: [resolveCognitiveServicesToES2015],
-  noExternal: [
-    '@babel/runtime',
-    'memoize-one',
-    // 'microsoft-cognitiveservices-speech-sdk',
-    'web-speech-cognitive-services'
-  ]
+  esbuildPlugins: [...(baseConfig.esbuildPlugins || []), resolveCognitiveServicesToES2015],
+  noExternal: ['@babel/runtime', 'memoize-one', 'web-speech-cognitive-services']
 });
