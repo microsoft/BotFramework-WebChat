@@ -6,18 +6,18 @@ import { useCallback } from 'react';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 import useTrackEvent from './useTrackEvent';
 
-const warnDeprecation = warnOnce(
-  'This hook will be removed on or after 2026-04-03. Please use `useSendMessage` instead.'
-);
-
-export type PostActivityFile = {
+type PostActivityFile = {
   name: string;
   size: number;
   thumbnail?: string;
   url: string;
 };
 
-export default function useSendFiles(): (files: PostActivityFile[]) => void {
+const warnDeprecation = warnOnce(
+  'This hook will be removed on or after 2026-04-03. Please use `useSendMessage` instead.'
+);
+
+function useSendFiles(): (files: PostActivityFile[]) => void {
   const { sendFiles } = useWebChatAPIContext();
   const trackEvent = useTrackEvent();
 
@@ -36,3 +36,6 @@ export default function useSendFiles(): (files: PostActivityFile[]) => void {
     [sendFiles, trackEvent]
   );
 }
+
+export default useSendFiles;
+export { type PostActivityFile };
