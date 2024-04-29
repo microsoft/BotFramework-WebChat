@@ -37,7 +37,6 @@ const LiveRegionAttachments = ({ activity }: LiveRegionAttachmentsProps) => {
     <Fragment>
       {attachmentForScreenReaderRenderers.map((render, index) => (
         // Direct Line does not have key for attachment other than index.
-        // @ts-expect-error
         // eslint-disable-next-line react/no-array-index-key
         <div key={index}>{typeof render === 'function' && render()}</div>
       ))}

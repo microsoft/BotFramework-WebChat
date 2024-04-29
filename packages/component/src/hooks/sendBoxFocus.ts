@@ -1,6 +1,6 @@
 import { WaitUntilable } from './internal/createWaitUntilable';
 
-// TODO [P0]: remove to `use-propagate` when it
+// TODO [P0]: remove and use `use-propagate` when it
 // is able to work with React v16+
 // import { createPropagation } from 'use-propagate';
 import { useEffect } from 'react';

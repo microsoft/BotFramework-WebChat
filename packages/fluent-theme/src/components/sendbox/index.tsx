@@ -68,7 +68,7 @@ function SendBox(
               if (typeof previousReadOnly !== 'string') {
                 inputRef.current?.removeAttribute('readonly');
               } else {
-                inputRef.current?.setAttribute('readonly', previousReadOnly); 
+                inputRef.current?.setAttribute('readonly', previousReadOnly);
               }
             })()
           );
