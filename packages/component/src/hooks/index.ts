@@ -18,6 +18,9 @@ import { useTypingIndicatorVisible } from '../BasicTypingIndicator';
 import { useSendBoxSpeechInterimsVisible } from '../SendBox/BasicSendBox';
 import { useMicrophoneButtonClick, useMicrophoneButtonDisabled } from '../SendBox/MicrophoneButton';
 import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
+import { useRegisterFocusSendBox, type SendBoxFocusOptions } from './sendBoxFocus';
+
+export { type SendBoxFocusOptions };
 
 export {
   useDictateAbortable,
@@ -29,6 +32,7 @@ export {
   useMicrophoneButtonDisabled,
   useObserveScrollPosition,
   useObserveTranscriptFocus,
+  useRegisterFocusSendBox,
   useRenderMarkdownAsHTML,
   useScrollDown,
   useScrollTo,

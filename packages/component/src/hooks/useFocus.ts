@@ -2,16 +2,18 @@ import { useCallback } from 'react';
 
 import createWaitUntilable from './internal/createWaitUntilable';
 import useWebChatUIContext from './internal/useWebChatUIContext';
+import { useFocusSendBox } from './sendBoxFocus';
 
 export default function useFocus(): (where?: 'main' | 'sendBox' | 'sendBoxWithoutKeyboard') => Promise<void> {
-  const { focusSendBoxCallbacksRef, focusTranscriptCallbacksRef } = useWebChatUIContext();
+  const focusSendBox = useFocusSendBox();
+  const { focusTranscriptCallbacksRef } = useWebChatUIContext();
 
   return useCallback(
     async where => {
       if (where === 'sendBox' || where === 'sendBoxWithoutKeyboard') {
         const [options, getPromise] = createWaitUntilable({ noKeyboard: where === 'sendBoxWithoutKeyboard' });
 
-        focusSendBoxCallbacksRef.current.forEach(callback => callback(options));
+        focusSendBox(options);
 
         await getPromise();
       } else {
@@ -22,6 +24,6 @@ export default function useFocus(): (where?: 'main' | 'sendBox' | 'sendBoxWithou
         await getPromise();
       }
     },
-    [focusSendBoxCallbacksRef, focusTranscriptCallbacksRef]
+    [focusSendBox, focusTranscriptCallbacksRef]
   );
 }

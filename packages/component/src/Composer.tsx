@@ -44,7 +44,6 @@ import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
 import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import { type ContextOf } from './types/ContextOf';
-import { type FocusSendBoxInit } from './types/internal/FocusSendBoxInit';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import createCSSKey from './Utils/createCSSKey';
@@ -111,7 +110,6 @@ const ComposerCore = ({
   const [dictateAbortable, setDictateAbortable] = useState();
   const [referenceGrammarID] = useReferenceGrammarID();
   const [styleOptions] = useStyleOptions();
-  const focusSendBoxCallbacksRef = useRef<((init: FocusSendBoxInit) => Promise<void>)[]>([]);
   const focusTranscriptCallbacksRef = useRef<((init: FocusTranscriptInit) => Promise<void>)[]>([]);
   const internalMarkdownIt = useMemo(() => new MarkdownIt(), []);
   const scrollToCallbacksRef = useRef([]);
@@ -221,7 +219,6 @@ const ComposerCore = ({
       dictateAbortable,
       dispatchScrollPosition,
       dispatchTranscriptFocusByActivityKey,
-      focusSendBoxCallbacksRef,
       focusTranscriptCallbacksRef,
       internalMarkdownItState: [internalMarkdownIt],
       internalRenderMarkdownInline,
@@ -243,7 +240,6 @@ const ComposerCore = ({
       dictateAbortable,
       dispatchScrollPosition,
       dispatchTranscriptFocusByActivityKey,
-      focusSendBoxCallbacksRef,
       focusTranscriptCallbacksRef,
       internalMarkdownIt,
       internalRenderMarkdownInline,

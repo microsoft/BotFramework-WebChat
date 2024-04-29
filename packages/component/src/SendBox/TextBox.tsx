@@ -5,7 +5,7 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import AccessibleInputText from '../Utils/AccessibleInputText';
 import navigableEvent from '../Utils/TypeFocusSink/navigableEvent';
 import { ie11 } from '../Utils/detectBrowser';
-import useRegisterFocusSendBox from '../hooks/internal/useRegisterFocusSendBox';
+import { useRegisterFocusSendBox, type SendBoxFocusOptions } from '../hooks/sendBoxFocus';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useScrollDown from '../hooks/useScrollDown';
 import useScrollUp from '../hooks/useScrollUp';
@@ -162,8 +162,8 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
     [scrollDown, scrollUp]
   );
 
-  const focusCallback = useCallback<Parameters<typeof useRegisterFocusSendBox>[0]>(
-    options => {
+  const focusCallback = useCallback(
+    (options: SendBoxFocusOptions) => {
       const { noKeyboard } = options;
       const { current } = inputElementRef;
 
