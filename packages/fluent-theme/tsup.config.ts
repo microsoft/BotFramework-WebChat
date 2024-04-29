@@ -38,6 +38,7 @@ export default defineConfig([
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
+    env: { ...baseConfig.env, module_format: 'esmodules', transpiler: 'tsup' },
     loader: {
       ...baseConfig.loader,
       '.css': 'local-css'
@@ -51,6 +52,7 @@ export default defineConfig([
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme.development': './src/bundle.ts' },
+    env: { ...baseConfig.env, module_format: 'esmodules', transpiler: 'tsup' },
     loader: {
       ...baseConfig.loader,
       '.css': 'local-css'
@@ -68,6 +70,7 @@ export default defineConfig([
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme.production.min': './src/bundle.ts' },
+    env: { ...baseConfig.env, module_format: 'esmodules', transpiler: 'tsup' },
     loader: {
       ...baseConfig.loader,
       '.css': 'local-css'
