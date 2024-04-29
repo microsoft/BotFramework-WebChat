@@ -44,9 +44,6 @@ export default defineConfig([
       '.css': 'local-css'
     },
     esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin],
-    // esbuildOptions(options) {
-    //   options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
-    // },
     format: ['cjs', 'esm']
   },
   {
@@ -57,10 +54,6 @@ export default defineConfig([
       ...baseConfig.loader,
       '.css': 'local-css'
     },
-    // esbuildOptions(options) {
-    //   options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
-    //   options.define['process.env.NODE_ENV'] = '"development"';
-    // },
     esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin, umdResolvePlugin],
     format: 'iife',
     outExtension() {
@@ -75,10 +68,6 @@ export default defineConfig([
       ...baseConfig.loader,
       '.css': 'local-css'
     },
-    // esbuildOptions(options) {
-    //   options.define.NPM_PACKAGE_VERSION = JSON.stringify(process.env.npm_package_version);
-    //   options.define['process.env.NODE_ENV'] = '"production"';
-    // },
     esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin, umdResolvePlugin],
     format: 'iife',
     minify: true,
