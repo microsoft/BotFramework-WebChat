@@ -39,7 +39,6 @@ module.exports = {
     '!<rootDir>/packages/playground/**',
     '!<rootDir>/samples/**'
   ],
-  coveragePathIgnorePatterns: ['/node_modules/', '<rootDir>/packages/test/'],
   coverageReporters: ['json', 'lcov', 'text-summary', 'clover', 'cobertura'],
   globals: {
     npm_package_version: '0.0.0-0.jest'
