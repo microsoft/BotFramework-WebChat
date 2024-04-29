@@ -39,6 +39,7 @@
     "docker:up": "docker-compose -f docker-compose-wsl2.yml down && docker-compose -f docker-compose-wsl2.yml up --build --scale chrome=4",
     "eslint": "npm run precommit",
     "lint-staged": "lint-staged",
+    "pack-all": "npx lerna exec --scope=botframework* -- npm pack --pack-destination=$PWD && zip tarball.zip $PWD/*.tgz",
     "precommit": "lerna run --parallel --stream precommit -- ",
     "precommit:eslint:api": "cd packages && cd api && npm run precommit:eslint",
     "precommit:eslint:bundle": "cd packages && cd bundle && npm run precommit:eslint",
