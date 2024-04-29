@@ -1,5 +1,5 @@
 import { defineConfig, type Options } from 'tsup';
-import { defaultPredicate, plugin, type Predicate } from './esbuildBabelPluginIstanbul';
+import { babelPlugin, defaultPredicate, type Predicate } from './esbuildBabelPluginIstanbul';
 
 const env = process.env.NODE_ENV || 'development';
 const { npm_package_version } = process.env;
@@ -18,10 +18,30 @@ export default defineConfig({
   esbuildPlugins:
     env === 'test'
       ? [
-          plugin({ filter: /\.[cm]?js$/u, loader: 'jsx', name: 'istanbul-loader-js', predicate: istanbulPredicate }),
-          plugin({ filter: /\.jsx$/u, loader: 'jsx', name: 'istanbul-loader-jsx', predicate: istanbulPredicate }),
-          plugin({ filter: /\.[cm]?ts$/u, loader: 'ts', name: 'istanbul-loader-ts', predicate: istanbulPredicate }),
-          plugin({ filter: /\.tsx$/u, loader: 'tsx', name: 'istanbul-loader-tsx', predicate: istanbulPredicate })
+          babelPlugin({
+            filter: /\.[cm]?js$/u,
+            loader: 'jsx',
+            name: 'babel-plugin-istanbul:js',
+            predicate: istanbulPredicate
+          }),
+          babelPlugin({
+            filter: /\.jsx$/u,
+            loader: 'jsx',
+            name: 'babel-plugin-istanbul:jsx',
+            predicate: istanbulPredicate
+          }),
+          babelPlugin({
+            filter: /\.[cm]?ts$/u,
+            loader: 'ts',
+            name: 'babel-plugin-istanbul:ts',
+            predicate: istanbulPredicate
+          }),
+          babelPlugin({
+            filter: /\.tsx$/u,
+            loader: 'tsx',
+            name: 'babel-plugin-istanbul:tsx',
+            predicate: istanbulPredicate
+          })
         ]
       : [],
   format: 'esm',

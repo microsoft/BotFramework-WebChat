@@ -14,7 +14,7 @@ export type IstanbulPluginConfig = {
 
 export const defaultPredicate: Predicate = args => !args.path.includes('/node_modules/');
 
-export const plugin = ({ filter, loader, name, predicate = defaultPredicate }: IstanbulPluginConfig): Plugin => ({
+export const babelPlugin = ({ filter, loader, name, predicate = defaultPredicate }: IstanbulPluginConfig): Plugin => ({
   name,
   setup(build) {
     build.onLoad({ filter }, async args => {
