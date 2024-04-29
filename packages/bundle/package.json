@@ -3,6 +3,7 @@
   "version": "0.0.0-0",
   "description": "A highly-customizable web-based chat client for Azure Bot Services.",
   "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "exports": {
     ".": {
       "import": {

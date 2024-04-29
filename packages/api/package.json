@@ -3,6 +3,7 @@
   "version": "0.0.0-0",
   "description": "React DOM component of botframework-webchat",
   "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "exports": {
     ".": {
       "import": {

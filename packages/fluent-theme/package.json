@@ -3,6 +3,7 @@
   "version": "0.0.0-0",
   "description": "Fluent theme for Bot Framework Web Chat",
   "main": "./dist/botframework-webchat-fluent-theme.js",
+  "types": "./dist/botframework-webchat-fluent-theme.d.ts",
   "publishConfig": {
     "access": "public"
   },
