@@ -29,6 +29,10 @@ Web Chat now exports as ES Modules (named exports) along with CommonJS (named an
 
 End-user can now add a message and confirm before uploading their file to the bot. To opt-out of the new experience, pass `sendAttachmentOn: 'send'` in style options.
 
+#### Theme pack support
+
+We are excited to add theme pack support. Developers can now pack all their customization in a single package and publish it to NPM.
+
 #### Experimental Fluent UI theme pack
 
 We are excited to announce Fluent UI theme pack is in the work and is currently in experimental phase. This theme pack is designed for web developers who want to bring a native Copilot user experience to their customers.
