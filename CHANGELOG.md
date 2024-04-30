@@ -29,6 +29,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `useSuggestedActions` type is updated to align with its actual implementation, by [@OEvgeny](https://github.com/OEvgeny), in PR [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
 -  Removed deprecated code: `connect*`, `useRenderActivity`, `useRenderActivityStatus`, `useRenderAvatar`, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
 -  Added named exports in both CommonJS and ES Modules module format, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
+-  (Experimental) Added `botframework-webchat-fluent-theme` package for applying Fluent UI theme to Web Chat, by [@compulim](https://github.com/compulim) and [@OEvgeny](https://github.com/OEvgeny)
+-  Removed deprecated `useFocusSendBox()` hook, please use `useFocus('sendBox')` instead, in PR [#5150](https://github.com/microsoft/BotFramework-WebChat/pull/5150), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Added
 
@@ -53,6 +55,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Added dark theme support, in PR [#5138](https://github.com/microsoft/BotFramework-WebChat/pull/5138)
    -  Added an information message to the telephone keypad, in PR [#5140](https://github.com/microsoft/BotFramework-WebChat/pull/5140)
    -  Added animation to focus indicator and pixel-perfected, in PR [#5143](https://github.com/microsoft/BotFramework-WebChat/pull/5143)
+   -  Integrated webchat focus management, in PR [#5150](https://github.com/microsoft/BotFramework-WebChat/pull/5150), by [@OEvgeny](https://github.com/OEvgeny)
 -  (Experimental) Added `<LocalizeString />` component which can be used to localize strings, by [@OEvgeny](https://github.com/OEvgeny) in PR [#5140](https://github.com/microsoft/BotFramework-WebChat/pull/5140)
 -  Added `<ThemeProvider>` component to apply theme pack to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
 -  Added `useMakeThumbnail` hook option to create a thumbnail from the file given, by [@compulim](https://github.com/compulim), in PR [#5123](https://github.com/microsoft/BotFramework-WebChat/pull/5123) and [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
@@ -66,6 +69,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#5146](https://github.com/microsoft/BotFramework-WebChat/issues/5146). Fixed chat history focus indicator should not show up on tap, by [@OEvgeny](https://github.com/OEvgeny), in PR [#5145](https://github.com/microsoft/BotFramework-WebChat/pull/5145)
 -  Fixes type portability issues by exporting types from all exported code, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
 -  Fixes missing exports of `useNotifications`, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
+-  Fixes suggested actions keyboard navigation skips actions after suggested actions got updated, in PR [#5150](https://github.com/microsoft/BotFramework-WebChat/pull/5150), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
