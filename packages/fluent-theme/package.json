@@ -10,12 +10,12 @@
   "exports": {
     ".": {
       "import": {
-        "default": "./dist/botframework-webchat-fluent-theme.mjs",
-        "types": "./dist/botframework-webchat-fluent-theme.d.mts"
+        "types": "./dist/botframework-webchat-fluent-theme.d.mts",
+        "default": "./dist/botframework-webchat-fluent-theme.mjs"
       },
       "required": {
-        "default": "./dist/botframework-webchat-fluent-theme.js",
-        "types": "./dist/botframework-webchat-fluent-theme.d.ts"
+        "types": "./dist/botframework-webchat-fluent-theme.d.ts",
+        "default": "./dist/botframework-webchat-fluent-theme.js"
       }
     }
   },
