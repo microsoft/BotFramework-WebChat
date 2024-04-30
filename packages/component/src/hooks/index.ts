@@ -1,6 +1,5 @@
 import useDictateAbortable from './useDictateAbortable';
 import useFocus from './useFocus';
-import useFocusSendBox from './useFocusSendBox';
 import useMakeThumbnail from './useMakeThumbnail';
 import useObserveScrollPosition from './useObserveScrollPosition';
 import useObserveTranscriptFocus from './useObserveTranscriptFocus';
@@ -25,8 +24,6 @@ export { type SendBoxFocusOptions };
 export {
   useDictateAbortable,
   useFocus,
-  /** @deprecated Please use `useFocus('sendBox')` instead. */
-  useFocusSendBox,
   useMakeThumbnail,
   useMicrophoneButtonClick,
   useMicrophoneButtonDisabled,

@@ -507,6 +507,8 @@ useFocusSendBox(): () => void
 
 > This function is deprecated. Developers should migrate to [`useFocus`](#usefocus).
 
+> This function was removed in `botframework-webchat@4.17.0`.
+
 When called, this function will send focus to the send box.
 
 ## `useGetSendTimeoutForActivity`
