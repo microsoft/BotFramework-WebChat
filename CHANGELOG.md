@@ -27,6 +27,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `useSendMessage` hook is updated to support sending attachments with a message. To reduce complexity, the `useSendFiles` hook is being deprecated. The hook will be removed on or after 2026-04-03
 -  `styleOptions.uploadThumbnailHeight` and `styleOptions.uploadThumbnailWidth` must be a `number` of pixels
 -  `useSuggestedActions` type is updated to align with its actual implementation, by [@OEvgeny](https://github.com/OEvgeny), in PR [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
+-  Removed deprecated code: `connect*`, `useRenderActivity`, `useRenderActivityStatus`, `useRenderAvatar`, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
+-  Added named exports in both CommonJS and ES Modules module format, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
 
 ### Added
 
@@ -54,6 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  (Experimental) Added `<LocalizeString />` component which can be used to localize strings, by [@OEvgeny](https://github.com/OEvgeny) in PR [#5140](https://github.com/microsoft/BotFramework-WebChat/pull/5140)
 -  Added `<ThemeProvider>` component to apply theme pack to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
 -  Added `useMakeThumbnail` hook option to create a thumbnail from the file given, by [@compulim](https://github.com/compulim), in PR [#5123](https://github.com/microsoft/BotFramework-WebChat/pull/5123) and [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
+-  Added `moduleFormat` and `transpiler` build info to `<meta>` tag, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
 
 ### Fixed
 
@@ -61,11 +64,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes [#5111](https://github.com/microsoft/BotFramework-WebChat/issues/5111). Fixed keyboard help screen to use HTML description list, by [@compulim](https://github.com/compulim), in PR [#5116](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5116)
 -  Fixes [#5080](https://github.com/microsoft/BotFramework-WebChat/issues/5080). Fixed `dateToLocaleISOString` for handling sub-hour, by [@marclundgren](https://github.com/marclundgren), in PR [#5114](https://github.com/microsoft/BotFramework-WebChat/pull/5114)
 -  Fixes [#5146](https://github.com/microsoft/BotFramework-WebChat/issues/5146). Fixed chat history focus indicator should not show up on tap, by [@OEvgeny](https://github.com/OEvgeny), in PR [#5145](https://github.com/microsoft/BotFramework-WebChat/pull/5145)
+-  Fixes type portability issues by exporting types from all exported code, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
+-  Fixes missing exports of `useNotifications`, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
 -  Moved pull request validation pipeline to GitHub Actions, by [@compulim](https://github.com/compulim), in PR [#4976](https://github.com/microsoft/BotFramework-WebChat/pull/4976)
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4973](https://github.com/microsoft/BotFramework-WebChat/pull/4973) and PR [#5115](https://github.com/microsoft/BotFramework-WebChat/pull/5115)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4973](https://github.com/microsoft/BotFramework-WebChat/pull/4973), PR [#5115](https://github.com/microsoft/BotFramework-WebChat/pull/5115), and PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148)
    -  Notes: Some components/features in Adaptive Cards are in preview and not ready for production use. Web Chat does not support these components and features
    -  Production dependencies
       -  [`adaptivecards@3.0.2`](https://npmjs.com/package/adaptivecards)
@@ -82,7 +87,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Development dependencies
       -  [`@types/dom-speech-recognition@0.0.4`](https://npmjs.com/package/@types/dom-speech-recognition)
       -  [`@types/node@20.10.3`](https://npmjs.com/package/@types/node)
-      -  [`@types/react@18.2.42`](https://npmjs.com/package/@types/react)
+      -  [`@types/react@16.14.60`](https://npmjs.com/package/@types/react)
       -  [`@typescript-eslint/eslint-plugin@6.13.2`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
       -  [`@typescript-eslint/parser@6.13.2`](https://npmjs.com/package/@typescript-eslint/parser)
       -  [`axe-core@4.8.2`](https://npmjs.com/package/axe-core)
