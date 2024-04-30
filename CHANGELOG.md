@@ -29,7 +29,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  `useSuggestedActions` type is updated to align with its actual implementation, by [@OEvgeny](https://github.com/OEvgeny), in PR [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
 -  Removed deprecated code: `connect*`, `useRenderActivity`, `useRenderActivityStatus`, `useRenderAvatar`, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
 -  Added named exports in both CommonJS and ES Modules module format, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
--  (Experimental) Added `botframework-webchat-fluent-theme` package for applying Fluent UI theme to Web Chat, by [@compulim](https://github.com/compulim) and [@OEvgeny](https://github.com/OEvgeny)
 -  Removed deprecated `useFocusSendBox()` hook, please use `useFocus('sendBox')` instead, in PR [#5150](https://github.com/microsoft/BotFramework-WebChat/pull/5150), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Added
