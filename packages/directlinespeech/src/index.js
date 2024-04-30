@@ -23,10 +23,7 @@ if (typeof HTMLDocument !== 'undefined' && typeof document !== 'undefined' && do
   const packageMeta = document.createElement('meta');
 
   packageMeta.setAttribute('name', 'botframework-directlinespeech');
-  packageMeta.setAttribute(
-    'content',
-    `version=${version}; format=${process.env.module_format}; transpiler=${process.env.transpiler}`
-  );
+  packageMeta.setAttribute('content', `version=${version}; build_tool=${buildTool}; format=${moduleFormat}`);
 
   document.head.appendChild(packageMeta);
 }
