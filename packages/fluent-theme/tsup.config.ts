@@ -38,13 +38,24 @@ export default defineConfig([
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
+    env: { ...baseConfig.env, module_format: 'commonjs', transpiler: 'tsup' },
+    loader: {
+      ...baseConfig.loader,
+      '.css': 'local-css'
+    },
+    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin],
+    format: ['cjs']
+  },
+  {
+    ...baseConfig,
+    entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
     env: { ...baseConfig.env, module_format: 'esmodules', transpiler: 'tsup' },
     loader: {
       ...baseConfig.loader,
       '.css': 'local-css'
     },
     esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin],
-    format: ['cjs', 'esm']
+    format: ['esm']
   },
   {
     ...baseConfig,
