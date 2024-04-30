@@ -22,8 +22,6 @@ export default defineConfig({
   },
   env: {
     ...baseConfig.env,
-    module_format: 'esmodules',
-    transpiler: 'tsup',
 
     // Followings are required by microsoft-cognitiveservices-speech-sdk:
     NODE_TLS_REJECT_UNAUTHORIZED: '',
@@ -31,5 +29,10 @@ export default defineConfig({
     SPEECH_OCSP_CACHE_ROOT: ''
   },
   esbuildPlugins: [...(baseConfig.esbuildPlugins || []), resolveCognitiveServicesToES2015],
-  noExternal: ['@babel/runtime', 'memoize-one', 'microsoft-cognitiveservices-speech-sdk', 'web-speech-cognitive-services']
+  noExternal: [
+    '@babel/runtime',
+    'memoize-one',
+    'microsoft-cognitiveservices-speech-sdk',
+    'web-speech-cognitive-services'
+  ]
 });

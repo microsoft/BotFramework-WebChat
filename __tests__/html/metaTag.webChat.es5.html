@@ -25,8 +25,8 @@
             .map(value => value.trim().split('='))
         );
 
-        expect(buildInfo).toHaveProperty('format', 'esmodules');
-        expect(buildInfo).toHaveProperty('transpiler', 'tsup');
+        expect(buildInfo).toHaveProperty('build-tool', 'tsup');
+        expect(buildInfo).toHaveProperty('module-format', 'esmodules');
         expect(buildInfo).toHaveProperty('variant', 'full-es5');
         expect(buildInfo.version).toMatch(/^\d+\.\d+\.\d+($|-)/u);
       });

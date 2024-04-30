@@ -43,13 +43,11 @@ import TypingIndicatorMiddleware, { type RenderTypingIndicator } from './types/T
 import { type WebSpeechPonyfill } from './types/WebSpeechPonyfill';
 import { type WebSpeechPonyfillFactory } from './types/WebSpeechPonyfillFactory';
 
+const buildTool = process.env.build_tool;
 const moduleFormat = process.env.module_format;
-// No object destructuring for process.env because of how transpiler define variables.
-// eslint-disable-next-line prefer-destructuring
-const transpiler = process.env.transpiler;
 const version = process.env.npm_package_version;
 
-const buildInfo = { moduleFormat, transpiler, version };
+const buildInfo = { buildTool, moduleFormat, version };
 
 export {
   Composer,

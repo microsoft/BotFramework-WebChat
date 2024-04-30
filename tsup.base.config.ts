@@ -8,6 +8,8 @@ const istanbulPredicate: Predicate = args => defaultPredicate(args) && !/\.worke
 export default defineConfig({
   dts: true,
   env: {
+    build_tool: 'tsup',
+    module_format: 'esmodules',
     node_env: env,
     NODE_ENV: env,
     ...(npm_package_version ? { npm_package_version } : {})

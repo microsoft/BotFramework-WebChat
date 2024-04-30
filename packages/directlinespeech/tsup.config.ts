@@ -20,8 +20,6 @@ export default defineConfig({
   },
   env: {
     ...baseConfig.env,
-    module_format: 'esmodules',
-    transpiler: 'tsup',
 
     // Followings are required by microsoft-cognitiveservices-speech-sdk:
     NODE_TLS_REJECT_UNAUTHORIZED: '',

@@ -3,7 +3,13 @@ import 'core-js/features/object/entries.js';
 
 import createAdapters from './createAdapters';
 
-export { createAdapters };
+const buildTool = process.env.build_tool;
+const moduleFormat = process.env.module_format;
+const version = process.env.npm_package_version;
+
+const buildInfo = { buildTool, moduleFormat, version };
+
+export { buildInfo, createAdapters };
 
 if (typeof HTMLDocument !== 'undefined' && typeof document !== 'undefined' && document instanceof HTMLDocument) {
   const version = process.env.npm_package_version;

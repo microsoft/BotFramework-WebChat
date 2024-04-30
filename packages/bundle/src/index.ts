@@ -26,13 +26,20 @@ import createDirectLineSpeechAdapters from './createDirectLineSpeechAdapters';
 import createStyleSet from './createFullStyleSet';
 import useStyleOptions from './hooks/useStyleOptions';
 import useStyleSet from './hooks/useStyleSet';
-import { Components as MinimalComponents, hooks, version, withEmoji } from './index-minimal';
+import {
+  Components as MinimalComponents,
+  hooks,
+  buildInfo as minimalBuildInfo,
+  version,
+  withEmoji
+} from './index-minimal';
 import renderMarkdown from './markdown/renderMarkdown';
 import coreRenderWebChat from './renderWebChat';
 import { type AdaptiveCardsPackage } from './types/AdaptiveCardsPackage';
 import FullBundleStyleOptions, { StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
+const buildInfo = { ...minimalBuildInfo, variant: 'full' };
 
 export const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {
   (options as any).botAgent &&
@@ -87,6 +94,7 @@ export default ReactWebChat;
 
 export {
   Components,
+  buildInfo,
   createAdaptiveCardsAttachmentForScreenReaderMiddleware,
   createAdaptiveCardsAttachmentMiddleware,
   createCognitiveServicesSpeechServicesPonyfillFactory,
@@ -102,6 +110,7 @@ export type { AdaptiveCardsPackage, StrictStyleOptions, StyleOptions };
 
 window['WebChat'] = {
   ...window['WebChat'],
+  buildInfo,
   Components,
   createAdaptiveCardsAttachmentMiddleware,
   createAdaptiveCardsAttachmentForScreenReaderMiddleware,

@@ -25,19 +25,19 @@ function setMetaTag(name, content) {
 export default function addVersion(variant) {
   setMetaTag(
     'botframework-webchat:api',
-    `version=${apiBuildInfo.version}; format=${apiBuildInfo.moduleFormat}; transpiler=${apiBuildInfo.transpiler}`
+    `version=${apiBuildInfo.version}; build-tool=${apiBuildInfo.buildTool}; module-format=${apiBuildInfo.moduleFormat}`
   );
   setMetaTag(
     'botframework-webchat:bundle',
-    `version=${bundleVersion}; variant=${variant}; format=${process.env.module_format}; transpiler=${process.env.transpiler}`
+    `version=${bundleVersion}; variant=${variant}; build-tool=${process.env.build_tool}; module-format=${process.env.module_format}`
   );
   setMetaTag(
     'botframework-webchat:component',
-    `version=${componentBuildInfo.version}; format=${componentBuildInfo.moduleFormat}; transpiler=${componentBuildInfo.transpiler}`
+    `version=${componentBuildInfo.version}; build-tool=${componentBuildInfo.buildTool}; module-format=${componentBuildInfo.moduleFormat}`
   );
   setMetaTag(
     'botframework-webchat:core',
-    `version=${coreBuildInfo.version}; format=${coreBuildInfo.moduleFormat}; transpiler=${coreBuildInfo.transpiler}`
+    `version=${coreBuildInfo.version}; build-tool=${coreBuildInfo.buildTool}; module-format=${coreBuildInfo.moduleFormat}`
   );
 
   setMetaTag('botframework-webchat:bundle:variant', variant);
