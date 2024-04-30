@@ -37,7 +37,7 @@ We are excited to add theme pack support. Developers can now pack all their cust
 
 We are excited to announce Fluent UI theme pack is in the work and is currently in experimental phase. This theme pack is designed for web developers who want to bring a native Copilot user experience to their customers.
 
-We will continue to add new features and support both white-label experience and Fluent UI experience with same level of parity.
+We will continue to add new features and support both white-label experience and Fluent UI experience with the same level of parity.
 
 You can wrap Web Chat with `<FluentThemeProvider>` to try out the new experience.
 
