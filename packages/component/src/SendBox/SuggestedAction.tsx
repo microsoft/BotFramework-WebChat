@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { MouseEventHandler, useCallback, VFC } from 'react';
 
-import connectToWebChat from '../connectToWebChat';
 import useFocusVisible from '../hooks/internal/useFocusVisible';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
@@ -24,19 +23,6 @@ const ROOT_STYLE = {
     overflow: 'hidden' // Prevent image from leaking; object-fit does not work with IE11
   }
 };
-
-const connectSuggestedAction = (...selectors) =>
-  connectToWebChat(
-    ({ clearSuggestedActions, disabled, language, onCardAction }, { displayText, text, type, value }) => ({
-      click: () => {
-        onCardAction({ displayText, text, type, value });
-        type === 'openUrl' && clearSuggestedActions();
-      },
-      disabled,
-      language
-    }),
-    ...selectors
-  );
 
 type SuggestedActionProps = {
   buttonText: string;
@@ -173,5 +159,3 @@ SuggestedAction.propTypes = {
 };
 
 export default SuggestedAction;
-
-export { connectSuggestedAction };

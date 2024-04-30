@@ -8,7 +8,6 @@ import {
 } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import type { Definition } from 'mdast';
-// @ts-expect-error TS1479 should be fixed when bumping to typescript@5.
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import React, { memo, useCallback, useMemo, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
@@ -20,7 +19,7 @@ import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import { type PropsOf } from '../../../types/PropsOf';
 import CitationModalContext from './CitationModalContent';
-import MessageSensitivityLabel from './MessageSensitivityLabel';
+import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './MessageSensitivityLabel';
 import isHTMLButtonElement from './isHTMLButtonElement';
 
 const { useLocalizer } = hooks;
@@ -196,7 +195,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
         onClick={handleClick}
       />
       {!!entries.length && (
-        <LinkDefinitions
+        <LinkDefinitions<MessageSensitivityLabelProps>
           accessoryComponentType={messageSensitivityLabelProps && MessageSensitivityLabel}
           accessoryProps={messageSensitivityLabelProps}
         >

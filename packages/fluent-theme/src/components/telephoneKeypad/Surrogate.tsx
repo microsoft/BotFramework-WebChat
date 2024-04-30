@@ -6,7 +6,7 @@ import useShown from './useShown';
 
 type Props = PropsOf<typeof TelephoneKeypad>;
 
-const TelephoneKeypadSurrogate = memo((props: Props) => (useShown()[0] ? <TelephoneKeypad {...props} /> : false));
+const TelephoneKeypadSurrogate = memo((props: Props) => (useShown()[0] ? <TelephoneKeypad {...props} /> : null));
 
 TelephoneKeypadSurrogate.displayName = 'TelephoneKeypad.Surrogate';
 

@@ -4,17 +4,15 @@ import { useCallback } from 'react';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 import useTrackEvent from './useTrackEvent';
 
-type SendMessage = (
+export default function useSendMessage(): (
   text?: string,
   method?: string,
   init?: { attachments?: readonly SendBoxAttachment[] | undefined; channelData?: any }
-) => void;
-
-export default function useSendMessage(): SendMessage {
+) => void {
   const { sendMessage } = useWebChatAPIContext();
   const trackEvent = useTrackEvent();
 
-  return useCallback<SendMessage>(
+  return useCallback(
     (text, method, { attachments, channelData } = {}) => {
       trackEvent('sendMessage', {
         numAttachments: attachments?.length || 0,

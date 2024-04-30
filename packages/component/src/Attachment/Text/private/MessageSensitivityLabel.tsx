@@ -3,7 +3,7 @@ import React, { memo, useMemo } from 'react';
 
 import ShieldIcon from './ShieldIcon';
 
-type Props = Readonly<{
+type MessageSensitivityLabelProps = Readonly<{
   className?: string | undefined;
   color?: string | undefined;
   isEncrypted?: boolean | undefined;
@@ -11,7 +11,7 @@ type Props = Readonly<{
   title?: string | undefined;
 }>;
 
-const MessageSensitivityLabel = memo(({ className, color, isEncrypted, name, title }: Props) => (
+const MessageSensitivityLabel = memo(({ className, color, isEncrypted, name, title }: MessageSensitivityLabelProps) => (
   <div
     className={classNames(
       'webchat__link-definitions__message-sensitivity-label',
@@ -34,3 +34,5 @@ const MessageSensitivityLabel = memo(({ className, color, isEncrypted, name, tit
 MessageSensitivityLabel.displayName = 'MessageSensitivityLabel';
 
 export default MessageSensitivityLabel;
+
+export type { MessageSensitivityLabelProps };

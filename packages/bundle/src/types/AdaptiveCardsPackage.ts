@@ -3,9 +3,9 @@ import {
   GlobalSettings,
   HorizontalAlignment,
   HostConfig,
+  SerializationContext,
   TextSize,
   TextWeight,
-  SerializationContext,
   Version
 } from 'adaptivecards';
 
@@ -20,4 +20,4 @@ type AdaptiveCardsPackage = {
   Version: typeof Version;
 };
 
-export default AdaptiveCardsPackage;
+export { type AdaptiveCardsPackage };

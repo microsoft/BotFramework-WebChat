@@ -2,20 +2,20 @@
   "name": "botframework-webchat-fluent-theme",
   "version": "0.0.0-0",
   "description": "Fluent theme for Bot Framework Web Chat",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/botframework-webchat-fluent-theme.js",
+  "types": "./dist/botframework-webchat-fluent-theme.d.ts",
   "publishConfig": {
     "access": "public"
   },
   "exports": {
     ".": {
       "import": {
-        "default": "./dist/index.mjs",
-        "types": "./dist/index.d.mts"
+        "types": "./dist/botframework-webchat-fluent-theme.d.mts",
+        "default": "./dist/botframework-webchat-fluent-theme.mjs"
       },
       "required": {
-        "default": "./dist/index.js",
-        "types": "./dist/index.d.ts"
+        "types": "./dist/botframework-webchat-fluent-theme.d.ts",
+        "default": "./dist/botframework-webchat-fluent-theme.js"
       }
     }
   },
@@ -54,12 +54,17 @@
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "start": "npm run build -- --watch"
   },
-  "pinDependencies": {},
+  "pinDependencies": {
+    "@types/react": [
+      "16",
+      "react@16.8.6 is our baseline"
+    ]
+  },
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.5",
     "@types/math-random": "^1.0.2",
     "@types/node": "^20.10.3",
-    "@types/react": "^18.2.74",
+    "@types/react": "^16.14.60",
     "tsup": "^8.0.2",
     "typescript": "^5.3.2"
   },

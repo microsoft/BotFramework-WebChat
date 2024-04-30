@@ -1,4 +1,4 @@
 /*.tgz
-/dist
-/lib
-/node_modules
+/dist/
+/lib/
+/node_modules/

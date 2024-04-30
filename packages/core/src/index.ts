@@ -68,10 +68,15 @@ import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Pro
 import type { Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
 
 const Constants = { ActivityClientState, DictateState };
+const buildTool = process.env.build_tool;
+const moduleFormat = process.env.module_format;
 const version = process.env.npm_package_version;
+
+const buildInfo = { buildTool, moduleFormat, version };
 
 export {
   Constants,
+  buildInfo,
   clearSuggestedActions,
   connect,
   createStore,
@@ -83,6 +88,7 @@ export {
   getOrgSchemaMessage,
   isForbiddenPropertyName,
   markActivity,
+  moduleFormat,
   onErrorResumeNext,
   parseAction,
   parseClaim,

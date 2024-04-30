@@ -34,15 +34,13 @@ import useLocalizer from './useLocalizer';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import useMarkActivityKeyAsRead from './useMarkActivityKeyAsRead';
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
+import useNotifications from './useNotifications';
 import usePerformCardAction from './usePerformCardAction';
 import usePonyfill from './usePonyfill';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
 import useRelativeTimeFormatter from './useRelativeTimeFormatter';
-import useRenderActivity from './useRenderActivity';
-import useRenderActivityStatus from './useRenderActivityStatus';
 import useRenderAttachment from './useRenderAttachment';
-import useRenderAvatar from './useRenderAvatar';
 import useRenderToast from './useRenderToast';
 import useRenderTypingIndicator from './useRenderTypingIndicator';
 import useSendBoxAttachments from './useSendBoxAttachments';
@@ -108,15 +106,13 @@ export {
   useMarkActivityAsSpoken,
   useMarkActivityKeyAsRead,
   useMarkAllAsAcknowledged,
+  useNotifications,
   usePerformCardAction,
   usePonyfill,
   usePostActivity,
   useReferenceGrammarID,
   useRelativeTimeFormatter,
-  useRenderActivity,
-  useRenderActivityStatus,
   useRenderAttachment,
-  useRenderAvatar,
   useRenderToast,
   useRenderTypingIndicator,
   useSendBoxAttachments,

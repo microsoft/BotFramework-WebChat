@@ -118,6 +118,16 @@ body:
         - Others or unrelated
     validations:
       required: true
+  - type: dropdown
+    id: theme-pack
+    attributes:
+      label: Which theme pack does this issue affect?
+      multiple: true
+      options:
+        - I did not test it on other theme packs
+        - Fluent UI
+    validations:
+      required: true
   - type: input
     id: url
     attributes:

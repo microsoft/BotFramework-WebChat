@@ -1,31 +1,30 @@
 /* eslint dot-notation: ["error", { "allowPattern": "^WebChat$" }] */
 // window['WebChat'] is required for TypeScript
 
-import {
-  Constants,
-  createStore,
-  createStoreWithDevTools,
-  createStoreWithOptions,
-  version
-} from 'botframework-webchat-core';
 import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
+import { Constants, createStore, createStoreWithDevTools, createStoreWithOptions } from 'botframework-webchat-core';
 
 import ReactWebChat, {
   Components,
   concatMiddleware,
-  connectToWebChat,
   createStyleSet,
   hooks,
   withEmoji
 } from 'botframework-webchat-component';
 
 import addVersion from './addVersion';
-import coreRenderWebChat from './renderWebChat';
 import createBrowserWebSpeechPonyfillFactory from './createBrowserWebSpeechPonyfillFactory';
 import defaultCreateDirectLine from './createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from './createDirectLineAppServiceExtension';
+import coreRenderWebChat from './renderWebChat';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
+
+const buildTool = process.env.build_tool;
+const moduleFormat = process.env.module_format;
+const version = process.env.npm_package_version;
+
+const buildInfo = { buildTool, moduleFormat, variant: 'minimal', version };
 
 export const createDirectLine = options => {
   options.botAgent &&
@@ -49,9 +48,9 @@ export default ReactWebChat;
 
 export {
   Components,
-  concatMiddleware,
-  connectToWebChat,
   Constants,
+  buildInfo,
+  concatMiddleware,
   createBrowserWebSpeechPonyfillFactory,
   createStore,
   createStoreWithDevTools,
@@ -63,13 +62,12 @@ export {
   withEmoji
 };
 
-export type { StyleOptions, StrictStyleOptions };
+export type { StrictStyleOptions, StyleOptions };
 
 // Until we have a development-specific bundle, we are not shipping createStoreWithDevTools in bundle.
 window['WebChat'] = {
   ...window['WebChat'],
   concatMiddleware,
-  connectToWebChat,
   Constants,
   createBrowserWebSpeechPonyfillFactory,
   createDirectLine,

@@ -15,8 +15,7 @@ import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import type { FC, ReactNode } from 'react';
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Composer as SayComposer } from 'react-say';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
@@ -100,7 +99,7 @@ type ComposerCoreProps = Readonly<{
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
 }>;
 
-const ComposerCore: FC<ComposerCoreProps> = ({
+const ComposerCore = ({
   children,
   extraStyleSet,
   nonce,
@@ -108,7 +107,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
   styleSet,
   suggestedActionsAccessKey,
   webSpeechPonyfillFactory
-}) => {
+}: ComposerCoreProps) => {
   const [dictateAbortable, setDictateAbortable] = useState();
   const [referenceGrammarID] = useReferenceGrammarID();
   const [styleOptions] = useStyleOptions();
@@ -274,7 +273,6 @@ const ComposerCore: FC<ComposerCoreProps> = ({
 };
 
 ComposerCore.defaultProps = {
-  children: undefined,
   extraStyleSet: undefined,
   nonce: undefined,
   renderMarkdown: undefined,
@@ -294,7 +292,7 @@ ComposerCore.propTypes = {
 
 type ComposerProps = APIComposerProps & ComposerCoreProps;
 
-const Composer: FC<ComposerProps> = ({
+const Composer = ({
   activityMiddleware,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
@@ -314,7 +312,7 @@ const Composer: FC<ComposerProps> = ({
   typingIndicatorMiddleware,
   webSpeechPonyfillFactory,
   ...composerProps
-}) => {
+}: ComposerProps) => {
   const { nonce, onTelemetry } = composerProps;
   const theme = useTheme();
 

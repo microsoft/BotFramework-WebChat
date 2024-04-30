@@ -59,7 +59,7 @@ import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from '
 import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
 import ToastMiddleware from '../types/ToastMiddleware';
 import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
-import { type ContextOf } from '../types/internal/ContextOf';
+import { type ContextOf } from '../types/ContextOf';
 import createCustomEvent from '../utils/createCustomEvent';
 import isObject from '../utils/isObject';
 import mapMap from '../utils/mapMap';
@@ -82,7 +82,7 @@ import observableToPromise from './utils/observableToPromise';
 
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
-import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+import PrecompiledGlobalize from '../external/PrecompiledGlobalize.cjs';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -348,6 +348,7 @@ const ComposerCore = ({
         DISPATCHERS,
         dispatcher =>
           (...args) =>
+            // @ts-expect-error
             dispatch(dispatcher(...args))
       ),
     [dispatch]

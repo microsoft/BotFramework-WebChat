@@ -27,7 +27,9 @@ const BUILD_OPTIONS = {
   // Currently, we are only serving webchat-es5.js for development and testing purpose.
   // Saving some CPUs by not building other bundles.
   entryPoints: {
-    'webchat-es5': resolveFromProjectRoot('./lib/index-es5.js')
+    webchat: resolveFromProjectRoot('./dist/botframework-webchat.mjs'),
+    'webchat-es5': resolveFromProjectRoot('./dist/botframework-webchat.es5.mjs'),
+    'webchat-minimal': resolveFromProjectRoot('./dist/botframework-webchat.minimal.mjs')
   },
   logLevel: 'info',
   // Generate stats.json.
