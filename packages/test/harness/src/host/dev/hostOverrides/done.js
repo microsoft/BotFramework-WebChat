@@ -6,7 +6,7 @@ const override = require('../utils/override');
 
 // Send the completion back to the browser console.
 module.exports = (webDriver, done) =>
-  override(done, undefined, async ({ skipCheckAccessibility }) => {
+  override(done, undefined, async ({ skipCheckAccessibility } = {}) => {
     skipCheckAccessibility || (await checkAccessibility(webDriver)());
 
     /* istanbul ignore next */
