@@ -55,6 +55,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Added an information message to the telephone keypad, in PR [#5140](https://github.com/microsoft/BotFramework-WebChat/pull/5140)
    -  Added animation to focus indicator and pixel-perfected, in PR [#5143](https://github.com/microsoft/BotFramework-WebChat/pull/5143)
    -  Integrated focus management for send box, in PR [#5150](https://github.com/microsoft/BotFramework-WebChat/pull/5150), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Added keyboard navigation support into suggested actions, in PR [#5154](https://github.com/microsoft/BotFramework-WebChat/pull/5154), by [@OEvgeny](https://github.com/OEvgeny)
 -  (Experimental) Added `<LocalizeString />` component which can be used to localize strings, by [@OEvgeny](https://github.com/OEvgeny) in PR [#5140](https://github.com/microsoft/BotFramework-WebChat/pull/5140)
 -  Added `<ThemeProvider>` component to apply theme pack to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
 -  Added `useMakeThumbnail` hook option to create a thumbnail from the file given, by [@compulim](https://github.com/compulim), in PR [#5123](https://github.com/microsoft/BotFramework-WebChat/pull/5123) and [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
