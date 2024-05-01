@@ -1,10 +1,11 @@
 import { hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import cx from 'classnames';
-import React, { MouseEventHandler, memo, useCallback, useRef } from 'react';
+import React, { MouseEventHandler, memo, useCallback } from 'react';
 import styles from './SuggestedAction.module.css';
 import { useStyles } from '../../styles';
 import AccessibleButton from './AccessibleButton';
+import { useRovingFocusItemRef } from './private/rovingFocus';
 
 const { useDisabled, useFocus, usePerformCardAction, useScrollToEnd, useStyleSet, useSuggestedActions } = hooks;
 
@@ -38,13 +39,14 @@ function SuggestedAction({
   imageAlt,
   text,
   type,
-  value
+  value,
+  itemIndex
 }: SuggestedActionProps) {
   const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
   const focus = useFocus();
-  const focusRef = useRef<HTMLButtonElement>(null);
+  const focusRef = useRovingFocusItemRef<HTMLButtonElement>(itemIndex);
   const performCardAction = usePerformCardAction();
   const classNames = useStyles(styles);
   const scrollToEnd = useScrollToEnd();

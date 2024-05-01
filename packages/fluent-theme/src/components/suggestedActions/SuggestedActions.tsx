@@ -1,12 +1,13 @@
 import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
-import React, { memo, type ReactNode } from 'react';
+import React, { memo, useCallback, type ReactNode } from 'react';
 import SuggestedAction from './SuggestedAction';
 import computeSuggestedActionText from './private/computeSuggestedActionText';
 import styles from './SuggestedActions.module.css';
 import { useStyles } from '../../styles';
+import RovingFocusProvider from './private/rovingFocus';
 
-const { useLocalizer, useStyleOptions, useStyleSet, useSuggestedActions } = hooks;
+const { useFocus, useLocalizer, useStyleOptions, useStyleSet, useSuggestedActions } = hooks;
 
 function SuggestedActionStackedOrFlowContainer(
   props: Readonly<{
@@ -44,6 +45,12 @@ function SuggestedActions() {
   const classNames = useStyles(styles);
   const localize = useLocalizer();
   const [suggestedActions] = useSuggestedActions();
+  const focus = useFocus();
+
+  const handleEscapeKey = useCallback(() => {
+    focus('sendBox');
+  }, [focus]);
+
   const children = suggestedActions.map((cardAction, index) => {
     const { displayText, image, imageAltText, text, type, value } = cardAction as {
       displayText?: string;
@@ -85,13 +92,16 @@ function SuggestedActions() {
       />
     );
   });
+
   return (
-    <SuggestedActionStackedOrFlowContainer
-      aria-label={localize('SUGGESTED_ACTIONS_LABEL_ALT')}
-      className={classNames['suggested-actions']}
-    >
-      {children}
-    </SuggestedActionStackedOrFlowContainer>
+    <RovingFocusProvider onEscapeKey={handleEscapeKey}>
+      <SuggestedActionStackedOrFlowContainer
+        aria-label={localize('SUGGESTED_ACTIONS_LABEL_ALT')}
+        className={classNames['suggested-actions']}
+      >
+        {children}
+      </SuggestedActionStackedOrFlowContainer>
+    </RovingFocusProvider>
   );
 }
 
