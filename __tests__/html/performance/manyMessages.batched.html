@@ -61,6 +61,8 @@
           const averageOfFirstHalf = sumOfFirstHalf / firstHalf.length;
           const averageOfSecondHalf = sumOfSecondHalf / timeForEachQuorum.length;
 
+          console.log({ firstHalf, secondHalf: timeForEachQuorum, averageOfFirstHalf, averageOfSecondHalf });
+
           // Time taken to render the first half of the chat history, should be 80% similar to the time taken to render the second half of the chat history.
           expect(averageOfFirstHalf / averageOfSecondHalf).toBeGreaterThan(0.8);
         },
