@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      const NUM_MESSAGE = 400;
+      const QUORUM = 5;
+
+      run(async function () {
+        const {
+          WebChat: { ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.querySelector('main'));
+
+        await pageConditions.uiConnected();
+
+        const now = Date.now();
+        const timeForEachMessage = [];
+
+        for (let index = 0; index < NUM_MESSAGE; index++) {
+          const last = Date.now();
+
+          await directLine.emulateIncomingActivity(`Message ${index}.`);
+
+          timeForEachMessage.push(Date.now() - last);
+        }
+
+        await pageConditions.numActivitiesShown(NUM_MESSAGE);
+
+        console.log(`Took ${Date.now() - now} milliseconds.`);
+        console.log(timeForEachMessage.join(','));
+      });
+    </script>
+  </body>
+</html>

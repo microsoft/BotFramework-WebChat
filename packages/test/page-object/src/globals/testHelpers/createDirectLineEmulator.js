@@ -1,11 +1,11 @@
-import createDeferred from 'p-defer';
 import Observable from 'core-js/features/observable';
 import random from 'math-random';
+import createDeferred from 'p-defer';
 import updateIn from 'simple-update-in';
 
-import { createStoreWithOptions } from './createStore';
-import became from '../pageConditions/became';
 import createDeferredObservable from '../../utils/createDeferredObservable';
+import became from '../pageConditions/became';
+import { createStoreWithOptions } from './createStore';
 import shareObservable from './shareObservable';
 
 function isNativeClock() {
@@ -119,7 +119,7 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
       };
     },
     emulateConnected: connectedDeferred.resolve,
-    emulateIncomingActivity: async activity => {
+    emulateIncomingActivity: async (activity, { skipWait } = {}) => {
       if (typeof activity === 'string') {
         activity = {
           from: { id: 'bot', role: 'bot' },
@@ -145,11 +145,12 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
 
       activityDeferredObservable.next(activity);
 
-      await became(
-        'incoming activity appears in the store',
-        () => store.getState().activities.find(activity => activity.id === id),
-        1000
-      );
+      skipWait ||
+        (await became(
+          'incoming activity appears in the store',
+          () => store.getState().activities.find(activity => activity.id === id),
+          1000
+        ));
     },
     emulateOutgoingActivity: (activity, options) => {
       if (typeof activity === 'string') {
