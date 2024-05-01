@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      const NUM_MESSAGE = 200;
+      const QUORUM_SIZE = 20;
+
+      run(
+        async function () {
+          const {
+            WebChat: { ReactWebChat }
+          } = window; // Imports in UMD fashion.
+
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+          WebChat.renderWebChat({ directLine, store }, document.querySelector('main'));
+
+          await pageConditions.uiConnected();
+
+          const startAt = Date.now();
+          const timeForEachQuorum = [];
+          const promises = [];
+          let lastFlushAt = Date.now();
+
+          for (let index = 0; index < NUM_MESSAGE; index++) {
+            promises.push(directLine.emulateIncomingActivity(`Message ${index}.`, { skipWait: true }));
+
+            if (promises.length >= QUORUM_SIZE) {
+              await Promise.all(promises.splice(0));
+              await pageConditions.numActivitiesShown(index + 1);
+
+              const now = Date.now();
+
+              timeForEachQuorum.push(now - lastFlushAt);
+              lastFlushAt = now;
+            }
+          }
+
+          if (promises.length) {
+            await Promise.all(promises);
+
+            const now = Date.now();
+
+            timeForEachQuorum.push(now - lastFlushAt);
+          }
+
+          await pageConditions.numActivitiesShown(NUM_MESSAGE);
+
+          const firstHalf = timeForEachQuorum.splice(0, timeForEachQuorum.length >> 1);
+
+          const sumOfFirstHalf = firstHalf.reduce((sum, time) => sum + time, 0);
+          const sumOfSecondHalf = timeForEachQuorum.reduce((sum, time) => sum + time, 0);
+
+          const averageOfFirstHalf = sumOfFirstHalf / firstHalf.length;
+          const averageOfSecondHalf = sumOfSecondHalf / timeForEachQuorum.length;
+
+          // Time taken to render the first half of the chat history, should be 80% similar to the time taken to render the second half of the chat history.
+          expect(averageOfFirstHalf / averageOfSecondHalf).toBeGreaterThan(0.8);
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>

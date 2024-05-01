@@ -9,7 +9,8 @@
   <body>
     <main id="webchat"></main>
     <script>
-      const NUM_MESSAGE = 300;
+      const NUM_MESSAGE = 400;
+      const QUORUM = 5;
 
       run(async function () {
         const {
@@ -24,16 +25,21 @@
 
         const now = Date.now();
         const timeForEachMessage = [];
-        const promises = [];
 
         for (let index = 0; index < NUM_MESSAGE; index++) {
-          promises.push(directLine.emulateIncomingActivity(`Message ${index}.`, { skipWait: true }));
+          const last = Date.now();
+
+          await directLine.emulateIncomingActivity(`Message ${index}.`);
+
+          timeForEachMessage.push(Date.now() - last);
         }
 
-        await Promise.all(promises);
         await pageConditions.numActivitiesShown(NUM_MESSAGE);
 
-        console.log(`Took ${Date.now() - now} milliseconds.`, timeForEachMessage);
+        console.log(`Took ${Date.now() - now} milliseconds.`);
+        console.log(timeForEachMessage.join(','));
+
+        // TODO: How do we consider performance don't exponentially increase?
       });
     </script>
   </body>
