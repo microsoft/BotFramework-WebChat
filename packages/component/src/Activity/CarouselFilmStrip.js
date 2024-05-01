@@ -8,7 +8,6 @@ import React from 'react';
 
 import Bubble from './Bubble';
 import CarouselFilmStripAttachment from './CarouselFilmStripAttachment';
-import connectToWebChat from '../connectToWebChat';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
@@ -95,23 +94,6 @@ const ROOT_STYLE = {
     }
   }
 };
-
-const connectCarouselFilmStrip = (...selectors) =>
-  connectToWebChat(
-    (
-      {
-        language,
-        styleSet: {
-          options: { botAvatarInitials, userAvatarInitials }
-        }
-      },
-      { activity: { from: { role } = {} } = {} }
-    ) => ({
-      avatarInitials: role === 'user' ? userAvatarInitials : botAvatarInitials,
-      language
-    }),
-    ...selectors
-  );
 
 const CarouselFilmStrip = ({
   activity,
@@ -283,5 +265,3 @@ CarouselFilmStrip.propTypes = {
 };
 
 export default CarouselFilmStrip;
-
-export { connectCarouselFilmStrip };

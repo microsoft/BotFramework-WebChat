@@ -7,4 +7,4 @@ type Notification = {
   timestamp?: number;
 };
 
-export default Notification;
+export { type Notification };

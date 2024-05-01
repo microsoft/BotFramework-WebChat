@@ -1,17 +1,14 @@
-import { Components } from 'botframework-webchat-component';
+import { Components, type ComposerProps } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
 import React, { type ReactNode } from 'react';
 
-import AddFullBundle from './AddFullBundle';
-
-import { type AddFullBundleProps } from './AddFullBundle';
-import { type ComposerProps } from 'botframework-webchat-component';
+import AddFullBundle, { type AddFullBundleProps } from './AddFullBundle';
 
 const { Composer } = Components;
 
 type FullComposerProps = ComposerProps & Readonly<AddFullBundleProps>;
 
-const FullComposer = (props: FullComposerProps): ReactNode => (
+const FullComposer = (props: FullComposerProps) => (
   <AddFullBundle {...props}>
     {extraProps => (
       <Composer {...props} {...extraProps}>

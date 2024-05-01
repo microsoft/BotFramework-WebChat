@@ -1,8 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
-import PropTypes from 'prop-types';
-import React, { type ReactNode, Fragment } from 'react';
-
 import { type WebChatActivity } from 'botframework-webchat-core';
+import React, { Fragment } from 'react';
 
 const { useCreateAttachmentForScreenReaderRenderer, useLocalizer } = hooks;
 
@@ -21,7 +19,7 @@ type LiveRegionAttachmentsProps = Readonly<{
 // When "renderAttachments" is false, we will not render the content of attachments.
 // That means, it will only render "2 attachments", instead of "image attachment".
 // This is used in the visual transcript, where we render "Press ENTER to interact."
-const LiveRegionAttachments = ({ activity }: LiveRegionAttachmentsProps): ReactNode => {
+const LiveRegionAttachments = ({ activity }: LiveRegionAttachmentsProps) => {
   const { attachments = [] } = activity;
   const createAttachmentForScreenReaderRenderer = useCreateAttachmentForScreenReaderRenderer();
   const localizeWithPlural = useLocalizer({ plural: true });
@@ -40,20 +38,11 @@ const LiveRegionAttachments = ({ activity }: LiveRegionAttachmentsProps): ReactN
       {attachmentForScreenReaderRenderers.map((render, index) => (
         // Direct Line does not have key for attachment other than index.
         // eslint-disable-next-line react/no-array-index-key
-        <div key={index}>{render()}</div>
+        <div key={index}>{typeof render === 'function' && render()}</div>
       ))}
       {numAttachmentsAlt && <p>{numAttachmentsAlt}</p>}
     </Fragment>
   );
-};
-
-LiveRegionAttachments.propTypes = {
-  // PropTypes is not fully compatible with TypeScript definition.
-  // @ts-ignore
-  activity: PropTypes.shape({
-    attachments: PropTypes.array,
-    type: PropTypes.oneOf(['message'])
-  }).isRequired
 };
 
 export default LiveRegionAttachments;

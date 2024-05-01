@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import { type SendStatus } from '../../../types/internal/SendStatus';
+import type { SendStatus } from '../../../types/SendStatus';
 
 type ActivitySendStatusContextType = {
   sendStatusByActivityKeyState: readonly [ReadonlyMap<string, SendStatus>];

@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { type ReactNode } from 'react';
 
-import connectToWebChat from '../connectToWebChat';
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
@@ -21,19 +20,9 @@ const ROOT_STYLE = {
   display: 'flex'
 };
 
-const connectDictationInterims = (...selectors) =>
-  connectToWebChat(
-    ({ dictateInterims, dictateState, language }) => ({
-      dictateInterims,
-      dictateState,
-      language
-    }),
-    ...selectors
-  );
-
-type DictationInterimsProps = Readonly<{
+type DictationInterimsProps = {
   className?: string;
-}>;
+};
 
 const DictationInterims = ({ className }: DictationInterimsProps): ReactNode => {
   const [dictateInterims] = useDictateInterims();
@@ -77,5 +66,3 @@ DictationInterims.propTypes = {
 //       stop the dictation and allow the user to type-correct the transcript
 
 export default DictationInterims;
-
-export { connectDictationInterims };

@@ -6,7 +6,7 @@
 /* eslint max-classes-per-file: ["error", 4] */
 /* eslint no-empty-function: "off" */
 
-import EventTarget, { Event, getEventAttributeValue, setEventAttributeValue } from 'event-target-shim/es5';
+import EventTarget, { Event, getEventAttributeValue, setEventAttributeValue } from 'event-target-shim';
 
 class SpeechSynthesisEvent extends Event {
   constructor(type, utterance) {

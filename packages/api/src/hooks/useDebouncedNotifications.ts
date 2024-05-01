@@ -1,20 +1,20 @@
 import { useRef } from 'react';
 import updateIn from 'simple-update-in';
 
+import { type Notification } from '../types/Notification';
 import findMin from '../utils/findMin';
-import type Notification from '../types/Notification';
 import useForceRender from './internal/useForceRender';
+import useTimer from './internal/useTimer';
 import useNotifications from './useNotifications';
 import usePonyfill from './usePonyfill';
 import useStyleOptions from './useStyleOptions';
-import useTimer from './internal/useTimer';
 
-type DebouncedNotification = Notification & {
+export type DebouncedNotification = Notification & {
   outOfDate: boolean;
   updateNotBefore: number;
 };
 
-type DebouncedNotifications = { [id: string]: DebouncedNotification };
+export type DebouncedNotifications = { [id: string]: DebouncedNotification };
 
 function getEarliestUpdateNotBefore(notificationMap: DebouncedNotifications) {
   return findMin(

@@ -23,7 +23,7 @@ env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
   NODE_ENV: test # Add instrumentation code
   node-version: 18.18 # Need to bump jest@29 to resolve something in https://github.com/facebook/react-native/issues/35701
-  skip-secure-feed: false
+  skip-secure-feed: true # Terrapin service is degrading and their team told us to disable Terrapin to unblock ourselves
 
 jobs:
   build:
@@ -48,20 +48,22 @@ jobs:
 
       - run: npm run bootstrap
 
-      - run: npm run build --if-present
+      - run: npm run build --if-present # Add instrumentation code
 
       - name: Pack Docker artifact
         run: |
           zip docker.zip -r@ <<EOF
-          ./__tests__/
           ./babel-jest-config.js
           ./babel-passthru-transformer.js
           ./babel.config.json
           ./docker-compose-wsl2.yml
           ./jest.config.js
-          ./package.json
           ./package-lock.json
+          ./package.json
+          ./__tests__/
           ./packages/bundle/dist/
+          ./packages/fluent-theme/dist/
+          ./packages/test/fluent-bundle/dist/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
           ./serve-test.json
@@ -185,12 +187,20 @@ jobs:
 
       - run: npm run build --if-present
 
-      - name: Run tsd under packages/bundle
-        run: ./node_modules/.bin/tsd
+      - name: Run tsd under packages/bundle (CJS)
+        run: ./node_modules/.bin/tsd -t ./lib/index.d.ts
         working-directory: ./packages/bundle
 
-      - name: Run tsd under packages/core
-        run: ./node_modules/.bin/tsd
+      - name: Run tsd under packages/bundle (ESM)
+        run: ./node_modules/.bin/tsd -t ./dist/botframework-webchat.d.mts
+        working-directory: ./packages/bundle
+
+      - name: Run tsd under packages/core (CJS)
+        run: ./node_modules/.bin/tsd -t ./lib/index.d.ts
+        working-directory: ./packages/core
+
+      - name: Run tsd under packages/core (ESM)
+        run: ./node_modules/.bin/tsd -t ./dist/botframework-webchat-core.d.mts
         working-directory: ./packages/core
 
   html-test:

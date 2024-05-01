@@ -1,12 +1,13 @@
 import { createContext } from 'react';
 
-import type AdaptiveCardsPackage from '../types/AdaptiveCardsPackage';
+import { type AdaptiveCardsPackage } from '../types/AdaptiveCardsPackage';
 
-type AdaptiveCardsContext = {
+type AdaptiveCardsContextType = {
   adaptiveCardsPackage: AdaptiveCardsPackage;
   hostConfigFromProps: any;
 };
 
-const AdaptiveCardsContext = createContext<AdaptiveCardsContext>(undefined);
+const AdaptiveCardsContext = createContext<AdaptiveCardsContextType>(undefined);
 
 export default AdaptiveCardsContext;
+export type { AdaptiveCardsContextType };

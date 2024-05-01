@@ -1,6 +1,4 @@
-import type Observable from 'core-js/features/observable';
-
-import { type GlobalScopePonyfill } from 'botframework-webchat-core';
+import { type GlobalScopePonyfill, type Observable } from 'botframework-webchat-core';
 
 export default function observableToPromise<T>(
   observable: Observable<T>,

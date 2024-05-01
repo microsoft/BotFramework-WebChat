@@ -1,5 +1,5 @@
-import type WebSpeechPonyfill from './WebSpeechPonyfill';
+import { type WebSpeechPonyfill } from './WebSpeechPonyfill';
 
 type WebSpeechPonyfillFactory = ({ referenceGrammarID }: { referenceGrammarID?: string }) => WebSpeechPonyfill;
 
-export default WebSpeechPonyfillFactory;
+export { type WebSpeechPonyfillFactory };

@@ -7,17 +7,17 @@ import useRenderMarkdownAsHTML from '../../hooks/useRenderMarkdownAsHTML';
 import { type WebChatActivity } from 'botframework-webchat-core';
 
 type Props = Readonly<{
+  activity: WebChatActivity;
   contentType?: string;
-  entities?: WebChatActivity['entities'];
   text: string;
 }>;
 
-const TextContent = memo(({ contentType = 'text/plain', entities, text }: Props): ReactNode => {
+const TextContent = memo(({ activity, contentType = 'text/plain', text }: Props) => {
   const supportMarkdown = !!useRenderMarkdownAsHTML();
 
   return text ? (
     contentType === 'text/markdown' && supportMarkdown ? (
-      <MarkdownTextContent entities={entities} markdown={text} />
+      <MarkdownTextContent activity={activity} markdown={text} />
     ) : (
       <PlainTextContent text={text} />
     )

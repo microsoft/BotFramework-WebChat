@@ -8,9 +8,7 @@ export default function useItemRef<T extends HTMLElement>(itemIndex: number): Mu
 
   const { itemEffector } = useContext();
 
-  useEffect(() => {
-    itemEffector(ref, itemIndex);
-  });
+  useEffect(() => itemEffector(ref, itemIndex));
 
   return ref;
 }

@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 
-import AdaptiveCardsContext from '../../AdaptiveCardsContext';
+import AdaptiveCardsContext, { type AdaptiveCardsContextType } from '../../AdaptiveCardsContext';
 
-export default function useAdaptiveCardsContext(): AdaptiveCardsContext {
+export default function useAdaptiveCardsContext(): AdaptiveCardsContextType {
   const context = useContext(AdaptiveCardsContext);
 
   if (!context) {

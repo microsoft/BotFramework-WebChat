@@ -39,7 +39,8 @@ test('show ZIP files with contentUrl', async () => {
       };
 
       return patchedDirectLine;
-    }
+    },
+    props: { styleOptions: { sendAttachmentOn: 'attach' } }
   });
 
   await driver.wait(uiConnected(), timeouts.directLine);
@@ -112,7 +113,8 @@ test('show ZIP files without contentUrl', async () => {
       };
 
       return patchedDirectLine;
-    }
+    },
+    props: { styleOptions: { sendAttachmentOn: 'attach' } }
   });
 
   await driver.wait(uiConnected(), timeouts.directLine);

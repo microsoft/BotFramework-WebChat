@@ -1,12 +1,12 @@
 import {
-  type AdaptiveCard,
-  type GlobalSettings,
-  type HorizontalAlignment,
-  type HostConfig,
-  type TextSize,
-  type TextWeight,
-  type SerializationContext,
-  type Version
+  AdaptiveCard,
+  GlobalSettings,
+  HorizontalAlignment,
+  HostConfig,
+  SerializationContext,
+  TextSize,
+  TextWeight,
+  Version
 } from 'adaptivecards';
 
 type AdaptiveCardsPackage = {
@@ -20,4 +20,4 @@ type AdaptiveCardsPackage = {
   Version: typeof Version;
 };
 
-export default AdaptiveCardsPackage;
+export { type AdaptiveCardsPackage };

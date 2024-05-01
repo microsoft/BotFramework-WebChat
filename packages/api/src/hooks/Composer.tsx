@@ -1,7 +1,3 @@
-import { Provider } from 'react-redux';
-import PropTypes from 'prop-types';
-import React, { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import updateIn from 'simple-update-in';
 import {
   clearSuggestedActions,
   connect as createConnectAction,
@@ -21,6 +17,7 @@ import {
   setLanguage,
   setNotification,
   setSendBox,
+  setSendBoxAttachments,
   setSendTimeout,
   setSendTypingIndicator,
   singleToArray,
@@ -28,64 +25,64 @@ import {
   startSpeakingActivity,
   stopDictate,
   stopSpeakingActivity,
-  submitSendBox
+  submitSendBox,
+  type DirectLineJSBotConnection,
+  type GlobalScopePonyfill,
+  type OneOrMany,
+  type WebChatActivity
 } from 'botframework-webchat-core';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Provider } from 'react-redux';
+import updateIn from 'simple-update-in';
 
-import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
+import StyleOptions from '../StyleOptions';
+import usePonyfill from '../hooks/usePonyfill';
+import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
+import normalizeStyleOptions from '../normalizeStyleOptions';
+import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
-import type ActivityMiddleware from '../types/ActivityMiddleware';
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
-import type AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
-import type AttachmentMiddleware from '../types/AttachmentMiddleware';
-import type AvatarMiddleware from '../types/AvatarMiddleware';
-import type CardActionMiddleware from '../types/CardActionMiddleware';
+import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
+import ActivityMiddleware from '../types/ActivityMiddleware';
+import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
+import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
+import AttachmentMiddleware from '../types/AttachmentMiddleware';
+import AvatarMiddleware from '../types/AvatarMiddleware';
+import CardActionMiddleware from '../types/CardActionMiddleware';
+import GroupActivitiesMiddleware from '../types/GroupActivitiesMiddleware';
+import LocalizedStrings from '../types/LocalizedStrings';
+import PrecompiledGlobalizeType from '../types/PrecompiledGlobalize';
+import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from '../types/ScrollToEndButtonMiddleware';
+import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
+import ToastMiddleware from '../types/ToastMiddleware';
+import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
+import { type ContextOf } from '../types/ContextOf';
 import createCustomEvent from '../utils/createCustomEvent';
-import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
-import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
-import defaultSelectVoice from './internal/defaultSelectVoice';
-import ErrorBoundary from './utils/ErrorBoundary';
-import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
-import type GroupActivitiesMiddleware from '../types/GroupActivitiesMiddleware';
 import isObject from '../utils/isObject';
-import type LocalizedStrings from '../types/LocalizedStrings';
 import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
-import normalizeStyleOptions from '../normalizeStyleOptions';
-import observableToPromise from './utils/observableToPromise';
-import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
-import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
-import type PrecompiledGlobalizeType from '../types/PrecompiledGlobalize';
-import { type ScrollToEndButtonComponentFactory } from '../types/ScrollToEndButtonMiddleware';
-import type ScrollToEndButtonMiddleware from '../types/ScrollToEndButtonMiddleware';
-import type StyleOptions from '../StyleOptions';
-import { type TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
-import type TelemetryMeasurementEvent from '../types/TelemetryMeasurementEvent';
-import type ToastMiddleware from '../types/ToastMiddleware';
+import { SendBoxMiddlewareProvider, type SendBoxMiddleware } from './internal/SendBoxMiddleware';
+import { SendBoxToolbarMiddlewareProvider, type SendBoxToolbarMiddleware } from './internal/SendBoxToolbarMiddleware';
 import Tracker from './internal/Tracker';
-import type TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
-import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
-import usePonyfill from '../hooks/usePonyfill';
+import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
-
+import defaultSelectVoice from './internal/defaultSelectVoice';
 import applyMiddleware, {
   forLegacyRenderer as applyMiddlewareForLegacyRenderer,
   forRenderer as applyMiddlewareForRenderer
 } from './middleware/applyMiddleware';
+import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
+import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
+import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
+import ErrorBoundary from './utils/ErrorBoundary';
+import observableToPromise from './utils/observableToPromise';
 
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
-import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
-
-import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
-import { type ContextOf } from '../types/internal/ContextOf';
-import {
-  type DirectLineJSBotConnection,
-  type OneOrMany,
-  type GlobalScopePonyfill,
-  type WebChatActivity
-} from 'botframework-webchat-core';
+import PrecompiledGlobalize from '../external/PrecompiledGlobalize.cjs';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -103,6 +100,7 @@ const DISPATCHERS = {
   setDictateState,
   setNotification,
   setSendBox,
+  setSendBoxAttachments,
   setSendTimeout,
   startDictate,
   startSpeakingActivity,
@@ -111,10 +109,22 @@ const DISPATCHERS = {
   submitSendBox
 };
 
-function createCardActionContext({ cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill }) {
+function createCardActionContext({
+  cardActionMiddleware,
+  directLine,
+  dispatch,
+  markAllAsAcknowledged,
+  ponyfill
+}: {
+  cardActionMiddleware: readonly CardActionMiddleware[];
+  directLine: DirectLineJSBotConnection;
+  dispatch: Function;
+  markAllAsAcknowledged: () => void;
+  ponyfill: GlobalScopePonyfill;
+}) {
   const runMiddleware = applyMiddleware(
     'card action',
-    ...singleToArray(cardActionMiddleware),
+    ...cardActionMiddleware,
     createDefaultCardActionMiddleware()
   )({ dispatch });
 
@@ -151,10 +161,18 @@ function createCardActionContext({ cardActionMiddleware, directLine, dispatch, m
   };
 }
 
-function createGroupActivitiesContext({ groupActivitiesMiddleware, groupTimestamp, ponyfill }) {
+function createGroupActivitiesContext({
+  groupActivitiesMiddleware,
+  groupTimestamp,
+  ponyfill
+}: {
+  groupActivitiesMiddleware: readonly GroupActivitiesMiddleware[];
+  groupTimestamp: boolean | number;
+  ponyfill: GlobalScopePonyfill;
+}) {
   const runMiddleware = applyMiddleware(
     'group activities',
-    ...singleToArray(groupActivitiesMiddleware),
+    ...groupActivitiesMiddleware,
     createDefaultGroupActivitiesMiddleware({ groupTimestamp, ponyfill })
   );
 
@@ -199,7 +217,13 @@ type ComposerCoreProps = Readonly<{
   dir?: string;
   directLine: DirectLineJSBotConnection;
   disabled?: boolean;
-  downscaleImageToDataURL?: (blob: Blob, maxWidth: number, maxHeight: number, type: string, quality: number) => string;
+  downscaleImageToDataURL?: (
+    blob: Blob,
+    maxWidth: number,
+    maxHeight: number,
+    type: string,
+    quality: number
+  ) => Promise<URL>;
   grammars?: any;
   groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware>;
   internalErrorBoxClass?: React.Component | Function;
@@ -213,41 +237,22 @@ type ComposerCoreProps = Readonly<{
   ) => string;
   scrollToEndButtonMiddleware?: OneOrMany<ScrollToEndButtonMiddleware>;
   selectVoice?: (voices: (typeof window.SpeechSynthesisVoice)[], activity: WebChatActivity) => void;
+  sendBoxMiddleware?: readonly SendBoxMiddleware[] | undefined;
+  sendBoxToolbarMiddleware?: readonly SendBoxToolbarMiddleware[] | undefined;
   sendTypingIndicator?: boolean;
   styleOptions?: StyleOptions;
   toastMiddleware?: OneOrMany<ToastMiddleware>;
   typingIndicatorMiddleware?: OneOrMany<TypingIndicatorMiddleware>;
   userID?: string;
   username?: string;
-
-  /** @deprecated Please use "activityMiddleware" instead. */
-  activityRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
-  /** @deprecated Please use "activityStatusMiddleware" instead. */
-  activityStatusRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
-  /** @deprecated Please use "attachmentMiddleware" instead. */
-  attachmentRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
-  /** @deprecated Please use "avatarMiddleware" instead. */
-  avatarRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
-  /** @deprecated Please use "styleOptions.groupTimestamp" instead. */
-  groupTimestamp?: boolean | number; // TODO: [P4] Remove on or after 2022-01-01
-  /** @deprecated Please use "styleOptions.sendTimeout" instead. */
-  sendTimeout?: number; // TODO: [P4] Remove on or after 2022-01-01.
-  /** @deprecated Please use "toastMiddleware" instead. */
-  toastRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
-  /** @deprecated Please use "typingIndicatorRenderer" instead. */
-  typingIndicatorRenderer?: any; // TODO: [P4] Remove on or after 2022-06-15.
 }>;
 
 const ComposerCore = ({
   activityMiddleware,
-  activityRenderer,
   activityStatusMiddleware,
-  activityStatusRenderer,
   attachmentForScreenReaderMiddleware,
   attachmentMiddleware,
-  attachmentRenderer,
   avatarMiddleware,
-  avatarRenderer,
   cardActionMiddleware,
   children,
   dir,
@@ -256,7 +261,6 @@ const ComposerCore = ({
   downscaleImageToDataURL,
   grammars,
   groupActivitiesMiddleware,
-  groupTimestamp,
   internalErrorBoxClass,
   locale,
   onTelemetry,
@@ -264,13 +268,12 @@ const ComposerCore = ({
   renderMarkdown,
   scrollToEndButtonMiddleware,
   selectVoice,
-  sendTimeout,
+  sendBoxMiddleware,
+  sendBoxToolbarMiddleware,
   sendTypingIndicator,
   styleOptions,
   toastMiddleware,
-  toastRenderer,
   typingIndicatorMiddleware,
-  typingIndicatorRenderer,
   userID,
   username
 }: ComposerCoreProps) => {
@@ -281,17 +284,13 @@ const ComposerCore = ({
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
   const patchedStyleOptions = useMemo(
-    () => normalizeStyleOptions(patchStyleOptionsFromDeprecatedProps(styleOptions, { groupTimestamp, sendTimeout })),
-    [groupTimestamp, sendTimeout, styleOptions]
+    () => normalizeStyleOptions(patchStyleOptionsFromDeprecatedProps(styleOptions)),
+    [styleOptions]
   );
 
   useEffect(() => {
     dispatch(setLanguage(locale));
   }, [dispatch, locale]);
-
-  useEffect(() => {
-    typeof sendTimeout === 'number' && dispatch(setSendTimeout(sendTimeout));
-  }, [dispatch, sendTimeout]);
 
   useEffect(() => {
     dispatch(setSendTypingIndicator(!!sendTypingIndicator));
@@ -317,7 +316,14 @@ const ComposerCore = ({
   const markAllAsAcknowledged = useMarkAllAsAcknowledged();
 
   const cardActionContext = useMemo(
-    () => createCardActionContext({ cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill }),
+    () =>
+      createCardActionContext({
+        cardActionMiddleware: Object.freeze([...singleToArray(cardActionMiddleware)]),
+        directLine,
+        dispatch,
+        markAllAsAcknowledged,
+        ponyfill
+      }),
     [cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill]
   );
 
@@ -329,7 +335,7 @@ const ComposerCore = ({
   const groupActivitiesContext = useMemo(
     () =>
       createGroupActivitiesContext({
-        groupActivitiesMiddleware,
+        groupActivitiesMiddleware: Object.freeze([...singleToArray(groupActivitiesMiddleware)]),
         groupTimestamp: patchedStyleOptions.groupTimestamp,
         ponyfill
       }),
@@ -342,6 +348,7 @@ const ComposerCore = ({
         DISPATCHERS,
         dispatcher =>
           (...args) =>
+            // @ts-expect-error
             dispatch(dispatcher(...args))
       ),
     [dispatch]
@@ -379,14 +386,8 @@ const ComposerCore = ({
     [telemetryDimensionsRef]
   );
 
-  const patchedActivityRenderer = useMemo(() => {
-    activityRenderer &&
-      console.warn(
-        'Web Chat: "activityRenderer" is deprecated and will be removed on 2022-06-15, please use "activityMiddleware" instead.'
-      );
-
-    return (
-      activityRenderer ||
+  const patchedActivityRenderer = useMemo(
+    () =>
       applyMiddlewareForRenderer(
         'activity',
         { strict: false },
@@ -400,26 +401,20 @@ const ComposerCore = ({
               throw new Error('No activity to render');
             }
           }
-      )({})
-    );
-  }, [activityMiddleware, activityRenderer]);
+      )({}),
+    [activityMiddleware]
+  );
 
-  const patchedActivityStatusRenderer = useMemo<RenderActivityStatus>(() => {
-    activityStatusRenderer &&
-      console.warn(
-        'Web Chat: "activityStatusRenderer" is deprecated and will be removed on 2022-06-15, please use "activityStatusMiddleware" instead.'
-      );
-
-    return (
-      activityStatusRenderer ||
+  const patchedActivityStatusRenderer = useMemo<RenderActivityStatus>(
+    () =>
       applyMiddlewareForRenderer(
         'activity status',
         { strict: false },
         ...singleToArray(activityStatusMiddleware),
         () => () => () => false
-      )({})
-    );
-  }, [activityStatusMiddleware, activityStatusRenderer]);
+      )({}),
+    [activityStatusMiddleware]
+  );
 
   const patchedAttachmentForScreenReaderRenderer = useMemo(
     () =>
@@ -446,56 +441,37 @@ const ComposerCore = ({
     [attachmentForScreenReaderMiddleware]
   );
 
-  const patchedAttachmentRenderer = useMemo(() => {
-    if (attachmentRenderer) {
-      console.warn(
-        'Web Chat: "attachmentRenderer" is deprecated and will be removed on 2022-06-15, please use "attachmentMiddleware" instead.'
-      );
-
-      return attachmentRenderer;
-    }
-
-    // Attachment renderer
-    return applyMiddlewareForLegacyRenderer(
-      'attachment',
-      ...singleToArray(attachmentMiddleware),
-      () =>
+  const patchedAttachmentRenderer = useMemo(
+    () =>
+      applyMiddlewareForLegacyRenderer(
+        'attachment',
+        ...singleToArray(attachmentMiddleware),
         () =>
-        ({ attachment }) => {
-          if (attachment) {
-            throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
-          } else {
-            throw new Error('No attachment to render');
+          () =>
+          ({ attachment }) => {
+            if (attachment) {
+              throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
+            } else {
+              throw new Error('No attachment to render');
+            }
           }
-        }
-    )({});
-  }, [attachmentMiddleware, attachmentRenderer]);
+      )({}),
+    [attachmentMiddleware]
+  );
 
-  const patchedAvatarRenderer = useMemo(() => {
-    avatarRenderer &&
-      console.warn(
-        'Web Chat: "avatarRenderer" is deprecated and will be removed on 2022-06-15, please use "avatarMiddleware" instead.'
-      );
-
-    return (
-      avatarRenderer ||
+  const patchedAvatarRenderer = useMemo(
+    () =>
       applyMiddlewareForRenderer(
         'avatar',
         { strict: false },
         ...singleToArray(avatarMiddleware),
         () => () => () => false
-      )({})
-    );
-  }, [avatarMiddleware, avatarRenderer]);
+      )({}),
+    [avatarMiddleware]
+  );
 
-  const patchedToastRenderer = useMemo(() => {
-    toastRenderer &&
-      console.warn(
-        'Web Chat: "toastRenderer" is deprecated and will be removed on 2022-06-15, please use "toastMiddleware" instead.'
-      );
-
-    return (
-      toastRenderer ||
+  const patchedToastRenderer = useMemo(
+    () =>
       applyMiddlewareForRenderer(
         'toast',
         { strict: false },
@@ -509,26 +485,20 @@ const ComposerCore = ({
               throw new Error('No notification to render');
             }
           }
-      )({})
-    );
-  }, [toastMiddleware, toastRenderer]);
+      )({}),
+    [toastMiddleware]
+  );
 
-  const patchedTypingIndicatorRenderer = useMemo(() => {
-    typingIndicatorRenderer &&
-      console.warn(
-        'Web Chat: "typingIndicatorRenderer" is deprecated and will be removed on 2022-06-15, please use "typingIndicatorMiddleware" instead.'
-      );
-
-    return (
-      typingIndicatorRenderer ||
+  const patchedTypingIndicatorRenderer = useMemo(
+    () =>
       applyMiddlewareForRenderer(
         'typing indicator',
         { strict: false },
         ...singleToArray(typingIndicatorMiddleware),
         () => () => () => false
-      )({})
-    );
-  }, [typingIndicatorMiddleware, typingIndicatorRenderer]);
+      )({}),
+    [typingIndicatorMiddleware]
+  );
 
   const scrollToEndButtonRenderer: ScrollToEndButtonComponentFactory = useMemo(
     () =>
@@ -620,8 +590,12 @@ const ComposerCore = ({
   return (
     <WebChatAPIContext.Provider value={context}>
       <ActivitySendStatusComposer>
-        {typeof children === 'function' ? children(context) : children}
-        <ActivitySendStatusTelemetryComposer />
+        <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || Object.freeze([])}>
+          <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || Object.freeze([])}>
+            {typeof children === 'function' ? children(context) : children}
+            <ActivitySendStatusTelemetryComposer />
+          </SendBoxToolbarMiddlewareProvider>
+        </SendBoxMiddlewareProvider>
       </ActivitySendStatusComposer>
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>
@@ -636,14 +610,10 @@ const ComposerCore = ({
  */
 ComposerCore.defaultProps = {
   activityMiddleware: undefined,
-  activityRenderer: undefined,
   activityStatusMiddleware: undefined,
-  activityStatusRenderer: undefined,
   attachmentForScreenReaderMiddleware: undefined,
   attachmentMiddleware: undefined,
-  attachmentRenderer: undefined,
   avatarMiddleware: undefined,
-  avatarRenderer: undefined,
   cardActionMiddleware: undefined,
   children: undefined,
   dir: 'auto',
@@ -651,7 +621,6 @@ ComposerCore.defaultProps = {
   downscaleImageToDataURL: undefined,
   grammars: [],
   groupActivitiesMiddleware: undefined,
-  groupTimestamp: undefined,
   internalErrorBoxClass: undefined,
   locale: window.navigator.language || 'en-US',
   onTelemetry: undefined,
@@ -659,27 +628,20 @@ ComposerCore.defaultProps = {
   renderMarkdown: undefined,
   scrollToEndButtonMiddleware: undefined,
   selectVoice: undefined,
-  sendTimeout: undefined,
   sendTypingIndicator: false,
   styleOptions: {},
   toastMiddleware: undefined,
-  toastRenderer: undefined,
   typingIndicatorMiddleware: undefined,
-  typingIndicatorRenderer: undefined,
   userID: '',
   username: ''
 };
 
 ComposerCore.propTypes = {
   activityMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  activityRenderer: PropTypes.func,
   activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  activityStatusRenderer: PropTypes.func,
   attachmentForScreenReaderMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  attachmentRenderer: PropTypes.func,
   avatarMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  avatarRenderer: PropTypes.func,
   cardActionMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   children: PropTypes.any,
   dir: PropTypes.oneOf(['auto', 'ltr', 'rtl']),
@@ -702,7 +664,6 @@ ComposerCore.propTypes = {
   downscaleImageToDataURL: PropTypes.func,
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupActivitiesMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  groupTimestamp: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
   internalErrorBoxClass: PropTypes.func, // This is for internal use only. We don't allow customization of error box.
   locale: PropTypes.string,
   onTelemetry: PropTypes.func,
@@ -710,13 +671,10 @@ ComposerCore.propTypes = {
   renderMarkdown: PropTypes.func,
   scrollToEndButtonMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   selectVoice: PropTypes.func,
-  sendTimeout: PropTypes.number,
   sendTypingIndicator: PropTypes.bool,
   styleOptions: PropTypes.any,
   toastMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  toastRenderer: PropTypes.func,
   typingIndicatorMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  typingIndicatorRenderer: PropTypes.func,
   userID: PropTypes.string,
   username: PropTypes.string
 };

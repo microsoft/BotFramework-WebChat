@@ -1,12 +1,11 @@
 import { normalizeStyleOptions, type StrictStyleOptions, type StyleOptions } from 'botframework-webchat-api';
 
-import { type StrictAdaptiveCardsStyleOptions } from '../AdaptiveCardsStyleOptions';
-import type AdaptiveCardsStyleOptions from '../AdaptiveCardsStyleOptions';
-import type AdaptiveCardsStyleSet from '../AdaptiveCardsStyleSet';
+import { type AdaptiveCardsStyleOptions, type StrictAdaptiveCardsStyleOptions } from '../AdaptiveCardsStyleOptions';
+import { type AdaptiveCardsStyleSet } from '../AdaptiveCardsStyleSet';
+import normalizeAdaptiveCardsStyleOptions from '../normalizeStyleOptions';
 import createAdaptiveCardRendererStyle from './StyleSet/AdaptiveCardRenderer';
 import createAnimationCardAttachmentStyle from './StyleSet/AnimationCardAttachment';
 import createAudioCardAttachmentStyle from './StyleSet/AudioCardAttachment';
-import normalizeAdaptiveCardsStyleOptions from '../normalizeStyleOptions';
 
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.

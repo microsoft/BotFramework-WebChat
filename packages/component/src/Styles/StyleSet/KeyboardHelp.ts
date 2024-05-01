@@ -183,10 +183,12 @@ export default function createKeyboardHelpStyleSet({ paddingRegular, primaryFont
       },
 
       '& .webchat__keyboard-help__notes': {
-        marginBottom: paddingRegular
+        marginBottom: paddingRegular,
+        marginTop: 0
       },
 
       '& .webchat__keyboard-help__notes-header': {
+        fontWeight: 'bold',
         margin: 0
       },
 

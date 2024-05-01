@@ -2,9 +2,31 @@
   "cleanUrls": false,
   "redirects": [
     { "source": "/", "destination": "samples/index.html" },
+    {
+      "source": "/botframework-webchat-fluent-theme.development.js",
+      "destination": "packages/fluent-theme/dist/botframework-webchat-fluent-theme.development.js"
+    },
+    {
+      "source": "/botframework-webchat-fluent-theme.development.js.map",
+      "destination": "packages/fluent-theme/dist/botframework-webchat-fluent-theme.development.js.map"
+    },
+    {
+      "source": "/botframework-webchat-fluent-theme.production.min.js",
+      "destination": "packages/fluent-theme/dist/botframework-webchat-fluent-theme.production.min.js"
+    },
+    {
+      "source": "/botframework-webchat-fluent-theme.production.min.js.map",
+      "destination": "packages/fluent-theme/dist/botframework-webchat-fluent-theme.production.min.js.map"
+    },
     { "source": "/directline.js", "destination": "packages/bundle/dist/directline.js" },
-    { "source": "/directlinespeech.development.js", "destination": "packages/directlinespeech/dist/directlinespeech.development.js" },
-    { "source": "/directlinespeech.production.min.js", "destination": "packages/directlinespeech/dist/directlinespeech.production.min.js" },
+    {
+      "source": "/directlinespeech.development.js",
+      "destination": "packages/directlinespeech/dist/directlinespeech.development.js"
+    },
+    {
+      "source": "/directlinespeech.production.min.js",
+      "destination": "packages/directlinespeech/dist/directlinespeech.production.min.js"
+    },
     { "source": "/webchat.js", "destination": "packages/bundle/dist/webchat.js" },
     { "source": "/webchat-es5.js", "destination": "packages/bundle/dist/webchat-es5.js" },
     { "source": "/webchat-es5.js.map", "destination": "packages/bundle/dist/webchat-es5.js.map" },

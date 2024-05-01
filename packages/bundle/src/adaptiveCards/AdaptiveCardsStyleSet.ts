@@ -4,4 +4,4 @@ type AdaptiveCardsStyleSet = {
   audioCardAttachment: any;
 };
 
-export default AdaptiveCardsStyleSet;
+export { type AdaptiveCardsStyleSet };

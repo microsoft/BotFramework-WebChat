@@ -1,0 +1,23 @@
+
+:global(.webchat-fluent) .suggested-actions {
+  align-items: flex-end;
+  align-self: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &:not(:empty) {
+    padding-block-end: 8px;
+    padding-inline-start: 4px
+  }
+
+  &.suggested-actions--flow {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  &.suggested-actions--stacked {
+    flex-direction: column
+  }
+}

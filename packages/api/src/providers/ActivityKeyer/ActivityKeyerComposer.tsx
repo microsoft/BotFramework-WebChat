@@ -1,15 +1,13 @@
-import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef, type PropsWithChildren, type ReactNode } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
+import React, { useCallback, useMemo, useRef, type ReactNode } from 'react';
 
+import useActivities from '../../hooks/useActivities';
+import type { ActivityKeyerContextType } from './private/Context';
 import ActivityKeyerContext from './private/Context';
 import getActivityId from './private/getActivityId';
 import getClientActivityId from './private/getClientActivityId';
 import uniqueId from './private/uniqueId';
-import useActivities from '../../hooks/useActivities';
 import useActivityKeyerContext from './private/useContext';
-
-import { type ActivityKeyerContextType } from './private/Context';
-import { type WebChatActivity } from 'botframework-webchat-core';
 
 type ActivityIdToKeyMap = Map<string, string>;
 type ActivityToKeyMap = Map<WebChatActivity, string>;
@@ -32,7 +30,7 @@ type ActivityKeyerComposerProps = Readonly<PropsWithChildren>;
  *
  * Local key are only persisted in memory. On refresh, they will be a new random key.
  */
-const ActivityKeyerComposer = ({ children }: ActivityKeyerComposerProps): ReactNode => {
+const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | undefined }>) => {
   const existingContext = useActivityKeyerContext(false);
 
   if (existingContext) {
@@ -140,14 +138,6 @@ const ActivityKeyerComposer = ({ children }: ActivityKeyerComposerProps): ReactN
   }
 
   return <ActivityKeyerContext.Provider value={contextValue}>{children}</ActivityKeyerContext.Provider>;
-};
-
-ActivityKeyerComposer.defaultProps = {
-  children: undefined
-};
-
-ActivityKeyerComposer.propTypes = {
-  children: PropTypes.any
 };
 
 export default ActivityKeyerComposer;

@@ -2,8 +2,20 @@
   "name": "botframework-webchat-component",
   "version": "0.0.0-0",
   "description": "React component of botframework-webchat",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.d.mts",
+        "default": "./dist/botframework-webchat-component.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.js"
+      }
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -17,14 +29,16 @@
     "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
   "files": [
-    "lib/**/*",
-    "src/**/*"
+    "./dist/**/*",
+    "./lib/**/*",
+    "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
-    "build": "npm run build:typescript && npm run build:babel",
-    "build:babel": "babel src --copy-files --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --no-copy-ignored --out-dir lib --verbose",
+    "build": "npm run build:tsup && npm run build:typescript && npm run build:babel",
+    "build:babel": "build_tool=babel module_format=commonjs babel src --copy-files --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --no-copy-ignored --out-dir lib --verbose",
+    "build:tsup": "tsup --config ./tsup.config.ts",
     "build:typescript": "tsc --project src/tsconfig.json",
     "bump": "npm run bump:prod && npm run bump:dev && npm run bump:auditfix",
     "bump:auditfix": "npm audit fix --legacy-peer-deps || exit 0",
@@ -39,8 +53,9 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "prestart": "npm run build:babel",
-    "start": "concurrently --kill-others --names \"babel,tsc\" \"npm run start:babel\" \"npm run start:typescript\"",
+    "start": "concurrently --kill-others --names \"babel,tsc,tsup\" \"npm run start:babel\" \"npm run start:typescript\" \"npm run start:tsup\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
+    "start:tsup": "npm run build:tsup -- --watch",
     "start:typescript": "npm run build:typescript -- --watch"
   },
   "pinDependencies": {
@@ -64,6 +79,10 @@
       "7.18.6",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
+    "@types/react": [
+      "16",
+      "react@16.8.6 is our baseline"
+    ],
     "compute-scroll-into-view": [
       "1",
       "@>=2 does not support IE Mode"
@@ -84,12 +103,13 @@
     "@babel/preset-typescript": "^7.18.6",
     "@types/mdast": "^4.0.3",
     "@types/node": "^20.10.3",
-    "@types/react": "^18.2.42",
+    "@types/react": "^16.14.60",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "concurrently": "^8.2.2",
     "core-js": "^3.34.0",
     "node-dev": "^8.0.0",
+    "type-fest": "^4.14.0",
     "typescript": "^5.3.2"
   },
   "dependencies": {
@@ -99,6 +119,7 @@
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.3.2",
     "compute-scroll-into-view": "1.0.20",
+    "deep-freeze-strict": "^1.1.1",
     "event-target-shim": "6.0.2",
     "markdown-it": "13.0.2",
     "math-random": "2.0.1",
@@ -106,6 +127,7 @@
     "memoize-one": "6.0.0",
     "merge-refs": "1.2.2",
     "prop-types": "15.8.1",
+    "react-chain-of-responsibility": "^0.1.0",
     "react-dictate-button": "2.0.1",
     "react-film": "3.1.1-main.df870ea",
     "react-redux": "7.2.9",
@@ -113,7 +135,9 @@
     "react-scroll-to-bottom": "4.2.0",
     "redux": "5.0.0",
     "simple-update-in": "2.2.0",
-    "use-ref-from": "0.0.3"
+    "use-propagate": "^0.1.0",
+    "use-ref-from": "^0.1.0",
+    "valibot": "^0.30.0"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",

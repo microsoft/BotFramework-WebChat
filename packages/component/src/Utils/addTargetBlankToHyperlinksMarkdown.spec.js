@@ -1,11 +1,6 @@
-// TODO: [P4] Object.fromEntries is not on Node.js 11.*
-//       If all devs are on Node.js >= 12.0, we can remove "core-js"
-import fromEntries from 'core-js/features/object/from-entries';
 import MarkdownIt from 'markdown-it';
 
 import addTargetBlankToHyperlinksMarkdown from './addTargetBlankToHyperlinksMarkdown';
-
-Object.fromEntries = fromEntries;
 
 test('add to external links', () => {
   const markdownIt = new MarkdownIt();

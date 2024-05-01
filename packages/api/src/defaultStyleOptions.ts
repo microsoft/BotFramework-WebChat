@@ -93,8 +93,12 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   // Send box
   hideSendBox: false,
   hideUploadButton: false,
+  hideTelephoneKeypadButton: true,
   microphoneButtonColorOnDictate: '#F33',
   sendBoxBackground: 'White',
+  uploadAccept: undefined,
+  uploadMultiple: true,
+  sendAttachmentOn: 'send',
 
   // Send box buttons
   sendBoxButtonColor: undefined,
@@ -283,7 +287,9 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   uploadThumbnailWidth: 720,
 
   // Video
-  videoHeight: 270 // based on bubbleMaxWidth: 480 / 16 * 9 = 270
+  videoHeight: 270, // based on bubbleMaxWidth: 480 / 16 * 9 = 270
+
+  maxMessageLength: 2000
 };
 
 export default DEFAULT_OPTIONS;

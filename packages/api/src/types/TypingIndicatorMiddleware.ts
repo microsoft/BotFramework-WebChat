@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import type Typing from './Typing';
+import { type Typing } from './Typing';
 
 type TypingIndicatorProps = {
   activeTyping: { [id: string]: Typing };

@@ -2,8 +2,30 @@
   "name": "botframework-webchat-api",
   "version": "0.0.0-0",
   "description": "React DOM component of botframework-webchat",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-api.d.mts",
+        "default": "./dist/botframework-webchat-api.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.js"
+      }
+    },
+    "./internal": {
+      "import": {
+        "types": "./dist/botframework-webchat-api.internal.d.mts",
+        "default": "./dist/botframework-webchat-api.internal.mjs"
+      },
+      "require": {
+        "types": "./lib/internal.d.ts",
+        "default": "./lib/internal.js"
+      }
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -17,15 +39,18 @@
     "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
   "files": [
-    "lib/**/*",
-    "src/**/*"
+    "./dist/**/*",
+    "./internal.js",
+    "./lib/**/*",
+    "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
-    "build": "npm run build:globalize && npm run build:typescript && npm run build:babel",
-    "build:babel": "babel src --copy-files --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --no-copy-ignored --out-dir lib --verbose",
+    "build": "npm run build:globalize && npm run build:tsup && npm run build:typescript && npm run build:babel",
+    "build:babel": "build_tool=babel module_format=commonjs babel src --copy-files --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --no-copy-ignored --out-dir lib --verbose",
     "build:globalize": "node scripts/createPrecompiledGlobalize.mjs",
+    "build:tsup": "tsup --config ./tsup.config.ts",
     "build:typescript": "tsc --project src/tsconfig.json",
     "bump": "npm run bump:prod && npm run bump:dev && npm run bump:auditfix",
     "bump:auditfix": "npm audit fix --legacy-peer-deps || exit 0",
@@ -40,9 +65,10 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "prestart": "npm run build:babel",
-    "start": "concurrently --kill-others --names \"babel,globalize,tsc\" \"npm run start:babel\" \"npm run start:globalize\" \"npm run start:typescript\"",
+    "start": "concurrently --kill-others --names \"babel,globalize,tsc\" \"npm run start:babel\" \"npm run start:globalize\" \"npm run start:typescript\" \"npm run start:tsup\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:globalize": "node-dev --respawn scripts/createPrecompiledGlobalize.mjs",
+    "start:tsup": "npm run build:tsup -- --watch",
     "start:typescript": "npm run build:typescript -- --watch"
   },
   "devDependencies": {
@@ -53,7 +79,7 @@
     "@babel/preset-typescript": "^7.18.6",
     "@types/dom-speech-recognition": "^0.0.4",
     "@types/node": "^20.10.3",
-    "@types/react": "^18.2.42",
+    "@types/react": "^16.14.60",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "cldr-data": "36.0.0-0",
@@ -62,6 +88,7 @@
     "globalize-compiler": "^1.1.1",
     "iana-tz-data": "^2019.1.0",
     "node-dev": "^8.0.0",
+    "type-fest": "^4.15.0",
     "typescript": "^5.3.2"
   },
   "dependencies": {
@@ -69,9 +96,12 @@
     "globalize": "1.7.0",
     "math-random": "2.0.1",
     "prop-types": "15.8.1",
+    "react-chain-of-responsibility": "^0.1.0",
     "react-redux": "7.2.9",
     "redux": "5.0.0",
-    "simple-update-in": "2.2.0"
+    "simple-update-in": "2.2.0",
+    "use-ref-from": "^0.1.0",
+    "valibot": "^0.30.0"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",
@@ -103,6 +133,10 @@
     "@babel/preset-typescript": [
       "7.18.6",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@types/react": [
+      "16",
+      "react@16.8.6 is our baseline"
     ],
     "react-redux": [
       "7"

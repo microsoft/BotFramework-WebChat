@@ -7,10 +7,10 @@
 //    - However, we do not expect the server to return "localTimestamp" as they may not have capability to store this information
 // - "conversationUpdate" activity is never sent to Web Chat, thus, it is not defined
 
-import { type AnyAnd } from './AnyAnd';
-import { type DirectLineAttachment } from './external/DirectLineAttachment';
-import { type DirectLineSuggestedAction } from './external/DirectLineSuggestedAction';
-import { type OrgSchemaThing } from './external/OrgSchemaThing';
+import type { AnyAnd } from './AnyAnd';
+// import type { AsEntity, Thing } from './external/OrgSchema/Thing';
+import type { DirectLineAttachment } from './external/DirectLineAttachment';
+import type { DirectLineSuggestedAction } from './external/DirectLineSuggestedAction';
 
 type SupportedRole = 'bot' | 'channel' | 'user';
 type SupportedSendStatus = 'sending' | 'send failed' | 'sent';
@@ -111,8 +111,9 @@ type ClientCapabilitiesEntity = {
 
 type Entity =
   | ClientCapabilitiesEntity
-  | OrgSchemaThing
-  | AnyAnd<{ type: Exclude<string, 'ClientCapabilities' | `https://schema.org/${string}`> }>;
+  // Schema.org thing in the first level of entities field must have "type" field of "string".
+  // | AsEntity<Thing>
+  | { type: string };
 
 // Channel account - https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#channel-account
 type ChannelAcount<Role extends SupportedRole> = {

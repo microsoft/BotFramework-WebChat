@@ -1,5 +1,4 @@
-import { type StrictAdaptiveCardsStyleOptions } from './AdaptiveCardsStyleOptions';
-import type AdaptiveCardsStyleOptions from './AdaptiveCardsStyleOptions';
+import { type AdaptiveCardsStyleOptions, type StrictAdaptiveCardsStyleOptions } from './AdaptiveCardsStyleOptions';
 import defaultStyleOptions from './defaultStyleOptions';
 
 export default function normalizeStyleOptions(

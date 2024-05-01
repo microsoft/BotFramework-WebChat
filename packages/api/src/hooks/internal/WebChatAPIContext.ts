@@ -1,33 +1,46 @@
+import {
+  type DirectLineJSBotConnection,
+  type Observable,
+  type WebChatActivity,
+  type sendFiles,
+  type sendMessage,
+  type setSendBoxAttachments
+} from 'botframework-webchat-core';
 import { createContext } from 'react';
 
-import { type AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
-import { type AvatarComponentFactory } from '../../types/AvatarMiddleware';
-import { type GroupActivities } from '../../types/GroupActivitiesMiddleware';
-import { type LegacyActivityRenderer } from '../../types/ActivityMiddleware';
-import { type PerformCardAction } from '../../types/CardActionMiddleware';
-import { type RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
-import { type RenderAttachment } from '../../types/AttachmentMiddleware';
-import { type RenderToast } from '../../types/ToastMiddleware';
-import { type ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButtonMiddleware';
-import { type StrictStyleOptions } from '../../StyleOptions';
-import type LocalizedStrings from '../../types/LocalizedStrings';
-import type PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
-import type TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
-
-import { type DirectLineJSBotConnection, type Observable, type WebChatActivity } from 'botframework-webchat-core';
+import { StrictStyleOptions } from '../../StyleOptions';
+import { LegacyActivityRenderer } from '../../types/ActivityMiddleware';
+import { RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
+import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
+import { RenderAttachment } from '../../types/AttachmentMiddleware';
+import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
+import { PerformCardAction } from '../../types/CardActionMiddleware';
+import { GroupActivities } from '../../types/GroupActivitiesMiddleware';
+import LocalizedStrings from '../../types/LocalizedStrings';
+import { type Notification } from '../../types/Notification';
+import PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
+import { ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButtonMiddleware';
+import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
+import { RenderToast } from '../../types/ToastMiddleware';
 
 type WebChatAPIContext = {
   activityRenderer?: LegacyActivityRenderer;
   activityStatusRenderer: RenderActivityStatus;
   attachmentForScreenReaderRenderer?: AttachmentForScreenReaderComponentFactory;
   attachmentRenderer?: RenderAttachment;
-  avatarRenderer?: AvatarComponentFactory;
+  avatarRenderer: AvatarComponentFactory;
   clearSuggestedActions?: () => void;
   dir?: string;
   directLine?: DirectLineJSBotConnection;
   disabled?: boolean;
   dismissNotification?: (id: string) => void;
-  downscaleImageToDataURL?: (blob: Blob, maxWidth: number, maxHeight: number, type: string, quality: number) => string;
+  downscaleImageToDataURL?: (
+    blob: Blob,
+    maxWidth: number,
+    maxHeight: number,
+    type: string,
+    quality: number
+  ) => Promise<URL>;
   emitTypingIndicator?: () => void;
   grammars?: any;
   groupActivities?: GroupActivities;
@@ -45,10 +58,13 @@ type WebChatAPIContext = {
     linkOptions: { externalLinkAlt: string }
   ) => string;
   scrollToEndButtonRenderer?: ScrollToEndButtonComponentFactory;
-  selectVoice?: (voices: (typeof window.SpeechSynthesisVoice)[], activity: WebChatActivity) => void;
+  selectVoice?: (
+    voices: (typeof window.SpeechSynthesisVoice)[],
+    activity: WebChatActivity
+  ) => typeof window.SpeechSynthesisVoice;
   sendEvent?: (name: string, value: any) => void;
-  sendFiles?: (files: File[]) => void;
-  sendMessage?: (text: string, method?: string, { channelData }?: { channelData?: any }) => void;
+  sendFiles?: (...args: Parameters<typeof sendFiles>) => void;
+  sendMessage?: (...args: Parameters<typeof sendMessage>) => void;
   sendMessageBack?: (value: any, text?: string, displayText?: string) => void;
   sendPostBack?: (value?: any) => void;
   sendTypingIndicator?: boolean;
@@ -56,6 +72,7 @@ type WebChatAPIContext = {
   setDictateState?: (dictateState: number) => void;
   setNotification?: (notification: Notification) => void;
   setSendBox?: (value: string) => void;
+  setSendBoxAttachments?: (...args: Parameters<typeof setSendBoxAttachments>) => void;
   setSendTimeout?: (timeout: number) => void;
   startDictate?: () => void;
   startSpeakingActivity?: () => void;

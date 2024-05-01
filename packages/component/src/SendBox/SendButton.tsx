@@ -3,24 +3,13 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, type ReactNode } from 'react';
 
-import connectToWebChat from '../connectToWebChat';
 import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 
 const { useDisabled, useLocalizer } = hooks;
 
-const connectSendButton = (...selectors) =>
-  connectToWebChat(
-    ({ disabled, language, submitSendBox }) => ({
-      disabled,
-      language,
-      submitSendBox
-    }),
-    ...selectors
-  );
-
-type SendButtonProps = Readonly<{
+type SendButtonProps = {
   className?: string;
 }>;
 
@@ -52,5 +41,3 @@ SendButton.propTypes = {
 };
 
 export default SendButton;
-
-export { connectSendButton };

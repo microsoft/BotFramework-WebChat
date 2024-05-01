@@ -1,6 +1,4 @@
 import {
-  type AdaptiveCard,
-  type CardElement,
   Column,
   ColumnSet,
   Container,
@@ -13,13 +11,15 @@ import {
   TextBlock,
   TextColor,
   TextSize,
-  TextWeight
+  TextWeight,
+  type AdaptiveCard,
+  type CardElement
 } from 'adaptivecards';
+import type { DirectLineCardAction } from 'botframework-webchat-core';
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
-import { type DirectLineCardAction } from 'botframework-webchat-core';
 
-import type AdaptiveCardsPackage from '../../types/AdaptiveCardsPackage';
-import type AdaptiveCardsStyleOptions from '../AdaptiveCardsStyleOptions';
+import { type AdaptiveCardsPackage } from '../../types/AdaptiveCardsPackage';
+import { type AdaptiveCardsStyleOptions } from '../AdaptiveCardsStyleOptions';
 
 export interface BotFrameworkCardAction {
   __isBotFrameworkCardAction: true;

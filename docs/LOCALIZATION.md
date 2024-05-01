@@ -259,6 +259,17 @@ function convertFromOldStringId(js) {
     TEXT_INPUT_SEND_BUTTON_ALT: js.Send,
     TEXT_INPUT_SPEAK_BUTTON_ALT: js.Speak,
     TEXT_INPUT_UPLOAD_BUTTON_ALT: js['Upload file'],
+    TEXT_INPUT_TELEPHON_KEYPAD_BUTTON_ALT: js['Telephone keypad'],
+    TEXT_INPUT_DROP_ZONE: js['Drop files'],
+    TEXT_INPUT_LENGTH_EXCEEDED_ALT: js['Message length exceeded'],
+
+    TELEPHONE_KEYPAD_INPUT_MESSAGE: js['Only supports single-digit input'],
+
+    TEXT_INPUT_ATTACHMENTS_FEW: js['attachments'],
+    TEXT_INPUT_ATTACHMENTS_MANY: js['attachments'],
+    TEXT_INPUT_ATTACHMENTS_ONE: js['attachment'],
+    TEXT_INPUT_ATTACHMENTS_OTHER: js['attachments'],
+    TEXT_INPUT_ATTACHMENTS_TWO: js['attachments'],
 
     TRANSCRIPT_NEW_MESSAGES: js['New messages'],
 

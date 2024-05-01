@@ -3,14 +3,13 @@ import {
   type AttachmentMiddleware,
   type StyleOptions
 } from 'botframework-webchat-api';
-import { type OneOrMany, singleToArray, warnOnce } from 'botframework-webchat-core';
-import PropTypes from 'prop-types';
+import { singleToArray, warnOnce, type OneOrMany } from 'botframework-webchat-core';
 import React, { type ReactNode } from 'react';
 
-import { type StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
-import type AdaptiveCardsPackage from './types/AdaptiveCardsPackage';
-import type AdaptiveCardsStyleOptions from './adaptiveCards/AdaptiveCardsStyleOptions';
+import { type AdaptiveCardsStyleOptions } from './adaptiveCards/AdaptiveCardsStyleOptions';
+import { type AdaptiveCardsPackage } from './types/AdaptiveCardsPackage';
+import { type StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 import useComposerProps from './useComposerProps';
 
 type AddFullBundleProps = Readonly<{
@@ -45,7 +44,7 @@ const AddFullBundle = ({
   renderMarkdown,
   styleOptions,
   styleSet
-}: AddFullBundleProps): ReactNode => {
+}: AddFullBundleProps) => {
   adaptiveCardHostConfig && adaptiveCardHostConfigDeprecation();
 
   const patchedProps = useComposerProps({
@@ -64,36 +63,6 @@ const AddFullBundle = ({
       {children(patchedProps)}
     </AdaptiveCardsComposer>
   );
-};
-
-AddFullBundle.defaultProps = {
-  adaptiveCardHostConfig: undefined,
-  adaptiveCardsHostConfig: undefined,
-  adaptiveCardsPackage: undefined,
-  attachmentForScreenReaderMiddleware: undefined,
-  attachmentMiddleware: undefined,
-  renderMarkdown: undefined,
-  styleOptions: undefined,
-  styleSet: undefined
-};
-
-AddFullBundle.propTypes = {
-  adaptiveCardHostConfig: PropTypes.any,
-  adaptiveCardsHostConfig: PropTypes.any,
-  // TypeScript class is not mappable to PropTypes.func
-  // @ts-ignore
-  adaptiveCardsPackage: PropTypes.shape({
-    AdaptiveCard: PropTypes.func.isRequired,
-    HorizontalAlignment: PropTypes.any.isRequired,
-    TextSize: PropTypes.any.isRequired,
-    TextWeight: PropTypes.any.isRequired
-  }),
-  attachmentForScreenReaderMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  attachmentMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  children: PropTypes.func.isRequired,
-  renderMarkdown: PropTypes.func,
-  styleOptions: PropTypes.any,
-  styleSet: PropTypes.any
 };
 
 export default AddFullBundle;

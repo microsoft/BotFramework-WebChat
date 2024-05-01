@@ -7,6 +7,8 @@
     "downlevelIteration": true,
     "emitDeclarationOnly": true,
     "jsx": "react",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "preserveWatchOutput": true,
     "pretty": true,
     "resolveJsonModule": true, // Required for localization files

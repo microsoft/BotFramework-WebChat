@@ -1,6 +1,6 @@
 {
   "name": "botframework-webchat-root",
-  "version": "4.16.1-0",
+  "version": "4.17.0-0",
   "private": true,
   "files": [
     "lib/**/*"
@@ -39,12 +39,14 @@
     "docker:up": "docker-compose -f docker-compose-wsl2.yml down && docker-compose -f docker-compose-wsl2.yml up --build --scale chrome=4",
     "eslint": "npm run precommit",
     "lint-staged": "lint-staged",
+    "pack-all": "npx lerna exec --scope=botframework* -- npm pack --pack-destination=$PWD && zip tarball.zip *.tgz",
     "precommit": "lerna run --parallel --stream precommit -- ",
     "precommit:eslint:api": "cd packages && cd api && npm run precommit:eslint",
     "precommit:eslint:bundle": "cd packages && cd bundle && npm run precommit:eslint",
     "precommit:eslint:component": "cd packages && cd component && npm run precommit:eslint",
     "precommit:eslint:core": "cd packages && cd core && npm run precommit:eslint",
     "precommit:eslint:directlinespeech": "cd packages && cd directlinespeech && npm run precommit:eslint",
+    "precommit:eslint:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:eslint",
     "precommit:eslint:isomorphic-react-dom": "cd packages && cd isomorphic-react-dom && npm run precommit:eslint",
     "precommit:eslint:isomorphic-react": "cd packages && cd isomorphic-react && npm run precommit:eslint",
     "precommit:eslint:support-cldr-data-downloader": "cd packages && cd support && cd cldr-data-downloader && npm run precommit:eslint",
@@ -56,6 +58,7 @@
     "precommit:typecheck:bundle": "cd packages && cd bundle && npm run precommit:typecheck",
     "precommit:typecheck:component": "cd packages && cd component && npm run precommit:typecheck",
     "precommit:typecheck:core": "cd packages && cd core && npm run precommit:typecheck",
+    "precommit:typecheck:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:typecheck",
     "prepare": "husky install",
     "start": "concurrently --kill-others --raw \"serve -p 5000\" \"lerna run --ignore playground --parallel --stream start\"",
     "start:docker": "echo This command has been renamed to \"npm run docker\" && npm run docker",
@@ -88,9 +91,13 @@
       "28",
       "pinned jest@28"
     ],
+    "@types/react": [
+      "16",
+      "react@16.8.6 is our baseline"
+    ],
     "@types/react-dom": [
-      "~16.8.5",
-      "using react@16.8.6 to make sure this is the minimum supported version"
+      "16",
+      "react@16.8.6 is our baseline"
     ],
     "babel-jest": [
       "28",
@@ -136,11 +143,13 @@
     "@babel/preset-typescript": "^7.18.6",
     "@babel/runtime": "^7.19.0",
     "@types/jest": "^28.1.8",
-    "@types/react-dom": "~16.8.5",
+    "@types/react": "^16.14.60",
+    "@types/react-dom": "^16.9.24",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
     "abort-controller": "^3.0.0",
     "babel-jest": "^28.1.3",
+    "babel-plugin-istanbul": "^6.1.1",
     "concurrently": "^8.2.2",
     "core-js": "^3.34.0",
     "cross-env": "^7.0.3",
@@ -174,7 +183,9 @@
     "serve": "^14.2.1",
     "serve-handler": "^6.1.5",
     "strip-ansi": "^6.0.1",
+    "tsup": "^8.0.2",
     "typescript": "^5.3.2",
+    "typescript-plugin-css-modules": "^5.1.0",
     "xmlbuilder": "^15.1.1"
   },
   "dependencies": {

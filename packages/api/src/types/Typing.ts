@@ -5,4 +5,4 @@ type Typing = {
   role: 'bot' | 'user';
 };
 
-export default Typing;
+export type { Typing };

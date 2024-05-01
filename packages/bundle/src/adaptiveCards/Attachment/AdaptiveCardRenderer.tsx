@@ -1,37 +1,31 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
-import {
-  type Action as AdaptiveCardAction,
-  type AdaptiveCard,
-  type OpenUrlAction,
-  type SubmitAction
-} from 'adaptivecards';
+import { AdaptiveCard, Action as AdaptiveCardAction, OpenUrlAction, SubmitAction } from 'adaptivecards';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
+import type { DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {
-  type KeyboardEventHandler,
-  type MouseEventHandler,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  VFC,
   useCallback,
   useLayoutEffect,
   useMemo,
-  useRef,
-  type ReactNode
+  useRef
 } from 'react';
-import { type DirectLineCardAction } from 'botframework-webchat-core';
 
-import { type BotFrameworkCardAction } from './AdaptiveCardBuilder';
-import renderAdaptiveCard from './private/renderAdaptiveCard';
-import useActionSetShouldNotBeMenuBarModEffect from './AdaptiveCardHacks/useActionSetShouldNotBeMenuBarModEffect';
-import useActionShouldBePushButtonModEffect from './AdaptiveCardHacks/useActionShouldBePushButtonModEffect';
-import useActiveElementModEffect from './AdaptiveCardHacks/useActiveElementModEffect';
+import useStyleSet from '../../hooks/useStyleSet';
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
+import { BotFrameworkCardAction } from './AdaptiveCardBuilder';
+import useValueRef from './AdaptiveCardHacks/private/useValueRef';
+import useActionShouldBePushButtonModEffect from './AdaptiveCardHacks/useActionShouldBePushButtonModEffect';
+import useActiveElementModEffect from './AdaptiveCardHacks/useActiveElementModEffect';
 import useDisabledModEffect from './AdaptiveCardHacks/useDisabledModEffect';
 import usePersistValuesModEffect from './AdaptiveCardHacks/usePersistValuesModEffect';
 import useRoleModEffect from './AdaptiveCardHacks/useRoleModEffect';
-import useStyleSet from '../../hooks/useStyleSet';
-import useValueRef from './AdaptiveCardHacks/private/useValueRef';
+import renderAdaptiveCard from './private/renderAdaptiveCard';
 
 const { ErrorBox } = Components;
 const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd } = hooks;
@@ -174,8 +168,6 @@ const AdaptiveCardRenderer = ({
 
   const [applyActionShouldBePushButtonMod, undoActionShouldBePushButtonMod] =
     useActionShouldBePushButtonModEffect(adaptiveCard);
-  const [applyActionSetShouldNotBeMenuBarMod, undoActionSetShouldNotBeMenuBarMod] =
-    useActionSetShouldNotBeMenuBarModEffect(adaptiveCard);
   const [applyActiveElementMod, undoActiveElementMod] = useActiveElementModEffect(adaptiveCard);
   const [applyDisabledMod, undoDisabledMod] = useDisabledModEffect(adaptiveCard);
   const [applyPersistValuesMod, undoPersistValuesMod] = usePersistValuesModEffect(adaptiveCard);
@@ -183,7 +175,6 @@ const AdaptiveCardRenderer = ({
 
   const { element, errors }: { element?: HTMLElement; errors?: Error[] } = useMemo(() => {
     undoActionShouldBePushButtonMod();
-    undoActionSetShouldNotBeMenuBarMod();
     undoActiveElementMod();
     undoDisabledMod();
     undoPersistValuesMod();
@@ -203,7 +194,6 @@ const AdaptiveCardRenderer = ({
     renderMarkdownAsHTML,
     setTabIndexAtCardRoot,
     undoActionShouldBePushButtonMod,
-    undoActionSetShouldNotBeMenuBarMod,
     undoActiveElementMod,
     undoDisabledMod,
     undoPersistValuesMod,
@@ -229,7 +219,6 @@ const AdaptiveCardRenderer = ({
   useLayoutEffect(() => {
     if (element) {
       applyActionShouldBePushButtonMod(element, actionPerformedClassName);
-      applyActionSetShouldNotBeMenuBarMod(element);
       applyActiveElementMod(element);
       applyDisabledMod(element, disabled);
       applyPersistValuesMod(element);
@@ -238,7 +227,6 @@ const AdaptiveCardRenderer = ({
   }, [
     actionPerformedClassName,
     applyActionShouldBePushButtonMod,
-    applyActionSetShouldNotBeMenuBarMod,
     applyActiveElementMod,
     applyDisabledMod,
     applyPersistValuesMod,

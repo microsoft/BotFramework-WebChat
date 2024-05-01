@@ -1,5 +1,5 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { type ReactNode, memo } from 'react';
+import React, { memo } from 'react';
 
 import { type WebChatAttachment } from '../private/types/WebChatAttachment';
 import TextContent from './TextContent';
@@ -11,11 +11,9 @@ type Props = Readonly<{
   };
 }>;
 
-const TextAttachment = memo(
-  ({ activity, attachment: { content, contentType } }: Props): ReactNode => (
-    <TextContent contentType={contentType} entities={activity.entities} text={content} />
-  )
-);
+const TextAttachment = memo(({ activity, attachment: { content, contentType } }: Props) => (
+  <TextContent activity={activity} contentType={contentType} text={content} />
+));
 
 TextAttachment.displayName = 'TextAttachment';
 
