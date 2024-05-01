@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-export function AttachmentIcon(props: Readonly<{ readonly className?: string }>) {
+function AttachmentIcon(props: Readonly<{ readonly className?: string }>) {
   return (
     <svg
       aria-hidden="true"
@@ -17,3 +17,5 @@ export function AttachmentIcon(props: Readonly<{ readonly className?: string }>)
     </svg>
   );
 }
+
+export default memo(AttachmentIcon);

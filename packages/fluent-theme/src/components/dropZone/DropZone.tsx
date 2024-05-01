@@ -3,9 +3,9 @@ import cx from 'classnames';
 import React, { memo, useCallback, useEffect, useRef, useState, type DragEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import { AddDocumentIcon } from '../../icons/AddDocumentIcon';
+import { AddDocumentIcon } from '../../icons';
 import testIds from '../../testIds';
-import styles from './index.module.css';
+import styles from './DropZone.module.css';
 import { useStyles } from '../../styles';
 
 const { useLocalizer } = hooks;

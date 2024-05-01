@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-component';
 import React, { useCallback, useRef, type ChangeEventHandler, memo } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { AttachmentIcon } from '../../icons/AttachmentIcon';
+import { AttachmentIcon } from '../../icons';
 import testIds from '../../testIds';
 import { ToolbarButton } from './Toolbar';
 import styles from './AddAttachmentButton.module.css';

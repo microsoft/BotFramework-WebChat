@@ -2,11 +2,11 @@ import { hooks, type SendBoxFocusOptions } from 'botframework-webchat-component'
 import cx from 'classnames';
 import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { SendIcon } from '../../icons/SendIcon';
+import { SendIcon } from '../../icons';
 import testIds from '../../testIds';
-import DropZone from '../DropZone';
-import SuggestedActions from '../SuggestedActions';
-import { TelephoneKeypadSurrogate, useTelephoneKeypadShown, type DTMF } from '../TelephoneKeypad';
+import { DropZone } from '../dropZone';
+import { SuggestedActions } from '../suggestedActions';
+import { TelephoneKeypadSurrogate, useTelephoneKeypadShown, type DTMF } from '../telephoneKeypad';
 import AddAttachmentButton from './AddAttachmentButton';
 import Attachments from './Attachments';
 import ErrorMessage from './ErrorMessage';
@@ -15,7 +15,7 @@ import TextArea from './TextArea';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
 import useSubmitError from './private/useSubmitError';
 import useUniqueId from './private/useUniqueId';
-import styles from './index.module.css';
+import styles from './SendBox.module.css';
 import { useStyles } from '../../styles';
 
 const {
