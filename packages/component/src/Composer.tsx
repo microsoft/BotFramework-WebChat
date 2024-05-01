@@ -1,14 +1,14 @@
 import createEmotion from '@emotion/css/create-instance';
-import type {
-  ComposerProps as APIComposerProps,
-  SendBoxMiddleware,
-  SendBoxToolbarMiddleware
-} from 'botframework-webchat-api';
 import {
   Composer as APIComposer,
   hooks,
   rectifySendBoxMiddlewareProps,
-  rectifySendBoxToolbarMiddlewareProps,
+  rectifySendBoxToolbarMiddlewareProps
+} from 'botframework-webchat-api';
+import type {
+  ComposerProps as APIComposerProps,
+  SendBoxMiddleware,
+  SendBoxToolbarMiddleware,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
 import { singleToArray } from 'botframework-webchat-core';
@@ -60,9 +60,9 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
 
-type ComposerCoreUIProps = Readonly<{ children?: ReactNode }>;
+type ComposerCoreUIProps = Readonly<{ children?: ReactNode | undefined }>;
 
-const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps): ReactNode => {
+const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   const [{ cssCustomProperties }] = useStyleSet();
 
   const dictationOnError = useCallback(err => {
@@ -84,20 +84,19 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps): ReactNode => {
 
 ComposerCoreUI.displayName = 'ComposerCoreUI';
 
-type ComposerCoreProps = Readonly<
-  PropsWithChildren<{
-    extraStyleSet?: any;
-    nonce?: string;
-    renderMarkdown?: (
-      markdown: string,
-      newLineOptions: { markdownRespectCRLF: boolean },
-      linkOptions: { externalLinkAlt: string }
-    ) => string;
-    styleSet?: any;
-    suggestedActionsAccessKey?: boolean | string;
-    webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
-  }>
->;
+type ComposerCoreProps = Readonly<{
+  children?: ReactNode | undefined;
+  extraStyleSet?: any;
+  nonce?: string;
+  renderMarkdown?: (
+    markdown: string,
+    newLineOptions: { markdownRespectCRLF: boolean },
+    linkOptions: { externalLinkAlt: string }
+  ) => string;
+  styleSet?: any;
+  suggestedActionsAccessKey?: boolean | string;
+  webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
+}>;
 
 const ComposerCore = ({
   children,

@@ -4,7 +4,7 @@ import ReactWebChat, { createDirectLine, createDirectLineAppServiceExtension } f
 import { IWebChatProps } from './IWebChatProps';
 import styles from './WebChat.module.scss';
 
-const WebChat = ({ domain, token }: IWebChatProps): ReactNode => {
+const WebChat = ({ domain, token }: IWebChatProps) => {
   const [directLine, setDirectLine] = useState();
 
   useEffect(() => {

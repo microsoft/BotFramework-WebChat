@@ -2,7 +2,7 @@
 
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React, { type ReactNode, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { type DirectLineReceiptCard } from 'botframework-webchat-core';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
@@ -22,7 +22,7 @@ type ReceiptCardContentProps = Readonly<{
   disabled?: boolean;
 }>;
 
-const ReceiptCardContent = ({ actionPerformedClassName, content, disabled }: ReceiptCardContentProps): ReactNode => {
+const ReceiptCardContent = ({ actionPerformedClassName, content, disabled }: ReceiptCardContentProps) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();

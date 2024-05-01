@@ -14,8 +14,6 @@ type ActivityToKeyMap = Map<WebChatActivity, string>;
 type ClientActivityIdToKeyMap = Map<string, string>;
 type KeyToActivityMap = Map<string, WebChatActivity>;
 
-type ActivityKeyerComposerProps = Readonly<PropsWithChildren>;
-
 /**
  * React context composer component to assign a perma-key to every activity.
  * This will support both `useGetActivityByKey` and `useGetKeyByActivity` custom hooks.

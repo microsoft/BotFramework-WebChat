@@ -1,7 +1,7 @@
 import {
   getOrgSchemaMessage,
-  OrgSchemaAction,
-  OrgSchemaProject,
+  type OrgSchemaAction,
+  type OrgSchemaProject,
   parseAction,
   parseClaim,
   warnOnce,

@@ -612,7 +612,7 @@ const InternalTranscriptScrollable = ({
   children,
   onFocusFiller,
   terminatorRef
-}: InternalTranscriptScrollableProps): ReactNode => {
+}: InternalTranscriptScrollableProps) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
   const [animatingToEnd]: [boolean] = useAnimatingToEnd();
   const [atEnd]: [boolean] = useAtEnd();
@@ -873,7 +873,7 @@ type BasicTranscriptProps = {
   className?: string;
 };
 
-const BasicTranscript = ({ className }: BasicTranscriptProps): ReactNode => {
+const BasicTranscript = ({ className }: BasicTranscriptProps) => {
   const activityElementMapRef = useRef<ActivityElementMap>(new Map());
   const containerRef = useRef<HTMLDivElement>();
 

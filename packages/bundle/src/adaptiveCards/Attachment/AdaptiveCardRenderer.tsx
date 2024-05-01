@@ -1,14 +1,18 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
-import { AdaptiveCard, Action as AdaptiveCardAction, OpenUrlAction, SubmitAction } from 'adaptivecards';
+import {
+  type AdaptiveCard,
+  type Action as AdaptiveCardAction,
+  type OpenUrlAction,
+  type SubmitAction
+} from 'adaptivecards';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 import type { DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {
-  KeyboardEventHandler,
-  MouseEventHandler,
-  VFC,
+  type KeyboardEventHandler,
+  type MouseEventHandler,
   useCallback,
   useLayoutEffect,
   useMemo,
@@ -18,7 +22,7 @@ import React, {
 import useStyleSet from '../../hooks/useStyleSet';
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
-import { BotFrameworkCardAction } from './AdaptiveCardBuilder';
+import { type BotFrameworkCardAction } from './AdaptiveCardBuilder';
 import useValueRef from './AdaptiveCardHacks/private/useValueRef';
 import useActionShouldBePushButtonModEffect from './AdaptiveCardHacks/useActionShouldBePushButtonModEffect';
 import useActiveElementModEffect from './AdaptiveCardHacks/useActiveElementModEffect';
@@ -44,7 +48,7 @@ const AdaptiveCardRenderer = ({
   adaptiveCard,
   disabled: disabledFromProps,
   tapAction
-}: AdaptiveCardRendererProps): ReactNode => {
+}: AdaptiveCardRendererProps) => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();

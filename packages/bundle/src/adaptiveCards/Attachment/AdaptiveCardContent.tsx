@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { type ReactNode, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useParseAdaptiveCardJSON from '../hooks/internal/useParseAdaptiveCardJSON';
@@ -23,7 +23,7 @@ type AdaptiveCardContentProps = Readonly<{
   disabled?: boolean;
 }>;
 
-const AdaptiveCardContent = ({ actionPerformedClassName, content, disabled }: AdaptiveCardContentProps): ReactNode => {
+const AdaptiveCardContent = ({ actionPerformedClassName, content, disabled }: AdaptiveCardContentProps) => {
   const parseAdaptiveCardJSON = useParseAdaptiveCardJSON();
 
   const card = useMemo(

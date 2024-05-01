@@ -10,7 +10,7 @@ import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
-import BasicWebChat, { BasicWebChatProps } from './BasicWebChat';
+import BasicWebChat, { type BasicWebChatProps } from './BasicWebChat';
 import BasicSendBox from './SendBox/BasicSendBox';
 import BasicSendBoxToolbar from './SendBoxToolbar/BasicSendBoxToolbar';
 

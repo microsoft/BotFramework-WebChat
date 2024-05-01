@@ -1,6 +1,6 @@
 import { Components, type ComposerProps } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React, { type ReactNode } from 'react';
+import React from 'react';
 
 import AddFullBundle, { type AddFullBundleProps } from './AddFullBundle';
 

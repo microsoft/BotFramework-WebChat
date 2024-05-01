@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React, { type ReactNode, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { type DirectLineHeroCard } from 'botframework-webchat-core';
 
@@ -17,7 +17,7 @@ type HeroCardContentProps = Readonly<{
   disabled?: boolean;
 }>;
 
-const HeroCardContent = ({ actionPerformedClassName, content, disabled }: HeroCardContentProps): ReactNode => {
+const HeroCardContent = ({ actionPerformedClassName, content, disabled }: HeroCardContentProps) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [styleOptions] = useStyleOptions();
   const [direction] = useDirection();

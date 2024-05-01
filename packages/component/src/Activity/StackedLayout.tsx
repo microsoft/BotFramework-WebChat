@@ -83,7 +83,7 @@ const StackedLayout = ({
   renderAttachment,
   renderAvatar,
   showCallout
-}: StackedLayoutProps): ReactNode => {
+}: StackedLayoutProps) => {
   const [styleOptions] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();

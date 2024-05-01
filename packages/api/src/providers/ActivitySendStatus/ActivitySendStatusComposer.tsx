@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, type FC, type PropsWithChildren } from 'react';
+import React, { type ReactNode, useEffect, useMemo, useRef } from 'react';
 
 import { useActivities, usePonyfill } from '../../hooks/index';
 import useForceRender from '../../hooks/internal/useForceRender';
@@ -14,9 +14,11 @@ import isMapEqual from './private/isMapEqual';
 const EXPIRY_SEND_FAILED = -Infinity;
 const EXPIRY_SENT = Infinity;
 
-type ActivitySendStatusComposerProps = Readonly<PropsWithChildren>;
+type ActivitySendStatusComposerProps = Readonly<{
+  children?: ReactNode | undefined;
+}>;
 
-const ActivitySendStatusComposer = ({ children }: ActivitySendStatusComposerProps): ReactNode => {
+const ActivitySendStatusComposer = ({ children }: ActivitySendStatusComposerProps) => {
   const [activities] = useActivities();
   const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
   const forceRender = useForceRender();

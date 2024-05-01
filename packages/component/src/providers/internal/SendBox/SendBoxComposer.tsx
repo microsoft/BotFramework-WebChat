@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { useCallback, useEffect, useMemo, useRef, useState, type PropsWithChildren } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import useStyleToEmotionObject from '../../../hooks/internal/useStyleToEmotionObject';
@@ -54,7 +54,9 @@ const TIME_TO_RESET_ERROR_MESSAGE = 50;
 
 type ErrorMessageStringMap = ReadonlyMap<SendError, string>;
 
-type SendBoxComposerProps = Readonly<PropsWithChildren>;
+type SendBoxComposerProps = Readonly<{
+  children?: ReactNode | undefined;
+}>;
 
 // TODO: [P2] Complete this component.
 const SendBoxComposer = ({ children }: SendBoxComposerProps) => {

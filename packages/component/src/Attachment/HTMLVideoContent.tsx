@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { type ReactNode } from 'react';
+import React from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -11,7 +11,7 @@ type HTMLVideoContentProps = Readonly<{
   src: string;
 }>;
 
-const HTMLVideoContent = ({ alt, autoPlay, loop, poster, src }: HTMLVideoContentProps): ReactNode => {
+const HTMLVideoContent = ({ alt, autoPlay, loop, poster, src }: HTMLVideoContentProps) => {
   const [{ videoContent: videoContentStyleSet }] = useStyleSet();
 
   return (

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { type ReactNode } from 'react';
+import React from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 
@@ -11,7 +11,7 @@ type AudioContentProps = Readonly<{
   src: string;
 }>;
 
-const AudioContent = ({ alt, autoPlay, loop, src }: AudioContentProps): ReactNode => {
+const AudioContent = ({ alt, autoPlay, loop, src }: AudioContentProps) => {
   const [{ audioContent: audioContentStyleSet }] = useStyleSet();
 
   return (

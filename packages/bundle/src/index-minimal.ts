@@ -1,7 +1,7 @@
 /* eslint dot-notation: ["error", { "allowPattern": "^WebChat$" }] */
 // window['WebChat'] is required for TypeScript
 
-import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
+import { type StrictStyleOptions, type StyleOptions } from 'botframework-webchat-api';
 import { Constants, createStore, createStoreWithDevTools, createStoreWithOptions } from 'botframework-webchat-core';
 
 import ReactWebChat, {

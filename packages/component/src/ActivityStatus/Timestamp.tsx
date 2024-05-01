@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { type ReactNode } from 'react';
+import React from 'react';
 
 import AbsoluteTime from './AbsoluteTime';
 import RelativeTime from './private/RelativeTime';
@@ -11,7 +11,7 @@ type TimestampProps = Readonly<{
   timestamp: string;
 }>;
 
-const Timestamp = ({ timestamp }: TimestampProps): ReactNode => {
+const Timestamp = ({ timestamp }: TimestampProps) => {
   const [{ timestampFormat }] = useStyleOptions();
 
   return timestampFormat === 'relative' ? <RelativeTime value={timestamp} /> : <AbsoluteTime value={timestamp} />;

@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import random from 'math-random';
-import React, { type ReactNode, type MutableRefObject, type PropsWithChildren, useCallback, useMemo } from 'react';
+import React, { type MutableRefObject, type PropsWithChildren, useCallback, useMemo } from 'react';
 
 import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
 import TranscriptFocusContext from './private/Context';
@@ -34,7 +34,7 @@ function uniqueId(count = Infinity) {
   );
 }
 
-const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComposerProps): ReactNode => {
+const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComposerProps) => {
   const [flattenedActivityTree] = useActivityTreeWithRenderer({ flat: true });
   const [_, setRawFocusedActivityKey, rawFocusedActivityKeyRef] = useStateRef<string | undefined>();
   const getKeyByActivity = useGetKeyByActivity();

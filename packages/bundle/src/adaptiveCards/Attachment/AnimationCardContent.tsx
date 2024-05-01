@@ -2,7 +2,7 @@
 
 import { Components } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React, { type ReactNode } from 'react';
+import React from 'react';
 import { type DirectLineAnimationCard } from 'botframework-webchat-core';
 
 import CommonCard from './CommonCard';
@@ -16,11 +16,7 @@ type AnimationCardContentProps = Readonly<{
   disabled?: boolean;
 }>;
 
-const AnimationCardContent = ({
-  actionPerformedClassName,
-  content,
-  disabled
-}: AnimationCardContentProps): ReactNode => {
+const AnimationCardContent = ({ actionPerformedClassName, content, disabled }: AnimationCardContentProps) => {
   const { media = [] } = content;
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 

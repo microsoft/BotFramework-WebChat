@@ -2,7 +2,7 @@
 
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { type ReactNode } from 'react';
+import React from 'react';
 
 import ScreenReaderText from './ScreenReaderText';
 import useStyleSet from './hooks/useStyleSet';
@@ -14,7 +14,7 @@ type ErrorBoxProps = Readonly<{
   type?: string;
 }>;
 
-const ErrorBox = ({ error, type }: ErrorBoxProps): ReactNode => {
+const ErrorBox = ({ error, type }: ErrorBoxProps) => {
   const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
   const localize = useLocalizer();
 

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { type ReactNode, Fragment } from 'react';
+import React, { Fragment } from 'react';
 
 import useMarkAllAsRenderedEffect from './useMarkAllAsRenderedEffect';
 import useStaticElementEntries from './useStaticElementEntries';
@@ -21,7 +21,7 @@ const LiveRegionTwinContainer = ({
   className,
   role,
   textElementClassName
-}: LiveRegionTwinContainerProps): ReactNode => {
+}: LiveRegionTwinContainerProps) => {
   const [staticElementEntries] = useStaticElementEntries();
 
   // We assume there is only one instance under the <LiveRegionTwinContext>.

@@ -2,7 +2,7 @@
 
 import { Components } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React, { type ReactNode } from 'react';
+import React from 'react';
 import { type DirectLineAudioCard } from 'botframework-webchat-core';
 
 import CommonCard from './CommonCard';
@@ -16,7 +16,7 @@ type AudioCardContentProps = Readonly<{
   disabled?: boolean;
 }>;
 
-const AudioCardContent = ({ actionPerformedClassName, content, disabled }: AudioCardContentProps): ReactNode => {
+const AudioCardContent = ({ actionPerformedClassName, content, disabled }: AudioCardContentProps) => {
   const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
   const { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = content;
 

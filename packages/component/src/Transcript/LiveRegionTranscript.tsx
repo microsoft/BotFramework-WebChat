@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { type RefObject, type ReactNode, useEffect, useMemo, useRef } from 'react';
+import React, { type RefObject, useEffect, useMemo, useRef } from 'react';
 import { type WebChatActivity } from 'botframework-webchat-core';
 
 import isPresentational from './LiveRegion/isPresentational';
@@ -40,7 +40,7 @@ type LiveRegionTranscriptCoreProps = Readonly<{
   activityElementMapRef: RefObject<ActivityElementMap>;
 }>;
 
-const LiveRegionTranscriptCore = ({ activityElementMapRef }: LiveRegionTranscriptCoreProps): ReactNode => {
+const LiveRegionTranscriptCore = ({ activityElementMapRef }: LiveRegionTranscriptCoreProps) => {
   // We are looking for all activities instead of just those will be rendered.
   // This is because some activities that chosen not be rendered in the chat history,
   // we might still need to be read by screen reader. Such as, suggested actions without text content.

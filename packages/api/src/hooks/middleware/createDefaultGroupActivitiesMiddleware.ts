@@ -1,4 +1,4 @@
-import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
+import type GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
 import type { GlobalScopePonyfill, WebChatActivity } from 'botframework-webchat-core';
 import type { SendStatus } from '../../types/SendStatus';

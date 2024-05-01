@@ -4,7 +4,7 @@
 import { SendBoxMiddlewareProxy, hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { type ReactNode } from 'react';
+import React from 'react';
 
 import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicToaster from './BasicToaster';
@@ -44,7 +44,7 @@ type BasicWebChatProps = Readonly<{
   role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
 }>;
 
-const BasicWebChat = ({ className, role }: BasicWebChatProps): ReactNode => {
+const BasicWebChat = ({ className, role }: BasicWebChatProps) => {
   const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();
   const styleToEmotionObject = useStyleToEmotionObject();

@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, type ReactNode } from 'react';
+import React, { useCallback } from 'react';
 
 import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
@@ -9,11 +9,11 @@ import useSubmit from '../providers/internal/SendBox/useSubmit';
 
 const { useDisabled, useLocalizer } = hooks;
 
-type SendButtonProps = {
+type SendButtonProps = Readonly<{
   className?: string;
 }>;
 
-const SendButton = ({ className }: SendButtonProps): ReactNode => {
+const SendButton = ({ className }: SendButtonProps) => {
   const [disabled] = useDisabled();
   const localize = useLocalizer();
   const submit = useSubmit();

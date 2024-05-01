@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, type MutableRefObject, type ReactNode } from 'react';
+import React, { useCallback, type MutableRefObject } from 'react';
 
 // This is an element, when focused, will send the focus to the ref specified in "redirectRef".
 // Although the focus is being redirected, browser will scroll this redirector element into view.
@@ -16,7 +16,7 @@ type FocusRedirectorProps = Readonly<{
   redirectRef?: MutableRefObject<HTMLElement>;
 }>;
 
-const FocusRedirector = ({ className, onFocus, redirectRef }: FocusRedirectorProps): ReactNode => {
+const FocusRedirector = ({ className, onFocus, redirectRef }: FocusRedirectorProps) => {
   const handleFocus = useCallback(() => {
     redirectRef?.current?.focus();
     onFocus && onFocus();

@@ -3,7 +3,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, type ReactNode } from 'react';
 // eslint-disable-next-line import/no-named-as-default
 import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
 
@@ -120,9 +120,13 @@ SuggestedActionCarouselContainer.propTypes = {
   label: PropTypes.string.isRequired
 };
 
-type SuggestedActionFlowContainerProps = SuggestedContainerProps;
+type SuggestedActionFlowContainerProps = {
+  children?: ReactNode | undefined;
+  className?: string | undefined;
+  label: string;
+};
 
-const SuggestedActionFlowContainer = ({ children, className, label }: SuggestedActionFlowContainerProps): ReactNode => {
+const SuggestedActionFlowContainer = ({ children, className, label }: SuggestedActionFlowContainerProps) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 

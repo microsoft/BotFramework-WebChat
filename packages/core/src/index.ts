@@ -29,7 +29,7 @@ import createStore, {
   withDevTools as createStoreWithDevTools,
   withOptions as createStoreWithOptions
 } from './createStore';
-import OneOrMany from './types/OneOrMany';
+import type OneOrMany from './types/OneOrMany';
 import { parseAction } from './types/external/OrgSchema/Action';
 import { parseClaim } from './types/external/OrgSchema/Claim';
 import { parseCreativeWork } from './types/external/OrgSchema/CreativeWork';

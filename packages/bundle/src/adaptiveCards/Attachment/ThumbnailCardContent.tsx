@@ -2,7 +2,7 @@
 
 import { hooks } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React, { type ReactNode, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { type DirectLineThumbnailCard } from 'botframework-webchat-core';
 
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
@@ -18,11 +18,7 @@ type ThumbnailCardContentProps = Readonly<{
   disabled?: boolean;
 }>;
 
-const ThumbnailCardContent = ({
-  actionPerformedClassName,
-  content,
-  disabled
-}: ThumbnailCardContentProps): ReactNode => {
+const ThumbnailCardContent = ({ actionPerformedClassName, content, disabled }: ThumbnailCardContentProps) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();

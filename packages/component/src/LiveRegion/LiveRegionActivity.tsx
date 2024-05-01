@@ -3,7 +3,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { type ReactNode, Fragment, useMemo } from 'react';
+import React, { Fragment, useMemo } from 'react';
 
 import activityAltText from '../Utils/activityAltText';
 import LiveRegionAttachments from './private/LiveRegionAttachments';
@@ -32,7 +32,7 @@ type LiveRegionActivityProps = Readonly<{
   activity: WebChatActivity;
 }>;
 
-const LiveRegionActivity = ({ activity }: LiveRegionActivityProps): ReactNode => {
+const LiveRegionActivity = ({ activity }: LiveRegionActivityProps) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const {
     from: { role },

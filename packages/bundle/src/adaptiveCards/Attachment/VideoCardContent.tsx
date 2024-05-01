@@ -2,7 +2,7 @@
 
 import { Components } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React, { type ReactNode } from 'react';
+import React from 'react';
 import { type DirectLineVideoCard } from 'botframework-webchat-core';
 
 import CommonCard from './CommonCard';
@@ -23,7 +23,7 @@ type VideoCardContentProps = Readonly<{
   disabled?: boolean;
 }>;
 
-const VideoCardContent = ({ actionPerformedClassName, content, disabled }: VideoCardContentProps): ReactNode => {
+const VideoCardContent = ({ actionPerformedClassName, content, disabled }: VideoCardContentProps) => {
   const { autoloop, autostart, image: { url: imageURL } = { url: undefined }, media } = content;
   const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
 

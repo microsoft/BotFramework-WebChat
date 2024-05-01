@@ -8,20 +8,20 @@ import {
 } from 'botframework-webchat-core';
 import { createContext } from 'react';
 
-import { StrictStyleOptions } from '../../StyleOptions';
-import { LegacyActivityRenderer } from '../../types/ActivityMiddleware';
-import { RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
-import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
-import { RenderAttachment } from '../../types/AttachmentMiddleware';
-import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
-import { PerformCardAction } from '../../types/CardActionMiddleware';
-import { GroupActivities } from '../../types/GroupActivitiesMiddleware';
-import LocalizedStrings from '../../types/LocalizedStrings';
+import { type StrictStyleOptions } from '../../StyleOptions';
+import { type LegacyActivityRenderer } from '../../types/ActivityMiddleware';
+import { type RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
+import { type AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
+import { type RenderAttachment } from '../../types/AttachmentMiddleware';
+import { type AvatarComponentFactory } from '../../types/AvatarMiddleware';
+import { type PerformCardAction } from '../../types/CardActionMiddleware';
+import { type GroupActivities } from '../../types/GroupActivitiesMiddleware';
+import type LocalizedStrings from '../../types/LocalizedStrings';
 import { type Notification } from '../../types/Notification';
-import PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
-import { ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButtonMiddleware';
-import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
-import { RenderToast } from '../../types/ToastMiddleware';
+import type PrecompiledGlobalize from '../../types/PrecompiledGlobalize';
+import { type ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButtonMiddleware';
+import type TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
+import { type RenderToast } from '../../types/ToastMiddleware';
 
 type WebChatAPIContext = {
   activityRenderer?: LegacyActivityRenderer;

@@ -1,14 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, {
-  type PropsWithChildren,
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { type PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import LiveRegionTwinContainer from './private/LiveRegionTwinContainer';
 import LiveRegionTwinContext from './private/Context';
@@ -72,7 +64,7 @@ const LiveRegionTwinComposer = ({
   fadeAfter = DEFAULT_FADE_AFTER,
   role,
   textElementClassName
-}: LiveRegionTwinComposerProps): ReactNode => {
+}: LiveRegionTwinComposerProps) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [staticElementEntries, setStaticElementEntries] = useState<StaticElementEntry[]>([]);
   const fadeAfterRef = useValueRef(fadeAfter);

@@ -1,7 +1,7 @@
 import { SendBoxToolbarMiddlewareProxy, hooks } from 'botframework-webchat-api';
 import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import React, { FC } from 'react';
+import React from 'react';
 
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
@@ -50,7 +50,7 @@ type BasicSendBoxProps = Readonly<{
   className?: string;
 }>;
 
-const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
+const BasicSendBox = ({ className }: BasicSendBoxProps) => {
   const [{ sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition = undefined } = {}] = useWebSpeechPonyfill();

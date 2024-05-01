@@ -1,4 +1,4 @@
-import React, { type ReactNode, memo } from 'react';
+import React, { memo } from 'react';
 
 import MarkdownTextContent from './private/MarkdownTextContent';
 import PlainTextContent from './private/PlainTextContent';

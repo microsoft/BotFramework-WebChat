@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { type ReactNode } from 'react';
+import React from 'react';
 
 import CroppedImage from '../Utils/CroppedImage';
 
@@ -11,7 +11,7 @@ type ImageContentProps = Readonly<{
   src: string;
 }>;
 
-const ImageContent = ({ alt, src }: ImageContentProps): ReactNode => {
+const ImageContent = ({ alt, src }: ImageContentProps) => {
   const [{ bubbleImageHeight }] = useStyleOptions();
 
   return <CroppedImage alt={alt} height={bubbleImageHeight} src={src} width="100%" />;

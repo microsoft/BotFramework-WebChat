@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { type ReactNode } from 'react';
+import React from 'react';
 
 import computeSuggestedActionText from '../../Utils/computeSuggestedActionText';
 
@@ -9,7 +9,7 @@ type LiveRegionSuggestedActionsProps = Readonly<{
   suggestedActions: Readonly<DirectLineSuggestedAction>;
 }>;
 
-const LiveRegionSuggestedActions = ({ suggestedActions }: LiveRegionSuggestedActionsProps): ReactNode =>
+const LiveRegionSuggestedActions = ({ suggestedActions }: LiveRegionSuggestedActionsProps) =>
   suggestedActions.actions?.length && (
     <p className="webchat__live-region-activity__suggested-actions">
       {suggestedActions.actions.map((action, index) => (

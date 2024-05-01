@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { useMemo, type PropsWithChildren, type ReactNode } from 'react';
+import React, { useMemo, type ReactNode } from 'react';
 
 import { type ActivityComponentFactory } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
@@ -13,11 +13,13 @@ import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';
 
 import { type ActivityTreeContextType } from './private/Context';
 
-type ActivityTreeComposerProps = Readonly<PropsWithChildren>;
+type ActivityTreeComposerProps = Readonly<{
+  children?: ReactNode | undefined;
+}>;
 
 const { useActivities, useCreateActivityRenderer } = hooks;
 
-const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps): ReactNode => {
+const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
   const existingContext = useActivityTreeContext(false);
 
   if (existingContext) {

@@ -71,7 +71,7 @@ type BubbleProps = Readonly<
   }>
 >;
 
-const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }: BubbleProps): ReactNode => {
+const Bubble = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }: BubbleProps) => {
   const [{ bubble: bubbleStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const [

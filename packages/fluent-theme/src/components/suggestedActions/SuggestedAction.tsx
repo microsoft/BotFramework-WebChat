@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import cx from 'classnames';
-import React, { MouseEventHandler, memo, useCallback } from 'react';
+import React, { type MouseEventHandler, memo, useCallback } from 'react';
 import styles from './SuggestedAction.module.css';
 import { useStyles } from '../../styles';
 import AccessibleButton from './AccessibleButton';

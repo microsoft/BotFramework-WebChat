@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { type ReactNode, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { type WebChatActivity } from 'botframework-webchat-core';
 
 import { SENDING, SEND_FAILED, SENT } from '../../types/internal/SendStatus';
@@ -13,12 +13,12 @@ import { type SendStatus as SendStatusType } from '../../types/internal/SendStat
 
 const { useLocalizer, usePostActivity } = hooks;
 
-type SendStatusProps = {
+type SendStatusProps = Readonly<{
   activity: WebChatActivity;
   sendStatus: SendStatusType;
 }>;
 
-const SendStatus = ({ activity, sendStatus }: SendStatusProps): ReactNode => {
+const SendStatus = ({ activity, sendStatus }: SendStatusProps) => {
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focus = useFocus();
   const localize = useLocalizer();
