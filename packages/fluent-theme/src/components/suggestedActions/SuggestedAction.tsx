@@ -37,10 +37,10 @@ function SuggestedAction({
   displayText,
   image,
   imageAlt,
+  itemIndex,
   text,
   type,
-  value,
-  itemIndex
+  value
 }: SuggestedActionProps) {
   const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
