@@ -72,7 +72,7 @@ function RovingFocusProvider(
 
       const index = itemRefsRef.current.findIndex(({ current }) => current === target);
 
-      // prevent focus the last element, if not found the focused element
+      // prevent focusing the last element, if we didn't found the element focused
       if (index !== -1) {
         setActiveItemIndex(index);
       }
