@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import random from 'math-random';
-import React, { type MutableRefObject, type PropsWithChildren, useCallback, useMemo } from 'react';
+import React, { type MutableRefObject, type ReactNode, useCallback, useMemo } from 'react';
 
 import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
 import TranscriptFocusContext from './private/Context';
@@ -14,11 +14,10 @@ import { type TranscriptFocusContextType } from './private/Context';
 
 const { useGetKeyByActivity } = hooks;
 
-type TranscriptFocusComposerProps = Readonly<
-  PropsWithChildren<{
-    containerRef: MutableRefObject<HTMLElement>;
-  }>
->;
+type TranscriptFocusComposerProps = Readonly<{
+  children?: ReactNode | undefined;
+  containerRef: MutableRefObject<HTMLElement>;
+}>;
 
 function last<T>(array: ArrayLike<T>) {
   return array[array.length - 1];

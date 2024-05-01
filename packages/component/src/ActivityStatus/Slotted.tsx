@@ -1,7 +1,10 @@
-import React, { Children, Fragment, memo, type PropsWithChildren } from 'react';
+import React, { Children, Fragment, memo, type ReactNode } from 'react';
 import classNames from 'classnames';
 
-type Props = Readonly<PropsWithChildren<{ className?: string }>>;
+type Props = Readonly<{
+  children?: ReactNode | undefined;
+  className?: string;
+}>;
 
 const Slotted = memo(({ children, className }: Props) => (
   <span className={classNames('webchat__activity-status--slotted', className)}>

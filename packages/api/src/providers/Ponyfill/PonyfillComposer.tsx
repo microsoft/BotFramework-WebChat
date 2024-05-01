@@ -1,11 +1,12 @@
 import type { GlobalScopePonyfill } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
-import React, { useMemo, useRef, type PropsWithChildren } from 'react';
+import React, { useMemo, useRef, type ReactNode } from 'react';
 
 import type { ContextOf } from '../../types/ContextOf';
 import PonyfillContext from './private/PonyfillContext';
 
-type Props = PropsWithChildren<{
+type Props = Readonly<{
+  children?: ReactNode | undefined;
   ponyfill?: Partial<GlobalScopePonyfill>;
 }>;
 

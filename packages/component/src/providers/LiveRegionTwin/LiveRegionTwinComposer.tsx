@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { type PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import LiveRegionTwinContainer from './private/LiveRegionTwinContainer';
 import LiveRegionTwinContext from './private/Context';
@@ -13,36 +13,37 @@ const { usePonyfill } = hooks;
 const DEFAULT_ARIA_LIVE = 'polite';
 const DEFAULT_FADE_AFTER = 1000;
 
-type LiveRegionTwinComposerProps = Readonly<
-  PropsWithChildren<{
-    /** Optional "aria-label" attribute for the live region twin container. */
-    'aria-label'?: string;
+type LiveRegionTwinComposerProps = Readonly<{
+  /** Optional "aria-label" attribute for the live region twin container. */
+  'aria-label'?: string;
 
-    /** "aria-live" attribute for the live region twin container, defaults to `'polite'`. */
-    'aria-live'?: 'assertive' | 'polite';
+  /** "aria-live" attribute for the live region twin container, defaults to `'polite'`. */
+  'aria-live'?: 'assertive' | 'polite';
 
-    /** Optional "aria-roledescription" attribute for the live region twin container. */
-    'aria-roledescription'?: string;
+  /** Optional "aria-roledescription" attribute for the live region twin container. */
+  'aria-roledescription'?: string;
 
-    /** Optional "className" attribute for the live region twin container. */
-    className?: string;
+  /** Optional "children" for the live region twin container. */
+  children?: ReactNode | undefined;
 
-    /**
-     * Static elements will fade out after this timeout value specified in milliseconds, defaults to `1000`.
-     *
-     * When lowering this value, make sure screen reader can continue to pick up new static elements before fading out.
-     *
-     * If this prop is updated, it will be reflected in next queueing elements.
-     */
-    fadeAfter?: number;
+  /** Optional "className" attribute for the live region twin container. */
+  className?: string;
 
-    /** Optional "role" attribute for the live region twin container. */
-    role?: string;
+  /**
+   * Static elements will fade out after this timeout value specified in milliseconds, defaults to `1000`.
+   *
+   * When lowering this value, make sure screen reader can continue to pick up new static elements before fading out.
+   *
+   * If this prop is updated, it will be reflected in next queueing elements.
+   */
+  fadeAfter?: number;
 
-    /** Optional "className" attribute for static text element. */
-    textElementClassName?: string;
-  }>
->;
+  /** Optional "role" attribute for the live region twin container. */
+  role?: string;
+
+  /** Optional "className" attribute for static text element. */
+  textElementClassName?: string;
+}>;
 
 /**
  * Live region twin is an UI component for queueing texts or elements to the screen reader using

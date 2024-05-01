@@ -15,7 +15,7 @@ import React, { forwardRef, Fragment, useCallback, useMemo, useRef } from 'react
 
 import { type ActivityComponentFactory } from 'botframework-webchat-api';
 import { type ActivityElementMap } from './Transcript/types';
-import { type KeyboardEventHandler, type MutableRefObject, type ReactNode, type PropsWithChildren } from 'react';
+import { type KeyboardEventHandler, type MutableRefObject, type ReactNode } from 'react';
 import { type WebChatActivity } from 'botframework-webchat-core';
 
 import { android } from './Utils/detectBrowser';
@@ -600,12 +600,11 @@ InternalTranscript.propTypes = {
   className: PropTypes.string
 };
 
-type InternalTranscriptScrollableProps = Readonly<
-  PropsWithChildren<{
-    onFocusFiller: () => void;
-    terminatorRef: MutableRefObject<HTMLDivElement>;
-  }>
->;
+type InternalTranscriptScrollableProps = Readonly<{
+  children?: ReactNode | undefined;
+  onFocusFiller: () => void;
+  terminatorRef: MutableRefObject<HTMLDivElement>;
+}>;
 
 // Separating high-frequency hooks to improve performance.
 const InternalTranscriptScrollable = ({

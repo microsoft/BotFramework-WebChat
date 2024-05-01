@@ -1,19 +1,18 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { memo, type PropsWithChildren, useCallback, useEffect, useRef } from 'react';
+import React, { memo, type ReactNode, useCallback, useEffect, useRef } from 'react';
 
 import useStyleSet from '../../../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
 
-type Props = Readonly<
-  PropsWithChildren<{
-    'aria-label'?: string;
-    'aria-labelledby'?: string;
-    className?: string;
-    onDismiss?: () => void;
-  }>
->;
+type Props = Readonly<{
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+  children?: ReactNode | undefined;
+  className?: string;
+  onDismiss?: () => void;
+}>;
 
 const ModalDialog = memo(
   ({ 'aria-label': ariaLabel, 'aria-labelledby': ariaLabelledBy, children, className, onDismiss }: Props) => {
