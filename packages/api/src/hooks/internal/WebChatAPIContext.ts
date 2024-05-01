@@ -1,10 +1,10 @@
 import {
   type DirectLineJSBotConnection,
   type Observable,
-  type WebChatActivity,
   type sendFiles,
   type sendMessage,
-  type setSendBoxAttachments
+  type setSendBoxAttachments,
+  type WebChatActivity
 } from 'botframework-webchat-core';
 import { createContext } from 'react';
 

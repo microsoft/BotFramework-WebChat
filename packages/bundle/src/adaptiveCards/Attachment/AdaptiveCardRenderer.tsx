@@ -1,8 +1,8 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
 import {
-  type AdaptiveCard,
   type Action as AdaptiveCardAction,
+  type AdaptiveCard,
   type OpenUrlAction,
   type SubmitAction
 } from 'adaptivecards';

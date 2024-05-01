@@ -1,8 +1,8 @@
 /* eslint-disable no-magic-numbers */
 import React, {
-  type MutableRefObject,
   createContext,
   memo,
+  type MutableRefObject,
   useCallback,
   useContext,
   useEffect,

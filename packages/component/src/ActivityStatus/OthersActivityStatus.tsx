@@ -1,11 +1,11 @@
 import {
   getOrgSchemaMessage,
-  type OrgSchemaAction,
-  type OrgSchemaProject,
   parseAction,
   parseClaim,
-  warnOnce,
-  type WebChatActivity
+  type OrgSchemaAction,
+  type OrgSchemaProject,
+  type WebChatActivity,
+  warnOnce
 } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo, useMemo, type ReactNode } from 'react';

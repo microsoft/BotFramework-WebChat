@@ -12,9 +12,9 @@ type SendBoxMiddlewareProps = typeof types.props;
 type SendBoxMiddlewareRequest = typeof types.request;
 
 export {
+  rectifySendBoxMiddlewareProps,
   SendBoxMiddlewareProvider,
   SendBoxMiddlewareProxy,
-  rectifySendBoxMiddlewareProps,
   type SendBoxMiddleware,
   type SendBoxMiddlewareProps,
   type SendBoxMiddlewareRequest
