@@ -13,7 +13,7 @@ test('calling emitTypingIndicator should send a typing activity', async () => {
 
   await driver.wait(uiConnected(), timeouts.directLine);
 
-  await pageObjects.runHook('useFocusSendBox', [], fn => fn());
+  await pageObjects.runHook('useFocus', [], fn => fn('sendBox'));
 
   await driver.wait(sendBoxTextBoxFocused(), timeouts.ui);
 });

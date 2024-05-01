@@ -31,7 +31,7 @@
         await pageConditions.uiConnected();
 
         // WHEN: The callback of "useFocus()" is called.
-        await renderWebChatWithHook(() => window.WebChat.hooks.useFocus()());
+        await renderWebChatWithHook(() =>  Promise.resolve(window.WebChat.hooks.useFocus()).then(focus => focus()));
 
         // THEN: It should focus on the (blank) transcript.
         await host.snapshot();

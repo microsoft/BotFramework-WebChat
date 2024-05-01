@@ -1,4 +1,4 @@
-import { hooks } from 'botframework-webchat-component';
+import { hooks, type SendBoxFocusOptions } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
@@ -18,7 +18,15 @@ import useUniqueId from './private/useUniqueId';
 import styles from './index.module.css';
 import { useStyles } from '../../styles';
 
-const { useStyleOptions, useMakeThumbnail, useLocalizer, useSendBoxAttachments, useSendMessage } = hooks;
+const {
+  useFocus,
+  useLocalizer,
+  useMakeThumbnail,
+  useRegisterFocusSendBox,
+  useSendBoxAttachments,
+  useSendMessage,
+  useStyleOptions
+} = hooks;
 
 function SendBox(
   props: Readonly<{
@@ -38,6 +46,39 @@ function SendBox(
   const errorMessageId = useUniqueId('sendbox__error-message-id');
   const [errorRef, errorMessage] = useSubmitError({ message, attachments });
   const [telephoneKeypadShown] = useTelephoneKeypadShown();
+  const setFocus = useFocus();
+
+  useRegisterFocusSendBox(
+    useCallback(
+      ({ noKeyboard, waitUntil }: SendBoxFocusOptions) => {
+        if (!inputRef.current) {
+          return;
+        }
+        if (noKeyboard) {
+          waitUntil(
+            (async () => {
+              const previousReadOnly = inputRef.current?.getAttribute('readonly');
+              inputRef.current?.setAttribute('readonly', 'true');
+              // TODO: [P2] We should update this logic to handle quickly-successive `focusCallback`.
+              //       If a succeeding `focusCallback` is being called, the `setTimeout` should run immediately.
+              //       Or the second `focusCallback` should not set `readonly` to `true`.
+              // eslint-disable-next-line no-restricted-globals
+              await new Promise(resolve => setTimeout(resolve, 0));
+              inputRef.current?.focus();
+              if (typeof previousReadOnly !== 'string') {
+                inputRef.current?.removeAttribute('readonly');
+              } else {
+                inputRef.current?.setAttribute('readonly', previousReadOnly);
+              }
+            })()
+          );
+        } else {
+          inputRef.current?.focus();
+        }
+      },
+      [inputRef]
+    )
+  );
 
   const attachmentsRef = useRefFrom(attachments);
   const messageRef = useRefFrom(message);
@@ -48,10 +89,9 @@ function SendBox(
         return;
       }
 
-      // TODO: Should call `useFocus('sendBox')`.
-      inputRef.current?.focus();
+      setFocus('sendBox');
     },
-    [inputRef]
+    [setFocus]
   );
 
   const handleMessageChange: React.FormEventHandler<HTMLTextAreaElement> = useCallback(
@@ -95,10 +135,9 @@ function SendBox(
         setAttachments([]);
       }
 
-      // TODO: Should call `useFocus('sendBox')`.
-      inputRef.current?.focus();
+      setFocus('sendBox');
     },
-    [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage, isMessageLengthExceeded, errorRef, inputRef]
+    [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage, isMessageLengthExceeded, errorRef, setFocus]
   );
 
   const handleTelephoneKeypadButtonClick = useCallback(

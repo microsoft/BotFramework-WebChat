@@ -1,6 +1,5 @@
 import useDictateAbortable from './useDictateAbortable';
 import useFocus from './useFocus';
-import useFocusSendBox from './useFocusSendBox';
 import useMakeThumbnail from './useMakeThumbnail';
 import useObserveScrollPosition from './useObserveScrollPosition';
 import useObserveTranscriptFocus from './useObserveTranscriptFocus';
@@ -18,17 +17,19 @@ import { useTypingIndicatorVisible } from '../BasicTypingIndicator';
 import { useSendBoxSpeechInterimsVisible } from '../SendBox/BasicSendBox';
 import { useMicrophoneButtonClick, useMicrophoneButtonDisabled } from '../SendBox/MicrophoneButton';
 import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
+import { useRegisterFocusSendBox, type SendBoxFocusOptions } from './sendBoxFocus';
+
+export { type SendBoxFocusOptions };
 
 export {
   useDictateAbortable,
   useFocus,
-  /** @deprecated Please use `useFocus('sendBox')` instead. */
-  useFocusSendBox,
   useMakeThumbnail,
   useMicrophoneButtonClick,
   useMicrophoneButtonDisabled,
   useObserveScrollPosition,
   useObserveTranscriptFocus,
+  useRegisterFocusSendBox,
   useRenderMarkdownAsHTML,
   useScrollDown,
   useScrollTo,

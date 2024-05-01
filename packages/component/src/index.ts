@@ -50,6 +50,8 @@ import withEmoji from './withEmoji/withEmoji';
 
 import * as componentHooks from './hooks/index';
 
+export { type SendBoxFocusOptions } from './hooks/index';
+
 const hooks = {
   ...apiHooks,
   ...componentHooks
