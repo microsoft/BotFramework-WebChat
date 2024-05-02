@@ -22,6 +22,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Known issues
+
+-  Web Chat is not loading with error `Uncaught TypeError: Super constructor null of anonymous class is not a constructor`
+   -  A [bug in webpack@>=5.84.1](https://github.com/webpack/webpack/issues/17711) is causing the issue. Please update to [`webpack@>=5.90.0`](https://npmjs.com/package/webpack/v/5.90.0)
+
 ### Breaking changes
 
 -  `useSendMessage` hook is updated to support sending attachments with a message. To reduce complexity, the `useSendFiles` hook is being deprecated. The hook will be removed on or after 2026-04-03
@@ -70,11 +75,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes type portability issues by exporting types from all exported code, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
 -  Fixes missing exports of `useNotifications`, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
 -  Fixes suggested actions keyboard navigation skips actions after suggested actions got updated, in PR [#5150](https://github.com/microsoft/BotFramework-WebChat/pull/5150), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixes [#5155](https://github.com/microsoft/BotFramework-WebChat/issues/5155). Fixed "Super constructor null of anonymous class is not a constructor" error in CDN bundle by bumping to [`webpack@5.91.0`](https://www.npmjs.com/package/webpack/v/5.91.0), in PR [#5156](https://github.com/microsoft/BotFramework-WebChat/pull/5156), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
 -  Moved pull request validation pipeline to GitHub Actions, by [@compulim](https://github.com/compulim), in PR [#4976](https://github.com/microsoft/BotFramework-WebChat/pull/4976)
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4973](https://github.com/microsoft/BotFramework-WebChat/pull/4973), PR [#5115](https://github.com/microsoft/BotFramework-WebChat/pull/5115), and PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#4973](https://github.com/microsoft/BotFramework-WebChat/pull/4973), PR [#5115](https://github.com/microsoft/BotFramework-WebChat/pull/5115), PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), and PR [#5156](https://github.com/microsoft/BotFramework-WebChat/pull/5156)
    -  Notes: Some components/features in Adaptive Cards are in preview and not ready for production use. Web Chat does not support these components and features
    -  Production dependencies
       -  [`adaptivecards@3.0.2`](https://npmjs.com/package/adaptivecards)
@@ -112,7 +118,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`read-pkg@9.0.1`](https://npmjs.com/package/read-pkg)
       -  [`selenium-webdriver@4.15.0`](https://npmjs.com/package/selenium-webdriver)
       -  [`typescript@5.3.2`](https://npmjs.com/package/typescript)
-      -  [`webpack@5.89.0`](https://npmjs.com/package/webpack)
+      -  [`webpack@5.91.0`](https://npmjs.com/package/webpack)
 
 ## [4.16.0] - 2023-11-16
 
