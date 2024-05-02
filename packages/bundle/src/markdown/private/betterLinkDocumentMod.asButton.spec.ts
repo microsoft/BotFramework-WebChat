@@ -82,3 +82,55 @@ describe('When passing "asButton" option with true and "title" with "Hello, Worl
       )
     ));
 });
+
+describe('When passing "asButton" option with true and "className" with "my-link"', () => {
+  let actual: Document;
+  const decoration: BetterLinkDocumentModDecoration = { asButton: true, className: 'my-link' };
+
+  beforeEach(() => {
+    actual = betterLinkDocumentMod(parseDocumentFromString(BASE_HTML), () => decoration);
+  });
+
+  test('should replace with <button type="button" class="my-link">', () => {
+    expect(actual.querySelector('button').getAttribute('type')).toBe('button');
+    expect(actual.querySelector('button').getAttribute('class')).toBe('my-link');
+  });
+
+  test('should match snapshot', () =>
+    expect(serializeDocumentIntoString(actual)).toBe(
+      '<p><button class="my-link" type="button" value="https://example.com">Example</button></p>\n'
+    ));
+
+  test('should match baseline', () =>
+    expect(serializeDocumentIntoString(actual)).toBe(
+      serializeDocumentIntoString(
+        parseDocumentFromString(new MarkdownIt().use(betterLink, () => decoration).render(BASE_MARKDOWN))
+      )
+    ));
+});
+
+describe('When passing "asButton" option with true and "aria-label" with "Hello, World!"', () => {
+  let actual: Document;
+  const decoration: BetterLinkDocumentModDecoration = { asButton: true, ariaLabel: 'Hello, World!' };
+
+  beforeEach(() => {
+    actual = betterLinkDocumentMod(parseDocumentFromString(BASE_HTML), () => decoration);
+  });
+
+  test('should replace with <button type="button" aria-label="Hello, World!">', () => {
+    expect(actual.querySelector('button').getAttribute('type')).toBe('button');
+    expect(actual.querySelector('button').getAttribute('aria-label')).toBe('Hello, World!');
+  });
+
+  test('should match snapshot', () =>
+    expect(serializeDocumentIntoString(actual)).toBe(
+      '<p><button aria-label="Hello, World!" type="button" value="https://example.com">Example</button></p>\n'
+    ));
+
+  test('should match baseline', () =>
+    expect(serializeDocumentIntoString(actual)).toBe(
+      serializeDocumentIntoString(
+        parseDocumentFromString(new MarkdownIt().use(betterLink, () => decoration).render(BASE_MARKDOWN))
+      )
+    ));
+});

@@ -84,6 +84,8 @@ export default function betterLinkDocumentMod(
     if (asButton) {
       const button = document.createElement('button');
 
+      anchor.hasAttribute('aria-label') && button.setAttribute('aria-label', anchor.getAttribute('aria-label'));
+      anchor.hasAttribute('class') && button.setAttribute('class', anchor.getAttribute('class'));
       anchor.hasAttribute('title') && button.setAttribute('title', anchor.getAttribute('title'));
       button.setAttribute('type', 'button');
       button.setAttribute('value', anchor.getAttribute('href'));
