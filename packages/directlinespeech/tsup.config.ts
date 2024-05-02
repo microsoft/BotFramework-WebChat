@@ -27,5 +27,6 @@ export default defineConfig({
     SPEECH_OCSP_CACHE_ROOT: ''
   },
   esbuildPlugins: [resolveCognitiveServicesToES2015],
+  // We need to internalize event-target-shim because it appear as transient packages with a different version.
   noExternal: ['event-target-shim']
 });
