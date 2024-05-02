@@ -211,6 +211,11 @@ type StyleOptions = {
   markdownRespectCRLF?: boolean;
 
   /**
+   * Render HTML alongside Markdown
+   */
+
+  markdownRenderHTML?: boolean;
+  /**
    * Assign new image for anchor links to indicate external
    */
 

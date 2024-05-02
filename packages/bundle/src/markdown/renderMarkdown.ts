@@ -59,23 +59,23 @@ const SANITIZE_HTML_OPTIONS = Object.freeze({
   nonBooleanAttributes: []
 });
 
-const MARKDOWN_IT_INIT = Object.freeze({
-  breaks: false,
-  html: false,
-  linkify: true,
-  typographer: true,
-  xhtmlOut: true
-});
-
 type BetterLinkDecoration = Exclude<ReturnType<Parameters<typeof betterLink>[1]>, undefined>;
 type RenderInit = { externalLinkAlt?: string };
 
 export default function render(
   markdown: string,
-  { markdownRespectCRLF }: Readonly<{ markdownRespectCRLF: boolean }>,
+  { markdownRespectCRLF, markdownRenderHTML }: Readonly<{ markdownRespectCRLF: boolean; markdownRenderHTML?: boolean }>,
   { externalLinkAlt = '' }: Readonly<RenderInit> = Object.freeze({})
 ): string {
   const linkDefinitions = Array.from(iterateLinkDefinitions(markdown));
+
+  const MARKDOWN_IT_INIT = Object.freeze({
+    breaks: false,
+    html: markdownRenderHTML ?? true,
+    linkify: true,
+    typographer: true,
+    xhtmlOut: true
+  });
 
   if (markdownRespectCRLF) {
     markdown = respectCRLFPre(markdown);
