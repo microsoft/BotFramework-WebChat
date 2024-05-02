@@ -4,8 +4,8 @@ import sanitizeHTML from 'sanitize-html';
 
 import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdownItPlugins/ariaLabel';
 import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
-import iterateLinkDefinitions from './private/iterateLinkDefinitions';
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
+import iterateLinkDefinitions from './private/iterateLinkDefinitions';
 
 const SANITIZE_HTML_OPTIONS = Object.freeze({
   allowedAttributes: {
@@ -141,17 +141,13 @@ export default function render(
     return decoration;
   };
 
-  const markdownIt = new MarkdownIt(MARKDOWN_IT_INIT).use(ariaLabel);
+  const htmlAfterMarkdown = new MarkdownIt(MARKDOWN_IT_INIT).use(ariaLabel).render(markdown);
+  const documentAfterMarkdown = new DOMParser().parseFromString(htmlAfterMarkdown, 'text/html');
 
-  let html = markdownIt.render(markdown);
+  betterLinkDocumentMod(documentAfterMarkdown, decorate);
 
-  const tempDocument = document.implementation.createHTMLDocument();
-  tempDocument.body.innerHTML = html;
-  betterLinkDocumentMod(tempDocument, decorate);
+  const htmlAfterBetterLink = new XMLSerializer().serializeToString(documentAfterMarkdown);
+  const htmlAfterAriaLabelPost = ariaLabelPost(htmlAfterBetterLink);
 
-  html = tempDocument.body.innerHTML;
-
-  html = ariaLabelPost(html);
-
-  return sanitizeHTML(html, SANITIZE_HTML_OPTIONS);
+  return sanitizeHTML(htmlAfterAriaLabelPost, SANITIZE_HTML_OPTIONS);
 }
