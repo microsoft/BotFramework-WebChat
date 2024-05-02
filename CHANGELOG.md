@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
+-  Renders HTML-based citation text, including within Markdown. HTML display should be sanitized and correctly formatted, by [@compulim](https://github.com/compulim), [@beyackle2](https://github.com/beyackle2), and [@OEvgeny](https://github.com/OEvgeny) in PR [#5161](https://github.com/microsoft/BotFramework-WebChat/pull/5161)
 -  Resolves [#5083](https://github.com/microsoft/BotFramework-WebChat/issues/5083). Added `sendAttachmentOn` style option to send attachments and text in a single activity, by [@ms-jb](https://github.com/ms-jb) and [@compulim](https://github.com/compulim), in PR [#5123](https://github.com/microsoft/BotFramework-WebChat/pull/5123)
    -  `useSendMessage` hook is updated to support sending attachments with a message
    -  `useSendBoxAttachments` hook is added to get/set attachments in the send box
