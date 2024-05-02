@@ -48,7 +48,7 @@
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "npm run build:tsup && npm run build:typescript && npm run build:babel",
-    "build:babel": "build_tool=babel module_format=commonjs babel src --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --verbose",
+    "build:babel": "cross-env build_tool=babel module_format=commonjs babel src --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --verbose",
     "build:tsup": "tsup --config ./tsup.config.ts",
     "build:typescript": "tsc --project src/tsconfig.json",
     "bump": "npm run bump:prod && npm run bump:dev && npm run bump:auditfix",
@@ -80,6 +80,7 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "botframework-directlinejs": "^0.15.5",
     "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
     "tsd": "^0.30.3",
     "type-fest": "^4.9.0",
     "typescript": "^5.3.2"
