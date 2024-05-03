@@ -211,15 +211,19 @@ type StyleOptions = {
   markdownRespectCRLF?: boolean;
 
   /**
-   * Render HTML alongside Markdown
+   * Render HTML inside Markdown.
+   *
+   * `true` to render HTML inside Markdown, otherwise, `false`. Defaults to `true`.
+   *
+   * New in 4.17: This option is enabled by default.
    */
-
   markdownRenderHTML?: boolean;
+
   /**
    * Assign new image for anchor links to indicate external
    */
-
   markdownExternalLinkIconImage?: string;
+
   /**
    * Scroll behavior styling
    */
