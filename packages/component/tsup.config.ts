@@ -5,6 +5,5 @@ export default defineConfig({
   ...baseConfig,
   entry: {
     'botframework-webchat-component': './src/index.ts'
-  },
-  noExternal: ['event-target-shim']
+  }
 });
