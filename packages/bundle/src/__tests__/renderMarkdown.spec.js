@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import renderMarkdown from '../markdown/renderMarkdown';
@@ -54,7 +55,7 @@ describe('renderMarkdown', () => {
 
     expect(renderMarkdown('[example](https://sample.com){aria-label="Sample label"}', styleOptions))
       .toMatchInlineSnapshot(`
-      "<p>\u200B<a href=\\"https://sample.com\\" aria-label=\\"Sample label\\" rel=\\"noopener noreferrer\\" target=\\"_blank\\">example<img src=\\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\\" alt class=\\"webchat__render-markdown__external-link-icon\\" title /></a>\u200B</p>
+      "<p>\u200B<a href=\\"https://sample.com\\" aria-label=\\"Sample label\\" rel=\\"noopener noreferrer\\" target=\\"_blank\\">example<img src=\\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\\" alt class=\\"webchat__render-markdown__external-link-icon\\" /></a>\u200B</p>
       "
     `);
   });
