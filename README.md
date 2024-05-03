@@ -54,6 +54,12 @@ export default function MyComponent() {
 }
 ```
 
+#### Support HTML-in-Markdown
+
+Web Chat will now render HTML-in-Markdown. We have ported our sanitizer and accessibility fixer to work on HTML level. Both Markdown and HTML-in-Markdown will receive the same treatment and meet our security and accessibility requirements.
+
+You can turn off this option by setting `styleOptions.markdownRenderHTML` to `false`.
+
 ### 4.16.1 notable changes
 
 Web Chat now supports [Adaptive Cards schema up to 1.6](https://adaptivecards.io/explorer/). Some features in Adaptive Cards are in preview or designed to use outside of Bot Framework. Web Chat does not support these features.
