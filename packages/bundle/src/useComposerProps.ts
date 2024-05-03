@@ -17,8 +17,8 @@ export default function useComposerProps({
   attachmentMiddleware: AttachmentMiddleware[];
   renderMarkdown?: (
     markdown: string,
-    newLineOptions: { markdownRespectCRLF: boolean },
-    linkOptions: { externalLinkAlt: string }
+    styleOptions: Readonly<{ markdownRespectCRLF: boolean }>,
+    options: Readonly<{ containerClassName: string; externalLinkAlt: string }>
   ) => string;
   styleOptions: any;
   styleSet: any;

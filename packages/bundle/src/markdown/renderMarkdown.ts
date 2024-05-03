@@ -6,6 +6,8 @@ import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdow
 import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
+import parseDocumentFromString from './private/parseDocumentFromString';
+import serializeDocumentIntoString from './private/serializeDocumentIntoString';
 
 const SANITIZE_HTML_OPTIONS = Object.freeze({
   allowedAttributes: {
@@ -59,12 +61,12 @@ const SANITIZE_HTML_OPTIONS = Object.freeze({
   nonBooleanAttributes: []
 });
 
-type RenderInit = { externalLinkAlt?: string };
+type RenderInit = Readonly<{ containerClassName?: string; externalLinkAlt?: string }>;
 
 export default function render(
   markdown: string,
   { markdownRespectCRLF, markdownRenderHTML }: Readonly<{ markdownRespectCRLF: boolean; markdownRenderHTML?: boolean }>,
-  { externalLinkAlt = '' }: Readonly<RenderInit> = Object.freeze({})
+  { containerClassName = '', externalLinkAlt = '' }: RenderInit = Object.freeze({})
 ): string {
   const linkDefinitions = Array.from(iterateLinkDefinitions(markdown));
 
@@ -142,12 +144,29 @@ export default function render(
   };
 
   const htmlAfterMarkdown = new MarkdownIt(MARKDOWN_IT_INIT).use(ariaLabel).render(markdown);
-  const documentAfterMarkdown = new DOMParser().parseFromString(htmlAfterMarkdown, 'text/html');
+  const documentAfterMarkdown = parseDocumentFromString(htmlAfterMarkdown);
 
   betterLinkDocumentMod(documentAfterMarkdown, decorate);
 
-  const htmlAfterBetterLink = new XMLSerializer().serializeToString(documentAfterMarkdown);
-  const htmlAfterAriaLabelPost = ariaLabelPost(htmlAfterBetterLink);
+  const htmlAfterBetterLink = serializeDocumentIntoString(documentAfterMarkdown);
 
-  return sanitizeHTML(htmlAfterAriaLabelPost, SANITIZE_HTML_OPTIONS);
+  const htmlAfterAriaLabelPost = ariaLabelPost(htmlAfterBetterLink);
+  const htmlAfterSanitization = sanitizeHTML(htmlAfterAriaLabelPost, SANITIZE_HTML_OPTIONS);
+
+  // return htmlAfterSanitization;
+
+  const documentAfterSanitization = parseDocumentFromString(htmlAfterSanitization);
+
+  // We can only adding class/style in <div> after sanitization.
+
+  const rootElement = documentAfterSanitization.createElement('div');
+
+  // TODO: We need to add Emotion class here.
+  containerClassName && rootElement.classList.add(...containerClassName.split(' ').filter(Boolean));
+  rootElement.setAttribute('style', 'display: content;');
+
+  rootElement.append(...documentAfterSanitization.body.children);
+  documentAfterSanitization.body.append(rootElement);
+
+  return serializeDocumentIntoString(documentAfterSanitization);
 }

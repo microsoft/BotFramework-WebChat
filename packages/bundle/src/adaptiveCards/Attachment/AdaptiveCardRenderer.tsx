@@ -52,7 +52,7 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
   const contentRef = useRef<HTMLDivElement>();
   const localize = useLocalizer();
   const performCardAction = usePerformCardAction();
-  const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('adaptive cards');
   const scrollToEnd = useScrollToEnd();
 
   const disabled = disabledFromComposer || disabledFromProps;

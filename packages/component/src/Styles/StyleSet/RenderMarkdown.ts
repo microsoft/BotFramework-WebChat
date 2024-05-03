@@ -7,6 +7,19 @@ import { FORCED_COLORS_SELECTOR, NOT_FORCED_COLORS_SELECTOR } from './Constants'
 export default function createMarkdownStyle() {
   return {
     '&.webchat__render-markdown': {
+      // Copied from Adaptive Cards inline styling.
+      '&.webchat__render-markdown--adaptive-cards > *:first-child': {
+        marginTop: 0,
+        width: '100%',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
+      },
+
+      // Copied from Adaptive Cards inline styling.
+      '&.webchat__render-markdown--adaptive-cards > *:last-child': {
+        marginBottom: 0
+      },
+
       '& .webchat__render-markdown__external-link-icon': {
         backgroundImage: CSSTokens.IconURLExternalLink,
         height: '.75em',
