@@ -20,8 +20,8 @@ type AddFullBundleProps = Readonly<{
   children: ({ extraStyleSet }: { extraStyleSet: any }) => ReactNode;
   renderMarkdown?: (
     markdown: string,
-    styleOptions: Readonly<{ markdownRespectCRLF: boolean }>,
-    options: Readonly<{ containerClassName: string; externalLinkAlt: string }>
+    newLineOptions: { markdownRespectCRLF: boolean },
+    linkOptions: { externalLinkAlt: string }
   ) => string;
   styleOptions?: StyleOptions & AdaptiveCardsStyleOptions;
   styleSet?: any & { options: StrictFullBundleStyleOptions };
