@@ -153,19 +153,4 @@ export default function render(
   const htmlAfterSanitization = sanitizeHTML(htmlAfterAriaLabelPost, SANITIZE_HTML_OPTIONS);
 
   return htmlAfterSanitization;
-
-  // const documentAfterSanitization = parseDocumentFromString(htmlAfterSanitization);
-
-  // // We can only adding class/style in <div> after sanitization.
-
-  // const rootElement = documentAfterSanitization.createElement('div');
-
-  // // TODO: We need to add Emotion class here.
-  // containerClassName && rootElement.classList.add(...containerClassName.split(' ').filter(Boolean));
-  // rootElement.setAttribute('style', 'display: contents;');
-
-  // rootElement.append(...documentAfterSanitization.body.children);
-  // documentAfterSanitization.body.append(rootElement);
-
-  // return serializeDocumentIntoString(documentAfterSanitization);
 }
