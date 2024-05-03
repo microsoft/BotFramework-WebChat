@@ -51,7 +51,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   ] = useStyleSet();
   const localize = useLocalizer();
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
-  const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
   const showModal = useShowModal();
 
   const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
@@ -185,11 +185,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
       className={classNames('webchat__text-content', 'webchat__text-content--is-markdown', textContentStyleSet + '')}
     >
       <div
-        className={classNames(
-          'webchat__text-content__markdown',
-          'webchat__render-markdown',
-          renderMarkdownStyleSet + ''
-        )}
+        className={classNames('webchat__text-content__markdown', renderMarkdownStyleSet + '')}
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={dangerouslySetInnerHTML}
         onClick={handleClick}

@@ -14,6 +14,16 @@
         "types": "./lib/index.d.ts",
         "default": "./lib/index.js"
       }
+    },
+    "./internal": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.internal.d.mts",
+        "default": "./dist/botframework-webchat-component.internal.mjs"
+      },
+      "require": {
+        "types": "./lib/internal.d.ts",
+        "default": "./lib/internal.js"
+      }
     }
   },
   "publishConfig": {
