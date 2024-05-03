@@ -2,6 +2,8 @@ import { cx } from '@emotion/css';
 import { hooks, StrictStyleOptions } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 
+import parseDocumentFromString from '../Utils/parseDocumentFromString';
+import serializeDocumentIntoString from '../Utils/serializeDocumentIntoString';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 import useStyleSet from './useStyleSet';
 
@@ -13,7 +15,7 @@ export default function useRenderMarkdownAsHTML(
   | ((
       markdown: string,
       styleOptions?: Readonly<StrictStyleOptions>,
-      options?: Readonly<{ containerClassName: string; externalLinkAlt: string }>
+      options?: Readonly<{ externalLinkAlt: string }>
     ) => string)
   | undefined {
   const { renderMarkdown } = useWebChatUIContext();
@@ -40,7 +42,23 @@ export default function useRenderMarkdownAsHTML(
 
   return useMemo(
     () =>
-      renderMarkdown && (markdown => renderMarkdown(markdown, styleOptions, { containerClassName, externalLinkAlt })),
+      renderMarkdown &&
+      (markdown => {
+        const htmlAfterSanitization = renderMarkdown(markdown, styleOptions, { containerClassName, externalLinkAlt });
+
+        const documentAfterSanitization = parseDocumentFromString(htmlAfterSanitization);
+
+        const rootElement = documentAfterSanitization.createElement('div');
+
+        // TODO: We need to add Emotion class here.
+        containerClassName && rootElement.classList.add(...containerClassName.split(' ').filter(Boolean));
+        rootElement.setAttribute('style', 'display: contents;');
+
+        rootElement.append(...documentAfterSanitization.body.children);
+        documentAfterSanitization.body.append(rootElement);
+
+        return serializeDocumentIntoString(documentAfterSanitization);
+      }),
     [containerClassName, externalLinkAlt, renderMarkdown, styleOptions]
   );
 }

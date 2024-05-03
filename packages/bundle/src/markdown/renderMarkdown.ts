@@ -2,12 +2,11 @@ import { onErrorResumeNext } from 'botframework-webchat-core';
 import MarkdownIt from 'markdown-it';
 import sanitizeHTML from 'sanitize-html';
 
+import { parseDocumentFromString, serializeDocumentIntoString } from 'botframework-webchat-component/internal';
 import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdownItPlugins/ariaLabel';
 import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
-import parseDocumentFromString from './private/parseDocumentFromString';
-import serializeDocumentIntoString from './private/serializeDocumentIntoString';
 
 const SANITIZE_HTML_OPTIONS = Object.freeze({
   allowedAttributes: {
@@ -66,7 +65,7 @@ type RenderInit = Readonly<{ containerClassName?: string; externalLinkAlt?: stri
 export default function render(
   markdown: string,
   { markdownRespectCRLF, markdownRenderHTML }: Readonly<{ markdownRespectCRLF: boolean; markdownRenderHTML?: boolean }>,
-  { containerClassName = '', externalLinkAlt = '' }: RenderInit = Object.freeze({})
+  { externalLinkAlt = '' }: RenderInit = Object.freeze({})
 ): string {
   const linkDefinitions = Array.from(iterateLinkDefinitions(markdown));
 
@@ -153,20 +152,20 @@ export default function render(
   const htmlAfterAriaLabelPost = ariaLabelPost(htmlAfterBetterLink);
   const htmlAfterSanitization = sanitizeHTML(htmlAfterAriaLabelPost, SANITIZE_HTML_OPTIONS);
 
-  // return htmlAfterSanitization;
+  return htmlAfterSanitization;
 
-  const documentAfterSanitization = parseDocumentFromString(htmlAfterSanitization);
+  // const documentAfterSanitization = parseDocumentFromString(htmlAfterSanitization);
 
-  // We can only adding class/style in <div> after sanitization.
+  // // We can only adding class/style in <div> after sanitization.
 
-  const rootElement = documentAfterSanitization.createElement('div');
+  // const rootElement = documentAfterSanitization.createElement('div');
 
-  // TODO: We need to add Emotion class here.
-  containerClassName && rootElement.classList.add(...containerClassName.split(' ').filter(Boolean));
-  rootElement.setAttribute('style', 'display: content;');
+  // // TODO: We need to add Emotion class here.
+  // containerClassName && rootElement.classList.add(...containerClassName.split(' ').filter(Boolean));
+  // rootElement.setAttribute('style', 'display: contents;');
 
-  rootElement.append(...documentAfterSanitization.body.children);
-  documentAfterSanitization.body.append(rootElement);
+  // rootElement.append(...documentAfterSanitization.body.children);
+  // documentAfterSanitization.body.append(rootElement);
 
-  return serializeDocumentIntoString(documentAfterSanitization);
+  // return serializeDocumentIntoString(documentAfterSanitization);
 }

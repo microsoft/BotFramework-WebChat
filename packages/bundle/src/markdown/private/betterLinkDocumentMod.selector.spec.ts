@@ -1,10 +1,9 @@
 /** @jest-environment jsdom */
 
+import { parseDocumentFromString, serializeDocumentIntoString } from 'botframework-webchat-component/internal';
 import MarkdownIt from 'markdown-it';
 import betterLink from '../markdownItPlugins/betterLink';
 import betterLinkDocumentMod, { type BetterLinkDocumentModDecoration } from './betterLinkDocumentMod';
-import parseDocumentFromString from './parseDocumentFromString';
-import serializeDocumentIntoString from './serializeDocumentIntoString';
 
 const BASE_MARKDOWN = '[Hello, World!](https://example.com/1)\n\n[Aloha!](https://example.com/2)';
 const BASE_HTML = new MarkdownIt().render(BASE_MARKDOWN);
