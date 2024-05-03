@@ -35,7 +35,7 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'Hello, World!\n');
+        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', '\nHello, World!');
 
         const pushButton1 = document.querySelector('.ac-pushButton');
 
@@ -53,7 +53,7 @@
           type: 'message'
         });
 
-        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'Aloha!\n');
+        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', '\nAloha!');
 
         const pushButton2 = document.querySelector('.ac-pushButton');
 
