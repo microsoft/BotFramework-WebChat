@@ -142,15 +142,19 @@ export default function render(
     return decoration;
   };
 
-  const htmlAfterMarkdown = new MarkdownIt(MARKDOWN_IT_INIT).use(ariaLabel).render(markdown);
+  const htmlAfterMarkdown = ariaLabelPost(new MarkdownIt(MARKDOWN_IT_INIT).use(ariaLabel).render(markdown));
+
+  // TODO: [P1] In some future, we should apply "better link" and "sanitization" outside of the Markdown engine.
+  //       Particularly, apply them at `useRenderMarkdownAsHTML` instead of inside the default `renderMarkdown`.
+  //       If web devs want to bring their own Markdown engine, they don't need to rebuild "better link" and sanitization themselves.
+
   const documentAfterMarkdown = parseDocumentFromString(htmlAfterMarkdown);
 
   betterLinkDocumentMod(documentAfterMarkdown, decorate);
 
   const htmlAfterBetterLink = serializeDocumentIntoString(documentAfterMarkdown);
 
-  const htmlAfterAriaLabelPost = ariaLabelPost(htmlAfterBetterLink);
-  const htmlAfterSanitization = sanitizeHTML(htmlAfterAriaLabelPost, SANITIZE_HTML_OPTIONS);
+  const htmlAfterSanitization = sanitizeHTML(htmlAfterBetterLink, SANITIZE_HTML_OPTIONS);
 
   return htmlAfterSanitization;
 }
