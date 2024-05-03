@@ -21,7 +21,7 @@ describe('When passing "title" option with "Hello, World!"', () => {
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<body xmlns="http://www.w3.org/1999/xhtml"><p><a href="https://example.com" title="Hello, World!">Example</a></p>\n</body>'
+      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com" title="Hello, World!">Example</a></p>'
     ));
 
   test('should match baseline', () =>
@@ -48,6 +48,6 @@ describe('When passing "title" option with false', () => {
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<body xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com">Example</a></body>'
+      '<a xmlns="http://www.w3.org/1999/xhtml" href="https://example.com">Example</a>'
     ));
 });

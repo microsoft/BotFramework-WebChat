@@ -1,10 +1,10 @@
 export default function serializeDocumentIntoString(document: Document): string {
   const serializer = new XMLSerializer();
-  let html = '';
+  const elementHTML: string[] = [];
 
   for (const element of document.body.children) {
-    html += serializer.serializeToString(element);
+    elementHTML.push(serializer.serializeToString(element));
   }
 
-  return html;
+  return elementHTML.join('\n');
 }
