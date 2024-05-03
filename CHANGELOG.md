@@ -78,7 +78,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Fixes missing exports of `useNotifications`, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
 -  Fixes suggested actions keyboard navigation skips actions after suggested actions got updated, in PR [#5150](https://github.com/microsoft/BotFramework-WebChat/pull/5150), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixes [#5155](https://github.com/microsoft/BotFramework-WebChat/issues/5155). Fixed "Super constructor null of anonymous class is not a constructor" error in CDN bundle by bumping to [`webpack@5.91.0`](https://www.npmjs.com/package/webpack/v/5.91.0), in PR [#5156](https://github.com/microsoft/BotFramework-WebChat/pull/5156), by [@compulim](https://github.com/compulim)
--  Fixes [#5162](https://github.com/microsoft/BotFramework-WebChat/issues/5162). Improved performance for `useActivityTreeWithRenderer`, in PR [#5163}(https://github.com/microsoft/BotFramework-WebChat/pull/5163), by [@compulim](https://github.com/compulim)
+-  Fixes [#5162](https://github.com/microsoft/BotFramework-WebChat/issues/5162). Improved performance for `useActivityTreeWithRenderer`, in PR [#5163](https://github.com/microsoft/BotFramework-WebChat/pull/5163), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
