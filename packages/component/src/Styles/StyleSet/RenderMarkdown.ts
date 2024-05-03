@@ -7,6 +7,8 @@ import { FORCED_COLORS_SELECTOR, NOT_FORCED_COLORS_SELECTOR } from './Constants'
 export default function createMarkdownStyle() {
   return {
     '&.webchat__render-markdown': {
+      display: 'contents',
+
       // Copied from Adaptive Cards inline styling.
       '&.webchat__render-markdown--adaptive-cards > *:first-child': {
         marginTop: 0,
@@ -17,6 +19,14 @@ export default function createMarkdownStyle() {
 
       // Copied from Adaptive Cards inline styling.
       '&.webchat__render-markdown--adaptive-cards > *:last-child': {
+        marginBottom: 0
+      },
+
+      '&.webchat__render-markdown--message-activity > *:first-child': {
+        marginTop: 0
+      },
+
+      '&.webchat__render-markdown--message-activity > *:last-child': {
         marginBottom: 0
       },
 

@@ -13,7 +13,7 @@ type Props = Readonly<{
 }>;
 
 const TextContent: FC<Props> = memo(({ activity, contentType = 'text/plain', text }: Props) => {
-  const supportMarkdown = !!useRenderMarkdownAsHTML();
+  const supportMarkdown = !!useRenderMarkdownAsHTML('message activity');
 
   return text ? (
     contentType === 'text/markdown' && supportMarkdown ? (

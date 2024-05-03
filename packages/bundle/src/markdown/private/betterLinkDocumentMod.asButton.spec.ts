@@ -22,7 +22,7 @@ describe('When passing "asButton" option with true', () => {
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<p><button type="button" value="https://example.com">Example</button></p>\n'
+      '<body xmlns="http://www.w3.org/1999/xhtml"><p><button type="button" value="https://example.com">Example</button></p>\n</body>'
     ));
 
   test('should match baseline', () =>
@@ -46,7 +46,7 @@ describe('When passing "asButton" option with true and "iconClassName" with "my-
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<p><button type="button" value="https://example.com">Example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="my-icon" /></button></p>\n'
+      '<body xmlns="http://www.w3.org/1999/xhtml"><p><button type="button" value="https://example.com">Example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="my-icon" /></button></p>\n</body>'
     ));
 
   test('should match baseline', () =>
@@ -72,7 +72,7 @@ describe('When passing "asButton" option with true and "title" with "Hello, Worl
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<p><button title="Hello, World!" type="button" value="https://example.com">Example</button></p>\n'
+      '<body xmlns="http://www.w3.org/1999/xhtml"><p><button title="Hello, World!" type="button" value="https://example.com">Example</button></p>\n</body>'
     ));
 
   test('should match baseline', () =>
@@ -98,7 +98,7 @@ describe('When passing "asButton" option with true and "className" with "my-link
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<p><button class="my-link" type="button" value="https://example.com">Example</button></p>\n'
+      '<body xmlns="http://www.w3.org/1999/xhtml"><p><button class="my-link" type="button" value="https://example.com">Example</button></p>\n</body>'
     ));
 
   test('should match baseline', () =>
@@ -124,7 +124,7 @@ describe('When passing "asButton" option with true and "aria-label" with "Hello,
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<p><button aria-label="Hello, World!" type="button" value="https://example.com">Example</button></p>\n'
+      '<body xmlns="http://www.w3.org/1999/xhtml"><p><button aria-label="Hello, World!" type="button" value="https://example.com">Example</button></p>\n</body>'
     ));
 
   test('should match baseline', () =>

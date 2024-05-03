@@ -22,7 +22,7 @@ describe('When passing "className" option with "my-link"', () => {
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<p><a href="https://example.com" class="my-link">Example</a></p>\n'
+      '<body xmlns="http://www.w3.org/1999/xhtml"><p><a href="https://example.com" class="my-link">Example</a></p>\n</body>'
     ));
 
   test('should match baseline', () =>
@@ -48,5 +48,7 @@ describe('When passing "className" option with false', () => {
     expect(actual.querySelector('a').hasAttribute('class')).toBe(false));
 
   test('should match snapshot', () =>
-    expect(serializeDocumentIntoString(actual)).toBe('<a href="https://example.com">Example</a>'));
+    expect(serializeDocumentIntoString(actual)).toBe(
+      '<body xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com">Example</a></body>'
+    ));
 });
