@@ -21,7 +21,7 @@ describe('When passing "ariaLabel" option with "Hello, World!"', () => {
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com" aria-label="Hello, World!">Example</a></p>'
+      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com" aria-label="Hello, World!">Example</a></p>\n'
     ));
 
   test('should match baseline', () =>
@@ -48,6 +48,6 @@ describe('When passing "ariaLabel" option with false', () => {
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<a xmlns="http://www.w3.org/1999/xhtml" href="https://example.com">Example</a>'
+      '<a xmlns="http://www.w3.org/1999/xhtml" href="https://example.com">Example</a>\n'
     ));
 });

@@ -6,5 +6,5 @@ export default function serializeDocumentIntoString(document: Document): string 
     elementHTML.push(serializer.serializeToString(element));
   }
 
-  return elementHTML.join('\n');
+  return `${elementHTML.join('\n')}\n`;
 }
