@@ -1,5 +1,5 @@
-import type { DirectLineCardAction } from './DirectLineCardAction';
-import type { DirectLineCardImage } from './DirectLineCardImage';
+import { type DirectLineCardAction } from './DirectLineCardAction';
+import { type DirectLineCardImage } from './DirectLineCardImage';
 
 type Fact = {
   key?: string;

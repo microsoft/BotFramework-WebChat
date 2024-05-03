@@ -1,11 +1,11 @@
 import classNames from 'classnames';
-import React, { type FC, Fragment, memo } from 'react';
+import React, { Fragment, memo } from 'react';
 
 import useStyleSet from '../../../hooks/useStyleSet';
 
 type Props = Readonly<{ text: string }>;
 
-const PlainTextContent: FC<Props> = memo(({ text }: Props) => {
+const PlainTextContent = memo(({ text }: Props) => {
   const [{ textContent: textContentStyleSet }] = useStyleSet();
 
   return (

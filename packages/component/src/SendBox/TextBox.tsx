@@ -14,8 +14,6 @@ import useSubmit from '../providers/internal/SendBox/useSubmit';
 import withEmoji from '../withEmoji/withEmoji';
 import AutoResizeTextArea from './AutoResizeTextArea';
 
-import type { MutableRefObject } from 'react';
-
 const { useDisabled, useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
@@ -84,7 +82,7 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
   const [{ emojiSet, sendBoxTextWrap }] = useStyleOptions();
   const [{ setTimeout }] = usePonyfill();
   const [disabled] = useDisabled();
-  const inputElementRef: MutableRefObject<HTMLInputElement & HTMLTextAreaElement> = useRef();
+  const inputElementRef = useRef<HTMLInputElement & HTMLTextAreaElement>(null);
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const scrollDown = useScrollDown();

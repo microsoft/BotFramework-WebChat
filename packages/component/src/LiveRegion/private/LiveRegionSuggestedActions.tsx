@@ -3,14 +3,13 @@ import React from 'react';
 
 import computeSuggestedActionText from '../../Utils/computeSuggestedActionText';
 
-import type { DirectLineSuggestedAction } from 'botframework-webchat-core';
-import type { VFC } from 'react';
+import { type DirectLineSuggestedAction } from 'botframework-webchat-core';
 
-type LiveRegionSuggestedActionsProps = {
-  suggestedActions: DirectLineSuggestedAction;
-};
+type LiveRegionSuggestedActionsProps = Readonly<{
+  suggestedActions: Readonly<DirectLineSuggestedAction>;
+}>;
 
-const LiveRegionSuggestedActions: VFC<LiveRegionSuggestedActionsProps> = ({ suggestedActions }) =>
+const LiveRegionSuggestedActions = ({ suggestedActions }: LiveRegionSuggestedActionsProps) =>
   suggestedActions.actions?.length && (
     <p className="webchat__live-region-activity__suggested-actions">
       {suggestedActions.actions.map((action, index) => (

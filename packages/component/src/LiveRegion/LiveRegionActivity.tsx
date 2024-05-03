@@ -11,8 +11,7 @@ import LiveRegionSuggestedActions from './private/LiveRegionSuggestedActions';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 
-import type { VFC } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 const { useAvatarForBot, useLocalizer } = hooks;
 
@@ -29,11 +28,11 @@ const ROOT_STYLE = {
   }
 };
 
-type LiveRegionActivityProps = {
+type LiveRegionActivityProps = Readonly<{
   activity: WebChatActivity;
-};
+}>;
 
-const LiveRegionActivity: VFC<LiveRegionActivityProps> = ({ activity }) => {
+const LiveRegionActivity = ({ activity }: LiveRegionActivityProps) => {
   const [{ initials: botInitials }] = useAvatarForBot();
   const {
     from: { role },

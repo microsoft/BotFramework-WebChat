@@ -1,4 +1,4 @@
-import React, { type FC, memo } from 'react';
+import React, { memo } from 'react';
 
 import MarkdownTextContent from './private/MarkdownTextContent';
 import PlainTextContent from './private/PlainTextContent';
@@ -12,7 +12,7 @@ type Props = Readonly<{
   text: string;
 }>;
 
-const TextContent: FC<Props> = memo(({ activity, contentType = 'text/plain', text }: Props) => {
+const TextContent = memo(({ activity, contentType = 'text/plain', text }: Props) => {
   const supportMarkdown = !!useRenderMarkdownAsHTML();
 
   return text ? (
@@ -24,7 +24,6 @@ const TextContent: FC<Props> = memo(({ activity, contentType = 'text/plain', tex
   ) : null;
 });
 
-TextContent.defaultProps = { contentType: 'text/plain' };
 TextContent.displayName = 'TextContent';
 
 export default TextContent;

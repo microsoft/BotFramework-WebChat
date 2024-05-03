@@ -2,7 +2,6 @@ import { AudioInputStream } from 'microsoft-cognitiveservices-speech-sdk';
 
 import {
   AudioSourceErrorEvent,
-  AudioSourceEvent,
   AudioSourceInitializingEvent,
   AudioSourceOffEvent,
   AudioSourceReadyEvent,
@@ -11,20 +10,21 @@ import {
   AudioStreamNodeDetachedEvent,
   AudioStreamNodeErrorEvent,
   Events,
-  EventSource
+  EventSource,
+  type AudioSourceEvent
 } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Exports';
 
 import { AudioStreamFormatImpl } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioStreamFormat';
 
 import {
   connectivity as Connectivity,
-  ISpeechConfigAudioDevice,
-  type as Type
+  type as Type,
+  type ISpeechConfigAudioDevice
 } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/Exports';
 
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import { v4 } from 'uuid';
-import createDeferred, { DeferredPromise } from 'p-defer-es5';
+import createDeferred, { type DeferredPromise } from 'p-defer-es5';
 
 type AudioStreamNode = {
   detach: () => Promise<void>;

@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import PonyfillContext from './PonyfillContext';
 
-import type { Context } from 'react';
+import { type Context } from 'react';
 
 type ContextOf<T> = T extends Context<infer C> ? C : never;
 

@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import Context from './Context';
 
-import type { ContextType } from './types';
+import { type ContextType } from './types';
 
 export default function useSendBoxContext(): ContextType {
   const context = useContext(Context);

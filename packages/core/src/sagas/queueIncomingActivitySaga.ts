@@ -8,7 +8,7 @@ import setSuggestedActions from '../actions/setSuggestedActions';
 import sleep from '../utils/sleep';
 import whileConnected from './effects/whileConnected';
 
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+import { type GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 
 // We will hold up the replying activity if the originating activity did not arrive, up to 5 seconds.
 const REPLY_TIMEOUT = 5000;

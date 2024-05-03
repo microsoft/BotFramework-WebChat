@@ -2,11 +2,11 @@
 
 import PropTypes from 'prop-types';
 import React, {
-  ChangeEventHandler,
-  FocusEventHandler,
   forwardRef,
-  KeyboardEventHandler,
-  ReactEventHandler,
+  type ChangeEventHandler,
+  type FocusEventHandler,
+  type KeyboardEventHandler,
+  type ReactEventHandler,
   useRef
 } from 'react';
 

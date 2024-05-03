@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 type ActivityKeyerContextType = {
   activityKeysState: readonly [readonly string[]];

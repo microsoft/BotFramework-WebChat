@@ -7,15 +7,13 @@ import IconButton from './IconButton';
 import SendIcon from './Assets/SendIcon';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 
-import type { FC } from 'react';
-
 const { useDisabled, useLocalizer } = hooks;
 
-type SendButtonProps = {
+type SendButtonProps = Readonly<{
   className?: string;
-};
+}>;
 
-const SendButton: FC<SendButtonProps> = ({ className }) => {
+const SendButton = ({ className }: SendButtonProps) => {
   const [disabled] = useDisabled();
   const localize = useLocalizer();
   const submit = useSubmit();

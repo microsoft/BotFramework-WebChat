@@ -1,5 +1,5 @@
-import type { ReactElement } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type ReactElement } from 'react';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import type { SendStatus } from '../types/SendStatus';
 

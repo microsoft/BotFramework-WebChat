@@ -1,21 +1,19 @@
 import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
-import type { FC, PropsWithChildren } from 'react';
+import React, { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import LiveRegionTwinContainer from './private/LiveRegionTwinContainer';
 import LiveRegionTwinContext from './private/Context';
 import useValueRef from '../../hooks/internal/useValueRef';
 
-import type { StaticElement, StaticElementEntry } from './private/types';
+import { type StaticElement, type StaticElementEntry } from './private/types';
 
 const { usePonyfill } = hooks;
 
 const DEFAULT_ARIA_LIVE = 'polite';
 const DEFAULT_FADE_AFTER = 1000;
 
-type LiveRegionTwinComposerProps = PropsWithChildren<{
+type LiveRegionTwinComposerProps = Readonly<{
   /** Optional "aria-label" attribute for the live region twin container. */
   'aria-label'?: string;
 
@@ -24,6 +22,9 @@ type LiveRegionTwinComposerProps = PropsWithChildren<{
 
   /** Optional "aria-roledescription" attribute for the live region twin container. */
   'aria-roledescription'?: string;
+
+  /** Optional "children" for the live region twin container. */
+  children?: ReactNode | undefined;
 
   /** Optional "className" attribute for the live region twin container. */
   className?: string;
@@ -55,7 +56,7 @@ type LiveRegionTwinComposerProps = PropsWithChildren<{
  * By default, the live region is visible. If is is not desirable, the caller can use `className` prop to
  * hide its visuals.
  */
-const LiveRegionTwinComposer: FC<LiveRegionTwinComposerProps> = ({
+const LiveRegionTwinComposer = ({
   'aria-label': ariaLabel,
   'aria-live': ariaLive = DEFAULT_ARIA_LIVE,
   'aria-roledescription': ariaRoleDescription,
@@ -64,7 +65,7 @@ const LiveRegionTwinComposer: FC<LiveRegionTwinComposerProps> = ({
   fadeAfter = DEFAULT_FADE_AFTER,
   role,
   textElementClassName
-}) => {
+}: LiveRegionTwinComposerProps) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [staticElementEntries, setStaticElementEntries] = useState<StaticElementEntry[]>([]);
   const fadeAfterRef = useValueRef(fadeAfter);

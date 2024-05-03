@@ -1,4 +1,4 @@
-import type { DirectLineCardAction } from './DirectLineCardAction';
+import { type DirectLineCardAction } from './DirectLineCardAction';
 
 // https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-cards.md#Signin-card
 type DirectLineSignInCard = {

@@ -1,4 +1,4 @@
-import { normalizeStyleOptions, StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
+import { normalizeStyleOptions, type StrictStyleOptions, type StyleOptions } from 'botframework-webchat-api';
 
 import { type AdaptiveCardsStyleOptions, type StrictAdaptiveCardsStyleOptions } from '../AdaptiveCardsStyleOptions';
 import { type AdaptiveCardsStyleSet } from '../AdaptiveCardsStyleSet';

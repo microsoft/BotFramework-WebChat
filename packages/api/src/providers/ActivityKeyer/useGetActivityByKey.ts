@@ -1,4 +1,4 @@
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import useActivityKeyerContext from './private/useContext';
 

@@ -1,24 +1,25 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { useMemo } from 'react';
+import React, { useMemo, type ReactNode } from 'react';
 
-import type { ActivityComponentFactory } from 'botframework-webchat-api';
-import type { FC, PropsWithChildren } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type ActivityComponentFactory } from 'botframework-webchat-api';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
-import { ActivityWithRenderer, ReadonlyActivityTree } from './private/types';
+import { type ActivityWithRenderer, type ReadonlyActivityTree } from './private/types';
 import ActivityTreeContext from './private/Context';
 import useActivitiesWithRenderer from './private/useActivitiesWithRenderer';
 import useActivityTreeContext from './private/useContext';
 import useActivityTreeWithRenderer from './private/useActivityTreeWithRenderer';
 import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';
 
-import type { ActivityTreeContextType } from './private/Context';
+import { type ActivityTreeContextType } from './private/Context';
 
-type ActivityTreeComposerProps = PropsWithChildren<{}>;
+type ActivityTreeComposerProps = Readonly<{
+  children?: ReactNode | undefined;
+}>;
 
 const { useActivities, useCreateActivityRenderer } = hooks;
 
-const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
+const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
   const existingContext = useActivityTreeContext(false);
 
   if (existingContext) {

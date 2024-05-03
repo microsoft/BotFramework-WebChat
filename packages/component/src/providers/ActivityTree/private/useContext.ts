@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import ActivityTreeContext from './Context';
 
-import type { ActivityTreeContextType } from './Context';
+import { type ActivityTreeContextType } from './Context';
 
 export default function useActivityTreeContext(thrownOnUndefined = true): ActivityTreeContextType {
   const contextValue = useContext(ActivityTreeContext);

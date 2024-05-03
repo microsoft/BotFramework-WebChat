@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
-import React, { FC } from 'react';
-import type { DirectLineAttachment } from 'botframework-webchat-core';
+import React from 'react';
+import { type DirectLineAttachment } from 'botframework-webchat-core';
 
 import AdaptiveCardContent from './AdaptiveCardContent';
 
-type AdaptiveCardAttachmentProps = {
+type AdaptiveCardAttachmentProps = Readonly<{
   attachment: DirectLineAttachment;
   disabled?: boolean;
-};
+}>;
 
-const AdaptiveCardAttachment: FC<AdaptiveCardAttachmentProps> = ({ attachment: { content }, disabled }) => (
+const AdaptiveCardAttachment = ({ attachment: { content }, disabled }: AdaptiveCardAttachmentProps) => (
   <AdaptiveCardContent content={content} disabled={disabled} />
 );
 

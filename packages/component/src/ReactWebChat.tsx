@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import BasicWebChat from './BasicWebChat';
-import Composer, { ComposerProps } from './Composer';
+import Composer, { type ComposerProps } from './Composer';
 
 // Please keep this file as simple as possible. This is for setting up the surface (a.k.a. <Composer>) and <BasicWebChat> only.
 
@@ -28,10 +28,12 @@ const ReactWebChat = ({ className, role, ...composerProps }: ReactWebChatProps) 
   </Composer>
 );
 
+const { children: __, ...composerDefaultProps } = Composer.defaultProps;
+
 ReactWebChat.defaultProps = {
   className: undefined,
   role: undefined,
-  ...Composer.defaultProps
+  ...composerDefaultProps
 };
 
 const {

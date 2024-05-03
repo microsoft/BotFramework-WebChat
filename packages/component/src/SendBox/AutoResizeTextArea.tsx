@@ -1,11 +1,11 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {
-  ChangeEventHandler,
-  FocusEventHandler,
   forwardRef,
-  KeyboardEventHandler,
-  ReactEventHandler
+  type ChangeEventHandler,
+  type FocusEventHandler,
+  type KeyboardEventHandler,
+  type ReactEventHandler
 } from 'react';
 
 import AccessibleTextArea from '../Utils/AccessibleTextArea';

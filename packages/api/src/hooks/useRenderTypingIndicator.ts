@@ -1,4 +1,4 @@
-import { RenderTypingIndicator } from '../types/TypingIndicatorMiddleware';
+import { type RenderTypingIndicator } from '../types/TypingIndicatorMiddleware';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 export default function useRenderTypingIndicator(): RenderTypingIndicator {

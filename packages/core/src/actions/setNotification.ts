@@ -1,6 +1,6 @@
 import uniqueID from '../utils/uniqueID';
 
-import type { Notification } from '../types/internal/Notification';
+import { type Notification } from '../types/internal/Notification';
 
 const SET_NOTIFICATION = 'WEB_CHAT/SET_NOTIFICATION';
 

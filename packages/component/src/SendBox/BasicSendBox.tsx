@@ -1,7 +1,7 @@
 import { SendBoxToolbarMiddlewareProxy, hooks } from 'botframework-webchat-api';
 import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import React, { FC } from 'react';
+import React from 'react';
 
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
@@ -13,7 +13,7 @@ import SendButton from './SendButton';
 import SuggestedActions from './SuggestedActions';
 import TextBox from './TextBox';
 
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 const {
   DictateState: { DICTATING, STARTING }
@@ -50,7 +50,7 @@ type BasicSendBoxProps = Readonly<{
   className?: string;
 }>;
 
-const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
+const BasicSendBox = ({ className }: BasicSendBoxProps) => {
   const [{ sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition = undefined } = {}] = useWebSpeechPonyfill();

@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import LiveRegionTwinContext from './Context';
 
-import type { LiveRegionTwinContextType } from './Context';
+import { type LiveRegionTwinContextType } from './Context';
 
 export default function useLiveRegionTwinContext(thrownOnUndefined = true): LiveRegionTwinContextType {
   const contextValue = useContext(LiveRegionTwinContext);

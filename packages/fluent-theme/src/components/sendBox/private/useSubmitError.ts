@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-component';
-import { RefObject, useMemo } from 'react';
+import { type RefObject, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 const { useConnectivityStatus, useLocalizer } = hooks;

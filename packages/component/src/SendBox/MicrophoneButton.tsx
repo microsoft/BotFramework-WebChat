@@ -6,7 +6,7 @@ import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
 import PropTypes from 'prop-types';
-import React, { FC, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useDictateAbortable from '../hooks/useDictateAbortable';
@@ -107,11 +107,11 @@ function useMicrophoneButtonDisabled(): [boolean] {
   ];
 }
 
-type MicrophoneButtonProps = {
+type MicrophoneButtonProps = Readonly<{
   className?: string;
-};
+}>;
 
-const MicrophoneButton: FC<MicrophoneButtonProps> = ({ className }) => {
+const MicrophoneButton = ({ className }: MicrophoneButtonProps) => {
   const [{ microphoneButton: microphoneButtonStyleSet }] = useStyleSet();
   const [dictateState] = useDictateState();
   const [disabled] = useMicrophoneButtonDisabled();

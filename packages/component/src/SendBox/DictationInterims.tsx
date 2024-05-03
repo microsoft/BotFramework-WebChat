@@ -4,7 +4,7 @@ import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
@@ -24,7 +24,7 @@ type DictationInterimsProps = {
   className?: string;
 };
 
-const DictationInterims: FC<DictationInterimsProps> = ({ className }) => {
+const DictationInterims = ({ className }: DictationInterimsProps) => {
   const [dictateInterims] = useDictateInterims();
   const [dictateState] = useDictateState();
   const [{ dictationInterims: dictationInterimsStyleSet }] = useStyleSet();

@@ -1,4 +1,4 @@
-import { hooks, StrictStyleOptions } from 'botframework-webchat-api';
+import { hooks, type StrictStyleOptions } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 
 import useWebChatUIContext from './internal/useWebChatUIContext';

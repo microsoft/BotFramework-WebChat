@@ -1,5 +1,5 @@
 /* eslint no-magic-numbers: "off" */
-import StyleOptions from './StyleOptions';
+import type StyleOptions from './StyleOptions';
 
 function fontFamily(fonts) {
   return fonts.map(font => `'${font}'`).join(', ');

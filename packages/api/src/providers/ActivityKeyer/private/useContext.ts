@@ -2,7 +2,7 @@ import { useContext } from 'react';
 
 import ActivityKeyerContext from './Context';
 
-import type { ActivityKeyerContextType } from './Context';
+import { type ActivityKeyerContextType } from './Context';
 
 export default function useActivityKeyerContext(thrownOnUndefined = true): ActivityKeyerContextType {
   const contextValue = useContext(ActivityKeyerContext);

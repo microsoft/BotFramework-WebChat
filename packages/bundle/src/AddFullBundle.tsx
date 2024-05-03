@@ -14,7 +14,7 @@ import useComposerProps from './useComposerProps';
 
 type AddFullBundleProps = Readonly<{
   adaptiveCardsHostConfig?: any;
-  adaptiveCardsPackage?: AdaptiveCardsPackage;
+  adaptiveCardsPackage?: Readonly<AdaptiveCardsPackage>;
   attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
   attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
   children: ({ extraStyleSet }: { extraStyleSet: any }) => ReactNode;
@@ -23,8 +23,8 @@ type AddFullBundleProps = Readonly<{
     newLineOptions: { markdownRespectCRLF: boolean },
     linkOptions: { externalLinkAlt: string }
   ) => string;
-  styleOptions?: StyleOptions & AdaptiveCardsStyleOptions;
-  styleSet?: any & { options: StrictFullBundleStyleOptions };
+  styleOptions?: Readonly<StyleOptions & AdaptiveCardsStyleOptions>;
+  styleSet?: any & Readonly<{ options: StrictFullBundleStyleOptions }>;
 
   /** @deprecated Rename to "adaptiveCardsHostConfig" */
   adaptiveCardHostConfig?: any;

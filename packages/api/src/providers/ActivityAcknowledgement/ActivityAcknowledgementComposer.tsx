@@ -5,7 +5,7 @@ import useValueRef from '../../hooks/internal/useValueRef';
 import useActivities from '../../hooks/useActivities';
 import findLastIndex from '../../utils/findLastIndex';
 import useActivityKeys from '../ActivityKeyer/useActivityKeys';
-import ActivityAcknowledgementContext, { ActivityAcknowledgementContextType } from './private/Context';
+import ActivityAcknowledgementContext, { type ActivityAcknowledgementContextType } from './private/Context';
 
 type ActivityAcknowledgement = {
   get acknowledged(): boolean;

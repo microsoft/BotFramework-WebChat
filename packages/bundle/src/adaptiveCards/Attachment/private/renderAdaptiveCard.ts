@@ -1,8 +1,8 @@
-import type {
-  AdaptiveCard,
-  GlobalSettings as GlobalSettingsType,
-  HostConfig as HostConfigType,
-  IMarkdownProcessingResult
+import {
+  type AdaptiveCard,
+  type GlobalSettings as GlobalSettingsType,
+  type HostConfig as HostConfigType,
+  type IMarkdownProcessingResult
 } from 'adaptivecards';
 
 /**

@@ -109,16 +109,14 @@ The component code is being replaced by a React function component. It connects 
 
 <!-- prettier-ignore-start -->
 ```ts
-import { useEffect, useState } from 'react';
-import * as React from 'react';
+import React, { type ReactNode, useEffect, useState } from 'react';
 import ReactWebChat, { createDirectLine, createDirectLineAppServiceExtension } from 'botframework-webchat';
 
 import { IWebChatProps } from './IWebChatProps';
 import styles from './WebChat.module.scss';
 
-import type { VFC } from 'react';
 
-const WebChat: VFC<IWebChatProps> = ({ domain, token }) => {
+const WebChat = ({ domain, token }: IWebChatProps): ReactNode => {
   const [directLine, setDirectLine] = useState();
 
   useEffect(() => {

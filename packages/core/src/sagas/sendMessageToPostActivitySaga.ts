@@ -1,7 +1,8 @@
 import { put, takeEvery } from 'redux-saga/effects';
 
 import postActivity from '../actions/postActivity';
-import sendMessage, { SEND_MESSAGE } from '../actions/sendMessage';
+import type sendMessage from '../actions/sendMessage';
+import { SEND_MESSAGE } from '../actions/sendMessage';
 import whileConnected from './effects/whileConnected';
 
 function* postActivityWithMessage({

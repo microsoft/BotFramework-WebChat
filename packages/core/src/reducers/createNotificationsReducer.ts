@@ -5,12 +5,12 @@ import { SAGA_ERROR } from '../actions/sagaError';
 import { SET_NOTIFICATION } from '../actions/setNotification';
 import isForbiddenPropertyName from '../utils/isForbiddenPropertyName';
 
-import type { DismissNotificationAction } from '../actions/dismissNotification';
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
-import type { Notification } from '../types/internal/Notification';
-import type { Reducer } from 'redux';
-import type { SagaErrorAction } from '../actions/sagaError';
-import type { SetNotificationAction } from '../actions/setNotification';
+import { type DismissNotificationAction } from '../actions/dismissNotification';
+import { type GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+import { type Notification } from '../types/internal/Notification';
+import { type Reducer } from 'redux';
+import { type SagaErrorAction } from '../actions/sagaError';
+import { type SetNotificationAction } from '../actions/setNotification';
 
 type NotificationsAction = DismissNotificationAction | SagaErrorAction | SetNotificationAction;
 type NotificationsState = Record<string, Notification>;

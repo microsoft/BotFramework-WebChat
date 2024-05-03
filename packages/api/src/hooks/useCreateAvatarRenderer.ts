@@ -1,10 +1,9 @@
-import { useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import useStyleOptions from './useStyleOptions';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
-import type { AvatarComponentFactory } from '../types/AvatarMiddleware';
-import type { ReactNode } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type AvatarComponentFactory } from '../types/AvatarMiddleware';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 export default function useCreateAvatarRenderer(): ({
   activity

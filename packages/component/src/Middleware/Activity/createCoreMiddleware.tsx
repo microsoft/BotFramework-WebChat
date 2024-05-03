@@ -1,4 +1,4 @@
-import { ActivityMiddleware } from 'botframework-webchat-api';
+import { type ActivityMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
 import CarouselLayout from '../../Activity/CarouselLayout';

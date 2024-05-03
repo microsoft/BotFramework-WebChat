@@ -1,4 +1,4 @@
-import { ScrollToEndButtonComponentFactory } from '../types/ScrollToEndButtonMiddleware';
+import { type ScrollToEndButtonComponentFactory } from '../types/ScrollToEndButtonMiddleware';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 export default function useCreateScrollToEndButtonRenderer(): ScrollToEndButtonComponentFactory {
