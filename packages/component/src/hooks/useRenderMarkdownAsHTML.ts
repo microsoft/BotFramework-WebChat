@@ -50,9 +50,7 @@ export default function useRenderMarkdownAsHTML(
 
         const rootElement = documentAfterSanitization.createElement('div');
 
-        // TODO: We need to add Emotion class here.
         containerClassName && rootElement.classList.add(...containerClassName.split(' ').filter(Boolean));
-        rootElement.setAttribute('style', 'display: contents;');
 
         rootElement.append(...documentAfterSanitization.body.children);
         documentAfterSanitization.body.append(rootElement);
