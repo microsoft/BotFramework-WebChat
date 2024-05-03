@@ -30,7 +30,13 @@
           let lastFlushAt = Date.now();
 
           for (let index = 0; index < NUM_MESSAGE; index++) {
-            promises.push(directLine.emulateIncomingActivity(`Message ${index}.`, { skipWait: true }));
+            promises.push(
+              // Plain text message isolate dependencies on Markdown.
+              directLine.emulateIncomingActivity(
+                { text: `Message ${index}.`, textFormat: 'plain', type: 'message' },
+                { skipWait: true }
+              )
+            );
 
             if (promises.length >= QUORUM_SIZE) {
               await Promise.all(promises.splice(0));
@@ -53,6 +59,10 @@
 
           await pageConditions.numActivitiesShown(NUM_MESSAGE);
 
+          // Remove outliers.
+          timeForEachQuorum.shift();
+          timeForEachQuorum.shift();
+
           const firstHalf = timeForEachQuorum.splice(0, timeForEachQuorum.length >> 1);
 
           const sumOfFirstHalf = firstHalf.reduce((sum, time) => sum + time, 0);
@@ -61,7 +71,12 @@
           const averageOfFirstHalf = sumOfFirstHalf / firstHalf.length;
           const averageOfSecondHalf = sumOfSecondHalf / timeForEachQuorum.length;
 
-          console.log({ firstHalf, secondHalf: timeForEachQuorum, averageOfFirstHalf, averageOfSecondHalf });
+          console.log(`Took ${Date.now() - startAt} ms.`, {
+            firstHalf,
+            secondHalf: timeForEachQuorum,
+            averageOfFirstHalf,
+            averageOfSecondHalf
+          });
 
           // Time taken to render the first half of the chat history, should be 80% similar to the time taken to render the second half of the chat history.
           expect(averageOfFirstHalf / averageOfSecondHalf).toBeGreaterThan(0.8);
