@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { forwardRef, useCallback, useRef } from 'react';
+import React, { forwardRef, memo, useCallback, useRef } from 'react';
 
 import { android } from '../Utils/detectBrowser';
 import FocusTrap from './FocusTrap';
@@ -121,4 +121,4 @@ ActivityRow.propTypes = {
   children: PropTypes.any
 };
 
-export default ActivityRow;
+export default memo(ActivityRow);
