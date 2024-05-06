@@ -62,11 +62,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Added animation to focus indicator and pixel-perfected, in PR [#5143](https://github.com/microsoft/BotFramework-WebChat/pull/5143)
    -  Integrated focus management for send box, in PR [#5150](https://github.com/microsoft/BotFramework-WebChat/pull/5150), by [@OEvgeny](https://github.com/OEvgeny)
    -  Added keyboard navigation support into suggested actions, in PR [#5154](https://github.com/microsoft/BotFramework-WebChat/pull/5154), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Fixes [#5166](https://github.com/microsoft/BotFramework-WebChat/issues/5166). Fixed "attach file" button in iOS Safari should looks the same as on other platforms, in PR [#5167](https://github.com/microsoft/BotFramework-WebChat/pull/5167), by [@compulim](https://github.com/compulim)
 -  (Experimental) Added `<LocalizeString />` component which can be used to localize strings, by [@OEvgeny](https://github.com/OEvgeny) in PR [#5140](https://github.com/microsoft/BotFramework-WebChat/pull/5140)
 -  Added `<ThemeProvider>` component to apply theme pack to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
 -  Added `useMakeThumbnail` hook option to create a thumbnail from the file given, by [@compulim](https://github.com/compulim), in PR [#5123](https://github.com/microsoft/BotFramework-WebChat/pull/5123) and [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
 -  Added `moduleFormat` and `transpiler` build info to `<meta>` tag, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
--  Added support of rendering HTML-in-Markdown, in PR [#5161](https://github.com/microsoft/BotFramework-WebChat/pull/5161), by [@compulim](https://github.com/compulim), [@beyackle2](https://github.com/beyackle2), and [@OEvgeny](https://github.com/OEvgeny)
+-  Added support of rendering HTML-in-Markdown, in PR [#5161](https://github.com/microsoft/BotFramework-WebChat/pull/5161) and PR [#5164](https://github.com/microsoft/BotFramework-WebChat/pull/5164), by [@compulim](https://github.com/compulim), [@beyackle2](https://github.com/beyackle2), and [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 
