@@ -1,4 +1,4 @@
-import { DependencyList, useMemo, useRef } from 'react';
+import { useMemo, useRef, type DependencyList } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 type Cache<TArgs, TResult> = { args: TArgs[]; result: TResult };
@@ -9,7 +9,7 @@ type Fn<TArgs, TResult> = (...args: TArgs[]) => TResult;
  *
  * This is similar to `useMemo`. But instead of calling it once, `useMemoize` enables multiple calls while the `callback` function is executed.
  *
- * We store cache outside of the memoo, so that even in case when dependencies change we're able to use the previous cache for subsequent invocations
+ * We store cache outside of the memo, so that even in case when dependencies change we're able to use the previous cache for subsequent invocations
  *
  * @param {Fn<TArgs, TIntermediate>} fn - The function to be memoized.
  * @param {(fn: Fn<TArgs, TIntermediate>) => TFinal} callback - When called, this function should execute the memoizing function.
@@ -29,12 +29,12 @@ export default function useMemoAll<TIntermediate, TFinal>(
   }
 
   const fnRef = useRefFrom<Fn<unknown, TIntermediate>>(fn);
-  const fnCache = useRef<Cache<unknown, TIntermediate>[]>([]);
+  const cacheRef = useRef<Cache<unknown, TIntermediate>[]>([]);
 
   const memoizedFn = useMemo(
     () => (run: (fn: Fn<unknown, TIntermediate>) => TFinal) => {
       const { current: fn } = fnRef;
-      const { current: cache } = fnCache;
+      const { current: cache } = cacheRef;
       const nextCache: Cache<unknown, TIntermediate>[] = [];
       const result = run((...args) => {
         const { result } = [...cache, ...nextCache].find(
@@ -47,13 +47,13 @@ export default function useMemoAll<TIntermediate, TFinal>(
         return result;
       });
 
-      fnCache.current = nextCache;
+      cacheRef.current = nextCache;
 
       return result;
     },
     // We are manually creating the deps here. The "callback" arg is also designed not to be impact deps, similar to useEffect(fn), where "fn" is not in deps.
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [fnRef, fnCache, ...deps]
+    [fnRef, cacheRef, ...deps]
   );
 
   return memoizedFn(callback);

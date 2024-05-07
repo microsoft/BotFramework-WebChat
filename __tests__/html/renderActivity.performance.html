@@ -67,40 +67,39 @@
           await pageConditions.uiConnected();
           pageElements.transcript().focus();
 
-          // WHEN: adding 20 activities
+          // WHEN: adding 10 activities
           await postMessagesBatch(directLine);
           await postMessagesBatch(directLine);
 
-          // THEN: do not re-render each activity each time
+          // THEN: Should not re-render activity more than twice.
           expect(Math.max(...timesActivityRendered.values())).toEqual(2);
           expect(Math.min(...timesActivityRendered.values())).toEqual(1);
-
-          // WHEN: clicking on an activity
+          
+          // WHEN: Scroll and clicked on the 5th activity.
+          const previousTimesActivityRendered = structuredClone(timesActivityRendered)
           pageElements.activities()[4].scrollIntoView();
           await host.clickAt(10, 10, pageElements.activities()[4]);
 
-          // THEN: set focus to the activity
+          // THEN: Should focus on the activity.
           expect(pageElements.focusedActivity()).toEqual(pageElements.activities()[4]);
           
-          // THEN: no re-renders happen
-          expect(Math.max(...timesActivityRendered.values())).toEqual(2);
-          expect(Math.min(...timesActivityRendered.values())).toEqual(1);
+          // THEN: Should not re-render.          
+          expect(timesActivityRendered).toEqual(previousTimesActivityRendered);
 
+          // WHEN: The 9th activity received an update.
           const timestamp = new Date().toISOString();
           const activity9Renders = timesActivityRendered.get('activity-8');
-          // WHEN: updating an activity
           await directLine.emulateIncomingActivity(
               { id: `activity-8`, text: `Activity 8 got updated`, textFormat: 'plain', type: 'message', timestamp },
               { skipWait: true }
             );
 
-          // THEN: activity re-renders
+          // THEN: Should re-render the 9th activity once.
           expect(timesActivityRendered.get('activity-8')).toBe(activity9Renders + 1);
-          // THEN: activity gets updated on screen
+          // THEN: Should render the updated 9th activity.
           pageElements.focusedActivity().scrollIntoView();
           await host.snapshot();
-        },
-        { skipCheckAccessibility: true }
+        }
       );
     </script>
   </body>

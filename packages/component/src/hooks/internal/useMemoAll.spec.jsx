@@ -82,19 +82,16 @@ test('useMemoize should cache result if deps change', async () => {
 
   const render = testHook(doMemoChecks => {
     // Start a run, all calls to sum() will be cached.
-    useMemoize(expensiveSum, sum => doMemoChecks(sum), []);
+    useMemoize(expensiveSum, sum => doMemoChecks(sum), [{}]);
   });
 
   // Start a run, all calls to sum() will be cached.
-  await render(
-    sum => {
-      expect(sum(1, 2)).toBe(3); // Not cached, return 3.
-      expect(sum(1, 2)).toBe(3); // Cached, return 3.
-      expect(sum(2, 4)).toBe(6); // Not cached, return 6.
-      expect(sum(1, 2)).toBe(3); // Cached, return 3. This is cached because it is inside the same run.
-    },
-    [{}]
-  );
+  await render(sum => {
+    expect(sum(1, 2)).toBe(3); // Not cached, return 3.
+    expect(sum(1, 2)).toBe(3); // Cached, return 3.
+    expect(sum(2, 4)).toBe(6); // Not cached, return 6.
+    expect(sum(1, 2)).toBe(3); // Cached, return 3. This is cached because it is inside the same run.
+  });
 
   expect(expensiveSum).toHaveBeenCalledTimes(2);
 
@@ -104,13 +101,10 @@ test('useMemoize should cache result if deps change', async () => {
   // After the run, 1 + 2 = 3, and 2 + 4 = 6 is cached.
 
   // Start another run with previous cache
-  await render(
-    sum => {
-      expect(sum(1, 2)).toBe(3); // Cached from previous run, return 3.
-      expect(sum(3, 6)).toBe(9); // Not cached, return 9.
-    },
-    [{}]
-  );
+  await render(sum => {
+    expect(sum(1, 2)).toBe(3); // Cached from previous run, return 3.
+    expect(sum(3, 6)).toBe(9); // Not cached, return 9.
+  });
 
   expect(expensiveSum).toHaveBeenCalledTimes(3);
   expect(expensiveSum.mock.calls[2]).toEqual([3, 6]);
@@ -118,12 +112,10 @@ test('useMemoize should cache result if deps change', async () => {
   // After the run, only 1 + 2 = 3 and 3 + 6 = 9 is cached. 2 + 4 is dropped.
 
   // Start another run with previous cache
-  await render(
-    sum => {
-      expect(sum(2, 4)).toBe(6); // Not cached, return 6
-    },
-    [{}]
-  );
+  await render(sum => {
+    expect(sum(1, 2)).toBe(3); // Cached from previous run, return 3.
+    expect(sum(2, 4)).toBe(6); // Not cached, return 6
+  });
 
   expect(expensiveSum).toHaveBeenCalledTimes(4);
   expect(expensiveSum.mock.calls[3]).toEqual([2, 4]);
@@ -144,7 +136,7 @@ test('useMemoize should not share cache across hooks', async () => {
     expect(sum(1, 2)).toBe(3); // Cached, return 3.
     expect(sum(2, 4)).toBe(6); // Not cached, return 6.
     expect(sum(1, 2)).toBe(3); // Cached, return 3. This is cached because it is inside the same run.
-  }, []);
+  });
 
   expect(expensiveSum).toHaveBeenCalledTimes(4);
 
