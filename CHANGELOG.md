@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.17.0] - 2024-05-06
+
 ### Known issues
 
 -  Web Chat is not loading with error `Uncaught TypeError: Super constructor null of anonymous class is not a constructor`
