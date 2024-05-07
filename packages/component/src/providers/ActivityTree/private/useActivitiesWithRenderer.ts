@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
-import useMemoAll from '../../../hooks/internal/useMemoize';
+import useMemoAll from '../../../hooks/internal/useMemoAll';
 import type { ActivityWithRenderer } from './types';
 
 export default function useActivitiesWithRenderer(

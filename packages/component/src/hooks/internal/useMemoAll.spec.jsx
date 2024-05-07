@@ -5,7 +5,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { act } from 'react-dom/test-utils';
-import useMemoize from './useMemoize';
+import useMemoize from './useMemoAll';
 
 const testHook = fun => {
   let state;
