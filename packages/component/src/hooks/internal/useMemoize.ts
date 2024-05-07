@@ -1,23 +1,21 @@
-import { DependencyList, useMemo } from 'react';
+import { DependencyList, useMemo, useRef } from 'react';
+import { useRefFrom } from 'use-ref-from';
 
 type Cache<TArgs, TResult> = { args: TArgs[]; result: TResult };
 type Fn<TArgs, TResult> = (...args: TArgs[]) => TResult;
-
-const fnCache = new WeakMap();
 
 /**
  * `useMemoize` will memoize multiple calls to the same memoize function.
  *
  * This is similar to `useMemo`. But instead of calling it once, `useMemoize` enables multiple calls while the `callback` function is executed.
  *
- * We store cache outside of the hook and use the passed function as a key, so that even
- * in case when dependencies change we're able to use the previous cache for subsequent invocations
+ * We store cache outside of the memoo, so that even in case when dependencies change we're able to use the previous cache for subsequent invocations
  *
  * @param {Fn<TArgs, TIntermediate>} fn - The function to be memoized.
  * @param {(fn: Fn<TArgs, TIntermediate>) => TFinal} callback - When called, this function should execute the memoizing function.
  * @param {DependencyList[]} deps - Dependencies to detect for chagnes.
  */
-export default function useMemoize<TIntermediate, TFinal>(
+export default function useMemoAll<TIntermediate, TFinal>(
   fn: Fn<unknown, TIntermediate>,
   callback: (fn: Fn<unknown, TIntermediate>) => TFinal,
   deps: DependencyList[]
@@ -30,9 +28,13 @@ export default function useMemoize<TIntermediate, TFinal>(
     throw new Error('The third argument must be an array.');
   }
 
+  const fnRef = useRefFrom<Fn<unknown, TIntermediate>>(fn);
+  const fnCache = useRef<Cache<unknown, TIntermediate>[]>([]);
+
   const memoizedFn = useMemo(
     () => (run: (fn: Fn<unknown, TIntermediate>) => TFinal) => {
-      const cache: Cache<unknown, TIntermediate>[] = fnCache.get(fn) ?? [];
+      const { current: fn } = fnRef;
+      const { current: cache } = fnCache;
       const nextCache: Cache<unknown, TIntermediate>[] = [];
       const result = run((...args) => {
         const { result } = [...cache, ...nextCache].find(
@@ -45,13 +47,13 @@ export default function useMemoize<TIntermediate, TFinal>(
         return result;
       });
 
-      fnCache.set(fn, nextCache);
+      fnCache.current = nextCache;
 
       return result;
     },
     // We are manually creating the deps here. The "callback" arg is also designed not to be impact deps, similar to useEffect(fn), where "fn" is not in deps.
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
-    [fn, ...deps]
+    [fnRef, fnCache, ...deps]
   );
 
   return memoizedFn(callback);
