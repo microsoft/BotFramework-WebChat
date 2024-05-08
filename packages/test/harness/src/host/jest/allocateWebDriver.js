@@ -10,7 +10,7 @@ module.exports = async function allocateWebDriver({ webDriverURL }) {
 
   const builder = new Builder().forBrowser('chrome').setChromeOptions(
     new ChromeOptions()
-      .addArguments('--headless=new') // More info at https://github.com/SeleniumHQ/selenium/commit/5a97adf9864a346fdd8914cdb1b601c05dd837ac
+      .addArguments('--headless') // More info at https://github.com/SeleniumHQ/selenium/commit/5a97adf9864a346fdd8914cdb1b601c05dd837ac
       .addArguments('--single-process')
       .setLoggingPrefs(preferences)
   );
