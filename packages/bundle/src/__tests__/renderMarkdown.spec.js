@@ -55,7 +55,7 @@ describe('renderMarkdown', () => {
 
     expect(renderMarkdown('[example](https://sample.com){aria-label="Sample label"}', styleOptions))
       .toMatchInlineSnapshot(`
-      "<p>\u200B<a href=\\"https://sample.com\\" aria-label=\\"Sample label\\" rel=\\"noopener noreferrer\\" target=\\"_blank\\">example<img src=\\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\\" alt class=\\"webchat__render-markdown__external-link-icon\\" /></a>\u200B</p>
+      "<p>\u200B<a href=\\"https://sample.com\\" aria-label=\\"Sample label\\" rel=\\"noopener noreferrer\\" target=\\"_blank\\">example<img src=\\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\\" alt="" class=\\"webchat__render-markdown__external-link-icon\\" /></a>\u200B</p>
       "
     `);
   });
@@ -66,7 +66,7 @@ describe('renderMarkdown', () => {
 
     expect(renderMarkdown('[example](https://sample.com){aria-label="Sample label"}', styleOptions, options))
       .toMatchInlineSnapshot(`
-      "<p>\u200B<a href=\\"https://sample.com\\" aria-label=\\"Sample label\\" rel=\\"noopener noreferrer\\" target=\\"_blank\\">example<img src=\\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\\" alt class=\\"webchat__render-markdown__external-link-icon\\" title=\\"Opens in a new window, external.\\" /></a>\u200B</p>
+      "<p>\u200B<a href=\\"https://sample.com\\" aria-label=\\"Sample label\\" rel=\\"noopener noreferrer\\" target=\\"_blank\\">example<img src=\\"data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\\" alt="" class=\\"webchat__render-markdown__external-link-icon\\" title=\\"Opens in a new window, external.\\" /></a>\u200B</p>
       "
     `);
   });
