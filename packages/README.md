@@ -2,7 +2,7 @@
 
 Web Chat consists of the following packages:
 
--  [`base`](#bae)
+-  [`base`](#base)
 -  [`core`](#core)
 -  [`component`](#component)
 -  [`bundle`](#bundle)
