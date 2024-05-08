@@ -3,7 +3,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { memo } from 'react';
 
 import Bubble from './Bubble';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
@@ -244,4 +244,4 @@ StackedLayout.propTypes = {
   showCallout: PropTypes.bool
 };
 
-export default StackedLayout;
+export default memo(StackedLayout);
