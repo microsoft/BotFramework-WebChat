@@ -10,7 +10,7 @@ import {
 
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 
 import CarouselFilmStrip from './CarouselFilmStrip';
 import useNonce from '../hooks/internal/useNonce';
@@ -117,4 +117,4 @@ CarouselLayout.propTypes = {
   ...CarouselLayoutCore.propTypes
 };
 
-export default CarouselLayout;
+export default memo(CarouselLayout);

@@ -21,7 +21,7 @@
     ]
   },
   "dependencies": {
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.5",
     "http-proxy": "^1.18.1",
     "math-random": "^2.0.1",
     "node-fetch": "^2.7.0",

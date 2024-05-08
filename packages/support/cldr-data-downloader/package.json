@@ -52,8 +52,8 @@
     "precommit:eslint": "node ../../../node_modules/eslint/bin/eslint.js --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
-    "adm-zip": "^0.5.10",
-    "nopt": "^7.2.0",
+    "adm-zip": "^0.5.12",
+    "nopt": "^7.2.1",
     "progress": "^2.0.3",
     "q": "^1.5.1",
     "request": "^2.88.2",

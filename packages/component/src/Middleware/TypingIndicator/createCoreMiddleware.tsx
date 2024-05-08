@@ -24,8 +24,6 @@ export default function createCoreMiddleware(): TypingIndicatorMiddleware[] {
   return [
     () =>
       () =>
-      // This is not a React component.
-      // eslint-disable-next-line react/prop-types
       ({ visible }) =>
         visible && <DotIndicator />
   ];

@@ -7,8 +7,6 @@ import SendStatus from '../../ActivityStatus/SendStatus/SendStatus';
 export default function createSendStatusMiddleware(): ActivityStatusMiddleware {
   return () =>
     next =>
-    // This is not a React component.
-    // eslint-disable-next-line react/prop-types
     ({ activity, sendState, ...args }) => {
       switch (sendState) {
         case SENDING:

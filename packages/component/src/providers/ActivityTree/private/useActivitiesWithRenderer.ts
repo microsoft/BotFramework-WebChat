@@ -1,23 +1,20 @@
-import { useCallback, useRef } from 'react';
+import { useRef } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
-import useMemoize from '../../../hooks/internal/useMemoize';
+import useMemoAll from '../../../hooks/internal/useMemoAll';
 import type { ActivityWithRenderer } from './types';
 
 export default function useActivitiesWithRenderer(
   activities: readonly WebChatActivity[],
   createActivityRenderer
 ): readonly ActivityWithRenderer[] {
-  const createActivityRendererWithLiteralArgs = useCallback(
-    (activity: WebChatActivity, nextVisibleActivity: WebChatActivity) =>
-      createActivityRenderer({ activity, nextVisibleActivity }),
-    [createActivityRenderer]
-  );
-
   // Create a memoized context of the createActivityRenderer function.
-  // TODO: [P2] Rename useMemoize to useMemoAll
-  const entries = useMemoize(
-    createActivityRendererWithLiteralArgs,
+  const entries = useMemoAll(
+    (
+      activity: WebChatActivity,
+      nextVisibleActivity: WebChatActivity,
+      createActivityRendererFn: typeof createActivityRenderer
+    ) => createActivityRendererFn({ activity, nextVisibleActivity }),
     createActivityRendererWithLiteralArgsMemoized => {
       // All calls to createActivityRendererWithLiteralArgsMemoized() in this function will be memoized (LRU = 1).
       // In the next render cycle, calls to createActivityRendererWithLiteralArgsMemoized() might return the memoized result instead.
@@ -29,7 +26,11 @@ export default function useActivitiesWithRenderer(
 
       for (let index = activities.length - 1; index >= 0; index--) {
         const activity = activities[+index];
-        const renderActivity = createActivityRendererWithLiteralArgsMemoized(activity, nextVisibleActivity);
+        const renderActivity = createActivityRendererWithLiteralArgsMemoized(
+          activity,
+          nextVisibleActivity,
+          createActivityRenderer
+        );
 
         if (renderActivity) {
           activitiesWithRenderer.splice(0, 0, {
@@ -43,7 +44,7 @@ export default function useActivitiesWithRenderer(
 
       return Object.freeze(activitiesWithRenderer);
     },
-    [activities]
+    [activities, createActivityRenderer]
   );
 
   const prevEntriesRef = useRef<readonly ActivityWithRenderer[]>([]);

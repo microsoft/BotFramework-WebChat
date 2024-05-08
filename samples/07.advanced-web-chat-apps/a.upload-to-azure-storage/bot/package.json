@@ -16,10 +16,10 @@
   "license": "MIT",
   "dependencies": {
     "@azure/storage-blob": "^12.17.0",
-    "botbuilder": "^4.21.2",
-    "botbuilder-dialogs": "^4.21.2",
+    "botbuilder": "^4.22.2",
+    "botbuilder-dialogs": "^4.22.2",
     "bytes": "^3.1.2",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.5",
     "restify": "^11.1.0"
   },
   "devDependencies": {

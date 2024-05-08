@@ -1,4 +1,4 @@
-import { type ReactNode, createContext } from 'react';
+import { createContext, type ReactNode } from 'react';
 
 type DialogInit = {
   'aria-label'?: string;
@@ -13,9 +13,8 @@ type ContextType = Readonly<{
   showModal(render: RenderFunction, init?: DialogInit): void;
 }>;
 
-type ContextAsGetter<T extends Record<string, unknown>> = T extends Record<infer K, infer V>
-  ? Record<K, { get(): V }>
-  : never;
+type ContextAsGetter<T extends Record<string, unknown>> =
+  T extends Record<infer K, infer V> ? Record<K, { get(): V }> : never;
 
 const defaultContextValue: ContextAsGetter<ContextType> = {
   close: {
