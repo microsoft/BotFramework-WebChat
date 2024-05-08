@@ -22,10 +22,9 @@ export default function setupTestEnvironment(browserName, builder, { height = 64
 
     case 'chrome-docker':
     default:
-      const dockerOptions = (builder.getChromeOptions() || new Options()).windowSize({
-        height: height * zoom,
-        width: width * zoom
-      });
+      const dockerOptions = (builder.getChromeOptions() || new Options())
+        .headless()
+        .windowSize({ height: height * zoom, width: width * zoom });
 
       dockerOptions.setLoggingPrefs(preferences);
 
