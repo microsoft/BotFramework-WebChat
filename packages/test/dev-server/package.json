@@ -19,11 +19,17 @@
     "start": "node ."
   },
   "type": "module",
+  "pinDependencies": {
+    "http-proxy-middleware": [
+      "2",
+      "http-proxy-middleware@3 has breaking changes, need time to migrate"
+    ]
+  },
   "devDependencies": {
     "chalk": "^5.3.0",
     "compression": "^1.7.4",
     "express": "^4.19.2",
-    "http-proxy-middleware": "^3.0.0",
+    "http-proxy-middleware": "^2.0.6",
     "serve-handler": "^6.1.5"
   },
   "dependencies": {}

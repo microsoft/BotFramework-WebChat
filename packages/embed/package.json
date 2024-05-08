@@ -57,6 +57,10 @@
       "7.17.2",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
+    "http-proxy-middleware": [
+      "2",
+      "http-proxy-middleware@3 has breaking changes, need time to migrate"
+    ],
     "node-fetch": [
       "2",
       "^3 does not support CommonJS"
@@ -69,7 +73,7 @@
     "@babel/preset-env": "^7.16.11",
     "concurrently": "^8.2.2",
     "html-webpack-plugin": "^5.6.0",
-    "http-proxy-middleware": "^3.0.0",
+    "http-proxy-middleware": "^2.0.6",
     "jest": "^29.7.0",
     "node-dev": "^8.0.0",
     "node-fetch": "^2.7.0",

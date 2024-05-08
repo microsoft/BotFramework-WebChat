@@ -53,7 +53,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`eslint-plugin-security@3.0.0`](https://npmjs.com/package/eslint-plugin-security)
       -  [`eslint@8.57.0`](https://npmjs.com/package/eslint)
       -  [`html-webpack-plugin@5.6.0`](https://npmjs.com/package/html-webpack-plugin)
-      -  [`http-proxy-middleware@3.0.0`](https://npmjs.com/package/http-proxy-middleware)
       -  [`husky@9.0.11`](https://npmjs.com/package/husky)
       -  [`jest-image-snapshot@6.4.0`](https://npmjs.com/package/jest-image-snapshot)
       -  [`lint-staged@15.2.2`](https://npmjs.com/package/lint-staged)
