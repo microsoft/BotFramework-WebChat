@@ -15,8 +15,6 @@ type Props = Readonly<{
 }>;
 
 const Button = memo(
-  // As we are all TypeScript, internal components do not need propTypes.
-  // eslint-disable-next-line react/prop-types
   forwardRef(({ button, 'data-testid': dataTestId, onClick, ruby }: Props, ref: Ref<HTMLButtonElement>) => {
     const classNames = useStyles(styles);
     const onClickRef = useRefFrom(onClick);

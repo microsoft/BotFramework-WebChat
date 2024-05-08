@@ -72,6 +72,10 @@
       "7.19.0",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
+    "eslint": [
+      "8",
+      "@typescript-eslint/eslint-plugin does not support eslint@9 yet"
+    ],
     "microsoft-cognitiveservices-speech-sdk": [
       "1.17.0",
       "needs to bump manually"
@@ -94,7 +98,7 @@
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
-    "eslint": "^9.2.0",
+    "eslint": "^8.57.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-security": "^3.0.0",
