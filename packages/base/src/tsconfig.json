@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "outDir": "../lib",
     "allowSyntheticDefaultImports": true,
     "checkJs": false,
-    "declaration": true,
-    "emitDeclarationOnly": true,
     "jsx": "react",
     "moduleResolution": "Bundler",
+    "noEmit": true,
+    "outDir": "../lib",
     "skipLibCheck": true,
     "target": "ESNext"
   },

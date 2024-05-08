@@ -2,8 +2,8 @@
   "name": "botframework-webchat-base",
   "version": "0.0.0-0",
   "description": "Base botframework-webchat package",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./dist/botframework-webchat-base.js",
+  "types": "./dist/botframework-webchat-base.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -11,8 +11,8 @@
         "default": "./dist/botframework-webchat-base.mjs"
       },
       "require": {
-        "types": "./lib/botframework-webchat-base.d.ts",
-        "default": "./lib/botframework-webchat-base.js"
+        "types": "./dist/botframework-webchat-base.d.ts",
+        "default": "./dist/botframework-webchat-base.js"
       }
     }
   },
@@ -27,14 +27,12 @@
   },
   "files": [
     "./dist/**/*",
-    "./lib/**/*",
     "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "scripts": {
     "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
-    "build": "npm run build:tsup && npm run build:typescript && npm run build:babel",
-    "build:babel": "cross-env build_tool=babel module_format=commonjs babel src --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx,**/*.json --out-dir lib --verbose",
+    "build": "npm run build:tsup && npm run build:typescript",
     "build:tsup": "tsup --config ./tsup.config.ts",
     "build:typescript": "tsc --project src/tsconfig.json",
     "bump": "npm run bump:prod && npm run bump:dev && npm run bump:auditfix",
@@ -50,38 +48,13 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "prestart": "npm run build:babel",
-    "start": "concurrently --kill-others --names \"babel,tsc,tsup\" \"npm run start:babel\" \"npm run start:typescript\" \"npm run start:tsup\"",
-    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
+    "start": "concurrently --kill-others --names \"tsc,tsup\" \"npm run start:typescript\" \"npm run start:tsup\"",
     "start:tsup": "npm run build:tsup -- --watch",
     "start:typescript": "npm run build:typescript -- --watch"
   },
-  "pinDependencies": {
-    "@babel/cli": [
-      "7.18.10",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/core": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/preset-env": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/preset-typescript": [
-      "7.18.6",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ]
-  },
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
-    "@babel/preset-typescript": "^7.18.6",
     "@tsconfig/strictest": "^2.0.5",
     "@types/node": "^20.10.3",
-    "babel-plugin-istanbul": "^6.1.1",
-    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "cross-env": "^7.0.3",
     "type-fest": "^4.14.0",
     "typescript": "^5.3.2"
