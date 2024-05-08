@@ -17,19 +17,19 @@
     ]
   },
   "dependencies": {
-    "@emotion/react": "11.11.1",
-    "@fluentui/react": "8.112.9",
+    "@emotion/react": "11.11.4",
+    "@fluentui/react": "8.118.2",
     "adaptivecards": "2.11.0",
     "botframework-directlinejs": "0.15.5",
     "botframework-webchat": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
-    "classnames": "2.3.2",
+    "classnames": "2.5.1",
     "memoize-one": "6.0.0",
     "on-error-resume-next": "1.1.0",
     "rxjs": "5.5.12"
   },
   "devDependencies": {
-    "prettier": "^3.1.0",
+    "prettier": "^3.2.5",
     "react-scripts": "^5.0.1"
   },
   "localPeerDependencies": {

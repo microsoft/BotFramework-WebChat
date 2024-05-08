@@ -46,7 +46,7 @@
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
     "concurrently": "^8.2.2",
-    "webpack": "^5.89.0",
+    "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {}
