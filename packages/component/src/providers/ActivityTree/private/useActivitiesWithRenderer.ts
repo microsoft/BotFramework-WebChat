@@ -44,7 +44,7 @@ export default function useActivitiesWithRenderer(
 
       return Object.freeze(activitiesWithRenderer);
     },
-    [createActivityRenderer, activities]
+    [activities, createActivityRenderer]
   );
 
   const prevEntriesRef = useRef<readonly ActivityWithRenderer[]>([]);
