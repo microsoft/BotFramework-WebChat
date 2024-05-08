@@ -179,7 +179,7 @@
     "lint-staged": "^15.2.2",
     "lolex": "^6.0.0",
     "node-dev": "^8.0.0",
-    "node-fetch": "^2.7.0",
+    "node-fetch": "^3.3.2",
     "nodemon": "^3.1.0",
     "p-defer": "^4.0.1",
     "prettier": "^3.2.5",
