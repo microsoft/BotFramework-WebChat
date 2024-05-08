@@ -10,7 +10,7 @@ module.exports = async function allocateWebDriver({ webDriverURL }) {
 
   const builder = new Builder()
     .forBrowser('chrome')
-    .setChromeOptions(new ChromeOptions().addArguments('--single-process').headless().setLoggingPrefs(preferences));
+    .setChromeOptions(new ChromeOptions().addArguments('--single-process').setLoggingPrefs(preferences));
 
   const webDriver = (global.webDriver = await builder.usingServer(webDriverURL).build());
 
