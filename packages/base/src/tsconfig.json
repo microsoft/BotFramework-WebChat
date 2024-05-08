@@ -5,7 +5,6 @@
     "jsx": "react",
     "moduleResolution": "Bundler",
     "noEmit": true,
-    "outDir": "../lib",
     "skipLibCheck": true,
     "target": "ESNext"
   },
