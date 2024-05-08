@@ -103,6 +103,10 @@
       "28",
       "jest-image-snapshot@5.2.0 does not support jest@29 yet"
     ],
+    "eslint": [
+      "8",
+      "@typescript-eslint/eslint-plugin does not support eslint@9 yet"
+    ],
     "get-port": [
       "5",
       "get-port@6 dropped support of CommonJS"
@@ -155,7 +159,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "error-stack-parser": "^2.1.4",
-    "eslint": "^9.2.0",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",

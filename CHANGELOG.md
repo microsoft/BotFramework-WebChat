@@ -51,7 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`eslint-plugin-react-hooks@4.6.2`](https://npmjs.com/package/eslint-plugin-react-hooks)
       -  [`eslint-plugin-react@7.34.1`](https://npmjs.com/package/eslint-plugin-react)
       -  [`eslint-plugin-security@3.0.0`](https://npmjs.com/package/eslint-plugin-security)
-      -  [`eslint@9.2.0`](https://npmjs.com/package/eslint)
+      -  [`eslint@8.57.0`](https://npmjs.com/package/eslint)
       -  [`html-webpack-plugin@5.6.0`](https://npmjs.com/package/html-webpack-plugin)
       -  [`http-proxy-middleware@3.0.0`](https://npmjs.com/package/http-proxy-middleware)
       -  [`husky@9.0.11`](https://npmjs.com/package/husky)
