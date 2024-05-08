@@ -511,11 +511,37 @@
       "private": true,
       "versionFamily": "4"
     },
+    "4.16": {
+      "redirects": [
+        [
+          "*",
+          "4.16.0"
+        ]
+      ]
+    },
     "4.16.0": {
       "assets": [
         [
           "https://cdn.botframework.com/botframework-webchat/4.16.0/webchat-es5.js",
           "sha384-fhdXAQj5PD+9CBeiZ3dGYjJ3mzH1DePD30cKtJKWzGxyioYiNYOaw5oRw7+AMg+e"
+        ]
+      ],
+      "private": true,
+      "versionFamily": "4"
+    },
+    "4.17": {
+      "redirects": [
+        [
+          "*",
+          "4.17.0"
+        ]
+      ]
+    },
+    "4.17.0": {
+      "assets": [
+        [
+          "https://cdn.botframework.com/botframework-webchat/4.17.0/webchat-es5.js",
+          "sha384-N+hZt09yrG7gT/xDkupYZeFnCoFR1S4ig9v3h1liavEgPm9C+Lt4MFPv85gfBp6E"
         ]
       ],
       "private": true,

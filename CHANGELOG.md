@@ -22,6 +22,53 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5174](https://github.com/microsoft/BotFramework-WebChat/pull/5174)
+   -  Production dependencies
+      -  [`classnames@2.5.1`](https://npmjs.com/package/classnames)
+      -  [`core-js@3.37.0`](https://npmjs.com/package/core-js)
+      -  [`deep-freeze-strict@1.1.1`](https://npmjs.com/package/deep-freeze-strict)
+      -  [`markdown-it@14.1.0`](https://npmjs.com/package/markdown-it)
+      -  [`merge-refs@1.3.0`](https://npmjs.com/package/merge-refs)
+      -  [`mime@4.0.3`](https://npmjs.com/package/mime)
+      -  [`p-defer@4.0.1`](https://npmjs.com/package/p-defer)
+      -  [`redux-saga@1.3.0`](https://npmjs.com/package/redux-saga)
+      -  [`redux@5.0.1`](https://npmjs.com/package/redux)
+      -  [`sanitize-html@2.13.0`](https://npmjs.com/package/sanitize-html)
+      -  [`swiper@8.4.7`](https://npmjs.com/package/swiper)
+      -  [`whatwg-fetch@3.6.20`](https://npmjs.com/package/whatwg-fetch)
+   -  Development dependencies
+      -  [`@fluentui/react-components@9.49.2`](https://npmjs.com/package/@fluentui/react-components)
+      -  [`@types/node@20.12.11`](https://npmjs.com/package/@types/node)
+      -  [`@typescript-eslint/eslint-plugin@7.8.0`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
+      -  [`@typescript-eslint/parser@7.8.0`](https://npmjs.com/package/@typescript-eslint/parser)
+      -  [`adm-zip@0.5.12`](https://npmjs.com/package/adm-zip)
+      -  [`dotenv@16.4.5`](https://npmjs.com/package/dotenv)
+      -  [`esbuild@0.21.1`](https://npmjs.com/package/esbuild)
+      -  [`eslint-plugin-import@2.29.1`](https://npmjs.com/package/eslint-plugin-import)
+      -  [`eslint-plugin-prettier@5.1.3`](https://npmjs.com/package/eslint-plugin-prettier)
+      -  [`eslint-plugin-react-hooks@4.6.2`](https://npmjs.com/package/eslint-plugin-react-hooks)
+      -  [`eslint-plugin-react@7.34.1`](https://npmjs.com/package/eslint-plugin-react)
+      -  [`eslint-plugin-security@3.0.0`](https://npmjs.com/package/eslint-plugin-security)
+      -  [`eslint@8.57.0`](https://npmjs.com/package/eslint)
+      -  [`html-webpack-plugin@5.6.0`](https://npmjs.com/package/html-webpack-plugin)
+      -  [`husky@9.0.11`](https://npmjs.com/package/husky)
+      -  [`jest-image-snapshot@6.4.0`](https://npmjs.com/package/jest-image-snapshot)
+      -  [`lint-staged@15.2.2`](https://npmjs.com/package/lint-staged)
+      -  [`nodemon@3.1.0`](https://npmjs.com/package/nodemon)
+      -  [`nopt@7.2.1`](https://npmjs.com/package/nopt)
+      -  [`p-defer@4.0.1`](https://npmjs.com/package/p-defer)
+      -  [`prettier@3.2.5`](https://npmjs.com/package/prettier)
+      -  [`selenium-webdriver@4.20.0`](https://npmjs.com/package/selenium-webdriver)
+      -  [`serve@14.2.3`](https://npmjs.com/package/serve)
+      -  [`source-map-loader@5.0.0`](https://npmjs.com/package/source-map-loader)
+      -  [`terser-webpack-plugin@5.3.10`](https://npmjs.com/package/terser-webpack-plugin)
+      -  [`tsd@0.31.0`](https://npmjs.com/package/tsd)
+      -  [`type-fest@4.18.2`](https://npmjs.com/package/type-fest)
+      -  [`typescript@5.4.5`](https://npmjs.com/package/typescript)
+      -  [`webpack@5.91.0`](https://npmjs.com/package/webpack)
+
 ## [4.17.0] - 2024-05-06
 
 ### Known issues
