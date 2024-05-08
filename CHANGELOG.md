@@ -61,7 +61,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
       -  [`nopt@7.2.1`](https://npmjs.com/package/nopt)
       -  [`p-defer@4.0.1`](https://npmjs.com/package/p-defer)
       -  [`prettier@3.2.5`](https://npmjs.com/package/prettier)
-      -  [`selenium-webdriver@4.20.0`](https://npmjs.com/package/selenium-webdriver)
       -  [`serve@14.2.3`](https://npmjs.com/package/serve)
       -  [`source-map-loader@5.0.0`](https://npmjs.com/package/source-map-loader)
       -  [`terser-webpack-plugin@5.3.10`](https://npmjs.com/package/terser-webpack-plugin)
