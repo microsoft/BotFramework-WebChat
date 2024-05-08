@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "checkJs": false,
+    "jsx": "react",
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
+    "target": "ESNext"
+  },
+  "extends": "@tsconfig/strictest/tsconfig.json"
+}
