@@ -2,12 +2,17 @@
 
 Web Chat consists of the following packages:
 
+-  [`base`](#bae)
 -  [`core`](#core)
 -  [`component`](#component)
 -  [`bundle`](#bundle)
 -  [`directlinespeech`](#directlinespeech)
 -  [`embed`](#embed)
 -  [`isomorphic-*`](#isomorphic-*)
+
+## `base`
+
+Essentials and utilities used in the project.
 
 ## `core`
 
@@ -69,9 +74,9 @@ We offer 3 build flavors:
 
 |             | Instrumented | Minified | Source maps |
 | ----------- | ------------ | -------- | ----------- |
-| Production  | ❌           | ✔        | ❌          |
-| Test        | ✔            | ✔        | ❌          |
-| Development | ❌           | ❌       | ✔           |
+| Production  | ❌           | ✔       | ❌          |
+| Test        | ✔           | ✔       | ❌          |
+| Development | ❌           | ❌       | ✔          |
 
 > Instrumentation code is added by Istanbul via Babel.
 > Minification is carried out by Terser via Webpack.

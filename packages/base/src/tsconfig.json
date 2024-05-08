@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
+    "outDir": "../lib",
     "allowSyntheticDefaultImports": true,
     "checkJs": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "jsx": "react",
     "moduleResolution": "Bundler",
     "skipLibCheck": true,
