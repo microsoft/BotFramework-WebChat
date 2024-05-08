@@ -15,8 +15,8 @@
     "start": "node-dev --no-notify --respawn ."
   },
   "dependencies": {
-    "botbuilder": "^4.21.2",
-    "dotenv": "^16.3.1",
+    "botbuilder": "^4.22.2",
+    "dotenv": "^16.4.5",
     "restify": "^11.1.0"
   },
   "devDependencies": {
