@@ -98,6 +98,10 @@
       "1",
       "@>=2 does not support IE Mode"
     ],
+    "markdown-it": [
+      "13",
+      "markdown-it@14.1.0 has module field and it is breaking Webpack 4 because cross loading CJS and ESM"
+    ],
     "react-film": [
       "3.1.1-main.df870ea",
       "TEMPORARY: Use a custom version to verify build"
@@ -132,7 +136,7 @@
     "classnames": "2.5.1",
     "compute-scroll-into-view": "1.0.20",
     "deep-freeze-strict": "1.1.1",
-    "markdown-it": "14.1.0",
+    "markdown-it": "13.0.2",
     "math-random": "2.0.1",
     "mdast-util-from-markdown": "2.0.0",
     "memoize-one": "6.0.0",

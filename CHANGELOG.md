@@ -26,15 +26,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 -  Improved performance for `useActivityWithRenderer`, in PR [#5172](https://github.com/microsoft/BotFramework-WebChat/pull/5172), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixes [#5162](https://github.com/microsoft/BotFramework-WebChat/issues/5162). Improved performance for `useActivityTreeWithRenderer`, in PR [#5163](https://github.com/microsoft/BotFramework-WebChat/pull/5163), by [@compulim](https://github.com/compulim)
+-  Fixes [#5175](https://github.com/microsoft/BotFramework-WebChat/issues/5175). `PrecompiledGlobalize.js` is emitted instead of `.cjs`, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Changed
 
--  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5174](https://github.com/microsoft/BotFramework-WebChat/pull/5174)
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5174](https://github.com/microsoft/BotFramework-WebChat/pull/5174) and PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
    -  Production dependencies
       -  [`classnames@2.5.1`](https://npmjs.com/package/classnames)
       -  [`core-js@3.37.0`](https://npmjs.com/package/core-js)
       -  [`deep-freeze-strict@1.1.1`](https://npmjs.com/package/deep-freeze-strict)
-      -  [`markdown-it@14.1.0`](https://npmjs.com/package/markdown-it)
       -  [`merge-refs@1.3.0`](https://npmjs.com/package/merge-refs)
       -  [`mime@4.0.3`](https://npmjs.com/package/mime)
       -  [`p-defer@4.0.1`](https://npmjs.com/package/p-defer)
