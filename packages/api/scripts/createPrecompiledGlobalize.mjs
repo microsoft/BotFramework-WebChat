@@ -43,6 +43,7 @@ import { fileURLToPath } from 'url';
     globalizeCompiler.compile(formattersAndParsers, {
       template: ({ code, dependencies }) =>
         `
+/* eslint-disable */
 import Globalize from 'globalize/dist/globalize-runtime';
 
 ${dependencies.map(name => `import 'globalize/dist/${name}';`).join('\n')}
