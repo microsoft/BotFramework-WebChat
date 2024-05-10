@@ -13,12 +13,12 @@ type Fn<TArgs, TResult> = (...args: TArgs[]) => TResult;
  *
  * @param {Fn<TArgs, TIntermediate>} fn - The function to be memoized.
  * @param {(fn: Fn<TArgs, TIntermediate>) => TFinal} callback - When called, this function should execute the memoizing function.
- * @param {DependencyList[]} deps - Dependencies to detect for chagnes.
+ * @param {DependencyList} deps - Dependencies to detect for chagnes.
  */
 export default function useMemoAll<TIntermediate, TFinal>(
   fn: Fn<unknown, TIntermediate>,
   callback: (fn: Fn<unknown, TIntermediate>) => TFinal,
-  deps: DependencyList[]
+  deps: DependencyList
 ): TFinal {
   if (typeof fn !== 'function') {
     throw new Error('The first argument must be a function.');

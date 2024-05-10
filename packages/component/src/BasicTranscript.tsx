@@ -11,7 +11,7 @@ import {
 } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { forwardRef, Fragment, useCallback, useMemo, useRef } from 'react';
+import React, { forwardRef, Fragment, memo, useCallback, useMemo, useRef } from 'react';
 
 import type { ActivityComponentFactory } from 'botframework-webchat-api';
 import type { ActivityElementMap } from './Transcript/types';
@@ -48,6 +48,7 @@ import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
 import useValueRef from './hooks/internal/useValueRef';
+import useMemoAll from './hooks/internal/useMemoAll';
 
 const {
   useActivityKeys,
@@ -93,16 +94,61 @@ const ROOT_STYLE = {
   }
 };
 
-type RenderingElement = {
-  activity: WebChatActivity;
-  callbackRef: (element: HTMLElement) => void;
-  hideTimestamp: boolean;
-  key: string;
-  renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
-  renderActivityStatus: (props: { hideTimestamp?: boolean }) => ReactNode;
-  renderAvatar: false | (() => Exclude<ReactNode, boolean | null | undefined>);
-  showCallout: boolean;
-};
+const ActivityRenderer = memo(
+  ({
+    activityElementMapRef,
+    activityKey,
+    activity,
+    hideTimestamp,
+    renderActivity,
+    renderAvatar,
+    showCallout
+  }: Readonly<{
+    activityElementMapRef: MutableRefObject<ActivityElementMap>;
+    activityKey: string;
+    activity: WebChatActivity;
+    hideTimestamp: boolean;
+    renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
+    renderAvatar: false | (() => Exclude<ReactNode, boolean | null | undefined>);
+    showCallout: boolean;
+  }>) => {
+    const createActivityStatusRenderer = useCreateActivityStatusRenderer();
+    const activityCallbackRef = useCallback(
+      (activityElement: HTMLElement) => {
+        activityElement
+          ? activityElementMapRef.current.set(activityKey, activityElement)
+          : activityElementMapRef.current.delete(activityKey);
+      },
+      [activityElementMapRef, activityKey]
+    );
+
+    const renderActivityStatus = useMemo(
+      () =>
+        createActivityStatusRenderer({
+          activity,
+          nextVisibleActivity: undefined
+        }),
+      [activity, createActivityStatusRenderer]
+    );
+
+    const children = useMemo(
+      () =>
+        renderActivity({
+          hideTimestamp,
+          renderActivityStatus,
+          renderAvatar,
+          showCallout
+        }),
+      [hideTimestamp, renderActivity, renderActivityStatus, renderAvatar, showCallout]
+    );
+
+    return (
+      <ActivityRow activity={activity} ref={activityCallbackRef}>
+        {children}
+      </ActivityRow>
+    );
+  }
+);
 
 type ScrollBehavior = 'auto' | 'smooth';
 type ScrollToOptions = { behavior?: ScrollBehavior };
@@ -123,7 +169,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const [direction] = useDirection();
     const [focusedActivityKey] = useFocusedActivityKey();
     const [focusedExplicitly] = useFocusedExplicitly();
-    const createActivityStatusRenderer = useCreateActivityStatusRenderer();
     const createAvatarRenderer = useCreateAvatarRenderer();
     const focus = useFocus();
     const focusByActivityKey = useFocusByActivityKey();
@@ -155,15 +200,21 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       [ref, rootElementRef]
     );
 
+    const createAvatarRendererMemoized = useMemoAll(
+      (activity: WebChatActivity) => createAvatarRenderer({ activity }),
+      fn => fn,
+      [createAvatarRenderer]
+    );
+
     // Flatten the tree back into an array with information related to rendering.
     const renderingElements = useMemo(() => {
-      const renderingElements: RenderingElement[] = [];
+      const renderingElements: Array<ReactNode> = [];
       const topSideBotNub = isZeroOrPositive(bubbleNubOffset);
       const topSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
 
       activityWithRendererTree.forEach(entriesWithSameSender => {
         const [[{ activity: firstActivity }]] = entriesWithSameSender;
-        const renderAvatar = createAvatarRenderer({ activity: firstActivity });
+        const renderAvatar = createAvatarRendererMemoized(firstActivity);
 
         entriesWithSameSender.forEach((entriesWithSameSenderAndStatus, indexWithinSenderGroup) => {
           const firstInSenderGroup = !indexWithinSenderGroup;
@@ -175,10 +226,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             const key: string = getKeyByActivity(activity);
             const lastInSenderAndStatusGroup =
               indexWithinSenderAndStatusGroup === entriesWithSameSenderAndStatus.length - 1;
-            const renderActivityStatus = createActivityStatusRenderer({
-              activity,
-              nextVisibleActivity: undefined
-            });
             const topSideNub = activity.from?.role === 'user' ? topSideUserNub : topSideBotNub;
 
             let showCallout: boolean;
@@ -200,27 +247,23 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
               showCallout = true;
             }
 
-            renderingElements.push({
-              activity,
-
-              // After the element is mounted, set it to activityElementsRef.
-              callbackRef: activityElement => {
-                activityElement
-                  ? activityElementMapRef.current.set(key, activityElement)
-                  : activityElementMapRef.current.delete(key);
-              },
-
-              // "hideTimestamp" is a render-time parameter for renderActivityStatus().
-              // If true, it will hide the timestamp, but it will continue to show the
-              // retry prompt. And show the screen reader version of the timestamp.
-              hideTimestamp:
-                hideAllTimestamps || indexWithinSenderAndStatusGroup !== entriesWithSameSenderAndStatus.length - 1,
-              key,
-              renderActivity,
-              renderActivityStatus,
-              renderAvatar,
-              showCallout
-            });
+            renderingElements.push(
+              <ActivityRenderer
+                activity={activity}
+                activityElementMapRef={activityElementMapRef}
+                // "hideTimestamp" is a render-time parameter for renderActivityStatus().
+                // If true, it will hide the timestamp, but it will continue to show the
+                // retry prompt. And show the screen reader version of the timestamp.
+                activityKey={key}
+                hideTimestamp={
+                  hideAllTimestamps || indexWithinSenderAndStatusGroup !== entriesWithSameSenderAndStatus.length - 1
+                }
+                key={key}
+                renderActivity={renderActivity}
+                renderAvatar={renderAvatar}
+                showCallout={showCallout}
+              />
+            );
           });
         });
       });
@@ -231,8 +274,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       activityWithRendererTree,
       bubbleFromUserNubOffset,
       bubbleNubOffset,
-      createActivityStatusRenderer,
-      createAvatarRenderer,
+      createAvatarRendererMemoized,
       getKeyByActivity,
       hideAllTimestamps,
       showAvatarInGroup
@@ -537,27 +579,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
         {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
         <InternalTranscriptScrollable onFocusFiller={handleFocusFiller} terminatorRef={terminatorRef}>
-          {renderingElements.map(
-            ({
-              activity,
-              callbackRef,
-              hideTimestamp,
-              key,
-              renderActivity,
-              renderActivityStatus,
-              renderAvatar,
-              showCallout
-            }) => (
-              <ActivityRow activity={activity} key={key} ref={callbackRef}>
-                {renderActivity({
-                  hideTimestamp,
-                  renderActivityStatus,
-                  renderAvatar,
-                  showCallout
-                })}
-              </ActivityRow>
-            )
-          )}
+          {renderingElements}
         </InternalTranscriptScrollable>
         {!!renderingElements.length && (
           <Fragment>
@@ -896,4 +918,4 @@ BasicTranscript.propTypes = {
   className: PropTypes.string
 };
 
-export default BasicTranscript;
+export default memo(BasicTranscript);
