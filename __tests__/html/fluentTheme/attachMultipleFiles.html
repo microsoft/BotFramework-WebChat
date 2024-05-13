@@ -63,9 +63,10 @@
           { type: 'image/jpeg' }
         );
 
-        await pageObjects.runHook(({ useSendBoxAttachments }) =>
-          useSendBoxAttachments()[1]([{ blob: blob1 }, { blob: blob2 }])
-        );
+        await pageObjects.runHook(({ useSendBoxAttachments }) => {
+          const attachmentsRef = React.useRef([{ blob: blob1 }, { blob: blob2 }]);
+          useSendBoxAttachments()[1](attachmentsRef.current);
+        });
 
         await pageConditions.became(
           'attachment count change to 2',
@@ -84,7 +85,7 @@
         );
 
         await host.snapshot();
-      }, { ignoreErrors: true });
+      });
     </script>
   </body>
 </html>

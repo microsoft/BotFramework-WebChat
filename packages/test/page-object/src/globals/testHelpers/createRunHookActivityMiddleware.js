@@ -1,8 +1,8 @@
-const RunHook = ({ fn, resolve }) => {
+const RunHook = window.React.memo(({ fn, resolve }) => {
   resolve(fn(window.WebChat.hooks));
 
   return false;
-};
+});
 
 function createRunHookActivityMiddleware() {
   return () =>
