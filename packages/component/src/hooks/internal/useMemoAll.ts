@@ -15,7 +15,7 @@ type Fn<TArgs, TResult> = (...args: TArgs[]) => TResult;
  * @param {(fn: Fn<TArgs, TIntermediate>) => TFinal} callback - When called, this function should execute the memoizing function.
  * @param {DependencyList} deps - Dependencies to detect for chagnes.
  */
-export default function useMemoAll<TIntermediate, TFinal>(
+export default function useMemoized<TIntermediate, TFinal>(
   fn: Fn<unknown, TIntermediate>,
   callback: (fn: Fn<unknown, TIntermediate>) => TFinal,
   deps: DependencyList

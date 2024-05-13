@@ -46,8 +46,8 @@ import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
 import useValueRef from './hooks/internal/useValueRef';
-import useMemoAll from './hooks/internal/useMemoAll';
 import TranscriptActivity from './TranscriptActivity';
+import useMemoized from './hooks/internal/useMemoized';
 
 const {
   useActivityKeys,
@@ -142,9 +142,8 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       [ref, rootElementRef]
     );
 
-    const createAvatarRendererMemoized = useMemoAll(
+    const createAvatarRendererMemoized = useMemoized(
       (activity: WebChatActivity) => createAvatarRenderer({ activity }),
-      fn => fn,
       [createAvatarRenderer]
     );
 
