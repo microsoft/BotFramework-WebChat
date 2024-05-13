@@ -13,13 +13,11 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, Fragment, memo, useCallback, useMemo, useRef } from 'react';
 
-import type { ActivityComponentFactory } from 'botframework-webchat-api';
 import type { ActivityElementMap } from './Transcript/types';
 import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { android } from './Utils/detectBrowser';
-import ActivityRow from './Transcript/ActivityRow';
 import BasicTypingIndicator from './BasicTypingIndicator';
 import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
@@ -49,11 +47,11 @@ import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
 import useValueRef from './hooks/internal/useValueRef';
 import useMemoAll from './hooks/internal/useMemoAll';
+import TranscriptActivity from './TranscriptActivity';
 
 const {
   useActivityKeys,
   useActivityKeysByRead,
-  useCreateActivityStatusRenderer,
   useCreateAvatarRenderer,
   useCreateScrollToEndButtonRenderer,
   useDirection,
@@ -93,62 +91,6 @@ const ROOT_STYLE = {
     }
   }
 };
-
-const ActivityRenderer = memo(
-  ({
-    activityElementMapRef,
-    activityKey,
-    activity,
-    hideTimestamp,
-    renderActivity,
-    renderAvatar,
-    showCallout
-  }: Readonly<{
-    activityElementMapRef: MutableRefObject<ActivityElementMap>;
-    activityKey: string;
-    activity: WebChatActivity;
-    hideTimestamp: boolean;
-    renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
-    renderAvatar: false | (() => Exclude<ReactNode, boolean | null | undefined>);
-    showCallout: boolean;
-  }>) => {
-    const createActivityStatusRenderer = useCreateActivityStatusRenderer();
-    const activityCallbackRef = useCallback(
-      (activityElement: HTMLElement) => {
-        activityElement
-          ? activityElementMapRef.current.set(activityKey, activityElement)
-          : activityElementMapRef.current.delete(activityKey);
-      },
-      [activityElementMapRef, activityKey]
-    );
-
-    const renderActivityStatus = useMemo(
-      () =>
-        createActivityStatusRenderer({
-          activity,
-          nextVisibleActivity: undefined
-        }),
-      [activity, createActivityStatusRenderer]
-    );
-
-    const children = useMemo(
-      () =>
-        renderActivity({
-          hideTimestamp,
-          renderActivityStatus,
-          renderAvatar,
-          showCallout
-        }),
-      [hideTimestamp, renderActivity, renderActivityStatus, renderAvatar, showCallout]
-    );
-
-    return (
-      <ActivityRow activity={activity} ref={activityCallbackRef}>
-        {children}
-      </ActivityRow>
-    );
-  }
-);
 
 type ScrollBehavior = 'auto' | 'smooth';
 type ScrollToOptions = { behavior?: ScrollBehavior };
@@ -248,7 +190,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             }
 
             renderingElements.push(
-              <ActivityRenderer
+              <TranscriptActivity
                 activity={activity}
                 activityElementMapRef={activityElementMapRef}
                 // "hideTimestamp" is a render-time parameter for renderActivityStatus().
