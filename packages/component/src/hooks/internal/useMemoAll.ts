@@ -1,4 +1,4 @@
-import { useMemo, useRef, type DependencyList } from 'react';
+import { useEffect, useMemo, useRef, type DependencyList } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 type Cache<TArgs, TResult> = { args: TArgs[]; result: TResult };
@@ -30,24 +30,26 @@ export default function useMemoAll<TIntermediate, TFinal>(
 
   const fnRef = useRefFrom<Fn<unknown, TIntermediate>>(fn);
   const cacheRef = useRef<Cache<unknown, TIntermediate>[]>([]);
+  const nextCacheRef = useRef<Cache<unknown, TIntermediate>[]>([]);
 
   const memoizedFn = useMemo(
     () => (run: (fn: Fn<unknown, TIntermediate>) => TFinal) => {
       const { current: fn } = fnRef;
       const { current: cache } = cacheRef;
-      const nextCache: Cache<unknown, TIntermediate>[] = [];
+      const { current: nextCache } = nextCacheRef;
+      const localCache: Cache<unknown, TIntermediate>[] = [];
       const result = run((...args) => {
-        const { result } = [...cache, ...nextCache].find(
+        const { result } = [...cache, ...localCache, ...nextCache].find(
           ({ args: cachedArgs }) =>
             args.length === cachedArgs.length && args.every((arg, index) => Object.is(arg, cachedArgs[+index]))
         ) || { result: fn(...args) };
 
-        nextCache.push({ args, result });
+        localCache.push({ args, result });
 
         return result;
       });
 
-      cacheRef.current = nextCache;
+      nextCacheRef.current = [...nextCache, ...localCache];
 
       return result;
     },
@@ -55,6 +57,11 @@ export default function useMemoAll<TIntermediate, TFinal>(
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
     [fnRef, cacheRef, ...deps]
   );
+
+  useEffect(() => {
+    cacheRef.current = nextCacheRef.current;
+    nextCacheRef.current = [];
+  });
 
   return memoizedFn(callback);
 }
