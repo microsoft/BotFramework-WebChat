@@ -68,5 +68,6 @@ FocusTrap.propTypes = {
   onFocus: PropTypes.func,
   onLeave: PropTypes.func.isRequired
 };
+FocusTrap.displayName = 'FocusTrap';
 
 export default memo(FocusTrap);

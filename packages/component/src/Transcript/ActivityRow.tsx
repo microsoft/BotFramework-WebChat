@@ -62,7 +62,7 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
         {children}
       </div>
     ),
-    [children]
+    [bodyRef, children]
   );
 
   return (
