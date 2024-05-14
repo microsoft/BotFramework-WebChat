@@ -139,6 +139,7 @@ interface Typing {
   expireAt: number;
   name: string;
   role: 'bot' | 'user';
+  type: 'indicator' | 'livestream';
 }
 
 useActiveTyping(expireAfter?: number): [{ [id: string]: Typing }]
@@ -146,6 +147,8 @@ useActiveTyping(expireAfter?: number): [{ [id: string]: Typing }]
 <!-- prettier-ignore-end -->
 
 > On or before 4.15.1, there is [an issue](https://github.com/microsoft/BotFramework-WebChat/issues/4209) which the `at` field is not accurately reflecting the time when the participant start typing.
+
+> New in 4.18.0: `type` property will tell if the participant is livestreaming or busy preparing its response.
 
 This hook will return a list of participants who are actively typing, including the start typing time (`at`) and expiration time (`expireAt`), the name and the role of the participant. Both time values are based on local clock.
 
