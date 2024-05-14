@@ -57,19 +57,14 @@
         // WHEN: Type "a" without send.
         await pageObjects.typeInSendBox('a');
 
-        const firstUserTypingActivity = await renderWithFunction(() =>
-          useActivities()[0].find(({ type }) => type === 'typing')
-        );
-
         // THEN: `useActiveTyping` should return current user.
         await expect(renderWithFunction(() => Object.values(useActiveTyping()[0]))).resolves.toEqual([
           {
             at: 600,
             expireAt: 5600,
-            firstTypingActivity: firstUserTypingActivity,
-            lastTypingActivity: firstUserTypingActivity,
             name: expect.any(String),
-            role: 'user'
+            role: 'user',
+            type: 'busy'
           }
         ]);
 
@@ -97,10 +92,9 @@
           {
             at: 600,
             expireAt: 8610,
-            firstTypingActivity: firstUserTypingActivity,
-            lastTypingActivity: secondUserTypingActivity,
             name: expect.any(String),
-            role: 'user'
+            role: 'user',
+            type: 'busy'
           }
         ]);
 
@@ -115,10 +109,9 @@
           {
             at: 600,
             expireAt: 13610,
-            firstTypingActivity: firstUserTypingActivity,
-            lastTypingActivity: secondUserTypingActivity,
             name: expect.any(String),
-            role: 'user'
+            role: 'user',
+            type: 'busy'
           }
         ]);
       });

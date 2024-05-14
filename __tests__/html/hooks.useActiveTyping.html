@@ -57,19 +57,14 @@
         // WHEN: Type "typing 1" without send.
         await pageObjects.typeInSendBox('typing 1');
 
-        const userTypingActivity1 = await renderWithFunction(() =>
-          useActivities()[0].find(({ type }) => type === 'typing')
-        );
-
         // THEN: `useActiveTyping` should return current user.
         await expect(renderWithFunction(() => Object.values(useActiveTyping()[0]))).resolves.toEqual([
           {
             at: 600,
             expireAt: 5600,
-            firstTypingActivity: userTypingActivity1,
-            lastTypingActivity: userTypingActivity1,
             name: expect.any(String),
-            role: 'user'
+            role: 'user',
+            type: 'busy'
           }
         ]);
 
@@ -80,46 +75,35 @@
         await pageConditions.numActivitiesShown(2);
         await pageConditions.typingIndicatorShown();
 
-        const botTypingActivity = await renderWithFunction(() =>
-          useActivities()[0].find(({ from: { role }, type }) => role === 'bot' && type === 'typing')
-        );
-
         // THEN: `useActiveTyping` should return current user.
         await expect(renderWithFunction(() => Object.values(useActiveTyping()[0]))).resolves.toEqual([
           {
             at: 600,
             expireAt: 5600,
-            firstTypingActivity: botTypingActivity,
-            lastTypingActivity: botTypingActivity,
             name: expect.any(String),
-            role: 'bot'
+            role: 'bot',
+            type: 'busy'
           }
         ]);
 
         // WHEN: The user type ".".
         await pageObjects.typeInSendBox('.');
 
-        const userTypingActivity2 = await renderWithFunction(() =>
-          useActivities()[0].findLast(({ type }) => type === 'typing')
-        );
-
         // THEN: `useActiveTyping` should return both.
         await expect(renderWithFunction(() => Object.values(useActiveTyping()[0]))).resolves.toEqual([
           {
             at: 600,
             expireAt: 5600,
-            firstTypingActivity: botTypingActivity,
-            lastTypingActivity: botTypingActivity,
             name: expect.any(String),
-            role: 'bot'
+            role: 'bot',
+            type: 'busy'
           },
           {
             at: 600,
             expireAt: 5600,
-            firstTypingActivity: userTypingActivity2,
-            lastTypingActivity: userTypingActivity2,
             name: expect.any(String),
-            role: 'user'
+            role: 'user',
+            type: 'busy'
           }
         ]);
       });
