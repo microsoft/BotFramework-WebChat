@@ -122,6 +122,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Added `useMakeThumbnail` hook option to create a thumbnail from the file given, by [@compulim](https://github.com/compulim), in PR [#5123](https://github.com/microsoft/BotFramework-WebChat/pull/5123) and [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
 -  Added `moduleFormat` and `transpiler` build info to `<meta>` tag, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
 -  Added support of rendering HTML-in-Markdown, in PR [#5161](https://github.com/microsoft/BotFramework-WebChat/pull/5161) and PR [#5164](https://github.com/microsoft/BotFramework-WebChat/pull/5164), by [@compulim](https://github.com/compulim), [@beyackle2](https://github.com/beyackle2), and [@OEvgeny](https://github.com/OEvgeny)
+-  Resolves [#5184](https://github.com/microsoft/BotFramework-WebChat/issues/5184). Added `channelData.webChat.styleOptions.typingIndicatorDuration` to override the default typing indicator duration on a per-activity basis, by [@compulim](https://github.com/compulim), in PR [#5141](https://github.com/microsoft/BotFramework-WebChat/pull/5141)
+-  Resolves [#4876](https://github.com/microsoft/BotFramework-WebChat/issues/4876) and [#4939](https://github.com/microsoft/BotFramework-WebChat/issues/4939). Added support of livestreaming, by [@compulim](https://github.com/compulim), in PR [#5141](https://github.com/microsoft/BotFramework-WebChat/pull/5141)
 
 ### Fixed
 
