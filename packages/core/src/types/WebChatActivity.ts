@@ -159,6 +159,7 @@ type TypingActivityEssence =
       channelData: {
         streamId: string;
         streamSequence: number;
+        streamType: 'informative' | 'streaming';
       };
       text: string;
       type: 'typing';

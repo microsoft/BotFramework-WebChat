@@ -4,8 +4,17 @@ import React, { Fragment, useMemo } from 'react';
 
 const { useActiveTyping, useRenderTypingIndicator } = hooks;
 
-function isChunkedTyping(activity: WebChatActivity): boolean {
-  return activity.type === 'typing' && 'text' in activity && typeof activity.text === 'string';
+function isTypingLivestream(activity: WebChatActivity): boolean {
+  if (
+    activity.type === 'typing' &&
+    'text' in activity &&
+    typeof activity.text === 'string' &&
+    activity.channelData.streamType !== 'informative'
+  ) {
+    return true;
+  }
+
+  return false;
 }
 
 function isFromUser({ from: { role } }: WebChatActivity): boolean {
@@ -20,7 +29,7 @@ function useTypingIndicatorVisible(): readonly [boolean] {
       Object.freeze([
         !!Object.values(activeTyping).some(
           // Display typing indicator for non-chunked typing from bot.
-          ({ lastTypingActivity }) => !isFromUser(lastTypingActivity) && !isChunkedTyping(lastTypingActivity)
+          ({ lastTypingActivity }) => !isFromUser(lastTypingActivity) && !isTypingLivestream(lastTypingActivity)
         )
       ]),
     [activeTyping]

@@ -16,7 +16,13 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
         const { type } = activity;
 
         if (type === 'typing') {
-          if (!('text' in activity && typeof activity.text === 'string')) {
+          if (
+            !(
+              'text' in activity &&
+              typeof activity.text === 'string' &&
+              activity.channelData.streamType !== 'informative'
+            )
+          ) {
             return false;
           }
 
