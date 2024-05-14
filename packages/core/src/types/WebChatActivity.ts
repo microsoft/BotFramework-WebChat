@@ -151,10 +151,18 @@ type MessageActivityEssence = {
 };
 
 // https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#typing-activity
-type TypingActivityEssence = {
-  text?: string | undefined;
-  type: 'typing';
-};
+type TypingActivityEssence =
+  | {
+      type: 'typing';
+    }
+  | {
+      channelData: {
+        streamId: string;
+        streamSequence: number;
+      };
+      text: string;
+      type: 'typing';
+    };
 
 // Abstract - timestamps
 

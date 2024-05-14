@@ -5,7 +5,7 @@ import React, { Fragment, useMemo } from 'react';
 const { useActiveTyping, useRenderTypingIndicator } = hooks;
 
 function isChunkedTyping(activity: WebChatActivity): boolean {
-  return activity.type === 'typing' && !!activity.text;
+  return activity.type === 'typing' && 'text' in activity && typeof activity.text === 'string';
 }
 
 function isFromUser({ from: { role } }: WebChatActivity): boolean {

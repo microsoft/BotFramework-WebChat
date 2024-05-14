@@ -9,6 +9,9 @@ import { type Typing } from './types/Typing';
 
 const INITIAL_ALL_TYPING_STATE = Object.freeze([Object.freeze(new Map())] as const);
 
+function tryParseAsNumber(value: number): number;
+function tryParseAsNumber(value: unknown): undefined;
+
 function tryParseAsNumber(value: unknown): number | undefined {
   if (typeof value === 'number') {
     return value;

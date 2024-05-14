@@ -22,7 +22,8 @@ function getTypingActivityId(activity: WebChatActivity): string | undefined {
 
   if (
     (type === 'message' || type === 'typing') &&
-    activity.text &&
+    'text' in activity &&
+    typeof activity.text === 'string' &&
     'streamId' in activity.channelData &&
     activity.channelData.streamId
   ) {
