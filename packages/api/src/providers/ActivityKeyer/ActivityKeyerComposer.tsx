@@ -1,13 +1,13 @@
 import type { WebChatActivity } from 'botframework-webchat-core';
 import React, { useCallback, useMemo, useRef, type ReactNode } from 'react';
 
+import reduceIterable from '../../hooks/private/reduceIterable';
 import useActivities from '../../hooks/useActivities';
 import type { ActivityKeyerContextType } from './private/Context';
 import ActivityKeyerContext from './private/Context';
 import getActivityId from './private/getActivityId';
 import getClientActivityId from './private/getClientActivityId';
 import lastOf from './private/lastOf';
-import reduceIterable from './private/reduceIterable';
 import someIterable from './private/someIterable';
 import uniqueId from './private/uniqueId';
 import useActivityKeyerContext from './private/useContext';

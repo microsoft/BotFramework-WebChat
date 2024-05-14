@@ -8,7 +8,7 @@ describe('when called with a summation reducer', () => {
 
   beforeEach(() => {
     reducer = jest.fn((intermediate, value) => intermediate + +value);
-    actual = reduceIterable(['1', '2', '3'], reducer, 100);
+    actual = reduceIterable(['1', '2', '3'].values(), reducer, 100);
   });
 
   test('should return summation', () => expect(actual).toBe(106));
@@ -24,7 +24,7 @@ describe('when called with an empty array', () => {
 
   beforeEach(() => {
     reducer = jest.fn();
-    actual = reduceIterable([], reducer, 100);
+    actual = reduceIterable([].values(), reducer, 100);
   });
 
   test('should return initial value', () => expect(actual).toBe(100));
