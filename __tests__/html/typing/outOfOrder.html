@@ -93,10 +93,15 @@
         ]);
 
         // THEN: Should have active typing.
-        expect(currentActiveTyping).toHaveProperty('u-00001.firstTypingActivity.id', 't-00001');
-        expect(currentActiveTyping).toHaveProperty('u-00001.lastTypingActivity.id', 't-00001');
-        expect(currentActiveTyping).toHaveProperty('u-00001.name', 'Bot');
-        expect(currentActiveTyping).toHaveProperty('u-00001.role', 'bot');
+        expect(currentActiveTyping).toEqual({
+          'u-00001': {
+            at: expect.any(Number),
+            expireAt: expect.any(Number),
+            name: 'Bot',
+            role: 'bot',
+            type: 'livestream'
+          }
+        });
 
         // ---
 
@@ -127,10 +132,15 @@
         ]);
 
         // THEN: Should have active typing.
-        expect(currentActiveTyping).toHaveProperty('u-00001.firstTypingActivity.id', 't-00001');
-        expect(currentActiveTyping).toHaveProperty('u-00001.lastTypingActivity.id', 't-00003');
-        expect(currentActiveTyping).toHaveProperty('u-00001.name', 'Bot');
-        expect(currentActiveTyping).toHaveProperty('u-00001.role', 'bot');
+        expect(currentActiveTyping).toEqual({
+          'u-00001': {
+            at: expect.any(Number),
+            expireAt: expect.any(Number),
+            name: 'Bot',
+            role: 'bot',
+            type: 'livestream'
+          }
+        });
 
         // ---
 
@@ -161,10 +171,15 @@
         ]);
 
         // THEN: Should have active typing.
-        expect(currentActiveTyping).toHaveProperty('u-00001.firstTypingActivity.id', 't-00001');
-        expect(currentActiveTyping).toHaveProperty('u-00001.lastTypingActivity.id', 't-00003');
-        expect(currentActiveTyping).toHaveProperty('u-00001.name', 'Bot');
-        expect(currentActiveTyping).toHaveProperty('u-00001.role', 'bot');
+        expect(currentActiveTyping).toEqual({
+          'u-00001': {
+            at: expect.any(Number),
+            expireAt: expect.any(Number),
+            name: 'Bot',
+            role: 'bot',
+            type: 'livestream'
+          }
+        });
 
         // ---
 
