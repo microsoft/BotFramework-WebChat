@@ -139,7 +139,7 @@ interface Typing {
   expireAt: number;
   name: string;
   role: 'bot' | 'user';
-  type: 'indicator' | 'livestream';
+  type: 'busy' | 'livestream';
 }
 
 useActiveTyping(expireAfter?: number): [{ [id: string]: Typing }]
@@ -148,13 +148,18 @@ useActiveTyping(expireAfter?: number): [{ [id: string]: Typing }]
 
 > On or before 4.15.1, there is [an issue](https://github.com/microsoft/BotFramework-WebChat/issues/4209) which the `at` field is not accurately reflecting the time when the participant start typing.
 
-> New in 4.18.0: `type` property will tell if the participant is livestreaming or busy preparing its response.
+> New in 4.18.0: Added `type` property.
 
 This hook will return a list of participants who are actively typing, including the start typing time (`at`) and expiration time (`expireAt`), the name and the role of the participant. Both time values are based on local clock.
 
 If the participant sends a message after the typing activity, the participant will be explicitly removed from the list. If no messages or typing activities are received, the participant is considered inactive and not listed in the result. To keep the typing indicator active, participants should continuously send the typing activity.
 
 The `expireAfter` argument can override the inactivity timer. If `expireAfter` is `Infinity`, it will return all participants who did not explicitly remove from the list. In other words, it will return participants who sent a typing activity, but did not send a message activity afterward.
+
+The `type` property will tell if the participant is livestreaming or busy preparing its response:
+
+-  `busy` indicates the participant is busy preparing the response
+-  `livestream` indicates the participant is sending its response as it is being prepared
 
 > This hook will trigger render of your component if one or more typing information is expired or removed.
 

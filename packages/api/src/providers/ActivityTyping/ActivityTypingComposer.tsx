@@ -55,7 +55,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
             lastAppearAt: appearAt,
             name: from.name,
             role,
-            type: isLivestream(activity) ? 'livestream' : 'indicator'
+            type: isLivestream(activity) ? 'livestream' : 'busy'
           });
 
           changed = true;

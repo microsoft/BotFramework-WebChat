@@ -11,7 +11,7 @@ function useTypingIndicatorVisible(): readonly [boolean] {
       Object.freeze([
         !!Object.values(activeTyping).some(
           // Show typing indicator if anyone is typing and not livestreaming.
-          ({ role, type }) => role !== 'user' && type === 'indicator'
+          ({ role, type }) => role !== 'user' && type !== 'livestream'
         )
       ]),
     [activeTyping]

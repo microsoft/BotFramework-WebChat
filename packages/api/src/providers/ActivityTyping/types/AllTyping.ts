@@ -4,5 +4,5 @@ export type AllTyping = {
   lastAppearAt: number;
   name: string | undefined;
   role: 'bot' | 'user';
-  type: 'indicator' | 'livestream';
+  type: 'busy' | 'livestream';
 };
