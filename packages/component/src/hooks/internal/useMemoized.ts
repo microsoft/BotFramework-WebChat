@@ -14,7 +14,7 @@ export default function useMemoized<TFinal, TArgs>(fn: Fn<TArgs, TFinal>, deps: 
   if (typeof fn !== 'function') {
     throw new Error('The first argument must be a function.');
   } else if (!Array.isArray(deps)) {
-    throw new Error('The third argument must be an array.');
+    throw new Error('The second argument must be an array.');
   }
 
   // Hook-style inline fn: changing it won't trigger updates unless deps change
