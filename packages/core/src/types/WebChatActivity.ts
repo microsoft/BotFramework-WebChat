@@ -26,8 +26,19 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
     // Sequence ID must be available when chat adapter send it to Web Chat.
     'webchat:sequence-id': number;
 
-    // Style options
     webChat?: {
+      /**
+       * Time when the activity appear in chat history.
+       *
+       * Note: if the activity is updated, this value will also be updated.
+       */
+      appearAt?: number;
+
+      /**
+       * Per-activity style options.
+       *
+       * New in 4.18.0.
+       */
       styleOptions?: Record<string, boolean | number | null | string>;
     };
   } & (SendStatus extends SupportedSendStatus

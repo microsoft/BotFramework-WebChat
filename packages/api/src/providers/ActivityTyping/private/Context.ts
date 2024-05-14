@@ -1,8 +1,8 @@
 import { createContext } from 'react';
-import { type Typing } from '../types/Typing';
+import { type AllTyping } from '../types/AllTyping';
 
 export type ActivityTypingContextType = {
-  allTypingState: readonly [ReadonlyMap<string, Typing>];
+  allTypingState: readonly [ReadonlyMap<string, AllTyping>];
 };
 
 const ActivityTypingContext = createContext<ActivityTypingContextType>(

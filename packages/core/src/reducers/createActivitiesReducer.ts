@@ -72,6 +72,7 @@ function patchActivity(
   });
 
   activity = updateIn(activity, ['channelData'], channelData => ({ ...channelData }));
+  activity = updateIn(activity, ['channelData', 'webChat', 'appearAt'], () => Date.now());
 
   const {
     channelData: { 'webchat:sequence-id': sequenceId }
@@ -89,7 +90,7 @@ function patchActivity(
     let after: WebChatActivity;
     let before: WebChatActivity;
 
-    if (isTypingLivestream(activity)) {
+    if (isTypingLivestream(activity) && typeof activity.channelData.streamSequence === 'number') {
       [before, after] = findBeforeAfter(activities, target => {
         if (target.type === 'typing' && target.channelData.streamId === activity.channelData.streamId) {
           return target.channelData.streamSequence < activity.channelData.streamSequence ? 'before' : 'after';

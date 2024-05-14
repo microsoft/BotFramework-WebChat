@@ -1,88 +1,35 @@
+import type { WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
+
+import numberWithInfinity from '../../hooks/private/numberWithInfinity';
 import useActivities from '../../hooks/useActivities';
 import usePonyfill from '../../hooks/usePonyfill';
 import useUpsertedActivities from '../../providers/ActivityListener/useUpsertedActivities';
 import ActivityTypingContext, { ActivityTypingContextType } from './private/Context';
 import useMemoWithPrevious from './private/useMemoWithPrevious';
-import { type Typing } from './types/Typing';
+import { type AllTyping } from './types/AllTyping';
 
 const INITIAL_ALL_TYPING_STATE = Object.freeze([Object.freeze(new Map())] as const);
 
-function tryParseAsNumber(value: number): number;
-function tryParseAsNumber(value: unknown): undefined;
-
-function tryParseAsNumber(value: unknown): number | undefined {
-  if (typeof value === 'number') {
-    return value;
-  }
-}
-
 type Props = Readonly<{ children?: ReactNode | undefined }>;
+
+function isLivestream(activity: WebChatActivity): boolean {
+  return activity.type === 'typing' && 'text' in activity && typeof activity.text === 'string';
+}
 
 const ActivityTypingComposer = ({ children }: Props) => {
   const [{ Date }] = usePonyfill();
-  // const [typing, setTyping] = useState<ReadonlyMap<string, Typing>>(Object.freeze(new Map()));
-
-  // // Algorithm 1: just use upsert
-  // useActivityUpsertCallback(activities => {
-  //   const now = Date.now();
-  //   const nextTyping = new Map(typing);
-  //   let changed = false;
-
-  //   for (const activity of activities) {
-  //     const {
-  //       from,
-  //       from: { id },
-  //       type
-  //     } = activity;
-
-  //     if (type === 'typing') {
-  //       const currentTyping = nextTyping.get(id);
-  //       const currentStreamSequence =
-  //         tryParseAsNumber(currentTyping?.lastTypingActivity.channelData.streamSequence) || 0;
-  //       const streamSequence = tryParseAsNumber(activity.channelData.streamSequence) || 0;
-
-  //       if (streamSequence >= currentStreamSequence) {
-  //         nextTyping.set(id, {
-  //           firstTypingActivity: currentTyping?.firstTypingActivity || activity,
-  //           firstAppearAt: currentTyping?.firstAppearAt || now,
-  //           lastTypingActivity: activity,
-  //           lastAppearAt: now,
-  //           name: from.name,
-  //           role: from.role
-  //         });
-
-  //         changed = true;
-  //       }
-  //     } else if (type === 'message') {
-  //       nextTyping.delete(id);
-  //       changed = true;
-  //     }
-  //   }
-
-  //   changed && setTyping(nextTyping);
-  // });
-
-  // Algorithm 2: replay at the first activities
-  // This algorithm is better because it will not drop any out-of-order activity.
   const [activities] = useActivities();
   const [upsertedActivities] = useUpsertedActivities();
   const activitiesRef = useRefFrom(activities);
 
-  // TODO: We should save this to a Context.
-  const allTypingState = useMemoWithPrevious<readonly [ReadonlyMap<string, Typing>]>(
+  const allTypingState = useMemoWithPrevious<readonly [ReadonlyMap<string, AllTyping>]>(
     (prevAllTypingState = INITIAL_ALL_TYPING_STATE) => {
       const { current: activities } = activitiesRef;
-      const now = Date.now();
       const nextTyping = new Map(prevAllTypingState[0]);
       let changed = false;
 
-      // Replay from where it started to change to handle OOO properly.
-      // For example, we received typing activity IDs: typing-1, typing-3, typing-2.
-      // In the output, it should be:
-      // - firstTypingActivity: typing-1
-      // - lastTypingActivity: typing-3
       const firstIndex = upsertedActivities.reduce(
         (firstIndex, upsertedActivity) => Math.min(firstIndex, activities.indexOf(upsertedActivity)),
         Infinity
@@ -91,30 +38,27 @@ const ActivityTypingComposer = ({ children }: Props) => {
       for (const activity of activities.slice(firstIndex)) {
         const {
           from,
-          from: { id },
+          from: { id, role },
           type
         } = activity;
 
-        if (type === 'typing') {
+        if (type === 'typing' && (role === 'bot' || role === 'user')) {
           const currentTyping = nextTyping.get(id);
-          const currentStreamSequence =
-            tryParseAsNumber(currentTyping?.lastTypingActivity.channelData.streamSequence) || 0;
-          const streamSequence = tryParseAsNumber(activity.channelData.streamSequence) || 0;
+          // TODO: When we rework on types of DLActivity, we will make sure all activities has "webChat.appearAt", this coalesces can be removed.
+          const appearAt = activity.channelData.webChat?.appearAt || Date.now();
 
-          // TODO: Add tests for "streamSequence".
-          if (streamSequence >= currentStreamSequence) {
-            nextTyping.set(id, {
-              firstTypingActivity: currentTyping?.firstTypingActivity || activity,
-              firstAppearAt: currentTyping?.firstAppearAt || now,
-              lastTypingActivity: activity,
-              // Do not update "lastAppearAt" if the last activity is not updated (in OOO cases).
-              lastAppearAt: (activity === currentTyping?.lastTypingActivity && currentTyping?.lastAppearAt) || now, // TODO: Add test
-              name: from.name,
-              role: from.role
-            });
+          nextTyping.set(id, {
+            firstAppearAt: currentTyping?.firstAppearAt || appearAt,
+            lastActivityDuration: numberWithInfinity(
+              activity.channelData.webChat?.styleOptions?.typingAnimationDuration
+            ),
+            lastAppearAt: appearAt,
+            name: from.name,
+            role,
+            type: isLivestream(activity) ? 'livestream' : 'indicator'
+          });
 
-            changed = true;
-          }
+          changed = true;
         } else if (type === 'message') {
           nextTyping.delete(id);
           changed = true;
@@ -123,7 +67,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
 
       return changed ? Object.freeze([nextTyping]) : prevAllTypingState;
     },
-    [activities, activitiesRef, upsertedActivities]
+    [activitiesRef, upsertedActivities]
   );
 
   const context = useMemo<ActivityTypingContextType>(() => ({ allTypingState }), [allTypingState]);
