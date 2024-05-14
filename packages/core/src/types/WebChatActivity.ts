@@ -25,6 +25,11 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
 
     // Sequence ID must be available when chat adapter send it to Web Chat.
     'webchat:sequence-id': number;
+
+    // Style options
+    webChat?: {
+      styleOptions?: Record<string, boolean | number | null | string>;
+    };
   } & (SendStatus extends SupportedSendStatus
     ? {
         /**

@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import useAllTyping from '../providers/ActivityTyping/useAllTyping';
 import { type Typing } from '../types/Typing';
 import useForceRender from './internal/useForceRender';
+import numberWithInfinity from './private/numberWithInfinity';
 import usePonyfill from './usePonyfill';
 import useStyleOptions from './useStyleOptions';
 
@@ -14,16 +15,16 @@ function useActiveTyping(expireAfter?: number): [{ [userId: string]: Typing }] {
 
   const now = Date.now();
 
-  if (typeof expireAfter !== 'number') {
-    expireAfter = typingAnimationDuration;
-  }
-
   const activeTyping: { [userId: string]: Typing } = [...typing.entries()].reduce(
     (
       activeTyping,
       [id, { firstTypingActivity, firstAppearAt, lastTypingActivity, lastAppearAt, name, role }]
     ): Record<string, Typing> => {
-      const until = lastAppearAt + expireAfter;
+      const until =
+        lastAppearAt +
+        (expireAfter ??
+          numberWithInfinity(lastTypingActivity.channelData?.webChat?.styleOptions?.typingAnimationDuration) ??
+          typingAnimationDuration);
 
       if (until > now) {
         return {
