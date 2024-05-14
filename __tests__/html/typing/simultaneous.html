@@ -59,7 +59,7 @@
 
         // WHEN: Bot is typing a message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamMode: 'chunk' },
+          channelData: { streamType: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 't-00001',
           text: 'A quick',
@@ -88,7 +88,7 @@
 
         // WHEN: Bot is typing another message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamMode: 'chunk' },
+          channelData: { streamType: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 't-10001',
           text: 'Falsches Üben',
@@ -119,7 +119,7 @@
 
         // WHEN: Bot continue typing the message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamId: 't-00001', streamMode: 'chunk' },
+          channelData: { streamId: 't-00001', streamType: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 't-00002',
           text: 'A quick brown fox',
@@ -148,7 +148,7 @@
 
         // WHEN: Bot continue typing the third message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamId: 't-10001', streamMode: 'chunk' },
+          channelData: { streamId: 't-10001', streamType: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 't-10002',
           text: 'Falsches Üben von Xylophonmusik',
@@ -177,7 +177,7 @@
 
         // WHEN: Bot finished typing the second message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamId: 't-00001', streamMode: 'chunk' },
+          channelData: { streamId: 't-00001', streamType: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 'a-00002',
           text: 'A quick brown fox jumped over the lazy dogs.',
@@ -209,7 +209,7 @@
 
         // WHEN: Bot finished typing the third message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamId: 't-10001', streamMode: 'chunk' },
+          channelData: { streamId: 't-10001', streamType: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 'a-00003',
           text: 'Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.',

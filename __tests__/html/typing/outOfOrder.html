@@ -66,7 +66,7 @@
         const firstTypingActivityId = 't-00001';
 
         await directLine.emulateIncomingActivity({
-          channelData: { streamMode: 'chunk' },
+          channelData: { streamTYpe: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: firstTypingActivityId,
           text: 'A quick',
@@ -102,7 +102,7 @@
 
         // WHEN: Bot send typing message in out-of-order fashion.
         await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
+          channelData: { streamId: firstTypingActivityId, streamType: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 't-00003',
           text: 'A quick brown fox jumped over',
@@ -136,7 +136,7 @@
 
         // WHEN: Bot send the belated typing message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
+          channelData: { streamId: firstTypingActivityId, streamType: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 't-00002',
           text: 'A quick brown fox',
@@ -170,7 +170,7 @@
 
         // WHEN: Bot finished typing the message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamMode: 'chunk' },
+          channelData: { streamId: firstTypingActivityId, streamType: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 'a-00002',
           text: 'A quick brown fox jumped over the lazy dogs.',
