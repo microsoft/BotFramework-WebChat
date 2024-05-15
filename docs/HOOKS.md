@@ -1555,15 +1555,15 @@ If the function throws an exception while executing, the exception will be repor
 
 ## What is activity key?
 
-Activity ID is a service-assigned ID that is unique in the conversation. However, not every activity has an activity ID. Thus, it is not trivial to reference an activity using activity ID.
+Activity ID is a service-assigned ID that is unique in the conversation. However, not every activity has an activity ID. Therefore, it is not possible to reference every activities in the chat history by solely using activity ID.
 
-Web Chat introduces activity key for referencing every activity in the system.
+Web Chat introduces activity key as an alternative method to reference activity in the system.
 
-Activity key is an opaque string. Web Chat assign an activity key to every activity when the activity first appear in the system. Once the activity has an assigned activity key, it will never be reassigned to another key again until Web Chat is restarted, for example, page refresh.
+Activity key is an opaque string. When the acitvity first appear in Web Chat, they will be assigned an activity key and never be reassigned to another key again until Web Chat is restarted.
 
-Multiple activities could share the same activity key if they are revision of each others. For example, a livestreaming activity is made up of different revisions of the same activity, thus, these activities would share the same activity key.
+Multiple activities could share the same activity key if they are revision of each others. For example, a livestreaming activity could made up of different revisions of the same activity. Thus, these activities would share the same activity key.
 
-Following are hooks to help navigating between activity, activity ID and activity keys:
+Following hooks are designed to help navigating between activity, activity ID and activity keys:
 
 -  [`useGetActivitiesByKey`](#usegetactivitiesbykey)
 -  [`useGetActivityByKey`](#usegetactivitybykey)
