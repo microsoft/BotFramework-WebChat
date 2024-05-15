@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Fixed
+-  Fixed broken URLs in documentation of [LOCALIZATION.md](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/LOCALIZATION.md), by [@iamabhijeet2003](https://github.com/iamabhijeet2003), in PR [#5186](https://github.com/microsoft/BotFramework-WebChat/pull/5186)
+
+### Fixed
 
 -  Improved performance for `useActivityWithRenderer`, in PR [#5172](https://github.com/microsoft/BotFramework-WebChat/pull/5172), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixes [#5162](https://github.com/microsoft/BotFramework-WebChat/issues/5162). Improved performance for `useActivityTreeWithRenderer`, in PR [#5163](https://github.com/microsoft/BotFramework-WebChat/pull/5163), by [@compulim](https://github.com/compulim)
