@@ -23,6 +23,7 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
               activity.channelData.streamType !== 'informative'
             )
           ) {
+            // If it is an informative message, hide it until we have a design for informative message.
             return false;
           }
 
