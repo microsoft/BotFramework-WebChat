@@ -14,7 +14,7 @@ const INITIAL_ALL_TYPING_STATE = Object.freeze([Object.freeze(new Map())] as con
 
 type Props = Readonly<{ children?: ReactNode | undefined }>;
 
-function isLivestream(activity: WebChatActivity): boolean {
+function isLivestreamChunk(activity: WebChatActivity): boolean {
   return (
     activity.type === 'typing' &&
     'text' in activity &&
@@ -60,7 +60,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
             lastAppearAt: appearAt,
             name: from.name,
             role,
-            type: isLivestream(activity) ? 'livestream' : 'busy'
+            type: isLivestreamChunk(activity) ? 'livestream' : 'busy' // Informative message means the bot is busy.
           });
 
           changed = true;
