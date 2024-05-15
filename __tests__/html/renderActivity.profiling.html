@@ -11,6 +11,9 @@
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <style>
+      body {
+        overflow: hidden;
+      }
       #webchat {
         overflow-y: auto;
       }
@@ -21,21 +24,27 @@
       small {
         padding-inline: 8px;
       }
-
       svg {
         margin-inline: 8px;
+      }
+      .wrap {
+        position: relative;
+      }
+      .wrap > button {
+        position: absolute;
+        top: 100%;
       }
     </style>
   </head>
   <body>
-    <main>
-      <div id="webchat"></div>
+    <div class="wrap">
+      <main id="webchat"></main>
       <button onclick="handleBuildGraphClick()">Show render stats</button>
-    </main>
+    </div>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         ReactDOM: { render },
-        React: { Profiler, Fragment },
+        React: { Profiler },
         WebChat: {
           Components: {
             BasicTranscript,
@@ -51,21 +60,17 @@
 
       let activitiesCount = 0;
 
-      const renders = new Map();
       const commits = new Map()
-      function onRender(id, phase, actual, base, start, commit) {
-        const render = renders.get(id) ?? [];
-        const c = commits.get(commit) ?? {};
-        render.push(`${id} ${phase}: actual ${actual}, base ${base} start ${start} commit ${commit}`);
-        c.activitiesCount = document.querySelectorAll('.webchat__bubble__content').length;
-        c.commit = commit;
-        c[`${id} ${phase} actual`] ??= 0;
-        c[`${id} ${phase} actual`] += actual;
-        c[`${id} ${phase} count`] ??= 0;
-        c[`${id} ${phase} count`] += 1;
-        c[`${id} ${phase} avg`] = c[`${id} ${phase} actual`] / c[`${id} ${phase} count`] ;
-        renders.set(id, render);
-        commits.set(commit, c);
+      function handleRender(id, renderPhase, actualDuration, baseDuration, startTime, commitTime) {
+        const commit = commits.get(commitTime) ?? {};
+        commit.activitiesCount = document.querySelectorAll('.webchat__bubble__content').length;
+        commit.commit = commitTime;
+        commit[`${id} ${renderPhase} actual`] ??= 0;
+        commit[`${id} ${renderPhase} actual`] += actualDuration;
+        commit[`${id} ${renderPhase} count`] ??= 0;
+        commit[`${id} ${renderPhase} count`] += 1;
+        commit[`${id} ${renderPhase} avg`] = commit[`${id} ${renderPhase} actual`] / commit[`${id} ${renderPhase} count`] ;
+        commits.set(commitTime, commit);
       }
 
       function activityRendered() {
@@ -75,7 +80,7 @@
           timesActivityRendered.set(activity.id, (timesActivityRendered.get(activity.id) ?? 0) + 1);
           return (...args) => (
             <>
-              <Profiler id="Activity" onRender={onRender}>
+              <Profiler id="Activity" onRender={handleRender}>
                 {renderActivity.call ? renderActivity(...args) : renderActivity}
               </Profiler>
               <small> Rendered {timesActivityRendered.get(activity.id)} times</small>
@@ -111,29 +116,23 @@
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         render(
-          <Fragment>
-            <Composer activityMiddleware={activityRendered} directLine={directLine} store={store}>
-              <pre></pre>
-              <Profiler id="Transcript" onRender={onRender}>
-                <BasicTranscript />
-              </Profiler>
-            </Composer>
-          </Fragment>
-          ,
+          <Composer activityMiddleware={activityRendered} directLine={directLine} store={store}>
+            <pre></pre>
+            <Profiler id="Transcript" onRender={handleRender}>
+              <BasicTranscript />
+            </Profiler>
+          </Composer>,
           document.getElementById('webchat')
         );
 
         await pageConditions.uiConnected();
 
-        // WHEN: Adding 10 activities.
+        // WHEN: Adding 100 activities.
         await postMessagesBatch(directLine);
         await postMessagesBatch(directLine);
         await postMessagesBatch(directLine);
         await postMessagesBatch(directLine);
         await postMessagesBatch(directLine);
-
-        const filterKey = (key, arr) => arr.filter(item => key in item)
-        const map = (key, arr, cb) => filterKey(key, Array.from(arr)).map((item, index) => cb(item[key], item))
 
         const data = [];
         for (const entry of commits.values()) {
@@ -154,8 +153,8 @@
           .map(({ acivityMount, activityUpdate, activitiesCount }) => ({time: acivityMount + activityUpdate, count: activitiesCount }))
           .filter(({ time }) => time);
         const activityTimesSorted = activityTimes.sort(({ time: a }, { time: b }) => a > b ? 1 : a < b ? -1 : 0);
-        const excludeTimes = [].concat(activityTimesSorted.slice(0, 5), activityTimesSorted.slice(activityTimesSorted.length - 5));
-        const activityTimesNorm = activityTimes.filter(v => !excludeTimes.includes(v));
+        const excludedTimes = [].concat(activityTimesSorted.slice(0, 5), activityTimesSorted.slice(activityTimesSorted.length - 5));
+        const activityTimesNorm = activityTimes.filter(v => !excludedTimes.includes(v));
 
         displayResults(activityTimesNorm);
 
@@ -163,7 +162,6 @@
 
         await host.snapshot();
       }, { ignoreErrors: true });
-
 
       function displayResults(activityTimesNorm, pretty = true) {
         const prettyBool = condition => {
@@ -175,19 +173,21 @@
         const covariance = ss.sampleCovariance(activityTimesNorm.map(({ time }) => time), activityTimesNorm.map(({ count }) => count));
         const linearRegression = ss.linearRegression(activityTimesNorm.map(({ time }, i) => [i, time]));
         const results = document.querySelector('pre');
+
         results.innerText = `Render results:
 Activities rendered:\t\t\t ${activitiesCount}
 Render data samples:\t\t\t  ${activityTimesNorm.length}
 Render time grows slow:\t\t\t  ${prettyBool(() => [linearRegression.m < 0.5, linearRegression.m ])}
 Render time slightly moves with count:\t  ${prettyBool(() => [covariance < 50, covariance])}
 `;
+        expect(linearRegression.m).toBeLessThan(0.5);
+        expect(covariance).toBeLessThan(50);
       }
 
       async function handleBuildGraphClick() {
         const { data, activityTimesNorm } = await testComplete.promise;
         buildGraph(data, activityTimesNorm);
       }
-      // globalThis.handleBuildGraphClick = handleBuildGraphClick;
 
       function buildGraph(data, activityTimesNorm) {
         displayResults(activityTimesNorm, false);
@@ -210,7 +210,7 @@ Render time slightly moves with count:\t  ${prettyBool(() => [covariance < 50, c
         const xAxis = (g, x) => g
             .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
 
-        // The area generator, called at startup and when zooming.
+        // The area generators, called at startup and when zooming.
         const areaTNU = (data, x) => d3.area()
             .curve(d3.curveStepAfter)
             .x(d => x(d.index))
@@ -239,7 +239,6 @@ Render time slightly moves with count:\t  ${prettyBool(() => [covariance < 50, c
           .y1(d => y(d.acivityMount + d.activityUpdate))
         (data);
 
-        // The area generator, called at startup and when zooming.
         const areaAC = (data, x) => d3.area()
             .curve(d3.curveStepAfter)
             .x(d => x(d.index))
@@ -261,7 +260,6 @@ Render time slightly moves with count:\t  ${prettyBool(() => [covariance < 50, c
             .attr("height", height)
             .attr("style", "max-width: 100%; height: auto;");
 
-        // Create a clip-path with a unique ID.
         const clip = {
           id: 'clip-path-1',
           toString () {
@@ -277,7 +275,7 @@ Render time slightly moves with count:\t  ${prettyBool(() => [covariance < 50, c
             .attr("width", width - marginLeft - marginRight)
             .attr("height", height - marginTop - marginBottom);
 
-        // Create areas.
+        // Create area paths.
         const pathTNU = svg.append("path")
             .attr("clip-path", clip)
             .attr("fill", "SteelBlue")
@@ -300,7 +298,6 @@ Render time slightly moves with count:\t  ${prettyBool(() => [covariance < 50, c
           .attr("fill", "LightPink")
           .attr("d", areaAU(data, x));
 
-        // Create the area.
         const pathAC = svg.append("path")
           .attr("clip-path", clip)
           .attr("stroke", "Coral")
@@ -324,7 +321,7 @@ Render time slightly moves with count:\t  ${prettyBool(() => [covariance < 50, c
                 .attr("font-weight", "bold")
                 .text("ms / activities"));
 
-        // When zooming, redraw the area and the x axis.
+        // When zooming, redraw all areas and the x axis.
         function zoomed(event) {
           const xz = event.transform.rescaleX(x);
           pathTNU.attr("d", areaTNU(data, xz));
@@ -339,18 +336,68 @@ Render time slightly moves with count:\t  ${prettyBool(() => [covariance < 50, c
         svg.call(zoom)
           .transition()
             .duration(750)
-            .call(zoom.scaleTo, 4, [x(Date.now()), 0]);
+            .call(zoom.scaleTo, 4, [x(200), 0]);
 
-        svg.append("circle").attr("cx",80).attr("cy",50).attr("r", 6).style("fill", "SteelBlue");
-        svg.append("text").attr("x", 95).attr("y", 52).text("Transcript nested-update ms").style("font-size", "15px").attr("alignment-baseline","middle");
-        svg.append("circle").attr("cx",80).attr("cy",70).attr("r", 6).style("fill", "LightSteelBlue");
-        svg.append("text").attr("x", 95).attr("y", 72).text("Transcript update ms").style("font-size", "15px").attr("alignment-baseline","middle");
-        svg.append("circle").attr("cx",80).attr("cy",90).attr("r", 6).style("fill", "LightPink");
-        svg.append("text").attr("x", 95).attr("y", 92).text("Activity update ms").style("font-size", "15px").attr("alignment-baseline","middle");
-        svg.append("circle").attr("cx",80).attr("cy",110).attr("r", 6).attr("fill", "LavenderBlush").attr('strokeWidth', '1').style('stroke', 'LightPink');
-        svg.append("text").attr("x", 95).attr("y", 112).text("Activity mount ms").style("font-size", "15px").attr("alignment-baseline","middle");
-        svg.append("circle").attr("cx",80).attr("cy",130).attr("r", 6).attr("fill", "none").attr('strokeWidth', '2').style('stroke', 'Coral');
-        svg.append("text").attr("x", 95).attr("y", 132).text("Activities shown count").style("font-size", "15px").attr("alignment-baseline","middle");
+        // Legend
+        svg.append("circle")
+          .attr("cx",80)
+          .attr("cy",50)
+          .attr("r", 6)
+          .style("fill", "SteelBlue");
+        svg.append("text")
+          .attr("x", 95)
+          .attr("y", 52)
+          .text("Transcript nested-update ms")
+          .style("font-size", "15px")
+          .attr("alignment-baseline","middle");
+        svg.append("circle")
+          .attr("cx",80)
+          .attr("cy",70)
+          .attr("r", 6)
+          .style("fill", "LightSteelBlue");
+        svg.append("text")
+          .attr("x", 95)
+          .attr("y", 72)
+          .text("Transcript update ms")
+          .style("font-size", "15px")
+          .attr("alignment-baseline","middle");
+        svg.append("circle")
+          .attr("cx",80)
+          .attr("cy",90)
+          .attr("r", 6)
+          .style("fill", "LightPink");
+        svg.append("text")
+          .attr("x", 95)
+          .attr("y", 92)
+          .text("Activity update ms")
+          .style("font-size", "15px")
+          .attr("alignment-baseline","middle");
+        svg.append("circle")
+          .attr("cx",80)
+          .attr("cy",110)
+          .attr("r", 6)
+          .attr("fill", "LavenderBlush")
+          .attr('strokeWidth', '1')
+          .style('stroke', 'LightPink');
+        svg.append("text")
+          .attr("x", 95)
+          .attr("y", 112)
+          .text("Activity mount ms")
+          .style("font-size", "15px")
+          .attr("alignment-baseline","middle");
+        svg.append("circle")
+          .attr("cx",80)
+          .attr("cy",130)
+          .attr("r", 6)
+          .attr("fill", "none")
+          .attr('strokeWidth', '2')
+          .style('stroke', 'Coral');
+        svg.append("text")
+          .attr("x", 95)
+          .attr("y", 132)
+          .text("Activities shown count")
+          .style("font-size", "15px")
+          .attr("alignment-baseline","middle");
 
         document.body.appendChild(svg.node());
       }
