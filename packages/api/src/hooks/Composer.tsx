@@ -111,6 +111,8 @@ const DISPATCHERS = {
   submitSendBox
 };
 
+const EMPTY_ARRAY: readonly [] = Object.freeze([]);
+
 function createCardActionContext({
   cardActionMiddleware,
   directLine,
@@ -594,8 +596,8 @@ const ComposerCore = ({
       <ActivityListenerComposer>
         <ActivitySendStatusComposer>
           <ActivityTypingComposer>
-            <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || Object.freeze([])}>
-              <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || Object.freeze([])}>
+            <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
+              <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
                 {typeof children === 'function' ? children(context) : children}
                 <ActivitySendStatusTelemetryComposer />
               </SendBoxToolbarMiddlewareProvider>
