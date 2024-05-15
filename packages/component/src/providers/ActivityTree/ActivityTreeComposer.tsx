@@ -35,6 +35,7 @@ const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
       // "Activities with same key" means "multiple revisions of same activity."
       const activitiesWithSameKey = getActivitiesByKey(getKeyByActivity(activity));
 
+      // TODO: We may want to send all revisions of activity to the middleware so they can render UI to see previous revisions.
       activitiesWithSameKey[0] === activity && activities.push(activitiesWithSameKey[activitiesWithSameKey.length - 1]);
     }
 
