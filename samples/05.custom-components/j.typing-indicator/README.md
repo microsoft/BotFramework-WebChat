@@ -59,7 +59,7 @@ Then, register a custom component to override the existing typing indicator:
 +
 +       return (
 +         !!activeTyping.length && (
-+           <span className="webchat__typingIndicator">
++           <span className="webchat__typing-indicator">
 +             Currently typing:{' '}
 +             {activeTyping
 +               .map(({ role }) => role)
@@ -105,7 +105,7 @@ Add the following CSS for styling the typing indicator:
 
 <!-- prettier-ignore-start -->
 ```css
-.webchat__typingIndicator {
+.webchat__typing-indicator {
   font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
   font-size: 14px;
   padding: 10px;
@@ -143,7 +143,7 @@ Here is the finished `index.html`:
         width: 100%;
       }
 
-      .webchat__typingIndicator {
+      .webchat__typing-indicator {
         font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
         font-size: 14px;
         padding: 10px;
@@ -168,7 +168,7 @@ Here is the finished `index.html`:
 
               return (
                 !!activeTyping.length && (
-                  <span className="webchat__typingIndicator">
+                  <span className="webchat__typing-indicator">
                     Currently typing:{' '}
                     {activeTyping
                       .map(({ role }) => role)

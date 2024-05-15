@@ -1,39 +1,41 @@
 import { useEffect } from 'react';
 
-import type { Typing } from '../types/Typing';
-import { useSelector } from './internal/WebChatReduxContext';
+import useAllTyping from '../providers/ActivityTyping/useAllTyping';
+import { type Typing } from '../types/Typing';
 import useForceRender from './internal/useForceRender';
+import reduceIterable from './private/reduceIterable';
 import usePonyfill from './usePonyfill';
 import useStyleOptions from './useStyleOptions';
 
-function useActiveTyping(expireAfter?: number): [{ [userId: string]: Typing }] {
+function useActiveTyping(expireAfter?: number): readonly [Readonly<Record<string, Typing>>] {
   const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
   const [{ typingAnimationDuration }] = useStyleOptions();
+  const [typing] = useAllTyping();
   const forceRender = useForceRender();
-  const typing: { [userId: string]: { at: number; last: number; name: string; role: string } } = useSelector(
-    ({ typing }) => typing
-  );
-
   const now = Date.now();
 
-  if (typeof expireAfter !== 'number') {
-    expireAfter = typingAnimationDuration;
-  }
+  // TODO: We should use useState to simplify the force render part.
+  const activeTypingState: readonly [Readonly<Record<string, Typing>>] = Object.freeze([
+    Object.freeze(
+      Object.fromEntries(
+        reduceIterable(
+          typing.entries(),
+          (activeTypingMap, [id, { firstReceivedAt, lastActivityDuration, lastReceivedAt, name, role, type }]) => {
+            const expireAt = lastReceivedAt + (expireAfter ?? lastActivityDuration ?? typingAnimationDuration);
 
-  const activeTyping: { [userId: string]: Typing } = Object.entries(typing).reduce(
-    (activeTyping, [id, { at, last, name, role }]) => {
-      const until = last + expireAfter;
+            if (expireAt > now) {
+              activeTypingMap.set(id, { at: firstReceivedAt, expireAt, name, role, type });
+            }
 
-      if (until > now) {
-        return { ...activeTyping, [id]: { at, expireAt: until, name, role } };
-      }
+            return activeTypingMap;
+          },
+          new Map<string, Typing>()
+        ).entries()
+      )
+    )
+  ]);
 
-      return activeTyping;
-    },
-    {}
-  );
-
-  const earliestExpireAt = Math.min(...Object.values(activeTyping).map(({ expireAt }) => expireAt));
+  const earliestExpireAt = Math.min(...Object.values(activeTypingState[0]).map(({ expireAt }) => expireAt));
   const timeToRender = earliestExpireAt && earliestExpireAt - now;
 
   useEffect(() => {
@@ -44,7 +46,7 @@ function useActiveTyping(expireAfter?: number): [{ [userId: string]: Typing }] {
     }
   }, [clearTimeout, forceRender, setTimeout, timeToRender]);
 
-  return [activeTyping];
+  return activeTypingState;
 }
 
 export default useActiveTyping;

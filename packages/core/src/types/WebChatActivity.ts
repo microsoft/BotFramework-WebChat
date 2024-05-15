@@ -25,6 +25,22 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
 
     // Sequence ID must be available when chat adapter send it to Web Chat.
     'webchat:sequence-id': number;
+
+    webChat?: {
+      /**
+       * Time when the activity appear in chat history.
+       *
+       * Note: if the activity is updated, this value will also be updated.
+       */
+      receivedAt?: number;
+
+      /**
+       * Per-activity style options.
+       *
+       * New in 4.18.0.
+       */
+      styleOptions?: Record<string, boolean | number | null | string>;
+    };
   } & (SendStatus extends SupportedSendStatus
     ? {
         /**
@@ -135,6 +151,11 @@ type EventActivityEssence = {
 type MessageActivityEssence = {
   attachmentLayout?: 'carousel' | 'stacked';
   attachments?: DirectLineAttachment[];
+  channelData: {
+    streamId?: string;
+    streamSequence?: number;
+    streamType?: 'final';
+  };
   inputHint?: 'accepting' | 'expecting' | 'ignoring';
   locale?: string;
   speak?: string;
@@ -146,9 +167,19 @@ type MessageActivityEssence = {
 };
 
 // https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#typing-activity
-type TypingActivityEssence = {
-  type: 'typing';
-};
+type TypingActivityEssence =
+  | {
+      type: 'typing';
+    }
+  | {
+      channelData: {
+        streamId: string;
+        streamSequence: number;
+        streamType: 'informative' | 'streaming';
+      };
+      text: string;
+      type: 'typing';
+    };
 
 // Abstract - timestamps
 

@@ -19,21 +19,29 @@ Web Chat supports [Content Security Policy (CSP)](https://developer.mozilla.org/
 
 > This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/CHANGELOG.md)
 
-### 4.17.0 notable changes
+Notes: web developers are advised to use [`~` (tilde range)](https://github.com/npm/node-semver?tab=readme-ov-file#tilde-ranges-123-12-1) to select minor versions, which contains new features and/or fixes. Use [`^` (caret range)](https://github.com/npm/node-semver?tab=readme-ov-file#caret-ranges-123-025-004) to select major versions, which may contains breaking changes.
 
-#### Debut of ES Modules
+## 4.18.0 notable changes
+
+### Support livestreaming response
+
+Bots can now livestream their responses. Before Bot Framework SDK support this feature, bot authors can follow the details in [this pull request](https://github.com/microsoft/BotFramework-WebChat/pull/5141) to construct the livestream responses.
+
+## 4.17.0 notable changes
+
+### Debut of ES Modules
 
 Web Chat now exports as ES Modules (named exports) along with CommonJS (named and unnamed exports).
 
-#### Improvement to file upload experience
+### Improvement to file upload experience
 
 End-user can now add a message and confirm before uploading their file to the bot. To opt-out of the new experience, pass `sendAttachmentOn: 'send'` in style options.
 
-#### Theme pack support
+### Theme pack support
 
 We are excited to add theme pack support. Developers can now pack all their customization in a single package and publish it to NPM.
 
-#### Experimental Fluent UI theme pack
+### Experimental Fluent UI theme pack
 
 We are excited to announce Fluent UI theme pack is in the work and is currently in experimental phase. This theme pack is designed for web developers who want to bring a native Copilot user experience to their customers.
 
@@ -60,15 +68,15 @@ Web Chat will now render HTML-in-Markdown. We have ported our sanitizer and acce
 
 You can turn off this option by setting `styleOptions.markdownRenderHTML` to `false`.
 
-### 4.16.1 notable changes
+## 4.16.1 notable changes
 
 Web Chat now supports [Adaptive Cards schema up to 1.6](https://adaptivecards.io/explorer/). Some features in Adaptive Cards are in preview or designed to use outside of Bot Framework. Web Chat does not support these features.
 
-### 4.16.0 notable changes
+## 4.16.0 notable changes
 
 Starting from 4.16.0, Internet Explorer is no longer supported. After more than a year of the Internet Explorer 11 officially retirement, we decided to stop supporting Internet Explorer. This will help us to bring new features to Web Chat. 4.15.9 is the last version which supports Internet Explorer in limited fashion.
 
-### 4.12.1 patch: New style property `adaptiveCardsParserMaxVersion`
+## 4.12.1 patch: New style property `adaptiveCardsParserMaxVersion`
 
 Web Chat 4.12.1 patch includes a new style property allowing developers to choose the max Adaptive Cards schema version. See [PR #3778](https://github.com/microsoft/BotFramework-WebChat/pull/3778) for code changes.
 
@@ -220,7 +228,7 @@ See the working sample of the [full Web Chat bundle](https://github.com/microsof
 
 For full customizability, you can use React to recompose components of Web Chat.
 
-To install the production build from NPM, run `npm install botframework-webchat`.
+To install the production build from NPM, run `npm install botframework-webchat`. See our [version notes](#version-notes) on how to select a version.
 
 <!-- prettier-ignore-start -->
 ```js
