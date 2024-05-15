@@ -15,7 +15,7 @@
       const {
         WebChat: {
           Components: { BasicWebChat, Composer },
-          hooks: { useActiveTyping, useActivities }
+          hooks: { useActiveTyping }
         }
       } = window;
 
@@ -82,10 +82,6 @@
 
         // TODO: Understand why we need to yield after clock.tick and see if we could eliminate it.
         await 0;
-
-        const secondUserTypingActivity = await renderWithFunction(() =>
-          useActivities()[0].findLast(({ type }) => type === 'typing')
-        );
 
         // THEN: `useActiveTyping` should return current user.
         await expect(renderWithFunction(() => Object.values(useActiveTyping()[0]))).resolves.toEqual([
