@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX). Added something, by [@johndoe](https://github.com/johndoe), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 -->
 
+Notes: web developers are advised to use [`~` (tilde range)](https://github.com/npm/node-semver?tab=readme-ov-file#tilde-ranges-123-12-1) to select minor versions, which contains new features and/or fixes. Use [`^` (caret range)](https://github.com/npm/node-semver?tab=readme-ov-file#caret-ranges-123-025-004) to select major versions, which may contains breaking changes.
+
 ## [Unreleased]
 
 ### Fixed
