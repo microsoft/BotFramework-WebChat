@@ -75,6 +75,11 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useEmitTypingIndicator`](#useemittypingindicator)
 -  [`useFocus`](#usefocus)
 -  [`useFocusSendBox`](#usefocussendbox)
+-  [`useGetActivitiesByKey`](#usegetactivitiesbykey)
+-  [`useGetActivityByKey`](#usegetactivitybykey)
+-  [`useGetHasAcknowledgedByActivityKey`](#usegethasacknowledgedbyactivitykey)
+-  [`useGetKeyByActivity`](#usegetkeybyactivity)
+-  [`useGetKeyByActivityId`](#usegetkeybyactivityid)
 -  [`useGetSendTimeoutForActivity`](#usegetsendtimeoutforactivity)
 -  [`useGrammars`](#usegrammars)
 -  [`useGroupTimestamp`](#usegrouptimestamp)
@@ -519,6 +524,72 @@ useFocusSendBox(): () => void
 
 When called, this function will send focus to the send box.
 
+## `useGetActivitiesByKey`
+
+<!-- prettier-ignore-start -->
+```ts
+useGetActivitiesByKey(): (key?: string) => readonly WebChatActivity[] | undefined
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to (the activity key section)[#what-is-activity-key] for details about how Web Chat use activity keys.
+
+When called, this hook will return a function to get a sorted list of activities which share the same activity key. These activities represent different revisions of the same activity. For example, a livestreaming activity will have multiple revisions.
+
+## `useGetActivityByKey`
+
+<!-- prettier-ignore-start -->
+```ts
+useGetActivityByKey(): (key?: string) => undefined | WebChatActivity
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to (the activity key section)[#what-is-activity-key] for details about how Web Chat use activity keys.
+
+When called, this hook will return a function to get the latest activity which share the same activity key.
+
+This hook is same as getting the last element from the result of the [`useGetActivitiesByKey`](#usegetactivitiesbykey) hook.
+
+## `useGetHasAcknowledgedByActivityKey`
+
+<!-- prettier-ignore-start -->
+```ts
+useGetHasAcknowledgedByActivityKey(): (activityKey: string) => boolean
+```
+<!-- prettier-ignore-end -->
+
+When called, this hook will return a function to evaluate whether the activity represented by the passing activity key is acknowledged by the user.
+
+Chat history normally would scroll to the bottom when message arrive and remains stick to the bottom. However, in some circumstances, such as the bot sending more than a page of message, the chat history will pause the auto-scroll and unstick from the bottom.
+
+The pause helps users to read the long text sent by the bot without explicitly scrolling up from the very bottom of the chat history.
+
+Activities are being acknowledged when the chat history view is being scroll to the end, either by auto-scroll or manually after a pause.
+
+## `useGetKeyByActivity`
+
+<!-- prettier-ignore-start -->
+```ts
+useGetKeyByActivity(): (activity?: WebChatActivity | undefined) => string | undefined
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to (the activity key section)[#what-is-activity-key] for details about how Web Chat use activity keys.
+
+When called, this hook will return a function to get the activity key of the passing activity.
+
+## `useGetKeyByActivityId`
+
+<!-- prettier-ignore-start -->
+```ts
+useGetKeyByActivityId(): (activityId?: string | undefined) => string | undefined
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to (the activity key section)[#what-is-activity-key] for details about how Web Chat use activity keys.
+
+When called, this hook will return a function to get the activity key of the passing activity ID.
+
 ## `useGetSendTimeoutForActivity`
 
 <!-- prettier-ignore-start -->
@@ -527,7 +598,7 @@ useGetSendTimeoutForActivity(): ({ activity: Activity }) => number
 ```
 <!-- prettier-ignore-end -->
 
-When called, This hook will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
+When called, this hook will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
 
 ## `useGrammars`
 
@@ -1481,3 +1552,20 @@ useTrackTiming(): (name: string, promise: Promise) => void
 This function will emit timing measurements for the execution of a synchronous or asynchronous function. Before the execution, the `onTelemetry` handler will be triggered with a `timingstart` event. After completion, regardless of resolve or reject, the `onTelemetry` handler will be triggered again with a `timingend` event.
 
 If the function throws an exception while executing, the exception will be reported to [`useTrackException`](#usetrackexception) hook as a non-fatal error.
+
+## What is activity key?
+
+Activity ID is a service-assigned ID that is unique in the conversation. However, not every activity has an activity ID. Thus, it is not trivial to reference an activity using activity ID.
+
+Web Chat introduces activity key for referencing every activity in the system.
+
+Activity key is an opaque string. Web Chat assign an activity key to every activity when the activity first appear in the system. Once the activity has an assigned activity key, it will never be reassigned to another key again until Web Chat is restarted, for example, page refresh.
+
+Multiple activities could share the same activity key if they are revision of each others. For example, a livestreaming activity is made up of different revisions of the same activity, thus, these activities would share the same activity key.
+
+Following are hooks to help navigating between activity, activity ID and activity keys:
+
+-  [`useGetActivitiesByKey`](#usegetactivitiesbykey)
+-  [`useGetActivityByKey`](#usegetactivitybykey)
+-  [`useGetKeyByActivity`](#usegetkeybyactivity)
+-  [`useGetKeyByActivityId`](#usegetkeybyactivityid)
