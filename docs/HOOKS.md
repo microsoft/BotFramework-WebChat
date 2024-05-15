@@ -546,7 +546,7 @@ useGetActivitiesByKey(): (key?: string) => readonly WebChatActivity[] | undefine
 ```
 <!-- prettier-ignore-end -->
 
-> Please refer to (the activity key section)[#what-is-activity-key] for details about how Web Chat use activity keys.
+> Please refer to [the activity key section](#what-is-activity-key) for details about how Web Chat use activity keys.
 
 When the returned function is called, will return a chronologically sorted list of activities which share the same activity key. These activities represent different revisions of the same activity. For example, a livestreaming activity is made up of multiple revisions.
 
@@ -558,7 +558,7 @@ useGetActivityByKey(): (key?: string) => undefined | WebChatActivity
 ```
 <!-- prettier-ignore-end -->
 
-> Please refer to (the activity key section)[#what-is-activity-key] for details about how Web Chat use activity keys.
+> Please refer to [the activity key section](#what-is-activity-key) for details about how Web Chat use activity keys.
 
 When called, this hook will return a function to get the latest activity which share the same activity key.
 
@@ -572,7 +572,7 @@ useGetHasAcknowledgedByActivityKey(): (activityKey: string) => boolean | undefin
 ```
 <!-- prettier-ignore-end -->
 
-> Please refer to (this section)[#what-is-acknowledged-activity] for details about acknowledged activity.
+> Please refer to [this section](#what-is-acknowledged-activity) for details about acknowledged activity.
 
 When the returned function is called with an activity key, will evaluate whether the activity is acknowledged by the user or not.
 
@@ -584,7 +584,7 @@ useGetKeyByActivity(): (activity?: WebChatActivity | undefined) => string | unde
 ```
 <!-- prettier-ignore-end -->
 
-> Please refer to (the activity key section)[#what-is-activity-key] for details about how Web Chat use activity keys.
+> Please refer to [the activity key section](#what-is-activity-key) for details about how Web Chat use activity keys.
 
 When called, this hook will return a function to get the activity key of the passing activity.
 
@@ -596,7 +596,7 @@ useGetKeyByActivityId(): (activityId?: string | undefined) => string | undefined
 ```
 <!-- prettier-ignore-end -->
 
-> Please refer to (the activity key section)[#what-is-activity-key] for details about how Web Chat use activity keys.
+> Please refer to [the activity key section](#what-is-activity-key) for details about how Web Chat use activity keys.
 
 When called, this hook will return a function to get the activity key of the passing activity ID.
 
@@ -662,7 +662,7 @@ useLastAcknowledgedActivityKey(): readonly [string | undefined]
 ```
 <!-- prettier-ignore-end -->
 
-> Please refer to (this section)[#what-is-acknowledged-activity] for details about acknowledged activity.
+> Please refer to [this section](#what-is-acknowledged-activity) for details about acknowledged activity.
 
 This hook will subscribe and return the activity key of the last acknowledged activity in the chat history.
 
@@ -793,7 +793,7 @@ useMarkAllAsAcknowledged(): () => void
 ```
 <!-- prettier-ignore-end -->
 
-> Please refer to (this section)[#what-is-acknowledged-activity] for details about acknowledged activity.
+> Please refer to [this section](#what-is-acknowledged-activity) for details about acknowledged activity.
 
 When the returned function is called, will mark all activities in the chat history as acknowledged.
 
@@ -1613,7 +1613,7 @@ Activity ID is a service-assigned ID that is unique in the conversation. However
 
 Web Chat introduces activity key as an alternative method to reference activity in the system.
 
-Activity key is an opaque string. When the acitvity first appear in Web Chat, they will be assigned an activity key and never be reassigned to another key again until Web Chat is restarted.
+Activity key is an opaque string. When the activity first appear in Web Chat, they will be assigned an activity key and never be reassigned to another key again until Web Chat is restarted.
 
 Multiple activities could share the same activity key if they are revision of each others. For example, a livestreaming activity could made up of different revisions of the same activity. Thus, these activities would share the same activity key.
 
