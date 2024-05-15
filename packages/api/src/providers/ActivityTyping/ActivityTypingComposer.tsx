@@ -49,15 +49,15 @@ const ActivityTypingComposer = ({ children }: Props) => {
 
         if (type === 'typing' && (role === 'bot' || role === 'user')) {
           const currentTyping = nextTyping.get(id);
-          // TODO: When we rework on types of DLActivity, we will make sure all activities has "webChat.appearAt", this coalesces can be removed.
-          const appearAt = activity.channelData.webChat?.appearAt || Date.now();
+          // TODO: When we rework on types of DLActivity, we will make sure all activities has "webChat.receivedAt", this coalesces can be removed.
+          const receivedAt = activity.channelData.webChat?.receivedAt || Date.now();
 
           nextTyping.set(id, {
-            firstAppearAt: currentTyping?.firstAppearAt || appearAt,
+            firstReceivedAt: currentTyping?.firstReceivedAt || receivedAt,
             lastActivityDuration: numberWithInfinity(
               activity.channelData.webChat?.styleOptions?.typingAnimationDuration
             ),
-            lastAppearAt: appearAt,
+            lastReceivedAt: receivedAt,
             name: from.name,
             role,
             type: isLivestreamChunk(activity) ? 'livestream' : 'busy' // Informative message means the bot is busy.

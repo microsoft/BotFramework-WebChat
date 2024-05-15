@@ -20,11 +20,11 @@ function useActiveTyping(expireAfter?: number): readonly [Readonly<Record<string
       Object.fromEntries(
         reduceIterable(
           typing.entries(),
-          (activeTypingMap, [id, { firstAppearAt, lastActivityDuration, lastAppearAt, name, role, type }]) => {
-            const expireAt = lastAppearAt + (expireAfter ?? lastActivityDuration ?? typingAnimationDuration);
+          (activeTypingMap, [id, { firstReceivedAt, lastActivityDuration, lastReceivedAt, name, role, type }]) => {
+            const expireAt = lastReceivedAt + (expireAfter ?? lastActivityDuration ?? typingAnimationDuration);
 
             if (expireAt > now) {
-              activeTypingMap.set(id, { at: firstAppearAt, expireAt, name, role, type });
+              activeTypingMap.set(id, { at: firstReceivedAt, expireAt, name, role, type });
             }
 
             return activeTypingMap;

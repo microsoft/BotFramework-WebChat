@@ -32,7 +32,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
        *
        * Note: if the activity is updated, this value will also be updated.
        */
-      appearAt?: number;
+      receivedAt?: number;
 
       /**
        * Per-activity style options.

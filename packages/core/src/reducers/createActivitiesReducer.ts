@@ -77,7 +77,7 @@ function patchActivity(
   });
 
   activity = updateIn(activity, ['channelData'], channelData => ({ ...channelData }));
-  activity = updateIn(activity, ['channelData', 'webChat', 'appearAt'], () => Date.now());
+  activity = updateIn(activity, ['channelData', 'webChat', 'receivedAt'], () => Date.now());
 
   const {
     channelData: { 'webchat:sequence-id': sequenceId }

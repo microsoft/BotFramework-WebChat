@@ -1,7 +1,7 @@
 export type AllTyping = {
-  firstAppearAt: number;
+  firstReceivedAt: number;
   lastActivityDuration: number;
-  lastAppearAt: number;
+  lastReceivedAt: number;
   name: string | undefined;
   role: 'bot' | 'user';
   type: 'busy' | 'livestream';
