@@ -53,6 +53,7 @@ Following is the list of hooks supported by Web Chat API.
 
 -  [`useActiveTyping`](#useactivetyping)
 -  [`useActivities`](#useactivities)
+-  [`useActivityKeysByRead`](#useactivitykeysbyread)
 -  [`useAdaptiveCardsHostConfig`](#useadaptivecardshostconfig)
 -  [`useAdaptiveCardsPackage`](#useadaptivecardspackage)
 -  [`useAvatarForBot`](#useavatarforbot)
@@ -84,11 +85,14 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useGrammars`](#usegrammars)
 -  [`useGroupTimestamp`](#usegrouptimestamp)
 -  [`useLanguage`](#uselanguage)
--  [`useLastTypingAt`](#uselasttypingat)
+-  [`useLastAcknowledgedActivityKey`](#uselastacknowledgedactivitykey)
+-  [`useLastReadActivityKey`](#uselastreadactivitykey)
 -  [`useLastTypingAt`](#uselasttypingat) (Deprecated)
 -  [`useLocalize`](#uselocalize) (Deprecated)
 -  [`useLocalizer`](#useLocalizer)
 -  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
+-  [`useMarkActivityKeyAsRead`](#usemarkactivitykeyasread)
+-  [`useMarkAllAsAcknowledged`](#usemarkallasacknowledged)
 -  [`useNotification`](#usenotification)
 -  [`useObserveScrollPosition`](#useobservescrollposition)
 -  [`useObserveTranscriptFocus`](#useobservetranscriptfocus)
@@ -178,6 +182,16 @@ useActivities(): [Activity[]]
 
 This hook will return a list of activities.
 
+## `useActivityKeysByRead`
+
+<!-- prettier-ignore-start -->
+```ts
+useActivityKeysByRead(): readonly [readonly string[], readonly string[]]
+```
+<!-- prettier-ignore-end -->
+
+This hook will subscribe and return two lists of activities: read and unread.
+
 ## `useAdaptiveCardsHostConfig`
 
 <!-- prettier-ignore-start -->
@@ -242,7 +256,7 @@ useByteFormatter() => (bytes: number) => string
 ```
 <!-- prettier-ignore-end -->
 
-This hook will return a function that, when called with a file size, will return a localized representation of the size in bytes, kilobytes, megabytes, or gigabytes. It honors the language settings from the `useLanguage` hook.
+When the returned function is called with a file size, will return a localized representation of the size in bytes, kilobytes, megabytes, or gigabytes. It honors the language settings from the [`useLanguage` hook](#uselanguage).
 
 ## `useConnectivityStatus`
 
@@ -378,7 +392,7 @@ useDateFormatter() => (dateOrString: (Date | number | string)) => string
 ```
 <!-- prettier-ignore-end -->
 
-This hook will return a function that, when called with a `Date` object, `number`, or `string`, will return a localized representation of the date in absolute time. It honors the language settings from the `useLanguage` hook.
+When the returned function is called with a `Date` object, `number`, or `string`, will return a localized representation of the date in absolute time. It honors the language settings from the [`useLanguage` hook](#uselanguage).
 
 ## `useDebouncedNotification`
 
@@ -534,7 +548,7 @@ useGetActivitiesByKey(): (key?: string) => readonly WebChatActivity[] | undefine
 
 > Please refer to (the activity key section)[#what-is-activity-key] for details about how Web Chat use activity keys.
 
-When called, this hook will return a function to get a sorted list of activities which share the same activity key. These activities represent different revisions of the same activity. For example, a livestreaming activity will have multiple revisions.
+When the returned function is called, will return a chronologically sorted list of activities which share the same activity key. These activities represent different revisions of the same activity. For example, a livestreaming activity is made up of multiple revisions.
 
 ## `useGetActivityByKey`
 
@@ -554,17 +568,13 @@ This hook is same as getting the last element from the result of the [`useGetAct
 
 <!-- prettier-ignore-start -->
 ```ts
-useGetHasAcknowledgedByActivityKey(): (activityKey: string) => boolean
+useGetHasAcknowledgedByActivityKey(): (activityKey: string) => boolean | undefined
 ```
 <!-- prettier-ignore-end -->
 
-When called, this hook will return a function to evaluate whether the activity represented by the passing activity key is acknowledged by the user.
+> Please refer to (this section)[#what-is-acknowledged-activity] for details about acknowledged activity.
 
-Chat history normally would scroll to the bottom when message arrive and remains stick to the bottom. However, in some circumstances, such as the bot sending more than a page of message, the chat history will pause the auto-scroll and unstick from the bottom.
-
-The pause helps users to read the long text sent by the bot without explicitly scrolling up from the very bottom of the chat history.
-
-Activities are being acknowledged when the chat history view is being scroll to the end, either by auto-scroll or manually after a pause.
+When the returned function is called with an activity key, will evaluate whether the activity is acknowledged by the user or not.
 
 ## `useGetKeyByActivity`
 
@@ -643,6 +653,28 @@ If no options are passed, the return value will be the written language. This va
 If `"speech"` is passed to `options`, the return value will be the oral language instead of written language. For example, the written language for Hong Kong SAR and Taiwan are Traditional Chinese, while the oral language are Cantonese and Taiwanese Mandarin respectively.
 
 To modify this value, change the value in the `locale` prop passed to Web Chat.
+
+## `useLastAcknowledgedActivityKey`
+
+<!-- prettier-ignore-start -->
+```ts
+useLastAcknowledgedActivityKey(): readonly [string | undefined]
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to (this section)[#what-is-acknowledged-activity] for details about acknowledged activity.
+
+This hook will subscribe and return the activity key of the last acknowledged activity in the chat history.
+
+## `useLastReadActivityKey`
+
+<!-- prettier-ignore-start -->
+```ts
+useLastReadActivityKey(): readonly [string | undefined]
+```
+<!-- prettier-ignore-end -->
+
+This hook will subscribe and return the activity key of the last read activity in the chat history.
 
 ## `useLastTypingAt`
 
@@ -742,6 +774,28 @@ useMarkActivityAsSpoken(): (activity: Activity) => void
 <!-- prettier-ignore-end -->
 
 When called, this function will mark the activity as spoken and remove it from the text-to-speech queue.
+
+## `useMarkActivityKeyAsRead`
+
+<!-- prettier-ignore-start -->
+```ts
+useMarkActivityKeyAsRead(): (activityKey: string) => void
+```
+<!-- prettier-ignore-end -->
+
+When the returned function is called, will mark the activity as read.
+
+## `useMarkAllAsAcknowledged`
+
+<!-- prettier-ignore-start -->
+```ts
+useMarkAllAsAcknowledged(): () => void
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to (this section)[#what-is-acknowledged-activity] for details about acknowledged activity.
+
+When the returned function is called, will mark all activities in the chat history as acknowledged.
 
 ## `useNotifications`
 
@@ -1569,3 +1623,11 @@ Following hooks are designed to help navigating between activity, activity ID an
 -  [`useGetActivityByKey`](#usegetactivitybykey)
 -  [`useGetKeyByActivity`](#usegetkeybyactivity)
 -  [`useGetKeyByActivityId`](#usegetkeybyactivityid)
+
+## What is acknowledged activity?
+
+Chat history normally would scroll to the bottom when message arrive and remains stick to the bottom. However, in some circumstances, such as the bot sending more than a page of message, the chat history will pause the auto-scroll and unstick from the bottom.
+
+The pause helps users to read the long text sent by the bot without explicitly scrolling up from the very bottom of the chat history.
+
+Activities are being acknowledged when the chat history view is being scroll to the end, either by auto-scroll or manually after a pause. It can also be programmatically acknowledged using the [`useMarkAllAsAcknowledged` hook](#usemarkallasacknowledged).
