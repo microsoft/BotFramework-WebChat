@@ -15,7 +15,12 @@ const INITIAL_ALL_TYPING_STATE = Object.freeze([Object.freeze(new Map())] as con
 type Props = Readonly<{ children?: ReactNode | undefined }>;
 
 function isLivestream(activity: WebChatActivity): boolean {
-  return activity.type === 'typing' && 'text' in activity && typeof activity.text === 'string';
+  return (
+    activity.type === 'typing' &&
+    'text' in activity &&
+    typeof activity.text === 'string' &&
+    activity.channelData.streamType !== 'informative'
+  );
 }
 
 const ActivityTypingComposer = ({ children }: Props) => {
