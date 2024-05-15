@@ -151,6 +151,11 @@ type EventActivityEssence = {
 type MessageActivityEssence = {
   attachmentLayout?: 'carousel' | 'stacked';
   attachments?: DirectLineAttachment[];
+  channelData: {
+    streamId?: string;
+    streamSequence?: number;
+    streamType?: 'final';
+  };
   inputHint?: 'accepting' | 'expecting' | 'ignoring';
   locale?: string;
   speak?: string;
