@@ -11,10 +11,11 @@ import {
   POST_ACTIVITY_PENDING,
   POST_ACTIVITY_REJECTED
 } from '../actions/postActivity';
-import { SEND_FAILED, SENDING, SENT } from '../types/internal/SendStatus';
+import { SENDING, SEND_FAILED, SENT } from '../types/internal/SendStatus';
+import findBeforeAfter from './private/findBeforeAfter';
 
+import type { Reducer } from 'redux';
 import type { DeleteActivityAction } from '../actions/deleteActivity';
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { IncomingActivityAction } from '../actions/incomingActivity';
 import type { MarkActivityAction } from '../actions/markActivity';
 import type {
@@ -23,7 +24,7 @@ import type {
   PostActivityPendingAction,
   PostActivityRejectedAction
 } from '../actions/postActivity';
-import type { Reducer } from 'redux';
+import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { WebChatActivity } from '../types/WebChatActivity';
 
 type ActivitiesAction =
@@ -49,9 +50,15 @@ function findByClientActivityID(clientActivityID: string): (activity: WebChatAct
   return (activity: WebChatActivity) => getClientActivityID(activity) === clientActivityID;
 }
 
+function isPartOfLivestreamSession(
+  activity: WebChatActivity
+): activity is WebChatActivity & { text: string; type: 'typing' } {
+  return activity.type === 'typing' && 'text' in activity && typeof activity.text === 'string';
+}
+
 function patchActivity(
   activity: WebChatActivity,
-  lastActivity: WebChatActivity,
+  activities: WebChatActivity[],
   { Date }: GlobalScopePonyfill
 ): WebChatActivity {
   // Direct Line channel will return a placeholder image for the user-uploaded image.
@@ -69,26 +76,54 @@ function patchActivity(
     }
   });
 
-  // If the message does not have sequence ID, use these fallback values:
-  // 1. "timestamp" field
-  //    - outgoing activity will not have "timestamp" field
-  // 2. last activity sequence ID (or 0) + 0.001
-  //    - best effort to put this message the last one in the chat history
-  activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], (sequenceId?: number) =>
-    typeof sequenceId === 'number'
-      ? sequenceId
-      : typeof activity.timestamp !== 'undefined'
-        ? +new Date(activity.timestamp)
-        : // We assume there will be no more than 1,000 messages sent before receiving server response.
-          // If there are more than 1,000 messages, some messages will get reordered and appear jumpy after receiving server response.
-          // eslint-disable-next-line no-magic-numbers
-          (lastActivity?.channelData?.['webchat:sequence-id'] || 0) + 0.001
-  );
+  activity = updateIn(activity, ['channelData'], channelData => ({ ...channelData }));
+  activity = updateIn(activity, ['channelData', 'webChat', 'receivedAt'], () => Date.now());
+
+  const {
+    channelData: { 'webchat:sequence-id': sequenceId }
+  } = activity;
 
   // TODO: [P1] #3953 We should move this patching logic to a DLJS wrapper for simplicity.
-  activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], (sequenceId: number) =>
-    typeof sequenceId === 'number' ? sequenceId : +new Date(activity.timestamp || 0) || 0
-  );
+  // If the message does not have sequence ID, use these fallback values:
+  // 1. "channelData.streamSequence" field (if available)
+  //    - 0.0001 * streamSequence should be good
+  // 2. "timestamp" field
+  //    - outgoing activity will not have "timestamp" field
+  // 3. last activity sequence ID (or 0) + 0.001
+  //    - best effort to put this message the last one in the chat history
+  if (typeof sequenceId !== 'number') {
+    let after: WebChatActivity;
+    let before: WebChatActivity;
+
+    if (isPartOfLivestreamSession(activity) && typeof activity.channelData.streamSequence === 'number') {
+      [before, after] = findBeforeAfter(activities, target => {
+        if (target.type === 'typing' && target.channelData.streamId === activity.channelData.streamId) {
+          return target.channelData.streamSequence < activity.channelData.streamSequence ? 'before' : 'after';
+        }
+
+        return 'unknown';
+      });
+    }
+
+    let sequenceId: number;
+
+    if (before) {
+      // eslint-disable-next-line no-magic-numbers
+      sequenceId = before.channelData['webchat:sequence-id'] + 0.001;
+    } else if (after) {
+      // eslint-disable-next-line no-magic-numbers
+      sequenceId = after.channelData['webchat:sequence-id'] - 0.001;
+    } else if (typeof activity.timestamp !== 'undefined') {
+      sequenceId = +new Date(activity.timestamp);
+    } else {
+      // We assume there will be no more than 1,000 messages sent before receiving server response.
+      // If there are more than 1,000 messages, some messages will get reordered and appear jumpy after receiving server response.
+      // eslint-disable-next-line no-magic-numbers
+      sequenceId = (activities[activities.length - 1]?.channelData['webchat:sequence-id'] || 0) + 0.001;
+    }
+
+    activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], () => sequenceId);
+  }
 
   return activity;
 }
@@ -98,7 +133,7 @@ function upsertActivityWithSort(
   nextActivity: WebChatActivity,
   ponyfill: GlobalScopePonyfill
 ): WebChatActivity[] {
-  nextActivity = patchActivity(nextActivity, activities[activities.length - 1], ponyfill);
+  nextActivity = patchActivity(nextActivity, activities, ponyfill);
 
   const { channelData: { clientActivityID: nextClientActivityID, 'webchat:sequence-id': nextSequenceId } = {} } =
     nextActivity;
@@ -180,18 +215,22 @@ export default function createActivitiesReducer(
         break;
 
       case POST_ACTIVITY_FULFILLED:
-        state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], () => {
+        {
           // We will replace the activity with the version from the server
           const activity = updateIn(
-            patchActivity(action.payload.activity, state[state.length - 1], ponyfill),
-            // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
-            // Please refer to #4362 for details. Remove on or after 2024-07-31.
-            ['channelData', 'state'],
+            updateIn(
+              patchActivity(action.payload.activity, state, ponyfill),
+              // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
+              // Please refer to #4362 for details. Remove on or after 2024-07-31.
+              ['channelData', 'state'],
+              () => SENT
+            ),
+            ['channelData', 'webchat:send-status'],
             () => SENT
           );
 
-          return updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
-        });
+          state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], () => activity);
+        }
 
         break;
 

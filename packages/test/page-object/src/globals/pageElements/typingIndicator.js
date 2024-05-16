@@ -1,3 +1,3 @@
-export default function typeFocusSink() {
-  return document.querySelector('.webchat__typingIndicator');
+export default function typingIndicator() {
+  return document.querySelector('.webchat__typing-indicator');
 }
