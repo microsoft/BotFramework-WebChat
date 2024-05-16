@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { Fragment, useCallback, useRef } from 'react';
+import React, { Fragment, memo, useCallback, useRef } from 'react';
 
 import type { FC, KeyboardEventHandler, PropsWithChildren } from 'react';
 
 import FocusRedirector from '../Utils/FocusRedirector';
 import tabbableElements from '../Utils/tabbableElements';
-import useValueRef from '../hooks/internal/useValueRef';
+import { useRefFrom } from 'use-ref-from';
 
 type FocusTrapProps = PropsWithChildren<{
   onFocus: () => void;
@@ -14,7 +14,7 @@ type FocusTrapProps = PropsWithChildren<{
 
 const FocusTrap: FC<FocusTrapProps> = ({ children, onFocus, onLeave }) => {
   const bodyRef = useRef<HTMLDivElement>();
-  const onLeaveRef = useValueRef<() => void>(onLeave);
+  const onLeaveRef = useRefFrom<() => void>(onLeave);
 
   const getTabbableElementsInBody = useCallback(
     () => tabbableElements(bodyRef.current).filter(element => element.getAttribute('aria-disabled') !== 'true'),
@@ -69,4 +69,6 @@ FocusTrap.propTypes = {
   onLeave: PropTypes.func.isRequired
 };
 
-export default FocusTrap;
+FocusTrap.displayName = 'FocusTrap';
+
+export default memo(FocusTrap);
