@@ -149,7 +149,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
     // Flatten the tree back into an array with information related to rendering.
     const renderingElements = useMemo(() => {
-      const renderingElements: Array<ReactNode> = [];
+      const renderingElements: ReactNode[] = [];
       const topSideBotNub = isZeroOrPositive(bubbleNubOffset);
       const topSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
 
