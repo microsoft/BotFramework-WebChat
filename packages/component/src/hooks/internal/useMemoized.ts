@@ -39,7 +39,7 @@ export default function useMemoized<TFinal, TArgs>(fn: Fn<TArgs, TFinal>, deps: 
         const lookupCached = ({ args: cachedArgs }: { args: TArgs[] }) =>
           args.length === cachedArgs.length && args.every((arg, index) => Object.is(arg, cachedArgs[+index]));
 
-        const cached = nextCache.find(lookupCached) ?? cache.find(lookupCached);
+        const cached = cache.find(lookupCached) ?? nextCache.find(lookupCached);
         if (cached) {
           cached.args = args;
           nextCache.push(cached);
