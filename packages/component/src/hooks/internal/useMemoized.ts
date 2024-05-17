@@ -33,14 +33,20 @@ export default function useMemoized<TFinal, TArgs>(fn: Fn<TArgs, TFinal>, deps: 
       nextCacheRef.current = [];
 
       const memoizedFn = (...args) => {
-        const { current: fn } = fnRef;
-        const { current: cache } = cacheRef;
-        const { current: nextCache } = nextCacheRef;
-        const { result } = [...cache, ...nextCache].find(
-          ({ args: cachedArgs }) =>
-            args.length === cachedArgs.length && args.every((arg, index) => Object.is(arg, cachedArgs[+index]))
-        ) || { result: fn(...args) };
+        const fn = fnRef.current;
+        const cache = cacheRef.current;
+        const nextCache = nextCacheRef.current;
+        const lookupCached = ({ args: cachedArgs }: { args: TArgs[] }) =>
+          args.length === cachedArgs.length && args.every((arg, index) => Object.is(arg, cachedArgs[+index]));
 
+        const cached = nextCache.find(lookupCached) ?? cache.find(lookupCached);
+        if (cached) {
+          cached.args = args;
+          nextCache.push(cached);
+          return cached.result;
+        }
+
+        const result = fn(...args);
         nextCache.push({ args, result });
 
         return result;
