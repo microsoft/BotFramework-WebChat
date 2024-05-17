@@ -31,6 +31,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixes [#5175](https://github.com/microsoft/BotFramework-WebChat/issues/5175). `PrecompiledGlobalize.js` is emitted instead of `.cjs`, by [@compulim](https://github.com/compulim) in PR [#5181](https://github.com/microsoft/BotFramework-WebChat/pull/5181)
 -  Improved performance for `BasicTranscript`, in PR [5183](https://github.com/microsoft/BotFramework-WebChat/pull/5183), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed potential memory usage issues caused by `useActivitiesWithRenderer`, in PR [5183](https://github.com/microsoft/BotFramework-WebChat/pull/5183), by [@OEvgeny](https://github.com/OEvgeny)
+-  Improved performance for `useMemoized`, in PR [5190](https://github.com/microsoft/BotFramework-WebChat/pull/5190), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
