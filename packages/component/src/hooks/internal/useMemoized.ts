@@ -49,14 +49,14 @@ export default function useMemoized<TFinal, TArgs>(fn: Fn<TArgs, TFinal>, deps: 
           return cached.result;
         }
 
-        const newCached = {
+        const nextCached = {
           args,
           result: fn(...args)
         };
-        nextCache.push(newCached);
-        cache.push(newCached);
+        nextCache.push(nextCached);
+        cache.push(nextCached);
 
-        return newCached.result;
+        return nextCached.result;
       };
 
       return memoizedFn;
