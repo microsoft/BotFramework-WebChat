@@ -36,20 +36,27 @@ export default function useMemoized<TFinal, TArgs>(fn: Fn<TArgs, TFinal>, deps: 
         const fn = fnRef.current;
         const cache = cacheRef.current;
         const nextCache = nextCacheRef.current;
-        const lookupCached = ({ args: cachedArgs }: { args: TArgs[] }) =>
-          args.length === cachedArgs.length && args.every((arg, index) => Object.is(arg, cachedArgs[+index]));
 
-        const cached = cache.find(lookupCached) ?? nextCache.find(lookupCached);
+        const cached = cache.find(
+          ({ args: cachedArgs }) =>
+            // index is guarented to be a number here
+            // eslint-disable-next-line security/detect-object-injection
+            args.length === cachedArgs.length && args.every((arg, index) => Object.is(arg, cachedArgs[index]))
+        );
         if (cached) {
           cached.args = args;
           nextCache.push(cached);
           return cached.result;
         }
 
-        const result = fn(...args);
-        nextCache.push({ args, result });
+        const newCached = {
+          args,
+          result: fn(...args)
+        };
+        nextCache.push(newCached);
+        cache.push(newCached);
 
-        return result;
+        return newCached.result;
       };
 
       return memoizedFn;
