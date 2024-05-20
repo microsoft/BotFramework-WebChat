@@ -17,6 +17,7 @@ import useSubmitError from './private/useSubmitError';
 import useUniqueId from './private/useUniqueId';
 import styles from './SendBox.module.css';
 import { useStyles } from '../../styles';
+import useTranscriptNavigation from './private/useTranscriptNavigation';
 
 const {
   useFocus,
@@ -146,6 +147,8 @@ function SendBox(
     [sendMessage]
   );
 
+  const handleTranscriptNavigation = useTranscriptNavigation(message);
+
   const aria = {
     'aria-invalid': 'false' as const,
     ...(errorMessage && {
@@ -157,7 +160,11 @@ function SendBox(
   return (
     <form {...aria} className={cx(classNames['sendbox'], props.className)} onSubmit={handleFormSubmit}>
       <SuggestedActions />
-      <div className={cx(classNames['sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
+      <div
+        className={cx(classNames['sendbox__sendbox'])}
+        onClickCapture={handleSendBoxClick}
+        onKeyDown={handleTranscriptNavigation}
+      >
         <TextArea
           aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
           className={cx(classNames['sendbox__sendbox-text'], classNames['sendbox__text-area--in-grid'])}

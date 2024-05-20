@@ -39,7 +39,6 @@ import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelati
 import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
 import usePrevious from './hooks/internal/usePrevious';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
-import useRegisterScrollRelative from './hooks/internal/useRegisterScrollRelative';
 import useRegisterScrollTo from './hooks/internal/useRegisterScrollTo';
 import useRegisterScrollToEnd from './hooks/internal/useRegisterScrollToEnd';
 import useStyleSet from './hooks/useStyleSet';
@@ -48,6 +47,10 @@ import useUniqueId from './hooks/internal/useUniqueId';
 import useValueRef from './hooks/internal/useValueRef';
 import TranscriptActivity from './TranscriptActivity';
 import useMemoized from './hooks/internal/useMemoized';
+import {
+  useRegisterScrollRelativeTranscript,
+  type TranscriptScrollRelativeOptions
+} from './hooks/transcriptScrollRelative';
 
 const {
   useActivityKeys,
@@ -274,7 +277,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     );
 
     const scrollRelative = useCallback(
-      (direction: 'down' | 'up', { displacement }: { displacement?: number } = {}) => {
+      ({ direction, displacement }: TranscriptScrollRelativeOptions) => {
         const { current: rootElement } = rootElementRef;
 
         if (!rootElement) {
@@ -306,7 +309,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     // We call `useRegisterScrollXXX` to register a callback function, the `useScrollXXX` will multiplex the call into each instance of <BasicTranscript>.
     useRegisterScrollTo(scrollTo);
     useRegisterScrollToEnd(scrollToEnd);
-    useRegisterScrollRelative(scrollRelative);
+    useRegisterScrollRelativeTranscript(scrollRelative);
 
     const markActivityKeyAsRead = useMarkActivityKeyAsRead();
 
