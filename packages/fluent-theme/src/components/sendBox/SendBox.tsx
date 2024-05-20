@@ -147,7 +147,7 @@ function SendBox(
     [sendMessage]
   );
 
-  const handleTranscriptNavigation = useTranscriptNavigation(message);
+  const handleTranscriptNavigation = useTranscriptNavigation();
 
   const aria = {
     'aria-invalid': 'false' as const,

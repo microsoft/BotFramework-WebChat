@@ -1,17 +1,15 @@
 import { useCallback, type KeyboardEvent } from 'react';
-import { useRefFrom } from 'use-ref-from';
 import { hooks } from 'botframework-webchat-component';
 
 const { useScrollDown, useScrollUp } = hooks;
 
-export default function useTranscriptNavigation(message: string) {
-  const messageRef = useRefFrom(message);
+export default function useTranscriptNavigation() {
   const scrollDown = useScrollDown();
   const scrollUp = useScrollUp();
 
   return useCallback(
     (event: KeyboardEvent<unknown>) => {
-      if (messageRef.current.length) {
+      if (event.target instanceof HTMLTextAreaElement && event.target.value) {
         return;
       }
 
@@ -50,6 +48,6 @@ export default function useTranscriptNavigation(message: string) {
         event.stopPropagation();
       }
     },
-    [messageRef, scrollDown, scrollUp]
+    [scrollDown, scrollUp]
   );
 }
