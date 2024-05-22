@@ -74,11 +74,18 @@
   border: none;
   flex: auto;
   font-family: var(--webchat-fontFamilyBase);
-  font-size: 14px;
+  font-size: var(--webchat-sendbox-font-size, 14px);
   line-height: 20px;
   outline: none;
   padding: 4px 4px 0;
   resize: none;
+
+  /* Prevent zoom on focus on iOS */
+  @media only screen and (hover: none) and (pointer: coarse) {
+    &:focus-within {
+      font-size: 16px;
+    }
+  }
 }
 
 :global(.webchat-fluent) .sendbox__sendbox-controls {
