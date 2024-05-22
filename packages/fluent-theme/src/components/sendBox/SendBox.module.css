@@ -74,7 +74,7 @@
   border: none;
   flex: auto;
   font-family: var(--webchat-fontFamilyBase);
-  font-size: var(--webchat-sendbox-font-size, 14px);
+  font-size: 14px;
   line-height: 20px;
   outline: none;
   padding: 4px 4px 0;
