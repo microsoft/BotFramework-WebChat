@@ -9,7 +9,7 @@ import updateIn from 'simple-update-in';
 import createCustomEvent from './createCustomEvent';
 import randomId from './randomId';
 import useInternalMarkdownIt from '../hooks/internal/useInternalMarkdownIt';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import walkMarkdownTokens from './walkMarkdownTokens';
 
 const { useStyleOptions } = hooks;

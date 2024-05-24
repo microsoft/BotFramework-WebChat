@@ -12,7 +12,7 @@ import LiveRegionTwinComposer from '../providers/LiveRegionTwin/LiveRegionTwinCo
 import tabbableElements from '../Utils/tabbableElements';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
 import useQueueStaticElement from '../providers/LiveRegionTwin/useQueueStaticElement';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useTypistNames from './useTypistNames';
 

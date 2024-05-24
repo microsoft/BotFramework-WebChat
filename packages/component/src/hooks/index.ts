@@ -18,6 +18,7 @@ import { useSendBoxSpeechInterimsVisible } from '../SendBox/BasicSendBox';
 import { useMicrophoneButtonClick, useMicrophoneButtonDisabled } from '../SendBox/MicrophoneButton';
 import { useTextBoxSubmit, useTextBoxValue } from '../SendBox/TextBox';
 import { useRegisterFocusSendBox, type SendBoxFocusOptions } from './sendBoxFocus';
+import { useStylesRoot } from './internal/useStylesRoot';
 
 export { type SendBoxFocusOptions };
 
@@ -41,6 +42,7 @@ export {
   // We are overwriting the `useSendMessage` hook from bf-wc-api and adding thumbnailing support.
   useSendMessage,
   useStyleSet,
+  useStylesRoot,
   useTextBoxSubmit,
   useTextBoxValue,
   useTypingIndicatorVisible,

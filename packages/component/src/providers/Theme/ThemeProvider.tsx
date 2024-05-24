@@ -1,8 +1,8 @@
 import React, { memo, useContext, useMemo, type ReactNode } from 'react';
 
-import Context, { type ContextType } from './private/Context';
+import Context, { type ThemeContextType } from './private/Context';
 
-type Props = Readonly<{ children?: ReactNode | undefined } & Partial<ContextType>>;
+type Props = Readonly<{ children?: ReactNode | undefined } & Partial<ThemeContextType>>;
 
 const EMPTY_ARRAY = Object.freeze([] as const);
 
@@ -19,23 +19,24 @@ const ThemeProvider = ({
   sendBoxMiddleware,
   sendBoxToolbarMiddleware,
   styleOptions,
+  styles,
   toastMiddleware,
   typingIndicatorMiddleware
 }: Props) => {
   const existingContext = useContext(Context);
 
   // TODO: [P1] We should reduce boilerplate code.
-  const mergedActivityMiddleware = useMemo<ContextType['activityMiddleware']>(
+  const mergedActivityMiddleware = useMemo<ThemeContextType['activityMiddleware']>(
     () => Object.freeze([...(activityMiddleware || []), ...existingContext.activityMiddleware]),
     [activityMiddleware, existingContext.activityMiddleware]
   );
 
-  const mergedActivityStatusMiddleware = useMemo<ContextType['activityStatusMiddleware']>(
+  const mergedActivityStatusMiddleware = useMemo<ThemeContextType['activityStatusMiddleware']>(
     () => Object.freeze([...(activityStatusMiddleware || EMPTY_ARRAY), ...existingContext.activityStatusMiddleware]),
     [activityStatusMiddleware, existingContext.activityStatusMiddleware]
   );
 
-  const mergedAttachmentForScreenReaderMiddleware = useMemo<ContextType['attachmentForScreenReaderMiddleware']>(
+  const mergedAttachmentForScreenReaderMiddleware = useMemo<ThemeContextType['attachmentForScreenReaderMiddleware']>(
     () =>
       Object.freeze([
         ...(attachmentForScreenReaderMiddleware || EMPTY_ARRAY),
@@ -44,53 +45,53 @@ const ThemeProvider = ({
     [attachmentForScreenReaderMiddleware, existingContext.attachmentForScreenReaderMiddleware]
   );
 
-  const mergedAttachmentMiddleware = useMemo<ContextType['attachmentMiddleware']>(
+  const mergedAttachmentMiddleware = useMemo<ThemeContextType['attachmentMiddleware']>(
     () => Object.freeze([...(attachmentMiddleware || EMPTY_ARRAY), ...existingContext.attachmentMiddleware]),
     [attachmentMiddleware, existingContext.attachmentMiddleware]
   );
 
-  const mergedAvatarMiddleware = useMemo<ContextType['avatarMiddleware']>(
+  const mergedAvatarMiddleware = useMemo<ThemeContextType['avatarMiddleware']>(
     () => Object.freeze([...(avatarMiddleware || EMPTY_ARRAY), ...existingContext.avatarMiddleware]),
     [avatarMiddleware, existingContext.avatarMiddleware]
   );
 
-  const mergedCardActionMiddleware = useMemo<ContextType['cardActionMiddleware']>(
+  const mergedCardActionMiddleware = useMemo<ThemeContextType['cardActionMiddleware']>(
     () => Object.freeze([...(cardActionMiddleware || EMPTY_ARRAY), ...existingContext.cardActionMiddleware]),
     [cardActionMiddleware, existingContext.cardActionMiddleware]
   );
 
-  const mergedGroupActivitiesMiddleware = useMemo<ContextType['groupActivitiesMiddleware']>(
+  const mergedGroupActivitiesMiddleware = useMemo<ThemeContextType['groupActivitiesMiddleware']>(
     () => Object.freeze([...(groupActivitiesMiddleware || EMPTY_ARRAY), ...existingContext.groupActivitiesMiddleware]),
     [groupActivitiesMiddleware, existingContext.groupActivitiesMiddleware]
   );
 
-  const mergedScrollToEndButtonMiddleware = useMemo<ContextType['scrollToEndButtonMiddleware']>(
+  const mergedScrollToEndButtonMiddleware = useMemo<ThemeContextType['scrollToEndButtonMiddleware']>(
     () =>
       Object.freeze([...(scrollToEndButtonMiddleware || EMPTY_ARRAY), ...existingContext.scrollToEndButtonMiddleware]),
     [scrollToEndButtonMiddleware, existingContext.scrollToEndButtonMiddleware]
   );
 
-  const mergedSendBoxMiddleware = useMemo<ContextType['sendBoxMiddleware']>(
+  const mergedSendBoxMiddleware = useMemo<ThemeContextType['sendBoxMiddleware']>(
     () => Object.freeze([...(sendBoxMiddleware || EMPTY_ARRAY), ...existingContext.sendBoxMiddleware]),
     [sendBoxMiddleware, existingContext.sendBoxMiddleware]
   );
 
-  const mergedSendBoxToolbarMiddleware = useMemo<ContextType['sendBoxToolbarMiddleware']>(
+  const mergedSendBoxToolbarMiddleware = useMemo<ThemeContextType['sendBoxToolbarMiddleware']>(
     () => Object.freeze([...(sendBoxToolbarMiddleware || EMPTY_ARRAY), ...existingContext.sendBoxToolbarMiddleware]),
     [sendBoxToolbarMiddleware, existingContext.sendBoxToolbarMiddleware]
   );
 
-  const mergedStyleOptions = useMemo<ContextType['styleOptions']>(
+  const mergedStyleOptions = useMemo<ThemeContextType['styleOptions']>(
     () => Object.freeze({ ...styleOptions, ...existingContext.styleOptions }),
     [styleOptions, existingContext.styleOptions]
   );
 
-  const mergedToastMiddleware = useMemo<ContextType['toastMiddleware']>(
+  const mergedToastMiddleware = useMemo<ThemeContextType['toastMiddleware']>(
     () => Object.freeze([...(toastMiddleware || EMPTY_ARRAY), ...existingContext.toastMiddleware]),
     [toastMiddleware, existingContext.toastMiddleware]
   );
 
-  const mergedTypingIndicatorMiddleware = useMemo<ContextType['typingIndicatorMiddleware']>(
+  const mergedTypingIndicatorMiddleware = useMemo<ThemeContextType['typingIndicatorMiddleware']>(
     () => Object.freeze([...(typingIndicatorMiddleware || EMPTY_ARRAY), ...existingContext.typingIndicatorMiddleware]),
     [typingIndicatorMiddleware, existingContext.typingIndicatorMiddleware]
   );
@@ -108,6 +109,7 @@ const ThemeProvider = ({
       sendBoxMiddleware: mergedSendBoxMiddleware,
       sendBoxToolbarMiddleware: mergedSendBoxToolbarMiddleware,
       styleOptions: mergedStyleOptions,
+      styles,
       toastMiddleware: mergedToastMiddleware,
       typingIndicatorMiddleware: mergedTypingIndicatorMiddleware
     }),
@@ -124,7 +126,8 @@ const ThemeProvider = ({
       mergedSendBoxToolbarMiddleware,
       mergedStyleOptions,
       mergedToastMiddleware,
-      mergedTypingIndicatorMiddleware
+      mergedTypingIndicatorMiddleware,
+      styles
     ]
   );
 
