@@ -6,7 +6,7 @@ import AccessibleInputText from '../Utils/AccessibleInputText';
 import navigableEvent from '../Utils/TypeFocusSink/navigableEvent';
 import { ie11 } from '../Utils/detectBrowser';
 import { useRegisterFocusSendBox, type SendBoxFocusOptions } from '../hooks/sendBoxFocus';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useScrollDown from '../hooks/useScrollDown';
 import useScrollUp from '../hooks/useScrollUp';
 import useStyleSet from '../hooks/useStyleSet';

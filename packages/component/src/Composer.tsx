@@ -1,4 +1,3 @@
-import createEmotion from '@emotion/css/create-instance';
 import type {
   ComposerProps as APIComposerProps,
   SendBoxMiddleware,
@@ -47,15 +46,15 @@ import createStyleSet from './Styles/createStyleSet';
 import { type ContextOf } from './types/ContextOf';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
-import createCSSKey from './Utils/createCSSKey';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
+import { StyleToEmotionObjectProvider, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
+import { StylesRootProvider } from './hooks/internal/useStylesRoot';
+import useInjectStyles from './hooks/internal/useInjectStyles';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
 const node_env = process.env.node_env || process.env.NODE_ENV;
-
-const emotionPool = {};
 
 function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
@@ -97,6 +96,7 @@ type ComposerCoreProps = Readonly<{
     linkOptions: { externalLinkAlt: string }
   ) => string;
   styleSet?: any;
+  styles?: readonly HTMLStyleElement[];
   suggestedActionsAccessKey?: boolean | string;
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
 }>;
@@ -106,6 +106,7 @@ const ComposerCore = ({
   extraStyleSet,
   nonce,
   renderMarkdown,
+  styles,
   styleSet,
   suggestedActionsAccessKey,
   webSpeechPonyfillFactory
@@ -131,17 +132,7 @@ const ComposerCore = ({
     [internalMarkdownIt]
   );
 
-  const styleToEmotionObject = useMemo(() => {
-    // Emotion doesn't hash with nonce. We need to provide the pooling mechanism.
-    // 1. If 2 instances use different nonce, they should result in different hash;
-    // 2. If 2 instances are being mounted, pooling will make sure we render only 1 set of <style> tags, instead of 2.
-    const emotion =
-      // Prefix "id-" to prevent object injection attack.
-      emotionPool[`id-${nonce}`] ||
-      (emotionPool[`id-${nonce}`] = createEmotion({ key: `webchat--css-${createCSSKey()}`, nonce }));
-
-    return style => emotion.css(style);
-  }, [nonce]);
+  const styleToEmotionObject = useStyleToEmotionObject();
 
   const patchedStyleSet = useMemo(
     () =>
@@ -213,6 +204,8 @@ const ComposerCore = ({
     [transcriptFocusObserversRef, setNumTranscriptFocusObservers]
   );
 
+  useInjectStyles(styles);
+
   const context = useMemo<ContextOf<typeof WebChatUIContext>>(
     () => ({
       dictateAbortable,
@@ -230,7 +223,6 @@ const ComposerCore = ({
       scrollToEndCallbacksRef,
       setDictateAbortable,
       styleSet: patchedStyleSet,
-      styleToEmotionObject,
       suggestedActionsAccessKey,
       webSpeechPonyfill
     }),
@@ -250,7 +242,6 @@ const ComposerCore = ({
       scrollToCallbacksRef,
       scrollToEndCallbacksRef,
       setDictateAbortable,
-      styleToEmotionObject,
       suggestedActionsAccessKey,
       webSpeechPonyfill
     ]
@@ -426,17 +417,22 @@ const Composer = ({
       {...composerProps}
     >
       <ActivityTreeComposer>
-        <ComposerCore
-          extraStyleSet={extraStyleSet}
-          nonce={nonce}
-          renderMarkdown={renderMarkdown}
-          styleSet={styleSet}
-          suggestedActionsAccessKey={suggestedActionsAccessKey}
-          webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-        >
-          {children}
-          {onTelemetry && <UITracker />}
-        </ComposerCore>
+        <StylesRootProvider>
+          <StyleToEmotionObjectProvider nonce={nonce}>
+            <ComposerCore
+              extraStyleSet={extraStyleSet}
+              nonce={nonce}
+              renderMarkdown={renderMarkdown}
+              styleSet={styleSet}
+              styles={theme.styles}
+              suggestedActionsAccessKey={suggestedActionsAccessKey}
+              webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+            >
+              {children}
+              {onTelemetry && <UITracker />}
+            </ComposerCore>
+          </StyleToEmotionObjectProvider>
+        </StylesRootProvider>
       </ActivityTreeComposer>
     </APIComposer>
   );

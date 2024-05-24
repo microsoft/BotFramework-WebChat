@@ -12,7 +12,7 @@ import randomId from './Utils/randomId';
 import ScreenReaderText from './ScreenReaderText';
 import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
 import useStyleSet from './hooks/useStyleSet';
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 
 const { useDismissNotification, useLocalizer } = hooks;
 

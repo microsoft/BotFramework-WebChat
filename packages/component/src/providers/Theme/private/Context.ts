@@ -18,7 +18,7 @@ import { createContext } from 'react';
 const EMPTY_ARRAY = Object.freeze([] as const);
 const EMPTY_OBJECT = Object.freeze({} as const);
 
-export type ContextType = {
+export type ThemeContextType = {
   activityMiddleware: readonly ActivityMiddleware[];
   activityStatusMiddleware: readonly ActivityStatusMiddleware[];
   attachmentForScreenReaderMiddleware: readonly AttachmentForScreenReaderMiddleware[];
@@ -30,11 +30,12 @@ export type ContextType = {
   sendBoxMiddleware: readonly SendBoxMiddleware[];
   sendBoxToolbarMiddleware: readonly SendBoxToolbarMiddleware[];
   styleOptions: StyleOptions;
+  styles: readonly HTMLStyleElement[];
   toastMiddleware: readonly ToastMiddleware[];
   typingIndicatorMiddleware: readonly TypingIndicatorMiddleware[];
 };
 
-export default createContext<ContextType>({
+export default createContext<ThemeContextType>({
   activityMiddleware: EMPTY_ARRAY,
   activityStatusMiddleware: EMPTY_ARRAY,
   attachmentForScreenReaderMiddleware: EMPTY_ARRAY,
@@ -46,6 +47,7 @@ export default createContext<ContextType>({
   sendBoxMiddleware: EMPTY_ARRAY,
   sendBoxToolbarMiddleware: EMPTY_ARRAY,
   styleOptions: EMPTY_OBJECT,
+  styles: EMPTY_ARRAY,
   toastMiddleware: EMPTY_ARRAY,
   typingIndicatorMiddleware: EMPTY_ARRAY
 });

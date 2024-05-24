@@ -6,7 +6,7 @@ import { useRefFrom } from 'use-ref-from';
 
 import IconButton from '../SendBox/IconButton';
 import useMakeThumbnail from '../hooks/useMakeThumbnail';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
 import useSubmit from '../providers/internal/SendBox/useSubmit';

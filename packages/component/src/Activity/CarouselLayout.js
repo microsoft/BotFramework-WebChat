@@ -15,7 +15,7 @@ import React, { memo, useMemo } from 'react';
 import CarouselFilmStrip from './CarouselFilmStrip';
 import useNonce from '../hooks/internal/useNonce';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 const { useDirection, useLocalizer } = hooks;
 
