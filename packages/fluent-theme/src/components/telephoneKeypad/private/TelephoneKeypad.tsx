@@ -50,8 +50,8 @@ const TelephoneKeypad = memo(({ autoFocus, className, onButtonClick, isHorizonta
   const handleButton8Click = useCallback(() => onButtonClickRef.current?.('8'), [onButtonClickRef]);
   const handleButton9Click = useCallback(() => onButtonClickRef.current?.('9'), [onButtonClickRef]);
   const handleButton0Click = useCallback(() => onButtonClickRef.current?.('0'), [onButtonClickRef]);
-  const handleButtonStarClick = useCallback(() => onButtonClickRef.current?.('star'), [onButtonClickRef]);
-  const handleButtonPoundClick = useCallback(() => onButtonClickRef.current?.('pound'), [onButtonClickRef]);
+  const handleButtonStarClick = useCallback(() => onButtonClickRef.current?.('*'), [onButtonClickRef]);
+  const handleButtonPoundClick = useCallback(() => onButtonClickRef.current?.('#'), [onButtonClickRef]);
   const handleKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
     event => {
       if (event.key === 'Escape') {
@@ -123,13 +123,9 @@ const TelephoneKeypad = memo(({ autoFocus, className, onButtonClick, isHorizonta
           onClick={handleButton9Click}
           ruby="WXYZ"
         />
-        <Button button="star" data-testid={testIds.sendBoxTelephoneKeypadButtonStar} onClick={handleButtonStarClick} />
+        <Button button="*" data-testid={testIds.sendBoxTelephoneKeypadButtonStar} onClick={handleButtonStarClick} />
         <Button button="0" data-testid={testIds.sendBoxTelephoneKeypadButton0} onClick={handleButton0Click} ruby="+" />
-        <Button
-          button="pound"
-          data-testid={testIds.sendBoxTelephoneKeypadButtonPound}
-          onClick={handleButtonPoundClick}
-        />
+        <Button button="#" data-testid={testIds.sendBoxTelephoneKeypadButtonPound} onClick={handleButtonPoundClick} />
       </Orientation>
       <div className={classNames['telephone-keypad__info-message']}>
         <InfoSmallIcon />

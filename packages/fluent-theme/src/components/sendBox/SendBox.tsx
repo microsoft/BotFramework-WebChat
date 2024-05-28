@@ -143,7 +143,7 @@ function SendBox(
 
   const handleTelephoneKeypadButtonClick = useCallback(
     // TODO: We need more official way of sending DTMF.
-    (dtmf: DTMF) => sendMessage(`/DTMF ${dtmf}`),
+    (dtmf: DTMF) => sendMessage(`/DTMFKey ${dtmf}`),
     [sendMessage]
   );
 

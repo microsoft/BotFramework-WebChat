@@ -45,14 +45,29 @@
         await host.click(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadToolbarButton));
 
         await (
-          await directLine.actPostActivity(() =>
+          await directLine.actPostActivity(() => 
+            host.click(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadButtonPound))
+          )
+        ).resolveAll();
+
+        await (
+          await directLine.actPostActivity(() => 
+            host.click(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadButtonStar))
+          )
+        ).resolveAll();
+
+        await (
+          await directLine.actPostActivity(() => 
             host.click(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadButton5))
           )
         ).resolveAll();
 
-        // THEN: Should send "/DTMF 5".
-        await pageConditions.numActivitiesShown(2);
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', '/DTMF 5');
+
+        // THEN: Should send "/DTMFKey 5".
+        await pageConditions.numActivitiesShown(4);
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', '/DTMFKey #');
+        expect(pageElements.activityContents()[2]).toHaveProperty('textContent', '/DTMFKey *');
+        expect(pageElements.activityContents()[3]).toHaveProperty('textContent', '/DTMFKey 5');
 
         // THEN: Should not close the keypad and keep focusing on the button "5".
         expect(pageElements.byTestId(WebChat.testIds.sendBoxTelephoneKeypadButton5)).toBeTruthy();
