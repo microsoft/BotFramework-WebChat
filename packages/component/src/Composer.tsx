@@ -115,10 +115,6 @@ const ComposerCore = ({
   const scrollToCallbacksRef = useRef([]);
   const scrollToEndCallbacksRef = useRef([]);
 
-  // Instead of having a `scrollUpCallbacksRef` and `scrollDownCallbacksRef`, they are combined into a single `scrollRelativeCallbacksRef`.
-  // The first argument tells whether it should go "up" or "down".
-  const scrollRelativeCallbacksRef = useRef([]);
-
   const internalRenderMarkdownInline = useMemo(
     () => markdown => {
       const tree = internalMarkdownIt.parseInline(markdown);
@@ -227,7 +223,6 @@ const ComposerCore = ({
       observeScrollPosition,
       observeTranscriptFocus,
       renderMarkdown,
-      scrollRelativeCallbacksRef,
       scrollToCallbacksRef,
       scrollToEndCallbacksRef,
       setDictateAbortable,
@@ -249,7 +244,6 @@ const ComposerCore = ({
       observeTranscriptFocus,
       patchedStyleSet,
       renderMarkdown,
-      scrollRelativeCallbacksRef,
       scrollToCallbacksRef,
       scrollToEndCallbacksRef,
       setDictateAbortable,
