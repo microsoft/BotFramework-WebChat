@@ -32,6 +32,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Improved performance for `BasicTranscript`, in PR [5183](https://github.com/microsoft/BotFramework-WebChat/pull/5183), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed potential memory usage issues caused by `useActivitiesWithRenderer`, in PR [5183](https://github.com/microsoft/BotFramework-WebChat/pull/5183), by [@OEvgeny](https://github.com/OEvgeny)
 -  Improved performance for `useMemoized`, in PR [5190](https://github.com/microsoft/BotFramework-WebChat/pull/5190), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed DTMF command usage sent by telephone keypad, in PR [5198](https://github.com/microsoft/BotFramework-WebChat/pull/5198), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
