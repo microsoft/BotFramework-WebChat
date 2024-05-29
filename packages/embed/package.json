@@ -2,7 +2,6 @@
   "name": "embed",
   "version": "0.0.0-0",
   "description": "",
-  "main": "src/index.js",
   "private": true,
   "jest": {
     "collectCoverageFrom": [
@@ -29,7 +28,7 @@
     "prestart": "npm run build:babel",
     "start": "concurrently --kill-others --names \"babel,server,webpack\" \"npm run start:babel\" \"npm run start:server\" \"npm run start:webpack\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
-    "start:server": "node-dev --no-notify --respawn hostDevServer",
+    "start:server": "node-dev --no-notify --respawn hostDevServer.mjs",
     "start:webpack": "npm run build:webpack -- --watch",
     "test": "jest --watch",
     "test:ci": "npm run test -- --ci --coverage true --no-watch"
@@ -56,14 +55,6 @@
     "@babel/runtime": [
       "7.17.2",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "http-proxy-middleware": [
-      "2",
-      "http-proxy-middleware@3 has breaking changes, need time to migrate"
-    ],
-    "node-fetch": [
-      "2",
-      "^3 does not support CommonJS"
     ]
   },
   "devDependencies": {
@@ -72,17 +63,15 @@
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "concurrently": "^8.2.2",
+    "express": "^4.19.2",
     "html-webpack-plugin": "^5.6.0",
-    "http-proxy-middleware": "^2.0.6",
+    "http-proxy-middleware": "^3.0.0",
     "jest": "^29.7.0",
     "node-dev": "^8.0.0",
-    "node-fetch": "^2.7.0",
     "pug": "^3.0.2",
     "pug-loader": "^2.4.0",
-    "restify": "^11.1.0",
     "webpack": "^5.91.0",
-    "webpack-cli": "^5.1.4",
-    "webpack-stats-plugin": "^1.1.3"
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "@babel/runtime": "7.17.2",
