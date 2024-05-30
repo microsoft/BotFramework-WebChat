@@ -53,7 +53,6 @@ import {
 } from './hooks/transcriptScrollRelative';
 import { useStylesRoot } from './hooks';
 
-
 const {
   useActivityKeys,
   useActivityKeysByRead,
