@@ -397,27 +397,27 @@ const Composer = ({
   );
 
   return (
-    <APIComposer
-      activityMiddleware={patchedActivityMiddleware}
-      activityStatusMiddleware={patchedActivityStatusMiddleware}
-      attachmentForScreenReaderMiddleware={patchedAttachmentForScreenReaderMiddleware}
-      attachmentMiddleware={patchedAttachmentMiddleware}
-      avatarMiddleware={patchedAvatarMiddleware}
-      cardActionMiddleware={patchedCardActionMiddleware}
-      downscaleImageToDataURL={downscaleImageToDataURL}
-      // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
-      internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
-      nonce={nonce}
-      scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
-      sendBoxMiddleware={sendBoxMiddleware}
-      sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}
-      styleOptions={patchedStyleOptions}
-      toastMiddleware={patchedToastMiddleware}
-      typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
-      {...composerProps}
-    >
-      <ActivityTreeComposer>
-        <StylesRootProvider>
+    <StylesRootProvider>
+      <APIComposer
+        activityMiddleware={patchedActivityMiddleware}
+        activityStatusMiddleware={patchedActivityStatusMiddleware}
+        attachmentForScreenReaderMiddleware={patchedAttachmentForScreenReaderMiddleware}
+        attachmentMiddleware={patchedAttachmentMiddleware}
+        avatarMiddleware={patchedAvatarMiddleware}
+        cardActionMiddleware={patchedCardActionMiddleware}
+        downscaleImageToDataURL={downscaleImageToDataURL}
+        // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
+        internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
+        nonce={nonce}
+        scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
+        sendBoxMiddleware={sendBoxMiddleware}
+        sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}
+        styleOptions={patchedStyleOptions}
+        toastMiddleware={patchedToastMiddleware}
+        typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
+        {...composerProps}
+      >
+        <ActivityTreeComposer>
           <StyleToEmotionObjectProvider nonce={nonce}>
             <ComposerCore
               extraStyleSet={extraStyleSet}
@@ -432,9 +432,9 @@ const Composer = ({
               {onTelemetry && <UITracker />}
             </ComposerCore>
           </StyleToEmotionObjectProvider>
-        </StylesRootProvider>
-      </ActivityTreeComposer>
-    </APIComposer>
+        </ActivityTreeComposer>
+      </APIComposer>
+    </StylesRootProvider>
   );
 };
 

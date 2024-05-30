@@ -17,7 +17,7 @@ export const StylesRootProvider = ({ children }: Readonly<{ children: ReactNode 
   const childElRef = useRefFrom(childEl);
   const stylesRoot = useMemo<Node>(() => {
     const documentOrShadowRoot = childEl?.getRootNode();
-    return documentOrShadowRoot && 'head' in documentOrShadowRoot
+    return documentOrShadowRoot && documentOrShadowRoot instanceof Document
       ? (documentOrShadowRoot.head as Node)
       : documentOrShadowRoot;
   }, [childEl]);
@@ -30,8 +30,7 @@ export const StylesRootProvider = ({ children }: Readonly<{ children: ReactNode 
 
   return (
     <stylesRootContext.Provider value={stylesRootRef}>
-      <span ref={childElCallbackRef} />
-      {childEl && children}
+      {childEl ? children : <span hidden={true} ref={childElCallbackRef} />}
     </stylesRootContext.Provider>
   );
 };
