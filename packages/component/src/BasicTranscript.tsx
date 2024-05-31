@@ -51,7 +51,6 @@ import {
   useRegisterScrollRelativeTranscript,
   type TranscriptScrollRelativeOptions
 } from './hooks/transcriptScrollRelative';
-import { useStylesRoot } from './hooks';
 
 const {
   useActivityKeys,
@@ -845,7 +844,7 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
 
   const scroller = useScroller(activityElementMapRef);
 
-  const stylesRoot = useStylesRoot();
+  const [{ stylesRoot }] = useStyleOptions();
   const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
 
   return (
