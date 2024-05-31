@@ -86,6 +86,11 @@ const ThemeProvider = ({
     [styleOptions, existingContext.styleOptions]
   );
 
+  const mergedStyles = useMemo<ThemeContextType['styles']>(
+    () => [...existingContext.styles, ...styles],
+    [styles, existingContext.styles]
+  );
+
   const mergedToastMiddleware = useMemo<ThemeContextType['toastMiddleware']>(
     () => Object.freeze([...(toastMiddleware || EMPTY_ARRAY), ...existingContext.toastMiddleware]),
     [toastMiddleware, existingContext.toastMiddleware]
@@ -109,7 +114,7 @@ const ThemeProvider = ({
       sendBoxMiddleware: mergedSendBoxMiddleware,
       sendBoxToolbarMiddleware: mergedSendBoxToolbarMiddleware,
       styleOptions: mergedStyleOptions,
-      styles,
+      styles: mergedStyles,
       toastMiddleware: mergedToastMiddleware,
       typingIndicatorMiddleware: mergedTypingIndicatorMiddleware
     }),
@@ -125,9 +130,9 @@ const ThemeProvider = ({
       mergedSendBoxMiddleware,
       mergedSendBoxToolbarMiddleware,
       mergedStyleOptions,
+      mergedStyles,
       mergedToastMiddleware,
-      mergedTypingIndicatorMiddleware,
-      styles
+      mergedTypingIndicatorMiddleware
     ]
   );
 
