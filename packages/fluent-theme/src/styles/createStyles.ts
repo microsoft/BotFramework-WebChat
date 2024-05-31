@@ -1,4 +1,4 @@
-export const injectedStyles = '@--INJECTED-STYLES-CONTENT--@';
+export const fluentStyleContent = '@--FLUENT-STYLES-CONTENT--@';
 
 export default function createStyles() {
   if (!globalThis.document) {
@@ -6,6 +6,6 @@ export default function createStyles() {
   }
 
   const style = document.createElement('style');
-  style.append(document.createTextNode(injectedStyles));
+  style.append(document.createTextNode(fluentStyleContent));
   return [style];
 }
