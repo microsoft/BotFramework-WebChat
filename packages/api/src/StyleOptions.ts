@@ -849,7 +849,7 @@ type StyleOptions = {
   maxMessageLength?: number;
 
   /**
-   * A node used for WebChat styles to be placed into
+   * The node used for WebChat styles to be placed into
    *
    * @default document.head
    */
