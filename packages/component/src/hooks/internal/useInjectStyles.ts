@@ -6,12 +6,15 @@ const { useStyleOptions } = hooks;
 export default function useInjectStyles(styles: readonly HTMLStyleElement[]) {
   const [{ stylesRoot }] = useStyleOptions();
   useEffect(() => {
+    const injectedStyles = [];
     if (stylesRoot && styles?.length) {
       for (const style of styles) {
-        stylesRoot.appendChild(style);
+        const injectedStyle = style.cloneNode();
+        stylesRoot.appendChild(injectedStyle);
+        injectedStyles.push(injectedStyle);
       }
       return () => {
-        for (const style of styles) {
+        for (const style of injectedStyles) {
           style.remove();
         }
       };
