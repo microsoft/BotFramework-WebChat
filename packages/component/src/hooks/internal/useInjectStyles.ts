@@ -1,12 +1,14 @@
 import { useEffect } from 'react';
-import { useStylesRoot } from './useStylesRoot';
+import { hooks } from 'botframework-webchat-api';
+
+const { useStyleOptions } = hooks;
 
 export default function useInjectStyles(styles: readonly HTMLStyleElement[]) {
-  const root = useStylesRoot();
+  const [{ stylesRoot }] = useStyleOptions();
   useEffect(() => {
-    if (root && styles?.length) {
+    if (stylesRoot && styles?.length) {
       for (const style of styles) {
-        root.appendChild(style);
+        stylesRoot.appendChild(style);
       }
       return () => {
         for (const style of styles) {
@@ -14,5 +16,5 @@ export default function useInjectStyles(styles: readonly HTMLStyleElement[]) {
         }
       };
     }
-  }, [root, styles]);
+  }, [stylesRoot, styles]);
 }

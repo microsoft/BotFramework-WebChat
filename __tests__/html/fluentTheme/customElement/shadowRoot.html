@@ -43,7 +43,12 @@
           );
           const store = testHelpers.createStore();
 
-          const App = () => <ReactWebChat directLine={directLine} store={store} />;
+          const App = () => 
+            <ReactWebChat 
+              directLine={directLine} 
+              store={store} 
+              styleOptions={{ stylesRoot: this.shadowRoot }} 
+            />;
 
           render(
             <FluentThemeProvider>

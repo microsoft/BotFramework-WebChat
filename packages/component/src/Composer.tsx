@@ -49,7 +49,6 @@ import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlin
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
 import { StyleToEmotionObjectProvider, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
-import { StylesRootProvider } from './hooks/internal/useStylesRoot';
 import useInjectStyles from './hooks/internal/useInjectStyles';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
@@ -397,44 +396,42 @@ const Composer = ({
   );
 
   return (
-    <StylesRootProvider>
-      <APIComposer
-        activityMiddleware={patchedActivityMiddleware}
-        activityStatusMiddleware={patchedActivityStatusMiddleware}
-        attachmentForScreenReaderMiddleware={patchedAttachmentForScreenReaderMiddleware}
-        attachmentMiddleware={patchedAttachmentMiddleware}
-        avatarMiddleware={patchedAvatarMiddleware}
-        cardActionMiddleware={patchedCardActionMiddleware}
-        downscaleImageToDataURL={downscaleImageToDataURL}
-        // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
-        internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
-        nonce={nonce}
-        scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
-        sendBoxMiddleware={sendBoxMiddleware}
-        sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}
-        styleOptions={patchedStyleOptions}
-        toastMiddleware={patchedToastMiddleware}
-        typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
-        {...composerProps}
-      >
-        <ActivityTreeComposer>
-          <StyleToEmotionObjectProvider nonce={nonce}>
-            <ComposerCore
-              extraStyleSet={extraStyleSet}
-              nonce={nonce}
-              renderMarkdown={renderMarkdown}
-              styleSet={styleSet}
-              styles={theme.styles}
-              suggestedActionsAccessKey={suggestedActionsAccessKey}
-              webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-            >
-              {children}
-              {onTelemetry && <UITracker />}
-            </ComposerCore>
-          </StyleToEmotionObjectProvider>
-        </ActivityTreeComposer>
-      </APIComposer>
-    </StylesRootProvider>
+    <APIComposer
+      activityMiddleware={patchedActivityMiddleware}
+      activityStatusMiddleware={patchedActivityStatusMiddleware}
+      attachmentForScreenReaderMiddleware={patchedAttachmentForScreenReaderMiddleware}
+      attachmentMiddleware={patchedAttachmentMiddleware}
+      avatarMiddleware={patchedAvatarMiddleware}
+      cardActionMiddleware={patchedCardActionMiddleware}
+      downscaleImageToDataURL={downscaleImageToDataURL}
+      // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
+      internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
+      nonce={nonce}
+      scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
+      sendBoxMiddleware={sendBoxMiddleware}
+      sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}
+      styleOptions={patchedStyleOptions}
+      toastMiddleware={patchedToastMiddleware}
+      typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
+      {...composerProps}
+    >
+      <ActivityTreeComposer>
+        <StyleToEmotionObjectProvider nonce={nonce}>
+          <ComposerCore
+            extraStyleSet={extraStyleSet}
+            nonce={nonce}
+            renderMarkdown={renderMarkdown}
+            styleSet={styleSet}
+            styles={theme.styles}
+            suggestedActionsAccessKey={suggestedActionsAccessKey}
+            webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+          >
+            {children}
+            {onTelemetry && <UITracker />}
+          </ComposerCore>
+        </StyleToEmotionObjectProvider>
+      </ActivityTreeComposer>
+    </APIComposer>
   );
 };
 

@@ -36,7 +36,13 @@
           const store = testHelpers.createStore();
 
           window.WebChat.renderWebChat(
-            { directLine, store },
+            { 
+              directLine, 
+              store,
+              styleOptions: {
+                stylesRoot: this.shadowRoot
+              } 
+            },
             container
           );
         }
