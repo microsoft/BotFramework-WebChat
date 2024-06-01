@@ -87,7 +87,7 @@ const ThemeProvider = ({
   );
 
   const mergedStyles = useMemo<ThemeContextType['styles']>(
-    () => [...existingContext.styles, ...styles],
+    () => [...(existingContext.styles || EMPTY_ARRAY), ...styles],
     [styles, existingContext.styles]
   );
 
