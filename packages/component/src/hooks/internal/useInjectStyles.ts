@@ -11,11 +11,12 @@ export default function useInjectStyles(styles: readonly HTMLStyleElement[]) {
     const injectedStyles = [];
     if (stylesRoot && styles?.length) {
       for (const style of styles) {
-        const isAddedToTheRoot = stylesRoot.contains(style);
+        const isAddedToTheDOM = !!style.parentNode;
+        const isAddedToTheRoot = style.parentNode === stylesRoot;
         // We use the passed style node, but:
         // if it's already added to the same root, we only add a ref to it into `injectedStyleRefs`
-        // If it's already added to the different root. we clone the style node and add it to the new root
-        const injectedStyle = style.parentElement && !isAddedToTheRoot ? style.cloneNode() : style;
+        // if it's already added to the different root. we clone the style node and add it to the new root
+        const injectedStyle = isAddedToTheDOM && !isAddedToTheRoot ? style.cloneNode() : style;
         if (!isAddedToTheRoot) {
           stylesRoot.appendChild(injectedStyle);
         }
