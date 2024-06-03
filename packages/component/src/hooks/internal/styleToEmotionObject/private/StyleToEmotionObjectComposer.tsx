@@ -3,7 +3,13 @@ import createStyleToEmotionObjectComposer from './createStyleToEmotionObjectComp
 
 export type StyleToEmotionObjectContextType = RefObject<(...args: any[]) => string>;
 
-const styleToEmotionObjectContext = createContext<StyleToEmotionObjectContextType>(createRef());
+const styleToEmotionObjectContext = createContext<StyleToEmotionObjectContextType>(
+  new Proxy(createRef(), {
+    get() {
+      throw new Error('StyleToEmotionObjectContext was used without StyleToEmotionObjectComposer');
+    }
+  })
+);
 
 export function useStyleToEmotionObject() {
   return useContext(styleToEmotionObjectContext).current;
