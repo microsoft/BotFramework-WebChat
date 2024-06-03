@@ -5,7 +5,7 @@ const { useStyleOptions } = hooks;
 
 const injectedStyleRefs = [];
 
-export default function useInjectStyles(styles: readonly HTMLStyleElement[]) {
+export default function useInjectStyles(styles: readonly HTMLStyleElement[], nonce?: string) {
   const [{ stylesRoot }] = useStyleOptions();
   useEffect(() => {
     const injectedStyles = [];
@@ -16,8 +16,9 @@ export default function useInjectStyles(styles: readonly HTMLStyleElement[]) {
         // We use the passed style node, but:
         // if it's already added to the same root, we only add a ref to it into `injectedStyleRefs`
         // if it's already added to the different root. we clone the style node and add it to the new root
-        const injectedStyle = isAddedToTheDOM && !isAddedToTheRoot ? style.cloneNode() : style;
+        const injectedStyle = isAddedToTheDOM && !isAddedToTheRoot ? (style.cloneNode() as HTMLStyleElement) : style;
         if (!isAddedToTheRoot) {
+          nonce && injectedStyle.setAttribute('nonce', nonce);
           stylesRoot.appendChild(injectedStyle);
         }
         injectedStyles.push(injectedStyle);
@@ -33,5 +34,5 @@ export default function useInjectStyles(styles: readonly HTMLStyleElement[]) {
         }
       };
     }
-  }, [stylesRoot, styles]);
+  }, [stylesRoot, styles, nonce]);
 }

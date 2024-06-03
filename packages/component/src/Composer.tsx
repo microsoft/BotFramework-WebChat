@@ -200,7 +200,7 @@ const ComposerCore = ({
     [transcriptFocusObserversRef, setNumTranscriptFocusObservers]
   );
 
-  useInjectStyles(styles);
+  useInjectStyles(styles, nonce);
 
   const context = useMemo<ContextOf<typeof WebChatUIContext>>(
     () => ({

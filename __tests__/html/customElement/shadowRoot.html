@@ -37,7 +37,8 @@
 
           window.WebChat.renderWebChat(
             { 
-              directLine, 
+              directLine,
+              nonce: 'test', 
               store,
               styleOptions: {
                 stylesRoot: this.shadowRoot
@@ -51,6 +52,9 @@
       run(async function () {
         customElements.define('webchat-element', WebChatElement);
         await host.snapshot();
+        for (const style of document.querySelector('webchat-element').shadowRoot.querySelectorAll('style')) {
+          expect(style.nonce).toBe('test');
+        }
       });
     </script>
   </body>
