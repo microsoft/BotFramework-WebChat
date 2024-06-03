@@ -17,8 +17,9 @@ export default function useInjectStyles(styles: readonly HTMLStyleElement[], non
         // if it's already added to the same root, we only add a ref to it into `injectedStyleRefs`
         // if it's already added to the different root. we clone the style node and add it to the new root
         const injectedStyle = isAddedToTheDOM && !isAddedToTheRoot ? (style.cloneNode() as HTMLStyleElement) : style;
+        // Update nonce in case it got changed
+        nonce && injectedStyle.setAttribute('nonce', nonce);
         if (!isAddedToTheRoot) {
-          nonce && injectedStyle.setAttribute('nonce', nonce);
           stylesRoot.appendChild(injectedStyle);
         }
         injectedStyles.push(injectedStyle);
