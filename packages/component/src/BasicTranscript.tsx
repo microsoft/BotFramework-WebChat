@@ -51,6 +51,7 @@ import {
   useRegisterScrollRelativeTranscript,
   type TranscriptScrollRelativeOptions
 } from './hooks/transcriptScrollRelative';
+import useNonce from './hooks/internal/useNonce';
 
 const {
   useActivityKeys,
@@ -843,13 +844,14 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
   const containerRef = useRef<HTMLDivElement>();
 
   const scroller = useScroller(activityElementMapRef);
+  const nonce = useNonce();
 
   const [{ stylesRoot }] = useStyleOptions();
   const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
 
   return (
     <TranscriptFocusComposer containerRef={containerRef}>
-      <ReactScrollToBottomComposer scroller={scroller} styleOptions={styleOptions}>
+      <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
         <KeyboardHelp />
         <InternalTranscript activityElementMapRef={activityElementMapRef} className={className} ref={containerRef} />
       </ReactScrollToBottomComposer>
