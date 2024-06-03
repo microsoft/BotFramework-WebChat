@@ -48,7 +48,7 @@ import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
-import { StyleToEmotionObjectProvider, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
+import { StyleToEmotionObjectComposer, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useInjectStyles from './hooks/internal/useInjectStyles';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
@@ -416,7 +416,7 @@ const Composer = ({
       {...composerProps}
     >
       <ActivityTreeComposer>
-        <StyleToEmotionObjectProvider nonce={nonce}>
+        <StyleToEmotionObjectComposer nonce={nonce}>
           <ComposerCore
             extraStyleSet={extraStyleSet}
             nonce={nonce}
@@ -429,7 +429,7 @@ const Composer = ({
             {children}
             {onTelemetry && <UITracker />}
           </ComposerCore>
-        </StyleToEmotionObjectProvider>
+        </StyleToEmotionObjectComposer>
       </ActivityTreeComposer>
     </APIComposer>
   );
