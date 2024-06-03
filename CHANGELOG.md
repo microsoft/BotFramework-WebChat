@@ -29,6 +29,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  (Experimental) Added support for using WebChat inside a shadow DOM, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
    -  Added `styleOptions.stylesRoot` property allowing users to specify the root node where WebChat styles should be placed, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
    -  Added the `ThemeProvider.styles` property, allowing theme packages to place styles into the same root node as WebChat, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Added `nonce` for Fluent and `react-scroll-to-bottom` injected styles, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
    -  Updated `react-scroll-to-bottom` to version `4.2.1-main.53844f5`, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
