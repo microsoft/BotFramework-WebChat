@@ -3,6 +3,9 @@
   "version": "0.0.0-0",
   "description": "",
   "private": true,
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "jest": {
     "collectCoverageFrom": [
       "**/src/**/*.{js,jsx}",
