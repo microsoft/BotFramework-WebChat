@@ -20,7 +20,7 @@ export default function useInjectStyles(styles: readonly HTMLStyleElement[], non
     }
 
     for (const style of styles) {
-      if (style.localName === 'style' || (style.localName === 'link' && style.getAttribute('rel') === 'stylesheet')) {
+      if (style.localName !== 'style' && !(style.localName === 'link' && style.getAttribute('rel') === 'stylesheet')) {
         throw new Error(`The useInjectStyles hook supports injecting styles only, got ${style.localName}`);
       }
     }
