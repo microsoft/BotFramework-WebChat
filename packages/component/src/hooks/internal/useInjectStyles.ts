@@ -34,31 +34,31 @@ export default function useInjectStyles(styles: readonly HTMLStyleElement[], non
       return;
     }
 
-    sharedInstances.push(instance);
-
-    return instance;
-  }, [stylesRoot, nonce, styles]);
-
-  useEffect(() => {
-    if (!instance) {
-      return;
-    }
-    const { nonce, styles, root } = instance;
-    for (const style of styles) {
-      if (!style.parentNode) {
+    if (instance !== sharedInstance) {
+      const { nonce, styles, root } = instance;
+      for (const style of styles) {
         nonce ? style.setAttribute('nonce', nonce) : style.removeAttribute('nonce');
         root.appendChild(style);
       }
     }
 
-    return () => {
-      const index = sharedInstances.lastIndexOf(instance);
-      ~index && sharedInstances.splice(index, 1);
-      if (!sharedInstances.includes(instance)) {
-        for (const style of instance.styles) {
-          style.remove();
+    sharedInstances.push(instance);
+
+    return instance;
+  }, [stylesRoot, nonce, styles]);
+
+  useEffect(
+    () =>
+      instance &&
+      (() => {
+        const index = sharedInstances.lastIndexOf(instance);
+        ~index && sharedInstances.splice(index, 1);
+        if (!sharedInstances.includes(instance)) {
+          for (const style of instance.styles) {
+            style.remove();
+          }
         }
-      }
-    };
-  }, [instance]);
+      }),
+    [instance]
+  );
 }
