@@ -43,9 +43,9 @@ export default function useInjectStyles(styles: readonly HTMLStyleElement[], non
     if (!instance) {
       return;
     }
-    if (!instance.styles.at(0).parentNode) {
-      const { nonce, styles, root } = instance;
-      for (const style of styles) {
+    const { nonce, styles, root } = instance;
+    for (const style of styles) {
+      if (!style.parentNode) {
         nonce ? style.setAttribute('nonce', nonce) : style.removeAttribute('nonce');
         root.appendChild(style);
       }
