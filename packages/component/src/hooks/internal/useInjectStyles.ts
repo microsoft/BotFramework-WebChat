@@ -1,39 +1,64 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { hooks } from 'botframework-webchat-api';
 
 const { useStyleOptions } = hooks;
 
-const injectedStyleRefs = [];
+type InjectedStylesInstance = Readonly<{
+  styles: readonly HTMLStyleElement[];
+  nonce?: string;
+  root: Node;
+}>;
+
+const sharedInstances: InjectedStylesInstance[] = [];
 
 export default function useInjectStyles(styles: readonly HTMLStyleElement[], nonce?: string) {
   const [{ stylesRoot }] = useStyleOptions();
-  useEffect(() => {
-    const injectedStyles = [];
-    if (stylesRoot && styles?.length) {
-      for (const style of styles) {
-        const isAddedToTheDOM = !!style.parentNode;
-        const isAddedToTheRoot = style.parentNode === stylesRoot;
-        // We use the passed style node, but:
-        // if it's already added to the same root, we only add a ref to it into `injectedStyleRefs`
-        // if it's already added to the different root. we clone the style node and add it to the new root
-        const injectedStyle = isAddedToTheDOM && !isAddedToTheRoot ? (style.cloneNode() as HTMLStyleElement) : style;
-        // Update nonce in case it got changed
-        nonce ? injectedStyle.setAttribute('nonce', nonce) : injectedStyle.removeAttribute('nonce');
-        if (!isAddedToTheRoot) {
-          stylesRoot.appendChild(injectedStyle);
-        }
-        injectedStyles.push(injectedStyle);
-      }
-      injectedStyleRefs.push(...injectedStyles);
-      return () => {
-        for (const style of injectedStyles) {
-          const index = injectedStyleRefs.lastIndexOf(style);
-          ~index && injectedStyleRefs.splice(index, 1);
-          if (!injectedStyleRefs.includes(style)) {
-            style.remove();
-          }
-        }
-      };
+
+  const instance = useMemo(() => {
+    const sharedInstance = sharedInstances.find(
+      instance =>
+        instance.styles.length === styles.length &&
+        instance.styles.every(style => styles.includes(style)) &&
+        instance.root === stylesRoot &&
+        instance.nonce === nonce
+    );
+    const instance = sharedInstance ?? {
+      nonce,
+      styles: styles.some(style => style.parentNode)
+        ? styles.map(style => style.cloneNode() as HTMLStyleElement)
+        : styles,
+      root: stylesRoot
+    };
+
+    if (!instance.root || !instance.styles.length) {
+      return;
     }
-  }, [stylesRoot, styles, nonce]);
+
+    sharedInstances.push(instance);
+
+    return instance;
+  }, [stylesRoot, nonce, styles]);
+
+  useEffect(() => {
+    if (!instance) {
+      return;
+    }
+    if (!instance.styles.at(0).parentNode) {
+      const { nonce, styles, root } = instance;
+      for (const style of styles) {
+        nonce ? style.setAttribute('nonce', nonce) : style.removeAttribute('nonce');
+        root.appendChild(style);
+      }
+    }
+
+    return () => {
+      const index = sharedInstances.lastIndexOf(instance);
+      ~index && sharedInstances.splice(index, 1);
+      if (!sharedInstances.includes(instance)) {
+        for (const style of instance.styles) {
+          style.remove();
+        }
+      }
+    };
+  }, [instance]);
 }
