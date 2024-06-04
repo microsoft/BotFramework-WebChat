@@ -19,6 +19,12 @@ export default function useInjectStyles(styles: readonly HTMLStyleElement[], non
       return;
     }
 
+    for (const style of styles) {
+      if (style.localName === 'style' || (style.localName === 'link' && style.getAttribute('rel') === 'stylesheet')) {
+        throw new Error(`The useInjectStyles hook supports injecting styles only, got ${style.localName}`);
+      }
+    }
+
     const sharedInstance = sharedInstances.find(
       instance =>
         instance.styles.length === styles.length &&
