@@ -3,15 +3,17 @@ import { hooks } from 'botframework-webchat-api';
 
 const { useStyleOptions } = hooks;
 
+type InjectedStyleElement = HTMLStyleElement | HTMLLinkElement;
+
 type InjectedStylesInstance = Readonly<{
-  styles: readonly HTMLStyleElement[];
+  styles: readonly InjectedStyleElement[];
   nonce?: string;
   root: Node;
 }>;
 
 const sharedInstances: InjectedStylesInstance[] = [];
 
-export default function useInjectStyles(styles: readonly HTMLStyleElement[], nonce?: string) {
+export default function useInjectStyles(styles: readonly InjectedStyleElement[], nonce?: string) {
   const [{ stylesRoot }] = useStyleOptions();
 
   const instance = useMemo(() => {
