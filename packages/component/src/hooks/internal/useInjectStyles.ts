@@ -15,6 +15,10 @@ export default function useInjectStyles(styles: readonly HTMLStyleElement[], non
   const [{ stylesRoot }] = useStyleOptions();
 
   const instance = useMemo(() => {
+    if (!stylesRoot || !styles.length) {
+      return;
+    }
+
     const sharedInstance = sharedInstances.find(
       instance =>
         instance.styles.length === styles.length &&
@@ -30,11 +34,7 @@ export default function useInjectStyles(styles: readonly HTMLStyleElement[], non
       root: stylesRoot
     };
 
-    if (!instance.root || !instance.styles.length) {
-      return;
-    }
-
-    if (instance !== sharedInstance) {
+    if (!sharedInstance) {
       const { nonce, styles, root } = instance;
       for (const style of styles) {
         nonce ? style.setAttribute('nonce', nonce) : style.removeAttribute('nonce');
