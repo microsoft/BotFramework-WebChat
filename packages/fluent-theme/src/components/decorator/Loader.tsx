@@ -4,7 +4,7 @@ import styles from './Loader.module.css';
 
 function Loader() {
   const classNames = useStyles(styles);
-  return <div className={classNames.loader} />;
+  return <div className={classNames['loader']} />;
 }
 
 export default memo(Loader);
