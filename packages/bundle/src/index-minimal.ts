@@ -2,6 +2,7 @@
 // window['WebChat'] is required for TypeScript
 
 import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
+import * as decorator from 'botframework-webchat-api/decorator';
 import { Constants, createStore, createStoreWithDevTools, createStoreWithOptions } from 'botframework-webchat-core';
 
 import ReactWebChat, {
@@ -75,6 +76,7 @@ window['WebChat'] = {
   createStore,
   createStoreWithOptions,
   createStyleSet,
+  decorator,
   hooks,
   ReactWebChat,
   renderWebChat,

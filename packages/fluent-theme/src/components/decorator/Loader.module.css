@@ -1,0 +1,5 @@
+
+:global(.webchat-fluent-decorator) .loader {
+  border-radius: inherit;
+  border-bottom: solid 4px blue;
+}

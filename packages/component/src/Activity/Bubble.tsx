@@ -1,9 +1,10 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 2, 10] }] */
 
 import { hooks } from 'botframework-webchat-api';
+import { ActivityDecorator } from 'botframework-webchat-api/decorator';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode, memo } from 'react';
 
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import useStyleSet from '../hooks/useStyleSet';
@@ -117,7 +118,9 @@ const Bubble: FC<BubbleProps> = ({ 'aria-hidden': ariaHidden, children, classNam
       )}
     >
       <div className="webchat__bubble__nub-pad" />
-      <div className="webchat__bubble__content">{children}</div>
+      <div className="webchat__bubble__content">
+        <ActivityDecorator>{children}</ActivityDecorator>
+      </div>
       {nub === true && acuteNubSVG(nubSize, borderWidth, side, !isZeroOrPositive(nubOffset))}
     </div>
   );
@@ -139,4 +142,6 @@ Bubble.propTypes = {
   nub: PropTypes.oneOf([true, false, 'hidden'])
 };
 
-export default Bubble;
+Bubble.displayName = 'Bubble';
+
+export default memo(Bubble);
