@@ -1,13 +1,15 @@
 import React, { type ReactNode, useMemo } from 'react';
-import { FlairDecoratorMiddlewareProvider, type FlairDecoratorMiddleware } from './FlairDecoratorMiddleware';
-import { LoaderDecoratorMiddleware, LoaderDecoratorMiddlewareProvider } from './LoaderDecoratorMiddleware';
+import {
+  ActivityBorderDecoratorMiddlewareProvider,
+  activityBorderDecoratorTypeName,
+  type ActivityBorderDecoratorMiddleware
+} from './ActivityBorderDecoratorMiddleware';
 
 type DecoratorMiddlewareByInit = {
-  flair: FlairDecoratorMiddleware;
-  loader: LoaderDecoratorMiddleware;
+  [activityBorderDecoratorTypeName]: ActivityBorderDecoratorMiddleware;
 };
 
-type DecoratorMiddlewareInit = 'flair' | 'loader';
+type DecoratorMiddlewareInit = keyof DecoratorMiddlewareByInit;
 
 export type DecoratorComposerComponent = (
   props: Readonly<{
@@ -18,7 +20,7 @@ export type DecoratorComposerComponent = (
 
 export type DecoratorMiddleware = (
   init: DecoratorMiddlewareInit
-) => ReturnType<FlairDecoratorMiddleware | LoaderDecoratorMiddleware> | false;
+) => ReturnType<ActivityBorderDecoratorMiddleware> | false;
 
 const initMiddlewares = <Init extends DecoratorMiddlewareInit>(
   middleware: DecoratorMiddleware[],
@@ -31,12 +33,11 @@ const initMiddlewares = <Init extends DecoratorMiddlewareInit>(
 
 export default (): DecoratorComposerComponent =>
   ({ children, middleware }) => {
-    const flairMiddlewares = useMemo(() => initMiddlewares(middleware, 'flair'), [middleware]);
-    const loaderMiddlewares = useMemo(() => initMiddlewares(middleware, 'loader'), [middleware]);
+    const borderMiddlewares = useMemo(() => initMiddlewares(middleware, activityBorderDecoratorTypeName), [middleware]);
 
     return (
-      <FlairDecoratorMiddlewareProvider middleware={flairMiddlewares}>
-        <LoaderDecoratorMiddlewareProvider middleware={loaderMiddlewares}>{children}</LoaderDecoratorMiddlewareProvider>
-      </FlairDecoratorMiddlewareProvider>
+      <ActivityBorderDecoratorMiddlewareProvider middleware={borderMiddlewares}>
+        {children}
+      </ActivityBorderDecoratorMiddlewareProvider>
     );
   };

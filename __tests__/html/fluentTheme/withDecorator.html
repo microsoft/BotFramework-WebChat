@@ -13,6 +13,7 @@
   <body>
     <main id="webchat"></main>
     <script type="text/babel">
+      run = fn => fn();
       run(async function () {
         const {
           React,
@@ -39,11 +40,46 @@
 
         await pageConditions.uiConnected();
 
-        await directLine.emulateIncomingActivity(
-          'Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
-        );
+        await directLine.emulateIncomingActivity({
+          id: 1,
+          text: 'Please wait',
+          type: 'message',
+          channelData: { streamType: 'informative' }
+        });
 
-        await pageConditions.numActivitiesShown(1);
+        const attachments = [
+          {
+            content: {
+              type: 'AdaptiveCard',
+              $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+              version: '1.5',
+              actions: [
+                { type: 'Action.Submit', title: 'Button 1' },
+                {
+                  type: 'Action.ShowCard',
+                  title: 'Show card',
+                  card: {
+                    type: 'AdaptiveCard',
+                    $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                    version: '1.5',
+                    actions: [
+                      { type: 'Action.Submit', title: 'Button 2' },
+                      { type: 'Action.Submit', title: 'Button 3' }
+                    ]
+                  }
+                }
+              ]
+            },
+            contentType: 'application/vnd.microsoft.card.adaptive'
+          }
+        ];
+        await directLine.emulateIncomingActivity({
+          text: 'Working on it',
+          channelData: { streamType: 'completion' },
+          attachments
+        });
+
+        await pageConditions.numActivitiesShown(2);
 
         // THEN: Fluent theme should be loaded.
         const buildInfo = Object.fromEntries(

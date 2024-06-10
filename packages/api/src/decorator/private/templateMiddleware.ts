@@ -1,5 +1,4 @@
 import { warnOnce } from 'botframework-webchat-core';
-import { memo } from 'react';
 import { createChainOfResponsibility, type ComponentMiddleware } from 'react-chain-of-responsibility';
 import { type EmptyObject } from 'type-fest';
 import { any, array, custom, safeParse, type Output } from 'valibot';
@@ -42,7 +41,7 @@ export default function createMiddlewareFacility<Props extends {} = EmptyObject,
       request: {} as Request
     },
     Provider,
-    Proxy: memo(Proxy),
+    Proxy,
     rectifyProps
   };
 }
