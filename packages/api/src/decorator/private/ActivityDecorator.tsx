@@ -7,21 +7,24 @@ const ActivityDecoratorFallback = memo(({ children }) => <React.Fragment>{childr
 
 function ActivityDecorator({ children, activity }: Readonly<{ activity?: WebChatActivity; children?: ReactNode }>) {
   const request = useMemo<ActivityDecoratorRequest>(
-    () => ({
-      from: activity.from.role,
-      state:
-        activity.channelData.streamType === 'informative'
-          ? 'informative'
-          : activity.channelData.streamType === 'completion'
-            ? 'completion'
-            : undefined
-    }),
+    () =>
+      activity && {
+        from: activity.from?.role,
+        state:
+          activity.channelData.streamType === 'informative'
+            ? 'informative'
+            : activity.channelData.streamType === 'completion'
+              ? 'completion'
+              : undefined
+      },
     [activity]
   );
-  return (
+  return request ? (
     <ActivityBorderDecoratorMiddlewareProxy fallbackComponent={ActivityDecoratorFallback} request={request}>
       {children}
     </ActivityBorderDecoratorMiddlewareProxy>
+  ) : (
+    <React.Fragment>{children}</React.Fragment>
   );
 }
 

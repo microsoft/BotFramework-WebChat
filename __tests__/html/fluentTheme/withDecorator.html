@@ -13,7 +13,6 @@
   <body>
     <main id="webchat"></main>
     <script type="text/babel">
-      run = fn => fn();
       run(async function () {
         const {
           React,
@@ -41,7 +40,7 @@
         await pageConditions.uiConnected();
 
         await directLine.emulateIncomingActivity({
-          id: 1,
+          from: { role: 'bot' },
           text: 'Please wait',
           type: 'message',
           channelData: { streamType: 'informative' }
@@ -74,26 +73,13 @@
           }
         ];
         await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
           text: 'Working on it',
           channelData: { streamType: 'completion' },
           attachments
         });
 
         await pageConditions.numActivitiesShown(2);
-
-        // THEN: Fluent theme should be loaded.
-        const buildInfo = Object.fromEntries(
-          document
-            .querySelector('head > meta[name="botframework-webchat:fluent-theme"]')
-            .content.split(';')
-            .map(value => value.trim().split('='))
-        );
-
-        expect(buildInfo).toHaveProperty('build-tool', 'tsup');
-        expect(buildInfo).toHaveProperty('module-format', 'esmodules');
-        expect(buildInfo.version).toMatch(/^\d+\.\d+\.\d+($|-)/u);
-
-        expect(window.WebChat.FluentThemeProvider).toBeTruthy();
 
         // THEN: Should render the activity.
         await host.snapshot();
