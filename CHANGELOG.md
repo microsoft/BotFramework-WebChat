@@ -26,6 +26,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ### Fixed
 
+-  Fixes [#4965](https://github.com/microsoft/BotFramework-WebChat/issues/4965), [#5047](https://github.com/microsoft/BotFramework-WebChat/issues/5047). Added condition for `FocusRedirector` and `KeyboardHelp` in PR [#5206](https://github.com/microsoft/BotFramework-WebChat/pull/5206), by [@amirmursal](https://github.com/amirmursal)
 -  Improved performance for `useActivityWithRenderer`, in PR [#5172](https://github.com/microsoft/BotFramework-WebChat/pull/5172), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixes [#5162](https://github.com/microsoft/BotFramework-WebChat/issues/5162). Improved performance for `useActivityTreeWithRenderer`, in PR [#5163](https://github.com/microsoft/BotFramework-WebChat/pull/5163), by [@compulim](https://github.com/compulim)
 -  Fixes [#5175](https://github.com/microsoft/BotFramework-WebChat/issues/5175). `PrecompiledGlobalize.js` is emitted instead of `.cjs`, by [@compulim](https://github.com/compulim) in PR [#5181](https://github.com/microsoft/BotFramework-WebChat/pull/5181)
