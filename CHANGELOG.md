@@ -25,7 +25,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 ## [Unreleased]
 
 ### Fixed
-
+- Fixes (https://msazure.visualstudio.com/CCI/_workitems/edit/28081591), (https://msazure.visualstudio.com/CCI/_workitems/edit/27168818) in PR (https://github.com/microsoft/BotFramework-WebChat/pull/5207), by [@deepalic](https://github.com/deepalic)
 -  Improved performance for `useActivityWithRenderer`, in PR [#5172](https://github.com/microsoft/BotFramework-WebChat/pull/5172), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixes [#5162](https://github.com/microsoft/BotFramework-WebChat/issues/5162). Improved performance for `useActivityTreeWithRenderer`, in PR [#5163](https://github.com/microsoft/BotFramework-WebChat/pull/5163), by [@compulim](https://github.com/compulim)
 -  Fixes [#5175](https://github.com/microsoft/BotFramework-WebChat/issues/5175). `PrecompiledGlobalize.js` is emitted instead of `.cjs`, by [@compulim](https://github.com/compulim) in PR [#5181](https://github.com/microsoft/BotFramework-WebChat/pull/5181)
