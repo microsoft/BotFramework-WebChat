@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 
 import useStyleSet from '../../hooks/useStyleSet';
 
@@ -14,6 +14,14 @@ const ScrollToEndButton = ({ onClick }) => {
   const localize = useLocalizer();
 
   const text = localize(scrollToEndButtonBehavior === 'any' ? 'TRANSCRIPT_MORE_MESSAGES' : 'TRANSCRIPT_NEW_MESSAGES');
+  // useRef and useEffect is added to move focus on 'New messages' button when it is display on screen.
+  const buttonReference = useRef();
+
+  useEffect(() => {
+    if (buttonReference?.current) {
+      buttonReference?.current?.focus();
+    }
+  }, [buttonReference]);
 
   return (
     <button
@@ -24,6 +32,7 @@ const ScrollToEndButton = ({ onClick }) => {
         direction === 'rtl' ? 'webchat__scroll-to-end-button--rtl' : ''
       )}
       onClick={onClick}
+      ref={buttonReference}
       tabIndex={0}
       type="button"
     >
