@@ -19,7 +19,7 @@ const ScrollToEndButton = ({ onClick }) => {
 
   useEffect(() => {
     if (buttonReference?.current) {
-      buttonReference?.current?.focus();
+      buttonReference.current.focus();
     }
   }, [buttonReference]);
 
