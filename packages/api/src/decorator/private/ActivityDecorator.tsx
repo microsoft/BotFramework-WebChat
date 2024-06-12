@@ -9,7 +9,7 @@ function ActivityDecorator({ children, activity }: Readonly<{ activity?: WebChat
   const request = useMemo<ActivityDecoratorRequest>(
     () =>
       activity && {
-        from: activity.from?.role,
+        from: activity.from?.role === 'bot' ? 'bot' : activity.from?.role === 'channel' ? 'channel' ? activity.from?.role === 'user' ? 'user' : undefined,
         state:
           activity.channelData.streamType === 'informative'
             ? 'informative'

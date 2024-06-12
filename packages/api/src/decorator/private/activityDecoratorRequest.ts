@@ -1,5 +1,5 @@
 type ActivityDecoratorRequestType = {
-  from: 'user' | 'bot' | 'channel';
+  from: 'bot' | 'channel' | `user` | undefined;
   state: 'completion' | 'informative' | undefined;
 };
 
