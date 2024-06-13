@@ -1,4 +1,5 @@
 import { warnOnce } from 'botframework-webchat-core';
+import React, { ComponentType, ReactNode, memo } from 'react';
 import { createChainOfResponsibility, type ComponentMiddleware } from 'react-chain-of-responsibility';
 import { type EmptyObject } from 'type-fest';
 import { any, array, custom, safeParse, type Output } from 'valibot';
@@ -43,7 +44,32 @@ export default function createMiddlewareFacility<
         .map(enhancer => () => enhancer)
     );
 
-  const { Provider, Proxy } = createChainOfResponsibility<Request, Props>();
+  const { Provider, useBuildComponentCallback } = createChainOfResponsibility<Request, Props>();
+
+  const Proxy = memo(
+    ({
+      children,
+      fallbackComponent,
+      request,
+      ...props
+    }: Readonly<{
+      children?: ReactNode;
+      request: Request;
+      fallbackComponent: ComponentType<Props> | false | null | undefined;
+    }>) => {
+      let Component;
+      try {
+        const enhancer = useBuildComponentCallback();
+        Component = enhancer(request, {
+          fallbackComponent
+        });
+      } catch {
+        Component = fallbackComponent;
+      }
+
+      return Component ? React.createElement(Component, props, children) : null;
+    }
+  );
 
   Provider.displayName = `${name}Provider`;
   Proxy.displayName = `${name}Proxy`;
