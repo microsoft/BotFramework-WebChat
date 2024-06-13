@@ -3,6 +3,10 @@ import { createChainOfResponsibility, type ComponentMiddleware } from 'react-cha
 import { type EmptyObject } from 'type-fest';
 import { any, array, custom, safeParse, type Output } from 'valibot';
 
+export type MiddlewareWithInit<M extends ComponentMiddleware<unknown>, I = unknown> = (
+  init: I
+) => ReturnType<M> | false;
+
 export default function createMiddlewareFacility<
   Props extends {} = EmptyObject,
   Request extends {} = EmptyObject,
@@ -31,10 +35,7 @@ export default function createMiddlewareFacility<
     return Object.freeze([]);
   };
 
-  const initMiddleware = (
-    middleware: ComponentMiddleware<unknown, unknown, unknown>[],
-    init: Init
-  ): readonly Middleware[] =>
+  const initMiddleware = (middleware: MiddlewareWithInit<Middleware>[], init: Init): readonly Middleware[] =>
     rectifyProps(
       middleware
         .map(md => md(init))

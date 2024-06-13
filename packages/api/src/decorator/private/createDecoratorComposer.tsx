@@ -15,7 +15,9 @@ export type DecoratorComposerComponent = (
   }>
 ) => React.JSX.Element;
 
-export type DecoratorMiddleware = (init: DecoratorMiddlewareInit) => ReturnType<ActivityBorderDecoratorMiddleware>;
+export type DecoratorMiddleware = (
+  init: DecoratorMiddlewareInit
+) => ReturnType<ActivityBorderDecoratorMiddleware> | false;
 
 export default (): DecoratorComposerComponent =>
   ({ children, middleware }) => {

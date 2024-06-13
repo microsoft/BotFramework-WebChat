@@ -3,12 +3,22 @@
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style>
+      .flair {
+        border-radius: inherit;
+        border: solid 2px red;
+      }
+
+      .loader {
+        border-bottom: solid 4px blue;
+      }
+    </style>
   </head>
   <body>
     <main id="webchat"></main>
@@ -17,8 +27,25 @@
         const {
           React,
           ReactDOM: { render },
-          WebChat: { FluentThemeProvider, ReactWebChat }
+          WebChat: { 
+            decorator: { DecoratorComposer },
+            FluentThemeProvider,
+            ReactWebChat
+          }
         } = window; // Imports in UMD fashion.
+
+        function Flair({ children }) {
+          return <div className="flair">{children}</div>;
+        }
+
+        function Loader({ children }) {
+          return <div className="loader">{children}</div>;
+        }
+
+        const decoratorMiddleware = [
+          init => init === 'activity border' && (next => request => (request.state === 'completion' ? Flair : next(request))),
+          init => init === 'activity border' && (next => request => (request.state === 'informative' ? Loader : next(request)))
+        ];
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
@@ -32,7 +59,9 @@
 
         render(
           <FluentThemeProvider>
-            <App />
+            <DecoratorComposer middleware={decoratorMiddleware}>
+              <App />
+            </DecoratorComposer>
           </FluentThemeProvider>,
           document.getElementById('webchat')
         );
