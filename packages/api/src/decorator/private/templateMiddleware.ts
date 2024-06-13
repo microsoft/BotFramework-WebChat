@@ -3,9 +3,11 @@ import { createChainOfResponsibility, type ComponentMiddleware } from 'react-cha
 import { type EmptyObject } from 'type-fest';
 import { any, array, custom, safeParse, type Output } from 'valibot';
 
-export default function createMiddlewareFacility<Props extends {} = EmptyObject, Request extends {} = EmptyObject>(
-  name: string
-) {
+export default function createMiddlewareFacility<
+  Props extends {} = EmptyObject,
+  Request extends {} = EmptyObject,
+  Init extends {} = undefined
+>(name: string) {
   type Middleware = ComponentMiddleware<Request, Props>;
 
   const validateMiddleware = custom<Middleware>(input => typeof input === 'function', 'Middleware must be a function.');
@@ -29,6 +31,17 @@ export default function createMiddlewareFacility<Props extends {} = EmptyObject,
     return Object.freeze([]);
   };
 
+  const initMiddleware = (
+    middleware: ComponentMiddleware<unknown, unknown, unknown>[],
+    init: Init
+  ): readonly Middleware[] =>
+    rectifyProps(
+      middleware
+        .map(md => md(init))
+        .filter((enhancer): enhancer is ReturnType<Middleware> => !!enhancer)
+        .map(enhancer => () => enhancer)
+    );
+
   const { Provider, Proxy } = createChainOfResponsibility<Request, Props>();
 
   Provider.displayName = `${name}Provider`;
@@ -36,12 +49,13 @@ export default function createMiddlewareFacility<Props extends {} = EmptyObject,
 
   return {
     types: {
-      middleware: {} as Middleware,
-      props: {} as Props,
-      request: {} as Request
+      middleware: undefined as Middleware,
+      props: undefined as Props,
+      request: undefined as Request,
+      init: undefined as Init
     },
     Provider,
     Proxy,
-    rectifyProps
+    initMiddleware
   };
 }

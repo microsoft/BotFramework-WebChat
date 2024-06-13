@@ -5,26 +5,25 @@ import { ActivityDecoratorRequest } from '..';
 
 const ActivityDecoratorFallback = memo(({ children }) => <React.Fragment>{children}</React.Fragment>);
 
+ActivityDecoratorFallback.displayName = 'ActivityDecoratorFallback';
+
+const supportedActivityRoles = ['bot', 'chnnel', 'user', undefined] as const;
+const supportedActivityStates = ['informative', 'completion', undefined] as const;
+
 function ActivityDecorator({ children, activity }: Readonly<{ activity?: WebChatActivity; children?: ReactNode }>) {
   const request = useMemo<ActivityDecoratorRequest>(
-    () =>
-      activity && {
-        from: activity.from?.role === 'bot' ? 'bot' : activity.from?.role === 'channel' ? 'channel' ? activity.from?.role === 'user' ? 'user' : undefined,
-        state:
-          activity.channelData.streamType === 'informative'
-            ? 'informative'
-            : activity.channelData.streamType === 'completion'
-              ? 'completion'
-              : undefined
-      },
+    () => ({
+      from: supportedActivityRoles.includes(activity?.from?.role) ? activity?.from?.role : undefined,
+      state: supportedActivityStates.includes(activity?.channelData?.streamType)
+        ? activity?.channelData?.streamType
+        : undefined
+    }),
     [activity]
   );
-  return request ? (
+  return (
     <ActivityBorderDecoratorMiddlewareProxy fallbackComponent={ActivityDecoratorFallback} request={request}>
       {children}
     </ActivityBorderDecoratorMiddlewareProxy>
-  ) : (
-    <React.Fragment>{children}</React.Fragment>
   );
 }
 
