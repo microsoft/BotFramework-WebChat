@@ -10,8 +10,8 @@ type DecoratorMiddlewareInit = typeof activityBorderDecoratorTypeName;
 
 export type DecoratorComposerComponent = (
   props: Readonly<{
-    children: ReactNode;
-    middleware: DecoratorMiddleware[];
+    children?: ReactNode;
+    middleware?: DecoratorMiddleware[];
   }>
 ) => React.JSX.Element;
 
@@ -19,8 +19,10 @@ export type DecoratorMiddleware = (
   init: DecoratorMiddlewareInit
 ) => ReturnType<ActivityBorderDecoratorMiddleware> | false;
 
+const EMPTY_ARRAY = [];
+
 export default (): DecoratorComposerComponent =>
-  ({ children, middleware }) => {
+  ({ children, middleware = EMPTY_ARRAY }) => {
     const borderMiddlewares = useMemo(
       () => initActivityBorderDecoratorMiddleware(middleware, activityBorderDecoratorTypeName),
       [middleware]

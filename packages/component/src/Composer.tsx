@@ -49,6 +49,7 @@ import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlin
 import createCSSKey from './Utils/createCSSKey';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
+import { DecoratorComposer } from 'botframework-webchat-api/decorator';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -71,13 +72,15 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
 
   return (
     <div className={classNames('webchat__css-custom-properties', cssCustomProperties)}>
-      <ModalDialogComposer>
-        {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-        <SendBoxComposer>
-          {children}
-          <Dictation onError={dictationOnError} />
-        </SendBoxComposer>
-      </ModalDialogComposer>
+      <DecoratorComposer>
+        <ModalDialogComposer>
+          {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+          <SendBoxComposer>
+            {children}
+            <Dictation onError={dictationOnError} />
+          </SendBoxComposer>
+        </ModalDialogComposer>
+      </DecoratorComposer>
     </div>
   );
 });
