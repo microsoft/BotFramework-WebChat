@@ -30,11 +30,13 @@
       class WebChatElement extends HTMLElement {
         constructor() {
           super();
+
           this.attachShadow({ mode: 'open' });
         }
 
         connectedCallback() {
           const slot = document.createElement('slot');
+
           this.shadowRoot.appendChild(slot);
 
           const directLine = testHelpers.createDirectLineWithTranscript(
@@ -55,6 +57,11 @@
 
       run(async function () {
         customElements.define('webchat-element', WebChatElement);
+
+        pageElements.root(document.querySelector('webchat-element'));
+
+        await pageConditions.uiConnected();
+        await pageConditions.scrollToBottomCompleted();
         await host.snapshot();
       });
     </script>

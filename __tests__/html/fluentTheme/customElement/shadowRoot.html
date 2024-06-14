@@ -28,27 +28,32 @@
       class WebChatElement extends HTMLElement {
         constructor() {
           super();
+
           this.attachShadow({ mode: 'open' });
         }
 
         connectedCallback() {
           const container = document.createElement('main');
+
           container.id = 'webchat';
+
           this.shadowRoot.appendChild(container);
           this.shadowRoot.appendChild(document.head.querySelector('link').cloneNode());
 
           const directLine = testHelpers.createDirectLineWithTranscript(
             testHelpers.transcriptNavigation.generateTranscript()
           );
+
           const store = testHelpers.createStore();
 
-          const App = () => 
-            <ReactWebChat 
-              directLine={directLine} 
+          const App = () => (
+            <ReactWebChat
+              directLine={directLine}
               nonce="test"
               store={store}
-              styleOptions={{ stylesRoot: this.shadowRoot }} 
-            />;
+              styleOptions={{ stylesRoot: this.shadowRoot }}
+            />
+          );
 
           render(
             <FluentThemeProvider>
@@ -61,7 +66,13 @@
 
       run(async function () {
         customElements.define('webchat-element', WebChatElement);
+
+        pageElements.root(document.querySelector('webchat-element').shadowRoot);
+
+        await pageConditions.uiConnected();
+        await pageConditions.scrollToBottomCompleted();
         await host.snapshot();
+
         for (const style of document.querySelector('webchat-element').shadowRoot.querySelectorAll('style')) {
           expect(style.nonce).toBe('test');
         }
