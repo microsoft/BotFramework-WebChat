@@ -107,13 +107,8 @@ jobs:
       - run: npm run precommit --if-present
 
   unit-test:
-    name: Unit test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
+    name: Unit test
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shard-index: [1, 2, 3, 4, 5]
-        shard-count: [5]
 
     steps:
       - uses: actions/checkout@v4
@@ -143,7 +138,6 @@ jobs:
           --forceExit \
           --logHeapUsage \
           --runInBand \
-          --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }} \
           --testPathPattern=/packages/\
         timeout-minutes: 10
 
@@ -152,10 +146,10 @@ jobs:
         run: |
           ls -laR .
 
-          mv jest.json jest-unit-${{ matrix.shard-index }}.json
-          mv lcov.info lcov-unit-${{ matrix.shard-index }}.info
-          mv nunit3.xml nunit3-unit-${{ matrix.shard-index }}.xml
-          mv result.trx result-unit-${{ matrix.shard-index }}.trx
+          mv jest.json jest-unit.json
+          mv lcov.info lcov-unit.info
+          mv nunit3.xml nunit3-unit.xml
+          mv result.trx result-unit.trx
         working-directory: ./coverage
 
       - if: always()
@@ -344,11 +338,7 @@ jobs:
             --add-tracefile lcov-15.info \
             --add-tracefile lcov-16.info \
             --add-tracefile lcov-17.info \
-            --add-tracefile lcov-unit-1.info \
-            --add-tracefile lcov-unit-2.info \
-            --add-tracefile lcov-unit-3.info \
-            --add-tracefile lcov-unit-4.info \
-            --add-tracefile lcov-unit-5.info \
+            --add-tracefile lcov-unit.info \
             --output-file lcov.info
 
       - if: always()
