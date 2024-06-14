@@ -1,3 +1,5 @@
+import root from './root';
+
 export default function toastDismissButtons() {
-  return document.querySelectorAll('.webchat__toast__dismissButton');
+  return root().querySelectorAll('.webchat__toast__dismissButton');
 }

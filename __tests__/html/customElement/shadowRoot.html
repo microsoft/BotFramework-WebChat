@@ -21,12 +21,15 @@
       class WebChatElement extends HTMLElement {
         constructor() {
           super();
+
           this.attachShadow({ mode: 'open' });
         }
 
         connectedCallback() {
           const container = document.createElement('main');
+
           container.id = 'webchat';
+
           this.shadowRoot.appendChild(container);
           this.shadowRoot.appendChild(document.head.querySelector('link').cloneNode());
 
@@ -36,13 +39,13 @@
           const store = testHelpers.createStore();
 
           window.WebChat.renderWebChat(
-            { 
+            {
               directLine,
-              nonce: 'test', 
+              nonce: 'test',
               store,
               styleOptions: {
                 stylesRoot: this.shadowRoot
-              } 
+              }
             },
             container
           );
@@ -51,7 +54,13 @@
 
       run(async function () {
         customElements.define('webchat-element', WebChatElement);
+
+        pageElements.root(document.querySelector('webchat-element').shadowRoot);
+
+        await pageConditions.uiConnected();
+        await pageConditions.scrollToBottomCompleted();
         await host.snapshot();
+
         for (const style of document.querySelector('webchat-element').shadowRoot.querySelectorAll('style')) {
           expect(style.nonce).toBe('test');
         }

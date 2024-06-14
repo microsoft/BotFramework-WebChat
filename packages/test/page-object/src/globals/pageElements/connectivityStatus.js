@@ -1,3 +1,5 @@
+import root from './root';
+
 export default function connectivityStatus() {
-  return document.querySelector(`.webchat__connectivityStatus`);
+  return root().querySelector(`.webchat__connectivityStatus`);
 }

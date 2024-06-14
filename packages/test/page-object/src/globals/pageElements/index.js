@@ -9,6 +9,7 @@ import focusedActivity from './focusedActivity';
 import keyboardHelpScreenCloseButton from './keyboardHelpScreenCloseButton';
 import linkDefinitions from './linkDefinitions';
 import microphoneButton from './microphoneButton';
+import root from './root';
 import scrollToEndButton from './scrollToEndButton';
 import sendBoxTextBox from './sendBoxTextBox';
 import sendButton from './sendButton';
@@ -35,6 +36,7 @@ export {
   keyboardHelpScreenCloseButton,
   linkDefinitions,
   microphoneButton,
+  root,
   scrollToEndButton,
   sendBoxTextBox,
   sendButton,
