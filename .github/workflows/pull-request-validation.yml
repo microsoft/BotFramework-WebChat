@@ -107,7 +107,7 @@ jobs:
       - run: npm run precommit --if-present
 
   unit-test:
-    name: Unit test
+    name: Unit test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
