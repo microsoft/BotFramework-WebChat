@@ -83,6 +83,11 @@ jobs:
   static-code-analysis:
     name: Static code analysis
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard-index: [1, 2]
+        shard-count: [2]
 
     steps:
       - uses: actions/checkout@v4
@@ -138,6 +143,7 @@ jobs:
           --forceExit \
           --logHeapUsage \
           --runInBand \
+          --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
           --testPathPattern=/packages/\
         timeout-minutes: 10
 
@@ -146,10 +152,10 @@ jobs:
         run: |
           ls -laR .
 
-          mv jest.json jest-unit.json
-          mv lcov.info lcov-unit.info
-          mv nunit3.xml nunit3-unit.xml
-          mv result.trx result-unit.trx
+          mv jest.json jest-unit-${{ matrix.shard-index }}.json
+          mv lcov.info lcov-unit-${{ matrix.shard-index }}.info
+          mv nunit3.xml nunit3-unit-${{ matrix.shard-index }}.xml
+          mv result.trx result-unit-${{ matrix.shard-index }}.trx
         working-directory: ./coverage
 
       - if: always()
@@ -211,8 +217,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard-index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
-        shard-count: [17]
+        shard-index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        shard-count: [16]
 
     steps:
       - if: "env.skip-secure-feed != 'true'"
@@ -337,8 +343,8 @@ jobs:
             --add-tracefile lcov-14.info \
             --add-tracefile lcov-15.info \
             --add-tracefile lcov-16.info \
-            --add-tracefile lcov-17.info \
-            --add-tracefile lcov-unit.info \
+            --add-tracefile lcov-unit-1.info \
+            --add-tracefile lcov-unit-2.info \
             --output-file lcov.info
 
       - if: always()
