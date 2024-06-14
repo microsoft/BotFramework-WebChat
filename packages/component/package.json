@@ -15,14 +15,34 @@
         "default": "./lib/index.js"
       }
     },
-    "./internal": {
+    "./internal/parseDocumentFromString": {
       "import": {
-        "types": "./dist/botframework-webchat-component.internal.d.mts",
-        "default": "./dist/botframework-webchat-component.internal.mjs"
+        "types": "./dist/botframework-webchat-component.internal.parseDocumentFromString.d.mts",
+        "default": "./dist/botframework-webchat-component.internal.parseDocumentFromString.mjs"
       },
       "require": {
-        "types": "./lib/internal.d.ts",
-        "default": "./lib/internal.js"
+        "types": "./lib/internal/parseDocumentFromString.d.ts",
+        "default": "./lib/internal/parseDocumentFromString.js"
+      }
+    },
+    "./internal/serializeDocumentIntoString": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.internal.serializeDocumentIntoString.d.mts",
+        "default": "./dist/botframework-webchat-component.internal.serializeDocumentIntoString.mjs"
+      },
+      "require": {
+        "types": "./lib/internal/serializeDocumentIntoString.d.ts",
+        "default": "./lib/internal/serializeDocumentIntoString.js"
+      }
+    },
+    "./internal/useInjectStyles": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.internal.useInjectStyles.d.mts",
+        "default": "./dist/botframework-webchat-component.internal.useInjectStyles.mjs"
+      },
+      "require": {
+        "types": "./lib/internal/useInjectStyles.d.ts",
+        "default": "./lib/internal/useInjectStyles.js"
       }
     }
   },
