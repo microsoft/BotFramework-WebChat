@@ -26,9 +26,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ### Added
 
--  (Experimental) Added initial decorators support, in [PR #5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
-   -  Introduced internal `botframework-webchat-api/decorator` import, in [PR #5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
-   -  Added initial decorator support for activities, including `ActivityBorderDecoratorMiddleware`, in [PR #5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+-  (Experimental) Added initial decorators support, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Introduced internal `botframework-webchat-api/decorator` import, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Added `DecoratorComposer` and `ActivityDecorator` to be used for decorating activity border, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 
