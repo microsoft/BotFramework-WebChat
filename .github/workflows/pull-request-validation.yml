@@ -112,8 +112,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard-index: [1, 2]
-        shard-count: [2]
+        shard-index: [1, 2, 3, 4, 5]
+        shard-count: [5]
 
     steps:
       - uses: actions/checkout@v4
@@ -217,8 +217,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard-index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-        shard-count: [16]
+        shard-index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+        shard-count: [17]
 
     steps:
       - if: "env.skip-secure-feed != 'true'"
@@ -343,8 +343,12 @@ jobs:
             --add-tracefile lcov-14.info \
             --add-tracefile lcov-15.info \
             --add-tracefile lcov-16.info \
+            --add-tracefile lcov-17.info \
             --add-tracefile lcov-unit-1.info \
             --add-tracefile lcov-unit-2.info \
+            --add-tracefile lcov-unit-3.info \
+            --add-tracefile lcov-unit-4.info \
+            --add-tracefile lcov-unit-5.info \
             --output-file lcov.info
 
       - if: always()
