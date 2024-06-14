@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useMemo } from 'react';
 
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 const ROOT_STYLE = {
   overflow: 'hidden',

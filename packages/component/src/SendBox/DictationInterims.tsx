@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import React, { FC } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 const {
   DictateState: { DICTATING, STARTING, STOPPING }

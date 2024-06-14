@@ -1,6 +1,7 @@
 /** @jest-environment jsdom */
 
-import { parseDocumentFromString, serializeDocumentIntoString } from 'botframework-webchat-component/internal';
+import { parseDocumentFromString } from 'botframework-webchat-component/internal/parseDocumentFromString';
+import { serializeDocumentIntoString } from 'botframework-webchat-component/internal/serializeDocumentIntoString';
 import MarkdownIt from 'markdown-it';
 import betterLink from '../markdownItPlugins/betterLink';
 import betterLinkDocumentMod, { type BetterLinkDocumentModDecoration } from './betterLinkDocumentMod';

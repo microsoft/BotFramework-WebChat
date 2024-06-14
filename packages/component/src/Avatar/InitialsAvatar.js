@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 const { useAvatarForBot, useAvatarForUser } = hooks;
 

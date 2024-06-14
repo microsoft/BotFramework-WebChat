@@ -11,6 +11,7 @@ let config = {
   entry: {
     webchat: './dist/botframework-webchat.mjs',
     'webchat-es5': './dist/botframework-webchat.es5.mjs',
+    'webchat-internal': './dist/botframework-webchat.internal.mjs',
     'webchat-minimal': './dist/botframework-webchat.minimal.mjs'
   },
   mode: 'production',

@@ -16,6 +16,10 @@
       "destination": "__tests__/html/assets/:filename"
     },
     {
+      "source": "/assets/:path/:filename",
+      "destination": "__tests__/html/assets/:path/:filename"
+    },
+    {
       "source": "/assets/transcripts/:filename",
       "destination": "__tests__/html/assets/transcripts/:filename"
     },
@@ -56,12 +60,32 @@
       "destination": "packages/bundle/dist/webchat.js"
     },
     {
+      "source": "/__dist__/webchat.js.map",
+      "destination": "packages/bundle/dist/webchat.js.map"
+    },
+    {
       "source": "/__dist__/webchat-es5.js",
       "destination": "packages/bundle/dist/webchat-es5.js"
     },
     {
+      "source": "/__dist__/webchat-es5.js.map",
+      "destination": "packages/bundle/dist/webchat-es5.js/map"
+    },
+    {
+      "source": "/__dist__/webchat-internal.js",
+      "destination": "packages/bundle/dist/webchat-internal.js"
+    },
+    {
+      "source": "/__dist__/webchat-internal.js.map",
+      "destination": "packages/bundle/dist/webchat-internal.js.map"
+    },
+    {
       "source": "/__dist__/webchat-minimal.js",
       "destination": "packages/bundle/dist/webchat-minimal.js"
+    },
+    {
+      "source": "/__dist__/webchat-minimal.js.map",
+      "destination": "packages/bundle/dist/webchat-minimal.js.map"
     },
     {
       "source": "/test-harness.js",

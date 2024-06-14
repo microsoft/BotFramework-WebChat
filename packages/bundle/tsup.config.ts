@@ -18,6 +18,7 @@ export default defineConfig({
   entry: {
     'botframework-webchat': './src/index.ts',
     'botframework-webchat.es5': './src/index-es5.ts',
+    'botframework-webchat.internal': './src/index-withInternal.ts',
     'botframework-webchat.minimal': './src/index-minimal.ts'
   },
   env: {

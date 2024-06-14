@@ -1,4 +1,4 @@
-import injectStyle from './injectStyle';
+import createStyles from './createStyles';
 import useStyles from './useStyles';
 
-export { injectStyle, useStyles };
+export { createStyles, useStyles };

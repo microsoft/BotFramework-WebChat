@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
 
 const { useDirection, useLocalizer } = hooks;

@@ -1,3 +1,5 @@
+import root from './root';
+
 export default function toasterHeader() {
-  return document.querySelector('.webchat__toaster__header');
+  return root().querySelector('.webchat__toaster__header');
 }
