@@ -39,46 +39,31 @@
           return false;
         };
 
-        const renderWithFunction = fn =>
+        const renderWithFunction = (fn, props) =>
           new Promise(resolve =>
             ReactDOM.render(
-              <Composer directLine={directLine} store={store}>
+              <Composer directLine={directLine} store={store} {...props}>
                 <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
               </Composer>,
               document.getElementById('webchat')
             )
           );
 
-        const styleElement1 = createStyle('main { background-color: Red!important; }');
-        const styleElement2 = createStyle('main { background-color: Orange!important; }');
-        const styleElement3 = createStyle('main { background-color: Yellow!important; }');
+        const styleElement = createStyle('main { background-color: Red!important; }');
 
-        await renderWithFunction(() => useInjectStyles([styleElement1]));
+        await renderWithFunction(() => useInjectStyles([styleElement]));
         await host.snapshot();
 
-        const allInjectedStyles1 = document.head.querySelectorAll('style:not([data-emotion])');
+        expect([...document.head.querySelectorAll('style:not([data-emotion])')]).toEqual([styleElement]);
+        expect([...document.body.querySelectorAll('style:not([data-emotion])')]).toEqual([]);
 
-        expect(allInjectedStyles1).toHaveLength(1);
-        expect(allInjectedStyles1[0]).toBe(styleElement1);
-
-        await renderWithFunction(() => useInjectStyles([styleElement1, styleElement2]));
+        await renderWithFunction(() => useInjectStyles([styleElement]), {
+          styleOptions: { stylesRoot: document.body }
+        });
         await host.snapshot();
 
-        const allInjectedStyles2 = document.head.querySelectorAll('style:not([data-emotion])');
-
-        expect(allInjectedStyles2).toHaveLength(2);
-        expect(allInjectedStyles2[0]).toBe(styleElement1);
-        expect(allInjectedStyles2[1]).toBe(styleElement2);
-
-        await renderWithFunction(() => useInjectStyles([styleElement1, styleElement2, styleElement3]));
-        await host.snapshot();
-
-        const allInjectedStyles3 = document.head.querySelectorAll('style:not([data-emotion])');
-
-        expect(allInjectedStyles3).toHaveLength(3);
-        expect(allInjectedStyles3[0]).toBe(styleElement1);
-        expect(allInjectedStyles3[1]).toBe(styleElement2);
-        expect(allInjectedStyles3[2]).toBe(styleElement3);
+        expect([...document.head.querySelectorAll('style:not([data-emotion])')]).toEqual([]);
+        expect([...document.body.querySelectorAll('style:not([data-emotion])')]).toEqual([styleElement]);
       });
     </script>
   </body>

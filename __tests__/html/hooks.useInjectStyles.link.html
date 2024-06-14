@@ -59,7 +59,7 @@
         const allInjectedStyles1 = document.head.querySelectorAll('link:not([data-default])');
 
         expect(allInjectedStyles1).toHaveLength(1);
-        expect(allInjectedStyles1[0]).toBe(linkStyleSheetElement1); // Same instance.
+        expect(allInjectedStyles1[0]).toBe(linkStyleSheetElement1);
 
         await renderWithFunction(() => useInjectStyles([linkStyleSheetElement1, linkStyleSheetElement2]));
         await host.snapshot();
@@ -67,8 +67,8 @@
         const allInjectedStyles2 = document.head.querySelectorAll('link:not([data-default])');
 
         expect(allInjectedStyles2).toHaveLength(2);
-        expect(allInjectedStyles2[0]).not.toBe(linkStyleSheetElement1); // The funny part, not same instance.
-        expect(allInjectedStyles2[1]).not.toBe(linkStyleSheetElement2);
+        expect(allInjectedStyles2[0]).toBe(linkStyleSheetElement1);
+        expect(allInjectedStyles2[1]).toBe(linkStyleSheetElement2);
 
         await renderWithFunction(() => useInjectStyles([linkStyleSheetElement1, linkStyleSheetElement2, linkStyleSheetElement3]));
         await host.snapshot();
@@ -76,11 +76,9 @@
         const allInjectedStyles3 = document.head.querySelectorAll('link:not([data-default])');
 
         expect(allInjectedStyles3).toHaveLength(3);
-        expect(allInjectedStyles3[0]).toBe(linkStyleSheetElement1); // The funny part, same instance again.
+        expect(allInjectedStyles3[0]).toBe(linkStyleSheetElement1);
         expect(allInjectedStyles3[1]).toBe(linkStyleSheetElement2);
         expect(allInjectedStyles3[2]).toBe(linkStyleSheetElement3);
-
-        // I think for which methodology we take, it should be either same/not-same instance for all 3 set of expectations.
       });
     </script>
   </body>
