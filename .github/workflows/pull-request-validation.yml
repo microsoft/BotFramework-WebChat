@@ -83,11 +83,6 @@ jobs:
   static-code-analysis:
     name: Static code analysis
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shard-index: [1, 2]
-        shard-count: [2]
 
     steps:
       - uses: actions/checkout@v4
@@ -114,6 +109,11 @@ jobs:
   unit-test:
     name: Unit test
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard-index: [1, 2]
+        shard-count: [2]
 
     steps:
       - uses: actions/checkout@v4
