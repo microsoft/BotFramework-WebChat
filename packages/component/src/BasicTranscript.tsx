@@ -354,7 +354,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
                   // If the activity is not attached to DOM tree, we should not count it as "bottommost visible activity", as it is not visible.
                   return elementClientRect && elementClientRect.bottom < scrollableClientBottom + 1;
-            })
+                })
             : activityElements[0]
         )?.[0];
 
