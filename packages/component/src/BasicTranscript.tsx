@@ -815,12 +815,12 @@ const useScroller = (activityElementMapRef: MutableRefObject<ActivityElementMap>
               const firstUnacknowledgedActivityOffsetTop =
                 firstUnacknowledgedActivityElement.offsetTop + firstUnacknowledgedActivityBoundingBoxElement.offsetTop;
 
-              values.push(
-               firstUnacknowledgedActivityOffsetTop -
-               scrollTop -
-               offsetHeight * (1 - patchedAutoScrollSnapOnPage) +
-               patchedAutoScrollSnapOnPageOffset
-              );
+                values.push(
+                  firstUnacknowledgedActivityOffsetTop -
+                  scrollTop -
+                  offsetHeight * (1 - patchedAutoScrollSnapOnPage) +
+                  patchedAutoScrollSnapOnPageOffset
+                );
             }
           }
         }
