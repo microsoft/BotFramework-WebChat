@@ -847,7 +847,7 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
   return (
     <TranscriptFocusComposer containerRef={containerRef}>
       <ReactScrollToBottomComposer scroller={scroller}>
-        {!android && <KeyboardHelp />}
+        <KeyboardHelp />
         <InternalTranscript activityElementMapRef={activityElementMapRef} className={className} ref={containerRef} />
       </ReactScrollToBottomComposer>
     </TranscriptFocusComposer>
