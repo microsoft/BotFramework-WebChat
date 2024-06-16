@@ -345,16 +345,16 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         const activityKeyJustAboveScrollBottom: string | undefined = (
           scrollableElement.scrollTop
             ? activityElements
-              .reverse()
-              // Add subpixel tolerance
-              .find(([, element]) => {
-                // "getClientRects()" is not returning an array, thus, it is not destructurable.
-                // eslint-disable-next-line prefer-destructuring
-                const elementClientRect = element.getClientRects()[0];
+                .reverse()
+                // Add subpixel tolerance
+                .find(([, element]) => {
+                  // "getClientRects()" is not returning an array, thus, it is not destructurable.
+                  // eslint-disable-next-line prefer-destructuring
+                  const elementClientRect = element.getClientRects()[0];
 
-                // If the activity is not attached to DOM tree, we should not count it as "bottommost visible activity", as it is not visible.
-                return elementClientRect && elementClientRect.bottom < scrollableClientBottom + 1;
-              })
+                   // If the activity is not attached to DOM tree, we should not count it as "bottommost visible activity", as it is not visible.
+                 return elementClientRect && elementClientRect.bottom < scrollableClientBottom + 1;
+               })
             : activityElements[0]
         )?.[0];
 
