@@ -1,13 +1,13 @@
-import React, { type ReactNode, memo, useMemo } from 'react';
-import { ActivityBorderDecoratorMiddlewareProxy } from './ActivityBorderDecoratorMiddleware';
 import { WebChatActivity } from 'botframework-webchat-core';
+import React, { Fragment, memo, useMemo, type ReactNode } from 'react';
 import { ActivityDecoratorRequest } from '..';
+import { ActivityBorderDecoratorMiddlewareProxy } from './ActivityBorderDecoratorMiddleware';
 
-const ActivityDecoratorFallback = memo(({ children }) => <React.Fragment>{children}</React.Fragment>);
+const ActivityDecoratorFallback = memo(({ children }) => <Fragment>{children}</Fragment>);
 
 ActivityDecoratorFallback.displayName = 'ActivityDecoratorFallback';
 
-const supportedActivityRoles = ['bot', 'chnnel', 'user', undefined] as const;
+const supportedActivityRoles = ['bot', 'channel', 'user', undefined] as const;
 const supportedActivityStates = ['informative', 'completion', undefined] as const;
 
 function ActivityDecorator({ children, activity }: Readonly<{ activity?: WebChatActivity; children?: ReactNode }>) {
@@ -20,6 +20,7 @@ function ActivityDecorator({ children, activity }: Readonly<{ activity?: WebChat
     }),
     [activity]
   );
+
   return (
     <ActivityBorderDecoratorMiddlewareProxy fallbackComponent={ActivityDecoratorFallback} request={request}>
       {children}
