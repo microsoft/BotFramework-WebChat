@@ -7,8 +7,8 @@ const ActivityDecoratorFallback = memo(({ children }) => <Fragment>{children}</F
 
 ActivityDecoratorFallback.displayName = 'ActivityDecoratorFallback';
 
-const supportedActivityRoles = ['bot', 'channel', 'user', undefined] as const;
-const supportedActivityStates = ['informative', 'completion', undefined] as const;
+const supportedActivityRoles: ActivityDecoratorRequest['from'][] = ['bot', 'channel', 'user', undefined];
+const supportedActivityStates: ActivityDecoratorRequest['state'][] = ['informative', 'completion', undefined];
 
 function ActivityDecorator({ children, activity }: Readonly<{ activity?: WebChatActivity; children?: ReactNode }>) {
   const request = useMemo<ActivityDecoratorRequest>(
