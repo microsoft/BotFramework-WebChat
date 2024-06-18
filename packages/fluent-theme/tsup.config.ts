@@ -12,7 +12,11 @@ const umdResolvePlugin = {
     }));
 
     build.onResolve({ filter: /^botframework-webchat-api$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api.ts')
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/index.ts')
+    }));
+
+    build.onResolve({ filter: /^botframework-webchat-api\/decorator$/u }, () => ({
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/decorator.ts')
     }));
 
     build.onResolve({ filter: /^botframework-webchat-component$/u }, () => ({
@@ -27,6 +31,7 @@ const injectCSSPlugin = {
     build.onEnd(result => {
       const js = result.outputFiles.find(f => f.path.match(/(\.js|\.mjs)$/u));
       const css = result.outputFiles.find(f => f.path.match(/(\.css)$/u));
+
       if (css && js?.text.includes(injectedStylesPlaceholder)) {
         js.contents = Buffer.from(js.text.replace(`"${injectedStylesPlaceholder}"`, JSON.stringify(css.text)));
       }
