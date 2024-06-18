@@ -7,16 +7,16 @@ export type MiddlewareWithInit<M extends ComponentMiddleware<unknown>, I = unkno
   init: I
 ) => ReturnType<M> | false;
 
-export default function createMiddlewareFacility<
+export default function templateMiddleware<
   Props extends {} = EmptyObject,
   Request extends {} = EmptyObject,
   Init extends {} = undefined
 >(name: string) {
   type Middleware = ComponentMiddleware<Request, Props>;
 
-  const validateMiddleware = custom<Middleware>(input => typeof input === 'function', 'Middleware must be a function.');
-
-  const middlewareSchema = array(any([validateMiddleware]));
+  const middlewareSchema = array(
+    any([custom<Middleware>(input => typeof input === 'function', 'Middleware must be a function.')])
+  );
 
   const isMiddleware = (middleware: unknown): middleware is Output<typeof middlewareSchema> =>
     safeParse(middlewareSchema, middleware).success;
