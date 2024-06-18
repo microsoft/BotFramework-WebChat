@@ -41,7 +41,7 @@ function isCitationURL(url: string): boolean {
   return onErrorResumeNext(() => new URL(url))?.protocol === 'cite:';
 }
 
-function getEntryName(entry: Entry): string {
+function getEntryName(entry: Entry) {
   return entry.claim?.appearance?.usageInfo?.name;
 }
 
