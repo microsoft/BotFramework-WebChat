@@ -1,4 +1,4 @@
-import React, { type ReactNode, useMemo } from 'react';
+import React, { useMemo, type ReactNode } from 'react';
 import {
   ActivityBorderDecoratorMiddlewareProvider,
   activityBorderDecoratorTypeName,
