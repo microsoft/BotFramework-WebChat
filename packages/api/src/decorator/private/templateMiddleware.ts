@@ -19,10 +19,18 @@ export default function templateMiddleware<Init, Request = any, Props extends {}
 
   const warnInvalid = warnOnce(`"${name}" prop is invalid`);
 
-  const rectifyProps = (middleware: unknown): readonly Middleware[] => {
+  const initMiddleware = (
+    middleware: readonly MiddlewareWithInit<Middleware, Init>[],
+    init?: Init
+  ): readonly Middleware[] => {
     if (middleware) {
       if (isMiddleware(middleware)) {
-        return Object.isFrozen(middleware) ? middleware : Object.freeze([...middleware]);
+        return Object.freeze(
+          middleware
+            ?.map(middleware => middleware(init))
+            .filter((enhancer): enhancer is ReturnType<Middleware> => !!enhancer)
+            .map(enhancer => () => enhancer)
+        );
       }
 
       warnInvalid();
@@ -30,17 +38,6 @@ export default function templateMiddleware<Init, Request = any, Props extends {}
 
     return EMPTY_ARRAY;
   };
-
-  const initMiddleware = (
-    middleware: readonly MiddlewareWithInit<Middleware, Init>[],
-    init?: Init
-  ): readonly Middleware[] =>
-    rectifyProps(
-      middleware
-        ?.map(middleware => middleware(init))
-        .filter((enhancer): enhancer is ReturnType<Middleware> => !!enhancer)
-        .map(enhancer => () => enhancer)
-    );
 
   const { Provider, Proxy } = createChainOfResponsibility<Request, Props>();
 
