@@ -1,8 +1,9 @@
-import React, { memo, type ReactNode } from 'react';
-import cx from 'classnames';
-import styles from './Decorator.module.css';
-import { useStyles } from '../../styles';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
+import cx from 'classnames';
+import React, { memo, type ReactNode } from 'react';
+
+import { useStyles } from '../../styles';
+import styles from './Decorator.module.css';
 import Flair from './Flair';
 import Loader from './Loader';
 
@@ -13,8 +14,9 @@ const middleware: DecoratorMiddleware[] = [
   init => init === 'activity border' && (next => request => (request.state === 'informative' ? Loader : next(request)))
 ];
 
-function WebchatDecorator(props: Readonly<{ readonly children: ReactNode | undefined }>) {
+function WebChatDecorator(props: Readonly<{ readonly children?: ReactNode | undefined }>) {
   const classNames = useStyles(styles);
+
   return (
     <div className={cx(rootClassName, classNames['decorator'])}>
       <DecoratorComposer middleware={middleware}>{props.children}</DecoratorComposer>
@@ -22,4 +24,4 @@ function WebchatDecorator(props: Readonly<{ readonly children: ReactNode | undef
   );
 }
 
-export default memo(WebchatDecorator);
+export default memo(WebChatDecorator);
