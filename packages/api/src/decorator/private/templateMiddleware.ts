@@ -38,7 +38,7 @@ export default function createMiddlewareFacility<
   const initMiddleware = (middleware: MiddlewareWithInit<Middleware>[], init: Init): readonly Middleware[] =>
     rectifyProps(
       middleware
-        .map(md => md(init))
+        .map(middleware => middleware(init))
         .filter((enhancer): enhancer is ReturnType<Middleware> => !!enhancer)
         .map(enhancer => () => enhancer)
     );
@@ -49,14 +49,14 @@ export default function createMiddlewareFacility<
   Proxy.displayName = `${name}Proxy`;
 
   return {
-    types: {
-      middleware: undefined as Middleware,
-      props: undefined as Props,
-      request: undefined as Request,
-      init: undefined as Init
-    },
+    initMiddleware,
     Provider,
     Proxy,
-    initMiddleware
+    types: {
+      init: undefined as Init,
+      middleware: undefined as Middleware,
+      props: undefined as Props,
+      request: undefined as Request
+    }
   };
 }
