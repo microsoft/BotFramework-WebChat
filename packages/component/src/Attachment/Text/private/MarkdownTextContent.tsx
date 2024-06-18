@@ -41,6 +41,10 @@ function isCitationURL(url: string): boolean {
   return onErrorResumeNext(() => new URL(url))?.protocol === 'cite:';
 }
 
+function getEntryName(entry: Entry): string {
+  return entry.claim?.appearance?.usageInfo?.name;
+}
+
 const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   const [
     {
@@ -98,7 +102,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
                 messageCitation?.appearance && !messageCitation.appearance.url
                   ? () =>
                       showClaimModal(
-                        markdownDefinition.title,
+                        messageCitation.appearance.name ?? markdownDefinition.title,
                         messageCitation.appearance.text,
                         messageCitation.alternateName
                       )
@@ -118,7 +122,12 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
               claim: rootLevelClaim,
               key: markdownDefinition.url,
               handleClick: isCitationURL(rootLevelClaim['@id'])
-                ? () => showClaimModal(markdownDefinition.title, rootLevelClaim.text, rootLevelClaim.alternateName)
+                ? () =>
+                    showClaimModal(
+                      rootLevelClaim.name ?? markdownDefinition.title,
+                      rootLevelClaim.text,
+                      rootLevelClaim.alternateName
+                    )
                 : undefined,
               markdownDefinition
             };
@@ -197,14 +206,14 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
         >
           {entries.map(entry => (
             <LinkDefinitionItem
-              badgeName={entry.claim?.appearance?.usageInfo?.name}
-              badgeTitle={[entry.claim?.appearance?.usageInfo?.name, entry.claim?.appearance?.usageInfo?.description]
+              badgeName={getEntryName(entry)}
+              badgeTitle={[getEntryName(entry), entry.claim?.appearance?.usageInfo?.description]
                 .filter(Boolean)
                 .join('\n\n')}
               identifier={entry.markdownDefinition.label}
               key={entry.key}
               onClick={entry.handleClick}
-              text={entry.markdownDefinition.title}
+              text={entry.claim?.appearance?.name ?? entry.markdownDefinition.title}
               url={entry.url}
             />
           ))}
