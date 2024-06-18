@@ -3,7 +3,7 @@ import { createChainOfResponsibility, type ComponentMiddleware } from 'react-cha
 import { type EmptyObject } from 'type-fest';
 import { any, array, custom, safeParse, type Output } from 'valibot';
 
-export type MiddlewareWithInit<M extends ComponentMiddleware<unknown>, I> = (init: I) => ReturnType<M> | false;
+export type MiddlewareWithInit<M extends ComponentMiddleware<any, any, any>, I> = (init: I) => ReturnType<M> | false;
 
 const EMPTY_ARRAY = Object.freeze([]);
 
