@@ -5,6 +5,8 @@ import { any, array, custom, safeParse, type Output } from 'valibot';
 
 export type MiddlewareWithInit<M extends ComponentMiddleware<unknown>, I> = (init: I) => ReturnType<M> | false;
 
+const EMPTY_ARRAY = Object.freeze([]);
+
 export default function templateMiddleware<Init, Request = any, Props extends {} = EmptyObject>(name: string) {
   type Middleware = ComponentMiddleware<Request, Props>;
 
@@ -26,16 +28,16 @@ export default function templateMiddleware<Init, Request = any, Props extends {}
       warnInvalid();
     }
 
-    return Object.freeze([]);
+    return EMPTY_ARRAY;
   };
 
   const initMiddleware = (
     middleware: readonly MiddlewareWithInit<Middleware, Init>[],
-    init: Init
+    init?: Init
   ): readonly Middleware[] =>
     rectifyProps(
       middleware
-        .map(middleware => middleware(init))
+        ?.map(middleware => middleware(init))
         .filter((enhancer): enhancer is ReturnType<Middleware> => !!enhancer)
         .map(enhancer => () => enhancer)
     );
