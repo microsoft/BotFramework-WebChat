@@ -1,9 +1,11 @@
 import React, { memo, type ReactNode } from 'react';
+
 import { useStyles } from '../../styles';
 import styles from './Loader.module.css';
 
-function Loader({ children }: Readonly<{ children?: ReactNode }>) {
+function Loader({ children }: Readonly<{ children?: ReactNode | undefined }>) {
   const classNames = useStyles(styles);
+
   return (
     <React.Fragment>
       {children}
