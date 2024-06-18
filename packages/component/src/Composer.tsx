@@ -7,8 +7,8 @@ import type {
 import {
   Composer as APIComposer,
   hooks,
-  rectifySendBoxMiddlewareProps,
-  rectifySendBoxToolbarMiddlewareProps,
+  initSendBoxMiddleware,
+  initSendBoxToolbarMiddleware,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
 import { DecoratorComposer } from 'botframework-webchat-api/decorator';
@@ -388,8 +388,8 @@ const Composer = ({
   const sendBoxMiddleware = useMemo<readonly SendBoxMiddleware[]>(
     () =>
       Object.freeze([
-        ...rectifySendBoxMiddlewareProps(sendBoxMiddlewareFromProps),
-        ...rectifySendBoxMiddlewareProps(theme.sendBoxMiddleware),
+        ...initSendBoxMiddleware(sendBoxMiddlewareFromProps),
+        ...initSendBoxMiddleware(theme.sendBoxMiddleware),
         ...createDefaultSendBoxMiddleware()
       ]),
     [sendBoxMiddlewareFromProps, theme.sendBoxMiddleware]
@@ -398,8 +398,8 @@ const Composer = ({
   const sendBoxToolbarMiddleware = useMemo<readonly SendBoxToolbarMiddleware[]>(
     () =>
       Object.freeze([
-        ...rectifySendBoxToolbarMiddlewareProps(sendBoxToolbarMiddlewareFromProps),
-        ...rectifySendBoxToolbarMiddlewareProps(theme.sendBoxToolbarMiddleware),
+        ...initSendBoxToolbarMiddleware(sendBoxToolbarMiddlewareFromProps),
+        ...initSendBoxToolbarMiddleware(theme.sendBoxToolbarMiddleware),
         ...createDefaultSendBoxToolbarMiddleware()
       ]),
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]

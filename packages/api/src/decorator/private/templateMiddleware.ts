@@ -3,15 +3,9 @@ import { createChainOfResponsibility, type ComponentMiddleware } from 'react-cha
 import { type EmptyObject } from 'type-fest';
 import { any, array, custom, safeParse, type Output } from 'valibot';
 
-export type MiddlewareWithInit<M extends ComponentMiddleware<unknown>, I = unknown> = (
-  init: I
-) => ReturnType<M> | false;
+export type MiddlewareWithInit<M extends ComponentMiddleware<unknown>, I> = (init: I) => ReturnType<M> | false;
 
-export default function templateMiddleware<
-  Props extends {} = EmptyObject,
-  Request extends {} = EmptyObject,
-  Init extends {} = undefined
->(name: string) {
+export default function templateMiddleware<Init, Request = any, Props extends {} = EmptyObject>(name: string) {
   type Middleware = ComponentMiddleware<Request, Props>;
 
   const middlewareSchema = array(
@@ -35,7 +29,10 @@ export default function templateMiddleware<
     return Object.freeze([]);
   };
 
-  const initMiddleware = (middleware: MiddlewareWithInit<Middleware>[], init: Init): readonly Middleware[] =>
+  const initMiddleware = (
+    middleware: readonly MiddlewareWithInit<Middleware, Init>[],
+    init: Init
+  ): readonly Middleware[] =>
     rectifyProps(
       middleware
         .map(middleware => middleware(init))

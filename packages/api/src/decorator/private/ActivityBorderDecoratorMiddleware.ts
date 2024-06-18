@@ -8,7 +8,7 @@ const {
   Provider: ActivityBorderDecoratorMiddlewareProvider,
   Proxy: ActivityBorderDecoratorMiddlewareProxy,
   types
-} = templateMiddleware<EmptyObject, ActivityDecoratorRequest, typeof activityBorderDecoratorTypeName>(
+} = templateMiddleware<typeof activityBorderDecoratorTypeName, ActivityDecoratorRequest, EmptyObject>(
   'ActivityBorderDecoratorMiddleware'
 );
 
