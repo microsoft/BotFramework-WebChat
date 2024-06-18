@@ -1,3 +1,5 @@
+import { type EmptyObject } from 'type-fest';
+
 import ActivityDecoratorRequest from './activityDecoratorRequest';
 import templateMiddleware from './templateMiddleware';
 
@@ -6,7 +8,7 @@ const {
   Provider: ActivityBorderDecoratorMiddlewareProvider,
   Proxy: ActivityBorderDecoratorMiddlewareProxy,
   types
-} = templateMiddleware<{}, ActivityDecoratorRequest, typeof activityBorderDecoratorTypeName>(
+} = templateMiddleware<EmptyObject, ActivityDecoratorRequest, typeof activityBorderDecoratorTypeName>(
   'ActivityBorderDecoratorMiddleware'
 );
 
