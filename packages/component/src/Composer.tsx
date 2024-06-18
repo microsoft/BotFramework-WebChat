@@ -11,6 +11,7 @@ import {
   rectifySendBoxToolbarMiddlewareProps,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
+import { DecoratorComposer } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -49,7 +50,6 @@ import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlin
 import createCSSKey from './Utils/createCSSKey';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
-import { DecoratorComposer } from 'botframework-webchat-api/decorator';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
