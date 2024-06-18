@@ -31,6 +31,7 @@ const injectCSSPlugin = {
     build.onEnd(result => {
       const js = result.outputFiles.find(f => f.path.match(/(\.js|\.mjs)$/u));
       const css = result.outputFiles.find(f => f.path.match(/(\.css)$/u));
+
       if (css && js?.text.includes(injectedStylesPlaceholder)) {
         js.contents = Buffer.from(js.text.replace(`"${injectedStylesPlaceholder}"`, JSON.stringify(css.text)));
       }
