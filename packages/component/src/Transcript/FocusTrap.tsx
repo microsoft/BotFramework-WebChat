@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Fragment, memo, useCallback, useRef } from 'react';
 
 import type { FC, KeyboardEventHandler, PropsWithChildren } from 'react';
-
+import { android } from '../Utils/detectBrowser';
 import FocusRedirector from '../Utils/FocusRedirector';
 import tabbableElements from '../Utils/tabbableElements';
 import { useRefFrom } from 'use-ref-from';
@@ -49,11 +49,11 @@ const FocusTrap: FC<FocusTrapProps> = ({ children, onFocus, onLeave }) => {
 
   return (
     <Fragment>
-      <FocusRedirector onFocus={handleFirstSentinelFocus} />
+      {!android && <FocusRedirector onFocus={handleFirstSentinelFocus} />}
       <div onFocus={onFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
         {children}
       </div>
-      <FocusRedirector onFocus={handleLastSentinelFocus} />
+      {!android && <FocusRedirector onFocus={handleLastSentinelFocus} />}
     </Fragment>
   );
 };
