@@ -51,7 +51,9 @@
 
         await pageConditions.allImagesLoaded();
 
-        // When "New message" appears then focus should be automatically move to "New messages" button.
+        await host.sendTab();
+
+        // After pressing TAB from transcript, it should focus on the "New messages" button.
         expect(document.activeElement === pageElements.scrollToEndButton()).toBe(true);
 
         await host.snapshot();
