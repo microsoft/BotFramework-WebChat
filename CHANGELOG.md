@@ -24,6 +24,12 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ## [Unreleased]
 
+### Added
+
+-  (Experimental) Added initial decorators support, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Introduced internal `botframework-webchat-api/decorator` import, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Added `DecoratorComposer` and `ActivityDecorator` to be used for decorating activity border, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+
 ### Fixed
 - Fixed 'New message' button focus issue with Tab key press from keyboard (https://msazure.visualstudio.com/CCI/_workitems/edit/28081591), (https://msazure.visualstudio.com/CCI/_workitems/edit/27168818) in PR (https://github.com/microsoft/BotFramework-WebChat/pull/5207), by [@deepalic](https://github.com/deepalic)
 -  Improved performance for `useActivityWithRenderer`, in PR [#5172](https://github.com/microsoft/BotFramework-WebChat/pull/5172), by [@OEvgeny](https://github.com/OEvgeny)
