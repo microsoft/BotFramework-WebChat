@@ -213,7 +213,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
               identifier={entry.markdownDefinition.label}
               key={entry.key}
               onClick={entry.handleClick}
-              text={entry.claim?.appearance?.name ?? entry.markdownDefinition.title}
+              text={entry.claim?.name ?? entry.claim?.appearance?.name ?? entry.markdownDefinition.title}
               url={entry.url}
             />
           ))}

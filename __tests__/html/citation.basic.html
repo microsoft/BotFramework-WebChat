@@ -37,7 +37,7 @@
 
 [1]: https://support.microsoft.com/en-us/windows/use-a-proxy-server-in-windows-03096c53-0554-4ffe-b6ab-8b1deee8dae1
 [2]: https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-proxy-server-settings "Configure proxy server settings - Windows Server"
-[3]: cite:1 "Should be hidden"
+[3]: cite:1 "should be hidden"
 `,
           type: 'message'
         });
@@ -73,7 +73,8 @@
 
         expect(linkDefinitionItems[2].tagName).toBe('BUTTON');
 
-        expect(linkDefinitionItems[2].text).toBe('Should Be Visible');
+        expect(linkDefinitionItems[2].innerHTML).toContain('Should Be Visible');
+        expect(linkDefinitionItems[2].innerHTML).not.toContain('should be hidden');
       });
     </script>
   </body>
