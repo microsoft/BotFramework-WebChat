@@ -15,13 +15,26 @@ const ScrollToEndButton = ({ onClick }) => {
 
   const text = localize(scrollToEndButtonBehavior === 'any' ? 'TRANSCRIPT_MORE_MESSAGES' : 'TRANSCRIPT_NEW_MESSAGES');
   // useRef and useEffect is added to move focus on 'New messages' button when it is display on screen.
-  const buttonReference = useRef();
+  const buttonReference = useRef<HTMLButtonElement>();
 
   useEffect(() => {
-    if (buttonReference?.current) {
-      buttonReference.current.focus();
-    }
-  }, [buttonReference]);
+    const handleTabPress = event => {
+      if (event.key === 'Tab') {
+        if (buttonReference.current) {
+          event.preventDefault();
+          buttonReference.current.focus();
+        }
+      }
+    };
+
+    // Add event listener when component mounts
+    document.addEventListener('keydown', handleTabPress);
+
+    // Clean up event listener when component unmounts
+    return () => {
+      document.removeEventListener('keydown', handleTabPress);
+    };
+  }, [buttonReference]); // Empty dependency array means this effect runs only once
 
   return (
     <button
