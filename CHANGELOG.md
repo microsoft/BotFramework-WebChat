@@ -31,6 +31,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    -  Added `DecoratorComposer` and `ActivityDecorator` to be used for decorating activity border, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
+-  Fixed broken URLs in documentation of [LOCALIZATION.md](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/LOCALIZATION.md), by [@iamabhijeet2003](https://github.com/iamabhijeet2003), in PR [#5186](https://github.com/microsoft/BotFramework-WebChat/pull/5186)
+
+### Fixed
 
 -  Read deeper into citation objects in order to provide names, in PR [#5215](https://github.com/microsoft/BotFramework-WebChat/pull/5215), by [@beyackle2](https://github.com/beyackle2)
 -  Improved performance for `useActivityWithRenderer`, in PR [#5172](https://github.com/microsoft/BotFramework-WebChat/pull/5172), by [@OEvgeny](https://github.com/OEvgeny)
