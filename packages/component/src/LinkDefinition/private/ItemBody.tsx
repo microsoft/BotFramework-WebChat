@@ -10,7 +10,7 @@ type Props = Readonly<{
   // The text displayed as the main link of the citation
   text: string;
 
-  // do we show the external link icon after the link?
+  // If this is true, we show the "external link" icon after the link
   isExternal?: boolean;
 
   // The text displayed beneath the link as a description
