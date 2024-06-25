@@ -41,10 +41,6 @@ function isCitationURL(url: string): boolean {
   return onErrorResumeNext(() => new URL(url))?.protocol === 'cite:';
 }
 
-function getEntryName(entry: Entry) {
-  return entry.claim?.appearance?.usageInfo?.name;
-}
-
 const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   const [
     {
@@ -189,6 +185,16 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
     }
   }, [messageThing]);
 
+  // The main text of the citation entry (e.g. the title of the document). Used as the content of the main link and, if it exists, the header of the popup window.
+  const getEntryMainText = (entry: Entry) =>
+    entry.claim?.name ?? entry.claim?.appearance?.name ?? entry.markdownDefinition.title;
+
+  // Optional alternate name for the entry, used as a subtitle beneath the link
+  const getEntryBadgeName = (entry: Entry) => entry.claim?.appearance?.usageInfo?.name;
+
+  // Secondary text describing the citation, used in the a11y description (i.e. the div's title attribute)
+  const getEntryDescription = (entry: Entry) => entry.claim?.appearance?.usageInfo?.description;
+
   return (
     <div
       className={classNames('webchat__text-content', 'webchat__text-content--is-markdown', textContentStyleSet + '')}
@@ -206,14 +212,12 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
         >
           {entries.map(entry => (
             <LinkDefinitionItem
-              badgeName={getEntryName(entry)}
-              badgeTitle={[getEntryName(entry), entry.claim?.appearance?.usageInfo?.description]
-                .filter(Boolean)
-                .join('\n\n')}
+              badgeName={getEntryBadgeName(entry)}
+              badgeTitle={`${getEntryBadgeName(entry) ?? ''}\n\n${getEntryDescription(entry) ?? ''}`.trim()}
               identifier={entry.markdownDefinition.label}
               key={entry.key}
               onClick={entry.handleClick}
-              text={entry.claim?.name ?? entry.claim?.appearance?.name ?? entry.markdownDefinition.title}
+              text={getEntryMainText(entry)}
               url={entry.url}
             />
           ))}

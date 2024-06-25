@@ -4,11 +4,20 @@ import Badge from './Badge';
 import OpenInNewWindowIcon from './OpenInNewWindowIcon';
 
 type Props = Readonly<{
-  badgeName?: string;
-  badgeTitle?: string;
+  // The text (usually a number) displayed at the head of the citation
   identifier?: string;
-  isExternal?: boolean;
+
+  // The text displayed as the main link of the citation
   text: string;
+
+  // do we show the external link icon after the link?
+  isExternal?: boolean;
+
+  // The text displayed beneath the link as a description
+  badgeName?: string;
+
+  // The title of the badge, displayed as a tooltip on the item's description as well as the description's screen-reader content
+  badgeTitle?: string;
 }>;
 
 const ItemBody = memo(({ badgeName, badgeTitle, identifier, isExternal, text }: Props) => (
