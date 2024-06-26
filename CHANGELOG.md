@@ -33,6 +33,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 ### Fixed
 
 - Fixes [#4965](https://github.com/microsoft/BotFramework-WebChat/issues/4965). Removed keyboard helper screen in [#5218](https://github.com/microsoft/BotFramework-WebChat/pull/5218), by [@amirmursal](https://github.com/amirmursal)
+-  Read deeper into citation objects in order to provide names, in PR [#5215](https://github.com/microsoft/BotFramework-WebChat/pull/5215), by [@beyackle2](https://github.com/beyackle2)
 -  Improved performance for `useActivityWithRenderer`, in PR [#5172](https://github.com/microsoft/BotFramework-WebChat/pull/5172), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixes [#5162](https://github.com/microsoft/BotFramework-WebChat/issues/5162). Improved performance for `useActivityTreeWithRenderer`, in PR [#5163](https://github.com/microsoft/BotFramework-WebChat/pull/5163), by [@compulim](https://github.com/compulim)
 -  Fixes [#5175](https://github.com/microsoft/BotFramework-WebChat/issues/5175). `PrecompiledGlobalize.js` is emitted instead of `.cjs`, by [@compulim](https://github.com/compulim) in PR [#5181](https://github.com/microsoft/BotFramework-WebChat/pull/5181)
