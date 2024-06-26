@@ -12,7 +12,6 @@ import {
 } from 'botframework-webchat-api';
 import { DecoratorComposer } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
-import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
@@ -27,7 +26,6 @@ import {
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
 import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
-import useStyleSet from './hooks/useStyleSet';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
@@ -50,6 +48,7 @@ import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
 import { StyleToEmotionObjectComposer, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useInjectStyles from './hooks/internal/useInjectStyles';
+import useInjectCustomProperties from './Styles/useInjectCustomProperties';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -62,14 +61,14 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
 type ComposerCoreUIProps = Readonly<{ children?: ReactNode }>;
 
 const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
-  const [{ cssCustomProperties }] = useStyleSet();
+  const customPropertiesClassName = useInjectCustomProperties();
 
   const dictationOnError = useCallback(err => {
     console.error(err);
   }, []);
 
   return (
-    <div className={classNames('webchat__css-custom-properties', cssCustomProperties)}>
+    <div className={`webchat ${customPropertiesClassName}`}>
       <DecoratorComposer>
         <ModalDialogComposer>
           {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}

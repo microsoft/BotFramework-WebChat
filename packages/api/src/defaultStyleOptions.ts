@@ -292,7 +292,12 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
 
   maxMessageLength: 2000,
 
-  stylesRoot: document.head
+  stylesRoot: document.head,
+
+  // Border animation
+  borderAnimationColor1: '#203C91',
+  borderAnimationColor2: '#4DD3FF',
+  borderAnimationColor3: '#2B8DD8'
 };
 
 export default DEFAULT_OPTIONS;
