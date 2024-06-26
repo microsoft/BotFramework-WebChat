@@ -5,12 +5,22 @@ import ItemBody from './private/ItemBody';
 import extractHostnameWithSubdomain from './private/extractHostnameWithSubdomain';
 
 type Props = Readonly<{
-  badgeName?: string;
-  badgeTitle?: string;
+  // The text (usually a number) displayed to the left of the item (e.g. "1")
   identifier?: string;
-  onClick?: (event: Pick<CustomEvent, 'defaultPrevented' | 'preventDefault' | 'type'>) => void;
+
+  // The main text of the citation. This will be formatted as if it were a link. If this is nullish and a URL exists, its host will be displayed instead.
   text?: string;
+
+  // Displayed beneath the main link of the citation if it exists
+  badgeName?: string;
+
+  // Used as a tooltip and ARIA label for the item's displayed badgeName
+  badgeTitle?: string;
+
+  // If the citation is an external link, this is its destination.
   url?: string;
+
+  onClick?: (event: Pick<CustomEvent, 'defaultPrevented' | 'preventDefault' | 'type'>) => void;
 }>;
 
 const LinkDefinitionItem = memo(({ badgeName, badgeTitle, identifier, onClick, text, url }: Props) => {
