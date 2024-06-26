@@ -12,11 +12,11 @@ import {
 } from 'botframework-webchat-api';
 import { DecoratorComposer } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
-import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Composer as SayComposer } from 'react-say';
+import classNames from 'classnames';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import Dictation from './Dictation';
@@ -27,7 +27,6 @@ import {
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
 import UITracker from './hooks/internal/UITracker';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
-import useStyleSet from './hooks/useStyleSet';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
@@ -53,6 +52,7 @@ import useInjectStyles from './hooks/internal/useInjectStyles';
 import { LiveRegionTwinComposer } from './providers/LiveRegionTwin';
 import { FocusSendBoxScope } from './hooks/sendBoxFocus';
 import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
+import useInjectCustomProperties from './Styles/useInjectCustomProperties';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -79,8 +79,8 @@ const ROOT_STYLE = {
 };
 
 const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
-  const [{ cssCustomProperties }] = useStyleSet();
   const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
+  const customPropertiesClassName = useInjectCustomProperties();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const dictationOnError = useCallback(err => {
@@ -88,7 +88,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   }, []);
 
   return (
-    <div className={classNames('webchat__css-custom-properties', rootClassName, cssCustomProperties)}>
+    <div className={classNames('webchat__css-custom-properties', rootClassName, customPropertiesClassName)}>
       <FocusSendBoxScope>
         <ScrollRelativeTranscriptScope>
           <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>

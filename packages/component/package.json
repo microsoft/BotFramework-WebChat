@@ -24,6 +24,16 @@
         "types": "./lib/internal.d.ts",
         "default": "./lib/internal.js"
       }
+    },
+    "./decorator": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.decorator.d.mts",
+        "default": "./dist/botframework-webchat-component.decorator.mjs"
+      },
+      "require": {
+        "types": "./lib/decorator.d.ts",
+        "default": "./lib/decorator.js"
+      }
     }
   },
   "publishConfig": {

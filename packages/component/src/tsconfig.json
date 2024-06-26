@@ -13,6 +13,7 @@
     "pretty": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   }
 }

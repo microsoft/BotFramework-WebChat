@@ -1,0 +1,28 @@
+
+/* Keyframes for animation */
+@keyframes borderAnimation-position {
+  0% {
+    width: 33%;
+    left: -33%;
+  }
+  100% {
+    width: 33%;
+    left: 100%;
+  }
+}
+
+:global(.webchat) .border-loader {
+  height: 4px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+
+  &::after {
+    animation: borderAnimation-position 3s linear infinite;
+    background-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, var(--webchat__border-animation--color-1) 35%, var(--webchat__border-animation--color-2) 70%, var(--webchat__border-animation--color-3) 92%, rgba(0,0,0,0));
+    content: "";
+    display: block;
+    inset: 0;
+    position: absolute;
+  }
+}

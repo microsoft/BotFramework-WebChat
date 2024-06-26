@@ -1,0 +1,102 @@
+
+@keyframes borderAnimation-angle {
+  0% {
+    --webchat-borderFlair-animated-angle: 0.75;
+  }
+  100% {
+    --webchat-borderFlair-animated-angle: 2.75;
+  }
+}
+
+@keyframes borderAnimation-color1 {
+  0% {
+    --webchat-borderFlair-animated-color1: var(--webchat-borderFlair-color1InOut);
+  }
+  33% {
+    --webchat-borderFlair-animated-color1: var(--webchat-borderFlair-color1);
+  }
+  83% {
+    --webchat-borderFlair-animated-color1: var(--webchat-borderFlair-color1);
+  }
+  100% {
+    --webchat-borderFlair-animated-color1: var(--webchat-borderFlair-color1InOut);
+  }
+}
+
+@keyframes borderAnimation-color2 {
+  0% {
+    --webchat-borderFlair-animated-color2: var(--webchat-borderFlair-color2InOut);
+  }
+
+  33% {
+    --webchat-borderFlair-animated-color2: var(--webchat-borderFlair-color2);
+  }
+
+  83% {
+    --webchat-borderFlair-animated-color2: var(--webchat-borderFlair-color2);
+  }
+
+  100% {
+    --webchat-borderFlair-animated-color2: var(--webchat-borderFlair-color2InOut);
+  }
+}
+
+@keyframes borderAnimation-color3 {
+  0% {
+    --webchat-borderFlair-animated-color3: var(--webchat-borderFlair-color3InOut);
+  }
+  33% {
+    --webchat-borderFlair-animated-color3: var(--webchat-borderFlair-color3);
+  }
+  83% {
+    --webchat-borderFlair-animated-color3: var(--webchat-borderFlair-color3);
+  }
+  100% {
+    --webchat-borderFlair-animated-color3: var(--webchat-borderFlair-color3InOut);
+  }
+}
+
+:global(.webchat) .border-flair {
+  /* Animation colors */
+  --webchat-borderFlair-color1: var(--webchat__border-animation--color-1);
+  --webchat-borderFlair-color2: var(--webchat__border-animation--color-2);
+  --webchat-borderFlair-color3: var(--webchat__border-animation--color-3);
+  --webchat-borderFlair-color1InOut: transparent;
+  --webchat-borderFlair-color2InOut: transparent;
+  --webchat-borderFlair-color3InOut: transparent;
+
+  position: relative;
+  border-radius: inherit;
+  animation-duration: 2000ms, 1200ms, 1200ms, 1200ms;
+  animation-delay: 0ms, 0ms, 200ms, 400ms;
+  animation-timing-function: linear, linear, linear, linear;
+  animation-fill-mode: forwards, forwards, forwards, forwards;
+  /* animation-iteration-count: infinite, infinite, infinite, infinite; */
+  animation-name: borderAnimation-angle, borderAnimation-color1,
+    borderAnimation-color2, borderAnimation-color3;
+
+  &::after {
+    --webchat-borderFlair-borderSize: 3px;
+    --webchat-borderFlair-backgroundSize: calc(100% + (2 * var(--webchat-borderFlair-borderSize)));
+    --webchat-borderFlair-borderGradient: linear-gradient(
+      calc(var(--webchat-borderFlair-animated-angle) * 180deg + 45deg),
+      var(--webchat-borderFlair-animated-color1),
+      var(--webchat-borderFlair-animated-color2),
+      var(--webchat-borderFlair-animated-color3)
+    );
+
+    content: '';
+    position: absolute;
+    isolation: isolate;
+    inset: -1px;
+    border-radius: inherit;
+    background: var(--webchat-borderFlair-borderGradient) center center / var(--webchat-borderFlair-backgroundSize)
+      var(--webchat-borderFlair-backgroundSize);
+    border: var(--webchat-borderFlair-borderSize) solid transparent;
+    mask: linear-gradient(hsl(0 0% 100% / 0), hsl(0 0% 100% / 0)),
+      linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%));
+    mask-clip: padding-box, border-box;
+    mask-composite: intersect;
+    pointer-events: none;
+  }
+}
