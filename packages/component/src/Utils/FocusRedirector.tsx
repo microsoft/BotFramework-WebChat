@@ -40,7 +40,7 @@ const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirec
       aria-hidden={ariaHidden}
       className={className}
       onFocus={handleFocus}
-      tabIndex={redirectRef?.current ? TAB_INDEX_ENABLED : TAB_INDEX_DISABLED} 
+      tabIndex={redirectRef?.current ? TAB_INDEX_ENABLED : TAB_INDEX_DISABLED}
     />
   );
 };
