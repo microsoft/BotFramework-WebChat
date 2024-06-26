@@ -31,7 +31,17 @@ const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirec
   //             This redirector is designed to capture TAB only and should not react on browse mode.
   //             However, reacting with browse mode is currently okay. Just better to leave it alone.
 
-  return <div className={className} onFocus={handleFocus} tabIndex={0} />;
+  // Hide from screen readers when not needed
+  const ariaHidden = !redirectRef?.current ? 'true' : 'false';
+
+  return (
+    <div
+      className={className}
+      onFocus={handleFocus}
+      tabIndex={redirectRef?.current ? 0 : -1}
+      aria-hidden={ariaHidden}
+    />
+  );
 };
 
 FocusRedirector.defaultProps = {
