@@ -22,7 +22,6 @@ type FocusRedirectorProps = {
 const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirectRef }) => {
   // Hide from screen readers when not needed
   const shouldHide = !!redirectRef?.current;
- 
   const handleFocus = useCallback(() => {
     redirectRef?.current?.focus();
     onFocus && onFocus();
