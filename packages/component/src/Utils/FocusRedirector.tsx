@@ -1,3 +1,4 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [-1, 0] }] */
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
@@ -20,10 +21,8 @@ type FocusRedirectorProps = {
 
 const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirectRef }) => {
   // Hide from screen readers when not needed
-  const ariaHidden = !redirectRef?.current ? 'true' : 'false';
-  const TAB_INDEX_DISABLED = -1;
-  const TAB_INDEX_ENABLED = 0;
-
+  const shouldHide = !!redirectRef?.current;
+  
   const handleFocus = useCallback(() => {
     redirectRef?.current?.focus();
     onFocus && onFocus();
@@ -37,10 +36,10 @@ const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirec
   //             However, reacting with browse mode is currently okay. Just better to leave it alone.
   return (
     <div
-      aria-hidden={ariaHidden}
+      aria-hidden={shouldHide}
       className={className}
       onFocus={handleFocus}
-      tabIndex={redirectRef?.current ? TAB_INDEX_ENABLED : TAB_INDEX_DISABLED}
+      tabIndex={shouldHide ? -1 : 0}
     />
   );
 };
