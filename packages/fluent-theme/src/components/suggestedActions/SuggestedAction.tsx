@@ -1,10 +1,10 @@
 import { hooks } from 'botframework-webchat-component';
-import { type DirectLineCardAction } from 'botframework-webchat-core';
+import type { DirectLineCardAction } from 'botframework-webchat-core';
 import cx from 'classnames';
-import React, { MouseEventHandler, memo, useCallback } from 'react';
-import styles from './SuggestedAction.module.css';
+import React, { type MouseEventHandler, memo, useCallback } from 'react';
 import { useStyles } from '../../styles';
 import AccessibleButton from './AccessibleButton';
+import styles from './SuggestedAction.module.css';
 import { useRovingFocusItemRef } from './private/rovingFocus';
 
 const { useDisabled, useFocus, usePerformCardAction, useScrollToEnd, useStyleSet, useSuggestedActions } = hooks;

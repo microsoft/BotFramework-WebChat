@@ -1,4 +1,3 @@
-
 :global(.webchat-fluent) .suggested-actions {
   align-items: flex-end;
   align-self: flex-end;
@@ -8,7 +7,7 @@
 
   &:not(:empty) {
     padding-block-end: 8px;
-    padding-inline-start: 4px
+    padding-inline-start: 4px;
   }
 
   &.suggested-actions--flow {
@@ -18,6 +17,6 @@
   }
 
   &.suggested-actions--stacked {
-    flex-direction: column
+    flex-direction: column;
   }
 }

@@ -1,8 +1,8 @@
 import { hooks } from 'botframework-webchat-component';
-import React, { memo } from 'react';
 import cx from 'classnames';
-import styles from './Attachments.module.css';
+import React, { memo } from 'react';
 import { useStyles } from '../../styles';
+import styles from './Attachments.module.css';
 
 const { useLocalizer } = hooks;
 

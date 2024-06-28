@@ -1,7 +1,7 @@
-import React, { type ReactNode } from 'react';
 import cx from 'classnames';
-import styles from './Theme.module.css';
+import React, { type ReactNode } from 'react';
 import { useStyles } from '../../styles';
+import styles from './Theme.module.css';
 
 export const rootClassName = 'webchat-fluent';
 

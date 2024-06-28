@@ -1,23 +1,24 @@
-import { hooks, type SendBoxFocusOptions } from 'botframework-webchat-component';
+import { type SendBoxFocusOptions, hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
-import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
+// biome-ignore lint/style/useImportType: it really isnt
+import React, { type FormEventHandler, type MouseEventHandler, memo, useCallback, useRef, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { SendIcon } from '../../icons';
+import { useStyles } from '../../styles';
 import testIds from '../../testIds';
 import { DropZone } from '../dropZone';
 import { SuggestedActions } from '../suggestedActions';
-import { TelephoneKeypadSurrogate, useTelephoneKeypadShown, type DTMF } from '../telephoneKeypad';
+import { type DTMF, TelephoneKeypadSurrogate, useTelephoneKeypadShown } from '../telephoneKeypad';
 import AddAttachmentButton from './AddAttachmentButton';
 import Attachments from './Attachments';
 import ErrorMessage from './ErrorMessage';
+import styles from './SendBox.module.css';
 import TelephoneKeypadToolbarButton from './TelephoneKeypadToolbarButton';
 import TextArea from './TextArea';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
 import useSubmitError from './private/useSubmitError';
-import useUniqueId from './private/useUniqueId';
-import styles from './SendBox.module.css';
-import { useStyles } from '../../styles';
 import useTranscriptNavigation from './private/useTranscriptNavigation';
+import useUniqueId from './private/useUniqueId';
 
 const {
   useFocus,
@@ -63,7 +64,7 @@ function SendBox(
               // TODO: [P2] We should update this logic to handle quickly-successive `focusCallback`.
               //       If a succeeding `focusCallback` is being called, the `setTimeout` should run immediately.
               //       Or the second `focusCallback` should not set `readonly` to `true`.
-              // eslint-disable-next-line no-restricted-globals
+              // biome-ignore lint/style/noRestrictedGlobals:
               await new Promise(resolve => setTimeout(resolve, 0));
               inputRef.current?.focus();
               if (typeof previousReadOnly !== 'string') {

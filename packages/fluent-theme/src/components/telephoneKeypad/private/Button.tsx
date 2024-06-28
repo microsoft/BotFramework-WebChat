@@ -2,10 +2,10 @@ import React, { forwardRef, memo, useCallback, type Ref } from 'react';
 
 import { useRefFrom } from 'use-ref-from';
 
-import { type DTMF } from '../types';
+import type { DTMF } from '../types';
 
-import styles from './Button.module.css';
 import { useStyles } from '../../../styles';
+import styles from './Button.module.css';
 
 type Props = Readonly<{
   button: DTMF;

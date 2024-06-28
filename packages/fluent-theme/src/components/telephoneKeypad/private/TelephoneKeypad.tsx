@@ -3,14 +3,14 @@ import cx from 'classnames';
 import React, { memo, useCallback, useEffect, useRef, type KeyboardEventHandler, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import Button from './Button';
+import { InfoSmallIcon } from '../../../icons';
+import { useStyles } from '../../../styles';
 // import HorizontalDialPadController from './HorizontalDialPadController';
 import testIds from '../../../testIds';
-import { type DTMF } from '../types';
+import type { DTMF } from '../types';
 import useShown from '../useShown';
+import Button from './Button';
 import styles from './TelephoneKeypad.module.css';
-import { useStyles } from '../../../styles';
-import { InfoSmallIcon } from '../../../icons';
 
 const { LocalizedString } = Components;
 

@@ -13,18 +13,18 @@
   transition: all .15s ease-out;
 
   @media (hover: hover) {
-    &:not([aria-disabled="true"]):hover {
+    &:not([aria-disabled='true']):hover {
       background-color: var(--webchat-colorBrandBackground2Hover);
-      color: var(--webchat-colorBrandForeground2Hover)
+      color: var(--webchat-colorBrandForeground2Hover);
     }
   }
-  &:not([aria-disabled="true"]):active {
+  &:not([aria-disabled='true']):active {
     background-color: var(--webchat-colorBrandBackground2Pressed);
-    color: var(--webchat-colorBrandForeground2Pressed)
+    color: var(--webchat-colorBrandForeground2Pressed);
   }
-  &[aria-disabled="true"] {
+  &[aria-disabled='true'] {
     color: var(--webchat-colorNeutralForegroundDisabled);
-    cursor: not-allowed
+    cursor: not-allowed;
   }
 }
 

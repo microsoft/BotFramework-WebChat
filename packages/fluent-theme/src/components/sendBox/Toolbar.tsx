@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import React, { memo, type MouseEventHandler, type ReactNode } from 'react';
-import styles from './Toolbar.module.css';
 import { useStyles } from '../../styles';
+import styles from './Toolbar.module.css';
 
 const preventDefaultHandler: MouseEventHandler<HTMLButtonElement> = event => event.preventDefault();
 

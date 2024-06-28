@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, ReactNode, forwardRef, memo, useRef } from 'react';
+import React, { type MouseEventHandler, type ReactNode, forwardRef, memo, useRef } from 'react';
 
 const preventDefaultHandler: MouseEventHandler<HTMLButtonElement> = event => event.preventDefault();
 

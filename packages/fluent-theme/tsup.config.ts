@@ -1,6 +1,6 @@
 import { join } from 'path';
-import { defineConfig } from 'tsup';
 import { fileURLToPath } from 'url';
+import { defineConfig } from 'tsup';
 import baseConfig from '../../tsup.base.config';
 import { injectedStyles as injectedStylesPlaceholder } from './src/styles/injectStyle';
 

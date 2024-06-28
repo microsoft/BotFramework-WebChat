@@ -4,9 +4,9 @@ import React, { memo, useCallback, useEffect, useRef, useState, type DragEventHa
 import { useRefFrom } from 'use-ref-from';
 
 import { AddDocumentIcon } from '../../icons';
+import { useStyles } from '../../styles';
 import testIds from '../../testIds';
 import styles from './DropZone.module.css';
-import { useStyles } from '../../styles';
 
 const { useLocalizer } = hooks;
 

@@ -1,4 +1,4 @@
-/* eslint-disable no-magic-numbers */
+// biome-ignore lint/style/useImportType: it really isnt
 import React, {
   type MutableRefObject,
   createContext,

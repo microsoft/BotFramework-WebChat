@@ -1,10 +1,10 @@
 import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, { memo, useCallback, type ReactNode } from 'react';
-import SuggestedAction from './SuggestedAction';
-import computeSuggestedActionText from './private/computeSuggestedActionText';
-import styles from './SuggestedActions.module.css';
 import { useStyles } from '../../styles';
+import SuggestedAction from './SuggestedAction';
+import styles from './SuggestedActions.module.css';
+import computeSuggestedActionText from './private/computeSuggestedActionText';
 import RovingFocusProvider from './private/rovingFocus';
 
 const { useFocus, useLocalizer, useStyleOptions, useStyleSet, useSuggestedActions } = hooks;
@@ -84,7 +84,7 @@ function SuggestedActions() {
         // https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#image-alt-text
         imageAlt={image && (imageAltText || text)}
         itemIndex={index}
-        // eslint-disable-next-line react/no-array-index-key
+        // biome-ignore lint/suspicious/noArrayIndexKey:
         key={index}
         text={text}
         type={type}

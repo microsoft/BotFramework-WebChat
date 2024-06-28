@@ -1,5 +1,5 @@
-import { useCallback, type KeyboardEvent } from 'react';
 import { hooks } from 'botframework-webchat-component';
+import { type KeyboardEvent, useCallback } from 'react';
 
 const { useScrollDown, useScrollUp } = hooks;
 

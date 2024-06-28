@@ -1,4 +1,4 @@
-import { createContext, type Dispatch, type SetStateAction } from 'react';
+import { type Dispatch, type SetStateAction, createContext } from 'react';
 
 type ContextType = Readonly<{
   setShown: Dispatch<SetStateAction<boolean>>;
