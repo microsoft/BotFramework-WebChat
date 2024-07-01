@@ -31,8 +31,8 @@
         "default": "./dist/botframework-webchat-api.decorator.mjs"
       },
       "require": {
-        "types": "./lib/decorator.d.ts",
-        "default": "./lib/decorator.js"
+        "types": "./lib/decorator/index.d.ts",
+        "default": "./lib/decorator/index.js"
       }
     }
   },
@@ -50,7 +50,7 @@
   },
   "files": [
     "./dist/**/*",
-    "./internal.js",
+    "./*.js",
     "./lib/**/*",
     "./src/**/*"
   ],
