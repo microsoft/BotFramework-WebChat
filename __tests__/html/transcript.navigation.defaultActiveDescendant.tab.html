@@ -34,8 +34,7 @@
         // GIVEN: The focus is on the first element on the page, before Web Chat.
         document.querySelector('.first-button').focus();
 
-        // WHEN: TAB key is pressed twice.
-        await host.sendTab();
+        // WHEN: TAB key is pressed once.
         await host.sendTab();
 
         await new Promise(resolve => setTimeout(resolve, 1000));
