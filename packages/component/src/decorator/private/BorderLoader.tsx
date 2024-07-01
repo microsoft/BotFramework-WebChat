@@ -1,6 +1,6 @@
 import React, { Fragment, memo, type ReactNode } from 'react';
 
-import { useStyles } from '../../Styles';
+import { useStyles } from 'botframework-webchat-styles/react';
 import styles from './BorderLoader.module.css';
 
 function Loader({ children }: Readonly<{ children?: ReactNode | undefined }>) {

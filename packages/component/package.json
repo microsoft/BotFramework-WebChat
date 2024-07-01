@@ -163,6 +163,7 @@
     "base64-js": "1.5.1",
     "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
+    "botframework-webchat-styles": "0.0.0-0",
     "classnames": "2.5.1",
     "compute-scroll-into-view": "1.0.20",
     "deep-freeze-strict": "1.1.1",

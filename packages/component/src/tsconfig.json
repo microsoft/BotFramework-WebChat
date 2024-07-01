@@ -13,7 +13,9 @@
     "pretty": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "target": "ESNext",
-    "plugins": [{ "name": "typescript-plugin-css-modules" }]
-  }
+    "target": "ESNext"
+  },
+  "extends": [
+		"botframework-webchat-styles/tsconfig.json"
+	]
 }

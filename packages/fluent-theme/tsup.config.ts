@@ -1,8 +1,9 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { defineConfig } from 'tsup';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import baseConfig from '../../tsup.base.config';
 import { fluentStyleContent as fluentStyleContentPlaceholder } from './src/styles/createStyles';
+import { injectCSSPlugin } from 'botframework-webchat-styles/build';
 
 const umdResolvePlugin = {
   name: 'umd-resolve',
@@ -25,19 +26,6 @@ const umdResolvePlugin = {
   }
 };
 
-const injectCSSPlugin = {
-  name: 'inject-css-plugin',
-  setup(build) {
-    build.onEnd(result => {
-      const js = result.outputFiles.find(f => f.path.match(/(\.js|\.mjs)$/u));
-      const css = result.outputFiles.find(f => f.path.match(/(\.css)$/u));
-      if (css && js?.text.includes(fluentStyleContentPlaceholder)) {
-        js.contents = Buffer.from(js.text.replace(`"${fluentStyleContentPlaceholder}"`, JSON.stringify(css.text)));
-      }
-    });
-  }
-};
-
 export default defineConfig([
   {
     ...baseConfig,
@@ -47,7 +35,7 @@ export default defineConfig([
       ...baseConfig.loader,
       '.css': 'local-css'
     },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin],
+    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })],
     format: ['cjs']
   },
   {
@@ -57,7 +45,7 @@ export default defineConfig([
       ...baseConfig.loader,
       '.css': 'local-css'
     },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin],
+    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })],
     format: ['esm']
   },
   {
@@ -67,7 +55,7 @@ export default defineConfig([
       ...baseConfig.loader,
       '.css': 'local-css'
     },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin, umdResolvePlugin],
+    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }), umdResolvePlugin],
     format: 'iife',
     outExtension() {
       return { js: '.js' };
@@ -80,7 +68,7 @@ export default defineConfig([
       ...baseConfig.loader,
       '.css': 'local-css'
     },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin, umdResolvePlugin],
+    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }), umdResolvePlugin],
     format: 'iife',
     minify: true,
     outExtension() {

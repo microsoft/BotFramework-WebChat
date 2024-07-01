@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "plugins": [{ "name": "typescript-plugin-css-modules" }],
+    "types": ["botframework-webchat-styles/env"]
+  }
+}
