@@ -1,3 +1,4 @@
+/* eslint no-magic-numbers: ["error", { "ignore": [-1, 0] }] */
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
@@ -19,6 +20,7 @@ type FocusRedirectorProps = {
 };
 
 const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirectRef }) => {
+  const shouldHide = !redirectRef?.current;
   const handleFocus = useCallback(() => {
     redirectRef?.current?.focus();
     onFocus && onFocus();
@@ -31,7 +33,7 @@ const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirec
   //             This redirector is designed to capture TAB only and should not react on browse mode.
   //             However, reacting with browse mode is currently okay. Just better to leave it alone.
 
-  return <div className={className} onFocus={handleFocus} tabIndex={0} />;
+  return <div aria-hidden={shouldHide} className={className} onFocus={handleFocus} tabIndex={shouldHide ? -1 : 0} />;
 };
 
 FocusRedirector.defaultProps = {
