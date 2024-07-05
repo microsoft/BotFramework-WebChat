@@ -17,7 +17,12 @@
 
         const render = overrideProps => WebChat.renderWebChat({ directLine, store, ...overrideProps }, container);
 
-        render();
+        render({
+          styleOptions: {
+            bubbleImageMaxHeight: 240,
+            bubbleImageMinHeight: 180
+          }
+        });
 
         document.body.append(container);
 

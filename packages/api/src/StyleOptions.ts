@@ -166,7 +166,7 @@ type StyleOptions = {
   bubbleImageMaxHeight?: number | undefined;
 
   /**
-   * Specifies the minimum height of the bubble for image, default to 180px.
+   * Specifies the minimum height of the bubble for image, default to 240px.
    *
    * New in 4.18.0.
    */
