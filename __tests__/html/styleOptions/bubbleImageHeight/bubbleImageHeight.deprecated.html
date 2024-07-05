@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <script>
+      run(
+        async function () {
+          const container = document.createElement('main');
+
+          container.setAttribute('id', 'webchat');
+
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+          WebChat.renderWebChat(
+            {
+              directLine,
+              store,
+              styleOptions: { bubbleImageHeight: 240, bubbleImageMaxHeight: 10, bubbleImageMinHeight: 10 }
+            },
+            container
+          );
+
+          document.body.append(container);
+
+          await pageConditions.uiConnected();
+
+          // Generated from https://placeholder.pics/svg/320x180.
+          const LANDSCAPE_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180"><rect x="2" y="2" width="316" height="176" style="fill:%23DEDEDE;stroke:%23555555;stroke-width:2"/><text x="50%" y="50%" font-size="18" text-anchor="middle" alignment-baseline="middle" font-family="monospace, sans-serif" fill="%23555555">320×180 (16:9)</text></svg>`;
+
+          // Generated from https://placeholder.pics/svg/180x320.
+          const PORTRAIT_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="320"><rect x="2" y="2" width="176" height="316" style="fill:%23DEDEDE;stroke:%23555555;stroke-width:2"/><text x="50%" y="50%" font-size="18" text-anchor="middle" alignment-baseline="middle" font-family="monospace, sans-serif" fill="%23555555">180×320</text></svg>`;
+
+          await directLine.emulateIncomingActivity({
+            attachments: [
+              {
+                contentType: 'image/svg+xml',
+                contentUrl: LANDSCAPE_SVG,
+                thumbnailUrl: LANDSCAPE_SVG
+              },
+              {
+                contentType: 'image/svg+xml',
+                contentUrl: PORTRAIT_SVG,
+                thumbnailUrl: PORTRAIT_SVG
+              }
+            ],
+            from: { role: 'user' },
+            text: '16:9 images with fixed `bubbleImageHeight`.',
+            type: 'message'
+          });
+
+          await pageConditions.allImagesLoaded();
+
+          const imageElements = pageElements.activities()[0].querySelectorAll('img');
+
+          expect(imageElements[0]).toHaveProperty('clientHeight', 240);
+          expect(Math.abs(imageElements[0].clientWidth - 338) <= 1).toBe(true); // @1x this will be 338px, @2x this will be 338.67px and rounded to 339 by clientWidth.
+
+          expect(imageElements[1]).toHaveProperty('clientHeight', 240);
+          expect(Math.abs(imageElements[1].clientWidth - 338) <= 1).toBe(true); // @1x this will be 338px, @2x this will be 338.67px and rounded to 339 by clientWidth.
+
+          await host.snapshot();
+        },
+        { expectDeprecations: true }
+      );
+    </script>
+  </body>
+</html>

@@ -150,7 +150,28 @@ type StyleOptions = {
   bubbleFromUserNubSize?: number;
 
   bubbleFromUserTextColor?: string;
-  bubbleImageHeight?: number;
+
+  /**
+   * Specifies the fixed height of the bubble for image, default to unset.
+   *
+   * @deprecated Use `bubbleImageMaxHeight` and `bubbleImageMinHeight` instead. To mimick behavior before deprecation, set both options to 240px.
+   */
+  bubbleImageHeight?: number | undefined;
+
+  /**
+   * Specifies the maximum height of the bubble for image, default to 240px.
+   *
+   * New in 4.18.0.
+   */
+  bubbleImageMaxHeight?: number | undefined;
+
+  /**
+   * Specifies the minimum height of the bubble for image, default to 180px.
+   *
+   * New in 4.18.0.
+   */
+  bubbleImageMinHeight?: number | undefined;
+
   bubbleMaxWidth?: number;
   bubbleMinHeight?: number;
   bubbleMinWidth?: number;
@@ -853,7 +874,9 @@ type StyleOptions = {
 // 1. Allow developers to set the "bubbleNubOffset" option as "top" (string), but when we normalize them, we will convert it to 0 (number);
 // 2. Renamed/deprecated options, only the newer option will be kept, the older option will be dropped.
 //    Internally, no code should use the deprecated value except the migration code.
-type StrictStyleOptions = Required<Omit<StyleOptions, 'hideScrollToEndButton' | 'newMessagesButtonFontSize'>> & {
+type StrictStyleOptions = Required<
+  Omit<StyleOptions, 'bubbleImageHeight' | 'hideScrollToEndButton' | 'newMessagesButtonFontSize'>
+> & {
   bubbleFromUserNubOffset: number;
   bubbleNubOffset: number;
   emojiSet: false | Record<string, string>;

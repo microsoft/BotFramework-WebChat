@@ -24,6 +24,12 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  `styleOptions.bubbleImageHeight` is being deprecated in favor of `styleOptions.bubbleImageMaxHeight` and `styleOptions.bubbleImageMinHeight`. The option will be removed on or after 2026-07-05
+   -  Image will be shown at minimium height of `180` and maximum height of `240`, instead of fixed height of `240`
+   -  To revert to previous behavior, set both values to `240`
+
 ## [4.18.0] - 2024-07-10
 
 ### Added
@@ -31,6 +37,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  (Experimental) Added initial decorators support, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
    -  Introduced internal `botframework-webchat-api/decorator` import, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
    -  Added `DecoratorComposer` and `ActivityDecorator` to be used for decorating activity border, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added `styleOptions.bubbleImageMaxHeight` and `styleOptions.bubbleImageMinHeight` for variable image height, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
 
 ### Fixed
 
