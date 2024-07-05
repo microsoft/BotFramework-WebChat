@@ -101,6 +101,29 @@
         expect(Math.abs(imageElements[1].clientWidth - 338) <= 1).toBe(true); // @1x = 338, @2x = 338.67.
 
         await host.snapshot();
+
+        render({
+          styleOptions: {
+            bubbleImageMinHeight: 0,
+            bubbleImageMaxHeight: Infinity
+          }
+        });
+
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageConditions.became('image resized', () => imageElements[0].clientHeight - 181 <= 1, 5_000);
+
+        expect(Math.abs(imageElements[0].clientHeight - 181) <= 1).toBe(true);
+        expect(Math.abs(imageElements[0].clientWidth - 322) <= 1).toBe(true);
+
+        expect(Math.abs(imageElements[1].clientHeight - 573) <= 1).toBe(true);
+        expect(Math.abs(imageElements[1].clientWidth - 322) <= 1).toBe(true);
+
+        await host.snapshot();
+
+        await pageObjects.scrollToTop();
+
+        await host.snapshot();
       });
     </script>
   </body>

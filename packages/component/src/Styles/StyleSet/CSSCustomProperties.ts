@@ -43,7 +43,8 @@ export default function createCSSCustomPropertiesStyle({
       [CustomPropertyNames.MaxWidthBubble]: bubbleMaxWidth + 'px',
       [CustomPropertyNames.MinHeightBubble]: bubbleMinHeight + 'px',
       [CustomPropertyNames.PaddingRegular]: paddingRegular + 'px',
-      [CustomPropertyNames.MaxHeightImageBubble]: bubbleImageMaxHeight + 'px',
+      [CustomPropertyNames.MaxHeightImageBubble]:
+        bubbleImageMaxHeight === Infinity ? undefined : bubbleImageMaxHeight + 'px',
       [CustomPropertyNames.MinHeightImageBubble]: bubbleImageMinHeight + 'px'
     }
   };
