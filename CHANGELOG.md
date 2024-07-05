@@ -37,7 +37,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  (Experimental) Added initial decorators support, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
    -  Introduced internal `botframework-webchat-api/decorator` import, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
    -  Added `DecoratorComposer` and `ActivityDecorator` to be used for decorating activity border, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
--  Added `styleOptions.bubbleImageMaxHeight` and `styleOptions.bubbleImageMinHeight` for variable image height, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
+-  Added `styleOptions.bubbleImageMaxHeight` and `styleOptions.bubbleImageMinHeight` for variable image height, in PR [#5236](https://github.com/microsoft/BotFramework-WebChat/pull/5236), by [@compulim](https://github.com/compulim)
 
 ### Fixed
 
