@@ -22,10 +22,14 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
             const entryName = js.path.replace(/(\.js|\.mjs)$/u, '');
             const css = outputFiles.find(f => f.path.replace(/(\.css)$/u, '') === entryName);
             if (css && js?.text.includes(stylesPlaceholder)) {
+              const jsText = js.text;
               const cssText = JSON.stringify(css.text);
-              const index = js.text.indexOf(stylesPlaceholderQuoted);
+              const index = jsText.indexOf(stylesPlaceholderQuoted);
               const map = outputFiles.find(f => f.path.replace(/(\.map)$/u, '') === js.path);
-              js.contents = Buffer.from(js.text.replace(stylesPlaceholderQuoted, cssText));
+
+              const updatedJsText = [jsText.slice(0, index), cssText, jsText.slice(index + stylesPlaceholderQuoted.length)].join('');
+              js.contents = Buffer.from(updatedJsText);
+
               if (map) {
                 const parsed = JSON.parse(map.text);
                 parsed.mappings = updateMappings(parsed.mappings, index, cssText.length - stylesPlaceholderQuoted.length);
@@ -50,4 +54,3 @@ function updateMappings(encoded: string, startIndex: number, offset: number) {
   }
   return encode(mappings);
 }
-
