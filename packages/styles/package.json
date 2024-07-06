@@ -78,6 +78,7 @@
     "start:typescript": "npm run build:typescript -- --watch"
   },
   "devDependencies": {
+    "@jridgewell/sourcemap-codec": "^1.4.15",
     "@tsconfig/strictest": "^2.0.5",
     "@types/node": "^20.10.3",
     "cross-env": "^7.0.3",
