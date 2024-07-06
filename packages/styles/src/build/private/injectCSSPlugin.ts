@@ -1,4 +1,5 @@
 import type { Plugin } from 'esbuild';
+import { decode, encode } from '@jridgewell/sourcemap-codec';
 
 export interface InjectCSSPluginOptions {
   stylesPlaceholder: string;
@@ -8,6 +9,9 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
   if (!stylesPlaceholder) {
     throw new Error('inject-css-plugin: no placeholder for styles provided');
   }
+
+  const stylesPlaceholderQuoted = JSON.stringify(stylesPlaceholder);
+
   return {
     name: `inject-css-plugin(${stylesPlaceholder})`,
     setup(build) {
@@ -18,7 +22,15 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
             const entryName = js.path.replace(/(\.js|\.mjs)$/u, '');
             const css = outputFiles.find(f => f.path.replace(/(\.css)$/u, '') === entryName);
             if (css && js?.text.includes(stylesPlaceholder)) {
-              js.contents = Buffer.from(js.text.replace(`"${stylesPlaceholder}"`, JSON.stringify(css.text)));
+              const cssText = JSON.stringify(css.text);
+              const index = js.text.indexOf(stylesPlaceholderQuoted);
+              const map = outputFiles.find(f => f.path.replace(/(\.map)$/u, '') === js.path);
+              js.contents = Buffer.from(js.text.replace(stylesPlaceholderQuoted, cssText));
+              if (map) {
+                const parsed = JSON.parse(map.text);
+                parsed.mappings = updateMappings(parsed.mappings, index, cssText.length - stylesPlaceholderQuoted.length);
+                map.contents = Buffer.from(JSON.stringify(parsed));
+              }
             }
           }
         }
@@ -26,3 +38,16 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
     }
   };
 }
+
+function updateMappings(encoded: string, startIndex: number, offset: number) {
+  const mappings = decode(encoded);
+  for (const mapping of mappings) {
+    for (const line of mapping) {
+      if (line[0] > startIndex) {
+        line[0] += offset;
+      }
+    }
+  }
+  return encode(mappings);
+}
+
