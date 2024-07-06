@@ -21,7 +21,7 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
             const js = file;
             const entryName = js.path.replace(/(\.js|\.mjs)$/u, '');
             const css = outputFiles.find(f => f.path.replace(/(\.css)$/u, '') === entryName);
-            if (css && js?.text.includes(stylesPlaceholder)) {
+            if (css && js?.text.includes(stylesPlaceholderQuoted)) {
               const jsText = js.text;
               const cssText = JSON.stringify(css.text);
               const index = jsText.indexOf(stylesPlaceholderQuoted);
