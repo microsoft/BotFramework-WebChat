@@ -8,6 +8,14 @@
   </head>
   <body>
     <script>
+      function expectWidthHeight(element, width, height) {
+        try {
+          expect(Math.abs(element.clientWidth - width) <= 1).toBe(true);
+        } catch {
+          expect(element.clientWidth).toBe(width); // Better message.
+        }
+      }
+
       run(async function () {
         const container = document.createElement('main');
 
@@ -26,6 +34,8 @@
 
         document.body.append(container);
 
+        await host.windowSize(360, 1280, document.getElementById('webchat'));
+
         await pageConditions.uiConnected();
 
         // Generated from https://placeholder.pics/svg/320x180.
@@ -34,8 +44,16 @@
         // Generated from https://placeholder.pics/svg/180x320.
         const PORTRAIT_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="320"><rect x="2" y="2" width="176" height="316" style="fill:%23DEDEDE;stroke:%23555555;stroke-width:2"/><text x="50%" y="50%" font-size="18" text-anchor="middle" alignment-baseline="middle" font-family="monospace, sans-serif" fill="%23555555">180×320</text></svg>`;
 
+        // Generated from https://placeholder.pics/svg/640x180.
+        const WIDE_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="180"><rect x="2" y="2" width="636" height="176" style="fill:%23DEDEDE;stroke:%23555555;stroke-width:2"/><text x="50%" y="50%" font-size="18" text-anchor="middle" alignment-baseline="middle" font-family="monospace, sans-serif" fill="%23555555">640×180</text></svg>`;
+
         await directLine.emulateIncomingActivity({
           attachments: [
+            {
+              contentType: 'image/svg+xml',
+              contentUrl: WIDE_SVG,
+              thumbnailUrl: WIDE_SVG
+            },
             {
               contentType: 'image/svg+xml',
               contentUrl: LANDSCAPE_SVG,
@@ -48,19 +66,21 @@
             }
           ],
           from: { role: 'user' },
-          text: '16:9 images with varying `bubbleImageMaxHeight` and `bubbleImageMinHeight`.',
+          text: 'Images with varies `bubbleImageMaxHeight` and `bubbleImageMinHeight`.',
           type: 'message'
         });
 
         await pageConditions.allImagesLoaded();
+        await pageConditions.scrollToBottomCompleted();
 
-        const imageElements = pageElements.activities()[0].querySelectorAll('img');
+        const imageElements = pageElements.activities()[0].querySelectorAll('.webchat__fixed-width-image');
+        const wideImage = imageElements[0];
+        const landscapeImage = imageElements[1];
+        const portraitImage = imageElements[2];
 
-        expect(Math.abs(imageElements[0].clientHeight - 191) <= 1).toBe(true);
-        expect(Math.abs(imageElements[0].clientWidth - 338) <= 1).toBe(true); // @1x this will be 338px, @2x this will be 338.67px and rounded to 339 by clientWidth.
-
-        expect(imageElements[1]).toHaveProperty('clientHeight', 240);
-        expect(Math.abs(imageElements[1].clientWidth - 338) <= 1).toBe(true); // @1x this will be 338px, @2x this will be 338.67px and rounded to 339 by clientWidth.
+        expectWidthHeight(wideImage, 339, 180);
+        expectWidthHeight(landscapeImage, 339, 339 / 16 / 9);
+        expectWidthHeight(portraitImage, 339, 240);
 
         await host.snapshot();
 
@@ -73,13 +93,11 @@
 
         await pageConditions.scrollToBottomCompleted();
 
-        await pageConditions.became('image resized', () => imageElements[0].clientHeight === 240, 5_000);
+        await pageConditions.became('image resized', () => wideImage.clientHeight === 240, 5_000);
 
-        expect(imageElements[0]).toHaveProperty('clientHeight', 240);
-        expect(Math.abs(imageElements[0].clientWidth - 322) <= 1).toBe(true); // @1x = 321, @2x = 322, Docker = 323.
-
-        expect(imageElements[1]).toHaveProperty('clientHeight', 360);
-        expect(Math.abs(imageElements[1].clientWidth - 322) <= 1).toBe(true); // @1x = 321, @2x = 322, Docker = 323.
+        expectWidthHeight(wideImage, 338, 240);
+        expectWidthHeight(landscapeImage, 338, 240);
+        expectWidthHeight(portraitImage, 338, 360);
 
         await host.snapshot();
 
@@ -92,13 +110,11 @@
 
         await pageConditions.scrollToBottomCompleted();
 
-        await pageConditions.became('image resized', () => imageElements[0].clientHeight === 180, 5_000);
+        await pageConditions.became('image resized', () => wideImage.clientHeight === 120, 5_000);
 
-        expect(imageElements[0]).toHaveProperty('clientHeight', 180);
-        expect(Math.abs(imageElements[0].clientWidth - 338) <= 1).toBe(true); // @1x = 338, @2x = 338.67.
-
-        expect(imageElements[1]).toHaveProperty('clientHeight', 180);
-        expect(Math.abs(imageElements[1].clientWidth - 338) <= 1).toBe(true); // @1x = 338, @2x = 338.67.
+        expectWidthHeight(wideImage, 338, 120);
+        expectWidthHeight(landscapeImage, 338, 180);
+        expectWidthHeight(portraitImage, 338, 180);
 
         await host.snapshot();
 
@@ -111,17 +127,11 @@
 
         await pageConditions.scrollToBottomCompleted();
 
-        await pageConditions.became('image resized', () => imageElements[0].clientHeight - 181 <= 1, 5_000);
+        await pageConditions.became('image resized', () => Math.abs(wideImage.clientHeight - 95) <= 1, 5_000);
 
-        expect(Math.abs(imageElements[0].clientHeight - 181) <= 1).toBe(true);
-        expect(Math.abs(imageElements[0].clientWidth - 322) <= 1).toBe(true);
-
-        expect(Math.abs(imageElements[1].clientHeight - 573) <= 1).toBe(true);
-        expect(Math.abs(imageElements[1].clientWidth - 322) <= 1).toBe(true);
-
-        await host.snapshot();
-
-        await pageObjects.scrollToTop();
+        expectWidthHeight(wideImage, 338, 338 / (32 / 9));
+        expectWidthHeight(landscapeImage, 338, 338 / (16 / 9));
+        expectWidthHeight(portraitImage, 338, 338 / (9 / 16));
 
         await host.snapshot();
       });

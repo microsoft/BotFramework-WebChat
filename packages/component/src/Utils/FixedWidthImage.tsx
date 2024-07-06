@@ -10,14 +10,27 @@ const ROOT_STYLE = {
     justifyContent: 'center',
     maxHeight: CSSTokens.MaxHeightImageBubble,
     minHeight: CSSTokens.MinHeightImageBubble,
+    position: 'relative',
+
+    '& .webchat__fixed-width-image__filler': {
+      visibility: 'hidden',
+      width: '100%'
+    },
 
     '& .webchat__fixed-width-image__image': {
-      objectFit: 'contain',
+      left: '50%',
+      objectFit: 'cover',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
       width: '100%'
     }
   }
 };
 
+/**
+ * Shows the image with fixed width but cropped top/bottom.
+ */
 const FixedWidthImage = memo(
   ({
     alt,
@@ -35,6 +48,7 @@ const FixedWidthImage = memo(
         (className || '') + ''
       )}
     >
+      <img alt="" className="webchat__fixed-width-image__filler" role="none" src={src} />
       <img alt={alt} className="webchat__fixed-width-image__image" src={src} />
     </div>
   )
