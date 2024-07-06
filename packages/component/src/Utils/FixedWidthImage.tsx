@@ -10,6 +10,7 @@ const ROOT_STYLE = {
     justifyContent: 'center',
     maxHeight: CSSTokens.MaxHeightImageBubble,
     minHeight: CSSTokens.MinHeightImageBubble,
+    overflow: 'hidden',
     position: 'relative',
 
     '& .webchat__fixed-width-image__filler': {
