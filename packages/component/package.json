@@ -60,7 +60,7 @@
   },
   "files": [
     "./dist/**/*",
-    "./internal.js",
+    "./internal/*.js",
     "./lib/**/*",
     "./src/**/*"
   ],
