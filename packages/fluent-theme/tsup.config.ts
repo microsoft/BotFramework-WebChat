@@ -21,7 +21,11 @@ const umdResolvePlugin = {
     }));
 
     build.onResolve({ filter: /^botframework-webchat-component$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component.ts')
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/index.ts')
+    }));
+
+    build.onResolve({ filter: /^botframework-webchat-component\/decorator$/u }, () => ({
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/decorator.ts')
     }));
   }
 };
