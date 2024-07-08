@@ -70,6 +70,12 @@
 
   --webchat-curveAccelerateMid: var(--curveAccelerateMid, cubic-bezier(1,0,1,1));
   --webchat-curveDecelerateMid: var(--curveDecelerateMid, cubic-bezier(0,0,0,1));
+
+  :global(.webchat__css-custom-properties) {
+    --webchat__border-animation--color-1: var(--borderAnimation-color1, #464FEB);
+    --webchat__border-animation--color-2: var(--borderAnimation-color2, #47CFFA);
+    --webchat__border-animation--color-3: var(--borderAnimation-color3, #B47CF8);
+  }
 }
 
 @media (prefers-reduced-motion) {

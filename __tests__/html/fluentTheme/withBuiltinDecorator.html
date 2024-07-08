@@ -11,7 +11,7 @@
     <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
   
     <style>
-      #webchat .border-loader::after,
+      #webchat .border-loader,
       #webchat .border-flair {
         animation-delay: -1s !important;
         animation-play-state: paused !important;
@@ -26,7 +26,6 @@
           React,
           ReactDOM: { render },
           WebChat: { 
-            decorator: { WebChatDecorator },
             FluentThemeProvider,
             ReactWebChat
           }
@@ -45,9 +44,7 @@
 
         render(
           <FluentThemeProvider>
-            <WebChatDecorator>
-              <App />
-            </WebChatDecorator>
+            <App />
           </FluentThemeProvider>,
           document.getElementById('webchat')
         );

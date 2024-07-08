@@ -72,7 +72,8 @@
     "./dist/**/*",
     "./internal.js",
     "./lib/**/*",
-    "./src/**/*"
+    "./src/**/*",
+    "./*.js"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "scripts": {
