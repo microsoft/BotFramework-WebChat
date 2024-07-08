@@ -27,6 +27,10 @@ const umdResolvePlugin = {
     build.onResolve({ filter: /^botframework-webchat-component\/internal$/u }, () => ({
       path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/internal.ts')
     }));
+
+    build.onResolve({ filter: /^botframework-webchat-component\/decorator$/u }, () => ({
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/decorator.ts')
+    }));
   }
 };
 
