@@ -97,6 +97,9 @@
     var(--webchat-decorator-borderFlair-animated-color2),
     var(--webchat-decorator-borderFlair-animated-color3)
   );
+  --webchat-decorator-borderFlair-borderMask:
+    linear-gradient(hsl(0 0% 100% / 0), hsl(0 0% 100% / 0)) padding-box, 
+    linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%)) border-box;
 
   animation: 
     borderAnimation-angle 2000ms linear 0ms forwards,
@@ -111,9 +114,10 @@
   border: var(--webchat-decorator-borderFlair-borderSize) solid transparent;
   inset: 0;
   isolation: isolate;
-  mask: 
-    linear-gradient(hsl(0 0% 100% / 0), hsl(0 0% 100% / 0)) padding-box intersect, 
-    linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%)) border-box;
+  -webkit-mask: var(--webchat-decorator-borderFlair-borderMask);
+  -webkit-mask-composite: clear;
+  mask: var(--webchat-decorator-borderFlair-borderMask);
+  mask-composite: intersect;
   pointer-events: none;
   position: absolute;
 }
