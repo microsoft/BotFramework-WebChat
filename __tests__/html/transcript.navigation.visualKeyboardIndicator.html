@@ -62,12 +62,6 @@
         // WHEN: TAB key is pressed from the widget before Web Chat.
         await host.sendTab();
 
-        // THEN: It should show the keyboard help.
-        await host.snapshot();
-
-        // WHEN: TAB key is pressed from the keyboard help.
-        await host.sendTab();
-
         // THEN: It should focus back on the transcript, show a focus indicator around the transcript, and an active indicator around the last activity.
         await host.snapshot();
 
