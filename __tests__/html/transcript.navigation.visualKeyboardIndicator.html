@@ -52,7 +52,30 @@
 
         // THEN: It should show a focus indicator around the transcript, and an active indicator around the last activity.
         await host.snapshot();
-        
+
+        // WHEN: SHIFT-TAB key is pressed from the transcript.
+        await host.sendShiftTab();
+
+        // THEN: It should focus on the first button outside of Web Chat.
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed from the widget before Web Chat.
+        await host.sendTab();
+
+        // THEN: It should show the keyboard help.
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed from the keyboard help.
+        await host.sendTab();
+
+        // THEN: It should focus back on the transcript, show a focus indicator around the transcript, and an active indicator around the last activity.
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed from the transcript.
+        await host.sendTab();
+
+        // THEN: It should focus on the terminator, show a focus indicator around the transcript with the words "End of transcript".
+        await host.snapshot();
       });
     </script>
   </body>
