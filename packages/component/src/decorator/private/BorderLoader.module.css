@@ -11,6 +11,11 @@
 }
 
 :global(.webchat) .border-loader {
+  border-radius: inherit;
+  position: relative;
+}
+
+:global(.webchat) .border-loader__loader {
   --webchat-decorator-borderLoader-color1: var(--webchat-borderLoader-color1, var(--webchat__border-animation--color-1));
   --webchat-decorator-borderLoader-color2: var(--webchat-borderLoader-color2, var(--webchat__border-animation--color-2));
   --webchat-decorator-borderLoader-color3: var(--webchat-borderLoader-color3, var(--webchat__border-animation--color-3));
@@ -28,7 +33,6 @@
   height: var(--webchat-decorator-borderLoader-borderSize);
   inset: auto 0 0 0;
   isolation: isolate;
-  overflow: hidden;
   position: absolute;
   width: 100%;
 }

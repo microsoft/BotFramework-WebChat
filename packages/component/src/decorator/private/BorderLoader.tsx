@@ -7,10 +7,10 @@ function Loader({ children }: Readonly<{ children?: ReactNode | undefined }>) {
   const classNames = useStyles(styles);
 
   return (
-    <Fragment>
+    <div className={classNames['border-loader']}>
       {children}
-      <div className={classNames['border-loader']} />
-    </Fragment>
+      <div className={classNames['border-loader__loader']} />
+    </div>
   );
 }
 
