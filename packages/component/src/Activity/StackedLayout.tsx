@@ -4,6 +4,7 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
+import { ActivityDecorator } from 'botframework-webchat-api/decorator';
 
 import Bubble from './Bubble';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
@@ -156,15 +157,17 @@ const StackedLayout: FC<StackedLayoutProps> = ({
                 fromUser={fromUser}
                 nub={showNub || (hasAvatar || hasNub ? 'hidden' : false)}
               >
-                {renderAttachment({
-                  activity,
-                  attachment: isMessage
-                    ? {
-                        content: activityDisplayText,
-                        contentType: textFormatToContentType(activity.textFormat)
-                      }
-                    : undefined
-                })}
+                <ActivityDecorator activity={activity}>
+                  {renderAttachment({
+                    activity,
+                    attachment: isMessage
+                      ? {
+                          content: activityDisplayText,
+                          contentType: textFormatToContentType(activity.textFormat)
+                        }
+                      : undefined
+                  })}
+                </ActivityDecorator>
               </Bubble>
             </div>
           )}

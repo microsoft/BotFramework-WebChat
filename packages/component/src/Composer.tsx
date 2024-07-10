@@ -6,10 +6,11 @@ import type {
 import {
   Composer as APIComposer,
   hooks,
-  rectifySendBoxMiddlewareProps,
-  rectifySendBoxToolbarMiddlewareProps,
+  initSendBoxMiddleware,
+  initSendBoxToolbarMiddleware,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
+import { DecoratorComposer } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -69,13 +70,15 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
 
   return (
     <div className={classNames('webchat__css-custom-properties', cssCustomProperties)}>
-      <ModalDialogComposer>
-        {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-        <SendBoxComposer>
-          {children}
-          <Dictation onError={dictationOnError} />
-        </SendBoxComposer>
-      </ModalDialogComposer>
+      <DecoratorComposer>
+        <ModalDialogComposer>
+          {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+          <SendBoxComposer>
+            {children}
+            <Dictation onError={dictationOnError} />
+          </SendBoxComposer>
+        </ModalDialogComposer>
+      </DecoratorComposer>
     </div>
   );
 });
@@ -375,8 +378,8 @@ const Composer = ({
   const sendBoxMiddleware = useMemo<readonly SendBoxMiddleware[]>(
     () =>
       Object.freeze([
-        ...rectifySendBoxMiddlewareProps(sendBoxMiddlewareFromProps),
-        ...rectifySendBoxMiddlewareProps(theme.sendBoxMiddleware),
+        ...initSendBoxMiddleware(sendBoxMiddlewareFromProps),
+        ...initSendBoxMiddleware(theme.sendBoxMiddleware),
         ...createDefaultSendBoxMiddleware()
       ]),
     [sendBoxMiddlewareFromProps, theme.sendBoxMiddleware]
@@ -385,8 +388,8 @@ const Composer = ({
   const sendBoxToolbarMiddleware = useMemo<readonly SendBoxToolbarMiddleware[]>(
     () =>
       Object.freeze([
-        ...rectifySendBoxToolbarMiddlewareProps(sendBoxToolbarMiddlewareFromProps),
-        ...rectifySendBoxToolbarMiddlewareProps(theme.sendBoxToolbarMiddleware),
+        ...initSendBoxToolbarMiddleware(sendBoxToolbarMiddlewareFromProps),
+        ...initSendBoxToolbarMiddleware(theme.sendBoxToolbarMiddleware),
         ...createDefaultSendBoxToolbarMiddleware()
       ]),
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]

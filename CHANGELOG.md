@@ -31,9 +31,14 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    -  Added the `ThemeProvider.styles` property, allowing theme packages to place styles into the same root node as WebChat, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
    -  Added `nonce` for Fluent and `react-scroll-to-bottom` injected styles, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
    -  Updated `react-scroll-to-bottom` to version `4.2.1-main.53844f5`, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
+-  (Experimental) Added initial decorators support, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Introduced internal `botframework-webchat-api/decorator` import, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Added `DecoratorComposer` and `ActivityDecorator` to be used for decorating activity border, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+
 
 ### Fixed
 
+-  Read deeper into citation objects in order to provide names, in PR [#5215](https://github.com/microsoft/BotFramework-WebChat/pull/5215), by [@beyackle2](https://github.com/beyackle2)
 -  Improved performance for `useActivityWithRenderer`, in PR [#5172](https://github.com/microsoft/BotFramework-WebChat/pull/5172), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixes [#5162](https://github.com/microsoft/BotFramework-WebChat/issues/5162). Improved performance for `useActivityTreeWithRenderer`, in PR [#5163](https://github.com/microsoft/BotFramework-WebChat/pull/5163), by [@compulim](https://github.com/compulim)
 -  Fixes [#5175](https://github.com/microsoft/BotFramework-WebChat/issues/5175). `PrecompiledGlobalize.js` is emitted instead of `.cjs`, by [@compulim](https://github.com/compulim) in PR [#5181](https://github.com/microsoft/BotFramework-WebChat/pull/5181)
@@ -43,6 +48,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixed send box zoomed in when clicked on mobile Safari, in PR [5192](https://github.com/microsoft/BotFramework-WebChat/pull/5192), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added missing support for chat history scroll with keyboard when Fluent send box is focused, in PR [5191](https://github.com/microsoft/BotFramework-WebChat/pull/5191), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed DTMF command usage sent by telephone keypad, in PR [5198](https://github.com/microsoft/BotFramework-WebChat/pull/5198), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed decorator import in legacy CommonJS environments, in [5231](https://github.com/microsoft/BotFramework-WebChat/pull/5231), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
