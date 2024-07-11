@@ -24,6 +24,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ## [Unreleased]
 
+## [4.18.0] - 2024-07-10
+
 ### Added
 
 -  (Experimental) Added initial decorators support, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
@@ -36,13 +38,13 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Improved performance for `useActivityWithRenderer`, in PR [#5172](https://github.com/microsoft/BotFramework-WebChat/pull/5172), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixes [#5162](https://github.com/microsoft/BotFramework-WebChat/issues/5162). Improved performance for `useActivityTreeWithRenderer`, in PR [#5163](https://github.com/microsoft/BotFramework-WebChat/pull/5163), by [@compulim](https://github.com/compulim)
 -  Fixes [#5175](https://github.com/microsoft/BotFramework-WebChat/issues/5175). `PrecompiledGlobalize.js` is emitted instead of `.cjs`, by [@compulim](https://github.com/compulim) in PR [#5181](https://github.com/microsoft/BotFramework-WebChat/pull/5181)
--  Improved performance for `BasicTranscript`, in PR [5183](https://github.com/microsoft/BotFramework-WebChat/pull/5183), by [@OEvgeny](https://github.com/OEvgeny)
--  Fixed potential memory usage issues caused by `useActivitiesWithRenderer`, in PR [5183](https://github.com/microsoft/BotFramework-WebChat/pull/5183), by [@OEvgeny](https://github.com/OEvgeny)
--  Improved performance for `useMemoized`, in PR [5190](https://github.com/microsoft/BotFramework-WebChat/pull/5190), by [@OEvgeny](https://github.com/OEvgeny)
--  Fixed send box zoomed in when clicked on mobile Safari, in PR [5192](https://github.com/microsoft/BotFramework-WebChat/pull/5192), by [@OEvgeny](https://github.com/OEvgeny)
--  Added missing support for chat history scroll with keyboard when Fluent send box is focused, in PR [5191](https://github.com/microsoft/BotFramework-WebChat/pull/5191), by [@OEvgeny](https://github.com/OEvgeny)
--  Fixed DTMF command usage sent by telephone keypad, in PR [5198](https://github.com/microsoft/BotFramework-WebChat/pull/5198), by [@OEvgeny](https://github.com/OEvgeny)
--  Fixed decorator import in legacy CommonJS environments, in [5231](https://github.com/microsoft/BotFramework-WebChat/pull/5231), by [@OEvgeny](https://github.com/OEvgeny)
+-  Improved performance for `BasicTranscript`, in PR [#5183](https://github.com/microsoft/BotFramework-WebChat/pull/5183), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed potential memory usage issues caused by `useActivitiesWithRenderer`, in PR [#5183](https://github.com/microsoft/BotFramework-WebChat/pull/5183), by [@OEvgeny](https://github.com/OEvgeny)
+-  Improved performance for `useMemoized`, in PR [#5190](https://github.com/microsoft/BotFramework-WebChat/pull/5190), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed send box zoomed in when clicked on mobile Safari, in PR [#5192](https://github.com/microsoft/BotFramework-WebChat/pull/5192), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added missing support for chat history scroll with keyboard when Fluent send box is focused, in PR [#5191](https://github.com/microsoft/BotFramework-WebChat/pull/5191), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed DTMF command usage sent by telephone keypad, in PR [#5198](https://github.com/microsoft/BotFramework-WebChat/pull/5198), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed decorator import in legacy CommonJS environments, in [#5231](https://github.com/microsoft/BotFramework-WebChat/pull/5231), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 

@@ -23,11 +23,13 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ## 4.18.0 notable changes
 
+In this release, we are focusing on performance improvements, including memory and load time optimizations.
+
+## 4.17.0 notable changes
+
 ### Support livestreaming response
 
 Bots can now livestream their responses. Before Bot Framework SDK support this feature, bot authors can follow the details in [this pull request](https://github.com/microsoft/BotFramework-WebChat/pull/5141) to construct the livestream responses.
-
-## 4.17.0 notable changes
 
 ### Debut of ES Modules
 
