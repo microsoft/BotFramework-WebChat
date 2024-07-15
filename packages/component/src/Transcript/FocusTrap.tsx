@@ -1,19 +1,19 @@
-import PropTypes from 'prop-types';
-import React, { Fragment, memo, useCallback, useRef } from 'react';
+import React, { KeyboardEventHandler, memo, type FocusEvent, type ReactNode, useCallback, useRef } from 'react';
 
-import type { FC, KeyboardEventHandler, PropsWithChildren } from 'react';
-
-import FocusRedirector from '../Utils/FocusRedirector';
 import tabbableElements from '../Utils/tabbableElements';
 import { useRefFrom } from 'use-ref-from';
 
-type FocusTrapProps = PropsWithChildren<{
+const FocusTrap = ({
+  children,
+  onFocus,
+  onLeave
+}: Readonly<{
+  children: ReactNode;
   onFocus: () => void;
   onLeave: () => void;
-}>;
-
-const FocusTrap: FC<FocusTrapProps> = ({ children, onFocus, onLeave }) => {
+}>) => {
   const bodyRef = useRef<HTMLDivElement>();
+  const lastFocused = useRef<HTMLElement>();
   const onLeaveRef = useRefFrom<() => void>(onLeave);
 
   const getTabbableElementsInBody = useCallback(
@@ -28,45 +28,44 @@ const FocusTrap: FC<FocusTrapProps> = ({ children, onFocus, onLeave }) => {
         event.stopPropagation();
 
         onLeaveRef.current?.();
+      } else if (event.key === 'Tab') {
+        const activeElement = document.activeElement as HTMLElement;
+        const focusables = getTabbableElementsInBody();
+        const focusedIndex = getTabbableElementsInBody().indexOf(activeElement);
+        if (event.shiftKey && focusedIndex === 0) {
+          event.preventDefault();
+          onLeaveRef.current?.();
+        } else if (!event.shiftKey && focusedIndex === focusables.length - 1) {
+          event.preventDefault();
+          onLeaveRef.current?.();
+        }
       }
     },
-    [onLeaveRef]
+    [getTabbableElementsInBody, onLeaveRef]
   );
 
-  const handleFirstSentinelFocus: () => void = useCallback(() => {
-    const focusables = getTabbableElementsInBody();
-
-    const lastTabbableElement = focusables[focusables.length - 1];
-
-    lastTabbableElement ? lastTabbableElement.focus() : onLeaveRef.current?.();
-  }, [getTabbableElementsInBody, onLeaveRef]);
-
-  const handleLastSentinelFocus: () => void = useCallback(() => {
-    const [firstTabbableElement] = getTabbableElementsInBody();
-
-    firstTabbableElement ? firstTabbableElement.focus() : onLeaveRef.current?.();
-  }, [getTabbableElementsInBody, onLeaveRef]);
+  const handleFocus = useCallback(
+    (event: FocusEvent<HTMLDivElement, Element>) => {
+      const { relatedTarget } = event;
+      if (
+        (!relatedTarget || !bodyRef.current?.contains(relatedTarget)) &&
+        lastFocused.current?.parentElement &&
+        getTabbableElementsInBody().includes(lastFocused.current)
+      ) {
+        lastFocused.current?.focus();
+      } else {
+        onFocus();
+        lastFocused.current = event.target;
+      }
+    },
+    [getTabbableElementsInBody, lastFocused, onFocus]
+  );
 
   return (
-    <Fragment>
-      <FocusRedirector onFocus={handleFirstSentinelFocus} />
-      <div onFocus={onFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
-        {children}
-      </div>
-      <FocusRedirector onFocus={handleLastSentinelFocus} />
-    </Fragment>
+    <div onFocus={handleFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
+      {children}
+    </div>
   );
-};
-
-FocusTrap.defaultProps = {
-  children: undefined,
-  onFocus: undefined
-};
-
-FocusTrap.propTypes = {
-  children: PropTypes.any,
-  onFocus: PropTypes.func,
-  onLeave: PropTypes.func.isRequired
 };
 
 FocusTrap.displayName = 'FocusTrap';
