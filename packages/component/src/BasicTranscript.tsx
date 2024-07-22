@@ -4,7 +4,7 @@ import {
   ScrollPanel as ReactScrollToBottomPanel,
   useScrollAnimatingToEnd as useAnimatingToEnd,
   useScrollAtEnd as useAtEnd,
-  useObserveScroll as useObserveScrollPosition,
+  useObserveScrollPosition,
   useScrollTo,
   useScrollToEnd,
   useScroller,
@@ -52,6 +52,7 @@ import {
   useRegisterScrollRelativeTranscript,
   type TranscriptScrollRelativeOptions
 } from './hooks/transcriptScrollRelative';
+import { Virtualizer } from 'virtua';
 
 const {
   useActivityKeysByRead,
@@ -687,24 +688,36 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
   });
 
   const hasAnyChild = !!React.Children.count(children);
-
+  const scrollerRef = useRef<HTMLElement>(null);
+  const setScrollerRef = useCallback(
+    (el: HTMLElement) => {
+      scrollerRef.current = el ? el.querySelector(`.webchat__basic-transcript__scrollable`) : null;
+    },
+    [scrollerRef]
+  );
+  /*TODO: list of activities we want changes to be presented in*/
+  const keepMounted = useMemo(() => [], []);
   return (
     <React.Fragment>
       {renderScrollToEndButton && renderScrollToEndButton({ onClick: handleScrollToEndButtonClick })}
       {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
-      <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
-        <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
-        {hasAnyChild && (
-          <section
-            aria-roledescription={transcriptRoleDescription}
-            className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
-            role="feed"
-          >
-            {children}
-          </section>
-        )}
-        <BasicTypingIndicator />
-      </ReactScrollToBottomPanel>
+      <div ref={setScrollerRef} style={{ overflow: 'hidden' }}>
+        <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
+          <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
+          {hasAnyChild && (
+            <section
+              aria-roledescription={transcriptRoleDescription}
+              className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
+              role="feed"
+            >
+              <Virtualizer keepMounted={keepMounted} scrollRef={scrollerRef}>
+                {children}
+              </Virtualizer>
+            </section>
+          )}
+          <BasicTypingIndicator />
+        </ReactScrollToBottomPanel>
+      </div>
     </React.Fragment>
   );
 };

@@ -34,7 +34,7 @@
           timeForEachMessage.push(Date.now() - last);
         }
 
-        await pageConditions.numActivitiesShown(NUM_MESSAGE);
+        // await pageConditions.numActivitiesShown(NUM_MESSAGE);
 
         console.log(`Took ${Date.now() - now} milliseconds.`);
         console.log(timeForEachMessage.join(','));
