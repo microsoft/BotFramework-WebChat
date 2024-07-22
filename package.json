@@ -97,11 +97,11 @@
     ],
     "@types/react": [
       "16",
-      "react@16.8.6 is our baseline"
+      "react@16.14.0 is our baseline"
     ],
     "@types/react-dom": [
       "16",
-      "react@16.8.6 is our baseline"
+      "react@16.14.0 is our baseline"
     ],
     "babel-jest": [
       "28",
@@ -132,12 +132,12 @@
       "node-fetch@3 dropped support of CommonJS"
     ],
     "react": [
-      "16.8.6",
-      "using react@16.8.6 to make sure this is the minimum supported version"
+      "16.14.0",
+      "using react@16.14.0 to make sure this is the minimum supported version"
     ],
     "react-dom": [
-      "16.8.6",
-      "using react-dom@16.8.6 to make sure this is the minimum supported version"
+      "16.14.0",
+      "using react-dom@16.14.0 to make sure this is the minimum supported version"
     ],
     "strip-ansi": [
       "6",
@@ -198,7 +198,7 @@
     "xmlbuilder": "^15.1.1"
   },
   "dependencies": {
-    "react": "16.8.6",
-    "react-dom": "16.8.6"
+    "react": "16.14.0",
+    "react-dom": "16.14.0"
   }
 }

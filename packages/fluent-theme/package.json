@@ -57,7 +57,7 @@
   "pinDependencies": {
     "@types/react": [
       "16",
-      "react@16.8.6 is our baseline"
+      "react@16.14.0 is our baseline"
     ]
   },
   "devDependencies": {
@@ -78,7 +78,7 @@
     "use-ref-from": "0.1.0"
   },
   "peerDependencies": {
-    "react": ">= 16.8.6"
+    "react": ">= 16.14.0"
   },
   "localPeerDependencies": {
     "botframework-webchat-api": "0.0.0-0",

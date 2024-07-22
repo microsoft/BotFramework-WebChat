@@ -92,7 +92,7 @@
     ],
     "@types/react": [
       "16",
-      "react@16.8.6 is our baseline"
+      "react@16.14.0 is our baseline"
     ],
     "compute-scroll-into-view": [
       "1",
@@ -156,8 +156,8 @@
     "virtua": "^0.33.3"
   },
   "peerDependencies": {
-    "react": ">= 16.8.6",
-    "react-dom": ">= 16.8.6"
+    "react": ">= 16.14.0",
+    "react-dom": ">= 16.14.0"
   },
   "localPeerDependencies": {
     "botframework-webchat-api": "0.0.0-0",
