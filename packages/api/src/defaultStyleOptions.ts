@@ -290,7 +290,9 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   // Video
   videoHeight: 270, // based on bubbleMaxWidth: 480 / 16 * 9 = 270
 
-  maxMessageLength: 2000
+  maxMessageLength: 2000,
+
+  enableVirtualScroll: false
 };
 
 export default DEFAULT_OPTIONS;

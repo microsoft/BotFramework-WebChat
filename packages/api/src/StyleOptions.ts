@@ -847,6 +847,13 @@ type StyleOptions = {
    * @default 2000
    */
   maxMessageLength?: number;
+
+  /**
+   * Enable virtual scroll for transcript
+   *
+   * @default false
+   */
+  enableVirtualScroll?: boolean;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:
