@@ -1,5 +1,5 @@
 export default async function fetchDirectLineAppServiceExtensionToken(
-  url = 'https://webchat-mockbot3.azurewebsites.net/api/token/directlinease'
+  url = 'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directlinease'
 ) {
   const res = await fetch(url, { method: 'POST' });
 
