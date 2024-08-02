@@ -12,6 +12,7 @@
   --webchat-colorNeutralForegroundDisabled: var(--colorNeutralForegroundDisabled, #bdbdbd);
 
   --webchat-colorNeutralBackground1: var(--colorNeutralBackground1, #ffffff);
+  --webchat-colorNeutralBackground3: var(--colorNeutralBackground3, #f5f5f5);
   --webchat-colorNeutralBackground4: var(--colorNeutralBackground4, #f0f0f0);
   --webchat-colorNeutralBackground5: var(--colorNeutralBackground5, #ebebeb);
 
@@ -27,6 +28,7 @@
   --webchat-colorStrokeFocus2: var(--colorStrokeFocus2, #000000);
 
   --webchat-colorBrandStroke2: var(--colorBrandStroke2, #9edcf7);
+  --webchat-colorTransparentStroke: var(--colorTransparentStroke, transparent);
 
   --webchat-colorBrandForeground2Hover: var(--colorBrandForeground2Hover, #015a7a);
   --webchat-colorBrandForeground2Pressed: var(--colorBrandForeground2Pressed, #01384d);
@@ -36,6 +38,7 @@
   --webchat-colorBrandForegroundLinkPressed: var(--colorBrandForegroundLinkPressed, #014259);
   --webchat-colorBrandForegroundLinkSelected: var(--colorBrandForegroundLinkSelected, #01678c);
 
+  --webchat-colorBrandBackground2: var(--colorBrandBackground2, #EBEFFF);
   --webchat-colorBrandBackground2Hover: var(--colorBrandBackground2Hover, #bee7fa);
   --webchat-colorBrandBackground2Pressed: var(--colorBrandBackground2Pressed, #7fd2f5);
 
@@ -55,6 +58,7 @@
   --webchat-borderRadiusXLarge: var(--borderRadiusXLarge, 8px);
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/utils/shadows.ts */
+  --webchat-shadow4: var(--shadow4, 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.14));
   --webchat-shadow16: var(--shadow16, 0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108));
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/spacings.ts */
@@ -62,6 +66,51 @@
   --webchat-spacingHorizontalM: var(--spacingHorizontalM, 12px);
   --webchat-spacingHorizontalXXXL: var(--spacingHorizontalXXXL, 32px);
   --webchat-spacingVerticalL: var(--spacingVerticalL, 16px);
+
+
+  --webchat-fontSizeBase100: var(--fontSizeBase100, 10px);
+  --webchat-fontSizeBase200: var(--fontSizeBase200, 12px);
+  --webchat-fontSizeBase300: var(--fontSizeBase300, 14px);
+  --webchat-fontSizeBase400: var(--fontSizeBase400, 16px);
+  --webchat-fontSizeBase500: var(--fontSizeBase500, 20px);
+  --webchat-fontSizeBase600: var(--fontSizeBase600, 24px);
+  --webchat-fontSizeHero700: var(--fontSizeHero700, 28px);
+  --webchat-fontSizeHero800: var(--fontSizeHero800, 32px);
+  --webchat-fontSizeHero900: var(--fontSizeHero900, 40px);
+
+  --webchat-lineHeightBase100: var(--lineHeightBase100, 14px);
+  --webchat-lineHeightBase200: var(--lineHeightBase200, 16px);
+  --webchat-lineHeightBase300: var(--lineHeightBase300, 20px);
+  --webchat-lineHeightBase400: var(--lineHeightBase400, 22px);
+  --webchat-lineHeightBase500: var(--lineHeightBase500, 28px);
+  --webchat-lineHeightBase600: var(--lineHeightBase600, 32px);
+  --webchat-lineHeightHero700: var(--lineHeightHero700, 36px);
+  --webchat-lineHeightHero800: var(--lineHeightHero800, 40px);
+  --webchat-lineHeightHero900: var(--lineHeightHero900, 52px);
+  --webchat-lineHeightHero1000: var(--lineHeightHero1000, 92px);
+
+  --webchat-spacingHorizontalNone: var(--spacingHorizontalNone, 0);
+  --webchat-spacingHorizontalXXS: var(--spacingHorizontalXXS, 2px);
+  --webchat-spacingHorizontalXS: var(--spacingHorizontalXS, 4px);
+  --webchat-spacingHorizontalSNudge: var(--spacingHorizontalSNudge, 6px);
+  --webchat-spacingHorizontalS: var(--spacingHorizontalS, 8px);
+  --webchat-spacingHorizontalMNudge: var(--spacingHorizontalMNudge, 10px);
+  --webchat-spacingHorizontalM: var(--spacingHorizontalM, 12px);
+  --webchat-spacingHorizontalL: var(--spacingHorizontalL, 16px);
+  --webchat-spacingHorizontalXL: var(--spacingHorizontalXL, 20px);
+  --webchat-spacingHorizontalXXL: var(--spacingHorizontalXXL, 24px);
+  --webchat-spacingHorizontalXXXL: var(--spacingHorizontalXXXL, 32px);
+  --webchat-spacingVerticalNone: var(--spacingVerticalNone, 0);
+  --webchat-spacingVerticalXXS: var(--spacingVerticalXXS, 2px);
+  --webchat-spacingVerticalXS: var(--spacingVerticalXS, 4px);
+  --webchat-spacingVerticalSNudge: var(--spacingVerticalSNudge, 6px);
+  --webchat-spacingVerticalS: var(--spacingVerticalS, 8px);
+  --webchat-spacingVerticalMNudge: var(--spacingVerticalMNudge, 10px);
+  --webchat-spacingVerticalM: var(--spacingVerticalM, 12px);
+  --webchat-spacingVerticalL: var(--spacingVerticalL, 16px);
+  --webchat-spacingVerticalXL: var(--spacingVerticalXL, 20px);
+  --webchat-spacingVerticalXXL: var(--spacingVerticalXXL, 24px);
+  --webchat-spacingVerticalXXXL: var(--spacingVerticalXXXL, 32px);
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts */
   --webchat-fontFamilyBase: var(--fontFamilyBase, 'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif);
@@ -95,4 +144,119 @@
     --webchat-durationUltraFast: 0.01ms;
     --webchat-durationNormal: 0.01ms;
   }
+}
+
+/* Custom properties override */
+:global(.webchat-fluent).theme :global(.webchat__css-custom-properties) {
+  --webchat__font--primary: var(--webchat-fontFamilyBase);
+  --webchat__min-height--bubble: var(--webchat-message-minHeight);
+  --webchat__padding--regular: var(--webchat-spacingVerticalS);
+
+  --webchat-message-minHeight: 36px;
+}
+
+/* Transcript surface */
+:global(.webchat-fluent).theme :global(.webchat__surface) {
+  background-color: var(--webchat-colorNeutralBackground3);
+}
+
+/* Transcript scrollable */
+:global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable) {
+  scrollbar-gutter: stable;
+  /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
+  scrollbar-color: unset;
+  scrollbar-width: unset;
+  /* Firefox */
+  -moz-scrollbar-color: var(--webchat-colorNeutralBackground5) var(--webchat-colorNeutralForeground2);
+  -moz-scrollbar-width: thin;
+
+  /* Chrome, Edge, and Safari */
+  &::-webkit-scrollbar {
+    width: 8px
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: var(--webchat-colorNeutralBackground3);
+    border-radius: 16px
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--webchat-colorNeutralForeground4);
+    border-radius: 16px
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--webchat-colorNeutralForeground2);
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: var(--webchat-colorNeutralBackground3);
+  }
+}
+
+/* Transcript activity non-empty */
+:global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__activity-body:not(:empty)) {
+  padding-block-end: var(--webchat-spacingVerticalM);
+}
+
+/* Stacked layout message which has message bubble */
+:global(.webchat-fluent).theme :global(.webchat__stacked-layout .webchat__stacked-layout__content:has(.webchat__bubble)) {
+  --webchat-message-borderRadius: var(--webchat-borderRadiusXLarge);
+  --webchat-message-boxShadow: var(--webchat-shadow4);
+  --webchat-message-backgroundColor: var(--webchat-colorNeutralBackground1);
+  --webchat-message-blockPadding: var(--webchat-spacingVerticalM);
+  overflow: visible;
+}
+
+/* Stacked layout message which has user message bubble */
+:global(.webchat-fluent).theme :global(.webchat__stacked-layout .webchat__stacked-layout__content:has(.webchat__bubble--from-user)) {
+  --webchat-message-boxShadow: none;
+  --webchat-message-backgroundColor: var(--webchat-colorBrandBackground2);
+  --webchat-message-blockPadding: var(--webchat-spacingVerticalS);
+}
+
+/* Message status */
+:global(.webchat-fluent).theme :global(.webchat__stacked-layout .webchat__stacked-layout__status) {
+  color: var(--webchat-colorNeutralForeground1);
+  font-size: var(--webchat-fontSizeBase200);
+  line-height: var(--webchat-lineHeightBase200);
+}
+
+/* Message bubble */
+:global(.webchat-fluent).theme :global(.webchat__stacked-layout .webchat__bubble) {
+  overflow: visible;
+}
+
+/* Message bubble content */
+:global(.webchat-fluent).theme :global(.webchat__stacked-layout .webchat__bubble .webchat__bubble__content) {
+  background-color: var(--webchat-message-backgroundColor);
+  border-width: 0;
+  border-radius: var(--webchat-message-borderRadius);
+  box-sizing: border-box;
+  min-height: var(--webchat-message-minHeight);
+}
+
+/* Message bubble text content */
+:global(.webchat-fluent).theme :global(.webchat__stacked-layout .webchat__bubble .webchat__text-content) {
+  padding: var(--webchat-message-blockPadding) var(--webchat-spacingHorizontalL);
+  font-size: var(--webchat-fontSizeBase300);
+  line-height: var(--webchat-lineHeightBase300);
+  min-height: auto;
+}
+
+/* Message bubble content pseudo */
+:global(.webchat-fluent).theme :global(.webchat__stacked-layout .webchat__bubble .webchat__bubble__content)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  isolation: isolate;
+  box-shadow: var(--webchat-message-boxShadow);
+}
+
+/* Transcript Activity indicator without focus-visible state */
+/* Hide activity focus when no focus-visible state */
+:global(.webchat-fluent).theme :global(.webchat__basic-transcript:not(:focus-visible) .webchat__basic-transcript__activity-indicator.webchat__basic-transcript__activity-indicator--focus) {
+  display: none;
 }
