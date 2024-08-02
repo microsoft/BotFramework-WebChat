@@ -91,32 +91,28 @@
         await pageConditions.numActivitiesShown(7);
         await pageConditions.liveRegionStabilized();
 
-        const screenReaderTexts = [].map.call(pageElements.transcriptLiveRegion().children, child =>
+        const screenReaderTexts = [].map.call(pageElements.liveRegion().children, child =>
           testHelpers.getAllTextContents(child).join('\n')
         );
 
         // THEN: One of the activity contains a fallback text of empty string. It become presentational and not rendered.
-        expect(screenReaderTexts).toHaveLength(6);
-
-        // THEN: Without `webchat:fallback-text` field set, we will be narrating the "text" with best-effort on removing Markdown syntax.
-        //       Timestamp should not be narrated.
-        expect(screenReaderTexts[0]).toBe('Bot said:\nHello, World without webchat:fallback-text field.');
-
-        // THEN: Without valid `webchat:fallback-text` field, we will be narrating the "text" with best-effort on removing Markdown syntax.
-        expect(screenReaderTexts[1]).toBe('Bot said:\nHello, World with invalid webchat:fallback-text field.');
-
-        // THEN: With `webchat:fallback-text` field set, we will be narrating it instead of the `text` field.
-        expect(screenReaderTexts[2]).toBe('Bot said:\nDisplay another thing.');
-
-        // THEN: With `channelData.messageBack.displayText` field set and `textFormat` is `plain`, we will be narrating it instead of the `text` field.
-        expect(screenReaderTexts[3]).toBe('You said:\nText from *MessageBack* (plain).');
-
-        // THEN: With `channelData.messageBack.displayText` field set, we will be narrating it instead of the `text` field, with best-effort on removing Markdown syntax.
-        expect(screenReaderTexts[4]).toBe('You said:\nText from MessageBack (Markdown).');
-
-        // THEN: With `textFormat` is set to `plain`, we should narrate it as-is.
-        //       Also note we have a preceding activity with `webchat:fallback-text` field set as an empty string. That one is not narrated and considered presentational.
-        expect(screenReaderTexts[5]).toBe('Bot said:\nThis is *plain text*, preserve asterisks.');
+        expect(screenReaderTexts).toEqual([
+          'connecting',
+          // THEN: Without `webchat:fallback-text` field set, we will be narrating the "text" with best-effort on removing Markdown syntax.
+          //       Timestamp should not be narrated.
+          'Bot said:\nHello, World without webchat:fallback-text field.',
+          // THEN: Without valid `webchat:fallback-text` field, we will be narrating the "text" with best-effort on removing Markdown syntax.
+          'Bot said:\nHello, World with invalid webchat:fallback-text field.',
+          // THEN: With `webchat:fallback-text` field set, we will be narrating it instead of the `text` field.
+          'Bot said:\nDisplay another thing.',
+          // THEN: With `channelData.messageBack.displayText` field set and `textFormat` is `plain`, we will be narrating it instead of the `text` field.
+          'You said:\nText from *MessageBack* (plain).',
+          // THEN: With `channelData.messageBack.displayText` field set, we will be narrating it instead of the `text` field, with best-effort on removing Markdown syntax.
+          'You said:\nText from MessageBack (Markdown).',
+          // THEN: With `textFormat` is set to `plain`, we should narrate it as-is.
+          //       Also note we have a preceding activity with `webchat:fallback-text` field set as an empty string. That one is not narrated and considered presentational.
+          'Bot said:\nThis is *plain text*, preserve asterisks.'
+        ]);
 
         // THEN: The screenshot should show the message in Markdown format, i.e. <strong> and <code>.
         //       It must not show the text "This should not be displayed."

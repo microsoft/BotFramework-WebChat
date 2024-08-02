@@ -64,18 +64,20 @@
         await pageConditions.numActivitiesShown(6);
         await pageConditions.liveRegionStabilized();
 
-        const screenReaderTexts = [].map.call(pageElements.transcriptLiveRegion().children, child =>
+        const screenReaderTexts = [].map.call(pageElements.liveRegion().children, child =>
           testHelpers.getAllTextContents(child).join('\n')
         );
 
-        expect(screenReaderTexts).toHaveLength(7);
-
-        expect(screenReaderTexts[0]).toBe('Bot said:\nExclamation mark Warning.');
-        expect(screenReaderTexts[1]).toBe('Bot said:\nHello\nWorld\nAloha');
-        expect(screenReaderTexts[2]).toBe('Bot said:\nHello\nWorld');
-        expect(screenReaderTexts[3]).toBe('Bot said:\nUSD\n1.00\nJPY\n0.91');
-        expect(screenReaderTexts[4]).toBe('Bot said:\nHello, World!');
-        expect(screenReaderTexts[6]).toBe('One or more links in the message. Press shift tab key 2 to 3 times to switch to the chat history. Then click on the message to interact.');
+        expect(screenReaderTexts).toEqual([
+          'connecting',
+          'Bot said:\nExclamation mark Warning.',
+          'Bot said:\nHello\nWorld\nAloha',
+          'Bot said:\nHello\nWorld',
+          'Bot said:\nUSD\n1.00\nJPY\n0.91',
+          'Bot said:\nHello, World!',
+          'Bot said:\nHello, Bing!',
+          'One or more links in the message. Press shift tab key 2 to 3 times to switch to the chat history. Then click on the message to interact.'
+        ]);
 
         // The screenshot should show the message in Markdown format, i.e. <strong> and <code>.
         await host.snapshot();

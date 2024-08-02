@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-component';
-import { RefObject, useMemo } from 'react';
+import { RefObject, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 const { useConnectivityStatus, useLocalizer } = hooks;
@@ -17,6 +17,7 @@ const useSubmitError = ({
 }>) => {
   const [connectivityStatus] = useConnectivityStatus();
   const localize = useLocalizer();
+  const [error, setError] = useState<SendError | undefined>();
 
   const submitErrorRef = useRefFrom<'empty' | 'offline' | undefined>(
     connectivityStatus !== 'connected' && connectivityStatus !== 'reconnected'
@@ -37,9 +38,20 @@ const useSubmitError = ({
     [localize]
   );
 
-  return useMemo<Readonly<[RefObject<SendError | undefined>, string | undefined]>>(
-    () => Object.freeze([submitErrorRef, submitErrorRef.current && errorMessageStringMap.get(submitErrorRef.current)]),
-    [errorMessageStringMap, submitErrorRef]
+  const hasValue = !!message?.trim();
+  useEffect(() => {
+    if (error === 'empty' && hasValue) {
+      setError(undefined);
+    }
+  }, [error, hasValue]);
+
+  const checkError = useCallback(() => {
+    setError(submitErrorRef.current);
+  }, [submitErrorRef]);
+
+  return useMemo<Readonly<[RefObject<SendError | undefined>, string | undefined, () => void]>>(
+    () => Object.freeze([submitErrorRef, error && errorMessageStringMap.get(error), checkError]),
+    [checkError, error, errorMessageStringMap, submitErrorRef]
   );
 };
 

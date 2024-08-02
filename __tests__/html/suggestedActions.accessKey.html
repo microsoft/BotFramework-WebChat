@@ -87,7 +87,7 @@
         await pageConditions.suggestedActionsShown();
         await pageConditions.liveRegionStabilized();
 
-        const screenReaderTexts = [].map.call(pageElements.transcriptLiveRegion().children, child =>
+        const screenReaderTexts = [].map.call(pageElements.liveRegion().children, child =>
           testHelpers.getAllTextContents(child).join('\n')
         );
 

@@ -10,7 +10,6 @@ import executePromiseScript from './executePromiseScript';
 import getConsoleErrors from './getConsoleErrors';
 import getConsoleLogs from './getConsoleLogs';
 import getConsoleWarnings from './getConsoleWarnings';
-import getNotificationText from './getNotificationText';
 import getNumActivitiesShown from './getNumActivitiesShown';
 import getSendBoxText from './getSendBoxText';
 import getStore from './getStore';
@@ -52,7 +51,6 @@ export default function pageObjects(driver) {
       getConsoleErrors,
       getConsoleLogs,
       getConsoleWarnings,
-      getNotificationText,
       getNumActivitiesShown,
       getSendBoxText,
       getStore,

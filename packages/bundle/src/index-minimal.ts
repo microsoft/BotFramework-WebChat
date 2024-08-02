@@ -4,6 +4,7 @@
 import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
 import * as decorator from 'botframework-webchat-api/decorator';
 import { Constants, createStore, createStoreWithDevTools, createStoreWithOptions } from 'botframework-webchat-core';
+import * as internal from 'botframework-webchat-component/internal';
 
 import ReactWebChat, {
   Components,
@@ -57,6 +58,7 @@ export {
   createStoreWithDevTools,
   createStoreWithOptions,
   createStyleSet,
+  internal,
   hooks,
   renderWebChat,
   version,
@@ -77,6 +79,7 @@ window['WebChat'] = {
   createStoreWithOptions,
   createStyleSet,
   decorator,
+  internal,
   hooks,
   ReactWebChat,
   renderWebChat,

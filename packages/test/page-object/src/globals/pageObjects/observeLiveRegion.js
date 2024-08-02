@@ -1,7 +1,7 @@
-import transcriptLiveRegion from '../pageElements/transcriptLiveRegion';
+import liveRegion from '../pageElements/liveRegion';
 
 export default function observeLiveRegion() {
-  const liveRegionElement = transcriptLiveRegion();
+  const liveRegionElement = liveRegion();
   const liveRegionInnerTexts = [];
 
   const mutationObserver = new MutationObserver(records => {
