@@ -29,6 +29,7 @@ const BUILD_OPTIONS = {
   entryPoints: {
     webchat: resolveFromProjectRoot('./dist/botframework-webchat.mjs'),
     'webchat-es5': resolveFromProjectRoot('./dist/botframework-webchat.es5.mjs'),
+    'webchat-internal': resolveFromProjectRoot('./dist/botframework-webchat.internal.mjs'),
     'webchat-minimal': resolveFromProjectRoot('./dist/botframework-webchat.minimal.mjs')
   },
   logLevel: 'info',

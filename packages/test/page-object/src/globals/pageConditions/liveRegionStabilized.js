@@ -1,6 +1,6 @@
-import getTranscriptLiveRegion from '../pageElements/transcriptLiveRegion';
+import getliveRegion from '../pageElements/liveRegion';
 import stabilized from './stabilized';
 
 export default function liveRegionStabilized() {
-  return stabilized('live region', () => getTranscriptLiveRegion().children.length, 5, 5000);
+  return stabilized('live region', () => getliveRegion().children.length, 5, 5000);
 }

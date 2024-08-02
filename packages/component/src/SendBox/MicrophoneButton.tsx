@@ -14,6 +14,7 @@ import useStyleSet from '../hooks/useStyleSet';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
 import IconButton from './IconButton';
+import useQueueStaticElement from '../providers/LiveRegionTwin/useQueueStaticElement';
 
 const { DictateState } = Constants;
 
@@ -117,9 +118,16 @@ const MicrophoneButton: FC<MicrophoneButtonProps> = ({ className }) => {
   const [disabled] = useMicrophoneButtonDisabled();
   const click = useMicrophoneButtonClick();
   const localize = useLocalizer();
+  const queueStaticElement = useQueueStaticElement();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const dictating = dictateState === DictateState.DICTATING;
+
+  const message = localize(
+    dictating ? 'SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT' : 'SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT'
+  );
+
+  message && queueStaticElement(<div className="webchat__microphone-button__status">{message}</div>);
 
   return (
     <div
@@ -140,8 +148,8 @@ const MicrophoneButton: FC<MicrophoneButtonProps> = ({ className }) => {
       >
         <MicrophoneIcon className="webchat__microphone-button__icon" />
       </IconButton>
-      <div aria-live="polite" className="sr-only" id="webchatSendBoxMicrophoneButton" role="status">
-        {localize(dictating ? 'SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT' : 'SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT')}
+      <div className="sr-only" id="webchatSendBoxMicrophoneButton">
+        {message}
       </div>
     </div>
   );

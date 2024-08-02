@@ -23,7 +23,6 @@ function SuggestedActionStackedOrFlowContainer(
   return (
     <div
       aria-label={props['aria-label']}
-      aria-live="polite"
       aria-orientation="vertical"
       className={cx(
         classNames['suggested-actions'],
