@@ -2,7 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React from 'react';
 
-import useStyleToEmotionObject from '../../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../../hooks/internal/styleToEmotionObject';
 
 const { useDirection } = hooks;
 

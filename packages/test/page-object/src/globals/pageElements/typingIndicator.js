@@ -1,3 +1,5 @@
+import root from './root';
+
 export default function typingIndicator() {
-  return document.querySelector('.webchat__typing-indicator');
+  return root().querySelector('.webchat__typing-indicator');
 }

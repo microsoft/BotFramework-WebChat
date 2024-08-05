@@ -3,7 +3,7 @@ import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { FC } from 'react';
 
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 import useErrorMessageId from '../providers/internal/SendBox/useErrorMessageId';

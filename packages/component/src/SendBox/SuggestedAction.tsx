@@ -6,7 +6,7 @@ import React, { MouseEventHandler, useCallback, VFC } from 'react';
 
 import useFocusVisible from '../hooks/internal/useFocusVisible';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useFocus from '../hooks/useFocus';
 import useScrollToEnd from '../hooks/useScrollToEnd';

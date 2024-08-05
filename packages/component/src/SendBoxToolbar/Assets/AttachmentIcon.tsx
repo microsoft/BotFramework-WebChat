@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 
-import useStyleToEmotionObject from '../../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../../hooks/internal/styleToEmotionObject';
 
 type Props = Readonly<{ checked: boolean }>;
 
