@@ -161,12 +161,16 @@ type StyleOptions = {
   /**
    * Specifies the maximum height of the bubble for image, default to 240px.
    *
+   * CSS variable: `--webchat__max-height--image-bubble`.
+   *
    * New in 4.18.0.
    */
   bubbleImageMaxHeight?: number | undefined;
 
   /**
    * Specifies the minimum height of the bubble for image, default to 240px.
+   *
+   * CSS variable: `--webchat__min-height--image-bubble`.
    *
    * New in 4.18.0.
    */
