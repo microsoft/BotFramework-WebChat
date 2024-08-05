@@ -45,6 +45,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Added missing support for chat history scroll with keyboard when Fluent send box is focused, in PR [#5191](https://github.com/microsoft/BotFramework-WebChat/pull/5191), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed DTMF command usage sent by telephone keypad, in PR [#5198](https://github.com/microsoft/BotFramework-WebChat/pull/5198), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed decorator import in legacy CommonJS environments, in [#5231](https://github.com/microsoft/BotFramework-WebChat/pull/5231), by [@OEvgeny](https://github.com/OEvgeny)
+-  Scoped `use-propagate` to individual WebChat instances to prevent interference between multiple instances, in PR [#5248](https://github.com/microsoft/BotFramework-WebChat/pull/5248), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 

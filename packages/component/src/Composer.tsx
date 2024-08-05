@@ -50,6 +50,8 @@ import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlin
 import createCSSKey from './Utils/createCSSKey';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
+import { FocusSendBoxScope } from './hooks/sendBoxFocus';
+import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -72,15 +74,19 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
 
   return (
     <div className={classNames('webchat__css-custom-properties', cssCustomProperties)}>
-      <DecoratorComposer>
-        <ModalDialogComposer>
-          {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-          <SendBoxComposer>
-            {children}
-            <Dictation onError={dictationOnError} />
-          </SendBoxComposer>
-        </ModalDialogComposer>
-      </DecoratorComposer>
+      <FocusSendBoxScope>
+        <ScrollRelativeTranscriptScope>
+          <DecoratorComposer>
+            <ModalDialogComposer>
+              {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+              <SendBoxComposer>
+                {children}
+                <Dictation onError={dictationOnError} />
+              </SendBoxComposer>
+            </ModalDialogComposer>
+          </DecoratorComposer>
+        </ScrollRelativeTranscriptScope>
+      </FocusSendBoxScope>
     </div>
   );
 });
