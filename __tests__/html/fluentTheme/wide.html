@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  <style>
+    #webchat {
+      width: 680px;
+      background: hsla(237, 80%, 60%, 0.05);
+      padding: 12px;
+    }
+
+    .webchat-fluent .sendbox__sendbox {
+      grid-template:
+        [telephone-keypad-start] "text-area controls" [attachment telephone-keypad-end]
+        / [telephone-keypad text-area attachment] 5fr [controls] 1fr;
+    }
+
+    .webchat-fluent {
+      --colorBrandBackground2: hsl(228, 100%, 96%);
+      --colorBrandForegroundLink: hsl(228, 99%, 28%);
+      --colorBrandForegroundLinkHover: hsl(228, 98%, 24%);
+      --colorBrandForegroundLinkPressed: hsl(228, 98%, 18%);
+      --colorBrandForegroundLinkSelected: hsl(228, 99%, 28%);
+      --colorCompoundBrandForeground1Hover: hsl(228, 97%, 31%);
+    }
+  </style>
+</head>
+
+<body>
+  <main id="webchat"></main>
+  <script type="text/babel">
+    run(async function () {
+      const {
+        React,
+        ReactDOM: { render },
+        WebChat: { FluentThemeProvider, ReactWebChat }
+      } = window; // Imports in UMD fashion.
+
+      const store = testHelpers.createStore();
+      const directLine = await testHelpers.createDirectLineWithTranscript([
+        {
+          "from": {
+            "role": "bot"
+          },
+          "suggestedActions": {
+            "to": {},
+            "actions": [
+              {
+                "displayText": "Review key points in ",
+                "image": "data:image/svg+xml;utf8,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M2%204.5C2%204.22386%202.22386%204%202.5%204H13.5C13.7761%204%2014%204.22386%2014%204.5C14%204.77614%2013.7761%205%2013.5%205H2.5C2.22386%205%202%204.77614%202%204.5ZM2%209.5C2%209.22386%202.22386%209%202.5%209H17.5C17.7761%209%2018%209.22386%2018%209.5C18%209.77614%2017.7761%2010%2017.5%2010H2.5C2.22386%2010%202%209.77614%202%209.5ZM2.5%2014C2.22386%2014%202%2014.2239%202%2014.5C2%2014.7761%202.22386%2015%202.5%2015H11.5C11.7761%2015%2012%2014.7761%2012%2014.5C12%2014.2239%2011.7761%2014%2011.5%2014H2.5Z%22%20fill%3D%22%23707070%22%2F%3E%3C%2Fsvg%3E",
+                "text": "Review key points in [file](#)",
+                "type": "messageBack",
+                "title": "Summarize"
+              },
+              {
+                "displayText": "Write more about ",
+                "image": "data:image/svg+xml;utf8,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M17.1813%202.92689C16.0291%201.71505%2014.1047%201.69077%2012.9222%202.87317L3.54741%2012.2475C3.21958%2012.5754%202.99204%2012.9899%202.89148%2013.4424L2.01387%2017.3923C1.97678%2017.5592%202.02754%2017.7335%202.14844%2017.8544C2.26934%2017.9753%202.44362%2018.026%202.6105%2017.9889L6.53689%2017.1157C7.00432%2017.0118%207.43243%2016.7767%207.77103%2016.4381L17.129%207.08003C18.27%205.939%2018.2933%204.09631%2017.1813%202.92689ZM13.6293%203.58029C14.4143%202.79538%2015.6917%202.8115%2016.4566%203.61596C17.1948%204.39225%2017.1793%205.61548%2016.4219%206.37293L15.7507%207.04418L12.958%204.25155L13.6293%203.58029ZM12.2509%204.95864L15.0436%207.7513L7.06391%2015.731C6.85976%2015.9352%206.60164%2016.0769%206.31982%2016.1396L3.1605%2016.8421L3.86768%2013.6593C3.92698%2013.3924%204.06117%2013.148%204.2545%2012.9547L12.2509%204.95864Z%22%20fill%3D%22%23707070%22%2F%3E%3C%2Fsvg%3E",
+                "text": "Write more about...",
+                "type": "messageBack",
+                "title": "Create"
+              },
+              {
+                "displayText": "Who is ",
+                "image": "data:image/svg+xml;utf8,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M8.49279%204.90114C8.13479%204.9711%207.7439%205.20337%207.43474%205.74712C7.29826%205.98718%206.99301%206.07114%206.75296%205.93465C6.5129%205.79817%206.42894%205.49292%206.56543%205.25287C7.00628%204.47749%207.63328%204.0502%208.30099%203.9197C8.9539%203.7921%209.60295%203.95667%2010.0932%204.28126C10.5768%204.6015%2010.9679%205.12423%2010.9804%205.75187C10.9934%206.40602%2010.5946%206.99672%209.86123%207.43036C9.36263%207.7252%209.16869%207.92513%209.08626%208.05795C9.01687%208.16975%209.00009%208.27172%209.00009%208.5C9.00009%208.77614%208.77623%209%208.50009%209C8.22394%209%208.00009%208.77614%208.00009%208.5C8.00009%208.22827%208.01399%207.88929%208.2366%207.53061C8.44617%207.19295%208.80555%206.89287%209.35222%206.5696C9.88718%206.25326%209.98416%205.95168%209.98059%205.77173C9.97649%205.56527%209.83866%205.31208%209.54108%205.11505C9.25005%204.92235%208.86559%204.82828%208.49279%204.90114ZM8.75%2011.5C9.16421%2011.5%209.5%2011.1642%209.5%2010.75C9.5%2010.3358%209.16421%2010%208.75%2010C8.33579%2010%208%2010.3358%208%2010.75C8%2011.1642%208.33579%2011.5%208.75%2011.5ZM8.50019%201C4.91034%201%202.00019%203.91015%202.00019%207.5C2.00019%208.651%202.29978%209.73335%202.82544%2010.6719L2.0297%2012.7542C1.73642%2013.5216%202.4424%2014.2957%203.23352%2014.0741L5.7209%2013.3774C6.5641%2013.7768%207.50671%2014%208.50019%2014C12.09%2014%2015.0002%2011.0899%2015.0002%207.5C15.0002%203.91015%2012.09%201%208.50019%201ZM3.00019%207.5C3.00019%204.46243%205.46263%202%208.50019%202C11.5378%202%2014.0002%204.46243%2014.0002%207.5C14.0002%2010.5376%2011.5378%2013%208.50019%2013C7.59806%2013%206.74803%2012.7832%205.99798%2012.3993L5.82377%2012.3101L2.96381%2013.1111L3.93292%2010.5753L3.80463%2010.3655C3.29438%209.53135%203.00019%208.55079%203.00019%207.5ZM11.4628%2017C9.49315%2017%207.72814%2016.1239%206.53613%2014.7402C7.09918%2014.8926%207.68851%2014.981%208.29584%2014.9973C9.19123%2015.629%2010.2837%2016%2011.4628%2016C12.3649%2016%2013.2149%2015.7832%2013.965%2015.3993L14.1392%2015.3101L16.9992%2016.1111L16.0301%2013.5752L16.1583%2013.3655C16.6686%2012.5313%2016.9628%2011.5508%2016.9628%2010.5C16.9628%209.34552%2016.6071%208.27414%2015.9993%207.38943C15.9905%206.78165%2015.9095%206.19137%2015.7643%205.6268C17.1125%206.81779%2017.9628%208.5596%2017.9628%2010.5C17.9628%2011.651%2017.6632%2012.7333%2017.1375%2013.6719L17.9333%2015.7542C18.2266%2016.5216%2017.5206%2017.2957%2016.7295%2017.0741L14.2421%2016.3774C13.3989%2016.7768%2012.4563%2017%2011.4628%2017Z%22%20fill%3D%22%23707070%22%2F%3E%3C%2Fsvg%3E",
+                "text": "Who is [person](#)",
+                "type": "messageBack",
+                "title": "Ask"
+              }
+            ]
+          },
+          "text": "Ready to explore? Select one of the suggestions below to get started...\n\nYou can always use the prompt guide for suggestions by selecting this button",
+          "textFormat": "markdown",
+          "type": "message"
+        },
+        {
+          from: { role: 'bot' },
+          id: '1.0',
+          text: `Great! Your copilot will maintain a polite, friendly, professional, and fun while assisting team members with onboarding tasks.
+Are there any topics or tasks this copilot shouldn’t help with or talk about?`,
+          type: 'message'
+        },
+        {
+          channelData: { state: 'sent' },
+          from: { role: 'user' },
+          id: '1.1',
+          text: 'No',
+          type: 'message'
+        },
+        {
+          from: { role: 'bot' },
+          id: '2.0',
+          text: 'Is there a website or datasource that has knowledge that will be necessary for Onboarding Buddy?',
+          type: 'message'
+        },
+        {
+          channelData: { state: 'sent' },
+          from: { role: 'user' },
+          id: '2.1',
+          text: 'sharepoint.contoso.com/newhires/',
+          type: 'message'
+        },
+        {
+          from: { role: 'bot' },
+          id: '3.0',
+          text: `https://sharepoint.contoso.com/team/ has been added as a Knowledge source.
+You can preview your extension at any time.`,
+          timestamp: 0,
+          type: 'message'
+        },
+        {
+          channelData: { state: 'sent' },
+          from: { role: 'user' },
+          id: '4.0',
+          text: 'Onboarding Checklist.doc',
+          timestamp: 0,
+          type: 'message'
+        }
+      ]);
+
+      const App = () => <ReactWebChat 
+        directLine={directLine}
+        store={store}
+        styleOptions={{
+          maxMessageLength: null
+        }}
+      />;
+
+      render(
+        <FluentThemeProvider>
+          <App />
+        </FluentThemeProvider>,
+        document.getElementById('webchat')
+      );
+
+      await pageConditions.uiConnected();
+      // THEN: Should render the activity.
+      await host.snapshot();
+    });
+  </script>
+</body>
+
+</html>

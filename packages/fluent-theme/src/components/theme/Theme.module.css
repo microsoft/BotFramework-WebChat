@@ -4,6 +4,7 @@
   --webchat-colorNeutralForeground1: var(--colorNeutralForeground1, #242424);
   --webchat-colorNeutralForeground2: var(--colorNeutralForeground2, #424242);
   --webchat-colorNeutralForeground4: var(--colorNeutralForeground4, #707070);
+  --webchat-colorNeutralForeground5: var(--colorNeutralForeground5, #7e7e7e);
 
   --webchat-colorNeutralForeground2BrandHover: var(--colorNeutralForeground2BrandHover, #02729c);
   --webchat-colorNeutralForeground2BrandPressed: var(--colorNeutralForeground2BrandPressed, #01678c);
@@ -38,7 +39,7 @@
   --webchat-colorBrandForegroundLinkPressed: var(--colorBrandForegroundLinkPressed, #014259);
   --webchat-colorBrandForegroundLinkSelected: var(--colorBrandForegroundLinkSelected, #01678c);
 
-  --webchat-colorBrandBackground2: var(--colorBrandBackground2, #EBEFFF);
+  --webchat-colorBrandBackground2: var(--colorBrandBackground2, #def2fc);
   --webchat-colorBrandBackground2Hover: var(--colorBrandBackground2Hover, #bee7fa);
   --webchat-colorBrandBackground2Pressed: var(--colorBrandBackground2Pressed, #7fd2f5);
 
@@ -149,15 +150,17 @@
 /* Custom properties override */
 :global(.webchat-fluent).theme :global(.webchat__css-custom-properties) {
   --webchat__font--primary: var(--webchat-fontFamilyBase);
+  --webchat__max-width--bubble: var(--webchat-message-maxWidth);
   --webchat__min-height--bubble: var(--webchat-message-minHeight);
   --webchat__padding--regular: var(--webchat-spacingVerticalS);
 
+  --webchat-message-maxWidth: 450px;
   --webchat-message-minHeight: 36px;
 }
 
 /* Transcript surface */
 :global(.webchat-fluent).theme :global(.webchat__surface) {
-  background-color: var(--webchat-colorNeutralBackground3);
+  background-color: transparent;
 }
 
 /* Transcript scrollable */
@@ -170,33 +173,35 @@
   -moz-scrollbar-color: var(--webchat-colorNeutralBackground5) var(--webchat-colorNeutralForeground2);
   -moz-scrollbar-width: thin;
 
-  /* Chrome, Edge, and Safari */
   &::-webkit-scrollbar {
-    width: 8px
+    width: var(--webchat-spacingVerticalMNudge);
+    visibility: hidden;
   }
-
-  &::-webkit-scrollbar-track {
-    background-color: var(--webchat-colorNeutralBackground3);
-    border-radius: 16px
+  
+  &:hover::-webkit-scrollbar {
+    width: var(--webchat-spacingVerticalMNudge);
   }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: var(--webchat-colorNeutralForeground4);
-    border-radius: 16px
+  
+  &:hover::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-right: 4px solid transparent;
+    background-clip: padding-box;
+    border-radius: 10px;
+    background-color: var(--webchat-colorNeutralForeground5);
   }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: var(--webchat-colorNeutralForeground2);
-  }
-
-  &::-webkit-scrollbar-corner {
-    background-color: var(--webchat-colorNeutralBackground3);
+  
+  &:hover::-webkit-scrollbar-thumb:hover {
+    border: 0px solid transparent;
+    border-right: 1px solid transparent;
+    background-clip: padding-box;
+    border-radius: 10px;
+    background-color: var(--webchat-colorNeutralForeground5);
   }
 }
 
 /* Transcript activity non-empty */
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__activity-body:not(:empty)) {
-  padding-block-end: var(--webchat-spacingVerticalM);
+  padding-block-end: var(--webchat-spacingVerticalXL);
 }
 
 /* Stacked layout message which has message bubble */
@@ -225,6 +230,7 @@
 /* Message bubble */
 :global(.webchat-fluent).theme :global(.webchat__stacked-layout .webchat__bubble) {
   overflow: visible;
+  max-width: var(--webchat-message-maxWidth);
 }
 
 /* Message bubble content */
@@ -259,4 +265,26 @@
 /* Hide activity focus when no focus-visible state */
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript:not(:focus-visible) .webchat__basic-transcript__activity-indicator.webchat__basic-transcript__activity-indicator--focus) {
   display: none;
+}
+
+
+/* Markdown */
+:global(.webchat-fluent).theme :global(.webchat__render-markdown) a[href] {
+  color: var(--webchat-colorBrandForegroundLink);
+  text-decoration-color: transparent;
+
+  &:target {
+    color: var(--webchat-colorBrandForegroundLinkSelected);
+  }
+  &:hover {
+    color: var(--webchat-colorBrandForegroundLinkHover);
+    text-decoration: underline 1px currentColor;
+  }
+  &:active {
+    color: var(--webchat-colorBrandForegroundLinkPressed);
+  }
+  &:focus-visible {
+    outline: none;
+    text-decoration: underline 1px double var(--webchat-colorStrokeFocus2);
+  }
 }
