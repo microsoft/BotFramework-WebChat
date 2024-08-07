@@ -28,6 +28,18 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 -  `styleOptions.bubbleImageHeight` is being deprecated in favor of `styleOptions.bubbleImageMaxHeight` and `styleOptions.bubbleImageMinHeight`. The option will be removed on or after 2026-07-05
 
+### Added
+
+-  (Experimental) Added pre-chat message with starter prompts, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
+
+### Changed
+
+-  Updated `useSuggestedActions` to return the activity the suggested actions originated from, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
+
+### Fixed
+
+-  Fixed [#5256](https://github.com/microsoft/BotFramework-WebChat/issues/5256). `styleOptions.maxMessageLength` should support any JavaScript number value including `Infinity`, by [@compulim](https://github.com/compulim), in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5255)
+
 ## [4.18.0] - 2024-07-10
 
 ### Added

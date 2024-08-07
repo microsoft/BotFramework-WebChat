@@ -1,4 +1,4 @@
-const CLEAR_SUGGESTED_ACTIONS = 'WEB_CHAT/CLEAR_SUGGESTED_ACTIONS';
+const CLEAR_SUGGESTED_ACTIONS = 'WEB_CHAT/CLEAR_SUGGESTED_ACTIONS' as const;
 
 export default function clearSuggestedActions() {
   return {

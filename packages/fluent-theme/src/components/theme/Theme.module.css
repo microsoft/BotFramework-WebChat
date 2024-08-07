@@ -1,4 +1,3 @@
-
 :global(.webchat-fluent).theme {
   display: contents;
 
@@ -16,10 +15,15 @@
   --webchat-colorNeutralBackground4: var(--colorNeutralBackground4, #f0f0f0);
   --webchat-colorNeutralBackground5: var(--colorNeutralBackground5, #ebebeb);
 
+  --webchat-colorNeutralBackground1Disabled: var(--colorNeutralBackground1Disabled, #f0f0f0);
+  --webchat-colorNeutralBackground1Pressed: var(--colorNeutralBackground1Pressed, #e0e0e0);
+
+  --webchat-colorNeutralGrey94: var(--colorNeutralGrey94, #f0f0f0);
+
   --webchat-colorNeutralStroke1: var(--colorNeutralStroke1, #d1d1d1);
   --webchat-colorNeutralStroke2: var(--colorNeutralStroke2, #e0e0e0);
   --webchat-colorNeutralStroke1Selected: var(--colorNeutralStroke1Selected, #bdbdbd);
-  
+
   --webchat-colorStrokeFocus2: var(--colorStrokeFocus2, #000000);
 
   --webchat-colorBrandStroke2: var(--colorBrandStroke2, #9edcf7);
@@ -30,7 +34,7 @@
   --webchat-colorBrandForegroundLink: var(--colorBrandForegroundLink, #01678c);
   --webchat-colorBrandForegroundLinkHover: var(--colorBrandForegroundLinkHover, #015a7a);
   --webchat-colorBrandForegroundLinkPressed: var(--colorBrandForegroundLinkPressed, #014259);
-  --webchat-colorBrandForegroundLinkSelected: var(--colorBrandForegroundLinkSelected, #01678c);  
+  --webchat-colorBrandForegroundLinkSelected: var(--colorBrandForegroundLinkSelected, #01678c);
 
   --webchat-colorBrandBackground2Hover: var(--colorBrandBackground2Hover, #bee7fa);
   --webchat-colorBrandBackground2Pressed: var(--colorBrandBackground2Pressed, #7fd2f5);
@@ -55,14 +59,25 @@
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/spacings.ts */
   --webchat-spacingHorizontalMNudge: var(--spacingHorizontalMNudge, 10px);
+  --webchat-spacingHorizontalM: var(--spacingHorizontalM, 12px);
+  --webchat-spacingHorizontalXXXL: var(--spacingHorizontalXXXL, 32px);
+  --webchat-spacingVerticalL: var(--spacingVerticalL, 16px);
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts */
   --webchat-fontFamilyBase: var(--fontFamilyBase, 'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif);
   --webchat-fontFamilyNumeric: var(--fontFamilyNumeric, Bahnschrift, 'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif);
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts */
+  --webchat-fontWeightRegular: var(--fontWeightRegular, 400);
   --webchat-fontWeightSemibold: var(--fontWeightSemibold, 600);
-  
+
+  /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts */
+  --webchat-fontSizeBase300: var(--fontSizeBase300, 14px);
+  --webchat-fontSizeHero700: var(--fontSizeHero700, 28px);
+
+  --webchat-lineHeightBase300: var(--lineHeightBase300, 20px);
+  --webchat-lineHeightHero700: var(--lineHeightHero700, 36px);
+
   --webchat-strokeWidthThicker: var(--strokeWidthThicker, 3px);
 
   --webchat-durationUltraFast: var(--durationUltraFast, 0);
@@ -70,6 +85,9 @@
 
   --webchat-curveAccelerateMid: var(--curveAccelerateMid, cubic-bezier(1,0,1,1));
   --webchat-curveDecelerateMid: var(--curveDecelerateMid, cubic-bezier(0,0,0,1));
+
+  /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/utils/shadows.ts */
+  --webchat-shadow2: 0 0 2px rgba(0, 0, 0, 12%), 0 1px 2px rgba(0, 0, 0, 14%);
 }
 
 @media (prefers-reduced-motion) {

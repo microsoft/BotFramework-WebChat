@@ -1,0 +1,18 @@
+:global(.webchat-fluent) .pre-chat-message-activity__card-action-toolbar {
+  container-name: webchat-container;
+  container-type: inline-size;
+}
+
+:global(.webchat-fluent) .pre-chat-message-activity__card-action-toolbar-grid {
+  display: grid;
+  gap: var(--webchat-spacingHorizontalM);
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 0;
+}
+
+/* TODO: What is the good width to show as 3 columns? Web Chat, by default, has a bubble max width of 480px. */
+@container webchat-container (width <= 480px) {
+  :global(.webchat-fluent) .pre-chat-message-activity__card-action-toolbar-grid {
+    grid-template-columns: 1fr;
+  }
+}

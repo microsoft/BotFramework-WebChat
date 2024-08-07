@@ -183,7 +183,7 @@ function SendBox(
         />
         <Attachments attachments={attachments} className={classNames['sendbox__attachment--in-grid']} />
         <div className={cx(classNames['sendbox__sendbox-controls'], classNames['sendbox__sendbox-controls--in-grid'])}>
-          {!telephoneKeypadShown && maxMessageLength && (
+          {!telephoneKeypadShown && maxMessageLength && isFinite(maxMessageLength) && (
             <div
               className={cx(classNames['sendbox__text-counter'], {
                 [classNames['sendbox__text-counter--error']]: isMessageLengthExceeded
