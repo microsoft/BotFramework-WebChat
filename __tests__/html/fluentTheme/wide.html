@@ -14,7 +14,7 @@
     #webchat {
       width: 680px;
       background: hsla(237, 80%, 60%, 0.05);
-      padding: 12px;
+      padding: 12px 0;
     }
 
     .webchat-fluent .sendbox__sendbox {
@@ -25,11 +25,18 @@
 
     .webchat-fluent {
       --colorBrandBackground2: hsl(228, 100%, 96%);
+      --colorBrandForeground1: hsl(228, 99%, 28%);
       --colorBrandForegroundLink: hsl(228, 99%, 28%);
       --colorBrandForegroundLinkHover: hsl(228, 98%, 24%);
       --colorBrandForegroundLinkPressed: hsl(228, 98%, 18%);
       --colorBrandForegroundLinkSelected: hsl(228, 99%, 28%);
       --colorCompoundBrandForeground1Hover: hsl(228, 97%, 31%);
+      --colorBrandForeground2Hover:  hsl(228, 36%, 42%);
+      --colorBrandStroke2Hover: hsl(228, 89%, 82%);
+      --colorBrandBackground2Hover: hsl(228, 75%, 92%);
+      --colorBrandForeground2Pressed: hsl(228, 26%, 27%);
+      --colorBrandStroke2Pressed: hsl(228, 49%, 57%);
+      --colorBrandBackground2Pressed: hsl(228, 87%, 85%);
     }
   </style>
 </head>
@@ -121,6 +128,24 @@ You can preview your extension at any time.`,
           id: '4.0',
           text: 'Onboarding Checklist.doc',
           timestamp: 0,
+          type: 'message'
+        },
+        {
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': 'cite:1',
+              '@type': 'Claim',
+              type: 'https://schema.org/Claim',
+              text: 'Reprehenderit exercitation laborum labore ut. Nostrud do et ut nostrud nisi excepteur labore adipisicing nostrud nostrud ipsum id dolore. Anim aliquip incididunt incididunt sunt sit proident consectetur exercitation qui aliqua aliquip adipisicing nisi et. Id commodo labore sunt quis do aute cillum laborum veniam [proident](https://bing.com/).'
+            }
+          ],
+          text: `Sure, you should override the default proxy settings[1]\u200C[2], when your proxy server requires authentication[3].
+
+[1]: https://support.microsoft.com/en-us/windows/use-a-proxy-server-in-windows-03096c53-0554-4ffe-b6ab-8b1deee8dae1
+[2]: https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-proxy-server-settings "Configure proxy server settings - Windows Server"
+[3]: cite:1 "Citation-1"
+`,
           type: 'message'
         }
       ]);

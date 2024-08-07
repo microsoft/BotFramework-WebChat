@@ -1,7 +1,11 @@
 :global(.webchat-fluent) .sendbox {
   color: var(--webchat-colorNeutralForeground1);
   font-family: var(--webchat-fontFamilyBase);
-  padding: 0 10px 10px;
+  padding:
+    var(--webchat-spacingVerticalNone)
+    var(--webchat-spacingHorizontalXL)
+    var(--webchat-spacingVerticalMNudge)
+    var(--webchat-spacingHorizontalMNudge);
   text-rendering: optimizeLegibility;
 
   --webchat-sendbox-attachment-area-active: ;
