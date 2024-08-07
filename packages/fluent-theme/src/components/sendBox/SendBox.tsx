@@ -218,7 +218,7 @@ function SendBox(props: Props) {
   );
 }
 
-const PrimarySendBox = (props: Exclude<Props, 'primary'>) => <SendBox {...props} isPrimary={true} />;
+const PrimarySendBox = memo((props: Exclude<Props, 'primary'>) => <SendBox {...props} isPrimary={true} />);
 
 PrimarySendBox.displayName = 'PrimarySendBox';
 
