@@ -1,0 +1,36 @@
+:global(.webchat-fluent) .pre-chat-message-activity {
+  display: grid;
+  grid-template-areas: 'body' 'toolbar';
+  grid-template-rows: auto auto;
+  gap: 32px;
+
+  padding: 32px; /* Unproven number. */
+}
+
+:global(.webchat-fluent) .pre-chat-message-activity__body {
+  font-family: var(--webchat-fontFamilyBase, 'Segoe UI');
+  font-size: 14px;
+  font-weight: 400;
+  grid-area: body;
+  line-height: 20px;
+  text-align: center;
+}
+
+:global(.webchat-fluent) .pre-chat-message-activity__body h2 {
+  color: var(--webchat-colorNeutralForeground1, #242424);
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 32px; /* Unproven number. */
+  line-height: 40px; /* Unproven number. */
+  margin: 16px 0 0;
+}
+
+:global(.webchat-fluent) .pre-chat-message-activity__body img {
+  background-color: #304e7a;
+  border-radius: 4px;
+  height: 64px;
+}
+
+:global(.webchat-fluent) .pre-chat-message-activity__toolbar {
+  grid-area: toolbar;
+}

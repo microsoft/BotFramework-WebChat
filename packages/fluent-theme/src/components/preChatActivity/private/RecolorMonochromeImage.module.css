@@ -1,0 +1,9 @@
+:global(.webchat-fluent) .pre-chat-message-activity__recolor-monochrome-image {
+  background-color: var(--webchat-colorNeutralForeground4, #707070);
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(.webchat-fluent) .pre-chat-message-activity__recolor-monochrome-image {
+    background-color: var(--webchat-colorNeutralForeground4, #999);
+  }
+}

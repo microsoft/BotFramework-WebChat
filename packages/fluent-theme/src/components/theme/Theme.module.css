@@ -1,4 +1,3 @@
-
 :global(.webchat-fluent).theme {
   display: contents;
 
@@ -19,7 +18,7 @@
   --webchat-colorNeutralStroke1: var(--colorNeutralStroke1, #d1d1d1);
   --webchat-colorNeutralStroke2: var(--colorNeutralStroke2, #e0e0e0);
   --webchat-colorNeutralStroke1Selected: var(--colorNeutralStroke1Selected, #bdbdbd);
-  
+
   --webchat-colorStrokeFocus2: var(--colorStrokeFocus2, #000000);
 
   --webchat-colorBrandStroke2: var(--colorBrandStroke2, #9edcf7);
@@ -30,7 +29,7 @@
   --webchat-colorBrandForegroundLink: var(--colorBrandForegroundLink, #01678c);
   --webchat-colorBrandForegroundLinkHover: var(--colorBrandForegroundLinkHover, #015a7a);
   --webchat-colorBrandForegroundLinkPressed: var(--colorBrandForegroundLinkPressed, #014259);
-  --webchat-colorBrandForegroundLinkSelected: var(--colorBrandForegroundLinkSelected, #01678c);  
+  --webchat-colorBrandForegroundLinkSelected: var(--colorBrandForegroundLinkSelected, #01678c);
 
   --webchat-colorBrandBackground2Hover: var(--colorBrandBackground2Hover, #bee7fa);
   --webchat-colorBrandBackground2Pressed: var(--colorBrandBackground2Pressed, #7fd2f5);
@@ -62,7 +61,7 @@
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts */
   --webchat-fontWeightSemibold: var(--fontWeightSemibold, 600);
-  
+
   --webchat-strokeWidthThicker: var(--strokeWidthThicker, 3px);
 
   --webchat-durationUltraFast: var(--durationUltraFast, 0);
