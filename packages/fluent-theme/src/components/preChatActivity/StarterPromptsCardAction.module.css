@@ -1,11 +1,10 @@
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-box {
   appearance: none;
   background-color: var(--webchat-colorNeutralBackground1);
-  /* border: solid 1px var(--webchat-colorNeutralStroke1, #d1d1d1); */
   border: 0;
   border-radius: 16px;
-  box-shadow: var(--webchat-shadow4);
-  color: var(--webchat-colorNeutralForeground1, #242424);
+  box-shadow: var(--webchat-shadow2);
+  color: var(--webchat-colorNeutralForeground1);
   cursor: pointer;
   display: grid;
   gap: 8px;
@@ -19,26 +18,19 @@
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-box:disabled {
-  background-color: var(--webchat-colorNeutralBackground1Disabled, #f0f0f0); /* Needs to add to Web Chat. */
-  /* border-color: var(--webchat-colorNeutralStroke2, #e0e0e0); */
+  background-color: var(--webchat-colorNeutralBackground1Disabled);
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-box:hover {
-  background-color: var(--webchat-colorNeutralGrey94, #f0f0f0); /* Needs to add to Web Chat. */
-
-  /* Needs to add to Web Chat: Fluent AI say #c7c7c7, Fluent UI say #e0e0e0 */
-  /* border-color: var(--webchat-colorNeutralGrey88, #c7c7c7); */
+  background-color: var(--webchat-colorNeutralGrey94);
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-box:active {
-  background-color: var(--webchat-colorNeutralBackground1Pressed, #e0e0e0); /* Needs to add to Web Chat. */
-
-  /* Needs to add to Web Chat. */
-  /* border-color: var(--webchat-colorNeutralStroke1Pressed, #b3b3b3); */
+  background-color: var(--webchat-colorNeutralBackground1Pressed);
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-box:focus-visible {
-  outline: solid 2px var(--webchat-colorStrokeFocus2, #000);
+  outline: solid 2px var(--webchat-colorStrokeFocus2);
   outline-offset: -2px;
 }
 
@@ -51,16 +43,16 @@
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-subtitle {
   font-family: var(--webchat-fontFamilyBase);
   font-size: 14px;
-  font-weight: 400;
+  font-weight: var(--webchat-fontWeightRegular);
   grid-area: subtitle;
   line-height: 20px;
   pointer-events: none; /* Links in subtitle are not clickable. */
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-title {
-  font-family: var(--webchat-fontFamilyBase, 'Segoe UI');
+  font-family: var(--webchat-fontFamilyBase);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: var(--webchat-fontWeightSemibold);
   grid-area: title;
   line-height: 20px;
 }

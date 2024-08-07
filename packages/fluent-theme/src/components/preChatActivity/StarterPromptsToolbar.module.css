@@ -5,7 +5,7 @@
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-toolbar-grid {
   display: grid;
-  gap: 12px;
+  gap: var(--webchat-spacingHorizontalM);
   grid-template-columns: 1fr 1fr 1fr;
   padding: 0;
 }

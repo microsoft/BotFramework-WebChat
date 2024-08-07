@@ -2,17 +2,16 @@
   display: grid;
   grid-template-areas: 'body' 'toolbar';
   grid-template-rows: auto auto;
-  gap: 32px;
-
-  padding: 32px; /* Unproven number. */
+  gap: var(--webchat-spacingHorizontalXXXL);
+  padding: var(--webchat-spacingHorizontalXXXL);
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__body {
   font-family: var(--webchat-fontFamilyBase);
-  font-size: 14px;
-  font-weight: 400;
+  font-size: var(--webchat-fontSizeBase300);
+  font-weight: var(--webchat-fontWeightRegular);
   grid-area: body;
-  line-height: 20px;
+  line-height: var(--webchat-lineHeightBase300);
   text-align: center;
 }
 
@@ -20,13 +19,12 @@
   color: var(--webchat-colorNeutralForeground1);
   font-family: inherit;
   font-weight: var(--webchat-fontWeightSemibold);
-  font-size: 32px; /* Unproven number. */
-  line-height: 40px; /* Unproven number. */
-  margin: 16px 0 0;
+  font-size: var(--webchat-fontSizeHero700);
+  line-height: var(--webchat-lineHeightHero700);
+  margin: var(--webchat-spacingVerticalL) 0 0;
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__body img {
-  background: #304e7a;
   border-radius: 4px;
   height: 64px;
 }
