@@ -51,7 +51,7 @@
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-subtitle {
-  font-family: var(--webchat-fontFamilyBase, 'Segoe UI');
+  font-family: var(--webchat-fontFamilyBase);
   font-size: 14px;
   font-weight: 400;
   grid-area: subtitle;

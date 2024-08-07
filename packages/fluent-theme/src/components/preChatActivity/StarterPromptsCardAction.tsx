@@ -4,7 +4,7 @@ import cx from 'classnames';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { useStyles } from '../../styles/index.js';
-import RecolorMonochromeImage from './private/RecolorMonochromeImage.js';
+import MonochromeImageMasker from './private/MonochromeImageMasker.js';
 import styles from './StarterPromptsCardAction.module.css';
 
 const { useFocus, useRenderMarkdownAsHTML, useSendBoxValue } = hooks;
@@ -42,7 +42,7 @@ const StarterPromptAction = ({ className, messageBackAction }: Props) => {
         {'title' in messageBackAction && messageBackAction.title}
       </div>
       {'image' in messageBackAction && messageBackAction.image && (
-        <RecolorMonochromeImage
+        <MonochromeImageMasker
           className={classNames['pre-chat-message-activity__card-action-image']}
           src={messageBackAction.image}
         />

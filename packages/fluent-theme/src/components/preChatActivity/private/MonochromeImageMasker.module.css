@@ -1,0 +1,3 @@
+:global(.webchat-fluent) .pre-chat-message-activity__monochrome-image-masker {
+  background-color: var(--webchat-colorNeutralForeground4);
+}
