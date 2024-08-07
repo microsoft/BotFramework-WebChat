@@ -3,7 +3,7 @@ import React, { memo, type ReactNode } from 'react';
 
 import type { ActivityMiddleware } from 'botframework-webchat-api';
 import { isPreChatMessageActivity, PreChatMessageActivity } from '../components/preChatActivity';
-import { SendBox } from '../components/sendBox';
+import { PrimarySendBox } from '../components/sendBox';
 import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
 
@@ -24,7 +24,7 @@ const activityMiddleware: ActivityMiddleware[] = [
       return next(...args);
     }
 ];
-const sendBoxMiddleware = [() => () => () => SendBox];
+const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
 const FluentThemeProvider = ({ children }: Props) => (
   <WebChatTheme>

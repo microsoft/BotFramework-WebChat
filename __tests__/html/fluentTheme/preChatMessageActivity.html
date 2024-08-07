@@ -98,6 +98,22 @@
         await pageConditions.numActivitiesShown(1);
 
         await host.snapshot();
+
+        // WHEN: The first card action button is clicked.
+        await host.click(
+          document.querySelector(`[data-testid="${WebChat.testIds.preChatMessageActivityStarterPromptsCardAction}"]`)
+        );
+
+        // THEN: Send box text box should have the value typed for the user.
+        await host.snapshot();
+
+        // WHEN: The sixth (last) card action button is clicked.
+        await host.click(
+          document.querySelectorAll(`[data-testid="${WebChat.testIds.preChatMessageActivityStarterPromptsCardAction}"]`)[5]
+        );
+
+        // THEN: Send box text box should be replaced.
+        await host.snapshot();
       });
     </script>
   </body>

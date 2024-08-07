@@ -31,6 +31,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 ### Added
 
 -  (Experimental) Added pre-chat message with starter prompts, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
+-  (Experimental) Added `isPrimary` props to Fluent UI send box. When set, will wire up with `useSendBoxValue` and works with starter prompts in pre-chat message, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
