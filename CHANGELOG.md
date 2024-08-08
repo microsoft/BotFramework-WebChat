@@ -38,6 +38,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Updated `useSuggestedActions` to return the activity the suggested actions originated from, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
 
 ### Fixed
+-  Fixed broken URLs in documentation of [LOCALIZATION.md](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/LOCALIZATION.md), by [@iamabhijeet2003](https://github.com/iamabhijeet2003), in PR [#5186](https://github.com/microsoft/BotFramework-WebChat/pull/5186)
+
+### Fixed
 
 -  Fixed [#5256](https://github.com/microsoft/BotFramework-WebChat/issues/5256). `styleOptions.maxMessageLength` should support any JavaScript number value including `Infinity`, by [@compulim](https://github.com/compulim), in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5255)
 
