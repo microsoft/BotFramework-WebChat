@@ -6,10 +6,12 @@ import { isPreChatMessageActivity, PreChatMessageActivity } from '../components/
 import { PrimarySendBox } from '../components/sendBox';
 import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
+import { ActivityDecorator } from '../components/activity';
+import VariantComposer, { VariantList } from './VariantComposer';
 
 const { ThemeProvider } = Components;
 
-type Props = Readonly<{ children?: ReactNode | undefined }>;
+type Props = Readonly<{ children?: ReactNode | undefined; variant?: VariantList | undefined }>;
 
 const activityMiddleware: ActivityMiddleware[] = [
   () =>
@@ -21,19 +23,26 @@ const activityMiddleware: ActivityMiddleware[] = [
         return () => <PreChatMessageActivity activity={activity} />;
       }
 
-      return next(...args);
+      const children = next(...args);
+      return (...args) => (
+        <ActivityDecorator activity={activity}>
+          {children && children instanceof Function ? children(...args) : children}
+        </ActivityDecorator>
+      );
     }
 ];
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
-const FluentThemeProvider = ({ children }: Props) => (
-  <WebChatTheme>
-    <TelephoneKeypadProvider>
-      <ThemeProvider activityMiddleware={activityMiddleware} sendBoxMiddleware={sendBoxMiddleware}>
-        {children}
-      </ThemeProvider>
-    </TelephoneKeypadProvider>
-  </WebChatTheme>
+const FluentThemeProvider = ({ children, variant }: Props) => (
+  <VariantComposer variant={variant}>
+    <WebChatTheme>
+      <TelephoneKeypadProvider>
+        <ThemeProvider activityMiddleware={activityMiddleware} sendBoxMiddleware={sendBoxMiddleware}>
+          {children}
+        </ThemeProvider>
+      </TelephoneKeypadProvider>
+    </WebChatTheme>
+  </VariantComposer>
 );
 
 export default memo(FluentThemeProvider);
