@@ -105,7 +105,7 @@
     "global-agent": "^3.0.0",
     "has-resolved": "^1.1.0",
     "jest": "^29.7.0",
-    "node-fetch": "^2.7.0",
+    "node-fetch": "^3.3.2",
     "prettier": "^3.2.5",
     "serve": "^14.2.3",
     "simple-update-in": "^2.2.0",
