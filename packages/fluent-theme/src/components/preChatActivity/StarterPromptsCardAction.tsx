@@ -4,6 +4,7 @@ import cx from 'classnames';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { useStyles } from '../../styles/index.js';
+import testIds from '../../testIds.js';
 import MonochromeImageMasker from './private/MonochromeImageMasker.js';
 import styles from './StarterPromptsCardAction.module.css';
 
@@ -35,6 +36,7 @@ const StarterPromptAction = ({ className, messageBackAction }: Props) => {
   return (
     <button
       className={cx(className, classNames['pre-chat-message-activity__card-action-box'])}
+      data-testid={testIds.preChatMessageActivityStarterPromptsCardAction}
       onClick={handleClick}
       type="button"
     >
