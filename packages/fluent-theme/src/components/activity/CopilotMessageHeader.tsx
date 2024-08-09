@@ -5,7 +5,6 @@ import styles from './CopilotMessageHeader.module.css';
 
 const { useStyleOptions, useLocalizer } = hooks;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function CopilotMessageHeader({ activity }: Readonly<{ activity?: WebChatActivity | undefined }>) {
   const [{ botAvatarImage, botAvatarBackgroundColor, botTitle }] = useStyleOptions();
   const classNames = useStyles(styles);
