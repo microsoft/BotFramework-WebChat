@@ -33,7 +33,7 @@ const activityMiddleware: ActivityMiddleware[] = [
 ];
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
-const FluentThemeProvider = ({ children, variant }: Props) => (
+const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
   <VariantComposer variant={variant}>
     <WebChatTheme>
       <TelephoneKeypadProvider>
