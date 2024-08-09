@@ -169,7 +169,7 @@
 
 /* Transcript surface */
 :global(.webchat-fluent).theme :global(.webchat__surface) {
-  background-color: transparent;
+  background-color: var(--webchat__color--surface);
 }
 
 :global(.webchat-fluent).theme.theme.variant-copilot :global(.webchat__surface) {

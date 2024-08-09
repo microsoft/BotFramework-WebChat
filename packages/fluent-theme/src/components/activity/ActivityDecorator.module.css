@@ -92,6 +92,7 @@
   border-radius: var(--webchat__bubble--border-radius);
   border-width: 0;
   box-sizing: border-box;
+  color: var(--webchat-colorNeutralForeground1);
   min-height: var(--webchat__bubble--min-height);
 }
 
