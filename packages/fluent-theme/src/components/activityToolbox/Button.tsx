@@ -8,6 +8,7 @@ import styles from './Button.module.css';
 type Props = Readonly<{
   children?: ReactNode | undefined;
   className?: string | undefined;
+  'data-testid'?: string | undefined;
   iconURL?: string | undefined;
   onClick: () => void;
   text?: string | undefined;
@@ -22,6 +23,7 @@ const Button = (props: Props) => {
   return (
     <button
       className={cx(props.className, classNames['activity-toolbox__base-button'])}
+      data-testid={props['data-testid']}
       onClick={handleClick}
       type="button"
     >

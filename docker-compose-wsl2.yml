@@ -41,6 +41,7 @@ services:
       dockerfile: testharness2.dockerfile
     ports:
       - '5081:80'
+      - '5443:443'
     stop_grace_period: 0s
     volumes:
       - ./__tests__/html/:/var/web/__tests__/html/
