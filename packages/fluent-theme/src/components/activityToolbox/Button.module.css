@@ -1,0 +1,42 @@
+.activity-toolbox__base-button {
+  align-items: center;
+  align-self: stretch;
+  appearance: none;
+  background: var(--webchat-colorNeutralBackground1);
+  border-radius: var(--webchat-borderRadiusMedium);
+  border: 1px solid var(--webchat-colorNeutralStroke1);
+  color: var(--webchat-colorNeutralForeground1);
+  display: flex;
+  gap: var(--webchat-spacingHorizontalXS);
+  justify-content: center;
+  padding: 5px var(--webchat-spacingHorizontalM);
+}
+
+.activity-toolbox__base-button:hover {
+  background: var(--webchat-colorNeutralBackground1Hover);
+  border: 1px solid var(--webchat-colorNeutralStroke1Hover);
+  color: var(--webchat-colorNeutralForeground1Hover);
+}
+
+.activity-toolbox__base-button:active {
+  background: var(--webchat-colorNeutralBackground1Pressed);
+  border: 1px solid var(--webchat-colorNeutralStroke1Pressed);
+  color: var(--webchat-colorNeutralForeground1Pressed);
+}
+
+.activity-toolbox__base-button:focus-visible {
+  background: var(--webchat-colorNeutralBackground1);
+  outline: 2px solid var(--webchat-colorStrokeFocus2);
+  outline-offset: -2px;
+}
+
+.activity-toolbox__base-button:disabled {
+  background: var(--webchat-colorNeutralBackgroundDisabled);
+  border: 1px solid var(--webchat-colorNeutralStrokeDisabled);
+  color: var(--webchat-colorNeutralForegroundDisabled);
+}
+
+.activity-toolbox__base-button-icon {
+  height: 20px;
+  width: 20px;
+}
