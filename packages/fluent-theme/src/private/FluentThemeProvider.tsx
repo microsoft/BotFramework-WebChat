@@ -2,6 +2,7 @@ import { Components } from 'botframework-webchat-component';
 import React, { memo, type ReactNode } from 'react';
 
 import type { ActivityMiddleware } from 'botframework-webchat-api';
+import { ActivityToolbox } from '../components/activityToolbox';
 import { isPreChatMessageActivity, PreChatMessageActivity } from '../components/preChatActivity';
 import { PrimarySendBox } from '../components/sendBox';
 import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
@@ -22,6 +23,24 @@ const activityMiddleware: ActivityMiddleware[] = [
       }
 
       return next(...args);
+    },
+  () =>
+    next =>
+    (...args) => {
+      const result = next(...args);
+      const activity = args[0]?.activity;
+
+      if (activity && activity.from.role === 'bot') {
+        // TODO: Build a component.
+        return (...args) => (
+          <div>
+            {result && result(...args)}
+            <ActivityToolbox activity={activity} />
+          </div>
+        );
+      }
+
+      return result;
     }
 ];
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
