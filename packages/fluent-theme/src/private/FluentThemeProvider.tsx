@@ -23,12 +23,11 @@ const activityMiddleware: ActivityMiddleware[] = [
         return () => <PreChatMessageActivity activity={activity} />;
       }
 
-      const children = next(...args);
-      return (...args) => (
-        <ActivityDecorator activity={activity}>
-          {children && children instanceof Function ? children(...args) : children}
-        </ActivityDecorator>
-      );
+      const renderActivity = next(...args);
+      if (!renderActivity) {
+        return renderActivity;
+      }
+      return (...args) => <ActivityDecorator activity={activity}>{renderActivity(...args)}</ActivityDecorator>;
     }
 ];
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
