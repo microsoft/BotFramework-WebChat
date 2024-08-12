@@ -17,11 +17,12 @@
   --webchat-colorNeutralBackground3: var(--colorNeutralBackground3, #f5f5f5);
   --webchat-colorNeutralBackground4: var(--colorNeutralBackground4, #f0f0f0);
   --webchat-colorNeutralBackground5: var(--colorNeutralBackground5, #ebebeb);
+  
+  --webchat-colorTransparentBackground: var(--colorTransparentBackground, rgba(0, 0, 0, 0.4));
 
   --webchat-colorNeutralBackground1Disabled: var(--colorNeutralBackground1Disabled, #f0f0f0);
+  --webchat-colorNeutralBackground1Hover: var(--colorNeutralBackground1Pressed, #f0f0f0);
   --webchat-colorNeutralBackground1Pressed: var(--colorNeutralBackground1Pressed, #e0e0e0);
-
-  --webchat-colorNeutralGrey94: var(--colorNeutralGrey94, #f0f0f0);
 
   --webchat-colorNeutralStroke1: var(--colorNeutralStroke1, #d1d1d1);
   --webchat-colorNeutralStroke2: var(--colorNeutralStroke2, #e0e0e0);
@@ -61,6 +62,7 @@
   --webchat-shadow2: var(--shadow2, 0 0 2px rgba(0, 0, 0, 12%), 0 1px 2px rgba(0, 0, 0, 14%));
   --webchat-shadow4: var(--shadow4, 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.14));
   --webchat-shadow16: var(--shadow16, 0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108));
+  --webchat-shadow64: var(--shadow64, 0 0 8px rgba(0, 0, 0, 0.12), 0 32px 64px rgba(0, 0, 0, 0.14));
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/spacings.ts */
   --webchat-spacingHorizontalNone: var(--spacingHorizontalNone, 0);
@@ -143,8 +145,8 @@
 /* Style Options override */
 :global(.webchat-fluent).theme :global(.webchat__css-custom-properties) {
   --webchat__color--accent: var(--webchat-colorBrandForeground1);
-  --webchat__color--subtle: var(--webchat-colorNeutralForeground1);
-  --webchat__color--timestamp: var(--webchat-colorNeutralForeground1);
+  --webchat__color--subtle: var(--webchat-colorNeutralForeground2);
+  --webchat__color--timestamp: var(--webchat-colorNeutralForeground3);
   --webchat__font--primary: var(--webchat-fontFamilyBase);
   --webchat__font-size--small: var(--webchat-fontSizeBase200);
   --webchat__font-size--medium: var(--webchat-fontSizeBase300);
@@ -213,6 +215,11 @@
   }
 }
 
+/* Transcript focus indicator color when in focus-visible state */
+:global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__terminator:focus-visible + .webchat__basic-transcript__focus-indicator) {
+  border-color: var(--webchat-colorStrokeFocus2);
+}
+
 /* Transcript Activity indicator without focus-visible state */
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript:not(:focus-visible) .webchat__basic-transcript__activity-indicator--focus) {
   /* Hide activity focus when no focus-visible state */
@@ -253,4 +260,45 @@
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript:has(.webchat__basic-transcript__activity:only-child):has(.pre-chat-message-activity) .webchat__basic-transcript__filler) {
   /* limit grow to half of the size to center the activity */
   flex-grow: 0.5;
+}
+
+/* Modal */
+:global(.webchat-fluent).theme :global(.webchat__modal-dialog) {
+  height: 100%;
+  display: grid;
+  place-items: center;
+
+  &::backdrop {
+    background-color: var(--webchat-colorTransparentBackground);
+  }
+
+  :global(.webchat__modal-dialog__box) {
+    background-color: var(--webchat-colorNeutralBackground1);
+    border-radius: var(--webchat-borderRadiusXLarge);
+    position: relative;
+    color: var(--webchat-colorNeutralForeground1);
+    box-shadow: var(--webchat-shadow64);
+  }
+
+  :global(.webchat__modal-dialog__close-button) {
+    color: var(--webchat-colorNeutralForeground1);
+    transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+  }
+  /* TODO: align with original fluent modal styles in WebChat as they don't match v9 anymore */
+  :global(.webchat__modal-dialog__close-button):focus:not(:active):hover {
+    background-color: var(--webchat-colorNeutralBackground3);
+  }
+  :global(.webchat__modal-dialog__close-button):focus:active {
+    background-color: var(--webchat-colorNeutralBackground4);
+  }
+  :global(.webchat__modal-dialog__close-button):not(:focus-visible) {
+    border: none;
+  }
+  :global(.webchat__modal-dialog__close-button):focus {
+    border-color: var(--webchat-colorStrokeFocus2);
+  }
+
+  :global(.webchat__modal-dialog__close-button-image) {
+    fill: currentColor;
+  }
 }

@@ -195,10 +195,16 @@
 }
 
 /* Citation summary chevron */
-:global(.webchat-fluent) .activity-decorator :global(.webchat__link-definitions__header) :global(.webchat__link-definitions__header-chevron) {
-  fill: currentColor;
-  font-size: var(--webchat__font-size--small);
-  width: 1em;
+:global(.webchat-fluent) .activity-decorator :global(.webchat__link-definitions__header) {
+  :global(.webchat__link-definitions__header-text) {
+    color: var(--webchat-colorNeutralForeground3);
+  }
+
+  :global(.webchat__link-definitions__header-chevron) {
+    fill: var(--webchat-colorNeutralForeground3);
+    font-size: var(--webchat__font-size--small);
+    width: 1em;
+  }
 }
 
 /* Citation link definitions */
@@ -207,6 +213,7 @@
   --webchat__citation__link--max-width: var(--webchat-externalLink-maxWidth);
 
   :global(.webchat__link-definitions__list) {
+    color: var(--webchat__color--subtle);
     display: flex;
     flex-flow: row wrap;
     gap: var(--webchat-spacingHorizontalS);
@@ -230,9 +237,10 @@
   }
 
   :global(.webchat__link-definitions__list-item-body) {
-    padding: 0;
-    min-width: 0;
+    font-family: inherit;
     gap: var(--webchat-spacingHorizontalSNudge);
+    min-width: 0;
+    padding: 0;
   }
 
   :global(.webchat__link-definitions__badge) {
@@ -240,6 +248,7 @@
     background-color: transparent;
     border-radius: 0;
     border: none;
+    color: currentColor;
     font-size: var(--webchat-fontSizeBase100);
     font-weight: var(--webchat-fontWeightSemibold);
     line-height: var(--webchat-lineHeightBase100);

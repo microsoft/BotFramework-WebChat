@@ -7,6 +7,9 @@
   gap: var(--webchat-spacingHorizontalS);
   margin-inline-start: var(--webchat-spacingVerticalMNudge);
   padding-block-start: var(--webchat-spacingVerticalXS);
+  /* TODO: remove when moved to the bubble */
+  position: relative;
+  z-index: 1;
 }
 
 :global(.webchat-fluent) .copilot-message-header__avatar {
