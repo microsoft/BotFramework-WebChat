@@ -6,11 +6,12 @@ import styles from './CopilotMessageHeader.module.css';
 const { useStyleOptions, useLocalizer } = hooks;
 
 function CopilotMessageHeader({ activity }: Readonly<{ activity?: WebChatActivity | undefined }>) {
-  const [{ botAvatarImage, botAvatarBackgroundColor, botTitle }] = useStyleOptions();
+  const [{ botAvatarImage, botAvatarBackgroundColor }] = useStyleOptions();
   const classNames = useStyles(styles);
   const localize = useLocalizer();
   // TODO: how we determine the activity has ai-generated content
   const isAIGenerated = useMemo(() => !!activity, [activity]);
+  const botTitle = activity?.from?.name;
 
   const avatarStyle = useMemo(
     () => ({ '--background-color': botAvatarBackgroundColor }) as CSSProperties,

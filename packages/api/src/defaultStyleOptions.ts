@@ -33,7 +33,6 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   botAvatarBackgroundColor: undefined,
   botAvatarImage: undefined,
   botAvatarInitials: undefined,
-  botTitle: undefined,
   userAvatarBackgroundColor: undefined,
   userAvatarImage: undefined,
   userAvatarInitials: undefined,

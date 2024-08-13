@@ -96,11 +96,6 @@ type StyleOptions = {
   botAvatarInitials?: string;
 
   /**
-   * Bot title
-   */
-  botTitle?: string;
-
-  /**
    * Background color defaults to accent
    */
   userAvatarBackgroundColor?: string;
