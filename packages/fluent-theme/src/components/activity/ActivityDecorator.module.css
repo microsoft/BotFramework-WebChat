@@ -257,10 +257,10 @@
     font-weight: var(--webchat-fontWeightSemibold);
     line-height: var(--webchat-lineHeightBase100);
     margin: 0;
+    min-width: 20px;
     padding: 0;
     position: relative;
     text-align: center;
-    width: 20px;
   }
 
   :global(.webchat__link-definitions__badge)::after {
