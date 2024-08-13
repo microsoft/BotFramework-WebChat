@@ -102,11 +102,11 @@
         // WHEN: pressed TAB two times
         await host.sendKeys('TAB', 'TAB');
 
-        // THEN: Should focus the activity
+        // THEN: Should focus the first available card button (loop)
         await host.snapshot();
 
-        // WHEN: pressed ARROW_DOWN and ENTER
-        await host.sendKeys('ARROW_DOWN', 'ENTER');
+        // WHEN: pressed TAB then ESCAPE followed by ARROW_DOWN and ENTER
+        await host.sendKeys('TAB', 'ESCAPE', 'ARROW_DOWN', 'ENTER');
 
         // THEN: Should focus the next activitie's card
         await host.snapshot();

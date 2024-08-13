@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 import React, { KeyboardEventHandler, memo, type FocusEvent, type ReactNode, useCallback, useRef } from 'react';
 
 import tabbableElements from '../Utils/tabbableElements';
@@ -6,11 +7,13 @@ import { useRefFrom } from 'use-ref-from';
 const FocusTrap = ({
   children,
   onFocus,
-  onLeave
+  onLeave,
+  loopFocus = true
 }: Readonly<{
   children: ReactNode;
   onFocus: () => void;
   onLeave: () => void;
+  loopFocus?: boolean;
 }>) => {
   const bodyRef = useRef<HTMLDivElement>();
   const lastFocused = useRef<HTMLElement>();
@@ -34,14 +37,14 @@ const FocusTrap = ({
         const focusedIndex = getTabbableElementsInBody().indexOf(activeElement);
         if (event.shiftKey && focusedIndex === 0) {
           event.preventDefault();
-          onLeaveRef.current?.();
+          loopFocus ? focusables.at(-1)?.focus() : onLeaveRef.current?.();
         } else if (!event.shiftKey && focusedIndex === focusables.length - 1) {
           event.preventDefault();
-          onLeaveRef.current?.();
+          loopFocus ? focusables.at(0)?.focus() : onLeaveRef.current?.();
         }
       }
     },
-    [getTabbableElementsInBody, onLeaveRef]
+    [getTabbableElementsInBody, loopFocus, onLeaveRef]
   );
 
   const handleFocus = useCallback(
