@@ -48,7 +48,7 @@
     order: -1;
   }
 
-  /* TODO: remove when we get decorators in and can place header direclty to the bubble*/
+  /* TODO: remove when we get decorators in and can place header directly to the bubble */
   &:not(:has(:global(.webchat__bubble--from-user))) :global(.webchat__stacked-layout .webchat__bubble .webchat__text-content) {
     padding-block: calc(var(--webchat-spacingVerticalS) + 20px) var(--webchat-spacingVerticalXXS);
   }
