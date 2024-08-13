@@ -1,5 +1,6 @@
-import { createContext, memo } from 'react';
-import createVariantComposer from './createVariantComposer';
+import { createContext } from 'react';
+
+import createComposer from './createComposer';
 
 type VariantName = 'fluent' | 'copilot' | '';
 
@@ -20,8 +21,9 @@ export const VariantContext = createContext<VariantContextType>(
   ) as unknown as VariantContextType
 );
 
-const VariantComposer = memo(createVariantComposer(VariantContext));
-
-VariantComposer.displayName = 'VariantComposer';
+const VariantComposer = createComposer<VariantContextType>(VariantContext, {
+  defaults: { variant: '' },
+  displayName: 'VariantComposer'
+});
 
 export default VariantComposer;
