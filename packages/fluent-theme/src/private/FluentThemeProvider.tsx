@@ -1,7 +1,7 @@
+import type { ActivityMiddleware } from 'botframework-webchat-api';
 import { Components } from 'botframework-webchat-component';
 import React, { memo, type ReactNode } from 'react';
 
-import type { ActivityMiddleware } from 'botframework-webchat-api';
 import { ActivityDecorator } from '../components/activity';
 import { isPreChatMessageActivity, PreChatMessageActivity } from '../components/preChatActivity';
 import { PrimarySendBox } from '../components/sendBox';
@@ -24,12 +24,13 @@ const activityMiddleware: ActivityMiddleware[] = [
       }
 
       const renderActivity = next(...args);
-      if (!renderActivity) {
-        return renderActivity;
-      }
-      return (...args) => <ActivityDecorator activity={activity}>{renderActivity(...args)}</ActivityDecorator>;
+
+      return renderActivity
+        ? (...args) => <ActivityDecorator activity={activity}>{renderActivity(...args)}</ActivityDecorator>
+        : renderActivity;
     }
 ];
+
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
 const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
