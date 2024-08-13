@@ -52,6 +52,8 @@ import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
 import { LiveRegionTwinComposer } from './providers/LiveRegionTwin';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import { FocusSendBoxScope } from './hooks/sendBoxFocus';
+import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -89,18 +91,22 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   }, []);
 
   return (
-    <div className={classNames('webchat__css-custom-properties', rootClassName, cssCustomProperties)}>
-      <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
-        <DecoratorComposer>
-          <ModalDialogComposer>
-            {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-            <SendBoxComposer>
-              {children}
-              <Dictation onError={dictationOnError} />
-            </SendBoxComposer>
-          </ModalDialogComposer>
-        </DecoratorComposer>
-      </LiveRegionTwinComposer>
+    <div className={classNames('webchat__css-custom-properties', cssCustomProperties)}>
+      <FocusSendBoxScope>
+        <ScrollRelativeTranscriptScope>
+          <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
+            <DecoratorComposer>
+              <ModalDialogComposer>
+                {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+                <SendBoxComposer>
+                  {children}
+                  <Dictation onError={dictationOnError} />
+                </SendBoxComposer>
+              </ModalDialogComposer>
+            </DecoratorComposer>
+          </LiveRegionTwinComposer>
+        </ScrollRelativeTranscriptScope>
+      </FocusSendBoxScope>
     </div>
   );
 });

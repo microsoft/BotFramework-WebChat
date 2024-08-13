@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -51,12 +51,12 @@
         await pageConditions.minNumActivitiesShown(2);
 
         // Replace the animation with a static image.
-        document
-          .querySelector('.webchat__bubble__content img')
-          .setAttribute(
+        for (const imageElement of document.querySelectorAll('.webchat__bubble__content img')) {
+          imageElement.setAttribute(
             'src',
             'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
           );
+        }
 
         await pageConditions.allImagesLoaded();
         await pageConditions.allOutgoingActivitiesSent();

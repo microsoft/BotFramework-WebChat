@@ -4,6 +4,8 @@ import CustomPropertyNames from '../CustomPropertyNames';
 
 export default function createCSSCustomPropertiesStyle({
   accent,
+  bubbleImageMaxHeight,
+  bubbleImageMinHeight,
   bubbleMaxWidth,
   bubbleMinHeight,
   fontSizeSmall,
@@ -40,7 +42,10 @@ export default function createCSSCustomPropertiesStyle({
       [CustomPropertyNames.IconURLExternalLink]: markdownExternalLinkIconImage,
       [CustomPropertyNames.MaxWidthBubble]: bubbleMaxWidth + 'px',
       [CustomPropertyNames.MinHeightBubble]: bubbleMinHeight + 'px',
-      [CustomPropertyNames.PaddingRegular]: paddingRegular + 'px'
+      [CustomPropertyNames.PaddingRegular]: paddingRegular + 'px',
+      [CustomPropertyNames.MaxHeightImageBubble]:
+        bubbleImageMaxHeight === Infinity ? undefined : bubbleImageMaxHeight + 'px',
+      [CustomPropertyNames.MinHeightImageBubble]: bubbleImageMinHeight + 'px'
     }
   };
 }

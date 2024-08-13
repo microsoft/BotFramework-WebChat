@@ -167,7 +167,7 @@
         } else {
           const { token } = await retry(async () => {
             try {
-              const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', {
+              const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', {
                 method: 'POST',
                 timeout: 2000
               });
