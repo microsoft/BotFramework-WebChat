@@ -1,0 +1,42 @@
+
+:global(.webchat-fluent) .copilot-message-header {
+  align-items: center;
+  cursor: default;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--webchat-spacingHorizontalS);
+  margin-inline-start: var(--webchat-spacingVerticalMNudge);
+  padding-block-start: var(--webchat-spacingVerticalXS);
+  /* TODO: remove when moved to the bubble */
+  position: relative;
+  z-index: 1;
+}
+
+:global(.webchat-fluent) .copilot-message-header__avatar {
+  aspect-ratio: 1;
+  background-color: var(--background-color);
+  border-radius: var(--webchat-borderRadiusSmall);
+  width: 20px;
+}
+
+:global(.webchat-fluent) .copilot-message-header__title {
+  font-size: var(--webchat-fontSizeBase300);
+  font-weight: var(--webchat-fontWeightSemibold);
+  line-height: var(--webchat-lineHeightBase300);
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+}
+
+:global(.webchat-fluent) .copilot-message-header__ai-generated-content {
+  align-items: center;
+  background-color: var(--webchat-colorNeutralBackground5);
+  border-radius: var(--webchat-borderRadiusMedium);
+  color: var(--webchat-colorNeutralForeground3);
+  display: flex;
+  font-size: var(--webchat-fontSizeBase100);
+  height: 20px;
+  line-height: var(--webchat-lineHeightBase100);
+  padding-inline: 4px;
+}

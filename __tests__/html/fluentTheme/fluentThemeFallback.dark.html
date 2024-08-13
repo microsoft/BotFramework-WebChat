@@ -11,6 +11,8 @@
     <style>
       .fui-FluentProvider {
         display: contents;
+
+        --webchat__color--surface: var(--colorNeutralBackground3);
       }
     </style>
   </head>
@@ -28,13 +30,6 @@
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const App = () => <ReactWebChat directLine={directLine} store={store} styleOptions={{
-          backgroundColor: 'var(--colorNeutralBackground1)',
-          bubbleBackground: 'var(--colorNeutralBackground2)',
-          bubbleBorderColor: 'var(--colorNeutralStroke2)',
-          bubbleTextColor: 'var(--colorNeutralForeground1)',
-          bubbleFromUserBackground: 'var(--colorBrandBackgroundStatic)',
-          bubbleFromUserTextColor: 'var(--colorNeutralForeground1)',
-          timestampColor: 'var(--colorNeutralForeground3)',
           hideTelephoneKeypadButton: false
         }} />;
 

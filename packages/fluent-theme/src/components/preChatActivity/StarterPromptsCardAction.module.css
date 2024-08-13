@@ -22,7 +22,7 @@
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-box:hover {
-  background-color: var(--webchat-colorNeutralGrey94);
+  background-color: var(--webchat-colorNeutralBackground1Hover);
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-box:active {

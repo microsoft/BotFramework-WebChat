@@ -1,9 +1,11 @@
 :global(.webchat-fluent) .pre-chat-message-activity {
+  box-sizing: border-box;
   display: grid;
+  gap: var(--webchat-spacingHorizontalXXXL);
   grid-template-areas: 'body' 'toolbar';
   grid-template-rows: auto auto;
-  gap: var(--webchat-spacingHorizontalXXXL);
-  padding: var(--webchat-spacingHorizontalXXXL);
+  padding: var(--webchat-spacingHorizontalXXXL) var(--webchat-spacingHorizontalM);
+  position: relative;
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__body {

@@ -1,15 +1,17 @@
+import type { ActivityMiddleware } from 'botframework-webchat-api';
 import { Components } from 'botframework-webchat-component';
 import React, { memo, type ReactNode } from 'react';
 
-import type { ActivityMiddleware } from 'botframework-webchat-api';
+import { ActivityDecorator } from '../components/activity';
 import { isPreChatMessageActivity, PreChatMessageActivity } from '../components/preChatActivity';
 import { PrimarySendBox } from '../components/sendBox';
 import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
+import VariantComposer, { VariantList } from './VariantComposer';
 
 const { ThemeProvider } = Components;
 
-type Props = Readonly<{ children?: ReactNode | undefined }>;
+type Props = Readonly<{ children?: ReactNode | undefined; variant?: VariantList | undefined }>;
 
 const activityMiddleware: ActivityMiddleware[] = [
   () =>
@@ -21,19 +23,26 @@ const activityMiddleware: ActivityMiddleware[] = [
         return () => <PreChatMessageActivity activity={activity} />;
       }
 
-      return next(...args);
+      const renderActivity = next(...args);
+
+      return renderActivity
+        ? (...args) => <ActivityDecorator activity={activity}>{renderActivity(...args)}</ActivityDecorator>
+        : renderActivity;
     }
 ];
+
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
-const FluentThemeProvider = ({ children }: Props) => (
-  <WebChatTheme>
-    <TelephoneKeypadProvider>
-      <ThemeProvider activityMiddleware={activityMiddleware} sendBoxMiddleware={sendBoxMiddleware}>
-        {children}
-      </ThemeProvider>
-    </TelephoneKeypadProvider>
-  </WebChatTheme>
+const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
+  <VariantComposer variant={variant}>
+    <WebChatTheme>
+      <TelephoneKeypadProvider>
+        <ThemeProvider activityMiddleware={activityMiddleware} sendBoxMiddleware={sendBoxMiddleware}>
+          {children}
+        </ThemeProvider>
+      </TelephoneKeypadProvider>
+    </WebChatTheme>
+  </VariantComposer>
 );
 
 export default memo(FluentThemeProvider);
