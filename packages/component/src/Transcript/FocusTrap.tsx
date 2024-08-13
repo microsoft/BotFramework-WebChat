@@ -7,13 +7,11 @@ import { useRefFrom } from 'use-ref-from';
 const FocusTrap = ({
   children,
   onFocus,
-  onLeave,
-  loopFocus = true
+  onLeave
 }: Readonly<{
   children: ReactNode;
   onFocus: () => void;
   onLeave: () => void;
-  loopFocus?: boolean;
 }>) => {
   const bodyRef = useRef<HTMLDivElement>();
   const lastFocused = useRef<HTMLElement>();
@@ -37,14 +35,14 @@ const FocusTrap = ({
         const focusedIndex = getTabbableElementsInBody().indexOf(activeElement);
         if (event.shiftKey && focusedIndex === 0) {
           event.preventDefault();
-          loopFocus ? focusables.at(-1)?.focus() : onLeaveRef.current?.();
+          focusables.at(-1)?.focus();
         } else if (!event.shiftKey && focusedIndex === focusables.length - 1) {
           event.preventDefault();
-          loopFocus ? focusables.at(0)?.focus() : onLeaveRef.current?.();
+          focusables.at(0)?.focus();
         }
       }
     },
-    [getTabbableElementsInBody, loopFocus, onLeaveRef]
+    [getTabbableElementsInBody, onLeaveRef]
   );
 
   const handleFocus = useCallback(
