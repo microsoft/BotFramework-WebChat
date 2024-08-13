@@ -13,9 +13,9 @@
 }
 
 :global(.webchat-fluent) .copilot-message-header__avatar {
+  aspect-ratio: 1;
   background-color: var(--background-color);
   border-radius: var(--webchat-borderRadiusSmall);
-  aspect-ratio: 1;
   width: 20px;
 }
 
