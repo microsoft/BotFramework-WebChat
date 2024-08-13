@@ -77,7 +77,7 @@
 /* Message status */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__stacked-layout__status) {
   font-size: var(--webchat__font-size--small);
-  line-height: var(--webchat__line-heihgt--small);
+  line-height: var(--webchat__line-height--small);
 }
 
 /* Message bubble */
@@ -99,7 +99,7 @@
 /* Message bubble text content */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__text-content) {
   font-size: var(--webchat__font-size--medium);
-  line-height: var(--webchat__line-heihgt--medium);
+  line-height: var(--webchat__line-height--medium);
   min-height: auto;
   padding-block: var(--webchat__bubble--block-padding);
   padding-inline: var(--webchat__bubble--inline-padding);

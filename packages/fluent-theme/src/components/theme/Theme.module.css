@@ -150,8 +150,8 @@
   --webchat__font--primary: var(--webchat-fontFamilyBase);
   --webchat__font-size--small: var(--webchat-fontSizeBase200);
   --webchat__font-size--medium: var(--webchat-fontSizeBase300);
-  --webchat__line-heihgt--small: var(--webchat-lineHeightBase200);
-  --webchat__line-heihgt--medium: var(--webchat-lineHeightBase300);
+  --webchat__line-height--small: var(--webchat-lineHeightBase200);
+  --webchat__line-height--medium: var(--webchat-lineHeightBase300);
   --webchat__max-width--bubble: var(--webchat-bubble-maxWidth);
   --webchat__min-height--bubble: var(--webchat-bubble-minHeight);
   --webchat__padding--regular: var(--webchat-spacingVerticalS);
