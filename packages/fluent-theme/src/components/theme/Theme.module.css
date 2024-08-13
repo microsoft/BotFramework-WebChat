@@ -174,14 +174,13 @@
   background-color: var(--webchat__color--surface);
 }
 
-:global(.webchat-fluent).theme.theme.variant-copilot :global(.webchat__surface) {
+:global(.webchat-fluent).theme.variant-copilot :global(.webchat__surface) {
   box-sizing: border-box;
   padding-inline-start: var(--webchat-spacingHorizontalMNudge);
 }
 
 /* Transcript scrollable */
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable) {
-  scrollbar-gutter: stable;
   /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
   scrollbar-color: unset;
   scrollbar-width: unset;
@@ -213,6 +212,10 @@
     border-right: 2px solid transparent;
     border: 1px solid transparent;
   }
+}
+
+:global(.webchat-fluent).theme.variant-copilot :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable) {
+  scrollbar-gutter: stable;
 }
 
 /* Transcript focus indicator color when in focus-visible state */
