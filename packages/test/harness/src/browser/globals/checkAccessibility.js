@@ -77,8 +77,6 @@ export default function initializeCheckAccessibility() {
               );
             });
 
-            console.log(...target);
-
             console.groupEnd();
           });
 
