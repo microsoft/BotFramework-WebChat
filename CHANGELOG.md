@@ -24,9 +24,29 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ## [Unreleased]
 
+### Breaking changes
+
+-  `styleOptions.bubbleImageHeight` is being deprecated in favor of `styleOptions.bubbleImageMaxHeight` and `styleOptions.bubbleImageMinHeight`. The option will be removed on or after 2026-07-05
+
+### Added
+
+-  (Experimental) Added pre-chat message with starter prompts, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
+-  (Experimental) Added `isPrimary` props to Fluent UI send box. When set, will wire up with `useSendBoxValue` and works with starter prompts in pre-chat message, in PR [#5257](https://github.com/microsoft/BotFramework-WebChat/issues/5257), by [@compulim](https://github.com/compulim)
+-  (Experimental) Expand Fluent theme support to activities and transcript, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added new Fluent UI theme variant "copilot" with updated styling and components, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+-  Introduced `ActivityDecorator` component for enhanced message styling and layout, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added `CopilotMessageHeader` component for displaying bot information in the "copilot" variant, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+-  Updated Fluent theme styling to improve accessibility and visual consistency, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+
 ### Changed
 
+-  Updated `useSuggestedActions` to return the activity the suggested actions originated from, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
 -  Improved focus trap implementation by preserving focus state and removing sentinels, in PR [#5243](https://github.com/microsoft/BotFramework-WebChat/pull/5243), by [@OEvgeny](https://github.com/OEvgeny)
+
+
+### Fixed
+
+-  Fixed [#5256](https://github.com/microsoft/BotFramework-WebChat/issues/5256). `styleOptions.maxMessageLength` should support any JavaScript number value including `Infinity`, by [@compulim](https://github.com/compulim), in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5255)
 
 ## [4.18.0] - 2024-07-10
 
@@ -35,6 +55,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  (Experimental) Added initial decorators support, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
    -  Introduced internal `botframework-webchat-api/decorator` import, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
    -  Added `DecoratorComposer` and `ActivityDecorator` to be used for decorating activity border, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added `styleOptions.bubbleImageMaxHeight` and `styleOptions.bubbleImageMinHeight` for variable image height, in PR [#5236](https://github.com/microsoft/BotFramework-WebChat/pull/5236), by [@compulim](https://github.com/compulim)
 
 ### Fixed
 
@@ -49,6 +70,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Added missing support for chat history scroll with keyboard when Fluent send box is focused, in PR [#5191](https://github.com/microsoft/BotFramework-WebChat/pull/5191), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed DTMF command usage sent by telephone keypad, in PR [#5198](https://github.com/microsoft/BotFramework-WebChat/pull/5198), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed decorator import in legacy CommonJS environments, in [#5231](https://github.com/microsoft/BotFramework-WebChat/pull/5231), by [@OEvgeny](https://github.com/OEvgeny)
+-  Scoped `use-propagate` to individual WebChat instances to prevent interference between multiple instances, in PR [#5248](https://github.com/microsoft/BotFramework-WebChat/pull/5248), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 

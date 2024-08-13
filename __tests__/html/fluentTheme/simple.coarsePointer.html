@@ -55,6 +55,11 @@
 
         // THEN: Decreases font-size back
         await host.snapshot();
+
+        await host.sendDevToolsCommand('Emulation.setTouchEmulationEnabled', {
+          enabled: false,
+          configuration: 'desktop'
+        });
       });
     </script>
   </body>
