@@ -5,6 +5,7 @@ const createVariantComposer =
   ({ Provider }: Context<VariantContextType>) =>
   ({ children, variant = '' }: Readonly<{ children?: ReactNode | undefined; variant?: VariantList | undefined }>) => {
     const value = useMemo(() => ({ variant }), [variant]);
+
     return <Provider value={value}>{children}</Provider>;
   };
 

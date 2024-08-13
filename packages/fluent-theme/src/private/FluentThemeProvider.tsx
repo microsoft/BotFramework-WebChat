@@ -2,11 +2,11 @@ import { Components } from 'botframework-webchat-component';
 import React, { memo, type ReactNode } from 'react';
 
 import type { ActivityMiddleware } from 'botframework-webchat-api';
+import { ActivityDecorator } from '../components/activity';
 import { isPreChatMessageActivity, PreChatMessageActivity } from '../components/preChatActivity';
 import { PrimarySendBox } from '../components/sendBox';
 import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
-import { ActivityDecorator } from '../components/activity';
 import VariantComposer, { VariantList } from './VariantComposer';
 
 const { ThemeProvider } = Components;
