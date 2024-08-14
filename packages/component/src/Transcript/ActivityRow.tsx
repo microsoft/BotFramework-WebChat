@@ -97,7 +97,11 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
           <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
         </div>
       )}
-      <FocusTrap onFocus={handleDescendantFocus} onLeave={handleLeaveFocusTrap}>
+      <FocusTrap
+        className="webchat__basic-transcript__activity-focus-trap"
+        onFocus={handleDescendantFocus}
+        onLeave={handleLeaveFocusTrap}
+      >
         {focusTrapChildren}
       </FocusTrap>
       {shouldSpeak && <SpeakActivity activity={activity} />}
