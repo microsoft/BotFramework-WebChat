@@ -1,4 +1,5 @@
 .activity-toolbox {
   display: flex;
-  margin: var(--webchat-spacingVerticalS) 10px 0; /* TODO: 10px = styleOptions.padding, need it for left/right padding, should use gap for vertical */
+  padding-block: 0 var(--webchat__bubble--block-padding);
+  padding-inline: var(--webchat__bubble--inline-padding);
 }
