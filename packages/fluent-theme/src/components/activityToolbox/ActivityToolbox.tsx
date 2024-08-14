@@ -1,6 +1,6 @@
 import type { WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import { array, looseObject, parse, string } from 'valibot';
+import { array, looseObject, optional, parse, string } from 'valibot';
 import { useStyles } from '../../styles';
 import getMessageEntity from '../../utils/getMessageEntity';
 import styles from './ActivityToolbox.module.css';
@@ -9,11 +9,7 @@ import CopyButton from './CopyButton';
 type Props = Readonly<{ activity: WebChatActivity }>;
 
 const activitySchema = looseObject({
-  entities: array(
-    looseObject({
-      type: string()
-    })
-  ),
+  entities: optional(array(looseObject({ type: string() }))),
   type: string()
 });
 

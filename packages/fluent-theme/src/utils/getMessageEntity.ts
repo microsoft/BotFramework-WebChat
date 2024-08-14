@@ -13,7 +13,7 @@ type MessageEntity = InferOutput<typeof messageEntity>;
 // TODO: We should move this file to base package once it's ready.
 export default function getMessageEntity(
   activity: Readonly<{
-    entities?: readonly Readonly<{ type: string }>[];
+    entities?: readonly Readonly<{ type: string }>[] | undefined;
     type: string;
   }>
 ): MessageEntity | undefined {

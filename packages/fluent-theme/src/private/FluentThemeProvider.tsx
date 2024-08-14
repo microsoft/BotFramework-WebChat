@@ -14,7 +14,7 @@ const { ThemeProvider } = Components;
 
 type Props = Readonly<{ children?: ReactNode | undefined; variant?: VariantList | undefined }>;
 
-const activityMiddleware: ActivityMiddleware[] = [
+const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
   () =>
     next =>
     (...args) => {
@@ -30,9 +30,9 @@ const activityMiddleware: ActivityMiddleware[] = [
         ? (...args) => <ActivityDecorator activity={activity}>{renderActivity(...args)}</ActivityDecorator>
         : renderActivity;
     }
-];
+]);
 
-const attachmentMiddleware: AttachmentMiddleware[] = [
+const attachmentMiddleware: readonly AttachmentMiddleware[] = Object.freeze([
   () =>
     next =>
     (...args) => {
@@ -40,10 +40,11 @@ const attachmentMiddleware: AttachmentMiddleware[] = [
       const { activity, attachment } = args[0] || {};
 
       if (activity?.from.role === 'bot' && activity.type === 'message') {
-        const attachments = activity.attachments || [];
+        const attachments = Array.isArray(activity.attachments) ? activity.attachments : [];
         const lastAttachment = attachments[attachments.length - 1];
 
-        if (attachment === lastAttachment) {
+        // No last attachment means this could be the text message.
+        if (attachment === lastAttachment || !lastAttachment) {
           return (
             <div>
               {result}
@@ -55,7 +56,7 @@ const attachmentMiddleware: AttachmentMiddleware[] = [
 
       return result;
     }
-];
+]);
 
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
