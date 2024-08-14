@@ -67,12 +67,12 @@ const FocusTrap = ({
 
   const handleBlur = useCallback(
     event => {
-      const { relatedTarget } = event;
+      const { target } = event;
       const focusables = getTabbableElementsInBody();
 
       // When blurred element became non-focusable, move to the first focusable element if available
       // Otherwise trigger leave
-      if (bodyRef.current?.contains(relatedTarget) && !focusables.includes(relatedTarget)) {
+      if (!focusables.includes(target)) {
         event.preventDefault();
         event.stopPropagation();
         const firstTabbableElement = focusables.at(0);
