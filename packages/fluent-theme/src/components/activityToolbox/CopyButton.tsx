@@ -22,7 +22,6 @@ type Props = Readonly<{
 // TODO: Need to localize.
 const COPIED_TEXT = 'Copied';
 const COPY_TEXT = 'Copy';
-// eslint-disable-next-line no-magic-numbers
 const SHOW_COPIED_TEXT_DURATION = 1_000;
 
 const CopyButton = (props: Props) => {
