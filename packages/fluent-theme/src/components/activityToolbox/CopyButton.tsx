@@ -29,8 +29,8 @@ const CopyButton = (props: Props) => {
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const localize = useLocalizer();
 
-  const copiedText = localize('COPY_BUTTON_TEXT');
-  const copyText = localize('COPY_BUTTON_COPIED_TEXT');
+  const copiedText = localize('COPY_BUTTON_COPIED_TEXT');
+  const copyText = localize('COPY_BUTTON_TEXT');
 
   const handleClick = useCallback(() => {
     const { current } = activityRef;
