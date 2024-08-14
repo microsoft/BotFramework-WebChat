@@ -23,7 +23,11 @@ const ActivityToolbox = (props: Props) => {
 
   const allowCopy = useMemo(() => getMessageEntity(activity)?.keywords.includes('AllowCopy'), [activity]);
 
-  return <div className={classNames['activity-toolbox']}>{allowCopy && <CopyButton activity={activity} />}</div>;
+  return allowCopy ? (
+    <div className={classNames['activity-toolbox']}>
+      <CopyButton activity={activity} />
+    </div>
+  ) : null;
 };
 
 ActivityToolbox.displayName = 'ActivityToolbox';

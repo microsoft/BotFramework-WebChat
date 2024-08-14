@@ -37,15 +37,20 @@ const attachmentMiddleware: AttachmentMiddleware[] = [
     next =>
     (...args) => {
       const result = next(...args);
-      const { activity } = args[0] || {};
+      const { activity, attachment } = args[0] || {};
 
-      if (activity?.from.role === 'bot') {
-        return (
-          <div>
-            {result}
-            <ActivityToolbox activity={activity} />
-          </div>
-        );
+      if (activity?.from.role === 'bot' && activity.type === 'message') {
+        const attachments = activity.attachments || [];
+        const lastAttachment = attachments[attachments.length - 1];
+
+        if (attachment === lastAttachment) {
+          return (
+            <div>
+              {result}
+              <ActivityToolbox activity={activity} />
+            </div>
+          );
+        }
       }
 
       return result;
