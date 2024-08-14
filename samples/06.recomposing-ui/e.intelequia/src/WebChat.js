@@ -1,13 +1,21 @@
 import React, { useEffect, useMemo } from 'react';
 import ReactWebChat, { createDirectLine } from 'botframework-webchat';
-import { setCookie, getCookie, checkCookie } from './CookiesUtils'
-import getUser from './Strings'
+import { setCookie, getCookie, checkCookie } from './CookiesUtils';
+import getUser from './Strings';
 import './WebChat.css';
 
-const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeechPonyfillFactory, language, selectVoice }) => {
-
+const WebChat = ({
+  className,
+  onFetchToken,
+  store,
+  token,
+  styleOptions,
+  webSpeechPonyfillFactory,
+  language,
+  selectVoice
+}) => {
   useEffect(() => {
-    const $style = document.createElement("style");
+    const $style = document.createElement('style');
     document.head.appendChild($style);
 
     //Colours for adaptiveCards + button hover
@@ -50,38 +58,54 @@ const WebChat = ({ className, onFetchToken, store, token, styleOptions, webSpeec
     background-color: ${styleOptions.suggestedActionTextColor} !important;
     border-color: ${styleOptions.suggestedActionTextColor};
   }
-  `
+  .cancelButton{
+    background-color: ${styleOptions.streamingCancelButtonColor} !important;
+    color: ${styleOptions.streamingCancelButtonTextColor} !important;
+  }
+  .cancelButton:hover {
+    background-color: ${styleOptions.streamingCancelButtonColorOnHover};
+  }
+  `;
     $style.innerHTML = buttonCss;
     onFetchToken();
   }, [onFetchToken]);
 
-  let conversationId = getCookie("bci")
+  let conversationId = getCookie('bci');
   let directLine = undefined;
 
   var date = new Date();
   date.setDate(date.getDate() + 2);
 
-  directLine = useMemo(() =>createDirectLine({ token }), [token]);
-  
+  directLine = useMemo(() => createDirectLine({ token }), [token]);
+
   if (token && !conversationId && directLine.conversationId) {
-    setCookie('bci', directLine.conversationId, { path: '/', expires: date});
+    setCookie('bci', directLine.conversationId, { path: '/', expires: date });
   }
 
   const userId = getUser(window.navigator.language);
 
   return token ? (
-    <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} styleOptions={styleOptions} userID={String(userId)}
-     username={String(userId)} webSpeechPonyfillFactory={webSpeechPonyfillFactory} locale={ language ? language : directLine.locale} selectVoice={selectVoice} />
+    <ReactWebChat
+      className={`${className || ''} web-chat`}
+      directLine={directLine}
+      store={store}
+      styleOptions={styleOptions}
+      userID={String(userId)}
+      username={String(userId)}
+      webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+      locale={language ? language : directLine.locale}
+      selectVoice={selectVoice}
+    />
   ) : (
-      <div className={`${className || ''} connect-spinner`}>
-        <div className="content">
-          <div className="icon">
-            <span className="ms-Icon ms-Icon--Robot" />
-          </div>
-          <p>Please wait while we are connecting.</p>
+    <div className={`${className || ''} connect-spinner`}>
+      <div className="content">
+        <div className="icon">
+          <span className="ms-Icon ms-Icon--Robot" />
         </div>
+        <p>Please wait while we are connecting.</p>
       </div>
-    );
+    </div>
+  );
 };
 
 export default WebChat;
