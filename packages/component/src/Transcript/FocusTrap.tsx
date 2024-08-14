@@ -6,10 +6,12 @@ import { useRefFrom } from 'use-ref-from';
 
 const FocusTrap = ({
   children,
+  className,
   onFocus,
   onLeave
 }: Readonly<{
   children: ReactNode;
+  className?: string | undefined;
   onFocus: () => void;
   onLeave: () => void;
 }>) => {
@@ -37,7 +39,6 @@ const FocusTrap = ({
           event.preventDefault();
           const lastTabbableElement = focusables.at(-1);
           lastTabbableElement ? lastTabbableElement.focus() : onLeaveRef.current?.();
-          focusables.at(-1)?.focus();
         } else if (!event.shiftKey && focusedIndex === focusables.length - 1) {
           event.preventDefault();
           const firstTabbableElement = focusables.at(0);
@@ -50,19 +51,25 @@ const FocusTrap = ({
 
   const handleFocus = useCallback(
     (event: FocusEvent<HTMLDivElement, Element>) => {
-      const { relatedTarget } = event;
-      if (
-        (!relatedTarget || !bodyRef.current?.contains(relatedTarget)) &&
-        lastFocused.current?.parentElement &&
-        getTabbableElementsInBody().includes(lastFocused.current)
-      ) {
-        lastFocused.current?.focus();
+      const { target } = event;
+
+      if (target === bodyRef.current) {
+        event.preventDefault();
+        event.stopPropagation();
+        target.blur();
+        if (lastFocused.current) {
+          lastFocused.current.focus();
+        } else {
+          const focusables = getTabbableElementsInBody();
+          const firstTabbableElement = focusables.at(0);
+          firstTabbableElement ? firstTabbableElement.focus() : onLeaveRef.current?.();
+        }
       } else {
         onFocus();
         lastFocused.current = event.target;
       }
     },
-    [getTabbableElementsInBody, onFocus]
+    [getTabbableElementsInBody, onFocus, onLeaveRef]
   );
 
   const handleBlur = useCallback(
@@ -72,7 +79,7 @@ const FocusTrap = ({
 
       // When blurred element became non-focusable, move to the first focusable element if available
       // Otherwise trigger leave
-      if (!focusables.includes(target)) {
+      if (target !== bodyRef.current && !focusables.includes(target)) {
         event.preventDefault();
         event.stopPropagation();
         const firstTabbableElement = focusables.at(0);
@@ -83,7 +90,14 @@ const FocusTrap = ({
   );
 
   return (
-    <div onBlur={handleBlur} onFocus={handleFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
+    <div
+      className={className}
+      onBlur={handleBlur}
+      onFocus={handleFocus}
+      onKeyDown={handleBodyKeyDown}
+      ref={bodyRef}
+      tabIndex={-1}
+    >
       {children}
     </div>
   );

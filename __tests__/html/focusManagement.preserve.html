@@ -67,7 +67,7 @@
         await pageConditions.numActivitiesShown(2);
 
         // WHEN: pressed 1st Card "Show card" button
-        await host.sendKeys('TAB', 'ENTER', 'ARROW_UP', 'ARROW_UP', 'ENTER', 'TAB', 'ENTER');
+        await host.sendKeys('TAB', 'TAB', 'ARROW_UP', 'ENTER', 'TAB', 'ENTER');
 
         // THEN: Should render additional buttons.
         await host.snapshot();
@@ -83,7 +83,7 @@
 
         // THEN: Should focus the same "Show card" button
         await host.snapshot();
-        const showCardButton = document.activeElement
+        const showCardButton = document.activeElement;
 
         // WHEN: pressed TAB two times
         await host.sendKeys('TAB', 'TAB');
@@ -91,16 +91,17 @@
         // THEN: Should focus the last card button
         await host.snapshot();
 
-        // WHEN: pressed ESCAPE and click "Show card" button and focus back the card
+        // WHEN: pressed ESCAPE and click "Show card" button
         await host.sendKeys('ESCAPE');
-        showCardButton.click();
-        await host.sendKeys('ENTER');
+        host.click(showCardButton);
+        // Type anything to display focus
+        await host.sendKeys('A');
 
-        // THEN: Should focus the first available card button
+        // THEN: Should focus the last focused card button (via mouse)
         await host.snapshot();
 
-        // WHEN: pressed TAB two times
-        await host.sendKeys('TAB', 'TAB');
+        // WHEN: pressed TAB one time
+        await host.sendKeys('TAB');
 
         // THEN: Should focus the first available card button (loop)
         await host.snapshot();
