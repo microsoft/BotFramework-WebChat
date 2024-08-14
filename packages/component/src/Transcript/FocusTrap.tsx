@@ -35,10 +35,13 @@ const FocusTrap = ({
         const focusedIndex = getTabbableElementsInBody().indexOf(activeElement);
         if (event.shiftKey && focusedIndex === 0) {
           event.preventDefault();
+          const lastTabbableElement = focusables.at(-1);
+          lastTabbableElement ? lastTabbableElement.focus() : onLeaveRef.current?.();
           focusables.at(-1)?.focus();
         } else if (!event.shiftKey && focusedIndex === focusables.length - 1) {
           event.preventDefault();
-          focusables.at(0)?.focus();
+          const firstTabbableElement = focusables.at(0);
+          firstTabbableElement ? firstTabbableElement.focus() : onLeaveRef.current?.();
         }
       }
     },
@@ -59,11 +62,28 @@ const FocusTrap = ({
         lastFocused.current = event.target;
       }
     },
-    [getTabbableElementsInBody, lastFocused, onFocus]
+    [getTabbableElementsInBody, onFocus]
+  );
+
+  const handleBlur = useCallback(
+    event => {
+      const { relatedTarget } = event;
+      const focusables = getTabbableElementsInBody();
+
+      // When blurred element became non-focusable, move to the first focusable element if available
+      // Otherwise trigger leave
+      if (!focusables.includes(relatedTarget)) {
+        event.preventDefault();
+        event.stopPropagation();
+        const firstTabbableElement = focusables.at(0);
+        firstTabbableElement ? firstTabbableElement.focus() : onLeaveRef.current?.();
+      }
+    },
+    [getTabbableElementsInBody, onLeaveRef]
   );
 
   return (
-    <div onFocus={handleFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
+    <div onBlur={handleBlur} onFocus={handleFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
       {children}
     </div>
   );
