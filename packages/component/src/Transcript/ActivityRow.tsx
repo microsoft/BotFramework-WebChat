@@ -98,9 +98,9 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
         </div>
       )}
       <FocusTrap
-        className="webchat__basic-transcript__activity-focus-trap"
         onFocus={handleDescendantFocus}
         onLeave={handleLeaveFocusTrap}
+        targetClassName="webchat__basic-transcript__activity-focus-target"
       >
         {focusTrapChildren}
       </FocusTrap>

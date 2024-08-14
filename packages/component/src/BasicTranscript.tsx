@@ -408,15 +408,15 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             // This is capturing plain ENTER.
             // When screen reader is not running, or screen reader is running outside of scan mode, the ENTER key will be captured here.
             if (!fromEndOfTranscriptIndicator) {
-              const activityFocusTrap: HTMLElement = activityElementMapRef.current
+              const activityFocusTrapTarget: HTMLElement = activityElementMapRef.current
                 .get(focusedActivityKeyRef.current)
-                ?.querySelector('.webchat__basic-transcript__activity-focus-trap');
+                ?.querySelector('.webchat__basic-transcript__activity-focus-target');
               // TODO: review focus approach:
               // It is not clear how to handle focus without introducing something like context.
               // Ideally we would want a way to interact with focus outside of React
               // so it doesn't cause transcript re-renders while still having an ability
               // to scope activity-related handlers and data in a single place.
-              activityFocusTrap?.focus();
+              activityFocusTrapTarget?.focus();
             }
 
             break;

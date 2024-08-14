@@ -1,23 +1,31 @@
 /* eslint-disable no-magic-numbers */
-import React, { KeyboardEventHandler, memo, type FocusEvent, type ReactNode, useCallback, useRef } from 'react';
+import React, {
+  Fragment,
+  memo,
+  type FocusEvent,
+  type KeyboardEventHandler,
+  type ReactNode,
+  useCallback,
+  useRef
+} from 'react';
 
 import tabbableElements from '../Utils/tabbableElements';
 import { useRefFrom } from 'use-ref-from';
 
 const FocusTrap = ({
   children,
-  className,
   onFocus,
-  onLeave
+  onLeave,
+  targetClassName
 }: Readonly<{
   children: ReactNode;
-  className?: string | undefined;
   onFocus: () => void;
   onLeave: () => void;
+  targetClassName?: string | undefined;
 }>) => {
   const bodyRef = useRef<HTMLDivElement>();
   const lastFocused = useRef<HTMLElement>();
-  const onLeaveRef = useRefFrom<() => void>(onLeave);
+  const onLeaveRef = useRefFrom(onLeave);
 
   const getTabbableElementsInBody = useCallback(
     () => tabbableElements(bodyRef.current).filter(element => element.getAttribute('aria-disabled') !== 'true'),
@@ -54,37 +62,22 @@ const FocusTrap = ({
 
   const handleFocus = useCallback(
     (event: FocusEvent<HTMLDivElement, Element>) => {
-      const { target } = event;
-
-      if (target === bodyRef.current) {
-        event.preventDefault();
-        event.stopPropagation();
-        target.blur();
-
-        const focusables = getTabbableElementsInBody();
-        if (lastFocused.current && focusables.includes(lastFocused.current)) {
-          lastFocused.current.focus();
-        } else {
-          focusOrTriggerLeave(focusables.at(0));
-        }
-      } else {
-        onFocus();
-        lastFocused.current = event.target;
-      }
+      onFocus();
+      lastFocused.current = event.target;
     },
-    [focusOrTriggerLeave, getTabbableElementsInBody, onFocus]
+    [lastFocused, onFocus]
   );
 
-  const handleBlur = useCallback(
+  const handleTrapFocus = useCallback(
     event => {
-      const { target } = event;
-      const focusables = getTabbableElementsInBody();
+      event.preventDefault();
+      event.stopPropagation();
+      event.target.blur();
 
-      // When blurred element became non-focusable, move to the first focusable element if available
-      // Otherwise trigger leave
-      if (target !== bodyRef.current && !focusables.includes(target)) {
-        event.preventDefault();
-        event.stopPropagation();
+      const focusables = getTabbableElementsInBody();
+      if (lastFocused.current && focusables.includes(lastFocused.current)) {
+        lastFocused.current.focus();
+      } else {
         focusOrTriggerLeave(focusables.at(0));
       }
     },
@@ -92,16 +85,12 @@ const FocusTrap = ({
   );
 
   return (
-    <div
-      className={className}
-      onBlur={handleBlur}
-      onFocus={handleFocus}
-      onKeyDown={handleBodyKeyDown}
-      ref={bodyRef}
-      tabIndex={-1}
-    >
-      {children}
-    </div>
+    <Fragment>
+      <div onFocus={handleFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
+        {children}
+      </div>
+      <div className={targetClassName} onFocus={handleTrapFocus} tabIndex={0} />
+    </Fragment>
   );
 };
 
