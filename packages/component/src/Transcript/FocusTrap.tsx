@@ -24,6 +24,11 @@ const FocusTrap = ({
     [bodyRef]
   );
 
+  const focusOrTriggerLeave = useCallback(
+    (el: HTMLElement | undefined) => (el ? el.focus() : onLeaveRef.current?.()),
+    [onLeaveRef]
+  );
+
   const handleBodyKeyDown: KeyboardEventHandler = useCallback(
     event => {
       if (event.key === 'Escape') {
@@ -37,16 +42,14 @@ const FocusTrap = ({
         const focusedIndex = getTabbableElementsInBody().indexOf(activeElement);
         if (event.shiftKey && focusedIndex === 0) {
           event.preventDefault();
-          const lastTabbableElement = focusables.at(-1);
-          lastTabbableElement ? lastTabbableElement.focus() : onLeaveRef.current?.();
+          focusOrTriggerLeave(focusables.at(-1));
         } else if (!event.shiftKey && focusedIndex === focusables.length - 1) {
           event.preventDefault();
-          const firstTabbableElement = focusables.at(0);
-          firstTabbableElement ? firstTabbableElement.focus() : onLeaveRef.current?.();
+          focusOrTriggerLeave(focusables.at(0));
         }
       }
     },
-    [getTabbableElementsInBody, onLeaveRef]
+    [focusOrTriggerLeave, getTabbableElementsInBody, onLeaveRef]
   );
 
   const handleFocus = useCallback(
@@ -57,19 +60,19 @@ const FocusTrap = ({
         event.preventDefault();
         event.stopPropagation();
         target.blur();
-        if (lastFocused.current) {
+
+        const focusables = getTabbableElementsInBody();
+        if (lastFocused.current && focusables.includes(lastFocused.current)) {
           lastFocused.current.focus();
         } else {
-          const focusables = getTabbableElementsInBody();
-          const firstTabbableElement = focusables.at(0);
-          firstTabbableElement ? firstTabbableElement.focus() : onLeaveRef.current?.();
+          focusOrTriggerLeave(focusables.at(0));
         }
       } else {
         onFocus();
         lastFocused.current = event.target;
       }
     },
-    [getTabbableElementsInBody, onFocus, onLeaveRef]
+    [focusOrTriggerLeave, getTabbableElementsInBody, onFocus]
   );
 
   const handleBlur = useCallback(
@@ -82,11 +85,10 @@ const FocusTrap = ({
       if (target !== bodyRef.current && !focusables.includes(target)) {
         event.preventDefault();
         event.stopPropagation();
-        const firstTabbableElement = focusables.at(0);
-        firstTabbableElement ? firstTabbableElement.focus() : onLeaveRef.current?.();
+        focusOrTriggerLeave(focusables.at(0));
       }
     },
-    [getTabbableElementsInBody, onLeaveRef]
+    [focusOrTriggerLeave, getTabbableElementsInBody]
   );
 
   return (
