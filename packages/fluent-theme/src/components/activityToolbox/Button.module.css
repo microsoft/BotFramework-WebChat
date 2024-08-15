@@ -9,30 +9,30 @@
   gap: var(--webchat-spacingHorizontalXS);
   justify-content: center;
   padding: 5px var(--webchat-spacingHorizontalM);
-}
 
-:global(.webchat-fluent) .activity-toolbox__base-button:hover {
-  background: var(--webchat-colorNeutralBackground1Hover);
-  border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1Hover);
-  color: var(--webchat-colorNeutralForeground1Hover);
-}
+  &:hover {
+    background: var(--webchat-colorNeutralBackground1Hover);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1Hover);
+    color: var(--webchat-colorNeutralForeground1Hover);
+  }
 
-:global(.webchat-fluent) .activity-toolbox__base-button:active {
-  background: var(--webchat-colorNeutralBackground1Pressed);
-  border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1Pressed);
-  color: var(--webchat-colorNeutralForeground1Pressed);
-}
+  &:active {
+    background: var(--webchat-colorNeutralBackground1Pressed);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1Pressed);
+    color: var(--webchat-colorNeutralForeground1Pressed);
+  }
 
-:global(.webchat-fluent) .activity-toolbox__base-button:focus-visible {
-  background: var(--webchat-colorNeutralBackground1);
-  outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
-  outline-offset: calc(var(--webchat-strokeWidthThick) * -1);
-}
+  &:focus-visible {
+    background: var(--webchat-colorNeutralBackground1);
+    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
+    outline-offset: calc(var(--webchat-strokeWidthThick) * -1);
+  }
 
-:global(.webchat-fluent) .activity-toolbox__base-button:disabled {
-  background: var(--webchat-colorNeutralBackgroundDisabled);
-  border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStrokeDisabled);
-  color: var(--webchat-colorNeutralForegroundDisabled);
+  &:disabled {
+    background: var(--webchat-colorNeutralBackgroundDisabled);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStrokeDisabled);
+    color: var(--webchat-colorNeutralForegroundDisabled);
+  }
 }
 
 :global(.webchat-fluent) .activity-toolbox__base-button-icon {
