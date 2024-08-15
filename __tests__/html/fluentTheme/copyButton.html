@@ -85,10 +85,19 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        // WHEN: The copy button is clicked
+        // WHEN: Focus on the "Copy" button via keyboard.
+        await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
+        await host.sendShiftTab(2);
+        await host.sendKeys('ENTER');
+
+        // THEN: Should focus on the "Copy" button
         const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`);
 
-        await host.click(copyButton);
+        expect(document.activeElement).toBe(copyButton);
+        await host.snapshot();
+
+        // WHEN: Press ENTER on the "Copy" button.
+        await host.sendKeys('ENTER');
 
         // THEN: The copy button should change to "Copied".
         await host.snapshot();

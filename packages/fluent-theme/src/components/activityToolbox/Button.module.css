@@ -26,8 +26,8 @@
 
 :global(.webchat-fluent) .activity-toolbox__base-button:focus-visible {
   background: var(--webchat-colorNeutralBackground1);
-  outline: 2px solid var(--webchat-colorStrokeFocus2);
-  outline-offset: -2px;
+  outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
+  outline-offset: calc(var(--webchat-strokeWidthThick) * -1);
 }
 
 :global(.webchat-fluent) .activity-toolbox__base-button:disabled {
