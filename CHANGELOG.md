@@ -45,6 +45,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 ### Fixed
 
 -  Fixed [#5256](https://github.com/microsoft/BotFramework-WebChat/issues/5256). `styleOptions.maxMessageLength` should support any JavaScript number value including `Infinity`, by [@compulim](https://github.com/compulim), in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5255)
+-  Fixes [#4965](https://github.com/microsoft/BotFramework-WebChat/issues/4965). Removed keyboard helper screen in [#5234]https://github.com/microsoft/BotFramework-WebChat/pull/5234), by [@amirmursal](https://github.com/amirmursal) and [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.18.0] - 2024-07-10
 
