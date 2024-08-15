@@ -33,7 +33,6 @@ const CopyButton = (props: Props) => {
   const handleClick = useCallback(() => {
     const { current } = activityRef;
 
-    // TODO: See if we should/could/want to copy in rich-text style.
     if (current.type === 'message' && current.text) {
       navigator.clipboard
         ?.write([
@@ -47,12 +46,13 @@ const CopyButton = (props: Props) => {
         .catch(error => console.error(`botframework-webchat-fluent-theme: Failed to copy to clipboard.`, error));
 
       buttonRef.current?.classList.remove(...classNames['activity-toolbox__copy-button--copied'].split(' '));
+
       // Reading `offsetWidth` will trigger a reflow and this is critical for resetting the animation.
       // https://css-tricks.com/restart-css-animation/#aa-update-another-javascript-method-to-restart-a-css-animation
       // eslint-disable-next-line no-unused-expressions
       buttonRef.current?.offsetWidth;
+
       buttonRef.current?.classList.add(...classNames['activity-toolbox__copy-button--copied'].split(' '));
-      // setCopied(true);
     } else {
       console.warn(
         'botframework-webchat-fluent-theme: Cannot copy a non-message activity or a message activity with empty content.'
