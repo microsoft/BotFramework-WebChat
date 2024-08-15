@@ -89,7 +89,7 @@ const FocusTrap = ({
       <div onFocus={handleFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
         {children}
       </div>
-      <div className={targetClassName} onFocus={handleTrapFocus} tabIndex={0} />
+      <div aria-hidden="true" className={targetClassName} onFocus={handleTrapFocus} tabIndex={0} />
     </Fragment>
   );
 };
