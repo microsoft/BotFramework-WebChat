@@ -31,12 +31,13 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 ### Added
 
 -  (Experimental) Added pre-chat message with starter prompts, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
--  (Experimental) Added `isPrimary` props to Fluent UI send box. When set, will wire up with `useSendBoxValue` and works with starter prompts in pre-chat message, in PR [#5257](https://github.com/microsoft/BotFramework-WebChat/issues/5257), by [@compulim](https://github.com/compulim)
--  (Experimental) Expand Fluent theme support to activities and transcript, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
--  Added new Fluent UI theme variant "copilot" with updated styling and components, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
--  Introduced `ActivityDecorator` component for enhanced message styling and layout, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
--  Added `CopilotMessageHeader` component for displaying bot information in the "copilot" variant, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
--  Updated Fluent theme styling to improve accessibility and visual consistency, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+   -  (Experimental) Added `isPrimary` props to Fluent UI send box. When set, will wire up with `useSendBoxValue` and works with starter prompts in pre-chat message, in PR [#5257](https://github.com/microsoft/BotFramework-WebChat/issues/5257), by [@compulim](https://github.com/compulim)
+   -  (Experimental) Expand Fluent theme support to activities and transcript, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Added new Fluent UI theme variant "copilot" with updated styling and components, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Introduced `ActivityDecorator` component for enhanced message styling and layout, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Added `CopilotMessageHeader` component for displaying bot information in the "copilot" variant, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Updated Fluent theme styling to improve accessibility and visual consistency, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Fixed header font in copilot variant, in PR [#5261](https://github.com/microsoft/BotFramework-WebChat/pull/5261), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
@@ -58,6 +59,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ### Fixed
 
+-  Fixes [#4965](https://github.com/microsoft/BotFramework-WebChat/issues/4965). Removed keyboard helper screen in [#5234]https://github.com/microsoft/BotFramework-WebChat/pull/5234), by [@amirmursal](https://github.com/amirmursal)
 -  Read deeper into citation objects in order to provide names, in PR [#5215](https://github.com/microsoft/BotFramework-WebChat/pull/5215), by [@beyackle2](https://github.com/beyackle2)
 -  Improved performance for `useActivityWithRenderer`, in PR [#5172](https://github.com/microsoft/BotFramework-WebChat/pull/5172), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixes [#5162](https://github.com/microsoft/BotFramework-WebChat/issues/5162). Improved performance for `useActivityTreeWithRenderer`, in PR [#5163](https://github.com/microsoft/BotFramework-WebChat/pull/5163), by [@compulim](https://github.com/compulim)
