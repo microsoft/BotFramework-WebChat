@@ -1,5 +1,6 @@
 :global(.webchat-fluent) .activity-toolbox {
   display: flex;
-  padding-block: 0 var(--webchat__bubble--block-padding);
+  padding-block: var(--webchat__bubble--block-padding);
+  padding-block-start: 0; /* Specifically set block-start to 0. */
   padding-inline: var(--webchat__bubble--inline-padding);
 }
