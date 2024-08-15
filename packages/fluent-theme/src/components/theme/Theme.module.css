@@ -146,8 +146,10 @@
   --webchat-strokeWidthThick: var(--strokeWidthThicker, 2px);
   --webchat-strokeWidthThicker: var(--strokeWidthThicker, 3px);
 
+  /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/durations.ts */
   --webchat-durationUltraFast: var(--durationUltraFast, 0);
   --webchat-durationNormal: var(--durationNormal, 200ms);
+  --webchat-durationUltraSlow: var(--durationUltraSlow, 500ms);
 
   --webchat-curveAccelerateMid: var(--curveAccelerateMid, cubic-bezier(1,0,1,1));
   --webchat-curveDecelerateMid: var(--curveDecelerateMid, cubic-bezier(0,0,0,1));

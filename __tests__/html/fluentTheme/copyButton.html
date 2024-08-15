@@ -89,11 +89,6 @@
         const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`);
 
         await host.click(copyButton);
-        await pageConditions.became(
-          'Copy button content changed to "Copied"',
-          () => copyButton.textContent === 'CopyCopied',
-          1_000
-        );
 
         // THEN: The copy button should change to "Copied".
         await host.snapshot();
@@ -106,6 +101,9 @@
         await host.sendKeys('+CONTROL', 'v', '-CONTROL');
 
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
+
+        // Sleep for 1 second for the "Copied" text to go away.
+        await testHelpers.sleep(500);
 
         // THEN: Plain text box should contains plain text, while rich text box should contains rich text.
         await host.snapshot();

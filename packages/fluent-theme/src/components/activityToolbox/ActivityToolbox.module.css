@@ -1,4 +1,4 @@
-.activity-toolbox {
+:global(.webchat-fluent) .activity-toolbox {
   display: flex;
   padding-block: 0 var(--webchat__bubble--block-padding);
   padding-inline: var(--webchat__bubble--inline-padding);

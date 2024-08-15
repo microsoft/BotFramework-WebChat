@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import React, { memo, useCallback, type ReactNode } from 'react';
+import React, { forwardRef, memo, useCallback, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { useStyles } from '../../styles';
 import MonochromeImageMasker from '../preChatActivity/private/MonochromeImageMasker';
@@ -14,7 +14,7 @@ type Props = Readonly<{
   text?: string | undefined;
 }>;
 
-const Button = (props: Props) => {
+const Button = forwardRef<HTMLButtonElement, Props>((props, ref) => {
   const classNames = useStyles(styles);
   const onClickRef = useRefFrom(props.onClick);
 
@@ -25,6 +25,7 @@ const Button = (props: Props) => {
       className={cx(props.className, classNames['activity-toolbox__base-button'])}
       data-testid={props['data-testid']}
       onClick={handleClick}
+      ref={ref}
       type="button"
     >
       {props.iconURL && (
@@ -34,6 +35,6 @@ const Button = (props: Props) => {
       {props.children}
     </button>
   );
-};
+});
 
 export default memo(Button);
