@@ -1,6 +1,6 @@
 import type { ActivityMiddleware, AttachmentMiddleware } from 'botframework-webchat-api';
 import { Components } from 'botframework-webchat-component';
-import React, { memo, type ReactNode } from 'react';
+import React, { Fragment, memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';
 import { ActivityToolbox } from '../components/activityToolbox';
@@ -39,17 +39,16 @@ const attachmentMiddleware: readonly AttachmentMiddleware[] = Object.freeze([
       const result = next(...args);
       const { activity, attachment } = args[0] || {};
 
-      if (activity?.from.role === 'bot' && activity.type === 'message') {
+      if (attachment && activity?.from.role === 'bot' && activity.type === 'message') {
         const attachments = Array.isArray(activity.attachments) ? activity.attachments : [];
-        const lastAttachment = attachments[attachments.length - 1];
 
-        // No last attachment means this could be the text message.
-        if (attachment === lastAttachment || !lastAttachment) {
+        // Main text message is not an attachment inside the `attachments` field.
+        if (!attachments.includes(attachment)) {
           return (
-            <div>
+            <Fragment>
               {result}
               <ActivityToolbox activity={activity} />
-            </div>
+            </Fragment>
           );
         }
       }

@@ -18,6 +18,8 @@ type Props = Readonly<{
   };
 }>;
 
+const COPY_ICON_URL = `data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none"><path d="M8.5 2C7.39543 2 6.5 2.89543 6.5 4V14C6.5 15.1046 7.39543 16 8.5 16H14.5C15.6046 16 16.5 15.1046 16.5 14V4C16.5 2.89543 15.6046 2 14.5 2H8.5ZM7.5 4C7.5 3.44772 7.94772 3 8.5 3H14.5C15.0523 3 15.5 3.44772 15.5 4V14C15.5 14.5523 15.0523 15 14.5 15H8.5C7.94772 15 7.5 14.5523 7.5 14V4ZM4.5 6.00001C4.5 5.25973 4.9022 4.61339 5.5 4.26758V14.5C5.5 15.8807 6.61929 17 8 17H14.2324C13.8866 17.5978 13.2403 18 12.5 18H8C6.067 18 4.5 16.433 4.5 14.5V6.00001Z" fill="#000000"/></svg>')}`;
+
 const CopyButton = (props: Props) => {
   const activityRef = useRefFrom(props.activity);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -62,7 +64,7 @@ const CopyButton = (props: Props) => {
     <Button
       className={classNames['activity-toolbox__copy-button']}
       data-testid={testIds.copyButton}
-      iconURL="data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2221%22%20height%3D%2220%22%20viewBox%3D%220%200%2021%2020%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M8.5%202C7.39543%202%206.5%202.89543%206.5%204V14C6.5%2015.1046%207.39543%2016%208.5%2016H14.5C15.6046%2016%2016.5%2015.1046%2016.5%2014V4C16.5%202.89543%2015.6046%202%2014.5%202H8.5ZM7.5%204C7.5%203.44772%207.94772%203%208.5%203H14.5C15.0523%203%2015.5%203.44772%2015.5%204V14C15.5%2014.5523%2015.0523%2015%2014.5%2015H8.5C7.94772%2015%207.5%2014.5523%207.5%2014V4ZM4.5%206.00001C4.5%205.25973%204.9022%204.61339%205.5%204.26758V14.5C5.5%2015.8807%206.61929%2017%208%2017H14.2324C13.8866%2017.5978%2013.2403%2018%2012.5%2018H8C6.067%2018%204.5%2016.433%204.5%2014.5V6.00001Z%22%20fill%3D%22%23000000%22%2F%3E%3C%2Fsvg%3E"
+      iconURL={COPY_ICON_URL}
       onClick={handleClick}
       ref={buttonRef}
       text={copyText}
