@@ -70,8 +70,7 @@
         expect(components[1].className).toContain(classes.sendBox);
         expect(components[2].textContent).toContain('Connectivity Status');
         expect(components[3].className).toContain(classes.customComponent);
-        expect(components[4].className).toContain('keyboard-help');
-        expect(components[5].className).toContain(classes.transcript);
+        expect(components[4].className).toContain(classes.transcript);
 
         await host.snapshot();
       });
