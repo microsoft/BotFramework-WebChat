@@ -68,6 +68,22 @@ const FocusTrap = ({
     [lastFocused, onFocus]
   );
 
+  const handleBlur = useCallback(
+    event => {
+      const { target } = event;
+      const focusables = getTabbableElementsInBody();
+
+      // When blurred element became non-focusable, move to the first focusable element if available
+      // Otherwise trigger leave
+      if (target !== bodyRef.current && !focusables.includes(target)) {
+        event.preventDefault();
+        event.stopPropagation();
+        focusOrTriggerLeave(focusables.at(0));
+      }
+    },
+    [bodyRef, focusOrTriggerLeave, getTabbableElementsInBody]
+  );
+
   const handleTrapFocus = useCallback(
     event => {
       event.preventDefault();
@@ -86,10 +102,10 @@ const FocusTrap = ({
 
   return (
     <Fragment>
-      <div onFocus={handleFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
+      <div onBlur={handleBlur} onFocus={handleFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
         {children}
       </div>
-      <div aria-hidden="true" className={targetClassName} onFocus={handleTrapFocus} tabIndex={0} />
+      <div aria-hidden="true" className={targetClassName} onFocus={handleTrapFocus} tabIndex={-1} />
     </Fragment>
   );
 };
