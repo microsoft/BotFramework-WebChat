@@ -15,9 +15,7 @@
 }
 
 :global(.webchat-fluent) .activity-toolbox__copy-button--copied .activity-toolbox__copy-button__copied-text {
-  animation-name: copied-animation;
-  animation-duration: var(--webchat-durationUltraSlow);
-  animation-timing-function: linear;
+  animation: copied-animation var(--webchat-durationUltraSlow) linear;
 }
 
 @keyframes copied-animation {
