@@ -35,7 +35,6 @@
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-image {
-  --monochrome-image-masker-color: var(--webchat-colorNeutralForeground4);
   grid-area: image;
   height: 20px;
   width: 20px;
