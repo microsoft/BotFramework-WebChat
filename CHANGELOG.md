@@ -43,6 +43,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 ### Changed
 
 -  Updated `useSuggestedActions` to return the activity the suggested actions originated from, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
+-  Improved focus trap implementation by preserving focus state and removing sentinels, in PR [#5243](https://github.com/microsoft/BotFramework-WebChat/pull/5243), by [@OEvgeny](https://github.com/OEvgeny)
+
 
 ### Fixed
 

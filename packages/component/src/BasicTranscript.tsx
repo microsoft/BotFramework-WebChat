@@ -23,8 +23,6 @@ import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
-// TODO: [P2] #4133 Rename to "getTabbableElements".
-import tabbableElements from './Utils/tabbableElements';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
 import useActivityTreeWithRenderer from './providers/ActivityTree/useActivityTreeWithRenderer';
@@ -408,11 +406,15 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             // This is capturing plain ENTER.
             // When screen reader is not running, or screen reader is running outside of scan mode, the ENTER key will be captured here.
             if (!fromEndOfTranscriptIndicator) {
-              const body: HTMLElement = activityElementMapRef.current
+              const activityFocusTrapTarget: HTMLElement = activityElementMapRef.current
                 .get(focusedActivityKeyRef.current)
-                ?.querySelector('.webchat__basic-transcript__activity-body');
-
-              tabbableElements(body)[0]?.focus();
+                ?.querySelector('.webchat__basic-transcript__activity-focus-target');
+              // TODO: review focus approach:
+              // It is not clear how to handle focus without introducing something like context.
+              // Ideally we would want a way to interact with focus outside of React
+              // so it doesn't cause transcript re-renders while still having an ability
+              // to scope activity-related handlers and data in a single place.
+              activityFocusTrapTarget?.focus();
             }
 
             break;

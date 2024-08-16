@@ -1,24 +1,41 @@
-import PropTypes from 'prop-types';
-import React, { Fragment, memo, useCallback, useRef } from 'react';
+/* eslint-disable no-magic-numbers */
+import React, {
+  Fragment,
+  memo,
+  type FocusEvent,
+  type KeyboardEventHandler,
+  type ReactNode,
+  useCallback,
+  useRef
+} from 'react';
 
-import type { FC, KeyboardEventHandler, PropsWithChildren } from 'react';
-
-import FocusRedirector from '../Utils/FocusRedirector';
 import tabbableElements from '../Utils/tabbableElements';
 import { useRefFrom } from 'use-ref-from';
 
-type FocusTrapProps = PropsWithChildren<{
+const FocusTrap = ({
+  children,
+  onFocus,
+  onLeave,
+  targetClassName
+}: Readonly<{
+  children: ReactNode;
   onFocus: () => void;
   onLeave: () => void;
-}>;
-
-const FocusTrap: FC<FocusTrapProps> = ({ children, onFocus, onLeave }) => {
+  targetClassName?: string | undefined;
+}>) => {
   const bodyRef = useRef<HTMLDivElement>();
-  const onLeaveRef = useRefFrom<() => void>(onLeave);
+  const lastFocused = useRef<HTMLElement>();
+  const onFocusRef = useRefFrom(onFocus);
+  const onLeaveRef = useRefFrom(onLeave);
 
   const getTabbableElementsInBody = useCallback(
     () => tabbableElements(bodyRef.current).filter(element => element.getAttribute('aria-disabled') !== 'true'),
     [bodyRef]
+  );
+
+  const focusOrTriggerLeave = useCallback(
+    (element: HTMLElement | undefined) => (element ? element.focus() : onLeaveRef.current?.()),
+    [onLeaveRef]
   );
 
   const handleBodyKeyDown: KeyboardEventHandler = useCallback(
@@ -28,45 +45,76 @@ const FocusTrap: FC<FocusTrapProps> = ({ children, onFocus, onLeave }) => {
         event.stopPropagation();
 
         onLeaveRef.current?.();
+      } else if (event.key === 'Tab') {
+        const activeElement = document.activeElement as HTMLElement;
+        const focusables = getTabbableElementsInBody();
+        const focusedIndex = getTabbableElementsInBody().indexOf(activeElement);
+
+        if (event.shiftKey && focusedIndex === 0) {
+          event.preventDefault();
+
+          focusOrTriggerLeave(focusables.at(-1));
+        } else if (!event.shiftKey && focusedIndex === focusables.length - 1) {
+          event.preventDefault();
+
+          focusOrTriggerLeave(focusables.at(0));
+        }
       }
     },
-    [onLeaveRef]
+    [focusOrTriggerLeave, getTabbableElementsInBody, onLeaveRef]
   );
 
-  const handleFirstSentinelFocus: () => void = useCallback(() => {
-    const focusables = getTabbableElementsInBody();
+  const handleFocus = useCallback(
+    (event: FocusEvent<HTMLDivElement, Element>) => {
+      onFocusRef.current?.();
 
-    const lastTabbableElement = focusables[focusables.length - 1];
+      lastFocused.current = event.target;
+    },
+    [lastFocused, onFocusRef]
+  );
 
-    lastTabbableElement ? lastTabbableElement.focus() : onLeaveRef.current?.();
-  }, [getTabbableElementsInBody, onLeaveRef]);
+  const handleBlur = useCallback(
+    event => {
+      const { target } = event;
+      const focusables = getTabbableElementsInBody();
 
-  const handleLastSentinelFocus: () => void = useCallback(() => {
-    const [firstTabbableElement] = getTabbableElementsInBody();
+      // When blurred element became non-focusable, move to the first focusable element if available.
+      // Otherwise trigger leave.
+      if (!focusables.includes(target)) {
+        event.preventDefault();
+        event.stopPropagation();
 
-    firstTabbableElement ? firstTabbableElement.focus() : onLeaveRef.current?.();
-  }, [getTabbableElementsInBody, onLeaveRef]);
+        focusOrTriggerLeave(focusables.at(0));
+      }
+    },
+    [focusOrTriggerLeave, getTabbableElementsInBody]
+  );
+
+  const handleTrapFocus = useCallback(
+    event => {
+      event.preventDefault();
+      event.stopPropagation();
+      event.target.blur();
+
+      const focusables = getTabbableElementsInBody();
+
+      if (lastFocused.current && focusables.includes(lastFocused.current)) {
+        lastFocused.current.focus();
+      } else {
+        focusOrTriggerLeave(focusables.at(0));
+      }
+    },
+    [focusOrTriggerLeave, getTabbableElementsInBody]
+  );
 
   return (
     <Fragment>
-      <FocusRedirector onFocus={handleFirstSentinelFocus} />
-      <div onFocus={onFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
+      <div onBlur={handleBlur} onFocus={handleFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
         {children}
       </div>
-      <FocusRedirector onFocus={handleLastSentinelFocus} />
+      <div aria-hidden="true" className={targetClassName} onFocus={handleTrapFocus} tabIndex={-1} />
     </Fragment>
   );
-};
-
-FocusTrap.defaultProps = {
-  children: undefined,
-  onFocus: undefined
-};
-
-FocusTrap.propTypes = {
-  children: PropTypes.any,
-  onFocus: PropTypes.func,
-  onLeave: PropTypes.func.isRequired
 };
 
 FocusTrap.displayName = 'FocusTrap';
