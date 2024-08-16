@@ -18,7 +18,7 @@
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-box:disabled {
-  background-color: var(--webchat-colorNeutralBackground1Disabled);
+  background-color: var(--webchat-colorNeutralBackgroundDisabled);
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-box:hover {
