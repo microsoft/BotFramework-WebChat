@@ -58,7 +58,7 @@
         // THEN: Should focus on the "Hello, World!" button.
         await host.snapshot();
 
-        // WHEN: The "Hello, World!" button is disabled.
+        // WHEN: The "Hello, World!" button is disabled via tabIndex.
         render(() => next => (...args) => {
           const result = next(...args);
 
@@ -66,7 +66,7 @@
             <div>
               {result}
               <div>
-                <button disabled type="button">
+                <button aria-disabled="true" tabIndex={-1} type="button">
                   Hello, World!
                 </button>
                 <button type="button">Aloha!</button>
@@ -75,13 +75,21 @@
           );
         });
 
-        // THEN: Should focus on the document body.
-        expect(document.activeElement).toBe(document.body);
+        // THEN: Should continue focus on the "Hello, World!" button.
+        expect(document.activeElement.textContent).toBe('Hello, World!');
 
         // WHEN: TAB key is pressed.
         await host.sendTab();
 
         // THEN: Should focus on the "Aloha!" button.
+        expect(document.activeElement.textContent).toBe('Aloha!');
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed again.
+        await host.sendTab();
+
+        // THEN: Should continue to focus on the "Aloha!" button.
+        expect(document.activeElement.textContent).toBe('Aloha!');
         await host.snapshot();
       });
     </script>
