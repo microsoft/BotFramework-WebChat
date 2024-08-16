@@ -75,7 +75,7 @@ const FocusTrap = ({
 
       // When blurred element became non-focusable, move to the first focusable element if available
       // Otherwise trigger leave
-      if (target !== bodyRef.current && !focusables.includes(target)) {
+      if (!focusables.includes(target)) {
         event.preventDefault();
         event.stopPropagation();
         focusOrTriggerLeave(focusables.at(0));
