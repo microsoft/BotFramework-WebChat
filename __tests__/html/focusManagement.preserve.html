@@ -67,7 +67,7 @@
         await pageConditions.numActivitiesShown(2);
 
         // WHEN: pressed 1st Card "Show card" button
-        await host.sendKeys('TAB', 'TAB', 'ARROW_UP', 'ENTER', 'TAB', 'ENTER');
+        await host.sendKeys('TAB', 'ARROW_UP', 'ENTER', 'TAB', 'ENTER');
 
         // THEN: Should render additional buttons.
         await host.snapshot();
