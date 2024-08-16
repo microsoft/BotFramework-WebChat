@@ -1,0 +1,29 @@
+:global(.webchat-fluent) .activity-toolbox__copy-button {
+  overflow: hidden;
+  position: relative;
+}
+
+:global(.webchat-fluent) .activity-toolbox__copy-button__copied-text {
+  align-items: center;
+  background-color: var(--webchat-colorNeutralBackground1);
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+}
+
+:global(.webchat-fluent) .activity-toolbox__copy-button--copied .activity-toolbox__copy-button__copied-text {
+  animation: copied-animation var(--webchat-durationUltraSlow) linear;
+}
+
+@keyframes copied-animation {
+  0% {
+    opacity: 100%;
+  }
+
+  100% {
+    opacity: unset;
+  }
+}
