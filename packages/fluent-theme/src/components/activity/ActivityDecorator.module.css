@@ -1,6 +1,7 @@
 
 :global(.webchat-fluent) .activity-decorator {
   display: contents;
+  font-family: var(--webchat__font--primary);
 
   --webchat__bubble--inline-padding: var(--webchat-spacingHorizontalL);
   --webchat__bubble--block-padding: var(--webchat-spacingVerticalM);

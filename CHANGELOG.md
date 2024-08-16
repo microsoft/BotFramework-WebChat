@@ -30,13 +30,15 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ### Added
 
--  (Experimental) Added pre-chat message with starter prompts, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
+-  (Experimental) Added pre-chat message with starter prompts in Fluent UI, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
 -  (Experimental) Added `isPrimary` props to Fluent UI send box. When set, will wire up with `useSendBoxValue` and works with starter prompts in pre-chat message, in PR [#5257](https://github.com/microsoft/BotFramework-WebChat/issues/5257), by [@compulim](https://github.com/compulim)
 -  (Experimental) Expand Fluent theme support to activities and transcript, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added new Fluent UI theme variant "copilot" with updated styling and components, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
 -  Introduced `ActivityDecorator` component for enhanced message styling and layout, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added `CopilotMessageHeader` component for displaying bot information in the "copilot" variant, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
 -  Updated Fluent theme styling to improve accessibility and visual consistency, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed header font in copilot variant, in PR [#5261](https://github.com/microsoft/BotFramework-WebChat/pull/5261), by [@OEvgeny](https://github.com/OEvgeny)
+-  (Experimental) Added "Copy" button to bot messages in Fluent UI if it contains keyword `AllowCopy`, in PR [#5259](https://github.com/microsoft/BotFramework-WebChat/pull/5259), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
@@ -45,6 +47,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 ### Fixed
 
 -  Fixed [#5256](https://github.com/microsoft/BotFramework-WebChat/issues/5256). `styleOptions.maxMessageLength` should support any JavaScript number value including `Infinity`, by [@compulim](https://github.com/compulim), in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5255)
+-  Fixes [#4965](https://github.com/microsoft/BotFramework-WebChat/issues/4965). Removed keyboard helper screen in [#5234]https://github.com/microsoft/BotFramework-WebChat/pull/5234), by [@amirmursal](https://github.com/amirmursal) and [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.18.0] - 2024-07-10
 

@@ -53,6 +53,7 @@
     "precommit:eslint:support-cldr-data": "cd packages && cd support && cd cldr-data && npm run precommit:eslint",
     "precommit:eslint:test-harness": "cd packages && cd test && cd harness && npm run precommit:eslint",
     "precommit:eslint:test-page-object": "cd packages && cd test && cd page-object && npm run precommit:eslint",
+    "precommit:eslint:web-server": "cd packages && cd test && cd web-server && npm run precommit:eslint",
     "precommit:typecheck": "concurrently --raw \"npm run precommit:typecheck:*\"",
     "precommit:typecheck:api": "cd packages && cd api && npm run precommit:typecheck",
     "precommit:typecheck:bundle": "cd packages && cd bundle && npm run precommit:typecheck",

@@ -66,6 +66,7 @@ jobs:
           ./packages/test/fluent-bundle/dist/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
+          ./packages/test/web-server/dist/
           ./serve-test.json
           ./testharness.dockerfile
           ./testharness2.dockerfile
