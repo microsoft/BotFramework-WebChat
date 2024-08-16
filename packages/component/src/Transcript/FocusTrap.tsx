@@ -81,7 +81,7 @@ const FocusTrap = ({
         focusOrTriggerLeave(focusables.at(0));
       }
     },
-    [bodyRef, focusOrTriggerLeave, getTabbableElementsInBody]
+    [focusOrTriggerLeave, getTabbableElementsInBody]
   );
 
   const handleTrapFocus = useCallback(
