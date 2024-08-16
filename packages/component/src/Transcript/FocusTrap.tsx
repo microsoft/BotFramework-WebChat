@@ -25,6 +25,7 @@ const FocusTrap = ({
 }>) => {
   const bodyRef = useRef<HTMLDivElement>();
   const lastFocused = useRef<HTMLElement>();
+  const onFocusRef = useRefFrom(onFocus);
   const onLeaveRef = useRefFrom(onLeave);
 
   const getTabbableElementsInBody = useCallback(
@@ -33,7 +34,7 @@ const FocusTrap = ({
   );
 
   const focusOrTriggerLeave = useCallback(
-    (el: HTMLElement | undefined) => (el ? el.focus() : onLeaveRef.current?.()),
+    (element: HTMLElement | undefined) => (element ? element.focus() : onLeaveRef.current?.()),
     [onLeaveRef]
   );
 
@@ -48,11 +49,14 @@ const FocusTrap = ({
         const activeElement = document.activeElement as HTMLElement;
         const focusables = getTabbableElementsInBody();
         const focusedIndex = getTabbableElementsInBody().indexOf(activeElement);
+
         if (event.shiftKey && focusedIndex === 0) {
           event.preventDefault();
+
           focusOrTriggerLeave(focusables.at(-1));
         } else if (!event.shiftKey && focusedIndex === focusables.length - 1) {
           event.preventDefault();
+
           focusOrTriggerLeave(focusables.at(0));
         }
       }
@@ -62,10 +66,11 @@ const FocusTrap = ({
 
   const handleFocus = useCallback(
     (event: FocusEvent<HTMLDivElement, Element>) => {
-      onFocus();
+      onFocusRef.current?.();
+
       lastFocused.current = event.target;
     },
-    [lastFocused, onFocus]
+    [lastFocused, onFocusRef]
   );
 
   const handleBlur = useCallback(
@@ -73,11 +78,12 @@ const FocusTrap = ({
       const { target } = event;
       const focusables = getTabbableElementsInBody();
 
-      // When blurred element became non-focusable, move to the first focusable element if available
-      // Otherwise trigger leave
+      // When blurred element became non-focusable, move to the first focusable element if available.
+      // Otherwise trigger leave.
       if (!focusables.includes(target)) {
         event.preventDefault();
         event.stopPropagation();
+
         focusOrTriggerLeave(focusables.at(0));
       }
     },
@@ -91,6 +97,7 @@ const FocusTrap = ({
       event.target.blur();
 
       const focusables = getTabbableElementsInBody();
+
       if (lastFocused.current && focusables.includes(lastFocused.current)) {
         lastFocused.current.focus();
       } else {

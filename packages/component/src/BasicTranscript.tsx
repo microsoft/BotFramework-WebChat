@@ -23,7 +23,6 @@ import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
-// TODO: [P2] #4133 Rename to "getTabbableElements".
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
 import useActivityTreeWithRenderer from './providers/ActivityTree/useActivityTreeWithRenderer';
