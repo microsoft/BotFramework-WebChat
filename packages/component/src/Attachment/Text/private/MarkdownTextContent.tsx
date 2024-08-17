@@ -229,7 +229,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
           ))}
         </LinkDefinitions>
       )}
-      {activity.type === 'message' && activity.text && messageThing.keywords.includes('AllowCopy') ? (
+      {activity.type === 'message' && activity.text && messageThing?.keywords.includes('AllowCopy') ? (
         <ActivityCopyButton
           className="webchat__text-content__activity-copy-button"
           htmlText={htmlText}
