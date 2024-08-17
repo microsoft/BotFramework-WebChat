@@ -8,7 +8,6 @@
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
   </head>
   <body>
     <main id="webchat" style="position: relative"></main>
@@ -17,7 +16,7 @@
         const {
           React,
           ReactDOM: { render },
-          WebChat: { FluentThemeProvider, ReactWebChat }
+          WebChat: { ReactWebChat }
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
@@ -48,12 +47,7 @@
           </React.Fragment>
         );
 
-        render(
-          <FluentThemeProvider>
-            <App />
-          </FluentThemeProvider>,
-          document.getElementById('webchat')
-        );
+        render(<App />, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
@@ -87,7 +81,7 @@
 
         // WHEN: Focus on the "Copy" button via keyboard.
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
-        await host.sendShiftTab(2);
+        await host.sendShiftTab(3);
         await host.sendKeys('ENTER');
 
         // THEN: Should focus on the "Copy" button

@@ -18,6 +18,7 @@ import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import { type PropsOf } from '../../../types/PropsOf';
+import ActivityCopyButton from './ActivityCopyButton';
 import CitationModalContext from './CitationModalContent';
 import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './MessageSensitivityLabel';
 import isHTMLButtonElement from './isHTMLButtonElement';
@@ -61,6 +62,11 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   if (!renderMarkdownAsHTML) {
     throw new Error('botframework-webchat: assert failed for renderMarkdownAsHTML');
   }
+
+  const htmlText = useMemo(
+    () => (markdown ? renderMarkdownAsHTML(markdown) : undefined),
+    [markdown, renderMarkdownAsHTML]
+  );
 
   const dangerouslySetInnerHTML = useMemo(
     () => ({ __html: markdown ? renderMarkdownAsHTML(markdown) : '' }),
@@ -223,6 +229,13 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
           ))}
         </LinkDefinitions>
       )}
+      {activity.type === 'message' && activity.text && messageThing.keywords.includes('AllowCopy') ? (
+        <ActivityCopyButton
+          className="webchat__text-content__activity-copy-button"
+          htmlText={htmlText}
+          plainText={activity.text}
+        />
+      ) : null}
     </div>
   );
 });
