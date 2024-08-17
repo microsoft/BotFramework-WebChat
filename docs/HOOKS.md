@@ -1009,6 +1009,8 @@ useRenderMarkdownAsHTML(
 ```
 <!-- prettier-ignore-end -->
 
+> New in 4.17.0: A new `mode` option can be passed to indicate how the HTML output will be used.
+
 This hook will return a function that, when called, will render Markdown into an HTML string. For example,
 
 <!-- prettier-ignore-start -->
