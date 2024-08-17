@@ -1003,7 +1003,9 @@ This function is for rendering the avatar of an activity. The caller will need t
 
 <!-- prettier-ignore-start -->
 ```js
-useRenderMarkdownAsHTML(): (markdown: string): string
+useRenderMarkdownAsHTML(
+  mode: 'accessible name' | 'adaptive cards' | 'citation modal' | 'clipboard' | 'message activity' = 'message activity'
+): (markdown: string): string
 ```
 <!-- prettier-ignore-end -->
 

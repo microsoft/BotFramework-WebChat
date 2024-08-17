@@ -53,6 +53,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   const localize = useLocalizer();
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
+  const renderMarkdownAsHTMLForClipboard = useRenderMarkdownAsHTML('clipboard');
   const showModal = useShowModal();
 
   const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
@@ -63,14 +64,14 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
     throw new Error('botframework-webchat: assert failed for renderMarkdownAsHTML');
   }
 
-  const htmlText = useMemo(
-    () => (markdown ? renderMarkdownAsHTML(markdown) : undefined),
-    [markdown, renderMarkdownAsHTML]
-  );
-
   const dangerouslySetInnerHTML = useMemo(
     () => ({ __html: markdown ? renderMarkdownAsHTML(markdown) : '' }),
     [renderMarkdownAsHTML, markdown]
+  );
+
+  const htmlTextForClipboard = useMemo(
+    () => (markdown ? renderMarkdownAsHTMLForClipboard(markdown) : undefined),
+    [markdown, renderMarkdownAsHTMLForClipboard]
   );
 
   const markdownDefinitions = useMemo(
@@ -232,7 +233,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
       {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
         <ActivityCopyButton
           className="webchat__text-content__activity-copy-button"
-          htmlText={htmlText}
+          htmlText={htmlTextForClipboard}
           plainText={activity.text}
         />
       ) : null}
