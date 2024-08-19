@@ -38,7 +38,6 @@ import SendButton from './SendBox/SendButton';
 import SuggestedActions from './SendBox/SuggestedActions';
 import SendTextBox from './SendBox/TextBox';
 import UploadButton from './SendBoxToolbar/UploadButton';
-import MonochromeImageMasker from './Utils/MonochromeImageMasker';
 
 import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
@@ -105,10 +104,7 @@ const Components = {
   UploadButton,
 
   // Components for localization
-  LocalizedString,
-
-  // Components for theming
-  MonochromeImageMasker
+  LocalizedString
 };
 
 export default ReactWebChat;
