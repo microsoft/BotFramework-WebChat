@@ -12,9 +12,9 @@ import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useDictateAbortable from '../hooks/useDictateAbortable';
 import useStyleSet from '../hooks/useStyleSet';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
+import { usePushToLiveRegion } from '../providers/LiveRegionTwin';
 import MicrophoneIcon from './Assets/MicrophoneIcon';
 import IconButton from './IconButton';
-import useQueueStaticElement from '../providers/LiveRegionTwin/useQueueStaticElement';
 
 const { DictateState } = Constants;
 
@@ -118,7 +118,6 @@ const MicrophoneButton: FC<MicrophoneButtonProps> = ({ className }) => {
   const [disabled] = useMicrophoneButtonDisabled();
   const click = useMicrophoneButtonClick();
   const localize = useLocalizer();
-  const queueStaticElement = useQueueStaticElement();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const dictating = dictateState === DictateState.DICTATING;
@@ -127,7 +126,7 @@ const MicrophoneButton: FC<MicrophoneButtonProps> = ({ className }) => {
     dictating ? 'SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT' : 'SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT'
   );
 
-  message && queueStaticElement(<div className="webchat__microphone-button__status">{message}</div>);
+  usePushToLiveRegion(() => message && <div className="webchat__microphone-button__status">{message}</div>, [message]);
 
   return (
     <div

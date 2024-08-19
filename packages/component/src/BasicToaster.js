@@ -12,7 +12,7 @@ import randomId from './Utils/randomId';
 import useStyleSet from './hooks/useStyleSet';
 import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
-import useQueueStaticElement from './providers/LiveRegionTwin/useQueueStaticElement';
+import { usePushToLiveRegion } from './providers/LiveRegionTwin';
 
 const { useDebouncedNotifications, useLocalizer, useRenderToast } = hooks;
 
@@ -77,7 +77,6 @@ const BasicToaster = () => {
   const [expanded, setExpanded] = useState(false);
   const localizeWithPlural = useLocalizer({ plural: true });
   const renderToast = useRenderToast();
-  const queueStaticElement = useQueueStaticElement();
   const renderMarkdownInline = useInternalRenderMarkdownInline();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -112,7 +111,7 @@ const BasicToaster = () => {
   }, [expandable]);
 
   const notifiedElements = useRef(new Set());
-  useMemo(() => {
+  usePushToLiveRegion(() => {
     const toAnnounce = [];
     for (const notification of sortedNotifications.slice().reverse()) {
       if (!notifiedElements.current.has(notification.id)) {
@@ -136,8 +135,8 @@ const BasicToaster = () => {
         );
       }
     }
-    return toAnnounce.length > 0 && queueStaticElement(<Fragment>{toAnnounce}</Fragment>);
-  }, [queueStaticElement, renderMarkdownInline, sortedNotifications]);
+    return toAnnounce.length > 0 && <Fragment>{toAnnounce}</Fragment>;
+  }, [renderMarkdownInline, sortedNotifications]);
 
   return (
     <div

@@ -7,9 +7,9 @@ import useStyleToEmotionObject from '../../../hooks/internal/useStyleToEmotionOb
 import useUniqueId from '../../../hooks/internal/useUniqueId';
 import useFocus from '../../../hooks/useFocus';
 import useScrollToEnd from '../../../hooks/useScrollToEnd';
+import { usePushToLiveRegion } from '../../../providers/LiveRegionTwin';
 import SendBoxContext from './private/Context';
 import { type ContextType, type SendError } from './private/types';
-import useQueueStaticElement from '../../LiveRegionTwin/useQueueStaticElement';
 
 const { useConnectivityStatus, useLocalizer, useSendBoxAttachments, useSendBoxValue, useSubmitSendBox } = hooks;
 
@@ -57,7 +57,6 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   const focus = useFocus();
   const localize = useLocalizer();
   const scrollToEnd = useScrollToEnd();
-  const queueStaticElement = useQueueStaticElement();
   const styleToEmotionObject = useStyleToEmotionObject();
   const submitErrorMessageId = useUniqueId('webchat__send-box__error-message-id');
 
@@ -118,13 +117,12 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
     }
   }, [error, hasValue]);
 
-  useMemo(
+  usePushToLiveRegion(
     () =>
-      error &&
-      queueStaticElement(
+      error && (
         <span className={classNames('webchat__submit-error-message__status')}>{errorMessageStringMap.get(error)}</span>
       ),
-    [error, errorMessageStringMap, queueStaticElement]
+    [error, errorMessageStringMap]
   );
 
   return (

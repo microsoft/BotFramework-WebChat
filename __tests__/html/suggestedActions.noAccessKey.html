@@ -81,15 +81,12 @@
           testHelpers.getAllTextContents(child).join('\n')
         );
 
-        expect(screenReaderTexts).toHaveLength(3);
-
-        expect(screenReaderTexts[0]).toBe('You said:\nsuggested-actions');
-        expect(screenReaderTexts[1]).toBe(
-          'Bot said:\nPlease select one of the actions below\nIM back as string\nPost back as string\nPost back as JSON\nMessage back as JSON with display text\nMessage back as JSON without display text\nMessage back as string with display text'
-        );
-        expect(screenReaderTexts[2]).toBe(
+        expect(screenReaderTexts).toEqual([
+          'connecting',
+          'You said:\nsuggested-actions',
+          'Bot said:\nPlease select one of the actions below\nIM back as string\nPost back as string\nPost back as JSON\nMessage back as JSON with display text\nMessage back as JSON without display text\nMessage back as string with display text',
           'Message has suggested actions. Press shift tab 2 to 3 times to select them.'
-        );
+        ]);
 
         expect(document.querySelector('.webchat__suggested-actions').getAttribute('aria-label')).toBe(
           'Suggested actions'

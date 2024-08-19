@@ -91,7 +91,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   }, []);
 
   return (
-    <div className={classNames('webchat__css-custom-properties', cssCustomProperties)}>
+    <div className={classNames('webchat__css-custom-properties', rootClassName, cssCustomProperties)}>
       <FocusSendBoxScope>
         <ScrollRelativeTranscriptScope>
           <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
