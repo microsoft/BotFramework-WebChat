@@ -13,6 +13,7 @@ import ReactWebChat, {
   testIds,
   withEmoji
 } from 'botframework-webchat-component';
+import * as internal from 'botframework-webchat-component/internal';
 
 import addVersion from './addVersion';
 import createBrowserWebSpeechPonyfillFactory from './createBrowserWebSpeechPonyfillFactory';
@@ -79,6 +80,10 @@ window['WebChat'] = {
   createStyleSet,
   decorator,
   hooks,
+  internal: {
+    ...(window['WebChat']?.internal || {}),
+    ...internal
+  },
   ReactWebChat,
   renderWebChat,
   testIds: {
