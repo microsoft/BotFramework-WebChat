@@ -1,5 +1,5 @@
 import useTranscriptFocusContext from './private/useContext';
 
-export default function useFocusByActivityKey(): (delta: number) => void {
+export default function useFocusRelativeActivity(): (delta: number) => void {
   return useTranscriptFocusContext().focusRelativeActivity;
 }
