@@ -4,7 +4,6 @@ import { useStyleSet } from '../hooks';
 
 type Props = Readonly<{ className?: string | undefined; src: string }>;
 
-// TODO: This need to be deduplicated with Fluent Theme.
 const MonochromeImageMasker = ({ className, src }: Props) => {
   const [{ monochromeImageMasker }] = useStyleSet();
   const style = useMemo(

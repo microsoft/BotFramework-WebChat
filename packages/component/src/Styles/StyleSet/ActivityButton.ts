@@ -4,7 +4,7 @@ export default function createActivityButtonStyle() {
       alignItems: 'center',
       appearance: 'none',
       background: '#fff',
-      borderRadius: 4,
+      borderRadius: '4px',
       border: '1px solid #d1d1d1',
       color: '#242424',
       display: 'flex',
@@ -27,7 +27,7 @@ export default function createActivityButtonStyle() {
       '&:focus-visible': {
         background: '#fff',
         outline: '2px solid #000',
-        outlineOffset: -2
+        outlineOffset: '-2px'
       },
 
       '&:disabled': {
@@ -37,8 +37,8 @@ export default function createActivityButtonStyle() {
       },
 
       '& .webchat__activity-button__icon': {
-        height: 20,
-        width: 20
+        height: '20px',
+        width: '20px'
       }
     }
   };
