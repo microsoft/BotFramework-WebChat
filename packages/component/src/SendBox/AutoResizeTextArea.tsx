@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, {
   ChangeEventHandler,
   FocusEventHandler,
@@ -12,26 +11,27 @@ import AccessibleTextArea from '../Utils/AccessibleTextArea';
 import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
 import useStyleSet from '../hooks/useStyleSet';
 
-type AutoResizeTextAreaProps = {
-  'aria-errormessage'?: string;
-  'aria-label'?: string;
-  className?: string;
-  'data-id'?: string;
-  disabled?: boolean;
-  enterKeyHint?: string;
-  inputMode?: 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
-  onChange?: ChangeEventHandler<HTMLTextAreaElement>;
-  onFocus?: FocusEventHandler<HTMLTextAreaElement>;
-  onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>;
-  onKeyDownCapture?: KeyboardEventHandler<HTMLTextAreaElement>;
-  onKeyPress?: KeyboardEventHandler<HTMLTextAreaElement>;
-  onSelect?: ReactEventHandler<HTMLTextAreaElement>;
-  placeholder?: string;
-  readOnly?: boolean;
-  rows?: number;
-  textAreaClassName?: string;
-  value?: string;
-};
+type AutoResizeTextAreaProps = Readonly<{
+  'aria-errormessage'?: string | undefined;
+  'aria-label'?: string | undefined;
+  className?: string | undefined;
+  'data-id'?: string | undefined;
+  'data-testid'?: string | undefined;
+  disabled?: boolean | undefined;
+  enterKeyHint?: string | undefined;
+  inputMode?: 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' | undefined;
+  onChange?: ChangeEventHandler<HTMLTextAreaElement> | undefined;
+  onFocus?: FocusEventHandler<HTMLTextAreaElement> | undefined;
+  onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement> | undefined;
+  onKeyDownCapture?: KeyboardEventHandler<HTMLTextAreaElement> | undefined;
+  onKeyPress?: KeyboardEventHandler<HTMLTextAreaElement> | undefined;
+  onSelect?: ReactEventHandler<HTMLTextAreaElement> | undefined;
+  placeholder?: string | undefined;
+  readOnly?: boolean | undefined;
+  rows?: number | undefined;
+  textAreaClassName?: string | undefined;
+  value?: string | undefined;
+}>;
 
 const AutoResizeTextArea = forwardRef<HTMLTextAreaElement, AutoResizeTextAreaProps>(
   (
@@ -40,6 +40,7 @@ const AutoResizeTextArea = forwardRef<HTMLTextAreaElement, AutoResizeTextAreaPro
       'aria-label': ariaLabel,
       className,
       'data-id': dataId,
+      'data-testid': dataTestId,
       disabled,
       enterKeyHint,
       inputMode,
@@ -72,6 +73,7 @@ const AutoResizeTextArea = forwardRef<HTMLTextAreaElement, AutoResizeTextAreaPro
           aria-label={ariaLabel}
           className={classNames('webchat__auto-resize-textarea__textarea', textAreaClassName)}
           data-id={dataId}
+          data-testid={dataTestId}
           disabled={disabled}
           inputMode={inputMode}
           onChange={onChange}
@@ -90,47 +92,5 @@ const AutoResizeTextArea = forwardRef<HTMLTextAreaElement, AutoResizeTextAreaPro
     );
   }
 );
-
-AutoResizeTextArea.defaultProps = {
-  'aria-errormessage': undefined,
-  'aria-label': undefined,
-  'data-id': undefined,
-  className: undefined,
-  disabled: undefined,
-  enterKeyHint: undefined,
-  inputMode: undefined,
-  onChange: undefined,
-  onFocus: undefined,
-  onKeyDown: undefined,
-  onKeyDownCapture: undefined,
-  onKeyPress: undefined,
-  onSelect: undefined,
-  placeholder: undefined,
-  readOnly: undefined,
-  rows: undefined,
-  textAreaClassName: undefined,
-  value: ''
-};
-
-AutoResizeTextArea.propTypes = {
-  'aria-errormessage': PropTypes.string,
-  'aria-label': PropTypes.string,
-  className: PropTypes.string,
-  'data-id': PropTypes.string,
-  disabled: PropTypes.bool,
-  enterKeyHint: PropTypes.string,
-  inputMode: PropTypes.oneOf(['text', 'none', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']),
-  onChange: PropTypes.func,
-  onFocus: PropTypes.func,
-  onKeyDown: PropTypes.func,
-  onKeyDownCapture: PropTypes.func,
-  onKeyPress: PropTypes.func,
-  onSelect: PropTypes.func,
-  placeholder: PropTypes.string,
-  readOnly: PropTypes.bool,
-  rows: PropTypes.number,
-  textAreaClassName: PropTypes.string,
-  value: PropTypes.string
-};
 
 export default AutoResizeTextArea;

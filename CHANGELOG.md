@@ -38,13 +38,12 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Added `CopilotMessageHeader` component for displaying bot information in the "copilot" variant, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
 -  Updated Fluent theme styling to improve accessibility and visual consistency, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed header font in copilot variant, in PR [#5261](https://github.com/microsoft/BotFramework-WebChat/pull/5261), by [@OEvgeny](https://github.com/OEvgeny)
--  (Experimental) Added "Copy" button to bot messages in Fluent UI if it contains keyword `AllowCopy`, in PR [#5259](https://github.com/microsoft/BotFramework-WebChat/pull/5259), by [@compulim](https://github.com/compulim)
+-  Added "Copy" button to bot messages in Fluent UI if it contains keyword `AllowCopy`, in PR [#5259](https://github.com/microsoft/BotFramework-WebChat/pull/5259) and [#5262](https://github.com/microsoft/BotFramework-WebChat/pull/5262), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
 -  Updated `useSuggestedActions` to return the activity the suggested actions originated from, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
 -  Improved focus trap implementation by preserving focus state and removing sentinels, in PR [#5243](https://github.com/microsoft/BotFramework-WebChat/pull/5243), by [@OEvgeny](https://github.com/OEvgeny)
-
 
 ### Fixed
 

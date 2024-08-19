@@ -1,14 +1,14 @@
-import { hooks } from 'botframework-webchat-component';
+import { Components, hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { useStyles } from '../../styles/index.js';
 import testIds from '../../testIds.js';
-import MonochromeImageMasker from './private/MonochromeImageMasker.js';
 import styles from './StarterPromptsCardAction.module.css';
 
 const { useFocus, useRenderMarkdownAsHTML, useSendBoxValue } = hooks;
+const { MonochromeImageMasker } = Components;
 
 type Props = Readonly<{
   className?: string | undefined;

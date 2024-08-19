@@ -22,7 +22,6 @@
       run(async function () {
         const {
           Fluent: { createDarkTheme, createLightTheme, FluentProvider },
-          React,
           ReactDOMClient: { createRoot },
           WebChat: { FluentThemeProvider, ReactWebChat }
         } = window; // Imports in UMD fashion.
@@ -58,19 +57,23 @@
 
         const root = createRoot(document.getElementById('webchat'));
 
-        root.render(
-          <FluentProvider
-            theme={
-              searchParams.get('theme') === 'dark'
-                ? createDarkTheme(customBrandRamp)
-                : createLightTheme(customBrandRamp)
-            }
-          >
-            <FluentThemeProvider variant={searchParams.get('variant') || ''}>
-              <App />
-            </FluentThemeProvider>
-          </FluentProvider>
-        );
+        if (searchParams.get('variant') === 'white label') {
+          root.render(<App />);
+        } else {
+          root.render(
+            <FluentProvider
+              theme={
+                searchParams.get('theme') === 'dark'
+                  ? createDarkTheme(customBrandRamp)
+                  : createLightTheme(customBrandRamp)
+              }
+            >
+              <FluentThemeProvider variant={searchParams.get('variant') || ''}>
+                <App />
+              </FluentThemeProvider>
+            </FluentProvider>
+          );
+        }
 
         await pageConditions.uiConnected();
 
@@ -92,8 +95,7 @@
               type: 'https://schema.org/Message',
               citation: [
                 {
-                  '@id':
-                    'https://bing.com/',
+                  '@id': 'https://bing.com/',
                   '@type': 'Claim',
                   claimInterpreter: {
                     '@type': 'Project',

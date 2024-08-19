@@ -25,6 +25,10 @@ export default function createTextContentStyle() {
 
       '& .webchat__text-content__open-in-new-window-icon': {
         height: '.75em'
+      },
+
+      '& .webchat__text-content__activity-copy-button': {
+        alignSelf: 'flex-start'
       }
     }
   };
