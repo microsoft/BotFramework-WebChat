@@ -17,6 +17,11 @@
   user-select: none;
 }
 
+:global(.webchat-fluent) .pre-chat-message-activity__card-action-box.pre-chat-message-activity__card-action-box--without-image {
+  grid-template-areas: 'title' 'subtitle';
+  grid-template-columns: 1fr;
+}
+
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-box:disabled {
   background-color: var(--webchat-colorNeutralBackgroundDisabled);
 }
