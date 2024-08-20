@@ -8,16 +8,13 @@
   cursor: pointer;
   display: grid;
   gap: 8px;
-  grid-template-areas: 'image title' 'image subtitle';
-  grid-template-columns: 20px 1fr;
+  grid-template-areas: 'title' 'subtitle';
+  grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
   overflow: hidden;
   padding: 16px 20px;
   text-align: left;
   user-select: none;
-  grid-template-areas: 'title' 'subtitle';
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr;
 
   :has(.pre-chat-message-activity__card-action-image) {
     grid-template-areas: 'image title' 'image subtitle';
@@ -25,7 +22,8 @@
   }
 }
 
-:global(.webchat-fluent) .pre-chat-message-activity__card-action-box.pre-chat-message-activity__card-action-box--without-image {
+:global(.webchat-fluent)
+  .pre-chat-message-activity__card-action-box.pre-chat-message-activity__card-action-box--without-image {
   grid-template-areas: 'title' 'subtitle';
   grid-template-columns: 1fr;
 }
