@@ -15,11 +15,11 @@
   padding: 16px 20px;
   text-align: left;
   user-select: none;
+}
 
-  :has(.pre-chat-message-activity__card-action-image) {
-    grid-template-areas: 'image title' 'image subtitle';
-    grid-template-columns: 20px 1fr;
-  }
+:global(.webchat-fluent) .pre-chat-message-activity__card-action-box:has(.pre-chat-message-activity__card-action-image) {
+  grid-template-areas: 'image title' 'image subtitle';
+  grid-template-columns: 20px 1fr;
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-box:disabled {
