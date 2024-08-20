@@ -15,28 +15,28 @@
   padding: 16px 20px;
   text-align: left;
   user-select: none;
-}
 
-:global(.webchat-fluent) .pre-chat-message-activity__card-action-box:has(.pre-chat-message-activity__card-action-image) {
-  grid-template-areas: 'image title' 'image subtitle';
-  grid-template-columns: 20px 1fr;
-}
+  &:has(.pre-chat-message-activity__card-action-image) {
+    grid-template-areas: 'image title' 'image subtitle';
+    grid-template-columns: 20px 1fr;
+  }
 
-:global(.webchat-fluent) .pre-chat-message-activity__card-action-box:disabled {
-  background-color: var(--webchat-colorNeutralBackgroundDisabled);
-}
+  &:disabled {
+    background-color: var(--webchat-colorNeutralBackgroundDisabled);
+  }
 
-:global(.webchat-fluent) .pre-chat-message-activity__card-action-box:hover {
-  background-color: var(--webchat-colorNeutralBackground1Hover);
-}
+  &:hover {
+    background-color: var(--webchat-colorNeutralBackground1Hover);
+  }
 
-:global(.webchat-fluent) .pre-chat-message-activity__card-action-box:active {
-  background-color: var(--webchat-colorNeutralBackground1Pressed);
-}
+  &:active {
+    background-color: var(--webchat-colorNeutralBackground1Pressed);
+  }
 
-:global(.webchat-fluent) .pre-chat-message-activity__card-action-box:focus-visible {
-  outline: solid 2px var(--webchat-colorStrokeFocus2);
-  outline-offset: -2px;
+  &:focus-visible {
+    outline: solid 2px var(--webchat-colorStrokeFocus2);
+    outline-offset: -2px;
+  }
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-image {
