@@ -18,7 +18,7 @@ const ScrollToEndButton = ({ onClick }) => {
   const [{ scrollToEndButtonBehavior }] = useStyleOptions();
   const [direction] = useDirection();
   const localize = useLocalizer();
-  const localizeAccessKey = useLocalizeAccessKey;
+  const localizeAccessKey = useLocalizeAccessKey();
 
   const text = localize(scrollToEndButtonBehavior === 'any' ? 'TRANSCRIPT_MORE_MESSAGES' : 'TRANSCRIPT_NEW_MESSAGES');
 
