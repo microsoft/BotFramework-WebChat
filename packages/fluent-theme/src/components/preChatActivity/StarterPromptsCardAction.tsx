@@ -35,9 +35,7 @@ const StarterPromptAction = ({ className, messageBackAction }: Props) => {
 
   return (
     <button
-      className={cx(className, classNames['pre-chat-message-activity__card-action-box'], {
-        [classNames['pre-chat-message-activity__card-action-box--without-image']]: !('image' in messageBackAction)
-      })}
+      className={cx(className, classNames['pre-chat-message-activity__card-action-box'])}
       data-testid={testIds.preChatMessageActivityStarterPromptsCardAction}
       onClick={handleClick}
       type="button"
