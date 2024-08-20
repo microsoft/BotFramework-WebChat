@@ -11,6 +11,7 @@ import ReactWebChat, {
   concatMiddleware,
   createStyleSet,
   hooks,
+  testIds,
   withEmoji
 } from 'botframework-webchat-component';
 
@@ -49,10 +50,10 @@ export const createDirectLineAppServiceExtension = options => {
 export default ReactWebChat;
 
 export {
-  Components,
-  Constants,
   buildInfo,
+  Components,
   concatMiddleware,
+  Constants,
   createBrowserWebSpeechPonyfillFactory,
   createStore,
   createStoreWithDevTools,
@@ -83,6 +84,10 @@ window['WebChat'] = {
   hooks,
   ReactWebChat,
   renderWebChat,
+  testIds: {
+    ...(window['WebChat']?.testIds || {}),
+    ...testIds
+  },
   withEmoji
 };
 

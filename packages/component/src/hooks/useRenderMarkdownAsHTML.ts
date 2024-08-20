@@ -10,7 +10,7 @@ import useStyleSet from './useStyleSet';
 const { useLocalizer, useStyleOptions } = hooks;
 
 export default function useRenderMarkdownAsHTML(
-  mode: 'accessible name' | 'adaptive cards' | 'citation modal' | 'message activity' = 'message activity'
+  mode: 'accessible name' | 'adaptive cards' | 'citation modal' | 'clipboard' | 'message activity' = 'message activity'
 ):
   | ((
       markdown: string,
@@ -32,8 +32,9 @@ export default function useRenderMarkdownAsHTML(
         {
           'webchat__render-markdown--adaptive-cards': mode === 'adaptive cards',
           'webchat__render-markdown--citation': mode === 'citation modal',
+          'webchat__render-markdown--clipboard': mode === 'clipboard',
           'webchat__render-markdown--message-activity':
-            mode !== 'accessible name' && mode !== 'adaptive cards' && mode !== 'citation modal'
+            mode !== 'accessible name' && mode !== 'adaptive cards' && mode !== 'citation modal' && mode !== 'clipboard'
         },
         renderMarkdownStyleSet + ''
       ),

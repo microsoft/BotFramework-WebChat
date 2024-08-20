@@ -18,6 +18,7 @@ import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import { type PropsOf } from '../../../types/PropsOf';
+import ActivityCopyButton from './ActivityCopyButton';
 import CitationModalContext from './CitationModalContent';
 import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './MessageSensitivityLabel';
 import isHTMLButtonElement from './isHTMLButtonElement';
@@ -52,6 +53,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   const localize = useLocalizer();
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
+  const renderMarkdownAsHTMLForClipboard = useRenderMarkdownAsHTML('clipboard');
   const showModal = useShowModal();
 
   const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
@@ -65,6 +67,11 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
   const dangerouslySetInnerHTML = useMemo(
     () => ({ __html: markdown ? renderMarkdownAsHTML(markdown) : '' }),
     [renderMarkdownAsHTML, markdown]
+  );
+
+  const htmlTextForClipboard = useMemo(
+    () => (markdown ? renderMarkdownAsHTMLForClipboard(markdown) : undefined),
+    [markdown, renderMarkdownAsHTMLForClipboard]
   );
 
   const markdownDefinitions = useMemo(
@@ -223,6 +230,13 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
           ))}
         </LinkDefinitions>
       )}
+      {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
+        <ActivityCopyButton
+          className="webchat__text-content__activity-copy-button"
+          htmlText={htmlTextForClipboard}
+          plainText={activity.text}
+        />
+      ) : null}
     </div>
   );
 });

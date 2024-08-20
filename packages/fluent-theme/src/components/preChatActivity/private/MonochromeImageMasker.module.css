@@ -1,7 +1,0 @@
-:global(.webchat-fluent) .pre-chat-message-activity__monochrome-image-masker {
-  background-color: var(--webchat-colorNeutralForeground4);
-  -webkit-mask-image: var(--mask-image);
-  mask-image: var(--mask-image);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-}

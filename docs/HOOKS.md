@@ -1003,9 +1003,13 @@ This function is for rendering the avatar of an activity. The caller will need t
 
 <!-- prettier-ignore-start -->
 ```js
-useRenderMarkdownAsHTML(): (markdown: string): string
+useRenderMarkdownAsHTML(
+  mode: 'accessible name' | 'adaptive cards' | 'citation modal' | 'clipboard' | 'message activity' = 'message activity'
+): (markdown: string): string
 ```
 <!-- prettier-ignore-end -->
+
+> New in 4.17.0: A new `mode` option can be passed to indicate how the HTML output will be used.
 
 This hook will return a function that, when called, will render Markdown into an HTML string. For example,
 
