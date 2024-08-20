@@ -61,7 +61,7 @@
         const composer = container.firstChild;
         expect(getComputedStyle(composer).getPropertyValue('--webchat__color--accent')).toBe('#0063B1');
 
-        const surface = composer.firstChild;
+        const surface = composer.children[1];
         expect(surface.className).toContain(classes.surface);
         expect(surface.role).toEqual(role);
 

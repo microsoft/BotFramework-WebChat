@@ -127,7 +127,7 @@ const BasicToaster = () => {
               className="webchat__toaster__notifications"
               // eslint-disable-next-line react/no-danger
               dangerouslySetInnerHTML={{
-                __html: renderMarkdownInline(notification.message)
+                __html: renderMarkdownInline(notification.message ?? '')
               }}
               key={notification.id}
             />
