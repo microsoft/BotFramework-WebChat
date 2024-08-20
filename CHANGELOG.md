@@ -30,7 +30,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ### Added
 
--  (Experimental) Added pre-chat message with starter prompts in Fluent UI, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
+-  (Experimental) Added pre-chat message with starter prompts in Fluent UI, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255) and [#5263](https://github.com/microsoft/BotFramework-WebChat/issues/5263), by [@compulim](https://github.com/compulim)
 -  (Experimental) Added `isPrimary` props to Fluent UI send box. When set, will wire up with `useSendBoxValue` and works with starter prompts in pre-chat message, in PR [#5257](https://github.com/microsoft/BotFramework-WebChat/issues/5257), by [@compulim](https://github.com/compulim)
 -  (Experimental) Expand Fluent theme support to activities and transcript, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added new Fluent UI theme variant "copilot" with updated styling and components, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
