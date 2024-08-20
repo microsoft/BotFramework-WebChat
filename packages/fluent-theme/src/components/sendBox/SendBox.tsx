@@ -144,7 +144,17 @@ function SendBox(props: Props) {
 
       setFocus('sendBox');
     },
-    [checkError, errorRef, isMessageLengthExceeded, setFocus, sendMessage, messageRef, attachmentsRef, setAttachments]
+    [
+      checkError,
+      errorRef,
+      isMessageLengthExceeded,
+      setFocus,
+      sendMessage,
+      setMessage,
+      messageRef,
+      attachmentsRef,
+      setAttachments
+    ]
   );
 
   const handleTelephoneKeypadButtonClick = useCallback(
