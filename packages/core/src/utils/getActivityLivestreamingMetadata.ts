@@ -58,6 +58,7 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
       channelData: { streamType }
     } = output;
 
+    // If the activity is the first in the session, session ID should be the activity ID.
     const sessionId = output.channelData.streamId || output.id;
 
     const type =
