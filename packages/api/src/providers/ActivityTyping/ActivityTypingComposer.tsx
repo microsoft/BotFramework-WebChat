@@ -1,4 +1,4 @@
-import { getActivityLivestreamingType } from 'botframework-webchat-core';
+import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
@@ -51,7 +51,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
             lastReceivedAt: receivedAt,
             name: from.name,
             role,
-            type: getActivityLivestreamingType(activity) ? 'livestream' : 'busy'
+            type: getActivityLivestreamingMetadata(activity) ? 'livestream' : 'busy'
           });
 
           changed = true;

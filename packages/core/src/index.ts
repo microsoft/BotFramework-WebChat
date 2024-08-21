@@ -37,7 +37,7 @@ import { parseDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
 import { parseProject } from './types/external/OrgSchema/Project';
 import { parseThing } from './types/external/OrgSchema/Thing';
 import { parseVoteAction } from './types/external/OrgSchema/VoteAction';
-import getActivityLivestreamingType from './utils/getActivityLivestreamingType';
+import getActivityLivestreamingMetadata from './utils/getActivityLivestreamingMetadata';
 import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import onErrorResumeNext from './utils/onErrorResumeNext';
@@ -86,7 +86,7 @@ export {
   disconnect,
   dismissNotification,
   emitTypingIndicator,
-  getActivityLivestreamingType,
+  getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
   isForbiddenPropertyName,
   markActivity,

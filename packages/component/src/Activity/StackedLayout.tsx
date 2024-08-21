@@ -14,7 +14,7 @@ import useStyleSet from '../hooks/useStyleSet';
 import Bubble from './Bubble';
 
 import type { RenderAttachment } from 'botframework-webchat-api';
-import { getActivityLivestreamingType, type WebChatActivity } from 'botframework-webchat-core';
+import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
 import type { ReactNode } from 'react';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
@@ -101,10 +101,10 @@ const StackedLayout = ({
   const fromUser = activity.from.role === 'user';
   const messageBackDisplayText: string = (isMessage && activity.channelData?.messageBack?.displayText) || '';
 
-  const livestreamingType = getActivityLivestreamingType(activity);
+  const isLivestreaming = getActivityLivestreamingMetadata(activity);
   const activityDisplayText = isMessage
     ? messageBackDisplayText || activity.text
-    : livestreamingType && 'text' in activity
+    : isLivestreaming && 'text' in activity
       ? activity.text
       : '';
   const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');

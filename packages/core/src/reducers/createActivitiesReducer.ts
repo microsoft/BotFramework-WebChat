@@ -12,6 +12,7 @@ import {
   POST_ACTIVITY_REJECTED
 } from '../actions/postActivity';
 import { SENDING, SEND_FAILED, SENT } from '../types/internal/SendStatus';
+import getActivityLivestreamingMetadata from '../utils/getActivityLivestreamingMetadata';
 import findBeforeAfter from './private/findBeforeAfter';
 
 import type { Reducer } from 'redux';
@@ -48,12 +49,6 @@ function getClientActivityID(activity: WebChatActivity): string | undefined {
 
 function findByClientActivityID(clientActivityID: string): (activity: WebChatActivity) => boolean {
   return (activity: WebChatActivity) => getClientActivityID(activity) === clientActivityID;
-}
-
-function isPartOfLivestreamSession(
-  activity: WebChatActivity
-): activity is WebChatActivity & { text: string; type: 'typing' } {
-  return activity.type === 'typing' && 'text' in activity && typeof activity.text === 'string';
 }
 
 function patchActivity(
@@ -95,9 +90,12 @@ function patchActivity(
     let after: WebChatActivity;
     let before: WebChatActivity;
 
-    if (isPartOfLivestreamSession(activity) && typeof activity.channelData.streamSequence === 'number') {
+    if (getActivityLivestreamingMetadata(activity) && typeof activity.channelData.streamSequence === 'number') {
       [before, after] = findBeforeAfter(activities, target => {
-        if (target.type === 'typing' && target.channelData.streamId === activity.channelData.streamId) {
+        if (
+          target.type === 'typing' &&
+          target.channelData.streamId === (activity.channelData.streamId || activity.id)
+        ) {
           return target.channelData.streamSequence < activity.channelData.streamSequence ? 'before' : 'after';
         }
 
