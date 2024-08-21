@@ -1,4 +1,4 @@
-/** @jest-environment jsdom */
+/** @jest-environment @happy-dom/jest-environment */
 
 import { parseDocumentFromString, serializeDocumentIntoString } from 'botframework-webchat-component/internal';
 import MarkdownIt from 'markdown-it';
@@ -32,7 +32,7 @@ describe('When passing "iconAlt" option with "Hello, World!" and "iconClassName"
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com">Example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="my-icon" title="Hello, World!" /></a></p>\n'
+      '<p><a href="https://example.com">Example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="my-icon" title="Hello, World!"></a></p>\n'
     ));
 
   test('should match baseline', () =>

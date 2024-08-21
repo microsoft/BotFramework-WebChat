@@ -1,4 +1,4 @@
-/** @jest-environment jsdom */
+/** @jest-environment @happy-dom/jest-environment */
 
 import { parseDocumentFromString, serializeDocumentIntoString } from 'botframework-webchat-component/internal';
 import MarkdownIt from 'markdown-it';
@@ -24,7 +24,7 @@ describe('When passing "ariaLabel" option with "Hello, World!" for a specific an
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com/1" aria-label="Hello, World!">Hello, World!</a></p>\n<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com/2">Aloha!</a></p>\n'
+      '<p><a href="https://example.com/1" aria-label="Hello, World!">Hello, World!</a></p>\n<p><a href="https://example.com/2">Aloha!</a></p>\n'
     ));
 
   test('should match baseline', () =>
@@ -55,7 +55,7 @@ describe('When passing "ariaLabel" option with "Hello, World!" for a specific an
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com/1" aria-label="Hello, World!">Hello, World!</a></p>\n<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com/2">Aloha!</a></p>\n'
+      '<p><a href="https://example.com/1" aria-label="Hello, World!">Hello, World!</a></p>\n<p><a href="https://example.com/2">Aloha!</a></p>\n'
     ));
 
   test('should match baseline', () =>
