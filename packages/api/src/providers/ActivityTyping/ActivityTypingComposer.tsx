@@ -1,4 +1,4 @@
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { getActivityLivestreamingType } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
@@ -13,15 +13,6 @@ import { type AllTyping } from './types/AllTyping';
 const INITIAL_ALL_TYPING_STATE = Object.freeze([Object.freeze(new Map())] as const);
 
 type Props = Readonly<{ children?: ReactNode | undefined }>;
-
-function isLivestreamChunk(activity: WebChatActivity): boolean {
-  return (
-    activity.type === 'typing' &&
-    'text' in activity &&
-    typeof activity.text === 'string' &&
-    activity.channelData.streamType !== 'informative'
-  );
-}
 
 const ActivityTypingComposer = ({ children }: Props) => {
   const [{ Date }] = usePonyfill();
@@ -60,7 +51,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
             lastReceivedAt: receivedAt,
             name: from.name,
             role,
-            type: isLivestreamChunk(activity) ? 'livestream' : 'busy' // Informative message means the bot is busy.
+            type: getActivityLivestreamingType(activity) ? 'livestream' : 'busy'
           });
 
           changed = true;

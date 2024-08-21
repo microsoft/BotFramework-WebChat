@@ -1,4 +1,4 @@
-import { WebChatActivity } from 'botframework-webchat-core';
+import { getActivityLivestreamingType, type WebChatActivity } from 'botframework-webchat-core';
 import React, { Fragment, memo, useMemo, type ReactNode } from 'react';
 import { ActivityDecoratorRequest } from '..';
 import { ActivityBorderDecoratorMiddlewareProxy } from './ActivityBorderDecoratorMiddleware';
@@ -8,18 +8,21 @@ const ActivityDecoratorFallback = memo(({ children }) => <Fragment>{children}</F
 ActivityDecoratorFallback.displayName = 'ActivityDecoratorFallback';
 
 const supportedActivityRoles: ActivityDecoratorRequest['from'][] = ['bot', 'channel', 'user', undefined];
-const supportedActivityStates: ActivityDecoratorRequest['state'][] = ['informative', 'completion', undefined];
 
-function ActivityDecorator({ children, activity }: Readonly<{ activity?: WebChatActivity; children?: ReactNode }>) {
-  const request = useMemo<ActivityDecoratorRequest>(
-    () => ({
+function ActivityDecorator({ activity, children }: Readonly<{ activity?: WebChatActivity; children?: ReactNode }>) {
+  const request = useMemo<ActivityDecoratorRequest>(() => {
+    const livestreamingType = getActivityLivestreamingType(activity);
+
+    return {
       from: supportedActivityRoles.includes(activity?.from?.role) ? activity?.from?.role : undefined,
-      state: supportedActivityStates.includes(activity?.channelData?.streamType)
-        ? activity?.channelData?.streamType
-        : undefined
-    }),
-    [activity]
-  );
+      state:
+        livestreamingType === 'final activity'
+          ? 'completion'
+          : livestreamingType === 'informative message'
+            ? 'informative'
+            : undefined
+    };
+  }, [activity]);
 
   return (
     <ActivityBorderDecoratorMiddlewareProxy fallbackComponent={ActivityDecoratorFallback} request={request}>

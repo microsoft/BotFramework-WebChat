@@ -15,35 +15,6 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
 
         const { type } = activity;
 
-        if (type === 'typing') {
-          if (
-            !(
-              'text' in activity &&
-              typeof activity.text === 'string' &&
-              activity.channelData.streamType !== 'informative'
-            )
-          ) {
-            // If it is an informative message, hide it until we have a design for informative message.
-            return false;
-          }
-
-          // Should show if this is useActiveTyping()[0][*].firstActivity, and render it with the content of lastActivity.
-          return function renderStackedLayout(renderAttachment, props) {
-            typeof props === 'undefined' &&
-              console.warn(
-                'botframework-webchat: One or more arguments were missing after passing through the activity middleware. Please check your custom activity middleware to make sure it passes all arguments.'
-              );
-
-            return (
-              <StackedLayout
-                activity={{ ...activity, type: 'message' } as any}
-                renderAttachment={renderAttachment}
-                {...props}
-              />
-            );
-          };
-        }
-
         // Filter out activities that should not be visible
         if (type === 'conversationUpdate' || type === 'event' || type === 'invoke') {
           return false;

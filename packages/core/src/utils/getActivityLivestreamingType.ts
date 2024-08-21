@@ -1,27 +1,24 @@
-import { literal, number, object, safeParse, string, union } from 'valibot';
+import { literal, number, object, optional, safeParse, string, union } from 'valibot';
+
 import { type WebChatActivity } from '../types/WebChatActivity';
 
-const livestreamActivitySchema = union([
+const livestreamingActivitySchema = union([
   object({
     channelData: object({
-      streamId: string(),
+      // "streamId" is optional for the very first activity in the session.
+      streamId: optional(string()),
       streamSequence: number(),
       streamType: union([literal('informative'), literal('streaming')])
-    }),
-    from: object({
-      role: literal('bot')
     }),
     text: string(),
     type: literal('typing')
   }),
   object({
     channelData: object({
+      // "streamId" is required for the final activity in the session. The final activity must not be the sole activity in the session.
       streamId: string(),
       streamSequence: number(),
       streamType: literal('final')
-    }),
-    from: object({
-      role: literal('bot')
     }),
     text: string(),
     type: literal('message')
@@ -41,10 +38,10 @@ const livestreamActivitySchema = union([
  *
  * @returns {("final activity" | "informative message" | "interim activity" | undefined)} Type of the activity in the livestreaming session.
  */
-export default function getLivestreamingActivityType(
+export default function getActivityLivestreamingType(
   activity: WebChatActivity
 ): 'final activity' | 'informative message' | 'interim activity' | undefined {
-  const result = safeParse(livestreamActivitySchema, activity);
+  const result = safeParse(livestreamingActivitySchema, activity);
 
   // eslint-disable-next-line default-case
   switch (result.success && result.output.channelData.streamType) {
