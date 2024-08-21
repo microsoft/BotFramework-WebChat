@@ -89,14 +89,14 @@ function patchActivity(
   if (typeof sequenceId !== 'number') {
     let after: WebChatActivity;
     let before: WebChatActivity;
+    const metadata = getActivityLivestreamingMetadata(activity);
 
-    if (getActivityLivestreamingMetadata(activity) && typeof activity.channelData.streamSequence === 'number') {
+    if (metadata) {
       [before, after] = findBeforeAfter(activities, target => {
-        if (
-          target.type === 'typing' &&
-          target.channelData.streamId === (activity.channelData.streamId || activity.id)
-        ) {
-          return target.channelData.streamSequence < activity.channelData.streamSequence ? 'before' : 'after';
+        const targetMetadata = getActivityLivestreamingMetadata(target);
+
+        if (targetMetadata?.sessionId === metadata.sessionId) {
+          return targetMetadata.sequenceNumber < metadata.sequenceNumber ? 'before' : 'after';
         }
 
         return 'unknown';
