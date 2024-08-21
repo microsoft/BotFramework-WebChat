@@ -1,4 +1,4 @@
-/** @jest-environment @happy-dom/jest-environment */
+/** @jest-environment jsdom */
 
 import { parseDocumentFromString, serializeDocumentIntoString } from 'botframework-webchat-component/internal';
 import MarkdownIt from 'markdown-it';
@@ -21,7 +21,7 @@ describe('When passing "ariaLabel" option with "Hello, World!"', () => {
 
   test('should match snapshot', () =>
     expect(serializeDocumentIntoString(actual)).toBe(
-      '<p><a href="https://example.com" aria-label="Hello, World!">Example</a></p>\n'
+      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com" aria-label="Hello, World!">Example</a></p>\n'
     ));
 
   test('should match baseline', () =>
@@ -47,5 +47,7 @@ describe('When passing "ariaLabel" option with false', () => {
     expect(actual.querySelector('a').hasAttribute('aria-label')).toBe(false));
 
   test('should match snapshot', () =>
-    expect(serializeDocumentIntoString(actual)).toBe('<a href="https://example.com">Example</a>\n'));
+    expect(serializeDocumentIntoString(actual)).toBe(
+      '<a xmlns="http://www.w3.org/1999/xhtml" href="https://example.com">Example</a>\n'
+    ));
 });

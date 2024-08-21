@@ -1,4 +1,4 @@
-/** @jest-environment @happy-dom/jest-environment */
+/** @jest-environment jsdom */
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import renderMarkdown from '../markdown/renderMarkdown';
