@@ -15,11 +15,11 @@ function ActivityDecorator({ activity, children }: Readonly<{ activity?: WebChat
 
     return {
       from: supportedActivityRoles.includes(activity?.from?.role) ? activity?.from?.role : undefined,
-      state:
+      livestreaming:
         livestreamingType === 'final activity'
-          ? 'completion'
+          ? 'completing'
           : livestreamingType === 'informative message'
-            ? 'informative'
+            ? 'informative message'
             : undefined
     };
   }, [activity]);

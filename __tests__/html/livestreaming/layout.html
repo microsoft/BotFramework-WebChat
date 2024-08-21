@@ -12,7 +12,8 @@
     <style>
       .flair {
         border-radius: inherit;
-        border: solid 2px red;
+        outline: solid 2px red;
+        outline-offset: -2px;
       }
 
       .loader {
@@ -44,10 +45,11 @@
 
         const decoratorMiddleware = [
           init =>
-            init === 'activity border' && (next => request => (request.state === 'completion' ? Flair : next(request))),
+            init === 'activity border' &&
+            (next => request => (request.livestreaming === 'completing' ? Flair : next(request))),
           init =>
             init === 'activity border' &&
-            (next => request => (request.state === 'informative' ? Loader : next(request)))
+            (next => request => (request.livestreaming === 'informative message' ? Loader : next(request)))
         ];
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
@@ -87,7 +89,11 @@
 
         // THEN: Informative message should appear.
         await pageConditions.numActivitiesShown(1);
-        await pageConditions.became('informative message show up', () => pageElements.activityContents()[0].textContent.trim() === 'Searching your document library…', 1_000);
+        await pageConditions.became(
+          'informative message show up',
+          () => pageElements.activityContents()[0].textContent.trim() === 'Searching your document library…',
+          1_000
+        );
 
         // THEN: Should show the informative message with blue bottom border.
         // THEN: Should not show typing indicator.
@@ -112,7 +118,11 @@
 
         // THEN: Interim activity should appear.
         await pageConditions.numActivitiesShown(1);
-        await pageConditions.became('interim activity show up', () => pageElements.activityContents()[0].textContent.trim() === 'A quick brown fox', 1_000);
+        await pageConditions.became(
+          'interim activity show up',
+          () => pageElements.activityContents()[0].textContent.trim() === 'A quick brown fox',
+          1_000
+        );
 
         // THEN: Should show the informative message with blue bottom border.
         // THEN: Should not show typing indicator.
@@ -137,7 +147,12 @@
 
         // THEN: Final activity should appear.
         await pageConditions.numActivitiesShown(1);
-        await pageConditions.became('final activity show up', () => pageElements.activityContents()[0].textContent.trim() === 'A quick brown fox jumped over the lazy dogs.', 1_000);
+        await pageConditions.became(
+          'final activity show up',
+          () =>
+            pageElements.activityContents()[0].textContent.trim() === 'A quick brown fox jumped over the lazy dogs.',
+          1_000
+        );
 
         // THEN: Should show the informative message with blue bottom border.
         // THEN: Should not show typing indicator.
