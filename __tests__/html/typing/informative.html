@@ -42,6 +42,7 @@
         // WHEN: An informative message is received.
         await directLine.emulateIncomingActivity({
           channelData: {
+            streamSequence: 1,
             streamType: 'informative'
           },
           from: {
@@ -54,9 +55,13 @@
           type: 'typing'
         });
 
-        // THEN: Should render the typing indicator for informative typing message.
-        await pageConditions.numActivitiesShown(1);
-        await pageConditions.typingIndicatorShown();
+        // THEN: Should render the informative message.
+        expect(pageElements.activityContents()[0].textContent.trim()).toBe(
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
+        );
+        expect(pageElements.activityContents()[1].textContent.trim()).toBe('Nisi elit quis nisi consectetur.');
+
+        await pageConditions.numActivitiesShown(2);
         await host.snapshot();
       });
     </script>

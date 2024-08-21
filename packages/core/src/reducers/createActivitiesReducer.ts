@@ -106,8 +106,13 @@ function patchActivity(
     let sequenceId: number;
 
     if (before) {
-      // eslint-disable-next-line no-magic-numbers
-      sequenceId = before.channelData['webchat:sequence-id'] + 0.001;
+      if (after) {
+        // eslint-disable-next-line no-magic-numbers
+        sequenceId = (before.channelData['webchat:sequence-id'] + after.channelData['webchat:sequence-id']) / 2;
+      } else {
+        // eslint-disable-next-line no-magic-numbers
+        sequenceId = before.channelData['webchat:sequence-id'] + 0.001;
+      }
     } else if (after) {
       // eslint-disable-next-line no-magic-numbers
       sequenceId = after.channelData['webchat:sequence-id'] - 0.001;
