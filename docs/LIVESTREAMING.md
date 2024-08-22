@@ -1,10 +1,10 @@
 # Livestreaming
 
-This document describes how to livestreaming works in Web Chat.
+This document describes how livestreaming works in Web Chat.
 
 ## Background
 
-As livestreaming is becoming more popular for bot that use LLMs to generate response. Web Chat also added support of livestreaming since version 4.17.0.
+Livestreaming is a popular technique to improve user experience for bots/copilots that use large-language models (LLM) to generate response. Web Chat added support of livestreaming since version [4.17.0](CHANGELOG.md#4170---2024-05-06).
 
 ## Terminology
 
@@ -24,7 +24,7 @@ The livestreaming session ID is same as the activity ID of the first activity in
 
 > Also known as: latency loader.
 
-Informative message is a message that will shown to the user and is intended to describes the bot is preparing the livestreaming session. A typical example of informative message is "Searching your document library..."
+Informative message is a message that will be shown to the user and is intended to describes the bot is preparing the livestreaming session. A typical example of informative message is "Searching your document library..."
 
 The informative message should be a canned message and not being generated via LLMs.
 
@@ -167,6 +167,11 @@ Example of channels that do not support livestreaming:
 -  Email does not support typing activity
 -  SMS does not support typing activity
 
+Livestreaming is resilient against:
+
+-  Out-of-order messages: channel/client receive interim activities in wrong order and/or heavily delayed
+-  Most packet loss scenarios: channel/client only received some interim activities but not all of them
+
 ### Client support
 
-Web Chat introduced livestreaming support since version 4.17.0. More livestreaming features are being added to Web Chat. Please read our [`CHANGELOG.md`](/tree/main/CHANGELOG.md) for complete version history.
+Web Chat introduced livestreaming support since version [4.17.0](CHANGELOG.md#4170---2024-05-06). More livestreaming features are being added to Web Chat. Please read our [`CHANGELOG.md`](CHANGELOG.md) for complete version history.
