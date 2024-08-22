@@ -39,7 +39,7 @@ const livestreamingActivitySchema = union([
  *     More activities are expected. Future interim activities always replace past interim activities, enable erasing or backtracking response.
  *   - `"informative message"` - optional sidechannel informative message describing the current response, e.g. "Searching your document library".
  *     Always replace past informative messages. May interleave with interim activities.
- *   - `"final activity"` - complete-and-final response, always replace past interim activities and remove past informative messages.
+ *   - `"final activity"` - complete-and-final response, always replace past interim activities and remove all informative messages.
  *     This activity indicates end of the session, all future activities must be ignored.
  *   - `undefined` - not part of a livestream session or the activity is not valid
  *
