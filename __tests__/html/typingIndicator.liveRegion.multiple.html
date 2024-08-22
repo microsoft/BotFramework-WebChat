@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -108,7 +108,9 @@
         await liveRegionTypingIndicatorBecame(['John is typing.', 'John and others are typing.']);
 
         // THEN: At t = 6, it should read "Mary is typing."
+        console.log('--- before tick', clock.now);
         clock.tick(4500);
+        console.log('--- after tick', clock.now);
         await liveRegionTypingIndicatorBecame(['John is typing.', 'John and others are typing.', 'Mary is typing.']);
 
         // THEN: The typing indicator should be shown, because Mary is typing.

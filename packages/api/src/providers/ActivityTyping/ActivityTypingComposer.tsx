@@ -38,7 +38,12 @@ const ActivityTypingComposer = ({ children }: Props) => {
           type
         } = activity;
 
-        if (type === 'typing' && (role === 'bot' || role === 'user')) {
+        const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
+
+        if (type === 'message' || livestreamingMetadata?.type === 'final activity') {
+          nextTyping.delete(id);
+          changed = true;
+        } else if (type === 'typing' && (role === 'bot' || role === 'user')) {
           const currentTyping = nextTyping.get(id);
           // TODO: When we rework on types of DLActivity, we will make sure all activities has "webChat.receivedAt", this coalesces can be removed.
           const receivedAt = activity.channelData.webChat?.receivedAt || Date.now();
@@ -51,12 +56,9 @@ const ActivityTypingComposer = ({ children }: Props) => {
             lastReceivedAt: receivedAt,
             name: from.name,
             role,
-            type: getActivityLivestreamingMetadata(activity) ? 'livestream' : 'busy'
+            type: livestreamingMetadata ? 'livestream' : 'busy'
           });
 
-          changed = true;
-        } else if (type === 'message') {
-          nextTyping.delete(id);
           changed = true;
         }
       }
