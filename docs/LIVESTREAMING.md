@@ -38,7 +38,7 @@ In the following example, we assume the bot is livestreaming the following sente
 
 First, start a [proactive messaging session](https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-proactive-message?view=azure-bot-service-4.0).
 
-Then, send the following activity to start the livestream session.
+Then, send the following activity to start the livestreaming session.
 
 ```json
 {
