@@ -60,7 +60,9 @@ Bot developers would need to implement the livestreaming as outlined in this sec
 
 ### Scenario 1: Livestream from start to end
 
-In the following example, we assume the bot is livestreaming the following sentence to the user: "A quick brown fox jumped over the lazy dogs."
+> In this example, we assume the bot is livestreaming the following sentence to the user:
+>
+> "A quick brown fox jumped over the lazy dogs."
 
 First, start a [proactive messaging session](https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-proactive-message?view=azure-bot-service-4.0). Although not required, proactive messaging is highly recommended to prevent client timeouts.
 
