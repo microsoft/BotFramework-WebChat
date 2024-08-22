@@ -1,13 +1,15 @@
-import { literal, number, object, optional, safeParse, string, union } from 'valibot';
+import { integer, literal, minValue, number, object, optional, safeParse, string, union } from 'valibot';
 
 import { type WebChatActivity } from '../types/WebChatActivity';
+
+const streamSequenceSchema = number([integer(), minValue(1)]);
 
 const livestreamingActivitySchema = union([
   object({
     channelData: object({
       // "streamId" is optional for the very first activity in the session.
       streamId: optional(string()),
-      streamSequence: number(),
+      streamSequence: streamSequenceSchema,
       streamType: union([literal('informative'), literal('streaming')])
     }),
     id: string(),
@@ -18,7 +20,7 @@ const livestreamingActivitySchema = union([
     channelData: object({
       // "streamId" is required for the final activity in the session. The final activity must not be the sole activity in the session.
       streamId: string(),
-      streamSequence: number(),
+      streamSequence: streamSequenceSchema,
       streamType: literal('final')
     }),
     id: string(),

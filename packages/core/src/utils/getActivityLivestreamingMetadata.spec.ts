@@ -103,6 +103,26 @@ test('activity with "streamType" of "streaming" without critical fields should r
     } as any)
   ).toBeUndefined());
 
+describe.each([
+  ['integer', 1, true],
+  ['zero', 0, false],
+  // eslint-disable-next-line no-magic-numbers
+  ['decimal', 1.234, false]
+])('activity with %s "streamSequence" should return undefined', (_, streamSequence, isValid) => {
+  const activity = {
+    channelData: { streamSequence, streamType: 'streaming' },
+    id: 'a-00001',
+    text: '',
+    type: 'typing'
+  } as any;
+
+  if (isValid) {
+    expect(getActivityLivestreamingMetadata(activity)).toBeTruthy();
+  } else {
+    expect(getActivityLivestreamingMetadata(activity)).toBeUndefined();
+  }
+});
+
 test('activity with "streamType" of "final" but "type" of "typing" should return undefined', () =>
   expect(
     getActivityLivestreamingMetadata({
