@@ -11,7 +11,7 @@ const supportedActivityRoles: ActivityDecoratorRequest['from'][] = ['bot', 'chan
 
 function ActivityDecorator({ activity, children }: Readonly<{ activity?: WebChatActivity; children?: ReactNode }>) {
   const request = useMemo<ActivityDecoratorRequest>(() => {
-    const type = getActivityLivestreamingMetadata(activity)?.type;
+    const { type } = getActivityLivestreamingMetadata(activity) || {};
 
     return {
       decorateForLivestreaming:
