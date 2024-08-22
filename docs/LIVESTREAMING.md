@@ -30,7 +30,7 @@ Informative message is a message that will be shown to the user and is intended 
 
 The informative message should be a prepared message with very low latency. It should not be generated via LLMs.
 
-## Implementation
+## Bot implementation
 
 Bot author would need to implement the livestreaming as outlined in this section. The implementation below will enable livestreaming to both Azure Bot Services and Teams.
 
@@ -147,7 +147,7 @@ End-to-end support of livestreaming relies on the following components:
 
 You can use [Microsoft Copilot Studio](https://www.microsoft.com/en-us/microsoft-copilot/microsoft-copilot-studio) to build low-code copilot with livestreaming support.
 
-If you already have a Bot Framework bot, most existing Bot SDK versions support livestreaming. You will need to update the bot to livestream activities through the [implementation described in this document](#implementation).
+If you already have a Bot Framework bot, most existing Bot SDK versions support livestreaming. You will need to update the bot to livestream activities through the [implementation described in this document](#bot-implementation).
 
 ### Channel support
 
