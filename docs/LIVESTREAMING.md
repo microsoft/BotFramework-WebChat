@@ -56,7 +56,7 @@ Notes:
 -  `text` field is required but can be an empty string
 -  `type` field must be `typing`
 
-After sending the activity, the bot must wait until the service will return the activity ID of the sent activity. This will become the livestreaming session ID.
+After sending the activity, the bot must wait until the service will return the activity ID. This will be the livestreaming session ID.
 
 In this example, we assume the service return activity ID of `"a-00001"` for the first activity.
 
@@ -76,14 +76,16 @@ Subsequently, send the following interim activity.
 
 Notes:
 
--  `channelData.streamId` field is the activity ID of the first activity, a.k.a. livestreaming session ID
+-  `channelData.streamId` field is the livestreaming session ID, i.e. the activity ID of the first activity
    -  In this example, the first activity ID is assumed `"a-00001"`
 -  `channelData.streamSequence` field should be incremented by 1 for every interim activity sent
 -  `text` field should contains partial content from past interim activities
-   -  `text` field in latter interim activities will replace `text` field in past interim activities, bot can use this capability to backtrack or erase response
--  More interim activities can be sent
+   -  `text` field in latter interim activities will replace `text` field in former interim activities
+   -  Bot can use this capability to backtrack or erase response
 
-To complete the livestreaming session, send the following activity.
+The bot can send as much as interim activities as it need.
+
+To complete and finalize the livestreaming session, send the following activity.
 
 ```json
 {
@@ -102,8 +104,8 @@ Notes:
 -  `channelData.streamType` field is `final`
 -  `text` field contains the complete message
 -  `type` field must be `message`
--  No more activities should be sent in the livestreaming session after this activity
--  This must not be the first activity in the livestreaming session
+-  After the session has concluded, future activities in the session will be ignored
+-  This must not be the first activity in the session
 
 ### Scenario 2: With informative message
 
