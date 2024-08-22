@@ -8,11 +8,17 @@ As livestreaming is becoming more popular for bot that use LLMs to generate resp
 
 ## Terminology
 
-### Livestreaming session
+### Livestreaming
 
 > Also known as: streaming response.
 
-A single bot, at its turn, can livestream multiple activities simultaneously each with their own content. Each livestream will have their own session. The livestream session ID is the activity ID of the first activity in the livestream session.
+Livestreaming is the mechanism to progressively send an activity.
+
+### Livestreaming session
+
+A single bot, at its turn, can livestream multiple activities simultaneously each with their own content. Each livestream will be isolated by their own session ID.
+
+The livestream session ID is same as the activity ID of the first activity in the livestream session.
 
 ### Informative message
 
@@ -30,7 +36,9 @@ Bot author would need to implement the livestreaming as outlined in this section
 
 In the following example, we assume the bot is livestreaming the following sentence to the user: "A quick brown fox jumped over the lazy dogs."
 
-First, start a [proactive messaging session](https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-proactive-message?view=azure-bot-service-4.0). Then, send the following activity to start the livestream session.
+First, start a [proactive messaging session](https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-proactive-message?view=azure-bot-service-4.0).
+
+Then, send the following activity to start the livestream session.
 
 ```json
 {
@@ -48,9 +56,11 @@ Notes:
 -  `text` field is required but can be an empty string
 -  `type` field must be `typing`
 
-After sending the activity, the service will return activity ID. This will be the livestream session ID. In this example, we assume the service return activity ID of `"a-00001"`.
+After sending the activity, the bot must wait until the service will return the activity ID of the sent activity. This will become the livestreaming session ID.
 
-Subsequently, send the following interim activities.
+In this example, we assume the service return activity ID of `"a-00001"` for the first activity.
+
+Subsequently, send the following interim activity.
 
 ```json
 {
@@ -66,11 +76,14 @@ Subsequently, send the following interim activities.
 
 Notes:
 
--  `channelData.streamId` field is the activity ID of the first activity
--  `channelData.streamSequence` field will be increase by 1 for every interim activity sent
--  `text` field should contains partial content from previous livestream
+-  `channelData.streamId` field is the activity ID of the first activity, a.k.a. livestreaming session ID
+   -  In this example, the first activity ID is assumed `"a-00001"`
+-  `channelData.streamSequence` field should be incremented by 1 for every interim activity sent
+-  `text` field should contains partial content from past interim activities
+   -  `text` field in latter interim activities will replace `text` field in past interim activities, bot can use this capability to backtrack or erase response
+-  More interim activities can be sent
 
-When reaching completion, send the following activity.
+To complete the livestreaming session, send the following activity.
 
 ```json
 {
@@ -89,6 +102,8 @@ Notes:
 -  `channelData.streamType` field is `final`
 -  `text` field contains the complete message
 -  `type` field must be `message`
+-  No more activities should be sent in the livestreaming session after this activity
+-  This must not be the first activity in the livestreaming session
 
 ### Scenario 2: With informative message
 
