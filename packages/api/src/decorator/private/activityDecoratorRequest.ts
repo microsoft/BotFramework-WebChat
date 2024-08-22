@@ -7,7 +7,7 @@ type ActivityDecoratorRequestType = {
    * - `"preparing"` - decorate as the livestreaming is being prepared
    * - `undefined` - not participated in a livestreaming session
    */
-  decorateForLivestreaming: 'completing' | 'preparing' | 'ongoing' | undefined;
+  decorateForLivestreaming: 'completing' | 'ongoing' | 'preparing' | undefined;
 
   /**
    * Gets the role of the sender for the activity.
