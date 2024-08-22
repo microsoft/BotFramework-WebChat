@@ -216,7 +216,7 @@ Web Chat introduced livestreaming support since version [4.17.0](../CHANGELOG.md
 
 #### Solutions
 
--  `channelData.streamSequence` will be used to identify obsoleted activities
+-  `channelData.streamSequence` will be used to identify obsoleted (outdated) activities
 -  Once the livestream has concluded, all future activities should be ignored
 
 ### Packet loss or join after livestream started
@@ -224,14 +224,16 @@ Web Chat introduced livestreaming support since version [4.17.0](../CHANGELOG.md
 #### Background
 
 -  Client may join the conversation after livestream started
--  Some services may drop typing activities as it could has lower QOS priority
+-  Some services may drop typing activities as it has a lower quality-of-service (QoS) priority
 
 #### Solutions
 
--  Content should be overlapping
-   -  Former activities will be obsoleted by latter activities
-   -  The latest round of activities is sufficient to catchup the livestream
+-  Content in interim activities should be overlapping
+   -  Former interim activities will be obsoleted by latter interim activities
+   -  The latest round of interim activities is sufficient to catchup the livestream
 -  Side benefits: bot can backtrack and erase response
+
+Bottomline: we understand the bandwidth usage could be large. But the benefits outweighted the shortcomings. Transports are free to implement their own mechanisms to save bandwidth.
 
 ### Channel and transport support
 
