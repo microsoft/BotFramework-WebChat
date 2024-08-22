@@ -14,9 +14,9 @@ function ActivityDecorator({ activity, children }: Readonly<{ activity?: WebChat
     const type = getActivityLivestreamingMetadata(activity)?.type;
 
     return {
-      from: supportedActivityRoles.includes(activity?.from?.role) ? activity?.from?.role : undefined,
-      livestreaming:
-        type === 'final activity' ? 'completing' : type === 'informative message' ? 'informative message' : undefined
+      decorateForLivestreaming:
+        type === 'final activity' ? 'completing' : type === 'informative message' ? 'informative message' : undefined,
+      from: supportedActivityRoles.includes(activity?.from?.role) ? activity?.from?.role : undefined
     };
   }, [activity]);
 

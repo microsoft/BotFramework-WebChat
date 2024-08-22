@@ -55,6 +55,10 @@
 
         // WHEN: Bot livestream.
         await directLine.emulateIncomingActivity({
+          channelData: {
+            streamSequence: 1,
+            streamType: 'streaming'
+          },
           from: {
             id: 'bot',
             name: 'Bot',

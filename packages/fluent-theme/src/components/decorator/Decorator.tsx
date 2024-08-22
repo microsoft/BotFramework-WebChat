@@ -11,10 +11,11 @@ export const rootClassName = 'webchat-fluent-decorator';
 
 const middleware: DecoratorMiddleware[] = [
   init =>
-    init === 'activity border' && (next => request => (request.livestreaming === 'completing' ? Flair : next(request))),
+    init === 'activity border' &&
+    (next => request => (request.decorateForLivestreaming === 'completing' ? Flair : next(request))),
   init =>
     init === 'activity border' &&
-    (next => request => (request.livestreaming === 'informative message' ? Loader : next(request)))
+    (next => request => (request.decorateForLivestreaming === 'informative message' ? Loader : next(request)))
 ];
 
 function WebChatDecorator(props: Readonly<{ readonly children?: ReactNode | undefined }>) {

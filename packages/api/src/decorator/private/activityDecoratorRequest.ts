@@ -1,6 +1,4 @@
 type ActivityDecoratorRequestType = {
-  from: 'bot' | 'channel' | `user` | undefined;
-
   /**
    * Decorate the activity in a livestreaming session.
    *
@@ -8,7 +6,17 @@ type ActivityDecoratorRequestType = {
    * - `"informative message"` - decorate as informative message in a livestreaming session
    * - `undefined` - not participated in a livestreaming session
    */
-  livestreaming: 'completing' | 'informative message' | undefined;
+  decorateForLivestreaming: 'completing' | 'informative message' | undefined;
+
+  /**
+   * Gets the role of the sender for the activity.
+   *
+   * - `"bot"` - the sender is a bot or other users
+   * - `"channel"` - the sender is the channel service
+   * - `"user"` - the sender is the current user
+   * - `undefined` - the sender is unknown
+   */
+  from: 'bot' | 'channel' | `user` | undefined;
 };
 
 export default ActivityDecoratorRequestType;
