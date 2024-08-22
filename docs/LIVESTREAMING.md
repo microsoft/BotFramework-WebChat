@@ -18,7 +18,7 @@ Livestreaming is the mechanism to progressively send an activity.
 
 A single bot, at its turn, can livestream multiple activities simultaneously each with their own content. Each livestream will be isolated by their own session ID.
 
-The livestream session ID is same as the activity ID of the first activity in the livestream session.
+The livestreaming session ID is same as the activity ID of the first activity in the livestreaming session.
 
 ### Informative message
 
