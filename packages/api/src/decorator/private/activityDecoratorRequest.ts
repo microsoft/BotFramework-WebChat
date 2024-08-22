@@ -1,6 +1,6 @@
 type ActivityDecoratorRequestType = {
   /**
-   * Decorate the activity in a livestreaming session.
+   * Decorate the activity as it participate in a livestreaming session.
    *
    * - `"completing"` - decorate as the livestreaming is completing
    * - `"informative message"` - decorate as informative message in a livestreaming session
