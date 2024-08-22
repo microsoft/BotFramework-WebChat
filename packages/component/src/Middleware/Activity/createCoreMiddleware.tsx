@@ -17,27 +17,23 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
         const { type } = activity;
         const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
 
-        // Filter out activities that should not be visible
-        if (type === 'conversationUpdate' || type === 'event' || type === 'invoke') {
-          return false;
-        } else if (type === 'message') {
-          const { attachments, channelData, text } = activity;
-
-          if (
+        // Filter out activities that should not be visible.
+        if (
+          type === 'conversationUpdate' ||
+          type === 'event' ||
+          type === 'invoke' ||
+          // Do not show typing indicator except when it is livestreaming session
+          (type === 'typing' && !livestreamingMetadata) ||
+          (type === 'message' &&
             // Do not show postback
-            channelData?.postBack ||
-            // Do not show messageBack if displayText is undefined
-            (channelData?.messageBack && !channelData.messageBack.displayText) ||
-            // Do not show empty bubbles (no text and attachments, and not "typing")
-            !(text || attachments?.length)
-          ) {
-            return false;
-          }
-        } else if (type === 'typing' && !livestreamingMetadata) {
+            (activity.channelData?.postBack ||
+              // Do not show messageBack if displayText is undefined
+              (activity.channelData?.messageBack && !activity.channelData.messageBack.displayText) ||
+              // Do not show empty bubbles (no text and attachments)
+              !(activity.text || activity.attachments?.length)))
+        ) {
           return false;
-        }
-
-        if (type === 'message' || type === 'typing') {
+        } else if (type === 'message' || type === 'typing') {
           if (
             type === 'message' &&
             (activity.attachments?.length || 0) > 1 &&
