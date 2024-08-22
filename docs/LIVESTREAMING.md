@@ -107,7 +107,7 @@ Notes:
 
 -  `channelData.streamId` field is the session ID, i.e. the activity ID of the first activity
    -  In this example, the first activity ID is assumed `"a-00001"`
--  `channelData.streamSequence` field should be incremented by 1 for every activity sent in the session
+-  `channelData.streamSequence` field should be incremented by 1 for every activity sent in the livestream
 -  `text` field should contains partial content from past interim activities
    -  `text` field in latter interim activities will replace `text` field in former interim activities
    -  Bot can use this capability to backtrack or erase response
@@ -133,8 +133,8 @@ Notes:
 -  `channelData.streamType` field is `final`
 -  `text` field should contains the complete message
 -  `type` field must be `message`
--  After the session has concluded, future activities in the session will be ignored
--  This must not be the first activity in the session
+-  After the livestream has concluded, future activities for the livestream will be ignored
+-  This must not be the first activity in the livestream
 -  For best compatibility, do not send attachments or anything other than the `text` field
 
 ### Scenario 2: With informative message
@@ -217,9 +217,9 @@ Background:
 Solutions:
 
 -  `channelData.streamSequence` will be used to identify obsoleted activities
--  Once the session has concluded, all future activities should be ignored
+-  Once the livestream has concluded, all future activities should be ignored
 
-### Packet loss or join after session started
+### Packet loss or join after livestream started
 
 Background:
 
@@ -230,7 +230,7 @@ Solutions:
 
 -  Content should be overlapping
    -  Former activities will be obsoleted by latter activities
-   -  The latest round of activities is sufficient to catchup the session
+   -  The latest round of activities is sufficient to catchup the livestream
 -  Side benefits: bot can backtrack and erase response
 
 ### Channel and transport support
@@ -255,12 +255,12 @@ Solutions:
    -  Channels that does not support livestreaming will be able to handle the final activity
 -  Side benefits: bot do not need a major update to use the livestreaming feature
 
-### Guaranteed start of session
+### Guaranteed start of livestream
 
 Background:
 
 -  Some services requires a very clear signal to start a livestream
--  Out-of-order delivery could affect this start of session signal
+-  Out-of-order delivery could affect this start of livestream signal
 
 Solutions:
 
