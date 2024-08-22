@@ -6,7 +6,7 @@ This document describes how livestreaming works in Web Chat.
 
 Livestreaming is a popular technique to improve user experience for bots/copilots that use large-language models (LLM) to generate response.
 
-Web Chat added support of livestreaming since version [4.17.0](../CHANGELOG.md#4170---2024-05-06).
+Web Chat added livestreaming support since version [4.17.0](../CHANGELOG.md#4170---2024-05-06).
 
 ## Terminology
 
