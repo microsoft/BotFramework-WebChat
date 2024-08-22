@@ -81,7 +81,7 @@ Notes:
 
 -  `channelData.streamId` field is the livestreaming session ID, i.e. the activity ID of the first activity
    -  In this example, the first activity ID is assumed `"a-00001"`
--  `channelData.streamSequence` field should be incremented by 1 for every interim activity sent
+-  `channelData.streamSequence` field should be incremented by 1 for every activity sent in the session
 -  `text` field should contains partial content from past interim activities
    -  `text` field in latter interim activities will replace `text` field in former interim activities
    -  Bot can use this capability to backtrack or erase response
