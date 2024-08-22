@@ -112,7 +112,7 @@ Notes:
    -  `text` field in latter interim activities will replace `text` field in former interim activities
    -  Bot can use this capability to backtrack or erase response
 
-Bots can send as much as interim activities as it needs.
+Bots can send as much interim activities as it needs.
 
 To conclude the livestream, send the following activity.
 
