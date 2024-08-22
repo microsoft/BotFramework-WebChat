@@ -52,7 +52,7 @@ Ephermal message means the content should only available for a limited time and 
 
 In Web Chat, bot is the general terms for chatbot. Copilot is a bot with generative AI and modern features. In other words, copilot is a modern bot.
 
-To simplify this documentation, we are using the term "bot" instead of "copilot". But they can be interchangeable in this documentation.
+To simplify this documentation, we are using the term "bot" instead of "copilot". But they can be used interchangeable in this documentation.
 
 ## Bot implementation
 
