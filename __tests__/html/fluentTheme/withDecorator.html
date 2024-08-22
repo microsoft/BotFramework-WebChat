@@ -120,15 +120,15 @@
           }
         ];
         await directLine.emulateIncomingActivity({
-          id: 'm-00001',
+          attachments,
+          channelData: { streamId: 't-00001', streamSequence: 2, streamType: 'completion' },
           from: {
             id: 'u-00001',
             name: 'Bot',
             role: 'bot'
           },
-          text: 'Work completed!',
-          channelData: { streamType: 'completion' },
-          attachments
+          id: 'm-00001',
+          text: 'Work completed!'
         });
 
         await pageConditions.numActivitiesShown(1);
