@@ -4,7 +4,9 @@ This document describes how livestreaming works in Web Chat.
 
 ## Background
 
-Livestreaming is a popular technique to improve user experience for bots/copilots that use large-language models (LLM) to generate response. Web Chat added support of livestreaming since version [4.17.0](CHANGELOG.md#4170---2024-05-06).
+Livestreaming is a popular technique to improve user experience for bots/copilots that use large-language models (LLM) to generate response.
+
+Web Chat added support of livestreaming since version [4.17.0](../CHANGELOG.md#4170---2024-05-06).
 
 ## Terminology
 
@@ -85,7 +87,7 @@ Notes:
 
 Bots can send as much as interim activities as it needs.
 
-To complete and finalize the livestreaming session, send the following activity.
+To conclude the livestreaming session, send the following activity.
 
 ```json
 {
@@ -102,14 +104,14 @@ To complete and finalize the livestreaming session, send the following activity.
 Notes:
 
 -  `channelData.streamType` field is `final`
--  `text` field contains the complete message
+-  `text` field should contains the complete message
 -  `type` field must be `message`
 -  After the session has concluded, future activities in the session will be ignored
 -  This must not be the first activity in the session
 
 ### Scenario 2: With informative message
 
-To send an [informative message](#informative-message) to indicate the LLM is preparing the answer, send the following activity.
+To send an [informative message](#informative-message), send the following activity.
 
 ```json
 {
@@ -126,6 +128,8 @@ To send an [informative message](#informative-message) to indicate the LLM is pr
 Notes:
 
 -  `streamType` field is `informative`
+-  `text` field should describes how the bot is preparing the livestream
+-  `type` field must be `typing`
 -  The activity can be send as the first activity or interleaved with other interim activities
    -  Some clients may not show informative messages while interleaved with other interim activities
    -  For best compatibility, send informative messages before any other interim activities
@@ -154,18 +158,18 @@ Channel support depends on the following factors:
 -  Proactive messaging is optional but highly recommended
    -  Enabling proactive messaging will prevent client timeouts which may occur while the bot is generating the response
 
-Example of channels that support livestreaming:
+Known channels which supports livestreaming:
 
--  Direct Line (via Web Socket)
+-  Direct Line (Web Socket)
 -  Teams
 
-Example of channels that do not support livestreaming:
+Known channels which does not support livestreaming:
 
--  Direct Line (via REST) does not support typing activity
--  Direct Line ASE does not return activity ID
--  Direct Line Speech does not return activity ID
--  Email does not support typing activity
--  SMS does not support typing activity
+-  Direct Line (REST), does not support typing activity
+-  Direct Line ASE, does not return activity ID
+-  Direct Line Speech, does not return activity ID
+-  Email, does not support typing activity
+-  SMS, does not support typing activity
 
 Livestreaming is resilient against:
 
@@ -174,4 +178,4 @@ Livestreaming is resilient against:
 
 ### Client support
 
-Web Chat introduced livestreaming support since version [4.17.0](CHANGELOG.md#4170---2024-05-06). More livestreaming features are being added to Web Chat. Please read our [`CHANGELOG.md`](CHANGELOG.md) for complete version history.
+Web Chat introduced livestreaming support since version [4.17.0](../CHANGELOG.md#4170---2024-05-06). More livestreaming features are being added to Web Chat. Please read our [`CHANGELOG.md`](../CHANGELOG.md) for complete version history.
