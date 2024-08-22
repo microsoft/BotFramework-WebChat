@@ -76,10 +76,7 @@
         await pageConditions.uiConnected();
 
         await directLine.emulateIncomingActivity({
-          channelData: {
-            streamSequence: 1,
-            streamType: 'informative'
-          },
+          channelData: { streamSequence: 1, streamType: 'informative' },
           from: {
             id: 'u-00001',
             name: 'Bot',
