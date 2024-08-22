@@ -14,7 +14,7 @@ function ActivityDecorator({ activity, children }: Readonly<{ activity?: WebChat
     const { type } = getActivityLivestreamingMetadata(activity) || {};
 
     return {
-      decorateForLivestreaming:
+      livestreamingState:
         type === 'final activity'
           ? 'completing'
           : type === 'informative message'

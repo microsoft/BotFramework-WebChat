@@ -45,10 +45,10 @@
         const decoratorMiddleware = [
           init =>
             init === 'activity border' &&
-            (next => request => (request.decorateForLivestreaming === 'completing' ? Flair : next(request))),
+            (next => request => (request.livestreamingState === 'completing' ? Flair : next(request))),
           init =>
             init === 'activity border' &&
-            (next => request => (request.decorateForLivestreaming === 'preparing' ? Loader : next(request)))
+            (next => request => (request.livestreamingState === 'preparing' ? Loader : next(request)))
         ];
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
