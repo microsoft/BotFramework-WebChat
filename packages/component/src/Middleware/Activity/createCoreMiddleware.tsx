@@ -1,6 +1,7 @@
 import { ActivityMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
+import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';
 import CarouselLayout from '../../Activity/CarouselLayout';
 import StackedLayout from '../../Activity/StackedLayout';
 
@@ -14,6 +15,7 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
         // TODO: [P4] Can we simplify these if-statement to something more readable?
 
         const { type } = activity;
+        const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
 
         // Filter out activities that should not be visible
         if (type === 'conversationUpdate' || type === 'event' || type === 'invoke') {
@@ -31,6 +33,8 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
           ) {
             return false;
           }
+        } else if (type === 'typing' && !livestreamingMetadata) {
+          return false;
         }
 
         if (type === 'message' || type === 'typing') {
