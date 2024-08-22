@@ -26,11 +26,17 @@ A single bot, at its turn, can livestream multiple activities simultaneously eac
 
 The session ID is same as the activity ID of the first activity in the livestream.
 
+### Interim activities
+
+> Also known as: chunk.
+
+Interim activities are the activities of the partial response from the bot. Its content often become part of the final/complete response.
+
 ### Informative message
 
 > Also known as: latency loader.
 
-Informative message is a message that will be shown to the user and is intended to describes how the bot is preparing the livestream. A typical example of an informative message is "Searching your document library..."
+Informative message is a side-channel message that will be shown to the user and is intended to describes how the bot is preparing the livestream. A typical example of an informative message is "Searching your document library..."
 
 For better UX, the informative message should be a prepared message with very low latency. It should not be generated via LLMs.
 
