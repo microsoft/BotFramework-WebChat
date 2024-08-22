@@ -56,6 +56,7 @@ Then, send the following activity to start the livestreaming session.
 Notes:
 
 -  `text` field is required but can be an empty string
+   -  In this example, the bot is sending "A quick" as its being prepared by LLMs
 -  `type` field must be `typing`
 
 After sending the activity, the bot must wait until the service will return the activity ID. This will be the livestreaming session ID.
