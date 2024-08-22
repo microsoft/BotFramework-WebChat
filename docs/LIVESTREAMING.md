@@ -4,7 +4,7 @@ This document describes how livestreaming works in Web Chat.
 
 ## Background
 
-Livestreaming is a popular technique to improve user experience for bots/copilots that use large-language models (LLM) to generate response.
+Livestreaming is a popular technique to improve user experience (UX) for bots/copilots that use large-language models (LLM) to generate response.
 
 Web Chat added livestreaming support since version [4.17.0](../CHANGELOG.md#4170---2024-05-06).
 
@@ -14,33 +14,51 @@ Web Chat added livestreaming support since version [4.17.0](../CHANGELOG.md#4170
 
 > Also known as: streaming response.
 
-Livestreaming is the mechanism to progressively send an activity.
+Livestreaming means progressively sending an activity. It is usually progressively concatenating until the full response is made.
 
-### Livestreaming session
+Livestreaming is one-off and should not be replayed.
+
+### A livestream
+
+> Also known as: livestreaming session.
 
 A single bot, at its turn, can livestream multiple activities simultaneously each with their own content. Each livestream will be isolated by their own session ID.
 
-The livestreaming session ID is same as the activity ID of the first activity in the livestreaming session.
+The session ID is same as the activity ID of the first activity in the livestream.
 
 ### Informative message
 
 > Also known as: latency loader.
 
-Informative message is a message that will be shown to the user and is intended to describes how the bot is preparing the livestreaming session. A typical example of an informative message is "Searching your document library..."
+Informative message is a message that will be shown to the user and is intended to describes how the bot is preparing the livestream. A typical example of an informative message is "Searching your document library..."
 
-The informative message should be a prepared message with very low latency. It should not be generated via LLMs.
+For better UX, the informative message should be a prepared message with very low latency. It should not be generated via LLMs.
+
+### Ephermal message
+
+> Also known as: temporary message.
+
+Ephermal message means the content should only available for a limited time and should not consider as final. Interim activities are naturally ephermal message.
+
+### Bot vs. copilot
+
+> This is _not_ an official statement from Microsoft.
+
+In Web Chat, bot is the general terms for chatbot. Copilot is a bot with generative AI and modern features. In other words, copilot is a modern bot.
+
+To simplify this documentation, we are using the term "bot" instead of "copilot". But they can be interchangeable in this documentation.
 
 ## Bot implementation
 
-Bot author would need to implement the livestreaming as outlined in this section. The implementation below will enable livestreaming to both Azure Bot Services and Teams.
+Bot developers would need to implement the livestreaming as outlined in this section. The implementation below will enable livestreaming to both Azure Bot Services and Teams.
 
 ### Scenario 1: Livestream from start to end
 
 In the following example, we assume the bot is livestreaming the following sentence to the user: "A quick brown fox jumped over the lazy dogs."
 
-First, start a [proactive messaging session](https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-proactive-message?view=azure-bot-service-4.0).
+First, start a [proactive messaging session](https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-howto-proactive-message?view=azure-bot-service-4.0). Although not required, proactive messaging is highly recommended to prevent client timeouts.
 
-Then, send the following activity to start the livestreaming session.
+Then, send the following activity to start the livestream.
 
 ```json
 {
@@ -59,7 +77,7 @@ Notes:
    -  In this example, the bot is sending "A quick" as its being prepared by LLMs
 -  `type` field must be `typing`
 
-After sending the activity, the bot must wait until the service will return the activity ID. This will be the livestreaming session ID.
+After sending the activity, the bot must wait until the service will return the activity ID. This will be the session ID of the livestream.
 
 In this example, we assume the service return activity ID of `"a-00001"` for the first activity.
 
@@ -79,7 +97,7 @@ Subsequently, send the following interim activity.
 
 Notes:
 
--  `channelData.streamId` field is the livestreaming session ID, i.e. the activity ID of the first activity
+-  `channelData.streamId` field is the session ID, i.e. the activity ID of the first activity
    -  In this example, the first activity ID is assumed `"a-00001"`
 -  `channelData.streamSequence` field should be incremented by 1 for every activity sent in the session
 -  `text` field should contains partial content from past interim activities
@@ -88,7 +106,7 @@ Notes:
 
 Bots can send as much as interim activities as it needs.
 
-To conclude the livestreaming session, send the following activity.
+To conclude the livestream, send the following activity.
 
 ```json
 {
@@ -167,17 +185,126 @@ Known channels which supports livestreaming:
 
 Known channels which does not support livestreaming:
 
--  Direct Line (REST), does not support typing activity
--  Direct Line ASE, does not return activity ID
--  Direct Line Speech, does not return activity ID
--  Email, does not support typing activity
--  SMS, does not support typing activity
-
-Livestreaming is resilient against:
-
--  Out-of-order messages: channel/client receive interim activities in wrong order and/or heavily delayed
--  Most packet loss scenarios: channel/client only received some interim activities but not all of them
+-  Direct Line (REST): ignores typing activity
+-  Direct Line ASE: does not return activity ID
+-  Direct Line Speech: does not return activity ID
+-  Email: ignores typing activity
+-  SMS: ignores typing activity
 
 ### Client support
 
 Web Chat introduced livestreaming support since version [4.17.0](../CHANGELOG.md#4170---2024-05-06). More livestreaming features are being added to Web Chat. Please read our [`CHANGELOG.md`](../CHANGELOG.md) for complete version history.
+
+## Design decisions
+
+### Out-of-order messages
+
+Background:
+
+-  Assumption: interim activities can be sent as frequently as every 10 ms (100 Hz)
+-  ABS is a distributed system and may receive bot activity in an out-of-order fashion
+   -  Every interim activities could send to a different HTTP endpoints
+   -  In a distributed environment, the time receiving the HTTP request could differs
+
+Solutions:
+
+-  `channelData.streamSequence` will be used to identify obsoleted activities
+-  Once the session has concluded, all future activities should be ignored
+
+### Packet loss or join after session started
+
+Background:
+
+-  Client may join the conversation after livestream started
+-  Some services may drop typing activities as it could has lower QOS priority
+
+Solutions:
+
+-  Content should be overlapping
+   -  Former activities will be obsoleted by latter activities
+   -  The latest round of activities is sufficient to catchup the session
+-  Side benefits: bot can backtrack and erase response
+
+### Channel and transport support
+
+Background:
+
+-  Reduce/eliminate the need to update existing channel/transport/service
+   -  3P channel devs may have existing channel adapter that could be impacted by livestreaming
+-  Resource-heavy channels should not handle livestream
+   -  Livestream should be ignored by SMS channel and Direct Line (REST) channel
+-  Unsupported channels should ignore livestream
+
+Solutions:
+
+-  Typing activity is being used to send interim activities
+   -  According to [Direct Line specification](https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#typing-activity): "Typing activities represent ongoing input from a user or a bot."
+   -  We are leveraging existing typing activity to send interims, channel/transport/service would not need an update
+-  Typing activity is naturally ignored by SMS, email, and other plain text channels
+-  Direct Line (REST) is a resource-heavy channel and livestreaming should be ignored
+   -  Typing activity is naturally ignored by Direct Line (REST) channel to save resources
+-  Final activity in the livestream is sent as a normal message activity
+   -  Channels that does not support livestreaming will be able to handle the final activity
+-  Side benefits: bot do not need a major update to use the livestreaming feature
+
+### Guaranteed start of session
+
+Background:
+
+-  Some services requires a very clear signal to start a livestream
+-  Out-of-order delivery could affect this start of session signal
+
+Solutions:
+
+-  Bot would need to wait until the service replies with an activity ID
+   -  The response from the service is a clear signal that the service has created a livestream
+-  Side benefits: the activity ID is an opaque string and can be used as the session ID
+
+### Storing of interim activities
+
+Background:
+
+-  Some services may need to store every interim activities being sent
+   -  Service implementation which concatenate interim activities in an out-of-order fashion could be very complex
+
+Solutions:
+
+-  Interim activities will send overlapping content
+   -  Services would not need to concatenate content itself
+
+### No replay
+
+Background:
+
+-  Restoring chat history should not replay the livestreaming
+   -  The final activity should be displayed instantly, interim activities should be skipped
+
+Solutions:
+
+-  Typing activity for all activities during a livestream
+   -  Direct Line channel save chat history without typing activities
+
+### Text format change
+
+Background:
+
+-  Text format could change during interim activities
+   -  This could cause layout to change rapidly and degrade UX
+
+Solutions:
+
+-  Text format is assumed to be Markdown during the livestream
+
+### Adding attachments during livestream
+
+Background:
+
+-  Some clients may have difficulties handling attachments during livestream
+
+Solutions:
+
+-  Currently, no consensus is made at the time of this writing
+   -  "We want to livestream the creation of Adaptive Cards."
+   -  "We don't want to show file attachments in interim activities."
+-  In the meanwhile, we are issuing best practices and discourage sending attachments in interim activities
+   -  Bot should only send attachments in final activity
