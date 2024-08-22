@@ -109,6 +109,7 @@ Notes:
 -  `type` field must be `message`
 -  After the session has concluded, future activities in the session will be ignored
 -  This must not be the first activity in the session
+-  For best compatibility, do not send attachments or anything other than `text` field
 
 ### Scenario 2: With informative message
 
@@ -128,7 +129,7 @@ To send an [informative message](#informative-message), send the following activ
 
 Notes:
 
--  `streamType` field is `informative`
+-  `channelData.streamType` field is `informative`
 -  `text` field should describes how the bot is preparing the livestream
 -  `type` field must be `typing`
 -  The activity can be send as the first activity or interleaved with other interim activities
