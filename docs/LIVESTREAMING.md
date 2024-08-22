@@ -143,20 +143,29 @@ Livestreaming support are based on 3 components:
 
 You can use [Microsoft Copilot Studio](https://www.microsoft.com/en-us/microsoft-copilot/microsoft-copilot-studio) to build low-code copilot with livestreaming support.
 
-If you already have a Bot Framework bot, most existing Bot SDK versions support livestreaming. You will need to update the bot to livestream activities through the [implementation](#implementation) described in this document.
+If you already have a Bot Framework bot, most existing Bot SDK versions support livestreaming. You will need to update the bot to livestream activities through the [implementation described in this document](#implementation).
 
 ### Channel support
 
-Channel support depends on a few factors:
+Channel support depends on the following factors:
 
 -  Channel must support typing activity
 -  Channel must return activity ID of the sent activity
 -  Proactive messaging is optional but highly recommended
    -  Enabling proactive messaging will prevent client timeouts which may occur while the bot is generating the response
 
-Example of channels that support livestreaming: Direct Line (via Web Socket), Teams, etc.
+Example of channels that support livestreaming:
 
-Example of channels that do not support livestreaming: Direct Line (via REST), Direct Line ASE, Direct Line Speech, email, SMS, etc.
+-  Direct Line (via Web Socket)
+-  Teams
+
+Example of channels that do not support livestreaming:
+
+-  Direct Line (via REST) does not support typing activity
+-  Direct Line ASE does not return activity ID
+-  Direct Line Speech does not return activity ID
+-  Email does not support typing activity
+-  SMS does not support typing activity
 
 ### Client support
 
