@@ -101,7 +101,7 @@ const StackedLayout = ({
   const fromUser = activity.from.role === 'user';
   const messageBackDisplayText: string = (isMessage && activity.channelData?.messageBack?.displayText) || '';
 
-  const isLivestreaming = getActivityLivestreamingMetadata(activity);
+  const isLivestreaming = !!getActivityLivestreamingMetadata(activity);
   const activityDisplayText = isMessage
     ? messageBackDisplayText || activity.text
     : isLivestreaming && 'text' in activity
