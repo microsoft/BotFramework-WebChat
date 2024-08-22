@@ -109,7 +109,7 @@ Notes:
 -  `type` field must be `message`
 -  After the session has concluded, future activities in the session will be ignored
 -  This must not be the first activity in the session
--  For best compatibility, do not send attachments or anything other than `text` field
+-  For best compatibility, do not send attachments or anything other than the `text` field
 
 ### Scenario 2: With informative message
 
