@@ -21,6 +21,10 @@ Web Chat supports [Content Security Policy (CSP)](https://developer.mozilla.org/
 
 Notes: web developers are advised to use [`~` (tilde range)](https://github.com/npm/node-semver?tab=readme-ov-file#tilde-ranges-123-12-1) to select minor versions, which contains new features and/or fixes. Use [`^` (caret range)](https://github.com/npm/node-semver?tab=readme-ov-file#caret-ranges-123-025-004) to select major versions, which may contains breaking changes.
 
+## 4.19.0 notable changes
+
+-  Supports informative message in [livestreaming](./docs/LIVESTREAMING.md)
+
 ## 4.18.0 notable changes
 
 In this release, we are focusing on performance improvements, including memory and load time optimizations.
@@ -29,7 +33,7 @@ In this release, we are focusing on performance improvements, including memory a
 
 ### Support livestreaming response
 
-Bots can now livestream their responses. Before Bot Framework SDK support this feature, bot authors can follow the details in [this pull request](https://github.com/microsoft/BotFramework-WebChat/pull/5141) to construct the livestream responses.
+Bots can now livestream their responses. Before Bot Framework SDK support this feature, bot authors can follow the details in [LIVESTREAMING.md](./docs/LIVESTREAMING.md) to construct the livestream responses.
 
 ### Debut of ES Modules
 
