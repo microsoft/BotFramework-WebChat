@@ -126,7 +126,10 @@ To send an [informative message](#informative-message) to indicate the LLM is pr
 Notes:
 
 -  `streamType` field is `informative`
--  The activity can be send as the first activity or while the livestreaming session is ongoing
+-  The activity can be send as the first activity or interleaved with other interim activities
+   -  Some clients may not show informative messages while interleaved with other interim activities
+   -  For best compatibility, send informative messages before any other interim activities
+-  Latter informative messages will replace former informative messages
 
 ## Supportability
 
