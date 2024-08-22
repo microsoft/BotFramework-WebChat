@@ -37,6 +37,7 @@ import { parseDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
 import { parseProject } from './types/external/OrgSchema/Project';
 import { parseThing } from './types/external/OrgSchema/Thing';
 import { parseVoteAction } from './types/external/OrgSchema/VoteAction';
+import getActivityLivestreamingMetadata from './utils/getActivityLivestreamingMetadata';
 import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import onErrorResumeNext from './utils/onErrorResumeNext';
@@ -75,16 +76,17 @@ const version = process.env.npm_package_version;
 const buildInfo = { buildTool, moduleFormat, version };
 
 export {
-  Constants,
   buildInfo,
   clearSuggestedActions,
   connect,
+  Constants,
   createStore,
   createStoreWithDevTools,
   createStoreWithOptions,
   disconnect,
   dismissNotification,
   emitTypingIndicator,
+  getActivityLivestreamingMetadata,
   getOrgSchemaMessage,
   isForbiddenPropertyName,
   markActivity,

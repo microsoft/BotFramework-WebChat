@@ -55,11 +55,16 @@
 
         // WHEN: Bot livestream.
         await directLine.emulateIncomingActivity({
+          channelData: {
+            streamSequence: 1,
+            streamType: 'streaming'
+          },
           from: {
             id: 'bot',
             name: 'Bot',
             role: 'bot'
           },
+          id: 'a-00001',
           text: 'Et est esse aliqua culpa quis laboris exercitation voluptate dolor.',
           type: 'typing'
         });
@@ -76,6 +81,26 @@
             }
           }
         ]);
+
+        // WHEN: Bot livestream ended.
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            streamId: 'a-00001',
+            streamSequence: 2,
+            streamType: 'final'
+          },
+          from: {
+            id: 'bot',
+            name: 'Bot',
+            role: 'bot'
+          },
+          id: 'a-00002',
+          text: 'Et est esse aliqua culpa quis laboris exercitation voluptate dolor.',
+          type: 'message'
+        });
+
+        // THEN: `useActiveTyping` should return empty.
+        await expect(renderWithFunction(() => useActiveTyping())).resolves.toEqual([{}]);
       });
     </script>
   </body>

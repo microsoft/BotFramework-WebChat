@@ -36,15 +36,16 @@ function useActiveTyping(expireAfter?: number): readonly [Readonly<Record<string
   ]);
 
   const earliestExpireAt = Math.min(...Object.values(activeTypingState[0]).map(({ expireAt }) => expireAt));
-  const timeToRender = earliestExpireAt && earliestExpireAt - now;
 
   useEffect(() => {
+    const timeToRender = earliestExpireAt && earliestExpireAt - Date.now();
+
     if (timeToRender && isFinite(timeToRender)) {
       const timeout = setTimeout(forceRender, Math.max(0, timeToRender));
 
       return () => clearTimeout(timeout);
     }
-  }, [clearTimeout, forceRender, setTimeout, timeToRender]);
+  }, [clearTimeout, Date, earliestExpireAt, forceRender, setTimeout]);
 
   return activeTypingState;
 }

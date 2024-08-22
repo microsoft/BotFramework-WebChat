@@ -1,4 +1,4 @@
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
@@ -13,15 +13,6 @@ import { type AllTyping } from './types/AllTyping';
 const INITIAL_ALL_TYPING_STATE = Object.freeze([Object.freeze(new Map())] as const);
 
 type Props = Readonly<{ children?: ReactNode | undefined }>;
-
-function isLivestreamChunk(activity: WebChatActivity): boolean {
-  return (
-    activity.type === 'typing' &&
-    'text' in activity &&
-    typeof activity.text === 'string' &&
-    activity.channelData.streamType !== 'informative'
-  );
-}
 
 const ActivityTypingComposer = ({ children }: Props) => {
   const [{ Date }] = usePonyfill();
@@ -47,7 +38,12 @@ const ActivityTypingComposer = ({ children }: Props) => {
           type
         } = activity;
 
-        if (type === 'typing' && (role === 'bot' || role === 'user')) {
+        const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
+
+        if (type === 'message' || livestreamingMetadata?.type === 'final activity') {
+          nextTyping.delete(id);
+          changed = true;
+        } else if (type === 'typing' && (role === 'bot' || role === 'user')) {
           const currentTyping = nextTyping.get(id);
           // TODO: When we rework on types of DLActivity, we will make sure all activities has "webChat.receivedAt", this coalesces can be removed.
           const receivedAt = activity.channelData.webChat?.receivedAt || Date.now();
@@ -60,12 +56,9 @@ const ActivityTypingComposer = ({ children }: Props) => {
             lastReceivedAt: receivedAt,
             name: from.name,
             role,
-            type: isLivestreamChunk(activity) ? 'livestream' : 'busy' // Informative message means the bot is busy.
+            type: livestreamingMetadata ? 'livestream' : 'busy'
           });
 
-          changed = true;
-        } else if (type === 'message') {
-          nextTyping.delete(id);
           changed = true;
         }
       }

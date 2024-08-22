@@ -12,6 +12,7 @@ import {
   POST_ACTIVITY_REJECTED
 } from '../actions/postActivity';
 import { SENDING, SEND_FAILED, SENT } from '../types/internal/SendStatus';
+import getActivityLivestreamingMetadata from '../utils/getActivityLivestreamingMetadata';
 import findBeforeAfter from './private/findBeforeAfter';
 
 import type { Reducer } from 'redux';
@@ -48,12 +49,6 @@ function getClientActivityID(activity: WebChatActivity): string | undefined {
 
 function findByClientActivityID(clientActivityID: string): (activity: WebChatActivity) => boolean {
   return (activity: WebChatActivity) => getClientActivityID(activity) === clientActivityID;
-}
-
-function isPartOfLivestreamSession(
-  activity: WebChatActivity
-): activity is WebChatActivity & { text: string; type: 'typing' } {
-  return activity.type === 'typing' && 'text' in activity && typeof activity.text === 'string';
 }
 
 function patchActivity(
@@ -94,11 +89,14 @@ function patchActivity(
   if (typeof sequenceId !== 'number') {
     let after: WebChatActivity;
     let before: WebChatActivity;
+    const metadata = getActivityLivestreamingMetadata(activity);
 
-    if (isPartOfLivestreamSession(activity) && typeof activity.channelData.streamSequence === 'number') {
+    if (metadata) {
       [before, after] = findBeforeAfter(activities, target => {
-        if (target.type === 'typing' && target.channelData.streamId === activity.channelData.streamId) {
-          return target.channelData.streamSequence < activity.channelData.streamSequence ? 'before' : 'after';
+        const targetMetadata = getActivityLivestreamingMetadata(target);
+
+        if (targetMetadata?.sessionId === metadata.sessionId) {
+          return targetMetadata.sequenceNumber < metadata.sequenceNumber ? 'before' : 'after';
         }
 
         return 'unknown';
@@ -108,8 +106,13 @@ function patchActivity(
     let sequenceId: number;
 
     if (before) {
-      // eslint-disable-next-line no-magic-numbers
-      sequenceId = before.channelData['webchat:sequence-id'] + 0.001;
+      if (after) {
+        // eslint-disable-next-line no-magic-numbers
+        sequenceId = (before.channelData['webchat:sequence-id'] + after.channelData['webchat:sequence-id']) / 2;
+      } else {
+        // eslint-disable-next-line no-magic-numbers
+        sequenceId = before.channelData['webchat:sequence-id'] + 0.001;
+      }
     } else if (after) {
       // eslint-disable-next-line no-magic-numbers
       sequenceId = after.channelData['webchat:sequence-id'] - 0.001;
