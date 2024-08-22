@@ -207,26 +207,26 @@ Web Chat introduced livestreaming support since version [4.17.0](../CHANGELOG.md
 
 ### Out-of-order messages
 
-Background:
+#### Background
 
 -  Assumption: interim activities can be sent as frequently as every 10 ms (100 Hz)
 -  ABS is a distributed system and may receive bot activity in an out-of-order fashion
    -  Every interim activities could send to a different HTTP endpoints
    -  In a distributed environment, the time receiving the HTTP request could differs
 
-Solutions:
+#### Solutions
 
 -  `channelData.streamSequence` will be used to identify obsoleted activities
 -  Once the livestream has concluded, all future activities should be ignored
 
 ### Packet loss or join after livestream started
 
-Background:
+#### Background
 
 -  Client may join the conversation after livestream started
 -  Some services may drop typing activities as it could has lower QOS priority
 
-Solutions:
+#### Solutions
 
 -  Content should be overlapping
    -  Former activities will be obsoleted by latter activities
@@ -235,7 +235,7 @@ Solutions:
 
 ### Channel and transport support
 
-Background:
+#### Background
 
 -  Reduce/eliminate the need to update existing channel/transport/service
    -  3P channel devs may have existing channel adapter that could be impacted by livestreaming
@@ -243,7 +243,7 @@ Background:
    -  Livestream should be ignored by SMS channel and Direct Line (REST) channel
 -  Unsupported channels should ignore livestream
 
-Solutions:
+#### Solutions
 
 -  Typing activity is being used to send interim activities
    -  According to [Direct Line specification](https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#typing-activity): "Typing activities represent ongoing input from a user or a bot."
@@ -257,12 +257,12 @@ Solutions:
 
 ### Guaranteed start of livestream
 
-Background:
+#### Background
 
 -  Some services requires a very clear signal to start a livestream
 -  Out-of-order delivery could affect this start of livestream signal
 
-Solutions:
+#### Solutions
 
 -  Bot would need to wait until the service replies with an activity ID
    -  The response from the service is a clear signal that the service has created a livestream
@@ -270,46 +270,46 @@ Solutions:
 
 ### Storing of interim activities
 
-Background:
+#### Background
 
 -  Some services may need to store every interim activities being sent
    -  Service implementation which concatenate interim activities in an out-of-order fashion could be very complex
 
-Solutions:
+#### Solutions
 
 -  Interim activities will send overlapping content
    -  Services would not need to concatenate content itself
 
 ### No replay
 
-Background:
+#### Background
 
 -  Restoring chat history should not replay the livestreaming
    -  The final activity should be displayed instantly, interim activities should be skipped
 
-Solutions:
+#### Solutions
 
 -  Typing activity for all activities during a livestream
    -  Direct Line channel save chat history without typing activities
 
 ### Text format change
 
-Background:
+#### Background
 
 -  Text format could change during interim activities
    -  This could cause layout to change rapidly and degrade UX
 
-Solutions:
+#### Solutions
 
 -  Text format is assumed to be Markdown during the livestream
 
 ### Adding attachments during livestream
 
-Background:
+#### Background
 
 -  Some clients may have difficulties handling attachments during livestream
 
-Solutions:
+#### Solutions
 
 -  Currently, no consensus is made at the time of this writing
    -  "We want to livestream the creation of Adaptive Cards."
