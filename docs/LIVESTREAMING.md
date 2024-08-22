@@ -40,11 +40,11 @@ Informative message is a side-channel message that will be shown to the user and
 
 For better UX, the informative message should be a prepared message with very low latency. It should not be generated via LLMs.
 
-### Ephermal message
+### Ephemeral message
 
 > Also known as: temporary message.
 
-Ephermal message means the content should only available for a limited time and should not consider as final. Interim activities are naturally ephermal message.
+Ephemeral message means the content should only be available for a limited time and should not be considered final. Interim activities are naturally ephemeral message.
 
 ### Bot vs. copilot
 
@@ -52,7 +52,7 @@ Ephermal message means the content should only available for a limited time and 
 
 In Web Chat, bot is the general terms for chatbot. Copilot is a bot with generative AI and modern features. In other words, copilot is a modern bot.
 
-To simplify this documentation, we are using the term "bot" instead of "copilot". But they can be used interchangeable in this documentation.
+To simplify this documentation, we are using the term "bot" instead of "copilot". But they can be used interchangeably in this documentation.
 
 ## Bot implementation
 
@@ -292,7 +292,7 @@ Bottomline: we understand the bandwidth usage could be large. But the benefits o
 #### Solutions
 
 -  Typing activity for all activities during a livestream
-   -  Direct Line channel save chat history without typing activities
+   -  Direct Line channel saves chat history without typing activities
 
 ### Text format change
 
@@ -313,8 +313,7 @@ Bottomline: we understand the bandwidth usage could be large. But the benefits o
 
 #### Solutions
 
--  Currently, no consensus is made at the time of this writing
-   -  "We want to livestream the creation of Adaptive Cards."
+-  As of this writing, no consensus has been reached on this issue
    -  "We don't want to show file attachments in interim activities."
 -  In the meanwhile, we are issuing best practices and discourage sending attachments in interim activities
    -  Bot should only send attachments in final activity
