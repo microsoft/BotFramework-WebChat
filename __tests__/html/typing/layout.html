@@ -91,7 +91,7 @@
         await pageConditions.numActivitiesShown(1);
         await pageConditions.became(
           'informative message show up',
-          () => pageElements.activityContents()[0].textContent.trim() === 'Searching your document library…',
+          () => pageElements.activityContents()[0].textContent === 'Searching your document library…\n',
           1_000
         );
 
@@ -120,7 +120,7 @@
         await pageConditions.numActivitiesShown(1);
         await pageConditions.became(
           'interim activity show up',
-          () => pageElements.activityContents()[0].textContent.trim() === 'A quick brown fox',
+          () => pageElements.activityContents()[0].textContent === 'A quick brown fox\n',
           1_000
         );
 
@@ -149,8 +149,7 @@
         await pageConditions.numActivitiesShown(1);
         await pageConditions.became(
           'final activity show up',
-          () =>
-            pageElements.activityContents()[0].textContent.trim() === 'A quick brown fox jumped over the lazy dogs.',
+          () => pageElements.activityContents()[0].textContent === 'A quick brown fox jumped over the lazy dogs.\n',
           1_000
         );
 

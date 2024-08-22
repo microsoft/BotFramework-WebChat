@@ -97,8 +97,6 @@
 
         let thirdActivityKey = currentActivityKeysWithId[2][0];
 
-        console.log({ currentActivityKeysWithId });
-
         // THEN: Should display 3 messages.
         await pageConditions.numActivitiesShown(3);
         expect(pageElements.typingIndicator()).toBeFalsy();

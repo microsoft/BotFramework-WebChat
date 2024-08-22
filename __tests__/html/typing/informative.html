@@ -56,10 +56,11 @@
         });
 
         // THEN: Should render the informative message.
-        expect(pageElements.activityContents()[0].textContent.trim()).toBe(
-          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
+        expect(pageElements.activityContents()[0]).toHaveProperty(
+          'textContent',
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
-        expect(pageElements.activityContents()[1].textContent.trim()).toBe('Nisi elit quis nisi consectetur.');
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Nisi elit quis nisi consectetur.\n');
 
         await pageConditions.numActivitiesShown(2);
         await host.snapshot();
