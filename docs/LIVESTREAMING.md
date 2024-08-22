@@ -24,9 +24,9 @@ The livestreaming session ID is same as the activity ID of the first activity in
 
 > Also known as: latency loader.
 
-Informative message is a message that will be shown to the user and is intended to describes the bot is preparing the livestreaming session. A typical example of informative message is "Searching your document library..."
+Informative message is a message that will be shown to the user and is intended to describes how the bot is preparing the livestreaming session. A typical example of an informative message is "Searching your document library..."
 
-The informative message should be a canned message and not being generated via LLMs.
+The informative message should be a prepared message with very low latency. It should not be generated via LLMs.
 
 ## Implementation
 
