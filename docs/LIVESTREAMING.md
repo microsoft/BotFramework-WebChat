@@ -133,7 +133,7 @@ Notes:
 
 ## Supportability
 
-Livestreaming support are based on 3 components:
+End-to-end support of livestreaming relies on the following components:
 
 -  [Bot code](#bot-code-support)
 -  [Channel](#channel-support)
