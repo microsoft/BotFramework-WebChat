@@ -1,6 +1,7 @@
 import { ActivityMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
+import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';
 import CarouselLayout from '../../Activity/CarouselLayout';
 import StackedLayout from '../../Activity/StackedLayout';
 
@@ -15,54 +16,23 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
 
         const { type } = activity;
 
-        if (type === 'typing') {
-          if (
-            !(
-              'text' in activity &&
-              typeof activity.text === 'string' &&
-              activity.channelData.streamType !== 'informative'
-            )
-          ) {
-            // If it is an informative message, hide it until we have a design for informative message.
-            return false;
-          }
-
-          // Should show if this is useActiveTyping()[0][*].firstActivity, and render it with the content of lastActivity.
-          return function renderStackedLayout(renderAttachment, props) {
-            typeof props === 'undefined' &&
-              console.warn(
-                'botframework-webchat: One or more arguments were missing after passing through the activity middleware. Please check your custom activity middleware to make sure it passes all arguments.'
-              );
-
-            return (
-              <StackedLayout
-                activity={{ ...activity, type: 'message' } as any}
-                renderAttachment={renderAttachment}
-                {...props}
-              />
-            );
-          };
-        }
-
-        // Filter out activities that should not be visible
-        if (type === 'conversationUpdate' || type === 'event' || type === 'invoke') {
-          return false;
-        } else if (type === 'message') {
-          const { attachments, channelData, text } = activity;
-
-          if (
+        // Filter out activities that should not visible.
+        if (
+          type === 'conversationUpdate' ||
+          type === 'event' ||
+          type === 'invoke' ||
+          // Do not show typing indicator except when it is livestreaming session
+          (type === 'typing' && !getActivityLivestreamingMetadata(activity)) ||
+          (type === 'message' &&
             // Do not show postback
-            channelData?.postBack ||
-            // Do not show messageBack if displayText is undefined
-            (channelData?.messageBack && !channelData.messageBack.displayText) ||
-            // Do not show empty bubbles (no text and attachments, and not "typing")
-            !(text || attachments?.length)
-          ) {
-            return false;
-          }
-        }
-
-        if (type === 'message' || type === 'typing') {
+            (activity.channelData?.postBack ||
+              // Do not show messageBack if displayText is undefined
+              (activity.channelData?.messageBack && !activity.channelData.messageBack.displayText) ||
+              // Do not show empty bubbles (no text and attachments)
+              !(activity.text || activity.attachments?.length)))
+        ) {
+          return false;
+        } else if (type === 'message' || type === 'typing') {
           if (
             type === 'message' &&
             (activity.attachments?.length || 0) > 1 &&

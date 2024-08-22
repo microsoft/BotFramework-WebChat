@@ -58,6 +58,7 @@
 
         // WHEN: Receive a bot typing message.
         await directLine.emulateIncomingActivity({
+          channelData: { streamSequence: 1, streamType: 'streaming' },
           from: { role: 'bot' },
           text: 'Amet consequat ex duis',
           type: 'typing'
