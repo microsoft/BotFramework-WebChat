@@ -15,15 +15,14 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
         // TODO: [P4] Can we simplify these if-statement to something more readable?
 
         const { type } = activity;
-        const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
 
-        // Filter out activities that should not be visible.
+        // Filter out activities that should not visible.
         if (
           type === 'conversationUpdate' ||
           type === 'event' ||
           type === 'invoke' ||
           // Do not show typing indicator except when it is livestreaming session
-          (type === 'typing' && !livestreamingMetadata) ||
+          (type === 'typing' && !getActivityLivestreamingMetadata(activity)) ||
           (type === 'message' &&
             // Do not show postback
             (activity.channelData?.postBack ||
