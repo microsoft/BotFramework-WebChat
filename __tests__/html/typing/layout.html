@@ -16,6 +16,10 @@
         outline-offset: -2px;
       }
 
+      .flair--ongoing {
+        outline-color: green;
+      }
+
       .loader {
         border-bottom: solid 4px blue;
       }
@@ -39,6 +43,10 @@
           return <div className="flair">{children}</div>;
         }
 
+        function FlairOngoing({ children }) {
+          return <div className="flair flair--ongoing">{children}</div>;
+        }
+
         function Loader({ children }) {
           return <div className="loader">{children}</div>;
         }
@@ -49,7 +57,10 @@
             (next => request => (request.decorateForLivestreaming === 'completing' ? Flair : next(request))),
           init =>
             init === 'activity border' &&
-            (next => request => (request.decorateForLivestreaming === 'informative message' ? Loader : next(request)))
+            (next => request => (request.decorateForLivestreaming === 'preparing' ? Loader : next(request))),
+          init =>
+            init === 'activity border' &&
+            (next => request => (request.decorateForLivestreaming === 'ongoing' ? FlairOngoing : next(request)))
         ];
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
