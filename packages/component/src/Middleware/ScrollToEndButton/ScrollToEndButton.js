@@ -36,6 +36,7 @@ const ScrollToEndButton = ({ onClick }) => {
 
   return (
     <button
+      aria-keyshortcuts={scrollToEndButtonBehavior !== 'any' ? localizeAccessKey(newMessagesAccessKey) : undefined}
       aria-label={text}
       className={classNames(
         'webchat__scroll-to-end-button',
