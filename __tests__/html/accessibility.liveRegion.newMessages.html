@@ -54,7 +54,7 @@
         // THEN: The focus should land on the "New messages" button.
         expect(document.activeElement === pageElements.scrollToEndButton()).toBe(true);
 
-        expect(pageElements.scrollToEndButton().getAttribute('aria-keyshortcuts')).toBe('Alt+Shift+U');
+        expect(pageElements.scrollToEndButton().getAttribute('aria-keyshortcuts')).toBe('Alt Shift U');
 
         await host.snapshot();
 

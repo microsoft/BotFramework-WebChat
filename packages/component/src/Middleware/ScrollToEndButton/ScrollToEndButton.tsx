@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { memo, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import useFocusAccessKeyEffect from '../../Utils/AccessKeySink/useFocusAccessKeyEffect';
 import useLocalizeAccessKey from '../../hooks/internal/useLocalizeAccessKey';
@@ -61,4 +61,5 @@ const ScrollToEndButton = ({ onClick }: ScrollToEndButtonProps) => {
 
 ScrollToEndButton.displayName = 'ScrollToEndButton';
 
-export default memo(ScrollToEndButton);
+// TODO: Will fail test if memo().
+export default ScrollToEndButton;
