@@ -50,7 +50,7 @@ function SendBox(props: Props) {
   const sendMessage = useSendMessage();
   const makeThumbnail = useMakeThumbnail();
   const errorMessageId = useUniqueId('sendbox__error-message-id');
-  const [errorRef, errorMessage] = useSubmitError({ message, attachments });
+  const [errorMessage, commitLatestError] = useSubmitError({ message, attachments });
   const [telephoneKeypadShown] = useTelephoneKeypadShown();
   const setFocus = useFocus();
 
@@ -133,8 +133,9 @@ function SendBox(props: Props) {
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     event => {
       event.preventDefault();
+      const error = commitLatestError();
 
-      if (errorRef.current !== 'empty' && !isMessageLengthExceeded) {
+      if (error !== 'empty' && !isMessageLengthExceeded) {
         sendMessage(messageRef.current, undefined, { attachments: attachmentsRef.current });
 
         setMessage('');
@@ -143,7 +144,16 @@ function SendBox(props: Props) {
 
       setFocus('sendBox');
     },
-    [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage, isMessageLengthExceeded, errorRef, setFocus]
+    [
+      commitLatestError,
+      isMessageLengthExceeded,
+      setFocus,
+      sendMessage,
+      setMessage,
+      messageRef,
+      attachmentsRef,
+      setAttachments
+    ]
   );
 
   const handleTelephoneKeypadButtonClick = useCallback(
@@ -157,8 +167,9 @@ function SendBox(props: Props) {
   const aria = {
     'aria-invalid': 'false' as const,
     ...(errorMessage && {
-      'aria-invalid': 'true' as const,
-      'aria-errormessage': errorMessageId
+      'aria-describedby': errorMessageId,
+      'aria-errormessage': errorMessageId,
+      'aria-invalid': 'true' as const
     })
   };
 

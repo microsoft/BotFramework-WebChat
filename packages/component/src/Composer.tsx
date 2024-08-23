@@ -50,6 +50,8 @@ import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlin
 import createCSSKey from './Utils/createCSSKey';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
+import { LiveRegionTwinComposer } from './providers/LiveRegionTwin';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import { FocusSendBoxScope } from './hooks/sendBoxFocus';
 import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
 
@@ -65,26 +67,44 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
 
 type ComposerCoreUIProps = Readonly<{ children?: ReactNode }>;
 
+const ROOT_STYLE = {
+  '&.webchat__css-custom-properties': {
+    '& .webchat__live-region': {
+      color: 'transparent',
+      height: 1,
+      overflow: 'hidden',
+      position: 'absolute',
+      top: 0,
+      whiteSpace: 'nowrap',
+      width: 1
+    }
+  }
+};
+
 const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   const [{ cssCustomProperties }] = useStyleSet();
+  const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const dictationOnError = useCallback(err => {
     console.error(err);
   }, []);
 
   return (
-    <div className={classNames('webchat__css-custom-properties', cssCustomProperties)}>
+    <div className={classNames('webchat__css-custom-properties', rootClassName, cssCustomProperties)}>
       <FocusSendBoxScope>
         <ScrollRelativeTranscriptScope>
-          <DecoratorComposer>
-            <ModalDialogComposer>
-              {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-              <SendBoxComposer>
-                {children}
-                <Dictation onError={dictationOnError} />
-              </SendBoxComposer>
-            </ModalDialogComposer>
-          </DecoratorComposer>
+          <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
+            <DecoratorComposer>
+              <ModalDialogComposer>
+                {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+                <SendBoxComposer>
+                  {children}
+                  <Dictation onError={dictationOnError} />
+                </SendBoxComposer>
+              </ModalDialogComposer>
+            </DecoratorComposer>
+          </LiveRegionTwinComposer>
         </ScrollRelativeTranscriptScope>
       </FocusSendBoxScope>
     </div>
