@@ -50,7 +50,7 @@ function SendBox(props: Props) {
   const sendMessage = useSendMessage();
   const makeThumbnail = useMakeThumbnail();
   const errorMessageId = useUniqueId('sendbox__error-message-id');
-  const [errorMessage, syncLastError] = useSubmitError({ message, attachments });
+  const [errorMessage, commitLatestError] = useSubmitError({ message, attachments });
   const [telephoneKeypadShown] = useTelephoneKeypadShown();
   const setFocus = useFocus();
 
@@ -133,7 +133,7 @@ function SendBox(props: Props) {
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     event => {
       event.preventDefault();
-      const error = syncLastError();
+      const error = commitLatestError();
 
       if (error !== 'empty' && !isMessageLengthExceeded) {
         sendMessage(messageRef.current, undefined, { attachments: attachmentsRef.current });
@@ -145,7 +145,7 @@ function SendBox(props: Props) {
       setFocus('sendBox');
     },
     [
-      syncLastError,
+      commitLatestError,
       isMessageLengthExceeded,
       setFocus,
       sendMessage,

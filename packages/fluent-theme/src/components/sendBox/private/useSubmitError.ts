@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-component';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 const { useConnectivityStatus, useLocalizer } = hooks;
@@ -38,22 +38,21 @@ const useSubmitError = ({
     [localize]
   );
 
+  // TODO: we may want to improve this later e.g. to avoid re-render
+  // Reset visible error if there is a value
   const hasValue = !!message?.trim();
+  if (error === 'empty' && hasValue) {
+    setError(undefined);
+  }
 
-  useEffect(() => {
-    if (error === 'empty' && hasValue) {
-      setError(undefined);
-    }
-  }, [error, hasValue]);
-
-  const syncLastError = useCallback(() => {
+  const commitLatestError = useCallback(() => {
     setError(submitErrorRef.current);
     return submitErrorRef.current;
   }, [submitErrorRef]);
 
   return useMemo<Readonly<[string | undefined, () => typeof submitErrorRef.current]>>(
-    () => Object.freeze([error && errorMessageStringMap.get(error), syncLastError]),
-    [error, errorMessageStringMap, syncLastError]
+    () => Object.freeze([error && errorMessageStringMap.get(error), commitLatestError]),
+    [error, errorMessageStringMap, commitLatestError]
   );
 };
 
