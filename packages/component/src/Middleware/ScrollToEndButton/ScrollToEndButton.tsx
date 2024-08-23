@@ -9,17 +9,18 @@ import { useLiveRegion } from '../../providers/LiveRegionTwin';
 
 const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
+type ScrollToEndButtonProps = Readonly<{ onClick?: (() => void) | undefined }>;
+
 const newMessagesAccessKey = 'U u Ü ü';
 
-const ScrollToEndButton = ({ onClick }) => {
+const ScrollToEndButton = ({ onClick }: ScrollToEndButtonProps) => {
   const focusRef = useRef(null);
   const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
   const [{ scrollToEndButtonBehavior }] = useStyleOptions();
   const [direction] = useDirection();
   const localize = useLocalizer();
-  const localizeAccessKey = useLocalizeAccessKey();
+  const localizeAccessKey = useLocalizeAccessKey('accessible name');
 
-  const shouldShowScrollToEndButtonOnUnread = scrollToEndButtonBehavior === 'unread';
   const text = localize(scrollToEndButtonBehavior === 'any' ? 'TRANSCRIPT_MORE_MESSAGES' : 'TRANSCRIPT_NEW_MESSAGES');
 
   const liveRegionText = localize(
@@ -33,15 +34,15 @@ const ScrollToEndButton = ({ onClick }) => {
 
   useLiveRegion(
     () =>
-      shouldShowScrollToEndButtonOnUnread && (
+      scrollToEndButtonBehavior !== 'any' && (
         <div className="webchat__scroll-to-end-button__status">{liveRegionText}</div>
       ),
-    [liveRegionText, shouldShowScrollToEndButtonOnUnread]
+    [liveRegionText, scrollToEndButtonBehavior]
   );
 
   return (
     <button
-      aria-keyshortcuts={shouldShowScrollToEndButtonOnUnread ? localizeAccessKey(newMessagesAccessKey) : undefined}
+      aria-keyshortcuts={scrollToEndButtonBehavior !== 'any' ? localizeAccessKey(newMessagesAccessKey) : undefined}
       aria-label={text}
       className={classNames(
         'webchat__scroll-to-end-button',
