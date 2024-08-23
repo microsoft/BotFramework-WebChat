@@ -1,4 +1,4 @@
-import { createContext, memo } from 'react';
+import { createContext } from 'react';
 import createLiveRegionTwinComposer from './createLiveRegionTwinComposer';
 
 import type { StaticElement, StaticElementEntry } from './types';
@@ -22,8 +22,6 @@ export const LiveRegionTwinContext = createContext<LiveRegionTwinContextType>(
   ) as unknown as LiveRegionTwinContextType
 );
 
-const LiveRegionTwinComposer = memo(createLiveRegionTwinComposer(LiveRegionTwinContext));
-
-LiveRegionTwinComposer.displayName = 'LiveRegionTwinComposer';
+const LiveRegionTwinComposer = createLiveRegionTwinComposer(LiveRegionTwinContext);
 
 export default LiveRegionTwinComposer;
