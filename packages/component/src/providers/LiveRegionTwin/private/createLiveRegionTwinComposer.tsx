@@ -1,9 +1,9 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { Context, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState, type Context, type ReactNode } from 'react';
 
-import LiveRegionTwinContainer from './LiveRegionTwinContainer';
-import { type LiveRegionTwinContextType } from './LiveRegionTwinComposer';
 import useValueRef from '../../../hooks/internal/useValueRef';
+import { type LiveRegionTwinContextType } from './LiveRegionTwinComposer';
+import LiveRegionTwinContainer from './LiveRegionTwinContainer';
 
 import type { StaticElement, StaticElementEntry } from './types';
 
@@ -54,9 +54,8 @@ type LiveRegionTwinComposerProps = Readonly<{
  * By default, the live region is visible. If is is not desirable, the caller can use `className` prop to
  * hide its visuals.
  */
-const createLiveRegionTwinComposer =
-  ({ Provider }: Context<LiveRegionTwinContextType>) =>
-  ({
+const createLiveRegionTwinComposer = ({ Provider }: Context<LiveRegionTwinContextType>) => {
+  const LiveRegionTwinComposer = ({
     'aria-label': ariaLabel,
     'aria-live': ariaLive = DEFAULT_ARIA_LIVE,
     'aria-roledescription': ariaRoleDescription,
@@ -147,5 +146,10 @@ const createLiveRegionTwinComposer =
       </Provider>
     );
   };
+
+  LiveRegionTwinComposer.displayName = 'LiveRegionTwinComposer';
+
+  return memo(LiveRegionTwinComposer);
+};
 
 export default createLiveRegionTwinComposer;
