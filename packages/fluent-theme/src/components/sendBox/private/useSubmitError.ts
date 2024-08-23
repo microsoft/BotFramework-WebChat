@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-component';
-import { type RefObject, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 const { useConnectivityStatus, useLocalizer } = hooks;
@@ -46,13 +46,14 @@ const useSubmitError = ({
     }
   }, [error, hasValue]);
 
-  const checkError = useCallback(() => {
+  const syncLastError = useCallback(() => {
     setError(submitErrorRef.current);
+    return submitErrorRef.current;
   }, [submitErrorRef]);
 
-  return useMemo<Readonly<[RefObject<SendError | undefined>, string | undefined, () => void]>>(
-    () => Object.freeze([submitErrorRef, error && errorMessageStringMap.get(error), checkError]),
-    [checkError, error, errorMessageStringMap, submitErrorRef]
+  return useMemo<Readonly<[string | undefined, () => typeof submitErrorRef.current]>>(
+    () => Object.freeze([error && errorMessageStringMap.get(error), syncLastError]),
+    [error, errorMessageStringMap, syncLastError]
   );
 };
 
