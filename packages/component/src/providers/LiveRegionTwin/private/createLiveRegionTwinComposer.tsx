@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState, type Context, type ReactNode } from 'react';
+import { useRefFrom } from 'use-ref-from';
 
-import useValueRef from '../../../hooks/internal/useValueRef';
 import { type LiveRegionTwinContextType } from './LiveRegionTwinComposer';
 import LiveRegionTwinContainer from './LiveRegionTwinContainer';
 
@@ -67,11 +67,11 @@ const createLiveRegionTwinComposer = ({ Provider }: Context<LiveRegionTwinContex
   }: LiveRegionTwinComposerProps) => {
     const [{ clearTimeout, setTimeout }] = usePonyfill();
     const [staticElementEntries, setStaticElementEntries] = useState<StaticElementEntry[]>([]);
-    const fadeAfterRef = useValueRef(fadeAfter);
+    const fadeAfterRef = useRefFrom(fadeAfter);
     const markAllAsRenderedTimeoutIdRef = useRef<any>();
     const nextKeyRef = useRef<number>(1);
 
-    const staticElementEntriesRef = useValueRef(staticElementEntries);
+    const staticElementEntriesRef = useRefFrom(staticElementEntries);
 
     // This function is called by an effect hook `useMarkAllAsRenderedEffect`, it must be designed with converging in mind.
     // To prevent infinite render loop, after multiple calls to this function, it should eventually no-op.
