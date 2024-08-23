@@ -14,7 +14,9 @@ export const LiveRegionTwinContext = createContext<LiveRegionTwinContextType>(
     {},
     {
       get(_target, key: string) {
-        throw new Error(`LiveRegionTwinContext.${key} can only be used inside of LiveRegionTwinComposer`);
+        throw new Error(
+          `botframework-webchat: LiveRegionTwinContext.${key} can only be used inside of <LiveRegionTwinComposer>.`
+        );
       }
     }
   ) as unknown as LiveRegionTwinContextType

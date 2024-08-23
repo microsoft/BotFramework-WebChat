@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-component';
-import { RefObject, useCallback, useEffect, useMemo, useState } from 'react';
+import { type RefObject, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 const { useConnectivityStatus, useLocalizer } = hooks;
@@ -16,8 +16,8 @@ const useSubmitError = ({
   message: string;
 }>) => {
   const [connectivityStatus] = useConnectivityStatus();
-  const localize = useLocalizer();
   const [error, setError] = useState<SendError | undefined>();
+  const localize = useLocalizer();
 
   const submitErrorRef = useRefFrom<'empty' | 'offline' | undefined>(
     connectivityStatus !== 'connected' && connectivityStatus !== 'reconnected'
@@ -39,6 +39,7 @@ const useSubmitError = ({
   );
 
   const hasValue = !!message?.trim();
+
   useEffect(() => {
     if (error === 'empty' && hasValue) {
       setError(undefined);

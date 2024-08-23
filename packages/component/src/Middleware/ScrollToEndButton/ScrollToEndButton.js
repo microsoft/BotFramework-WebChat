@@ -22,7 +22,7 @@ const ScrollToEndButton = ({ onClick }) => {
 
   const text = localize(scrollToEndButtonBehavior === 'any' ? 'TRANSCRIPT_MORE_MESSAGES' : 'TRANSCRIPT_NEW_MESSAGES');
 
-  // Setup and nnnounce new messages button shortcuts
+  // Setup and announce new messages button shortcuts
   useFocusAccessKeyEffect(scrollToEndButtonBehavior === 'any' ? '' : newMessagesAccessKey, focusRef);
   usePushToLiveRegion(
     () =>

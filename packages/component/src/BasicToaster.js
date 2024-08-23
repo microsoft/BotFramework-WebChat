@@ -111,11 +111,14 @@ const BasicToaster = () => {
   }, [expandable]);
 
   const notifiedElements = useRef(new Set());
+
   usePushToLiveRegion(() => {
     const toAnnounce = [];
+
     for (const notification of sortedNotifications.slice().reverse()) {
       if (!notifiedElements.current.has(notification.id)) {
         notifiedElements.current.add(notification.id);
+
         toAnnounce.push(
           notification.alt ? (
             <div aria-atomic={true} className="webchat__toaster__notifications" key={notification.id}>
@@ -135,6 +138,7 @@ const BasicToaster = () => {
         );
       }
     }
+
     return toAnnounce.length > 0 && <Fragment>{toAnnounce}</Fragment>;
   }, [renderMarkdownInline, sortedNotifications]);
 

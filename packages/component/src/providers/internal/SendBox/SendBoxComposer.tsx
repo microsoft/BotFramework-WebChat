@@ -111,6 +111,7 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   );
 
   const hasValue = !!sendBoxValue?.trim();
+
   useEffect(() => {
     if (error === 'empty' && hasValue) {
       setError(false);
