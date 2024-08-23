@@ -9,10 +9,10 @@ import CollapseIcon from './Toast/CollapseIcon';
 import ExpandIcon from './Toast/ExpandIcon';
 import NotificationIcon from './Toast/NotificationIcon';
 import randomId from './Utils/randomId';
-import useStyleSet from './hooks/useStyleSet';
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
 import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
-import { usePushToLiveRegion } from './providers/LiveRegionTwin';
+import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import useStyleSet from './hooks/useStyleSet';
+import { useLiveRegion } from './providers/LiveRegionTwin';
 
 const { useDebouncedNotifications, useLocalizer, useRenderToast } = hooks;
 
@@ -112,7 +112,7 @@ const BasicToaster = () => {
 
   const notifiedElements = useRef(new Set());
 
-  usePushToLiveRegion(() => {
+  useLiveRegion(() => {
     const toAnnounce = [];
 
     for (const notification of sortedNotifications.slice().reverse()) {

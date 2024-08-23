@@ -1,13 +1,13 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { useCallback, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import useStyleToEmotionObject from '../../../hooks/internal/useStyleToEmotionObject';
 import useUniqueId from '../../../hooks/internal/useUniqueId';
 import useFocus from '../../../hooks/useFocus';
 import useScrollToEnd from '../../../hooks/useScrollToEnd';
-import { usePushToLiveRegion } from '../../../providers/LiveRegionTwin';
+import { useLiveRegion } from '../../../providers/LiveRegionTwin';
 import SendBoxContext from './private/Context';
 import { type ContextType, type SendError } from './private/types';
 
@@ -47,8 +47,10 @@ const SUBMIT_ERROR_MESSAGE_STYLE = {
 
 type ErrorMessageStringMap = ReadonlyMap<SendError, string>;
 
+type SendBoxComposerProps = Readonly<{ children?: ReactNode | undefined }>;
+
 // TODO: [P2] Complete this component.
-const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
+const SendBoxComposer = ({ children }: SendBoxComposerProps) => {
   const [attachments] = useSendBoxAttachments();
   const [connectivityStatus] = useConnectivityStatus();
   const [error, setError] = useState<SendError | false>(false);
@@ -118,12 +120,11 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
     }
   }, [error, hasValue]);
 
-  usePushToLiveRegion(
-    () =>
-      error && (
-        <span className={classNames('webchat__submit-error-message__status')}>{errorMessageStringMap.get(error)}</span>
-      ),
-    [error, errorMessageStringMap]
+  const errorMessage = error && errorMessageStringMap.get(error);
+
+  useLiveRegion(
+    () => errorMessage && <div className={classNames('webchat__submit-error-message__status')}>{errorMessage}</div>,
+    [errorMessage]
   );
 
   return (
@@ -141,4 +142,6 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   );
 };
 
-export default SendBoxComposer;
+SendBoxComposer.displayName = 'SendBoxComposer';
+
+export default memo(SendBoxComposer);

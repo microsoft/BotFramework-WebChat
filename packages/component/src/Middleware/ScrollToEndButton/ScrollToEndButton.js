@@ -1,12 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useRef } from 'react';
+import React, { memo, useRef } from 'react';
 
 import useFocusAccessKeyEffect from '../../Utils/AccessKeySink/useFocusAccessKeyEffect';
 import useLocalizeAccessKey from '../../hooks/internal/useLocalizeAccessKey';
-import { usePushToLiveRegion } from '../../providers/LiveRegionTwin';
 import useStyleSet from '../../hooks/useStyleSet';
+import { useLiveRegion } from '../../providers/LiveRegionTwin';
 
 const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
@@ -20,23 +19,29 @@ const ScrollToEndButton = ({ onClick }) => {
   const localize = useLocalizer();
   const localizeAccessKey = useLocalizeAccessKey();
 
+  const shouldShowScrollToEndButtonOnUnread = scrollToEndButtonBehavior === 'unread';
   const text = localize(scrollToEndButtonBehavior === 'any' ? 'TRANSCRIPT_MORE_MESSAGES' : 'TRANSCRIPT_NEW_MESSAGES');
+
+  const liveRegionText = localize(
+    'TRANSCRIPT_LIVE_REGION_NEW_MESSAGES_ALT',
+    localizeAccessKey(newMessagesAccessKey),
+    text
+  );
 
   // Setup and announce new messages button shortcuts
   useFocusAccessKeyEffect(scrollToEndButtonBehavior === 'any' ? '' : newMessagesAccessKey, focusRef);
-  usePushToLiveRegion(
+
+  useLiveRegion(
     () =>
-      scrollToEndButtonBehavior !== 'any' && (
-        <div className="webchat__scroll-to-end-button__status">
-          {localize('TRANSCRIPT_LIVE_REGION_NEW_MESSAGES_ALT', localizeAccessKey(newMessagesAccessKey), text)}
-        </div>
+      shouldShowScrollToEndButtonOnUnread && (
+        <div className="webchat__scroll-to-end-button__status">{liveRegionText}</div>
       ),
-    [scrollToEndButtonBehavior]
+    [liveRegionText, shouldShowScrollToEndButtonOnUnread]
   );
 
   return (
     <button
-      aria-keyshortcuts={scrollToEndButtonBehavior !== 'any' ? localizeAccessKey(newMessagesAccessKey) : undefined}
+      aria-keyshortcuts={shouldShowScrollToEndButtonOnUnread ? localizeAccessKey(newMessagesAccessKey) : undefined}
       aria-label={text}
       className={classNames(
         'webchat__scroll-to-end-button',
@@ -53,14 +58,6 @@ const ScrollToEndButton = ({ onClick }) => {
   );
 };
 
-ScrollToEndButton.defaultProps = {
-  onClick: undefined
-};
-
 ScrollToEndButton.displayName = 'ScrollToEndButton';
 
-ScrollToEndButton.propTypes = {
-  onClick: PropTypes.func
-};
-
-export default ScrollToEndButton;
+export default memo(ScrollToEndButton);

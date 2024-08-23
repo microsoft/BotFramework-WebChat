@@ -1,15 +1,15 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { memo, useEffect, useMemo, useRef } from 'react';
-import type { RefObject } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
+import type { RefObject } from 'react';
+import React, { memo, useEffect, useMemo, useRef } from 'react';
 
-import isPresentational from './LiveRegion/isPresentational';
 import LiveRegionActivity from '../LiveRegion/LiveRegionActivity';
-import LiveRegionSendFailed from './LiveRegion/SendFailed';
 import tabbableElements from '../Utils/tabbableElements';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
-import useQueueStaticElement from '../providers/LiveRegionTwin/useQueueStaticElement';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
+import { useQueueStaticElement } from '../providers/LiveRegionTwin';
+import LiveRegionSendFailed from './LiveRegion/SendFailed';
+import isPresentational from './LiveRegion/isPresentational';
 import useTypistNames from './useTypistNames';
 
 import type { ActivityElementMap } from './types';
@@ -128,9 +128,7 @@ const LiveRegionTranscript = ({ activityElementMapRef }: LiveRegionTranscriptPro
     keyedActivities
   ]);
 
-  useEffect(() => {
-    typingIndicator && queueStaticElement(typingIndicator);
-  }, [queueStaticElement, typingIndicator]);
+  useMemo(() => typingIndicator && queueStaticElement(typingIndicator), [queueStaticElement, typingIndicator]);
 
   return <LiveRegionSendFailed />;
 };
