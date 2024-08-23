@@ -20,8 +20,9 @@ const ScrollToEndButton = ({ onClick }: ScrollToEndButtonProps) => {
   const [direction] = useDirection();
   const localize = useLocalizer();
   const localizeAccessKey = useLocalizeAccessKey('accessible name');
+  const shouldShowNewMessagesButton = scrollToEndButtonBehavior !== 'any';
 
-  const text = localize(scrollToEndButtonBehavior === 'any' ? 'TRANSCRIPT_MORE_MESSAGES' : 'TRANSCRIPT_NEW_MESSAGES');
+  const text = localize(shouldShowNewMessagesButton ? 'TRANSCRIPT_NEW_MESSAGES' : 'TRANSCRIPT_MORE_MESSAGES');
 
   const liveRegionText = localize(
     'TRANSCRIPT_LIVE_REGION_NEW_MESSAGES_ALT',
@@ -30,19 +31,16 @@ const ScrollToEndButton = ({ onClick }: ScrollToEndButtonProps) => {
   );
 
   // Setup and announce new messages button shortcuts
-  useFocusAccessKeyEffect(scrollToEndButtonBehavior === 'any' ? '' : newMessagesAccessKey, focusRef);
+  useFocusAccessKeyEffect(shouldShowNewMessagesButton ? newMessagesAccessKey : '', focusRef);
 
   useLiveRegion(
-    () =>
-      scrollToEndButtonBehavior !== 'any' && (
-        <div className="webchat__scroll-to-end-button__status">{liveRegionText}</div>
-      ),
-    [liveRegionText, scrollToEndButtonBehavior]
+    () => shouldShowNewMessagesButton && <div className="webchat__scroll-to-end-button__status">{liveRegionText}</div>,
+    [liveRegionText, shouldShowNewMessagesButton]
   );
 
   return (
     <button
-      aria-keyshortcuts={scrollToEndButtonBehavior !== 'any' ? localizeAccessKey(newMessagesAccessKey) : undefined}
+      aria-keyshortcuts={shouldShowNewMessagesButton ? localizeAccessKey(newMessagesAccessKey) : undefined}
       aria-label={text}
       className={classNames(
         'webchat__scroll-to-end-button',
