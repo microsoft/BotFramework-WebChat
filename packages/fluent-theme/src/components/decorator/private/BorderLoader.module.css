@@ -1,7 +1,7 @@
 @keyframes borderAnimation-position {
   0% {
-    width: 33%;
     left: -33%;
+    width: 33%;
   }
 
   100% {
