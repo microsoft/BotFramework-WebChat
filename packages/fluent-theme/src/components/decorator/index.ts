@@ -1,1 +1,1 @@
-export { default as WebChatDecorator } from './Decorator';
+export { default as WebChatDecorator } from './private/Decorator';

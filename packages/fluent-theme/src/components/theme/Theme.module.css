@@ -20,6 +20,7 @@
   --webchat-colorNeutralBackground3: var(--colorNeutralBackground3, #f5f5f5);
   --webchat-colorNeutralBackground4: var(--colorNeutralBackground4, #f0f0f0);
   --webchat-colorNeutralBackground5: var(--colorNeutralBackground5, #ebebeb);
+  --webchat-colorNeutralBackground6: var(--colorNeutralBackground6, #e6e6e6);
 
   --webchat-colorTransparentBackground: var(--colorTransparentBackground, rgba(0, 0, 0, 0.4));
 
@@ -167,6 +168,10 @@
     var(--webchat-spacingVerticalNone)
     var(--webchat-spacingHorizontalMNudge)
     var(--webchat-spacingHorizontalMNudge);
+
+  --webchat__border-animation--color-1: #464FEB;
+  --webchat__border-animation--color-2: #47CFFA;
+  --webchat__border-animation--color-3: #B47CF8;
 }
 
 :global(.webchat-fluent).theme.variant-copilot :global(.webchat__css-custom-properties) {

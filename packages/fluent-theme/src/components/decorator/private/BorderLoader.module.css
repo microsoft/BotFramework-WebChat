@@ -1,0 +1,49 @@
+@keyframes borderAnimation-position {
+  0% {
+    width: 33%;
+    left: -33%;
+  }
+
+  100% {
+    width: 33%;
+    left: 100%;
+  }
+}
+
+:global(.webchat-fluent) .border-loader {
+  border-radius: inherit;
+}
+
+:global(.webchat-fluent) .border-loader__track {
+  --webchat-decorator-borderLoader-borderSize: var(--webchat-borderLoader-borderSize, 4px);
+
+  background-color: var(--webchat-colorNeutralBackground6);
+  height: var(--webchat-decorator-borderLoader-borderSize);
+  width: 100%;
+  position: relative;
+}
+
+
+:global(.webchat-fluent) .border-loader__loader {
+  --webchat-decorator-borderLoader-color1: var(--webchat-borderLoader-color1,
+      var(--webchat__border-animation--color-1));
+  --webchat-decorator-borderLoader-color2: var(--webchat-borderLoader-color2,
+      var(--webchat__border-animation--color-2));
+  --webchat-decorator-borderLoader-color3: var(--webchat-borderLoader-color3,
+      var(--webchat__border-animation--color-3));
+  --webchat-decorator-borderLoader-color1Fade: var(--webchat-borderLoader-color1Fade, transparent);
+  --webchat-decorator-borderLoader-color3Fade: var(--webchat-borderLoader-color1Fade, transparent);
+
+  animation: borderAnimation-position 3s linear infinite;
+  background: linear-gradient(90deg,
+      var(--webchat-decorator-borderLoader-color1Fade) 0%,
+      var(--webchat-decorator-borderLoader-color1) 35%,
+      var(--webchat-decorator-borderLoader-color2) 70%,
+      var(--webchat-decorator-borderLoader-color3) 92%,
+      var(--webchat-decorator-borderLoader-color3Fade)) no-repeat;
+  height: var(--webchat-decorator-borderLoader-borderSize);
+  inset: 0;
+  isolation: isolate;
+  position: absolute;
+  width: 100%;
+}
