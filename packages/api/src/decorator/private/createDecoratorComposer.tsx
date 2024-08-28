@@ -10,7 +10,7 @@ type DecoratorMiddlewareInit = typeof activityBorderDecoratorTypeName;
 
 export type DecoratorComposerComponent = (
   props: Readonly<{
-    children: ReactNode;
+    children?: ReactNode | undefined;
     middleware?: readonly DecoratorMiddleware[] | undefined;
   }>
 ) => React.JSX.Element;
