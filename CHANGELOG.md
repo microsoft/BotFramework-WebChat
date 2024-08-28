@@ -48,6 +48,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    -  Added the `ThemeProvider.styles` property, allowing theme packages to place styles into the same root node as WebChat, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
    -  Added `nonce` for Fluent and `react-scroll-to-bottom` injected styles, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
    -  Updated `react-scroll-to-bottom` to version `4.2.1-main.53844f5`, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Updated `react-film` to version `3.1.1-main.f623bf6`, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
