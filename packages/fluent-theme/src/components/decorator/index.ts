@@ -1,1 +1,1 @@
-export { default as WebChatDecorator } from './private/Decorator';
+export { default as FluentThemeDecorator } from './private/Decorator';

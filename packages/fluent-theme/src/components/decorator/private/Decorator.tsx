@@ -13,8 +13,8 @@ const middleware: DecoratorMiddleware[] = [
     (next => request => (request.livestreamingState === 'preparing' ? BorderLoader : next(request)))
 ];
 
-function WebChatDecorator({ children }: Readonly<{ readonly children?: ReactNode | undefined }>) {
+function FluentThemeDecorator({ children }: Readonly<{ readonly children?: ReactNode | undefined }>) {
   return <DecoratorComposer middleware={middleware}>{children}</DecoratorComposer>;
 }
 
-export default memo(WebChatDecorator);
+export default memo(FluentThemeDecorator);
