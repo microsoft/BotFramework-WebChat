@@ -5,8 +5,8 @@
   }
 
   100% {
-    width: 33%;
     left: 100%;
+    width: 33%;
   }
 }
 
@@ -19,8 +19,8 @@
 
   background-color: var(--webchat-colorNeutralBackground6);
   height: var(--webchat-decorator-borderLoader-borderSize);
-  width: 100%;
   position: relative;
+  width: 100%;
 }
 
 
