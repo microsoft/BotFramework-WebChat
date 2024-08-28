@@ -127,7 +127,6 @@ const SuggestedActionFlowContainer = ({ children, className, label }) => {
   return (
     <div
       aria-label={label}
-      aria-live="polite"
       aria-orientation="horizontal"
       className={classNames(
         'webchat__suggested-actions',
@@ -168,7 +167,6 @@ const SuggestedActionStackedContainer = ({ children, className, label }) => {
   return (
     <div
       aria-label={label}
-      aria-live="polite"
       aria-orientation="vertical"
       className={classNames(
         'webchat__suggested-actions',

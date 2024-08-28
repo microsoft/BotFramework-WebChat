@@ -94,7 +94,9 @@ rules:
   react/void-dom-elements-no-children: error
 
   react-hooks/rules-of-hooks: error
-  react-hooks/exhaustive-deps: warn
+  react-hooks/exhaustive-deps:
+    - warn
+    - additionalHooks: ^(useLiveRegion|useMemoized)$
 
   # Conflicts with Adaptive Card schema.
   # react/forbid-prop-types: error

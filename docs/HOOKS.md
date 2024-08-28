@@ -1003,9 +1003,13 @@ This function is for rendering the avatar of an activity. The caller will need t
 
 <!-- prettier-ignore-start -->
 ```js
-useRenderMarkdownAsHTML(): (markdown: string): string
+useRenderMarkdownAsHTML(
+  mode: 'accessible name' | 'adaptive cards' | 'citation modal' | 'clipboard' | 'message activity' = 'message activity'
+): (markdown: string): string
 ```
 <!-- prettier-ignore-end -->
+
+> New in 4.17.0: A new `mode` option can be passed to indicate how the HTML output will be used.
 
 This hook will return a function that, when called, will render Markdown into an HTML string. For example,
 
@@ -1355,16 +1359,19 @@ This function will send the text in the send box to the bot and clear the send b
 
 ## `useSuggestedActions`
 
+> New in 4.18.1: Will return the activity which the suggested actions are originated from.
+
 <!-- prettier-ignore-start -->
 ```js
-useSuggestedActions(): [CardAction[], (CardAction[]) => void]
+useSuggestedActions(): [CardAction[], (CardAction[]) => void, { activity: WebChatActivity }]
 ```
 <!-- prettier-ignore-end -->
 
-This hook will return an array and a setter function.
+This hook will return an array, a setter function, and a property bag.
 
 1. array: a list of suggested actions that should be shown to the user
 1. function: a setter function to clear suggested actions. The setter function can only be used to clear suggested actions, and it will accept empty array or falsy value only.
+1. `activity`: the activity which the suggested actions are originated from
 
 The suggested actions are computed from the last message activity sent from the bot. If the user posts an activity, the suggested actions will be cleared.
 

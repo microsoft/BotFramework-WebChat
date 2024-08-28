@@ -2,8 +2,7 @@ import { onErrorResumeNext } from 'botframework-webchat-core';
 import MarkdownIt from 'markdown-it';
 import sanitizeHTML from 'sanitize-html';
 
-import { parseDocumentFromString } from 'botframework-webchat-component/internal/parseDocumentFromString';
-import { serializeDocumentIntoString } from 'botframework-webchat-component/internal/serializeDocumentIntoString';
+import { parseDocumentFromString, serializeDocumentIntoString } from 'botframework-webchat-component/internal';
 import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdownItPlugins/ariaLabel';
 import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';

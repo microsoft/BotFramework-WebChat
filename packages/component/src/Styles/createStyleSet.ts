@@ -1,6 +1,8 @@
 import { normalizeStyleOptions, StyleOptions } from 'botframework-webchat-api';
 
 import createActivitiesStyle from './StyleSet/Activities';
+import createActivityButtonStyle from './StyleSet/ActivityButton';
+import createActivityCopyButtonStyle from './StyleSet/ActivityCopyButton';
 import createAudioAttachmentStyle from './StyleSet/AudioAttachment';
 import createAudioContentStyle from './StyleSet/AudioContent';
 import createAutoResizeTextAreaStyle from './StyleSet/AutoResizeTextArea';
@@ -19,10 +21,10 @@ import createErrorNotificationStyle from './StyleSet/ErrorNotification';
 import createFileContentStyle from './StyleSet/FileContent';
 import createImageAvatarStyle from './StyleSet/ImageAvatar';
 import createInitialsAvatarStyle from './StyleSet/InitialsAvatar';
-import createKeyboardHelpStyle from './StyleSet/KeyboardHelp';
 import createLinkDefinitionsStyle from './StyleSet/LinkDefinitions';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createModalDialogStyle from './StyleSet/ModalDialog';
+import createMonochromeImageMaskerStyleSet from './StyleSet/MonochromeImageMasker';
 import createRenderMarkdownStyle from './StyleSet/RenderMarkdown';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
@@ -58,6 +60,8 @@ export default function createStyleSet(styleOptions: StyleOptions) {
 
   return Object.freeze({
     activities: createActivitiesStyle(),
+    activityButton: createActivityButtonStyle(),
+    activityCopyButton: createActivityCopyButtonStyle(),
     audioAttachment: createAudioAttachmentStyle(strictStyleOptions),
     audioContent: createAudioContentStyle(),
     autoResizeTextArea: createAutoResizeTextAreaStyle(strictStyleOptions),
@@ -74,8 +78,8 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     fileContent: createFileContentStyle(strictStyleOptions),
     imageAvatar: createImageAvatarStyle(strictStyleOptions),
     initialsAvatar: createInitialsAvatarStyle(strictStyleOptions),
-    keyboardHelp: createKeyboardHelpStyle(strictStyleOptions),
     microphoneButton: createMicrophoneButtonStyle(strictStyleOptions),
+    monochromeImageMasker: createMonochromeImageMaskerStyleSet(),
     options: { ...strictStyleOptions }, // Cloned to make sure no additional modifications will propagate up.
     root: createRootStyle(strictStyleOptions),
     scrollToEndButton: createScrollToEndButtonStyle(strictStyleOptions),

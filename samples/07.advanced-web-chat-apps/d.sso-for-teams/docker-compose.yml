@@ -5,12 +5,12 @@ services:
       context: .
       dockerfile: Dockerfile-bot
     env_file: ./bot/.env
-    image: webchat.azurecr.io/webchat-sso-teams-bot
+    # image: your-own-registry.azurecr.io/webchat-sso-teams-bot
   web:
     build:
       context: .
       dockerfile: Dockerfile-web
     env_file: ./web/.env
-    image: webchat.azurecr.io/webchat-sso-teams-web
+    # image: your-own-registry.azurecr.io/webchat-sso-teams-web
     ports:
       - "3000:5000"

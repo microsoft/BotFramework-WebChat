@@ -1,1 +1,1 @@
-export { default as SendBox } from './SendBox';
+export { PrimarySendBox, default as SendBox } from './SendBox';

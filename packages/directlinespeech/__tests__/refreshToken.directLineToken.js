@@ -40,7 +40,7 @@ test.nightly('should refresh Direct Line token', async () => {
     throw new Error('"SPEECH_SERVICES_SUBSCRIPTION_KEY" environment variable must be set.');
   }
 
-  jest.useFakeTimers('modern');
+  jest.useFakeTimers({ doNotFake: ['performance'] });
 
   const { directLine } = await createTestHarness({ enableInternalHTTPSupport: true });
   const initialToken = directLine.dialogServiceConnector.properties.getProperty(PropertyId.Conversation_Agent_Connection_Id);

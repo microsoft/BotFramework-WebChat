@@ -6,10 +6,11 @@ import type {
 import {
   Composer as APIComposer,
   hooks,
-  rectifySendBoxMiddlewareProps,
-  rectifySendBoxToolbarMiddlewareProps,
+  initSendBoxMiddleware,
+  initSendBoxToolbarMiddleware,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
+import { DecoratorComposer } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -49,6 +50,9 @@ import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
 import { StyleToEmotionObjectComposer, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useInjectStyles from './hooks/internal/useInjectStyles';
+import { LiveRegionTwinComposer } from './providers/LiveRegionTwin';
+import { FocusSendBoxScope } from './hooks/sendBoxFocus';
+import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -60,22 +64,46 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
 
 type ComposerCoreUIProps = Readonly<{ children?: ReactNode }>;
 
+const ROOT_STYLE = {
+  '&.webchat__css-custom-properties': {
+    '& .webchat__live-region': {
+      color: 'transparent',
+      height: 1,
+      overflow: 'hidden',
+      position: 'absolute',
+      top: 0,
+      whiteSpace: 'nowrap',
+      width: 1
+    }
+  }
+};
+
 const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   const [{ cssCustomProperties }] = useStyleSet();
+  const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const dictationOnError = useCallback(err => {
     console.error(err);
   }, []);
 
   return (
-    <div className={classNames('webchat__css-custom-properties', cssCustomProperties)}>
-      <ModalDialogComposer>
-        {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-        <SendBoxComposer>
-          {children}
-          <Dictation onError={dictationOnError} />
-        </SendBoxComposer>
-      </ModalDialogComposer>
+    <div className={classNames('webchat__css-custom-properties', rootClassName, cssCustomProperties)}>
+      <FocusSendBoxScope>
+        <ScrollRelativeTranscriptScope>
+          <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
+            <DecoratorComposer>
+              <ModalDialogComposer>
+                {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+                <SendBoxComposer>
+                  {children}
+                  <Dictation onError={dictationOnError} />
+                </SendBoxComposer>
+              </ModalDialogComposer>
+            </DecoratorComposer>
+          </LiveRegionTwinComposer>
+        </ScrollRelativeTranscriptScope>
+      </FocusSendBoxScope>
     </div>
   );
 });
@@ -375,8 +403,8 @@ const Composer = ({
   const sendBoxMiddleware = useMemo<readonly SendBoxMiddleware[]>(
     () =>
       Object.freeze([
-        ...rectifySendBoxMiddlewareProps(sendBoxMiddlewareFromProps),
-        ...rectifySendBoxMiddlewareProps(theme.sendBoxMiddleware),
+        ...initSendBoxMiddleware(sendBoxMiddlewareFromProps),
+        ...initSendBoxMiddleware(theme.sendBoxMiddleware),
         ...createDefaultSendBoxMiddleware()
       ]),
     [sendBoxMiddlewareFromProps, theme.sendBoxMiddleware]
@@ -385,8 +413,8 @@ const Composer = ({
   const sendBoxToolbarMiddleware = useMemo<readonly SendBoxToolbarMiddleware[]>(
     () =>
       Object.freeze([
-        ...rectifySendBoxToolbarMiddlewareProps(sendBoxToolbarMiddlewareFromProps),
-        ...rectifySendBoxToolbarMiddlewareProps(theme.sendBoxToolbarMiddleware),
+        ...initSendBoxToolbarMiddleware(sendBoxToolbarMiddlewareFromProps),
+        ...initSendBoxToolbarMiddleware(theme.sendBoxToolbarMiddleware),
         ...createDefaultSendBoxToolbarMiddleware()
       ]),
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]

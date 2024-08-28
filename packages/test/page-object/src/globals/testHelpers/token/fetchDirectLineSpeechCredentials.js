@@ -5,9 +5,12 @@ function createFetchDirectLineSpeechCredentials() {
   return () => {
     if (!resultPromise || Date.now() > expireAfter) {
       expireAfter = Date.now() + 5000;
-      resultPromise = fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-        method: 'POST'
-      })
+      resultPromise = fetch(
+        'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/speech',
+        {
+          method: 'POST'
+        }
+      )
         .then(res => {
           if (!res.ok) {
             throw new Error('Failed to fetch Direct Line Speech credentials.');

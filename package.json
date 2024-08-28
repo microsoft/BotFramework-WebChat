@@ -1,6 +1,6 @@
 {
   "name": "botframework-webchat-root",
-  "version": "4.17.1-0",
+  "version": "4.18.1-0",
   "private": true,
   "files": [
     "lib/**/*"
@@ -35,8 +35,8 @@
     "bump:packages": "for i in `find packages -name package.json ! -path */node_modules/* | xargs realpath | xargs dirname`; do echo \u001b[32m--- Bumping $i/package.json ---\u001b[0m; cd $i; npm run bump; if [ $? -ne 0 ]; then echo \u001b[31m--- Error while bumping $i/package.json ---\u001b[0m; break; fi; cd $OLDPWD; done; echo \u001b[32m--- Bump completed ---\u001b[0m && lerna clean --yes && lerna bootstrap",
     "bump:samples": "for i in `find samples -name package.json ! -path */node_modules/* | xargs realpath | xargs dirname`; do echo \u001b[32m--- Bumping $i/package.json ---\u001b[0m; cd $i; npm run bump; if [ $? -ne 0 ]; then echo \u001b[31m--- Error while bumping $i/package.json ---\u001b[0m; break; fi; cd $OLDPWD; done; echo \u001b[32m--- Bump completed ---\u001b[0m",
     "docker": "npm run docker:up",
-    "docker:down": "docker-compose -f docker-compose-wsl2.yml down --rmi all",
-    "docker:up": "docker-compose -f docker-compose-wsl2.yml down && docker-compose -f docker-compose-wsl2.yml up --build --scale chrome=4",
+    "docker:down": "docker compose -f docker-compose-wsl2.yml down --rmi all",
+    "docker:up": "docker compose -f docker-compose-wsl2.yml down && docker compose -f docker-compose-wsl2.yml up --build --scale chrome=4",
     "eslint": "npm run precommit",
     "lint-staged": "lint-staged",
     "pack-all": "npx lerna exec --scope=botframework* -- npm pack --pack-destination=$PWD && zip tarball.zip *.tgz",
@@ -53,6 +53,7 @@
     "precommit:eslint:support-cldr-data": "cd packages && cd support && cd cldr-data && npm run precommit:eslint",
     "precommit:eslint:test-harness": "cd packages && cd test && cd harness && npm run precommit:eslint",
     "precommit:eslint:test-page-object": "cd packages && cd test && cd page-object && npm run precommit:eslint",
+    "precommit:eslint:web-server": "cd packages && cd test && cd web-server && npm run precommit:eslint",
     "precommit:typecheck": "concurrently --raw \"npm run precommit:typecheck:*\"",
     "precommit:typecheck:api": "cd packages && cd api && npm run precommit:typecheck",
     "precommit:typecheck:bundle": "cd packages && cd bundle && npm run precommit:typecheck",
@@ -86,6 +87,10 @@
     "@babel/runtime": [
       "7.19.0",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@testing-library/react": [
+      "12",
+      "@testing-library/react@12 is targeting react@16"
     ],
     "@types/jest": [
       "28",
@@ -146,6 +151,7 @@
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
     "@babel/runtime": "^7.19.0",
+    "@testing-library/react": "^12.1.5",
     "@types/jest": "^28.1.8",
     "@types/react": "^16.14.60",
     "@types/react-dom": "^16.9.24",

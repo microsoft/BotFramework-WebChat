@@ -1,3 +1,4 @@
+.webchat__live-region,
 .webchat__live-region-activity,
 .webchat__live-region-transcript__note,
 .webchat__live-region-transcript__text-element {
@@ -9,6 +10,21 @@
   top: initial !important;
   white-space: initial !important;
   width: initial !important;
+}
+
+#webchat {
+  position: relative;
+}
+
+.webchat__live-region {
+  backdrop-filter: blur(1px);
+  background: rgba(230, 230, 230, 0.5);
+  border: 1px solid rgb(200, 200, 200);
+  box-sizing: border-box;
+  padding: 5px 10px;
+  position: absolute !important;
+  width: 100% !important;
+  z-index: 1;
 }
 
 .webchat__live-region-activity .webchat__live-region-activity__timestamp {

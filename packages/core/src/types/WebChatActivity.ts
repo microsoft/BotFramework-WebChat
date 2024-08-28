@@ -173,7 +173,7 @@ type TypingActivityEssence =
     }
   | {
       channelData: {
-        streamId: string;
+        streamId?: string | undefined;
         streamSequence: number;
         streamType: 'informative' | 'streaming';
       };

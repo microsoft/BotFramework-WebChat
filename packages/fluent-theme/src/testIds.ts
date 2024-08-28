@@ -1,4 +1,5 @@
 const testIds = {
+  preChatMessageActivityStarterPromptsCardAction: 'pre-chat message activity starter prompts card action',
   sendBoxDropZone: 'send box drop zone',
   sendBoxSendButton: 'send box send button',
   sendBoxTextBox: 'send box text area',

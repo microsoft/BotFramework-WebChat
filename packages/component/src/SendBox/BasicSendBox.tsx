@@ -71,6 +71,7 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
 
   return (
     <div
+      aria-describedby={errorMessageId}
       aria-errormessage={errorMessageId}
       aria-invalid={!!errorMessageId}
       className={classNames('webchat__send-box', sendBoxStyleSet + '', rootClassName + '', (className || '') + '')}

@@ -3,6 +3,10 @@ import { createPropagation } from 'use-propagate';
 
 export type SendBoxFocusOptions = WaitUntilable<{ noKeyboard: boolean }>;
 
-const { useListen: useRegisterFocusSendBox, usePropagate: useFocusSendBox } = createPropagation<SendBoxFocusOptions>();
+const {
+  PropagationScope: FocusSendBoxScope,
+  useListen: useRegisterFocusSendBox,
+  usePropagate: useFocusSendBox
+} = createPropagation<SendBoxFocusOptions>();
 
-export { useRegisterFocusSendBox, useFocusSendBox };
+export { FocusSendBoxScope, useRegisterFocusSendBox, useFocusSendBox };

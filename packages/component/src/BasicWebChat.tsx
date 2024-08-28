@@ -61,7 +61,10 @@ const BasicWebChat: FC<BasicWebChatProps> = ({ className, role }) => {
   }
 
   return (
-    <AccessKeySinkSurface className={classNames(rootClassName, rootStyleSet + '', (className || '') + '')} role={role}>
+    <AccessKeySinkSurface
+      className={classNames('webchat__surface', rootClassName, rootStyleSet + '', (className || '') + '')}
+      role={role}
+    >
       {!options.hideToaster && <BasicToaster className={toasterClassName} />}
       <BasicTranscript className={transcriptClassName} />
       <BasicConnectivityStatus className={connectivityStatusClassName} />

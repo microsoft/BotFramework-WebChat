@@ -6,8 +6,8 @@ import activityStatuses from './activityStatuses';
 import byTestId from './byTestId';
 import connectivityStatus from './connectivityStatus';
 import focusedActivity from './focusedActivity';
-import keyboardHelpScreenCloseButton from './keyboardHelpScreenCloseButton';
 import linkDefinitions from './linkDefinitions';
+import liveRegion from './liveRegion';
 import microphoneButton from './microphoneButton';
 import root from './root';
 import scrollToEndButton from './scrollToEndButton';
@@ -18,7 +18,6 @@ import toastDismissButtons from './toastDismissButtons';
 import toasterHeader from './toasterHeader';
 import toasts from './toasts';
 import transcript from './transcript';
-import transcriptLiveRegion from './transcriptLiveRegion';
 import transcriptScrollable from './transcriptScrollable';
 import transcriptTerminator from './transcriptTerminator';
 import typingIndicator from './typingIndicator';
@@ -33,8 +32,8 @@ export {
   byTestId,
   connectivityStatus,
   focusedActivity,
-  keyboardHelpScreenCloseButton,
   linkDefinitions,
+  liveRegion,
   microphoneButton,
   root,
   scrollToEndButton,
@@ -45,7 +44,6 @@ export {
   toasterHeader,
   toasts,
   transcript,
-  transcriptLiveRegion,
   transcriptScrollable,
   transcriptTerminator,
   typingIndicator,

@@ -2,7 +2,10 @@ import { createPropagation } from 'use-propagate';
 
 export type TranscriptScrollRelativeOptions = { direction: 'down' | 'up'; displacement?: number };
 
-const { useListen: useRegisterScrollRelativeTranscript, usePropagate: useScrollRelativeTranscript } =
-  createPropagation<TranscriptScrollRelativeOptions>();
+const {
+  PropagationScope: ScrollRelativeTranscriptScope,
+  useListen: useRegisterScrollRelativeTranscript,
+  usePropagate: useScrollRelativeTranscript
+} = createPropagation<TranscriptScrollRelativeOptions>();
 
-export { useRegisterScrollRelativeTranscript, useScrollRelativeTranscript };
+export { ScrollRelativeTranscriptScope, useRegisterScrollRelativeTranscript, useScrollRelativeTranscript };

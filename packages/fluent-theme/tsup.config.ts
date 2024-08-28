@@ -12,11 +12,19 @@ const umdResolvePlugin = {
     }));
 
     build.onResolve({ filter: /^botframework-webchat-api$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api.ts')
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/index.ts')
+    }));
+
+    build.onResolve({ filter: /^botframework-webchat-api\/decorator$/u }, () => ({
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/decorator.ts')
     }));
 
     build.onResolve({ filter: /^botframework-webchat-component$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component.ts')
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/index.ts')
+    }));
+
+    build.onResolve({ filter: /^botframework-webchat-component\/internal$/u }, () => ({
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/internal.ts')
     }));
   }
 };

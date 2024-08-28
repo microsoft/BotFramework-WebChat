@@ -2,6 +2,10 @@ const { defaults } = require('jest-config');
 const { join, relative } = require('path');
 
 const TRANSFORM_IGNORE_PACKAGES = [
+  'botframework-webchat-api',
+  'botframework-webchat-component',
+  'botframework-webchat-core',
+  'botframework-webchat',
   'character-entities',
   'decode-named-character-reference',
   'mdast-util-from-markdown',
@@ -143,6 +147,7 @@ module.exports = {
     // Packages, such as "uuid", export itself for browser as ES5 + ESM.
     // Since jest@28 cannot consume ESM yet, we need to transpile these packages.
     `/node_modules/(?!(${TRANSFORM_IGNORE_PACKAGES.join('|')})/)`,
+    '/packages/(?:test/)?\\w+/(?:lib/|dist/|\\w+\\.js)',
     ...defaults.transformIgnorePatterns.filter(pattern => pattern !== '/node_modules/')
   ]
 };

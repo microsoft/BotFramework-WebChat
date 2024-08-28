@@ -15,6 +15,7 @@ import withEmoji from '../withEmoji/withEmoji';
 import AutoResizeTextArea from './AutoResizeTextArea';
 
 import type { MutableRefObject } from 'react';
+import testIds from '../testIds';
 
 const { useDisabled, useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions } = hooks;
 
@@ -219,6 +220,7 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
           aria-label={sendBoxString}
           className="webchat__send-box-text-box__input"
           data-id="webchat-sendbox-input"
+          data-testid={testIds.sendBoxTextBox}
           disabled={disabled}
           emojiMap={emojiMap}
           enterKeyHint="send"
@@ -237,6 +239,7 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
           aria-label={sendBoxString}
           className="webchat__send-box-text-box__text-area"
           data-id="webchat-sendbox-input"
+          data-testid={testIds.sendBoxTextBox}
           disabled={disabled}
           emojiMap={emojiMap}
           enterKeyHint="send"

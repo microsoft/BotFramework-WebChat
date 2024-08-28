@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-component';
-import { RefObject, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 const { useConnectivityStatus, useLocalizer } = hooks;
@@ -16,6 +16,7 @@ const useSubmitError = ({
   message: string;
 }>) => {
   const [connectivityStatus] = useConnectivityStatus();
+  const [error, setError] = useState<SendError | undefined>();
   const localize = useLocalizer();
 
   const submitErrorRef = useRefFrom<'empty' | 'offline' | undefined>(
@@ -37,9 +38,21 @@ const useSubmitError = ({
     [localize]
   );
 
-  return useMemo<Readonly<[RefObject<SendError | undefined>, string | undefined]>>(
-    () => Object.freeze([submitErrorRef, submitErrorRef.current && errorMessageStringMap.get(submitErrorRef.current)]),
-    [errorMessageStringMap, submitErrorRef]
+  // TODO: we may want to improve this later e.g. to avoid re-render
+  // Reset visible error if there is a value
+  const hasValue = !!message?.trim();
+  if (error === 'empty' && hasValue) {
+    setError(undefined);
+  }
+
+  const commitLatestError = useCallback(() => {
+    setError(submitErrorRef.current);
+    return submitErrorRef.current;
+  }, [submitErrorRef]);
+
+  return useMemo<Readonly<[string | undefined, () => typeof submitErrorRef.current]>>(
+    () => Object.freeze([error && errorMessageStringMap.get(error), commitLatestError]),
+    [error, errorMessageStringMap, commitLatestError]
   );
 };
 

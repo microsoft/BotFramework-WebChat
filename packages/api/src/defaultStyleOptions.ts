@@ -53,7 +53,9 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   bubbleFromUserNubOffset: 0,
   bubbleFromUserNubSize: undefined,
   bubbleFromUserTextColor: 'Black',
-  bubbleImageHeight: 240,
+  bubbleImageHeight: undefined,
+  bubbleImageMaxHeight: 240, // Based on previously default `bubbleImageHeight` of 240px.
+  bubbleImageMinHeight: 240, // TODO: Should change to 180px. Based on 320px bubble width showing a 16:9 image, or `320 / (16 / 9)`. 320px bubble width is based on 360px wide of the chat canvas.
   bubbleMaxWidth: 480, // Based off screen width = 600px
   bubbleMinHeight: 40,
   bubbleMinWidth: 250, // min screen width = 300px; Microsoft Edge requires 372px (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13621468/)

@@ -2,13 +2,16 @@
 // window['WebChat'] is required for TypeScript
 
 import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
+import * as decorator from 'botframework-webchat-api/decorator';
 import { Constants, createStore, createStoreWithDevTools, createStoreWithOptions } from 'botframework-webchat-core';
+import * as internal from 'botframework-webchat-component/internal';
 
 import ReactWebChat, {
   Components,
   concatMiddleware,
   createStyleSet,
   hooks,
+  testIds,
   withEmoji
 } from 'botframework-webchat-component';
 
@@ -47,15 +50,16 @@ export const createDirectLineAppServiceExtension = options => {
 export default ReactWebChat;
 
 export {
-  Components,
-  Constants,
   buildInfo,
+  Components,
   concatMiddleware,
+  Constants,
   createBrowserWebSpeechPonyfillFactory,
   createStore,
   createStoreWithDevTools,
   createStoreWithOptions,
   createStyleSet,
+  internal,
   hooks,
   renderWebChat,
   version,
@@ -75,9 +79,15 @@ window['WebChat'] = {
   createStore,
   createStoreWithOptions,
   createStyleSet,
+  decorator,
+  internal,
   hooks,
   ReactWebChat,
   renderWebChat,
+  testIds: {
+    ...(window['WebChat']?.testIds || {}),
+    ...testIds
+  },
   withEmoji
 };
 
