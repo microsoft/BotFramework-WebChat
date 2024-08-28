@@ -6,9 +6,11 @@ import BorderLoader from './BorderLoader';
 
 const middleware: DecoratorMiddleware[] = [
   init =>
-    init === 'activity border' && (next => request => (request.livestreamingState === 'completing' ? BorderFlair : next(request))),
+    init === 'activity border' &&
+    (next => request => (request.livestreamingState === 'completing' ? BorderFlair : next(request))),
   init =>
-    init === 'activity border' && (next => request => (request.livestreamingState === 'preparing' ? BorderLoader : next(request)))
+    init === 'activity border' &&
+    (next => request => (request.livestreamingState === 'preparing' ? BorderLoader : next(request)))
 ];
 
 function WebChatDecorator({ children }: Readonly<{ readonly children?: ReactNode | undefined }>) {
