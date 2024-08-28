@@ -8,6 +8,7 @@ import { PrimarySendBox } from '../components/sendBox';
 import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
 import VariantComposer, { VariantList } from './VariantComposer';
+import { FluentThemeDecorator } from '../components/decorator';
 
 const { ThemeProvider } = Components;
 
@@ -38,7 +39,7 @@ const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
     <WebChatTheme>
       <TelephoneKeypadProvider>
         <ThemeProvider activityMiddleware={activityMiddleware} sendBoxMiddleware={sendBoxMiddleware}>
-          {children}
+          <FluentThemeDecorator>{children}</FluentThemeDecorator>
         </ThemeProvider>
       </TelephoneKeypadProvider>
     </WebChatTheme>
