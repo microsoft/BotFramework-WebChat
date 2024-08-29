@@ -17,6 +17,10 @@
   text-align: center;
 }
 
+:global(.webchat-fluent) .pre-chat-message-activity__body--placeholder {
+  opacity: 60%;
+}
+
 :global(.webchat-fluent) .pre-chat-message-activity__body h2 {
   color: var(--webchat-colorNeutralForeground1);
   font-family: inherit;

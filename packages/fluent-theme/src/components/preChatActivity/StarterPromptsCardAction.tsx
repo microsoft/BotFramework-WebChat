@@ -12,18 +12,18 @@ const { MonochromeImageMasker } = Components;
 
 type Props = Readonly<{
   className?: string | undefined;
-  messageBackAction: DirectLineCardAction & { type: 'messageBack' };
+  messageBackAction?: (DirectLineCardAction & { type: 'messageBack' }) | undefined;
 }>;
 
-const StarterPromptAction = ({ className, messageBackAction }: Props) => {
+const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
   const [_, setSendBoxValue] = useSendBoxValue();
   const classNames = useStyles(styles);
   const focus = useFocus();
-  const inputTextRef = useRefFrom(messageBackAction.displayText || messageBackAction.text || '');
+  const inputTextRef = useRefFrom(messageBackAction?.displayText || messageBackAction?.text || '');
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
   const subtitleHTML = useMemo(
-    () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(messageBackAction.text || '') } : { __html: '' }),
-    [messageBackAction.text, renderMarkdownAsHTML]
+    () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(messageBackAction?.text || '') } : { __html: '' }),
+    [messageBackAction?.text, renderMarkdownAsHTML]
   );
 
   const handleClick = useCallback(() => {
@@ -37,28 +37,33 @@ const StarterPromptAction = ({ className, messageBackAction }: Props) => {
     <button
       className={cx(className, classNames['pre-chat-message-activity__card-action-box'])}
       data-testid={testIds.preChatMessageActivityStarterPromptsCardAction}
+      disabled={!messageBackAction?.displayText}
       onClick={handleClick}
       type="button"
     >
-      <div className={classNames['pre-chat-message-activity__card-action-title']}>
-        {'title' in messageBackAction && messageBackAction.title}
-      </div>
-      {'image' in messageBackAction && messageBackAction.image && (
-        <MonochromeImageMasker
-          className={classNames['pre-chat-message-activity__card-action-image']}
-          src={messageBackAction.image}
-        />
-        // <img className="pre-chat-message-activity__card-action-image" src={messageBackAction.image} />
+      {messageBackAction && (
+        <React.Fragment>
+          <div className={classNames['pre-chat-message-activity__card-action-title']}>
+            {'title' in messageBackAction && messageBackAction.title}
+          </div>
+          {'image' in messageBackAction && messageBackAction.image && (
+            <MonochromeImageMasker
+              className={classNames['pre-chat-message-activity__card-action-image']}
+              src={messageBackAction.image}
+            />
+            // <img className="pre-chat-message-activity__card-action-image" src={messageBackAction.image} />
+          )}
+          <div
+            className={classNames['pre-chat-message-activity__card-action-subtitle']}
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={subtitleHTML}
+          />
+        </React.Fragment>
       )}
-      <div
-        className={classNames['pre-chat-message-activity__card-action-subtitle']}
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={subtitleHTML}
-      />
     </button>
   );
 };
 
-StarterPromptAction.displayName = 'StarterPromptAction';
+StarterPromptsCardAction.displayName = 'StarterPromptsCardAction';
 
-export default memo(StarterPromptAction);
+export default memo(StarterPromptsCardAction);
