@@ -844,7 +844,7 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
   const activityElementMapRef = useRef<ActivityElementMap>(new Map());
   const containerRef = useRef<HTMLDivElement>();
 
-  const nonce = useNonce();
+  const [nonce] = useNonce();
   const scroller = useScroller(activityElementMapRef);
 
   const [{ stylesRoot }] = useStyleOptions();
