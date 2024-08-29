@@ -22,7 +22,7 @@ defaults:
 env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
   NODE_ENV: test # Add instrumentation code
-  node-version: 18.18 # Need to bump jest@29 to resolve something in https://github.com/facebook/react-native/issues/35701
+  node-version: 18.20 # Need to bump jest@29 to resolve something in https://github.com/facebook/react-native/issues/35701
   skip-secure-feed: true # Terrapin service is degrading and their team told us to disable Terrapin to unblock ourselves
 
 jobs:
@@ -66,6 +66,7 @@ jobs:
           ./packages/test/fluent-bundle/dist/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
+          ./packages/test/web-server/dist/
           ./serve-test.json
           ./testharness.dockerfile
           ./testharness2.dockerfile
@@ -236,11 +237,11 @@ jobs:
 
       - run: npm clean-install
 
-      - name: Run docker-compose build
-        run: docker-compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
+      - name: Run docker compose build
+        run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
 
-      - name: Run docker-compose up
-        run: docker-compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
+      - name: Run docker compose up
+        run: docker compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
 
       - name: Wait for Docker to be ready
         run: |
@@ -269,7 +270,7 @@ jobs:
 
       - if: always()
         name: Print Docker logs
-        run: docker-compose -f docker-compose-wsl2.yml logs
+        run: docker compose -f docker-compose-wsl2.yml logs
 
       - if: always()
         name: Append ID to test result

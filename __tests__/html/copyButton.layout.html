@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/fluent-bundle.production.min.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style>
+      .fui-FluentProvider {
+        display: contents;
+
+        --webchat__color--surface: var(--colorNeutralBackground3);
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat" style="position: relative"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          Fluent: { createDarkTheme, createLightTheme, FluentProvider },
+          ReactDOMClient: { createRoot },
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const searchParams = new URLSearchParams(location.search);
+        const styleOptions = {
+          botAvatarBackgroundColor: '#304E7A',
+          botAvatarImage:
+            'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAK0lEQVQ4T2P8z8Dwn4GKgHHUQIpDczQMKQ5ChtEwHA1DMkJgNNmQEWhoWgBMAiftPRtHngAAAABJRU5ErkJggg=='
+        };
+
+        const App = () => <ReactWebChat directLine={directLine} store={store} styleOptions={styleOptions} />;
+
+        const customBrandRamp = {
+          10: '#124C32',
+          20: '#1A5B3E',
+          30: '#216A4A',
+          40: '#297956',
+          50: '#308861',
+          60: '#38976D',
+          70: '#40A779',
+          80: '#158051',
+          90: '#4FC590',
+          100: '#56D49C',
+          110: '#5EE3A8',
+          120: '#79E8B7',
+          130: '#94ECC5',
+          140: '#AFF1D3',
+          150: '#C9F6E2',
+          160: '#E4FAF1'
+        };
+
+        const root = createRoot(document.getElementById('webchat'));
+
+        if (searchParams.get('variant') === 'white label') {
+          root.render(<App />);
+        } else {
+          root.render(
+            <FluentProvider
+              theme={
+                searchParams.get('theme') === 'dark'
+                  ? createDarkTheme(customBrandRamp)
+                  : createLightTheme(customBrandRamp)
+              }
+            >
+              <FluentThemeProvider variant={searchParams.get('variant') || ''}>
+                <App />
+              </FluentThemeProvider>
+            </FluentProvider>
+          );
+        }
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          // TODO: Attachment is buggy now: clipped into the text content now and not aligned horizontally.
+          // attachments: [
+          //   {
+          //     contentType: 'image/jpeg',
+          //     contentUrl:
+          //       'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+          //   }
+          // ],
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              keywords: ['AllowCopy'],
+              type: 'https://schema.org/Message',
+              citation: [
+                {
+                  '@id': 'https://bing.com/',
+                  '@type': 'Claim',
+                  claimInterpreter: {
+                    '@type': 'Project',
+                    slogan: 'Surfaced with Azure OpenAI',
+                    url: 'https://www.microsoft.com/en-us/ai/responsible-ai'
+                  },
+                  position: '1'
+                }
+              ]
+            }
+          ],
+          from: {
+            name: 'Copilot',
+            role: 'bot'
+          },
+          text: 'Mollit *aute* **aute** dolor[1] ea ex magna incididunt nostrud sit nisi.\n\n[1]: https://bing.com/ "Ex voluptate est dolore"',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: "Copy" button should appear after the message.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

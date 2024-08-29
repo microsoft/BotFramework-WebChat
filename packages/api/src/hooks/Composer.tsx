@@ -43,8 +43,10 @@ import normalizeStyleOptions from '../normalizeStyleOptions';
 import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
+import ActivityListenerComposer from '../providers/ActivityListener/ActivityListenerComposer';
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
+import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
 import ActivityMiddleware from '../types/ActivityMiddleware';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
@@ -108,6 +110,8 @@ const DISPATCHERS = {
   stopSpeakingActivity,
   submitSendBox
 };
+
+const EMPTY_ARRAY: readonly [] = Object.freeze([]);
 
 function createCardActionContext({
   cardActionMiddleware,
@@ -589,14 +593,18 @@ const ComposerCore = ({
 
   return (
     <WebChatAPIContext.Provider value={context}>
-      <ActivitySendStatusComposer>
-        <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || Object.freeze([])}>
-          <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || Object.freeze([])}>
-            {typeof children === 'function' ? children(context) : children}
-            <ActivitySendStatusTelemetryComposer />
-          </SendBoxToolbarMiddlewareProvider>
-        </SendBoxMiddlewareProvider>
-      </ActivitySendStatusComposer>
+      <ActivityListenerComposer>
+        <ActivitySendStatusComposer>
+          <ActivityTypingComposer>
+            <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
+              <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
+                {typeof children === 'function' ? children(context) : children}
+                <ActivitySendStatusTelemetryComposer />
+              </SendBoxToolbarMiddlewareProvider>
+            </SendBoxMiddlewareProvider>
+          </ActivityTypingComposer>
+        </ActivitySendStatusComposer>
+      </ActivityListenerComposer>
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>
   );

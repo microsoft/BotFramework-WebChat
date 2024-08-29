@@ -1,21 +1,21 @@
 /* eslint complexity: ["error", 50] */
 
 import { hooks } from 'botframework-webchat-api';
+import { ActivityDecorator } from 'botframework-webchat-api/decorator';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 
-import Bubble from './Bubble';
-import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ScreenReaderText from '../ScreenReaderText';
+import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import textFormatToContentType from '../Utils/textFormatToContentType';
-import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useUniqueId from '../hooks/internal/useUniqueId';
+import useStyleSet from '../hooks/useStyleSet';
+import Bubble from './Bubble';
 
-import type { FC, ReactNode } from 'react';
 import type { RenderAttachment } from 'botframework-webchat-api';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
+import type { ReactNode } from 'react';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
 
@@ -68,23 +68,23 @@ const ROOT_STYLE = {
   }
 };
 
-type StackedLayoutProps = {
+type StackedLayoutProps = Readonly<{
   activity: WebChatActivity;
-  hideTimestamp?: boolean;
-  renderActivityStatus?: (options: { hideTimestamp: boolean }) => ReactNode;
-  renderAttachment?: RenderAttachment;
-  renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>);
-  showCallout?: boolean;
-};
+  hideTimestamp?: boolean | undefined;
+  renderActivityStatus?: ((options: { hideTimestamp: boolean }) => ReactNode) | undefined;
+  renderAttachment?: RenderAttachment | undefined;
+  renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>) | undefined;
+  showCallout?: boolean | undefined;
+}>;
 
-const StackedLayout: FC<StackedLayoutProps> = ({
+const StackedLayout = ({
   activity,
   hideTimestamp,
   renderActivityStatus,
   renderAttachment,
   renderAvatar,
   showCallout
-}) => {
+}: StackedLayoutProps) => {
   const [styleOptions] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
@@ -101,7 +101,12 @@ const StackedLayout: FC<StackedLayoutProps> = ({
   const fromUser = activity.from.role === 'user';
   const messageBackDisplayText: string = (isMessage && activity.channelData?.messageBack?.displayText) || '';
 
-  const activityDisplayText = isMessage ? messageBackDisplayText || activity.text : '';
+  const isLivestreaming = !!getActivityLivestreamingMetadata(activity);
+  const activityDisplayText = isMessage
+    ? messageBackDisplayText || activity.text
+    : isLivestreaming && 'text' in activity
+      ? activity.text
+      : '';
   const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
   const greetingAlt = (
     fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
@@ -156,15 +161,15 @@ const StackedLayout: FC<StackedLayoutProps> = ({
                 fromUser={fromUser}
                 nub={showNub || (hasAvatar || hasNub ? 'hidden' : false)}
               >
-                {renderAttachment({
-                  activity,
-                  attachment: isMessage
-                    ? {
-                        content: activityDisplayText,
-                        contentType: textFormatToContentType(activity.textFormat)
-                      }
-                    : undefined
-                })}
+                <ActivityDecorator activity={activity}>
+                  {renderAttachment({
+                    activity,
+                    attachment: {
+                      content: activityDisplayText,
+                      contentType: textFormatToContentType('textFormat' in activity ? activity.textFormat : undefined)
+                    }
+                  })}
+                </ActivityDecorator>
               </Bubble>
             </div>
           )}
@@ -206,42 +211,6 @@ const StackedLayout: FC<StackedLayoutProps> = ({
   );
 };
 
-StackedLayout.defaultProps = {
-  hideTimestamp: false,
-  renderActivityStatus: () => false,
-  renderAvatar: undefined,
-  showCallout: true
-};
-
-StackedLayout.propTypes = {
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  activity: PropTypes.shape({
-    attachments: PropTypes.array,
-    channelData: PropTypes.shape({
-      messageBack: PropTypes.shape({
-        displayText: PropTypes.string
-      })
-    }),
-    from: PropTypes.shape({
-      role: PropTypes.string.isRequired
-    }).isRequired,
-    text: PropTypes.string,
-    textFormat: PropTypes.oneOf(['markdown', 'plain', 'xml']),
-    timestamp: PropTypes.string,
-    type: PropTypes.string.isRequired
-  }).isRequired,
-  hideTimestamp: PropTypes.bool,
-
-  // PropTypes cannot validate precisely with its TypeScript counterpart.
-  // @ts-ignore
-  renderActivityStatus: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
-  renderAttachment: PropTypes.func.isRequired,
-
-  // PropTypes cannot validate precisely with its TypeScript counterpart.
-  // @ts-ignore
-  renderAvatar: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.func]),
-  showCallout: PropTypes.bool
-};
+StackedLayout.displayName = 'StackedLayout';
 
 export default memo(StackedLayout);

@@ -3,6 +3,10 @@ import { warnOnce } from 'botframework-webchat-core';
 import defaultStyleOptions from './defaultStyleOptions';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 
+const bubbleImageHeightDeprecation = warnOnce(
+  '"styleOptions.bubbleImageHeight" has been deprecated. Use "styleOptions.bubbleImageMaxHeight" and "styleOptions.bubbleImageMinHeight" instead. This deprecation migration will be removed on or after 2026-07-05.'
+);
+
 const hideScrollToEndButtonDeprecation = warnOnce(
   '"styleOptions.hideScrollToEndButton" has been deprecated. To hide scroll to end button, set "scrollToEndBehavior" to false. This deprecation migration will be removed on or after 2023-06-02.'
 );
@@ -175,6 +179,15 @@ export default function normalizeStyleOptions({
 
     filledOptions.suggestedActionTextColorOnDisabled =
       options.suggestedActionTextColorOnDisabled || options.suggestedActionDisabledTextColor;
+  }
+
+  if (options.bubbleImageHeight) {
+    bubbleImageHeightDeprecation();
+
+    filledOptions.bubbleImageMaxHeight = options.bubbleImageHeight;
+    filledOptions.bubbleImageMinHeight = options.bubbleImageHeight;
+
+    filledOptions.bubbleImageHeight = undefined;
   }
 
   return {

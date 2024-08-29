@@ -59,7 +59,10 @@
         });
 
         // WHEN: `useSendBoxAttachments` hook is called to set an attachment.
-        await pageObjects.runHook(({ useSendBoxAttachments }) => useSendBoxAttachments()[1]([{ blob, thumbnailURL }]));
+        await pageObjects.runHook(({ useSendBoxAttachments }) => {
+          const attachmentsRef = React.useRef([{ blob, thumbnailURL }]);
+          useSendBoxAttachments()[1](attachmentsRef.current);
+        });
 
         // THEN: It should show checkmark on the button.
         await host.snapshot();

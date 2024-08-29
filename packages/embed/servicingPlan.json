@@ -16,11 +16,11 @@
         ],
         [
           "feature:nextminor",
-          "4.15"
+          "4.17"
         ],
         [
           "*",
-          "4.14"
+          "4.17"
         ]
       ]
     },
@@ -542,6 +542,24 @@
         [
           "https://cdn.botframework.com/botframework-webchat/4.17.0/webchat-es5.js",
           "sha384-N+hZt09yrG7gT/xDkupYZeFnCoFR1S4ig9v3h1liavEgPm9C+Lt4MFPv85gfBp6E"
+        ]
+      ],
+      "private": true,
+      "versionFamily": "4"
+    },
+    "4.18": {
+      "redirects": [
+        [
+          "*",
+          "4.18.0"
+        ]
+      ]
+    },
+    "4.18.0": {
+      "assets": [
+        [
+          "https://cdn.botframework.com/botframework-webchat/4.18.0/webchat-es5.js",
+          "sha384-RuyQM7i2h9QDvJTm5quFymi0qfuWyIZocRdsgUaPIhlZnAM/Qz1/YnUxH55Dt9Rd"
         ]
       ],
       "private": true,

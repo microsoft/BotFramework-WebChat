@@ -23,7 +23,7 @@
 
         // The "role" is on second level.
         // The first level is our <Composer>, which could be parent of many other things including Web Chat.
-        await expect(document.querySelector('#webchat > * > *').getAttribute('role')).toBe('main');
+        await expect(document.querySelector('#webchat > * > *:not([aria-live])').getAttribute('role')).toBe('main');
       });
     </script>
   </body>

@@ -3,6 +3,7 @@ import cx from 'classnames';
 import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { SendIcon } from '../../icons';
+import { useStyles } from '../../styles';
 import testIds from '../../testIds';
 import { DropZone } from '../dropZone';
 import { SuggestedActions } from '../suggestedActions';
@@ -10,13 +11,13 @@ import { TelephoneKeypadSurrogate, useTelephoneKeypadShown, type DTMF } from '..
 import AddAttachmentButton from './AddAttachmentButton';
 import Attachments from './Attachments';
 import ErrorMessage from './ErrorMessage';
+import useSubmitError from './private/useSubmitError';
+import useTranscriptNavigation from './private/useTranscriptNavigation';
+import useUniqueId from './private/useUniqueId';
+import styles from './SendBox.module.css';
 import TelephoneKeypadToolbarButton from './TelephoneKeypadToolbarButton';
 import TextArea from './TextArea';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
-import useSubmitError from './private/useSubmitError';
-import useUniqueId from './private/useUniqueId';
-import styles from './SendBox.module.css';
-import { useStyles } from '../../styles';
 
 const {
   useFocus,
@@ -24,18 +25,23 @@ const {
   useMakeThumbnail,
   useRegisterFocusSendBox,
   useSendBoxAttachments,
+  useSendBoxValue,
   useSendMessage,
   useStyleOptions
 } = hooks;
 
-function SendBox(
-  props: Readonly<{
-    className?: string | undefined;
-    placeholder?: string | undefined;
-  }>
-) {
+type Props = Readonly<{
+  className?: string | undefined;
+  isPrimary?: boolean | undefined;
+  placeholder?: string | undefined;
+}>;
+
+function SendBox(props: Props) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const [message, setMessage] = useState('');
+  const [localMessage, setLocalMessage] = useState('');
+  const [globalMessage, setGlobalMessage] = useSendBoxValue();
+  const message = props.isPrimary ? globalMessage : localMessage;
+  const setMessage = props.isPrimary ? setGlobalMessage : setLocalMessage;
   const [attachments, setAttachments] = useSendBoxAttachments();
   const [{ hideTelephoneKeypadButton, hideUploadButton, maxMessageLength }] = useStyleOptions();
   const isMessageLengthExceeded = !!maxMessageLength && message.length > maxMessageLength;
@@ -44,7 +50,7 @@ function SendBox(
   const sendMessage = useSendMessage();
   const makeThumbnail = useMakeThumbnail();
   const errorMessageId = useUniqueId('sendbox__error-message-id');
-  const [errorRef, errorMessage] = useSubmitError({ message, attachments });
+  const [errorMessage, commitLatestError] = useSubmitError({ message, attachments });
   const [telephoneKeypadShown] = useTelephoneKeypadShown();
   const setFocus = useFocus();
 
@@ -127,8 +133,9 @@ function SendBox(
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     event => {
       event.preventDefault();
+      const error = commitLatestError();
 
-      if (errorRef.current !== 'empty' && !isMessageLengthExceeded) {
+      if (error !== 'empty' && !isMessageLengthExceeded) {
         sendMessage(messageRef.current, undefined, { attachments: attachmentsRef.current });
 
         setMessage('');
@@ -137,27 +144,43 @@ function SendBox(
 
       setFocus('sendBox');
     },
-    [attachmentsRef, messageRef, sendMessage, setAttachments, setMessage, isMessageLengthExceeded, errorRef, setFocus]
+    [
+      commitLatestError,
+      isMessageLengthExceeded,
+      setFocus,
+      sendMessage,
+      setMessage,
+      messageRef,
+      attachmentsRef,
+      setAttachments
+    ]
   );
 
   const handleTelephoneKeypadButtonClick = useCallback(
     // TODO: We need more official way of sending DTMF.
-    (dtmf: DTMF) => sendMessage(`/DTMF ${dtmf}`),
+    (dtmf: DTMF) => sendMessage(`/DTMFKey ${dtmf}`),
     [sendMessage]
   );
+
+  const handleTranscriptNavigation = useTranscriptNavigation();
 
   const aria = {
     'aria-invalid': 'false' as const,
     ...(errorMessage && {
-      'aria-invalid': 'true' as const,
-      'aria-errormessage': errorMessageId
+      'aria-describedby': errorMessageId,
+      'aria-errormessage': errorMessageId,
+      'aria-invalid': 'true' as const
     })
   };
 
   return (
     <form {...aria} className={cx(classNames['sendbox'], props.className)} onSubmit={handleFormSubmit}>
       <SuggestedActions />
-      <div className={cx(classNames['sendbox__sendbox'])} onClickCapture={handleSendBoxClick}>
+      <div
+        className={cx(classNames['sendbox__sendbox'])}
+        onClickCapture={handleSendBoxClick}
+        onKeyDown={handleTranscriptNavigation}
+      >
         <TextArea
           aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
           className={cx(classNames['sendbox__sendbox-text'], classNames['sendbox__text-area--in-grid'])}
@@ -176,7 +199,7 @@ function SendBox(
         />
         <Attachments attachments={attachments} className={classNames['sendbox__attachment--in-grid']} />
         <div className={cx(classNames['sendbox__sendbox-controls'], classNames['sendbox__sendbox-controls--in-grid'])}>
-          {!telephoneKeypadShown && maxMessageLength && (
+          {!telephoneKeypadShown && maxMessageLength && isFinite(maxMessageLength) && (
             <div
               className={cx(classNames['sendbox__text-counter'], {
                 [classNames['sendbox__text-counter--error']]: isMessageLengthExceeded
@@ -206,4 +229,10 @@ function SendBox(
   );
 }
 
+const PrimarySendBox = memo((props: Exclude<Props, 'primary'>) => <SendBox {...props} isPrimary={true} />);
+
+PrimarySendBox.displayName = 'PrimarySendBox';
+
 export default memo(SendBox);
+
+export { PrimarySendBox };
