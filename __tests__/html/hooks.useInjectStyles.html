@@ -20,14 +20,22 @@
         }
       } = window;
 
+      function convertCSSStyleSheetToString(stylesheet) {
+        return stylesheet.cssRules ? Array.from(stylesheet.cssRules)
+          .map(rule => rule.cssText ?? '')
+          .join('\n') : '';
+      }
+
       function createStyle(body) {
-        const styleElement = document.createElement('style');
+        const sheet = new CSSStyleSheet();
 
-        const { sheet } = styleElement;
+        sheet.replaceSync(body);
 
-        styleElement.innerHTML = body;
+        return sheet;
+      }
 
-        return styleElement;
+      function verifyStyles(style, sheet) {
+        expect(style.textContent).toBe(convertCSSStyleSheetToString(sheet));
       }
 
       run(async function () {
@@ -59,7 +67,7 @@
         const allInjectedStyles1 = document.head.querySelectorAll('style:not([data-emotion])');
 
         expect(allInjectedStyles1).toHaveLength(1);
-        expect(allInjectedStyles1[0]).toBe(styleElement1);
+        verifyStyles(allInjectedStyles1[0], styleElement1);
 
         await renderWithFunction(() => useInjectStyles([styleElement1, styleElement2]));
         await host.snapshot();
@@ -67,8 +75,8 @@
         const allInjectedStyles2 = document.head.querySelectorAll('style:not([data-emotion])');
 
         expect(allInjectedStyles2).toHaveLength(2);
-        expect(allInjectedStyles2[0]).toBe(styleElement1);
-        expect(allInjectedStyles2[1]).toBe(styleElement2);
+        verifyStyles(allInjectedStyles2[0], styleElement1);
+        verifyStyles(allInjectedStyles2[1], styleElement2);
 
         await renderWithFunction(() => useInjectStyles([styleElement1, styleElement2, styleElement3]));
         await host.snapshot();
@@ -76,9 +84,9 @@
         const allInjectedStyles3 = document.head.querySelectorAll('style:not([data-emotion])');
 
         expect(allInjectedStyles3).toHaveLength(3);
-        expect(allInjectedStyles3[0]).toBe(styleElement1);
-        expect(allInjectedStyles3[1]).toBe(styleElement2);
-        expect(allInjectedStyles3[2]).toBe(styleElement3);
+        verifyStyles(allInjectedStyles3[0], styleElement1);
+        verifyStyles(allInjectedStyles3[1], styleElement2);
+        verifyStyles(allInjectedStyles3[2], styleElement3);
       });
     </script>
   </body>

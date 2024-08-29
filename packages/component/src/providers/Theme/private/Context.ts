@@ -30,7 +30,7 @@ export type ThemeContextType = {
   sendBoxMiddleware: readonly SendBoxMiddleware[];
   sendBoxToolbarMiddleware: readonly SendBoxToolbarMiddleware[];
   styleOptions: StyleOptions;
-  styles: readonly (HTMLStyleElement | HTMLLinkElement)[];
+  styles: readonly CSSStyleSheet[];
   toastMiddleware: readonly ToastMiddleware[];
   typingIndicatorMiddleware: readonly TypingIndicatorMiddleware[];
 };

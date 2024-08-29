@@ -3,12 +3,11 @@ import { useEffect } from 'react';
 
 const { useStyleOptions } = hooks;
 
-type InjectedStylesElement = HTMLLinkElement | HTMLStyleElement;
-
 type InjectedStylesInstance = Readonly<{
   nonce?: string;
   root: Node;
-  styles: readonly InjectedStylesElement[];
+  sheets: readonly CSSStyleSheet[];
+  tags: readonly HTMLStyleElement[];
 }>;
 
 const sharedInstances: InjectedStylesInstance[] = [];
@@ -31,37 +30,45 @@ function arrayEqual<T>(x: readonly T[], y: readonly T[]): boolean {
   return true;
 }
 
-export default function useInjectStyles(styles: readonly InjectedStylesElement[], nonce?: string) {
-  for (const style of styles) {
-    if (style.localName !== 'style' && !(style.localName === 'link' && style.getAttribute('rel') === 'stylesheet')) {
-      throw new Error(
-        `botframework-webchat: useInjectStyles() hook supports injecting <link rel="stylesheet"> or <style> only, got <${style.localName}>.`
-      );
-    }
+function convertCSSStyleSheetToStyle(stylesheet: CSSStyleSheet) {
+  const style = document.createElement('style');
+
+  if (!stylesheet.cssRules) {
+    return style;
   }
 
+  const cssText = Array.from(stylesheet.cssRules)
+    .map(rule => rule.cssText ?? '')
+    .join('\n');
+
+  const textNode = document.createTextNode(cssText);
+
+  style.append(textNode);
+
+  return style;
+}
+
+export default function useInjectStyles(sheets: readonly CSSStyleSheet[], nonce?: string) {
   const [{ stylesRoot: root }] = useStyleOptions();
 
   useEffect(() => {
-    if (!root || !styles.length) {
+    if (!root || !sheets.length) {
       return;
     }
 
     let instance = sharedInstances.find(
-      instance => arrayEqual(instance.styles, styles) && instance.root === root && instance.nonce === nonce
+      instance => arrayEqual(instance.sheets, sheets) && instance.root === root && instance.nonce === nonce
     );
 
     if (!instance) {
       instance = {
         nonce,
         root,
-        styles: styles.some(style => style.parentNode)
-          ? // Deep clone is required for <style>body { ... }</style> (text node inside).
-            styles.map(style => style.cloneNode(true) as InjectedStylesElement)
-          : styles
+        sheets,
+        tags: sheets.map(sheet => convertCSSStyleSheetToStyle(sheet))
       };
 
-      for (const style of instance.styles) {
+      for (const style of instance.tags) {
         nonce ? style.setAttribute('nonce', nonce) : style.removeAttribute('nonce');
 
         root.appendChild(style);
@@ -77,10 +84,10 @@ export default function useInjectStyles(styles: readonly InjectedStylesElement[]
       ~index && sharedInstances.splice(index, 1);
 
       if (!sharedInstances.includes(instance)) {
-        for (const style of instance.styles) {
+        for (const style of instance.tags) {
           style.remove();
         }
       }
     };
-  }, [nonce, root, styles]);
+  }, [nonce, root, sheets]);
 }

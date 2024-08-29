@@ -1,11 +1,11 @@
 export const fluentStyleContent = '@--FLUENT-STYLES-CONTENT--@';
 
 export default function createStyles() {
-  if (!globalThis.document) {
+  if (!globalThis.CSSStyleSheet) {
     return [];
   }
 
-  const style = document.createElement('style');
-  style.append(document.createTextNode(fluentStyleContent));
-  return [style];
+  const sheet = new CSSStyleSheet();
+  sheet.replaceSync(fluentStyleContent);
+  return [sheet];
 }

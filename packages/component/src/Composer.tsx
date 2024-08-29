@@ -120,7 +120,7 @@ type ComposerCoreProps = Readonly<{
     linkOptions: { externalLinkAlt: string }
   ) => string;
   styleSet?: any;
-  styles?: readonly HTMLStyleElement[];
+  styles?: readonly CSSStyleSheet[];
   suggestedActionsAccessKey?: boolean | string;
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
 }>;
