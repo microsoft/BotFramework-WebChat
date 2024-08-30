@@ -43,6 +43,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Introduced centralized announcements approach via the new `usePushToLiveRegion` hook, in PR [#5251](https://github.com/microsoft/BotFramework-WebChat/pull/5251), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added keyboard shortcut for the "New Messages" button, in PR [#5251](https://github.com/microsoft/BotFramework-WebChat/pull/5251), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added decorators for loading and completion states to the Fluent theme, in PR [#5269](https://github.com/microsoft/BotFramework-WebChat/pull/5269), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added placeholder state for starter prompts in the Fluent theme, in PR [#5270](https://github.com/microsoft/BotFramework-WebChat/pull/5270), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
