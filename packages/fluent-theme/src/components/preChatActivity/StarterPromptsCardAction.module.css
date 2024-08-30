@@ -22,20 +22,44 @@
   }
 
   &:disabled {
+    cursor: default;
+  }
+
+  &:disabled:not(:empty) {
     background-color: var(--webchat-colorNeutralBackgroundDisabled);
   }
 
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: var(--webchat-colorNeutralBackground1Hover);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     background-color: var(--webchat-colorNeutralBackground1Pressed);
   }
 
   &:focus-visible {
     outline: solid 2px var(--webchat-colorStrokeFocus2);
     outline-offset: -2px;
+  }
+
+  &:empty::before {
+    content: '';
+    display: block;
+    width: 66%;
+    height: 18px;
+    background-color: var(--webchat-colorNeutralBackground6);
+    border-radius: 18px;
+    opacity: 1;
+  }
+
+  &:empty::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 16px;
+    background-color: var(--webchat-colorNeutralBackground6);
+    border-radius: 16px;
+    opacity: 0.8;
   }
 }
 

@@ -43,6 +43,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Introduced centralized announcements approach via the new `usePushToLiveRegion` hook, in PR [#5251](https://github.com/microsoft/BotFramework-WebChat/pull/5251), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added keyboard shortcut for the "New Messages" button, in PR [#5251](https://github.com/microsoft/BotFramework-WebChat/pull/5251), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added decorators for loading and completion states to the Fluent theme, in PR [#5269](https://github.com/microsoft/BotFramework-WebChat/pull/5269), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added placeholder state for starter prompts in the Fluent theme, in PR [#5270](https://github.com/microsoft/BotFramework-WebChat/pull/5270), by [@OEvgeny](https://github.com/OEvgeny)
 -  (Experimental) Added support for using WebChat inside a shadow DOM, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
    -  Added `styleOptions.stylesRoot` property allowing users to specify the root node where WebChat styles should be placed, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
    -  Added the `ThemeProvider.styles` property, allowing theme packages to place styles into the same root node as WebChat, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)

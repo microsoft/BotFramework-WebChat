@@ -1,9 +1,12 @@
+/* eslint-disable react/no-danger */
 import { hooks } from 'botframework-webchat-component';
-import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { memo, useMemo } from 'react';
+import cx from 'classnames';
+import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
+import React, { Fragment, memo, useMemo } from 'react';
 import { useStyles } from '../../styles/index.js';
 import styles from './PreChatMessageActivity.module.css';
 import StarterPromptsToolbar from './StarterPromptsToolbar.js';
+import StarterPromptsCardAction from './StarterPromptsCardAction.js';
 
 type Props = Readonly<{ activity: WebChatActivity & { type: 'message' } }>;
 
@@ -18,14 +21,30 @@ const PreChatMessageActivity = ({ activity }: Props) => {
     [activity.text, renderMarkdownAsHTML]
   );
 
+  const entity = getOrgSchemaMessage(activity?.entities || []);
+  const isPlaceHolder = entity?.keywords?.includes('PreChatMessage') && entity.creativeWorkStatus === 'Placeholder';
+
   return (
     <div className={classNames['pre-chat-message-activity']}>
-      {/* eslint-disable-next-line react/no-danger */}
-      <div className={classNames['pre-chat-message-activity__body']} dangerouslySetInnerHTML={html} />
+      <div
+        className={cx(
+          classNames['pre-chat-message-activity__body'],
+          isPlaceHolder && classNames['pre-chat-message-activity__body--placeholder']
+        )}
+        dangerouslySetInnerHTML={html}
+      />
       <StarterPromptsToolbar
         cardActions={activity.suggestedActions?.actions || []}
         className={classNames['pre-chat-message-activity__toolbar']}
-      />
+      >
+        {isPlaceHolder && (
+          <Fragment>
+            <StarterPromptsCardAction />
+            <StarterPromptsCardAction />
+            <StarterPromptsCardAction />
+          </Fragment>
+        )}
+      </StarterPromptsToolbar>
     </div>
   );
 };
