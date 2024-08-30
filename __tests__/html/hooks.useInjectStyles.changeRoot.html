@@ -20,12 +20,22 @@
         }
       } = window;
 
+      function convertCSSStyleSheetToString(stylesheet) {
+        return stylesheet.cssRules ? Array.from(stylesheet.cssRules)
+          .map(rule => rule.cssText ?? '')
+          .join('\n') : '';
+      }
+
       function createStyle(body) {
-        const styleElement = document.createElement('style');
+        const sheet = new CSSStyleSheet();
 
-        styleElement.innerHTML = body;
+        sheet.replaceSync(body);
 
-        return styleElement;
+        return sheet;
+      }
+
+      function verifyStyles(style, sheet) {
+        expect(style.textContent).toBe(convertCSSStyleSheetToString(sheet));
       }
 
       run(async function () {
@@ -52,7 +62,7 @@
         await renderWithFunction(() => useInjectStyles([styleElement]));
         await host.snapshot();
 
-        expect([...document.head.querySelectorAll('style:not([data-emotion])')]).toEqual([styleElement]);
+        verifyStyles(document.head.querySelector('style:not([data-emotion])'), styleElement);
         expect([...document.body.querySelectorAll('style:not([data-emotion])')]).toEqual([]);
 
         await renderWithFunction(() => useInjectStyles([styleElement]), {
@@ -61,7 +71,7 @@
         await host.snapshot();
 
         expect([...document.head.querySelectorAll('style:not([data-emotion])')]).toEqual([]);
-        expect([...document.body.querySelectorAll('style:not([data-emotion])')]).toEqual([styleElement]);
+        verifyStyles(document.head.querySelector('style:not([data-emotion])'), styleElement);
       });
     </script>
   </body>

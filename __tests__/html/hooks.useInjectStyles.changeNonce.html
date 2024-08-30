@@ -21,12 +21,22 @@
         }
       } = window;
 
+      function convertCSSStyleSheetToString(stylesheet) {
+        return stylesheet.cssRules ? Array.from(stylesheet.cssRules)
+          .map(rule => rule.cssText ?? '')
+          .join('\n') : '';
+      }
+
       function createStyle(body) {
-        const styleElement = document.createElement('style');
+        const sheet = new CSSStyleSheet();
 
-        styleElement.innerHTML = body;
+        sheet.replaceSync(body);
 
-        return styleElement;
+        return sheet;
+      }
+
+      function verifyStyles(style, sheet) {
+        expect(style.textContent).toBe(convertCSSStyleSheetToString(sheet));
       }
 
       run(
@@ -57,7 +67,7 @@
           const allInjectedStyles1 = document.head.querySelectorAll('style:not([data-emotion])');
 
           expect(allInjectedStyles1).toHaveLength(1);
-          expect(allInjectedStyles1[0]).toBe(styleElement);
+          verifyStyles(allInjectedStyles1[0], styleElement);
 
           await renderWithFunction(() => useInjectStyles([styleElement], '2'));
 
@@ -67,7 +77,7 @@
           const allInjectedStyles2 = document.head.querySelectorAll('style:not([data-emotion])');
 
           expect(allInjectedStyles2).toHaveLength(1);
-          expect(allInjectedStyles2[0]).toBe(styleElement);
+          verifyStyles(allInjectedStyles2[0], styleElement);
         },
         { ignoreErrors: 'violate the following Content Security Policy directive' }
       );
