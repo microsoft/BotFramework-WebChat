@@ -10,7 +10,7 @@
   font-weight: var(--webchat-fontWeightRegular);
   gap: var(--webchat-spacingHorizontalM);
   line-height: var(--webchat-lineHeightBase200);
-  padding-inline: var(--webchat-spacingHorizontalM);
+  padding: var(--webchat-spacingVerticalSNudge) var(--webchat-spacingHorizontalM);
   text-align: center;
   width: 100%;
 
