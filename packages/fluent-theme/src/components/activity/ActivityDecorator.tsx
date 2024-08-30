@@ -11,7 +11,7 @@ function ActivityDecorator({ activity, children }: Readonly<{ activity: WebChatA
   const variants = useVariants();
   const variantClassName = useVariantClassName(styles);
 
-  const shouldRenderHeader = variants.includes('copilot') && activity?.from?.role !== 'user' && !!children;
+  const shouldRenderHeader = variants.includes('copilot') && activity?.from?.role === 'bot' && !!children;
 
   return (
     <div className={cx(classNames['activity-decorator'], variantClassName)}>

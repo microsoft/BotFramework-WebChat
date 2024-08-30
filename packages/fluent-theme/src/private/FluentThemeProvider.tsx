@@ -9,6 +9,7 @@ import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
 import VariantComposer, { VariantList } from './VariantComposer';
 import { FluentThemeDecorator } from '../components/decorator';
+import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
 
 const { ThemeProvider } = Components;
 
@@ -20,8 +21,11 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
     (...args) => {
       const activity = args[0]?.activity;
 
-      if (activity && isPreChatMessageActivity(activity)) {
+      if (isPreChatMessageActivity(activity)) {
         return () => <PreChatMessageActivity activity={activity} />;
+      }
+      if (isLinerMessageActivity(activity)) {
+        return () => <LinerMessageActivity activity={activity} />;
       }
 
       const renderActivity = next(...args);
