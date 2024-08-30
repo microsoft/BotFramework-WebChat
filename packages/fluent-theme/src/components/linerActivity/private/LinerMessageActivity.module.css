@@ -15,8 +15,8 @@
   width: 100%;
 
   &::before, &::after {
-    content: "";
     border-top: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke2);
+    content: "";
     display: flex;
     flex: auto;
     min-width: 8px;
