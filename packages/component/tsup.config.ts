@@ -5,6 +5,6 @@ export default defineConfig({
   ...baseConfig,
   entry: {
     'botframework-webchat-component': './src/index.ts',
-    'botframework-webchat-component.internal': './src/internal.ts',
+    'botframework-webchat-component.internal': './src/internal.ts'
   }
 });
