@@ -1,4 +1,3 @@
-/* eslint-disable react/no-danger */
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo } from 'react';
 import { useStyles } from '../../../styles/index.js';
