@@ -69,7 +69,6 @@ describe.each([['with "streamId"' as const], ['without "streamId"' as const]])('
       activity = {
         channelData: {
           ...(variant === 'with "streamId"' ? { streamId: 'a-00001' } : {}),
-          streamSequence: 1,
           streamType: 'final'
         },
         id: 'a-00002',

@@ -9,7 +9,7 @@
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
-  
+
     <style>
       #webchat .border-loader__loader,
       #webchat .border-flair {
@@ -25,7 +25,7 @@
         const {
           React,
           ReactDOM: { render },
-          WebChat: { 
+          WebChat: {
             FluentThemeProvider,
             ReactWebChat
           }
@@ -34,7 +34,7 @@
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const App = () => <ReactWebChat
-          directLine={directLine} 
+          directLine={directLine}
           store={store}
           styleOptions={{
             bubbleBorderRadius: 10,
@@ -94,7 +94,7 @@
         ];
         await directLine.emulateIncomingActivity({
           attachments,
-          channelData: { streamId: 't-00001', streamSequence: 2, streamType: 'final' },
+          channelData: { streamId: 't-00001', streamType: 'final' },
           from: {
             id: 'u-00001',
             name: 'Bot',

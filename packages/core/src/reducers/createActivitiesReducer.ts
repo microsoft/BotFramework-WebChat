@@ -136,6 +136,23 @@ function upsertActivityWithSort(
   nextActivity: WebChatActivity,
   ponyfill: GlobalScopePonyfill
 ): WebChatActivity[] {
+  const metadata = getActivityLivestreamingMetadata(nextActivity);
+
+  if (metadata) {
+    const { sessionId } = metadata;
+
+    // If the upserting activity is going upsert into a concluded livestream, skip the activity.
+    const isLivestreamConcluded = activities.find(targetActivity => {
+      const targetMetadata = getActivityLivestreamingMetadata(targetActivity);
+
+      return targetMetadata?.sessionId === sessionId && targetMetadata.type === 'final activity';
+    });
+
+    if (isLivestreamConcluded) {
+      return activities;
+    }
+  }
+
   nextActivity = patchActivity(nextActivity, activities, ponyfill);
 
   const { channelData: { clientActivityID: nextClientActivityID, 'webchat:sequence-id': nextSequenceId } = {} } =
