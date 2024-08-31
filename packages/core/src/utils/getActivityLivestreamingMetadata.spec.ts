@@ -69,7 +69,6 @@ describe.each([['with "streamId"' as const], ['without "streamId"' as const]])('
       activity = {
         channelData: {
           ...(variant === 'with "streamId"' ? { streamId: 'a-00001' } : {}),
-          streamSequence: 1,
           streamType: 'final'
         },
         id: 'a-00002',
@@ -81,8 +80,8 @@ describe.each([['with "streamId"' as const], ['without "streamId"' as const]])('
     if (variant === 'with "streamId"') {
       test('should return type of "final activity"', () =>
         expect(getActivityLivestreamingMetadata(activity)).toHaveProperty('type', 'final activity'));
-      test('should return sequence number', () =>
-        expect(getActivityLivestreamingMetadata(activity)).toHaveProperty('sequenceNumber', 1));
+      test('should return sequence number of Infinity', () =>
+        expect(getActivityLivestreamingMetadata(activity)).toHaveProperty('sequenceNumber', Infinity));
       test('should return session ID', () =>
         expect(getActivityLivestreamingMetadata(activity)).toHaveProperty('sessionId', 'a-00001'));
     } else {
