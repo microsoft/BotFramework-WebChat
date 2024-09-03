@@ -51,7 +51,6 @@ const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
               className={classNames['pre-chat-message-activity__card-action-image']}
               src={messageBackAction.image}
             />
-            // <img className="pre-chat-message-activity__card-action-image" src={messageBackAction.image} />
           )}
           <div
             className={classNames['pre-chat-message-activity__card-action-subtitle']}

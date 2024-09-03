@@ -270,6 +270,12 @@
     inset: 0;
     border-radius: var(--webchat-borderRadiusSmall);
   }
+
+  :global(.liner-message-activity) > span {
+    border-radius: 20px;
+    outline-offset: 4px;
+    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
+  }
 }
 
 /* Transcript filer in copilot variant */
