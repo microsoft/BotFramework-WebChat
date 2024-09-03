@@ -10,7 +10,7 @@ import StarterPromptsCardAction from './StarterPromptsCardAction.js';
 
 type Props = Readonly<{ activity: WebChatActivity & { type: 'message' } }>;
 
-const { useRenderMarkdownAsHTML, useLocalizer } = hooks;
+const { useLocalizer, useRenderMarkdownAsHTML } = hooks;
 
 const PreChatMessageActivity = ({ activity }: Props) => {
   const classNames = useStyles(styles);

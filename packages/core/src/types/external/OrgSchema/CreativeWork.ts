@@ -93,7 +93,7 @@ export const creativeWork = <TEntries extends ObjectEntries>(entries?: TEntries 
     // In future, if Schema.org introduced a new subtype of CreativeWork, we should still able to parse that one as a CreativeWork.
 
     abstract: orgSchemaProperty(string()),
-    author: orgSchemaProperty(union([lazy(() => person()), string()])),
+    author: orgSchemaProperty(union([person(), string()])),
     citation: orgSchemaProperties(lazy(() => creativeWork())),
     keywords: orgSchemaProperties(union([lazy(() => definedTerm()), string()])),
     pattern: orgSchemaProperty(lazy(() => definedTerm())),
