@@ -271,7 +271,7 @@
     border-radius: var(--webchat-borderRadiusSmall);
   }
 
-  :global(.liner-message-activity) > span {
+  :global(.liner-message-activity__text) {
     border-radius: 20px;
     outline-offset: 4px;
     outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
