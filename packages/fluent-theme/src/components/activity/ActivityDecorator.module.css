@@ -120,17 +120,17 @@
 
 /* Message bubble attachment content */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__fileContent__badge) {
+  cursor: default;
   font-size: var(--webchat-fontSizeBase300);
   line-height: var(--webchat-lineHeightBase300);
-  cursor: default;
   
   :global(.webchat__fileContent__fileName) {
-    font-family: inherit;
     color: var(--webchat-colorBrandForegroundLink);
+    font-family: inherit;
   }
   :global(.webchat__fileContent__size) {
-    font-family: inherit;
     color: var(--webchat-colorNeutralForeground2);
+    font-family: inherit;
   }
 }
 
