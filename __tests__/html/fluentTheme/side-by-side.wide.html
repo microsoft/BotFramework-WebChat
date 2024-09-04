@@ -25,6 +25,7 @@
       --colorBrandForeground2Pressed: hsl(237, 26%, 27%);
       --colorBrandStroke2Pressed: hsl(237, 49%, 57%);
       --colorBrandBackground2Pressed: hsl(237, 87%, 85%);
+      --colorBrandStroke2: hsl(237, 53%, 68%);
       --shadow2: 0 0 2px rgba(0, 0, 0, 12%), 0 1px 2px rgba(0, 0, 0, 14%);
     }
 
@@ -123,15 +124,34 @@ You can preview your extension at any time.`,
         },
         {
           timestamp: timestamp(),
-          channelData: { state: 'sent' },
           from: { role: 'user' },
           id: '4.0',
-          text: 'Onboarding Checklist.doc',
+          text: '',
+          channelData: {
+            state: 'sent',
+            attachmentSizes: [65 * 1024]
+          },
+          attachments: [
+            {
+              contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+              name: 'Onboarding Checklist.doc'
+            }
+          ],
           type: 'message'
         },
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
+          suggestedActions: {
+            actions: [
+              {
+                displayText: 'What else should I say?',
+                text: 'What else should I say?',
+                title: 'What else should I say?',
+                type: 'messageBack'
+              },
+            ]
+          },
           "entities": [
             {
               "@context": "https://schema.org",
@@ -374,6 +394,16 @@ Is there anything specific about the Remote Work Policy you'd like to know more 
             }
           ],
           from: { name: 'Onboarding Buddy', role: 'bot' },
+          suggestedActions: {
+            actions: [
+                {
+                  displayText: 'Tell me more about onboarding process',
+                  text: 'Tell me more about onboarding process',
+                  title: 'Tell me more about onboarding process',
+                  type: 'messageBack'
+                }
+            ]
+          },
           "id": "7.1",
           "text": `I'm glad I could help! For your first day, here are some tips[1]:
 
