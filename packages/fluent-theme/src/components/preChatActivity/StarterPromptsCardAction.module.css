@@ -14,6 +14,7 @@
   overflow: hidden;
   padding: 16px 20px;
   text-align: left;
+  transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
   user-select: none;
 
   &:has(.pre-chat-message-activity__card-action-image) {

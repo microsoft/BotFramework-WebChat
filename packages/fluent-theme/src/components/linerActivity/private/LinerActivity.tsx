@@ -10,7 +10,7 @@ const LinerMessageActivity = ({ activity }: Props) => {
 
   return (
     <div className={classNames['liner-message-activity']} role="separator">
-      {activity.text}
+      <span className={classNames['liner-message-activity__text']}>{activity.text}</span>
     </div>
   );
 };

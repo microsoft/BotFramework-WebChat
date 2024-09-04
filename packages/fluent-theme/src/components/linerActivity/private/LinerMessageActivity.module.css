@@ -22,3 +22,7 @@
     min-width: 8px;
   }
 }
+
+:global(.webchat-fluent) .liner-message-activity__text {
+  text-align: center;
+}
