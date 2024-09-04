@@ -26,7 +26,7 @@ export type CreativeWork = Thing & {
    *
    * @see https://schema.org/author
    */
-  author?: string | Person | undefined;
+  author?: Person | string | undefined;
 
   /**
    * A citation or reference to another creative work, such as another publication, web page, scholarly article, etc.

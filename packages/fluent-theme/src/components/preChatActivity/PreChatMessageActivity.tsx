@@ -19,7 +19,18 @@ const PreChatMessageActivity = ({ activity }: Props) => {
 
   const entity = getOrgSchemaMessage(activity?.entities || []);
   const isPlaceHolder = entity?.keywords?.includes('PreChatMessage') && entity.creativeWorkStatus === 'Placeholder';
-  const author = typeof entity?.author !== 'string' ? entity?.author : undefined;
+  const author = useMemo(
+    () =>
+      typeof entity?.author === 'string'
+        ? {
+            '@type': 'Person',
+            description: undefined,
+            image: undefined,
+            name: entity?.author
+          }
+        : entity?.author,
+    [entity?.author]
+  );
 
   const html = useMemo(
     () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(author?.description || '') } : { __html: '' }),
@@ -35,13 +46,17 @@ const PreChatMessageActivity = ({ activity }: Props) => {
             isPlaceHolder && classNames['pre-chat-message-activity__body--placeholder']
           )}
         >
-          <img
-            alt={localize('AVATAR_ALT', author.name)}
-            className={classNames['pre-chat-message-activity__body-avatar']}
-            src={author.image}
-          />
-          <h2 className={classNames['pre-chat-message-activity__body-title']}>{author.name}</h2>
-          <div className={classNames['pre-chat-message-activity__body-subtitle']} dangerouslySetInnerHTML={html} />
+          {author.image && (
+            <img
+              alt={localize('AVATAR_ALT', author.name)}
+              className={classNames['pre-chat-message-activity__body-avatar']}
+              src={author.image}
+            />
+          )}
+          {author.name && <h2 className={classNames['pre-chat-message-activity__body-title']}>{author.name}</h2>}
+          {author.description && (
+            <div className={classNames['pre-chat-message-activity__body-subtitle']} dangerouslySetInnerHTML={html} />
+          )}
         </div>
       )}
       <StarterPromptsToolbar
