@@ -43,8 +43,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Introduced centralized announcements approach via the new `usePushToLiveRegion` hook, in PR [#5251](https://github.com/microsoft/BotFramework-WebChat/pull/5251), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added keyboard shortcut for the "New Messages" button, in PR [#5251](https://github.com/microsoft/BotFramework-WebChat/pull/5251), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added decorators for loading and completion states to the Fluent theme, in PR [#5269](https://github.com/microsoft/BotFramework-WebChat/pull/5269), by [@OEvgeny](https://github.com/OEvgeny)
--  Added placeholder state for starter prompts in the Fluent theme, in PR [#5270](https://github.com/microsoft/BotFramework-WebChat/pull/5270), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added placeholder state for starter prompts in the Fluent theme, in PR [#5270](https://github.com/microsoft/BotFramework-WebChat/pull/5270) and [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@OEvgeny](https://github.com/OEvgeny) and [@compulim](https://github.com/compulim)
 -  Added support for liner message activities in the Fluent theme, in PR [#5272](https://github.com/microsoft/BotFramework-WebChat/pull/5272), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
@@ -58,6 +59,10 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixed [#5256](https://github.com/microsoft/BotFramework-WebChat/issues/5256). `styleOptions.maxMessageLength` should support any JavaScript number value including `Infinity`, by [@compulim](https://github.com/compulim), in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5255)
 -  Fixes [#4965](https://github.com/microsoft/BotFramework-WebChat/issues/4965). Removed keyboard helper screen in [#5234](https://github.com/microsoft/BotFramework-WebChat/pull/5234), by [@amirmursal](https://github.com/amirmursal) and [@OEvgeny](https://github.com/OEvgeny)
 -  Fixes [#5268](https://github.com/microsoft/BotFramework-WebChat/issues/5268). Concluded livestream is sealed and activities received afterwards are ignored, and `streamSequence` is not required in final activity, in PR [#5273](https://github.com/microsoft/BotFramework-WebChat/pull/5273), by [@compulim](https://github.com/compulim)
+
+# Removed
+
+-  Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
 
 ## [4.18.0] - 2024-07-10
 
