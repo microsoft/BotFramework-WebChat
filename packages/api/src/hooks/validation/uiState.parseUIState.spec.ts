@@ -15,8 +15,7 @@ describe.each([
   [undefined, undefined, undefined]
 ])('uiState=%s and disabled=%s', (uiState, disabled, expected) => {
   describe('parseUIState', () => {
-    test(`should return ${JSON.stringify(expected)}`, () => {
-      expect(parseUIState(uiState as any, disabled as any)).toBe(expected);
-    });
+    test(`should return ${JSON.stringify(expected)}`, () =>
+      expect(parseUIState(uiState as any, disabled as any)).toBe(expected));
   });
 });
