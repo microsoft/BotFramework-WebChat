@@ -17,12 +17,12 @@ type LiveRegionTwinContainerProps = {
 
 // This container is marked as private because we assume there is only one instance under the <LiveRegionTwinContext>.
 const LiveRegionTwinContainer: VFC<LiveRegionTwinContainerProps> = ({
-  'aria-label': ariaLabel,
+  'aria-label': ariaLabel = undefined,
   'aria-live': ariaLive,
-  'aria-roledescription': ariaRoleDescription,
-  className,
-  role,
-  textElementClassName
+  'aria-roledescription': ariaRoleDescription = undefined,
+  className = undefined,
+  role = undefined,
+  textElementClassName = undefined
 }) => {
   const [staticElementEntries] = useStaticElementEntries();
 
@@ -52,14 +52,6 @@ const LiveRegionTwinContainer: VFC<LiveRegionTwinContainerProps> = ({
       })}
     </div>
   );
-};
-
-LiveRegionTwinContainer.defaultProps = {
-  'aria-label': undefined,
-  'aria-roledescription': undefined,
-  className: undefined,
-  role: undefined,
-  textElementClassName: undefined
 };
 
 LiveRegionTwinContainer.propTypes = {

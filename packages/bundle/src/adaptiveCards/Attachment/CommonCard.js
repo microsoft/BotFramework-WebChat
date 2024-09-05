@@ -10,7 +10,7 @@ import useStyleOptions from '../../hooks/useStyleOptions';
 
 const { useDirection } = hooks;
 
-const CommonCard = ({ actionPerformedClassName, content, disabled }) => {
+const CommonCard = ({ actionPerformedClassName = '', content, disabled = undefined }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -33,11 +33,6 @@ const CommonCard = ({ actionPerformedClassName, content, disabled }) => {
       tapAction={content && content.tap}
     />
   );
-};
-
-CommonCard.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
 };
 
 CommonCard.propTypes = {

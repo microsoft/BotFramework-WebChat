@@ -33,7 +33,7 @@ type AccessibleButtonProps = {
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
 const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
-  ({ 'aria-hidden': ariaHidden, children, disabled, onClick, tabIndex, ...props }, forwardedRef) => {
+  ({ 'aria-hidden': ariaHidden = undefined, children = undefined, disabled = undefined, onClick = undefined, tabIndex = undefined, ...props }, forwardedRef) => {
     const targetRef = useRef();
 
     const ref = forwardedRef || targetRef;
@@ -53,14 +53,6 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
     );
   }
 );
-
-AccessibleButton.defaultProps = {
-  'aria-hidden': undefined,
-  children: undefined,
-  disabled: undefined,
-  onClick: undefined,
-  tabIndex: undefined
-};
 
 AccessibleButton.displayName = 'AccessibleButton';
 

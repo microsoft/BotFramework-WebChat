@@ -32,7 +32,7 @@ const ROOT_STYLE = {
   }
 };
 
-const SuggestedActionCarouselContainer = ({ children, className, label }) => {
+const SuggestedActionCarouselContainer = ({ children = undefined, className = undefined, label }) => {
   const [
     {
       suggestedActionsCarouselFlipperBoxWidth,
@@ -109,18 +109,13 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
   );
 };
 
-SuggestedActionCarouselContainer.defaultProps = {
-  children: undefined,
-  className: undefined
-};
-
 SuggestedActionCarouselContainer.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   label: PropTypes.string.isRequired
 };
 
-const SuggestedActionFlowContainer = ({ children, className, label }) => {
+const SuggestedActionFlowContainer = ({ children = undefined, className = undefined, label }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -149,18 +144,13 @@ const SuggestedActionFlowContainer = ({ children, className, label }) => {
   );
 };
 
-SuggestedActionFlowContainer.defaultProps = {
-  children: undefined,
-  className: undefined
-};
-
 SuggestedActionFlowContainer.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   label: PropTypes.string.isRequired
 };
 
-const SuggestedActionStackedContainer = ({ children, className, label }) => {
+const SuggestedActionStackedContainer = ({ children = undefined, className = undefined, label }) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -183,11 +173,6 @@ const SuggestedActionStackedContainer = ({ children, className, label }) => {
       <div className="webchat__suggested-actions__focus-indicator" />
     </div>
   );
-};
-
-SuggestedActionStackedContainer.defaultProps = {
-  children: undefined,
-  className: undefined
 };
 
 SuggestedActionStackedContainer.propTypes = {
@@ -219,16 +204,16 @@ const SuggestedActions = ({ className }: SuggestedActionsProps) => {
       imageAltText?: string;
       text?: string;
       type:
-        | 'call'
-        | 'downloadFile'
-        | 'imBack'
-        | 'messageBack'
-        | 'openUrl'
-        | 'playAudio'
-        | 'playVideo'
-        | 'postBack'
-        | 'showImage'
-        | 'signin';
+      | 'call'
+      | 'downloadFile'
+      | 'imBack'
+      | 'messageBack'
+      | 'openUrl'
+      | 'playAudio'
+      | 'playVideo'
+      | 'postBack'
+      | 'showImage'
+      | 'signin';
       value?: { [key: string]: any } | string;
     };
 

@@ -3,13 +3,9 @@ import React from 'react';
 
 import SignInCardContent from './SignInCardContent';
 
-const SignInCardAttachment = ({ attachment: { content }, disabled }) => (
+const SignInCardAttachment = ({ attachment: { content }, disabled = undefined }) => (
   <SignInCardContent content={content} disabled={disabled} />
 );
-
-SignInCardAttachment.defaultProps = {
-  disabled: undefined
-};
 
 SignInCardAttachment.propTypes = {
   attachment: PropTypes.shape({

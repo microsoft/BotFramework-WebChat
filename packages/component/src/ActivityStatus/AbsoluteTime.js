@@ -6,7 +6,7 @@ import ScreenReaderText from '../ScreenReaderText';
 
 const { useDateFormatter, useLocalizer } = hooks;
 
-const AbsoluteTime = ({ hide, value }) => {
+const AbsoluteTime = ({ hide = false, value }) => {
   const localize = useLocalizer();
   const formatDate = useDateFormatter();
 
@@ -18,10 +18,6 @@ const AbsoluteTime = ({ hide, value }) => {
       {!hide && <span aria-hidden={true}>{absoluteTime}</span>}
     </Fragment>
   );
-};
-
-AbsoluteTime.defaultProps = {
-  hide: false
 };
 
 AbsoluteTime.propTypes = {

@@ -15,7 +15,7 @@ class ErrorBoundary extends Component {
 
     this.setState({ hasError: true });
 
-    onError(error);
+    onError && onError(error);
   }
 
   render() {
@@ -25,11 +25,6 @@ class ErrorBoundary extends Component {
     return !hasError && <RenderChildrenFunction>{children}</RenderChildrenFunction>;
   }
 }
-
-ErrorBoundary.defaultProps = {
-  children: undefined,
-  onError: undefined
-};
 
 ErrorBoundary.propTypes = {
   children: PropTypes.any,

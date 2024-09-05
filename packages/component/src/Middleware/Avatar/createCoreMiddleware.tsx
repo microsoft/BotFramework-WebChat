@@ -25,7 +25,7 @@ type DefaultAvatarProps = {
   fromUser: boolean;
 };
 
-const DefaultAvatar: FC<DefaultAvatarProps> = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
+const DefaultAvatar: FC<DefaultAvatarProps> = ({ 'aria-hidden': ariaHidden = true, className = '', fromUser }) => {
   const [{ avatar: avatarStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -46,11 +46,6 @@ const DefaultAvatar: FC<DefaultAvatarProps> = ({ 'aria-hidden': ariaHidden, clas
   );
 };
 
-DefaultAvatar.defaultProps = {
-  'aria-hidden': true,
-  className: ''
-};
-
 DefaultAvatar.propTypes = {
   'aria-hidden': PropTypes.bool,
   className: PropTypes.string,
@@ -61,15 +56,15 @@ export default function createCoreAvatarMiddleware(): AvatarMiddleware[] {
   return [
     () =>
       () =>
-      ({ fromUser, styleOptions }) => {
-        const { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials } = styleOptions;
+        ({ fromUser, styleOptions }) => {
+          const { botAvatarImage, botAvatarInitials, userAvatarImage, userAvatarInitials } = styleOptions;
 
-        if (fromUser ? userAvatarImage || userAvatarInitials : botAvatarImage || botAvatarInitials) {
-          return () => <DefaultAvatar fromUser={fromUser} />;
+          if (fromUser ? userAvatarImage || userAvatarInitials : botAvatarImage || botAvatarInitials) {
+            return () => <DefaultAvatar fromUser={fromUser} />;
+          }
+
+          return false;
         }
-
-        return false;
-      }
   ];
 }
 

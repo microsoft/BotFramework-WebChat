@@ -18,7 +18,7 @@ type FocusRedirectorProps = {
   redirectRef?: MutableRefObject<HTMLElement>;
 };
 
-const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirectRef }) => {
+const FocusRedirector: FC<FocusRedirectorProps> = ({ className = undefined, onFocus = undefined, redirectRef = undefined }) => {
   const handleFocus = useCallback(() => {
     redirectRef?.current?.focus();
     onFocus && onFocus();
@@ -32,12 +32,6 @@ const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirec
   //             However, reacting with browse mode is currently okay. Just better to leave it alone.
 
   return <div className={className} onFocus={handleFocus} tabIndex={0} />;
-};
-
-FocusRedirector.defaultProps = {
-  className: undefined,
-  onFocus: undefined,
-  redirectRef: undefined
 };
 
 FocusRedirector.propTypes = {

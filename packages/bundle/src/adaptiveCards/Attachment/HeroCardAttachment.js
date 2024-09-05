@@ -3,12 +3,8 @@ import React from 'react';
 
 import HeroCardContent from './HeroCardContent';
 
-const HeroCardAttachment = ({ attachment: { content } = {}, disabled }) =>
+const HeroCardAttachment = ({ attachment: { content } = {}, disabled = undefined }) =>
   !!content && <HeroCardContent content={content} disabled={disabled} />;
-
-HeroCardAttachment.defaultProps = {
-  disabled: undefined
-};
 
 HeroCardAttachment.propTypes = {
   attachment: PropTypes.shape({

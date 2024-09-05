@@ -18,7 +18,7 @@ type ThumbnailCardContentProps = {
   disabled?: boolean;
 };
 
-const ThumbnailCardContent: FC<ThumbnailCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const ThumbnailCardContent: FC<ThumbnailCardContentProps> = ({ actionPerformedClassName = '', content, disabled = undefined }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -59,11 +59,6 @@ const ThumbnailCardContent: FC<ThumbnailCardContentProps> = ({ actionPerformedCl
       tapAction={content && content.tap}
     />
   );
-};
-
-ThumbnailCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
 };
 
 ThumbnailCardContent.propTypes = {

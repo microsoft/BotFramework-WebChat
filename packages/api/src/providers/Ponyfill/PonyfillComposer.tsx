@@ -9,7 +9,7 @@ type Props = PropsWithChildren<{
   ponyfill?: Partial<GlobalScopePonyfill>;
 }>;
 
-const PonyfillComposer = ({ children, ponyfill: partialPonyfill }: Props) => {
+const PonyfillComposer = ({ children, ponyfill: partialPonyfill = undefined }: Props) => {
   // Note: `useRef(value)` always return the initial value that was called with.
   if (useRef(partialPonyfill).current !== partialPonyfill) {
     // We does not support changing ponyfill.
@@ -83,10 +83,6 @@ const PonyfillComposer = ({ children, ponyfill: partialPonyfill }: Props) => {
   );
 
   return <PonyfillContext.Provider value={contextValue}>{children}</PonyfillContext.Provider>;
-};
-
-PonyfillComposer.defaultProps = {
-  ponyfill: undefined
 };
 
 PonyfillComposer.propTypes = {

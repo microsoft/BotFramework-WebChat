@@ -16,7 +16,7 @@ type OAuthCardContentProps = {
   disabled?: boolean;
 };
 
-const OAuthCardContent: FC<OAuthCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const OAuthCardContent: FC<OAuthCardContentProps> = ({ actionPerformedClassName = '', content, disabled = undefined }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -39,11 +39,6 @@ const OAuthCardContent: FC<OAuthCardContentProps> = ({ actionPerformedClassName,
       disabled={disabled}
     />
   );
-};
-
-OAuthCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
 };
 
 OAuthCardContent.propTypes = {

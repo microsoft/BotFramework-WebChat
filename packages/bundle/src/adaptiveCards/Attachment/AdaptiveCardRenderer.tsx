@@ -40,10 +40,10 @@ type AdaptiveCardRendererProps = {
 };
 
 const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
-  actionPerformedClassName,
+  actionPerformedClassName = '',
   adaptiveCard,
-  disabled: disabledFromProps,
-  tapAction
+  disabled: disabledFromProps = undefined,
+  tapAction = undefined
 }) => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
@@ -247,12 +247,6 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
       ref={contentRef}
     />
   );
-};
-
-AdaptiveCardRenderer.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined,
-  tapAction: undefined
 };
 
 AdaptiveCardRenderer.propTypes = {

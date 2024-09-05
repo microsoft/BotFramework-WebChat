@@ -9,15 +9,11 @@ type AdaptiveCardAttachmentProps = {
   disabled?: boolean;
 };
 
-const AdaptiveCardAttachment: FC<AdaptiveCardAttachmentProps> = ({ attachment: { content }, disabled }) => (
+const AdaptiveCardAttachment: FC<AdaptiveCardAttachmentProps> = ({ attachment: { content }, disabled = undefined }) => (
   <AdaptiveCardContent content={content} disabled={disabled} />
 );
 
 export default AdaptiveCardAttachment;
-
-AdaptiveCardAttachment.defaultProps = {
-  disabled: undefined
-};
 
 AdaptiveCardAttachment.propTypes = {
   // PropTypes cannot fully capture TypeScript types.

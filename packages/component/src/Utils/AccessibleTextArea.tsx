@@ -48,19 +48,19 @@ type AccessibleTextAreaProps = {
 const AccessibleTextArea = forwardRef<HTMLTextAreaElement, AccessibleTextAreaProps>(
   (
     {
-      className,
-      disabled,
-      inputMode,
-      onChange,
-      onFocus,
-      onKeyDown,
-      onKeyDownCapture,
-      onKeyPress,
-      onSelect,
-      placeholder,
-      readOnly,
-      rows,
-      tabIndex,
+      className = undefined,
+      disabled = undefined,
+      inputMode = undefined,
+      onChange = undefined,
+      onFocus = undefined,
+      onKeyDown = undefined,
+      onKeyDownCapture = undefined,
+      onKeyPress = undefined,
+      onSelect = undefined,
+      placeholder = undefined,
+      readOnly = undefined,
+      rows = undefined,
+      tabIndex = undefined,
       ...props
     },
     forwardedRef
@@ -90,23 +90,6 @@ const AccessibleTextArea = forwardRef<HTMLTextAreaElement, AccessibleTextAreaPro
     );
   }
 );
-
-AccessibleTextArea.defaultProps = {
-  className: undefined,
-  disabled: undefined,
-  inputMode: undefined,
-  onChange: undefined,
-  onFocus: undefined,
-  onKeyDown: undefined,
-  onKeyDownCapture: undefined,
-  onKeyPress: undefined,
-  onSelect: undefined,
-  placeholder: undefined,
-  readOnly: undefined,
-  rows: undefined,
-  tabIndex: undefined,
-  value: undefined
-};
 
 AccessibleTextArea.displayName = 'AccessibleTextArea';
 

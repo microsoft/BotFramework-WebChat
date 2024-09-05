@@ -17,7 +17,7 @@ type IconButtonProps = {
   onClick?: MouseEventHandler<HTMLButtonElement>;
 };
 
-const IconButton: FC<IconButtonProps> = ({ alt, children, className, disabled, onClick }) => {
+const IconButton: FC<IconButtonProps> = ({ alt = '', children = undefined, className = '', disabled = false, onClick = undefined }) => {
   const [{ sendBoxButton: sendBoxButtonStyleSet }] = useStyleSet();
   const [{ sendBoxButtonAlignment }] = useStyleOptions();
   const buttonRef = useRef<HTMLButtonElement>();
@@ -46,14 +46,6 @@ const IconButton: FC<IconButtonProps> = ({ alt, children, className, disabled, o
       <div className="webchat__icon-button__keyboard-focus-indicator" />
     </AccessibleButton>
   );
-};
-
-IconButton.defaultProps = {
-  alt: '',
-  children: undefined,
-  className: '',
-  disabled: false,
-  onClick: undefined
 };
 
 IconButton.propTypes = {

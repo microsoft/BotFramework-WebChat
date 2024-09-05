@@ -70,7 +70,7 @@ type BubbleProps = {
   nub?: boolean | 'hidden';
 };
 
-const Bubble: FC<BubbleProps> = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }) => {
+const Bubble: FC<BubbleProps> = ({ 'aria-hidden': ariaHidden = undefined, children = undefined, className = '', fromUser = false, nub = false }) => {
   const [{ bubble: bubbleStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const [
@@ -87,17 +87,17 @@ const Bubble: FC<BubbleProps> = ({ 'aria-hidden': ariaHidden, children, classNam
 
   const { borderWidth, nubOffset, nubSize, side } = fromUser
     ? {
-        borderWidth: bubbleFromUserBorderWidth,
-        nubOffset: bubbleFromUserNubOffset,
-        nubSize: bubbleFromUserNubSize,
-        side: 'user'
-      }
+      borderWidth: bubbleFromUserBorderWidth,
+      nubOffset: bubbleFromUserNubOffset,
+      nubSize: bubbleFromUserNubSize,
+      side: 'user'
+    }
     : {
-        borderWidth: bubbleBorderWidth,
-        nubOffset: bubbleNubOffset,
-        nubSize: bubbleNubSize,
-        side: 'bot'
-      };
+      borderWidth: bubbleBorderWidth,
+      nubOffset: bubbleNubOffset,
+      nubSize: bubbleNubSize,
+      side: 'bot'
+    };
 
   return (
     <div
@@ -121,14 +121,6 @@ const Bubble: FC<BubbleProps> = ({ 'aria-hidden': ariaHidden, children, classNam
       {nub === true && acuteNubSVG(nubSize, borderWidth, side, !isZeroOrPositive(nubOffset))}
     </div>
   );
-};
-
-Bubble.defaultProps = {
-  'aria-hidden': undefined,
-  children: undefined,
-  className: '',
-  fromUser: false,
-  nub: false
 };
 
 Bubble.propTypes = {

@@ -30,7 +30,7 @@ type ScreenReaderTextProps = {
 };
 
 const ScreenReaderText: VFC<ScreenReaderTextProps> = forwardRef<HTMLDivElement, ScreenReaderTextProps>(
-  ({ 'aria-hidden': ariaHidden, id, text }, ref) => {
+  ({ 'aria-hidden': ariaHidden = undefined, id = undefined, text }, ref) => {
     const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
     if (ariaHidden && !id) {
@@ -46,11 +46,6 @@ const ScreenReaderText: VFC<ScreenReaderTextProps> = forwardRef<HTMLDivElement, 
     );
   }
 );
-
-ScreenReaderText.defaultProps = {
-  'aria-hidden': undefined,
-  id: undefined
-};
 
 ScreenReaderText.propTypes = {
   'aria-hidden': PropTypes.bool,

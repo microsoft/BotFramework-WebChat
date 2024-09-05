@@ -43,7 +43,7 @@ function replaceAnchorWithButton(markdownTokens) {
   });
 }
 
-const InlineMarkdown = ({ children, onReference, references }) => {
+const InlineMarkdown = ({ children = '', onReference = undefined, references = [] }) => {
   if (typeof children !== 'string') {
     console.warn('botframework-webchat: "children" prop passed to <InlineMarkdown> must be of type string.');
     children = '';
@@ -132,12 +132,6 @@ const InlineMarkdown = ({ children, onReference, references }) => {
   );
 
   return <span className={className} dangerouslySetInnerHTML={html} onClick={handleClick} />;
-};
-
-InlineMarkdown.defaultProps = {
-  children: '',
-  onReference: undefined,
-  references: []
 };
 
 InlineMarkdown.propTypes = {

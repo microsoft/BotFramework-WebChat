@@ -3,13 +3,9 @@ import React from 'react';
 
 import ReceiptCardContent from './ReceiptCardContent';
 
-const ReceiptCardAttachment = ({ attachment: { content }, disabled }) => (
+const ReceiptCardAttachment = ({ attachment: { content }, disabled = undefined }) => (
   <ReceiptCardContent content={content} disabled={disabled} />
 );
-
-ReceiptCardAttachment.defaultProps = {
-  disabled: undefined
-};
 
 ReceiptCardAttachment.propTypes = {
   attachment: PropTypes.shape({

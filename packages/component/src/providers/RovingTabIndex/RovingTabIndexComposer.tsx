@@ -15,7 +15,7 @@ type RovingTabIndexContextProps = PropsWithChildren<{
   orientation?: 'horizontal' | 'vertical';
 }>;
 
-const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEscapeKey, orientation }) => {
+const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEscapeKey = undefined, orientation = 'horizontal' }) => {
   const activeItemIndexRef = useRef(0);
   const itemRefsRef = useRef<ItemRef[]>([]);
 
@@ -179,11 +179,6 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEs
   });
 
   return <RovingTabIndexContext.Provider value={contextValue}>{children}</RovingTabIndexContext.Provider>;
-};
-
-RovingTabIndexComposer.defaultProps = {
-  onEscapeKey: undefined,
-  orientation: 'horizontal'
 };
 
 RovingTabIndexComposer.propTypes = {

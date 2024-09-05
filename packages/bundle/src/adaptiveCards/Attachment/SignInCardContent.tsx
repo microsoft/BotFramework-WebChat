@@ -11,7 +11,7 @@ type SignInCardContentProps = {
   disabled?: boolean;
 };
 
-const SignInCardContent: FC<SignInCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const SignInCardContent: FC<SignInCardContentProps> = ({ actionPerformedClassName = '', content, disabled = undefined }) => {
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
   return (
@@ -19,11 +19,6 @@ const SignInCardContent: FC<SignInCardContentProps> = ({ actionPerformedClassNam
       <CommonCard actionPerformedClassName={actionPerformedClassName} content={content} disabled={disabled} />
     </div>
   );
-};
-
-SignInCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
 };
 
 SignInCardContent.propTypes = {

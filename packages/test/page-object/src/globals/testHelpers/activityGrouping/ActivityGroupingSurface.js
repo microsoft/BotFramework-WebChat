@@ -26,17 +26,17 @@ const URL_QUERY_MAPPING = {
 function createCustomActivityMiddleware(attachmentLayout) {
   return () =>
     next =>
-    (arg0, ...args) =>
-      next(
-        {
-          ...arg0,
-          activity: {
-            ...arg0.activity,
-            ...(attachmentLayout && arg0.activity.from.role === 'bot' ? { attachmentLayout } : {})
-          }
-        },
-        ...args
-      );
+      (arg0, ...args) =>
+        next(
+          {
+            ...arg0,
+            activity: {
+              ...arg0.activity,
+              ...(attachmentLayout && arg0.activity.from.role === 'bot' ? { attachmentLayout } : {})
+            }
+          },
+          ...args
+        );
 }
 
 function generateURL(state) {
@@ -106,7 +106,7 @@ function getInitialState(defaultValues = {}) {
   return initialState;
 }
 
-const ActivityGroupingSurface = ({ children }) => {
+const ActivityGroupingSurface = ({ children = undefined }) => {
   const [transcriptNames, setTranscriptNames] = useState([]);
   const initialState = useMemo(() => getInitialState(DEFAULT_STATE), []);
 
@@ -264,10 +264,6 @@ const ActivityGroupingSurface = ({ children }) => {
   );
 
   return <ActivityGroupingContext.Provider value={context}>{children}</ActivityGroupingContext.Provider>;
-};
-
-ActivityGroupingSurface.defaultProps = {
-  children: undefined
 };
 
 ActivityGroupingSurface.propTypes = {

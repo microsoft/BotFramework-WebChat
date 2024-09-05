@@ -27,10 +27,10 @@ async function fetchSettings() {
 
 // The props are passed by MicrosoftGraphProfileContext and its related composer.
 const MicrosoftGraphProfileMenu = ({
-  avatarURL,
-  name,
-  onSignIn, // This will become falsy if sign in is not available, e.g. already signed in or misconfiguration
-  onSignOut // This will become falsy if sign out is not available, e.g. not signed in
+  avatarURL = '',
+  name = '',
+  onSignIn = undefined, // This will become falsy if sign in is not available, e.g. already signed in or misconfiguration
+  onSignOut = undefined // This will become falsy if sign out is not available, e.g. not signed in
 }) => {
   const [expanded, setExpanded] = useState(false);
   const signedIn = !!onSignOut;
@@ -113,16 +113,6 @@ const MicrosoftGraphProfileMenu = ({
   );
 };
 
-MicrosoftGraphProfileMenu.defaultProps = {
-  accessToken: '',
-  avatarURL: '',
-  name: '',
-  oauthReviewAccessURL: '',
-  onSignIn: undefined,
-  onSignOut: undefined,
-  setAccessToken: undefined
-};
-
 MicrosoftGraphProfileMenu.propTypes = {
   accessToken: PropTypes.string,
   avatarURL: PropTypes.string,
@@ -160,10 +150,6 @@ const ConnectedMicrosoftGraphProfileMenu = ({ accessToken, onAccessTokenChange }
       <ComposedMicrosoftGraphProfileMenu />
     </MicrosoftGraphProfileComposer>
   );
-};
-
-ConnectedMicrosoftGraphProfileMenu.defaultProps = {
-  onSignedInChange: undefined
 };
 
 ConnectedMicrosoftGraphProfileMenu.propTypes = {

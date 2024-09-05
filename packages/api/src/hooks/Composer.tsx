@@ -141,23 +141,23 @@ function createCardActionContext({
         getSignInUrl:
           cardAction.type === 'signin'
             ? () => {
-                const { value } = cardAction;
+              const { value } = cardAction;
 
-                if (directLine.getSessionId) {
-                  /**
-                   * @todo TODO: [P3] We should change this one to async/await.
-                   *       This is the first place in this project to use async.
-                   *       Thus, we need to add @babel/plugin-transform-runtime and @babel/runtime.
-                   */
-                  return observableToPromise(directLine.getSessionId(), ponyfill).then(
-                    sessionId => `${value}${encodeURIComponent(`&code_challenge=${sessionId}`)}`
-                  );
-                }
-
-                console.warn('botframework-webchat: OAuth is not supported on this Direct Line adapter.');
-
-                return value;
+              if (directLine.getSessionId) {
+                /**
+                 * @todo TODO: [P3] We should change this one to async/await.
+                 *       This is the first place in this project to use async.
+                 *       Thus, we need to add @babel/plugin-transform-runtime and @babel/runtime.
+                 */
+                return observableToPromise(directLine.getSessionId(), ponyfill).then(
+                  sessionId => `${value}${encodeURIComponent(`&code_challenge=${sessionId}`)}`
+                );
               }
+
+              console.warn('botframework-webchat: OAuth is not supported on this Direct Line adapter.');
+
+              return value;
+            }
             : null,
         target
       });
@@ -252,34 +252,34 @@ type ComposerCoreProps = Readonly<{
 }>;
 
 const ComposerCore = ({
-  activityMiddleware,
-  activityStatusMiddleware,
-  attachmentForScreenReaderMiddleware,
-  attachmentMiddleware,
-  avatarMiddleware,
-  cardActionMiddleware,
-  children,
-  dir,
+  activityMiddleware = undefined,
+  activityStatusMiddleware = undefined,
+  attachmentForScreenReaderMiddleware = undefined,
+  attachmentMiddleware = undefined,
+  avatarMiddleware = undefined,
+  cardActionMiddleware = undefined,
+  children = undefined,
+  dir = 'auto',
   directLine,
-  disabled,
-  downscaleImageToDataURL,
-  grammars,
-  groupActivitiesMiddleware,
-  internalErrorBoxClass,
-  locale,
-  onTelemetry,
-  overrideLocalizedStrings,
-  renderMarkdown,
-  scrollToEndButtonMiddleware,
-  selectVoice,
+  disabled = false,
+  downscaleImageToDataURL = undefined,
+  grammars = [],
+  groupActivitiesMiddleware = undefined,
+  internalErrorBoxClass = undefined,
+  locale = window.navigator.language || 'en-US',
+  onTelemetry = undefined,
+  overrideLocalizedStrings = undefined,
+  renderMarkdown = undefined,
+  scrollToEndButtonMiddleware = undefined,
+  selectVoice = undefined,
   sendBoxMiddleware,
   sendBoxToolbarMiddleware,
-  sendTypingIndicator,
-  styleOptions,
-  toastMiddleware,
-  typingIndicatorMiddleware,
-  userID,
-  username
+  sendTypingIndicator = false,
+  styleOptions = {},
+  toastMiddleware = undefined,
+  typingIndicatorMiddleware = undefined,
+  userID = '',
+  username = ''
 }: ComposerCoreProps) => {
   const [ponyfill] = usePonyfill();
   const dispatch = useDispatch();
@@ -398,13 +398,13 @@ const ComposerCore = ({
         ...singleToArray(activityMiddleware),
         () =>
           () =>
-          ({ activity }) => {
-            if (activity) {
-              throw new Error(`No renderer for activity of type "${activity.type}"`);
-            } else {
-              throw new Error('No activity to render');
+            ({ activity }) => {
+              if (activity) {
+                throw new Error(`No renderer for activity of type "${activity.type}"`);
+              } else {
+                throw new Error('No activity to render');
+              }
             }
-          }
       )({}),
     [activityMiddleware]
   );
@@ -428,19 +428,19 @@ const ComposerCore = ({
         ...singleToArray(attachmentForScreenReaderMiddleware),
         () =>
           () =>
-          ({ attachment }) => {
-            if (attachment) {
-              console.warn(`No renderer for attachment for screen reader of type "${attachment.contentType}"`);
-              return false;
-            }
+            ({ attachment }) => {
+              if (attachment) {
+                console.warn(`No renderer for attachment for screen reader of type "${attachment.contentType}"`);
+                return false;
+              }
 
-            return () => {
-              /**
-               * @todo TODO: [P4] Might be able to throw without returning a function -- investigate and possibly fix
-               */
-              throw new Error('No attachment to render');
-            };
-          }
+              return () => {
+                /**
+                 * @todo TODO: [P4] Might be able to throw without returning a function -- investigate and possibly fix
+                 */
+                throw new Error('No attachment to render');
+              };
+            }
       )({}),
     [attachmentForScreenReaderMiddleware]
   );
@@ -452,13 +452,13 @@ const ComposerCore = ({
         ...singleToArray(attachmentMiddleware),
         () =>
           () =>
-          ({ attachment }) => {
-            if (attachment) {
-              throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
-            } else {
-              throw new Error('No attachment to render');
+            ({ attachment }) => {
+              if (attachment) {
+                throw new Error(`No renderer for attachment of type "${attachment.contentType}"`);
+              } else {
+                throw new Error('No attachment to render');
+              }
             }
-          }
       )({}),
     [attachmentMiddleware]
   );
@@ -482,13 +482,13 @@ const ComposerCore = ({
         ...singleToArray(toastMiddleware),
         () =>
           () =>
-          ({ notification }) => {
-            if (notification) {
-              throw new Error(`No renderer for notification of type "${notification.contentType}"`);
-            } else {
-              throw new Error('No notification to render');
+            ({ notification }) => {
+              if (notification) {
+                throw new Error(`No renderer for notification of type "${notification.contentType}"`);
+              } else {
+                throw new Error('No notification to render');
+              }
             }
-          }
       )({}),
     [toastMiddleware]
   );
@@ -616,34 +616,6 @@ const ComposerCore = ({
  *       we should clean up the responsibility between Context and Redux store
  *       We should decide which data is needed for React but not in other environment such as CLI/VSCode
  */
-ComposerCore.defaultProps = {
-  activityMiddleware: undefined,
-  activityStatusMiddleware: undefined,
-  attachmentForScreenReaderMiddleware: undefined,
-  attachmentMiddleware: undefined,
-  avatarMiddleware: undefined,
-  cardActionMiddleware: undefined,
-  children: undefined,
-  dir: 'auto',
-  disabled: false,
-  downscaleImageToDataURL: undefined,
-  grammars: [],
-  groupActivitiesMiddleware: undefined,
-  internalErrorBoxClass: undefined,
-  locale: window.navigator.language || 'en-US',
-  onTelemetry: undefined,
-  overrideLocalizedStrings: undefined,
-  renderMarkdown: undefined,
-  scrollToEndButtonMiddleware: undefined,
-  selectVoice: undefined,
-  sendTypingIndicator: false,
-  styleOptions: {},
-  toastMiddleware: undefined,
-  typingIndicatorMiddleware: undefined,
-  userID: '',
-  username: ''
-};
-
 ComposerCore.propTypes = {
   activityMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
@@ -708,7 +680,7 @@ type ComposerProps = ComposerWithStoreProps & {
 };
 
 // We will create a Redux store if it was not passed in
-const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStoreProps) => {
+const ComposerWithStore = ({ onTelemetry = undefined, store = undefined, ...props }: ComposerWithStoreProps) => {
   const [ponyfill] = usePonyfill();
 
   const memoizedStore = useMemo(() => {
@@ -757,17 +729,12 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
   );
 };
 
-ComposerWithStore.defaultProps = {
-  onTelemetry: undefined,
-  store: undefined
-};
-
 ComposerWithStore.propTypes = {
   onTelemetry: PropTypes.func,
   store: PropTypes.any
 };
 
-const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, ...props }: ComposerProps) => {
+const Composer = ({ internalRenderErrorBox = undefined, onTelemetry = undefined, ponyfill = undefined, ...props }: ComposerProps) => {
   const [error, setError] = useState();
 
   const handleError = useCallback(
@@ -790,13 +757,6 @@ const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, ...props }: C
       </PonyfillComposer>
     </ErrorBoundary>
   );
-};
-
-Composer.defaultProps = {
-  ...ComposerWithStore.defaultProps,
-  internalRenderErrorBox: undefined,
-  onTelemetry: undefined,
-  ponyfill: undefined
 };
 
 Composer.propTypes = {

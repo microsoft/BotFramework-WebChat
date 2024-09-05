@@ -34,30 +34,30 @@ type SuggestedActionProps = {
   text?: string;
   textClassName?: string;
   type?:
-    | 'call'
-    | 'downloadFile'
-    | 'imBack'
-    | 'messageBack'
-    | 'openUrl'
-    | 'playAudio'
-    | 'playVideo'
-    | 'postBack'
-    | 'showImage'
-    | 'signin';
+  | 'call'
+  | 'downloadFile'
+  | 'imBack'
+  | 'messageBack'
+  | 'openUrl'
+  | 'playAudio'
+  | 'playVideo'
+  | 'postBack'
+  | 'showImage'
+  | 'signin';
   value?: any;
 };
 
 const SuggestedAction: VFC<SuggestedActionProps> = ({
   buttonText,
-  className,
-  displayText,
-  image,
-  imageAlt,
+  className = '',
+  displayText = '',
+  image = '',
+  imageAlt = undefined,
   itemIndex,
-  text,
-  textClassName,
-  type,
-  value
+  text = '',
+  textClassName = '',
+  type = undefined,
+  value = undefined
 }) => {
   const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
@@ -130,17 +130,6 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
       <div className="webchat__suggested-action__keyboard-focus-indicator" />
     </AccessibleButton>
   );
-};
-
-SuggestedAction.defaultProps = {
-  className: '',
-  displayText: '',
-  image: '',
-  imageAlt: undefined,
-  text: '',
-  textClassName: '',
-  type: undefined,
-  value: undefined
 };
 
 SuggestedAction.propTypes = {

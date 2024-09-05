@@ -28,7 +28,7 @@ const {
   DictateState: { DICTATING, IDLE, STARTING }
 } = Constants;
 
-const Dictation = ({ onError }) => {
+const Dictation = ({ onError = undefined }) => {
   const [, setDictateAbortable] = useSettableDictateAbortable();
   const [, setDictateInterims] = useDictateInterims();
   const [, setSendBox] = useSendBoxValue();
@@ -116,10 +116,6 @@ const Dictation = ({ onError }) => {
       started={!disabled && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities}
     />
   );
-};
-
-Dictation.defaultProps = {
-  onError: undefined
 };
 
 Dictation.propTypes = {

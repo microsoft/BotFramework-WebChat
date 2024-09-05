@@ -37,7 +37,7 @@ type UploadButtonProps = {
   className?: string;
 };
 
-const UploadButton: FC<UploadButtonProps> = ({ className }) => {
+const UploadButton: FC<UploadButtonProps> = ({ className = undefined }) => {
   const [{ sendAttachmentOn, uploadAccept, uploadMultiple }] = useStyleOptions();
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
   const [disabled] = useDisabled();
@@ -97,10 +97,6 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
       </IconButton>
     </div>
   );
-};
-
-UploadButton.defaultProps = {
-  className: undefined
 };
 
 UploadButton.propTypes = {

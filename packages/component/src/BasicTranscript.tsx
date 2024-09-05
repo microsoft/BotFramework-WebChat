@@ -103,7 +103,7 @@ type InternalTranscriptProps = {
 
 // TODO: [P1] #4133 Add telemetry for computing how many re-render done so far.
 const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
-  ({ activityElementMapRef, className }, ref) => {
+  ({ activityElementMapRef, className = '' }, ref) => {
     const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
     const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
     const [activeDescendantId] = useActiveDescendantId();
@@ -342,16 +342,16 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         const activityKeyJustAboveScrollBottom: string | undefined = (
           scrollableElement.scrollTop
             ? activityElements
-                .reverse()
-                // Add subpixel tolerance
-                .find(([, element]) => {
-                  // "getClientRects()" is not returning an array, thus, it is not destructurable.
-                  // eslint-disable-next-line prefer-destructuring
-                  const elementClientRect = element.getClientRects()[0];
+              .reverse()
+              // Add subpixel tolerance
+              .find(([, element]) => {
+                // "getClientRects()" is not returning an array, thus, it is not destructurable.
+                // eslint-disable-next-line prefer-destructuring
+                const elementClientRect = element.getClientRects()[0];
 
-                  // If the activity is not attached to DOM tree, we should not count it as "bottommost visible activity", as it is not visible.
-                  return elementClientRect && elementClientRect.bottom < scrollableClientBottom + 1;
-                })
+                // If the activity is not attached to DOM tree, we should not count it as "bottommost visible activity", as it is not visible.
+                return elementClientRect && elementClientRect.bottom < scrollableClientBottom + 1;
+              })
             : activityElements[0]
         )?.[0];
 
@@ -551,10 +551,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     );
   }
 );
-
-InternalTranscript.defaultProps = {
-  className: ''
-};
 
 InternalTranscript.displayName = 'InternalTranscript';
 
@@ -800,10 +796,10 @@ const useScroller = (activityElementMapRef: MutableRefObject<ActivityElementMap>
 
                 values.push(
                   nthUnacknowledgedActivityOffsetTop +
-                    nthUnacknowledgedActivityBoundingBoxElement.offsetHeight -
-                    offsetHeight -
-                    scrollTop +
-                    patchedAutoScrollSnapOnActivityOffset
+                  nthUnacknowledgedActivityBoundingBoxElement.offsetHeight -
+                  offsetHeight -
+                  scrollTop +
+                  patchedAutoScrollSnapOnActivityOffset
                 );
               }
             }
@@ -818,9 +814,9 @@ const useScroller = (activityElementMapRef: MutableRefObject<ActivityElementMap>
 
               values.push(
                 firstUnacknowledgedActivityOffsetTop -
-                  scrollTop -
-                  offsetHeight * (1 - patchedAutoScrollSnapOnPage) +
-                  patchedAutoScrollSnapOnPageOffset
+                scrollTop -
+                offsetHeight * (1 - patchedAutoScrollSnapOnPage) +
+                patchedAutoScrollSnapOnPageOffset
               );
             }
           }
@@ -839,7 +835,7 @@ type BasicTranscriptProps = {
   className?: string;
 };
 
-const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
+const BasicTranscript: FC<BasicTranscriptProps> = ({ className = '' }) => {
   const activityElementMapRef = useRef<ActivityElementMap>(new Map());
   const containerRef = useRef<HTMLDivElement>();
 
@@ -852,10 +848,6 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
       </ReactScrollToBottomComposer>
     </TranscriptFocusComposer>
   );
-};
-
-BasicTranscript.defaultProps = {
-  className: ''
 };
 
 BasicTranscript.propTypes = {

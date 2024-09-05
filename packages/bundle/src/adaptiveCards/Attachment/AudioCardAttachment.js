@@ -5,13 +5,9 @@ import React from 'react';
 
 import AudioCardContent from './AudioCardContent';
 
-const AudioCardAttachment = ({ attachment: { content }, disabled }) => (
+const AudioCardAttachment = ({ attachment: { content }, disabled = undefined }) => (
   <AudioCardContent content={content} disabled={disabled} />
 );
-
-AudioCardAttachment.defaultProps = {
-  disabled: undefined
-};
 
 AudioCardAttachment.propTypes = {
   attachment: PropTypes.shape({

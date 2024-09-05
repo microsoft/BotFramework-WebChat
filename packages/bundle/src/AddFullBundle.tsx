@@ -36,11 +36,11 @@ const adaptiveCardHostConfigDeprecation = warnOnce(
 
 const AddFullBundle = ({
   adaptiveCardHostConfig,
-  adaptiveCardsHostConfig,
-  adaptiveCardsPackage,
+  adaptiveCardsHostConfig = undefined,
+  adaptiveCardsPackage = undefined,
   attachmentForScreenReaderMiddleware,
   attachmentMiddleware,
-  children,
+  children = undefined,
   renderMarkdown,
   styleOptions,
   styleSet

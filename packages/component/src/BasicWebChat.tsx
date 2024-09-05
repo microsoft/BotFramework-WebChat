@@ -44,7 +44,7 @@ type BasicWebChatProps = {
   role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
 };
 
-const BasicWebChat: FC<BasicWebChatProps> = ({ className, role }) => {
+const BasicWebChat: FC<BasicWebChatProps> = ({ className = '', role = 'complementary' }) => {
   const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();
   const styleToEmotionObject = useStyleToEmotionObject();
@@ -71,11 +71,6 @@ const BasicWebChat: FC<BasicWebChatProps> = ({ className, role }) => {
       <SendBoxMiddlewareProxy className={sendBoxClassName} request={undefined} />
     </AccessKeySinkSurface>
   );
-};
-
-BasicWebChat.defaultProps = {
-  className: '',
-  role: 'complementary'
 };
 
 BasicWebChat.propTypes = {

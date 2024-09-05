@@ -17,7 +17,7 @@ const ROOT_STYLE = {
   }
 };
 
-const InitialsAvatar = ({ fromUser }) => {
+const InitialsAvatar = ({ fromUser = false }) => {
   const [{ initials: avatarInitialsForBot }] = useAvatarForBot();
   const [{ initials: avatarInitialsForUser }] = useAvatarForUser();
   const [{ initialsAvatar: initialsAvatarStyleSet }] = useStyleSet();
@@ -37,10 +37,6 @@ const InitialsAvatar = ({ fromUser }) => {
       <div className="webchat__initialsAvatar__initials">{fromUser ? avatarInitialsForUser : avatarInitialsForBot}</div>
     </div>
   );
-};
-
-InitialsAvatar.defaultProps = {
-  fromUser: false
 };
 
 InitialsAvatar.propTypes = {

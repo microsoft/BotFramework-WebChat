@@ -5,7 +5,7 @@ import { orSelf as firstTabbableDescendantOrSelf } from '../firstTabbableDescend
 import AccessKeySinkContext from './internal/Context';
 import useNavigatorPlatform from '../../hooks/internal/useNavigatorPlatform';
 
-const Surface = ({ children, ...otherProps }) => {
+const Surface = ({ children = undefined, ...otherProps }) => {
   const [{ apple }] = useNavigatorPlatform();
   const contextRef = useRef({ focii: [] });
 
@@ -43,10 +43,6 @@ const Surface = ({ children, ...otherProps }) => {
       </div>
     </AccessKeySinkContext.Provider>
   );
-};
-
-Surface.defaultProps = {
-  children: undefined
 };
 
 Surface.propTypes = {

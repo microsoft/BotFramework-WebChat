@@ -16,7 +16,7 @@ type AnimationCardContentProps = {
   disabled?: boolean;
 };
 
-const AnimationCardContent: FC<AnimationCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const AnimationCardContent: FC<AnimationCardContentProps> = ({ actionPerformedClassName = '', content, disabled = undefined }) => {
   const { media = [] } = content;
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
@@ -32,11 +32,6 @@ const AnimationCardContent: FC<AnimationCardContentProps> = ({ actionPerformedCl
       <CommonCard actionPerformedClassName={actionPerformedClassName} content={content} disabled={disabled} />
     </div>
   );
-};
-
-AnimationCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
 };
 
 AnimationCardContent.propTypes = {

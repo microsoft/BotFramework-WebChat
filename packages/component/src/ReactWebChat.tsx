@@ -22,17 +22,11 @@ type ReactWebChatProps = Readonly<
   }
 >;
 
-const ReactWebChat = ({ className, role, ...composerProps }: ReactWebChatProps) => (
+const ReactWebChat = ({ className = undefined, role = undefined, ...composerProps }: ReactWebChatProps) => (
   <Composer {...composerProps}>
     <BasicWebChat className={className} role={role} />
   </Composer>
 );
-
-ReactWebChat.defaultProps = {
-  className: undefined,
-  role: undefined,
-  ...Composer.defaultProps
-};
 
 const {
   // Excluding "children" from ComposerProps.

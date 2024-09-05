@@ -23,7 +23,7 @@ type AdaptiveCardContentProps = {
   disabled?: boolean;
 };
 
-const AdaptiveCardContent: FC<AdaptiveCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const AdaptiveCardContent: FC<AdaptiveCardContentProps> = ({ actionPerformedClassName = '', content, disabled = undefined }) => {
   const parseAdaptiveCardJSON = useParseAdaptiveCardJSON();
 
   const card = useMemo(
@@ -47,11 +47,6 @@ const AdaptiveCardContent: FC<AdaptiveCardContentProps> = ({ actionPerformedClas
       />
     )
   );
-};
-
-AdaptiveCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
 };
 
 AdaptiveCardContent.propTypes = {

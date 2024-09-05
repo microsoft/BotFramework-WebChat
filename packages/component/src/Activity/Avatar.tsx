@@ -10,18 +10,12 @@ type AvatarProps = {
 };
 
 /** @deprecated Please use `useRenderAvatar` hook instead. */
-const Avatar: VFC<AvatarProps> = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
+const Avatar: VFC<AvatarProps> = ({ 'aria-hidden': ariaHidden = false, className = '', fromUser = false }) => {
   console.warn(
     'botframework-webchat: <Avatar> component is deprecated and will be removed on or after 2022-02-25. Please use `useRenderAvatar` hook instead.'
   );
 
   return <DefaultAvatar aria-hidden={ariaHidden} className={className} fromUser={fromUser} />;
-};
-
-Avatar.defaultProps = {
-  'aria-hidden': false,
-  className: '',
-  fromUser: false
 };
 
 Avatar.propTypes = {
