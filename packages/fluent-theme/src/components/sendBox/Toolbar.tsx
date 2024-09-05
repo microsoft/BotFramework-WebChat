@@ -53,7 +53,7 @@ export const Toolbar = memo((props: Readonly<{ children?: ReactNode | undefined;
 
   return (
     <div className={cx(classNames['sendbox__toolbar'], props.className)}>
-      {uiState === 'blueprint' && props.children}
+      {uiState !== 'blueprint' && props.children}
     </div>
   );
 });
