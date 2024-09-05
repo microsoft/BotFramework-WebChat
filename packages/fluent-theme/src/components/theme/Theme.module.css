@@ -22,6 +22,9 @@
   --webchat-colorNeutralBackground5: var(--colorNeutralBackground5, #ebebeb);
   --webchat-colorNeutralBackground6: var(--colorNeutralBackground6, #e6e6e6);
 
+  --webchat-colorNeutralStencil1: var(--colorNeutralStencil1, #e6e6e6); /* #575757 for dark mode */
+  --webchat-colorNeutralStencil2: var(--colorNeutralStencil2, #fafafa); /* #333333 for dark mode */
+
   --webchat-colorTransparentBackground: var(--colorTransparentBackground, rgba(0, 0, 0, 0.4));
 
   --webchat-colorNeutralStrokeDisabled: var(--colorNeutralStrokeDisabled, #e0e0e0);

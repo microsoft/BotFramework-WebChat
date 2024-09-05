@@ -44,24 +44,50 @@
     outline-offset: -2px;
   }
 
+  @media (prefers-reduced-motion: no-preference) {
+    &:empty::after,
+    &:empty::before {
+      animation-duration: 3s;
+      animation-iteration-count: infinite;
+      animation-name: blueprintAnimation;
+      animation-timing-function: linear;
+    }
+  }
+
+  &:empty::after,
   &:empty::before {
+    background-attachment: fixed;
+    background-image: linear-gradient(
+      -90deg,
+      var(--webchat-colorNeutralStencil1) 0%,
+      var(--webchat-colorNeutralStencil2) 50%,
+      var(--webchat-colorNeutralStencil1) 100%
+    );
+    background-size: 300% 100%;
     content: '';
     display: block;
-    width: 66%;
-    height: 18px;
-    background-color: var(--webchat-colorNeutralBackground6);
-    border-radius: 18px;
-    opacity: 1;
   }
 
   &:empty::after {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 16px;
-    background-color: var(--webchat-colorNeutralBackground6);
     border-radius: 16px;
-    opacity: 0.8;
+    height: 16px;
+    width: 100%;
+  }
+
+  &:empty::before {
+    border-radius: 18px;
+    height: 18px;
+    width: 66%;
+  }
+}
+
+@keyframes blueprintAnimation {
+  from {
+    background-position-x: 0%;
+  }
+
+  to {
+    background-position-x: -300%;
   }
 }
 

@@ -21,7 +21,7 @@
   text-align: center;
 }
 
-:global(.webchat-fluent) .pre-chat-message-activity__body--placeholder {
+:global(.webchat-fluent) .pre-chat-message-activity__body--blueprint {
   opacity: 60%;
 
   .pre-chat-message-activity__body-avatar {

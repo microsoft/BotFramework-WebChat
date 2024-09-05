@@ -3,12 +3,16 @@
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/fluent-bundle.production.min.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style type="text/css">
+      .fluent-provider {
+        height: 100%;
+      }
+    </style>
   </head>
 
   <body>
@@ -16,19 +20,60 @@
     <script type="text/babel">
       run(async function () {
         const {
+          Fluent: { FluentProvider, createDarkTheme },
           React,
-          ReactDOM: { render },
+          ReactDOMClient: { createRoot },
           WebChat: { FluentThemeProvider, ReactWebChat }
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
+        const theme = new URLSearchParams(location.search).get('theme');
+
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [
+            { name: 'prefers-reduced-motion', value: 'reduce' },
+            ...(theme === 'dark' || theme === 'light' ? [{ name: 'prefers-color-scheme', value: theme }] : [])
+          ]
+        });
+
+        const root = createRoot(document.getElementById('webchat'));
+
         function renderWebChat(uiState) {
-          render(
-            <FluentThemeProvider>
-              <ReactWebChat directLine={directLine} store={store} uiState={uiState} />
-            </FluentThemeProvider>,
-            document.getElementById('webchat')
+          let theme;
+
+          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            theme = {
+              ...createDarkTheme({
+                10: '#12174c',
+                20: '#1a1f5b',
+                30: '#21276a',
+                40: '#293079',
+                50: '#303788',
+                60: '#384097',
+                70: '#4049a7',
+                80: '#151e80',
+                90: '#4f59c5',
+                100: '#5661d4',
+                110: '#5e69e3',
+                120: '#7982e8',
+                130: '#949bec',
+                140: '#afb5f1',
+                150: '#c9cdf6',
+                160: '#e4e6fa'
+              }),
+              colorNeutralBackground1Disabled: '#101010',
+              colorNeutralBackground1Hover: '#101010',
+              colorNeutralForeground5: '#424242'
+            };
+          }
+
+          root.render(
+            <FluentProvider className="fluent-provider" theme={theme}>
+              <FluentThemeProvider variant="fluent">
+                <ReactWebChat directLine={directLine} store={store} uiState={uiState} />
+              </FluentThemeProvider>
+            </FluentProvider>
           );
         }
 
@@ -122,8 +167,8 @@
         // THEN: Should match screenshot.
         await host.snapshot();
 
-        // WHEN: Render with "mock" UI state.
-        renderWebChat('mock');
+        // WHEN: Render with "blueprint" UI state.
+        renderWebChat('blueprint');
         await pageConditions.scrollToBottomCompleted();
 
         // THEN: Starter prompt card actions should not be a button and exactly 3 are shown.
@@ -232,15 +277,15 @@
         // THEN: Should show 3 suggested actions in the send box.
         expect(document.querySelectorAll(`[data-testid="${WebChat.testIds.sendBoxSuggestedAction}"]`)).toHaveLength(3);
 
-        // WHEN: Render with "mock" UI state.
-        renderWebChat('mock');
+        // WHEN: Render with "blueprint" UI state.
+        renderWebChat('blueprint');
         await pageConditions.scrollToBottomCompleted();
 
         // THEN: Should show no suggested actions in the send box.
         expect(document.querySelectorAll(`[data-testid="${WebChat.testIds.sendBoxSuggestedAction}"]`)).toHaveLength(0);
 
         // THEN: Should match screenshot.
-        // TODO: Mocked message should not render its content.
+        // TODO: Blueprint messages should not render its content.
         await host.snapshot();
 
         // WHEN: Render with "disabled" UI state.
