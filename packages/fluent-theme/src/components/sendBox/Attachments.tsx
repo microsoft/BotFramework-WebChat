@@ -25,7 +25,7 @@ function Attachments({
   const classNames = useStyles(styles);
   const localizeWithPlural = useLocalizer({ plural: true });
 
-  return uiState !== 'mock' && attachments.length ? (
+  return uiState !== 'blueprint' && attachments.length ? (
     <div className={cx(classNames['sendbox__attachment'], className)}>
       {localizeWithPlural(attachmentsPluralStringIds, attachments.length)}
     </div>

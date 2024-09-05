@@ -36,7 +36,7 @@ const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
     focus('sendBox');
   }, [focus, inputTextRef, setSendBoxValue]);
 
-  return uiState === 'mock' || !messageBackAction ? (
+  return uiState === 'blueprint' || !messageBackAction ? (
     <div
       className={cx(className, classNames['pre-chat-message-activity__card-action-box'])}
       data-testid={testIds.preChatMessageActivityStarterPromptsCardAction}

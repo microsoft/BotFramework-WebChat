@@ -54,7 +54,7 @@ const TextArea = forwardRef<
       )}
       role={props.hidden ? 'hidden' : undefined}
     >
-      {uiState === 'mock' ? (
+      {uiState === 'blueprint' ? (
         <div
           className={cx(
             classNames['sendbox__text-area-doppelganger'],

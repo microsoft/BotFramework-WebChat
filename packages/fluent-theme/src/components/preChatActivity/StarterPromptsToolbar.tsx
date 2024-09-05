@@ -21,7 +21,7 @@ const StarterPrompts = ({ cardActions, className }: Props) => {
     // TODO: Accessibility-wise, this should be role="toolbar" with keyboard navigation.
     <div className={cx(className, classNames['pre-chat-message-activity__card-action-toolbar'])}>
       <div className={classNames['pre-chat-message-activity__card-action-toolbar-grid']}>
-        {uiState === 'mock' ? (
+        {uiState === 'blueprint' ? (
           <Fragment>
             <StarterPromptsCardAction />
             <StarterPromptsCardAction />

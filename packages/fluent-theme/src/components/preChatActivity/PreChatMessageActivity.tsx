@@ -41,7 +41,7 @@ const PreChatMessageActivity = ({ activity }: Props) => {
         <div
           className={cx(
             classNames['pre-chat-message-activity__body'],
-            uiState === 'mock' && classNames['pre-chat-message-activity__body--placeholder']
+            uiState === 'blueprint' && classNames['pre-chat-message-activity__body--placeholder']
           )}
         >
           {author.image && (

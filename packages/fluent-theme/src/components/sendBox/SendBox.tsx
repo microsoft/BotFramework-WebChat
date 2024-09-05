@@ -54,12 +54,12 @@ function SendBox(props: Props) {
 
   const message = props.isPrimary ? globalMessage : localMessage;
   const setMessage = props.isPrimary ? setGlobalMessage : setLocalMessage;
-  const isMock = uiState === 'mock';
+  const isBlueprint = uiState === 'blueprint';
 
   const [errorMessage, commitLatestError] = useSubmitError({ message, attachments });
   const isMessageLengthExceeded = !!maxMessageLength && message.length > maxMessageLength;
-  const shouldShowMessageLength = !isMock && !telephoneKeypadShown && maxMessageLength && isFinite(maxMessageLength);
-  const shouldShowTelephoneKeypad = !isMock && telephoneKeypadShown;
+  const shouldShowMessageLength = !isBlueprint && !telephoneKeypadShown && maxMessageLength && isFinite(maxMessageLength);
+  const shouldShowTelephoneKeypad = !isBlueprint && telephoneKeypadShown;
 
   useRegisterFocusSendBox(
     useCallback(

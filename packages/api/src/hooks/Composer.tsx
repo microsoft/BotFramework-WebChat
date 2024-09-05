@@ -255,10 +255,10 @@ type ComposerCoreProps = Readonly<{
    * Sets the state of the UI.
    *
    * - `undefined` will enable and render all UI elements normally
+   * - `"blueprint"` will hide rendering for most elements and render a blueprint UI instead, this could be used for loading state
    * - `"disabled"` will disable all interactive elements except temporal and non-submitting UI elements, such as "New messages" button
-   * - `"mock"` will hide rendering for most elements and render a mock UI instead, this could be used for loading state
    */
-  uiState?: 'disabled' | 'mock' | undefined;
+  uiState?: 'blueprint' | 'disabled' | undefined;
   userID?: string;
   username?: string;
 }>;
@@ -699,7 +699,7 @@ ComposerCore.propTypes = {
   styleOptions: PropTypes.any,
   toastMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   typingIndicatorMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  uiState: PropTypes.oneOf(['disabled', 'mock']),
+  uiState: PropTypes.oneOf(['blueprint', 'disabled']),
   userID: PropTypes.string,
   username: PropTypes.string
 };

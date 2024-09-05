@@ -37,7 +37,7 @@ function SuggestedActionStackedOrFlowContainer(
       )}
       role="toolbar"
     >
-      {uiState !== 'mock' && props.children}
+      {uiState !== 'blueprint' && props.children}
     </div>
   );
 }

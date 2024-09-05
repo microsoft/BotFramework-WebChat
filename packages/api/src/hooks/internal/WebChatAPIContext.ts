@@ -83,7 +83,7 @@ type WebChatAPIContext = {
   toastRenderer?: RenderToast;
   trackDimension?: (name: string, data: any) => void;
   typingIndicatorRenderer?: any; // TODO
-  uiState: 'disabled' | 'mock' | undefined;
+  uiState: 'blueprint' | 'disabled' | undefined;
   userID?: string;
   username?: string;
 };

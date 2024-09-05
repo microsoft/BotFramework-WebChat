@@ -1,12 +1,12 @@
 import { parseUIState } from './uiState';
 
 describe.each([
+  ['blueprint', false, 'blueprint'],
+  ['blueprint', true, 'blueprint'],
+  ['blueprint', undefined, 'blueprint'],
   ['disabled', false, 'disabled'],
   ['disabled', true, 'disabled'],
   ['disabled', undefined, 'disabled'],
-  ['mock', false, 'mock'],
-  ['mock', true, 'mock'],
-  ['mock', undefined, 'mock'],
   ['xyz', false, undefined],
   ['xyz', true, 'disabled'],
   ['xyz', undefined, undefined],
