@@ -15,7 +15,7 @@ type SendButtonProps = {
   className?: string;
 };
 
-const SendButton: FC<SendButtonProps> = ({ className }) => {
+const SendButton: FC<SendButtonProps> = ({ className = undefined }) => {
   const [disabled] = useDisabled();
   const localize = useLocalizer();
   const submit = useSubmit();
@@ -32,10 +32,6 @@ const SendButton: FC<SendButtonProps> = ({ className }) => {
       <SendIcon />
     </IconButton>
   );
-};
-
-SendButton.defaultProps = {
-  className: undefined
 };
 
 SendButton.propTypes = {

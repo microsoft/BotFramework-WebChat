@@ -9,7 +9,7 @@ import GitHubProfileContext from './Context';
 import OAuthComposer from '../oauth/Composer';
 
 // Composer is a React component with a React context
-const GitHubProfileComposer = ({ accessToken, children, onSignIn, onSignOut }) => {
+const GitHubProfileComposer = ({ accessToken = '', children = undefined, onSignIn = undefined, onSignOut = undefined }) => {
   const [avatarURL, setAvatarURL] = useState('');
   const [name, setName] = useState('');
 
@@ -33,13 +33,6 @@ const GitHubProfileComposer = ({ accessToken, children, onSignIn, onSignOut }) =
   );
 
   return <GitHubProfileContext.Provider value={context}>{children}</GitHubProfileContext.Provider>;
-};
-
-GitHubProfileComposer.defaultProps = {
-  accessToken: '',
-  children: undefined,
-  onSignIn: undefined,
-  onSignOut: undefined
 };
 
 GitHubProfileComposer.propTypes = {

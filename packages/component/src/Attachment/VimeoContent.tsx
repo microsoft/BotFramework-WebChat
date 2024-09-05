@@ -13,7 +13,7 @@ type VimeoContentProps = {
   loop?: boolean;
 };
 
-const VimeoContent: FC<VimeoContentProps> = ({ alt, autoPlay, embedID, loop }) => {
+const VimeoContent: FC<VimeoContentProps> = ({ alt = '', autoPlay = false, embedID, loop = false }) => {
   const [{ vimeoContent: vimeoContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
 
@@ -37,12 +37,6 @@ const VimeoContent: FC<VimeoContentProps> = ({ alt, autoPlay, embedID, loop }) =
       title={title}
     />
   );
-};
-
-VimeoContent.defaultProps = {
-  alt: '',
-  autoPlay: false,
-  loop: false
 };
 
 VimeoContent.propTypes = {

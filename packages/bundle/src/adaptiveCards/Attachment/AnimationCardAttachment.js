@@ -3,13 +3,9 @@ import React from 'react';
 
 import AnimationCardContent from './AnimationCardContent';
 
-const AnimationCardAttachment = ({ attachment: { content }, disabled }) => (
+const AnimationCardAttachment = ({ attachment: { content }, disabled = undefined }) => (
   <AnimationCardContent content={content} disabled={disabled} />
 );
-
-AnimationCardAttachment.defaultProps = {
-  disabled: undefined
-};
 
 AnimationCardAttachment.propTypes = {
   attachment: PropTypes.shape({

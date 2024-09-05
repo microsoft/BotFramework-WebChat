@@ -3,13 +3,9 @@ import React from 'react';
 
 import OAuthCardContent from './OAuthCardContent';
 
-const OAuthCardAttachment = ({ attachment: { content } = {}, disabled }) => (
+const OAuthCardAttachment = ({ attachment: { content } = {}, disabled = undefined }) => (
   <OAuthCardContent content={content} disabled={disabled} />
 );
-
-OAuthCardAttachment.defaultProps = {
-  disabled: undefined
-};
 
 OAuthCardAttachment.propTypes = {
   attachment: PropTypes.shape({

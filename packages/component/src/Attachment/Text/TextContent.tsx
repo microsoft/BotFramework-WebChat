@@ -24,7 +24,6 @@ const TextContent: FC<Props> = memo(({ activity, contentType = 'text/plain', tex
   ) : null;
 });
 
-TextContent.defaultProps = { contentType: 'text/plain' };
 TextContent.displayName = 'TextContent';
 
 export default TextContent;

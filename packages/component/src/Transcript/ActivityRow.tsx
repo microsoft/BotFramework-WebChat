@@ -20,7 +20,7 @@ const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByAc
 
 type ActivityRowProps = PropsWithChildren<{ activity: WebChatActivity }>;
 
-const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, children }, ref) => {
+const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity = undefined, children }, ref) => {
   const [activeDescendantId] = useActiveDescendantId();
   const [readActivityKeys] = useActivityKeysByRead();
   const bodyRef = useRef<HTMLDivElement>();
@@ -113,10 +113,6 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
     </article>
   );
 });
-
-ActivityRow.defaultProps = {
-  children: undefined
-};
 
 ActivityRow.displayName = 'ActivityRow';
 

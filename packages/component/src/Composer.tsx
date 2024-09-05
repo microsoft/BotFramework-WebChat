@@ -129,12 +129,12 @@ type ComposerCoreProps = Readonly<{
 
 const ComposerCore = ({
   children,
-  extraStyleSet,
-  nonce,
-  renderMarkdown,
-  styleSet,
-  suggestedActionsAccessKey,
-  webSpeechPonyfillFactory
+  extraStyleSet = undefined,
+  nonce = undefined,
+  renderMarkdown = undefined,
+  styleSet = undefined,
+  suggestedActionsAccessKey = 'A a Å å',
+  webSpeechPonyfillFactory = undefined
 }: ComposerCoreProps) => {
   const [dictateAbortable, setDictateAbortable] = useState();
   const [referenceGrammarID] = useReferenceGrammarID();
@@ -291,15 +291,6 @@ const ComposerCore = ({
   );
 };
 
-ComposerCore.defaultProps = {
-  extraStyleSet: undefined,
-  nonce: undefined,
-  renderMarkdown: undefined,
-  styleSet: undefined,
-  suggestedActionsAccessKey: 'A a Å å',
-  webSpeechPonyfillFactory: undefined
-};
-
 ComposerCore.propTypes = {
   extraStyleSet: PropTypes.any,
   nonce: PropTypes.string,
@@ -318,7 +309,7 @@ const Composer = ({
   attachmentMiddleware,
   avatarMiddleware,
   cardActionMiddleware,
-  children,
+  children = undefined,
   extraStyleSet,
   renderMarkdown,
   scrollToEndButtonMiddleware,
@@ -466,12 +457,6 @@ const Composer = ({
       </ActivityTreeComposer>
     </APIComposer>
   );
-};
-
-Composer.defaultProps = {
-  ...APIComposer.defaultProps,
-  ...ComposerCore.defaultProps,
-  children: undefined
 };
 
 Composer.propTypes = {

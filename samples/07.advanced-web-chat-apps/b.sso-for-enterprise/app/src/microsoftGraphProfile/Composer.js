@@ -10,7 +10,7 @@ import MicrosoftGraphProfileContext from './Context';
 import OAuthComposer from '../oauth/Composer';
 
 // Composer is a React component with a React context
-const MicrosoftGraphProfileComposer = ({ accessToken, children, onSignIn, onSignOut }) => {
+const MicrosoftGraphProfileComposer = ({ accessToken = '', children = undefined, onSignIn = undefined, onSignOut = undefined }) => {
   const [avatarURL, setAvatarURL] = useState('');
   const [name, setName] = useState('');
 
@@ -37,13 +37,6 @@ const MicrosoftGraphProfileComposer = ({ accessToken, children, onSignIn, onSign
   );
 
   return <MicrosoftGraphProfileContext.Provider value={context}>{children}</MicrosoftGraphProfileContext.Provider>;
-};
-
-MicrosoftGraphProfileComposer.defaultProps = {
-  accessToken: '',
-  children: undefined,
-  onSignIn: undefined,
-  onSignOut: undefined
 };
 
 MicrosoftGraphProfileComposer.propTypes = {

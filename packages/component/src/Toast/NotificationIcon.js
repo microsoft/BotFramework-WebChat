@@ -8,7 +8,7 @@ import ExclamationMarkIcon from './ExclamationMarkIcon';
 
 const { useLocalizer } = hooks;
 
-const NotificationIcon = ({ className, level }) => {
+const NotificationIcon = ({ className = undefined, level }) => {
   const localize = useLocalizer();
 
   const prefixes = {
@@ -31,10 +31,6 @@ const NotificationIcon = ({ className, level }) => {
       )}
     </React.Fragment>
   );
-};
-
-NotificationIcon.defaultProps = {
-  className: undefined
 };
 
 NotificationIcon.propTypes = {

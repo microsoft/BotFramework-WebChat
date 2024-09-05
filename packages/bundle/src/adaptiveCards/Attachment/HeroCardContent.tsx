@@ -16,7 +16,7 @@ type HeroCardContentProps = {
   disabled?: boolean;
 };
 
-const HeroCardContent: FC<HeroCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const HeroCardContent: FC<HeroCardContentProps> = ({ actionPerformedClassName = '', content, disabled = undefined }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [styleOptions] = useStyleOptions();
   const [direction] = useDirection();
@@ -41,11 +41,6 @@ const HeroCardContent: FC<HeroCardContentProps> = ({ actionPerformedClassName, c
       tapAction={content && content.tap}
     />
   );
-};
-
-HeroCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
 };
 
 HeroCardContent.propTypes = {

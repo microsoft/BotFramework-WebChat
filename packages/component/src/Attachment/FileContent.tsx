@@ -34,7 +34,7 @@ function isAllowedProtocol(url) {
   }
 }
 
-const FileContentBadge = ({ downloadIcon, fileName, size }) => {
+const FileContentBadge = ({ downloadIcon = false, fileName, size = undefined }) => {
   const [direction] = useDirection();
   const formatByte = useByteFormatter();
 
@@ -59,11 +59,6 @@ const FileContentBadge = ({ downloadIcon, fileName, size }) => {
   );
 };
 
-FileContentBadge.defaultProps = {
-  downloadIcon: false,
-  size: undefined
-};
-
 FileContentBadge.propTypes = {
   downloadIcon: PropTypes.bool,
   fileName: PropTypes.string.isRequired,
@@ -77,7 +72,7 @@ type FileContentProps = {
   size?: number;
 };
 
-const FileContent: FC<FileContentProps> = ({ className, href, fileName, size }) => {
+const FileContent: FC<FileContentProps> = ({ className = '', href = undefined, fileName, size = undefined }) => {
   const [{ fileContent: fileContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
   const localizeBytes = useByteFormatter();
@@ -119,12 +114,6 @@ const FileContent: FC<FileContentProps> = ({ className, href, fileName, size }) 
       )}
     </div>
   );
-};
-
-FileContent.defaultProps = {
-  className: '',
-  href: undefined,
-  size: undefined
 };
 
 FileContent.propTypes = {

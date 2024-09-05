@@ -97,12 +97,12 @@ const ROOT_STYLE = {
 
 const CarouselFilmStrip = ({
   activity,
-  className,
-  hideTimestamp,
-  renderActivityStatus,
+  className = '',
+  hideTimestamp = false,
+  renderActivityStatus = false,
   renderAttachment,
-  renderAvatar,
-  showCallout
+  renderAvatar = false,
+  showCallout = false
 }) => {
   const [{ bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize }] = useStyleOptions();
   const [{ carouselFilmStrip: carouselFilmStripStyleSet }] = useStyleSet();
@@ -231,14 +231,6 @@ const CarouselFilmStrip = ({
       )}
     </div>
   );
-};
-
-CarouselFilmStrip.defaultProps = {
-  className: '',
-  hideTimestamp: false,
-  renderActivityStatus: false,
-  renderAvatar: false,
-  showCallout: false
 };
 
 CarouselFilmStrip.propTypes = {

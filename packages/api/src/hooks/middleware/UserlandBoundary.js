@@ -4,7 +4,7 @@ import React, { useCallback, useState } from 'react';
 import ErrorBoundary from '../utils/ErrorBoundary';
 import ErrorBox from '../internal/ErrorBox';
 
-const UserlandBoundary = ({ children, type }) => {
+const UserlandBoundary = ({ children = undefined, type = undefined }) => {
   const [error, setError] = useState();
 
   const handleError = useCallback(error => setError(error), []);
@@ -14,11 +14,6 @@ const UserlandBoundary = ({ children, type }) => {
   ) : (
     <ErrorBoundary onError={handleError}>{children}</ErrorBoundary>
   );
-};
-
-UserlandBoundary.defaultProps = {
-  children: undefined,
-  type: undefined
 };
 
 UserlandBoundary.propTypes = {

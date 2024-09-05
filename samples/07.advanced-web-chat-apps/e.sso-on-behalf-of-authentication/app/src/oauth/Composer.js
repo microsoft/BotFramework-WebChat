@@ -26,7 +26,7 @@ const GRAPH_REQUESTS = {
 
 // Composer will prepare a React context object to use by consumer.
 const Composer = ({
-  children,
+  children = undefined,
   onError = error => {
     console.error(error);
   }
@@ -55,21 +55,21 @@ const Composer = ({
   const onSignIn = useMemo(() => {
     return !accessToken && msal
       ? async () => {
-          try {
-            if (!authenticating) {
-              setAuthenticating(true);
-              const loginResponse = await msal.loginPopup(GRAPH_REQUESTS.LOGIN);
-              if (loginResponse) {
-                const { accessToken } = await acquireToken();
-                setAccessToken(accessToken);
-              }
-              setAuthenticating(false);
+        try {
+          if (!authenticating) {
+            setAuthenticating(true);
+            const loginResponse = await msal.loginPopup(GRAPH_REQUESTS.LOGIN);
+            if (loginResponse) {
+              const { accessToken } = await acquireToken();
+              setAccessToken(accessToken);
             }
-          } catch (error) {
-            onError(error);
             setAuthenticating(false);
           }
+        } catch (error) {
+          onError(error);
+          setAuthenticating(false);
         }
+      }
       : undefined;
   }, [accessToken, acquireToken, authenticating, msal, onError, setAccessToken, setAuthenticating]);
 
@@ -81,9 +81,9 @@ const Composer = ({
 
     return accessToken
       ? () => {
-          msal.logout();
-          setAccessToken('');
-        }
+        msal.logout();
+        setAccessToken('');
+      }
       : undefined;
   }, [accessToken, setAccessToken, msal]);
 
@@ -144,11 +144,6 @@ const Composer = ({
   );
 
   return <Context.Provider value={context}>{children}</Context.Provider>;
-};
-
-Composer.defaultProps = {
-  children: undefined,
-  onError: undefined
 };
 
 Composer.propTypes = {

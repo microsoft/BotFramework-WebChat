@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import useErrorBoxClass from './useErrorBoxClass';
 import useTrackException from '../useTrackException';
 
-const ErrorBox = ({ error, type }) => {
+const ErrorBox = ({ error, type = undefined }) => {
   const [errorBoxClass] = useErrorBoxClass();
   const trackException = useTrackException();
 
@@ -20,10 +20,6 @@ const ErrorBox = ({ error, type }) => {
   }, [error, type]);
 
   return !!errorBoxClass && createElement(errorBoxClass, { error, type });
-};
-
-ErrorBox.defaultProps = {
-  type: undefined
 };
 
 ErrorBox.propTypes = {

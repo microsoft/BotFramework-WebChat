@@ -24,7 +24,7 @@ type DictationInterimsProps = {
   className?: string;
 };
 
-const DictationInterims: FC<DictationInterimsProps> = ({ className }) => {
+const DictationInterims: FC<DictationInterimsProps> = ({ className = '' }) => {
   const [dictateInterims] = useDictateInterims();
   const [dictateState] = useDictateState();
   const [{ dictationInterims: dictationInterimsStyleSet }] = useStyleSet();
@@ -37,25 +37,21 @@ const DictationInterims: FC<DictationInterimsProps> = ({ className }) => {
     </p>
   ) : (
     dictateState === DICTATING &&
-      (dictateInterims.length ? (
-        <p className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'dictating')}>
-          {dictateInterims.map((interim, index) => (
-            <span key={index}>
-              {interim}
-              &nbsp;
-            </span>
-          ))}
-        </p>
-      ) : (
-        <p className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}>
-          {localize('SPEECH_INPUT_LISTENING')}
-        </p>
-      ))
+    (dictateInterims.length ? (
+      <p className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'dictating')}>
+        {dictateInterims.map((interim, index) => (
+          <span key={index}>
+            {interim}
+            &nbsp;
+          </span>
+        ))}
+      </p>
+    ) : (
+      <p className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}>
+        {localize('SPEECH_INPUT_LISTENING')}
+      </p>
+    ))
   );
-};
-
-DictationInterims.defaultProps = {
-  className: ''
 };
 
 DictationInterims.propTypes = {

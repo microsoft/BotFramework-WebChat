@@ -38,7 +38,7 @@ type VideoContentProps = {
   src: string;
 };
 
-const VideoContent: FC<VideoContentProps> = ({ alt, autoPlay, loop, poster, src }) => {
+const VideoContent: FC<VideoContentProps> = ({ alt = '', autoPlay = false, loop = false, poster = '', src }) => {
   const { hostname, pathname, search } = parseURL(src);
   const lastSegment = pathname.split('/').pop();
   const searchParams = new URLSearchParams(search);
@@ -59,13 +59,6 @@ const VideoContent: FC<VideoContentProps> = ({ alt, autoPlay, loop, poster, src 
     default:
       return <HTMLVideoContent alt={alt} autoPlay={autoPlay} loop={loop} poster={poster} src={src} />;
   }
-};
-
-VideoContent.defaultProps = {
-  alt: '',
-  autoPlay: false,
-  loop: false,
-  poster: ''
 };
 
 VideoContent.propTypes = {

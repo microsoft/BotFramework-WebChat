@@ -3,13 +3,9 @@ import React from 'react';
 
 import ThumbnailCardContent from './ThumbnailCardContent';
 
-const ThumbnailCardAttachment = ({ attachment: { content }, disabled }) => (
+const ThumbnailCardAttachment = ({ attachment: { content }, disabled = undefined }) => (
   <ThumbnailCardContent content={content} disabled={disabled} />
 );
-
-ThumbnailCardAttachment.defaultProps = {
-  disabled: undefined
-};
 
 ThumbnailCardAttachment.propTypes = {
   attachment: PropTypes.shape({

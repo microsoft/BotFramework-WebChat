@@ -22,7 +22,7 @@ type ReceiptCardContentProps = {
   disabled?: boolean;
 };
 
-const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassName = '', content, disabled = undefined }) => {
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -121,11 +121,6 @@ const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassN
       tapAction={content && content.tap}
     />
   );
-};
-
-ReceiptCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
 };
 
 ReceiptCardContent.propTypes = {

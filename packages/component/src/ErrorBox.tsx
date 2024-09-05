@@ -14,7 +14,7 @@ type ErrorBoxProps = {
   type?: string;
 };
 
-const ErrorBox: FC<ErrorBoxProps> = ({ error, type }) => {
+const ErrorBox: FC<ErrorBoxProps> = ({ error, type = '' }) => {
   const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
   const localize = useLocalizer();
 
@@ -31,10 +31,6 @@ const ErrorBox: FC<ErrorBoxProps> = ({ error, type }) => {
       </div>
     </React.Fragment>
   );
-};
-
-ErrorBox.defaultProps = {
-  type: ''
 };
 
 ErrorBox.propTypes = {

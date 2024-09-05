@@ -5,13 +5,9 @@ import React from 'react';
 
 import VideoCardContent from './VideoCardContent';
 
-const VideoCardAttachment = ({ attachment: { content }, disabled }) => (
+const VideoCardAttachment = ({ attachment: { content }, disabled = undefined }) => (
   <VideoCardContent content={content} disabled={disabled} />
 );
-
-VideoCardAttachment.defaultProps = {
-  disabled: undefined
-};
 
 VideoCardAttachment.propTypes = {
   attachment: PropTypes.shape({

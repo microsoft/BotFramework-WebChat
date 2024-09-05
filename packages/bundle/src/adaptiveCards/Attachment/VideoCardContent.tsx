@@ -21,7 +21,7 @@ type VideoCardContentProps = {
   disabled?: boolean;
 };
 
-const VideoCardContent: FC<VideoCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const VideoCardContent: FC<VideoCardContentProps> = ({ actionPerformedClassName = '', content, disabled = undefined }) => {
   const { autoloop, autostart, image: { url: imageURL } = { url: undefined }, media } = content;
   const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
 
@@ -37,11 +37,6 @@ const VideoCardContent: FC<VideoCardContentProps> = ({ actionPerformedClassName,
       <CommonCard actionPerformedClassName={actionPerformedClassName} content={content} disabled={disabled} />
     </div>
   );
-};
-
-VideoCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
 };
 
 VideoCardContent.propTypes = {

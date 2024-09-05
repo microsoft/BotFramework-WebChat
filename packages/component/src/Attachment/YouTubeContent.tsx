@@ -13,7 +13,7 @@ type YouTubeContentProps = {
   loop?: boolean;
 };
 
-const YouTubeContent: FC<YouTubeContentProps> = ({ alt, autoPlay, embedID, loop }) => {
+const YouTubeContent: FC<YouTubeContentProps> = ({ alt = '', autoPlay = false, embedID, loop = false }) => {
   const [{ youTubeContent: youTubeContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
 
@@ -35,12 +35,6 @@ const YouTubeContent: FC<YouTubeContentProps> = ({ alt, autoPlay, embedID, loop 
       title={title}
     />
   );
-};
-
-YouTubeContent.defaultProps = {
-  alt: '',
-  autoPlay: false,
-  loop: false
 };
 
 YouTubeContent.propTypes = {

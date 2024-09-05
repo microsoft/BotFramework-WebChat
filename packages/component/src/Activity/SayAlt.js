@@ -9,14 +9,10 @@ const ROOT_STYLE = {
   margin: 0
 };
 
-const SayAlt = ({ speak }) => {
+const SayAlt = ({ speak = '' }) => {
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return !!speak && <pre className={rootClassName}>{speak}</pre>;
-};
-
-SayAlt.defaultProps = {
-  speak: ''
 };
 
 SayAlt.propTypes = {

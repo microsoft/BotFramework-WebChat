@@ -1,13 +1,11 @@
 import createDeferred from 'p-defer';
 import PropTypes from 'prop-types';
 
-const RunHook = ({ fn, resolve }) => {
+const RunHook = ({ fn = undefined, resolve }) => {
   resolve(fn?.());
 
   return false;
 };
-
-RunHook.defaultProps = { fn: undefined };
 
 RunHook.propTypes = {
   fn: PropTypes.func,

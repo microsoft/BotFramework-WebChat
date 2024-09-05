@@ -12,7 +12,7 @@ import WarningNotificationIcon from './Assets/WarningNotificationIcon';
 
 const { useDirection, useLocalizer, usePonyfill, useStyleOptions } = hooks;
 
-const ConnectivityStatusConnecting = ({ reconnect }) => {
+const ConnectivityStatusConnecting = ({ reconnect = false }) => {
   const [{ Date }] = usePonyfill();
   const [{ slowConnectionAfter }] = useStyleOptions();
   const [
@@ -59,10 +59,6 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
       </div>
     </React.Fragment>
   );
-};
-
-ConnectivityStatusConnecting.defaultProps = {
-  reconnect: false
 };
 
 ConnectivityStatusConnecting.propTypes = {

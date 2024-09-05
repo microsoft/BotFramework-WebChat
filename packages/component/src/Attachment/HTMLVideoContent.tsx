@@ -11,7 +11,7 @@ type HTMLVideoContentProps = {
   src: string;
 };
 
-const HTMLVideoContent: FC<HTMLVideoContentProps> = ({ alt, autoPlay, loop, poster, src }) => {
+const HTMLVideoContent: FC<HTMLVideoContentProps> = ({ alt = '', autoPlay = false, loop = false, poster = '', src }) => {
   const [{ videoContent: videoContentStyleSet }] = useStyleSet();
 
   return (
@@ -25,13 +25,6 @@ const HTMLVideoContent: FC<HTMLVideoContentProps> = ({ alt, autoPlay, loop, post
       src={src}
     />
   );
-};
-
-HTMLVideoContent.defaultProps = {
-  alt: '',
-  autoPlay: false,
-  loop: false,
-  poster: ''
 };
 
 HTMLVideoContent.propTypes = {

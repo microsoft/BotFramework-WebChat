@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-const CheckMarkIcon = ({ 'aria-label': ariaLabel, className }) => (
+const CheckMarkIcon = ({ 'aria-label': ariaLabel = undefined, className = undefined }) => (
   <svg
     aria-label={ariaLabel}
     className={(className || '') + ''}
@@ -17,11 +17,6 @@ const CheckMarkIcon = ({ 'aria-label': ariaLabel, className }) => (
     />
   </svg>
 );
-
-CheckMarkIcon.defaultProps = {
-  'aria-label': undefined,
-  className: undefined
-};
 
 CheckMarkIcon.propTypes = {
   'aria-label': PropTypes.string,

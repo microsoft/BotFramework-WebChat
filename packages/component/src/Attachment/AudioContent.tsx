@@ -11,7 +11,7 @@ type AudioContentProps = {
   src: string;
 };
 
-const AudioContent: FC<AudioContentProps> = ({ alt, autoPlay, loop, src }) => {
+const AudioContent: FC<AudioContentProps> = ({ alt = '', autoPlay = false, loop = false, src }) => {
   const [{ audioContent: audioContentStyleSet }] = useStyleSet();
 
   return (
@@ -24,13 +24,6 @@ const AudioContent: FC<AudioContentProps> = ({ alt, autoPlay, loop, src }) => {
       src={src}
     />
   );
-};
-
-AudioContent.defaultProps = {
-  alt: '',
-  autoPlay: false,
-  loop: false,
-  poster: ''
 };
 
 AudioContent.propTypes = {

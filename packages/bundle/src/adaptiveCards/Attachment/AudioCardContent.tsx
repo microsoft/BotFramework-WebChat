@@ -16,7 +16,7 @@ type AudioCardContentProps = {
   disabled?: boolean;
 };
 
-const AudioCardContent: FC<AudioCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const AudioCardContent: FC<AudioCardContentProps> = ({ actionPerformedClassName = '', content, disabled = undefined }) => {
   const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
   const { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = content;
 
@@ -32,11 +32,6 @@ const AudioCardContent: FC<AudioCardContentProps> = ({ actionPerformedClassName,
       <CommonCard actionPerformedClassName={actionPerformedClassName} content={content} disabled={disabled} />
     </div>
   );
-};
-
-AudioCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
 };
 
 AudioCardContent.propTypes = {
