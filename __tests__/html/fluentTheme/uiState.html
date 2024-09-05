@@ -115,9 +115,11 @@
 
         await host.snapshot();
 
+        // WHEN: Render with "mock" UI state.
         renderWebChat('mock');
         await pageConditions.scrollStabilized();
 
+        // THEN: Starter prompts card action should not be a button and exactly 3 are shown.
         expect(
           document.querySelectorAll(
             `[data-testid="${WebChat.testIds.preChatMessageActivityStarterPromptsCardAction}"]:not(button)`
@@ -126,9 +128,11 @@
 
         await host.snapshot();
 
+        // WHEN: Render with "disabled" UI state.
         renderWebChat('disabled');
         await pageConditions.scrollStabilized();
 
+        // THEN: Starter prompts card action should show as disabled.
         expect(
           document.querySelectorAll(
             `button[data-testid="${WebChat.testIds.preChatMessageActivityStarterPromptsCardAction}"][aria-disabled="true"]`
@@ -147,9 +151,11 @@
 
         await host.snapshot();
 
+        // WHEN: Render with normal UI state.
         renderWebChat();
         await pageConditions.scrollStabilized();
 
+        // THEN: Starter prompts card action should show normally.
         expect(
           document.querySelectorAll(
             `button[data-testid="${WebChat.testIds.preChatMessageActivityStarterPromptsCardAction}"]`
