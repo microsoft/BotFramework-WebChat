@@ -1,24 +1,22 @@
-/* eslint-disable react/no-danger */
 import { hooks } from 'botframework-webchat-component';
-import cx from 'classnames';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
-import React, { Fragment, memo, useMemo } from 'react';
+import cx from 'classnames';
+import React, { memo, useMemo } from 'react';
 import { useStyles } from '../../styles/index.js';
 import styles from './PreChatMessageActivity.module.css';
 import StarterPromptsToolbar from './StarterPromptsToolbar.js';
-import StarterPromptsCardAction from './StarterPromptsCardAction.js';
 
 type Props = Readonly<{ activity: WebChatActivity & { type: 'message' } }>;
 
-const { useLocalizer, useRenderMarkdownAsHTML } = hooks;
+const { useLocalizer, useRenderMarkdownAsHTML, useUIState } = hooks;
 
 const PreChatMessageActivity = ({ activity }: Props) => {
+  const [uiState] = useUIState();
   const classNames = useStyles(styles);
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const localize = useLocalizer();
 
   const entity = getOrgSchemaMessage(activity?.entities || []);
-  const isPlaceHolder = entity?.keywords?.includes('PreChatMessage') && entity.creativeWorkStatus === 'Placeholder';
   const author = useMemo(
     () =>
       typeof entity?.author === 'string'
@@ -43,7 +41,7 @@ const PreChatMessageActivity = ({ activity }: Props) => {
         <div
           className={cx(
             classNames['pre-chat-message-activity__body'],
-            isPlaceHolder && classNames['pre-chat-message-activity__body--placeholder']
+            uiState === 'mock' && classNames['pre-chat-message-activity__body--placeholder']
           )}
         >
           {author.image && (
@@ -55,6 +53,7 @@ const PreChatMessageActivity = ({ activity }: Props) => {
           )}
           {author.name && <h2 className={classNames['pre-chat-message-activity__body-title']}>{author.name}</h2>}
           {author.description && (
+            // eslint-disable-next-line react/no-danger
             <div className={classNames['pre-chat-message-activity__body-subtitle']} dangerouslySetInnerHTML={html} />
           )}
         </div>
@@ -62,15 +61,7 @@ const PreChatMessageActivity = ({ activity }: Props) => {
       <StarterPromptsToolbar
         cardActions={activity.suggestedActions?.actions || []}
         className={classNames['pre-chat-message-activity__toolbar']}
-      >
-        {isPlaceHolder && (
-          <Fragment>
-            <StarterPromptsCardAction />
-            <StarterPromptsCardAction />
-            <StarterPromptsCardAction />
-          </Fragment>
-        )}
-      </StarterPromptsToolbar>
+      />
     </div>
   );
 };

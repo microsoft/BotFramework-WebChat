@@ -22,7 +22,7 @@
     grid-template-columns: 20px 1fr;
   }
 
-  &:disabled {
+  &:disabled, &:empty {
     cursor: default;
   }
 
@@ -30,11 +30,11 @@
     background-color: var(--webchat-colorNeutralBackgroundDisabled);
   }
 
-  &:hover:not(:disabled) {
+  &:hover:not(:disabled, :empty) {
     background-color: var(--webchat-colorNeutralBackground1Hover);
   }
 
-  &:active:not(:disabled) {
+  &:active:not(:disabled, :empty) {
     background-color: var(--webchat-colorNeutralBackground1Pressed);
   }
 
