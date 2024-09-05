@@ -22,19 +22,20 @@
     grid-template-columns: 20px 1fr;
   }
 
-  &:disabled, &:empty {
+  &[aria-disabled='true'],
+  &:empty {
     cursor: default;
   }
 
-  &:disabled:not(:empty) {
+  &[aria-disabled='true']:not(:empty) {
     background-color: var(--webchat-colorNeutralBackgroundDisabled);
   }
 
-  &:hover:not(:disabled, :empty) {
+  &:hover:not([aria-disabled='true'], :empty) {
     background-color: var(--webchat-colorNeutralBackground1Hover);
   }
 
-  &:active:not(:disabled, :empty) {
+  &:active:not([aria-disabled='true'], :empty) {
     background-color: var(--webchat-colorNeutralBackground1Pressed);
   }
 

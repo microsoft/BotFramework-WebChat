@@ -27,6 +27,8 @@ const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
     [messageBackAction?.text, renderMarkdownAsHTML]
   );
 
+  const disabled = uiState === 'disabled';
+
   const handleClick = useCallback(() => {
     setSendBoxValue(inputTextRef.current);
 
@@ -43,9 +45,14 @@ const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
     <button
       className={cx(className, classNames['pre-chat-message-activity__card-action-box'])}
       data-testid={testIds.preChatMessageActivityStarterPromptsCardAction}
-      disabled={uiState === 'disabled'}
-      onClick={handleClick}
       type="button"
+      {...(disabled
+        ? {
+            'aria-disabled': 'true',
+            // eslint-disable-next-line no-magic-numbers
+            tabIndex: -1
+          }
+        : { onClick: handleClick })}
     >
       <div className={classNames['pre-chat-message-activity__card-action-title']}>
         {'title' in messageBackAction && messageBackAction.title}
