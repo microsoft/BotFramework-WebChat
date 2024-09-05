@@ -58,7 +58,8 @@ function SendBox(props: Props) {
 
   const [errorMessage, commitLatestError] = useSubmitError({ message, attachments });
   const isMessageLengthExceeded = !!maxMessageLength && message.length > maxMessageLength;
-  const shouldShowMessageLength = !isBlueprint && !telephoneKeypadShown && maxMessageLength && isFinite(maxMessageLength);
+  const shouldShowMessageLength =
+    !isBlueprint && !telephoneKeypadShown && maxMessageLength && isFinite(maxMessageLength);
   const shouldShowTelephoneKeypad = !isBlueprint && telephoneKeypadShown;
 
   useRegisterFocusSendBox(

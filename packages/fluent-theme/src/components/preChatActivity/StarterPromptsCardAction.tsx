@@ -46,10 +46,7 @@ const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
       className={cx(className, classNames['pre-chat-message-activity__card-action-box'])}
       data-testid={testIds.preChatMessageActivityStarterPromptsCardAction}
       type="button"
-      {...(disabled
-        ? // eslint-disable-next-line no-magic-numbers
-          { 'aria-disabled': 'true', tabIndex: -1 }
-        : { onClick: handleClick })}
+      {...(disabled ? { 'aria-disabled': 'true', tabIndex: -1 } : { onClick: handleClick })}
     >
       <div className={classNames['pre-chat-message-activity__card-action-title']}>
         {'title' in messageBackAction && messageBackAction.title}
