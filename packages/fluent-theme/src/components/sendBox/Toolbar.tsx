@@ -1,7 +1,10 @@
+import { hooks } from 'botframework-webchat-api';
 import cx from 'classnames';
 import React, { memo, type MouseEventHandler, type ReactNode } from 'react';
-import styles from './Toolbar.module.css';
 import { useStyles } from '../../styles';
+import styles from './Toolbar.module.css';
+
+const { useUIState } = hooks;
 
 const preventDefaultHandler: MouseEventHandler<HTMLButtonElement> = event => event.preventDefault();
 
@@ -43,9 +46,14 @@ export const ToolbarButton = memo(
 ToolbarButton.displayName = 'ToolbarButton';
 
 export const Toolbar = memo((props: Readonly<{ children?: ReactNode | undefined; className?: string | undefined }>) => {
+  const [uiState] = useUIState();
   const classNames = useStyles(styles);
 
-  return <div className={cx(classNames['sendbox__toolbar'], props.className)}>{props.children}</div>;
+  return (
+    <div className={cx(classNames['sendbox__toolbar'], props.className)}>
+      {uiState === 'mock' ? undefined : props.children}
+    </div>
+  );
 });
 
 Toolbar.displayName = 'Toolbar';

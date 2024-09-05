@@ -107,12 +107,17 @@
 
         await pageConditions.numActivitiesShown(1);
 
+        await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
+        await host.sendKeys('Hello, World!');
+        await pageObjects.uploadFile('seaofthieves.jpg');
+
         expect(
           document.querySelectorAll(
             `button[data-testid="${WebChat.testIds.preChatMessageActivityStarterPromptsCardAction}"]`
           )
         ).toHaveLength(6);
 
+        // THEN: Should match screenshot.
         await host.snapshot();
 
         // WHEN: Render with "mock" UI state.
@@ -126,11 +131,18 @@
           )
         ).toHaveLength(3);
 
+        // THEN: Should match screenshot.
         await host.snapshot();
 
         // WHEN: Render with "disabled" UI state.
         renderWebChat('disabled');
         await pageConditions.scrollStabilized();
+
+        // THEN: Should send box value could return.
+        expect(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`)).toHaveProperty(
+          'value',
+          'Hello, World!'
+        );
 
         // THEN: Starter prompts card action should show as disabled.
         expect(
@@ -147,8 +159,12 @@
         );
 
         // THEN: Should have no effect.
-        expect(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`)).toHaveProperty('value', '');
+        expect(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`)).toHaveProperty(
+          'value',
+          'Hello, World!'
+        );
 
+        // THEN: Should match screenshot.
         await host.snapshot();
 
         // WHEN: Render with normal UI state.
@@ -162,6 +178,50 @@
           )
         ).toHaveLength(6);
 
+        // THEN: Should match screenshot.
+        await host.snapshot();
+
+        await directLine.emulateIncomingActivity({
+          suggestedActions: {
+            actions: [
+              {
+                title: 'Nulla commodo',
+                type: 'messageBack'
+              },
+              {
+                title: 'Laboris do elit',
+                type: 'messageBack'
+              },
+              {
+                title: 'Officia irure',
+                type: 'messageBack'
+              }
+            ],
+            to: []
+          },
+          text: 'Dolore eiusmod enim officia voluptate est aliquip aliquip mollit.',
+          type: 'message'
+        });
+
+        // WHEN: Render with "mock" UI state.
+        renderWebChat();
+        await pageConditions.scrollStabilized();
+
+        // THEN: Should show 3 suggested actions in the send box.
+        expect(
+          document.querySelectorAll(`[data-testid="${WebChat.testIds.sendBoxSuggestedAction}"]`)
+        ).toHaveLength(3);
+
+        // WHEN: Render with "mock" UI state.
+        renderWebChat('mock');
+        await pageConditions.scrollStabilized();
+
+        // THEN: Should show no suggested actions in the send box.
+        expect(
+          document.querySelectorAll(`[data-testid="${WebChat.testIds.sendBoxSuggestedAction}"]`)
+        ).toHaveLength(0);
+
+        // THEN: Should match screenshot.
         await host.snapshot();
       });
     </script>

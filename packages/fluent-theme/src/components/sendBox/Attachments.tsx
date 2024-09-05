@@ -1,10 +1,10 @@
 import { hooks } from 'botframework-webchat-component';
-import React, { memo } from 'react';
 import cx from 'classnames';
-import styles from './Attachments.module.css';
+import React, { memo } from 'react';
 import { useStyles } from '../../styles';
+import styles from './Attachments.module.css';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useUIState } = hooks;
 
 const attachmentsPluralStringIds = {
   one: 'TEXT_INPUT_ATTACHMENTS_ONE',
@@ -21,10 +21,11 @@ function Attachments({
   readonly attachments: readonly Readonly<{ blob: Blob | File; thumbnailURL?: URL | undefined }>[];
   readonly className?: string | undefined;
 }>) {
+  const [uiState] = useUIState();
   const classNames = useStyles(styles);
   const localizeWithPlural = useLocalizer({ plural: true });
 
-  return attachments.length ? (
+  return uiState !== 'mock' && attachments.length ? (
     <div className={cx(classNames['sendbox__attachment'], className)}>
       {localizeWithPlural(attachmentsPluralStringIds, attachments.length)}
     </div>

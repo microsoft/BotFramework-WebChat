@@ -4,6 +4,7 @@ import cx from 'classnames';
 import React, { MouseEventHandler, memo, useCallback } from 'react';
 
 import { useStyles } from '../../styles';
+import testIds from '../../testIds';
 import AccessibleButton from './AccessibleButton';
 import { useRovingFocusItemRef } from './private/rovingFocus';
 import styles from './SuggestedAction.module.css';
@@ -76,6 +77,7 @@ function SuggestedAction({
   return (
     <AccessibleButton
       className={cx(classNames['suggested-action'], suggestedActionStyleSet + '', (className || '') + '')}
+      data-testid={testIds.sendBoxSuggestedAction}
       disabled={uiState === 'disabled'}
       onClick={handleClick}
       ref={focusRef}

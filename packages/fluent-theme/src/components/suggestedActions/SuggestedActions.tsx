@@ -8,7 +8,7 @@ import RovingFocusProvider from './private/rovingFocus';
 import SuggestedAction from './SuggestedAction';
 import styles from './SuggestedActions.module.css';
 
-const { useFocus, useLocalizer, useStyleOptions, useStyleSet, useSuggestedActions } = hooks;
+const { useFocus, useLocalizer, useStyleOptions, useStyleSet, useSuggestedActions, useUIState } = hooks;
 
 function SuggestedActionStackedOrFlowContainer(
   props: Readonly<{
@@ -19,6 +19,7 @@ function SuggestedActionStackedOrFlowContainer(
 ) {
   const [{ suggestedActionLayout }] = useStyleOptions();
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();
+  const [uiState] = useUIState();
   const classNames = useStyles(styles);
 
   return (
@@ -36,7 +37,7 @@ function SuggestedActionStackedOrFlowContainer(
       )}
       role="toolbar"
     >
-      {!!props.children && !!React.Children.count(props.children) && props.children}
+      {uiState !== 'mock' && props.children}
     </div>
   );
 }
