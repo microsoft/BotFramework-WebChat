@@ -42,13 +42,15 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
 
     return (
       <button
+        aria-disabled={disabled ? 'true' : undefined}
         aria-hidden={ariaHidden}
         className={className}
         data-testid={dataTestId}
         onClick={disabled ? preventDefaultHandler : onClick}
         ref={ref}
+        // eslint-disable-next-line no-magic-numbers
+        tabIndex={disabled ? -1 : tabIndex}
         type="button"
-        {...(disabled ? { 'aria-disabled': 'true', tabIndex: -1 } : { tabIndex })}
       >
         {children}
       </button>

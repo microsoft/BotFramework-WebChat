@@ -31,6 +31,8 @@ const TextArea = forwardRef<
   const [uiState] = useUIState();
   const classNames = useStyles(styles);
 
+  const disabled = uiState === 'disabled';
+
   const handleKeyDown = useCallback<KeyboardEventHandler<HTMLTextAreaElement>>(event => {
     // Shift+Enter adds a new line
     // Enter requests related form submission
@@ -74,6 +76,7 @@ const TextArea = forwardRef<
             {props.value || props.placeholder}{' '}
           </div>
           <textarea
+            aria-disabled={disabled}
             aria-label={props['aria-label']}
             className={cx(
               classNames['sendbox__text-area-input'],
@@ -84,6 +87,7 @@ const TextArea = forwardRef<
             onInput={props.onInput}
             onKeyDown={handleKeyDown}
             placeholder={props.placeholder}
+            readOnly={disabled}
             ref={ref}
             rows={props.startRows ?? 1}
             // eslint-disable-next-line no-magic-numbers

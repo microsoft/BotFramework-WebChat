@@ -22,20 +22,22 @@ export const ToolbarButton = memo(
     }>
   ) => {
     const classNames = useStyles(styles);
+    const [uiState] = useUIState();
+
+    const disabled = props.disabled || uiState === 'disabled';
 
     return (
       <button
+        aria-disabled={disabled ? 'true' : undefined}
         aria-label={props['aria-label']}
         className={cx(classNames['sendbox__toolbar-button'], props.className, {
           [classNames['sendbox__toolbar-button--selected']]: props.selected
         })}
         data-testid={props['data-testid']}
-        onClick={props.disabled ? preventDefaultHandler : props.onClick}
+        onClick={disabled ? preventDefaultHandler : props.onClick}
+        // eslint-disable-next-line no-magic-numbers
+        tabIndex={disabled ? -1 : undefined}
         type={props.type === 'submit' ? 'submit' : 'button'}
-        {...(props.disabled && {
-          'aria-disabled': 'true',
-          tabIndex: -1
-        })}
       >
         {props.children}
       </button>

@@ -110,7 +110,9 @@
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
         await host.sendKeys('Hello, World!');
         await pageObjects.uploadFile('seaofthieves.jpg');
+        await pageConditions.scrollToBottomCompleted();
 
+        // THEN: Should show 6 starter prompt card actions.
         expect(
           document.querySelectorAll(
             `button[data-testid="${WebChat.testIds.preChatMessageActivityStarterPromptsCardAction}"]`
@@ -122,9 +124,9 @@
 
         // WHEN: Render with "mock" UI state.
         renderWebChat('mock');
-        await pageConditions.scrollStabilized();
+        await pageConditions.scrollToBottomCompleted();
 
-        // THEN: Starter prompts card action should not be a button and exactly 3 are shown.
+        // THEN: Starter prompt card actions should not be a button and exactly 3 are shown.
         expect(
           document.querySelectorAll(
             `[data-testid="${WebChat.testIds.preChatMessageActivityStarterPromptsCardAction}"]:not(button)`
@@ -136,9 +138,25 @@
 
         // WHEN: Render with "disabled" UI state.
         renderWebChat('disabled');
-        await pageConditions.scrollStabilized();
+        await pageConditions.scrollToBottomCompleted();
 
-        // THEN: Should send box value could return.
+        // THEN: Should send box value should return.
+        expect(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`)).toHaveProperty(
+          'value',
+          'Hello, World!'
+        );
+
+        // THEN: Send box should be disabled and read-only.
+        expect(
+          document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"][aria-disabled="true"][readonly]`)
+        ).toBeTruthy();
+
+        // WHEN: Click on the disabled "Send" button.
+        await host.click(
+          document.querySelector(`[data-testid="${WebChat.testIds.sendBoxSendButton}"][aria-disabled="true"]`)
+        );
+
+        // THEN: Should not send.
         expect(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`)).toHaveProperty(
           'value',
           'Hello, World!'
@@ -169,7 +187,7 @@
 
         // WHEN: Render with normal UI state.
         renderWebChat();
-        await pageConditions.scrollStabilized();
+        await pageConditions.scrollToBottomCompleted();
 
         // THEN: Starter prompts card action should show normally.
         expect(
@@ -203,23 +221,46 @@
           type: 'message'
         });
 
-        // WHEN: Render with "mock" UI state.
+        // WHEN: Render with normal UI state.
+        // TODO: Pre-chat message activity should hide when no longer in pre-chat mode.
         renderWebChat();
-        await pageConditions.scrollStabilized();
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: Should match screenshot.
+        await host.snapshot();
 
         // THEN: Should show 3 suggested actions in the send box.
-        expect(
-          document.querySelectorAll(`[data-testid="${WebChat.testIds.sendBoxSuggestedAction}"]`)
-        ).toHaveLength(3);
+        expect(document.querySelectorAll(`[data-testid="${WebChat.testIds.sendBoxSuggestedAction}"]`)).toHaveLength(3);
 
         // WHEN: Render with "mock" UI state.
         renderWebChat('mock');
-        await pageConditions.scrollStabilized();
+        await pageConditions.scrollToBottomCompleted();
 
         // THEN: Should show no suggested actions in the send box.
+        expect(document.querySelectorAll(`[data-testid="${WebChat.testIds.sendBoxSuggestedAction}"]`)).toHaveLength(0);
+
+        // THEN: Should match screenshot.
+        // TODO: Mocked message should not render its content.
+        await host.snapshot();
+
+        // WHEN: Render with "disabled" UI state.
+        renderWebChat('disabled');
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: Should show disabled suggested actions in the send box.
         expect(
-          document.querySelectorAll(`[data-testid="${WebChat.testIds.sendBoxSuggestedAction}"]`)
-        ).toHaveLength(0);
+          document.querySelectorAll(`[aria-disabled="true"][data-testid="${WebChat.testIds.sendBoxSuggestedAction}"]`)
+        ).toHaveLength(3);
+
+        // WHEN: Click on the disabled suggested action button.
+        await host.click(
+          document.querySelector(`[aria-disabled="true"][data-testid="${WebChat.testIds.sendBoxSuggestedAction}"]`)
+        );
+
+        // THEN: Should have no effect.
+        expect(
+          document.querySelectorAll(`[aria-disabled="true"][data-testid="${WebChat.testIds.sendBoxSuggestedAction}"]`)
+        ).toHaveLength(3);
 
         // THEN: Should match screenshot.
         await host.snapshot();
