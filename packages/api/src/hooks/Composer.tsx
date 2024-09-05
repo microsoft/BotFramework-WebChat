@@ -54,6 +54,7 @@ import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenRea
 import AttachmentMiddleware from '../types/AttachmentMiddleware';
 import AvatarMiddleware from '../types/AvatarMiddleware';
 import CardActionMiddleware from '../types/CardActionMiddleware';
+import { type ContextOf } from '../types/ContextOf';
 import GroupActivitiesMiddleware from '../types/GroupActivitiesMiddleware';
 import LocalizedStrings from '../types/LocalizedStrings';
 import PrecompiledGlobalizeType from '../types/PrecompiledGlobalize';
@@ -61,7 +62,6 @@ import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from '
 import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
 import ToastMiddleware from '../types/ToastMiddleware';
 import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
-import { type ContextOf } from '../types/ContextOf';
 import createCustomEvent from '../utils/createCustomEvent';
 import isObject from '../utils/isObject';
 import mapMap from '../utils/mapMap';
@@ -85,6 +85,7 @@ import observableToPromise from './utils/observableToPromise';
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+import { parseUIState } from './validation/uiState';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -220,6 +221,9 @@ type ComposerCoreProps = Readonly<{
   children?: ReactNode | ((context: ContextOf<typeof WebChatAPIContext>) => ReactNode);
   dir?: string;
   directLine: DirectLineJSBotConnection;
+  /**
+   * @deprecated Please use `uiState="disabled"` instead. This feature will be removed on or after 2026-09-04.
+   */
   disabled?: boolean;
   downscaleImageToDataURL?: (
     blob: Blob,
@@ -247,6 +251,14 @@ type ComposerCoreProps = Readonly<{
   styleOptions?: StyleOptions;
   toastMiddleware?: OneOrMany<ToastMiddleware>;
   typingIndicatorMiddleware?: OneOrMany<TypingIndicatorMiddleware>;
+  /**
+   * Sets the state of the UI.
+   *
+   * - `undefined` will enable and render all UI elements normally
+   * - `"disabled"` will disable all interactive elements except temporal and non-submitting UI elements, such as "New messages" button
+   * - `"mock"` will hide rendering for most elements and render a mock UI instead, this could be used for loading state
+   */
+  uiState?: 'disabled' | 'mock' | undefined;
   userID?: string;
   username?: string;
 }>;
@@ -278,6 +290,7 @@ const ComposerCore = ({
   styleOptions,
   toastMiddleware,
   typingIndicatorMiddleware,
+  uiState,
   userID,
   username
 }: ComposerCoreProps) => {
@@ -291,6 +304,8 @@ const ComposerCore = ({
     () => normalizeStyleOptions(patchStyleOptionsFromDeprecatedProps(styleOptions)),
     [styleOptions]
   );
+
+  uiState = parseUIState(uiState, disabled);
 
   useEffect(() => {
     dispatch(setLanguage(locale));
@@ -538,7 +553,6 @@ const ComposerCore = ({
       avatarRenderer: patchedAvatarRenderer,
       dir: patchedDir,
       directLine,
-      disabled,
       downscaleImageToDataURL,
       grammars: patchedGrammars,
       internalErrorBoxClass,
@@ -555,13 +569,13 @@ const ComposerCore = ({
       toastRenderer: patchedToastRenderer,
       trackDimension,
       typingIndicatorRenderer: patchedTypingIndicatorRenderer,
+      uiState,
       userID,
       username
     }),
     [
       cardActionContext,
       directLine,
-      disabled,
       downscaleImageToDataURL,
       groupActivitiesContext,
       hoistedDispatchers,
@@ -586,6 +600,7 @@ const ComposerCore = ({
       sendTypingIndicator,
       telemetryDimensionsRef,
       trackDimension,
+      uiState,
       userID,
       username
     ]
@@ -640,6 +655,7 @@ ComposerCore.defaultProps = {
   styleOptions: {},
   toastMiddleware: undefined,
   typingIndicatorMiddleware: undefined,
+  uiState: undefined,
   userID: '',
   username: ''
 };
@@ -683,6 +699,7 @@ ComposerCore.propTypes = {
   styleOptions: PropTypes.any,
   toastMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   typingIndicatorMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
+  uiState: PropTypes.oneOf(['disabled', 'mock']),
   userID: PropTypes.string,
   username: PropTypes.string
 };
