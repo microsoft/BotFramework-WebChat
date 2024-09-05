@@ -134,6 +134,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useTrackEvent`](#usetrackevent)
 -  [`useTrackException`](#usetrackexception)
 -  [`useTrackTiming`](#usetracktiming)
+-  [`useUIState`](#useuistate)
 -  [`useUserID`](#useuserid)
 -  [`useUsername`](#useusername)
 -  [`useVoiceSelector`](#usevoiceselector)
@@ -475,6 +476,8 @@ This value will be automatically configured based on the `locale` of Web Chat.
 If you would prefer to set this property manually, change the value `dir` prop passed to Web Chat.
 
 ## `useDisabled`
+
+> This hook is deprecated and will be removed on or after 2026-09-04. Developers should migrate to [`useUIState`](#useuistate) hook instead.
 
 <!-- prettier-ignore-start -->
 ```js
@@ -1386,6 +1389,26 @@ useTimeoutForSend(): [number]
 This hook will return the interval of time paused before a sending activity is considered unsuccessful. The interval is represented in milliseconds. Due to network partitioning problems, activities that fail to send may eventually be successfully delivered to the bot.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
+
+## `useUIState`
+
+> New in 4.19.0.
+
+<!-- prettier-ignore-start -->
+```js
+useUIState(): ['blueprint' | 'disabled' | undefined]
+```
+<!-- prettier-ignore-end -->
+
+This hook will return whether the UI should be rendered in blueprint mode, as disabled, or normally. This can be set via the `uiState` props.
+
+-  `"blueprint"` will render as few UI elements as possible and should be non-functional
+   -  Useful for loading scenarios
+-  `"disabled"` will render most UI elements as non-functional
+   -  Scrolling may continue to trigger read acknowledgements
+-  `undefined` will render normally
+
+Note: `uiState` props that precedence over the deprecated `disabled` props.
 
 ## `useUserID`
 
