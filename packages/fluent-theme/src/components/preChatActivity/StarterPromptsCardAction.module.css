@@ -47,8 +47,8 @@
   @media (prefers-reduced-motion: reduce) {
     &:empty::after,
     &:empty::before {
-      animation-delay: -1s !important;
-      animation-play-state: paused !important;
+      animation-delay: -1s;
+      animation-play-state: paused;
     }
   }
 
