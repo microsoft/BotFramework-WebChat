@@ -7,7 +7,7 @@
   color: var(--webchat-colorNeutralForeground1);
   cursor: pointer;
   display: grid;
-  gap: 8px;
+  gap: var(--webchat-spacingVerticalS);
   grid-template-areas: 'title' 'subtitle';
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
@@ -25,6 +25,7 @@
   &[aria-disabled='true'],
   &:empty {
     cursor: default;
+    gap: var(--webchat-spacingVerticalS) 14px;
   }
 
   &[aria-disabled='true']:not(:empty) {
@@ -84,7 +85,6 @@
   &:empty::before {
     border-radius: 18px;
     height: 18px;
-    margin-block-end: var(--webchat-spacingVerticalXXS);
     width: 66%;
   }
 }
