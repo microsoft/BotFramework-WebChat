@@ -22,12 +22,15 @@ const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
   const focus = useFocus();
   const inputTextRef = useRefFrom(messageBackAction?.displayText || messageBackAction?.text || '');
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
-  const subtitleHTML = useMemo(
-    () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(messageBackAction?.text || '') } : { __html: '' }),
+  const subtitleHTML = useMemo<{ __html: string } | undefined>(
+    () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(messageBackAction?.text || '') } : undefined),
     [messageBackAction?.text, renderMarkdownAsHTML]
   );
-
   const disabled = uiState === 'disabled';
+  const title = messageBackAction && 'title' in messageBackAction && messageBackAction.title;
+
+  // Every starter prompt card action must have "title" field.
+  const shouldShowBlueprint = uiState === 'blueprint' || !title;
 
   const handleClick = useCallback(() => {
     setSendBoxValue(inputTextRef.current);
@@ -36,7 +39,7 @@ const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
     focus('sendBox');
   }, [focus, inputTextRef, setSendBoxValue]);
 
-  return uiState === 'blueprint' || !messageBackAction ? (
+  return shouldShowBlueprint ? (
     <div
       className={cx(className, classNames['pre-chat-message-activity__card-action-box'])}
       data-testid={testIds.preChatMessageActivityStarterPromptsCardAction}
@@ -51,9 +54,7 @@ const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
       tabIndex={disabled ? -1 : undefined}
       type="button"
     >
-      <div className={classNames['pre-chat-message-activity__card-action-title']}>
-        {'title' in messageBackAction && messageBackAction.title}
-      </div>
+      <div className={classNames['pre-chat-message-activity__card-action-title']}>{title}</div>
       {'image' in messageBackAction && messageBackAction.image && (
         <MonochromeImageMasker
           className={classNames['pre-chat-message-activity__card-action-image']}
