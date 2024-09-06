@@ -25,7 +25,7 @@
   &[aria-disabled='true'],
   &:empty {
     cursor: default;
-    gap: var(--webchat-spacingVerticalS) 14px;
+    row-gap: 14px;
   }
 
   &[aria-disabled='true']:not(:empty) {
