@@ -365,7 +365,7 @@
     outline-offset: calc(var(--webchat-strokeWidthThick) * -1);
   }
 
-  &:disabled {
+  &[aria-disabled="true"] {
     background: var(--webchat-colorNeutralBackgroundDisabled);
     border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStrokeDisabled);
     color: var(--webchat-colorNeutralForegroundDisabled);
