@@ -182,7 +182,12 @@ function SendBox(props: Props) {
   };
 
   return (
-    <form {...aria} className={cx(classNames['sendbox'], props.className)} onSubmit={handleFormSubmit}>
+    <form
+      {...aria}
+      className={cx(classNames['sendbox'], props.className)}
+      data-testid={testIds.sendBoxContainer}
+      onSubmit={handleFormSubmit}
+    >
       <SuggestedActions />
       <div
         className={cx(classNames['sendbox__sendbox'])}
