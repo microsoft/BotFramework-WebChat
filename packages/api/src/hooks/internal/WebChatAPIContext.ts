@@ -32,7 +32,6 @@ type WebChatAPIContext = {
   clearSuggestedActions?: () => void;
   dir?: string;
   directLine?: DirectLineJSBotConnection;
-  disabled?: boolean;
   dismissNotification?: (id: string) => void;
   downscaleImageToDataURL?: (
     blob: Blob,
@@ -84,6 +83,7 @@ type WebChatAPIContext = {
   toastRenderer?: RenderToast;
   trackDimension?: (name: string, data: any) => void;
   typingIndicatorRenderer?: any; // TODO
+  uiState: 'blueprint' | 'disabled' | undefined;
   userID?: string;
   username?: string;
 };

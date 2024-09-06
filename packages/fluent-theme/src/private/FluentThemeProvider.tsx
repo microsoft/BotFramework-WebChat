@@ -21,9 +21,11 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
     (...args) => {
       const activity = args[0]?.activity;
 
+      // TODO: Should show pre-chat only when it is the very first message in the chat history.
       if (isPreChatMessageActivity(activity)) {
         return () => <PreChatMessageActivity activity={activity} />;
       }
+
       if (isLinerMessageActivity(activity)) {
         return () => <LinerMessageActivity activity={activity} />;
       }

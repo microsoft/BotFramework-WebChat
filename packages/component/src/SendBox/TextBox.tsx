@@ -17,7 +17,7 @@ import AutoResizeTextArea from './AutoResizeTextArea';
 import type { MutableRefObject } from 'react';
 import testIds from '../testIds';
 
-const { useDisabled, useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions } = hooks;
+const { useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions, useUIState } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__send-box-text-box': {
@@ -84,7 +84,7 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
   const [{ sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [{ emojiSet, sendBoxTextWrap }] = useStyleOptions();
   const [{ setTimeout }] = usePonyfill();
-  const [disabled] = useDisabled();
+  const [uiState] = useUIState();
   const inputElementRef: MutableRefObject<HTMLInputElement & HTMLTextAreaElement> = useRef();
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
@@ -92,6 +92,7 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
   const scrollUp = useScrollUp();
   const submitTextBox = useTextBoxSubmit();
 
+  const disabled = uiState === 'disabled';
   const sendBoxString = localize('TEXT_INPUT_ALT');
   const typeYourMessageString = localize('TEXT_INPUT_PLACEHOLDER');
 

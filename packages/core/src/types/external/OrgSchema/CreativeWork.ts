@@ -36,13 +36,6 @@ export type CreativeWork = Thing & {
   citation?: readonly CreativeWork[] | undefined;
 
   /**
-   * The schema.org [creativeWorkStatus](https://schema.org/creativeWorkStatus) property.
-   *
-   * The status of a creative work in terms of its stage in a lifecycle. Example terms include Incomplete, Draft, Published, Obsolete. Some organizations define a set of terms for the stages of their publication lifecycle.
-   */
-  creativeWorkStatus?: string | undefined;
-
-  /**
    * Keywords or tags used to describe some item. Multiple textual entries in a keywords list are typically delimited by commas, or by repeating the property.
    *
    * @see https://schema.org/keywords

@@ -3,20 +3,20 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 
-import IconButton from './IconButton';
-import SendIcon from './Assets/SendIcon';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
+import SendIcon from './Assets/SendIcon';
+import IconButton from './IconButton';
 
 import type { FC } from 'react';
 
-const { useDisabled, useLocalizer } = hooks;
+const { useLocalizer, useUIState } = hooks;
 
 type SendButtonProps = {
   className?: string;
 };
 
 const SendButton: FC<SendButtonProps> = ({ className }) => {
-  const [disabled] = useDisabled();
+  const [uiState] = useUIState();
   const localize = useLocalizer();
   const submit = useSubmit();
 
@@ -26,7 +26,7 @@ const SendButton: FC<SendButtonProps> = ({ className }) => {
     <IconButton
       alt={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
       className={classNames('webchat__send-button', className)}
-      disabled={disabled}
+      disabled={uiState === 'disabled'}
       onClick={handleClick}
     >
       <SendIcon />
