@@ -28,7 +28,8 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        const theme = new URLSearchParams(location.search).get('theme');
+        const searchParams = new URLSearchParams(location.search);
+        const theme = searchParams.get('theme');
 
         await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
           features: [
@@ -71,7 +72,7 @@
           root.render(
             <FluentProvider className="fluent-provider" theme={theme}>
               <FluentThemeProvider variant="fluent">
-                <ReactWebChat directLine={directLine} store={store} uiState={uiState} />
+                <ReactWebChat dir={searchParams.get('dir')} directLine={directLine} store={store} uiState={uiState} />
               </FluentThemeProvider>
             </FluentProvider>
           );
