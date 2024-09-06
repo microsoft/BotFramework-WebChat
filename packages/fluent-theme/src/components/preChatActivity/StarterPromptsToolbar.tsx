@@ -42,6 +42,6 @@ const StarterPromptsToolbar = ({ cardActions, className }: Props) => {
   );
 };
 
-StarterPrompts.displayName = 'StarterPrompts';
+StarterPromptsToolbar.displayName = 'StarterPromptsToolbar';
 
-export default memo(StarterPrompts);
+export default memo(StarterPromptsToolbar);
