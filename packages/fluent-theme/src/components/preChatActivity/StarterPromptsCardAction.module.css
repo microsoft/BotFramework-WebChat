@@ -84,7 +84,7 @@
   &:empty::before {
     border-radius: 18px;
     height: 18px;
-    margin-bottom: 2px;
+    margin-block-end: var(--webchat-spacingVerticalXXS);
     width: 66%;
   }
 }
