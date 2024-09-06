@@ -45,21 +45,6 @@
     outline-offset: -2px;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    &:empty::after,
-    &:empty::before {
-      animation-delay: -1s;
-      animation-play-state: paused;
-    }
-  }
-
-  &:dir(rtl) {
-    &:empty::after,
-    &:empty::before {
-      animation-direction: reverse;
-    }
-  }
-
   &:empty::after,
   &:empty::before {
     animation: blueprintAnimation 3s linear infinite;
@@ -73,6 +58,22 @@
     background-size: 300% 100%;
     content: '';
     display: block;
+  }
+
+  /* animation-* needs to position after animation shorthand. */
+  @media (prefers-reduced-motion: reduce) {
+    &:empty::after,
+    &:empty::before {
+      animation-delay: -1s;
+      animation-play-state: paused;
+    }
+  }
+
+  &:dir(rtl) {
+    &:empty::after,
+    &:empty::before {
+      animation-direction: reverse;
+    }
   }
 
   &:empty::after {
