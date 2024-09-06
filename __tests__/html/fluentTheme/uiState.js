@@ -2,5 +2,6 @@
 
 describe('Fluent theme applied', () => {
   test('UI state should display properly in dark theme', () => runHTML('fluentTheme/uiState?theme=dark'));
+  test('UI state should display properly in dark theme and RTL', () => runHTML('fluentTheme/uiState?dir=rtl&theme=dark'));
   test('UI state should display properly in light theme', () => runHTML('fluentTheme/uiState?theme=light'));
 });

@@ -7,7 +7,7 @@
   color: var(--webchat-colorNeutralForeground1);
   cursor: pointer;
   display: grid;
-  gap: 8px;
+  gap: var(--webchat-spacingVerticalS);
   grid-template-areas: 'title' 'subtitle';
   grid-template-columns: 1fr;
   grid-template-rows: auto 1fr;
@@ -25,6 +25,7 @@
   &[aria-disabled='true'],
   &:empty {
     cursor: default;
+    row-gap: 14px;
   }
 
   &[aria-disabled='true']:not(:empty) {
@@ -44,18 +45,9 @@
     outline-offset: -2px;
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    &:empty::after,
-    &:empty::before {
-      animation-duration: 3s;
-      animation-iteration-count: infinite;
-      animation-name: blueprintAnimation;
-      animation-timing-function: linear;
-    }
-  }
-
   &:empty::after,
   &:empty::before {
+    animation: blueprintAnimation 3s linear infinite;
     background-attachment: fixed;
     background-image: linear-gradient(
       -90deg,
@@ -66,6 +58,22 @@
     background-size: 300% 100%;
     content: '';
     display: block;
+  }
+
+  /* animation-* needs to position after animation shorthand. */
+  @media (prefers-reduced-motion: reduce) {
+    &:empty::after,
+    &:empty::before {
+      animation-delay: -1s;
+      animation-play-state: paused;
+    }
+  }
+
+  &:dir(rtl) {
+    &:empty::after,
+    &:empty::before {
+      animation-direction: reverse;
+    }
   }
 
   &:empty::after {
