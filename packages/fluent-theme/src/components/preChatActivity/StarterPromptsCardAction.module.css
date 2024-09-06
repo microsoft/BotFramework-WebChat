@@ -79,7 +79,6 @@
   &:empty::after {
     border-radius: 16px;
     height: 16px;
-    margin-block-start: var(--webchat-spacingVerticalXS);
     width: 100%;
   }
 
