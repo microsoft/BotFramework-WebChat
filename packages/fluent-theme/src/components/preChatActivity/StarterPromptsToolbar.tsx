@@ -13,7 +13,7 @@ type Props = Readonly<{
   className?: string | undefined;
 }>;
 
-const StarterPrompts = ({ cardActions, className }: Props) => {
+const StarterPromptsToolbar = ({ cardActions, className }: Props) => {
   const classNames = useStyles(styles);
   const [uiState] = useUIState();
 
