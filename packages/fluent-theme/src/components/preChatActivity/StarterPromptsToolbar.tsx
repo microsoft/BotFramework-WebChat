@@ -29,10 +29,13 @@ const StarterPrompts = ({ cardActions, className }: Props) => {
           </Fragment>
         ) : (
           cardActions
-            .filter<
-              DirectLineCardAction & { type: 'messageBack' }
-            >((card: DirectLineCardAction): card is DirectLineCardAction & { type: 'messageBack' } => card.type === 'messageBack')
-            .map(cardAction => <StarterPromptsCardAction key={cardAction.text} messageBackAction={cardAction} />)
+            .filter<DirectLineCardAction & { type: 'messageBack' }>(
+              (card: DirectLineCardAction): card is DirectLineCardAction & { type: 'messageBack' } =>
+                card.type === 'messageBack'
+            )
+            // There is no other usable keys in card actions.
+            // eslint-disable-next-line react/no-array-index-key
+            .map((cardAction, index) => <StarterPromptsCardAction key={index} messageBackAction={cardAction} />)
         )}
       </div>
     </div>
