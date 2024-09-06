@@ -22,10 +22,13 @@
     grid-template-columns: 20px 1fr;
   }
 
+  &:empty {
+    row-gap: 14px;
+  }
+
   &[aria-disabled='true'],
   &:empty {
     cursor: default;
-    row-gap: 14px;
   }
 
   &[aria-disabled='true']:not(:empty) {
