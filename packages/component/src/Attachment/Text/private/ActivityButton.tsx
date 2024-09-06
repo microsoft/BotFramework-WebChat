@@ -8,13 +8,14 @@ type Props = Readonly<{
   children?: ReactNode | undefined;
   className?: string | undefined;
   'data-testid'?: string | undefined;
+  disabled?: boolean | undefined;
   iconURL?: string | undefined;
   onClick?: (() => void) | undefined;
   text?: string | undefined;
 }>;
 
 const ActivityButton = forwardRef<HTMLButtonElement, Props>(
-  ({ children, className, 'data-testid': dataTestId, iconURL, onClick, text }, ref) => {
+  ({ children, className, 'data-testid': dataTestId, disabled, iconURL, onClick, text }, ref) => {
     const [{ activityButton }] = useStyleSet();
     const onClickRef = useRefFrom(onClick);
 
@@ -22,10 +23,13 @@ const ActivityButton = forwardRef<HTMLButtonElement, Props>(
 
     return (
       <button
+        aria-disabled={disabled ? 'true' : undefined}
         className={classNames(activityButton, 'webchat__activity-button', className)}
         data-testid={dataTestId}
-        onClick={handleClick}
+        onClick={disabled ? undefined : handleClick}
         ref={ref}
+        // eslint-disable-next-line no-magic-numbers
+        tabIndex={disabled ? -1 : undefined}
         type="button"
       >
         {iconURL && <MonochromeImageMasker className="webchat__activity-button__icon" src={iconURL} />}

@@ -77,6 +77,18 @@
 
         await pageConditions.uiConnected();
 
+        expect(window.isSecureContext).toBe(true);
+
+        await host.sendDevToolsCommand('Browser.setPermission', {
+          permission: { name: 'clipboard-write' },
+          setting: 'granted'
+        });
+
+        await expect(navigator.permissions.query({ name: 'clipboard-write' })).resolves.toHaveProperty(
+          'state',
+          'granted'
+        );
+
         await directLine.emulateIncomingActivity({
           // TODO: Attachment is buggy now: clipped into the text content now and not aligned horizontally.
           // attachments: [
@@ -116,6 +128,15 @@
         });
 
         await pageConditions.numActivitiesShown(1);
+
+        // WHEN: Wait until the copy button is enabled after permission check.
+        const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`);
+
+        await pageConditions.became(
+          'copy button is enabled',
+          () => copyButton.getAttribute('aria-disabled') !== 'true',
+          1_000
+        );
 
         // THEN: "Copy" button should appear after the message.
         await host.snapshot();
