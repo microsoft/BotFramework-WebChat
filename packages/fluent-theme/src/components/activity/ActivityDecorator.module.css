@@ -74,6 +74,7 @@
 /* Stacked layout which has message bubble */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__stacked-layout__content:has(.webchat__bubble)) {
   overflow: visible;
+  width: 100%;
 }
 
 /* Message status */
@@ -86,6 +87,7 @@
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble) {
   max-width: var(--webchat__bubble--max-width);
   overflow: visible;
+  width: 100%;
 }
 
 /* Message bubble content */
@@ -123,7 +125,7 @@
   cursor: default;
   font-size: var(--webchat-fontSizeBase300);
   line-height: var(--webchat-lineHeightBase300);
-  
+
   :global(.webchat__fileContent__fileName) {
     color: var(--webchat-colorBrandForegroundLink);
     font-family: inherit;
@@ -314,6 +316,11 @@
     mask: var(--webchat__citation__external-link--mask) no-repeat;
     padding: 0;
     width: 1em;
+  }
+
+  /* It seems Fluent does not show per-item sensitivity label, i.e. "General", etc. */
+  :global(.webchat__link-definitions__list-item-badge) {
+    display: none;
   }
 
   :global(.webchat__link-definitions__open-in-new-window-icon) {

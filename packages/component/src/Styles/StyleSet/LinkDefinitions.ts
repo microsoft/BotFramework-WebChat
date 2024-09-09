@@ -18,7 +18,7 @@ export default function createLinkDefinitionsStyleSet() {
         display: 'flex',
         fontFamily: CSSTokens.FontPrimary,
         fontSize: CSSTokens.FontSizeSmall,
-        gap: 4,
+        justifyContent: 'space-between',
         listStyle: 'none',
 
         [LIGHT_THEME_SELECTOR]: {
@@ -29,6 +29,22 @@ export default function createLinkDefinitionsStyleSet() {
           // TODO: Add dark theme color.
           color: '#616161'
         }
+      },
+
+      '.webchat__link-definitions__header-section': {
+        alignItems: 'center',
+        display: 'flex',
+        gap: 4,
+        overflow: 'hidden'
+      },
+
+      '.webchat__link-definitions__header-section--left': {
+        flexShrink: 0
+      },
+
+      '.webchat__link-definitions__header-section--right': {
+        // When right side is contentful, add a 8px between left/right section so they don't looks too close
+        marginLeft: 8
       },
 
       '.webchat__link-definitions__header-text': {
@@ -47,15 +63,12 @@ export default function createLinkDefinitionsStyleSet() {
         transform: 'rotate(-180deg)'
       },
 
-      '.webchat__link-definitions__header-filler': {
-        flexGrow: 1
-      },
-
       '.webchat__link-definitions__header-accessory': {
         overflow: 'hidden'
       },
 
       '.webchat__link-definitions__message-sensitivity-label': {
+        alignItems: 'center',
         display: 'flex',
         gap: 4
       },
