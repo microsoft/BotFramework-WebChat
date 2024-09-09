@@ -69,12 +69,13 @@
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout) {
   display: flex;
   flex-flow: column nowrap;
+  max-width: var(--webchat__bubble--max-width);
 }
 
 /* Stacked layout which has message bubble */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__stacked-layout__content:has(.webchat__bubble)) {
+  max-width: 100%;
   overflow: visible;
-  width: 100%;
 }
 
 /* Message status */
@@ -85,9 +86,8 @@
 
 /* Message bubble */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble) {
-  max-width: var(--webchat__bubble--max-width);
+  max-width: 100%;
   overflow: visible;
-  width: 100%;
 }
 
 /* Message bubble content */
