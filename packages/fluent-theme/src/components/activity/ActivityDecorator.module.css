@@ -69,7 +69,6 @@
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout) {
   display: flex;
   flex-flow: column nowrap;
-  max-width: var(--webchat__bubble--max-width);
 }
 
 /* Stacked layout which has message bubble */
@@ -95,9 +94,11 @@
   background-color: var(--webchat__bubble--background-color);
   border-radius: var(--webchat__bubble--border-radius);
   border-width: 0;
+  box-shadow: var(--webchat__bubble--box-shadow);
   box-sizing: border-box;
   color: var(--webchat-colorNeutralForeground1);
   min-height: var(--webchat__bubble--min-height);
+  max-width: var(--webchat__bubble--max-width);
 }
 
 /* Message bubble text content */
@@ -110,7 +111,7 @@
 }
 
 /* Message bubble content pseudo */
-:global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__bubble__content)::before {
+/* :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__bubble__content)::before {
   border-radius: inherit;
   box-shadow: var(--webchat__bubble--box-shadow);
   content: '';
@@ -118,7 +119,7 @@
   isolation: isolate;
   pointer-events: none;
   position: absolute;
-}
+} */
 
 /* Message bubble attachment content */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__fileContent__badge) {
