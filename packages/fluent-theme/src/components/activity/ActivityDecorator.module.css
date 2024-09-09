@@ -110,17 +110,6 @@
   padding-inline: var(--webchat__bubble--inline-padding);
 }
 
-/* Message bubble content pseudo */
-/* :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__bubble__content)::before {
-  border-radius: inherit;
-  box-shadow: var(--webchat__bubble--box-shadow);
-  content: '';
-  inset: 0;
-  isolation: isolate;
-  pointer-events: none;
-  position: absolute;
-} */
-
 /* Message bubble attachment content */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__fileContent__badge) {
   cursor: default;
