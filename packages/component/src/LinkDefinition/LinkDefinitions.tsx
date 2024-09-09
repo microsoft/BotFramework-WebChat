@@ -35,14 +35,17 @@ const LinkDefinitions = <TAccessoryProps extends object>({
   return (
     <details className={classNames(linkDefinitions, 'webchat__link-definitions')} open={true}>
       <summary className="webchat__link-definitions__header">
-        <div className="webchat__link-definitions__header-text">{headerText}</div>
-        <Chevron />
-        <div className="webchat__link-definitions__header-filler" />
-        {accessoryComponentType && (
-          <div className="webchat__link-definitions__header-accessory">
-            {React.createElement(accessoryComponentType, accessoryProps)}
-          </div>
-        )}
+        <div className="webchat__link-definitions__header-section webchat__link-definitions__header-section--left">
+          <div className="webchat__link-definitions__header-text">{headerText}</div>
+          <Chevron />
+        </div>
+        <div className="webchat__link-definitions__header-section webchat__link-definitions__header-section--right">
+          {accessoryComponentType && (
+            <div className="webchat__link-definitions__header-accessory">
+              {React.createElement(accessoryComponentType, accessoryProps)}
+            </div>
+          )}
+        </div>
       </summary>
       <div className="webchat__link-definitions__list" role="list">
         {childrenMap(children, child => (

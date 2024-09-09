@@ -73,6 +73,7 @@
 
 /* Stacked layout which has message bubble */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__stacked-layout__content:has(.webchat__bubble)) {
+  max-width: 100%;
   overflow: visible;
 }
 
@@ -84,7 +85,7 @@
 
 /* Message bubble */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble) {
-  max-width: var(--webchat__bubble--max-width);
+  max-width: 100%;
   overflow: visible;
 }
 
@@ -93,9 +94,11 @@
   background-color: var(--webchat__bubble--background-color);
   border-radius: var(--webchat__bubble--border-radius);
   border-width: 0;
+  box-shadow: var(--webchat__bubble--box-shadow);
   box-sizing: border-box;
   color: var(--webchat-colorNeutralForeground1);
   min-height: var(--webchat__bubble--min-height);
+  max-width: var(--webchat__bubble--max-width);
 }
 
 /* Message bubble text content */
@@ -107,23 +110,12 @@
   padding-inline: var(--webchat__bubble--inline-padding);
 }
 
-/* Message bubble content pseudo */
-:global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__bubble__content)::before {
-  border-radius: inherit;
-  box-shadow: var(--webchat__bubble--box-shadow);
-  content: '';
-  inset: 0;
-  isolation: isolate;
-  pointer-events: none;
-  position: absolute;
-}
-
 /* Message bubble attachment content */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__fileContent__badge) {
   cursor: default;
   font-size: var(--webchat-fontSizeBase300);
   line-height: var(--webchat-lineHeightBase300);
-  
+
   :global(.webchat__fileContent__fileName) {
     color: var(--webchat-colorBrandForegroundLink);
     font-family: inherit;
@@ -314,6 +306,11 @@
     mask: var(--webchat__citation__external-link--mask) no-repeat;
     padding: 0;
     width: 1em;
+  }
+
+  /* It seems Copilot does not show per-item sensitivity label, i.e. "General", etc. */
+  :global(.webchat__link-definitions__list-item-badge) {
+    display: none;
   }
 
   :global(.webchat__link-definitions__open-in-new-window-icon) {
