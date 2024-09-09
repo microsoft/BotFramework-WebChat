@@ -318,7 +318,7 @@
     width: 1em;
   }
 
-  /* It seems Fluent does not show per-item sensitivity label, i.e. "General", etc. */
+  /* It seems Copilot does not show per-item sensitivity label, i.e. "General", etc. */
   :global(.webchat__link-definitions__list-item-badge) {
     display: none;
   }
