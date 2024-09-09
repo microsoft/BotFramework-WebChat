@@ -18,6 +18,7 @@ export default function createLinkDefinitionsStyleSet() {
         display: 'flex',
         fontFamily: CSSTokens.FontPrimary,
         fontSize: CSSTokens.FontSizeSmall,
+        gap: 4,
         justifyContent: 'space-between',
         listStyle: 'none',
 
@@ -40,11 +41,6 @@ export default function createLinkDefinitionsStyleSet() {
 
       '.webchat__link-definitions__header-section--left': {
         flexShrink: 0
-      },
-
-      '.webchat__link-definitions__header-section--right': {
-        // When right side is contentful, add a 8px between left/right section so they don't looks too close
-        marginLeft: 8
       },
 
       '.webchat__link-definitions__header-text': {
