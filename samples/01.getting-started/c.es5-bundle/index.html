@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Full-featured bundle with ES5 polyfills</title>
@@ -37,7 +37,9 @@
 
       // This code is modified to run in browser without async and Promise support
       window
-        .fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' })
+        .fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', {
+          method: 'POST'
+        })
         .then(function (res) {
           return res.json();
         })

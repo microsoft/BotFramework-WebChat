@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Decorate bot activity with upvote and downvote buttons</title>
@@ -111,25 +111,31 @@
           );
         };
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch(
+          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline',
+          { method: 'POST' }
+        );
         const { token } = await res.json();
-        const activityMiddleware = () => next => (...setupArgs) => {
-          const [card] = setupArgs;
+        const activityMiddleware =
+          () =>
+          next =>
+          (...setupArgs) => {
+            const [card] = setupArgs;
 
-          if (card.activity.type === 'messageReaction') {
-            // Currently, Web Chat does not handle "messageReaction" activity and will show a warning in console log as it is an unknown activity.
-            // In this sample, we will disable the rendering of "messageReaction" activity, so the warning is not shown.
-            return false;
-          } else if (card.activity.from.role === 'bot') {
-            return (...renderArgs) => (
-              <BotActivityDecorator key={card.activity.id} activityID={card.activity.id}>
-                {next(...setupArgs)(...renderArgs)}
-              </BotActivityDecorator>
-            );
-          }
+            if (card.activity.type === 'messageReaction') {
+              // Currently, Web Chat does not handle "messageReaction" activity and will show a warning in console log as it is an unknown activity.
+              // In this sample, we will disable the rendering of "messageReaction" activity, so the warning is not shown.
+              return false;
+            } else if (card.activity.from.role === 'bot') {
+              return (...renderArgs) => (
+                <BotActivityDecorator key={card.activity.id} activityID={card.activity.id}>
+                  {next(...setupArgs)(...renderArgs)}
+                </BotActivityDecorator>
+              );
+            }
 
-          return next(...setupArgs);
-        };
+            return next(...setupArgs);
+          };
 
         window.ReactDOM.render(
           <ReactWebChat
