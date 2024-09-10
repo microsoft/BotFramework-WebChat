@@ -20,7 +20,7 @@ function CopilotMessageHeader({ activity }: Readonly<{ activity?: WebChatActivit
     [botAvatarBackgroundColor]
   );
 
-  const author = useActivityAuthor();
+  const author = useActivityAuthor(activity);
   const avatarImage = author?.image || botAvatarImage;
   const botTitle = author?.name || activity?.from?.name;
 
