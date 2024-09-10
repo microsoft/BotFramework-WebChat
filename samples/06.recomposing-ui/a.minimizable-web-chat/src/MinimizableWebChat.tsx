@@ -1,13 +1,19 @@
 import { createStore, createStyleSet } from 'botframework-webchat';
 import classNames from 'classnames';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 
 import WebChat from './WebChat';
 
 import './fabric-icons-inline.css';
 import './MinimizableWebChat.css';
 
-const MinimizableWebChat = () => {
+function MinimizableWebChat() {
+  const [loaded, setLoaded] = useState(false);
+  const [minimized, setMinimized] = useState(true);
+  const [newMessage, setNewMessage] = useState(false);
+  const [side, setSide] = useState('right');
+  const [token, setToken] = useState<string>('');
+
   const store = useMemo(
     () =>
       createStore({}, ({ dispatch }) => next => action => {
@@ -32,19 +38,7 @@ const MinimizableWebChat = () => {
     []
   );
 
-  const styleSet = useMemo(
-    () =>
-      createStyleSet({
-        backgroundColor: 'Transparent'
-      }),
-    []
-  );
-
-  const [loaded, setLoaded] = useState(false);
-  const [minimized, setMinimized] = useState(true);
-  const [newMessage, setNewMessage] = useState(false);
-  const [side, setSide] = useState('right');
-  const [token, setToken] = useState();
+  const styleSet = useMemo(() => createStyleSet({ backgroundColor: 'Transparent' }), []);
 
   // To learn about reconnecting to a conversation, see the following documentation:
   // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-reconnect-to-conversation?view=azure-bot-service-4.0
@@ -61,18 +55,18 @@ const MinimizableWebChat = () => {
     }
   }, [setToken, token]);
 
-  const handleMaximizeButtonClick = useCallback(async () => {
+  const handleMaximizeButtonClick = useCallback<() => void>(() => {
     setLoaded(true);
     setMinimized(false);
     setNewMessage(false);
   }, [setMinimized, setNewMessage]);
 
-  const handleMinimizeButtonClick = useCallback(() => {
+  const handleMinimizeButtonClick = useCallback<() => void>(() => {
     setMinimized(true);
     setNewMessage(false);
   }, [setMinimized, setNewMessage]);
 
-  const handleSwitchButtonClick = useCallback(() => {
+  const handleSwitchButtonClick = useCallback<() => void>(() => {
     setSide(side === 'left' ? 'right' : 'left');
   }, [setSide, side]);
 
@@ -84,7 +78,7 @@ const MinimizableWebChat = () => {
   return (
     <div className="minimizable-web-chat">
       {minimized && (
-        <button className="maximize" onClick={handleMaximizeButtonClick}>
+        <button className="maximize" onClick={handleMaximizeButtonClick} type="button">
           <span className={token ? 'ms-Icon ms-Icon--MessageFill' : 'ms-Icon ms-Icon--Message'} />
           {newMessage && <span className="ms-Icon ms-Icon--CircleShapeSolid red-dot" />}
         </button>
@@ -93,10 +87,10 @@ const MinimizableWebChat = () => {
         <div className={classNames(side === 'left' ? 'chat-box left' : 'chat-box right', minimized ? 'hide' : '')}>
           <header>
             <div className="filler" />
-            <button className="switch" onClick={handleSwitchButtonClick}>
+            <button className="switch" onClick={handleSwitchButtonClick} type="button">
               <span className="ms-Icon ms-Icon--Switch" />
             </button>
-            <button className="minimize" onClick={handleMinimizeButtonClick}>
+            <button className="minimize" onClick={handleMinimizeButtonClick} type="button">
               <span className="ms-Icon ms-Icon--ChromeMinimize" />
             </button>
           </header>
@@ -111,6 +105,6 @@ const MinimizableWebChat = () => {
       )}
     </div>
   );
-};
+}
 
-export default MinimizableWebChat;
+export default memo(MinimizableWebChat);
