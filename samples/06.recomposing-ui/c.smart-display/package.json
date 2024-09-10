@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/c.smart-display/",
   "dependencies": {
-    "botframework-webchat": "^4.17.0",
+    "botframework-webchat": "^4.18.0",
     "classnames": "^2.5.1",
     "esbuild": "^0.23.1",
     "react": "^18.3.1",
