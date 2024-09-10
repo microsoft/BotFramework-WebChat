@@ -1,11 +1,11 @@
 import './SpeechInterims.css';
 
 import { hooks } from 'botframework-webchat';
-import React from 'react';
+import React, { memo } from 'react';
 
 const { useDictateInterims, useSendBoxSpeechInterimsVisible } = hooks;
 
-const CustomDictationInterims = () => {
+function CustomDictationInterims() {
   const [dictateInterims] = useDictateInterims();
   const [speechInterimsVisible] = useSendBoxSpeechInterimsVisible();
 
@@ -16,6 +16,6 @@ const CustomDictationInterims = () => {
       </div>
     )
   );
-};
+}
 
-export default CustomDictationInterims;
+export default memo(CustomDictationInterims);

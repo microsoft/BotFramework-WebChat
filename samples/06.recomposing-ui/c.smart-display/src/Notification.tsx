@@ -1,15 +1,15 @@
 import './Notification.css';
 
 import classNames from 'classnames';
-import React from 'react';
+import React, { memo, type ReactNode } from 'react';
 
-const Notification = ({ children, icon }) => {
+function Notification({ children, icon }: Readonly<{ children?: ReactNode | undefined; icon: string }>) {
   return (
     <div className="App-Notification">
       <i className={classNames('App-Notification-Icon', 'ms-Icon', `ms-Icon--${icon}`)} />
       <div className="App-Notification-Text">{children}</div>
     </div>
   );
-};
+}
 
-export default Notification;
+export default memo(Notification);

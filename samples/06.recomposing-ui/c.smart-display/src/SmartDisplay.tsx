@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 
 import BlurLens from './BlurLens';
 import BotResponse from './BotResponse';
@@ -8,12 +8,12 @@ import SpeechInterims from './SpeechInterims';
 
 import useLastBotActivity from './hooks/useLastBotActivity';
 
-const SmartDisplay = () => {
+function SmartDisplay() {
   const [lastBotActivity] = useLastBotActivity();
   const [lastReadActivityID, setLastReadActivityID] = useState();
 
   const handleMicrophoneButtonClick = useCallback(() => {
-    lastBotActivity && setLastReadActivityID(lastBotActivity.id);
+    lastBotActivity && setLastReadActivityID((lastBotActivity as any).id);
   }, [lastBotActivity, setLastReadActivityID]);
 
   return (
@@ -25,6 +25,6 @@ const SmartDisplay = () => {
       <MicrophoneButton onClick={handleMicrophoneButtonClick} />
     </div>
   );
-};
+}
 
-export default SmartDisplay;
+export default memo(SmartDisplay);

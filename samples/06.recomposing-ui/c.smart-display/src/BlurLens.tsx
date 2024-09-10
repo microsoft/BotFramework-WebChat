@@ -1,15 +1,15 @@
 import './BlurLens.css';
 
-import classNames from 'classnames';
-import React from 'react';
 import { hooks } from 'botframework-webchat';
+import classNames from 'classnames';
+import React, { memo } from 'react';
 
 const { useSendBoxSpeechInterimsVisible } = hooks;
 
-const BlurLens = () => {
+function BlurLens() {
   const [interimsVisible] = useSendBoxSpeechInterimsVisible();
 
   return <div className={classNames('App-BlurLens', { hide: !interimsVisible })} />;
-};
+}
 
-export default BlurLens;
+export default memo(BlurLens);

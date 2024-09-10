@@ -2,11 +2,11 @@ import './MicrophoneButton.css';
 
 import { hooks } from 'botframework-webchat';
 import classNames from 'classnames';
-import React, { useCallback } from 'react';
+import React, { memo, useCallback } from 'react';
 
 const { useMicrophoneButtonClick, useMicrophoneButtonDisabled, useSendBoxSpeechInterimsVisible } = hooks;
 
-const CustomMicrophoneButton = ({ onClick }) => {
+function CustomMicrophoneButton({ onClick }: Readonly<{ onClick: () => void }>) {
   const [interimsVisible] = useSendBoxSpeechInterimsVisible();
   const [disabled] = useMicrophoneButtonDisabled();
   const click = useMicrophoneButtonClick();
@@ -25,6 +25,6 @@ const CustomMicrophoneButton = ({ onClick }) => {
       <i className="ms-Icon ms-Icon--Microphone" />
     </button>
   );
-};
+}
 
-export default CustomMicrophoneButton;
+export default memo(CustomMicrophoneButton);

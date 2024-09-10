@@ -1,6 +1,6 @@
 import './Clock.css';
 
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import Notification from './Notification';
 
@@ -16,7 +16,7 @@ function useInterval(fn, intervalMS = 1000) {
   }, [fn, intervalMS]);
 }
 
-const Clock = () => {
+function Clock() {
   const [clock, setClock] = useState(Date.now());
   const [temperatureInFahrenheit, setTemperatureInFahrenheit] = useState();
 
@@ -50,6 +50,6 @@ const Clock = () => {
       <Notification icon="SkypeForBusinessLogo">1</Notification>
     </div>
   );
-};
+}
 
-export default Clock;
+export default memo(Clock);
