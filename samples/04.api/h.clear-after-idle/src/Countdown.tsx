@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 
 import './Countdown.css';
 import useInterval from './utils/useInterval';
@@ -10,7 +10,7 @@ function formatTime(ms) {
   return `${Math.floor(ms / 60000)}:${('0' + (Math.floor(ms / 1000) % 60)).slice(-2)}`;
 }
 
-export default function Countdown({ to }) {
+function Countdown({ to }: Readonly<{ to: number }>) {
   const [, setForceRefresh] = useState({});
 
   const timeRemaining = Math.max(0, to - Date.now());
@@ -27,3 +27,5 @@ export default function Countdown({ to }) {
     </div>
   );
 }
+
+export default memo(Countdown);
