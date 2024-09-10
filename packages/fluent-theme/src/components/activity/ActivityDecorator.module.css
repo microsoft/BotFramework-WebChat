@@ -33,8 +33,11 @@
 
   &:not(:has(:global(.webchat__bubble--from-user))) {
     --webchat__bubble--block-padding: var(--webchat-spacingVerticalS) var(--webchat-spacingVerticalXXS);
-    --webchat__bubble--border-radius: var(--webchat-borderRadiusSmall);
-    --webchat__bubble--inline-padding: 32px var(--webchat-spacingHorizontalNone);
+    --webchat__bubble--border-radius: var(--webchat-borderRadiusMedium);
+    --webchat__bubble--inline-padding: 34px var(--webchat-spacingHorizontalS);
+
+    display: block;
+    padding-inline-start: var(--webchat-spacingHorizontalMNudge);
   }
 
   &:not(:has(:global(.webchat__bubble--from-user))) :global(.webchat__stacked-layout__status) {
@@ -49,14 +52,21 @@
     order: -1;
   }
 
+  :global(.border-loader .border-loader__track) {
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+    width: auto;
+  }
+
   /* TODO: remove when we get decorators in and can place header directly to the bubble */
   &:not(:has(:global(.webchat__bubble--from-user))) :global(.webchat__stacked-layout .webchat__bubble .webchat__text-content) {
-    padding-block: calc(var(--webchat-spacingVerticalS) + 20px) var(--webchat-spacingVerticalXXS);
+    padding-block: calc(var(--webchat-spacingVerticalMNudge) + 20px) var(--webchat-spacingVerticalXS);
   }
 
   &:not(:has(:global(.webchat__bubble--from-user))) :global(.webchat__stacked-layout .webchat__bubble) {
-    margin-block-start: -24px;
-    margin-inline-start: -4px;
+    margin-block-start: -28px;
+    margin-inline-start: -8px;
+    width: var(--webchat-bubble-maxWidth);
   }
 }
 

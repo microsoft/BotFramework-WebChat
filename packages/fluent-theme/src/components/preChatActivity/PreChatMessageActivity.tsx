@@ -1,10 +1,11 @@
 import { hooks } from 'botframework-webchat-component';
-import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
 import { useStyles } from '../../styles/index.js';
 import styles from './PreChatMessageActivity.module.css';
 import StarterPromptsToolbar from './StarterPromptsToolbar.js';
+import { useActivityAuthor } from '../activity/index.js';
 
 type Props = Readonly<{ activity: WebChatActivity & { type: 'message' } }>;
 
@@ -16,19 +17,7 @@ const PreChatMessageActivity = ({ activity }: Props) => {
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
   const localize = useLocalizer();
 
-  const entity = getOrgSchemaMessage(activity?.entities || []);
-  const author = useMemo(
-    () =>
-      typeof entity?.author === 'string'
-        ? {
-            '@type': 'Person',
-            description: undefined,
-            image: undefined,
-            name: entity?.author
-          }
-        : entity?.author,
-    [entity?.author]
-  );
+  const author = useActivityAuthor(activity);
 
   const html = useMemo(
     () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(author?.description || '') } : { __html: '' }),

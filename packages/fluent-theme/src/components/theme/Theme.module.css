@@ -260,18 +260,23 @@
     display: none;
   }
 
-  :global(.webchat__bubble)::after, :global(.pre-chat-message-activity)::after {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
+  :global(.webchat__bubble)::after, 
+  :global(.pre-chat-message-activity)::after {
     border-radius: var(--webchat__bubble--border-radius);
+    content: '';
+    inset: 0;
+    outline-offset: 0;
+    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
     pointer-events: none;
+    position: absolute;
   }
 
   :global(.pre-chat-message-activity)::after {
-    inset: 0;
-    border-radius: var(--webchat-borderRadiusSmall);
+    outline-offset: -2px;
+  }
+
+  :global(.pre-chat-message-activity)::after {
+    border-radius: var(--webchat-borderRadiusLarge);
   }
 
   :global(.liner-message-activity__text) {
