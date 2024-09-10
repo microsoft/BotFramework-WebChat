@@ -1,6 +1,6 @@
+import { createStore, createStyleSet } from 'botframework-webchat';
 import classNames from 'classnames';
 import React, { useCallback, useMemo, useState } from 'react';
-import { createStore, createStyleSet } from 'botframework-webchat';
 
 import WebChat from './WebChat';
 
@@ -51,7 +51,10 @@ const MinimizableWebChat = () => {
 
   const handleFetchToken = useCallback(async () => {
     if (!token) {
-      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+      const res = await fetch(
+        'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline',
+        { method: 'POST' }
+      );
       const { token } = await res.json();
 
       setToken(token);

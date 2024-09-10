@@ -1,10 +1,10 @@
-import './App.css';
 import {
   Components,
-  createDirectLine,
-  createCognitiveServicesSpeechServicesPonyfillFactory
+  createCognitiveServicesSpeechServicesPonyfillFactory,
+  createDirectLine
 } from 'botframework-webchat';
 import React, { Component } from 'react';
+import './App.css';
 
 import CustomDictationInterims from './CustomDictationInterims';
 import CustomMicrophoneButton from './CustomMicrophoneButton';
@@ -27,7 +27,10 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+    const res = await fetch(
+      'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline',
+      { method: 'POST' }
+    );
     const { token } = await res.json();
     const webSpeechPonyfillFactory = await createCognitiveServicesSpeechServicesPonyfillFactory({
       credentials: {

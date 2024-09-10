@@ -46,13 +46,16 @@ function createFetchSpeechServicesCredentials() {
   };
 }
 
-(async function() {
+(async function () {
   // In this demo, we are using Direct Line token from MockBot.
   // Your client code must provide either a secret or a token to talk to your bot.
   // Tokens are more secure. To learn about the differences between secrets and tokens.
   // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
 
-  const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+  const res = await fetch(
+    'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline',
+    { method: 'POST' }
+  );
   const { token } = await res.json();
 
   // Imports
@@ -124,7 +127,7 @@ function createFetchSpeechServicesCredentials() {
 
         let directLine;
 
-        (async function() {
+        (async function () {
           const adapters = await createDirectLineSpeechAdapters({
             audioInputDeviceId: selectedAudioInputDeviceId,
             fetchCredentials: fetchDirectLineSpeechCredentials
@@ -160,7 +163,7 @@ function createFetchSpeechServicesCredentials() {
 
     // Enumerate the device list on initial page load or when a device is plugged/unplugged.
     useEffect(() => {
-      (async function() {
+      (async function () {
         mediaDevices &&
           setAudioInputDevices(
             // We will only list "audioinput" device.
