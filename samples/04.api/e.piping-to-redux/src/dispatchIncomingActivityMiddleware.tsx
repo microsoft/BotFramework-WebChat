@@ -1,4 +1,4 @@
-export default function(dispatch) {
+export default function (dispatch) {
   return () => next => action => {
     if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
       const { activity } = action.payload;
