@@ -1,6 +1,7 @@
-import { createDirectLine } from 'botframework-webchat';
-import { Components } from 'botframework-webchat-component';
-import React from 'react';
+/* eslint-disable react/jsx-no-literals */
+
+import { Components, createDirectLine } from 'botframework-webchat';
+import React, { memo, useEffect, useState } from 'react';
 import PlainWebChat from './PlainWebChat';
 
 // In this demo, we are using Direct Line token from MockBot.
@@ -8,7 +9,7 @@ import PlainWebChat from './PlainWebChat';
 // You should never put the Direct Line secret in the browser or client app.
 // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
-async function getDirectLineToken() {
+async function getDirectLineToken(): Promise<string> {
   const res = await fetch(
     'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline',
     { method: 'POST' }
@@ -18,13 +19,21 @@ async function getDirectLineToken() {
   return token;
 }
 
-export default () => {
-  const [directLine, setDirectLine] = React.useState();
+function App() {
+  const [directLine, setDirectLine] = useState<ReturnType<typeof createDirectLine>>();
 
-  if (!directLine) {
-    // We will load DirectLineJS asynchronously on first render.
-    getDirectLineToken().then(token => setDirectLine(createDirectLine({ token })));
-  }
+  useEffect(() => {
+    const abortController = new AbortController();
+    const { signal } = abortController;
+
+    (async function () {
+      const token = await getDirectLineToken();
+
+      signal.aborted || setDirectLine(createDirectLine({ token }));
+    })();
+
+    return () => abortController.abort();
+  }, []);
 
   return (
     // We are using the "Composer" component here, which all descendants will have access to the Web Chat API by HOC-ing thru "connectToWebChat".
@@ -60,4 +69,6 @@ export default () => {
       )}
     </React.Fragment>
   );
-};
+}
+
+export default memo(App);

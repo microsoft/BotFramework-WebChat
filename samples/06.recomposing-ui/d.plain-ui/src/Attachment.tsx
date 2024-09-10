@@ -1,6 +1,16 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-const Attachment = ({ content, contentUrl, contentType, name }) => {
+function Attachment({
+  content,
+  contentUrl,
+  contentType,
+  name
+}: Readonly<{
+  content?: string | undefined;
+  contentUrl?: string | undefined;
+  contentType?: string | undefined;
+  name?: string | undefined;
+}>) {
   switch (contentType) {
     case 'image/gif':
     case 'image/jpeg':
@@ -20,10 +30,11 @@ const Attachment = ({ content, contentUrl, contentType, name }) => {
             {name}
           </a>
         );
-      } else {
-        return <pre>{JSON.stringify(content, null, 2)}</pre>;
       }
-  }
-};
 
-export default Attachment;
+      // eslint-disable-next-line no-magic-numbers
+      return <pre>{JSON.stringify(content, null, 2)}</pre>;
+  }
+}
+
+export default memo(Attachment);
