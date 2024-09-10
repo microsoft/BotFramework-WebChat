@@ -29,6 +29,7 @@
 
 /* Decorator copilot variant */
 :global(.webchat-fluent) .activity-decorator.variant-copilot {
+  --webchat-bubble-maxWidth: var(--bubble-maxWidth, 100%);
   --webchat__bubble--border-radius: var(--webchat-borderRadiusXLarge);
 
   &:not(:has(:global(.webchat__bubble--from-user))) {
