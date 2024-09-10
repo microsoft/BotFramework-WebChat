@@ -1,8 +1,8 @@
-import React from 'react';
-import { Components } from 'botframework-webchat-component';
+import { Components } from 'botframework-webchat';
+import React, { memo } from 'react';
 import HelloButton from './HelloButton';
 
-const CustomWebChat = () => {
+function CustomWebChat() {
   return (
     <Components.AccessKeySinkSurface>
       <Components.BasicToaster />
@@ -12,6 +12,6 @@ const CustomWebChat = () => {
       <Components.BasicSendBox />
     </Components.AccessKeySinkSurface>
   );
-};
+}
 
-export default CustomWebChat;
+export default memo(CustomWebChat);

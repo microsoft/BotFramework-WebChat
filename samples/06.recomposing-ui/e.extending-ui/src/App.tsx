@@ -1,6 +1,8 @@
+/* eslint-disable react/jsx-no-literals */
+
 import { createDirectLine } from 'botframework-webchat';
 import { Components } from 'botframework-webchat-component';
-import React from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import CustomWebChat from './CustomWebChat';
 
 // In this demo, we are using Direct Line token from MockBot.
@@ -18,13 +20,21 @@ async function getDirectLineToken() {
   return token;
 }
 
-const App = () => {
-  const [directLine, setDirectLine] = React.useState();
+function App() {
+  const [directLine, setDirectLine] = useState<ReturnType<typeof createDirectLine>>();
 
-  if (!directLine) {
-    // We will load DirectLineJS asynchronously on first render.
-    getDirectLineToken().then(token => setDirectLine(createDirectLine({ token })));
-  }
+  useEffect(() => {
+    const abortController = new AbortController();
+    const { signal } = abortController;
+
+    (async function () {
+      const token = await getDirectLineToken();
+
+      signal.aborted || setDirectLine(createDirectLine({ token }));
+    })();
+
+    return () => abortController.abort();
+  }, []);
 
   return (
     // We are using the "Composer" component here, which all descendants will have access to the Web Chat API by HOC-ing thru "connectToWebChat".
@@ -46,6 +56,6 @@ const App = () => {
       )}
     </React.Fragment>
   );
-};
+}
 
-export default App;
+export default memo(App);
