@@ -405,7 +405,9 @@ Is there anything specific about the Remote Work Policy you'd like to know more 
         },
         {
           timestamp: timestamp(),
+          from: { role: 'bot' },
           "entities": [
+            aiMessageEntity,
             {
               "@context": "https://schema.org",
               "@id": "cite:1",
@@ -414,8 +416,6 @@ Is there anything specific about the Remote Work Policy you'd like to know more 
               "text": "The onboarding process is crucial for new hires. It helps them understand company culture, policies, and their role. A well-structured onboarding program can significantly improve employee retention and productivity."
             }
           ],
-          from: { role: 'bot' },
-          entities: [aiMessageEntity],
           suggestedActions: {
             actions: [
                 {
