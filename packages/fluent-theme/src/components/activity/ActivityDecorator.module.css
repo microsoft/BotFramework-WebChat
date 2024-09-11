@@ -52,7 +52,6 @@
   --webchat__bubble--max-width: 100%;
   --webchat__bubble--min-height: 20px;
 
-  /* box-sizing: border-box; */
   display: flex;
   flex-flow: column nowrap;
   gap: var(--webchat-spacingVerticalS);
