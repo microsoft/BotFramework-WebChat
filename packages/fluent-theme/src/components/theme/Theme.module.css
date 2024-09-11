@@ -272,7 +272,7 @@
   }
 
   :global(.pre-chat-message-activity)::after {
-    border-radius: var(--webchat-borderRadiusLarge);
+    border-radius: var(--webchat-borderRadiusMedium);
     outline-offset: -2px;
   }
 
