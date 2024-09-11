@@ -54,6 +54,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Reworked pre-chat activity layout to use author entity for improved consistency and flexibility, in PR [#5274](https://github.com/microsoft/BotFramework-WebChat/pull/5274), by [@OEvgeny](https://github.com/OEvgeny)
 -  Updated styles for suggested actions and attachments in Fluent theme to improve readability and consistency, in PR [#5275](https://github.com/microsoft/BotFramework-WebChat/pull/5275), by [@OEvgeny](https://github.com/OEvgeny)
 -  Moved from `redux-devtools-extension@2.13.9` to `@redux/devtools-extension@3.3.0`, in PR [#5292](https://github.com/microsoft/BotFramework-WebChat/pull/5292), by [@compulim](https://github.com/compulim)
+-  Enhanced the visual presentation of the Fluent theme copilot variant, in PR [#5293](https://github.com/microsoft/BotFramework-WebChat/pull/5293), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 

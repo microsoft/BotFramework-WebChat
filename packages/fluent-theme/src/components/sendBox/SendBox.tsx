@@ -3,7 +3,7 @@ import cx from 'classnames';
 import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { SendIcon } from '../../icons';
-import { useStyles } from '../../styles';
+import { useStyles, useVariantClassName } from '../../styles';
 import testIds from '../../testIds';
 import { DropZone } from '../dropZone';
 import { SuggestedActions } from '../suggestedActions';
@@ -45,6 +45,7 @@ function SendBox(props: Props) {
   const [telephoneKeypadShown] = useTelephoneKeypadShown();
   const [uiState] = useUIState();
   const classNames = useStyles(styles);
+  const variantClassName = useVariantClassName(styles);
   const errorMessageId = useUniqueId('sendbox__error-message-id');
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const localize = useLocalizer();
@@ -184,7 +185,7 @@ function SendBox(props: Props) {
   return (
     <form
       {...aria}
-      className={cx(classNames['sendbox'], props.className)}
+      className={cx(classNames['sendbox'], variantClassName, props.className)}
       data-testid={testIds.sendBoxContainer}
       onSubmit={handleFormSubmit}
     >

@@ -123,6 +123,10 @@
   position: absolute;
 }
 
+:global(.webchat-fluent) .border-flair--complete {
+  animation-play-state: paused;
+}
+
 /* Firefox implementation */
 @supports (-moz-appearance: none) {
   @keyframes borderFlair-animation {

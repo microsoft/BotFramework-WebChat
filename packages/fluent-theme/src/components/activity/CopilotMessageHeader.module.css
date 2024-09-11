@@ -1,12 +1,14 @@
 
 :global(.webchat-fluent) .copilot-message-header {
   align-items: center;
+  box-sizing: border-box;
   cursor: default;
   display: flex;
   flex-wrap: nowrap;
   gap: var(--webchat-spacingHorizontalS);
-  margin-inline-start: var(--webchat-spacingVerticalMNudge);
+  max-width: var(--webchat__bubble--max-width);
   padding-block-start: var(--webchat-spacingVerticalXS);
+  padding-inline: var(--webchat-spacingVerticalMNudge);
   /* TODO: remove when moved to the bubble */
   position: relative;
   z-index: 1;
@@ -23,7 +25,6 @@
   font-size: var(--webchat-fontSizeBase300);
   font-weight: var(--webchat-fontWeightSemibold);
   line-height: var(--webchat-lineHeightBase300);
-  max-width: 240px;
   overflow: hidden;
   text-overflow: ellipsis;
   text-wrap: nowrap;
@@ -35,8 +36,9 @@
   border-radius: var(--webchat-borderRadiusMedium);
   color: var(--webchat-colorNeutralForeground3);
   display: flex;
+  flex: none;
   font-size: var(--webchat-fontSizeBase100);
   height: 20px;
   line-height: var(--webchat-lineHeightBase100);
-  padding-inline: 4px;
+  padding-inline: var(--webchat-spacingHorizontalXS);
 }
