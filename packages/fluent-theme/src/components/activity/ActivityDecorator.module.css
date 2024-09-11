@@ -53,12 +53,6 @@
     order: -1;
   }
 
-  :global(.border-loader .border-loader__track) {
-    border-bottom-left-radius: inherit;
-    border-bottom-right-radius: inherit;
-    width: auto;
-  }
-
   /* TODO: remove when we get decorators in and can place header directly to the bubble */
   &:not(:has(:global(.webchat__bubble--from-user))) :global(.webchat__stacked-layout .webchat__bubble .webchat__text-content) {
     padding-block: calc(var(--webchat-spacingVerticalMNudge) + 20px) var(--webchat-spacingVerticalS);
