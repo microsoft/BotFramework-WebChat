@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat" style="position: relative"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        render(<ReactWebChat directLine={directLine} store={store} />, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        expect(window.isSecureContext).toBe(true);
+
+        await host.sendDevToolsCommand('Browser.setPermission', {
+          permission: { name: 'clipboard-write' },
+          setting: 'granted'
+        });
+
+        await expect(navigator.permissions.query({ name: 'clipboard-write' })).resolves.toHaveProperty(
+          'state',
+          'granted'
+        );
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              keywords: ['AllowCopy'],
+              type: 'https://schema.org/Message'
+            }
+          ],
+          text: 'Mollit *aute* **aute** dolor ea ex magna incididunt nostrud sit nisi.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // WHEN: Focus on the "Copy" button via keyboard.
+        await host.click(document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`));
+
+        // THEN: The "Copy" button should say "Copied".
+        await host.snapshot();
+
+        // WHEN: After 1 second.
+        await testHelpers.sleep(1_000);
+
+        // THEN: The "Copy" button should back to normal.
+        await host.snapshot();
+
+        // WHEN: Hiding Web Chat and showing it back.
+        document.getElementById('webchat').style.display = 'none';
+        document.body.offsetWidth; // Need for browser to refresh the layout.
+        document.getElementById('webchat').style.display = '';
+
+        // THEN: The "Copy" button should kept at normal.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

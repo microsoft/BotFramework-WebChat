@@ -53,6 +53,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Improved focus trap implementation by preserving focus state and removing sentinels, in PR [#5243](https://github.com/microsoft/BotFramework-WebChat/pull/5243), by [@OEvgeny](https://github.com/OEvgeny)
 -  Reworked pre-chat activity layout to use author entity for improved consistency and flexibility, in PR [#5274](https://github.com/microsoft/BotFramework-WebChat/pull/5274), by [@OEvgeny](https://github.com/OEvgeny)
 -  Updated styles for suggested actions and attachments in Fluent theme to improve readability and consistency, in PR [#5275](https://github.com/microsoft/BotFramework-WebChat/pull/5275), by [@OEvgeny](https://github.com/OEvgeny)
+-  Moved from `redux-devtools-extension@2.13.9` to `@redux/devtools-extension@3.3.0`, in PR [#5292](https://github.com/microsoft/BotFramework-WebChat/pull/5292), by [@compulim](https://github.com/compulim)
 
 ### Fixed
 
@@ -60,6 +61,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixes [#4965](https://github.com/microsoft/BotFramework-WebChat/issues/4965). Removed keyboard helper screen in [#5234](https://github.com/microsoft/BotFramework-WebChat/pull/5234), by [@amirmursal](https://github.com/amirmursal) and [@OEvgeny](https://github.com/OEvgeny)
 -  Fixes [#5268](https://github.com/microsoft/BotFramework-WebChat/issues/5268). Concluded livestream is sealed and activities received afterwards are ignored, and `streamSequence` is not required in final activity, in PR [#5273](https://github.com/microsoft/BotFramework-WebChat/pull/5273), by [@compulim](https://github.com/compulim)
 -  Fixes [#5288](https://github.com/microsoft/BotFramework-WebChat/issues/5288). Fixed citation and sensitivity label bleeding when using Fluent skin pack, in PR [#5287](https://github.com/microsoft/BotFramework-WebChat/pull/5287), by [@compulim](https://github.com/compulim)
+-  Fixes [#5294](https://github.com/microsoft/BotFramework-WebChat/issues/5294). Fixed copy button animation reset to "Copied" after hiding and showing Web Chat, in PR [#5295](https://github.com/microsoft/BotFramework-WebChat/pull/5295), by [@compulim](https://github.com/compulim)
 
 # Removed
 
