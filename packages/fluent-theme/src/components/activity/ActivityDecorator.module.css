@@ -30,20 +30,6 @@
 /* Decorator copilot variant */
 :global(.webchat-fluent) .activity-decorator.variant-copilot {
   --webchat__bubble--border-radius: var(--webchat-borderRadiusXLarge);
-  
-  &:not(:has(:global(.webchat__bubble--from-user))) {
-    --webchat__bubble--block-padding: var(--webchat-spacingVerticalS) var(--webchat-spacingVerticalS);
-    --webchat__bubble--border-radius: var(--webchat-borderRadiusMedium);
-    --webchat__bubble--inline-padding: 34px var(--webchat-spacingHorizontalS);
-    --webchat__bubble--max-width: 100%;
-
-    display: block;
-    padding-inline-start: var(--webchat-spacingHorizontalM);
-  }
-
-  &:not(:has(:global(.webchat__bubble--from-user))) :global(.webchat__stacked-layout__status) {
-    display: none;
-  }
 
   :global(.webchat__activity-status) {
     margin: 0 0 var(--webchat-spacingHorizontalXXS);
@@ -53,15 +39,60 @@
     order: -1;
   }
 
-  /* TODO: remove when we get decorators in and can place header directly to the bubble */
-  &:not(:has(:global(.webchat__bubble--from-user))) :global(.webchat__stacked-layout .webchat__bubble .webchat__text-content) {
-    padding-block: calc(var(--webchat-spacingVerticalMNudge) + 20px) var(--webchat-spacingVerticalS);
+  &:has(:global(.webchat__bubble--from-user)) :global(.webchat__bubble) {
+    margin-block-end: var(--webchat-spacingVerticalM);
+  }
+}
+
+/* Decorator copilot variant which has bot message */  
+:global(.webchat-fluent) .activity-decorator.variant-copilot:not(:has(:global(.webchat__bubble--from-user))) {
+  --webchat__bubble--block-padding: 0;
+  --webchat__bubble--border-radius: var(--webchat-borderRadiusMedium);
+  --webchat__bubble--inline-padding: 0;
+  --webchat__bubble--max-width: 100%;
+  --webchat__bubble--min-height: 20px;
+
+  /* box-sizing: border-box; */
+  display: flex;
+  flex-flow: column nowrap;
+  gap: var(--webchat-spacingVerticalS);
+  margin-inline: var(--webchat-spacingVerticalM);
+  padding: var(--webchat-spacingVerticalMNudge) var(--webchat-spacingHorizontalM) var(--webchat-spacingVerticalM);
+  position: relative;
+
+  :global(.webchat__stacked-layout) {
+    margin: 0;
+    position: static;
   }
 
-  &:not(:has(:global(.webchat__bubble--from-user))) :global(.webchat__stacked-layout .webchat__bubble) {
-    margin-block-start: -28px;
-    margin-inline-start: -10px;
+  :global(.webchat__bubble) {
+    position: static;
     width: var(--webchat__bubble--max-width);
+  }
+
+  :global(.webchat__text-content) {
+    margin-inline-start: 28px;
+  }
+
+  :global(.border-loader) {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: var(--webchat-spacingVerticalS);
+    padding-inline-end: var(--webchat-spacingHorizontalM);
+    width: 500px;
+  }
+
+  :global(.border-loader__track) {
+    border-radius: inherit;
+    box-sizing: border-box;
+    clip-path: border-box;
+    margin-inline-start: 28px;
+    order: -1;
+    width: auto;
+  }
+
+  :global(.webchat__stacked-layout__status) {
+    display: none;
   }
 }
 
@@ -129,6 +160,12 @@
     color: var(--webchat-colorNeutralForeground2);
     font-family: inherit;
   }
+}
+
+/* Message bubble latency loader */
+:global(.webchat-fluent) .activity-decorator :global(.border-loader) {
+  max-width: 100%;
+  width: var(--webchat__bubble--max-width);
 }
 
 /* Markdown links and citation links */

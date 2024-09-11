@@ -7,11 +7,6 @@
   flex-wrap: nowrap;
   gap: var(--webchat-spacingHorizontalS);
   max-width: var(--webchat__bubble--max-width);
-  padding-block-start: var(--webchat-spacingVerticalXS);
-  padding-inline: var(--webchat-spacingVerticalMNudge);
-  /* TODO: remove when moved to the bubble */
-  position: relative;
-  z-index: 1;
 }
 
 :global(.webchat-fluent) .copilot-message-header__avatar {
