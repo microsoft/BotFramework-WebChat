@@ -36,9 +36,9 @@
   border-radius: var(--webchat-borderRadiusMedium);
   color: var(--webchat-colorNeutralForeground3);
   display: flex;
+  flex: none;
   font-size: var(--webchat-fontSizeBase100);
   height: 20px;
   line-height: var(--webchat-lineHeightBase100);
   padding-inline: var(--webchat-spacingHorizontalXS);
-  flex: none;
 }
