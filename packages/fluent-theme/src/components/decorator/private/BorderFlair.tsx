@@ -9,7 +9,10 @@ function BorderFlair({ children }: Readonly<{ children?: ReactNode | undefined }
   const [isComplete, setComplete] = useState(false);
 
   const handleAnimationEnd = useCallback(
-    event => event.animationName === styles['borderAnimation-angle'] && setComplete(true),
+    event =>
+      (event.animationName === styles['borderAnimation-angle'] ||
+        event.animationName === styles['borderFlair-animation']) &&
+      setComplete(true),
     []
   );
 
