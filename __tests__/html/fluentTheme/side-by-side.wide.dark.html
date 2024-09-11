@@ -167,16 +167,16 @@ You can preview your extension at any time.`,
               },
             ]
           },
-          "entities": [
+          entities: [
             {
               "@context": "https://schema.org",
               "@id": "cite:1",
               "@type": "Claim",
-              "type": "https://schema.org/Claim",
-              "text": "The onboarding process is crucial for new hires. It helps them understand company culture, policies, and their role. A well-structured onboarding program can significantly improve employee retention and productivity."
+              type: "https://schema.org/Claim",
+              text: "The onboarding process is crucial for new hires. It helps them understand company culture, policies, and their role. A well-structured onboarding program can significantly improve employee retention and productivity."
             }
           ],
-          "text": `Great! I've reviewed the Onboarding Checklist.doc[1]\u200C[2]. Here are some key points to include in your Onboarding Buddy's knowledge base:
+          text: `Great! I've reviewed the Onboarding Checklist.doc[1]\u200C[2]. Here are some key points to include in your Onboarding Buddy's knowledge base:
 
 1. Welcome package preparation[1]
 2. IT setup and access provisioning[1]
@@ -188,7 +188,7 @@ You can preview your extension at any time.`,
 [2]: https://sharepoint.contoso.com/team/ \"Company SharePoint\"
 [3]: cite:1 \"Importance of Onboarding\"
 `,
-          "type": "message"
+          type: "message"
         }
       ], [
         {
@@ -262,32 +262,32 @@ You can preview your extension at any time.`,
       ], [
         {
           timestamp: timestamp(),
-          "from": { "role": "user" },
-          "id": "1.0",
-          "text": "Hi, I'm a new employee starting today. Can you help me with the onboarding process?",
-          "type": "message"
+          from: { "role": "user" },
+          id: "1.0",
+          text: "Hi, I'm a new employee starting today. Can you help me with the onboarding process?",
+          type: "message"
         },
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
           entities: [aiMessageEntity],
-          "id": "1.1",
-          "text": "Welcome to the team! I'd be happy to assist you with your onboarding. Let's start with the essentials. Have you received your welcome package yet?",
-          "type": "message"
+          id: "1.1",
+          text: "Welcome to the team! I'd be happy to assist you with your onboarding. Let's start with the essentials. Have you received your welcome package yet?",
+          type: "message"
         },
         {
           timestamp: timestamp(),
-          "from": { "role": "user" },
-          "id": "2.0",
-          "text": "Yes, I got it this morning.",
-          "type": "message"
+          from: { "role": "user" },
+          id: "2.0",
+          text: "Yes, I got it this morning.",
+          type: "message"
         },
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
           entities: [aiMessageEntity],
-          "id": "2.1",
-          "text": `Great! Let's go through the next steps:
+          id: "2.1",
+          text: `Great! Let's go through the next steps:
 
 1. IT Setup: Have you received your company laptop and login credentials?
 2. First-day orientation: I can provide you with today's schedule.
@@ -295,21 +295,21 @@ You can preview your extension at any time.`,
 4. Team introductions: Would you like me to arrange meet-and-greets with your colleagues?
 
 Which of these would you like to start with?`,
-          "type": "message"
+          type: "message"
         },
         {
           timestamp: timestamp(),
-          "from": { "role": "user" },
-          "id": "3.0",
-          "text": "I have my laptop, but I'm not sure about my login credentials. Can you help with that?",
-          "type": "message"
+          from: { "role": "user" },
+          id: "3.0",
+          text: "I have my laptop, but I'm not sure about my login credentials. Can you help with that?",
+          type: "message"
         },
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
           entities: [aiMessageEntity],
-          "id": "3.1",
-          "text": `Of course! Your login credentials should have been emailed to your personal email address. If you haven't received them, I can help you contact our IT support team.
+          id: "3.1",
+          text: `Of course! Your login credentials should have been emailed to your personal email address. If you haven't received them, I can help you contact our IT support team.
 
 Here's what you need to do:
 
@@ -317,21 +317,21 @@ Here's what you need to do:
 2. If you can't find the email, I can generate a support ticket for you right away.
 
 Would you like me to create a support ticket?`,
-          "type": "message"
+          type: "message"
         },
         {
           timestamp: timestamp(),
-          "from": { "role": "user" },
-          "id": "4.0",
-          "text": "I found the email, thanks! What's next on the checklist?",
-          "type": "message"
+          from: { "role": "user" },
+          id: "4.0",
+          text: "I found the email, thanks! What's next on the checklist?",
+          type: "message"
         },
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
           entities: [aiMessageEntity],
-          "id": "4.1",
-          "text": `Excellent! I'm glad you found your credentials. The next item on our onboarding checklist is your first-day orientation. Here's your schedule for today:
+          id: "4.1",
+          text: `Excellent! I'm glad you found your credentials. The next item on our onboarding checklist is your first-day orientation. Here's your schedule for today:
 
 9:00 AM - Welcome meeting with HR
 10:00 AM - Company overview presentation
@@ -341,21 +341,21 @@ Would you like me to create a support ticket?`,
 4:00 PM - Meet with your direct supervisor
 
 Is there anything on this schedule you'd like more information about?`,
-          "type": "message"
+          type: "message"
         },
         {
           timestamp: timestamp(),
-          "from": { "role": "user" },
-          "id": "5.0",
-          "text": "This is helpful, thanks! Can you tell me more about the company policies I need to know?",
-          "type": "message"
+          from: { "role": "user" },
+          id: "5.0",
+          text: "This is helpful, thanks! Can you tell me more about the company policies I need to know?",
+          type: "message"
         },
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
           entities: [aiMessageEntity],
-          "id": "5.1",
-          "text": `Certainly! Here are the key company policies you should be aware of:
+          id: "5.1",
+          text: `Certainly! Here are the key company policies you should be aware of:
 
 1. Code of Conduct: Outlines expected behavior and ethical standards.
 2. IT Usage Policy: Guidelines for using company computers and networks.
@@ -368,21 +368,21 @@ You can find detailed information on all these policies in the Employee Handbook
 [Employee Handbook](https://sharepoint.contoso.com/newhires/EmployeeHandbook.pdf)
 
 Would you like me to summarize any specific policy for you?`,
-          "type": "message"
+          type: "message"
         },
         {
           timestamp: timestamp(),
-          "from": { "role": "user" },
-          "id": "6.0",
-          "text": "The Remote Work Policy sounds interesting. Can you give me a quick overview?",
-          "type": "message"
+          from: { "role": "user" },
+          id: "6.0",
+          text: "The Remote Work Policy sounds interesting. Can you give me a quick overview?",
+          type: "message"
         },
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
           entities: [aiMessageEntity],
-          "id": "6.1",
-          "text": `Certainly! Here's a brief overview of our Remote Work Policy:
+          id: "6.1",
+          text: `Certainly! Here's a brief overview of our Remote Work Policy:
 
 1. Hybrid Model: We operate on a 3-2 model (3 days in office, 2 days remote per week).
 2. Core Hours: All employees should be available online from 10 AM to 3 PM, regardless of location.
@@ -394,26 +394,26 @@ Would you like me to summarize any specific policy for you?`,
 Remember, this is just a summary. For full details, please refer to the Employee Handbook.
 
 Is there anything specific about the Remote Work Policy you'd like to know more about?`,
-          "type": "message"
+          type: "message"
         },
         {
           timestamp: timestamp(),
-          "from": { "role": "user" },
-          "id": "7.0",
-          "text": "That's great, thanks! I think I'm all set for now. Is there anything else I should know for my first day?",
-          "type": "message"
+          from: { "role": "user" },
+          id: "7.0",
+          text: "That's great, thanks! I think I'm all set for now. Is there anything else I should know for my first day?",
+          type: "message"
         },
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
-          "entities": [
+          entities: [
             aiMessageEntity,
             {
               "@context": "https://schema.org",
               "@id": "cite:1",
               "@type": "Claim",
-              "type": "https://schema.org/Claim",
-              "text": "The onboarding process is crucial for new hires. It helps them understand company culture, policies, and their role. A well-structured onboarding program can significantly improve employee retention and productivity."
+              type: "https://schema.org/Claim",
+              text: "The onboarding process is crucial for new hires. It helps them understand company culture, policies, and their role. A well-structured onboarding program can significantly improve employee retention and productivity."
             }
           ],
           suggestedActions: {
@@ -426,8 +426,8 @@ Is there anything specific about the Remote Work Policy you'd like to know more 
                 }
             ]
           },
-          "id": "7.1",
-          "text": `I'm glad I could help! For your first day, here are some tips[1]:
+          id: "7.1",
+          text: `I'm glad I could help! For your first day, here are some tips[1]:
 
 1. Dress Code: Business casual dress code[2].
 2. Lunch: The cafeteria is on the 2nd floor[3], or you can join your team for lunch as scheduled.
@@ -444,29 +444,29 @@ Otherwise parking permit is required[7].
 [5]: https://sharepoint.contoso.com/hr/NewHireFAQ.pdf \"Frequently Asked Questions for New Hires\"
 [6]: https://sharepoint.contoso.com/facilities/ParkingMap.pdf \"Contoso Office Parking Map\"
 [7]: cite:1 \"Meet the Contoso Team\"`,
-          "type": "message"
+          type: "message"
         }
       ], [
         {
           timestamp: timestamp(),
-          "from": { "role": "user" },
-          "id": "6.0",
-          "text": "Help me access my team’s sprint board?",
-          "type": "message"
+          from: { "role": "user" },
+          id: "6.0",
+          text: "Help me access my team’s sprint board?",
+          type: "message"
         },
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
           entities: [aiMessageEntity],
-          "id": "7.1",
-          "text": `To access your team's sprint board, you can follow these steps:
+          id: "7.1",
+          text: `To access your team's sprint board, you can follow these steps:
 
 Check if you have the necessary permissions to access the sprint board. You might need to be part of a specific security group or have a particular role assigned to you.
 1. If you're unsure about your access rights or need to request access, you can reach out to your team.
 2. Once you have access, you can navigate to the board through the Azure DevOps portal. Look for the board under the 'Boards' tab in your project's dashboard.
 
 If your access is still pending, consider emailing your manager to remind them to give you access.`,
-          "type": "message"
+          type: "message"
         },
         {
           timestamp: timestamp(),
@@ -479,38 +479,38 @@ If your access is still pending, consider emailing your manager to remind them t
           timestamp: timestamp(),
           from: { role: 'bot' },
           entities: [aiMessageEntity],
-          "id": "a4c0c01d-c06e-4dde-9278-265c607b545b",
-          "type": "typing",
-          "text": "Processing",
-          "channelData": {
-            "streamType": "informative",
-            "streamSequence": 1
+          id: "a4c0c01d-c06e-4dde-9278-265c607b545b",
+          type: "typing",
+          text: "Processing",
+          channelData: {
+            streamType: "informative",
+            streamSequence: 1
           }
         },
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
           entities: [aiMessageEntity],
-          "id": "a4c0c01d-c06e-4dde-9278-265c607b545b-89",
-          "type": "typing",
-          "text": "Hello there! I'm your Onboarding Buddy, here to guide you through your first days at our company. Let's go over some important information:\n\n- Your **orientation session** is scheduled for tomorrow at **9:00 AM** in the main conference room.",
-          "channelData": {
-            "streamType": "streaming",
-            "streamId": "a4c0c01d-c06e-4dde-9278-265c607b5457",
-            "streamSequence": 90
+          id: "a4c0c01d-c06e-4dde-9278-265c607b545b-89",
+          type: "typing",
+          text: "Hello there! I'm your Onboarding Buddy, here to guide you through your first days at our company. Let's go over some important information:\n\n- Your **orientation session** is scheduled for tomorrow at **9:00 AM** in the main conference room.",
+          channelData: {
+            streamType: "streaming",
+            streamId: "a4c0c01d-c06e-4dde-9278-265c607b5457",
+            streamSequence: 90
           }
         },
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
           entities: [aiMessageEntity],
-          "id": "a4c0c01d-c06e-4dde-9278-265c607b545b-82",
-          "type": "message",
-          "text": "Hello there! I'm your Onboarding Buddy, here to guide you through your first days at our company. Let's go over some important information:\n\n- Your **orientation session** is scheduled for tomorrow at **9:00 AM** in the main conference room.\n\n- Don't forget to complete your **new hire paperwork** by the end of this week. This includes your tax forms, benefits enrollment, and emergency contact information.\n\nGood luck!",
-          "channelData": {
-            "streamType": "final",
-            "streamId": "a4c0c01d-c06e-4dde-9278-265c607b5457",
-            "streamSequence": 99
+          id: "a4c0c01d-c06e-4dde-9278-265c607b545b-82",
+          type: "message",
+          text: "Hello there! I'm your Onboarding Buddy, here to guide you through your first days at our company. Let's go over some important information:\n\n- Your **orientation session** is scheduled for tomorrow at **9:00 AM** in the main conference room.\n\n- Don't forget to complete your **new hire paperwork** by the end of this week. This includes your tax forms, benefits enrollment, and emergency contact information.\n\nGood luck!",
+          channelData: {
+            streamType: "final",
+            streamId: "a4c0c01d-c06e-4dde-9278-265c607b5457",
+            streamSequence: 99
           }
         }
       ]];
