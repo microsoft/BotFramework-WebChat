@@ -132,8 +132,9 @@
   box-shadow: var(--webchat__bubble--box-shadow);
   box-sizing: border-box;
   color: var(--webchat-colorNeutralForeground1);
-  min-height: var(--webchat__bubble--min-height);
   max-width: var(--webchat__bubble--max-width);
+  min-height: var(--webchat__bubble--min-height);
+  overflow: visible;
 }
 
 /* Message bubble text content */
@@ -250,6 +251,8 @@
 
 /* Citation summary chevron */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__link-definitions__header) {
+  border-radius: var(--webchat-borderRadiusMedium);
+  
   :global(.webchat__link-definitions__header-text) {
     color: var(--webchat-colorNeutralForeground3);
   }
@@ -258,6 +261,11 @@
     fill: var(--webchat-colorNeutralForeground3);
     font-size: var(--webchat__font-size--small);
     width: 1em;
+  }
+
+  &:focus-visible {
+    outline-offset: 1px;
+    outline: var(--webchat-strokeWidthThin) solid var(--webchat-colorStrokeFocus2);
   }
 }
 
