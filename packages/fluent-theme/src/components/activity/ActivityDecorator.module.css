@@ -69,6 +69,10 @@
     width: var(--webchat__bubble--max-width);
   }
 
+  :global(.webchat__bubble .webchat__bubble__content) {
+    overflow: visible;
+  }
+
   :global(.webchat__text-content) {
     margin-inline-start: 28px;
   }
@@ -134,7 +138,6 @@
   color: var(--webchat-colorNeutralForeground1);
   max-width: var(--webchat__bubble--max-width);
   min-height: var(--webchat__bubble--min-height);
-  overflow: visible;
 }
 
 /* Message bubble text content */
