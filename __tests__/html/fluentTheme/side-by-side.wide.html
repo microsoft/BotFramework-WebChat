@@ -83,6 +83,7 @@
       const timestamp = () => new Date(timestampStart += 100).toISOString();
 
       const [leftTranscriptIndex = 0, rightTranscriptIndex = 1] = new URLSearchParams(location.search).getAll('transcript');
+      const [leftVariant = 'fluent', rightVariant = 'copilot'] = new URLSearchParams(location.search).getAll('variant');
 
       const sendBoxIndexes = new URLSearchParams(location.search).getAll('focus');
 
@@ -106,7 +107,6 @@
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
-          entities: [aiMessageEntity],
           id: '1.0',
           text: `Great! Your copilot will maintain a polite, friendly, professional, and fun while assisting team members with onboarding tasks.
 Are there any topics or tasks this copilot shouldn’t help with or talk about?`,
@@ -123,7 +123,6 @@ Are there any topics or tasks this copilot shouldn’t help with or talk about?`
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
-          entities: [aiMessageEntity],
           id: '2.0',
           text: 'Is there a website or datasource that has knowledge that will be necessary for Onboarding Buddy?',
           type: 'message'
@@ -139,7 +138,6 @@ Are there any topics or tasks this copilot shouldn’t help with or talk about?`
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
-          entities: [aiMessageEntity],
           id: '3.0',
           text: `https://sharepoint.contoso.com/team/ has been added as a Knowledge source.
 You can preview your extension at any time.`,
@@ -165,7 +163,6 @@ You can preview your extension at any time.`,
         {
           timestamp: timestamp(),
           from: { role: 'bot' },
-          entities: [aiMessageEntity],
           suggestedActions: {
             actions: [
               {
@@ -281,8 +278,9 @@ You can preview your extension at any time.`,
           from: { role: 'bot' },
           entities: [aiMessageEntity],
           id: "1.1",
-          text: "Welcome to the team! I'd be happy to assist you with your onboarding. Let's start with the essentials. Have you received your welcome package yet?",
-          type: "message"
+          text: "Welcome to the team! \n\n I'd be happy to assist you with your onboarding. Let's start with the essentials. Have you received your welcome package yet?",
+          type: "message",
+          textFormat: "plain"
         },
         {
           timestamp: timestamp(),
@@ -532,7 +530,7 @@ If your access is still pending, consider emailing your manager to remind them t
 
       const App = () => <>
         <div className="webchat-left">
-          <FluentThemeProvider variant="fluent">
+          <FluentThemeProvider variant={leftVariant}>
             <ReactWebChat
               directLine={leftDirectLine}
               store={leftStore}
@@ -546,7 +544,7 @@ If your access is still pending, consider emailing your manager to remind them t
           </FluentThemeProvider>
         </div>
         <div className="webchat-right">
-          <FluentThemeProvider variant="copilot">
+          <FluentThemeProvider variant={rightVariant}>
             <ReactWebChat
               directLine={rightDirectLine}
               store={rightStore}
@@ -582,7 +580,9 @@ If your access is still pending, consider emailing your manager to remind them t
         await host.snapshot();
         await host.sendShiftTab();
         await host.snapshot();
-        await host.sendKeys('ARROW_UP');
+        await host.sendKeys('HOME');
+        await host.snapshot();
+        await host.sendKeys('END');
         await host.snapshot();
         await host.sendKeys('ARROW_UP');
         await host.snapshot();
