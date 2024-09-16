@@ -20,8 +20,8 @@ type Props = Readonly<{
 
 const generatedBadgeStyle = {
   '&.webchat__text-content__generated-badge': {
-    fontSize: `var(${CustomPropertyNames.FontSizeSmall})`,
-    color: `var(${CustomPropertyNames.ColorSubtle})`
+    color: `var(${CustomPropertyNames.ColorSubtle})`,
+    fontSize: `var(${CustomPropertyNames.FontSizeSmall})`
   }
 };
 
