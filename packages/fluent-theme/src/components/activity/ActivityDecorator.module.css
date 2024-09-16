@@ -42,6 +42,11 @@
   &:has(:global(.webchat__bubble--from-user)) :global(.webchat__bubble) {
     margin-block-end: var(--webchat-spacingVerticalM);
   }
+
+  /* Hide generated badge as it is in the copilot header */
+  :global(.webchat__bubble .webchat__text-content .webchat__text-content__generated-badge) {
+    display: none;
+  }
 }
 
 /* Decorator copilot variant which has bot message */  
@@ -147,6 +152,30 @@
   min-height: auto;
   padding-block: var(--webchat__bubble--block-padding);
   padding-inline: var(--webchat__bubble--inline-padding);
+
+  &:empty {
+    padding-block-end: 0;
+  }
+
+  +:global(.webchat__text-content) {
+    margin-top: calc(var(--webchat__bubble--block-padding) * -1);
+  }
+}
+
+/* Message bubble text content generated badge */
+:global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__text-content__generated-badge) {
+  align-items: center;
+  align-self: flex-start;
+  background-color: var(--webchat-colorNeutralBackground5);
+  border-radius: var(--webchat-borderRadiusMedium);
+  box-sizing: border-box;
+  color: var(--webchat-colorNeutralForeground3);
+  cursor: default;
+  display: inline-flex;
+  font-size: var(--webchat-fontSizeBase100);
+  height: 16px;
+  line-height: var(--webchat-lineHeightBase100);
+  padding-inline: var(--webchat-spacingHorizontalXS);
 }
 
 /* Message bubble attachment content */

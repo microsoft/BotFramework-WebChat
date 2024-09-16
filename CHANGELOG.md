@@ -56,6 +56,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Moved from `redux-devtools-extension@2.13.9` to `@redux/devtools-extension@3.3.0`, in PR [#5292](https://github.com/microsoft/BotFramework-WebChat/pull/5292), by [@compulim](https://github.com/compulim)
 -  Enhanced the visual presentation of the Fluent theme copilot variant, in PR [#5293](https://github.com/microsoft/BotFramework-WebChat/pull/5293), by [@OEvgeny](https://github.com/OEvgeny)
 -  Refactored spacing and layout for copilot variant in Fluent theme, improving visual consistency, in PR [#5296](https://github.com/microsoft/BotFramework-WebChat/pull/5296), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added a content generated badge to AI-generated messages, in PR [#5298](https://github.com/microsoft/BotFramework-WebChat/pull/5298), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 
