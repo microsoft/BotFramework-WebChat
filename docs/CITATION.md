@@ -16,7 +16,7 @@ A type of link in Markdown that is located below the paragraph. It would reduce 
 
 ### Sensitivity label
 
-Additional metadata can be added to indicate how the content of the link should be used.
+Optional metadata to indicate how the subject should be used. Commonly use to indicate level of confidentiality of the document or the audience scope.
 
 ### Activity graph
 
