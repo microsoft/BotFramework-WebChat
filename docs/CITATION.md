@@ -18,6 +18,21 @@ A type of link in Markdown that is located below the paragraph. It would reduce 
 
 Additional metadata can be added to indicate how the content of the link should be used.
 
+### Activity graph
+
+Activity graph is the collective of all Schema.org things (a.k.a. objects) inside `entities` field. These things must have `type` field under https://schema.org domain and conform to JSON-LD specification.
+
+The activity graph should have a [Message thing](#message-thing).
+
+### Message thing
+
+A [Message thing](https://schema.org/Message) represent the message activity itself and act as the root of the [activity graph](#activity-graph). It must have the following fields:
+
+-  `@context` of `"https://schema.org"`
+-  `@id` of `""` (an empty string means self in JSON-LD fashion)
+-  `@type` of `"Message"`
+-  `type` of `"https://schema.org/Message"`
+
 ## Bot implementation
 
 Bot developers would need to implement the citation as outlined in this section. The implementation below will enable livestreaming to both Azure Bot Services and Teams.
@@ -167,7 +182,11 @@ Note: some Markdown engine treats `link[1][1]` and `link[1]` synonymically.
 
 Instead of using `@id`, we are using `position` to matchmake the link definition in Markdown to the Claim thing in the activity graph.
 
-### `usageInfo` on the `Message` entity should be a blank node
+### Source of truths
+
+If there are deviations of information in Markdown and Message thing, the Message thing should take precedence over the Markdown, given the receiver understood the Message thing.
+
+### `usageInfo` on the `Message` thing should be a blank node
 
 In JSON-LD, blank node means a node that does not have any contents but `@id` and is intended for referencing other nodes in the system.
 
