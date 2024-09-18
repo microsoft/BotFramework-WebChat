@@ -201,6 +201,6 @@ In JSON-LD, blank node means a node that does not have any contents but `@id` an
 
 `Message.usageInfo` is representing sensitivity label for the whole message. The sensitivity label it is referring to is usually the sensitivity label which has highest priority or importance.
 
-## Further Reading
+## Further reading
 
 -  [Microsoft Teams: Bot messages with AI-generated content](https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/bot-messages-ai-generated-content?tabs=after%2Cbotmessage#citations)
