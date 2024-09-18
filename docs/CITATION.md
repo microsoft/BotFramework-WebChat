@@ -143,11 +143,11 @@ Please refer to the graph for details of each fields. Notably:
 
 ### Markdown reference style link
 
-This type of link allows multiple words/badges to reference to the same link. It also helps readability when users are on text channels (email/SMS).
+This type of link allows multiple words/badges to reference to the same link, which is common when citing sources. It also helps readability when users are on text channels (email/SMS).
 
-According to CommonMark, Markdown engines should not render the reference style links as footnote.
+According to CommonMark, Markdown engines should not render the reference style links separately. Channels which does not support citation should continue rendering links normally.
 
-Web Chat appended an additional renderer to visualize the links as citation in footnote fashion.
+Web Chat appended an additional UI component below the Markdown component. It visualizes the reference style link in a footnote fashion and render sensitivity labels and other UIs.
 
 ### Markdown pure identifiers for badges
 
