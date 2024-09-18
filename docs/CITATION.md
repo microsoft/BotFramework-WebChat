@@ -57,9 +57,9 @@ Notes:
 ```md
 Sure, you should override the default proxy settings[1]​[2], when your proxy server requires authentication[3].
 
-[1]: https://support.microsoft.com/en-us/windows/use-a-proxy-server-in-windows-03096c53-0554-4ffe-b6ab-8b1deee8dae1 'Use a proxy server in Windows'
-[2]: https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-proxy-server-settings 'Configure proxy server settings - Windows Server'
-[3]: cite:1 'Introduction Configuring proxy settings is a fundamental aspect...'
+[1]: https://support.microsoft.com/en-us/windows/use-a-proxy-server-in-windows-03096c53-0554-4ffe-b6ab-8b1deee8dae1 "Use a proxy server in Windows"
+[2]: https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-proxy-server-settings "Configure proxy server settings - Windows Server"
+[3]: cite:1 "Introduction Configuring proxy settings is a fundamental aspect..."
 ```
 
 ### Message object
