@@ -18,7 +18,7 @@ CommonMark-compliant Markdown engines will inline the link into the paragraph an
 
 ### Sensitivity label
 
-Optional metadata to indicate how the subject should be used. Commonly use to indicate level of confidentiality of the subject or the audience scope.
+Optional metadata indicating how the subject should be handled, often used to specify the confidentiality level or intended audience scope.
 
 ### Activity graph
 
@@ -41,7 +41,9 @@ Citation which does not have a link to point the user to. But part or whole of t
 
 ## Bot implementation
 
-Bot developers would need to implement the citation as outlined in this section.
+This section outlines the key components and steps for implementing citations in bot responses. By following these guidelines, developers can ensure their bots generate properly formatted citations that can be rendered effectively in Web Chat and other supported channels.
+
+Bot developers should implement citations as outlined in this section to ensure proper functionality.
 
 ### Activity text
 
@@ -161,6 +163,8 @@ Please refer to the graph for details of each fields. Notably:
 
 ## Design decisions
 
+The following design decisions were made to optimize the citation implementation for our needs. These choices reflect our approach to balancing technical requirements with user experience considerations.
+
 ### Markdown reference style link
 
 This type of link allows multiple words/badges to reference to the same link, which is common when citing sources. It also helps readability when users are on text channels (email/SMS).
@@ -185,7 +189,7 @@ Note: some Markdown engine treats `link[1][1]` and `link[1]` synonymically.
 
 ### Using `position` instead of `@id` to match links from Markdown to Claim
 
-Instead of using `@id`, we are using `position` to matchmake the link definition in Markdown to the Claim thing in the activity graph.
+We use `position` instead of `@id` to match the link definition in Markdown to the Claim thing in the activity graph. This simplifies the matching process and maintains an ordinal relationship between citations in the text and their corresponding Claims.
 
 ### Source of truths
 
@@ -197,6 +201,6 @@ In JSON-LD, blank node means a node that does not have any contents but `@id` an
 
 `Message.usageInfo` is representing sensitivity label for the whole message. The sensitivity label it is referring to is usually the sensitivity label which has highest priority or importance.
 
-## Further reads
+## Further Reading
 
 -  [Microsoft Teams: Bot messages with AI-generated content](https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/bot-messages-ai-generated-content?tabs=after%2Cbotmessage#citations)
