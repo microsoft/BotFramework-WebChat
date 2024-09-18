@@ -28,6 +28,18 @@ const ActivityCopyButton = ({ className, htmlText, plainText }: Props) => {
   const copyText = localize('COPY_BUTTON_TEXT');
   const disabled = !permissionGranted || uiState === 'disabled';
 
+  useEffect(() => {
+    const { current } = buttonRef;
+
+    if (current) {
+      const handleAnimationEnd = () => current.classList.remove('webchat__activity-copy-button--copied');
+
+      current.addEventListener('animationend', handleAnimationEnd);
+
+      return () => current.removeEventListener('animationend', handleAnimationEnd);
+    }
+  }, [buttonRef]);
+
   const handleClick = useCallback(() => {
     const { current: htmlText } = htmlTextRef;
 
