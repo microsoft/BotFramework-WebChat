@@ -41,7 +41,7 @@ Citation which does not have a link to point the user to. But part or whole of t
 
 ## Bot implementation
 
-Bot developers would need to implement the citation as outlined in this section. The implementation below will enable livestreaming to both Azure Bot Services and Teams.
+Bot developers would need to implement the citation as outlined in this section.
 
 ### Activity text
 
