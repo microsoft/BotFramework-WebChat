@@ -51,7 +51,7 @@ Sure, you should override the default proxy settings[1]​[2], when your proxy s
 
 Please refer to the graph for details of each fields. Notably:
 
--  Only nested objects are supported (a.k.a. "compact form"), flattened/referenced objects are not supported unless stated otherwise
+-  Only compact from is supported (i.e. nested objects), other forms and object references are not supported unless stated otherwise
 -  Subclasses are not supported. If the object is expected to be `Message`, it must not be `EmailMessage` (subclass)
 
 #### Sample payload
@@ -138,3 +138,39 @@ Please refer to the graph for details of each fields. Notably:
    }
 }
 ```
+
+## Design decisions
+
+### Markdown reference style link
+
+This type of link allows multiple words/badges to reference to the same link. It also helps readability when users are on text channels (email/SMS).
+
+According to CommonMark, Markdown engines should not render the reference style links as footnote. Web Chat appended an additional renderer to visualize the links as citation in footnote fashion.
+
+### Markdown pure identifiers for badges
+
+Pure identifiers is a type of link identifiers which does not have a specific word linked. Instead, it use the identifier itself as a link.
+
+We are rendering pure identifiers as citation badges.
+
+Example of text without pure identifiers: `Here is the [link][1] about copilot.` would have the word "link" referencing the link indicated by `1` in the reference style link. It would render as "Here is the link about copilot." with the word "link" usually underlined or colored.
+
+Example of text With pure identifiers, `Here is the link[1] about copilot.` would have the identifier "1" added to the text and we would use this as a badge. The message would render as "Here is the link 1 about copilot."
+
+In Web Chat, the identifier "1" would be styled as a badge and may have a "open in new tab" icon and additional text alternative for accessibility.
+
+Note: some Markdown engine treats `link[1][1]` and `link[1]` synonymically.
+
+### Using `position` instead of `@id` to match links from Markdown to Claim
+
+Instead of using `@id`, we are using `position` to matchmake the link definition in Markdown to the Claim thing in the activity graph.
+
+### `usageInfo` on the `Message` entity should be a blank node
+
+In JSON-LD, blank node means a node that does not have any contents but `@id` and is intended for referencing other nodes in the system.
+
+`Message.usageInfo` is representing sensitivity label for the whole message. The sensitivity label it is referring to is usually the sensitivity label which has highest priority or importance.
+
+## Further reads
+
+-  [Microsoft Teams: Bot messages with AI-generated content](https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/bot-messages-ai-generated-content?tabs=after%2Cbotmessage#citations)
