@@ -12,7 +12,9 @@ Web Chat added citation support since [4.16.0](../CHANGELOG.md#4160---2023-11-16
 
 ### Markdown reference style link
 
-A type of link in Markdown that is located below the paragraph. It would reduce repetitiveness when multiple words shared the same link and improve readability.
+A type of link in Markdown that is placed below the paragraph. Reduce repetitiveness when multiple words shared the same link and improve readability for plain text users.
+
+CommonMark-compliant Markdown engines will inline the link into the paragraph and should not render it differently than normal inline links.
 
 ### Sensitivity label
 
