@@ -35,18 +35,19 @@ A [Message thing](https://schema.org/Message) represent the message activity its
 -  `@type` of `"Message"`
 -  `type` of `"https://schema.org/Message"`
 
+### Non-URL citation
+
+Citation which does not have a link to point the user to. But part or whole of the cited content is attached in the activity.
+
 ## Bot implementation
 
 Bot developers would need to implement the citation as outlined in this section. The implementation below will enable livestreaming to both Azure Bot Services and Teams.
 
-## Non-URL citation
-
-Citation which does not have a link to point the user to. But part or whole of the cited content is attached in the activity.
-
 ### Activity text
 
--  It must be in Markdown format
--  It must use reference style link
+![Sample citation output](../media/citation-example.png)
+
+`activity.text` must be in Markdown format and links for citation must format as [reference style link](#markdown-reference-style-link).
 
 #### Sample payload
 
@@ -54,7 +55,7 @@ Notes:
 
 -  The third citation is a non-URL citation, its link `cite:1` is currently ignored
 
-```md
+```
 Sure, you should override the default proxy settings[1]​[2], when your proxy server requires authentication[3].
 
 [1]: https://support.microsoft.com/en-us/windows/use-a-proxy-server-in-windows-03096c53-0554-4ffe-b6ab-8b1deee8dae1 "Use a proxy server in Windows"
