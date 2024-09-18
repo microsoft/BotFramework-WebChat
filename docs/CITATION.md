@@ -45,8 +45,6 @@ Bot developers would need to implement the citation as outlined in this section.
 
 ### Activity text
 
-![Sample citation output](../media/citation-example.png)
-
 `activity.text` must be in Markdown format and links for citation must format as [reference style link](#markdown-reference-style-link).
 
 #### Sample payload
@@ -62,6 +60,10 @@ Sure, you should override the default proxy settings[1]​[2], when your proxy s
 [2]: https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-proxy-server-settings "Configure proxy server settings - Windows Server"
 [3]: cite:1 "Introduction Configuring proxy settings is a fundamental aspect..."
 ```
+
+#### Sample output
+
+![Sample citation output](../media/citation-example.png)
 
 ### Message object
 
