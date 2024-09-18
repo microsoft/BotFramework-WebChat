@@ -113,7 +113,7 @@ Please refer to the graph for details of each fields. Notably:
                "@type": "CreativeWork",
                "additionalType": "https://copilotstudio.microsoft.com/sensitivity-labels/v1",
                "description": "Data is classified as Confidential but is NOT PROTECTED to allow access by approved NDA business partners. If a higher level of protection is needed please change the sensitivity level of the cited content.",
-               "keywords": ["HasEncryption"],
+               "keywords": ["EncryptedContent"],
                "name": "Confidential\\Any User (No Protection)",
                "pattern": {
                   "@type": "DefinedTermSet",
@@ -145,7 +145,9 @@ Please refer to the graph for details of each fields. Notably:
 
 This type of link allows multiple words/badges to reference to the same link. It also helps readability when users are on text channels (email/SMS).
 
-According to CommonMark, Markdown engines should not render the reference style links as footnote. Web Chat appended an additional renderer to visualize the links as citation in footnote fashion.
+According to CommonMark, Markdown engines should not render the reference style links as footnote.
+
+Web Chat appended an additional renderer to visualize the links as citation in footnote fashion.
 
 ### Markdown pure identifiers for badges
 
