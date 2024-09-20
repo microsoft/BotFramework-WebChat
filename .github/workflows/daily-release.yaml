@@ -1,11 +1,14 @@
 name: Daily release
 
+# For internal on-demand tests, until we can build it in AzDO.
+
 on:
-  push:
-    paths:
-      - .github/workflows/daily-release.yaml
-  schedule:
-    - cron: 00 03 * * *
+  # push:
+  #   paths:
+  #     - .github/workflows/daily-release.yaml
+  # schedule:
+  #   - cron: 00 03 * * *
+  workflow_dispatch: {}
 
 defaults:
   run:
@@ -124,7 +127,7 @@ jobs:
           tag_name: ${{ steps.compute_hash.outputs.release_tag_name }}
           release_name: Daily (${{ github.ref }})
           body: |
-            This release will be updated daily. **Please do not use this build in production environment.**
+            This release is for internal testing only. **Please do not use this build in production environment.**
 
             | Build time | Run ID | Source version | Git ref | Package version |
             | - | - | - | - | - |
