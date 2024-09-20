@@ -60,13 +60,13 @@ jobs:
           cp *.tgz ../../artifacts/tarballs
 
       - name: Upload bundles
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: bundles
           path: packages/bundle/dist/**/*
 
       - name: Upload tarballs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: tarballs
           path: artifacts/tarballs/**/*
@@ -76,11 +76,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
           name: bundles
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
         with:
           name: tarballs
 
