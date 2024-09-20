@@ -302,7 +302,7 @@ jobs:
         run: sudo apt install -y lcov
 
       - name: Merge lcov-*.info
-        run: find . -name "lcov-*.info" -type f | xargs -i echo "--add-tracefile {}" | xargs echo | xargs -i echo "lcov --rc lcov_branch_coverage=1 {} --output-file lcov.info"
+        run: find . -name "lcov-*.info" -type f | xargs -i echo "--add-tracefile {}" | xargs lcov --rc lcov_branch_coverage=1 --output-file lcov.info
 
       - if: always()
         name: Print coverage list
