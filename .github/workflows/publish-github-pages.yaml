@@ -30,18 +30,6 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: npm
 
-      # - name: Run npm ci --no-production
-      #   env:
-      #     NODE_ENV: production
-      #   run: |
-      #     cd samples
-      #     npm ci --no-production
-
-      # - name: Run npm run bootstrap
-      #   run: |
-      #     cd samples
-      #     npm run bootstrap
-
       - run: npm clean-install
         working-directory: ./samples
 
