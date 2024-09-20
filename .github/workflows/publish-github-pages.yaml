@@ -2,13 +2,11 @@ name: Publish GitHub Pages
 
 on:
   push:
-    # branches:
-    #   - main
+    branches:
+      - main
     paths:
       - .github/workflows/publish-github-pages.yaml
       - samples/**
-  schedule:
-    - cron: 00 03 * * * # Redeploy every 3 AM
   workflow_dispatch: {}
 
 defaults:
