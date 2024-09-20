@@ -1,0 +1,17 @@
+{
+  "name": "botframework-webchat-samples-root",
+  "private": true,
+  "workspaces": [
+    "./04.api/e.piping-to-redux",
+    "./04.api/f.selectable-activity",
+    "./04.api/g.chat-send-history",
+    "./04.api/h.clear-after-idle",
+    "./06.recomposing-ui/a.minimizable-web-chat",
+    "./06.recomposing-ui/b.speech-ui",
+    "./06.recomposing-ui/c.smart-display",
+    "./06.recomposing-ui/d.plain-ui"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces"
+  }
+}

@@ -1,12 +1,14 @@
 name: samples/07.a.upload-to-azure-storage
 
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/samples.07.a.upload-to-azure-storage.yaml
-      - samples/07.advanced-web-chat-apps/a.upload-to-azure-storage/**
+on: {} # Pipeline is disabled
+
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths:
+#       - .github/workflows/samples.07.a.upload-to-azure-storage.yaml
+#       - samples/07.advanced-web-chat-apps/a.upload-to-azure-storage/**
 
 env:
   APP_NAME: webchat-samples-uploadazurestorage

@@ -8,6 +8,10 @@ on:
       - .github/workflows/publish-github-pages.yaml
       - samples/**
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,24 +20,26 @@ jobs:
       - name: Checking out for ${{ github.ref }}
         uses: actions/checkout@v2
 
-      - name: Run npm ci --no-production
-        env:
-          NODE_ENV: production
-        run: |
-          cd samples
-          npm ci --no-production
+      # - name: Run npm ci --no-production
+      #   env:
+      #     NODE_ENV: production
+      #   run: |
+      #     cd samples
+      #     npm ci --no-production
 
-      - name: Run npm run bootstrap
-        run: |
-          cd samples
-          npm run bootstrap
+      # - name: Run npm run bootstrap
+      #   run: |
+      #     cd samples
+      #     npm run bootstrap
+
+      - run: npm clean-install
+        working-directory: ./samples
 
       - name: Run npm run build
         env:
           NODE_ENV: production
-        run: |
-          cd samples
-          npm run build
+        run: npm run build
+        working-directory: ./samples
 
       - name: Copy files
         run: |
@@ -100,24 +106,24 @@ jobs:
           mkdir gh-pages/06.recomposing-ui/d.plain-ui
           rsync -av --progress samples/06.recomposing-ui/d.plain-ui/build/ gh-pages/06.recomposing-ui/d.plain-ui/
 
-      - name: Upload bundles
-        uses: actions/upload-artifact@v2
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: gh-pages
           path: gh-pages/**/*
 
   release:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      id-token: write
+      pages: write
+
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: gh-pages
-          path: ./public
-
-      - name: Publish GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+      - id: deployment
+        name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
