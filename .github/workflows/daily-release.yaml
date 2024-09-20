@@ -89,7 +89,7 @@ jobs:
         run: |
           echo git_short_sha=`echo ${{ github.sha }} | cut -c 1-7` | tee --append $GITHUB_OUTPUT
           echo package_version=`tar -xOzf botframework-webchat-4*.tgz package/package.json | jq -r '.version'` | tee --append $GITHUB_OUTPUT
-          echo release_date=`date \"+%Y-%m-%d %R:%S\"` | tee --append $GITHUB_OUTPUT
+          echo release_date=`date "+%Y-%m-%d %R:%S"` | tee --append $GITHUB_OUTPUT
           echo release_tag_name=daily | tee --append $GITHUB_OUTPUT
           echo sha384_es5=`cat webchat-es5.js | openssl dgst -sha384 -binary | openssl base64 -A` | tee --append $GITHUB_OUTPUT
           echo sha384_full=`cat webchat.js | openssl dgst -sha384 -binary | openssl base64 -A` | tee --append $GITHUB_OUTPUT
