@@ -1,6 +1,9 @@
 name: samples/07.d.sso-for-teams
 
-on: {} # Pipeline is disabled
+on:
+  push:
+    branches:
+      - disabled # Pipeline is disabled
 
 # on:
 #   push:
