@@ -69,7 +69,7 @@ jobs:
       - run: ls -l docker.zip
 
       - name: Upload Docker artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docker
           path: docker.zip
@@ -139,9 +139,9 @@ jobs:
 
       - if: always()
         name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-result
+          name: test-result-unit
           path: |
             ./coverage/jest-*.json
             ./coverage/lcov-*.info
@@ -201,7 +201,7 @@ jobs:
           node-version: ${{ env.node-version }}
 
       - name: Download Docker artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: docker
 
@@ -259,9 +259,9 @@ jobs:
 
       - if: always()
         name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-result
+          name: test-result-html-${{ matrix.shard-index }}
           path: |
             ./coverage/jest-*.json
             ./coverage/lcov-*.info
@@ -270,9 +270,9 @@ jobs:
 
       - if: failure()
         name: Upload test snapshot diffs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-snapshot-diff
+          name: test-snapshot-diff-html-${{ matrix.shard-index }}
           path: ./__tests__/__image_snapshots__/*/__diff_output__/*
 
   merge-test-result:
@@ -285,9 +285,10 @@ jobs:
 
     steps:
       - name: Download test results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: test-result
+          merge-multiple: true
+          pattern: test-result-*
 
       - name: Install lcov
         run: sudo apt install -y lcov
@@ -326,3 +327,24 @@ jobs:
           echo \`\`\` >> $GITHUB_STEP_SUMMARY
           lcov --rc lcov_branch_coverage=1 --summary lcov.info | tee --append $GITHUB_STEP_SUMMARY
           echo \`\`\` >> $GITHUB_STEP_SUMMARY
+
+  merge-test-snapshots:
+    if: always()
+    name: Merge test snapshots
+    needs:
+      - html-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download test snapshots
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: ./test-snapshot-diff
+          pattern: test-snapshot-diff-html-*
+
+      - name: Upload merged test snapshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-snapshot-diff
+          path: ./test-snapshot-diff
