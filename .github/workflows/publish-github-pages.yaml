@@ -12,6 +12,9 @@ defaults:
   run:
     shell: bash
 
+env:
+  node-version: 22
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,6 +22,12 @@ jobs:
     steps:
       - name: Checking out for ${{ github.ref }}
         uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
 
       # - name: Run npm ci --no-production
       #   env:
