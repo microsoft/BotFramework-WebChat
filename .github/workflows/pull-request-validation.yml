@@ -71,6 +71,7 @@ jobs:
       - name: Upload Docker artifact
         uses: actions/upload-artifact@v4
         with:
+          compression-level: 0
           name: docker
           path: docker.zip
           retention-days: 1
