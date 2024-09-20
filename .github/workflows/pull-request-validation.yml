@@ -277,20 +277,26 @@ jobs:
           name: test-snapshot-diff-html-${{ matrix.shard-index }}
           path: ./__tests__/__image_snapshots__/*/__diff_output__/*
 
-  merge-test-result:
+  merge-test-results:
     if: always()
-    name: Merge test result
+    name: Merge test results
     needs:
       - html-test
       - unit-test
     runs-on: ubuntu-latest
 
     steps:
+      - name: Merge test result artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          delete-merged: true
+          name: test-result
+          pattern: test-result-*
+
       - name: Download test results
         uses: actions/download-artifact@v4
         with:
-          merge-multiple: true
-          pattern: test-result-*
+          name: test-result
 
       - name: Install lcov
         run: sudo apt install -y lcov
