@@ -69,7 +69,7 @@ jobs:
       - run: ls -l docker.zip
 
       - name: Upload Docker artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: docker
           path: docker.zip
@@ -139,7 +139,7 @@ jobs:
 
       - if: always()
         name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: test-result
           path: |
@@ -201,7 +201,7 @@ jobs:
           node-version: ${{ env.node-version }}
 
       - name: Download Docker artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: docker
 
@@ -259,7 +259,7 @@ jobs:
 
       - if: always()
         name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: test-result
           path: |
@@ -270,7 +270,7 @@ jobs:
 
       - if: failure()
         name: Upload test snapshot diffs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: test-snapshot-diff
           path: ./__tests__/__image_snapshots__/*/__diff_output__/*
@@ -285,7 +285,7 @@ jobs:
 
     steps:
       - name: Download test results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: test-result
 
