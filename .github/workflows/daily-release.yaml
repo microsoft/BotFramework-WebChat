@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checking out for ${{ github.ref }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - run: npx version-from-git --no-git-tag-version
 
