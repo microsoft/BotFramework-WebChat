@@ -65,11 +65,7 @@ jobs:
           rsync -av --progress samples/00.migration/ gh-pages/00.migration/
 
           mkdir gh-pages/01.getting-started
-          rsync -av --progress samples/01.getting-started/ gh-pages/01.getting-started/ \
-            --exclude g.hybrid-react-npm
-
-          mkdir gh-pages/01.getting-started/g.hybrid-react-npm
-          rsync -av --progress samples/01.getting-started/g.hybrid-react-npm/packages/app/build/ gh-pages/01.getting-started/g.hybrid-react-npm/
+          rsync -av --progress samples/01.getting-started/ gh-pages/01.getting-started/
 
           mkdir gh-pages/02.branding-styling-and-customization
           rsync -av --progress samples/02.branding-styling-and-customization/ gh-pages/02.branding-styling-and-customization/
