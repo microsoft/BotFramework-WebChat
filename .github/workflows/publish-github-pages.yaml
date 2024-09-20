@@ -81,16 +81,16 @@ jobs:
             --exclude h.clear-after-idle
 
           mkdir gh-pages/04.api/e.piping-to-redux
-          rsync -av --progress samples/04.api/e.piping-to-redux/build/ gh-pages/04.api/e.piping-to-redux/
+          rsync -av --progress samples/04.api/e.piping-to-redux/public/ gh-pages/04.api/e.piping-to-redux/
 
           mkdir gh-pages/04.api/f.selectable-activity
-          rsync -av --progress samples/04.api/f.selectable-activity/build/ gh-pages/04.api/f.selectable-activity/
+          rsync -av --progress samples/04.api/f.selectable-activity/public/ gh-pages/04.api/f.selectable-activity/
 
           mkdir gh-pages/04.api/g.chat-send-history
-          rsync -av --progress samples/04.api/g.chat-send-history/build/ gh-pages/04.api/g.chat-send-history/
+          rsync -av --progress samples/04.api/g.chat-send-history/public/ gh-pages/04.api/g.chat-send-history/
 
           mkdir gh-pages/04.api/h.clear-after-idle
-          rsync -av --progress samples/04.api/h.clear-after-idle/build/ gh-pages/04.api/h.clear-after-idle/
+          rsync -av --progress samples/04.api/h.clear-after-idle/public/ gh-pages/04.api/h.clear-after-idle/
 
           mkdir gh-pages/05.custom-components
           rsync -av --progress samples/05.custom-components/ gh-pages/05.custom-components/
@@ -103,16 +103,16 @@ jobs:
             --exclude d.plain-ui
 
           mkdir gh-pages/06.recomposing-ui/a.minimizable-web-chat
-          rsync -av --progress samples/06.recomposing-ui/a.minimizable-web-chat/build/ gh-pages/06.recomposing-ui/a.minimizable-web-chat/
+          rsync -av --progress samples/06.recomposing-ui/a.minimizable-web-chat/public/ gh-pages/06.recomposing-ui/a.minimizable-web-chat/
 
           mkdir gh-pages/06.recomposing-ui/b.speech-ui
-          rsync -av --progress samples/06.recomposing-ui/b.speech-ui/build/ gh-pages/06.recomposing-ui/b.speech-ui/
+          rsync -av --progress samples/06.recomposing-ui/b.speech-ui/public/ gh-pages/06.recomposing-ui/b.speech-ui/
 
           mkdir gh-pages/06.recomposing-ui/c.smart-display
-          rsync -av --progress samples/06.recomposing-ui/c.smart-display/build/ gh-pages/06.recomposing-ui/c.smart-display/
+          rsync -av --progress samples/06.recomposing-ui/c.smart-display/public/ gh-pages/06.recomposing-ui/c.smart-display/
 
           mkdir gh-pages/06.recomposing-ui/d.plain-ui
-          rsync -av --progress samples/06.recomposing-ui/d.plain-ui/build/ gh-pages/06.recomposing-ui/d.plain-ui/
+          rsync -av --progress samples/06.recomposing-ui/d.plain-ui/public/ gh-pages/06.recomposing-ui/d.plain-ui/
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
