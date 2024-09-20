@@ -23,7 +23,6 @@ env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
   NODE_ENV: test # Add instrumentation code
   node-version: 18.20 # Need to bump jest@29 to resolve something in https://github.com/facebook/react-native/issues/35701
-  skip-secure-feed: true # Terrapin service is degrading and their team told us to disable Terrapin to unblock ourselves
 
 jobs:
   build:
@@ -32,11 +31,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
-        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -75,7 +69,7 @@ jobs:
       - run: ls -l docker.zip
 
       - name: Upload Docker artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docker
           path: docker.zip
@@ -87,11 +81,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
-        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -113,11 +102,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
-        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -155,7 +139,7 @@ jobs:
 
       - if: always()
         name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-result
           path: |
@@ -170,11 +154,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
-        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -216,18 +195,13 @@ jobs:
         shard-count: [17]
 
     steps:
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
-        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
-
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
 
       - name: Download Docker artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: docker
 
@@ -285,7 +259,7 @@ jobs:
 
       - if: always()
         name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-result
           path: |
@@ -296,7 +270,7 @@ jobs:
 
       - if: failure()
         name: Upload test snapshot diffs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-snapshot-diff
           path: ./__tests__/__image_snapshots__/*/__diff_output__/*
@@ -311,7 +285,7 @@ jobs:
 
     steps:
       - name: Download test results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: test-result
 
