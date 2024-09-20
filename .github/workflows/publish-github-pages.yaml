@@ -7,6 +7,14 @@ on:
     paths:
       - .github/workflows/publish-github-pages.yaml
       - samples/**
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  node-version: 22
 
 jobs:
   build:
@@ -14,26 +22,22 @@ jobs:
 
     steps:
       - name: Checking out for ${{ github.ref }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Run npm ci --no-production
-        env:
-          NODE_ENV: production
-        run: |
-          cd samples
-          npm ci --no-production
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
 
-      - name: Run npm run bootstrap
-        run: |
-          cd samples
-          npm run bootstrap
+      - run: npm clean-install
+        working-directory: ./samples
 
       - name: Run npm run build
         env:
           NODE_ENV: production
-        run: |
-          cd samples
-          npm run build
+        run: npm run build
+        working-directory: ./samples
 
       - name: Copy files
         run: |
@@ -47,11 +51,7 @@ jobs:
           rsync -av --progress samples/00.migration/ gh-pages/00.migration/
 
           mkdir gh-pages/01.getting-started
-          rsync -av --progress samples/01.getting-started/ gh-pages/01.getting-started/ \
-            --exclude g.hybrid-react-npm
-
-          mkdir gh-pages/01.getting-started/g.hybrid-react-npm
-          rsync -av --progress samples/01.getting-started/g.hybrid-react-npm/packages/app/build/ gh-pages/01.getting-started/g.hybrid-react-npm/
+          rsync -av --progress samples/01.getting-started/ gh-pages/01.getting-started/
 
           mkdir gh-pages/02.branding-styling-and-customization
           rsync -av --progress samples/02.branding-styling-and-customization/ gh-pages/02.branding-styling-and-customization/
@@ -67,16 +67,16 @@ jobs:
             --exclude h.clear-after-idle
 
           mkdir gh-pages/04.api/e.piping-to-redux
-          rsync -av --progress samples/04.api/e.piping-to-redux/build/ gh-pages/04.api/e.piping-to-redux/
+          rsync -av --progress samples/04.api/e.piping-to-redux/public/ gh-pages/04.api/e.piping-to-redux/
 
           mkdir gh-pages/04.api/f.selectable-activity
-          rsync -av --progress samples/04.api/f.selectable-activity/build/ gh-pages/04.api/f.selectable-activity/
+          rsync -av --progress samples/04.api/f.selectable-activity/public/ gh-pages/04.api/f.selectable-activity/
 
           mkdir gh-pages/04.api/g.chat-send-history
-          rsync -av --progress samples/04.api/g.chat-send-history/build/ gh-pages/04.api/g.chat-send-history/
+          rsync -av --progress samples/04.api/g.chat-send-history/public/ gh-pages/04.api/g.chat-send-history/
 
           mkdir gh-pages/04.api/h.clear-after-idle
-          rsync -av --progress samples/04.api/h.clear-after-idle/build/ gh-pages/04.api/h.clear-after-idle/
+          rsync -av --progress samples/04.api/h.clear-after-idle/public/ gh-pages/04.api/h.clear-after-idle/
 
           mkdir gh-pages/05.custom-components
           rsync -av --progress samples/05.custom-components/ gh-pages/05.custom-components/
@@ -89,35 +89,35 @@ jobs:
             --exclude d.plain-ui
 
           mkdir gh-pages/06.recomposing-ui/a.minimizable-web-chat
-          rsync -av --progress samples/06.recomposing-ui/a.minimizable-web-chat/build/ gh-pages/06.recomposing-ui/a.minimizable-web-chat/
+          rsync -av --progress samples/06.recomposing-ui/a.minimizable-web-chat/public/ gh-pages/06.recomposing-ui/a.minimizable-web-chat/
 
           mkdir gh-pages/06.recomposing-ui/b.speech-ui
-          rsync -av --progress samples/06.recomposing-ui/b.speech-ui/build/ gh-pages/06.recomposing-ui/b.speech-ui/
+          rsync -av --progress samples/06.recomposing-ui/b.speech-ui/public/ gh-pages/06.recomposing-ui/b.speech-ui/
 
           mkdir gh-pages/06.recomposing-ui/c.smart-display
-          rsync -av --progress samples/06.recomposing-ui/c.smart-display/build/ gh-pages/06.recomposing-ui/c.smart-display/
+          rsync -av --progress samples/06.recomposing-ui/c.smart-display/public/ gh-pages/06.recomposing-ui/c.smart-display/
 
           mkdir gh-pages/06.recomposing-ui/d.plain-ui
-          rsync -av --progress samples/06.recomposing-ui/d.plain-ui/build/ gh-pages/06.recomposing-ui/d.plain-ui/
+          rsync -av --progress samples/06.recomposing-ui/d.plain-ui/public/ gh-pages/06.recomposing-ui/d.plain-ui/
 
-      - name: Upload bundles
-        uses: actions/upload-artifact@v2
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: gh-pages
-          path: gh-pages/**/*
+          path: gh-pages
 
   release:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      id-token: write
+      pages: write
+
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: gh-pages
-          path: ./public
-
-      - name: Publish GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+      - id: deployment
+        name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

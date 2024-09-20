@@ -23,7 +23,6 @@ env:
   CI_PULL_REQUEST: 1 # Skip nightly tests
   NODE_ENV: test # Add instrumentation code
   node-version: 18.20 # Need to bump jest@29 to resolve something in https://github.com/facebook/react-native/issues/35701
-  skip-secure-feed: true # Terrapin service is degrading and their team told us to disable Terrapin to unblock ourselves
 
 jobs:
   build:
@@ -32,11 +31,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
-        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -75,8 +69,9 @@ jobs:
       - run: ls -l docker.zip
 
       - name: Upload Docker artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
+          compression-level: 0
           name: docker
           path: docker.zip
           retention-days: 1
@@ -87,11 +82,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
-        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -113,11 +103,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
-        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -155,9 +140,9 @@ jobs:
 
       - if: always()
         name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-result
+          name: test-result-unit
           path: |
             ./coverage/jest-*.json
             ./coverage/lcov-*.info
@@ -170,11 +155,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
-        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
@@ -216,18 +196,13 @@ jobs:
         shard-count: [17]
 
     steps:
-      - if: "env.skip-secure-feed != 'true'"
-        name: Enable secure feed
-        run: npx https://aka.ms/EnableSecureFeed
-        timeout-minutes: 8 # Terrapin normally finish within 4 minutes but sometimes hang
-
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-version }}
 
       - name: Download Docker artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: docker
 
@@ -285,9 +260,9 @@ jobs:
 
       - if: always()
         name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-result
+          name: test-result-html-${{ matrix.shard-index }}
           path: |
             ./coverage/jest-*.json
             ./coverage/lcov-*.info
@@ -296,22 +271,30 @@ jobs:
 
       - if: failure()
         name: Upload test snapshot diffs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-snapshot-diff
+          compression-level: 0
+          name: test-snapshot-diff-html-${{ matrix.shard-index }}
           path: ./__tests__/__image_snapshots__/*/__diff_output__/*
 
-  merge-test-result:
+  merge-test-results:
     if: always()
-    name: Merge test result
+    name: Merge test results
     needs:
       - html-test
       - unit-test
     runs-on: ubuntu-latest
 
     steps:
+      - name: Merge test result artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          delete-merged: true
+          name: test-result
+          pattern: test-result-*
+
       - name: Download test results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: test-result
 
@@ -319,28 +302,7 @@ jobs:
         run: sudo apt install -y lcov
 
       - name: Merge lcov-*.info
-        run: |
-          lcov \
-            --rc lcov_branch_coverage=1 \
-            --add-tracefile lcov-1.info \
-            --add-tracefile lcov-2.info \
-            --add-tracefile lcov-3.info \
-            --add-tracefile lcov-4.info \
-            --add-tracefile lcov-5.info \
-            --add-tracefile lcov-6.info \
-            --add-tracefile lcov-7.info \
-            --add-tracefile lcov-8.info \
-            --add-tracefile lcov-9.info \
-            --add-tracefile lcov-10.info \
-            --add-tracefile lcov-11.info \
-            --add-tracefile lcov-12.info \
-            --add-tracefile lcov-13.info \
-            --add-tracefile lcov-14.info \
-            --add-tracefile lcov-15.info \
-            --add-tracefile lcov-16.info \
-            --add-tracefile lcov-17.info \
-            --add-tracefile lcov-unit.info \
-            --output-file lcov.info
+        run: find . -name "lcov-*.info" -type f | xargs -i echo "--add-tracefile {}" | xargs lcov --rc lcov_branch_coverage=1 --output-file lcov.info
 
       - if: always()
         name: Print coverage list
@@ -352,3 +314,20 @@ jobs:
           echo \`\`\` >> $GITHUB_STEP_SUMMARY
           lcov --rc lcov_branch_coverage=1 --summary lcov.info | tee --append $GITHUB_STEP_SUMMARY
           echo \`\`\` >> $GITHUB_STEP_SUMMARY
+
+  merge-test-snapshots:
+    if: always()
+    name: Merge test snapshots
+    needs:
+      - html-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - continue-on-error: true # Do not error out when no artifacts to merge, see https://github.com/actions/upload-artifact/issues/524
+        name: Merge test snapshots artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          compression-level: 0
+          delete-merged: true
+          name: test-snapshot-diff
+          pattern: test-snapshot-diff-*
