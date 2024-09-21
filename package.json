@@ -79,7 +79,7 @@
     "precommit:typecheck:component": "cd packages && cd component && npm run precommit:typecheck",
     "precommit:typecheck:core": "cd packages && cd core && npm run precommit:typecheck",
     "precommit:typecheck:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:typecheck",
-    "prepare": "husky install",
+    "prepare": "husky",
 
     "start": "concurrently --kill-others --raw \"npm run start:*\"",
 
