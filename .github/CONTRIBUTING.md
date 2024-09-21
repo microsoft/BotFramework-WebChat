@@ -25,11 +25,12 @@ There are 2 steps to prepare the environment: [install tools](#installing-tools)
 
 Please install the following in the development environment:
 
--  [Node.js](https://nodejs.org/) of LTS or latest version
--  [NPM] with minimum version of 7.0.0
--  [Docker](https://docs.docker.com/get-docker/)
--  On Windows 10, install [Windows Subsystem for Linux 2](https://aka.ms/wsl2)
-   -  [Ubuntu 20.04](https://www.microsoft.com/en-us/p/ubuntu-2004-lts/9n6svws3rx71)
+-  [Node.js LTS](https://nodejs.org/)
+-  On Windows 11, install [Windows Subsystem for Linux 2](https://aka.ms/wsl2)
+   -  [Ubuntu 24](https://www.microsoft.com/store/productId/9NZ3KLHXDJP5)
+-  [ChromeDriver](https://googlechromelabs.github.io/chrome-for-testing/)
+   -  Extract ChromeDriver binary to project root
+-  [Docker Desktop](https://docs.docker.com/get-docker/)
 
 ## Preparing the repository
 
@@ -46,7 +47,9 @@ npm clean-install
 There are two ways to build: one-off and continuous build.
 
 -  For one-off building, run `npm run build`
--  For continuous building, run `npm start`
+-  For continuous building
+   -  For the first time, run `npm run build`
+   -  Then, run `npm start`
 
 The bundle output will be located at:
 
@@ -57,32 +60,30 @@ The bundle output will be located at:
 
 There are multiple ways to try out the build:
 
--  Using our prebuilt environments
-   -  Our prebuilt environments are great ways to test out the latest from Web Chat
-   -  Using the Web Chat playground
-      -  `cd packages/playground`
-      -  `npm start`
-      -  Navigate to [http://localhost:3000/](http://localhost:3000/), and click on "Official MockBot" on the upper right corner
-   -  Using `webchat-loader`
-      -  Navigate to [https://compulim.github.io/webchat-loader/](https://compulim.github.io/webchat-loader/)
-      -  In the version dropdown, select [`http://localhost:5000/webchat-es5.js`](`http://localhost:5000/webchat-es5.js`)
-         -  If you do not see this options, make sure you have run `npm start` and can access the URL
-      -  Selecting a bot to use
-         -  If you do not own a bot or prefer to use our bots, select "[Public] MockBot" or other bots from the presets
-         -  If you have your own Direct Line or Direct Line App Service Extension bot:
-            -  Check "Direct Line via Web Socket" or "Direct Line App Service Extension" in the "Protocol" section
-               -  For "Direct Line App Service Extension", set the host name to your bot
-            -  If you have the Direct Line secret of your bot, type it in the "Secret" box
-            -  Otherwise, type the token in the "Token" box
-         -  If you have a Direct Line Speech bot:
-            -  Select the region of your resource in the "Speech region" box
-            -  Type the subscription key in the "Speech key" box, or the authorization token in the "Speech token" box
-      -  Selecting speech options for non-Direct Line Speech bot:
-         -  If you do not need to use speech, clear "Speech key" and "Speech token"
-         -  If you own a Cognitive Services Speech Services resource:
-            -  Select the region of your resource in the "Speech region" box
-            -  Type the subscription key in the "Speech key" box, or the authorization token in the "Speech token" box
-         -  If you do not own Cognitive Services Speech Services resource, click "MockBot" below the "Speech key" box
+-  Using ChromeDriver (recommended)
+   -  Run `npm start`, wait until stable
+   -  In a new terminal window, run `npm run browser`
+      -  Browse to `simple.html`
+-  Using `webchat-loader`
+   -  Navigate to [https://compulim.github.io/webchat-loader/](https://compulim.github.io/webchat-loader/)
+   -  In the version dropdown, select [`http://localhost:5000/webchat-es5.js`](`http://localhost:5000/webchat-es5.js`)
+      -  If you do not see this options, make sure you have run `npm start` and can access the URL
+   -  Selecting a bot to use
+      -  If you do not own a bot or prefer to use our bots, select "[Public] MockBot" or other bots from the presets
+      -  If you have your own Direct Line or Direct Line App Service Extension bot:
+         -  Check "Direct Line via Web Socket" or "Direct Line App Service Extension" in the "Protocol" section
+            -  For "Direct Line App Service Extension", set the host name to your bot
+         -  If you have the Direct Line secret of your bot, type it in the "Secret" box
+         -  Otherwise, type the token in the "Token" box
+      -  If you have a Direct Line Speech bot:
+         -  Select the region of your resource in the "Speech region" box
+         -  Type the subscription key in the "Speech key" box, or the authorization token in the "Speech token" box
+   -  Selecting speech options for non-Direct Line Speech bot:
+      -  If you do not need to use speech, clear "Speech key" and "Speech token"
+      -  If you own a Cognitive Services Speech Services resource:
+         -  Select the region of your resource in the "Speech region" box
+         -  Type the subscription key in the "Speech key" box, or the authorization token in the "Speech token" box
+      -  If you do not own Cognitive Services Speech Services resource, click "MockBot" below the "Speech key" box
 -  Write your own HTML page to load Web Chat
    -  Using a HTML page is recommended over using the playground or loader for development, for faster loading and quick reproduce ability
    -  `<script src="http://localhost:5000/webchat.js"></script>`
