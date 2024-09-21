@@ -161,19 +161,19 @@ jobs:
       - run: npm run build --if-present
 
       - name: Run tsd under packages/bundle (CJS)
-        run: ./node_modules/.bin/tsd -t ./lib/index.d.ts
+        run: ../../node_modules/.bin/tsd -t ./lib/index.d.ts
         working-directory: ./packages/bundle
 
       - name: Run tsd under packages/bundle (ESM)
-        run: ./node_modules/.bin/tsd -t ./dist/botframework-webchat.d.mts
+        run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat.d.mts
         working-directory: ./packages/bundle
 
       - name: Run tsd under packages/core (CJS)
-        run: ./node_modules/.bin/tsd -t ./lib/index.d.ts
+        run: ../../node_modules/.bin/tsd -t ./lib/index.d.ts
         working-directory: ./packages/core
 
       - name: Run tsd under packages/core (ESM)
-        run: ./node_modules/.bin/tsd -t ./dist/botframework-webchat-core.d.mts
+        run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat-core.d.mts
         working-directory: ./packages/core
 
   html-test:
