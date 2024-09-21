@@ -1,5 +1,3 @@
-const createDeferred = require('p-defer-es5');
-
 const checkAccessibility = require('./checkAccessibility');
 const click = require('./click');
 const clickAt = require('./clickAt');
@@ -23,24 +21,24 @@ const windowSize = require('./windowSize');
 
 /** RPC object on the Jest side. */
 module.exports = function createHost(webDriver) {
-  const doneDeferred = createDeferred();
-  const readyDeferred = createDeferred();
+  const doneWithResolvers = Promise.withResolvers();
+  const readyWithResolvers = Promise.withResolvers();
 
   // Modifying this map will also requires modifying the corresponding RPC dummy at /src/browser/proxies/host.js
   return {
     checkAccessibility: checkAccessibility(webDriver),
     click: click(),
     clickAt: clickAt(webDriver),
-    done: done(webDriver, doneDeferred.resolve),
-    donePromise: doneDeferred.promise,
+    done: done(webDriver, doneWithResolvers.resolve),
+    donePromise: doneWithResolvers.promise,
     dragAndHold: dragAndHold(webDriver),
-    error: error(doneDeferred.reject),
+    error: error(doneWithResolvers.reject),
     getLogs: getLogs(webDriver),
     hover: hover(webDriver),
     moveTo: moveTo(webDriver),
     pressAndHold: pressAndHold(webDriver),
-    ready: ready(readyDeferred.resolve),
-    readyPromise: readyDeferred.promise,
+    ready: ready(readyWithResolvers.resolve),
+    readyPromise: readyWithResolvers.promise,
     release: release(webDriver),
     sendAccessKey: sendAccessKey(webDriver),
     sendDevToolsCommand: sendDevToolsCommand(webDriver),

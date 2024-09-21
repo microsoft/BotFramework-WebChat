@@ -43,6 +43,7 @@ import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import onErrorResumeNext from './utils/onErrorResumeNext';
 import singleToArray from './utils/singleToArray';
 import warnOnce from './utils/warnOnce';
+import withResolvers, { type PromiseWithResolvers } from './utils/withResolvers';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 import type { SendBoxAttachment } from './types/SendBoxAttachment';
@@ -120,7 +121,8 @@ export {
   stopSpeakingActivity,
   submitSendBox,
   version,
-  warnOnce
+  warnOnce,
+  withResolvers
 };
 
 export type {
@@ -146,6 +148,7 @@ export type {
   OrgSchemaDefinedTerm,
   OrgSchemaProject,
   OrgSchemaThing,
+  PromiseWithResolvers,
   SendBoxAttachment,
   WebChatActivity
 };

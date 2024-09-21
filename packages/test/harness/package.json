@@ -89,8 +89,6 @@
     "jest-image-snapshot": "^6.4.0",
     "node-dev": "^8.0.0",
     "node-fetch": "^2.7.0",
-    "p-defer": "^4.0.1",
-    "p-defer-es5": "^2.0.1",
     "selenium-webdriver": "^4.20.0",
     "serve": "^14.2.3",
     "strip-ansi": "^6.0.1"

@@ -2,7 +2,6 @@ import 'core-js/stable';
 
 import { EventIterator } from 'event-iterator';
 import classNames from 'classnames';
-import createDeferred from 'p-defer';
 import lolex from 'lolex';
 import Observable from 'core-js/features/observable';
 import updateIn from 'simple-update-in';
@@ -13,7 +12,7 @@ import * as pageObjects from './globals/pageObjects/index';
 import * as testHelpers from './globals/testHelpers/index';
 
 window.classNames = classNames;
-window.createDeferred = createDeferred;
+window.createDeferred = () => Promise.withResolvers();
 window.EventIterator = EventIterator;
 window.lolex = lolex;
 window.Observable = Observable;
