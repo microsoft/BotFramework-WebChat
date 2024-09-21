@@ -137,6 +137,7 @@
     "memoize-one": "6.0.0",
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "prop-types": "15.8.1",
+    "punycode": "2.3.1",
     "sanitize-html": "2.13.0",
     "swiper": "8.4.7",
     "url-search-params-polyfill": "8.2.5",
