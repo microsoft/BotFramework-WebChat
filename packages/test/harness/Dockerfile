@@ -14,6 +14,8 @@ WORKDIR /var/jest-server/
 ENTRYPOINT ["node", "src/host/jest-server/"]
 
 ADD package*.json /var/jest-server/
-RUN npm ci
+# TODO: Should shrinkwrap and use `npm clean-install` instead
+# RUN npm clean-install
+RUN npm install
 
 ADD . /var/jest-server/
