@@ -92,7 +92,8 @@
     "@types/react": "^16.14.60",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "cldr-data": "36.0.0-0",
+    "botframework-webchat-cldr-data": "36.0.0-0",
+    "cldr-data": "^36.0.2",
     "concurrently": "^8.2.2",
     "core-js": "^3.37.0",
     "cross-env": "^7.0.3",
@@ -122,7 +123,7 @@
     "botframework-webchat-core": "0.0.0-0"
   },
   "localPeerDevDependencies": {
-    "cldr-data": "36.0.0-0"
+    "botframework-webchat-cldr-data": "36.0.0-0"
   },
   "pinDependencies": {
     "@babel/cli": [
