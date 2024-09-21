@@ -34,7 +34,7 @@
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0",
     "prettier": "prettier --check src/**/*.{js,ts}",
-    "start": "concurrently --kill-others --names \"babel,serve,tsup,webpack\" --raw \"npm:start:babel\" \"npm:start:serve\" \"npm:start:tsup\" \"npm:start:webpack\"",
+    "start": "concurrently --kill-others \"npm:start:*\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:serve": "serve",
     "start:tsup": "npm run build:tsup -- --watch",

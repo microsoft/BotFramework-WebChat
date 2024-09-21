@@ -68,9 +68,8 @@
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
-    "start": "concurrently --kill-others --names \"babel,globalize,tsup,typescript\" --raw \"npm:start:babel\" \"npm:start:globalize\" \"npm:start:tsup\" \"npm:start:typescript\"",
+    "start": "concurrently --kill-others \"npm:start:*\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
-    "start:globalize": "node-dev --respawn scripts/createPrecompiledGlobalize.mjs",
     "start:tsup": "npm run build:tsup -- --watch",
     "start:typescript": "npm run build:typescript -- --watch"
   },
@@ -92,7 +91,7 @@
     "cross-env": "^7.0.3",
     "globalize-compiler": "^1.1.1",
     "iana-tz-data": "^2019.1.0",
-    "node-dev": "^8.0.0",
+    "nodemon": "^3.1.7",
     "type-fest": "^4.18.2",
     "typescript": "^5.4.5"
   },

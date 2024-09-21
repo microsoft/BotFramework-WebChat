@@ -21,7 +21,7 @@
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
-    "start": "concurrently --kill-others --names \"babel,esbuild\" --raw \"npm:start:babel\" \"npm:start:esbuild\"",
+    "start": "concurrently --kill-others \"npm:start:*\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:esbuild": "npm run build:esbuild -- --watch",
     "test": "node node_modules/.bin/jest --maxWorkers=4"

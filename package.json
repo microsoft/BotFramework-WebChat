@@ -73,7 +73,7 @@
     "precommit:eslint:test-harness": "cd packages && cd test && cd harness && npm run precommit:eslint",
     "precommit:eslint:test-page-object": "cd packages && cd test && cd page-object && npm run precommit:eslint",
     "precommit:eslint:web-server": "cd packages && cd test && cd web-server && npm run precommit:eslint",
-    "precommit:typecheck": "concurrently --raw \"npm:precommit:typecheck:*\"",
+    "precommit:typecheck": "concurrently \"npm:precommit:typecheck:*\"",
     "precommit:typecheck:api": "cd packages && cd api && npm run precommit:typecheck",
     "precommit:typecheck:bundle": "cd packages && cd bundle && npm run precommit:typecheck",
     "precommit:typecheck:component": "cd packages && cd component && npm run precommit:typecheck",
@@ -81,7 +81,7 @@
     "precommit:typecheck:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:typecheck",
     "prepare": "husky",
 
-    "start": "concurrently --kill-others --raw \"npm:start:*\"",
+    "start": "concurrently --kill-others \"npm:start:*\"",
 
     "start:test-dev-server": "cd packages && cd test && cd dev-server && npm start",
     "start:test-harness": "cd packages && cd test && cd harness && npm start",
@@ -95,7 +95,7 @@
     "start:test-fluent-bundle": "cd packages && cd test && cd fluent-bundle && npm start",
 
     "start:server": "serve -p 5000",
-    "-start": "concurrently --kill-others --raw \"serve -p 5000\" \"lerna run --ignore playground --parallel --stream start\"",
+    "-start": "concurrently --kill-others \"serve -p 5000\" \"lerna run --ignore playground --parallel --stream start\"",
 
     "test": "jest --watch"
   },
