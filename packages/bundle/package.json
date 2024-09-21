@@ -136,6 +136,7 @@
     "mdast-util-from-markdown": "2.0.0",
     "memoize-one": "6.0.0",
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
+    "p-defer": "4.0.1",
     "p-defer-es5": "2.0.1",
     "prop-types": "15.8.1",
     "punycode": "2.3.1",
