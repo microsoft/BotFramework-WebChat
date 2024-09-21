@@ -39,7 +39,6 @@
     "prebump": "cat package.json | jq '(((.localPeerDependencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDependencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0",
-    "prestart": "npm run build:babel",
     "prettier": "prettier --check src/**/*.{js,ts}",
     "start": "npm run start:babel && concurrently --kill-others --names \"babel,serve,tsup,webpack\" \"npm run start:babel:watch\" \"npm run start:serve\" \"npm run start:tsup\" \"npm run start:webpack\"",
     "start:babel:watch": "npm run start:babel -- --skip-initial-build --watch",

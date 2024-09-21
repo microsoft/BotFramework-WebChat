@@ -83,9 +83,6 @@
     "precommit:typecheck:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:typecheck",
     "prepare": "husky install",
 
-    "-prestart": "npm run prestart:isomorphic-react && npm run prestart:isomorphic-react-dom",
-    "start:isomorphic-react": "cd packages && cd isomorphic-react && npm run build",
-    "start:isomorphic-react-dom": "cd packages && cd isomorphic-react-dom && npm run build",
     "start": "concurrently --kill-others --raw \"npm run start:*\"",
 
     "start:test-dev-server": "cd packages && cd test && cd dev-server && npm start",
@@ -94,7 +91,7 @@
     "start:api": "cd packages && cd api && npm start",
     "start:component": "cd packages && cd component && npm start",
     "start:directlinespeech": "cd packages && cd directlinespeech && npm start",
-    "start:bundle": "cd packages && cd bundle && npm start",
+    "start:bundle": "cd packages && cd bulsndle && npm start",
     "start:test-page-object": "cd packages && cd test && cd page-object && npm start",
     "start:fluent-theme": "cd packages && cd fluent-theme && npm start",
     "start:test-fluent-bundle": "cd packages && cd test && cd fluent-bundle && npm start",

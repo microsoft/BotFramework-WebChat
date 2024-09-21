@@ -19,11 +19,7 @@
     "preauditfix": "npm run prebump",
     "prebump": "cat package.json | jq '(((.localPeerDependencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDependencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
     "precommit": "npm run precommit:eslint -- src",
-    "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
-    "start": "npm run start:note && npm run start:babel && npm run start:webpack",
-    "start:babel": "npm run build:babel",
-    "start:note": "echo \"isomorphic-react is not under active development; running in non-watch mode.\"",
-    "start:webpack": "npm run build:webpack"
+    "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",

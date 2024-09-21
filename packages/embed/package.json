@@ -28,7 +28,6 @@
     "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
     "preauditfix": "npm run prebump",
     "prebump": "cat package.json | jq '(((.localPeerDependencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDependencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
-    "prestart": "npm run build:babel",
     "start": "concurrently --kill-others --names \"babel,server,webpack\" \"npm run start:babel\" \"npm run start:server\" \"npm run start:webpack\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:server": "node-dev --no-notify --respawn hostDevServer.mjs",
