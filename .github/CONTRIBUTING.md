@@ -266,7 +266,7 @@ The following is a quick summary on how to approach when [fixing a bug](#fixing-
 Write the bug repro as a test before fixing the bug.
 
 1. Clone and prepare the repository or reset an existing one
-   -  To reset, run `npm run tableflip`
+   -  To reset, run `git clean -fdx`
 1. Run continuous build by running `npm start`
 1. Reproduce the bug on a test page under `__tests__/html/this.is.the.bug.html`
 1. Run `npm run browser` and navigate to the test page
@@ -283,7 +283,7 @@ Write the bug repro as a test before fixing the bug.
 Write the user story while implementing the feature.
 
 1. Clone and prepare the repository or reset an existing one
-   -  To reset, run `npm run tableflip`
+   -  To reset, run `git clean -fdx`
 1. Run continuous build by running `npm start`
 1. Clone the test page `__tests__/html/simple.html` to `feature.subfeature.scenario.html` and use it as a playground
 1. Run `npm run browser` and navigate to the test page
