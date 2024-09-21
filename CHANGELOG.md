@@ -67,6 +67,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixes [#5268](https://github.com/microsoft/BotFramework-WebChat/issues/5268). Concluded livestream is sealed and activities received afterwards are ignored, and `streamSequence` is not required in final activity, in PR [#5273](https://github.com/microsoft/BotFramework-WebChat/pull/5273), by [@compulim](https://github.com/compulim)
 -  Fixes [#5288](https://github.com/microsoft/BotFramework-WebChat/issues/5288). Fixed citation and sensitivity label bleeding when using Fluent skin pack, in PR [#5287](https://github.com/microsoft/BotFramework-WebChat/pull/5287), by [@compulim](https://github.com/compulim)
 -  Fixes [#5294](https://github.com/microsoft/BotFramework-WebChat/issues/5294). Fixed copy button animation reset to "Copied" after hiding and showing Web Chat, in PR [#5295](https://github.com/microsoft/BotFramework-WebChat/pull/5295), by [@compulim](https://github.com/compulim)
+-  Fixes [#5147](https://github.com/microsoft/BotFramework-WebChat/issues/5147). Added `punycode` to our dependencies as `markdown-it` requires it but did not have it in their `package.json`, in PR [#5301](https://github.com/microsoft/BotFramework-WebChat/pull/5301), by [@compulim](https://github.com/compulim)
 
 # Removed
 
