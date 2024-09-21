@@ -40,8 +40,6 @@ jobs:
 
       - run: npm clean-install
 
-      - run: npm run bootstrap
-
       - run: npm run build --if-present # Add instrumentation code
 
       - name: Pack Docker artifact
@@ -91,8 +89,6 @@ jobs:
 
       - run: npm clean-install
 
-      - run: npm run bootstrap
-
       - run: npm run build --if-present
 
       - run: npm run precommit --if-present
@@ -111,8 +107,6 @@ jobs:
           cache: npm
 
       - run: npm clean-install
-
-      - run: npm run bootstrap
 
       - run: npm run build --if-present
 
@@ -163,8 +157,6 @@ jobs:
           cache: npm
 
       - run: npm clean-install
-
-      - run: npm run bootstrap
 
       - run: npm run build --if-present
 

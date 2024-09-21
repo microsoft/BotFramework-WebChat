@@ -58,7 +58,6 @@
     "docker:up": "docker compose -f docker-compose-wsl2.yml down && docker compose -f docker-compose-wsl2.yml up --build --scale chrome=4",
     "eslint": "npm run precommit",
     "lint-staged": "lint-staged",
-    "pack-all": "npx lerna exec --scope=botframework* -- npm pack --pack-destination=$PWD && zip tarball.zip *.tgz",
     "precommit": "npm run precommit --if-present --workspaces",
     "-precommit": "lerna run --parallel --stream precommit -- ",
     "precommit:eslint:api": "cd packages && cd api && npm run precommit:eslint",
@@ -98,7 +97,6 @@
     "start:server": "serve -p 5000",
     "-start": "concurrently --kill-others --raw \"serve -p 5000\" \"lerna run --ignore playground --parallel --stream start\"",
 
-    "tableflip": "npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm clean-install",
     "test": "jest --watch"
   },
   "pinDependencies": {
