@@ -68,6 +68,7 @@
     "abort-controller": "3.0.0",
     "axe-core": "4.9.1",
     "core-js": "3.37.0",
+    "core-js-pure": "3.38.1",
     "event-target-shim": "6.0.2",
     "expect": "25.5.0",
     "lolex": "6.0.0",

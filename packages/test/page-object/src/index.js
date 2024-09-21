@@ -10,9 +10,10 @@ import * as pageConditions from './globals/pageConditions/index';
 import * as pageElements from './globals/pageElements/index';
 import * as pageObjects from './globals/pageObjects/index';
 import * as testHelpers from './globals/testHelpers/index';
+import withResolvers from './utils/withResolvers';
 
 window.classNames = classNames;
-window.createDeferred = () => Promise.withResolvers();
+window.createDeferred = () => withResolvers();
 window.EventIterator = EventIterator;
 window.lolex = lolex;
 window.Observable = Observable;

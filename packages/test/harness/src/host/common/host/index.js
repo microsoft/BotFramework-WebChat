@@ -1,3 +1,5 @@
+const withResolvers = require('core-js-pure/features/promise/with-resolvers');
+
 const checkAccessibility = require('./checkAccessibility');
 const click = require('./click');
 const clickAt = require('./clickAt');
@@ -21,8 +23,8 @@ const windowSize = require('./windowSize');
 
 /** RPC object on the Jest side. */
 module.exports = function createHost(webDriver) {
-  const doneWithResolvers = Promise.withResolvers();
-  const readyWithResolvers = Promise.withResolvers();
+  const doneWithResolvers = withResolvers();
+  const readyWithResolvers = withResolvers();
 
   // Modifying this map will also requires modifying the corresponding RPC dummy at /src/browser/proxies/host.js
   return {

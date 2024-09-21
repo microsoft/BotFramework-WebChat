@@ -6,6 +6,7 @@ import createDeferredObservable from '../../utils/createDeferredObservable';
 import became from '../pageConditions/became';
 import { createStoreWithOptions } from './createStore';
 import shareObservable from './shareObservable';
+import withResolvers from '../../utils/withResolvers';
 
 function isNativeClock() {
   return ('' + setTimeout).endsWith('() { [native code] }');
@@ -26,7 +27,7 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
   const now = Date.now();
   const getTimestamp = () => new Date().toISOString();
 
-  const connectedWithResolvers = Promise.withResolvers();
+  const connectedWithResolvers = withResolvers();
   const connectionStatusDeferredObservable = createDeferredObservable(() => {
     connectionStatusDeferredObservable.next(0);
   });
@@ -39,7 +40,7 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
 
   const postActivityCallDeferreds = [];
   const postActivity = outgoingActivity => {
-    const returnPostActivityWithResolvers = Promise.withResolvers();
+    const returnPostActivityWithResolvers = withResolvers();
 
     const deferred = postActivityCallDeferreds.shift();
 
@@ -64,7 +65,7 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
   };
 
   const actPostActivity = async (fn, { id: idFromOptions } = {}) => {
-    const postActivityCallWithResolvers = Promise.withResolvers();
+    const postActivityCallWithResolvers = withResolvers();
 
     postActivityCallDeferreds.push(postActivityCallWithResolvers);
 
