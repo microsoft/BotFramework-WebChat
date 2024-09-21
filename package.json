@@ -81,7 +81,7 @@
     "precommit:typecheck:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:typecheck",
     "prepare": "husky",
 
-    "start": "concurrently --kill-others \"npm:start:*\"",
+    "start": "NODE_OPTIONS=--no-deprecation concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
 
     "start:test-dev-server": "cd packages && cd test && cd dev-server && npm start",
     "start:test-harness": "cd packages && cd test && cd harness && npm start",
@@ -89,13 +89,13 @@
     "start:api": "cd packages && cd api && npm start",
     "start:component": "cd packages && cd component && npm start",
     "start:directlinespeech": "cd packages && cd directlinespeech && npm start",
-    "start:bundle": "cd packages && cd bulsndle && npm start",
+    "start:bundle": "cd packages && cd bundle && npm start",
     "start:test-page-object": "cd packages && cd test && cd page-object && npm start",
     "start:fluent-theme": "cd packages && cd fluent-theme && npm start",
     "start:test-fluent-bundle": "cd packages && cd test && cd fluent-bundle && npm start",
 
     "start:server": "serve -p 5000",
-    "-start": "concurrently --kill-others \"serve -p 5000\" \"lerna run --ignore playground --parallel --stream start\"",
+    "-start": "concurrently --kill-others --prefix-colors \"auto\" \"serve -p 5000\" \"lerna run --ignore playground --parallel --stream start\"",
 
     "test": "jest --watch"
   },

@@ -58,7 +58,7 @@
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
-    "start": "concurrently --kill-others \"npm:start:*\"",
+    "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:devserver": "node ./scripts/devServer.mjs",
     "start:tsup": "npm run build:tsup -- --watch",
