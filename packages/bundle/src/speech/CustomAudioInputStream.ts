@@ -24,7 +24,7 @@ import {
 
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import { v4 } from 'uuid';
-import createDeferred, { DeferredPromise } from 'p-defer-es5';
+import createDeferred, { type DeferredPromise } from 'p-defer-es5';
 
 type AudioStreamNode = {
   detach: () => Promise<void>;
