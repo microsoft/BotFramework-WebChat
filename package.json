@@ -17,6 +17,7 @@
   "workspaces": [
     "./packages/test/dev-server",
     "./packages/test/harness",
+    "./packages/test/web-server",
     "./packages/core",
     "./packages/support/cldr-data-downloader",
     "./packages/support/cldr-data",
