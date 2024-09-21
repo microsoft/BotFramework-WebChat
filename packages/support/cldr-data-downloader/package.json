@@ -39,8 +39,7 @@
     "cldr-data-downloader": "./bin/download.sh"
   },
   "scripts": {
-    "bump": "npm run bump:dependencies && npm run bump:auditfix",
-    "bump:auditfix": "npm audit fix || exit 0",
+    "bump": "npm run bump:dependencies && (npm audit fix || exit 0)",
     "bump:dependencies": "if [ `cat package.json | jq -r '((.dependencies // {} | length) + (.devDependencies // {} | length))'` -ne 0 ]; then npm install $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}), (.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
