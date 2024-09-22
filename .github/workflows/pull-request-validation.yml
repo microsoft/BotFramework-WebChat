@@ -87,7 +87,7 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: npm
 
-      - run: npm clean-install
+      - run: npm clean-install --strict-peer-deps
 
       - run: npm run build --if-present
 
@@ -106,7 +106,7 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: npm
 
-      - run: npm clean-install
+      - run: npm clean-install --strict-peer-deps
 
       - run: npm run build --if-present
 
@@ -156,7 +156,7 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: npm
 
-      - run: npm clean-install
+      - run: npm clean-install --strict-peer-deps
 
       - run: npm run build --if-present
 
@@ -202,7 +202,7 @@ jobs:
 
       - run: rm docker.zip
 
-      - run: npm clean-install
+      - run: npm clean-install --strict-peer-deps
 
       - name: Run docker compose build
         run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
