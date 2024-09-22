@@ -74,6 +74,25 @@ jobs:
           path: docker.zip
           retention-days: 1
 
+  build-samples:
+    name: Build samples
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install --strict-peer-deps
+        working-directory: samples
+
+      - run: npm run build --if-present
+        working-directory: samples
+
   static-code-analysis:
     name: Static code analysis
     runs-on: ubuntu-latest
