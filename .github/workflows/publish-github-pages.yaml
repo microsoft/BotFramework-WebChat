@@ -86,7 +86,8 @@ jobs:
             --exclude a.minimizable-web-chat \
             --exclude b.speech-ui \
             --exclude c.smart-display \
-            --exclude d.plain-ui
+            --exclude d.plain-ui \
+            --exclude e.extending-ui
 
           mkdir gh-pages/06.recomposing-ui/a.minimizable-web-chat
           rsync -av --progress samples/06.recomposing-ui/a.minimizable-web-chat/public/ gh-pages/06.recomposing-ui/a.minimizable-web-chat/
@@ -99,6 +100,9 @@ jobs:
 
           mkdir gh-pages/06.recomposing-ui/d.plain-ui
           rsync -av --progress samples/06.recomposing-ui/d.plain-ui/public/ gh-pages/06.recomposing-ui/d.plain-ui/
+
+          mkdir gh-pages/06.recomposing-ui/e.extending-ui
+          rsync -av --progress samples/06.recomposing-ui/e.extending-ui/public/ gh-pages/06.recomposing-ui/e.extending-ui/
 
       - name: Upload pages artifact
         uses: actions/upload-pages-artifact@v3
