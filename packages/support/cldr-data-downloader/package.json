@@ -52,6 +52,5 @@
     "q": "^1.5.1",
     "request": "^2.88.2",
     "request-progress": "^3.0.0"
-  },
-  "devDependencies": {}
+  }
 }
