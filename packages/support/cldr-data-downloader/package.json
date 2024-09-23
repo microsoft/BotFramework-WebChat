@@ -42,7 +42,7 @@
     "bump": "npm run bump:dependencies && (npm audit fix || exit 0)",
     "bump:dependencies": "if [ `cat package.json | jq -r '((.dependencies // {} | length) + (.devDependencies // {} | length))'` -ne 0 ]; then npm install $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}), (.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
     "eslint": "npm run precommit",
-    "postversion": "cat package.json | jq '.version as $V | . + (.dependencies = (.dependencies + ((.localPeerDependencies // []) | map({(.): $V }) | add)) | to_entries | sort_by(.key) | from_entries) + (.devDependencies = (.devDependencies + ((.localPeerDevDependencies // []) | map({(.): $V }) | add)) | to_entries | sort_by(.key) | from_entries)'",
+    "postversion": "cat package.json | jq '.version as $V | . + (.dependencies = (.dependencies + ((.localPeerDependencies // []) | map({(.): $V }) | add)) | to_entries | sort_by(.key) | from_entries) + (.devDependencies = (.devDependencies + ((.localPeerDevDependencies // []) | map({(.): $V }) | add)) | to_entries | sort_by(.key) | from_entries)' > package-temp.json && mv package-temp.json package.json",
     "precommit:eslint": "node ../../../node_modules/eslint/bin/eslint.js --report-unused-disable-directives --max-warnings 0",
     "precommit": "npm run precommit:eslint -- src",
     "preversion": "cat package.json | jq '(((.localPeerDependencies // []) | map([\"dependencies\", .])) + ((.localPeerDevDependencies // []) | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json"
