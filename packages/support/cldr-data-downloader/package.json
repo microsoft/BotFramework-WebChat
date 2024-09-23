@@ -42,6 +42,7 @@
     "bump": "npm run bump:dependencies && (npm audit fix || exit 0)",
     "bump:dependencies": "if [ `cat package.json | jq -r '((.dependencies // {} | length) + (.devDependencies // {} | length))'` -ne 0 ]; then npm install $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}), (.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
     "eslint": "npm run precommit",
+    "postversion": "LOCAL_PACKAGES_TO_BUMP=$(cat package.json | jq -r '.version as $V | (.localPeerDependencies // []) | .[] | . + \"@\" + $V') && [ ! -z \"$LOCAL_PACKAGES_TO_BUMP\" ] && npm install $LOCAL_PACKAGES_TO_BUMP || true",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "node ../../../node_modules/eslint/bin/eslint.js --report-unused-disable-directives --max-warnings 0"
   },
