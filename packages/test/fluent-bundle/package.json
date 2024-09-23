@@ -15,7 +15,8 @@
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
-    "propagate-version": "LOCAL_PACKAGES_TO_BUMP=$(cat package.json | jq -r '.version as $V | (.localPeerDependencies // []) | .[] | . + \"@\" + $V') && [ ! -z \"$LOCAL_PACKAGES_TO_BUMP\" ] && npm install $LOCAL_PACKAGES_TO_BUMP || true",
+    "preversion": "cat package.json | jq '(((.localPeerDependencies // []) | map([\"dependencies\", .])) + ((.localPeerDevDependencies // []) | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
+    "postversion": "cat package.json | jq '.version as $V | . + (.dependencies = (.dependencies + ((.localPeerDependencies // []) | map({(.): $V }) | add)) | to_entries | sort_by(.key) | from_entries) + (.devDependencies = (.devDependencies + ((.localPeerDevDependencies // []) | map({(.): $V }) | add)) | to_entries | sort_by(.key) | from_entries)'",
     "start": "npm run build -- --watch"
   },
   "type": "module",

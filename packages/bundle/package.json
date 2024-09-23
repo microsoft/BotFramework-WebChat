@@ -55,10 +55,11 @@
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
     "eslint": "npm run precommit",
-    "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
+    "postversion": "cat package.json | jq '.version as $V | . + (.dependencies = (.dependencies + ((.localPeerDependencies // []) | map({(.): $V }) | add)) | to_entries | sort_by(.key) | from_entries) + (.devDependencies = (.devDependencies + ((.localPeerDevDependencies // []) | map({(.): $V }) | add)) | to_entries | sort_by(.key) | from_entries)'",
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
-    "propagate-version": "LOCAL_PACKAGES_TO_BUMP=$(cat package.json | jq -r '.version as $V | (.localPeerDependencies // []) | .[] | . + \"@\" + $V') && [ ! -z \"$LOCAL_PACKAGES_TO_BUMP\" ] && npm install $LOCAL_PACKAGES_TO_BUMP || true",
+    "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
+    "preversion": "cat package.json | jq '(((.localPeerDependencies // []) | map([\"dependencies\", .])) + ((.localPeerDevDependencies // []) | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
     "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:devserver": "node ./scripts/devServer.mjs",
@@ -69,7 +70,9 @@
     "botframework-directlinespeech-sdk",
     "botframework-webchat-api",
     "botframework-webchat-component",
-    "botframework-webchat-core",
+    "botframework-webchat-core"
+  ],
+  "localPeerDevDependencies": [
     "isomorphic-react",
     "isomorphic-react-dom"
   ],
