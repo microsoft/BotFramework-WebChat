@@ -9,7 +9,8 @@
     "./06.recomposing-ui/a.minimizable-web-chat",
     "./06.recomposing-ui/b.speech-ui",
     "./06.recomposing-ui/c.smart-display",
-    "./06.recomposing-ui/d.plain-ui"
+    "./06.recomposing-ui/d.plain-ui",
+    "./06.recomposing-ui/e.extending-ui"
   ],
   "scripts": {
     "build": "npm run build --workspaces"

@@ -6,14 +6,9 @@ This article outlines the Web Chat build scripts design.
 
 This section lists the requirements for an efficient design of build scripts. The Web Chat code closely follows the guidelines below.
 
-### Bootstrap scripts
+### Install dependencies for development
 
-Only two NPM commands are needed to ready the repository for development:
-
--  `npm ci`, followed by
--  `npm run bootstrap`
-
-On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
+-  `npm clean-install`
 
 ### Build scripts
 

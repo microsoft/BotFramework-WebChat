@@ -1,4 +1,4 @@
-import cldrData from 'cldr-data';
+import cldrData from 'botframework-webchat-cldr-data';
 import { existsSync } from 'fs';
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import Globalize from 'globalize';
