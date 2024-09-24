@@ -57,6 +57,10 @@ function rebaseV1InlineAll({ dependencies }, baseURL) {
 }
 
 function rebaseV2Inline(path, dependency, baseURL) {
+  if (dependency.link || !dependency.resolved) {
+    return;
+  }
+
   const { name: nameFromDependency, resolved: actual, version } = dependency;
   const name = nameFromDependency || path.split('node_modules/').reverse()[0];
 
