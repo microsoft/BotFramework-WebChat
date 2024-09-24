@@ -88,6 +88,9 @@ jobs:
 
   release:
     needs: build
+    permissions:
+      contents: write
+      packages: write
     runs-on: ubuntu-latest
 
     steps:
@@ -117,46 +120,46 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release delete ${{ steps.compute_hash.outputs.release_tag_name }} --repo ${{ github.repository }} --yes
 
+      - name: Create release note
+        run: |
+          tee ./release.txt <<EOF
+          This release is for internal testing only. **Please do not use this build in production environment.**
+
+          | Build time | Run ID | Source version | Git ref | Package version |
+          | - | - | - | - | - |
+          | ${{ steps.compute_hash.outputs.release_date }}Z | [\`${{ github.run_id }}\`](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [\`${{ steps.compute_hash.outputs.git_short_sha }}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) | \`${{ github.ref }}\` | \`${{ steps.compute_hash.outputs.package_version }}\` |
+
+          \`\`\`html
+          <script
+            crossorigin="anonymous"
+            integrity="sha384-${{ steps.compute_hash.outputs.sha384_full }}"
+            src="https://github.com/microsoft/BotFramework-WebChat/releases/download/${{ steps.compute_hash.outputs.release_tag_name }}/webchat.js"
+          ></script>
+
+          <script
+            crossorigin="anonymous"
+            integrity="sha384-${{ steps.compute_hash.outputs.sha384_es5 }}"
+            src="https://github.com/microsoft/BotFramework-WebChat/releases/download/${{ steps.compute_hash.outputs.release_tag_name }}/webchat-es5.js"
+          ></script>
+
+          <script
+            crossorigin="anonymous"
+            integrity="sha384-${{ steps.compute_hash.outputs.sha384_minimal }}"
+            src="https://github.com/microsoft/BotFramework-WebChat/releases/download/${{ steps.compute_hash.outputs.release_tag_name }}/webchat-minimal.js"
+          ></script>
+          \`\`\`
+
+          > Note: the SHA384 hash may change daily.
+          EOF
+
       - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.compute_hash.outputs.release_tag_name }}
-          release_name: Daily (${{ github.ref }})
-          body: |
-            This release is for internal testing only. **Please do not use this build in production environment.**
-
-            | Build time | Run ID | Source version | Git ref | Package version |
-            | - | - | - | - | - |
-            | ${{ steps.compute_hash.outputs.release_date }}Z | [`${{ github.run_id }}`](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [`${{ steps.compute_hash.outputs.git_short_sha }}`](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) | `${{ github.ref }}` | `${{ steps.compute_hash.outputs.package_version }}` |
-
-            ```html
-            <script
-              crossorigin="anonymous"
-              integrity="sha384-${{ steps.compute_hash.outputs.sha384_full }}"
-              src="https://github.com/microsoft/BotFramework-WebChat/releases/download/${{ steps.compute_hash.outputs.release_tag_name }}/webchat.js"
-            ></script>
-
-            <script
-              crossorigin="anonymous"
-              integrity="sha384-${{ steps.compute_hash.outputs.sha384_es5 }}"
-              src="https://github.com/microsoft/BotFramework-WebChat/releases/download/${{ steps.compute_hash.outputs.release_tag_name }}/webchat-es5.js"
-            ></script>
-
-            <script
-              crossorigin="anonymous"
-              integrity="sha384-${{ steps.compute_hash.outputs.sha384_minimal }}"
-              src="https://github.com/microsoft/BotFramework-WebChat/releases/download/${{ steps.compute_hash.outputs.release_tag_name }}/webchat-minimal.js"
-            ></script>
-            ```
-
-            > Note: the SHA384 hash may change daily.
-          draft: false
-          prerelease: true
-
-      - name: Upload assets
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ steps.compute_hash.outputs.release_tag_name }} *.js *.json *.tgz --repo ${{ github.repository }}
+        run: |
+          gh release create ${{ steps.compute_hash.outputs.release_tag_name }} \
+            *.js *.json *.tgz \
+            --notes-file ./release.txt \
+            --prerelease \
+            --repo ${{ github.repository }} \
+            --target ${{ github.ref }} \
+            --title "Daily (${{ github.ref }})"
