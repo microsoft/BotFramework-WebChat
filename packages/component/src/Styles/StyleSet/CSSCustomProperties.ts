@@ -4,6 +4,8 @@ import CustomPropertyNames from '../CustomPropertyNames';
 
 export default function createCSSCustomPropertiesStyle({
   accent,
+  bubbleImageMaxHeight,
+  bubbleImageMinHeight,
   bubbleMaxWidth,
   bubbleMinHeight,
   fontSizeSmall,
@@ -33,13 +35,17 @@ export default function createCSSCustomPropertiesStyle({
       //       - We MUST NOT put runtime variables here, e.g. sendTimeout
       //          - This is because we cannot programmatically know when the sendTimeout change
       [CustomPropertyNames.ColorAccent]: accent,
+      [CustomPropertyNames.ColorSubtle]: subtle,
       [CustomPropertyNames.ColorTimestamp]: timestampColor || subtle, // Maybe we should not need this if we allow web devs to override CSS variables for certain components.
       [CustomPropertyNames.FontPrimary]: primaryFont,
       [CustomPropertyNames.FontSizeSmall]: fontSizeSmall,
       [CustomPropertyNames.IconURLExternalLink]: markdownExternalLinkIconImage,
       [CustomPropertyNames.MaxWidthBubble]: bubbleMaxWidth + 'px',
       [CustomPropertyNames.MinHeightBubble]: bubbleMinHeight + 'px',
-      [CustomPropertyNames.PaddingRegular]: paddingRegular + 'px'
+      [CustomPropertyNames.PaddingRegular]: paddingRegular + 'px',
+      [CustomPropertyNames.MaxHeightImageBubble]:
+        bubbleImageMaxHeight === Infinity ? undefined : bubbleImageMaxHeight + 'px',
+      [CustomPropertyNames.MinHeightImageBubble]: bubbleImageMinHeight + 'px'
     }
   };
 }

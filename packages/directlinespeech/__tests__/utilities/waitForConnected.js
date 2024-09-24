@@ -1,19 +1,19 @@
-import createDeferred from 'p-defer-es5';
+import withResolvers from '../../src/utils/withResolvers';
 
 export default function waitForConnected(directLine) {
-  const connectedDeferred = createDeferred();
+  const connectedWithResolvers = withResolvers();
   const subscription = directLine.connectionStatus$.subscribe({
-    error: error => connectedDeferred.reject(error),
+    error: error => connectedWithResolvers.reject(error),
     next: value => {
       if (value === 2) {
-        connectedDeferred.resolve();
+        connectedWithResolvers.resolve();
       } else if (value === 4) {
-        connectedDeferred.reject(new Error('Disconnected from Direct Line Speech.'));
+        connectedWithResolvers.reject(new Error('Disconnected from Direct Line Speech.'));
       }
     }
   });
 
-  return connectedDeferred.promise.then(
+  return connectedWithResolvers.promise.then(
     () => {
       subscription.unsubscribe();
     },

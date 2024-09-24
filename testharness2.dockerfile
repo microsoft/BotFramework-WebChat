@@ -9,10 +9,12 @@ RUN apk update && \
     apk add --no-cache bash git openssh
 
 ENV PORT=80
+ENV PORTS=443
 EXPOSE 80
-RUN npm install serve@11.3.0 -g
+EXPOSE 443
 WORKDIR /var/web/
-ENTRYPOINT ["npx", "--no-install", "serve", "-c", "serve-test.json", "-p", "80", "/var/web/"]
+ENTRYPOINT ["node", "./index.js"]
 
-ADD serve-test.json /var/web/
+ADD serve-test.json /var/web/serve.json
+ADD packages/test/web-server/dist/index.js /var/web/
 RUN echo {}>/var/web/package.json

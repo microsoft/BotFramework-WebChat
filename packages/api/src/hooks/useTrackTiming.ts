@@ -2,30 +2,31 @@ import { useCallback } from 'react';
 
 import createCustomEvent from '../utils/createCustomEvent';
 import randomId from '../utils/randomId';
-import usePonyfill from './usePonyfill';
 import useReadTelemetryDimensions from './internal/useReadTelemetryDimensions';
-import useTrackException from './useTrackException';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
+import usePonyfill from './usePonyfill';
+import useTrackException from './useTrackException';
 
-export default function useTrackTiming<T>(): (
-  name: string,
-  functionOrPromise: (() => T) | Promise<T>
-) => Promise<T | void> {
+export default function useTrackTiming<T>(): (name: string, functionOrPromise: (() => T) | Promise<T>) => Promise<T> {
   const [{ Date }] = usePonyfill();
   const { onTelemetry } = useWebChatAPIContext();
   const readTelemetryDimensions = useReadTelemetryDimensions();
   const trackException = useTrackException();
 
   return useCallback(
-    async (name, functionOrPromise) => {
+    async (name, functionOrPromise): Promise<T> => {
       if (!name || typeof name !== 'string') {
-        return console.warn(
+        console.warn(
           'botframework-webchat: "name" passed to "useTrackTiming" hook must be specified and of type string.'
         );
+
+        return;
       } else if (typeof functionOrPromise !== 'function' && typeof functionOrPromise.then !== 'function') {
-        return console.warn(
+        console.warn(
           'botframework-webchat: "functionOrPromise" passed to "useTrackTiming" hook must be specified, of type function or Promise.'
         );
+
+        return;
       }
 
       const timingId = randomId();

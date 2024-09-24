@@ -1,27 +1,17 @@
 import { hooks } from 'botframework-webchat-api';
-import PropTypes from 'prop-types';
-import React, { FC, useCallback, useMemo } from 'react';
-import Say, { SayUtterance } from 'react-say';
 import type { WebChatActivity } from 'botframework-webchat-core';
+import PropTypes from 'prop-types';
+import React, { FC, memo, useCallback, useMemo } from 'react';
+import ReactSay, { SayUtterance } from 'react-say';
 
-import connectToWebChat from '../connectToWebChat';
 import SayAlt from './SayAlt';
 
+// TODO: [P1] Interop between Babel and esbuild.
+const Say = 'default' in ReactSay ? ReactSay.default : ReactSay;
 const { useMarkActivityAsSpoken, useStyleOptions, useVoiceSelector } = hooks;
 
 // TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text
-
-// TODO: [P3] We should add a "spoken" or "speakState" flag to indicate whether this activity is going to speak, or spoken
-const connectSpeakActivity = (...selectors) =>
-  connectToWebChat(
-    ({ language, markActivity, selectVoice }, { activity }) => ({
-      language,
-      markAsSpoken: () => markActivity(activity, 'speak', false),
-      selectVoice: voices => selectVoice(voices, activity)
-    }),
-    ...selectors
-  );
 
 type SpeakProps = {
   activity: WebChatActivity;
@@ -91,6 +81,6 @@ Speak.propTypes = {
   }).isRequired
 };
 
-export default Speak;
+Speak.displayName = 'SpeakActivity';
 
-export { connectSpeakActivity };
+export default memo(Speak);

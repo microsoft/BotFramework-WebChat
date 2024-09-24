@@ -4,9 +4,7 @@ services:
   # On Windows, run with COMPOSE_CONVERT_WINDOWS_PATHS=1
 
   chrome:
-    build:
-      context: ./
-      dockerfile: chrome.dockerfile
+    image: selenium/node-chrome:110.0
     depends_on:
       - selenium-hub
       - webchat
@@ -18,6 +16,8 @@ services:
       SE_OPTS: '--log-level WARNING'
       SE_NODE_SESSION_TIMEOUT: '300'
     shm_size: '2.5gb'
+    volumes:
+      - ./__tests__/setup/local/:/home/seluser/Downloads
 
   selenium-hub:
     image: selenium/hub:4.8.1
@@ -39,12 +39,12 @@ services:
     build:
       context: ./
       dockerfile: testharness2.dockerfile
-    ports:
-      - '5081:80'
     stop_grace_period: 0s
     volumes:
       - ./__tests__/html/:/var/web/__tests__/html/
       - ./packages/bundle/dist/:/var/web/packages/bundle/dist/
+      - ./packages/fluent-theme/dist/:/var/web/packages/fluent-theme/dist/
+      - ./packages/test/fluent-bundle/dist/:/var/web/packages/test/fluent-bundle/dist/
       - ./packages/test/harness/dist/:/var/web/packages/test/harness/dist/
       - ./packages/test/page-object/dist/:/var/web/packages/test/page-object/dist/
 

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const App = () => <ReactWebChat directLine={directLine} store={store} />;
+
+        render(
+          <FluentThemeProvider>
+            <App />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity(
+          'Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
+        );
+
+        await pageConditions.numActivitiesShown(1);
+
+        // We cannot mimic drag-and-drop in WebDriver yet. So we are doing as good as we could.
+
+        const dataTransfer = new DataTransfer();
+
+        dataTransfer.items.add(new File([new ArrayBuffer(100)], 'simple.txt'));
+
+        // WHEN: Dragging a file into document.
+        const dragEnterDocumentEvent = new DragEvent('dragenter', { dataTransfer });
+
+        dragEnterDocumentEvent.initEvent('dragenter', true, true);
+
+        document.dispatchEvent(dragEnterDocumentEvent);
+
+        // THEN: Should render the drop zone.
+        await host.snapshot();
+
+        // WHEN: Dragging into the drop zone.
+        const dragEnterDropZoneEvent = new DragEvent('dragenter', { dataTransfer });
+
+        dragEnterDropZoneEvent.initEvent('dragenter', true, true);
+
+        document
+          .querySelector(`[data-testid="${WebChat.testIds['sendBoxDropZone']}"]`)
+          .dispatchEvent(dragEnterDropZoneEvent);
+
+        // THEN: Should render the drop zone.
+        await host.snapshot();
+
+        // WHEN: Dropping into the drop zone.
+        const dropEvent = new DragEvent('drop', { dataTransfer });
+
+        dropEvent.initEvent('drop', true, true);
+
+        document.querySelector(`[data-testid="${WebChat.testIds['sendBoxDropZone']}"]`).dispatchEvent(dropEvent);
+
+        // THEN: Should render the drop zone.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

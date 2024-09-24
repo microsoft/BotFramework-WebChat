@@ -1,10 +1,10 @@
 import { call, cancelled, fork, put, race, select, take } from 'redux-saga/effects';
 
-import { QUEUE_INCOMING_ACTIVITY } from '../actions/queueIncomingActivity';
-import activitiesSelector, { ofType as activitiesOfType } from '../selectors/activities';
-import activityFromBot from '../definitions/activityFromBot';
 import incomingActivity, { INCOMING_ACTIVITY } from '../actions/incomingActivity';
+import { QUEUE_INCOMING_ACTIVITY } from '../actions/queueIncomingActivity';
 import setSuggestedActions from '../actions/setSuggestedActions';
+import activityFromBot from '../definitions/activityFromBot';
+import activitiesSelector, { ofType as activitiesOfType } from '../selectors/activities';
 import sleep from '../utils/sleep';
 import whileConnected from './effects/whileConnected';
 
@@ -94,7 +94,13 @@ function* queueIncomingActivity({ userID }: { userID: string }, ponyfill: Global
 
         // If suggested actions is not destined to anyone, or is destined to the user, show it.
         // In other words, if suggested actions is destined to someone else, don't show it.
-        yield put(setSuggestedActions(to?.length && !to.includes(userID) ? null : actions));
+        const suggestedActions = to?.length && !to.includes(userID) ? null : actions;
+
+        if (suggestedActions) {
+          yield put(setSuggestedActions(suggestedActions, lastMessageActivity));
+        } else {
+          yield put(setSuggestedActions());
+        }
       }
     }
   );

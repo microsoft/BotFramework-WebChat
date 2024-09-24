@@ -1,28 +1,27 @@
-import { Composer as DictateComposer } from 'react-dictate-button';
-import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
+// TODO: [P1] #3350 No import from internal, we need to move setDictateState from bf-wc-core (Redux) to React Context.
+import { useSetDictateState } from 'botframework-webchat-api/internal';
+import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo } from 'react';
+import { Composer as DictateComposer } from 'react-dictate-button';
 
 import useResumeAudioContext from './hooks/internal/useResumeAudioContext';
 import useSettableDictateAbortable from './hooks/internal/useSettableDictateAbortable';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
-// TODO: [P1] #3350 No /lib/, we need to move setDictateState from bf-wc-core (Redux) to React Context.
-import useSetDictateState from 'botframework-webchat-api/lib/hooks/internal/useSetDictateState';
-
 const {
   useActivities,
   useDictateInterims,
   useDictateState,
-  useDisabled,
   useEmitTypingIndicator,
   useLanguage,
   useSendBoxValue,
   useSendTypingIndicator,
   useShouldSpeakIncomingActivity,
   useStopDictate,
-  useSubmitSendBox
+  useSubmitSendBox,
+  useUIState
 } = hooks;
 
 const {
@@ -37,9 +36,9 @@ const Dictation = ({ onError }) => {
   const [{ SpeechGrammarList, SpeechRecognition } = {}] = useWebSpeechPonyfill();
   const [activities] = useActivities();
   const [dictateState] = useDictateState();
-  const [disabled] = useDisabled();
   const [sendTypingIndicator] = useSendTypingIndicator();
   const [speechLanguage] = useLanguage('speech');
+  const [uiState] = useUIState();
   const emitTypingIndicator = useEmitTypingIndicator();
   const resumeAudioContext = useResumeAudioContext();
   const setDictateState = useSetDictateState();
@@ -114,7 +113,9 @@ const Dictation = ({ onError }) => {
       onProgress={handleDictating}
       speechGrammarList={SpeechGrammarList}
       speechRecognition={SpeechRecognition}
-      started={!disabled && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities}
+      started={
+        uiState !== 'disabled' && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities
+      }
     />
   );
 };

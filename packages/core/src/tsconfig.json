@@ -7,11 +7,14 @@
     "downlevelIteration": true,
     "emitDeclarationOnly": true,
     "jsx": "react",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "preserveWatchOutput": true,
     "pretty": true,
     "resolveJsonModule": true, // Required for localization files
     "skipLibCheck": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "target": "ESNext"
   },
   "files": ["index.ts"]
 }

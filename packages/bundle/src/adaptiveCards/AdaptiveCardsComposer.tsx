@@ -1,21 +1,20 @@
 import * as defaultAdaptiveCardsPackage from 'adaptivecards';
-import PropTypes from 'prop-types';
-import React, { FC, ReactNode, useMemo } from 'react';
+import React, { useMemo, type ReactNode } from 'react';
 
+import { type AdaptiveCardsPackage } from '../types/AdaptiveCardsPackage';
 import AdaptiveCardsContext from './AdaptiveCardsContext';
-import AdaptiveCardsPackage from '../types/AdaptiveCardsPackage';
 
-type AdaptiveCardsComposerProps = {
+type AdaptiveCardsComposerProps = Readonly<{
   adaptiveCardsHostConfig: any;
   adaptiveCardsPackage: AdaptiveCardsPackage;
-  children: ReactNode;
-};
+  children?: ReactNode | undefined;
+}>;
 
-const AdaptiveCardsComposer: FC<AdaptiveCardsComposerProps> = ({
+const AdaptiveCardsComposer = ({
   adaptiveCardsHostConfig,
   adaptiveCardsPackage,
   children
-}) => {
+}: AdaptiveCardsComposerProps) => {
   const patchedAdaptiveCardsPackage = useMemo(
     () => adaptiveCardsPackage || defaultAdaptiveCardsPackage,
     [adaptiveCardsPackage]
@@ -30,18 +29,6 @@ const AdaptiveCardsComposer: FC<AdaptiveCardsComposerProps> = ({
   );
 
   return <AdaptiveCardsContext.Provider value={adaptiveCardsContext}>{children}</AdaptiveCardsContext.Provider>;
-};
-
-AdaptiveCardsComposer.defaultProps = {
-  adaptiveCardsHostConfig: undefined,
-  adaptiveCardsPackage: undefined,
-  children: undefined
-};
-
-AdaptiveCardsComposer.propTypes = {
-  adaptiveCardsHostConfig: PropTypes.any,
-  adaptiveCardsPackage: PropTypes.any,
-  children: PropTypes.any
 };
 
 export default AdaptiveCardsComposer;

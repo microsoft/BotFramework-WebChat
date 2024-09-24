@@ -24,8 +24,19 @@ async function readAllStdin() {
 }
 
 function rebaseV1Inline(name, dependency, baseURL) {
-  const { resolved: actual, version } = dependency;
-  const singleName = name.split('/').reverse()[0];
+  const { resolved: actual, version: versionFromDependency } = dependency;
+  let version = versionFromDependency;
+  const npmPrefix = 'npm:';
+
+  if (versionFromDependency.startsWith(npmPrefix)) {
+    const lastAt = versionFromDependency.lastIndexOf('@');
+
+    // eslint-disable-next-line no-magic-numbers
+    name = versionFromDependency.slice(npmPrefix.length, lastAt);
+    version = versionFromDependency.slice(lastAt + 1);
+  }
+
+  const [singleName] = name.split('/').reverse();
 
   const { href: expected } = new URL(`${name}/-/${singleName}-${version}.tgz`, 'https://registry.npmjs.org/');
   const { href: rebased } = new URL(`${name}/-/${singleName}-${version}.tgz`, baseURL);
@@ -46,8 +57,8 @@ function rebaseV1InlineAll({ dependencies }, baseURL) {
 }
 
 function rebaseV2Inline(path, dependency, baseURL) {
-  const { resolved: actual, version } = dependency;
-  const name = path.split('node_modules/').reverse()[0];
+  const { name: nameFromDependency, resolved: actual, version } = dependency;
+  const name = nameFromDependency || path.split('node_modules/').reverse()[0];
 
   const singleName = name.split('/').reverse()[0];
 

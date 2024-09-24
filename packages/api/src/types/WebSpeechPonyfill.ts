@@ -21,4 +21,4 @@ type WebSpeechPonyfill = {
   SpeechSynthesisUtterance?: typeof SpeechSynthesisUtterance;
 };
 
-export default WebSpeechPonyfill;
+export { type WebSpeechPonyfill };

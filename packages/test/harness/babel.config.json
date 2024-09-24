@@ -10,7 +10,7 @@
       {
         "modules": false,
         "targets": {
-          "chrome": "90"
+          "chrome": "100"
         }
       }
     ]

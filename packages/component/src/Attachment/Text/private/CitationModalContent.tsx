@@ -11,7 +11,7 @@ type Props = Readonly<{
 
 const CitationModalContent = memo(({ headerText, markdown }: Props) => {
   const [{ renderMarkdown: renderMarkdownStyleSet }] = useStyleSet();
-  const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('citation modal');
 
   return (
     <Fragment>

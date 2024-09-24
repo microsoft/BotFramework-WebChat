@@ -4,10 +4,12 @@
 // Importing polyfills required for IE11/ES5.
 import './polyfill';
 
-import { version } from './index-minimal';
 import addVersion from './addVersion';
 import defaultCreateDirectLine from './createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from './createDirectLineAppServiceExtension';
+import { buildInfo as minimalBuildInfo, version } from './index-minimal';
+
+const buildInfo = { ...minimalBuildInfo, variant: 'full-es5' };
 
 export * from './index';
 
@@ -29,8 +31,11 @@ export const createDirectLineAppServiceExtension = options => {
   return defaultCreateDirectLineAppServiceExtension({ ...options, botAgent: `WebChat/${version} (ES5)` });
 };
 
+export { buildInfo };
+
 window['WebChat'] = {
   ...window['WebChat'],
+  buildInfo,
   createDirectLine,
   createDirectLineAppServiceExtension
 };

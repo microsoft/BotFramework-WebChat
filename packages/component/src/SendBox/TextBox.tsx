@@ -1,23 +1,23 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
 
-import { ie11 } from '../Utils/detectBrowser';
 import AccessibleInputText from '../Utils/AccessibleInputText';
-import AutoResizeTextArea from './AutoResizeTextArea';
 import navigableEvent from '../Utils/TypeFocusSink/navigableEvent';
-import useRegisterFocusSendBox from '../hooks/internal/useRegisterFocusSendBox';
+import { ie11 } from '../Utils/detectBrowser';
+import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useRegisterFocusSendBox, type SendBoxFocusOptions } from '../hooks/sendBoxFocus';
 import useScrollDown from '../hooks/useScrollDown';
 import useScrollUp from '../hooks/useScrollUp';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import withEmoji from '../withEmoji/withEmoji';
+import AutoResizeTextArea from './AutoResizeTextArea';
 
 import type { MutableRefObject } from 'react';
+import testIds from '../testIds';
 
-const { useDisabled, useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions } = hooks;
+const { useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions, useUIState } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__send-box-text-box': {
@@ -79,12 +79,12 @@ const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 const SingleLineTextBox = withEmoji(AccessibleInputText);
 const MultiLineTextBox = withEmoji(AutoResizeTextArea);
 
-const TextBox = ({ className }) => {
+const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }>) => {
   const [value, setValue] = useSendBoxValue();
   const [{ sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [{ emojiSet, sendBoxTextWrap }] = useStyleOptions();
   const [{ setTimeout }] = usePonyfill();
-  const [disabled] = useDisabled();
+  const [uiState] = useUIState();
   const inputElementRef: MutableRefObject<HTMLInputElement & HTMLTextAreaElement> = useRef();
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
@@ -92,6 +92,7 @@ const TextBox = ({ className }) => {
   const scrollUp = useScrollUp();
   const submitTextBox = useTextBoxSubmit();
 
+  const disabled = uiState === 'disabled';
   const sendBoxString = localize('TEXT_INPUT_ALT');
   const typeYourMessageString = localize('TEXT_INPUT_PLACEHOLDER');
 
@@ -163,8 +164,9 @@ const TextBox = ({ className }) => {
     [scrollDown, scrollUp]
   );
 
-  const focusCallback = useCallback<(options?: { noKeyboard?: boolean }) => void>(
-    ({ noKeyboard } = {}) => {
+  const focusCallback = useCallback(
+    (options: SendBoxFocusOptions) => {
+      const { noKeyboard } = options;
       const { current } = inputElementRef;
 
       if (current) {
@@ -178,17 +180,19 @@ const TextBox = ({ className }) => {
 
           current.setAttribute('readonly', 'readonly');
 
-          // TODO: [P2] We should update this logic to handle quickly-successive `focusCallback`.
-          //       If a succeeding `focusCallback` is being called, the `setTimeout` should run immediately.
-          //       Or the second `focusCallback` should not set `readonly` to `true`.
-          setTimeout(() => {
-            const { current } = inputElementRef;
+          options.waitUntil(
+            (async function () {
+              // TODO: [P2] We should update this logic to handle quickly-successive `focusCallback`.
+              //       If a succeeding `focusCallback` is being called, the `setTimeout` should run immediately.
+              //       Or the second `focusCallback` should not set `readonly` to `true`.
+              await new Promise(resolve => setTimeout(resolve, 0));
 
-            if (current) {
-              current.focus();
-              readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
-            }
-          }, 0);
+              if (current) {
+                current.focus();
+                readOnly ? current.setAttribute('readonly', readOnly) : current.removeAttribute('readonly');
+              }
+            })()
+          );
         } else {
           current.focus();
         }
@@ -199,7 +203,7 @@ const TextBox = ({ className }) => {
 
   useRegisterFocusSendBox(focusCallback);
 
-  const emojiMap = useMemo(() => new Map(Object.entries(emojiSet)), [emojiSet]);
+  const emojiMap = useMemo(() => new Map<string, string>(Object.entries(emojiSet)), [emojiSet]);
 
   return (
     <form
@@ -217,6 +221,7 @@ const TextBox = ({ className }) => {
           aria-label={sendBoxString}
           className="webchat__send-box-text-box__input"
           data-id="webchat-sendbox-input"
+          data-testid={testIds.sendBoxTextBox}
           disabled={disabled}
           emojiMap={emojiMap}
           enterKeyHint="send"
@@ -235,6 +240,7 @@ const TextBox = ({ className }) => {
           aria-label={sendBoxString}
           className="webchat__send-box-text-box__text-area"
           data-id="webchat-sendbox-input"
+          data-testid={testIds.sendBoxTextBox}
           disabled={disabled}
           emojiMap={emojiMap}
           enterKeyHint="send"
@@ -253,14 +259,6 @@ const TextBox = ({ className }) => {
       {disabled && <div className="webchat__send-box-text-box__glass" />}
     </form>
   );
-};
-
-TextBox.defaultProps = {
-  className: ''
-};
-
-TextBox.propTypes = {
-  className: PropTypes.string
 };
 
 export default TextBox;

@@ -89,7 +89,7 @@ import { hooks } from 'botframework-webchat-component';
 
 const { useSendMessage } = hooks;
 
-const HelloButton = () => {  
+const HelloButton = () => {
   const sendMessage = useSendMessage();
 
   return (
@@ -139,7 +139,7 @@ import CustomWebChat from './CustomWebChat';
 // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
 async function getDirectLineToken() {
-  const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+  const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
   const { token } = await res.json();
 
   return token;
@@ -200,7 +200,7 @@ import { hooks } from 'botframework-webchat-component';
 
 const { useSendMessage } = hooks;
 
-const HelloButton = () => {  
+const HelloButton = () => {
   const sendMessage = useSendMessage();
 
   return (

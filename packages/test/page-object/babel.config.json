@@ -12,7 +12,7 @@
       "@babel/preset-env",
       {
         "targets": {
-          "chrome": "90"
+          "chrome": "100"
         },
         "modules": false
       }

@@ -37,7 +37,6 @@ rules:
         - jest-environment-node
         - jest-image-snapshot
         - node-fetch
-        - p-defer-es5
         - selenium-webdriver
         - strip-ansi
   node/prefer-global/buffer: error

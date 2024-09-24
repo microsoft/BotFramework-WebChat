@@ -1,6 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 
+import type { WebChatActivity } from 'botframework-webchat-core';
 import intersectionOf from '../../../Utils/intersectionOf';
 import removeInline from '../../../Utils/removeInline';
 import type { ActivityWithRenderer, ReadonlyActivityTree } from './types';
@@ -35,6 +36,10 @@ function validateAllEntriesTagged<T>(entries: readonly T[], bins: readonly (read
 
 function useActivityTreeWithRenderer(entries: readonly ActivityWithRenderer[]): ReadonlyActivityTree {
   const groupActivities = useGroupActivities();
+  const entryMap: Map<WebChatActivity, ActivityWithRenderer> = useMemo(
+    () => new Map(entries.map(entry => [entry.activity, entry])),
+    [entries]
+  );
 
   // We bin activities in 2 different ways:
   // - `activitiesBySender` is a 2D array containing activities with same sender
@@ -45,7 +50,7 @@ function useActivityTreeWithRenderer(entries: readonly ActivityWithRenderer[]): 
     entriesBySender: readonly (readonly ActivityWithRenderer[])[];
     entriesByStatus: readonly (readonly ActivityWithRenderer[])[];
   }>(() => {
-    const visibleActivities = entries.map(({ activity }) => activity);
+    const visibleActivities = [...entryMap.keys()];
 
     const groupActivitiesResult = groupActivities({ activities: visibleActivities });
 
@@ -53,7 +58,7 @@ function useActivityTreeWithRenderer(entries: readonly ActivityWithRenderer[]): 
     const activitiesByStatus = groupActivitiesResult?.status || [];
 
     const [entriesBySender, entriesByStatus] = [activitiesBySender, activitiesByStatus].map(bins =>
-      bins.map(bin => bin.map(activity => entries.find(entry => entry.activity === activity)))
+      bins.map(bin => bin.map(activity => entryMap.get(activity)))
     );
 
     if (!validateAllEntriesTagged(visibleActivities, activitiesBySender)) {
@@ -72,7 +77,7 @@ function useActivityTreeWithRenderer(entries: readonly ActivityWithRenderer[]): 
       entriesBySender,
       entriesByStatus
     };
-  }, [entries, groupActivities]);
+  }, [entryMap, groupActivities]);
 
   // Create a tree of activities with 2 dimensions: sender, followed by status.
 

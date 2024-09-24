@@ -1,7 +1,7 @@
 /* eslint react/forbid-dom-props: ["off"] */
 
 import PropTypes from 'prop-types';
-import React, { forwardRef } from 'react';
+import React, { forwardRef, memo } from 'react';
 
 import type { VFC } from 'react';
 
@@ -58,4 +58,6 @@ ScreenReaderText.propTypes = {
   text: PropTypes.string.isRequired
 };
 
-export default ScreenReaderText;
+ScreenReaderText.displayName = 'ScreenReaderText';
+
+export default memo(ScreenReaderText);

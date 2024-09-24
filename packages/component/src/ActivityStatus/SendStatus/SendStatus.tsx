@@ -5,7 +5,6 @@ import React, { FC, useCallback } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { SENDING, SEND_FAILED, SENT } from '../../types/internal/SendStatus';
-import connectToWebChat from '../../connectToWebChat';
 import SendFailedRetry from './private/SendFailedRetry';
 import useFocus from '../../hooks/useFocus';
 import useStyleSet from '../../hooks/useStyleSet';
@@ -13,23 +12,6 @@ import useStyleSet from '../../hooks/useStyleSet';
 import type { SendStatus as SendStatusType } from '../../types/internal/SendStatus';
 
 const { useLocalizer, usePostActivity } = hooks;
-
-const connectSendStatus = (...selectors) =>
-  connectToWebChat(
-    ({ focusSendBox, language, postActivity }, { activity }) => ({
-      language,
-      retrySend: evt => {
-        evt.preventDefault();
-
-        postActivity(activity);
-
-        // After clicking on "retry", the button will be removed from the DOM and focus will be lost (back to document.body)
-        // This ensures that focus will stay within Web Chat
-        focusSendBox();
-      }
-    }),
-    ...selectors
-  );
 
 type SendStatusProps = {
   activity: WebChatActivity;
@@ -74,5 +56,3 @@ SendStatus.propTypes = {
 };
 
 export default SendStatus;
-
-export { connectSendStatus };

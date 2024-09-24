@@ -1,4 +1,4 @@
-import createDeferred from 'p-defer-es5';
+import withResolvers from './utils/withResolvers';
 
 // Patching a function to add pre-processing of arguments and post-processing of result.
 function patchFunction(fn, pre, post) {
@@ -15,21 +15,21 @@ export default function patchDialogServiceConnectorInline(dialogServiceConnector
   // This function will patch DialogServiceConnector by modifying the object.
   // The patches are intended to fill-in features to make DialogServiceConnector object works like the full-fledged Recognizer object.
 
-  let lastRecognitionDeferred;
+  let lastRecognitionWithResolvers;
 
   dialogServiceConnector.listenOnceAsync = patchFunction(
     dialogServiceConnector.listenOnceAsync.bind(dialogServiceConnector),
     (resolve, reject, ...args) => {
-      lastRecognitionDeferred = createDeferred();
+      lastRecognitionWithResolvers = withResolvers();
 
       return [
         patchFunction(resolve, null, result => {
-          lastRecognitionDeferred.resolve(result);
+          lastRecognitionWithResolvers.resolve(result);
 
           return result;
         }),
         patchFunction(reject, null, error => {
-          lastRecognitionDeferred.reject(error);
+          lastRecognitionWithResolvers.reject(error);
 
           return error;
         }),

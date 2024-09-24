@@ -1,6 +1,5 @@
-import createDeferred from 'p-defer-es5';
-
 import createAdapters from '../../src/createAdapters';
+import withResolvers from '../../src/utils/withResolvers';
 import createFetchCredentials from './createFetchCredentials';
 import createQueuedArrayBufferAudioSource from './createQueuedArrayBufferAudioSource';
 import fetchSpeechData from './fetchSpeechData';
@@ -25,7 +24,7 @@ export default async function createTestHarness({ enableInternalHTTPSupport } = 
       // By SpeechRecognition.start(), it will invoke Speech SDK to start grabbing speech data from AudioConfig.
       const { SpeechRecognition } = webSpeechPonyfillFactory();
       const recognition = new SpeechRecognition();
-      const recognitionEndDeferred = createDeferred();
+      const recognitionEndDeferred = withResolvers();
 
       recognition.onend = recognitionEndDeferred.resolve;
       recognition.onerror = ({ error }) =>

@@ -1,6 +1,39 @@
 const { defaults } = require('jest-config');
 const { join, relative } = require('path');
 
+const TRANSFORM_IGNORE_PACKAGES = [
+  'botframework-webchat-api',
+  'botframework-webchat-component',
+  'botframework-webchat-core',
+  'botframework-webchat',
+  'character-entities',
+  'decode-named-character-reference',
+  'mdast-util-from-markdown',
+  'mdast-util-to-string',
+  'micromark-core-commonmark',
+  'micromark-factory-destination',
+  'micromark-factory-label',
+  'micromark-factory-space',
+  'micromark-factory-title',
+  'micromark-factory-whitespace',
+  'micromark-util-character',
+  'micromark-util-chunked',
+  'micromark-util-classify-character',
+  'micromark-util-combine-extensions',
+  'micromark-util-decode-numeric-character-reference',
+  'micromark-util-decode-string',
+  'micromark-util-encode',
+  'micromark-util-html-tag-name',
+  'micromark-util-normalize-identifier',
+  'micromark-util-resolve-all',
+  'micromark-util-sanitize-uri',
+  'micromark-util-subtokenize',
+  'micromark',
+  'mime',
+  'unist-util-stringify-position',
+  'uuid'
+];
+
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/packages/*/src/**/*.{js,jsx,ts,tsx}',
@@ -75,6 +108,12 @@ module.exports = {
         filename: join(__dirname, 'coverage/nunit3.xml'),
         jestResultFilename: join(__dirname, 'coverage/jest.json')
       }
+    ],
+    [
+      'github-actions',
+      {
+        silent: false
+      }
     ]
   ],
   setupFilesAfterEnv: [
@@ -93,7 +132,8 @@ module.exports = {
     '<rootDir>/__tests__/html/__jest__',
     '<rootDir>/__tests__/html/assets',
     '<rootDir>/__tests__/setup/',
-    '<rootDir>/__tests__/types/__typescript__',
+    '<rootDir>/packages/bundle/__tests__/types/__typescript__/',
+    '<rootDir>/packages/core/__tests__/types/__typescript__/',
     '<rootDir>/packages/directlinespeech/__tests__/utilities/',
     '<rootDir>/packages/playground/',
     '<rootDir>/samples/'
@@ -106,7 +146,8 @@ module.exports = {
     // jest-environment-jsdom import packages as browser.
     // Packages, such as "uuid", export itself for browser as ES5 + ESM.
     // Since jest@28 cannot consume ESM yet, we need to transpile these packages.
-    '/node_modules/(?!(character-entities|decode-named-character-reference|micromark|micromark-core-commonmark|micromark-factory-destination|micromark-factory-label|micromark-factory-space|micromark-factory-title|micromark-factory-whitespace|micromark-util-resolve-all|micromark-util-character|micromark-util-chunked|micromark-util-classify-character|micromark-util-combine-extensions|micromark-util-decode-numeric-character-reference|micromark-util-decode-string|micromark-util-encode|micromark-util-html-tag-name|micromark-util-normalize-identifier|micromark-util-sanitize-uri|micromark-util-subtokenize|mdast-util-from-markdown|mdast-util-to-string|unist-util-stringify-position|uuid)/)',
+    `/node_modules/(?!(${TRANSFORM_IGNORE_PACKAGES.join('|')})/)`,
+    '/packages/(?:test/)?\\w+/(?:lib/|dist/|\\w+\\.js)',
     ...defaults.transformIgnorePatterns.filter(pattern => pattern !== '/node_modules/')
   ]
 };

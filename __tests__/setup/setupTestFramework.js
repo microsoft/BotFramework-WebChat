@@ -72,7 +72,8 @@ global.setupWebDriver = async options => {
         return { driver, pageObjects };
       } catch (err) {
         try {
-          console.log('Browser console logs at exception', await getBrowserConsoleLogs(driver));
+          console.error(err);
+          console.error('Browser console logs at exception', await getBrowserConsoleLogs(driver));
         } catch (err) {}
 
         await driver.quit();

@@ -1,0 +1,28 @@
+
+:global(.webchat-fluent) .liner-message-activity {
+  align-items: center;
+  box-sizing: border-box;
+  color: var(--webchat-colorNeutralForeground3);
+  display: flex;
+  flex-direction: row;
+  font-family: var(--webchat__font--primary);
+  font-size: var(--webchat-fontSizeBase200);
+  font-weight: var(--webchat-fontWeightRegular);
+  gap: var(--webchat-spacingHorizontalM);
+  line-height: var(--webchat-lineHeightBase200);
+  padding: var(--webchat-spacingVerticalSNudge) var(--webchat-spacingHorizontalM);
+  text-align: center;
+  width: 100%;
+
+  &::before, &::after {
+    border-top: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke2);
+    content: "";
+    display: flex;
+    flex: auto;
+    min-width: 8px;
+  }
+}
+
+:global(.webchat-fluent) .liner-message-activity__text {
+  text-align: center;
+}

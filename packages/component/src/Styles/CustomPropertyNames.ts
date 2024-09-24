@@ -1,12 +1,15 @@
 const CustomPropertyNames = Object.freeze({
   // Make sure key names does not have JavaScript forbidden names.
   ColorAccent: '--webchat__color--accent',
+  ColorSubtle: '--webchat__color--subtle',
   ColorTimestamp: '--webchat__color--timestamp',
   FontPrimary: '--webchat__font--primary',
   FontSizeSmall: '--webchat__font-size--small',
   IconURLExternalLink: '--webchat__icon-url--external-link',
+  MaxHeightImageBubble: '--webchat__max-height--image-bubble',
   MaxWidthBubble: '--webchat__max-width--bubble',
   MinHeightBubble: '--webchat__min-height--bubble',
+  MinHeightImageBubble: '--webchat__min-height--image-bubble',
   PaddingRegular: '--webchat__padding--regular'
 });
 

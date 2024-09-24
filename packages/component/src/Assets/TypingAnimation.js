@@ -3,14 +3,13 @@ import classNames from 'classnames';
 import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
-
-import useStyleSet from '../hooks/useStyleSet';
 import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import useStyleSet from '../hooks/useStyleSet';
 
 const { useDirection, useLocalizer } = hooks;
 
 const ROOT_STYLE = {
-  '&.webchat__typingIndicator.webchat__typingIndicator--rtl': { transform: 'scale(-1, 1)' }
+  '&.webchat__typing-indicator.webchat__typing-indicator--rtl': { transform: 'scale(-1, 1)' }
 };
 
 const TypingAnimation = () => {
@@ -25,9 +24,9 @@ const TypingAnimation = () => {
       <div
         aria-hidden={true}
         className={classNames(
-          'webchat__typingIndicator',
+          'webchat__typing-indicator',
           {
-            'webchat__typingIndicator--rtl': direction === 'rtl'
+            'webchat__typing-indicator--rtl': direction === 'rtl'
           },
           rootClassName,
           typingAnimationStyleSet + ''
