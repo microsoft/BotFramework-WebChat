@@ -116,15 +116,11 @@ jobs:
       - name: Delete existing release
         # When this workflow is run in its first time, or 2+ are running side-by-side, the release may not exists. It is okay to ignore 404s.
         continue-on-error: true
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release delete ${{ steps.compute_hash.outputs.release_tag_name }} --repo ${{ github.repository }} --yes
 
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.compute_hash.outputs.release_tag_name }}
           release_name: Daily (${{ github.ref }})
@@ -160,6 +156,4 @@ jobs:
           prerelease: true
 
       - name: Upload assets
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release upload ${{ steps.compute_hash.outputs.release_tag_name }} *.js *.json *.tgz --repo ${{ github.repository }}
