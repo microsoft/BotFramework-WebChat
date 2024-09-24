@@ -23,7 +23,7 @@ async function readAllStdin() {
   });
 }
 
-function rebaseV2Inline(path, dependency, baseURL) {
+function rebaseV3Inline(path, dependency, baseURL) {
   if (dependency.link || !dependency.resolved) {
     return;
   }
@@ -46,7 +46,7 @@ function rebaseV2Inline(path, dependency, baseURL) {
 function rebaseV3InlineAll(packages, baseURL) {
   for (const [path, dependency] of Object.entries(packages || {})) {
     // "path" is falsy if it is iterating the current package.
-    path && rebaseV2Inline(path, dependency, baseURL);
+    path && rebaseV3Inline(path, dependency, baseURL);
   }
 }
 
