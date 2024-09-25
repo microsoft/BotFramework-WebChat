@@ -21,7 +21,7 @@ export default async function switchToYouTubeIFRAME(driver) {
 
   await driver.wait(
     new Condition('until switched to IFRAME', async driver =>
-      /^https:\/\/www.youtube.com\//.test(await driver.executeScript(() => document.location.href))
+      /^https:\/\/www\.youtube\.com\//iu.test(await driver.executeScript(() => document.location.href))
     ),
     timeouts.fetch
   );
