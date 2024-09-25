@@ -425,7 +425,7 @@ There are 3 ways a screen reader can read messages:
 
 Given the following message with an Adaptive Card and two buttons.
 
-![A message with an Adaptive Card, with two buttons, "United States" and "Hong Kong".](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/main/docs/media/webchat-accessibility-narration-interactive-message.png)
+![A message with an Adaptive Card, with two buttons, "United States" and "Japan".](https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/main/docs/media/webchat-accessibility-narration-interactive-message.png)
 
 <details>
 <summary>Click to see the activity in JSON format</summary>
@@ -457,8 +457,8 @@ Given the following message with an Adaptive Card and two buttons.
                },
                {
                   "type": "imBack",
-                  "title": "Hong Kong",
-                  "value": "I am from Hong Kong."
+                  "title": "Japan",
+                  "value": "I am from Japan."
                }
             ]
          }
@@ -476,7 +476,7 @@ Screen readers do not read punctuations, we added them for readability.
 
 ### Live region
 
-The screen reader should read "Bot said: Where are you from? Article. Contains 1 items, 1 of 1 level 1. A card: article. A card: United States button, Hong Kong button. Message is interactive. Press shift tab key 2 to 3 times to switch to the chat history. Then click on the message to interact."
+The screen reader should read "Bot said: Where are you from? Article. Contains 1 items, 1 of 1 level 1. A card: article. A card: United States button, Japan button. Message is interactive. Press shift tab key 2 to 3 times to switch to the chat history. Then click on the message to interact."
 
 ### Focus landing on the message via chat history navigation
 
@@ -486,7 +486,7 @@ The screen reader should read "Bot said: Where are you from? One attachment. Mes
 
 ### Browse mode
 
-The screen reader should read "Bot said: Where are you from? Bot attached. Menu item, 1 of 2, United States. Menu item, 2 of 2, Hong Kong. Send at May 26th 8:08 PM."
+The screen reader should read "Bot said: Where are you from? Bot attached. Menu item, 1 of 2, United States. Menu item, 2 of 2, Japan. Send at May 26th 8:08 PM."
 
 # Do's and don't
 
