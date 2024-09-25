@@ -2,7 +2,7 @@ import { join } from 'path';
 import { defineConfig } from 'tsup';
 import { fileURLToPath } from 'url';
 import baseConfig from '../../tsup.base.config';
-import { injectedStyles as injectedStylesPlaceholder } from './src/styles/injectStyle';
+import { fluentStyleContent as fluentStyleContentPlaceholder } from './src/styles/createStyles';
 
 const umdResolvePlugin = {
   name: 'umd-resolve',
@@ -35,9 +35,8 @@ const injectCSSPlugin = {
     build.onEnd(result => {
       const js = result.outputFiles.find(f => f.path.match(/(\.js|\.mjs)$/u));
       const css = result.outputFiles.find(f => f.path.match(/(\.css)$/u));
-
-      if (css && js?.text.includes(injectedStylesPlaceholder)) {
-        js.contents = Buffer.from(js.text.replace(`"${injectedStylesPlaceholder}"`, JSON.stringify(css.text)));
+      if (css && js?.text.includes(fluentStyleContentPlaceholder)) {
+        js.contents = Buffer.from(js.text.replace(`"${fluentStyleContentPlaceholder}"`, JSON.stringify(css.text)));
       }
     });
   }

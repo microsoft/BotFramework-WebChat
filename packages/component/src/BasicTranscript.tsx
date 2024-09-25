@@ -39,7 +39,7 @@ import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscr
 import useRegisterScrollTo from './hooks/internal/useRegisterScrollTo';
 import useRegisterScrollToEnd from './hooks/internal/useRegisterScrollToEnd';
 import useStyleSet from './hooks/useStyleSet';
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
 import useValueRef from './hooks/internal/useValueRef';
 import TranscriptActivity from './TranscriptActivity';
@@ -48,6 +48,7 @@ import {
   useRegisterScrollRelativeTranscript,
   type TranscriptScrollRelativeOptions
 } from './hooks/transcriptScrollRelative';
+import useNonce from './hooks/internal/useNonce';
 
 const {
   useActivityKeys,
@@ -843,11 +844,15 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
   const activityElementMapRef = useRef<ActivityElementMap>(new Map());
   const containerRef = useRef<HTMLDivElement>();
 
+  const [nonce] = useNonce();
   const scroller = useScroller(activityElementMapRef);
+
+  const [{ stylesRoot }] = useStyleOptions();
+  const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
 
   return (
     <TranscriptFocusComposer containerRef={containerRef}>
-      <ReactScrollToBottomComposer scroller={scroller}>
+      <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
         <InternalTranscript activityElementMapRef={activityElementMapRef} className={className} ref={containerRef} />
       </ReactScrollToBottomComposer>
     </TranscriptFocusComposer>

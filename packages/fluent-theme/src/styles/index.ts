@@ -1,5 +1,5 @@
-import injectStyle from './injectStyle';
+import createStyles from './createStyles';
 import useStyles from './useStyles';
 import useVariantClassName from './useVariantClassName';
 
-export { injectStyle, useStyles, useVariantClassName };
+export { createStyles, useStyles, useVariantClassName };

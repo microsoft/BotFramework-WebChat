@@ -10,7 +10,7 @@ import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } fro
 import computeSuggestedActionText from '../Utils/computeSuggestedActionText';
 import useFocusWithin from '../hooks/internal/useFocusWithin';
 import useNonce from '../hooks/internal/useNonce';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
 import RovingTabIndexComposer from '../providers/RovingTabIndex/RovingTabIndexComposer';

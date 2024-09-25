@@ -9,7 +9,7 @@ import activityAltText from '../Utils/activityAltText';
 import LiveRegionAttachments from './private/LiveRegionAttachments';
 import LiveRegionSuggestedActions from './private/LiveRegionSuggestedActions';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 import type { VFC } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';

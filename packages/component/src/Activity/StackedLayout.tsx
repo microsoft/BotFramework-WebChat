@@ -8,9 +8,9 @@ import React, { memo } from 'react';
 import ScreenReaderText from '../ScreenReaderText';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import textFormatToContentType from '../Utils/textFormatToContentType';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
-import useUniqueId from '../hooks/internal/useUniqueId';
 import useStyleSet from '../hooks/useStyleSet';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import useUniqueId from '../hooks/internal/useUniqueId';
 import Bubble from './Bubble';
 
 import type { RenderAttachment } from 'botframework-webchat-api';

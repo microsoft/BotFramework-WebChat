@@ -15,9 +15,9 @@ import React, { memo, useMemo } from 'react';
 import CarouselFilmStrip from './CarouselFilmStrip';
 import useNonce from '../hooks/internal/useNonce';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
-const { useDirection, useLocalizer } = hooks;
+const { useDirection, useLocalizer, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__carousel-layout': {
@@ -101,9 +101,17 @@ const CarouselLayout = props => {
   const [direction] = useDirection();
   const [nonce] = useNonce();
   const filmStyleSet = useMemo(() => createBasicStyleSetForReactFilm({ cursor: null }), []);
+  const [{ stylesRoot }] = useStyleOptions();
+  const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
 
   return (
-    <FilmComposer dir={direction} nonce={nonce} numItems={attachments.length} styleSet={filmStyleSet}>
+    <FilmComposer
+      dir={direction}
+      nonce={nonce}
+      numItems={attachments.length}
+      styleOptions={styleOptions}
+      styleSet={filmStyleSet}
+    >
       <CarouselLayoutCore {...props} />
     </FilmComposer>
   );

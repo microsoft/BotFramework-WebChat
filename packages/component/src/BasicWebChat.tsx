@@ -10,7 +10,7 @@ import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useStyleSet from './hooks/useStyleSet';
 
 const { useStyleOptions } = hooks;

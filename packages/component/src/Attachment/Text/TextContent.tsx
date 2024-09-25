@@ -7,7 +7,7 @@ import isAIGeneratedActivity from './private/isAIGeneratedActivity';
 import MarkdownTextContent from './private/MarkdownTextContent';
 import PlainTextContent from './private/PlainTextContent';
 import CustomPropertyNames from '../../Styles/CustomPropertyNames';
-import useStyleToEmotionObject from '../../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../../hooks/internal/styleToEmotionObject';
 import useRenderMarkdownAsHTML from '../../hooks/useRenderMarkdownAsHTML';
 
 const { useLocalizer } = hooks;

@@ -872,6 +872,13 @@ type StyleOptions = {
    * @default 2000
    */
   maxMessageLength?: number;
+
+  /**
+   * The node to place Web Chat styles into. Needed when using as a Web Component.
+   *
+   * @default document.head
+   */
+  stylesRoot?: Node;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

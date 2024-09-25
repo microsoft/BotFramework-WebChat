@@ -3,8 +3,8 @@ import classNames from 'classnames';
 import React, { memo } from 'react';
 
 import FixedWidthImage from '../Utils/FixedWidthImage';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 const { useAvatarForBot, useAvatarForUser } = hooks;
 

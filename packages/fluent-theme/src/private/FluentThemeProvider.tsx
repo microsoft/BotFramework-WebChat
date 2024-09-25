@@ -7,6 +7,7 @@ import { isPreChatMessageActivity, PreChatMessageActivity } from '../components/
 import { PrimarySendBox } from '../components/sendBox';
 import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
+import { createStyles } from '../styles';
 import VariantComposer, { VariantList } from './VariantComposer';
 import { FluentThemeDecorator } from '../components/decorator';
 import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
@@ -40,11 +41,13 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
 
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
+const styles = createStyles();
+
 const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
   <VariantComposer variant={variant}>
     <WebChatTheme>
       <TelephoneKeypadProvider>
-        <ThemeProvider activityMiddleware={activityMiddleware} sendBoxMiddleware={sendBoxMiddleware}>
+        <ThemeProvider activityMiddleware={activityMiddleware} sendBoxMiddleware={sendBoxMiddleware} styles={styles}>
           <FluentThemeDecorator>{children}</FluentThemeDecorator>
         </ThemeProvider>
       </TelephoneKeypadProvider>

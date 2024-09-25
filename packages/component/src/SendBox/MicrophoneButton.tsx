@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import memoize from 'memoize-one';
 import React, { memo, useCallback, useState } from 'react';
 
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useDictateAbortable from '../hooks/useDictateAbortable';
 import useStyleSet from '../hooks/useStyleSet';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';

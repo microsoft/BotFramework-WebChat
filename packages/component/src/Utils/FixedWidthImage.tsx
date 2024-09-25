@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { memo } from 'react';
 
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import CSSTokens from '../Styles/CSSTokens';
 
 const ROOT_STYLE = {

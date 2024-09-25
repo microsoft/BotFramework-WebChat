@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import useStyleToEmotionObject from '../../../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../../../hooks/internal/styleToEmotionObject';
 import useUniqueId from '../../../hooks/internal/useUniqueId';
 import useFocus from '../../../hooks/useFocus';
 import useScrollToEnd from '../../../hooks/useScrollToEnd';

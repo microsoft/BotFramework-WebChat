@@ -10,7 +10,7 @@ import ExpandIcon from './Toast/ExpandIcon';
 import NotificationIcon from './Toast/NotificationIcon';
 import randomId from './Utils/randomId';
 import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useStyleSet from './hooks/useStyleSet';
 import { useLiveRegion } from './providers/LiveRegionTwin';
 

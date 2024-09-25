@@ -1,3 +1,5 @@
+import root from './root';
+
 export default function suggestedActions() {
-  return document.querySelectorAll('.webchat__suggested-action');
+  return root().querySelectorAll('.webchat__suggested-action');
 }

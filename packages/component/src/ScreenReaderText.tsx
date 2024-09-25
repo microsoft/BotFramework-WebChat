@@ -5,7 +5,7 @@ import React, { forwardRef, memo } from 'react';
 
 import type { VFC } from 'react';
 
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 
 const ROOT_STYLE = {
   // .sr-only - This component is intended to be invisible to the visual Web Chat user, but read by the AT when using a screen reader
