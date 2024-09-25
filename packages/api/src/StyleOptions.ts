@@ -874,7 +874,7 @@ type StyleOptions = {
   maxMessageLength?: number;
 
   /**
-   * The node used for WebChat styles to be placed into
+   * The node to place Web Chat styles into. Needed when using as a Web Component.
    *
    * @default document.head
    */
