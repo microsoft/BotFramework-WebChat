@@ -42,13 +42,13 @@
   font-weight: var(--webchat-fontWeightSemibold);
   line-height: var(--webchat-lineHeightHero700);
   margin: 0;
-  /* overflow-wrap: anywhere; */
+  overflow-wrap: anywhere;
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__body-subtitle {
   font-size: var(--webchat-fontSizeBase300);
   line-height: var(--webchat-lineHeightBase300);
-  /* overflow-wrap: anywhere; */
+  overflow-wrap: anywhere;
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__toolbar {
