@@ -9,7 +9,7 @@ import {
 import classNames from 'classnames';
 import type { Definition } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
-import React, { memo, useCallback, useMemo, type MouseEventHandler } from 'react';
+import React, { memo, useCallback, useMemo, type MouseEventHandler, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
@@ -35,6 +35,7 @@ type Entry = {
 
 type Props = Readonly<{
   activity: WebChatActivity;
+  children?: ReactNode | undefined;
   markdown: string;
 }>;
 
@@ -42,7 +43,7 @@ function isCitationURL(url: string): boolean {
   return onErrorResumeNext(() => new URL(url))?.protocol === 'cite:';
 }
 
-const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
+const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
   const [
     {
       citationModalDialog: citationModalDialogStyleSet,
@@ -212,6 +213,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
         dangerouslySetInnerHTML={dangerouslySetInnerHTML}
         onClick={handleClick}
       />
+      {children}
       {!!entries.length && (
         <LinkDefinitions<MessageSensitivityLabelProps>
           accessoryComponentType={messageSensitivityLabelProps && MessageSensitivityLabel}

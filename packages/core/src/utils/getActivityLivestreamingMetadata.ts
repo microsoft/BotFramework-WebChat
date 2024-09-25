@@ -20,7 +20,6 @@ const livestreamingActivitySchema = union([
     channelData: object({
       // "streamId" is required for the final activity in the session. The final activity must not be the sole activity in the session.
       streamId: string(),
-      streamSequence: streamSequenceSchema,
       streamType: literal('final')
     }),
     id: string(),
@@ -56,25 +55,23 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
 
   if (result.success) {
     const { output } = result;
-    const {
-      channelData: { streamType }
-    } = output;
 
     // If the activity is the first in the session, session ID should be the activity ID.
     const sessionId = output.channelData.streamId || output.id;
 
-    const type =
-      streamType === 'final'
-        ? 'final activity'
-        : streamType === 'informative'
-          ? 'informative message'
-          : 'interim activity';
-
-    return Object.freeze({
-      sessionId,
-      sequenceNumber: output.channelData.streamSequence,
-      type
-    });
+    return Object.freeze(
+      output.channelData.streamType === 'final'
+        ? {
+            sequenceNumber: Infinity,
+            sessionId,
+            type: 'final activity'
+          }
+        : {
+            sequenceNumber: output.channelData.streamSequence,
+            sessionId,
+            type: output.channelData.streamType === 'informative' ? 'informative message' : 'interim activity'
+          }
+    );
   }
 
   return undefined;

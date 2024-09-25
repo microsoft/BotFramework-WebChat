@@ -43,6 +43,13 @@ export default function () {
               features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
             })
           )
+          // Some tests may have denied the clipboard-write permission, we should reset it to grant (default).
+          .then(() =>
+            host.sendDevToolsCommand('Browser.setPermission', {
+              permission: { name: 'clipboard-write' },
+              setting: 'granted'
+            })
+          )
           // Some tests may have changed the time zone, we should unset it.
           .then(() => host.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'Etc/UTC' }))
           .catch(error =>

@@ -10,6 +10,13 @@
   --webchat-sendbox-border-radius: var(--webchat-borderRadiusLarge);
 }
 
+/* Copilot variant */
+:global(.webchat-fluent) .sendbox.variant-copilot {
+  .sendbox__text-counter:not(.sendbox__text-counter--error) {
+    visibility: hidden;
+  }
+}
+
 :global(.webchat-fluent) .sendbox__sendbox {
   background-color: var(--webchat-colorNeutralBackground1);
   border-radius: var(--webchat-sendbox-border-radius);

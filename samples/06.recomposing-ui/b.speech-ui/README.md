@@ -277,7 +277,7 @@ We will also use our newly made component, `fetchSpeechServicesToken`, with a ha
 <!-- prettier-ignore-start -->
 ```js
 async componentDidMount() {
-  const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+  const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
   const { token } = await res.json();
 
   this.setState(() => ({
@@ -357,7 +357,7 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+    const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
     const { token } = await res.json();
 
     this.setState(() => ({

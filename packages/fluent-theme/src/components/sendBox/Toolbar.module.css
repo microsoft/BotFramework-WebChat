@@ -1,6 +1,9 @@
 :global(.webchat-fluent) .sendbox__toolbar {
+  --webchat__sendbox-button-height: 32px;
+
   display: flex;
   gap: 4px;
+  height: var(--webchat__sendbox-button-height);
   margin-inline-start: auto;
 }
 
@@ -14,9 +17,9 @@
   color: currentColor;
   cursor: pointer;
   display: flex;
+  height: var(--webchat__sendbox-button-height);
   justify-content: center;
   padding: 3px;
-  width: 32px;
 
   > svg {
     font-size: 20px;
@@ -26,14 +29,17 @@
   &.sendbox__toolbar-button--selected {
     color: var(--webchat-colorNeutralForeground2BrandSelected);
   }
+
   @media (hover: hover) {
     &:not([aria-disabled="true"]):hover {
       color: var(--webchat-colorNeutralForeground2BrandHover);
     }
   }
+
   &:not([aria-disabled="true"]):active {
     color: var(--webchat-colorNeutralForeground2BrandPressed);
   }
+
   &[aria-disabled="true"] {
     color: var(--webchat-colorNeutralForegroundDisabled);
     cursor: not-allowed;

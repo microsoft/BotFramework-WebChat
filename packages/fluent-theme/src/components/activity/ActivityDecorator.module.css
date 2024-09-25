@@ -31,16 +31,6 @@
 :global(.webchat-fluent) .activity-decorator.variant-copilot {
   --webchat__bubble--border-radius: var(--webchat-borderRadiusXLarge);
 
-  &:not(:has(:global(.webchat__bubble--from-user))) {
-    --webchat__bubble--block-padding: var(--webchat-spacingVerticalS) var(--webchat-spacingVerticalXXS);
-    --webchat__bubble--border-radius: var(--webchat-borderRadiusSmall);
-    --webchat__bubble--inline-padding: 32px var(--webchat-spacingHorizontalNone);
-  }
-
-  &:not(:has(:global(.webchat__bubble--from-user))) :global(.webchat__stacked-layout__status) {
-    display: none;
-  }
-
   :global(.webchat__activity-status) {
     margin: 0 0 var(--webchat-spacingHorizontalXXS);
   }
@@ -49,14 +39,68 @@
     order: -1;
   }
 
-  /* TODO: remove when we get decorators in and can place header directly to the bubble */
-  &:not(:has(:global(.webchat__bubble--from-user))) :global(.webchat__stacked-layout .webchat__bubble .webchat__text-content) {
-    padding-block: calc(var(--webchat-spacingVerticalS) + 20px) var(--webchat-spacingVerticalXXS);
+  &:has(:global(.webchat__bubble--from-user)) :global(.webchat__bubble) {
+    margin-block-end: var(--webchat-spacingVerticalM);
   }
 
-  &:not(:has(:global(.webchat__bubble--from-user))) :global(.webchat__stacked-layout .webchat__bubble) {
-    margin-block-start: -24px;
-    margin-inline-start: -4px;
+  /* Hide generated badge as it is in the copilot header */
+  :global(.webchat__bubble .webchat__text-content .webchat__text-content__generated-badge) {
+    display: none;
+  }
+}
+
+/* Decorator copilot variant which has bot message */  
+:global(.webchat-fluent) .activity-decorator.variant-copilot:not(:has(:global(.webchat__bubble--from-user))) {
+  --webchat__bubble--block-padding: 0;
+  --webchat__bubble--border-radius: var(--webchat-borderRadiusMedium);
+  --webchat__bubble--inline-padding: 0;
+  --webchat__bubble--max-width: 100%;
+  --webchat__bubble--min-height: 20px;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: var(--webchat-spacingVerticalS);
+  margin-inline: var(--webchat-spacingHorizontalM);
+  padding: var(--webchat-spacingVerticalMNudge) var(--webchat-spacingHorizontalM) var(--webchat-spacingVerticalM);
+  position: relative;
+
+  :global(.webchat__stacked-layout) {
+    margin: 0;
+    position: static;
+  }
+
+  :global(.webchat__bubble) {
+    position: static;
+    width: var(--webchat__bubble--max-width);
+  }
+
+  :global(.webchat__bubble .webchat__bubble__content) {
+    overflow: visible;
+  }
+
+  :global(.webchat__text-content) {
+    margin-inline-start: 28px;
+  }
+
+  :global(.border-loader) {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: var(--webchat-spacingVerticalS);
+    padding-inline-end: var(--webchat-spacingHorizontalM);
+    width: 500px;
+  }
+
+  :global(.border-loader__track) {
+    border-radius: inherit;
+    box-sizing: border-box;
+    clip-path: border-box;
+    margin-inline-start: 28px;
+    order: -1;
+    width: auto;
+  }
+
+  :global(.webchat__stacked-layout__status) {
+    display: none;
   }
 }
 
@@ -73,6 +117,7 @@
 
 /* Stacked layout which has message bubble */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__stacked-layout__content:has(.webchat__bubble)) {
+  max-width: 100%;
   overflow: visible;
 }
 
@@ -84,7 +129,7 @@
 
 /* Message bubble */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble) {
-  max-width: var(--webchat__bubble--max-width);
+  max-width: 100%;
   overflow: visible;
 }
 
@@ -93,8 +138,10 @@
   background-color: var(--webchat__bubble--background-color);
   border-radius: var(--webchat__bubble--border-radius);
   border-width: 0;
+  box-shadow: var(--webchat__bubble--box-shadow);
   box-sizing: border-box;
   color: var(--webchat-colorNeutralForeground1);
+  max-width: var(--webchat__bubble--max-width);
   min-height: var(--webchat__bubble--min-height);
 }
 
@@ -105,17 +152,52 @@
   min-height: auto;
   padding-block: var(--webchat__bubble--block-padding);
   padding-inline: var(--webchat__bubble--inline-padding);
+
+  &:empty {
+    padding-block-end: 0;
+  }
+
+  +:global(.webchat__text-content) {
+    margin-top: calc(var(--webchat__bubble--block-padding) * -1);
+  }
 }
 
-/* Message bubble content pseudo */
-:global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__bubble__content)::before {
-  border-radius: inherit;
-  box-shadow: var(--webchat__bubble--box-shadow);
-  content: '';
-  inset: 0;
-  isolation: isolate;
-  pointer-events: none;
-  position: absolute;
+/* Message bubble text content generated badge */
+:global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__text-content__generated-badge) {
+  align-items: center;
+  align-self: flex-start;
+  background-color: var(--webchat-colorNeutralBackground5);
+  border-radius: var(--webchat-borderRadiusMedium);
+  box-sizing: border-box;
+  color: var(--webchat-colorNeutralForeground3);
+  cursor: default;
+  display: inline-flex;
+  font-size: var(--webchat-fontSizeBase100);
+  height: 16px;
+  line-height: var(--webchat-lineHeightBase100);
+  padding-inline: var(--webchat-spacingHorizontalXS);
+}
+
+/* Message bubble attachment content */
+:global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__fileContent__badge) {
+  cursor: default;
+  font-size: var(--webchat-fontSizeBase300);
+  line-height: var(--webchat-lineHeightBase300);
+
+  :global(.webchat__fileContent__fileName) {
+    color: var(--webchat-colorBrandForegroundLink);
+    font-family: inherit;
+  }
+  :global(.webchat__fileContent__size) {
+    color: var(--webchat-colorNeutralForeground2);
+    font-family: inherit;
+  }
+}
+
+/* Message bubble latency loader */
+:global(.webchat-fluent) .activity-decorator :global(.border-loader) {
+  max-width: 100%;
+  width: var(--webchat__bubble--max-width);
 }
 
 /* Markdown links and citation links */
@@ -201,6 +283,8 @@
 
 /* Citation summary chevron */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__link-definitions__header) {
+  border-radius: var(--webchat-borderRadiusMedium);
+  
   :global(.webchat__link-definitions__header-text) {
     color: var(--webchat-colorNeutralForeground3);
   }
@@ -209,6 +293,11 @@
     fill: var(--webchat-colorNeutralForeground3);
     font-size: var(--webchat__font-size--small);
     width: 1em;
+  }
+
+  &:focus-visible {
+    outline-offset: 1px;
+    outline: var(--webchat-strokeWidthThin) solid var(--webchat-colorStrokeFocus2);
   }
 }
 
@@ -298,6 +387,11 @@
     mask: var(--webchat__citation__external-link--mask) no-repeat;
     padding: 0;
     width: 1em;
+  }
+
+  /* It seems Copilot does not show per-item sensitivity label, i.e. "General", etc. */
+  :global(.webchat__link-definitions__list-item-badge) {
+    display: none;
   }
 
   :global(.webchat__link-definitions__open-in-new-window-icon) {

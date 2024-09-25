@@ -30,10 +30,11 @@ export default function createActivityButtonStyle() {
         outlineOffset: '-2px'
       },
 
-      '&:disabled': {
+      '&[aria-disabled="true"]': {
         background: '#f0f0f0',
         border: '1px solid #e0e0e0',
-        color: '#bdbdbd'
+        color: '#bdbdbd',
+        cursor: 'not-allowed'
       },
 
       '& .webchat__activity-button__icon': {

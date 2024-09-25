@@ -13,11 +13,11 @@ const isomorphicReactResolvePlugin = {
   name: 'isomorphic-react',
   setup(build) {
     build.onResolve({ filter: /^react$/u }, () => ({
-      path: resolveFromProjectRoot('./node_modules/isomorphic-react/dist/react.js')
+      path: resolveFromProjectRoot('../../node_modules/isomorphic-react/dist/react.js')
     }));
 
     build.onResolve({ filter: /^react-dom$/u }, () => ({
-      path: resolveFromProjectRoot('./node_modules/isomorphic-react-dom/dist/react-dom.js')
+      path: resolveFromProjectRoot('../../node_modules/isomorphic-react-dom/dist/react-dom.js')
     }));
   }
 };

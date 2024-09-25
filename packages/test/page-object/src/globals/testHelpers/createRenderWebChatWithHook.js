@@ -1,5 +1,6 @@
-import createDeferred from 'p-defer';
 import PropTypes from 'prop-types';
+
+import withResolvers from '../../utils/withResolvers';
 
 const RunHook = ({ fn, resolve }) => {
   resolve(fn?.());
@@ -22,19 +23,19 @@ export default function createRenderWebChatWithHook(props, element) {
   } = window;
 
   return (hookFn, extraProps) => {
-    const hookDeferred = !!hookFn && createDeferred();
-    const renderDeferred = createDeferred();
+    const hookWithResolvers = !!hookFn && withResolvers();
+    const renderWithResolvers = withResolvers();
 
     // We are not using Babel JSX transform to make the call stack easier to read.
     window.ReactDOM.render(
       <Composer {...props} {...extraProps}>
         <BasicWebChat />
-        {!!hookFn && <RunHook fn={hookFn} resolve={hookDeferred.resolve} />}
+        {!!hookFn && <RunHook fn={hookFn} resolve={hookWithResolvers.resolve} />}
       </Composer>,
       element,
-      renderDeferred.resolve
+      renderWithResolvers.resolve
     );
 
-    return Promise.all([hookDeferred, renderDeferred]);
+    return Promise.all([hookWithResolvers, renderWithResolvers]);
   };
 }

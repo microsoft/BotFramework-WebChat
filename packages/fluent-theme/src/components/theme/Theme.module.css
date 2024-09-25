@@ -22,6 +22,9 @@
   --webchat-colorNeutralBackground5: var(--colorNeutralBackground5, #ebebeb);
   --webchat-colorNeutralBackground6: var(--colorNeutralBackground6, #e6e6e6);
 
+  --webchat-colorNeutralStencil1: var(--colorNeutralStencil1, #e6e6e6); /* #575757 for dark mode */
+  --webchat-colorNeutralStencil2: var(--colorNeutralStencil2, #fafafa); /* #333333 for dark mode */
+
   --webchat-colorTransparentBackground: var(--colorTransparentBackground, rgba(0, 0, 0, 0.4));
 
   --webchat-colorNeutralStrokeDisabled: var(--colorNeutralStrokeDisabled, #e0e0e0);
@@ -257,19 +260,33 @@
     display: none;
   }
 
-  :global(.webchat__bubble)::after, :global(.pre-chat-message-activity)::after {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
+  :global(.webchat__bubble)::after, 
+  :global(.pre-chat-message-activity)::after {
     border-radius: var(--webchat__bubble--border-radius);
+    content: '';
+    inset: 0;
+    outline-offset: 0;
+    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
     pointer-events: none;
+    position: absolute;
   }
 
   :global(.pre-chat-message-activity)::after {
-    inset: 0;
-    border-radius: var(--webchat-borderRadiusSmall);
+    border-radius: var(--webchat-borderRadiusMedium);
+    outline-offset: -3px;
   }
+
+  :global(.liner-message-activity__text) {
+    border-radius: 20px;
+    outline-offset: 4px;
+    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
+  }
+}
+
+/* Transcript filer in copilot variant */
+:global(.webchat-fluent).theme.variant-copilot :global(.webchat__basic-transcript .webchat__basic-transcript__filler) {
+  /* No filler unless pre-chat activity, see next rule */
+  flex-grow: 0;
 }
 
 /* Transcript with a single pre-chat activity */
@@ -350,7 +367,7 @@
     outline-offset: calc(var(--webchat-strokeWidthThick) * -1);
   }
 
-  &:disabled {
+  &[aria-disabled="true"] {
     background: var(--webchat-colorNeutralBackgroundDisabled);
     border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStrokeDisabled);
     color: var(--webchat-colorNeutralForegroundDisabled);

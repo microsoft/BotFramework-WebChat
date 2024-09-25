@@ -1,11 +1,11 @@
 import classNames from 'classnames';
-import React, { type FC, Fragment, memo } from 'react';
+import React, { Fragment, memo, type ReactNode } from 'react';
 
 import useStyleSet from '../../../hooks/useStyleSet';
 
-type Props = Readonly<{ text: string }>;
+type Props = Readonly<{ children?: ReactNode | undefined; text: string }>;
 
-const PlainTextContent: FC<Props> = memo(({ text }: Props) => {
+const PlainTextContent = memo(({ children, text }: Props) => {
   const [{ textContent: textContentStyleSet }] = useStyleSet();
 
   return (
@@ -18,6 +18,13 @@ const PlainTextContent: FC<Props> = memo(({ text }: Props) => {
           {line.trim()}
         </p>
       ))}
+      {children && (
+        <div
+          className={classNames('webchat__text-content', 'webchat__text-content--children', textContentStyleSet + '')}
+        >
+          {children}
+        </div>
+      )}
     </Fragment>
   );
 });

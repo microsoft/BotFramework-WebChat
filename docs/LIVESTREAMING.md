@@ -107,6 +107,7 @@ Notes:
 
 -  `channelData.streamId` field is the session ID, i.e. the activity ID of the first activity
    -  In this example, the first activity ID is assumed `"a-00001"`
+   -  The session ID must be unique within the conversation
 -  `channelData.streamSequence` field should be incremented by 1 for every activity sent in the livestream
 -  `text` field should contains partial content from past interim activities
    -  `text` field in latter interim activities will replace `text` field in former interim activities
@@ -120,7 +121,6 @@ To conclude the livestream, send the following activity.
 {
    "channelData": {
       "streamId": "a-00001",
-      "streamSequence": 3,
       "streamType": "final"
    },
    "text": "A quick brown fox jumped over the lazy dogs.",
@@ -131,6 +131,7 @@ To conclude the livestream, send the following activity.
 Notes:
 
 -  `channelData.streamType` field is `final`
+-  `channelData.streamSequence` field should not be present, and assumed `Infinity`
 -  `text` field should contains the complete message
 -  `type` field must be `message`
 -  After the livestream has concluded, future activities for the livestream will be ignored

@@ -10,6 +10,7 @@ import { WebChatTheme } from '../components/theme';
 import { createStyles } from '../styles';
 import VariantComposer, { VariantList } from './VariantComposer';
 import { FluentThemeDecorator } from '../components/decorator';
+import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
 
 const { ThemeProvider } = Components;
 
@@ -21,8 +22,13 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
     (...args) => {
       const activity = args[0]?.activity;
 
-      if (activity && isPreChatMessageActivity(activity)) {
+      // TODO: Should show pre-chat only when it is the very first message in the chat history.
+      if (isPreChatMessageActivity(activity)) {
         return () => <PreChatMessageActivity activity={activity} />;
+      }
+
+      if (isLinerMessageActivity(activity)) {
+        return () => <LinerMessageActivity activity={activity} />;
       }
 
       const renderActivity = next(...args);

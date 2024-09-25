@@ -3,7 +3,7 @@ import cx from 'classnames';
 import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { SendIcon } from '../../icons';
-import { useStyles } from '../../styles';
+import { useStyles, useVariantClassName } from '../../styles';
 import testIds from '../../testIds';
 import { DropZone } from '../dropZone';
 import { SuggestedActions } from '../suggestedActions';
@@ -27,7 +27,8 @@ const {
   useSendBoxAttachments,
   useSendBoxValue,
   useSendMessage,
-  useStyleOptions
+  useStyleOptions,
+  useUIState
 } = hooks;
 
 type Props = Readonly<{
@@ -37,22 +38,30 @@ type Props = Readonly<{
 }>;
 
 function SendBox(props: Props) {
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  const [localMessage, setLocalMessage] = useState('');
+  const [{ hideTelephoneKeypadButton, hideUploadButton, maxMessageLength }] = useStyleOptions();
+  const [attachments, setAttachments] = useSendBoxAttachments();
   const [globalMessage, setGlobalMessage] = useSendBoxValue();
+  const [localMessage, setLocalMessage] = useState('');
+  const [telephoneKeypadShown] = useTelephoneKeypadShown();
+  const [uiState] = useUIState();
+  const classNames = useStyles(styles);
+  const variantClassName = useVariantClassName(styles);
+  const errorMessageId = useUniqueId('sendbox__error-message-id');
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const localize = useLocalizer();
+  const makeThumbnail = useMakeThumbnail();
+  const sendMessage = useSendMessage();
+  const setFocus = useFocus();
+
   const message = props.isPrimary ? globalMessage : localMessage;
   const setMessage = props.isPrimary ? setGlobalMessage : setLocalMessage;
-  const [attachments, setAttachments] = useSendBoxAttachments();
-  const [{ hideTelephoneKeypadButton, hideUploadButton, maxMessageLength }] = useStyleOptions();
-  const isMessageLengthExceeded = !!maxMessageLength && message.length > maxMessageLength;
-  const classNames = useStyles(styles);
-  const localize = useLocalizer();
-  const sendMessage = useSendMessage();
-  const makeThumbnail = useMakeThumbnail();
-  const errorMessageId = useUniqueId('sendbox__error-message-id');
+  const isBlueprint = uiState === 'blueprint';
+
   const [errorMessage, commitLatestError] = useSubmitError({ message, attachments });
-  const [telephoneKeypadShown] = useTelephoneKeypadShown();
-  const setFocus = useFocus();
+  const isMessageLengthExceeded = !!maxMessageLength && message.length > maxMessageLength;
+  const shouldShowMessageLength =
+    !isBlueprint && !telephoneKeypadShown && maxMessageLength && isFinite(maxMessageLength);
+  const shouldShowTelephoneKeypad = !isBlueprint && telephoneKeypadShown;
 
   useRegisterFocusSendBox(
     useCallback(
@@ -174,7 +183,12 @@ function SendBox(props: Props) {
   };
 
   return (
-    <form {...aria} className={cx(classNames['sendbox'], props.className)} onSubmit={handleFormSubmit}>
+    <form
+      {...aria}
+      className={cx(classNames['sendbox'], variantClassName, props.className)}
+      data-testid={testIds.sendBoxContainer}
+      onSubmit={handleFormSubmit}
+    >
       <SuggestedActions />
       <div
         className={cx(classNames['sendbox__sendbox'])}
@@ -185,7 +199,7 @@ function SendBox(props: Props) {
           aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
           className={cx(classNames['sendbox__sendbox-text'], classNames['sendbox__text-area--in-grid'])}
           data-testid={testIds.sendBoxTextBox}
-          hidden={telephoneKeypadShown}
+          hidden={shouldShowTelephoneKeypad}
           onInput={handleMessageChange}
           placeholder={props.placeholder ?? localize('TEXT_INPUT_PLACEHOLDER')}
           ref={inputRef}
@@ -199,7 +213,7 @@ function SendBox(props: Props) {
         />
         <Attachments attachments={attachments} className={classNames['sendbox__attachment--in-grid']} />
         <div className={cx(classNames['sendbox__sendbox-controls'], classNames['sendbox__sendbox-controls--in-grid'])}>
-          {!telephoneKeypadShown && maxMessageLength && isFinite(maxMessageLength) && (
+          {shouldShowMessageLength && (
             <div
               className={cx(classNames['sendbox__text-counter'], {
                 [classNames['sendbox__text-counter--error']]: isMessageLengthExceeded
@@ -215,7 +229,7 @@ function SendBox(props: Props) {
             <ToolbarButton
               aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
               data-testid={testIds.sendBoxSendButton}
-              disabled={isMessageLengthExceeded || telephoneKeypadShown}
+              disabled={isMessageLengthExceeded || shouldShowTelephoneKeypad}
               type="submit"
             >
               <SendIcon />

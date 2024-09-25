@@ -20,12 +20,12 @@ const { DictateState } = Constants;
 const {
   useDictateInterims,
   useDictateState,
-  useDisabled,
   useLocalizer,
   useSendBoxValue,
   useShouldSpeakIncomingActivity,
   useStartDictate,
-  useStopDictate
+  useStopDictate,
+  useUIState
 } = hooks;
 
 const ROOT_STYLE = {
@@ -97,10 +97,10 @@ function useMicrophoneButtonClick(): () => void {
 function useMicrophoneButtonDisabled(): [boolean] {
   const [abortable] = useDictateAbortable();
   const [dictateState] = useDictateState();
-  const [disabled] = useDisabled();
+  const [uiState] = useUIState();
 
   return [
-    disabled ||
+    uiState === 'disabled' ||
       dictateState === DictateState.STARTING ||
       dictateState === DictateState.STOPPING ||
       (dictateState === DictateState.DICTATING && !abortable)

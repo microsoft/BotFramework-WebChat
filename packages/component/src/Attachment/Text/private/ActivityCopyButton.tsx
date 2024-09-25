@@ -1,11 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { memo, useCallback, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import useStyleSet from '../../../hooks/useStyleSet';
 import ActivityButton from './ActivityButton';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useUIState } = hooks;
 
 type Props = Readonly<{
   className?: string | undefined;
@@ -17,13 +17,28 @@ const COPY_ICON_URL = `data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns=
 
 const ActivityCopyButton = ({ className, htmlText, plainText }: Props) => {
   const [{ activityButton, activityCopyButton }] = useStyleSet();
+  const [permissionGranted, setPermissionGranted] = useState(false);
+  const [uiState] = useUIState();
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const htmlTextRef = useRefFrom(htmlText);
   const localize = useLocalizer();
   const plainTextRef = useRefFrom(plainText);
-  const htmlTextRef = useRefFrom(htmlText);
 
   const copiedText = localize('COPY_BUTTON_COPIED_TEXT');
   const copyText = localize('COPY_BUTTON_TEXT');
+  const disabled = !permissionGranted || uiState === 'disabled';
+
+  useEffect(() => {
+    const { current } = buttonRef;
+
+    if (current) {
+      const handleAnimationEnd = () => current.classList.remove('webchat__activity-copy-button--copied');
+
+      current.addEventListener('animationend', handleAnimationEnd);
+
+      return () => current.removeEventListener('animationend', handleAnimationEnd);
+    }
+  }, [buttonRef]);
 
   const handleClick = useCallback(() => {
     const { current: htmlText } = htmlTextRef;
@@ -47,6 +62,20 @@ const ActivityCopyButton = ({ className, htmlText, plainText }: Props) => {
     buttonRef.current?.classList.add('webchat__activity-copy-button--copied');
   }, [buttonRef, htmlTextRef, plainTextRef]);
 
+  useEffect(() => {
+    let unmounted = false;
+
+    (async function () {
+      if ((await navigator.permissions.query({ name: 'clipboard-write' as any })).state === 'granted') {
+        unmounted || setPermissionGranted(true);
+      }
+    })();
+
+    return () => {
+      unmounted = true;
+    };
+  }, [setPermissionGranted]);
+
   return (
     <ActivityButton
       className={classNames(
@@ -57,6 +86,7 @@ const ActivityCopyButton = ({ className, htmlText, plainText }: Props) => {
         className
       )}
       data-testid="copy button"
+      disabled={disabled}
       iconURL={COPY_ICON_URL}
       onClick={handleClick}
       ref={buttonRef}

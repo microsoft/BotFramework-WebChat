@@ -7,7 +7,7 @@ import { useStyles } from '../../styles/index.js';
 import testIds from '../../testIds.js';
 import styles from './StarterPromptsCardAction.module.css';
 
-const { useFocus, useRenderMarkdownAsHTML, useSendBoxValue } = hooks;
+const { useFocus, useRenderMarkdownAsHTML, useSendBoxValue, useUIState } = hooks;
 const { MonochromeImageMasker } = Components;
 
 type Props = Readonly<{
@@ -17,14 +17,20 @@ type Props = Readonly<{
 
 const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
   const [_, setSendBoxValue] = useSendBoxValue();
+  const [uiState] = useUIState();
   const classNames = useStyles(styles);
   const focus = useFocus();
   const inputTextRef = useRefFrom(messageBackAction?.displayText || messageBackAction?.text || '');
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
-  const subtitleHTML = useMemo(
-    () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(messageBackAction?.text || '') } : { __html: '' }),
+  const subtitleHTML = useMemo<{ __html: string } | undefined>(
+    () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(messageBackAction?.text || '') } : undefined),
     [messageBackAction?.text, renderMarkdownAsHTML]
   );
+  const disabled = uiState === 'disabled';
+  const title = messageBackAction && 'title' in messageBackAction && messageBackAction.title;
+
+  // Every starter prompt card action must have "title" field.
+  const shouldShowBlueprint = uiState === 'blueprint' || !title;
 
   const handleClick = useCallback(() => {
     setSendBoxValue(inputTextRef.current);
@@ -33,33 +39,33 @@ const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
     focus('sendBox');
   }, [focus, inputTextRef, setSendBoxValue]);
 
-  return (
-    <button
+  return shouldShowBlueprint ? (
+    <div
       className={cx(className, classNames['pre-chat-message-activity__card-action-box'])}
       data-testid={testIds.preChatMessageActivityStarterPromptsCardAction}
-      disabled={!messageBackAction}
-      onClick={handleClick}
+    />
+  ) : (
+    <button
+      aria-disabled={disabled ? true : undefined}
+      className={cx(className, classNames['pre-chat-message-activity__card-action-box'])}
+      data-testid={testIds.preChatMessageActivityStarterPromptsCardAction}
+      onClick={disabled ? undefined : handleClick}
+      // eslint-disable-next-line no-magic-numbers
+      tabIndex={disabled ? -1 : undefined}
       type="button"
     >
-      {messageBackAction && (
-        <React.Fragment>
-          <div className={classNames['pre-chat-message-activity__card-action-title']}>
-            {'title' in messageBackAction && messageBackAction.title}
-          </div>
-          {'image' in messageBackAction && messageBackAction.image && (
-            <MonochromeImageMasker
-              className={classNames['pre-chat-message-activity__card-action-image']}
-              src={messageBackAction.image}
-            />
-            // <img className="pre-chat-message-activity__card-action-image" src={messageBackAction.image} />
-          )}
-          <div
-            className={classNames['pre-chat-message-activity__card-action-subtitle']}
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={subtitleHTML}
-          />
-        </React.Fragment>
+      <div className={classNames['pre-chat-message-activity__card-action-title']}>{title}</div>
+      {'image' in messageBackAction && messageBackAction.image && (
+        <MonochromeImageMasker
+          className={classNames['pre-chat-message-activity__card-action-image']}
+          src={messageBackAction.image}
+        />
       )}
+      <div
+        className={classNames['pre-chat-message-activity__card-action-subtitle']}
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={subtitleHTML}
+      />
     </button>
   );
 };

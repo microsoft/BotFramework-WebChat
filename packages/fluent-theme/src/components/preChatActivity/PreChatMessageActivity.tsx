@@ -1,50 +1,56 @@
-/* eslint-disable react/no-danger */
 import { hooks } from 'botframework-webchat-component';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import cx from 'classnames';
-import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
-import React, { Fragment, memo, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { useStyles } from '../../styles/index.js';
 import styles from './PreChatMessageActivity.module.css';
 import StarterPromptsToolbar from './StarterPromptsToolbar.js';
-import StarterPromptsCardAction from './StarterPromptsCardAction.js';
+import { useActivityAuthor } from '../activity/index.js';
 
 type Props = Readonly<{ activity: WebChatActivity & { type: 'message' } }>;
 
-const { useRenderMarkdownAsHTML } = hooks;
+const { useLocalizer, useRenderMarkdownAsHTML, useUIState } = hooks;
 
 const PreChatMessageActivity = ({ activity }: Props) => {
+  const [uiState] = useUIState();
   const classNames = useStyles(styles);
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
+  const localize = useLocalizer();
+
+  const author = useActivityAuthor(activity);
 
   const html = useMemo(
-    () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(activity.text || '') } : { __html: '' }),
-    [activity.text, renderMarkdownAsHTML]
+    () => (renderMarkdownAsHTML ? { __html: renderMarkdownAsHTML(author?.description || '') } : { __html: '' }),
+    [author?.description, renderMarkdownAsHTML]
   );
-
-  const entity = getOrgSchemaMessage(activity?.entities || []);
-  const isPlaceHolder = entity?.keywords?.includes('PreChatMessage') && entity.creativeWorkStatus === 'Placeholder';
 
   return (
     <div className={classNames['pre-chat-message-activity']}>
-      <div
-        className={cx(
-          classNames['pre-chat-message-activity__body'],
-          isPlaceHolder && classNames['pre-chat-message-activity__body--placeholder']
-        )}
-        dangerouslySetInnerHTML={html}
-      />
+      {author && (
+        <div
+          className={cx(
+            classNames['pre-chat-message-activity__body'],
+            uiState === 'blueprint' && classNames['pre-chat-message-activity__body--blueprint']
+          )}
+        >
+          {author.image && (
+            <img
+              alt={localize('AVATAR_ALT', author.name)}
+              className={classNames['pre-chat-message-activity__body-avatar']}
+              src={author.image}
+            />
+          )}
+          {author.name && <h2 className={classNames['pre-chat-message-activity__body-title']}>{author.name}</h2>}
+          {author.description && (
+            // eslint-disable-next-line react/no-danger
+            <div className={classNames['pre-chat-message-activity__body-subtitle']} dangerouslySetInnerHTML={html} />
+          )}
+        </div>
+      )}
       <StarterPromptsToolbar
         cardActions={activity.suggestedActions?.actions || []}
         className={classNames['pre-chat-message-activity__toolbar']}
-      >
-        {isPlaceHolder && (
-          <Fragment>
-            <StarterPromptsCardAction />
-            <StarterPromptsCardAction />
-            <StarterPromptsCardAction />
-          </Fragment>
-        )}
-      </StarterPromptsToolbar>
+      />
     </div>
   );
 };
