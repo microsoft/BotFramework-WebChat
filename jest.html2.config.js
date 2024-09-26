@@ -1,17 +1,8 @@
 module.exports = {
-  collectCoverageFrom: [
-    '<rootDir>/packages/*/src/**/*.{js,jsx,ts,tsx}',
-    '!<rootDir>/*.{spec,test}.{js,jsx,ts,tsx}',
-    '!<rootDir>/*.json',
-    '!<rootDir>/node_modules/**',
-    '!<rootDir>/packages/playground/**',
-    '!<rootDir>/samples/**'
-  ],
+  collectCoverageFrom: ['<rootDir>/packages/*/src/**/*.{js,jsx,ts,tsx}'],
   coverageReporters: ['json', 'lcov', 'text-summary', 'clover', 'cobertura'],
   displayName: { color: 'cyan', name: 'html2' },
-  globals: {
-    npm_package_version: '0.0.0-0.jest'
-  },
+  globals: { npm_package_version: '0.0.0-0.jest' },
   // We only have 4 instances of Chromium running simultaneously.
   maxWorkers: 4,
   moduleFileExtensions: ['html', 'js'],
