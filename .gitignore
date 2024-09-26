@@ -1,4 +1,5 @@
 /__tests__/__image_snapshots__/**/__diff_output__
+/__tests__/html2/**/*.snap-*-diff.png
 /.env
 /*.tgz
 /coverage
