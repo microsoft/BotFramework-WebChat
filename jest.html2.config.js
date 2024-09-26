@@ -5,16 +5,17 @@ module.exports = {
   maxWorkers: 4,
   moduleFileExtensions: ['html', 'js'],
   rootDir: './',
+  roots: ['<rootDir>/'],
   setupFilesAfterEnv: [
     '<rootDir>/__tests__/setup/setupImageSnapshot.js',
     '<rootDir>/__tests__/setup/setupTestNightly.js',
     '<rootDir>/__tests__/setup/setupTimeout.js'
   ],
-  testEnvironment: './packages/test/harness/src/host/jest/WebDriverEnvironment.js',
+  testEnvironment: '<rootDir>/packages/test/harness/src/host/jest/WebDriverEnvironment.js',
   testMatch: ['<rootDir>/__tests__/html2/**/*.html'],
   testPathIgnorePatterns: ['/node_modules/', '<rootDir>/packages/', '<rootDir>/samples/'],
   transform: {
-    '\\.html$': './html2-test-transformer.js',
-    '\\.[jt]sx?$': './babel-jest-config.js'
+    '\\.html$': '<rootDir>/html2-test-transformer.js',
+    '\\.[jt]sx?$': '<rootDir>/babel-jest-config.js'
   }
 };

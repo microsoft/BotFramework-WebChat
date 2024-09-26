@@ -43,6 +43,7 @@ module.exports = {
   moduleDirectories: ['node_modules', 'packages'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   rootDir: './',
+  roots: ['<rootDir>/'],
   setupFilesAfterEnv: [
     '<rootDir>/__tests__/setup/setupDotEnv.js',
     '<rootDir>/__tests__/setup/setupGlobalAgent.js',
@@ -68,10 +69,8 @@ module.exports = {
     '<rootDir>/samples/'
   ],
   transform: {
-    '[\\/]__tests__[\\/]html[\\/]': './babel-passthru-transformer.js',
-    // '\\.html$': './html2-test-transformer.js',
-    // '[\\/]__tests__[\\/]html2[\\/]': './html2-test-transformer.js',
-    '\\.[jt]sx?$': './babel-jest-config.js'
+    '[\\/]__tests__[\\/]html[\\/]': '<rootDir>/babel-passthru-transformer.js',
+    '\\.[jt]sx?$': '<rootDir>/babel-jest-config.js'
   },
   transformIgnorePatterns: [
     // jest-environment-jsdom import packages as browser.
