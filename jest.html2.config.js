@@ -5,7 +5,6 @@ module.exports = {
   maxWorkers: 4,
   moduleFileExtensions: ['html', 'js'],
   rootDir: './',
-  roots: ['<rootDir>/'],
   setupFilesAfterEnv: [
     '<rootDir>/__tests__/setup/setupImageSnapshot.js',
     '<rootDir>/__tests__/setup/setupTestNightly.js',

@@ -43,7 +43,6 @@ module.exports = {
   moduleDirectories: ['node_modules', 'packages'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   rootDir: './',
-  roots: ['<rootDir>/'],
   setupFilesAfterEnv: [
     '<rootDir>/__tests__/setup/setupDotEnv.js',
     '<rootDir>/__tests__/setup/setupGlobalAgent.js',
