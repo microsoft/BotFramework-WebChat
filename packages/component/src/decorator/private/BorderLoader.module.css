@@ -10,21 +10,21 @@
   }
 }
 
-:global(.webchat-fluent) .border-loader {
+:global(.webchat) .border-loader {
   border-radius: inherit;
 }
 
-:global(.webchat-fluent) .border-loader__track {
+:global(.webchat) .border-loader__track {
   --webchat-decorator-borderLoader-borderSize: var(--webchat-borderLoader-borderSize, 4px);
 
-  background-color: var(--webchat-colorNeutralBackground6);
+  background-color: var(--webchat-colorNeutralBackground6, #e6e6e6);
   height: var(--webchat-decorator-borderLoader-borderSize);
   position: relative;
   width: 100%;
 }
 
 
-:global(.webchat-fluent) .border-loader__loader {
+:global(.webchat) .border-loader__loader {
   --webchat-decorator-borderLoader-color1: var(--webchat-borderLoader-color1,
       var(--webchat__border-animation--color-1));
   --webchat-decorator-borderLoader-color2: var(--webchat-borderLoader-color2,

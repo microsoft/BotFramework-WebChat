@@ -9,7 +9,7 @@
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
-  
+
     <style>
       #webchat .border-loader__loader,
       #webchat .border-flair {
@@ -25,7 +25,7 @@
         const {
           React,
           ReactDOM: { render },
-          WebChat: { 
+          WebChat: {
             decorator: { WebChatDecorator },
             ReactWebChat
           }
@@ -34,7 +34,7 @@
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const App = () => <ReactWebChat
-          directLine={directLine} 
+          directLine={directLine}
           store={store}
           styleOptions={{
             bubbleBorderRadius: 10,
@@ -52,23 +52,7 @@
         await pageConditions.uiConnected();
 
         await directLine.emulateIncomingActivity({
-          channelData: {
-            streamType: 'informative'
-          },
-          from: {
-            id: 'u-00001',
-            name: 'Bot',
-            role: 'bot'
-          },
-          id: 'm-00001',
-          text: 'Working on it...',
-          type: 'message'
-        });
-
-        await directLine.emulateIncomingActivity({
-          channelData: {
-            streamType: 'informative'
-          },
+          channelData: { streamSequence: 1, streamType: 'informative' },
           from: {
             id: 'u-00001',
             name: 'Bot',
@@ -79,7 +63,6 @@
           type: 'typing'
         });
 
-        await pageConditions.typingIndicatorShown();
         await pageConditions.numActivitiesShown(1);
         await host.snapshot();
 
@@ -110,15 +93,15 @@
           }
         ];
         await directLine.emulateIncomingActivity({
-          id: 'm-00001',
+          attachments,
+          channelData: { streamId: 't-00001', streamType: 'final' },
           from: {
             id: 'u-00001',
             name: 'Bot',
             role: 'bot'
           },
-          text: 'Work completed!',
-          channelData: { streamType: 'completion' },
-          attachments
+          id: 'm-00001',
+          text: 'Work completed!'
         });
 
         await pageConditions.numActivitiesShown(1);
