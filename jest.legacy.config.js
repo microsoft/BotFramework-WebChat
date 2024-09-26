@@ -117,6 +117,7 @@ module.exports = {
       }
     ]
   ],
+  rootDir: './',
   setupFilesAfterEnv: [
     '<rootDir>/__tests__/setup/setupDotEnv.js',
     '<rootDir>/__tests__/setup/setupGlobalAgent.js',
