@@ -50,6 +50,7 @@ jobs:
           ./babel.config.json
           ./docker-compose-wsl2.yml
           ./jest.config.js
+          ./jest.*.config.js
           ./package-lock.json
           ./package.json
           ./__tests__/
