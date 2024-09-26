@@ -1,3 +1,3 @@
 module.exports = {
-  projects: ['./jest.html2.config.js', './jest.legacy.config.js']
+  projects: ['<rootDir>/jest.html2.config.js', '<rootDir>>/jest.legacy.config.js']
 };
