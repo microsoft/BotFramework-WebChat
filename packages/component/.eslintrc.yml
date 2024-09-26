@@ -5,6 +5,3 @@ extends:
 # This package is expected to run inside a web browser.
 env:
   browser: true
-
-rules:
-  dot-notation: off

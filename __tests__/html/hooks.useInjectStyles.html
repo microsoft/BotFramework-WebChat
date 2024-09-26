@@ -56,7 +56,7 @@
         await renderWithFunction(() => useInjectStyles([styleElement1]));
         await host.snapshot();
 
-        const allInjectedStyles1 = document.head.querySelectorAll('style:not([data-emotion])');
+        const allInjectedStyles1 = document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])');
 
         expect(allInjectedStyles1).toHaveLength(1);
         expect(allInjectedStyles1[0]).toBe(styleElement1);
@@ -64,7 +64,7 @@
         await renderWithFunction(() => useInjectStyles([styleElement1, styleElement2]));
         await host.snapshot();
 
-        const allInjectedStyles2 = document.head.querySelectorAll('style:not([data-emotion])');
+        const allInjectedStyles2 = document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])');
 
         expect(allInjectedStyles2).toHaveLength(2);
         expect(allInjectedStyles2[0]).toBe(styleElement1);
@@ -73,7 +73,7 @@
         await renderWithFunction(() => useInjectStyles([styleElement1, styleElement2, styleElement3]));
         await host.snapshot();
 
-        const allInjectedStyles3 = document.head.querySelectorAll('style:not([data-emotion])');
+        const allInjectedStyles3 = document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])');
 
         expect(allInjectedStyles3).toHaveLength(3);
         expect(allInjectedStyles3[0]).toBe(styleElement1);

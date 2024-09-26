@@ -54,7 +54,7 @@
           await renderWithFunction(() => useInjectStyles([styleElement], '1'));
           await host.snapshot();
 
-          const allInjectedStyles1 = document.head.querySelectorAll('style:not([data-emotion])');
+          const allInjectedStyles1 = document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])');
 
           expect(allInjectedStyles1).toHaveLength(1);
           expect(allInjectedStyles1[0]).toBe(styleElement);
@@ -64,7 +64,7 @@
           // No color should be applied as nonce don't match.
           await host.snapshot();
 
-          const allInjectedStyles2 = document.head.querySelectorAll('style:not([data-emotion])');
+          const allInjectedStyles2 = document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])');
 
           expect(allInjectedStyles2).toHaveLength(1);
           expect(allInjectedStyles2[0]).toBe(styleElement);

@@ -886,17 +886,26 @@ type StyleOptions = {
 
   /**
    * Border animation 1st color
-   * @deprecated since 4.18.0: use `--webchat__animation--border-color-1` CSS variable to adjust the color
+   *
+   * CSS variable: `--webchat__animation--border-color-1` CSS variable to adjust the color
+   *
+   * New in 4.19.0.
    */
   borderAnimationColor1?: string;
   /**
    * Border animation 2nd color
-   * @deprecated since 4.18.0: use `--webchat__animation--border-color-2` CSS variable to adjust the color
+   *
+   * CSS variable: `--webchat__animation--border-color-2` CSS variable to adjust the color
+   *
+   * New in 4.19.0.
    */
   borderAnimationColor2?: string;
   /**
    * Border animation 3rd color
-   * @deprecated since 4.18.0: use `--webchat__animation--border-color-3` CSS variable to adjust the color
+   *
+   * CSS variable: `--webchat__animation--border-color-3` CSS variable to adjust the color
+   *
+   * New in 4.19.0.
    */
   borderAnimationColor3?: string;
 };

@@ -52,8 +52,7 @@
     "./dist/**/*",
     "./*.js",
     "./lib/**/*",
-    "./src/**/*",
-    "./*.js"
+    "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "scripts": {
@@ -77,7 +76,8 @@
   },
   "localDependencies": {
     "botframework-webchat-api": "production",
-    "botframework-webchat-core": "production"
+    "botframework-webchat-core": "production",
+    "botframework-webchat-styles": "production"
   },
   "pinDependencies": {
     "@babel/cli": [
