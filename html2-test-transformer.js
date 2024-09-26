@@ -12,6 +12,5 @@ module.exports = {
           runHTML(${JSON.stringify(`/__tests__/html2/${html}`)}));
       `
     };
-    // return { code: value };
   }
 };
