@@ -49,6 +49,7 @@ jobs:
           ./babel-passthru-transformer.js
           ./babel.config.json
           ./docker-compose-wsl2.yml
+          ./html2-test-transformer.js
           ./jest.config.js
           ./jest.html2.config.js
           ./jest.legacy.config.js
