@@ -4,10 +4,8 @@ export default function createAudioContext(): AudioContext {
     return new window.AudioContext();
 
     // Required by TypeScript.
-    // eslint-disable-next-line dot-notation
   } else if (typeof window['webkitAudioContext'] !== 'undefined') {
     // This is for Safari as Web Audio API is still under vendor-prefixed.
-    // eslint-disable-next-line dot-notation
     return new window['webkitAudioContext']();
   }
 
