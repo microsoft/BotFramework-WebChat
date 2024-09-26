@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 import CustomPropertyNames from './CustomPropertyNames';
-import { useInjectStyles } from '../internal/useInjectStyles';
+import useInjectStyles from '../hooks/internal/useInjectStyles';
 import useNonce from '../hooks/internal/useNonce';
 
 const { useStyleOptions } = hooks;
