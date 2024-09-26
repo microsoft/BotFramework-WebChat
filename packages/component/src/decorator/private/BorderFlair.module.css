@@ -86,7 +86,7 @@
   }
 }
 
-:global(.webchat) .border-flair {
+:global(.webchat-fluent) .border-flair {
   /* Configurable variables */
   --webchat-decorator-borderFlair-color1: var(--webchat-borderFlair-color1, var(--webchat__border-animation--color-1));
   --webchat-decorator-borderFlair-color2: var(--webchat-borderFlair-color2, var(--webchat__border-animation--color-2));
@@ -121,6 +121,10 @@
   mask-composite: intersect;
   pointer-events: none;
   position: absolute;
+}
+
+:global(.webchat-fluent) .border-flair--complete {
+  animation-play-state: paused;
 }
 
 /* Firefox implementation */
@@ -531,7 +535,7 @@
     }
   }
 
-  :global(.webchat) .border-flair {
+  :global(.webchat-fluent) .border-flair {
     --webchat-decorator-borderFlair-animated-angle: calc(0.75 + 2 * var(--webchat-decorator-borderFlair-animated));
     --webchat-decorator-borderFlair-animated-color1: color-mix(in srgb,
         var(--webchat-decorator-borderFlair-color1) calc((1 - abs(var(--webchat-decorator-borderFlair-animated) * 3 - 1.5)) * 100%),

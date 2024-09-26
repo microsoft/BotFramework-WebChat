@@ -1,17 +1,30 @@
-import React, { Fragment, memo, type ReactNode } from 'react';
-
+import React, { Fragment, memo, useCallback, useState, type ReactNode } from 'react';
+import cx from 'classnames';
 import { useStyles } from 'botframework-webchat-styles/react';
+
 import styles from './BorderFlair.module.css';
 
-function Flair({ children }: Readonly<{ children?: ReactNode | undefined }>) {
+function BorderFlair({ children }: Readonly<{ children?: ReactNode | undefined }>) {
   const classNames = useStyles(styles);
+  const [isComplete, setComplete] = useState(false);
+
+  const handleAnimationEnd = useCallback(
+    event =>
+      (event.animationName === styles['borderAnimation-angle'] ||
+        event.animationName === styles['borderFlair-animation']) &&
+      setComplete(true),
+    []
+  );
 
   return (
     <Fragment>
       {children}
-      <div className={classNames['border-flair']} />
+      <div
+        className={cx(classNames['border-flair'], isComplete && classNames['border-flair--complete'])}
+        onAnimationEnd={handleAnimationEnd}
+      />
     </Fragment>
   );
 }
 
-export default memo(Flair);
+export default memo(BorderFlair);
