@@ -7,7 +7,7 @@ function createStyle(content: string) {
 export default function makeCreateStyles(...contents: string[]) {
   return function createStyles() {
     if (!globalThis.document) {
-      return [];
+      throw new Error('Unable to create styles: document is not defined');
     }
 
     return contents.map(content => createStyle(content));
