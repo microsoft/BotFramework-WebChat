@@ -19,6 +19,7 @@
     "./packages/test/harness",
     "./packages/test/web-server",
     "./packages/core",
+    "./packages/styles",
     "./packages/support/cldr-data-downloader",
     "./packages/support/cldr-data",
     "./packages/api",
