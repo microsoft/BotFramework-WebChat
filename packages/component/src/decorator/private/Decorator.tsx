@@ -22,6 +22,7 @@ function WebChatDecorator({ children }: Readonly<{ readonly children?: ReactNode
     <ThemeProvider styles={styles}>
       <DecoratorComposer middleware={middleware}>{children}</DecoratorComposer>
     </ThemeProvider>
-  );}
+  );
+}
 
 export default memo(WebChatDecorator);

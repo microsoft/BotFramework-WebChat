@@ -5,6 +5,18 @@ export interface InjectCSSPluginOptions {
   stylesPlaceholder: string;
 }
 
+function updateMappings(encoded: string, startIndex: number, offset: number) {
+  const mappings = decode(encoded);
+  for (const mapping of mappings) {
+    for (const line of mapping) {
+      if (line[0] > startIndex) {
+        line[0] += offset;
+      }
+    }
+  }
+  return encode(mappings);
+}
+
 export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOptions): Plugin {
   if (!stylesPlaceholder) {
     throw new Error('inject-css-plugin: no placeholder for styles provided');
@@ -27,16 +39,25 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
               const index = jsText.indexOf(stylesPlaceholderQuoted);
               const map = outputFiles.find(f => f.path.replace(/(\.map)$/u, '') === js.path);
 
-              const updatedJsText = [jsText.slice(0, index), cssText, jsText.slice(index + stylesPlaceholderQuoted.length)].join('');
+              const updatedJsText = [
+                jsText.slice(0, index),
+                cssText,
+                jsText.slice(index + stylesPlaceholderQuoted.length)
+              ].join('');
               js.contents = Buffer.from(updatedJsText);
 
+              // eslint-disable-next-line no-magic-numbers
               if (updatedJsText.indexOf(stylesPlaceholder) !== -1) {
-                throw new Error(`Duplicate placeholders are not supported.\nFound ${stylesPlaceholder} in ${js.path}.`)
+                throw new Error(`Duplicate placeholders are not supported.\nFound ${stylesPlaceholder} in ${js.path}.`);
               }
 
               if (map) {
                 const parsed = JSON.parse(map.text);
-                parsed.mappings = updateMappings(parsed.mappings, index, cssText.length - stylesPlaceholderQuoted.length);
+                parsed.mappings = updateMappings(
+                  parsed.mappings,
+                  index,
+                  cssText.length - stylesPlaceholderQuoted.length
+                );
                 map.contents = Buffer.from(JSON.stringify(parsed));
               }
             }
@@ -45,16 +66,4 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
       });
     }
   };
-}
-
-function updateMappings(encoded: string, startIndex: number, offset: number) {
-  const mappings = decode(encoded);
-  for (const mapping of mappings) {
-    for (const line of mapping) {
-      if (line[0] > startIndex) {
-        line[0] += offset;
-      }
-    }
-  }
-  return encode(mappings);
 }

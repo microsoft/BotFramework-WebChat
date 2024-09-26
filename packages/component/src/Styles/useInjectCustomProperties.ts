@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { makeCreateStyles } from 'botframework-webchat-styles';
 import { useMemo } from 'react';
 import CustomPropertyNames from './CustomPropertyNames';
 import useInjectStyles from '../hooks/internal/useInjectStyles';
@@ -47,9 +48,8 @@ export default function useInjectCustomProperties() {
   ${CustomPropertyNames.PaddingRegular}: ${paddingRegular}px;
 }
 `;
-    const style = document.createElement('style');
-    style.append(document.createTextNode(contents));
-    return [[style], `${webchatCustomPropertiesClass} ${randomClass}`];
+    const styles = makeCreateStyles(contents)();
+    return [styles, `${webchatCustomPropertiesClass} ${randomClass}`];
   }, [styleOptions]);
 
   useInjectStyles(styles, nonce);
