@@ -3,6 +3,8 @@ const { join, relative } = require('path');
 module.exports = {
   collectCoverageFrom: ['<rootDir>/packages/*/src/**/*.{js,jsx,ts,tsx}'],
   coverageReporters: ['json', 'lcov', 'text-summary', 'clover', 'cobertura'],
+  // We only have 4 instances of Chromium running simultaneously.
+  maxWorkers: 4,
   projects: ['<rootDir>/jest.html2.config.js', '<rootDir>/jest.legacy.config.js'],
   reporters: [
     'default',
