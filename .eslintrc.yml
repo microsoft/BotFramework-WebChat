@@ -29,6 +29,7 @@ overrides:
 
   - files:
       - 'jest.config.js'
+      - 'jest.*.config.js'
 
     env:
       node: true
