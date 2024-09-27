@@ -1,5 +1,5 @@
-import type { Plugin } from 'esbuild';
 import { decode, encode } from '@jridgewell/sourcemap-codec';
+import type { Plugin } from 'esbuild';
 
 export interface InjectCSSPluginOptions {
   stylesPlaceholder: string;
@@ -7,6 +7,7 @@ export interface InjectCSSPluginOptions {
 
 function updateMappings(encoded: string, startIndex: number, offset: number) {
   const mappings = decode(encoded);
+
   for (const mapping of mappings) {
     for (const line of mapping) {
       if (line[0] > startIndex) {
@@ -14,6 +15,7 @@ function updateMappings(encoded: string, startIndex: number, offset: number) {
       }
     }
   }
+
   return encode(mappings);
 }
 
@@ -33,7 +35,9 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
             const js = file;
             const entryName = js.path.replace(/(\.js|\.mjs)$/u, '');
             const css = outputFiles.find(f => f.path.replace(/(\.css)$/u, '') === entryName);
+
             const jsText = js?.text;
+
             if (css && jsText?.includes(stylesPlaceholderQuoted)) {
               const cssText = JSON.stringify(css.text);
               const index = jsText.indexOf(stylesPlaceholderQuoted);
@@ -44,6 +48,7 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
                 cssText,
                 jsText.slice(index + stylesPlaceholderQuoted.length)
               ].join('');
+
               js.contents = Buffer.from(updatedJsText);
 
               // eslint-disable-next-line no-magic-numbers
@@ -53,11 +58,13 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
 
               if (map) {
                 const parsed = JSON.parse(map.text);
+
                 parsed.mappings = updateMappings(
                   parsed.mappings,
                   index,
                   cssText.length - stylesPlaceholderQuoted.length
                 );
+
                 map.contents = Buffer.from(JSON.stringify(parsed));
               }
             }
