@@ -1,7 +1,7 @@
 import React, { Fragment, memo, useCallback, useState, type ReactNode } from 'react';
 import cx from 'classnames';
+import { useStyles } from 'botframework-webchat-styles/react';
 
-import { useStyles } from '../../../styles';
 import styles from './BorderFlair.module.css';
 
 function BorderFlair({ children }: Readonly<{ children?: ReactNode | undefined }>) {

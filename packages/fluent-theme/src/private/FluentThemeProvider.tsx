@@ -1,5 +1,6 @@
 import type { ActivityMiddleware } from 'botframework-webchat-api';
 import { Components } from 'botframework-webchat-component';
+import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import React, { memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';
@@ -9,7 +10,6 @@ import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
 import { createStyles } from '../styles';
 import VariantComposer, { VariantList } from './VariantComposer';
-import { FluentThemeDecorator } from '../components/decorator';
 import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
 
 const { ThemeProvider } = Components;
@@ -48,7 +48,7 @@ const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
     <WebChatTheme>
       <TelephoneKeypadProvider>
         <ThemeProvider activityMiddleware={activityMiddleware} sendBoxMiddleware={sendBoxMiddleware} styles={styles}>
-          <FluentThemeDecorator>{children}</FluentThemeDecorator>
+          <WebChatDecorator>{children}</WebChatDecorator>
         </ThemeProvider>
       </TelephoneKeypadProvider>
     </WebChatTheme>

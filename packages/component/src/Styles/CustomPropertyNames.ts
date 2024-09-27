@@ -1,5 +1,8 @@
 const CustomPropertyNames = Object.freeze({
   // Make sure key names does not have JavaScript forbidden names.
+  BorderAnimationColor1: '--webchat__border-animation--color-1',
+  BorderAnimationColor2: '--webchat__border-animation--color-2',
+  BorderAnimationColor3: '--webchat__border-animation--color-3',
   ColorAccent: '--webchat__color--accent',
   ColorSubtle: '--webchat__color--subtle',
   ColorTimestamp: '--webchat__color--timestamp',

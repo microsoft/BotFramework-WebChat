@@ -24,6 +24,16 @@
         "types": "./lib/internal.d.ts",
         "default": "./lib/internal.js"
       }
+    },
+    "./decorator": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.decorator.d.mts",
+        "default": "./dist/botframework-webchat-component.decorator.mjs"
+      },
+      "require": {
+        "types": "./lib/decorator/index.d.ts",
+        "default": "./lib/decorator/index.js"
+      }
     }
   },
   "publishConfig": {
@@ -66,7 +76,8 @@
   },
   "localDependencies": {
     "botframework-webchat-api": "production",
-    "botframework-webchat-core": "production"
+    "botframework-webchat-core": "production",
+    "botframework-webchat-styles": "production"
   },
   "pinDependencies": {
     "@babel/cli": [
@@ -132,6 +143,7 @@
     "base64-js": "1.5.1",
     "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
+    "botframework-webchat-styles": "0.0.0-0",
     "classnames": "2.5.1",
     "compute-scroll-into-view": "1.0.20",
     "deep-freeze-strict": "1.1.1",

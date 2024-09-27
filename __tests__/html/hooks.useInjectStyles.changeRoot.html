@@ -52,16 +52,16 @@
         await renderWithFunction(() => useInjectStyles([styleElement]));
         await host.snapshot();
 
-        expect([...document.head.querySelectorAll('style:not([data-emotion])')]).toEqual([styleElement]);
-        expect([...document.body.querySelectorAll('style:not([data-emotion])')]).toEqual([]);
+        expect([...document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])')]).toEqual([styleElement]);
+        expect([...document.body.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])')]).toEqual([]);
 
         await renderWithFunction(() => useInjectStyles([styleElement]), {
           styleOptions: { stylesRoot: document.body }
         });
         await host.snapshot();
 
-        expect([...document.head.querySelectorAll('style:not([data-emotion])')]).toEqual([]);
-        expect([...document.body.querySelectorAll('style:not([data-emotion])')]).toEqual([styleElement]);
+        expect([...document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])')]).toEqual([]);
+        expect([...document.body.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])')]).toEqual([styleElement]);
       });
     </script>
   </body>

@@ -879,6 +879,35 @@ type StyleOptions = {
    * @default document.head
    */
   stylesRoot?: Node;
+
+  /**
+   * Border animation
+   */
+
+  /**
+   * Border animation 1st color
+   *
+   * CSS variable: `--webchat__animation--border-color-1` CSS variable to adjust the color
+   *
+   * New in 4.19.0.
+   */
+  borderAnimationColor1?: string;
+  /**
+   * Border animation 2nd color
+   *
+   * CSS variable: `--webchat__animation--border-color-2` CSS variable to adjust the color
+   *
+   * New in 4.19.0.
+   */
+  borderAnimationColor2?: string;
+  /**
+   * Border animation 3rd color
+   *
+   * CSS variable: `--webchat__animation--border-color-3` CSS variable to adjust the color
+   *
+   * New in 4.19.0.
+   */
+  borderAnimationColor3?: string;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

@@ -1,8 +1,10 @@
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
 import React, { memo, type ReactNode } from 'react';
 
+import ThemeProvider from '../../providers/Theme/ThemeProvider';
 import BorderFlair from './BorderFlair';
 import BorderLoader from './BorderLoader';
+import createStyles from './createStyles';
 
 const middleware: DecoratorMiddleware[] = [
   init =>
@@ -13,8 +15,14 @@ const middleware: DecoratorMiddleware[] = [
     (next => request => (request.livestreamingState === 'preparing' ? BorderLoader : next(request)))
 ];
 
-function FluentThemeDecorator({ children }: Readonly<{ readonly children?: ReactNode | undefined }>) {
-  return <DecoratorComposer middleware={middleware}>{children}</DecoratorComposer>;
+const styles = createStyles();
+
+function WebChatDecorator({ children }: Readonly<{ readonly children?: ReactNode | undefined }>) {
+  return (
+    <ThemeProvider styles={styles}>
+      <DecoratorComposer middleware={middleware}>{children}</DecoratorComposer>
+    </ThemeProvider>
+  );
 }
 
-export default memo(FluentThemeDecorator);
+export default memo(WebChatDecorator);

@@ -1,6 +1,3 @@
-/* eslint dot-notation: ["error", { "allowPattern": "^WebChat$" }] */
-// window['WebChat'] is required for TypeScript
-
 // Importing polyfills required for IE11/ES5.
 import './polyfill';
 

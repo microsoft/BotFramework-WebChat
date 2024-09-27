@@ -14,5 +14,8 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "target": "ESNext"
-  }
+  },
+  "extends": [
+		"botframework-webchat-styles/tsconfig.json"
+	]
 }
