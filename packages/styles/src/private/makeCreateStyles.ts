@@ -1,6 +1,8 @@
 function createStyle(content: string) {
   const style = document.createElement('style');
+
   style.append(document.createTextNode(content));
+
   return style;
 }
 

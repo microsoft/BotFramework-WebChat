@@ -13,7 +13,8 @@ const webchatCustomPropertiesClass = 'webchat__css-custom-properties';
 export default function useCustomPropertiesClassName() {
   const [styleOptions] = useStyleOptions();
   const nonce = useNonce();
-  const [styles, className] = useMemo(() => {
+
+  const [styles, classNameState] = useMemo(() => {
     const {
       accent,
       borderAnimationColor1,
@@ -54,11 +55,13 @@ export default function useCustomPropertiesClassName() {
 }
 `;
     const [style] = makeCreateStyles(contents)();
+
     style.dataset.webchatInjected = 'component';
+
     return [Object.freeze([style]), Object.freeze([`${webchatCustomPropertiesClass} ${randomClass}`] as const)];
   }, [styleOptions]);
 
   useInjectStyles(styles, nonce);
 
-  return className;
+  return classNameState;
 }
