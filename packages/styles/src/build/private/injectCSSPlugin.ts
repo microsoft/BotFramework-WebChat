@@ -32,16 +32,14 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
       build.onEnd(({ outputFiles = [] }) => {
         for (const file of outputFiles) {
           if (file.path.match(/(\.js|\.mjs)$/u)) {
-            const js = file;
-            const entryName = js.path.replace(/(\.js|\.mjs)$/u, '');
+            const entryName = file.path.replace(/(\.js|\.mjs)$/u, '');
             const css = outputFiles.find(f => f.path.replace(/(\.css)$/u, '') === entryName);
 
-            const jsText = js?.text;
-
+            const jsText = file?.text;
             if (css && jsText?.includes(stylesPlaceholderQuoted)) {
               const cssText = JSON.stringify(css.text);
               const index = jsText.indexOf(stylesPlaceholderQuoted);
-              const map = outputFiles.find(f => f.path.replace(/(\.map)$/u, '') === js.path);
+              const map = outputFiles.find(f => f.path.replace(/(\.map)$/u, '') === file.path);
 
               const updatedJsText = [
                 jsText.slice(0, index),
@@ -49,11 +47,13 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
                 jsText.slice(index + stylesPlaceholderQuoted.length)
               ].join('');
 
-              js.contents = Buffer.from(updatedJsText);
+              file.contents = Buffer.from(updatedJsText);
 
               // eslint-disable-next-line no-magic-numbers
               if (updatedJsText.indexOf(stylesPlaceholder) !== -1) {
-                throw new Error(`Duplicate placeholders are not supported.\nFound ${stylesPlaceholder} in ${js.path}.`);
+                throw new Error(
+                  `Duplicate placeholders are not supported.\nFound ${stylesPlaceholder} in ${file.path}.`
+                );
               }
 
               if (map) {
