@@ -1,5 +1,3 @@
-// window['WebChat'] is required for TypeScript
-
 import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
 import * as decorator from 'botframework-webchat-api/decorator';
 import { WebChatDecorator } from 'botframework-webchat-component/decorator';
