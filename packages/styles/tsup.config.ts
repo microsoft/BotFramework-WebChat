@@ -5,8 +5,8 @@ export default defineConfig({
   ...baseConfig,
   entry: {
     'botframework-webchat-styles': './src/index.ts',
-    'botframework-webchat-styles.react': './src/react/index.ts',
-    'botframework-webchat-styles.build': './src/build/index.ts'
+    'botframework-webchat-styles.build': './src/build/index.ts',
+    'botframework-webchat-styles.react': './src/react/index.ts'
   },
   format: ['esm', 'cjs']
 });
