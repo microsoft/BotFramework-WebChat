@@ -1,5 +1,6 @@
 import type { ActivityMiddleware } from 'botframework-webchat-api';
 import { Components } from 'botframework-webchat-component';
+import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import React, { memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';
@@ -10,7 +11,6 @@ import { WebChatTheme } from '../components/theme';
 import { createStyles } from '../styles';
 import VariantComposer, { VariantList } from './VariantComposer';
 import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
-import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 
 const { ThemeProvider } = Components;
 
