@@ -46,7 +46,7 @@ export default defineConfig({
           })
         ]
       : [],
-  format: 'esm',
+  format: ['esm', 'cjs'],
   loader: { '.js': 'jsx' },
   metafile: true,
   minify: env === 'production',

@@ -15,6 +15,7 @@
   "keywords": [],
   "cldr-data-coverage": "full",
   "workspaces": [
+    "./packages/base",
     "./packages/test/dev-server",
     "./packages/test/harness",
     "./packages/test/web-server",
