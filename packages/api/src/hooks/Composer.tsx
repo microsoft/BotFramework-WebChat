@@ -69,7 +69,7 @@ import normalizeLanguage from '../utils/normalizeLanguage';
 import { SendBoxMiddlewareProvider, type SendBoxMiddleware } from './internal/SendBoxMiddleware';
 import { SendBoxToolbarMiddlewareProvider, type SendBoxToolbarMiddleware } from './internal/SendBoxToolbarMiddleware';
 import Tracker from './internal/Tracker';
-import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
+import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
 import defaultSelectVoice from './internal/defaultSelectVoice';
 import applyMiddleware, {
@@ -218,7 +218,7 @@ type ComposerCoreProps = Readonly<{
   attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
   avatarMiddleware?: OneOrMany<AvatarMiddleware>;
   cardActionMiddleware?: OneOrMany<CardActionMiddleware>;
-  children?: ReactNode | ((context: ContextOf<typeof WebChatAPIContext>) => ReactNode);
+  children?: ReactNode | ((context: ContextOf<React.Context<WebChatAPIContextType>>) => ReactNode);
   dir?: string;
   directLine: DirectLineJSBotConnection;
   /**
@@ -543,7 +543,7 @@ const ComposerCore = ({
    *       This context should consist of members that are not in the Redux store
    *       i.e. members that are not interested in other types of UIs
    */
-  const context = useMemo<ContextOf<typeof WebChatAPIContext>>(
+  const context = useMemo<ContextOf<React.Context<WebChatAPIContextType>>>(
     () => ({
       ...cardActionContext,
       ...groupActivitiesContext,
