@@ -5,10 +5,8 @@
     "jsx": "react",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "preserveWatchOutput": true,
-    "pretty": true,
+    "noEmit": true,
     "skipLibCheck": true,
-    "sourceMap": true,
     "target": "ESNext"
   },
   "extends": [

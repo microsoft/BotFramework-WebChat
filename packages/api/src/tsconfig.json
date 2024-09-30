@@ -5,7 +5,7 @@
     "jsx": "react",
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "preserveWatchOutput": true,
+    "noEmit": true,
     "pretty": true,
     "resolveJsonModule": true, // Required for localization files
     "skipLibCheck": true,
