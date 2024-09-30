@@ -4,9 +4,10 @@
   "description": "Direct Line Speech SDK",
   "files": [
     "./dist/**/*",
+    "./lib/**/*",
     "./src/**/*"
   ],
-  "main": "./dist/botframework-directlinespeech-sdk.js",
+  "main": "./lib/index.js",
   "exports": {
     ".": {
       "import": {
@@ -14,8 +15,8 @@
         "default": "./dist/botframework-directlinespeech-sdk.mjs"
       },
       "require": {
-        "types": "./dist/botframework-directlinespeech-sdk.d.ts",
-        "default": "./dist/botframework-directlinespeech-sdk.js"
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.js"
       }
     }
   },
@@ -44,9 +45,7 @@
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
-  "localDependencies": {
-    "botframework-webchat-base": "development"
-  },
+  "localDependencies": {},
   "pinDependencies": {
     "@babel/cli": [
       "7.18.10",
@@ -91,7 +90,6 @@
     "babel-jest": "^29.7.0",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "botframework-webchat-base": "0.0.0-0",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
