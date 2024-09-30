@@ -15,14 +15,13 @@
         "default": "./dist/botframework-directlinespeech-sdk.mjs"
       },
       "require": {
-        "types": "./lib/index.d.ts",
-        "default": "./lib/index.js"
+        "types": "./dist/botframework-directlinespeech-sdk.d.ts",
+        "default": "./dist/botframework-directlinespeech-sdk.js"
       }
     }
   },
   "scripts": {
-    "build": "npm run build:tsup && npm run build:babel && npm run build:webpack",
-    "build:babel": "cross-env build_tool=babel module_format=commonjs babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
+    "build": "npm run build:tsup && npm run build:webpack",
     "build:tsup": "tsup --config ./tsup.config.ts",
     "build:webpack": "npm run build:webpack:development && npm run build:webpack:production",
     "build:webpack:development": "cross-env node_env=development webpack-cli",
@@ -37,7 +36,6 @@
     "prettier": "prettier --check src/**/*.{js,ts}",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
-    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:serve": "serve",
     "start:tsup": "npm run build:tsup -- --watch",
     "start:webpack": "npm run build:webpack:development -- --watch",
@@ -45,7 +43,9 @@
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
-  "localDependencies": {},
+  "localDependencies": {
+    "botframework-webchat-base": "development"
+  },
   "pinDependencies": {
     "@babel/cli": [
       "7.18.10",
@@ -90,6 +90,7 @@
     "babel-jest": "^29.7.0",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
+    "botframework-webchat-base": "0.0.0-0",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",

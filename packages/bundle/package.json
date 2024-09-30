@@ -2,8 +2,8 @@
   "name": "botframework-webchat",
   "version": "0.0.0-0",
   "description": "A highly-customizable web-based chat client for Azure Bot Services.",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./dist/botframework-webchat.js",
+  "types": "./dist/botframework-webchat.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -11,8 +11,8 @@
         "default": "./dist/botframework-webchat.mjs"
       },
       "require": {
-        "types": "./lib/index.d.ts",
-        "default": "./lib/index.js"
+        "types": "./dist/botframework-webchat.d.ts",
+        "default": "./dist/botframework-webchat.js"
       }
     }
   },
@@ -31,7 +31,6 @@
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/#readme",
   "files": [
     "./dist/**/*",
-    "./lib/**/*",
     "./src/**/*"
   ],
   "tsd": {
@@ -46,10 +45,8 @@
     }
   },
   "scripts": {
-    "build": "npm run build:tsup && npm run build:typescript && npm run build:babel && npm run build:webpack",
-    "build:babel": "cross-env build_tool=babel module_format=commonjs babel src --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --verbose",
+    "build": "npm run build:tsup && npm run build:webpack",
     "build:tsup": "tsup --config ./tsup.config.ts",
-    "build:typescript": "tsc --project src/tsconfig.json",
     "build:webpack": "webpack-cli",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
@@ -68,6 +65,7 @@
   },
   "localDependencies": {
     "botframework-directlinespeech-sdk": "production",
+    "botframework-webchat-base": "development",
     "botframework-webchat-api": "production",
     "botframework-webchat-component": "production",
     "botframework-webchat-core": "production",
@@ -170,6 +168,7 @@
     "babel-loader": "^9.1.3",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
+    "botframework-webchat-base": "0.0.0-0",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "esbuild": "^0.21.1",
