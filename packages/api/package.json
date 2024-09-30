@@ -2,8 +2,8 @@
   "name": "botframework-webchat-api",
   "version": "0.0.0-0",
   "description": "React DOM component of botframework-webchat",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./dist/botframework-webchat-api.js",
+  "types": "./dist/botframework-webchat-api.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -51,7 +51,6 @@
   "files": [
     "./dist/**/*",
     "./*.js",
-    "./lib/**/*",
     "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",

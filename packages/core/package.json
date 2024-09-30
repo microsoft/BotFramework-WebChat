@@ -2,8 +2,8 @@
   "name": "botframework-webchat-core",
   "version": "0.0.0-0",
   "description": "Core of botframework-webchat",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./dist/botframework-webchat-core.js",
+  "types": "./dist/botframework-webchat-core.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -11,8 +11,8 @@
         "default": "./dist/botframework-webchat-core.mjs"
       },
       "require": {
-        "types": "./lib/index.d.ts",
-        "default": "./lib/index.js"
+        "types": "./dist/botframework-webchat-core.d.ts",
+        "default": "./dist/botframework-webchat-core.js"
       }
     }
   },
@@ -30,7 +30,6 @@
   },
   "files": [
     "./dist/**/*",
-    "./lib/**/*",
     "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/packages/core#readme",

@@ -4,10 +4,9 @@
   "description": "Direct Line Speech SDK",
   "files": [
     "./dist/**/*",
-    "./lib/**/*",
     "./src/**/*"
   ],
-  "main": "./lib/index.js",
+  "main": "./dist/botframework-directlinespeech-sdk.js",
   "exports": {
     ".": {
       "import": {
@@ -21,7 +20,8 @@
     }
   },
   "scripts": {
-    "build": "npm run build:tsup && npm run build:webpack",
+    "build": "npm run build:tsup && npm run build:babel && npm run build:webpack",
+    "build:babel": "cross-env build_tool=babel module_format=commonjs babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
     "build:tsup": "tsup --config ./tsup.config.ts",
     "build:webpack": "npm run build:webpack:development && npm run build:webpack:production",
     "build:webpack:development": "cross-env node_env=development webpack-cli",
@@ -36,6 +36,7 @@
     "prettier": "prettier --check src/**/*.{js,ts}",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
+    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:serve": "serve",
     "start:tsup": "npm run build:tsup -- --watch",
     "start:webpack": "npm run build:webpack:development -- --watch",

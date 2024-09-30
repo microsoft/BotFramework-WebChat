@@ -2,8 +2,8 @@
   "name": "botframework-webchat-component",
   "version": "0.0.0-0",
   "description": "React component of botframework-webchat",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./dist/botframework-webchat-component.js",
+  "types": "./dist/botframework-webchat-component.d.ts",
   "exports": {
     ".": {
       "import": {
