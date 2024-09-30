@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "declarationDir": "../lib",
-    "declarationMap": true,
     "downlevelIteration": true,
-    "emitDeclarationOnly": true,
     "jsx": "react",
     "module": "ESNext",
     "moduleResolution": "Bundler",
