@@ -34,5 +34,6 @@ export default defineConfig({
     'memoize-one',
     'microsoft-cognitiveservices-speech-sdk',
     'web-speech-cognitive-services'
-  ]
+  ],
+  format: ['esm', 'cjs']
 });
