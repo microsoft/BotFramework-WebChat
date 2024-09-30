@@ -22,7 +22,7 @@
       },
       "require": {
         "types": "./dist/botframework-webchat-component.internal.d.ts",
-        "default": "./dist/botframework-webchat-component.internal.d.js"
+        "default": "./dist/botframework-webchat-component.internal.js"
       }
     },
     "./decorator": {
