@@ -6,5 +6,6 @@ export default defineConfig({
   entry: {
     'botframework-webchat-base': './src/index.ts',
     'botframework-webchat-base.utils': './src/utils/index.ts'
-  }
+  },
+  format: ['esm', 'cjs']
 });

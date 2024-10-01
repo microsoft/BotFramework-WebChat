@@ -55,6 +55,9 @@
     "./src/**/*",
     "*.js"
   ],
+  "localDependencies": {
+    "botframework-webchat-base": "development"
+  },
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/styles#readme",
   "scripts": {
     "build": "npm run build:tsup",
@@ -76,6 +79,7 @@
     "@jridgewell/sourcemap-codec": "^1.4.15",
     "@tsconfig/strictest": "^2.0.5",
     "@types/node": "^20.10.3",
+    "botframework-webchat-base": "0.0.0-0",
     "cross-env": "^7.0.3",
     "type-fest": "^4.14.0",
     "typescript": "^5.3.2"
