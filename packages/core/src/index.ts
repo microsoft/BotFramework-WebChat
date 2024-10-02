@@ -1,3 +1,5 @@
+import { withResolvers, type PromiseWithResolvers } from 'botframework-webchat-base/utils';
+
 import clearSuggestedActions from './actions/clearSuggestedActions';
 import connect from './actions/connect';
 import disconnect from './actions/disconnect';
@@ -43,7 +45,6 @@ import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import onErrorResumeNext from './utils/onErrorResumeNext';
 import singleToArray from './utils/singleToArray';
 import warnOnce from './utils/warnOnce';
-import withResolvers, { type PromiseWithResolvers } from './utils/withResolvers';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 import type { SendBoxAttachment } from './types/SendBoxAttachment';

@@ -23,7 +23,7 @@ import { ScrollToEndButtonComponentFactory } from '../../types/ScrollToEndButton
 import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
 import { RenderToast } from '../../types/ToastMiddleware';
 
-type WebChatAPIContext = {
+export type WebChatAPIContextType = {
   activityRenderer?: LegacyActivityRenderer;
   activityStatusRenderer: RenderActivityStatus;
   attachmentForScreenReaderRenderer?: AttachmentForScreenReaderComponentFactory;
@@ -88,7 +88,7 @@ type WebChatAPIContext = {
   username?: string;
 };
 
-const context = createContext<WebChatAPIContext>(undefined);
+const context = createContext<WebChatAPIContextType>(undefined);
 
 context.displayName = 'WebChatAPIContext';
 

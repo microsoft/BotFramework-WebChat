@@ -2,8 +2,8 @@
   "name": "botframework-webchat-api",
   "version": "0.0.0-0",
   "description": "React DOM component of botframework-webchat",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./dist/botframework-webchat-api.js",
+  "types": "./dist/botframework-webchat-api.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -11,8 +11,8 @@
         "default": "./dist/botframework-webchat-api.mjs"
       },
       "require": {
-        "types": "./lib/index.d.ts",
-        "default": "./lib/index.js"
+        "types": "./dist/botframework-webchat-api.d.ts",
+        "default": "./dist/botframework-webchat-api.js"
       }
     },
     "./internal": {
@@ -21,8 +21,8 @@
         "default": "./dist/botframework-webchat-api.internal.mjs"
       },
       "require": {
-        "types": "./lib/internal.d.ts",
-        "default": "./lib/internal.js"
+        "types": "./dist/botframework-webchat-api.internal.d.ts",
+        "default": "./dist/botframework-webchat-api.internal.js"
       }
     },
     "./decorator": {
@@ -31,8 +31,8 @@
         "default": "./dist/botframework-webchat-api.decorator.mjs"
       },
       "require": {
-        "types": "./lib/decorator/index.d.ts",
-        "default": "./lib/decorator/index.js"
+        "types": "./dist/botframework-webchat-api.decorator.d.ts",
+        "default": "./dist/botframework-webchat-api.decorator.js"
       }
     }
   },
@@ -51,16 +51,13 @@
   "files": [
     "./dist/**/*",
     "./*.js",
-    "./lib/**/*",
     "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "scripts": {
-    "build": "npm run build:globalize && npm run build:tsup && npm run build:typescript && npm run build:babel",
-    "build:babel": "cross-env build_tool=babel module_format=commonjs babel src --copy-files --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --no-copy-ignored --out-dir lib --verbose",
+    "build": "npm run build:globalize && npm run build:tsup",
     "build:globalize": "node scripts/createPrecompiledGlobalize.mjs",
     "build:tsup": "tsup --config ./tsup.config.ts",
-    "build:typescript": "tsc --project src/tsconfig.json",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -71,9 +68,7 @@
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
-    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
-    "start:tsup": "npm run build:tsup -- --watch",
-    "start:typescript": "npm run build:typescript -- --watch"
+    "start:tsup": "npm run build:tsup -- --watch"
   },
   "localDependencies": {
     "botframework-webchat-cldr-data": "development",

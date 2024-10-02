@@ -1,3 +1,4 @@
+// @ts-expect-error: no types available
 import coreJSWithResolvers from 'core-js-pure/features/promise/with-resolvers.js';
 
 export type PromiseWithResolvers<T> = {

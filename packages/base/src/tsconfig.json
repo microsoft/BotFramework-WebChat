@@ -1,13 +1,12 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
+    "checkJs": false,
     "jsx": "react",
-    "module": "ESNext",
     "moduleResolution": "Bundler",
     "noEmit": true,
-    "resolveJsonModule": true, // Required for localization files
     "skipLibCheck": true,
     "target": "ESNext"
   },
-  "files": ["index.ts"]
+  "extends": "@tsconfig/strictest/tsconfig.json"
 }

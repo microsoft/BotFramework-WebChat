@@ -8,5 +8,6 @@ export default defineConfig({
     'botframework-webchat-api.internal': './src/internal.ts',
     'botframework-webchat-api.decorator': './src/decorator/index.ts'
   },
-  noExternal: ['globalize']
+  noExternal: ['globalize'],
+  format: ['esm', 'cjs']
 });

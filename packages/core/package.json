@@ -2,8 +2,8 @@
   "name": "botframework-webchat-core",
   "version": "0.0.0-0",
   "description": "Core of botframework-webchat",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
+  "main": "./dist/botframework-webchat-core.js",
+  "types": "./dist/botframework-webchat-core.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -11,8 +11,8 @@
         "default": "./dist/botframework-webchat-core.mjs"
       },
       "require": {
-        "types": "./lib/index.d.ts",
-        "default": "./lib/index.js"
+        "types": "./dist/botframework-webchat-core.d.ts",
+        "default": "./dist/botframework-webchat-core.js"
       }
     }
   },
@@ -30,7 +30,6 @@
   },
   "files": [
     "./dist/**/*",
-    "./lib/**/*",
     "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/packages/core#readme",
@@ -46,10 +45,8 @@
     }
   },
   "scripts": {
-    "build": "npm run build:tsup && npm run build:typescript && npm run build:babel",
-    "build:babel": "cross-env build_tool=babel module_format=commonjs babel src --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --verbose",
+    "build": "npm run build:tsup",
     "build:tsup": "tsup --config ./tsup.config.ts",
-    "build:typescript": "tsc --project src/tsconfig.json",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -67,7 +64,9 @@
   "engines": {
     "node": ">=12.0.0"
   },
-  "localDependences": {},
+  "localDependences": {
+    "botframework-webchat-base": "development"
+  },
   "pinDependencies": {
     "@babel/cli": [
       "7.18.10",
@@ -104,6 +103,7 @@
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "botframework-directlinejs": "^0.15.5",
+    "botframework-webchat-base": "0.0.0-0",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "tsd": "^0.31.0",
@@ -113,7 +113,6 @@
   "dependencies": {
     "@babel/runtime": "7.19.0",
     "@redux-devtools/extension": "3.3.0",
-    "core-js-pure": "3.38.1",
     "jwt-decode": "4.0.0",
     "math-random": "2.0.1",
     "mime": "4.0.3",

@@ -1,48 +1,33 @@
 {
-  "name": "botframework-webchat-styles",
+  "name": "botframework-webchat-base",
   "version": "0.0.0-0",
-  "description": "The botframework-webchat styles package",
-  "main": "./dist/botframework-webchat-styles.js",
-  "types": "./dist/botframework-webchat-styles.d.ts",
+  "description": "Base botframework-webchat package",
+  "main": "./dist/botframework-webchat-base.js",
+  "types": "./dist/botframework-webchat-base.d.ts",
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/botframework-webchat-styles.d.mts",
-        "default": "./dist/botframework-webchat-styles.mjs"
+        "types": "./dist/botframework-webchat-base.d.mts",
+        "default": "./dist/botframework-webchat-base.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-styles.d.ts",
-        "default": "./dist/botframework-webchat-styles.js"
+        "types": "./dist/botframework-webchat-base.d.ts",
+        "default": "./dist/botframework-webchat-base.js"
       }
     },
-    "./build": {
+    "./utils": {
       "import": {
-        "types": "./dist/botframework-webchat-styles.build.d.mts",
-        "default": "./dist/botframework-webchat-styles.build.mjs"
+        "types": "./dist/botframework-webchat-base.utils.d.mts",
+        "default": "./dist/botframework-webchat-base.utils.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-styles.build.d.ts",
-        "default": "./dist/botframework-webchat-styles.build.js"
+        "types": "./dist/botframework-webchat-base.utils.d.ts",
+        "default": "./dist/botframework-webchat-base.utils.js"
       }
-    },
-    "./react": {
-      "import": {
-        "types": "./dist/botframework-webchat-styles.react.d.mts",
-        "default": "./dist/botframework-webchat-styles.react.mjs"
-      },
-      "require": {
-        "types": "./dist/botframework-webchat-styles.react.d.ts",
-        "default": "./dist/botframework-webchat-styles.react.js"
-      }
-    },
-    "./tsconfig.json": "./src/ts-config/config.json",
-    "./env": {
-      "types": "./src/env.d.ts"
     }
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/microsoft/BotFramework-WebChat.git"
@@ -55,10 +40,8 @@
     "./src/**/*",
     "*.js"
   ],
-  "localDependencies": {
-    "botframework-webchat-base": "development"
-  },
-  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/styles#readme",
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
+  "private": true,
   "scripts": {
     "build": "npm run build:tsup",
     "build:tsup": "tsup --config ./tsup.config.ts",
@@ -72,19 +55,14 @@
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
-    "start:tsup": "npm run build:tsup -- --watch",
-    "start:typescript": "npm run build:typescript -- --watch"
+    "start:tsup": "npm run build:tsup -- --watch"
   },
   "devDependencies": {
-    "@jridgewell/sourcemap-codec": "^1.4.15",
     "@tsconfig/strictest": "^2.0.5",
     "@types/node": "^20.10.3",
-    "botframework-webchat-base": "0.0.0-0",
+    "core-js-pure": "3.38.1",
     "cross-env": "^7.0.3",
-    "type-fest": "^4.14.0",
+    "type-fest": "^4.18.2",
     "typescript": "^5.3.2"
-  },
-  "peerDependencies": {
-    "react": ">= 16.8.6"
   }
 }

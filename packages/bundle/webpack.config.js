@@ -120,10 +120,10 @@ if (node_env !== 'production' && node_env !== 'test') {
         {
           enforce: 'pre',
           include: [
-            join(__dirname, './lib'),
-            join(__dirname, '../component/lib'),
-            join(__dirname, '../core/lib'),
-            join(__dirname, '../directlinespeech/lib')
+            join(__dirname, './dist'),
+            join(__dirname, '../component/dist'),
+            join(__dirname, '../core/dist'),
+            join(__dirname, '../directlinespeech/dist')
           ],
           test: /\.js$/iu,
           use: ['source-map-loader']
