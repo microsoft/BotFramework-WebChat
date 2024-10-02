@@ -31,16 +31,16 @@
   }
 
   @media (hover: hover) {
-    &:not([aria-disabled="true"]):hover {
+    &:not([aria-disabled='true']):hover {
       color: var(--webchat-colorNeutralForeground2BrandHover);
     }
   }
 
-  &:not([aria-disabled="true"]):active {
+  &:not([aria-disabled='true']):active {
     color: var(--webchat-colorNeutralForeground2BrandPressed);
   }
 
-  &[aria-disabled="true"] {
+  &[aria-disabled='true'] {
     color: var(--webchat-colorNeutralForegroundDisabled);
     cursor: not-allowed;
   }
@@ -51,7 +51,9 @@
   border-inline-end: 1px solid var(--webchat-colorNeutralStroke2);
   height: 28px;
 
-  &:first-child, &:last-child, &:only-child {
-    display: none
+  &:first-child,
+  &:last-child,
+  &:only-child {
+    display: none;
   }
 }
