@@ -97,8 +97,27 @@
   --webchat-spacingVerticalXXXL: var(--spacingVerticalXXXL, 32px);
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts */
-  --webchat-fontFamilyBase: var(--fontFamilyBase, 'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif);
-  --webchat-fontFamilyNumeric: var(--fontFamilyNumeric, Bahnschrift, 'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif);
+  --webchat-fontFamilyBase: var(
+    --fontFamilyBase,
+    'Segoe UI',
+    'Segoe UI Web (West European)',
+    -apple-system,
+    BlinkMacSystemFont,
+    Roboto,
+    'Helvetica Neue',
+    sans-serif
+  );
+  --webchat-fontFamilyNumeric: var(
+    --fontFamilyNumeric,
+    Bahnschrift,
+    'Segoe UI',
+    'Segoe UI Web (West European)',
+    -apple-system,
+    BlinkMacSystemFont,
+    Roboto,
+    'Helvetica Neue',
+    sans-serif
+  );
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/fonts.ts */
   --webchat-fontWeightRegular: var(--fontWeightRegular, 400);
@@ -143,8 +162,8 @@
   --webchat-durationUltraSlow: var(--durationUltraSlow, 500ms);
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/curves.ts */
-  --webchat-curveAccelerateMid: var(--curveAccelerateMid, cubic-bezier(1,0,1,1));
-  --webchat-curveDecelerateMid: var(--curveDecelerateMid, cubic-bezier(0,0,0,1));
+  --webchat-curveAccelerateMid: var(--curveAccelerateMid, cubic-bezier(1, 0, 1, 1));
+  --webchat-curveDecelerateMid: var(--curveDecelerateMid, cubic-bezier(0, 0, 0, 1));
 }
 
 @media (prefers-reduced-motion) {
@@ -167,22 +186,17 @@
   --webchat__max-width--bubble: var(--webchat-bubble-maxWidth);
   --webchat__min-height--bubble: var(--webchat-bubble-minHeight);
   --webchat__padding--regular: var(--webchat-spacingVerticalS);
-  --webchat__padding--sendbox:
-    var(--webchat-spacingVerticalNone)
-    var(--webchat-spacingHorizontalMNudge)
+  --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalMNudge)
     var(--webchat-spacingHorizontalMNudge);
 
-  --webchat__border-animation--color-1: #464FEB;
-  --webchat__border-animation--color-2: #47CFFA;
-  --webchat__border-animation--color-3: #B47CF8;
+  --webchat__border-animation--color-1: #464feb;
+  --webchat__border-animation--color-2: #47cffa;
+  --webchat__border-animation--color-3: #b47cf8;
 }
 
 :global(.webchat-fluent).theme.variant-copilot :global(.webchat__css-custom-properties) {
-  --webchat__padding--sendbox:
-    var(--webchat-spacingVerticalNone)
-    var(--webchat-spacingHorizontalXL)
-    var(--webchat-spacingVerticalMNudge)
-    var(--webchat-spacingHorizontalMNudge);
+  --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalXL)
+    var(--webchat-spacingVerticalMNudge) var(--webchat-spacingHorizontalMNudge);
 }
 
 /* Transcript surface */
@@ -230,23 +244,31 @@
   }
 }
 
-:global(.webchat-fluent).theme.variant-copilot :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable) {
+:global(.webchat-fluent).theme.variant-copilot
+  :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable) {
   scrollbar-gutter: stable;
 }
 
 /* Transcript focus indicator color when in focus-visible state */
-:global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__terminator:focus-visible + .webchat__basic-transcript__focus-indicator) {
+:global(.webchat-fluent).theme
+  :global(
+    .webchat__basic-transcript
+    .webchat__basic-transcript__terminator:focus-visible
+    + .webchat__basic-transcript__focus-indicator
+  ) {
   border-color: var(--webchat-colorStrokeFocus2);
 }
 
 /* Transcript Activity indicator without focus-visible state */
-:global(.webchat-fluent).theme :global(.webchat__basic-transcript:not(:focus-visible) .webchat__basic-transcript__activity-indicator--focus) {
+:global(.webchat-fluent).theme
+  :global(.webchat__basic-transcript:not(:focus-visible) .webchat__basic-transcript__activity-indicator--focus) {
   /* Hide activity focus when no focus-visible state */
   display: none;
 }
 
 /* Transcript Focus indicator when activity focused */
-:global(.webchat-fluent).theme :global(.webchat__basic-transcript:focus-visible:has(.webchat__basic-transcript__activity-indicator--focus)) {
+:global(.webchat-fluent).theme
+  :global(.webchat__basic-transcript:focus-visible:has(.webchat__basic-transcript__activity-indicator--focus)) {
   :global(.webchat__basic-transcript__focus-indicator) {
     /* Hide transcript focus when an activity is focused */
     display: none;
@@ -254,13 +276,17 @@
 }
 
 /* Transcript focused activity */
-:global(.webchat-fluent).theme :global(.webchat__basic-transcript:focus-visible .webchat__basic-transcript__activity:has(.webchat__basic-transcript__activity-indicator--focus)) {
+:global(.webchat-fluent).theme
+  :global(
+    .webchat__basic-transcript:focus-visible
+    .webchat__basic-transcript__activity:has(.webchat__basic-transcript__activity-indicator--focus)
+  ) {
   :global(.webchat__basic-transcript__activity-indicator--focus) {
     /* Hide transcript activity focus when the activity is focused */
     display: none;
   }
 
-  :global(.webchat__bubble)::after, 
+  :global(.webchat__bubble)::after,
   :global(.pre-chat-message-activity)::after {
     border-radius: var(--webchat__bubble--border-radius);
     content: '';
@@ -290,7 +316,11 @@
 }
 
 /* Transcript with a single pre-chat activity */
-:global(.webchat-fluent).theme :global(.webchat__basic-transcript:has(.webchat__basic-transcript__activity:only-child):has(.pre-chat-message-activity) .webchat__basic-transcript__filler) {
+:global(.webchat-fluent).theme
+  :global(
+    .webchat__basic-transcript:has(.webchat__basic-transcript__activity:only-child):has(.pre-chat-message-activity)
+    .webchat__basic-transcript__filler
+  ) {
   /* limit grow to half of the size to center the activity */
   flex-grow: 0.5;
 }
@@ -367,7 +397,7 @@
     outline-offset: calc(var(--webchat-strokeWidthThick) * -1);
   }
 
-  &[aria-disabled="true"] {
+  &[aria-disabled='true'] {
     background: var(--webchat-colorNeutralBackgroundDisabled);
     border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStrokeDisabled);
     color: var(--webchat-colorNeutralForegroundDisabled);
