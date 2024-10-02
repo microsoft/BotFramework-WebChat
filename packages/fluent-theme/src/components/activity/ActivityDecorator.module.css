@@ -1,4 +1,3 @@
-
 :global(.webchat-fluent) .activity-decorator {
   display: contents;
   font-family: var(--webchat__font--primary);
@@ -10,7 +9,11 @@
 
   --webchat-bubble-maxWidth: var(--bubble-maxWidth, 450px);
   --webchat-bubble-minHeight: var(--bubble-minHeight, 36px);
-  --webchat-externalLink-mask: var(--externalLink-mask, var(--webchat__icon-url--external-link) center center / 10px 10px);
+  --webchat-externalLink-mask: var(
+    --externalLink-mask,
+    var(--webchat__icon-url--external-link) center center /
+    10px 10px
+  );
   --webchat-externalLink-maxWidth: var(--externalLink-maxWidth, 204px);
 
   /* Override for stacked layout message which has user message bubble props */
@@ -49,7 +52,7 @@
   }
 }
 
-/* Decorator copilot variant which has bot message */  
+/* Decorator copilot variant which has bot message */
 :global(.webchat-fluent) .activity-decorator.variant-copilot:not(:has(:global(.webchat__bubble--from-user))) {
   --webchat__bubble--block-padding: 0;
   --webchat__bubble--border-radius: var(--webchat-borderRadiusMedium);
@@ -116,7 +119,9 @@
 }
 
 /* Stacked layout which has message bubble */
-:global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__stacked-layout__content:has(.webchat__bubble)) {
+:global(.webchat-fluent)
+  .activity-decorator
+  :global(.webchat__stacked-layout .webchat__stacked-layout__content:has(.webchat__bubble)) {
   max-width: 100%;
   overflow: visible;
 }
@@ -134,7 +139,9 @@
 }
 
 /* Message bubble content */
-:global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__bubble__content) {
+:global(.webchat-fluent)
+  .activity-decorator
+  :global(.webchat__stacked-layout .webchat__bubble .webchat__bubble__content) {
   background-color: var(--webchat__bubble--background-color);
   border-radius: var(--webchat__bubble--border-radius);
   border-width: 0;
@@ -157,13 +164,15 @@
     padding-block-end: 0;
   }
 
-  +:global(.webchat__text-content) {
+  + :global(.webchat__text-content) {
     margin-top: calc(var(--webchat__bubble--block-padding) * -1);
   }
 }
 
 /* Message bubble text content generated badge */
-:global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__text-content__generated-badge) {
+:global(.webchat-fluent)
+  .activity-decorator
+  :global(.webchat__stacked-layout .webchat__bubble .webchat__text-content__generated-badge) {
   align-items: center;
   align-self: flex-start;
   background-color: var(--webchat-colorNeutralBackground5);
@@ -179,7 +188,9 @@
 }
 
 /* Message bubble attachment content */
-:global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble .webchat__fileContent__badge) {
+:global(.webchat-fluent)
+  .activity-decorator
+  :global(.webchat__stacked-layout .webchat__bubble .webchat__fileContent__badge) {
   cursor: default;
   font-size: var(--webchat-fontSizeBase300);
   line-height: var(--webchat-lineHeightBase300);
@@ -201,7 +212,10 @@
 }
 
 /* Markdown links and citation links */
-:global(.webchat-fluent) .activity-decorator :global(.webchat__render-markdown) a[href]:not(:global(.webchat__render-markdown__pure-identifier)) {
+:global(.webchat-fluent)
+  .activity-decorator
+  :global(.webchat__render-markdown)
+  a[href]:not(:global(.webchat__render-markdown__pure-identifier)) {
   color: var(--webchat-colorBrandForegroundLink);
   text-decoration-color: transparent;
 
@@ -231,8 +245,14 @@
 }
 
 /* Citation inline references */
-:global(.webchat-fluent) .activity-decorator :global(.webchat__render-markdown) :global(.webchat__render-markdown__citation),
-:global(.webchat-fluent) .activity-decorator :global(.webchat__render-markdown) :global(.webchat__render-markdown__pure-identifier) {
+:global(.webchat-fluent)
+  .activity-decorator
+  :global(.webchat__render-markdown)
+  :global(.webchat__render-markdown__citation),
+:global(.webchat-fluent)
+  .activity-decorator
+  :global(.webchat__render-markdown)
+  :global(.webchat__render-markdown__pure-identifier) {
   align-items: center;
   background-color: var(--webchat-colorNeutralBackground3);
   border-radius: var(--webchat-borderRadiusMedium);
@@ -265,7 +285,8 @@
     color: var(--webchat-colorBrandForeground2Pressed);
   }
 
-  &::before, &::after {
+  &::before,
+  &::after {
     all: unset;
   }
 
@@ -284,7 +305,7 @@
 /* Citation summary chevron */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__link-definitions__header) {
   border-radius: var(--webchat-borderRadiusMedium);
-  
+
   :global(.webchat__link-definitions__header-text) {
     color: var(--webchat-colorNeutralForeground3);
   }
@@ -375,7 +396,9 @@
     text-overflow: ellipsis;
   }
 
-  :global(.webchat__link-definitions__list-item-main-text):has(:global(.webchat__link-definitions__open-in-new-window-icon))::before {
+  :global(.webchat__link-definitions__list-item-main-text):has(
+      :global(.webchat__link-definitions__open-in-new-window-icon)
+    )::before {
     align-self: center;
     background: currentColor;
     color: currentColor;

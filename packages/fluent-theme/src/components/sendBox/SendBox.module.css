@@ -28,14 +28,13 @@
   grid-template:
     [telephone-keypad-start] 'text-area' [telephone-keypad-end]
     var(--webchat-sendbox-attachment-area-active)
-    'controls' / [telephone-keypad] 1fr
-  ;
+    'controls' / [telephone-keypad] 1fr;
   line-height: 20px;
   padding: 8px;
   position: relative;
 
   &:has(.sendbox__attachment--in-grid) {
-    --webchat-sendbox-attachment-area-active: 'attachment'
+    --webchat-sendbox-attachment-area-active: 'attachment';
   }
 
   &:focus-within {
@@ -48,7 +47,7 @@
     border-bottom: var(--webchat-strokeWidthThicker) solid var(--webchat-colorCompoundBrandForeground1Hover);
     bottom: -1px;
     clip-path: inset(calc(100% - var(--webchat-strokeWidthThicker)) 50% 0 50%);
-    content: "";
+    content: '';
     height: var(--webchat-sendbox-border-radius);
     left: -1px;
     position: absolute;
