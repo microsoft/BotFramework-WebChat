@@ -2,7 +2,10 @@ import { onErrorResumeNext } from 'botframework-webchat-core';
 import MarkdownIt from 'markdown-it';
 import sanitizeHTML from 'sanitize-html';
 
-import { parseDocumentFromString, serializeDocumentIntoString } from 'botframework-webchat-component/internal';
+import {
+  parseDocumentFragmentFromString,
+  serializeDocumentFragmentIntoString
+} from 'botframework-webchat-component/internal';
 import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdownItPlugins/ariaLabel';
 import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
@@ -148,11 +151,11 @@ export default function render(
   //       Particularly, apply them at `useRenderMarkdownAsHTML` instead of inside the default `renderMarkdown`.
   //       If web devs want to bring their own Markdown engine, they don't need to rebuild "better link" and sanitization themselves.
 
-  const documentAfterMarkdown = parseDocumentFromString(htmlAfterMarkdown);
+  const documentFragmentAfterMarkdown = parseDocumentFragmentFromString(htmlAfterMarkdown);
 
-  betterLinkDocumentMod(documentAfterMarkdown, decorate);
+  betterLinkDocumentMod(documentFragmentAfterMarkdown, decorate);
 
-  const htmlAfterBetterLink = serializeDocumentIntoString(documentAfterMarkdown);
+  const htmlAfterBetterLink = serializeDocumentFragmentIntoString(documentFragmentAfterMarkdown);
 
   const htmlAfterSanitization = sanitizeHTML(htmlAfterBetterLink, SANITIZE_HTML_OPTIONS);
 

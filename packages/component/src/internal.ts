@@ -1,6 +1,6 @@
-import parseDocumentFromString from './Utils/parseDocumentFromString';
-import serializeDocumentIntoString from './Utils/serializeDocumentIntoString';
-import { useLiveRegion } from './providers/LiveRegionTwin/index';
+import parseDocumentFragmentFromString from './Utils/parseDocumentFragmentFromString';
+import serializeDocumentFragmentIntoString from './Utils/serializeDocumentFragmentIntoString';
 import useInjectStyles from './hooks/internal/useInjectStyles';
+import { useLiveRegion } from './providers/LiveRegionTwin/index';
 
-export { parseDocumentFromString, serializeDocumentIntoString, useInjectStyles, useLiveRegion };
+export { parseDocumentFragmentFromString, serializeDocumentFragmentIntoString, useInjectStyles, useLiveRegion };

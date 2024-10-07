@@ -52,11 +52,11 @@ function setOrRemoveAttribute(element: Element, attributeName: string, setter: A
   }
 }
 
-export default function betterLinkDocumentMod(
-  document: Document,
+export default function betterLinkDocumentMod<T extends Document | DocumentFragment>(
+  documentFragment: T,
   decorator: (href: string, textContent: string) => BetterLinkDocumentModDecoration | false | undefined
-): Document {
-  for (const anchor of [...iterateNodeList(document.querySelectorAll('a'))]) {
+): T {
+  for (const anchor of [...iterateNodeList(documentFragment.querySelectorAll('a'))]) {
     const decoration = decorator(anchor.getAttribute('href'), anchor.textContent);
 
     if (!decoration) {
@@ -109,5 +109,5 @@ export default function betterLinkDocumentMod(
     }
   }
 
-  return document;
+  return documentFragment;
 }
