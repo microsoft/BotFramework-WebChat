@@ -78,6 +78,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixes [#5294](https://github.com/microsoft/BotFramework-WebChat/issues/5294). Fixed copy button animation reset to "Copied" after hiding and showing Web Chat, in PR [#5295](https://github.com/microsoft/BotFramework-WebChat/pull/5295), by [@compulim](https://github.com/compulim)
 -  Fixes [#5147](https://github.com/microsoft/BotFramework-WebChat/issues/5147). Added `punycode` to our dependencies as `markdown-it` requires it but did not have it in their `package.json`, in PR [#5301](https://github.com/microsoft/BotFramework-WebChat/pull/5301), by [@compulim](https://github.com/compulim)
 -  Fixes [#5306](https://github.com/microsoft/BotFramework-WebChat/issues/5306). Title and subtitle in pre-chat message activity should wrap, in PR [#5307](https://github.com/microsoft/BotFramework-WebChat/pull/5307), by [@compulim](https://github.com/compulim)
+-  Fixes [#5319](https://github.com/microsoft/BotFramework-WebChat/issues/5319). Some Markdown text are not rendered after HTML tags, in PR [#5320](https://github.com/microsoft/BotFramework-WebChat/pull/5320), by [@compulim](https://github.com/compulim)
 
 # Removed
 

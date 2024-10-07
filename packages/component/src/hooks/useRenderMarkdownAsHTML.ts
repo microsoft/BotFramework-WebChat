@@ -53,7 +53,7 @@ export default function useRenderMarkdownAsHTML(
 
         containerClassName && rootElement.classList.add(...containerClassName.split(' ').filter(Boolean));
 
-        rootElement.append(...documentAfterSanitization.body.children);
+        rootElement.append(...documentAfterSanitization.body.childNodes);
         documentAfterSanitization.body.append(rootElement);
 
         return serializeDocumentIntoString(documentAfterSanitization);
