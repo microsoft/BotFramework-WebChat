@@ -75,9 +75,9 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick\n');
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick');
         await host.snapshot();
 
         // THEN: Should have 2 activity keys.
@@ -102,12 +102,12 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick\n');
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick');
         expect(pageElements.activityContents()[2]).toHaveProperty(
           'textContent',
-          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.\n'
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.'
         );
         await host.snapshot();
 
@@ -134,12 +134,12 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox\n');
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox');
         expect(pageElements.activityContents()[2]).toHaveProperty(
           'textContent',
-          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.\n'
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.'
         );
         await host.snapshot();
 
@@ -166,12 +166,12 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over\n');
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over');
         expect(pageElements.activityContents()[2]).toHaveProperty(
           'textContent',
-          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.\n'
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.'
         );
         await host.snapshot();
 
@@ -197,15 +197,15 @@
         await pageConditions.numActivitiesShown(3);
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
         );
         expect(pageElements.activityContents()[1]).toHaveProperty(
           'textContent',
-          'A quick brown fox jumped over the lazy dogs.\n'
+          'A quick brown fox jumped over the lazy dogs.'
         );
         expect(pageElements.activityContents()[2]).toHaveProperty(
           'textContent',
-          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.\n'
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.'
         );
         expect(pageElements.typingIndicator()).toBeFalsy();
         await host.snapshot();
