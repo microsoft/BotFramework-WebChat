@@ -76,7 +76,7 @@
         'use strict';
 
         const {
-          hooks: { useRenderActivityStatus, useSendPostBack },
+          hooks: { useCreateActivityStatusRenderer, useSendPostBack },
           ReactWebChat
         } = window.WebChat;
 
@@ -85,7 +85,7 @@
         const PasswordInputActivity = ({ activity, nextVisibleActivity }) => {
           const [twoFACode, setTwoFACode] = useState('');
           const [submitted, setSubmitted] = useState(false);
-          const renderActivityStatus = useRenderActivityStatus({ activity, nextVisibleActivity });
+          const renderActivityStatus = useCreateActivityStatusRenderer()({ activity, sendState: 'sent' });
           const sendPostBack = useSendPostBack();
 
           const handleCodeChange = useCallback(
@@ -111,6 +111,7 @@
                 <label className="passwordInput__box">
                   <span className="passwordInput__label">Please input your 2FA code</span>
                   <input
+                    autoComplete="off"
                     autoFocus={true}
                     className="passwordInput__input"
                     disabled={submitted}
@@ -120,7 +121,7 @@
                   />
                 </label>
               </form>
-              {renderActivityStatus()}
+              {renderActivityStatus({ hideTimestamp: false })}
             </div>
           );
         };
