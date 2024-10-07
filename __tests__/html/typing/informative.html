@@ -58,12 +58,9 @@
         // THEN: Should render the informative message.
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum\.\n*$/u)
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty(
-          'textContent',
-          expect.stringMatching(/^Nisi elit quis nisi consectetur\.\n*$/u)
-        );
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Nisi elit quis nisi consectetur.\n');
 
         await pageConditions.numActivitiesShown(2);
         await host.snapshot();

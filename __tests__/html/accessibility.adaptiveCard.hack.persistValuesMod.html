@@ -45,10 +45,7 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        expect(pageElements.activityContents()[0]).toHaveProperty(
-          'textContent',
-          expect.stringMatching(/^Hello, World!\n*$/u)
-        );
+        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'Hello, World!\n');
 
         const textInput1 = document.querySelector('.ac-textInput');
 
@@ -65,7 +62,7 @@
           type: 'message'
         });
 
-        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', expect.stringMatching(/^Aloha!\n*$/u));
+        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'Aloha!\n');
 
         const textInput2 = document.querySelector('.ac-textInput');
 

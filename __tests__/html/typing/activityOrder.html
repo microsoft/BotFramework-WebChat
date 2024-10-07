@@ -75,9 +75,9 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum\.\n*$/u)
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', expect.stringMatching(/^A quick\n*$/u));
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick\n');
         await host.snapshot();
 
         // THEN: Should have 2 activity keys.
@@ -102,12 +102,12 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum\.\n*$/u)
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', expect.stringMatching(/^A quick\n*$/u));
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick\n');
         expect(pageElements.activityContents()[2]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Amet consequat enim incididunt excepteur aliquip magna duis et tempor\.\n*$/u)
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.\n'
         );
         await host.snapshot();
 
@@ -134,15 +134,12 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum\.\n*$/u)
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty(
-          'textContent',
-          expect.stringMatching(/^A quick brown fox\n*$/u)
-        );
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox\n');
         expect(pageElements.activityContents()[2]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Amet consequat enim incididunt excepteur aliquip magna duis et tempor\.\n*$/u)
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.\n'
         );
         await host.snapshot();
 
@@ -169,15 +166,12 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum\.\n*$/u)
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty(
-          'textContent',
-          expect.stringMatching(/^A quick brown fox jumped over\n*$/u)
-        );
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over\n');
         expect(pageElements.activityContents()[2]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Amet consequat enim incididunt excepteur aliquip magna duis et tempor\.\n*$/u)
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.\n'
         );
         await host.snapshot();
 
@@ -203,15 +197,15 @@
         await pageConditions.numActivitiesShown(3);
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum\.\n*$/u)
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
         expect(pageElements.activityContents()[1]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^A quick brown fox jumped over the lazy dogs\.\n*$/u)
+          'A quick brown fox jumped over the lazy dogs.\n'
         );
         expect(pageElements.activityContents()[2]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Amet consequat enim incididunt excepteur aliquip magna duis et tempor\.*\n*$/u)
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.\n'
         );
         expect(pageElements.typingIndicator()).toBeFalsy();
         await host.snapshot();

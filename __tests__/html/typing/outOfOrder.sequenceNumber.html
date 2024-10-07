@@ -81,9 +81,9 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum\.\n*$/u)
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', expect.stringMatching(/^A quick\n*$/u));
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick\n');
         await host.snapshot();
 
         // THEN: Should have 2 activity keys.
@@ -121,12 +121,9 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum\.\n*$/u)
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty(
-          'textContent',
-          expect.stringMatching(/^A quick brown fox jumped over\n*$/u)
-        );
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over\n');
         await host.snapshot();
 
         // THEN: Should have 2 activity keys only.
@@ -164,12 +161,9 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum\.\n*$/u)
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty(
-          'textContent',
-          expect.stringMatching(/^A quick brown fox jumped over\n*$/u)
-        );
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over\n');
         await host.snapshot();
 
         // THEN: Should have 2 activity keys in correctly sorted order.
@@ -205,11 +199,11 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum\.\n*$/u)
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.\n'
         );
         expect(pageElements.activityContents()[1]).toHaveProperty(
           'textContent',
-          expect.stringMatching(/^A quick brown fox jumped over the lazy dogs\.\n*$/u)
+          'A quick brown fox jumped over the lazy dogs.\n'
         );
         await host.snapshot();
 
