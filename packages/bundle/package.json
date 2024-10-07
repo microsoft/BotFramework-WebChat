@@ -58,10 +58,8 @@
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
-    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:devserver": "node ./scripts/devServer.mjs",
-    "start:tsup": "npm run build:tsup -- --watch",
-    "start:typescript": "npm run build:typescript -- --watch"
+    "start:tsup": "npm run build:tsup -- --watch"
   },
   "localDependencies": {
     "botframework-directlinespeech-sdk": "production",
