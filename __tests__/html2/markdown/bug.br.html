@@ -36,7 +36,7 @@
 
         // THEN: Should render both "Line 1" and "Line 2".
         expect(document.getElementById('webchat').textContent).toEqual(
-          expect.stringMatching('<p>\n*Line 1\n*</p>\n*<br />\n*Line 2\n*</div>')
+          expect.stringMatching(/<p>\n*Line 1\n*<\/p>\n*<br \/>\n*Line 2\n*<\/div>/)
         );
       });
     </script>
