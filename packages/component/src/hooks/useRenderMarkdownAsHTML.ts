@@ -2,8 +2,8 @@ import { cx } from '@emotion/css';
 import { hooks, StrictStyleOptions } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 
-import parseDocumentFromString from '../Utils/parseDocumentFromString';
-import serializeDocumentIntoString from '../Utils/serializeDocumentIntoString';
+import parseDocumentFragmentFromString from '../Utils/parseDocumentFragmentFromString';
+import serializeDocumentFragmentIntoString from '../Utils/serializeDocumentFragmentIntoString';
 import useWebChatUIContext from './internal/useWebChatUIContext';
 import useStyleSet from './useStyleSet';
 
@@ -47,16 +47,16 @@ export default function useRenderMarkdownAsHTML(
       (markdown => {
         const htmlAfterSanitization = renderMarkdown(markdown, styleOptions, { containerClassName, externalLinkAlt });
 
-        const documentAfterSanitization = parseDocumentFromString(htmlAfterSanitization);
+        const documentFragmentAfterSanitization = parseDocumentFragmentFromString(htmlAfterSanitization);
 
-        const rootElement = documentAfterSanitization.createElement('div');
+        const rootElement = document.createElement('div');
 
         containerClassName && rootElement.classList.add(...containerClassName.split(' ').filter(Boolean));
 
-        rootElement.append(...documentAfterSanitization.body.children);
-        documentAfterSanitization.body.append(rootElement);
+        rootElement.append(...documentFragmentAfterSanitization.childNodes);
+        documentFragmentAfterSanitization.append(rootElement);
 
-        return serializeDocumentIntoString(documentAfterSanitization);
+        return serializeDocumentFragmentIntoString(documentFragmentAfterSanitization);
       }),
     [containerClassName, externalLinkAlt, renderMarkdown, styleOptions]
   );

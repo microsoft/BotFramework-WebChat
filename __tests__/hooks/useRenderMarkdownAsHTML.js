@@ -16,7 +16,7 @@ test('renderMarkdown should use Markdown-It if not set in props', async () => {
       'webchat--css-xxxxx-xxxxx'
     )
   ).toBe(
-    '<div xmlns="http://www.w3.org/1999/xhtml" class="webchat__render-markdown webchat__render-markdown--message-activity webchat--css-xxxxx-xxxxx"><p>Hello, World!</p></div>\n'
+    '<div xmlns="http://www.w3.org/1999/xhtml" class="webchat__render-markdown webchat__render-markdown--message-activity webchat--css-xxxxx-xxxxx"><p>Hello, World!</p></div>'
   );
 });
 
@@ -33,7 +33,7 @@ test('renderMarkdown should use custom Markdown transform function from props', 
       'webchat--css-xxxxx-xxxxx'
     )
   ).toBe(
-    '<div xmlns="http://www.w3.org/1999/xhtml" class="webchat__render-markdown webchat__render-markdown--message-activity webchat--css-xxxxx-xxxxx"><p>HELLO, WORLD!</p></div>\n'
+    '<div xmlns="http://www.w3.org/1999/xhtml" class="webchat__render-markdown webchat__render-markdown--message-activity webchat--css-xxxxx-xxxxx"><p>HELLO, WORLD!</p></div>'
   );
 });
 
@@ -57,7 +57,7 @@ test('renderMarkdown should add accessibility text for external links', async ()
       )
     ).replace(CSS_HASH_PATTERN, 'webchat--css-xxxxx-xxxxx')
   ).toBe(
-    `<div xmlns="http://www.w3.org/1999/xhtml" class="webchat__render-markdown webchat__render-markdown--message-activity webchat--css-xxxxx-xxxxx"><p>Click \u200B<a href="https://aka.ms/" aria-label="here Opens in a new window; external." rel="noopener noreferrer" target="_blank">here<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="webchat__render-markdown__external-link-icon" title="Opens in a new window; external." /></a>\u200B to find out more.</p></div>\n`
+    `<div xmlns="http://www.w3.org/1999/xhtml" class="webchat__render-markdown webchat__render-markdown--message-activity webchat--css-xxxxx-xxxxx"><p>Click \u200B<a href="https://aka.ms/" aria-label="here Opens in a new window; external." rel="noopener noreferrer" target="_blank">here<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="webchat__render-markdown__external-link-icon" title="Opens in a new window; external." /></a>\u200B to find out more.</p></div>`
   );
 });
 
@@ -71,6 +71,6 @@ test('renderMarkdown should add accessibility text for external links with yue',
       )
     ).replace(CSS_HASH_PATTERN, 'webchat--css-xxxxx-xxxxx')
   ).toBe(
-    `<div xmlns="http://www.w3.org/1999/xhtml" class="webchat__render-markdown webchat__render-markdown--message-activity webchat--css-xxxxx-xxxxx"><p>Click \u200B<a href="https://aka.ms/" aria-label="here 喺新嘅視窗開啟外部連結。" rel="noopener noreferrer" target="_blank">here<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="webchat__render-markdown__external-link-icon" title="喺新嘅視窗開啟外部連結。" /></a>\u200B to find out more.</p></div>\n`
+    `<div xmlns="http://www.w3.org/1999/xhtml" class="webchat__render-markdown webchat__render-markdown--message-activity webchat--css-xxxxx-xxxxx"><p>Click \u200B<a href="https://aka.ms/" aria-label="here 喺新嘅視窗開啟外部連結。" rel="noopener noreferrer" target="_blank">here<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="webchat__render-markdown__external-link-icon" title="喺新嘅視窗開啟外部連結。" /></a>\u200B to find out more.</p></div>`
   );
 });
