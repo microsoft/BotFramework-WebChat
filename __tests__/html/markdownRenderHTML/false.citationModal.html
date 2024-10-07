@@ -97,7 +97,7 @@
 
         const markdownElement = document.querySelectorAll('dialog .webchat__render-markdown')[1];
 
-        expect(markdownElement.textContent.startsWith('Header<p>This is some text')).toBe(true);
+        expect(markdownElement.innerHTML.startsWith('<h2>Header</h2>\n<p>&lt;p&gt;This is some text')).toBe(true);
 
         await host.snapshot();
       });

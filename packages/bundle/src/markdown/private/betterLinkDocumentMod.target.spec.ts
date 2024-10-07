@@ -24,7 +24,7 @@ describe('When passing "target" option with "noopener noreferer"', () => {
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com" target="noopener noreferer">Example</a></p>\n'
+      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com" target="noopener noreferer">Example</a></p>'
     ));
 
   test('should match baseline', () =>
@@ -51,6 +51,6 @@ describe('When passing "target" option with false', () => {
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
-      '<a xmlns="http://www.w3.org/1999/xhtml" href="https://example.com">Example</a>\n'
+      '<a xmlns="http://www.w3.org/1999/xhtml" href="https://example.com">Example</a>'
     ));
 });

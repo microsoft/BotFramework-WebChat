@@ -35,7 +35,7 @@ describe('When passing "iconAlt" option with "Hello, World!" and "iconClassName"
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com">Example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="my-icon" title="Hello, World!" /></a></p>\n'
+      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com">Example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="my-icon" title="Hello, World!" /></a></p>'
     ));
 
   test('should match baseline', () =>
