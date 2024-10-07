@@ -6,5 +6,5 @@ export default function serializeDocumentFragmentIntoString(documentFragment: Do
     elementHTML.push(serializer.serializeToString(element));
   }
 
-  return `${elementHTML.join('\n')}\n`;
+  return `${elementHTML.join('\n')}\n`.replace(/\n{2,}/gu, '\n');
 }
