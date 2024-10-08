@@ -27,20 +27,20 @@ import createMonochromeImageMaskerStyleSet from './StyleSet/MonochromeImageMaske
 import createRenderMarkdownStyle from './StyleSet/RenderMarkdown';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
-import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
 import createSendBoxStyle from './StyleSet/SendBox';
+import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
 import createSingleAttachmentActivityStyle from './StyleSet/SingleAttachmentActivity';
 import createSlottedActivityStatusStyle from './StyleSet/SlottedActivityStatus';
 import createSpinnerAnimationStyle from './StyleSet/SpinnerAnimation';
 import createStackedLayoutStyle from './StyleSet/StackedLayout';
-import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
 import createSuggestedActionStyle from './StyleSet/SuggestedAction';
+import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
 import createTextContentStyle from './StyleSet/TextContent';
 import createThumbButtonStyle from './StyleSet/ThumbButton';
-import createToasterStyle from './StyleSet/Toaster';
 import createToastStyle from './StyleSet/Toast';
+import createToasterStyle from './StyleSet/Toaster';
 import createTypingAnimationStyle from './StyleSet/TypingAnimation';
 import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
 import createUploadButtonStyle from './StyleSet/UploadButton';
@@ -85,7 +85,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     sendBox: createSendBoxStyle(strictStyleOptions),
     sendBoxButton: createSendBoxButtonStyle(strictStyleOptions),
     sendBoxTextBox: createSendBoxTextBoxStyle(strictStyleOptions),
-    singleAttachmentActivity: createSingleAttachmentActivityStyle(),
+    singleAttachmentActivity: createSingleAttachmentActivityStyle(strictStyleOptions),
     spinnerAnimation: createSpinnerAnimationStyle(strictStyleOptions),
     stackedLayout: createStackedLayoutStyle(strictStyleOptions),
     suggestedAction: createSuggestedActionStyle(strictStyleOptions),

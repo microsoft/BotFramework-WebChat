@@ -3,11 +3,15 @@
 import { StrictStyleOptions } from 'botframework-webchat-api';
 import CSSTokens from '../CSSTokens';
 
-export default function createStackedLayoutStyle({ transitionDuration }: StrictStyleOptions) {
+export default function createStackedLayoutStyle({
+  bubbleMaxWidth,
+  paddingRegular,
+  transitionDuration
+}: StrictStyleOptions) {
   return {
     '&.webchat__stacked-layout': {
-      marginLeft: CSSTokens.PaddingRegular,
-      marginRight: CSSTokens.PaddingRegular,
+      marginLeft: paddingRegular,
+      marginRight: paddingRegular,
 
       '& .webchat__stacked-layout__alignment-pad': {
         transitionDuration,
@@ -16,7 +20,7 @@ export default function createStackedLayoutStyle({ transitionDuration }: StrictS
       },
 
       '&.webchat__stacked-layout--extra-trailing .webchat__stacked-layout__alignment-pad': {
-        width: CSSTokens.PaddingRegular
+        width: paddingRegular
       },
 
       '& .webchat__stacked-layout__avatar-gutter': {
@@ -33,7 +37,7 @@ export default function createStackedLayoutStyle({ transitionDuration }: StrictS
       },
 
       '& .webchat__stacked-layout__attachment-row': {
-        marginTop: CSSTokens.PaddingRegular,
+        marginTop: paddingRegular,
         width: '100%'
       },
 
@@ -64,11 +68,11 @@ export default function createStackedLayoutStyle({ transitionDuration }: StrictS
       '&.webchat__stacked-layout--hide-avatar, &.webchat__stacked-layout--show-avatar, &.webchat__stacked-layout--hide-nub, &.webchat__stacked-layout--show-nub':
         {
           '& .webchat__stacked-layout__attachment, & .webchat__stacked-layout__message': {
-            maxWidth: `calc(${CSSTokens.MaxWidthBubble} + ${CSSTokens.PaddingRegular})`
+            maxWidth: bubbleMaxWidth + paddingRegular
           },
 
           '& .webchat__stacked-layout__nub-pad': {
-            width: CSSTokens.PaddingRegular
+            width: paddingRegular
           }
         },
 
