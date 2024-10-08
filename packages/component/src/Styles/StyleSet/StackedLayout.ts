@@ -53,6 +53,11 @@ export default function createStackedLayoutStyle({
         transitionProperty: 'max-width'
       },
 
+      // Bubble min width do not applies to user message, could be a design bug.
+      '&:not(.webchat__stacked-layout--from-user) .webchat__stacked-layout__message': {
+        minWidth: CSSTokens.MinWidthBubble
+      },
+
       '& .webchat__stacked-layout__nub-pad': {
         transitionDuration,
         transitionProperty: 'width',

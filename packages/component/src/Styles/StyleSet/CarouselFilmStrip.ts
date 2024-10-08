@@ -18,8 +18,13 @@ export default function CarouselFilmStrip({
         marginBottom: -17
       },
 
+      '& .webchat__carousel-filmstrip__bubble': {
+        width: '100%'
+      },
+
       '& .webchat__carousel-filmstrip__message': {
         maxWidth: CSSTokens.MaxWidthBubble,
+        minWidth: CSSTokens.MinWidthBubble,
         transitionDuration,
         transitionProperty: 'max-width'
       },
@@ -80,7 +85,8 @@ export default function CarouselFilmStrip({
         },
 
         '& .webchat__carousel-filmstrip__attachments': {
-          marginLeft: -paddingRegular
+          marginLeft: -paddingRegular,
+          marginRight: paddingRegular
         },
 
         '&.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar': {

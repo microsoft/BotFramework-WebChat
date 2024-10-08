@@ -14,8 +14,8 @@ export default function CarouselFilmStripAttachment({
 }: StrictStyleOptions) {
   return {
     '&.webchat__carousel-filmstrip-attachment': {
-      minWidth: CSSTokens.MinWidthBubble,
       maxWidth: CSSTokens.MaxWidthBubble,
+      minWidth: CSSTokens.MinWidthBubble,
       transitionDuration,
       transitionProperty: 'max-width, min-width',
 
