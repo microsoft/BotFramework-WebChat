@@ -19,10 +19,6 @@ export default function CarouselFilmStrip({
       },
 
       '& .webchat__carousel-filmstrip__bubble': {
-        width: '100%'
-      },
-
-      '& .webchat__carousel-filmstrip__message': {
         maxWidth: CSSTokens.MaxWidthMessageBubble,
         minWidth: CSSTokens.MinWidthMessageBubble,
         transitionDuration,
@@ -31,7 +27,7 @@ export default function CarouselFilmStrip({
 
       '&.webchat__carousel-filmstrip--hide-nub, &.webchat__carousel-filmstrip--show-nub, &.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar':
         {
-          '& .webchat__carousel-filmstrip__message': {
+          '& .webchat__carousel-filmstrip__bubble': {
             maxWidth: bubbleMessageMaxWidth + paddingRegular
           }
         },
@@ -85,8 +81,7 @@ export default function CarouselFilmStrip({
         },
 
         '& .webchat__carousel-filmstrip__attachments': {
-          marginLeft: -paddingRegular,
-          marginRight: paddingRegular
+          marginLeft: -paddingRegular
         },
 
         '&.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar': {
