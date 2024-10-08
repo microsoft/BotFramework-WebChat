@@ -31,7 +31,6 @@ import createSendBoxStyle from './StyleSet/SendBox';
 import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
-import createSingleAttachmentActivityStyle from './StyleSet/SingleAttachmentActivity';
 import createSlottedActivityStatusStyle from './StyleSet/SlottedActivityStatus';
 import createSpinnerAnimationStyle from './StyleSet/SpinnerAnimation';
 import createStackedLayoutStyle from './StyleSet/StackedLayout';
@@ -85,7 +84,6 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     sendBox: createSendBoxStyle(strictStyleOptions),
     sendBoxButton: createSendBoxButtonStyle(strictStyleOptions),
     sendBoxTextBox: createSendBoxTextBoxStyle(strictStyleOptions),
-    singleAttachmentActivity: createSingleAttachmentActivityStyle(strictStyleOptions),
     spinnerAnimation: createSpinnerAnimationStyle(strictStyleOptions),
     stackedLayout: createStackedLayoutStyle(strictStyleOptions),
     suggestedAction: createSuggestedActionStyle(strictStyleOptions),

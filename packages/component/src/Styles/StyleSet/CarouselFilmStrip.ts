@@ -6,7 +6,7 @@ import mirrorStyle from '../mirrorStyle';
 
 export default function CarouselFilmStrip({
   avatarSize,
-  bubbleMaxWidth,
+  bubbleMessageMaxWidth,
   paddingRegular,
   transitionDuration
 }: StrictStyleOptions) {
@@ -23,8 +23,8 @@ export default function CarouselFilmStrip({
       },
 
       '& .webchat__carousel-filmstrip__message': {
-        maxWidth: CSSTokens.MaxWidthBubble,
-        minWidth: CSSTokens.MinWidthBubble,
+        maxWidth: CSSTokens.MaxWidthMessageBubble,
+        minWidth: CSSTokens.MinWidthMessageBubble,
         transitionDuration,
         transitionProperty: 'max-width'
       },
@@ -32,7 +32,7 @@ export default function CarouselFilmStrip({
       '&.webchat__carousel-filmstrip--hide-nub, &.webchat__carousel-filmstrip--show-nub, &.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar':
         {
           '& .webchat__carousel-filmstrip__message': {
-            maxWidth: bubbleMaxWidth + paddingRegular
+            maxWidth: bubbleMessageMaxWidth + paddingRegular
           }
         },
 

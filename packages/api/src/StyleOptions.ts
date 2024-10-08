@@ -176,9 +176,17 @@ type StyleOptions = {
    */
   bubbleImageMinHeight?: number | undefined;
 
-  bubbleMaxWidth?: number;
+  /* @deprecated Please use `bubbleAttachmentMaxWidth` and `bubbleMessageMaxWidth` instead. */
+  bubbleMaxWidth?: number | undefined;
+  /* @deprecated Please use `bubbleAttachmentMaxWidth` and `bubbleMessageMaxWidth` instead. */
+  bubbleMinWidth?: number | undefined;
+
+  bubbleAttachmentMaxWidth?: number | undefined;
+  bubbleAttachmentMinWidth?: number | undefined;
+  bubbleMessageMaxWidth?: number | undefined;
+  bubbleMessageMinWidth?: number | undefined;
+
   bubbleMinHeight?: number;
-  bubbleMinWidth?: number;
 
   /**
    * Nub offset ''bottom' will render nub at the bottom
@@ -915,7 +923,10 @@ type StyleOptions = {
 // 2. Renamed/deprecated options, only the newer option will be kept, the older option will be dropped.
 //    Internally, no code should use the deprecated value except the migration code.
 type StrictStyleOptions = Required<
-  Omit<StyleOptions, 'bubbleImageHeight' | 'hideScrollToEndButton' | 'newMessagesButtonFontSize'>
+  Omit<
+    StyleOptions,
+    'bubbleImageHeight' | 'bubbleMaxWidth' | 'bubbleMinWidth' | 'hideScrollToEndButton' | 'newMessagesButtonFontSize'
+  >
 > & {
   bubbleFromUserNubOffset: number;
   bubbleNubOffset: number;
