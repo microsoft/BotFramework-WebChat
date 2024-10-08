@@ -55,6 +55,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  (Experimental) Added CSS decorator support into Web Chat white-label experience, in PR [#5312](https://github.com/microsoft/BotFramework-WebChat/pull/5312), by [@OEvgeny](https://github.com/OEvgeny)
    -  Introduced `WebChatDecorator` component for adding animated borders to activities, in PR [#5312](https://github.com/microsoft/BotFramework-WebChat/pull/5312)
    -  Added new style options `borderAnimationColor1`, `borderAnimationColor2`, and `borderAnimationColor3` for customizing decorator colors, in PR [#5312](https://github.com/microsoft/BotFramework-WebChat/pull/5312)
+-  (Experimental) Added more CSS variables support, in PR [#5321](https://github.com/microsoft/BotFramework-WebChat/pull/5321), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
