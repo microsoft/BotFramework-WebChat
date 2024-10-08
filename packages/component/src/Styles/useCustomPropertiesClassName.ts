@@ -17,12 +17,14 @@ export default function useCustomPropertiesClassName() {
   const [styles, classNameState] = useMemo(() => {
     const {
       accent,
+      avatarSize,
       borderAnimationColor1,
       borderAnimationColor2,
       borderAnimationColor3,
       bubbleImageMaxHeight,
       bubbleImageMinHeight,
       bubbleMaxWidth,
+      bubbleMinWidth,
       bubbleMinHeight,
       fontSizeSmall,
       markdownExternalLinkIconImage,
@@ -49,9 +51,11 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.IconURLExternalLink}: ${markdownExternalLinkIconImage};
   ${CustomPropertyNames.MaxHeightImageBubble}: ${bubbleImageMaxHeight}px;
   ${CustomPropertyNames.MaxWidthBubble}: ${bubbleMaxWidth}px;
+  ${CustomPropertyNames.MinWidthBubble}: ${bubbleMinWidth}px;
   ${CustomPropertyNames.MinHeightBubble}: ${bubbleMinHeight}px;
   ${CustomPropertyNames.MinHeightImageBubble}: ${bubbleImageMinHeight}px;
   ${CustomPropertyNames.PaddingRegular}: ${paddingRegular}px;
+  ${CustomPropertyNames.SizeAvatar}: ${avatarSize}px;
 }
 `;
     const [style] = makeCreateStyles(contents)();

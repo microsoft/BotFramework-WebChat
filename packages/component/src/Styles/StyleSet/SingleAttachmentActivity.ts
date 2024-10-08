@@ -1,18 +1,14 @@
-import { StrictStyleOptions } from 'botframework-webchat-api';
+import CSSTokens from '../CSSTokens';
 
-export default function createSingleCardActivityStyle({
-  bubbleMaxWidth,
-  bubbleMinWidth,
-  paddingRegular
-}: StrictStyleOptions) {
+export default function createSingleCardActivityStyle() {
   return {
     '& > .bubble-box': {
-      maxWidth: bubbleMaxWidth,
-      minWidth: bubbleMinWidth
+      maxWidth: CSSTokens.MaxWidthBubble,
+      minWidth: CSSTokens.MinWidthBubble
     },
 
     '& > .filler': {
-      minWidth: paddingRegular
+      minWidth: CSSTokens.PaddingRegular
     }
   };
 }

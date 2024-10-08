@@ -6,8 +6,10 @@
   --webchat__bubble--block-padding: var(--webchat-spacingVerticalM);
   --webchat__bubble--min-height: var(--webchat-bubble-minHeight);
   --webchat__bubble--max-width: var(--webchat-bubble-maxWidth);
+  --webchat__bubble--min-width: var(--webchat-bubble-minWidth);
 
   --webchat-bubble-maxWidth: var(--bubble-maxWidth, 450px);
+  --webchat-bubble-minWidth: var(--bubble-minWidth, unset);
   --webchat-bubble-minHeight: var(--bubble-minHeight, 36px);
   --webchat-externalLink-mask: var(
     --externalLink-mask,
@@ -149,6 +151,7 @@
   box-sizing: border-box;
   color: var(--webchat-colorNeutralForeground1);
   max-width: var(--webchat__bubble--max-width);
+  min-width: var(--webchat__bubble--min-width);
   min-height: var(--webchat__bubble--min-height);
 }
 

@@ -11,9 +11,11 @@ const CustomPropertyNames = Object.freeze({
   IconURLExternalLink: '--webchat__icon-url--external-link',
   MaxHeightImageBubble: '--webchat__max-height--image-bubble',
   MaxWidthBubble: '--webchat__max-width--bubble',
+  MinWidthBubble: '--webchat__min-width--bubble',
   MinHeightBubble: '--webchat__min-height--bubble',
   MinHeightImageBubble: '--webchat__min-height--image-bubble',
-  PaddingRegular: '--webchat__padding--regular'
+  PaddingRegular: '--webchat__padding--regular',
+  SizeAvatar: '--webchat__size--avatar'
 });
 
 // This is for type-checking only to make sure the CSS custom property names is `--webchat__${string}`.

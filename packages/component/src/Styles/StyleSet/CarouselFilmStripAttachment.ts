@@ -1,13 +1,10 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
+import CSSTokens from '../CSSTokens';
 import mirrorStyle from '../mirrorStyle';
 
 export default function CarouselFilmStripAttachment({
-  avatarSize,
-  bubbleMaxWidth,
-  bubbleMinWidth,
-  paddingRegular,
   transcriptVisualKeyboardIndicatorColor,
   transcriptVisualKeyboardIndicatorStyle,
   transcriptVisualKeyboardIndicatorWidth,
@@ -15,8 +12,8 @@ export default function CarouselFilmStripAttachment({
 }: StrictStyleOptions) {
   return {
     '&.webchat__carousel-filmstrip-attachment': {
-      minWidth: bubbleMinWidth,
-      maxWidth: bubbleMaxWidth,
+      minWidth: CSSTokens.MinWidthBubble,
+      maxWidth: CSSTokens.MaxWidthBubble,
       transitionDuration,
       transitionProperty: 'max-width, min-width',
 
@@ -38,18 +35,18 @@ export default function CarouselFilmStripAttachment({
       }
     },
     ...mirrorStyle('&.webchat__carousel-filmstrip-attachment--rtl', {
-      paddingLeft: paddingRegular,
+      paddingLeft: CSSTokens.PaddingRegular,
 
       '&.webchat__carousel-filmstrip-attachment--hide-avatar, &.webchat__carousel-filmstrip-attachment--show-avatar': {
         '&:first-child': {
-          paddingLeft: avatarSize + paddingRegular * 2
+          paddingLeft: `calc(${CSSTokens.SizeAvatar} + ${CSSTokens.PaddingRegular} * 2)`
         }
       },
 
       '&.webchat__carousel-filmstrip-attachment--hide-nub, &.webchat__carousel-filmstrip-attachment--show-nub': {
         '&:not(.webchat__carousel-filmstrip-attachment--hide-avatar.webchat__carousel-filmstrip-attachment--show-avatar):first-child':
           {
-            paddingLeft: paddingRegular * 2
+            paddingLeft: `calc(${CSSTokens.PaddingRegular} * 2)`
           }
       }
     })

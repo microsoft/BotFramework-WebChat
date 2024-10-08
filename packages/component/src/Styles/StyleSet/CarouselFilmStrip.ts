@@ -1,14 +1,10 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
+import CSSTokens from '../CSSTokens';
 import mirrorStyle from '../mirrorStyle';
 
-export default function CarouselFilmStrip({
-  avatarSize,
-  bubbleMaxWidth,
-  paddingRegular,
-  transitionDuration
-}: StrictStyleOptions) {
+export default function CarouselFilmStrip({ transitionDuration }: StrictStyleOptions) {
   return {
     '&.webchat__carousel-filmstrip': {
       // Browser quirks: Firefox has no way to hide scrollbar and while keeping it in function
@@ -18,7 +14,7 @@ export default function CarouselFilmStrip({
       },
 
       '& .webchat__carousel-filmstrip__message': {
-        maxWidth: bubbleMaxWidth,
+        maxWidth: CSSTokens.MaxWidthBubble,
         transitionDuration,
         transitionProperty: 'max-width'
       },
@@ -26,22 +22,22 @@ export default function CarouselFilmStrip({
       '&.webchat__carousel-filmstrip--hide-nub, &.webchat__carousel-filmstrip--show-nub, &.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar':
         {
           '& .webchat__carousel-filmstrip__message': {
-            maxWidth: bubbleMaxWidth + paddingRegular
+            maxWidth: `calc(${CSSTokens.MaxWidthBubble + CSSTokens.PaddingRegular})`
           }
         },
 
       '& .webchat__carousel-filmstrip__alignment-pad': {
         transitionDuration,
         transitionProperty: 'width',
-        width: paddingRegular
+        width: CSSTokens.PaddingRegular
       },
 
       '&.webchat__carousel-filmstrip--extra-trailing .webchat__carousel-filmstrip__alignment-pad': {
-        width: paddingRegular * 2
+        width: `calc(${CSSTokens.PaddingRegular} * 2)`
       },
 
       '&:not(.webchat__carousel-filmstrip--no-message) .webchat__carousel-filmstrip__attachments': {
-        marginTop: paddingRegular
+        marginTop: CSSTokens.PaddingRegular
       },
 
       '& .webchat__carousel-filmstrip__avatar-gutter': {
@@ -58,14 +54,14 @@ export default function CarouselFilmStrip({
 
       '&.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar': {
         '& .webchat__carousel-filmstrip__avatar-gutter': {
-          width: avatarSize
+          width: CSSTokens.SizeAvatar
         }
       },
 
       '&.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar, &.webchat__carousel-filmstrip--hide-nub, &.webchat__carousel-filmstrip--show-nub':
         {
           '& .webchat__carousel-filmstrip__nub-pad': {
-            width: paddingRegular
+            width: CSSTokens.PaddingRegular
           }
         },
 
@@ -75,23 +71,23 @@ export default function CarouselFilmStrip({
 
       ...mirrorStyle('&.webchat__carousel-filmstrip--rtl', {
         '& .webchat__carousel-filmstrip__avatar-gutter': {
-          marginLeft: paddingRegular
+          marginLeft: CSSTokens.PaddingRegular
         },
 
         '& .webchat__carousel-filmstrip__attachments': {
-          marginLeft: -paddingRegular
+          marginLeft: `calc(${CSSTokens.PaddingRegular} * -1)`
         },
 
         '&.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar': {
           '& .webchat__carousel-filmstrip__attachments': {
-            marginLeft: -(avatarSize + paddingRegular * 2)
+            marginLeft: `calc((${CSSTokens.SizeAvatar} + ${CSSTokens.PaddingRegular} * 2) * -1)`
           }
         },
 
         '&.webchat__carousel-filmstrip--hide-nub, &.webchat__carousel-filmstrip--show-nub': {
           '&:not(.webchat__carousel-filmstrip--hide-avatar.webchat__carousel-filmstrip--show-avatar)': {
             '& .webchat__carousel-filmstrip__attachments': {
-              marginLeft: -paddingRegular * 2
+              marginLeft: `calc(${CSSTokens.PaddingRegular} * -2)`
             }
           }
         }

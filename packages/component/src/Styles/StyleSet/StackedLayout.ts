@@ -1,18 +1,13 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import { StrictStyleOptions } from 'botframework-webchat-api';
+import CSSTokens from '../CSSTokens';
 
-export default function createStackedLayoutStyle({
-  avatarSize,
-  bubbleMaxWidth,
-  bubbleMinWidth,
-  paddingRegular,
-  transitionDuration
-}: StrictStyleOptions) {
+export default function createStackedLayoutStyle({ transitionDuration }: StrictStyleOptions) {
   return {
     '&.webchat__stacked-layout': {
-      marginLeft: paddingRegular,
-      marginRight: paddingRegular,
+      marginLeft: CSSTokens.PaddingRegular,
+      marginRight: CSSTokens.PaddingRegular,
 
       '& .webchat__stacked-layout__alignment-pad': {
         transitionDuration,
@@ -21,7 +16,7 @@ export default function createStackedLayoutStyle({
       },
 
       '&.webchat__stacked-layout--extra-trailing .webchat__stacked-layout__alignment-pad': {
-        width: paddingRegular
+        width: CSSTokens.PaddingRegular
       },
 
       '& .webchat__stacked-layout__avatar-gutter': {
@@ -31,14 +26,14 @@ export default function createStackedLayoutStyle({
       },
 
       '& .webchat__stacked-layout__attachment': {
-        maxWidth: bubbleMaxWidth,
-        minWidth: bubbleMinWidth,
+        maxWidth: CSSTokens.MaxWidthBubble,
+        minWidth: CSSTokens.MinWidthBubble,
         transitionDuration,
         transitionProperty: 'max-width, min-width'
       },
 
       '& .webchat__stacked-layout__attachment-row': {
-        marginTop: paddingRegular,
+        marginTop: CSSTokens.PaddingRegular,
         width: '100%'
       },
 
@@ -48,7 +43,7 @@ export default function createStackedLayoutStyle({
         },
 
       '& .webchat__stacked-layout__message': {
-        maxWidth: bubbleMaxWidth,
+        maxWidth: CSSTokens.MaxWidthBubble,
         overflow: 'hidden',
         transitionDuration,
         transitionProperty: 'max-width'
@@ -62,18 +57,18 @@ export default function createStackedLayoutStyle({
 
       '&.webchat__stacked-layout--hide-avatar, &.webchat__stacked-layout--show-avatar': {
         '& .webchat__stacked-layout__avatar-gutter': {
-          width: avatarSize
+          width: CSSTokens.SizeAvatar
         }
       },
 
       '&.webchat__stacked-layout--hide-avatar, &.webchat__stacked-layout--show-avatar, &.webchat__stacked-layout--hide-nub, &.webchat__stacked-layout--show-nub':
         {
           '& .webchat__stacked-layout__attachment, & .webchat__stacked-layout__message': {
-            maxWidth: bubbleMaxWidth + paddingRegular
+            maxWidth: `calc(${CSSTokens.MaxWidthBubble} + ${CSSTokens.PaddingRegular})`
           },
 
           '& .webchat__stacked-layout__nub-pad': {
-            width: paddingRegular
+            width: CSSTokens.PaddingRegular
           }
         },
 
