@@ -17,12 +17,16 @@ export default function useCustomPropertiesClassName() {
   const [styles, classNameState] = useMemo(() => {
     const {
       accent,
+      avatarSize,
       borderAnimationColor1,
       borderAnimationColor2,
       borderAnimationColor3,
+      bubbleAttachmentMaxWidth,
+      bubbleAttachmentMinWidth,
       bubbleImageMaxHeight,
       bubbleImageMinHeight,
-      bubbleMaxWidth,
+      bubbleMessageMaxWidth,
+      bubbleMessageMinWidth,
       bubbleMinHeight,
       fontSizeSmall,
       markdownExternalLinkIconImage,
@@ -48,10 +52,14 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.FontSizeSmall}: ${fontSizeSmall};
   ${CustomPropertyNames.IconURLExternalLink}: ${markdownExternalLinkIconImage};
   ${CustomPropertyNames.MaxHeightImageBubble}: ${bubbleImageMaxHeight}px;
-  ${CustomPropertyNames.MaxWidthBubble}: ${bubbleMaxWidth}px;
+  ${CustomPropertyNames.MaxWidthAttachmentBubble}: ${bubbleAttachmentMaxWidth}px;
+  ${CustomPropertyNames.MinWidthAttachmentBubble}: ${bubbleAttachmentMinWidth}px;
+  ${CustomPropertyNames.MaxWidthMessageBubble}: ${bubbleMessageMaxWidth}px;
+  ${CustomPropertyNames.MinWidthMessageBubble}: ${bubbleMessageMinWidth}px;
   ${CustomPropertyNames.MinHeightBubble}: ${bubbleMinHeight}px;
   ${CustomPropertyNames.MinHeightImageBubble}: ${bubbleImageMinHeight}px;
   ${CustomPropertyNames.PaddingRegular}: ${paddingRegular}px;
+  ${CustomPropertyNames.SizeAvatar}: ${avatarSize}px;
 }
 `;
     const [style] = makeCreateStyles(contents)();

@@ -1,11 +1,12 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 import { StrictStyleOptions } from 'botframework-webchat-api';
 
+import CSSTokens from '../CSSTokens';
 import mirrorStyle from '../mirrorStyle';
 
 export default function CarouselFilmStrip({
   avatarSize,
-  bubbleMaxWidth,
+  bubbleMessageMaxWidth,
   paddingRegular,
   transitionDuration
 }: StrictStyleOptions) {
@@ -17,23 +18,24 @@ export default function CarouselFilmStrip({
         marginBottom: -17
       },
 
-      '& .webchat__carousel-filmstrip__message': {
-        maxWidth: bubbleMaxWidth,
+      '& .webchat__carousel-filmstrip__bubble': {
+        maxWidth: CSSTokens.MaxWidthMessageBubble,
+        minWidth: CSSTokens.MinWidthMessageBubble,
         transitionDuration,
         transitionProperty: 'max-width'
       },
 
       '&.webchat__carousel-filmstrip--hide-nub, &.webchat__carousel-filmstrip--show-nub, &.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar':
         {
-          '& .webchat__carousel-filmstrip__message': {
-            maxWidth: bubbleMaxWidth + paddingRegular
+          '& .webchat__carousel-filmstrip__bubble': {
+            maxWidth: bubbleMessageMaxWidth + paddingRegular
           }
         },
 
       '& .webchat__carousel-filmstrip__alignment-pad': {
         transitionDuration,
         transitionProperty: 'width',
-        width: paddingRegular
+        width: CSSTokens.PaddingRegular
       },
 
       '&.webchat__carousel-filmstrip--extra-trailing .webchat__carousel-filmstrip__alignment-pad': {
@@ -58,7 +60,7 @@ export default function CarouselFilmStrip({
 
       '&.webchat__carousel-filmstrip--hide-avatar, &.webchat__carousel-filmstrip--show-avatar': {
         '& .webchat__carousel-filmstrip__avatar-gutter': {
-          width: avatarSize
+          width: CSSTokens.SizeAvatar
         }
       },
 

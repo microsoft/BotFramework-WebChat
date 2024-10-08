@@ -15,7 +15,8 @@ export default function createTextContentStyle() {
       },
 
       '& .webchat__text-content__markdown img:not(.webchat__render-markdown__external-link-icon)': {
-        maxWidth: CSSTokens.MaxWidthBubble,
+        maxWidth: CSSTokens.MaxWidthMessageBubble,
+        minWidth: CSSTokens.MinWidthMessageBubble,
         width: '100%'
       },
 

@@ -1,9 +1,9 @@
-import { StrictStyleOptions } from 'botframework-webchat-api';
+import CSSTokens from '../CSSTokens';
 
-export default function createImageAvatarStyle({ avatarSize }: StrictStyleOptions) {
+export default function createImageAvatarStyle() {
   return {
-    height: avatarSize,
+    height: CSSTokens.SizeAvatar,
     overflow: 'hidden',
-    width: avatarSize
+    width: CSSTokens.SizeAvatar
   };
 }
