@@ -54,6 +54,7 @@ const baseConfig: Options & { target: Target[] } = {
   minify: env === 'production',
   platform: 'browser',
   sourcemap: true,
+  splitting: true,
   target: ['chrome100', 'firefox100', 'safari15'] satisfies Target[]
 };
 
