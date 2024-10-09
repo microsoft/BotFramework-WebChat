@@ -8,7 +8,7 @@
   --webchat__bubble--max-width: var(--webchat-bubble-maxWidth);
   --webchat__bubble--min-width: var(--webchat-bubble-minWidth);
 
-  --webchat-bubble-maxWidth: var(--bubble-maxWidth, min(max(450px, 75%), 100%));
+  --webchat-bubble-maxWidth: var(--bubble-maxWidth, max(450px, 75%));
   --webchat-bubble-minWidth: var(--bubble-minWidth, auto);
   --webchat-bubble-minHeight: var(--bubble-minHeight, 36px);
   --webchat-externalLink-mask: var(
@@ -137,7 +137,7 @@
 
 /* Message bubble */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble) {
-  max-width: var(--webchat__bubble--max-width);
+  max-width: min(var(--webchat__bubble--max-width), 100%);
   min-width: var(--webchat__bubble--min-width);
   overflow: visible;
 }
