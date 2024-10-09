@@ -6,8 +6,10 @@
   --webchat__bubble--block-padding: var(--webchat-spacingVerticalM);
   --webchat__bubble--min-height: var(--webchat-bubble-minHeight);
   --webchat__bubble--max-width: var(--webchat-bubble-maxWidth);
+  --webchat__bubble--min-width: var(--webchat-bubble-minWidth);
 
-  --webchat-bubble-maxWidth: var(--bubble-maxWidth, 450px);
+  --webchat-bubble-maxWidth: var(--bubble-maxWidth, max(450px, 75%));
+  --webchat-bubble-minWidth: var(--bubble-minWidth, auto);
   --webchat-bubble-minHeight: var(--bubble-minHeight, 36px);
   --webchat-externalLink-mask: var(
     --externalLink-mask,
@@ -20,6 +22,7 @@
   &:has(:global(.webchat__stacked-layout .webchat__bubble--from-user)) {
     --webchat__bubble--background-color: var(--webchat-colorBrandBackground2);
     --webchat__bubble--block-padding: var(--webchat-spacingVerticalS);
+    --webchat__bubble--min-width: auto;
   }
 }
 
@@ -134,8 +137,14 @@
 
 /* Message bubble */
 :global(.webchat-fluent) .activity-decorator :global(.webchat__stacked-layout .webchat__bubble) {
-  max-width: 100%;
+  max-width: min(var(--webchat__bubble--max-width), 100%);
+  min-width: var(--webchat__bubble--min-width);
   overflow: visible;
+
+  /* Take all width available when has message bubble latency loader */
+  &:has(:global(.border-loader)) {
+    width: 100%;
+  }
 }
 
 /* Message bubble content */
@@ -148,7 +157,7 @@
   box-shadow: var(--webchat__bubble--box-shadow);
   box-sizing: border-box;
   color: var(--webchat-colorNeutralForeground1);
-  max-width: var(--webchat__bubble--max-width);
+  max-width: 100%;
   min-height: var(--webchat__bubble--min-height);
 }
 
@@ -203,12 +212,6 @@
     color: var(--webchat-colorNeutralForeground2);
     font-family: inherit;
   }
-}
-
-/* Message bubble latency loader */
-:global(.webchat-fluent) .activity-decorator :global(.border-loader) {
-  max-width: 100%;
-  width: var(--webchat__bubble--max-width);
 }
 
 /* Markdown links and citation links */
