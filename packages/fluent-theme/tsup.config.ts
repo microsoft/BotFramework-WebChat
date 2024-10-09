@@ -44,7 +44,8 @@ export default defineConfig([
       '.css': 'local-css'
     },
     esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })],
-    format: ['cjs']
+    format: ['cjs'],
+    target: [...baseConfig.target, 'es2019']
   },
   {
     ...baseConfig,
