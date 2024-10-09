@@ -13,7 +13,7 @@ const resolveCognitiveServicesToES2015 = {
   }
 };
 
-export default defineConfig({
+const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
     'botframework-webchat': './src/index.ts',
@@ -34,6 +34,17 @@ export default defineConfig({
     'memoize-one',
     'microsoft-cognitiveservices-speech-sdk',
     'web-speech-cognitive-services'
-  ],
-  format: ['esm', 'cjs']
-});
+  ]
+};
+
+export default defineConfig([
+  {
+    ...config,
+    format: 'esm'
+  },
+  {
+    ...config,
+    format: 'cjs',
+    target: [...config.target, 'es2019']
+  }
+]);
