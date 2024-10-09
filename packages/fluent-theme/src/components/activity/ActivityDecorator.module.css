@@ -211,7 +211,8 @@
 
 /* Message bubble latency loader */
 :global(.webchat-fluent) .activity-decorator :global(.border-loader) {
-  width: 100%;
+  max-width: 100%;
+  width: 450px;
 }
 
 /* Markdown links and citation links */
