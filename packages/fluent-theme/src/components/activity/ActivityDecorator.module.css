@@ -140,6 +140,11 @@
   max-width: min(var(--webchat__bubble--max-width), 100%);
   min-width: var(--webchat__bubble--min-width);
   overflow: visible;
+
+  /* Take all width available when has message bubble latency loader */
+  &:has(:global(.border-loader)) {
+    width: 100%;
+  }
 }
 
 /* Message bubble content */
@@ -207,12 +212,6 @@
     color: var(--webchat-colorNeutralForeground2);
     font-family: inherit;
   }
-}
-
-/* Message bubble latency loader */
-:global(.webchat-fluent) .activity-decorator :global(.border-loader) {
-  max-width: 100%;
-  width: 450px;
 }
 
 /* Markdown links and citation links */
