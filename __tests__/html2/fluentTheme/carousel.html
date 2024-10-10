@@ -48,7 +48,7 @@
       // Verify the sent message
       await pageConditions.numActivitiesShown(1);
       await pageConditions.allOutgoingActivitiesSent();
-      await host.snapshot();
+      await host.snapshot('local');
 
       // Wait for and verify bot response
       await pageConditions.numActivitiesShown(2);
@@ -68,7 +68,7 @@
 
       await testHelpers.sleep(500); // Wait for right flipper to fade away.
 
-      await host.snapshot();
+      await host.snapshot('local');
     });
   </script>
 </body>
