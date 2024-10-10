@@ -195,7 +195,7 @@ const CarouselFilmStrip = ({
           )}
           <div className="webchat__carousel-filmstrip__complimentary">
             <div className="webchat__carousel-filmstrip__nub-pad" />
-            <div className="webchat__carousel-filmstrip__complimentary-content c">
+            <div className="webchat__carousel-filmstrip__complimentary-content">
               <ul
                 className="webchat__carousel-filmstrip__attachments react-film__filmstrip__list"
                 ref={itemContainerCallbackRef}
