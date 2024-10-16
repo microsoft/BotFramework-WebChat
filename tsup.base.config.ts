@@ -51,7 +51,7 @@ const baseConfig: Options & { target: Target[] } = {
   format: 'esm',
   loader: { '.js': 'jsx' },
   metafile: true,
-  minify: env === 'production',
+  minify: env === 'production' || env === 'test',
   platform: 'browser',
   sourcemap: true,
   splitting: true,
