@@ -88,7 +88,7 @@
     margin-inline-start: 28px;
   }
 
-  :global(.border-loader):global(.border-loader) {
+  :global(.border-loader) {
     display: flex;
     flex-flow: column nowrap;
     gap: var(--webchat-spacingVerticalS);
@@ -96,7 +96,7 @@
     width: 500px;
   }
 
-  :global(.border-loader__track):global(.border-loader__track) {
+  :global(.border-loader__track) {
     border-radius: inherit;
     box-sizing: border-box;
     clip-path: border-box;
