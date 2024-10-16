@@ -584,6 +584,9 @@ If your access is still pending, consider emailing your manager to remind them t
         <App />
       );
 
+      console.warn('Pre chat', document.querySelector('.pre-chat-message-activity__body')?.getAttribute('class'));
+      console.warn('Border loader', document.querySelector('.border-loader__loader')?.getAttribute('class'));
+
       await host.snapshot();
 
       const sendboxes = Array.from(document.querySelectorAll(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`)).filter((_, index) => sendBoxIndexes.includes(String(index)));
