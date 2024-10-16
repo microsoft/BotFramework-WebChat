@@ -583,7 +583,7 @@ If your access is still pending, consider emailing your manager to remind them t
       root.render(
         <App />
       );
-
+      await new Promise(r => setTimeout(r, 1000));
       console.warn('Pre chat', document.querySelector('.pre-chat-message-activity__body')?.getAttribute('class'));
       console.warn('Border loader', document.querySelector('.border-loader__loader')?.getAttribute('class'));
 
