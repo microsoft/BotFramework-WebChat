@@ -62,12 +62,19 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
 
     const handleDragLeave = () => --entranceCounter <= 0 && setDropZoneState(false);
 
+    const handleDragEnd = () => {
+      entranceCounter = 0;
+      setDropZoneState(false);
+    };
+
     document.addEventListener('dragenter', handleDragEnter, false);
     document.addEventListener('dragleave', handleDragLeave, false);
+    document.addEventListener('dragend', handleDragEnd, false);
 
     return () => {
       document.removeEventListener('dragenter', handleDragEnter);
       document.removeEventListener('dragleave', handleDragLeave);
+      document.removeEventListener('dragend', handleDragEnd);
     };
   }, [setDropZoneState]);
 
