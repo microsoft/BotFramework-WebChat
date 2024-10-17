@@ -84,7 +84,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixes [#5306](https://github.com/microsoft/BotFramework-WebChat/issues/5306). Title and subtitle in pre-chat message activity should wrap, in PR [#5307](https://github.com/microsoft/BotFramework-WebChat/pull/5307), by [@compulim](https://github.com/compulim)
 -  Fixes [#5319](https://github.com/microsoft/BotFramework-WebChat/issues/5319). Some Markdown text are not rendered after HTML tags, in PR [#5320](https://github.com/microsoft/BotFramework-WebChat/pull/5320), by [@compulim](https://github.com/compulim)
 -  Fixes [#5323](https://github.com/microsoft/BotFramework-WebChat/issues/5323). Removed unused CSS class from carousel component, eliminating unintended styling, in PR [#5325](https://github.com/microsoft/BotFramework-WebChat/pull/5325), by [@OEvgeny](https://github.com/OEvgeny)
--  Resolved CSS class name conflicts between component and fluent packages to prevent styling issues, in PR [#5326](https://github.com/microsoft/BotFramework-WebChat/pull/5326), by [@OEvgeny](https://github.com/OEvgeny)
+-  Resolved CSS class name conflicts between component and fluent packages to prevent styling issues, in PR [#5326](https://github.com/microsoft/BotFramework-WebChat/pull/5326), in PR [#5327](https://github.com/microsoft/BotFramework-WebChat/pull/5327), by [@OEvgeny](https://github.com/OEvgeny)
 
 # Removed
 

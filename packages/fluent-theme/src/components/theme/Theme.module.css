@@ -1,3 +1,11 @@
+:global {
+  /* biome-ignore format: do not print each class on the new line */
+  .a, .b, .c, .d, .e, .f, .g, .h, .i, .j, .k, .l, .m, .n, .o, .p, .q, .r, .s, .t, .v, .w, .u, .x, .y, .z,
+  .A, .B, .C, .D, .E, .F, .G, .H, .I, .J, .K, .L, .M, .N, .O, .P, .Q, .R, .S, .T, .V, .W, .U, .X, .Y, .Z {
+    /* biome-ignore lint: esbuild considers empty global classes as used and removes them due to lack of rules */
+  }
+}
+
 :global(.webchat-fluent).theme {
   display: contents;
 
