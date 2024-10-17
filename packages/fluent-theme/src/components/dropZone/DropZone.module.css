@@ -8,11 +8,11 @@
   place-content: center;
   place-items: center;
   position: absolute;
+  transition: all var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
 }
 
 :global(.webchat-fluent) .sendbox__attachment-drop-zone--droppable {
-  background-color: #e00;
-  color: White;
+  background-color: var(--webchat-colorBrandBackground2Hover);
 }
 
 :global(.webchat-fluent) .sendbox__attachment-drop-zone-icon {
