@@ -72,6 +72,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Resolved [#4847](https://github.com/microsoft/BotFramework-WebChat/issues/4847). Migrated to npm workspaces from lerna, in PR [#5301](https://github.com/microsoft/BotFramework-WebChat/pull/5301), by [@compulim](https://github.com/compulim)
 -  Resolved [#5302](https://github.com/microsoft/BotFramework-WebChat/issues/5302). Migrated to `core-js-pure/Promise.withResolveers` from `p-defer`, in PR [#5301](https://github.com/microsoft/BotFramework-WebChat/pull/5301), by [@compulim](https://github.com/compulim)
 -  Improved message bubble layout in Fluent theme to allow growth beyond 450px up to 75% of container width, in PR [#5324](https://github.com/microsoft/BotFramework-WebChat/pull/5324), by [@OEvgeny](https://github.com/OEvgeny)
+-  Improved drop zone behavior and styling in Fluent theme, in PR [#5328](https://github.com/microsoft/BotFramework-WebChat/pull/5328), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 
