@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { Components, createStore } from '../../src/index';
+import { Components, createStore } from '../../src/module/exports';
 
 const { Composer } = Components;
 

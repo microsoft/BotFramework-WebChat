@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import ReactWebChat, { createDirectLine } from '../../src/index-minimal';
+import ReactWebChat, { createDirectLine } from '../../src/module/exports-minimal';
 
 const directLine = createDirectLine({ token: '...' });
 const styleOptions = { accent: 'black' };

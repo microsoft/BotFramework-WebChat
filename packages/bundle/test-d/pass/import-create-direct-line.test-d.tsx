@@ -1,3 +1,3 @@
-import { createDirectLine } from '../../src/index';
+import { createDirectLine } from '../../src/module/exports';
 
 createDirectLine({ token: 'faketoken' });
