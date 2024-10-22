@@ -13,12 +13,22 @@ const resolveCognitiveServicesToES2015 = {
   }
 };
 
+// Redirect import paths for "react" and "react-dom"
+const resolveReact = {
+  name: 'isomorphic-react',
+  setup(build) {
+    build.onResolve({ filter: /^(react|react-dom)$/u }, ({ path: pkgNamne }) => ({
+      path: path.join(process.cwd(), '../../node_modules', `isomorphic-${pkgNamne}/dist/${pkgNamne}.js`)
+    }));
+  }
+};
+
 const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
-    'botframework-webchat': './src/index.ts',
-    'botframework-webchat.es5': './src/index-es5.ts',
-    'botframework-webchat.minimal': './src/index-minimal.ts'
+    'botframework-webchat': './src/module/exports.ts',
+    'botframework-webchat.es5': './src/module/exports-es5.ts',
+    'botframework-webchat.minimal': './src/module/exports-minimal.ts'
   },
   env: {
     ...baseConfig.env,
@@ -45,6 +55,22 @@ export default defineConfig([
   {
     ...config,
     format: 'cjs',
+    target: [...config.target, 'es2019']
+  },
+  {
+    ...config,
+    dts: false,
+    entry: {
+      webchat: './src/bundle/index.ts',
+      'webchat-es5': './src/bundle/index-es5.ts',
+      'webchat-minimal': './src/bundle/index-minimal.ts'
+    },
+    esbuildPlugins: [...config.esbuildPlugins, resolveReact],
+    format: 'iife',
+    outExtension() {
+      return { js: '.js' };
+    },
+    platform: 'browser',
     target: [...config.target, 'es2019']
   }
 ]);

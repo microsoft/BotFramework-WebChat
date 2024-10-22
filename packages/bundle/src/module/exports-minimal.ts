@@ -1,5 +1,5 @@
 import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
-import * as decorator from 'botframework-webchat-api/decorator';
+import * as apiDecorator from 'botframework-webchat-api/decorator';
 import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import { Constants, createStore, createStoreWithDevTools, createStoreWithOptions } from 'botframework-webchat-core';
 import * as internal from 'botframework-webchat-component/internal';
@@ -13,11 +13,10 @@ import ReactWebChat, {
   withEmoji
 } from 'botframework-webchat-component';
 
-import addVersion from './addVersion';
-import createBrowserWebSpeechPonyfillFactory from './createBrowserWebSpeechPonyfillFactory';
-import defaultCreateDirectLine from './createDirectLine';
-import defaultCreateDirectLineAppServiceExtension from './createDirectLineAppServiceExtension';
-import coreRenderWebChat from './renderWebChat';
+import createBrowserWebSpeechPonyfillFactory from '../createBrowserWebSpeechPonyfillFactory';
+import defaultCreateDirectLine from '../createDirectLine';
+import defaultCreateDirectLineAppServiceExtension from '../createDirectLineAppServiceExtension';
+import coreRenderWebChat from '../renderWebChat';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
@@ -25,7 +24,12 @@ const buildTool = process.env.build_tool;
 const moduleFormat = process.env.module_format;
 const version = process.env.npm_package_version;
 
-const buildInfo = { buildTool, moduleFormat, variant: 'minimal', version };
+const buildInfo = Object.freeze({
+  buildTool,
+  moduleFormat,
+  variant: 'minimal',
+  version
+});
 
 export const createDirectLine = options => {
   options.botAgent &&
@@ -47,6 +51,11 @@ export const createDirectLineAppServiceExtension = options => {
 
 export default ReactWebChat;
 
+const decorator = Object.freeze({
+  ...apiDecorator,
+  WebChatDecorator
+});
+
 export {
   buildInfo,
   Components,
@@ -57,39 +66,14 @@ export {
   createStoreWithDevTools,
   createStoreWithOptions,
   createStyleSet,
-  internal,
+  decorator,
   hooks,
+  internal,
+  ReactWebChat,
   renderWebChat,
+  testIds,
   version,
   withEmoji
 };
 
 export type { StrictStyleOptions, StyleOptions };
-
-// Until we have a development-specific bundle, we are not shipping createStoreWithDevTools in bundle.
-window['WebChat'] = {
-  ...window['WebChat'],
-  concatMiddleware,
-  Constants,
-  createBrowserWebSpeechPonyfillFactory,
-  createDirectLine,
-  createDirectLineAppServiceExtension,
-  createStore,
-  createStoreWithOptions,
-  createStyleSet,
-  decorator: {
-    ...decorator,
-    WebChatDecorator
-  },
-  internal,
-  hooks,
-  ReactWebChat,
-  renderWebChat,
-  testIds: {
-    ...(window['WebChat']?.testIds || {}),
-    ...testIds
-  },
-  withEmoji
-};
-
-addVersion('minimal');
