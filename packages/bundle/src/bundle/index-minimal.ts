@@ -3,7 +3,8 @@ import * as minimal from '../module/exports-minimal.js';
 
 const buildInfo = Object.freeze({
   ...minimal.buildInfo,
-  moduleFormat: 'iife'
+  buildTool: process.env.build_tool,
+  moduleFormat: process.env.module_format
 });
 
 // Until we have a development-specific bundle, we are not shipping createStoreWithDevTools in bundle.

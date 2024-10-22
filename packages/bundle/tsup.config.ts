@@ -65,6 +65,10 @@ export default defineConfig([
       'webchat-es5': './src/bundle/index-es5.ts',
       'webchat-minimal': './src/bundle/index-minimal.ts'
     },
+    env: {
+      ...config.env,
+      module_format: 'global'
+    },
     esbuildPlugins: [...config.esbuildPlugins, resolveReact],
     format: 'iife',
     outExtension() {
