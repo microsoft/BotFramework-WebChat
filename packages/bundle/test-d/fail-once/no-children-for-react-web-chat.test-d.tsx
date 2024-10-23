@@ -2,7 +2,7 @@ import { expectNotAssignable } from 'tsd';
 
 import React, { type ComponentType } from 'react';
 
-import ReactWebChat from '../../src/index';
+import ReactWebChat from '../../src/module/exports';
 
 type PropsOf<T> = T extends ComponentType<infer P> ? P : never;
 

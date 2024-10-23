@@ -26,7 +26,7 @@
         );
 
         expect(buildInfo).toHaveProperty('build-tool', 'tsup');
-        expect(buildInfo).toHaveProperty('module-format', 'esmodules');
+        expect(buildInfo).toHaveProperty('module-format', 'global');
         expect(buildInfo).toHaveProperty('variant', 'full-es5');
         expect(buildInfo.version).toMatch(/^\d+\.\d+\.\d+($|-)/u);
       });

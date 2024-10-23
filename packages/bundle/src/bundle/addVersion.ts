@@ -1,13 +1,10 @@
-/* global globalThis:readonly, process:readonly */
+/* global globalThis:readonly */
 /* eslint no-empty: ["error", { "allowEmptyCatch": true }] */
-
 import { buildInfo as apiBuildInfo } from 'botframework-webchat-api';
 import { buildInfo as componentBuildInfo } from 'botframework-webchat-component';
 import { buildInfo as coreBuildInfo } from 'botframework-webchat-core';
 
-const bundleVersion = process.env.npm_package_version;
-
-function setMetaTag(name, content) {
+function setMetaTag(name: string, content: string) {
   try {
     const { document } = globalThis;
 
@@ -22,14 +19,21 @@ function setMetaTag(name, content) {
   } catch (err) {}
 }
 
-export default function addVersion(variant) {
+type BuildMeta = Readonly<{
+  version: string;
+  variant: string;
+  buildTool: string;
+  moduleFormat: string;
+}>;
+
+export default function addVersion(buildInfo: BuildMeta) {
   setMetaTag(
     'botframework-webchat:api',
     `version=${apiBuildInfo.version}; build-tool=${apiBuildInfo.buildTool}; module-format=${apiBuildInfo.moduleFormat}`
   );
   setMetaTag(
     'botframework-webchat:bundle',
-    `version=${bundleVersion}; variant=${variant}; build-tool=${process.env.build_tool}; module-format=${process.env.module_format}`
+    `version=${buildInfo.version}; variant=${buildInfo.variant}; build-tool=${buildInfo.buildTool}; module-format=${buildInfo.moduleFormat}`
   );
   setMetaTag(
     'botframework-webchat:component',
@@ -40,8 +44,8 @@ export default function addVersion(variant) {
     `version=${coreBuildInfo.version}; build-tool=${coreBuildInfo.buildTool}; module-format=${coreBuildInfo.moduleFormat}`
   );
 
-  setMetaTag('botframework-webchat:bundle:variant', variant);
-  setMetaTag('botframework-webchat:bundle:version', process.env.npm_package_version);
+  setMetaTag('botframework-webchat:bundle:variant', buildInfo.variant);
+  setMetaTag('botframework-webchat:bundle:version', buildInfo.version);
   setMetaTag('botframework-webchat:core:version', coreBuildInfo.version);
   setMetaTag('botframework-webchat:ui:version', componentBuildInfo.version);
 }

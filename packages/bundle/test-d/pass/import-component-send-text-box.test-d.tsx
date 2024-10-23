@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Components } from '../../src/index';
+import { Components } from '../../src/module/exports';
 
 const { SendTextBox } = Components;
 

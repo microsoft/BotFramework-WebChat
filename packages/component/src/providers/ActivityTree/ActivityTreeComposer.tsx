@@ -13,7 +13,7 @@ import type { ActivityTreeContextType } from './private/Context';
 
 type ActivityTreeComposerProps = Readonly<{ children?: ReactNode | undefined }>;
 
-const { useActivities, useCreateActivityRenderer, useGetActivitiesByKey, useGetKeyByActivity } = hooks;
+const { useActivities, useActivityKeys, useCreateActivityRenderer, useGetActivitiesByKey, useGetKeyByActivity } = hooks;
 
 const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
   const existingContext = useActivityTreeContext(false);
@@ -25,9 +25,14 @@ const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
   const [rawActivities] = useActivities();
   const getActivitiesByKey = useGetActivitiesByKey();
   const getKeyByActivity = useGetKeyByActivity();
+  const activityKeys = useActivityKeys();
 
   const activities = useMemo<readonly WebChatActivity[]>(() => {
     const activities: WebChatActivity[] = [];
+
+    if (!activityKeys) {
+      return rawActivities;
+    }
 
     for (const activity of rawActivities) {
       // If an activity has multiple revisions, display the latest revision only at the position of the first revision.
@@ -36,11 +41,12 @@ const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
       const activitiesWithSameKey = getActivitiesByKey(getKeyByActivity(activity));
 
       // TODO: We may want to send all revisions of activity to the middleware so they can render UI to see previous revisions.
-      activitiesWithSameKey[0] === activity && activities.push(activitiesWithSameKey[activitiesWithSameKey.length - 1]);
+      activitiesWithSameKey?.[0] === activity &&
+        activities.push(activitiesWithSameKey[activitiesWithSameKey.length - 1]);
     }
 
     return Object.freeze(activities);
-  }, [getActivitiesByKey, getKeyByActivity, rawActivities]);
+  }, [activityKeys, getActivitiesByKey, getKeyByActivity, rawActivities]);
 
   const createActivityRenderer: ActivityComponentFactory = useCreateActivityRenderer();
 
