@@ -124,8 +124,6 @@ export default function render(
 
     decoration.className = Array.from(classes).join(' ');
 
-    // By default, Markdown-It will set "title" to the link title in link definition.
-
     // However, "title" may be narrated by screen reader:
     // - Edge
     //   - <a> will narrate "aria-label" but not "title"
