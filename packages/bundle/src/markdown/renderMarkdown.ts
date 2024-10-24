@@ -97,16 +97,23 @@ export default function render(
       linkDefinition.label === textContent && classes.add('webchat__render-markdown__pure-identifier');
     }
 
-    // For links that would be sanitized out, let's turn them into a button so we could handle them later.
-    if (!SANITIZE_HTML_OPTIONS.allowedSchemes.map(scheme => `${scheme}:`).includes(protocol)) {
-      decoration.asButton = true;
+    // Let javascript: fell through. Our sanitizer will catch and remove it from <a href>.
+    // Otherwise, it will be turn into <button value="javascript:"> and won't able to catch it.
 
-      classes.add('webchat__render-markdown__citation');
-    } else if (protocol === 'http:' || protocol === 'https:') {
-      decoration.iconAlt = externalLinkAlt;
-      decoration.iconClassName = 'webchat__render-markdown__external-link-icon';
+    // False-positive.
+    // eslint-disable-next-line no-script-url
+    if (protocol !== 'javascript:') {
+      // For links that would be sanitized out, let's turn them into a button so we could handle them later.
+      if (!SANITIZE_HTML_OPTIONS.allowedSchemes.map(scheme => `${scheme}:`).includes(protocol)) {
+        decoration.asButton = true;
 
-      ariaLabelSegments.push(externalLinkAlt);
+        classes.add('webchat__render-markdown__citation');
+      } else if (protocol === 'http:' || protocol === 'https:') {
+        decoration.iconAlt = externalLinkAlt;
+        decoration.iconClassName = 'webchat__render-markdown__external-link-icon';
+
+        ariaLabelSegments.push(externalLinkAlt);
+      }
     }
 
     // The first segment is textContent. Putting textContent is aria-label is useless.
