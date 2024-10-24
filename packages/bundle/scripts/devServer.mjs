@@ -27,16 +27,16 @@ const BUILD_OPTIONS = {
   // Currently, we are only serving webchat-es5.js for development and testing purpose.
   // Saving some CPUs by not building other bundles.
   entryPoints: {
-    webchat: resolveFromProjectRoot('./dist/botframework-webchat.mjs'),
-    'webchat-es5': resolveFromProjectRoot('./dist/botframework-webchat.es5.mjs'),
-    'webchat-minimal': resolveFromProjectRoot('./dist/botframework-webchat.minimal.mjs')
+    webchat: resolveFromProjectRoot('./dist/webchat.js'),
+    'webchat-es5': resolveFromProjectRoot('./dist/webchat-es5.js'),
+    'webchat-minimal': resolveFromProjectRoot('./dist/webchat-minimal.js')
   },
   logLevel: 'info',
   // Generate stats.json.
   metafile: true,
   // Minified file is smaller and load faster from GitHub Codespaces.
   minify: true,
-  outdir: resolveFromProjectRoot('./dist'),
+  outdir: resolveFromProjectRoot('./dist/dev'),
   plugins: [isomorphicReactResolvePlugin],
   sourcemap: true
 };

@@ -28,6 +28,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 -  `styleOptions.bubbleImageHeight` is being deprecated in favor of `styleOptions.bubbleImageMaxHeight` and `styleOptions.bubbleImageMinHeight`. The option will be removed on or after 2026-07-05
 -  `styleOptions.bubbleMaxWidth`/`bubbleMinWidth` is being deprecated in favor of `styleOptions.bubbleAttachmentMaxWidth`/`bubbleAttachmentMinWidth` and `styleOptions.bubbleMessageMaxWidth`/`bubbleMessageMinWidth`. The option will be removed on or after 2026-10-08
+-  Moved to `micromark` for rendering Markdown, instead of `markdown-it`
+   -  Please refer to PR [#5330](https://github.com/microsoft/BotFramework-WebChat/pull/5330) for details
 
 ### Added
 
@@ -74,6 +76,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Improved message bubble layout in Fluent theme to allow growth beyond 450px up to 75% of container width, in PR [#5324](https://github.com/microsoft/BotFramework-WebChat/pull/5324), by [@OEvgeny](https://github.com/OEvgeny)
 -  Improved drop zone behavior and styling in Fluent theme, in PR [#5328](https://github.com/microsoft/BotFramework-WebChat/pull/5328), by [@OEvgeny](https://github.com/OEvgeny)
 -  Excluded side effects from module entry points to prevent global scope modifications, in PR [#5329](https://github.com/microsoft/BotFramework-WebChat/pull/5329), by [@OEvgeny](https://github.com/OEvgeny)
+-  Moved to `micromark` for rendering Markdown, instead of `markdown-it`, in PR [#5330](https://github.com/microsoft/BotFramework-WebChat/pull/5330), by [@compulim](https://github.com/compulim)
 
 ### Fixed
 
