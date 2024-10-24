@@ -7,7 +7,7 @@ import {
 } from 'botframework-webchat-component/internal';
 import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
-import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
+import { pre as respectCRLFPre } from './private/respectCRLF';
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
 

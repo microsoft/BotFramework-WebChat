@@ -4,12 +4,15 @@ import {
   parseDocumentFragmentFromString,
   serializeDocumentFragmentIntoString
 } from 'botframework-webchat-component/internal';
-import MarkdownIt from 'markdown-it';
-import betterLink from '../markdownItPlugins/betterLink';
+import { micromark } from 'micromark';
 import betterLinkDocumentMod, { type BetterLinkDocumentModDecoration } from './betterLinkDocumentMod';
 
 const BASE_MARKDOWN = '[Hello, World!](https://example.com/1)\n\n[Aloha!](https://example.com/2)';
-const BASE_HTML = new MarkdownIt().render(BASE_MARKDOWN);
+let baseHTML: string;
+
+beforeEach(() => {
+  baseHTML = micromark(BASE_MARKDOWN, { allowDangerousHtml: true });
+});
 
 describe('When passing "ariaLabel" option with "Hello, World!" for a specific anchor based on "href"', () => {
   let actual: DocumentFragment;
@@ -17,7 +20,7 @@ describe('When passing "ariaLabel" option with "Hello, World!" for a specific an
 
   beforeEach(() => {
     actual = betterLinkDocumentMod(
-      parseDocumentFragmentFromString(BASE_HTML),
+      parseDocumentFragmentFromString(baseHTML),
       href => href === 'https://example.com/1' && decoration
     );
   });
@@ -29,17 +32,6 @@ describe('When passing "ariaLabel" option with "Hello, World!" for a specific an
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
       '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com/1" aria-label="Hello, World!">Hello, World!</a></p>\n<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com/2">Aloha!</a></p>'
     ));
-
-  test('should match baseline', () =>
-    expect(serializeDocumentFragmentIntoString(actual)).toBe(
-      serializeDocumentFragmentIntoString(
-        parseDocumentFragmentFromString(
-          new MarkdownIt()
-            .use(betterLink, (_, textContent) => textContent === 'Hello, World!' && decoration)
-            .render(BASE_MARKDOWN)
-        )
-      )
-    ));
 });
 
 describe('When passing "ariaLabel" option with "Hello, World!" for a specific anchor based on "textContent"', () => {
@@ -48,7 +40,7 @@ describe('When passing "ariaLabel" option with "Hello, World!" for a specific an
 
   beforeEach(() => {
     actual = betterLinkDocumentMod(
-      parseDocumentFragmentFromString(BASE_HTML),
+      parseDocumentFragmentFromString(baseHTML),
       (_, textContent) => textContent === 'Hello, World!' && decoration
     );
   });
@@ -59,16 +51,5 @@ describe('When passing "ariaLabel" option with "Hello, World!" for a specific an
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
       '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com/1" aria-label="Hello, World!">Hello, World!</a></p>\n<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com/2">Aloha!</a></p>'
-    ));
-
-  test('should match baseline', () =>
-    expect(serializeDocumentFragmentIntoString(actual)).toBe(
-      serializeDocumentFragmentIntoString(
-        parseDocumentFragmentFromString(
-          new MarkdownIt()
-            .use(betterLink, (_, textContent) => textContent === 'Hello, World!' && decoration)
-            .render(BASE_MARKDOWN)
-        )
-      )
     ));
 });
