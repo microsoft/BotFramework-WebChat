@@ -1,12 +1,12 @@
 import { onErrorResumeNext } from 'botframework-webchat-core';
-import MarkdownIt from 'markdown-it';
 import sanitizeHTML from 'sanitize-html';
 
 import {
   parseDocumentFragmentFromString,
   serializeDocumentFragmentIntoString
 } from 'botframework-webchat-component/internal';
-import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdownItPlugins/ariaLabel';
+import { micromark } from 'micromark';
+import { gfm, gfmHtml } from 'micromark-extension-gfm';
 import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
@@ -72,19 +72,9 @@ export default function render(
 ): string {
   const linkDefinitions = Array.from(iterateLinkDefinitions(markdown));
 
-  const MARKDOWN_IT_INIT = Object.freeze({
-    breaks: false,
-    html: markdownRenderHTML ?? true,
-    linkify: true,
-    typographer: true,
-    xhtmlOut: true
-  });
-
   if (markdownRespectCRLF) {
     markdown = respectCRLFPre(markdown);
   }
-
-  markdown = ariaLabelPre(markdown);
 
   const decorate = (href: string, textContent: string): BetterLinkDocumentModDecoration => {
     const decoration: BetterLinkDocumentModDecoration = {
@@ -145,7 +135,14 @@ export default function render(
     return decoration;
   };
 
-  const htmlAfterMarkdown = ariaLabelPost(new MarkdownIt(MARKDOWN_IT_INIT).use(ariaLabel).render(markdown));
+  const htmlAfterMarkdown = micromark(markdown, {
+    allowDangerousHtml: markdownRenderHTML ?? true,
+    // We need to handle links like cite:1 or other URL handlers.
+    // And we will remove dangerous protocol during sanitization.
+    allowDangerousProtocol: true,
+    extensions: [gfm()],
+    htmlExtensions: [gfmHtml()]
+  });
 
   // TODO: [P1] In some future, we should apply "better link" and "sanitization" outside of the Markdown engine.
   //       Particularly, apply them at `useRenderMarkdownAsHTML` instead of inside the default `renderMarkdown`.
