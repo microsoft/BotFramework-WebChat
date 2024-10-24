@@ -86,6 +86,6 @@ describe('renderMarkdown', () => {
   it('should render strikethrough text correctly', () => {
     const styleOptions = { markdownRespectCRLF: true };
 
-    expect(renderMarkdown(`~~strike text~~`, styleOptions)).toBe('<p><s>strike text</s></p>');
+    expect(renderMarkdown(`~~strike text~~`, styleOptions)).toBe('<p><del>strike text</del></p>');
   });
 });
