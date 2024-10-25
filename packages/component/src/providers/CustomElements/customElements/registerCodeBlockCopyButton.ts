@@ -9,8 +9,8 @@ type Strings = Readonly<{
 type StyleSet = ReturnType<typeof useStyleSet>[0];
 
 export default function registerCodeBlockCopyButton(hash: string, strings: Strings, styleSet: StyleSet): string {
-  // Allowed tag names are ASCII alphanumeric only, https://html.spec.whatwg.org/multipage/syntax.html#tag-name.
-  const name = `WebChatCodeBlockCopyButton${hash}`;
+  // Allowed tag names are specified here, https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define#valid_custom_element_names
+  const name = `webchat-${hash}--code-block-copy-button`;
 
   class CodeBlockCopyButtonElement extends HTMLElement {
     constructor() {
