@@ -7,8 +7,7 @@ describe('renderMarkdown', () => {
   const renderMarkdownOptions = {
     codeBlockCopyButtonTagName: 'webchat__code-block-copy-button',
     copyButtonAlt: 'Copy',
-    copyButtonCopiedAlt: 'Copied',
-    externalLinkAlt: 'Opens in a new window; external.'
+    copyButtonCopiedAlt: 'Copied'
   };
 
   it('should render markdown', () => {
@@ -58,7 +57,13 @@ describe('renderMarkdown', () => {
         styleOptions,
         renderMarkdownOptions
       )
-    ).toBe('<pre><code>{\n  "hello": "World!"\n}\n</code></pre>');
+    ).toBe(`<pre class="webchat__render-markdown__code-block"><webchat__code-block-copy-button data-value="{
+  &quot;hello&quot;: &quot;World!&quot;
+}
+"></webchat__code-block-copy-button><code>{
+  "hello": "World!"
+}
+</code></pre>`);
   });
 
   it('should render aria-labels', () => {
