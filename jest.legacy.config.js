@@ -17,6 +17,7 @@ const TRANSFORM_IGNORE_PACKAGES = [
   'micromark-extension-gfm-table',
   'micromark-extension-gfm-tagfilter',
   'micromark-extension-gfm-task-list-item',
+  'micromark-extension-math',
   'micromark-factory-destination',
   'micromark-factory-label',
   'micromark-factory-space',
