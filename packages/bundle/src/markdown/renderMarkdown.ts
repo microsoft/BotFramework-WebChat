@@ -1,13 +1,13 @@
 import { onErrorResumeNext } from 'botframework-webchat-core';
-import MarkdownIt from 'markdown-it';
 import sanitizeHTML from 'sanitize-html';
 
 import {
   parseDocumentFragmentFromString,
   serializeDocumentFragmentIntoString
 } from 'botframework-webchat-component/internal';
-import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdownItPlugins/ariaLabel';
-import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
+import { micromark } from 'micromark';
+import { gfm, gfmHtml } from 'micromark-extension-gfm';
+import { pre as respectCRLFPre } from './private/respectCRLF';
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
 
@@ -72,19 +72,9 @@ export default function render(
 ): string {
   const linkDefinitions = Array.from(iterateLinkDefinitions(markdown));
 
-  const MARKDOWN_IT_INIT = Object.freeze({
-    breaks: false,
-    html: markdownRenderHTML ?? true,
-    linkify: true,
-    typographer: true,
-    xhtmlOut: true
-  });
-
   if (markdownRespectCRLF) {
     markdown = respectCRLFPre(markdown);
   }
-
-  markdown = ariaLabelPre(markdown);
 
   const decorate = (href: string, textContent: string): BetterLinkDocumentModDecoration => {
     const decoration: BetterLinkDocumentModDecoration = {
@@ -107,16 +97,23 @@ export default function render(
       linkDefinition.label === textContent && classes.add('webchat__render-markdown__pure-identifier');
     }
 
-    // For links that would be sanitized out, let's turn them into a button so we could handle them later.
-    if (!SANITIZE_HTML_OPTIONS.allowedSchemes.map(scheme => `${scheme}:`).includes(protocol)) {
-      decoration.asButton = true;
+    // Let javascript: fell through. Our sanitizer will catch and remove it from <a href>.
+    // Otherwise, it will be turn into <button value="javascript:"> and won't able to catch it.
 
-      classes.add('webchat__render-markdown__citation');
-    } else if (protocol === 'http:' || protocol === 'https:') {
-      decoration.iconAlt = externalLinkAlt;
-      decoration.iconClassName = 'webchat__render-markdown__external-link-icon';
+    // False-positive.
+    // eslint-disable-next-line no-script-url
+    if (protocol !== 'javascript:') {
+      // For links that would be sanitized out, let's turn them into a button so we could handle them later.
+      if (!SANITIZE_HTML_OPTIONS.allowedSchemes.map(scheme => `${scheme}:`).includes(protocol)) {
+        decoration.asButton = true;
 
-      ariaLabelSegments.push(externalLinkAlt);
+        classes.add('webchat__render-markdown__citation');
+      } else if (protocol === 'http:' || protocol === 'https:') {
+        decoration.iconAlt = externalLinkAlt;
+        decoration.iconClassName = 'webchat__render-markdown__external-link-icon';
+
+        ariaLabelSegments.push(externalLinkAlt);
+      }
     }
 
     // The first segment is textContent. Putting textContent is aria-label is useless.
@@ -126,8 +123,6 @@ export default function render(
     }
 
     decoration.className = Array.from(classes).join(' ');
-
-    // By default, Markdown-It will set "title" to the link title in link definition.
 
     // However, "title" may be narrated by screen reader:
     // - Edge
@@ -145,7 +140,14 @@ export default function render(
     return decoration;
   };
 
-  const htmlAfterMarkdown = ariaLabelPost(new MarkdownIt(MARKDOWN_IT_INIT).use(ariaLabel).render(markdown));
+  const htmlAfterMarkdown = micromark(markdown, {
+    allowDangerousHtml: markdownRenderHTML ?? true,
+    // We need to handle links like cite:1 or other URL handlers.
+    // And we will remove dangerous protocol during sanitization.
+    allowDangerousProtocol: true,
+    extensions: [gfm()],
+    htmlExtensions: [gfmHtml()]
+  });
 
   // TODO: [P1] In some future, we should apply "better link" and "sanitization" outside of the Markdown engine.
   //       Particularly, apply them at `useRenderMarkdownAsHTML` instead of inside the default `renderMarkdown`.

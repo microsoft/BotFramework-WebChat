@@ -72,7 +72,7 @@
         // The last activity have "webchat:fallback-text" field set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
         expect(screenReaderTexts).toEqual([
           'connecting',
-          'Bot said:\nNo “webchat:fallback-text” field.\nA text: Hello.\nA text: World!',
+          'Bot said:\nNo \"webchat:fallback-text\" field.\nA text: Hello.\nA text: World!',
           'Bot said:\nWith \"webchat:fallback-text\" field.',
           'Bot said:\nA text: Hello.\nA text: World!'
         ]);
@@ -85,7 +85,7 @@
         expect(screenReaderTexts).toEqual([
           'connecting',
           // In interactive transcript, this is narrated as "2 attachments".
-          'Bot said:\nNo “webchat:fallback-text” field.\nA text: Hello.\nA text: World!',
+          'Bot said:\nNo \"webchat:fallback-text\" field.\nA text: Hello.\nA text: World!',
           'Bot said:\nWith "webchat:fallback-text" field.',
           'Bot said:\nA text: Hello.\nA text: World!'
         ]);

@@ -106,10 +106,6 @@
       "3.0.2",
       "needs to bump manually"
     ],
-    "markdown-it": [
-      "13",
-      "markdown-it@14.1.0 has module field and it is breaking Webpack 4 because cross loading CJS and ESM"
-    ],
     "microsoft-cognitiveservices-speech-sdk": [
       "1.17.0",
       "needs to bump manually"
@@ -133,13 +129,11 @@
     "botframework-webchat-core": "0.0.0-0",
     "classnames": "2.5.1",
     "core-js": "3.37.0",
-    "markdown-it": "13.0.2",
-    "markdown-it-attrs": "4.1.6",
-    "markdown-it-attrs-es5": "2.0.2",
-    "markdown-it-for-inline": "2.0.1",
     "math-random": "2.0.1",
     "mdast-util-from-markdown": "2.0.0",
     "memoize-one": "6.0.0",
+    "micromark": "^4.0.0",
+    "micromark-extension-gfm": "^3.0.0",
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "prop-types": "15.8.1",
     "punycode": "2.3.1",

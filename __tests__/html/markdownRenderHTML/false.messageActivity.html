@@ -32,7 +32,7 @@
 
         const markdownElement = firstActivityElement.querySelector('.webchat__render-markdown');
 
-        expect(markdownElement.innerHTML.startsWith('<h2>Header</h2>\n<p>&lt;p&gt;This is some text')).toBe(true);
+        expect(markdownElement.innerHTML.startsWith('<h2>Header</h2>\n&lt;p&gt;This is some text')).toBe(true);
 
         await host.snapshot();
       });
