@@ -22,6 +22,9 @@ import ActivityCopyButton from './ActivityCopyButton';
 import CitationModalContext from './CitationModalContent';
 import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './MessageSensitivityLabel';
 import isHTMLButtonElement from './isHTMLButtonElement';
+import ActivityViewCodeButton from './ActivityViewCodeButton';
+import isAIGeneratedActivity from './isAIGeneratedActivity';
+import isBasedOnSoftwareSourceCode from './isBasedOnSoftwareSourceCode';
 
 const { useLocalizer } = hooks;
 
@@ -232,13 +235,24 @@ const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
           ))}
         </LinkDefinitions>
       )}
-      {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
-        <ActivityCopyButton
-          className="webchat__text-content__activity-copy-button"
-          htmlText={htmlTextForClipboard}
-          plainText={activity.text}
-        />
-      ) : null}
+      <div className="webchat__text-content__activity-actions">
+        {activity.type === 'message' && isBasedOnSoftwareSourceCode(messageThing) ? (
+          <ActivityViewCodeButton
+            className="webchat__text-content__activity-view-code-button"
+            code={messageThing.isBasedOn.text}
+            isAIGenerated={isAIGeneratedActivity(activity)}
+            language={messageThing.isBasedOn.programmingLanguage}
+            title={messageThing.isBasedOn.programmingLanguage}
+          />
+        ) : null}
+        {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
+          <ActivityCopyButton
+            className="webchat__text-content__activity-copy-button"
+            htmlText={htmlTextForClipboard}
+            plainText={activity.text}
+          />
+        ) : null}
+      </div>
     </div>
   );
 });

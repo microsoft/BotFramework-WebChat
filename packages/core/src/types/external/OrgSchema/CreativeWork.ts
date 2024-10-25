@@ -62,6 +62,11 @@ export type CreativeWork = Thing & {
    * This property can be used alongside the license property which indicates license(s) applicable to some piece of content. The usageInfo property can provide information about other licensing options, e.g. acquiring commercial usage rights for an image that is also available under non-commercial creative commons licenses.
    */
   usageInfo?: CreativeWork | undefined;
+
+  /**
+   * The schema.org [isBasedOn](https://schema.org/isBasedOn) property provides a resource from which this work is derived or from which it is a modification or adaptation.
+   */
+  isBasedOn?: CreativeWork | undefined;
 };
 
 type Person = {
@@ -92,6 +97,7 @@ export const creativeWork = <TEntries extends ObjectEntries>(entries?: TEntries 
     pattern: orgSchemaProperty(lazy(() => definedTerm())),
     text: orgSchemaProperty(string()),
     usageInfo: orgSchemaProperty(lazy(() => creativeWork())),
+    isBasedOn: orgSchemaProperty(lazy(() => creativeWork())),
 
     ...entries
   });
