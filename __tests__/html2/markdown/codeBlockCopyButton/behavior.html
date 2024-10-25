@@ -82,13 +82,13 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
         const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.codeBlockCopyButton}"]`);
 
         expect(document.activeElement).toBe(copyButton);
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Press ENTER on the "Copy" button.
         await host.sendKeys('ENTER');
 
         // THEN: The copy button should change to "Copied".
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Paste into plain text and rich text text box.
         await host.click(document.querySelector('[data-testid="paste box"]'));
@@ -105,7 +105,7 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
         document.getElementById('webchat').style.display = '';
 
         // THEN: The "Copy" button should kept at normal.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

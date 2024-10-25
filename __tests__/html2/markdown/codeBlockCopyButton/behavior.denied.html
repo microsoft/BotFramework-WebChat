@@ -82,21 +82,21 @@ Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing v
         const copyButton = document.querySelector(`[data-testid="${testIds.codeBlockCopyButton}"]`);
 
         expect(document.activeElement).toBe(copyButton);
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Press ENTER on the "Copy" button.
         await host.sendKeys('ENTER');
 
         // THEN: The copy button should be disabled.
         expect(copyButton.getAttribute('aria-disabled')).toBe('true');
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Press TAB twice.
         await host.sendTab(2);
 
         // THEN: It should stay on the second copy button.
         expect(document.activeElement).toBe(document.querySelectorAll(`[data-testid="${testIds.codeBlockCopyButton}"]`)[1]);
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
