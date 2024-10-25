@@ -14,7 +14,7 @@ export default function createCodeBlockCopyButtonStyle() {
       float: 'right',
       gap: '4px',
       justifyContent: 'center',
-      padding: '5px 12px',
+      padding: '5px 5px',
 
       '&:hover': {
         background: '#f5f5f5',
