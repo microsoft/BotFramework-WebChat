@@ -2,6 +2,7 @@ import { cx } from '@emotion/css';
 import { hooks, StrictStyleOptions } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 
+import useCodeBlockCopyButtonTagName from '../providers/CustomElements/useCodeBlockCopyButtonTagName';
 import parseDocumentFragmentFromString from '../Utils/parseDocumentFragmentFromString';
 import serializeDocumentFragmentIntoString from '../Utils/serializeDocumentFragmentIntoString';
 import useWebChatUIContext from './internal/useWebChatUIContext';
@@ -19,6 +20,7 @@ export default function useRenderMarkdownAsHTML(
     ) => string)
   | undefined {
   const { renderMarkdown } = useWebChatUIContext();
+  const [codeBlockCopyButtonTagName] = useCodeBlockCopyButtonTagName();
   const [styleOptions] = useStyleOptions();
   const [{ renderMarkdown: renderMarkdownStyleSet }] = useStyleSet();
   const localize = useLocalizer();
@@ -45,7 +47,11 @@ export default function useRenderMarkdownAsHTML(
     () =>
       renderMarkdown &&
       (markdown => {
-        const htmlAfterSanitization = renderMarkdown(markdown, styleOptions, { containerClassName, externalLinkAlt });
+        const htmlAfterSanitization = renderMarkdown(markdown, styleOptions, {
+          codeBlockCopyButtonTagName,
+          containerClassName,
+          externalLinkAlt
+        });
 
         const documentFragmentAfterSanitization = parseDocumentFragmentFromString(htmlAfterSanitization);
 
@@ -58,6 +64,6 @@ export default function useRenderMarkdownAsHTML(
 
         return serializeDocumentFragmentIntoString(documentFragmentAfterSanitization);
       }),
-    [containerClassName, externalLinkAlt, renderMarkdown, styleOptions]
+    [codeBlockCopyButtonTagName, containerClassName, externalLinkAlt, renderMarkdown, styleOptions]
   );
 }

@@ -48,15 +48,7 @@ const config: typeof baseConfig = {
 };
 
 export default defineConfig([
-  {
-    ...config,
-    format: 'esm'
-  },
-  {
-    ...config,
-    format: 'cjs',
-    target: [...config.target, 'es2019']
-  },
+  // Build IIFE before CJS/ESM to make npm start faster.
   {
     ...config,
     dts: false,
@@ -75,6 +67,15 @@ export default defineConfig([
       return { js: '.js' };
     },
     platform: 'browser',
+    target: [...config.target, 'es2019']
+  },
+  {
+    ...config,
+    format: 'esm'
+  },
+  {
+    ...config,
+    format: 'cjs',
     target: [...config.target, 'es2019']
   }
 ]);

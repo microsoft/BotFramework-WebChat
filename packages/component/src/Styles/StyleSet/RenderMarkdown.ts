@@ -71,6 +71,10 @@ export default function createMarkdownStyle() {
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'column'
+      },
+
+      '& .webchat__render-markdown__code-block': {
+        whiteSpace: 'pre-line'
       }
     }
   };
