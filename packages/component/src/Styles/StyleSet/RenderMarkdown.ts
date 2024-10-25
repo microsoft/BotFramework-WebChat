@@ -74,7 +74,7 @@ export default function createMarkdownStyle() {
       },
 
       '& .webchat__render-markdown__code-block': {
-        whiteSpace: 'pre-line'
+        whiteSpace: 'pre-wrap'
       }
     }
   };
