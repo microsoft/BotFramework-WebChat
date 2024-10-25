@@ -7,9 +7,10 @@ import {
 } from 'botframework-webchat-component/internal';
 import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
-import { pre as respectCRLFPre } from './private/respectCRLF';
+import { math, mathHtml } from 'micromark-extension-math';
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
+import { pre as respectCRLFPre } from './private/respectCRLF';
 
 const SANITIZE_HTML_OPTIONS = Object.freeze({
   allowedAttributes: {
@@ -56,7 +57,38 @@ const SANITIZE_HTML_OPTIONS = Object.freeze({
     'th',
     'thead',
     'tr',
-    'ul'
+    'ul',
+
+    // Followings are for MathML elements, from https://developer.mozilla.org/en-US/docs/Web/MathML.
+    'annotation-xml',
+    'annotation',
+    'math',
+    'merror',
+    'mfrac',
+    'mi',
+    'mmultiscripts',
+    'mn',
+    'mo',
+    'mover',
+    'mpadded',
+    'mphantom',
+    'mprescripts',
+    'mroot',
+    'mrow',
+    'ms',
+    'mspace',
+    'msqrt',
+    'mstyle',
+    'msub',
+    'msubsup',
+    'msup',
+    'mtable',
+    'mtd',
+    'mtext',
+    'mtr',
+    'munder',
+    'munderover',
+    'semantics'
   ],
   // Bug of https://github.com/apostrophecms/sanitize-html/issues/633.
   // They should not remove `alt=""` even though it is empty.
@@ -145,8 +177,12 @@ export default function render(
     // We need to handle links like cite:1 or other URL handlers.
     // And we will remove dangerous protocol during sanitization.
     allowDangerousProtocol: true,
-    extensions: [gfm()],
-    htmlExtensions: [gfmHtml()]
+    extensions: [
+      gfm(),
+      // Disabling single dollar inline math block to prevent easy collision.
+      math({ singleDollarTextMath: false })
+    ],
+    htmlExtensions: [gfmHtml(), mathHtml({ output: 'mathml' })]
   });
 
   // TODO: [P1] In some future, we should apply "better link" and "sanitization" outside of the Markdown engine.
