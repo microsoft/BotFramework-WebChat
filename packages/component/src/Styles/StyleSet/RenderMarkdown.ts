@@ -65,6 +65,12 @@ export default function createMarkdownStyle() {
 
       '& .webchat__render-markdown__pure-identifier::before': {
         content: "'['"
+      },
+
+      '& math': {
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column'
       }
     }
   };

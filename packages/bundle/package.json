@@ -134,6 +134,7 @@
     "memoize-one": "6.0.0",
     "micromark": "^4.0.0",
     "micromark-extension-gfm": "^3.0.0",
+    "micromark-extension-math": "^3.1.0",
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "prop-types": "15.8.1",
     "punycode": "2.3.1",
