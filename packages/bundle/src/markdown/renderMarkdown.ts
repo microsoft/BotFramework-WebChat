@@ -112,7 +112,7 @@ export default function render(
     ...SANITIZE_HTML_OPTIONS,
     allowedAttributes: {
       ...SANITIZE_HTML_OPTIONS.allowedAttributes,
-      [codeBlockCopyButtonTagName]: ['data-value']
+      [codeBlockCopyButtonTagName]: ['data-testid', 'data-value']
     },
     allowedTags: [...SANITIZE_HTML_OPTIONS.allowedTags, codeBlockCopyButtonTagName]
   };

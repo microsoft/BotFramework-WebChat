@@ -1,4 +1,5 @@
 import type { useStyleSet } from '../../../hooks';
+import testIds from '../../../testIds';
 
 type Strings = Readonly<{
   copiedText: 'Copied';
@@ -30,13 +31,31 @@ export default function registerCodeBlockCopyButton(hash: string, strings: Strin
 
       const buttonElement = this.ownerDocument.createElement('button');
 
-      buttonElement.ariaLabel = strings.copyText;
       buttonElement.classList.add('webchat__code-block-copy-button', styleSet.codeBlockCopyButton);
+      buttonElement.dataset.testid = testIds.codeBlockCopyButton;
+      buttonElement.type = 'button';
 
-      buttonElement.addEventListener('animationend', () => {
+      buttonElement.append(copyIconImageElement);
+      buttonElement.append(copiedIconImageElement);
+
+      this.append(buttonElement);
+
+      const showAsPressed = () => {
+        buttonElement.ariaLabel = strings.copiedText;
+        buttonElement.ariaPressed = 'true';
+        buttonElement.classList.add('webchat__code-block-copy-button--copied');
+      };
+
+      const showAsUnpressed = () => {
         buttonElement.ariaLabel = strings.copyText;
+        buttonElement.ariaPressed = '';
         buttonElement.classList.remove('webchat__code-block-copy-button--copied');
-      });
+      };
+
+      // Initially, show as unpressed.
+      showAsUnpressed();
+
+      buttonElement.addEventListener('animationend', () => showAsUnpressed());
 
       buttonElement.addEventListener('click', () => {
         if (buttonElement.ariaDisabled === 'true') {
@@ -52,8 +71,7 @@ export default function registerCodeBlockCopyButton(hash: string, strings: Strin
                 new ClipboardItem({ 'text/plain': new Blob([this.dataset.value], { type: 'text/plain' }) })
               ]);
 
-              buttonElement.ariaLabel = strings.copiedText;
-              buttonElement.classList.add('webchat__code-block-copy-button--copied');
+              showAsPressed();
             } else if (state === 'denied') {
               buttonElement.ariaDisabled = 'true';
             }
@@ -62,13 +80,6 @@ export default function registerCodeBlockCopyButton(hash: string, strings: Strin
           }
         })();
       });
-
-      buttonElement.type = 'button';
-
-      buttonElement.append(copyIconImageElement);
-      buttonElement.append(copiedIconImageElement);
-
-      this.append(buttonElement);
     }
   }
 
