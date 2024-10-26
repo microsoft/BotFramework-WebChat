@@ -45,10 +45,10 @@ import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
 import createVideoContentStyle from './StyleSet/VideoContent';
+import createViewCodeDialogStyle from './StyleSet/ViewCodeDialog';
 import createVimeoContentStyle from './StyleSet/VimeoContent';
 import createWarningNotificationStyle from './StyleSet/WarningNotification';
 import createYouTubeContentStyle from './StyleSet/YouTubeContent';
-import createViewCodeDialogStyle from './StyleSet/ViewCodeDialog';
 
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
@@ -109,7 +109,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     sendStatus: createSendStatusStyle(),
     slottedActivityStatus: createSlottedActivityStatusStyle(),
     textContent: createTextContentStyle(),
-    viewCodeDialog: createViewCodeDialogStyle(),
-    thumbButton: createThumbButtonStyle()
+    thumbButton: createThumbButtonStyle(),
+    viewCodeDialog: createViewCodeDialogStyle()
   } as const);
 }
