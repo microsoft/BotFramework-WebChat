@@ -5,7 +5,10 @@ import renderMarkdown from '../markdown/renderMarkdown';
 
 describe('renderMarkdown', () => {
   const renderMarkdownOptions = {
-    codeBlockCopyButtonTagName: 'webchat__code-block-copy-button',
+    codeBlockCopyButtonAltCopied: 'Copied',
+    codeBlockCopyButtonAltCopy: 'Copy',
+    codeBlockCopyButtonTagName: 'webchat--code-block-copy-button',
+    codeBlockCopyButtonClassName: 'webchat__code-block-copy-button',
     copyButtonAlt: 'Copy',
     copyButtonCopiedAlt: 'Copied'
   };
@@ -57,10 +60,11 @@ describe('renderMarkdown', () => {
         styleOptions,
         renderMarkdownOptions
       )
-    ).toBe(`<pre class="webchat__render-markdown__code-block"><webchat__code-block-copy-button data-value="{
+    )
+      .toBe(`<pre class="webchat__render-markdown__code-block"><webchat--code-block-copy-button class="webchat__code-block-copy-button" data-alt-copied="Copied" data-alt-copy="Copy" data-value="{
   &quot;hello&quot;: &quot;World!&quot;
 }
-"></webchat__code-block-copy-button><code>{
+"></webchat--code-block-copy-button><code>{
   "hello": "World!"
 }
 </code></pre>`);
