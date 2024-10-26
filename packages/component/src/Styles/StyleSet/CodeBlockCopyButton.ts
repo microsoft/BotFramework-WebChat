@@ -11,7 +11,7 @@ export default function createCodeBlockCopyButtonStyle() {
       border: '1px solid #d1d1d1',
       color: '#242424',
       display: 'grid',
-      float: 'right',
+      float: 'inline-end',
       gap: '4px',
       justifyContent: 'center',
       marginInlineStart: CSSTokens.PaddingRegular,
