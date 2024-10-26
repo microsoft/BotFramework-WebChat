@@ -22,9 +22,11 @@ export default function useRenderMarkdownAsHTML(
   const { renderMarkdown } = useWebChatUIContext();
   const [codeBlockCopyButtonTagName] = useCodeBlockCopyButtonTagName();
   const [styleOptions] = useStyleOptions();
-  const [{ renderMarkdown: renderMarkdownStyleSet }] = useStyleSet();
+  const [{ codeBlockCopyButton: codeBlockCopyButtonClassName, renderMarkdown: renderMarkdownStyleSet }] = useStyleSet();
   const localize = useLocalizer();
 
+  const codeBlockCopyButtonAltCopied = localize('COPY_BUTTON_COPIED_TEXT');
+  const codeBlockCopyButtonAltCopy = localize('COPY_BUTTON_TEXT');
   const externalLinkAlt = localize('MARKDOWN_EXTERNAL_LINK_ALT');
 
   const containerClassName = useMemo(
@@ -48,6 +50,9 @@ export default function useRenderMarkdownAsHTML(
       renderMarkdown &&
       (markdown => {
         const htmlAfterSanitization = renderMarkdown(markdown, styleOptions, {
+          codeBlockCopyButtonAltCopied,
+          codeBlockCopyButtonAltCopy,
+          codeBlockCopyButtonClassName,
           codeBlockCopyButtonTagName,
           containerClassName,
           externalLinkAlt
@@ -64,6 +69,15 @@ export default function useRenderMarkdownAsHTML(
 
         return serializeDocumentFragmentIntoString(documentFragmentAfterSanitization);
       }),
-    [codeBlockCopyButtonTagName, containerClassName, externalLinkAlt, renderMarkdown, styleOptions]
+    [
+      codeBlockCopyButtonAltCopied,
+      codeBlockCopyButtonAltCopy,
+      codeBlockCopyButtonClassName,
+      codeBlockCopyButtonTagName,
+      containerClassName,
+      externalLinkAlt,
+      renderMarkdown,
+      styleOptions
+    ]
   );
 }

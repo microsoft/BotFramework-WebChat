@@ -98,21 +98,30 @@ const SANITIZE_HTML_OPTIONS = Object.freeze({
 });
 
 type RenderInit = Readonly<{
+  codeBlockCopyButtonClassName: string;
   codeBlockCopyButtonTagName: string;
+  codeBlockCopyButtonAltCopied: string;
+  codeBlockCopyButtonAltCopy: string;
   externalLinkAlt: string;
 }>;
 
 export default function render(
   markdown: string,
   { markdownRespectCRLF, markdownRenderHTML }: Readonly<{ markdownRespectCRLF: boolean; markdownRenderHTML?: boolean }>,
-  { codeBlockCopyButtonTagName, externalLinkAlt }: RenderInit
+  {
+    codeBlockCopyButtonAltCopied,
+    codeBlockCopyButtonAltCopy,
+    codeBlockCopyButtonClassName,
+    codeBlockCopyButtonTagName,
+    externalLinkAlt
+  }: RenderInit
 ): string {
   const linkDefinitions = Array.from(iterateLinkDefinitions(markdown));
   const sanitizeHTMLOptions = {
     ...SANITIZE_HTML_OPTIONS,
     allowedAttributes: {
       ...SANITIZE_HTML_OPTIONS.allowedAttributes,
-      [codeBlockCopyButtonTagName]: ['data-testid', 'data-value']
+      [codeBlockCopyButtonTagName]: ['class', 'data-alt-copy', 'data-alt-copied', 'data-testid', 'data-value']
     },
     allowedTags: [...SANITIZE_HTML_OPTIONS.allowedTags, codeBlockCopyButtonTagName]
   };
@@ -205,7 +214,12 @@ export default function render(
   const documentFragmentAfterMarkdown = parseDocumentFragmentFromString(htmlAfterMarkdown);
 
   betterLinkDocumentMod(documentFragmentAfterMarkdown, decorate);
-  codeBlockCopyButtonDocumentMod(documentFragmentAfterMarkdown, { codeBlockCopyButtonTagName });
+  codeBlockCopyButtonDocumentMod(documentFragmentAfterMarkdown, {
+    codeBlockCopyButtonAltCopied,
+    codeBlockCopyButtonAltCopy,
+    codeBlockCopyButtonClassName,
+    codeBlockCopyButtonTagName
+  });
 
   const htmlAfterBetterLink = serializeDocumentFragmentIntoString(documentFragmentAfterMarkdown);
 
