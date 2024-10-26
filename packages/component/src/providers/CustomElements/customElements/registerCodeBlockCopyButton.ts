@@ -2,8 +2,16 @@ import testIds from '../../../testIds';
 
 type ObservedAttributes = 'className' | 'data-alt-copied' | 'data-alt-copy';
 
+const observedAttributes: readonly ObservedAttributes[] = Object.freeze([
+  'className',
+  'data-alt-copied',
+  'data-alt-copy'
+]);
+
 class CodeBlockCopyButtonElement extends HTMLElement {
-  static observedAttributes: ObservedAttributes[] = ['className', 'data-alt-copied', 'data-alt-copy'];
+  static get observedAttributes(): readonly ObservedAttributes[] {
+    return observedAttributes;
+  }
 
   constructor() {
     super();
