@@ -30,7 +30,7 @@ const CodeContent = memo(({ children, className, code, language, title }: Props)
 
         setHighlightedCode(html);
       } catch (error) {
-        console.error('Failed to highlight code:', error);
+        console.error('botframework-webchat: Failed to highlight code:', error);
 
         const pre = document.createElement('pre');
         pre.innerText = code;
