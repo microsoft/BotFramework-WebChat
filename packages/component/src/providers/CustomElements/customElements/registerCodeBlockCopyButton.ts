@@ -110,8 +110,16 @@ export default function registerCodeBlockCopyButton(hash: string): string {
   // Allowed tag names are specified here, https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define#valid_custom_element_names
   const name = `webchat-${hash}--code-block-copy-button`;
 
-  // One class can only be registered with one tag name. Must be 1:1 relationship.
-  customElements.define(name, class extends CodeBlockCopyButtonElement {});
+  customElements.define(
+    name,
+    // Using anonymous class because one class can only be registered with one tag name.
+    // Web Components enforce 1:1 relationship.
+    class extends CodeBlockCopyButtonElement {
+      static get observedAttributes(): readonly ObservedAttributes[] {
+        return observedAttributes;
+      }
+    }
+  );
 
   return name;
 }
