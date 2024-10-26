@@ -1,6 +1,6 @@
 import mathRandom from 'math-random';
-import React, { memo, useMemo, type ReactNode } from 'react';
-import registerCodeBlockCopyButton from './customElements/registerCodeBlockCopyButton';
+import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
+import CodeBlockCopyButtonElement from './customElements/CodeBlockCopyButton';
 import CustomElementsContext from './private/CustomElementsContext';
 
 type CustomElementsComposerProps = Readonly<{
@@ -11,7 +11,32 @@ const CustomElementsComposer = ({ children }: CustomElementsComposerProps) => {
   // eslint-disable-next-line no-magic-numbers
   const hash = useMemo(() => mathRandom().toString(36).substring(2, 7), []);
 
-  const codeBlockCopyButtonTagName = useMemo(() => registerCodeBlockCopyButton(hash), [hash]);
+  const registerCustomElement = useCallback(
+    (tagName: string, customElementConstructor: CustomElementConstructor): string => {
+      const fullTagName = `webchat-${hash}--${tagName}` as const;
+
+      customElements.define(
+        fullTagName,
+        class extends customElementConstructor {
+          static get observedAttributes(): readonly string[] {
+            return Object.freeze(
+              'observedAttributes' in customElementConstructor
+                ? (customElementConstructor.observedAttributes as string[])
+                : []
+            );
+          }
+        }
+      );
+
+      return fullTagName;
+    },
+    [hash]
+  );
+
+  const codeBlockCopyButtonTagName = useMemo(
+    () => registerCustomElement('code-block-copy-button', CodeBlockCopyButtonElement),
+    [registerCustomElement]
+  );
 
   const context = useMemo(() => Object.freeze({ codeBlockCopyButtonTagName }), [codeBlockCopyButtonTagName]);
 

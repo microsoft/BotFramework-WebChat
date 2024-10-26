@@ -4,7 +4,7 @@ type ObservedAttributes = 'class' | 'data-alt-copied' | 'data-alt-copy';
 
 const observedAttributes: readonly ObservedAttributes[] = Object.freeze(['class', 'data-alt-copied', 'data-alt-copy']);
 
-class CodeBlockCopyButtonElement extends HTMLElement {
+export default class CodeBlockCopyButtonElement extends HTMLElement {
   static get observedAttributes(): readonly ObservedAttributes[] {
     return observedAttributes;
   }
@@ -98,22 +98,4 @@ class CodeBlockCopyButtonElement extends HTMLElement {
       this.#copyIconImageElement.ariaLabel = this.dataset.altCopy;
     }
   }
-}
-
-export default function registerCodeBlockCopyButton(hash: string): string {
-  // Allowed tag names are specified here, https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define#valid_custom_element_names
-  const name = `webchat-${hash}--code-block-copy-button`;
-
-  customElements.define(
-    name,
-    // Using anonymous class because one class can only be registered with one tag name.
-    // Web Components enforce 1:1 relationship.
-    class extends CodeBlockCopyButtonElement {
-      static get observedAttributes(): readonly ObservedAttributes[] {
-        return observedAttributes;
-      }
-    }
-  );
-
-  return name;
 }
