@@ -36,6 +36,11 @@ export type CreativeWork = Thing & {
   citation?: readonly CreativeWork[] | undefined;
 
   /**
+   * The schema.org [isBasedOn](https://schema.org/isBasedOn) property provides a resource from which this work is derived or from which it is a modification or adaptation.
+   */
+  isBasedOn?: CreativeWork | undefined;
+
+  /**
    * Keywords or tags used to describe some item. Multiple textual entries in a keywords list are typically delimited by commas, or by repeating the property.
    *
    * @see https://schema.org/keywords
@@ -88,6 +93,7 @@ export const creativeWork = <TEntries extends ObjectEntries>(entries?: TEntries 
     abstract: orgSchemaProperty(string()),
     author: orgSchemaProperty(union([person(), string()])),
     citation: orgSchemaProperties(lazy(() => creativeWork())),
+    isBasedOn: orgSchemaProperty(lazy(() => creativeWork())),
     keywords: orgSchemaProperties(union([lazy(() => definedTerm()), string()])),
     pattern: orgSchemaProperty(lazy(() => definedTerm())),
     text: orgSchemaProperty(string()),
