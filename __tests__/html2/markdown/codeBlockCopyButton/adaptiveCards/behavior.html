@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat" style="position: relative"></main>
+    <script type="text/babel">
+      run(async function () {
+        await host.sendDevToolsCommand('Browser.setPermission', {
+          permission: { name: 'clipboard-write' },
+          setting: 'granted'
+        });
+
+        await expect(navigator.permissions.query({ name: 'clipboard-write' })).resolves.toHaveProperty(
+          'state',
+          'granted'
+        );
+
+        const {
+          ReactDOM: { render },
+          WebChat: { ReactWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const App = () => (
+          <React.Fragment>
+            <ReactWebChat directLine={directLine} store={store} />
+            <div style={{ gap: 8, position: 'absolute', top: 0, width: '100%' }}>
+              <label>
+                <div>Paste box</div>
+                <textarea
+                  data-testid="paste box"
+                  spellCheck={false}
+                  style={{ background: '#f0f0f0', border: 0, height: 100, padding: 0, resize: 'none', width: '100%' }}
+                />
+              </label>
+            </div>
+          </React.Fragment>
+        );
+
+        render(<App />, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                type: 'AdaptiveCard',
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                version: '1.5',
+                body: [
+                  {
+                    style: 'heading',
+                    type: 'TextBlock',
+                    text: 'This is an Adaptive Card'
+                  },
+                  {
+                    type: 'TextBlock',
+                    text: `Laboris ut proident dolore nisi sint ullamco proident veniam est.
+
+\`\`\`
+In do pariatur id enim nisi adipisicing incididunt consectetur do velit quis aliqua ad.
+
+Et proident est fugiat duis exercitation qui sunt amet ipsum.
+\`\`\`
+
+Ea sint elit anim enim voluptate aliquip aliqua nulla veniam.
+
+<pre>
+Ea et pariatur sint Lorem ex veniam adipisicing.
+
+Aliqua magna aliquip nisi quis.
+</pre>
+
+Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing velit id Lorem.`,
+                    wrap: true
+                  }
+                ]
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // WHEN: Focus on the "Copy" button via keyboard.
+        await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
+        await host.sendShiftTab(3);
+        await host.sendKeys('ENTER');
+
+        // THEN: Should focus on the "Copy" button
+        const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.codeBlockCopyButton}"]`);
+
+        expect(document.activeElement).toBe(copyButton);
+        await host.snapshot('local');
+
+        // WHEN: Press ENTER on the "Copy" button.
+        await host.sendKeys('ENTER');
+
+        // THEN: The copy button should change to "Copied".
+        await host.snapshot('local');
+
+        // WHEN: Paste into plain text and rich text text box.
+        await host.click(document.querySelector('[data-testid="paste box"]'));
+        await host.sendKeys('+CONTROL', 'v', '-CONTROL');
+
+        await host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`));
+
+        // Sleep for 1 second for the checkmark to go away.
+        await testHelpers.sleep(500);
+
+        // WHEN: Hiding Web Chat and showing it back.
+        document.getElementById('webchat').style.display = 'none';
+        document.body.offsetWidth; // Need for browser to refresh the layout.
+        document.getElementById('webchat').style.display = '';
+
+        // THEN: The "Copy" button should kept at normal.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

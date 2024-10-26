@@ -66,8 +66,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
-    "start:tsup": "npm run build:tsup -- --watch"
+    "start": "npm run build:tsup -- --onSuccess=\"touch ../bundle/src/bundle/index.ts\" --watch"
   },
   "localDependencies": {
     "botframework-webchat-api": "production",
@@ -162,6 +161,7 @@
     "simple-update-in": "2.2.0",
     "use-propagate": "^0.2.0-main.fb24772",
     "use-ref-from": "0.1.0",
+    "use-state-with-ref": "^0.1.0",
     "valibot": "0.30.0"
   },
   "peerDependencies": {

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          WebChat: { renderWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        function render(props) {
+          renderWebChat({ directLine, store, ...props }, document.getElementById('webchat'));
+        }
+
+        render();
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          text: `Laboris ut proident dolore nisi sint ullamco proident veniam est.
+
+\`\`\`
+In do pariatur id enim nisi adipisicing incididunt consectetur do velit quis aliqua ad.
+
+Et proident est fugiat duis exercitation qui sunt amet ipsum.
+\`\`\`
+
+Ea sint elit anim enim voluptate aliquip aliqua nulla veniam.
+
+<pre>
+Ea et pariatur sint Lorem ex veniam adipisicing.
+
+Aliqua magna aliquip nisi quis.
+</pre>
+
+Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing velit id Lorem.`,
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        const codeBlockCopyButton = document.querySelectorAll(
+          `[data-testid="${testIds.codeBlockCopyButton}"] [role="img"]`
+        );
+
+        expect(
+          [...document.querySelectorAll(`[data-testid="${testIds.codeBlockCopyButton}"] [role="img"]`)].map(
+            ({ ariaLabel }) => ariaLabel
+          )
+        ).toEqual(['Copy', 'Copied', 'Copy', 'Copied']);
+
+        // WHEN: Localization strings changed.
+        render({
+          overrideLocalizedStrings: {
+            COPY_BUTTON_COPIED_TEXT: '複製咗',
+            COPY_BUTTON_TEXT: '複製'
+          }
+        });
+
+        // THEN: Should reflect on the button immediately.
+        expect(
+          [...document.querySelectorAll(`[data-testid="${testIds.codeBlockCopyButton}"] [role="img"]`)].map(
+            ({ ariaLabel }) => ariaLabel
+          )
+        ).toEqual(['複製', '複製咗', '複製', '複製咗']);
+      });
+    </script>
+  </body>
+</html>

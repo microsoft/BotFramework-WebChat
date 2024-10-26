@@ -25,8 +25,12 @@ import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
+import { StyleToEmotionObjectComposer, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import UITracker from './hooks/internal/UITracker';
+import useInjectStyles from './hooks/internal/useInjectStyles';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
+import { FocusSendBoxScope } from './hooks/sendBoxFocus';
+import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
@@ -36,23 +40,20 @@ import createDefaultScrollToEndButtonMiddleware from './Middleware/ScrollToEndBu
 import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
 import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
+import CustomElementsComposer from './providers/CustomElements/CustomElementsComposer';
 import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
+import { LiveRegionTwinComposer } from './providers/LiveRegionTwin';
 import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
 import useTheme from './providers/Theme/useTheme';
 import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
 import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
+import useCustomPropertiesClassName from './Styles/useCustomPropertiesClassName';
 import { type ContextOf } from './types/ContextOf';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
-import { StyleToEmotionObjectComposer, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
-import useInjectStyles from './hooks/internal/useInjectStyles';
-import { LiveRegionTwinComposer } from './providers/LiveRegionTwin';
-import { FocusSendBoxScope } from './hooks/sendBoxFocus';
-import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
-import useCustomPropertiesClassName from './Styles/useCustomPropertiesClassName';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -89,21 +90,23 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
 
   return (
     <div className={classNames('webchat', 'webchat__css-custom-properties', rootClassName, customPropertiesClassName)}>
-      <FocusSendBoxScope>
-        <ScrollRelativeTranscriptScope>
-          <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
-            <DecoratorComposer>
-              <ModalDialogComposer>
-                {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-                <SendBoxComposer>
-                  {children}
-                  <Dictation onError={dictationOnError} />
-                </SendBoxComposer>
-              </ModalDialogComposer>
-            </DecoratorComposer>
-          </LiveRegionTwinComposer>
-        </ScrollRelativeTranscriptScope>
-      </FocusSendBoxScope>
+      <CustomElementsComposer>
+        <FocusSendBoxScope>
+          <ScrollRelativeTranscriptScope>
+            <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
+              <DecoratorComposer>
+                <ModalDialogComposer>
+                  {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+                  <SendBoxComposer>
+                    {children}
+                    <Dictation onError={dictationOnError} />
+                  </SendBoxComposer>
+                </ModalDialogComposer>
+              </DecoratorComposer>
+            </LiveRegionTwinComposer>
+          </ScrollRelativeTranscriptScope>
+        </FocusSendBoxScope>
+      </CustomElementsComposer>
     </div>
   );
 });

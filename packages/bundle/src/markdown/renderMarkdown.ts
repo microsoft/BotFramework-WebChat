@@ -1,14 +1,15 @@
-import { onErrorResumeNext } from 'botframework-webchat-core';
-import sanitizeHTML from 'sanitize-html';
-
 import {
   parseDocumentFragmentFromString,
   serializeDocumentFragmentIntoString
 } from 'botframework-webchat-component/internal';
+import { onErrorResumeNext } from 'botframework-webchat-core';
 import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
 import { math, mathHtml } from 'micromark-extension-math';
+import sanitizeHTML from 'sanitize-html';
+
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
+import codeBlockCopyButtonDocumentMod from './private/codeBlockCopyButtonDocumentMod';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
 import { pre as respectCRLFPre } from './private/respectCRLF';
 
@@ -16,7 +17,8 @@ const SANITIZE_HTML_OPTIONS = Object.freeze({
   allowedAttributes: {
     a: ['aria-label', 'class', 'href', 'name', 'rel', 'target'],
     button: ['aria-label', 'class', 'type', 'value'],
-    img: ['alt', 'class', 'src', 'title'],
+    img: ['alt', 'aria-label', 'class', 'src', 'title'],
+    pre: ['class'],
     span: ['aria-label']
   },
   allowedSchemes: ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'],
@@ -95,14 +97,34 @@ const SANITIZE_HTML_OPTIONS = Object.freeze({
   nonBooleanAttributes: []
 });
 
-type RenderInit = Readonly<{ containerClassName?: string; externalLinkAlt?: string }>;
+type RenderInit = Readonly<{
+  codeBlockCopyButtonClassName: string;
+  codeBlockCopyButtonTagName: string;
+  codeBlockCopyButtonAltCopied: string;
+  codeBlockCopyButtonAltCopy: string;
+  externalLinkAlt: string;
+}>;
 
 export default function render(
   markdown: string,
   { markdownRespectCRLF, markdownRenderHTML }: Readonly<{ markdownRespectCRLF: boolean; markdownRenderHTML?: boolean }>,
-  { externalLinkAlt = '' }: RenderInit = Object.freeze({})
+  {
+    codeBlockCopyButtonAltCopied,
+    codeBlockCopyButtonAltCopy,
+    codeBlockCopyButtonClassName,
+    codeBlockCopyButtonTagName,
+    externalLinkAlt
+  }: RenderInit
 ): string {
   const linkDefinitions = Array.from(iterateLinkDefinitions(markdown));
+  const sanitizeHTMLOptions = {
+    ...SANITIZE_HTML_OPTIONS,
+    allowedAttributes: {
+      ...SANITIZE_HTML_OPTIONS.allowedAttributes,
+      [codeBlockCopyButtonTagName]: ['class', 'data-alt-copy', 'data-alt-copied', 'data-testid', 'data-value']
+    },
+    allowedTags: [...SANITIZE_HTML_OPTIONS.allowedTags, codeBlockCopyButtonTagName]
+  };
 
   if (markdownRespectCRLF) {
     markdown = respectCRLFPre(markdown);
@@ -136,7 +158,7 @@ export default function render(
     // eslint-disable-next-line no-script-url
     if (protocol !== 'javascript:') {
       // For links that would be sanitized out, let's turn them into a button so we could handle them later.
-      if (!SANITIZE_HTML_OPTIONS.allowedSchemes.map(scheme => `${scheme}:`).includes(protocol)) {
+      if (!sanitizeHTMLOptions.allowedSchemes.map(scheme => `${scheme}:`).includes(protocol)) {
         decoration.asButton = true;
 
         classes.add('webchat__render-markdown__citation');
@@ -192,10 +214,16 @@ export default function render(
   const documentFragmentAfterMarkdown = parseDocumentFragmentFromString(htmlAfterMarkdown);
 
   betterLinkDocumentMod(documentFragmentAfterMarkdown, decorate);
+  codeBlockCopyButtonDocumentMod(documentFragmentAfterMarkdown, {
+    codeBlockCopyButtonAltCopied,
+    codeBlockCopyButtonAltCopy,
+    codeBlockCopyButtonClassName,
+    codeBlockCopyButtonTagName
+  });
 
   const htmlAfterBetterLink = serializeDocumentFragmentIntoString(documentFragmentAfterMarkdown);
 
-  const htmlAfterSanitization = sanitizeHTML(htmlAfterBetterLink, SANITIZE_HTML_OPTIONS);
+  const htmlAfterSanitization = sanitizeHTML(htmlAfterBetterLink, sanitizeHTMLOptions);
 
   return htmlAfterSanitization;
 }

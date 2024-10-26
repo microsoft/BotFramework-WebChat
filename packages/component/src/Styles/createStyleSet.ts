@@ -13,6 +13,7 @@ import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
 import createCarouselFilmStripAttachment from './StyleSet/CarouselFilmStripAttachment';
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createCitationModalDialogStyle from './StyleSet/CitationModalDialog';
+import createCodeBlockCopyButtonStyle from './StyleSet/CodeBlockCopyButton';
 import createConnectivityNotification from './StyleSet/ConnectivityNotification';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
@@ -70,6 +71,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     carouselFilmStrip: createCarouselFilmStrip(strictStyleOptions),
     carouselFilmStripAttachment: createCarouselFilmStripAttachment(strictStyleOptions),
     carouselFlipper: createCarouselFlipper(strictStyleOptions),
+    codeBlockCopyButton: createCodeBlockCopyButtonStyle(),
     connectivityNotification: createConnectivityNotification(strictStyleOptions),
     dictationInterims: createDictationInterimsStyle(strictStyleOptions),
     errorBox: createErrorBoxStyle(strictStyleOptions),
