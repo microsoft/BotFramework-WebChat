@@ -33,7 +33,16 @@ In do pariatur id enim nisi adipisicing incididunt consectetur do velit quis ali
 
 Et proident est fugiat duis exercitation qui sunt amet ipsum.
 \`\`\`
-      `,
+
+Ea sint elit anim enim voluptate aliquip aliqua nulla veniam.
+
+<pre>
+Ea et pariatur sint Lorem ex veniam adipisicing.
+
+Aliqua magna aliquip nisi quis.
+</pre>
+
+Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing velit id Lorem.`,
           type: 'message'
         });
 
@@ -47,7 +56,7 @@ Et proident est fugiat duis exercitation qui sunt amet ipsum.
           [...document.querySelectorAll(`[data-testid="${testIds.codeBlockCopyButton}"] [role="img"]`)].map(
             ({ ariaLabel }) => ariaLabel
           )
-        ).toEqual(['Copy', 'Copied']);
+        ).toEqual(['Copy', 'Copied', 'Copy', 'Copied']);
 
         // WHEN: Localization strings changed.
         render({
@@ -62,7 +71,7 @@ Et proident est fugiat duis exercitation qui sunt amet ipsum.
           [...document.querySelectorAll(`[data-testid="${testIds.codeBlockCopyButton}"] [role="img"]`)].map(
             ({ ariaLabel }) => ariaLabel
           )
-        ).toEqual(['複製', '複製咗']);
+        ).toEqual(['複製', '複製咗', '複製', '複製咗']);
       });
     </script>
   </body>
