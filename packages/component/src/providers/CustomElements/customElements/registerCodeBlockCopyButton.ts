@@ -1,12 +1,8 @@
 import testIds from '../../../testIds';
 
-type ObservedAttributes = 'className' | 'data-alt-copied' | 'data-alt-copy';
+type ObservedAttributes = 'class' | 'data-alt-copied' | 'data-alt-copy';
 
-const observedAttributes: readonly ObservedAttributes[] = Object.freeze([
-  'className',
-  'data-alt-copied',
-  'data-alt-copy'
-]);
+const observedAttributes: readonly ObservedAttributes[] = Object.freeze(['class', 'data-alt-copied', 'data-alt-copy']);
 
 class CodeBlockCopyButtonElement extends HTMLElement {
   static get observedAttributes(): readonly ObservedAttributes[] {
@@ -99,7 +95,7 @@ class CodeBlockCopyButtonElement extends HTMLElement {
   #copyIconImageElement: HTMLDivElement;
 
   attributeChangedCallback(name: ObservedAttributes, oldValue: string, newValue: string) {
-    if (name === 'className') {
+    if (name === 'class') {
       this.#buttonElement.classList.remove(oldValue);
       this.#buttonElement.classList.add(newValue);
     } else if (name === 'data-alt-copied') {
