@@ -1,7 +1,7 @@
 import { createElement, type ComponentType } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 
-export default function wrapAsCustomElement<Props extends { [key: string]: string }>(
+export default function wrapAsCustomElement<Props extends { [key: string]: string | undefined } & { children?: never }>(
   component: ComponentType<Props>,
   propKeys: (keyof Props)[]
 ) {
@@ -24,16 +24,15 @@ export default function wrapAsCustomElement<Props extends { [key: string]: strin
 
         typeof value === 'string' && propMap.set(key === 'class' ? 'className' : key, value);
       }
-
-      this.#rootElement = this.ownerDocument.createElement('div');
-    }
-
-    connectedCallback() {
-      this.append(this.#rootElement);
     }
 
     #propMap: Map<keyof Props, string>;
-    #rootElement: HTMLDivElement;
+
+    #getProps(): Props {
+      const propEntries: [keyof Props, string][] = Array.from<[keyof Props, string]>(this.#propMap.entries());
+
+      return Object.freeze(Object.fromEntries(propEntries) as Props);
+    }
 
     attributeChangedCallback(name: AttributeName, _oldValue: string, newValue: string) {
       if (name === 'class') {
@@ -46,16 +45,16 @@ export default function wrapAsCustomElement<Props extends { [key: string]: strin
         this.#propMap.delete(name);
       }
 
-      const propEntries: [keyof Props, string][] = Array.from<[keyof Props, string]>(this.#propMap.entries());
-
       // For every attribute change, browser will call this function again. It is not batched.
-      render(createElement(component, Object.freeze(Object.fromEntries(propEntries) as Props)), this.#rootElement);
+      render(createElement(component, this.#getProps()), this);
+    }
+
+    connectedCallback() {
+      render(createElement(component, this.#getProps()), this);
     }
 
     disconnectedCallback() {
-      unmountComponentAtNode(this.#rootElement);
-
-      this.#rootElement.remove();
+      unmountComponentAtNode(this);
     }
   };
 }
