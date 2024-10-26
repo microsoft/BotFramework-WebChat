@@ -1,6 +1,7 @@
-import classNames from 'classnames';
 import { hooks } from 'botframework-webchat-api';
+import classNames from 'classnames';
 import React, { memo, useCallback } from 'react';
+
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import LocalizedString from '../../../Utils/LocalizedString';
