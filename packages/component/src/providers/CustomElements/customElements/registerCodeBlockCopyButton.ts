@@ -12,18 +12,16 @@ class CodeBlockCopyButtonElement extends HTMLElement {
   constructor() {
     super();
 
-    const copiedIconImageElement = this.ownerDocument.createElement('div');
+    const copiedIconImageElement = (this.#copiedIconImageElement = this.ownerDocument.createElement('div'));
 
-    copiedIconImageElement.ariaLabel = this.dataset.altCopied;
     copiedIconImageElement.classList.add(
       'webchat__code-block-copy-button__icon',
       'webchat__code-block-copy-button__icon--copied'
     );
     copiedIconImageElement.role = 'img';
 
-    const copyIconImageElement = this.ownerDocument.createElement('div');
+    const copyIconImageElement = (this.#copyIconImageElement = this.ownerDocument.createElement('div'));
 
-    copyIconImageElement.ariaLabel = this.dataset.altCopy;
     copyIconImageElement.classList.add(
       'webchat__code-block-copy-button__icon',
       'webchat__code-block-copy-button__icon--copy'
@@ -33,7 +31,7 @@ class CodeBlockCopyButtonElement extends HTMLElement {
     const buttonElement = (this.#buttonElement = this.ownerDocument.createElement('button'));
 
     buttonElement.ariaLive = 'assertive'; // Needed to narrate when the button is pressed.
-    buttonElement.classList.add('webchat__code-block-copy-button', this.className);
+    buttonElement.classList.add('webchat__code-block-copy-button');
     buttonElement.dataset.testid = testIds.codeBlockCopyButton;
     buttonElement.type = 'button';
 
@@ -84,10 +82,6 @@ class CodeBlockCopyButtonElement extends HTMLElement {
         }
       })();
     });
-
-    this.#buttonElement = buttonElement;
-    this.#copiedIconImageElement = copiedIconImageElement;
-    this.#copyIconImageElement = copyIconImageElement;
   }
 
   #buttonElement: HTMLButtonElement;
