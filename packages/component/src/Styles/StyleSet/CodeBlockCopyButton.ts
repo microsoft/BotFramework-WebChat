@@ -11,7 +11,7 @@ export default function createCodeBlockCopyButtonStyle() {
       border: '1px solid #d1d1d1',
       color: '#242424',
       display: 'grid',
-      float: 'inline-end',
+      float: 'right', // Use "inline-end" after we update Chromium in Docker
       gap: '4px',
       justifyContent: 'center',
       marginInlineStart: CSSTokens.PaddingRegular,
