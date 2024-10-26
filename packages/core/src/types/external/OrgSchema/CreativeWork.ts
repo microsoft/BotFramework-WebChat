@@ -36,6 +36,11 @@ export type CreativeWork = Thing & {
   citation?: readonly CreativeWork[] | undefined;
 
   /**
+   * The schema.org [isBasedOn](https://schema.org/isBasedOn) property provides a resource from which this work is derived or from which it is a modification or adaptation.
+   */
+  isBasedOn?: CreativeWork | undefined;
+
+  /**
    * Keywords or tags used to describe some item. Multiple textual entries in a keywords list are typically delimited by commas, or by repeating the property.
    *
    * @see https://schema.org/keywords
@@ -62,11 +67,6 @@ export type CreativeWork = Thing & {
    * This property can be used alongside the license property which indicates license(s) applicable to some piece of content. The usageInfo property can provide information about other licensing options, e.g. acquiring commercial usage rights for an image that is also available under non-commercial creative commons licenses.
    */
   usageInfo?: CreativeWork | undefined;
-
-  /**
-   * The schema.org [isBasedOn](https://schema.org/isBasedOn) property provides a resource from which this work is derived or from which it is a modification or adaptation.
-   */
-  isBasedOn?: CreativeWork | undefined;
 };
 
 type Person = {
@@ -93,11 +93,11 @@ export const creativeWork = <TEntries extends ObjectEntries>(entries?: TEntries 
     abstract: orgSchemaProperty(string()),
     author: orgSchemaProperty(union([person(), string()])),
     citation: orgSchemaProperties(lazy(() => creativeWork())),
+    isBasedOn: orgSchemaProperty(lazy(() => creativeWork())),
     keywords: orgSchemaProperties(union([lazy(() => definedTerm()), string()])),
     pattern: orgSchemaProperty(lazy(() => definedTerm())),
     text: orgSchemaProperty(string()),
     usageInfo: orgSchemaProperty(lazy(() => creativeWork())),
-    isBasedOn: orgSchemaProperty(lazy(() => creativeWork())),
 
     ...entries
   });
