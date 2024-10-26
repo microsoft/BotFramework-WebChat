@@ -17,7 +17,7 @@ const CodeContent = memo(({ children, className, code, language, title }: Props)
 
   useEffect(() => {
     let mounted = true;
-    async function highlight() {
+    (async function highlight() {
       const highlighter = await highlighterPromise;
       if (!mounted) {
         return;
@@ -33,13 +33,12 @@ const CodeContent = memo(({ children, className, code, language, title }: Props)
         console.error('botframework-webchat: Failed to highlight code:', error);
 
         const pre = document.createElement('pre');
-        pre.innerText = code;
+        pre.textContent = code;
 
         setHighlightedCode(pre.outerHTML);
       }
-    }
+    })();
 
-    highlight();
     return () => {
       mounted = false;
     };

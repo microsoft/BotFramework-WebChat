@@ -19,12 +19,12 @@ import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import { type PropsOf } from '../../../types/PropsOf';
 import ActivityCopyButton from './ActivityCopyButton';
+import ActivityViewCodeButton from './ActivityViewCodeButton';
 import CitationModalContext from './CitationModalContent';
 import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './MessageSensitivityLabel';
-import isHTMLButtonElement from './isHTMLButtonElement';
-import ActivityViewCodeButton from './ActivityViewCodeButton';
 import isAIGeneratedActivity from './isAIGeneratedActivity';
 import isBasedOnSoftwareSourceCode from './isBasedOnSoftwareSourceCode';
+import isHTMLButtonElement from './isHTMLButtonElement';
 
 const { useLocalizer } = hooks;
 

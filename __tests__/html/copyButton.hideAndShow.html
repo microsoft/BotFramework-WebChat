@@ -55,7 +55,7 @@
 
         await pageConditions.became(
           'copy button is available',
-          () => document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`) !== undefined,
+          () => !!document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`),
           1000
         );
 
