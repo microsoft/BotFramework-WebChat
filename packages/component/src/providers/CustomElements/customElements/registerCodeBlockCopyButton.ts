@@ -3,7 +3,7 @@ import testIds from '../../../testIds';
 type ObservedAttributes = 'className' | 'data-alt-copied' | 'data-alt-copy';
 
 class CodeBlockCopyButtonElement extends HTMLElement {
-  static observedAttributes: ObservedAttributes[] = ['className'];
+  static observedAttributes: ObservedAttributes[] = ['className', 'data-alt-copied', 'data-alt-copy'];
 
   constructor() {
     super();
