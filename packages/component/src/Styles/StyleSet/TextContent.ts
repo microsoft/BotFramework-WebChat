@@ -28,8 +28,14 @@ export default function createTextContentStyle() {
         height: '.75em'
       },
 
-      '& .webchat__text-content__activity-copy-button': {
-        alignSelf: 'flex-start'
+      '& .webchat__text-content__activity-actions': {
+        alignSelf: 'flex-start',
+        display: 'flex',
+        gap: `calc(${CSSTokens.PaddingRegular} / 2)`
+      },
+
+      '& .webchat__text-content__activity-actions:empty': {
+        display: 'none'
       }
     }
   };

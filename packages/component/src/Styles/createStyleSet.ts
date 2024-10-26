@@ -45,6 +45,7 @@ import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
 import createVideoContentStyle from './StyleSet/VideoContent';
+import createViewCodeDialogStyle from './StyleSet/ViewCodeDialog';
 import createVimeoContentStyle from './StyleSet/VimeoContent';
 import createWarningNotificationStyle from './StyleSet/WarningNotification';
 import createYouTubeContentStyle from './StyleSet/YouTubeContent';
@@ -108,6 +109,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     sendStatus: createSendStatusStyle(),
     slottedActivityStatus: createSlottedActivityStatusStyle(),
     textContent: createTextContentStyle(),
-    thumbButton: createThumbButtonStyle()
+    thumbButton: createThumbButtonStyle(),
+    viewCodeDialog: createViewCodeDialogStyle()
   } as const);
 }
