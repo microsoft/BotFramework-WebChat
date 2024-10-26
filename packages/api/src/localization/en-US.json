@@ -13,7 +13,7 @@
   "ACTIVITY_CODE_ALT": "Code sample: $1",
   "_ACTIVITY_CODE_ALT.comment": "This is for screen reader code sample dialog label, $1 is the dialog title.",
   "ACTIVITY_CONTENT_CAUTION": "AI-generated content may be incorrect",
-  "ACTIVITY_CODE_CAUTION": "AI-generated code review and use carefully",
+  "ACTIVITY_CODE_CAUTION": "AI-generated code. Review and use carefully",
   "ACTIVITY_ERROR_BOX_TITLE": "Error message",
   "ACTIVITY_INTERACTIVE_FOOTNOTE_ALT": "Click to interact.",
   "_ACTIVITY_INTERACTIVE_FOOTNOTE_ALT.comment": "This is for screen reader. When the user is navigating to this message which is either contains interactive elements, contains links, or failed to send (with a retry button), it will give this hint.",
