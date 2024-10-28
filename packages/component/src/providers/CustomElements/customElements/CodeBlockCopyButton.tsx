@@ -89,9 +89,13 @@ const CodeBlockCopyButton = memo(
 
 CodeBlockCopyButton.displayName = 'CodeBlockCopyButton';
 
-export default wrapAsCustomElement(CodeBlockCopyButton, [
+const CodeBlockCopyButtonElement = wrapAsCustomElement(CodeBlockCopyButton, [
   'className',
   'data-alt-copied',
   'data-alt-copy',
   'data-value'
 ]);
+
+export default CodeBlockCopyButton;
+
+export { CodeBlockCopyButtonElement };

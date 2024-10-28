@@ -6,7 +6,6 @@ export default function createViewCodeDialogStyle() {
       boxSizing: 'border-box',
       display: 'grid',
       height: '100%',
-      margin: 0,
       maxHeight: '100vh',
       overflow: 'hidden',
       padding: '1rem',
@@ -33,6 +32,7 @@ export default function createViewCodeDialogStyle() {
       },
 
       '& .webchat__view-code-dialog__header': {
+        alignItems: 'center',
         display: 'flex',
         paddingInlineEnd: '30px'
       },
@@ -43,6 +43,12 @@ export default function createViewCodeDialogStyle() {
       },
 
       '& .webchat__view-code-dialog__body': {
+        display: 'flex',
+        overflow: 'hidden',
+        position: 'relative'
+      },
+
+      '& .webchat__view-code-dialog__code-body': {
         lineHeight: '20px',
         overflow: 'auto'
       },
@@ -50,6 +56,12 @@ export default function createViewCodeDialogStyle() {
       '& .webchat__view-code-dialog__footer': {
         color: CSSTokens.ColorSubtle,
         lineHeight: '20px'
+      },
+
+      '& .webchat__view-code-dialog__copy-button': {
+        position: 'absolute',
+        right: '10px',
+        top: '10px'
       }
     }
   };

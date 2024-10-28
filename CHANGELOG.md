@@ -63,6 +63,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Added MathML/TeX block support in Markdown via [`micromark-extension-math`](https://npmjs.com/package/micromark-extension-math) and [`katex`](https://katex.org/), in PR [#5332](https://github.com/microsoft/BotFramework-WebChat/pull/5332), by [@compulim](https://github.com/compulim)
 -  Added code viewer dialog with syntax highlighting, in PR [#5335](https://github.com/microsoft/BotFramework-WebChat/pull/5335), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added copy button to code blocks, in PR [#5334](https://github.com/microsoft/BotFramework-WebChat/pull/5334), by [@compulim](https://github.com/compulim)
+-  Added copy button to view code dialog, in PR [#5336](https://github.com/microsoft/BotFramework-WebChat/pull/5336), by [@compulim](https://github.com/compulim)
 
 ### Changed
 

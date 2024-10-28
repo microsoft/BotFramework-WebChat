@@ -1,5 +1,8 @@
-import React, { Fragment, memo, ReactNode, useEffect, useState } from 'react';
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
+import React, { Fragment, memo, ReactNode, useEffect, useState } from 'react';
+import { useStyleSet } from '../../../hooks';
+import CodeBlockCopyButton from '../../../providers/CustomElements/customElements/CodeBlockCopyButton';
 import createHighlighter from './shiki';
 
 type Props = Readonly<{
@@ -10,10 +13,17 @@ type Props = Readonly<{
   title: string;
 }>;
 
+const { useLocalizer } = hooks;
+
 const highlighterPromise = createHighlighter();
 
 const CodeContent = memo(({ children, className, code, language, title }: Props) => {
   const [highlightedCode, setHighlightedCode] = useState('');
+  const localize = useLocalizer();
+
+  const copiedAlt = localize('COPY_BUTTON_COPIED_TEXT');
+  const copyAlt = localize('COPY_BUTTON_TEXT');
+  const [{ codeBlockCopyButton: codeBlockCopyButtonClassName }] = useStyleSet();
 
   useEffect(() => {
     let mounted = true;
@@ -48,13 +58,20 @@ const CodeContent = memo(({ children, className, code, language, title }: Props)
     <Fragment>
       <div className={'webchat__view-code-dialog__header'}>
         <h2 className={'webchat__view-code-dialog__title'}>{title}</h2>
-        {/* <CopyCodeButton htmlText={highlightedCode} plainText={code} /> */}
       </div>
-      <div
-        className={classNames('webchat__view-code-dialog__body', className)}
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: highlightedCode }}
-      />
+      <div className={classNames('webchat__view-code-dialog__body')}>
+        <CodeBlockCopyButton
+          className={classNames('webchat__view-code-dialog__copy-button', codeBlockCopyButtonClassName)}
+          data-alt-copied={copiedAlt}
+          data-alt-copy={copyAlt}
+          data-value={code}
+        />
+        <div
+          className={classNames('webchat__view-code-dialog__code-body', className)}
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: highlightedCode }}
+        />
+      </div>
       {children}
     </Fragment>
   );
