@@ -13,4 +13,8 @@ describe('Fluent theme applied', () => {
     runHTML('fluentTheme/side-by-side.wide?transcript=0&transcript=4'));
   test('side by side left - fluent, right - fluent', () =>
     runHTML('fluentTheme/side-by-side.wide?transcript=0&transcript=2&focus=1&variant=fluent&variant=fluent'));
+  test('side by side left - transcript, right - codeblock', () =>
+    runHTML('fluentTheme/side-by-side.wide?transcript=0&transcript=5&focus=1&focus-preset=viewCode'));
+  test('side by side left - transcript, right - codeblock dark', () =>
+    runHTML('fluentTheme/side-by-side.wide?transcript=0&transcript=5&focus=1&focus-preset=viewCode&codeBlockTheme=github-dark-default'));
 });
