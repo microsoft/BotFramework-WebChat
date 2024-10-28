@@ -58,18 +58,20 @@ const CodeContent = memo(({ children, className, code, language, title }: Props)
     <Fragment>
       <div className={'webchat__view-code-dialog__header'}>
         <h2 className={'webchat__view-code-dialog__title'}>{title}</h2>
+      </div>
+      <div className={classNames('webchat__view-code-dialog__body')}>
         <CodeBlockCopyButton
-          className={codeBlockCopyButtonClassName}
+          className={classNames('webchat__view-code-dialog__copy-button', codeBlockCopyButtonClassName)}
           data-alt-copied={copiedAlt}
           data-alt-copy={copyAlt}
           data-value={code}
         />
+        <div
+          className={classNames('webchat__view-code-dialog__code-body', className)}
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: highlightedCode }}
+        />
       </div>
-      <div
-        className={classNames('webchat__view-code-dialog__body', className)}
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: highlightedCode }}
-      />
       {children}
     </Fragment>
   );

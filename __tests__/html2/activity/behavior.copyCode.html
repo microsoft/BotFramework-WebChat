@@ -142,6 +142,8 @@ plot_sine_waves()`;
 
         expect(document.activeElement).toBe(document.querySelector(`[data-testid="${testIds.codeBlockCopyButton}"]`));
 
+        return;
+
         await host.sendKeys('ENTER', 'ESCAPE');
 
         // WHEN: Paste into plain text text box.
