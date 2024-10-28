@@ -11,8 +11,7 @@ export default function createModalDialogStyleSet() {
     '&.webchat__modal-dialog': {
       fontFamily: CSSTokens.FontPrimary,
       maxHeight: 'calc(100% - 32px)',
-      // maxWidth: 'calc(100% - 32px)',
-      maxWidth: '100%',
+      maxWidth: 'calc(100% - 32px)',
       width: '100%',
 
       [NOT_FORCED_COLORS_SELECTOR]: {
