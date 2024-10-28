@@ -714,9 +714,11 @@ plot_sine_waves()`
       const sendboxes = Array.from(document.querySelectorAll(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`))
         .filter((_, index) => sendBoxIndexes.includes(String(index)));
 
-      const focusPresets = activeFocusPresets.length 
-        ? activeFocusPresets.map(pattern => focusPresetsMap[pattern]) 
-        : [focusPresetsMap.navigation];
+      const focusPresets = activeFocusPresets
+        .map(presetName => focusPresetsMap.get(presetName))
+        .filter(preset => preset)
+
+      if (!focusPresets.length) focusPresets.push(focusPresetsMap.get('navigation'));
 
       for (const preset of focusPresets) {
         for (const sendbox of sendboxes) {
