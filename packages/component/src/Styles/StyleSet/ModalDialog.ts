@@ -30,7 +30,7 @@ export default function createModalDialogStyleSet() {
 
         '@media screen and (min-width: 640px)': {
           maxWidth: '60%',
-          minWidth: 'calc(640px - 64px)',
+          minWidth: 'calc(640px - 2em - 6px)', // Browser natively do "100% - 2em - 6px".
           width: '60%'
         },
 
