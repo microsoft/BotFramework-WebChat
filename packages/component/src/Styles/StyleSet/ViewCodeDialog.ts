@@ -33,6 +33,7 @@ export default function createViewCodeDialogStyle() {
       },
 
       '& .webchat__view-code-dialog__header': {
+        alignItems: 'center',
         display: 'flex',
         paddingInlineEnd: '30px'
       },
