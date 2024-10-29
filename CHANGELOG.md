@@ -87,6 +87,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Improved drop zone behavior and styling in Fluent theme, in PR [#5328](https://github.com/microsoft/BotFramework-WebChat/pull/5328), by [@OEvgeny](https://github.com/OEvgeny)
 -  Excluded side effects from module entry points to prevent global scope modifications, in PR [#5329](https://github.com/microsoft/BotFramework-WebChat/pull/5329), by [@OEvgeny](https://github.com/OEvgeny)
 -  Moved to `micromark` for rendering Markdown, instead of `markdown-it`, in PR [#5330](https://github.com/microsoft/BotFramework-WebChat/pull/5330), by [@compulim](https://github.com/compulim)
+-  Improved view code dialog UI in Fluent theme with better styling and accessibility, in PR [#5337](https://github.com/microsoft/BotFramework-WebChat/pull/5337), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 

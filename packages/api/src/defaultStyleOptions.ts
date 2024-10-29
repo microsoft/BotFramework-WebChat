@@ -303,7 +303,9 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   // Border animation
   borderAnimationColor1: '#203C91',
   borderAnimationColor2: '#4DD3FF',
-  borderAnimationColor3: '#2B8DD8'
+  borderAnimationColor3: '#2B8DD8',
+
+  codeBlockTheme: 'github-light-default' as const
 };
 
 export default DEFAULT_OPTIONS;

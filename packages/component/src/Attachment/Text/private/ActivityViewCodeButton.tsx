@@ -31,10 +31,7 @@ const ViewCodeButton = ({ className, code, language, title = '', isAIGenerated =
         <CodeContent code={code} language={language} title={title}>
           {isAIGenerated && (
             <div className={'webchat__view-code-dialog__footer'}>
-              <LocalizedString
-                linkClassName={classNames['webchat__view-code-dialog__link']}
-                stringIds="ACTIVITY_CODE_CAUTION"
-              />
+              <LocalizedString linkClassName={'webchat__view-code-dialog__link'} stringIds="ACTIVITY_CODE_CAUTION" />
             </div>
           )}
         </CodeContent>
