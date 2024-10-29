@@ -6,125 +6,24 @@ import { onErrorResumeNext } from 'botframework-webchat-core';
 import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
 import { math, mathHtml } from 'micromark-extension-math';
-import sanitizeHTML from 'sanitize-html';
 
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
-import codeBlockCopyButtonDocumentMod from './private/codeBlockCopyButtonDocumentMod';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
 import { pre as respectCRLFPre } from './private/respectCRLF';
 
-const SANITIZE_HTML_OPTIONS = Object.freeze({
-  allowedAttributes: {
-    a: ['aria-label', 'class', 'href', 'name', 'rel', 'target'],
-    button: ['aria-label', 'class', 'type', 'value'],
-    img: ['alt', 'aria-label', 'class', 'src', 'title'],
-    pre: ['class'],
-    span: ['aria-label']
-  },
-  allowedSchemes: ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'],
-  allowedTags: [
-    'a',
-    'b',
-    'blockquote',
-    'br',
-    'button',
-    'caption',
-    'code',
-    'del',
-    'div',
-    'em',
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'hr',
-    'i',
-    'img',
-    'ins',
-    'li',
-    'nl',
-    'ol',
-    'p',
-    'pre',
-    's',
-    'span',
-    'strike',
-    'strong',
-    'table',
-    'tbody',
-    'td',
-    'tfoot',
-    'th',
-    'thead',
-    'tr',
-    'ul',
-
-    // Followings are for MathML elements, from https://developer.mozilla.org/en-US/docs/Web/MathML.
-    'annotation-xml',
-    'annotation',
-    'math',
-    'merror',
-    'mfrac',
-    'mi',
-    'mmultiscripts',
-    'mn',
-    'mo',
-    'mover',
-    'mpadded',
-    'mphantom',
-    'mprescripts',
-    'mroot',
-    'mrow',
-    'ms',
-    'mspace',
-    'msqrt',
-    'mstyle',
-    'msub',
-    'msubsup',
-    'msup',
-    'mtable',
-    'mtd',
-    'mtext',
-    'mtr',
-    'munder',
-    'munderover',
-    'semantics'
-  ],
-  // Bug of https://github.com/apostrophecms/sanitize-html/issues/633.
-  // They should not remove `alt=""` even though it is empty.
-  nonBooleanAttributes: []
-});
-
 type RenderInit = Readonly<{
-  codeBlockCopyButtonClassName: string;
   codeBlockCopyButtonTagName: string;
-  codeBlockCopyButtonAltCopied: string;
-  codeBlockCopyButtonAltCopy: string;
   externalLinkAlt: string;
 }>;
+
+const ALLOWED_SCHEMES = ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'];
 
 export default function render(
   markdown: string,
   { markdownRespectCRLF, markdownRenderHTML }: Readonly<{ markdownRespectCRLF: boolean; markdownRenderHTML?: boolean }>,
-  {
-    codeBlockCopyButtonAltCopied,
-    codeBlockCopyButtonAltCopy,
-    codeBlockCopyButtonClassName,
-    codeBlockCopyButtonTagName,
-    externalLinkAlt
-  }: RenderInit
+  { externalLinkAlt }: RenderInit
 ): string {
   const linkDefinitions = Array.from(iterateLinkDefinitions(markdown));
-  const sanitizeHTMLOptions = {
-    ...SANITIZE_HTML_OPTIONS,
-    allowedAttributes: {
-      ...SANITIZE_HTML_OPTIONS.allowedAttributes,
-      [codeBlockCopyButtonTagName]: ['class', 'data-alt-copy', 'data-alt-copied', 'data-testid', 'data-value']
-    },
-    allowedTags: [...SANITIZE_HTML_OPTIONS.allowedTags, codeBlockCopyButtonTagName]
-  };
 
   if (markdownRespectCRLF) {
     markdown = respectCRLFPre(markdown);
@@ -158,7 +57,7 @@ export default function render(
     // eslint-disable-next-line no-script-url
     if (protocol !== 'javascript:') {
       // For links that would be sanitized out, let's turn them into a button so we could handle them later.
-      if (!sanitizeHTMLOptions.allowedSchemes.map(scheme => `${scheme}:`).includes(protocol)) {
+      if (!ALLOWED_SCHEMES.map(scheme => `${scheme}:`).includes(protocol)) {
         decoration.asButton = true;
 
         classes.add('webchat__render-markdown__citation');
@@ -214,16 +113,6 @@ export default function render(
   const documentFragmentAfterMarkdown = parseDocumentFragmentFromString(htmlAfterMarkdown);
 
   betterLinkDocumentMod(documentFragmentAfterMarkdown, decorate);
-  codeBlockCopyButtonDocumentMod(documentFragmentAfterMarkdown, {
-    codeBlockCopyButtonAltCopied,
-    codeBlockCopyButtonAltCopy,
-    codeBlockCopyButtonClassName,
-    codeBlockCopyButtonTagName
-  });
 
-  const htmlAfterBetterLink = serializeDocumentFragmentIntoString(documentFragmentAfterMarkdown);
-
-  const htmlAfterSanitization = sanitizeHTML(htmlAfterBetterLink, sanitizeHTMLOptions);
-
-  return htmlAfterSanitization;
+  return serializeDocumentFragmentIntoString(documentFragmentAfterMarkdown);
 }

@@ -46,6 +46,12 @@ import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/crea
 import createStyleSet from './Styles/createStyleSet';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 import Context from './hooks/internal/WebChatUIContext';
+import {
+  type HTMLContentTransformEnhancer,
+  type HTMLContentTransformFunction,
+  type HTMLContentTransformMiddleware,
+  type HTMLContentTransformRequest
+} from './providers/HTMLContentTransformCOR/index';
 import ThemeProvider from './providers/Theme/ThemeProvider';
 import testIds from './testIds';
 import withEmoji from './withEmoji/withEmoji';
@@ -130,4 +136,13 @@ export {
   withEmoji
 };
 
-export type { BasicWebChatProps, ComposerProps, ReactWebChatProps, WebChatActivity };
+export type {
+  BasicWebChatProps,
+  ComposerProps,
+  HTMLContentTransformEnhancer,
+  HTMLContentTransformFunction,
+  HTMLContentTransformMiddleware,
+  HTMLContentTransformRequest,
+  ReactWebChatProps,
+  WebChatActivity
+};

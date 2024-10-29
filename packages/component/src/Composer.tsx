@@ -41,6 +41,8 @@ import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddlewar
 import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
 import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
 import CustomElementsComposer from './providers/CustomElements/CustomElementsComposer';
+import HTMLContentTransformComposer from './providers/HTMLContentTransformCOR/HTMLContentTransformComposer';
+import { type HTMLContentTransformMiddleware } from './providers/HTMLContentTransformCOR/private/HTMLContentTransformContext';
 import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
 import { LiveRegionTwinComposer } from './providers/LiveRegionTwin';
 import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
@@ -63,7 +65,7 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
 
-type ComposerCoreUIProps = Readonly<{ children?: ReactNode }>;
+type ComposerCoreUIProps = Readonly<{ children?: ReactNode | undefined }>;
 
 const ROOT_STYLE = {
   '&.webchat__css-custom-properties': {
@@ -116,6 +118,7 @@ ComposerCoreUI.displayName = 'ComposerCoreUI';
 type ComposerCoreProps = Readonly<{
   children?: ReactNode;
   extraStyleSet?: any;
+  htmlContentTransformMiddleware?: readonly HTMLContentTransformMiddleware[] | undefined;
   nonce?: string;
   renderMarkdown?: (
     markdown: string,
@@ -312,6 +315,7 @@ const Composer = ({
   cardActionMiddleware,
   children,
   extraStyleSet,
+  htmlContentTransformMiddleware,
   renderMarkdown,
   scrollToEndButtonMiddleware,
   sendBoxMiddleware: sendBoxMiddlewareFromProps,
@@ -445,18 +449,20 @@ const Composer = ({
     >
       <ActivityTreeComposer>
         <StyleToEmotionObjectComposer nonce={nonce}>
-          <ComposerCore
-            extraStyleSet={extraStyleSet}
-            nonce={nonce}
-            renderMarkdown={renderMarkdown}
-            styleSet={styleSet}
-            styles={theme.styles}
-            suggestedActionsAccessKey={suggestedActionsAccessKey}
-            webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-          >
-            {children}
-            {onTelemetry && <UITracker />}
-          </ComposerCore>
+          <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
+            <ComposerCore
+              extraStyleSet={extraStyleSet}
+              nonce={nonce}
+              renderMarkdown={renderMarkdown}
+              styleSet={styleSet}
+              styles={theme.styles}
+              suggestedActionsAccessKey={suggestedActionsAccessKey}
+              webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+            >
+              {children}
+              {onTelemetry && <UITracker />}
+            </ComposerCore>
+          </HTMLContentTransformComposer>
         </StyleToEmotionObjectComposer>
       </ActivityTreeComposer>
     </APIComposer>
