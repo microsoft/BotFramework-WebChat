@@ -674,7 +674,7 @@ plot_sine_waves()`
 
       await host.snapshot();
 
-      const focusPresetsMap = {
+      const focusPresetsMap = new Map(Obje.entries({
         navigation: async sendbox => {
           sendbox.focus();
           await host.sendKeys('Next message');
@@ -709,7 +709,7 @@ plot_sine_waves()`
           await host.sendKeys('ENTER');
           await host.snapshot();
         }
-      }
+      }));
 
       const sendboxes = Array.from(document.querySelectorAll(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`))
         .filter((_, index) => sendBoxIndexes.includes(String(index)));
