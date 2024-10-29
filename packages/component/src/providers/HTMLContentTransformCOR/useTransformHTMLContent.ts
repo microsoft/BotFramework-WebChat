@@ -13,8 +13,8 @@ export default function useTransformHTMLContent(): (documentFragment: DocumentFr
   const { transform } = useHTMLContentTransformContext();
 
   const localize = useLocalizer();
-  const codeBlockCopyButtonAltCopied = localize('COPY_BUTTON_TEXT');
-  const codeBlockCopyButtonAltCopy = localize('COPY_BUTTON_COPIED_TEXT');
+  const codeBlockCopyButtonAltCopied = localize('COPY_BUTTON_COPIED_TEXT');
+  const codeBlockCopyButtonAltCopy = localize('COPY_BUTTON_TEXT');
   const externalLinkAlt = localize('MARKDOWN_EXTERNAL_LINK_ALT');
 
   return useCallback(
