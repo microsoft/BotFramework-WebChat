@@ -30,6 +30,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  `styleOptions.bubbleMaxWidth`/`bubbleMinWidth` is being deprecated in favor of `styleOptions.bubbleAttachmentMaxWidth`/`bubbleAttachmentMinWidth` and `styleOptions.bubbleMessageMaxWidth`/`bubbleMessageMinWidth`. The option will be removed on or after 2026-10-08
 -  Moved to `micromark` for rendering Markdown, instead of `markdown-it`
    -  Please refer to PR [#5330](https://github.com/microsoft/BotFramework-WebChat/pull/5330) for details
+-  HTML sanitizer is moved from `renderMarkdown` to HTML content transformer middleware
+   -  If you customized `renderMarkdown` with a custom HTML sanitizer, please move the HTML sanitizer to the new HTML content transformer middleware
 
 ### Added
 
