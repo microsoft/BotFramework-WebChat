@@ -1,5 +1,5 @@
 // `shiki/core` entry does not include any themes or languages or the wasm binary.
-import { createHighlighterCore } from 'shiki/core';
+import { createHighlighterCore, type ThemeRegistrationRaw } from 'shiki/core';
 import { createJavaScriptRegexEngine } from 'shiki/engine-javascript.mjs';
 
 // directly import the theme and language modules, only the ones you imported will be bundled.
@@ -10,13 +10,19 @@ import languageJavaScript from 'shiki/langs/js.mjs';
 import languagePython from 'shiki/langs/py.mjs';
 import languageTypeScript from 'shiki/langs/ts.mjs';
 
+function addjustTheme(theme: ThemeRegistrationRaw): ThemeRegistrationRaw {
+  return {
+    ...theme,
+    colors: {
+      ...theme.colors,
+      'editor.background': `var(--webchat__code-block--background, ${theme.colors['editor.background']})`
+    }
+  };
+}
+
 function createHighlighter() {
   return createHighlighterCore({
-    themes: [
-      // instead of strings, you need to pass the imported module
-      themeGitHubDark,
-      themeGitHubLight
-    ],
+    themes: [addjustTheme(themeGitHubDark), addjustTheme(themeGitHubLight)],
     langs: [languageJavaScript, languagePython, languageTypeScript],
     engine: createJavaScriptRegexEngine()
   });

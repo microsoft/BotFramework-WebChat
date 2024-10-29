@@ -916,6 +916,18 @@ type StyleOptions = {
    * New in 4.19.0.
    */
   borderAnimationColor3?: string;
+
+  /**
+   * Code block theme
+   *
+   * - `'github-light-default'` - use light theme for code blocks
+   * - `'github-dark-default'` - use dark theme for code blocks
+   *
+   * @default 'github-light-default'
+   *
+   * New in 4.19.0.
+   */
+  codeBlockTheme?: 'github-light-default' | 'github-dark-default';
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

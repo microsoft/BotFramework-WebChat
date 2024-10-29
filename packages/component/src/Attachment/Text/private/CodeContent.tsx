@@ -13,11 +13,12 @@ type Props = Readonly<{
   title: string;
 }>;
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useStyleOptions } = hooks;
 
 const highlighterPromise = createHighlighter();
 
 const CodeContent = memo(({ children, className, code, language, title }: Props) => {
+  const [{ codeBlockTheme }] = useStyleOptions();
   const [highlightedCode, setHighlightedCode] = useState('');
   const localize = useLocalizer();
 
@@ -35,7 +36,7 @@ const CodeContent = memo(({ children, className, code, language, title }: Props)
       try {
         const html = highlighter.codeToHtml(code, {
           lang: language,
-          theme: 'github-light-default'
+          theme: codeBlockTheme
         });
 
         setHighlightedCode(html);
@@ -52,7 +53,7 @@ const CodeContent = memo(({ children, className, code, language, title }: Props)
     return () => {
       mounted = false;
     };
-  }, [code, language]);
+  }, [code, codeBlockTheme, language]);
 
   return (
     <Fragment>
