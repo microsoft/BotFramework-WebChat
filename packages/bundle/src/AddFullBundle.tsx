@@ -3,6 +3,7 @@ import {
   type AttachmentMiddleware,
   type StyleOptions
 } from 'botframework-webchat-api';
+import { type HTMLContentTransformMiddleware } from 'botframework-webchat-component';
 import { singleToArray, warnOnce, type OneOrMany } from 'botframework-webchat-core';
 import React, { type ReactNode } from 'react';
 
@@ -18,6 +19,7 @@ type AddFullBundleProps = Readonly<{
   attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
   attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
   children: ({ extraStyleSet }: { extraStyleSet: any }) => ReactNode;
+  htmlContentTransformMiddleware?: HTMLContentTransformMiddleware[];
   renderMarkdown?: (
     markdown: string,
     newLineOptions: { markdownRespectCRLF: boolean },
@@ -41,6 +43,7 @@ const AddFullBundle = ({
   attachmentForScreenReaderMiddleware,
   attachmentMiddleware,
   children,
+  htmlContentTransformMiddleware,
   renderMarkdown,
   styleOptions,
   styleSet
@@ -50,6 +53,7 @@ const AddFullBundle = ({
   const patchedProps = useComposerProps({
     attachmentForScreenReaderMiddleware: singleToArray(attachmentForScreenReaderMiddleware),
     attachmentMiddleware: singleToArray(attachmentMiddleware),
+    htmlContentTransformMiddleware,
     renderMarkdown,
     styleOptions,
     styleSet

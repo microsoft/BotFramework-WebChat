@@ -5,12 +5,12 @@ export default function codeBlockCopyButtonDocumentMod<T extends Document | Docu
     codeBlockCopyButtonAltCopy,
     codeBlockCopyButtonClassName,
     codeBlockCopyButtonTagName
-  }: {
+  }: Readonly<{
     codeBlockCopyButtonAltCopied: string;
     codeBlockCopyButtonAltCopy: string;
     codeBlockCopyButtonClassName: string;
     codeBlockCopyButtonTagName: string;
-  }
+  }>
 ): T {
   for (const preElement of [...documentFragment.querySelectorAll('pre')]) {
     const codeBlockCopyButtonElement = documentFragment.ownerDocument.createElement(codeBlockCopyButtonTagName);
