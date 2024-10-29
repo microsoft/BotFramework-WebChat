@@ -222,7 +222,7 @@
   padding-inline-start: var(--webchat-spacingHorizontalMNudge);
 }
 
-/* Transcript scrollable */
+/* Scrollbars */
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable),
 :global(.webchat-fluent).theme :global(.webchat__view-code-dialog__code-body) {
   /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
@@ -478,10 +478,6 @@
 
   :global(.webchat__view-code-dialog__code-body:has(.shiki.github-dark-default)) {
     --webchat__code-block--background: var(--codeBlockBackground, var(--webchat-colorGrey8));
-  }
-
-  :global(.webchat__view-code-dialog__code-body > pre) {
-    outline: none;
   }
 
   :global(.webchat__view-code-dialog__footer) {
