@@ -674,7 +674,7 @@ plot_sine_waves()`
 
       await host.snapshot();
 
-      const focusPresetsMap = new Map(Obje.entries({
+      const focusPresetsMap = new Map(Object.entries({
         navigation: async sendbox => {
           sendbox.focus();
           await host.sendKeys('Next message');
