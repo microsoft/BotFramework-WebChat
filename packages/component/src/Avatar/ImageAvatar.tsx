@@ -2,7 +2,6 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { memo } from 'react';
 
-import FixedWidthImage from '../Utils/FixedWidthImage';
 import useStyleSet from '../hooks/useStyleSet';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
@@ -10,7 +9,9 @@ const { useAvatarForBot, useAvatarForUser } = hooks;
 
 const ROOT_STYLE = {
   '& .webchat__imageAvatar__image': {
-    width: '100%'
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover'
   }
 };
 
@@ -25,11 +26,7 @@ const ImageAvatar = memo(({ fromUser }: Readonly<{ fromUser: boolean }>) => {
   return (
     !!avatarImage && (
       <div className={classNames('webchat__imageAvatar', rootClassName, imageAvatarStyleSet + '')}>
-        <FixedWidthImage
-          alt=""
-          className="webchat__imageAvatar__image"
-          src={fromUser ? avatarImageForUser : avatarImageForBot}
-        />
+        <img alt="" className="webchat__imageAvatar__image" src={fromUser ? avatarImageForUser : avatarImageForBot} />
       </div>
     )
   );

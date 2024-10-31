@@ -9,7 +9,7 @@ import useStyleSet from '../../hooks/useStyleSet';
 import { useStyleToEmotionObject } from '../../hooks/internal/styleToEmotionObject';
 
 const ROOT_STYLE = {
-  overflow: 'hidden',
+  overflow: ['hidden', 'clip'],
   position: 'relative',
 
   '> *': {
