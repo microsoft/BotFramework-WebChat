@@ -33,9 +33,14 @@
 
         await pageConditions.uiConnected();
 
-        await directLine.emulateIncomingActivity(
-          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
-        );
+        await directLine.emulateIncomingActivity({
+          from: {
+            id: 'u-00001',
+            name: 'Bot',
+            role: 'bot'
+          },
+          text: 'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
+        });
 
         const firstTypingActivityId = 't-00001';
 
