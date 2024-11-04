@@ -1,6 +1,13 @@
 import { createContext } from 'react';
 
 export type HTMLContentTransformRequest = Readonly<{
+  allowedTags: ReadonlyMap<
+    string,
+    Readonly<{
+      // TODO: Ultimately, we could allowlist a cherry-picked instance of element, but not all elements sharing the same tag name.
+      attributes: ReadonlySet<string>;
+    }>
+  >;
   codeBlockCopyButtonAltCopied: string;
   codeBlockCopyButtonAltCopy: string;
   codeBlockCopyButtonClassName: string;

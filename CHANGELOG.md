@@ -66,10 +66,11 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Added code viewer dialog with syntax highlighting, in PR [#5335](https://github.com/microsoft/BotFramework-WebChat/pull/5335), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added copy button to code blocks, in PR [#5334](https://github.com/microsoft/BotFramework-WebChat/pull/5334), by [@compulim](https://github.com/compulim)
 -  Added copy button to view code dialog, in PR [#5336](https://github.com/microsoft/BotFramework-WebChat/pull/5336), by [@compulim](https://github.com/compulim)
--  Added HTML content transformer middleware, in PR [#5338](https://github.com/microsoft/BotFramework-WebChat/pull/5338), by [@compulim](https://github.com/compulim)
+-  Added HTML content transformer middleware, in PR [#5338](https://github.com/microsoft/BotFramework-WebChat/pull/5338) and [#5347](https://github.com/microsoft/BotFramework-WebChat/pull/5347), by [@compulim](https://github.com/compulim)
    -  HTML content transformer is used by `useRenderMarkdown` to transform the result from `renderMarkdown`
    -  HTML sanitizer is moved from `renderMarkdown` into HTML content transformer for better coverage
    -  Copy button is added to fenced code blocks (`<pre><code>`)
+   -  Configure HTML sanitizer via `request.allowedTags`
 
 ### Changed
 
