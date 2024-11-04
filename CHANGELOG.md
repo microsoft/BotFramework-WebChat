@@ -70,6 +70,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    -  HTML content transformer is used by `useRenderMarkdown` to transform the result from `renderMarkdown`
    -  HTML sanitizer is moved from `renderMarkdown` into HTML content transformer for better coverage
    -  Copy button is added to fenced code blocks (`<pre><code>`)
+   -  Configure HTML sanitizer via `request.allowedTags`
 
 ### Changed
 
