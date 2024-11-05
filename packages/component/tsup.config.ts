@@ -6,19 +6,24 @@ import { decoratorStyleContent as decoratorStyleContentPlaceholder } from './src
 
 const config: typeof baseConfig = {
   ...baseConfig,
-  loader: {
-    ...baseConfig.loader,
-    '.css': 'local-css'
+  entry: {
+    'botframework-webchat-component': './src/index.ts',
+    'botframework-webchat-component.internal': './src/internal.ts',
+    'botframework-webchat-component.decorator': './src/decorator/index.ts'
   },
   esbuildPlugins: [
     injectCSSPlugin({ stylesPlaceholder: componentStyleContentPlaceholder }),
     injectCSSPlugin({ stylesPlaceholder: decoratorStyleContentPlaceholder })
   ],
-  entry: {
-    'botframework-webchat-component': './src/index.ts',
-    'botframework-webchat-component.internal': './src/internal.ts',
-    'botframework-webchat-component.decorator': './src/decorator/index.ts'
-  }
+  loader: {
+    ...baseConfig.loader,
+    '.css': 'local-css'
+  },
+  noExternal: [
+    // Belows are the dependency chain related to "regex" where it is named export-only and does not work on Webpack 4/PPUX (CJS cannot import named export).
+    // Webpack 4: "Can't import the named export 'rewrite' from non EcmaScript module (only default export is available)"
+    'shiki', // shiki -> @shikijs/core -> @shikijs/engine-javascript -> regex
+  ]
 };
 
 export default defineConfig([
