@@ -67,9 +67,15 @@ export default function createMarkdownStyle() {
         content: "'['"
       },
 
-      '& math': {
+      '& [data-math-type=block] math': {
         alignItems: 'center',
         display: 'flex',
+        flexDirection: 'column'
+      },
+
+      '& [data-math-type=inline] math': {
+        alignItems: 'center',
+        display: 'inline-flex',
         flexDirection: 'column'
       },
 

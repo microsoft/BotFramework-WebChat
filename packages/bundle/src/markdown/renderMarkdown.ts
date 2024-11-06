@@ -3,10 +3,11 @@ import {
   serializeDocumentFragmentIntoString
 } from 'botframework-webchat-component/internal';
 import { onErrorResumeNext } from 'botframework-webchat-core';
+import katex from 'katex';
 import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
-import { math, mathHtml } from 'micromark-extension-math';
 
+import { math, mathHtml } from './mathExtension';
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
 import { pre as respectCRLFPre } from './private/respectCRLF';
@@ -98,12 +99,17 @@ export default function render(
     // We need to handle links like cite:1 or other URL handlers.
     // And we will remove dangerous protocol during sanitization.
     allowDangerousProtocol: true,
-    extensions: [
-      gfm(),
-      // Disabling single dollar inline math block to prevent easy collision.
-      math({ singleDollarTextMath: false })
-    ],
-    htmlExtensions: [gfmHtml(), mathHtml({ output: 'mathml' })]
+    extensions: [gfm(), math()],
+    htmlExtensions: [
+      gfmHtml(),
+      mathHtml({
+        renderMath: (content, isDisplay) =>
+          katex.renderToString(content, {
+            displayMode: isDisplay,
+            output: 'mathml'
+          })
+      })
+    ]
   });
 
   // TODO: [P1] In some future, we should apply "better link" and "sanitization" outside of the Markdown engine.
