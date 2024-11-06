@@ -93,6 +93,7 @@ export default function render(
 
     return decoration;
   };
+
   const htmlAfterMarkdown = micromark(markdown, {
     allowDangerousHtml: markdownRenderHTML ?? true,
     // We need to handle links like cite:1 or other URL handlers.
