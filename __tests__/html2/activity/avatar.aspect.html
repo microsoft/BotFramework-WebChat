@@ -8,12 +8,6 @@
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <style type="text/css">
-      .webchat__avatar {
-        width: 100%;
-        height: auto;
-      }
-    </style>
   </head>
   <template id="avatars">
     <svg data-for="1" xmlns="http://www.w3.org/2000/svg" width="75" height="150" viewBox="0 0 75 150">
@@ -92,43 +86,18 @@
       run(async function () {
         await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
-        const PortraitAvatar = ({ id }) => {
-          return (
-            <img
-              alt={`Bot ${id}`}
-              className="webchat__avatar"
-              src={`data:image/svg+xml;utf8,${encodeURIComponent(window.avatars.content.querySelector(`[data-for="${id}"]`).outerHTML)}`}
-            />
-          );
-        };
-
-        const avatarMiddleware =
-          () =>
-          next =>
-          (...args) => {
-            const [{ activity }] = args;
-            const { id } = activity.from;
-
-            if (/^(1|2)/.test(id)) {
-              return () => <PortraitAvatar id={id} />;
-            }
-
-            return next(...args);
-          };
-
         WebChat.renderWebChat(
           {
-            avatarMiddleware,
             directLine: await testHelpers.createDirectLineWithTranscript([
               {
-                from: { role: 'bot', id: 1 },
+                from: { role: 'bot' },
                 id: '1.0',
                 text: 'Cillum ea irure amet reprehenderit minim.',
                 timestamp: -300001,
                 type: 'message'
               },
               {
-                from: { role: 'bot', id: 2 },
+                from: { role: 'bot' },
                 id: '1.1',
                 text: 'Minim ut laboris enim nostrud magna irure occaecat laborum occaecat ex.',
                 timestamp: -300001,
@@ -151,14 +120,14 @@
                 type: 'message'
               },
               {
-                from: { role: 'bot', id: 2 },
+                from: { role: 'bot' },
                 id: '3.0',
                 text: 'Nulla irure laborum officia tempor aute consequat eiusmod nisi velit ipsum magna.',
                 timestamp: -300001,
                 type: 'message'
               },
               {
-                from: { role: 'bot', id: 1 },
+                from: { role: 'bot' },
                 id: '3.1',
                 text: 'Minim fugiat aute do ea veniam.',
                 timestamp: -300001,
@@ -196,14 +165,14 @@
                     name: 'back of Surface Pro'
                   }
                 ],
-                from: { role: 'bot', id: 1 },
+                from: { role: 'bot' },
                 id: '5.0',
                 text: 'Bot message with attachment',
                 timestamp: 0,
                 type: 'message'
               },
               {
-                from: { role: 'bot', id: 1 },
+                from: { role: 'bot' },
                 id: '5.1',
                 text: 'Follow-up message within the group',
                 timestamp: 0,
@@ -212,6 +181,7 @@
             ]),
             store: testHelpers.createStore(),
             styleOptions: {
+              botAvatarImage: `data:image/svg+xml;utf8,${encodeURIComponent(window.avatars.content.querySelector(`[data-for="1"]`).outerHTML)}`,
               botAvatarInitials: 'Bot',
               bubbleBackground: '#0063B1',
               bubbleBorderColor: '#0063B1',
@@ -225,7 +195,8 @@
               bubbleNubOffset: 0,
               bubbleNubSize: 10,
               bubbleTextColor: 'White',
-              userAvatarInitials: 'You'
+              userAvatarInitials: 'You',
+              userAvatarImage: `data:image/svg+xml;utf8,${encodeURIComponent(window.avatars.content.querySelector(`[data-for="2"]`).outerHTML)}`,
             }
           },
           document.getElementById('webchat')
