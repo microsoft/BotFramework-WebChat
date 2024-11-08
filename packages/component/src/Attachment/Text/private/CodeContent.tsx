@@ -55,6 +55,10 @@ const CodeContent = memo(({ children, className, code, language, title }: Props)
     };
   }, [code, codeBlockTheme, language]);
 
+  if (!highlightedCode) {
+    return null;
+  }
+
   return (
     <Fragment>
       <div className={'webchat__view-code-dialog__header'}>

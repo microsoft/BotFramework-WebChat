@@ -19,6 +19,10 @@ export default function createModalDialogStyleSet() {
         border: 0
       },
 
+      '&:has(.webchat__modal-dialog__body:empty)': {
+        visibility: 'hidden'
+      },
+
       '& .webchat__modal-dialog__box': {
         borderRadius: 2,
         overflow: 'hidden',
