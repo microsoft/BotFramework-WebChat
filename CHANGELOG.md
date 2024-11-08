@@ -90,6 +90,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Moved to `micromark` for rendering Markdown, instead of `markdown-it`, in PR [#5330](https://github.com/microsoft/BotFramework-WebChat/pull/5330), by [@compulim](https://github.com/compulim)
 -  Improved view code dialog UI in Fluent theme with better styling and accessibility, in PR [#5337](https://github.com/microsoft/BotFramework-WebChat/pull/5337), by [@OEvgeny](https://github.com/OEvgeny)
 -  Switched math block syntax from `$$` to Tex-style `\[ \]` and `\( \)` delimiters with improved rendering and error handling, in PR [#5353](https://github.com/microsoft/BotFramework-WebChat/pull/5353), by [@OEvgeny](https://github.com/OEvgeny)
+-  Improved avatar display and grouping behavior by fixing rendering issues and activity sender identification, in PR [#5346](https://github.com/microsoft/BotFramework-WebChat/pull/5346), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 

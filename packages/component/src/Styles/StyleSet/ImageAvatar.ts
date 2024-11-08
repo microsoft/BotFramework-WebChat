@@ -2,8 +2,11 @@ import CSSTokens from '../CSSTokens';
 
 export default function createImageAvatarStyle() {
   return {
+    alignItems: 'center',
+    display: 'flex',
     height: CSSTokens.SizeAvatar,
-    overflow: 'hidden',
+    justifyContent: 'center',
+    overflow: ['hidden', 'clip'],
     width: CSSTokens.SizeAvatar
   };
 }
