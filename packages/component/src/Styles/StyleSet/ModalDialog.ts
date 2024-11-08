@@ -19,6 +19,12 @@ export default function createModalDialogStyleSet() {
         border: 0
       },
 
+      // Assume the content is being prepared, so we hide the whole dialog until content appears in the DOM.
+      // Use opacity to still be able to set focus on the first available control (close button).
+      '&:has(.webchat__modal-dialog__body:empty)': {
+        opacity: 0
+      },
+
       '& .webchat__modal-dialog__box': {
         borderRadius: 2,
         overflow: 'hidden',

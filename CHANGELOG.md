@@ -105,6 +105,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixes [#5323](https://github.com/microsoft/BotFramework-WebChat/issues/5323). Removed unused CSS class from carousel component, eliminating unintended styling, in PR [#5325](https://github.com/microsoft/BotFramework-WebChat/pull/5325), by [@OEvgeny](https://github.com/OEvgeny)
 -  Resolved CSS class name conflicts between component and fluent packages to prevent styling issues, in PR [#5326](https://github.com/microsoft/BotFramework-WebChat/pull/5326), in PR [#5327](https://github.com/microsoft/BotFramework-WebChat/pull/5327), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed [#5350](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5350). Bundled `shiki` in component package, in PR [#5349](https://github.com/microsoft/BotFramework-WebChat/pull5349), by [@compulim](https://github.com/compulim)
+-  Fixed modal dialog rendering to prevent visual flicker and improve UX when opening code views, in PR [#5374](https://github.com/microsoft/BotFramework-WebChat/pull/5374), by [@OEvgeny](https://github.com/OEvgeny)
 
 # Removed
 

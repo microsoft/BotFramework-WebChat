@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { memo, type PropsWithChildren, useCallback, useEffect, useRef } from 'react';
+import React, { memo, type PropsWithChildren, useCallback, useLayoutEffect, useRef } from 'react';
 
 import useStyleSet from '../../../hooks/useStyleSet';
 
@@ -25,7 +25,7 @@ const ModalDialog = memo(
 
     const handleCloseButtonClick = useCallback(() => dialogRef.current?.close(), [dialogRef]);
 
-    useEffect(() => dialogRef.current?.showModal(), [dialogRef]);
+    useLayoutEffect(() => dialogRef.current?.showModal(), [dialogRef]);
 
     return (
       <dialog
