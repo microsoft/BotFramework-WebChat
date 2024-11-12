@@ -1,4 +1,6 @@
 import { createContext } from 'react';
+import { type HighlightCodeFn } from '../../../internal';
+import { type StyleOptions } from 'botframework-webchat-api';
 
 export type HTMLContentTransformRequest = Readonly<{
   allowedTags: ReadonlyMap<
@@ -14,6 +16,8 @@ export type HTMLContentTransformRequest = Readonly<{
   codeBlockCopyButtonTagName: string;
   documentFragment: DocumentFragment;
   externalLinkAlt: string;
+  highlightCode: HighlightCodeFn;
+  highlightCodeTheme: StyleOptions['codeBlockTheme'];
 }>;
 
 export type HTMLContentTransformFunction = (request: HTMLContentTransformRequest) => DocumentFragment;

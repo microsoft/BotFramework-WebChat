@@ -4,8 +4,9 @@ import { useCallback } from 'react';
 import { useStyleSet } from '../../hooks/index';
 import useCodeBlockCopyButtonTagName from '../CustomElements/useCodeBlockCopyButtonTagName';
 import useHTMLContentTransformContext from './private/useHTMLContentTransformContext';
+import { useCodeHighlighter } from '../../internal';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useStyleOptions } = hooks;
 
 const DEFAULT_ALLOWED_TAGS: ReadonlyMap<string, Readonly<{ attributes: ReadonlySet<string> }>> = Object.freeze(
   new Map(
@@ -92,9 +93,11 @@ const DEFAULT_ALLOWED_TAGS: ReadonlyMap<string, Readonly<{ attributes: ReadonlyS
 );
 
 export default function useTransformHTMLContent(): (documentFragment: DocumentFragment) => DocumentFragment {
+  const [{ codeBlockTheme: highlightCodeTheme }] = useStyleOptions();
   const [{ codeBlockCopyButton: codeBlockCopyButtonClassName }] = useStyleSet();
   const [codeBlockCopyButtonTagName] = useCodeBlockCopyButtonTagName();
   const { transform } = useHTMLContentTransformContext();
+  const highlightCode = useCodeHighlighter();
 
   const localize = useLocalizer();
   const codeBlockCopyButtonAltCopied = localize('COPY_BUTTON_COPIED_TEXT');
@@ -110,7 +113,9 @@ export default function useTransformHTMLContent(): (documentFragment: DocumentFr
         codeBlockCopyButtonClassName,
         codeBlockCopyButtonTagName,
         documentFragment,
-        externalLinkAlt
+        externalLinkAlt,
+        highlightCode,
+        highlightCodeTheme
       }),
     [
       codeBlockCopyButtonAltCopied,
@@ -118,6 +123,8 @@ export default function useTransformHTMLContent(): (documentFragment: DocumentFr
       codeBlockCopyButtonClassName,
       codeBlockCopyButtonTagName,
       externalLinkAlt,
+      highlightCode,
+      highlightCodeTheme,
       transform
     ]
   );

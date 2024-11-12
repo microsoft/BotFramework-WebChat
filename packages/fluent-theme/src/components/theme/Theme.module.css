@@ -405,7 +405,7 @@
     width: unset;
   }
 
-  :global(.webchat__view-code-dialog__copy-button) {
+  :global(.webchat__code-block-copy-button) {
     background: transparent;
     border: none;
     color: var(--webchat-colorNeutralForeground1);
@@ -463,20 +463,20 @@
     padding-inline: var(--webchat-spacingHorizontalM);
   }
 
-  :global(.webchat__view-code-dialog__code-body:has(.shiki:focus-visible)):focus-within {
+  :global(.webchat__view-code-dialog__code-body:has(.webchat__code-block:focus-visible)):focus-within {
     outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
     outline-offset: calc(var(--webchat-strokeWidthThick) * -1);
 
-    :global(.shiki) {
+    :global(.webchat__code-block) {
       outline: none;
     }
   }
 
-  :global(.webchat__view-code-dialog__code-body:has(.shiki.github-light-default)) {
+  :global(.webchat__view-code-dialog__code-body:has([data-theme='github-light-default'])) {
     --webchat__code-block--background: var(--codeBlockBackground, var(--webchat-colorGrey98));
   }
 
-  :global(.webchat__view-code-dialog__code-body:has(.shiki.github-dark-default)) {
+  :global(.webchat__view-code-dialog__code-body:has([data-theme='github-dark-default'])) {
     --webchat__code-block--background: var(--codeBlockBackground, var(--webchat-colorGrey8));
   }
 
