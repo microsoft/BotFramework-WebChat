@@ -54,7 +54,7 @@ export function createTokenizer(effects: MathEffects, ok: State, nok: State) {
     return content;
   }
 
-  function maybeCloseDelimeter(code: Code): State {
+  function maybeCloseDelimiter(code: Code): State {
     if ((!isDisplay && code === CLOSE_PAREN) || (isDisplay && code === CLOSE_BRACKET)) {
       effects.consume(code);
       effects.exit('mathChunk');
