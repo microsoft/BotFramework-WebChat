@@ -41,7 +41,7 @@ export function createTokenizer(effects: MathEffects, ok: State, nok: State) {
 
     if (code === BACKSLASH) {
       effects.consume(code);
-      return escaped;
+      return maybeCloseDelimeter;
     }
 
     effects.consume(code);
@@ -54,7 +54,7 @@ export function createTokenizer(effects: MathEffects, ok: State, nok: State) {
     return content;
   }
 
-  function escaped(code) {
+  function maybeCloseDelimeter(code: Code): State {
     if ((!isDisplay && code === CLOSE_PAREN) || (isDisplay && code === CLOSE_BRACKET)) {
       effects.consume(code);
       effects.exit('mathChunk');
@@ -62,7 +62,6 @@ export function createTokenizer(effects: MathEffects, ok: State, nok: State) {
       return ok(code);
     }
 
-    effects.consume(code);
-    return content;
+    return content(code);
   }
 }
