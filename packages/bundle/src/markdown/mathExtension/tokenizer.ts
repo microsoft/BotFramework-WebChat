@@ -41,7 +41,7 @@ export function createTokenizer(effects: MathEffects, ok: State, nok: State) {
 
     if (code === BACKSLASH) {
       effects.consume(code);
-      return maybeCloseDelimeter;
+      return maybeCloseDelimiter;
     }
 
     effects.consume(code);
