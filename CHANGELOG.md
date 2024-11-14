@@ -91,7 +91,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Improved view code dialog UI in Fluent theme with better styling and accessibility, in PR [#5337](https://github.com/microsoft/BotFramework-WebChat/pull/5337), by [@OEvgeny](https://github.com/OEvgeny)
 -  Switched math block syntax from `$$` to Tex-style `\[ \]` and `\( \)` delimiters with improved rendering and error handling, in PR [#5353](https://github.com/microsoft/BotFramework-WebChat/pull/5353), by [@OEvgeny](https://github.com/OEvgeny)
 -  Improved avatar display and grouping behavior by fixing rendering issues and activity sender identification, in PR [#5346](https://github.com/microsoft/BotFramework-WebChat/pull/5346), by [@OEvgeny](https://github.com/OEvgeny)
--  Activity "copy" button will use `outerHTML` and `textContent` for clipboard content, in PR [#5378](https://github.com/microsoft/BotFramework-WebChat/pull/5378), by [@compulim](https://github.com/compuilm)
+-  Activity "copy" button will use `outerHTML` and `textContent` for clipboard content, in PR [#5378](https://github.com/microsoft/BotFramework-WebChat/pull/5378), by [@compulim](https://github.com/compulim)
 
 ### Fixed
 
@@ -108,6 +108,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixed [#5350](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5350). Bundled `shiki` in component package, in PR [#5349](https://github.com/microsoft/BotFramework-WebChat/pull5349), by [@compulim](https://github.com/compulim)
 -  Fixed modal dialog rendering to prevent visual flicker and improve UX when opening code views, in PR [#5374](https://github.com/microsoft/BotFramework-WebChat/pull/5374), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed math parsing that could cause Web Chat to hang when processing certain LaTeX expressions, in PR [#5377](https://github.com/microsoft/BotFramework-WebChat/pull/5377), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed long math formula should be scrollable, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
 
 # Removed
 

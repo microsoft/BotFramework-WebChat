@@ -67,16 +67,22 @@ export default function createMarkdownStyle() {
         content: "'['"
       },
 
-      '& [data-math-type=block] math': {
+      '& [data-math-type=block]': {
         alignItems: 'center',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        overflowX: 'auto',
+        overflowY: 'clip'
       },
 
       '& [data-math-type=inline] math': {
         alignItems: 'center',
         display: 'inline-flex',
         flexDirection: 'column'
+      },
+
+      '& :is([data-math-type=block], [data-math-type=inline]) > span': {
+        display: 'contents'
       },
 
       '& .webchat__render-markdown__code-block': {
