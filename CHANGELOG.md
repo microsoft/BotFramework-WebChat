@@ -108,7 +108,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixed [#5350](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5350). Bundled `shiki` in component package, in PR [#5349](https://github.com/microsoft/BotFramework-WebChat/pull5349), by [@compulim](https://github.com/compulim)
 -  Fixed modal dialog rendering to prevent visual flicker and improve UX when opening code views, in PR [#5374](https://github.com/microsoft/BotFramework-WebChat/pull/5374), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed math parsing that could cause Web Chat to hang when processing certain LaTeX expressions, in PR [#5377](https://github.com/microsoft/BotFramework-WebChat/pull/5377), by [@OEvgeny](https://github.com/OEvgeny)
--  Fixed long math formula should be scrollable, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
+-  Fixed long math formula should be scrollable, in PR [#5380](https://github.com/microsoft/BotFramework-WebChat/pull/5380), by [@compulim](https://github.com/compulim)
 
 # Removed
 
