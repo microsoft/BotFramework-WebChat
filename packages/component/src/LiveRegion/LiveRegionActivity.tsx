@@ -42,7 +42,7 @@ const LiveRegionActivity: VFC<LiveRegionActivityProps> = ({ activity }) => {
   const fallbackText: string | undefined =
     type === 'message' ? activity.channelData['webchat:fallback-text'] : undefined;
   const localize = useLocalizer();
-  const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('accessible name');
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const textAlt = useMemo(() => activityAltText(activity, renderMarkdownAsHTML), [activity, renderMarkdownAsHTML]);
 

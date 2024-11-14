@@ -73,7 +73,7 @@
               type: 'https://schema.org/Message'
             }
           ],
-          text: 'Mollit *aute* **aute** dolor ea ex magna incididunt nostrud sit nisi.',
+          text: 'Mollit *aute* **aute** dolor ea ex magna incididunt nostrud sit nisi. ![Icon](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAUCAYAAABiS3YzAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAFvSURBVHgB7ZPdcYJAFIUX9D2UgBWIFQS0AUsgFYQOhA7sILGCkAIUUkGwA0og7/zku8mSWYHM+OKbd8bhsufcc84uq1L3unn5vu+u1+u3K7lSu+G6PVywLCtr2/asrqsC/hbh6EJj4Bzatv14Op2eSLvrum6VZdlWjRO6Yg4e8OowI0EWeZ5Xo6QQnwEPMsRryFA0FY/hEu47vxd6SVsgHKrh9hFyAF1IOYTodzYvDdzTZj+FeQxf1hzMDywtR6Lz+dwDPOvES0k8OJZP2bKRtoIvph5YSb8YidZ1XQE+6BRfs9nM6TH6Spsps+BXaqLMMxU3Vw8XTdN4PXA8HlMEAsxW5jB84RQEkrk/gwvrzWaTIZaIgWxXRMxzNUtuBw9XbkoQBClBUvrXYVJx/gDcaaGEfj8lKB+NR4hpoq/XshcciQLEPBz5l9DvMYmnROUa6aOo9MdLTNyaSOGy9ZQhv7/M/xVHEMFz4MXqXjetb0P8xVy6y7nkAAAAAElFTkSuQmCC)',
           type: 'message'
         });
 
@@ -88,13 +88,13 @@
         const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`);
 
         expect(document.activeElement).toBe(copyButton);
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Press ENTER on the "Copy" button.
         await host.sendKeys('ENTER');
 
         // THEN: The copy button should change to "Copied".
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Paste into plain text and rich text text box.
         await host.click(document.querySelector('[data-testid="plain-text-box"]'));
@@ -109,7 +109,7 @@
         await testHelpers.sleep(500);
 
         // THEN: Plain text box should contains plain text, while rich text box should contains rich text.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
