@@ -1,8 +1,8 @@
 import { type HTMLContentTransformMiddleware } from 'botframework-webchat-component';
 
-import createCodeBlockCopyButtonMiddleware from './middleware/createCodeBlockCopyButtonMiddleware';
 import createSanitizeMiddleware from './middleware/createSanitizeMiddleware';
+import createCodeBlockMiddleware from './middleware/createCodeBlockMiddleware';
 
 export default function createHTMLContentTransformMiddleware(): readonly HTMLContentTransformMiddleware[] {
-  return Object.freeze([createCodeBlockCopyButtonMiddleware(), createSanitizeMiddleware()]);
+  return Object.freeze([createCodeBlockMiddleware(), createSanitizeMiddleware()]);
 }

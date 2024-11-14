@@ -1,4 +1,5 @@
 import {
+  HighlightCodeFn,
   parseDocumentFragmentFromString,
   serializeDocumentFragmentIntoString
 } from 'botframework-webchat-component/internal';
@@ -15,6 +16,7 @@ import { pre as respectCRLFPre } from './private/respectCRLF';
 type RenderInit = Readonly<{
   codeBlockCopyButtonTagName: string;
   externalLinkAlt: string;
+  highlightCode: HighlightCodeFn;
 }>;
 
 const ALLOWED_SCHEMES = ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'];

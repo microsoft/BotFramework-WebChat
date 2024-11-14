@@ -138,6 +138,7 @@
     "prop-types": "15.8.1",
     "punycode": "2.3.1",
     "sanitize-html": "2.13.0",
+    "shiki": "^1.22.2",
     "swiper": "8.4.7",
     "url-search-params-polyfill": "8.2.5",
     "uuid": "8.3.2",

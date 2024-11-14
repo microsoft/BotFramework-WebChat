@@ -1,11 +1,10 @@
 import { hooks } from 'botframework-webchat-api';
 import { useCallback } from 'react';
 
-import { useStyleSet } from '../../hooks/index';
-import useCodeBlockCopyButtonTagName from '../CustomElements/useCodeBlockCopyButtonTagName';
+import useCodeBlockTag from '../CustomElements/useCodeBlockTagName';
 import useHTMLContentTransformContext from './private/useHTMLContentTransformContext';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useStyleOptions } = hooks;
 
 const DEFAULT_ALLOWED_TAGS: ReadonlyMap<string, Readonly<{ attributes: ReadonlySet<string> }>> = Object.freeze(
   new Map(
@@ -169,33 +168,22 @@ const DEFAULT_ALLOWED_TAGS: ReadonlyMap<string, Readonly<{ attributes: ReadonlyS
 );
 
 export default function useTransformHTMLContent(): (documentFragment: DocumentFragment) => DocumentFragment {
-  const [{ codeBlockCopyButton: codeBlockCopyButtonClassName }] = useStyleSet();
-  const [codeBlockCopyButtonTagName] = useCodeBlockCopyButtonTagName();
+  const [{ codeBlockTheme }] = useStyleOptions();
+  const [codeBlockTagName] = useCodeBlockTag();
   const { transform } = useHTMLContentTransformContext();
 
   const localize = useLocalizer();
-  const codeBlockCopyButtonAltCopied = localize('COPY_BUTTON_COPIED_TEXT');
-  const codeBlockCopyButtonAltCopy = localize('COPY_BUTTON_TEXT');
   const externalLinkAlt = localize('MARKDOWN_EXTERNAL_LINK_ALT');
 
   return useCallback(
     documentFragment =>
       transform({
         allowedTags: DEFAULT_ALLOWED_TAGS,
-        codeBlockCopyButtonAltCopied,
-        codeBlockCopyButtonAltCopy,
-        codeBlockCopyButtonClassName,
-        codeBlockCopyButtonTagName,
+        codeBlockTagName,
+        codeBlockTheme,
         documentFragment,
         externalLinkAlt
       }),
-    [
-      codeBlockCopyButtonAltCopied,
-      codeBlockCopyButtonAltCopy,
-      codeBlockCopyButtonClassName,
-      codeBlockCopyButtonTagName,
-      externalLinkAlt,
-      transform
-    ]
+    [codeBlockTagName, codeBlockTheme, externalLinkAlt, transform]
   );
 }

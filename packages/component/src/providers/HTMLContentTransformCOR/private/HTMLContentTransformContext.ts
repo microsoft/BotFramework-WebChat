@@ -8,10 +8,8 @@ export type HTMLContentTransformRequest = Readonly<{
       attributes: ReadonlySet<string>;
     }>
   >;
-  codeBlockCopyButtonAltCopied: string;
-  codeBlockCopyButtonAltCopy: string;
-  codeBlockCopyButtonClassName: string;
-  codeBlockCopyButtonTagName: string;
+  codeBlockTagName: string;
+  codeBlockTheme: string;
   documentFragment: DocumentFragment;
   externalLinkAlt: string;
 }>;

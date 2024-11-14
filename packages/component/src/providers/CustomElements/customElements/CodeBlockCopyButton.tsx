@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, MouseEventHandler, useCallback, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { useStateWithRef } from 'use-state-with-ref';
 import testIds from '../../../testIds';
@@ -23,37 +23,45 @@ const CodeBlockCopyButton = memo(
     const [pressed, setPressed] = useState(false);
     const valueRef = useRefFrom(value);
 
-    const handleClick = useCallback(() => {
-      if (disabledRef.current) {
-        return;
-      }
-
-      let obsoleted = false;
-
-      (async () => {
-        try {
-          const { state } = await navigator.permissions.query({ name: 'clipboard-write' as any });
-
-          if (!obsoleted) {
-            if (state === 'granted') {
-              await navigator.clipboard?.write([
-                new ClipboardItem({ 'text/plain': new Blob([valueRef.current], { type: 'text/plain' }) })
-              ]);
-
-              obsoleted || setPressed(true);
-            } else if (state === 'denied') {
-              setDisabled(true);
-            }
-          }
-        } catch (error) {
-          console.warn('botframework-webchat: Failed to copy code block to clipboard.', error);
+    const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(
+      event => {
+        if (disabledRef.current) {
+          return;
         }
-      })();
 
-      return () => {
-        obsoleted = true;
-      };
-    }, [disabledRef, setDisabled, setPressed, valueRef]);
+        let obsoleted = false;
+
+        (async () => {
+          try {
+            const parentElement = (event.currentTarget as HTMLButtonElement)?.parentElement?.parentElement;
+
+            const { state } = await navigator.permissions.query({ name: 'clipboard-write' as any });
+
+            const value =
+              (valueRef.current ?? (parentElement && 'code' in parentElement)) ? parentElement['code'] : undefined;
+
+            if (!obsoleted) {
+              if (state === 'granted') {
+                await navigator.clipboard?.write([
+                  new ClipboardItem({ 'text/plain': new Blob([value], { type: 'text/plain' }) })
+                ]);
+
+                obsoleted || setPressed(true);
+              } else if (state === 'denied') {
+                setDisabled(true);
+              }
+            }
+          } catch (error) {
+            console.warn('botframework-webchat: Failed to copy code block to clipboard.', error);
+          }
+        })();
+
+        return () => {
+          obsoleted = true;
+        };
+      },
+      [disabledRef, setDisabled, setPressed, valueRef]
+    );
 
     const handleAnimationEnd = useCallback(() => setPressed(false), [setPressed]);
 

@@ -44,8 +44,7 @@ export default function createViewCodeDialogStyle() {
 
       '& .webchat__view-code-dialog__body': {
         display: 'flex',
-        overflow: 'hidden',
-        position: 'relative'
+        overflow: 'auto'
       },
 
       '& .webchat__view-code-dialog__code-body': {

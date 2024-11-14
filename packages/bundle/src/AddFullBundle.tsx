@@ -5,13 +5,14 @@ import {
 } from 'botframework-webchat-api';
 import { type HTMLContentTransformMiddleware } from 'botframework-webchat-component';
 import { singleToArray, warnOnce, type OneOrMany } from 'botframework-webchat-core';
-import React, { type ReactNode } from 'react';
+import React, { memo, type ReactNode } from 'react';
 
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
 import { type AdaptiveCardsStyleOptions } from './adaptiveCards/AdaptiveCardsStyleOptions';
 import { type AdaptiveCardsPackage } from './types/AdaptiveCardsPackage';
 import { type StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 import useComposerProps from './useComposerProps';
+import ShikiComposer from './codeHighlighter/ShikiComposer';
 
 type AddFullBundleProps = Readonly<{
   adaptiveCardsHostConfig?: any;
@@ -36,7 +37,7 @@ const adaptiveCardHostConfigDeprecation = warnOnce(
   '"adaptiveCardHostConfig" is deprecated. Please use "adaptiveCardsHostConfig" instead. "adaptiveCardHostConfig" will be removed on or after 2022-01-01.'
 );
 
-const AddFullBundle = ({
+function AddFullBundle({
   adaptiveCardHostConfig,
   adaptiveCardsHostConfig,
   adaptiveCardsPackage,
@@ -47,7 +48,7 @@ const AddFullBundle = ({
   renderMarkdown,
   styleOptions,
   styleSet
-}: AddFullBundleProps) => {
+}: AddFullBundleProps) {
   adaptiveCardHostConfig && adaptiveCardHostConfigDeprecation();
 
   const patchedProps = useComposerProps({
@@ -60,15 +61,17 @@ const AddFullBundle = ({
   });
 
   return (
-    <AdaptiveCardsComposer
-      adaptiveCardsHostConfig={adaptiveCardHostConfig || adaptiveCardsHostConfig}
-      adaptiveCardsPackage={adaptiveCardsPackage}
-    >
-      {children(patchedProps)}
-    </AdaptiveCardsComposer>
+    <ShikiComposer>
+      <AdaptiveCardsComposer
+        adaptiveCardsHostConfig={adaptiveCardHostConfig || adaptiveCardsHostConfig}
+        adaptiveCardsPackage={adaptiveCardsPackage}
+      >
+        {children(patchedProps)}
+      </AdaptiveCardsComposer>
+    </ShikiComposer>
   );
-};
+}
 
-export default AddFullBundle;
+export default memo(AddFullBundle);
 
 export type { AddFullBundleProps };
