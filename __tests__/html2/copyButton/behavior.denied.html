@@ -59,13 +59,13 @@
         expect(copyButton.getAttribute('aria-disabled')).toBe('true');
 
         // THEN: Should match screenshot.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Clicks the "Copy" button.
         await host.click(copyButton);
 
         // THEN: The copy button should not change to "Copied".
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

@@ -43,7 +43,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Added `CopilotMessageHeader` component for displaying bot information in the "copilot" variant, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
 -  Updated Fluent theme styling to improve accessibility and visual consistency, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed header font in copilot variant, in PR [#5261](https://github.com/microsoft/BotFramework-WebChat/pull/5261), by [@OEvgeny](https://github.com/OEvgeny)
--  Added "Copy" button to bot messages in Fluent UI if it contains keyword `AllowCopy`, in PR [#5259](https://github.com/microsoft/BotFramework-WebChat/pull/5259), [#5262](https://github.com/microsoft/BotFramework-WebChat/pull/5262), and [#5285](https://github.com/microsoft/BotFramework-WebCHat/pull/5285), by [@compulim](https://github.com/compulim)
+-  Added "Copy" button to bot messages in Fluent UI if it contains keyword `AllowCopy`, in PR [#5259](https://github.com/microsoft/BotFramework-WebChat/pull/5259), [#5262](https://github.com/microsoft/BotFramework-WebChat/pull/5262), and [#5285](https://github.com/microsoft/BotFramework-WebChat/pull/5285), by [@compulim](https://github.com/compulim)
 -  Resolves [#4876](https://github.com/microsoft/BotFramework-WebChat/issues/4876) and [#4939](https://github.com/microsoft/BotFramework-WebChat/issues/4939). Added support of informative message in livestreaming, by [@compulim](https://github.com/compulim), in PR [#5265](https://github.com/microsoft/BotFramework-WebChat/pull/5265)
 -  Introduced centralized announcements approach via the new `usePushToLiveRegion` hook, in PR [#5251](https://github.com/microsoft/BotFramework-WebChat/pull/5251), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added keyboard shortcut for the "New Messages" button, in PR [#5251](https://github.com/microsoft/BotFramework-WebChat/pull/5251), by [@OEvgeny](https://github.com/OEvgeny)
@@ -91,6 +91,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Improved view code dialog UI in Fluent theme with better styling and accessibility, in PR [#5337](https://github.com/microsoft/BotFramework-WebChat/pull/5337), by [@OEvgeny](https://github.com/OEvgeny)
 -  Switched math block syntax from `$$` to Tex-style `\[ \]` and `\( \)` delimiters with improved rendering and error handling, in PR [#5353](https://github.com/microsoft/BotFramework-WebChat/pull/5353), by [@OEvgeny](https://github.com/OEvgeny)
 -  Improved avatar display and grouping behavior by fixing rendering issues and activity sender identification, in PR [#5346](https://github.com/microsoft/BotFramework-WebChat/pull/5346), by [@OEvgeny](https://github.com/OEvgeny)
+-  Activity "copy" button will use `outerHTML` and `textContent` for clipboard content, in PR [#5378](https://github.com/microsoft/BotFramework-WebChat/pull/5378), by [@compulim](https://github.com/compuilm)
 
 ### Fixed
 

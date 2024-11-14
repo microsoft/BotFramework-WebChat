@@ -57,9 +57,7 @@
 
         const root = createRoot(document.getElementById('webchat'));
 
-        if (searchParams.get('variant') === 'white label') {
-          root.render(<App />);
-        } else {
+        if (searchParams.get('variant') === 'copilot' || searchParams.get('variant') === 'fluent') {
           root.render(
             <FluentProvider
               theme={
@@ -73,6 +71,8 @@
               </FluentThemeProvider>
             </FluentProvider>
           );
+        } else {
+          root.render(<App />);
         }
 
         await pageConditions.uiConnected();
@@ -139,7 +139,7 @@
         );
 
         // THEN: "Copy" button should appear after the message.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

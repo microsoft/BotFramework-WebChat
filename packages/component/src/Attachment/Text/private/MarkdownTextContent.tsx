@@ -9,7 +9,7 @@ import {
 import classNames from 'classnames';
 import type { Definition } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
-import React, { memo, useCallback, useMemo, type MouseEventHandler, type ReactNode } from 'react';
+import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
@@ -54,10 +54,10 @@ const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
       textContent: textContentStyleSet
     }
   ] = useStyleSet();
+  const contentRef = useRef<HTMLDivElement>(null);
   const localize = useLocalizer();
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
-  const renderMarkdownAsHTMLForClipboard = useRenderMarkdownAsHTML('clipboard');
   const showModal = useShowModal();
 
   const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
@@ -71,11 +71,6 @@ const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
   const dangerouslySetInnerHTML = useMemo(
     () => ({ __html: markdown ? renderMarkdownAsHTML(markdown) : '' }),
     [renderMarkdownAsHTML, markdown]
-  );
-
-  const htmlTextForClipboard = useMemo(
-    () => (markdown ? renderMarkdownAsHTMLForClipboard(markdown) : undefined),
-    [markdown, renderMarkdownAsHTMLForClipboard]
   );
 
   const markdownDefinitions = useMemo(
@@ -215,6 +210,7 @@ const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={dangerouslySetInnerHTML}
         onClick={handleClick}
+        ref={contentRef}
       />
       {children}
       {!!entries.length && (
@@ -246,11 +242,7 @@ const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
           />
         ) : null}
         {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
-          <ActivityCopyButton
-            className="webchat__text-content__activity-copy-button"
-            htmlText={htmlTextForClipboard}
-            plainText={activity.text}
-          />
+          <ActivityCopyButton className="webchat__text-content__activity-copy-button" targetRef={contentRef} />
         ) : null}
       </div>
     </div>

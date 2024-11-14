@@ -63,13 +63,13 @@
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`));
 
         // THEN: The "Copy" button should say "Copied".
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: After 1 second.
         await testHelpers.sleep(1_000);
 
         // THEN: The "Copy" button should back to normal.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Hiding Web Chat and showing it back.
         document.getElementById('webchat').style.display = 'none';
@@ -77,7 +77,7 @@
         document.getElementById('webchat').style.display = '';
 
         // THEN: The "Copy" button should kept at normal.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
