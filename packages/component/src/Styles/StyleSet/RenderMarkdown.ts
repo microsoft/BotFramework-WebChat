@@ -67,12 +67,13 @@ export default function createMarkdownStyle() {
         content: "'['"
       },
 
-      '& [data-math-type=block]': {
+      '& [data-math-type=block] math': {
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'column',
         overflowX: 'auto',
-        overflowY: 'clip'
+        overflowY: 'clip',
+        scrollbarWidth: 'thin'
       },
 
       '& [data-math-type=inline] math': {

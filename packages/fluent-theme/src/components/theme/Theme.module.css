@@ -225,7 +225,7 @@
 /* Scrollbars */
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable),
 :global(.webchat-fluent).theme :global(.webchat__view-code-dialog__code-body),
-:global(.webchat-fluent).theme :global(.webchat__render-markdown [data-math-type='block']) {
+:global(.webchat-fluent).theme :global(.webchat__render-markdown [data-math-type='block'] math) {
   /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
   scrollbar-color: unset;
   scrollbar-width: unset;
