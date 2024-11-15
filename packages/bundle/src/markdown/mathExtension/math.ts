@@ -10,8 +10,7 @@ export default function math(): Extension {
 
   return {
     text: {
-      [BACKSLASH]: construct,
-      [DOLLAR]: construct
+      [BACKSLASH]: construct
     },
     flow: {
       [BACKSLASH]: construct,
