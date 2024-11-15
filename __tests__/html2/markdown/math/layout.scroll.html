@@ -17,7 +17,7 @@
         const {
           Fluent: { createDarkTheme, createLightTheme, FluentProvider },
           ReactDOMClient: { createRoot },
-          WebChat: { FluentThemeProvider, ReactWebChat }
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
@@ -76,6 +76,44 @@
 
         await pageConditions.numActivitiesShown(1);
 
+        await host.snapshot('local');
+
+        // WHEN: Press ENTER over the activity.
+        document.querySelector(`#webchat [data-testid="${testIds.sendBoxTextBox}"]`).focus();
+
+        await host.sendShiftTab(
+          (searchParams.get('variant') === 'copilot' || searchParams.get('variant') === 'fluent') ? 2 : 3
+        );
+        await host.sendKeys('ENTER');
+
+        // THEN: Should focus on the first <figure>.
+        expect(document).toHaveProperty(
+          'activeElement',
+          pageElements.activityContents()[0].querySelectorAll('figure')[0]
+        );
+        // expect(document).toHaveProperty('activeElement.tagName', 'FIGURE');
+        await host.snapshot('local');
+
+        // ----------------------------------------
+
+        // WHEN: Press RIGHT key.
+        await host.sendKeys('RIGHT');
+
+        // THEN: Should scroll to the right.
+        await pageConditions.became('should scroll to the right', () => document.activeElement.scrollLeft > 10, 1000);
+        await pageConditions.stabilized('should finish scrolling', () => document.activeElement.scrollLeft, 5, 1000);
+        await host.snapshot('local');
+
+        // ----------------------------------------
+
+        // WHEN: Press TAB key.
+        await host.sendKeys('TAB');
+
+        // THEN: Should focus on the second <figure>.
+        expect(document).toHaveProperty(
+          'activeElement',
+          pageElements.activityContents()[0].querySelectorAll('figure')[1]
+        );
         await host.snapshot('local');
       });
     </script>

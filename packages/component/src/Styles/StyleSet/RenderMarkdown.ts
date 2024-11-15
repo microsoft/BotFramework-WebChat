@@ -67,7 +67,7 @@ export default function createMarkdownStyle() {
         content: "'['"
       },
 
-      '& [data-math-type=block] math': {
+      '& [data-math-type=block]': {
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'column',
@@ -76,7 +76,7 @@ export default function createMarkdownStyle() {
         scrollbarWidth: 'thin'
       },
 
-      '& [data-math-type=inline] math': {
+      '& [data-math-type=inline]': {
         alignItems: 'center',
         display: 'inline-flex',
         flexDirection: 'column'

@@ -28,7 +28,8 @@ export default function createHtmlRenderer(options: CreateHtmlRendererOptions = 
           type: 'block' | 'inline' | 'error' = defaults.type,
           tag: 'figure' | 'span' | 'pre' | 'code' = defaults.tag
         ) => {
-          this.tag(`<${tag} data-math-type="${type}">`);
+          // Math could be scrollable, need to be tabbable.
+          this.tag(`<${tag} data-math-type="${type}" tabindex="0">`);
           this.raw(content);
           this.tag(`</${tag}>`);
         };
