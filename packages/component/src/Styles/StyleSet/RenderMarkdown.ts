@@ -71,6 +71,9 @@ export default function createMarkdownStyle() {
         alignItems: 'center',
         display: 'flex',
         flexDirection: 'column',
+        marginBottom: '-4px',
+        paddingBottom: '4px',
+        outlineOffset: '2px',
         overflowX: 'auto',
         overflowY: 'clip',
         scrollbarWidth: 'thin'
