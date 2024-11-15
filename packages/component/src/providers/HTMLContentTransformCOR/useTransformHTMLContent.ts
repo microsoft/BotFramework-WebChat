@@ -21,7 +21,7 @@ const DEFAULT_ALLOWED_TAGS: ReadonlyMap<string, Readonly<{ attributes: ReadonlyS
         ['del', []],
         ['div', []],
         ['em', []],
-        ['figure', ['data-math-type']],
+        ['figure', ['data-math-type', 'tabindex']],
         ['h1', []],
         ['h2', []],
         ['h3', []],

@@ -67,16 +67,26 @@ export default function createMarkdownStyle() {
         content: "'['"
       },
 
-      '& [data-math-type=block] math': {
+      '& [data-math-type=block]': {
         alignItems: 'center',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        marginBottom: '-4px',
+        paddingBottom: '4px',
+        outlineOffset: '2px',
+        overflowX: 'auto',
+        overflowY: 'clip',
+        scrollbarWidth: 'thin'
       },
 
-      '& [data-math-type=inline] math': {
+      '& [data-math-type=inline]': {
         alignItems: 'center',
         display: 'inline-flex',
         flexDirection: 'column'
+      },
+
+      '& :is([data-math-type=block], [data-math-type=inline]) > span': {
+        display: 'contents'
       },
 
       '& .webchat__render-markdown__code-block': {
