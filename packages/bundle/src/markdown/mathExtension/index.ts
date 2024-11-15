@@ -1,17 +1,2 @@
-import { BACKSLASH } from './constants';
-import { createTokenizer } from './tokenizer';
-import { type Extension } from 'micromark-util-types';
-
-export function math(): Extension {
-  const construct = {
-    name: 'math',
-    tokenize: createTokenizer
-  };
-
-  return {
-    text: { [BACKSLASH]: construct },
-    flow: { [BACKSLASH]: construct }
-  } as any;
-}
-
-export { type CreateHtmlRendererOptions as mathHtmlOptions, default as mathHtml } from './htmlRenderer';
+export { default as math } from './math';
+export { default as mathHtml, type CreateHtmlRendererOptions as mathHtmlOptions } from './mathHtml';

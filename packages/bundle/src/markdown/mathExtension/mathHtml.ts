@@ -4,17 +4,25 @@ export type CreateHtmlRendererOptions = {
   renderMath?: ((content: string, isDisplay: boolean) => string) | undefined;
 };
 
-function extractMathContent(value) {
-  const isDisplay = value.startsWith('\\[');
-  const start = value.indexOf(isDisplay ? '[' : '(') + 1;
-  const end = value.lastIndexOf(isDisplay ? ']' : ')') - 1;
+const delimeters = {
+  PAREN: ['\\(', '\\)'],
+  BRACKET: ['\\[', '\\]'],
+  DOLLAR: ['$$', '$$']
+} as const;
+
+function extractMathContent(value: string) {
+  const [mode, [startDelimiter, endDelimiter]] = Object.entries(delimeters).find(([, [start]]) =>
+    value.startsWith(start)
+  );
+  const start = value.indexOf(startDelimiter) + startDelimiter.length;
+  const end = value.lastIndexOf(endDelimiter);
   return {
-    content: value.slice(start, end).trim(),
-    isDisplay
+    content: value.substring(start, end).trim(),
+    isDisplay: mode === 'BRACKET' || mode === 'DOLLAR'
   };
 }
 
-export default function createHtmlRenderer(options: CreateHtmlRendererOptions = {}): HtmlExtension {
+export default function mathHtml(options: CreateHtmlRendererOptions = {}): HtmlExtension {
   return {
     exit: {
       math(token: Token) {
