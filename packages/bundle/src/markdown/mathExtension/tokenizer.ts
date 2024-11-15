@@ -1,12 +1,9 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { BACKSLASH, OPEN_PAREN, CLOSE_PAREN, OPEN_BRACKET, CLOSE_BRACKET, DOLLAR } from './constants';
-import { markdownLineEnding } from 'micromark-util-character';
+import { markdownLineEnding, markdownLineEndingOrSpace } from 'micromark-util-character';
 import { type Code, type Effects, type State } from 'micromark-util-types';
 
 type MathTokenTypes = 'math' | 'mathChunk';
-
-type OpenCode = typeof OPEN_BRACKET | typeof OPEN_PAREN | typeof DOLLAR;
-type CloseCode = typeof CLOSE_BRACKET | typeof CLOSE_PAREN | typeof DOLLAR;
 
 type MathEffects = Omit<Effects, 'enter' | 'exit'> & {
   enter(type: MathTokenTypes): void;
@@ -14,16 +11,19 @@ type MathEffects = Omit<Effects, 'enter' | 'exit'> & {
 };
 
 /**
- * Creates a math tokenizer for specified delimiter pair
- * @param OPEN_CODE - Opening delimiter code
- * @param CLOSE_CODE - Closing delimiter code
+ * Creates a math tokenizer for specified trigger code
+ * @param TRIGGER_CODE - Delimiter trigger code
  */
-export default ({ OPEN_CODE, CLOSE_CODE }: { OPEN_CODE: OpenCode; CLOSE_CODE: CloseCode }) =>
+export default (TRIGGER_CODE: typeof BACKSLASH | typeof DOLLAR) =>
   function createTokenizer(effects: MathEffects, ok: State, nok: State) {
+    const OPEN_CODES = TRIGGER_CODE === DOLLAR ? [DOLLAR] : [OPEN_PAREN, OPEN_BRACKET];
+    const CLOSE_CODES = TRIGGER_CODE === DOLLAR ? [DOLLAR] : [CLOSE_PAREN, CLOSE_BRACKET];
+    let isInline: boolean;
+
     return start;
 
     function start(code: Code): State {
-      if (code === BACKSLASH || (code === DOLLAR && OPEN_CODE === DOLLAR)) {
+      if (code === TRIGGER_CODE) {
         effects.enter('math');
         effects.enter('mathChunk');
         effects.consume(code);
@@ -34,12 +34,13 @@ export default ({ OPEN_CODE, CLOSE_CODE }: { OPEN_CODE: OpenCode; CLOSE_CODE: Cl
     }
 
     function openDelimiter(code: Code): State {
-      if (code !== OPEN_CODE) {
-        return nok(code);
+      if (OPEN_CODES.includes(code)) {
+        isInline = code === OPEN_PAREN;
+        effects.consume(code);
+        return content;
       }
 
-      effects.consume(code);
-      return content;
+      return nok(code);
     }
 
     function content(code: Code): State {
@@ -47,29 +48,54 @@ export default ({ OPEN_CODE, CLOSE_CODE }: { OPEN_CODE: OpenCode; CLOSE_CODE: Cl
         return nok(code);
       }
 
-      if (code === BACKSLASH || (CLOSE_CODE === DOLLAR && code === DOLLAR)) {
+      if (code === TRIGGER_CODE) {
         effects.consume(code);
-        return maybeCloseDelimiter;
+        return closeDelimiter;
+      }
+
+      if (code === BACKSLASH) {
+        effects.consume(code);
+        return escaped;
+      }
+
+      if (markdownLineEnding(code)) {
+        return isInline ? ending(code) : mathChunk(code);
       }
 
       effects.consume(code);
-
-      if (markdownLineEnding(code)) {
-        effects.exit('mathChunk');
-        effects.enter('mathChunk');
-      }
-
       return content;
     }
 
-    function maybeCloseDelimiter(code: Code): State {
-      if (code === CLOSE_CODE) {
+    function escaped(code: Code): State {
+      if (code === DOLLAR) {
         effects.consume(code);
-        effects.exit('mathChunk');
-        effects.exit('math');
-        return ok;
+        return content;
+      }
+      return content(code);
+    }
+
+    function closeDelimiter(code: Code): State {
+      if (CLOSE_CODES.includes(code)) {
+        effects.consume(code);
+        return ending;
       }
 
       return content(code);
+    }
+
+    function mathChunk(code: Code): State {
+      effects.consume(code);
+      effects.exit('mathChunk');
+      effects.enter('mathChunk');
+      return content;
+    }
+
+    function ending(code: Code): State {
+      if (markdownLineEndingOrSpace(code) || code === null || isInline) {
+        effects.exit('mathChunk');
+        effects.exit('math');
+        return ok(code);
+      }
+      return nok(code);
     }
   };

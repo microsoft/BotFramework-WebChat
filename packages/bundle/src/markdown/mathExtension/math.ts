@@ -1,5 +1,5 @@
 import type { Extension } from 'micromark-util-types';
-import { BACKSLASH, CLOSE_BRACKET, CLOSE_PAREN, DOLLAR, OPEN_BRACKET, OPEN_PAREN } from './constants';
+import { BACKSLASH, DOLLAR } from './constants';
 import makeConstructTokenizer from './tokenizer';
 
 export default function math(): Extension {
@@ -10,11 +10,12 @@ export default function math(): Extension {
 
   return {
     text: {
-      [BACKSLASH]: makeConstruct({ OPEN_CODE: OPEN_PAREN, CLOSE_CODE: CLOSE_PAREN })
+      [BACKSLASH]: makeConstruct(BACKSLASH),
+      [DOLLAR]: makeConstruct(DOLLAR)
     },
     flow: {
-      [BACKSLASH]: makeConstruct({ OPEN_CODE: OPEN_BRACKET, CLOSE_CODE: CLOSE_BRACKET }),
-      [DOLLAR]: makeConstruct({ OPEN_CODE: DOLLAR, CLOSE_CODE: DOLLAR })
+      [BACKSLASH]: makeConstruct(BACKSLASH),
+      [DOLLAR]: makeConstruct(DOLLAR)
     }
   } as any;
 }
