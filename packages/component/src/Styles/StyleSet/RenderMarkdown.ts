@@ -79,6 +79,10 @@ export default function createMarkdownStyle() {
         scrollbarWidth: 'thin'
       },
 
+      '& span[data-math-type=block]': {
+        display: 'inline-flex'
+      },
+
       '& [data-math-type=inline]': {
         alignItems: 'center',
         display: 'inline-flex',

@@ -4,24 +4,21 @@ export type CreateHtmlRendererOptions = {
   renderMath?: ((content: string, isDisplay: boolean) => string) | undefined;
 };
 
-function extractMathContent(value) {
-  const isDisplay = value.startsWith('\\[');
-  const start = value.indexOf(isDisplay ? '[' : '(') + 1;
-  const end = value.lastIndexOf(isDisplay ? ']' : ')') - 1;
-  return {
-    content: value.slice(start, end).trim(),
-    isDisplay
-  };
-}
-
-export default function createHtmlRenderer(options: CreateHtmlRendererOptions = {}): HtmlExtension {
+export default function mathHtml(options: CreateHtmlRendererOptions = {}): HtmlExtension {
   return {
     exit: {
-      math(token: Token) {
-        const { content, isDisplay } = extractMathContent(this.sliceSerialize(token));
-        const defaults = isDisplay
-          ? ({ tag: options.renderMath ? 'figure' : 'pre', type: 'block' } as const)
-          : ({ tag: 'span', type: 'inline' } as const);
+      // @ts-expect-error math* are not known tokens in micromark
+      mathContent(token: Token) {
+        this.setData('content', this.sliceSerialize(token));
+      },
+      math(token: Token & { isInline: boolean; isDisplay: boolean }) {
+        const { isInline, isDisplay } = token;
+        const content = this.getData('content');
+
+        const defaults =
+          isDisplay && !isInline
+            ? ({ tag: options.renderMath ? 'figure' : 'pre', type: 'block' } as const)
+            : ({ tag: 'span', type: isDisplay ? 'block' : 'inline' } as const);
 
         const render = (
           content: string,
@@ -42,5 +39,5 @@ export default function createHtmlRenderer(options: CreateHtmlRendererOptions = 
         }
       }
     }
-  } as any;
+  };
 }
