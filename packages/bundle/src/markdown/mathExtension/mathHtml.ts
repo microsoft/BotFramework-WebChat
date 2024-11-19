@@ -4,29 +4,19 @@ export type CreateHtmlRendererOptions = {
   renderMath?: ((content: string, isDisplay: boolean) => string) | undefined;
 };
 
-const delimeters = {
-  PAREN: ['\\(', '\\)'],
-  BRACKET: ['\\[', '\\]'],
-  DOLLAR: ['$$', '$$']
-} as const;
-
-function extractMathContent(value: string) {
-  const [mode, [startDelimiter, endDelimiter]] = Object.entries(delimeters).find(([, [start]]) =>
-    value.startsWith(start)
-  );
-  const start = value.indexOf(startDelimiter) + startDelimiter.length;
-  const end = value.lastIndexOf(endDelimiter);
-  return {
-    content: value.substring(start, end).trim(),
-    isDisplay: mode === 'BRACKET' || mode === 'DOLLAR'
-  };
-}
-
 export default function mathHtml(options: CreateHtmlRendererOptions = {}): HtmlExtension {
   return {
     exit: {
-      math(token: Token) {
-        const { content, isDisplay } = extractMathContent(this.sliceSerialize(token));
+      // @ts-expect-error math* are not known tokens in micromark
+      mathContent(token: Token) {
+        this.setData('content', this.sliceSerialize(token));
+      },
+      math(token: Token & { isInline: boolean; isDisplay: boolean }) {
+        // TODO: Determine how we render display math when found inline.
+        // Currently we let it be display, but this leads to invalid html markup.
+        const { isDisplay } = token;
+        const content = this.getData('content');
+
         const defaults = isDisplay
           ? ({ tag: options.renderMath ? 'figure' : 'pre', type: 'block' } as const)
           : ({ tag: 'span', type: 'inline' } as const);
@@ -50,5 +40,5 @@ export default function mathHtml(options: CreateHtmlRendererOptions = {}): HtmlE
         }
       }
     }
-  } as any;
+  };
 }
