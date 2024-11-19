@@ -12,14 +12,13 @@ export default function mathHtml(options: CreateHtmlRendererOptions = {}): HtmlE
         this.setData('content', this.sliceSerialize(token));
       },
       math(token: Token & { isInline: boolean; isDisplay: boolean }) {
-        // TODO: Determine how we render display math when found inline.
-        // Currently we let it be display, but this leads to invalid html markup.
-        const { isDisplay } = token;
+        const { isInline, isDisplay } = token;
         const content = this.getData('content');
 
-        const defaults = isDisplay
-          ? ({ tag: options.renderMath ? 'figure' : 'pre', type: 'block' } as const)
-          : ({ tag: 'span', type: 'inline' } as const);
+        const defaults =
+          isDisplay && !isInline
+            ? ({ tag: options.renderMath ? 'figure' : 'pre', type: 'block' } as const)
+            : ({ tag: 'span', type: isDisplay ? 'block' : 'inline' } as const);
 
         const render = (
           content: string,
