@@ -93,6 +93,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Switched math block syntax from `$$` to Tex-style `\[ \]` and `\( \)` delimiters with improved rendering and error handling, in PR [#5353](https://github.com/microsoft/BotFramework-WebChat/pull/5353), by [@OEvgeny](https://github.com/OEvgeny)
 -  Improved avatar display and grouping behavior by fixing rendering issues and activity sender identification, in PR [#5346](https://github.com/microsoft/BotFramework-WebChat/pull/5346), by [@OEvgeny](https://github.com/OEvgeny)
 -  Activity "copy" button will use `outerHTML` and `textContent` for clipboard content, in PR [#5378](https://github.com/microsoft/BotFramework-WebChat/pull/5378), by [@compulim](https://github.com/compulim)
+-  Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+   -  Production dependencies
+      -  [`web-speech-cognitive-services@8.0.0`](https://npmjs.com/package/web-speech-cognitive-services)
 
 ### Fixed
 
@@ -106,10 +109,11 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixes [#5319](https://github.com/microsoft/BotFramework-WebChat/issues/5319). Some Markdown text are not rendered after HTML tags, in PR [#5320](https://github.com/microsoft/BotFramework-WebChat/pull/5320), by [@compulim](https://github.com/compulim)
 -  Fixes [#5323](https://github.com/microsoft/BotFramework-WebChat/issues/5323). Removed unused CSS class from carousel component, eliminating unintended styling, in PR [#5325](https://github.com/microsoft/BotFramework-WebChat/pull/5325), by [@OEvgeny](https://github.com/OEvgeny)
 -  Resolved CSS class name conflicts between component and fluent packages to prevent styling issues, in PR [#5326](https://github.com/microsoft/BotFramework-WebChat/pull/5326), in PR [#5327](https://github.com/microsoft/BotFramework-WebChat/pull/5327), by [@OEvgeny](https://github.com/OEvgeny)
--  Fixed [#5350](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5350). Bundled `shiki` in component package, in PR [#5349](https://github.com/microsoft/BotFramework-WebChat/pull5349), by [@compulim](https://github.com/compulim)
+-  Fixed [#5350](https://github.com/microsoft/BotFramework-WebChat/issues/5350). Bundled `shiki` in component package, in PR [#5349](https://github.com/microsoft/BotFramework-WebChat/pull/5349), by [@compulim](https://github.com/compulim)
 -  Fixed modal dialog rendering to prevent visual flicker and improve UX when opening code views, in PR [#5374](https://github.com/microsoft/BotFramework-WebChat/pull/5374), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed math parsing that could cause Web Chat to hang when processing certain LaTeX expressions, in PR [#5377](https://github.com/microsoft/BotFramework-WebChat/pull/5377), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed long math formula should be scrollable, in PR [#5380](https://github.com/microsoft/BotFramework-WebChat/pull/5380), by [@compulim](https://github.com/compulim)
+-  Fixed [#4948](https://github.com/microsoft/BotFramework-WebChat/issues/4948). Microphone should stop after initial silence, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 # Removed
 

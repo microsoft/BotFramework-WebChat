@@ -1,7 +1,7 @@
 /* eslint class-methods-use-this: ["error", { "exceptMethods": ["cancel", "getVoices", "speak"] }] */
 
 import { AbortController } from 'abort-controller-es5';
-import { createSpeechRecognitionPonyfillFromRecognizer } from 'web-speech-cognitive-services/lib/SpeechServices/SpeechToText.js';
+import { createSpeechRecognitionPonyfillFromRecognizer } from 'web-speech-cognitive-services';
 
 import createTaskQueue from './createTaskQueue';
 import EventTarget, { Event, getEventAttributeValue, setEventAttributeValue } from 'event-target-shim';
