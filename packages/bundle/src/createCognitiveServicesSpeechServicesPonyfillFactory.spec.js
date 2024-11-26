@@ -13,7 +13,7 @@ let createPonyfill;
 let originalConsole;
 
 beforeEach(() => {
-  jest.mock('web-speech-cognitive-services/lib/SpeechServices', () => jest.fn(() => ({})));
+  jest.mock('web-speech-cognitive-services', () => jest.fn(() => ({})));
   jest.mock('microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports', () => ({
     ...jest.requireActual('microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports'),
     PcmRecorder: class MockPcmRecorder {
@@ -34,7 +34,7 @@ beforeEach(() => {
     warn: text => consoleWarns.push(text)
   };
 
-  createPonyfill = require('web-speech-cognitive-services/lib/SpeechServices');
+  createPonyfill = require('web-speech-cognitive-services');
   createCognitiveServicesSpeechServicesPonyfillFactory =
     require('./createCognitiveServicesSpeechServicesPonyfillFactory').default;
 
