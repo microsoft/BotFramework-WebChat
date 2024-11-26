@@ -93,7 +93,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Switched math block syntax from `$$` to Tex-style `\[ \]` and `\( \)` delimiters with improved rendering and error handling, in PR [#5353](https://github.com/microsoft/BotFramework-WebChat/pull/5353), by [@OEvgeny](https://github.com/OEvgeny)
 -  Improved avatar display and grouping behavior by fixing rendering issues and activity sender identification, in PR [#5346](https://github.com/microsoft/BotFramework-WebChat/pull/5346), by [@OEvgeny](https://github.com/OEvgeny)
 -  Activity "copy" button will use `outerHTML` and `textContent` for clipboard content, in PR [#5378](https://github.com/microsoft/BotFramework-WebChat/pull/5378), by [@compulim](https://github.com/compulim)
--  Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385)
    -  Production dependencies
       -  [`web-speech-cognitive-services@8.0.0`](https://npmjs.com/package/web-speech-cognitive-services)
 
@@ -113,7 +113,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixed modal dialog rendering to prevent visual flicker and improve UX when opening code views, in PR [#5374](https://github.com/microsoft/BotFramework-WebChat/pull/5374), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed math parsing that could cause Web Chat to hang when processing certain LaTeX expressions, in PR [#5377](https://github.com/microsoft/BotFramework-WebChat/pull/5377), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed long math formula should be scrollable, in PR [#5380](https://github.com/microsoft/BotFramework-WebChat/pull/5380), by [@compulim](https://github.com/compulim)
--  Fixed [#4948](https://github.com/microsoft/BotFramework-WebChat/issues/4948). Microphone should stop after initial silence, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+-  Fixed [#4948](https://github.com/microsoft/BotFramework-WebChat/issues/4948). Microphone should stop after initial silence, in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385)
 
 # Removed
 
