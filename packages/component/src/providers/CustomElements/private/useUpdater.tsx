@@ -1,14 +1,14 @@
 import { useMemo, RefObject, useRef, useCallback, DependencyList } from 'react';
 
 export type UpdateFn = () => any;
-export type OnTrackFn = (cb: UpdateFn) => () => boolean;
+export type OnTrackFn = (cb: UpdateFn, signal: AbortSignal) => void;
 
 export function useUpdater<T>(fn: () => T, deps: DependencyList | undefined): Readonly<[RefObject<T>, OnTrackFn]> {
   const updaters = useRef<Set<UpdateFn>>(new Set());
 
-  const onTrack = useCallback<OnTrackFn>((cb: UpdateFn) => {
+  const onTrack = useCallback<OnTrackFn>((cb, signal) => {
     updaters.current.add(cb);
-    return () => updaters.current.delete(cb);
+    signal.addEventListener('abort', () => updaters.current.delete(cb));
   }, []);
 
   const ref = useRef<T>();
