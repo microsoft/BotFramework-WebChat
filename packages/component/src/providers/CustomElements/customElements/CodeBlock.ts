@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { StyleOptions, hooks } from 'botframework-webchat-api';
 import cx from 'classnames';
-import { ElementType, ReactNode, RefObject, useMemo } from 'react';
+import { ReactNode, RefObject, useMemo } from 'react';
 
 import { defaultHighlightCode } from '../../../hooks/internal/codeHighlighter';
 import { HighlightCodeFn, parseDocumentFragmentFromString, useCodeHighlighter } from '../../../internal';
@@ -195,13 +195,6 @@ function useCodeBlockUpdater(copyButtonTagName: string) {
     )
   ] as const;
 }
-
-export type CodeBlockElementType = `webchat-${string}--code-block` &
-  ElementType<{
-    className?: string | undefined;
-    theme?: string | undefined;
-    language?: string | undefined;
-  }>;
 
 export type CodeBlockProps = {
   className?: string | undefined;
