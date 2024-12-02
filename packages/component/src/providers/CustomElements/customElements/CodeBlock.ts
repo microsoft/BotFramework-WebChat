@@ -37,6 +37,7 @@ class CodeBlock extends HTMLElement {
   }
 
   attributeChangedCallback() {
+    this.highlightedCodeFragment = null;
     this.update();
   }
 
