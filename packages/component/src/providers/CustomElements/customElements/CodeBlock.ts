@@ -49,8 +49,7 @@ class CodeBlock extends HTMLElement {
   }
 
   update() {
-    const { code, language, options } = this;
-    const { ownerDocument: document } = this;
+    const { code, language, options, ownerDocument: document } = this;
 
     if (code && !this.highlightedCodeFragment) {
       const highlightCodeFragment = this.constructHighlightedCode(code, language, options);
