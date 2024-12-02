@@ -459,8 +459,12 @@
     font-family: var(--webchat-fontFamilyMonospace);
     font-size: var(--webchat-fontSizeBase300);
     line-height: var(--webchat-fontSizeBase300);
-    margin-inline: calc(var(--webchat-spacingHorizontalM) * -1);
-    padding-inline: var(--webchat-spacingHorizontalM);
+    margin: 0 calc(var(--webchat-spacingHorizontalM) * -1);
+    padding: 0 var(--webchat-spacingHorizontalM);
+  }
+
+  :global(.webchat__code-block__body) {
+    display: block;
   }
 
   :global(.webchat__view-code-dialog__body:has(.webchat__code-block__body:focus-visible)):focus-within {

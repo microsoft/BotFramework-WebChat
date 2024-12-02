@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
 import { StyleOptions, hooks } from 'botframework-webchat-api';
-import cx from 'classnames';
 import { ReactNode, RefObject, useMemo } from 'react';
 
 import { defaultHighlightCode } from '../../../hooks/internal/codeHighlighter';
@@ -12,9 +11,9 @@ class CodeBlock extends HTMLElement {
   static observedAttributes = Object.freeze(['theme', 'language']);
 
   copyButtonElement = null;
-  highlightedCodeElement = null;
+  highlightedCodeFragment: DocumentFragment = null;
 
-  #originalChildren = null;
+  #originalFragment: DocumentFragment = null;
 
   get code() {
     return this.querySelector('code')?.textContent ?? '';
@@ -50,25 +49,28 @@ class CodeBlock extends HTMLElement {
   }
 
   update() {
-    this.#originalChildren ??= this.children;
     const { code, language, options } = this;
+    const { ownerDocument: document } = this;
 
-    if (code && !this.highlightedCodeElement) {
+    if (code && !this.highlightedCodeFragment) {
       const highlightCodeFragment = this.constructHighlightedCode(code, language, options);
-      const [root] = highlightCodeFragment.children;
-      this.highlightedCodeElement = root;
-      root?.classList.add('webchat__code-block__body');
+      this.highlightedCodeFragment = highlightCodeFragment;
+      const body = highlightCodeFragment.querySelector('pre');
+      body?.classList.add('webchat__code-block__body');
     }
 
-    const children = this.highlightedCodeElement ? [this.highlightedCodeElement] : this.#originalChildren;
+    if (!this.#originalFragment) {
+      this.#originalFragment = document.createDocumentFragment();
+      this.#originalFragment.replaceChildren(...this.children);
+    }
+
+    const sourceFragment = this.highlightedCodeFragment ? this.highlightedCodeFragment : this.#originalFragment;
+    const fragment = sourceFragment?.cloneNode(true);
 
     this.copyButtonElement ??= this.constructCopyButton();
+    this.copyButtonElement && fragment.insertBefore(this.copyButtonElement, fragment.firstChild);
 
-    if (this.copyButtonElement) {
-      this.replaceChildren(this.copyButtonElement, ...children);
-    } else {
-      this.replaceChildren(...children);
-    }
+    this.replaceChildren(fragment);
   }
 
   constructCopyButton() {
@@ -113,6 +115,7 @@ const createReactCodeBlockClass = ({
     }
 
     #controller: AbortController;
+    #prevClassName: string;
 
     connectedCallback() {
       super.connectedCallback();
@@ -121,7 +124,7 @@ const createReactCodeBlockClass = ({
         this.#controller = new AbortController();
 
         trackCodeBlockRefChanges(() => {
-          this.highlightedCodeElement = null;
+          this.highlightedCodeFragment = null;
           this.update();
         }, this.#controller.signal);
 
@@ -144,8 +147,14 @@ const createReactCodeBlockClass = ({
       return codeBlockRef.current.highlightCode(...args);
     }
 
+    updateClassName(): void {
+      this.#prevClassName && this.classList.remove(this.#prevClassName);
+      this.#prevClassName = codeBlockRef.current.className;
+      this.classList.add('webchat__code-block', codeBlockRef.current.className);
+    }
+
     update(): void {
-      this.className = codeBlockRef.current.className;
+      this.updateClassName();
       super.update();
     }
 
@@ -177,7 +186,7 @@ function useCodeBlockUpdater(copyButtonTagName: string) {
     useUpdater(
       () =>
         Object.freeze({
-          className: cx('webchat__code-block', codeBlockClassName),
+          className: codeBlockClassName,
           highlightCode: codeBlockHighlightCode,
           theme: codeBlockTheme
         }),

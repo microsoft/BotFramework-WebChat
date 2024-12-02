@@ -9,7 +9,9 @@ export default function useCodeBlockTag() {
     () =>
       Object.freeze([
         codeBlockTagName,
-        memo((props: CodeBlockProps) => createElement(codeBlockTagName, { ...props, class: props.className }))
+        memo((props: CodeBlockProps) =>
+          createElement(codeBlockTagName, { ...props, class: props.className, className: undefined })
+        )
       ] as const),
     [codeBlockTagName]
   );
