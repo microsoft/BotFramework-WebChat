@@ -1,6 +1,13 @@
 import { createElement, type ComponentType } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 
+enum ConnectionState {
+  CONNECTED,
+  PENDING,
+  DISCONNECTED
+}
+
+
 export default function wrapAsCustomElement<Props extends { [key: string]: string | undefined } & { children?: never }>(
   component: ComponentType<Props>,
   propKeys: (keyof Props)[]
@@ -14,6 +21,9 @@ export default function wrapAsCustomElement<Props extends { [key: string]: strin
       return attributeNames;
     }
 
+    #connected = ConnectionState.DISCONNECTED;
+    #ref = new WeakRef(this);
+
     constructor() {
       super();
 
@@ -24,6 +34,7 @@ export default function wrapAsCustomElement<Props extends { [key: string]: strin
 
         typeof value === 'string' && propMap.set(key === 'class' ? 'className' : key, value);
       }
+
     }
 
     #propMap: Map<keyof Props, string>;
@@ -39,22 +50,38 @@ export default function wrapAsCustomElement<Props extends { [key: string]: strin
         name = 'className';
       }
 
+      const prevProps = new Map(this.#propMap);
+
       if (typeof newValue === 'string') {
         this.#propMap.set(name, newValue);
       } else {
         this.#propMap.delete(name);
       }
 
+      const areEqual = Array.from(new Set(prevProps.keys()).union(new Set())).every((key: string) =>
+        Object.is(prevProps.get(key), this.#propMap.get(key))
+      );
+
       // For every attribute change, browser will call this function again. It is not batched.
-      render(createElement(component, this.#getProps()), this);
+      !areEqual &&
+        this.#connected === ConnectionState.CONNECTED &&
+        render(createElement(component, this.#getProps()), this);
     }
 
     connectedCallback() {
-      render(createElement(component, this.#getProps()), this);
+      this.#connected !== ConnectionState.PENDING && render(createElement(component, this.#getProps()), this);
+      this.#connected = ConnectionState.CONNECTED;
     }
 
-    disconnectedCallback() {
-      unmountComponentAtNode(this);
+    async disconnectedCallback() {
+      this.#connected = ConnectionState.PENDING;
+      // eslint-disable-next-line no-restricted-globals
+      await new Promise(resolve => setTimeout(resolve));
+      if (this.#connected === ConnectionState.PENDING) {
+        this.#connected = ConnectionState.DISCONNECTED;
+        unmountComponentAtNode(this);
+        this.replaceChildren();
+      }
     }
   };
 }
