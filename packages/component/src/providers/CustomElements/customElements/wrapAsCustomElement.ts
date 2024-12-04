@@ -1,11 +1,11 @@
 import { createElement, type ComponentType } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 
-enum ConnectionState {
-  DISCONNECTED,
-  CONNECTED,
-  PENDING
-}
+const ConnectionState = {
+  DISCONNECTED: 0,
+  CONNECTED: 1,
+  PENDING: 2
+};
 
 export default function wrapAsCustomElement<Props extends { [key: string]: string | undefined } & { children?: never }>(
   component: ComponentType<Props>,
