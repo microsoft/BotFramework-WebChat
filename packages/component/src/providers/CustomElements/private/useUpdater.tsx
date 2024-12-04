@@ -13,13 +13,15 @@ export function useUpdater<T>(fn: () => T, deps: DependencyList | undefined): Re
 
   const ref = useRef<T>();
 
-  useMemo(() => {
-    ref.current = fn();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const value = useMemo(fn, deps);
+
+  if (ref.current !== value) {
+    ref.current = value;
     for (const updater of updaters.current.values()) {
       updater();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fn, ...deps]);
+  }
 
   return useMemo(() => Object.freeze([ref, onTrack]), [ref, onTrack]);
 }

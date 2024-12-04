@@ -2,11 +2,10 @@ import { createElement, type ComponentType } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 
 enum ConnectionState {
+  DISCONNECTED,
   CONNECTED,
-  PENDING,
-  DISCONNECTED
+  PENDING
 }
-
 
 export default function wrapAsCustomElement<Props extends { [key: string]: string | undefined } & { children?: never }>(
   component: ComponentType<Props>,
@@ -22,7 +21,6 @@ export default function wrapAsCustomElement<Props extends { [key: string]: strin
     }
 
     #connected = ConnectionState.DISCONNECTED;
-    #ref = new WeakRef(this);
 
     constructor() {
       super();
@@ -34,7 +32,6 @@ export default function wrapAsCustomElement<Props extends { [key: string]: strin
 
         typeof value === 'string' && propMap.set(key === 'class' ? 'className' : key, value);
       }
-
     }
 
     #propMap: Map<keyof Props, string>;
@@ -75,8 +72,7 @@ export default function wrapAsCustomElement<Props extends { [key: string]: strin
 
     async disconnectedCallback() {
       this.#connected = ConnectionState.PENDING;
-      // eslint-disable-next-line no-restricted-globals
-      await new Promise(resolve => setTimeout(resolve));
+      await Promise.resolve();
       if (this.#connected === ConnectionState.PENDING) {
         this.#connected = ConnectionState.DISCONNECTED;
         unmountComponentAtNode(this);

@@ -15,6 +15,8 @@ class CodeBlock extends HTMLElement {
 
   #originalFragment: DocumentFragment = null;
 
+  connected = false;
+
   get code() {
     return this.querySelector('code')?.textContent ?? '';
   }
@@ -42,7 +44,12 @@ class CodeBlock extends HTMLElement {
   }
 
   connectedCallback() {
+    this.connected = true;
     this.update();
+  }
+
+  disconnectedCallback() {
+    this.connected = false;
   }
 
   highlight(...args: Parameters<HighlightCodeFn>) {
@@ -50,6 +57,10 @@ class CodeBlock extends HTMLElement {
   }
 
   update() {
+    if (!this.connected) {
+      return;
+    }
+
     const { code, language, options, ownerDocument: document } = this;
 
     if (code && !this.highlightedCodeFragment) {
