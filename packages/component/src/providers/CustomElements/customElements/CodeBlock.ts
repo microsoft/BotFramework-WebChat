@@ -147,6 +147,8 @@ const createReactCodeBlockClass = ({
     }
 
     disconnectedCallback() {
+      super.disconnectedCallback();
+
       this.#controller?.abort();
       this.#controller = undefined;
     }
