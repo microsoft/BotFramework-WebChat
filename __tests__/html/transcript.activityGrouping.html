@@ -36,14 +36,13 @@
         }
       } = window;
 
-      run = fn => fn();
       run(async function () {
         const params = new URLSearchParams(location.hash.replace(/^#/u, ''));
 
         const height = params.get('ch');
         const width = params.get('cw');
 
-        // await host.windowSize(width, height, document.getElementById('webchat'));
+        await host.windowSize(width, height, document.getElementById('webchat'));
 
         const TestHarness = () => {
           const { activityMiddleware, directLine, rtl, styleOptions, wide } = useContext(ActivityGroupingContext);
@@ -76,11 +75,11 @@
           document.getElementById('webchat')
         );
 
-      //   await pageConditions.uiConnected();
-      //   await pageConditions.allImagesLoaded();
-      //   await pageConditions.scrollToBottomCompleted();
+        await pageConditions.uiConnected();
+        await pageConditions.allImagesLoaded();
+        await pageConditions.scrollToBottomCompleted();
 
-      //   await host.snapshot();
+        await host.snapshot();
       });
     </script>
   </body>

@@ -1,21 +1,25 @@
+import CustomPropertyNames from '../CustomPropertyNames';
+
 export default function createCodeBlockStyle() {
   return {
     '&.webchat__code-block': {
-      margin: '16px 0',
+      background: `var(${CustomPropertyNames.BackgroundCodeBlock}, inherit)`,
+      border: '1px solid #d1d1d1',
+      borderRadius: '4px',
+      color: `var(${CustomPropertyNames.ColorCodeBlock}, currentColor)`,
       display: 'block',
+      margin: '16px 0',
       overflow: 'hidden',
       padding: '4px',
-      borderRadius: '4px',
-      border: '1px solid #d1d1d1',
 
       ':has(> .github-dark-default)': {
-        backgroundColor: 'var(--webchat__code-block--background, #0d1117)',
-        color: 'var(--webchat__code-block--color, #e6edf3)'
+        background: `var(${CustomPropertyNames.BackgroundCodeBlock}, #0d1117)`,
+        color: `var(${CustomPropertyNames.ColorCodeBlock}, #e6edf3)`
       },
 
       ':has(> .github-light-default)': {
-        backgroundColor: 'var(--webchat__code-block--background, inherit)',
-        color: 'var(--webchat__code-block--color, currentColor)'
+        background: `var(${CustomPropertyNames.BackgroundCodeBlock}, #ffffff)`,
+        color: `var(${CustomPropertyNames.ColorCodeBlock}, #1f2328)`
       },
 
       ':has(.webchat__code-block__body:focus-visible):focus-within': {

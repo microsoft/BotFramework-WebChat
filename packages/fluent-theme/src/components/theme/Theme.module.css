@@ -443,20 +443,20 @@
   }
 
   &:global(:has(> .github-dark-default)) {
+    --webchat__background--code-block: var(--codeBlockBackground, var(--webchat-colorGrey8));
     --webchat__code-block__copy-button--background: var(
       --codeBlockCopyButtonBackgroundPressed,
       var(--webchat-colorGrey14)
     );
-    --webchat__code-block__copy-button--color: var(--codeBlockCopyButtonColor, var(--webchat__code-block--color));
-    --webchat__code-block--background: var(--codeBlockBackground, var(--webchat-colorGrey8));
-    --webchat__code-block--color: var(--codeBlockColor, var(--webchat-colorGrey98));
+    --webchat__code-block__copy-button--color: var(--codeBlockCopyButtonForeground, var(--webchat__color--code-block));
+    --webchat__color--code-block: var(--codeBlockForeground, var(--webchat-colorGrey98));
   }
 
   &:global(:has(> .github-light-default)) {
+    --webchat__background--code-block: var(--codeBlockBackground, var(--webchat-colorGrey98));
     --webchat__code-block__copy-button--background: var(--codeBlockBackgroundPressed, var(--webchat-colorGrey92));
-    --webchat__code-block__copy-button--color: var(--codeBlockCopyButtonColor, var(--webchat__code-block--color));
-    --webchat__code-block--background: var(--codeBlockBackground, var(--webchat-colorGrey98));
-    --webchat__code-block--color: var(--codeBlockColor, var(--webchat-colorGrey8));
+    --webchat__code-block__copy-button--color: var(--codeBlockCopyButtonForeground, var(--webchat__color--code-block));
+    --webchat__color--code-block: var(--codeBlockForeground, var(--webchat-colorGrey8));
   }
 }
 
@@ -482,7 +482,6 @@
     --webchat__code-block__copy-button--background: var(--webchat-colorNeutralBackground3);
 
     margin-block-start: var(--webchat-spacingVerticalS);
-    opacity: 1;
     position: absolute;
     right: 32px;
     top: 0;
