@@ -41,7 +41,7 @@ const ViewCodeButton = ({ className, code, language, title = '', isAIGenerated =
         'aria-label': localize('ACTIVITY_CODE_ALT', title ?? '')
       }
     );
-  }, [showModal, viewCodeDialog, localize, title, code, language, isAIGenerated]);
+  }, [code, isAIGenerated, language, localize, showModal, title, viewCodeDialog]);
 
   return (
     <ActivityButton

@@ -49,6 +49,7 @@ export default function createViewCodeDialogStyle() {
         height: '100%',
 
         '.webchat__code-block__body': {
+          display: 'block',
           margin: 0,
           padding: '16px 0'
         }

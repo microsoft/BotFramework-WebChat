@@ -10,7 +10,7 @@ export default function createCodeBlockStyle() {
       display: 'block',
       margin: '16px 0',
       overflow: 'hidden',
-      padding: '4px',
+      padding: '4px 4px 4px 8px',
 
       ':has(> .github-dark-default)': {
         background: `var(${CustomPropertyNames.BackgroundCodeBlock}, #0d1117)`,
@@ -28,10 +28,11 @@ export default function createCodeBlockStyle() {
       },
 
       '.webchat__code-block__body': {
-        margin: '0 0 0 4px',
-        whiteSpace: 'pre-wrap',
+        display: 'contents',
         lineHeight: 'normal',
-        outline: 'none'
+        margin: '0',
+        outline: 'none',
+        whiteSpace: 'pre-wrap'
       }
     }
   };

@@ -11,10 +11,10 @@ class CodeBlock extends HTMLElement {
   static observedAttributes = Object.freeze(['theme', 'language']);
 
   connected = false;
-  copyButtonElement = null;
-  highlightedCodeFragment: DocumentFragment = null;
+  copyButtonElement = undefined;
+  highlightedCodeFragment: DocumentFragment = undefined;
 
-  #originalFragment: DocumentFragment = null;
+  #originalFragment: DocumentFragment = undefined;
 
   get code() {
     return this.querySelector('code')?.textContent ?? '';
@@ -38,7 +38,7 @@ class CodeBlock extends HTMLElement {
   }
 
   attributeChangedCallback() {
-    this.highlightedCodeFragment = null;
+    this.highlightedCodeFragment = undefined;
     this.update();
   }
 
@@ -135,12 +135,12 @@ const createReactCodeBlockClass = ({
         this.#controller = new AbortController();
 
         trackCodeBlockRefChanges(() => {
-          this.highlightedCodeFragment = null;
+          this.highlightedCodeFragment = undefined;
           this.update();
         }, this.#controller.signal);
 
         trackCopyButtonRefChanges(() => {
-          this.copyButtonElement = null;
+          this.copyButtonElement = undefined;
           this.update();
         }, this.#controller.signal);
       }
@@ -148,7 +148,7 @@ const createReactCodeBlockClass = ({
 
     disconnectedCallback() {
       this.#controller?.abort();
-      this.#controller = null;
+      this.#controller = undefined;
     }
 
     highlight(...args: Parameters<HighlightCodeFn>) {
