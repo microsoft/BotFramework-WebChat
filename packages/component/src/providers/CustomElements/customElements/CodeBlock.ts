@@ -148,6 +148,7 @@ const createReactCodeBlockClass = ({
 
     disconnectedCallback() {
       this.#controller?.abort();
+      this.#controller = null;
     }
 
     highlight(...args: Parameters<HighlightCodeFn>) {

@@ -1,8 +1,9 @@
 import mathRandom from 'math-random';
 import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
+
+import useReactCodeBlockClass from './customElements/CodeBlock';
 import { CodeBlockCopyButtonElement } from './customElements/CodeBlockCopyButton';
 import CustomElementsContext from './private/CustomElementsContext';
-import useReactCodeBlockClass from './customElements/CodeBlock';
 
 type CustomElementsComposerProps = Readonly<{
   children?: ReactNode | undefined;

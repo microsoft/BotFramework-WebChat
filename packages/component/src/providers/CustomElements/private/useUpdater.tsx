@@ -1,4 +1,4 @@
-import { useMemo, useRef, useCallback, type DependencyList, type RefObject } from 'react';
+import { useCallback, useMemo, useRef, type DependencyList, type RefObject } from 'react';
 
 export type UpdateFn = () => any;
 export type OnTrackFn = (cb: UpdateFn, signal: AbortSignal) => void;
