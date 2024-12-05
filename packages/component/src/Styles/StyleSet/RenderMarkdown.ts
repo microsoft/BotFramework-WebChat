@@ -91,10 +91,6 @@ export default function createMarkdownStyle() {
 
       '& :is([data-math-type=block], [data-math-type=inline]) > span': {
         display: 'contents'
-      },
-
-      '& .webchat__render-markdown__code-block': {
-        whiteSpace: 'pre-wrap'
       }
     }
   };

@@ -102,7 +102,7 @@
       };
 
       const waveSvg = `data:image/svg+xml;utf8,${encodeURIComponent(`
-<svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 50 400 100" xmlns="http://www.w3.org/2000/svg">
   <!-- Primary Wave -->
   <path d="M0,100 C50,50 100,150 150,100 C200,50 250,150 300,100 C350,50 400,150 400,100" 
         stroke="#3B82F6" fill="none" stroke-width="2" opacity="0.5"/>
@@ -542,6 +542,17 @@ If your access is still pending, consider emailing your manager to remind them t
       ], [
         {
           timestamp: timestamp(),
+          from: { "role": "user" },
+          id: "6.0",
+          text: `Help me to create a beautiful visualization of harmonic waves using Python, complete the following code:
+\`\`\`python
+def plot_sine_waves():
+    t = np.linspace(0, 10, 1000)
+\`\`\``,
+          type: "message"
+        },
+        {
+          timestamp: timestamp(),
           from: { role: 'bot' },
           entities: [{
             ...aiMessageEntity,
@@ -594,7 +605,12 @@ plot_sine_waves()`
           }],
           id: "a4c0c01d-c06e-4dde-9278-265c607b545b-82",
           type: "message",
-          text: `This example demonstrates creating a beautiful visualization of harmonic waves using Python's Matplotlib library. The code generates three sine waves with different frequencies and phases, then combines them to show wave interference patterns.\n<img alt="wave plot" src="${waveSvg}">`,
+          text: `This example demonstrates creating a visualization of harmonic waves using Python's Matplotlib library. The code generates three sine waves with different frequencies and phases, then combines them to show wave interference patterns.
+<img alt="wave plot" src="${waveSvg}">
+
+Use the command to install required dependencies:
+
+    $ pip install numpy matplotlib`
         }
       ]];
 
@@ -703,6 +719,8 @@ plot_sine_waves()`
           await host.sendShiftTab();
           await host.sendKeys('ARROW_UP');
           await host.sendKeys('ENTER');
+          await host.snapshot();
+          await host.sendKeys('TAB');
           await host.snapshot();
           await host.sendKeys('ENTER');
           await host.snapshot();
