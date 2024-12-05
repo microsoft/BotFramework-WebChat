@@ -1,4 +1,5 @@
 import { createContext, useContext, memo } from 'react';
+
 import createCodeHighlighterComposer from './createCodeHighlighterComposer';
 import { defaultHighlightCode } from './defaultHighlightCode';
 

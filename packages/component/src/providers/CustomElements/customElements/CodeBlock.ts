@@ -3,19 +3,18 @@ import { StyleOptions, hooks } from 'botframework-webchat-api';
 import { ReactNode, RefObject, useMemo } from 'react';
 
 import { defaultHighlightCode } from '../../../hooks/internal/codeHighlighter';
+import { useStyleSet } from '../../../hooks';
 import { HighlightCodeFn, parseDocumentFragmentFromString, useCodeHighlighter } from '../../../internal';
 import { OnTrackFn, useUpdater } from '../private/useUpdater';
-import { useStyleSet } from '../../../hooks';
 
 class CodeBlock extends HTMLElement {
   static observedAttributes = Object.freeze(['theme', 'language']);
 
+  connected = false;
   copyButtonElement = null;
   highlightedCodeFragment: DocumentFragment = null;
 
   #originalFragment: DocumentFragment = null;
-
-  connected = false;
 
   get code() {
     return this.querySelector('code')?.textContent ?? '';
@@ -68,6 +67,7 @@ class CodeBlock extends HTMLElement {
       this.highlightedCodeFragment = highlightCodeFragment;
       const body = highlightCodeFragment.querySelector('pre');
       body?.classList.add('webchat__code-block__body');
+      options.theme && body?.classList.add(options.theme);
     }
 
     if (!this.#originalFragment) {

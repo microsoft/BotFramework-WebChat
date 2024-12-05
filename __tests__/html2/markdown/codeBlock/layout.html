@@ -9,15 +9,25 @@
 
   <body>
     <template id="messages">
-      <x-message>
+      <x-message snapshot-ignore>
 ```javascript
 console.log('JavaScript code block using tripple ` delimiters');
 ```
 ----
     Code block using indent
     also has copy button
-    but no highlighting
-      </x-message>
+    but no highlighting</x-message>
+    <x-message>
+```javascript
+export default function JavaScript(is, supported) { using shiki; }
+```
+```typescript
+export default type TypeScript = (is, supported): { using: shiki; }
+```
+```python
+def Python(is_supported): return {'using': 'shiki'}
+```
+    </x-message>
     </template>
     <main id="webchat"></main>
     <script>
@@ -28,7 +38,15 @@ console.log('JavaScript code block using tripple ` delimiters');
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+        const params = new URLSearchParams(location.search);
+
+        renderWebChat({
+          directLine, 
+          store,
+          styleOptions: {
+            codeBlockTheme: params.get('code-block-theme') ?? 'github-light-default'
+          }
+        }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 

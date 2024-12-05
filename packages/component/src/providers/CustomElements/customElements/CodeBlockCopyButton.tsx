@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { memo, MouseEventHandler, useCallback, useState } from 'react';
+import React, { memo, useCallback, useState, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { useStateWithRef } from 'use-state-with-ref';
 import testIds from '../../../testIds';

@@ -1,4 +1,5 @@
 import React, { type ReactNode, useCallback, useMemo } from 'react';
+
 import { useCodeHighlighter, type CodeHighlighterContextType, type HighlightCodeFn } from './CodeHighlighterComposer';
 
 const createCodeHighlighterComposer =

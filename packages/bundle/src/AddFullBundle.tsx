@@ -9,10 +9,10 @@ import React, { memo, type ReactNode } from 'react';
 
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
 import { type AdaptiveCardsStyleOptions } from './adaptiveCards/AdaptiveCardsStyleOptions';
+import ShikiComposer from './codeHighlighter/ShikiComposer';
 import { type AdaptiveCardsPackage } from './types/AdaptiveCardsPackage';
 import { type StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 import useComposerProps from './useComposerProps';
-import ShikiComposer from './codeHighlighter/ShikiComposer';
 
 type AddFullBundleProps = Readonly<{
   adaptiveCardsHostConfig?: any;

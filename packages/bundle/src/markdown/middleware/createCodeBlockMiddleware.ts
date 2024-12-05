@@ -15,11 +15,7 @@ export default function createCodeBlockMiddleware(): HTMLContentTransformMiddlew
             })
           )
         ),
-        documentFragment: codeBlockDocumentMod(
-          request.documentFragment,
-          request.codeBlockTagName,
-          request.codeBlockTheme
-        )
+        documentFragment: codeBlockDocumentMod(request.documentFragment, request.codeBlockTagName)
       })
     );
 }

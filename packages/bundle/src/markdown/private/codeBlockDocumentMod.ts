@@ -2,8 +2,7 @@ const languageClassPrefix = 'language-';
 
 export default function codeBlockDocumentMod<T extends Document | DocumentFragment>(
   documentFragment: T,
-  codeBlockTagName: string,
-  codeBlockTheme: string
+  codeBlockTagName: string
 ): T {
   for (const preElement of [...documentFragment.querySelectorAll('pre:has(code:only-child)')]) {
     const [codeElement] = preElement.children;
@@ -14,7 +13,6 @@ export default function codeBlockDocumentMod<T extends Document | DocumentFragme
 
     const codeBlockRoot = document.createElement(codeBlockTagName);
 
-    codeBlockTheme && codeBlockRoot.setAttribute('theme', codeBlockTheme);
     language && codeBlockRoot.setAttribute('language', language);
 
     codeBlockRoot.append(codeElement);

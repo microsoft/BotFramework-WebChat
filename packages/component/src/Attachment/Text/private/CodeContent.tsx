@@ -5,20 +5,19 @@ import useCodeBlockTag from '../../../providers/CustomElements/useCodeBlockTagNa
 type Props = Readonly<{
   children?: ReactNode | undefined;
   className?: string | undefined;
-  theme: string;
-  language: string;
   code: string;
+  language: string;
   title: string;
 }>;
 
-const CodeContent = memo(({ children, className, code, language, theme, title }: Props) => {
+const CodeContent = memo(({ children, className, code, language, title }: Props) => {
   const [, CodeBlock] = useCodeBlockTag();
   return (
     <Fragment>
       <div className={'webchat__view-code-dialog__header'}>
         <h2 className={'webchat__view-code-dialog__title'}>{title}</h2>
       </div>
-      <CodeBlock className={classNames('webchat__view-code-dialog__body', className)} language={language} theme={theme}>
+      <CodeBlock className={classNames('webchat__view-code-dialog__body', className)} language={language}>
         <code>{code}</code>
       </CodeBlock>
       {children}

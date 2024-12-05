@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <!-- <script crossorigin="anonymous" src="https://unpkg.com/botframework-webchat@main/dist/webchat.js"></script> -->
+  <!-- <script crossorigin="anonymous" src="https://unpkg.com/botframework-webchat@4.18/dist/webchat.js"></script> -->
+</head>
+
+<body>
+  <main id="webchat"></main>
+  <script>
+    run = fn => fn();
+    run(async function () {
+      const clock = lolex.createClock();
+
+      const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+      WebChat.renderWebChat(
+        {
+          directLine,
+          ponyfill: clock,
+          store,
+          styleOptions: {
+            "autoScrollSnapOnPage": true,
+            "avatarBorderRadius": 0,
+            "botAvatarBackgroundColor": "green",
+            "botAvatarImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAHlBMVEUNirz////J5fDC4e5br9FVrdBAoso4n8gtmcQllcLl2pCDAAAAMElEQVR42mMYBaNgeANDQTAQIl/BjI6OQJGOjk58thSKAYlRBaMKiFcwmjVHwVAHAFOkDndKDHQVAAAAAElFTkSuQmCC",
+            "botAvatarInitials": "VA",
+            "bubbleBackground": "rgba(232, 232, 232, 1)",
+            "bubbleBorderWidth": 0,
+            "bubbleFromUserBackground": "rgba(219, 241, 251, 1)",
+            "bubbleFromUserBorderWidth": 0,
+            "bubbleFromUserNubOffset": "top",
+            "bubbleFromUserNubSize": 8,
+            "bubbleNubOffset": "bottom",
+            "bubbleNubSize": 8,
+            "groupTimestamp": 0,
+            "hideUploadButton": true,
+            "markdownRenderHTML": false,
+            "suggestedActionBorder": "solid",
+            "suggestedActionBorderColor": "rgba(0,150,214,1)",
+            "suggestedActionBorderRadius": 3,
+            "suggestedActionBorderStyle": "solid",
+            "suggestedActionBorderWidth": 1,
+            "suggestedActionLayout": "stacked",
+            "suggestedActionsStackedLayoutButtonTextWrap": true,
+            "suggestedActionTextColor": "#00679a",
+            "timestampFormat": "absolute"
+          }
+        },
+        document.getElementById('webchat')
+      );
+
+      await pageConditions.webChatRendered();
+
+      clock.tick(1000);
+
+      await (
+        await directLine.emulateOutgoingActivity(
+          'Culpa qui non id occaecat consectetur veniam laborum Lorem nulla commodo.'
+        )
+      ).resolveAll();
+
+      await directLine.emulateIncomingActivity(
+        'Est labore mollit do cillum cillum est amet tempor quis reprehenderit veniam sunt.'
+      )
+
+      await directLine.emulateIncomingActivity(
+        'Elit adipisicing laborum sit anim.'
+      );
+
+      clock.tick(2000);
+
+      await directLine.emulateIncomingActivity({
+        type: 'message',
+        from: { role: 'bot1', name: 'Bot' },
+        text: 'Another custom.',
+      });
+
+      await directLine.emulateIncomingActivity({
+        type: 'message',
+        text: '',
+        attachments: [{
+          "contentType": "application/vnd.microsoft.card.adaptive",
+          "content": {
+            "type": "AdaptiveCard",
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "version": "1.2",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": "Did this solve the problem?",
+                "wrap": true
+              },
+              {
+                "type": "ActionSet",
+                "actions": [
+                  {
+                    "type": "Action.Submit",
+                    "title": "Yes",
+                    "data": {
+                      "value": "Yes"
+                    }
+                  },
+                  {
+                    "type": "Action.Submit",
+                    "title": "No",
+                    "data": {
+                      "value": "No"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }]
+      });
+
+      clock.tick(5000);
+
+      await host.snapshot();
+    });
+  </script>
+</body>
+
+</html>

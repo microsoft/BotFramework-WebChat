@@ -9,7 +9,6 @@ export type HTMLContentTransformRequest = Readonly<{
     }>
   >;
   codeBlockTagName: string;
-  codeBlockTheme: string;
   documentFragment: DocumentFragment;
   externalLinkAlt: string;
 }>;
