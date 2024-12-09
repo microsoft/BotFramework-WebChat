@@ -1,20 +1,22 @@
 /* eslint-disable class-methods-use-this */
-import { StyleOptions, hooks } from 'botframework-webchat-api';
-import { ReactNode, RefObject, useMemo } from 'react';
+import { hooks } from 'botframework-webchat-api';
+import { ReactNode, useMemo } from 'react';
+import { useRefFrom } from 'use-ref-from';
 
-import { defaultHighlightCode } from '../../../hooks/internal/codeHighlighter';
 import { useStyleSet } from '../../../hooks';
-import { HighlightCodeFn, parseDocumentFragmentFromString, useCodeHighlighter } from '../../../internal';
-import { OnTrackFn, useUpdater } from '../private/useUpdater';
+import { defaultHighlightCode, HighlightCodeFn } from '../../../hooks/internal/codeHighlighter';
+import { parseDocumentFragmentFromString, useCodeHighlighter } from '../../../internal';
+import { createElementRegistryWithUpdater } from '../private/useUpdater';
+
+const { useStyleOptions, useLocalizer } = hooks;
 
 class CodeBlock extends HTMLElement {
-  static observedAttributes = Object.freeze(['theme', 'language']);
+  static observedAttributes = ['theme', 'language'];
 
   connected = false;
-  copyButtonElement = undefined;
-  highlightedCodeFragment: DocumentFragment = undefined;
-
+  copyButtonElement: HTMLElement;
   #originalFragment: DocumentFragment = undefined;
+  #updateTask?: Promise<void>;
 
   get code() {
     return this.querySelector('code')?.textContent ?? '';
@@ -30,44 +32,38 @@ class CodeBlock extends HTMLElement {
 
   get options() {
     const { theme } = this;
-    return theme
-      ? {
-          theme
-        }
-      : undefined;
-  }
-
-  attributeChangedCallback() {
-    this.highlightedCodeFragment = undefined;
-    this.update();
+    return theme ? { theme } : undefined;
   }
 
   connectedCallback() {
     this.connected = true;
-    this.update();
+    this.scheduleUpdate();
   }
 
   disconnectedCallback() {
     this.connected = false;
   }
 
-  highlight(...args: Parameters<HighlightCodeFn>) {
-    return defaultHighlightCode(...args);
+  attributeChangedCallback(_name: string, oldValue: string, newValue: string) {
+    const updated = !Object.is(oldValue, newValue);
+    this.connected && updated && this.scheduleUpdate();
+  }
+
+  scheduleUpdate() {
+    if (this.#updateTask) {
+      return;
+    }
+    this.#updateTask = Promise.resolve().then(() => {
+      this.#updateTask = undefined;
+      this.update();
+    });
   }
 
   update() {
-    if (!this.connected) {
-      return;
-    }
-
     const { code, language, options, ownerDocument: document } = this;
 
-    if (code && !this.highlightedCodeFragment) {
-      const highlightCodeFragment = this.constructHighlightedCode(code, language, options);
-      this.highlightedCodeFragment = highlightCodeFragment;
-      const body = highlightCodeFragment.querySelector('pre');
-      body?.classList.add('webchat__code-block__body');
-      options.theme && body?.classList.add(options.theme);
+    if (!code) {
+      return;
     }
 
     if (!this.#originalFragment) {
@@ -75,148 +71,65 @@ class CodeBlock extends HTMLElement {
       this.#originalFragment.replaceChildren(...this.children);
     }
 
-    const sourceFragment = this.highlightedCodeFragment ? this.highlightedCodeFragment : this.#originalFragment;
-    const fragment = sourceFragment?.cloneNode(true);
+    const result = this.highlightCode(code, language, options);
+    const highlightedCodeFragment =
+      result instanceof DocumentFragment ? result : parseDocumentFragmentFromString(result);
 
-    this.copyButtonElement ??= this.constructCopyButton();
-    this.copyButtonElement && fragment.insertBefore(this.copyButtonElement, fragment.firstChild);
+    const body = highlightedCodeFragment.querySelector('pre');
+    body?.classList.add('webchat__code-block__body');
+    options.theme && body?.classList.add(options.theme);
 
-    this.replaceChildren(fragment);
+    highlightedCodeFragment.insertBefore(this.copyButtonElement, highlightedCodeFragment.firstChild);
+
+    this.replaceChildren(highlightedCodeFragment);
   }
 
-  constructCopyButton() {
-    return null;
-  }
-
-  constructHighlightedCode(...args: Parameters<HighlightCodeFn>) {
-    const result = this.highlight(...args);
-    return result instanceof DocumentFragment ? result : parseDocumentFragmentFromString(result);
+  highlightCode(...args: Parameters<HighlightCodeFn>) {
+    return defaultHighlightCode(...args);
   }
 }
 
-const createReactCodeBlockClass = ({
-  codeBlockRef,
-  copyButtonRef,
-  trackCodeBlockRefChanges,
-  trackCopyButtonRefChanges
-}: {
-  codeBlockRef: RefObject<{
-    className: string;
-    highlightCode: HighlightCodeFn;
-    theme: StyleOptions['codeBlockTheme'];
-  }>;
-  copyButtonRef: RefObject<{
-    altCopied: string;
-    altCopy: string;
-    className: string;
-    tagName: string;
-  }>;
-  trackCodeBlockRefChanges: OnTrackFn;
-  trackCopyButtonRefChanges: OnTrackFn;
-}) =>
-  class ReactCodeBlock extends CodeBlock {
-    static observedAttributes = CodeBlock.observedAttributes;
+const [useCodeBlockUpdater, connectCodeBlock, disconnectCodeBlock] = createElementRegistryWithUpdater<CodeBlock>();
 
-    get options() {
-      // Prefer options from element attributes over ones passed from the context
-      return {
-        theme: codeBlockRef.current.theme,
-        ...super.options
-      };
-    }
+const [useCopyButtonUpdater, connectCopyButton, disconnectCopyButton] = createElementRegistryWithUpdater();
 
-    #controller: AbortController;
-    #prevClassName: string;
-
-    connectedCallback() {
-      super.connectedCallback();
-
-      if (!this.#controller) {
-        this.#controller = new AbortController();
-
-        trackCodeBlockRefChanges(() => {
-          this.highlightedCodeFragment = undefined;
-          this.update();
-        }, this.#controller.signal);
-
-        trackCopyButtonRefChanges(() => {
-          this.copyButtonElement = undefined;
-          this.update();
-        }, this.#controller.signal);
-      }
-    }
-
-    disconnectedCallback() {
-      super.disconnectedCallback();
-
-      this.#controller?.abort();
-      this.#controller = undefined;
-    }
-
-    highlight(...args: Parameters<HighlightCodeFn>) {
-      const [, language] = args;
-      if (!language) {
-        return super.highlight(...args);
-      }
-      return codeBlockRef.current.highlightCode(...args);
-    }
-
-    updateClassName(): void {
-      this.#prevClassName && this.classList.remove(this.#prevClassName);
-      this.#prevClassName = codeBlockRef.current.className;
-      this.classList.add('webchat__code-block', codeBlockRef.current.className);
-    }
-
-    update(): void {
-      this.updateClassName();
-      super.update();
-    }
-
-    constructCopyButton() {
-      const { ownerDocument: document } = this;
-      const { altCopied, altCopy, className, tagName } = copyButtonRef.current;
-
-      const button = document.createElement(tagName);
-      button.className = className;
-      button.dataset.altCopied = altCopied;
-      button.dataset.altCopy = altCopy;
-
-      return button;
-    }
-  };
-
-const { useStyleOptions, useLocalizer } = hooks;
-
-function useCodeBlockUpdater(copyButtonTagName: string) {
-  const codeBlockHighlightCode = useCodeHighlighter();
+function useCodeBlockHandlers(highlightCode: HighlightCodeFn) {
   const localize = useLocalizer();
-
   const [{ codeBlock: codeBlockClassName, codeBlockCopyButton: copyButtonClassName }] = useStyleSet();
-  const copyButtonAltCopied: string = localize('COPY_BUTTON_COPIED_TEXT');
-  const copyButtonAltCopy: string = localize('COPY_BUTTON_TEXT');
   const [{ codeBlockTheme }] = useStyleOptions();
+  const copyButtonAltCopied = localize('COPY_BUTTON_COPIED_TEXT');
+  const copyButtonAltCopy = localize('COPY_BUTTON_TEXT');
 
-  return [
-    useUpdater(
-      () =>
-        Object.freeze({
-          className: codeBlockClassName,
-          highlightCode: codeBlockHighlightCode,
-          theme: codeBlockTheme
-        }),
-      [codeBlockClassName, codeBlockHighlightCode, codeBlockTheme]
-    ),
-    useUpdater(
-      () =>
-        Object.freeze({
-          altCopied: copyButtonAltCopied,
-          altCopy: copyButtonAltCopy,
-          className: copyButtonClassName as string,
-          tagName: copyButtonTagName
-        }),
-      [copyButtonAltCopied, copyButtonAltCopy, copyButtonClassName, copyButtonTagName]
-    )
-  ] as const;
+  useCodeBlockUpdater(
+    (host: CodeBlock) => {
+      host.classList.add('webchat__code-block', codeBlockClassName);
+      return () => host.classList.remove(codeBlockClassName);
+    },
+    [codeBlockClassName]
+  );
+
+  useCodeBlockUpdater(
+    (host: CodeBlock) => {
+      codeBlockTheme && host.setAttribute('theme', codeBlockTheme);
+    },
+    [codeBlockTheme]
+  );
+
+  useCodeBlockUpdater(
+    (host: CodeBlock) => {
+      highlightCode && host.scheduleUpdate();
+    },
+    [highlightCode]
+  );
+
+  useCopyButtonUpdater(
+    (button: HTMLElement) => {
+      button.className = copyButtonClassName;
+      button.dataset.altCopy = copyButtonAltCopy;
+      button.dataset.altCopied = copyButtonAltCopied;
+    },
+    [copyButtonClassName, copyButtonAltCopy, copyButtonAltCopied]
+  );
 }
 
 export type CodeBlockProps = {
@@ -227,16 +140,39 @@ export type CodeBlockProps = {
 };
 
 export default function useReactCodeBlockClass(copyButtonTagName: string) {
-  const [[codeBlockRef, trackCodeBlockRefChanges], [copyButtonRef, trackCopyButtonRefChanges]] =
-    useCodeBlockUpdater(copyButtonTagName);
+  const highlightCode = useCodeHighlighter();
+  const highlightCodeRef = useRefFrom(highlightCode);
+
+  useCodeBlockHandlers(highlightCode);
+
   return useMemo(
     () =>
-      createReactCodeBlockClass({
-        codeBlockRef,
-        copyButtonRef,
-        trackCodeBlockRefChanges,
-        trackCopyButtonRefChanges
-      }),
-    [codeBlockRef, copyButtonRef, trackCodeBlockRefChanges, trackCopyButtonRefChanges]
+      class ReactCodeBlock extends CodeBlock {
+        static observedAttributes = CodeBlock.observedAttributes;
+
+        connectedCallback(): void {
+          const { ownerDocument: document } = this;
+          this.copyButtonElement ??= document.createElement(copyButtonTagName);
+
+          connectCodeBlock(this);
+          connectCopyButton(this.copyButtonElement);
+          super.connectedCallback();
+        }
+
+        disconnectedCallback(): void {
+          disconnectCodeBlock(this);
+          disconnectCopyButton(this.copyButtonElement);
+          super.disconnectedCallback();
+        }
+
+        highlightCode(...args: Parameters<HighlightCodeFn>) {
+          const [, language, options] = args;
+          if (!language || !options) {
+            return defaultHighlightCode(...args);
+          }
+          return highlightCodeRef.current(...args);
+        }
+      },
+    [copyButtonTagName, highlightCodeRef]
   );
 }

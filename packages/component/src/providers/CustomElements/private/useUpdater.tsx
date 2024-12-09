@@ -1,27 +1,81 @@
-import { useCallback, useMemo, useRef, type DependencyList, type RefObject } from 'react';
+import { useCallback, useMemo, useRef, type DependencyList } from 'react';
 
-export type UpdateFn = () => any;
-export type OnTrackFn = (cb: UpdateFn, signal: AbortSignal) => void;
+export function createElementRegistryWithUpdater<T extends Element = HTMLElement>() {
+  type disposeFn = void | (() => void);
+  type UpdateFn = (element: T) => disposeFn;
 
-export function useUpdater<T>(fn: () => T, deps: DependencyList | undefined): Readonly<[RefObject<T>, OnTrackFn]> {
-  const updaters = useRef<Set<UpdateFn>>(new Set());
+  class ElementUpdater<T> {
+    element: any;
+    #update: UpdateFn;
+    #dispose: disposeFn;
 
-  const onTrack = useCallback<OnTrackFn>((cb, signal) => {
-    updaters.current.add(cb);
-    signal.addEventListener('abort', () => updaters.current.delete(cb));
-  }, []);
+    constructor(element: T, updateFn: UpdateFn) {
+      this.element = element;
+      this.#update = updateFn;
+      this.update();
+    }
 
-  const ref = useRef<T>();
+    update() {
+      this.dispose();
+      this.#dispose = this.#update(this.element);
+    }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const value = useMemo(fn, deps);
+    dispose() {
+      this.#dispose && this.#dispose();
+      this.#dispose = undefined;
+    }
 
-  if (ref.current !== value) {
-    ref.current = value;
-    for (const updater of updaters.current.values()) {
-      updater();
+    eqUpdate(updateFn: UpdateFn) {
+      return this.#update === updateFn;
     }
   }
 
-  return useMemo(() => Object.freeze([ref, onTrack]), [ref, onTrack]);
+  const updateCallbacks = new Set<UpdateFn>();
+  const elements = new Set<T>();
+
+  let updaters = new Set<ElementUpdater<T>>();
+
+  function useUpdater(updateFn: UpdateFn, deps: DependencyList) {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const updateCallback = useCallback(updateFn, deps);
+
+    const disposeCallback = useRef<() => void>();
+    disposeCallback.current = useMemo(() => {
+      disposeCallback.current?.();
+
+      updateCallbacks.add(updateCallback);
+      const localUpdaters = new Set([...elements].map(element => new ElementUpdater(element, updateCallback)));
+
+      updaters = updaters.union(localUpdaters);
+
+      return () => {
+        updateCallbacks.delete(updateCallback);
+
+        const disposeUpdaters = new Set([...updaters].filter(updater => updater.eqUpdate(updateCallback)));
+
+        disposeUpdaters.forEach(updater => updater.dispose());
+
+        updaters = updaters.difference(disposeUpdaters);
+      };
+    }, [updateCallback]);
+  }
+
+  function removeFromRegistry(element: T) {
+    const disposeUpdaters = new Set([...updaters].filter(updater => updater.element === element));
+    disposeUpdaters.forEach(updater => updater.dispose());
+    updaters = updaters.difference(disposeUpdaters);
+    elements.delete(element);
+  }
+
+  function addToRegistry(element: T) {
+    if (elements.has(element)) {
+      removeFromRegistry(element);
+    }
+    updaters = updaters.union(
+      new Set([...updateCallbacks].map(updateCallback => new ElementUpdater(element, updateCallback)))
+    );
+    elements.add(element);
+  }
+
+  return [useUpdater, addToRegistry, removeFromRegistry] as const;
 }
