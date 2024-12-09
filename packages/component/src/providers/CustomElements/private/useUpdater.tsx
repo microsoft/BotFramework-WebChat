@@ -40,10 +40,12 @@ export function createElementRegistryWithUpdater<T extends Element = HTMLElement
     const updateCallback = useCallback(updateFn, deps);
 
     const disposeCallback = useRef<() => void>();
+
     disposeCallback.current = useMemo(() => {
       disposeCallback.current?.();
 
       updateCallbacks.add(updateCallback);
+
       const localUpdaters = new Set([...elements].map(element => new ElementUpdater(element, updateCallback)));
 
       updaters = updaters.union(localUpdaters);
@@ -62,8 +64,10 @@ export function createElementRegistryWithUpdater<T extends Element = HTMLElement
 
   function removeFromRegistry(element: T) {
     const disposeUpdaters = new Set([...updaters].filter(updater => updater.element === element));
+
     disposeUpdaters.forEach(updater => updater.dispose());
     updaters = updaters.difference(disposeUpdaters);
+
     elements.delete(element);
   }
 
@@ -71,9 +75,11 @@ export function createElementRegistryWithUpdater<T extends Element = HTMLElement
     if (elements.has(element)) {
       removeFromRegistry(element);
     }
+
     updaters = updaters.union(
       new Set([...updateCallbacks].map(updateCallback => new ElementUpdater(element, updateCallback)))
     );
+
     elements.add(element);
   }
 
