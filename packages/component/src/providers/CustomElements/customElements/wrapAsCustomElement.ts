@@ -55,9 +55,11 @@ export default function wrapAsCustomElement<Props extends { [key: string]: strin
         this.#propMap.delete(name);
       }
 
-      const areEqual = Array.from(new Set(prevProps.keys()).union(new Set())).every((key: string) =>
-        Object.is(prevProps.get(key), this.#propMap.get(key))
-      );
+      const areEqual =
+        prevProps.size === this.#propMap.size &&
+        Array.from(new Set(prevProps.keys()).union(new Set(this.#propMap))).every((key: string) =>
+          Object.is(prevProps.get(key), this.#propMap.get(key))
+        );
 
       // For every attribute change, browser will call this function again. It is not batched.
       !areEqual &&

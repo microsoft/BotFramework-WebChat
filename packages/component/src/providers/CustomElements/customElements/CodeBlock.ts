@@ -82,6 +82,10 @@ class CodeBlock extends HTMLElement {
     highlightedCodeFragment.insertBefore(this.copyButtonElement, highlightedCodeFragment.firstChild);
 
     this.replaceChildren(highlightedCodeFragment);
+
+    if (this.copyButtonElement) {
+      this.copyButtonElement.dataset.value = code;
+    }
   }
 
   highlightCode(...args: Parameters<HighlightCodeFn>) {
