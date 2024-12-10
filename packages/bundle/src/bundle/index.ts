@@ -1,3 +1,5 @@
+import './modern-polyfill';
+
 import addVersion from './addVersion';
 import * as full from '../module/exports';
 
