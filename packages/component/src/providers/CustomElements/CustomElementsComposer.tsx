@@ -1,5 +1,7 @@
 import mathRandom from 'math-random';
 import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
+
+import useReactCodeBlockClass from './customElements/CodeBlock';
 import { CodeBlockCopyButtonElement } from './customElements/CodeBlockCopyButton';
 import CustomElementsContext from './private/CustomElementsContext';
 
@@ -38,7 +40,17 @@ const CustomElementsComposer = ({ children }: CustomElementsComposerProps) => {
     [registerCustomElement]
   );
 
-  const context = useMemo(() => Object.freeze({ codeBlockCopyButtonTagName }), [codeBlockCopyButtonTagName]);
+  const CodeBlockClass = useReactCodeBlockClass(codeBlockCopyButtonTagName);
+
+  const codeBlockTagName = useMemo(
+    () => registerCustomElement('code-block', CodeBlockClass),
+    [CodeBlockClass, registerCustomElement]
+  );
+
+  const context = useMemo(
+    () => Object.freeze({ codeBlockTagName, codeBlockCopyButtonTagName }),
+    [codeBlockTagName, codeBlockCopyButtonTagName]
+  );
 
   return <CustomElementsContext.Provider value={context}>{children}</CustomElementsContext.Provider>;
 };
