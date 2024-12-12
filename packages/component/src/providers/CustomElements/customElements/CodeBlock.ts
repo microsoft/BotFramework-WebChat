@@ -137,10 +137,10 @@ function useCodeBlockHandlers(highlightCode: HighlightCodeFn) {
 }
 
 export type CodeBlockProps = {
-  className?: string | undefined;
-  theme?: string | undefined;
-  language?: string | undefined;
   children?: ReactNode | undefined;
+  className?: string | undefined;
+  language?: string | undefined;
+  theme?: string | undefined;
 };
 
 export default function useReactCodeBlockClass(copyButtonTagName: string) {
