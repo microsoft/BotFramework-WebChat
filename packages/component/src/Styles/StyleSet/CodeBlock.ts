@@ -12,12 +12,12 @@ export default function createCodeBlockStyle() {
       overflow: 'hidden',
       padding: '4px 4px 4px 8px',
 
-      ':has(> .github-dark-default)': {
+      ':has(> .webchat__code-block__theme--github-dark-default)': {
         background: `var(${CustomPropertyNames.BackgroundCodeBlock}, #0d1117)`,
         color: `var(${CustomPropertyNames.ColorCodeBlock}, #e6edf3)`
       },
 
-      ':has(> .github-light-default)': {
+      ':has(> .webchat__code-block__theme--github-light-default)': {
         background: `var(${CustomPropertyNames.BackgroundCodeBlock}, #ffffff)`,
         color: `var(${CustomPropertyNames.ColorCodeBlock}, #1f2328)`
       },

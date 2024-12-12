@@ -442,7 +442,7 @@
     }
   }
 
-  &:global(:has(> .github-dark-default)) {
+  &:global(:has(> .webchat__code-block__theme--github-dark-default)) {
     --webchat__background--code-block: var(--codeBlockBackground, var(--webchat-colorGrey8));
     --webchat__code-block__copy-button--background: var(
       --codeBlockCopyButtonBackgroundPressed,
@@ -452,7 +452,7 @@
     --webchat__color--code-block: var(--codeBlockForeground, var(--webchat-colorGrey98));
   }
 
-  &:global(:has(> .github-light-default)) {
+  &:global(:has(> .webchat__code-block__theme--github-light-default)) {
     --webchat__background--code-block: var(--codeBlockBackground, var(--webchat-colorGrey98));
     --webchat__code-block__copy-button--background: var(--codeBlockBackgroundPressed, var(--webchat-colorGrey92));
     --webchat__code-block__copy-button--color: var(--codeBlockCopyButtonForeground, var(--webchat__color--code-block));

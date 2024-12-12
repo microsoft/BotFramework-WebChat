@@ -13,10 +13,11 @@ const { useStyleOptions, useLocalizer } = hooks;
 class CodeBlock extends HTMLElement {
   static observedAttributes = ['theme', 'language'];
 
-  connected = false;
-  copyButtonElement: HTMLElement;
+  #connected = false;
   #originalFragment: DocumentFragment = undefined;
   #updateTask?: Promise<void>;
+
+  copyButtonElement: HTMLElement;
 
   get code() {
     return this.querySelector('code')?.textContent ?? '';
@@ -36,17 +37,17 @@ class CodeBlock extends HTMLElement {
   }
 
   connectedCallback() {
-    this.connected = true;
+    this.#connected = true;
     this.scheduleUpdate();
   }
 
   disconnectedCallback() {
-    this.connected = false;
+    this.#connected = false;
   }
 
   attributeChangedCallback(_name: string, oldValue: string, newValue: string) {
     const updated = !Object.is(oldValue, newValue);
-    this.connected && updated && this.scheduleUpdate();
+    this.#connected && updated && this.scheduleUpdate();
   }
 
   scheduleUpdate() {
@@ -77,7 +78,7 @@ class CodeBlock extends HTMLElement {
 
     const body = highlightedCodeFragment.querySelector('pre');
     body?.classList.add('webchat__code-block__body');
-    options.theme && body?.classList.add(options.theme);
+    options.theme && body?.classList.add(`webchat__code-block__theme--${options.theme}`);
 
     highlightedCodeFragment.insertBefore(this.copyButtonElement, highlightedCodeFragment.firstChild);
 
