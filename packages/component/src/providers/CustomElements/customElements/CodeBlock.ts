@@ -76,7 +76,7 @@ class CodeBlock extends HTMLElement {
 
     const body = highlightedCodeFragment.querySelector('pre');
     body?.classList.add('webchat__code-block__body');
-    options.theme && body?.classList.add(`webchat__code-block__theme--${options.theme}`);
+    options?.theme && body?.classList.add(`webchat__code-block__theme--${options.theme}`);
 
     highlightedCodeFragment.insertBefore(this.copyButtonElement, highlightedCodeFragment.firstChild);
 
@@ -92,12 +92,12 @@ class CodeBlock extends HTMLElement {
   }
 }
 
-export type CodeBlockProps = {
+export type CodeBlockProps = Readonly<{
   children?: ReactNode | undefined;
   className?: string | undefined;
   language?: string | undefined;
   theme?: string | undefined;
-};
+}>;
 
 type CodeBlockReactProps = Readonly<{
   codeBlockClass: string | undefined;
@@ -141,7 +141,10 @@ const useCodeBlockProps = (copyButtonTagName: string) => {
     propsChangedEventTarget
   ]);
 
-  return useMemo(() => Object.freeze([propsChangedEventTarget, propsRef] as const), [propsChangedEventTarget]);
+  return useMemo(
+    () => Object.freeze([propsChangedEventTarget, propsRef] as const),
+    [propsChangedEventTarget, propsRef]
+  );
 };
 
 export default function useReactCodeBlockClass(copyButtonTagName: string) {
