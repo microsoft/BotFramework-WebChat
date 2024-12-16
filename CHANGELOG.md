@@ -116,6 +116,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixed math parsing that could cause Web Chat to hang when processing certain LaTeX expressions, in PR [#5377](https://github.com/microsoft/BotFramework-WebChat/pull/5377), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed long math formula should be scrollable, in PR [#5380](https://github.com/microsoft/BotFramework-WebChat/pull/5380), by [@compulim](https://github.com/compulim)
 -  Fixed [#4948](https://github.com/microsoft/BotFramework-WebChat/issues/4948). Microphone should stop after initial silence, in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385)
+-  Fixed [#5390](https://github.com/microsoft/BotFramework-WebChat/issues/5390). Fixed drop zone remaining visible when file is dropped outside of the zone, in PR [#5394](https://github.com/microsoft/BotFramework-WebChat/pull/5394), by [@OEvgeny](https://github.com/OEvgeny)
 
 # Removed
 
