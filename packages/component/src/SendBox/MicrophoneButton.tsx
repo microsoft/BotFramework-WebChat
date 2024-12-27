@@ -2,6 +2,8 @@
 /* eslint react/forbid-dom-props: "off" */
 
 import { hooks } from 'botframework-webchat-api';
+import { useSetDictateState } from 'botframework-webchat-api/internal';
+
 import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
@@ -25,7 +27,8 @@ const {
   useShouldSpeakIncomingActivity,
   useStartDictate,
   useStopDictate,
-  useUIState
+  useUIState,
+  useContinuousListening
 } = hooks;
 
 const ROOT_STYLE = {
@@ -53,6 +56,8 @@ function useMicrophoneButtonClick(): () => void {
   const [webSpeechPonyfill] = useWebSpeechPonyfill();
   const startDictate = useStartDictate();
   const stopDictate = useStopDictate();
+  const setDictateState = useSetDictateState();
+  const continuousListening = useContinuousListening();
 
   const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
 
@@ -75,6 +80,9 @@ function useMicrophoneButtonClick(): () => void {
     } else if (dictateState === DictateState.DICTATING) {
       stopDictate();
       setSendBox(dictateInterims.join(' '));
+      if (continuousListening) {
+        setDictateState(DictateState.IDLE);
+      }
     } else {
       setShouldSpeakIncomingActivity(false);
       startDictate();
@@ -86,6 +94,8 @@ function useMicrophoneButtonClick(): () => void {
     dictateState,
     primeSpeechSynthesis,
     setSendBox,
+    setDictateState,
+    continuousListening,
     setShouldSpeakIncomingActivity,
     speechSynthesis,
     SpeechSynthesisUtterance,

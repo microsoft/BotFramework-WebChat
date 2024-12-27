@@ -12,6 +12,7 @@ import {
   sendMessage,
   sendMessageBack,
   sendPostBack,
+  setContinuousListening,
   setDictateInterims,
   setDictateState,
   setLanguage,
@@ -263,6 +264,7 @@ type ComposerCoreProps = Readonly<{
   uiState?: 'blueprint' | 'disabled' | undefined;
   userID?: string;
   username?: string;
+  enableContinuousListening?: boolean;
 }>;
 
 const ComposerCore = ({
@@ -277,6 +279,7 @@ const ComposerCore = ({
   directLine,
   disabled,
   downscaleImageToDataURL,
+  enableContinuousListening,
   grammars,
   groupActivitiesMiddleware,
   internalErrorBoxClass,
@@ -311,7 +314,8 @@ const ComposerCore = ({
 
   useEffect(() => {
     dispatch(setLanguage(locale));
-  }, [dispatch, locale]);
+    dispatch(setContinuousListening(enableContinuousListening));
+  }, [dispatch, locale, enableContinuousListening]);
 
   useEffect(() => {
     dispatch(setSendTypingIndicator(!!sendTypingIndicator));

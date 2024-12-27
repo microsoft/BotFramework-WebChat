@@ -1,8 +1,9 @@
-import { put, takeEvery } from 'redux-saga/effects';
+import { put, takeEvery, select } from 'redux-saga/effects';
 
 import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
 import stopDictate from '../actions/stopDictate';
 import whileConnected from './effects/whileConnected';
+import continuousListeningSelector from '../selectors/continuousListening';
 
 function* stopDictateOnCardAction() {
   // TODO: [P2] We should stop speech input when the user click on anything on a card, including open URL which doesn't generate postActivity
@@ -14,7 +15,10 @@ function* stopDictateOnCardAction() {
     // In the future, if we have an action for card input, we should use that instead
     ({ payload, type }) => type === POST_ACTIVITY_PENDING && payload.activity.type === 'message',
     function* putStopDictate() {
-      yield put(stopDictate());
+      const continuousListening = yield select(continuousListeningSelector);
+      if (!continuousListening) {
+        yield put(stopDictate());
+      }
     }
   );
 }
