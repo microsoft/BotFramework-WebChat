@@ -314,7 +314,7 @@ const ComposerCore = ({
 
   useEffect(() => {
     dispatch(setLanguage(locale));
-    dispatch(setContinuousListening(enableContinuousListening));
+    dispatch(setContinuousListening(enableContinuousListening ?? false));
   }, [dispatch, locale, enableContinuousListening]);
 
   useEffect(() => {
