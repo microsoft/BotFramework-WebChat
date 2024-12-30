@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      const {
+        testHelpers: {
+          speech: {
+            createQueuedArrayBufferAudioSource,
+            fetchSpeechData,
+          },
+        }
+      } = window;
+      run(async function () {
+        const { authorizationToken, region } = await fetch(
+          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/speech',
+          {
+            method: 'POST'
+          }
+        ).then(res => res.json());
+
+        const credentials = {
+          authorizationToken,
+          region
+        }
+
+        const audioConfig = createQueuedArrayBufferAudioSource();
+        const webSpeechPonyfillFactory = WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
+          audioConfig,
+          credentials
+        });
+
+        WebChat.renderWebChat(
+          {
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+            store: testHelpers.createStore(),
+            enableContinuousListening: true,
+            webSpeechPonyfillFactory: () => {
+              return {
+                ...webSpeechPonyfillFactory(),
+              };
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        audioConfig.push(
+          await fetchSpeechData({
+            fetchCredentials: () => credentials,
+            text: 'Hello world'
+          })
+        );
+
+        audioConfig.push(
+          await fetchSpeechData({
+            fetchCredentials: () => credentials,
+            text: 'Continuous Listening'
+          })
+        );
+
+        // WHEN: When the microphone button is clicked, it should send "Hello world" and "Continuous Listening".
+        await host.click(pageElements.microphoneButton());
+
+        // wait until both messages are sent
+        await pageConditions.minNumActivitiesShown(3);
+
+        // THEN: Both messages should be sent.
+        await pageConditions.became(
+          'Recognize and send "Hello world"',
+          () =>
+            /hello\sworld/iu.test(
+              pageElements.activities()[0]?.querySelector('[aria-roledescription="message"]')?.innerText || ''
+            ),
+          5000
+        );
+
+        await pageConditions.became(
+          'Recognize and send "Continuous Listening"',
+          () =>
+            /Continuous\sListening/iu.test(
+              pageElements.activities()[2]?.querySelector('[aria-roledescription="message"]')?.innerText || ''
+            ),
+          5000
+        );
+        await host.click(pageElements.microphoneButton());
+
+        // THEN: The bot should respond to both messages.
+        await pageConditions.numActivitiesShown(4);
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>
