@@ -72,6 +72,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    -  Copy button is added to fenced code blocks (`<pre><code>`)
    -  Configure HTML sanitizer via `request.allowedTags`
 -  Added support for math blocks using `$$` delimiter alongside existing `\[...\]` and `\(...\)` notations, in PR [#5381](https://github.com/microsoft/BotFramework-WebChat/pull/5381), by [@OEvgeny](https://github.com/OEvgeny)
+- Introduced continuous listening capability, in PR [#5397](https://github.com/microsoft/BotFramework-WebChat/pull/5397), by [@RushikeshGavali](https://github.com/RushikeshGavali)
 
 ### Changed
 
