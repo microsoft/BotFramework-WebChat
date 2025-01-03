@@ -95,7 +95,7 @@
         // THEN: The bot should respond to both messages.
         await pageConditions.numActivitiesShown(4);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
