@@ -12,7 +12,7 @@ import sendFiles from './actions/sendFiles';
 import sendMessage from './actions/sendMessage';
 import sendMessageBack from './actions/sendMessageBack';
 import sendPostBack from './actions/sendPostBack';
-import setContinuousListening from './actions/setContinuousListening'
+import setContinuousListening from './actions/setContinuousListening';
 import setDictateInterims from './actions/setDictateInterims';
 import setDictateState from './actions/setDictateState';
 import setLanguage from './actions/setLanguage';
