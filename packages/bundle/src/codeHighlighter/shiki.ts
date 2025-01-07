@@ -15,7 +15,7 @@ function addjustTheme(theme: ThemeRegistrationRaw): ThemeRegistrationRaw {
     ...theme,
     colors: {
       ...theme.colors,
-      'editor.background': `var(--webchat__code-block--background, ${theme.colors['editor.background']})`
+      'editor.background': `transparent`
     }
   };
 }

@@ -10,15 +10,11 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const clock = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
-
-        WebChat.renderWebChat({ directLine, ponyfill: clock, store }, document.getElementById('webchat'));
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
         await pageConditions.webChatRendered();
-
-        clock.tick(600);
 
         await pageConditions.uiConnected();
 
@@ -33,6 +29,7 @@
 
         await pageConditions.toastShown(1);
         await pageConditions.toastShown('Please read our privacy policy.');
+        await host.snapshot('local');
 
         store.dispatch({
           type: 'WEB_CHAT/SET_NOTIFICATION',
@@ -43,16 +40,9 @@
           }
         });
 
-        await pageConditions.toastShown(1);
-        await pageConditions.toastShown('Please read our privacy policy.');
-
-        clock.tick(400);
-
-        await pageConditions.toastShown('Please read our privacy policy.');
-
-        clock.tick(600);
 
         await pageConditions.toastShown('Please read our privacy policy again.');
+        await host.snapshot('local');
 
         store.dispatch({
           type: 'WEB_CHAT/DISMISS_NOTIFICATION',
@@ -61,16 +51,8 @@
           }
         });
 
-        await pageConditions.toastShown(1);
-        await pageConditions.toastShown('Please read our privacy policy again.');
-
-        clock.tick(400);
-
-        await pageConditions.toastShown('Please read our privacy policy again.');
-
-        clock.tick(600);
-
         await pageConditions.toastShown(0);
+        await host.snapshot('local');
       });
     </script>
   </body>

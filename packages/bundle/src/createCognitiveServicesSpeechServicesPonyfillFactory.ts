@@ -13,6 +13,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioInputDeviceId,
   credentials,
   enableTelemetry,
+  initialSilenceTimeout,
   speechRecognitionEndpointId,
   speechSynthesisDeploymentId,
   speechSynthesisOutputFormat,
@@ -23,6 +24,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioInputDeviceId?: string;
   credentials: CognitiveServicesCredentials;
   enableTelemetry?: true;
+  initialSilenceTimeout?: number | undefined;
   speechRecognitionEndpointId?: string;
   speechSynthesisDeploymentId?: string;
   speechSynthesisOutputFormat?: CognitiveServicesAudioOutputFormat;
@@ -61,6 +63,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
         audioContext,
         credentials,
         enableTelemetry,
+        initialSilenceTimeout,
         referenceGrammars: referenceGrammarID ? [`luis/${referenceGrammarID}-PRODUCTION`] : [],
         speechRecognitionEndpointId,
         speechSynthesisDeploymentId,

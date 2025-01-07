@@ -1,6 +1,7 @@
 import {
   parseDocumentFragmentFromString,
-  serializeDocumentFragmentIntoString
+  serializeDocumentFragmentIntoString,
+  type HighlightCodeFn
 } from 'botframework-webchat-component/internal';
 import { onErrorResumeNext } from 'botframework-webchat-core';
 import katex from 'katex';
@@ -15,6 +16,7 @@ import { pre as respectCRLFPre } from './private/respectCRLF';
 type RenderInit = Readonly<{
   codeBlockCopyButtonTagName: string;
   externalLinkAlt: string;
+  highlightCode: HighlightCodeFn;
 }>;
 
 const ALLOWED_SCHEMES = ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'];
