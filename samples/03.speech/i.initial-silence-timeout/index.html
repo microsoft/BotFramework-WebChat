@@ -71,15 +71,8 @@
         );
         const { token } = await res.json();
 
-        // Select the audio input device which has the keyword "Audio" in it.
-        const { deviceId } = (await window.navigator.mediaDevices.enumerateDevices()).find(
-          ({ label }) => ~label.indexOf('Audio')
-        );
-
         // Create the ponyfill factory function, which can be called to create a concrete implementation of the ponyfill.
         const webSpeechPonyfillFactory = await window.WebChat.createCognitiveServicesSpeechServicesPonyfillFactory({
-          audioInputDeviceId: deviceId,
-
           // We are passing the Promise function to the "credentials" field.
           // This function will be called every time the token is being used.
           credentials: fetchSpeechServicesCredentials,
