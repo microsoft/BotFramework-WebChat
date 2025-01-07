@@ -45,6 +45,7 @@ class CodeBlock extends HTMLElement {
 
   attributeChangedCallback(_name: string, oldValue: string, newValue: string) {
     const updated = !Object.is(oldValue, newValue);
+
     this.#connected && updated && this.scheduleUpdate();
   }
 
@@ -52,6 +53,7 @@ class CodeBlock extends HTMLElement {
     if (this.#updateTask) {
       return;
     }
+
     this.#updateTask = Promise.resolve().then(() => {
       this.#updateTask = undefined;
       this.update();
@@ -75,6 +77,7 @@ class CodeBlock extends HTMLElement {
       result instanceof DocumentFragment ? result : parseDocumentFragmentFromString(result);
 
     const body = highlightedCodeFragment.querySelector('pre');
+
     body?.classList.add('webchat__code-block__body');
     options?.theme && body?.classList.add(`webchat__code-block__theme--${options.theme}`);
 
@@ -116,9 +119,9 @@ const useCodeBlockProps = (copyButtonTagName: string) => {
   const [{ codeBlockTheme }] = useStyleOptions();
   const copyButtonAltCopied = localize('COPY_BUTTON_COPIED_TEXT');
   const copyButtonAltCopy = localize('COPY_BUTTON_TEXT');
-
   const propsChangedEventTarget = useMemo<EventTarget>(() => new EventTarget(), []);
   const propsRef = useRef<CodeBlockReactProps>();
+
   useMemo(() => {
     propsRef.current = Object.freeze({
       codeBlockClass,
@@ -129,6 +132,7 @@ const useCodeBlockProps = (copyButtonTagName: string) => {
       copyButtonTagName,
       highlightCode
     });
+
     propsChangedEventTarget.dispatchEvent(new CustomEvent('change'));
   }, [
     codeBlockClass,
@@ -156,6 +160,7 @@ export default function useReactCodeBlockClass(copyButtonTagName: string) {
         static observedAttributes = CodeBlock.observedAttributes;
 
         #prevProps: CodeBlockReactProps | undefined;
+
         get #props() {
           return codeBlockPropsRef.current;
         }
@@ -179,6 +184,7 @@ export default function useReactCodeBlockClass(copyButtonTagName: string) {
 
           if (prevProps?.copyButtonTagName !== props.copyButtonTagName || !this.copyButtonElement) {
             const { ownerDocument: document } = this;
+
             this.copyButtonElement = document.createElement(props.copyButtonTagName);
             this.scheduleUpdate();
           }
@@ -192,8 +198,8 @@ export default function useReactCodeBlockClass(copyButtonTagName: string) {
           this.classList.add('webchat__code-block');
 
           codeBlockTarget.addEventListener('change', this.#handlePropsChange);
-          this.#handlePropsChange();
 
+          this.#handlePropsChange();
           super.connectedCallback();
         }
 
@@ -205,9 +211,11 @@ export default function useReactCodeBlockClass(copyButtonTagName: string) {
 
         highlightCode(...args: Parameters<HighlightCodeFn>) {
           const [, language, options] = args;
+
           if (!language || !options) {
             return defaultHighlightCode(...args);
           }
+
           return this.#props.highlightCode(...args);
         }
       },
