@@ -72,6 +72,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    -  Copy button is added to fenced code blocks (`<pre><code>`)
    -  Configure HTML sanitizer via `request.allowedTags`
 -  Added support for math blocks using `$$` delimiter alongside existing `\[...\]` and `\(...\)` notations, in PR [#5381](https://github.com/microsoft/BotFramework-WebChat/pull/5381), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added support for speech recognition initial silence timeout when using Azure Speech, in PR [#5400](https://github.com/microsoft/BotFramework/WebChat/pull/5400), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
