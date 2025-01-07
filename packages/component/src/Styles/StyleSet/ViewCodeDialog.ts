@@ -27,8 +27,8 @@ export default function createViewCodeDialogStyle() {
       '& .webchat__modal-dialog__body': {
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'hidden',
-        gap: CSSTokens.PaddingRegular
+        gap: CSSTokens.PaddingRegular,
+        overflow: 'hidden'
       },
 
       '& .webchat__view-code-dialog__header': {
@@ -43,14 +43,16 @@ export default function createViewCodeDialogStyle() {
       },
 
       '& .webchat__view-code-dialog__body': {
-        display: 'flex',
-        overflow: 'hidden',
-        position: 'relative'
-      },
+        border: 'none',
+        borderRadius: 0,
+        overflow: 'auto',
+        height: '100%',
 
-      '& .webchat__view-code-dialog__code-body': {
-        lineHeight: '20px',
-        overflow: 'auto'
+        '.webchat__code-block__body': {
+          display: 'block',
+          margin: 0,
+          padding: '16px 0'
+        }
       },
 
       '& .webchat__view-code-dialog__footer': {
