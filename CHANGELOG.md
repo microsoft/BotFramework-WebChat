@@ -94,9 +94,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Switched math block syntax from `$$` to Tex-style `\[ \]` and `\( \)` delimiters with improved rendering and error handling, in PR [#5353](https://github.com/microsoft/BotFramework-WebChat/pull/5353), by [@OEvgeny](https://github.com/OEvgeny)
 -  Improved avatar display and grouping behavior by fixing rendering issues and activity sender identification, in PR [#5346](https://github.com/microsoft/BotFramework-WebChat/pull/5346), by [@OEvgeny](https://github.com/OEvgeny)
 -  Activity "copy" button will use `outerHTML` and `textContent` for clipboard content, in PR [#5378](https://github.com/microsoft/BotFramework-WebChat/pull/5378), by [@compulim](https://github.com/compulim)
--  Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385)
+-  Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385) and [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400)
    -  Production dependencies
-      -  [`web-speech-cognitive-services@8.0.0`](https://npmjs.com/package/web-speech-cognitive-services)
+      -  [`web-speech-cognitive-services@8.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
 
 ### Fixed
 
