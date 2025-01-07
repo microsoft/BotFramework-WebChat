@@ -43,16 +43,19 @@
           // https://docs.microsoft.com/en-us/azure/cognitive-services/authentication#authenticate-with-an-authentication-token
           if (now > expireAfter) {
             expireAfter = now + 300000;
-            lastPromise = fetch('https://webchat-mockbot.azurewebsites.net/speechservices/token', {
-              method: 'POST'
-            }).then(
-              res => res.json(),
-              err => {
-                expireAfter = 0;
+            lastPromise = fetch(
+              'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/speech/msi',
+              { method: 'POST' }
+            )
+              .then(
+                res => res.json(),
+                err => {
+                  expireAfter = 0;
 
-                return Promise.reject(err);
-              }
-            );
+                  return Promise.reject(err);
+                }
+              )
+              .then(({ region, token }) => ({ authorizationToken: `Bearer ${token}`, region }));
           }
 
           return lastPromise;
