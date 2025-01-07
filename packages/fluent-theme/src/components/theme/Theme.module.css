@@ -74,6 +74,8 @@
 
   /* New greys from the link above not exposed by Fluent */
   --webchat-colorGrey8: #141414;
+  --webchat-colorGrey14: #242424;
+  --webchat-colorGrey92: #ebebeb;
   --webchat-colorGrey98: #fafafa;
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/utils/shadows.ts */
@@ -225,7 +227,8 @@
 /* Scrollbars */
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable),
 :global(.webchat-fluent).theme :global(.webchat__view-code-dialog__code-body),
-:global(.webchat-fluent).theme :global(.webchat__render-markdown [data-math-type='block']) {
+:global(.webchat-fluent).theme :global(.webchat__render-markdown [data-math-type='block']),
+:global(.webchat-fluent).theme :global(.webchat__view-code-dialog__body) {
   /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
   scrollbar-color: unset;
   scrollbar-width: unset;
@@ -391,6 +394,72 @@
   }
 }
 
+/* Code block */
+:global(.webchat-fluent).theme :global(.webchat__code-block) {
+  border: none;
+  font-family: var(--webchat-fontFamilyMonospace);
+  font-size: var(--webchat-fontSizeBase300);
+
+  --webchat__code-block__copy-button--color: var(--webchat-colorNeutralForeground1);
+  --webchat__code-block__copy-button--background: var(--webchat-colorNeutralBackground3);
+
+  :global(.webchat__code-block-copy-button) {
+    background: transparent;
+    border: none;
+    color: var(--webchat__code-block__copy-button--color);
+    height: 20px;
+    margin-inline-start: var(--webchat-spacingHorizontalS);
+    padding: 0;
+    width: 20px;
+    transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+
+    :global(.webchat__code-block-copy-button__icon) {
+      background-color: currentColor;
+    }
+
+    &:hover {
+      background: var(--webchat__code-block__copy-button--background);
+      color: var(--webchat__code-block__copy-button--color);
+    }
+
+    &:active {
+      background: var(--webchat__code-block__copy-button--background);
+      color: var(--webchat__code-block__copy-button--color);
+    }
+
+    &:focus {
+      color: var(--webchat__code-block__copy-button--color);
+      outline-color: currentColor;
+    }
+  }
+
+  &:global(:has(.webchat__code-block__body:focus-visible)):focus-within {
+    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
+    outline-offset: calc(var(--webchat-strokeWidthThick) * -1);
+
+    :global(.webchat__code-block__body) {
+      outline: none;
+    }
+  }
+
+  &:global(:has(> .webchat__code-block__theme--github-dark-default)) {
+    --webchat__background--code-block: var(--codeBlockBackground, var(--webchat-colorGrey8));
+    --webchat__code-block__copy-button--background: var(
+      --codeBlockCopyButtonBackgroundPressed,
+      var(--webchat-colorGrey14)
+    );
+    --webchat__code-block__copy-button--color: var(--codeBlockCopyButtonForeground, var(--webchat__color--code-block));
+    --webchat__color--code-block: var(--codeBlockForeground, var(--webchat-colorGrey98));
+  }
+
+  &:global(:has(> .webchat__code-block__theme--github-light-default)) {
+    --webchat__background--code-block: var(--codeBlockBackground, var(--webchat-colorGrey98));
+    --webchat__code-block__copy-button--background: var(--codeBlockBackgroundPressed, var(--webchat-colorGrey92));
+    --webchat__code-block__copy-button--color: var(--codeBlockCopyButtonForeground, var(--webchat__color--code-block));
+    --webchat__color--code-block: var(--codeBlockForeground, var(--webchat-colorGrey8));
+  }
+}
+
 /* View Code dialog */
 :global(.webchat-fluent).theme :global(.webchat__modal-dialog.webchat__view-code-dialog) {
   :global(.webchat__modal-dialog__close-button-layout) {
@@ -408,34 +477,14 @@
     width: unset;
   }
 
-  :global(.webchat__view-code-dialog__copy-button) {
-    background: transparent;
-    border: none;
-    color: var(--webchat-colorNeutralForeground1);
-    height: 20px;
+  :global(.webchat__code-block-copy-button) {
+    --webchat__code-block__copy-button--color: var(--webchat-colorNeutralForeground1);
+    --webchat__code-block__copy-button--background: var(--webchat-colorNeutralBackground3);
+
     margin-block-start: var(--webchat-spacingVerticalS);
-    padding: 0;
     position: absolute;
     right: 32px;
     top: 0;
-    transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
-    width: 20px;
-
-    :global(.webchat__code-block-copy-button__icon) {
-      background-color: currentColor;
-    }
-
-    &:hover {
-      background: var(--webchat-colorNeutralBackground3);
-    }
-
-    &:active {
-      background: var(--webchat-colorNeutralBackground3);
-    }
-
-    &:focus {
-      outline-color: var(--webchat-colorStrokeFocus2);
-    }
   }
 
   :global(.webchat__modal-dialog__box) {
@@ -454,33 +503,10 @@
   }
 
   :global(.webchat__view-code-dialog__body) {
-    display: contents;
-  }
-
-  :global(.webchat__view-code-dialog__code-body) {
-    background: var(--webchat__code-block--background);
     font-family: var(--webchat-fontFamilyMonospace);
     font-size: var(--webchat-fontSizeBase300);
-    line-height: var(--webchat-fontSizeBase300);
-    margin-inline: calc(var(--webchat-spacingHorizontalM) * -1);
-    padding-inline: var(--webchat-spacingHorizontalM);
-  }
-
-  :global(.webchat__view-code-dialog__code-body:has(.shiki:focus-visible)):focus-within {
-    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
-    outline-offset: calc(var(--webchat-strokeWidthThick) * -1);
-
-    :global(.shiki) {
-      outline: none;
-    }
-  }
-
-  :global(.webchat__view-code-dialog__code-body:has(.shiki.github-light-default)) {
-    --webchat__code-block--background: var(--codeBlockBackground, var(--webchat-colorGrey98));
-  }
-
-  :global(.webchat__view-code-dialog__code-body:has(.shiki.github-dark-default)) {
-    --webchat__code-block--background: var(--codeBlockBackground, var(--webchat-colorGrey8));
+    margin: 0 calc(var(--webchat-spacingHorizontalM) * -1);
+    padding: 0 var(--webchat-spacingHorizontalM);
   }
 
   :global(.webchat__view-code-dialog__footer) {
