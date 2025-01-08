@@ -120,11 +120,11 @@ SuggestedActionCarouselContainer.propTypes = {
   label: PropTypes.string.isRequired
 };
 
-type SuggestedActionFlowContainerProps = {
+type SuggestedActionFlowContainerProps = Readonly<{
   children?: ReactNode | undefined;
   className?: string | undefined;
   label: string;
-};
+}>;
 
 const SuggestedActionFlowContainer = ({ children, className, label }: SuggestedActionFlowContainerProps) => {
   const [{ suggestedActions: suggestedActionsStyleSet }] = useStyleSet();

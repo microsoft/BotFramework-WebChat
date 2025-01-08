@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { memo, type ReactNode, useCallback, useLayoutEffect, useRef } from 'react';
+import React, { memo, useCallback, useLayoutEffect, useRef, type ReactNode } from 'react';
 
 import useStyleSet from '../../../hooks/useStyleSet';
 

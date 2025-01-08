@@ -11,12 +11,12 @@ import { type DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {
-  type KeyboardEventHandler,
-  type MouseEventHandler,
   useCallback,
   useLayoutEffect,
   useMemo,
-  useRef
+  useRef,
+  type KeyboardEventHandler,
+  type MouseEventHandler
 } from 'react';
 
 import useStyleSet from '../../hooks/useStyleSet';

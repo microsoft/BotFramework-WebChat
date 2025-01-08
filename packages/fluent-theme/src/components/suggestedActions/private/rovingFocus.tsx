@@ -2,12 +2,12 @@
 import React, {
   createContext,
   memo,
-  type MutableRefObject,
   useCallback,
   useContext,
   useEffect,
   useMemo,
-  useRef
+  useRef,
+  type MutableRefObject
 } from 'react';
 
 type ItemRef = MutableRefObject<HTMLElement | undefined>;

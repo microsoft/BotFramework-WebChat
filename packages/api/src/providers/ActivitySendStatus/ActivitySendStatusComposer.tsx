@@ -1,4 +1,4 @@
-import React, { type ReactNode, useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, type ReactNode } from 'react';
 
 import { useActivities, usePonyfill } from '../../hooks/index';
 import useForceRender from '../../hooks/internal/useForceRender';
