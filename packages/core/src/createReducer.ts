@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import connectivityStatus from './reducers/connectivityStatus';
+import continuousListening from './reducers/continuousListening';
 import createActivitiesReducer from './reducers/createActivitiesReducer';
 import createInternalReducer from './reducers/createInternalReducer';
 import createNotificationsReducer from './reducers/createNotificationsReducer';
@@ -38,6 +39,7 @@ export default function createReducer(ponyfill: GlobalScopePonyfill) {
     shouldSpeakIncomingActivity,
     suggestedActions,
     suggestedActionsOriginActivity,
-    typing: createTypingReducer(ponyfill)
+    typing: createTypingReducer(ponyfill),
+    continuousListening
   });
 }

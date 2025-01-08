@@ -74,6 +74,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Added support for math blocks using `$$` delimiter alongside existing `\[...\]` and `\(...\)` notations, in PR [#5381](https://github.com/microsoft/BotFramework-WebChat/pull/5381), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added support for speech recognition initial silence timeout when using Azure Speech, in PR [#5400](https://github.com/microsoft/BotFramework/WebChat/pull/5400), by [@compulim](https://github.com/compulim)
 -  Introduced syntax highlighting for markdown code blocks, in PR [#5389](https://github.com/microsoft/BotFramework-WebChat/pull/5389), by [@OEvgeny](https://github.com/OEvgeny)
+- Introduced continuous listening capability, in PR [#5397](https://github.com/microsoft/BotFramework-WebChat/pull/5397), by [@RushikeshGavali](https://github.com/RushikeshGavali)
 
 ### Changed
 
