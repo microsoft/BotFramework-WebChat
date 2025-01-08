@@ -1,32 +1,31 @@
 // This is required for aria-controls.
 /* eslint react/forbid-dom-props: "off" */
 
-import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
+import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import memoize from 'memoize-one';
-import PropTypes from 'prop-types';
-import React, { FC, useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 
-import connectToWebChat from '../connectToWebChat';
-import IconButton from './IconButton';
-import MicrophoneIcon from './Assets/MicrophoneIcon';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useDictateAbortable from '../hooks/useDictateAbortable';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
+import { useLiveRegion } from '../providers/LiveRegionTwin';
+import MicrophoneIcon from './Assets/MicrophoneIcon';
+import IconButton from './IconButton';
 
 const { DictateState } = Constants;
 
 const {
   useDictateInterims,
   useDictateState,
-  useDisabled,
   useLocalizer,
   useSendBoxValue,
   useShouldSpeakIncomingActivity,
   useStartDictate,
-  useStopDictate
+  useStopDictate,
+  useUIState
 } = hooks;
 
 const ROOT_STYLE = {
@@ -44,53 +43,6 @@ const ROOT_STYLE = {
     whiteSpace: 'nowrap',
     width: 1
   }
-};
-
-const connectMicrophoneButton = (...selectors) => {
-  const primeSpeechSynthesis = memoize((speechSynthesis, SpeechSynthesisUtterance) => {
-    if (speechSynthesis && SpeechSynthesisUtterance) {
-      const utterance = new SpeechSynthesisUtterance('');
-
-      [utterance.voice] = speechSynthesis.getVoices();
-      speechSynthesis.speak(utterance);
-    }
-  });
-
-  return connectToWebChat(
-    ({
-      disabled,
-      dictateInterims,
-      dictateState,
-      language,
-      setSendBox,
-      startDictate,
-      stopDictate,
-      stopSpeakingActivity,
-      webSpeechPonyfill
-    }) => {
-      const { speechSynthesis, SpeechSynthesisUtterance } = webSpeechPonyfill || {};
-
-      return {
-        click: () => {
-          if (dictateState === DictateState.WILL_START) {
-            stopSpeakingActivity();
-          } else if (dictateState === DictateState.DICTATING) {
-            stopDictate();
-            setSendBox(dictateInterims.join(' '));
-          } else {
-            stopSpeakingActivity();
-            startDictate();
-          }
-
-          primeSpeechSynthesis(speechSynthesis, SpeechSynthesisUtterance);
-        },
-        dictating: dictateState === DictateState.DICTATING,
-        disabled: disabled || (dictateState === DictateState.STARTING && dictateState === DictateState.STOPPING),
-        language
-      };
-    },
-    ...selectors
-  );
 };
 
 function useMicrophoneButtonClick(): () => void {
@@ -145,21 +97,21 @@ function useMicrophoneButtonClick(): () => void {
 function useMicrophoneButtonDisabled(): [boolean] {
   const [abortable] = useDictateAbortable();
   const [dictateState] = useDictateState();
-  const [disabled] = useDisabled();
+  const [uiState] = useUIState();
 
   return [
-    disabled ||
+    uiState === 'disabled' ||
       dictateState === DictateState.STARTING ||
       dictateState === DictateState.STOPPING ||
       (dictateState === DictateState.DICTATING && !abortable)
   ];
 }
 
-type MicrophoneButtonProps = {
-  className?: string;
-};
+type MicrophoneButtonProps = Readonly<{
+  className?: string | undefined;
+}>;
 
-const MicrophoneButton: FC<MicrophoneButtonProps> = ({ className }) => {
+const MicrophoneButton = ({ className }: MicrophoneButtonProps) => {
   const [{ microphoneButton: microphoneButtonStyleSet }] = useStyleSet();
   const [dictateState] = useDictateState();
   const [disabled] = useMicrophoneButtonDisabled();
@@ -168,6 +120,12 @@ const MicrophoneButton: FC<MicrophoneButtonProps> = ({ className }) => {
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const dictating = dictateState === DictateState.DICTATING;
+
+  const message = localize(
+    dictating ? 'SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT' : 'SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT'
+  );
+
+  useLiveRegion(() => message && <div className="webchat__microphone-button__status">{message}</div>, [message]);
 
   return (
     <div
@@ -188,21 +146,15 @@ const MicrophoneButton: FC<MicrophoneButtonProps> = ({ className }) => {
       >
         <MicrophoneIcon className="webchat__microphone-button__icon" />
       </IconButton>
-      <div aria-live="polite" className="sr-only" id="webchatSendBoxMicrophoneButton" role="status">
-        {localize(dictating ? 'SPEECH_INPUT_MICROPHONE_BUTTON_OPEN_ALT' : 'SPEECH_INPUT_MICROPHONE_BUTTON_CLOSE_ALT')}
+      <div className="sr-only" id="webchatSendBoxMicrophoneButton">
+        {message}
       </div>
     </div>
   );
 };
 
-MicrophoneButton.defaultProps = {
-  className: ''
-};
+MicrophoneButton.displayName = 'MicrophoneButton';
 
-MicrophoneButton.propTypes = {
-  className: PropTypes.string
-};
+export default memo(MicrophoneButton);
 
-export default MicrophoneButton;
-
-export { connectMicrophoneButton, useMicrophoneButtonClick, useMicrophoneButtonDisabled };
+export { useMicrophoneButtonClick, useMicrophoneButtonDisabled };

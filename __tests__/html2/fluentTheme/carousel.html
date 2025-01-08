@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+</head>
+
+<body>
+  <main id="webchat"></main>
+  <script type="text/babel">
+    run(async function () {
+      const {
+        React,
+        ReactDOM: { render },
+        WebChat: { createDirectLine, FluentThemeProvider, ReactWebChat, testIds }
+      } = window;
+
+      const directLine = createDirectLine({
+        token: await testHelpers.token.fetchDirectLineToken()
+      });
+
+      const store = testHelpers.createStore();
+
+      const App = () => <ReactWebChat directLine={directLine} store={store} />;
+
+      render(
+        <FluentThemeProvider>
+          <App />
+        </FluentThemeProvider>,
+        document.getElementById('webchat')
+      );
+
+      await pageConditions.uiConnected();
+
+      // Test sending a message
+      document.querySelector(`[data-testid="${testIds.sendBoxTextBox}"]`).focus();
+      await host.sendKeys('carousel');
+
+      await host.click(document.querySelector(`[data-testid="${testIds.sendBoxSendButton}"]`));
+
+      // Verify the sent message
+      await pageConditions.numActivitiesShown(1);
+      await pageConditions.allOutgoingActivitiesSent();
+      await host.snapshot('local');
+
+      // Wait for and verify bot response
+      await pageConditions.numActivitiesShown(2);
+
+      // WHEN: Right flipper is clicked.
+      const carouselLayout = document.querySelector('.webchat__carousel-layout');
+      const carouselFilmstrip = carouselLayout.querySelector('.webchat__carousel-filmstrip');
+      const rightFlipper = carouselLayout.querySelector('[aria-label="Next"]');
+
+      // Improve test reliability by hover before click on flipper button.
+      await host.hover(rightFlipper);
+      await testHelpers.sleep(500);
+      await host.click(rightFlipper);
+
+      // THEN: It should scroll right.
+      await pageConditions.became('Carousel should scroll right', () => carouselFilmstrip.scrollLeft > 100, 1000);
+
+      await testHelpers.sleep(500); // Wait for right flipper to fade away.
+
+      await host.snapshot('local');
+    });
+  </script>
+</body>
+
+</html>

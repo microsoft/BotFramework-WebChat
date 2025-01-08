@@ -57,12 +57,12 @@
         expect(scrollable.scrollTop).toBe(scrollTopAtBottommost);
 
         // Call useScrollUp() should scroll the transcript view up
-        await renderWithFunction(() => useScrollUp()());
+        await renderWithFunction(() => Promise.resolve(useScrollUp()).then(fn => fn()));
         await pageConditions.scrollStabilized();
         expect(scrollable.scrollTop).toBeLessThan(scrollTopAtBottommost);
 
         // Call useScrollDown() should scroll the transcript view down, back at the bottommost position
-        await renderWithFunction(() => useScrollDown()());
+        await renderWithFunction(() => Promise.resolve(useScrollDown()).then(fn => fn()));
         await pageConditions.scrollStabilized();
         expect(scrollable.scrollTop).toBe(scrollTopAtBottommost);
       });

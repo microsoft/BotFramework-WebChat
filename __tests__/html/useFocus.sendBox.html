@@ -29,7 +29,7 @@
         );
 
         await pageConditions.uiConnected();
-        await pageObjects.runHook(({ useFocus }) => useFocus()('sendBox'));
+        await pageObjects.runHook(({ useFocus }) => Promise.resolve(useFocus()).then(focus => focus('sendBox')));
 
         await host.snapshot();
       });

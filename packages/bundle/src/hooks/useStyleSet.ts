@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-component';
 
-import type AdaptiveCardsStyleSet from '../adaptiveCards/AdaptiveCardsStyleSet';
+import { type AdaptiveCardsStyleSet } from '../adaptiveCards/AdaptiveCardsStyleSet';
 
 const useMinimalStyleSet = hooks.useStyleSet;
 

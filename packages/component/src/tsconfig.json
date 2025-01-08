@@ -1,19 +1,15 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "declarationDir": "../lib",
-    "declarationMap": true,
     "downlevelIteration": true,
-    "emitDeclarationOnly": true,
     "jsx": "react",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "preserveWatchOutput": true,
-    "pretty": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
     "skipLibCheck": true,
-    "sourceMap": true,
     "target": "ESNext"
   },
-  "files": ["index.ts"]
+  "extends": [
+		"botframework-webchat-styles/tsconfig.json"
+	]
 }

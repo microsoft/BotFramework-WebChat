@@ -1,30 +1,56 @@
-import React, { type FC, memo } from 'react';
-
-import MarkdownTextContent from './private/MarkdownTextContent';
-import PlainTextContent from './private/PlainTextContent';
-import useRenderMarkdownAsHTML from '../../hooks/useRenderMarkdownAsHTML';
-
+import React, { memo, useMemo } from 'react';
+import classNames from 'classnames';
+import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 
+import isAIGeneratedActivity from './private/isAIGeneratedActivity';
+import MarkdownTextContent from './private/MarkdownTextContent';
+import PlainTextContent from './private/PlainTextContent';
+import CustomPropertyNames from '../../Styles/CustomPropertyNames';
+import { useStyleToEmotionObject } from '../../hooks/internal/styleToEmotionObject';
+import useRenderMarkdownAsHTML from '../../hooks/useRenderMarkdownAsHTML';
+
+const { useLocalizer } = hooks;
+
 type Props = Readonly<{
+  activity: WebChatActivity;
   contentType?: string;
-  entities?: WebChatActivity['entities'];
   text: string;
 }>;
 
-const TextContent: FC<Props> = memo(({ contentType = 'text/plain', entities, text }: Props) => {
-  const supportMarkdown = !!useRenderMarkdownAsHTML();
+const generatedBadgeStyle = {
+  '&.webchat__text-content__generated-badge': {
+    color: `var(${CustomPropertyNames.ColorSubtle})`,
+    fontSize: `var(${CustomPropertyNames.FontSizeSmall})`
+  }
+};
+
+const TextContent = memo(({ activity, contentType = 'text/plain', text }: Props) => {
+  const supportMarkdown = !!useRenderMarkdownAsHTML('message activity');
+  const localize = useLocalizer();
+  const generatedBadgeClassName = useStyleToEmotionObject()(generatedBadgeStyle) + '';
+
+  const generatedBadge = useMemo(
+    () =>
+      isAIGeneratedActivity(activity) && (
+        <div className={classNames('webchat__text-content__generated-badge', generatedBadgeClassName)}>
+          {localize('ACTIVITY_CONTENT_CAUTION')}
+        </div>
+      ),
+    [activity, generatedBadgeClassName, localize]
+  );
 
   return text ? (
     contentType === 'text/markdown' && supportMarkdown ? (
-      <MarkdownTextContent entities={entities} markdown={text} />
+      <MarkdownTextContent activity={activity} markdown={text}>
+        {generatedBadge}
+      </MarkdownTextContent>
     ) : (
-      <PlainTextContent text={text} />
+      <PlainTextContent text={text}>{generatedBadge}</PlainTextContent>
     )
   ) : null;
 });
 
-TextContent.defaultProps = { contentType: 'text/plain' };
 TextContent.displayName = 'TextContent';
 
 export default TextContent;

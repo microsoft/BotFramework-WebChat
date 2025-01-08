@@ -22,7 +22,7 @@
 
         await pageConditions.uiConnected();
 
-        const liveRegionElement = pageElements.transcriptLiveRegion();
+        const liveRegionElement = pageElements.liveRegion();
 
         // WHEN: A typing activity is sent by a participant with a name.
         //       Currently, Web Chat only support "bot" role for other participants.
@@ -41,8 +41,7 @@
         // THEN: It should read "John is typing."
         await pageConditions.became(
           'typing indicator to appear in live region',
-          async () =>
-            [].map.call(liveRegionElement.childNodes, ({ innerText }) => innerText).join('\n') === 'John is typing.',
+          async () => liveRegionElement.innerText === 'connecting\nJohn is typing.',
           5000
         );
       });

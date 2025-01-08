@@ -1,0 +1,564 @@
+@property --webchat-decorator-borderFlair-animated-angle {
+  inherits: true;
+  initial-value: 0;
+  syntax: '<number>';
+}
+
+@property --webchat-decorator-borderFlair-animated-color1 {
+  inherits: true;
+  initial-value: transparent;
+  syntax: '<color>';
+}
+
+@property --webchat-decorator-borderFlair-animated-color2 {
+  inherits: true;
+  initial-value: transparent;
+  syntax: '<color>';
+}
+
+@property --webchat-decorator-borderFlair-animated-color3 {
+  inherits: true;
+  initial-value: transparent;
+  syntax: '<color>';
+}
+
+@keyframes borderAnimation-angle {
+  0% {
+    --webchat-decorator-borderFlair-animated-angle: 0.75;
+  }
+
+  100% {
+    --webchat-decorator-borderFlair-animated-angle: 2.75;
+  }
+}
+
+@keyframes borderAnimation-color1 {
+  0% {
+    --webchat-decorator-borderFlair-animated-color1: var(--webchat-decorator-borderFlair-color1Fade);
+  }
+
+  33% {
+    --webchat-decorator-borderFlair-animated-color1: var(--webchat-decorator-borderFlair-color1);
+  }
+
+  83% {
+    --webchat-decorator-borderFlair-animated-color1: var(--webchat-decorator-borderFlair-color1);
+  }
+
+  100% {
+    --webchat-decorator-borderFlair-animated-color1: var(--webchat-decorator-borderFlair-color1Fade);
+  }
+}
+
+@keyframes borderAnimation-color2 {
+  0% {
+    --webchat-decorator-borderFlair-animated-color2: var(--webchat-decorator-borderFlair-color2Fade);
+  }
+
+  33% {
+    --webchat-decorator-borderFlair-animated-color2: var(--webchat-decorator-borderFlair-color2);
+  }
+
+  83% {
+    --webchat-decorator-borderFlair-animated-color2: var(--webchat-decorator-borderFlair-color2);
+  }
+
+  100% {
+    --webchat-decorator-borderFlair-animated-color2: var(--webchat-decorator-borderFlair-color2Fade);
+  }
+}
+
+@keyframes borderAnimation-color3 {
+  0% {
+    --webchat-decorator-borderFlair-animated-color3: var(--webchat-decorator-borderFlair-color3Fade);
+  }
+
+  33% {
+    --webchat-decorator-borderFlair-animated-color3: var(--webchat-decorator-borderFlair-color3);
+  }
+
+  83% {
+    --webchat-decorator-borderFlair-animated-color3: var(--webchat-decorator-borderFlair-color3);
+  }
+
+  100% {
+    --webchat-decorator-borderFlair-animated-color3: var(--webchat-decorator-borderFlair-color3Fade);
+  }
+}
+
+:global(.webchat) .border-flair {
+  /* Configurable variables */
+  --webchat-decorator-borderFlair-color1: var(--webchat-borderFlair-color1, var(--webchat__border-animation--color-1));
+  --webchat-decorator-borderFlair-color2: var(--webchat-borderFlair-color2, var(--webchat__border-animation--color-2));
+  --webchat-decorator-borderFlair-color3: var(--webchat-borderFlair-color3, var(--webchat__border-animation--color-3));
+  --webchat-decorator-borderFlair-color1Fade: var(--webchat-borderFlair-color1Fade, transparent);
+  --webchat-decorator-borderFlair-color2Fade: var(--webchat-borderFlair-color2Fade, transparent);
+  --webchat-decorator-borderFlair-color3Fade: var(--webchat-borderFlair-color1Fade, transparent);
+  --webchat-decorator-borderFlair-borderSize: var(--webchat-borderFlair-borderSize, 2px);
+
+  /* Helper variables */
+  --webchat-decorator-borderFlair-backgroundSize: calc(100% + (2 * var(--webchat-decorator-borderFlair-borderSize)));
+  --webchat-decorator-borderFlair-borderGradient: linear-gradient(
+    calc(var(--webchat-decorator-borderFlair-animated-angle) * 180deg + 45deg),
+    var(--webchat-decorator-borderFlair-animated-color1),
+    var(--webchat-decorator-borderFlair-animated-color2),
+    var(--webchat-decorator-borderFlair-animated-color3)
+  );
+  --webchat-decorator-borderFlair-borderMask: linear-gradient(hsl(0 0% 100% / 0), hsl(0 0% 100% / 0)) padding-box,
+    linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%)) border-box;
+
+  animation:
+    borderAnimation-angle 2000ms linear 0ms forwards,
+    borderAnimation-color1 1200ms linear 0ms forwards,
+    borderAnimation-color2 1200ms linear 200ms forwards,
+    borderAnimation-color3 1200ms linear 400ms forwards;
+  background: var(--webchat-decorator-borderFlair-borderGradient) center center /
+    var(--webchat-decorator-borderFlair-backgroundSize) var(--webchat-decorator-borderFlair-backgroundSize);
+  border: var(--webchat-decorator-borderFlair-borderSize) solid transparent;
+  border-radius: inherit;
+  inset: 0;
+  isolation: isolate;
+  -webkit-mask: var(--webchat-decorator-borderFlair-borderMask);
+  -webkit-mask-composite: clear;
+  mask: var(--webchat-decorator-borderFlair-borderMask);
+  mask-composite: intersect;
+  pointer-events: none;
+  position: absolute;
+}
+
+:global(.webchat) .border-flair--complete {
+  animation-play-state: paused;
+}
+
+/* Firefox implementation */
+@supports (-moz-appearance: none) {
+  @keyframes borderFlair-animation {
+    0% {
+      --webchat-decorator-borderFlair-animated: 0;
+    }
+
+    1% {
+      --webchat-decorator-borderFlair-animated: 0.01;
+    }
+
+    2% {
+      --webchat-decorator-borderFlair-animated: 0.02;
+    }
+
+    3% {
+      --webchat-decorator-borderFlair-animated: 0.03;
+    }
+
+    4% {
+      --webchat-decorator-borderFlair-animated: 0.04;
+    }
+
+    5% {
+      --webchat-decorator-borderFlair-animated: 0.05;
+    }
+
+    6% {
+      --webchat-decorator-borderFlair-animated: 0.06;
+    }
+
+    7% {
+      --webchat-decorator-borderFlair-animated: 0.07;
+    }
+
+    8% {
+      --webchat-decorator-borderFlair-animated: 0.08;
+    }
+
+    9% {
+      --webchat-decorator-borderFlair-animated: 0.09;
+    }
+
+    10% {
+      --webchat-decorator-borderFlair-animated: 0.1;
+    }
+
+    11% {
+      --webchat-decorator-borderFlair-animated: 0.11;
+    }
+
+    12% {
+      --webchat-decorator-borderFlair-animated: 0.12;
+    }
+
+    13% {
+      --webchat-decorator-borderFlair-animated: 0.13;
+    }
+
+    14% {
+      --webchat-decorator-borderFlair-animated: 0.14;
+    }
+
+    15% {
+      --webchat-decorator-borderFlair-animated: 0.15;
+    }
+
+    16% {
+      --webchat-decorator-borderFlair-animated: 0.16;
+    }
+
+    17% {
+      --webchat-decorator-borderFlair-animated: 0.17;
+    }
+
+    18% {
+      --webchat-decorator-borderFlair-animated: 0.18;
+    }
+
+    19% {
+      --webchat-decorator-borderFlair-animated: 0.19;
+    }
+
+    20% {
+      --webchat-decorator-borderFlair-animated: 0.2;
+    }
+
+    21% {
+      --webchat-decorator-borderFlair-animated: 0.21;
+    }
+
+    22% {
+      --webchat-decorator-borderFlair-animated: 0.22;
+    }
+
+    23% {
+      --webchat-decorator-borderFlair-animated: 0.23;
+    }
+
+    24% {
+      --webchat-decorator-borderFlair-animated: 0.24;
+    }
+
+    25% {
+      --webchat-decorator-borderFlair-animated: 0.25;
+    }
+
+    26% {
+      --webchat-decorator-borderFlair-animated: 0.26;
+    }
+
+    27% {
+      --webchat-decorator-borderFlair-animated: 0.27;
+    }
+
+    28% {
+      --webchat-decorator-borderFlair-animated: 0.28;
+    }
+
+    29% {
+      --webchat-decorator-borderFlair-animated: 0.29;
+    }
+
+    30% {
+      --webchat-decorator-borderFlair-animated: 0.3;
+    }
+
+    31% {
+      --webchat-decorator-borderFlair-animated: 0.31;
+    }
+
+    32% {
+      --webchat-decorator-borderFlair-animated: 0.32;
+    }
+
+    33% {
+      --webchat-decorator-borderFlair-animated: 0.33;
+    }
+
+    34% {
+      --webchat-decorator-borderFlair-animated: 0.34;
+    }
+
+    35% {
+      --webchat-decorator-borderFlair-animated: 0.35;
+    }
+
+    36% {
+      --webchat-decorator-borderFlair-animated: 0.36;
+    }
+
+    37% {
+      --webchat-decorator-borderFlair-animated: 0.37;
+    }
+
+    38% {
+      --webchat-decorator-borderFlair-animated: 0.38;
+    }
+
+    39% {
+      --webchat-decorator-borderFlair-animated: 0.39;
+    }
+
+    40% {
+      --webchat-decorator-borderFlair-animated: 0.4;
+    }
+
+    41% {
+      --webchat-decorator-borderFlair-animated: 0.41;
+    }
+
+    42% {
+      --webchat-decorator-borderFlair-animated: 0.42;
+    }
+
+    43% {
+      --webchat-decorator-borderFlair-animated: 0.43;
+    }
+
+    44% {
+      --webchat-decorator-borderFlair-animated: 0.44;
+    }
+
+    45% {
+      --webchat-decorator-borderFlair-animated: 0.45;
+    }
+
+    46% {
+      --webchat-decorator-borderFlair-animated: 0.46;
+    }
+
+    47% {
+      --webchat-decorator-borderFlair-animated: 0.47;
+    }
+
+    48% {
+      --webchat-decorator-borderFlair-animated: 0.48;
+    }
+
+    49% {
+      --webchat-decorator-borderFlair-animated: 0.49;
+    }
+
+    50% {
+      --webchat-decorator-borderFlair-animated: 0.5;
+    }
+
+    51% {
+      --webchat-decorator-borderFlair-animated: 0.51;
+    }
+
+    52% {
+      --webchat-decorator-borderFlair-animated: 0.52;
+    }
+
+    53% {
+      --webchat-decorator-borderFlair-animated: 0.53;
+    }
+
+    54% {
+      --webchat-decorator-borderFlair-animated: 0.54;
+    }
+
+    55% {
+      --webchat-decorator-borderFlair-animated: 0.55;
+    }
+
+    56% {
+      --webchat-decorator-borderFlair-animated: 0.56;
+    }
+
+    57% {
+      --webchat-decorator-borderFlair-animated: 0.57;
+    }
+
+    58% {
+      --webchat-decorator-borderFlair-animated: 0.58;
+    }
+
+    59% {
+      --webchat-decorator-borderFlair-animated: 0.59;
+    }
+
+    60% {
+      --webchat-decorator-borderFlair-animated: 0.6;
+    }
+
+    61% {
+      --webchat-decorator-borderFlair-animated: 0.61;
+    }
+
+    62% {
+      --webchat-decorator-borderFlair-animated: 0.62;
+    }
+
+    63% {
+      --webchat-decorator-borderFlair-animated: 0.63;
+    }
+
+    64% {
+      --webchat-decorator-borderFlair-animated: 0.64;
+    }
+
+    65% {
+      --webchat-decorator-borderFlair-animated: 0.65;
+    }
+
+    66% {
+      --webchat-decorator-borderFlair-animated: 0.66;
+    }
+
+    67% {
+      --webchat-decorator-borderFlair-animated: 0.67;
+    }
+
+    68% {
+      --webchat-decorator-borderFlair-animated: 0.68;
+    }
+
+    69% {
+      --webchat-decorator-borderFlair-animated: 0.69;
+    }
+
+    70% {
+      --webchat-decorator-borderFlair-animated: 0.7;
+    }
+
+    71% {
+      --webchat-decorator-borderFlair-animated: 0.71;
+    }
+
+    72% {
+      --webchat-decorator-borderFlair-animated: 0.72;
+    }
+
+    73% {
+      --webchat-decorator-borderFlair-animated: 0.73;
+    }
+
+    74% {
+      --webchat-decorator-borderFlair-animated: 0.74;
+    }
+
+    75% {
+      --webchat-decorator-borderFlair-animated: 0.75;
+    }
+
+    76% {
+      --webchat-decorator-borderFlair-animated: 0.76;
+    }
+
+    77% {
+      --webchat-decorator-borderFlair-animated: 0.77;
+    }
+
+    78% {
+      --webchat-decorator-borderFlair-animated: 0.78;
+    }
+
+    79% {
+      --webchat-decorator-borderFlair-animated: 0.79;
+    }
+
+    80% {
+      --webchat-decorator-borderFlair-animated: 0.8;
+    }
+
+    81% {
+      --webchat-decorator-borderFlair-animated: 0.81;
+    }
+
+    82% {
+      --webchat-decorator-borderFlair-animated: 0.82;
+    }
+
+    83% {
+      --webchat-decorator-borderFlair-animated: 0.83;
+    }
+
+    84% {
+      --webchat-decorator-borderFlair-animated: 0.84;
+    }
+
+    85% {
+      --webchat-decorator-borderFlair-animated: 0.85;
+    }
+
+    86% {
+      --webchat-decorator-borderFlair-animated: 0.86;
+    }
+
+    87% {
+      --webchat-decorator-borderFlair-animated: 0.87;
+    }
+
+    88% {
+      --webchat-decorator-borderFlair-animated: 0.88;
+    }
+
+    89% {
+      --webchat-decorator-borderFlair-animated: 0.89;
+    }
+
+    90% {
+      --webchat-decorator-borderFlair-animated: 0.9;
+    }
+
+    91% {
+      --webchat-decorator-borderFlair-animated: 0.91;
+    }
+
+    92% {
+      --webchat-decorator-borderFlair-animated: 0.92;
+    }
+
+    93% {
+      --webchat-decorator-borderFlair-animated: 0.93;
+    }
+
+    94% {
+      --webchat-decorator-borderFlair-animated: 0.94;
+    }
+
+    95% {
+      --webchat-decorator-borderFlair-animated: 0.95;
+    }
+
+    96% {
+      --webchat-decorator-borderFlair-animated: 0.96;
+    }
+
+    97% {
+      --webchat-decorator-borderFlair-animated: 0.97;
+    }
+
+    98% {
+      --webchat-decorator-borderFlair-animated: 0.98;
+    }
+
+    99% {
+      --webchat-decorator-borderFlair-animated: 0.99;
+    }
+
+    100% {
+      --webchat-decorator-borderFlair-animated: 1;
+    }
+  }
+
+  :global(.webchat) .border-flair {
+    --webchat-decorator-borderFlair-animated-angle: calc(0.75 + 2 * var(--webchat-decorator-borderFlair-animated));
+    --webchat-decorator-borderFlair-animated-color1: color-mix(
+      in srgb,
+      var(--webchat-decorator-borderFlair-color1)
+        calc((1 - abs(var(--webchat-decorator-borderFlair-animated) * 3 - 1.5)) * 100%),
+      var(--webchat-decorator-borderFlair-color1Fade)
+    );
+    --webchat-decorator-borderFlair-animated-color2: color-mix(
+      in srgb,
+      var(--webchat-decorator-borderFlair-color2)
+        calc((1 - abs(var(--webchat-decorator-borderFlair-animated) * 3 - 1.75)) * 100%),
+      var(--webchat-decorator-borderFlair-color2Fade)
+    );
+    --webchat-decorator-borderFlair-animated-color3: color-mix(
+      in srgb,
+      var(--webchat-decorator-borderFlair-color3)
+        calc((1 - abs(var(--webchat-decorator-borderFlair-animated) * 3 - 2)) * 100%),
+      var(--webchat-decorator-borderFlair-color3Fade)
+    );
+
+    animation: borderFlair-animation 2000ms linear forwards;
+  }
+}

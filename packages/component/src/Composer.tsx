@@ -1,12 +1,22 @@
-import createEmotion from '@emotion/css/create-instance';
-import { Composer as APIComposer, hooks, WebSpeechPonyfillFactory } from 'botframework-webchat-api';
+import type {
+  ComposerProps as APIComposerProps,
+  SendBoxMiddleware,
+  SendBoxToolbarMiddleware
+} from 'botframework-webchat-api';
+import {
+  Composer as APIComposer,
+  hooks,
+  initSendBoxMiddleware,
+  initSendBoxToolbarMiddleware,
+  WebSpeechPonyfillFactory
+} from 'botframework-webchat-api';
+import { DecoratorComposer } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Composer as SayComposer } from 'react-say';
-import createStyleSet from './Styles/createStyleSet';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import Dictation from './Dictation';
@@ -15,9 +25,12 @@ import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
+import { StyleToEmotionObjectComposer, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import UITracker from './hooks/internal/UITracker';
+import useInjectStyles from './hooks/internal/useInjectStyles';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
-import useStyleSet from './hooks/useStyleSet';
+import { FocusSendBoxScope } from './hooks/sendBoxFocus';
+import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
@@ -27,47 +40,75 @@ import createDefaultScrollToEndButtonMiddleware from './Middleware/ScrollToEndBu
 import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
 import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
+import CustomElementsComposer from './providers/CustomElements/CustomElementsComposer';
+import HTMLContentTransformComposer from './providers/HTMLContentTransformCOR/HTMLContentTransformComposer';
+import { type HTMLContentTransformMiddleware } from './providers/HTMLContentTransformCOR/private/HTMLContentTransformContext';
 import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
+import { LiveRegionTwinComposer } from './providers/LiveRegionTwin';
 import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
+import useTheme from './providers/Theme/useTheme';
+import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
+import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
+import createStyleSet from './Styles/createStyleSet';
+import useCustomPropertiesClassName from './Styles/useCustomPropertiesClassName';
+import { type ContextOf } from './types/ContextOf';
+import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
-import createCSSKey from './Utils/createCSSKey';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
-
-import type { ComposerProps as APIComposerProps } from 'botframework-webchat-api';
-import type { FC, ReactNode } from 'react';
-import type { ContextOf } from './types/ContextOf';
-import { type FocusSendBoxInit } from './types/internal/FocusSendBoxInit';
-import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
-const emotionPool = {};
-
 function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
 
-type ComposerCoreUIProps = Readonly<{ children?: ReactNode }>;
+type ComposerCoreUIProps = Readonly<{ children?: ReactNode | undefined }>;
+
+const ROOT_STYLE = {
+  '&.webchat__css-custom-properties': {
+    '& .webchat__live-region': {
+      color: 'transparent',
+      height: 1,
+      overflow: 'hidden',
+      position: 'absolute',
+      top: 0,
+      whiteSpace: 'nowrap',
+      width: 1
+    }
+  }
+};
 
 const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
-  const [{ cssCustomProperties }] = useStyleSet();
+  const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
+  const [customPropertiesClassName] = useCustomPropertiesClassName();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const dictationOnError = useCallback(err => {
     console.error(err);
   }, []);
 
   return (
-    <div className={classNames('webchat__css-custom-properties', cssCustomProperties)}>
-      <ModalDialogComposer>
-        {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-        <SendBoxComposer>
-          {children}
-          <Dictation onError={dictationOnError} />
-        </SendBoxComposer>
-      </ModalDialogComposer>
+    <div className={classNames('webchat', 'webchat__css-custom-properties', rootClassName, customPropertiesClassName)}>
+      <CustomElementsComposer>
+        <FocusSendBoxScope>
+          <ScrollRelativeTranscriptScope>
+            <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
+              <DecoratorComposer>
+                <ModalDialogComposer>
+                  {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+                  <SendBoxComposer>
+                    {children}
+                    <Dictation onError={dictationOnError} />
+                  </SendBoxComposer>
+                </ModalDialogComposer>
+              </DecoratorComposer>
+            </LiveRegionTwinComposer>
+          </ScrollRelativeTranscriptScope>
+        </FocusSendBoxScope>
+      </CustomElementsComposer>
     </div>
   );
 });
@@ -77,6 +118,7 @@ ComposerCoreUI.displayName = 'ComposerCoreUI';
 type ComposerCoreProps = Readonly<{
   children?: ReactNode;
   extraStyleSet?: any;
+  htmlContentTransformMiddleware?: readonly HTMLContentTransformMiddleware[] | undefined;
   nonce?: string;
   renderMarkdown?: (
     markdown: string,
@@ -84,31 +126,28 @@ type ComposerCoreProps = Readonly<{
     linkOptions: { externalLinkAlt: string }
   ) => string;
   styleSet?: any;
+  styles?: readonly HTMLStyleElement[];
   suggestedActionsAccessKey?: boolean | string;
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
 }>;
 
-const ComposerCore: FC<ComposerCoreProps> = ({
+const ComposerCore = ({
   children,
   extraStyleSet,
   nonce,
   renderMarkdown,
+  styles,
   styleSet,
   suggestedActionsAccessKey,
   webSpeechPonyfillFactory
-}) => {
+}: ComposerCoreProps) => {
   const [dictateAbortable, setDictateAbortable] = useState();
   const [referenceGrammarID] = useReferenceGrammarID();
   const [styleOptions] = useStyleOptions();
-  const focusSendBoxCallbacksRef = useRef<((init: FocusSendBoxInit) => Promise<void>)[]>([]);
   const focusTranscriptCallbacksRef = useRef<((init: FocusTranscriptInit) => Promise<void>)[]>([]);
   const internalMarkdownIt = useMemo(() => new MarkdownIt(), []);
   const scrollToCallbacksRef = useRef([]);
   const scrollToEndCallbacksRef = useRef([]);
-
-  // Instead of having a `scrollUpCallbacksRef` and `scrollDownCallbacksRef`, they are combined into a single `scrollRelativeCallbacksRef`.
-  // The first argument tells whether it should go "up" or "down".
-  const scrollRelativeCallbacksRef = useRef([]);
 
   const internalRenderMarkdownInline = useMemo(
     () => markdown => {
@@ -123,17 +162,7 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     [internalMarkdownIt]
   );
 
-  const styleToEmotionObject = useMemo(() => {
-    // Emotion doesn't hash with nonce. We need to provide the pooling mechanism.
-    // 1. If 2 instances use different nonce, they should result in different hash;
-    // 2. If 2 instances are being mounted, pooling will make sure we render only 1 set of <style> tags, instead of 2.
-    const emotion =
-      // Prefix "id-" to prevent object injection attack.
-      emotionPool[`id-${nonce}`] ||
-      (emotionPool[`id-${nonce}`] = createEmotion({ key: `webchat--css-${createCSSKey()}`, nonce }));
-
-    return style => emotion.css(style);
-  }, [nonce]);
+  const styleToEmotionObject = useStyleToEmotionObject();
 
   const patchedStyleSet = useMemo(
     () =>
@@ -205,12 +234,13 @@ const ComposerCore: FC<ComposerCoreProps> = ({
     [transcriptFocusObserversRef, setNumTranscriptFocusObservers]
   );
 
+  useInjectStyles(styles, nonce);
+
   const context = useMemo<ContextOf<typeof WebChatUIContext>>(
     () => ({
       dictateAbortable,
       dispatchScrollPosition,
       dispatchTranscriptFocusByActivityKey,
-      focusSendBoxCallbacksRef,
       focusTranscriptCallbacksRef,
       internalMarkdownItState: [internalMarkdownIt],
       internalRenderMarkdownInline,
@@ -219,12 +249,10 @@ const ComposerCore: FC<ComposerCoreProps> = ({
       observeScrollPosition,
       observeTranscriptFocus,
       renderMarkdown,
-      scrollRelativeCallbacksRef,
       scrollToCallbacksRef,
       scrollToEndCallbacksRef,
       setDictateAbortable,
       styleSet: patchedStyleSet,
-      styleToEmotionObject,
       suggestedActionsAccessKey,
       webSpeechPonyfill
     }),
@@ -232,7 +260,6 @@ const ComposerCore: FC<ComposerCoreProps> = ({
       dictateAbortable,
       dispatchScrollPosition,
       dispatchTranscriptFocusByActivityKey,
-      focusSendBoxCallbacksRef,
       focusTranscriptCallbacksRef,
       internalMarkdownIt,
       internalRenderMarkdownInline,
@@ -242,11 +269,9 @@ const ComposerCore: FC<ComposerCoreProps> = ({
       observeTranscriptFocus,
       patchedStyleSet,
       renderMarkdown,
-      scrollRelativeCallbacksRef,
       scrollToCallbacksRef,
       scrollToEndCallbacksRef,
       setDictateAbortable,
-      styleToEmotionObject,
       suggestedActionsAccessKey,
       webSpeechPonyfill
     ]
@@ -262,7 +287,6 @@ const ComposerCore: FC<ComposerCoreProps> = ({
 };
 
 ComposerCore.defaultProps = {
-  children: undefined,
   extraStyleSet: undefined,
   nonce: undefined,
   renderMarkdown: undefined,
@@ -282,7 +306,7 @@ ComposerCore.propTypes = {
 
 type ComposerProps = APIComposerProps & ComposerCoreProps;
 
-const Composer: FC<ComposerProps> = ({
+const Composer = ({
   activityMiddleware,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
@@ -291,65 +315,116 @@ const Composer: FC<ComposerProps> = ({
   cardActionMiddleware,
   children,
   extraStyleSet,
+  htmlContentTransformMiddleware,
   renderMarkdown,
   scrollToEndButtonMiddleware,
+  sendBoxMiddleware: sendBoxMiddlewareFromProps,
+  sendBoxToolbarMiddleware: sendBoxToolbarMiddlewareFromProps,
+  styleOptions,
   styleSet,
   suggestedActionsAccessKey,
   toastMiddleware,
   typingIndicatorMiddleware,
   webSpeechPonyfillFactory,
   ...composerProps
-}) => {
+}: ComposerProps) => {
   const { nonce, onTelemetry } = composerProps;
+  const theme = useTheme();
 
   const patchedActivityMiddleware = useMemo(
-    () => [...singleToArray(activityMiddleware), ...createDefaultActivityMiddleware()],
-    [activityMiddleware]
+    () => [...singleToArray(activityMiddleware), ...theme.activityMiddleware, ...createDefaultActivityMiddleware()],
+    [activityMiddleware, theme.activityMiddleware]
   );
 
   const patchedActivityStatusMiddleware = useMemo(
-    () => [...singleToArray(activityStatusMiddleware), ...createDefaultActivityStatusMiddleware()],
-    [activityStatusMiddleware]
+    () => [
+      ...singleToArray(activityStatusMiddleware),
+      ...theme.activityStatusMiddleware,
+      ...createDefaultActivityStatusMiddleware()
+    ],
+    [activityStatusMiddleware, theme.activityStatusMiddleware]
   );
 
   const patchedAttachmentForScreenReaderMiddleware = useMemo(
     () => [
       ...singleToArray(attachmentForScreenReaderMiddleware),
+      ...theme.attachmentForScreenReaderMiddleware,
       ...createDefaultAttachmentForScreenReaderMiddleware()
     ],
-    [attachmentForScreenReaderMiddleware]
+    [attachmentForScreenReaderMiddleware, theme.attachmentForScreenReaderMiddleware]
   );
 
   const patchedAttachmentMiddleware = useMemo(
-    () => [...singleToArray(attachmentMiddleware), ...createDefaultAttachmentMiddleware()],
-    [attachmentMiddleware]
+    () => [
+      ...singleToArray(attachmentMiddleware),
+      ...theme.attachmentMiddleware,
+      ...createDefaultAttachmentMiddleware()
+    ],
+    [attachmentMiddleware, theme.attachmentMiddleware]
   );
 
   const patchedAvatarMiddleware = useMemo(
-    () => [...singleToArray(avatarMiddleware), ...createDefaultAvatarMiddleware()],
-    [avatarMiddleware]
+    () => [...singleToArray(avatarMiddleware), ...theme.avatarMiddleware, ...createDefaultAvatarMiddleware()],
+    [avatarMiddleware, theme.avatarMiddleware]
   );
 
   const patchedCardActionMiddleware = useMemo(
-    () => [...singleToArray(cardActionMiddleware), ...createDefaultCardActionMiddleware()],
-    [cardActionMiddleware]
+    () => [
+      ...singleToArray(cardActionMiddleware),
+      ...theme.cardActionMiddleware,
+      ...createDefaultCardActionMiddleware()
+    ],
+    [cardActionMiddleware, theme.cardActionMiddleware]
   );
 
   const patchedToastMiddleware = useMemo(
-    () => [...singleToArray(toastMiddleware), ...createDefaultToastMiddleware()],
-    [toastMiddleware]
+    () => [...singleToArray(toastMiddleware), ...theme.toastMiddleware, ...createDefaultToastMiddleware()],
+    [toastMiddleware, theme.toastMiddleware]
   );
 
   const patchedTypingIndicatorMiddleware = useMemo(
-    () => [...singleToArray(typingIndicatorMiddleware), ...createDefaultTypingIndicatorMiddleware()],
-    [typingIndicatorMiddleware]
+    () => [
+      ...singleToArray(typingIndicatorMiddleware),
+      ...theme.typingIndicatorMiddleware,
+      ...createDefaultTypingIndicatorMiddleware()
+    ],
+    [typingIndicatorMiddleware, theme.typingIndicatorMiddleware]
   );
 
   const defaultScrollToEndButtonMiddleware = useMemo(() => createDefaultScrollToEndButtonMiddleware(), []);
 
   const patchedScrollToEndButtonMiddleware = useMemo(
-    () => [...singleToArray(scrollToEndButtonMiddleware), ...defaultScrollToEndButtonMiddleware],
-    [defaultScrollToEndButtonMiddleware, scrollToEndButtonMiddleware]
+    () => [
+      ...singleToArray(scrollToEndButtonMiddleware),
+      ...theme.scrollToEndButtonMiddleware,
+      ...defaultScrollToEndButtonMiddleware
+    ],
+    [defaultScrollToEndButtonMiddleware, scrollToEndButtonMiddleware, theme.scrollToEndButtonMiddleware]
+  );
+
+  const patchedStyleOptions = useMemo(
+    () => ({ ...theme.styleOptions, ...styleOptions }),
+    [styleOptions, theme.styleOptions]
+  );
+
+  const sendBoxMiddleware = useMemo<readonly SendBoxMiddleware[]>(
+    () =>
+      Object.freeze([
+        ...initSendBoxMiddleware(sendBoxMiddlewareFromProps),
+        ...initSendBoxMiddleware(theme.sendBoxMiddleware),
+        ...createDefaultSendBoxMiddleware()
+      ]),
+    [sendBoxMiddlewareFromProps, theme.sendBoxMiddleware]
+  );
+
+  const sendBoxToolbarMiddleware = useMemo<readonly SendBoxToolbarMiddleware[]>(
+    () =>
+      Object.freeze([
+        ...initSendBoxToolbarMiddleware(sendBoxToolbarMiddlewareFromProps),
+        ...initSendBoxToolbarMiddleware(theme.sendBoxToolbarMiddleware),
+        ...createDefaultSendBoxToolbarMiddleware()
+      ]),
+    [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]
   );
 
   return (
@@ -365,22 +440,30 @@ const Composer: FC<ComposerProps> = ({
       internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
       nonce={nonce}
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
+      sendBoxMiddleware={sendBoxMiddleware}
+      sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}
+      styleOptions={patchedStyleOptions}
       toastMiddleware={patchedToastMiddleware}
       typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
       {...composerProps}
     >
       <ActivityTreeComposer>
-        <ComposerCore
-          extraStyleSet={extraStyleSet}
-          nonce={nonce}
-          renderMarkdown={renderMarkdown}
-          styleSet={styleSet}
-          suggestedActionsAccessKey={suggestedActionsAccessKey}
-          webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-        >
-          {children}
-          {onTelemetry && <UITracker />}
-        </ComposerCore>
+        <StyleToEmotionObjectComposer nonce={nonce}>
+          <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
+            <ComposerCore
+              extraStyleSet={extraStyleSet}
+              nonce={nonce}
+              renderMarkdown={renderMarkdown}
+              styleSet={styleSet}
+              styles={theme.styles}
+              suggestedActionsAccessKey={suggestedActionsAccessKey}
+              webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+            >
+              {children}
+              {onTelemetry && <UITracker />}
+            </ComposerCore>
+          </HTMLContentTransformComposer>
+        </StyleToEmotionObjectComposer>
       </ActivityTreeComposer>
     </APIComposer>
   );

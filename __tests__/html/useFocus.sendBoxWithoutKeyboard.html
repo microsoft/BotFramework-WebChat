@@ -32,7 +32,7 @@
 
         // Since the keyboard is controlled by the browser and OS, we cannot test if the keyboard activated or not.
         // This is our best-effort to check if focus is being set correctly or not.
-        await pageObjects.runHook(({ useFocus }) => useFocus()('sendBoxWithoutKeyboard'));
+        await pageObjects.runHook(({ useFocus }) => Promise.resolve(useFocus()).then(focus => focus('sendBoxWithoutKeyboard')));
 
         await host.snapshot();
       });

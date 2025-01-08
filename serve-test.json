@@ -16,20 +16,68 @@
       "destination": "__tests__/html/assets/:filename"
     },
     {
+      "source": "/assets/:path/:filename",
+      "destination": "__tests__/html/assets/:path/:filename"
+    },
+    {
       "source": "/assets/transcripts/:filename",
       "destination": "__tests__/html/assets/transcripts/:filename"
+    },
+    {
+      "source": "/__dist__/botframework-webchat-fluent-theme.development.js",
+      "destination": "packages/fluent-theme/dist/botframework-webchat-fluent-theme.development.js"
+    },
+    {
+      "source": "/__dist__/botframework-webchat-fluent-theme.development.js.map",
+      "destination": "packages/fluent-theme/dist/botframework-webchat-fluent-theme.development.js.map"
+    },
+    {
+      "source": "/__dist__/botframework-webchat-fluent-theme.production.min.js",
+      "destination": "packages/fluent-theme/dist/botframework-webchat-fluent-theme.production.min.js"
+    },
+    {
+      "source": "/__dist__/botframework-webchat-fluent-theme.production.min.js.map",
+      "destination": "packages/fluent-theme/dist/botframework-webchat-fluent-theme.production.min.js.map"
+    },
+    {
+      "source": "/__dist__/fluent-bundle.development.js",
+      "destination": "packages/test/fluent-bundle/dist/fluent-bundle.development.js"
+    },
+    {
+      "source": "/__dist__/fluent-bundle.development.js.map",
+      "destination": "packages/test/fluent-bundle/dist/fluent-bundle.development.js.map"
+    },
+    {
+      "source": "/__dist__/fluent-bundle.production.min.js",
+      "destination": "packages/test/fluent-bundle/dist/fluent-bundle.production.min.js"
+    },
+    {
+      "source": "/__dist__/fluent-bundle.production.min.js.map",
+      "destination": "packages/test/fluent-bundle/dist/fluent-bundle.production.min.js.map"
     },
     {
       "source": "/__dist__/webchat.js",
       "destination": "packages/bundle/dist/webchat.js"
     },
     {
+      "source": "/__dist__/webchat.js.map",
+      "destination": "packages/bundle/dist/webchat.js.map"
+    },
+    {
       "source": "/__dist__/webchat-es5.js",
       "destination": "packages/bundle/dist/webchat-es5.js"
     },
     {
+      "source": "/__dist__/webchat-es5.js.map",
+      "destination": "packages/bundle/dist/webchat-es5.js/map"
+    },
+    {
       "source": "/__dist__/webchat-minimal.js",
       "destination": "packages/bundle/dist/webchat-minimal.js"
+    },
+    {
+      "source": "/__dist__/webchat-minimal.js.map",
+      "destination": "packages/bundle/dist/webchat-minimal.js.map"
     },
     {
       "source": "/test-harness.js",

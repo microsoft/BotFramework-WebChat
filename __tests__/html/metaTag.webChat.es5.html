@@ -17,6 +17,18 @@
         expect(document.querySelector('head > meta[name="botframework-webchat:bundle:version"]').content).toMatch(
           /^\d+\.\d+\.\d+($|-)/u
         );
+
+        const buildInfo = Object.fromEntries(
+          document
+            .querySelector('head > meta[name="botframework-webchat:bundle"]')
+            .content.split(';')
+            .map(value => value.trim().split('='))
+        );
+
+        expect(buildInfo).toHaveProperty('build-tool', 'tsup');
+        expect(buildInfo).toHaveProperty('module-format', 'global');
+        expect(buildInfo).toHaveProperty('variant', 'full-es5');
+        expect(buildInfo.version).toMatch(/^\d+\.\d+\.\d+($|-)/u);
       });
     </script>
   </body>

@@ -65,38 +65,30 @@
         await pageConditions.numActivitiesShown(4);
         await pageConditions.liveRegionStabilized();
 
-        const screenReaderTexts = [].map.call(pageElements.transcriptLiveRegion().children, child =>
+        const screenReaderTexts = [].map.call(pageElements.liveRegion().children, child =>
           testHelpers.getAllTextContents(child).join('\n')
         );
 
         // The last activity have "webchat:fallback-text" field set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
-        expect(screenReaderTexts).toHaveLength(3);
+        expect(screenReaderTexts).toEqual([
+          'connecting',
+          'Bot said:\nNo \"webchat:fallback-text\" field.\nA text: Hello.\nA text: World!',
+          'Bot said:\nWith \"webchat:fallback-text\" field.',
+          'Bot said:\nA text: Hello.\nA text: World!'
+        ]);
 
-        // In screen reader transcript, the attachment are rendered and narrated.
-        expect(screenReaderTexts[0]).toBe(
-          'Bot said:\nNo “webchat:fallback-text” field.\nA text: Hello.\nA text: World!'
-        );
-
-        // No attachments should be narrated.
-        expect(screenReaderTexts[1]).toBe(
-          'Bot said:\nWith "webchat:fallback-text" field.'
-        );
-        expect(screenReaderTexts[2]).toBe('Bot said:\nA text: Hello.\nA text: World!');
-
-        const activityAlts = [].map.call(pageElements.transcriptLiveRegion().children, element =>
+        const activityAlts = [].map.call(pageElements.liveRegion().children, element =>
           testHelpers.getAllTextContents(element).join('\n')
         );
 
         // The last activity have "webchat:fallback-text" field set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
-        expect(screenReaderTexts).toHaveLength(3);
-
-        // In interactive transcript, this is narrated as "2 attachments".
-        expect(activityAlts[0]).toBe(
-          'Bot said:\nNo “webchat:fallback-text” field.\nA text: Hello.\nA text: World!'
-        );
-
-        expect(activityAlts[1]).toBe('Bot said:\nWith "webchat:fallback-text" field.');
-        expect(activityAlts[2]).toBe('Bot said:\nA text: Hello.\nA text: World!');
+        expect(screenReaderTexts).toEqual([
+          'connecting',
+          // In interactive transcript, this is narrated as "2 attachments".
+          'Bot said:\nNo \"webchat:fallback-text\" field.\nA text: Hello.\nA text: World!',
+          'Bot said:\nWith "webchat:fallback-text" field.',
+          'Bot said:\nA text: Hello.\nA text: World!'
+        ]);
       });
     </script>
   </body>

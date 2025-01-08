@@ -10,6 +10,7 @@ function prettierMarkdown(filenames) {
 module.exports = {
   '{docs,samples}/**/*.{html,js,jsx,ts,tsx}': prettierCode,
   '**/*.md': prettierMarkdown,
+  'packages/**/*.css': ['npm run precommit:biome'],
   'packages/api/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:api'],
   'packages/bundle/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:bundle'],
   'packages/component/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:component'],

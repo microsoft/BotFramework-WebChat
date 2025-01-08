@@ -1,0 +1,89 @@
+{
+  "name": "botframework-webchat-fluent-theme",
+  "version": "0.0.0-0",
+  "description": "Fluent theme for Bot Framework Web Chat",
+  "main": "./dist/botframework-webchat-fluent-theme.js",
+  "types": "./dist/botframework-webchat-fluent-theme.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-fluent-theme.d.mts",
+        "default": "./dist/botframework-webchat-fluent-theme.mjs"
+      },
+      "required": {
+        "types": "./dist/botframework-webchat-fluent-theme.d.ts",
+        "default": "./dist/botframework-webchat-fluent-theme.js"
+      }
+    }
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/BotFramework-WebChat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
+  },
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat/packages/core#readme",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.map",
+    "dist/**/*.mjs",
+    "dist/**/*.mts",
+    "dist/**/*.ts",
+    "src/**/*"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "eslint": "npm run precommit",
+    "postversion": "cat package.json | jq '.version as $V | (.localDependencies // {} | with_entries(select(.value == \"production\") | { key: .key, value: $V })) as $L1 | (.localDependencies // {} | with_entries(select(.value == \"development\") | { key: .key, value: $V })) as $L2 | ((.dependencies // {}) + $L1 | to_entries | sort_by(.key) | from_entries) as $D1 | ((.devDependencies // {}) + $L2 | to_entries | sort_by(.key) | from_entries) as $D2 | . + { dependencies: $D1, devDependencies: $D2 }' > package-temp.json && mv package-temp.json package.json",
+    "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
+    "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
+    "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
+    "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
+    "start": "npm run build -- --watch"
+  },
+  "localDependencies": {
+    "botframework-webchat-api": "production",
+    "botframework-webchat-base": "development",
+    "botframework-webchat-component": "production",
+    "botframework-webchat-core": "production",
+    "botframework-webchat-styles": "development"
+  },
+  "pinDependencies": {
+    "@types/react": [
+      "16",
+      "react@16.8.6 is our baseline"
+    ]
+  },
+  "devDependencies": {
+    "@tsconfig/strictest": "^2.0.5",
+    "@types/math-random": "^1.0.2",
+    "@types/node": "^20.12.11",
+    "@types/react": "^16.14.60",
+    "botframework-webchat-base": "0.0.0-0",
+    "botframework-webchat-styles": "0.0.0-0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "botframework-webchat-api": "0.0.0-0",
+    "botframework-webchat-component": "0.0.0-0",
+    "botframework-webchat-core": "0.0.0-0",
+    "classnames": "2.5.1",
+    "inject-meta-tag": "0.0.1",
+    "math-random": "2.0.1",
+    "use-ref-from": "0.1.0",
+    "valibot": "^0.37.0"
+  },
+  "peerDependencies": {
+    "react": ">= 16.8.6"
+  }
+}

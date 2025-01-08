@@ -1,6 +1,5 @@
 import React from 'react';
 
-// eslint-disable-next-line react/prop-types
 const MicrophoneIcon = ({ className }) => (
   <svg className={className} focusable={false} height={28} role="presentation" viewBox="0 0 34.75 46" width={28}>
     <path

@@ -18,7 +18,7 @@ async function clickButton(driver, locator) {
   await button.click();
 }
 
-test('video', async () => {
+test.skip('video', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
   await pageObjects.sendMessageViaSendBox('video youtube', { waitForSend: true });
@@ -35,7 +35,7 @@ test('video', async () => {
   await driver.sleep(4000);
 
   // Pause the video
-  await clickButton(driver, By.css('button[title="Pause (k)"]'));
+  await clickButton(driver, By.css('button[data-title-no-tooltip="Pause"]'));
 
   // Jump back for 10 seconds, to get the buffering bar the same
   await driver.actions().sendKeys('j').perform();

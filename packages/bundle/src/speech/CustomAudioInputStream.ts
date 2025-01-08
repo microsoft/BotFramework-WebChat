@@ -22,9 +22,8 @@ import {
   type as Type
 } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/Exports';
 
-import { isForbiddenPropertyName } from 'botframework-webchat-core';
+import { isForbiddenPropertyName, withResolvers } from 'botframework-webchat-core';
 import { v4 } from 'uuid';
-import createDeferred, { DeferredPromise } from 'p-defer-es5';
 
 type AudioStreamNode = {
   detach: () => Promise<void>;
@@ -91,7 +90,7 @@ abstract class CustomAudioInputStream extends AudioInputStream {
 
     // False alarm: indexer is a constant of type Symbol.
     // eslint-disable-next-line security/detect-object-injection
-    this[SYMBOL_DEVICE_INFO_DEFERRED] = createDeferred<DeviceInfo>();
+    this[SYMBOL_DEVICE_INFO_DEFERRED] = withResolvers<DeviceInfo>();
 
     // False alarm: indexer is a constant of type Symbol.
     // eslint-disable-next-line security/detect-object-injection
@@ -99,16 +98,16 @@ abstract class CustomAudioInputStream extends AudioInputStream {
 
     // False alarm: indexer is a constant of type Symbol.
     // eslint-disable-next-line security/detect-object-injection
-    this[SYMBOL_FORMAT_DEFERRED] = createDeferred<AudioStreamFormatImpl>();
+    this[SYMBOL_FORMAT_DEFERRED] = withResolvers<AudioStreamFormatImpl>();
 
     // False alarm: indexer is a constant of type Symbol.
     // eslint-disable-next-line security/detect-object-injection
     this[SYMBOL_OPTIONS] = normalizedOptions;
   }
 
-  [SYMBOL_DEVICE_INFO_DEFERRED]: DeferredPromise<DeviceInfo>;
+  [SYMBOL_DEVICE_INFO_DEFERRED]: PromiseWithResolvers<DeviceInfo>;
   [SYMBOL_EVENTS]: EventSource<AudioSourceEvent>;
-  [SYMBOL_FORMAT_DEFERRED]: DeferredPromise<AudioStreamFormatImpl>;
+  [SYMBOL_FORMAT_DEFERRED]: PromiseWithResolvers<AudioStreamFormatImpl>;
   [SYMBOL_OPTIONS]: NormalizedOptions;
 
   /** Gets the event source for listening to events. */
@@ -335,17 +334,17 @@ abstract class CustomAudioInputStream extends AudioInputStream {
         bitspersample: bitsPerSample,
         channelcount: channels,
         connectivity:
-          typeof connectivity === 'string' && !isForbiddenPropertyName(connectivity)
-            ? // Mitigated through denylisting.
-              // eslint-disable-next-line security/detect-object-injection
-              Connectivity[connectivity]
-            : connectivity || Connectivity.Unknown,
+          (typeof connectivity === 'string' &&
+            !isForbiddenPropertyName(connectivity) && // Mitigated through denylisting.
+            // eslint-disable-next-line security/detect-object-injection
+            Connectivity[connectivity]) ||
+          Connectivity.Unknown,
         manufacturer: manufacturer || '',
         model: model || '',
         samplerate: samplesPerSec,
         // Mitigated through denylisting.
         // eslint-disable-next-line security/detect-object-injection
-        type: typeof type === 'string' && !isForbiddenPropertyName(type) ? Type[type] : type || Type.Unknown
+        type: (typeof type === 'string' && !isForbiddenPropertyName(type) && Type[type]) || Type.Unknown
       })
     );
   }

@@ -1,11 +1,12 @@
 import { StrictStyleOptions } from 'botframework-webchat-api';
+import CSSTokens from '../CSSTokens';
 
-export default function createAvatarStyle({ avatarBorderRadius, avatarSize }: StrictStyleOptions) {
+export default function createAvatarStyle({ avatarBorderRadius }: StrictStyleOptions) {
   return {
     '&.webchat__defaultAvatar': {
       borderRadius: avatarBorderRadius,
-      height: avatarSize,
-      width: avatarSize
+      height: CSSTokens.SizeAvatar,
+      width: CSSTokens.SizeAvatar
     }
   };
 }

@@ -1,11 +1,11 @@
 /* eslint react/forbid-dom-props: ["off"] */
 
 import PropTypes from 'prop-types';
-import React, { forwardRef } from 'react';
+import React, { forwardRef, memo } from 'react';
 
 import type { VFC } from 'react';
 
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 
 const ROOT_STYLE = {
   // .sr-only - This component is intended to be invisible to the visual Web Chat user, but read by the AT when using a screen reader
@@ -58,4 +58,6 @@ ScreenReaderText.propTypes = {
   text: PropTypes.string.isRequired
 };
 
-export default ScreenReaderText;
+ScreenReaderText.displayName = 'ScreenReaderText';
+
+export default memo(ScreenReaderText);

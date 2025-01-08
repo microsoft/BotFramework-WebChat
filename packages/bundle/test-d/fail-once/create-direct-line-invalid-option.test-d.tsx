@@ -1,6 +1,6 @@
 import { expectNotAssignable } from 'tsd';
 
-import { createDirectLine } from '../../src/index';
+import { createDirectLine } from '../../src/module/exports';
 
 type CreateDirectLineInit = Parameters<typeof createDirectLine>[0];
 

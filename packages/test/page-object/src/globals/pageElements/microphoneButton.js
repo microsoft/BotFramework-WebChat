@@ -1,3 +1,5 @@
+import root from './root';
+
 export default function microphoneButton() {
-  return document.querySelector(`button[title="Speak"]`);
+  return root().querySelector(`button[title="Speak"]`);
 }

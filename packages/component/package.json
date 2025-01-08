@@ -2,8 +2,40 @@
   "name": "botframework-webchat-component",
   "version": "0.0.0-0",
   "description": "React component of botframework-webchat",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "main": "./dist/botframework-webchat-component.js",
+  "types": "./dist/botframework-webchat-component.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.d.mts",
+        "default": "./dist/botframework-webchat-component.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-component.d.ts",
+        "default": "./dist/botframework-webchat-component.js"
+      }
+    },
+    "./internal": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.internal.d.mts",
+        "default": "./dist/botframework-webchat-component.internal.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-component.internal.d.ts",
+        "default": "./dist/botframework-webchat-component.internal.js"
+      }
+    },
+    "./decorator": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.decorator.d.mts",
+        "default": "./dist/botframework-webchat-component.decorator.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-component.decorator.d.ts",
+        "default": "./dist/botframework-webchat-component.decorator.js"
+      }
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -17,31 +49,30 @@
     "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
   "files": [
-    "lib/**/*",
-    "src/**/*"
+    "./dist/**/*",
+    "./*.js",
+    "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "scripts": {
-    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
-    "build": "npm run build:typescript && npm run build:babel",
-    "build:babel": "babel src --copy-files --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --no-copy-ignored --out-dir lib --verbose",
-    "build:typescript": "tsc --project src/tsconfig.json",
-    "bump": "npm run bump:prod && npm run bump:dev && npm run bump:auditfix",
-    "bump:auditfix": "npm audit fix --legacy-peer-deps || exit 0",
-    "bump:dev": "if [ `cat package.json | jq -r '.devDependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
-    "bump:prod": "if [ `cat package.json | jq -r '.dependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
+    "build": "npm run build:tsup",
+    "build:tsup": "tsup --config ./tsup.config.ts",
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
     "eslint": "npm run precommit",
-    "postauditfix": "npm run postbump",
-    "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
-    "preauditfix": "npm run prebump",
-    "prebump": "cat package.json | jq '(((.localPeerDependencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDependencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
+    "postversion": "cat package.json | jq '.version as $V | (.localDependencies // {} | with_entries(select(.value == \"production\") | { key: .key, value: $V })) as $L1 | (.localDependencies // {} | with_entries(select(.value == \"development\") | { key: .key, value: $V })) as $L2 | ((.dependencies // {}) + $L1 | to_entries | sort_by(.key) | from_entries) as $D1 | ((.devDependencies // {}) + $L2 | to_entries | sort_by(.key) | from_entries) as $D2 | . + { dependencies: $D1, devDependencies: $D2 }' > package-temp.json && mv package-temp.json package.json",
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
-    "prestart": "npm run build:babel",
-    "start": "concurrently --kill-others --names \"babel,tsc\" \"npm run start:babel\" \"npm run start:typescript\"",
-    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
-    "start:typescript": "npm run build:typescript -- --watch"
+    "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
+    "start": "npm run build:tsup -- --onSuccess=\"touch ../bundle/src/FullComposer.tsx\" --watch"
+  },
+  "localDependencies": {
+    "botframework-webchat-api": "production",
+    "botframework-webchat-base": "development",
+    "botframework-webchat-core": "production",
+    "botframework-webchat-styles": "development"
   },
   "pinDependencies": {
     "@babel/cli": [
@@ -64,12 +95,20 @@
       "7.18.6",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
     ],
+    "@types/react": [
+      "16",
+      "react@16.8.6 is our baseline"
+    ],
     "compute-scroll-into-view": [
       "1",
       "@>=2 does not support IE Mode"
     ],
+    "markdown-it": [
+      "13",
+      "markdown-it@14.1.0 has module field and it is breaking Webpack 4 because cross loading CJS and ESM"
+    ],
     "react-film": [
-      "3.1.1-main.df870ea",
+      "3.1.1-main.f623bf6",
       "TEMPORARY: Use a custom version to verify build"
     ],
     "react-redux": [
@@ -83,45 +122,49 @@
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
     "@types/mdast": "^4.0.3",
-    "@types/node": "^20.10.3",
-    "@types/react": "^18.2.42",
+    "@types/node": "^20.12.11",
+    "@types/react": "^16.14.60",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
+    "botframework-webchat-base": "0.0.0-0",
+    "botframework-webchat-styles": "0.0.0-0",
     "concurrently": "^8.2.2",
-    "core-js": "^3.34.0",
+    "core-js": "^3.37.0",
+    "cross-env": "^7.0.3",
     "node-dev": "^8.0.0",
-    "type-fest": "^4.14.0",
-    "typescript": "^5.3.2"
+    "type-fest": "^4.18.2",
+    "typescript": "^5.4.5"
   },
   "dependencies": {
     "@emotion/css": "11.11.2",
     "base64-js": "1.5.1",
     "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
-    "classnames": "2.3.2",
+    "classnames": "2.5.1",
     "compute-scroll-into-view": "1.0.20",
-    "event-target-shim": "6.0.2",
+    "deep-freeze-strict": "1.1.1",
     "markdown-it": "13.0.2",
     "math-random": "2.0.1",
     "mdast-util-from-markdown": "2.0.0",
     "memoize-one": "6.0.0",
-    "merge-refs": "1.2.2",
+    "merge-refs": "1.3.0",
     "prop-types": "15.8.1",
+    "punycode": "2.3.1",
+    "react-chain-of-responsibility": "0.2.0-main.3cb47ab",
     "react-dictate-button": "2.0.1",
-    "react-film": "3.1.1-main.df870ea",
+    "react-film": "3.1.1-main.f623bf6",
     "react-redux": "7.2.9",
     "react-say": "2.1.0",
-    "react-scroll-to-bottom": "4.2.0",
-    "redux": "5.0.0",
+    "react-scroll-to-bottom": "4.2.1-main.53844f5",
+    "redux": "5.0.1",
     "simple-update-in": "2.2.0",
-    "use-ref-from": "0.0.3"
+    "use-propagate": "^0.2.0-main.fb24772",
+    "use-ref-from": "0.1.0",
+    "use-state-with-ref": "^0.1.0",
+    "valibot": "0.30.0"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",
     "react-dom": ">= 16.8.6"
-  },
-  "localPeerDependencies": {
-    "botframework-webchat-api": "0.0.0-0",
-    "botframework-webchat-core": "0.0.0-0"
   }
 }

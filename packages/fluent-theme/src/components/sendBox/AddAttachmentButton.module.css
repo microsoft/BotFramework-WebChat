@@ -1,0 +1,10 @@
+:global(.webchat-fluent) .sendbox__add-attachment {
+  display: grid;
+}
+
+:global(.webchat-fluent) .sendbox__add-attachment-input {
+  font-size: 0;
+  height: 0;
+  opacity: 0;
+  width: 1px; /* iOS Safari does not honor 0px for the width. */
+}

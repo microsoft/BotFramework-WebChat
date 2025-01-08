@@ -1,7 +1,5 @@
 import React, { ReactNode, useMemo } from 'react';
-import PropTypes from 'prop-types';
 import { OneOrMany, singleToArray } from 'botframework-webchat-core';
-// TODO: fix the import location
 import { createChainOfResponsibility } from 'react-chain-of-responsibility';
 import ActivityMiddleware, {
   ActivityComponentFactory,
@@ -21,7 +19,7 @@ type ActivityMiddlewareProviderProps = Readonly<{
   children?: ReactNode | undefined;
 }>;
 
-const ActivityMiddlewareProvider = ({ middleware, children }: ActivityMiddlewareProviderProps): ReactNode => {
+const ActivityMiddlewareProvider = ({ middleware, children }: ActivityMiddlewareProviderProps) => {
   const { isUsingActivityMiddlewareV2 } = useWebChatAPIContext();
   return (
     <ActivityMiddlewareProviderInner
@@ -36,16 +34,6 @@ const ActivityMiddlewareProvider = ({ middleware, children }: ActivityMiddleware
 
 ActivityMiddlewareProvider.displayName = 'ActivityMiddlewareProvider';
 
-ActivityMiddlewareProvider.defaultProps = {
-  children: undefined,
-  middleware: undefined
-};
-
-ActivityMiddlewareProvider.propTypes = {
-  children: PropTypes.any,
-  middleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func])
-};
-
 function useCreateActivityRendererV2(): ActivityComponentFactory {
   const enhancer = useBuildComponentCallback();
   return useMemo(
@@ -56,7 +44,7 @@ function useCreateActivityRendererV2(): ActivityComponentFactory {
         return false;
       }
 
-      return props => <Component {...props} {...createActivityRendererOptions} />;
+      return props => <Component {...createActivityRendererOptions} {...props}/>;
     },
     [enhancer]
   );

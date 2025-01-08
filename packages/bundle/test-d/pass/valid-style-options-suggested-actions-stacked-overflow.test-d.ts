@@ -1,4 +1,4 @@
-import { createStyleSet } from '../../src/index';
+import { createStyleSet } from '../../src/module/exports';
 
 // Related to #4081.
 createStyleSet({ suggestedActionsStackedOverflow: 'auto' });

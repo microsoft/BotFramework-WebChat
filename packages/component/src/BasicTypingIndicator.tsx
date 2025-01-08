@@ -1,15 +1,24 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { Fragment, VFC } from 'react';
+import React, { Fragment, useMemo } from 'react';
 
 const { useActiveTyping, useRenderTypingIndicator } = hooks;
 
-function useTypingIndicatorVisible(): [boolean] {
+function useTypingIndicatorVisible(): readonly [boolean] {
   const [activeTyping] = useActiveTyping();
 
-  return [!!Object.values(activeTyping).filter(({ role }) => role !== 'user').length];
+  return useMemo(
+    () =>
+      Object.freeze([
+        !!Object.values(activeTyping).some(
+          // Show typing indicator if anyone is typing and not livestreaming.
+          ({ role, type }) => role !== 'user' && type !== 'livestream'
+        )
+      ]),
+    [activeTyping]
+  );
 }
 
-const BasicTypingIndicator: VFC<{}> = () => {
+const BasicTypingIndicator = () => {
   const [activeTyping] = useActiveTyping();
   const [visible] = useTypingIndicatorVisible();
   const [typing] = useActiveTyping(Infinity);

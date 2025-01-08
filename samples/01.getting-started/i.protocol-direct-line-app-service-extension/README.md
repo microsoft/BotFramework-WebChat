@@ -45,8 +45,8 @@ We are updating the endpoint of our token server to retrieve a Direct Line ASE-s
 
 ```diff
   …
-- const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
-+ const res = await fetch('https://webchat-mockbot2.azurewebsites.net/api/token/directlinease', { method: 'POST' });
+- const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
++ const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directlinease', { method: 'POST' });
   …
 ```
 

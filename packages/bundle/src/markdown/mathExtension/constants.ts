@@ -1,0 +1,6 @@
+export const BACKSLASH = 92; // '\'
+export const OPEN_PAREN = 40; // '('
+export const CLOSE_PAREN = 41; // ')'
+export const OPEN_BRACKET = 91; // '['
+export const CLOSE_BRACKET = 93; // ']'
+export const DOLLAR = 36; // '$'

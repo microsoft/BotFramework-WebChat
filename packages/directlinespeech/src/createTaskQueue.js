@@ -1,4 +1,4 @@
-import createDeferred from 'p-defer-es5';
+import withResolvers from './utils/withResolvers';
 
 export default function createTaskQueue() {
   let queueWithCurrent = [];
@@ -8,9 +8,9 @@ export default function createTaskQueue() {
       queueWithCurrent.forEach(({ cancel }) => cancel());
     },
     push: fn => {
-      const cancelDeferred = createDeferred();
-      const resultDeferred = createDeferred();
-      const entry = { promise: resultDeferred.promise };
+      const cancelWithResolvers = withResolvers();
+      const resultWithResolvers = withResolvers();
+      const entry = { promise: resultWithResolvers.promise };
       let abort;
 
       const cancel = (entry.cancel = () => {
@@ -20,7 +20,7 @@ export default function createTaskQueue() {
 
         // Abort the task if it is currently running.
         abort && abort();
-        cancelDeferred.reject(new Error('cancelled in the midway'));
+        cancelWithResolvers.reject(new Error('cancelled in the midway'));
       });
 
       const start = async () => {
@@ -30,9 +30,9 @@ export default function createTaskQueue() {
 
         try {
           // Either wait for the actual result, or the task is being cancelled.
-          resultDeferred.resolve(await Promise.race([result, cancelDeferred.promise]));
+          resultWithResolvers.resolve(await Promise.race([result, cancelWithResolvers.promise]));
         } catch (error) {
-          resultDeferred.reject(error);
+          resultWithResolvers.reject(error);
         }
 
         queueWithCurrent = queueWithCurrent.filter(e => e !== entry);
@@ -49,7 +49,7 @@ export default function createTaskQueue() {
 
       return {
         cancel,
-        result: resultDeferred.promise
+        result: resultWithResolvers.promise
       };
     }
   };

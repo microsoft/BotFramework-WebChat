@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { VFC } from 'react';
+import React from 'react';
 
 import BasicWebChat from './BasicWebChat';
 import Composer, { ComposerProps } from './Composer';
@@ -15,12 +15,14 @@ import Composer, { ComposerProps } from './Composer';
 // Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
 const ARIA_LANDMARK_ROLES = ['complementary', 'contentinfo', 'form', 'main', 'region'];
 
-type ReactWebChatProps = Omit<ComposerProps, 'children'> & {
-  className?: string;
-  role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
-};
+type ReactWebChatProps = Readonly<
+  Omit<ComposerProps, 'children'> & {
+    className?: string;
+    role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
+  }
+>;
 
-const ReactWebChat: VFC<ReactWebChatProps> = ({ className, role, ...composerProps }) => (
+const ReactWebChat = ({ className, role, ...composerProps }: ReactWebChatProps) => (
   <Composer {...composerProps}>
     <BasicWebChat className={className} role={role} />
   </Composer>

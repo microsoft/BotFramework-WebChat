@@ -17,36 +17,40 @@ jest.setTimeout(timeouts.test);
 test('file upload should show thumbnail and file name', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
-      attachmentMiddleware: () => next => ({
-        activity = {},
-        activity: { from: { role } } = {},
-        attachment,
-        attachment: { contentType, thumbnailUrl } = {}
-      }) => {
-        if (role === 'user' && /^image\//u.test(contentType) && thumbnailUrl) {
-          const patchedAttachment = Object.assign({}, attachment, {
-            contentType: 'application/octet-stream',
-            thumbnailUrl: undefined
-          });
+      attachmentMiddleware:
+        () =>
+        next =>
+        ({
+          activity = {},
+          activity: { from: { role } } = {},
+          attachment,
+          attachment: { contentType, thumbnailUrl } = {}
+        }) => {
+          if (role === 'user' && /^image\//u.test(contentType) && thumbnailUrl) {
+            const patchedAttachment = Object.assign({}, attachment, {
+              contentType: 'application/octet-stream',
+              thumbnailUrl: undefined
+            });
 
-          const patchedAttachments = activity.attachments.map(target =>
-            target === attachment ? patchedAttachment : target
-          );
+            const patchedAttachments = activity.attachments.map(target =>
+              target === attachment ? patchedAttachment : target
+            );
 
-          const patchedActivity = Object.assign({}, activity, {
-            attachments: patchedAttachments
-          });
+            const patchedActivity = Object.assign({}, activity, {
+              attachments: patchedAttachments
+            });
 
-          return React.createElement(
-            React.Fragment,
-            {},
-            next({ activity, attachment }),
-            next({ activity: patchedActivity, attachment: patchedAttachment })
-          );
-        }
+            return React.createElement(
+              React.Fragment,
+              {},
+              next({ activity, attachment }),
+              next({ activity: patchedActivity, attachment: patchedAttachment })
+            );
+          }
 
-        return next({ activity, attachment });
-      }
+          return next({ activity, attachment });
+        },
+      styleOptions: { sendAttachmentOn: 'attach' }
     },
     // TODO: [P3] Offline bot did not reply with a downloadable attachment, we need to use production bot
     useProductionBot: true

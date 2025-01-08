@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Presentation mode</title>
@@ -33,7 +33,10 @@
         // Tokens are more secure. To learn about the differences between secrets and tokens
         // and to understand the risks associated with using secrets, visit https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch(
+          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline',
+          { method: 'POST' }
+        );
         const { token } = await res.json();
         const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
           // The following code is for convenience only. It not required for production.

@@ -1,12 +1,12 @@
-import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 import { createAdapters } from 'botframework-directlinespeech-sdk';
 import { WebSpeechPonyfill } from 'botframework-webchat-api';
 import type { DirectLineJSBotConnection } from 'botframework-webchat-core';
+import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 
+import createMicrophoneAudioConfigAndAudioContext from './speech/createMicrophoneAudioConfigAndAudioContext';
 import CognitiveServicesAudioOutputFormat from './types/CognitiveServicesAudioOutputFormat';
 import CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
 import CognitiveServicesTextNormalization from './types/CognitiveServicesTextNormalization';
-import createMicrophoneAudioConfigAndAudioContext from './speech/createMicrophoneAudioConfigAndAudioContext';
 
 const DEFAULT_LANGUAGE = 'en-US';
 
@@ -39,10 +39,10 @@ export default function createDirectLineSpeechAdapters({
   textNormalization?: CognitiveServicesTextNormalization;
   userID?: string;
   username?: string;
-}): {
+}): Promise<{
   directLine: DirectLineJSBotConnection;
   webSpeechPonyfill: WebSpeechPonyfill;
-} {
+}> {
   if (audioConfig) {
     audioInputDeviceId &&
       console.warn(
@@ -70,6 +70,7 @@ export default function createDirectLineSpeechAdapters({
   return createAdapters({
     audioConfig,
     audioContext,
+    audioInputDeviceId: undefined,
     enableInternalHTTPSupport,
     enableTelemetry,
     fetchCredentials,
@@ -80,5 +81,6 @@ export default function createDirectLineSpeechAdapters({
     textNormalization,
     userID,
     username
-  });
+    // TODO: [P1] Need to port Direct Line Speech SDK to TypeScript to remove this any.
+  }) as any;
 }

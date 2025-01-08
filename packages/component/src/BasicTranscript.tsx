@@ -11,23 +11,18 @@ import {
 } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { forwardRef, Fragment, useCallback, useMemo, useRef } from 'react';
+import React, { forwardRef, Fragment, memo, useCallback, useMemo, useRef } from 'react';
 
-import type { ActivityComponentFactory } from 'botframework-webchat-api';
 import type { ActivityElementMap } from './Transcript/types';
 import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
 
 import { android } from './Utils/detectBrowser';
-import ActivityRow from './Transcript/ActivityRow';
 import BasicTypingIndicator from './BasicTypingIndicator';
 import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import isZeroOrPositive from './Utils/isZeroOrPositive';
-import KeyboardHelp from './Transcript/KeyboardHelp';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
-// TODO: [P2] #4133 Rename to "getTabbableElements".
-import tabbableElements from './Utils/tabbableElements';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
 import useActivityTreeWithRenderer from './providers/ActivityTree/useActivityTreeWithRenderer';
@@ -41,18 +36,23 @@ import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelati
 import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
 import usePrevious from './hooks/internal/usePrevious';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
-import useRegisterScrollRelative from './hooks/internal/useRegisterScrollRelative';
 import useRegisterScrollTo from './hooks/internal/useRegisterScrollTo';
 import useRegisterScrollToEnd from './hooks/internal/useRegisterScrollToEnd';
 import useStyleSet from './hooks/useStyleSet';
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
 import useValueRef from './hooks/internal/useValueRef';
+import TranscriptActivity from './TranscriptActivity';
+import useMemoized from './hooks/internal/useMemoized';
+import {
+  useRegisterScrollRelativeTranscript,
+  type TranscriptScrollRelativeOptions
+} from './hooks/transcriptScrollRelative';
+import useNonce from './hooks/internal/useNonce';
 
 const {
   useActivityKeys,
   useActivityKeysByRead,
-  useCreateActivityStatusRenderer,
   useCreateAvatarRenderer,
   useCreateScrollToEndButtonRenderer,
   useDirection,
@@ -93,17 +93,6 @@ const ROOT_STYLE = {
   }
 };
 
-type RenderingElement = {
-  activity: WebChatActivity;
-  callbackRef: (element: HTMLElement) => void;
-  hideTimestamp: boolean;
-  key: string;
-  renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
-  renderActivityStatus: (props: { hideTimestamp?: boolean }) => ReactNode;
-  renderAvatar: false | (() => Exclude<ReactNode, boolean | null | undefined>);
-  showCallout: boolean;
-};
-
 type ScrollBehavior = 'auto' | 'smooth';
 type ScrollToOptions = { behavior?: ScrollBehavior };
 type ScrollToPosition = { activityID?: string; scrollTop?: number };
@@ -123,7 +112,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const [direction] = useDirection();
     const [focusedActivityKey] = useFocusedActivityKey();
     const [focusedExplicitly] = useFocusedExplicitly();
-    const createActivityStatusRenderer = useCreateActivityStatusRenderer();
     const createAvatarRenderer = useCreateAvatarRenderer();
     const focus = useFocus();
     const focusByActivityKey = useFocusByActivityKey();
@@ -155,15 +143,20 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       [ref, rootElementRef]
     );
 
+    const createAvatarRendererMemoized = useMemoized(
+      (activity: WebChatActivity) => createAvatarRenderer({ activity }),
+      [createAvatarRenderer]
+    );
+
     // Flatten the tree back into an array with information related to rendering.
     const renderingElements = useMemo(() => {
-      const renderingElements: RenderingElement[] = [];
+      const renderingElements: ReactNode[] = [];
       const topSideBotNub = isZeroOrPositive(bubbleNubOffset);
       const topSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
 
       activityWithRendererTree.forEach(entriesWithSameSender => {
         const [[{ activity: firstActivity }]] = entriesWithSameSender;
-        const renderAvatar = createAvatarRenderer({ activity: firstActivity });
+        const renderAvatar = createAvatarRendererMemoized(firstActivity);
 
         entriesWithSameSender.forEach((entriesWithSameSenderAndStatus, indexWithinSenderGroup) => {
           const firstInSenderGroup = !indexWithinSenderGroup;
@@ -175,10 +168,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             const key: string = getKeyByActivity(activity);
             const lastInSenderAndStatusGroup =
               indexWithinSenderAndStatusGroup === entriesWithSameSenderAndStatus.length - 1;
-            const renderActivityStatus = createActivityStatusRenderer({
-              activity,
-              nextVisibleActivity: undefined
-            });
             const topSideNub = activity.from?.role === 'user' ? topSideUserNub : topSideBotNub;
 
             let showCallout: boolean;
@@ -200,27 +189,23 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
               showCallout = true;
             }
 
-            renderingElements.push({
-              activity,
-
-              // After the element is mounted, set it to activityElementsRef.
-              callbackRef: activityElement => {
-                activityElement
-                  ? activityElementMapRef.current.set(key, activityElement)
-                  : activityElementMapRef.current.delete(key);
-              },
-
-              // "hideTimestamp" is a render-time parameter for renderActivityStatus().
-              // If true, it will hide the timestamp, but it will continue to show the
-              // retry prompt. And show the screen reader version of the timestamp.
-              hideTimestamp:
-                hideAllTimestamps || indexWithinSenderAndStatusGroup !== entriesWithSameSenderAndStatus.length - 1,
-              key,
-              renderActivity,
-              renderActivityStatus,
-              renderAvatar,
-              showCallout
-            });
+            renderingElements.push(
+              <TranscriptActivity
+                activity={activity}
+                activityElementMapRef={activityElementMapRef}
+                // "hideTimestamp" is a render-time parameter for renderActivityStatus().
+                // If true, it will hide the timestamp, but it will continue to show the
+                // retry prompt. And show the screen reader version of the timestamp.
+                activityKey={key}
+                hideTimestamp={
+                  hideAllTimestamps || indexWithinSenderAndStatusGroup !== entriesWithSameSenderAndStatus.length - 1
+                }
+                key={key}
+                renderActivity={renderActivity}
+                renderAvatar={renderAvatar}
+                showCallout={showCallout}
+              />
+            );
           });
         });
       });
@@ -231,8 +216,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       activityWithRendererTree,
       bubbleFromUserNubOffset,
       bubbleNubOffset,
-      createActivityStatusRenderer,
-      createAvatarRenderer,
+      createAvatarRendererMemoized,
       getKeyByActivity,
       hideAllTimestamps,
       showAvatarInGroup
@@ -291,7 +275,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     );
 
     const scrollRelative = useCallback(
-      (direction: 'down' | 'up', { displacement }: { displacement?: number } = {}) => {
+      ({ direction, displacement }: TranscriptScrollRelativeOptions) => {
         const { current: rootElement } = rootElementRef;
 
         if (!rootElement) {
@@ -323,7 +307,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     // We call `useRegisterScrollXXX` to register a callback function, the `useScrollXXX` will multiplex the call into each instance of <BasicTranscript>.
     useRegisterScrollTo(scrollTo);
     useRegisterScrollToEnd(scrollToEnd);
-    useRegisterScrollRelative(scrollRelative);
+    useRegisterScrollRelativeTranscript(scrollRelative);
 
     const markActivityKeyAsRead = useMarkActivityKeyAsRead();
 
@@ -423,11 +407,15 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             // This is capturing plain ENTER.
             // When screen reader is not running, or screen reader is running outside of scan mode, the ENTER key will be captured here.
             if (!fromEndOfTranscriptIndicator) {
-              const body: HTMLElement = activityElementMapRef.current
+              const activityFocusTrapTarget: HTMLElement = activityElementMapRef.current
                 .get(focusedActivityKeyRef.current)
-                ?.querySelector('.webchat__basic-transcript__activity-body');
-
-              tabbableElements(body)[0]?.focus();
+                ?.querySelector('.webchat__basic-transcript__activity-focus-target');
+              // TODO: review focus approach:
+              // It is not clear how to handle focus without introducing something like context.
+              // Ideally we would want a way to interact with focus outside of React
+              // so it doesn't cause transcript re-renders while still having an ability
+              // to scope activity-related handlers and data in a single place.
+              activityFocusTrapTarget?.focus();
             }
 
             break;
@@ -537,27 +525,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
         {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
         <InternalTranscriptScrollable onFocusFiller={handleFocusFiller} terminatorRef={terminatorRef}>
-          {renderingElements.map(
-            ({
-              activity,
-              callbackRef,
-              hideTimestamp,
-              key,
-              renderActivity,
-              renderActivityStatus,
-              renderAvatar,
-              showCallout
-            }) => (
-              <ActivityRow activity={activity} key={key} ref={callbackRef}>
-                {renderActivity({
-                  hideTimestamp,
-                  renderActivityStatus,
-                  renderAvatar,
-                  showCallout
-                })}
-              </ActivityRow>
-            )
-          )}
+          {renderingElements}
         </InternalTranscriptScrollable>
         {!!renderingElements.length && (
           <Fragment>
@@ -876,12 +844,15 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
   const activityElementMapRef = useRef<ActivityElementMap>(new Map());
   const containerRef = useRef<HTMLDivElement>();
 
+  const [nonce] = useNonce();
   const scroller = useScroller(activityElementMapRef);
+
+  const [{ stylesRoot }] = useStyleOptions();
+  const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
 
   return (
     <TranscriptFocusComposer containerRef={containerRef}>
-      <ReactScrollToBottomComposer scroller={scroller}>
-        <KeyboardHelp />
+      <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
         <InternalTranscript activityElementMapRef={activityElementMapRef} className={className} ref={containerRef} />
       </ReactScrollToBottomComposer>
     </TranscriptFocusComposer>
@@ -896,4 +867,4 @@ BasicTranscript.propTypes = {
   className: PropTypes.string
 };
 
-export default BasicTranscript;
+export default memo(BasicTranscript);

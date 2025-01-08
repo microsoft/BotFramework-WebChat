@@ -29,5 +29,4 @@ type AdaptiveCardsStyleOptions = {
 
 type StrictAdaptiveCardsStyleOptions = Required<AdaptiveCardsStyleOptions>;
 
-export default AdaptiveCardsStyleOptions;
-export { StrictAdaptiveCardsStyleOptions };
+export type { AdaptiveCardsStyleOptions, StrictAdaptiveCardsStyleOptions };

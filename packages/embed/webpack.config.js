@@ -1,5 +1,4 @@
 const { resolve } = require('path');
-const { StatsWriterPlugin } = require('webpack-stats-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 let config = {
@@ -17,14 +16,11 @@ let config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
+      filename: 'gemini.html',
       inject: false,
       template: 'src/index.pug',
       title: 'Web Chat',
       xhtml: true
-    }),
-    new StatsWriterPlugin({
-      filename: 'stats.json',
-      transform: (_, opts) => JSON.stringify(opts.compiler.getStats().toJson({ chunkModules: true }), null, 2)
     })
   ]
 };

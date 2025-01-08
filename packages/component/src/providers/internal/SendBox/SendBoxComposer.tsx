@@ -1,18 +1,17 @@
 import { hooks } from 'botframework-webchat-api';
-import { useRefFrom } from 'use-ref-from';
 import classNames from 'classnames';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useRefFrom } from 'use-ref-from';
 
-import SendBoxContext from './private/Context';
+import { useStyleToEmotionObject } from '../../../hooks/internal/styleToEmotionObject';
+import useUniqueId from '../../../hooks/internal/useUniqueId';
 import useFocus from '../../../hooks/useFocus';
 import useScrollToEnd from '../../../hooks/useScrollToEnd';
-import useStyleToEmotionObject from '../../../hooks/internal/useStyleToEmotionObject';
-import useUniqueId from '../../../hooks/internal/useUniqueId';
+import { useLiveRegion } from '../../../providers/LiveRegionTwin';
+import SendBoxContext from './private/Context';
+import { type ContextType, type SendError } from './private/types';
 
-import type { ContextType, SendError } from './private/types';
-import type { PropsWithChildren } from 'react';
-
-const { useConnectivityStatus, useLocalizer, usePonyfill, useSendBoxValue, useSubmitSendBox } = hooks;
+const { useConnectivityStatus, useLocalizer, useSendBoxAttachments, useSendBoxValue, useSubmitSendBox } = hooks;
 
 const SUBMIT_ERROR_MESSAGE_STYLE = {
   '&.webchat__submit-error-message': {
@@ -32,13 +31,6 @@ const SUBMIT_ERROR_MESSAGE_STYLE = {
   }
 };
 
-// False positive: we are using `setTimeout` as a type.
-// eslint-disable-next-line no-restricted-globals
-type Timeout = ReturnType<typeof setTimeout>;
-
-const TIME_TO_QUEUE_ERROR_MESSAGE = 500;
-const TIME_TO_RESET_ERROR_MESSAGE = 50;
-
 // This component is marked as internal because it is not fully implemented and is not ready to be consumed publicly.
 // When it is done, it should provide and replace all the functionalities we did in Redux, including but not limited to:
 
@@ -55,9 +47,11 @@ const TIME_TO_RESET_ERROR_MESSAGE = 50;
 
 type ErrorMessageStringMap = ReadonlyMap<SendError, string>;
 
+type SendBoxComposerProps = Readonly<{ children?: ReactNode | undefined }>;
+
 // TODO: [P2] Complete this component.
-const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
-  const [{ clearTimeout, setTimeout }] = usePonyfill();
+const SendBoxComposer = ({ children }: SendBoxComposerProps) => {
+  const [attachments] = useSendBoxAttachments();
   const [connectivityStatus] = useConnectivityStatus();
   const [error, setError] = useState<SendError | false>(false);
   const [sendBoxValue] = useSendBoxValue();
@@ -67,7 +61,6 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   const scrollToEnd = useScrollToEnd();
   const styleToEmotionObject = useStyleToEmotionObject();
   const submitErrorMessageId = useUniqueId('webchat__send-box__error-message-id');
-  const timeoutRef = useRef<readonly [Timeout, Timeout] | undefined>(undefined);
 
   const errorMessageStringMap = useMemo<ErrorMessageStringMap>(
     () =>
@@ -81,19 +74,16 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   );
   const focusRef = useRefFrom(focus);
   const scrollToEndRef = useRefFrom(scrollToEnd);
-  const setErrorRef = useRef<typeof setError | undefined>(setError);
   const submitErrorMessageClassName = styleToEmotionObject(SUBMIT_ERROR_MESSAGE_STYLE) + '';
   const submitErrorMessageIdState = useMemo<readonly [string | undefined]>(
     () => Object.freeze([error ? submitErrorMessageId : undefined]) as readonly [string | undefined],
     [error, submitErrorMessageId]
   );
 
-  setErrorRef.current = setError;
-
   const submitErrorRef = useRefFrom<'empty' | 'offline' | undefined>(
     connectivityStatus !== 'connected' && connectivityStatus !== 'reconnected'
       ? 'offline'
-      : !sendBoxValue
+      : !sendBoxValue && !attachments.length
         ? 'empty'
         : undefined
   );
@@ -104,30 +94,14 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
         focusRef.current?.(setFocus === 'main' || setFocus === 'sendBox' ? setFocus : 'sendBoxWithoutKeyboard');
 
       const { current: submitError } = submitErrorRef;
+      setError(submitError ?? false);
 
-      if (submitError) {
-        timeoutRef.current && timeoutRef.current.forEach(clearTimeout);
-
-        setErrorRef.current?.(false);
-
-        timeoutRef.current = Object.freeze([
-          setTimeout(() => setErrorRef.current?.(submitError), TIME_TO_RESET_ERROR_MESSAGE),
-          setTimeout(() => setErrorRef.current?.(false), TIME_TO_QUEUE_ERROR_MESSAGE)
-        ]) as readonly [Timeout, Timeout];
-      } else {
+      if (!submitError) {
         scrollToEndRef.current?.();
         apiSubmitSendBox();
       }
     },
-    [apiSubmitSendBox, clearTimeout, focusRef, scrollToEndRef, setErrorRef, setTimeout, submitErrorRef, timeoutRef]
-  );
-
-  useEffect(
-    // Prevent `setTimeout()` from firing after unmount.
-    () => () => {
-      setErrorRef.current = undefined;
-    },
-    [setErrorRef]
+    [apiSubmitSendBox, focusRef, scrollToEndRef, submitErrorRef]
   );
 
   const context = useMemo(
@@ -138,6 +112,21 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
     [submit, submitErrorMessageIdState]
   );
 
+  const hasValue = !!sendBoxValue?.trim();
+
+  useEffect(() => {
+    if (error === 'empty' && hasValue) {
+      setError(false);
+    }
+  }, [error, hasValue]);
+
+  const errorMessage = error && errorMessageStringMap.get(error);
+
+  useLiveRegion(
+    () => errorMessage && <div className={classNames('webchat__submit-error-message__status')}>{errorMessage}</div>,
+    [errorMessage]
+  );
+
   return (
     <SendBoxContext.Provider value={context}>
       {children}
@@ -146,7 +135,6 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
         // "id" is required for "aria-errormessage" as IDREF.
         // eslint-disable-next-line react/forbid-dom-props
         id={submitErrorMessageId}
-        role="alert"
       >
         {error ? errorMessageStringMap.get(error) : ''}
       </span>
@@ -154,4 +142,6 @@ const SendBoxComposer = ({ children }: PropsWithChildren<{}>) => {
   );
 };
 
-export default SendBoxComposer;
+SendBoxComposer.displayName = 'SendBoxComposer';
+
+export default memo(SendBoxComposer);

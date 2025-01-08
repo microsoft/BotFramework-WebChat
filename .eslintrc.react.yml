@@ -78,6 +78,7 @@ rules:
   react/no-will-update-set-state: error
   react/prefer-es6-class: error
   react/prefer-read-only-props: error
+  react/prop-types: off # defaultProps/propTypes is being deprecated over TypeScript and default function parameters.
   react/require-default-props: error
   react/self-closing-comp: error
   react/sort-default-props: error
@@ -90,7 +91,9 @@ rules:
   react/void-dom-elements-no-children: error
 
   react-hooks/rules-of-hooks: error
-  react-hooks/exhaustive-deps: warn
+  react-hooks/exhaustive-deps:
+    - warn
+    - additionalHooks: ^(useLiveRegion|useMemoized|use(\w+)Updater)$
 
   # Conflicts with Adaptive Card schema.
   # react/forbid-prop-types: error

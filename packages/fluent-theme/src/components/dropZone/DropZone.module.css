@@ -1,0 +1,23 @@
+:global(.webchat-fluent) .sendbox__attachment-drop-zone {
+  background-color: var(--webchat-colorNeutralBackground4);
+  border-radius: inherit;
+  cursor: copy;
+  display: grid;
+  gap: 8px;
+  inset: 0;
+  place-content: center;
+  place-items: center;
+  position: absolute;
+  transition: all var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+}
+
+:global(.webchat-fluent) .sendbox__attachment-drop-zone--droppable {
+  background-color: var(--webchat-colorBrandBackground2Hover);
+}
+
+:global(.webchat-fluent) .sendbox__attachment-drop-zone-icon {
+  height: 36px;
+  /* Set "pointer-events: none" to ignore dragging over the icon. Otherwise, when dragging over the icon; it would disable the "--droppable" modifier.*/
+  pointer-events: none;
+  width: 36px;
+}

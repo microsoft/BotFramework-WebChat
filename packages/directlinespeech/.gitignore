@@ -1,6 +1,6 @@
 /.env
 /*.tgz
-/coverage
-/dist
-/lib
-/node_modules
+/coverage/
+/dist/
+/lib/
+/node_modules/

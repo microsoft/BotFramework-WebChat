@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        await host.windowSize(640, 720, document.getElementById('webchat'));
+
+        const {
+          WebChat: { renderWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          text: `On January 1, 2018, the closing stock price of Microsoft was **$85.95**. On December 1, 2021, the closing stock price was **$330.08**.
+
+Using these prices, here's how you can calculate the value of your investment:
+
+1. Determine the number of shares you could buy on 1/1/2018:
+
+\\[
+\\text{Number of shares} = \\frac{\\text{Investment amount}}{\\text{Stock price purchase date}} = \\frac{1000}{85.95}
+\\]
+
+2. Calculate the total value when selling the shares on 12/1/2021:
+
+\\[
+\\text{Total value} = \\text{Number of shares} \\times \\text{Stock price on sale date}
+\\]
+
+Let's do the math:
+
+1. Number of shares you could buy on 1/1/2018:
+
+\\[
+\\text{Number of shares} = \\frac{1000}{85.95} \\approx 11.63\\text{ shares}
+\\]
+
+2. Total value when selling the shares on 12/1/2021:
+
+\\[
+\\text{Total value} = 11.63 \\times 330.08 \\approx \\$3839.63
+\\]
+
+So, if you invested $1000 in Microsoft on January 1, 2018, and sold the shares on December 1, 2021, your investment would be worth approximately **$3839.63**. Please note that this calculation does not account for dividends, taxes, or transaction fees, which could affect the final amount. If you need a more precise calculation including these factors, I recommend consulting a financial advisor or using a detailed investment calculator.
+`,
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

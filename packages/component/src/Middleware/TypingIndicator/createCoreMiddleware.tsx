@@ -13,7 +13,7 @@ const DotIndicator = () => {
   const localize = useLocalizer();
 
   return (
-    <div className={classNames(typingIndicatorStyleSet + '', direction === 'rtl' && 'webchat__typingIndicator--rtl')}>
+    <div className={classNames(typingIndicatorStyleSet + '', direction === 'rtl' && 'webchat__typing-indicator--rtl')}>
       <TypingAnimation aria-label={localize('TYPING_INDICATOR_ALT')} />
     </div>
   );
@@ -24,8 +24,6 @@ export default function createCoreMiddleware(): TypingIndicatorMiddleware[] {
   return [
     () =>
       () =>
-      // This is not a React component.
-      // eslint-disable-next-line react/prop-types
       ({ visible }) =>
         visible && <DotIndicator />
   ];
