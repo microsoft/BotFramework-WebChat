@@ -1,4 +1,4 @@
-import type { WebChatActivity } from '../types/WebChatActivity';
+import { type WebChatActivity } from '../types/WebChatActivity';
 
 type IncomingActivityActionType = 'DIRECT_LINE/INCOMING_ACTIVITY';
 

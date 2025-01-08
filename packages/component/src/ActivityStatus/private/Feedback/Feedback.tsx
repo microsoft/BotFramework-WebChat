@@ -1,17 +1,16 @@
 import { hooks } from 'botframework-webchat-api';
 import { type OrgSchemaAction } from 'botframework-webchat-core';
-import React, { Fragment, memo, useEffect, useState, type PropsWithChildren } from 'react';
+import React, { Fragment, memo, useEffect, useState, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import FeedbackVoteButton from './private/VoteButton';
 
 const { usePonyfill, usePostActivity } = hooks;
 
-type Props = Readonly<
-  PropsWithChildren<{
-    actions: ReadonlySet<OrgSchemaAction>;
-  }>
->;
+type Props = Readonly<{
+  actions: ReadonlySet<OrgSchemaAction>;
+  children?: ReactNode | undefined;
+}>;
 
 const DEBOUNCE_TIMEOUT = 500;
 

@@ -1,6 +1,6 @@
 import useLiveRegionTwinContext from './private/useContext';
 
-import type { StaticElement } from './private/types';
+import { type StaticElement } from './private/types';
 
 /**
  * Queues a static element to the live region.

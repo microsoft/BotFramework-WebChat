@@ -1,5 +1,5 @@
 // TODO: [P0] #4133 Don't copy.
-import { RefObject, useMemo, useRef } from 'react';
+import { type RefObject, useMemo, useRef } from 'react';
 
 export default function useValueRef<T>(value: T): RefObject<T> {
   const ref = useRef<T>();

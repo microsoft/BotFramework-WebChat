@@ -1,8 +1,8 @@
 import { hooks } from 'botframework-webchat-api';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { MouseEventHandler, useCallback, VFC } from 'react';
+import React, { type MouseEventHandler, useCallback } from 'react';
 
 import useFocusVisible from '../hooks/internal/useFocusVisible';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
@@ -47,7 +47,7 @@ type SuggestedActionProps = {
   value?: any;
 };
 
-const SuggestedAction: VFC<SuggestedActionProps> = ({
+const SuggestedAction = ({
   buttonText,
   className,
   displayText,
@@ -58,7 +58,7 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
   textClassName,
   type,
   value
-}) => {
+}: SuggestedActionProps) => {
   const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();

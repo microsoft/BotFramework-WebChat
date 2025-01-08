@@ -1,4 +1,4 @@
-import { ActivityStatusMiddleware } from 'botframework-webchat-api';
+import { type ActivityStatusMiddleware } from 'botframework-webchat-api';
 import React, { Fragment } from 'react';
 
 import AbsoluteTime from '../../ActivityStatus/AbsoluteTime';

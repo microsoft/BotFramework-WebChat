@@ -1,16 +1,16 @@
 import { hooks as apiHooks, concatMiddleware, localize } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 
-import ReactWebChat, { ReactWebChatProps } from './ReactWebChat';
+import ReactWebChat, { type ReactWebChatProps } from './ReactWebChat';
 
-import Composer, { ComposerProps } from './Composer';
+import Composer, { type ComposerProps } from './Composer';
 
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 
 import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
-import BasicWebChat, { BasicWebChatProps } from './BasicWebChat';
+import BasicWebChat, { type BasicWebChatProps } from './BasicWebChat';
 import BasicSendBox from './SendBox/BasicSendBox';
 import BasicSendBoxToolbar from './SendBoxToolbar/BasicSendBoxToolbar';
 

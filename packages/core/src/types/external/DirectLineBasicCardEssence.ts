@@ -1,5 +1,5 @@
-import type { DirectLineCardImage } from './DirectLineCardImage';
-import type { DirectLineCardAction } from './DirectLineCardAction';
+import { type DirectLineCardImage } from './DirectLineCardImage';
+import { type DirectLineCardAction } from './DirectLineCardAction';
 
 // https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-cards.md#basic-cards
 type DirectLineBasicCardEssence = {

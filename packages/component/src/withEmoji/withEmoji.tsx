@@ -1,16 +1,16 @@
 import { useRefFrom } from 'use-ref-from';
 import mergeRefs from 'merge-refs';
 import React, {
-  type ChangeEvent,
-  type ComponentType,
-  type FocusEvent,
   forwardRef,
-  type KeyboardEvent,
-  type SyntheticEvent,
   useCallback,
   useMemo,
   useRef,
-  type Ref
+  type ChangeEvent,
+  type ComponentType,
+  type FocusEvent,
+  type KeyboardEvent,
+  type Ref,
+  type SyntheticEvent
 } from 'react';
 
 import useUndoStack from './private/useUndoStack';

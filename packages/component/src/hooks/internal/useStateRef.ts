@@ -1,6 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
-
-import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
+import { type Dispatch, type MutableRefObject, type SetStateAction, useCallback, useRef, useState } from 'react';
 
 export default function useStateRef<T>(
   initialValue?: T

@@ -1,5 +1,5 @@
 import { SET_SEND_BOX_ATTACHMENTS } from '../actions/setSendBoxAttachments';
-import type { SendBoxAttachment } from '../types/SendBoxAttachment';
+import { type SendBoxAttachment } from '../types/SendBoxAttachment';
 
 const DEFAULT_STATE: readonly SendBoxAttachment[] = Object.freeze([]);
 

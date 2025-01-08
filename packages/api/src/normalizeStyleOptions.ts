@@ -1,7 +1,8 @@
 import { warnOnce } from 'botframework-webchat-core';
 
 import defaultStyleOptions from './defaultStyleOptions';
-import StyleOptions, { StrictStyleOptions } from './StyleOptions';
+import { type StrictStyleOptions } from './StyleOptions';
+import type StyleOptions from './StyleOptions';
 
 const bubbleImageHeightDeprecation = warnOnce(
   '"styleOptions.bubbleImageHeight" has been deprecated. Use "styleOptions.bubbleImageMaxHeight" and "styleOptions.bubbleImageMinHeight" instead. This deprecation migration will be removed on or after 2026-07-05.'

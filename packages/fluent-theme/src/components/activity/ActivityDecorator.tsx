@@ -1,6 +1,6 @@
-import { WebChatActivity } from 'botframework-webchat-component';
+import { type WebChatActivity } from 'botframework-webchat-component';
 import cx from 'classnames';
-import React, { ReactNode, memo } from 'react';
+import React, { type ReactNode, memo } from 'react';
 import useVariants from '../../private/useVariants';
 import { useStyles, useVariantClassName } from '../../styles';
 import styles from './ActivityDecorator.module.css';

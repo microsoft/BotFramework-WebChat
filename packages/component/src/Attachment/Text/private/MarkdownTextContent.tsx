@@ -7,7 +7,7 @@ import {
   type WebChatActivity
 } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import type { Definition } from 'mdast';
+import { type Definition } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';

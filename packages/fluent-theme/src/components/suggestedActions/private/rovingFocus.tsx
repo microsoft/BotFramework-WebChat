@@ -1,13 +1,13 @@
 /* eslint-disable no-magic-numbers */
 import React, {
-  type MutableRefObject,
   createContext,
   memo,
   useCallback,
   useContext,
   useEffect,
   useMemo,
-  useRef
+  useRef,
+  type MutableRefObject
 } from 'react';
 
 type ItemRef = MutableRefObject<HTMLElement | undefined>;

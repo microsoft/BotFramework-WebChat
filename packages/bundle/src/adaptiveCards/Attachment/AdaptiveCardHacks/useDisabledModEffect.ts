@@ -4,8 +4,8 @@ import bunchUndos from '../../DOMManipulationWithUndo/bunchUndos';
 import durableDisableInputElementAccessiblyWithUndo from '../../DOMManipulationWithUndo/durableDisableInputElementAccessiblyWithUndo';
 import useAdaptiveCardModEffect from './private/useAdaptiveCardModEffect';
 
-import type { AdaptiveCard } from 'adaptivecards';
-import type { UndoFunction } from '../../DOMManipulationWithUndo/types/UndoFunction';
+import { type AdaptiveCard } from 'adaptivecards';
+import { type UndoFunction } from '../../DOMManipulationWithUndo/types/UndoFunction';
 
 // This is intended. This is a no-op function and intended to do nothing.
 // eslint-disable-next-line @typescript-eslint/no-empty-function

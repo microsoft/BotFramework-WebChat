@@ -1,5 +1,5 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
-import { StrictStyleOptions } from 'botframework-webchat-api';
+import { type StrictStyleOptions } from 'botframework-webchat-api';
 
 import CSSTokens from '../CSSTokens';
 import mirrorStyle from '../mirrorStyle';

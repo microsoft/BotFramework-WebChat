@@ -1,6 +1,6 @@
 import { call } from 'redux-saga/effects';
 
-import { Observable, Observer, Subscription } from '../../types/external/Observable';
+import { type Observable, type Observer, type Subscription } from '../../types/external/Observable';
 
 export default function observeOnceEffect<T>(observable: Observable<T>) {
   return call(function* observeOnce() {

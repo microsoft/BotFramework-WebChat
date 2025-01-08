@@ -1,4 +1,4 @@
-import { ActivityMiddleware } from 'botframework-webchat-api';
+import { type ActivityMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
 import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';

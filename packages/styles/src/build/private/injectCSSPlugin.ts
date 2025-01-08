@@ -1,5 +1,5 @@
 import { decode, encode } from '@jridgewell/sourcemap-codec';
-import type { Plugin } from 'esbuild';
+import { type Plugin } from 'esbuild';
 
 export interface InjectCSSPluginOptions {
   stylesPlaceholder: string;

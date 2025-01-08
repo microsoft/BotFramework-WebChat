@@ -4,7 +4,7 @@ import findDOMNodeOwner from './private/findDOMNodeOwner';
 import useAdaptiveCardModEffect from './private/useAdaptiveCardModEffect';
 import usePrevious from './private/usePrevious';
 
-import type { AdaptiveCard, CardObject } from 'adaptivecards';
+import { type AdaptiveCard, type CardObject } from 'adaptivecards';
 
 /**
  * Re-rendering: Last focused element must be persisted during render cycle.

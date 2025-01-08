@@ -1,4 +1,4 @@
-import type { SendBoxAttachment } from 'botframework-webchat-core';
+import { type SendBoxAttachment } from 'botframework-webchat-core';
 import { useMemo } from 'react';
 
 import { useSelector } from './internal/WebChatReduxContext';

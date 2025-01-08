@@ -1,5 +1,5 @@
-import type { ActivityComponentFactory } from 'botframework-webchat-api';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type ActivityComponentFactory } from 'botframework-webchat-api';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 type ActivityWithRenderer = {
   activity: WebChatActivity;

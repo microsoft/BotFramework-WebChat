@@ -2,7 +2,7 @@ import type clearSuggestedActions from '../actions/clearSuggestedActions';
 import { CLEAR_SUGGESTED_ACTIONS } from '../actions/clearSuggestedActions';
 import type setSuggestedActions from '../actions/setSuggestedActions';
 import { SET_SUGGESTED_ACTIONS } from '../actions/setSuggestedActions';
-import type { WebChatActivity } from '../types/WebChatActivity';
+import { type WebChatActivity } from '../types/WebChatActivity';
 
 type ClearSuggestedActions = ReturnType<typeof clearSuggestedActions>;
 type SetSuggestedActions = ReturnType<typeof setSuggestedActions>;

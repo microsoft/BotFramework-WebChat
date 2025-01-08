@@ -1,4 +1,4 @@
-import type { SendBoxAttachment } from '../types/SendBoxAttachment';
+import { type SendBoxAttachment } from '../types/SendBoxAttachment';
 
 const SET_SEND_BOX_ATTACHMENTS = 'WEB_CHAT/SET_SEND_BOX_ATTACHMENTS';
 

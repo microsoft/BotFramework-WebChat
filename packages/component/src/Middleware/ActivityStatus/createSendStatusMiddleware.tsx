@@ -1,4 +1,4 @@
-import { ActivityStatusMiddleware } from 'botframework-webchat-api';
+import { type ActivityStatusMiddleware } from 'botframework-webchat-api';
 import React from 'react';
 
 import { SENDING, SEND_FAILED } from '../../types/internal/SendStatus';

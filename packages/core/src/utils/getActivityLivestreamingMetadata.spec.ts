@@ -1,4 +1,4 @@
-import type { WebChatActivity } from '../types/WebChatActivity';
+import { type WebChatActivity } from '../types/WebChatActivity';
 import getActivityLivestreamingMetadata from './getActivityLivestreamingMetadata';
 
 describe.each([['with "streamId"' as const], ['without "streamId"' as const]])('activity %s', variant => {

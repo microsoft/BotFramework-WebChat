@@ -1,4 +1,4 @@
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 import usePrevious from '../../hooks/internal/usePrevious';
 import useActivities from '../../hooks/useActivities';

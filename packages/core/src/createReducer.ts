@@ -18,7 +18,7 @@ import shouldSpeakIncomingActivity from './reducers/shouldSpeakIncomingActivity'
 import suggestedActions from './reducers/suggestedActions';
 import suggestedActionsOriginActivity from './reducers/suggestedActionsOriginActivity';
 
-import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import { type GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 
 export default function createReducer(ponyfill: GlobalScopePonyfill) {
   return combineReducers({

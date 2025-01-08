@@ -1,24 +1,28 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
-import { AdaptiveCard, Action as AdaptiveCardAction, OpenUrlAction, SubmitAction } from 'adaptivecards';
+import {
+  type Action as AdaptiveCardAction,
+  type AdaptiveCard,
+  type OpenUrlAction,
+  type SubmitAction
+} from 'adaptivecards';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {
-  KeyboardEventHandler,
-  MouseEventHandler,
-  VFC,
   useCallback,
   useLayoutEffect,
   useMemo,
-  useRef
+  useRef,
+  type KeyboardEventHandler,
+  type MouseEventHandler
 } from 'react';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
-import { BotFrameworkCardAction } from './AdaptiveCardBuilder';
+import { type BotFrameworkCardAction } from './AdaptiveCardBuilder';
 import useValueRef from './AdaptiveCardHacks/private/useValueRef';
 import useActionShouldBePushButtonModEffect from './AdaptiveCardHacks/useActionShouldBePushButtonModEffect';
 import useActiveElementModEffect from './AdaptiveCardHacks/useActiveElementModEffect';
@@ -32,19 +36,19 @@ const { useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollTo
 
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
-type AdaptiveCardRendererProps = {
+type AdaptiveCardRendererProps = Readonly<{
   actionPerformedClassName?: string;
   adaptiveCard: AdaptiveCard;
   disabled?: boolean;
   tapAction?: DirectLineCardAction;
-};
+}>;
 
-const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
+const AdaptiveCardRenderer = ({
   actionPerformedClassName,
   adaptiveCard,
   disabled: disabledFromProps,
   tapAction
-}) => {
+}: AdaptiveCardRendererProps) => {
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();

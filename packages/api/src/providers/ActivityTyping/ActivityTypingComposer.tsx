@@ -6,7 +6,7 @@ import numberWithInfinity from '../../hooks/private/numberWithInfinity';
 import useActivities from '../../hooks/useActivities';
 import usePonyfill from '../../hooks/usePonyfill';
 import useUpsertedActivities from '../../providers/ActivityListener/useUpsertedActivities';
-import ActivityTypingContext, { ActivityTypingContextType } from './private/Context';
+import ActivityTypingContext, { type ActivityTypingContextType } from './private/Context';
 import useMemoWithPrevious from './private/useMemoWithPrevious';
 import { type AllTyping } from './types/AllTyping';
 

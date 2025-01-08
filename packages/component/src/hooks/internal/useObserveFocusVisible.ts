@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
+import { type MutableRefObject, type RefObject, useCallback, useEffect, useMemo, useRef } from 'react';
 
 import supportPseudoClass from '../../Utils/supportPseudoClass';
 import useNonce from './useNonce';

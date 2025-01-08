@@ -1,4 +1,4 @@
-import type { DirectLineCardAction } from './DirectLineCardAction';
+import { type DirectLineCardAction } from './DirectLineCardAction';
 
 type DirectLineCardImage = {
   alt: string;

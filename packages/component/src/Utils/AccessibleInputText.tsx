@@ -1,11 +1,11 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
 
 import React, {
-  ChangeEventHandler,
-  FocusEventHandler,
   forwardRef,
-  KeyboardEventHandler,
-  ReactEventHandler,
+  type ChangeEventHandler,
+  type FocusEventHandler,
+  type KeyboardEventHandler,
+  type ReactEventHandler,
   useRef
 } from 'react';
 

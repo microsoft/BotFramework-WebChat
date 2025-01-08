@@ -1,6 +1,7 @@
-import StyleOptions, { StrictStyleOptions } from './StyleOptions';
+import { type StrictStyleOptions } from './StyleOptions';
+import type StyleOptions from './StyleOptions';
 import defaultStyleOptions from './defaultStyleOptions';
-import Composer, { ComposerProps } from './hooks/Composer';
+import Composer, { type ComposerProps } from './hooks/Composer';
 import * as hooks from './hooks/index';
 import {
   SendBoxMiddlewareProxy,
@@ -22,24 +23,29 @@ import { type DebouncedNotification, type DebouncedNotifications } from './hooks
 import { type PostActivityFile } from './hooks/useSendFiles';
 import { localize } from './localization/Localize';
 import normalizeStyleOptions from './normalizeStyleOptions';
-import ActivityMiddleware, { type ActivityComponentFactory } from './types/ActivityMiddleware';
+import type ActivityMiddleware from './types/ActivityMiddleware';
+import { type ActivityComponentFactory } from './types/ActivityMiddleware';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from './types/ActivityStatusMiddleware';
-import AttachmentForScreenReaderMiddleware, {
-  AttachmentForScreenReaderComponentFactory
-} from './types/AttachmentForScreenReaderMiddleware';
-import AttachmentMiddleware, { type RenderAttachment } from './types/AttachmentMiddleware';
-import AvatarMiddleware, { type AvatarComponentFactory } from './types/AvatarMiddleware';
-import CardActionMiddleware, { type PerformCardAction } from './types/CardActionMiddleware';
+import { type AttachmentForScreenReaderComponentFactory } from './types/AttachmentForScreenReaderMiddleware';
+import type AttachmentForScreenReaderMiddleware from './types/AttachmentForScreenReaderMiddleware';
+import type AttachmentMiddleware from './types/AttachmentMiddleware';
+import { type RenderAttachment } from './types/AttachmentMiddleware';
+import type AvatarMiddleware from './types/AvatarMiddleware';
+import { type AvatarComponentFactory } from './types/AvatarMiddleware';
+import type CardActionMiddleware from './types/CardActionMiddleware';
+import { type PerformCardAction } from './types/CardActionMiddleware';
 import { type ContextOf } from './types/ContextOf';
-import GroupActivitiesMiddleware, { type GroupActivities } from './types/GroupActivitiesMiddleware';
+import type GroupActivitiesMiddleware from './types/GroupActivitiesMiddleware';
+import { type GroupActivities } from './types/GroupActivitiesMiddleware';
 import { type Notification } from './types/Notification';
-import ScrollToEndButtonMiddleware, {
-  type ScrollToEndButtonComponentFactory
-} from './types/ScrollToEndButtonMiddleware';
+import type ScrollToEndButtonMiddleware from './types/ScrollToEndButtonMiddleware';
+import { type ScrollToEndButtonComponentFactory } from './types/ScrollToEndButtonMiddleware';
 import { type SendStatus } from './types/SendStatus';
-import ToastMiddleware, { type RenderToast } from './types/ToastMiddleware';
+import type ToastMiddleware from './types/ToastMiddleware';
+import { type RenderToast } from './types/ToastMiddleware';
 import { type Typing } from './types/Typing';
-import TypingIndicatorMiddleware, { type RenderTypingIndicator } from './types/TypingIndicatorMiddleware';
+import type TypingIndicatorMiddleware from './types/TypingIndicatorMiddleware';
+import { type RenderTypingIndicator } from './types/TypingIndicatorMiddleware';
 import { type WebSpeechPonyfill } from './types/WebSpeechPonyfill';
 import { type WebSpeechPonyfillFactory } from './types/WebSpeechPonyfillFactory';
 

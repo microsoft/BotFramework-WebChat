@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
-import type { WebChatActivity } from 'botframework-webchat-core';
-import type { RefObject } from 'react';
+import { type WebChatActivity } from 'botframework-webchat-core';
+import { type RefObject } from 'react';
 import React, { memo, useEffect, useMemo, useRef } from 'react';
 
 import LiveRegionActivity from '../LiveRegion/LiveRegionActivity';
@@ -12,7 +12,7 @@ import LiveRegionSendFailed from './LiveRegion/SendFailed';
 import isPresentational from './LiveRegion/isPresentational';
 import useTypistNames from './useTypistNames';
 
-import type { ActivityElementMap } from './types';
+import { type ActivityElementMap } from './types';
 
 const { useActivities, useGetKeyByActivity, useLocalizer } = hooks;
 

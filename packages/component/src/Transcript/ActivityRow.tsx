@@ -12,13 +12,13 @@ import useActivityAccessibleName from './useActivityAccessibleName';
 import useFocusByActivityKey from '../providers/TranscriptFocus/useFocusByActivityKey';
 import useGetDescendantIdByActivityKey from '../providers/TranscriptFocus/useGetDescendantIdByActivityKey';
 
-import type { MouseEventHandler, PropsWithChildren } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type MouseEventHandler, type ReactNode } from 'react';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import { useRefFrom } from 'use-ref-from';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
-type ActivityRowProps = PropsWithChildren<{ activity: WebChatActivity }>;
+type ActivityRowProps = Readonly<{ activity: WebChatActivity; children?: ReactNode | undefined }>;
 
 const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, children }, ref) => {
   const [activeDescendantId] = useActiveDescendantId();

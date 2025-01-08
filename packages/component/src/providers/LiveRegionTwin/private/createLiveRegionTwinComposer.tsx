@@ -5,7 +5,7 @@ import { useRefFrom } from 'use-ref-from';
 import { type LiveRegionTwinContextType } from './LiveRegionTwinComposer';
 import LiveRegionTwinContainer from './LiveRegionTwinContainer';
 
-import type { StaticElement, StaticElementEntry } from './types';
+import { type StaticElement, type StaticElementEntry } from './types';
 
 const { usePonyfill } = hooks;
 

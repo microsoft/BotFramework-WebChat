@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 
-import type { PropsOf } from '../../types';
+import { type PropsOf } from '../../types';
 import TelephoneKeypad from './private/TelephoneKeypad';
 import useShown from './useShown';
 

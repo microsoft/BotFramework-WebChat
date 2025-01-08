@@ -3,8 +3,6 @@
 import PropTypes from 'prop-types';
 import React, { forwardRef, memo } from 'react';
 
-import type { VFC } from 'react';
-
 import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 
 const ROOT_STYLE = {
@@ -23,13 +21,13 @@ const ROOT_STYLE = {
   width: 1
 };
 
-type ScreenReaderTextProps = {
+type ScreenReaderTextProps = Readonly<{
   'aria-hidden'?: boolean;
   id?: string;
   text: string;
-};
+}>;
 
-const ScreenReaderText: VFC<ScreenReaderTextProps> = forwardRef<HTMLDivElement, ScreenReaderTextProps>(
+const ScreenReaderText = forwardRef<HTMLDivElement, ScreenReaderTextProps>(
   ({ 'aria-hidden': ariaHidden, id, text }, ref) => {
     const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 

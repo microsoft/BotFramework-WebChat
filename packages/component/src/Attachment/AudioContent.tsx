@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 
-type AudioContentProps = {
+type AudioContentProps = Readonly<{
   alt?: string;
   autoPlay?: boolean;
   loop?: boolean;
   poster?: string;
   src: string;
-};
+}>;
 
-const AudioContent: FC<AudioContentProps> = ({ alt, autoPlay, loop, src }) => {
+const AudioContent = ({ alt, autoPlay, loop, src }: AudioContentProps) => {
   const [{ audioContent: audioContentStyleSet }] = useStyleSet();
 
   return (

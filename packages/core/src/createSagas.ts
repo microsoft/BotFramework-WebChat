@@ -23,8 +23,8 @@ import stopDictateOnCardActionSaga from './sagas/stopDictateOnCardActionSaga';
 import stopSpeakingActivityOnInputSaga from './sagas/stopSpeakingActivityOnInputSaga';
 import submitSendBoxSaga from './sagas/submitSendBoxSaga';
 
-import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
-import type { Saga } from 'redux-saga';
+import { type GlobalScopePonyfill } from './types/GlobalScopePonyfill';
+import { type Saga } from 'redux-saga';
 
 type CreateSagasOptions = {
   ponyfill: GlobalScopePonyfill;

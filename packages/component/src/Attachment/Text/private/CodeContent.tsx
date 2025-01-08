@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { Fragment, memo, ReactNode } from 'react';
+import React, { Fragment, memo, type ReactNode } from 'react';
 
 import useCodeBlockTag from '../../../providers/CustomElements/useCodeBlockTagName';
 

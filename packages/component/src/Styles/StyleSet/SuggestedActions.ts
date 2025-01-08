@@ -1,7 +1,7 @@
 /* eslint no-empty-pattern: "off" */
 /* eslint no-magic-numbers: ["error", { "ignore": [1.5, 2] }] */
 
-import { StrictStyleOptions } from 'botframework-webchat-api';
+import { type StrictStyleOptions } from 'botframework-webchat-api';
 
 export default function createSuggestedActionsStyle({
   paddingRegular,

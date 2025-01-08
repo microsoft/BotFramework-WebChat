@@ -14,7 +14,7 @@ import useSubmit from '../providers/internal/SendBox/useSubmit';
 import withEmoji from '../withEmoji/withEmoji';
 import AutoResizeTextArea from './AutoResizeTextArea';
 
-import type { MutableRefObject } from 'react';
+import { type MutableRefObject } from 'react';
 import testIds from '../testIds';
 
 const { useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions, useUIState } = hooks;

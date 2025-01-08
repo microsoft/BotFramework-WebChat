@@ -1,9 +1,9 @@
 /* eslint-disable class-methods-use-this */
 import { hooks } from 'botframework-webchat-api';
-import { ReactNode, useMemo, useRef } from 'react';
+import { type ReactNode, useMemo, useRef } from 'react';
 
 import { useStyleSet } from '../../../hooks';
-import { defaultHighlightCode, HighlightCodeFn } from '../../../hooks/internal/codeHighlighter';
+import { defaultHighlightCode, type HighlightCodeFn } from '../../../hooks/internal/codeHighlighter';
 import { parseDocumentFragmentFromString, useCodeHighlighter } from '../../../internal';
 
 const { useStyleOptions, useLocalizer } = hooks;

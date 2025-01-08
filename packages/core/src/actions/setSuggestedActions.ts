@@ -1,5 +1,5 @@
-import type { DirectLineCardAction } from '../types/external/DirectLineCardAction';
-import type { WebChatActivity } from '../types/WebChatActivity';
+import { type DirectLineCardAction } from '../types/external/DirectLineCardAction';
+import { type WebChatActivity } from '../types/WebChatActivity';
 
 const EMPTY_ARRAY: readonly DirectLineCardAction[] = Object.freeze([]);
 
