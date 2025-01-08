@@ -1,6 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import { type StrictStyleOptions } from 'botframework-webchat-api';
+import CSSTokens from '../CSSTokens';
 
 export default function createStackedLayoutStyle({
   bubbleAttachmentMaxWidth,

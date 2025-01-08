@@ -1,6 +1,6 @@
 import { createElement, memo, useMemo } from 'react';
 
-import { CodeBlockProps } from './customElements/CodeBlock';
+import { type CodeBlockProps } from './customElements/CodeBlock';
 import useCustomElementsContext from './private/useCustomElementsContext';
 
 export default function useCodeBlockTag() {

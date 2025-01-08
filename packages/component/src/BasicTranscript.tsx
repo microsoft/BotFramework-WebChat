@@ -1,3 +1,4 @@
+import { type WebChatActivity } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
 import {
   Composer as ReactScrollToBottomComposer,
@@ -11,11 +12,17 @@ import {
 } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { forwardRef, Fragment, memo, useCallback, useMemo, useRef } from 'react';
-
-import type { ActivityElementMap } from './Transcript/types';
-import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import React, {
+  forwardRef,
+  Fragment,
+  memo,
+  useCallback,
+  useMemo,
+  useRef,
+  type KeyboardEventHandler,
+  type MutableRefObject,
+  type ReactNode
+} from 'react';
 
 import { android } from './Utils/detectBrowser';
 import BasicTypingIndicator from './BasicTypingIndicator';
@@ -49,6 +56,7 @@ import {
   type TranscriptScrollRelativeOptions
 } from './hooks/transcriptScrollRelative';
 import useNonce from './hooks/internal/useNonce';
+import { type ActivityElementMap } from './Transcript/types';
 
 const {
   useActivityKeys,

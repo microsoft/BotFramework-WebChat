@@ -30,7 +30,8 @@ import {
 import renderMarkdown from '../markdown/renderMarkdown';
 import coreRenderWebChat from '../renderWebChat';
 import { type AdaptiveCardsPackage } from '../types/AdaptiveCardsPackage';
-import FullBundleStyleOptions, { StrictFullBundleStyleOptions } from '../types/FullBundleStyleOptions';
+import { type StrictFullBundleStyleOptions } from '../types/FullBundleStyleOptions';
+import type FullBundleStyleOptions from '../types/FullBundleStyleOptions';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 

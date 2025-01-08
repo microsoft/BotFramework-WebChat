@@ -4,7 +4,7 @@ import React, { useMemo, type ReactNode } from 'react';
 
 import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';
 import ActivityTreeContext from './private/Context';
-import { ActivityWithRenderer, ReadonlyActivityTree } from './private/types';
+import { type ActivityWithRenderer, type ReadonlyActivityTree } from './private/types';
 import useActivitiesWithRenderer from './private/useActivitiesWithRenderer';
 import useActivityTreeWithRenderer from './private/useActivityTreeWithRenderer';
 import useActivityTreeContext from './private/useContext';

@@ -9,7 +9,7 @@ import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
 
 import { math, mathHtml } from './mathExtension';
-import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
+import betterLinkDocumentMod, { type BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
 import { pre as respectCRLFPre } from './private/respectCRLF';
 

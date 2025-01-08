@@ -1,4 +1,4 @@
-import { AttachmentForScreenReaderMiddleware, AttachmentMiddleware } from 'botframework-webchat-api';
+import { type AttachmentForScreenReaderMiddleware, type AttachmentMiddleware } from 'botframework-webchat-api';
 import { type HTMLContentTransformMiddleware } from 'botframework-webchat-component';
 import { useMemo } from 'react';
 

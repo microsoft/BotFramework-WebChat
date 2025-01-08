@@ -1,5 +1,5 @@
 import React, { memo, useMemo, type CSSProperties } from 'react';
-import { WebChatActivity, hooks } from 'botframework-webchat-component';
+import { type WebChatActivity, hooks } from 'botframework-webchat-component';
 
 import useActivityStyleOptions from './private/useActivityStyleOptions';
 import isAIGeneratedActivity from './private/isAIGeneratedActivity';

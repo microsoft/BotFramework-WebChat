@@ -3,7 +3,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { ReactNode, memo } from 'react';
+import React, { type ReactNode, memo } from 'react';
 
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import useStyleSet from '../hooks/useStyleSet';

@@ -1,12 +1,12 @@
-import type {
-  ComposerProps as APIComposerProps,
-  SendBoxMiddleware,
-  SendBoxToolbarMiddleware,
+import {
   Composer as APIComposer,
   hooks,
   initSendBoxMiddleware,
   initSendBoxToolbarMiddleware,
-  WebSpeechPonyfillFactory
+  type ComposerProps as APIComposerProps,
+  type SendBoxMiddleware,
+  type SendBoxToolbarMiddleware,
+  type WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
 import { DecoratorComposer } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';

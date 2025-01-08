@@ -1,4 +1,4 @@
-import { StrictStyleOptions } from 'botframework-webchat-api';
+import { type StrictStyleOptions } from 'botframework-webchat-api';
 import CSSTokens from '../CSSTokens';
 
 export default function createAvatarStyle({ avatarBorderRadius }: StrictStyleOptions) {

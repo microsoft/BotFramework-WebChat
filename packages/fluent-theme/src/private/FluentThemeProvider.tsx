@@ -9,7 +9,7 @@ import { PrimarySendBox } from '../components/sendBox';
 import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
 import { createStyles } from '../styles';
-import VariantComposer, { VariantList } from './VariantComposer';
+import VariantComposer, { type VariantList } from './VariantComposer';
 import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
 
 const { ThemeProvider } = Components;

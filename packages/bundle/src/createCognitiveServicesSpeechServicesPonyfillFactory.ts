@@ -1,11 +1,11 @@
-import { WebSpeechPonyfillFactory } from 'botframework-webchat-api';
-import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
+import { type WebSpeechPonyfillFactory } from 'botframework-webchat-api';
+import { type AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 import { createSpeechServicesPonyfill } from 'web-speech-cognitive-services';
 
 import createMicrophoneAudioConfigAndAudioContext from './speech/createMicrophoneAudioConfigAndAudioContext';
-import CognitiveServicesAudioOutputFormat from './types/CognitiveServicesAudioOutputFormat';
-import CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
-import CognitiveServicesTextNormalization from './types/CognitiveServicesTextNormalization';
+import type CognitiveServicesAudioOutputFormat from './types/CognitiveServicesAudioOutputFormat';
+import type CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
+import type CognitiveServicesTextNormalization from './types/CognitiveServicesTextNormalization';
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioConfig,

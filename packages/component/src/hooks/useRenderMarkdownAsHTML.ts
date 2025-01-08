@@ -1,5 +1,5 @@
 import { cx } from '@emotion/css';
-import { hooks, StrictStyleOptions } from 'botframework-webchat-api';
+import { hooks, type StrictStyleOptions } from 'botframework-webchat-api';
 import { useMemo } from 'react';
 
 import { useTransformHTMLContent } from '../providers/HTMLContentTransformCOR/index';
