@@ -69,7 +69,7 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
 
     const handleDocumentDrop = (event: DragEvent) => {
       if (!dropZoneRef.current?.contains(event.target as Node)) {
-        handleDragEnd()
+        handleDragEnd();
       }
     };
 
