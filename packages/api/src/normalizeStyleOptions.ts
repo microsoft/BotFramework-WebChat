@@ -4,6 +4,18 @@ import defaultStyleOptions from './defaultStyleOptions';
 import { type StrictStyleOptions } from './StyleOptions';
 import type StyleOptions from './StyleOptions';
 
+const bubbleImageHeightDeprecation = warnOnce(
+  '"styleOptions.bubbleImageHeight" has been deprecated. Use "styleOptions.bubbleImageMaxHeight" and "styleOptions.bubbleImageMinHeight" instead. This deprecation migration will be removed on or after 2026-07-05.'
+);
+
+const bubbleMaxWidthDeprecation = warnOnce(
+  '"styleOptions.bubbleMaxWidth" has been deprecated. Use "styleOptions.bubbleAttachmentMaxWidth" and "styleOptions.bubbleMessageMaxWidth" instead. This deprecation migration will be removed on or after 2026-07-05.'
+);
+
+const bubbleMinWidthDeprecation = warnOnce(
+  '"styleOptions.bubbleMinWidth" has been deprecated. Use "styleOptions.bubbleAttachmentMinWidth" and "styleOptions.bubbleMessageMinWidth" instead. This deprecation migration will be removed on or after 2026-07-05.'
+);
+
 const hideScrollToEndButtonDeprecation = warnOnce(
   '"styleOptions.hideScrollToEndButton" has been deprecated. To hide scroll to end button, set "scrollToEndBehavior" to false. This deprecation migration will be removed on or after 2023-06-02.'
 );
@@ -176,6 +188,39 @@ export default function normalizeStyleOptions({
 
     filledOptions.suggestedActionTextColorOnDisabled =
       options.suggestedActionTextColorOnDisabled || options.suggestedActionDisabledTextColor;
+  }
+
+  if (options.bubbleImageHeight) {
+    bubbleImageHeightDeprecation();
+
+    filledOptions.bubbleImageMaxHeight = options.bubbleImageHeight;
+    filledOptions.bubbleImageMinHeight = options.bubbleImageHeight;
+
+    filledOptions.bubbleImageHeight = undefined;
+  }
+
+  if (typeof options.bubbleAttachmentMaxWidth === 'undefined' && options.bubbleMaxWidth) {
+    bubbleMaxWidthDeprecation();
+    filledOptions.bubbleAttachmentMaxWidth = options.bubbleMaxWidth;
+    filledOptions.bubbleMaxWidth = undefined;
+  }
+
+  if (typeof options.bubbleAttachmentMinWidth === 'undefined' && options.bubbleMinWidth) {
+    bubbleMinWidthDeprecation();
+    filledOptions.bubbleAttachmentMinWidth = options.bubbleMinWidth;
+    filledOptions.bubbleMinWidth = undefined;
+  }
+
+  if (typeof options.bubbleMessageMaxWidth === 'undefined' && options.bubbleMaxWidth) {
+    bubbleMaxWidthDeprecation();
+    filledOptions.bubbleMessageMaxWidth = options.bubbleMaxWidth;
+    filledOptions.bubbleMaxWidth = undefined;
+  }
+
+  if (typeof options.bubbleMessageMinWidth === 'undefined' && options.bubbleMinWidth) {
+    bubbleMinWidthDeprecation();
+    filledOptions.bubbleMessageMinWidth = options.bubbleMinWidth;
+    filledOptions.bubbleMinWidth = undefined;
   }
 
   return {

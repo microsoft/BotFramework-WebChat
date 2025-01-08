@@ -3,7 +3,7 @@ import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React from 'react';
 
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 import useErrorMessageId from '../providers/internal/SendBox/useErrorMessageId';
@@ -71,6 +71,7 @@ const BasicSendBox = ({ className }: BasicSendBoxProps) => {
 
   return (
     <div
+      aria-describedby={errorMessageId}
       aria-errormessage={errorMessageId}
       aria-invalid={!!errorMessageId}
       className={classNames('webchat__send-box', sendBoxStyleSet + '', rootClassName + '', (className || '') + '')}

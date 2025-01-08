@@ -17,7 +17,7 @@ const handleDragOver: DragEventHandler<HTMLDivElement> = event => {
 
 // Notes: For files dragging from outside of browser, it only tell us if it is a "File" instead of "text/plain" or "text/uri-list".
 //        For images dragging inside of browser, it only tell us that it is "text/plain", "text/uri-list" and "text/html". But not "image/*".
-//        So we cannot whitelist what is droppable.
+//        So we cannot allowlist what is droppable.
 //        We are using case-insensitive of type "files" so we can drag in WebDriver.
 const isFilesTransferEvent = (event: DragEvent) =>
   !!event.dataTransfer?.types?.some(type => type.toLowerCase() === 'files');
@@ -62,12 +62,19 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
 
     const handleDragLeave = () => --entranceCounter <= 0 && setDropZoneState(false);
 
+    const handleDragEnd = () => {
+      entranceCounter = 0;
+      setDropZoneState(false);
+    };
+
     document.addEventListener('dragenter', handleDragEnter, false);
     document.addEventListener('dragleave', handleDragLeave, false);
+    document.addEventListener('dragend', handleDragEnd, false);
 
     return () => {
       document.removeEventListener('dragenter', handleDragEnter);
       document.removeEventListener('dragleave', handleDragLeave);
+      document.removeEventListener('dragend', handleDragEnd);
     };
   }, [setDropZoneState]);
 

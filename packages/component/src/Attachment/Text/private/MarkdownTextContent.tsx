@@ -9,7 +9,7 @@ import {
 import classNames from 'classnames';
 import type { Definition } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
-import React, { memo, useCallback, useMemo, type MouseEventHandler } from 'react';
+import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
@@ -18,8 +18,12 @@ import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import { type PropsOf } from '../../../types/PropsOf';
+import ActivityCopyButton from './ActivityCopyButton';
+import ActivityViewCodeButton from './ActivityViewCodeButton';
 import CitationModalContext from './CitationModalContent';
 import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './MessageSensitivityLabel';
+import isAIGeneratedActivity from './isAIGeneratedActivity';
+import isBasedOnSoftwareSourceCode from './isBasedOnSoftwareSourceCode';
 import isHTMLButtonElement from './isHTMLButtonElement';
 
 const { useLocalizer } = hooks;
@@ -34,6 +38,7 @@ type Entry = {
 
 type Props = Readonly<{
   activity: WebChatActivity;
+  children?: ReactNode | undefined;
   markdown: string;
 }>;
 
@@ -41,7 +46,7 @@ function isCitationURL(url: string): boolean {
   return onErrorResumeNext(() => new URL(url))?.protocol === 'cite:';
 }
 
-const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
+const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
   const [
     {
       citationModalDialog: citationModalDialogStyleSet,
@@ -49,9 +54,10 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
       textContent: textContentStyleSet
     }
   ] = useStyleSet();
+  const contentRef = useRef<HTMLDivElement>(null);
   const localize = useLocalizer();
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
-  const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
   const showModal = useShowModal();
 
   const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
@@ -98,7 +104,7 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
                 messageCitation?.appearance && !messageCitation.appearance.url
                   ? () =>
                       showClaimModal(
-                        markdownDefinition.title,
+                        messageCitation.appearance.name ?? markdownDefinition.title,
                         messageCitation.appearance.text,
                         messageCitation.alternateName
                       )
@@ -118,7 +124,12 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
               claim: rootLevelClaim,
               key: markdownDefinition.url,
               handleClick: isCitationURL(rootLevelClaim['@id'])
-                ? () => showClaimModal(markdownDefinition.title, rootLevelClaim.text, rootLevelClaim.alternateName)
+                ? () =>
+                    showClaimModal(
+                      rootLevelClaim.name ?? markdownDefinition.title,
+                      rootLevelClaim.text,
+                      rootLevelClaim.alternateName
+                    )
                 : undefined,
               markdownDefinition
             };
@@ -180,20 +191,28 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
     }
   }, [messageThing]);
 
+  // The main text of the citation entry (e.g. the title of the document). Used as the content of the main link and, if it exists, the header of the popup window.
+  const getEntryMainText = (entry: Entry) =>
+    entry.claim?.name ?? entry.claim?.appearance?.name ?? entry.markdownDefinition.title;
+
+  // Optional alternate name for the entry, used as a subtitle beneath the link
+  const getEntryBadgeName = (entry: Entry) => entry.claim?.appearance?.usageInfo?.name;
+
+  // Secondary text describing the citation, used in the a11y description (i.e. the div's title attribute)
+  const getEntryDescription = (entry: Entry) => entry.claim?.appearance?.usageInfo?.description;
+
   return (
     <div
       className={classNames('webchat__text-content', 'webchat__text-content--is-markdown', textContentStyleSet + '')}
     >
       <div
-        className={classNames(
-          'webchat__text-content__markdown',
-          'webchat__render-markdown',
-          renderMarkdownStyleSet + ''
-        )}
+        className={classNames('webchat__text-content__markdown', renderMarkdownStyleSet + '')}
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={dangerouslySetInnerHTML}
         onClick={handleClick}
+        ref={contentRef}
       />
+      {children}
       {!!entries.length && (
         <LinkDefinitions<MessageSensitivityLabelProps>
           accessoryComponentType={messageSensitivityLabelProps && MessageSensitivityLabel}
@@ -201,19 +220,31 @@ const MarkdownTextContent = memo(({ activity, markdown }: Props) => {
         >
           {entries.map(entry => (
             <LinkDefinitionItem
-              badgeName={entry.claim?.appearance?.usageInfo?.name}
-              badgeTitle={[entry.claim?.appearance?.usageInfo?.name, entry.claim?.appearance?.usageInfo?.description]
-                .filter(Boolean)
-                .join('\n\n')}
+              badgeName={getEntryBadgeName(entry)}
+              badgeTitle={`${getEntryBadgeName(entry) ?? ''}\n\n${getEntryDescription(entry) ?? ''}`.trim()}
               identifier={entry.markdownDefinition.label}
               key={entry.key}
               onClick={entry.handleClick}
-              text={entry.markdownDefinition.title}
+              text={getEntryMainText(entry)}
               url={entry.url}
             />
           ))}
         </LinkDefinitions>
       )}
+      <div className="webchat__text-content__activity-actions">
+        {activity.type === 'message' && isBasedOnSoftwareSourceCode(messageThing) && messageThing.isBasedOn.text ? (
+          <ActivityViewCodeButton
+            className="webchat__text-content__activity-view-code-button"
+            code={messageThing.isBasedOn.text}
+            isAIGenerated={isAIGeneratedActivity(activity)}
+            language={messageThing.isBasedOn.programmingLanguage}
+            title={messageThing.isBasedOn.programmingLanguage}
+          />
+        ) : null}
+        {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
+          <ActivityCopyButton className="webchat__text-content__activity-copy-button" targetRef={contentRef} />
+        ) : null}
+      </div>
     </div>
   );
 });

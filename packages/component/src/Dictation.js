@@ -14,14 +14,14 @@ const {
   useActivities,
   useDictateInterims,
   useDictateState,
-  useDisabled,
   useEmitTypingIndicator,
   useLanguage,
   useSendBoxValue,
   useSendTypingIndicator,
   useShouldSpeakIncomingActivity,
   useStopDictate,
-  useSubmitSendBox
+  useSubmitSendBox,
+  useUIState
 } = hooks;
 
 const {
@@ -36,9 +36,9 @@ const Dictation = ({ onError }) => {
   const [{ SpeechGrammarList, SpeechRecognition } = {}] = useWebSpeechPonyfill();
   const [activities] = useActivities();
   const [dictateState] = useDictateState();
-  const [disabled] = useDisabled();
   const [sendTypingIndicator] = useSendTypingIndicator();
   const [speechLanguage] = useLanguage('speech');
+  const [uiState] = useUIState();
   const emitTypingIndicator = useEmitTypingIndicator();
   const resumeAudioContext = useResumeAudioContext();
   const setDictateState = useSetDictateState();
@@ -113,7 +113,9 @@ const Dictation = ({ onError }) => {
       onProgress={handleDictating}
       speechGrammarList={SpeechGrammarList}
       speechRecognition={SpeechRecognition}
-      started={!disabled && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities}
+      started={
+        uiState !== 'disabled' && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities
+      }
     />
   );
 };

@@ -13,7 +13,7 @@ const resolveCognitiveServicesToES2015 = {
   }
 };
 
-export default defineConfig({
+const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
     'botframework-directlinespeech-sdk': './src/index.js'
@@ -29,4 +29,16 @@ export default defineConfig({
   esbuildPlugins: [resolveCognitiveServicesToES2015],
   // We need to internalize event-target-shim because it appear as transient packages with a different version.
   noExternal: ['event-target-shim']
-});
+};
+
+export default defineConfig([
+  {
+    ...config,
+    format: 'esm'
+  },
+  {
+    ...config,
+    format: 'cjs',
+    target: [...config.target, 'es2019']
+  }
+]);

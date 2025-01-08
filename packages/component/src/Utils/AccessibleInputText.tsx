@@ -1,6 +1,5 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
 
-import PropTypes from 'prop-types';
 import React, {
   forwardRef,
   type ChangeEventHandler,
@@ -30,30 +29,34 @@ import useEnterKeyHint from '../hooks/internal/useEnterKeyHint';
 //   - aria-disabled="true" is the source of truth
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
-type AccessibleInputTextProps = {
+type AccessibleInputTextProps = Readonly<{
   'aria-errormessage'?: string;
-  className?: string;
-  disabled?: boolean;
-  enterKeyHint?: string;
-  inputMode?: 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search';
-  onChange?: ChangeEventHandler<HTMLInputElement>;
-  onFocus?: FocusEventHandler<HTMLInputElement>;
-  onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
-  onKeyDownCapture?: KeyboardEventHandler<HTMLInputElement>;
-  onKeyPress?: KeyboardEventHandler<HTMLInputElement>;
-  onSelect?: ReactEventHandler<HTMLInputElement>;
-  placeholder?: string;
-  readOnly?: boolean;
-  tabIndex?: number;
+  className?: string | undefined;
+  'data-id'?: string | undefined;
+  'data-testid'?: string | undefined;
+  disabled?: boolean | undefined;
+  enterKeyHint?: string | undefined;
+  inputMode?: 'text' | 'none' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search' | undefined;
+  onChange?: ChangeEventHandler<HTMLInputElement> | undefined;
+  onFocus?: FocusEventHandler<HTMLInputElement> | undefined;
+  onKeyDown?: KeyboardEventHandler<HTMLInputElement> | undefined;
+  onKeyDownCapture?: KeyboardEventHandler<HTMLInputElement> | undefined;
+  onKeyPress?: KeyboardEventHandler<HTMLInputElement> | undefined;
+  onSelect?: ReactEventHandler<HTMLInputElement> | undefined;
+  placeholder?: string | undefined;
+  readOnly?: boolean | undefined;
+  tabIndex?: number | undefined;
   type: 'text';
-  value?: string;
-};
+  value?: string | undefined;
+}>;
 
 const AccessibleInputText = forwardRef<HTMLInputElement, AccessibleInputTextProps>(
   (
     {
       'aria-errormessage': ariaErrorMessage,
       className,
+      'data-id': dataId,
+      'data-testid': dataTestId,
       disabled,
       enterKeyHint,
       onChange,
@@ -81,6 +84,8 @@ const AccessibleInputText = forwardRef<HTMLInputElement, AccessibleInputTextProp
         aria-disabled={disabled || undefined}
         aria-errormessage={ariaErrorMessage}
         className={className}
+        data-id={dataId}
+        data-testid={dataTestId}
         onChange={disabled ? undefined : onChange}
         onFocus={disabled ? undefined : onFocus}
         onKeyDown={disabled ? undefined : onKeyDown}
@@ -99,44 +104,6 @@ const AccessibleInputText = forwardRef<HTMLInputElement, AccessibleInputTextProp
   }
 );
 
-AccessibleInputText.defaultProps = {
-  'aria-errormessage': undefined,
-  className: undefined,
-  disabled: undefined,
-  enterKeyHint: undefined,
-  inputMode: undefined,
-  onChange: undefined,
-  onFocus: undefined,
-  onKeyDown: undefined,
-  onKeyDownCapture: undefined,
-  onKeyPress: undefined,
-  onSelect: undefined,
-  placeholder: undefined,
-  readOnly: undefined,
-  tabIndex: undefined,
-  value: undefined
-};
-
 AccessibleInputText.displayName = 'AccessibleInputText';
-
-AccessibleInputText.propTypes = {
-  'aria-errormessage': PropTypes.string,
-  className: PropTypes.string,
-  disabled: PropTypes.bool,
-  enterKeyHint: PropTypes.string,
-  inputMode: PropTypes.oneOf(['text', 'none', 'tel', 'url', 'email', 'numeric', 'decimal', 'search']),
-  onChange: PropTypes.func,
-  onFocus: PropTypes.func,
-  onKeyDown: PropTypes.func,
-  onKeyDownCapture: PropTypes.func,
-  onKeyPress: PropTypes.func,
-  onSelect: PropTypes.func,
-  placeholder: PropTypes.string,
-  readOnly: PropTypes.bool,
-  tabIndex: PropTypes.number,
-  // @ts-ignore PropTypes and TypeScript type do not well understood each other.
-  type: PropTypes.oneOf(['text']).isRequired,
-  value: PropTypes.string
-};
 
 export default AccessibleInputText;

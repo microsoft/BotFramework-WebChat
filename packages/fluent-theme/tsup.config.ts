@@ -1,8 +1,9 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import { defineConfig } from 'tsup';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import baseConfig from '../../tsup.base.config';
-import { injectedStyles as injectedStylesPlaceholder } from './src/styles/injectStyle';
+import { fluentStyleContent as fluentStyleContentPlaceholder } from './src/styles/createStyles';
+import { injectCSSPlugin } from 'botframework-webchat-styles/build';
 
 const umdResolvePlugin = {
   name: 'umd-resolve',
@@ -12,25 +13,24 @@ const umdResolvePlugin = {
     }));
 
     build.onResolve({ filter: /^botframework-webchat-api$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api.ts')
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/index.ts')
+    }));
+
+    build.onResolve({ filter: /^botframework-webchat-api\/decorator$/u }, () => ({
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/decorator.ts')
     }));
 
     build.onResolve({ filter: /^botframework-webchat-component$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component.ts')
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/index.ts')
     }));
-  }
-};
 
-const injectCSSPlugin = {
-  name: 'inject-css-plugin',
-  setup(build) {
-    build.onEnd(result => {
-      const js = result.outputFiles.find(f => f.path.match(/(\.js|\.mjs)$/u));
-      const css = result.outputFiles.find(f => f.path.match(/(\.css)$/u));
-      if (css && js?.text.includes(injectedStylesPlaceholder)) {
-        js.contents = Buffer.from(js.text.replace(`"${injectedStylesPlaceholder}"`, JSON.stringify(css.text)));
-      }
-    });
+    build.onResolve({ filter: /^botframework-webchat-component\/internal$/u }, () => ({
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/internal.ts')
+    }));
+
+    build.onResolve({ filter: /^botframework-webchat-component\/decorator$/u }, () => ({
+      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/decorator.ts')
+    }));
   }
 };
 
@@ -43,8 +43,9 @@ export default defineConfig([
       ...baseConfig.loader,
       '.css': 'local-css'
     },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin],
-    format: ['cjs']
+    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })],
+    format: ['cjs'],
+    target: [...baseConfig.target, 'es2019']
   },
   {
     ...baseConfig,
@@ -53,7 +54,7 @@ export default defineConfig([
       ...baseConfig.loader,
       '.css': 'local-css'
     },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin],
+    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })],
     format: ['esm']
   },
   {
@@ -63,7 +64,7 @@ export default defineConfig([
       ...baseConfig.loader,
       '.css': 'local-css'
     },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin, umdResolvePlugin],
+    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }), umdResolvePlugin],
     format: 'iife',
     outExtension() {
       return { js: '.js' };
@@ -76,7 +77,7 @@ export default defineConfig([
       ...baseConfig.loader,
       '.css': 'local-css'
     },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin, umdResolvePlugin],
+    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }), umdResolvePlugin],
     format: 'iife',
     minify: true,
     outExtension() {

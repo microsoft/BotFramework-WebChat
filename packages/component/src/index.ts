@@ -38,6 +38,7 @@ import SendButton from './SendBox/SendButton';
 import SuggestedActions from './SendBox/SuggestedActions';
 import SendTextBox from './SendBox/TextBox';
 import UploadButton from './SendBoxToolbar/UploadButton';
+import MonochromeImageMasker from './Utils/MonochromeImageMasker';
 
 import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
@@ -45,7 +46,14 @@ import createCoreActivityStatusMiddleware from './Middleware/ActivityStatus/crea
 import createStyleSet from './Styles/createStyleSet';
 import getTabIndex from './Utils/TypeFocusSink/getTabIndex';
 import Context from './hooks/internal/WebChatUIContext';
+import {
+  type HTMLContentTransformEnhancer,
+  type HTMLContentTransformFunction,
+  type HTMLContentTransformMiddleware,
+  type HTMLContentTransformRequest
+} from './providers/HTMLContentTransformCOR/index';
 import ThemeProvider from './providers/Theme/ThemeProvider';
+import testIds from './testIds';
 import withEmoji from './withEmoji/withEmoji';
 
 import * as componentHooks from './hooks/index';
@@ -103,16 +111,19 @@ const Components = {
   UploadButton,
 
   // Components for localization
-  LocalizedString
+  LocalizedString,
+
+  // Components for theming
+  MonochromeImageMasker
 };
 
 export default ReactWebChat;
 
 export {
-  Components,
-  Context,
   buildInfo,
+  Components,
   concatMiddleware,
+  Context,
   createCoreActivityMiddleware,
   createCoreActivityStatusMiddleware,
   createCoreAttachmentMiddleware,
@@ -120,8 +131,18 @@ export {
   getTabIndex,
   hooks,
   localize,
+  testIds,
   version,
   withEmoji
 };
 
-export type { BasicWebChatProps, ComposerProps, ReactWebChatProps, WebChatActivity };
+export type {
+  BasicWebChatProps,
+  ComposerProps,
+  HTMLContentTransformEnhancer,
+  HTMLContentTransformFunction,
+  HTMLContentTransformMiddleware,
+  HTMLContentTransformRequest,
+  ReactWebChatProps,
+  WebChatActivity
+};

@@ -82,7 +82,7 @@ beforeEach(() => {
 jest.setTimeout(2000);
 
 beforeEach(() => {
-  jest.useFakeTimers();
+  jest.useFakeTimers({ doNotFake: ['performance'] });
 });
 
 afterEach(() => {

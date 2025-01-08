@@ -12,7 +12,7 @@ const os = require('os');
 const stripANSI = require('strip-ansi');
 
 const hash = value => {
-  const hash = createHash('sha1');
+  const hash = createHash('sha512');
 
   hash.update(value);
 

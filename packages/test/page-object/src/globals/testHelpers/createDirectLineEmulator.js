@@ -1,12 +1,12 @@
-import createDeferred from 'p-defer';
 import Observable from 'core-js/features/observable';
 import random from 'math-random';
 import updateIn from 'simple-update-in';
 
-import { createStoreWithOptions } from './createStore';
-import became from '../pageConditions/became';
 import createDeferredObservable from '../../utils/createDeferredObservable';
+import became from '../pageConditions/became';
+import { createStoreWithOptions } from './createStore';
 import shareObservable from './shareObservable';
+import withResolvers from '../../utils/withResolvers';
 
 function isNativeClock() {
   return ('' + setTimeout).endsWith('() { [native code] }');
@@ -27,20 +27,20 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
   const now = Date.now();
   const getTimestamp = () => new Date().toISOString();
 
-  const connectedDeferred = createDeferred();
+  const connectedWithResolvers = withResolvers();
   const connectionStatusDeferredObservable = createDeferredObservable(() => {
     connectionStatusDeferredObservable.next(0);
   });
   const activityDeferredObservable = createDeferredObservable(async () => {
     connectionStatusDeferredObservable.next(1);
 
-    await connectedDeferred.promise;
+    await connectedWithResolvers.promise;
     connectionStatusDeferredObservable.next(2);
   });
 
   const postActivityCallDeferreds = [];
   const postActivity = outgoingActivity => {
-    const returnPostActivityDeferred = createDeferred();
+    const returnPostActivityWithResolvers = withResolvers();
 
     const deferred = postActivityCallDeferreds.shift();
 
@@ -50,12 +50,12 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
       );
     }
 
-    deferred.resolve({ outgoingActivity, returnPostActivityDeferred });
+    deferred.resolve({ outgoingActivity, returnPostActivityDeferred: returnPostActivityWithResolvers });
 
     return new Observable(observer => {
       (async function () {
         try {
-          observer.next(await returnPostActivityDeferred.promise);
+          observer.next(await returnPostActivityWithResolvers.promise);
           observer.complete();
         } catch (error) {
           observer.error(error);
@@ -65,13 +65,13 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
   };
 
   const actPostActivity = async (fn, { id: idFromOptions } = {}) => {
-    const postActivityCallDeferred = createDeferred();
+    const postActivityCallWithResolvers = withResolvers();
 
-    postActivityCallDeferreds.push(postActivityCallDeferred);
+    postActivityCallDeferreds.push(postActivityCallWithResolvers);
 
     await fn();
 
-    const { outgoingActivity, returnPostActivityDeferred } = await postActivityCallDeferred.promise;
+    const { outgoingActivity, returnPostActivityDeferred } = await postActivityCallWithResolvers.promise;
     const id = idFromOptions || uniqueId();
 
     let echoBackActivity = { ...outgoingActivity, id, timestamp: getTimestamp() };
@@ -101,7 +101,7 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
     return { activity: outgoingActivity, echoBack, rejectPostActivity, resolveAll, resolvePostActivity };
   };
 
-  autoConnect && connectedDeferred.resolve();
+  autoConnect && connectedWithResolvers.resolve();
 
   const directLine = {
     activity$: shareObservable(activityDeferredObservable.observable),
@@ -118,8 +118,8 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
         resolve: () => connectionStatusDeferredObservable.next(2)
       };
     },
-    emulateConnected: connectedDeferred.resolve,
-    emulateIncomingActivity: async activity => {
+    emulateConnected: connectedWithResolvers.resolve,
+    emulateIncomingActivity: async (activity, { skipWait } = {}) => {
       if (typeof activity === 'string') {
         activity = {
           from: { id: 'bot', role: 'bot' },
@@ -145,11 +145,12 @@ export default function createDirectLineEmulator({ autoConnect = true, ponyfill 
 
       activityDeferredObservable.next(activity);
 
-      await became(
-        'incoming activity appears in the store',
-        () => store.getState().activities.find(activity => activity.id === id),
-        1000
-      );
+      skipWait ||
+        (await became(
+          'incoming activity appears in the store',
+          () => store.getState().activities.find(activity => activity.id === id),
+          1000
+        ));
     },
     emulateOutgoingActivity: (activity, options) => {
       if (typeof activity === 'string') {

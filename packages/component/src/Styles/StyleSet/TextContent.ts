@@ -14,16 +14,9 @@ export default function createTextContentStyle() {
         gap: CSSTokens.PaddingRegular
       },
 
-      '& .webchat__text-content__markdown > :first-child': {
-        marginTop: 0
-      },
-
-      '& .webchat__text-content__markdown > :last-child': {
-        marginBottom: 0
-      },
-
       '& .webchat__text-content__markdown img:not(.webchat__render-markdown__external-link-icon)': {
-        maxWidth: CSSTokens.MaxWidthBubble,
+        maxWidth: CSSTokens.MaxWidthMessageBubble,
+        minWidth: CSSTokens.MinWidthMessageBubble,
         width: '100%'
       },
 
@@ -33,6 +26,16 @@ export default function createTextContentStyle() {
 
       '& .webchat__text-content__open-in-new-window-icon': {
         height: '.75em'
+      },
+
+      '& .webchat__text-content__activity-actions': {
+        alignSelf: 'flex-start',
+        display: 'flex',
+        gap: `calc(${CSSTokens.PaddingRegular} / 2)`
+      },
+
+      '& .webchat__text-content__activity-actions:empty': {
+        display: 'none'
       }
     }
   };

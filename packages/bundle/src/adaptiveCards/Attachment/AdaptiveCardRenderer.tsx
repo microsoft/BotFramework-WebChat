@@ -32,7 +32,7 @@ import useRoleModEffect from './AdaptiveCardHacks/useRoleModEffect';
 import renderAdaptiveCard from './private/renderAdaptiveCard';
 
 const { ErrorBox } = Components;
-const { useDisabled, useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd } = hooks;
+const { useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useUIState } = hooks;
 
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
@@ -52,14 +52,14 @@ const AdaptiveCardRenderer = ({
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
-  const [disabledFromComposer] = useDisabled();
+  const [uiState] = useUIState();
   const contentRef = useRef<HTMLDivElement>();
   const localize = useLocalizer();
   const performCardAction = usePerformCardAction();
-  const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('adaptive cards');
   const scrollToEnd = useScrollToEnd();
 
-  const disabled = disabledFromComposer || disabledFromProps;
+  const disabled = uiState === 'disabled' || disabledFromProps;
   const tapActionRef = useValueRef(tapAction);
 
   const disabledRef = useValueRef(disabled);

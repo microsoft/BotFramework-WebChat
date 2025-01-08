@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <template id="avatars">
+    <svg data-for="1" xmlns="http://www.w3.org/2000/svg" width="75" height="150" viewBox="0 0 75 150">
+      <!-- Gradient Definitions -->
+      <defs>
+        <linearGradient id="tallGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#0ea5e9"/>
+          <stop offset="100%" style="stop-color:#6366f1"/>
+        </linearGradient>
+        <linearGradient id="tallHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:rgba(255,255,255,0.2)"/>
+          <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+        </linearGradient>
+      </defs>
+    
+      <!-- Base Rectangle -->
+      <rect width="75" height="150" rx="37.5" fill="url(#tallGradient)"/>
+      
+      <!-- Highlight Overlay -->
+      <path d="M 0 0 L 75 0 L 75 75 Q 37.5 95 0 75 Z" fill="url(#tallHighlight)" opacity="0.5"/>
+      
+      <!-- Face - Positioned in Upper Third -->
+      <!-- Eyes -->
+      <path d="M 25 55 Q 27 52 29 55" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M 46 55 Q 48 52 50 55" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+      
+      <!-- Smile -->
+      <path d="M 25 70 Q 37.5 80 50 70" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+      
+      <!-- Decorative Elements -->
+      <circle cx="37.5" cy="110" r="15" stroke="white" stroke-width="3" fill="none" opacity="0.3"/>
+      <circle cx="37.5" cy="110" r="7" stroke="white" stroke-width="2" fill="none" opacity="0.2"/>
+    </svg>
+    <svg data-for="2" xmlns="http://www.w3.org/2000/svg" width="150" height="75" viewBox="0 0 150 75">
+      <!-- Gradient Definitions -->
+      <defs>
+        <linearGradient id="wideGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#84cc16"/>
+          <stop offset="100%" style="stop-color:#22c55e"/>
+        </linearGradient>
+        <linearGradient id="wideHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:rgba(255,255,255,0.25)"/>
+          <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+        </linearGradient>
+      </defs>
+    
+      <!-- Base Rectangle -->
+      <rect width="150" height="75" rx="37.5" fill="url(#wideGradient)"/>
+      
+      <!-- Highlight Overlay -->
+      <path d="M 0 0 Q 75 -10 150 0 L 150 40 Q 75 30 0 40 Z" fill="url(#wideHighlight)" opacity="0.5"/>
+      
+      <!-- Face - Centered -->
+      <!-- Eyes -->
+      <path d="M 55 35 Q 58 32 61 35" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M 89 35 Q 92 32 95 35" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+      
+      <!-- Smile -->
+      <path d="M 55 45 Q 75 55 95 45" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+      
+      <!-- Decorative Elements -->
+      <circle cx="30" cy="37.5" r="8" stroke="white" stroke-width="2" fill="none" opacity="0.2"/>
+      <circle cx="120" cy="37.5" r="8" stroke="white" stroke-width="2" fill="none" opacity="0.2"/>
+    </svg>
+  </template>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        React: { useMemo },
+        WebChat: {
+          hooks: { useDirection }
+        }
+      } = window;
+
+      run(async function () {
+        await host.windowSize(undefined, 1280, document.getElementById('webchat'));
+
+        WebChat.renderWebChat(
+          {
+            directLine: await testHelpers.createDirectLineWithTranscript([
+              {
+                from: { role: 'bot' },
+                id: '1.0',
+                text: 'Cillum ea irure amet reprehenderit minim.',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                id: '1.1',
+                text: 'Minim ut laboris enim nostrud magna irure occaecat laborum occaecat ex.',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '2.0',
+                text: 'Tempor deserunt ut enim eu elit.',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '2.1',
+                text: 'Elit occaecat quis velit qui ad.',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                id: '3.0',
+                text: 'Nulla irure laborum officia tempor aute consequat eiusmod nisi velit ipsum magna.',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                id: '3.1',
+                text: 'Minim fugiat aute do ea veniam.',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '4.0',
+                text: 'This first activity has user avatar',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '4.1',
+                text: 'This shows no avatar as the activities in the same group',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                attachmentLayout: 'carousel',
+                attachments: [
+                  {
+                    contentType: 'image/jpeg',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg',
+                    name: 'front of Surface Pro'
+                  },
+                  {
+                    contentType: 'image/jpeg',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg',
+                    name: 'back of Surface Pro'
+                  }
+                ],
+                from: { role: 'bot' },
+                id: '5.0',
+                text: 'Bot message with attachment',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                id: '5.1',
+                text: 'Follow-up message within the group',
+                timestamp: 0,
+                type: 'message'
+              }
+            ]),
+            store: testHelpers.createStore(),
+            styleOptions: {
+              botAvatarImage: `data:image/svg+xml;utf8,${encodeURIComponent(window.avatars.content.querySelector(`[data-for="1"]`).outerHTML)}`,
+              botAvatarInitials: 'Bot',
+              bubbleBackground: '#0063B1',
+              bubbleBorderColor: '#0063B1',
+              bubbleBorderRadius: 4,
+              bubbleFromUserBackground: '#0063B1',
+              bubbleFromUserBorderColor: '#0063B1',
+              bubbleFromUserBorderRadius: 4,
+              bubbleFromUserNubOffset: 0,
+              bubbleFromUserNubSize: 10,
+              bubbleFromUserTextColor: 'White',
+              bubbleNubOffset: 0,
+              bubbleNubSize: 10,
+              bubbleTextColor: 'White',
+              userAvatarInitials: 'You',
+              userAvatarImage: `data:image/svg+xml;utf8,${encodeURIComponent(window.avatars.content.querySelector(`[data-for="2"]`).outerHTML)}`,
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

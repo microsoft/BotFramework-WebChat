@@ -1,3 +1,5 @@
+import root from './root';
+
 export default function transcript() {
-  return document.querySelector('.webchat__basic-transcript');
+  return root().querySelector('.webchat__basic-transcript');
 }

@@ -20,7 +20,178 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Resolves [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX). Added something, by [@johndoe](https://github.com/johndoe), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 -->
 
+Notes: web developers are advised to use [`~` (tilde range)](https://github.com/npm/node-semver?tab=readme-ov-file#tilde-ranges-123-12-1) to select minor versions, which contains new features and/or fixes. Use [`^` (caret range)](https://github.com/npm/node-semver?tab=readme-ov-file#caret-ranges-123-025-004) to select major versions, which may contains breaking changes.
+
 ## [Unreleased]
+
+### Breaking changes
+
+-  `styleOptions.bubbleImageHeight` is being deprecated in favor of `styleOptions.bubbleImageMaxHeight` and `styleOptions.bubbleImageMinHeight`. The option will be removed on or after 2026-07-05
+-  `styleOptions.bubbleMaxWidth`/`bubbleMinWidth` is being deprecated in favor of `styleOptions.bubbleAttachmentMaxWidth`/`bubbleAttachmentMinWidth` and `styleOptions.bubbleMessageMaxWidth`/`bubbleMessageMinWidth`. The option will be removed on or after 2026-10-08
+-  Moved to `micromark` for rendering Markdown, instead of `markdown-it`
+   -  Please refer to PR [#5330](https://github.com/microsoft/BotFramework-WebChat/pull/5330) for details
+-  HTML sanitizer is moved from `renderMarkdown` to HTML content transformer middleware, please refer to PR [#5338](https://github.com/microsoft/BotFramework-WebChat/pull/5338)
+   -  If you customized `renderMarkdown` with a custom HTML sanitizer, please move the HTML sanitizer to the new HTML content transformer middleware
+
+### Added
+
+-  (Experimental) Added pre-chat message with starter prompts in Fluent UI, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255) and [#5263](https://github.com/microsoft/BotFramework-WebChat/issues/5263), by [@compulim](https://github.com/compulim)
+-  (Experimental) Added `isPrimary` props to Fluent UI send box. When set, will wire up with `useSendBoxValue` and works with starter prompts in pre-chat message, in PR [#5257](https://github.com/microsoft/BotFramework-WebChat/issues/5257), by [@compulim](https://github.com/compulim)
+-  (Experimental) Expand Fluent theme support to activities and transcript, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added new Fluent UI theme variant "copilot" with updated styling and components, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+-  Introduced `ActivityDecorator` component for enhanced message styling and layout, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added `CopilotMessageHeader` component for displaying bot information in the "copilot" variant, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+-  Updated Fluent theme styling to improve accessibility and visual consistency, in PR [#5258](https://github.com/microsoft/BotFramework-WebChat/pull/5258), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed header font in copilot variant, in PR [#5261](https://github.com/microsoft/BotFramework-WebChat/pull/5261), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added "Copy" button to bot messages in Fluent UI if it contains keyword `AllowCopy`, in PR [#5259](https://github.com/microsoft/BotFramework-WebChat/pull/5259), [#5262](https://github.com/microsoft/BotFramework-WebChat/pull/5262), and [#5285](https://github.com/microsoft/BotFramework-WebChat/pull/5285), by [@compulim](https://github.com/compulim)
+-  Resolves [#4876](https://github.com/microsoft/BotFramework-WebChat/issues/4876) and [#4939](https://github.com/microsoft/BotFramework-WebChat/issues/4939). Added support of informative message in livestreaming, by [@compulim](https://github.com/compulim), in PR [#5265](https://github.com/microsoft/BotFramework-WebChat/pull/5265)
+-  Introduced centralized announcements approach via the new `usePushToLiveRegion` hook, in PR [#5251](https://github.com/microsoft/BotFramework-WebChat/pull/5251), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added keyboard shortcut for the "New Messages" button, in PR [#5251](https://github.com/microsoft/BotFramework-WebChat/pull/5251), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added decorators for loading and completion states to the Fluent theme, in PR [#5269](https://github.com/microsoft/BotFramework-WebChat/pull/5269), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added blueprint of starter prompts in the Fluent theme, in PR [#5270](https://github.com/microsoft/BotFramework-WebChat/pull/5270), [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), [#5279](https://github.com/microsoft/BotFramework-WebChat/pull/5279), and [#5284](https://github.com/microsoft/BotFramework-WebChat/pull/5284), by [@OEvgeny](https://github.com/OEvgeny) and [@compulim](https://github.com/compulim)
+-  Added support for liner message activities in the Fluent theme, in PR [#5272](https://github.com/microsoft/BotFramework-WebChat/pull/5272), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
+-  (Experimental) Added support for using Web Chat inside a shadow DOM, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Added `styleOptions.stylesRoot` property allowing users to specify the root node where Web Chat styles should be placed, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Added the `ThemeProvider.styles` property, allowing theme packages to place styles into the same root node as Web Chat, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Added `nonce` for Fluent and `react-scroll-to-bottom` injected styles, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Updated `react-scroll-to-bottom` to version `4.2.1-main.53844f5`, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Updated `react-film` to version `3.1.1-main.f623bf6`, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
+-  (Experimental) Added CSS decorator support into Web Chat white-label experience, in PR [#5312](https://github.com/microsoft/BotFramework-WebChat/pull/5312), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Introduced `WebChatDecorator` component for adding animated borders to activities, in PR [#5312](https://github.com/microsoft/BotFramework-WebChat/pull/5312)
+   -  Added new style options `borderAnimationColor1`, `borderAnimationColor2`, and `borderAnimationColor3` for customizing decorator colors, in PR [#5312](https://github.com/microsoft/BotFramework-WebChat/pull/5312)
+-  Added `styleOptions.bubbleAttachmentMaxWidth`/`bubbleAttachmentMinWidth` and `styleOptions.bubbleMessageMaxWidth`/`bubbleMessageMinWidth`, in PR [#5321](https://github.com/microsoft/BotFramework-WebChat/pull/5321), by [@compulim](https://github.com/compulim)
+-  (Experimental) Added more CSS variables support, in PR [#5321](https://github.com/microsoft/BotFramework-WebChat/pull/5321), by [@compulim](https://github.com/compulim)
+-  Added MathML/TeX block support in Markdown via [`micromark-extension-math`](https://npmjs.com/package/micromark-extension-math) and [`katex`](https://katex.org/), in PR [#5332](https://github.com/microsoft/BotFramework-WebChat/pull/5332), by [@compulim](https://github.com/compulim)
+-  Added code viewer dialog with syntax highlighting, in PR [#5335](https://github.com/microsoft/BotFramework-WebChat/pull/5335), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added copy button to code blocks, in PR [#5334](https://github.com/microsoft/BotFramework-WebChat/pull/5334), by [@compulim](https://github.com/compulim)
+-  Added copy button to view code dialog, in PR [#5336](https://github.com/microsoft/BotFramework-WebChat/pull/5336), by [@compulim](https://github.com/compulim)
+-  Added HTML content transformer middleware, in PR [#5338](https://github.com/microsoft/BotFramework-WebChat/pull/5338) and [#5347](https://github.com/microsoft/BotFramework-WebChat/pull/5347), by [@compulim](https://github.com/compulim)
+   -  HTML content transformer is used by `useRenderMarkdown` to transform the result from `renderMarkdown`
+   -  HTML sanitizer is moved from `renderMarkdown` into HTML content transformer for better coverage
+   -  Copy button is added to fenced code blocks (`<pre><code>`)
+   -  Configure HTML sanitizer via `request.allowedTags`
+-  Added support for math blocks using `$$` delimiter alongside existing `\[...\]` and `\(...\)` notations, in PR [#5381](https://github.com/microsoft/BotFramework-WebChat/pull/5381), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added support for speech recognition initial silence timeout when using Azure Speech, in PR [#5400](https://github.com/microsoft/BotFramework/WebChat/pull/5400), by [@compulim](https://github.com/compulim)
+-  Introduced syntax highlighting for markdown code blocks, in PR [#5389](https://github.com/microsoft/BotFramework-WebChat/pull/5389), by [@OEvgeny](https://github.com/OEvgeny)
+
+### Changed
+
+-  Updated `useSuggestedActions` to return the activity the suggested actions originated from, in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/5255), by [@compulim](https://github.com/compulim)
+-  Improved focus trap implementation by preserving focus state and removing sentinels, in PR [#5243](https://github.com/microsoft/BotFramework-WebChat/pull/5243), by [@OEvgeny](https://github.com/OEvgeny)
+-  Reworked pre-chat activity layout to use author entity for improved consistency and flexibility, in PR [#5274](https://github.com/microsoft/BotFramework-WebChat/pull/5274), by [@OEvgeny](https://github.com/OEvgeny)
+-  Updated styles for suggested actions and attachments in Fluent theme to improve readability and consistency, in PR [#5275](https://github.com/microsoft/BotFramework-WebChat/pull/5275), by [@OEvgeny](https://github.com/OEvgeny)
+-  Moved from `redux-devtools-extension@2.13.9` to `@redux/devtools-extension@3.3.0`, in PR [#5292](https://github.com/microsoft/BotFramework-WebChat/pull/5292), by [@compulim](https://github.com/compulim)
+-  Enhanced the visual presentation of the Fluent theme copilot variant, in PR [#5293](https://github.com/microsoft/BotFramework-WebChat/pull/5293), by [@OEvgeny](https://github.com/OEvgeny)
+-  Refactored spacing and layout for copilot variant in Fluent theme, improving visual consistency, in PR [#5296](https://github.com/microsoft/BotFramework-WebChat/pull/5296), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added a content generated badge to AI-generated messages, in PR [#5298](https://github.com/microsoft/BotFramework-WebChat/pull/5298), by [@OEvgeny](https://github.com/OEvgeny)
+-  Resolved [#4847](https://github.com/microsoft/BotFramework-WebChat/issues/4847). Migrated to npm workspaces from lerna, in PR [#5301](https://github.com/microsoft/BotFramework-WebChat/pull/5301), by [@compulim](https://github.com/compulim)
+-  Resolved [#5302](https://github.com/microsoft/BotFramework-WebChat/issues/5302). Migrated to `core-js-pure/Promise.withResolveers` from `p-defer`, in PR [#5301](https://github.com/microsoft/BotFramework-WebChat/pull/5301), by [@compulim](https://github.com/compulim)
+-  Improved message bubble layout in Fluent theme to allow growth beyond 450px up to 75% of container width, in PR [#5324](https://github.com/microsoft/BotFramework-WebChat/pull/5324), by [@OEvgeny](https://github.com/OEvgeny)
+-  Improved drop zone behavior and styling in Fluent theme, in PR [#5328](https://github.com/microsoft/BotFramework-WebChat/pull/5328), by [@OEvgeny](https://github.com/OEvgeny)
+-  Excluded side effects from module entry points to prevent global scope modifications, in PR [#5329](https://github.com/microsoft/BotFramework-WebChat/pull/5329), by [@OEvgeny](https://github.com/OEvgeny)
+-  Moved to `micromark` for rendering Markdown, instead of `markdown-it`, in PR [#5330](https://github.com/microsoft/BotFramework-WebChat/pull/5330), by [@compulim](https://github.com/compulim)
+-  Improved view code dialog UI in Fluent theme with better styling and accessibility, in PR [#5337](https://github.com/microsoft/BotFramework-WebChat/pull/5337), by [@OEvgeny](https://github.com/OEvgeny)
+-  Switched math block syntax from `$$` to Tex-style `\[ \]` and `\( \)` delimiters with improved rendering and error handling, in PR [#5353](https://github.com/microsoft/BotFramework-WebChat/pull/5353), by [@OEvgeny](https://github.com/OEvgeny)
+-  Improved avatar display and grouping behavior by fixing rendering issues and activity sender identification, in PR [#5346](https://github.com/microsoft/BotFramework-WebChat/pull/5346), by [@OEvgeny](https://github.com/OEvgeny)
+-  Activity "copy" button will use `outerHTML` and `textContent` for clipboard content, in PR [#5378](https://github.com/microsoft/BotFramework-WebChat/pull/5378), by [@compulim](https://github.com/compulim)
+-  Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385) and [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400)
+   -  Production dependencies
+      -  [`web-speech-cognitive-services@8.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
+
+### Fixed
+
+-  Fixed [#5256](https://github.com/microsoft/BotFramework-WebChat/issues/5256). `styleOptions.maxMessageLength` should support any JavaScript number value including `Infinity`, by [@compulim](https://github.com/compulim), in PR [#5255](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5255)
+-  Fixes [#4965](https://github.com/microsoft/BotFramework-WebChat/issues/4965). Removed keyboard helper screen in [#5234](https://github.com/microsoft/BotFramework-WebChat/pull/5234), by [@amirmursal](https://github.com/amirmursal) and [@OEvgeny](https://github.com/OEvgeny)
+-  Fixes [#5268](https://github.com/microsoft/BotFramework-WebChat/issues/5268). Concluded livestream is sealed and activities received afterwards are ignored, and `streamSequence` is not required in final activity, in PR [#5273](https://github.com/microsoft/BotFramework-WebChat/pull/5273), by [@compulim](https://github.com/compulim)
+-  Fixes [#5288](https://github.com/microsoft/BotFramework-WebChat/issues/5288). Fixed citation and sensitivity label bleeding when using Fluent skin pack, in PR [#5287](https://github.com/microsoft/BotFramework-WebChat/pull/5287), by [@compulim](https://github.com/compulim)
+-  Fixes [#5294](https://github.com/microsoft/BotFramework-WebChat/issues/5294). Fixed copy button animation reset to "Copied" after hiding and showing Web Chat, in PR [#5295](https://github.com/microsoft/BotFramework-WebChat/pull/5295), by [@compulim](https://github.com/compulim)
+-  Fixes [#5147](https://github.com/microsoft/BotFramework-WebChat/issues/5147). Added `punycode` to our dependencies as `markdown-it` requires it but did not have it in their `package.json`, in PR [#5301](https://github.com/microsoft/BotFramework-WebChat/pull/5301), by [@compulim](https://github.com/compulim)
+-  Fixes [#5306](https://github.com/microsoft/BotFramework-WebChat/issues/5306). Title and subtitle in pre-chat message activity should wrap, in PR [#5307](https://github.com/microsoft/BotFramework-WebChat/pull/5307), by [@compulim](https://github.com/compulim)
+-  Fixes [#5319](https://github.com/microsoft/BotFramework-WebChat/issues/5319). Some Markdown text are not rendered after HTML tags, in PR [#5320](https://github.com/microsoft/BotFramework-WebChat/pull/5320), by [@compulim](https://github.com/compulim)
+-  Fixes [#5323](https://github.com/microsoft/BotFramework-WebChat/issues/5323). Removed unused CSS class from carousel component, eliminating unintended styling, in PR [#5325](https://github.com/microsoft/BotFramework-WebChat/pull/5325), by [@OEvgeny](https://github.com/OEvgeny)
+-  Resolved CSS class name conflicts between component and fluent packages to prevent styling issues, in PR [#5326](https://github.com/microsoft/BotFramework-WebChat/pull/5326), in PR [#5327](https://github.com/microsoft/BotFramework-WebChat/pull/5327), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed [#5350](https://github.com/microsoft/BotFramework-WebChat/issues/5350). Bundled `shiki` in component package, in PR [#5349](https://github.com/microsoft/BotFramework-WebChat/pull/5349), by [@compulim](https://github.com/compulim)
+-  Fixed modal dialog rendering to prevent visual flicker and improve UX when opening code views, in PR [#5374](https://github.com/microsoft/BotFramework-WebChat/pull/5374), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed math parsing that could cause Web Chat to hang when processing certain LaTeX expressions, in PR [#5377](https://github.com/microsoft/BotFramework-WebChat/pull/5377), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed long math formula should be scrollable, in PR [#5380](https://github.com/microsoft/BotFramework-WebChat/pull/5380), by [@compulim](https://github.com/compulim)
+-  Fixed [#4948](https://github.com/microsoft/BotFramework-WebChat/issues/4948). Microphone should stop after initial silence, in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385)
+
+# Removed
+
+-  Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
+
+## [4.18.0] - 2024-07-10
+
+### Added
+
+-  (Experimental) Added initial decorators support, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Introduced internal `botframework-webchat-api/decorator` import, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Added `DecoratorComposer` and `ActivityDecorator` to be used for decorating activity border, in PR [#5205](https://github.com/microsoft/BotFramework-WebChat/pull/5205), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added `styleOptions.bubbleImageMaxHeight` and `styleOptions.bubbleImageMinHeight` for variable image height, in PR [#5236](https://github.com/microsoft/BotFramework-WebChat/pull/5236), by [@compulim](https://github.com/compulim)
+
+### Fixed
+
+-  Read deeper into citation objects in order to provide names, in PR [#5215](https://github.com/microsoft/BotFramework-WebChat/pull/5215), by [@beyackle2](https://github.com/beyackle2)
+-  Improved performance for `useActivityWithRenderer`, in PR [#5172](https://github.com/microsoft/BotFramework-WebChat/pull/5172), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixes [#5162](https://github.com/microsoft/BotFramework-WebChat/issues/5162). Improved performance for `useActivityTreeWithRenderer`, in PR [#5163](https://github.com/microsoft/BotFramework-WebChat/pull/5163), by [@compulim](https://github.com/compulim)
+-  Fixes [#5175](https://github.com/microsoft/BotFramework-WebChat/issues/5175). `PrecompiledGlobalize.js` is emitted instead of `.cjs`, by [@compulim](https://github.com/compulim) in PR [#5181](https://github.com/microsoft/BotFramework-WebChat/pull/5181)
+-  Improved performance for `BasicTranscript`, in PR [#5183](https://github.com/microsoft/BotFramework-WebChat/pull/5183), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed potential memory usage issues caused by `useActivitiesWithRenderer`, in PR [#5183](https://github.com/microsoft/BotFramework-WebChat/pull/5183), by [@OEvgeny](https://github.com/OEvgeny)
+-  Improved performance for `useMemoized`, in PR [#5190](https://github.com/microsoft/BotFramework-WebChat/pull/5190), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed send box zoomed in when clicked on mobile Safari, in PR [#5192](https://github.com/microsoft/BotFramework-WebChat/pull/5192), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added missing support for chat history scroll with keyboard when Fluent send box is focused, in PR [#5191](https://github.com/microsoft/BotFramework-WebChat/pull/5191), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed DTMF command usage sent by telephone keypad, in PR [#5198](https://github.com/microsoft/BotFramework-WebChat/pull/5198), by [@OEvgeny](https://github.com/OEvgeny)
+-  Fixed decorator import in legacy CommonJS environments, in [#5231](https://github.com/microsoft/BotFramework-WebChat/pull/5231), by [@OEvgeny](https://github.com/OEvgeny)
+-  Scoped `use-propagate` to individual WebChat instances to prevent interference between multiple instances, in PR [#5248](https://github.com/microsoft/BotFramework-WebChat/pull/5248), by [@OEvgeny](https://github.com/OEvgeny)
+
+### Changed
+
+-  Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5174](https://github.com/microsoft/BotFramework-WebChat/pull/5174) and PR [#5181](https://github.com/microsoft/BotFramework-WebChat/pull/5181)
+   -  Production dependencies
+      -  [`classnames@2.5.1`](https://npmjs.com/package/classnames)
+      -  [`core-js@3.37.0`](https://npmjs.com/package/core-js)
+      -  [`deep-freeze-strict@1.1.1`](https://npmjs.com/package/deep-freeze-strict)
+      -  [`merge-refs@1.3.0`](https://npmjs.com/package/merge-refs)
+      -  [`mime@4.0.3`](https://npmjs.com/package/mime)
+      -  [`p-defer@4.0.1`](https://npmjs.com/package/p-defer)
+      -  [`redux-saga@1.3.0`](https://npmjs.com/package/redux-saga)
+      -  [`redux@5.0.1`](https://npmjs.com/package/redux)
+      -  [`sanitize-html@2.13.0`](https://npmjs.com/package/sanitize-html)
+      -  [`swiper@8.4.7`](https://npmjs.com/package/swiper)
+      -  [`whatwg-fetch@3.6.20`](https://npmjs.com/package/whatwg-fetch)
+   -  Development dependencies
+      -  [`@fluentui/react-components@9.49.2`](https://npmjs.com/package/@fluentui/react-components)
+      -  [`@types/node@20.12.11`](https://npmjs.com/package/@types/node)
+      -  [`@typescript-eslint/eslint-plugin@7.8.0`](https://npmjs.com/package/@typescript-eslint/eslint-plugin)
+      -  [`@typescript-eslint/parser@7.8.0`](https://npmjs.com/package/@typescript-eslint/parser)
+      -  [`adm-zip@0.5.12`](https://npmjs.com/package/adm-zip)
+      -  [`dotenv@16.4.5`](https://npmjs.com/package/dotenv)
+      -  [`esbuild@0.21.1`](https://npmjs.com/package/esbuild)
+      -  [`eslint-plugin-import@2.29.1`](https://npmjs.com/package/eslint-plugin-import)
+      -  [`eslint-plugin-prettier@5.1.3`](https://npmjs.com/package/eslint-plugin-prettier)
+      -  [`eslint-plugin-react-hooks@4.6.2`](https://npmjs.com/package/eslint-plugin-react-hooks)
+      -  [`eslint-plugin-react@7.34.1`](https://npmjs.com/package/eslint-plugin-react)
+      -  [`eslint-plugin-security@3.0.0`](https://npmjs.com/package/eslint-plugin-security)
+      -  [`eslint@8.57.0`](https://npmjs.com/package/eslint)
+      -  [`html-webpack-plugin@5.6.0`](https://npmjs.com/package/html-webpack-plugin)
+      -  [`husky@9.0.11`](https://npmjs.com/package/husky)
+      -  [`jest-image-snapshot@6.4.0`](https://npmjs.com/package/jest-image-snapshot)
+      -  [`lint-staged@15.2.2`](https://npmjs.com/package/lint-staged)
+      -  [`nodemon@3.1.0`](https://npmjs.com/package/nodemon)
+      -  [`nopt@7.2.1`](https://npmjs.com/package/nopt)
+      -  [`p-defer@4.0.1`](https://npmjs.com/package/p-defer)
+      -  [`prettier@3.2.5`](https://npmjs.com/package/prettier)
+      -  [`selenium-webdriver@4.20.0`](https://npmjs.com/package/selenium-webdriver)
+      -  [`serve@14.2.3`](https://npmjs.com/package/serve)
+      -  [`source-map-loader@5.0.0`](https://npmjs.com/package/source-map-loader)
+      -  [`terser-webpack-plugin@5.3.10`](https://npmjs.com/package/terser-webpack-plugin)
+      -  [`tsd@0.31.0`](https://npmjs.com/package/tsd)
+      -  [`type-fest@4.18.2`](https://npmjs.com/package/type-fest)
+      -  [`typescript@5.4.5`](https://npmjs.com/package/typescript)
+      -  [`webpack@5.91.0`](https://npmjs.com/package/webpack)
+
+## [4.17.0] - 2024-05-06
 
 ### Known issues
 
@@ -35,6 +206,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 -  Removed deprecated code: `connect*`, `useRenderActivity`, `useRenderActivityStatus`, `useRenderAvatar`, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
 -  Added named exports in both CommonJS and ES Modules module format, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
 -  Removed deprecated `useFocusSendBox()` hook, please use `useFocus('sendBox')` instead, in PR [#5150](https://github.com/microsoft/BotFramework-WebChat/pull/5150), by [@OEvgeny](https://github.com/OEvgeny)
+-  HTML-in-Markdown is now supported. To disable this feature, set `styleOptions.markdownRenderHTML` to `false`
 
 ### Added
 
@@ -61,10 +233,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Added animation to focus indicator and pixel-perfected, in PR [#5143](https://github.com/microsoft/BotFramework-WebChat/pull/5143)
    -  Integrated focus management for send box, in PR [#5150](https://github.com/microsoft/BotFramework-WebChat/pull/5150), by [@OEvgeny](https://github.com/OEvgeny)
    -  Added keyboard navigation support into suggested actions, in PR [#5154](https://github.com/microsoft/BotFramework-WebChat/pull/5154), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Fixes [#5166](https://github.com/microsoft/BotFramework-WebChat/issues/5166). Fixed "attach file" button in iOS Safari should looks the same as on other platforms, in PR [#5167](https://github.com/microsoft/BotFramework-WebChat/pull/5167), by [@compulim](https://github.com/compulim)
 -  (Experimental) Added `<LocalizeString />` component which can be used to localize strings, by [@OEvgeny](https://github.com/OEvgeny) in PR [#5140](https://github.com/microsoft/BotFramework-WebChat/pull/5140)
 -  Added `<ThemeProvider>` component to apply theme pack to Web Chat, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
 -  Added `useMakeThumbnail` hook option to create a thumbnail from the file given, by [@compulim](https://github.com/compulim), in PR [#5123](https://github.com/microsoft/BotFramework-WebChat/pull/5123) and [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)
 -  Added `moduleFormat` and `transpiler` build info to `<meta>` tag, in PR [#5148](https://github.com/microsoft/BotFramework-WebChat/pull/5148), by [@compulim](https://github.com/compulim)
+-  Added support of rendering HTML-in-Markdown, in PR [#5161](https://github.com/microsoft/BotFramework-WebChat/pull/5161) and PR [#5164](https://github.com/microsoft/BotFramework-WebChat/pull/5164), by [@compulim](https://github.com/compulim), [@beyackle2](https://github.com/beyackle2), and [@OEvgeny](https://github.com/OEvgeny)
+-  Resolves [#5184](https://github.com/microsoft/BotFramework-WebChat/issues/5184). Added `channelData.webChat.styleOptions.typingIndicatorDuration` to override the default typing indicator duration on a per-activity basis, by [@compulim](https://github.com/compulim), in PR [#5141](https://github.com/microsoft/BotFramework-WebChat/pull/5141)
+-  Resolves [#4876](https://github.com/microsoft/BotFramework-WebChat/issues/4876) and [#4939](https://github.com/microsoft/BotFramework-WebChat/issues/4939). Added support of livestreaming, by [@compulim](https://github.com/compulim), in PR [#5141](https://github.com/microsoft/BotFramework-WebChat/pull/5141)
 
 ### Fixed
 
@@ -666,6 +842,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
    -  Fixed typings of `useFocus` and `useLocalizer`
 -  Fixes [#3165](https://github.com/microsoft/BotFramework-WebChat/issues/3165) and [#4094](https://github.com/microsoft/BotFramework-WebChat/issues/4094). Allowlist `aria-label` for links in Markdown and skip unrecognized attributes or invalid curly brackets, by [@compulim](https://github.com/compulim), in PR [#4095](https://github.com/microsoft/BotFramework-WebChat/pull/4095)
 -  Fixes [#4190](https://github.com/microsoft/BotFramework-WebChat/issues/4190). Recent Markdown curly bracket fix should not break IE11 due to unsupported "u" flag in `RegExp`, by [@compulim](https://github.com/compulim), in PR [#4191](https://github.com/microsoft/BotFramework-WebChat/pull/4191)
+-  Improved importability in vanilla Webpack 4 without `babel-loader`, by [@compulim](https://github.com/compulim), in PR [#5322](https://github.com/microsoft/BotFramework-WebChat/pull/5322)
 
 ### Changed
 

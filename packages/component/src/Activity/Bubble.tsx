@@ -3,11 +3,11 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { type ReactNode } from 'react';
+import React, { ReactNode, memo } from 'react';
 
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 const { useDirection, useStyleOptions } = hooks;
 
@@ -139,4 +139,6 @@ Bubble.propTypes = {
   nub: PropTypes.oneOf([true, false, 'hidden'])
 };
 
-export default Bubble;
+Bubble.displayName = 'Bubble';
+
+export default memo(Bubble);

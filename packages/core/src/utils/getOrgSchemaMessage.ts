@@ -2,9 +2,9 @@ import { type WebChatActivity } from '../types/WebChatActivity';
 import { parseCreativeWork, type CreativeWork } from '../types/external/OrgSchema/CreativeWork';
 import { parseThing } from '../types/external/OrgSchema/Thing';
 
-export default function getOrgSchemaMessage(
-  graph: readonly WebChatActivity['entities'][0][]
-): CreativeWork | undefined {
+type EntityType = NonNullable<WebChatActivity['entities']>[number];
+
+export default function getOrgSchemaMessage(graph: readonly EntityType[]): CreativeWork | undefined {
   const messageEntity = (graph || []).find(entity => {
     const isThing = entity.type?.startsWith('https://schema.org/');
 

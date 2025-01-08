@@ -1,4 +1,3 @@
-
 :global(.webchat-fluent) .telephone-keypad__button {
   -webkit-user-select: none;
   align-items: center;
@@ -28,7 +27,7 @@
 
   &:hover {
     /* backgroundColor: isHighContrastTheme() ? gray210 : isDarkTheme() ? gray150 : gray30 */
-    background-color: var(--webchat-colorGray30)
+    background-color: var(--webchat-colorGray30);
   }
 }
 
@@ -49,7 +48,7 @@
     justify-content: center;
     margin: 8px 4px;
     width: 32px;
-  };
+  }
 
   .telephone-keypad__button__ruby {
     display: none;

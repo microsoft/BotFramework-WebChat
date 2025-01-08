@@ -43,25 +43,25 @@ import normalizeStyleOptions from '../normalizeStyleOptions';
 import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
+import ActivityListenerComposer from '../providers/ActivityListener/ActivityListenerComposer';
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
+import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
 import type ActivityMiddleware from '../types/ActivityMiddleware';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
-import type AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
-import type AttachmentMiddleware from '../types/AttachmentMiddleware';
-import type AvatarMiddleware from '../types/AvatarMiddleware';
-import type CardActionMiddleware from '../types/CardActionMiddleware';
-import type GroupActivitiesMiddleware from '../types/GroupActivitiesMiddleware';
-import type LocalizedStrings from '../types/LocalizedStrings';
-import type PrecompiledGlobalizeType from '../types/PrecompiledGlobalize';
-import { type ScrollToEndButtonComponentFactory } from '../types/ScrollToEndButtonMiddleware';
-import type ScrollToEndButtonMiddleware from '../types/ScrollToEndButtonMiddleware';
-import { type TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
-import type TelemetryMeasurementEvent from '../types/TelemetryMeasurementEvent';
-import type ToastMiddleware from '../types/ToastMiddleware';
-import type TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
+import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
+import AttachmentMiddleware from '../types/AttachmentMiddleware';
+import AvatarMiddleware from '../types/AvatarMiddleware';
+import CardActionMiddleware from '../types/CardActionMiddleware';
 import { type ContextOf } from '../types/ContextOf';
+import GroupActivitiesMiddleware from '../types/GroupActivitiesMiddleware';
+import LocalizedStrings from '../types/LocalizedStrings';
+import PrecompiledGlobalizeType from '../types/PrecompiledGlobalize';
+import ScrollToEndButtonMiddleware, { ScrollToEndButtonComponentFactory } from '../types/ScrollToEndButtonMiddleware';
+import TelemetryMeasurementEvent, { TelemetryExceptionMeasurementEvent } from '../types/TelemetryMeasurementEvent';
+import ToastMiddleware from '../types/ToastMiddleware';
+import TypingIndicatorMiddleware from '../types/TypingIndicatorMiddleware';
 import createCustomEvent from '../utils/createCustomEvent';
 import isObject from '../utils/isObject';
 import mapMap from '../utils/mapMap';
@@ -69,7 +69,7 @@ import normalizeLanguage from '../utils/normalizeLanguage';
 import { SendBoxMiddlewareProvider, type SendBoxMiddleware } from './internal/SendBoxMiddleware';
 import { SendBoxToolbarMiddlewareProvider, type SendBoxToolbarMiddleware } from './internal/SendBoxToolbarMiddleware';
 import Tracker from './internal/Tracker';
-import { default as WebChatAPIContext } from './internal/WebChatAPIContext';
+import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
 import defaultSelectVoice from './internal/defaultSelectVoice';
 import applyMiddleware, {
@@ -84,7 +84,8 @@ import observableToPromise from './utils/observableToPromise';
 
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
-import PrecompiledGlobalize from '../external/PrecompiledGlobalize.cjs';
+import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+import { parseUIState } from './validation/uiState';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -110,6 +111,8 @@ const DISPATCHERS = {
   stopSpeakingActivity,
   submitSendBox
 };
+
+const EMPTY_ARRAY: readonly [] = Object.freeze([]);
 
 function createCardActionContext({
   cardActionMiddleware,
@@ -215,9 +218,12 @@ type ComposerCoreProps = Readonly<{
   attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
   avatarMiddleware?: OneOrMany<AvatarMiddleware>;
   cardActionMiddleware?: OneOrMany<CardActionMiddleware>;
-  children?: ReactNode | ((context: ContextOf<typeof WebChatAPIContext>) => ReactNode);
+  children?: ReactNode | ((context: ContextOf<React.Context<WebChatAPIContextType>>) => ReactNode);
   dir?: string;
   directLine: DirectLineJSBotConnection;
+  /**
+   * @deprecated Please use `uiState="disabled"` instead. This feature will be removed on or after 2026-09-04.
+   */
   disabled?: boolean;
   downscaleImageToDataURL?: (
     blob: Blob,
@@ -245,6 +251,16 @@ type ComposerCoreProps = Readonly<{
   styleOptions?: StyleOptions;
   toastMiddleware?: OneOrMany<ToastMiddleware>;
   typingIndicatorMiddleware?: OneOrMany<TypingIndicatorMiddleware>;
+  /**
+   * Sets the state of the UI.
+   *
+   * - `undefined` will render normally
+   * - `"blueprint"` will render as few UI elements as possible and should be non-functional
+   *   - Useful for loading scenarios
+   * - `"disabled"` will render most UI elements as non-functional
+   *   - Scrolling may continue to trigger read acknowledgements
+   */
+  uiState?: 'blueprint' | 'disabled' | undefined;
   userID?: string;
   username?: string;
 }>;
@@ -276,6 +292,7 @@ const ComposerCore = ({
   styleOptions,
   toastMiddleware,
   typingIndicatorMiddleware,
+  uiState,
   userID,
   username
 }: ComposerCoreProps) => {
@@ -289,6 +306,8 @@ const ComposerCore = ({
     () => normalizeStyleOptions(patchStyleOptionsFromDeprecatedProps(styleOptions)),
     [styleOptions]
   );
+
+  uiState = parseUIState(uiState, disabled);
 
   useEffect(() => {
     dispatch(setLanguage(locale));
@@ -524,7 +543,7 @@ const ComposerCore = ({
    *       This context should consist of members that are not in the Redux store
    *       i.e. members that are not interested in other types of UIs
    */
-  const context = useMemo<ContextOf<typeof WebChatAPIContext>>(
+  const context = useMemo<ContextOf<React.Context<WebChatAPIContextType>>>(
     () => ({
       ...cardActionContext,
       ...groupActivitiesContext,
@@ -536,7 +555,6 @@ const ComposerCore = ({
       avatarRenderer: patchedAvatarRenderer,
       dir: patchedDir,
       directLine,
-      disabled,
       downscaleImageToDataURL,
       grammars: patchedGrammars,
       internalErrorBoxClass,
@@ -553,13 +571,13 @@ const ComposerCore = ({
       toastRenderer: patchedToastRenderer,
       trackDimension,
       typingIndicatorRenderer: patchedTypingIndicatorRenderer,
+      uiState,
       userID,
       username
     }),
     [
       cardActionContext,
       directLine,
-      disabled,
       downscaleImageToDataURL,
       groupActivitiesContext,
       hoistedDispatchers,
@@ -584,6 +602,7 @@ const ComposerCore = ({
       sendTypingIndicator,
       telemetryDimensionsRef,
       trackDimension,
+      uiState,
       userID,
       username
     ]
@@ -591,14 +610,18 @@ const ComposerCore = ({
 
   return (
     <WebChatAPIContext.Provider value={context}>
-      <ActivitySendStatusComposer>
-        <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || Object.freeze([])}>
-          <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || Object.freeze([])}>
-            {typeof children === 'function' ? children(context) : children}
-            <ActivitySendStatusTelemetryComposer />
-          </SendBoxToolbarMiddlewareProvider>
-        </SendBoxMiddlewareProvider>
-      </ActivitySendStatusComposer>
+      <ActivityListenerComposer>
+        <ActivitySendStatusComposer>
+          <ActivityTypingComposer>
+            <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
+              <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
+                {typeof children === 'function' ? children(context) : children}
+                <ActivitySendStatusTelemetryComposer />
+              </SendBoxToolbarMiddlewareProvider>
+            </SendBoxMiddlewareProvider>
+          </ActivityTypingComposer>
+        </ActivitySendStatusComposer>
+      </ActivityListenerComposer>
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>
   );
@@ -634,6 +657,7 @@ ComposerCore.defaultProps = {
   styleOptions: {},
   toastMiddleware: undefined,
   typingIndicatorMiddleware: undefined,
+  uiState: undefined,
   userID: '',
   username: ''
 };
@@ -677,6 +701,7 @@ ComposerCore.propTypes = {
   styleOptions: PropTypes.any,
   toastMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   typingIndicatorMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
+  uiState: PropTypes.oneOf(['blueprint', 'disabled']),
   userID: PropTypes.string,
   username: PropTypes.string
 };

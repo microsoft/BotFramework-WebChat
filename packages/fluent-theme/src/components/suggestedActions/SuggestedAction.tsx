@@ -1,13 +1,15 @@
 import { hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import cx from 'classnames';
-import React, { type MouseEventHandler, memo, useCallback } from 'react';
-import styles from './SuggestedAction.module.css';
+import React, { MouseEventHandler, memo, useCallback } from 'react';
+
 import { useStyles } from '../../styles';
+import testIds from '../../testIds';
 import AccessibleButton from './AccessibleButton';
 import { useRovingFocusItemRef } from './private/rovingFocus';
+import styles from './SuggestedAction.module.css';
 
-const { useDisabled, useFocus, usePerformCardAction, useScrollToEnd, useStyleSet, useSuggestedActions } = hooks;
+const { useFocus, usePerformCardAction, useScrollToEnd, useStyleSet, useSuggestedActions, useUIState } = hooks;
 
 type SuggestedActionProps = Readonly<{
   buttonText: string | undefined;
@@ -44,7 +46,7 @@ function SuggestedAction({
 }: SuggestedActionProps) {
   const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
-  const [disabled] = useDisabled();
+  const [uiState] = useUIState();
   const focus = useFocus();
   const focusRef = useRovingFocusItemRef<HTMLButtonElement>(itemIndex);
   const performCardAction = usePerformCardAction();
@@ -75,7 +77,8 @@ function SuggestedAction({
   return (
     <AccessibleButton
       className={cx(classNames['suggested-action'], suggestedActionStyleSet + '', (className || '') + '')}
-      disabled={disabled}
+      data-testid={testIds.sendBoxSuggestedAction}
+      disabled={uiState === 'disabled'}
       onClick={handleClick}
       ref={focusRef}
       type="button"

@@ -57,7 +57,7 @@
 
         await pageConditions.uiConnected();
 
-        const liveRegionElement = pageElements.transcriptLiveRegion();
+        const liveRegionElement = pageElements.liveRegion();
         const liveRegionInnerTexts = [];
 
         const mutationObserver = new MutationObserver(records => {

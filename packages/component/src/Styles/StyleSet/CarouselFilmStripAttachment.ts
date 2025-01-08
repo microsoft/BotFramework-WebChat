@@ -1,12 +1,11 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 import { type StrictStyleOptions } from 'botframework-webchat-api';
 
+import CSSTokens from '../CSSTokens';
 import mirrorStyle from '../mirrorStyle';
 
 export default function CarouselFilmStripAttachment({
   avatarSize,
-  bubbleMaxWidth,
-  bubbleMinWidth,
   paddingRegular,
   transcriptVisualKeyboardIndicatorColor,
   transcriptVisualKeyboardIndicatorStyle,
@@ -15,8 +14,8 @@ export default function CarouselFilmStripAttachment({
 }: StrictStyleOptions) {
   return {
     '&.webchat__carousel-filmstrip-attachment': {
-      minWidth: bubbleMinWidth,
-      maxWidth: bubbleMaxWidth,
+      maxWidth: CSSTokens.MaxWidthAttachmentBubble,
+      minWidth: CSSTokens.MinWidthAttachmentBubble,
       transitionDuration,
       transitionProperty: 'max-width, min-width',
 

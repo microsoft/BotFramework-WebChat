@@ -12,7 +12,7 @@ extends:
   - eslint:recommended
   - plugin:import/recommended
   - plugin:prettier/recommended
-  - plugin:security/recommended
+  - plugin:security/recommended-legacy
 
 parserOptions:
   ecmaVersion: 2020
@@ -29,6 +29,7 @@ overrides:
 
   - files:
       - 'jest.config.js'
+      - 'jest.*.config.js'
 
     env:
       node: true

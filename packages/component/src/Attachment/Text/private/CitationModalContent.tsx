@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { Fragment, memo } from 'react';
+import React, { Fragment, memo, useMemo } from 'react';
 
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
@@ -11,7 +11,9 @@ type Props = Readonly<{
 
 const CitationModalContent = memo(({ headerText, markdown }: Props) => {
   const [{ renderMarkdown: renderMarkdownStyleSet }] = useStyleSet();
-  const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('citation modal');
+
+  const html = useMemo(() => ({ __html: renderMarkdownAsHTML(markdown) }), [markdown, renderMarkdownAsHTML]);
 
   return (
     <Fragment>
@@ -25,7 +27,7 @@ const CitationModalContent = memo(({ headerText, markdown }: Props) => {
           )}
           // The content rendered by `renderMarkdownAsHTML` is sanitized.
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: renderMarkdownAsHTML(markdown) }}
+          dangerouslySetInnerHTML={html}
         />
       ) : (
         <div className={classNames('webchat__render-markdown', renderMarkdownStyleSet + '')}>{markdown}</div>

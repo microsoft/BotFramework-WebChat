@@ -6,13 +6,13 @@ import { useRefFrom } from 'use-ref-from';
 
 import IconButton from '../SendBox/IconButton';
 import useMakeThumbnail from '../hooks/useMakeThumbnail';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import AttachmentIcon from './Assets/AttachmentIcon';
 
-const { useDisabled, useSendBoxAttachments, useLocalizer, useStyleOptions } = hooks;
+const { useSendBoxAttachments, useLocalizer, useStyleOptions, useUIState } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__upload-button': {
@@ -40,8 +40,8 @@ type UploadButtonProps = {
 const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const [{ sendAttachmentOn, uploadAccept, uploadMultiple }] = useStyleOptions();
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
-  const [disabled] = useDisabled();
   const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachments();
+  const [uiState] = useUIState();
   const focus = useFocus();
   const inputRef = useRef<HTMLInputElement>(null);
   const localize = useLocalizer();
@@ -49,6 +49,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const submit = useSubmit();
 
+  const disabled = uiState === 'disabled';
   const sendAttachmentOnRef = useRefFrom(sendAttachmentOn);
   const uploadFileString = localize('TEXT_INPUT_UPLOAD_BUTTON_ALT');
 

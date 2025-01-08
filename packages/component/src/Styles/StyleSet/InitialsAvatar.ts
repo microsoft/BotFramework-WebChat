@@ -1,21 +1,20 @@
-import { type StrictStyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions } from 'botframework-webchat-api';
+import CSSTokens from '../CSSTokens';
 
 export default function createInitialsAvatarStyle({
   accent,
-  avatarSize,
   botAvatarBackgroundColor,
-  primaryFont,
   userAvatarBackgroundColor
 }: StrictStyleOptions) {
   return {
     '&.webchat__initialsAvatar': {
       alignItems: 'center',
       color: 'White',
-      fontFamily: primaryFont,
-      height: avatarSize,
+      fontFamily: CSSTokens.FontPrimary,
+      height: CSSTokens.SizeAvatar,
       justifyContent: 'center',
       overflow: 'hidden',
-      width: avatarSize,
+      width: CSSTokens.SizeAvatar,
 
       '&.webchat__initialsAvatar--fromUser': {
         backgroundColor: userAvatarBackgroundColor || accent

@@ -1,4 +1,4 @@
-import { lazy, parse, string, union, type ObjectEntries } from 'valibot';
+import { lazy, object, parse, string, union, type ObjectEntries } from 'valibot';
 
 import { definedTerm, type DefinedTerm } from './DefinedTerm';
 import orgSchemaProperties from './private/orgSchemaProperties';
@@ -26,7 +26,7 @@ export type CreativeWork = Thing & {
    *
    * @see https://schema.org/author
    */
-  author?: string | undefined;
+  author?: Person | string | undefined;
 
   /**
    * A citation or reference to another creative work, such as another publication, web page, scholarly article, etc.
@@ -34,6 +34,11 @@ export type CreativeWork = Thing & {
    * @see https://schema.org/citation
    */
   citation?: readonly CreativeWork[] | undefined;
+
+  /**
+   * The schema.org [isBasedOn](https://schema.org/isBasedOn) property provides a resource from which this work is derived or from which it is a modification or adaptation.
+   */
+  isBasedOn?: CreativeWork | undefined;
 
   /**
    * Keywords or tags used to describe some item. Multiple textual entries in a keywords list are typically delimited by commas, or by repeating the property.
@@ -64,14 +69,31 @@ export type CreativeWork = Thing & {
   usageInfo?: CreativeWork | undefined;
 };
 
+type Person = {
+  '@type': 'Person';
+  description?: string | undefined;
+  image?: string | undefined;
+  name?: string | undefined;
+};
+
+const person = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
+  object({
+    description: orgSchemaProperty(string()),
+    image: orgSchemaProperty(string()),
+    name: orgSchemaProperty(string()),
+
+    ...entries
+  });
+
 export const creativeWork = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
   thing({
     // For forward compatibility, we did not enforce @type must be "CreativeWork" or any other subtypes.
     // In future, if Schema.org introduced a new subtype of CreativeWork, we should still able to parse that one as a CreativeWork.
 
     abstract: orgSchemaProperty(string()),
-    author: orgSchemaProperties(string()),
+    author: orgSchemaProperty(union([person(), string()])),
     citation: orgSchemaProperties(lazy(() => creativeWork())),
+    isBasedOn: orgSchemaProperty(lazy(() => creativeWork())),
     keywords: orgSchemaProperties(union([lazy(() => definedTerm()), string()])),
     pattern: orgSchemaProperty(lazy(() => definedTerm())),
     text: orgSchemaProperty(string()),

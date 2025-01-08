@@ -3,12 +3,13 @@ import React, { type MouseEventHandler, type ReactNode, forwardRef, memo, useRef
 const preventDefaultHandler: MouseEventHandler<HTMLButtonElement> = event => event.preventDefault();
 
 type AccessibleButtonProps = Readonly<{
+  'aria-hidden'?: boolean | undefined;
+  'data-testid'?: string | undefined;
+  children?: ReactNode | undefined;
   className?: string | undefined;
-  'aria-hidden'?: boolean;
-  children?: ReactNode;
-  disabled?: boolean;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-  tabIndex?: number;
+  disabled?: boolean | undefined;
+  onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
+  tabIndex?: number | undefined;
   type: 'button';
 }>;
 
@@ -31,23 +32,24 @@ type AccessibleButtonProps = Readonly<{
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
 const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
-  ({ 'aria-hidden': ariaHidden, children, disabled, onClick, tabIndex, ...props }, forwardedRef) => {
+  (
+    { 'aria-hidden': ariaHidden, children, className, 'data-testid': dataTestId, disabled, onClick, tabIndex },
+    forwardedRef
+  ) => {
     const targetRef = useRef<HTMLButtonElement>(null);
 
     const ref = forwardedRef || targetRef;
 
     return (
       <button
-        aria-disabled={disabled ? 'true' : 'false'}
+        aria-disabled={disabled ? 'true' : undefined}
         aria-hidden={ariaHidden}
+        className={className}
+        data-testid={dataTestId}
         onClick={disabled ? preventDefaultHandler : onClick}
         ref={ref}
-        tabIndex={tabIndex}
-        {...(disabled && {
-          'aria-disabled': 'true',
-          tabIndex: -1
-        })}
-        {...props}
+        // eslint-disable-next-line no-magic-numbers
+        tabIndex={disabled ? -1 : tabIndex}
         type="button"
       >
         {children}

@@ -1,17 +1,20 @@
 name: samples/07.b.sso-for-enterprise
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/samples.07.b.sso-for-enterprise.yaml
-      - samples/07.advanced-web-chat-apps/b.sso-for-enterprise/**
+  workflow_dispatch: {} # Pipeline is disabled
+
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths:
+#       - .github/workflows/samples.07.b.sso-for-enterprise.yaml
+#       - samples/07.advanced-web-chat-apps/b.sso-for-enterprise/**
 
 env:
   APP_NAME: webchat-samples-ssoenterprise
-  DOCKER_IMAGE: webchatsamples.azurecr.io/webchat-samples-ssoenterprise
-  DOCKER_REGISTRY: webchatsamples.azurecr.io
+  # DOCKER_IMAGE: your-own-registry.azurecr.io/webchat-samples-ssoenterprise
+  # DOCKER_REGISTRY: your-own-registry.azurecr.io
   DOCKER_TAG: sha-${{ github.sha }}
   DOCKERFILE_PATH: samples/07.advanced-web-chat-apps/b.sso-for-enterprise
   PUBLISH_PROFILE: ${{ secrets.SAMPLES_SSOENTERPRISE_PUBLISH_PROFILE }}

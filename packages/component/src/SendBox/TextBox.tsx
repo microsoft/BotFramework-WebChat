@@ -6,7 +6,7 @@ import AccessibleInputText from '../Utils/AccessibleInputText';
 import navigableEvent from '../Utils/TypeFocusSink/navigableEvent';
 import { ie11 } from '../Utils/detectBrowser';
 import { useRegisterFocusSendBox, type SendBoxFocusOptions } from '../hooks/sendBoxFocus';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useScrollDown from '../hooks/useScrollDown';
 import useScrollUp from '../hooks/useScrollUp';
 import useStyleSet from '../hooks/useStyleSet';
@@ -14,7 +14,10 @@ import useSubmit from '../providers/internal/SendBox/useSubmit';
 import withEmoji from '../withEmoji/withEmoji';
 import AutoResizeTextArea from './AutoResizeTextArea';
 
-const { useDisabled, useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions } = hooks;
+import type { MutableRefObject } from 'react';
+import testIds from '../testIds';
+
+const { useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions, useUIState } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__send-box-text-box': {
@@ -81,14 +84,15 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
   const [{ sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [{ emojiSet, sendBoxTextWrap }] = useStyleOptions();
   const [{ setTimeout }] = usePonyfill();
-  const [disabled] = useDisabled();
-  const inputElementRef = useRef<HTMLInputElement & HTMLTextAreaElement>(null);
+  const [uiState] = useUIState();
+  const inputElementRef: MutableRefObject<HTMLInputElement & HTMLTextAreaElement> = useRef();
   const localize = useLocalizer();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const scrollDown = useScrollDown();
   const scrollUp = useScrollUp();
   const submitTextBox = useTextBoxSubmit();
 
+  const disabled = uiState === 'disabled';
   const sendBoxString = localize('TEXT_INPUT_ALT');
   const typeYourMessageString = localize('TEXT_INPUT_PLACEHOLDER');
 
@@ -217,6 +221,7 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
           aria-label={sendBoxString}
           className="webchat__send-box-text-box__input"
           data-id="webchat-sendbox-input"
+          data-testid={testIds.sendBoxTextBox}
           disabled={disabled}
           emojiMap={emojiMap}
           enterKeyHint="send"
@@ -235,6 +240,7 @@ const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }
           aria-label={sendBoxString}
           className="webchat__send-box-text-box__text-area"
           data-id="webchat-sendbox-input"
+          data-testid={testIds.sendBoxTextBox}
           disabled={disabled}
           emojiMap={emojiMap}
           enterKeyHint="send"

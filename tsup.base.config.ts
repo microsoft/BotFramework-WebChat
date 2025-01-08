@@ -1,11 +1,13 @@
-import { defineConfig, type Options } from 'tsup';
+import { type Options } from 'tsup';
 import { babelPlugin, defaultPredicate, type Predicate } from './esbuildBabelPluginIstanbul';
+
+type Target = Exclude<Options['target'], Array<unknown> | undefined>;
 
 const env = process.env.NODE_ENV || 'development';
 const { npm_package_version } = process.env;
 const istanbulPredicate: Predicate = args => defaultPredicate(args) && !/\.worker\.[cm]?[jt]s$/u.test(args.path);
 
-export default defineConfig({
+const baseConfig: Options & { target: Target[] } = {
   dts: true,
   env: {
     build_tool: 'tsup',
@@ -49,8 +51,11 @@ export default defineConfig({
   format: 'esm',
   loader: { '.js': 'jsx' },
   metafile: true,
-  minify: env === 'production',
+  minify: env === 'production' || env === 'test',
   platform: 'browser',
   sourcemap: true,
-  target: ['chrome100', 'firefox100', 'safari15']
-}) as Options;
+  splitting: true,
+  target: ['chrome100', 'firefox100', 'safari15'] satisfies Target[]
+};
+
+export default baseConfig;

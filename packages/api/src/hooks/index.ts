@@ -19,6 +19,7 @@ import useDirection from './useDirection';
 import useDisabled from './useDisabled';
 import useDismissNotification from './useDismissNotification';
 import useEmitTypingIndicator from './useEmitTypingIndicator';
+import useGetActivitiesByKey from './useGetActivitiesByKey';
 import useGetActivityByKey from './useGetActivityByKey';
 import useGetHasAcknowledgedByActivityKey from './useGetHasAcknowledgedByActivityKey';
 import useGetKeyByActivity from './useGetKeyByActivity';
@@ -65,6 +66,7 @@ import useTrackDimension from './useTrackDimension';
 import useTrackEvent from './useTrackEvent';
 import useTrackException from './useTrackException';
 import useTrackTiming from './useTrackTiming';
+import useUIState from './useUIState';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
@@ -91,6 +93,7 @@ export {
   useDisabled,
   useDismissNotification,
   useEmitTypingIndicator,
+  useGetActivitiesByKey,
   useGetActivityByKey,
   useGetHasAcknowledgedByActivityKey,
   useGetKeyByActivity,
@@ -137,6 +140,7 @@ export {
   useTrackEvent,
   useTrackException,
   useTrackTiming,
+  useUIState,
   useUserID,
   useUsername,
   useVoiceSelector

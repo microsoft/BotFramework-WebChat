@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import React, { type MouseEventHandler, type ReactNode, forwardRef, useCallback, useRef } from 'react';
+import React, { forwardRef, memo, useCallback, useMemo, useRef } from 'react';
 
 import { android } from '../Utils/detectBrowser';
 import FocusTrap from './FocusTrap';
@@ -11,9 +11,10 @@ import useActiveDescendantId from '../providers/TranscriptFocus/useActiveDescend
 import useActivityAccessibleName from './useActivityAccessibleName';
 import useFocusByActivityKey from '../providers/TranscriptFocus/useFocusByActivityKey';
 import useGetDescendantIdByActivityKey from '../providers/TranscriptFocus/useGetDescendantIdByActivityKey';
-import useValueRef from '../hooks/internal/useValueRef';
 
-import { type WebChatActivity } from 'botframework-webchat-core';
+import type { MouseEventHandler, ReactNode } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
+import { useRefFrom } from 'use-ref-from';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
@@ -32,7 +33,7 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
   const activityKey = getKeyByActivity(activity);
 
   const acknowledged = useGetHasAcknowledgedByActivityKey()(activityKey);
-  const activityKeyRef = useValueRef<string>(activityKey);
+  const activityKeyRef = useRefFrom<string>(activityKey);
   const descendantId = useGetDescendantIdByActivityKey()(activityKey);
   const descendantLabelId = `webchat__basic-transcript__active-descendant-label--${activityKey}`;
 
@@ -54,6 +55,15 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
   // We should do the same for mouse, when the user click on the activity, we should also put a visual focus indicator around the activity.
   // We are doing it in event capture phase to prevent descendants from stopping event propagation to us.
   const handleMouseDownCapture: MouseEventHandler = useCallback(() => focusSelf(false), [focusSelf]);
+
+  const focusTrapChildren = useMemo(
+    () => (
+      <div className="webchat__basic-transcript__activity-body" ref={bodyRef}>
+        {children}
+      </div>
+    ),
+    [bodyRef, children]
+  );
 
   return (
     // TODO: [P2] Add `aria-roledescription="message"` for better AX, need localization strings.
@@ -87,10 +97,12 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
           <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
         </div>
       )}
-      <FocusTrap onFocus={handleDescendantFocus} onLeave={handleLeaveFocusTrap}>
-        <div className="webchat__basic-transcript__activity-body" ref={bodyRef}>
-          {children}
-        </div>
+      <FocusTrap
+        onFocus={handleDescendantFocus}
+        onLeave={handleLeaveFocusTrap}
+        targetClassName="webchat__basic-transcript__activity-focus-target"
+      >
+        {focusTrapChildren}
       </FocusTrap>
       {shouldSpeak && <SpeakActivity activity={activity} />}
       <div
@@ -120,4 +132,4 @@ ActivityRow.propTypes = {
   children: PropTypes.any
 };
 
-export default ActivityRow;
+export default memo(ActivityRow);

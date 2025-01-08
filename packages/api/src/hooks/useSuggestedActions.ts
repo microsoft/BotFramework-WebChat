@@ -1,11 +1,23 @@
+import type { DirectLineCardAction, WebChatActivity } from 'botframework-webchat-core';
 import { useCallback } from 'react';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
 
 import { useSelector } from './internal/WebChatReduxContext';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
-export default function useSuggestedActions(): [DirectLineCardAction[], (suggestedActions: never[]) => void] {
-  const value = useSelector(({ suggestedActions }) => suggestedActions);
+export default function useSuggestedActions(): [
+  DirectLineCardAction[],
+  (suggestedActions: never[]) => void,
+  extras: { activity: WebChatActivity }
+] {
+  const [value, activity] = useSelector(
+    ({
+      suggestedActions,
+      suggestedActionsOriginActivity: { activity }
+    }: {
+      suggestedActions: readonly DirectLineCardAction[];
+      suggestedActionsOriginActivity: { activity: undefined | WebChatActivity };
+    }) => [suggestedActions, activity]
+  );
   const { clearSuggestedActions } = useWebChatAPIContext();
 
   return [
@@ -19,6 +31,7 @@ export default function useSuggestedActions(): [DirectLineCardAction[], (suggest
         clearSuggestedActions();
       },
       [clearSuggestedActions]
-    )
+    ),
+    { activity }
   ];
 }

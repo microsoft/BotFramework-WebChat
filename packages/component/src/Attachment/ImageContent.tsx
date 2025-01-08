@@ -1,29 +1,15 @@
-import { hooks } from 'botframework-webchat-api';
-import PropTypes from 'prop-types';
-import React from 'react';
+import React, { memo } from 'react';
 
-import CroppedImage from '../Utils/CroppedImage';
+import FixedWidthImage from '../Utils/FixedWidthImage';
 
-const { useStyleOptions } = hooks;
-
-type ImageContentProps = Readonly<{
-  alt?: string;
-  src: string;
-}>;
-
-const ImageContent = ({ alt, src }: ImageContentProps) => {
-  const [{ bubbleImageHeight }] = useStyleOptions();
-
-  return <CroppedImage alt={alt} height={bubbleImageHeight} src={src} width="100%" />;
-};
-
-ImageContent.defaultProps = {
-  alt: ''
-};
-
-ImageContent.propTypes = {
-  alt: PropTypes.string,
-  src: PropTypes.string.isRequired
-};
+const ImageContent = memo(
+  ({
+    alt,
+    src
+  }: Readonly<{
+    alt?: string;
+    src: string;
+  }>) => <FixedWidthImage alt={alt || ''} src={src} />
+);
 
 export default ImageContent;

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -56,11 +56,24 @@
         await host.sendKeys('ABC');
         expect(getTextWithCaret()).toBe('ABC|');
 
+        // Make sure we have write permissions to the clipboard.
+        expect(window.isSecureContext).toBe(true);
+
+        await host.sendDevToolsCommand('Browser.setPermission', {
+          permission: { name: 'clipboard-write' },
+          setting: 'granted'
+        });
+
+        await expect(navigator.permissions.query({ name: 'clipboard-write' })).resolves.toHaveProperty(
+          'state',
+          'granted'
+        );
+
         // In WebDriver, CTRL + X do not cut to clipboard.
         // We cannot do CTRL + A followed by CTRL + X here.
         // Instead, we are writing to clipboard directly.
         await host.sendKeys('+CONTROL', 'A', '-CONTROL');
-        navigator.clipboard?.writeText(document.activeElement.value) || document.execCommand('copy');
+        await (navigator.clipboard?.writeText(document.activeElement.value) || document.execCommand('copy'));
 
         await host.sendKeys('BACK_SPACE');
         expect(getTextWithCaret()).toBe('|');

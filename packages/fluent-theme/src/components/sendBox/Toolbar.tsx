@@ -1,7 +1,10 @@
+import { hooks } from 'botframework-webchat-api';
 import cx from 'classnames';
 import React, { memo, type MouseEventHandler, type ReactNode } from 'react';
-import styles from './Toolbar.module.css';
 import { useStyles } from '../../styles';
+import styles from './Toolbar.module.css';
+
+const { useUIState } = hooks;
 
 const preventDefaultHandler: MouseEventHandler<HTMLButtonElement> = event => event.preventDefault();
 
@@ -19,20 +22,22 @@ export const ToolbarButton = memo(
     }>
   ) => {
     const classNames = useStyles(styles);
+    const [uiState] = useUIState();
+
+    const disabled = props.disabled || uiState === 'disabled';
 
     return (
       <button
+        aria-disabled={disabled ? 'true' : undefined}
         aria-label={props['aria-label']}
         className={cx(classNames['sendbox__toolbar-button'], props.className, {
           [classNames['sendbox__toolbar-button--selected']]: props.selected
         })}
         data-testid={props['data-testid']}
-        onClick={props.disabled ? preventDefaultHandler : props.onClick}
+        onClick={disabled ? preventDefaultHandler : props.onClick}
+        // eslint-disable-next-line no-magic-numbers
+        tabIndex={disabled ? -1 : undefined}
         type={props.type === 'submit' ? 'submit' : 'button'}
-        {...(props.disabled && {
-          'aria-disabled': 'true',
-          tabIndex: -1
-        })}
       >
         {props.children}
       </button>
@@ -43,9 +48,14 @@ export const ToolbarButton = memo(
 ToolbarButton.displayName = 'ToolbarButton';
 
 export const Toolbar = memo((props: Readonly<{ children?: ReactNode | undefined; className?: string | undefined }>) => {
+  const [uiState] = useUIState();
   const classNames = useStyles(styles);
 
-  return <div className={cx(classNames['sendbox__toolbar'], props.className)}>{props.children}</div>;
+  return (
+    <div className={cx(classNames['sendbox__toolbar'], props.className)}>
+      {uiState !== 'blueprint' && props.children}
+    </div>
+  );
 });
 
 Toolbar.displayName = 'Toolbar';

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -53,7 +53,9 @@
           let speechSynthesisHostname;
           let speechRegion;
 
+          // CodeQL [SM01513] False positive, not bypassing, but switching between approaches
           if (useSubscriptionKey) {
+            // CodeQL [SM01513] False positive, not bypassing, but switching between approaches
             if (channelType === 'dlspeech' && directLineSpeechSubscriptionKey) {
               speechAuthorizationToken = await fetchSpeechServicesAuthorizationToken({
                 region: directLineSpeechRegion,
@@ -67,6 +69,7 @@
               } else {
                 speechRegion = directLineSpeechRegion;
               }
+              // CodeQL [SM01513] False positive, not bypassing, but switching between approaches
             } else if (channelType === 'dl' && speechServicesSubscriptionKey) {
               speechAuthorizationToken = await fetchSpeechServicesAuthorizationToken({
                 region: speechServicesRegion,

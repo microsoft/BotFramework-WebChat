@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Full-featured bundle with Direct Line Speech channel</title>
@@ -37,18 +37,16 @@
         // You should never put the Direct Line secret in the browser or client app.
         // https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication
 
-        const res = await fetch('https://webchat-mockbot3.azurewebsites.net/api/token/directlinease', {
-          method: 'POST'
-        });
+        const res = await fetch(
+          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directlinease',
+          { method: 'POST' }
+        );
 
-        const { token } = await res.json();
+        const { domain, token } = await res.json();
 
         window.WebChat.renderWebChat(
           {
-            directLine: await window.WebChat.createDirectLineAppServiceExtension({
-              domain: 'https://webchat-mockbot3.azurewebsites.net/.bot/v3/directline',
-              token
-            })
+            directLine: await window.WebChat.createDirectLineAppServiceExtension({ domain, token })
           },
           document.getElementById('webchat')
         );

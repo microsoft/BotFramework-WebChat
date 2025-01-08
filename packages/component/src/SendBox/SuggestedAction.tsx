@@ -6,7 +6,7 @@ import React, { type MouseEventHandler, useCallback } from 'react';
 
 import useFocusVisible from '../hooks/internal/useFocusVisible';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useFocus from '../hooks/useFocus';
 import useScrollToEnd from '../hooks/useScrollToEnd';
@@ -15,7 +15,7 @@ import useItemRef from '../providers/RovingTabIndex/useItemRef';
 import AccessibleButton from '../Utils/AccessibleButton';
 import useFocusAccessKeyEffect from '../Utils/AccessKeySink/useFocusAccessKeyEffect';
 
-const { useDirection, useDisabled, usePerformCardAction, useStyleOptions, useSuggestedActions } = hooks;
+const { useDirection, usePerformCardAction, useStyleOptions, useSuggestedActions, useUIState } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__suggested-action': {
@@ -64,7 +64,7 @@ const SuggestedAction = ({
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const [accessKey] = useSuggestedActionsAccessKey();
   const [direction] = useDirection();
-  const [disabled] = useDisabled();
+  const [uiState] = useUIState();
   const focus = useFocus();
   const focusRef = useItemRef<HTMLButtonElement>(itemIndex);
   const localizeAccessKeyAsAriaKeyShortcuts = useLocalizeAccessKey('aria-keyshortcuts');
@@ -111,7 +111,7 @@ const SuggestedAction = ({
         suggestedActionStyleSet + '',
         (className || '') + ''
       )}
-      disabled={disabled}
+      disabled={uiState === 'disabled'}
       onClick={handleClick}
       ref={focusRef}
       type="button"

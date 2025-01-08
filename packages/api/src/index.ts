@@ -4,15 +4,15 @@ import defaultStyleOptions from './defaultStyleOptions';
 import Composer, { type ComposerProps } from './hooks/Composer';
 import * as hooks from './hooks/index';
 import {
-  rectifySendBoxMiddlewareProps,
   SendBoxMiddlewareProxy,
+  initSendBoxMiddleware,
   type SendBoxMiddleware,
   type SendBoxMiddlewareProps,
   type SendBoxMiddlewareRequest
 } from './hooks/internal/SendBoxMiddleware';
 import {
-  rectifySendBoxToolbarMiddlewareProps,
   SendBoxToolbarMiddlewareProxy,
+  initSendBoxToolbarMiddleware,
   type SendBoxToolbarMiddleware,
   type SendBoxToolbarMiddlewareProps,
   type SendBoxToolbarMiddlewareRequest
@@ -63,10 +63,10 @@ export {
   concatMiddleware,
   defaultStyleOptions,
   hooks,
+  initSendBoxMiddleware,
+  initSendBoxToolbarMiddleware,
   localize,
   normalizeStyleOptions,
-  rectifySendBoxMiddlewareProps,
-  rectifySendBoxToolbarMiddlewareProps,
   version
 };
 

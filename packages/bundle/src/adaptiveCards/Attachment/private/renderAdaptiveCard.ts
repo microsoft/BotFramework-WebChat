@@ -36,7 +36,6 @@ export default function renderAdaptiveCard(
   //       Because there could be timing difference between .parse and .render, we could be using wrong Markdown engine
 
   // "onProcessMarkdown" is a static function but we are trying to scope it to the current object instead.
-  // eslint-disable-next-line dot-notation
   adaptiveCard.constructor['onProcessMarkdown'] = (text: string, result: IMarkdownProcessingResult) => {
     if (renderMarkdownAsHTML) {
       result.outputHtml = renderMarkdownAsHTML(text);

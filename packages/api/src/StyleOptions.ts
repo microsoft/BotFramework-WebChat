@@ -150,10 +150,43 @@ type StyleOptions = {
   bubbleFromUserNubSize?: number;
 
   bubbleFromUserTextColor?: string;
-  bubbleImageHeight?: number;
-  bubbleMaxWidth?: number;
+
+  /**
+   * Specifies the fixed height of the bubble for image, default to unset.
+   *
+   * @deprecated Use `bubbleImageMaxHeight` and `bubbleImageMinHeight` instead. To mimick behavior before deprecation, set both options to 240px.
+   */
+  bubbleImageHeight?: number | undefined;
+
+  /**
+   * Specifies the maximum height of the bubble for image, default to 240px.
+   *
+   * CSS variable: `--webchat__max-height--image-bubble`.
+   *
+   * New in 4.18.0.
+   */
+  bubbleImageMaxHeight?: number | undefined;
+
+  /**
+   * Specifies the minimum height of the bubble for image, default to 240px.
+   *
+   * CSS variable: `--webchat__min-height--image-bubble`.
+   *
+   * New in 4.18.0.
+   */
+  bubbleImageMinHeight?: number | undefined;
+
+  /* @deprecated Please use `bubbleAttachmentMaxWidth` and `bubbleMessageMaxWidth` instead. */
+  bubbleMaxWidth?: number | undefined;
+  /* @deprecated Please use `bubbleAttachmentMaxWidth` and `bubbleMessageMaxWidth` instead. */
+  bubbleMinWidth?: number | undefined;
+
+  bubbleAttachmentMaxWidth?: number | undefined;
+  bubbleAttachmentMinWidth?: number | undefined;
+  bubbleMessageMaxWidth?: number | undefined;
+  bubbleMessageMinWidth?: number | undefined;
+
   bubbleMinHeight?: number;
-  bubbleMinWidth?: number;
 
   /**
    * Nub offset ''bottom' will render nub at the bottom
@@ -211,10 +244,19 @@ type StyleOptions = {
   markdownRespectCRLF?: boolean;
 
   /**
+   * Render HTML inside Markdown.
+   *
+   * `true` to render HTML inside Markdown, otherwise, `false`. Defaults to `true`.
+   *
+   * New in 4.17: This option is enabled by default.
+   */
+  markdownRenderHTML?: boolean;
+
+  /**
    * Assign new image for anchor links to indicate external
    */
-
   markdownExternalLinkIconImage?: string;
+
   /**
    * Scroll behavior styling
    */
@@ -838,13 +880,66 @@ type StyleOptions = {
    * @default 2000
    */
   maxMessageLength?: number;
+
+  /**
+   * The node to place Web Chat styles into. Needed when using as a Web Component.
+   *
+   * @default document.head
+   */
+  stylesRoot?: Node;
+
+  /**
+   * Border animation
+   */
+
+  /**
+   * Border animation 1st color
+   *
+   * CSS variable: `--webchat__animation--border-color-1` CSS variable to adjust the color
+   *
+   * New in 4.19.0.
+   */
+  borderAnimationColor1?: string;
+  /**
+   * Border animation 2nd color
+   *
+   * CSS variable: `--webchat__animation--border-color-2` CSS variable to adjust the color
+   *
+   * New in 4.19.0.
+   */
+  borderAnimationColor2?: string;
+  /**
+   * Border animation 3rd color
+   *
+   * CSS variable: `--webchat__animation--border-color-3` CSS variable to adjust the color
+   *
+   * New in 4.19.0.
+   */
+  borderAnimationColor3?: string;
+
+  /**
+   * Code block theme
+   *
+   * - `'github-light-default'` - use light theme for code blocks
+   * - `'github-dark-default'` - use dark theme for code blocks
+   *
+   * @default 'github-light-default'
+   *
+   * New in 4.19.0.
+   */
+  codeBlockTheme?: 'github-light-default' | 'github-dark-default';
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:
 // 1. Allow developers to set the "bubbleNubOffset" option as "top" (string), but when we normalize them, we will convert it to 0 (number);
 // 2. Renamed/deprecated options, only the newer option will be kept, the older option will be dropped.
 //    Internally, no code should use the deprecated value except the migration code.
-type StrictStyleOptions = Required<Omit<StyleOptions, 'hideScrollToEndButton' | 'newMessagesButtonFontSize'>> & {
+type StrictStyleOptions = Required<
+  Omit<
+    StyleOptions,
+    'bubbleImageHeight' | 'bubbleMaxWidth' | 'bubbleMinWidth' | 'hideScrollToEndButton' | 'newMessagesButtonFontSize'
+  >
+> & {
   bubbleFromUserNubOffset: number;
   bubbleNubOffset: number;
   emojiSet: false | Record<string, string>;

@@ -1,11 +1,11 @@
-import { type AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
-import { type WebSpeechPonyfillFactory } from 'botframework-webchat-api';
-import createPonyfill from 'web-speech-cognitive-services/lib/SpeechServices';
+import { WebSpeechPonyfillFactory } from 'botframework-webchat-api';
+import { AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
+import { createSpeechServicesPonyfill } from 'web-speech-cognitive-services';
 
-import type CognitiveServicesAudioOutputFormat from './types/CognitiveServicesAudioOutputFormat';
-import type CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
-import type CognitiveServicesTextNormalization from './types/CognitiveServicesTextNormalization';
 import createMicrophoneAudioConfigAndAudioContext from './speech/createMicrophoneAudioConfigAndAudioContext';
+import CognitiveServicesAudioOutputFormat from './types/CognitiveServicesAudioOutputFormat';
+import CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
+import CognitiveServicesTextNormalization from './types/CognitiveServicesTextNormalization';
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioConfig,
@@ -13,6 +13,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioInputDeviceId,
   credentials,
   enableTelemetry,
+  initialSilenceTimeout,
   speechRecognitionEndpointId,
   speechSynthesisDeploymentId,
   speechSynthesisOutputFormat,
@@ -23,6 +24,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioInputDeviceId?: string;
   credentials: CognitiveServicesCredentials;
   enableTelemetry?: true;
+  initialSilenceTimeout?: number | undefined;
   speechRecognitionEndpointId?: string;
   speechSynthesisDeploymentId?: string;
   speechSynthesisOutputFormat?: CognitiveServicesAudioOutputFormat;
@@ -55,17 +57,19 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   }
 
   return ({ referenceGrammarID } = {}) => {
-    const { SpeechGrammarList, SpeechRecognition, speechSynthesis, SpeechSynthesisUtterance } = createPonyfill({
-      audioConfig,
-      audioContext,
-      credentials,
-      enableTelemetry,
-      referenceGrammars: referenceGrammarID ? [`luis/${referenceGrammarID}-PRODUCTION`] : [],
-      speechRecognitionEndpointId,
-      speechSynthesisDeploymentId,
-      speechSynthesisOutputFormat,
-      textNormalization
-    });
+    const { SpeechGrammarList, SpeechRecognition, speechSynthesis, SpeechSynthesisUtterance } =
+      createSpeechServicesPonyfill({
+        audioConfig,
+        audioContext,
+        credentials,
+        enableTelemetry,
+        initialSilenceTimeout,
+        referenceGrammars: referenceGrammarID ? [`luis/${referenceGrammarID}-PRODUCTION`] : [],
+        speechRecognitionEndpointId,
+        speechSynthesisDeploymentId,
+        speechSynthesisOutputFormat,
+        textNormalization
+      });
 
     return {
       resumeAudioContext: () => audioContext && audioContext.state === 'suspended' && audioContext.resume(),

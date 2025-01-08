@@ -10,7 +10,7 @@ import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } fro
 import computeSuggestedActionText from '../Utils/computeSuggestedActionText';
 import useFocusWithin from '../hooks/internal/useFocusWithin';
 import useNonce from '../hooks/internal/useNonce';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
 import RovingTabIndexComposer from '../providers/RovingTabIndex/RovingTabIndexComposer';
@@ -133,7 +133,6 @@ const SuggestedActionFlowContainer = ({ children, className, label }: SuggestedA
   return (
     <div
       aria-label={label}
-      aria-live="polite"
       aria-orientation="horizontal"
       className={classNames(
         'webchat__suggested-actions',
@@ -174,7 +173,6 @@ const SuggestedActionStackedContainer = ({ children, className, label }) => {
   return (
     <div
       aria-label={label}
-      aria-live="polite"
       aria-orientation="vertical"
       className={classNames(
         'webchat__suggested-actions',

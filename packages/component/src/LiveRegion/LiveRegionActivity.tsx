@@ -9,7 +9,7 @@ import activityAltText from '../Utils/activityAltText';
 import LiveRegionAttachments from './private/LiveRegionAttachments';
 import LiveRegionSuggestedActions from './private/LiveRegionSuggestedActions';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 import { type WebChatActivity } from 'botframework-webchat-core';
 
@@ -41,7 +41,7 @@ const LiveRegionActivity = ({ activity }: LiveRegionActivityProps) => {
   const fallbackText: string | undefined =
     type === 'message' ? activity.channelData['webchat:fallback-text'] : undefined;
   const localize = useLocalizer();
-  const renderMarkdownAsHTML = useRenderMarkdownAsHTML();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('accessible name');
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const textAlt = useMemo(() => activityAltText(activity, renderMarkdownAsHTML), [activity, renderMarkdownAsHTML]);
 

@@ -1,35 +1,36 @@
 :global(.webchat-fluent) .suggested-action {
   align-items: center;
   background: transparent;
-  border-radius: 8px;
-  border: 1px solid var(--webchat-colorBrandStroke2);
+  border-radius: var(--webchat-borderRadiusXLarge);
+  border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandStroke2);
   color: currentColor;
   cursor: pointer;
   display: flex;
-  font-size: 12px;
-  gap: 4px;
-  padding: 4px 8px 4px;
+  font-family: var(--webchat__font--primary);
+  font-size: var(--webchat-fontSizeBase200);
+  gap: var(--webchat-spacingHorizontalXS);
+  padding: var(--webchat-spacingVerticalXS) var(--webchat-spacingHorizontalS);
   text-align: start;
-  transition: all .15s ease-out;
+  transition: all var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
 
   @media (hover: hover) {
-    &:not([aria-disabled="true"]):hover {
+    &:not([aria-disabled='true']):hover {
       background-color: var(--webchat-colorBrandBackground2Hover);
-      color: var(--webchat-colorBrandForeground2Hover)
+      color: var(--webchat-colorBrandForeground2Hover);
     }
   }
-  &:not([aria-disabled="true"]):active {
+  &:not([aria-disabled='true']):active {
     background-color: var(--webchat-colorBrandBackground2Pressed);
-    color: var(--webchat-colorBrandForeground2Pressed)
+    color: var(--webchat-colorBrandForeground2Pressed);
   }
-  &[aria-disabled="true"] {
+  &[aria-disabled='true'] {
     color: var(--webchat-colorNeutralForegroundDisabled);
-    cursor: not-allowed
+    cursor: not-allowed;
   }
 }
 
 :global(.webchat-fluent) .suggested-action__image {
-  font-size: 12px;
+  font-size: var(--webchat-fontSizeBase200);
   height: 1em;
   width: 1em;
 }

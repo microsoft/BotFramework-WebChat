@@ -1,3 +1,4 @@
+import { useTransformHTMLContent } from '../providers/HTMLContentTransformCOR/index';
 import useDictateAbortable from './useDictateAbortable';
 import useFocus from './useFocus';
 import useMakeThumbnail from './useMakeThumbnail';
@@ -43,6 +44,7 @@ export {
   useStyleSet,
   useTextBoxSubmit,
   useTextBoxValue,
+  useTransformHTMLContent,
   useTypingIndicatorVisible,
   useWebSpeechPonyfill
 };

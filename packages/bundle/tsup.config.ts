@@ -8,17 +8,27 @@ const resolveCognitiveServicesToES2015 = {
   name: 'microsoft-cognitiveservices-speech-sdk',
   setup(build) {
     build.onResolve({ filter: /microsoft-cognitiveservices-speech-sdk.+/u }, args => ({
-      path: path.join(process.cwd(), 'node_modules', args.path.replace('distrib/lib', 'distrib/es2015') + '.js')
+      path: path.join(process.cwd(), '../../node_modules', args.path.replace('distrib/lib', 'distrib/es2015') + '.js')
     }));
   }
 };
 
-export default defineConfig({
+// Redirect import paths for "react" and "react-dom"
+const resolveReact = {
+  name: 'isomorphic-react',
+  setup(build) {
+    build.onResolve({ filter: /^(react|react-dom)$/u }, ({ path: pkgNamne }) => ({
+      path: path.join(process.cwd(), '../../node_modules', `isomorphic-${pkgNamne}/dist/${pkgNamne}.js`)
+    }));
+  }
+};
+
+const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
-    'botframework-webchat': './src/index.ts',
-    'botframework-webchat.es5': './src/index-es5.ts',
-    'botframework-webchat.minimal': './src/index-minimal.ts'
+    'botframework-webchat': './src/module/exports.ts',
+    'botframework-webchat.es5': './src/module/exports-es5.ts',
+    'botframework-webchat.minimal': './src/module/exports-minimal.ts'
   },
   env: {
     ...baseConfig.env,
@@ -33,6 +43,42 @@ export default defineConfig({
     '@babel/runtime',
     'memoize-one',
     'microsoft-cognitiveservices-speech-sdk',
-    'web-speech-cognitive-services'
+    'web-speech-cognitive-services',
+    // Belows are the dependency chain related to "regex" where it is named export-only and does not work on Webpack 4/PPUX (CJS cannot import named export).
+    // Webpack 4: "Can't import the named export 'rewrite' from non EcmaScript module (only default export is available)"
+    'shiki' // shiki -> @shikijs/core -> @shikijs/engine-javascript -> regex
   ]
-});
+};
+
+export default defineConfig([
+  // Build IIFE before CJS/ESM to make npm start faster.
+  {
+    ...config,
+    dts: false,
+    entry: {
+      webchat: './src/bundle/index.ts',
+      'webchat-es5': './src/bundle/index-es5.ts',
+      'webchat-minimal': './src/bundle/index-minimal.ts'
+    },
+    env: {
+      ...config.env,
+      module_format: 'global'
+    },
+    esbuildPlugins: [...config.esbuildPlugins, resolveReact],
+    format: 'iife',
+    outExtension() {
+      return { js: '.js' };
+    },
+    platform: 'browser',
+    target: [...config.target, 'es2019']
+  },
+  {
+    ...config,
+    format: 'esm'
+  },
+  {
+    ...config,
+    format: 'cjs',
+    target: [...config.target, 'es2019']
+  }
+]);

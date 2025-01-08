@@ -105,7 +105,7 @@ In the sample code below, if the activity is for language "zh-HK", we will use a
       const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
 
       (async function() {
-        const directLineTokenResponse = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', {
+        const directLineTokenResponse = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', {
           method: 'POST'
         });
         const { token } = await directLineTokenResponse.json();

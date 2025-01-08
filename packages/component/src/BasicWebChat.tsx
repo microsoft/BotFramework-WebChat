@@ -10,7 +10,7 @@ import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useStyleSet from './hooks/useStyleSet';
 
 const { useStyleOptions } = hooks;
@@ -61,7 +61,10 @@ const BasicWebChat = ({ className, role }: BasicWebChatProps) => {
   }
 
   return (
-    <AccessKeySinkSurface className={classNames(rootClassName, rootStyleSet + '', (className || '') + '')} role={role}>
+    <AccessKeySinkSurface
+      className={classNames('webchat__surface', rootClassName, rootStyleSet + '', (className || '') + '')}
+      role={role}
+    >
       {!options.hideToaster && <BasicToaster className={toasterClassName} />}
       <BasicTranscript className={transcriptClassName} />
       <BasicConnectivityStatus className={connectivityStatusClassName} />

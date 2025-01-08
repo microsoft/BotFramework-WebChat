@@ -2,22 +2,76 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/fluent-bundle.production.min.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style type="text/css">
+      .fluent-provider {
+        height: 100%;
+      }
+    </style>
   </head>
   <body>
     <main id="webchat"></main>
-    <script>
+    <script type="text/babel">
       run(async function () {
+        const {
+          Fluent: { FluentProvider, createDarkTheme },
+          React,
+          ReactDOMClient: { createRoot },
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        WebChat.renderWebChat(
-          {
-            directLine,
-            store
-          },
-          document.getElementById('webchat')
+        const searchParams = new URLSearchParams(location.search);
+        const variant = searchParams.get('variant');
+        const webChatProps = { dir: searchParams.get('dir'), directLine, store };
+
+        const root = createRoot(document.getElementById('webchat'));
+
+        root.render(
+          variant === 'copilot' || variant === 'fluent' ? (
+            <FluentProvider
+              className="fluent-provider"
+              theme={
+                window.matchMedia('(prefers-color-scheme: dark)').matches
+                  ? {
+                      ...createDarkTheme({
+                        10: '#12174c',
+                        20: '#1a1f5b',
+                        30: '#21276a',
+                        40: '#293079',
+                        50: '#303788',
+                        60: '#384097',
+                        70: '#4049a7',
+                        80: '#151e80',
+                        90: '#4f59c5',
+                        100: '#5661d4',
+                        110: '#5e69e3',
+                        120: '#7982e8',
+                        130: '#949bec',
+                        140: '#afb5f1',
+                        150: '#c9cdf6',
+                        160: '#e4e6fa'
+                      }),
+                      colorNeutralBackground1Disabled: '#101010',
+                      colorNeutralBackground1Hover: '#101010',
+                      colorNeutralForeground5: '#424242'
+                    }
+                  : undefined
+              }
+            >
+              <FluentThemeProvider variant={variant}>
+                <ReactWebChat {...webChatProps} />
+              </FluentThemeProvider>
+            </FluentProvider>
+          ) : (
+            <ReactWebChat {...webChatProps} />
+          )
         );
 
         await pageConditions.uiConnected();
@@ -79,7 +133,11 @@
                 }
               ],
               type: 'https://schema.org/Message',
-              usageInfo: { '@id': '_:1' }
+              usageInfo: { '@id': '_:1' },
+              author: {
+                '@type': 'Person',
+                name: 'Lorem Ipsum Expert'
+              }
             }
           ],
           text: 'Ipsum[1] dolore[2] cupidatat[3] magna[4] consectetur[5] do tempor est excepteur.\n\n[1]: https://example.com/1/ "Sint amet id officia dolor ex eiusmod ipsum ipsum magna fugiat"\n[2]: https://example.com/2/ "Laboris cupidatat voluptate"\n[3]: _:3 "Velit nulla culpa eu ea consectetur consectetur dolore velit"\n[4]: _:4 "Adipisicing enim nulla"\n[5]: https://example.com/5',

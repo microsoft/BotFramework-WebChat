@@ -1,10 +1,10 @@
 import { hooks } from 'botframework-webchat-api';
-import { useEffect, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
+import usePrevious from '../../hooks/internal/usePrevious';
+import { useLiveRegion } from '../../providers/LiveRegionTwin';
 import { SEND_FAILED } from '../../types/internal/SendStatus';
 import isPresentational from './isPresentational';
-import usePrevious from '../../hooks/internal/usePrevious';
-import useQueueStaticElement from '../../providers/LiveRegionTwin/useQueueStaticElement';
 
 const { useGetActivityByKey, useLocalizer, useSendStatusByActivityKey } = hooks;
 
@@ -22,7 +22,6 @@ const LiveRegionSendFailed = () => {
   const [sendStatusByActivityKey] = useSendStatusByActivityKey();
   const getActivityByKey = useGetActivityByKey();
   const localize = useLocalizer();
-  const queueStaticElement = useQueueStaticElement();
 
   /**
    * List of keys of outgoing and non-presentational activities that are failed to send.
@@ -62,11 +61,11 @@ const LiveRegionSendFailed = () => {
     return false;
   }, [activityKeysOfSendFailed, prevActivityKeysOfSendFailed]);
 
-  useEffect(() => {
-    hasNewSendFailed && queueStaticElement(liveRegionSendFailedAlt);
-  }, [hasNewSendFailed, liveRegionSendFailedAlt, queueStaticElement]);
+  useLiveRegion(() => hasNewSendFailed && liveRegionSendFailedAlt, [hasNewSendFailed, liveRegionSendFailedAlt]);
 
   return null;
 };
 
-export default LiveRegionSendFailed;
+LiveRegionSendFailed.displayName = 'LiveRegionSendFailed';
+
+export default memo(LiveRegionSendFailed);
