@@ -14,6 +14,7 @@ import createCarouselFilmStripAttachment from './StyleSet/CarouselFilmStripAttac
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createCitationModalDialogStyle from './StyleSet/CitationModalDialog';
 import createCodeBlockCopyButtonStyle from './StyleSet/CodeBlockCopyButton';
+import createCodeBlockStyle from './StyleSet/CodeBlock';
 import createConnectivityNotification from './StyleSet/ConnectivityNotification';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
@@ -28,19 +29,19 @@ import createMonochromeImageMaskerStyleSet from './StyleSet/MonochromeImageMaske
 import createRenderMarkdownStyle from './StyleSet/RenderMarkdown';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
-import createSendBoxStyle from './StyleSet/SendBox';
 import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
+import createSendBoxStyle from './StyleSet/SendBox';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
 import createSlottedActivityStatusStyle from './StyleSet/SlottedActivityStatus';
 import createSpinnerAnimationStyle from './StyleSet/SpinnerAnimation';
 import createStackedLayoutStyle from './StyleSet/StackedLayout';
-import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
+import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createThumbButtonStyle from './StyleSet/ThumbButton';
-import createToastStyle from './StyleSet/Toast';
 import createToasterStyle from './StyleSet/Toaster';
+import createToastStyle from './StyleSet/Toast';
 import createTypingAnimationStyle from './StyleSet/TypingAnimation';
 import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
 import createUploadButtonStyle from './StyleSet/UploadButton';
@@ -71,6 +72,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     carouselFilmStrip: createCarouselFilmStrip(strictStyleOptions),
     carouselFilmStripAttachment: createCarouselFilmStripAttachment(strictStyleOptions),
     carouselFlipper: createCarouselFlipper(strictStyleOptions),
+    codeBlock: createCodeBlockStyle(),
     codeBlockCopyButton: createCodeBlockCopyButtonStyle(),
     connectivityNotification: createConnectivityNotification(strictStyleOptions),
     dictationInterims: createDictationInterimsStyle(strictStyleOptions),

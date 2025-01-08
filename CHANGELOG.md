@@ -72,6 +72,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    -  Copy button is added to fenced code blocks (`<pre><code>`)
    -  Configure HTML sanitizer via `request.allowedTags`
 -  Added support for math blocks using `$$` delimiter alongside existing `\[...\]` and `\(...\)` notations, in PR [#5381](https://github.com/microsoft/BotFramework-WebChat/pull/5381), by [@OEvgeny](https://github.com/OEvgeny)
+-  Added support for speech recognition initial silence timeout when using Azure Speech, in PR [#5400](https://github.com/microsoft/BotFramework/WebChat/pull/5400), by [@compulim](https://github.com/compulim)
+-  Introduced syntax highlighting for markdown code blocks, in PR [#5389](https://github.com/microsoft/BotFramework-WebChat/pull/5389), by [@OEvgeny](https://github.com/OEvgeny)
 - Introduced continuous listening capability, in PR [#5397](https://github.com/microsoft/BotFramework-WebChat/pull/5397), by [@RushikeshGavali](https://github.com/RushikeshGavali)
 
 ### Changed
@@ -94,9 +96,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Switched math block syntax from `$$` to Tex-style `\[ \]` and `\( \)` delimiters with improved rendering and error handling, in PR [#5353](https://github.com/microsoft/BotFramework-WebChat/pull/5353), by [@OEvgeny](https://github.com/OEvgeny)
 -  Improved avatar display and grouping behavior by fixing rendering issues and activity sender identification, in PR [#5346](https://github.com/microsoft/BotFramework-WebChat/pull/5346), by [@OEvgeny](https://github.com/OEvgeny)
 -  Activity "copy" button will use `outerHTML` and `textContent` for clipboard content, in PR [#5378](https://github.com/microsoft/BotFramework-WebChat/pull/5378), by [@compulim](https://github.com/compulim)
--  Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385)
+-  Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385) and [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400)
    -  Production dependencies
-      -  [`web-speech-cognitive-services@8.0.0`](https://npmjs.com/package/web-speech-cognitive-services)
+      -  [`web-speech-cognitive-services@8.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
 
 ### Fixed
 
