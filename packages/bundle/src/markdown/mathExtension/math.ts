@@ -1,4 +1,4 @@
-import type { Construct, Extension } from 'micromark-util-types';
+import { type Construct, type Extension } from 'micromark-util-types';
 import { BACKSLASH, DOLLAR } from './constants';
 import makeConstructTokenizer from './tokenizer';
 

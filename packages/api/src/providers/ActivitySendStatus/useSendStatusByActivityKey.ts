@@ -1,6 +1,6 @@
 import useActivitySendStatusContext from './private/useContext';
 
-import type { SendStatus } from '../../types/SendStatus';
+import { type SendStatus } from '../../types/SendStatus';
 
 /**
  * Returns a key/value map which stores the outgoing activity send status by activity key:

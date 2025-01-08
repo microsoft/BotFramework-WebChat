@@ -15,18 +15,18 @@ import { SENDING, SEND_FAILED, SENT } from '../types/internal/SendStatus';
 import getActivityLivestreamingMetadata from '../utils/getActivityLivestreamingMetadata';
 import findBeforeAfter from './private/findBeforeAfter';
 
-import type { Reducer } from 'redux';
-import type { DeleteActivityAction } from '../actions/deleteActivity';
-import type { IncomingActivityAction } from '../actions/incomingActivity';
-import type { MarkActivityAction } from '../actions/markActivity';
-import type {
-  PostActivityFulfilledAction,
-  PostActivityImpededAction,
-  PostActivityPendingAction,
-  PostActivityRejectedAction
+import { type Reducer } from 'redux';
+import { type DeleteActivityAction } from '../actions/deleteActivity';
+import { type IncomingActivityAction } from '../actions/incomingActivity';
+import { type MarkActivityAction } from '../actions/markActivity';
+import {
+  type PostActivityFulfilledAction,
+  type PostActivityImpededAction,
+  type PostActivityPendingAction,
+  type PostActivityRejectedAction
 } from '../actions/postActivity';
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
-import type { WebChatActivity } from '../types/WebChatActivity';
+import { type GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+import { type WebChatActivity } from '../types/WebChatActivity';
 
 type ActivitiesAction =
   | DeleteActivityAction

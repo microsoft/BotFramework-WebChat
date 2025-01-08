@@ -1,4 +1,4 @@
-import type { HighlightCodeFn } from './CodeHighlighterComposer';
+import { type HighlightCodeFn } from './CodeHighlighterComposer';
 
 export const defaultHighlightCode: HighlightCodeFn = (source, language) => {
   try {

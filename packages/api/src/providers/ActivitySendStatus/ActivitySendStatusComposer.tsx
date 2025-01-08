@@ -3,10 +3,10 @@ import React, { type ReactNode, useEffect, useMemo, useRef } from 'react';
 import { useActivities, usePonyfill } from '../../hooks/index';
 import useForceRender from '../../hooks/internal/useForceRender';
 import useGetSendTimeoutForActivity from '../../hooks/useGetSendTimeoutForActivity';
-import type { SendStatus } from '../../types/SendStatus';
+import { type SendStatus } from '../../types/SendStatus';
 import freezeArray from '../../utils/freezeArray';
 import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
-import type { ActivitySendStatusContextType } from './private/Context';
+import { type ActivitySendStatusContextType } from './private/Context';
 import ActivitySendStatusContext from './private/Context';
 import isMapEqual from './private/isMapEqual';
 

@@ -1,7 +1,7 @@
 import type GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 
-import type { GlobalScopePonyfill, WebChatActivity } from 'botframework-webchat-core';
-import type { SendStatus } from '../../types/SendStatus';
+import { type GlobalScopePonyfill, type WebChatActivity } from 'botframework-webchat-core';
+import { type SendStatus } from '../../types/SendStatus';
 
 function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
   let lastBin: T[];

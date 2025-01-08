@@ -1,6 +1,6 @@
 import { createAdapters } from 'botframework-directlinespeech-sdk';
 import { type WebSpeechPonyfill } from 'botframework-webchat-api';
-import type { DirectLineJSBotConnection } from 'botframework-webchat-core';
+import { type DirectLineJSBotConnection } from 'botframework-webchat-core';
 import { type AudioConfig } from 'microsoft-cognitiveservices-speech-sdk';
 
 import createMicrophoneAudioConfigAndAudioContext from './speech/createMicrophoneAudioConfigAndAudioContext';

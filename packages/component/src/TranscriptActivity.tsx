@@ -1,8 +1,8 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
-import type { ActivityElementMap } from './Transcript/types';
-import type { MutableRefObject, ReactNode } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type ActivityElementMap } from './Transcript/types';
+import { type MutableRefObject, type ReactNode } from 'react';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import ActivityRow from './Transcript/ActivityRow';
 
 const { useCreateActivityStatusRenderer } = hooks;

@@ -13,9 +13,9 @@ import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject'
 import useUniqueId from '../hooks/internal/useUniqueId';
 import Bubble from './Bubble';
 
-import type { RenderAttachment } from 'botframework-webchat-api';
+import { type RenderAttachment } from 'botframework-webchat-api';
 import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
 

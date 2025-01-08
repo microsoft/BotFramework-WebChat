@@ -7,7 +7,7 @@ import {
   type SubmitAction
 } from 'adaptivecards';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, {

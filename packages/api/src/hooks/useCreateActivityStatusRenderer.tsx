@@ -1,13 +1,13 @@
 /* eslint react/prop-types: "off" */
 /* eslint react/require-default-props: "off" */
 
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 
 import useGetKeyByActivity from '../hooks/useGetKeyByActivity';
 import useSendStatusByActivityKey from '../hooks/useSendStatusByActivityKey';
-import type { RenderActivityStatus } from '../types/ActivityStatusMiddleware';
-import type { SendStatus } from '../types/SendStatus';
+import { type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
+import { type SendStatus } from '../types/SendStatus';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 type ActivityStatusContainerCoreProps = Readonly<{

@@ -1,4 +1,4 @@
-import type { DirectLineCardAction, WebChatActivity } from 'botframework-webchat-core';
+import { type DirectLineCardAction, type WebChatActivity } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 
 import { useSelector } from './internal/WebChatReduxContext';

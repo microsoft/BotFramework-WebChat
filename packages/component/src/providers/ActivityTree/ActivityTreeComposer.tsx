@@ -1,5 +1,5 @@
 import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { useMemo, type ReactNode } from 'react';
 
 import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';

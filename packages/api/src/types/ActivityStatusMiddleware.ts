@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react';
 import { type WebChatActivity } from 'botframework-webchat-core';
 
-import type { SendStatus } from '../types/SendStatus';
+import { type SendStatus } from '../types/SendStatus';
 
 // TODO: Migrate this legacy middleware signature.
 type RenderActivityStatusOptions = {

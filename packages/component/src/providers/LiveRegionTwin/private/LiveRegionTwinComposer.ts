@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import createLiveRegionTwinComposer from './createLiveRegionTwinComposer';
 
-import type { StaticElement, StaticElementEntry } from './types';
+import { type StaticElement, type StaticElementEntry } from './types';
 
 export type LiveRegionTwinContextType = {
   markAllAsRendered: () => void;

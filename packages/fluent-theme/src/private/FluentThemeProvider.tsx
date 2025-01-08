@@ -1,4 +1,4 @@
-import type { ActivityMiddleware } from 'botframework-webchat-api';
+import { type ActivityMiddleware } from 'botframework-webchat-api';
 import { Components } from 'botframework-webchat-component';
 import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import React, { memo, type ReactNode } from 'react';

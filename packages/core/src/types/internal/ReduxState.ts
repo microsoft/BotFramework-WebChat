@@ -1,6 +1,6 @@
 import type sendBoxAttachments from '../../reducers/sendBoxAttachments';
-import type { WebChatActivity } from '../WebChatActivity';
-import type { Notification } from './Notification';
+import { type WebChatActivity } from '../WebChatActivity';
+import { type Notification } from './Notification';
 
 // TODO: Should build this using typings of createReducer.
 type ReduxState = {

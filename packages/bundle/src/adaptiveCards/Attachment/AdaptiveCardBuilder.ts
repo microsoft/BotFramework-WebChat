@@ -15,7 +15,7 @@ import {
   type AdaptiveCard,
   type CardElement
 } from 'adaptivecards';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
 import { isForbiddenPropertyName } from 'botframework-webchat-core';
 
 import { type AdaptiveCardsPackage } from '../../types/AdaptiveCardsPackage';

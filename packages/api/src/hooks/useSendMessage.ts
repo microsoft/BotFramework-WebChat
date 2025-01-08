@@ -1,4 +1,4 @@
-import type { SendBoxAttachment } from 'botframework-webchat-core';
+import { type SendBoxAttachment } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 
 import useWebChatAPIContext from './internal/useWebChatAPIContext';

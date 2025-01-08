@@ -1,17 +1,17 @@
-import type {
-  ActivityMiddleware,
-  ActivityStatusMiddleware,
-  AttachmentForScreenReaderMiddleware,
-  AttachmentMiddleware,
-  AvatarMiddleware,
-  CardActionMiddleware,
-  GroupActivitiesMiddleware,
-  ScrollToEndButtonMiddleware,
-  SendBoxMiddleware,
-  SendBoxToolbarMiddleware,
-  StyleOptions,
-  ToastMiddleware,
-  TypingIndicatorMiddleware
+import {
+  type ActivityMiddleware,
+  type ActivityStatusMiddleware,
+  type AttachmentForScreenReaderMiddleware,
+  type AttachmentMiddleware,
+  type AvatarMiddleware,
+  type CardActionMiddleware,
+  type GroupActivitiesMiddleware,
+  type ScrollToEndButtonMiddleware,
+  type SendBoxMiddleware,
+  type SendBoxToolbarMiddleware,
+  type StyleOptions,
+  type ToastMiddleware,
+  type TypingIndicatorMiddleware
 } from 'botframework-webchat-api';
 import { createContext } from 'react';
 
