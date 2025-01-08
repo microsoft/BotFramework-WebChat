@@ -415,22 +415,24 @@ const ComposerCore = ({
     [activityMiddleware]
   );
 
-  const patchedActivityRenderer = useMemo(() => {
-    return applyMiddlewareForRenderer(
-          'activity',
-          { strict: false },
-          ...singleToArray(activityMiddleware),
+  const patchedActivityRenderer = useMemo(
+    () =>
+      applyMiddlewareForRenderer(
+        'activity',
+        { strict: false },
+        ...singleToArray(activityMiddleware),
+        () =>
           () =>
-            () =>
-            ({ activity }) => {
-              if (activity) {
-                throw new Error(`No renderer for activity of type "${activity.type}"`);
-              } else {
-                throw new Error('No activity to render');
-              }
+          ({ activity }) => {
+            if (activity) {
+              throw new Error(`No renderer for activity of type "${activity.type}"`);
+            } else {
+              throw new Error('No activity to render');
             }
-        )({});
-  }, [activityMiddleware, isUsingActivityMiddlewareV2]);
+          }
+      )({}),
+    [activityMiddleware]
+  );
 
   const patchedActivityStatusRenderer = useMemo<RenderActivityStatus>(
     () =>

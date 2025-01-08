@@ -44,7 +44,7 @@ function useCreateActivityRendererV2(): ActivityComponentFactory {
         return false;
       }
 
-      return props => <Component {...createActivityRendererOptions} {...props}/>;
+      return props => <Component {...createActivityRendererOptions} {...props} />;
     },
     [enhancer]
   );

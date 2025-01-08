@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
 
 <head>
@@ -46,6 +46,7 @@
                   if (activity.text.includes('decorated')) {
                     const renderActivity = next(...args);
                     if (!renderActivity) return renderActivity;
+                    if (activity.text.includes('dropped')) return false;
                     return (...args) => (
                       <CustomActivity activity={activity}>
                         {renderActivity.call ? renderActivity(...args) : renderActivity}
@@ -72,9 +73,9 @@
                     role: 'bot'
                   },
                   id: '1',
-                  text: 'This is the decorated custom message.',
+                  text: 'This is the dropped decorated message.',
                   timestamp: new Date(NOW).toISOString(),
-                  type: 'custom-message'
+                  type: 'message'
                 },
                 {
                   from: {

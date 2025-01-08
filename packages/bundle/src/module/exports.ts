@@ -46,6 +46,7 @@ export {
   decorator,
   internal,
   testIds,
+  v2Middleware,
   version
 } from './exports-minimal';
 

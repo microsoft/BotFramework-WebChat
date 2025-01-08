@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
 
 <head>
@@ -46,6 +46,7 @@
                   if (activity.text.includes('decorated')) {
                     const Next = next(props);
                     if (!Next) return Next;
+                    if (activity.text.includes('dropped')) return false;
                     return (props) => (
                       <CustomActivity>
                         <Next {...props} />
@@ -72,9 +73,9 @@
                     role: 'bot'
                   },
                   id: '1',
-                  text: 'This is the dropped decorated custom message.',
+                  text: 'This is the dropped decorated message.',
                   timestamp: new Date(NOW).toISOString(),
-                  type: 'custom-message'
+                  type: 'message'
                 },
                 {
                   from: {
