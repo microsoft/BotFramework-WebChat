@@ -4,12 +4,11 @@ export default function () {
   return {
     '&.webchat__thumb-button': {
       appearance: 'none',
-      background: 'Transparent',
+      background: 'transparent',
       border: 0,
       borderRadius: 2,
       boxSizing: 'content-box',
       height: 16,
-      fontSize: '14px',
       /* The Fluent icon is larger than the button. We need to clip it.
       Without clipping, hover effect will appear on the edge of the button but not possible to click. */
       overflow: ['hidden', 'clip'],
@@ -21,14 +20,16 @@ export default function () {
         border: '1px solid transparent',
         borderRadius: '4px',
         display: 'flex',
-        fontSize: '20px',
         height: '20px',
         justifyContent: 'center',
         padding: '5px',
         width: '20px',
 
         '& .webchat__thumb-button__image': {
-          color: 'currentColor'
+          color: 'currentColor',
+          fontSize: '20px',
+          height: '1em',
+          width: '1em'
         },
 
         '&:hover, &:active, &.webchat__thumb-button--is-pressed': {
@@ -47,8 +48,7 @@ export default function () {
 
       '& .webchat__thumb-button__image': {
         color: CSSTokens.ColorAccent,
-        width: '1em',
-        height: '1em'
+        width: 14
       },
 
       '&:hover .webchat__thumb-button__image:not(.webchat__thumb-button__image--is-filled)': {

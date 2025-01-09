@@ -4,7 +4,7 @@ import classNames from 'classnames';
 type Props = Readonly<{ className?: string; children?: ReactNode | undefined }>;
 
 const StatusSlot = ({ children, className }: Props) => (
-  <div className={classNames('webchat__activity-status-slot', className)}>{children}</div>
+  <span className={classNames('webchat__activity-status-slot', className)}>{children}</span>
 );
 
 StatusSlot.displayName = 'StatusSlot';

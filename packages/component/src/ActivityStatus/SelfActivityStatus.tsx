@@ -5,16 +5,18 @@ import React, { memo } from 'react';
 import Timestamp from './Timestamp';
 import useStyleSet from '../hooks/useStyleSet';
 
-type Props = Readonly<{ activity: WebChatActivity }>;
+type Props = Readonly<{ activity: WebChatActivity; className?: string | undefined }>;
 
-const SelftActivityStatus = memo(({ activity }: Props) => {
+const SelftActivityStatus = memo(({ activity, className }: Props) => {
   const [{ sendStatus }] = useStyleSet();
   const { timestamp } = activity;
 
   return timestamp ? (
-    <div className={classNames('webchat__activity-status', 'webchat__activity-status--self', sendStatus + '')}>
+    <span
+      className={classNames('webchat__activity-status', 'webchat__activity-status--self', className, sendStatus + '')}
+    >
       <Timestamp timestamp={timestamp} />
-    </div>
+    </span>
   ) : null;
 });
 

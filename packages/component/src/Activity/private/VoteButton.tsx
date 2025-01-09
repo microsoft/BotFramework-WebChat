@@ -1,11 +1,12 @@
 import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction } from 'botframework-webchat-core';
+import cx from 'classnames';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import ThumbsButton from './ThumbButton';
 
 type Props = Readonly<{
-  className?: string;
+  className?: string | undefined;
   action: OrgSchemaAction;
   onClick?: (action: OrgSchemaAction) => void;
   pressed: boolean;
@@ -29,7 +30,16 @@ const FeedbackVoteButton = memo(({ action, className, onClick, pressed }: Props)
 
   const handleClick = useCallback(() => onClickRef.current?.(voteActionRef.current), [onClickRef, voteActionRef]);
 
-  return <ThumbsButton className={className} direction={direction} onClick={handleClick} pressed={pressed} />;
+  return (
+    <ThumbsButton
+      className={cx(className, {
+        'webchat__thumb-button--is-complete': action.actionStatus === 'CompletedActionStatus'
+      })}
+      direction={direction}
+      onClick={handleClick}
+      pressed={pressed}
+    />
+  );
 });
 
 FeedbackVoteButton.displayName = 'FeedbackVoteButton';

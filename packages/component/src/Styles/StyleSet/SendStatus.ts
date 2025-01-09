@@ -15,11 +15,12 @@ export default function createSendStatusStyle() {
     },
 
     '& .webchat__activity-status-slot': {
+      display: 'contents',
+
       '&:not(:first-child)::before': {
-        content: `"|"`,
-        marginRight: '4px',
-        display: 'inline-block'
+        content: `"|"`
       },
+
       '&:empty': {
         display: 'none'
       }

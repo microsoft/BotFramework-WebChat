@@ -33,7 +33,6 @@ import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
 import createSendBoxStyle from './StyleSet/SendBox';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
-import createSlottedActivityStatusStyle from './StyleSet/SlottedActivityStatus';
 import createSpinnerAnimationStyle from './StyleSet/SpinnerAnimation';
 import createStackedLayoutStyle from './StyleSet/StackedLayout';
 import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
@@ -111,7 +110,6 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     modalDialog: createModalDialogStyle(),
     renderMarkdown: createRenderMarkdownStyle(),
     sendStatus: createSendStatusStyle(),
-    slottedActivityStatus: createSlottedActivityStatusStyle(),
     textContent: createTextContentStyle(),
     thumbButton: createThumbButtonStyle(),
     viewCodeDialog: createViewCodeDialogStyle()
