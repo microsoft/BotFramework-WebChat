@@ -14,6 +14,17 @@ export default function createSendStatusStyle() {
       gap: 4
     },
 
+    '& .webchat__activity-status-slot': {
+      '&:not(:first-child)::before': {
+        content: `"|"`,
+        marginRight: '4px',
+        display: 'inline-block'
+      },
+      '&:empty': {
+        display: 'none'
+      }
+    },
+
     '& .webchat__activity-status__originator': {
       alignItems: 'center',
 

@@ -25,6 +25,7 @@ import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './Me
 import isAIGeneratedActivity from './isAIGeneratedActivity';
 import isBasedOnSoftwareSourceCode from './isBasedOnSoftwareSourceCode';
 import isHTMLButtonElement from './isHTMLButtonElement';
+import ActivityFeedback from '../../../Activity/ActivityFeedback';
 
 const { useLocalizer } = hooks;
 
@@ -244,6 +245,7 @@ const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
         {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
           <ActivityCopyButton className="webchat__text-content__activity-copy-button" targetRef={contentRef} />
         ) : null}
+        <ActivityFeedback activity={activity} placement="activity-actions" />
       </div>
     </div>
   );

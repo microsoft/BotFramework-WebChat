@@ -3,19 +3,20 @@ import { type OrgSchemaAction } from 'botframework-webchat-core';
 import React, { Fragment, memo, useEffect, useState, type PropsWithChildren } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import FeedbackVoteButton from './private/VoteButton';
+import FeedbackVoteButton from './VoteButton';
 
 const { usePonyfill, usePostActivity } = hooks;
 
 type Props = Readonly<
   PropsWithChildren<{
     actions: ReadonlySet<OrgSchemaAction>;
+    className?: string | undefined;
   }>
 >;
 
 const DEBOUNCE_TIMEOUT = 500;
 
-const Feedback = memo(({ actions }: Props) => {
+const Feedback = memo(({ actions, className }: Props) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
   const postActivity = usePostActivity();
@@ -46,6 +47,7 @@ const Feedback = memo(({ actions }: Props) => {
       {Array.from(actions).map((action, index) => (
         <FeedbackVoteButton
           action={action}
+          className={className}
           key={action['@id'] || index}
           onClick={setSelectedAction}
           pressed={selectedAction === action}

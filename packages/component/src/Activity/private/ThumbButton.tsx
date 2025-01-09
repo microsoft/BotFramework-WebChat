@@ -3,17 +3,18 @@ import classNames from 'classnames';
 import React, { memo } from 'react';
 
 import ThumbButtonImage from './ThumbButton.Image';
-import useStyleSet from '../../../../hooks/useStyleSet';
+import useStyleSet from '../../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
 
 type Props = Readonly<{
+  className?: string | undefined;
   direction: 'down' | 'up';
   onClick?: () => void;
   pressed?: boolean;
 }>;
 
-const ThumbButton = memo(({ direction, onClick, pressed }: Props) => {
+const ThumbButton = memo(({ className, direction, onClick, pressed }: Props) => {
   const [{ thumbButton }] = useStyleSet();
   const localize = useLocalizer();
 
@@ -26,6 +27,7 @@ const ThumbButton = memo(({ direction, onClick, pressed }: Props) => {
       className={classNames(
         'webchat__thumb-button',
         { 'webchat__thumb-button--is-pressed': pressed },
+        className,
         thumbButton + ''
       )}
       onClick={onClick}

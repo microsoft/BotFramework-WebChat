@@ -5,12 +5,13 @@ import { useRefFrom } from 'use-ref-from';
 import ThumbsButton from './ThumbButton';
 
 type Props = Readonly<{
+  className?: string;
   action: OrgSchemaAction;
   onClick?: (action: OrgSchemaAction) => void;
   pressed: boolean;
 }>;
 
-const FeedbackVoteButton = memo(({ action, onClick, pressed }: Props) => {
+const FeedbackVoteButton = memo(({ action, className, onClick, pressed }: Props) => {
   const onClickRef = useRefFrom(onClick);
   const voteActionRef = useRefFrom(action);
 
@@ -28,7 +29,7 @@ const FeedbackVoteButton = memo(({ action, onClick, pressed }: Props) => {
 
   const handleClick = useCallback(() => onClickRef.current?.(voteActionRef.current), [onClickRef, voteActionRef]);
 
-  return <ThumbsButton direction={direction} onClick={handleClick} pressed={pressed} />;
+  return <ThumbsButton className={className} direction={direction} onClick={handleClick} pressed={pressed} />;
 });
 
 FeedbackVoteButton.displayName = 'FeedbackVoteButton';

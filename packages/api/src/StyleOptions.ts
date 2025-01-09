@@ -928,6 +928,18 @@ type StyleOptions = {
    * New in 4.19.0.
    */
   codeBlockTheme?: 'github-light-default' | 'github-dark-default';
+
+  /**
+   * Feedback actions placement
+   *
+   * - `'activity-actions'` - place feedback buttons inside activity actions
+   * - `'activity-status'` - place feedback buttons inside activity status
+   *
+   * @default 'activity-status'
+   *
+   * New in 4.19.0.
+   */
+  feedbackActionsPlacement?: 'activity-actions' | 'activity-status';
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

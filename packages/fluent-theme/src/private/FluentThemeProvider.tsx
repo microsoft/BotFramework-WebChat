@@ -1,4 +1,4 @@
-import type { ActivityMiddleware } from 'botframework-webchat-api';
+import { type ActivityMiddleware, type StyleOptions } from 'botframework-webchat-api';
 import { Components } from 'botframework-webchat-component';
 import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import React, { memo, type ReactNode } from 'react';
@@ -43,11 +43,20 @@ const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
 const styles = createStyles();
 
+const fluentStyleOptions: StyleOptions = {
+  feedbackActionsPlacement: 'activity-actions'
+};
+
 const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
   <VariantComposer variant={variant}>
     <WebChatTheme>
       <TelephoneKeypadProvider>
-        <ThemeProvider activityMiddleware={activityMiddleware} sendBoxMiddleware={sendBoxMiddleware} styles={styles}>
+        <ThemeProvider
+          activityMiddleware={activityMiddleware}
+          sendBoxMiddleware={sendBoxMiddleware}
+          styleOptions={fluentStyleOptions}
+          styles={styles}
+        >
           <WebChatDecorator>{children}</WebChatDecorator>
         </ThemeProvider>
       </TelephoneKeypadProvider>
