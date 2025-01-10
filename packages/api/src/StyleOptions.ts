@@ -930,7 +930,7 @@ type StyleOptions = {
   codeBlockTheme?: 'github-light-default' | 'github-dark-default';
 
   /**
-   * Feedback actions placement
+   * Feedback buttons placement
    *
    * - `'activity-actions'` - place feedback buttons inside activity actions
    * - `'activity-status'` - place feedback buttons inside activity status
