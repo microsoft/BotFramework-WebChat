@@ -1,11 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
 import { type OrgSchemaAction } from 'botframework-webchat-core';
-import React, { Fragment, memo, useEffect, useState, type PropsWithChildren } from 'react';
+import React, { Fragment, memo, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import FeedbackVoteButton from './VoteButton';
 
-const { usePonyfill, usePostActivity } = hooks;
+const { usePonyfill, usePostActivity, useLocalizer } = hooks;
 
 type Props = Readonly<
   PropsWithChildren<{
@@ -20,6 +20,7 @@ const Feedback = memo(({ actions, className }: Props) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
   const postActivity = usePostActivity();
+  const localize = useLocalizer();
 
   const postActivityRef = useRefFrom(postActivity);
 
@@ -42,6 +43,17 @@ const Feedback = memo(({ actions, className }: Props) => {
     return () => clearTimeout(timeout);
   }, [clearTimeout, postActivityRef, selectedAction, setTimeout]);
 
+  const actionProps = useMemo(
+    () =>
+      [...actions].some(action => action.actionStatus === 'CompletedActionStatus')
+        ? {
+            title: localize('VOTE_COMPLETE_ALT'),
+            disabled: true
+          }
+        : undefined,
+    [actions, localize]
+  );
+
   return (
     <Fragment>
       {Array.from(actions).map((action, index) => (
@@ -50,7 +62,12 @@ const Feedback = memo(({ actions, className }: Props) => {
           className={className}
           key={action['@id'] || index}
           onClick={setSelectedAction}
-          pressed={selectedAction === action}
+          pressed={
+            selectedAction === action ||
+            action.actionStatus === 'CompletedActionStatus' ||
+            action.actionStatus === 'ActiveActionStatus'
+          }
+          {...actionProps}
         />
       ))}
     </Fragment>

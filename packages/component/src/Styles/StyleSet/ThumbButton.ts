@@ -3,12 +3,16 @@ import CSSTokens from '../CSSTokens';
 export default function () {
   return {
     '&.webchat__thumb-button': {
+      alignItems: 'center',
       appearance: 'none',
       background: 'transparent',
       border: 0,
       borderRadius: 2,
       boxSizing: 'content-box',
+      display: 'grid',
+      gridTemplateAreas: `"icon"`,
       height: 16,
+      justifyContent: 'center',
       /* The Fluent icon is larger than the button. We need to clip it.
       Without clipping, hover effect will appear on the edge of the button but not possible to click. */
       overflow: ['hidden', 'clip'],
@@ -16,12 +20,9 @@ export default function () {
       width: 16,
 
       '&.webchat__thumb-button--large': {
-        alignItems: 'center',
         border: '1px solid transparent',
         borderRadius: '4px',
-        display: 'flex',
         height: '20px',
-        justifyContent: 'center',
         padding: '5px',
         width: '20px',
 
@@ -35,6 +36,10 @@ export default function () {
         '&:hover, &:active, &.webchat__thumb-button--is-pressed': {
           background: 'transparent',
           color: CSSTokens.ColorAccent
+        },
+
+        '&[aria-disabled="true"]': {
+          color: CSSTokens.ColorSubtle
         }
       },
 
@@ -48,22 +53,32 @@ export default function () {
 
       '& .webchat__thumb-button__image': {
         color: CSSTokens.ColorAccent,
-        width: 14
-      },
+        gridArea: 'icon',
+        visibility: 'hidden',
+        width: 14,
 
-      '&:hover .webchat__thumb-button__image:not(.webchat__thumb-button__image--is-filled)': {
-        display: 'none'
-      },
-
-      '&.webchat__thumb-button--is-pressed .webchat__thumb-button__image:not(.webchat__thumb-button__image--is-filled)':
-        {
-          display: 'none'
-        },
-
-      '&.webchat__thumb-button:not(:hover):not(.webchat__thumb-button--is-pressed) .webchat__thumb-button__image--is-filled':
-        {
-          display: 'none'
+        '&.webchat__thumb-button__image--is-stroked': {
+          visibility: 'visible'
         }
+      },
+
+      '&:not([aria-disabled="true"]):hover .webchat__thumb-button__image': {
+        '&.webchat__thumb-button__image--is-stroked': {
+          visibility: 'hidden'
+        },
+        '&.webchat__thumb-button__image--is-filled': {
+          visibility: 'visible'
+        }
+      },
+
+      '&.webchat__thumb-button--is-pressed .webchat__thumb-button__image': {
+        '&.webchat__thumb-button__image--is-stroked': {
+          visibility: 'hidden'
+        },
+        '&.webchat__thumb-button__image--is-filled': {
+          visibility: 'visible'
+        }
+      }
     }
   };
 }
