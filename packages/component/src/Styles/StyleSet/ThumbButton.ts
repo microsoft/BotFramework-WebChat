@@ -13,9 +13,6 @@ export default function () {
       gridTemplateAreas: `"icon"`,
       height: 16,
       justifyContent: 'center',
-      /* The Fluent icon is larger than the button. We need to clip it.
-      Without clipping, hover effect will appear on the edge of the button but not possible to click. */
-      overflow: ['hidden', 'clip'],
       padding: 0,
       width: 16,
 

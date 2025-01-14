@@ -40,6 +40,7 @@ import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createThumbButtonStyle from './StyleSet/ThumbButton';
 import createToasterStyle from './StyleSet/Toaster';
+import createTooltipStyle from './StyleSet/Tooltip';
 import createToastStyle from './StyleSet/Toast';
 import createTypingAnimationStyle from './StyleSet/TypingAnimation';
 import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
@@ -112,6 +113,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     sendStatus: createSendStatusStyle(),
     textContent: createTextContentStyle(),
     thumbButton: createThumbButtonStyle(),
+    tooltip: createTooltipStyle(),
     viewCodeDialog: createViewCodeDialogStyle()
   } as const);
 }

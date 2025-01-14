@@ -33,6 +33,9 @@
   --webchat-colorNeutralStencil1: var(--colorNeutralStencil1, #e6e6e6); /* #575757 for dark mode */
   --webchat-colorNeutralStencil2: var(--colorNeutralStencil2, #fafafa); /* #333333 for dark mode */
 
+  --webchat-colorNeutralShadowAmbient: var(--colorNeutralShadowAmbient, rgba(0, 0, 0, 0.12));
+  --webchat-colorNeutralShadowKey: var(--colorNeutralShadowKey, rgba(0, 0, 0, 0.14));
+
   --webchat-colorTransparentBackground: var(--colorTransparentBackground, rgba(0, 0, 0, 0.4));
 
   --webchat-colorNeutralStrokeDisabled: var(--colorNeutralStrokeDisabled, #e0e0e0);
@@ -602,4 +605,18 @@
   &[aria-disabled='true'] {
     color: var(--webchat-colorNeutralForegroundDisabled);
   }
+}
+
+/* Tooltip */
+:global(.webchat-fluent).theme :global(.webchat__tooltip) {
+  --webchat__tooltip-background: var(--tooltip-background, var(--webchat-colorNeutralBackground1));
+
+  color: var(--webchat-colorNeutralForeground1);
+  filter: drop-shadow(0 0 2px var(--webchat-colorNeutralShadowAmbient))
+    drop-shadow(0 4px 8px var(--webchat-colorNeutralShadowKey));
+  font-family: var(--webchat-fontFamilyBase);
+  font-size: var(--webchat-fontSizeBase200);
+  font-weight: var(--webchat-fontWeightRegular);
+  line-height: var(--webchat-lineHeightBase200);
+  padding: var(--webchat-spacingVerticalSNudge) var(--webchat-spacingHorizontalM);
 }
