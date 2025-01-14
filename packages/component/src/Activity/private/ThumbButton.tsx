@@ -1,39 +1,51 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { memo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
+import { useRefFrom } from 'use-ref-from';
 
 import ThumbButtonImage from './ThumbButton.Image';
-import useStyleSet from '../../../../hooks/useStyleSet';
+import useStyleSet from '../../hooks/useStyleSet';
+import { Tooltip } from '../../Tooltip';
 
 const { useLocalizer } = hooks;
 
 type Props = Readonly<{
+  className?: string | undefined;
   direction: 'down' | 'up';
+  disabled?: boolean | undefined;
   onClick?: () => void;
   pressed?: boolean;
+  title?: string | undefined;
 }>;
 
-const ThumbButton = memo(({ direction, onClick, pressed }: Props) => {
+const ThumbButton = memo(({ className, direction, disabled, onClick, pressed, title }: Props) => {
   const [{ thumbButton }] = useStyleSet();
   const localize = useLocalizer();
+  const onClickRef = useRefFrom(onClick);
 
-  const title = localize(direction === 'down' ? 'VOTE_DISLIKE_ALT' : 'VOTE_LIKE_ALT');
+  const buttonTitle = useMemo(
+    () => title ?? localize(direction === 'down' ? 'VOTE_DISLIKE_ALT' : 'VOTE_LIKE_ALT'),
+    [direction, localize, title]
+  );
+
+  const handleClick = useCallback(() => !disabled && onClickRef.current?.(), [disabled, onClickRef]);
 
   return (
     <button
-      aria-label={title}
+      aria-disabled={disabled ? 'true' : undefined}
+      aria-label={buttonTitle}
       aria-pressed={pressed}
       className={classNames(
         'webchat__thumb-button',
         { 'webchat__thumb-button--is-pressed': pressed },
+        className,
         thumbButton + ''
       )}
-      onClick={onClick}
-      title={title}
+      onClick={handleClick}
       type="button"
     >
       <ThumbButtonImage
-        className={classNames('webchat__thumb-button__image', {
+        className={classNames('webchat__thumb-button__image', 'webchat__thumb-button__image--is-stroked', {
           'webchat__thumb-button__image--is-down': direction === 'down'
         })}
         direction={direction}
@@ -45,6 +57,7 @@ const ThumbButton = memo(({ direction, onClick, pressed }: Props) => {
         direction={direction}
         filled={true}
       />
+      <Tooltip>{buttonTitle}</Tooltip>
     </button>
   );
 });

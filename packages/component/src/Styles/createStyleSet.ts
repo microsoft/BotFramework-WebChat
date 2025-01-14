@@ -33,7 +33,6 @@ import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
 import createSendBoxStyle from './StyleSet/SendBox';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
-import createSlottedActivityStatusStyle from './StyleSet/SlottedActivityStatus';
 import createSpinnerAnimationStyle from './StyleSet/SpinnerAnimation';
 import createStackedLayoutStyle from './StyleSet/StackedLayout';
 import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
@@ -41,6 +40,7 @@ import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createThumbButtonStyle from './StyleSet/ThumbButton';
 import createToasterStyle from './StyleSet/Toaster';
+import createTooltipStyle from './StyleSet/Tooltip';
 import createToastStyle from './StyleSet/Toast';
 import createTypingAnimationStyle from './StyleSet/TypingAnimation';
 import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
@@ -111,9 +111,9 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     modalDialog: createModalDialogStyle(),
     renderMarkdown: createRenderMarkdownStyle(),
     sendStatus: createSendStatusStyle(),
-    slottedActivityStatus: createSlottedActivityStatusStyle(),
     textContent: createTextContentStyle(),
     thumbButton: createThumbButtonStyle(),
+    tooltip: createTooltipStyle(),
     viewCodeDialog: createViewCodeDialogStyle()
   } as const);
 }
