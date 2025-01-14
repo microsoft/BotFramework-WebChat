@@ -43,9 +43,9 @@ const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
 const styles = createStyles();
 
-const fluentStyleOptions: StyleOptions = {
+const fluentStyleOptions: StyleOptions = Object.freeze({
   feedbackActionsPlacement: 'activity-actions'
-};
+});
 
 const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
   <VariantComposer variant={variant}>
