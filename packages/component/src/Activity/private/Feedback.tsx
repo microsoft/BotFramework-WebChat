@@ -47,8 +47,8 @@ const Feedback = memo(({ actions, className }: Props) => {
     () =>
       [...actions].some(action => action.actionStatus === 'CompletedActionStatus')
         ? {
-            title: localize('VOTE_COMPLETE_ALT'),
-            disabled: true
+            disabled: true,
+            title: localize('VOTE_COMPLETE_ALT')
           }
         : undefined,
     [actions, localize]
