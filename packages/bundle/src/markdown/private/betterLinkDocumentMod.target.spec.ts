@@ -1,4 +1,4 @@
-/** @jest-environment jsdom */
+/** @jest-environment @happy-dom/jest-environment */
 
 import {
   parseDocumentFragmentFromString,
@@ -27,7 +27,7 @@ describe('When passing "target" option with "noopener noreferer"', () => {
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com" target="noopener noreferer">Example</a></p>'
+      '<p><a href="https://example.com" target="noopener noreferer">Example</a></p>'
     ));
 });
 
@@ -46,7 +46,5 @@ describe('When passing "target" option with false', () => {
     expect(actual.querySelector('a').hasAttribute('target')).toBe(false));
 
   test('should match snapshot', () =>
-    expect(serializeDocumentFragmentIntoString(actual)).toBe(
-      '<a xmlns="http://www.w3.org/1999/xhtml" href="https://example.com">Example</a>'
-    ));
+    expect(serializeDocumentFragmentIntoString(actual)).toBe('<a href="https://example.com">Example</a>'));
 });

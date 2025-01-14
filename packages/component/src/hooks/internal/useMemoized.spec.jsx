@@ -1,4 +1,4 @@
-/** @jest-environment jsdom */
+/** @jest-environment @happy-dom/jest-environment */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-undef */
 /* eslint no-magic-numbers: "off" */

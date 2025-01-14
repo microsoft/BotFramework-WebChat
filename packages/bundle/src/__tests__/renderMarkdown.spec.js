@@ -1,4 +1,4 @@
-/** @jest-environment jsdom */
+/** @jest-environment @happy-dom/jest-environment */
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import renderMarkdown from '../markdown/renderMarkdown';
@@ -23,7 +23,7 @@ describe('renderMarkdown', () => {
     const styleOptions = { markdownRespectCRLF: true };
 
     expect(renderMarkdown('Same line.\nSame line.  \n2nd line.', styleOptions, renderMarkdownOptions)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml">Same line.\nSame line.<br />\n2nd line.</p>'
+      '<p>Same line.\nSame line.<br>\n2nd line.</p>'
     );
   });
 
@@ -31,7 +31,7 @@ describe('renderMarkdown', () => {
     const styleOptions = { markdownRespectCRLF: true };
 
     expect(renderMarkdown('Same Line.\n\rSame Line.\r\n2nd line.', styleOptions, renderMarkdownOptions)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml">Same Line.\nSame Line.</p>\n<p xmlns="http://www.w3.org/1999/xhtml">2nd line.</p>'
+      '<p>Same Line.\r\nSame Line.</p>\n<p>2nd line.</p>'
     );
   });
 
@@ -39,7 +39,7 @@ describe('renderMarkdown', () => {
     const styleOptions = { markdownRespectCRLF: false };
 
     expect(renderMarkdown('Same Line.\r\nSame Line.\n\r2nd line.', styleOptions, renderMarkdownOptions)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml">Same Line.\nSame Line.</p>\n<p xmlns="http://www.w3.org/1999/xhtml">2nd line.</p>'
+      '<p>Same Line.\r\nSame Line.</p>\n<p>2nd line.</p>'
     );
   });
 
@@ -48,9 +48,7 @@ describe('renderMarkdown', () => {
 
     expect(
       renderMarkdown('**Message with Markdown**\r\nShould see bold text.', styleOptions, renderMarkdownOptions)
-    ).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml"><strong>Message with Markdown</strong></p>\n<p xmlns="http://www.w3.org/1999/xhtml">Should see bold text.</p>'
-    );
+    ).toBe('<p><strong>Message with Markdown</strong></p>\n<p>Should see bold text.</p>');
   });
 
   it('should render code correctly', () => {
@@ -62,7 +60,7 @@ describe('renderMarkdown', () => {
         styleOptions,
         renderMarkdownOptions
       )
-    ).toBe(`<pre xmlns="http://www.w3.org/1999/xhtml"><code>{
+    ).toBe(`<pre><code>{
   "hello": "World!"
 }
 </code></pre>`);
@@ -72,7 +70,7 @@ describe('renderMarkdown', () => {
     const styleOptions = { markdownRespectCRLF: true };
 
     expect(renderMarkdown('[example](https://sample.com)', styleOptions, renderMarkdownOptions)).toBe(
-      `<p xmlns="http://www.w3.org/1999/xhtml">\u200B<a href="https://sample.com" aria-label="example " rel="noopener noreferrer" target="_blank">example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="webchat__render-markdown__external-link-icon" /></a>\u200B</p>`
+      `<p>\u200B<a href="https://sample.com" aria-label="example " rel="noopener noreferrer" target="_blank">example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="webchat__render-markdown__external-link-icon"></a>\u200B</p>`
     );
   });
 
@@ -81,7 +79,7 @@ describe('renderMarkdown', () => {
     const options = { externalLinkAlt: 'Opens in a new window, external.' };
 
     expect(renderMarkdown('[example](https://sample.com)', styleOptions, options)).toBe(
-      `<p xmlns="http://www.w3.org/1999/xhtml">\u200B<a href="https://sample.com" aria-label="example Opens in a new window, external." rel="noopener noreferrer" target="_blank">example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="webchat__render-markdown__external-link-icon" title="Opens in a new window, external." /></a>\u200B</p>`
+      `<p>\u200B<a href="https://sample.com" aria-label="example Opens in a new window, external." rel="noopener noreferrer" target="_blank">example<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="" class="webchat__render-markdown__external-link-icon" title="Opens in a new window, external."></a>\u200B</p>`
     );
   });
 
@@ -89,7 +87,7 @@ describe('renderMarkdown', () => {
     const styleOptions = { markdownRespectCRLF: true };
 
     expect(renderMarkdown(`[example@test.com](sip:example@test.com)`, styleOptions, renderMarkdownOptions)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml">\u200B<a href="sip:example@test.com" rel="noopener noreferrer" target="_blank">example@test.com</a>\u200B</p>'
+      '<p>\u200B<a href="sip:example@test.com" rel="noopener noreferrer" target="_blank">example@test.com</a>\u200B</p>'
     );
   });
 
@@ -97,7 +95,7 @@ describe('renderMarkdown', () => {
     const styleOptions = { markdownRespectCRLF: true };
 
     expect(renderMarkdown(`[(505)503-4455](tel:505-503-4455)`, styleOptions, renderMarkdownOptions)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml">\u200B<a href="tel:505-503-4455" rel="noopener noreferrer" target="_blank">(505)503-4455</a>\u200B</p>'
+      '<p>\u200B<a href="tel:505-503-4455" rel="noopener noreferrer" target="_blank">(505)503-4455</a>\u200B</p>'
     );
   });
 
@@ -105,7 +103,7 @@ describe('renderMarkdown', () => {
     const styleOptions = { markdownRespectCRLF: true };
 
     expect(renderMarkdown(`~~strike text~~`, styleOptions, renderMarkdownOptions)).toBe(
-      '<p xmlns="http://www.w3.org/1999/xhtml"><del>strike text</del></p>'
+      '<p><del>strike text</del></p>'
     );
   });
 });

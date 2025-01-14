@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @jest-environment @happy-dom/jest-environment
  */
 
 import createElement from './createElement';
@@ -27,7 +27,7 @@ test('Create an element with click event', () => {
 test('Create an element with stylesheet', () => {
   const image = createElement('img', { style: { backgroundColor: 'Black' } });
 
-  expect(image).toHaveProperty('outerHTML', '<img style="background-color: Black;">');
+  expect(image).toHaveProperty('outerHTML', '<img style="background-color: black;">');
 });
 
 test('Create an element with boolean attribute of true', () => {
