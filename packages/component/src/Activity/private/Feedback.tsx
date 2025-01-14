@@ -56,7 +56,7 @@ const Feedback = memo(({ actions, className }: Props) => {
 
   return (
     <Fragment>
-      {Array.from(actions).map((action, index) => (
+      {[...actions].map((action, index) => (
         <FeedbackVoteButton
           action={action}
           className={className}

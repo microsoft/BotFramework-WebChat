@@ -15,7 +15,7 @@ function Tooltip({ children, className, position = 'block-start' }: TooltipProps
     <span
       className={cx('webchat__tooltip', className, tooltipClassName, `webchat__tooltip--${position}`)}
       /* @ts-expect-error: inert unknown attribute */
-      inert={true}
+      inert="true"
       role="tooltip"
     >
       {children}

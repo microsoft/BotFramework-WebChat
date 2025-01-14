@@ -74,7 +74,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Added support for math blocks using `$$` delimiter alongside existing `\[...\]` and `\(...\)` notations, in PR [#5381](https://github.com/microsoft/BotFramework-WebChat/pull/5381), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added support for speech recognition initial silence timeout when using Azure Speech, in PR [#5400](https://github.com/microsoft/BotFramework/WebChat/pull/5400), by [@compulim](https://github.com/compulim)
 -  Introduced syntax highlighting for markdown code blocks, in PR [#5389](https://github.com/microsoft/BotFramework-WebChat/pull/5389), by [@OEvgeny](https://github.com/OEvgeny)
--  Added `feedbackActionsPlacement` style option to control feedback button placement, in PR [#5407](https://github.com/microsoft/BotFramework-WebChat/pull/5407), by [@OEvgeny](https://github.com/OEvgeny)
+-  (Experimental) Added `feedbackActionsPlacement` style option to control feedback button placement, in PR [#5407](https://github.com/microsoft/BotFramework-WebChat/pull/5407), by [@OEvgeny](https://github.com/OEvgeny)
    -  New style option supports two values: `'activity-actions'` and `'activity-status'` (default)
    -  When set to `'activity-actions'`, feedback buttons are displayed in the activity actions toolbar
    -  When set to `'activity-status'`, feedback buttons appear in the activity status area (default behavior)

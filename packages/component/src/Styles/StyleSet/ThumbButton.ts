@@ -59,21 +59,15 @@ export default function () {
         }
       },
 
-      '&:not([aria-disabled="true"]):hover .webchat__thumb-button__image': {
-        '&.webchat__thumb-button__image--is-stroked': {
-          visibility: 'hidden'
-        },
-        '&.webchat__thumb-button__image--is-filled': {
-          visibility: 'visible'
-        }
-      },
+      '&:not([aria-disabled="true"]):hover, &.webchat__thumb-button--is-pressed': {
+        '& .webchat__thumb-button__image': {
+          '&.webchat__thumb-button__image--is-stroked': {
+            visibility: 'hidden'
+          },
 
-      '&.webchat__thumb-button--is-pressed .webchat__thumb-button__image': {
-        '&.webchat__thumb-button__image--is-stroked': {
-          visibility: 'hidden'
-        },
-        '&.webchat__thumb-button__image--is-filled': {
-          visibility: 'visible'
+          '&.webchat__thumb-button__image--is-filled': {
+            visibility: 'visible'
+          }
         }
       }
     }

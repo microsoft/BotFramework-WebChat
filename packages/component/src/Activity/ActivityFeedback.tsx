@@ -10,17 +10,16 @@ const { useStyleOptions } = hooks;
 
 type ActivityFeedbackProps = Readonly<{
   activity: WebChatActivity;
-  placement: 'activity-status' | 'activity-actions';
 }>;
 
-function ActivityFeedback({ activity, placement }: ActivityFeedbackProps) {
+function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   const [{ feedbackActionsPlacement }] = useStyleOptions();
 
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
 
   const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
 
-  const feedbackActions = useMemo<ReadonlySet<OrgSchemaAction> | undefined>(() => {
+  const feedbackActions = useMemo<ReadonlySet<OrgSchemaAction>>(() => {
     try {
       const reactActions = (messageThing?.potentialAction || []).filter(
         ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
@@ -38,16 +37,17 @@ function ActivityFeedback({ activity, placement }: ActivityFeedbackProps) {
     } catch {
       // Intentionally left blank.
     }
+    return Object.freeze(new Set([] as OrgSchemaAction[]));
   }, [graph, messageThing?.potentialAction]);
 
-  return feedbackActions?.size && placement === feedbackActionsPlacement ? (
+  return (
     <Feedback
       actions={feedbackActions}
       className={cx({
         'webchat__thumb-button--large': feedbackActionsPlacement === 'activity-actions'
       })}
     />
-  ) : null;
+  );
 }
 
 export default memo(ActivityFeedback);

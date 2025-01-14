@@ -1,3 +1,4 @@
+import { hooks } from 'botframework-webchat-api';
 import {
   getOrgSchemaMessage,
   OrgSchemaProject,
@@ -16,6 +17,8 @@ import Timestamp from './Timestamp';
 import ActivityFeedback from '../Activity/ActivityFeedback';
 import StatusSlot from './StatusSlot';
 
+const { useStyleOptions } = hooks;
+
 type Props = Readonly<{ activity: WebChatActivity; className?: string | undefined }>;
 
 const warnRootLevelThings = warnOnce(
@@ -23,6 +26,7 @@ const warnRootLevelThings = warnOnce(
 );
 
 const OthersActivityStatus = memo(({ activity, className }: Props) => {
+  const [{ feedbackActionsPlacement }] = useStyleOptions();
   const [{ sendStatus }] = useStyleSet();
   const { timestamp } = activity;
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
@@ -57,11 +61,21 @@ const OthersActivityStatus = memo(({ activity, className }: Props) => {
 
   return (
     <span className={classNames('webchat__activity-status', className, sendStatus + '')}>
-      <StatusSlot>{timestamp && <Timestamp key="timestamp" timestamp={timestamp} />}</StatusSlot>
-      <StatusSlot>{claimInterpreter && <Originator key="originator" project={claimInterpreter} />}</StatusSlot>
-      <StatusSlot>
-        <ActivityFeedback activity={activity} key="feedback" placement="activity-status" />
-      </StatusSlot>
+      {timestamp && (
+        <StatusSlot>
+          <Timestamp key="timestamp" timestamp={timestamp} />
+        </StatusSlot>
+      )}
+      {claimInterpreter && (
+        <StatusSlot>
+          <Originator key="originator" project={claimInterpreter} />
+        </StatusSlot>
+      )}
+      {feedbackActionsPlacement === 'activity-status' && (
+        <StatusSlot>
+          <ActivityFeedback activity={activity} key="feedback" />
+        </StatusSlot>
+      )}
     </span>
   );
 });

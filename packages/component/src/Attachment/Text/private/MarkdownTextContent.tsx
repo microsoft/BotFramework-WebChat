@@ -27,7 +27,7 @@ import isBasedOnSoftwareSourceCode from './isBasedOnSoftwareSourceCode';
 import isHTMLButtonElement from './isHTMLButtonElement';
 import ActivityFeedback from '../../../Activity/ActivityFeedback';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useStyleOptions } = hooks;
 
 type Entry = {
   claim?: OrgSchemaClaim | undefined;
@@ -48,6 +48,7 @@ function isCitationURL(url: string): boolean {
 }
 
 const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
+  const [{ feedbackActionsPlacement }] = useStyleOptions();
   const [
     {
       citationModalDialog: citationModalDialogStyleSet,
@@ -245,7 +246,9 @@ const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
         {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
           <ActivityCopyButton className="webchat__text-content__activity-copy-button" targetRef={contentRef} />
         ) : null}
-        <ActivityFeedback activity={activity} placement="activity-actions" />
+        {activity.type === 'message' && feedbackActionsPlacement === 'activity-actions' && (
+          <ActivityFeedback activity={activity} />
+        )}
       </div>
     </div>
   );
