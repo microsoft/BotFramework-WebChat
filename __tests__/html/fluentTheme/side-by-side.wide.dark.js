@@ -17,6 +17,10 @@ describe('Fluent theme applied', () => {
     test('side by side left - transcript, right - codeblock', () =>
       runHTML('fluentTheme/side-by-side.wide.dark?transcript=0&transcript=5&focus=1&focus-preset=viewCode'));
     test('side by side left - transcript, right - codeblock dark', () =>
-      runHTML('fluentTheme/side-by-side.wide.dark?transcript=0&transcript=5&focus=1&focus-preset=viewCode&codeBlockTheme=github-dark-default'));
+      runHTML(
+        'fluentTheme/side-by-side.wide.dark?transcript=0&transcript=5&focus=1&focus-preset=viewCode&codeBlockTheme=github-dark-default'
+      ));
+    test('side by side left - transcript, right - feedback', () =>
+      runHTML('fluentTheme/side-by-side.wide.dark?transcript=0&transcript=6&focus=1&focus-preset=likeDislike'));
   });
 });
