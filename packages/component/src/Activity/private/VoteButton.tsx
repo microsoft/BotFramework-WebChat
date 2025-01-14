@@ -2,7 +2,7 @@ import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction } from 'botfra
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import ThumbsButton from './ThumbButton';
+import ThumbButton from './ThumbButton';
 
 type Props = Readonly<{
   className?: string | undefined;
@@ -32,7 +32,7 @@ const FeedbackVoteButton = memo(({ action, className, disabled, onClick, pressed
   const handleClick = useCallback(() => onClickRef.current?.(voteActionRef.current), [onClickRef, voteActionRef]);
 
   return (
-    <ThumbsButton
+    <ThumbButton
       className={className}
       direction={direction}
       disabled={disabled}
