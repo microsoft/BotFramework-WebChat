@@ -43,6 +43,7 @@ import TypingIndicatorMiddleware, { type RenderTypingIndicator } from './types/T
 import { type WebSpeechPonyfill } from './types/WebSpeechPonyfill';
 import { type WebSpeechPonyfillFactory } from './types/WebSpeechPonyfillFactory';
 
+import { v2Middleware } from './utils/v2Middleware';
 const buildTool = process.env.build_tool;
 const moduleFormat = process.env.module_format;
 const version = process.env.npm_package_version;
@@ -61,6 +62,7 @@ export {
   initSendBoxToolbarMiddleware,
   localize,
   normalizeStyleOptions,
+  v2Middleware,
   version
 };
 
