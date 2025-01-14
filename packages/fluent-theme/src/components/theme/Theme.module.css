@@ -619,4 +619,5 @@
   font-weight: var(--webchat-fontWeightRegular);
   line-height: var(--webchat-lineHeightBase200);
   padding: var(--webchat-spacingVerticalSNudge) var(--webchat-spacingHorizontalM);
+  transition: opacity var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
 }
