@@ -67,14 +67,22 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
       setDropZoneState(false);
     };
 
-    document.addEventListener('dragenter', handleDragEnter, false);
-    document.addEventListener('dragleave', handleDragLeave, false);
-    document.addEventListener('dragend', handleDragEnd, false);
+    const handleDocumentDrop = (event: DragEvent) => {
+      if (!dropZoneRef.current?.contains(event.target as Node)) {
+        handleDragEnd();
+      }
+    };
+
+    document.addEventListener('dragenter', handleDragEnter);
+    document.addEventListener('dragleave', handleDragLeave);
+    document.addEventListener('dragend', handleDragEnd);
+    document.addEventListener('drop', handleDocumentDrop);
 
     return () => {
       document.removeEventListener('dragenter', handleDragEnter);
       document.removeEventListener('dragleave', handleDragLeave);
       document.removeEventListener('dragend', handleDragEnd);
+      document.removeEventListener('drop', handleDocumentDrop);
     };
   }, [setDropZoneState]);
 
