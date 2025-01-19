@@ -1,4 +1,4 @@
-import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
+import { StrictStyleOptions, StyleOptions, v2Middleware } from 'botframework-webchat-api';
 import * as apiDecorator from 'botframework-webchat-api/decorator';
 import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import { Constants, createStore, createStoreWithDevTools, createStoreWithOptions } from 'botframework-webchat-core';
@@ -74,6 +74,7 @@ export {
   ReactWebChat,
   renderWebChat,
   testIds,
+  v2Middleware,
   version,
   withEmoji
 };
