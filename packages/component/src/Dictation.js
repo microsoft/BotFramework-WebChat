@@ -112,6 +112,7 @@ const Dictation = ({ onError }) => {
 
   return (
     <DictateComposer
+      extra={{ continuous: continuousListening }}
       lang={speechLanguage}
       onDictate={handleDictate}
       onError={handleError}
@@ -119,7 +120,9 @@ const Dictation = ({ onError }) => {
       speechGrammarList={SpeechGrammarList}
       speechRecognition={SpeechRecognition}
       started={
-        uiState !== 'disabled' && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities
+        uiState !== 'disabled' &&
+        (dictateState === STARTING || dictateState === DICTATING) &&
+        (continuousListening || !numSpeakingActivities)
       }
     />
   );
