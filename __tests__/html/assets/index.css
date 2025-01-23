@@ -21,6 +21,10 @@ body {
   width: 360px;
 }
 
+.webchat__tooltip {
+  transition-duration: 0.01ms !important;
+}
+
 body.jest input,
 body.jest textarea,
 body.jest [contenteditable] {

@@ -21,7 +21,7 @@ export type Action = Thing & {
    */
   actionStatus?:
     | 'ActiveActionStatus'
-    | 'CompletedActionStatu'
+    | 'CompletedActionStatus'
     | 'FailedActionStatus'
     | 'PotentialActionStatus'
     | undefined;

@@ -172,8 +172,10 @@
   "_TYPING_INDICATOR_MULTIPLE_TEXT.comment": "This shows when two or more users are typing simultaneously.",
   "TYPING_INDICATOR_MULTIPLE_TEXT": "$1 and others are typing.",
   "VIEW_CODE_BUTTON_TEXT": "Code",
+  "VOTE_COMPLETE_ALT": "Feedback recorded",
+  "VOTE_COMPLETE_ALT.comment": "This is for screen reader. The label of a button with a thumb up/down icons. The label is used when feedback was recorded.",
   "VOTE_DISLIKE_ALT": "Dislike",
-  "_VOTE_DISLIKE_ALT.comment": "This is for screen reader. The label of a button with a thumb up icon and is placed next to the timestamp. The button is for giving feedback that the end-user don't think the response is useful.",
+  "_VOTE_DISLIKE_ALT.comment": "This is for screen reader. The label of a button with a thumb up icon. The button is for giving feedback that the end-user don't think the response is useful.",
   "VOTE_LIKE_ALT": "Like",
-  "_VOTE_LIKE_ALT.comment": "This is for screen reader. The label of a button with a thumb up icon and is placed next to the timestamp. The button is for giving feedback that the end-user think the response is useful."
+  "_VOTE_LIKE_ALT.comment": "This is for screen reader. The label of a button with a thumb up icon. The button is for giving feedback that the end-user think the response is useful."
 }

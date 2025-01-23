@@ -622,6 +622,91 @@ Use the command to install required dependencies:
 
     $ pip install numpy matplotlib`
         }
+      ], [
+        {
+          from:{
+            role: "bot"
+          },
+          id: "a-00000",
+          type: "message",
+          text: "This is compleded feedback action example.",
+          timestamp: timestamp(),
+          entities: [
+            {
+              ...aiMessageEntity,
+              keywords: ['AIGeneratedContent', 'AllowCopy'],
+              potentialAction: [
+                {
+                  "@type": "LikeAction",
+                  actionStatus: "CompletedActionStatus",
+                  target: { 
+                    "@type": "EntryPoint",
+                    urlTemplate: "ms-directline://postback?interaction=like"
+                  }
+                },
+                {
+                  "@type": "DislikeAction",
+                  actionStatus: "PotentialActionStatus",
+                  result: {
+                    "@type": "Review",
+                    reviewBody: "I don't like it.",
+                    "reviewBody-input": {
+                      "@type": "PropertyValueSpecification",
+                      valueMinLength: 3,
+                      valueName: "reason"
+                    }
+                  },
+                  target: {
+                    "@type": "EntryPoint",
+                    urlTemplate: "ms-directline://postback?interaction=dislike{&reason}"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          from:{
+            role: "bot"
+          },
+          id: "a-00001",
+          type: "message",
+          text: "Hi! I'm Cody, the devbot. How can I help?",
+          timestamp: timestamp(),
+          entities: [
+            {
+              ...aiMessageEntity,
+              keywords: ['AIGeneratedContent', 'AllowCopy'],
+              potentialAction: [
+                {
+                  "@type": "LikeAction",
+                  actionStatus: "PotentialActionStatus",
+                  target: { 
+                    "@type": "EntryPoint",
+                    urlTemplate: "ms-directline://postback?interaction=like"
+                  }
+                },
+                {
+                  "@type": "DislikeAction",
+                  actionStatus: "PotentialActionStatus",
+                  result: {
+                    "@type": "Review",
+                    reviewBody: "I don't like it.",
+                    "reviewBody-input": {
+                      "@type": "PropertyValueSpecification",
+                      valueMinLength: 3,
+                      valueName: "reason"
+                    }
+                  },
+                  target: {
+                    "@type": "EntryPoint",
+                    urlTemplate: "ms-directline://postback?interaction=dislike{&reason}"
+                  }
+                }
+              ]
+            }
+          ]
+        }
       ]];
 
       const leftStore = testHelpers.createStore();
@@ -708,6 +793,24 @@ Use the command to install required dependencies:
           await host.sendKeys('ENTER');
           await host.snapshot();
           await host.sendKeys('ENTER');
+          await host.snapshot();
+        },
+        likeDislike: async sendbox => {
+          sendbox.focus();
+          await host.sendShiftTab();
+          await host.sendKeys('ARROW_UP');
+          await host.sendKeys('ENTER');
+          await host.snapshot();
+          await host.sendKeys('TAB');
+          await host.snapshot();
+          await host.sendKeys('ENTER');
+          await host.snapshot();
+          await host.sendKeys('TAB');
+          await host.snapshot();
+          await host.sendKeys('ENTER');
+          await host.snapshot();
+          await host.sendKeys('ESCAPE');
+          await host.sendKeys('ESCAPE');
           await host.snapshot();
         }
       }));
