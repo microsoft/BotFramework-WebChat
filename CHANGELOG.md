@@ -74,6 +74,10 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Added support for math blocks using `$$` delimiter alongside existing `\[...\]` and `\(...\)` notations, in PR [#5381](https://github.com/microsoft/BotFramework-WebChat/pull/5381), by [@OEvgeny](https://github.com/OEvgeny)
 -  Added support for speech recognition initial silence timeout when using Azure Speech, in PR [#5400](https://github.com/microsoft/BotFramework/WebChat/pull/5400), by [@compulim](https://github.com/compulim)
 -  Introduced syntax highlighting for markdown code blocks, in PR [#5389](https://github.com/microsoft/BotFramework-WebChat/pull/5389), by [@OEvgeny](https://github.com/OEvgeny)
+-  (Experimental) Added `feedbackActionsPlacement` style option to control feedback button placement, in PR [#5407](https://github.com/microsoft/BotFramework-WebChat/pull/5407), by [@OEvgeny](https://github.com/OEvgeny)
+   -  New style option supports two values: `'activity-actions'` and `'activity-status'` (default)
+   -  When set to `'activity-actions'`, feedback buttons are displayed in the activity actions toolbar
+   -  When set to `'activity-status'`, feedback buttons appear in the activity status area (default behavior)
 
 ### Changed
 
@@ -98,6 +102,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385) and [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400)
    -  Production dependencies
       -  [`web-speech-cognitive-services@8.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
+-  Enabled icon customization in Fluent theme through CSS variables, in PR [#5413](https://github.com/microsoft/BotFramework-WebChat/pull/5413), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 

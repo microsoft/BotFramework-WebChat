@@ -1,6 +1,6 @@
+import { hooks } from 'botframework-webchat-api';
 import {
   getOrgSchemaMessage,
-  OrgSchemaAction,
   OrgSchemaProject,
   parseAction,
   parseClaim,
@@ -8,22 +8,25 @@ import {
   type WebChatActivity
 } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import React, { memo, useMemo, type ReactNode } from 'react';
+import React, { memo, useMemo } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
-import Feedback from './private/Feedback/Feedback';
 import Originator from './private/Originator';
-import Slotted from './Slotted';
 import Timestamp from './Timestamp';
+import ActivityFeedback from '../Activity/ActivityFeedback';
+import StatusSlot from './StatusSlot';
 
-type Props = Readonly<{ activity: WebChatActivity }>;
+const { useStyleOptions } = hooks;
+
+type Props = Readonly<{ activity: WebChatActivity; className?: string | undefined }>;
 
 const warnRootLevelThings = warnOnce(
   'Root-level things are being deprecated, please relate all things to `entities[@id=""]` instead. This feature will be removed in 2025-03-06.'
 );
 
-const OthersActivityStatus = memo(({ activity }: Props) => {
+const OthersActivityStatus = memo(({ activity, className }: Props) => {
+  const [{ feedbackActionsPlacement }] = useStyleOptions();
   const [{ sendStatus }] = useStyleSet();
   const { timestamp } = activity;
   const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
@@ -56,38 +59,24 @@ const OthersActivityStatus = memo(({ activity }: Props) => {
     }
   }, [graph, messageThing]);
 
-  const feedbackActions = useMemo<ReadonlySet<OrgSchemaAction> | undefined>(() => {
-    try {
-      const reactActions = (messageThing?.potentialAction || []).filter(
-        ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
-      );
-
-      if (reactActions.length) {
-        return Object.freeze(new Set(reactActions));
-      }
-
-      const voteActions = graph.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction);
-
-      if (voteActions.length) {
-        return Object.freeze(new Set(voteActions));
-      }
-    } catch {
-      // Intentionally left blank.
-    }
-  }, [graph, messageThing]);
-
   return (
-    <Slotted className={classNames('webchat__activity-status', sendStatus + '')}>
-      {useMemo<ReactNode[]>(
-        () =>
-          [
-            timestamp && <Timestamp key="timestamp" timestamp={timestamp} />,
-            claimInterpreter && <Originator key="originator" project={claimInterpreter} />,
-            feedbackActions?.size && <Feedback actions={feedbackActions} key="feedback" />
-          ].filter(Boolean),
-        [claimInterpreter, timestamp, feedbackActions]
+    <span className={classNames('webchat__activity-status', className, sendStatus + '')}>
+      {timestamp && (
+        <StatusSlot>
+          <Timestamp key="timestamp" timestamp={timestamp} />
+        </StatusSlot>
       )}
-    </Slotted>
+      {claimInterpreter && (
+        <StatusSlot>
+          <Originator key="originator" project={claimInterpreter} />
+        </StatusSlot>
+      )}
+      {feedbackActionsPlacement === 'activity-status' && (
+        <StatusSlot>
+          <ActivityFeedback activity={activity} key="feedback" />
+        </StatusSlot>
+      )}
+    </span>
   );
 });
 
