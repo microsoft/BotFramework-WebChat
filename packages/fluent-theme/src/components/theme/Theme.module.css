@@ -591,7 +591,9 @@
 
 /* Monochrome image masker */
 :global(.webchat-fluent).theme :global(.webchat__monochrome-image-masker) {
-  background-color: var(--webchat-colorNeutralForeground4);
+  background-color: currentColor;
+  height: 1em;
+  width: 1em;
 }
 
 /* Feedback button */
