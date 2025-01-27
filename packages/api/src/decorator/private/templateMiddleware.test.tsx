@@ -1,4 +1,4 @@
-/** @jest-environment jsdom */
+/** @jest-environment @happy-dom/jest-environment */
 
 import { render } from '@testing-library/react';
 import React, { Fragment, type ReactNode } from 'react';
