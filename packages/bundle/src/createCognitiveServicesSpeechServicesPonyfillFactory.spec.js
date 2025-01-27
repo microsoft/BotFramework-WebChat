@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @jest-environment @happy-dom/jest-environment
  * @jest-environment-options { "customExportConditions": ["node"] }
  *
  * "uuid" resolved by jest-environment-jsdom use Web Crypto API.
