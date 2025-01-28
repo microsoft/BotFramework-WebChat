@@ -6,8 +6,8 @@ import React, {
   useEffect,
   useRef,
   useState,
-  type DragEventHandler,
-  type DragEvent as ReactDragEvent
+  type DragEvent as ReactDragEvent,
+  type DragEventHandler
 } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
@@ -19,7 +19,13 @@ import { useStyles } from '../../styles';
 const { useLocalizer } = hooks;
 
 const handleDragOver = (event: ReactDragEvent<unknown> | DragEvent) => {
-  // This is for preventing the browser from opening the dropped file in a new tab.
+  // Prevent default dragover behavior to enable drop event triggering.
+  // Browsers require this to fire subsequent drop events - without it,
+  // they would handle the drop directly (e.g., open files in new tabs).
+  // This is needed regardless of whether we prevent default drop behavior,
+  // as it ensures our dropzone receives the drop event first. If we allow
+  // default drop handling (by not calling preventDefault there), the browser
+  // will still process the drop after our event handlers complete.
   event.preventDefault();
 };
 
@@ -86,17 +92,17 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
       }
     };
 
+    document.addEventListener('dragend', handleDragEnd);
     document.addEventListener('dragenter', handleDragEnter);
     document.addEventListener('dragleave', handleDragLeave);
-    document.addEventListener('dragend', handleDragEnd);
     document.addEventListener('drop', handleDocumentDrop);
 
     return () => {
+      document.removeEventListener('dragend', handleDragEnd);
       document.removeEventListener('dragenter', handleDragEnter);
       document.removeEventListener('dragleave', handleDragLeave);
-      document.removeEventListener('dragend', handleDragEnd);
-      document.removeEventListener('drop', handleDocumentDrop);
       document.removeEventListener('dragover', handleDragOver);
+      document.removeEventListener('drop', handleDocumentDrop);
     };
   }, [setDropZoneState]);
 
