@@ -1,6 +1,14 @@
 import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
-import React, { memo, useCallback, useEffect, useRef, useState, type DragEventHandler } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type DragEventHandler,
+  type DragEvent as ReactDragEvent
+} from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { AddDocumentIcon } from '../../icons';
@@ -10,7 +18,7 @@ import { useStyles } from '../../styles';
 
 const { useLocalizer } = hooks;
 
-const handleDragOver: DragEventHandler<HTMLDivElement> = event => {
+const handleDragOver = (event: ReactDragEvent<unknown> | DragEvent) => {
   // This is for preventing the browser from opening the dropped file in a new tab.
   event.preventDefault();
 };
@@ -47,6 +55,8 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
     let entranceCounter = 0;
 
     const handleDragEnter = (event: DragEvent) => {
+      document.addEventListener('dragover', handleDragOver);
+
       entranceCounter++;
 
       if (isFilesTransferEvent(event)) {
@@ -63,7 +73,10 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
     const handleDragLeave = () => --entranceCounter <= 0 && setDropZoneState(false);
 
     const handleDragEnd = () => {
+      document.removeEventListener('dragover', handleDragOver);
+
       entranceCounter = 0;
+
       setDropZoneState(false);
     };
 
@@ -83,6 +96,7 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
       document.removeEventListener('dragleave', handleDragLeave);
       document.removeEventListener('dragend', handleDragEnd);
       document.removeEventListener('drop', handleDocumentDrop);
+      document.removeEventListener('dragover', handleDragOver);
     };
   }, [setDropZoneState]);
 
