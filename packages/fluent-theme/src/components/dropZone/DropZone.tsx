@@ -1,6 +1,14 @@
 import { hooks } from 'botframework-webchat-component';
 import cx from 'classnames';
-import React, { memo, useCallback, useEffect, useRef, useState, type DragEventHandler } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type DragEvent as ReactDragEvent,
+  type DragEventHandler
+} from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { AddDocumentIcon } from '../../icons';
@@ -10,8 +18,14 @@ import { useStyles } from '../../styles';
 
 const { useLocalizer } = hooks;
 
-const handleDragOver: DragEventHandler<HTMLDivElement> = event => {
-  // This is for preventing the browser from opening the dropped file in a new tab.
+const handleDragOver = (event: ReactDragEvent<unknown> | DragEvent) => {
+  // Prevent default dragover behavior to enable drop event triggering.
+  // Browsers require this to fire subsequent drop events - without it,
+  // they would handle the drop directly (e.g., open files in new tabs).
+  // This is needed regardless of whether we prevent default drop behavior,
+  // as it ensures our dropzone receives the drop event first. If we allow
+  // default drop handling (by not calling preventDefault there), the browser
+  // will still process the drop after our event handlers complete.
   event.preventDefault();
 };
 
@@ -47,6 +61,8 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
     let entranceCounter = 0;
 
     const handleDragEnter = (event: DragEvent) => {
+      document.addEventListener('dragover', handleDragOver);
+
       entranceCounter++;
 
       if (isFilesTransferEvent(event)) {
@@ -63,7 +79,10 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
     const handleDragLeave = () => --entranceCounter <= 0 && setDropZoneState(false);
 
     const handleDragEnd = () => {
+      document.removeEventListener('dragover', handleDragOver);
+
       entranceCounter = 0;
+
       setDropZoneState(false);
     };
 
@@ -73,15 +92,16 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
       }
     };
 
+    document.addEventListener('dragend', handleDragEnd);
     document.addEventListener('dragenter', handleDragEnter);
     document.addEventListener('dragleave', handleDragLeave);
-    document.addEventListener('dragend', handleDragEnd);
     document.addEventListener('drop', handleDocumentDrop);
 
     return () => {
+      document.removeEventListener('dragend', handleDragEnd);
       document.removeEventListener('dragenter', handleDragEnter);
       document.removeEventListener('dragleave', handleDragLeave);
-      document.removeEventListener('dragend', handleDragEnd);
+      document.removeEventListener('dragover', handleDragOver);
       document.removeEventListener('drop', handleDocumentDrop);
     };
   }, [setDropZoneState]);
