@@ -148,7 +148,6 @@ jobs:
         run: |
           ls -laR .
 
-          mv jest.json jest-unit.json
           mv lcov.info lcov-unit.info
           mv result.trx result-unit.trx
         working-directory: ./coverage
@@ -159,7 +158,6 @@ jobs:
         with:
           name: test-result-unit
           path: |
-            ./coverage/jest-*.json
             ./coverage/lcov-*.info
             ./coverage/result-*.trx
 
@@ -264,7 +262,6 @@ jobs:
         run: |
           ls -laR .
 
-          mv jest.json jest-${{ matrix.shard-index }}.json
           mv lcov.info lcov-${{ matrix.shard-index }}.info
           mv result.trx result-${{ matrix.shard-index }}.trx
         working-directory: ./coverage
@@ -275,7 +272,6 @@ jobs:
         with:
           name: test-result-html-${{ matrix.shard-index }}
           path: |
-            ./coverage/jest-*.json
             ./coverage/lcov-*.info
             ./coverage/result-*.trx
 
