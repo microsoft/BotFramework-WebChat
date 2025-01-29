@@ -95,6 +95,18 @@
         // THEN: Should render the drop zone.
         await host.snapshot();
 
+        // WHEN: Dragging a file over the document.
+        const dragOverDocumentEvent = new DragEvent('dragover', {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer
+        });
+
+        document.dispatchEvent(dragOverDocumentEvent);
+        
+        // THEN: The default browser behavior should be prevented.
+        await pageConditions.became('DragOver event preventDefault is called', () => dragOverDocumentEvent.defaultPrevented, 1000);
+
         // WHEN: Dropping out of the drop zone.
         const dropEvent1 = new DragEvent('drop', {
           bubbles: true,
