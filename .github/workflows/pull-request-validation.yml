@@ -150,7 +150,6 @@ jobs:
 
           mv jest.json jest-unit.json
           mv lcov.info lcov-unit.info
-          mv nunit3.xml nunit3-unit.xml
           mv result.trx result-unit.trx
         working-directory: ./coverage
 
@@ -162,7 +161,6 @@ jobs:
           path: |
             ./coverage/jest-*.json
             ./coverage/lcov-*.info
-            ./coverage/nunit3-*.xml
             ./coverage/result-*.trx
 
   type-definitions-test:
@@ -268,7 +266,6 @@ jobs:
 
           mv jest.json jest-${{ matrix.shard-index }}.json
           mv lcov.info lcov-${{ matrix.shard-index }}.info
-          mv nunit3.xml nunit3-${{ matrix.shard-index }}.xml
           mv result.trx result-${{ matrix.shard-index }}.trx
         working-directory: ./coverage
 
@@ -280,7 +277,6 @@ jobs:
           path: |
             ./coverage/jest-*.json
             ./coverage/lcov-*.info
-            ./coverage/nunit3-*.xml
             ./coverage/result-*.trx
 
       - if: failure()
