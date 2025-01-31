@@ -21,7 +21,8 @@ const {
   useShouldSpeakIncomingActivity,
   useStopDictate,
   useSubmitSendBox,
-  useUIState
+  useUIState,
+  useContinuousListening
 } = hooks;
 
 const {
@@ -44,6 +45,7 @@ const Dictation = ({ onError }) => {
   const setDictateState = useSetDictateState();
   const stopDictate = useStopDictate();
   const submitSendBox = useSubmitSendBox();
+  const continuousListening = useContinuousListening();
 
   const numSpeakingActivities = useMemo(
     () => activities.filter(({ channelData: { speak } = {} }) => speak).length,
@@ -54,8 +56,10 @@ const Dictation = ({ onError }) => {
     ({ result: { confidence, transcript } = {} }) => {
       if (dictateState === DICTATING || dictateState === STARTING) {
         setDictateInterims([]);
-        setDictateState(IDLE);
-        stopDictate();
+        if (!continuousListening) {
+          setDictateState(IDLE);
+          stopDictate();
+        }
 
         if (transcript) {
           setSendBox(transcript);
@@ -65,6 +69,7 @@ const Dictation = ({ onError }) => {
       }
     },
     [
+      continuousListening,
       dictateState,
       setDictateInterims,
       setDictateState,
@@ -107,6 +112,7 @@ const Dictation = ({ onError }) => {
 
   return (
     <DictateComposer
+      continuous={continuousListening}
       lang={speechLanguage}
       onDictate={handleDictate}
       onError={handleError}
@@ -114,7 +120,9 @@ const Dictation = ({ onError }) => {
       speechGrammarList={SpeechGrammarList}
       speechRecognition={SpeechRecognition}
       started={
-        uiState !== 'disabled' && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities
+        uiState !== 'disabled' &&
+        (dictateState === STARTING || dictateState === DICTATING) &&
+        (continuousListening || !numSpeakingActivities)
       }
     />
   );

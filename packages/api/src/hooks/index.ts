@@ -70,6 +70,7 @@ import useUIState from './useUIState';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
+import useContinuousListening from './useContinuousListening';
 
 export {
   useActiveTyping,
@@ -143,5 +144,6 @@ export {
   useUIState,
   useUserID,
   useUsername,
-  useVoiceSelector
+  useVoiceSelector,
+  useContinuousListening
 };

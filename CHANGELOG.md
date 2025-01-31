@@ -78,6 +78,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    -  New style option supports two values: `'activity-actions'` and `'activity-status'` (default)
    -  When set to `'activity-actions'`, feedback buttons are displayed in the activity actions toolbar
    -  When set to `'activity-status'`, feedback buttons appear in the activity status area (default behavior)
+- Introduced continuous listening capability, in PR [#5397](https://github.com/microsoft/BotFramework-WebChat/pull/5397), by [@RushikeshGavali](https://github.com/RushikeshGavali)
 
 ### Changed
 
