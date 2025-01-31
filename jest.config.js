@@ -57,13 +57,6 @@ module.exports = {
         ]
       }
     ],
-    [
-      './__tests__/setup/NUnitTestReporter',
-      {
-        filename: join(__dirname, 'coverage/nunit3.xml'),
-        jestResultFilename: join(__dirname, 'coverage/jest.json')
-      }
-    ],
     ['github-actions', { silent: false }]
   ]
 };

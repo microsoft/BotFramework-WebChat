@@ -103,9 +103,9 @@
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-image {
+  color: var(--webchat-colorNeutralForeground4);
+  font-size: 20px;
   grid-area: image;
-  height: 20px;
-  width: 20px;
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__card-action-subtitle {

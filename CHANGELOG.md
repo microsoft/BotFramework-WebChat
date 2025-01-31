@@ -103,6 +103,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385) and [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400)
    -  Production dependencies
       -  [`web-speech-cognitive-services@8.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
+-  Enabled icon customization in Fluent theme through CSS variables, in PR [#5413](https://github.com/microsoft/BotFramework-WebChat/pull/5413), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 
@@ -121,6 +122,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixed math parsing that could cause Web Chat to hang when processing certain LaTeX expressions, in PR [#5377](https://github.com/microsoft/BotFramework-WebChat/pull/5377), by [@OEvgeny](https://github.com/OEvgeny)
 -  Fixed long math formula should be scrollable, in PR [#5380](https://github.com/microsoft/BotFramework-WebChat/pull/5380), by [@compulim](https://github.com/compulim)
 -  Fixed [#4948](https://github.com/microsoft/BotFramework-WebChat/issues/4948). Microphone should stop after initial silence, in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385)
+-  Fixed [#5390](https://github.com/microsoft/BotFramework-WebChat/issues/5390). Fixed drop zone remaining visible when file is dropped outside of the zone, in PR [#5394](https://github.com/microsoft/BotFramework-WebChat/pull/5394), in PR [#5415](https://github.com/microsoft/BotFramework-WebChat/pull/5415), by [@OEvgeny](https://github.com/OEvgeny)
 
 # Removed
 

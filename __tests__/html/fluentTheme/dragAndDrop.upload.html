@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
@@ -46,9 +46,11 @@
         dataTransfer.items.add(new File([new ArrayBuffer(100)], 'simple.txt'));
 
         // WHEN: Dragging a file into document.
-        const dragEnterDocumentEvent = new DragEvent('dragenter', { dataTransfer });
-
-        dragEnterDocumentEvent.initEvent('dragenter', true, true);
+        const dragEnterDocumentEvent = new DragEvent('dragenter', {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer
+        });
 
         document.dispatchEvent(dragEnterDocumentEvent);
 
@@ -56,25 +58,65 @@
         await host.snapshot();
 
         // WHEN: Dragging into the drop zone.
-        const dragEnterDropZoneEvent = new DragEvent('dragenter', { dataTransfer });
-
-        dragEnterDropZoneEvent.initEvent('dragenter', true, true);
+        const dragEnterDropZoneEvent = new DragEvent('dragenter', {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer
+        });
 
         document
           .querySelector(`[data-testid="${WebChat.testIds['sendBoxDropZone']}"]`)
           .dispatchEvent(dragEnterDropZoneEvent);
 
-        // THEN: Should render the drop zone.
+        // THEN: Should render element dropped.
         await host.snapshot();
 
         // WHEN: Dropping into the drop zone.
-        const dropEvent = new DragEvent('drop', { dataTransfer });
-
-        dropEvent.initEvent('drop', true, true);
+        const dropEvent = new DragEvent('drop', {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer
+        });
 
         document.querySelector(`[data-testid="${WebChat.testIds['sendBoxDropZone']}"]`).dispatchEvent(dropEvent);
 
         // THEN: Should render the drop zone.
+        await host.snapshot();
+
+        // WHEN: Dragging a file into document.
+        const dragEnterDocumentEvent1 = new DragEvent('dragenter', {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer
+        });
+
+        document.dispatchEvent(dragEnterDocumentEvent1);
+
+        // THEN: Should render the drop zone.
+        await host.snapshot();
+
+        // WHEN: Dragging a file over the document.
+        const dragOverDocumentEvent = new DragEvent('dragover', {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer
+        });
+
+        document.dispatchEvent(dragOverDocumentEvent);
+        
+        // THEN: The default browser behavior should be prevented.
+        await pageConditions.became('DragOver event preventDefault is called', () => dragOverDocumentEvent.defaultPrevented, 1000);
+
+        // WHEN: Dropping out of the drop zone.
+        const dropEvent1 = new DragEvent('drop', {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer
+        });
+
+        document.body.dispatchEvent(dropEvent1);
+
+        // THEN: Should render single element dropped.
         await host.snapshot();
       });
     </script>

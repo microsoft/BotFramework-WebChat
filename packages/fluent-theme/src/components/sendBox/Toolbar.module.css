@@ -21,7 +21,7 @@
   justify-content: center;
   padding: 3px;
 
-  > svg {
+  > :global(.webchat__monochrome-image-masker) {
     font-size: 20px;
     pointer-events: none;
   }
