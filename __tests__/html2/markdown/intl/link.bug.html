@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <style>
+    [data-math-type=error] {
+      color: #9d0000;
+      border: 1px dashed currentColor;
+      padding: 0.2em 0.4em;
+      margin: 0 0.2em;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <template id="messages">
+    <x-message>
+這是一個測試abc.def@hotmail.com. 
+
+這是一個測試 abc.def@hotmail.com.
+
+This is a link www.example.com.
+
+This is a link www.example.com
+
+This is a link http://www.example.com.
+
+This is a link https://www.example.com.
+
+This is a link example.com.
+
+這是一個連結 www.example.com.
+
+這是一個連結 http://www.example.com.
+
+這是一個連結 https://www.example.com.
+
+這是一個連結 example.com.
+    </x-message>
+  </template>
+  <main id="webchat"></main>
+  <script>
+    run(async function () {
+      await host.windowSize(640, 720, document.getElementById('webchat'));
+
+      const {
+        WebChat: { renderWebChat }
+      } = window; // Imports in UMD fashion.
+
+      const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+      renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+      await pageConditions.uiConnected();
+
+      const messages = Array.from(window.messages.content.querySelectorAll('x-message')).map(el => el.innerText)
+      for (const message of messages) {
+        await directLine.emulateIncomingActivity({
+          text: message,
+          type: 'message'
+        });
+        await host.snapshot('local');
+        await pageConditions.numActivitiesShown(messages.indexOf(message) + 1);
+      }
+    });
+  </script>
+</body>
+
+</html>
