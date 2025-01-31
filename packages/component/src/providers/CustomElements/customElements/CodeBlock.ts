@@ -24,9 +24,15 @@ class CodeBlock extends HTMLElement {
   get theme() {
     return this.getAttribute('theme');
   }
+  set theme(value: string) {
+    this.setAttribute('theme', value);
+  }
 
   get language() {
     return this.getAttribute('language');
+  }
+  set language(value: string) {
+    this.setAttribute('language', value);
   }
 
   get options() {
