@@ -71,6 +71,8 @@ import { SendBoxToolbarMiddlewareProvider, type SendBoxToolbarMiddleware } from 
 import Tracker from './internal/Tracker';
 import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
+import { isV2Middleware } from '../utils/v2Middleware';
+
 import defaultSelectVoice from './internal/defaultSelectVoice';
 import applyMiddleware, {
   forLegacyRenderer as applyMiddlewareForLegacyRenderer,
@@ -86,6 +88,7 @@ import observableToPromise from './utils/observableToPromise';
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import { parseUIState } from './validation/uiState';
+import { ActivityMiddlewareProvider } from '../providers/ActivityMiddleware/ActivityMiddleware';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
@@ -407,6 +410,11 @@ const ComposerCore = ({
     [telemetryDimensionsRef]
   );
 
+  const isUsingActivityMiddlewareV2 = useMemo(
+    () => singleToArray(activityMiddleware).some(md => isV2Middleware(md)),
+    [activityMiddleware]
+  );
+
   const patchedActivityRenderer = useMemo(
     () =>
       applyMiddlewareForRenderer(
@@ -573,7 +581,8 @@ const ComposerCore = ({
       typingIndicatorRenderer: patchedTypingIndicatorRenderer,
       uiState,
       userID,
-      username
+      username,
+      isUsingActivityMiddlewareV2
     }),
     [
       cardActionContext,
@@ -600,29 +609,31 @@ const ComposerCore = ({
       renderMarkdown,
       scrollToEndButtonRenderer,
       sendTypingIndicator,
-      telemetryDimensionsRef,
       trackDimension,
       uiState,
       userID,
-      username
+      username,
+      isUsingActivityMiddlewareV2
     ]
   );
 
   return (
     <WebChatAPIContext.Provider value={context}>
-      <ActivityListenerComposer>
-        <ActivitySendStatusComposer>
-          <ActivityTypingComposer>
-            <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
-              <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
-                {typeof children === 'function' ? children(context) : children}
-                <ActivitySendStatusTelemetryComposer />
-              </SendBoxToolbarMiddlewareProvider>
-            </SendBoxMiddlewareProvider>
-          </ActivityTypingComposer>
-        </ActivitySendStatusComposer>
-      </ActivityListenerComposer>
-      {onTelemetry && <Tracker />}
+      <ActivityMiddlewareProvider middleware={activityMiddleware}>
+        <ActivityListenerComposer>
+          <ActivitySendStatusComposer>
+            <ActivityTypingComposer>
+              <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
+                <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
+                  {typeof children === 'function' ? children(context) : children}
+                  <ActivitySendStatusTelemetryComposer />
+                </SendBoxToolbarMiddlewareProvider>
+              </SendBoxMiddlewareProvider>
+            </ActivityTypingComposer>
+          </ActivitySendStatusComposer>
+        </ActivityListenerComposer>
+        {onTelemetry && <Tracker />}
+      </ActivityMiddlewareProvider>
     </WebChatAPIContext.Provider>
   );
 };

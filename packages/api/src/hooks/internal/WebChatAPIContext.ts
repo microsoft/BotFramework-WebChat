@@ -86,6 +86,7 @@ export type WebChatAPIContextType = {
   uiState: 'blueprint' | 'disabled' | undefined;
   userID?: string;
   username?: string;
+  isUsingActivityMiddlewareV2: boolean;
 };
 
 const context = createContext<WebChatAPIContextType>(undefined);
