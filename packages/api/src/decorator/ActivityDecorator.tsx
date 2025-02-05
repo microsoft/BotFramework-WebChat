@@ -1,5 +1,6 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { Fragment, memo, type ReactNode } from 'react';
+
 import { ActivityBorderDecoratorMiddlewareProxy } from './private/ActivityBorderDecoratorMiddleware';
 import useActivityDecoratorRequest from './private/useActivityDecoratorRequest';
 
