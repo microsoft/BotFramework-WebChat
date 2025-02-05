@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React, { forwardRef, memo, useCallback, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import useStyleSet from '../../../hooks/useStyleSet';
-import MonochromeImageMasker from '../../../Utils/MonochromeImageMasker';
+import useStyleSet from '../../hooks/useStyleSet';
+import MonochromeImageMasker from '../../Utils/MonochromeImageMasker';
 
 type Props = Readonly<{
   children?: ReactNode | undefined;

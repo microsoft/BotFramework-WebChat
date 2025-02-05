@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  <style>
+    .actions {
+      display: contents;
+    }
+
+    .actions > .show-image {
+      order: 2;
+    }
+
+    .actions > *:nth-child(n+3) {
+      order: 2;
+    }
+
+    .image-modal-header {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .image-modal-container {
+      width: 100%;
+      aspect-ratio: 4/3;
+      border-radius: 8px;
+      overflow: clip;
+    }
+
+    .image-modal-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+  </style>
+</head>
+
+<body>
+  <template id="image">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+      <defs>
+        <!-- Deep space background -->
+        <linearGradient id="spaceGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#090D1F;stop-opacity:1" />
+          <stop offset="50%" style="stop-color:#111827;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#1A1B35;stop-opacity:1" />
+        </linearGradient>
+
+        <!-- Gas giant planet gradient -->
+        <radialGradient id="gasGiantGradient" cx="40%" cy="40%">
+          <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+          <stop offset="50%" style="stop-color:#357ABD;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#2B5A8C;stop-opacity:1" />
+        </radialGradient>
+
+        <!-- Dark planet gradient -->
+        <radialGradient id="darkPlanetGradient" cx="45%" cy="45%">
+          <stop offset="0%" style="stop-color:#1F2937;stop-opacity:1" />
+          <stop offset="70%" style="stop-color:#111827;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#0F172A;stop-opacity:1" />
+        </radialGradient>
+
+        <!-- Atmospheric glow for dark planet -->
+        <filter id="atmosphericGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="15" result="blur" />
+          <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.4
+                    0 0 0 0 0.6
+                    0 0 0 0 1
+                    0 0 0 0.6 0" />
+          <feMerge>
+            <feMergeNode />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        <!-- Enhanced star glow -->
+        <filter id="starGlow" x="-100%" y="-100%" width="300%" height="300%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="0.3" result="blur1" />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="0.8" result="blur2" />
+          <feColorMatrix in="blur2" type="matrix" values="1 0 0 0 0
+                    0 1 0 0 0.2
+                    0 0 1 0 0.4
+                    0 0 0 1 0" />
+          <feMerge>
+            <feMergeNode in="blur1" />
+            <feMergeNode in="blur2" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        <!-- Subtle nebula effect -->
+        <filter id="nebula" x="-50%" y="-50%" width="200%" height="200%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="3" result="noise" />
+          <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0
+                    0 0 0 0 0
+                    0 0 0 0 0.3
+                    0 0 0 0.1 0" />
+          <feGaussianBlur stdDeviation="30" result="blur" />
+          <feBlend in="SourceGraphic" in2="blur" mode="screen" />
+        </filter>
+      </defs>
+
+      <!-- Background with nebula effect -->
+      <rect width="800" height="600" fill="url(#spaceGradient)" />
+      <rect width="800" height="600" filter="url(#nebula)" opacity="0.3" />
+
+      <!-- Enhanced starfield -->
+      <g fill="#FFFFFF">
+        <!-- Distant stars -->
+        <g filter="url(#starGlow)" opacity="0.6">
+          <!-- Many small stars -->
+          <circle cx="50" cy="50" r="0.5" />
+          <circle cx="150" cy="80" r="0.4" />
+          <circle cx="250" cy="120" r="0.6" />
+          <circle cx="350" cy="90" r="0.3" />
+          <circle cx="450" cy="150" r="0.5" />
+          <circle cx="550" cy="70" r="0.4" />
+          <circle cx="650" cy="100" r="0.6" />
+          <circle cx="750" cy="130" r="0.3" />
+        </g>
+
+        <!-- Brighter stars -->
+        <g filter="url(#starGlow)" opacity="0.9">
+          <circle cx="120" cy="200" r="1" />
+          <circle cx="320" cy="150" r="1.2" />
+          <circle cx="520" cy="180" r="0.9" />
+          <circle cx="220" cy="400" r="1.1" />
+          <circle cx="420" cy="300" r="1" />
+        </g>
+      </g>
+
+      <!-- Dark planet with atmospheric glow -->
+      <g transform="translate(200,300)">
+        <!-- Atmospheric glow layers -->
+        <circle cx="0" cy="0" r="85" fill="url(#darkPlanetGradient)" filter="url(#atmosphericGlow)" opacity="0.7" />
+        <circle cx="0" cy="0" r="80" fill="url(#darkPlanetGradient)" />
+      </g>
+
+      <!-- Large gas giant -->
+      <g transform="translate(500,300)">
+        <!-- Atmosphere layers -->
+        <circle cx="0" cy="0" r="230" fill="url(#gasGiantGradient)" filter="url(#atmosphericGlow)" opacity="0.3" />
+
+        <!-- Main planet body -->
+        <circle cx="0" cy="0" r="200" fill="url(#gasGiantGradient)" />
+
+        <!-- Subtle atmospheric bands -->
+        <g opacity="0.1">
+          <path d="M-200,40 Q0,-20 200,40" fill="none" stroke="#FFFFFF" stroke-width="40" />
+          <path d="M-200,-40 Q0,20 200,-40" fill="none" stroke="#000000" stroke-width="30" />
+        </g>
+      </g>
+    </svg>
+  </template>
+  <main id="webchat"></main>
+  <script type="text/babel">
+    run(async function () {
+      const {
+        React,
+        React: { useCallback },
+        ReactDOM: { render },
+        WebChat: {
+          Components: { ActivityButton },
+          decorator: { DecoratorComposer },
+          hooks: { useShowModal },
+          FluentThemeProvider,
+          ReactWebChat
+        }
+      } = window; // Imports in UMD fashion.
+
+      const ImageModalContent = ({
+        headerText,
+        imageUrl
+      }) => {
+        return (
+          <div className="image-modal-content">
+            <h2 className="image-modal-header">
+              {headerText}
+            </h2>
+
+            <div className="image-modal-container">
+              <img
+                src={imageUrl}
+                alt={headerText}
+                className="image-modal-img"
+              />
+            </div>
+          </div>
+        );
+      };
+
+      function Actions({ activity, children }) {
+        const showModal = useShowModal();
+
+        const showImageModal = useCallback(
+          (title, imageUrl, altText) => {
+            showModal(() => <ImageModalContent headerText={title} imageUrl={imageUrl} />, {
+              'aria-label': altText || title || 'Image preview',
+              className: 'image-modal-dialog'
+            });
+          },
+          [showModal]
+        );
+
+        const message = activity?.entities?.at(0);
+        const imageObject = activity?.entities?.at(0)?.isBasedOn;
+
+        const handleImageButtonClick = useCallback(() => {
+          showModal(
+            () => <ImageModalContent 
+              headerText={imageObject.name} 
+              imageUrl={imageObject.url} 
+            />, 
+            {
+              'aria-label': imageObject.name,
+              className: 'image-modal-dialog'
+            }
+          );
+        }, [imageObject, showModal]);
+
+        if (message.isBasedOn?.['@type'] === 'ImageObject') {
+          return <div className="actions">
+            <ActivityButton
+              className="show-image"
+              iconURL={`data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="2 2 22 22"><path fill="currentColor" d="M5.616 20q-.691 0-1.153-.462T4 18.384V5.616q0-.691.463-1.153T5.616 4h12.769q.69 0 1.153.463T20 5.616v12.769q0 .69-.462 1.153T18.384 20zm0-1h12.769q.23 0 .423-.192t.192-.424V5.616q0-.231-.192-.424T18.384 5H5.616q-.231 0-.424.192T5 5.616v12.769q0 .23.192.423t.423.192M5 19V5zm3.308-2.5h7.538q.243 0 .354-.217t-.03-.43l-2.02-2.712q-.13-.162-.323-.162q-.192 0-.323.162l-2.292 2.898l-1.427-1.725q-.131-.143-.314-.143q-.182 0-.313.162l-1.154 1.52q-.162.213-.05.43t.354.217m.192-7q.414 0 .707-.293T9.5 8.5t-.293-.707T8.5 7.5t-.707.293T7.5 8.5t.293.707t.707.293"/></svg>')}`}
+              onClick={handleImageButtonClick}
+              text="View"
+            />
+            {children}
+          </div>;
+        }
+        return <>{children}</>;
+      }
+
+      const decoratorMiddleware = [
+        init =>
+          init === 'activity actions' &&
+          (next => request => (!request.livestreamingState ? Actions : next(request)))
+      ];
+
+      const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+      const App = () => (
+        <ReactWebChat
+          directLine={directLine}
+          store={store}
+          styleOptions={{
+            bubbleBorderRadius: 10,
+            typingAnimationBackgroundImage: `url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAUACgDASIAAhEBAxEB/8QAGgABAQACAwAAAAAAAAAAAAAAAAYCBwMFCP/EACsQAAECBQIEBQUAAAAAAAAAAAECAwAEBQYRBxITIjFBMlFhccFScoGh8f/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD0lctx023JVD9UeKOIcNoSNylkdcCMbauSmXHLOPUx8r4ZAcQtO1SM9Mj5iO1gtWo1syc7S2zMKYSptbIPNgnII8/5HBpRZ9RpaKjNVVCpUzLPAQ1nmA7qPl6fmAondRrcaqhkVTiiQrYXgglsH7vnpHc3DcNNoEimaqT4Q2s4bCRuUs+gEaLd05uNFVMmiS3o3YEwFDhlP1Z7e3WLzUuzahUKHRk0zM07TmeApvOFLGEjcM9+Xp6wFnbN0Uu5GnF0x4qW1je2tO1Sc9Djy9oRD6QWlU6PPzVSqjRlgtksttKPMcqBKiO3h/cIDacIQgEIQgEIQgP/2Q==')`
+          }}
+        />
+      );
+
+      render(
+        <FluentThemeProvider>
+          <DecoratorComposer middleware={decoratorMiddleware}>
+            <App />
+          </DecoratorComposer>
+        </FluentThemeProvider>,
+        document.getElementById('webchat')
+      );
+
+      await pageConditions.uiConnected();
+
+      await directLine.emulateIncomingActivity({
+        from: {
+          role: "bot"
+        },
+        id: "a-00002",
+        type: "message",
+        text: "Here is the image generated as prompted.",
+        entities: [
+          {
+            '@context': 'https://schema.org',
+            '@id': '',
+            '@type': 'Message',
+            type: 'https://schema.org/Message',
+            keywords: ['AIGeneratedContent', 'AllowCopy'],
+            isBasedOn: {
+              '@type': 'ImageObject',
+              'url': `data:image/svg+xml;base64,${btoa(window.image.innerHTML)}`,
+              'encodingFormat': 'image/svg',
+              'name': 'Two planets in the space',
+              'height': '600',
+              'width': '800'
+            },
+            potentialAction: [
+              {
+                "@type": "LikeAction",
+                actionStatus: "PotentialActionStatus",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: "ms-directline://postback?interaction=like"
+                }
+              },
+              {
+                "@type": "DislikeAction",
+                actionStatus: "PotentialActionStatus",
+                result: {
+                  "@type": "Review",
+                  reviewBody: "I don't like it.",
+                  "reviewBody-input": {
+                    "@type": "PropertyValueSpecification",
+                    valueMinLength: 3,
+                    valueName: "reason"
+                  }
+                },
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: "ms-directline://postback?interaction=dislike{&reason}"
+                }
+              }
+            ]
+          }
+        ]
+      });
+
+      await pageConditions.numActivitiesShown(1);
+
+      // WHEN: navigating to the image preview button
+      document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
+      await host.sendShiftTab();
+      await host.sendKeys('ARROW_UP');
+      await host.sendKeys('ENTER');
+
+      // THEN: the button gets focused
+      await host.snapshot('local');
+
+      // WHEN: activating the button
+      await host.sendKeys('ENTER');
+
+      // THEN: the image modal gets displayed
+      await host.snapshot('local');
+
+      // WHEN: activating the modal close button
+      await host.sendKeys('ENTER');
+
+      // THEN: the image modal gets closed
+      await host.snapshot('local');
+    });
+  </script>
+</body>
+</html>

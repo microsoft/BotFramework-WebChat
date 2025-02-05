@@ -12,8 +12,6 @@ import {
   initActivityActionsDecoratorMiddleware
 } from './ActivityActionsDecoratorMiddleware';
 
-type DecoratorMiddlewareInit = typeof activityBorderDecoratorTypeName | typeof activityActionsDecoratorTypeName;
-
 export type DecoratorComposerComponent = (
   props: Readonly<{
     children?: ReactNode | undefined;
@@ -21,11 +19,11 @@ export type DecoratorComposerComponent = (
   }>
 ) => React.JSX.Element;
 
-export type DecoratorMiddleware = (
-  init: DecoratorMiddlewareInit
-) => ReturnType<ActivityBorderDecoratorMiddleware | ActivityActionsDecoratorMiddleware> | false;
+export type DecoratorMiddleware =
+  | ((init: typeof activityBorderDecoratorTypeName) => ReturnType<ActivityBorderDecoratorMiddleware> | false)
+  | ((init: typeof activityActionsDecoratorTypeName) => ReturnType<ActivityActionsDecoratorMiddleware> | false);
 
-const EMPTY_ARRAY = [];
+const EMPTY_ARRAY = [] as DecoratorMiddleware[];
 
 export default (): DecoratorComposerComponent =>
   ({ children, middleware = EMPTY_ARRAY }) => {

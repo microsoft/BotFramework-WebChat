@@ -2,7 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useRef, useState, type RefObject } from 'react';
 import useStyleSet from '../../../hooks/useStyleSet';
-import ActivityButton from './ActivityButton';
+import ActivityButton from '../ActivityButton';
 
 const { useLocalizer, useUIState } = hooks;
 

@@ -1,4 +1,4 @@
-import { type EmptyObject } from 'type-fest';
+import { WebChatActivity } from 'botframework-webchat-core';
 
 import ActivityDecoratorRequest from './activityDecoratorRequest';
 import templateMiddleware from './templateMiddleware';
@@ -8,9 +8,13 @@ const {
   Provider: ActivityActionsDecoratorMiddlewareProvider,
   Proxy: ActivityActionsDecoratorMiddlewareProxy,
   types
-} = templateMiddleware<typeof activityActionsDecoratorTypeName, ActivityDecoratorRequest, EmptyObject>(
-  'ActivityActionsDecoratorMiddleware'
-);
+} = templateMiddleware<
+  typeof activityActionsDecoratorTypeName,
+  ActivityDecoratorRequest,
+  {
+    activity: WebChatActivity;
+  }
+>('ActivityActionsDecoratorMiddleware');
 
 type ActivityActionsDecoratorMiddleware = typeof types.middleware;
 type ActivityActionsDecoratorMiddlewareInit = typeof types.init;

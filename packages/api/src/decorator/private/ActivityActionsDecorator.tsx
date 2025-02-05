@@ -14,7 +14,11 @@ function ActivityActionsDecorator({
   const request = useActivityDecoratorRequest(activity);
 
   return (
-    <ActivityActionsDecoratorMiddlewareProxy fallbackComponent={ActivityActionsDecoratorFallback} request={request}>
+    <ActivityActionsDecoratorMiddlewareProxy
+      activity={activity}
+      fallbackComponent={ActivityActionsDecoratorFallback}
+      request={request}
+    >
       {children}
     </ActivityActionsDecoratorMiddlewareProxy>
   );

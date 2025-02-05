@@ -20,7 +20,7 @@ export default function templateMiddleware<Init, Request = any, Props extends {}
   const warnInvalid = warnOnce(`"${name}" prop is invalid`);
 
   const initMiddleware = (
-    middleware: readonly MiddlewareWithInit<Middleware, Init>[],
+    middleware: readonly MiddlewareWithInit<ComponentMiddleware<any, any>, any>[],
     init?: Init
   ): readonly Middleware[] => {
     if (middleware) {

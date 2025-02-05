@@ -21,8 +21,7 @@
     }
 
     .actions  {
-      display: flex;
-      gap: 4px;
+      display: contents;
     }
 
     .actions > * {
@@ -53,8 +52,11 @@
         return <div className="loader">{children}</div>;
       }
 
-      function Actions({ children }) {
-        return <div className="actions">{children}</div>;
+      function Actions({ activity, children }) {
+        if (activity.entities[0].keywords.includes('highlighted')) {
+          return <div className="actions">{children}</div>;
+        }
+        return <>{children}</>;
       }
 
       const decoratorMiddleware = [
@@ -66,7 +68,7 @@
           (next => request => (request.livestreamingState === 'preparing' ? Loader : next(request))),
         init =>
           init === 'activity actions' &&
-          (next => request => (request.activity.entities?.[0].keywords.includes('highlighted') ? Actions : next(request)))
+          (next => request => (!request.livestreamingState ? Actions : next(request)))
       ];
 
       const { directLine, store } = testHelpers.createDirectLineEmulator();

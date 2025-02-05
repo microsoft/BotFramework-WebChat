@@ -235,6 +235,7 @@ const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
         </LinkDefinitions>
       )}
       <div className="webchat__text-content__activity-actions">
+        {/* TODO: [P2] Fold the ActivityActionsDecorator into the ActivityDecorator to unlock more flexibility */}
         <ActivityActionsDecorator activity={activity}>
           {activity.type === 'message' && isBasedOnSoftwareSourceCode(messageThing) && messageThing.isBasedOn.text ? (
             <ActivityViewCodeButton

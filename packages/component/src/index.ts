@@ -23,6 +23,7 @@ import ErrorBox from './ErrorBox';
 
 import LocalizedString from './Utils/LocalizedString';
 
+import ActivityButton from './Attachment/Text/ActivityButton';
 import AudioContent from './Attachment/AudioContent';
 import FileContent from './Attachment/FileContent';
 import HTMLVideoContent from './Attachment/HTMLVideoContent';
@@ -85,6 +86,7 @@ const Components = {
   BasicTranscript,
 
   // Components for recomposing activities and attachments
+  ActivityButton,
   AudioContent,
   FileContent,
   HTMLVideoContent,
