@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style>
+      form {
+        display: flex;
+        flex-flow: column nowrap;
+        gap: 4px
+      }
+
+      form output {
+        white-space: pre-wrap;
+        padding: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main onsubmit="handleSubmit(event)" id="webchat"></main>
+    <script>
+      function handleSubmit(event) {
+        const form = event.target;
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(form).entries());
+        form.elements[1].value = `${'webchat:activity-key' in data} ${data['webchat:activity-id']}`;
+      }
+
+      run(async function () {
+        const {
+          WebChat: { renderWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const allowFormElementsTransform = () => next => request =>
+          next({
+            ...request,
+            allowedTags: Object.freeze(
+              new Map(request.allowedTags)
+                .set('form', Object.freeze({ attributes: Object.freeze([]) }))
+                .set('button', Object.freeze({ attributes: Object.freeze([]) }))
+                .set('output', Object.freeze({ attributes: Object.freeze([]) }))
+            )
+          });
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        renderWebChat(
+          { directLine, htmlContentTransformMiddleware: [allowFormElementsTransform], store },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          id: 'my-activity-id',
+          text: `<form><button>Send form</button><output></output></form>`,
+          type: 'message'
+        });
+
+        
+        await pageConditions.numActivitiesShown(1);
+
+        pageElements.sendBoxTextBox().focus();
+
+        // WHEN: Clicking on Send Form button
+        await host.sendShiftTab(2);
+        await host.sendKeys('ARROW_UP');
+        await host.sendKeys('ENTER');
+        await host.sendKeys('ENTER');
+    
+        // THEN: The form with activity related fields is shown 
+        await host.snapshot('local');
+
+        // WHEN: Stolen form is submitted
+        const form = document.querySelector('article form').cloneNode(true)
+        window.webchat.prepend(form);
+        form.requestSubmit();
+
+        // THEN: No activity related fields are present
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
