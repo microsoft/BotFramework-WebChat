@@ -111,6 +111,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useScrollTo`](#usescrollto)
 -  [`useScrollToEnd`](#usescrolltoend)
 -  [`useScrollUp`](#usescrollup)
+-  [`useShowModal`](#useShowModal)
 -  [`useSendBoxAttachments`](#usesendboxattachments)
 -  [`useSendBoxValue`](#usesendboxvalue)
 -  [`useSendEvent`](#usesendevent)
@@ -1119,6 +1120,52 @@ useScrollUp(): () => void
 <!-- prettier-ignore-end -->
 
 This hook will return a function that, when called, will scroll elements up the transcript. This is an important feature for AT accessibility.
+
+## `useShowModal`
+
+<!-- prettier-ignore-start -->
+```js
+type ModalOptions = {
+  'aria-label'?: string;
+  className?: string;
+};
+
+useShowModal(): (content: () => React.Element, options?: ModalOptions) => void
+```
+<!-- prettier-ignore-end -->
+
+When called, this hook will return a function to show a modal dialog. The returned function accepts:
+
+1. `content`: A function that returns a React element to be shown in the modal dialog
+2. `options`: Optional modal options including:
+   -  `aria-label`: Accessibility label for the modal
+   -  `className`: Additional CSS classes to apply to the modal
+
+Common use cases:
+
+-  Showing image previews
+-  Displaying detailed content
+-  Collecting user confirmation or input
+
+Example usage:
+
+```js
+const showModal = useShowModal();
+
+// Show an image preview modal
+showModal(
+   () => (
+      <div>
+         <h2>Image Preview</h2>
+         <img src="..." alt="..." />
+      </div>
+   ),
+   {
+      'aria-label': 'Image preview',
+      className: 'image-preview-modal'
+   }
+);
+```
 
 ## `useSendBoxAttachments`
 

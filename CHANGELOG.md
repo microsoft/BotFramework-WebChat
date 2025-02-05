@@ -2037,6 +2037,9 @@ It should check the result from downstream middleware. If it is falsy, it should
 -  Adds Direct Line Speech support, by [@compulim](https://github.com/compulim) in PR [#2621](https://github.com/microsoft/BotFramework-WebChat/pull/2621)
    -  Adds [`microsoft-cognitiveservices-sdk@1.8.1`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk), in PR [#2704](https://github.com/microsoft/BotFramework-WebChat/pull/2704)
 -  Fixes [#2692](https://github.com/microsoft/BotFramework-WebChat/issues/2692). Rename sample 17 to 17.a, by [@corinagum](https://github.com/corinagum) in PR [#2695](https://github.com/microsoft/BotFramework-WebChat/pull/2695)
+-  Added `ActivityActionsDecorator` for customizing activity actions layout, in PR [#5419](https://github.com/microsoft/BotFramework-WebChat/pull/5419), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Exposed `ActivityButton` component to be used in activity actions toolbar, in PR [#5419](https://github.com/microsoft/BotFramework-WebChat/pull/5419), by [@OEvgeny](https://github.com/OEvgeny)
+   -  Exposed `useShowModal` hook for displaying custom modal dialogs, in PR [#5419](https://github.com/microsoft/BotFramework-WebChat/pull/5419), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
 
