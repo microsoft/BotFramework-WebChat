@@ -1,3 +1,5 @@
+import { type WebChatActivity } from 'botframework-webchat-core';
+
 type ActivityDecoratorRequestType = {
   /**
    * Decorate the activity as it participate in a livestreaming session.
@@ -18,6 +20,8 @@ type ActivityDecoratorRequestType = {
    * - `undefined` - the sender is unknown
    */
   from: 'bot' | 'channel' | `user` | undefined;
+
+  activity: WebChatActivity;
 };
 
 export default ActivityDecoratorRequestType;

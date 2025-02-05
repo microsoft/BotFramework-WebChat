@@ -5,8 +5,14 @@ import {
   initActivityBorderDecoratorMiddleware,
   type ActivityBorderDecoratorMiddleware
 } from './ActivityBorderDecoratorMiddleware';
+import {
+  ActivityActionsDecoratorMiddleware,
+  ActivityActionsDecoratorMiddlewareProvider,
+  activityActionsDecoratorTypeName,
+  initActivityActionsDecoratorMiddleware
+} from './ActivityActionsDecoratorMiddleware';
 
-type DecoratorMiddlewareInit = typeof activityBorderDecoratorTypeName;
+type DecoratorMiddlewareInit = typeof activityBorderDecoratorTypeName | typeof activityActionsDecoratorTypeName;
 
 export type DecoratorComposerComponent = (
   props: Readonly<{
@@ -17,7 +23,7 @@ export type DecoratorComposerComponent = (
 
 export type DecoratorMiddleware = (
   init: DecoratorMiddlewareInit
-) => ReturnType<ActivityBorderDecoratorMiddleware> | false;
+) => ReturnType<ActivityBorderDecoratorMiddleware | ActivityActionsDecoratorMiddleware> | false;
 
 const EMPTY_ARRAY = [];
 
@@ -28,9 +34,16 @@ export default (): DecoratorComposerComponent =>
       [middleware]
     );
 
+    const actionsMiddlewares = useMemo(
+      () => initActivityActionsDecoratorMiddleware(middleware, activityActionsDecoratorTypeName),
+      [middleware]
+    );
+
     return (
       <ActivityBorderDecoratorMiddlewareProvider middleware={borderMiddlewares}>
-        {children}
+        <ActivityActionsDecoratorMiddlewareProvider middleware={actionsMiddlewares}>
+          {children}
+        </ActivityActionsDecoratorMiddlewareProvider>
       </ActivityBorderDecoratorMiddlewareProvider>
     );
   };

@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { ActivityActionsDecorator } from 'botframework-webchat-api/decorator';
 import {
   getOrgSchemaMessage,
   onErrorResumeNext,
@@ -234,21 +235,23 @@ const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
         </LinkDefinitions>
       )}
       <div className="webchat__text-content__activity-actions">
-        {activity.type === 'message' && isBasedOnSoftwareSourceCode(messageThing) && messageThing.isBasedOn.text ? (
-          <ActivityViewCodeButton
-            className="webchat__text-content__activity-view-code-button"
-            code={messageThing.isBasedOn.text}
-            isAIGenerated={isAIGeneratedActivity(activity)}
-            language={messageThing.isBasedOn.programmingLanguage}
-            title={messageThing.isBasedOn.programmingLanguage}
-          />
-        ) : null}
-        {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
-          <ActivityCopyButton className="webchat__text-content__activity-copy-button" targetRef={contentRef} />
-        ) : null}
-        {activity.type === 'message' && feedbackActionsPlacement === 'activity-actions' && (
-          <ActivityFeedback activity={activity} />
-        )}
+        <ActivityActionsDecorator activity={activity}>
+          {activity.type === 'message' && isBasedOnSoftwareSourceCode(messageThing) && messageThing.isBasedOn.text ? (
+            <ActivityViewCodeButton
+              className="webchat__text-content__activity-view-code-button"
+              code={messageThing.isBasedOn.text}
+              isAIGenerated={isAIGeneratedActivity(activity)}
+              language={messageThing.isBasedOn.programmingLanguage}
+              title={messageThing.isBasedOn.programmingLanguage}
+            />
+          ) : null}
+          {activity.type === 'message' && activity.text && messageThing?.keywords?.includes('AllowCopy') ? (
+            <ActivityCopyButton className="webchat__text-content__activity-copy-button" targetRef={contentRef} />
+          ) : null}
+          {activity.type === 'message' && feedbackActionsPlacement === 'activity-actions' && (
+            <ActivityFeedback activity={activity} />
+          )}
+        </ActivityActionsDecorator>
       </div>
     </div>
   );
