@@ -1131,7 +1131,7 @@ type ModalOptions = {
   className?: string | undefined;
 };
 
-useShowModal(): (render: () => React.Element, options?: ModalOptions) => void
+useShowModal(): (render: () => React.Element, options?: ModalOptions | undefined) => void
 ```
 <!-- prettier-ignore-end -->
 
