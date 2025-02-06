@@ -1124,19 +1124,20 @@ This hook will return a function that, when called, will scroll elements up the 
 ## `useShowModal`
 
 <!-- prettier-ignore-start -->
-```js
+```ts
 type ModalOptions = {
-  'aria-label'?: string;
-  className?: string;
+  'aria-label'?: string | undefined;
+  'aria-labelledby'?: string | undefined;
+  className?: string | undefined;
 };
 
-useShowModal(): (content: () => React.Element, options?: ModalOptions) => void
+useShowModal(): (render: () => React.Element, options?: ModalOptions) => void
 ```
 <!-- prettier-ignore-end -->
 
 When called, this hook will return a function to show a modal dialog. The returned function accepts:
 
-1. `content`: A function that returns a React element to be shown in the modal dialog
+1. `render`: A function that returns a React element to be shown in the modal dialog
 2. `options`: Optional modal options including:
    -  `aria-label`: Accessibility label for the modal
    -  `className`: Additional CSS classes to apply to the modal

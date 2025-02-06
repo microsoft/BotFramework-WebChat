@@ -178,7 +178,7 @@
 
       const ImageModalContent = ({
         headerText,
-        imageUrl
+        imageURL
       }) => {
         return (
           <div className="image-modal-content">
@@ -188,7 +188,7 @@
 
             <div className="image-modal-container">
               <img
-                src={imageUrl}
+                src={imageURL}
                 alt={headerText}
                 className="image-modal-img"
               />
@@ -200,16 +200,6 @@
       function Actions({ activity, children }) {
         const showModal = useShowModal();
 
-        const showImageModal = useCallback(
-          (title, imageUrl, altText) => {
-            showModal(() => <ImageModalContent headerText={title} imageUrl={imageUrl} />, {
-              'aria-label': altText || title || 'Image preview',
-              className: 'image-modal-dialog'
-            });
-          },
-          [showModal]
-        );
-
         const message = activity?.entities?.at(0);
         const imageObject = activity?.entities?.at(0)?.isBasedOn;
 
@@ -217,7 +207,7 @@
           showModal(
             () => <ImageModalContent 
               headerText={imageObject.name} 
-              imageUrl={imageObject.url} 
+              imageURL={imageObject.url} 
             />, 
             {
               'aria-label': imageObject.name,
@@ -237,13 +227,13 @@
             {children}
           </div>;
         }
-        return <>{children}</>;
+        return children;
       }
 
       const decoratorMiddleware = [
         init =>
           init === 'activity actions' &&
-          (next => request => (!request.livestreamingState ? Actions : next(request)))
+          (next => request => (request.livestreamingState !== undefined ? Actions : next(request)))
       ];
 
       const { directLine, store } = testHelpers.createDirectLineEmulator();
