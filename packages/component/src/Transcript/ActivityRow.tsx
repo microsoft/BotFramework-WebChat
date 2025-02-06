@@ -68,9 +68,14 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
   const activityIdRef = useRefFrom(activity.id);
 
   const handleFormData = useCallback(
-    (event: FormDataEvent) => {
-      event.formData.set('webchat:activity-key', activityKeyRef.current);
-      activityIdRef.current && event.formData.set('webchat:activity-id', activityIdRef.current);
+    (event: FormDataEvent & { target: HTMLFormElement }) => {
+      const { webchatIncludeActivityId, webchatIncludeActivityKey } = event.target.dataset;
+      if (webchatIncludeActivityId) {
+        event.formData.set(webchatIncludeActivityId, activityIdRef.current ?? '');
+      }
+      if (webchatIncludeActivityKey) {
+        event.formData.set(webchatIncludeActivityKey, activityKeyRef.current);
+      }
     },
 
     [activityKeyRef, activityIdRef]
@@ -81,22 +86,22 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
   const wrappedRef = useCallback(
     (el: HTMLElement | null) => {
       if (prevArticleRef.current) {
-        el.removeEventListener('formdata', handleFormData);
+        prevArticleRef.current.removeEventListener('formdata', handleFormData);
       }
 
       if (el) {
         el.addEventListener('formdata', handleFormData);
       }
 
+      prevArticleRef.current = el;
+
       if (ref) {
-        if (ref instanceof Function) {
+        if (typeof ref === 'function') {
           ref(el);
         } else {
           ref.current = el;
         }
       }
-
-      prevArticleRef.current = el;
     },
     [handleFormData, ref]
   );
