@@ -233,7 +233,7 @@
       const decoratorMiddleware = [
         init =>
           init === 'activity actions' &&
-          (next => request => (request.livestreamingState !== undefined ? Actions : next(request)))
+          (next => request => (request.livestreamingState === undefined ? Actions : next(request)))
       ];
 
       const { directLine, store } = testHelpers.createDirectLineEmulator();
