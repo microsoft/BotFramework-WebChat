@@ -1150,7 +1150,7 @@ Common use cases:
 
 Example usage:
 
-```js
+```ts
 const showModal = useShowModal();
 
 // Show an image preview modal
