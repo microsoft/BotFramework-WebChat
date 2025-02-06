@@ -20,7 +20,7 @@ const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByAc
 
 type ActivityRowProps = PropsWithChildren<{ activity: WebChatActivity }>;
 
-const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, children }, ref) => {
+const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, children }, ref) => {
   const [activeDescendantId] = useActiveDescendantId();
   const [readActivityKeys] = useActivityKeysByRead();
   const bodyRef = useRef<HTMLDivElement>();
@@ -65,6 +65,47 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
     [bodyRef, children]
   );
 
+  const activityIdRef = useRefFrom(activity.id);
+
+  const handleFormData = useCallback(
+    (event: FormDataEvent & { target: HTMLFormElement }) => {
+      const { webchatIncludeActivityId, webchatIncludeActivityKey } = event.target.dataset;
+      if (webchatIncludeActivityId) {
+        event.formData.set(webchatIncludeActivityId, activityIdRef.current ?? '');
+      }
+      if (webchatIncludeActivityKey) {
+        event.formData.set(webchatIncludeActivityKey, activityKeyRef.current);
+      }
+    },
+
+    [activityKeyRef, activityIdRef]
+  );
+
+  const prevArticleRef = useRef<HTMLElement>(null);
+
+  const wrappedRef = useCallback(
+    (el: HTMLElement | null) => {
+      if (prevArticleRef.current) {
+        prevArticleRef.current.removeEventListener('formdata', handleFormData);
+      }
+
+      if (el) {
+        el.addEventListener('formdata', handleFormData);
+      }
+
+      prevArticleRef.current = el;
+
+      if (ref) {
+        if (typeof ref === 'function') {
+          ref(el);
+        } else {
+          ref.current = el;
+        }
+      }
+    },
+    [handleFormData, ref]
+  );
+
   return (
     // TODO: [P2] Add `aria-roledescription="message"` for better AX, need localization strings.
     <article
@@ -74,7 +115,7 @@ const ActivityRow = forwardRef<HTMLLIElement, ActivityRowProps>(({ activity, chi
       })}
       // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <LiveRegionActivity>).
       onMouseDownCapture={handleMouseDownCapture}
-      ref={ref}
+      ref={wrappedRef}
     >
       {/* TODO: [P1] File a crbug for TalkBack. It should not able to read the content twice when scanning. */}
 
