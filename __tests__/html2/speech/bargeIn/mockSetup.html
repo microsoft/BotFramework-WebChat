@@ -18,13 +18,6 @@
       import { fn, SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
 
       run(async function () {
-        const mockedWebSpeech = {
-          SpeechGrammarList: SpeechGrammarList,
-          SpeechRecognition: SpeechRecognition,
-          speechSynthesis: new SpeechSynthesis(),
-          SpeechSynthesisUtterance: SpeechSynthesisUtterance
-        };
-
         const speechSynthesis = new SpeechSynthesis();
 
         expect(speechSynthesis.paused).toBe(false);
