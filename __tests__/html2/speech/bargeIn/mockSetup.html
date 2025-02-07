@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main>
+      <p>This test validates the mock of <code>SpeechRecognition</code>.</p>
+    </main>
+    <script type="module">
+      import {
+        SpeechGrammarList,
+        SpeechRecognition
+      } from 'https://unpkg.com/react-dictate-button@3.0.0/dist/react-dictate-button.internal.mjs';
+      import { fn, SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
+
+      run(async function () {
+        const mockedWebSpeech = {
+          SpeechGrammarList: SpeechGrammarList,
+          SpeechRecognition: SpeechRecognition,
+          speechSynthesis: new SpeechSynthesis(),
+          SpeechSynthesisUtterance: SpeechSynthesisUtterance
+        };
+
+        const speechSynthesis = new SpeechSynthesis();
+
+        expect(speechSynthesis.paused).toBe(false);
+        expect(speechSynthesis.pending).toBe(false);
+        expect(speechSynthesis.speaking).toBe(false);
+
+        const utterance1 = new SpeechSynthesisUtterance('Hello, World!');
+
+        utterance1.onend = fn();
+        utterance1.onpause = fn();
+        utterance1.onresume = fn();
+        utterance1.onstart = fn();
+
+        speechSynthesis.speak(utterance1);
+
+        expect(speechSynthesis.paused).toBe(false);
+        expect(speechSynthesis.pending).toBe(false);
+        expect(speechSynthesis.speaking).toBe(true);
+        expect(utterance1.onend).toHaveBeenCalledTimes(0);
+        expect(utterance1.onpause).toHaveBeenCalledTimes(0);
+        expect(utterance1.onresume).toHaveBeenCalledTimes(0);
+        expect(utterance1.onstart).toHaveBeenCalledTimes(1);
+
+        const utterance2 = new SpeechSynthesisUtterance('Aloha!');
+
+        utterance2.onend = fn();
+        utterance2.onpause = fn();
+        utterance2.onresume = fn();
+        utterance2.onstart = fn();
+
+        speechSynthesis.speak(utterance2);
+
+        expect(speechSynthesis.paused).toBe(false);
+        expect(speechSynthesis.pending).toBe(true);
+        expect(speechSynthesis.speaking).toBe(true);
+        expect(utterance2.onend).toHaveBeenCalledTimes(0);
+        expect(utterance2.onpause).toHaveBeenCalledTimes(0);
+        expect(utterance2.onresume).toHaveBeenCalledTimes(0);
+        expect(utterance2.onstart).toHaveBeenCalledTimes(0);
+
+        speechSynthesis.pause();
+
+        expect(utterance1.onend).toHaveBeenCalledTimes(0);
+        expect(utterance1.onpause).toHaveBeenCalledTimes(1);
+        expect(utterance1.onresume).toHaveBeenCalledTimes(0);
+        expect(utterance1.onstart).toHaveBeenCalledTimes(1);
+
+        speechSynthesis.resume();
+
+        expect(utterance1.onend).toHaveBeenCalledTimes(0);
+        expect(utterance1.onpause).toHaveBeenCalledTimes(1);
+        expect(utterance1.onresume).toHaveBeenCalledTimes(1);
+        expect(utterance1.onstart).toHaveBeenCalledTimes(1);
+
+        utterance1.dispatchEvent(new SpeechSynthesisEvent('end', { utterance: utterance1 }));
+
+        expect(speechSynthesis.paused).toBe(false);
+        expect(speechSynthesis.pending).toBe(false);
+        expect(speechSynthesis.speaking).toBe(true);
+
+        expect(utterance1.onend).toHaveBeenCalledTimes(1);
+        expect(utterance1.onpause).toHaveBeenCalledTimes(1);
+        expect(utterance1.onresume).toHaveBeenCalledTimes(1);
+        expect(utterance1.onstart).toHaveBeenCalledTimes(1);
+
+        expect(utterance2.onend).toHaveBeenCalledTimes(0);
+        expect(utterance2.onpause).toHaveBeenCalledTimes(0);
+        expect(utterance2.onresume).toHaveBeenCalledTimes(0);
+        expect(utterance2.onstart).toHaveBeenCalledTimes(1);
+
+        utterance2.dispatchEvent(new SpeechSynthesisEvent('end', { utterance: utterance2 }));
+
+        expect(speechSynthesis.paused).toBe(false);
+        expect(speechSynthesis.pending).toBe(false);
+        expect(speechSynthesis.speaking).toBe(false);
+
+        expect(utterance2.onend).toHaveBeenCalledTimes(1);
+        expect(utterance2.onpause).toHaveBeenCalledTimes(0);
+        expect(utterance2.onresume).toHaveBeenCalledTimes(0);
+        expect(utterance2.onstart).toHaveBeenCalledTimes(1);
+
+        speechSynthesis.pause();
+
+        expect(speechSynthesis.paused).toBe(true);
+        expect(speechSynthesis.pending).toBe(false);
+        expect(speechSynthesis.speaking).toBe(false);
+
+        const utterance3 = new SpeechSynthesisUtterance('Good morning!');
+
+        utterance3.onend = fn();
+        utterance3.onpause = fn();
+        utterance3.onresume = fn();
+        utterance3.onstart = fn();
+
+        speechSynthesis.speak(utterance3);
+
+        expect(speechSynthesis.paused).toBe(true);
+        expect(speechSynthesis.pending).toBe(true); // Not exactly sure if pending is true/false, seems true.
+        expect(speechSynthesis.speaking).toBe(false);
+
+        expect(utterance3.onend).toHaveBeenCalledTimes(0);
+        expect(utterance3.onpause).toHaveBeenCalledTimes(0);
+        expect(utterance3.onresume).toHaveBeenCalledTimes(0);
+        expect(utterance3.onstart).toHaveBeenCalledTimes(0);
+
+        speechSynthesis.resume();
+
+        expect(speechSynthesis.paused).toBe(false);
+        expect(speechSynthesis.pending).toBe(false);
+        expect(speechSynthesis.speaking).toBe(true);
+
+        expect(utterance3.onend).toHaveBeenCalledTimes(0);
+        expect(utterance3.onpause).toHaveBeenCalledTimes(0);
+        expect(utterance3.onresume).toHaveBeenCalledTimes(0);
+        expect(utterance3.onstart).toHaveBeenCalledTimes(1);
+
+        utterance3.dispatchEvent(new SpeechSynthesisEvent('end', { utterance: utterance3 }));
+
+        expect(speechSynthesis.paused).toBe(false);
+        expect(speechSynthesis.pending).toBe(false);
+        expect(speechSynthesis.speaking).toBe(false);
+
+        expect(utterance3.onend).toHaveBeenCalledTimes(1);
+        expect(utterance3.onpause).toHaveBeenCalledTimes(0);
+        expect(utterance3.onresume).toHaveBeenCalledTimes(0);
+        expect(utterance3.onstart).toHaveBeenCalledTimes(1);
+      });
+    </script>
+  </body>
+</html>
