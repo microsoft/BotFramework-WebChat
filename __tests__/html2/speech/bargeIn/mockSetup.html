@@ -15,7 +15,8 @@
         SpeechGrammarList,
         SpeechRecognition
       } from 'https://unpkg.com/react-dictate-button@3.0.0/dist/react-dictate-button.internal.mjs';
-      import { fn, SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
+      import { fn } from 'https://esm.sh/jest-mock';
+      import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
 
       run(async function () {
         const speechSynthesis = new SpeechSynthesis();
@@ -62,14 +63,23 @@
 
         expect(utterance1.onend).toHaveBeenCalledTimes(0);
         expect(utterance1.onpause).toHaveBeenCalledTimes(1);
+        expect(utterance1.onpause).toHaveBeenLastCalledWith(
+          expect.objectContaining({ type: 'pause', utterance: utterance1 })
+        );
         expect(utterance1.onresume).toHaveBeenCalledTimes(0);
         expect(utterance1.onstart).toHaveBeenCalledTimes(1);
+        expect(utterance1.onstart).toHaveBeenLastCalledWith(
+          expect.objectContaining({ type: 'start', utterance: utterance1 })
+        );
 
         speechSynthesis.resume();
 
         expect(utterance1.onend).toHaveBeenCalledTimes(0);
         expect(utterance1.onpause).toHaveBeenCalledTimes(1);
         expect(utterance1.onresume).toHaveBeenCalledTimes(1);
+        expect(utterance1.onresume).toHaveBeenLastCalledWith(
+          expect.objectContaining({ type: 'resume', utterance: utterance1 })
+        );
         expect(utterance1.onstart).toHaveBeenCalledTimes(1);
 
         utterance1.dispatchEvent(new SpeechSynthesisEvent('end', { utterance: utterance1 }));
@@ -79,6 +89,9 @@
         expect(speechSynthesis.speaking).toBe(true);
 
         expect(utterance1.onend).toHaveBeenCalledTimes(1);
+        expect(utterance1.onend).toHaveBeenLastCalledWith(
+          expect.objectContaining({ type: 'end', utterance: utterance1 })
+        );
         expect(utterance1.onpause).toHaveBeenCalledTimes(1);
         expect(utterance1.onresume).toHaveBeenCalledTimes(1);
         expect(utterance1.onstart).toHaveBeenCalledTimes(1);
@@ -87,6 +100,9 @@
         expect(utterance2.onpause).toHaveBeenCalledTimes(0);
         expect(utterance2.onresume).toHaveBeenCalledTimes(0);
         expect(utterance2.onstart).toHaveBeenCalledTimes(1);
+        expect(utterance2.onstart).toHaveBeenLastCalledWith(
+          expect.objectContaining({ type: 'start', utterance: utterance2 })
+        );
 
         utterance2.dispatchEvent(new SpeechSynthesisEvent('end', { utterance: utterance2 }));
 
@@ -95,6 +111,9 @@
         expect(speechSynthesis.speaking).toBe(false);
 
         expect(utterance2.onend).toHaveBeenCalledTimes(1);
+        expect(utterance2.onend).toHaveBeenLastCalledWith(
+          expect.objectContaining({ type: 'end', utterance: utterance2 })
+        );
         expect(utterance2.onpause).toHaveBeenCalledTimes(0);
         expect(utterance2.onresume).toHaveBeenCalledTimes(0);
         expect(utterance2.onstart).toHaveBeenCalledTimes(1);
@@ -133,6 +152,9 @@
         expect(utterance3.onpause).toHaveBeenCalledTimes(0);
         expect(utterance3.onresume).toHaveBeenCalledTimes(0);
         expect(utterance3.onstart).toHaveBeenCalledTimes(1);
+        expect(utterance3.onstart).toHaveBeenLastCalledWith(
+          expect.objectContaining({ type: 'start', utterance: utterance3 })
+        );
 
         utterance3.dispatchEvent(new SpeechSynthesisEvent('end', { utterance: utterance3 }));
 
@@ -141,6 +163,9 @@
         expect(speechSynthesis.speaking).toBe(false);
 
         expect(utterance3.onend).toHaveBeenCalledTimes(1);
+        expect(utterance3.onend).toHaveBeenLastCalledWith(
+          expect.objectContaining({ type: 'end', utterance: utterance3 })
+        );
         expect(utterance3.onpause).toHaveBeenCalledTimes(0);
         expect(utterance3.onresume).toHaveBeenCalledTimes(0);
         expect(utterance3.onstart).toHaveBeenCalledTimes(1);
