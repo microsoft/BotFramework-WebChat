@@ -8,6 +8,15 @@
   </head>
   <body>
     <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react-dictate-button/internal": "https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs"
+        }
+      }
+    </script>
     <script type="module">
       import {
         SpeechGrammarList,
@@ -16,10 +25,10 @@
         SpeechRecognitionEvent,
         SpeechRecognitionResult,
         SpeechRecognitionResultList
-      } from 'https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs';
-      import { fn, spyOn } from 'https://esm.sh/jest-mock';
+      } from 'react-dictate-button/internal';
+      import { fn, spyOn } from 'jest-mock';
       import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
-      import { waitFor } from 'https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs';
+      import { waitFor } from '@testduet/wait-for';
 
       const {
         testHelpers: { createDirectLineEmulator },
