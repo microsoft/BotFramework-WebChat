@@ -1,10 +1,11 @@
 import { EventTargetProperties } from 'https://unpkg.com/event-target-properties@latest/dist/event-target-properties.mjs';
 
 export default class SpeechSynthesisUtterance extends EventTarget {
-  constructor() {
+  constructor(text) {
     super();
 
     this.#eventTargetProperties = new EventTargetProperties(this);
+    this.#text = text || '';
   }
 
   #eventTargetProperties;
