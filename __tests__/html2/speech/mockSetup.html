@@ -10,12 +10,20 @@
     <main>
       <p>This test validates the mock of <code>SpeechRecognition</code>.</p>
     </main>
+    <script type="importmap">
+      {
+        "imports": {
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react-dictate-button/internal": "https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs"
+        }
+      }
+    </script>
     <script type="module">
       import {
         SpeechGrammarList,
         SpeechRecognition
-      } from 'https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs';
-      import { fn } from 'https://esm.sh/jest-mock';
+      } from 'react-dictate-button/internal';
+      import { fn } from 'jest-mock';
       import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
 
       run(async function () {
