@@ -89,6 +89,20 @@
             speechRecognition1.dispatchEvent(
               new SpeechRecognitionEvent('result', {
                 results: new SpeechRecognitionResultList(
+                  new SpeechRecognitionResult(new SpeechRecognitionAlternative(0, 'Hello'))
+                )
+              })
+            );
+            speechRecognition1.dispatchEvent(
+              new SpeechRecognitionEvent('result', {
+                results: new SpeechRecognitionResultList(
+                  new SpeechRecognitionResult(new SpeechRecognitionAlternative(0, 'Hello, World!'))
+                )
+              })
+            );
+            speechRecognition1.dispatchEvent(
+              new SpeechRecognitionEvent('result', {
+                results: new SpeechRecognitionResultList(
                   SpeechRecognitionResult.fromFinalized(new SpeechRecognitionAlternative(0.9, 'Hello, World!'))
                 )
               })
