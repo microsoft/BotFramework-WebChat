@@ -123,21 +123,16 @@
         expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
         expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
 
-        // WHEN: Barge-in.
-        await (
-          await directLine.actPostActivity(async () => {
-            const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
+        // WHEN: Barge-in with interims.
+        const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
 
-            // WHEN: Interims are dispatched.
-            speechRecognition1.dispatchEvent(
-              new SpeechRecognitionEvent('result', {
-                results: new SpeechRecognitionResultList(
-                  new SpeechRecognitionResult(new SpeechRecognitionAlternative(0, 'Good'))
-                )
-              })
-            );
+        speechRecognition1.dispatchEvent(
+          new SpeechRecognitionEvent('result', {
+            results: new SpeechRecognitionResultList(
+              new SpeechRecognitionResult(new SpeechRecognitionAlternative(0, 'Good'))
+            )
           })
-        ).resolveAll();
+        );
 
         // THEN: Should cancel speech synthesis.
         expect(speechSynthesisCancel).toHaveBeenCalledTimes(1);
