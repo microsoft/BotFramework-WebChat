@@ -30,6 +30,7 @@ Starter prompts are a special message that would send during greeting. It can co
          "@type": "Message",
          "type": "https://schema.org/Message",
 
+         "keywords": ["WelcomeMessage"], // What name should we put in? Pre-chat message, Starter Prompts, greeting, welcome?
          "sender": {
             "@type": "Person",
             "description": "I can help you with anything around you. Just let me know.",
