@@ -5,10 +5,10 @@ Starter prompts are a special message that would send during greeting. It can co
 -  An optional image
 -  An optional name of the bot (plain text)
 -  An optional description about the bot (supports Markdown)
--  Up to 6 buttons with predefined message to assist customers to jumpstart the conversation
-   -  An optional icon for each button
+-  1 to 6 buttons with predefined message to assist customers to jumpstart the conversation
    -  A title for each button (plain text, required)
    -  The message to send or put in the send box when clicked (plain text, required)
+   -  Notes: if the Starter prompts has no prompt buttons, service should not send Starter Prompts activity. Web Chat should ignore Starter Prompts activity without any buttons
 
 ```json
 {
@@ -30,7 +30,6 @@ Starter prompts are a special message that would send during greeting. It can co
          "potentialActions": [
             {
                "@type": "SendAction",
-               "image": "https://.../clock.svg", // Could be data URI of an image.
                "name": "Check time",
                "object": {
                   "@type": "Message",
@@ -39,7 +38,6 @@ Starter prompts are a special message that would send during greeting. It can co
             },
             {
                "@type": "SendAction",
-               "image": "https://.../cloud.svg", // Could be data URI of an image.
                "name": "Check weather",
                "object": {
                   "@type": "Message",
