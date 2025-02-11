@@ -10,6 +10,15 @@ Starter prompts are a special message that would send during greeting. It can co
    -  The message to send or put in the send box when clicked (plain text, required)
    -  Notes: if the Starter prompts has no prompt buttons, service should not send Starter Prompts activity. Web Chat should ignore Starter Prompts activity without any buttons
 
+## UX design choices
+
+- Buttons will show as a 3x2 grid when width of Web Chat is >= 500px. If it is <= 499px, buttons will show as a 1x3 grid with "show more"
+- If there is a "Starter Prompts" activity being sent in the conversation, the "View prompts" button will always show on lower right, just above the send box
+   - If suggested actions are shown, it will be show on top of the "View prompts" button
+- Clicking on the "View prompts" button will pop up a modal dialog to select multiple buttons
+
+## Payload
+
 ```json
 {
    "type": "event",
