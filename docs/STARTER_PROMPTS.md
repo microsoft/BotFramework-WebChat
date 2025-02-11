@@ -4,7 +4,7 @@ Starter prompts are a special message that would send during greeting. It can co
 
 -  An optional image
 -  An optional name of the bot (plain text)
--  An optional description about the bot (supports Markdown)
+-  An optional description about the bot (Markdown)
 -  1 to 6 buttons with predefined message to assist customers to jumpstart the conversation
    -  A title for each button (plain text, required)
    -  The message to send or put in the send box when clicked (plain text, required)
