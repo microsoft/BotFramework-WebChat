@@ -145,6 +145,12 @@
   &:has(:global(.border-loader)) {
     width: 100%;
   }
+
+  /* Ensure activity loader doesn't have bubble and shadow */
+  &:has(:global(.activity-loader)) :global(.webchat__bubble__content) {
+    background: transparent;
+    box-shadow: none;
+  }
 }
 
 /* Message bubble content */
