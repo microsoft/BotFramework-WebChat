@@ -2,6 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useRef, useState, type RefObject } from 'react';
 import useStyleSet from '../../../hooks/useStyleSet';
+import { useQueueStaticElement } from '../../../providers/LiveRegionTwin';
 import ActivityButton from './ActivityButton';
 
 const { useLocalizer, useUIState } = hooks;
@@ -19,6 +20,7 @@ const ActivityCopyButton = ({ className, targetRef }: Props) => {
   const [uiState] = useUIState();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const localize = useLocalizer();
+  const queueStaticElement = useQueueStaticElement();
 
   const copiedText = localize('COPY_BUTTON_COPIED_TEXT');
   const copyText = localize('COPY_BUTTON_TEXT');
@@ -57,7 +59,9 @@ const ActivityCopyButton = ({ className, targetRef }: Props) => {
     buttonRef.current?.offsetWidth;
 
     buttonRef.current?.classList.add('webchat__activity-copy-button--copied');
-  }, [buttonRef, targetRef]);
+
+    queueStaticElement(<div className="webchat__activity-copy-button__copy-announcement">{copiedText}</div>);
+  }, [buttonRef, copiedText, queueStaticElement, targetRef]);
 
   useEffect(() => {
     let unmounted = false;
@@ -89,7 +93,9 @@ const ActivityCopyButton = ({ className, targetRef }: Props) => {
       ref={buttonRef}
       text={copyText}
     >
-      <span className="webchat__activity-copy-button__copied-text">{copiedText}</span>
+      <span aria-hidden="true" className="webchat__activity-copy-button__copied-text">
+        {copiedText}
+      </span>
     </ActivityButton>
   );
 };
