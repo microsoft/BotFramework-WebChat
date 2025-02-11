@@ -307,7 +307,10 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
 
   codeBlockTheme: 'github-light-default' as const,
 
-  feedbackActionsPlacement: 'activity-status' as const
+  feedbackActionsPlacement: 'activity-status' as const,
+
+  // Speech recognition
+  speechRecognitionContinuous: false
 };
 
 export default DEFAULT_OPTIONS;

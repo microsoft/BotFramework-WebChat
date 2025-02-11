@@ -12,7 +12,10 @@ function* stopDictateOnCardAction() {
     // Currently, there are no actions that are related to card input
     // For now, we are using POST_ACTIVITY of a "message" activity
     // In the future, if we have an action for card input, we should use that instead
-    ({ payload, type }) => type === POST_ACTIVITY_PENDING && payload.activity.type === 'message',
+
+    // [P*] TODO: Think about if we should stop dictate on card action.
+    // XXXXXXXXXXX
+    ({ payload, type }) => false && type === POST_ACTIVITY_PENDING && payload.activity.type === 'message',
     function* putStopDictate() {
       yield put(stopDictate());
     }

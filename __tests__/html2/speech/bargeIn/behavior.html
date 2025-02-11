@@ -13,7 +13,7 @@
         "imports": {
           "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
           "jest-mock": "https://esm.sh/jest-mock",
-          "react-dictate-button/internal": "https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs"
+          "react-dictate-button/internal": "https://unpkg.com/react-dictate-button@3.0.1-main.1bbfe61/dist/react-dictate-button.internal.mjs"
         }
       }
     </script>
@@ -22,6 +22,7 @@
         SpeechGrammarList,
         SpeechRecognition,
         SpeechRecognitionAlternative,
+        SpeechRecognitionErrorEvent,
         SpeechRecognitionEvent,
         SpeechRecognitionResult,
         SpeechRecognitionResultList
@@ -36,13 +37,16 @@
       } = window;
 
       run(async function () {
+        let speechRecognitionAbort;
+        let speechRecognitionStart;
+
         const speechSynthesis = new SpeechSynthesis();
         const ponyfill = {
           SpeechGrammarList,
           SpeechRecognition: fn().mockImplementation(() => {
             const speechRecognition = new SpeechRecognition();
 
-            speechRecognition.continuous = true;
+            speechRecognitionAbort = spyOn(speechRecognition, 'abort');
             speechRecognitionStart = spyOn(speechRecognition, 'start');
 
             return speechRecognition;
@@ -50,7 +54,6 @@
           speechSynthesis,
           SpeechSynthesisUtterance
         };
-        let speechRecognitionStart;
 
         const speechSynthesisCancel = spyOn(speechSynthesis, 'cancel');
         const speechSynthesisSpeak = spyOn(speechSynthesis, 'speak');
@@ -61,6 +64,7 @@
           {
             directLine,
             store,
+            styleOptions: { speechRecognitionContinuous: true },
             webSpeechPonyfillFactory: () => ponyfill
           },
           document.getElementById('webchat')
@@ -80,6 +84,7 @@
 
             // THEN: Should call SpeechRecognition.start().
             expect(speechRecognition1.start).toHaveBeenCalledTimes(1);
+            expect(speechRecognition1).toHaveProperty('continuous', true);
 
             // WHEN: Recognition started and interims result is dispatched.
             speechRecognition1.dispatchEvent(new Event('start'));
@@ -107,11 +112,6 @@
                 )
               })
             );
-
-            // speechRecognition1.dispatchEvent(new Event('speechend'));
-            // speechRecognition1.dispatchEvent(new Event('soundend'));
-            // speechRecognition1.dispatchEvent(new Event('audioend'));
-            // speechRecognition1.dispatchEvent(new Event('end'));
           })
         ).resolveAll();
 
@@ -137,6 +137,14 @@
         expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
         expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
 
+        // WHEN: "start" event is emitted for synthesis.
+        speechSynthesisSpeak.mock.calls[1][0].dispatchEvent(
+          new SpeechSynthesisEvent('start', { utterance: speechSynthesisSpeak.mock.calls[1] })
+        );
+
+        // THEN: Should start speaking.
+        expect(speechSynthesis).toHaveProperty('speaking', true);
+
         // WHEN: Barge-in with interims.
         const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
 
@@ -149,7 +157,7 @@
         );
 
         // THEN: Should cancel speech synthesis.
-        expect(speechSynthesisCancel).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(speechSynthesisCancel).toHaveBeenCalledTimes(1));
 
         // WHEN: Completed recognition.
         await (
@@ -170,6 +178,25 @@
         // THEN: Should have send the activity.
         await pageConditions.numActivitiesShown(3);
         expect(pageElements.activityContents()[2]).toHaveProperty('textContent', 'Good morning!');
+
+        // THEN: Should not have called SpeechRecognition.abort().
+        expect(speechRecognitionAbort).toHaveBeenCalledTimes(0);
+
+        // WHEN: Click on the microphone button.
+        await pageObjects.clickMicrophoneButton();
+
+        // THEN: Should have called SpeechRecognition.abort() once.
+        expect(speechRecognitionAbort).toHaveBeenCalledTimes(1);
+
+        // WHEN: Speech recognition dispatch abort error event.
+        speechRecognition1.dispatchEvent(new Event('speechend'));
+        speechRecognition1.dispatchEvent(new Event('soundend'));
+        speechRecognition1.dispatchEvent(new Event('audioend'));
+        speechRecognition1.dispatchEvent(new SpeechRecognitionErrorEvent('error', { error: 'aborted' }));
+        speechRecognition1.dispatchEvent(new Event('end'));
+
+        // THEN: Should go back to text input mode.
+        expect(pageElements.sendBoxTextBox()).toBeTruthy();
       });
     </script>
   </body>

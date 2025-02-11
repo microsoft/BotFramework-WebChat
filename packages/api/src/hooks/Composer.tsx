@@ -116,12 +116,14 @@ const EMPTY_ARRAY: readonly [] = Object.freeze([]);
 
 function createCardActionContext({
   cardActionMiddleware,
+  continuous,
   directLine,
   dispatch,
   markAllAsAcknowledged,
   ponyfill
 }: {
   cardActionMiddleware: readonly CardActionMiddleware[];
+  continuous: boolean;
   directLine: DirectLineJSBotConnection;
   dispatch: Function;
   markAllAsAcknowledged: () => void;
@@ -136,6 +138,11 @@ function createCardActionContext({
   return {
     onCardAction: (cardAction, { target }: { target?: any } = {}) => {
       markAllAsAcknowledged();
+
+      // Stop speech recognition only if under interactive mode.
+      if (!continuous) {
+        dispatch(stopDictate());
+      }
 
       return runMiddleware({
         cardAction,
@@ -340,12 +347,20 @@ const ComposerCore = ({
     () =>
       createCardActionContext({
         cardActionMiddleware: Object.freeze([...singleToArray(cardActionMiddleware)]),
+        continuous: !!styleOptions.speechRecognitionContinuous,
         directLine,
         dispatch,
         markAllAsAcknowledged,
         ponyfill
       }),
-    [cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill]
+    [
+      cardActionMiddleware,
+      directLine,
+      dispatch,
+      markAllAsAcknowledged,
+      ponyfill,
+      styleOptions.speechRecognitionContinuous
+    ]
   );
 
   const patchedSelectVoice = useMemo(

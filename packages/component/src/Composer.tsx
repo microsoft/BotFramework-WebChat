@@ -87,7 +87,8 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const dictationOnError = useCallback(err => {
-    console.error(err);
+    // Ignore aborted error as it is likely user clicking on the microphone button to abort recognition.
+    err.error === 'aborted' || console.error(err);
   }, []);
 
   return (

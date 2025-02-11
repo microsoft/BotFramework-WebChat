@@ -942,6 +942,8 @@ type StyleOptions = {
    * New in 4.19.0.
    */
   feedbackActionsPlacement?: 'activity-actions' | 'activity-status';
+
+  speechRecognitionContinuous?: boolean | undefined;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:
