@@ -1,7 +1,8 @@
 import { useStyles } from 'botframework-webchat-styles/react';
-import React, { Fragment, memo, type ReactNode } from 'react';
-import { useVariantClassName } from '../../styles';
 import cx from 'classnames';
+import React, { Fragment, memo, type ReactNode } from 'react';
+
+import { useVariantClassName } from '../../styles';
 import styles from './ActivityLoader.module.css';
 
 const loadingAnimationUrl =
