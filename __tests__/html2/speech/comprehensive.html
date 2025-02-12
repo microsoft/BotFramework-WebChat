@@ -32,7 +32,7 @@
 
       const {
         testHelpers: { createDirectLineEmulator },
-        WebChat: { renderWebChat }
+        WebChat: { renderWebChat, testIds }
       } = window;
 
       run(async function () {
@@ -66,38 +66,51 @@
 
         await pageConditions.uiConnected();
 
+        // WHEN: Microphone button is clicked.
+        await pageObjects.clickMicrophoneButton();
+
+        // THEN: Should create new SpeechSynthesis() for priming user gesture requirement.
+        await waitFor(() => expect(speechSynthesisSpeak).toHaveBeenCalledTimes(1));
+        expect(speechSynthesis).toHaveProperty('paused', false);
+        expect(speechSynthesis).toHaveProperty('pending', false);
+        expect(speechSynthesis).toHaveProperty('speaking', true);
+        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
+        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: '' }));
+
+        // WHEN: Priming is done.
+        speechSynthesisSpeak.mock.calls[0][0].dispatchEvent(
+          new SpeechSynthesisEvent('start', { utterance: speechSynthesisSpeak.mock.calls[0] })
+        );
+        speechSynthesisSpeak.mock.calls[0][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesisSpeak.mock.calls[0] })
+        );
+        expect(speechSynthesis).toHaveProperty('paused', false);
+        expect(speechSynthesis).toHaveProperty('pending', false);
+        expect(speechSynthesis).toHaveProperty('speaking', false);
+
+        // THEN: Should construct SpeechRecognition().
+        expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1);
+
+        const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
+
+        // THEN: Should call SpeechRecognition.start().
+        expect(speechRecognition1.start).toHaveBeenCalledTimes(1);
+
+        // THEN: Send box should say "Listening…" and hide the original text box.
+        expect(pageElements.sendBoxTextBox()).toBeFalsy();
+        expect(document.querySelector(`[data-testid="${testIds.sendBoxSpeechBox}"]`)).toHaveProperty(
+          'textContent',
+          'Starting…'
+        );
+
+        // WHEN: Recognition started and interims result is dispatched.
+        speechRecognition1.dispatchEvent(new Event('start'));
+        speechRecognition1.dispatchEvent(new Event('audiostart'));
+        speechRecognition1.dispatchEvent(new Event('soundstart'));
+        speechRecognition1.dispatchEvent(new Event('speechstart'));
+
         await (
           await directLine.actPostActivity(async () => {
-            // WHEN: Microphone button is clicked.
-            await pageObjects.clickMicrophoneButton();
-
-            // THEN: Should create new SpeechSynthesis() for priming user gesture requirement.
-            await waitFor(() => expect(speechSynthesisSpeak).toHaveBeenCalledTimes(1));
-            expect(speechSynthesis).toHaveProperty('paused', false);
-            expect(speechSynthesis).toHaveProperty('pending', false);
-            expect(speechSynthesis).toHaveProperty('speaking', true);
-
-            // WHEN: Priming is done.
-            speechSynthesisSpeak.mock.calls[0][0].dispatchEvent(
-              new SpeechSynthesisEvent('end', { utterance: speechSynthesisSpeak.mock.calls[0] })
-            );
-            expect(speechSynthesis).toHaveProperty('paused', false);
-            expect(speechSynthesis).toHaveProperty('pending', false);
-            expect(speechSynthesis).toHaveProperty('speaking', false);
-
-            // THEN: Should construct SpeechRecognition().
-            expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1);
-
-            const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
-
-            // THEN: Should call SpeechRecognition.start().
-            expect(speechRecognition1.start).toHaveBeenCalledTimes(1);
-
-            // WHEN: Recognition started and interims result is dispatched.
-            speechRecognition1.dispatchEvent(new Event('start'));
-            speechRecognition1.dispatchEvent(new Event('audiostart'));
-            speechRecognition1.dispatchEvent(new Event('soundstart'));
-            speechRecognition1.dispatchEvent(new Event('speechstart'));
             speechRecognition1.dispatchEvent(
               new SpeechRecognitionEvent('result', {
                 results: new SpeechRecognitionResultList(
@@ -142,6 +155,9 @@
         // THEN: Should have send the activity.
         await pageConditions.numActivitiesShown(1);
         expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'Hello, World!');
+
+        // THEN: Send box go back to input mode.
+        expect(pageElements.sendBoxTextBox()).toBeTruthy();
 
         // WHEN: Bot replied.
         await directLine.emulateIncomingActivity({
