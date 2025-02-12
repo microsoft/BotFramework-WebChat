@@ -203,7 +203,7 @@
 
         // THEN: `useDictateState` should returns STOPPING.
         renderResult.rerender();
-        // await waitFor(() => expect(renderResult).toHaveProperty('result.current', 4));
+        await waitFor(() => expect(renderResult).toHaveProperty('result.current', 4));
 
         // WHEN: Recognition ended.
         speechRecognition2.dispatchEvent(new Event('speechend'));
