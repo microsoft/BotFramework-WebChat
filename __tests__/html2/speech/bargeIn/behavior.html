@@ -75,7 +75,7 @@
         // WHEN: Microphone button is clicked.
         await pageObjects.clickMicrophoneButton();
 
-        // THEN: Should call SpeechSynthesis.start() for fulfilling user-gesture requirement for speech synthesis by synthesizing an empty utterance.
+        // THEN: Should call SpeechSynthesis.speak() for fulfilling user gesture requirement for speech synthesis by synthesizing an empty utterance.
         await waitFor(() => expect(speechSynthesisSpeak).toHaveBeenCalledTimes(1));
 
         expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
@@ -172,6 +172,7 @@
 
         // WHEN: Bot replied "Aloha!"
         await directLine.emulateIncomingActivity({
+          // "expectingInput" should allow barge-in during speech synthesis.
           inputHint: 'expectingInput',
           text: 'Aloha!',
           type: 'message'
@@ -196,7 +197,7 @@
         expect(speechSynthesis).toHaveProperty('pending', false);
         expect(speechSynthesis).toHaveProperty('speaking', true);
 
-        // THEN: Send box should continue to show "Listening…"
+        // THEN: Send box should continue to show "Listening…" as barge-in is allowed through "expectingInput".
         expect(pageElements.sendBoxTextBox()).toBeFalsy();
         expect(document.querySelector(`[data-testid="${testIds.sendBoxSpeechBox}"]`)).toHaveProperty(
           'textContent',

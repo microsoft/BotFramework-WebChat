@@ -161,7 +161,7 @@
 
         // WHEN: Bot replied.
         await directLine.emulateIncomingActivity({
-          inputHint: 'expectingInput',
+          inputHint: 'expectingInput', // "expectingInput" should turn the microphone back on after synthesis completed.
           text: 'Aloha!',
           type: 'message'
         });
@@ -170,31 +170,38 @@
         await pageConditions.numActivitiesShown(2);
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Aloha!');
 
-        // THEN: Should call SpeechSynthesis.start() again.
+        // THEN: Should call SpeechSynthesis.speak() again.
         await waitFor(() => expect(speechSynthesisSpeak).toHaveBeenCalledTimes(2));
 
-        // THEN: Should synthesize "Aloha!".
+        // THEN: Should start synthesize "Aloha!".
         expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
         expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
+
+        // THEN: SpeechSynthesis.speaking should be true.
+        expect(speechSynthesis).toHaveProperty('paused', false);
+        expect(speechSynthesis).toHaveProperty('pending', false);
+        expect(speechSynthesis).toHaveProperty('speaking', true);
 
         // WHEN: Synthesis completed.
         speechSynthesisSpeak.mock.calls[1][0].dispatchEvent(
           new SpeechSynthesisEvent('end', { utterance: speechSynthesisSpeak.mock.calls[1] })
         );
+
+        // THEN: SpeechSynthesis.speaking should be false.
         expect(speechSynthesis).toHaveProperty('paused', false);
         expect(speechSynthesis).toHaveProperty('pending', false);
         expect(speechSynthesis).toHaveProperty('speaking', false);
 
+        // THEN: Should create new SpeechRecognition() again as "expectingInput" should restart speech recognition.
+        await waitFor(() => expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(2));
+
+        const { value: speechRecognition2 } = ponyfill.SpeechRecognition.mock.results[1];
+
+        // THEN: Should have called SpeechRecognition.start().
+        expect(speechRecognition2.start).toHaveBeenCalledTimes(1);
+
         await (
           await directLine.actPostActivity(async () => {
-            // THEN: Should create new SpeechRecognition() again.
-            await waitFor(() => expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(2));
-
-            const { value: speechRecognition2 } = ponyfill.SpeechRecognition.mock.results[1];
-
-            // THEN: Should have called SpeechRecognition.start().
-            expect(speechRecognition2.start).toHaveBeenCalledTimes(1);
-
             // WHEN: Recognized as "Good morning!" without interims.
             speechRecognition2.dispatchEvent(new Event('start'));
             speechRecognition2.dispatchEvent(new Event('audiostart'));
