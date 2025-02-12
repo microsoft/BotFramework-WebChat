@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react-dictate-button/internal": "https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import {
+        SpeechGrammarList,
+        SpeechRecognition,
+        SpeechRecognitionAlternative,
+        SpeechRecognitionErrorEvent,
+        SpeechRecognitionEvent,
+        SpeechRecognitionResult,
+        SpeechRecognitionResultList
+      } from 'react-dictate-button/internal';
+      import { fn, spyOn } from 'jest-mock';
+      import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
+      import { waitFor } from '@testduet/wait-for';
+
+      const {
+        testHelpers: { createDirectLineEmulator },
+        WebChat: { renderWebChat, testIds }
+      } = window;
+
+      run(async function () {
+        const speechSynthesis = new SpeechSynthesis();
+        const ponyfill = {
+          SpeechGrammarList,
+          SpeechRecognition: fn().mockImplementation(() => {
+            const speechRecognition = new SpeechRecognition();
+
+            spyOn(speechRecognition, 'abort');
+            spyOn(speechRecognition, 'start');
+
+            return speechRecognition;
+          }),
+          speechSynthesis,
+          SpeechSynthesisUtterance
+        };
+
+        const speechSynthesisCancel = spyOn(speechSynthesis, 'cancel');
+        const speechSynthesisSpeak = spyOn(speechSynthesis, 'speak');
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat(
+          {
+            directLine,
+            store,
+            webSpeechPonyfillFactory: () => ponyfill
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
+        await pageObjects.clickMicrophoneButton();
+        await waitFor(() => expect(speechSynthesisSpeak).toHaveBeenCalledTimes(1));
+        speechSynthesisSpeak.mock.calls[0][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesisSpeak.mock.calls[0] })
+        );
+
+        // THEN: Should construct the SpeechRecognition() instance and call start().
+        expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1);
+
+        const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
+
+        expect(speechRecognition1.start).toHaveBeenCalledTimes(1);
+
+        // WHEN: Recognition started and "Hello, World!" finalized result is dispatched.
+        await (
+          await directLine.actPostActivity(async () => {
+            speechRecognition1.dispatchEvent(new Event('start'));
+            speechRecognition1.dispatchEvent(new Event('audiostart'));
+            speechRecognition1.dispatchEvent(new Event('soundstart'));
+            speechRecognition1.dispatchEvent(new Event('speechstart'));
+
+            speechRecognition1.dispatchEvent(
+              new SpeechRecognitionEvent('result', {
+                results: new SpeechRecognitionResultList(
+                  SpeechRecognitionResult.fromFinalized(new SpeechRecognitionAlternative(0.9, 'Hello, World!'))
+                )
+              })
+            );
+
+            speechRecognition1.dispatchEvent(new Event('speechend'));
+            speechRecognition1.dispatchEvent(new Event('soundend'));
+            speechRecognition1.dispatchEvent(new Event('audioend'));
+            speechRecognition1.dispatchEvent(new Event('end'));
+          })
+        ).resolveAll();
+
+        // THEN: Should have send the activity.
+        await pageConditions.numActivitiesShown(1);
+        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'Hello, World!');
+
+        // THEN: Send box go back to input mode.
+        expect(pageElements.sendBoxTextBox()).toBeTruthy();
+
+        // WHEN: Bot replied with "acceptingInput".
+        await directLine.emulateIncomingActivity({
+          inputHint: 'acceptingInput',
+          text: 'Aloha!',
+          type: 'message'
+        });
+
+        // THEN: Should send a message and the reply from the bot.
+        await pageConditions.numActivitiesShown(2);
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Aloha!');
+
+        // THEN: Should call SpeechSynthesis.speak().
+        await waitFor(() => expect(speechSynthesisSpeak).toHaveBeenCalledTimes(2));
+        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
+        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
+
+        expect(speechSynthesis).toHaveProperty('paused', false);
+        expect(speechSynthesis).toHaveProperty('pending', false);
+        expect(speechSynthesis).toHaveProperty('speaking', true);
+
+        // WHEN: After synthesis completed.
+        speechSynthesisSpeak.mock.calls[1][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesisSpeak.mock.calls[1] })
+        );
+
+        // THEN: SpeechSynthesis.speaking should become false.
+        expect(speechSynthesis).toHaveProperty('paused', false);
+        expect(speechSynthesis).toHaveProperty('pending', false);
+        expect(speechSynthesis).toHaveProperty('speaking', false);
+
+        // THEN: Should keep in text input mode.
+        expect(pageElements.sendBoxTextBox()).toBeTruthy();
+      });
+    </script>
+  </body>
+</html>
