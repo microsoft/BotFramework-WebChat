@@ -52,8 +52,8 @@
           SpeechSynthesisUtterance
         };
 
-        const speechSynthesisCancel = spyOn(speechSynthesis, 'cancel');
-        const speechSynthesisSpeak = spyOn(speechSynthesis, 'speak');
+        spyOn(speechSynthesis, 'cancel');
+        spyOn(speechSynthesis, 'speak');
 
         const { directLine, store } = createDirectLineEmulator();
 
@@ -73,14 +73,14 @@
         await pageObjects.clickMicrophoneButton();
 
         // THEN: Should call SpeechSynthesis.speak() for fulfilling user gesture requirement for speech synthesis by synthesizing an empty utterance.
-        await waitFor(() => expect(speechSynthesisSpeak).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(1));
 
-        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
-        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: '' }));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.objectContaining({ text: '' }));
 
         // WHEN: Synthesized the empty utterance.
-        speechSynthesisSpeak.mock.calls[0][0].dispatchEvent(
-          new SpeechSynthesisEvent('end', { utterance: speechSynthesisSpeak.mock.calls[0] })
+        speechSynthesis.speak.mock.calls[0][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[0] })
         );
 
         // THEN: Should have stopped synthesis.
@@ -177,9 +177,9 @@
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Aloha!');
 
         // THEN: Should call SpeechSynthesis.speak() again with utterance of "Aloha!"
-        await waitFor(() => expect(speechSynthesisSpeak).toHaveBeenCalledTimes(2));
-        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
-        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(2));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
 
         expect(speechSynthesis).toHaveProperty('paused', false);
         expect(speechSynthesis).toHaveProperty('pending', false);
@@ -202,7 +202,7 @@
         );
 
         // THEN: Should cancel speech synthesis.
-        expect(speechSynthesisCancel).toHaveBeenCalledTimes(1);
+        expect(speechSynthesis.cancel).toHaveBeenCalledTimes(1);
         expect(speechSynthesis).toHaveProperty('paused', false);
         expect(speechSynthesis).toHaveProperty('pending', false);
         expect(speechSynthesis).toHaveProperty('speaking', false);
@@ -228,13 +228,13 @@
         expect(pageElements.activityContents()[2]).toHaveProperty('textContent', 'Good morning!');
 
         // THEN: Should not have called SpeechRecognition.abort().
-        expect(speechRecognitionAbort).toHaveBeenCalledTimes(0);
+        expect(speechRecognition1.abort).toHaveBeenCalledTimes(0);
 
         // WHEN: Click on the microphone button to stop recognition.
         await pageObjects.clickMicrophoneButton();
 
         // THEN: Should have called SpeechRecognition.abort() once.
-        expect(speechRecognitionAbort).toHaveBeenCalledTimes(1);
+        expect(speechRecognition1.abort).toHaveBeenCalledTimes(1);
 
         // WHEN: Speech recognition dispatch abort error event.
         speechRecognition1.dispatchEvent(new Event('speechend'));

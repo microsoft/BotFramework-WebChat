@@ -50,7 +50,7 @@
           SpeechSynthesisUtterance
         };
 
-        const speechSynthesisSpeak = spyOn(speechSynthesis, 'speak');
+        spyOn(speechSynthesis, 'speak');
 
         const { directLine, store } = createDirectLineEmulator();
 
@@ -69,16 +69,16 @@
         await pageObjects.clickMicrophoneButton();
 
         // THEN: Should create new SpeechSynthesis() for priming user gesture requirement.
-        await waitFor(() => expect(speechSynthesisSpeak).toHaveBeenCalledTimes(1));
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(1));
         expect(speechSynthesis).toHaveProperty('paused', false);
         expect(speechSynthesis).toHaveProperty('pending', false);
         expect(speechSynthesis).toHaveProperty('speaking', true);
-        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
-        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: '' }));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.objectContaining({ text: '' }));
 
         // WHEN: Priming is done.
-        speechSynthesisSpeak.mock.calls[0][0].dispatchEvent(
-          new SpeechSynthesisEvent('end', { utterance: speechSynthesisSpeak.mock.calls[0] })
+        speechSynthesis.speak.mock.calls[0][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[0] })
         );
         expect(speechSynthesis).toHaveProperty('paused', false);
         expect(speechSynthesis).toHaveProperty('pending', false);
@@ -167,11 +167,11 @@
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Aloha!');
 
         // THEN: Should call SpeechSynthesis.speak() again.
-        await waitFor(() => expect(speechSynthesisSpeak).toHaveBeenCalledTimes(2));
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(2));
 
         // THEN: Should start synthesize "Aloha!".
-        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
-        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
 
         // THEN: SpeechSynthesis.speaking should be true.
         expect(speechSynthesis).toHaveProperty('paused', false);
@@ -179,8 +179,8 @@
         expect(speechSynthesis).toHaveProperty('speaking', true);
 
         // WHEN: Synthesis completed.
-        speechSynthesisSpeak.mock.calls[1][0].dispatchEvent(
-          new SpeechSynthesisEvent('end', { utterance: speechSynthesisSpeak.mock.calls[1] })
+        speechSynthesis.speak.mock.calls[1][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[1] })
         );
 
         // THEN: SpeechSynthesis.speaking should be false.
