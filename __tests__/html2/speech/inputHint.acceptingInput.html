@@ -52,8 +52,7 @@
           SpeechSynthesisUtterance
         };
 
-        const speechSynthesisCancel = spyOn(speechSynthesis, 'cancel');
-        const speechSynthesisSpeak = spyOn(speechSynthesis, 'speak');
+        spyOn(speechSynthesis, 'speak');
 
         const { directLine, store } = createDirectLineEmulator();
 
@@ -70,9 +69,9 @@
 
         // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
         await pageObjects.clickMicrophoneButton();
-        await waitFor(() => expect(speechSynthesisSpeak).toHaveBeenCalledTimes(1));
-        speechSynthesisSpeak.mock.calls[0][0].dispatchEvent(
-          new SpeechSynthesisEvent('end', { utterance: speechSynthesisSpeak.mock.calls[0] })
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(1));
+        speechSynthesis.speak.mock.calls[0][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[0] })
         );
 
         // THEN: Should construct the SpeechRecognition() instance and call start().
@@ -124,17 +123,17 @@
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Aloha!');
 
         // THEN: Should call SpeechSynthesis.speak().
-        await waitFor(() => expect(speechSynthesisSpeak).toHaveBeenCalledTimes(2));
-        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
-        expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(2));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
 
         expect(speechSynthesis).toHaveProperty('paused', false);
         expect(speechSynthesis).toHaveProperty('pending', false);
         expect(speechSynthesis).toHaveProperty('speaking', true);
 
         // WHEN: After synthesis completed.
-        speechSynthesisSpeak.mock.calls[1][0].dispatchEvent(
-          new SpeechSynthesisEvent('end', { utterance: speechSynthesisSpeak.mock.calls[1] })
+        speechSynthesis.speak.mock.calls[1][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[1] })
         );
 
         // THEN: SpeechSynthesis.speaking should become false.
