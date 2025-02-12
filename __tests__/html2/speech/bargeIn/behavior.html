@@ -37,17 +37,14 @@
       } = window;
 
       run(async function () {
-        let speechRecognitionAbort;
-        let speechRecognitionStart;
-
         const speechSynthesis = new SpeechSynthesis();
         const ponyfill = {
           SpeechGrammarList,
           SpeechRecognition: fn().mockImplementation(() => {
             const speechRecognition = new SpeechRecognition();
 
-            speechRecognitionAbort = spyOn(speechRecognition, 'abort');
-            speechRecognitionStart = spyOn(speechRecognition, 'start');
+            spyOn(speechRecognition, 'abort');
+            spyOn(speechRecognition, 'start');
 
             return speechRecognition;
           }),
@@ -82,9 +79,6 @@
         expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: '' }));
 
         // WHEN: Synthesized the empty utterance.
-        speechSynthesisSpeak.mock.calls[0][0].dispatchEvent(
-          new SpeechSynthesisEvent('start', { utterance: speechSynthesisSpeak.mock.calls[0] })
-        );
         speechSynthesisSpeak.mock.calls[0][0].dispatchEvent(
           new SpeechSynthesisEvent('end', { utterance: speechSynthesisSpeak.mock.calls[0] })
         );
@@ -187,12 +181,6 @@
         expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
         expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
 
-        // WHEN: "start" event is emitted for synthesis.
-        speechSynthesisSpeak.mock.calls[1][0].dispatchEvent(
-          new SpeechSynthesisEvent('start', { utterance: speechSynthesisSpeak.mock.calls[1] })
-        );
-
-        // THEN: Should start speaking.
         expect(speechSynthesis).toHaveProperty('paused', false);
         expect(speechSynthesis).toHaveProperty('pending', false);
         expect(speechSynthesis).toHaveProperty('speaking', true);

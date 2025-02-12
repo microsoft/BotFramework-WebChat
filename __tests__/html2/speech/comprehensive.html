@@ -42,14 +42,13 @@
           SpeechRecognition: fn().mockImplementation(() => {
             const speechRecognition = new SpeechRecognition();
 
-            speechRecognitionStart = spyOn(speechRecognition, 'start');
+            spyOn(speechRecognition, 'start');
 
             return speechRecognition;
           }),
           speechSynthesis,
           SpeechSynthesisUtterance
         };
-        let speechRecognitionStart;
 
         const speechSynthesisSpeak = spyOn(speechSynthesis, 'speak');
 
@@ -78,9 +77,6 @@
         expect(speechSynthesisSpeak).toHaveBeenLastCalledWith(expect.objectContaining({ text: '' }));
 
         // WHEN: Priming is done.
-        speechSynthesisSpeak.mock.calls[0][0].dispatchEvent(
-          new SpeechSynthesisEvent('start', { utterance: speechSynthesisSpeak.mock.calls[0] })
-        );
         speechSynthesisSpeak.mock.calls[0][0].dispatchEvent(
           new SpeechSynthesisEvent('end', { utterance: speechSynthesisSpeak.mock.calls[0] })
         );
