@@ -245,6 +245,71 @@
 
         // THEN: Should go back to text input mode.
         expect(pageElements.sendBoxTextBox()).toBeTruthy();
+
+        // WHEN: Click ont he microphone button to start recognition again.
+        await pageObjects.clickMicrophoneButton();
+
+        // THEN: Should create a new instance of SpeechRecognition.
+        expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(2);
+
+        const { value: speechRecognition2 } = ponyfill.SpeechRecognition.mock.results[1];
+
+        // THEN: Should call SpeechRecognition.start().
+        expect(speechRecognition2.start).toHaveBeenCalledTimes(1);
+        expect(speechRecognition2).toHaveProperty('continuous', true);
+
+        // THEN: Send box should say "Starting…" and hide the original text box.
+        expect(pageElements.sendBoxTextBox()).toBeFalsy();
+        expect(document.querySelector(`[data-testid="${testIds.sendBoxSpeechBox}"]`)).toHaveProperty(
+          'textContent',
+          'Starting…'
+        );
+
+        // WHEN: Speech recognition started.
+        speechRecognition2.dispatchEvent(new Event('start'));
+        speechRecognition2.dispatchEvent(new Event('audiostart'));
+        speechRecognition2.dispatchEvent(new Event('soundstart'));
+        speechRecognition2.dispatchEvent(new Event('speechstart'));
+
+        // THEN: Send box should say "Listening…" and hide the original text box.
+        expect(pageElements.sendBoxTextBox()).toBeFalsy();
+        expect(document.querySelector(`[data-testid="${testIds.sendBoxSpeechBox}"]`)).toHaveProperty(
+          'textContent',
+          'Listening…'
+        );
+
+        // WHEN: Recognized result of "What's the weather?".
+        await (
+          await directLine.actPostActivity(async () => {
+            speechRecognition2.dispatchEvent(
+              new SpeechRecognitionEvent('result', {
+                results: new SpeechRecognitionResultList(
+                  SpeechRecognitionResult.fromFinalized(new SpeechRecognitionAlternative(0, "What's the weather?"))
+                )
+              })
+            );
+          })
+        ).resolveAll();
+
+        // THEN: Should have send the activity.
+        await pageConditions.numActivitiesShown(4);
+        expect(pageElements.activityContents()[3]).toHaveProperty('textContent', "What's the weather?");
+
+        // THEN: Send box should keep say "Listening…" and hide the original text box.
+        expect(pageElements.sendBoxTextBox()).toBeFalsy();
+        expect(document.querySelector(`[data-testid="${testIds.sendBoxSpeechBox}"]`)).toHaveProperty(
+          'textContent',
+          'Listening…'
+        );
+
+        // WHEN: Web Speech provider abruptly stopped recognition.
+        speechRecognition2.dispatchEvent(new Event('speechend'));
+        speechRecognition2.dispatchEvent(new Event('soundend'));
+        speechRecognition2.dispatchEvent(new Event('audioend'));
+        speechRecognition2.dispatchEvent(new Event('end'));
+
+        // THEN: Should go back to text input mode.
+        expect(pageElements.sendBoxTextBox()).toBeTruthy();
       });
     </script>
   </body>
