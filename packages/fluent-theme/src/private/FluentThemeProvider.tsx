@@ -1,9 +1,11 @@
 import { type ActivityMiddleware, type StyleOptions } from 'botframework-webchat-api';
+import { DecoratorComposer, DecoratorMiddleware } from 'botframework-webchat-api/decorator';
 import { Components } from 'botframework-webchat-component';
 import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import React, { memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';
+import ActivityLoader from '../components/activity/ActivityLoader';
 import { isPreChatMessageActivity, PreChatMessageActivity } from '../components/preChatActivity';
 import { PrimarySendBox } from '../components/sendBox';
 import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
@@ -41,6 +43,12 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
 
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
+const decoratorMiddleware: DecoratorMiddleware[] = [
+  init =>
+    init === 'activity border' &&
+    (next => request => (request.livestreamingState === 'preparing' ? ActivityLoader : next(request)))
+];
+
 const styles = createStyles();
 
 const fluentStyleOptions: StyleOptions = Object.freeze({
@@ -57,7 +65,9 @@ const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
           styleOptions={fluentStyleOptions}
           styles={styles}
         >
-          <WebChatDecorator>{children}</WebChatDecorator>
+          <WebChatDecorator>
+            <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
+          </WebChatDecorator>
         </ThemeProvider>
       </TelephoneKeypadProvider>
     </WebChatTheme>
