@@ -11,7 +11,6 @@ import useSettableDictateAbortable from './hooks/internal/useSettableDictateAbor
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
 
 const {
-  // useActivities,
   useDictateInterims,
   useDictateState,
   useEmitTypingIndicator,
@@ -36,7 +35,6 @@ const Dictation = ({ onError }) => {
   const [, setShouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
   const [{ SpeechGrammarList, SpeechRecognition } = {}] = useWebSpeechPonyfill();
   const [{ speechRecognitionContinuous }] = useStyleOptions();
-  // const [activities] = useActivities();
   const [dictateState] = useDictateState();
   const [sendTypingIndicator] = useSendTypingIndicator();
   const [speechLanguage] = useLanguage('speech');
@@ -46,11 +44,6 @@ const Dictation = ({ onError }) => {
   const setDictateState = useSetDictateState();
   const stopDictate = useStopDictate();
   const submitSendBox = useSubmitSendBox();
-
-  // const numSpeakingActivities = useMemo(
-  //   () => activities.filter(({ channelData: { speak } = {} }) => speak).length,
-  //   [activities]
-  // );
 
   const handleDictate = useCallback(
     ({ result: { confidence, transcript } = {} }) => {
