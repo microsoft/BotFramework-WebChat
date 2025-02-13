@@ -32,6 +32,7 @@ function* speakActivityAndStartDictateOnIncomingActivityFromOthers({ userID }) {
       }
 
       if (shouldSpeak && activity.inputHint === 'expectingInput') {
+        // In continuous mode, dictateState === LISTENING and we shouldn't set it to WILL_START, which means auto start after synthesis completed.
         if (dictateState === IDLE) {
           yield put(setDictateState(WILL_START));
         }
