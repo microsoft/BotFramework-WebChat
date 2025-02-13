@@ -17,8 +17,9 @@ function* stopDictateOnCardAction() {
     function* putStopDictate() {
       const dictateState = yield select(dictateStateSelector);
 
-      // In continuous mode (speech recognition is active) and it should not be stopped by performing card action.
-      // Otherwise, stop dictation.
+      // When performing card action:
+      // - In continuous mode (speech recognition is active), speech recognition should not be stopped
+      // - Otherwise, in interactive mode, speech recognition should be stopped
       if (dictateState !== DICTATING) {
         yield put(stopDictate());
       }

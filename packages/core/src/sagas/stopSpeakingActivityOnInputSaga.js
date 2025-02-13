@@ -22,10 +22,10 @@ function* stopSpeakingActivityOnInput() {
     function* ({ meta, payload, type }) {
       const dictateState = yield select(dictateStateSelector);
 
-      // If input is post activity, do not stop if:
-      // - In continuous mode, or
-      // - Posting via speech, or
-      // - Posting a non-message.
+      // If input is post activity, do not stop speaking if either one of the followings:
+      // - In continuous mode (speech should kept as active as long as possible)
+      // - Posting via speech (interactive mode, should speak bot response)
+      // - Posting a non-message (interactive mode, not typing on keyboard, should be ignored)
       if (
         type === POST_ACTIVITY_PENDING &&
         (dictateState === DICTATING || meta.method === 'speech' || payload.activity.type !== 'message')

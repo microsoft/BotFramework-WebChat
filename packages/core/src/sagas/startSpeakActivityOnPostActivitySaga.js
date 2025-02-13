@@ -15,7 +15,7 @@ function* startSpeakActivityOnPostActivity() {
       if (
         // In continuous mode (speech recognition is active), we should speak everything.
         dictateState === DICTATING ||
-        // If last user message was sent via speech, we should speak bot response.
+        // Otherwise, in interactive mode, if last message was sent via speech, we should speak bot response.
         (meta.method === 'speech' && payload.activity.type === 'message')
       ) {
         yield put(startSpeakingActivity());
