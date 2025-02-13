@@ -18,6 +18,8 @@
       }
     </script>
     <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { fn, spyOn } from 'jest-mock';
       import {
         SpeechGrammarList,
         SpeechRecognition,
@@ -26,9 +28,7 @@
         SpeechRecognitionResult,
         SpeechRecognitionResultList
       } from 'react-dictate-button/internal';
-      import { fn, spyOn } from 'jest-mock';
       import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
-      import { waitFor } from '@testduet/wait-for';
 
       const {
         testHelpers: { createDirectLineEmulator },

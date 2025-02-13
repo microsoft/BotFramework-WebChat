@@ -19,11 +19,11 @@
       }
     </script>
     <script type="module">
+      import { fn } from 'jest-mock';
       import {
         SpeechGrammarList,
         SpeechRecognition
       } from 'react-dictate-button/internal';
-      import { fn } from 'jest-mock';
       import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
 
       run(async function () {
