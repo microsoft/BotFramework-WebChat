@@ -942,6 +942,16 @@ type StyleOptions = {
    * New in 4.19.0.
    */
   feedbackActionsPlacement?: 'activity-actions' | 'activity-status';
+
+  /**
+   * Use continuous mode for speech recognition. Default to `false`.
+   *
+   * - `true` to use continuous mode which focuses on a hands-off experience, keeping speech recognition active for extended periods, supporting barge-in, non-speech interactions will not stop speech recognition
+   * - `false` to use interactive mode which focuses on privacy, keeping speech recognition active only for the minimal time required, no barge-in, non-speech interactions will stop speech recognition
+   *
+   * @see https://github.com/microsoft/BotFramework-WebChat/pull/5426
+   */
+  speechRecognitionContinuous?: boolean | undefined;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:
