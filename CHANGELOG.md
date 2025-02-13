@@ -78,8 +78,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    -  New style option supports two values: `'activity-actions'` and `'activity-status'` (default)
    -  When set to `'activity-actions'`, feedback buttons are displayed in the activity actions toolbar
    -  When set to `'activity-status'`, feedback buttons appear in the activity status area (default behavior)
--  Added speech recognition continuous mode with barge-in support, in PR [#5426](https://github.com/microsoft/BotFramework-WebChat/pull/5426), by [@RushikeshGavali](https://github.com/RushikeshGavali) and [@compulim](https://github.com/compulim)
-   -  Set `styleOptions.speechRecognitionContinuous` to `true` and use a Web Speech API provider which supports continuous mode
+-  Resolved [#2661](https://github.com/microsoft/BotFramework-WebChat/issues/2661) and [#5352](https://github.com/microsoft/BotFramework-WebChat/issues/5352). Added speech recognition continuous mode with barge-in support, in PR [#5426](https://github.com/microsoft/BotFramework-WebChat/pull/5426), by [@RushikeshGavali](https://github.com/RushikeshGavali) and [@compulim](https://github.com/compulim)
+   -  Set `styleOptions.speechRecognitionContinuous` to `true` with a Web Speech API provider with continuous mode support
 
 ### Changed
 
@@ -101,9 +101,10 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Switched math block syntax from `$$` to Tex-style `\[ \]` and `\( \)` delimiters with improved rendering and error handling, in PR [#5353](https://github.com/microsoft/BotFramework-WebChat/pull/5353), by [@OEvgeny](https://github.com/OEvgeny)
 -  Improved avatar display and grouping behavior by fixing rendering issues and activity sender identification, in PR [#5346](https://github.com/microsoft/BotFramework-WebChat/pull/5346), by [@OEvgeny](https://github.com/OEvgeny)
 -  Activity "copy" button will use `outerHTML` and `textContent` for clipboard content, in PR [#5378](https://github.com/microsoft/BotFramework-WebChat/pull/5378), by [@compulim](https://github.com/compulim)
--  Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385) and [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400)
+-  Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385), [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400), and [#5426](https://github.com/microsoft/BotFramework-WebChat/pull/5426)
    -  Production dependencies
       -  [`web-speech-cognitive-services@8.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
+      -  [`react-dictate-button@x.x.x](https://npmjs.com/package/react-dictate-button)
 -  Enabled icon customization in Fluent theme through CSS variables, in PR [#5413](https://github.com/microsoft/BotFramework-WebChat/pull/5413), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Fixed
