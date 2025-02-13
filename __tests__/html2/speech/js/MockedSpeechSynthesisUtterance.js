@@ -5,64 +5,23 @@ export default class SpeechSynthesisUtterance extends EventTarget {
     super();
 
     this.#eventTargetProperties = new EventTargetProperties(this);
-    this.#text = text || '';
+    this.text = text || '';
   }
 
   #eventTargetProperties;
-  #lang;
-  #pitch;
-  #rate;
-  #text;
-  #voice;
-  #volume;
 
-  get lang() {
-    return this.#lang;
-  }
-
-  set lang(value) {
-    this.#lang = value;
-  }
-
-  get pitch() {
-    return this.#pitch;
-  }
-
-  set pitch(value) {
-    this.#pitch = value;
-  }
-
-  get rate() {
-    return this.#rate;
-  }
-
-  set rate(value) {
-    this.#rate = value;
-  }
-
-  get text() {
-    return this.#text;
-  }
-
-  set text(value) {
-    this.#text = value;
-  }
-
-  get voice() {
-    return this.#voice;
-  }
-
-  set voice(value) {
-    this.#voice = value;
-  }
-
-  get volume() {
-    return this.#volume;
-  }
-
-  set volume(value) {
-    this.#volume = value;
-  }
+  /** @type {string} */
+  lang;
+  /** @type {number} */
+  pitch;
+  /** @type {number} */
+  rate;
+  /** @type {string} */
+  text;
+  /** @type {any} */
+  voice;
+  /** @type {number} */
+  volume;
 
   get onboundary() {
     return this.#eventTargetProperties.getProperty('boundary');
