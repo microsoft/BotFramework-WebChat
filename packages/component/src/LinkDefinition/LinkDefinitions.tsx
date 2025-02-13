@@ -1,6 +1,15 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { Children, type ComponentType, type ReactNode } from 'react';
+import random from 'math-random';
+import React, {
+  Children,
+  useCallback,
+  useRef,
+  useState,
+  type ComponentType,
+  type ReactEventHandler,
+  type ReactNode
+} from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
 import Chevron from './private/Chevron';
@@ -22,19 +31,53 @@ const REFERENCE_LIST_HEADER_IDS = {
   two: 'REFERENCE_LIST_HEADER_TWO'
 };
 
+function uniqueId(count = Infinity) {
+  return (
+    random()
+      // eslint-disable-next-line no-magic-numbers
+      .toString(36)
+      // eslint-disable-next-line no-magic-numbers
+      .substring(2, 2 + count)
+  );
+}
+
 const LinkDefinitions = <TAccessoryProps extends object>({
   accessoryComponentType,
   accessoryProps,
   children
 }: Props<TAccessoryProps>) => {
+  const [id] = useState(() => `webchat-link-definitions-${uniqueId()}`);
   const [{ linkDefinitions }] = useStyleSet();
   const localizeWithPlural = useLocalizer({ plural: true });
 
   const headerText = localizeWithPlural(REFERENCE_LIST_HEADER_IDS, childrenCount(children));
 
+  const summaryRef = useRef<HTMLElement>(null);
+  const handleToggle = useCallback<ReactEventHandler<HTMLDetailsElement>>(event => {
+    const summary = summaryRef.current;
+    const details = event.target;
+    if (summary && details && details instanceof HTMLDetailsElement) {
+      summary.setAttribute('aria-expanded', details.open.toString());
+      summary.setAttribute('aria-pressed', details.open.toString());
+    }
+  }, []);
+
   return (
-    <details className={classNames(linkDefinitions, 'webchat__link-definitions')} open={true}>
-      <summary className="webchat__link-definitions__header">
+    <details
+      className={classNames(linkDefinitions, 'webchat__link-definitions')}
+      // eslint-disable-next-line react/forbid-dom-props
+      id={id}
+      onToggle={handleToggle}
+      open={true}
+    >
+      <summary
+        aria-controls={id}
+        aria-expanded="true"
+        aria-pressed="true"
+        className="webchat__link-definitions__header"
+        ref={summaryRef}
+        role="button"
+      >
         <div className="webchat__link-definitions__header-section webchat__link-definitions__header-section--left">
           <div className="webchat__link-definitions__header-text">{headerText}</div>
           <Chevron />
