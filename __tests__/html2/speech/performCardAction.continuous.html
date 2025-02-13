@@ -68,6 +68,37 @@
 
         await pageConditions.uiConnected();
 
+        // WHEN: Click on the microphone and send a speech.
+        await pageObjects.clickMicrophoneButton();
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(1));
+        speechSynthesis.speak.mock.calls[0][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[0] })
+        );
+
+        // THEN: Should construct the SpeechRecognition() instance and call start().
+        expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1);
+
+        const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
+
+        expect(speechRecognition1.start).toHaveBeenCalledTimes(1);
+
+        speechRecognition1.dispatchEvent(new Event('start'));
+        speechRecognition1.dispatchEvent(new Event('audiostart'));
+        speechRecognition1.dispatchEvent(new Event('soundstart'));
+        speechRecognition1.dispatchEvent(new Event('speechstart'));
+
+        await (
+          await directLine.actPostActivity(async () => {
+            speechRecognition1.dispatchEvent(
+              new SpeechRecognitionEvent('result', {
+                results: new SpeechRecognitionResultList(
+                  SpeechRecognitionResult.fromFinalized(new SpeechRecognitionAlternative(0.9, 'Hello, World!'))
+                )
+              })
+            );
+          })
+        ).resolveAll();
+
         // WHEN: Bot send a card.
         await directLine.emulateIncomingActivity({
           attachments: [
@@ -87,26 +118,26 @@
         });
 
         // THEN: Should show the card.
-        await pageConditions.numActivitiesShown(1);
+        await pageConditions.numActivitiesShown(2);
 
-        // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
-        await pageObjects.clickMicrophoneButton();
-        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(1));
-        speechSynthesis.speak.mock.calls[0][0].dispatchEvent(
-          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[0] })
+        // THEN: Should call SpeechSynthesis.speak().
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(2));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'This is a card.' }));
+
+        expect(speechSynthesis).toHaveProperty('paused', false);
+        expect(speechSynthesis).toHaveProperty('pending', false);
+        expect(speechSynthesis).toHaveProperty('speaking', true);
+
+        // WHEN: After synthesis completed.
+        speechSynthesis.speak.mock.calls[1][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[1] })
         );
 
-        // THEN: Should construct the SpeechRecognition() instance and call start().
-        expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1);
-
-        const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
-
-        expect(speechRecognition1.start).toHaveBeenCalledTimes(1);
-
-        speechRecognition1.dispatchEvent(new Event('start'));
-        speechRecognition1.dispatchEvent(new Event('audiostart'));
-        speechRecognition1.dispatchEvent(new Event('soundstart'));
-        speechRecognition1.dispatchEvent(new Event('speechstart'));
+        // THEN: SpeechSynthesis.speaking should become false.
+        expect(speechSynthesis).toHaveProperty('paused', false);
+        expect(speechSynthesis).toHaveProperty('pending', false);
+        expect(speechSynthesis).toHaveProperty('speaking', false);
 
         // WHEN: Click on the card.
         await (
@@ -120,11 +151,11 @@
         });
 
         // THEN: Should show bot reply.
-        await pageConditions.numActivitiesShown(2);
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Aloha!');
+        await pageConditions.numActivitiesShown(3);
+        expect(pageElements.activityContents()[2]).toHaveProperty('textContent', 'Aloha!');
 
         // THEN: Should call SpeechSynthesis.speak().
-        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(2));
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(3));
         expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
         expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
 
@@ -133,8 +164,8 @@
         expect(speechSynthesis).toHaveProperty('speaking', true);
 
         // WHEN: After synthesis completed.
-        speechSynthesis.speak.mock.calls[1][0].dispatchEvent(
-          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[1] })
+        speechSynthesis.speak.mock.calls[2][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[2] })
         );
 
         // THEN: SpeechSynthesis.speaking should become false.
@@ -168,8 +199,8 @@
         ).resolveAll();
 
         // THEN: Should send the recognized message.
-        await pageConditions.numActivitiesShown(3);
-        expect(pageElements.activityContents()[2]).toHaveProperty('textContent', 'Good morning!');
+        await pageConditions.numActivitiesShown(4);
+        expect(pageElements.activityContents()[3]).toHaveProperty('textContent', 'Good morning!');
 
         // WHEN: Click on microphone button.
         await pageObjects.clickMicrophoneButton();
