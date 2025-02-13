@@ -57,7 +57,7 @@ import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlin
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
 
-const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
+const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions, useTrackException } = hooks;
 
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
@@ -85,11 +85,22 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
   const [customPropertiesClassName] = useCustomPropertiesClassName();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const trackException = useTrackException();
 
-  const dictationOnError = useCallback(err => {
-    // Ignore aborted error as it is likely user clicking on the microphone button to abort recognition.
-    err.error === 'aborted' || console.error(err);
-  }, []);
+  const dictationOnError = useCallback(
+    (errorEvent: SpeechRecognitionErrorEvent) => {
+      // Ignore aborted error as it is likely user clicking on the microphone button to abort recognition.
+      if (errorEvent.error !== 'aborted') {
+        const nativeError = new Error('Speech recognition failed');
+
+        nativeError.cause = errorEvent;
+
+        trackException(nativeError, false);
+        console.error(nativeError);
+      }
+    },
+    [trackException]
+  );
 
   return (
     <div className={classNames('webchat', 'webchat__css-custom-properties', rootClassName, customPropertiesClassName)}>
