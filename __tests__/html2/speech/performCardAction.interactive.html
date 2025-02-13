@@ -8,3 +8,127 @@
   - EXPECT: The reply should NOT be synthesized
   - EXPECT: Should not be listening
 -->
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react-dictate-button/internal": "https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { fn, spyOn } from 'jest-mock';
+      import {
+        SpeechGrammarList,
+        SpeechRecognition,
+        SpeechRecognitionAlternative,
+        SpeechRecognitionErrorEvent,
+        SpeechRecognitionEvent,
+        SpeechRecognitionResult,
+        SpeechRecognitionResultList
+      } from 'react-dictate-button/internal';
+      import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
+
+      const {
+        testHelpers: { createDirectLineEmulator },
+        WebChat: { renderWebChat, testIds }
+      } = window;
+
+      run(async function () {
+        const speechSynthesis = new SpeechSynthesis();
+        const ponyfill = {
+          SpeechGrammarList,
+          SpeechRecognition: fn().mockImplementation(() => {
+            const speechRecognition = new SpeechRecognition();
+
+            spyOn(speechRecognition, 'abort');
+            spyOn(speechRecognition, 'start');
+
+            return speechRecognition;
+          }),
+          speechSynthesis,
+          SpeechSynthesisUtterance
+        };
+
+        spyOn(speechSynthesis, 'speak');
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat(
+          {
+            directLine,
+            store,
+            webSpeechPonyfillFactory: () => ponyfill
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Bot send a card.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              contentType: 'application/vnd.microsoft.card.adaptive',
+              content: {
+                $schema: 'https://microsoft.github.io/AdaptiveCards/schemas/adaptive-card.json',
+                type: 'AdaptiveCard',
+                version: '1.0',
+                speak: 'This is a card.',
+                body: [{ text: 'This is a card.', type: 'TextBlock' }],
+                actions: [{ title: 'Submit', type: 'Action.Submit' }]
+              }
+            }
+          ],
+          type: 'message'
+        });
+
+        // THEN: Should show the card.
+        await pageConditions.numActivitiesShown(1);
+
+        // WHEN: Microphone button is clicked and synthesized empty utterace for user gesture requirement.
+        await pageObjects.clickMicrophoneButton();
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(1));
+        speechSynthesis.speak.mock.calls[0][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[0] })
+        );
+
+        // THEN: Should construct the SpeechRecognition() instance and call start().
+        expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1);
+
+        const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
+
+        expect(speechRecognition1.start).toHaveBeenCalledTimes(1);
+
+        speechRecognition1.dispatchEvent(new Event('start'));
+        speechRecognition1.dispatchEvent(new Event('audiostart'));
+        speechRecognition1.dispatchEvent(new Event('soundstart'));
+        speechRecognition1.dispatchEvent(new Event('speechstart'));
+
+        // WHEN: Click on the card.
+        await (
+          await directLine.actPostActivity(() => host.click(document.querySelector('.ac-pushButton')))
+        ).resolveAll();
+
+        // THEN: Should abort speech recognition.
+        expect(speechRecognition1.abort).toHaveBeenCalledTimes(1);
+
+        // THEN: Should go back to text mode.
+        expect(pageElements.sendBoxTextBox()).toBeTruthy();
+      });
+    </script>
+  </body>
+</html>
