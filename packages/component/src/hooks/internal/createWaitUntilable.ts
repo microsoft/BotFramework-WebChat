@@ -1,6 +1,6 @@
 export type WaitUntilable<T> = T & { waitUntil: (promise: Promise<void>) => void };
 
-export default function createWaitUntilable<T extends object>(
+export default function createWaitUntilable<T extends Record<any, any>>(
   object: T
 ): readonly [WaitUntilable<T>, () => Promise<void>] {
   const allPromises: Promise<void>[] = [];
