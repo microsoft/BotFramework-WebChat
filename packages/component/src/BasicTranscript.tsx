@@ -739,7 +739,7 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className = '' }) => {
   const terminatorRef = useRef<HTMLDivElement>();
 
   return (
-    <ChatHistoryBox>
+    <ChatHistoryBox className={className}>
       <TranscriptFocusComposer containerRef={containerRef}>
         <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
           <ChatHistoryToolbar>
@@ -747,7 +747,6 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className = '' }) => {
           </ChatHistoryToolbar>
           <InternalTranscript
             activityElementMapRef={activityElementMapRef}
-            className={className}
             ref={containerRef}
             terminatorRef={terminatorRef}
           />
