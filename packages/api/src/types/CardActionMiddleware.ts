@@ -13,7 +13,9 @@ type CardActionMiddleware = FunctionMiddleware<
       target: any;
     }
   ],
-  object
+  // Following @types/react to use {} for props.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  {}
 >;
 
 export default CardActionMiddleware;
