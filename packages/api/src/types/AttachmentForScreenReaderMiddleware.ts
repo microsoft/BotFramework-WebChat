@@ -13,13 +13,17 @@ type AttachmentForScreenReaderComponentFactoryOptions = [
 
 type AttachmentForScreenReaderComponentFactory = ComponentFactory<
   AttachmentForScreenReaderComponentFactoryOptions,
-  object
+  // Following @types/react to use {} for props.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  {}
 >;
 
 type AttachmentForScreenReaderMiddleware = ComponentMiddleware<
   [],
   AttachmentForScreenReaderComponentFactoryOptions,
-  object
+  // Following @types/react to use {} for props.
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  {}
 >;
 
 export default AttachmentForScreenReaderMiddleware;
