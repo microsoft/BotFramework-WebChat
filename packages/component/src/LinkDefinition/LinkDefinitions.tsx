@@ -41,7 +41,10 @@ function uniqueId(count = Infinity) {
   );
 }
 
-const LinkDefinitions = <TAccessoryProps extends object>({
+
+// Following @types/react to use {} for props.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+const LinkDefinitions = <TAccessoryProps extends {}>({
   accessoryComponentType,
   accessoryProps,
   children

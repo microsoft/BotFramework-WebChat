@@ -1,3 +1,6 @@
+// TODO: [P2] Fix ESLint error `no-use-before-define`
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 import { hooks } from 'botframework-webchat-api';
 import {
   Composer as ReactScrollToBottomComposer,
@@ -523,8 +526,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       >
         <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
         {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
-        {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
-        {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
         <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>
           {renderingElements}
         </InternalTranscriptScrollable>

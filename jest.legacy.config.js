@@ -66,6 +66,7 @@ module.exports = {
     '<rootDir>/__tests__/html/__dist__',
     '<rootDir>/__tests__/html/__jest__',
     '<rootDir>/__tests__/html/assets',
+    '<rootDir>/__tests__/html2/', // Will be tested by jest.html2.config.js.
     '<rootDir>/__tests__/setup/',
     '<rootDir>/packages/bundle/__tests__/types/__typescript__/',
     '<rootDir>/packages/core/__tests__/types/__typescript__/',

@@ -1,20 +1,28 @@
-import { put, takeEvery } from 'redux-saga/effects';
+import { put, select, takeEvery } from 'redux-saga/effects';
 
 import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
 import stopDictate from '../actions/stopDictate';
+import { DICTATING } from '../constants/DictateState';
+import dictateStateSelector from '../selectors/dictateState';
 import whileConnected from './effects/whileConnected';
 
 function* stopDictateOnCardAction() {
   // TODO: [P2] We should stop speech input when the user click on anything on a card, including open URL which doesn't generate postActivity
   //       This functionality was not implemented in v3
-
   yield takeEvery(
     // Currently, there are no actions that are related to card input
     // For now, we are using POST_ACTIVITY of a "message" activity
     // In the future, if we have an action for card input, we should use that instead
     ({ payload, type }) => type === POST_ACTIVITY_PENDING && payload.activity.type === 'message',
     function* putStopDictate() {
-      yield put(stopDictate());
+      const dictateState = yield select(dictateStateSelector);
+
+      // When performing card action:
+      // - In continuous mode (speech recognition is active), speech recognition should not be stopped
+      // - Otherwise, in interactive mode, speech recognition should be stopped
+      if (dictateState !== DICTATING) {
+        yield put(stopDictate());
+      }
     }
   );
 }

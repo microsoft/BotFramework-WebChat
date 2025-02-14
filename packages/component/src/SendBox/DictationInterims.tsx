@@ -1,13 +1,14 @@
 /* eslint react/no-array-index-key: "off" */
 
-import { Constants } from 'botframework-webchat-core';
 import { hooks } from 'botframework-webchat-api';
+import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { FC } from 'react';
 
-import useStyleSet from '../hooks/useStyleSet';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import useStyleSet from '../hooks/useStyleSet';
+import testIds from '../testIds';
 
 const {
   DictateState: { DICTATING, STARTING, STOPPING }
@@ -32,13 +33,19 @@ const DictationInterims: FC<DictationInterimsProps> = ({ className }) => {
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   return dictateState === STARTING || dictateState === STOPPING ? (
-    <p className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}>
+    <p
+      className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}
+      data-testid={testIds.sendBoxSpeechBox}
+    >
       {dictateState === STARTING && localize('SPEECH_INPUT_STARTING')}
     </p>
   ) : (
     dictateState === DICTATING &&
       (dictateInterims.length ? (
-        <p className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'dictating')}>
+        <p
+          className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'dictating')}
+          data-testid={testIds.sendBoxSpeechBox}
+        >
           {dictateInterims.map((interim, index) => (
             <span key={index}>
               {interim}
@@ -47,7 +54,10 @@ const DictationInterims: FC<DictationInterimsProps> = ({ className }) => {
           ))}
         </p>
       ) : (
-        <p className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}>
+        <p
+          className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}
+          data-testid={testIds.sendBoxSpeechBox}
+        >
           {localize('SPEECH_INPUT_LISTENING')}
         </p>
       ))

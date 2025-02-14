@@ -32,7 +32,7 @@ import {
   type WebChatActivity
 } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
@@ -116,14 +116,16 @@ const EMPTY_ARRAY: readonly [] = Object.freeze([]);
 
 function createCardActionContext({
   cardActionMiddleware,
+  continuous,
   directLine,
   dispatch,
   markAllAsAcknowledged,
   ponyfill
 }: {
   cardActionMiddleware: readonly CardActionMiddleware[];
+  continuous: boolean;
   directLine: DirectLineJSBotConnection;
-  dispatch: Function;
+  dispatch: (...args: unknown[]) => unknown;
   markAllAsAcknowledged: () => void;
   ponyfill: GlobalScopePonyfill;
 }) {
@@ -136,6 +138,11 @@ function createCardActionContext({
   return {
     onCardAction: (cardAction, { target }: { target?: any } = {}) => {
       markAllAsAcknowledged();
+
+      // Stop speech recognition only if under interactive mode.
+      if (!continuous) {
+        dispatch(stopDictate());
+      }
 
       return runMiddleware({
         cardAction,
@@ -234,7 +241,7 @@ type ComposerCoreProps = Readonly<{
   ) => Promise<URL>;
   grammars?: any;
   groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware>;
-  internalErrorBoxClass?: React.Component | Function;
+  internalErrorBoxClass?: ComponentType;
   locale?: string;
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
@@ -340,12 +347,20 @@ const ComposerCore = ({
     () =>
       createCardActionContext({
         cardActionMiddleware: Object.freeze([...singleToArray(cardActionMiddleware)]),
+        continuous: !!styleOptions.speechRecognitionContinuous,
         directLine,
         dispatch,
         markAllAsAcknowledged,
         ponyfill
       }),
-    [cardActionMiddleware, directLine, dispatch, markAllAsAcknowledged, ponyfill]
+    [
+      cardActionMiddleware,
+      directLine,
+      dispatch,
+      markAllAsAcknowledged,
+      ponyfill,
+      styleOptions.speechRecognitionContinuous
+    ]
   );
 
   const patchedSelectVoice = useMemo(

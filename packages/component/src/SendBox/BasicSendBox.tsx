@@ -13,13 +13,11 @@ import SendButton from './SendButton';
 import SuggestedActions from './SuggestedActions';
 import TextBox from './TextBox';
 
-import type { WebChatActivity } from 'botframework-webchat-core';
-
 const {
   DictateState: { DICTATING, STARTING }
 } = Constants;
 
-const { useActivities, useDirection, useDictateState, useStyleOptions } = hooks;
+const { useDirection, useDictateState, useStyleOptions } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__send-box': {
@@ -31,19 +29,10 @@ const ROOT_STYLE = {
   }
 };
 
-// TODO: [P3] We should consider exposing core/src/definitions and use it instead
-function activityIsSpeakingOrQueuedToSpeak(activity: WebChatActivity) {
-  return activity.type === 'message' && activity.channelData?.speak;
-}
-
 function useSendBoxSpeechInterimsVisible(): [boolean] {
-  const [activities] = useActivities();
   const [dictateState] = useDictateState();
 
-  return [
-    (dictateState === STARTING || dictateState === DICTATING) &&
-      !activities.filter(activityIsSpeakingOrQueuedToSpeak).length
-  ];
+  return [dictateState === STARTING || dictateState === DICTATING];
 }
 
 type BasicSendBoxProps = Readonly<{

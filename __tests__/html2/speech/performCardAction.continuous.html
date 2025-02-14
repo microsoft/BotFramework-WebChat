@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react-dictate-button/internal": "https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { fn, spyOn } from 'jest-mock';
+      import {
+        SpeechGrammarList,
+        SpeechRecognition,
+        SpeechRecognitionAlternative,
+        SpeechRecognitionErrorEvent,
+        SpeechRecognitionEvent,
+        SpeechRecognitionResult,
+        SpeechRecognitionResultList
+      } from 'react-dictate-button/internal';
+      import { SpeechSynthesis, SpeechSynthesisEvent, SpeechSynthesisUtterance } from './js/index.js';
+
+      const {
+        testHelpers: { createDirectLineEmulator },
+        WebChat: { renderWebChat, testIds }
+      } = window;
+
+      run(async function () {
+        const speechSynthesis = new SpeechSynthesis();
+        const ponyfill = {
+          SpeechGrammarList,
+          SpeechRecognition: fn().mockImplementation(() => {
+            const speechRecognition = new SpeechRecognition();
+
+            spyOn(speechRecognition, 'abort');
+            spyOn(speechRecognition, 'start');
+
+            return speechRecognition;
+          }),
+          speechSynthesis,
+          SpeechSynthesisUtterance
+        };
+
+        spyOn(speechSynthesis, 'speak');
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { speechRecognitionContinuous: true },
+            webSpeechPonyfillFactory: () => ponyfill
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Click on the microphone and send a speech.
+        await pageObjects.clickMicrophoneButton();
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(1));
+        speechSynthesis.speak.mock.calls[0][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[0] })
+        );
+
+        // THEN: Should construct the SpeechRecognition() instance and call start().
+        expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1);
+
+        const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
+
+        expect(speechRecognition1.start).toHaveBeenCalledTimes(1);
+
+        speechRecognition1.dispatchEvent(new Event('start'));
+        speechRecognition1.dispatchEvent(new Event('audiostart'));
+        speechRecognition1.dispatchEvent(new Event('soundstart'));
+        speechRecognition1.dispatchEvent(new Event('speechstart'));
+
+        await (
+          await directLine.actPostActivity(async () => {
+            speechRecognition1.dispatchEvent(
+              new SpeechRecognitionEvent('result', {
+                results: new SpeechRecognitionResultList(
+                  SpeechRecognitionResult.fromFinalized(new SpeechRecognitionAlternative(0.9, 'Hello, World!'))
+                )
+              })
+            );
+          })
+        ).resolveAll();
+
+        // WHEN: Bot send a card.
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              contentType: 'application/vnd.microsoft.card.adaptive',
+              content: {
+                $schema: 'https://microsoft.github.io/AdaptiveCards/schemas/adaptive-card.json',
+                type: 'AdaptiveCard',
+                version: '1.0',
+                speak: 'This is a card.',
+                body: [{ text: 'This is a card.', type: 'TextBlock' }],
+                actions: [{ title: 'Submit', type: 'Action.Submit' }]
+              }
+            }
+          ],
+          type: 'message'
+        });
+
+        // THEN: Should show the card.
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: Should call SpeechSynthesis.speak().
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(2));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'This is a card.' }));
+
+        expect(speechSynthesis).toHaveProperty('paused', false);
+        expect(speechSynthesis).toHaveProperty('pending', false);
+        expect(speechSynthesis).toHaveProperty('speaking', true);
+
+        // WHEN: After synthesis completed.
+        speechSynthesis.speak.mock.calls[1][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[1] })
+        );
+
+        // THEN: SpeechSynthesis.speaking should become false.
+        expect(speechSynthesis).toHaveProperty('paused', false);
+        expect(speechSynthesis).toHaveProperty('pending', false);
+        expect(speechSynthesis).toHaveProperty('speaking', false);
+
+        // WHEN: Click on the card.
+        await (
+          await directLine.actPostActivity(() => host.click(document.querySelector('.ac-pushButton')))
+        ).resolveAll();
+
+        // WHEN: Bot replied.
+        await directLine.emulateIncomingActivity({
+          text: 'Aloha!',
+          type: 'message'
+        });
+
+        // THEN: Should show bot reply.
+        await pageConditions.numActivitiesShown(3);
+        expect(pageElements.activityContents()[2]).toHaveProperty('textContent', 'Aloha!');
+
+        // THEN: Should call SpeechSynthesis.speak().
+        await waitFor(() => expect(speechSynthesis.speak).toHaveBeenCalledTimes(3));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.any(SpeechSynthesisUtterance));
+        expect(speechSynthesis.speak).toHaveBeenLastCalledWith(expect.objectContaining({ text: 'Aloha!' }));
+
+        expect(speechSynthesis).toHaveProperty('paused', false);
+        expect(speechSynthesis).toHaveProperty('pending', false);
+        expect(speechSynthesis).toHaveProperty('speaking', true);
+
+        // WHEN: After synthesis completed.
+        speechSynthesis.speak.mock.calls[2][0].dispatchEvent(
+          new SpeechSynthesisEvent('end', { utterance: speechSynthesis.speak.mock.calls[2] })
+        );
+
+        // THEN: SpeechSynthesis.speaking should become false.
+        expect(speechSynthesis).toHaveProperty('paused', false);
+        expect(speechSynthesis).toHaveProperty('pending', false);
+        expect(speechSynthesis).toHaveProperty('speaking', false);
+
+        // THEN: Should keep in speech mode.
+        expect(pageElements.sendBoxTextBox()).toBeFalsy();
+        expect(document.querySelector(`[data-testid="${testIds.sendBoxSpeechBox}"]`)).toHaveProperty(
+          'textContent',
+          'Listening…'
+        );
+
+        // WHEN: Recognition started and finalized result is dispatched.
+        speechRecognition1.dispatchEvent(new Event('start'));
+        speechRecognition1.dispatchEvent(new Event('audiostart'));
+        speechRecognition1.dispatchEvent(new Event('soundstart'));
+        speechRecognition1.dispatchEvent(new Event('speechstart'));
+
+        await (
+          await directLine.actPostActivity(async () => {
+            speechRecognition1.dispatchEvent(
+              new SpeechRecognitionEvent('result', {
+                results: new SpeechRecognitionResultList(
+                  SpeechRecognitionResult.fromFinalized(new SpeechRecognitionAlternative(0.9, 'Good morning!'))
+                )
+              })
+            );
+          })
+        ).resolveAll();
+
+        // THEN: Should send the recognized message.
+        await pageConditions.numActivitiesShown(4);
+        expect(pageElements.activityContents()[3]).toHaveProperty('textContent', 'Good morning!');
+
+        // WHEN: Click on microphone button.
+        await pageObjects.clickMicrophoneButton();
+
+        // THEN: Should stop recognition.
+        expect(pageElements.sendBoxTextBox()).toBeTruthy();
+      });
+    </script>
+  </body>
+</html>

@@ -77,7 +77,7 @@ function dereferenceBlankNodesInline(objects: object[]): void {
  * @param graph A list of nodes in the graph.
  * @returns A structured clone of graph with unconnected blank nodes replaced by their corresponding blank node.
  */
-export default function dereferenceBlankNodes<T extends object>(graph: T[]): readonly T[] {
+export default function dereferenceBlankNodes<T extends Record<any, any>>(graph: T[]): readonly T[] {
   const nextObjects = structuredClone(graph);
 
   dereferenceBlankNodesInline(nextObjects);

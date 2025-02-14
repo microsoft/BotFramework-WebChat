@@ -1,4 +1,4 @@
-type Work<T> = (...args: any[]) => T;
+type Work<T> = (...args: unknown[]) => T;
 type Enhancer<T> = (next: Work<T>) => Work<T>;
 type Middleware<Setup, Result> = (setup: Setup) => Enhancer<Result>;
 
