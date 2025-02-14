@@ -23,14 +23,11 @@ export default function createScrollToEndButtonStyle({
       backgroundColor: transcriptOverlayButtonBackground,
       borderRadius: paddingRegular,
       borderWidth: 0,
-      bottom: 5,
       color: transcriptOverlayButtonColor,
       fontFamily: primaryFont,
       fontSize: scrollToEndButtonFontSize,
       outline: 0,
       padding: paddingRegular,
-      position: 'absolute',
-      zIndex: 1, // We formed a stacking context in the parent container, so we can use "z-index" here.
 
       '&:hover': {
         backgroundColor: transcriptOverlayButtonBackgroundOnHover,
@@ -40,14 +37,6 @@ export default function createScrollToEndButtonStyle({
       '&:focus': {
         backgroundColor: transcriptOverlayButtonBackgroundOnFocus,
         color: transcriptOverlayButtonColorOnFocus || transcriptOverlayButtonColor
-      },
-
-      '&:not(.webchat__scroll-to-end-button--rtl)': {
-        right: 20
-      },
-
-      '&.webchat__scroll-to-end-button--rtl': {
-        left: 20
       }
     }
   };

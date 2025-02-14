@@ -44,7 +44,7 @@
 
         // WHEN: Focusing inside the activity, ESCAPE key is pressed followed by TAB key.
         await host.sendKeys('ESCAPE');
-        await host.sendTab();
+        await host.sendShiftTab();
 
         // THEN: The focus should land on the "New messages" button.
         expect(document.activeElement === pageElements.scrollToEndButton()).toBe(true);

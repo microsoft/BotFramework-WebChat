@@ -9,17 +9,20 @@
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
+      .webchat__chat-history-box__toolbar:has(.my-scroll-to-end-button) {
+        left: 10px;
+        position: absolute;
+        top: 10px;
+        z-index: 1;
+      }
+
       .my-scroll-to-end-button {
         appearance: none;
         background-color: #e00;
         border: 0;
         border-radius: 5px;
         color: White;
-        left: 10px;
         padding: 5px;
-        position: absolute;
-        top: 10px;
-        z-index: 1;
       }
 
       .my-scroll-to-end-button:active {
