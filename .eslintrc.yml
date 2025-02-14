@@ -82,6 +82,7 @@ overrides:
       no-duplicate-imports: off
       'import/no-duplicates': error
 
+      # Shorthanding if-condition with && and ||.
       '@typescript-eslint/no-unused-expressions': off
 
 rules:
