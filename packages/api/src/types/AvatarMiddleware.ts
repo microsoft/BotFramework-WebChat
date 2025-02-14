@@ -11,9 +11,13 @@ type AvatarComponentFactoryArguments = [
   }
 ];
 
-type AvatarComponentFactory = ComponentFactory<AvatarComponentFactoryArguments, object>;
+// Following @types/react to use {} for props.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+type AvatarComponentFactory = ComponentFactory<AvatarComponentFactoryArguments, {}>;
 
-type AvatarMiddleware = ComponentMiddleware<[], AvatarComponentFactoryArguments, object>;
+// Following @types/react to use {} for props.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+type AvatarMiddleware = ComponentMiddleware<[], AvatarComponentFactoryArguments, {}>;
 
 export default AvatarMiddleware;
 
