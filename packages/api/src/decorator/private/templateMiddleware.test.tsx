@@ -24,6 +24,7 @@ test('an uber middleware', () => {
     initMiddleware: initButtonMiddleware,
     Provider: ButtonProvider,
     Proxy: Button,
+    // False positive, `types` is used for its typing.
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     types: buttonTypes
   } = templateMiddleware<'button', void, ButtonProps>('Button');
