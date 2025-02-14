@@ -8,7 +8,7 @@ type OutgoingEventActivityEssence = {
 };
 
 type OutgoingMessageActivityEssence = {
-  attachments?: object[];
+  attachments?: Record<any, unknown>[];
   channelData: {
     attachmentSizes?: number[];
     messageBack?: { displayText: string };
