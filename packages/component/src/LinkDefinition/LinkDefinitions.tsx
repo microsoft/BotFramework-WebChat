@@ -51,10 +51,10 @@ const LinkDefinitions = <TAccessoryProps extends {}>({
   const [id] = useState(() => `webchat-link-definitions-${uniqueId()}`);
   const [{ linkDefinitions }] = useStyleSet();
   const localizeWithPlural = useLocalizer({ plural: true });
+  const summaryRef = useRef<HTMLElement>(null);
 
   const headerText = localizeWithPlural(REFERENCE_LIST_HEADER_IDS, childrenCount(children));
 
-  const summaryRef = useRef<HTMLElement>(null);
   const handleToggle = useCallback<ReactEventHandler<HTMLDetailsElement>>(event => {
     const summary = summaryRef.current;
     const details = event.target;
