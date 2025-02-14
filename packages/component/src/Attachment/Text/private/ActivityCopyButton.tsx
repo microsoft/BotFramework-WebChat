@@ -93,9 +93,7 @@ const ActivityCopyButton = ({ className, targetRef }: Props) => {
       ref={buttonRef}
       text={copyText}
     >
-      <span aria-hidden="true" className="webchat__activity-copy-button__copied-text">
-        {copiedText}
-      </span>
+      <span className="webchat__activity-copy-button__copied-text">{copiedText}</span>
     </ActivityButton>
   );
 };
