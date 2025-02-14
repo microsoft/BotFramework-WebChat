@@ -33,7 +33,9 @@ const TOASTER_STYLE = {
 };
 
 const TRANSCRIPT_STYLE = {
-  flex: 1
+  '.webchat__basic-transcript': {
+    flex: 1
+  }
 };
 
 // Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
