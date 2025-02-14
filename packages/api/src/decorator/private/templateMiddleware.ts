@@ -7,7 +7,9 @@ export type MiddlewareWithInit<M extends ComponentMiddleware<any, any, any>, I> 
 
 const EMPTY_ARRAY = Object.freeze([]);
 
-export default function templateMiddleware<Init, Request = any, Props extends object = EmptyObject>(name: string) {
+// Following @types/react to use {} for props.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export default function templateMiddleware<Init, Request = any, Props extends {} = EmptyObject>(name: string) {
   type Middleware = ComponentMiddleware<Request, Props>;
 
   const middlewareSchema = array(pipe(any(), function_()));
