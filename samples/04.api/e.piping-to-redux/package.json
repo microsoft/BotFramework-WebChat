@@ -10,15 +10,29 @@
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
     "start": "npm run build -- --servedir=./public"
   },
+  "pinDependencies": {
+    "react": [
+      "16.8.6",
+      "using react@16.8.6 to make sure this is the minimum supported version"
+    ],
+    "react-dom": [
+      "16.8.6",
+      "using react-dom@16.8.6 to make sure this is the minimum supported version"
+    ],
+    "react-redux": [
+      "7",
+      "react-redux@>7 requires newer version of React"
+    ]
+  },
   "dependencies": {
-    "botframework-webchat": "^4.18.0",
-    "punycode": "^2.3.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-redux": "^9.1.2",
-    "redux": "^5.0.1"
+    "botframework-webchat": "4.18.0",
+    "punycode": "2.3.1",
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
+    "react-redux": "7.2.9",
+    "redux": "5.0.1"
   },
   "devDependencies": {
-    "esbuild": "^0.23.1"
+    "esbuild": "^0.25.0"
   }
 }

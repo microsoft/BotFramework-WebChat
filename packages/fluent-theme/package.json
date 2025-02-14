@@ -61,17 +61,21 @@
     "@types/react": [
       "16",
       "react@16.8.6 is our baseline"
+    ],
+    "valibot": [
+      "0",
+      "valibot@0 until they finalize @1"
     ]
   },
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.5",
     "@types/math-random": "^1.0.2",
-    "@types/node": "^20.12.11",
-    "@types/react": "^16.14.60",
+    "@types/node": "^22.13.4",
+    "@types/react": "^16.14.62",
     "botframework-webchat-base": "0.0.0-0",
     "botframework-webchat-styles": "0.0.0-0",
-    "tsup": "^8.0.2",
-    "typescript": "^5.4.5"
+    "tsup": "^8.3.6",
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "botframework-webchat-api": "0.0.0-0",
@@ -81,7 +85,7 @@
     "inject-meta-tag": "0.0.1",
     "math-random": "2.0.1",
     "use-ref-from": "0.1.0",
-    "valibot": "^0.37.0"
+    "valibot": "0.42.1"
   },
   "peerDependencies": {
     "react": ">= 16.8.6"
