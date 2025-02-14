@@ -4,6 +4,7 @@ const {
   initMiddleware: initSendBoxMiddleware,
   Provider: SendBoxMiddlewareProvider,
   Proxy: SendBoxMiddlewareProxy,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   types
 } = templateMiddleware<void, void, { className?: string | undefined }>('sendBoxMiddleware');
 

@@ -5,7 +5,7 @@ import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
 export default function useStateRef<T>(
   initialValue?: T
 ): readonly [T, Dispatch<SetStateAction<T>>, MutableRefObject<T>] {
-  const [_, forceRender] = useState<{}>();
+  const [_, forceRender] = useState<object>();
   const valueRef: MutableRefObject<T> = useRef<T>(initialValue);
 
   const setter: Dispatch<SetStateAction<T>> = useCallback(

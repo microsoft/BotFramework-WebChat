@@ -1,6 +1,6 @@
 import useTracker from './useTracker';
 
-const Tracker: React.FC<{}> = () => {
+const Tracker = () => {
   useTracker();
 
   return null;
