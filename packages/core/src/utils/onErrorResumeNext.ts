@@ -9,7 +9,7 @@ export default function onErrorResumeNext<T, U = T>(fn: () => T, defaultValue: U
 export default function onErrorResumeNext<T>(fn: () => T, defaultValue?: T): T | undefined {
   try {
     return fn();
-  } catch (error) {
+  } catch {
     return defaultValue;
   }
 }

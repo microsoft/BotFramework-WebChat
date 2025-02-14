@@ -16,7 +16,7 @@ function setMetaTag(name: string, content: string) {
 
       document.head.appendChild(meta);
     }
-  } catch (err) {}
+  } catch {}
 }
 
 type BuildMeta = Readonly<{

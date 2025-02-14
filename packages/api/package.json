@@ -98,8 +98,16 @@
       "16",
       "react@16.8.6 is our baseline"
     ],
+    "react-chain-of-responsibility": [
+      "main"
+    ],
     "react-redux": [
-      "7"
+      "7",
+      "react-redux@>7 requires newer version of React"
+    ],
+    "valibot": [
+      "0",
+      "valibot@0 until they finalize @1"
     ]
   },
   "devDependencies": {
@@ -109,31 +117,31 @@
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
     "@types/dom-speech-recognition": "^0.0.4",
-    "@types/node": "^20.12.11",
-    "@types/react": "^16.14.60",
-    "babel-plugin-istanbul": "^6.1.1",
+    "@types/node": "^22.13.4",
+    "@types/react": "^16.14.62",
+    "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "botframework-webchat-cldr-data": "36.0.0-0",
-    "concurrently": "^8.2.2",
-    "core-js": "^3.37.0",
+    "concurrently": "^9.1.2",
+    "core-js": "^3.40.0",
     "cross-env": "^7.0.3",
     "globalize-compiler": "^1.1.1",
     "iana-tz-data": "^2019.1.0",
-    "nodemon": "^3.1.7",
-    "type-fest": "^4.18.2",
-    "typescript": "^5.4.5"
+    "nodemon": "^3.1.9",
+    "type-fest": "^4.34.1",
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "botframework-webchat-core": "0.0.0-0",
     "globalize": "1.7.0",
     "math-random": "2.0.1",
     "prop-types": "15.8.1",
-    "react-chain-of-responsibility": "0.2.0-main.3cb47ab",
+    "react-chain-of-responsibility": "0.2.0-main.a5d8eb6",
     "react-redux": "7.2.9",
     "redux": "5.0.1",
     "simple-update-in": "2.2.0",
     "use-ref-from": "0.1.0",
-    "valibot": "0.30.0"
+    "valibot": "0.42.1"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",

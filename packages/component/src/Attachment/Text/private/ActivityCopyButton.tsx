@@ -53,7 +53,6 @@ const ActivityCopyButton = ({ className, targetRef }: Props) => {
 
     // Reading `offsetWidth` will trigger a reflow and this is critical for resetting the animation.
     // https://css-tricks.com/restart-css-animation/#aa-update-another-javascript-method-to-restart-a-css-animation
-    // eslint-disable-next-line no-unused-expressions
     buttonRef.current?.offsetWidth;
 
     buttonRef.current?.classList.add('webchat__activity-copy-button--copied');

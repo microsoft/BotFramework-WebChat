@@ -9,7 +9,7 @@ export default function supportPseudoClass(pseudoClass: string, nonce?: string):
     styleElement.sheet.insertRule('html' + pseudoClass + '{}', 0);
 
     return true;
-  } catch (error) {
+  } catch {
     return false;
   } finally {
     document.head.removeChild(styleElement);

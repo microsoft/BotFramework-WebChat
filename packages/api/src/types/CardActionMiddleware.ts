@@ -13,7 +13,7 @@ type CardActionMiddleware = FunctionMiddleware<
       target: any;
     }
   ],
-  {}
+  object
 >;
 
 export default CardActionMiddleware;

@@ -7,6 +7,7 @@ const {
   initMiddleware: initActivityBorderDecoratorMiddleware,
   Provider: ActivityBorderDecoratorMiddlewareProvider,
   Proxy: ActivityBorderDecoratorMiddlewareProxy,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   types
 } = templateMiddleware<typeof activityBorderDecoratorTypeName, ActivityDecoratorRequest, EmptyObject>(
   'ActivityBorderDecoratorMiddleware'

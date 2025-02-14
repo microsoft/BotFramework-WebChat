@@ -9,7 +9,7 @@ export default function extractHostnameWithSubdomain(urlString: string): string 
 
       return host;
     }
-  } catch (error) {
+  } catch {
     // Intentionally left blank, will return `urlString`.
   }
 

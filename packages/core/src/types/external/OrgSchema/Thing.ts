@@ -1,5 +1,5 @@
 import { type EmptyObject } from 'type-fest';
-import { lazy, object, optional, parse, string, unknown, value, type ObjectEntries, type StringSchema } from 'valibot';
+import { lazy, literal, looseObject, optional, parse, pipe, string, type ObjectEntries } from 'valibot';
 
 import { action, type Action } from './Action';
 import orgSchemaProperties from './private/orgSchemaProperties';
@@ -61,7 +61,7 @@ export type Thing = {
 };
 
 const thingEntries = {
-  '@context': optional(string([value('https://schema.org')]) as StringSchema<'https://schema.org'>),
+  '@context': optional(pipe(string(), literal('https://schema.org'))),
   '@id': optional(string()),
   '@type': string(),
 
@@ -74,21 +74,18 @@ const thingEntries = {
 };
 
 export const thing = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
-  object(
-    {
-      ...thingEntries,
-      ...entries
-    },
-    // Forward compatibility is the reason why we use unknown() here and not adhere to JSON-LD which drop unknown fields.
-    //
-    // Example:
-    // - CreativeWork.editor must be type of Person (or any of its subtypes, Patient)
-    // - Without unknown(), when we parse the CreativeWork, we will drop Patient.diagnosis
-    // - That means, CreativeWork.editor.diagnosis will be unset despite CreativeWork.editor is of type Patient
-    //
-    // We can drop unknown() if there is a way to keep CreativeWork.editor.diagnosis.
-    // It is okay to drop future/unsupported properties. But not today/supported properties.
-    unknown()
-  );
+  // Forward compatibility is the reason why we use unknown() here and not adhere to JSON-LD which drop unknown fields.
+  //
+  // Example:
+  // - CreativeWork.editor must be type of Person (or any of its subtypes, Patient)
+  // - Without unknown(), when we parse the CreativeWork, we will drop Patient.diagnosis
+  // - That means, CreativeWork.editor.diagnosis will be unset despite CreativeWork.editor is of type Patient
+  //
+  // We can drop unknown() if there is a way to keep CreativeWork.editor.diagnosis.
+  // It is okay to drop future/unsupported properties. But not today/supported properties.
+  looseObject({
+    ...thingEntries,
+    ...entries
+  });
 
 export const parseThing = (data: unknown): Thing => parse(thing<EmptyObject>(), data);

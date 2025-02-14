@@ -24,6 +24,7 @@ test('an uber middleware', () => {
     initMiddleware: initButtonMiddleware,
     Provider: ButtonProvider,
     Proxy: Button,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     types: buttonTypes
   } = templateMiddleware<'button', void, ButtonProps>('Button');
 
@@ -33,6 +34,7 @@ test('an uber middleware', () => {
     initMiddleware: initLinkMiddleware,
     Provider: LinkProvider,
     Proxy: Link,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     types: linkTypes
   } = templateMiddleware<'link', { external: boolean }, LinkProps>('Link');
 

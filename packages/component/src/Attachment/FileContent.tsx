@@ -29,7 +29,7 @@ const ALLOWED_PROTOCOLS = ['blob:', 'data:', 'http:', 'https:'];
 function isAllowedProtocol(url) {
   try {
     return ALLOWED_PROTOCOLS.includes(new URL(url).protocol);
-  } catch (err) {
+  } catch {
     return false;
   }
 }

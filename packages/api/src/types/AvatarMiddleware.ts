@@ -1,4 +1,4 @@
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 
 import { StrictStyleOptions } from '../StyleOptions';
 import ComponentMiddleware, { ComponentFactory } from './ComponentMiddleware';
@@ -11,9 +11,9 @@ type AvatarComponentFactoryArguments = [
   }
 ];
 
-type AvatarComponentFactory = ComponentFactory<AvatarComponentFactoryArguments, {}>;
+type AvatarComponentFactory = ComponentFactory<AvatarComponentFactoryArguments, object>;
 
-type AvatarMiddleware = ComponentMiddleware<[], AvatarComponentFactoryArguments, {}>;
+type AvatarMiddleware = ComponentMiddleware<[], AvatarComponentFactoryArguments, object>;
 
 export default AvatarMiddleware;
 

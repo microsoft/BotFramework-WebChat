@@ -24,7 +24,7 @@ describe('When passing "wrapZeroWidthSpace" option with true', () => {
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
-      '<p>\u200b<a href="https://example.com">Example</a>\u200b</p>'
+      '<p xmlns="http://www.w3.org/1999/xhtml">\u200b<a href="https://example.com">Example</a>\u200b</p>'
     ));
 });
 
@@ -38,6 +38,6 @@ describe('When passing "wrapZeroWidthSpace" option with true and "asButton" opti
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
-      '<p>\u200b<button type="button" value="https://example.com">Example</button>\u200b</p>'
+      '<p xmlns="http://www.w3.org/1999/xhtml">\u200b<button type="button" value="https://example.com">Example</button>\u200b</p>'
     ));
 });

@@ -36,7 +36,7 @@ describe('with no waitUntil()', () => {
 });
 
 describe('With a single waitUntil()', () => {
-  let event: WaitUntilable<{}>;
+  let event: WaitUntilable<any>;
   let getPromise: () => Promise<void>;
   let promise: Promise<void>;
   let deferred: Deferred<void>;
@@ -59,7 +59,7 @@ describe('With a single waitUntil()', () => {
 });
 
 describe('With nested waitUntil()', () => {
-  let event: WaitUntilable<{}>;
+  let event: WaitUntilable<any>;
   let getPromise: () => Promise<void>;
   let promise: Promise<void>;
   let deferred1: Deferred<void>;

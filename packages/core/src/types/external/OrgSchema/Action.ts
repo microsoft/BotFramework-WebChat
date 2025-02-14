@@ -1,4 +1,4 @@
-import { lazy, parse, string, union, value, type ObjectEntries, type StringSchema } from 'valibot';
+import { lazy, parse, picklist, pipe, string, type ObjectEntries } from 'valibot';
 
 import orgSchemaProperty from './private/orgSchemaProperty';
 import { project, type Project } from './Project';
@@ -37,12 +37,10 @@ export type Action = Thing & {
 export const action = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
   thing({
     actionStatus: orgSchemaProperty(
-      union([
-        string([value('ActiveActionStatus')]) as StringSchema<'ActiveActionStatus'>,
-        string([value('CompletedActionStatus')]) as StringSchema<'CompletedActionStatus'>,
-        string([value('FailedActionStatus')]) as StringSchema<'FailedActionStatus'>,
-        string([value('PotentialActionStatus')]) as StringSchema<'PotentialActionStatus'>
-      ])
+      pipe(
+        string(),
+        picklist(['ActiveActionStatus', 'CompletedActionStatus', 'FailedActionStatus', 'PotentialActionStatus'])
+      )
     ),
     provider: orgSchemaProperty(lazy(() => project())),
 
