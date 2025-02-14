@@ -1,7 +1,7 @@
 import workerFunction from './downscaleImageToDataURLUsingWorker.worker';
 import { type WorkerJob, type WorkerReturnValue } from './WorkerJob';
 
-function createWorker(fn: ((...args: any[]) => any) | string): Promise<Worker> {
+function createWorker(fn: ((...args: unknown[]) => unknown) | string): Promise<Worker> {
   const blob = new Blob([`(${fn})()`], { type: 'text/javascript' });
   const url = window.URL.createObjectURL(blob);
 
