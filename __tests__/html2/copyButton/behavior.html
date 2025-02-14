@@ -84,6 +84,11 @@
         await host.sendShiftTab(3);
         await host.sendKeys('ENTER');
 
+
+        // axe-core is crazy about empty button name while swapping name
+        const { checkAccessibility } = window
+        window.checkAccessibility = async () => { };
+
         // THEN: Should focus on the "Copy" button
         const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`);
 
@@ -107,6 +112,8 @@
 
         // Sleep for 1 second for the "Copied" text to go away.
         await testHelpers.sleep(500);
+
+        window.checkAccessibility = checkAccessibility;
 
         // THEN: Plain text box should contains plain text, while rich text box should contains rich text.
         await host.snapshot('local');
