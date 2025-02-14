@@ -35,6 +35,7 @@ test('an uber middleware', () => {
     initMiddleware: initLinkMiddleware,
     Provider: LinkProvider,
     Proxy: Link,
+    // False positive, `types` is used for its typing.
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     types: linkTypes
   } = templateMiddleware<'link', { external: boolean }, LinkProps>('Link');
