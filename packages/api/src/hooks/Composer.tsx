@@ -125,7 +125,7 @@ function createCardActionContext({
   cardActionMiddleware: readonly CardActionMiddleware[];
   continuous: boolean;
   directLine: DirectLineJSBotConnection;
-  dispatch: (...args: any[]) => any;
+  dispatch: (...args: unknown[]) => unknown;
   markAllAsAcknowledged: () => void;
   ponyfill: GlobalScopePonyfill;
 }) {
