@@ -93,7 +93,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
          */
         'webchat:send-status': SendStatus;
       }
-    : Record<any, unknown>) &
+    : Record<any, any>) &
     (Type extends 'message'
       ? {
           // TODO: [P2] #3953 Rename to "webchat:message-back".
@@ -113,7 +113,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
           // TODO: [P2] #3953 It seems Direct Line added a new "summary" field to cater this case.
           'webchat:fallback-text'?: string;
         }
-      : Record<any, unknown>)
+      : Record<any, any>)
 >;
 
 // Entity - https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#entity
