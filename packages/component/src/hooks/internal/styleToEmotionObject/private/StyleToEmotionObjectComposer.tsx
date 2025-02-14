@@ -1,7 +1,7 @@
 import { createContext, createRef, type RefObject, useContext, memo } from 'react';
 import createStyleToEmotionObjectComposer from './createStyleToEmotionObjectComposer';
 
-export type StyleToEmotionObjectContextType = RefObject<(...args: any[]) => string>;
+export type StyleToEmotionObjectContextType = RefObject<(...args: unknown[]) => string>;
 
 const styleToEmotionObjectContext = createContext<StyleToEmotionObjectContextType>(
   new Proxy(createRef(), {

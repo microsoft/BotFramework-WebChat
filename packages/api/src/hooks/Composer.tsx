@@ -32,7 +32,7 @@ import {
   type WebChatActivity
 } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
@@ -125,7 +125,7 @@ function createCardActionContext({
   cardActionMiddleware: readonly CardActionMiddleware[];
   continuous: boolean;
   directLine: DirectLineJSBotConnection;
-  dispatch: Function;
+  dispatch: (...args: unknown[]) => unknown;
   markAllAsAcknowledged: () => void;
   ponyfill: GlobalScopePonyfill;
 }) {
@@ -241,7 +241,7 @@ type ComposerCoreProps = Readonly<{
   ) => Promise<URL>;
   grammars?: any;
   groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware>;
-  internalErrorBoxClass?: React.Component | Function;
+  internalErrorBoxClass?: ComponentType;
   locale?: string;
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);

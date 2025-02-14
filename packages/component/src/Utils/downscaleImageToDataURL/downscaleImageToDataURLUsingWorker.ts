@@ -1,7 +1,7 @@
 import workerFunction from './downscaleImageToDataURLUsingWorker.worker';
 import { type WorkerJob, type WorkerReturnValue } from './WorkerJob';
 
-function createWorker(fn: Function | string): Promise<Worker> {
+function createWorker(fn: ((...args: unknown[]) => unknown) | string): Promise<Worker> {
   const blob = new Blob([`(${fn})()`], { type: 'text/javascript' });
   const url = window.URL.createObjectURL(blob);
 
@@ -52,7 +52,7 @@ const checkSupportOffscreenCanvas = () => {
     try {
       new OffscreenCanvas(1, 1).getContext('2d');
       isOffscreenCanvasSupportGetContext2D = true;
-    } catch (err) {
+    } catch {
       isOffscreenCanvasSupportGetContext2D = false;
     }
   }
@@ -74,7 +74,7 @@ function checkSupportWebWorker(): Promise<boolean> {
 
       try {
         worker = await createWorker('function(){postMessage("ready")}');
-      } catch (err) {
+      } catch {
         return false;
       }
 
@@ -95,7 +95,7 @@ function checkSupport(): Promise<boolean> {
         const results = await Promise.all([checkSupportOffscreenCanvas(), checkSupportWebWorker()]);
 
         return results.every(result => result);
-      } catch (err) {
+      } catch {
         return false;
       }
     })())

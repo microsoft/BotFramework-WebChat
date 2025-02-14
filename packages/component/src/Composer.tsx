@@ -220,7 +220,7 @@ const ComposerCore = ({
   const getActivityByKey = useGetActivityByKey();
 
   const dispatchTranscriptFocusByActivityKey = useMemo(() => {
-    let prevActivityKey: string | Symbol | undefined = Symbol();
+    let prevActivityKey: string | symbol | undefined = Symbol();
 
     return activityKey => {
       if (activityKey !== prevActivityKey) {

@@ -82,6 +82,9 @@ overrides:
       no-duplicate-imports: off
       'import/no-duplicates': error
 
+      # Shorthanding if-condition with && and ||.
+      '@typescript-eslint/no-unused-expressions': off
+
 rules:
   # Only list rules that are not in *:recommended set
   # If rules are set to disable the one in *:recommended, please elaborate the reason

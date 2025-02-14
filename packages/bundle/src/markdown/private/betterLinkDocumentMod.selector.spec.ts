@@ -30,7 +30,7 @@ describe('When passing "ariaLabel" option with "Hello, World!" for a specific an
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
-      '<p><a href="https://example.com/1" aria-label="Hello, World!">Hello, World!</a></p>\n<p><a href="https://example.com/2">Aloha!</a></p>'
+      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com/1" aria-label="Hello, World!">Hello, World!</a></p>\n<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com/2">Aloha!</a></p>'
     ));
 });
 
@@ -50,6 +50,6 @@ describe('When passing "ariaLabel" option with "Hello, World!" for a specific an
 
   test('should match snapshot', () =>
     expect(serializeDocumentFragmentIntoString(actual)).toBe(
-      '<p><a href="https://example.com/1" aria-label="Hello, World!">Hello, World!</a></p>\n<p><a href="https://example.com/2">Aloha!</a></p>'
+      '<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com/1" aria-label="Hello, World!">Hello, World!</a></p>\n<p xmlns="http://www.w3.org/1999/xhtml"><a href="https://example.com/2">Aloha!</a></p>'
     ));
 });

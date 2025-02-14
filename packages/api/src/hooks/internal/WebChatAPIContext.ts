@@ -6,7 +6,7 @@ import {
   type sendMessage,
   type setSendBoxAttachments
 } from 'botframework-webchat-core';
-import { createContext } from 'react';
+import { createContext, type ComponentType } from 'react';
 
 import { StrictStyleOptions } from '../../StyleOptions';
 import { LegacyActivityRenderer } from '../../types/ActivityMiddleware';
@@ -43,7 +43,7 @@ export type WebChatAPIContextType = {
   emitTypingIndicator?: () => void;
   grammars?: any;
   groupActivities?: GroupActivities;
-  internalErrorBoxClass?: React.Component | Function;
+  internalErrorBoxClass?: ComponentType;
   language?: string;
   localizedGlobalizeState?: PrecompiledGlobalize[];
   localizedStrings?: { [language: string]: LocalizedStrings };
