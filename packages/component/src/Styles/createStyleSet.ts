@@ -12,6 +12,7 @@ import createBubbleStyle from './StyleSet/Bubble';
 import createCarouselFilmStrip from './StyleSet/CarouselFilmStrip';
 import createCarouselFilmStripAttachment from './StyleSet/CarouselFilmStripAttachment';
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
+import createChatHistoryBoxStyleSet from './StyleSet/ChatHistoryBox';
 import createCitationModalDialogStyle from './StyleSet/CitationModalDialog';
 import createCodeBlockCopyButtonStyle from './StyleSet/CodeBlockCopyButton';
 import createCodeBlockStyle from './StyleSet/CodeBlock';
@@ -40,8 +41,8 @@ import createSuggestedActionStyle from './StyleSet/SuggestedAction';
 import createTextContentStyle from './StyleSet/TextContent';
 import createThumbButtonStyle from './StyleSet/ThumbButton';
 import createToasterStyle from './StyleSet/Toaster';
-import createTooltipStyle from './StyleSet/Tooltip';
 import createToastStyle from './StyleSet/Toast';
+import createTooltipStyle from './StyleSet/Tooltip';
 import createTypingAnimationStyle from './StyleSet/TypingAnimation';
 import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
 import createUploadButtonStyle from './StyleSet/UploadButton';
@@ -106,6 +107,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
 
     // Following styles follows new house rules:
     // - Use CSS var instead of strictStyleOptions
+    chatHistoryBox: createChatHistoryBoxStyleSet(),
     citationModalDialog: createCitationModalDialogStyle(),
     linkDefinitions: createLinkDefinitionsStyle(),
     modalDialog: createModalDialogStyle(),

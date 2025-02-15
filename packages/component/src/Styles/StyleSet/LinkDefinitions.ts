@@ -9,12 +9,9 @@ import CSSTokens from '../CSSTokens';
 export default function createLinkDefinitionsStyleSet() {
   return {
     '&.webchat__link-definitions': {
-      // '&[open] .webchat__link-definitions__header::after': {
-      //   transform: 'rotate(0deg)'
-      // },
-
       '.webchat__link-definitions__header': {
         alignItems: 'center',
+        cursor: 'default',
         display: 'flex',
         fontFamily: CSSTokens.FontPrimary,
         fontSize: CSSTokens.FontSizeSmall,

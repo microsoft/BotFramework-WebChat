@@ -200,6 +200,10 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Fixed long math formula should be scrollable, in PR [#5380](https://github.com/microsoft/BotFramework-WebChat/pull/5380), by [@compulim](https://github.com/compulim)
 -  Fixed [#4948](https://github.com/microsoft/BotFramework-WebChat/issues/4948). Microphone should stop after initial silence, in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385)
 -  Fixed [#5390](https://github.com/microsoft/BotFramework-WebChat/issues/5390). Fixed drop zone remaining visible when file is dropped outside of the zone, in PR [#5394](https://github.com/microsoft/BotFramework-WebChat/pull/5394), in PR [#5415](https://github.com/microsoft/BotFramework-WebChat/pull/5415), by [@OEvgeny](https://github.com/OEvgeny)
+- Improved accessibility across multiple components, in PR [#5428](https://github.com/microsoft/BotFramework-WebChat/pull/5428), by [@OEvgeny](https://github.com/OEvgeny)
+  - Fixed copy button screen reader announcement
+  - Added proper ARIA attributes to link definitions component
+  - Improved focus management for scroll to end button
 
 # Removed
 

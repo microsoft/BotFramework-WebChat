@@ -7,7 +7,7 @@ import useLocalizeAccessKey from '../../hooks/internal/useLocalizeAccessKey';
 import useStyleSet from '../../hooks/useStyleSet';
 import { useLiveRegion } from '../../providers/LiveRegionTwin';
 
-const { useDirection, useLocalizer, useStyleOptions } = hooks;
+const { useLocalizer, useStyleOptions } = hooks;
 
 type ScrollToEndButtonProps = Readonly<{ onClick?: (() => void) | undefined }>;
 
@@ -17,7 +17,6 @@ const ScrollToEndButton = ({ onClick }: ScrollToEndButtonProps) => {
   const focusRef = useRef(null);
   const [{ scrollToEndButton: scrollToEndButtonStyleSet }] = useStyleSet();
   const [{ scrollToEndButtonBehavior }] = useStyleOptions();
-  const [direction] = useDirection();
   const localize = useLocalizer();
   const localizeAccessKey = useLocalizeAccessKey('accessible name');
   const shouldShowNewMessagesButton = scrollToEndButtonBehavior !== 'any';
@@ -42,11 +41,7 @@ const ScrollToEndButton = ({ onClick }: ScrollToEndButtonProps) => {
     <button
       aria-keyshortcuts={shouldShowNewMessagesButton ? localizeAccessKey(newMessagesAccessKey) : undefined}
       aria-label={text}
-      className={classNames(
-        'webchat__scroll-to-end-button',
-        scrollToEndButtonStyleSet + '',
-        direction === 'rtl' ? 'webchat__scroll-to-end-button--rtl' : ''
-      )}
+      className={classNames('webchat__scroll-to-end-button', scrollToEndButtonStyleSet + '')}
       onClick={onClick}
       ref={focusRef}
       tabIndex={0}

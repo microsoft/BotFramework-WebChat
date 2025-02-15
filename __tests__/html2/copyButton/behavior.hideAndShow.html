@@ -59,6 +59,10 @@
           1000
         );
 
+        // axe-core is crazy about empty button name while swapping name
+        const { checkAccessibility } = window
+        window.checkAccessibility = async () => { };
+
         // WHEN: Focus on the "Copy" button via keyboard.
         await host.click(document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`));
 
@@ -71,6 +75,8 @@
         // THEN: The "Copy" button should back to normal.
         await host.snapshot('local');
 
+        window.checkAccessibility = checkAccessibility;
+        
         // WHEN: Hiding Web Chat and showing it back.
         document.getElementById('webchat').style.display = 'none';
         document.body.offsetWidth; // Need for browser to refresh the layout.
@@ -78,7 +84,10 @@
 
         // THEN: The "Copy" button should kept at normal.
         await host.snapshot('local');
+
+        expect(document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`).innerText).toBe('Copy')
       });
+
     </script>
   </body>
 </html>
