@@ -59,7 +59,7 @@ const LinkDefinitions = <TAccessoryProps extends {}>({
     const summary = summaryRef.current;
     const details = event.target;
     if (summary && details && details instanceof HTMLDetailsElement) {
-      const isDetailsOpen =  details.open.toString();
+      const isDetailsOpen = details.open.toString();
       summary.setAttribute('aria-expanded', isDetailsOpen);
       summary.setAttribute('aria-pressed', isDetailsOpen);
     }
