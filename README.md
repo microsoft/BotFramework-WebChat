@@ -163,9 +163,9 @@ We strongly recommend using the token API instead of providing the app with your
 
 For further reading, please see the following links:
 
--  Using Web Chat with [Azure Bot Services authentication](https://blog.botframework.com/2018/09/01/using-webchat-with-azure-bot-services-authentication/)
+-  Using Web Chat with [Azure Bot Services authentication](https://learn.microsoft.com/en-us/azure/bot-service/bot-service-channel-connect-webchat?view=azure-bot-service-4.0)
 
--  [Enhanced Direct Line authentication features](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
+-  [Enhanced Direct Line authentication features](https://learn.microsoft.com/en-us/azure/bot-service/bot-builder-security-enhanced?view=azure-bot-service-4.0)
 
 ## Integrate with JavaScript
 
