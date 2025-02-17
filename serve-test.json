@@ -80,6 +80,14 @@
       "destination": "packages/bundle/dist/webchat-minimal.js.map"
     },
     {
+      "source": "/__dist__/webchat-module.mjs",
+      "destination": "packages/bundle/dist/webchat-module.mjs"
+    },
+    {
+      "source": "/__dist__/webchat-module.mjs.map",
+      "destination": "packages/bundle/dist/webchat-module.mjs.map"
+    },
+    {
       "source": "/test-harness.js",
       "destination": "packages/test/harness/dist/test-harness.js"
     },

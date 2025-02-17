@@ -11,7 +11,7 @@ type HTMLContentTransformComposerProps = Readonly<{
   middleware?: readonly HTMLContentTransformMiddleware[] | undefined;
 }>;
 
-const HTMLContentTransformComposer = memo(({ children, middleware }: HTMLContentTransformComposerProps) => {
+const HTMLContentTransformComposer = memo(({ children, middleware = [] }: HTMLContentTransformComposerProps) => {
   const transform = useMemo<HTMLContentTransformFunction>(() => {
     const enhancers = middleware.map(enhancer => enhancer()).reverse();
 

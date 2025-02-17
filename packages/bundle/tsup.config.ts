@@ -1,3 +1,4 @@
+/* eslint-disable require-unicode-regexp */
 import path from 'path';
 import { defineConfig } from 'tsup';
 import baseConfig from '../../tsup.base.config';
@@ -50,6 +51,26 @@ const config: typeof baseConfig = {
   ]
 };
 
+const externalCjsToEsmPlugin = external => ({
+  name: 'external',
+  setup(build) {
+    const escape = text => `^${text.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}$`;
+    // eslint-disable-next-line security/detect-non-literal-regexp
+    const filter = new RegExp(external.map(escape).join('|'));
+    build.onResolve({ filter: /.*/, namespace: 'external' }, args => ({
+      path: args.path,
+      external: true
+    }));
+    build.onResolve({ filter }, args => ({
+      path: args.path,
+      namespace: 'external'
+    }));
+    build.onLoad({ filter: /.*/, namespace: 'external' }, args => ({
+      contents: `export * from ${JSON.stringify(args.path)}\nimport * as pkg from ${JSON.stringify(args.path)}\nexport default pkg\n`
+    }));
+  }
+});
+
 export default defineConfig([
   // Build IIFE before CJS/ESM to make npm start faster.
   {
@@ -71,6 +92,45 @@ export default defineConfig([
     },
     platform: 'browser',
     target: [...config.target, 'es2019']
+  },
+  {
+    ...config,
+    dts: false,
+    entry: {
+      'webchat-module': './src/bundle/module.ts'
+    },
+    env: {
+      ...config.env,
+      module_format: 'module'
+    },
+    esbuildPlugins: [...config.esbuildPlugins, externalCjsToEsmPlugin(['react', 'react-dom'])],
+    format: 'esm',
+    platform: 'browser',
+    shims: true,
+    splitting: false,
+    target: ['es2023'],
+    noExternal: [
+      '@babel/runtime',
+      'botframework-directlinejs',
+      'botframework-webchat-api',
+      'botframework-webchat-component',
+      'botframework-webchat-core',
+      'classnames',
+      'core-js',
+      'math-random',
+      'mdast-util-from-markdown',
+      'memoize-one',
+      'prop-types',
+      'punycode',
+      'react-dom',
+      'react',
+      'url-search-params-polyfill'
+      // TODO: these packages are needed for full build
+      // decide how we should organize the full build:
+      // 'micromark',
+      // 'sanitize-html',
+      // 'shiki',
+    ]
   },
   {
     ...config,
