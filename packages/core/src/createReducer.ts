@@ -17,6 +17,7 @@ import sendTypingIndicator from './reducers/sendTypingIndicator';
 import shouldSpeakIncomingActivity from './reducers/shouldSpeakIncomingActivity';
 import suggestedActions from './reducers/suggestedActions';
 import suggestedActionsOriginActivity from './reducers/suggestedActionsOriginActivity';
+import botSpeakingState from './reducers/botSpeakingState';
 
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 
@@ -38,6 +39,7 @@ export default function createReducer(ponyfill: GlobalScopePonyfill) {
     shouldSpeakIncomingActivity,
     suggestedActions,
     suggestedActionsOriginActivity,
-    typing: createTypingReducer(ponyfill)
+    typing: createTypingReducer(ponyfill),
+    botSpeakingState
   });
 }
