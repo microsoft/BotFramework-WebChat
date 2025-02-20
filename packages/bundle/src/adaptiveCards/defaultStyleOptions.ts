@@ -1,4 +1,4 @@
-import AdaptiveCardsStyleOptions from './AdaptiveCardsStyleOptions';
+import { type AdaptiveCardsStyleOptions } from './AdaptiveCardsStyleOptions';
 
 const ADAPTIVE_CARDS_DEFAULT_STYLE_OPTIONS: Required<AdaptiveCardsStyleOptions> = {
   adaptiveCardsParserMaxVersion: undefined,

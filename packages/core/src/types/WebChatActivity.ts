@@ -8,9 +8,9 @@
 // - "conversationUpdate" activity is never sent to Web Chat, thus, it is not defined
 
 import type { AnyAnd } from './AnyAnd';
+// import type { AsEntity, Thing } from './external/OrgSchema/Thing';
 import type { DirectLineAttachment } from './external/DirectLineAttachment';
 import type { DirectLineSuggestedAction } from './external/DirectLineSuggestedAction';
-import type { OrgSchemaThing } from './external/OrgSchemaThing';
 
 type SupportedRole = 'bot' | 'channel' | 'user';
 type SupportedSendStatus = 'sending' | 'send failed' | 'sent';
@@ -25,6 +25,22 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
 
     // Sequence ID must be available when chat adapter send it to Web Chat.
     'webchat:sequence-id': number;
+
+    webChat?: {
+      /**
+       * Time when the activity appear in chat history.
+       *
+       * Note: if the activity is updated, this value will also be updated.
+       */
+      receivedAt?: number;
+
+      /**
+       * Per-activity style options.
+       *
+       * New in 4.18.0.
+       */
+      styleOptions?: Record<string, boolean | number | null | string>;
+    };
   } & (SendStatus extends SupportedSendStatus
     ? {
         /**
@@ -77,7 +93,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
          */
         'webchat:send-status': SendStatus;
       }
-    : {}) &
+    : Record<any, any>) &
     (Type extends 'message'
       ? {
           // TODO: [P2] #3953 Rename to "webchat:message-back".
@@ -97,7 +113,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
           // TODO: [P2] #3953 It seems Direct Line added a new "summary" field to cater this case.
           'webchat:fallback-text'?: string;
         }
-      : {})
+      : Record<any, any>)
 >;
 
 // Entity - https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#entity
@@ -111,8 +127,9 @@ type ClientCapabilitiesEntity = {
 
 type Entity =
   | ClientCapabilitiesEntity
-  | OrgSchemaThing
-  | AnyAnd<{ type: Exclude<string, 'ClientCapabilities' | `https://schema.org/${string}`> }>;
+  // Schema.org thing in the first level of entities field must have "type" field of "string".
+  // | AsEntity<Thing>
+  | { type: string };
 
 // Channel account - https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#channel-account
 type ChannelAcount<Role extends SupportedRole> = {
@@ -134,6 +151,11 @@ type EventActivityEssence = {
 type MessageActivityEssence = {
   attachmentLayout?: 'carousel' | 'stacked';
   attachments?: DirectLineAttachment[];
+  channelData: {
+    streamId?: string;
+    streamSequence?: number;
+    streamType?: 'final';
+  };
   inputHint?: 'accepting' | 'expecting' | 'ignoring';
   locale?: string;
   speak?: string;
@@ -145,9 +167,19 @@ type MessageActivityEssence = {
 };
 
 // https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#typing-activity
-type TypingActivityEssence = {
-  type: 'typing';
-};
+type TypingActivityEssence =
+  | {
+      type: 'typing';
+    }
+  | {
+      channelData: {
+        streamId?: string | undefined;
+        streamSequence: number;
+        streamType: 'informative' | 'streaming';
+      };
+      text: string;
+      type: 'typing';
+    };
 
 // Abstract - timestamps
 
@@ -190,10 +222,10 @@ type CoreActivityEssence<
   (Type extends 'event'
     ? EventActivityEssence
     : Type extends 'message'
-    ? MessageActivityEssence
-    : Type extends 'typing'
-    ? TypingActivityEssence
-    : { type: Type });
+      ? MessageActivityEssence
+      : Type extends 'typing'
+        ? TypingActivityEssence
+        : { type: Type });
 
 // Concrete
 

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style>
+      small {
+        padding-inline: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const BATCH_SIZE = 5;
+
+      const timesActivityRendered = new Map();
+
+      function activityRendered() {
+        return next => (...args) => {
+          const [{ activity }] = args;
+          const renderActivity = next(...args)
+          timesActivityRendered.set(activity.id, (timesActivityRendered.get(activity.id) ?? 0) + 1);
+          return (...args) => (
+            <>
+              {renderActivity.call ? renderActivity(...args) : renderActivity}
+              <small> Rendered {timesActivityRendered.get(activity.id)} times</small>
+            </>
+          )
+        }
+      }
+
+      let shownCount = 0;
+      async function postMessagesBatch(directLine) {
+        const promises = [];
+        const timestamp = new Date().toISOString();
+        for (let index = 0; index < BATCH_SIZE; index++) {
+          promises.push(
+            // Plain text message isolate dependencies on Markdown.
+            directLine.emulateIncomingActivity(
+              { id: `activity-${shownCount + index}`, text: `Message ${shownCount + index}.`, textFormat: 'plain', type: 'message', timestamp },
+              { skipWait: true }
+            )
+          );
+        }
+        shownCount += BATCH_SIZE;
+
+        await Promise.all(promises);
+        await pageConditions.numActivitiesShown(shownCount);
+      }
+
+      run(
+        async function () {
+          const {
+            WebChat: { ReactWebChat }
+          } = window; // Imports in UMD fashion.
+
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+          WebChat.renderWebChat({ directLine, store, activityMiddleware: [activityRendered] }, document.querySelector('main'));
+
+          await pageConditions.uiConnected();
+          pageElements.transcript().focus();
+
+          // WHEN: Adding 10 activities.
+          await postMessagesBatch(directLine);
+          await postMessagesBatch(directLine);
+
+          // THEN: Should not re-render activity more than twice.
+          expect(Math.max(...timesActivityRendered.values())).toEqual(2);
+          expect(Math.min(...timesActivityRendered.values())).toEqual(1);
+          
+          // WHEN: Scroll and clicked on the 5th activity.
+          const previousTimesActivityRendered = structuredClone(timesActivityRendered)
+          pageElements.activities()[4].scrollIntoView();
+          await host.clickAt(10, 10, pageElements.activities()[4]);
+
+          // THEN: Should focus on the activity.
+          expect(pageElements.focusedActivity()).toEqual(pageElements.activities()[4]);
+          
+          // THEN: Should not re-render.          
+          expect(timesActivityRendered).toEqual(previousTimesActivityRendered);
+
+          // WHEN: The 9th activity received an update.
+          const timestamp = new Date().toISOString();
+          const activity9Renders = timesActivityRendered.get('activity-8');
+          await directLine.emulateIncomingActivity(
+              { id: `activity-8`, text: `Activity 8 got updated`, textFormat: 'plain', type: 'message', timestamp },
+              { skipWait: true }
+            );
+
+          // THEN: Should re-render the 9th activity once.
+          expect(timesActivityRendered.get('activity-8')).toBe(activity9Renders + 1);
+          // THEN: Should render the updated 9th activity.
+          pageElements.focusedActivity().scrollIntoView();
+          await host.snapshot();
+        }
+      );
+    </script>
+  </body>
+</html>

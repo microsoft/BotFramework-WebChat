@@ -1,9 +1,9 @@
-import { StrictStyleOptions } from 'botframework-webchat-api';
+import CSSTokens from '../CSSTokens';
 
-export default function AudioAttachment({ avatarSize }: StrictStyleOptions) {
+export default function AudioAttachment() {
   return {
     // TODO: [P2] We should not set "display" in styleSet, this will allow the user to break the layout for no good reasons.
     display: 'flex',
-    minHeight: avatarSize
+    minHeight: CSSTokens.SizeAvatar
   };
 }

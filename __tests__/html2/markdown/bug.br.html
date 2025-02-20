@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: {
+            Components: { Composer },
+            hooks: { useRenderMarkdownAsHTML }
+          }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const App = () => useRenderMarkdownAsHTML()('Line 1\n\n<br />\nLine 2');
+
+        render(
+          <Composer directLine={directLine} store={store}>
+            <App />
+          </Composer>,
+          document.getElementById('webchat')
+        );
+
+        // THEN: Should render both "Line 1" and "Line 2".
+        expect(document.getElementById('webchat').textContent).toEqual(
+          expect.stringMatching('<p>\n*Line 1\n*</p>\n*<br />\n*Line 2\n*</div>')
+        );
+      });
+    </script>
+  </body>
+</html>

@@ -1,9 +1,8 @@
 import { useCallback } from 'react';
-
-import useScrollRelative from './internal/useScrollRelative';
+import { useScrollRelativeTranscript } from './transcriptScrollRelative';
 
 export default function useScrollDown(): (options?: { displacement: number }) => void {
-  const scrollRelative = useScrollRelative();
+  const scrollRelative = useScrollRelativeTranscript();
 
-  return useCallback((...args) => scrollRelative('down', ...args), [scrollRelative]);
+  return useCallback(options => scrollRelative({ direction: 'down', ...options }), [scrollRelative]);
 }

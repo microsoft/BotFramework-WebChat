@@ -1,31 +1,53 @@
-import { hooks } from 'botframework-webchat-api';
-import React, { useMemo } from 'react';
-
-import type { ActivityComponentFactory } from 'botframework-webchat-api';
-import type { FC, PropsWithChildren } from 'react';
+import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
 import type { WebChatActivity } from 'botframework-webchat-core';
+import React, { useMemo, type ReactNode } from 'react';
 
-import { ActivityWithRenderer, ReadonlyActivityTree } from './private/types';
-import ActivityTreeContext from './private/Context';
-import useActivitiesWithRenderer from './private/useActivitiesWithRenderer';
-import useActivityTreeContext from './private/useContext';
-import useActivityTreeWithRenderer from './private/useActivityTreeWithRenderer';
 import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';
+import ActivityTreeContext from './private/Context';
+import { ActivityWithRenderer, ReadonlyActivityTree } from './private/types';
+import useActivitiesWithRenderer from './private/useActivitiesWithRenderer';
+import useActivityTreeWithRenderer from './private/useActivityTreeWithRenderer';
+import useActivityTreeContext from './private/useContext';
 
 import type { ActivityTreeContextType } from './private/Context';
 
-type ActivityTreeComposerProps = PropsWithChildren<{}>;
+type ActivityTreeComposerProps = Readonly<{ children?: ReactNode | undefined }>;
 
-const { useActivities, useCreateActivityRenderer } = hooks;
+const { useActivities, useActivityKeys, useCreateActivityRenderer, useGetActivitiesByKey, useGetKeyByActivity } = hooks;
 
-const ActivityTreeComposer: FC<ActivityTreeComposerProps> = ({ children }) => {
+const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
   const existingContext = useActivityTreeContext(false);
 
   if (existingContext) {
     throw new Error('botframework-webchat internal: <ActivityTreeComposer> should not be nested.');
   }
 
-  const [activities]: [WebChatActivity[]] = useActivities();
+  const [rawActivities] = useActivities();
+  const getActivitiesByKey = useGetActivitiesByKey();
+  const getKeyByActivity = useGetKeyByActivity();
+  const activityKeys = useActivityKeys();
+
+  const activities = useMemo<readonly WebChatActivity[]>(() => {
+    const activities: WebChatActivity[] = [];
+
+    if (!activityKeys) {
+      return rawActivities;
+    }
+
+    for (const activity of rawActivities) {
+      // If an activity has multiple revisions, display the latest revision only at the position of the first revision.
+
+      // "Activities with same key" means "multiple revisions of same activity."
+      const activitiesWithSameKey = getActivitiesByKey(getKeyByActivity(activity));
+
+      // TODO: We may want to send all revisions of activity to the middleware so they can render UI to see previous revisions.
+      activitiesWithSameKey?.[0] === activity &&
+        activities.push(activitiesWithSameKey[activitiesWithSameKey.length - 1]);
+    }
+
+    return Object.freeze(activities);
+  }, [activityKeys, getActivitiesByKey, getKeyByActivity, rawActivities]);
+
   const createActivityRenderer: ActivityComponentFactory = useCreateActivityRenderer();
 
   const activitiesWithRenderer = useActivitiesWithRenderer(activities, createActivityRenderer);

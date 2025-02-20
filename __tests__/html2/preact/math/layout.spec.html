@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script src="https://unpkg.com/preact@10.25.4/dist/preact.umd.js"></script>
+  <script src="https://unpkg.com/preact@10.25.4/hooks/dist/hooks.umd.js"></script>
+  <script src="https://unpkg.com/preact@10.25.4/compat/dist/compat.umd.js"></script>
+  <script>
+    // Expose Preact's compat as React for WebChat
+    window.React = preactCompat;
+    window.ReactDOM = preactCompat;
+  </script>
+  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <style>
+    [data-math-type] {
+      border: 1px dashed #0005;
+    }
+    [data-math-type=error] {
+      color: #9d0000;
+      border: 1px dashed currentColor;
+      padding: 0.2em 0.4em;
+      margin: 0 0.2em;
+      border-radius: 2px;
+    }
+    *:has(> [data-math-type=inline]) {
+      --data-math-type: 'inline';
+    }
+    *:has(> [data-math-type=block]) {
+      --data-math-type: 'block';
+    }
+    *:has(> [data-math-type=error]) {
+      --data-math-type: 'error';
+    }
+    *:has(> [data-math-type])::after {
+      content: ' [' var(--data-math-type) ']';
+      opacity: 0.5;
+    }
+  </style>
+</head>
+
+<body>
+  <template id="messages">
+    <x-message>
+## Math Module Specification
+
+### Supported Delimiters
+
+Mathematical expressions can be written using three different delimiter styles:
+
+> **Inline Math** uses `\(...\)` delimiters  
+> Example: \(x^2\)
+
+> **Block Math** uses `\[...\]` delimiters  
+> Example: \[x^2\]
+
+> **Context-Sensitive Math** uses `$$...$$` delimiters  
+> Example: $$x^2$$
+
+### Delimiter Behavior
+
+The `\(...\)` delimiter always renders inline, regardless of position:
+
+> Even at the start of a new line, this remains inline:
+> \(\frac{1}{2}\)  
+
+The `\[...\]` delimiter always renders as a block, even within paragraphs:
+
+> This paragraph contains a block formula \[\frac{3}{4}\] right in the middle.
+
+The `$$...$$` delimiter adapts based on line breaks:
+
+> **Multi-line format** renders as block math:
+> ```
+> $$
+> \frac{4}{5}
+> $$
+> ```
+> Result:
+> $$
+> \frac{4}{5}
+> $$
+
+> **Single-line format** renders inline:  
+> `$$ \frac{5}{6} $$` renders as: $$ \frac{5}{6} $$
+
+> **Exception**: When the formula appears alone on a new line, it renders as block math:
+> ```
+> $$\frac{7}{8}$$
+> ```
+> Result:
+> $$\frac{7}{8}$$
+
+### Delimiter Behavior
+
+The `\(...\)` and `\[...\]` delimiters can be empty and will render as empty formulas:
+
+> Empty inline math: \(\) appears as a blank formula
+>
+> Empty block math: \[\] creates an empty block
+
+The `$$...$$` delimiter requires content to render:
+
+> `$$$$` is not processed as an empty formula and appears as plain text
+>
+> However, even a single space `$$ $$` will be processed as a formula: $$ $$
+
+This guarantees that accidental double dollar signs in text won't be misinterpreted as math formulas.
+    </x-message>
+    <x-message snapshot-ignore>
+### Unclosed Formula Behavior
+
+When processing mathematical formulas, especially during streaming, unclosed formulas are handled according to specific rules:
+
+> **Inline formulas** (`\(` or single-line `$$`) that reach the end of line without closing are ignored:
+> ```
+> This \( x^2 is not a formula because it reaches end of line
+> Neither is this $$ x^2 when on single line
+> ```
+
+> **Block formulas** that reach end of input are also ignored:
+> ```
+> $$ 
+> \frac{1}{2}
+> ```
+
+> The above won't render until the closing `\$$` is received.
+>
+> Similarly for block notation:
+> ```
+> \[
+> \frac{1}{2}
+> ```
+
+> This remains unprocessed text until `\\]` is encountered.
+
+> EOF Example: $$x^2</x-message>
+  <x-message snapshot-ignore>> This \( x^2 is not a formula because it reaches end of content</x-message>
+  <x-message snapshot-ignore>
+> Neither is this $$ x^2 when on single line
+  </x-message>
+  <x-message snapshot-ignore>
+> $$ 
+> \frac{1}{2}
+  </x-message>
+  <x-message>
+> \[
+> \frac{1}{2}
+  </x-message>
+  <x-message snapshot-ignore>
+### Escaping Characters
+
+Special characters can be escaped to prevent them from being interpreted as formula delimiters:
+
+> **Dollar Signs**  
+> Single `$` never needs escaping as it's not used as a delimiter.
+> 
+> Double dollar `$$` can be escaped in three ways:
+> ```
+> \$$ price is not a formula
+> $\$ price is not a formula
+> \$\$ price is also not a formula
+> ```
+
+> \$$ price is not a formula
+
+> $\$ price is not a formula
+
+> \$\$ price is also not a formula
+
+> **Backslashes**  
+> When a backslash precedes a delimiter character, it prevents formula interpretation:
+> ```
+> \\( not a formula \)
+> \\[ not a formula \]
+> ```
+> \\( not a formula \)
+
+> \\[ not a formula \]
+
+> To include a literal backslash in a formula, escape it:
+> ```
+> \( \\x + y \)
+> ```
+
+> \( \\x + y \)  renders as a formula with x + y
+
+This escaping system allows for flexible inclusion of delimiters in regular text while maintaining clear rules for formula detection.  </x-message>
+  </x-message>
+  <x-message>
+### Formula Closure and Nested Content
+
+For any opening `$$`, the next occurrence of `$$` is always treated as its closing delimiter, regardless of content between them:
+
+> **Long formulas with annotations** can include explanation text:
+> ```
+> $$
+> f(x) = \sum_{n=1}^{\infty} \frac{1}{n^2}
+> \newline
+> \text{The series converges to } \frac{\pi^2}{6}
+> $$
+> ```
+
+> $$
+> f(x) = \sum_{n=1}^{\infty} \frac{1}{n^2}
+> \newline
+> \text{The series converges to } \frac{\pi^2}{6}
+> $$
+
+> **Internal dollars** need to be escaped:
+> ```
+> $$
+> \text{Price: \$\$100}
+> \newline
+> \text{Total: \$\$150}
+> $$
+> ```
+
+> $$
+> \text{Price: \$\$100}
+> \newline
+> \text{Total: \$\$150}
+> $$
+  </x-message>
+  </template>
+  <main id="webchat"></main>
+  <script>
+    run(async function () {
+      await host.windowSize(720, 1536, document.getElementById('webchat'));
+
+      const {
+        WebChat: { renderWebChat }
+      } = window; // Imports in UMD fashion.
+
+
+      const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+      renderWebChat(
+        {
+          directLine,
+          store,
+          styleOptions: {
+            bubbleMinWidth: 700
+          }
+        }, 
+        document.getElementById('webchat')
+      );
+
+      await pageConditions.uiConnected();
+
+      const messages = Array.from(window.messages.content.querySelectorAll('x-message'))
+      for (const message of messages) {
+        await directLine.emulateIncomingActivity({
+          text: message.innerText,
+          type: 'message'
+        });
+        if (!message.hasAttribute('snapshot-ignore')) {
+          await host.snapshot('local');
+        }
+        await pageConditions.numActivitiesShown(messages.indexOf(message) + 1);
+      }
+    });
+  </script>
+</body>
+
+</html>

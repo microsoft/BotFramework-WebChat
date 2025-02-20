@@ -5,7 +5,7 @@ import React, { FC } from 'react';
 
 import DownloadIcon from './Assets/DownloadIcon';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 const { useByteFormatter, useDirection, useLocalizer } = hooks;
 
@@ -29,7 +29,7 @@ const ALLOWED_PROTOCOLS = ['blob:', 'data:', 'http:', 'https:'];
 function isAllowedProtocol(url) {
   try {
     return ALLOWED_PROTOCOLS.includes(new URL(url).protocol);
-  } catch (err) {
+  } catch {
     return false;
   }
 }
@@ -93,8 +93,8 @@ const FileContent: FC<FileContentProps> = ({ className, href, fileName, size }) 
         ? 'FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT'
         : 'FILE_CONTENT_DOWNLOADABLE_ALT'
       : localizedSize
-      ? 'FILE_CONTENT_WITH_SIZE_ALT'
-      : 'FILE_CONTENT_ALT',
+        ? 'FILE_CONTENT_WITH_SIZE_ALT'
+        : 'FILE_CONTENT_ALT',
     fileName,
     localizedSize
   );

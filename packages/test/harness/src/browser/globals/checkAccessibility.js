@@ -32,7 +32,9 @@ export default function initializeCheckAccessibility() {
         },
         selector: '#webchat',
         tags: ['webchat', 'cat.semantics', 'best-practice']
-      }
+      },
+      // False-positive: transcript scroll is handled by JS
+      { id: 'scrollable-region-focusable', enabled: false }
     ]
   });
 

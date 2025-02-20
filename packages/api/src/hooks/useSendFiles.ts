@@ -1,9 +1,10 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1024] }] */
 
+import { warnOnce } from 'botframework-webchat-core';
 import { useCallback } from 'react';
 
-import useTrackEvent from './useTrackEvent';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
+import useTrackEvent from './useTrackEvent';
 
 type PostActivityFile = {
   name: string;
@@ -12,13 +13,18 @@ type PostActivityFile = {
   url: string;
 };
 
-export default function useSendFiles(): (files: PostActivityFile[]) => void {
+const warnDeprecation = warnOnce(
+  'This hook will be removed on or after 2026-04-03. Please use `useSendMessage` instead.'
+);
+
+function useSendFiles(): (files: PostActivityFile[]) => void {
   const { sendFiles } = useWebChatAPIContext();
   const trackEvent = useTrackEvent();
 
   return useCallback(
     files => {
       if (files && files.length) {
+        warnDeprecation();
         sendFiles(files);
 
         trackEvent('sendFiles', {
@@ -30,3 +36,6 @@ export default function useSendFiles(): (files: PostActivityFile[]) => void {
     [sendFiles, trackEvent]
   );
 }
+
+export default useSendFiles;
+export { type PostActivityFile };

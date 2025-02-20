@@ -9,17 +9,18 @@ import CSSTokens from '../CSSTokens';
 export default function createLinkDefinitionsStyleSet() {
   return {
     '&.webchat__link-definitions': {
-      '&[open] .webchat__link-definitions__header::after': {
-        transform: 'rotate(0deg)'
-      },
-
       '.webchat__link-definitions__header': {
-        fontFamily: "Calibri, 'Helvetica Neue', Arial, 'sans-serif'",
-        fontSize: '80%',
+        alignItems: 'center',
+        cursor: 'default',
+        display: 'flex',
+        fontFamily: CSSTokens.FontPrimary,
+        fontSize: CSSTokens.FontSizeSmall,
+        gap: 4,
+        justifyContent: 'space-between',
         listStyle: 'none',
 
         [LIGHT_THEME_SELECTOR]: {
-          color: '#616161'
+          color: '#616161' // TODO: Should we use subtle color instead?
         },
 
         [DARK_THEME_SELECTOR]: {
@@ -28,13 +29,52 @@ export default function createLinkDefinitionsStyleSet() {
         }
       },
 
+      '.webchat__link-definitions__header-section': {
+        alignItems: 'center',
+        display: 'flex',
+        gap: 4,
+        overflow: 'hidden'
+      },
+
+      '.webchat__link-definitions__header-section--left': {
+        flexShrink: 0
+      },
+
+      '.webchat__link-definitions__header-text': {
+        flexShrink: 0
+      },
+
       '.webchat__link-definitions__header::-webkit-details-marker': {
         display: 'none'
       },
 
+      '.webchat__link-definitions__header-chevron': {
+        flexShrink: 0
+      },
+
       '&:not([open]) .webchat__link-definitions__header-chevron': {
-        marginBottom: '-0.1em',
         transform: 'rotate(-180deg)'
+      },
+
+      '.webchat__link-definitions__header-accessory': {
+        overflow: 'hidden'
+      },
+
+      '.webchat__link-definitions__message-sensitivity-label': {
+        alignItems: 'center',
+        display: 'flex',
+        gap: 4
+      },
+
+      '.webchat__link-definitions__message-sensitivity-label-icon': {
+        color: 'CanvasText',
+        flexShrink: 0
+      },
+
+      '.webchat__link-definitions__message-sensitivity-label-text': {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
       },
 
       '.webchat__link-definitions__list': {
@@ -52,6 +92,7 @@ export default function createLinkDefinitionsStyleSet() {
 
       '.webchat__link-definitions__badge': {
         alignItems: 'center',
+        alignSelf: 'flex-start',
         borderRadius: '4px',
         borderStyle: 'solid',
         borderWidth: 1,
@@ -119,7 +160,8 @@ export default function createLinkDefinitionsStyleSet() {
         fontFamily: 'inherit',
         fontSize: 'inherit',
         overflow: 'hidden',
-        padding: 0
+        padding: 0,
+        textAlign: 'initial' // By default, texts inside button are centered.
       },
 
       '.webchat__link-definitions__list-item-body': {
@@ -127,23 +169,51 @@ export default function createLinkDefinitionsStyleSet() {
         display: 'flex',
         fontFamily: "Calibri, 'Helvetica Neue', Arial, 'sans-serif'",
         gap: 4,
-        padding: 4,
+        padding: 4
+      },
+
+      '.webchat__link-definitions__list-item-body-main': {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        overflow: 'hidden'
+      },
+
+      '.webchat__link-definitions__list-item-main-text': {
+        alignItems: 'baseline',
+        display: 'flex',
+        gap: 4
+      },
+
+      '.webchat__link-definitions__list-item-badge, .webchat__link-definitions__list-item-text': {
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+      },
+
+      '.webchat__link-definitions__list-item-text': {
+        textDecoration: 'underline',
 
         [NOT_FORCED_COLORS_SELECTOR]: {
           color: CSSTokens.ColorAccent
         }
       },
 
-      '.webchat__link-definitions__list-item-text': {
-        overflow: 'hidden',
-        textDecoration: 'underline',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap'
+      '.webchat__link-definitions__list-item-badge': {
+        fontSize: CSSTokens.FontSizeSmall,
+
+        [NOT_FORCED_COLORS_SELECTOR]: {
+          color: CSSTokens.ColorSubtle
+        }
       },
 
       '.webchat__link-definitions__open-in-new-window-icon': {
         flexShrink: 0, // When text is too long, make sure the chevron is not squeezed.
-        paddingRight: 4 // When text is too long and chevron is on far right, this will align the chevron so it's not too far.
+        paddingRight: 4, // When text is too long and chevron is on far right, this will align the chevron so it's not too far.
+
+        [NOT_FORCED_COLORS_SELECTOR]: {
+          color: CSSTokens.ColorAccent
+        }
       }
     }
   };

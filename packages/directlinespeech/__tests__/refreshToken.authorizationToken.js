@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @jest-environment @happy-dom/jest-environment
  */
 
 import 'global-agent/bootstrap';
@@ -39,7 +39,7 @@ test.nightly('should refresh authorization token', async () => {
     throw new Error('"SPEECH_SERVICES_SUBSCRIPTION_KEY" environment variable must be set.');
   }
 
-  jest.useFakeTimers('modern');
+  jest.useFakeTimers({ doNotFake: ['performance'] });
 
   const { directLine } = await createTestHarness();
   const initialAuthorizationToken = directLine.dialogServiceConnector.authorizationToken;

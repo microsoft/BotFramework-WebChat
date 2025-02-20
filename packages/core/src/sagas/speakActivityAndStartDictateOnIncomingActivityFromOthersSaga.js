@@ -1,12 +1,13 @@
 import { put, select, takeEvery } from 'redux-saga/effects';
 
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
-import { WILL_START } from '../constants/DictateState';
 import markActivity from '../actions/markActivity';
 import setDictateState from '../actions/setDictateState';
-import shouldSpeakIncomingActivitySelector from '../selectors/shouldSpeakIncomingActivity';
-import speakableActivity from '../definitions/speakableActivity';
 import stopDictate from '../actions/stopDictate';
+import { IDLE, WILL_START } from '../constants/DictateState';
+import speakableActivity from '../definitions/speakableActivity';
+import dictateStateSelector from '../selectors/dictateState';
+import shouldSpeakIncomingActivitySelector from '../selectors/shouldSpeakIncomingActivity';
 import whileConnected from './effects/whileConnected';
 
 function* speakActivityAndStartDictateOnIncomingActivityFromOthers({ userID }) {
@@ -18,6 +19,7 @@ function* speakActivityAndStartDictateOnIncomingActivityFromOthers({ userID }) {
       type === INCOMING_ACTIVITY && payload.activity.from.id !== userID && payload.activity.from.role !== 'user',
     function* ({ payload: { activity } }) {
       const shouldSpeakIncomingActivity = yield select(shouldSpeakIncomingActivitySelector);
+      const dictateState = yield select(dictateStateSelector);
       const shouldSpeak = speakableActivity(activity) && shouldSpeakIncomingActivity;
 
       if (
@@ -30,7 +32,11 @@ function* speakActivityAndStartDictateOnIncomingActivityFromOthers({ userID }) {
       }
 
       if (shouldSpeak && activity.inputHint === 'expectingInput') {
-        yield put(setDictateState(WILL_START));
+        // In continuous mode (dictateState === LISTENING), we shouldn't set it to WILL_START.
+        // WILL_START means auto start after synthesis completed.
+        if (dictateState === IDLE) {
+          yield put(setDictateState(WILL_START));
+        }
       } else if (activity.inputHint === 'ignoringInput') {
         yield put(stopDictate());
       }

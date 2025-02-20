@@ -38,8 +38,8 @@ async function sendWebDriverCommand(sessionId, command, body, fetchOptions) {
       ? new URL(`/wd/hub/session/${sessionId}/${command}`, WEB_DRIVER_URL)
       : new URL(`/wd/hub/session/${sessionId}`, WEB_DRIVER_URL)
     : command
-    ? new URL(`/wd/hub/${command}`, WEB_DRIVER_URL)
-    : new URL(`/wd/hub`, WEB_DRIVER_URL);
+      ? new URL(`/wd/hub/${command}`, WEB_DRIVER_URL)
+      : new URL(`/wd/hub`, WEB_DRIVER_URL);
 
   const res = await fetch(
     url,

@@ -12,27 +12,23 @@
     "node": ">= 14.0.0"
   },
   "scripts": {
-    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "npm run build:babel && npm run build:esbuild",
     "build:babel": "babel --config-file ./babel.config.json --out-dir lib src",
-    "build:esbuild": "esbuild lib/browser/index.js --bundle --define:process.env.CI=undefined --outfile=dist/test-harness.js --sourcemap --target=chrome80",
-    "bump": "npm run bump:prod && npm run bump:dev && npm run bump:auditfix",
-    "bump:auditfix": "npm audit fix --legacy-peer-deps || exit 0",
-    "bump:dev": "if [ `cat package.json | jq -r '.devDependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
-    "bump:prod": "if [ `cat package.json | jq -r '.dependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
+    "build:esbuild": "esbuild lib/browser/index.js --bundle --define:process.env.CI=undefined --outfile=dist/test-harness.js --sourcemap --target=chrome100",
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
     "eslint": "npm run precommit",
-    "postauditfix": "npm run postbump",
-    "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
-    "preauditfix": "npm run prebump",
-    "prebump": "cat package.json | jq '(((.localPeerDependencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDependencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
+    "postversion": "cat package.json | jq '.version as $V | (.localDependencies // {} | with_entries(select(.value == \"production\") | { key: .key, value: $V })) as $L1 | (.localDependencies // {} | with_entries(select(.value == \"development\") | { key: .key, value: $V })) as $L2 | ((.dependencies // {}) + $L1 | to_entries | sort_by(.key) | from_entries) as $D1 | ((.devDependencies // {}) + $L2 | to_entries | sort_by(.key) | from_entries) as $D2 | . + { dependencies: $D1, devDependencies: $D2 }' > package-temp.json && mv package-temp.json package.json",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
-    "prestart": "concurrently \"npm run build:babel\" && npm run build:esbuild",
-    "start": "concurrently --kill-others \"npm run start:*\"",
+    "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
+    "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:esbuild": "npm run build:esbuild -- --watch",
     "test": "node node_modules/.bin/jest --maxWorkers=4"
   },
+  "localDependencies": {},
   "pinDependencies": {
     "@babel/cli": [
       "7.18.10",
@@ -49,6 +45,10 @@
     "expect": [
       "25",
       "expect@26 does not support pure JavaScript environment without node:fs and other packages"
+    ],
+    "http-proxy-middleware": [
+      "2",
+      "http-proxy-middleware@3 has breaking changes, need time to migrate"
     ],
     "jest": [
       "28",
@@ -69,8 +69,9 @@
   },
   "dependencies": {
     "abort-controller": "3.0.0",
-    "axe-core": "4.7.2",
-    "core-js": "3.32.1",
+    "axe-core": "4.10.2",
+    "core-js": "3.40.0",
+    "core-js-pure": "3.40.0",
     "event-target-shim": "6.0.2",
     "expect": "25.5.0",
     "lolex": "6.0.0",
@@ -80,22 +81,20 @@
     "@babel/cli": "^7.18.10",
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
-    "babel-plugin-istanbul": "^6.1.1",
-    "concurrently": "^8.2.1",
-    "esbuild": "^0.19.2",
-    "express": "^4.18.2",
+    "babel-plugin-istanbul": "^7.0.0",
+    "concurrently": "^9.1.2",
+    "esbuild": "^0.25.0",
+    "express": "^4.21.2",
     "global-agent": "^3.0.0",
-    "http-proxy-middleware": "^2.0.6",
-    "istanbul-lib-coverage": "^3.2.0",
+    "http-proxy-middleware": "^2.0.7",
+    "istanbul-lib-coverage": "^3.2.2",
     "jest": "^28.1.3",
     "jest-environment-node": "^28.1.3",
-    "jest-image-snapshot": "^6.2.0",
+    "jest-image-snapshot": "^6.4.0",
     "node-dev": "^8.0.0",
     "node-fetch": "^2.7.0",
-    "p-defer": "^4.0.0",
-    "p-defer-es5": "^2.0.1",
-    "selenium-webdriver": "^4.12.0",
-    "serve": "^14.2.1",
+    "selenium-webdriver": "^4.28.1",
+    "serve": "^14.2.4",
     "strip-ansi": "^6.0.1"
   }
 }

@@ -23,31 +23,13 @@ async function readAllStdin() {
   });
 }
 
-function rebaseV1Inline(name, dependency, baseURL) {
-  const { resolved: actual, version } = dependency;
-  const singleName = name.split('/').reverse()[0];
-
-  const { href: expected } = new URL(`${name}/-/${singleName}-${version}.tgz`, 'https://registry.npmjs.org/');
-  const { href: rebased } = new URL(`${name}/-/${singleName}-${version}.tgz`, baseURL);
-
-  if (expected !== actual) {
-    throw new Error(`v1: Expecting "resolved" field to be "${expected}", actual is "${actual}".`);
+function rebaseV3Inline(path, dependency, baseURL) {
+  if (dependency.link || !dependency.resolved) {
+    return;
   }
 
-  dependency.resolved = rebased;
-
-  rebaseV1InlineAll(dependency, baseURL);
-}
-
-function rebaseV1InlineAll({ dependencies }, baseURL) {
-  for (const [name, dependency] of Object.entries(dependencies || {})) {
-    rebaseV1Inline(name, dependency, baseURL);
-  }
-}
-
-function rebaseV2Inline(path, dependency, baseURL) {
-  const { resolved: actual, version } = dependency;
-  const name = path.split('node_modules/').reverse()[0];
+  const { name: nameFromDependency, resolved: actual, version } = dependency;
+  const name = nameFromDependency || path.split('node_modules/').reverse()[0];
 
   const singleName = name.split('/').reverse()[0];
 
@@ -61,10 +43,10 @@ function rebaseV2Inline(path, dependency, baseURL) {
   dependency.resolved = rebased;
 }
 
-function rebaseV2InlineAll(packages, baseURL) {
+function rebaseV3InlineAll(packages, baseURL) {
   for (const [path, dependency] of Object.entries(packages || {})) {
     // "path" is falsy if it is iterating the current package.
-    path && rebaseV2Inline(path, dependency, baseURL);
+    path && rebaseV3Inline(path, dependency, baseURL);
   }
 }
 
@@ -77,11 +59,12 @@ async function main() {
 
   const packageLockJSON = JSON.parse(await readAllStdin());
 
-  // v1
-  rebaseV1InlineAll(packageLockJSON, baseURL);
+  if (packageLockJSON.lockfileVersion !== 3) {
+    throw new Error('Only works with v3 lockfile.');
+  }
 
-  // v2
-  rebaseV2InlineAll(packageLockJSON.packages, baseURL);
+  // v3
+  rebaseV3InlineAll(packageLockJSON.packages, baseURL);
 
   const json = JSON.stringify(packageLockJSON, null, 2);
 

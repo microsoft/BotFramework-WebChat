@@ -2,7 +2,10 @@
 !/__tests__
 /__tests__/__image_snapshots__
 !/packages/bundle/dist
+!/packages/fluent-theme/dist
 !/packages/playground/build
+!/packages/test/fluent-bundle/dist
 !/packages/test/harness/dist
 !/packages/test/page-object/dist
+!/packages/test/web-server/dist
 !/serve-test.json

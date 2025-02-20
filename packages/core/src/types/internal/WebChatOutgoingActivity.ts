@@ -8,7 +8,7 @@ type OutgoingEventActivityEssence = {
 };
 
 type OutgoingMessageActivityEssence = {
-  attachments?: {}[];
+  attachments?: Record<any, unknown>[];
   channelData: {
     attachmentSizes?: number[];
     messageBack?: { displayText: string };
@@ -52,9 +52,9 @@ type WebChatOutgoingActivity<Type extends string = string> = {
 } & (Type extends 'event'
   ? OutgoingEventActivityEssence
   : Type extends 'message'
-  ? OutgoingMessageActivityEssence
-  : Type extends 'typing'
-  ? OutgoingTypingActivityEssence
-  : { type: Type });
+    ? OutgoingMessageActivityEssence
+    : Type extends 'typing'
+      ? OutgoingTypingActivityEssence
+      : { type: Type });
 
 export type { WebChatOutgoingActivity };

@@ -1,17 +1,14 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "declarationDir": "../lib",
-    "declarationMap": true,
     "downlevelIteration": true,
-    "emitDeclarationOnly": true,
     "jsx": "react",
-    "preserveWatchOutput": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
     "pretty": true,
     "resolveJsonModule": true, // Required for localization files
     "skipLibCheck": true,
     "sourceMap": true
-  },
-  "files": ["index.ts"]
+  }
 }

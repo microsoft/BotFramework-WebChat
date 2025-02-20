@@ -76,12 +76,12 @@ Open the project in your preferred IDE.
 
 First we will render Web Chat. To test, you can temporarily add `<WebChat>` to your `App.js`
 
-In the `WebChat.js` file, import `React`, `{ useEffect, useMemo }` `ReactWebChat`, `createDirectLine`, and `createStyleSet` from our packages.
+In the `WebChat.js` file, import `React`, `{ useEffect, useMemo }` `ReactWebChat`, and `createDirectLine`, from our packages.
 
 <!-- prettier-ignore-start -->
 ```js
 import React from 'react';
-import ReactWebChat, { createDirectLine, createStyleSet } from 'botframework-webchat';
+import ReactWebChat, { createDirectLine } from 'botframework-webchat';
 ```
 <!-- prettier-ignore-end -->
 
@@ -92,7 +92,7 @@ Set up the functional component the same way you would set up a regular `React.C
 
 <!-- prettier-ignore-start -->
 ```js
-const WebChat = ({ className, onFetchToken, store, token }) => {
+const WebChat = ({ className, onFetchToken, store, styleOptions, token }) => {
   const directLine = useMemo(() => createDirectLine({ token }), [token]);
 
   useEffect(() => {
@@ -100,7 +100,7 @@ const WebChat = ({ className, onFetchToken, store, token }) => {
   }, [onFetchToken]);
 
   return token ? (
-    <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} styleSet={styleSet} />
+    <ReactWebChat className={`${className || ''} web-chat`} directLine={directLine} store={store} styleOptions={styleOptions} />
   ) : (
     <div className={`${className || ''} connect-spinner`}>
       <div className="content">
@@ -130,12 +130,12 @@ In the `useEffect` hook, invoke `onFetchToken` from props if the `token` has not
 
 Let's move on to building the `<MinimizableWebChat>` component.
 
-Import `React`, `{ useCallback, useMemo, useState }` `createStore`, and `createStyleSet`. Then import your newly made component, `WebChat`.
+Import `React`, `{ useCallback, useMemo, useState }` and `createStore`. Then import your newly made component, `WebChat`.
 
 <!-- prettier-ignore-start -->
 ```js
 import React from 'react', { useCallback, useMemo, useState };
-import { createStore, createStyleSet } from 'botframework-webchat';
+import { createStore } from 'botframework-webchat';
 
 import WebChat from './WebChat';
 ```
@@ -212,14 +212,6 @@ import WebChat from './WebChat';
     []
   );
 
-  const styleSet = useMemo(
-    () =>
-      createStyleSet({
-        backgroundColor: 'Transparent'
-      }),
-    []
-  );
-
   const [loaded, setLoaded] = useState(false);
   const [minimized, setMinimized] = useState(true);
   const [newMessage, setNewMessage] = useState(false);
@@ -245,7 +237,7 @@ Now implement each method:
 ```js
   const handleFetchToken = useCallback(async () => {
     if (!token) {
-      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+      const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
       const { token } = await res.json();
 
       setToken(token);
@@ -298,7 +290,7 @@ Then implement these methods into the component:
             className="react-web-chat"
 +           onFetchToken={handleFetchToken}
 +           store={store}
-            styleSet={styleSet}
+            styleOptions={styleOptions}
 +           token={token}
           />
         </div>
@@ -345,7 +337,7 @@ Completed `MinimizableWebChat.js`
 ```js
 import classNames from 'classnames';
 import React, { useCallback, useMemo, useState } from 'react';
-import { createStore, createStyleSet } from 'botframework-webchat';
+import { createStore } from 'botframework-webchat';
 
 import WebChat from './WebChat';
 
@@ -377,10 +369,10 @@ const MinimizableWebChat = () => {
     []
   );
 
-  const styleSet = useMemo(
+  const styleOptions = useMemo(
     () =>
-      createStyleSet({
-        backgroundColor: 'Transparent'
+      ({
+        backgroundColor: 'transparent'
       }),
     []
   );
@@ -395,7 +387,7 @@ const MinimizableWebChat = () => {
     let token;
 
     if (!token) {
-      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+      const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
       const { token } = await res.json();
 
       setToken(token);
@@ -440,7 +432,7 @@ const MinimizableWebChat = () => {
             className="react-web-chat"
             onFetchToken={handleFetchToken}
             store={store}
-            styleSet={styleSet}
+            styleOptions={styleOptions}
             token={token}
           />
         </div>

@@ -1,79 +1,30 @@
+import {
+  parseDocumentFragmentFromString,
+  serializeDocumentFragmentIntoString,
+  type HighlightCodeFn
+} from 'botframework-webchat-component/internal';
 import { onErrorResumeNext } from 'botframework-webchat-core';
-import MarkdownIt from 'markdown-it';
-import sanitizeHTML from 'sanitize-html';
+import katex from 'katex';
+import { micromark } from 'micromark';
+import { gfm, gfmHtml } from 'micromark-extension-gfm';
 
-import { pre as respectCRLFPre } from './markdownItPlugins/respectCRLF';
-import ariaLabel, { post as ariaLabelPost, pre as ariaLabelPre } from './markdownItPlugins/ariaLabel';
-import betterLink from './markdownItPlugins/betterLink';
+import { math, mathHtml } from './mathExtension';
+import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
 import iterateLinkDefinitions from './private/iterateLinkDefinitions';
+import { pre as respectCRLFPre } from './private/respectCRLF';
 
-const SANITIZE_HTML_OPTIONS = Object.freeze({
-  allowedAttributes: {
-    a: ['aria-label', 'class', 'href', 'name', 'rel', 'target'],
-    button: ['aria-label', 'class', 'type', 'value'],
-    img: ['alt', 'class', 'src', 'title'],
-    span: ['aria-label']
-  },
-  allowedSchemes: ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'],
-  allowedTags: [
-    'a',
-    'b',
-    'blockquote',
-    'br',
-    'button',
-    'caption',
-    'code',
-    'del',
-    'div',
-    'em',
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'hr',
-    'i',
-    'img',
-    'ins',
-    'li',
-    'nl',
-    'ol',
-    'p',
-    'pre',
-    's',
-    'span',
-    'strike',
-    'strong',
-    'table',
-    'tbody',
-    'td',
-    'tfoot',
-    'th',
-    'thead',
-    'tr',
-    'ul'
-  ],
-  // Bug of https://github.com/apostrophecms/sanitize-html/issues/633.
-  // They should not remove `alt=""` even though it is empty.
-  nonBooleanAttributes: []
-});
+type RenderInit = Readonly<{
+  codeBlockCopyButtonTagName: string;
+  externalLinkAlt: string;
+  highlightCode: HighlightCodeFn;
+}>;
 
-const MARKDOWN_IT_INIT = Object.freeze({
-  breaks: false,
-  html: false,
-  linkify: true,
-  typographer: true,
-  xhtmlOut: true
-});
-
-type BetterLinkDecoration = Exclude<ReturnType<Parameters<typeof betterLink>[1]>, undefined>;
-type RenderInit = { externalLinkAlt?: string };
+const ALLOWED_SCHEMES = ['data', 'http', 'https', 'ftp', 'mailto', 'sip', 'tel'];
 
 export default function render(
   markdown: string,
-  { markdownRespectCRLF }: Readonly<{ markdownRespectCRLF: boolean }>,
-  { externalLinkAlt = '' }: Readonly<RenderInit> = Object.freeze({})
+  { markdownRespectCRLF, markdownRenderHTML }: Readonly<{ markdownRespectCRLF: boolean; markdownRenderHTML?: boolean }>,
+  { externalLinkAlt }: RenderInit
 ): string {
   const linkDefinitions = Array.from(iterateLinkDefinitions(markdown));
 
@@ -81,30 +32,35 @@ export default function render(
     markdown = respectCRLFPre(markdown);
   }
 
-  markdown = ariaLabelPre(markdown);
+  const decorate = (href: string, textContent: string): BetterLinkDocumentModDecoration => {
+    const decoration: BetterLinkDocumentModDecoration = {
+      rel: 'noopener noreferrer',
+      target: '_blank',
+      wrapZeroWidthSpace: true
+    };
 
-  const markdownIt = new MarkdownIt(MARKDOWN_IT_INIT)
-    .use(ariaLabel)
-    .use(betterLink, (href: string, textContent: string): BetterLinkDecoration | undefined => {
-      const decoration: BetterLinkDecoration = {
-        rel: 'noopener noreferrer',
-        target: '_blank'
-      };
+    const ariaLabelSegments: string[] = [textContent];
+    const classes: Set<string> = new Set();
+    const linkDefinition = linkDefinitions.find(({ url }) => url === href);
+    const protocol = onErrorResumeNext(() => new URL(href).protocol);
 
-      const ariaLabelSegments: string[] = [textContent];
-      const classes: Set<string> = new Set();
-      const linkDefinition = linkDefinitions.find(({ url }) => url === href);
-      const protocol = onErrorResumeNext(() => new URL(href).protocol);
+    if (linkDefinition) {
+      ariaLabelSegments.push(
+        linkDefinition.title || onErrorResumeNext(() => new URL(linkDefinition.url).host) || linkDefinition.url
+      );
 
-      if (linkDefinition) {
-        ariaLabelSegments.push(
-          linkDefinition.title || onErrorResumeNext(() => new URL(linkDefinition.url).host) || linkDefinition.url
-        );
+      // linkDefinition.identifier is uppercase, while linkDefinition.label is as-is.
+      linkDefinition.label === textContent && classes.add('webchat__render-markdown__pure-identifier');
+    }
 
-        linkDefinition.identifier === textContent && classes.add('webchat__render-markdown__pure-identifier');
-      }
+    // Let javascript: fell through. Our sanitizer will catch and remove it from <a href>.
+    // Otherwise, it will be turn into <button value="javascript:"> and won't able to catch it.
 
-      if (protocol === 'cite:') {
+    // False-positive.
+    // eslint-disable-next-line no-script-url
+    if (protocol !== 'javascript:') {
+      // For links that would be sanitized out, let's turn them into a button so we could handle them later.
+      if (!ALLOWED_SCHEMES.map(scheme => `${scheme}:`).includes(protocol)) {
         decoration.asButton = true;
 
         classes.add('webchat__render-markdown__citation');
@@ -114,36 +70,57 @@ export default function render(
 
         ariaLabelSegments.push(externalLinkAlt);
       }
+    }
 
-      // The first segment is textContent. Putting textContent is aria-label is useless.
-      if (ariaLabelSegments.length > 1) {
-        // If "aria-label" is already applied, do not overwrite it.
-        decoration.ariaLabel = (value: string) => value || ariaLabelSegments.join(' ');
-      }
+    // The first segment is textContent. Putting textContent is aria-label is useless.
+    if (ariaLabelSegments.length > 1) {
+      // If "aria-label" is already applied, do not overwrite it.
+      decoration.ariaLabel = (value: string) => value || ariaLabelSegments.join(' ');
+    }
 
-      decoration.className = Array.from(classes).join(' ');
+    decoration.className = Array.from(classes).join(' ');
 
-      // By default, Markdown-It will set "title" to the link title in link definition.
+    // However, "title" may be narrated by screen reader:
+    // - Edge
+    //   - <a> will narrate "aria-label" but not "title"
+    //   - <button> will narrate both "aria-label" and "title"
+    // - NVDA
+    //   - <a> will narrate both "aria-label" and "title"
+    //   - <button> will narrate both "aria-label" and "title"
 
-      // However, "title" may be narrated by screen reader:
-      // - Edge
-      //   - <a> will narrate "aria-label" but not "title"
-      //   - <button> will narrate both "aria-label" and "title"
-      // - NVDA
-      //   - <a> will narrate both "aria-label" and "title"
-      //   - <button> will narrate both "aria-label" and "title"
+    // Title makes it very difficult to control narrations by the screen reader. Thus, we are disabling it in favor of "aria-label".
+    // This will not affect our accessibility compliance but UX. We could use a non-native tooltip or other forms of visual hint.
 
-      // Title makes it very difficult to control narrations by the screen reader. Thus, we are disabling it in favor of "aria-label".
-      // This will not affect our accessibility compliance but UX. We could use a non-native tooltip or other forms of visual hint.
+    decoration.title = false;
 
-      decoration.title = false;
+    return decoration;
+  };
 
-      return decoration;
-    });
+  const htmlAfterMarkdown = micromark(markdown, {
+    allowDangerousHtml: markdownRenderHTML ?? true,
+    // We need to handle links like cite:1 or other URL handlers.
+    // And we will remove dangerous protocol during sanitization.
+    allowDangerousProtocol: true,
+    extensions: [gfm(), math()],
+    htmlExtensions: [
+      gfmHtml(),
+      mathHtml({
+        renderMath: (content, isDisplay) =>
+          katex.renderToString(content, {
+            displayMode: isDisplay,
+            output: 'mathml'
+          })
+      })
+    ]
+  });
 
-  let html = markdownIt.render(markdown);
+  // TODO: [P1] In some future, we should apply "better link" and "sanitization" outside of the Markdown engine.
+  //       Particularly, apply them at `useRenderMarkdownAsHTML` instead of inside the default `renderMarkdown`.
+  //       If web devs want to bring their own Markdown engine, they don't need to rebuild "better link" and sanitization themselves.
 
-  html = ariaLabelPost(html);
+  const documentFragmentAfterMarkdown = parseDocumentFragmentFromString(htmlAfterMarkdown);
 
-  return sanitizeHTML(html, SANITIZE_HTML_OPTIONS);
+  betterLinkDocumentMod(documentFragmentAfterMarkdown, decorate);
+
+  return serializeDocumentFragmentIntoString(documentFragmentAfterMarkdown);
 }

@@ -6,10 +6,10 @@ import React, { FC } from 'react';
 import ImageAvatar from '../../Avatar/ImageAvatar';
 import InitialsAvatar from '../../Avatar/InitialsAvatar';
 import useStyleSet from '../../hooks/useStyleSet';
-import useStyleToEmotionObject from '../../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../../hooks/internal/styleToEmotionObject';
 
 const ROOT_STYLE = {
-  overflow: 'hidden',
+  overflow: ['hidden', 'clip'],
   position: 'relative',
 
   '> *': {

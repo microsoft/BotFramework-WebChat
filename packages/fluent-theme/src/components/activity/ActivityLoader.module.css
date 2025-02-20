@@ -1,0 +1,10 @@
+:global(.webchat-fluent) .activity-loader {
+  flex: none;
+  height: 8px;
+  margin: var(--webchat-spacingHorizontalM) 0 0 18px;
+  width: auto;
+
+  &.variant-fluent {
+    margin: 0 0 var(--webchat-spacingHorizontalM) var(--webchat-spacingVerticalSNudge);
+  }
+}

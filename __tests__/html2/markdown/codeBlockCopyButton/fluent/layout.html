@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        await host.sendDevToolsCommand('Browser.setPermission', {
+          permission: { name: 'clipboard-write' },
+          setting: 'granted'
+        });
+
+        await expect(navigator.permissions.query({ name: 'clipboard-write' })).resolves.toHaveProperty(
+          'state',
+          'granted'
+        );
+
+        const {
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const App = () => <ReactWebChat directLine={directLine} store={store} />;
+
+        render(
+          <FluentThemeProvider>
+            <App />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          text: `Laboris ut proident dolore nisi sint ullamco proident veniam est.
+
+\`\`\`
+In do pariatur id enim nisi adipisicing incididunt consectetur do velit quis aliqua ad.
+
+Et proident est fugiat duis exercitation qui sunt amet ipsum.
+\`\`\`
+
+Ea sint elit anim enim voluptate aliquip aliqua nulla veniam.
+
+<pre><code>Ea et pariatur sint Lorem ex veniam adipisicing.
+
+Aliqua magna aliquip nisi quis.
+</code></pre>
+
+Cupidatat nulla duis dolor nulla ut pariatur minim incididunt quis adipisicing velit id Lorem.`,
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should show 2 copy button, one for triple-backtick codeblock, one for <pre> codeblock.
+        expect(
+          pageElements.activities()[0].querySelectorAll(`[data-testid="${testIds.codeBlockCopyButton}"]`)
+        ).toHaveLength(2);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

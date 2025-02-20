@@ -1,11 +1,13 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import { StrictStyleOptions } from 'botframework-webchat-api';
+import CSSTokens from '../CSSTokens';
 
 export default function createStackedLayoutStyle({
-  avatarSize,
-  bubbleMaxWidth,
-  bubbleMinWidth,
+  bubbleAttachmentMaxWidth,
+  bubbleAttachmentMinWidth,
+  bubbleMessageMaxWidth,
+  bubbleMessageMinWidth,
   paddingRegular,
   transitionDuration
 }: StrictStyleOptions) {
@@ -31,8 +33,8 @@ export default function createStackedLayoutStyle({
       },
 
       '& .webchat__stacked-layout__attachment': {
-        maxWidth: bubbleMaxWidth,
-        minWidth: bubbleMinWidth,
+        maxWidth: CSSTokens.MaxWidthAttachmentBubble,
+        minWidth: CSSTokens.MinWidthAttachmentBubble,
         transitionDuration,
         transitionProperty: 'max-width, min-width'
       },
@@ -48,7 +50,8 @@ export default function createStackedLayoutStyle({
         },
 
       '& .webchat__stacked-layout__message': {
-        maxWidth: bubbleMaxWidth,
+        maxWidth: CSSTokens.MaxWidthMessageBubble,
+        minWidth: CSSTokens.MinWidthMessageBubble,
         overflow: 'hidden',
         transitionDuration,
         transitionProperty: 'max-width'
@@ -62,14 +65,20 @@ export default function createStackedLayoutStyle({
 
       '&.webchat__stacked-layout--hide-avatar, &.webchat__stacked-layout--show-avatar': {
         '& .webchat__stacked-layout__avatar-gutter': {
-          width: avatarSize
+          width: CSSTokens.SizeAvatar
         }
       },
 
       '&.webchat__stacked-layout--hide-avatar, &.webchat__stacked-layout--show-avatar, &.webchat__stacked-layout--hide-nub, &.webchat__stacked-layout--show-nub':
         {
-          '& .webchat__stacked-layout__attachment, & .webchat__stacked-layout__message': {
-            maxWidth: bubbleMaxWidth + paddingRegular
+          '& .webchat__stacked-layout__attachment': {
+            maxWidth: bubbleAttachmentMaxWidth + paddingRegular,
+            minWidth: bubbleAttachmentMinWidth + paddingRegular
+          },
+
+          '& .webchat__stacked-layout__message': {
+            maxWidth: bubbleMessageMaxWidth + paddingRegular,
+            minWidth: bubbleMessageMinWidth + paddingRegular
           },
 
           '& .webchat__stacked-layout__nub-pad': {

@@ -8,12 +8,11 @@ import React from 'react';
 
 import Bubble from './Bubble';
 import CarouselFilmStripAttachment from './CarouselFilmStripAttachment';
-import connectToWebChat from '../connectToWebChat';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ScreenReaderText from '../ScreenReaderText';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useStyleSet from '../hooks/useStyleSet';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 const { useAvatarForBot, useAvatarForUser, useDirection, useLocalizer, useStyleOptions } = hooks;
 
@@ -95,23 +94,6 @@ const ROOT_STYLE = {
     }
   }
 };
-
-const connectCarouselFilmStrip = (...selectors) =>
-  connectToWebChat(
-    (
-      {
-        language,
-        styleSet: {
-          options: { botAvatarInitials, userAvatarInitials }
-        }
-      },
-      { activity: { from: { role } = {} } = {} }
-    ) => ({
-      avatarInitials: role === 'user' ? userAvatarInitials : botAvatarInitials,
-      language
-    }),
-    ...selectors
-  );
 
 const CarouselFilmStrip = ({
   activity,
@@ -213,7 +195,7 @@ const CarouselFilmStrip = ({
           )}
           <div className="webchat__carousel-filmstrip__complimentary">
             <div className="webchat__carousel-filmstrip__nub-pad" />
-            <div className="webchat__carousel-filmstrip__complimentary-content c">
+            <div className="webchat__carousel-filmstrip__complimentary-content">
               <ul
                 className="webchat__carousel-filmstrip__attachments react-film__filmstrip__list"
                 ref={itemContainerCallbackRef}
@@ -283,5 +265,3 @@ CarouselFilmStrip.propTypes = {
 };
 
 export default CarouselFilmStrip;
-
-export { connectCarouselFilmStrip };

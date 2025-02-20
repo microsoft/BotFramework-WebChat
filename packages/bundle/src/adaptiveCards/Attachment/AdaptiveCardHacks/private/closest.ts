@@ -9,7 +9,6 @@ export default function closest(element: HTMLElement, selector: string): HTMLEle
 
   while (current) {
     // "msMatchesSelector" is vendor-prefixed version of "matches".
-    // eslint-disable-next-line dot-notation
     if ((current.matches || (current['msMatchesSelector'] as (selector: string) => boolean)).call(current, selector)) {
       return current;
     }

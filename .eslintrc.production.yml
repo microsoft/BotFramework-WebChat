@@ -8,6 +8,7 @@ overrides:
       no-restricted-globals: off
 
 rules:
+  dot-notation: off
   no-restricted-globals:
     - error
     - name: cancelAnimationFrame

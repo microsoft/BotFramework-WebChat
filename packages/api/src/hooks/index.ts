@@ -19,6 +19,7 @@ import useDirection from './useDirection';
 import useDisabled from './useDisabled';
 import useDismissNotification from './useDismissNotification';
 import useEmitTypingIndicator from './useEmitTypingIndicator';
+import useGetActivitiesByKey from './useGetActivitiesByKey';
 import useGetActivityByKey from './useGetActivityByKey';
 import useGetHasAcknowledgedByActivityKey from './useGetHasAcknowledgedByActivityKey';
 import useGetKeyByActivity from './useGetKeyByActivity';
@@ -34,17 +35,16 @@ import useLocalizer from './useLocalizer';
 import useMarkActivityAsSpoken from './useMarkActivityAsSpoken';
 import useMarkActivityKeyAsRead from './useMarkActivityKeyAsRead';
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
+import useNotifications from './useNotifications';
 import usePerformCardAction from './usePerformCardAction';
 import usePonyfill from './usePonyfill';
 import usePostActivity from './usePostActivity';
 import useReferenceGrammarID from './useReferenceGrammarID';
 import useRelativeTimeFormatter from './useRelativeTimeFormatter';
-import useRenderActivity from './useRenderActivity';
-import useRenderActivityStatus from './useRenderActivityStatus';
 import useRenderAttachment from './useRenderAttachment';
-import useRenderAvatar from './useRenderAvatar';
 import useRenderToast from './useRenderToast';
 import useRenderTypingIndicator from './useRenderTypingIndicator';
+import useSendBoxAttachments from './useSendBoxAttachments';
 import useSendBoxValue from './useSendBoxValue';
 import useSendEvent from './useSendEvent';
 import useSendFiles from './useSendFiles';
@@ -66,6 +66,7 @@ import useTrackDimension from './useTrackDimension';
 import useTrackEvent from './useTrackEvent';
 import useTrackException from './useTrackException';
 import useTrackTiming from './useTrackTiming';
+import useUIState from './useUIState';
 import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
@@ -92,6 +93,7 @@ export {
   useDisabled,
   useDismissNotification,
   useEmitTypingIndicator,
+  useGetActivitiesByKey,
   useGetActivityByKey,
   useGetHasAcknowledgedByActivityKey,
   useGetKeyByActivity,
@@ -107,17 +109,16 @@ export {
   useMarkActivityAsSpoken,
   useMarkActivityKeyAsRead,
   useMarkAllAsAcknowledged,
+  useNotifications,
   usePerformCardAction,
   usePonyfill,
   usePostActivity,
   useReferenceGrammarID,
   useRelativeTimeFormatter,
-  useRenderActivity,
-  useRenderActivityStatus,
   useRenderAttachment,
-  useRenderAvatar,
   useRenderToast,
   useRenderTypingIndicator,
+  useSendBoxAttachments,
   useSendBoxValue,
   useSendEvent,
   useSendFiles,
@@ -139,6 +140,7 @@ export {
   useTrackEvent,
   useTrackException,
   useTrackTiming,
+  useUIState,
   useUserID,
   useUsername,
   useVoiceSelector

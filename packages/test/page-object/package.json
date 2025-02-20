@@ -9,25 +9,23 @@
     "node": ">= 14.0.0"
   },
   "scripts": {
-    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
     "build": "npm run build:babel && npm run build:esbuild",
     "build:babel": "babel --out-dir lib/ src/",
-    "build:esbuild": "esbuild lib/index.js --bundle --outfile=dist/test-page-object.js --sourcemap --target=chrome80",
-    "bump": "npm run bump:prod && npm run bump:dev && npm run bump:auditfix",
-    "bump:auditfix": "npm audit fix --legacy-peer-deps || exit 0",
-    "bump:dev": "if [ `cat package.json | jq -r '.devDependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
-    "bump:prod": "if [ `cat package.json | jq -r '.dependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
+    "build:esbuild": "esbuild lib/index.js --bundle --outfile=dist/test-page-object.js --sourcemap --target=chrome100",
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
     "eslint": "npm run precommit",
-    "postauditfix": "npm run postbump",
-    "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
-    "preauditfix": "npm run prebump",
-    "prebump": "cat package.json | jq '(((.localPeerDependencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDependencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
+    "postversion": "cat package.json | jq '.version as $V | (.localDependencies // {} | with_entries(select(.value == \"production\") | { key: .key, value: $V })) as $L1 | (.localDependencies // {} | with_entries(select(.value == \"development\") | { key: .key, value: $V })) as $L2 | ((.dependencies // {}) + $L1 | to_entries | sort_by(.key) | from_entries) as $D1 | ((.devDependencies // {}) + $L2 | to_entries | sort_by(.key) | from_entries) as $D2 | . + { dependencies: $D1, devDependencies: $D2 }' > package-temp.json && mv package-temp.json package.json",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
-    "prestart": "npm run build",
-    "start": "concurrently --kill-others \"npm run start:*\"",
+    "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
+    "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:esbuild": "npm run build:esbuild -- --watch"
+  },
+  "localDependencies": {
+    "botframework-webchat": "production"
   },
   "pinDependencies": {
     "@babel/cli": [
@@ -45,21 +43,19 @@
     "@babel/preset-react": [
       "7.18.6",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "microsoft-cognitiveservices-speech-sdk": [
-      "1.23.0",
-      "needs to bump manually"
     ]
   },
   "dependencies": {
     "base64-arraybuffer": "1.0.2",
-    "classnames": "2.3.2",
-    "core-js": "3.32.1",
+    "bent": "7.3.12",
+    "botframework-webchat": "0.0.0-0",
+    "classnames": "2.5.1",
+    "core-js": "3.40.0",
+    "core-js-pure": "3.40.0",
     "event-iterator": "2.0.0",
     "event-target-shim": "6.0.2",
     "math-random": "2.0.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.23.0",
-    "p-defer": "4.0.0",
+    "microsoft-cognitiveservices-speech-sdk": "1.42.0",
     "prop-types": "15.8.1",
     "simple-update-in": "2.2.0"
   },
@@ -68,7 +64,7 @@
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
     "@babel/preset-react": "^7.18.6",
-    "concurrently": "^8.2.1",
-    "esbuild": "^0.19.2"
+    "concurrently": "^9.1.2",
+    "esbuild": "^0.25.0"
   }
 }

@@ -53,6 +53,7 @@ Following is the list of hooks supported by Web Chat API.
 
 -  [`useActiveTyping`](#useactivetyping)
 -  [`useActivities`](#useactivities)
+-  [`useActivityKeysByRead`](#useactivitykeysbyread)
 -  [`useAdaptiveCardsHostConfig`](#useadaptivecardshostconfig)
 -  [`useAdaptiveCardsPackage`](#useadaptivecardspackage)
 -  [`useAvatarForBot`](#useavatarforbot)
@@ -75,15 +76,23 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useEmitTypingIndicator`](#useemittypingindicator)
 -  [`useFocus`](#usefocus)
 -  [`useFocusSendBox`](#usefocussendbox)
+-  [`useGetActivitiesByKey`](#usegetactivitiesbykey)
+-  [`useGetActivityByKey`](#usegetactivitybykey)
+-  [`useGetHasAcknowledgedByActivityKey`](#usegethasacknowledgedbyactivitykey)
+-  [`useGetKeyByActivity`](#usegetkeybyactivity)
+-  [`useGetKeyByActivityId`](#usegetkeybyactivityid)
 -  [`useGetSendTimeoutForActivity`](#usegetsendtimeoutforactivity)
 -  [`useGrammars`](#usegrammars)
 -  [`useGroupTimestamp`](#usegrouptimestamp)
 -  [`useLanguage`](#uselanguage)
--  [`useLastTypingAt`](#uselasttypingat)
+-  [`useLastAcknowledgedActivityKey`](#uselastacknowledgedactivitykey)
+-  [`useLastReadActivityKey`](#uselastreadactivitykey)
 -  [`useLastTypingAt`](#uselasttypingat) (Deprecated)
 -  [`useLocalize`](#uselocalize) (Deprecated)
 -  [`useLocalizer`](#useLocalizer)
 -  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
+-  [`useMarkActivityKeyAsRead`](#usemarkactivitykeyasread)
+-  [`useMarkAllAsAcknowledged`](#usemarkallasacknowledged)
 -  [`useNotification`](#usenotification)
 -  [`useObserveScrollPosition`](#useobservescrollposition)
 -  [`useObserveTranscriptFocus`](#useobservetranscriptfocus)
@@ -102,9 +111,10 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useScrollTo`](#usescrollto)
 -  [`useScrollToEnd`](#usescrolltoend)
 -  [`useScrollUp`](#usescrollup)
+-  [`useSendBoxAttachments`](#usesendboxattachments)
 -  [`useSendBoxValue`](#usesendboxvalue)
 -  [`useSendEvent`](#usesendevent)
--  [`useSendFiles`](#usesendfiles)
+-  [`useSendFiles`](#usesendfiles) (Deprecated)
 -  [`useSendMessage`](#usesendmessage)
 -  [`useSendMessageBack`](#usesendmessageback)
 -  [`useSendPostBack`](#usesendpostback)
@@ -124,6 +134,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useTrackEvent`](#usetrackevent)
 -  [`useTrackException`](#usetrackexception)
 -  [`useTrackTiming`](#usetracktiming)
+-  [`useUIState`](#useuistate)
 -  [`useUserID`](#useuserid)
 -  [`useUsername`](#useusername)
 -  [`useVoiceSelector`](#usevoiceselector)
@@ -138,19 +149,27 @@ interface Typing {
   expireAt: number;
   name: string;
   role: 'bot' | 'user';
+  type: 'busy' | 'livestream';
 }
 
-useActiveTyping(expireAfter?: number): [{ [id: string]: Typing }]
+useActiveTyping(expireAfter?: number): readonly [Readonly<Record<string, Typing>>]
 ```
 <!-- prettier-ignore-end -->
 
 > On or before 4.15.1, there is [an issue](https://github.com/microsoft/BotFramework-WebChat/issues/4209) which the `at` field is not accurately reflecting the time when the participant start typing.
+
+> New in 4.18.0: Added `type` property. The returned type is marked as read-only to prevent accidental modification.
 
 This hook will return a list of participants who are actively typing, including the start typing time (`at`) and expiration time (`expireAt`), the name and the role of the participant. Both time values are based on local clock.
 
 If the participant sends a message after the typing activity, the participant will be explicitly removed from the list. If no messages or typing activities are received, the participant is considered inactive and not listed in the result. To keep the typing indicator active, participants should continuously send the typing activity.
 
 The `expireAfter` argument can override the inactivity timer. If `expireAfter` is `Infinity`, it will return all participants who did not explicitly remove from the list. In other words, it will return participants who sent a typing activity, but did not send a message activity afterward.
+
+The `type` property will tell if the participant is livestreaming or busy preparing its response:
+
+-  `busy` indicates the participant is busy preparing the response
+-  `livestream` indicates the participant is sending its response as it is being prepared
 
 > This hook will trigger render of your component if one or more typing information is expired or removed.
 
@@ -163,6 +182,16 @@ useActivities(): [Activity[]]
 <!-- prettier-ignore-end -->
 
 This hook will return a list of activities.
+
+## `useActivityKeysByRead`
+
+<!-- prettier-ignore-start -->
+```ts
+useActivityKeysByRead(): readonly [readonly string[], readonly string[]]
+```
+<!-- prettier-ignore-end -->
+
+This hook will subscribe and return two lists of activities: read and unread.
 
 ## `useAdaptiveCardsHostConfig`
 
@@ -228,7 +257,7 @@ useByteFormatter() => (bytes: number) => string
 ```
 <!-- prettier-ignore-end -->
 
-This hook will return a function that, when called with a file size, will return a localized representation of the size in bytes, kilobytes, megabytes, or gigabytes. It honors the language settings from the `useLanguage` hook.
+When the returned function is called with a file size, will return a localized representation of the size in bytes, kilobytes, megabytes, or gigabytes. It honors the language settings from the [`useLanguage` hook](#uselanguage).
 
 ## `useConnectivityStatus`
 
@@ -364,7 +393,7 @@ useDateFormatter() => (dateOrString: (Date | number | string)) => string
 ```
 <!-- prettier-ignore-end -->
 
-This hook will return a function that, when called with a `Date` object, `number`, or `string`, will return a localized representation of the date in absolute time. It honors the language settings from the `useLanguage` hook.
+When the returned function is called with a `Date` object, `number`, or `string`, will return a localized representation of the date in absolute time. It honors the language settings from the [`useLanguage` hook](#uselanguage).
 
 ## `useDebouncedNotification`
 
@@ -448,6 +477,8 @@ If you would prefer to set this property manually, change the value `dir` prop p
 
 ## `useDisabled`
 
+> This hook is deprecated and will be removed on or after 2026-09-04. Developers should migrate to [`useUIState`](#useuistate) hook instead.
+
 <!-- prettier-ignore-start -->
 ```js
 useDisabled(): [boolean]
@@ -506,7 +537,71 @@ useFocusSendBox(): () => void
 
 > This function is deprecated. Developers should migrate to [`useFocus`](#usefocus).
 
+> This function was removed in `botframework-webchat@4.17.0`.
+
 When called, this function will send focus to the send box.
+
+## `useGetActivitiesByKey`
+
+<!-- prettier-ignore-start -->
+```ts
+useGetActivitiesByKey(): (key?: string) => readonly WebChatActivity[] | undefined
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to [the activity key section](#what-is-activity-key) for details about how Web Chat use activity keys.
+
+When the returned function is called, will return a chronologically sorted list of activities which share the same activity key. These activities represent different revisions of the same activity. For example, a livestreaming activity is made up of multiple revisions.
+
+## `useGetActivityByKey`
+
+<!-- prettier-ignore-start -->
+```ts
+useGetActivityByKey(): (key?: string) => undefined | WebChatActivity
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to [the activity key section](#what-is-activity-key) for details about how Web Chat use activity keys.
+
+When called, this hook will return a function to get the latest activity which share the same activity key.
+
+This hook is same as getting the last element from the result of the [`useGetActivitiesByKey`](#usegetactivitiesbykey) hook.
+
+## `useGetHasAcknowledgedByActivityKey`
+
+<!-- prettier-ignore-start -->
+```ts
+useGetHasAcknowledgedByActivityKey(): (activityKey: string) => boolean | undefined
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to [this section](#what-is-acknowledged-activity) for details about acknowledged activity.
+
+When the returned function is called with an activity key, will evaluate whether the activity is acknowledged by the user or not.
+
+## `useGetKeyByActivity`
+
+<!-- prettier-ignore-start -->
+```ts
+useGetKeyByActivity(): (activity?: WebChatActivity | undefined) => string | undefined
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to [the activity key section](#what-is-activity-key) for details about how Web Chat use activity keys.
+
+When called, this hook will return a function to get the activity key of the passing activity.
+
+## `useGetKeyByActivityId`
+
+<!-- prettier-ignore-start -->
+```ts
+useGetKeyByActivityId(): (activityId?: string | undefined) => string | undefined
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to [the activity key section](#what-is-activity-key) for details about how Web Chat use activity keys.
+
+When called, this hook will return a function to get the activity key of the passing activity ID.
 
 ## `useGetSendTimeoutForActivity`
 
@@ -516,7 +611,7 @@ useGetSendTimeoutForActivity(): ({ activity: Activity }) => number
 ```
 <!-- prettier-ignore-end -->
 
-When called, This hook will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
+When called, this hook will return a function to evaluate the timeout (in milliseconds) for sending a specific activity.
 
 ## `useGrammars`
 
@@ -561,6 +656,28 @@ If no options are passed, the return value will be the written language. This va
 If `"speech"` is passed to `options`, the return value will be the oral language instead of written language. For example, the written language for Hong Kong SAR and Taiwan are Traditional Chinese, while the oral language are Cantonese and Taiwanese Mandarin respectively.
 
 To modify this value, change the value in the `locale` prop passed to Web Chat.
+
+## `useLastAcknowledgedActivityKey`
+
+<!-- prettier-ignore-start -->
+```ts
+useLastAcknowledgedActivityKey(): readonly [string | undefined]
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to [this section](#what-is-acknowledged-activity) for details about acknowledged activity.
+
+This hook will subscribe and return the activity key of the last acknowledged activity in the chat history.
+
+## `useLastReadActivityKey`
+
+<!-- prettier-ignore-start -->
+```ts
+useLastReadActivityKey(): readonly [string | undefined]
+```
+<!-- prettier-ignore-end -->
+
+This hook will subscribe and return the activity key of the last read activity in the chat history.
 
 ## `useLastTypingAt`
 
@@ -660,6 +777,28 @@ useMarkActivityAsSpoken(): (activity: Activity) => void
 <!-- prettier-ignore-end -->
 
 When called, this function will mark the activity as spoken and remove it from the text-to-speech queue.
+
+## `useMarkActivityKeyAsRead`
+
+<!-- prettier-ignore-start -->
+```ts
+useMarkActivityKeyAsRead(): (activityKey: string) => void
+```
+<!-- prettier-ignore-end -->
+
+When the returned function is called, will mark the activity as read.
+
+## `useMarkAllAsAcknowledged`
+
+<!-- prettier-ignore-start -->
+```ts
+useMarkAllAsAcknowledged(): () => void
+```
+<!-- prettier-ignore-end -->
+
+> Please refer to [this section](#what-is-acknowledged-activity) for details about acknowledged activity.
+
+When the returned function is called, will mark all activities in the chat history as acknowledged.
 
 ## `useNotifications`
 
@@ -867,9 +1006,13 @@ This function is for rendering the avatar of an activity. The caller will need t
 
 <!-- prettier-ignore-start -->
 ```js
-useRenderMarkdownAsHTML(): (markdown: string): string
+useRenderMarkdownAsHTML(
+  mode: 'accessible name' | 'adaptive cards' | 'citation modal' | 'message activity' = 'message activity'
+): (markdown: string): string
 ```
 <!-- prettier-ignore-end -->
+
+> New in 4.17.0: A new `mode` option can be passed to indicate how the HTML output will be used.
 
 This hook will return a function that, when called, will render Markdown into an HTML string. For example,
 
@@ -977,6 +1120,26 @@ useScrollUp(): () => void
 
 This hook will return a function that, when called, will scroll elements up the transcript. This is an important feature for AT accessibility.
 
+## `useSendBoxAttachments`
+
+<!-- prettier-ignore-start -->
+```js
+type SendBoxAttachment = {
+  blob: Blob | File;
+  thumbnailURL?: URL | undefined;
+};
+
+useSendBoxAttachments(): readonly [
+  readonly SendBoxAttachment[],
+  (attachments: readonly SendBoxAttachment[]) => void
+]
+```
+<!-- prettier-ignore-end -->
+
+This hook will return the attachments in the send box and the setter function to change the attachments.
+
+Thumbnails are optional. They should be [data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs).
+
 ## `useSendBoxValue`
 
 <!-- prettier-ignore-start -->
@@ -999,6 +1162,8 @@ When called, this function will send an event activity to the bot.
 
 ## `useSendFiles`
 
+> This function is deprecated and will be removed on or after 2026-04-03. Developers should migrate to [`useSendMessage`](#usesendmessage).
+
 <!-- prettier-ignore-start -->
 ```js
 useSendFiles(): (files: (Blob | File)[]) => void
@@ -1016,13 +1181,30 @@ If you are using an `ArrayBuffer`, you can use `FileReader` to convert it into a
 
 <!-- prettier-ignore-start -->
 ```js
-useSendMessage(): (text: string, method: string) => void
+type SendBoxAttachment = {
+  blob: Blob | File;
+  thumbnailURL?: URL | undefined;
+};
+
+useSendMessage(): (
+  text?: string,
+  method: string | undefined,
+  {
+    attachments?: Iterable<SendBoxAttachment> | undefined
+  }
+) => void
 ```
 <!-- prettier-ignore-end -->
+
+> New in 4.17.0: `attachments` are added to support attaching files.
 
 When called, this function will send a text message activity to the bot.
 
 You can optionally include the input method how the text message was collected. Currently, if specified, only `speech` is supported.
+
+Either `text` or `attachments` must be defined. If none of them are defined, the function will be no-op.
+
+Image attachments (`Blob.type` returning `image/*`) will have their thumbnail automatically generated.
 
 ## `useSendMessageBack`
 
@@ -1180,16 +1362,19 @@ This function will send the text in the send box to the bot and clear the send b
 
 ## `useSuggestedActions`
 
+> New in 4.18.1: Will return the activity which the suggested actions are originated from.
+
 <!-- prettier-ignore-start -->
 ```js
-useSuggestedActions(): [CardAction[], (CardAction[]) => void]
+useSuggestedActions(): [CardAction[], (CardAction[]) => void, { activity: WebChatActivity }]
 ```
 <!-- prettier-ignore-end -->
 
-This hook will return an array and a setter function.
+This hook will return an array, a setter function, and a property bag.
 
 1. array: a list of suggested actions that should be shown to the user
 1. function: a setter function to clear suggested actions. The setter function can only be used to clear suggested actions, and it will accept empty array or falsy value only.
+1. `activity`: the activity which the suggested actions are originated from
 
 The suggested actions are computed from the last message activity sent from the bot. If the user posts an activity, the suggested actions will be cleared.
 
@@ -1204,6 +1389,26 @@ useTimeoutForSend(): [number]
 This hook will return the interval of time paused before a sending activity is considered unsuccessful. The interval is represented in milliseconds. Due to network partitioning problems, activities that fail to send may eventually be successfully delivered to the bot.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
+
+## `useUIState`
+
+> New in 4.19.0.
+
+<!-- prettier-ignore-start -->
+```js
+useUIState(): ['blueprint' | 'disabled' | undefined]
+```
+<!-- prettier-ignore-end -->
+
+This hook will return whether the UI should be rendered in blueprint mode, as disabled, or normally. This can be set via the `uiState` props.
+
+-  `"blueprint"` will render as few UI elements as possible and should be non-functional
+   -  Useful for loading scenarios
+-  `"disabled"` will render most UI elements as non-functional
+   -  Scrolling may continue to trigger read acknowledgements
+-  `undefined` will render normally
+
+Note: `uiState` props that precedence over the deprecated `disabled` props.
 
 ## `useUserID`
 
@@ -1431,3 +1636,28 @@ useTrackTiming(): (name: string, promise: Promise) => void
 This function will emit timing measurements for the execution of a synchronous or asynchronous function. Before the execution, the `onTelemetry` handler will be triggered with a `timingstart` event. After completion, regardless of resolve or reject, the `onTelemetry` handler will be triggered again with a `timingend` event.
 
 If the function throws an exception while executing, the exception will be reported to [`useTrackException`](#usetrackexception) hook as a non-fatal error.
+
+## What is activity key?
+
+Activity ID is a service-assigned ID that is unique in the conversation. However, not every activity has an activity ID. Therefore, it is not possible to reference every activities in the chat history by solely using activity ID.
+
+Web Chat introduces activity key as an alternative method to reference activity in the system.
+
+Activity key is an opaque string. When the activity first appear in Web Chat, they will be assigned an activity key and never be reassigned to another key again until Web Chat is restarted.
+
+Multiple activities could share the same activity key if they are revision of each others. For example, a livestreaming activity could made up of different revisions of the same activity. Thus, these activities would share the same activity key.
+
+Following hooks are designed to help navigating between activity, activity ID and activity keys:
+
+-  [`useGetActivitiesByKey`](#usegetactivitiesbykey)
+-  [`useGetActivityByKey`](#usegetactivitybykey)
+-  [`useGetKeyByActivity`](#usegetkeybyactivity)
+-  [`useGetKeyByActivityId`](#usegetkeybyactivityid)
+
+## What is acknowledged activity?
+
+Chat history normally would scroll to the bottom when message arrive and remains stick to the bottom. However, in some circumstances, such as the bot sending more than a page of message, the chat history will pause the auto-scroll and unstick from the bottom.
+
+The pause helps users to read the long text sent by the bot without explicitly scrolling up from the very bottom of the chat history.
+
+Activities are being acknowledged when the chat history view is being scroll to the end, either by auto-scroll or manually after a pause. It can also be programmatically acknowledged using the [`useMarkAllAsAcknowledged` hook](#usemarkallasacknowledged).

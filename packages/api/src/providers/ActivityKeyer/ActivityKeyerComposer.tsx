@@ -1,21 +1,35 @@
-import PropTypes from 'prop-types';
-import React, { useCallback, useMemo, useRef } from 'react';
+import type { WebChatActivity } from 'botframework-webchat-core';
+import React, { useCallback, useMemo, useRef, type ReactNode } from 'react';
 
+import reduceIterable from '../../hooks/private/reduceIterable';
+import useActivities from '../../hooks/useActivities';
+import type { ActivityKeyerContextType } from './private/Context';
 import ActivityKeyerContext from './private/Context';
 import getActivityId from './private/getActivityId';
 import getClientActivityId from './private/getClientActivityId';
+import lastOf from './private/lastOf';
+import someIterable from './private/someIterable';
 import uniqueId from './private/uniqueId';
-import useActivities from '../../hooks/useActivities';
 import useActivityKeyerContext from './private/useContext';
-
-import type { ActivityKeyerContextType } from './private/Context';
-import type { FC, PropsWithChildren } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
 
 type ActivityIdToKeyMap = Map<string, string>;
 type ActivityToKeyMap = Map<WebChatActivity, string>;
 type ClientActivityIdToKeyMap = Map<string, string>;
-type KeyToActivityMap = Map<string, WebChatActivity>;
+type KeyToActivitiesMap = Map<string, readonly WebChatActivity[]>;
+
+function getTypingActivityId(activity: WebChatActivity): string | undefined {
+  const { type } = activity;
+
+  if (
+    (type === 'message' || type === 'typing') &&
+    'text' in activity &&
+    typeof activity.text === 'string' &&
+    'streamId' in activity.channelData &&
+    activity.channelData.streamId
+  ) {
+    return activity.channelData.streamId;
+  }
+}
 
 /**
  * React context composer component to assign a perma-key to every activity.
@@ -31,7 +45,7 @@ type KeyToActivityMap = Map<string, WebChatActivity>;
  *
  * Local key are only persisted in memory. On refresh, they will be a new random key.
  */
-const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
+const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | undefined }>) => {
   const existingContext = useActivityKeyerContext(false);
 
   if (existingContext) {
@@ -42,7 +56,7 @@ const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
   const activityIdToKeyMapRef = useRef<Readonly<ActivityIdToKeyMap>>(Object.freeze(new Map()));
   const activityToKeyMapRef = useRef<Readonly<ActivityToKeyMap>>(Object.freeze(new Map()));
   const clientActivityIdToKeyMapRef = useRef<Readonly<ClientActivityIdToKeyMap>>(Object.freeze(new Map()));
-  const keyToActivityMapRef = useRef<Readonly<KeyToActivityMap>>(Object.freeze(new Map()));
+  const keyToActivitiesMapRef = useRef<Readonly<KeyToActivitiesMap>>(Object.freeze(new Map()));
 
   // TODO: [P1] `useMemoWithPrevious` to check and cache the resulting array if it hasn't changed.
   const activityKeysState = useMemo<readonly [readonly string[]]>(() => {
@@ -50,17 +64,19 @@ const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
     const { current: activityToKeyMap } = activityToKeyMapRef;
     const { current: clientActivityIdToKeyMap } = clientActivityIdToKeyMapRef;
     const nextActivityIdToKeyMap: ActivityIdToKeyMap = new Map();
-    const nextActivityKeys: string[] = [];
+    const nextActivityKeys: Set<string> = new Set();
     const nextActivityToKeyMap: ActivityToKeyMap = new Map();
     const nextClientActivityIdToKeyMap: ClientActivityIdToKeyMap = new Map();
-    const nextKeyToActivityMap: KeyToActivityMap = new Map();
+    const nextKeyToActivitiesMap: KeyToActivitiesMap = new Map();
 
     activities.forEach(activity => {
       const activityId = getActivityId(activity);
       const clientActivityId = getClientActivityId(activity);
+      const typingActivityId = getTypingActivityId(activity);
 
       const key =
         (clientActivityId && clientActivityIdToKeyMap.get(clientActivityId)) ||
+        (typingActivityId && activityIdToKeyMap.get(typingActivityId)) ||
         (activityId && activityIdToKeyMap.get(activityId)) ||
         activityToKeyMap.get(activity) ||
         uniqueId();
@@ -68,31 +84,40 @@ const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
       activityId && nextActivityIdToKeyMap.set(activityId, key);
       clientActivityId && nextClientActivityIdToKeyMap.set(clientActivityId, key);
       nextActivityToKeyMap.set(activity, key);
-      nextKeyToActivityMap.set(key, activity);
-      nextActivityKeys.push(key);
+      nextActivityKeys.add(key);
+
+      const activities = nextKeyToActivitiesMap.has(key) ? [...nextKeyToActivitiesMap.get(key)] : [];
+
+      activities.push(activity);
+      nextKeyToActivitiesMap.set(key, Object.freeze(activities));
     });
 
     activityIdToKeyMapRef.current = Object.freeze(nextActivityIdToKeyMap);
     activityToKeyMapRef.current = Object.freeze(nextActivityToKeyMap);
     clientActivityIdToKeyMapRef.current = Object.freeze(nextClientActivityIdToKeyMap);
-    keyToActivityMapRef.current = Object.freeze(nextKeyToActivityMap);
+    keyToActivitiesMapRef.current = Object.freeze(nextKeyToActivitiesMap);
 
     // `nextActivityKeys` could potentially same as `prevActivityKeys` despite reference differences, we should memoize it.
-    return Object.freeze([Object.freeze(nextActivityKeys)]) as readonly [readonly string[]];
-  }, [activities, activityIdToKeyMapRef, activityToKeyMapRef, clientActivityIdToKeyMapRef, keyToActivityMapRef]);
+    return Object.freeze([Object.freeze([...nextActivityKeys.values()])]) as readonly [readonly string[]];
+  }, [activities, activityIdToKeyMapRef, activityToKeyMapRef, clientActivityIdToKeyMapRef, keyToActivitiesMapRef]);
 
-  const getActivityByKey: (key?: string) => undefined | WebChatActivity = useCallback(
-    (key?: string): undefined | WebChatActivity => key && keyToActivityMapRef.current.get(key),
-    [keyToActivityMapRef]
+  const getActivitiesByKey: (key?: string | undefined) => readonly WebChatActivity[] | undefined = useCallback(
+    (key?: string | undefined): readonly WebChatActivity[] | undefined => key && keyToActivitiesMapRef.current.get(key),
+    [keyToActivitiesMapRef]
   );
 
-  const getKeyByActivity: (activity?: WebChatActivity) => string | undefined = useCallback(
-    (activity?: WebChatActivity) => activity && activityToKeyMapRef.current.get(activity),
+  const getActivityByKey: (key?: string | undefined) => undefined | WebChatActivity = useCallback(
+    (key?: string | undefined): undefined | WebChatActivity => lastOf(getActivitiesByKey(key)),
+    [getActivitiesByKey]
+  );
+
+  const getKeyByActivity: (activity?: WebChatActivity | undefined) => string | undefined = useCallback(
+    (activity?: WebChatActivity | undefined) => activity && activityToKeyMapRef.current.get(activity),
     [activityToKeyMapRef]
   );
 
-  const getKeyByActivityId: (activityId?: string) => string | undefined = useCallback(
-    (activityId?: string) => activityId && activityIdToKeyMapRef.current.get(activityId),
+  const getKeyByActivityId: (activityId?: string | undefined) => string | undefined = useCallback(
+    (activityId?: string | undefined) => activityId && activityIdToKeyMapRef.current.get(activityId),
     [activityIdToKeyMapRef]
   );
 
@@ -100,10 +125,11 @@ const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
     () => ({
       activityKeysState,
       getActivityByKey,
+      getActivitiesByKey,
       getKeyByActivity,
       getKeyByActivityId
     }),
-    [activityKeysState, getActivityByKey, getKeyByActivity, getKeyByActivityId]
+    [activityKeysState, getActivitiesByKey, getActivityByKey, getKeyByActivity, getKeyByActivityId]
   );
 
   const { length: numActivities } = activities;
@@ -126,27 +152,27 @@ const ActivityKeyerComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
     );
   }
 
-  if (keyToActivityMapRef.current.size !== numActivities) {
+  if (someIterable(keyToActivitiesMapRef.current.values(), ({ length }) => !length)) {
     console.warn(
-      'botframework-webchat internal assertion: "keyToActivityMap.size" should be same as "activities.length".'
+      'botframework-webchat internal assertion: all values in "keyToActivitiesMap" should have at least one item.'
     );
   }
 
-  if (activityKeysState[0].length !== numActivities) {
+  if (
+    reduceIterable(keyToActivitiesMapRef.current.values(), (total, { length }) => total + length, 0) !== numActivities
+  ) {
     console.warn(
-      'botframework-webchat internal assertion: "activityKeys.length" should be same as "activities.length".'
+      'botframework-webchat internal assertion: "keyToActivitiesMap.size" should be same as "activities.length".'
+    );
+  }
+
+  if (activityKeysState[0].length !== keyToActivitiesMapRef.current.size) {
+    console.warn(
+      'botframework-webchat internal assertion: "activityKeys.length" should be same as "keyToActivitiesMap.size".'
     );
   }
 
   return <ActivityKeyerContext.Provider value={contextValue}>{children}</ActivityKeyerContext.Provider>;
-};
-
-ActivityKeyerComposer.defaultProps = {
-  children: undefined
-};
-
-ActivityKeyerComposer.propTypes = {
-  children: PropTypes.any
 };
 
 export default ActivityKeyerComposer;

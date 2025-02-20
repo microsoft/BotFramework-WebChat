@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @jest-environment @happy-dom/jest-environment
  * @jest-environment-options { "customExportConditions": ["node"] }
  *
  * "uuid" resolved by jest-environment-jsdom use Web Crypto API.
@@ -9,11 +9,13 @@
 /* eslint-disable no-global-assign */
 let consoleWarns;
 let createCognitiveServicesSpeechServicesPonyfillFactory;
-let createPonyfill;
+let createSpeechServicesPonyfill;
 let originalConsole;
 
 beforeEach(() => {
-  jest.mock('web-speech-cognitive-services/lib/SpeechServices', () => jest.fn(() => ({})));
+  jest.mock('web-speech-cognitive-services', () => ({
+    createSpeechServicesPonyfill: jest.fn(() => ({}))
+  }));
   jest.mock('microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports', () => ({
     ...jest.requireActual('microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports'),
     PcmRecorder: class MockPcmRecorder {
@@ -34,7 +36,7 @@ beforeEach(() => {
     warn: text => consoleWarns.push(text)
   };
 
-  createPonyfill = require('web-speech-cognitive-services/lib/SpeechServices');
+  createSpeechServicesPonyfill = require('web-speech-cognitive-services').createSpeechServicesPonyfill;
   createCognitiveServicesSpeechServicesPonyfillFactory =
     require('./createCognitiveServicesSpeechServicesPonyfillFactory').default;
 
@@ -75,7 +77,7 @@ test('providing reference grammar ID', () => {
 
   ponyfillFactory({ referenceGrammarID: 'a1b2c3d' });
 
-  const { referenceGrammars } = createPonyfill.mock.calls[0][0];
+  const { referenceGrammars } = createSpeechServicesPonyfill.mock.calls[0][0];
 
   expect(referenceGrammars).toEqual(['luis/a1b2c3d-PRODUCTION']);
 });
@@ -90,7 +92,7 @@ test('not providing reference grammar ID', () => {
 
   ponyfillFactory({});
 
-  const { referenceGrammars } = createPonyfill.mock.calls[0][0];
+  const { referenceGrammars } = createSpeechServicesPonyfill.mock.calls[0][0];
 
   expect(referenceGrammars).toEqual([]);
 });
@@ -109,7 +111,7 @@ test('supplying audioInputDeviceId', async () => {
   ponyfillFactory({});
 
   // WHEN: Audio source is attached and audio device is opened.
-  await createPonyfill.mock.calls[0][0].audioConfig.privSource.attach();
+  await createSpeechServicesPonyfill.mock.calls[0][0].audioConfig.privSource.attach();
 
   // THEN: It should call getUserMedia() with "audio" constraints of { deviceId: 'audio-input-device-1' }.
   expect(window.navigator.mediaDevices.getUserMedia.mock.calls[0][0]).toHaveProperty(
@@ -138,7 +140,7 @@ test('supplying both audioConfig and audioInputDeviceId', () => {
     `"botframework-webchat: \\"audioConfig\\" and \\"audioInputDeviceId\\" cannot be set at the same time; ignoring \\"audioInputDeviceId\\"."`
   );
 
-  expect(createPonyfill.mock.calls[0][0].audioConfig).toBe(audioConfig);
+  expect(createSpeechServicesPonyfill.mock.calls[0][0].audioConfig).toBe(audioConfig);
 });
 
 test('unsupported environment', () => {
@@ -176,5 +178,5 @@ test('unsupported environment with audioConfig', () => {
   ponyfillFactory({});
 
   expect(consoleWarns).toHaveProperty('length', 0);
-  expect(createPonyfill.mock.calls[0][0].audioConfig).toBe(audioConfig);
+  expect(createSpeechServicesPonyfill.mock.calls[0][0].audioConfig).toBe(audioConfig);
 });

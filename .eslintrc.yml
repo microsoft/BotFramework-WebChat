@@ -12,7 +12,7 @@ extends:
   - eslint:recommended
   - plugin:import/recommended
   - plugin:prettier/recommended
-  - plugin:security/recommended
+  - plugin:security/recommended-legacy
 
 parserOptions:
   ecmaVersion: 2020
@@ -20,12 +20,25 @@ parserOptions:
 
 overrides:
   - files:
-    - '__tests__/**/*.js'
-    - '*.spec.js'
-    - '*.test.js'
+      - '__tests__/**/*.js'
+      - '*.spec.js'
+      - '*.test.js'
 
     env:
       jest: true
+
+  - files:
+      - 'jest.config.js'
+      - 'jest.*.config.js'
+
+    env:
+      node: true
+
+    parserOptions:
+      sourceType: commonjs
+
+    rules:
+      no-magic-numbers: off
 
   - files:
       - '*.ts'
@@ -68,6 +81,9 @@ overrides:
 
       no-duplicate-imports: off
       'import/no-duplicates': error
+
+      # Shorthanding if-condition with && and ||.
+      '@typescript-eslint/no-unused-expressions': off
 
 rules:
   # Only list rules that are not in *:recommended set

@@ -1,24 +1,20 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, type ReactNode } from 'react';
 
-import { SENDING, SEND_FAILED, SENT } from '../../types/internal/SendStatus';
-import ActivitySendStatusContext from './private/Context';
-import freezeArray from '../../utils/freezeArray';
-import isMapEqual from './private/isMapEqual';
-import useActivities from '../../hooks/useActivities';
+import { useActivities, usePonyfill } from '../../hooks/index';
 import useForceRender from '../../hooks/internal/useForceRender';
-import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
 import useGetSendTimeoutForActivity from '../../hooks/useGetSendTimeoutForActivity';
-import usePonyfill from '../../hooks/usePonyfill';
-
+import type { SendStatus } from '../../types/SendStatus';
+import freezeArray from '../../utils/freezeArray';
+import useGetKeyByActivity from '../ActivityKeyer/useGetKeyByActivity';
 import type { ActivitySendStatusContextType } from './private/Context';
-import type { FC, PropsWithChildren } from 'react';
-import type { SendStatus } from '../../types/internal/SendStatus';
+import ActivitySendStatusContext from './private/Context';
+import isMapEqual from './private/isMapEqual';
 
 // Magic numbers for `expiryByActivityKey`.
 const EXPIRY_SEND_FAILED = -Infinity;
 const EXPIRY_SENT = Infinity;
 
-const ActivitySendStatusComposer: FC<PropsWithChildren<{}>> = ({ children }) => {
+const ActivitySendStatusComposer = ({ children }: Readonly<{ children?: ReactNode | undefined }>) => {
   const [activities] = useActivities();
   const [{ clearTimeout, Date, setTimeout }] = usePonyfill();
   const forceRender = useForceRender();
@@ -52,11 +48,11 @@ const ActivitySendStatusComposer: FC<PropsWithChildren<{}>> = ({ children }) => 
 
               // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
               // Please refer to #4362 for details. Remove on or after 2024-07-31.
-              const rectifiedSendStatus = sendStatus || (state === SENT ? SENT : SENDING);
+              const rectifiedSendStatus = sendStatus || (state === 'sent' ? 'sent' : 'sending');
 
-              if (rectifiedSendStatus === SENT) {
+              if (rectifiedSendStatus === 'sent') {
                 expiryByActivityKey.set(key, EXPIRY_SENT);
-              } else if (rectifiedSendStatus === SEND_FAILED) {
+              } else if (rectifiedSendStatus === 'send failed') {
                 expiryByActivityKey.set(key, EXPIRY_SEND_FAILED);
               } else {
                 const expiry = +new Date(activity.localTimestamp) + getSendTimeoutForActivity({ activity });
@@ -78,7 +74,7 @@ const ActivitySendStatusComposer: FC<PropsWithChildren<{}>> = ({ children }) => 
 
   // Turns the expiry (epoch time) into `SendStatus`, which is based on current clock.
   for (const [key, expiry] of expiryByActivityKey) {
-    nextSendStatusByActivityKey.set(key, expiry === EXPIRY_SENT ? SENT : now >= expiry ? SEND_FAILED : SENDING);
+    nextSendStatusByActivityKey.set(key, expiry === EXPIRY_SENT ? 'sent' : now >= expiry ? 'send failed' : 'sending');
   }
 
   // Only memoize the new result if it has changed.

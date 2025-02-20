@@ -2,7 +2,20 @@
   "name": "botframework-webchat-core",
   "version": "0.0.0-0",
   "description": "Core of botframework-webchat",
-  "main": "lib/index.js",
+  "main": "./dist/botframework-webchat-core.js",
+  "types": "./dist/botframework-webchat-core.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-core.d.mts",
+        "default": "./dist/botframework-webchat-core.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core.d.ts",
+        "default": "./dist/botframework-webchat-core.js"
+      }
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -16,59 +29,40 @@
     "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
   "files": [
-    "lib/**/*",
-    "src/**/*"
+    "./dist/**/*",
+    "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/packages/core#readme",
+  "tsd": {
+    "compilerOptions": {
+      "allowSyntheticDefaultImports": true,
+      "downlevelIteration": true,
+      "jsx": "react",
+      "noImplicitAny": false,
+      "resolveJsonModule": true,
+      "skipLibCheck": true,
+      "strict": false
+    }
+  },
   "scripts": {
-    "auditfix": "npm audit fix --legacy-peer-deps || exit 0",
-    "build": "npm run build:typescript && npm run build:babel",
-    "build:babel": "babel src --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --verbose",
-    "build:typescript": "tsc --project src/tsconfig.json",
-    "bump": "npm run bump:prod && npm run bump:dev && npm run bump:auditfix",
-    "bump:auditfix": "npm audit fix --legacy-peer-deps || exit 0",
-    "bump:dev": "if [ `cat package.json | jq -r '.devDependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
-    "bump:prod": "if [ `cat package.json | jq -r '.dependencies | length'` -ne 0 ]; then npm install --legacy-peer-deps --save-exact $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]'); fi",
+    "build": "npm run build:tsup",
+    "build:tsup": "tsup --config ./tsup.config.ts",
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
     "eslint": "npm run precommit",
-    "postauditfix": "npm run postbump",
-    "postbump": "cat package.json | jq '. + (.dependencies = ((.dependencies + (.localPeerDependencies // {})) | to_entries | sort_by(.key) | from_entries)) | (.devDependencies = ((.devDependencies + (.localPeerDevDependencies // {})) | to_entries | sort_by(.key) | from_entries))' > package-temp.json && mv package-temp.json package.json",
-    "preauditfix": "npm run prebump",
-    "prebump": "cat package.json | jq '(((.localPeerDependencies // {}) | keys | map([\"dependencies\", .])) + ((.localPeerDevDependencies // {}) | keys | map([\"devDependencies\", .]))) as $localPeerPaths | delpaths($localPeerPaths)' > package-temp.json && mv package-temp.json package.json",
+    "postversion": "cat package.json | jq '.version as $V | (.localDependencies // {} | with_entries(select(.value == \"production\") | { key: .key, value: $V })) as $L1 | (.localDependencies // {} | with_entries(select(.value == \"development\") | { key: .key, value: $V })) as $L2 | ((.dependencies // {}) + $L1 | to_entries | sort_by(.key) | from_entries) as $D1 | ((.devDependencies // {}) + $L2 | to_entries | sort_by(.key) | from_entries) as $D2 | . + { dependencies: $D1, devDependencies: $D2 }' > package-temp.json && mv package-temp.json package.json",
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
-    "prestart": "npm run build:babel",
-    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
-    "start": "concurrently --kill-others --names \"babel,tsc\" \"npm run start:babel\" \"npm run start:typescript\"",
-    "start:typescript": "npm run build:typescript -- --watch"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/plugin-transform-runtime": "^7.19.1",
-    "@babel/plugin-transform-typescript": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
-    "@types/node": "^20.5.8",
-    "babel-plugin-istanbul": "^6.1.1",
-    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "botframework-directlinejs": "^0.15.5",
-    "concurrently": "^8.2.1",
-    "typescript": "^5.2.2"
-  },
-  "dependencies": {
-    "@babel/runtime": "7.19.0",
-    "jwt-decode": "3.1.2",
-    "math-random": "2.0.1",
-    "mime": "3.0.0",
-    "p-defer": "4.0.0",
-    "p-defer-es5": "2.0.1",
-    "redux": "4.2.1",
-    "redux-devtools-extension": "2.13.9",
-    "redux-saga": "1.2.3",
-    "simple-update-in": "2.2.0"
+    "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
+    "start": "npm run build:tsup -- --onSuccess=\"touch ../api/src/index.ts\" --watch"
   },
   "engines": {
     "node": ">=12.0.0"
+  },
+  "localDependences": {
+    "botframework-webchat-base": "development"
   },
   "pinDependencies": {
     "@babel/cli": [
@@ -94,6 +88,38 @@
     "@babel/runtime": [
       "7.19.0",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "valibot": [
+      "0",
+      "valibot@0 until they finalize @1"
     ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.1",
+    "@babel/plugin-transform-runtime": "^7.19.1",
+    "@babel/plugin-transform-typescript": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
+    "@types/node": "^20.12.11",
+    "babel-plugin-istanbul": "^6.1.1",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
+    "botframework-directlinejs": "^0.15.5",
+    "botframework-webchat-base": "0.0.0-0",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "tsd": "^0.31.0",
+    "type-fest": "^4.18.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.19.0",
+    "@redux-devtools/extension": "3.3.0",
+    "jwt-decode": "4.0.0",
+    "math-random": "2.0.1",
+    "mime": "4.0.6",
+    "redux": "5.0.1",
+    "redux-saga": "1.3.0",
+    "simple-update-in": "2.2.0",
+    "valibot": "0.42.1"
   }
 }

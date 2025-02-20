@@ -150,10 +150,43 @@ type StyleOptions = {
   bubbleFromUserNubSize?: number;
 
   bubbleFromUserTextColor?: string;
-  bubbleImageHeight?: number;
-  bubbleMaxWidth?: number;
+
+  /**
+   * Specifies the fixed height of the bubble for image, default to unset.
+   *
+   * @deprecated Use `bubbleImageMaxHeight` and `bubbleImageMinHeight` instead. To mimick behavior before deprecation, set both options to 240px.
+   */
+  bubbleImageHeight?: number | undefined;
+
+  /**
+   * Specifies the maximum height of the bubble for image, default to 240px.
+   *
+   * CSS variable: `--webchat__max-height--image-bubble`.
+   *
+   * New in 4.18.0.
+   */
+  bubbleImageMaxHeight?: number | undefined;
+
+  /**
+   * Specifies the minimum height of the bubble for image, default to 240px.
+   *
+   * CSS variable: `--webchat__min-height--image-bubble`.
+   *
+   * New in 4.18.0.
+   */
+  bubbleImageMinHeight?: number | undefined;
+
+  /* @deprecated Please use `bubbleAttachmentMaxWidth` and `bubbleMessageMaxWidth` instead. */
+  bubbleMaxWidth?: number | undefined;
+  /* @deprecated Please use `bubbleAttachmentMaxWidth` and `bubbleMessageMaxWidth` instead. */
+  bubbleMinWidth?: number | undefined;
+
+  bubbleAttachmentMaxWidth?: number | undefined;
+  bubbleAttachmentMinWidth?: number | undefined;
+  bubbleMessageMaxWidth?: number | undefined;
+  bubbleMessageMinWidth?: number | undefined;
+
   bubbleMinHeight?: number;
-  bubbleMinWidth?: number;
 
   /**
    * Nub offset ''bottom' will render nub at the bottom
@@ -211,10 +244,19 @@ type StyleOptions = {
   markdownRespectCRLF?: boolean;
 
   /**
+   * Render HTML inside Markdown.
+   *
+   * `true` to render HTML inside Markdown, otherwise, `false`. Defaults to `true`.
+   *
+   * New in 4.17: This option is enabled by default.
+   */
+  markdownRenderHTML?: boolean;
+
+  /**
    * Assign new image for anchor links to indicate external
    */
-
   markdownExternalLinkIconImage?: string;
+
   /**
    * Scroll behavior styling
    */
@@ -256,8 +298,35 @@ type StyleOptions = {
 
   hideSendBox?: boolean;
   hideUploadButton?: boolean;
+
+  /**
+   * (EXPERIMENTAL) `true`, if the telephone keypad button should be shown, otherwise, `false`. Defaults to `true`.
+   *
+   * @deprecated This is an experimental style options and should not be used without understanding its risk.
+   */
+  hideTelephoneKeypadButton?: boolean | undefined;
+
   microphoneButtonColorOnDictate?: string;
   sendBoxBackground?: string;
+
+  /**
+   * The comma-delimited file types that the upload button should accept.
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept
+   * @example 'image/*,.pdf'
+   */
+  uploadAccept?: string;
+  /**
+   * If true, the upload button will accept multiple files.
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#multiple
+   */
+  uploadMultiple?: boolean;
+
+  /**
+   * If set to `send` (default), attachment will be sent when the send button is clicked, or when the message is being sent.
+   *
+   * Otherwise, if set to `attach`, attachment will be sent immediately after file is selected.
+   */
+  sendAttachmentOn?: 'attach' | 'send';
 
   /** Send box button: Icon color, defaults to subtle */
   sendBoxButtonColor?: string;
@@ -795,22 +864,106 @@ type StyleOptions = {
 
   enableUploadThumbnail?: boolean;
   uploadThumbnailContentType?: string;
-  uploadThumbnailHeight?: number | string;
+  uploadThumbnailHeight?: number;
   uploadThumbnailQuality?: number;
-  uploadThumbnailWidth?: number | string;
+  uploadThumbnailWidth?: number;
 
   /**
    * Video
    */
 
   videoHeight?: number | string;
+
+  /**
+   * Maximum message length in characters
+   *
+   * @default 2000
+   */
+  maxMessageLength?: number;
+
+  /**
+   * The node to place Web Chat styles into. Needed when using as a Web Component.
+   *
+   * @default document.head
+   */
+  stylesRoot?: Node;
+
+  /**
+   * Border animation
+   */
+
+  /**
+   * Border animation 1st color
+   *
+   * CSS variable: `--webchat__animation--border-color-1` CSS variable to adjust the color
+   *
+   * New in 4.19.0.
+   */
+  borderAnimationColor1?: string;
+  /**
+   * Border animation 2nd color
+   *
+   * CSS variable: `--webchat__animation--border-color-2` CSS variable to adjust the color
+   *
+   * New in 4.19.0.
+   */
+  borderAnimationColor2?: string;
+  /**
+   * Border animation 3rd color
+   *
+   * CSS variable: `--webchat__animation--border-color-3` CSS variable to adjust the color
+   *
+   * New in 4.19.0.
+   */
+  borderAnimationColor3?: string;
+
+  /**
+   * Code block theme
+   *
+   * - `'github-light-default'` - use light theme for code blocks
+   * - `'github-dark-default'` - use dark theme for code blocks
+   *
+   * @default 'github-light-default'
+   *
+   * New in 4.19.0.
+   */
+  codeBlockTheme?: 'github-light-default' | 'github-dark-default';
+
+  /**
+   * (EXPERIMENTAL) Feedback buttons placement
+   *
+   * - `'activity-actions'` - place feedback buttons inside activity actions
+   * - `'activity-status'` - place feedback buttons inside activity status
+   *
+   * @default 'activity-status'
+   *
+   * @deprecated This is an experimental style options and should not be used without understanding its risk.
+   *
+   * New in 4.19.0.
+   */
+  feedbackActionsPlacement?: 'activity-actions' | 'activity-status';
+
+  /**
+   * Use continuous mode for speech recognition. Default to `false`.
+   *
+   * - `true` to use continuous mode which focuses on a hands-off experience, keeping speech recognition active for extended periods, supporting barge-in, non-speech interactions will not stop speech recognition
+   * - `false` to use interactive mode which focuses on privacy, keeping speech recognition active only for the minimal time required, no barge-in, non-speech interactions will stop speech recognition
+   *
+   * @see https://github.com/microsoft/BotFramework-WebChat/pull/5426
+   */
+  speechRecognitionContinuous?: boolean | undefined;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:
 // 1. Allow developers to set the "bubbleNubOffset" option as "top" (string), but when we normalize them, we will convert it to 0 (number);
 // 2. Renamed/deprecated options, only the newer option will be kept, the older option will be dropped.
 //    Internally, no code should use the deprecated value except the migration code.
-type StrictStyleOptions = Required<Omit<StyleOptions, 'hideScrollToEndButton' | 'newMessagesButtonFontSize'>> & {
+type StrictStyleOptions = Required<
+  Omit<
+    StyleOptions,
+    'bubbleImageHeight' | 'bubbleMaxWidth' | 'bubbleMinWidth' | 'hideScrollToEndButton' | 'newMessagesButtonFontSize'
+  >
+> & {
   bubbleFromUserNubOffset: number;
   bubbleNubOffset: number;
   emojiSet: false | Record<string, string>;

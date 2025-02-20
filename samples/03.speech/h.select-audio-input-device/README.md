@@ -127,7 +127,7 @@ If you are using Direct Line Speech, you should set `audioInputDeviceId` when ca
       const fetchSpeechServicesCredentials = createFetchSpeechServicesCredentials();
 
       (async function() {
-        const directLineTokenResponse = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', {
+        const directLineTokenResponse = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', {
           method: 'POST'
         });
         const { token } = await directLineTokenResponse.json();

@@ -1,28 +1,28 @@
-/** @jest-environment jsdom */
+/** @jest-environment @happy-dom/jest-environment */
 
 /* eslint no-magic-numbers: "off" */
 
-import createDeferred from 'p-defer-es5';
 import createTaskQueue from './createTaskQueue';
+import withResolvers from './utils/withResolvers';
 
 function createTask() {
   const abort = jest.fn();
-  const resultDeferred = createDeferred();
-  const startedDeferred = createDeferred();
+  const resultWithResolvers = withResolvers();
+  const startedWithResolvers = withResolvers();
 
   return {
     abort,
     fn: jest.fn(() => {
-      startedDeferred.resolve();
+      startedWithResolvers.resolve();
 
       return {
         abort,
-        result: resultDeferred.promise
+        result: resultWithResolvers.promise
       };
     }),
-    reject: resultDeferred.reject,
-    resolve: resultDeferred.resolve,
-    started: startedDeferred.promise
+    reject: resultWithResolvers.reject,
+    resolve: resultWithResolvers.resolve,
+    started: startedWithResolvers.promise
   };
 }
 

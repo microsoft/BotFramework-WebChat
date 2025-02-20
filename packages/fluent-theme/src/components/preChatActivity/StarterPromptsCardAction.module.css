@@ -1,0 +1,126 @@
+:global(.webchat-fluent) .pre-chat-message-activity__card-action-box {
+  appearance: none;
+  background-color: var(--webchat-colorNeutralBackground1);
+  border: 0;
+  border-radius: 16px;
+  box-shadow: var(--webchat-shadow2);
+  color: var(--webchat-colorNeutralForeground1);
+  cursor: pointer;
+  display: grid;
+  gap: var(--webchat-spacingVerticalS);
+  grid-template-areas: 'title' 'subtitle';
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  padding: 16px 20px;
+  text-align: left;
+  transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+  user-select: none;
+
+  &:has(.pre-chat-message-activity__card-action-image) {
+    grid-template-areas: 'image title' 'image subtitle';
+    grid-template-columns: 20px 1fr;
+  }
+
+  &:empty {
+    row-gap: 14px;
+  }
+
+  &[aria-disabled='true'],
+  &:empty {
+    cursor: default;
+  }
+
+  &[aria-disabled='true']:not(:empty) {
+    background-color: var(--webchat-colorNeutralBackgroundDisabled);
+  }
+
+  &:hover:not([aria-disabled='true'], :empty) {
+    background-color: var(--webchat-colorNeutralBackground1Hover);
+  }
+
+  &:active:not([aria-disabled='true'], :empty) {
+    background-color: var(--webchat-colorNeutralBackground1Pressed);
+  }
+
+  &:focus-visible {
+    outline: solid 2px var(--webchat-colorStrokeFocus2);
+    outline-offset: -2px;
+  }
+
+  &:empty::after,
+  &:empty::before {
+    animation: blueprintAnimation 3s linear infinite;
+    background-attachment: fixed;
+    background-image: linear-gradient(
+      -90deg,
+      var(--webchat-colorNeutralStencil1) 0%,
+      var(--webchat-colorNeutralStencil2) 50%,
+      var(--webchat-colorNeutralStencil1) 100%
+    );
+    background-size: 300% 100%;
+    content: '';
+    display: block;
+  }
+
+  /* animation-* needs to position after animation shorthand. */
+  @media (prefers-reduced-motion: reduce) {
+    &:empty::after,
+    &:empty::before {
+      animation-delay: -1s;
+      animation-play-state: paused;
+    }
+  }
+
+  &:dir(rtl) {
+    &:empty::after,
+    &:empty::before {
+      animation-direction: reverse;
+    }
+  }
+
+  &:empty::after {
+    border-radius: 16px;
+    height: 16px;
+    width: 100%;
+  }
+
+  &:empty::before {
+    border-radius: 18px;
+    height: 18px;
+    width: 66%;
+  }
+}
+
+@keyframes blueprintAnimation {
+  from {
+    background-position-x: 0%;
+  }
+
+  to {
+    background-position-x: -300%;
+  }
+}
+
+:global(.webchat-fluent) .pre-chat-message-activity__card-action-image {
+  color: var(--webchat-colorNeutralForeground4);
+  font-size: 20px;
+  grid-area: image;
+}
+
+:global(.webchat-fluent) .pre-chat-message-activity__card-action-subtitle {
+  font-family: var(--webchat-fontFamilyBase);
+  font-size: 14px;
+  font-weight: var(--webchat-fontWeightRegular);
+  grid-area: subtitle;
+  line-height: 20px;
+  pointer-events: none; /* Links in subtitle are not clickable. */
+}
+
+:global(.webchat-fluent) .pre-chat-message-activity__card-action-title {
+  font-family: var(--webchat-fontFamilyBase);
+  font-size: 14px;
+  font-weight: var(--webchat-fontWeightSemibold);
+  grid-area: title;
+  line-height: 20px;
+}

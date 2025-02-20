@@ -59,7 +59,7 @@ Then, register a custom component to override the existing typing indicator:
 +
 +       return (
 +         !!activeTyping.length && (
-+           <span className="webchat__typingIndicator">
++           <span className="webchat__typing-indicator">
 +             Currently typing:{' '}
 +             {activeTyping
 +               .map(({ role }) => role)
@@ -105,7 +105,7 @@ Add the following CSS for styling the typing indicator:
 
 <!-- prettier-ignore-start -->
 ```css
-.webchat__typingIndicator {
+.webchat__typing-indicator {
   font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
   font-size: 14px;
   padding: 10px;
@@ -143,7 +143,7 @@ Here is the finished `index.html`:
         width: 100%;
       }
 
-      .webchat__typingIndicator {
+      .webchat__typing-indicator {
         font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
         font-size: 14px;
         padding: 10px;
@@ -155,7 +155,7 @@ Here is the finished `index.html`:
     <script type="text/babel" data-presets="es2015,react,stage-3">
       (async function() {
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
         const { ReactWebChat } = window.WebChat;
 
@@ -168,7 +168,7 @@ Here is the finished `index.html`:
 
               return (
                 !!activeTyping.length && (
-                  <span className="webchat__typingIndicator">
+                  <span className="webchat__typing-indicator">
                     Currently typing:{' '}
                     {activeTyping
                       .map(({ role }) => role)
