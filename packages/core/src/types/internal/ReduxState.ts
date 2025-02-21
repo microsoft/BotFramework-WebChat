@@ -14,6 +14,7 @@ type ReduxState = {
   sendTimeout: number;
   sendTypingIndicator: boolean;
   shouldSpeakIncomingActivity: boolean;
+  botSpeakingState: string;
 };
 
 export type { ReduxState };

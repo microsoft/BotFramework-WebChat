@@ -1,0 +1,28 @@
+{
+  "name": "sample-continuous-speech-recognition",
+  "version": "0.0.0-0",
+  "private": true,
+  "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/",
+  "scripts": {
+    "build": "esbuild --bundle --entry-names=[name]/[ext]/main --jsx=automatic --loader:.jpg=file --minify --outdir=./public/static/ --sourcemap app=./src/index.tsx",
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "start": "npm run build -- --servedir=./public"
+  },
+  "dependencies": {
+    "botframework-webchat": "file:C:/BotFramework-WebChat/packages/bundle/botframework-webchat-0.0.0-0.tgz",
+    "botframework-directlinespeech-sdk": "file:C:/BotFramework-WebChat/packages/directlinespeech/botframework-directlinespeech-sdk-0.0.0-0.tgz",
+    "botframework-webchat-component": "file:C:/BotFramework-WebChat/packages/component/botframework-webchat-component-0.0.0-0.tgz",
+    "botframework-webchat-core": "file:C:/BotFramework-WebChat/packages/core/botframework-webchat-core-0.0.0-0.tgz",
+    "botframework-webchat-api": "file:C:/BotFramework-WebChat/packages/api/botframework-webchat-api-0.0.0-0.tgz",
+    "classnames": "^2.5.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-redux": "^9.1.2",
+    "redux": "^5.0.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.1"
+  }
+}

@@ -1,8 +1,10 @@
 import { hooks } from 'botframework-webchat-api';
 import type { WebChatActivity } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
-import React, { FC, memo, useCallback, useMemo } from 'react';
+import React, { useEffect, FC, memo, useCallback, useMemo } from 'react';
 import ReactSay, { SayUtterance } from 'react-say';
+import { useSetBotSpeakingState } from 'botframework-webchat-api/internal';
+import { Constants } from 'botframework-webchat-core';
 
 import SayAlt from './SayAlt';
 
@@ -13,6 +15,10 @@ const { useMarkActivityAsSpoken, useStyleOptions, useVoiceSelector } = hooks;
 // TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text
 
+const {
+  BotSpeakingState: { IDLE, SPEAKING }
+} = Constants;
+
 type SpeakProps = {
   activity: WebChatActivity;
 };
@@ -21,6 +27,18 @@ const Speak: FC<SpeakProps> = ({ activity }) => {
   const [{ showSpokenText }] = useStyleOptions();
   const markActivityAsSpoken = useMarkActivityAsSpoken();
   const selectVoice = useVoiceSelector(activity);
+  const setBotSpeaking = useSetBotSpeakingState();
+
+  useEffect(
+    () => () => {
+      setBotSpeaking(IDLE);
+    },
+    [setBotSpeaking]
+  );
+
+  const handleOnStartSpeaking = useCallback(() => {
+    setBotSpeaking(SPEAKING);
+  }, [setBotSpeaking]);
 
   const markAsSpoken = useCallback(() => {
     markActivityAsSpoken(activity);
@@ -50,9 +68,20 @@ const Speak: FC<SpeakProps> = ({ activity }) => {
     !!activity && (
       <React.Fragment>
         {speechSynthesisUtterance ? (
-          <SayUtterance onEnd={markAsSpoken} onError={markAsSpoken} utterance={speechSynthesisUtterance} />
+          <SayUtterance
+            onEnd={markAsSpoken}
+            onError={markAsSpoken}
+            onStart={handleOnStartSpeaking}
+            utterance={speechSynthesisUtterance}
+          />
         ) : (
-          <Say onEnd={markAsSpoken} onError={markAsSpoken} text={singleLine} voice={selectVoice} />
+          <Say
+            onEnd={markAsSpoken}
+            onError={markAsSpoken}
+            onStart={handleOnStartSpeaking}
+            text={singleLine}
+            voice={selectVoice}
+          />
         )}
         {!!showSpokenText && <SayAlt speak={singleLine} />}
       </React.Fragment>

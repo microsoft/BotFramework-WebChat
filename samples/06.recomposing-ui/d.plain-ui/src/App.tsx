@@ -11,8 +11,8 @@ import PlainWebChat from './PlainWebChat';
 
 async function getDirectLineToken(): Promise<string> {
   const res = await fetch(
-    'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline',
-    { method: 'POST' }
+    'https://defaultc2983f0e34ee4b438abcc2f460fd26b.e.environment.api.preprod.powerplatform.com/powervirtualagents/botsbyschema/cr924_testVoipAgent/directline/token?api-version=2022-03-01-preview',
+    { method: 'GET' }
   );
   const { token } = await res.json();
 
