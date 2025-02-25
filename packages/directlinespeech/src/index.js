@@ -27,3 +27,11 @@ if (typeof HTMLDocument !== 'undefined' && typeof document !== 'undefined' && do
 
   document.head.appendChild(packageMeta);
 }
+
+if (moduleFormat === 'global') {
+  window.DirectLineSpeech = Object.freeze({
+    ...window.DirectLineSpeech,
+    buildInfo,
+    createAdapters
+  });
+}
