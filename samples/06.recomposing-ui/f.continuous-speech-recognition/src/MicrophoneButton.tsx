@@ -26,13 +26,9 @@ const MicrophoneButton = ({ changeView }: MicroPhoneButtonProps) => {
 
   return (
     <button
-      className={classNames(
-        'icon-button',
-        {
-          'icon-button_animation': dictateState === DictateState.DICTATING && !unSpokenActivities.length
-        },
-        'micButton'
-      )}
+      className={classNames('App-icon-button', {
+        'App-icon-button_animation': dictateState === DictateState.DICTATING && !unSpokenActivities.length
+      })}
       onClick={handleMicrophoneButtonClick}
       type="button"
     >

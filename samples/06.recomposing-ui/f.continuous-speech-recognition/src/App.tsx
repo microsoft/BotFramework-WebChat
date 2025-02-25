@@ -43,15 +43,15 @@ const ReactSpeechWebChatView = ({ changeView, currentView }: ReactSpeechWebChatV
   return (
     <React.Fragment>
       {currentView === 'speech' ? (
-        <div className={classNames('pill-style', { 'speaking-style': unSpokenActivities.length }, 'pillContainer')}>
+        <div className={classNames('App-pill-style', { 'App-speaking-style': unSpokenActivities.length })}>
           <BotResponse />
-          <button className={classNames('icon-button', 'keyboardButton')} onClick={toggleChatView} type="button">
-            <Keyboard className={classNames('keyboard-style', 'keyboardIcon')} />
+          <button className={'App-icon-button'} onClick={toggleChatView} type="button">
+            <Keyboard className={'App-keyboard-style'} />
           </button>
           <MicrophoneButton changeView={changeView} />
         </div>
       ) : (
-        <BasicWebChat className={'chatBot'} role={'main'} />
+        <BasicWebChat className={'App-chatBot'} role={'main'} />
       )}
     </React.Fragment>
   );
@@ -122,7 +122,7 @@ const App = () => {
   };
 
   return (
-    <div className="chat_container">
+    <div className="App-chat_container">
       <Composer {...composerProps}>
         <ReactSpeechWebChatView changeView={handleChangeView} currentView={currentView} />
       </Composer>

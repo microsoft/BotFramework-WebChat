@@ -1,5 +1,5 @@
 
-.send_box_container {
+.App-send_box_container {
   align-items: stretch;
   background-color: white;
   border-top: 1px solid rgb(230, 230, 230);
@@ -7,6 +7,6 @@
   display: flex;
 }
 
-.max_width {
+.App-max_width {
   flex: 10000 1 0%;
 }

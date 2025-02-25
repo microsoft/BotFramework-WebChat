@@ -1,4 +1,4 @@
-.pill-style {
+.App-pill-style {
   width: 165px;
   height: 60px;
   display: flex;
@@ -35,11 +35,11 @@
   }
 }
 
-.speaking-style {
+.App-speaking-style {
   animation: glow 1s infinite alternate;
 }
 
-.icon-button {
+.App-icon-button {
   width: 54px;
   height: 54px;
   border-radius: 100%;
@@ -48,7 +48,7 @@
   background-color: transparent;
 }
 
-.icon-button:not(:disabled):not([aria-disabled="true"]) {
+.App-icon-button:not(:disabled):not([aria-disabled="true"]) {
   &:not(:active) {
     &:hover {
       .icon-button__shade {
@@ -85,21 +85,21 @@
   }
 }
 
-.icon-button_animation {
+.App-icon-button_animation {
   animation: innerShadow 1s infinite alternate;
   background-color: #95B8C3;
   border: 1px solid white;
 }
 
-.icon-button svg {
+.App-icon-button svg {
   fill: #01678C;
 }
 
-.keyboard-style {
+.App-keyboard-style {
   fill: #242424;
 }
 
-.chat_container {
+.App-chat_container {
   height: auto;
   width: auto;
   position: fixed;
@@ -107,7 +107,7 @@
   right: 10px;
   bottom: 10px;
 }
-.chatBot.webchat__surface {
+.App-chatBot.webchat__surface {
   height: 500px;
   max-height: calc(100vh - 50px);
   width: 350px;

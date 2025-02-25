@@ -27,8 +27,12 @@ const SendBox = ({ changeView }: SendBoxProps) => {
   return (
     <div>
       <SuggestedActions />
-      <div className="send_box_container">
-        {speechInterimsVisible ? <DictationInterims className="max_width" /> : <TextBox className="max_width" />}
+      <div className="App-send_box_container">
+        {speechInterimsVisible ? (
+          <DictationInterims className="App-max_width" />
+        ) : (
+          <TextBox className="App-max_width" />
+        )}
         <MicrophoneButton changeView={changeView} />
       </div>
     </div>
