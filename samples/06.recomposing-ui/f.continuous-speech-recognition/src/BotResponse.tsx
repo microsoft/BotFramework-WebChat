@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import useUnSpokenActivities from './useLastBotActivity';
+import useUnSpokenActivities from './useUnSpokenActivities';
 import { Components } from 'botframework-webchat';
 
 const { SpeakActivity } = Components;

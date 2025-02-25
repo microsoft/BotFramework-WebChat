@@ -10,8 +10,9 @@ import classNames from 'classnames';
 import Keyboard from './Assets/Keyboard';
 import SendBox from './SendBox';
 import MicrophoneButton from './MicrophoneButton';
+import useUnSpokenActivities from './useUnSpokenActivities';
 
-const { useShouldSpeakIncomingActivity, useStopDictate, useBotSpeakingState } = hooks;
+const { useShouldSpeakIncomingActivity, useStopDictate } = hooks;
 
 type ReactSpeechWebChatViewProps = {
   readonly changeView: (view: string) => void;
@@ -20,8 +21,7 @@ type ReactSpeechWebChatViewProps = {
 
 const ReactSpeechWebChatView = ({ changeView, currentView }: ReactSpeechWebChatViewProps) => {
   const [, setShouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
-
-  const botSpeakingState = useBotSpeakingState();
+  const unSpokenActivities = useUnSpokenActivities();
 
   const stopDictate = useStopDictate();
   const toggleChatView = useCallback(() => {
@@ -33,7 +33,7 @@ const ReactSpeechWebChatView = ({ changeView, currentView }: ReactSpeechWebChatV
   return (
     <React.Fragment>
       {currentView === 'speech' ? (
-        <div className={classNames('pill-style', { 'speaking-style': botSpeakingState }, 'pillContainer')}>
+        <div className={classNames('pill-style', { 'speaking-style': unSpokenActivities.length }, 'pillContainer')}>
           <BotResponse />
           <button className={classNames('icon-button', 'keyboardButton')} onClick={toggleChatView} type="button">
             <Keyboard className={classNames('keyboard-style', 'keyboardIcon')} />

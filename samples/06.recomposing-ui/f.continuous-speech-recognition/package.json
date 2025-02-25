@@ -11,11 +11,7 @@
     "start": "npm run build -- --servedir=./public"
   },
   "dependencies": {
-    "botframework-webchat": "file:C:/BotFramework-WebChat/packages/bundle/botframework-webchat-0.0.0-0.tgz",
-    "botframework-directlinespeech-sdk": "file:C:/BotFramework-WebChat/packages/directlinespeech/botframework-directlinespeech-sdk-0.0.0-0.tgz",
-    "botframework-webchat-component": "file:C:/BotFramework-WebChat/packages/component/botframework-webchat-component-0.0.0-0.tgz",
-    "botframework-webchat-core": "file:C:/BotFramework-WebChat/packages/core/botframework-webchat-core-0.0.0-0.tgz",
-    "botframework-webchat-api": "file:C:/BotFramework-WebChat/packages/api/botframework-webchat-api-0.0.0-0.tgz",
+    "botframework-webchat": "4.18.1-main.20250213.c8c5744",
     "classnames": "^2.5.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
