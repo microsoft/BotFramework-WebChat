@@ -108,7 +108,7 @@
 
         // THEN: Should show the informative message with blue bottom border.
         // THEN: Should not show typing indicator.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Interim activity arrives.
         await directLine.emulateIncomingActivity({
@@ -137,7 +137,7 @@
 
         // THEN: Should show the informative message with blue bottom border.
         // THEN: Should not show typing indicator.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: Final activity arrives.
         await directLine.emulateIncomingActivity({
@@ -165,7 +165,7 @@
 
         // THEN: Should show the informative message with blue bottom border.
         // THEN: Should not show typing indicator.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

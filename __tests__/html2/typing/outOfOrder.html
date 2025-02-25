@@ -85,7 +85,7 @@
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
         );
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick');
-        await host.snapshot();
+        await host.snapshot('local');
 
         // THEN: Should have 2 activity keys.
         expect(currentActivityKeysWithId).toEqual([
@@ -124,7 +124,7 @@
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
         );
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over');
-        await host.snapshot();
+        await host.snapshot('local');
 
         // THEN: Should have 2 activity keys only.
         expect(currentActivityKeysWithId).toEqual([
@@ -163,7 +163,7 @@
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
         );
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over');
-        await host.snapshot();
+        await host.snapshot('local');
 
         // THEN: Should have 2 activity keys.
         expect(currentActivityKeysWithId).toEqual([
@@ -204,7 +204,7 @@
           'textContent',
           'A quick brown fox jumped over the lazy dogs.'
         );
-        await host.snapshot();
+        await host.snapshot('local');
 
         // THEN: Should have 2 activity keys.
         expect(currentActivityKeysWithId).toEqual([

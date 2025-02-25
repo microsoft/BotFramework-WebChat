@@ -68,7 +68,7 @@
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'Nisi elit quis nisi consectetur.');
 
         await pageConditions.numActivitiesShown(2);
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
