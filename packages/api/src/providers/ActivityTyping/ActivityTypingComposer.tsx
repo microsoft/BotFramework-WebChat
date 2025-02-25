@@ -40,7 +40,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
 
         const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
 
-        if (type === 'message' || livestreamingMetadata?.type === 'final activity') {
+        if (livestreamingMetadata?.type === 'final activity') {
           nextTyping.delete(id);
           changed = true;
         } else if (type === 'typing' && (role === 'bot' || role === 'user')) {
@@ -56,7 +56,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
             lastReceivedAt: receivedAt,
             name: from.name,
             role,
-            type: livestreamingMetadata ? 'livestream' : 'busy'
+            type: livestreamingMetadata && livestreamingMetadata.type !== 'indicator only' ? 'livestream' : 'busy'
           });
 
           changed = true;

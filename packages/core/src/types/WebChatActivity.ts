@@ -175,9 +175,9 @@ type TypingActivityEssence =
       channelData: {
         streamId?: string | undefined;
         streamSequence: number;
-        streamType: 'informative' | 'streaming';
+        streamType: 'informative' | 'streaming' | 'final';
       };
-      text: string;
+      text?: string | undefined;
       type: 'typing';
     };
 
