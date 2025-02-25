@@ -27,7 +27,6 @@ import stopSpeakingActivity from './actions/stopSpeakingActivity';
 import submitSendBox from './actions/submitSendBox';
 import * as ActivityClientState from './constants/ActivityClientState';
 import * as DictateState from './constants/DictateState';
-import * as BotSpeakingState from './constants/BotSpeakingState';
 import createStore, {
   withDevTools as createStoreWithDevTools,
   withOptions as createStoreWithOptions
@@ -70,9 +69,8 @@ import type { CreativeWork as OrgSchemaCreativeWork } from './types/external/Org
 import type { DefinedTerm as OrgSchemaDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
 import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Project';
 import type { Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
-import setBotSpeakingState from './actions/setBotSpeakingState';
 
-const Constants = { ActivityClientState, DictateState, BotSpeakingState  };
+const Constants = { ActivityClientState, DictateState };
 const buildTool = process.env.build_tool;
 const moduleFormat = process.env.module_format;
 const version = process.env.npm_package_version;
@@ -110,7 +108,6 @@ export {
   sendMessageBack,
   sendPostBack,
   setDictateInterims,
-  setBotSpeakingState,
   setDictateState,
   setLanguage,
   setNotification,

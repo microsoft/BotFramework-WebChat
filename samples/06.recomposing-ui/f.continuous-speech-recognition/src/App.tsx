@@ -1,4 +1,9 @@
-import { Components, createBrowserWebSpeechPonyfillFactory, createDirectLine, hooks } from 'botframework-webchat';
+import {
+  Components,
+  createCognitiveServicesSpeechServicesPonyfillFactory,
+  createDirectLine,
+  hooks
+} from 'botframework-webchat';
 import './App.css';
 
 const { Composer, BasicWebChat } = Components;
@@ -17,6 +22,11 @@ const { useShouldSpeakIncomingActivity, useStopDictate } = hooks;
 type ReactSpeechWebChatViewProps = {
   readonly changeView: (view: string) => void;
   readonly currentView: 'speech' | 'text';
+};
+
+type SpeechCredentialType = {
+  authorizationToken: string;
+  region: string;
 };
 
 const ReactSpeechWebChatView = ({ changeView, currentView }: ReactSpeechWebChatViewProps) => {
@@ -50,7 +60,27 @@ const ReactSpeechWebChatView = ({ changeView, currentView }: ReactSpeechWebChatV
 const App = () => {
   const [directLine, setDirectLine] = useState<ReturnType<typeof createDirectLine>>();
   const [currentView, setCurrentSpeechWebChatView] = useState<'speech' | 'text'>('speech');
-  const webSpeechPonyfillFactory = useMemo(() => createBrowserWebSpeechPonyfillFactory(), []);
+  const [speechCredential, setSpeechCredentials] = useState<SpeechCredentialType | null>(null);
+
+  useEffect(() => {
+    (async function () {
+      await fetch(
+        'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/speech/msi',
+        {
+          method: 'POST'
+        }
+      )
+        .then(res => res.json())
+        .then(({ region, token }) => ({ authorizationToken: `Bearer ${token}`, region }))
+        .then(res => {
+          setSpeechCredentials(res);
+          return res;
+        })
+        .catch(err => {
+          throw new Error(err);
+        });
+    })();
+  }, []);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -76,9 +106,13 @@ const App = () => {
 
   const SendBoxMiddlewareComponent = useMemo(() => <SendBox changeView={handleChangeView} />, [handleChangeView]);
 
-  if (!directLine) {
+  if (!directLine || !speechCredential) {
     return null;
   }
+
+  const webSpeechPonyfillFactory = createCognitiveServicesSpeechServicesPonyfillFactory({
+    credentials: { ...speechCredential }
+  });
 
   const composerProps = {
     directLine,

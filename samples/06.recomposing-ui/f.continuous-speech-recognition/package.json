@@ -2,7 +2,7 @@
   "name": "sample-continuous-speech-recognition",
   "version": "0.0.0-0",
   "private": true,
-  "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/b.speech-ui/",
+  "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/f.continuous-speech-recognition/",
   "scripts": {
     "build": "esbuild --bundle --entry-names=[name]/[ext]/main --jsx=automatic --loader:.jpg=file --minify --outdir=./public/static/ --sourcemap app=./src/index.tsx",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
