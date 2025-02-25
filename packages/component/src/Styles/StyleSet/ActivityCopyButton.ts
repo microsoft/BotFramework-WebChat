@@ -1,7 +1,7 @@
 export default function createActivityButtonStyle() {
   return {
     '&.webchat__activity-copy-button': {
-      overflow: 'hidden',
+      overflow: ['clip', 'hidden'],
       position: 'relative',
 
       '& .webchat__activity-copy-button__copied-text': {
@@ -10,22 +10,28 @@ export default function createActivityButtonStyle() {
         display: 'flex',
         height: '100%',
         justifyContent: 'center',
-        opacity: 0,
         position: 'absolute',
+        visibility: 'hidden',
         width: '100%'
       },
 
-      '&.webchat__activity-copy-button--copied .webchat__activity-copy-button__copied-text': {
-        animation: 'webchat__activity-copy-button__copied-animation 0.5s linear'
+      '&.webchat__activity-copy-button--copied': {
+        '.webchat__activity-copy-button__copied-text': {
+          animation: 'webchat__activity-copy-button__copied-animation 0.7s linear'
+        },
+
+        '.webchat__activity-button__icon, .webchat__activity-button__text': {
+          visibility: 'hidden'
+        }
       },
 
       '@keyframes webchat__activity-copy-button__copied-animation': {
         '0%': {
-          opacity: '100%'
+          visibility: 'visible'
         },
 
         '100%': {
-          opacity: 'unset'
+          visibility: 'unset'
         }
       }
     }

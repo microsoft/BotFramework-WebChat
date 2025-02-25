@@ -1,20 +1,20 @@
 import { warnOnce } from 'botframework-webchat-core';
 import { createChainOfResponsibility, type ComponentMiddleware } from 'react-chain-of-responsibility';
 import { type EmptyObject } from 'type-fest';
-import { any, array, custom, safeParse, type Output } from 'valibot';
+import { any, array, function_, pipe, safeParse, type InferOutput } from 'valibot';
 
 export type MiddlewareWithInit<M extends ComponentMiddleware<any, any, any>, I> = (init: I) => ReturnType<M> | false;
 
 const EMPTY_ARRAY = Object.freeze([]);
 
+// Following @types/react to use {} for props.
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export default function templateMiddleware<Init, Request = any, Props extends {} = EmptyObject>(name: string) {
   type Middleware = ComponentMiddleware<Request, Props>;
 
-  const middlewareSchema = array(
-    any([custom<Middleware>(input => typeof input === 'function', 'Middleware must be a function.')])
-  );
+  const middlewareSchema = array(pipe(any(), function_()));
 
-  const isMiddleware = (middleware: unknown): middleware is Output<typeof middlewareSchema> =>
+  const isMiddleware = (middleware: unknown): middleware is InferOutput<typeof middlewareSchema> =>
     safeParse(middlewareSchema, middleware).success;
 
   const warnInvalid = warnOnce(`"${name}" prop is invalid`);

@@ -1,16 +1,16 @@
+// TODO: [P2] Fix ESLint error `no-use-before-define`
+/* eslint-disable @typescript-eslint/no-use-before-define */
+
 import { hooks } from 'botframework-webchat-api';
 import {
   Composer as ReactScrollToBottomComposer,
   Panel as ReactScrollToBottomPanel,
-  useAnimatingToEnd,
-  useAtEnd,
   useObserveScrollPosition,
   useScrollTo,
   useScrollToEnd,
   useSticky
 } from 'react-scroll-to-bottom';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { forwardRef, Fragment, memo, useCallback, useMemo, useRef } from 'react';
 
 import type { ActivityElementMap } from './Transcript/types';
@@ -33,6 +33,9 @@ import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivit
 import useFocusedActivityKey from './providers/TranscriptFocus/useFocusedActivityKey';
 import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicitly';
 import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
+import ChatHistoryBox from './ChatHistory/ChatHistoryBox';
+import ChatHistoryToolbar from './ChatHistory/ChatHistoryToolbar';
+import ScrollToEndButton from './ChatHistory/private/ScrollToEndButton';
 import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
 import usePrevious from './hooks/internal/usePrevious';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
@@ -52,9 +55,7 @@ import useNonce from './hooks/internal/useNonce';
 
 const {
   useActivityKeys,
-  useActivityKeysByRead,
   useCreateAvatarRenderer,
-  useCreateScrollToEndButtonRenderer,
   useDirection,
   useGetActivityByKey,
   useGetKeyByActivity,
@@ -97,14 +98,15 @@ type ScrollBehavior = 'auto' | 'smooth';
 type ScrollToOptions = { behavior?: ScrollBehavior };
 type ScrollToPosition = { activityID?: string; scrollTop?: number };
 
-type InternalTranscriptProps = {
+type InternalTranscriptProps = Readonly<{
   activityElementMapRef: MutableRefObject<ActivityElementMap>;
   className?: string;
-};
+  terminatorRef: React.MutableRefObject<HTMLDivElement>;
+}>;
 
 // TODO: [P1] #4133 Add telemetry for computing how many re-render done so far.
 const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
-  ({ activityElementMapRef, className }, ref) => {
+  ({ activityElementMapRef, className, terminatorRef }, ref) => {
     const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
     const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
     const [activeDescendantId] = useActiveDescendantId();
@@ -123,7 +125,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
     const rootElementRef = useRef<HTMLDivElement>();
     const terminatorLabelId = useUniqueId('webchat__basic-transcript__terminator-label');
-    const terminatorRef = useRef<HTMLDivElement>();
 
     const focusedActivityKeyRef = useValueRef(focusedActivityKey);
     const hideAllTimestamps = groupTimestamp === false;
@@ -461,7 +462,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           focus('sendBox');
         }
       },
-      [focus]
+      [focus, terminatorRef]
     );
 
     useRegisterFocusTranscript(useCallback(() => focusByActivityKey(undefined), [focusByActivityKey]));
@@ -496,6 +497,8 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       useCallback(() => focusByActivityKey(undefined), [focusByActivityKey])
     );
 
+    const hasAnyChild = !!React.Children.count(renderingElements);
+
     return (
       <div
         // Although Android TalkBack 12.1 does not support `aria-activedescendant`, when used, it become buggy and will narrate content twice.
@@ -522,9 +525,8 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         tabIndex={0}
       >
         <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
-        {/* TODO: [P2] Fix ESLint error `no-use-before-define` */}
-        {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
-        <InternalTranscriptScrollable onFocusFiller={handleFocusFiller} terminatorRef={terminatorRef}>
+        {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
+        <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>
           {renderingElements}
         </InternalTranscriptScrollable>
         {!!renderingElements.length && (
@@ -553,72 +555,24 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
   }
 );
 
-InternalTranscript.defaultProps = {
-  className: ''
-};
-
 InternalTranscript.displayName = 'InternalTranscript';
 
-InternalTranscript.propTypes = {
-  // PropTypes cannot validate precisely with its TypeScript counterpart.
-  // @ts-ignore
-  activityElementMapRef: PropTypes.shape({
-    current: PropTypes.instanceOf(Map)
-  }).isRequired,
-  className: PropTypes.string
-};
-
-type InternalTranscriptScrollableProps = {
+type InternalTranscriptScrollableProps = Readonly<{
   children?: ReactNode;
   onFocusFiller: () => void;
-  terminatorRef: MutableRefObject<HTMLDivElement>;
-};
+}>;
 
 // Separating high-frequency hooks to improve performance.
-const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
-  children,
-  onFocusFiller,
-  terminatorRef
-}) => {
+const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({ children, onFocusFiller }) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
-  const [animatingToEnd]: [boolean] = useAnimatingToEnd();
-  const [atEnd]: [boolean] = useAtEnd();
-  const [, unreadActivityKeys] = useActivityKeysByRead();
   const [sticky]: [boolean] = useSticky();
-  const [styleOptions] = useStyleOptions();
-  const focusByActivityKey = useFocusByActivityKey();
   const localize = useLocalizer();
-  const markActivityKeyAsRead = useMarkActivityKeyAsRead();
   const markAllAsAcknowledged = useMarkAllAsAcknowledged();
-  const scrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
 
   const prevSticky = usePrevious(sticky);
   const transcriptRoleDescription = localize('TRANSCRIPT_ARIA_ROLE_ALT');
 
   const stickyChangedToTrue = prevSticky !== sticky && sticky;
-
-  // Acknowledged means either:
-  // 1. The user sent a message
-  //    - We don't need a condition here. When Web Chat sends the user's message, it will scroll to bottom, and it will trigger condition 2 below.
-  // 2. The user scroll to the bottom of the transcript, from a non-bottom scroll position
-  //    - If the transcript is already at the bottom, the user needs to scroll up and then go back down
-  //    - What happens if we are relaxing "scrolled from a non-bottom scroll position":
-  //      1. The condition will become solely "at the bottom of the transcript"
-  //      2. Auto-scroll will always scroll the transcript to the bottom
-  //      3. Web Chat will always acknowledge all activities as it is at the bottom
-  //      4. Acknowledge flag become useless
-  //      5. Therefore, even the developer set "pause after 3 activities", if activities are coming in at a slow pace (not batched in a single render)
-  //         Web Chat will keep scrolling and not snapped/paused
-
-  // Note: When Web Chat is loaded, there are no activities acknowledged. We need to assume all arriving activities are acknowledged until end-user sends their first activity.
-  //       Activities loaded initially could be from conversation history. Without assuming acknowledgement, Web Chat will not scroll initially (as everything is not acknowledged).
-  //       It would be better if the chat adapter should let Web Chat know if the activity is loaded from history or not.
-
-  // TODO: [P2] #3670 Move the "conversation history acknowledgement" logic mentioned above to polyfill of chat adapters.
-  //       1. Chat adapter should send "acknowledged" as part of "channelData"
-  //       2. If "acknowledged" is "undefined", we set it to:
-  //          a. true, if there are no egress activities yet
-  //          b. Otherwise, false
 
   useMemo(
     () =>
@@ -630,71 +584,10 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
     [markAllAsAcknowledged, stickyChangedToTrue]
   );
 
-  const [flattenedActivityTreeWithRenderer] = useActivityTreeWithRenderer({ flat: true });
-  const getKeyByActivity = useGetKeyByActivity();
-
-  const renderingActivityKeys: string[] = useMemo<string[]>(
-    () => flattenedActivityTreeWithRenderer.map(({ activity }) => getKeyByActivity(activity)),
-    [flattenedActivityTreeWithRenderer, getKeyByActivity]
-  );
-
-  const renderingActivityKeysRef = useValueRef(renderingActivityKeys);
-
-  // To prevent flashy button, we are not waiting for another render loop to update the `[readActivityKeys, unreadActivityKeys]` state.
-  // Instead, we are building the next one in this `useMemo` call.
-  const nextUnreadActivityKeys = useMemo(() => {
-    // This code need to be careful reviewed as it will cause another render. The code should be converging.
-    // After we call `markActivityKeyAsRead`, everything will be read and nothing will be unread.
-    // That means, in next render, `unreadActivityKeys` will be emptied and the `markActivityKeyAsRead` will not get called again.
-    if (sticky && unreadActivityKeys.length) {
-      markActivityKeyAsRead(unreadActivityKeys[unreadActivityKeys.length - 1]);
-
-      return [];
-    }
-
-    return unreadActivityKeys;
-  }, [markActivityKeyAsRead, sticky, unreadActivityKeys]);
-
-  const nextUnreadActivityKeysRef = useValueRef(nextUnreadActivityKeys);
-
-  // If we are rendering anything that is unread, we should show the "New messages" button.
-  // Not everything in the `unreadActivityKeys` are rendered, say, bot typing indicator.
-  // We should not show the "New messages" button for bot typing indicator as it will confuse the user.
-  const unread = useMemo(
-    () => nextUnreadActivityKeys.some(key => renderingActivityKeys.includes(key)),
-    [renderingActivityKeys, nextUnreadActivityKeys]
-  );
-
-  const handleScrollToEndButtonClick = useCallback(() => {
-    scrollToEnd({ behavior: 'smooth' });
-
-    const { current: renderingActivityKeys } = renderingActivityKeysRef;
-
-    // After the "New message" button is clicked, focus on the first unread activity which will be rendered.
-    const firstUnreadRenderingActivityKey = nextUnreadActivityKeysRef.current.find(key =>
-      renderingActivityKeys.includes(key)
-    );
-
-    if (firstUnreadRenderingActivityKey) {
-      focusByActivityKey(firstUnreadRenderingActivityKey);
-    } else {
-      // If no unread activity, send the focus to the terminator block.
-      terminatorRef.current?.focus();
-    }
-  }, [focusByActivityKey, nextUnreadActivityKeysRef, renderingActivityKeysRef, scrollToEnd, terminatorRef]);
-
-  const renderScrollToEndButton = useCreateScrollToEndButtonRenderer()({
-    atEnd: animatingToEnd || atEnd || sticky,
-    styleOptions,
-    unread
-  });
-
   const hasAnyChild = !!React.Children.count(children);
 
   return (
     <React.Fragment>
-      {renderScrollToEndButton && renderScrollToEndButton({ onClick: handleScrollToEndButtonClick })}
-      {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
       <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
         <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
         {hasAnyChild && (
@@ -710,12 +603,6 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({
       </ReactScrollToBottomPanel>
     </React.Fragment>
   );
-};
-
-InternalTranscriptScrollable.propTypes = {
-  children: PropTypes.any.isRequired,
-  onFocusFiller: PropTypes.func.isRequired,
-  terminatorRef: PropTypes.any.isRequired
 };
 
 type Scroller = ({ offsetHeight, scrollTop }: { offsetHeight: number; scrollTop: number }) => number;
@@ -836,11 +723,11 @@ const useScroller = (activityElementMapRef: MutableRefObject<ActivityElementMap>
   );
 };
 
-type BasicTranscriptProps = {
-  className?: string;
-};
+type BasicTranscriptProps = Readonly<{
+  className: string;
+}>;
 
-const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
+const BasicTranscript: FC<BasicTranscriptProps> = ({ className = '' }) => {
   const activityElementMapRef = useRef<ActivityElementMap>(new Map());
   const containerRef = useRef<HTMLDivElement>();
 
@@ -850,21 +737,24 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className }) => {
   const [{ stylesRoot }] = useStyleOptions();
   const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
 
+  const terminatorRef = useRef<HTMLDivElement>();
+
   return (
-    <TranscriptFocusComposer containerRef={containerRef}>
-      <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
-        <InternalTranscript activityElementMapRef={activityElementMapRef} className={className} ref={containerRef} />
-      </ReactScrollToBottomComposer>
-    </TranscriptFocusComposer>
+    <ChatHistoryBox className={className}>
+      <TranscriptFocusComposer containerRef={containerRef}>
+        <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
+          <ChatHistoryToolbar>
+            <ScrollToEndButton terminatorRef={terminatorRef} />
+          </ChatHistoryToolbar>
+          <InternalTranscript
+            activityElementMapRef={activityElementMapRef}
+            ref={containerRef}
+            terminatorRef={terminatorRef}
+          />
+        </ReactScrollToBottomComposer>
+      </TranscriptFocusComposer>
+    </ChatHistoryBox>
   );
-};
-
-BasicTranscript.defaultProps = {
-  className: ''
-};
-
-BasicTranscript.propTypes = {
-  className: PropTypes.string
 };
 
 export default memo(BasicTranscript);

@@ -51,7 +51,7 @@
 
         await pageConditions.allImagesLoaded();
 
-        await host.sendTab();
+        await host.sendShiftTab();
 
         // After pressing TAB from transcript, it should focus on the "New messages" button.
         expect(document.activeElement === pageElements.scrollToEndButton()).toBe(true);

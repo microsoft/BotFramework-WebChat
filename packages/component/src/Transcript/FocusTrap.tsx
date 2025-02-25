@@ -48,7 +48,7 @@ const FocusTrap = ({
       } else if (event.key === 'Tab') {
         const activeElement = document.activeElement as HTMLElement;
         const focusables = getTabbableElementsInBody();
-        const focusedIndex = getTabbableElementsInBody().indexOf(activeElement);
+        const focusedIndex = focusables.indexOf(activeElement);
 
         if (event.shiftKey && focusedIndex === 0) {
           event.preventDefault();

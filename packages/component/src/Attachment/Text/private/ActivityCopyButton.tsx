@@ -2,6 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useRef, useState, type RefObject } from 'react';
 import useStyleSet from '../../../hooks/useStyleSet';
+import { useQueueStaticElement } from '../../../providers/LiveRegionTwin';
 import ActivityButton from './ActivityButton';
 
 const { useLocalizer, useUIState } = hooks;
@@ -19,6 +20,7 @@ const ActivityCopyButton = ({ className, targetRef }: Props) => {
   const [uiState] = useUIState();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const localize = useLocalizer();
+  const queueStaticElement = useQueueStaticElement();
 
   const copiedText = localize('COPY_BUTTON_COPIED_TEXT');
   const copyText = localize('COPY_BUTTON_TEXT');
@@ -53,11 +55,12 @@ const ActivityCopyButton = ({ className, targetRef }: Props) => {
 
     // Reading `offsetWidth` will trigger a reflow and this is critical for resetting the animation.
     // https://css-tricks.com/restart-css-animation/#aa-update-another-javascript-method-to-restart-a-css-animation
-    // eslint-disable-next-line no-unused-expressions
     buttonRef.current?.offsetWidth;
 
     buttonRef.current?.classList.add('webchat__activity-copy-button--copied');
-  }, [buttonRef, targetRef]);
+
+    queueStaticElement(<div className="webchat__activity-copy-button__copy-announcement">{copiedText}</div>);
+  }, [buttonRef, copiedText, queueStaticElement, targetRef]);
 
   useEffect(() => {
     let unmounted = false;

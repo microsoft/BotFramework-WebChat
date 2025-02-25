@@ -1,8 +1,8 @@
-import { integer, literal, minValue, number, object, optional, safeParse, string, union } from 'valibot';
+import { integer, literal, minValue, number, object, optional, pipe, safeParse, string, union } from 'valibot';
 
 import { type WebChatActivity } from '../types/WebChatActivity';
 
-const streamSequenceSchema = number([integer(), minValue(1)]);
+const streamSequenceSchema = pipe(number(), integer(), minValue(1));
 
 const livestreamingActivitySchema = union([
   object({
