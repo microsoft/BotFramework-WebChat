@@ -19,12 +19,13 @@
       import { waitFor } from '@testduet/wait-for';
 
       run(async function () {
-        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
-        const store = testHelpers.createStore();
+        const ponyfill = lolex.createClock();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill });
 
         WebChat.renderWebChat(
           {
             directLine,
+            ponyfill,
             sendTypingIndicator: true,
             store,
             styleOptions: {
@@ -34,6 +35,11 @@
           document.querySelector('main')
         );
 
+        await pageConditions.webChatRendered();
+
+        // Wait for "Connecting..." message to dismiss
+        ponyfill.tick(600);
+
         await pageConditions.uiConnected();
 
         // WHEN: Initially.
@@ -41,7 +47,22 @@
         expect(pageElements.typingIndicator()).toBeFalsy();
 
         // WHEN: After sending "typing" to the bot.
-        await pageObjects.sendMessageViaSendBox('typing', { waitForSend: false });
+        await (await directLine.emulateOutgoingActivity('typing')).resolveAll();
+
+        // WHEN: The bot send a message activity.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          id: crypto.randomUUID(),
+          text: 'I am sending typing, will send another message 2 seconds afterward.',
+          type: 'message'
+        });
+
+        // WHEN: The bot send a typing activity.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          id: crypto.randomUUID(),
+          type: 'typing'
+        });
 
         // THEN: Should receive a bot message.
         await waitFor(() => expect(pageElements.activities()).toHaveLength(2));
@@ -52,9 +73,18 @@
         // ---
 
         // WHEN: After 2 seconds.
+        ponyfill.tick(2_000);
+
+        // WHEN: The bot send another message activity.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          id: crypto.randomUUID(),
+          text: 'This message should stop the typing indicator.',
+          type: 'message'
+        });
 
         // THEN: Bot should send another message.
-        await waitFor(() => expect(pageElements.activities()).toHaveLength(3), { timeout: 3_000 });
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(3));
 
         // THEN: Typing indicator should be hidden.
         expect(pageElements.typingIndicator()).toBeFalsy();
