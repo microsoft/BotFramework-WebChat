@@ -1,6 +1,7 @@
 import activeActivity from './activeActivity';
 import activities from './activities';
 import activityActiveDescendantLabels from './activityActiveDescendantLabels';
+import activityAttachments from './activityAttachments';
 import activityContents from './activityContents';
 import activityStatuses from './activityStatuses';
 import byTestId from './byTestId';
@@ -27,6 +28,7 @@ export {
   activeActivity,
   activities,
   activityActiveDescendantLabels,
+  activityAttachments,
   activityContents,
   activityStatuses,
   byTestId,

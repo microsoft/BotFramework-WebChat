@@ -169,9 +169,14 @@ type MessageActivityEssence = {
 // https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#typing-activity
 type TypingActivityEssence =
   | {
+      attachmentLayout?: 'carousel' | 'stacked';
+      attachments?: DirectLineAttachment[];
+      text?: undefined;
       type: 'typing';
     }
   | {
+      attachmentLayout?: 'carousel' | 'stacked';
+      attachments?: DirectLineAttachment[];
       channelData: {
         streamId?: string | undefined;
         streamSequence: number;

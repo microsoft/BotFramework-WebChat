@@ -35,11 +35,8 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
         ) {
           return false;
         } else if (type === 'message' || type === 'typing') {
-          if (
-            type === 'message' &&
-            (activity.attachments?.length || 0) > 1 &&
-            activity.attachmentLayout === 'carousel'
-          ) {
+          // TODO: Add tests for "typing indicator only in attachmentLayout of carousel".
+          if ((activity.attachments?.length || 0) > 1 && activity.attachmentLayout === 'carousel') {
             // The following line is not a React functional component, it's a render function called by useCreateActivityRenderer() hook.
             // The function signature need to be compatible with older version of activity middleware, which was:
             //
