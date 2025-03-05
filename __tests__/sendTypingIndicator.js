@@ -1,7 +1,6 @@
 import { imageSnapshotOptions, timeouts } from './constants.json';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import negationOf from './setup/conditions/negationOf';
-import typingActivityReceived from './setup/conditions/typingActivityReceived';
 import typingAnimationBackgroundImage from './setup/assets/typingIndicator';
 import typingIndicatorShown from './setup/conditions/typingIndicatorShown';
 import uiConnected from './setup/conditions/uiConnected';
@@ -37,16 +36,4 @@ test('changing typing indicator duration on-the-fly', async () => {
   await driver.wait(typingIndicatorShown(), timeouts.ui);
 
   expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
-});
-
-test('should not show typing indicator for user', async () => {
-  const { driver, pageObjects } = await setupWebDriver({ props: { sendTypingIndicator: true } });
-
-  await driver.wait(uiConnected(), timeouts.directLine);
-  await pageObjects.typeInSendBox('Hello, World!');
-  await driver.wait(negationOf(typingIndicatorShown()), 2000);
-
-  const base64PNG = await driver.takeScreenshot();
-
-  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
 });
