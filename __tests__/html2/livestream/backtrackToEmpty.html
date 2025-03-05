@@ -135,7 +135,6 @@
         // ---
 
         // WHEN: Bot is typing a message.
-
         await directLine.emulateIncomingActivity({
           channelData: { streamId: 't-00001', streamSequence: 2, streamType: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
