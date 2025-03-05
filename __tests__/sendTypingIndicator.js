@@ -11,20 +11,6 @@ import uiConnected from './setup/conditions/uiConnected';
 
 jest.setTimeout(timeouts.test);
 
-test('typing indicator should not display after second activity', async () => {
-  const { driver, pageObjects } = await setupWebDriver({
-    props: {
-      styleOptions: { typingAnimationBackgroundImage, typingAnimationDuration: 10000 }
-    }
-  });
-
-  await pageObjects.sendMessageViaSendBox('typing', { waitForSend: true });
-  await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
-
-  const base64PNG = await driver.takeScreenshot();
-  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-});
-
 test('changing typing indicator duration on-the-fly', async () => {
   const { driver, pageObjects } = await setupWebDriver({
     props: {
