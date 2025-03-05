@@ -40,11 +40,24 @@
         // THEN: Typing indicator should not be shown.
         expect(pageElements.typingIndicator()).toBeFalsy();
 
-        // WHEN: After sending "typing 1" to the bot.
-        await pageObjects.sendMessageViaSendBox('typing 1', { waitForSend: true });
+        // WHEN: After sending "typing" to the bot.
+        await pageObjects.sendMessageViaSendBox('typing', { waitForSend: false });
+
+        // THEN: Should receive a bot message.
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(2));
 
         // THEN: Bot should send a typing indicator and shown on the screen.
         await waitFor(() => expect(pageElements.typingIndicator()).toBeTruthy());
+
+        // ---
+
+        // WHEN: After 2 seconds.
+
+        // THEN: Bot should send another message.
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(3), { timeout: 3_000 });
+
+        // THEN: Typing indicator should be hidden.
+        expect(pageElements.typingIndicator()).toBeFalsy();
 
         await host.snapshot('local');
       });
