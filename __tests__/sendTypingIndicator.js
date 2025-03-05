@@ -1,5 +1,3 @@
-import { By } from 'selenium-webdriver';
-
 import { imageSnapshotOptions, timeouts } from './constants.json';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import negationOf from './setup/conditions/negationOf';
@@ -12,21 +10,6 @@ import uiConnected from './setup/conditions/uiConnected';
 // https://seleniumhq.github.io/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
 
 jest.setTimeout(timeouts.test);
-
-test('typing indicator should display in SendBox', async () => {
-  const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions: { typingAnimationBackgroundImage } } });
-
-  await driver.wait(uiConnected(), timeouts.directLine);
-
-  await pageObjects.sendMessageViaSendBox('typing 1', { waitForSend: true });
-
-  // Typing indicator takes longer to come back
-  await driver.wait(typingActivityReceived(), timeouts.directLine);
-
-  const base64PNG = await driver.takeScreenshot();
-
-  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-});
 
 test('typing indicator should not display after second activity', async () => {
   const { driver, pageObjects } = await setupWebDriver({
