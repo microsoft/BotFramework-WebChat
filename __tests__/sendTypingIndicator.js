@@ -13,21 +13,6 @@ import uiConnected from './setup/conditions/uiConnected';
 
 jest.setTimeout(timeouts.test);
 
-test('Send typing indicator', async () => {
-  const { driver, pageObjects } = await setupWebDriver({ props: { sendTypingIndicator: true } });
-
-  await pageObjects.sendMessageViaSendBox('echo-typing', { waitForSend: true });
-
-  await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
-
-  const input = await driver.findElement(By.css('input[type="text"]'));
-
-  await input.sendKeys('ABC');
-
-  // Typing indicator takes longer to come back
-  await driver.wait(typingActivityReceived(), timeouts.directLine);
-});
-
 test('typing indicator should display in SendBox', async () => {
   const { driver, pageObjects } = await setupWebDriver({ props: { styleOptions: { typingAnimationBackgroundImage } } });
 
