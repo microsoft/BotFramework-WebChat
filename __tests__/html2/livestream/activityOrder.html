@@ -18,25 +18,21 @@
           ReactDOM: { render },
           WebChat: {
             Components: { BasicWebChat, Composer },
-            hooks: { useActiveTyping, useActivityKeys, useGetActivitiesByKey },
+            hooks: { useActivityKeys, useGetActivitiesByKey },
             ReactWebChat
           }
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         let currentActivityKeysWithId = [];
-        let currentActiveTyping = {};
 
         const Monitor = () => {
           const [activityKeys] = useActivityKeys();
-          const [activeTyping] = useActiveTyping();
           const getActivitiesByKey = useGetActivitiesByKey();
 
           currentActivityKeysWithId = Object.freeze(
             activityKeys.map(key => [key, getActivitiesByKey(key).map(({ id }) => id)])
           );
-
-          currentActiveTyping = activeTyping;
 
           return false;
         };
@@ -57,7 +53,6 @@
           id: 'a-00001',
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           text: 'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.',
-          timestamp: 0,
           type: 'message'
         });
 
@@ -71,7 +66,6 @@
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: firstTypingActivityId,
           text: 'A quick',
-          timestamp: 1,
           type: 'typing'
         });
 
@@ -93,109 +87,116 @@
           [secondActivityKey, ['t-00001']]
         ]);
 
-        // THEN: Should have active typing.
-        expect(currentActiveTyping).toEqual({
-          'u-00001': {
-            at: expect.any(Number),
-            expireAt: expect.any(Number),
-            name: 'Bot',
-            role: 'bot',
-            type: 'livestream'
-          }
-        });
-
         // ---
 
-        // WHEN: Bot send typing message in out-of-order fashion.
+        // WHEN: Bot send another message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamSequence: 3, streamType: 'streaming' },
+          id: 'a-00003',
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 't-00003',
-          text: 'A quick brown fox jumped over',
-          timestamp: 3,
-          type: 'typing'
+          text: 'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.',
+          type: 'message'
         });
 
-        // THEN: Should display 2 messages.
-        await pageConditions.numActivitiesShown(2);
+        let thirdActivityKey = currentActivityKeysWithId[2][0];
+
+        // THEN: Should display 3 messages.
+        await pageConditions.numActivitiesShown(3);
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
         );
-        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over');
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick');
+        expect(pageElements.activityContents()[2]).toHaveProperty(
+          'textContent',
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.'
+        );
         await host.snapshot('local');
 
-        // THEN: Should have 2 activity keys only.
+        // THEN: Should have 3 activity keys only.
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
-          [secondActivityKey, ['t-00001', 't-00003']]
+          [secondActivityKey, ['t-00001']],
+          [thirdActivityKey, ['a-00003']]
         ]);
-
-        // THEN: Should have active typing.
-        expect(currentActiveTyping).toEqual({
-          'u-00001': {
-            at: expect.any(Number),
-            expireAt: expect.any(Number),
-            name: 'Bot',
-            role: 'bot',
-            type: 'livestream'
-          }
-        });
 
         // ---
 
-        // WHEN: Bot send the belated typing message.
+        // WHEN: Bot continue typing the message.
         await directLine.emulateIncomingActivity({
           channelData: { streamId: firstTypingActivityId, streamSequence: 2, streamType: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 't-00002',
           text: 'A quick brown fox',
-          timestamp: 2,
           type: 'typing'
         });
 
-        // THEN: Should display 2 messages without the belated typing message.
-        await pageConditions.numActivitiesShown(2);
+        // THEN: Should display 3 messages, the order should kept the same.
+        await pageConditions.numActivitiesShown(3);
+        expect(pageElements.typingIndicator()).toBeFalsy();
+        expect(pageElements.activityContents()[0]).toHaveProperty(
+          'textContent',
+          'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
+        );
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox');
+        expect(pageElements.activityContents()[2]).toHaveProperty(
+          'textContent',
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.'
+        );
+        await host.snapshot('local');
+
+        // THEN: Should have 3 activity keys only.
+        expect(currentActivityKeysWithId).toEqual([
+          [firstActivityKey, ['a-00001']],
+          [secondActivityKey, ['t-00001', 't-00002']],
+          [thirdActivityKey, ['a-00003']]
+        ]);
+
+        // ---
+
+        // WHEN: Bot continue typing the message.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: firstTypingActivityId, streamSequence: 3, streamType: 'streaming' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 't-00003',
+          text: 'A quick brown fox jumped over',
+          type: 'typing'
+        });
+
+        // THEN: Should display 3 messages, the order should kept the same.
+        await pageConditions.numActivitiesShown(3);
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
         );
         expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'A quick brown fox jumped over');
+        expect(pageElements.activityContents()[2]).toHaveProperty(
+          'textContent',
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.'
+        );
         await host.snapshot('local');
 
-        // THEN: Should have 2 activity keys.
+        // THEN: Should have 3 activity keys only.
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
-          [secondActivityKey, ['t-00001', 't-00002', 't-00003']]
+          [secondActivityKey, ['t-00001', 't-00002', 't-00003']],
+          [thirdActivityKey, ['a-00003']]
         ]);
-
-        // THEN: Should have active typing.
-        expect(currentActiveTyping).toEqual({
-          'u-00001': {
-            at: expect.any(Number),
-            expireAt: expect.any(Number),
-            name: 'Bot',
-            role: 'bot',
-            type: 'livestream'
-          }
-        });
 
         // ---
 
         // WHEN: Bot finished typing the message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamSequence: 4, streamType: 'streaming' },
+          channelData: { streamId: firstTypingActivityId, streamType: 'final' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 'a-00002',
           text: 'A quick brown fox jumped over the lazy dogs.',
           type: 'message'
         });
 
-        // THEN: Should display 2 messages.
-        await pageConditions.numActivitiesShown(2);
-        expect(pageElements.typingIndicator()).toBeFalsy();
+        // THEN: Should display 3 messages.
+        await pageConditions.numActivitiesShown(3);
         expect(pageElements.activityContents()[0]).toHaveProperty(
           'textContent',
           'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.'
@@ -204,16 +205,19 @@
           'textContent',
           'A quick brown fox jumped over the lazy dogs.'
         );
+        expect(pageElements.activityContents()[2]).toHaveProperty(
+          'textContent',
+          'Amet consequat enim incididunt excepteur aliquip magna duis et tempor.'
+        );
+        expect(pageElements.typingIndicator()).toBeFalsy();
         await host.snapshot('local');
 
-        // THEN: Should have 2 activity keys.
+        // THEN: Should have 3 activity keys.
         expect(currentActivityKeysWithId).toEqual([
           [firstActivityKey, ['a-00001']],
-          [secondActivityKey, ['t-00001', 't-00002', 't-00003', 'a-00002']]
+          [secondActivityKey, ['t-00001', 't-00002', 't-00003', 'a-00002']],
+          [thirdActivityKey, ['a-00003']]
         ]);
-
-        // THEN: Should have no typing.
-        expect(currentActiveTyping).toHaveProperty('u-00001', undefined);
       });
     </script>
   </body>

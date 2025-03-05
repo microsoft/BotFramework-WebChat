@@ -177,7 +177,7 @@
 
         // WHEN: Bot finished typing the second message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamSequence: 3, streamId: 't-00001', streamType: 'streaming' },
+          channelData: { streamId: 't-00001', streamType: 'final' },
           from: { name: 'Bot', role: 'bot' },
           id: 'a-00002',
           text: 'A quick brown fox jumped over the lazy dogs.',
@@ -209,7 +209,7 @@
 
         // WHEN: Bot finished typing the third message.
         await directLine.emulateIncomingActivity({
-          channelData: { streamSequence: 3, streamId: 't-10001', streamType: 'streaming' },
+          channelData: { streamId: 't-10001', streamType: 'final' },
           from: { name: 'Bot', role: 'bot' },
           id: 'a-00003',
           text: 'Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.',
