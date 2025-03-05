@@ -40,7 +40,8 @@ const ActivityTypingComposer = ({ children }: Props) => {
 
         const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
 
-        if (livestreamingMetadata?.type === 'final activity') {
+        if (type === 'message' || livestreamingMetadata?.type === 'final activity') {
+          // A normal message activity, or final activity (which could be "message" or "typing"), will remove the typing indicator.
           nextTyping.delete(id);
           changed = true;
         } else if (type === 'typing' && (role === 'bot' || role === 'user')) {
