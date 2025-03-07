@@ -1,30 +1,67 @@
-import { integer, literal, minValue, number, object, optional, pipe, safeParse, string, union } from 'valibot';
+import {
+  integer,
+  literal,
+  minValue,
+  nonEmpty,
+  number,
+  object,
+  optional,
+  pipe,
+  safeParse,
+  string,
+  union
+} from 'valibot';
 
 import { type WebChatActivity } from '../types/WebChatActivity';
 
 const streamSequenceSchema = pipe(number(), integer(), minValue(1));
 
 const livestreamingActivitySchema = union([
+  // Interim can have optional "text".
   object({
     channelData: object({
       // "streamId" is optional for the very first activity in the session.
       streamId: optional(string()),
       streamSequence: streamSequenceSchema,
-      streamType: union([literal('informative'), literal('streaming')])
+      streamType: literal('streaming')
+    }),
+    id: string(),
+    text: optional(string()),
+    type: literal('typing')
+  }),
+  // Informative must have a "text".
+  object({
+    channelData: object({
+      // "streamId" is optional for the very first activity in the session.
+      streamId: optional(string()),
+      streamSequence: streamSequenceSchema,
+      streamType: literal('informative')
     }),
     id: string(),
     text: string(),
     type: literal('typing')
   }),
+  // Final with a message.
   object({
     channelData: object({
       // "streamId" is required for the final activity in the session. The final activity must not be the sole activity in the session.
-      streamId: string(),
+      streamId: pipe(string(), nonEmpty()),
       streamType: literal('final')
     }),
     id: string(),
     text: string(),
     type: literal('message')
+  }),
+  // Final without a message.
+  object({
+    channelData: object({
+      // "streamId" is required for the final activity in the session. The final activity must not be the sole activity in the session.
+      streamId: pipe(string(), nonEmpty()),
+      streamType: literal('final')
+    }),
+    id: string(),
+    text: optional(literal('')), // "text" field must be empty or undefined.
+    type: literal('typing')
   })
 ]);
 
@@ -34,7 +71,8 @@ const livestreamingActivitySchema = union([
  * - `sessionId` - ID of the livestreaming session
  * - `sequenceNumber` - sequence number of the activity
  * - `type`
- *   - `"interim activity"` - current response, could be empty, partial-from-start, or complete response.
+ *   - `"indicator only"` - ongoing but empty response, should show indicator only
+ *   - `"interim activity"` - current response, could be partial-from-start, or complete response.
  *     More activities are expected. Future interim activities always replace past interim activities, enable erasing or backtracking response.
  *   - `"informative message"` - optional side-channel informative message describing the current response, e.g. "Searching your document library".
  *     Always replace past informative messages. May interleave with interim activities.
@@ -48,7 +86,7 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
   | Readonly<{
       sessionId: string;
       sequenceNumber: number;
-      type: 'final activity' | 'informative message' | 'interim activity';
+      type: 'final activity' | 'informative message' | 'interim activity' | 'indicator only';
     }>
   | undefined {
   const result = safeParse(livestreamingActivitySchema, activity);
@@ -69,7 +107,11 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
         : {
             sequenceNumber: output.channelData.streamSequence,
             sessionId,
-            type: output.channelData.streamType === 'informative' ? 'informative message' : 'interim activity'
+            type: !output.text
+              ? 'indicator only'
+              : output.channelData.streamType === 'informative'
+                ? 'informative message'
+                : 'interim activity'
           }
     );
   }

@@ -70,7 +70,7 @@
         await pageConditions.numActivitiesShown(1);
         expect(pageElements.typingIndicator()).toBeFalsy();
         expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'A quick');
-        await host.snapshot();
+        await host.snapshot('local');
 
         // THEN: Should have 1 activity key.
         expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00001']]]);
@@ -104,7 +104,7 @@
           'textContent',
           'A quick brown fox jumped over the lazy dogs.'
         );
-        await host.snapshot();
+        await host.snapshot('local');
 
         // THEN: Should have 1 activity key only.
         expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00001', 't-00002']]]);
@@ -133,7 +133,7 @@
           'textContent',
           'A quick brown fox jumped over the lazy dogs.'
         );
-        await host.snapshot();
+        await host.snapshot('local');
 
         // THEN: Should have 1 activity key associated with 2 activity IDs only.
         expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00001', 't-00002']]]);
@@ -162,7 +162,7 @@
           'textContent',
           'A quick brown fox jumped over the lazy dogs.'
         );
-        await host.snapshot();
+        await host.snapshot('local');
 
         // THEN: Should have 1 activity key associated with 2 activity IDs only.
         expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00001', 't-00002']]]);

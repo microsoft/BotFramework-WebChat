@@ -13,7 +13,7 @@ describe.each([['with "streamId"' as const], ['without "streamId"' as const]])('
           streamType: 'streaming'
         },
         id: 'a-00002',
-        text: '',
+        text: 'Hello, World!',
         type: 'typing'
       } as any;
     });
@@ -43,7 +43,7 @@ describe.each([['with "streamId"' as const], ['without "streamId"' as const]])('
           streamType: 'informative'
         },
         id: 'a-00002',
-        text: '',
+        text: 'Hello, World!',
         type: 'typing'
       } as any;
     });
@@ -72,7 +72,7 @@ describe.each([['with "streamId"' as const], ['without "streamId"' as const]])('
           streamType: 'final'
         },
         id: 'a-00002',
-        text: '',
+        text: 'Hello, World!',
         type: 'message'
       } as any;
     });
@@ -122,12 +122,33 @@ describe.each([
   }
 });
 
-test('activity with "streamType" of "final" but "type" of "typing" should return undefined', () =>
+describe('"typing" activity with "streamType" of "final"', () => {
+  test('should return undefined if "text" field is defined', () =>
+    expect(
+      getActivityLivestreamingMetadata({
+        channelData: { streamId: 'a-00001', streamType: 'final' },
+        id: 'a-00002',
+        text: 'Final "typing" activity, must not have "text".',
+        type: 'typing'
+      } as any)
+    ).toBeUndefined());
+
+  test('should return truthy if "text" field is not defined', () =>
+    expect(
+      getActivityLivestreamingMetadata({
+        channelData: { streamId: 'a-00001', streamType: 'final' },
+        id: 'a-00002',
+        // Final activity can be "typing" if it does not have "text".
+        type: 'typing'
+      } as any)
+    ).toHaveProperty('type', 'final activity'));
+});
+
+test('activity with "streamType" of "streaming" without "content" should return type of "interim activity"', () =>
   expect(
     getActivityLivestreamingMetadata({
-      channelData: { streamType: 'final' },
-      text: '',
-      // Final activity must be "message", not "typing".
+      channelData: { streamSequence: 1, streamType: 'streaming' },
+      id: 'a-00001',
       type: 'typing'
     } as any)
-  ).toBeUndefined());
+  ).toHaveProperty('type', 'indicator only'));

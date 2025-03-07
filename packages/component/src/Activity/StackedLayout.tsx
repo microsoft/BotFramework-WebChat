@@ -8,9 +8,9 @@ import React, { memo } from 'react';
 import ScreenReaderText from '../ScreenReaderText';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import textFormatToContentType from '../Utils/textFormatToContentType';
-import useStyleSet from '../hooks/useStyleSet';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useUniqueId from '../hooks/internal/useUniqueId';
+import useStyleSet from '../hooks/useStyleSet';
 import Bubble from './Bubble';
 
 import type { RenderAttachment } from 'botframework-webchat-api';
@@ -95,14 +95,14 @@ const StackedLayout = ({
 
   const { bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize } = styleOptions;
 
-  const isMessage = activity.type === 'message';
+  const isMessageOrTyping = activity.type === 'message' || activity.type === 'typing';
 
-  const attachments = (isMessage && activity.attachments) || [];
+  const attachments = (isMessageOrTyping && activity.attachments) || [];
   const fromUser = activity.from.role === 'user';
-  const messageBackDisplayText: string = (isMessage && activity.channelData?.messageBack?.displayText) || '';
+  const messageBackDisplayText: string = (isMessageOrTyping && activity.channelData?.messageBack?.displayText) || '';
 
   const isLivestreaming = !!getActivityLivestreamingMetadata(activity);
-  const activityDisplayText = isMessage
+  const activityDisplayText = isMessageOrTyping
     ? messageBackDisplayText || activity.text
     : isLivestreaming && 'text' in activity
       ? activity.text
