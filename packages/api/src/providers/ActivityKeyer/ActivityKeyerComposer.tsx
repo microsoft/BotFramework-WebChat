@@ -75,10 +75,13 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
       const typingActivityId = getTypingActivityId(activity);
 
       const key =
-        (clientActivityId && clientActivityIdToKeyMap.get(clientActivityId)) ||
-        (typingActivityId && activityIdToKeyMap.get(typingActivityId)) ||
-        (activityId && activityIdToKeyMap.get(activityId)) ||
+        (clientActivityId &&
+          (clientActivityIdToKeyMap.get(clientActivityId) || nextClientActivityIdToKeyMap.get(clientActivityId))) ||
+        (typingActivityId &&
+          (activityIdToKeyMap.get(typingActivityId) || nextActivityIdToKeyMap.get(typingActivityId))) ||
+        (activityId && (activityIdToKeyMap.get(activityId) || nextActivityIdToKeyMap.get(activityId))) ||
         activityToKeyMap.get(activity) ||
+        nextActivityToKeyMap.get(activity) ||
         uniqueId();
 
       activityId && nextActivityIdToKeyMap.set(activityId, key);
@@ -122,13 +125,7 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
   );
 
   const contextValue = useMemo<ActivityKeyerContextType>(
-    () => ({
-      activityKeysState,
-      getActivityByKey,
-      getActivitiesByKey,
-      getKeyByActivity,
-      getKeyByActivityId
-    }),
+    () => ({ activityKeysState, getActivityByKey, getActivitiesByKey, getKeyByActivity, getKeyByActivityId }),
     [activityKeysState, getActivitiesByKey, getActivityByKey, getKeyByActivity, getKeyByActivityId]
   );
 
