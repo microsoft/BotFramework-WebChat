@@ -16,8 +16,8 @@ type SendButtonProps = {
 };
 
 const SendButton: FC<SendButtonProps> = ({ className }) => {
-  const [uiState] = useUIState();
   const localize = useLocalizer();
+  const [uiState] = useUIState();
   const submit = useSubmit();
 
   const handleClick = useCallback(() => submit({ setFocus: 'sendBoxWithoutKeyboard' }), [submit]);
