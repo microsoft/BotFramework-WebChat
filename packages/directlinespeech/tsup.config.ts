@@ -40,5 +40,24 @@ export default defineConfig([
     ...config,
     format: 'cjs',
     target: [...config.target, 'es2019']
+  },
+  {
+    ...config,
+    dts: false,
+    entry: {
+      [process.env.NODE_ENV === 'production' ? 'directlinespeech.production.min' : 'directlinespeech.development']:
+        './src/index.js'
+    },
+    env: {
+      ...config.env,
+      module_format: 'global'
+    },
+    esbuildPlugins: [],
+    format: 'iife',
+    outExtension() {
+      return { js: '.js' };
+    },
+    platform: 'browser',
+    target: [...config.target, 'es2019']
   }
 ]);
