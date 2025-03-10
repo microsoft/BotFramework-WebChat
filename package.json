@@ -1,10 +1,7 @@
 {
   "name": "botframework-webchat-root",
-  "version": "4.10.2-0",
+  "version": "4.18.1-0",
   "private": true,
-  "files": [
-    "lib/**/*"
-  ],
   "author": "Microsoft Corporation",
   "license": "MIT",
   "repository": {
@@ -15,64 +12,206 @@
     "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
   "homepage": "https://github.com/microsoft/BotFramework-WebChat#readme",
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged --no-stash"
-    }
-  },
   "keywords": [],
+  "cldr-data-coverage": "full",
+  "workspaces": [
+    "./packages/base",
+    "./packages/test/dev-server",
+    "./packages/test/harness",
+    "./packages/test/web-server",
+    "./packages/core",
+    "./packages/styles",
+    "./packages/support/cldr-data-downloader",
+    "./packages/support/cldr-data",
+    "./packages/api",
+    "./packages/isomorphic-react",
+    "./packages/isomorphic-react-dom",
+    "./packages/component",
+    "./packages/directlinespeech",
+    "./packages/bundle",
+    "./packages/test/page-object",
+    "./packages/fluent-theme",
+    "./packages/test/fluent-bundle"
+  ],
   "scripts": {
-    "bootstrap": "lerna bootstrap --ci",
-    "build": "lerna run --ignore playground --stream build",
-    "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "eslint": "lerna run --parallel --stream eslint",
-    "posteslint": "npm run prettier-readmes",
-    "prettier-readmes": "prettier --write **/**/*.md --tab-width 3 --single-quote true",
-    "start": "concurrently --kill-others --raw \"serve\" \"serve -p 5001 -c serve-test.json\" \"lerna run --ignore playground --parallel --stream start\"",
-    "start:docker": "npm run start:docker:build && npm run start:docker:up",
-    "start:docker:build": "docker-compose -f docker-compose-wsl2.yml build --parallel",
-    "start:docker:up": "docker-compose -f docker-compose-wsl2.yml up --scale chrome=4",
-    "stop:docker": "docker-compose -f docker-compose-wsl2.yml stop",
-    "tableflip": "npx lerna clean --yes --concurrency 8 && npx rimraf node_modules && npm ci && npm run bootstrap -- --concurrency 8",
-    "test": "jest --watch",
-    "test:ci": "npm run test -- --ci --coverage true --no-watch",
-    "watch": "echo NPM script \"watch\" has been replaced with \"start\"."
+    "biome": "biome check ./packages",
+    "browser": "node ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html/",
+    "browser:watch": "node-dev --no-notify --respawn ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html/",
+    "build": "npm run build --if-present --workspaces",
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0) && npm run bump:packages && npm run bump:samples",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "bump:packages": "npm run bump --workspaces",
+    "bump:samples": "cd samples && npm run bump --workspaces",
+    "docker": "npm run docker:up",
+    "docker:down": "docker compose -f docker-compose-wsl2.yml down --rmi all",
+    "docker:up": "docker compose -f docker-compose-wsl2.yml down && docker compose -f docker-compose-wsl2.yml up --build --scale chrome=4",
+    "eslint": "npm run precommit",
+    "lint-staged": "lint-staged",
+    "precommit": "npm run precommit --if-present --workspaces",
+    "precommit:biome": "npm run biome -- --no-errors-on-unmatched",
+    "precommit:eslint:api": "cd packages && cd api && npm run precommit:eslint",
+    "precommit:eslint:bundle": "cd packages && cd bundle && npm run precommit:eslint",
+    "precommit:eslint:component": "cd packages && cd component && npm run precommit:eslint",
+    "precommit:eslint:core": "cd packages && cd core && npm run precommit:eslint",
+    "precommit:eslint:directlinespeech": "cd packages && cd directlinespeech && npm run precommit:eslint",
+    "precommit:eslint:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:eslint",
+    "precommit:eslint:isomorphic-react-dom": "cd packages && cd isomorphic-react-dom && npm run precommit:eslint",
+    "precommit:eslint:isomorphic-react": "cd packages && cd isomorphic-react && npm run precommit:eslint",
+    "precommit:eslint:support-cldr-data-downloader": "cd packages && cd support && cd cldr-data-downloader && npm run precommit:eslint",
+    "precommit:eslint:support-cldr-data": "cd packages && cd support && cd cldr-data && npm run precommit:eslint",
+    "precommit:eslint:test-harness": "cd packages && cd test && cd harness && npm run precommit:eslint",
+    "precommit:eslint:test-page-object": "cd packages && cd test && cd page-object && npm run precommit:eslint",
+    "precommit:eslint:web-server": "cd packages && cd test && cd web-server && npm run precommit:eslint",
+    "precommit:typecheck": "concurrently \"npm:precommit:typecheck:*\"",
+    "precommit:typecheck:api": "cd packages && cd api && npm run precommit:typecheck",
+    "precommit:typecheck:bundle": "cd packages && cd bundle && npm run precommit:typecheck",
+    "precommit:typecheck:component": "cd packages && cd component && npm run precommit:typecheck",
+    "precommit:typecheck:core": "cd packages && cd core && npm run precommit:typecheck",
+    "precommit:typecheck:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:typecheck",
+    "prepare": "husky",
+    "start": "NODE_OPTIONS=--no-deprecation concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
+    "start:api": "cd packages && cd api && npm start",
+    "start:bundle": "cd packages && cd bundle && npm start",
+    "start:component": "cd packages && cd component && npm start",
+    "start:core": "cd packages && cd core && npm start",
+    "start:directlinespeech": "cd packages && cd directlinespeech && npm start",
+    "start:fluent-theme": "cd packages && cd fluent-theme && npm start",
+    "start:server": "serve -p 5000",
+    "start:test-dev-server": "cd packages && cd test && cd dev-server && npm start",
+    "start:test-fluent-bundle": "cd packages && cd test && cd fluent-bundle && npm start",
+    "start:test-harness": "cd packages && cd test && cd harness && npm start",
+    "start:test-page-object": "cd packages && cd test && cd page-object && npm start",
+    "test": "jest --watch"
+  },
+  "pinDependencies": {
+    "@babel/plugin-transform-runtime": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-env": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-react": [
+      "7.18.6",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-typescript": [
+      "7.18.6",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/runtime": [
+      "7.19.0",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@testing-library/react": [
+      "12",
+      "@testing-library/react@12 is targeting react@16"
+    ],
+    "@types/jest": [
+      "28",
+      "pinned jest@28"
+    ],
+    "@types/react": [
+      "16",
+      "react@16.8.6 is our baseline"
+    ],
+    "@types/react-dom": [
+      "16",
+      "react@16.8.6 is our baseline"
+    ],
+    "babel-jest": [
+      "28",
+      "jest-image-snapshot@5.2.0 does not support jest@29 yet"
+    ],
+    "eslint": [
+      "8",
+      "@typescript-eslint/eslint-plugin does not support eslint@9 yet"
+    ],
+    "get-port": [
+      "5",
+      "get-port@6 dropped support of CommonJS"
+    ],
+    "jest": [
+      "28",
+      "jest-image-snapshot@5.2.0 does not support jest@29 yet"
+    ],
+    "lerna": [
+      "6",
+      "lerna@7 use npm workspaces and we fund the migration work"
+    ],
+    "node-fetch": [
+      "2",
+      "node-fetch@3 dropped support of CommonJS"
+    ],
+    "react": [
+      "16.8.6",
+      "using react@16.8.6 to make sure this is the minimum supported version"
+    ],
+    "react-dom": [
+      "16.8.6",
+      "using react-dom@16.8.6 to make sure this is the minimum supported version"
+    ],
+    "strip-ansi": [
+      "6",
+      "strip-ansi@7 dropped support of CommonJS"
+    ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
-    "@babel/plugin-transform-runtime": "^7.11.0",
-    "@babel/preset-env": "^7.11.0",
-    "@babel/preset-react": "^7.10.4",
-    "@babel/preset-typescript": "^7.10.4",
-    "@babel/runtime": "^7.11.0",
+    "@babel/plugin-transform-runtime": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.18.6",
+    "@babel/runtime": "^7.19.0",
+    "@biomejs/biome": "^1.9.4",
+    "@happy-dom/jest-environment": "^17.1.0",
+    "@testing-library/react": "^12.1.5",
+    "@types/jest": "^28.1.8",
+    "@types/react": "^16.14.62",
+    "@types/react-dom": "^16.9.25",
+    "@typescript-eslint/eslint-plugin": "^8.24.0",
+    "@typescript-eslint/parser": "^8.24.0",
     "abort-controller": "^3.0.0",
-    "babel-cli": "^6.26.0",
-    "babel-jest": "^26.2.2",
-    "concurrently": "^5.3.0",
-    "core-js": "^3.6.5",
-    "cross-env": "^7.0.2",
-    "dotenv": "^8.2.0",
-    "error-stack-parser": "^2.0.6",
+    "babel-jest": "^28.1.3",
+    "babel-plugin-istanbul": "^7.0.0",
+    "concurrently": "^9.1.2",
+    "core-js": "^3.40.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.7",
+    "error-stack-parser": "^2.1.4",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-security": "^3.0.1",
     "get-port": "^5.1.1",
-    "global-agent": "^2.1.12",
-    "husky": "^4.2.5",
-    "jest": "^26.2.2",
-    "jest-image-snapshot": "^4.1.0",
-    "jest-junit": "^11.1.0",
-    "jest-trx-results-processor": "^2.0.3",
-    "lerna": "^3.22.1",
-    "lint-staged": "^10.2.13",
-    "lolex": "^5.1.2",
-    "node-fetch": "^2.6.0",
-    "p-defer": "^3.0.0",
-    "prettier": "^2.0.5",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "selenium-webdriver": "^4.0.0-alpha.7",
-    "serve": "^11.3.2",
-    "serve-handler": "^6.1.3",
-    "strip-ansi": "^6.0.0",
+    "global-agent": "^3.0.0",
+    "husky": "^9.1.7",
+    "jest": "^28.1.3",
+    "jest-image-snapshot": "^6.4.0",
+    "jest-junit": "^16.0.0",
+    "jest-trx-results-processor": "^3.0.2",
+    "lint-staged": "^15.4.3",
+    "lolex": "^6.0.0",
+    "node-dev": "^8.0.0",
+    "node-fetch": "^2.7.0",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.1",
+    "selenium-webdriver": "^4.28.1",
+    "serve": "^14.2.4",
+    "serve-handler": "^6.1.6",
+    "strip-ansi": "^6.0.1",
+    "tsup": "^8.3.6",
+    "typescript": "^5.7.3",
+    "typescript-plugin-css-modules": "^5.1.0",
     "xmlbuilder": "^15.1.1"
+  },
+  "dependencies": {
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   }
 }
