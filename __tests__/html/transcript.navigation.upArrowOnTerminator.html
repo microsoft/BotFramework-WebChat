@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            ),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(32);
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageObjects.focusSendBoxTextBox();
+
+        // Should show a focus indicator around the transcript and the terminator. This is our starting point.
+        await host.sendShiftTab(2);
+        await host.snapshot();
+
+        // Press up on the terminator should focus the bottommost activity.
+        await host.sendKeys('ARROW_UP');
+        await pageConditions.focusedActivityInView();
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

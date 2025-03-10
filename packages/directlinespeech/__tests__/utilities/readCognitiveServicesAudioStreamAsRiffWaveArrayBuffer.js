@@ -1,19 +1,14 @@
 import { AudioStreamFormat } from 'microsoft-cognitiveservices-speech-sdk';
 import { RiffPcmEncoder } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/RiffPcmEncoder';
 
-function cognitiveServicesPromiseToESPromise(promise) {
-  return new Promise((resolve, reject) => promise.on(resolve, reject));
-}
-
 async function readAudioStreamAsPCMArrayBuffer(stream) {
-  const read = (...args) => cognitiveServicesPromiseToESPromise(stream.read(...args));
   const buffers = [];
   let numBytes = 0;
 
   for (let maxChunks = 0; maxChunks < 1000; maxChunks++) {
     const buffer = new ArrayBuffer(4096);
 
-    const bytesRead = await read(buffer);
+    const bytesRead = await stream.read(buffer);
 
     if (bytesRead) {
       buffers.push(new Uint8Array(buffer, 0, bytesRead));

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      let counter = 0;
+
+      function createActivity() {
+        counter++;
+
+        return {
+          from: { role: 'bot' },
+          id: counter + '',
+          text: `Activity: ${counter}`,
+          timestamp: counter,
+          type: 'message'
+        };
+      }
+
+      function createActivities(count) {
+        const array = new Array(count);
+
+        return array.fill().map(() => createActivity());
+      }
+
+      run(async function () {
+        const directLine = testHelpers.createDirectLineWithTranscript(createActivities(20));
+        const store = testHelpers.createStore();
+
+        function addDummyActivitiesToDirectLine(count) {
+          for (let index = 0; index < count; index++) {
+            directLine.activityDeferredObservable.next(createActivity());
+          }
+        }
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { subtle: '#666' }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.scrollToBottomCompleted();
+
+        // SETUP: A transcript with 20 activities and focusing on the send box.
+        await pageConditions.numActivitiesShown(20);
+        await pageObjects.focusSendBoxTextBox();
+
+        // WHEN: Pressing SHIFT+TAB x 3 to focus on the transcript, followed by HOME key.
+        await host.sendShiftTab(3);
+        await host.sendKeys('HOME');
+
+        // THEN: It should focus on the first activity and scroll it into view.
+        await pageConditions.scrollStabilized(0);
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]);
+        await host.snapshot();
+
+        // WHEN: Pressing TAB x 3 to focus on the send box, then press END key on the empty send box.
+        await host.sendTab(3);
+        await host.sendKeys('END');
+
+        // THEN: It should scroll the transcript to the bottom.
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot();
+
+        // WHEN: Pressing SHIFT+TAB x 3 to focus back to the transcript with the first activity focused.
+        await host.sendShiftTab(3);
+
+        // THEN: It should scroll to the top.
+        await pageConditions.scrollStabilized(0);
+
+        // THEN: It should have the first activity selected.
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[0]);
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

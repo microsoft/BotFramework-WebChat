@@ -105,8 +105,8 @@ Then, apply the style sheet to our React component.
 
 Then, add business logic to the component:
 
--  When the upvote button is clicked, send a post back activity to the bot with the activity ID and `helpful` of `1`.
--  When the downvote button is clicked, send a post back activity with `helpful` of `-1`.
+-  When the upVote button is clicked, send a post back activity to the bot with the activity ID and `helpful` of `1`.
+-  When the downVote button is clicked, send a post back activity with `helpful` of `-1`.
 
 The `sendPostBack` function will be retrieve from Web Chat hooks via `useSendPostback` function.
 
@@ -123,19 +123,21 @@ The `sendPostBack` function will be retrieve from Web Chat hooks via `useSendPos
 + const BotActivityDecorator = ({ activityID, children }) => {
 +   const postActivity = usePostActivity();
 +
-+   const handleDownvoteButton = useCallback(() => {
-+     postActivity({
-+       type: 'messageReaction',
-+         reactionsAdded: [{ activityID, helpful: -1 }]
-+     });
-+   }, [activityID, postActivity]);
++   const addMessageReaction = helpful => {
++            postActivity({
++              type: 'messageReaction',
++              reactionsAdded: [{ type: helpful === 1 ? 'ThumbsUp' : 'ThumbsDown' }],
++              replyToId: activityID
++            });
++          };
 +
-+   const handleUpvoteButton = useCallback(() => {
-+     postActivity({
-+       type: 'messageReaction',
-+       reactionsAdded: [{ activityID, helpful: 1 }]
-+     });
-+   }, [activityID, postActivity]);
++    const handleDownVoteButton = useCallback(() => {
++      addMessageReaction(-1);
++    }, [activityID, postActivity]);
++
++    const handleUpVoteButton = useCallback(() => {
++      addMessageReaction(1);
++    }, [activityID, postActivity]);
 
     return (
       <div className="botActivityDecorator">
@@ -159,11 +161,12 @@ Next let's build the `activityMiddleware` that will filter which activities are 
 
 <!-- prettier-ignore-start -->
 ```js
-const activityMiddleware = () => next => card => {
+const activityMiddleware = () => next => (...setupArgs) => {
+  const [card] = setupArgs
   if (card.activity.from.role === 'bot') {
-    return children => (
+    return (...renderArgs) => (
       <BotActivityDecorator activityID={card.activity.id} key={card.activity.id}>
-        {next(card)(children)}
+        {next(card)(...renderArgs)}
       </BotActivityDecorator>
     );
   } else {
@@ -288,18 +291,18 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
           );
         };
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
-        const activityMiddleware = () => next => card => {
+        const activityMiddleware = () => next => (...setupArgs) => {
+          const [card] = setupArgs
           if (card.activity.from.role === 'bot') {
-            return children => (
-              <BotActivityDecorator key={card.activity.id} activityID={card.activity.id}>
-                {next(card)(children)}
+            return (...renderArgs) => (
+              <BotActivityDecorator activityID={card.activity.id} key={card.activity.id}>
+                {next(card)(...renderArgs)}
               </BotActivityDecorator>
             );
           }
-
-          return next(card);
+          return next(...setupArgs)
         };
 
         window.ReactDOM.render(
@@ -320,12 +323,12 @@ Make sure `activityMiddleware` is passed into the the Web Chat component, and th
 
 # Further reading
 
-[User highlighting bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/c.user-highlighting) | [(User highlighting source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/c.user-highlighting)
+[User highlighting bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/c.user-highlighting) | [(User highlighting source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/05.custom-components/c.user-highlighting)
 
-[Card components bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/e.card-components) | [(Card components source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/e.card-components)
+[Card components bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/e.card-components) | [(Card components source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/05.custom-components/e.card-components)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)
 
 [1]: ../../01.getting-started/e.host-with-react/README.md

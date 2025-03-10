@@ -79,7 +79,7 @@ Here is the finished `index.html`:
     <div id="webchat" role="main"></div>
     <script>
       (async function() {
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
         window.WebChat.renderWebChat(
           {
@@ -103,6 +103,6 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)
 
 [1]: ../../01.getting-started/a.full-bundle/README.md

@@ -1,5 +1,3 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
-test('Emoji should be enabled by default', () => runHTMLTest('styleOptions.emojiSet.default.html'));
+test('Emoji should be enabled by default', () => runHTML('styleOptions.emojiSet.default.html'));

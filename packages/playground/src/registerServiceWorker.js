@@ -1,3 +1,8 @@
+/* eslint-disable no-magic-numbers */
+/* eslint-disable no-undef */
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-console */
+
 // In production, we register a service worker to serve assets from local cache.
 
 // This lets the app load faster on subsequent visits in production, and gives
@@ -13,6 +18,7 @@ const isLocalhost = Boolean(
     // [::1] is the IPv6 localhost address.
     window.location.hostname === '[::1]' ||
     // 127.0.0.1/8 is considered localhost for IPv4.
+    // eslint-disable-next-line require-unicode-regexp
     window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
 );
 

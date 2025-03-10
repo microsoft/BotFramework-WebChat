@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       .decorated-activity {
@@ -22,13 +27,11 @@
     </style>
   </head>
   <body>
-    <div id="webchat"></div>
+    <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
-      } = window;
+      run(async function () {
+        await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
-      (async function() {
         const activityMiddleware = () => next => (...renderActivityArgs) => {
           const [{ activity }] = renderActivityArgs;
 
@@ -81,10 +84,10 @@
           return renderActivity;
         };
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             activityMiddleware,
-            directLine: await createDirectLineWithTranscript([
+            directLine: await testHelpers.createDirectLineWithTranscript([
               {
                 attachmentLayout: 'carousel',
                 attachments: [
@@ -167,21 +170,16 @@
                 type: 'message'
               }
             ]),
-            store: createStore()
+            store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
-        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
+        await pageConditions.uiConnected();
+        await pageConditions.scrollToBottomCompleted();
+        await pageConditions.allImagesLoaded();
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

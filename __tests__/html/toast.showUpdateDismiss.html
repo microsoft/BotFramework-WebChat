@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const clock = lolex.createClock();
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        WebChat.renderWebChat({ directLine, ponyfill: clock, store }, document.getElementById('webchat'));
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600);
+
+        await pageConditions.uiConnected();
+
+        store.dispatch({
+          type: 'WEB_CHAT/SET_NOTIFICATION',
+          payload: {
+            id: 'privacypolicy',
+            level: 'info',
+            message: 'Please read our [privacy policy](https://microsoft.com/privacypolicy).'
+          }
+        });
+
+        await pageConditions.toastShown(1);
+        await pageConditions.toastShown('Please read our privacy policy.');
+
+        await host.snapshot();
+
+        store.dispatch({
+          type: 'WEB_CHAT/SET_NOTIFICATION',
+          payload: {
+            id: 'privacypolicy',
+            level: 'warn',
+            message: 'Please read our [privacy policy](https://microsoft.com/privacypolicy) again.'
+          }
+        });
+
+        await pageConditions.toastShown(1);
+        await pageConditions.toastShown('Please read our privacy policy.');
+
+        clock.tick(400);
+
+        await pageConditions.toastShown('Please read our privacy policy again.');
+
+        await host.snapshot();
+
+        store.dispatch({
+          type: 'WEB_CHAT/DISMISS_NOTIFICATION',
+          payload: {
+            id: 'privacypolicy'
+          }
+        });
+
+        await pageConditions.toastShown(1);
+        await pageConditions.toastShown('Please read our privacy policy again.');
+
+        clock.tick(400);
+
+        await pageConditions.toastShown(0);
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

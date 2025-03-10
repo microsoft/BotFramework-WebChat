@@ -2,8 +2,7 @@
 
 import { call, cancel, cancelled, fork, put, race, take } from 'redux-saga/effects';
 
-import { ConnectionStatus } from 'botframework-directlinejs';
-import { decode } from 'jsonwebtoken';
+import { jwtDecode } from 'jwt-decode';
 
 import { CONNECT } from '../actions/connect';
 import createPromiseQueue from '../createPromiseQueue';
@@ -15,10 +14,12 @@ import { DISCONNECT, DISCONNECT_PENDING, DISCONNECT_FULFILLED } from '../actions
 
 import { RECONNECT } from '../actions/reconnect';
 
-const { Connecting: CONNECTING, Online: ONLINE, Uninitialized: UNINITIALIZED } = ConnectionStatus;
+const CONNECTING = 1;
+const ONLINE = 2;
+const UNINITIALIZED = 0;
 
 function randomUserID() {
-  return `r_${uniqueID().substr(0, 10)}`;
+  return `r_${uniqueID().substring(0, 10)}`;
 }
 
 function* observeAndPutConnectionStatusUpdate(directLine) {
@@ -39,7 +40,19 @@ function* observeAndPutConnectionStatusUpdate(directLine) {
 // TODO: [P2] We should move this check and rectification to DirectLineJS.
 function rectifyUserID(directLine, userIDFromAction) {
   const { token } = directLine;
-  const { user: userIDFromToken } = decode(token) || {};
+
+  let userIDFromToken;
+
+  // TODO: Add test to make sure "jwt-decode" work as expected.
+  try {
+    userIDFromToken = (jwtDecode(token) || {}).user;
+    // eslint-disable-next-line no-empty
+  } catch (err) {}
+
+  const result = {
+    fromAction: userIDFromAction,
+    fromToken: userIDFromToken
+  };
 
   if (userIDFromToken) {
     if (userIDFromAction && userIDFromAction !== userIDFromToken) {
@@ -48,24 +61,26 @@ function rectifyUserID(directLine, userIDFromAction) {
       );
     }
 
-    return userIDFromToken;
+    result.final = userIDFromToken;
   } else if (userIDFromAction) {
     if (typeof userIDFromAction !== 'string') {
       console.warn('Web Chat: user ID must be a string.');
 
-      return randomUserID();
+      result.final = randomUserID();
     } else if (/^dl_/u.test(userIDFromAction)) {
       console.warn(
         'Web Chat: user ID prefixed with "dl_" is reserved and must be embedded into the Direct Line token to prevent forgery.'
       );
 
-      return randomUserID();
+      result.final = randomUserID();
+    } else {
+      result.final = userIDFromAction;
     }
   } else {
-    return randomUserID();
+    result.final = randomUserID();
   }
 
-  return userIDFromAction;
+  return result;
 }
 
 // We could make this a Promise instead of saga (function generator) to make the code cleaner, if:
@@ -160,20 +175,27 @@ function runAsyncEffectUntilDisconnect(baseAction, callEffectFactory) {
   });
 }
 
-export default function*() {
+export default function* () {
   for (;;) {
     const {
       payload: { directLine, userID: userIDFromAction, username }
     } = yield take(CONNECT);
 
     const updateConnectionStatusTask = yield fork(observeAndPutConnectionStatusUpdate, directLine);
-    let disconnectMeta;
+    const rectifiedUserID = rectifyUserID(directLine, userIDFromAction);
 
     // TODO: [P2] Checks if this attached subtask will get killed if the parent task is complete (peacefully), errored out, or cancelled.
     const meta = {
-      userID: rectifyUserID(directLine, userIDFromAction),
+      userID: rectifiedUserID.final,
       username
     };
+
+    // Send user ID to DirectLineJS if it was specified from props of <API.Composer>.
+    // However, DirectLineJS may still prefer the user ID from token if it is burnt into the token.
+    // To prevent DirectLineJS giving false warnings, we will only call setUserId() if it is different than the token.
+    directLine.setUserId && rectifiedUserID.fromToken !== meta.userID && directLine.setUserId(meta.userID);
+
+    let disconnectMeta;
 
     // We will dispatch CONNECT_PENDING, wait for connect completed, errored, or cancelled (thru disconnect).
     // Then dispatch CONNECT_FULFILLED/CONNECT_REJECTED as needed.

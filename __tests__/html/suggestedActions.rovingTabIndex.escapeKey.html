@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript([
+              {
+                from: {
+                  id: 'bot',
+                  role: 'bot'
+                },
+                suggestedActions: {
+                  actions: [
+                    {
+                      title: 'What can I say?',
+                      type: 'imBack'
+                    },
+                    {
+                      title: 'What is the weather?',
+                      type: 'imBack'
+                    }
+                  ]
+                },
+                text: 'Hello, World!',
+                textFormat: 'markdown',
+                timestamp: new Date(2000, 0, 1, 12, 34, 56, 789).toISOString(),
+                type: 'message'
+              }
+            ]),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        // SETUP: Show the suggested actions.
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(1);
+        await pageConditions.suggestedActionsShown();
+
+        // SETUP: Focus on the send box.
+        await pageObjects.focusSendBoxTextBox();
+
+        // WHEN: SHIFT-TAB is pressed 3 times.
+        await host.sendShiftTab(3);
+
+        // THEN: It should focus on the first suggested action button.
+        expect(document.activeElement).toBe(pageElements.suggestedActions()[0]);
+
+        // WHEN: Press ESCAPE key.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: It should focus on the send box.
+
+        // THEN: It should focus on the first suggested action button, not third.
+        expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+name: Feature request
+description: Suggest an idea for this project.
+labels:
+  - feature-request
+  - customer-reported
+  - Bot Services
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > Please view our [Technical Support Guide](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/TECHNICAL_SUPPORT_GUIDE.md) before filing a new issue.
+
+        Use the ["feature-request" query](https://github.com/microsoft/BotFramework-WebChat/labels/feature-request) to search for existing feature requests.
+
+        The [Samples tag](https://github.com/microsoft/botframework-Webchat/issues?q=is%3Aissue+is%3Aopen+label%3ASample) also lists examples and implementations that have already been requested.
+  - type: textarea
+    attributes:
+      label: Is your feature request related to a problem?
+      description: A clear and concise description of what the problem is.
+      placeholder: I'm always frustrated when [...]
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the suggestion or request in detail
+      description: A clear and concise description of what you want to happen.
+  - type: textarea
+    attributes:
+      label: Describe alternatives you have considered
+      description: A clear and concise description of any alternative solutions or features you've considered.
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the feature request here.

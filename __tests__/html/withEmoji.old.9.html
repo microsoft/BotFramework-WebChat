@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <div>
+      <main></main>
+    </div>
+    <script>
+      run(async function () {
+        const InputWithEmoji = WebChat.withEmoji(
+          React.forwardRef((props, ref) => React.createElement('input', { ...props, ref }))
+        );
+
+        const App = () => {
+          const [value, setValue] = React.useState('');
+
+          return React.createElement(
+            'label',
+            {},
+            'Input: ',
+            React.createElement(InputWithEmoji, {
+              autoFocus: true,
+              emojiMap: new Map([[':)', '🙂']]),
+              onChange: setValue,
+              value
+            }),
+            React.createElement('br'),
+            React.createElement('div', { 'data-test-id': 'get-value' }, value)
+          );
+        };
+
+        await new Promise(resolve =>
+          ReactDOM.render(React.createElement(App), document.getElementsByTagName('main')[0], resolve)
+        );
+
+        const [inputElement] = document.getElementsByTagName('input');
+        const getValueElement = document.querySelector('[data-test-id]');
+
+        const getTextWithCaret = () => {
+          expect(inputElement.value).toBe(getValueElement.textContent);
+
+          const tokens = inputElement.value.split('');
+
+          if (inputElement.selectionStart === inputElement.selectionEnd) {
+            tokens.splice(inputElement.selectionStart, 0, '|');
+          } else {
+            tokens.splice(inputElement.selectionEnd, 0, ']');
+            tokens.splice(inputElement.selectionStart, 0, '[');
+          }
+
+          return tokens.join('');
+        };
+
+        await host.sendKeys('abc');
+        expect(getTextWithCaret()).toBe('abc|');
+
+        inputElement.blur();
+        inputElement.focus();
+
+        await host.sendKeys('+CONTROL', 'a', '-CONTROL');
+        expect(getTextWithCaret()).toBe('[abc]');
+
+        await host.sendKeys('def');
+        expect(getTextWithCaret()).toBe('def|');
+
+        await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
+        expect(getTextWithCaret()).toBe('[abc]');
+      });
+    </script>
+  </body>
+</html>

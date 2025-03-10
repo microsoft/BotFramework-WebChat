@@ -1,4 +1,4 @@
-import { timeouts } from '../constants.json';
+import { imageSnapshotOptions, timeouts } from '../constants.json';
 
 import uiConnected from '../setup/conditions/uiConnected';
 
@@ -22,6 +22,8 @@ test('getter should return dictate interims', async () => {
   const [dictateInterims] = await pageObjects.runHook('useDictateInterims');
 
   expect(dictateInterims).toEqual(['Hello']);
+
+  expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
 });
 
 test('setter should throw exception', async () => {

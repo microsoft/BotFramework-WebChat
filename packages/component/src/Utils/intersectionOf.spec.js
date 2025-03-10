@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import intersectionOf from './intersectionOf';
 
 test('intersection of [1, 2, 3] and [3, 4, 5] should return [3]', () => {

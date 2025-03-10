@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('locale', () => {
   test('should keep sending "yue-Hant" to bot while displaying "yue" and able to change it on-the-fly.', () =>
-    runHTMLTest('locale.keep.html'));
+    runHTML('locale.keep.html'));
 });

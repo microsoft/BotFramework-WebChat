@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript([
+              {
+                attachments: [
+                  {
+                    content: 'Attachment 1',
+                    contentType: 'text/plain'
+                  },
+                  {
+                    content: 'Attachment 2',
+                    contentType: 'text/plain'
+                  }
+                ],
+                type: 'message',
+                id: 'CONVERSATION_ID-o|00000',
+                timestamp: '2000-01-23T12:34:56.12345Z',
+                channelId: 'directline',
+                from: {
+                  id: 'webchat-mockbot',
+                  name: 'webchat-mockbot'
+                },
+                conversation: {
+                  id: 'CONVERSATION_ID-o'
+                },
+                locale: 'en-US'
+              }
+            ]),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // This test is to verify that all elements with aria-labelledby have a corresponding element with the same ID.
+
+        const labelledBys = [].map.call(document.querySelectorAll('[aria-labelledby]'), element => ({
+          element,
+          id: element.getAttribute('aria-labelledby')
+        }));
+
+        for (let { element, id } of labelledBys) {
+          if (!document.getElementById(id)) {
+            console.warn(`Cannot find element with ID of ${id}`, { element });
+
+            throw new Error(`Cannot find element with ID of ${id}`);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

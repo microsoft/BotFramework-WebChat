@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .button-bar {
+        position: fixed;
+        right: 10px;
+        text-align: right;
+        top: 10px;
+      }
+
+      .webchat__basic-transcript__activity.webchat__basic-transcript__activity--acknowledged {
+        background-color: Cyan;
+      }
+
+      .webchat__basic-transcript__activity:not(.webchat__basic-transcript__activity--acknowledged) {
+        background-color: Orange;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <div class="button-bar">
+      <button class="add-activity-button">Add activity with 10 lines</button>
+      <br />
+      <button class="add-3-activities-button">Add 3 activities with 10 lines each</button>
+    </div>
+    <script>
+      const {
+        Components: { AdaptiveCardContent }
+      } = window.WebChat;
+
+      const directLine = testHelpers.createDirectLineWithTranscript([createActivity(20)]);
+      const store = testHelpers.createStore();
+
+      let now = +new Date(2020, 0, 23, 12, 34);
+
+      function createActivity(numLines) {
+        return {
+          from: { role: 'bot' },
+          id: Math.random().toString(36).substr(2, 5),
+          text: new Array(numLines)
+            .fill()
+            .map((_, index) => `Line ${index + 1}`)
+            .join('\n\n'),
+          timestamp: new Date().toISOString(),
+          type: 'message'
+        };
+      }
+
+      function addDummyActivitiesToDirectLine(numLines) {
+        directLine.activityDeferredObservable.next(createActivity(numLines));
+      }
+
+      function numActivitiesByAcknowledgement() {
+        const { length: numActivities } = document.querySelectorAll('.webchat__basic-transcript__activity');
+
+        const { length: numAcknowledged } = document.querySelectorAll(
+          '.webchat__basic-transcript__activity--acknowledged'
+        );
+
+        return {
+          acknowledged: numAcknowledged,
+          unacknowledged: numActivities - numAcknowledged
+        };
+      }
+
+      document.querySelector('.add-activity-button').addEventListener('click', () => {
+        addDummyActivitiesToDirectLine(10);
+      });
+
+      document.querySelector('.add-3-activities-button').addEventListener('click', () => {
+        addDummyActivitiesToDirectLine(10);
+        addDummyActivitiesToDirectLine(10);
+        addDummyActivitiesToDirectLine(10);
+      });
+
+      run(async function () {
+        const webChatElement = document.getElementById('webchat');
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: {
+              autoScrollSnapOnPage: true,
+              subtle: '#666'
+            }
+          },
+          webChatElement
+        );
+
+        await pageConditions.uiConnected();
+
+        addDummyActivitiesToDirectLine(10);
+
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollStabilized();
+
+        expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 2, unacknowledged: 0 });
+
+        addDummyActivitiesToDirectLine(10);
+
+        await pageConditions.scrollStabilized();
+
+        expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 3, unacknowledged: 0 });
+
+        await pageObjects.sendMessageViaSendBox('Hello, World!');
+        await pageConditions.scrollStabilized();
+
+        expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 4, unacknowledged: 0 });
+
+        addDummyActivitiesToDirectLine(10);
+
+        await pageConditions.scrollStabilized();
+
+        expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 4, unacknowledged: 1 });
+
+        addDummyActivitiesToDirectLine(10);
+
+        await new Promise(requestAnimationFrame);
+
+        addDummyActivitiesToDirectLine(10);
+
+        await pageConditions.scrollStabilized();
+
+        expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 4, unacknowledged: 3 });
+
+        const { top: activityElementAtTopOfViewOffsetTop } = pageObjects.getActivityBoundingBoxes()[4];
+        const scrollable = pageElements.transcriptScrollable();
+
+        expect(scrollable.scrollTop).toBe(activityElementAtTopOfViewOffsetTop);
+
+        await pageObjects.sendMessageViaSendBox('Aloha!');
+
+        await pageConditions.scrollToBottomCompleted();
+        expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 8, unacknowledged: 0 });
+
+        // Scroll to top and lose the stickiness.
+        scrollable.scrollTop = 0;
+
+        // Wait for scroll-to-bottom to detect it is no longer sticky.
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        addDummyActivitiesToDirectLine(10);
+        await pageConditions.minNumActivitiesShown(9);
+
+        expect(scrollable.scrollTop).toBe(0);
+        expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 8, unacknowledged: 1 });
+
+        await pageObjects.clickScrollToEndButton();
+        await pageConditions.scrollToBottomCompleted();
+
+        addDummyActivitiesToDirectLine(10);
+        addDummyActivitiesToDirectLine(10);
+        addDummyActivitiesToDirectLine(10);
+
+        await pageConditions.scrollStabilized();
+
+        expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 9, unacknowledged: 3 });
+
+        expect(scrollable.scrollTop).toBe(pageObjects.getActivityBoundingBoxes()[9].top);
+
+        // Scroll to bottom
+        scrollable.scrollTop = scrollable.scrollHeight;
+
+        // Wait for scroll-to-bottom to detect it is at the bottom.
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        expect(numActivitiesByAcknowledgement()).toEqual({ acknowledged: 12, unacknowledged: 0 });
+      });
+    </script>
+  </body>
+</html>

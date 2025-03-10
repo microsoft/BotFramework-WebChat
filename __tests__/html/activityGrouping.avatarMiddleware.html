@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       .avatar-with-online-status {
@@ -37,17 +42,18 @@
     </style>
   </head>
   <body>
-    <div id="webchat"></div>
+    <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { useMemo },
         WebChat: {
           hooks: { useDirection }
-        },
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
+        }
       } = window;
 
-      (async function() {
+      run(async function () {
+        await host.windowSize(undefined, 1280, document.getElementById('webchat'));
+
         const AvatarWithOnlineStatus = ({ children }) => {
           const [direction] = useDirection();
 
@@ -62,30 +68,35 @@
         const PortraitAvatar = ({ fromUser }) => {
           const style = useMemo(() => ({ borderRadius: 4, width: '100%' }), []);
 
-          return <img src={fromUser ? 'assets/user-avatar.jpg' : 'assets/bot-avatar.jpg'} style={style} />;
+          return (
+            <img alt="Rinna" src={fromUser ? '/assets/user-avatar.jpg' : '/assets/bot-avatar.jpg'} style={style} />
+          );
         };
 
-        const avatarMiddleware = () => next => (...args) => {
-          const [{ activity, fromUser, ...otherArgs }] = args;
-          const { id } = activity;
+        const avatarMiddleware =
+          () =>
+          next =>
+          (...args) => {
+            const [{ activity, fromUser, ...otherArgs }] = args;
+            const { id } = activity;
 
-          if (/^(1|2)/.test(id)) {
-            return <PortraitAvatar fromUser={fromUser} />;
-          } else if (/^3/.test(id)) {
-            const renderNext = next({ activity, fromUser, ...otherArgs });
+            if (/^(1|2)/.test(id)) {
+              return <PortraitAvatar fromUser={fromUser} />;
+            } else if (/^3/.test(id)) {
+              const renderNext = next({ activity, fromUser, ...otherArgs });
 
-            return renderNext && (() => <AvatarWithOnlineStatus>{renderNext()}</AvatarWithOnlineStatus>);
-          } else if (id === '4.0' || id === '5.0') {
-            return false;
-          }
+              return renderNext && (() => <AvatarWithOnlineStatus>{renderNext()}</AvatarWithOnlineStatus>);
+            } else if (id === '4.0' || id === '5.0') {
+              return false;
+            }
 
-          return next(...args);
-        };
+            return next(...args);
+          };
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             avatarMiddleware,
-            directLine: await createDirectLineWithTranscript([
+            directLine: await testHelpers.createDirectLineWithTranscript([
               {
                 from: { role: 'bot' },
                 id: '1.0',
@@ -142,8 +153,7 @@
                 channelData: { state: 'sent' },
                 from: { role: 'user' },
                 id: '4.1',
-                text:
-                  'Although this activity has avatar, it is in the same group of activities with avatar disabled. So no avatar will be shown. A blank gutter space is expected.',
+                text: 'Although this activity has avatar, it is in the same group of activities with avatar disabled. So no avatar will be shown. A blank gutter space is expected.',
                 timestamp: 0,
                 type: 'message'
               },
@@ -153,12 +163,14 @@
                   {
                     contentType: 'image/jpeg',
                     contentUrl:
-                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg',
+                    name: 'front of Surface Pro'
                   },
                   {
                     contentType: 'image/jpeg',
                     contentUrl:
-                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg'
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg',
+                    name: 'back of Surface Pro'
                   }
                 ],
                 from: { role: 'bot' },
@@ -170,13 +182,12 @@
               {
                 from: { role: 'bot' },
                 id: '5.1',
-                text:
-                  'Although this activity has avatar, it is in the same group of activities with avatar disabled. So no avatar will be shown. A blank gutter space is expected.',
+                text: 'Although this activity has avatar, it is in the same group of activities with avatar disabled. So no avatar will be shown. A blank gutter space is expected.',
                 timestamp: 0,
                 type: 'message'
               }
             ]),
-            store: createStore(),
+            store: testHelpers.createStore(),
             styleOptions: {
               botAvatarInitials: 'Bot',
               bubbleBackground: '#0063B1',
@@ -198,15 +209,10 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
+        await pageConditions.uiConnected();
+        await pageConditions.allImagesLoaded();
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

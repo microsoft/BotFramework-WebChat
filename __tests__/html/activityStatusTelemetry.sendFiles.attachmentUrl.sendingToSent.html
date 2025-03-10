@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const testAttachmentActivity = {
+          type: 'message',
+          id: 'CONVERSATION_ID-o|00000',
+          timestamp: '2000-01-23T12:34:56.12345Z',
+          channelId: 'directline',
+          from: {
+            id: 'webchat-mockbot',
+            name: 'webchat-mockbot'
+          },
+          conversation: {
+            id: 'CONVERSATION_ID-o'
+          },
+          locale: 'en-US',
+          attachments: [
+            {
+              contentUrl: 'https://bing.com/',
+              contentType: 'text/plain',
+              name: 'test.txt'
+            }
+          ]
+        };
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const telemetryEventTracking = [];
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            onTelemetry: event => {
+              if (event?.name === 'send-status:change') {
+                telemetryEventTracking.push(event.data);
+              }
+            },
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        // GIVEN: Web Chat is connected.
+        await pageConditions.uiConnected();
+
+        // WHEN: An outgoing activity with attachments is sent.
+        await (await directLine.emulateOutgoingActivity(testAttachmentActivity)).resolveAll();
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: It should emit 2 events in order:
+        //       - undefined -> sending
+        //       - sending -> sent
+        expect(telemetryEventTracking).toEqual(
+          expect.arrayContaining([
+            {
+              clientActivityID: expect.any(String),
+              hasAttachment: 'true',
+              key: expect.any(String),
+              status: 'sending',
+              type: 'message'
+            },
+            {
+              clientActivityID: expect.any(String),
+              hasAttachment: 'true',
+              key: expect.any(String),
+              prevStatus: 'sending',
+              status: 'sent',
+              type: 'message'
+            }
+          ])
+        );
+      });
+    </script>
+  </body>
+</html>

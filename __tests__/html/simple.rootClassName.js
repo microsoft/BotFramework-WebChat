@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('simple', () => {
-  test('should apply "className" prop.', () => runHTMLTest('simple.rootClassName.html'));
+  test('should apply "className" prop.', () => runHTML('simple.rootClassName.html'));
 });

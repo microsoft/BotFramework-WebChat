@@ -1,0 +1,6 @@
+env:
+  browser: true
+  commonjs: true
+
+extends:
+  - ../../.eslintrc.production.yml

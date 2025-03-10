@@ -8,8 +8,8 @@ Microsoft **does not** collect or receive any telemetry measurements for Web Cha
 
 We have 2 samples for collecting telemetry measurements:
 
--  [Collecting telemetry measurements using Azure Application Insights](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/k.telemetry-application-insights)
--  [Collecting telemetry measurements using Google Analytics](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/l.telemetry-google-analytics)
+-  [Collecting telemetry measurements using Azure Application Insights](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/04.api/k.telemetry-application-insights)
+-  [Collecting telemetry measurements using Google Analytics](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/04.api/l.telemetry-google-analytics)
 
 ## Measurements
 
@@ -53,9 +53,10 @@ When the following hooks are called, one or more event measurements will be emit
 
 ### Other events
 
-| Name   | Description                                |
-| ------ | ------------------------------------------ |
-| `init` | Emit when telemetry system has initialized |
+| Name                 | Description                                                                                                                                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `init`               | Emit when telemetry system has initialized                                                                                                                                                                                            |
+| `send-status:change` | Emit when activity status changes from `undefined` to `sending`, `sending` to `sent`, `sending` to `send failed` and `send failed` to `sent`. Including `status`, `prevStatus`, `clientActivityID`, `key`, `hasAttachment` and `type` |
 
 ### Exceptions
 
@@ -119,15 +120,28 @@ interface TelemetryTimingEndMeasurementEvent extends TelemetryMeasurementEvent {
 }
 ```
 
+To collect `send-status:change` events, the data emitted will be in the type below:
+
+```ts
+type TelemetrySendStatusChangePayload = {
+   clientActivityID?: string;
+   hasAttachment?: 'true' | 'false';
+   key: string;
+   prevStatus?: 'sending' | 'send failed' | 'sent';
+   status: 'sending' | 'send failed' | 'sent';
+   type?: string;
+};
+```
+
 Web Chat may emit a large number of dimensions and measurements to your `onTelemetry` handler. As your telemetry service provider may limit number of dimensions and measurements for a single session or property, you are advised to pick and choose the data you needed before transmitting them to your provider.
 
 ## Hooks
 
 To emit custom measurements through the `onTelemetry` handler, you can use one of the following hooks.
 
--  [`useTrackDimension`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackdimension) to add/change/remove a dimension
--  [`useTrackEvent`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackevent) to emit an event
--  [`useTrackException`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetrackexception) to emit an exception
--  [`useTrackTiming`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usetracktiming) to emit a timing
+-  [`useTrackDimension`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usetrackdimension) to add/change/remove a dimension
+-  [`useTrackEvent`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usetrackevent) to emit an event
+-  [`useTrackException`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usetrackexception) to emit an exception
+-  [`useTrackTiming`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usetracktiming) to emit a timing
 
-Please refer to [`HOOKS.md`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#telemetry) for API references.
+Please refer to [`HOOKS.md`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#telemetry) for API references.

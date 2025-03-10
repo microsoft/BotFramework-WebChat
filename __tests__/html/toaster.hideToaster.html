@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const updateProps = extraProps => {
+          WebChat.renderWebChat({ directLine, store, ...extraProps }, document.getElementById('webchat'));
+        };
+
+        updateProps({
+          styleOptions: {
+            hideToaster: true
+          }
+        });
+
+        await pageConditions.uiConnected();
+
+        store.dispatch({
+          type: 'WEB_CHAT/SET_NOTIFICATION',
+          payload: {
+            id: '1',
+            level: 'info',
+            message: 'Notification 1.'
+          }
+        });
+
+        await pageConditions.toastShown(0);
+
+        await host.snapshot();
+
+        updateProps({
+          styleOptions: {
+            hideToaster: false
+          }
+        });
+
+        await pageConditions.toastShown(1);
+
+        await host.snapshot();
+
+        updateProps({
+          styleOptions: {
+            hideToaster: true
+          }
+        });
+
+        await pageConditions.toastShown(0);
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

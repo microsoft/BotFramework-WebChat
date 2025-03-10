@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('activity grouping', () => {
   test('should not break legacy activity status middleware', () =>
-    runHTMLTest('activityGrouping.legacyActivityStatusMiddleware.html', { height: 1280 }));
+    runHTML('activityGrouping.legacyActivityStatusMiddleware.html'));
 });

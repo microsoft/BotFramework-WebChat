@@ -18,8 +18,6 @@ export default async function setupVersionFamily4(
     webSocket
   });
 
-  // TODO: Should we support Bing Speech in Web Chat v4?
-
   const root = createElement('div', {
     style: {
       height: '100%'

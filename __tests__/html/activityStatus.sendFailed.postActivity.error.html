@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      function activityStatusInnerTextContained(expectedInnerTextPattern) {
+        return pageConditions.became(
+          `Activity status should contains "${expectedInnerTextPattern}"`,
+          () => pageElements.activityStatuses()[0].innerText.includes(expectedInnerTextPattern),
+          1000
+        );
+      }
+
+      function activityChannelDataStateBecame(expectedState) {
+        if (typeof expectedState === 'undefined') {
+          return pageConditions.became(
+            `Activity "channelData.state" should be undefined`,
+            () => !('state' in pageObjects.getActivities()[0].channelData),
+            1000
+          );
+        }
+
+        return pageConditions.became(
+          `Activity "channelData.state" should be "${expectedState}"`,
+          () => pageObjects.getActivities()[0].channelData?.state === expectedState,
+          1000
+        );
+      }
+
+      function activityChannelDataWebChatSendStatusBecame(expectedSendStatus) {
+        return pageConditions.became(
+          `Activity "channelData['webchat:send-status']" should be "${expectedSendStatus}"`,
+          () => pageObjects.getActivities()[0].channelData?.['webchat:send-status'] === expectedSendStatus,
+          1000
+        );
+      }
+
+      run(
+        async function () {
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+          WebChat.renderWebChat(
+            {
+              directLine,
+              store,
+              styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
+            },
+            document.getElementById('webchat')
+          );
+
+          // SETUP: Send a message
+          await pageConditions.uiConnected();
+
+          const sendMessage = await directLine.actPostActivity(() =>
+            pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false })
+          );
+
+          // THEN: `channelData.state` should be "sending".
+          await activityChannelDataStateBecame('sending');
+
+          // THEN: `channelData['webchat:send-status']` should be "sending".
+          await activityChannelDataWebChatSendStatusBecame('sending');
+
+          // THEN: The message should have status of "Sending".
+          await activityStatusInnerTextContained('Sending');
+
+          // WHEN: `postActivity` is rejected.
+          sendMessage.rejectPostActivity(new Error('artificial error'));
+
+          // THEN: The console should have an error message saying "artificial error"
+          await pageConditions.errorMessageLogged('artificial error');
+
+          // THEN: `channelData.state` should be "send failed".
+          await activityChannelDataStateBecame('send failed');
+
+          // THEN: `channelData['webchat:send-status']` should be "send failed".
+          await activityChannelDataWebChatSendStatusBecame('send failed');
+
+          // THEN: The message should have status of "Send failed. Retry.".
+          await activityStatusInnerTextContained('Send failed. Retry.');
+        },
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>

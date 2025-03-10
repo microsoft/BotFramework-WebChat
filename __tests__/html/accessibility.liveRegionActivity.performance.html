@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const baseActivity = {
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          textFormat: 'markdown',
+          timestamp: new Date(2000, 0, 1, 12, 34, 56, 789).toISOString(),
+          type: 'message'
+        };
+
+        const container = document.getElementById('webchat');
+        const transcript = new Array(10).fill().map((_, index) => ({
+          ...baseActivity,
+          id: index + 1 + '',
+          text: index + 1 + ''
+        }));
+
+        // We want to lockdown on the number of renderMarkdown() calls for <LiveRegionActivity>.
+        // It should not increase significantly over time.
+
+        let numRenderMarkdownWithLiveRegionActivity = 0;
+        let numRenderMarkdownWithoutLiveRegionActivity = 0;
+
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(transcript),
+            renderMarkdown: markdown => {
+              numRenderMarkdownWithLiveRegionActivity++;
+
+              return markdown;
+            },
+            store: testHelpers.createStore()
+          },
+          container
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(10);
+        await pageConditions.liveRegionStabilized();
+
+        // Unmount Web Chat, and re-render everything.
+        ReactDOM.unmountComponentAtNode(container);
+
+        await pageConditions.became('unmounted', () => !container.childNodes.length, 5000);
+
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(
+              // If "channelData['webchat:fallback-text']" field is set to empty string, it will disable <LiveRegionActivity>.
+              transcript.map(activity => ({ ...activity, channelData: { 'webchat:fallback-text': '' } }))
+            ),
+            renderMarkdown: markdown => {
+              numRenderMarkdownWithoutLiveRegionActivity++;
+
+              return markdown;
+            },
+            store: testHelpers.createStore()
+          },
+          container
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(10);
+
+        // Number of renderMarkdown() call with or without screen reader activity should be 20.
+
+        // Number of <LiveRegionActivity> rendered x number of activities = number of renderMarkdown
+        // 2 x 10 activities = 20 render loop
+
+        const numDiffRender = numRenderMarkdownWithLiveRegionActivity - numRenderMarkdownWithoutLiveRegionActivity;
+
+        expect(numDiffRender).toBe(20);
+      });
+    </script>
+  </body>
+</html>

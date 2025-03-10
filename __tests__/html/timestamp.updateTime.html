@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const clock = (window.clock = lolex.createClock());
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        window.WebChat.renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(400);
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Incoming and outgoing messages are arrived.
+        const sendMessage = await directLine.actPostActivity(() => {
+          pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: true });
+        });
+
+        await sendMessage.resolveAll();
+        await directLine.emulateIncomingActivity('Aloha!');
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: It should show "Just now".
+        await host.snapshot();
+
+        // WHEN: 5.5 minutes passed.
+        clock.tick(330000); // t = 5.5 minutes
+
+        // THEN: It should show "5 minutes ago".
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

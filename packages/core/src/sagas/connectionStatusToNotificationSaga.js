@@ -78,6 +78,6 @@ function* connectionStatusToNotification({ payload: { directLine } }) {
   }
 }
 
-export default function*() {
+export default function* () {
   yield takeLatest(CONNECT, connectionStatusToNotification);
 }

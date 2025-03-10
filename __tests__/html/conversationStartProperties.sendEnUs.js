@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('conversationStartProperties', () => {
   test('with locale of en-US should get "Hello and welcome!" message.', () =>
-    runHTMLTest('conversationStartProperties.sendEnUs.html'));
+    runHTML('conversationStartProperties.sendEnUs.html'));
 });

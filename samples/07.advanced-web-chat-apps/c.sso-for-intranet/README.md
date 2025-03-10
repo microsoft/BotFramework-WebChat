@@ -69,15 +69,17 @@ If you want to authenticate on Azure Active Directory, follow the steps below.
 
 ## Setup Azure Bot Services
 
-> We prefer using [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
-
-You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0).
+You can follow our instructions on how to [create an Azure Bot resource](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart?view=azure-bot-service-4.0&tabs=userassigned#create-the-resource).
 
 1. Save the Microsoft App ID and password to `/bot/.env`
-   -  `MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd`
-   -  `MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6`
+   -  ```
+      MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
+      MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
+      ```
 1. Save the Web Chat secret to `/web/.env`
-   -  `DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0`
+   -  ```
+      DIRECT_LINE_SECRET=<your-direct-line-secret>
+      ```
 
 > When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer [to this page on how to generate a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
 
@@ -149,7 +151,7 @@ To ease the setup of this sample, here is the template of `.env` files.
 
 ```
 MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
-MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
+MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
 ```
 
 ### `/web/.env`
@@ -157,7 +159,7 @@ MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
 ```
 OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd
 OAUTH_REDIRECT_URI=http://localhost:5000/api/oauth/callback
-DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
+DIRECT_LINE_SECRET=<your-direct-line-secret>
 ```
 
 # Frequently asked questions

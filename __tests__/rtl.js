@@ -3,6 +3,7 @@ import { By } from 'selenium-webdriver';
 import { imageSnapshotOptions, timeouts } from './constants.json';
 
 import allImagesLoaded from './setup/conditions/allImagesLoaded';
+import mediaBuffered from './setup/conditions/mediaBuffered.js';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown';
 import suggestedActionsShown from './setup/conditions/suggestedActionsShown';
 import uiConnected from './setup/conditions/uiConnected';
@@ -80,7 +81,8 @@ describe('rtl UI', () => {
     await sendMessageAndMatchSnapshot(driver, pageObjects, 'صباح الخير');
   });
 
-  test('carousel with avatar initials should display user and bot in reversed positions', async () => {
+  // TODO: [P1] #3898 Un-skip this one after we bump to Chromium 85+.
+  test.skip('carousel with avatar initials should display user and bot in reversed positions', async () => {
     const { driver, pageObjects } = await setupWebDriver({
       props: {
         ...props,
@@ -94,7 +96,8 @@ describe('rtl UI', () => {
     await sendMessageAndMatchSnapshot(driver, pageObjects, 'arabic carousel');
   });
 
-  test('carousel should scroll to the left instead of right', async () => {
+  // TODO: [P1] #3898 Un-skip this one after we bump to Chromium 85+.
+  test.skip('carousel should scroll to the left instead of right', async () => {
     const { driver, pageObjects } = await setupWebDriver({
       props: {
         ...props
@@ -109,7 +112,6 @@ describe('rtl UI', () => {
 
     const leftFlipper = await driver.findElement(By.css('button[aria-label="يسار"]'));
 
-    await leftFlipper.click();
     await leftFlipper.click();
     await leftFlipper.click();
     await leftFlipper.click();
@@ -137,7 +139,14 @@ describe('rtl UI', () => {
       }
     });
 
-    await sendMessageAndMatchSnapshot(driver, pageObjects, 'audiocard');
+    await pageObjects.sendMessageViaSendBox('audiocard', { waitForSend: true });
+
+    const audioElement = await driver.findElement(By.css('audio'));
+
+    await driver.wait(mediaBuffered(audioElement));
+    await pageObjects.playMediaToCompletion(audioElement);
+
+    expect(await driver.takeScreenshot()).toMatchImageSnapshot(imageSnapshotOptions);
   });
 
   test('should show suggested actions with images', async () => {

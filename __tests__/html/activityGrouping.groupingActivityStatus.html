@@ -1,193 +1,26 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <style type="text/css">
-      body.webdriver .lolex {
-        display: none;
-      }
-
-      .lolex {
-        left: 10px;
-        position: fixed;
-        top: 10px;
-      }
-
-      .lolex__clock {
-        font-family: Consolas, 'Courier New', Courier, monospace;
-      }
-    </style>
   </head>
   <body>
-    <div id="webchat"></div>
-    <div class="lolex">
-      <button class="lolex__advance-button">Advance</button>
-      <span class="lolex__clock">t = 0</span>
-    </div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        lolex,
-        WebChatTest: {
-          clock,
-          conditions,
-          createDirectLineWithTranscript,
-          createStore,
-          host,
-          pageObjects,
-          timeouts,
-          token
-        }
-      } = window;
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
-      (async function() {
-        const clock = lolex.install();
+        const clock = lolex.createClock();
 
-        function refreshClock() {
-          const now = Date.now();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
-          document.querySelector('.lolex__clock').textContent = `t = ${now}`;
-
-          switch (now) {
-            case 2000:
-              directLine.activityDeferredObservable.next({
-                channelData: {
-                  state: 'sent'
-                },
-                from: {
-                  role: 'user'
-                },
-                id: '6.0',
-                text: 'Nostrud proident nisi dolore deserunt veniam labore labore mollit veniam.',
-                timestamp: 3000,
-                type: 'message'
-              });
-
-              break;
-
-            case 3000:
-              directLine.activityDeferredObservable.next({
-                channelData: {
-                  state: 'sent'
-                },
-                from: {
-                  role: 'user'
-                },
-                id: '4.0',
-                text: 'Excepteur culpa culpa ullamco consectetur et dolor excepteur cillum enim nostrud ex do.',
-                timestamp: -6001,
-                type: 'message'
-              });
-
-              break;
-          }
-        }
-
-        document.querySelector('.lolex__advance-button').addEventListener('click', () => {
-          clock.tick(1000);
-          refreshClock();
-        });
-
-        const directLine = await createDirectLineWithTranscript([
-          {
-            from: {
-              role: 'bot'
-            },
-            id: '1.0',
-            text: 'Ullamco mollit sunt officia consectetur ex commodo.',
-            timestamp: -120002,
-            type: 'message'
-          },
-          {
-            from: {
-              role: 'bot'
-            },
-            id: '1.1',
-            text:
-              'Enim labore laboris Lorem qui exercitation adipisicing labore excepteur commodo reprehenderit velit.',
-            timestamp: -120002,
-            type: 'message'
-          },
-          {
-            from: {
-              role: 'bot'
-            },
-            id: '2.0',
-            text: 'Anim do voluptate eiusmod nostrud fugiat.',
-            timestamp: -60001,
-            type: 'message'
-          },
-          {
-            channelData: {
-              state: 'sent'
-            },
-            from: {
-              role: 'user'
-            },
-            id: '3.0',
-            text: 'This will not be grouped initially because the next activity is not sent.',
-            timestamp: -6001,
-            type: 'message'
-          },
-          {
-            channelData: {
-              clientTimestamp: -6001,
-              // "send failed" is actually ignored and treated as "sending".
-              // As long as this field is not "sent", we will consider it is "sending" or "send failed".
-              state: 'send failed'
-            },
-            from: {
-              role: 'user'
-            },
-            id: '4.0',
-            text: 'A retry prompt must show on this activity.',
-            timestamp: -6001,
-            type: 'message'
-          },
-          {
-            channelData: {
-              state: 'sent'
-            },
-            from: {
-              role: 'user'
-            },
-            id: '5.0',
-            text: 'Do anim irure in laborum qui aliquip dolor officia aliqua do aute exercitation deserunt.',
-            timestamp: -5001,
-            type: 'message'
-          },
-          {
-            channelData: {
-              state: 'sent'
-            },
-            from: {
-              role: 'user'
-            },
-            id: '5.1',
-            text:
-              'The timestamp is shown because the next activity is not sent. When it is sent, the timestamp will be hidden.',
-            timestamp: -5001,
-            type: 'message'
-          },
-          {
-            channelData: {
-              clientTimestamp: -3001,
-              state: 'sending'
-            },
-            from: {
-              role: 'user'
-            },
-            id: '6.0',
-            text: 'This activity is being sent.',
-            timestamp: -3001,
-            type: 'message'
-          }
-        ]);
-
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
-            store: createStore(),
+            ponyfill: clock,
+            store,
             styleOptions: {
               groupTimestamp: 60000,
               sendTimeout: 5000
@@ -196,24 +29,67 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.directLine);
+        await pageConditions.webChatRendered();
 
-        const advanceButton = document.querySelector('.lolex__advance-button');
+        directLine.emulateIncomingActivity('Ullamco mollit sunt officia consectetur ex commodo.');
 
-        advanceButton.click();
+        directLine.emulateIncomingActivity(
+          'Enim labore laboris Lorem qui exercitation adipisicing labore excepteur commodo reprehenderit velit.'
+        );
+
+        clock.tick(60001);
+
+        directLine.emulateIncomingActivity('Anim do voluptate eiusmod nostrud fugiat.');
+
+        clock.tick(54000);
+
+        const sendMessage1 = await directLine.emulateOutgoingActivity(
+          'This will not be grouped initially because the next activity is not sent.'
+        );
+
+        await sendMessage1.echoBack();
+        sendMessage1.resolvePostActivity();
+
+        const sendMessage2 = await directLine.emulateOutgoingActivity('A retry prompt must show on this activity.');
+
+        clock.tick(1000);
+
+        const sendMessage3 = await directLine.emulateOutgoingActivity(
+          'Do anim irure in laborum qui aliquip dolor officia aliqua do aute exercitation deserunt.'
+        );
+
+        await sendMessage3.echoBack();
+        sendMessage3.resolvePostActivity();
+
+        const sendMessage4 = await directLine.emulateOutgoingActivity(
+          'The timestamp is shown because the next activity is not sent. When it is sent, the timestamp will be hidden.'
+        );
+
+        await sendMessage4.echoBack();
+        sendMessage4.resolvePostActivity();
+
+        clock.tick(2000);
+
+        const sendMessage5 = await directLine.emulateOutgoingActivity('This activity is being sent.');
+
+        clock.tick(4000);
         await host.snapshot();
 
-        advanceButton.click();
+        clock.tick(1000);
+        await sendMessage5.echoBack(activity => ({
+          ...activity,
+          text: 'Nostrud proident nisi dolore deserunt veniam labore labore mollit veniam.'
+        }));
+        sendMessage5.resolvePostActivity();
         await host.snapshot();
 
-        advanceButton.click();
+        clock.tick(1000);
+        await sendMessage2.echoBack(activity => ({
+          ...activity,
+          text: 'Excepteur culpa culpa ullamco consectetur et dolor excepteur cillum enim nostrud ex do.'
+        }));
+        sendMessage2.resolvePostActivity();
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

@@ -1,0 +1,165 @@
+name: Daily release
+
+# For internal on-demand tests, until we can build it in AzDO.
+
+on:
+  # push:
+  #   paths:
+  #     - .github/workflows/daily-release.yaml
+  # schedule:
+  #   - cron: 00 03 * * *
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  node-version: 22
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checking out for ${{ github.ref }}
+        uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npx version-from-git --no-git-tag-version
+
+      - run: npm clean-install --no-production
+
+      - name: Propagate versions
+        run: npm version --no-git-tag-version --no-workspaces-update --workspaces `cat package.json | jq -r .version`
+
+      - env:
+          NODE_ENV: production
+        run: npm run build
+
+      - run: mkdir -p artifacts/tarballs
+
+      - name: Run npm pack api
+        run: |
+          cd packages/api
+          npm pack
+          cp *.tgz ../../artifacts/tarballs
+
+      - name: Run npm pack bundle
+        run: |
+          cd packages/bundle
+          npm pack
+          cp *.tgz ../../artifacts/tarballs
+
+      - name: Run npm pack component
+        run: |
+          cd packages/component
+          npm pack
+          cp *.tgz ../../artifacts/tarballs
+
+      - name: Run npm pack core
+        run: |
+          cd packages/core
+          npm pack
+          cp *.tgz ../../artifacts/tarballs
+
+      - name: Run npm pack directlinespeech
+        run: |
+          cd packages/directlinespeech
+          npm pack
+          cp *.tgz ../../artifacts/tarballs
+
+      - name: Upload bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundles
+          path: packages/bundle/dist/**/*
+
+      - name: Upload tarballs
+        uses: actions/upload-artifact@v4
+        with:
+          name: tarballs
+          path: artifacts/tarballs/**/*
+
+  release:
+    needs: build
+    permissions:
+      contents: write
+      packages: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: bundles
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: tarballs
+
+      - id: compute_hash
+        name: Compute build metadata
+        run: |
+          echo git_short_sha=`echo ${{ github.sha }} | cut -c 1-7` | tee --append $GITHUB_OUTPUT
+          echo package_version=`tar -xOzf botframework-webchat-4*.tgz package/package.json | jq -r '.version'` | tee --append $GITHUB_OUTPUT
+          echo release_date=`date "+%Y-%m-%d %R:%S"` | tee --append $GITHUB_OUTPUT
+          echo release_tag_name=daily | tee --append $GITHUB_OUTPUT
+          echo sha384_es5=`cat webchat-es5.js | openssl dgst -sha384 -binary | openssl base64 -A` | tee --append $GITHUB_OUTPUT
+          echo sha384_full=`cat webchat.js | openssl dgst -sha384 -binary | openssl base64 -A` | tee --append $GITHUB_OUTPUT
+          echo sha384_minimal=`cat webchat-minimal.js | openssl dgst -sha384 -binary | openssl base64 -A` | tee --append $GITHUB_OUTPUT
+
+      - name: Delete existing release
+        # When this workflow is run in its first time, or 2+ are running side-by-side, the release may not exists. It is okay to ignore 404s.
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release delete ${{ steps.compute_hash.outputs.release_tag_name }} --repo ${{ github.repository }} --yes
+
+      - name: Create release note
+        run: |
+          tee ./release.txt <<EOF
+          This release is for internal testing only. **Please do not use this build in production environment.**
+
+          | Build time | Run ID | Source version | Git ref | Package version |
+          | - | - | - | - | - |
+          | ${{ steps.compute_hash.outputs.release_date }}Z | [\`${{ github.run_id }}\`](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [\`${{ steps.compute_hash.outputs.git_short_sha }}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) | \`${{ github.ref }}\` | \`${{ steps.compute_hash.outputs.package_version }}\` |
+
+          \`\`\`html
+          <script
+            crossorigin="anonymous"
+            integrity="sha384-${{ steps.compute_hash.outputs.sha384_full }}"
+            src="https://github.com/microsoft/BotFramework-WebChat/releases/download/${{ steps.compute_hash.outputs.release_tag_name }}/webchat.js"
+          ></script>
+
+          <script
+            crossorigin="anonymous"
+            integrity="sha384-${{ steps.compute_hash.outputs.sha384_es5 }}"
+            src="https://github.com/microsoft/BotFramework-WebChat/releases/download/${{ steps.compute_hash.outputs.release_tag_name }}/webchat-es5.js"
+          ></script>
+
+          <script
+            crossorigin="anonymous"
+            integrity="sha384-${{ steps.compute_hash.outputs.sha384_minimal }}"
+            src="https://github.com/microsoft/BotFramework-WebChat/releases/download/${{ steps.compute_hash.outputs.release_tag_name }}/webchat-minimal.js"
+          ></script>
+          \`\`\`
+
+          > Note: the SHA384 hash may change daily.
+          EOF
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create ${{ steps.compute_hash.outputs.release_tag_name }} \
+            *.js *.json *.tgz \
+            --notes-file ./release.txt \
+            --prerelease \
+            --repo ${{ github.repository }} \
+            --target ${{ github.ref }} \
+            --title "Daily (${{ github.ref }})"

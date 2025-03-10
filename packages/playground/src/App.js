@@ -1,7 +1,9 @@
 /* eslint-disable no-magic-numbers */
 
-import { Global } from '@emotion/core';
-import { Dropdown, Label, SearchBox, Stack, TextField, Toggle } from '@fluentui/react';
+// eslint-disable-next-line no-unused-vars
+import { Global } from '@emotion/react';
+// eslint-disable-next-line no-unused-vars
+import { Dropdown, IconButton, Label, SearchBox, Stack, TextField, Toggle, TooltipHost } from '@fluentui/react';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   dirOptions,
@@ -11,6 +13,7 @@ import {
   sendTimeoutOptions
 } from './DropdownOptions';
 import { bubbleBorderOptions, showBubbleNubOptions } from './webchatStyleOptions';
+// eslint-disable-next-line no-unused-vars
 import ReactWebChat, { createDirectLine } from 'botframework-webchat';
 import { createStoreWithDevTools } from 'botframework-webchat-core';
 import PlaygroundStyles from './css.js';
@@ -21,8 +24,20 @@ function App() {
   const REDUX_STORE_KEY = 'REDUX_STORE';
 
   // fluentui settings
-  const stackTokens = { childrenGap: 10 };
+  const stackTokens = { childrenGap: 0 };
 
+  // TODO: Add action buttons in tooltip later
+  // wordBreak styleOption is in regards to css feature word-break: 'break-all' (as an example) within the activity bubble
+  const wordBreakTooltipProps = {
+    onRenderContent: () => (
+      <ol style={{ margin: 10, padding: 10 }}>
+        <li>
+          Send 'https://subdomain.domain.com/pathname0/pathname1/pathname2/pathname3/pathname4/' to test 'break-all{' '}
+        </li>
+        <li>Send '箸より重いものを持ったことがない箸より重いものを持ったことがない' to test 'keep-all </li>
+      </ol>
+    )
+  };
   /*
   /// STATE
   */
@@ -57,6 +72,11 @@ function App() {
 
   const [messageActivityWordBreak, setMessageActivityWordBreak] = useState('break-word');
 
+  // 'middlewareDisableObsoleteAC': Middleware that renders inputs disabled on an Adaptive Card that is no longer the latest activity.
+  const [disableObsoleteAC, setDisableObsoleteAC] = useState(
+    () => window.sessionStorage.getItem('PLAYGROUND_MIDDLEWARE_DISABLE_OBSOLETE_AC') === 'true'
+  );
+
   const [richCardWrapTitle, setRichCardWrapTitle] = useState(false);
 
   const [sendTimeout, setSendTimeout] = useState(
@@ -77,7 +97,6 @@ function App() {
   });
 
   useEffect(() => {
-    document.querySelector('html').setAttribute('lang', locale);
     document.querySelector('html').setAttribute('lang', locale);
   }, [locale]);
 
@@ -103,6 +122,25 @@ function App() {
   store.subscribe(() => {
     sessionStorage.setItem(REDUX_STORE_KEY, JSON.stringify(store.getState()));
   });
+
+  const attachmentMiddleware = () => next => card => {
+    const { activity, attachment } = card;
+    const { activities } = store.getState();
+
+    if (disableObsoleteAC) {
+      const messages = activities.filter(activity => activity.type === 'message');
+      const mostRecent = messages.pop() === activity;
+
+      if (attachment.contentType === 'application/vnd.microsoft.card.adaptive') {
+        return React.createElement(window.WebChat.Components.AdaptiveCardContent, {
+          actionPerformedClassName: 'card__action--performed',
+          content: attachment.content,
+          disabled: !mostRecent
+        });
+      }
+    }
+    return next(card);
+  };
 
   const [token, setToken] = useState();
 
@@ -160,7 +198,26 @@ function App() {
     console.log('Playground: Started conversation with locally running MockBot');
   }, [handleUseMockBot]);
 
+  // Feel free to change the text to whatever will help you dev faster
+  const handleCurrentCommandClick = () => {
+    store.dispatch({ type: 'WEB_CHAT/SEND_MESSAGE', payload: { text: 'suggested-actions' } });
+  };
+
   /// END CONNECTIVITY
+
+  /*
+  /// MIDDLEWARE
+  */
+
+  const handleDisableObsoleteACMiddlewareChange = useCallback(
+    (e, checked) => {
+      setDisableObsoleteAC(checked);
+      window.sessionStorage.setItem('PLAYGROUND_MIDDLEWARE_DISABLE_OBSOLETE_AC', checked.toString());
+    },
+    [setDisableObsoleteAC]
+  );
+
+  /// END MIDDLEWARE
 
   /*
   /// Web Chat props
@@ -185,14 +242,14 @@ function App() {
 
   const handleSendTypingIndicatorChange = useCallback(
     (e, checked) => {
-      setSendTypingIndicator(!!checked);
+      setSendTypingIndicator(checked);
     },
     [setSendTypingIndicator]
   );
 
   const handleUIDisabledChange = useCallback(
     (e, checked) => {
-      setDisabledUI(!!checked);
+      setDisabledUI(checked);
     },
     [setDisabledUI]
   );
@@ -216,14 +273,14 @@ function App() {
 
   const handleBubbleNubChange = useCallback(
     (e, checked) => {
-      setBubbleNub(!!checked);
+      setBubbleNub(checked);
     },
     [setBubbleNub]
   );
 
   const handleBubbleBorderChange = useCallback(
     (e, checked) => {
-      setBubbleBorders(!!checked);
+      setBubbleBorders(checked);
     },
     [setBubbleBorders]
   );
@@ -238,14 +295,14 @@ function App() {
 
   const handleHideSendBoxChange = useCallback(
     (e, checked) => {
-      setHideSendBox(!!checked);
+      setHideSendBox(checked);
     },
     [setHideSendBox]
   );
 
   const handleRichCardWrapTitleChange = useCallback(
     (e, checked) => {
-      setRichCardWrapTitle(!!checked);
+      setRichCardWrapTitle(checked);
     },
     [setRichCardWrapTitle]
   );
@@ -304,6 +361,7 @@ function App() {
     <div id="app-container" ref={mainRef}>
       <Global styles={PlaygroundStyles} />
       <ReactWebChat
+        attachmentMiddleware={attachmentMiddleware}
         className="webchat"
         dir={dir}
         directLine={directLine}
@@ -315,8 +373,17 @@ function App() {
       />
       <div className="button-bar">
         {/* TODO: (#3515) enable search */}
-        {/* eslint-disable-next-line no-console */}
-        <SearchBox placeholder="Search" onSearch={newValue => console.log('value is ' + newValue)} />
+        <Label>
+          Search Web Chat props
+          <SearchBox
+            aria-label="Search Web Chat properties"
+            placeholder="Search"
+            onSearch={newValue => {
+              /* eslint-disable-next-line no-console */
+              console.log('value is ' + newValue);
+            }}
+          />
+        </Label>
         <fieldset>
           <legend>Connectivity</legend>
           <button onClick={handleStartConversationWithOfficialMockBot} type="button">
@@ -334,100 +401,159 @@ function App() {
           <button onClick={handleHardResetClick} title="Resets store and props to default settings" type="button">
             Hard reset session
           </button>
+          <div>
+            <Label className="info-container">
+              <TooltipHost
+                calloutProps={{ gapSpace: 0 }}
+                content="Devs feel free to change this command for faster repro"
+                id="current command tooltip"
+              >
+                <IconButton aria-label="info" iconProps={{ iconName: 'infoSolid' }} />
+              </TooltipHost>
+              <button onClick={handleCurrentCommandClick}>Current command</button>
+            </Label>
+          </div>
         </fieldset>
         <fieldset>
           <legend>Web Chat props</legend>
           <Stack tokens={stackTokens}>
             <Dropdown label="Direction" onChange={handleDirChange} options={dirOptions} selectedKey={dir} />
-            <Toggle
-              label="Disable UI"
-              checked={uiDisabled}
-              onChange={handleUIDisabledChange}
-              onText="On"
-              offText="Off"
-            />
+            <Label className="info-container">
+              <TooltipHost
+                calloutProps={{ gapSpace: 0 }}
+                content="Disable the SendBox and inputs in the transcript"
+                id="disableUI tooltip"
+              >
+                <IconButton aria-label="info" iconProps={{ iconName: 'infoSolid' }} />
+              </TooltipHost>
+              <Toggle
+                label="Disable UI"
+                checked={uiDisabled}
+                onChange={handleUIDisabledChange}
+                onText="On"
+                offText="Off"
+              />
+            </Label>
             <Dropdown label="Locale" onChange={handleLocaleChange} options={localeOptions} selectedKey={locale} />
+            <Label className="info-container">
+              <TooltipHost
+                calloutProps={{ gapSpace: 0 }}
+                content="Shows a typing indicator when the user is typing. Send 'echo-typing' to the bot to turn this feature on and off and test"
+                id="sendTyping tooltip"
+              >
+                <IconButton aria-label="info" iconProps={{ iconName: 'infoSolid' }} />
+              </TooltipHost>
 
-            {/* TODO: (#3515) info icon: Send 'echo-typing' to the bot to turn this feature on and off */}
-            <Toggle
-              label="Send typing indicator"
-              checked={sendTypingIndicator}
-              onChange={handleSendTypingIndicatorChange}
-              onText="On"
-              offText="Off"
-            />
-          </Stack>
-        </fieldset>
-        <fieldset>
-          <legend>Style Options</legend>
-          <Stack tokens={stackTokens}>
-            <Label>
-              Avatar Initials
-              <TextField
-                label="Bot avatar initials"
-                onChange={handleBotAvatarInitialsChange}
-                value={botAvatarInitials || ''}
-              />
-              <TextField
-                label="User avatar initials"
-                onChange={handleUserAvatarInitialsChange}
-                value={userAvatarInitials || ''}
-              />
-            </Label>
-            <Label>
-              Bubble style options
               <Toggle
-                label="Show bubble nub"
-                checked={bubbleNub}
-                onChange={handleBubbleNubChange}
-                onText="On"
-                offText="Off"
-              />
-              <Toggle
-                label="Customize bubble borders"
-                checked={bubbleStyle}
-                onChange={handleBubbleBorderChange}
+                label="Send typing indicator"
+                checked={sendTypingIndicator}
+                onChange={handleSendTypingIndicatorChange}
                 onText="On"
                 offText="Off"
               />
             </Label>
-            <Toggle
-              label="Hide SendBox"
-              checked={hideSendBox}
-              onChange={handleHideSendBoxChange}
-              onText="On"
-              offText="Off"
-            />
-            <Dropdown
-              label="Group timestamp"
-              onChange={handleGroupTimestampChange}
-              options={groupTimestampOptions}
-              selectedKey={groupTimestamp}
-            />
-            {/* TODO: (#3515) info icon: Send 'herocard long title' to the bot to turn this feature on and off */}
-            <Toggle
-              label="Rich card wrap title"
-              checked={richCardWrapTitle}
-              onChange={handleRichCardWrapTitleChange}
-              onText="On"
-              offText="Off"
-            />
-            {/*  (#3515) info icon: Turn on airplane mode to test this feature */}
-            <Dropdown
-              label="Send timeout"
-              onChange={handleSendTimeoutChange}
-              options={sendTimeoutOptions}
-              selectedKey={sendTimeout}
-            />
-            {/* TODO: (#3515) info: Send 'https://subdomain.domain.com/pathname0/pathname1/pathname2/pathname3/pathname4/' test 'break-all */}
-            {/* TODO: (#3515) info: Send '箸より重いものを持ったことがない箸より重いものを持ったことがない' test 'keep-all */}
-            <Dropdown
-              label="Word break"
-              onChange={handleWordBreakChange}
-              options={messageActivityWordBreakOptions}
-              selectedKey={messageActivityWordBreak}
-            />
           </Stack>
+          {/* Empty for now; plan is to add more middleware eventually, so I'm keeping this commented out */}
+          {/* <fieldset>
+            <legend>Activity middleware</legend>
+          </fieldset> */}
+          <fieldset>
+            <legend>Attachment middleware</legend>
+            <Label className="info-container">
+              <TooltipHost
+                calloutProps={{ gapSpace: 0 }}
+                content="This feature disables inputs (e.g. buttons) on Adaptive Cards that are not the latest activity"
+                id="disableObsolete AC tooltip"
+              >
+                <IconButton aria-label="info" iconProps={{ iconName: 'infoSolid' }} />
+              </TooltipHost>
+              <Toggle
+                checked={disableObsoleteAC}
+                label="Disable obsolete Adaptive Cards"
+                onChange={handleDisableObsoleteACMiddlewareChange}
+                onText="On"
+                offText="Off"
+              ></Toggle>
+            </Label>
+          </fieldset>
+          <fieldset>
+            <legend>Style Options</legend>
+            <Stack tokens={stackTokens}>
+              <Label>
+                <h3>Avatar Initials</h3>
+                <TextField
+                  label="Bot avatar initials"
+                  onChange={handleBotAvatarInitialsChange}
+                  value={botAvatarInitials || ''}
+                />
+                <TextField
+                  label="User avatar initials"
+                  onChange={handleUserAvatarInitialsChange}
+                  value={userAvatarInitials || ''}
+                />
+              </Label>
+              <Label>
+                <h3>Bubble style options</h3>
+                <Toggle
+                  label="Show bubble nub"
+                  checked={bubbleNub}
+                  onChange={handleBubbleNubChange}
+                  onText="On"
+                  offText="Off"
+                />
+                <Toggle
+                  label="Customize bubble borders"
+                  checked={bubbleStyle}
+                  onChange={handleBubbleBorderChange}
+                  onText="On"
+                  offText="Off"
+                />
+              </Label>
+              <Toggle
+                label="Hide SendBox"
+                checked={hideSendBox}
+                onChange={handleHideSendBoxChange}
+                onText="On"
+                offText="Off"
+              />
+              <Dropdown
+                label="Group timestamp"
+                onChange={handleGroupTimestampChange}
+                options={groupTimestampOptions}
+                selectedKey={groupTimestamp}
+              />
+              {/* TODO: (#3515) info icon: Send 'herocard long title' to test this feature */}
+              <Toggle
+                label="Rich card wrap title"
+                checked={richCardWrapTitle}
+                onChange={handleRichCardWrapTitleChange}
+                onText="On"
+                offText="Off"
+              />
+              {/*  (#3515) info icon: Turn on airplane mode to test this feature */}
+              <Dropdown
+                label="Send timeout"
+                onChange={handleSendTimeoutChange}
+                options={sendTimeoutOptions}
+                selectedKey={sendTimeout}
+              />
+              <Label className="info-container">
+                <TooltipHost
+                  calloutProps={{ gapSpace: 0 }}
+                  tooltipProps={wordBreakTooltipProps}
+                  id="Word break tooltip"
+                >
+                  <IconButton aria-label="info" iconProps={{ iconName: 'infoSolid' }} />
+                </TooltipHost>
+                <Dropdown
+                  label="Word break"
+                  onChange={handleWordBreakChange}
+                  options={messageActivityWordBreakOptions}
+                  selectedKey={messageActivityWordBreak}
+                />
+              </Label>
+            </Stack>
+          </fieldset>
         </fieldset>
       </div>
     </div>

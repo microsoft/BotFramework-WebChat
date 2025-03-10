@@ -1,5 +1,6 @@
 {
   "name": "isomorphic-react",
+  "description": "Exports window.React if available, otherwise, exports require('react').",
   "version": "0.0.0-0",
   "main": "dist/react.js",
   "private": true,
@@ -7,24 +8,37 @@
     "build": "npm run build:babel && npm run build:webpack",
     "build:babel": "babel src --out-dir lib --verbose",
     "build:webpack": "webpack-cli",
-    "eslint": "eslint src/**/*.js",
-    "start": "npm run start:note && npm run start:babel && npm run start:webpack",
-    "start:babel": "npm run build:babel",
-    "start:note": "echo \"isomorphic-react is not under active development; running in non-watch mode.\"",
-    "start:webpack": "npm run build:webpack"
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "eslint": "npm run precommit",
+    "postversion": "cat package.json | jq '.version as $V | (.localDependencies // {} | with_entries(select(.value == \"production\") | { key: .key, value: $V })) as $L1 | (.localDependencies // {} | with_entries(select(.value == \"development\") | { key: .key, value: $V })) as $L2 | ((.dependencies // {}) + $L1 | to_entries | sort_by(.key) | from_entries) as $D1 | ((.devDependencies // {}) + $L2 | to_entries | sort_by(.key) | from_entries) as $D2 | . + { dependencies: $D1, devDependencies: $D2 }' > package-temp.json && mv package-temp.json package.json",
+    "precommit": "npm run precommit:eslint -- src",
+    "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
+    "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json"
   },
-  "author": "",
+  "author": "Microsoft Corporation",
   "license": "MIT",
+  "localDependencies": {},
+  "pinDependencies": {
+    "@babel/cli": [
+      "7.18.10",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/core": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-env": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ]
+  },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.8.7",
-    "@babel/preset-env": "^7.11.0",
-    "concurrently": "^5.3.0",
-    "eslint": "^7.7.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "prettier": "^2.1.1",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12"
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1"
   }
 }

@@ -1,0 +1,60 @@
+{
+  "name": "botframework-webchat-cldr-data-downloader",
+  "version": "0.3.5-0",
+  "engines": {
+    "node": ">= 12"
+  },
+  "private": true,
+  "keywords": [
+    "unicode",
+    "CLDR",
+    "JSON",
+    "data",
+    "install",
+    "download",
+    "fetch"
+  ],
+  "description": "Download tool for Unicode CLDR JSON data",
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "author": {
+    "name": "Rafael Xavier de Souza",
+    "email": "rxaviers@gmail.com",
+    "url": "http://rafael.xavier.blog.br"
+  },
+  "contributors": [
+    "Microsoft Corporation"
+  ],
+  "module": "src/index.js",
+  "exports": {
+    ".": {
+      "import": "./src/index.js"
+    }
+  },
+  "type": "module",
+  "bin": {
+    "cldr-data-downloader": "./bin/download.sh"
+  },
+  "scripts": {
+    "bump": "npm run bump:dev && npm run bump:prod && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "eslint": "npm run precommit",
+    "postversion": "cat package.json | jq '.version as $V | (.localDependencies // {} | with_entries(select(.value == \"production\") | { key: .key, value: $V })) as $L1 | (.localDependencies // {} | with_entries(select(.value == \"development\") | { key: .key, value: $V })) as $L2 | ((.dependencies // {}) + $L1 | to_entries | sort_by(.key) | from_entries) as $D1 | ((.devDependencies // {}) + $L2 | to_entries | sort_by(.key) | from_entries) as $D2 | . + { dependencies: $D1, devDependencies: $D2 }' > package-temp.json && mv package-temp.json package.json",
+    "precommit": "npm run precommit:eslint -- src",
+    "precommit:eslint": "node ../../../node_modules/eslint/bin/eslint.js --report-unused-disable-directives --max-warnings 0",
+    "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json"
+  },
+  "localDependencies": {},
+  "dependencies": {
+    "adm-zip": "0.5.16",
+    "nopt": "8.1.0",
+    "progress": "2.0.3",
+    "q": "1.5.1",
+    "request": "2.88.2",
+    "request-progress": "3.0.0"
+  }
+}

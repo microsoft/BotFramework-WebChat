@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      body {
+        background-color: #eee;
+      }
+
+      .button-bar {
+        background-color: antiquewhite;
+        border: #ccc;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+          'Helvetica Neue', sans-serif;
+        right: 10px;
+        margin: 10px;
+        padding: 10px;
+        position: absolute;
+        top: 0;
+        /* width: calc(100% - 40px); */
+      }
+
+      .webchat {
+        width: 100%;
+        height: 100%;
+        margin: auto;
+      }
+
+      .webchat.webchat--portrait {
+        height: 720px;
+        width: 480px;
+      }
+
+      .webchat.webchat--landscape {
+        width: 720px;
+        height: 480px;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        React: { Fragment, useCallback, useState },
+        ReactDOM: { render },
+        WebChat: { ReactWebChat }
+      } = window;
+
+      function createActivity(numLines) {
+        return {
+          from: { id: 'bot', role: 'bot' },
+          id: Math.random().toString(36).substr(2, 5),
+          text: new Array(numLines)
+            .fill()
+            .map((_, index) => `Line ${index + 1}`)
+            .join('\n\n'),
+          timestamp: new Date().toISOString(),
+          type: 'message'
+        };
+      }
+
+      const directLine = testHelpers.createDirectLineWithTranscript([createActivity(15)]);
+
+      run(async function () {
+        await host.windowSize(720, 720, document.getElementById('webchat'));
+
+        const store = testHelpers.createStore();
+
+        const App = ({ overrideOrientation }) => {
+          const [orientation, setOrientation] = useState('landscape');
+
+          const handlePortraitClick = useCallback(() => setOrientation('portrait'), [setOrientation]);
+          const handleLandscapeClick = useCallback(() => setOrientation('landscape'), [setOrientation]);
+          const handleAddMessageClick = useCallback(
+            () => directLine.activityDeferredObservable.next(createActivity(1)),
+            []
+          );
+
+          const finalOrientation = overrideOrientation || orientation;
+
+          return (
+            <Fragment>
+              <div
+                className={classNames('webchat', {
+                  'webchat--landscape': finalOrientation === 'landscape',
+                  'webchat--portrait': finalOrientation === 'portrait'
+                })}
+              >
+                <ReactWebChat directLine={directLine} store={store} />
+                <div className="button-bar">
+                  <button onClick={handlePortraitClick} type="button">
+                    Portrait
+                  </button>
+                  <br />
+                  <button onClick={handleLandscapeClick} type="button">
+                    Landscape
+                  </button>
+                  <br />
+                  <button onClick={handleAddMessageClick} type="button">
+                    Add a message
+                  </button>
+                </div>
+              </div>
+            </Fragment>
+          );
+        };
+
+        function renderApp(overrideProps = {}) {
+          render(<App {...overrideProps} />, document.getElementById('webchat'));
+        }
+
+        renderApp();
+
+        await pageConditions.uiConnected();
+
+        await pageObjects.scrollToTop();
+
+        renderApp({ overrideOrientation: 'portrait' });
+
+        await pageConditions.scrollStabilized();
+
+        directLine.activityDeferredObservable.next(createActivity(1));
+
+        // Wait for some time, to make sure the "New messages" button would never show up.
+        await testHelpers.sleep(1000);
+
+        // The "New messages" button should not show up because we still have spaces after adding 1 activity.
+        // I.e. the user can see the new activity and they don't need to scroll.
+        await pageConditions.scrollToEndButtonHidden();
+
+        // As a control experiment, we need to show the scroll-to-bottom button.
+        directLine.activityDeferredObservable.next(createActivity(5));
+
+        await pageObjects.scrollToTop();
+
+        // We need to wait for the scroll detector to know we are not sticky.
+        await testHelpers.sleep(1000);
+
+        // Add a new message, since we don't have enough space and is not sticky, the new message will be hidden from the view.
+        // The "New messages" button will show up.
+        directLine.activityDeferredObservable.next(createActivity(1));
+
+        // After scrolled to top, we add a new activity, the "New messages" button should show up.
+        // This is because the user would need to scroll, to see the newly added message.
+        await pageConditions.scrollToEndButtonShown();
+      });
+    </script>
+  </body>
+</html>

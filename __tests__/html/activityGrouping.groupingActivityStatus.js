@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('activity grouping', () => {
   test('should group activity status after activities being sent', () =>
-    runHTMLTest('activityGrouping.groupingActivityStatus.html', { height: 1280 }));
+    runHTML('activityGrouping.groupingActivityStatus.html'));
 });

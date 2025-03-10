@@ -20,7 +20,7 @@ This sample shows how to set up a Web Chat client that will collect telemetry me
 
 > This sample assumes you have already set up Azure Application Insights and have the instrumentation key ready.
 
-This sample is based on the [01.getting-started/a.full-bundle](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/a.full-bundle) sample.
+This sample is based on the [01.getting-started/a.full-bundle](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/a.full-bundle) sample.
 
 ## Load Application Insights SDK
 
@@ -45,7 +45,7 @@ Insert the following snippets to load Application Insights SDK on to the page. R
 Add an event handler to receive telemetry measurements from Web Chat and log them to console.
 
 ```diff
-  const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+  const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
   const { token } = await res.json();
 
 + const handleTelemetry = event => {
@@ -73,7 +73,7 @@ Telemetry measurements from Web Chat is slightly different from Application Insi
 For classifications, all measurements will be prefixed with `webchat:`.
 
 ```diff
-  const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+  const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
   const { token } = await res.json();
 
   const handleTelemetry = event => {
@@ -125,7 +125,7 @@ Record conversation ID, user ID, and Web Chat UI version into the metadata of me
 
 ```diff
   (async function() {
-    const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+    const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
 -   const { token } = await res.json();
 +   const { conversationID, token, userID } = await res.json();
 
@@ -185,7 +185,7 @@ Here is the finished `index.html`:
     <script>
       (async function() {
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { conversationID, token, userID } = await res.json();
 
         const telemetryInitializer = () => {
@@ -252,10 +252,10 @@ Here is the finished `index.html`:
 
 # Further reading
 
-[`04.api/l.telemetry-google-analytics`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/l.telemetry-google-analytics) is a sample that will collect telemetry measurements into your own instance of Google Analytics.
+[`04.api/l.telemetry-google-analytics`](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/04.api/l.telemetry-google-analytics) is a sample that will collect telemetry measurements into your own instance of Google Analytics.
 
 [Application Insights JavaScript SDK API References](https://github.com/Microsoft/ApplicationInsights-JS/blob/master/API-reference.md)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

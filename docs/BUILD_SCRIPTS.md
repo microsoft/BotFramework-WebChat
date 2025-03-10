@@ -6,14 +6,9 @@ This article outlines the Web Chat build scripts design.
 
 This section lists the requirements for an efficient design of build scripts. The Web Chat code closely follows the guidelines below.
 
-### Bootstrap scripts
+### Install dependencies for development
 
-Only two NPM commands are needed to ready the repository for development:
-
--  `npm ci`, followed by
--  `npm run bootstrap`
-
-On subsequent pulls, running `npm run tableflip` will reset all `node_modules`.
+-  `npm clean-install`
 
 ### Build scripts
 
@@ -88,7 +83,7 @@ This section lists verification steps to validate the implementation against the
          -  Verify all 4 packages can be seen: `bundle:///src`, `component:///src`, `core:///src`, `directlinespeech:///src`
       -  Verify breakpoints break correctly
    -  Make a change
-      -  Verify Webpack took less than 4 seconds
+      -  Verify it took less than 4 seconds to reflect the new changes
 -  Test build
    -  Verify `node_env` is set to `test`
    -  Run `npm start` and wait until stabilized
@@ -104,6 +99,7 @@ This section lists verification steps to validate the implementation against the
       -  Minified
       -  No instrumentation code (smaller than test builds)
 -  Direct Line Speech SDK
+   -  This is tested separately as Direct Line Speech SDK is designed not to live in our monorepo structure
    -  Development build
       -  Run `npm start` and wait until stabilized
       -  Verify only `dist/directlinespeech.development.js` is on disk and is about 4 MB in size

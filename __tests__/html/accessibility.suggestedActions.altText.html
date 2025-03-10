@@ -1,63 +1,62 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        WebChat: { renderWebChat },
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, expect, host, pageObjects, timeouts }
-      } = window;
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-      (async function() {
-        const directLine = createDirectLineWithTranscript([
-          {
-            from: { role: 'bot' },
-            id: '0',
-            timestamp: 0,
-            type: 'message',
-            text: 'Please select one of the actions below.',
-            suggestedActions: {
-              actions: [
-                {
-                  image: `https://github.com/compulim/BotFramework-MockBot/raw/master/public/assets/square-icon.png`,
-                  imageAltText: 'A blue square.',
-                  title: 'square-icon.png',
-                  type: 'imBack'
-                }
-              ],
-              to: []
-            }
-          }
-        ]);
-
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
-            store: createStore()
+            store
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.ui);
-        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.ui);
+        await pageConditions.uiConnected();
 
-        const altTexts = [].map.call(document.querySelectorAll('.webchat__suggested-action__image'), element =>
-          element.getAttribute('alt')
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          suggestedActions: {
+            to: [],
+            actions: [
+              {
+                type: 'imBack',
+                title: 'A',
+                image:
+                  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAK0lEQVQ4T2P8z8Dwn4GKgHHUQIpDczQMKQ5ChtEwHA1DMkJgNNmQEWhoWgBMAiftPRtHngAAAABJRU5ErkJggg==',
+                imageAltText: 'red square'
+              },
+              {
+                type: 'imBack',
+                title: 'B',
+                image:
+                  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAUCAYAAAD/Rn+7AAAAPElEQVRIS+3SsQkAAAgDwbi5m+sQ34i8fUAuqXQmh698ELajIASMggpSAZp3gwpSAZp3gwpSAZp3g+8FF89vHgEqUcfjAAAAAElFTkSuQmCC',
+                // If `imageAltText` is missing, `text` field shall be used for image alt text.
+                // https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#image-alt-text
+                text: 'green rectangle'
+              }
+            ]
+          },
+          text: 'Please select one of the actions below.',
+          timestamp: 0,
+          type: 'message'
+        });
+
+        const imageAltTexts = [].map.call(pageElements.suggestedActions(), element =>
+          element.getElementsByTagName('img')[0].getAttribute('alt')
         );
 
-        expect(altTexts).toEqual(['A blue square.']);
+        expect(imageAltTexts).toEqual(['red square', 'green rectangle']);
 
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

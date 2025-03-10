@@ -1,0 +1,147 @@
+{
+  "name": "botframework-webchat-api",
+  "version": "0.0.0-0",
+  "description": "React DOM component of botframework-webchat",
+  "main": "./dist/botframework-webchat-api.js",
+  "types": "./dist/botframework-webchat-api.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-api.d.mts",
+        "default": "./dist/botframework-webchat-api.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-api.d.ts",
+        "default": "./dist/botframework-webchat-api.js"
+      }
+    },
+    "./internal": {
+      "import": {
+        "types": "./dist/botframework-webchat-api.internal.d.mts",
+        "default": "./dist/botframework-webchat-api.internal.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-api.internal.d.ts",
+        "default": "./dist/botframework-webchat-api.internal.js"
+      }
+    },
+    "./decorator": {
+      "import": {
+        "types": "./dist/botframework-webchat-api.decorator.d.mts",
+        "default": "./dist/botframework-webchat-api.decorator.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-api.decorator.d.ts",
+        "default": "./dist/botframework-webchat-api.decorator.js"
+      }
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/BotFramework-WebChat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
+  },
+  "files": [
+    "./dist/**/*",
+    "./*.js",
+    "./src/**/*"
+  ],
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
+  "scripts": {
+    "build": "npm run build:globalize && npm run build:tsup",
+    "build:globalize": "node scripts/createPrecompiledGlobalize.mjs",
+    "build:tsup": "tsup --config ./tsup.config.ts",
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "eslint": "npm run precommit",
+    "postversion": "cat package.json | jq '.version as $V | (.localDependencies // {} | with_entries(select(.value == \"production\") | { key: .key, value: $V })) as $L1 | (.localDependencies // {} | with_entries(select(.value == \"development\") | { key: .key, value: $V })) as $L2 | ((.dependencies // {}) + $L1 | to_entries | sort_by(.key) | from_entries) as $D1 | ((.devDependencies // {}) + $L2 | to_entries | sort_by(.key) | from_entries) as $D2 | . + { dependencies: $D1, devDependencies: $D2 }' > package-temp.json && mv package-temp.json package.json",
+    "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
+    "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
+    "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
+    "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
+    "start": "npm run build:tsup -- --onSuccess=\"touch ../component/src/index.ts\" --watch"
+  },
+  "localDependencies": {
+    "botframework-webchat-cldr-data": "development",
+    "botframework-webchat-core": "production"
+  },
+  "pinDependencies": {
+    "@babel/cli": [
+      "7.18.10",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/core": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-env": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-react": [
+      "7.18.6",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-typescript": [
+      "7.18.6",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@types/react": [
+      "16",
+      "react@16.8.6 is our baseline"
+    ],
+    "react-redux": [
+      "7",
+      "react-redux@>7 requires newer version of React"
+    ],
+    "valibot": [
+      "0",
+      "valibot@0 until they finalize @1"
+    ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.18.6",
+    "@types/dom-speech-recognition": "^0.0.4",
+    "@types/node": "^22.13.4",
+    "@types/react": "^16.14.62",
+    "babel-plugin-istanbul": "^7.0.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
+    "botframework-webchat-cldr-data": "36.0.0-0",
+    "concurrently": "^9.1.2",
+    "core-js": "^3.40.0",
+    "cross-env": "^7.0.3",
+    "globalize-compiler": "^1.1.1",
+    "iana-tz-data": "^2019.1.0",
+    "nodemon": "^3.1.9",
+    "type-fest": "^4.34.1",
+    "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "botframework-webchat-core": "0.0.0-0",
+    "globalize": "1.7.0",
+    "math-random": "2.0.1",
+    "prop-types": "15.8.1",
+    "react-chain-of-responsibility": "0.2.0",
+    "react-redux": "7.2.9",
+    "redux": "5.0.1",
+    "simple-update-in": "2.2.0",
+    "use-ref-from": "0.1.0",
+    "valibot": "0.42.1"
+  },
+  "peerDependencies": {
+    "react": ">= 16.8.6",
+    "react-dom": ">= 16.8.6"
+  }
+}

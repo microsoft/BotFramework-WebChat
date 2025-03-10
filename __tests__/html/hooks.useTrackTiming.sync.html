@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        WebChat: {
+          Components: { BasicWebChat, Composer },
+          hooks: { useTrackTiming }
+        }
+      } = window;
+
+      run(async function () {
+        const clock = lolex.createClock();
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        const telemetryMeasurements = [];
+
+        const handleTelemetry = event => {
+          const { data, dimensions, duration, error, name, type } = event;
+
+          name !== 'init' && telemetryMeasurements.push({ data, dimensions, duration, error, name, type });
+        };
+
+        const RunFunction = ({ fn }) => {
+          fn();
+
+          return false;
+        };
+
+        const renderWithFunction = fn =>
+          new Promise(resolve =>
+            ReactDOM.render(
+              <Composer directLine={directLine} onTelemetry={handleTelemetry} ponyfill={clock} store={store}>
+                <BasicWebChat />
+                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
+              </Composer>,
+              document.getElementById('webchat')
+            )
+          );
+
+        await renderWithFunction();
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600);
+
+        // GIVEN: Web Chat is initialized.
+        await pageConditions.uiConnected();
+
+        // WHEN: `useTrackTiming('ping')` is called.
+        await expect(renderWithFunction(() => useTrackTiming()('ping', () => 123))).resolves.toBe(123);
+
+        // THEN: It should emit "timingstart" and "timingend".
+        await expect(telemetryMeasurements.filter(({ name }) => name === 'ping')).toEqual([
+          {
+            data: undefined,
+            dimensions: {
+              'capability:downscaleImage:workerType': 'web worker',
+              'capability:renderer': 'html',
+              'prop:locale': 'en-US',
+              'prop:speechRecognition': 'false',
+              'prop:speechSynthesis': 'false'
+            },
+            duration: undefined,
+            error: undefined,
+            name: 'ping',
+            type: 'timingstart'
+          },
+          {
+            data: undefined,
+            dimensions: {
+              'capability:downscaleImage:workerType': 'web worker',
+              'capability:renderer': 'html',
+              'prop:locale': 'en-US',
+              'prop:speechRecognition': 'false',
+              'prop:speechSynthesis': 'false'
+            },
+            duration: 0,
+            error: undefined,
+            name: 'ping',
+            type: 'timingend'
+          }
+        ]);
+      });
+    </script>
+  </body>
+</html>

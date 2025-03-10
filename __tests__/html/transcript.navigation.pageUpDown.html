@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            ),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(32);
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageObjects.focusSendBoxTextBox();
+
+        // Should scroll a page up
+        await host.sendKeys('PAGE_UP');
+        await pageConditions.scrollStabilized();
+        await host.snapshot();
+
+        // Should scroll another page up
+        await host.sendKeys('PAGE_UP');
+        await pageConditions.scrollStabilized();
+        await host.snapshot();
+
+        // Should scroll back down
+        await host.sendKeys('PAGE_DOWN');
+        await pageConditions.scrollStabilized();
+        await host.snapshot();
+
+        // Should scroll to the top
+        await host.sendKeys('HOME');
+        await pageConditions.scrollStabilized();
+        await host.snapshot();
+
+        // Should scroll to the bottom
+        await host.sendKeys('END');
+        await pageConditions.scrollStabilized();
+        await host.snapshot();
+
+        // Should not scroll because the send box is not empty
+        await host.sendKeys('A', 'PAGE_UP');
+        await pageConditions.scrollStabilized();
+        await host.snapshot();
+
+        // Should page up because the send box is no longer empty
+        await host.sendKeys('BACK_SPACE', 'PAGE_UP');
+        await pageConditions.scrollStabilized();
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

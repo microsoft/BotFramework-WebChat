@@ -1,9 +1,8 @@
-/**
- * @jest-environment jsdom
- */
+/** @jest-environment @happy-dom/jest-environment */
+
+/* eslint no-magic-numbers: "off" */
 
 import hasResolved from 'has-resolved';
-import { PromiseHelper } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Promise';
 
 import playCognitiveServicesStream from './playCognitiveServicesStream';
 
@@ -17,7 +16,7 @@ function createMockAudioContext(autoEndCount = Infinity) {
         channelData,
         duration: 1,
         getChannelData(channel) {
-          return channelData[channel];
+          return channelData[+channel];
         },
         numberOfChannels: channels,
         samplesPerSec
@@ -72,10 +71,10 @@ function createStreamFromChunks(format, chunks) {
       if (chunk) {
         new Uint8Array(destination).set(new Uint8Array(chunk));
 
-        return PromiseHelper.fromResult(chunk.byteLength);
-      } else {
-        return PromiseHelper.fromResult(0);
+        return Promise.resolve(chunk.byteLength);
       }
+
+      return Promise.resolve(0);
     }
   };
 }
@@ -96,13 +95,11 @@ test('should play 16-bit chunked stream to AudioContext', async () => {
     )
   );
 
-  const nodes = audioContext.connectedNodes.map(bufferSource => {
-    return {
-      channelData: bufferSource.buffer.channelData.map(arrayBuffer => new Float32Array(arrayBuffer.buffer, 0, 10)),
-      startAtTime: bufferSource.startAtTime,
-      samplesPerSec: bufferSource.buffer.samplesPerSec
-    };
-  });
+  const nodes = audioContext.connectedNodes.map(bufferSource => ({
+    channelData: bufferSource.buffer.channelData.map(arrayBuffer => new Float32Array(arrayBuffer.buffer, 0, 10)),
+    startAtTime: bufferSource.startAtTime,
+    samplesPerSec: bufferSource.buffer.samplesPerSec
+  }));
 
   expect(nodes).toMatchInlineSnapshot(`
     Array [
@@ -174,9 +171,13 @@ test('should stop when abort is called after all buffer queued', async () => {
 test('should stop when abort is called before first buffer is queued', async () => {
   const audioContext = createMockAudioContext();
   const abortController = new AbortController();
-  const read = jest.fn(() => ({
-    on() {}
-  }));
+
+  const read = jest.fn(
+    () =>
+      new Promise(() => {
+        // Never resolve read().
+      })
+  );
 
   const playPromise = playCognitiveServicesStream(
     audioContext,

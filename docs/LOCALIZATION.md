@@ -6,26 +6,26 @@ Beginning in Web Chat 4.8, this project shifted from community-provided localiza
 
 To add a new language, please update the following files:
 
--  Update [`/packages/component/src/Localization/overrides.json`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Localization/overrides.json) and add the language according to [Unicode CLDR](https://st.unicode.org/cldr-apps/v#locales///).
+-  Update [`/packages/api/src/localization/overrides.json`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/localization/overrides.json) and add the language according to [Unicode CLDR](https://st.unicode.org/cldr-apps/v#locales///).
    -  `GLOBALIZE_LANGUAGE` is the language code used for referencing Unicode CLDR
       -  To see the supported list of Unicode CLDR, look under `/packages/component/node_modules/cldr-data/main/`.
    -  (Optional) `TEXT_TO_SPEECH` is used to indicate the language code for speech.
-      -  Some locales have different oral languages, but share same written language with other locales. For example, the written language in both Hong Kong and Taiwan are Traditional Chinese, while oral languages are Cantonese and Taiwanese Mandarin respectively.
+      -  Some locales have different oral languages, but share same written language with other locales. For example, the written language in both Hong Kong SAR and Taiwan are Traditional Chinese, while oral languages are Cantonese and Taiwanese Mandarin respectively.
       -  The language code used in Web Chat only indicates the written language.
       -  Thus, when performing text-to-speech, the language code will be remapped to the oral language.
-      -  For example, the written language in Hong Kong is `zh-Hant-HK`, while the oral language is `zh-HK` (Cantonese). Meanwhile, the written language in Taiwan is `zh-Hant`, and the oral language is `zh-TW` (Taiwanese Mandarin).
+      -  For example, the written language in Hong Kong SAR is `zh-Hant-HK`, while the oral language is `zh-HK` (Cantonese). Meanwhile, the written language in Taiwan is `zh-Hant`, and the oral language is `zh-TW` (Taiwanese Mandarin).
    -  (Optional) `COGNITIVE_SERVICES_*` is used to indicate whether the language is supported by Cognitive Services Speech Services.
       -  `COGNITIVE_SERVICES_SPEECH_TO_TEXT` is used to indicate that the language is supported by Cognitive Services Speech-to-Text Service.
       -  `COGNITIVE_SERVICES_TEXT_TO_SPEECH` is used to indicate that the language is supported by Cognitive Services Text-to-Speech Service. If the service supports neural voices, set it to `"neural"`; otherwise, `true`
       -  [List of supported languages](https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/language-support)
--  Update [`/packages/component/src/Utils/normalizeLanguage.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Utils/normalizeLanguage.js) and add a normalization logic for ISO language.
+-  Update [`/packages/api/src/utils/normalizeLanguage.ts`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/utils/normalizeLanguage.ts) and add a normalization logic for ISO language.
    -  This is for cleaning up data provided by developers.
    -  For example, if the language starts with `ja`, it will be mapped to `ja-JP`.
-   -  Add a test to [`normalizeLanguage.spec.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Localization/normalizeLanguage.spec.js)
--  Add a new language to [`/packages/component/src/Localization/`](https://github.com/microsoft/BotFramework-WebChat/tree/master/packages/component/src/Localization).
+   -  Add a test to [`normalizeLanguage.spec.js`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/utils/normalizeLanguage.spec.js)
+-  Add a new language to [`/packages/api/src/localization/`](https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/api/src/localization/).
    -  Copy `en-US.json` as the base template.
-   -  Add to [`getAllLocalizedStrings.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Localization/getAllLocalizedStrings.js)
-   -  Add a test to [`getAllLocalizedStrings.spec.js`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Localization/getAllLocalizedStrings.spec.js)
+   -  Add to [`getAllLocalizedStrings.js`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/localization/getAllLocalizedStrings.ts)
+   -  Add a test to [`getAllLocalizedStrings.spec.js`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/localization/getAllLocalizedStrings.spec.js)
 
 ### Designing new strings
 
@@ -52,7 +52,7 @@ For strings that are contributed by the community, please submit a pull request 
 
 ## Adding new strings for new UI
 
-To add new strings to be used in the UI, please update [`/packages/component/src/localization/en-US.json`](https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/localization/en-US.json). The localization team will pick up the new strings and translate them to all other officially supported languages.
+To add new strings to be used in the UI, please update [`/packages/api/src/localization/en-US.json`](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/api/src/localization/en-US.json). The localization team will pick up the new strings and translate them to all other officially supported languages.
 
 ## Overriding localization strings
 
@@ -259,6 +259,17 @@ function convertFromOldStringId(js) {
     TEXT_INPUT_SEND_BUTTON_ALT: js.Send,
     TEXT_INPUT_SPEAK_BUTTON_ALT: js.Speak,
     TEXT_INPUT_UPLOAD_BUTTON_ALT: js['Upload file'],
+    TEXT_INPUT_TELEPHON_KEYPAD_BUTTON_ALT: js['Telephone keypad'],
+    TEXT_INPUT_DROP_ZONE: js['Drop files'],
+    TEXT_INPUT_LENGTH_EXCEEDED_ALT: js['Message length exceeded'],
+
+    TELEPHONE_KEYPAD_INPUT_MESSAGE: js['Only supports single-digit input'],
+
+    TEXT_INPUT_ATTACHMENTS_FEW: js['attachments'],
+    TEXT_INPUT_ATTACHMENTS_MANY: js['attachments'],
+    TEXT_INPUT_ATTACHMENTS_ONE: js['attachment'],
+    TEXT_INPUT_ATTACHMENTS_OTHER: js['attachments'],
+    TEXT_INPUT_ATTACHMENTS_TWO: js['attachments'],
 
     TRANSCRIPT_NEW_MESSAGES: js['New messages'],
 

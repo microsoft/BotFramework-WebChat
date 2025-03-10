@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const telemetryEventTracking = [];
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            onTelemetry: event => {
+              if (event?.name === 'send-status:change') {
+                telemetryEventTracking.push(event);
+              }
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: Simulate an ingress activity of "Aloha!".
+        await directLine.emulateIncomingActivity('Aloha!');
+
+        // WHEN: The activity is rendered.
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: No status change event should be logged for incoming activities.
+        expect(telemetryEventTracking.length).toEqual(0);
+      });
+    </script>
+  </body>
+</html>

@@ -38,7 +38,7 @@ We'll start by adding the CDN to the head of our Angular application's `index.ht
   …
 ```
 
-> This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed. https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+> This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to using Web Chat's latest bits. https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
 
 To create a WebChat container, create an empty `div` in the component's template file and assign it a template variable to reference it from this component's `.ts` file.
 
@@ -79,4 +79,4 @@ public ngOnInit(): void {
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

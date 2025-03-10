@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('focus management', () => {
   test('focus should not move after Adaptive Card is disable after manually disabled', () =>
-    runHTMLTest('focusManagement.disableAdaptiveCard.manual.html'));
+    runHTML('focusManagement.disableAdaptiveCard.manual.html'));
 });

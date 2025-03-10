@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const attachmentMiddleware = () => next => card => {
+          const { activity, attachment } = card;
+          const { activities } = store.getState();
+
+          const messages = activities.filter(activity => activity.type === 'message');
+          const mostRecent = messages.pop() === activity;
+
+          if (attachment.contentType === 'application/vnd.microsoft.card.adaptive') {
+            return React.createElement(WebChat.Components.AdaptiveCardContent, {
+              content: attachment.content,
+              disabled: !mostRecent
+            });
+          }
+
+          return next(card);
+        };
+
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
+
+        WebChat.renderWebChat(
+          {
+            attachmentMiddleware,
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageObjects.sendMessageViaSendBox('card markdown');
+        await pageObjects.sendMessageViaSendBox('stop');
+        await pageConditions.minNumActivitiesShown(4);
+
+        const externalLink = pageElements.transcript().querySelector('.ac-adaptiveCard a');
+        const relationships = (externalLink.getAttribute('rel') || '').split(new RegExp('\\s+', 'gu')).sort();
+        const ariaDisabled = externalLink.getAttribute('aria-disabled');
+
+        expect(relationships).toEqual(['noopener', 'noreferrer']);
+
+        expect(ariaDisabled).toBeFalsy();
+      });
+    </script>
+  </body>
+</html>

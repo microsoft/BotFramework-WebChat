@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const directLine = testHelpers.createDirectLineWithTranscript([]);
+        const store = testHelpers.createStore();
+
+        function render(options) {
+          return WebChat.renderWebChat(
+            {
+              ...options,
+              directLine,
+              store
+            },
+            document.getElementById('webchat')
+          );
+        }
+
+        render();
+
+        await pageConditions.uiConnected();
+
+        // EXPECT: Will load default strings.
+        await pageConditions.became(
+          'Strings loaded',
+          () => pageElements.sendBoxTextBox().placeholder === 'Type your message',
+          1000
+        );
+
+        // SETUP: Rendering with custom set of language-neutral strings.
+        render({
+          locale: 'ja-JP',
+          overrideLocalizedStrings: {
+            TEXT_INPUT_PLACEHOLDER: 'Enter your message here'
+          }
+        });
+
+        // EXPECT: Will load strings regardless of its language.
+        await pageConditions.became(
+          'Placeholder is customized',
+          () => pageElements.sendBoxTextBox().placeholder === 'Enter your message here',
+          1000
+        );
+
+        // EXPECT: Tooltip for send button should still in ja-JP.
+        await pageConditions.became('Send button is in ja-JP', () => pageElements.sendButton().getAttribute('title') === '送信', 1000);
+
+        const overrideLocalizedStrings = (strings, language) => ({
+          ...strings,
+          TEXT_INPUT_PLACEHOLDER: `${strings.TEXT_INPUT_PLACEHOLDER} (${language})`
+        });
+
+        // SETUP: Rendering with locale of en-US.
+        render({
+          locale: 'en-US',
+          overrideLocalizedStrings
+        });
+
+        // EXPECT: Will load strings from en-US.
+        await pageConditions.became(
+          'Placeholder is customized from en-US',
+          () => pageElements.sendBoxTextBox().placeholder === 'Type your message (en-US)',
+          1000
+        );
+
+        // SETUP: Rendering with locale of zh-Hant.
+        render({
+          locale: 'zh-Hant',
+          overrideLocalizedStrings
+        });
+
+        // EXPECT: Will load strings from zh-Hant.
+        await pageConditions.became(
+          'Placeholder is customized from zh-Hant',
+          () => pageElements.sendBoxTextBox().placeholder === '輸入您的訊息 (zh-Hant)',
+          1000
+        );
+
+        // SETUP: Rendering with unknown locale.
+        render({
+          locale: 'xx-XX',
+          overrideLocalizedStrings
+        });
+
+        // EXPECT: Will load default strings from en-US.
+        await pageConditions.became(
+          'Placeholder is customized from en-US despite unknown locale',
+          () => pageElements.sendBoxTextBox().placeholder === 'Type your message (xx-XX)',
+          1000
+        );
+      });
+    </script>
+  </body>
+</html>

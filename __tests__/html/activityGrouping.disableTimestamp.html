@@ -1,69 +1,24 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        lolex,
-        React: { useMemo },
-        WebChat: { renderWebChat },
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
-      } = window;
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const clock = lolex.createClock();
 
-      (async function() {
-        const clock = lolex.install();
-        const directLine = await createDirectLineWithTranscript([
-          {
-            from: { role: 'bot' },
-            id: '1.0',
-            text: 'Culpa qui non id occaecat consectetur veniam laborum Lorem nulla commodo.',
-            timestamp: -300001,
-            type: 'message'
-          },
-          {
-            channelData: { state: 'sent' },
-            from: { role: 'user' },
-            id: '2.0',
-            text: 'Est labore mollit do cillum cillum est amet tempor quis reprehenderit veniam sunt.',
-            timestamp: -300001,
-            type: 'message'
-          },
-          {
-            channelData: { clientActivityID: '2.1', clientTimestamp: -300001, state: 'sending' },
-            from: { role: 'user' },
-            text: 'Elit adipisicing laborum sit anim.',
-            type: 'message'
-          },
-          {
-            channelData: { clientActivityID: '2.2', clientTimestamp: -5001, state: 'sending' },
-            from: { role: 'user' },
-            text: 'Nostrud enim enim ipsum pariatur commodo.',
-            type: 'message'
-          },
-          {
-            channelData: { state: 'sent' },
-            from: { role: 'user' },
-            text: 'Culpa id proident sit officia aliquip.',
-            timestamp: -5001,
-            type: 'message'
-          },
-          {
-            from: { role: 'bot' },
-            id: '3.0',
-            text: 'Quis sit aliquip sit velit in velit magna culpa velit qui.',
-            timestamp: 0,
-            type: 'message'
-          }
-        ]);
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
-        renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
-            store: createStore(),
+            ponyfill: clock,
+            store,
             styleOptions: {
               botAvatarInitials: 'Bot',
               bubbleBackground: '#0063B1',
@@ -85,9 +40,35 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.directLine);
+        await pageConditions.webChatRendered();
 
         clock.tick(1000);
+
+        await directLine.emulateIncomingActivity(
+          'Culpa qui non id occaecat consectetur veniam laborum Lorem nulla commodo.'
+        );
+
+        await (
+          await directLine.emulateOutgoingActivity(
+            'Est labore mollit do cillum cillum est amet tempor quis reprehenderit veniam sunt.'
+          )
+        ).resolveAll();
+
+        const { resolveAll: resolveAll1 } = await directLine.emulateOutgoingActivity(
+          'Elit adipisicing laborum sit anim.'
+        );
+
+        clock.tick(295000);
+
+        const { resolveAll: resolveAll2 } = await directLine.emulateOutgoingActivity(
+          'Nostrud enim enim ipsum pariatur commodo.'
+        );
+
+        await (await directLine.emulateOutgoingActivity('Culpa id proident sit officia aliquip.')).resolveAll();
+
+        clock.tick(5000);
+
+        await directLine.emulateIncomingActivity('Quis sit aliquip sit velit in velit magna culpa velit qui.');
 
         await host.snapshot();
 
@@ -95,30 +76,10 @@
 
         await host.snapshot();
 
-        directLine.activityDeferredObservable.next({
-          channelData: { clientActivityID: '2.1', clientTimestamp: -300001, state: 'sent' },
-          from: { role: 'user' },
-          id: '2.1',
-          text: 'Elit adipisicing laborum sit anim.',
-          timestamp: -300001,
-          type: 'message'
-        });
-
-        directLine.activityDeferredObservable.next({
-          channelData: { clientActivityID: '2.2', clientTimestamp: -5001, state: 'sent' },
-          from: { role: 'user' },
-          id: '2.2',
-          text: 'Nostrud enim enim ipsum pariatur commodo.',
-          timestamp: -5001,
-          type: 'message'
-        });
+        await resolveAll1();
+        await resolveAll2();
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

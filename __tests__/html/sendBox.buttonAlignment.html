@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .webchat__auto-resize-textarea,
+      .webchat__send-box-text-box__input {
+        outline-color: rgba(0, 0, 0, 0.4) !important;
+        outline-offset: 2px !important;
+        outline-style: dotted !important;
+        outline-width: 2px !important;
+      }
+
+      .webchat__auto-resize-textarea__textarea,
+      .webchat__send-box-text-box__input {
+        background-color: rgba(0, 0, 255, 0.6) !important;
+      }
+
+      .button-bar {
+        background-color: antiquewhite;
+        border: #ccc;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+          'Helvetica Neue', sans-serif;
+        left: 0;
+        margin: 10px;
+        padding: 10px;
+        position: absolute;
+        top: 0;
+        width: calc(100% - 40px);
+      }
+
+      body.jest .button-bar {
+        display: none;
+      }
+
+      .webchat {
+        flex: 1;
+      }
+
+      .webchat__icon-button {
+        background-color: Orange !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        React: { Fragment, useCallback, useEffect, useMemo, useState },
+        ReactDOM: { render },
+        testHelpers: {
+          speech: { createWebSpeechMock }
+        },
+        WebChat: {
+          Components: { BasicWebChat, Composer },
+          createDirectLine,
+          hooks: { useSendBoxValue }
+        }
+      } = window;
+
+      run(async function () {
+        const directLine = createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
+
+        const TypeOnStartup = ({ value }) => {
+          const [_, setSendBoxValue] = useSendBoxValue();
+
+          useEffect(() => {
+            setSendBoxValue(value);
+          }, [setSendBoxValue, value]);
+
+          return false;
+        };
+
+        const App = () => {
+          const [enableWebSpeech, setEnableWebSpeech] = useState(false);
+          const [sendBoxTextWrap, setSendBoxTextWrap] = useState(false);
+          const [sendBoxButtonAlignment, setSendBoxButtonAlignment] = useState('stretch');
+
+          const updateState = useCallback(() => {
+            const params = new URLSearchParams(window.location.hash.replace(/^#/gu, ''));
+
+            setEnableWebSpeech(params.get('ws') === '1');
+            setSendBoxTextWrap(params.get('m') === '1');
+
+            const alignment = params.get('a');
+
+            setSendBoxButtonAlignment(~['bottom', 'stretch', 'top'].indexOf(alignment) ? alignment : 'stretch');
+          }, [setSendBoxButtonAlignment, setSendBoxTextWrap]);
+
+          useEffect(() => window.addEventListener('hashchange', updateState), [
+            setSendBoxButtonAlignment,
+            setSendBoxTextWrap,
+            updateState
+          ]);
+
+          useEffect(updateState, [updateState]);
+
+          const mergeParams = useCallback(
+            merge => {
+              const params = new URLSearchParams(window.location.hash.replace(/^#/gu, ''));
+
+              Object.entries(merge).forEach(([name, value]) => params.set(name, value));
+
+              document.location = `?${params}`;
+            },
+            [sendBoxButtonAlignment, sendBoxTextWrap]
+          );
+
+          const handleSendBoxTextWrapChange = useCallback(
+            ({ target: { checked } }) => mergeParams({ m: checked ? 1 : 0 }),
+            [mergeParams]
+          );
+
+          const handleSendBoxButtonAlignmentTopClick = useCallback(
+            ({ target: { checked } }) => mergeParams({ a: 'top' }),
+            [mergeParams]
+          );
+
+          const handleSendBoxButtonAlignmentBottomClick = useCallback(
+            ({ target: { checked } }) => mergeParams({ a: 'bottom' }),
+            [mergeParams]
+          );
+
+          const handleSendBoxButtonAlignmentStretchClick = useCallback(
+            ({ target: { checked } }) => mergeParams({ a: 'stretch' }),
+            [mergeParams]
+          );
+
+          const handleWebSpeechChange = useCallback(({ target: { checked } }) => mergeParams({ ws: checked ? 1 : 0 }), [
+            mergeParams
+          ]);
+
+          const styleOptions = useMemo(
+            () => ({
+              sendBoxBackground: 'yellow',
+              sendBoxTextColor: 'white',
+              sendBoxButtonAlignment,
+              sendBoxTextWrap
+            }),
+            [sendBoxButtonAlignment, sendBoxTextWrap]
+          );
+
+          const webSpeechPonyfill = useMemo(() => (enableWebSpeech ? createWebSpeechMock : () => ({})), [
+            enableWebSpeech
+          ]);
+
+          return (
+            <Fragment>
+              <Composer
+                directLine={directLine}
+                store={store}
+                styleOptions={styleOptions}
+                webSpeechPonyfillFactory={webSpeechPonyfill}
+              >
+                <BasicWebChat className="webchat" />
+                <TypeOnStartup value="Esse enim adipisicing duis occaecat sunt incididunt qui occaecat voluptate. Commodo veniam sint elit adipisicing consequat ullamco reprehenderit tempor exercitation. Non officia proident aute labore ea sunt incididunt excepteur enim. Qui consequat nostrud exercitation Lorem eiusmod do minim et reprehenderit incididunt ad. Elit veniam consequat ea qui." />
+              </Composer>
+              <div className="button-bar">
+                <div>
+                  <label>
+                    <input checked={enableWebSpeech} onChange={handleWebSpeechChange} type="checkbox" /> Enable Web
+                    Speech
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input checked={sendBoxTextWrap} onChange={handleSendBoxTextWrapChange} type="checkbox" />{' '}
+                    Multi-line text box
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      checked={sendBoxButtonAlignment === 'top'}
+                      onChange={handleSendBoxButtonAlignmentTopClick}
+                      type="radio"
+                    />{' '}
+                    Button alignment top
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      checked={sendBoxButtonAlignment === 'bottom'}
+                      onChange={handleSendBoxButtonAlignmentBottomClick}
+                      type="radio"
+                    />{' '}
+                    Button alignment bottom
+                  </label>
+                </div>
+                <div>
+                  <label>
+                    <input
+                      checked={sendBoxButtonAlignment === 'stretch'}
+                      onChange={handleSendBoxButtonAlignmentStretchClick}
+                      type="radio"
+                    />{' '}
+                    Button alignment stretch
+                  </label>
+                </div>
+              </div>
+            </Fragment>
+          );
+        };
+
+        render(<App />, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

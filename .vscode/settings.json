@@ -1,7 +1,8 @@
 {
   "files.exclude": {
-    "packages/*/dist": true,
-    "packages/*/lib": true
+    "packages/*/dist": false,
+    "packages/*/lib": false
   },
-  "typescript.tsdk": "packages\\component\\node_modules\\typescript\\lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "prettier.prettierPath": "./node_modules/prettier"
 }

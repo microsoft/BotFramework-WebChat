@@ -98,9 +98,7 @@ To host this demo, you will need to clone the code and run locally.
 
 ## Setup Azure Bot Services
 
-> We prefer using [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
-
-You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0).
+You can follow our instructions on how to [create an Azure Bot resource](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart?view=azure-bot-service-4.0&tabs=userassigned#create-the-resource).
 
 1. Add OAuth Connection for the bot to the Bot Channel Registration
    1. In the Bot Channel Registration open the settings blade
@@ -114,10 +112,10 @@ You can follow our instructions on how to [setup a new Bot Channel Registration]
          5. Set the "Scopes" field to the scopes you want the bot to have permission to access (ie. user.read)
 2. Save the Microsoft App ID, password, and OAuth connection name to `/bot/.env`
    -  `MicrosoftAppId=12345678-1234-5678-abcd-12345678abcd`
-   -  `MicrosoftAppPassword=a1b2c3d4e5f6`
+   -  `MicrosoftAppPassword=xxxxxxxx`
    -  `connectionName=botOAuthConnection`
 3. Save the Web Chat secret to `/rest-api/.env`
-   -  `DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0`
+   -  `DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz`
 
 > When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer [to this page on how to generate a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
 
@@ -188,7 +186,7 @@ To ease the setup of this sample, here is the template of `.env` files.
 
 ```
 MicrosoftAppId=12345678-1234-5678-abcd-12345678abcd
-MicrosoftAppPassword=a1b2c3d4e5f6
+MicrosoftAppPassword=xxxxxxxx
 connectionName=botOAuthConnection
 ```
 
@@ -198,7 +196,7 @@ connectionName=botOAuthConnection
 AAD_OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd
 AAD_OAUTH_REDIRECT_URI=http://localhost:3000/api/aad/oauth/callback
 AAD_OAUTH_TENANT_ID=abcd1234-abcd-1234-efgh-5678abcdefgh
-DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
+DIRECT_LINE_SECRET=abcdefghijk.abcdefghijklmnopqrstuvwxyz
 ```
 
 ## OAuth provider support single redirect URI only

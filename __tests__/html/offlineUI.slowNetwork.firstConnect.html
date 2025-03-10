@@ -1,85 +1,81 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const { conditions, createStore, host, pageObjects, updateIn, timeouts, token } = window.WebChatTest;
+    <main id="webchat"></main>
+    <script>
+      function createDirectLineForTest(options) {
+        // This part of code is running in the JavaScript VM in Chromium.
+        // This variable must be declared within scope
+        const ONLINE = 2;
 
-      (async function() {
-        function createDirectLineForTest(options) {
-          // This part of code is running in the JavaScript VM in Chromium.
-          // This variable must be declared within scope
-          const ONLINE = 2;
+        const workingDirectLine = WebChat.createDirectLine(options);
 
-          const workingDirectLine = window.WebChat.createDirectLine(options);
+        return {
+          activity$: workingDirectLine.activity$,
+          postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
 
-          return {
-            activity$: workingDirectLine.activity$,
-            postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
+          connectionStatus$: new Observable(observer => {
+            const subscription = workingDirectLine.connectionStatus$.subscribe({
+              complete: () => observer.complete(),
+              error: err => observer.error(err),
+              next: connectionStatus => {
+                connectionStatus !== ONLINE && observer.next(connectionStatus);
+              }
+            });
 
-            connectionStatus$: new Observable(observer => {
-              const subscription = workingDirectLine.connectionStatus$.subscribe({
-                complete: () => observer.complete(),
-                error: err => observer.error(err),
-                next: connectionStatus => {
-                  connectionStatus !== ONLINE && observer.next(connectionStatus);
-                }
-              });
+            return () => subscription.unsubscribe();
+          })
+        };
+      }
 
-              return () => subscription.unsubscribe();
-            })
-          };
-        }
+      async function createWebChat(ponyfill) {
+        let props = {
+          directLine: createDirectLineForTest({ token: await testHelpers.token.fetchDirectLineToken() }),
+          ponyfill,
+          store: testHelpers.createStoreWithOptions({ ponyfill }),
+          styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
+        };
 
-        const clock = lolex.install();
+        const render = () => WebChat.renderWebChat(props, document.getElementById('webchat'));
 
-        async function createWebChat() {
-          let props = {
-            directLine: createDirectLineForTest({ token: await token.fetchDirectLineToken() }),
-            store: createStore(),
-            styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
-          };
+        render();
 
-          const render = () => window.WebChat.renderWebChat(props, document.getElementById('webchat'));
+        return {
+          updateProps: updater => {
+            props = updater(props);
+            render(props);
+          }
+        };
+      }
 
-          render();
+      run(async function () {
+        const clock = lolex.createClock();
 
-          return {
-            updateProps: updater => {
-              props = updater(props);
-              render(props);
-            }
-          };
-        }
+        const { updateProps } = await createWebChat(clock);
 
-        const { updateProps } = await createWebChat();
-
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
+        await pageConditions.webChatRendered();
 
         clock.tick(15000);
 
-        await pageObjects.wait(conditions.actionDispatched('DIRECT_LINE/CONNECT_STILL_PENDING'), timeouts.directLine);
-        await pageObjects.wait(conditions.connectivityStatusShown(/taking longer than usual/iu), timeouts.ui);
+        await pageConditions.actionDispatched('DIRECT_LINE/CONNECT_STILL_PENDING');
+        await pageConditions.connectivityStatusShown(/taking longer than usual/iu);
         await host.snapshot();
 
         updateProps(props => updateIn(props, ['styleOptions', 'slowConnectionAfter'], () => 20000));
 
-        await pageObjects.wait(conditions.connectivityStatusShown(/connecting/iu), timeouts.ui);
+        await pageConditions.connectivityStatusShown(/connecting/iu);
         await host.snapshot();
 
         clock.tick(5000);
 
-        await pageObjects.wait(conditions.connectivityStatusShown(/taking longer than usual/iu), timeouts.ui);
+        await pageConditions.connectivityStatusShown(/taking longer than usual/iu);
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

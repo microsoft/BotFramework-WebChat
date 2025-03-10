@@ -139,7 +139,7 @@ Here is the finished `index.html`:
 
       (async function() {
 
-        const directLineTokenRes = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', {
+        const directLineTokenRes = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', {
           method: 'POST'
         });
 
@@ -184,11 +184,11 @@ Here is the finished `index.html`:
 -  [W3C Web Speech API](https://w3c.github.io/speech-api/)
 -  [JavaScript Factory Functions with ES6+](https://medium.com/javascript-scene/javascript-factory-functions-with-es6-4d224591a8b1)
 
--  [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/03.speech/b.cognitive-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js)
--  [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/03.speech/g.hybrid-speech) | [(Speech Web browser source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/g.hybrid-speech)
+-  [Cognitive Services Speech Services bot](https://microsoft.github.io/BotFramework-WebChat/03.speech/b.cognitive-speech-services-js) | [(Cognitive Services Speech Services source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/03.speech/b.cognitive-speech-services-js)
+-  [Speech Web browser bot](https://microsoft.github.io/BotFramework-WebChat/03.speech/g.hybrid-speech) | [(Speech Web browser source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/03.speech/g.hybrid-speech)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples) -->
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples) -->
 
 [1]: ../b.cognitive-speech-services-js/README.md

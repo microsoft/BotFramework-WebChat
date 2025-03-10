@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('useFocus', () => {
-  test('on send box without keyboard', () => runHTMLTest('useFocus.sendBoxWithoutKeyboard.html'));
+  test('on send box without keyboard', () => runHTML('useFocus.sendBoxWithoutKeyboard.html'));
 });

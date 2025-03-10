@@ -53,7 +53,7 @@ A middleware will be added to Redux store to intercept `DIRECT_LINE/CONNECT_FULF
 The completed code will be:
 
 ```diff
-  const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+  const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
   const { token } = await res.json();
 
 + const store = window.WebChat.createStore({}, ({ dispatch }) => next => action => {
@@ -341,7 +341,7 @@ Here is the finished `index.html`:
     <script type="text/babel" data-presets="es2015,react,stage-3">
       (async function() {
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
         const { useCallback, useMemo } = window.React;
         const {
@@ -440,10 +440,10 @@ Here is the finished `index.html`:
 
 # Further reading
 
--  [Web Chat notification system](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/NOTIFICATION.md)
--  [React Hook for setting notification](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usesetnotification)
--  [React Hook for dismissing notification](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usedismissnotification)
+-  [Web Chat notification system](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/NOTIFICATION.md)
+-  [React Hook for setting notification](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usesetnotification)
+-  [React Hook for dismissing notification](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usedismissnotification)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

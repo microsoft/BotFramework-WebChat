@@ -1,8 +1,10 @@
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React from 'react';
 
-import useDirection from '../../hooks/useDirection';
-import useStyleToEmotionObject from '../../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../../hooks/internal/styleToEmotionObject';
+
+const { useDirection } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__send-icon': {

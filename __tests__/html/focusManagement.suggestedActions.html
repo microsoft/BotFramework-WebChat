@@ -1,44 +1,40 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <link href="focusManagement.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const { conditions, createStore, elements, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
 
-      (async function() {
-        const store = createStore();
-        const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
-
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
-            store
+            store,
+            styleOptions: { subtle: '#666' }
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
         await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.suggestedActionsShown(), timeouts.directLine);
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.suggestedActionsShown();
         await pageObjects.clickNthSuggestedAction(1);
-        await pageObjects.wait(conditions.allOutgoingActivitiesSent(), timeouts.directLine);
-        await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
+        await pageConditions.allOutgoingActivitiesSent();
+        await pageConditions.minNumActivitiesShown(4);
 
         // After clicking on any suggested actions, it should focus back on the type focus sink.
-        expect(document.activeElement === elements.sendBoxTextBox()).toBe(true);
+        expect(document.activeElement === pageElements.sendBoxTextBox()).toBe(true);
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

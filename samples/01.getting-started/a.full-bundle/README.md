@@ -47,7 +47,7 @@ We'll start by adding the CDN to the head of a blank `index.html` template.
   …
 ```
 
-> This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed. https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+> This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to using Web Chat's latest bits. https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
 > Next, the code to render Web Chat must be added to the body. Note that MockBot uses **tokens** rather than the **Direct Line secret**.
 
 > It is **never recommended** to put the Direct Line secret in the browser or client app. To learn more about secrets and tokens for Direct Line, visit [this tutorial on authentication](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication).
@@ -57,7 +57,7 @@ We'll start by adding the CDN to the head of a blank `index.html` template.
 +   <div id="webchat" role="main"></div>
 +   <script>
 +     (async function () {
-+       const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
++       const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
 +       const { token } = await res.json();
 +       window.WebChat.renderWebChat({
 +         directLine: window.WebChat.createDirectLine({ token })
@@ -137,7 +137,7 @@ Here is the finished `index.html`:
     <div id="webchat" role="main"></div>
     <script>
       (async function() {
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
 
         window.WebChat.renderWebChat(
@@ -161,9 +161,9 @@ Here is the finished `index.html`:
 
 Check out the hosted samples and source code for other CDN bundle options below.
 
--  [Full bundle with polyfills for ES5 browsers bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/c.es5-bundle) | [(Full bundle with polyfills for ES5 browsers source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/c.es5-bundle)
--  [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/b.minimal-bundle) | [(Minimal bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/b.minimal-bundle)
--  [Minimal bundle with Markdown bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/h.minimal-markdown) | [(Minimal bundle with Markdown source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/h.minimal-markdown)
+-  [Full bundle with polyfills for ES5 browsers bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/c.es5-bundle) | [(Full bundle with polyfills for ES5 browsers source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/c.es5-bundle)
+-  [Minimal bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/b.minimal-bundle) | [(Minimal bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/b.minimal-bundle)
+-  [Minimal bundle with Markdown bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/h.minimal-markdown) | [(Minimal bundle with Markdown source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/h.minimal-markdown)
 
 ## CDN sunburst chart
 
@@ -171,4 +171,4 @@ Check out the hosted samples and source code for other CDN bundle options below.
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

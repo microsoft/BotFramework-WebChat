@@ -1,78 +1,93 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <link href="focusManagement.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const { Simulate } = window.ReactTestUtils;
-      const { conditions, createStore, elements, expect, host, pageObjects, timeouts, token } = window.WebChatTest;
-
-      (async function() {
-        function allOutgoingMessagesFailed() {
-          return {
-            message: 'All outgoing messages to fail sending',
-            fn: () =>
-              pageObjects
-                .getActivities()
-                .filter(({ from: { role }, type }) => role === 'user' && type === 'message')
-                .every(({ channelData: { state } }) => state === 'send failed')
-          };
-        }
-
-        const clock = lolex.install();
-
-        const store = createStore();
-        const directLine = window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() });
-        const hackedDirectLine = {
-          ...directLine,
-          activity$: directLine.activity$,
-          connectionStatus$: directLine.connectionStatus$,
-          postActivity: activity => {
-            if (activity.type === 'message') {
-              return new Observable(({ error }) => error(new Error('artificial error')));
-            } else {
-              return directLine.postActivity(activity);
+    <main id="webchat"></main>
+    <script>
+      run(
+        async function () {
+          const clock = lolex.createClock();
+          const store = testHelpers.createStoreWithOptions({ ponyfill: clock });
+          const directLine = window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+          const hackedDirectLine = {
+            ...directLine,
+            activity$: directLine.activity$,
+            connectionStatus$: directLine.connectionStatus$,
+            postActivity: activity => {
+              if (activity.type === 'message') {
+                return new Observable(observer => observer.error(new Error('artificial error')));
+              } else {
+                return directLine.postActivity(activity);
+              }
             }
-          }
-        };
+          };
 
-        window.WebChat.renderWebChat(
-          {
-            directLine: hackedDirectLine,
-            store
-          },
-          document.getElementById('webchat')
-        );
+          window.WebChat.renderWebChat(
+            {
+              directLine: hackedDirectLine,
+              ponyfill: clock,
+              store,
+              styleOptions: { subtle: '#666' }
+            },
+            document.getElementById('webchat')
+          );
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
+          await pageConditions.webChatRendered();
 
-        clock.tick(400);
+          clock.tick(400);
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
+          await pageConditions.uiConnected();
 
-        clock.tick(20000);
+          // SETUP: Send "echo Hello, World!" to the bot.
+          await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: false });
+          await pageConditions.numActivitiesShown(1);
 
-        await pageObjects.wait(allOutgoingMessagesFailed(), timeouts.postActivity);
+          // WHEN: After 20 seconds.
+          clock.tick(20000);
 
-        const retryButton = document.querySelector('button[data-markdown-href]');
+          // THEN: All outgoing messages should have `activity.channelData.state` of `"send failed"`.
+          await pageConditions.became(
+            'All outgoing messages sent',
+            () => pageElements.activityStatuses()[0].innerText === 'Send failed. Retry.',
+            1000
+          );
 
-        retryButton.click();
+          return;
 
-        // After clicking on retry button, it should focus back on the type focus sink.
-        expect(document.activeElement === elements.sendBoxTextBox()).toBe(true);
+          // WHEN: The "Retry" button in the first activity status is being clicked.
+          pageElements.activityStatuses()[0].querySelector('button[data-markdown-href]').click();
 
-        await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
+          // THEN: There should be 2 outgoing messages.
+          await pageConditions.numActivitiesShown(2);
 
-        await host.error(err);
-      });
+          // THEN: Both outgoing messages should show "Send failed. Retry." because the modded `postActivity` throw artificial error immediately.
+          await pageConditions.became(
+            'All outgoing messages sent',
+            () => {
+              const activityStatuses = pageElements.activityStatuses();
+
+              return (
+                activityStatuses.length === 2 &&
+                activityStatuses.every(({ innerText }) => innerText === 'Send failed. Retry.')
+              );
+            },
+            1000
+          );
+
+          // THEN: The focus should focus be on the send box.
+          expect(document.activeElement === pageElements.sendBoxTextBox()).toBe(true);
+
+          await host.snapshot();
+        },
+        // Ignoring errors thrown as "artificial error".
+        { ignoreErrors: true }
+      );
     </script>
   </body>
 </html>

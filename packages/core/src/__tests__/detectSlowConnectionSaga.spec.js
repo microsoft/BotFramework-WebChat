@@ -1,15 +1,14 @@
 /* eslint no-magic-numbers: "off" */
 
+import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { fork } from 'redux-saga/effects';
+import createSagaMiddleware from 'redux-saga';
 import Observable from 'core-js/features/observable';
 
 import connectionStatusUpdateSaga from '../sagas/connectionStatusUpdateSaga';
 import connectivityStatus from '../reducers/connectivityStatus';
 import connectSaga from '../sagas/connectSaga';
 import detectSlowConnectionSaga from '../sagas/detectSlowConnectionSaga';
-
-import createSagaMiddleware from 'redux-saga';
-import { applyMiddleware, combineReducers, createStore } from 'redux';
 
 let connectionStatusObserver;
 let directLine;
@@ -58,10 +57,10 @@ beforeEach(() => {
     applyMiddleware(sagaMiddleware)
   );
 
-  sagaMiddleware.run(function*() {
+  sagaMiddleware.run(function* () {
     yield fork(connectSaga);
     yield fork(connectionStatusUpdateSaga);
-    yield fork(detectSlowConnectionSaga);
+    yield fork(detectSlowConnectionSaga, { setTimeout });
   });
 
   directLine = {
@@ -83,7 +82,7 @@ beforeEach(() => {
 jest.setTimeout(2000);
 
 beforeEach(() => {
-  jest.useFakeTimers();
+  jest.useFakeTimers({ doNotFake: ['performance'] });
 });
 
 afterEach(() => {

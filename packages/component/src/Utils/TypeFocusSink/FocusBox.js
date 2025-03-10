@@ -10,12 +10,12 @@ import inputtableKey from './inputtableKey';
 
 const DEFAULT_STYLE = { outline: 0 };
 
-const BaseFocusBox = ({ children, disabled, sendFocusRef: sendFocusRefProp, ...otherProps }, ref) => {
+const BaseFocusBox = ({ children, disabled, onKeyDownCapture, sendFocusRef: sendFocusRefProp, ...otherProps }, ref) => {
   const sendFocusRefPersist = useRef(null);
-  const patchedSendFocusRef = useMemo(() => sendFocusRefProp || sendFocusRefPersist, [
-    sendFocusRefPersist,
-    sendFocusRefProp
-  ]);
+  const patchedSendFocusRef = useMemo(
+    () => sendFocusRefProp || sendFocusRefPersist,
+    [sendFocusRefPersist, sendFocusRefProp]
+  );
 
   const context = useMemo(
     () => ({
@@ -32,6 +32,8 @@ const BaseFocusBox = ({ children, disabled, sendFocusRef: sendFocusRefProp, ...o
 
   const handleKeyDownCapture = useCallback(
     event => {
+      onKeyDownCapture && onKeyDownCapture(event);
+
       const { altKey, ctrlKey, key, metaKey, target } = event;
       const tabIndex = getTabIndex(target);
 
@@ -48,7 +50,7 @@ const BaseFocusBox = ({ children, disabled, sendFocusRef: sendFocusRefProp, ...o
         focus();
       }
     },
-    [focus]
+    [focus, onKeyDownCapture]
   );
 
   return (
@@ -70,12 +72,14 @@ const FocusBox = forwardRef(BaseFocusBox);
 
 FocusBox.defaultProps = BaseFocusBox.defaultProps = {
   children: undefined,
-  disabled: false
+  disabled: false,
+  onKeyDownCapture: undefined
 };
 
 FocusBox.propTypes = BaseFocusBox.propTypes = {
   children: PropTypes.any,
   disabled: PropTypes.bool,
+  onKeyDownCapture: PropTypes.func,
   sendFocusRef: PropTypes.shape({
     current: PropTypes.shape({
       focus: PropTypes.func

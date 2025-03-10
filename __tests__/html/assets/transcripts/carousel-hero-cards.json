@@ -1,4 +1,4 @@
-[
+  [
   {
     "attachmentLayout": "carousel",
     "attachments": [
@@ -10,6 +10,7 @@
           "text": "Price: $XXX.XX USD",
           "images": [
             {
+              "alt": "front of Surface Pro",
               "url": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg"
             }
           ],
@@ -35,6 +36,7 @@
           "text": "Price: $XXX.XX USD",
           "images": [
             {
+              "alt": "back of Surface Pro",
               "url": "https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg"
             }
           ],

@@ -1,56 +1,59 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/activityGrouping.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script
-      crossorigin="anonymous"
-      src="assets/activityGrouping.js"
-      type="text/babel"
-      data-presets="env,stage-3,react"
-    ></script>
-    <link href="assets/activityGrouping.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      .react-film__flipper {
+        /* Hide flipper because they are not part of the tests and introduce reliability issues due to its animation. */
+        display: none;
+      }
+    </style>
   </head>
   <body>
-    <div id="webchat"></div>
+    <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
-        React: { useContext, useState },
+        React: { useContext, useEffect, useMemo },
         ReactDOM: { render },
+        testHelpers: {
+          activityGrouping: {
+            ActivityGroupingBadges,
+            ActivityGroupingContext,
+            ActivityGroupingPanel,
+            ActivityGroupingSurface,
+            customAdaptiveCardsHostConfig
+          }
+        },
         WebChat: {
           Components: { BasicWebChat, Composer }
-        },
-        WebChatTest: {
-          conditions,
-          classNames,
-          createDirectLineWithTranscript,
-          createStore,
-          expect,
-          ActivityGroupingBadges,
-          ActivityGroupingContext,
-          ActivityGroupingPanel,
-          ActivityGroupingSurface,
-          host,
-          pageObjects,
-          timeouts,
-          token
         }
       } = window;
 
-      (async function() {
+      run(async function () {
+        const params = new URLSearchParams(location.hash.replace(/^#/u, ''));
+
+        const height = params.get('ch');
+        const width = params.get('cw');
+
+        await host.windowSize(width, height, document.getElementById('webchat'));
+
         const TestHarness = () => {
           const { activityMiddleware, directLine, rtl, styleOptions, wide } = useContext(ActivityGroupingContext);
-          const [store, setStore] = useState(() => createStore());
-
-          useEffect(() => {
-            setStore(createStore());
-          }, [directLine, setStore]);
+          const store = useMemo(() => testHelpers.createStore());
 
           return (
             <div className={classNames('test-harness', { 'test-harness--wide': wide })} dir={rtl ? 'rtl' : 'ltr'}>
-              {!!directLine && !!store && (
+              {!!directLine && (
                 <Composer
                   activityMiddleware={activityMiddleware}
+                  adaptiveCardsHostConfig={customAdaptiveCardsHostConfig}
                   directLine={directLine}
                   dir={rtl ? 'rtl' : undefined}
                   store={store}
@@ -72,16 +75,11 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.directLine);
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.directLine);
+        await pageConditions.uiConnected();
+        await pageConditions.allImagesLoaded();
+        await pageConditions.scrollToBottomCompleted();
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

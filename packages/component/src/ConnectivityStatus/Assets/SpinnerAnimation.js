@@ -1,8 +1,10 @@
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React from 'react';
 
-import useDirection from '../../hooks/useDirection';
 import useStyleSet from '../../hooks/useStyleSet';
+
+const { useDirection } = hooks;
 
 const SpinnerAnimation = () => {
   const [{ spinnerAnimation: spinnerAnimationStyleSet }] = useStyleSet();

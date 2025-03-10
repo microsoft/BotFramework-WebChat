@@ -1,4 +1,5 @@
-/dist
-/lib
-/lib.instrumented
-/node_modules
+/*.tgz
+/dist/
+/lib/
+/lib.instrumented/
+/node_modules/

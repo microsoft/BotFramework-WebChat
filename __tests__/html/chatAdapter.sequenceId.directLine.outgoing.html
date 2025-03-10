@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      const BASE_TIMESTAMP = +new Date(2020, 0, 1, 12, 34);
+
+      function createActivity(text, timestamp, sequenceId) {
+        return {
+          channelData: {
+            'webchat:sequence-id': sequenceId
+          },
+          from: { role: 'bot' },
+          id: Math.random().toString(36).substr(2, 5),
+          text,
+          timestamp: new Date(BASE_TIMESTAMP + timestamp),
+          type: 'message'
+        };
+      }
+
+      run(async function () {
+        const sending = [];
+
+        const directLine = await testHelpers.createDirectLineWithTranscript(
+          [
+            {
+              from: { role: 'bot' },
+              id: 'in-00001',
+              text: 'Bot activity has timestamp of 2.',
+              timestamp: new Date(BASE_TIMESTAMP + 2),
+              type: 'message'
+            }
+          ],
+          {
+            overridePostActivity: activity => {
+              const deferred = createDeferred();
+              const observable = new Observable(observer => {
+                deferred.promise.then(
+                  activity => {
+                    directLine.activityDeferredObservable.next(activity);
+
+                    observer.next(activity.id);
+                    observer.complete();
+                  },
+                  err => observer.error(err)
+                );
+              });
+
+              sending.push({ activity, reject: deferred.reject, resolve: deferred.resolve });
+
+              return observable;
+            }
+          }
+        );
+
+        const store = testHelpers.createStore();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        // SETUP: With 1 message from the bot.
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(1);
+        await pageConditions.scrollToBottomCompleted();
+
+        // WHEN: Sending 2 messages consecutively, before getting responses.
+        await pageObjects.sendMessageViaSendBox('User activity has timestamp of 1.', { waitForSend: false });
+        await pageObjects.sendMessageViaSendBox('User activity has timestamp of 0.', { waitForSend: false });
+
+        const { activities } = store.getState();
+
+        // THEN: The first outgoing message should be the second, after the bot's message.
+        expect(activities[1].text).toBe('User activity has timestamp of 1.');
+
+        // THEN: The second outgoing message should be the third.
+        expect(activities[2].text).toBe('User activity has timestamp of 0.');
+
+        // THEN: The first outgoing message should have a smaller sequence ID than the bot's message.
+        expect(
+          activities[0].channelData['webchat:sequence-id'] < activities[1].channelData['webchat:sequence-id']
+        ).toBe(true);
+
+        // THEN: The first outgoing message should have a smaller sequence ID than the second outgoing message.
+        expect(
+          activities[1].channelData['webchat:sequence-id'] < activities[2].channelData['webchat:sequence-id']
+        ).toBe(true);
+
+        // THEN: Both outgoing messages should not send "webchat:sequence-id" and "state".
+        expect(sending[0].activity.channelData['webchat:sequence-id']).toBeUndefined();
+        expect(sending[0].activity.channelData.state).toBeUndefined();
+        expect(sending[1].activity.channelData['webchat:sequence-id']).toBeUndefined();
+        expect(sending[1].activity.channelData.state).toBeUndefined();
+
+        // THEN: It should show message in order of "2", "1", followed by "0".
+        await host.snapshot();
+
+        // WHEN: The first message has echoed back with a timestamp of 1.
+        sending[0].resolve({
+          ...sending[0].activity,
+          id: 'out-00001',
+          timestamp: new Date(BASE_TIMESTAMP + 1).toISOString()
+        });
+
+        // THEN: At least one outgoing message should marked as sent.
+        await pageConditions.became(
+          'one message has been sent',
+          () => store.getState().activities.find(activity => activity.channelData.state === 'sent'),
+          2000
+        );
+
+        // THEN: It should show message in the order of "1", "2", followed by "0".
+        //       "1" should be marked as sent.
+        //       "0" should be sending.
+        await host.snapshot();
+
+        // THEN: The first outgoing message should appears first, before the bot's message.
+        //       The first outgoing message has a smaller timestamp (t=1) than the bot's message (t=2).
+        expect(pageElements.activityContents().map(element => element.innerText)).toEqual([
+          'User activity has timestamp of 1.',
+          'Bot activity has timestamp of 2.',
+          'User activity has timestamp of 0.'
+        ]);
+
+        // WHEN: The first message has echoed back with a timestamp of 0.
+        sending[1].resolve({
+          ...sending[1].activity,
+          id: 'out-00002',
+          timestamp: new Date(BASE_TIMESTAMP).toISOString()
+        });
+
+        // THEN: All outgoing messages should be sent.
+        await pageConditions.allOutgoingActivitiesSent();
+
+        // THEN: All messages should sort based on timestamp.
+        expect(pageElements.activityContents().map(element => element.innerText)).toEqual([
+          'User activity has timestamp of 0.',
+          'User activity has timestamp of 1.',
+          'Bot activity has timestamp of 2.'
+        ]);
+
+        // THEN: It should show message in the order of "0", "1", followed by "2".
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

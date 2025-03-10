@@ -1,15 +1,13 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 36] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 4, 36] }] */
 
-import Observable from 'core-js/features/observable';
+import Observable from 'core-js/features/observable/index.js';
 import random from 'math-random';
 
 import shareObservable from './shareObservable';
 import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtterance';
 
 function randomActivityId() {
-  return random()
-    .toString(36)
-    .substr(2);
+  return random().toString(36).substr(2);
 }
 
 export default class DirectLineSpeech {
@@ -24,7 +22,17 @@ export default class DirectLineSpeech {
 
         connectionStatusObserver.next(0);
         connectionStatusObserver.next(1);
-        connectionStatusObserver.next(2);
+
+        dialogServiceConnector.connect(
+          () => {
+            connectionStatusObserver.next(2);
+          },
+          error => {
+            connectionStatusObserver.next(4);
+
+            console.warn('botframework-directlinespeech-sdk: Failed to connect', { error });
+          }
+        );
       })
     );
 
@@ -48,6 +56,8 @@ export default class DirectLineSpeech {
               // Since DLSpeech service never ACK our outgoing activity, this activity must be from bot.
               role: 'bot'
             },
+            // Since DLSpeech never ACK our outgoing activity, the "replyToId" will rarely able to point to an existing activity.
+            replyToId: undefined,
             // Direct Line Speech server currently do not timestamp outgoing activities.
             // Thus, it will be easier to just re-timestamp every incoming/outgoing activities using local time.
             timestamp: new Date().toISOString()
@@ -80,11 +90,13 @@ export default class DirectLineSpeech {
     try {
       // TODO: [P1] Direct Line Speech server currently do not ack the outgoing activities with any activity ID or timestamp.
       const pseudoActivityId = randomActivityId();
-      const isSpeech = !!(activity.channelData && activity.channelData.speech);
+      const isSpeech = !!activity.channelData?.speech;
 
       // Do not send the activity if it was from speech.
       if (!isSpeech) {
-        this.dialogServiceConnector.sendActivityAsync(activity);
+        // Starting from Speech SDK 1.13.0, they accept JSON text instead of JavaScript object.
+        // https://github.com/microsoft/cognitive-services-speech-sdk-js/commit/2f3a35446692b6d492a6c68e3237a48de67e293f
+        this.dialogServiceConnector.sendActivityAsync(JSON.stringify(activity));
       }
 
       this._activityObserver &&

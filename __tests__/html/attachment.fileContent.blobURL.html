@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          Components: { Composer, FileContent }
+        } = WebChat;
+
+        // TODO: [P2] #2869 When the "DLJS patching code" is being moved to DLJS, we should use standard Web Chat setup, instead of composition mode.
+        // SETUP: Web Chat using composition mode because the logic which talk to DLJS will strip out blob:// URL.
+        ReactDOM.render(
+          React.createElement(
+            Composer,
+            {
+              directLine: testHelpers.createDirectLineWithTranscript(),
+              store: testHelpers.createStore()
+            },
+            React.createElement(FileContent, {
+              fileName: 'blob.txt',
+              href: URL.createObjectURL(new Blob())
+            })
+          ),
+          document.getElementById('webchat')
+        );
+
+        // WHEN: <FileContent href="blob:http://..." /> is being displayed.
+        await pageConditions.uiConnected();
+
+        // THEN: The attachment should have a download icon which means the attachment is downloadable.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

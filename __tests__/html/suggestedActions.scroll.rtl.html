@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            dir: 'rtl',
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // GIVEN: Show the suggested actions.
+        await pageObjects.sendMessageViaSendBox('suggested-actions');
+        await pageConditions.numActivitiesShown(2);
+
+        // WHEN: The right flipper button is clicked.
+        document.querySelector('[aria-label="Suggested actions"] [aria-label="Next"]').click();
+
+        // THEN: It should scroll to the right.
+        await pageConditions.became(
+          'suggested actions scrolled to the left',
+          () => document.querySelector('.react-film__filmstrip').scrollLeft < 0,
+          1000
+        );
+
+        // WHEN: The left flipper button is clicked.
+        document.querySelector('[aria-label="Suggested actions"] [aria-label="Previous"]').click();
+
+        // THEN: It should scroll back to the origin.
+        await pageConditions.became(
+          'suggested actions scrolled back to the origin',
+          () => document.querySelector('.react-film__filmstrip').scrollLeft === 0,
+          1000
+        );
+      });
+    </script>
+  </body>
+</html>

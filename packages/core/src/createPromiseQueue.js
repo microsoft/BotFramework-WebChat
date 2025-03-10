@@ -1,14 +1,14 @@
-import createDeferred from 'p-defer-es5';
+import { withResolvers } from 'botframework-webchat-base/utils';
 
 export default function createPromiseQueue() {
-  let deferred;
+  let promiseWithResolvers;
   const queue = [];
 
   const push = value => {
-    if (deferred) {
-      const { resolve } = deferred;
+    if (promiseWithResolvers) {
+      const { resolve } = promiseWithResolvers;
 
-      deferred = null;
+      promiseWithResolvers = null;
       resolve(value);
     } else {
       queue.push(value);
@@ -16,7 +16,9 @@ export default function createPromiseQueue() {
   };
 
   const shift = () =>
-    queue.length ? Promise.resolve(queue.shift()) : (deferred || (deferred = createDeferred())).promise;
+    queue.length
+      ? Promise.resolve(queue.shift())
+      : (promiseWithResolvers || (promiseWithResolvers = withResolvers())).promise;
 
   return {
     push,

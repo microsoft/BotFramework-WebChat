@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // SETUP: Show the suggested actions.
+        await pageObjects.sendMessageViaSendBox('suggested-actions');
+        await pageConditions.numActivitiesShown(2);
+
+        // WHEN: SHIFT-TAB is pressed 3 times.
+        await host.sendShiftTab(3);
+
+        // THEN: It should focus on the first suggested action button.
+        expect(document.activeElement).toBe(pageElements.suggestedActions()[0]);
+
+        // WHEN: Right arrow key is pressed 5 times.
+        await host.sendKeys('ARROW_RIGHT');
+        await host.sendKeys('ARROW_RIGHT');
+        await host.sendKeys('ARROW_RIGHT');
+        await host.sendKeys('ARROW_RIGHT');
+        await host.sendKeys('ARROW_RIGHT');
+
+        // THEN: It should focus on the last suggested action button.
+        expect(document.activeElement).toBe(pageElements.suggestedActions()[5]);
+
+        // WHEN: Right arrow key is pressed again.
+        await host.sendKeys('ARROW_RIGHT');
+
+        // THEN: It should focus on the first suggested action button.
+        expect(document.activeElement).toBe(pageElements.suggestedActions()[0]);
+
+        // WHEN: Left arrow key is pressed.
+        await host.sendKeys('ARROW_LEFT');
+
+        // THEN: It should focus on the first suggested action button.
+        expect(document.activeElement).toBe(pageElements.suggestedActions()[5]);
+      });
+    </script>
+  </body>
+</html>

@@ -1,52 +1,29 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
-      body {
-        background-color: #f7f7f7;
-      }
-
-      #app {
-        height: 100%;
-      }
-
       .scroll-panel {
         left: 0;
         position: fixed;
         top: 0;
       }
-
-      .webchat {
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-        margin: 0 auto;
-        max-width: 480px;
-        min-width: 360px;
-      }
     </style>
   </head>
   <body>
-    <div id="app"></div>
+    <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { useCallback, useLayoutEffect, useRef, useState },
         WebChat: {
           Components: { BasicWebChat, Composer },
-          createDirectLine,
           hooks: { useObserveScrollPosition, useScrollTo, useSendMessage }
-        },
-        WebChatTest: {
-          conditions,
-          createDeferred,
-          createDirectLineWithTranscript,
-          createStore,
-          elements,
-          expect,
-          host,
-          pageObjects,
-          timeouts,
-          token
         }
       } = window;
 
@@ -78,15 +55,17 @@
           const fromUser = index % 2;
 
           return {
-            ...(fromUser
-              ? {
-                  channelData: {
-                    clientActivityID: index + '',
-                    clientTimestamp: 0,
-                    state: 'sent'
+            channelData: {
+              'webchat:sequence-id': index,
+              ...(fromUser
+                ? {
+                    channelData: {
+                      clientActivityID: index + '',
+                      state: 'sent'
+                    }
                   }
-                }
-              : {}),
+                : {})
+            },
             from: { role: fromUser ? 'user' : 'bot' },
             id: index + '',
             text: `#${index}: ${text}`,
@@ -96,9 +75,9 @@
         });
       }
 
-      (async function() {
-        const directLine = createDirectLineWithTranscript(generateTranscript());
-        const store = createStore();
+      run(async function () {
+        const directLine = testHelpers.createDirectLineWithTranscript(generateTranscript());
+        const store = testHelpers.createStore();
 
         let lastScrollPosition;
 
@@ -135,7 +114,7 @@
             <WebChat className="webchat">
               <RunFunction fn={() => deferreds[0].resolve(fn && fn())} key={Date.now() + ''} />
             </WebChat>,
-            document.getElementById('app'),
+            document.getElementById('webchat'),
             deferreds[1].resolve
           );
 
@@ -146,11 +125,11 @@
 
         await renderWithFunction();
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         // Wait until the view is not sticky.
         await new Promise(resolve => setTimeout(resolve, 200));
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+        await pageConditions.scrollToBottomCompleted();
 
         // "12" should appears right above the send box.
         await renderWithFunction(() => useScrollTo()({ activityID: '12' }));
@@ -166,12 +145,6 @@
         // Since "19" is a super-long activity, it should appears on the top of the page.
         await renderWithFunction(() => useScrollTo()({ activityID: '19' }));
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

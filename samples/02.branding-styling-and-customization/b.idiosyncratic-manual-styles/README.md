@@ -25,7 +25,7 @@ This sample introduces the ability to overwrite `createStyleSet`, which is the u
 
 ## Overriding `createStyleSet`
 
-> Please note that this method of styling Web Chat is **not recommended** and **not supported**. If you need to make styling changes, we **strongly recommend** using the strategy available in [05.a-branding-webchat-styling](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/02.branding-styling-and-customization/a.branding-web-chat). Please take a look at that sample before you decide to use manual styling.
+> Please note that this method of styling Web Chat is **not recommended** and **not supported**. If you need to make styling changes, we **strongly recommend** using the strategy available in [05.a-branding-webchat-styling](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/02.branding-styling-and-customization/a.branding-web-chat). Please take a look at that sample before you decide to use manual styling.
 
 If there are aspects of Web Chat that you want to change in appearance, and do not wish to file a PR with us, you are welcome to use idiosyncratic styling. Please note that this strategy is not protected by the Web Chat repo's team from the possibility of breaking changes in the future. This means that if you use the `/latest/` release of Web Chat, your styling may suddenly break when we create a new release.
 
@@ -104,7 +104,7 @@ Here is the finished `index.html`:
     <div id="webchat" role="main"></div>
     <script>
       (async function() {
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
         const styleSet = window.WebChat.createStyleSet({
           bubbleBackground: 'rgba(0, 0, 255, .1)',
@@ -134,8 +134,8 @@ Here is the finished `index.html`:
 
 # Further reading
 
--  [Branding styling bot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/a.branding-web-chat) | [(Branding styling source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/02.branding-styling-and-customization/a.branding-web-chat)
+-  [Branding styling bot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/a.branding-web-chat) | [(Branding styling source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/02.branding-styling-and-customization/a.branding-web-chat)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

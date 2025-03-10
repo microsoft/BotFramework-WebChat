@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      (async function() {
-        const { conditions, createStore, host, pageObjects, timeouts, token } = window.WebChatTest;
-
-        const store = createStore({}, ({ dispatch }) => next => action => {
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore({}, ({ dispatch }) => next => action => {
           if (action.type === 'DIRECT_LINE/CONNECT_FULFILLED') {
             dispatch({
               type: 'WEB_CHAT/SET_NOTIFICATION',
@@ -25,21 +25,20 @@
           return next(action);
         });
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
-            directLine: window.WebChat.createDirectLine({
-              token: await token.fetchDirectLineToken()
+            directLine: WebChat.createDirectLine({
+              token: await testHelpers.token.fetchDirectLineToken()
             }),
             store
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(conditions.toastShown(/privacy\spolicy/iu), timeouts.ui);
+        await pageConditions.uiConnected();
+        await pageConditions.toastShown(/privacy\spolicy/iu);
         await host.snapshot();
-        await host.done();
-      })().catch(err => console.error(err));
+      });
     </script>
   </body>
 </html>

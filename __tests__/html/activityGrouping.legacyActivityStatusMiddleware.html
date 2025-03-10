@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       .activity-status {
@@ -17,104 +22,89 @@
     </style>
   </head>
   <body>
-    <div id="webchat"></div>
+    <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        lolex,
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
-      } = window;
+      run(async function () {
+        const clock = lolex.createClock();
 
-      const clock = lolex.install();
+        await host.windowSize(undefined, 1280, document.getElementById('webchat'));
 
-      (async function() {
-        const activityStatusMiddleware = () => next => (...args) => {
-          const [
-            {
-              activity: {
-                from: { role }
-              },
-              sendState,
-              sameTimestampGroup
+        const activityStatusMiddleware =
+          () =>
+          next =>
+          (...args) => {
+            const [
+              {
+                activity: {
+                  from: { role }
+                },
+                sendState,
+                sameTimestampGroup
+              }
+            ] = args;
+
+            if (sendState === 'sending') {
+              return (
+                <span className="activity-status">
+                  <span className="activity-status__sending">Sending&hellip;</span>
+                </span>
+              );
+            } else if (sendState === 'send failed') {
+              // Custom retry logic can be added when rendering the "Send failed." status.
+              return (
+                <span className="activity-status">
+                  <span className="activity-status__send-failed">Send failed.</span>
+                </span>
+              );
+            } else if (!sameTimestampGroup) {
+              return (
+                <span className="activity-status">
+                  <span className="activity-status__timestamp-pretext">{role === 'user' ? 'User at ' : 'Bot at '}</span>
+                  {next(...args)}
+                </span>
+              );
             }
-          ] = args;
 
-          if (sendState === 'sending') {
-            return (
-              <span className="activity-status">
-                <span className="activity-status__sending">Sending&hellip;</span>
-              </span>
-            );
-          } else if (sendState === 'send failed') {
-            // Custom retry logic can be added when rendering the "Send failed." status.
-            return (
-              <span className="activity-status">
-                <span className="activity-status__send-failed">Send failed.</span>
-              </span>
-            );
-          } else if (!sameTimestampGroup) {
-            return (
-              <span className="activity-status">
-                <span className="activity-status__timestamp-pretext">{role === 'user' ? 'User at ' : 'Bot at '}</span>
-                {next(...args)}
-              </span>
-            );
-          }
+            return next(...args);
+          };
 
-          return next(...args);
-        };
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             activityStatusMiddleware,
-            directLine: await createDirectLineWithTranscript([
-              {
-                from: { role: 'bot' },
-                id: '1.0',
-                text: 'This message should have timestamp "Bot at Just now".',
-                timestamp: -30001,
-                type: 'message'
-              },
-              {
-                channelData: { state: 'sent' },
-                from: { role: 'user' },
-                id: '2.0',
-                text: 'This message should have timestamp "User at Just now".',
-                timestamp: -30001,
-                type: 'message'
-              },
-              {
-                channelData: { clientActivityID: '2.1', clientTimestamp: -20001, state: 'sending' },
-                from: { role: 'user' },
-                text: 'This message should have status "Send failed".',
-                type: 'message'
-              },
-              {
-                channelData: { clientActivityID: '2.2', clientTimestamp: 0, state: 'sending' },
-                from: { role: 'user' },
-                text: 'This message should have status "Sending...", then turn to "Send failed".',
-                type: 'message'
-              }
-            ]),
-            store: createStore()
+            directLine,
+            ponyfill: clock,
+            store
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.directLine);
+        await pageConditions.webChatRendered();
 
         clock.tick(1000);
 
+        await directLine.emulateIncomingActivity('This message should have timestamp "Bot at Just now".');
+
+        await (
+          await directLine.emulateOutgoingActivity('This message should have timestamp "User at Just now".')
+        ).resolveAll();
+
+        clock.tick(10000);
+
+        await directLine.emulateOutgoingActivity('This message should have status "Send failed".');
+
+        clock.tick(20000);
+
+        await directLine.emulateOutgoingActivity(
+          'This message should have status "Sending...", then turn to "Send failed".'
+        );
+
         await host.snapshot();
 
-        clock.tick(19000);
+        clock.tick(20000);
 
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

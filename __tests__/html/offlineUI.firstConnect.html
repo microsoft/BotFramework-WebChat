@@ -1,56 +1,53 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const { conditions, createStore, host, pageObjects, shareObservable, timeouts, token } = window.WebChatTest;
+    <main id="webchat"></main>
+    <script>
+      function createDirectLineForTest(options) {
+        const UNINITIALIZED = 0;
+        const workingDirectLine = WebChat.createDirectLine(options);
 
-      (async function() {
-        function createDirectLineForTest(options) {
-          const UNINITIALIZED = 0;
-          const workingDirectLine = window.WebChat.createDirectLine(options);
+        return {
+          activity$: workingDirectLine.activity$,
+          postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
 
-          return {
-            activity$: workingDirectLine.activity$,
-            postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
+          connectionStatus$: new Observable(observer => {
+            const subscription = workingDirectLine.connectionStatus$.subscribe({
+              complete: () => observer.complete(),
+              error: err => observer.error(err),
+              next: connectionStatus => {
+                connectionStatus === UNINITIALIZED && observer.next(connectionStatus);
+              }
+            });
 
-            connectionStatus$: new Observable(observer => {
-              const subscription = workingDirectLine.connectionStatus$.subscribe({
-                complete: () => observer.complete(),
-                error: err => observer.error(err),
-                next: connectionStatus => {
-                  connectionStatus === UNINITIALIZED && observer.next(connectionStatus);
-                }
-              });
+            return () => subscription.unsubscribe();
+          })
+        };
+      }
 
-              return () => subscription.unsubscribe();
-            })
-          };
-        }
+      run(async function () {
+        const clock = lolex.createClock();
 
-        const clock = lolex.install();
-
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
-            directLine: createDirectLineForTest({ token: await token.fetchDirectLineToken() }),
-            store: createStore(),
+            directLine: createDirectLineForTest({ token: await testHelpers.token.fetchDirectLineToken() }),
+            ponyfill: clock,
+            store: testHelpers.createStoreWithOptions({ ponyfill: clock }),
             styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
+        await pageConditions.webChatRendered();
+        await pageConditions.allImagesLoaded();
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

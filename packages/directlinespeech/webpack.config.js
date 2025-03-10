@@ -1,4 +1,4 @@
-const { join, resolve } = require('path');
+const { join } = require('path');
 const { StatsWriterPlugin } = require('webpack-stats-plugin');
 
 let config = {
@@ -7,8 +7,7 @@ let config = {
   output: {
     filename: 'directlinespeech.production.min.js',
     library: 'DirectLineSpeech',
-    libraryTarget: 'window',
-    path: resolve(__dirname, 'dist')
+    libraryTarget: 'window'
   },
   plugins: [
     new StatsWriterPlugin({

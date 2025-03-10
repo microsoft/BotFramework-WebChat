@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            ),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        const transcript = document.querySelector('.webchat__basic-transcript');
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(32);
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageObjects.focusSendBoxTextBox();
+
+        // WHEN: SHIFT-TAB is pressed 3 times.
+        await host.sendShiftTab(3);
+
+        // THEN: It should focus on the transcript and the last activity.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[0]);
+
+        // THEN: It should show a visual keyboard indicator around the transcript and the last activity. This is our starting point.
+        await host.snapshot();
+
+        // WHEN: Up arrow key is pressed.
+        await host.sendKeys('ARROW_UP');
+        await pageConditions.focusedActivityInView();
+
+        // THEN: It should focus on the transcript and the second last activity.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[1]);
+
+        // THEN: It should show an visual keyboard indicator around the second last activity.
+        await host.snapshot();
+
+        // WHEN: Up arrow key is pressed.
+        await host.sendKeys('ARROW_UP');
+        await pageConditions.focusedActivityInView();
+
+        // THEN: It should focus on the transcript and the activity which contains the Adaptive Card.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[2]);
+
+        // THEN: It should show an visual keyboard indicator around the card.
+        await host.snapshot();
+
+        // WHEN: ENTER key is pressed on the activity with the card.
+        await host.sendKeys('ENTER');
+
+        // THEN: It should focus the first input box in the Adaptive Card.
+        expect(document.activeElement).toBe([...pageElements.activities()].reverse()[2].querySelector('input'));
+        await host.snapshot();
+
+        // WHEN: Up arrow key is pressed with TAB key followed.
+        await host.sendKeys('ARROW_UP');
+        await pageConditions.focusedActivityInView();
+        await host.sendTab();
+
+        // THEN: It should focus on the second input box in the Adaptive Card and not scrolling the view by pressing up arrow key.
+        expect(document.activeElement).toBe([...pageElements.activities()].reverse()[2].querySelectorAll('input')[1]);
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed.
+        await host.sendTab();
+
+        // THEN: It should focus on the last input box in the Adaptive Card.
+        expect(document.activeElement).toBe([...pageElements.activities()].reverse()[2].querySelectorAll('input')[2]);
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed.
+        await host.sendTab();
+
+        // THEN: It should focus on the submit button in the Adaptive Card.
+        expect(document.activeElement).toBe([...pageElements.activities()].reverse()[2].querySelector('button'));
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed.
+        await host.sendTab();
+
+        // THEN: It should focus back on the first input box in the Adaptive Card.
+        expect(document.activeElement).toBe([...pageElements.activities()].reverse()[2].querySelectorAll('input')[0]);
+        await host.snapshot();
+
+        // WHEN: ESCAPE key is pressed.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: It should focus back to the transcript, showing a focusing indicator around the transcript and the last activity.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[2]);
+        await host.snapshot();
+
+        // WHEN: ENTER key is pressed.
+        await host.sendKeys('ENTER');
+
+        // THEN: It should focus back to the first input box in the Adaptive Card.
+        expect(document.activeElement).toBe([...pageElements.activities()].reverse()[2].querySelector('input'));
+        await host.snapshot();
+
+        // WHEN: SHIFT-TAB key is pressed.
+        await host.sendShiftTab();
+
+        // THEN: It should focus on the submit button in the Adaptive Card.
+        expect(document.activeElement).toBe([...pageElements.activities()].reverse()[2].querySelector('button'));
+        await host.snapshot();
+
+        // WHEN: ESCAPE key is pressed.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: It should focus back to the transcript, showing a focusing indicator around the transcript and the last activity.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[2]);
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

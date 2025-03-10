@@ -1,0 +1,4 @@
+/node_modules
+
+# CLDR downloaded files.
+/dist

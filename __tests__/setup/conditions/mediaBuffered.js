@@ -1,19 +1,31 @@
 import { Condition } from 'selenium-webdriver';
 
+// We will check buffered duration for 5 times of each 300ms interval.
+// If all 3 checks return the same buffered length, we will consider the buffering has stabilized.
+const NUM_BUFFERED_CHECK = 5;
+const BUFFERED_CHECK_INTERVAL = 300;
+
 export default function mediaBuffered(mediaElement) {
   return new Condition('for audio to finish buffering', async driver => {
-    const result = await driver.executeScript(mediaElement => {
-      return (
-        mediaElement.readyState === HTMLMediaElement.HAVE_ENOUGH_DATA &&
-        mediaElement.buffered.length &&
-        mediaElement.buffered.end(0) === mediaElement.duration
-      );
-    }, mediaElement);
+    for (let index = 0; index < NUM_BUFFERED_CHECK; index++) {
+      const result = await driver.executeScript(mediaElement => {
+        const bufferedDuration = mediaElement.buffered.length && mediaElement.buffered.end(0);
+        const buffered =
+          mediaElement.readyState === HTMLMediaElement.HAVE_ENOUGH_DATA &&
+          bufferedDuration === mediaElement.__lastBufferedDuration;
 
-    // TODO: If the result is positive, audio finished buffering, we still need to wait for an unknown time to refresh the UI.
-    //       Will be great if we can remove this sleep.
-    result && (await driver.sleep(2000));
+        mediaElement.__lastBufferedDuration = bufferedDuration;
 
-    return result;
+        return buffered;
+      }, mediaElement);
+
+      if (!result) {
+        return false;
+      }
+
+      await driver.sleep(BUFFERED_CHECK_INTERVAL);
+    }
+
+    return true;
   });
 }

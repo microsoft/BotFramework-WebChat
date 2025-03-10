@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const directLine = window.WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+
+        const store = testHelpers.createStoreWithOptions();
+
+        async function renderWebChat(props = {}) {
+          window.WebChat.renderWebChat(
+            {
+              directLine,
+              store,
+              ...props
+            },
+            document.getElementById('webchat')
+          );
+        }
+
+        renderWebChat();
+
+        // WHEN: "echo Hello, World!" is sent.
+        await pageConditions.uiConnected();
+        await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
+
+        // THEN: The bot should reply with 2 activities.
+        await pageConditions.minNumActivitiesShown(3);
+
+        // THEN: There should be 3 activities in total: 1 from user, followed by 2 from the bot.
+        await host.snapshot();
+
+        // WHEN: `styleOptions.groupTimestamp` is set to 0, which means, every activity is on its own group.
+        renderWebChat({ styleOptions: { groupTimestamp: 0 } });
+
+        // THEN: Every messages should have timestamp on its own.
+        await host.snapshot();
+
+        // WHEN: `styleOptions.groupTimestamp` is set to false, which means, timestamp is disabled.
+        renderWebChat({ styleOptions: { groupTimestamp: false } });
+
+        // THEN: No messages should have timestamp on it.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

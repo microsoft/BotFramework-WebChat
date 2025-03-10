@@ -69,7 +69,7 @@ We'll start by using our old v3 `index.html` as our starting point.
 ```
 <!-- prettier-ignore-end -->
 
-> This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed. https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
+> This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to using Web Chat's latest bits. https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
 
 Our first change is to update the CDN the webpage uses from v3 to v4.
 
@@ -102,7 +102,7 @@ Next, the code to render Web Chat must be updated in the body. Note that MockBot
 -       resize: 'detect'
 -     }, document.getElementById("bot"));
 +     (async function () {
-+       const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
++       const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
 +       const { token } = await res.json();
 +
 +       window.WebChat.renderWebChat({
@@ -186,7 +186,7 @@ Here is the finished `index.html`:
     <div id="webchat" role="main"></div>
     <script>
       (async function() {
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
 
         window.WebChat.renderWebChat(
@@ -206,8 +206,8 @@ Here is the finished `index.html`:
 
 # Further reading
 
--  [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/a.full-bundle) | [(Full bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/a.full-bundle)
+-  [Full bundle bot](https://microsoft.github.io/BotFramework-WebChat/01.getting-started/a.full-bundle) | [(Full bundle source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/a.full-bundle)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

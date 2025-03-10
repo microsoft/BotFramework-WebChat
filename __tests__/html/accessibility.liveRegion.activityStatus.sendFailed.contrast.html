@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(
+        async function () {
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+          await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+            features: [{ name: 'forced-colors', value: 'active' }]
+          });
+
+          WebChat.renderWebChat(
+            {
+              directLine,
+              store,
+              styleOptions: {
+                groupTimestamp: 60000,
+                sendTimeout: 5000
+              }
+            },
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.uiConnected();
+
+          const sendMessage = await directLine.emulateOutgoingActivity('Hello, World!');
+
+          await directLine.emulateIncomingActivity('Aloha!');
+
+          sendMessage.rejectPostActivity(new Error('artificial error'));
+
+          await pageConditions.became(
+            'failed to send message',
+            () => pageElements.activityStatuses()[0]?.innerText === 'Send failed. Retry.',
+            1000
+          );
+
+          await host.snapshot();
+        },
+        { ignoreErrors: 'artificial error' }
+      );
+    </script>
+  </body>
+</html>

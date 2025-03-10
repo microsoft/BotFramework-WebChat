@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style>
+      :focus {
+        background-color: initial !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        await host.windowSize(300, undefined, document.getElementById('webchat'));
+
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
+
+        const params = new URLSearchParams(location.hash.replace(/^#/u, ''));
+
+        const suggestedActionsStackedLayoutButtonMaxHeight = params.get('mh');
+        const suggestedActionHeight = params.get('sah');
+        const suggestedActionsStackedLayoutButtonTextWrap = params.get('tw');
+
+        const styleOptions = {
+          suggestedActionLayout: 'stacked',
+          suggestedActionHeight: parseInt(suggestedActionHeight) || null,
+          suggestedActionsStackedLayoutButtonMaxHeight: parseInt(suggestedActionsStackedLayoutButtonMaxHeight) || null,
+          suggestedActionsStackedLayoutButtonTextWrap: suggestedActionsStackedLayoutButtonTextWrap === 'true' || null
+        };
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageObjects.sendMessageViaSendBox('suggested-actions');
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
+        await pageConditions.scrollToBottomCompleted();
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

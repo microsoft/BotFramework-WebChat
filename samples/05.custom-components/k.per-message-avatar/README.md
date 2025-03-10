@@ -24,7 +24,7 @@ This sample shows how to customize avatar on a per-message basis.
 
 ## Overview
 
-> This sample is based on the [01.getting-started/e.host-with-react](https://github.com/microsoft/BotFramework-Webchat/tree/master/samples/01.getting-started/e.host-with-react).
+> This sample is based on the [01.getting-started/e.host-with-react](https://github.com/microsoft/BotFramework-Webchat/tree/main/samples/01.getting-started/e.host-with-react).
 
 This sample is separated into 2 phases:
 
@@ -38,7 +38,7 @@ First, create a React component, `<AvatarWithOnlineStatus>` that will decorate i
 The component supports two online status: `"online"` and `"busy"`.
 
 ```diff
-  const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+  const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
   const { token } = await res.json();
   const { ReactWebChat } = window.WebChat;
 
@@ -128,10 +128,10 @@ We will also add `botAvatarInitials` and `userAvatarInitials` as `styleOptions`.
 
 ### (Optional) Making the component aware of right-to-left language
 
-Make the component RTL aware by using the [`useDirection`](https://github.com/microsoft/BotFramework-WebChat/tree/master/docs/HOOKS.md#usedirection) hook.
+Make the component RTL aware by using the [`useDirection`](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md#usedirection) hook.
 
 ```diff
-  const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+  const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
   const { token } = await res.json();
 - const { ReactWebChat } = window.WebChat;
 + const {
@@ -314,7 +314,7 @@ Here is the finished `index.html`:
     <script type="text/babel" data-presets="es2015,react,stage-3">
       (async function() {
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
         const { useMemo } = window.React;
         const {
@@ -374,10 +374,10 @@ Here is the finished `index.html`:
 
 [Comprehensive live demo for customizable avatar](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/k.per-message-avatar/comprehensive.html)
 
-[Demonstrates how to display initials for both Web Chat participants](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/02.branding-styling-and-customization/c.display-sender-initials)
+[Demonstrates how to display initials for both Web Chat participants](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/02.branding-styling-and-customization/c.display-sender-initials)
 
-[Demonstrates how to display images and initials for both Web Chat participants](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/02.branding-styling-and-customization/d.display-sender-images)
+[Demonstrates how to display images and initials for both Web Chat participants](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/02.branding-styling-and-customization/d.display-sender-images)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

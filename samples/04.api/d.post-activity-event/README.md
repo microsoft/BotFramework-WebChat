@@ -18,7 +18,7 @@ When the 'Help' button is clicked, an activity will be sent programmatically to 
 
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
-This sample is based on the [04.api/m.enable-composition-mode](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/04.api/m.enable-composition-mode) sample.
+This sample is based on the [04.api/m.enable-composition-mode](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/04.api/m.enable-composition-mode) sample.
 
 # Overview
 
@@ -137,7 +137,7 @@ Here is the finished `index.html`:
           }
         } = window;
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
         const directLine = createDirectLine({ token });
 
@@ -169,8 +169,8 @@ Here is the finished `index.html`:
 
 # Further reading
 
-[`04.api/c.incoming-activity-event`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/15.a.incoming-activity-event) is a sample that will fire JavaScript event on all incoming activities.
+[`04.api/c.incoming-activity-event`](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/15.a.incoming-activity-event) is a sample that will fire JavaScript event on all incoming activities.
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

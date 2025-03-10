@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       .avatar-box {
@@ -24,18 +29,17 @@
     </style>
   </head>
   <body>
-    <div id="webchat"></div>
+    <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         ReactDOM: { render },
         WebChat: {
           Components: { Composer },
           hooks: { useActivities, useCreateAvatarRenderer }
-        },
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts }
+        }
       } = window;
 
-      (async function() {
+      run(async function () {
         const RenderAvatarTest = ({ activity }) => {
           const createAvatarRenderer = useCreateAvatarRenderer();
           const renderAvatar = createAvatarRenderer({ activity });
@@ -58,7 +62,7 @@
           );
         };
 
-        const directLine = await createDirectLineWithTranscript([
+        const directLine = await testHelpers.createDirectLineWithTranscript([
           {
             from: { role: 'bot' },
             id: '1.0',
@@ -115,7 +119,7 @@
           return next(...args);
         };
 
-        const store = createStore();
+        const store = testHelpers.createStore();
 
         const styleOptions = {
           botAvatarInitials: 'Bot',
@@ -134,15 +138,10 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(() => document.querySelector('.done'), timeouts.ui);
+        await pageConditions.uiConnected();
+        await pageConditions.became('Done', () => document.querySelector('.done'), 1000);
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            ),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(32);
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageObjects.focusSendBoxTextBox();
+
+        // WHEN: After clicking on bottom-right corner of activity #29.
+        const activityElements = pageElements.activities();
+
+        await host.clickAt(-20, -20, activityElements[activityElements.length - 3]);
+
+        // THEN: It should set activity #29 as active descendant.
+        expect(activityElements[activityElements.length - 3]).toBe(pageElements.activeActivity());
+
+        // THEN: It should keep scroll view at the bottom.
+        //       This is because clicking on an activity should not scroll it into view. Only focusing via TAB will scroll it into view.
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: It should show a focus indicator around the transcript, an active indicator around activity #29, and #29 is not scrolled into view.
+        await host.snapshot();
+
+        // WHEN: After clicking on bottom-right corner of activity #30.
+        await host.clickAt(-20, -20, activityElements[activityElements.length - 2]);
+
+        // THEN: It should set activity #30 as active descendant.
+        expect(activityElements[activityElements.length - 2]).toBe(pageElements.activeActivity());
+
+        // THEN: Activity #30 should be in the view.
+        await pageConditions.focusedActivityInView();
+
+        // THEN: It should keep scroll view at the bottom.
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: It should activate the activity #30.
+        await host.snapshot();
+
+        // WHEN: Click on <input> inside activity #29.
+        await host.click(activityElements[activityElements.length - 3].querySelector('input'));
+
+        // THEN: It should set activity #29 as the active descendant.
+        expect(activityElements[activityElements.length - 3]).toBe(pageElements.activeActivity());
+
+        // THEN: It should keep scroll view at the bottom.
+        await pageConditions.scrollToBottomCompleted();
+        await host.snapshot();
+
+        // WHEN: After SHIFT-TAB x 3 from the send box to the transcript.
+        await pageObjects.focusSendBoxTextBox();
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+
+        // THEN: It should show a focus indicator around the transcript, and an active indicator around activity #29.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        expect(activityElements[activityElements.length - 3]).toBe(pageElements.activeActivity());
+
+        // THEN: It should scroll #29 into view because it is focusing on #29 using TAB keys.
+        await pageConditions.focusedActivityInView();
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

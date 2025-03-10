@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      // This test is to make sure we don't regress issue #3431, a race condition:
+
+      // - After created a conversation
+      // - User send an activity (or Web Chat programmatically sending out an activity)
+      // - At the same time, the bot also send another activity, with reply to ID of a bogus activity
+
+      // The timeout occurs if the user's message was send before the bot message was received.
+
+      // Originally, we allow the bot's activity to show up even they point to a bogus activity, if that message was the very first activity in the transcript.
+
+      // Because the user's activity was already in the transcript, the relaxation was not granted. Thus, the bot's activity is subject to "reply to ID" and a timeout.
+
+      run(async function () {
+        const clock = lolex.createClock();
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        // Wait for "Connecting..." message to dismiss
+        clock.tick(600);
+
+        await pageConditions.uiConnected();
+
+        const sendMessage = await directLine.actPostActivity(() =>
+          pageObjects.sendMessageViaSendBox('Aloha, bot!', { waitForSend: false })
+        );
+
+        await sendMessage.resolveAll();
+
+        await directLine.emulateIncomingActivity({
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          id: '00000',
+          replyToId: 'ABCDE',
+          text: 'Hello, John!',
+          timestamp: new Date().toISOString(),
+          type: 'message'
+        });
+
+        // The bot's activity 00000 will show up immediately because it is the very first bot activity and should not send to "Reply-to-ID" queue.
+        await pageConditions.numActivitiesShown(2);
+      });
+    </script>
+  </body>
+</html>

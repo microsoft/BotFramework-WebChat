@@ -5,6 +5,7 @@
       "plugins": ["babel-plugin-istanbul"]
     }
   },
+  "ignore": ["src/index.tsx"],
   "overrides": [
     {
       "plugins": [],
@@ -22,11 +23,10 @@
     }
   ],
   "plugins": [
-    "@babel/proposal-object-rest-spread",
     [
       "transform-inline-environment-variables",
       {
-        "include": ["npm_package_version"]
+        "include": ["build_tool", "module_format", "NODE_ENV", "node_env", "npm_package_version"]
       }
     ]
   ],

@@ -1,8 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('notification toast', () => {
-  test('should not break when showing a toast with undefined content', () =>
-    runHTMLTest('toast.undefined.html', { ignoreConsoleError: true }));
+  test('should not break when showing a toast with undefined content', () => runHTML('toast.undefined.html'));
 });

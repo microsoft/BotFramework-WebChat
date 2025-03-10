@@ -1,8 +1,7 @@
-/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 8, 16, 32, 128, 1000, 32768, 96000, 2147483648] }] */
+/* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 8, 16, 32, 128, 1000, 16000, 32768, 96000, 2147483648] }] */
 /* eslint no-await-in-loop: "off" */
 /* eslint prefer-destructuring: "off" */
 
-import cognitiveServicesAsyncFunctionToESAsyncFunction from './cognitiveServicesAsyncFunctionToESAsyncFunction';
 import createMultiBufferingPlayer from './createMultiBufferingPlayer';
 
 // Safari requires an audio buffer with a sample rate of 22050 Hz.
@@ -30,7 +29,7 @@ function formatTypedBitArrayToFloatArray(audioData, maxValue) {
   const float32Data = new Float32Array(audioData.length);
 
   for (let i = 0; i < audioData.length; i++) {
-    float32Data[i] = audioData[i] / maxValue;
+    float32Data[+i] = audioData[+i] / maxValue;
   }
 
   return float32Data;
@@ -67,10 +66,10 @@ function deinterleave(channelInterleavedAudioData, { channels }) {
   for (let channel = 0; channel < channels; channel++) {
     const audioData = new Float32Array(frameSize);
 
-    multiChannelArrayBuffer[channel] = audioData;
+    multiChannelArrayBuffer[+channel] = audioData;
 
     for (let offset = 0; offset < frameSize; offset++) {
-      audioData[offset] = channelInterleavedAudioData[offset * channels + channel];
+      audioData[+offset] = channelInterleavedAudioData[offset * channels + channel];
     }
   }
 
@@ -88,7 +87,7 @@ function multiplySampleRate(source, sampleRateMultiplier) {
   const target = new Float32Array(source.length * sampleRateMultiplier);
 
   for (let sourceOffset = 0; sourceOffset < source.length; sourceOffset++) {
-    const value = source[sourceOffset];
+    const value = source[+sourceOffset];
     const targetOffset = sourceOffset * sampleRateMultiplier;
 
     for (let multiplierIndex = 0; multiplierIndex < sampleRateMultiplier; multiplierIndex++) {
@@ -118,23 +117,34 @@ export default async function playCognitiveServicesStream(audioContext, stream, 
     const { format } = stream;
     const abortPromise = abortToReject(signal);
     const array = new Uint8Array(DEFAULT_BUFFER_SIZE);
-    const streamRead = cognitiveServicesAsyncFunctionToESAsyncFunction(stream.read.bind(stream));
 
     const read = () =>
       Promise.race([
-        // Abort will gracefully end the queue. We will check signal.aborted later to throw abort exception.
-        // eslint-disable-next-line no-empty-function
-        abortPromise.catch(() => {}),
-        streamRead(array.buffer).then(numBytes =>
-          numBytes === array.byteLength ? array : numBytes ? array.slice(0, numBytes) : undefined
-        )
+        abortPromise.catch(() => {
+          // Abort will gracefully end the queue. We will check signal.aborted later to throw abort exception.
+        }),
+        stream
+          .read(array.buffer)
+          .then(numBytes => (numBytes === array.byteLength ? array : numBytes ? array.slice(0, numBytes) : undefined))
       ]);
 
     if (signal.aborted) {
       throw new Error('aborted');
     }
 
-    let newSamplesPerSec = format.samplesPerSec;
+    let { samplesPerSec } = format;
+
+    // TODO: [P0] #3692 Remove the following if-condition block when the underlying bugs are resolved.
+    //       There is a bug in Speech SDK 1.15.0 that returns 24kHz instead of 16kHz.
+    //       Even if we explicitly specify the output audio format to 16kHz, there is another bug that ignored it.
+    //       In short, DLSpeech service currently always streams in RIFF WAV format, instead of MP3.
+    //       https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/313
+    //       https://github.com/microsoft/cognitive-services-speech-sdk-js/issues/314
+    if (format.requestAudioFormatString === 'audio-24khz-48kbitrate-mono-mp3') {
+      samplesPerSec = 16000;
+    }
+
+    let newSamplesPerSec = samplesPerSec;
     let sampleRateMultiplier = 1;
 
     // Safari requires a minimum sample rate of 22100 Hz.
@@ -143,7 +153,7 @@ export default async function playCognitiveServicesStream(audioContext, stream, 
     // For security, data will only be upsampled up to 96000 Hz.
     while (newSamplesPerSec < MIN_SAMPLE_RATE && newSamplesPerSec < 96000) {
       sampleRateMultiplier++;
-      newSamplesPerSec = format.samplesPerSec * sampleRateMultiplier;
+      newSamplesPerSec = samplesPerSec * sampleRateMultiplier;
     }
 
     // The third parameter is the sample size in bytes.

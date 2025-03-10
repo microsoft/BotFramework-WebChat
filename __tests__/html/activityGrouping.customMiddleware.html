@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      function bin(items, grouping) {
+        let lastBin;
+        const bins = [];
+        let lastItem;
+
+        items.forEach(item => {
+          if (lastItem && grouping(lastItem, item)) {
+            lastBin.push(item);
+          } else {
+            lastBin = [item];
+            bins.push(lastBin);
+          }
+
+          lastItem = item;
+        });
+
+        return bins;
+      }
+
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const activityMiddleware =
+          () =>
+          next =>
+          (...args) => {
+            const component = next(...args);
+
+            if (component && args[0].activity.from.role === 'channel') {
+              return () =>
+                React.createElement(
+                  'div',
+                  {
+                    style: {
+                      color: '#999',
+                      fontFamily: 'Calibri, sans-serif',
+                      fontSize: 'smaller',
+                      textAlign: 'center'
+                    }
+                  },
+                  args[0].activity.text
+                );
+            }
+
+            return component;
+          };
+
+        function renderWebChatWithProps(props) {
+          WebChat.renderWebChat(
+            {
+              activityMiddleware,
+              directLine,
+              store,
+              ...props
+            },
+            document.getElementById('webchat')
+          );
+        }
+
+        renderWebChatWithProps();
+
+        await pageConditions.uiConnected();
+
+        // SETUP: Receive a channel message.
+        await directLine.emulateIncomingActivity({
+          from: { role: 'channel' },
+          text: 'An agent will be available shortly.',
+          type: 'message'
+        });
+
+        // SETUP: Receive a bot message.
+        await directLine.emulateIncomingActivity({
+          text: 'Hello, World!',
+          timestamp: new Date().toISOString(),
+          type: 'message'
+        });
+
+        // SETUP: Receive another bot message.
+        await directLine.emulateIncomingActivity({
+          text: 'Aloha!',
+          timestamp: new Date().toISOString(),
+          type: 'message'
+        });
+
+        // WHEN: `groupActivitiesMiddleware` is invalid (undefined).
+        renderWebChatWithProps({
+          groupActivitiesMiddleware:
+            () =>
+            next =>
+            (...args) =>
+              undefined
+        });
+
+        // THEN: It should group activities by themselves.
+        pageConditions.became(
+          'should have 2 timestamps',
+          () =>
+            pageElements
+              .activityStatuses()
+              .map(element => !!element?.querySelector('[aria-hidden]')?.innerText)
+              .filter(Boolean).length === 2,
+          1000
+        );
+
+        // WHEN: `groupActivitiesMiddleware` is invalid (() => false).
+        renderWebChatWithProps({
+          groupActivitiesMiddleware:
+            () =>
+            next =>
+            (...args) =>
+            () =>
+              false
+        });
+
+        // THEN: It should group activities by themselves.
+        pageConditions.became(
+          'should have 2 timestamps',
+          () =>
+            pageElements
+              .activityStatuses()
+              .map(element => !!element?.querySelector('[aria-hidden]')?.innerText)
+              .filter(Boolean).length === 2,
+          1000
+        );
+
+        // WHEN: `groupActivitiesMiddleware` is invalid ({ sender: undefined, status: undefined }).
+        renderWebChatWithProps({
+          groupActivitiesMiddleware:
+            () =>
+            next =>
+            (...args) =>
+            () => ({ sender: undefined, status: undefined })
+        });
+
+        // THEN: It should group activities by themselves.
+        pageConditions.became(
+          'should have 2 timestamps',
+          () =>
+            pageElements
+              .activityStatuses()
+              .map(element => !!element?.querySelector('[aria-hidden]')?.innerText)
+              .filter(Boolean).length === 2,
+          1000
+        );
+
+        // WHEN: `groupActivitiesMiddleware` is invalid (not all activities are grouped).
+        renderWebChatWithProps({
+          groupActivitiesMiddleware:
+            () =>
+            next =>
+            (...args) =>
+            () => ({ sender: [], status: [] })
+        });
+
+        // THEN: It should group activities by themselves.
+        pageConditions.became(
+          'should have 2 timestamps',
+          () =>
+            pageElements
+              .activityStatuses()
+              .map(element => !!element?.querySelector('[aria-hidden]')?.innerText)
+              .filter(Boolean).length === 2,
+          1000
+        );
+
+        // WHEN: `groupActivitiesMiddleware` is unset.
+        renderWebChatWithProps();
+
+        // THEN: It should group activities using defaults.
+        pageConditions.became(
+          'should have 1 timestamp',
+          () =>
+            pageElements
+              .activityStatuses()
+              .map(element => !!element?.querySelector('[aria-hidden]')?.innerText)
+              .filter(Boolean).length === 1,
+          1000
+        );
+      });
+    </script>
+  </body>
+</html>

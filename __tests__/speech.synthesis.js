@@ -66,14 +66,17 @@ describe('speech synthesis', () => {
 
     await pageObjects.sendMessageViaMicrophone('hint expecting');
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+    // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+    await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+      'Waiting SpeechRecognition.start to be called'
+    );
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
     await driver.wait(speechSynthesisUtterancePended(), timeouts.ui);
 
     await pageObjects.startSpeechSynthesize();
     await pageObjects.errorSpeechSynthesize();
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
   });
 
   test('should not synthesis if engine is explicitly configured off', async () => {
@@ -94,7 +97,10 @@ describe('speech synthesis', () => {
 
     await pageObjects.sendMessageViaMicrophone('Hello, World!');
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+    // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+    await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+      'Waiting SpeechRecognition.start to be called'
+    );
     await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
     expect(await pageObjects.getConsoleErrors()).toEqual([]);
@@ -109,7 +115,10 @@ describe('speech synthesis', () => {
 
     await pageObjects.sendMessageViaMicrophone('echo Hello, World!');
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+    // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+    await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+      'Waiting SpeechRecognition.start to be called'
+    );
     await driver.wait(minNumActivitiesShown(3), timeouts.directLine);
 
     await expect(pageObjects.startSpeechSynthesize()).resolves.toHaveProperty(
@@ -121,7 +130,7 @@ describe('speech synthesis', () => {
 
     await pageObjects.clickMicrophoneButton();
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
     await driver.wait(negationOf(speechSynthesisUtterancePended()), timeouts.ui);
   });
 
@@ -144,7 +153,7 @@ describe('speech synthesis', () => {
 
       await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
 
-      await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
+      await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
       await driver.wait(negationOf(speechSynthesisUtterancePended()), timeouts.ui);
     });
   });

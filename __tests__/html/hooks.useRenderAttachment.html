@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        ReactDOM: { render },
+        WebChat: {
+          Components: { Composer },
+          hooks: { useActivities, useRenderAttachment }
+        }
+      } = window;
+
+      run(async function () {
+        const Test = () => {
+          const [[activity]] = useActivities();
+          const renderAttachment = useRenderAttachment();
+
+          if (!activity) {
+            return false;
+          }
+
+          const attachment = renderAttachment({ activity, attachment: activity.attachments[0] });
+
+          return (
+            <React.Fragment>
+              {attachment}
+              {!!attachment && <div className="done" />}
+            </React.Fragment>
+          );
+        };
+
+        const directLine = await testHelpers.createDirectLineWithTranscript([
+          {
+            attachments: [
+              {
+                contentType: 'image/png',
+                contentUrl:
+                  'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+              }
+            ],
+            from: { role: 'bot' },
+            id: '1.0',
+            text: 'Nostrud in dolor Lorem nulla esse anim nisi adipisicing do nisi.',
+            timestamp: 0,
+            type: 'message'
+          }
+        ]);
+
+        const store = testHelpers.createStore();
+
+        render(
+          <Composer directLine={directLine} store={store}>
+            <Test />
+          </Composer>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.became('Done', () => document.querySelector('.done'), 1000);
+        await pageConditions.allImagesLoaded();
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

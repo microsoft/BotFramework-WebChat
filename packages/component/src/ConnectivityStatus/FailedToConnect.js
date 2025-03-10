@@ -1,11 +1,12 @@
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React from 'react';
 
 import ErrorNotificationIcon from './Assets/ErrorNotificationIcon';
 import ScreenReaderText from '../ScreenReaderText';
-import useDirection from '../hooks/useDirection';
-import useLocalizer from '../hooks/useLocalizer';
 import useStyleSet from '../hooks/useStyleSet';
+
+const { useDirection, useLocalizer } = hooks;
 
 const ConnectivityStatusFailedToConnect = () => {
   const [{ errorNotification: errorNotificationStyleSet }] = useStyleSet();

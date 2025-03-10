@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // WHEN: Web Chat is rendered without any activities.
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        // THEN: It should not have any role="feed".
+        expect(pageElements.transcript().querySelector('[role="feed"]')).toBeFalsy();
+
+        // THEN: It should not violating any accessibility rules.
+        pageObjects.verifyDOMIntegrity();
+
+        // WHEN: An activity "Hello, World!" arrive.
+        directLine.emulateIncomingActivity('Hello, World!');
+
+        // THEN: It should have 1 activity shown.
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: It should have role="feed".
+        expect(pageElements.transcript().querySelector('[role="feed"]')).toBeTruthy();
+
+        // THEN: The `role="feed"` element should have at least 1 <article> or `role="article"`.
+        pageObjects.verifyDOMIntegrity();
+      });
+    </script>
+  </body>
+</html>

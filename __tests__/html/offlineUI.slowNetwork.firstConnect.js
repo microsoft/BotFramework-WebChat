@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('offline UI', () => {
   test('should show "Taking longer than usual to connect" UI when connection is slow', () =>
-    runHTMLTest('offlineUI.slowNetwork.firstConnect.html'));
+    runHTML('offlineUI.slowNetwork.firstConnect.html'));
 });

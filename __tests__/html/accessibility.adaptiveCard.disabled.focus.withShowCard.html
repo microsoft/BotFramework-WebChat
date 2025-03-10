@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@18.1.0/umd/react.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          Components: { AdaptiveCardContent }
+        } = window.WebChat;
+
+        const NOW = Date.now();
+
+        let numPostActivityCalled = 0;
+
+        const directLine = await testHelpers.createDirectLineWithTranscript(
+          [
+            {
+              from: {
+                id: 'bot',
+                role: 'bot'
+              },
+              id: '0',
+              text: 'What is your ZIP code? (optional) for US users only',
+              timestamp: new Date(NOW).toISOString(),
+              type: 'message'
+            },
+            {
+              attachments: [
+                {
+                  contentType: 'application/vnd.microsoft.card.adaptive',
+                  content: {
+                    type: 'AdaptiveCard',
+                    version: '1.0',
+                    body: [
+                      {
+                        type: 'Container',
+                        items: []
+                      }
+                    ],
+                    actions: [
+                      {
+                        type: 'Action.ShowCard',
+                        card: {
+                          type: 'AdaptiveCard',
+                          body: [
+                            {
+                              type: 'Input.Text',
+                              id: 'zipcode',
+                              placeholder: 'Click here to enter a 5-digit (12345) or 9-digit (12345-1234) ZIP code'
+                            }
+                          ],
+                          actions: [
+                            {
+                              type: 'Action.Submit',
+                              title: 'Submit',
+                              text: 'size:extraLarge',
+                              size: 'extraLarge'
+                            }
+                          ]
+                        },
+                        title: 'Set ZIP code'
+                      },
+                      {
+                        type: 'Action.Submit',
+                        title: 'Skip',
+                        text: 'size:extraLarge',
+                        size: 'extraLarge'
+                      }
+                    ]
+                  }
+                }
+              ],
+              from: {
+                id: 'bot',
+                role: 'bot'
+              },
+              id: '1',
+              timestamp: new Date(NOW + 1).toISOString(),
+              type: 'message'
+            }
+          ],
+          {
+            overridePostActivity: () => {
+              numPostActivityCalled++;
+
+              return new Observable(() => {});
+            }
+          }
+        );
+
+        const createAttachmentMiddleware =
+          disabled =>
+          () =>
+          next =>
+          (...args) => {
+            const [{ attachment }] = args;
+
+            switch (attachment.contentType) {
+              case 'application/vnd.microsoft.card.adaptive':
+                return React.createElement(AdaptiveCardContent, {
+                  actionPerformedClassName: 'card__action--performed',
+                  content: attachment.content,
+                  disabled
+                });
+
+              default:
+                return next(...args);
+            }
+          };
+
+        const props = {
+          directLine,
+          store: testHelpers.createStore()
+        };
+
+        function render(patchProps) {
+          WebChat.renderWebChat({ ...props, ...patchProps }, document.getElementById('webchat'));
+        }
+
+        render({ attachmentMiddleware: createAttachmentMiddleware(false) });
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
+
+        // SETUP: Focus on the send box.
+        await pageObjects.focusSendBoxTextBox();
+
+        // WHEN: Mimick pressing "B" on screen reader, which will focus on the first `role="button"`.
+        await pageElements.transcript().querySelector('button:not([role]), [role="button"]').focus();
+
+        // WHEN: Pressing ENTER key on the "Set ZIP code" button.
+        await host.sendKeys('ENTER');
+
+        // THEN: It should expand the card and the "Submit" button should be shown.
+        //       It should continue to focus on the "Set ZIP code" button.
+        expect(document.querySelector('button[title="Submit"]')).toBeTruthy();
+        await host.snapshot();
+
+        // WHEN: Pressing TAB key.
+        await host.sendKeys('TAB');
+
+        // THEN: It should focus on the "Skip" button.
+        expect(document.activeElement).toBe(document.querySelector('button[title="Skip"]'));
+
+        // WHEN: Pressing TAB key again.
+        await host.sendKeys('TAB');
+
+        // THEN: It should focus on the textbox.
+        expect(document.activeElement).toBe(document.querySelector('input'));
+
+        // WHEN: Pressing TAB key.
+        await host.sendKeys('TAB');
+
+        // THEN: It should focus on the "Submit" button.
+        expect(document.activeElement).toBe(document.querySelector('button[title="Submit"]'));
+
+        // WHEN: Pressing ENTER key while the focus is on the "Submit" button.
+        await host.sendKeys('ENTER');
+
+        // THEN: It should call postActivity().
+        expect(numPostActivityCalled).toBe(1);
+
+        // WHEN: The UI is disabled.
+        render({ attachmentMiddleware: createAttachmentMiddleware(true) });
+
+        // WHEN: Pressing TAB key.
+        await host.sendKeys('TAB');
+
+        // THEN: It should focus on the "Set ZIP code" button.
+        expect(document.activeElement).toBe(document.querySelector('button[title="Set ZIP code"]'));
+
+        // WHEN: Pressing TAB key again.
+        await host.sendKeys('TAB');
+
+        // THEN: It should continue to focus on the "Set ZIP code" button.
+        expect(document.activeElement).toBe(document.querySelector('button[title="Set ZIP code"]'));
+
+        // WHEN: Pressing ENTER key while to focus is on "Set ZIP code".
+        await host.sendKeys('ENTER');
+
+        // THEN: It should hide te attached panel.
+        //       It should continue to focus on the "Set ZIP code" button.
+        //       The "Skip" button should be disabled.
+        expect(document.querySelector('button[title="Submit"]')).toBeFalsy();
+        await host.snapshot();
+
+        // WHEN: The UI is re-enabled.
+        render({ attachmentMiddleware: createAttachmentMiddleware(false) });
+
+        // WHEN: Pressing TAB key to focus on the "Skip" button and press ENTER key on it.
+        await host.sendKeys('TAB', 'ENTER');
+
+        // THEN: It should call postActivity().
+        expect(numPostActivityCalled).toBe(2);
+      });
+    </script>
+  </body>
+</html>

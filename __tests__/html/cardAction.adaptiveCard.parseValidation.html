@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const directLine = await testHelpers.createDirectLineWithTranscript([
+          {
+            type: 'message',
+            id: '1',
+            channelId: 'directline',
+            from: {
+              role: 'bot'
+            },
+            attachmentLayout: 'carousel',
+            locale: 'en-US',
+            text: 'This card has a parsing error',
+            timestamp: '2019-08-08T16:41:12.9397263Z',
+            attachments: [
+              {
+                contentType: 'application/vnd.microsoft.card.adaptive',
+                content: {
+                  type: 'AdaptiveCard',
+                  version: '1.2',
+                  speak: 'Forced parsing error',
+                  body: [
+                    [
+                      {
+                        cinemaList: [
+                          {
+                            cinemaName: 'CCP',
+                            locationLat: 0,
+                            locationLong: 0,
+                            dateList: [
+                              { showDate: 'N/A', timeSlotList: [{ showTime: '4.00 PM' }, { showTime: '5.00 PM' }] }
+                            ]
+                          },
+                          { cinemaName: 'JEM' }
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              }
+            ]
+          }
+        ]);
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.minNumActivitiesShown(1);
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

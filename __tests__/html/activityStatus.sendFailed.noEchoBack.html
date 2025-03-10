@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      function activityStatusInnerTextContained(expectedInnerTextPattern) {
+        return pageConditions.became(
+          `Activity status should contains "${expectedInnerTextPattern}"`,
+          () => pageElements.activityStatuses()[0].innerText.includes(expectedInnerTextPattern),
+          1000
+        );
+      }
+
+      function activityChannelDataStateBecame(expectedState) {
+        if (typeof expectedState === 'undefined') {
+          return pageConditions.became(
+            `Activity "channelData.state" should be undefined`,
+            () => !('state' in pageObjects.getActivities()[0].channelData),
+            1000
+          );
+        }
+
+        return pageConditions.became(
+          `Activity "channelData.state" should be "${expectedState}"`,
+          () => pageObjects.getActivities()[0].channelData?.state === expectedState,
+          1000
+        );
+      }
+
+      function activityChannelDataWebChatSendStatusBecame(expectedSendStatus) {
+        return pageConditions.became(
+          `Activity "channelData['webchat:send-status']" should be "${expectedSendStatus}"`,
+          () => pageObjects.getActivities()[0].channelData?.['webchat:send-status'] === expectedSendStatus,
+          1000
+        );
+      }
+
+      run(
+        async function () {
+          const clock = lolex.createClock();
+
+          const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+          WebChat.renderWebChat(
+            {
+              directLine,
+              ponyfill: clock,
+              store,
+              styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
+            },
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.webChatRendered();
+
+          clock.tick(400);
+
+          // SETUP: Send a message and resolve the call to `postActivity()`.
+          await pageConditions.uiConnected();
+
+          const sendMessage = await directLine.actPostActivity(
+            () => pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false }),
+            { id: 'a00001' }
+          );
+
+          sendMessage.resolvePostActivity();
+
+          // THEN: `channelData.state` should be "sending".
+          await activityChannelDataStateBecame('sending');
+
+          // THEN: `channelData['webchat:send-status']` should be "sending".
+          await activityChannelDataWebChatSendStatusBecame('sending');
+
+          // THEN: The message should have status of "Sending".
+          await activityStatusInnerTextContained('Sending');
+
+          // WHEN: After 20 seconds.
+          clock.tick(20000);
+
+          // THEN: `channelData.state` should be "send failed".
+          await activityChannelDataStateBecame('send failed');
+
+          // THEN: `channelData['webchat:send-status']` should be "sending".
+          await activityChannelDataWebChatSendStatusBecame('sending');
+
+          // THEN: The message should have status of "Send failed. Retry."
+          //       This is because the message passed 20s as defined in `styleOptions.sendTimeout`.
+          await activityStatusInnerTextContained('Send failed. Retry.');
+
+          // WHEN: After 280 seconds (at t=5m).
+          clock.tick(280000);
+
+          // THEN: The console should have an error message saying "timed out while waiting for outgoing message to echo back".
+          await pageConditions.errorMessageLogged('timed out while waiting for outgoing message to echo back');
+
+          // THEN: `channelData.state` should be "send failed".
+          await activityChannelDataStateBecame('send failed');
+
+          // THEN: `channelData['webchat:send-status']` should be "send failed".
+          await activityChannelDataWebChatSendStatusBecame('send failed');
+
+          // THEN: The message should have status of "Send failed. Retry.".
+          await activityStatusInnerTextContained('Send failed. Retry.');
+        },
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>

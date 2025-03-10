@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const directLine = testHelpers.createDirectLineWithTranscript([
+          {
+            attachments: [
+              {
+                contentType: 'application/vnd.microsoft.card.oauth',
+                content: {
+                  text: 'Sign in',
+                  connectionName: 'oauth-connection',
+                  buttons: [
+                    {
+                      type: 'signin',
+                      title: 'Sign in',
+                      value: 'https://bing.com/'
+                    }
+                  ]
+                }
+              }
+            ],
+            from: {
+              id: 'bot',
+              role: 'bot'
+            },
+            id: '1',
+            timestamp: new Date().toISOString(),
+            type: 'message'
+          }
+        ]);
+
+        let popup;
+
+        window.open = () => {
+          popup = {
+            location: { href: '' }
+          };
+
+          return popup;
+        };
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        // SETUP: Show attachments with various allowed protocols.
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(1);
+
+        // WHEN: Clicking on the "Sign in" button.
+        await host.click(document.querySelector('.ac-pushButton'));
+
+        // THEN: It should open an empty popup then close itself.
+        await pageConditions.became('popup opened and navigated', () => popup.location.href === 'https://bing.com/', 2000);
+      });
+    </script>
+  </body>
+</html>

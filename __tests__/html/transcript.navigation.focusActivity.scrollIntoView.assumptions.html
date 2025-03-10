@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            ),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(32);
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageObjects.focusSendBoxTextBox();
+
+        // Tests according to https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant.
+
+        // Assumption: When an <input> or other focusable widget is halfly shown on the screen,
+        //             clicking on it will not scroll, TAB on it will scroll.
+
+        // WHEN: Scrolling to make the <input> of activity #29 halfly on screen.
+        const targetActivity = [...pageElements.activities()].reverse()[2];
+        const transcriptScrollable = pageElements.transcriptScrollable();
+        const input = targetActivity.querySelector('input');
+
+        const clientTopToScrollable = input.getClientRects()[0].y - transcriptScrollable.getClientRects()[0].y;
+
+        transcriptScrollable.scrollTop -=
+          transcriptScrollable.offsetHeight - clientTopToScrollable - input.offsetHeight / 2;
+
+        const { scrollTop } = transcriptScrollable;
+
+        // THEN: The <input> should show as half on the screen.
+        await host.snapshot();
+
+        // WHEN: Click on the upper left corner of the <input>.
+        await host.clickAt(1, 1, input);
+
+        // THEN: It should focus on the <input>.
+        expect(document.activeElement).toBe(input);
+
+        // THEN: It should not scroll.
+        expect(transcriptScrollable.scrollTop).toBe(scrollTop);
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed.
+        await host.sendTab();
+
+        // THEN: It should focus on the second <input>.
+        expect(document.activeElement).toBe(targetActivity.querySelectorAll('input')[1]);
+
+        // THEN: It should scroll.
+        await pageConditions.scrollStabilized();
+        expect(transcriptScrollable.scrollTop).not.toBe(scrollTop);
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

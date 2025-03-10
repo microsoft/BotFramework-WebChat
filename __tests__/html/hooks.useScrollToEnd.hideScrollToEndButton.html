@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        React: { useCallback, useLayoutEffect, useRef, useState },
+        WebChat: {
+          Components: { BasicWebChat, Composer },
+          hooks: { useScrollTo, useScrollToEnd, useSendMessage }
+        }
+      } = window;
+
+      run(async function () {
+        const start = Date.now();
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
+
+        const RunFunction = ({ fn, message }) => {
+          // TODO: We should skip logging to Jest console if it is console.info().
+          //       But if it is console.log(), we will log it out.
+          ~document.body.className.indexOf('jest') ||
+            console.log(`t=${Date.now() - start}: Running function "${message}".`, { fn });
+
+          fn();
+
+          return false;
+        };
+
+        const renderWithFunction = (fn, message) =>
+          new Promise(resolve =>
+            ReactDOM.render(
+              <Composer directLine={directLine} store={store}>
+                <BasicWebChat />
+                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} message={message} />
+              </Composer>,
+              document.getElementById('webchat')
+            )
+          );
+
+        await renderWithFunction(undefined, 'initial');
+
+        await pageConditions.uiConnected();
+
+        // Send "markdown", so it show a message long enough to occupy the whole scroll view.
+        await renderWithFunction(() => useSendMessage()('markdown'), 'useSendMessage');
+        await pageConditions.minNumActivitiesShown(2);
+
+        // Wait until the view start scrolling to the bottom, then we stop it by fixing it to the top.
+        await pageConditions.scrollToBottomCompleted();
+        await renderWithFunction(() => useScrollTo()({ scrollTop: 0 }, { behavior: 'auto' }), 'useScrollTo');
+
+        // Wait until the view is not sticky.
+        await pageConditions.scrollStabilized(0);
+
+        // Send another "markdown", it should not scroll to bottom ("useSendMessage" do not automatically scroll-to-bottom)
+        await renderWithFunction(() => useSendMessage()('markdown'), 'useSendMessage');
+        await pageConditions.minNumActivitiesShown(4);
+
+        // The "New messages" button should show up
+        await pageConditions.scrollToEndButtonShown();
+
+        // Call "scrollToEnd" should hide the "New messages" button immediately
+        await renderWithFunction(() => useScrollToEnd()()), 'useScrollToEnd';
+        await pageConditions.scrollToEndButtonHidden();
+
+        // Tests to add:
+        // - Type "help", scroll to top, type "help" again, the "New messages" button should not flash-appear
+      });
+    </script>
+  </body>
+</html>

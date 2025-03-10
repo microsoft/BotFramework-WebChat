@@ -1,41 +1,44 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="assets/accessibility.delayActivity.js" type="text/babel"></script>
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        TestAsset: { createDirectLineForTest },
-        WebChatTest: { conditions, createStore, host, pageObjects, timeouts }
-      } = window;
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const clock = lolex.createClock();
+        const directLine = testHelpers.accessibility.delayActivity.createDirectLineForTest({
+          ponyfill: clock,
+          withReplyToId: true
+        });
 
-      (async function() {
-        const clock = lolex.install();
-        const directLine = createDirectLineForTest({ withReplyToId: true });
-
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
-            store: createStore()
+            ponyfill: clock,
+            store: testHelpers.createStoreWithOptions({ ponyfill: clock })
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.ui);
+        await pageConditions.webChatRendered();
 
         // Wait for "Connecting..." message to dismiss
         clock.tick(600);
+
+        // TODO: [P1] #3707 This line should be removed when the SDK removes the bogus replyToId.
+        directLine.botSendMessage({ replyToId: 'bogus', type: 'event' });
 
         await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
 
         // This screenshot should show only user-initiated message "Hello, World!" with "Sending" status.
         // Although the bot-initiate message arrived, it is not shown on the screen or appear in the Redux store.
-        await pageObjects.wait(conditions.numActivitiesShown(1), timeouts.directLine);
-        await pageObjects.wait(() => directLine.numActivities === 1, timeouts.directLine);
+        await pageConditions.numActivitiesShown(1);
+        await pageConditions.became('directLine.numActivities became 1', () => directLine.numActivities === 1, 15000);
         await host.snapshot();
 
         clock.tick(5000);
@@ -43,7 +46,7 @@
         // This screenshot should show:
         // 1. User-initiated message "Hello, World!" is still sending (with "Sending" status)
         // 2. Bot-initiated message "You said: Hello, World!"
-        await pageObjects.wait(conditions.numActivitiesShown(2), timeouts.ui);
+        await pageConditions.numActivitiesShown(2);
         await host.snapshot();
 
         directLine.releaseEchoBackOnce();
@@ -52,12 +55,6 @@
         // 1. User-initiated message "Hello, World!" and is successfully sent (with "Just now" timestamp)
         // 2. Bot-initiated message "You said: Hello, World!"
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

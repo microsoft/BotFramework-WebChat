@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('timestamp', () => {
-  test('change send timeout on-the-fly', () => runHTMLTest('timestamp.changeSendTimeout.html'));
+  test('change send timeout on-the-fly', () => runHTML('timestamp.changeSendTimeout.html'));
 });

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(
+        async function () {
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+          WebChat.renderWebChat(
+            {
+              directLine,
+              store,
+              styleOptions: {
+                groupTimestamp: 60000,
+                sendTimeout: 5000
+              }
+            },
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.uiConnected();
+
+          const sendMessage = await directLine.emulateOutgoingActivity('Hello, World!');
+
+          await sendMessage.resolveAll();
+
+          await directLine.emulateIncomingActivity('Aloha!');
+
+          expect(pageElements.activityActiveDescendantLabels().map(({ innerText }) => innerText)).toEqual([
+            'You said: Hello, World!',
+            'Bot said: Aloha!'
+          ]);
+        },
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>

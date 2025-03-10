@@ -1,7 +1,5 @@
 import { By, Key } from 'selenium-webdriver';
-
 import { imageSnapshotOptions, timeouts } from './constants.json';
-
 import allOutgoingActivitiesSent from './setup/conditions/allOutgoingActivitiesSent';
 import minNumActivitiesShown from './setup/conditions/minNumActivitiesShown.js';
 import uiConnected from './setup/conditions/uiConnected';
@@ -16,6 +14,8 @@ const styleOptions = { sendBoxTextWrap: true };
 test('textarea input scroll', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
 
+  await driver.wait(uiConnected(), timeouts.directLine);
+
   const textarea = await driver.findElement(By.tagName('textarea'));
 
   await textarea.sendKeys(
@@ -29,6 +29,8 @@ test('textarea input scroll', async () => {
 
 test('textarea input resize after delete', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
@@ -45,6 +47,8 @@ test('textarea input resize after delete', async () => {
 test('textarea input with whitespace', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
 
+  await driver.wait(uiConnected(), timeouts.directLine);
+
   const textarea = await driver.findElement(By.tagName('textarea'));
 
   await textarea.sendKeys(
@@ -58,6 +62,8 @@ test('textarea input with whitespace', async () => {
 
 test('textarea input shift enter', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
@@ -73,6 +79,8 @@ test('textarea input shift enter', async () => {
 test('textarea input multiple lines', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
 
+  await driver.wait(uiConnected(), timeouts.directLine);
+
   const textarea = await driver.findElement(By.tagName('textarea'));
 
   await textarea.sendKeys(
@@ -86,6 +94,8 @@ test('textarea input multiple lines', async () => {
 
 test('textarea send on enter', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
+
+  await driver.wait(uiConnected(), timeouts.directLine);
 
   const textarea = await driver.findElement(By.tagName('textarea'));
 
@@ -104,10 +114,12 @@ test('textarea send on enter', async () => {
 test('textarea long text', async () => {
   const { driver } = await setupWebDriver({ props: { styleOptions } });
 
+  await driver.wait(uiConnected(), timeouts.directLine);
+
   const textarea = await driver.findElement(By.tagName('textarea'));
 
   await textarea.sendKeys(
-    'https://github.com/microsoft/BotFramework-WebChat/blob/master/packages/component/src/Styles/defaultStyleOptions.js'
+    'https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/bundle/src/fullBundleDefaultStyleOptions.ts'
   );
 
   const base64PNG = await driver.takeScreenshot();

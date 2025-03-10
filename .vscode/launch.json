@@ -5,9 +5,9 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "edge",
+      "type": "msedge",
       "request": "launch",
-      "name": "Launch Edge",
+      "name": "Launch Microsoft Edge",
       "url": "http://localhost:5000/samples/",
       "webRoot": "${workspaceFolder}",
       "sourceMapPathOverrides": {

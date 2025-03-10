@@ -8,7 +8,7 @@ This package contains the source code for the embed page at https://webchat.botf
 
 Web Chat offers multiple levels of integration options. In this package, we focus on embedding an `<iframe>` element in your web page.
 
-`<iframe>` is the simplest way to connect your website to Azure Bot Services. If you prefer more advanced features or customization options, please refer to the [migration guide](https://github.com/microsoft/botframework-webchat/blob/master/README.md#migrating-from-v3-to-v4-of-web-chat) for details.
+`<iframe>` is the simplest way to connect your website to Azure Bot Services. If you prefer more advanced features or customization options, please refer to the [migration guide](https://github.com/microsoft/BotFramework-WebChat/blob/main/README.md#migrating-from-v3-to-v4-of-web-chat) for details.
 
 There are a few features unique to `<iframe>`:
 
@@ -146,7 +146,7 @@ You can specify any `<iframe>` 4.x version of Web Chat on your app.
    -  `4.2` will serve the latest patch version of `4.2.*`. At the time this document was created, it is `4.2.0`
 -  Other
 
-   -  versions `3` and older are no longer available via embed. To use one of these versions on your app, please use the CDN of Web Chat in your HTML. See samples [01.getting-started/a.full-bundle](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/a.full-bundle) and [00.migration/a.v3-to-v4](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/00.migration/a.v3-to-v4) to learn more.
+   -  versions `3` and older are no longer available via embed. To use one of these versions on your app, please use the CDN of Web Chat in your HTML. See samples [01.getting-started/a.full-bundle](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/a.full-bundle) and [00.migration/a.v3-to-v4](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/00.migration/a.v3-to-v4) to learn more.
 
    -  Pre-v3, legacy versions of Web Chat are maintained at [`botframework-webchat@legacy`](https://www.npmjs.com/package/botframework-webchat/v/legacy), latest is 0.15.1
 

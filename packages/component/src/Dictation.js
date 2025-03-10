@@ -1,22 +1,28 @@
-import { Composer as DictateComposer } from 'react-dictate-button';
+import { hooks } from 'botframework-webchat-api';
+// TODO: [P1] #3350 No import from internal, we need to move setDictateState from bf-wc-core (Redux) to React Context.
+import { useSetDictateState } from 'botframework-webchat-api/internal';
 import { Constants } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { Composer as DictateComposer } from 'react-dictate-button';
 
-import useActivities from './hooks/useActivities';
-import useDictateInterims from './hooks/useDictateInterims';
-import useDictateState from './hooks/useDictateState';
-import useDisabled from './hooks/useDisabled';
-import useEmitTypingIndicator from './hooks/useEmitTypingIndicator';
-import useLanguage from './hooks/useLanguage';
-import useSendBoxValue from './hooks/useSendBoxValue';
-import useSendTypingIndicator from './hooks/useSendTypingIndicator';
-import useSetDictateState from './hooks/internal/useSetDictateState';
+import useResumeAudioContext from './hooks/internal/useResumeAudioContext';
 import useSettableDictateAbortable from './hooks/internal/useSettableDictateAbortable';
-import useShouldSpeakIncomingActivity from './hooks/useShouldSpeakIncomingActivity';
-import useStopDictate from './hooks/useStopDictate';
-import useSubmitSendBox from './hooks/useSubmitSendBox';
 import useWebSpeechPonyfill from './hooks/useWebSpeechPonyfill';
+
+const {
+  useDictateInterims,
+  useDictateState,
+  useEmitTypingIndicator,
+  useLanguage,
+  useSendBoxValue,
+  useSendTypingIndicator,
+  useShouldSpeakIncomingActivity,
+  useStopDictate,
+  useStyleOptions,
+  useSubmitSendBox,
+  useUIState
+} = hooks;
 
 const {
   DictateState: { DICTATING, IDLE, STARTING }
@@ -28,26 +34,21 @@ const Dictation = ({ onError }) => {
   const [, setSendBox] = useSendBoxValue();
   const [, setShouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
   const [{ SpeechGrammarList, SpeechRecognition } = {}] = useWebSpeechPonyfill();
-  const [activities] = useActivities();
+  const [{ speechRecognitionContinuous }] = useStyleOptions();
   const [dictateState] = useDictateState();
-  const [disabled] = useDisabled();
   const [sendTypingIndicator] = useSendTypingIndicator();
   const [speechLanguage] = useLanguage('speech');
+  const [uiState] = useUIState();
   const emitTypingIndicator = useEmitTypingIndicator();
+  const resumeAudioContext = useResumeAudioContext();
   const setDictateState = useSetDictateState();
   const stopDictate = useStopDictate();
   const submitSendBox = useSubmitSendBox();
-
-  const numSpeakingActivities = useMemo(() => activities.filter(({ channelData: { speak } = {} }) => speak).length, [
-    activities
-  ]);
 
   const handleDictate = useCallback(
     ({ result: { confidence, transcript } = {} }) => {
       if (dictateState === DICTATING || dictateState === STARTING) {
         setDictateInterims([]);
-        setDictateState(IDLE);
-        stopDictate();
 
         if (transcript) {
           setSendBox(transcript);
@@ -56,15 +57,7 @@ const Dictation = ({ onError }) => {
         }
       }
     },
-    [
-      dictateState,
-      setDictateInterims,
-      setDictateState,
-      stopDictate,
-      setSendBox,
-      submitSendBox,
-      setShouldSpeakIncomingActivity
-    ]
+    [dictateState, setDictateInterims, setSendBox, submitSendBox, setShouldSpeakIncomingActivity]
   );
 
   const handleDictating = useCallback(
@@ -81,6 +74,11 @@ const Dictation = ({ onError }) => {
     [dictateState, emitTypingIndicator, sendTypingIndicator, setDictateAbortable, setDictateInterims, setDictateState]
   );
 
+  const handleEnd = useCallback(() => {
+    dictateState !== IDLE && setDictateState(IDLE);
+    (dictateState === DICTATING || dictateState === STARTING) && stopDictate();
+  }, [dictateState, setDictateState, stopDictate]);
+
   const handleError = useCallback(
     event => {
       dictateState !== IDLE && setDictateState(IDLE);
@@ -91,15 +89,23 @@ const Dictation = ({ onError }) => {
     [dictateState, onError, setDictateState, stopDictate]
   );
 
+  useEffect(() => {
+    window.addEventListener('pointerdown', resumeAudioContext);
+
+    return () => window.removeEventListener('pointerdown', resumeAudioContext);
+  }, [resumeAudioContext]);
+
   return (
     <DictateComposer
+      continuous={speechRecognitionContinuous}
       lang={speechLanguage}
       onDictate={handleDictate}
+      onEnd={handleEnd}
       onError={handleError}
       onProgress={handleDictating}
       speechGrammarList={SpeechGrammarList}
       speechRecognition={SpeechRecognition}
-      started={!disabled && (dictateState === STARTING || dictateState === DICTATING) && !numSpeakingActivities}
+      started={uiState !== 'disabled' && (dictateState === STARTING || dictateState === DICTATING)}
     />
   );
 };

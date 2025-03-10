@@ -1,7 +1,7 @@
 import { put, takeEvery } from 'redux-saga/effects';
+import mime from 'mime';
 
 import { SEND_FILES } from '../actions/sendFiles';
-import mime from '../utils/mime-wrapper';
 import postActivity from '../actions/postActivity';
 import whileConnected from './effects/whileConnected';
 

@@ -1,47 +1,45 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        lolex,
-        React: { useMemo },
-        WebChat: { renderWebChat },
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
-      } = window;
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const clock = lolex.createClock();
+        const directLine = await testHelpers.createDirectLineWithTranscript(
+          [
+            {
+              from: { role: 'bot' },
+              id: '1.0',
+              replyToId: '0.0',
+              text: 'Qui exercitation excepteur aute eu qui nulla Lorem elit nostrud.',
+              timestamp: 0,
+              type: 'message'
+            }
+          ],
+          { ponyfill: clock }
+        );
 
-      (async function () {
-        const clock = lolex.install();
-        const directLine = await createDirectLineWithTranscript([
-          {
-            from: { role: 'bot' },
-            id: '1.0',
-            replyToId: '0.0',
-            text: 'Qui exercitation excepteur aute eu qui nulla Lorem elit nostrud.',
-            timestamp: 0,
-            type: 'message'
-          }
-        ]);
-
-        renderWebChat(
+        WebChat.renderWebChat(
           {
             directLine,
-            store: createStore()
+            ponyfill: clock,
+            store: testHelpers.createStoreWithOptions({ ponyfill: clock })
           },
           document.getElementById('webchat')
         );
 
-        window.clock = clock;
-
-        await pageObjects.wait(conditions.webChatRendered(), timeouts.directLine);
+        await pageConditions.webChatRendered();
 
         clock.tick(1000);
 
         // We should not delay the first activity, as the first activity always has a "replyToId" pointing to missing activity.
+        await pageConditions.numActivitiesShown(1);
         await host.snapshot();
 
         directLine.activityDeferredObservable.next({
@@ -57,11 +55,6 @@
         // the new activity should show up immediately.
         // There should be 2 activities shown on the screen.
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

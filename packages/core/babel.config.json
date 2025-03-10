@@ -5,17 +5,16 @@
     }
   },
   "plugins": [
-    "@babel/proposal-object-rest-spread",
+    "@babel/plugin-transform-typescript",
     "@babel/plugin-transform-runtime",
     [
       "transform-inline-environment-variables",
       {
-        "include": ["npm_package_version"]
+        "include": ["build_tool", "module_format", "npm_package_version"]
       }
     ]
   ],
   "presets": [
-    "@babel/preset-typescript",
     [
       "@babel/preset-env",
       {

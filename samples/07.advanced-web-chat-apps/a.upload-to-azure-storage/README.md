@@ -45,9 +45,13 @@ This will create a new Azure Storage for temporary storage of user uploads.
 1. Save the account name and key
    1. Select "Access keys"
    1. Copy "Storage account name" and save it to both `/bot/.env` and `/web/.env`
-      -  `AZURE_STORAGE_ACCOUNT_NAME=youraccountname`
+      -  ```
+         AZURE_STORAGE_ACCOUNT_NAME=youraccountname
+         ```
    1. Copy "Key" of "key1" and save it to both `/bot/.env` and `/web/.env`
-      -  `AZURE_STORAGE_ACCOUNT_KEY=a1b2c3d`
+      -  ```
+         AZURE_STORAGE_ACCOUNT_KEY=<your-azure-storage-account-key>
+         ```
 1. Create a new blob container named "userupload"
    1. Select "Blobs"
    1. Click "+ Container"
@@ -67,15 +71,17 @@ This will create a new Azure Storage for temporary storage of user uploads.
 
 ## Setup Azure Bot Services
 
-> We prefer to use [Bot Channel Registration](https://ms.portal.azure.com/#create/Microsoft.BotServiceConnectivityGalleryPackage) during development. This will help you diagnose problems locally without deploying to the server and speed up development.
-
-You can follow our instructions on how to [setup a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0).
+You can follow our instructions on how to [create an Azure Bot resource](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart?view=azure-bot-service-4.0&tabs=userassigned#create-the-resource).
 
 1. Save the Microsoft App ID and password to `/bot/.env`
-   -  `MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd`
-   -  `MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6`
+   -  ```
+      MICROSOFT_APP_ID=12345678abcd-1234-5678-abcd-12345678abcd
+      MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
+      ```
 1. Save the Web Chat secret to `/web/.env`
-   -  `DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0`
+   -  ```
+      DIRECT_LINE_SECRET=<your-direct-line-secret>
+      ```
 
 > When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer the documentation on [Direct Line token generation](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and the [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
 
@@ -164,17 +170,17 @@ To ease the setup of this sample, here is the template of `.env` files.
 
 ```
 AZURE_STORAGE_ACCOUNT_NAME=youraccountname
-AZURE_STORAGE_ACCOUNT_KEY=a1b2c3d
-MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
-MICROSOFT_APP_PASSWORD=a1b2c3d4e5f6
+AZURE_STORAGE_ACCOUNT_KEY=<your-azure-storage-account-key>
+MICROSOFT_APP_ID=12345678abcd-1234-5678-abcd-12345678abcd
+MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
 ```
 
 ### `/web/.env`
 
 ```
 AZURE_STORAGE_ACCOUNT_NAME=youraccountname
-AZURE_STORAGE_ACCOUNT_KEY=a1b2c3d
-DIRECT_LINE_SECRET=a1b2c3.d4e5f6g7h8i9j0
+AZURE_STORAGE_ACCOUNT_KEY=<your-azure-storage-account-key>
+DIRECT_LINE_SECRET=<your-direct-line-secret>
 ```
 
 # Frequently asked questions
@@ -191,7 +197,7 @@ Since revoking the URL created through `createObjectURL` is not trivial, there i
 
 # Further reading
 
--  [Setting up a new Bot Channel Registration](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart-registration?view=azure-bot-service-3.0)
+-  [Create an Azure Bot resource](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart?view=azure-bot-service-4.0&tabs=userassigned#create-the-resource)
 -  [Generating a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token)
 -  [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
 -  [Azure Storage: Setting up storage lifecycle management](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-lifecycle-management-concepts)

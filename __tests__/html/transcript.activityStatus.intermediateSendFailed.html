@@ -1,83 +1,47 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts, token }
-      } = window;
+    <main id="webchat"></main>
+    <script>
+      run(
+        async function () {
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-      (async function() {
-        window.WebChat.renderWebChat(
-          {
-            directLine: await createDirectLineWithTranscript([
-              {
-                channelData: {
-                  state: 'sent'
-                },
-                from: {
-                  role: 'user'
-                },
-                id: '1.0',
-                text: 'Lorem pariatur ea veniam.',
-                timestamp: 0,
-                type: 'message'
-              },
-              {
-                channelData: {
-                  state: 'sent'
-                },
-                from: {
-                  role: 'user'
-                },
-                id: '1.1',
-                text: 'Reprehenderit culpa laboris consectetur sint.',
-                timestamp: 0,
-                type: 'message'
-              },
-              {
-                channelData: {
-                  state: 'send failed'
-                },
-                from: {
-                  role: 'user'
-                },
-                id: '1.2',
-                text: 'Duis duis irure proident dolor labore.',
-                timestamp: 0,
-                type: 'message'
-              },
-              {
-                channelData: {
-                  state: 'sent'
-                },
-                from: {
-                  role: 'user'
-                },
-                id: '1.3',
-                text: 'Mollit ullamco consequat occaecat enim pariatur reprehenderit tempor.',
-                timestamp: 0,
-                type: 'message'
-              }
-            ]),
-            store: createStore()
-          },
-          document.getElementById('webchat')
-        );
+          WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+          await pageConditions.uiConnected();
 
-        await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
+          // SETUP: Successfully send a message.
+          await (await directLine.emulateOutgoingActivity('Lorem pariatur ea veniam.')).resolveAll();
 
-        await host.error(err);
-      });
+          // SETUP: Successfully send another message.
+          await (
+            await directLine.emulateOutgoingActivity('Reprehenderit culpa laboris consectetur sint.')
+          ).resolveAll();
+
+          // SETUP: Fail sending a message.
+          (await directLine.emulateOutgoingActivity('Duis duis irure proident dolor labore.')).rejectPostActivity();
+
+          // SETUP: Successfully send the last message.
+          await (
+            await directLine.emulateOutgoingActivity(
+              'Mollit ullamco consequat occaecat enim pariatur reprehenderit tempor.'
+            )
+          ).resolveAll();
+
+          // THEN: The first and second message is grouped as "Just now".
+          //       The third message has "Send failed. Retry."
+          //       The last message has "Just now".
+          await host.snapshot();
+        },
+        { ignoreErrors: true }
+      );
     </script>
   </body>
 </html>

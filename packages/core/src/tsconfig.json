@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
-    "declaration": true,
-    "declarationDir": "../lib",
-    "emitDeclarationOnly": true,
-    "isolatedModules": true,
     "jsx": "react",
-    "preserveWatchOutput": true,
-    "pretty": true,
-    "skipLibCheck": true
-  }
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "resolveJsonModule": true, // Required for localization files
+    "skipLibCheck": true,
+    "target": "ESNext"
+  },
+  "files": ["index.ts"]
 }

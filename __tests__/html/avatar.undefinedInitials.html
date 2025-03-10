@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <div id="webchat"></div>
+    <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
-        React: { useMemo },
-        WebChat: { renderWebChat },
-        WebChatTest: { conditions, createDirectLineWithTranscript, createStore, host, pageObjects, timeouts }
+        React: { useMemo }
       } = window;
 
-      (async function() {
+      run(async function () {
         const avatarMiddleware = () => next => (...args) => {
           const [{ activity }] = args;
 
@@ -24,7 +27,7 @@
           return next(...args);
         };
 
-        const directLine = await createDirectLineWithTranscript([
+        const directLine = await testHelpers.createDirectLineWithTranscript([
           {
             from: { role: 'bot' },
             id: '1.0',
@@ -49,11 +52,11 @@
           }
         ]);
 
-        renderWebChat(
+        WebChat.renderWebChat(
           {
             avatarMiddleware,
             directLine,
-            store: createStore(),
+            store: testHelpers.createStore(),
             styleOptions: {
               botAvatarInitials: undefined,
               bubbleBackground: '#0063B1',
@@ -75,14 +78,9 @@
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
+        await pageConditions.uiConnected();
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

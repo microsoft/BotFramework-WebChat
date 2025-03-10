@@ -1,18 +1,20 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2, 3, 4, 5] }] */
 /* eslint react/forbid-dom-props: "off" */
 
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import CollapseIcon from './Toast/CollapseIcon';
 import ExpandIcon from './Toast/ExpandIcon';
 import NotificationIcon from './Toast/NotificationIcon';
 import randomId from './Utils/randomId';
-import useDebouncedNotifications from './hooks/useDebouncedNotifications';
-import useLocalizer from './hooks/useLocalizer';
-import useRenderToast from './hooks/useRenderToast';
+import useInternalRenderMarkdownInline from './hooks/internal/useInternalRenderMarkdownInline';
+import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useStyleSet from './hooks/useStyleSet';
-import useStyleToEmotionObject from './hooks/internal/useStyleToEmotionObject';
+import { useLiveRegion } from './providers/LiveRegionTwin';
+
+const { useDebouncedNotifications, useLocalizer, useRenderToast } = hooks;
 
 const ROOT_STYLE = {
   display: 'flex',
@@ -40,8 +42,12 @@ const LEVEL_AS_NUMBER = {
   success: 4
 };
 
+const LEVEL_AS_NUMBER_KEYS = Object.keys(LEVEL_AS_NUMBER);
+
 function getLevelAsNumber(level) {
-  return LEVEL_AS_NUMBER[level] || 5;
+  // Mitigated through allowlisting.
+  // eslint-disable-next-line security/detect-object-injection
+  return LEVEL_AS_NUMBER_KEYS.includes(level) ? LEVEL_AS_NUMBER[level] : 5;
 }
 
 function compareLevel(x, y) {
@@ -71,6 +77,7 @@ const BasicToaster = () => {
   const [expanded, setExpanded] = useState(false);
   const localizeWithPlural = useLocalizer({ plural: true });
   const renderToast = useRenderToast();
+  const renderMarkdownInline = useInternalRenderMarkdownInline();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const handleToggleExpand = useCallback(() => setExpanded(!expanded), [expanded, setExpanded]);
@@ -94,19 +101,50 @@ const BasicToaster = () => {
     () => (!expandable || expanded ? `webchat__toaster__list__${instanceId}` : undefined),
     [expandable, expanded, instanceId]
   );
-  const headerElementId = useMemo(() => (expandable ? `webchat__toaster__header__${instanceId}` : undefined), [
-    expandable,
-    instanceId
-  ]);
+  const headerElementId = useMemo(
+    () => (expandable ? `webchat__toaster__header__${instanceId}` : undefined),
+    [expandable, instanceId]
+  );
 
   useEffect(() => {
     !expandable && setExpanded(false);
   }, [expandable]);
 
+  const notifiedElements = useRef(new Set());
+
+  useLiveRegion(() => {
+    const toAnnounce = [];
+
+    for (const notification of sortedNotifications.slice().reverse()) {
+      if (!notifiedElements.current.has(notification.id)) {
+        notifiedElements.current.add(notification.id);
+
+        toAnnounce.push(
+          notification.alt ? (
+            <div aria-atomic={true} className="webchat__toaster__notifications" key={notification.id}>
+              {notification.alt}
+            </div>
+          ) : (
+            <div
+              aria-atomic={true}
+              className="webchat__toaster__notifications"
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{
+                __html: renderMarkdownInline(notification.message ?? '')
+              }}
+              key={notification.id}
+            />
+          )
+        );
+      }
+    }
+
+    return toAnnounce.length > 0 && <Fragment>{toAnnounce}</Fragment>;
+  }, [renderMarkdownInline, sortedNotifications]);
+
   return (
     <div
       aria-labelledby={headerElementId}
-      aria-live="polite"
       aria-relevant="all"
       className={classNames(
         'webchat__toaster',
@@ -144,16 +182,18 @@ const BasicToaster = () => {
         </button>
       )}
       {(!expandable || expanded) && (
-        <ul aria-labelledby={headerElementId} className="webchat__toaster__list" id={expandableElementId} role="region">
+        <div aria-labelledby={headerElementId} className="webchat__toaster__list" id={expandableElementId}>
           {sortedNotificationsWithChildren.map(({ children, notification: { id } }) => (
-            <li aria-atomic={true} className="webchat__toaster__listItem" key={id} role="none">
+            <div className="webchat__toaster__listItem" key={id}>
               {children}
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
 };
 
-export default BasicToaster;
+BasicToaster.displayName = 'BasicToaster';
+
+export default memo(BasicToaster);

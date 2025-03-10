@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Decorate bot activity with upvote and downvote buttons</title>
@@ -11,7 +11,7 @@
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-redux@7.1.0/dist/react-redux.min.js"></script>
     <!--
-      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to pointing to Web Chat's MyGet feed:
+      This CDN points to the latest official release of Web Chat. If you need to test against Web Chat's latest bits, please refer to using Web Chat's latest bits:
       https://github.com/microsoft/BotFramework-WebChat#how-to-test-with-web-chats-latest-bits
     -->
     <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
@@ -58,7 +58,7 @@
   <body>
     <div id="webchat" role="main"></div>
     <script type="text/babel" data-presets="es2015,react,stage-3">
-      (async function() {
+      (async function () {
         'use strict';
 
         // In this demo, we are using Direct Line token from MockBot.
@@ -76,18 +76,20 @@
         const BotActivityDecorator = ({ activityID, children }) => {
           const postActivity = usePostActivity();
 
-          const handleDownvoteButton = useCallback(() => {
+          const addMessageReaction = helpful => {
             postActivity({
               type: 'messageReaction',
-              reactionsAdded: [{ activityID, helpful: -1 }]
+              reactionsAdded: [{ type: helpful === 1 ? 'ThumbsUp' : 'ThumbsDown' }],
+              replyToId: activityID
             });
+          };
+
+          const handleDownvoteButton = useCallback(() => {
+            addMessageReaction(-1);
           }, [activityID, postActivity]);
 
           const handleUpvoteButton = useCallback(() => {
-            postActivity({
-              type: 'messageReaction',
-              reactionsAdded: [{ activityID, helpful: 1 }]
-            });
+            addMessageReaction(1);
           }, [activityID, postActivity]);
 
           return (
@@ -109,19 +111,31 @@
           );
         };
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch(
+          'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline',
+          { method: 'POST' }
+        );
         const { token } = await res.json();
-        const activityMiddleware = () => next => card => {
-          if (card.activity.from.role === 'bot') {
-            return children => (
-              <BotActivityDecorator key={card.activity.id} activityID={card.activity.id}>
-                {next(card)(children)}
-              </BotActivityDecorator>
-            );
-          }
+        const activityMiddleware =
+          () =>
+          next =>
+          (...setupArgs) => {
+            const [card] = setupArgs;
 
-          return next(card);
-        };
+            if (card.activity.type === 'messageReaction') {
+              // Currently, Web Chat does not handle "messageReaction" activity and will show a warning in console log as it is an unknown activity.
+              // In this sample, we will disable the rendering of "messageReaction" activity, so the warning is not shown.
+              return false;
+            } else if (card.activity.from.role === 'bot') {
+              return (...renderArgs) => (
+                <BotActivityDecorator key={card.activity.id} activityID={card.activity.id}>
+                  {next(...setupArgs)(...renderArgs)}
+                </BotActivityDecorator>
+              );
+            }
+
+            return next(...setupArgs);
+          };
 
         window.ReactDOM.render(
           <ReactWebChat

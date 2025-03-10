@@ -25,7 +25,7 @@
 
         window.addEventListener('error', ({ colno, error, filename, lineno, message }) => {
           push(
-            'onError',
+            'error',
             JSON.stringify({
               colno,
               error,
@@ -68,7 +68,7 @@
         width: 100%;
       }
     </style>
-    <script crossorigin="anonymous" src="https://tdurnford.github.io/BotFramework-Offline-MockBot/index.js"></script>
+    <script crossorigin="anonymous" src="https://corinagum.github.io/BotFramework-Offline-MockBot/index.js"></script>
     <script
       crossorigin="anonymous"
       src="https://unpkg.com/event-target-shim@5.0.1/dist/event-target-shim.umd.js"
@@ -167,7 +167,7 @@
         } else {
           const { token } = await retry(async () => {
             try {
-              const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', {
+              const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', {
                 method: 'POST',
                 timeout: 2000
               });

@@ -1,10 +1,9 @@
 import { put, takeEvery } from 'redux-saga/effects';
-
-import { SEND_MESSAGE_BACK } from '../actions/sendMessageBack';
 import postActivity from '../actions/postActivity';
+import { SEND_MESSAGE_BACK } from '../actions/sendMessageBack';
 import whileConnected from './effects/whileConnected';
 
-// https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-activity.md#message-back
+// https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#message-back
 function* postActivityWithMessageBack({ payload: { displayText, text, value } }) {
   yield put(
     postActivity({

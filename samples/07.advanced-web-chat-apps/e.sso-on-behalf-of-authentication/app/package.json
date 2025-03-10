@@ -2,22 +2,34 @@
   "name": "single-sign-on-app",
   "version": "0.1.0",
   "private": true,
+  "pinDependencies": {
+    "react": [
+      "16.14"
+    ],
+    "react-dom": [
+      "16.14"
+    ]
+  },
   "dependencies": {
-    "base64-arraybuffer": "^0.2.0",
-    "botframework-webchat": "^4.10.0",
+    "base64-arraybuffer": "^1.0.2",
+    "botframework-webchat": "^4.17.0",
     "math-random": "^2.0.1",
-    "msal": "^1.2.2",
-    "office-ui-fabric-react": "^7.86.1",
-    "prop-types": "^15.7.2",
-    "react": "^16.13.0",
-    "react-dom": "^16.13.0",
-    "react-scripts": "^3.4.3"
+    "msal": "^1.4.18",
+    "office-ui-fabric-react": "^7.204.0",
+    "prop-types": "^15.8.1",
+    "react": "16.14",
+    "react-dom": "16.14"
+  },
+  "devDependencies": {
+    "http-proxy-middleware": "^3.0.0",
+    "react-scripts": "^5.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "bump": "if [ `cat package.json | jq -r '(.devDependencies // {} + .devDependencies // {}) | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}), (.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]') && (npm audit fix || exit 0); fi",
+    "eject": "react-scripts eject",
+    "start": "react-scripts start",
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -33,8 +45,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "http-proxy-middleware": "^0.20.0"
   }
 }

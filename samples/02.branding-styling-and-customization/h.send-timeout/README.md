@@ -27,7 +27,7 @@ This sample shows how to customize the send timeout component.
 
 ## Getting started
 
-> Note: this sample is based from [`01.getting-started/a.full-bundle`](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/a.full-bundle).
+> Note: this sample is based from [`01.getting-started/a.full-bundle`](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/a.full-bundle).
 
 This sample will add a button bar with multiple send timeout values. When clicked, the send timeout value will change on-the-fly.
 
@@ -100,7 +100,7 @@ When clicking on the button bar, the URL will be updated with a new retry value 
 First, call `renderWebChat` on initial page load and on every `hashchange` event. The `directLine` object will be memoized so it will not be recreated and reconnected on every call.
 
 ```diff
-  const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+  const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
   const { token } = await res.json();
   const directLine = window.WebChat.createDirectLine({ token });
 
@@ -124,7 +124,7 @@ First, call `renderWebChat` on initial page load and on every `hashchange` event
 Then, read the `sendTimeout` value from `location.hash` and update Web Chat.
 
 ```diff
-  const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+  const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
   const { token } = await res.json();
   const directLine = window.WebChat.createDirectLine({ token });
 
@@ -245,7 +245,7 @@ Here is the finished `index.html`:
     </p>
     <script>
       (async function() {
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
         const directLine = window.WebChat.createDirectLine({ token });
 
@@ -311,4 +311,4 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

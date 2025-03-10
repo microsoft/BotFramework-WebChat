@@ -1,6 +1,6 @@
 # Using Cognitive Services Speech Services
 
-> Direct Line Speech is the preferred way to provide speech functionality in Web Chat, please refer to [DIRECT_LINE_SPEECH.md](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/DIRECT_LINE_SPEECH.md).
+> Direct Line Speech is the preferred way to provide speech functionality in Web Chat, please refer to [DIRECT_LINE_SPEECH.md](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/DIRECT_LINE_SPEECH.md).
 
 This guide is for integrating speech-to-text and text-to-speech functionality using Azure Cognitive Services.
 
@@ -15,7 +15,7 @@ We assume you have already set up a bot and have Web Chat running on a page.
     <tr>
       <th></th>
       <th></th>
-      <th colspan="2">Chrome/Edge<br />and Firefox<br />on desktop</th>
+      <th colspan="2">Chrome/Microsoft Edge<br />and Firefox<br />on desktop</th>
       <th colspan="2">Chrome<br />on Android</th>
       <th colspan="2">Safari<br />on macOS/iOS</th>
       <th colspan="2"><a href="https://developer.android.com/reference/android/webkit/WebView">Web View<br />on Android</a></th>
@@ -241,7 +241,7 @@ Internet Explorer 11 does not meet the basic requirements for both speech recogn
 
 Safari is the only browser that supports WebRTC API on iOS.
 
-Chrome, Edge and native apps built using `WKWebView` do not support WebRTC API. Apps based on Cordova/PhoneGap and [React Native WebView](https://github.com/react-native-community/react-native-webview) might need additional plugins or custom code to support WebRTC API.
+Chrome, Microsoft Edge and native apps built using `WKWebView` do not support WebRTC API. Apps based on Cordova/PhoneGap and [React Native WebView](https://github.com/react-native-community/react-native-webview) might need additional plugins or custom code to support WebRTC API.
 
 ### Text-to-speech requirements
 
@@ -659,8 +659,8 @@ For details on setting up sovereign cloud and their limitations, please refer to
 
 [authenticate requests to azure cognitive services]: https://docs.microsoft.com/en-us/azure/cognitive-services/authentication
 [get started with custom voice]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/how-to-custom-voice
-[sample: integrating with cognitive services speech services]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/b.cognitive-speech-services-js
-[sample: using hybrid speech engine]: https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/03.speech/g.hybrid-speech
+[sample: integrating with cognitive services speech services]: https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/03.speech/b.cognitive-speech-services-js
+[sample: using hybrid speech engine]: https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/03.speech/g.hybrid-speech
 [speech synthesis markup language]: https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup
 [try cognitive services]: https://azure.microsoft.com/en-us/try/cognitive-services/my-apis/#speech
 [web audio api support]: https://caniuse.com/#feat=audio-api

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .first-button {
+        left: 10px;
+        position: absolute;
+        top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="first-button" type="button">First button on the page</button>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        // GIVEN: A transcript with 3 messages.
+        await pageConditions.uiConnected();
+        await pageObjects.sendMessageViaSendBox('echo Hello, World!');
+        await pageConditions.numActivitiesShown(3);
+
+        // WHEN: SHIFT-TAB key is pressed 3 times.
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+
+        // THEN: It should focus on the transcript, with last activity selected.
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[2]);
+        await host.snapshot();
+
+        // WHEN: Up arrow key is pressed.
+        await host.sendKeys('ARROW_UP');
+
+        // THEN: It should select the second last activity.
+        expect(pageElements.focusedActivity()).toBe(pageElements.activities()[1]);
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('focus management', () => {
   test('press ENTER on send box text box should continue to focus on send box', () =>
-    runHTMLTest('focusManagement.sendBoxTextBoxSubmit.html'));
+    runHTML('focusManagement.sendBoxTextBoxSubmit.html'));
 });

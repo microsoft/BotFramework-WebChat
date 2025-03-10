@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('notification toast', () => {
-  test('should show privacy policy', () => runHTMLTest('toast.html'));
+  test('should show privacy policy', () => runHTML('toast.html'));
 });

@@ -1,15 +1,25 @@
-import { put, takeEvery } from 'redux-saga/effects';
+import { put, select, takeEvery } from 'redux-saga/effects';
 
 import { POST_ACTIVITY_PENDING } from '../actions/postActivity';
 import startSpeakingActivity from '../actions/startSpeakingActivity';
+import { DICTATING } from '../constants/DictateState';
+import dictateStateSelector from '../selectors/dictateState';
 import whileConnected from './effects/whileConnected';
 
 function* startSpeakActivityOnPostActivity() {
   yield takeEvery(
-    ({ meta, payload, type }) =>
-      type === POST_ACTIVITY_PENDING && meta.method === 'speech' && payload.activity.type === 'message',
-    function*() {
-      yield put(startSpeakingActivity());
+    ({ type }) => type === POST_ACTIVITY_PENDING,
+    function* ({ meta, payload }) {
+      const dictateState = yield select(dictateStateSelector);
+
+      if (
+        // In continuous mode (speech recognition is active), we should speak everything.
+        dictateState === DICTATING ||
+        // Otherwise, in interactive mode, if last message was sent via speech, we should speak bot response.
+        (meta.method === 'speech' && payload.activity.type === 'message')
+      ) {
+        yield put(startSpeakingActivity());
+      }
     }
   );
 }

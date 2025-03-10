@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('useObserveScrollPosition', () => {
-  test('should observe scroll position changes', () => runHTMLTest('hooks.useObserveScrollPosition.html'));
+  test('should observe scroll position changes', () => runHTML('hooks.useObserveScrollPosition.html'));
 });

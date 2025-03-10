@@ -1,6 +1,6 @@
-import React from 'react';
+import { createContext } from 'react';
 
-const context = React.createContext({
+const context = createContext({
   focusableRef: undefined
 });
 

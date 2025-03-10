@@ -1,10 +1,9 @@
 /**
- * @jest-environment jsdom
+ * @jest-environment @happy-dom/jest-environment
  */
 
 import 'global-agent/bootstrap';
 
-import { PropertyId } from 'microsoft-cognitiveservices-speech-sdk';
 import { timeouts } from './constants.json';
 import createTestHarness from './utilities/createTestHarness';
 import MockAudioContext from './utilities/MockAudioContext';
@@ -35,8 +34,12 @@ async function waitUntil(fn, timeout = 5000, intervalMS = 1000) {
   throw new Error('timed out');
 }
 
-test('should refresh authorization token', async () => {
-  jest.useFakeTimers('modern');
+test.nightly('should refresh authorization token', async () => {
+  if (!process.env.SPEECH_SERVICES_SUBSCRIPTION_KEY) {
+    throw new Error('"SPEECH_SERVICES_SUBSCRIPTION_KEY" environment variable must be set.');
+  }
+
+  jest.useFakeTimers({ doNotFake: ['performance'] });
 
   const { directLine } = await createTestHarness();
   const initialAuthorizationToken = directLine.dialogServiceConnector.authorizationToken;

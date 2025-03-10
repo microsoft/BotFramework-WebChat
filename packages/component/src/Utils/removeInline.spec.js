@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: "off" */
+
 import removeInline from './removeInline';
 
 test('remove single occurrence', () => {

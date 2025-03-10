@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      *:focus {
+        background-color: yellow !important;
+        color: Black !important;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        function createEventActivity() {
+          return {
+            from: { id: 'bot', role: 'bot' },
+            id: Math.random().toString(36).substr(2, 5),
+            timestamp: new Date().toISOString(),
+            type: 'event',
+            value: {}
+          };
+        }
+
+        function createTextActivity(numLines) {
+          return {
+            from: { id: 'bot', role: 'bot' },
+            id: Math.random().toString(36).substr(2, 5),
+            text: new Array(numLines)
+              .fill()
+              .map((_, index) => `Line ${index + 1}`)
+              .join('\n\n'),
+            timestamp: new Date().toISOString(),
+            type: 'message'
+          };
+        }
+
+        const directLine = testHelpers.createDirectLineWithTranscript([createTextActivity(20)]);
+        const store = testHelpers.createStore();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { subtle: 'Black' }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.minNumActivitiesShown(1);
+        await pageConditions.scrollToBottomCompleted();
+
+        // WHEN: Scroll to top to unstick.
+        pageElements.transcriptScrollable().scrollTop = 0;
+
+        // WHEN: Wait for scroll-to-bottom to detect it is no longer sticky.
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // WHEN: Receive an event activity.
+        directLine.activityDeferredObservable.next(createEventActivity());
+
+        // THEN: It should not show the "New messages" button. This is because the event activities are not being rendered.
+        await pageConditions.scrollToEndButtonHidden();
+
+        // WHEN: Receive a text activity.
+        directLine.activityDeferredObservable.next(createTextActivity(10));
+
+        // THEN: It should show the "New messages" button.
+        await pageConditions.scrollToEndButtonShown();
+
+        // WHEN: Receive another event activity.
+        directLine.activityDeferredObservable.next(createEventActivity());
+
+        // WHEN: Click on the "New messages" button.
+        await host.click(pageElements.scrollToEndButton());
+
+        // THEN: It should scroll to bottom.
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: It should have the last text activity selected.
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[0]);
+      });
+    </script>
+  </body>
+</html>

@@ -71,4 +71,4 @@ Any code executed inside Web Chat context could retrieve the nonce. When adding 
 
 ## Additional context
 
-Please refer to [Content Security Policy sample](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/j.bundle-with-content-security-policy/) for a hosted live demo.
+Please refer to [Content Security Policy sample](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/j.bundle-with-content-security-policy/) for a hosted live demo.

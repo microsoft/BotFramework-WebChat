@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const clock = lolex.createClock();
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // WHEN: Web Chat is rendered with a non-ponyfilled Redux store.
+        WebChat.renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600);
+
+        await pageConditions.uiConnected();
+
+        // THEN: It should warn "Ponyfill used in store should match the ponyfill passed in props".
+        const logs = await host.getLogs();
+
+        expect(
+          logs.some(
+            ({ level: { name_: levelName }, message }) =>
+              levelName === 'WARNING' &&
+              message.includes('Ponyfill used in store should match the ponyfill passed in props')
+          )
+        ).toBe(true);
+      });
+    </script>
+  </body>
+</html>

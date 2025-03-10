@@ -64,25 +64,13 @@ test('long URLs with keep-all', async () => {
 
   const { driver, pageObjects } = await setupWebDriver({ props: WEB_CHAT_PROPS });
 
+  await driver.wait(uiConnected(), timeouts.directLine);
   await pageObjects.sendMessageViaSendBox('箸より重いものを持ったことがない箸より重いものを持ったことがない', {
     waitForSend: true
   });
 
   await driver.wait(minNumActivitiesShown(2), timeouts.directLine);
   await driver.wait(allImagesLoaded(), timeouts.fetchImage);
-
-  const base64PNG = await driver.takeScreenshot();
-
-  expect(base64PNG).toMatchImageSnapshot(imageSnapshotOptions);
-});
-
-test('unknown activities do not render anything in the transcript', async () => {
-  const { driver, pageObjects } = await setupWebDriver();
-
-  await driver.wait(uiConnected(), timeouts.directLine);
-  await pageObjects.sendMessageViaSendBox('unknown activity', { waitForSend: true });
-
-  await driver.wait(minNumActivitiesShown(1), timeouts.directLine);
 
   const base64PNG = await driver.takeScreenshot();
 
@@ -148,6 +136,7 @@ test('thumbnail card with a long title and richCardWrapTitle set to default valu
 test('absolute timestamp', async () => {
   const activities = [
     {
+      channelData: {},
       type: 'message',
       id: '6266x5ZXhXkBfuIH0fNx0h-o|0000000',
       timestamp: '2019-08-08T16:41:12.9397263Z',
@@ -160,6 +149,7 @@ test('absolute timestamp', async () => {
       text: 'echo "Hello, World!"'
     },
     {
+      channelData: {},
       type: 'message',
       id: '6266x5ZXhXkBfuIH0fNx0h-o|0000001',
       timestamp: '2019-08-08T16:41:13.1835518Z',
@@ -171,6 +161,7 @@ test('absolute timestamp', async () => {
       text: 'Echoing back in a separate activity.'
     },
     {
+      channelData: {},
       type: 'message',
       id: '6266x5ZXhXkBfuIH0fNx0h-o|0000002',
       timestamp: '2019-08-08T16:41:13.3963019Z',

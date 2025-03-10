@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const directLine = testHelpers.createDirectLineWithTranscript([
+          {
+            type: 'message',
+            id: 'A0000001',
+            timestamp: '2022-09-06T20:49:30.3628667Z',
+            localTimestamp: '2022-09-06T13:49:29.166-07:00',
+            localTimezone: 'America/Los_Angeles',
+            channelId: 'directline',
+            from: {
+              role: 'user'
+            },
+            locale: 'en-US',
+            attachments: [
+              {
+                contentType: 'application/zip',
+                contentUrl:
+                  'https://docs.botframework.com/static/devportal/client/images/bot-framework-default-placeholder.png',
+                name: 'some-file.zip'
+              }
+            ],
+            channelData: {
+              attachmentSizes: [1024]
+            }
+          }
+        ]);
+
+        const store = testHelpers.createStore();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            locale: 'pl-PL',
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

@@ -1,5 +1,3 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
-test('Emoji should be disabled when emojiSet is set to false', () => runHTMLTest('styleOptions.emojiSet.disabled.html'));
+test('Emoji should be disabled when emojiSet is set to false', () => runHTML('styleOptions.emojiSet.disabled.html'));

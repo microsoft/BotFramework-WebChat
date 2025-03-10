@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(
+        async function () {
+          const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+          const telemetryEventTracking = [];
+
+          WebChat.renderWebChat(
+            {
+              directLine,
+              store,
+              onTelemetry: event => {
+                if (event.name == 'send-status:change') {
+                  telemetryEventTracking.push(event.data);
+                }
+              }
+            },
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.uiConnected();
+
+          // GIVEN: 2 outgoing messages.
+          const sendMessage1stAttempt = await directLine.emulateOutgoingActivity(
+            'Egress message 1, sending to send failed'
+          );
+          const sendMessage2ndAttempt = await directLine.emulateOutgoingActivity(
+            'Egress message 2,  sending to send failed'
+          );
+
+          // WHEN: Both messages are rejected.
+          sendMessage1stAttempt.rejectPostActivity(new Error('artificial error for egress message 1'));
+          sendMessage2ndAttempt.rejectPostActivity(new Error('artificial error for egress message 2'));
+
+          // THEN: The activities should become "Send failed".
+          await pageConditions.became(
+            'failed to send message',
+            () => {
+              return (
+                pageElements.activityStatuses()[0]?.innerText === 'Send failed. Retry.' &&
+                pageElements.activityStatuses()[1]?.innerText === 'Send failed. Retry.'
+              );
+            },
+            1000
+          );
+
+          // THEN: It should emit 2 x "undefined -> sending" events, followed by 2 x "sending to send failed" events.
+          //       We send 2 messages because we want to make sure only 2 x 2 events are emitted.
+          expect(telemetryEventTracking).toEqual([
+            {
+              clientActivityID: expect.any(String),
+              hasAttachment: 'false',
+              key: expect.any(String),
+              status: 'sending',
+              type: 'message'
+            },
+            {
+              clientActivityID: expect.any(String),
+              hasAttachment: 'false',
+              key: expect.any(String),
+              status: 'sending',
+              type: 'message'
+            },
+            {
+              clientActivityID: expect.any(String),
+              hasAttachment: 'false',
+              key: expect.any(String),
+              prevStatus: 'sending',
+              status: 'send failed',
+              type: 'message'
+            },
+            {
+              clientActivityID: expect.any(String),
+              hasAttachment: 'false',
+              key: expect.any(String),
+              prevStatus: 'sending',
+              status: 'send failed',
+              type: 'message'
+            }
+          ]);
+        },
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>

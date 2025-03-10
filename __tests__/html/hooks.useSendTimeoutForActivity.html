@@ -1,106 +1,86 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <style type="text/css">
-      #app {
-        height: 100%;
-      }
-
-      .app__button-bar {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 0;
-        z-index: 1;
-      }
-    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { useCallback, useLayoutEffect, useRef, useState },
         WebChat: {
           Components: { BasicWebChat, Composer },
           hooks: { useSendTimeoutForActivity }
-        },
-        WebChatTest: {
-          conditions,
-          createDirectLineWithTranscript,
-          createStore,
-          elements,
-          expect,
-          host,
-          pageObjects,
-          timeouts,
-          token
         }
       } = window;
 
-      (async function() {
-        const directLine = createDirectLineWithTranscript([]);
-        const store = createStore();
+      run(
+        async function () {
+          const directLine = testHelpers.createDirectLineWithTranscript([]);
+          const store = testHelpers.createStore();
 
-        const RunFunction = ({ fn }) => {
-          fn();
+          const RunFunction = ({ fn }) => {
+            fn();
 
-          return false;
-        };
+            return false;
+          };
 
-        const renderWithFunction = fn =>
-          new Promise(resolve =>
-            ReactDOM.render(
-              <Composer directLine={directLine} store={store}>
-                <BasicWebChat />
-                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
-              </Composer>,
-              document.getElementById('app')
+          const renderWithFunction = fn =>
+            new Promise(resolve =>
+              ReactDOM.render(
+                <Composer directLine={directLine} store={store}>
+                  <BasicWebChat />
+                  <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
+                </Composer>,
+                document.getElementById('webchat')
+              )
+            );
+
+          await renderWithFunction();
+
+          await pageConditions.uiConnected();
+
+          await expect(
+            renderWithFunction(() =>
+              useSendTimeoutForActivity({
+                channelData: { clientActivityID: '1.0', state: 'sending' },
+                from: { role: 'user' },
+                localTimestamp: 0,
+                text: 'Dolore deserunt tempor dolore et culpa nulla consequat.',
+                timestamp: 0,
+                type: 'message'
+              })
             )
-          );
+          ).resolves.toBe(20000);
 
-        await renderWithFunction();
-
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-
-        await expect(
-          renderWithFunction(() =>
-            useSendTimeoutForActivity({
-              channelData: { clientActivityID: '1.0', clientTimestamp: 0, state: 'sending' },
-              from: { role: 'user' },
-              text: 'Dolore deserunt tempor dolore et culpa nulla consequat.',
-              timestamp: 0,
-              type: 'message'
-            })
-          )
-        ).resolves.toBe(20000);
-
-        await expect(
-          renderWithFunction(() =>
-            useSendTimeoutForActivity({
-              attachments: [
-                {
-                  contentType: 'application/octet-stream',
-                  contentUrl:
-                    'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
-                }
-              ],
-              channelData: { clientActivityID: '2.0', clientTimestamp: 0, state: 'sending' },
-              from: { role: 'user' },
-              text: 'Ullamco ipsum irure culpa eu labore nulla id laborum nostrud et.',
-              timestamp: 0,
-              type: 'message'
-            })
-          )
-        ).resolves.toBe(120000);
-
-        await host.done({ deprecation: true });
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
-      });
+          await expect(
+            renderWithFunction(() =>
+              useSendTimeoutForActivity({
+                attachments: [
+                  {
+                    contentType: 'application/octet-stream',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg'
+                  }
+                ],
+                channelData: { clientActivityID: '2.0', state: 'sending' },
+                from: { role: 'user' },
+                localTimestamp: 0,
+                text: 'Ullamco ipsum irure culpa eu labore nulla id laborum nostrud et.',
+                timestamp: 0,
+                type: 'message'
+              })
+            )
+          ).resolves.toBe(120000);
+        },
+        { expectDeprecations: true }
+      );
     </script>
   </body>
 </html>

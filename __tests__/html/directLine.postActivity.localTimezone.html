@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const clock = lolex.createClock();
+
+        await host.sendDevToolsCommand('Emulation.setTimezoneOverride', { timezoneId: 'Asia/Hong_Kong' });
+
+        // Before running the test, the browser should have setup with time zone of GMT+08, at epoch time.
+        // Note the getTimezoneOffset() is correctly returns positive number for a negative offset.
+        expect(new Date().getTimezoneOffset()).toBe(-480);
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600);
+
+        // GIVEN: Wait for "Connecting..." message to dismiss
+        await pageConditions.uiConnected();
+
+        // WHEN: Sending a message.
+        const { activity } = await directLine.actPostActivity(() =>
+          pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false })
+        );
+
+        // THEN: The activity-in-transit should not have timestamp.
+        expect(activity.timestamp).toBeUndefined();
+
+        // THEN: The activity-in-transit should have local timestamp and timezone.
+        expect(activity).toHaveProperty('localTimestamp', '1970-01-01T08:00:00.600+08:00');
+        expect(activity).toHaveProperty('localTimezone', 'Asia/Hong_Kong');
+      });
+    </script>
+  </body>
+</html>

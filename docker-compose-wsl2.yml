@@ -4,36 +4,56 @@ services:
   # On Windows, run with COMPOSE_CONVERT_WINDOWS_PATHS=1
 
   chrome:
-    build:
-      context: ./
-      dockerfile: Dockerfile-selenium
+    image: selenium/node-chrome:110.0
     depends_on:
-    - selenium-hub
-    - webchat
-    - webchat2
+      - selenium-hub
+      - webchat
+      - webchat2
     environment:
-    - HUB_HOST=selenium-hub
-    - HUB_PORT=4444
+      SE_EVENT_BUS_HOST: selenium-hub
+      SE_EVENT_BUS_PUBLISH_PORT: '4442'
+      SE_EVENT_BUS_SUBSCRIBE_PORT: '4443'
+      SE_OPTS: '--log-level WARNING'
+      SE_NODE_SESSION_TIMEOUT: '300'
+    shm_size: '2.5gb'
+    volumes:
+      - ./__tests__/setup/local/:/home/seluser/Downloads
 
   selenium-hub:
-    image: selenium/hub:3.141.59-zirconium
+    image: selenium/hub:4.8.1
     container_name: selenium-hub
     environment:
-    - GRID_BROWSER_TIMEOUT=60
-    - GRID_TIMEOUT=60
+      GRID_TIMEOUT: '300'
     ports:
-    - "4444:4444"
+      - '4444:4444'
 
   webchat:
     build:
       context: ./
-      dockerfile: Dockerfile-testharness
+      dockerfile: testharness.dockerfile
     ports:
-    - "5080:80"
+      - '5080:80'
+    stop_grace_period: 0s
 
   webchat2:
     build:
       context: ./
-      dockerfile: Dockerfile-testharness2
+      dockerfile: testharness2.dockerfile
+    stop_grace_period: 0s
+    volumes:
+      - ./__tests__/html/:/var/web/__tests__/html/
+      - ./__tests__/html2/:/var/web/__tests__/html2/
+      - ./packages/bundle/dist/:/var/web/packages/bundle/dist/
+      - ./packages/fluent-theme/dist/:/var/web/packages/fluent-theme/dist/
+      - ./packages/test/fluent-bundle/dist/:/var/web/packages/test/fluent-bundle/dist/
+      - ./packages/test/harness/dist/:/var/web/packages/test/harness/dist/
+      - ./packages/test/page-object/dist/:/var/web/packages/test/page-object/dist/
     ports:
-    - "5081:80"
+      - '5081:80'
+
+  jest-server:
+    build:
+      context: ./packages/test/harness/
+    ports:
+      - '4445:4445'
+    stop_grace_period: 5s

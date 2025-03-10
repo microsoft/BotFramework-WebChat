@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('timestamp', () => {
-  test('showing date before yesterday', () => runHTMLTest('timestamp.beforeYesterday.html'));
+  test('showing date before yesterday', () => runHTML('timestamp.beforeYesterday.html'));
 });

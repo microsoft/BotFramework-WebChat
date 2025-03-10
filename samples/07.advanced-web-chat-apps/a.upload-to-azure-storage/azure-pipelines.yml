@@ -4,7 +4,7 @@ pool:
 trigger:
   branches:
     include:
-    - master
+    - main
   paths:
     include:
     - samples/07.advanced-web-chat-apps/a.upload-to-azure-storage

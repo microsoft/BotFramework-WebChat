@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .react-film__flipper {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await pageObjects.sendMessageViaSendBox('layout carousel', { waitForSend: true });
+        await pageConditions.minNumActivitiesShown(2);
+
+        // Move focus to carousel activity
+        await host.sendShiftTab(3);
+        await pageConditions.focusedActivityInView();
+
+        await host.sendKeys('ENTER');
+        // first focus inside carousel
+        await pageConditions.became(
+          'focus on the first attachment',
+          () =>
+            document.activeElement.tagName === 'LI' &&
+            document.activeElement === document.activeElement.parentElement.children[0],
+          1000
+        );
+        await host.snapshot();
+
+        // Second focus is not very stable because of its position, we are skipping snapshotting it.
+        // Third focus inside carousel
+        await host.sendTab(2);
+        await pageConditions.became(
+          'focus on the third attachment',
+          () =>
+            document.activeElement.tagName === 'LI' &&
+            document.activeElement === document.activeElement.parentElement.children[2],
+          1000
+        );
+        await pageConditions.stabilized(
+          'carousel',
+          () => document.querySelector('.webchat__carousel-filmstrip').scrollLeft,
+          5,
+          5000
+        );
+        await host.snapshot();
+
+        // Press ESCAPE key should focus the activity.
+        await host.sendKeys('ESCAPE');
+        await pageConditions.became(
+          'focus on the transcript with active descendant on the activity',
+          () => /(^|\s)webchat__basic-transcript(\s|$)/.test(document.activeElement.className),
+          1000
+        );
+        await pageConditions.stabilized(
+          'carousel',
+          () => document.querySelector('.webchat__carousel-filmstrip').scrollLeft,
+          5,
+          5000
+        );
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

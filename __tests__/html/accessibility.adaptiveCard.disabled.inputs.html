@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      const store = testHelpers.createStore();
+      let directLine;
+      let hackedDirectLine;
+      let postActivityCalledTimes = 0;
+
+      function renderWebChat(props) {
+        WebChat.renderWebChat(
+          {
+            directLine: hackedDirectLine,
+            store,
+            ...props
+          },
+          document.getElementById('webchat')
+        );
+      }
+
+      run(
+        async function () {
+          directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+          hackedDirectLine = {
+            ...directLine,
+            postActivity(...args) {
+              postActivityCalledTimes++;
+
+              return directLine.postActivity(...args);
+            }
+          };
+
+          renderWebChat();
+
+          await pageConditions.uiConnected();
+
+          await pageObjects.sendMessageViaSendBox('card inputs', { waitForSend: true });
+
+          expect(postActivityCalledTimes).toBe(1);
+
+          await pageConditions.minNumActivitiesShown(2);
+          await pageConditions.allImagesLoaded();
+          await pageConditions.scrollToBottomCompleted();
+
+          // WHEN: Focus on the first input box.
+          await host.click(document.querySelector('.ac-adaptiveCard input'));
+
+          // WHEN: The form is being filled via keyboard.
+          await host.sendKeys(
+            'William',
+            'TAB',
+            'https://github.com/microsoft/BotFramework-WebChat',
+            'TAB',
+            'someone@example.com',
+            'TAB',
+            '123-456-7890',
+            'TAB',
+            'One Microsoft Way, Redmond, WA',
+            'TAB',
+            'UP', // Domain updown: 1
+            'UP', // Domain updown: 2
+            'TAB',
+            '11/01/2019',
+            'TAB',
+            '12:34P',
+            'TAB',
+            'DOWN', // What color do you want? Red
+            'DOWN', // Green
+            'TAB',
+            'DOWN', // What color do you want? Red
+            'DOWN', // Green
+            'TAB',
+            'TAB', // AC 2.11: Checkbox group container has tabindex="0"
+            'SPACE', // What colors do you want? Red
+            'TAB',
+            'SPACE', // Green
+            'TAB',
+            'SPACE', // Blue
+            'TAB',
+            'SPACE', // IsCool (True/False)
+            'TAB',
+            'SPACE' // IsMale (valueOn/valueOff)
+          );
+
+          // Save all values, to be compared later.
+          const valuesBeforeDisabled = Array.from(
+            document.querySelector('.ac-adaptiveCard').querySelectorAll('input, select, text')
+          ).map(({ checked, type, value }) => (type === 'checkbox' || type === 'radio' ? checked : value));
+
+          // THEN: It should have the form completely filled.
+          await host.snapshot();
+
+          // WHEN: Changing "disabled" to true.
+          renderWebChat({ disabled: true });
+
+          // THEN: All values should kept the same.
+          //       When changing props, the card will be re-rendered. The user input must survive.
+          const valuesAfterDisabled = Array.from(
+            document.querySelector('.ac-adaptiveCard').querySelectorAll('input, select, text')
+          ).map(({ checked, type, value }) => (type === 'checkbox' || type === 'radio' ? checked : value));
+
+          expect(valuesAfterDisabled).toEqual(valuesBeforeDisabled);
+
+          // THEN: The "Show Card" button must not be disabled by the "disabled" props.
+          expect(document.querySelector('button[title="Show Card"]').hasAttribute('aria-disabled')).toBeFalsy();
+
+          // WHEN: The "Submit" button is clicked.
+          await host.click(document.querySelector('button[title="Submit"]'));
+
+          // THEN: It must not send any activities, as the button is disabled.
+          expect(postActivityCalledTimes).toBe(1);
+
+          // WHEN: The "Show Card" button (Action.ShowCard) is clicked.
+          await host.click(document.querySelector('button[title="Show Card"]'));
+
+          // TODO: Investigate why it is not scrolled.
+          await pageObjects.scrollToBottom();
+          await pageConditions.scrollToBottomCompleted();
+
+          // THEN: The bottom part should show, because the "Show Card" button is not disabled and could be clicked.
+          //       No focus indicator should show on the "Show Card" button as it is clicked by mouse.
+          await host.snapshot();
+
+          // THEN: All buttons should be disabled.
+          expect(
+            Array.from(document.querySelectorAll('.ac-adaptiveCard button:not(.expandable)'))
+              .map(element => element.getAttribute('aria-disabled'))
+              .every(ariaDisabled => ariaDisabled === 'true')
+          ).toBeTruthy();
+
+          // WHEN: Click on the "Show Card" button to hide the attached card.
+          await host.click(document.querySelector('button[title="Show Card"]'));
+
+          // WHEN: Changing "disabled" to false. This will unmount the DOM of the attached card, which contains some buttons.
+          renderWebChat({ disabled: false });
+
+          // WHEN: Click on the "Show Card" button to show the attached card.
+          await host.click(document.querySelector('button[title="Show Card"]'));
+
+          // THEN: All buttons should be re-enabled, including those in the attached card, which was unmounted when we set the "disabled" props.
+          expect(
+            Array.from(document.querySelectorAll('.ac-adaptiveCard button:not(.expandable)'))
+              .map(element => element.getAttribute('aria-disabled'))
+              .every(ariaDisabled => ariaDisabled !== 'true')
+          ).toBeTruthy();
+
+          // WHEN: The "Submit" button is clicked.
+          await host.click(document.querySelector('button[title="Submit"]'));
+
+          // THEN: The bot should reply.
+          await pageConditions.numActivitiesShown(3);
+          await pageConditions.scrollToBottomCompleted();
+
+          // THEN: It will send a new activity.
+          expect(postActivityCalledTimes).toBe(2);
+
+          // THEN: Bot should receive the posted JSON.
+          await host.snapshot();
+        },
+        // TODO: Currently the card is pointing to non-existing images, thus, 404 is logged in the console.
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>

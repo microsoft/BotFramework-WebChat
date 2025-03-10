@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            ),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(32);
+        await pageConditions.scrollToBottomCompleted();
+
+        // WHEN: Pressing SHIFT-TAB x 3 from the send box.
+        await pageObjects.focusSendBoxTextBox();
+        await host.sendShiftTab(3);
+
+        // THEN: It should focus on the last activity.
+        await host.snapshot();
+
+        // WHEN: Pressing up arrow key.
+        await host.sendKeys('ARROW_UP');
+
+        // THEN: It should show an active indicator around the second last activity.
+        await pageConditions.scrollStabilized();
+        await pageConditions.focusedActivityInView('first arrow up');
+        await host.snapshot();
+
+        // WHEN: Pressing up arrow key again.
+        await host.sendKeys('ARROW_UP');
+
+        // THEN: It should show an active indicator around the card and scroll up slightly to put the card in view.
+        await pageConditions.scrollStabilized();
+        await pageConditions.focusedActivityInView('second arrow up');
+        await host.snapshot();
+
+        // WHEN: Pressing HOME key.
+        await host.sendKeys('HOME');
+
+        // THEN: It should scroll to the top of the transcript.
+        await pageConditions.scrollStabilized();
+        await pageConditions.focusedActivityInView('pressing HOME key');
+        await host.snapshot();
+
+        // WHEN: Pressing END key.
+        await host.sendKeys('END');
+
+        // THEN: It should scroll to the bottom of the transcript.
+        await pageConditions.scrollStabilized();
+        await pageConditions.focusedActivityInView('pressing END key');
+        await host.snapshot();
+
+        // WHEN: Pressing TAB x 3 to focus on the send box, followed by PAGE UP key on an empty send box.
+        await host.sendTab(3);
+        await host.sendKeys('PAGE_UP');
+
+        // THEN: It should keep focus on the last activity even it is out of view.
+        await pageConditions.scrollStabilized();
+        expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[0]);
+        await host.snapshot();
+
+        // WHEN: Pressing SHIFT+TAB x 3 to focus back on the transcript.
+        await host.sendShiftTab(3);
+
+        // THEN: It should scroll the last activity in view.
+        await pageConditions.scrollStabilized();
+        await pageConditions.focusedActivityInView('pressing END key');
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

@@ -1,7 +1,7 @@
 # pr:
 #   branches:
 #     include:
-#     - master
+#     - main
 
 variables:
   CI: '1'
@@ -21,7 +21,6 @@ steps:
 
 - script: |
     npm ci
-    npm run bootstrap
     npm run eslint
     npm run build
     docker-compose up --build --detach

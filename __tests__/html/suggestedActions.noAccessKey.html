@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <style type="text/css">
       body {
@@ -21,22 +26,22 @@
     </style>
   </head>
   <body>
-    <div id="webchat"></div>
+    <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         React: { useEffect },
         ReactDOM: { render },
         WebChat: {
           Components: { BasicWebChat, Composer },
-          hooks: { useConnectivityStatus, useSendMessage },
-          renderWebChat
-        },
-        WebChatTest: { conditions, createStore, elements, expect, host, pageObjects, timeouts, token }
+          createDirectLine,
+          hooks: { useConnectivityStatus, useSendMessage }
+        }
       } = window;
 
-      (async function() {
-        const directLine = await createDirectLine({ token: await token.fetchDirectLineToken() });
-        const store = createStore();
+      run(async function () {
+        const directLine = await createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const store = testHelpers.createStore();
+        const styleOptions = { subtle: 'Black' };
 
         const SendOnConnect = () => {
           const [connectivityStatus] = useConnectivityStatus();
@@ -54,7 +59,7 @@
         function renderWebChat(props) {
           return new Promise(resolve => {
             render(
-              <Composer directLine={directLine} store={store} {...props}>
+              <Composer directLine={directLine} store={store} styleOptions={styleOptions} {...props}>
                 <BasicWebChat />
                 <SendOnConnect />
               </Composer>,
@@ -66,46 +71,42 @@
 
         await renderWebChat({ suggestedActionsAccessKey: false });
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
-        await pageObjects.wait(conditions.allImagesLoaded(), timeouts.network);
-        await pageObjects.wait(conditions.suggestedActionsShown(), timeouts.directLine);
+        await pageConditions.uiConnected();
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
+        await pageConditions.suggestedActionsShown();
+        await pageConditions.liveRegionStabilized();
 
-        expect(document.querySelector('[id^="webchat__suggested-actions--"]').textContent).toBe(
-          'Suggested Actions Container: Has content'
+        const screenReaderTexts = [].map.call(pageElements.liveRegion().children, child =>
+          testHelpers.getAllTextContents(child).join('\n')
+        );
+
+        expect(screenReaderTexts).toEqual([
+          'connecting',
+          'You said:\nsuggested-actions',
+          'Bot said:\nPlease select one of the actions below\nIM back as string\nPost back as string\nPost back as JSON\nMessage back as JSON with display text\nMessage back as JSON without display text\nMessage back as string with display text',
+          'Message has suggested actions. Press shift tab 2 to 3 times to select them.'
+        ]);
+
+        expect(document.querySelector('.webchat__suggested-actions').getAttribute('aria-label')).toBe(
+          'Suggested actions'
         );
 
         expect(document.querySelectorAll('[aria-keyshortcuts]')).toHaveProperty('length', 0);
 
-        // Change access key on-the-fly, it should update screen reader text.
+        // Change access key on-the-fly.
 
         await renderWebChat({ suggestedActionsAccessKey: 'Z z' });
 
-        expect(document.querySelector('[id^="webchat__suggested-actions--"]').textContent).toBe(
-          'Suggested Actions Container: Has content. Press Alt + Shift + Z to select.'
-        );
-
-        expect(
-          [].map.call(document.querySelectorAll('[aria-keyshortcuts]'), element =>
-            element.getAttribute('aria-keyshortcuts')
-          )
-        ).toEqual(new Array(6).fill('Alt + Shift + Z'));
-
         // Access key only works when the focus is inside Web Chat.
         // It will not work when the user is focusing on web page content, to prevent conflict with the hosting page.
-        elements.typeFocusSink().focus();
+        await pageObjects.focusTranscript();
 
         await host.snapshot();
 
         await host.sendAccessKey('Z');
 
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

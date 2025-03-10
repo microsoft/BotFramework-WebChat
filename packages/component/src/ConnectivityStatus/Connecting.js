@@ -1,18 +1,19 @@
+import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from './Assets/SpinnerAnimation';
-import useDirection from '../hooks/useDirection';
 import useForceRender from '../hooks/internal/useForceRender';
-import useLocalizer from '../hooks/useLocalizer';
-import useStyleOptions from '../hooks/useStyleOptions';
 import useStyleSet from '../hooks/useStyleSet';
 import useTimer from '../hooks/internal/useTimer';
 import WarningNotificationIcon from './Assets/WarningNotificationIcon';
 
+const { useDirection, useLocalizer, usePonyfill, useStyleOptions } = hooks;
+
 const ConnectivityStatusConnecting = ({ reconnect }) => {
+  const [{ Date }] = usePonyfill();
   const [{ slowConnectionAfter }] = useStyleOptions();
   const [
     { connectivityNotification: connectivityNotificationStyleSet, warningNotification: warningNotificationStyleSet }

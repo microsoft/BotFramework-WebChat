@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('useCreateAvatarRenderer', () => {
-  test('should render avatar', () => runHTMLTest('hooks.useCreateAvatarRenderer.html'));
+  test('should render avatar', () => runHTML('hooks.useCreateAvatarRenderer.html'));
 });

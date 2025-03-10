@@ -2,7 +2,20 @@
   "name": "botframework-webchat",
   "version": "0.0.0-0",
   "description": "A highly-customizable web-based chat client for Azure Bot Services.",
-  "main": "lib/index.js",
+  "main": "./dist/botframework-webchat.js",
+  "types": "./dist/botframework-webchat.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat.d.mts",
+        "default": "./dist/botframework-webchat.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat.d.ts",
+        "default": "./dist/botframework-webchat.js"
+      }
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -16,71 +29,145 @@
     "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/#readme",
+  "files": [
+    "./dist/**/*",
+    "./src/**/*"
+  ],
+  "tsd": {
+    "compilerOptions": {
+      "allowSyntheticDefaultImports": true,
+      "downlevelIteration": true,
+      "jsx": "react",
+      "noImplicitAny": false,
+      "resolveJsonModule": true,
+      "skipLibCheck": true,
+      "strict": false
+    }
+  },
   "scripts": {
-    "build": "npm run build:typescript && npm run build:babel && npm run build:webpack",
-    "build:babel": "babel src --extensions .js,.ts,.tsx --ignore **/*.spec.js,**/*.spec.ts,**/*.spec.tsx,**/*.test.js,**/*.test.ts,**/*.test.tsx,__tests__/**/*.js,__tests__/**/*.ts,__tests__/**/*.tsx --out-dir lib --verbose",
-    "build:typescript": "tsc --project src/tsconfig.json",
-    "build:webpack": "webpack-cli",
-    "eslint": "eslint src/**/*.js src/**/*.ts",
-    "prestart": "npm run build:babel",
-    "start": "concurrently --kill-others --names \"babel,tsc,webpack\" \"npm run start:babel\" \"npm run start:typescript\" \"npm run start:webpack\"",
-    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
-    "start:typescript": "npm run build:typescript -- --watch",
-    "start:webpack": "npm run build:webpack -- --watch"
+    "build": "npm run build:tsup",
+    "build:tsup": "tsup --config ./tsup.config.ts",
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "eslint": "npm run precommit",
+    "postversion": "cat package.json | jq '.version as $V | (.localDependencies // {} | with_entries(select(.value == \"production\") | { key: .key, value: $V })) as $L1 | (.localDependencies // {} | with_entries(select(.value == \"development\") | { key: .key, value: $V })) as $L2 | ((.dependencies // {}) + $L1 | to_entries | sort_by(.key) | from_entries) as $D1 | ((.devDependencies // {}) + $L2 | to_entries | sort_by(.key) | from_entries) as $D2 | . + { dependencies: $D1, devDependencies: $D2 }' > package-temp.json && mv package-temp.json package.json",
+    "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
+    "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
+    "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
+    "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
+    "start": "npm run build:tsup -- --watch"
+  },
+  "localDependencies": {
+    "botframework-directlinespeech-sdk": "production",
+    "botframework-webchat-base": "development",
+    "botframework-webchat-api": "production",
+    "botframework-webchat-component": "production",
+    "botframework-webchat-core": "production",
+    "isomorphic-react": "development",
+    "isomorphic-react-dom": "development"
+  },
+  "pinDependencies": {
+    "@babel/cli": [
+      "7.18.10",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/core": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/plugin-transform-runtime": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-env": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-react": [
+      "7.18.6",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-typescript": [
+      "7.18.6",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/runtime": [
+      "7.19.0",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@types/react": [
+      "16",
+      "react@16.8.6 is our baseline"
+    ],
+    "adaptivecards": [
+      "3.0.2",
+      "needs to bump manually"
+    ],
+    "swiper": [
+      "^8.2.6",
+      "required by Adaptive Cards but they forget to include in adaptivecards@3.0.2"
+    ],
+    "uuid": [
+      "8",
+      "uuid@9 emit non-ES5 build because of default parameters"
+    ]
   },
   "dependencies": {
-    "@babel/runtime": "7.11.2",
-    "adaptivecards": "1.2.6",
-    "botframework-directlinejs": "0.13.1",
+    "@babel/runtime": "7.19.0",
+    "adaptivecards": "3.0.2",
+    "botframework-directlinejs": "0.15.5",
     "botframework-directlinespeech-sdk": "0.0.0-0",
+    "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
-    "classnames": "2.2.6",
-    "core-js": "3.6.5",
-    "markdown-it": "11.0.0",
-    "markdown-it-attrs": "3.0.3",
-    "markdown-it-attrs-es5": "1.2.0",
-    "markdown-it-for-inline": "0.1.1",
-    "memoize-one": "5.1.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.13.1",
-    "prop-types": "15.7.2",
-    "sanitize-html": "1.27.4",
-    "url-search-params-polyfill": "8.1.0",
-    "web-speech-cognitive-services": "7.0.2-master.6004e4b",
-    "whatwg-fetch": "3.4.0"
+    "classnames": "2.5.1",
+    "core-js": "3.40.0",
+    "katex": "0.16.21",
+    "math-random": "2.0.1",
+    "mdast-util-from-markdown": "2.0.2",
+    "memoize-one": "6.0.0",
+    "micromark": "4.0.1",
+    "micromark-extension-gfm": "3.0.0",
+    "micromark-util-character": "2.1.1",
+    "microsoft-cognitiveservices-speech-sdk": "1.42.0",
+    "prop-types": "15.8.1",
+    "punycode": "2.3.1",
+    "sanitize-html": "2.14.0",
+    "shiki": "2.3.2",
+    "swiper": "8.4.7",
+    "url-search-params-polyfill": "8.2.5",
+    "uuid": "8.3.2",
+    "web-speech-cognitive-services": "8.1.1",
+    "whatwg-fetch": "3.6.20"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.11.0",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.11.0",
-    "@babel/plugin-transform-runtime": "^7.11.0",
-    "@babel/preset-env": "^7.11.0",
-    "@babel/preset-react": "^7.10.4",
-    "@babel/preset-typescript": "^7.10.4",
-    "@types/node": "^14.6.0",
-    "@types/react": "^16.9.47",
-    "@typescript-eslint/eslint-plugin": "^3.10.1",
-    "@typescript-eslint/parser": "^3.10.1",
-    "babel-plugin-istanbul": "^6.0.0",
-    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
-    "concurrently": "^5.3.0",
-    "eslint": "^7.7.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-react": "^7.20.6",
-    "eslint-plugin-react-hooks": "^4.1.0",
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.1",
+    "@babel/plugin-transform-runtime": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.18.6",
+    "@types/dom-speech-recognition": "^0.0.4",
+    "@types/mdast": "^4.0.4",
+    "@types/node": "^22.13.4",
+    "@types/react": "^16.14.62",
+    "@types/uuid": "^10.0.0",
+    "babel-plugin-istanbul": "^7.0.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
+    "botframework-webchat-base": "0.0.0-0",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "esbuild": "^0.25.0",
     "isomorphic-react": "^0.0.0-0",
     "isomorphic-react-dom": "^0.0.0-0",
-    "prettier": "^2.1.1",
-    "source-map-loader": "^1.0.2",
-    "terser-webpack-plugin": "^4.1.0",
-    "typescript": "^4.0.2",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12",
-    "webpack-stats-plugin": "^0.3.2"
+    "micromark-util-types": "^2.0.1",
+    "tsd": "^0.31.2",
+    "type-fest": "^4.34.1",
+    "typescript": "^5.7.3"
   },
   "peerDependencies": {
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "react": ">= 16.8.6",
+    "react-dom": ">= 16.8.6"
   }
 }

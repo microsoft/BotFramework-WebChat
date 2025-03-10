@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const timestamp = new Date(2000, 0, 1, 12, 34, 56, 789).toISOString();
+        const baseActivity = {
+          attachments: [
+            {
+              content: 'Hello.',
+              contentType: 'text/plain'
+            },
+            {
+              content: 'World!',
+              contentType: 'text/plain'
+            }
+          ],
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          textFormat: 'markdown',
+          timestamp,
+          type: 'message'
+        };
+
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript([
+              {
+                ...baseActivity,
+                text: 'No "webchat:fallback-text" field.'
+              },
+              {
+                ...baseActivity,
+                channelData: { 'webchat:fallback-text': 'With "webchat:fallback-text" field.' },
+                text: 'With "webchat:fallback-text" field.'
+              },
+              {
+                ...baseActivity,
+                channelData: { 'webchat:fallback-text': '' },
+                text: 'Empty string for "webchat:fallback-text" field.'
+              },
+              {
+                // No "text" field.
+                ...baseActivity
+              }
+            ]),
+            store: testHelpers.createStore(),
+            styleOptions: {
+              internalLiveRegionFadeAfter: 60000
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(4);
+        await pageConditions.liveRegionStabilized();
+
+        const screenReaderTexts = [].map.call(pageElements.liveRegion().children, child =>
+          testHelpers.getAllTextContents(child).join('\n')
+        );
+
+        // The last activity have "webchat:fallback-text" field set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
+        expect(screenReaderTexts).toEqual([
+          'connecting',
+          'Bot said:\nNo \"webchat:fallback-text\" field.\nA text: Hello.\nA text: World!',
+          'Bot said:\nWith \"webchat:fallback-text\" field.',
+          'Bot said:\nA text: Hello.\nA text: World!'
+        ]);
+
+        const activityAlts = [].map.call(pageElements.liveRegion().children, element =>
+          testHelpers.getAllTextContents(element).join('\n')
+        );
+
+        // The last activity have "webchat:fallback-text" field set to empty string. It is treated as role="presentation" and not emitted DOM element for screen reader.
+        expect(screenReaderTexts).toEqual([
+          'connecting',
+          // In interactive transcript, this is narrated as "2 attachments".
+          'Bot said:\nNo \"webchat:fallback-text\" field.\nA text: Hello.\nA text: World!',
+          'Bot said:\nWith "webchat:fallback-text" field.',
+          'Bot said:\nA text: Hello.\nA text: World!'
+        ]);
+      });
+    </script>
+  </body>
+</html>

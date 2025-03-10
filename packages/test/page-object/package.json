@@ -1,0 +1,70 @@
+{
+  "name": "test-page-object",
+  "version": "0.0.0-0",
+  "description": "",
+  "private": true,
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 14.0.0"
+  },
+  "scripts": {
+    "build": "npm run build:babel && npm run build:esbuild",
+    "build:babel": "babel --out-dir lib/ src/",
+    "build:esbuild": "esbuild lib/index.js --bundle --outfile=dist/test-page-object.js --sourcemap --target=chrome100",
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "eslint": "npm run precommit",
+    "postversion": "cat package.json | jq '.version as $V | (.localDependencies // {} | with_entries(select(.value == \"production\") | { key: .key, value: $V })) as $L1 | (.localDependencies // {} | with_entries(select(.value == \"development\") | { key: .key, value: $V })) as $L2 | ((.dependencies // {}) + $L1 | to_entries | sort_by(.key) | from_entries) as $D1 | ((.devDependencies // {}) + $L2 | to_entries | sort_by(.key) | from_entries) as $D2 | . + { dependencies: $D1, devDependencies: $D2 }' > package-temp.json && mv package-temp.json package.json",
+    "precommit": "npm run precommit:eslint -- src",
+    "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
+    "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
+    "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
+    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
+    "start:esbuild": "npm run build:esbuild -- --watch"
+  },
+  "localDependencies": {
+    "botframework-webchat": "production"
+  },
+  "pinDependencies": {
+    "@babel/cli": [
+      "7.18.10",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/core": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-env": [
+      "7.19.1",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ],
+    "@babel/preset-react": [
+      "7.18.6",
+      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
+    ]
+  },
+  "dependencies": {
+    "base64-arraybuffer": "1.0.2",
+    "bent": "7.3.12",
+    "botframework-webchat": "0.0.0-0",
+    "classnames": "2.5.1",
+    "core-js": "3.40.0",
+    "core-js-pure": "3.40.0",
+    "event-iterator": "2.0.0",
+    "event-target-shim": "6.0.2",
+    "math-random": "2.0.1",
+    "microsoft-cognitiveservices-speech-sdk": "1.42.0",
+    "prop-types": "15.8.1",
+    "simple-update-in": "2.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
+    "@babel/preset-react": "^7.18.6",
+    "concurrently": "^9.1.2",
+    "esbuild": "^0.25.0"
+  }
+}

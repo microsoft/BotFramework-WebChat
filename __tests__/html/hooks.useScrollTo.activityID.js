@@ -1,7 +1,5 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('useScrollTo hook', () => {
-  test('should scroll based on activity ID', () => runHTMLTest('hooks.useScrollTo.activityID.html'));
+  test('should scroll based on activity ID', () => runHTML('hooks.useScrollTo.activityID.html'));
 });

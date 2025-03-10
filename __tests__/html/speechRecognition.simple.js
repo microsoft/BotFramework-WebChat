@@ -1,10 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
-import fetch from 'node-fetch';
-
-import fetchSpeechServicesAuthorizationToken from './__jest__/fetchSpeechServicesAuthorizationToken';
+const fetch = require('node-fetch');
 
 const {
   COGNITIVE_SERVICES_REGION,
@@ -14,89 +10,46 @@ const {
 } = process.env;
 
 describe.each([
-  ['authorization token with Direct Line protocol', { useAuthorizationToken: true }],
+  ['authorization token with Direct Line protocol', {}],
+  ['authorization token with Direct Line protocol using hostname', { useHostname: true }],
   ['subscription key with Direct Line protocol', {}],
-  ['authorization token with Direct Line Speech protocol', { useAuthorizationToken: true, useDirectLineSpeech: true }],
-  ['subscription key with Direct Line Speech protocol', { useDirectLineSpeech: true }]
-])('speech recognition using %s', (_, { useAuthorizationToken, useDirectLineSpeech }) => {
-  test('should recognize "Hello, World!".', async () => {
-    let queryParams;
-
-    if (useAuthorizationToken) {
-      if (useDirectLineSpeech && DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY) {
-        queryParams = {
-          sa: await fetchSpeechServicesAuthorizationToken({
-            region: DIRECT_LINE_SPEECH_REGION,
-            subscriptionKey: DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY
-          }),
-          sr: DIRECT_LINE_SPEECH_REGION,
-          t: 'dlspeech'
-        };
-      } else if (!useDirectLineSpeech && COGNITIVE_SERVICES_SUBSCRIPTION_KEY) {
-        queryParams = {
-          sa: await fetchSpeechServicesAuthorizationToken({
-            region: COGNITIVE_SERVICES_REGION,
-            subscriptionKey: COGNITIVE_SERVICES_SUBSCRIPTION_KEY
-          }),
-          sr: COGNITIVE_SERVICES_REGION,
-          t: 'dl'
-        };
-      } else {
-        if (useDirectLineSpeech) {
-          console.warn(
-            'No environment variable "DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY" is set, using the authorization token from webchat-waterbottle.'
-          );
-        } else {
-          console.warn(
-            'No environment variable "COGNITIVE_SERVICES_SUBSCRIPTION_KEY" is set, using the authorization token from webchat-waterbottle.'
-          );
-        }
-
-        const res = await fetch('https://webchat-mockbot-streaming.azurewebsites.net/speechservices/token', {
-          headers: { origin: 'http://localhost' },
-          method: 'POST'
-        });
-
-        if (!res.ok) {
-          throw new Error(
-            `Failed to fetch Cognitive Services Speech Services credentials, server returned ${res.status}`
-          );
-        }
-
-        const { region, token: authorizationToken } = await res.json();
-
-        queryParams = { sa: authorizationToken, sr: region, t: useDirectLineSpeech ? 'dlspeech' : 'dl' };
-      }
-    } else {
-      if (useDirectLineSpeech) {
-        if (DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY) {
-          queryParams = {
-            sr: DIRECT_LINE_SPEECH_REGION,
-            ss: DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY,
-            t: 'dlspeech'
-          };
-        } else {
-          return console.warn(
-            'No environment variable "DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY" is set, skipping this test.'
-          );
-        }
-      } else {
-        if (COGNITIVE_SERVICES_SUBSCRIPTION_KEY) {
-          queryParams = {
-            sr: COGNITIVE_SERVICES_REGION,
-            ss: COGNITIVE_SERVICES_SUBSCRIPTION_KEY,
-            t: 'dl'
-          };
-        } else {
-          return console.warn(
-            'No environment variable "COGNITIVE_SERVICES_SUBSCRIPTION_KEY" is set, skipping this test.'
-          );
-        }
-      }
+  ['subscription key with Direct Line protocol using hostname', { useHostname: true, useSubscriptionKey: true }],
+  ['authorization token with Direct Line Speech protocol', { useDirectLineSpeech: true }],
+  [
+    'authorization token with Direct Line Speech protocol using hostname',
+    { useDirectLineSpeech: true, useHostname: true }
+  ],
+  ['subscription key with Direct Line Speech protocol', { useDirectLineSpeech: true, useSubscriptionKey: true }],
+  [
+    'subscription key with Direct Line Speech protocol using hostname',
+    { useDirectLineSpeech: true, useHostname: true, useSubscriptionKey: true }
+  ]
+])('speech recognition using %s', (_, { useSubscriptionKey, useDirectLineSpeech, useHostname }) => {
+  test.nightly('should recognize "Hello, World!".', async () => {
+    if (!useDirectLineSpeech && !COGNITIVE_SERVICES_SUBSCRIPTION_KEY) {
+      throw new Error('"COGNITIVE_SERVICES_SUBSCRIPTION_KEY" must be set.');
+    } else if (useDirectLineSpeech && !DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY) {
+      throw new Error('"DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY" must be set.');
     }
 
-    return runHTMLTest(`speechRecognition.simple.html#${new URLSearchParams(queryParams)}`, {
-      ignoreConsoleError: true
+    const { token } = await (
+      await fetch(
+        'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline',
+        { method: 'POST' }
+      )
+    ).json();
+
+    const params = new URLSearchParams({
+      'dl.token': token,
+      'dls.key': DIRECT_LINE_SPEECH_SUBSCRIPTION_KEY || '',
+      'dls.region': DIRECT_LINE_SPEECH_REGION || '',
+      'speech.key': COGNITIVE_SERVICES_SUBSCRIPTION_KEY || '',
+      'speech.region': COGNITIVE_SERVICES_REGION || '',
+      host: useHostname || '',
+      key: useSubscriptionKey || '',
+      type: useDirectLineSpeech ? 'dlspeech' : 'dl'
     });
+
+    return runHTML(`speechRecognition.simple.html#${params}`);
   });
 });

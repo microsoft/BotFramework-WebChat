@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const clock = lolex.createClock();
+
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(
+              [
+                {
+                  text: 'Hello, World!',
+                  type: 'message',
+                  id: 'CONVERSATION_ID-o|00000',
+                  timestamp: '2000-01-23T12:34:56.12345Z',
+                  channelId: 'directline',
+                  from: {
+                    id: 'webchat-mockbot',
+                    name: 'webchat-mockbot'
+                  },
+                  conversation: {
+                    id: 'CONVERSATION_ID-o'
+                  },
+                  locale: 'en-US'
+                },
+                {
+                  type: 'typing',
+                  id: 'CONVERSATION_ID-o|00002',
+                  timestamp: '2000-01-23T12:34:56.12345Z',
+                  channelId: 'directline',
+                  from: {
+                    id: 'webchat-mockbot',
+                    name: 'webchat-mockbot'
+                  },
+                  conversation: {
+                    id: 'CONVERSATION_ID-o'
+                  },
+                  locale: 'en-US',
+                  replyToId: 'CONVERSATION_ID-o|00001'
+                }
+              ],
+              { ponyfill: clock }
+            ),
+            ponyfill: clock,
+            sendTypingIndicator: true,
+            store: testHelpers.createStoreWithOptions({ ponyfill: clock })
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        // Wait for "Connecting..." message to dismiss
+        clock.tick(600);
+
+        await pageConditions.numActivitiesShown(1);
+
+        clock.tick(5000);
+
+        await pageConditions.typingIndicatorShown();
+
+        // The typing activity sent from the bot should trigger timeout because it is replying to a non-existing activity.
+        if (!(await host.getLogs()).some(({ message }) => message.includes('Timed out'))) {
+          throw new Error('Should see timeout warning.');
+        }
+      });
+    </script>
+  </body>
+</html>

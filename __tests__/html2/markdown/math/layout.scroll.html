@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/fluent-bundle.production.min.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          Fluent: { createDarkTheme, createLightTheme, FluentProvider },
+          ReactDOMClient: { createRoot },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const searchParams = new URLSearchParams(location.search);
+
+        const App = () => <ReactWebChat directLine={directLine} store={store} />;
+
+        const customBrandRamp = {
+          10: '#124C32',
+          20: '#1A5B3E',
+          30: '#216A4A',
+          40: '#297956',
+          50: '#308861',
+          60: '#38976D',
+          70: '#40A779',
+          80: '#158051',
+          90: '#4FC590',
+          100: '#56D49C',
+          110: '#5EE3A8',
+          120: '#79E8B7',
+          130: '#94ECC5',
+          140: '#AFF1D3',
+          150: '#C9F6E2',
+          160: '#E4FAF1'
+        };
+
+        const root = createRoot(document.getElementById('webchat'));
+
+        if (searchParams.get('variant') === 'copilot' || searchParams.get('variant') === 'fluent') {
+          root.render(
+            <FluentProvider
+              theme={
+                searchParams.get('theme') === 'dark'
+                  ? createDarkTheme(customBrandRamp)
+                  : createLightTheme(customBrandRamp)
+              }
+            >
+              <FluentThemeProvider variant={searchParams.get('variant') || ''}>
+                <App />
+              </FluentThemeProvider>
+            </FluentProvider>
+          );
+        } else {
+          root.render(<App />);
+        }
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          type: 'message',
+          from: {
+            role: 'bot'
+          },
+          text: 'To calculate the number of oranges in a crate, you can use a few different methods depending on the information you have. Here are some formulae that might help:\n\n1. **Volume Method**:\n   If you know the volume of the crate and the average volume of an orange, you can estimate the number of oranges.\n   \\[\n   \\text{Number of Oranges} = \\frac{\\text{Volume of Crate}}{\\text{Average Volume of an Orange}}\n   \\]\n\n2. **Weight Method**:\n   If you know the total weight of the crate and the average weight of an orange, you can use this formula.\n   \\[\n   \\text{Number of Oranges} = \\frac{\\text{Total Weight of Crate}}{\\text{Average Weight of an Orange}}\n   \\]\n\n3. **Layer Method**:\n   If you know the dimensions of the crate and the average dimensions of an orange, you can calculate how many layers of oranges fit in the crate.\n   \\[\n   \\text{Number of Oranges} = \\left(\\frac{\\text{Length of Crate}}{\\text{Average Diameter of an Orange}}\\right) \\times \\left(\\frac{\\text{Width of Crate}}{\\text{Average Diameter of an Orange}}\\right) \\times \\left(\\frac{\\text{Height of Crate}}{\\text{Average Diameter of an Orange}}\\right)\n   \\]\n\nThese methods can give you a good estimate. Do you have specific measurements or weights for your crate and oranges? That would help in applying these formulae more accurately.'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        await host.snapshot('local');
+
+        // WHEN: Press ENTER over the activity.
+        document.querySelector(`#webchat [data-testid="${testIds.sendBoxTextBox}"]`).focus();
+
+        await host.sendShiftTab(
+          (searchParams.get('variant') === 'copilot' || searchParams.get('variant') === 'fluent') ? 2 : 3
+        );
+        await host.sendKeys('ENTER');
+
+        // THEN: Should focus on the first <figure>.
+        expect(document).toHaveProperty(
+          'activeElement',
+          pageElements.activityContents()[0].querySelectorAll('figure')[0]
+        );
+        // expect(document).toHaveProperty('activeElement.tagName', 'FIGURE');
+        await host.snapshot('local');
+
+        // ----------------------------------------
+
+        // WHEN: Press RIGHT key.
+        await host.sendKeys('RIGHT');
+
+        // THEN: Should scroll to the right.
+        await pageConditions.became('should scroll to the right', () => document.activeElement.scrollLeft > 10, 1000);
+        await pageConditions.stabilized('should finish scrolling', () => document.activeElement.scrollLeft, 5, 1000);
+        await host.snapshot('local');
+
+        // ----------------------------------------
+
+        // WHEN: Press TAB key.
+        await host.sendKeys('TAB');
+
+        // THEN: Should focus on the second <figure>.
+        expect(document).toHaveProperty(
+          'activeElement',
+          pageElements.activityContents()[0].querySelectorAll('figure')[1]
+        );
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

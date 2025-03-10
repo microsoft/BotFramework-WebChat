@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() })
+          },
+          document.getElementById('webchat')
+        );
+
+        // WHEN: Connectivity status should show during connection.
+        await pageConditions.became('connectivity status should show', () => pageElements.connectivityStatus(), 1000);
+
+        // THEN: Connectivity status should hide after connected.
+        await pageConditions.became('connectivity status should hide after connected', () => !pageElements.connectivityStatus(), 1000);
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

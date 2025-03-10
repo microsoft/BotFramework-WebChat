@@ -28,7 +28,7 @@ We'll start by using the [host with React sample][1] as our Web Chat React templ
 
 `activityMiddleware` can be used to add to the currently existing DOM of Web Chat by filtering the bot's content based on activity. In this instance we are going to add a containing `<div>` to the activity (with extra styling) based on the activity's `role` value.
 
-First, let's style our new containers using glamor. The container for activities from the bot will have a solid red line on the left side of the `<div>`, and activities from the user will have a green line on the right.
+First, let's style our new containers. The container for activities from the bot will have a solid red line on the left side of the `<div>`, and activities from the user will have a green line on the right.
 
 ```css
 .highlightedActivity--bot {
@@ -50,12 +50,16 @@ Next, create the `activityMiddleware` which will be passed into the bot. We will
 
 <!-- prettier-ignore-start -->
 ```js
-const activityMiddleware = () => next => card => {
-  return children => (
-    <div>
-      <!-- content here -->
-    </div>
-  );
+const activityMiddleware = () => next => (...setupArgs) => {
+  const render = next(...setupArgs);
+
+  if(render) {
+    return  (...renderArgs) => {
+      const element = render(...renderArgs);
+      const [card] = setupArgs;
+      return element && <div className={card.activity.from.role === 'user' ? 'highlightedActivity--user' : 'highlightedActivity--bot'}>{element}</div>;
+      };
+    }
 };
 ```
 <!-- prettier-ignore-end -->
@@ -138,7 +142,7 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
       (async function() {
         'use strict';
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
         const { ReactWebChat } = window.WebChat;
         const activityMiddleware = () => next => card => {
@@ -169,16 +173,14 @@ Pass `activityMiddleware` into the rendering of Web Chat, and that's it.
 
 # Further reading
 
--  CSS in JavaScript - [glamor npm](https://www.npmjs.com/package/glamor)
-
 -  [Middleware wiki](https://en.wikipedia.org/wiki/Middleware)
 
--  [Reaction buttons bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/d.reaction-buttons) | [(Reaction buttons source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/d.reaction-buttons)
+-  [Reaction buttons bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/d.reaction-buttons) | [(Reaction buttons source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/05.custom-components/d.reaction-buttons)
 
--  [Card components bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/e.card-components) | [(Card components source code)](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/05.custom-components/e.card-components)
+-  [Card components bot](https://microsoft.github.io/BotFramework-WebChat/05.custom-components/e.card-components) | [(Card components source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/05.custom-components/e.card-components)
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)
 
 [1]: ../../01.getting-started/e.host-with-react/README.md

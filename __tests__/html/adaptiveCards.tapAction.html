@@ -1,62 +1,19 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <link href="focusManagement.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        conditions,
-        createRunHookActivityMiddleware,
-        createStore,
-        expect,
-        host,
-        pageObjects,
-        shareObservable,
-        timeouts,
-        token,
-        updateIn
-      } = window.WebChatTest;
-
-      function stringToArrayBuffer(value) {
-        // This assume the string is ASCII (0-127).
-
-        const { length } = value;
-        const byteArray = new Array(length);
-
-        for (let index = 0; index < length; index++) {
-          const charCode = value.charCodeAt(index);
-
-          if (charCode > 127) {
-            throw new Error('Only ASCII characters are supported.');
-          }
-
-          byteArray[index] = charCode;
-        }
-
-        return new Uint8Array(byteArray).buffer;
-      }
-
-      (async function() {
-        window.WebChat.renderWebChat(
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const directLine = testHelpers.createDirectLineWithTranscript([
           {
-            activityMiddleware: createRunHookActivityMiddleware(),
-            directLine: window.WebChat.createDirectLine({
-              token: await token.fetchDirectLineToken()
-            }),
-            store: createStore()
-          },
-          document.getElementById('webchat')
-        );
-
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-
-        const fileBlob = new Blob([
-          stringToArrayBuffer(
-            JSON.stringify(
+            attachments: [
               {
                 contentType: 'application/vnd.microsoft.card.hero',
                 content: {
@@ -68,45 +25,53 @@
                     'The first `imBack` is from mouse click. The second is from `ENTER` key. The third is from `SPACEBAR` key.',
                   title: 'Tap on this card to say, "echo Hello, World."'
                 }
-              },
-              null,
-              2
-            )
-          )
+              }
+            ],
+            from: {
+              id: 'bot',
+              role: 'bot'
+            },
+            id: '1',
+            timestamp: new Date().toISOString(),
+            type: 'message'
+          }
         ]);
 
-        fileBlob.name = 'hello-card.attachmentjson';
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore(),
+            styleOptions: { subtle: '#666' }
+          },
+          document.getElementById('webchat')
+        );
 
-        await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+        await pageConditions.uiConnected();
+
+        // When using runHookActivityMiddleware, an additional hidden activities will be rendered to run the hook function. Thus, minNumActivitiesShown must be +1.
+        await pageConditions.numActivitiesShown(1);
 
         const renderer = document.querySelector('.webchat__adaptive-card-renderer');
         const card = renderer.querySelector('.ac-adaptiveCard[tabindex="0"]');
 
         expect(card).toBeTruthy();
 
-        renderer.click();
+        await host.click(renderer);
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(4), timeouts.directLine);
+        await pageConditions.numActivitiesShown(2);
 
         card.focus();
         await host.sendKeys('\n');
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(6), timeouts.directLine);
+        await pageConditions.numActivitiesShown(3);
 
         card.focus();
         await host.sendKeys(' ');
 
-        await pageObjects.wait(conditions.minNumActivitiesShown(8), timeouts.directLine);
+        await pageConditions.numActivitiesShown(4);
 
-        await pageObjects.wait(conditions.scrollToBottomCompleted(), timeouts.scrollToBottom);
+        await pageConditions.scrollToBottomCompleted();
         await host.snapshot();
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

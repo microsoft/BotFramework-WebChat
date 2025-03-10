@@ -1,6 +1,4 @@
 import {
-  AdaptiveCard,
-  CardElement,
   Column,
   ColumnSet,
   Container,
@@ -8,21 +6,27 @@ import {
   OpenUrlAction,
   Size,
   SizeAndUnit,
+  SizeUnit,
   SubmitAction,
   TextBlock,
   TextColor,
   TextSize,
-  TextWeight
+  TextWeight,
+  type AdaptiveCard,
+  type CardElement
 } from 'adaptivecards';
+import type { DirectLineCardAction } from 'botframework-webchat-core';
+import { isForbiddenPropertyName } from 'botframework-webchat-core';
 
-import { CardAction } from 'botframework-directlinejs';
+import { type AdaptiveCardsPackage } from '../../types/AdaptiveCardsPackage';
+import { type AdaptiveCardsStyleOptions } from '../AdaptiveCardsStyleOptions';
 
 export interface BotFrameworkCardAction {
-  __isBotFrameworkCardAction: boolean;
-  cardAction: CardAction;
+  __isBotFrameworkCardAction: true;
+  cardAction: DirectLineCardAction;
 }
 
-function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
+function addCardAction(cardAction: DirectLineCardAction, includesOAuthButtons?: boolean) {
   const { type } = cardAction;
   let action;
 
@@ -39,11 +43,11 @@ function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
       cardAction
     };
 
-    action.title = cardAction.title;
+    action.title = (cardAction as { title: string }).title;
   } else {
     action = new OpenUrlAction();
 
-    action.title = cardAction.title;
+    action.title = (cardAction as { title: string }).title;
     action.url = cardAction.type === 'call' ? `tel:${cardAction.value}` : cardAction.value;
   }
 
@@ -53,9 +57,13 @@ function addCardAction(cardAction: CardAction, includesOAuthButtons?: boolean) {
 export default class AdaptiveCardBuilder {
   card: AdaptiveCard;
   container: Container;
-  styleOptions: any;
+  styleOptions: AdaptiveCardsStyleOptions;
 
-  constructor(adaptiveCards, styleOptions, direction = 'ltr') {
+  constructor(
+    adaptiveCards: AdaptiveCardsPackage,
+    styleOptions: AdaptiveCardsStyleOptions,
+    direction: 'ltr' | 'rtl' | 'auto' = 'ltr'
+  ) {
     this.card = new adaptiveCards.AdaptiveCard();
     this.container = new Container();
     this.container.rtl = direction === 'rtl';
@@ -64,7 +72,7 @@ export default class AdaptiveCardBuilder {
     this.card.addItem(this.container);
   }
 
-  addColumnSet(sizes: number[], container: Container = this.container, selectAction?: CardAction) {
+  addColumnSet(sizes: number[], container: Container = this.container, selectAction?: DirectLineCardAction) {
     const columnSet = new ColumnSet();
 
     columnSet.selectAction = selectAction && addCardAction(selectAction);
@@ -73,7 +81,7 @@ export default class AdaptiveCardBuilder {
     return sizes.map(size => {
       const column = new Column();
 
-      column.width = SizeAndUnit.parse(size);
+      column.width = new SizeAndUnit(size, SizeUnit.Weight);
 
       columnSet.addColumn(column);
 
@@ -89,9 +97,12 @@ export default class AdaptiveCardBuilder {
     if (typeof text !== 'undefined') {
       const textblock = new TextBlock();
 
-      // tslint:disable-next-line:forin
       for (const prop in template) {
-        textblock[prop] = template[prop];
+        if (!isForbiddenPropertyName(prop)) {
+          // Mitigated through denylisting.
+          // eslint-disable-next-line security/detect-object-injection
+          textblock[prop] = template[prop];
+        }
       }
 
       textblock.text = text;
@@ -100,7 +111,7 @@ export default class AdaptiveCardBuilder {
     }
   }
 
-  addButtons(cardActions: CardAction[], includesOAuthButtons?: boolean) {
+  addButtons(cardActions: DirectLineCardAction[], includesOAuthButtons?: boolean) {
     cardActions &&
       cardActions.forEach(cardAction => {
         this.card.addAction(addCardAction(cardAction, includesOAuthButtons));
@@ -110,13 +121,14 @@ export default class AdaptiveCardBuilder {
   addCommonHeaders(content: ICommonContent) {
     const { richCardWrapTitle } = this.styleOptions;
     this.addTextBlock(content.title, {
-      color: TextColor.Dark,
+      color: TextColor.Default,
       size: TextSize.Medium,
+      style: 'heading',
       weight: TextWeight.Bolder,
       wrap: richCardWrapTitle
     });
-    this.addTextBlock(content.subtitle, { color: TextColor.Dark, isSubtle: true, wrap: richCardWrapTitle });
-    this.addTextBlock(content.text, { color: TextColor.Dark, wrap: true });
+    this.addTextBlock(content.subtitle, { color: TextColor.Default, isSubtle: true, wrap: richCardWrapTitle });
+    this.addTextBlock(content.text, { color: TextColor.Default, wrap: true });
   }
 
   addCommon(content: ICommonContent) {
@@ -124,7 +136,7 @@ export default class AdaptiveCardBuilder {
     this.addButtons(content.buttons);
   }
 
-  addImage(url: string, container?: Container, selectAction?: CardAction, altText?: string) {
+  addImage(url: string, container?: Container, selectAction?: DirectLineCardAction, altText?: string) {
     container = container || this.container;
 
     const image = new Image();
@@ -139,7 +151,7 @@ export default class AdaptiveCardBuilder {
 }
 
 export interface ICommonContent {
-  buttons?: CardAction[];
+  buttons?: DirectLineCardAction[];
   subtitle?: string;
   text?: string;
   title?: string;

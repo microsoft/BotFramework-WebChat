@@ -1,9 +1,12 @@
+import { hooks } from 'botframework-webchat-api';
+import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import CheckMarkIcon from './CheckMarkIcon';
 import ExclamationMarkIcon from './ExclamationMarkIcon';
-import useLocalizer from '../hooks/useLocalizer';
+
+const { useLocalizer } = hooks;
 
 const NotificationIcon = ({ className, level }) => {
   const localize = useLocalizer();
@@ -15,7 +18,9 @@ const NotificationIcon = ({ className, level }) => {
     warn: localize('TOAST_ALT_WARN')
   };
 
-  const prefix = prefixes[level] || '';
+  // Mitigated through denylisting.
+  // eslint-disable-next-line security/detect-object-injection
+  const prefix = (!isForbiddenPropertyName(level) && prefixes[level]) || '';
 
   return (
     <React.Fragment>

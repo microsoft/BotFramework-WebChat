@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            ),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(32);
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageObjects.focusSendBoxTextBox();
+
+        // Tests according to https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant:
+
+        // Keyboard: TAB/SHIFT-TAB to focus on transcript should scroll activity into view.
+        // Keyboard: UP/DOWN arrow key should scroll them into view.
+        // Keyboard: Blurring the transcript, should still keep `aria-activedescendant`.
+
+        // WHEN: Pressing SHIFT-TAB x 3 to focus on the transcript.
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+
+        // THEN: It should show focus indicator around the last activity.
+        expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[0]);
+        await host.snapshot();
+
+        // WHEN: Press up arrow 2 times.
+        await host.sendKeys('ARROW_UP');
+        await host.sendKeys('ARROW_UP');
+
+        // THEN: It should show focus indicator around activity #29 and scroll it into view.
+        await pageConditions.focusedActivityInView();
+        expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[2]);
+        await host.snapshot();
+
+        // WHEN: Press up arrow 3 times.
+        await host.sendKeys('ARROW_UP');
+        await host.sendKeys('ARROW_UP');
+        await host.sendKeys('ARROW_UP');
+
+        // THEN: Activity #26 should be top aligned with appropriate spacing.
+        //       Activity #29 should be partially off the screen on the bottom side.
+        await host.snapshot();
+
+        // WHEN: Press down arrow 3 times.
+        await host.sendKeys('ARROW_DOWN');
+        await host.sendKeys('ARROW_DOWN');
+        await host.sendKeys('ARROW_DOWN');
+
+        // THEN: Activity #29 should be displayed completed and aligned to the bottom of the screen with appropriate spacing.
+        const activity29 = [...pageElements.activities()].reverse()[2];
+
+        await pageConditions.focusedActivityInView();
+        expect(pageElements.transcriptScrollable().scrollTop + pageElements.transcriptScrollable().offsetHeight).toBe(
+          activity29.offsetTop + activity29.offsetHeight
+        );
+        await host.snapshot();
+
+        // WHEN: Pressing TAB 3 times.
+        await host.sendTab();
+        await host.sendTab();
+        await host.sendTab();
+
+        // THEN: It should focus on the send box.
+        expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
+
+        // THEN: It should continue to keep activity #29 as the `aria-activedescendant`.
+        expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[2]);
+
+        // WHEN: Scroll the transcript to the bottom.
+        pageElements.transcriptScrollable().scrollTop =
+          pageElements.transcriptScrollable().scrollHeight - pageElements.transcriptScrollable().clientHeight;
+
+        // THEN: Transcript should be at the bottom.
+        await host.snapshot();
+
+        // WHEN: SHIFT-TAB to focus back on the transcript.
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+        await host.sendShiftTab();
+
+        // THEN: It should scroll activity #29 in the view.
+        await pageConditions.focusedActivityInView();
+        expect(pageElements.transcriptScrollable().scrollTop).toBe(
+          [...pageElements.activities()].reverse()[2].offsetTop - 5 // 5px is the margin
+        );
+
+        // THEN: It should show activity #29 completely with top aligned and appropriate spacing.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

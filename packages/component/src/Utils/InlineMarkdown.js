@@ -1,15 +1,18 @@
 /* eslint react/no-danger: "off" */
 
+import { hooks } from 'botframework-webchat-api';
+import { isForbiddenPropertyName } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo } from 'react';
 import updateIn from 'simple-update-in';
 
-import createCustomEvent from '../Utils/createCustomEvent';
+import createCustomEvent from './createCustomEvent';
 import randomId from './randomId';
 import useInternalMarkdownIt from '../hooks/internal/useInternalMarkdownIt';
-import useStyleOptions from '../hooks/useStyleOptions';
-import useStyleToEmotionObject from '../hooks/internal/useStyleToEmotionObject';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import walkMarkdownTokens from './walkMarkdownTokens';
+
+const { useStyleOptions } = hooks;
 
 function replaceAnchorWithButton(markdownTokens) {
   return walkMarkdownTokens(markdownTokens, markdownToken => {
@@ -65,6 +68,12 @@ const InlineMarkdown = ({ children, onReference, references }) => {
           fontFamily: 'inherit',
           fontSize: 'inherit',
           padding: 0
+        },
+        '@media screen and (forced-colors: active)': {
+          '& button[data-markdown-href]': {
+            color: 'LinkText',
+            textDecoration: 'underline'
+          }
         }
       }) + '',
     [accent, styleToClassName]
@@ -88,8 +97,10 @@ const InlineMarkdown = ({ children, onReference, references }) => {
   const html = useMemo(() => {
     const tree = markdownIt.parseInline(children, {
       references: references.reduce(
-        // (references, key) => ({ ...references, [key]: { href: `#${key}` } }),
-        (references, key) => ({ ...references, [key]: { href: `#${refToHref[key]}` } }),
+        (references, key) =>
+          // Mitigated through denylisting.
+          // eslint-disable-next-line security/detect-object-injection
+          isForbiddenPropertyName(key) ? references : { ...references, [key]: { href: `#${refToHref[key]}` } },
         {}
       )
     });
@@ -106,7 +117,16 @@ const InlineMarkdown = ({ children, onReference, references }) => {
 
       const href = event.target.getAttribute('data-markdown-href');
 
-      href && onReference && onReference(createCustomEvent('reference', { data: hrefToRef[href] }));
+      href &&
+        onReference &&
+        onReference(
+          createCustomEvent(
+            'reference',
+            // Mitigated through denylisting.
+            // eslint-disable-next-line security/detect-object-injection
+            isForbiddenPropertyName(href) ? {} : { data: hrefToRef[href] }
+          )
+        );
     },
     [hrefToRef, onReference]
   );

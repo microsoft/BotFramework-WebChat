@@ -1,5 +1,3 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
-test('useTextBoxSubmit and set focus to "sendBox"', () => runHTMLTest('useTextBoxSubmit.sendBox.html'));
+test('useTextBoxSubmit and set focus to "sendBox"', () => runHTML('useTextBoxSubmit.sendBox.html'));

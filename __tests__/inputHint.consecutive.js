@@ -54,54 +54,69 @@ describe('input hint from consecutive messages', () => {
   test('should turn on microphone for accepting then accepting', async () => {
     await sendInputHintCommand('accepting', 'accepting');
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+    // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+    await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+      'Waiting SpeechRecognition.start to be called'
+    );
   });
 
   test('should turn on microphone for accepting then expecting', async () => {
     await sendInputHintCommand('accepting', 'expecting');
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
   });
 
   test('should turn on microphone for accepting then ignoring', async () => {
     await sendInputHintCommand('accepting', 'ignoring');
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+    // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+    await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+      'Waiting SpeechRecognition.start to be called'
+    );
   });
 
   test('should turn on microphone for expecting then accepting', async () => {
     await sendInputHintCommand('expecting', 'accepting');
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
   });
 
   test('should turn on microphone for expecting then expecting', async () => {
     await sendInputHintCommand('expecting', 'expecting');
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
   });
 
   test('should turn on microphone for expecting then ignoring', async () => {
     await sendInputHintCommand('expecting', 'ignoring');
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+    // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+    await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+      'Waiting SpeechRecognition.start to be called'
+    );
   });
 
   test('should turn on microphone for ignoring then accepting', async () => {
     await sendInputHintCommand('ignoring', 'accepting');
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+    // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+    await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+      'Waiting SpeechRecognition.start to be called'
+    );
   });
 
   test('should turn on microphone for ignoring then expecting', async () => {
     await sendInputHintCommand('ignoring', 'expecting');
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeTruthy();
+    await driver.wait(speechRecognitionStartCalled(), timeouts.ui);
   });
 
   test('should turn on microphone for ignoring then ignoring', async () => {
     await sendInputHintCommand('ignoring', 'ignoring');
 
-    await expect(speechRecognitionStartCalled().fn(driver)).resolves.toBeFalsy();
+    // TODO: [P3] #4046 Improves test reliability by identifying false positives and reduce wait time.
+    await expect(() => driver.wait(speechRecognitionStartCalled(), timeouts.ui)).rejects.toThrow(
+      'Waiting SpeechRecognition.start to be called'
+    );
   });
 });

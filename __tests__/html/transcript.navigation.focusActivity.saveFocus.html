@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            ),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(32);
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageObjects.focusSendBoxTextBox();
+
+        // WHEN: SHIFT-TAB is pressed 3 times.
+        await host.sendShiftTab(3);
+
+        // THEN: It should show a focus indicator around the transcript, and an active indicator around the last activity. This is our starting point.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        await host.snapshot();
+
+        // WHEN: Up arrow key is pressed.
+        await host.sendKeys('ARROW_UP');
+
+        // THEN: It should active the second last activity.
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[1]);
+        await pageConditions.focusedActivityInView();
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed.
+        await host.sendTab();
+
+        // THEN: It should focus on the terminator.
+        expect(document.activeElement).toBe(pageElements.transcriptTerminator());
+        await host.snapshot();
+
+        // WHEN: TAB key is pressed, followed by SHIFT-TAB x 2.
+        await host.sendTab();
+        await host.sendShiftTab(2);
+
+        // THEN: It should focus on the transcript and show an active indicator around the second last activity.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[1]);
+        await host.snapshot();
+
+        // WHEN: After a message is sent.
+        await pageObjects.sendMessageViaSendBox('Hello, World!');
+        await pageConditions.allOutgoingActivitiesSent();
+
+        // THEN: It should continue focus on the send box.
+        expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
+
+        // THEN: Transcript should have `aria-activedescendant` set to the newly sent message.
+        expect(pageElements.activeActivity()).toBe([...pageElements.activities()].reverse()[0]);
+
+        // WHEN: SHIFT-TAB x 3 into the transcript.
+        await host.sendShiftTab(3);
+
+        // THEN: It should show an active indicator around the last activity, which is the newly sent message.
+        expect(document.activeElement).toBe(pageElements.transcript());
+        expect(pageElements.focusedActivity()).toBe([...pageElements.activities()].reverse()[0]);
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

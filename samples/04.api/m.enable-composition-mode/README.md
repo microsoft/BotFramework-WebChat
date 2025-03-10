@@ -16,7 +16,7 @@ Composition mode enables developers to use Web Chat APIs, such as the [Web Chat 
 
 > Jump to [completed code](#completed-code) to see the end-result `index.html`.
 
-This sample is based on the [01.getting-started/e.host-with-react](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples/01.getting-started/e.host-with-react) sample.
+This sample is based on the [01.getting-started/e.host-with-react](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/01.getting-started/e.host-with-react) sample.
 
 ## Enable composition mode
 
@@ -39,7 +39,7 @@ To enable composition mode, `<ReactWebChat>` will be replaced by `<Composer>` an
         }
       } = window;
 
-      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+      const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
       const { token } = await res.json();
 
       ReactDOM.render(
@@ -71,7 +71,7 @@ A new headless component `<SendHelpOnConnect>` will be added to the API containe
         }
       } = window;
 
-      const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+      const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
       const { token } = await res.json();
 
 +     const SendHelpOnConnect = () => {
@@ -142,7 +142,7 @@ Here is the finished `index.html`:
           }
         } = window;
 
-        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const res = await fetch('https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline', { method: 'POST' });
         const { token } = await res.json();
 
         const SendHelpOnConnect = () => {
@@ -176,4 +176,4 @@ Here is the finished `index.html`:
 
 ## Full list of Web Chat hosted samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)

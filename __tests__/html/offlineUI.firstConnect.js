@@ -1,8 +1,6 @@
-/**
- * @jest-environment ./__tests__/html/__jest__/WebChatEnvironment.js
- */
+/** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
 describe('offline UI', () => {
   test('should display the "Connecting..." connectivity status when connecting for the first time', () =>
-    runHTMLTest('offlineUI.firstConnect.html'));
+    runHTML('offlineUI.firstConnect.html'));
 });

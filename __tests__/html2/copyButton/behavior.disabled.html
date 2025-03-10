@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat" style="position: relative"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        render(<ReactWebChat directLine={directLine} store={store} uiState="disabled" />, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        expect(window.isSecureContext).toBe(true);
+
+        await host.sendDevToolsCommand('Browser.setPermission', {
+          permission: { name: 'clipboard-write' },
+          setting: 'granted'
+        });
+
+        await expect(navigator.permissions.query({ name: 'clipboard-write' })).resolves.toHaveProperty(
+          'state',
+          'granted'
+        );
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              keywords: ['AllowCopy'],
+              type: 'https://schema.org/Message'
+            }
+          ],
+          text: 'Mollit *aute* **aute** dolor ea ex magna incididunt nostrud sit nisi.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: The copy button should be disabled.
+        const copyButton = document.querySelector(`[data-testid="${WebChat.testIds.copyButton}"]`);
+
+        expect(copyButton.getAttribute('aria-disabled')).toBe('true');
+
+        // THEN: Should match screenshot.
+        await host.snapshot('local');
+
+        // WHEN: Clicks the "Copy" button.
+        await host.click(copyButton);
+
+        // THEN: The copy button should not change to "Copied".
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

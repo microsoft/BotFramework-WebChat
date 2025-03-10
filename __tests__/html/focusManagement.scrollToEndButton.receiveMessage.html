@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { subtle: '#666' }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await pageObjects.sendMessageViaSendBox('herocard');
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
+
+        // Waiting for scroll-to-end panel to detect unsticky.
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        await pageObjects.scrollToTop();
+
+        await host.snapshot();
+
+        await pageObjects.sendMessageViaCode('echo Hello, World!');
+
+        await pageConditions.minNumActivitiesShown(5);
+
+        await pageObjects.focusScrollToEndButton();
+
+        await host.snapshot();
+
+        await pageObjects.clickScrollToEndButton();
+
+        await pageConditions.scrollToBottomCompleted();
+
+        // After clicking on "New messages" button, it should focus on the transcript and the next unread activity.
+        expect(document.activeElement === pageElements.transcript()).toBe(true);
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

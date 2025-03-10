@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const directLine = testHelpers.createDirectLineWithTranscript([]);
+        const store = testHelpers.createStore();
+        const useDefault = new URLSearchParams(location.search).get('default');
+
+        function render(overrideProps) {
+          WebChat.renderWebChat(
+            {
+              directLine,
+              store,
+              ...overrideProps,
+              styleOptions: {
+                ...(useDefault
+                  ? {}
+                  : {
+                      sendBoxButtonShadeBorderRadius: 5,
+                      sendBoxButtonShadeInset: 3,
+
+                      sendBoxButtonKeyboardFocusIndicatorBorderColor: 'rgba(0, 255, 255, 1)',
+                      sendBoxButtonKeyboardFocusIndicatorBorderRadius: '100%',
+                      sendBoxButtonKeyboardFocusIndicatorBorderStyle: 'dashed',
+                      sendBoxButtonKeyboardFocusIndicatorBorderWidth: 2,
+                      sendBoxButtonKeyboardFocusIndicatorInset: 6,
+
+                      sendBoxButtonColor: 'rgba(255, 0, 0, 1)',
+                      sendBoxButtonShadeColor: 'rgba(255, 0, 0, .4)',
+
+                      sendBoxButtonColorOnActive: 'rgba(255, 0, 255, 1)',
+                      sendBoxButtonShadeColorOnActive: 'rgba(255, 0, 255, .4)',
+
+                      sendBoxButtonColorOnDisabled: 'rgba(255, 255, 0, 1)',
+                      sendBoxButtonShadeColorOnDisabled: 'rgba(255, 255, 0, .4)',
+
+                      sendBoxButtonColorOnFocus: 'rgba(0, 255, 0, 1)',
+                      sendBoxButtonShadeColorOnFocus: 'rgba(0, 255, 0, .4)',
+
+                      sendBoxButtonColorOnHover: 'rgba(0, 0, 255, 1)',
+                      sendBoxButtonShadeColorOnHover: 'rgba(0, 0, 255, .4)'
+                    }),
+                ...overrideProps?.styleOptions
+              }
+            },
+            document.getElementById('webchat')
+          );
+        }
+
+        render();
+
+        // GIVEN: Web Chat is rendered with no activities and focus is on the send box.
+        await pageConditions.uiConnected();
+        await pageObjects.focusSendBoxTextBox();
+        await host.snapshot();
+
+        // WHEN: Web Chat is disabled
+        render({ disabled: true });
+        await pageConditions.uiConnected();
+
+        // THEN: Send box buttons should be disabled.
+        await host.snapshot();
+
+        // WHEN: Press TAB to focus on the send button.
+        render();
+        await pageConditions.uiConnected();
+        await host.sendTab();
+
+        // THEN: A focus-visible border should surround the send button.
+        await host.snapshot();
+
+        // WHEN: Hover mouse on the send button.
+        await host.hover(pageElements.sendButton());
+
+        // THEN: Both focus-visible border and shaded background should appear behind the send button.
+        await host.snapshot();
+
+        // WHEN: Press-and-hold the send button.
+        await host.pressAndHold(pageElements.sendButton());
+
+        // THEN: Both focus-visible border and shaded background should appear.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

@@ -1,10 +1,12 @@
+import { hooks } from 'botframework-webchat-api';
 import React from 'react';
 
 import ConnectivityStatusConnected from './ConnectivityStatus/Connected';
 import ConnectivityStatusConnecting from './ConnectivityStatus/Connecting';
 import ConnectivityStatusFailedToConnect from './ConnectivityStatus/FailedToConnect';
 import ConnectivityStatusJavaScriptError from './ConnectivityStatus/JavaScriptError';
-import useDebouncedNotifications from './hooks/useDebouncedNotifications';
+
+const { useDebouncedNotifications } = hooks;
 
 const BasicConnectivityStatus = () => {
   const [{ connectivitystatus: connectivityStatus }] = useDebouncedNotifications();

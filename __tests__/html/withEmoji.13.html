@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main></main>
+    <script>
+      run(async function () {
+        const { withEmoji } = WebChat;
+        const Input = React.forwardRef((props, ref) => React.createElement('input', { ...props, ref }));
+        const InputWithEmoji = withEmoji(Input);
+        const App = () => {
+          const [value, setValue] = React.useState('');
+
+          const handleClick1 = React.useCallback(() => setValue('Aloha!'), [setValue]);
+          const handleClick2 = React.useCallback(() => setValue('Morning!'), [setValue]);
+
+          return React.createElement(
+            'label',
+            {},
+            'Input: ',
+            React.createElement(InputWithEmoji, {
+              autoFocus: true,
+              emojiMap: new Map([[':)', '🙂']]),
+              onChange: setValue,
+              value
+            }),
+            React.createElement(
+              'button',
+              {
+                onClick: handleClick1
+              },
+              'Set 1'
+            ),
+            React.createElement(
+              'button',
+              {
+                onClick: handleClick2
+              },
+              'Set 2'
+            ),
+            React.createElement('br'),
+            React.createElement('div', { 'data-test-id': 'get-value' }, value)
+          );
+        };
+
+        await new Promise(resolve =>
+          ReactDOM.render(React.createElement(App), document.getElementsByTagName('main')[0], resolve)
+        );
+
+        const [button1, button2] = document.getElementsByTagName('button');
+        const [inputElement] = document.getElementsByTagName('input');
+        const getValueElement = document.querySelector('[data-test-id]');
+
+        const getTextWithCaret = () => {
+          expect(inputElement.value).toBe(getValueElement.textContent);
+
+          const tokens = inputElement.value.split('');
+
+          if (inputElement.selectionStart === inputElement.selectionEnd) {
+            tokens.splice(inputElement.selectionStart, 0, '|');
+          } else {
+            tokens.splice(inputElement.selectionEnd, 0, ']');
+            tokens.splice(inputElement.selectionStart, 0, '[');
+          }
+
+          return tokens.join('');
+        };
+
+        expect(getTextWithCaret()).toBe('|');
+
+        await host.sendKeys('Hello, World!:)');
+        expect(getTextWithCaret()).toBe('Hello, World!🙂|');
+
+        await host.click(button1);
+        expect(getTextWithCaret()).toBe('|Aloha!');
+
+        await host.click(button2);
+        expect(getTextWithCaret()).toBe('|Morning!');
+
+        await host.click(document.getElementsByTagName('input')[0]);
+        await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
+        expect(getTextWithCaret()).toBe('|Aloha!');
+
+        await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
+        expect(getTextWithCaret()).toBe('Hello, World!🙂|');
+
+        await host.click(button1);
+        expect(getTextWithCaret()).toBe('|Aloha!');
+
+        await host.click(document.getElementsByTagName('input')[0]);
+        await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
+        expect(getTextWithCaret()).toBe('Hello, World!🙂|');
+
+        await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
+        expect(getTextWithCaret()).toBe('Hello, World!:)|');
+
+        await host.sendKeys('+CONTROL', 'Z', '-CONTROL');
+        expect(getTextWithCaret()).toBe('|');
+      });
+    </script>
+  </body>
+</html>

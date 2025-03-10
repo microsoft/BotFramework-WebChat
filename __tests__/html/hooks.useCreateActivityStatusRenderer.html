@@ -1,31 +1,28 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <div id="webchat"></div>
+    <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         ReactDOM: { render },
         WebChat: {
           Components: { Composer },
           hooks: { useActivities, useCreateActivityStatusRenderer }
-        },
-        WebChatTest: {
-          conditions,
-          createDeferred,
-          createDirectLineWithTranscript,
-          createStore,
-          host,
-          pageObjects,
-          timeouts,
-          token
         }
       } = window;
 
-      (async function() {
+      run(async function () {
+        const clock = lolex.createClock();
+
         const Test = () => {
           const [activities] = useActivities();
 
@@ -44,56 +41,55 @@
           );
         };
 
-        const directLine = await createDirectLineWithTranscript([
-          {
-            from: { role: 'bot' },
-            id: '1.0',
-            text: 'Sint ex sunt ipsum exercitation id id reprehenderit cupidatat incididunt aliquip.',
-            timestamp: -60001,
-            type: 'message'
-          },
-          {
-            channelData: { clientTimestamp: -60001, state: 'sending' },
-            from: { role: 'user' },
-            id: '2.0',
-            text: 'Ipsum ex labore occaecat aute eu ea anim veniam tempor.',
-            type: 'message'
-          },
-          {
-            channelData: { clientTimestamp: 0, state: 'sending' },
-            from: { role: 'user' },
-            id: '3.0',
-            text: 'Laboris Lorem sint magna sit ad eu ullamco irure.',
-            type: 'message'
-          },
-          {
-            channelData: { state: 'sent' },
-            from: { role: 'user' },
-            id: '4.0',
-            text: 'Sunt cupidatat mollit id adipisicing occaecat ipsum fugiat ullamco in aute deserunt ut.',
-            timestamp: 0,
-            type: 'message'
-          }
-        ]);
-
-        const store = createStore();
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
         render(
-          <Composer directLine={directLine} store={store}>
+          <Composer directLine={directLine} ponyfill={clock} store={store}>
             <Test />
           </Composer>,
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-        await pageObjects.wait(() => document.querySelector('.done'), timeouts.ui);
+        await pageConditions.webChatRendered();
+
+        await directLine.emulateIncomingActivity({
+          // Setting sequence ID to simplify the order of these test cases.
+          channelData: { 'webchat:sequence-id': 0 },
+          from: { role: 'bot' },
+          text: 'Sint ex sunt ipsum exercitation id id reprehenderit cupidatat incididunt aliquip.',
+          type: 'message'
+        });
+
+        await directLine.emulateOutgoingActivity({
+          channelData: { 'webchat:sequence-id': 1 },
+          from: { role: 'user' },
+          text: 'Ipsum ex labore occaecat aute eu ea anim veniam tempor.',
+          type: 'message'
+        });
+
+        clock.tick(60000);
+
+        await directLine.emulateOutgoingActivity({
+          channelData: { 'webchat:sequence-id': 2 },
+          from: { role: 'user' },
+          localTimestamp: 0,
+          text: 'Laboris Lorem sint magna sit ad eu ullamco irure.',
+          type: 'message'
+        });
+
+        await (
+          await directLine.emulateOutgoingActivity({
+            channelData: { 'webchat:sequence-id': 3 },
+            from: { role: 'user' },
+            text: 'Sunt cupidatat mollit id adipisicing occaecat ipsum fugiat ullamco in aute deserunt ut.',
+            timestamp: 0,
+            type: 'message'
+          })
+        ).resolveAll();
+
+        await pageConditions.became('Done', () => document.querySelector('.done'), 1000);
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

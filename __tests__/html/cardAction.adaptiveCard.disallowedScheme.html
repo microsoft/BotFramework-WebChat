@@ -1,62 +1,26 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const {
-        WebChat: { renderWebChat },
-        WebChatTest: {
-          conditions,
-          createRunHookActivityMiddleware,
-          createStore,
-          elements,
-          expect,
-          getConsoleHistory,
-          host,
-          pageObjects,
-          timeouts,
-          token
-        }
-      } = window;
-
-      function stringToArrayBuffer(value) {
-        // This assume the string is ASCII (0-127).
-
-        const { length } = value;
-        const byteArray = new Array(length);
-
-        for (let index = 0; index < length; index++) {
-          const charCode = value.charCodeAt(index);
-
-          if (charCode > 127) {
-            throw new Error('Only ASCII characters are supported.');
-          }
-
-          byteArray[index] = charCode;
-        }
-
-        return new Uint8Array(byteArray).buffer;
-      }
-
-      (async function() {
-        renderWebChat(
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const directLine = await testHelpers.createDirectLineWithTranscript([
           {
-            activityMiddleware: createRunHookActivityMiddleware(),
-            directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
-            store: createStore()
-          },
-          document.getElementById('webchat')
-        );
-
-        await pageObjects.wait(conditions.uiConnected(), timeouts.directLine);
-
-        const fileBlob = new Blob([
-          stringToArrayBuffer(
-            JSON.stringify(
+            type: 'message',
+            id: '1',
+            channelId: 'directline',
+            from: { role: 'bot' },
+            locale: 'en-US',
+            text: 'Showing card',
+            attachmentLayout: 'carousel',
+            timestamp: '2019-08-08T16:41:12.9397263Z',
+            attachments: [
               {
                 contentType: 'application/vnd.microsoft.card.adaptive',
                 content: {
@@ -75,23 +39,26 @@
                     url: 'javascript:alert(1)'
                   }
                 }
-              },
-              null,
-              2
-            )
-          )
+              }
+            ]
+          }
         ]);
 
-        fileBlob.name = 'openurl-card.attachmentjson';
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
 
-        await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
-        await pageObjects.wait(conditions.minNumActivitiesShown(2), timeouts.directLine);
+        await pageConditions.minNumActivitiesShown(1);
 
         const calls = [];
 
         window.open = (url, windowName, windowFeatures) => calls.push([url, windowName, windowFeatures]);
 
-        const activities = elements.activities();
+        const activities = pageElements.activities();
         const adaptiveCard = activities[activities.length - 1].querySelector('.ac-adaptiveCard');
 
         adaptiveCard.click();
@@ -99,20 +66,14 @@
         expect(calls).toHaveProperty('length', 0);
 
         // Expect to show a warning.
-        await expect(getConsoleHistory()).toEqual(
+        await expect(host.getLogs()).resolves.toEqual(
           expect.arrayContaining([
             expect.objectContaining({
-              args: expect.arrayContaining([expect.stringContaining('disallowed scheme')]),
-              level: 'warn'
+              level: expect.objectContaining({ name_: 'WARNING' }),
+              message: expect.stringContaining('disallowed scheme')
             })
           ])
         );
-
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

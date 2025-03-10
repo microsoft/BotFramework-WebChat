@@ -1,6 +1,6 @@
 # Using Direct Line Speech
 
-> For Cognitive Services Speech Services, please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md).
+> For Cognitive Services Speech Services, please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/SPEECH.md).
 
 This guide is for using Web Chat with chat and speech functionality provided by the [Direct Line Speech protocol](https://docs.microsoft.com/en-us/azure/cognitive-services/Speech-Service/direct-line-speech).
 
@@ -23,7 +23,7 @@ Direct Line Speech is not recommended to use on traditional websites where its p
     <tr>
       <th></th>
       <th></th>
-      <th colspan="2">Chrome/Edge<br />and Firefox<br />on desktop</th>
+      <th colspan="2">Chrome/Microsoft Edge<br />and Firefox<br />on desktop</th>
       <th colspan="2">Chrome<br />on Android</th>
       <th colspan="2">Safari<br />on macOS/iOS</th>
       <th colspan="2"><a href="https://developer.android.com/reference/android/webkit/WebView">Web View<br />on Android</a></th>
@@ -239,7 +239,7 @@ Direct Line Speech is not recommended to use on traditional websites where its p
 
 Direct Line Speech does not support Internet Explorer 11. It requires modern browser media capabilities that are not available in IE11.
 
-Direct Line Speech shares the same requirements as Cognitive Services Speech Services. Please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/master/docs/SPEECH.md#requirements).
+Direct Line Speech shares the same requirements as Cognitive Services Speech Services. Please refer to [`SPEECH.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/SPEECH.md#requirements).
 
 ## How to get started
 
@@ -368,11 +368,13 @@ These are the options to pass when calling `createDirectLineSpeechAdapters`.
         <code>fetchCredentials</code>
       </td>
       <td>
-        <pre>async () => ({<br />&nbsp;&nbsp;authorizationToken: string,<br />&nbsp;&nbsp;region: string<br />}) ||<br /><br />async () => ({<br />&nbsp;&nbsp;region: string,<br />&nbsp;&nbsp;subscriptionKey: string<br />})</pre>
+        <code>
+          <a href="#directlinespeechcredentials">DirectLineSpeechCredentials</a>
+        </code>
       </td>
       <td>(Required)</td>
       <td>
-        An asynchornous function to fetch credentials, including region and either authorization token or subscription key.
+        An asynchronous function to fetch credentials, including either hostname or region, and either authorization token or subscription key.
       </td>
     </tr>
     <tr>
@@ -397,8 +399,42 @@ These are the options to pass when calling `createDirectLineSpeechAdapters`.
       <td>(A random ID)</td>
       <td>User ID for all outgoing activities.</td>
     </tr>
+    <tr>
+      <td>
+        <code>username</code>
+      </td>
+      <td>
+        <code>string</code>
+      </td>
+      <td>
+        <code>undefined</code>
+      </td>
+      <td>Username for all outgoing activities.</td>
+    </tr>
   </tbody>
 </table>
+
+### `DirectLineSpeechCredentials`
+
+```js
+type DirectLineSpeechCredentials = {
+  authorizationToken: string,
+  region: string
+} || {
+  authorizationToken: string,
+  directLineSpeechHostname: string
+} || {
+  region: string,
+  subscriptionKey: string
+} || {
+  directLineSpeechHostname: string,
+  subscriptionKey: string
+}
+```
+
+For public clouds, we recommend using the `region` option, such as `"westus2"`.
+
+For sovereign clouds, you should specify the hostname in FQDN through `directLineSpeechHostname` option, such as `"virginia.convai.speech.azure.us"`.
 
 ## Known issues
 
@@ -457,12 +493,6 @@ You can only specify speech recognition language at initialization time. You can
 > Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2682) if this behavior is not desirable.
 
 [Proactive message](https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-proactive-message?view=azure-bot-service-4.0&tabs=csharp) is not supported when using Direct Line Speech.
-
-### Emulator is not supported
-
-> Please vote on [this bug](https://github.com/microsoft/BotFramework-WebChat/issues/2683) if this behavior is not desirable.
-
-Currently, Emulator only support Direct Line protocol. We are planning to add Direct Line Speech protocol to Emulator.
 
 ### Abort recognition is not supported
 

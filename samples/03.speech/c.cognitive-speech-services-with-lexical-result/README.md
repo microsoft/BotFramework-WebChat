@@ -44,6 +44,6 @@ The main change you will need to make, regardless of whether you are using the s
 
 ## Full list of Web Chat Hosted Samples
 
-View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/master/samples)
+View the list of [available Web Chat samples](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples)
 
 [1]: ../b.cognitive-speech-services-js/README.md

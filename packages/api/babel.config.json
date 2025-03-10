@@ -1,0 +1,48 @@
+{
+  "env": {
+    "test": {
+      "exclude": ["src/**/*.worker.js"],
+      "plugins": ["babel-plugin-istanbul"]
+    }
+  },
+  "ignore": ["src/index.tsx"],
+  "overrides": [
+    {
+      "plugins": [],
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "chrome": "69"
+            }
+          }
+        ]
+      ],
+      "test": "src/**/*.worker.js"
+    }
+  ],
+  "plugins": [
+    [
+      "transform-inline-environment-variables",
+      {
+        "include": ["build_tool", "module_format", "npm_package_version"]
+      }
+    ]
+  ],
+  "presets": [
+    "@babel/preset-typescript",
+    [
+      "@babel/preset-env",
+      {
+        "modules": "commonjs",
+        "targets": {
+          "browsers": ["last 2 versions"]
+        }
+      }
+    ],
+    "@babel/react"
+  ],
+  "sourceMaps": "inline",
+  "sourceRoot": "component:///"
+}

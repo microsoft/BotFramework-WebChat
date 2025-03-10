@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const baseProps = { directLine, store };
+        const webChatElement = document.getElementById('webchat');
+
+        WebChat.renderWebChat(baseProps, webChatElement);
+
+        await pageConditions.uiConnected();
+
+        await pageObjects.sendMessageViaSendBox('document-word', { waitForSend: true });
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
+
+        const fileContentAriaHidden = document.querySelector('.webchat__fileContent').getAttribute('aria-hidden');
+
+        expect(fileContentAriaHidden).toBeFalsy();
+
+        const fileContentButtonLinkLabel = document
+          .querySelector('.webchat__fileContent__buttonLink')
+          .getAttribute('aria-label');
+
+        expect(fileContentButtonLinkLabel).toBeTruthy();
+
+        await pageObjects.sendMessageViaSendBox('carousel', { waitForSend: true });
+        await pageConditions.minNumActivitiesShown(4);
+        await pageConditions.scrollToBottomCompleted();
+
+        const carouselContainer = document
+          .querySelector('.webchat__carousel-filmstrip')
+          .getAttribute('aria-labelledby');
+
+        expect(carouselContainer).toBeFalsy();
+      });
+    </script>
+  </body>
+</html>

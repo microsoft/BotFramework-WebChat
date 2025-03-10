@@ -1,0 +1,339 @@
+name: Pull request validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+    paths-ignore:
+      - .github
+      - .vscode
+
+  push:
+    branches:
+      - feat-github-workflow # Keeping the branch here so we can try out something later quickly
+
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  CI_PULL_REQUEST: 1 # Skip nightly tests
+  NODE_ENV: test # Add instrumentation code
+  node-version: 18.20 # Need to bump jest@29 to resolve something in https://github.com/facebook/react-native/issues/35701
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install --strict-peer-deps
+
+      - run: npm run build --if-present # Add instrumentation code
+
+      - name: Pack Docker artifact
+        run: |
+          zip docker.zip -r@ <<EOF
+          ./babel-jest-config.js
+          ./babel-passthru-transformer.js
+          ./babel.config.json
+          ./docker-compose-wsl2.yml
+          ./html2-test-transformer.js
+          ./jest.config.js
+          ./jest.html2.config.js
+          ./jest.legacy.config.js
+          ./package-lock.json
+          ./package.json
+          ./__tests__/
+          ./packages/bundle/dist/
+          ./packages/fluent-theme/dist/
+          ./packages/test/fluent-bundle/dist/
+          ./packages/test/harness/
+          ./packages/test/page-object/dist/
+          ./packages/test/web-server/dist/
+          ./serve-test.json
+          ./testharness.dockerfile
+          ./testharness2.dockerfile
+          EOF
+
+      - run: ls -l docker.zip
+
+      - name: Upload Docker artifact
+        uses: actions/upload-artifact@v4
+        with:
+          compression-level: 0
+          name: docker
+          path: docker.zip
+          retention-days: 1
+
+  build-samples:
+    name: Build samples
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install --strict-peer-deps
+        working-directory: samples
+
+      - run: npm run build --if-present
+        working-directory: samples
+
+  static-code-analysis:
+    name: Static code analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install --strict-peer-deps
+
+      - run: npm run build --if-present
+
+      - run: npm run precommit --if-present
+
+  unit-test:
+    name: Unit test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install --strict-peer-deps
+
+      - run: npm run build --if-present
+
+      - name: Run jest --testPathPattern packages/
+        run: |
+          ./node_modules/.bin/jest \
+          --ci \
+          --coverage true \
+          --forceExit \
+          --logHeapUsage \
+          --runInBand \
+          --testPathPattern=/packages/\
+        timeout-minutes: 10
+
+      - if: always()
+        name: Append ID to test result
+        run: |
+          ls -laR .
+
+          mv lcov.info lcov-unit.info
+          mv result.trx result-unit.trx
+        working-directory: ./coverage
+
+      - if: always()
+        name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-result-unit
+          path: |
+            ./coverage/lcov-*.info
+            ./coverage/result-*.trx
+
+  type-definitions-test:
+    name: Type definitions test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install --strict-peer-deps
+
+      - run: npm run build --if-present
+
+      - name: Run tsd under packages/bundle (CJS)
+        run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat.d.ts
+        working-directory: ./packages/bundle
+
+      - name: Run tsd under packages/bundle (ESM)
+        run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat.d.mts
+        working-directory: ./packages/bundle
+
+      - name: Run tsd under packages/core (CJS)
+        run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat-core.d.ts
+        working-directory: ./packages/core
+
+      - name: Run tsd under packages/core (ESM)
+        run: ../../node_modules/.bin/tsd -t ./dist/botframework-webchat-core.d.mts
+        working-directory: ./packages/core
+
+  html-test:
+    name: HTML test (${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }})
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard-index: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+        shard-count: [17]
+
+    steps:
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+
+      - name: Download Docker artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: docker
+
+      - run: unzip docker.zip
+
+      - run: rm docker.zip
+
+      - run: npm clean-install --strict-peer-deps
+
+      - name: Run docker compose build
+        run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
+
+      - name: Run docker compose up
+        run: docker compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
+
+      - name: Wait for Docker to be ready
+        run: |
+          set +e # Disable per-command fail, we will handle cURL fail.
+
+          while true
+          do
+            curl http://localhost:4444/wd/hub/status > /tmp/wd-status.json
+
+            [[ $? -eq 0 ]] && cat /tmp/wd-status.json | jq -r 'if (.value.ready != true) then halt_error(1) else empty end'
+            [[ $? -eq 0 ]] && break
+
+            sleep 1
+          done
+
+      - name: Run jest --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
+        run: |
+          ./node_modules/.bin/jest \
+            --ci \
+            --coverage true \
+            --forceExit \
+            --logHeapUsage \
+            --runInBand \
+            --shard=${{ format('{0}/{1}', matrix.shard-index, matrix.shard-count) }}
+        timeout-minutes: 10
+
+      - if: always()
+        name: Print Docker logs
+        run: docker compose -f docker-compose-wsl2.yml logs
+
+      - if: always()
+        name: Append ID to test result
+        run: |
+          ls -laR .
+
+          mv lcov.info lcov-${{ matrix.shard-index }}.info
+          mv result.trx result-${{ matrix.shard-index }}.trx
+        working-directory: ./coverage
+
+      - if: always()
+        name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-result-html-${{ matrix.shard-index }}
+          path: |
+            ./coverage/lcov-*.info
+            ./coverage/result-*.trx
+
+      - if: failure()
+        name: Upload test snapshot diffs
+        uses: actions/upload-artifact@v4
+        with:
+          compression-level: 0
+          name: test-snapshot-diff-html-${{ matrix.shard-index }}
+          path: ./__tests__/__image_snapshots__/*/__diff_output__/*
+
+  merge-test-results:
+    if: always()
+    name: Merge test results
+    needs:
+      - html-test
+      - unit-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Merge test result artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          delete-merged: true
+          name: test-result
+          pattern: test-result-*
+
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          name: test-result
+
+      - name: Install lcov
+        run: sudo apt install -y lcov
+
+      - name: Merge lcov-*.info
+        run: find . -name "lcov-*.info" -type f | xargs -i echo "--add-tracefile {}" | xargs lcov --rc lcov_branch_coverage=1 --output-file lcov.info
+
+      - if: always()
+        name: Print coverage list
+        run: lcov --rc lcov_branch_coverage=1 --list lcov.info
+
+      - if: always()
+        name: Print coverage summary
+        run: |
+          echo \`\`\` >> $GITHUB_STEP_SUMMARY
+          lcov --rc lcov_branch_coverage=1 --summary lcov.info | tee --append $GITHUB_STEP_SUMMARY
+          echo \`\`\` >> $GITHUB_STEP_SUMMARY
+
+  merge-test-snapshots:
+    if: always()
+    name: Merge test snapshots
+    needs:
+      - html-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - continue-on-error: true # Do not error out when no artifacts to merge, see https://github.com/actions/upload-artifact/issues/524
+        name: Merge test snapshots artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          compression-level: 0
+          delete-merged: true
+          name: test-snapshot-diff
+          pattern: test-snapshot-diff-*

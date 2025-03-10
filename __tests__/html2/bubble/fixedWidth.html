@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .my-webchat {
+        --webchat__max-width--attachment-bubble: 80%;
+        --webchat__min-width--attachment-bubble: 80%;
+
+        --webchat__max-width--message-bubble: 75%;
+        --webchat__min-width--message-bubble: 75%;
+
+        --webchat__max-height--image-bubble: initial;
+        --webchat__min-height--image-bubble: initial;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const styleOptions = {
+          bubbleMaxWidth: '75%',
+          bubbleMinWidth: '75%'
+        };
+
+        render(
+          <ReactWebChat className="my-webchat" directLine={directLine} store={store} />,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          text: 'Dolore excepteur laboris.',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          text: 'Reprehenderit exercitation do aliqua ad reprehenderit pariatur fugiat et deserunt mollit mollit.',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              contentType: 'image/png',
+              contentUrl:
+                'https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/main/media/BotFrameworkWebChat_header.png'
+            },
+            {
+              contentType: 'image/png',
+              contentUrl:
+                'https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/main/media/BotFrameworkWebChat_header.png'
+            }
+          ],
+          from: { role: 'bot' },
+          text: 'Sunt elit ad voluptate.',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          attachmentLayout: 'carousel',
+          attachments: [
+            {
+              contentType: 'image/png',
+              contentUrl:
+                'https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/main/media/BotFrameworkWebChat_header.png'
+            },
+            {
+              contentType: 'image/png',
+              contentUrl:
+                'https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/main/media/BotFrameworkWebChat_header.png'
+            }
+          ],
+          from: { role: 'bot' },
+          text: 'Sint aliqua nisi aute aliqua.',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              contentType: 'image/png',
+              thumbnailUrl:
+                'https://raw.githubusercontent.com/microsoft/BotFramework-WebChat/main/media/BotFrameworkWebChat_header.png'
+            }
+          ],
+          from: { role: 'user' },
+          text: 'Ut irure irure exercitation.',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(5);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

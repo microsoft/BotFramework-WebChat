@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        store.dispatch({
+          type: 'WEB_CHAT/SET_NOTIFICATION',
+          payload: {
+            id: '1',
+            level: 'info',
+            message: 'Notification 1.'
+          }
+        });
+
+        await pageConditions.toastShown(1);
+
+        store.dispatch({
+          type: 'WEB_CHAT/SET_NOTIFICATION',
+          payload: {
+            id: '2',
+            level: 'error',
+            message: 'Notification 2.'
+          }
+        });
+
+        await pageConditions.toasterExpandable();
+        await pageConditions.toasterExpanded(false);
+
+        await host.snapshot();
+
+        await pageObjects.clickToasterHeader();
+        await pageConditions.toasterExpanded();
+        await pageConditions.toastShown(2);
+
+        await host.snapshot();
+
+        await pageObjects.clickToasterHeader();
+        await pageConditions.toasterExpanded(false);
+        await pageConditions.toasterExpandable();
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

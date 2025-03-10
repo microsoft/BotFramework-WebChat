@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .webchat__basic-transcript__activity.webchat__basic-transcript__activity--acknowledged {
+        background-color: Cyan;
+      }
+
+      .webchat__basic-transcript__activity:not(.webchat__basic-transcript__activity--acknowledged) {
+        background-color: Orange;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      const directLine = testHelpers.createDirectLineWithTranscript([createActivity(20)]);
+      const store = testHelpers.createStore();
+
+      let now = +new Date(2020, 0, 23, 12, 34);
+
+      function createActivity(numLines) {
+        return {
+          from: { role: 'bot' },
+          id: Math.random().toString(36).substr(2, 5),
+          text: new Array(numLines)
+            .fill()
+            .map((_, index) => `Line ${index + 1}`)
+            .join('\n\n'),
+          timestamp: new Date().toISOString(),
+          type: 'message'
+        };
+      }
+
+      function addDummyActivitiesToDirectLine(numLines) {
+        directLine.activityDeferredObservable.next(createActivity(numLines));
+      }
+
+      function numActivitiesByAcknowledgement() {
+        const { length: numActivities } = document.querySelectorAll('.webchat__basic-transcript__activity');
+
+        const { length: numAcknowledged } = document.querySelectorAll(
+          '.webchat__basic-transcript__activity--acknowledged'
+        );
+
+        return {
+          acknowledged: numAcknowledged,
+          unacknowledged: numActivities - numAcknowledged
+        };
+      }
+
+      run(async function () {
+        const webChatElement = document.getElementById('webchat');
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: {
+              autoScrollSnapOnActivity: true,
+              autoScrollSnapOnPage: true,
+              autoScrollSnapOnPageOffset: -100,
+              subtle: '#666'
+            }
+          },
+          webChatElement
+        );
+
+        await pageConditions.uiConnected();
+
+        addDummyActivitiesToDirectLine(10);
+
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollStabilized();
+
+        await pageObjects.sendMessageViaSendBox('Hello, World!');
+
+        await pageConditions.minNumActivitiesShown(3);
+        await pageConditions.scrollStabilized();
+
+        const scrollable = document.querySelector('.webchat__basic-transcript__scrollable');
+
+        expect(scrollable.scrollTop).toBe(
+          scrollable.scrollHeight - scrollable.offsetHeight,
+          'scrollable should be at bottom'
+        );
+
+        addDummyActivitiesToDirectLine(10);
+        addDummyActivitiesToDirectLine(10);
+
+        await pageConditions.minNumActivitiesShown(5);
+        await pageConditions.scrollStabilized();
+
+        const { bottom: activityElementAtBottomOfViewOffsetBottom } = pageObjects.getActivityBoundingBoxes()[3];
+
+        expect(scrollable.scrollTop).toBe(
+          activityElementAtBottomOfViewOffsetBottom - scrollable.offsetHeight,
+          'scrollable should be at 1 activity + 100px'
+        );
+
+        await pageObjects.sendMessageViaSendBox('Aloha!');
+
+        await pageConditions.minNumActivitiesShown(6);
+        await pageConditions.scrollStabilized();
+
+        addDummyActivitiesToDirectLine(40);
+
+        await pageConditions.minNumActivitiesShown(7);
+        await pageConditions.scrollStabilized();
+
+        const { top } = pageObjects.getActivityBoundingBoxes()[6];
+
+        expect(scrollable.scrollTop).toBe(top - 100);
+
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

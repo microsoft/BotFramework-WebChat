@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/focusManagement.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const baseProps = { directLine, store, styleOptions: { subtle: '#666' } };
+        const webChatElement = document.getElementById('webchat');
+
+        WebChat.renderWebChat(baseProps, webChatElement);
+
+        await pageConditions.uiConnected();
+
+        await pageObjects.sendMessageViaSendBox('card breakfast', { waitForSend: true });
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
+
+        // SETUP: Focus on the first <select> inside the Adaptive Cards.
+        document.querySelector('select.ac-input').focus();
+
+        // WHEN: SHIFT-TAB key is pressed.
+        await host.sendShiftTab();
+
+        // THEN: It should focus on the last control inside the Adaptive Cards.
+        expect(document.activeElement.innerText).toBe('Dismiss');
+
+        // WHEN: TAB is pressed.
+        await host.sendTab();
+
+        // THEN: It should focus on the first control inside the Adaptive Cards.
+        expect(document.activeElement).toBe(document.querySelector('select.ac-input'));
+
+        // WHEN: ESCAPE key is pressed.
+        await host.sendKeys('ESCAPE');
+
+        // THEN: It should send the focus back to the transcript.
+        await pageConditions.became(
+          'focus is on the transcript',
+          () => document.activeElement === pageElements.transcript(),
+          1000
+        );
+
+        // The card should be in white because it is not tappable, it should not be focused.
+        // The transcript will become yellow because it is focused.
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

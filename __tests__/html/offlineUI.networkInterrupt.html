@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <script crossorigin="anonymous" src="/__dist__/testharness.js"></script>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
-    <div id="webchat"></div>
-    <script type="text/babel" data-presets="env,stage-3,react">
-      const { conditions, createStore, host, pageObjects, shareObservable, timeouts, token } = window.WebChatTest;
-
-      (async function() {
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
         function createDirectLineForTest(options) {
           // This part of code is running in the JavaScript VM in Chromium.
           // These Direct Line Connection Status variables must be declared within scope
           const CONNECTING = 1;
           const ONLINE = 2;
 
-          const reconnectingDirectLine = window.WebChat.createDirectLine(options);
+          const reconnectingDirectLine = WebChat.createDirectLine(options);
 
           return {
             activity$: reconnectingDirectLine.activity$,
@@ -37,30 +37,26 @@
           };
         }
 
-        const clock = lolex.install();
+        const clock = lolex.createClock();
 
-        window.WebChat.renderWebChat(
+        WebChat.renderWebChat(
           {
-            directLine: createDirectLineForTest({ token: await token.fetchDirectLineToken() }),
+            directLine: createDirectLineForTest({ token: await testHelpers.token.fetchDirectLineToken() }),
             // directLine: window.WebChat.createDirectLine({ token: await token.fetchDirectLineToken() }),
-            store: createStore(),
+            ponyfill: clock,
+            store: testHelpers.createStoreWithOptions({ ponyfill: clock }),
             styleOptions: { spinnerAnimationBackgroundImage: 'url(/assets/staticspinner.png)' }
           },
           document.getElementById('webchat')
         );
 
-        await pageObjects.wait(conditions.actionDispatched('DIRECT_LINE/CONNECT_PENDING'), timeouts.directLine);
-        await pageObjects.wait(conditions.actionDispatched('DIRECT_LINE/CONNECT_FULFILLED'), timeouts.directLine);
-        await pageObjects.wait(conditions.actionDispatched('DIRECT_LINE/CONNECT_PENDING'), timeouts.directLine);
+        await pageConditions.actionDispatched('DIRECT_LINE/CONNECT_PENDING');
+        await pageConditions.actionDispatched('DIRECT_LINE/CONNECT_FULFILLED');
+        await pageConditions.actionDispatched('DIRECT_LINE/CONNECT_PENDING');
 
         clock.tick(400); // "Connecting" will be gone after 400ms, turning into "Network interruption occured"
 
         await host.snapshot();
-        await host.done();
-      })().catch(async err => {
-        console.error(err);
-
-        await host.error(err);
       });
     </script>
   </body>

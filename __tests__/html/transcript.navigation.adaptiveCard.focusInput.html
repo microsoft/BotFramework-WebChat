@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            ),
+            store: testHelpers.createStore()
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(32);
+        await pageConditions.scrollToBottomCompleted();
+
+        await pageObjects.focusSendBoxTextBox();
+
+        document.querySelector('.ac-adaptiveCard input').focus();
+        document.querySelector('.ac-adaptiveCard input').click();
+
+        await pageConditions.scrollStabilized();
+
+        // After focusing/clicking on any <input> inside the Adaptive Card, <BasicTranscript> should not call scrollIntoView().
+        // We should not move the scrollable if the user is already focusing in it.
+
+        const scrollable = pageElements.transcriptScrollable();
+
+        expect(scrollable.scrollTop).toBe(scrollable.scrollHeight - scrollable.offsetHeight);
+      });
+    </script>
+  </body>
+</html>

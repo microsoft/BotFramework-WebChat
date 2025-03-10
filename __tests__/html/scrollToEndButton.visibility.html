@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const store = testHelpers.createStore();
+        const workingDirectLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+        const directLine = {
+          activity$: new Observable(activityObserver => {
+            directLine.activityObserver = activityObserver;
+
+            const subscription = workingDirectLine.activity$.subscribe({
+              complete: () => activityObserver.complete(),
+              error: value => activityObserver.error(value),
+              next: value => activityObserver.next(value)
+            });
+
+            return () => subscription.unsubscribe();
+          }),
+          connectionStatus$: workingDirectLine.connectionStatus$,
+          postActivity: workingDirectLine.postActivity.bind(workingDirectLine),
+          token: workingDirectLine.token
+        };
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // SETUP: Send "help" command.
+        await pageObjects.sendMessageViaSendBox('help', { waitForSend: true });
+        await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.scrollToBottomCompleted();
+
+        // WHEN: Scrolling to top.
+        await pageObjects.scrollToTop();
+
+        // THEN: It should not show "New message" button because no new message coming in
+        await pageConditions.scrollToEndButtonHidden();
+        await host.snapshot();
+
+        // WHEN: Receiving a new message.
+        directLine.activityObserver.next({
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        // THEN: It should show "New message" button when new message came in
+        await pageConditions.scrollToEndButtonShown();
+        await host.snapshot();
+
+        // WHEN: Clicking on the "New messages" button.
+        await host.click(pageElements.scrollToEndButton());
+
+        // THEN: It should scroll to bottom.
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: It should not show the "New messages" button.
+        await pageConditions.scrollToEndButtonHidden();
+
+        // WHEN: Receiving a new message while the view is sticky.
+        directLine.activityObserver.next({
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          text: 'Aloha!',
+          type: 'message'
+        });
+
+        // THEN: It should have 4 activities.
+        await pageConditions.minNumActivitiesShown(4);
+
+        // THEN: It should scroll to bottom.
+        await pageConditions.scrollToBottomCompleted();
+
+        // THEN: It should not show the "New messages" button.
+        await pageConditions.scrollToEndButtonHidden();
+        await host.snapshot();
+
+        // WHEN: Scrolling to top.
+        await pageObjects.scrollToTop();
+
+        // THEN: It should not show the "New messages" button.
+        await pageConditions.scrollToEndButtonHidden();
+        await host.snapshot();
+      });
+    </script>
+  </body>
+</html>

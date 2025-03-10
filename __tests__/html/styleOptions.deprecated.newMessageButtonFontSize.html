@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(
+        async function () {
+          const paragraphs = [
+            'Aliqua non sint est tempor nisi voluptate amet ipsum. Mollit do velit do eu laboris proident minim dolore non est excepteur. Enim reprehenderit aliqua nostrud adipisicing veniam consequat sit veniam id. Nisi dolore laboris dolore duis Lorem officia proident nostrud. Esse dolor nisi ad nisi est sit magna minim duis laborum.',
+            'Ex eu consectetur ut Lorem ipsum velit. Do aute aliquip esse ea. Ea voluptate velit est reprehenderit ullamco voluptate quis nisi nisi dolor. Velit do exercitation cillum proident minim. Exercitation sint cillum aliquip in. Excepteur elit veniam consectetur ea ad incididunt.',
+            'Nisi ipsum in enim et. Reprehenderit dolore proident ad id. Lorem elit incididunt aliquip sit elit pariatur sit ea aliquip officia deserunt enim incididunt. Occaecat consectetur ullamco adipisicing pariatur. Consectetur id cupidatat nulla deserunt eiusmod commodo laborum laboris laborum.',
+            'Anim fugiat quis consectetur do. Do ipsum qui commodo commodo officia. Ex qui pariatur reprehenderit aliqua consequat eu veniam laborum est mollit fugiat. Esse nisi consectetur laborum tempor cillum officia officia qui labore ipsum adipisicing.',
+            'Dolor ea labore aute culpa veniam voluptate fugiat commodo sint do aliqua aute ea. In aute commodo ex labore sint quis. Et aliquip laboris excepteur quis aliqua sit do labore eiusmod.',
+            'Exercitation amet excepteur quis ipsum officia. Occaecat dolor velit reprehenderit ullamco cillum nostrud culpa qui. Reprehenderit id cupidatat nostrud occaecat. Tempor ea exercitation aliqua non consequat officia cillum sunt.'
+          ];
+
+          const directLine = testHelpers.createDirectLineWithTranscript(paragraphs.splice(0, 5));
+          const store = testHelpers.createStore();
+
+          function render(options) {
+            return WebChat.renderWebChat(
+              {
+                ...options,
+                directLine,
+                store
+              },
+              document.getElementById('webchat')
+            );
+          }
+
+          render({ styleOptions: { scrollToEndButtonBehavior: 'any', newMessagesButtonFontSize: 32 } });
+
+          await pageConditions.uiConnected();
+
+          // SETUP: Scroll to the top, set the font size.
+          await pageObjects.scrollToTop();
+          await pageConditions.scrollToEndButtonShown();
+
+          // EXPECT: Should show a "More messages" button with enlarged font.
+          await host.snapshot();
+        },
+        { expectDeprecations: true }
+      );
+    </script>
+  </body>
+</html>
