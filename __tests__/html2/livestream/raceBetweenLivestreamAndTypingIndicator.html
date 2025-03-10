@@ -2,64 +2,35 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
   <body>
     <main id="webchat"></main>
-    <script type="text/babel">
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
       run(async function () {
         const {
-          React: { createElement },
-          ReactDOM: { render },
-          WebChat: {
-            Components: { BasicWebChat, Composer },
-            hooks: { useActiveTyping, useActivityKeys, useGetActivitiesByKey },
-            ReactWebChat
-          }
+          WebChat: { renderWebChat }
         } = window; // Imports in UMD fashion.
 
-        const ponyfill = lolex.createClock();
-        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill });
-        let currentActivityKeysWithId = [];
-        let currentActiveTyping = {};
-
-        const Monitor = () => {
-          const [activityKeys] = useActivityKeys();
-          const [activeTyping] = useActiveTyping();
-          const getActivitiesByKey = useGetActivitiesByKey();
-
-          currentActivityKeysWithId = Object.freeze(
-            activityKeys.map(key => [key, getActivitiesByKey(key).map(({ id }) => id)])
-          );
-
-          currentActiveTyping = activeTyping;
-
-          return false;
-        };
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const styleOptions = {
           // Non-animated typing indicator.
           typingAnimationBackgroundImage: `url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAUACgDASIAAhEBAxEB/8QAGgABAQACAwAAAAAAAAAAAAAAAAYCBwMFCP/EACsQAAECBQIEBQUAAAAAAAAAAAECAwAEBQYRBxITIjFBMlFhccFScoGh8f/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD0lctx023JVD9UeKOIcNoSNylkdcCMbauSmXHLOPUx8r4ZAcQtO1SM9Mj5iO1gtWo1syc7S2zMKYSptbIPNgnII8/5HBpRZ9RpaKjNVVCpUzLPAQ1nmA7qPl6fmAondRrcaqhkVTiiQrYXgglsH7vnpHc3DcNNoEimaqT4Q2s4bCRuUs+gEaLd05uNFVMmiS3o3YEwFDhlP1Z7e3WLzUuzahUKHRk0zM07TmeApvOFLGEjcM9+Xp6wFnbN0Uu5GnF0x4qW1je2tO1Sc9Djy9oRD6QWlU6PPzVSqjRlgtksttKPMcqBKiO3h/cIDacIQgEIQgEIQgP/2Q==')`
         };
 
-        const App = () => (
-          <Composer directLine={directLine} ponyfill={ponyfill} store={store} styleOptions={styleOptions}>
-            <BasicWebChat />
-            <Monitor />
-          </Composer>
-        );
-
-        render(<App />, document.getElementById('webchat'));
-
-        await pageConditions.webChatRendered();
-
-        // Wait for "Connecting..." message to dismiss
-        ponyfill.tick(600);
+        renderWebChat({ directLine, store, styleOptions }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
@@ -91,6 +62,9 @@
         // THEN: Should continue to show typing indicator.
         expect(pageElements.typingIndicator()).toBeTruthy();
 
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
         // ---
 
         // WHEN: Receive a livestream message with partial content.
@@ -103,11 +77,16 @@
         });
 
         // THEN: Should display the message.
-        expect(pageElements.activities()).toHaveLength(1);
-        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'A quick brown fox');
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(1));
+        await waitFor(() =>
+          expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'A quick brown fox')
+        );
 
         // THEN: Should not show the typing indicator.
-        expect(pageElements.typingIndicator()).toBeFalsy();
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeFalsy());
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
 
         // ---
 
@@ -121,11 +100,21 @@
         });
 
         // THEN: Should display the message.
-        expect(pageElements.activities()).toHaveLength(1);
-        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'A quick brown fox jumped over the lazy dogs.');
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(1));
+        await waitFor(() =>
+          expect(pageElements.activityContents()[0]).toHaveProperty(
+            'textContent',
+            'A quick brown fox jumped over the lazy dogs.'
+          )
+        );
 
         // THEN: Should not show the typing indicator.
-        expect(pageElements.typingIndicator()).toBeFalsy();
+        //       Non-livestream typing indicator ends as soon as a visible message is received.
+        //       In this scenario, the typing indicator get obsoleted by any chunks from livestream.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeFalsy());
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
       });
     </script>
   </body>

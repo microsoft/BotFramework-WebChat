@@ -120,14 +120,12 @@
 
         // ---
 
-        // TBD: Tick for 60 seconds, the typing indicator should be displayed.
-
         // THEN: Should display typing indicator.
         expect(pageElements.typingIndicator()).toBeTruthy();
 
-        // TBD: Add more tests. Having a normal typing indicator, while having a livestream-based typing indicator, the typing indicator must be kept
-        // TBD: Add more tests. Concluding a livestream with "message" activity with empty "text" field.
-        // TBD: Add more tests. 2 simultaneous livestream is ongoing. One is empty, one is contentful.
+        // TBD: [DONE] Add more tests. Having a normal typing indicator, while having a livestream-based typing indicator, the typing indicator must be kept
+        // TBD: [DONE] Add more tests. Concluding a livestream with "message" activity with empty "text" field.
+        // TBD: [DONE] Add more tests. 2 simultaneous livestream is ongoing. One is empty, one is contentful.
         //      - While both is going, it should not show typing indicator
         //      - When the contentful livestream concluded, it should show the typing indicator
         //      - In other words, typing indicator is the "last resort" to show the bot is progressing
