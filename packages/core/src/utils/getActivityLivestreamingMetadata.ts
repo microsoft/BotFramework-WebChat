@@ -71,7 +71,7 @@ const livestreamingActivitySchema = union([
  * - `sessionId` - ID of the livestreaming session
  * - `sequenceNumber` - sequence number of the activity
  * - `type`
- *   - `"indicator only"` - ongoing but empty response, should show indicator only
+ *   - `"contentless"` - ongoing but no content, should show indicator
  *   - `"interim activity"` - current response, could be partial-from-start, or complete response.
  *     More activities are expected. Future interim activities always replace past interim activities, enable erasing or backtracking response.
  *   - `"informative message"` - optional side-channel informative message describing the current response, e.g. "Searching your document library".
@@ -86,7 +86,7 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
   | Readonly<{
       sessionId: string;
       sequenceNumber: number;
-      type: 'final activity' | 'informative message' | 'interim activity' | 'indicator only';
+      type: 'contentless' | 'final activity' | 'informative message' | 'interim activity';
     }>
   | undefined {
   const result = safeParse(livestreamingActivitySchema, activity);
@@ -108,7 +108,7 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
             sequenceNumber: output.channelData.streamSequence,
             sessionId,
             type: !output.text
-              ? 'indicator only'
+              ? 'contentless'
               : output.channelData.streamType === 'informative'
                 ? 'informative message'
                 : 'interim activity'

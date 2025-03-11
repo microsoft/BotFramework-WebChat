@@ -21,10 +21,9 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
           type === 'conversationUpdate' ||
           type === 'event' ||
           type === 'invoke' ||
-          // Do not show livestream interims of "indicator only", or
-          // livestream interims without content (i.e. finalized activity without content.)
+          // Do not show content for contentless livestream interims, or finalized activity without content.
           (type === 'typing' &&
-            (getActivityLivestreamingMetadata(activity)?.type === 'indicator only' || !activity['text'])) ||
+            (getActivityLivestreamingMetadata(activity)?.type === 'contentless' || !activity['text'])) ||
           (type === 'message' &&
             // Do not show postback
             (activity.channelData?.postBack ||

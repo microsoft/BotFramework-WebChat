@@ -49,7 +49,7 @@
         // SETUP: Should display no message.
         expect(pageElements.activities()).toHaveLength(0);
 
-        // WHEN: Receive a livestream message with typing indicator only.
+        // WHEN: Receive a contentless livestream message.
         const streamId = crypto.randomUUID();
 
         await directLine.emulateIncomingActivity({

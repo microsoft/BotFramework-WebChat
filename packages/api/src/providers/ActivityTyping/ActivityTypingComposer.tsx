@@ -77,7 +77,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
               firstReceivedAt: Date.now(),
               ...mutableEntry.livestreamActivities.get(sessionId),
               activity,
-              contentful: livestreamingMetadata.type !== 'indicator only',
+              contentful: livestreamingMetadata.type !== 'contentless',
               lastReceivedAt: receivedAt
             })
           );

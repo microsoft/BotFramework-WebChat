@@ -21,8 +21,8 @@ function ActivityDecorator({ activity, children }: Readonly<{ activity?: WebChat
             ? 'preparing'
             : type === 'interim activity'
               ? 'ongoing'
-              : type === 'indicator only'
-                ? undefined // No bubble is shown for "indicator only" livestream, should not decorate.
+              : type === 'contentless'
+                ? undefined // No bubble is shown for "contentless" livestream, should not decorate.
                 : undefined,
       from: supportedActivityRoles.includes(activity?.from?.role) ? activity?.from?.role : undefined
     };

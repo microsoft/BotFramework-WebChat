@@ -105,7 +105,6 @@ test('activity with "streamType" of "streaming" without critical fields should r
 describe.each([
   ['integer', 1, true],
   ['zero', 0, false],
-  // eslint-disable-next-line no-magic-numbers
   ['decimal', 1.234, false]
 ])('activity with %s "streamSequence" should return undefined', (_, streamSequence, isValid) => {
   const activity = {
@@ -144,11 +143,11 @@ describe('"typing" activity with "streamType" of "final"', () => {
     ).toHaveProperty('type', 'final activity'));
 });
 
-test('activity with "streamType" of "streaming" without "content" should return type of "interim activity"', () =>
+test('activity with "streamType" of "streaming" without "content" should return type of "contentless"', () =>
   expect(
     getActivityLivestreamingMetadata({
       channelData: { streamSequence: 1, streamType: 'streaming' },
       id: 'a-00001',
       type: 'typing'
     } as any)
-  ).toHaveProperty('type', 'indicator only'));
+  ).toHaveProperty('type', 'contentless'));
