@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "jest-mock": "https://esm.sh/jest-mock"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { fn, spyOn } from 'jest-mock';
+      import renderHook from './private/renderHook.js';
+
+      const {
+        React: { createElement },
+        testHelpers: { createDirectLineEmulator },
+        WebChat: {
+          Components: { BasicWebChat, Composer },
+          hooks: { useEmitTypingIndicator }
+        }
+      } = window;
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+        const WebChatWrapper = ({ children }) =>
+          createElement(Composer, { directLine, store }, createElement(BasicWebChat), children);
+
+        // WHEN: Render initially.
+        const renderResult = renderHook(
+          ({ run } = {}) => {
+            const emitTypingIndicator = useEmitTypingIndicator();
+
+            run && emitTypingIndicator();
+          },
+          { legacyRoot: true, wrapper: WebChatWrapper }
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: The callback function from the useEmitTypingIndicator() hook is being called.
+        const result = await directLine.actPostActivity(() => renderResult.rerender({ run: true }));
+
+        // THEN: Should send a "typing" activity.
+        expect(result.activity).toHaveProperty('type', 'typing');
+
+        // THEN: Should originate from the user.
+        expect(result.activity).toHaveProperty('from.role', 'user');
+      });
+    </script>
+  </body>
+</html>

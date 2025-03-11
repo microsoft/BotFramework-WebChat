@@ -59,7 +59,10 @@ export default function renderHook(
   const render = ({ renderCallbackProps }) => {
     const element = document.querySelector('main');
 
-    ReactDOM.render(wrapUiIfNeeded(React.createElement(TestComponent, renderCallbackProps), renderOptions.wrapper), element);
+    ReactDOM.render(
+      wrapUiIfNeeded(React.createElement(TestComponent, { renderCallbackProps }), renderOptions.wrapper),
+      element
+    );
 
     return { rerender: render, unmount: () => ReactDOM.unmountComponentAtNode(element) };
   };
@@ -70,7 +73,7 @@ export default function renderHook(
   );
 
   function rerender(rerenderCallbackProps) {
-    return baseRerender(React.createElement(TestComponent, { renderCallbackProps: rerenderCallbackProps }));
+    return baseRerender({ renderCallbackProps: rerenderCallbackProps });
   }
 
   return { result, rerender, unmount };

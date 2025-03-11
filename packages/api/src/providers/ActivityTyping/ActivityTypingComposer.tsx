@@ -1,73 +1,57 @@
-import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';
-import React, { memo, useMemo, type ReactNode } from 'react';
-import { useRefFrom } from 'use-ref-from';
+import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
+import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
 
 import numberWithInfinity from '../../hooks/private/numberWithInfinity';
-import useActivities from '../../hooks/useActivities';
 import usePonyfill from '../../hooks/usePonyfill';
-import useUpsertedActivities from '../../providers/ActivityListener/useUpsertedActivities';
 import ActivityTypingContext, { ActivityTypingContextType } from './private/Context';
-import useMemoWithPrevious from './private/useMemoWithPrevious';
+import useReduceActivities from './private/useReduceActivities';
 import { type AllTyping } from './types/AllTyping';
-
-const INITIAL_ALL_TYPING_STATE = Object.freeze([Object.freeze(new Map())] as const);
 
 type Props = Readonly<{ children?: ReactNode | undefined }>;
 
 const ActivityTypingComposer = ({ children }: Props) => {
   const [{ Date }] = usePonyfill();
-  const [activities] = useActivities();
-  const [upsertedActivities] = useUpsertedActivities();
-  const activitiesRef = useRefFrom(activities);
 
-  const allTypingState = useMemoWithPrevious<readonly [ReadonlyMap<string, AllTyping>]>(
-    (prevAllTypingState = INITIAL_ALL_TYPING_STATE) => {
-      const { current: activities } = activitiesRef;
-      const nextTyping = new Map(prevAllTypingState[0]);
-      let changed = false;
+  const reducer = useCallback(
+    (
+      prevTypingState: ReadonlyMap<string, AllTyping> | undefined,
+      activity: WebChatActivity
+    ): ReadonlyMap<string, AllTyping> | undefined => {
+      const {
+        from,
+        from: { id, role },
+        type
+      } = activity;
 
-      const firstIndex = upsertedActivities.reduce(
-        (firstIndex, upsertedActivity) => Math.min(firstIndex, activities.indexOf(upsertedActivity)),
-        Infinity
-      );
+      const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
+      const typingState = new Map(prevTypingState);
 
-      for (const activity of activities.slice(firstIndex)) {
-        const {
-          from,
-          from: { id, role },
-          type
-        } = activity;
+      if (type === 'message' || livestreamingMetadata?.type === 'final activity') {
+        // A normal message activity, or final activity (which could be "message" or "typing"), will remove the typing indicator.
+        typingState.delete(id);
+      } else if (type === 'typing' && (role === 'bot' || role === 'user')) {
+        const currentTyping = typingState.get(id);
+        // TODO: When we rework on types of DLActivity, we will make sure all activities has "webChat.receivedAt", this coalesces can be removed.
+        const receivedAt = activity.channelData.webChat?.receivedAt || Date.now();
 
-        const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
-
-        if (type === 'message' || livestreamingMetadata?.type === 'final activity') {
-          // A normal message activity, or final activity (which could be "message" or "typing"), will remove the typing indicator.
-          nextTyping.delete(id);
-          changed = true;
-        } else if (type === 'typing' && (role === 'bot' || role === 'user')) {
-          const currentTyping = nextTyping.get(id);
-          // TODO: When we rework on types of DLActivity, we will make sure all activities has "webChat.receivedAt", this coalesces can be removed.
-          const receivedAt = activity.channelData.webChat?.receivedAt || Date.now();
-
-          nextTyping.set(id, {
-            firstReceivedAt: currentTyping?.firstReceivedAt || receivedAt,
-            lastActivityDuration: numberWithInfinity(
-              activity.channelData.webChat?.styleOptions?.typingAnimationDuration
-            ),
-            lastReceivedAt: receivedAt,
-            name: from.name,
-            role,
-            type: livestreamingMetadata && livestreamingMetadata.type !== 'indicator only' ? 'livestream' : 'busy'
-          });
-
-          changed = true;
-        }
+        typingState.set(id, {
+          firstReceivedAt: currentTyping?.firstReceivedAt || receivedAt,
+          lastActivityDuration: numberWithInfinity(activity.channelData.webChat?.styleOptions?.typingAnimationDuration),
+          lastReceivedAt: receivedAt,
+          name: from.name,
+          role,
+          type: livestreamingMetadata && livestreamingMetadata.type !== 'indicator only' ? 'livestream' : 'busy'
+        });
       }
 
-      return changed ? Object.freeze([nextTyping]) : prevAllTypingState;
+      return Object.freeze(typingState);
     },
-    [activitiesRef, upsertedActivities]
+    [Date]
   );
+
+  const allTyping: ReadonlyMap<string, AllTyping> = useReduceActivities(reducer) || Object.freeze(new Map());
+
+  const allTypingState = useMemo(() => Object.freeze([allTyping] as const), [allTyping]);
 
   const context = useMemo<ActivityTypingContextType>(() => ({ allTypingState }), [allTypingState]);
 

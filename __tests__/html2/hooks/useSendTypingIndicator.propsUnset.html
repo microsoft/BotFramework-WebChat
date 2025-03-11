@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "jest-mock": "https://esm.sh/jest-mock"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { fn, spyOn } from 'jest-mock';
+      import renderHook from './private/renderHook.js';
+
+      const {
+        React: { createElement },
+        testHelpers: { createDirectLineEmulator },
+        WebChat: {
+          Components: { BasicWebChat, Composer },
+          hooks: { useSendTypingIndicator }
+        }
+      } = window;
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+        const WebChatWrapper = ({ children }) =>
+          createElement(Composer, { directLine, store }, createElement(BasicWebChat), children);
+
+        // WHEN: The state hook is being called.
+        const renderResult = renderHook(() => useSendTypingIndicator(), { legacyRoot: true, wrapper: WebChatWrapper });
+
+        // THEN: Should return state as true.
+        expect(renderResult).toHaveProperty('result.current', [false]);
+      });
+    </script>
+  </body>
+</html>
