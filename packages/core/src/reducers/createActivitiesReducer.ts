@@ -145,7 +145,7 @@ function upsertActivityWithSort(
     const isLivestreamConcluded = activities.find(targetActivity => {
       const targetMetadata = getActivityLivestreamingMetadata(targetActivity);
 
-      return targetMetadata && targetMetadata.sessionId === sessionId && targetMetadata.type === 'final activity';
+      return targetMetadata?.sessionId === sessionId && targetMetadata.type === 'final activity';
     });
 
     if (isLivestreamConcluded) {
