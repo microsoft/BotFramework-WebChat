@@ -18,6 +18,8 @@
     <script type="module">
       import { waitFor } from '@testduet/wait-for';
 
+      const attachmentLayout = new URL(location).searchParams.get('layout') === 'carousel' ? 'carousel' : undefined;
+
       run(async function () {
         const {
           WebChat: { renderWebChat }
@@ -34,8 +36,9 @@
 
         await pageConditions.uiConnected();
 
-        // WHEN: Bot start a livestream.
+        // WHEN: Bot start a livestream without content.
         await directLine.emulateIncomingActivity({
+          attachmentLayout,
           channelData: { streamSequence: 1, streamType: 'streaming' },
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 'a-00001',
