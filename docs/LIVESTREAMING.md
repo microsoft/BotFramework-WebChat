@@ -368,7 +368,7 @@ Bottomline: we understand the bandwidth usage could be large. But the benefits o
 #### Background
 
 - Some bots may regret that they opened a livestream and prefer to conclude it without any contents
-- Some systems requires `text` to be set to a non-empty string for activities with `type` of `activity`
+- Some systems requires `text` to be set to a non-empty string for activities with `type` of `message`
 
 #### Solutions
 
