@@ -131,6 +131,7 @@
   "dependencies": {
     "botframework-webchat-core": "0.0.0-0",
     "globalize": "1.7.0",
+    "iter-fest": "^0.2.1",
     "math-random": "2.0.1",
     "prop-types": "15.8.1",
     "react-chain-of-responsibility": "0.2.0",
