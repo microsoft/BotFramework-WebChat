@@ -168,9 +168,9 @@ Notes:
 
 > New since 2025-02-25.
 
-Interim activities can be empty. Web Chat will show typing indicator in lieu of message bubble.
+Activities in a livestream can be empty (a.k.a. contentless activity). Web Chat will show typing indicator in lieu of message bubble.
 
-Empty interim activities can appear in all phase of a livestream, including: start, middle, and end of the livestream.
+Contentless activities can appear in all phase of a livestream, including: start, middle, and end of the livestream.
 
 ```json
 {
@@ -188,7 +188,7 @@ Notes:
 - Web Chat will show a typing indicator
    - The typing indicator will always appear until this livestream is concluded
 
-Interim activities can appear as the final activity of the livestream. Upon the conclusion of a livestream with an empty activity, Web Chat will remove the message bubble if it was previously shown.
+Final activity can be contentless. Upon the conclusion of a livestream with a contentless activity, Web Chat will remove the message bubble if it was previously shown.
 
 ```json
 {
@@ -207,7 +207,7 @@ Notes:
    - In some systems, activities with `type` of `message` requires `text` field to also be set
    - For best compatibility, we recommend setting the `type` to `typing`
 - If message bubble was shown for this livestream, it will be removed
-   - Traditionally, no bubbles will show when activities do not have visible contents
+   - Traditionally, no bubbles will show when activities do not contains any visible contents
 - If typing indicator was shown for this livestream, it will be removed
 
 ## Supportability
@@ -361,9 +361,7 @@ Bottomline: we understand the bandwidth usage could be large. But the benefits o
 #### Solutions
 
 - As of this writing, no consensus has been reached on this issue
-   - "We don't want to show file attachments in interim activities."
-- In the meanwhile, we are issuing best practices and discourage sending attachments in interim activities
-   - Bot should only send attachments in final activity
+- For best compatibility, bot should only send attachments in final activity
 
 ### Concluding the livestream without content
 
@@ -374,4 +372,6 @@ Bottomline: we understand the bandwidth usage could be large. But the benefits o
 
 #### Solutions
 
-- To conclude a livestream without any contents, send the final message with `type` set to `typing`, instead of `message`
+- To conclude a livestream without any contents, send the final message with `type` set to `typing` and without `text` field
+   - For best compatibility, bot should not use `type` of `message` with empty `text` field
+   - Some systems does not support handling message activity without content
