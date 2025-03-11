@@ -9,6 +9,7 @@ import {
   pipe,
   safeParse,
   string,
+  undefinedable,
   union
 } from 'valibot';
 
@@ -17,50 +18,56 @@ import { type WebChatActivity } from '../types/WebChatActivity';
 const streamSequenceSchema = pipe(number(), integer(), minValue(1));
 
 const livestreamingActivitySchema = union([
-  // Interim can have optional "text".
+  // Interim.
   object({
     channelData: object({
       // "streamId" is optional for the very first activity in the session.
-      streamId: optional(string()),
+      streamId: optional(undefinedable(string())),
       streamSequence: streamSequenceSchema,
       streamType: literal('streaming')
     }),
     id: string(),
-    text: optional(string()),
+    // "text" is optional. If not set or empty, it presents a contentless activity.
+    text: optional(undefinedable(string())),
     type: literal('typing')
   }),
-  // Informative must have a "text".
+  // Informative message.
   object({
     channelData: object({
       // "streamId" is optional for the very first activity in the session.
-      streamId: optional(string()),
+      streamId: optional(undefinedable(string())),
       streamSequence: streamSequenceSchema,
       streamType: literal('informative')
     }),
     id: string(),
+    // Informative message must have "text".
     text: string(),
     type: literal('typing')
   }),
-  // Final with a message.
+  // Conclude with a message.
   object({
     channelData: object({
-      // "streamId" is required for the final activity in the session. The final activity must not be the sole activity in the session.
+      // "streamId" is required for the final activity in the session.
+      // The final activity must not be the sole activity in the session.
       streamId: pipe(string(), nonEmpty()),
       streamType: literal('final')
     }),
     id: string(),
+    // If "text" is empty, it represents "regretting" the livestream.
     text: string(),
     type: literal('message')
   }),
-  // Final without a message.
+  // Conclude without a message.
   object({
     channelData: object({
-      // "streamId" is required for the final activity in the session. The final activity must not be the sole activity in the session.
+      // "streamId" is required for the final activity in the session.
+      // The final activity must not be the sole activity in the session.
       streamId: pipe(string(), nonEmpty()),
       streamType: literal('final')
     }),
     id: string(),
-    text: optional(literal('')), // "text" field must be empty or undefined.
+    // If "text" is not set or empty, it represents "regretting" the livestream.
+    text: optional(undefinedable(literal(''))),
     type: literal('typing')
   })
 ]);
