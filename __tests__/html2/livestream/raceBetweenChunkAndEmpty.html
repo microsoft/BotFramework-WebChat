@@ -80,9 +80,9 @@
 
         // WHEN: The second livestream is finished.
         await directLine.emulateIncomingActivity({
-          channelData: { streamType: 'final' },
+          channelData: { streamId: 'a-00002', streamType: 'final' },
           from: { id: 'bot', role: 'bot' },
-          id: 'a-00002',
+          id: crypto.randomUUID(),
           text: 'A quick brown fox jumped over the lazy dogs.',
           type: 'message'
         });
@@ -98,6 +98,25 @@
 
         // THEN: Should show typing indicator.
         await waitFor(() => expect(pageElements.typingIndicator()).toBeTruthy());
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: The contentless livestream is finished.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: 'a-00001', streamType: 'final' },
+          from: { id: 'bot', role: 'bot' },
+          id: crypto.randomUUID(),
+          type: 'typing'
+        });
+
+        // THEN: Should hide typing indicator.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeFalsy());
+
+        // THEN: Should not show additional message.
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(1));
 
         // THEN: Should match snapshot.
         await host.snapshot('local');
