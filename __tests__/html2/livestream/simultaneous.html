@@ -2,7 +2,7 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <link href="./css/pauseAnimation.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
@@ -11,15 +11,22 @@
   </head>
   <body>
     <main id="webchat"></main>
-    <script type="text/babel">
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
       run(async function () {
         const {
           React: { createElement },
           ReactDOM: { render },
           WebChat: {
             Components: { BasicWebChat, Composer },
+            decorator: { WebChatDecorator },
             hooks: { useActivityKeys, useGetActivitiesByKey },
-            ReactWebChat
           }
         } = window; // Imports in UMD fashion.
 
@@ -37,14 +44,22 @@
           return false;
         };
 
-        const App = () => (
-          <Composer directLine={directLine} store={store}>
-            <BasicWebChat />
-            <Monitor />
-          </Composer>
+        render(
+          createElement(
+            WebChatDecorator,
+            {},
+            createElement(
+              Composer,
+              {
+                directLine,
+                store
+              },
+              createElement(BasicWebChat),
+              createElement(Monitor)
+            )
+          ),
+          document.getElementById('webchat')
         );
-
-        render(<App />, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
