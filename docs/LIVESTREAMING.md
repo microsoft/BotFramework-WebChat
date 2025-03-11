@@ -372,6 +372,6 @@ Bottomline: we understand the bandwidth usage could be large. But the benefits o
 
 #### Solutions
 
-- To conclude a livestream without any contents, send the final message with `type` set to `typing` and without `text` field
+- To conclude a livestream without any contents, send the final message with `type` set to `typing`, with `text` either unset or set to an empty string
    - For best compatibility, bot should not use `type` of `message` with empty `text` field
-   - Some systems does not support handling message activity without content
+   - Some systems cannot handle message activity without content
