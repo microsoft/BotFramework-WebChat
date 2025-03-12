@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="./css/pauseAnimation.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      const attachmentLayout =
+        new URLSearchParams(location.search).get('layout') === 'carousel' ? 'carousel' : undefined;
+
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: {
+            decorator: { WebChatDecorator },
+            hooks: { useActiveTyping, useActivityKeys, useGetActivitiesByKey },
+            ReactWebChat
+          }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        render(
+          createElement(
+            WebChatDecorator,
+            {},
+            createElement(ReactWebChat, {
+              directLine,
+              store
+            })
+          ),
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Bot start a livestream with an attachment.
+        const firstTypingActivityId = crypto.randomUUID();
+
+        await directLine.emulateIncomingActivity({
+          attachmentLayout,
+          attachments: [
+            {
+              content: 'Card 1',
+              contentType: 'text/plain'
+            }
+          ],
+          channelData: { streamSequence: 1, streamType: 'streaming' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: firstTypingActivityId,
+          text: 'A quick brown',
+          timestamp: 1,
+          type: 'typing'
+        });
+
+        // THEN: Should display the message.
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should display 1 attachment.
+        expect(pageElements.activityAttachments()[0]).toHaveLength(1);
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: Receive another attachment through livestreaming.
+
+        await directLine.emulateIncomingActivity({
+          attachmentLayout,
+          attachments: [
+            {
+              content: 'Card 1',
+              contentType: 'text/plain'
+            },
+            {
+              content: 'Card 2',
+              contentType: 'text/plain'
+            }
+          ],
+          channelData: { streamId: firstTypingActivityId, streamSequence: 2, streamType: 'streaming' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: crypto.randomUUID(),
+          text: 'A quick brown fox jumped over',
+          timestamp: 2,
+          type: 'typing'
+        });
+
+        // THEN: Should display the message.
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should display 2 attachments.
+        await waitFor(() => expect(pageElements.activityAttachments()[0]).toHaveLength(2));
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: Finalized message is received without any attachments.
+
+        await directLine.emulateIncomingActivity({
+          attachmentLayout,
+          attachments: [],
+          channelData: { streamId: firstTypingActivityId, streamType: 'final' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: crypto.randomUUID(),
+          text: 'A quick brown fox jumped over the lazy dogs.',
+          timestamp: 3,
+          type: 'message'
+        });
+
+        // THEN: Should display the message.
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should display no attachments.
+        await waitFor(() => expect(pageElements.activityAttachments()[0]).toHaveLength(0));
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

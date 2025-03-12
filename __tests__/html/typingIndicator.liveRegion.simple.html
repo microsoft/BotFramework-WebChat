@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -8,7 +8,16 @@
   </head>
   <body>
     <main id="webchat"></main>
-    <script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
       run(async function () {
         const clock = lolex.createClock();
         const directLine = testHelpers.createDirectLineWithTranscript([], { ponyfill: clock });
@@ -62,11 +71,7 @@
         });
 
         // THEN: It should read "Bot is typing."
-        await pageConditions.became(
-          'typing indicator to appear in live region',
-          async () => () => liveRegionInnerTexts.join('\n') === 'Bot is typing.',
-          5000
-        );
+        await waitFor(() => expect(liveRegionInnerTexts.join('\n')).toBe('Bot is typing.'));
 
         // THEN: The typing indicator should be shown.
         await pageConditions.typingIndicatorShown();
@@ -86,11 +91,7 @@
         });
 
         // THEN: It should not add any live region elements.
-        await pageConditions.became(
-          'typing indicator should not add to the live region',
-          async () => () => liveRegionInnerTexts.join('\n') === 'Bot is typing.',
-          5000
-        );
+        await waitFor(() => expect(liveRegionInnerTexts.join('\n')).toBe('Bot is typing.'), 5_000);
 
         // THEN: The typing indicator should be shown.
         await pageConditions.typingIndicatorShown();
@@ -99,11 +100,7 @@
         clock.tick(5000);
 
         // THEN: It should not add any live region elements.
-        await pageConditions.became(
-          'typing indicator should not add to the live region',
-          async () => () => liveRegionInnerTexts.join('\n') === 'Bot is typing.',
-          5000
-        );
+        await waitFor(() => expect(liveRegionInnerTexts.join('\n')).toBe('Bot is typing.'), 5_000);
 
         // THEN: The typing indicator should be hidden.
         await pageConditions.typingIndicatorHidden();

@@ -1,5 +1,3 @@
-/* eslint-disable no-magic-numbers */
-
 import someIterable from './someIterable';
 
 describe('when predicate return true should return true', () => {

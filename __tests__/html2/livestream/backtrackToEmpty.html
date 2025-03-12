@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="./css/pauseAnimation.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            decorator: { WebChatDecorator },
+            hooks: { useActiveTyping, useActivityKeys, useGetActivitiesByKey }
+          }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        let currentActivityKeysWithId = [];
+        let currentActiveTyping = {};
+
+        const Monitor = () => {
+          const [activityKeys] = useActivityKeys();
+          const [activeTyping] = useActiveTyping();
+          const getActivitiesByKey = useGetActivitiesByKey();
+
+          currentActivityKeysWithId = Object.freeze(
+            activityKeys.map(key => [key, getActivitiesByKey(key).map(({ id }) => id)])
+          );
+
+          currentActiveTyping = activeTyping;
+
+          return false;
+        };
+
+        const styleOptions = {
+          // Non-animated typing indicator.
+          typingAnimationBackgroundImage: `url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAUACgDASIAAhEBAxEB/8QAGgABAQACAwAAAAAAAAAAAAAAAAYCBwMFCP/EACsQAAECBQIEBQUAAAAAAAAAAAECAwAEBQYRBxITIjFBMlFhccFScoGh8f/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD0lctx023JVD9UeKOIcNoSNylkdcCMbauSmXHLOPUx8r4ZAcQtO1SM9Mj5iO1gtWo1syc7S2zMKYSptbIPNgnII8/5HBpRZ9RpaKjNVVCpUzLPAQ1nmA7qPl6fmAondRrcaqhkVTiiQrYXgglsH7vnpHc3DcNNoEimaqT4Q2s4bCRuUs+gEaLd05uNFVMmiS3o3YEwFDhlP1Z7e3WLzUuzahUKHRk0zM07TmeApvOFLGEjcM9+Xp6wFnbN0Uu5GnF0x4qW1je2tO1Sc9Djy9oRD6QWlU6PPzVSqjRlgtksttKPMcqBKiO3h/cIDacIQgEIQgEIQgP/2Q==')`
+        };
+
+        render(
+          createElement(
+            WebChatDecorator,
+            {},
+            createElement(
+              Composer,
+              { directLine, store, styleOptions },
+              createElement(BasicWebChat),
+              createElement(Monitor)
+            )
+          ),
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Bot send a normal message.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00001',
+          timestamp: 1,
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        // THEN: Should display the message.
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should not display typing indicator.
+        expect(pageElements.typingIndicator()).toBeFalsy();
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: Bot is sending a typing indicator in a livestream.
+        const firstTypingActivityId = 't-00001';
+
+        await directLine.emulateIncomingActivity({
+          channelData: { streamSequence: 1, streamType: 'streaming' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: firstTypingActivityId,
+          timestamp: 2,
+          type: 'typing'
+        });
+
+        let firstTypingActivityKey = currentActivityKeysWithId[1][0];
+
+        // ---
+
+        // THEN: Should not display the livestream activity.
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should display typing indicator.
+        expect(pageElements.typingIndicator()).toBeTruthy();
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // THEN: Should have 2 activity keys.
+        expect(currentActivityKeysWithId).toEqual([
+          [expect.any(String), ['a-00001']],
+          [firstTypingActivityKey, ['t-00001']]
+        ]);
+
+        // THEN: Should have active typing.
+        expect(currentActiveTyping).toEqual({
+          'u-00001': {
+            at: expect.any(Number),
+            expireAt: expect.any(Number),
+            name: 'Bot',
+            role: 'bot',
+            type: 'busy'
+          }
+        });
+
+        // ---
+
+        // THEN: Should display typing indicator.
+        expect(pageElements.typingIndicator()).toBeTruthy();
+
+        // TBD: [DONE] Add more tests. Having a normal typing indicator, while having a livestream-based typing indicator, the typing indicator must be kept
+        // TBD: [DONE] Add more tests. Concluding a livestream with "message" activity with empty "text" field.
+        // TBD: [DONE] Add more tests. 2 simultaneous livestream is ongoing. One is empty, one is contentful.
+        //      - While both is going, it should not show typing indicator
+        //      - When the contentful livestream concluded, it should show the typing indicator
+        //      - In other words, typing indicator is the "last resort" to show the bot is progressing
+
+        // ---
+
+        // WHEN: Bot is typing a message.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: 't-00001', streamSequence: 2, streamType: 'streaming' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 't-00002',
+          text: 'I will delete this line later.',
+          timestamp: 3,
+          type: 'typing'
+        });
+
+        // THEN: Should display the livestream activity.
+        await pageConditions.numActivitiesShown(2);
+        expect(pageElements.activityContents()[1]).toHaveProperty('textContent', 'I will delete this line later.');
+
+        // THEN: Should not display typing indicator.
+        expect(pageElements.typingIndicator()).toBeFalsy();
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // THEN: Should have 2 activity keys only.
+        expect(currentActivityKeysWithId).toEqual([
+          [expect.any(String), ['a-00001']],
+          [firstTypingActivityKey, ['t-00001', 't-00002']]
+        ]);
+
+        // THEN: Should have active typing.
+        expect(currentActiveTyping).toEqual({
+          'u-00001': {
+            at: expect.any(Number),
+            expireAt: expect.any(Number),
+            name: 'Bot',
+            role: 'bot',
+            type: 'livestream'
+          }
+        });
+
+        // ---
+
+        // WHEN: Bot send interim message without content.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: firstTypingActivityId, streamSequence: 3, streamType: 'streaming' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 't-00003',
+          timestamp: 4,
+          type: 'typing'
+        });
+
+        // THEN: Should not display the livestream activity.
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should display typing indicator because the livestream is empty.
+        expect(pageElements.typingIndicator()).toBeTruthy();
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // THEN: Should have 2 activity keys only.
+        expect(currentActivityKeysWithId).toEqual([
+          [expect.any(String), ['a-00001']],
+          [firstTypingActivityKey, ['t-00001', 't-00002', 't-00003']]
+        ]);
+
+        // THEN: Should have active typing.
+        expect(currentActiveTyping).toEqual({
+          'u-00001': {
+            at: expect.any(Number),
+            expireAt: expect.any(Number),
+            name: 'Bot',
+            role: 'bot',
+            type: 'busy'
+          }
+        });
+
+        // ---
+
+        // WHEN: Bot send final message as typing, without content.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: firstTypingActivityId, streamType: 'final' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 't-00004',
+          timestamp: 5,
+          type: 'typing'
+        });
+
+        // THEN: Should display no messages.
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should not display typing indicator as the livestream is finalized.
+        expect(pageElements.typingIndicator()).toBeFalsy();
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // THEN: Should have 2 activity keys only.
+        expect(currentActivityKeysWithId).toEqual([
+          [expect.any(String), ['a-00001']],
+          [firstTypingActivityKey, ['t-00001', 't-00002', 't-00003', 't-00004']]
+        ]);
+
+        // THEN: Should have no active typing.
+        expect(currentActiveTyping).toHaveProperty('u-00001', undefined);
+
+        // ---
+
+        // WHEN: Bot is sending another message.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00002',
+          text: 'Aloha!',
+          timestamp: 6,
+          type: 'message'
+        });
+
+        // THEN: Should display 2 messages.
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: Should have 2 activity keys only.
+        expect(currentActivityKeysWithId).toEqual([
+          [expect.any(String), ['a-00001']],
+          [firstTypingActivityKey, ['t-00001', 't-00002', 't-00003', 't-00004']],
+          [expect.any(String), ['a-00002']]
+        ]);
+
+        // THEN: Should not display typing indicator.
+        expect(pageElements.typingIndicator()).toBeFalsy();
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

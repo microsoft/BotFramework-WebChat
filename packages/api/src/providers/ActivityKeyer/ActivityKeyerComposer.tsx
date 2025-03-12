@@ -1,4 +1,4 @@
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
 import React, { useCallback, useMemo, useRef, type ReactNode } from 'react';
 
 import reduceIterable from '../../hooks/private/reduceIterable';
@@ -16,20 +16,6 @@ type ActivityIdToKeyMap = Map<string, string>;
 type ActivityToKeyMap = Map<WebChatActivity, string>;
 type ClientActivityIdToKeyMap = Map<string, string>;
 type KeyToActivitiesMap = Map<string, readonly WebChatActivity[]>;
-
-function getTypingActivityId(activity: WebChatActivity): string | undefined {
-  const { type } = activity;
-
-  if (
-    (type === 'message' || type === 'typing') &&
-    'text' in activity &&
-    typeof activity.text === 'string' &&
-    'streamId' in activity.channelData &&
-    activity.channelData.streamId
-  ) {
-    return activity.channelData.streamId;
-  }
-}
 
 /**
  * React context composer component to assign a perma-key to every activity.
@@ -72,7 +58,7 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
     activities.forEach(activity => {
       const activityId = getActivityId(activity);
       const clientActivityId = getClientActivityId(activity);
-      const typingActivityId = getTypingActivityId(activity);
+      const typingActivityId = getActivityLivestreamingMetadata(activity)?.sessionId;
 
       const key =
         (clientActivityId &&

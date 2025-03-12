@@ -1,72 +1,164 @@
-import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';
-import React, { memo, useMemo, type ReactNode } from 'react';
-import { useRefFrom } from 'use-ref-from';
+import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
+import { iteratorFind } from 'iter-fest';
+import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
 
 import numberWithInfinity from '../../hooks/private/numberWithInfinity';
-import useActivities from '../../hooks/useActivities';
 import usePonyfill from '../../hooks/usePonyfill';
-import useUpsertedActivities from '../../providers/ActivityListener/useUpsertedActivities';
 import ActivityTypingContext, { ActivityTypingContextType } from './private/Context';
-import useMemoWithPrevious from './private/useMemoWithPrevious';
+import useReduceActivities from './private/useReduceActivities';
 import { type AllTyping } from './types/AllTyping';
 
-const INITIAL_ALL_TYPING_STATE = Object.freeze([Object.freeze(new Map())] as const);
+type Entry = {
+  livestreamActivities: Map<
+    string,
+    {
+      activity: WebChatActivity;
+      contentful: boolean;
+      firstReceivedAt: number;
+      lastReceivedAt: number;
+    }
+  >;
+  name: string | undefined;
+  role: 'bot' | 'user';
+  typingIndicator:
+    | {
+        activity: WebChatActivity;
+        duration: number;
+        firstReceivedAt: number;
+        lastReceivedAt: number;
+      }
+    | undefined;
+};
 
 type Props = Readonly<{ children?: ReactNode | undefined }>;
 
 const ActivityTypingComposer = ({ children }: Props) => {
   const [{ Date }] = usePonyfill();
-  const [activities] = useActivities();
-  const [upsertedActivities] = useUpsertedActivities();
-  const activitiesRef = useRefFrom(activities);
 
-  const allTypingState = useMemoWithPrevious<readonly [ReadonlyMap<string, AllTyping>]>(
-    (prevAllTypingState = INITIAL_ALL_TYPING_STATE) => {
-      const { current: activities } = activitiesRef;
-      const nextTyping = new Map(prevAllTypingState[0]);
-      let changed = false;
+  const reducer = useCallback(
+    (
+      prevTypingState: ReadonlyMap<string, Readonly<Entry>> | undefined,
+      activity: WebChatActivity
+    ): ReadonlyMap<string, Readonly<Entry>> | undefined => {
+      const {
+        from: { id, name, role },
+        type
+      } = activity;
 
-      const firstIndex = upsertedActivities.reduce(
-        (firstIndex, upsertedActivity) => Math.min(firstIndex, activities.indexOf(upsertedActivity)),
-        Infinity
-      );
-
-      for (const activity of activities.slice(firstIndex)) {
-        const {
-          from,
-          from: { id, role },
-          type
-        } = activity;
-
-        const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
-
-        if (type === 'message' || livestreamingMetadata?.type === 'final activity') {
-          nextTyping.delete(id);
-          changed = true;
-        } else if (type === 'typing' && (role === 'bot' || role === 'user')) {
-          const currentTyping = nextTyping.get(id);
-          // TODO: When we rework on types of DLActivity, we will make sure all activities has "webChat.receivedAt", this coalesces can be removed.
-          const receivedAt = activity.channelData.webChat?.receivedAt || Date.now();
-
-          nextTyping.set(id, {
-            firstReceivedAt: currentTyping?.firstReceivedAt || receivedAt,
-            lastActivityDuration: numberWithInfinity(
-              activity.channelData.webChat?.styleOptions?.typingAnimationDuration
-            ),
-            lastReceivedAt: receivedAt,
-            name: from.name,
-            role,
-            type: livestreamingMetadata ? 'livestream' : 'busy'
-          });
-
-          changed = true;
-        }
+      if (role === 'channel') {
+        return prevTypingState;
       }
 
-      return changed ? Object.freeze([nextTyping]) : prevAllTypingState;
+      // A normal message activity, or final activity (which could be "message" or "typing"), will remove the typing indicator.
+      const receivedAt = activity.channelData?.webChat?.receivedAt || Date.now();
+
+      const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
+      const typingState = new Map(prevTypingState);
+      const existingEntry = typingState.get(id);
+      const mutableEntry: Entry = {
+        typingIndicator: undefined,
+        ...existingEntry,
+        livestreamActivities: new Map(existingEntry?.livestreamActivities),
+        name,
+        role
+      };
+
+      if (livestreamingMetadata) {
+        mutableEntry.typingIndicator = undefined;
+
+        const { sessionId } = livestreamingMetadata;
+
+        if (livestreamingMetadata.type === 'final activity') {
+          mutableEntry.livestreamActivities.delete(sessionId);
+        } else {
+          mutableEntry.livestreamActivities.set(
+            sessionId,
+            Object.freeze({
+              firstReceivedAt: Date.now(),
+              ...mutableEntry.livestreamActivities.get(sessionId),
+              activity,
+              contentful: livestreamingMetadata.type !== 'contentless',
+              lastReceivedAt: receivedAt
+            })
+          );
+        }
+      } else if (type === 'message') {
+        mutableEntry.typingIndicator = undefined;
+      } else if (type === 'typing') {
+        mutableEntry.typingIndicator = Object.freeze({
+          activity,
+          duration: numberWithInfinity(activity.channelData.webChat?.styleOptions?.typingAnimationDuration),
+          firstReceivedAt: mutableEntry.typingIndicator?.firstReceivedAt || Date.now(),
+          lastReceivedAt: receivedAt
+        });
+      }
+
+      typingState.set(id, Object.freeze(mutableEntry));
+
+      return Object.freeze(typingState);
     },
-    [activitiesRef, upsertedActivities]
+    [Date]
   );
+
+  const state: ReadonlyMap<string, Entry> = useReduceActivities(reducer) || Object.freeze(new Map());
+
+  const allTyping = useMemo(() => {
+    const map = new Map<string, AllTyping>();
+
+    for (const [id, entry] of state.entries()) {
+      const firstContentfulLivestream = iteratorFind(
+        entry.livestreamActivities.values(),
+        ({ contentful }) => contentful
+      );
+
+      const firstContentlessLivestream = iteratorFind(
+        entry.livestreamActivities.values(),
+        ({ contentful }) => !contentful
+      );
+
+      if (firstContentfulLivestream) {
+        map.set(
+          id,
+          Object.freeze({
+            firstReceivedAt: firstContentfulLivestream.firstReceivedAt,
+            lastActivityDuration: Infinity,
+            lastReceivedAt: firstContentfulLivestream.lastReceivedAt,
+            name: entry.name,
+            role: entry.role,
+            type: 'livestream'
+          } satisfies AllTyping)
+        );
+      } else if (firstContentlessLivestream) {
+        map.set(
+          id,
+          Object.freeze({
+            firstReceivedAt: firstContentlessLivestream.firstReceivedAt,
+            lastActivityDuration: Infinity,
+            lastReceivedAt: firstContentlessLivestream.lastReceivedAt,
+            name: entry.name,
+            role: entry.role,
+            type: 'busy'
+          } satisfies AllTyping)
+        );
+      } else if (entry.typingIndicator) {
+        map.set(
+          id,
+          Object.freeze({
+            firstReceivedAt: entry.typingIndicator.firstReceivedAt,
+            lastActivityDuration: entry.typingIndicator.duration,
+            lastReceivedAt: entry.typingIndicator.lastReceivedAt,
+            name: entry.name,
+            role: entry.role,
+            type: 'busy'
+          } satisfies AllTyping)
+        );
+      }
+    }
+
+    return map;
+  }, [state]);
+
+  const allTypingState = useMemo(() => Object.freeze([allTyping] as const), [allTyping]);
 
   const context = useMemo<ActivityTypingContextType>(() => ({ allTypingState }), [allTypingState]);
 

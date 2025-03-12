@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="./css/pauseAnimation.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: {
+            decorator: { WebChatDecorator },
+            ReactWebChat
+          }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        render(
+          createElement(
+            WebChatDecorator,
+            {},
+            createElement(ReactWebChat, {
+              directLine,
+              store
+            })
+          ),
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Bot start a livestream.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamSequence: 1, streamType: 'streaming' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00001',
+          timestamp: 1,
+          text: 'A quick brown fox',
+          type: 'message'
+        });
+
+        // THEN: Should display the message.
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(1));
+        await expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'A quick brown fox');
+
+        // THEN: Should not display typing indicator.
+        expect(pageElements.typingIndicator()).toBeFalsy();
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: Bot regrets with an empty message.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: 'a-00001', streamType: 'final' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00002',
+          timestamp: 2,
+          text: '',
+          type: 'message'
+        });
+
+        // THEN: Should remove the message.
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(0));
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

@@ -44,7 +44,6 @@ describe('Marshalling value of', () => {
   });
 
   test('array', () => {
-    // eslint-disable-next-line no-magic-numbers
     expect(marshal([true, ERROR, 123, null, 'string', undefined])).toMatchInlineSnapshot(`
       Array [
         true,

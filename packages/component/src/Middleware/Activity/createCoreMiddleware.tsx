@@ -1,7 +1,7 @@
 import { ActivityMiddleware } from 'botframework-webchat-api';
+import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';
 import React from 'react';
 
-import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';
 import CarouselLayout from '../../Activity/CarouselLayout';
 import StackedLayout from '../../Activity/StackedLayout';
 
@@ -21,8 +21,10 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
           type === 'conversationUpdate' ||
           type === 'event' ||
           type === 'invoke' ||
-          // Do not show typing indicator except when it is livestreaming session
-          (type === 'typing' && !getActivityLivestreamingMetadata(activity)) ||
+          // Do not show content for contentless livestream interims, or finalized activity without content.
+          (type === 'typing' &&
+            (getActivityLivestreamingMetadata(activity)?.type === 'contentless' ||
+              !(activity['text'] || activity.attachments?.length > 0))) ||
           (type === 'message' &&
             // Do not show postback
             (activity.channelData?.postBack ||
@@ -33,11 +35,7 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
         ) {
           return false;
         } else if (type === 'message' || type === 'typing') {
-          if (
-            type === 'message' &&
-            (activity.attachments?.length || 0) > 1 &&
-            activity.attachmentLayout === 'carousel'
-          ) {
+          if ((activity.attachments?.length || 0) > 1 && activity.attachmentLayout === 'carousel') {
             // The following line is not a React functional component, it's a render function called by useCreateActivityRenderer() hook.
             // The function signature need to be compatible with older version of activity middleware, which was:
             //

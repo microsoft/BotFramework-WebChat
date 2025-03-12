@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        testHelpers: { createDirectLineEmulator },
+        WebChat: {
+          Components: { BasicWebChat, Composer },
+          hooks: { useActiveTyping }
+        }
+      } = window;
+
+      run(async function () {
+        const ponyfill = lolex.createClock();
+        const { directLine, store } = createDirectLineEmulator({ ponyfill });
+
+        const RunFunction = ({ fn }) => {
+          fn();
+
+          return false;
+        };
+
+        const renderWithFunction = fn =>
+          new Promise(resolve =>
+            ReactDOM.render(
+              <Composer directLine={directLine} ponyfill={ponyfill} sendTypingIndicator={true} store={store}>
+                <BasicWebChat />
+                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
+              </Composer>,
+              document.getElementById('webchat')
+            )
+          );
+
+        await renderWithFunction();
+
+        await pageConditions.webChatRendered();
+
+        ponyfill.tick(600);
+
+        // WHEN: At initial.
+        await pageConditions.uiConnected();
+
+        // THEN: `useActiveTyping` should return nothing.
+        await expect(renderWithFunction(() => useActiveTyping())).resolves.toEqual([{}]);
+
+        // WHEN: Type "a" without send.
+        await directLine.actPostActivity(() => pageObjects.typeInSendBox('a'));
+
+        // THEN: `useActiveTyping` should return current user.
+        await expect(renderWithFunction(() => Object.values(useActiveTyping()[0]))).resolves.toEqual([
+          {
+            at: 600,
+            expireAt: 5600,
+            name: expect.any(String),
+            role: 'user',
+            type: 'busy'
+          }
+        ]);
+
+        // WHEN: Type "b" at t=10.
+        ponyfill.tick(10);
+        await pageObjects.typeInSendBox('b');
+
+        // We need to wait for 6000 ms because:
+        // 1. t=0: Typed letter "a"
+        // 2. t=0: Send typing activity
+        // 3. t=10: Typed letter "b"
+        // 4. t=10: Scheduled another typing indicator at t=3000
+        // 5. t=3000: Send typing activity
+        await directLine.actPostActivity(() => ponyfill.tick(3000));
+
+        // THEN: `useActiveTyping` should return current user.
+        await expect(renderWithFunction(() => Object.values(useActiveTyping()[0]))).resolves.toEqual([
+          {
+            at: 600,
+            expireAt: 8610,
+            name: expect.any(String),
+            role: 'user',
+            type: 'busy'
+          }
+        ]);
+
+        // WHEN: After 8 seconds.
+        ponyfill.tick(8000);
+
+        // THEN: `useActiveTyping` should return nothing.
+        await expect(renderWithFunction(() => useActiveTyping())).resolves.toEqual([{}]);
+
+        // THEN: `useActiveTyping(10000)` should return the previous typing.
+        await expect(renderWithFunction(() => Object.values(useActiveTyping(10000)[0]))).resolves.toEqual([
+          {
+            at: 600,
+            expireAt: 13610,
+            name: expect.any(String),
+            role: 'user',
+            type: 'busy'
+          }
+        ]);
+      });
+    </script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -8,7 +8,16 @@
   </head>
   <body>
     <main id="webchat"></main>
-    <script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
       run(async function () {
         const clock = lolex.createClock();
         const directLine = testHelpers.createDirectLineWithTranscript([], { ponyfill: clock });
@@ -36,11 +45,7 @@
         };
 
         const liveRegionTypingIndicatorBecame = expected =>
-          pageConditions.became(
-            'typing indicator to appear in live region',
-            () => liveRegionInnerTexts.join('\n') === expected.join('\n'),
-            2000
-          );
+          waitFor(() => expect(liveRegionInnerTexts.join('\n')).toEqual(expected.join('\n')), 2_000);
 
         WebChat.renderWebChat(
           {
