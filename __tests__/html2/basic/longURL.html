@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: { ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        const { searchParams } = new URL(location);
+        const messageActivityWordBreak = searchParams.get('break');
+        const text =
+          searchParams.get('text') || 'https://subdomain.domain.com/pathname0/pathname1/pathname2/pathname3/pathname4/';
+
+        render(
+          createElement(ReactWebChat, {
+            directLine,
+            store,
+            styleOptions: messageActivityWordBreak ? { messageActivityWordBreak } : {}
+          }),
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Send a message.
+        await (
+          await directLine.actPostActivity(() => pageObjects.sendMessageViaSendBox(text, { waitForSend: false }))
+        ).resolveAll();
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          id: crypto.randomUUID(),
+          text: `Unknown command: \`${text}\`.\n\nType \`help\` to learn more.`,
+          type: 'message'
+        });
+
+        // THEN: Should show 2 messages.
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
