@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="./css/pauseAnimation.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            decorator: { WebChatDecorator },
+            hooks: { useActiveTyping, useActivityKeys, useGetActivitiesByKey }
+          }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+        let currentActivityKeysWithId = [];
+        let currentActiveTyping = {};
+
+        const Monitor = () => {
+          const [activityKeys] = useActivityKeys();
+          const [activeTyping] = useActiveTyping();
+          const getActivitiesByKey = useGetActivitiesByKey();
+
+          currentActivityKeysWithId = Object.freeze(
+            activityKeys.map(key => [key, getActivitiesByKey(key).map(({ id }) => id)])
+          );
+
+          currentActiveTyping = activeTyping;
+
+          return false;
+        };
+
+        render(
+          createElement(
+            WebChatDecorator,
+            {},
+            createElement(
+              Composer,
+              {
+                directLine,
+                store
+              },
+              createElement(BasicWebChat),
+              createElement(Monitor)
+            )
+          ),
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Bot is typing a message.
+        const firstTypingActivityId = 't-00001';
+
+        await directLine.emulateIncomingActivity({
+          channelData: { streamSequence: 1, streamType: 'streaming' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: firstTypingActivityId,
+          text: 'A quick',
+          timestamp: 1,
+          type: 'typing'
+        });
+
+        let firstTypingActivityKey = currentActivityKeysWithId[0][0];
+
+        // THEN: Should display 1 message.
+        await pageConditions.numActivitiesShown(1);
+        expect(pageElements.typingIndicator()).toBeFalsy();
+        expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'A quick');
+        await host.snapshot('local');
+
+        // THEN: Should have 1 activity key.
+        expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00001']]]);
+
+        // THEN: Should have active typing.
+        expect(currentActiveTyping).toEqual({
+          'u-00001': {
+            at: expect.any(Number),
+            expireAt: expect.any(Number),
+            name: 'Bot',
+            role: 'bot',
+            type: 'livestream'
+          }
+        });
+
+        // ---
+
+        // WHEN: Bot send final message.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: firstTypingActivityId, streamType: 'final' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 't-00002',
+          text: 'A quick brown fox jumped over the lazy dogs.',
+          type: 'message'
+        });
+
+        // THEN: Should display 1 message.
+        await pageConditions.numActivitiesShown(1);
+        expect(pageElements.typingIndicator()).toBeFalsy();
+        expect(pageElements.activityContents()[0]).toHaveProperty(
+          'textContent',
+          'A quick brown fox jumped over the lazy dogs.'
+        );
+        await host.snapshot('local');
+
+        // THEN: Should have 1 activity key only.
+        expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00001', 't-00002']]]);
+
+        // THEN: Should have no active typing.
+        expect(currentActiveTyping).toHaveProperty('u-00001', undefined);
+
+        // ---
+
+        // WHEN: Bot send an interim message and reuse the stream ID.
+        await directLine.emulateIncomingActivity(
+          {
+            channelData: { streamId: firstTypingActivityId, streamSequence: 2, streamType: 'streaming' },
+            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+            id: 't-00003',
+            text: 'Lorem',
+            type: 'typing'
+          },
+          { skipWait: true }
+        );
+
+        // THEN: Should not update the message.
+        await pageConditions.numActivitiesShown(1);
+        expect(pageElements.typingIndicator()).toBeFalsy();
+        expect(pageElements.activityContents()[0]).toHaveProperty(
+          'textContent',
+          'A quick brown fox jumped over the lazy dogs.'
+        );
+        await host.snapshot('local');
+
+        // THEN: Should have 1 activity key associated with 2 activity IDs only.
+        expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00001', 't-00002']]]);
+
+        // THEN: Should have no active typing.
+        expect(currentActiveTyping).toHaveProperty('u-00001', undefined);
+
+        // ---
+
+        // WHEN: Bot send a final message and reuse the stream ID.
+        await directLine.emulateIncomingActivity(
+          {
+            channelData: { streamId: firstTypingActivityId, streamType: 'final' },
+            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+            id: 't-00004',
+            text: 'Lorem ipsum.',
+            type: 'message'
+          },
+          { skipWait: true }
+        );
+
+        // THEN: Should not update the message.
+        await pageConditions.numActivitiesShown(1);
+        expect(pageElements.typingIndicator()).toBeFalsy();
+        expect(pageElements.activityContents()[0]).toHaveProperty(
+          'textContent',
+          'A quick brown fox jumped over the lazy dogs.'
+        );
+        await host.snapshot('local');
+
+        // THEN: Should have 1 activity key associated with 2 activity IDs only.
+        expect(currentActivityKeysWithId).toEqual([[firstTypingActivityKey, ['t-00001', 't-00002']]]);
+
+        // THEN: Should have no active typing.
+        expect(currentActiveTyping).toHaveProperty('u-00001', undefined);
+      });
+    </script>
+  </body>
+</html>

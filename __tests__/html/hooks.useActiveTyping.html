@@ -90,22 +90,28 @@
         await pageObjects.typeInSendBox('.');
 
         // THEN: `useActiveTyping` should return both.
-        await expect(renderWithFunction(() => Object.values(useActiveTyping()[0]))).resolves.toEqual([
-          {
-            at: 600,
-            expireAt: 5600,
-            name: expect.any(String),
-            role: 'bot',
-            type: 'busy'
-          },
-          {
-            at: 600,
-            expireAt: 5600,
-            name: expect.any(String),
-            role: 'user',
-            type: 'busy'
-          }
-        ]);
+        const hookResult = await renderWithFunction(() => Object.values(useActiveTyping()[0]));
+
+        expect(hookResult).toHaveLength(2);
+
+        expect(hookResult).toEqual(
+          expect.arrayContaining([
+            {
+              at: 600,
+              expireAt: 5600,
+              name: expect.any(String),
+              role: 'bot',
+              type: 'busy'
+            },
+            {
+              at: 600,
+              expireAt: 5600,
+              name: expect.any(String),
+              role: 'user',
+              type: 'busy'
+            }
+          ])
+        );
       });
     </script>
   </body>

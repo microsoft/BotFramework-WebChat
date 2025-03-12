@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: { ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const styleOptions = { timestampFormat: 'absolute' };
+
+        render(createElement(ReactWebChat, { directLine, store, styleOptions }), document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Received 3 activities.
+        await directLine.emulateIncomingActivity({
+          channelData: {},
+          type: 'message',
+          id: '6266x5ZXhXkBfuIH0fNx0h-o|0000000',
+          timestamp: '2019-08-08T16:41:12.9397263Z',
+          from: {
+            id: 'dl_654b35e09ab4149595a70aa6f1af6f50',
+            name: '',
+            role: 'user'
+          },
+          textFormat: 'plain',
+          text: 'echo "Hello, World!"'
+        });
+
+        await directLine.emulateIncomingActivity({
+          channelData: {},
+          type: 'message',
+          id: '6266x5ZXhXkBfuIH0fNx0h-o|0000001',
+          timestamp: '2019-08-08T16:41:13.1835518Z',
+          from: {
+            id: 'webchat-mockbot',
+            name: 'webchat-mockbot',
+            role: 'bot'
+          },
+          text: 'Echoing back in a separate activity.'
+        });
+
+        await directLine.emulateIncomingActivity({
+          channelData: {},
+          type: 'message',
+          id: '6266x5ZXhXkBfuIH0fNx0h-o|0000002',
+          timestamp: '2019-08-08T16:41:13.3963019Z',
+          from: {
+            id: 'webchat-mockbot',
+            name: 'webchat-mockbot',
+            role: 'bot'
+          },
+          text: 'Hello, World!'
+        });
+
+        // THEN: Should show 3 messages with absolute timestamps.
+        await pageConditions.numActivitiesShown(3);
+        expect(pageElements.activityStatuses()[0].textContent).toBe('Sent at August 8 at 4:41 PMAugust 8 at 4:41 PM');
+        expect(pageElements.activityStatuses()[1].textContent).toBe('Sent at August 8 at 4:41 PM');
+        expect(pageElements.activityStatuses()[2].textContent).toBe('Sent at August 8 at 4:41 PMAugust 8 at 4:41 PM');
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

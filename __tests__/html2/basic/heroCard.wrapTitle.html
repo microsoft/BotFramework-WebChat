@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: { ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        render(
+          createElement(ReactWebChat, {
+            directLine,
+            store,
+            styleOptions: new URL(location).searchParams.has('wrap') ? { richCardWrapTitle: true } : {}
+          }),
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Send a message.
+        await (
+          await directLine.actPostActivity(() =>
+            pageObjects.sendMessageViaSendBox('herocard long title', { waitForSend: false })
+          )
+        ).resolveAll();
+
+        await directLine.emulateIncomingActivity({
+          attachmentLayout: 'carousel',
+          attachments: [
+            {
+              contentType: 'application/vnd.microsoft.card.hero',
+              content: {
+                buttons: [
+                  {
+                    title: 'messageBack Action with no display text',
+                    type: 'messageBack',
+                    value: 'messageBack Button'
+                  }
+                ],
+                images: [
+                  {
+                    alt: 'Microsoft Surface Alt',
+                    tap: {
+                      type: 'openUrl',
+                      title: 'Tapped it!',
+                      value: 'https://aka.ms/testurl1.html'
+                    },
+                    url: './assets/surface1.jpg'
+                  }
+                ],
+                tap: {
+                  type: 'openUrl',
+                  title: 'Tapped it!',
+                  value: 'https://aka.ms/testurl2.html'
+                },
+                subtitle: 'This is the subtitle',
+                title:
+                  'This is a HeroCard with a really, really long title that is intended to test the richCardsWrapTitle style option.'
+              }
+            }
+          ],
+          from: { id: 'bot', role: 'bot' },
+          id: crypto.randomUUID(),
+          type: 'message'
+        });
+
+        // THEN: Should show 2 messages.
+        await pageConditions.numActivitiesShown(2);
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
