@@ -6,6 +6,9 @@ import createMicrophoneAudioConfigAndAudioContext from './speech/createMicrophon
 import CognitiveServicesAudioOutputFormat from './types/CognitiveServicesAudioOutputFormat';
 import CognitiveServicesCredentials from './types/CognitiveServicesCredentials';
 import CognitiveServicesTextNormalization from './types/CognitiveServicesTextNormalization';
+import ManagedCognitiveServiceOptions from './types/ManagedCognitiveServiceOptions';
+import createInterceptedFetch from './createInterceptedFetch';
+import createInterceptedWebSocket from './createInterceptedWebSocket';
 
 export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   audioConfig,
@@ -17,7 +20,8 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   speechRecognitionEndpointId,
   speechSynthesisDeploymentId,
   speechSynthesisOutputFormat,
-  textNormalization
+  textNormalization,
+  managedCognitiveService
 }: {
   audioConfig?: AudioConfig;
   audioContext?: AudioContext;
@@ -29,6 +33,7 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
   speechSynthesisDeploymentId?: string;
   speechSynthesisOutputFormat?: CognitiveServicesAudioOutputFormat;
   textNormalization?: CognitiveServicesTextNormalization;
+  managedCognitiveService?: ManagedCognitiveServiceOptions;
 }): WebSpeechPonyfillFactory {
   if (!window.navigator.mediaDevices && !audioConfig) {
     console.warn(
@@ -54,6 +59,12 @@ export default function createCognitiveServicesSpeechServicesPonyfillFactory({
       audioInputDeviceId,
       enableTelemetry
     }));
+  }
+
+  if (managedCognitiveService) {
+    // If the service is managed, we will use the token provided by the service
+    window.fetch = createInterceptedFetch(window.fetch, managedCognitiveService);
+    window.WebSocket = createInterceptedWebSocket(window.WebSocket, managedCognitiveService);
   }
 
   return ({ referenceGrammarID } = {}) => {

@@ -31,6 +31,8 @@ import renderMarkdown from '../markdown/renderMarkdown';
 import coreRenderWebChat from '../renderWebChat';
 import { type AdaptiveCardsPackage } from '../types/AdaptiveCardsPackage';
 import FullBundleStyleOptions, { StrictFullBundleStyleOptions } from '../types/FullBundleStyleOptions';
+import createInterceptedFetch from '../createInterceptedFetch';
+import createInterceptedWebSocket from '../createInterceptedWebSocket';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
@@ -108,6 +110,8 @@ export {
   createAdaptiveCardsAttachmentMiddleware,
   createCognitiveServicesSpeechServicesPonyfillFactory,
   createDirectLineSpeechAdapters,
+  createInterceptedFetch,
+  createInterceptedWebSocket,
   createStyleSet,
   patchedHooks as hooks,
   ReactWebChat,
