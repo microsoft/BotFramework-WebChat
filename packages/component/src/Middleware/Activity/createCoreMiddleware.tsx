@@ -23,7 +23,8 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
           type === 'invoke' ||
           // Do not show content for contentless livestream interims, or finalized activity without content.
           (type === 'typing' &&
-            (getActivityLivestreamingMetadata(activity)?.type === 'contentless' || !activity['text'])) ||
+            (getActivityLivestreamingMetadata(activity)?.type === 'contentless' ||
+              !(activity['text'] || activity.attachments?.length > 0))) ||
           (type === 'message' &&
             // Do not show postback
             (activity.channelData?.postBack ||

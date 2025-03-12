@@ -1,4 +1,6 @@
 import {
+  any,
+  array,
   integer,
   literal,
   minValue,
@@ -15,11 +17,14 @@ import {
 
 import { type WebChatActivity } from '../types/WebChatActivity';
 
+const EMPTY_ARRAY = Object.freeze([]);
+
 const streamSequenceSchema = pipe(number(), integer(), minValue(1));
 
 const livestreamingActivitySchema = union([
   // Interim.
   object({
+    attachments: optional(array(any()), EMPTY_ARRAY),
     channelData: object({
       // "streamId" is optional for the very first activity in the session.
       streamId: optional(undefinedable(string())),
@@ -33,6 +38,7 @@ const livestreamingActivitySchema = union([
   }),
   // Informative message.
   object({
+    attachments: optional(array(any()), EMPTY_ARRAY),
     channelData: object({
       // "streamId" is optional for the very first activity in the session.
       streamId: optional(undefinedable(string())),
@@ -46,6 +52,7 @@ const livestreamingActivitySchema = union([
   }),
   // Conclude with a message.
   object({
+    attachments: optional(array(any()), EMPTY_ARRAY),
     channelData: object({
       // "streamId" is required for the final activity in the session.
       // The final activity must not be the sole activity in the session.
@@ -54,11 +61,12 @@ const livestreamingActivitySchema = union([
     }),
     id: string(),
     // If "text" is empty, it represents "regretting" the livestream.
-    text: string(),
+    text: optional(undefinedable(string())),
     type: literal('message')
   }),
   // Conclude without a message.
   object({
+    attachments: optional(array(any()), EMPTY_ARRAY),
     channelData: object({
       // "streamId" is required for the final activity in the session.
       // The final activity must not be the sole activity in the session.
@@ -114,7 +122,7 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
         : {
             sequenceNumber: output.channelData.streamSequence,
             sessionId,
-            type: !output.text
+            type: !(output.text || output.attachments?.length)
               ? 'contentless'
               : output.channelData.streamType === 'informative'
                 ? 'informative message'
