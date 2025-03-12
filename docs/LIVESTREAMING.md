@@ -385,3 +385,9 @@ Bottomline: we understand the bandwidth usage could be large. But the benefits o
 - To conclude a livestream without any contents, send the final message with `type` set to `typing`, with `text` either unset or set to an empty string
    - For best compatibility, bot should not use `type` of `message` with empty `text` field
    - Some systems cannot handle message activity without content
+
+## Frequently asked questions
+
+### Why an activity is not part of the livestream?
+
+Please verify the activity payload against the logic in [this file](https://github.com/microsoft/BotFramework-WebChat/blob/main/packages/core/src/utils/getActivityLivestreamingMetadata.ts). If the result is `undefined`, the activity is not part of a livestream. They could be missing required fields or failed some type validations.
