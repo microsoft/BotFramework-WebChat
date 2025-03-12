@@ -46,6 +46,12 @@ For better UX, the informative message should be a prepared message with very lo
 
 Ephemeral message means the content should only be available for a limited time and should not be considered final. Interim activities are naturally ephemeral message.
 
+### Concluded livestream
+
+> Also known as: finalized livestream.
+
+When a livestream is finished, it will be closed for future updates. The said livestream is a concluded livestream.
+
 ### Bot vs. copilot
 
 > This is _not_ an official statement from Microsoft.
@@ -188,6 +194,9 @@ Notes:
 - `attachments` field is not set or is an empty array
 - Web Chat will show a typing indicator
    - The typing indicator will always appear until this livestream is concluded
+- Only activity without `text` and `attachments` are considered contentless activity
+   - Activities filtered out by activity and attachment middleware are not considered contentless and will not show typing indicators
+      - This behavior may change in the future, middleware may be taken into account when considering an activity is contentless or not
 
 Final activity can be contentless. Upon the conclusion of the livestream with a contentless activity, message bubble related to the livestream will be removed. This is also called "regretting the livestream" and allows the bot to erase the response before concluding it.
 
