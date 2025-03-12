@@ -134,6 +134,44 @@ describe('setup', () => {
           test('should not call fn()', () => expect(fn).toHaveBeenCalledTimes(4));
           test('return value should be undefined', () => expect(useReduceActivities).toHaveLastReturnedWith(undefined));
         });
+
+        describe('when the third activity is being replaced', () => {
+          let fourthActivity: WebChatActivity;
+
+          beforeEach(() => {
+            fourthActivity = { ...ACTIVITY_TEMPLATE, id: 'a-00004', text: 'Good morning!' };
+
+            useActivities.mockImplementationOnce(() => [[firstActivity, fourthActivity, secondActivity]]);
+
+            renderResult.rerender(<HookApp fn={fn} />);
+          });
+
+          describe('fn() should have been called', () => {
+            // It should call 2 more times because the first one should be from cache.
+            test('6 times in total', () => expect(fn).toHaveBeenCalledTimes(6));
+
+            test('with the fourth activity on 5rd call', () =>
+              expect(fn).toHaveBeenNthCalledWith(
+                5,
+                { maxText: 'Aloha!' },
+                fourthActivity,
+                1,
+                expect.arrayContaining([])
+              ));
+
+            test('with the second activity on 6th call', () =>
+              expect(fn).toHaveBeenNthCalledWith(
+                6,
+                { maxText: 'Good morning!' },
+                secondActivity,
+                2,
+                expect.arrayContaining([])
+              ));
+
+            test('return value should be derived from the second activity', () =>
+              expect(useReduceActivities).toHaveLastReturnedWith({ maxText: 'Hello, World!' }));
+          });
+        });
       });
 
       describe('when the first activity is removed', () => {

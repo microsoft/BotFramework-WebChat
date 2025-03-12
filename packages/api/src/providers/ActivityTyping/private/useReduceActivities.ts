@@ -16,11 +16,12 @@ export default function useReduceActivities<T>(
     (state = Object.freeze([])) => {
       let changed = activities.length !== state.length;
       let prevValue: T | undefined;
+      let shouldRecompute = false;
 
       const nextState = activities.map<Entry<T>>((activity, index) => {
         const entry = state[+index];
 
-        if (Object.is(entry?.activity, activity)) {
+        if (!shouldRecompute && Object.is(entry?.activity, activity)) {
           prevValue = entry?.value;
 
           // Skips the activity if it has been reduced in the past render loop.
@@ -28,6 +29,7 @@ export default function useReduceActivities<T>(
         }
 
         changed = true;
+        shouldRecompute = true;
 
         return Object.freeze({
           activity,
