@@ -11,6 +11,8 @@ let consoleWarns;
 let createCognitiveServicesSpeechServicesPonyfillFactory;
 let createSpeechServicesPonyfill;
 let originalConsole;
+let originalFetch;
+let originalWebSocket;
 
 beforeEach(() => {
   jest.mock('web-speech-cognitive-services', () => ({
@@ -35,6 +37,11 @@ beforeEach(() => {
     ...console,
     warn: text => consoleWarns.push(text)
   };
+
+  originalFetch = window.fetch;
+  originalWebSocket = window.WebSocket;
+  window.fetch = jest.fn();
+  window.WebSocket = jest.fn();
 
   createSpeechServicesPonyfill = require('web-speech-cognitive-services').createSpeechServicesPonyfill;
   createCognitiveServicesSpeechServicesPonyfillFactory =
@@ -63,7 +70,8 @@ beforeEach(() => {
 
 afterEach(() => {
   console = originalConsole;
-
+  window.fetch = originalFetch;
+  window.WebSocket = originalWebSocket;
   jest.resetModules();
 });
 
@@ -179,4 +187,19 @@ test('unsupported environment with audioConfig', () => {
 
   expect(consoleWarns).toHaveProperty('length', 0);
   expect(createSpeechServicesPonyfill.mock.calls[0][0].audioConfig).toBe(audioConfig);
+});
+
+test('should replace window.fetch and window.WebSocket when managedCognitiveService is provided', () => {
+  const managedCognitiveService = {
+    hostname: 'example.com',
+    directlineToken: 'test-token'
+  };
+
+  createCognitiveServicesSpeechServicesPonyfillFactory({
+    credentials: {},
+    managedCognitiveService
+  });
+
+  expect(window.fetch).not.toBe(originalFetch);
+  expect(window.WebSocket).not.toBe(originalWebSocket);
 });
