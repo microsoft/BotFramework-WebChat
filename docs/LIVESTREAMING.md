@@ -168,7 +168,7 @@ Notes:
 
 > New since 2025-02-25.
 
-Activities in a livestream can be empty (a.k.a. contentless activity). Web Chat will show typing indicator in lieu of message bubble.
+Traditionally, no bubbles will show for activities which do not have any text content or attachments, they are called contentless activity. For contentless activity in livestream, Web Chat will show typing indicator in lieu of message bubble.
 
 Contentless activities can appear in all phase of a livestream, including: start, middle, and end of the livestream.
 
@@ -185,10 +185,11 @@ Contentless activities can appear in all phase of a livestream, including: start
 Notes:
 
 - `text` field can be either unset or an empty string
+- `attachments` field is not set or is an empty array
 - Web Chat will show a typing indicator
    - The typing indicator will always appear until this livestream is concluded
 
-Final activity can be contentless. Upon the conclusion of a livestream with a contentless activity, Web Chat will remove the message bubble if it was previously shown.
+Final activity can be contentless. Upon the conclusion of the livestream with a contentless activity, message bubble related to the livestream will be removed. This is also called "regretting the livestream" and allows the bot to erase the response before concluding it.
 
 ```json
 {
@@ -205,10 +206,10 @@ Notes:
 - `text` field can be either unset or an empty string
 - `type` should be `typing`
    - In some systems, activities with `type` of `message` requires `text` field to also be set
-   - For best compatibility, we recommend setting the `type` to `typing`
-- If message bubble was shown for this livestream, it will be removed
-   - Traditionally, no bubbles will show when activities do not contains any visible contents
-- If typing indicator was shown for this livestream, it will be removed
+   - For best compatibility, we recommend setting the `type` to `typing` and `text` field unset
+- If message bubble was shown, it will be removed
+   - Traditionally, no bubbles will show for contentless activity
+- If typing indicator was shown, it will be removed
 
 ## Supportability
 
