@@ -50,7 +50,7 @@ const ActivityTypingComposer = ({ children }: Props) => {
       }
 
       // A normal message activity, or final activity (which could be "message" or "typing"), will remove the typing indicator.
-      const receivedAt = activity.channelData.webChat.receivedAt || Date.now();
+      const receivedAt = activity.channelData?.webChat?.receivedAt || Date.now();
 
       const livestreamingMetadata = getActivityLivestreamingMetadata(activity);
       const typingState = new Map(prevTypingState);
