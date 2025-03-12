@@ -1,7 +1,7 @@
 /* global process:readonly */
 import 'core-js/features/object/entries.js';
 
-import createAdapters from './createAdapters';
+import createAdapters from './createAdapters.mjs';
 
 const buildTool = process.env.build_tool;
 const moduleFormat = process.env.module_format;

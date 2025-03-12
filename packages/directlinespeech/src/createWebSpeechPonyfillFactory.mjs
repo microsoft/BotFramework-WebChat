@@ -3,11 +3,11 @@
 import { AbortController } from 'abort-controller';
 import { createSpeechRecognitionPonyfillFromRecognizer } from 'web-speech-cognitive-services';
 
-import createTaskQueue from './createTaskQueue';
+import createTaskQueue from './createTaskQueue.mjs';
 import EventTarget, { Event, getEventAttributeValue, setEventAttributeValue } from 'event-target-shim';
-import playCognitiveServicesStream from './playCognitiveServicesStream';
-import playWhiteNoise from './playWhiteNoise';
-import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtterance';
+import playCognitiveServicesStream from './playCognitiveServicesStream.mjs';
+import playWhiteNoise from './playWhiteNoise.mjs';
+import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtterance.mjs';
 
 export default function ({
   audioContext,

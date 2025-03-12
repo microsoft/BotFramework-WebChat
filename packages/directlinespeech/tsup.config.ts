@@ -16,7 +16,7 @@ const resolveCognitiveServicesToES2015 = {
 const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
-    'botframework-directlinespeech-sdk': './src/index.js'
+    'botframework-directlinespeech-sdk': './src/index.mjs'
   },
   env: {
     ...baseConfig.env,
@@ -46,7 +46,7 @@ export default defineConfig([
     dts: false,
     entry: {
       [process.env.NODE_ENV === 'production' ? 'directlinespeech.production.min' : 'directlinespeech.development']:
-        './src/index.js'
+        './src/index.mjs'
     },
     env: {
       ...config.env,
