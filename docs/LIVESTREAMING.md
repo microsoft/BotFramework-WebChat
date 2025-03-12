@@ -50,7 +50,7 @@ Ephemeral message means the content should only be available for a limited time 
 
 > Also known as: finalized livestream.
 
-When a livestream is finished, it will be closed for future updates. The said livestream is a concluded livestream.
+When a livestream has finished, it will be marked as closed and sealed against future updates. The said livestream is a concluded livestream.
 
 ### Bot vs. copilot
 
