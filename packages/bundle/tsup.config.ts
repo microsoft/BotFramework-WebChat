@@ -46,7 +46,11 @@ const config: typeof baseConfig = {
     'web-speech-cognitive-services',
     // Belows are the dependency chain related to "regex" where it is named export-only and does not work on Webpack 4/PPUX (CJS cannot import named export).
     // Webpack 4: "Can't import the named export 'rewrite' from non EcmaScript module (only default export is available)"
-    'shiki' // shiki -> @shikijs/core -> @shikijs/engine-javascript -> regex
+    'shiki', // shiki -> @shikijs/core -> @shikijs/engine-javascript -> regex
+    // Issues related to Webpack 4 when it tries to statically analyze dependencies.
+    // The way `microsoft-cognitiveservices-speech-sdk` imported the `uuid` package (in their `Guid.js`) is causing esbuild/tsup to proxy require() into __require() for dynamic loading.
+    // Webpack 4 cannot statically analyze the code and failed.
+    'uuid'
   ]
 };
 
