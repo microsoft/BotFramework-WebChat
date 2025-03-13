@@ -49,7 +49,7 @@ const config: typeof baseConfig = {
     'shiki', // shiki -> @shikijs/core -> @shikijs/engine-javascript -> regex
     // Issues related to Webpack 4 when it tries to statically analyze dependencies.
     // The way `microsoft-cognitiveservices-speech-sdk` imported the `uuid` package (in their `Guid.js`) is causing esbuild/tsup to proxy require() into __require() for dynamic loading.
-    // Webpack 4 cannot statically analyze the code and failed.
+    // Webpack 4 cannot statically analyze the code and failed with error "Critical dependency: require function is used in a way in which dependencies cannot be statically extracted".
     'uuid'
   ]
 };
