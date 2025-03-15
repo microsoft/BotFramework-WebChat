@@ -1,4 +1,4 @@
-import { type ActivityMiddleware, type StyleOptions } from 'botframework-webchat-api';
+import { type ActivityMiddleware, type StyleOptions, type TypingIndicatorMiddleware } from 'botframework-webchat-api';
 import { DecoratorComposer, DecoratorMiddleware } from 'botframework-webchat-api/decorator';
 import { Components } from 'botframework-webchat-component';
 import { WebChatDecorator } from 'botframework-webchat-component/decorator';
@@ -6,13 +6,14 @@ import React, { memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';
 import ActivityLoader from '../components/activity/ActivityLoader';
+import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
 import { isPreChatMessageActivity, PreChatMessageActivity } from '../components/preChatActivity';
 import { PrimarySendBox } from '../components/sendBox';
 import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
+import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
 import { createStyles } from '../styles';
 import VariantComposer, { VariantList } from './VariantComposer';
-import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
 
 const { ThemeProvider } = Components;
 
@@ -55,6 +56,10 @@ const fluentStyleOptions: StyleOptions = Object.freeze({
   feedbackActionsPlacement: 'activity-actions'
 });
 
+const typingIndicatorMiddleware = Object.freeze([
+  () => () => () => <SlidingDotsTypingIndicator />
+] satisfies TypingIndicatorMiddleware[]);
+
 const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
   <VariantComposer variant={variant}>
     <WebChatTheme>
@@ -64,6 +69,7 @@ const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
           sendBoxMiddleware={sendBoxMiddleware}
           styleOptions={fluentStyleOptions}
           styles={styles}
+          typingIndicatorMiddleware={typingIndicatorMiddleware}
         >
           <WebChatDecorator>
             <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
