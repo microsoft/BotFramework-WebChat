@@ -12,7 +12,10 @@ function SlidingDotsTypingIndicator() {
   const variantClassName = useVariantClassName(classNames);
 
   return (
-    <div className={cx(classNames['sliding-dots-typing-indicator'], variantClassName)} data-testid={testIds.typingIndicator}>
+    <div
+      className={cx(classNames['sliding-dots-typing-indicator'], variantClassName)}
+      data-testid={testIds.typingIndicator}
+    >
       <SlidingDots className={cx(classNames['sliding-dots-typing-indicator__image'])} />
     </div>
   );

@@ -1,21 +1,24 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 
-type SlidingDotsProps = {
+type SlidingDotsProps = Readonly<{
   className?: string | undefined;
-};
+}>;
 
 function SlidingDots({ className }: SlidingDotsProps) {
+  const id = useMemo(() => `webchat__sliding-dots--${crypto.randomUUID()}`, []);
+
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
       className={className}
-      role="presentation"
-      width="400"
       height="20"
+      role="presentation"
       viewBox="0 0 400 20"
+      width="400"
+      xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <linearGradient id="a" x1="0" x2="100%" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+        {/* eslint-disable-next-line react/forbid-dom-props */}
+        <linearGradient gradientUnits="userSpaceOnUse" id={id} x1="0" x2="100%" y1="0" y2="0">
           <stop offset="0%">
             <animate
               attributeName="stop-color"
@@ -45,7 +48,7 @@ function SlidingDots({ className }: SlidingDotsProps) {
           </stop>
         </linearGradient>
       </defs>
-      <g fill="url(#a)">
+      <g fill={`url(#${id})`}>
         <rect height="20" rx="10">
           <animate attributeName="x" dur="2s" keyTimes="0;0.5;0.66;1" repeatCount="indefinite" values="26;26;0;0" />
           <animate
@@ -155,7 +158,7 @@ function SlidingDots({ className }: SlidingDotsProps) {
           />
           <animate attributeName="opacity" dur="2s" keyTimes="0;0.5;0.66;1" repeatCount="indefinite" values="0;0;1;1" />
         </rect>
-        <rect width="20" height="20" rx="10">
+        <rect height="20" rx="10" width="20">
           <animate
             attributeName="x"
             dur="2s"
