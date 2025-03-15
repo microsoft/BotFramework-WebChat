@@ -59,6 +59,11 @@
         // THEN: Should show typing indicator.
         await waitFor(() => expect(pageElements.typingIndicator()).toBeTruthy());
 
+        const svg = pageElements.typingIndicator().querySelector('svg');
+
+        svg?.pauseAnimations();
+        svg?.setCurrentTime(0);
+
         // THEN: Should match snapshot.
         await host.snapshot('local');
 

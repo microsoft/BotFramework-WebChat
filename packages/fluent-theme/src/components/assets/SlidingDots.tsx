@@ -1,14 +1,173 @@
 import React, { memo } from 'react';
 
-const slidingDotsURL =
-  'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCA0MDAgMjAiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYSIgeDE9IjAiIHgyPSIxMDAlIiB5MT0iMCIgeTI9IjAiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBvZmZzZXQ9IjAlIj48YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJzdG9wLWNvbG9yIiBkdXI9IjJzIiBrZXlUaW1lcz0iMDswLjI7MC4zMzswLjU7MC42NjswLjg7MSIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIHZhbHVlcz0iI2FkNWFlMTsjYWQ1YWUxOyMwRTk0RTE7IzBFOTRFMTsjNjY5ZmMyOyM2NjlmYzI7I2FkNWFlMSIvPjwvc3RvcD48c3RvcCBvZmZzZXQ9IjUwJSI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ic3RvcC1jb2xvciIgZHVyPSIycyIga2V5VGltZXM9IjA7MC4yOzAuMzM7MC41OzAuNjY7MC44OzEiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiB2YWx1ZXM9IiNlOTYxOGQ7I2U5NjE4ZDsjNTdBQjgyOyM1N0FCODI7IzYzNzdlMDsjNjM3N2UwOyNlOTYxOGQiLz48L3N0b3A+PHN0b3Agb2Zmc2V0PSIxMDAlIj48YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJzdG9wLWNvbG9yIiBkdXI9IjJzIiBrZXlUaW1lcz0iMDswLjI7MC4zMzswLjU7MC42NjswLjg7MSIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIHZhbHVlcz0iI2ZkOWU1ZjsjZmQ5ZTVmOyNDNkMyMjU7I0M2QzIyNTsjOWI4MGVjOyM5YjgwZWM7I2ZkOWU1ZiIvPjwvc3RvcD48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48ZyBmaWxsPSJ1cmwoI2EpIj48cmVjdCBoZWlnaHQ9IjIwIiByeD0iMTAiPjxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9IngiIGR1cj0iMnMiIGtleVRpbWVzPSIwOzAuNTswLjY2OzEiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiB2YWx1ZXM9IjI2OzI2OzA7MCIvPjxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9IndpZHRoIiBkdXI9IjJzIiBrZXlUaW1lcz0iMDswLjI7MC4zMzswLjU7MC42NjsxIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgdmFsdWVzPSIyMDsyMDszMDszMDsyMDsyMCIvPjxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9Im9wYWNpdHkiIGR1cj0iMnMiIGtleVRpbWVzPSIwOzAuNTswLjY2OzEiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiB2YWx1ZXM9IjE7MTswOzAiLz48L3JlY3Q+PHJlY3QgaGVpZ2h0PSIyMCIgcng9IjEwIj48YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJ4IiBkdXI9IjJzIiBrZXlUaW1lcz0iMDswLjI7MC4zMzswLjU7MC42NjswLjg7MSIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIHZhbHVlcz0iNjI7NjI7NzI7NzI7MjY7MjY7MCIvPjxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9IndpZHRoIiBkdXI9IjJzIiBrZXlUaW1lcz0iMDswLjI7MC4zMzswLjU7MC42NjswLjg7MSIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIHZhbHVlcz0iMTA0OzEwNDsyMDsyMDs3MDs3MDsyMCIvPjxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9Im9wYWNpdHkiIGR1cj0iMnMiIGtleVRpbWVzPSIwOzAuODsxIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgdmFsdWVzPSIxOzE7MCIvPjwvcmVjdD48cmVjdCBoZWlnaHQ9IjIwIiByeD0iMTAiPjxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9IngiIGR1cj0iMnMiIGtleVRpbWVzPSIwOzAuMjswLjMzOzAuNTswLjY2OzAuODsxIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgdmFsdWVzPSIxODI7MTgyOzEwODsxMDg7MTEyOzExMjsyNiIvPjxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9IndpZHRoIiBkdXI9IjJzIiBrZXlUaW1lcz0iMDswLjI7MC4zMzswLjU7MC42NjsxIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgdmFsdWVzPSIyMDsyMDs2MDs2MDsyMDsyMCIvPjwvcmVjdD48cmVjdCBoZWlnaHQ9IjIwIiByeD0iMTAiPjxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9IngiIGR1cj0iMnMiIGtleVRpbWVzPSIwOzAuMjswLjMzOzAuNTswLjY2OzAuODsxIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgdmFsdWVzPSIyMTg7MjE4OzE4NDsxODQ7MTQ4OzE0ODs2MiIvPjxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9IndpZHRoIiBkdXI9IjJzIiBrZXlUaW1lcz0iMDswLjI7MC4zMzswLjU7MC42NjswLjg7MSIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIHZhbHVlcz0iNjA7NjA7ODA7ODA7NDA7NDA7MTA0Ii8+PC9yZWN0PjxyZWN0IGhlaWdodD0iMjAiIHJ4PSIxMCI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ieCIgZHVyPSIycyIga2V5VGltZXM9IjA7MC4yOzAuMzM7MC41OzAuNjY7MC44OzEiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiB2YWx1ZXM9IjI5NDsyOTQ7MjgwOzI4MDsyMDQ7MjA0OzE4MiIvPjxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9IndpZHRoIiBkdXI9IjJzIiBrZXlUaW1lcz0iMDswLjI7MC4zMzswLjU7MC42NjswLjg7MSIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIHZhbHVlcz0iNDA7NDA7MjA7MjA7ODA7ODA7MjAiLz48L3JlY3Q+PHJlY3QgaGVpZ2h0PSIyMCIgcng9IjEwIj48YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJ4IiBkdXI9IjJzIiBrZXlUaW1lcz0iMDswLjI7MC4zMzswLjU7MC42NjswLjg7MSIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIHZhbHVlcz0iMzUwOzM1MDszMTY7MzE2OzMwMDszMDA7MjE4Ii8+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0id2lkdGgiIGR1cj0iMnMiIGtleVRpbWVzPSIwOzAuMjswLjMzOzAuNTswLjY2OzAuODsxIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgdmFsdWVzPSIyMDsyMDs2MDs2MDsyMDsyMDs2MCIvPjwvcmVjdD48cmVjdCBoZWlnaHQ9IjIwIiByeD0iMTAiPjxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9IngiIGR1cj0iMnMiIGtleVRpbWVzPSIwOzAuMjswLjMzOzAuNTswLjY2OzAuODsxIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgdmFsdWVzPSIzODY7Mzg2OzM5MjszOTI7MzM2OzMzNjsyOTQiLz48YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJ3aWR0aCIgZHVyPSIycyIga2V5VGltZXM9IjA7MC41OzAuNjY7MSIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIHZhbHVlcz0iMjA7MjA7NDA7NDAiLz48YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJvcGFjaXR5IiBkdXI9IjJzIiBrZXlUaW1lcz0iMDswLjU7MC42NjsxIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgdmFsdWVzPSIwOzA7MTsxIi8+PC9yZWN0PjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgcng9IjEwIj48YW5pbWF0ZSBhdHRyaWJ1dGVOYW1lPSJ4IiBkdXI9IjJzIiBrZXlUaW1lcz0iMDswLjI7MC4zMzswLjU7MC42NjswLjg7MSIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIHZhbHVlcz0iNDIyOzQyMjs0Mjg7NDI4OzM5MjszOTI7MzUwIi8+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0ib3BhY2l0eSIgZHVyPSIycyIga2V5VGltZXM9IjA7MC44OzEiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiB2YWx1ZXM9IjA7MDsxIi8+PC9yZWN0PjwvZz48L3N2Zz4=';
-
 type SlidingDotsProps = {
   className?: string | undefined;
 };
 
 function SlidingDots({ className }: SlidingDotsProps) {
-  return <img alt="" className={className} role="presentation" src={slidingDotsURL} />;
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      role="presentation"
+      width="400"
+      height="20"
+      viewBox="0 0 400 20"
+    >
+      <defs>
+        <linearGradient id="a" x1="0" x2="100%" y1="0" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%">
+            <animate
+              attributeName="stop-color"
+              dur="2s"
+              keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+              repeatCount="indefinite"
+              values="#ad5ae1;#ad5ae1;#0E94E1;#0E94E1;#669fc2;#669fc2;#ad5ae1"
+            />
+          </stop>
+          <stop offset="50%">
+            <animate
+              attributeName="stop-color"
+              dur="2s"
+              keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+              repeatCount="indefinite"
+              values="#e9618d;#e9618d;#57AB82;#57AB82;#6377e0;#6377e0;#e9618d"
+            />
+          </stop>
+          <stop offset="100%">
+            <animate
+              attributeName="stop-color"
+              dur="2s"
+              keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+              repeatCount="indefinite"
+              values="#fd9e5f;#fd9e5f;#C6C225;#C6C225;#9b80ec;#9b80ec;#fd9e5f"
+            />
+          </stop>
+        </linearGradient>
+      </defs>
+      <g fill="url(#a)">
+        <rect height="20" rx="10">
+          <animate attributeName="x" dur="2s" keyTimes="0;0.5;0.66;1" repeatCount="indefinite" values="26;26;0;0" />
+          <animate
+            attributeName="width"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;1"
+            repeatCount="indefinite"
+            values="20;20;30;30;20;20"
+          />
+          <animate attributeName="opacity" dur="2s" keyTimes="0;0.5;0.66;1" repeatCount="indefinite" values="1;1;0;0" />
+        </rect>
+        <rect height="20" rx="10">
+          <animate
+            attributeName="x"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+            repeatCount="indefinite"
+            values="62;62;72;72;26;26;0"
+          />
+          <animate
+            attributeName="width"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+            repeatCount="indefinite"
+            values="104;104;20;20;70;70;20"
+          />
+          <animate attributeName="opacity" dur="2s" keyTimes="0;0.8;1" repeatCount="indefinite" values="1;1;0" />
+        </rect>
+        <rect height="20" rx="10">
+          <animate
+            attributeName="x"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+            repeatCount="indefinite"
+            values="182;182;108;108;112;112;26"
+          />
+          <animate
+            attributeName="width"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;1"
+            repeatCount="indefinite"
+            values="20;20;60;60;20;20"
+          />
+        </rect>
+        <rect height="20" rx="10">
+          <animate
+            attributeName="x"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+            repeatCount="indefinite"
+            values="218;218;184;184;148;148;62"
+          />
+          <animate
+            attributeName="width"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+            repeatCount="indefinite"
+            values="60;60;80;80;40;40;104"
+          />
+        </rect>
+        <rect height="20" rx="10">
+          <animate
+            attributeName="x"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+            repeatCount="indefinite"
+            values="294;294;280;280;204;204;182"
+          />
+          <animate
+            attributeName="width"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+            repeatCount="indefinite"
+            values="40;40;20;20;80;80;20"
+          />
+        </rect>
+        <rect height="20" rx="10">
+          <animate
+            attributeName="x"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+            repeatCount="indefinite"
+            values="350;350;316;316;300;300;218"
+          />
+          <animate
+            attributeName="width"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+            repeatCount="indefinite"
+            values="20;20;60;60;20;20;60"
+          />
+        </rect>
+        <rect height="20" rx="10">
+          <animate
+            attributeName="x"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+            repeatCount="indefinite"
+            values="386;386;392;392;336;336;294"
+          />
+          <animate
+            attributeName="width"
+            dur="2s"
+            keyTimes="0;0.5;0.66;1"
+            repeatCount="indefinite"
+            values="20;20;40;40"
+          />
+          <animate attributeName="opacity" dur="2s" keyTimes="0;0.5;0.66;1" repeatCount="indefinite" values="0;0;1;1" />
+        </rect>
+        <rect width="20" height="20" rx="10">
+          <animate
+            attributeName="x"
+            dur="2s"
+            keyTimes="0;0.2;0.33;0.5;0.66;0.8;1"
+            repeatCount="indefinite"
+            values="422;422;428;428;392;392;350"
+          />
+          <animate attributeName="opacity" dur="2s" keyTimes="0;0.8;1" repeatCount="indefinite" values="0;0;1" />
+        </rect>
+      </g>
+    </svg>
+  );
 }
 
 export default memo(SlidingDots);

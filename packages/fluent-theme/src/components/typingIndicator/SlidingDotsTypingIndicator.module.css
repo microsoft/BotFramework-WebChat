@@ -6,4 +6,5 @@
 
 :global(.webchat-fluent) .sliding-dots-typing-indicator__image {
   height: 6px;
+  width: auto;
 }
