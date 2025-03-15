@@ -11,8 +11,19 @@
   </head>
   <body>
     <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react-dictate-button/internal": "https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs"
+        }
+      }
+    </script>
     <script type="module">
-      const isLivestream = new URL(location).searchParams.get('livestream');
+      import { waitFor } from '@testduet/wait-for';
+
+      const isLivestream = new URL(location).searchParams.has('livestream');
 
       run(async function () {
         const {
@@ -30,7 +41,7 @@
 
         await pageConditions.uiConnected();
 
-        // WHEN: Bot send a normal message.
+        // WHEN: Bot send either a contentless livestream or typing activity.
         await directLine.emulateIncomingActivity({
           ...(isLivestream
             ? {
@@ -44,6 +55,38 @@
           id: 'a-00001',
           type: 'typing'
         });
+
+        // THEN: Should show typing indicator.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeTruthy());
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: Bot send either a contentless livestream or typing activity.
+        await directLine.emulateIncomingActivity({
+          ...(isLivestream
+            ? {
+                channelData: {
+                  streamId: 'a-00001',
+                  streamType: 'final'
+                }
+              }
+            : {
+                channelData: {
+                  webChat: {
+                    styleOptions: { typingAnimationDuration: 0 }
+                  }
+                }
+              }),
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00001',
+          type: 'typing'
+        });
+
+        // THEN: Should hide typing indicator.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeFalsy());
 
         // THEN: Should match snapshot.
         await host.snapshot('local');

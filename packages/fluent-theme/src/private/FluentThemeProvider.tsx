@@ -57,7 +57,10 @@ const fluentStyleOptions: StyleOptions = Object.freeze({
 });
 
 const typingIndicatorMiddleware = Object.freeze([
-  () => () => () => <SlidingDotsTypingIndicator />
+  () =>
+    next =>
+    (...args) =>
+      args[0].visible ? <SlidingDotsTypingIndicator /> : next(...args)
 ] satisfies TypingIndicatorMiddleware[]);
 
 const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
