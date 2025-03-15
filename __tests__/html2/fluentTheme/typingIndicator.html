@@ -41,6 +41,14 @@
 
         await pageConditions.uiConnected();
 
+        // WHEN: Receive a bot message.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00001',
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
         // WHEN: Bot send either a contentless livestream or typing activity.
         await directLine.emulateIncomingActivity({
           ...(isLivestream
@@ -52,7 +60,7 @@
               }
             : {}),
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 'a-00001',
+          id: 'a-00002',
           type: 'typing'
         });
 
@@ -74,7 +82,7 @@
           ...(isLivestream
             ? {
                 channelData: {
-                  streamId: 'a-00001',
+                  streamId: 'a-00002',
                   streamType: 'final'
                 }
               }
@@ -86,7 +94,7 @@
                 }
               }),
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 'a-00001',
+          id: 'a-00002',
           type: 'typing'
         });
 
