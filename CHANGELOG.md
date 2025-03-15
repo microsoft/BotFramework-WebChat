@@ -83,6 +83,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Resolved [#2661](https://github.com/microsoft/BotFramework-WebChat/issues/2661) and [#5352](https://github.com/microsoft/BotFramework-WebChat/issues/5352). Added speech recognition continuous mode with barge-in support, in PR [#5426](https://github.com/microsoft/BotFramework-WebChat/pull/5426), by [@RushikeshGavali](https://github.com/RushikeshGavali) and [@compulim](https://github.com/compulim)
    - Set `styleOptions.speechRecognitionContinuous` to `true` with a Web Speech API provider with continuous mode support
 - Added support of [contentless activity in livestream](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/LIVESTREAMING.md#scenario-3-interim-activities-with-no-content), in PR [#5430](https://github.com/microsoft/BotFramework-WebChat/pull/5430), by [@compulim](https://github.com/compulim)
+- Added sliding dots typing indicator in Fluent theme, in PR [#5447](https://github.com/microsoft/BotFramework-WebChat/pull/5447), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
