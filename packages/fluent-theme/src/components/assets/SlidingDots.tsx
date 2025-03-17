@@ -5,7 +5,7 @@ type SlidingDotsProps = Readonly<{
 }>;
 
 function SlidingDots({ className }: SlidingDotsProps) {
-  const id = useMemo(() => `webchat__sliding-dots--${crypto.randomUUID()}`, []);
+  const id = useMemo(() => `webchat__sliding-dots-asset--${crypto.randomUUID()}`, []);
 
   return (
     <svg

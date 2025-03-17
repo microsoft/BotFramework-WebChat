@@ -32,6 +32,11 @@
           WebChat: { FluentThemeProvider, ReactWebChat }
         } = window; // Imports in UMD fashion.
 
+        // TBD: We cannot pause SMIL animation via reduced motion yet.
+        // await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+        //   features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+        // });
+
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         render(
@@ -52,7 +57,7 @@
         // WHEN: Bot send either a contentless livestream or typing activity.
         await directLine.emulateIncomingActivity({
           ...(isLivestream
-            ? {
+        ? {
                 channelData: {
                   streamSequence: 1,
                   streamType: 'streaming'
