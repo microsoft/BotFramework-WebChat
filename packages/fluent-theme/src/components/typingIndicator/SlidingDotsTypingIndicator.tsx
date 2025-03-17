@@ -1,9 +1,9 @@
+import { testIds } from 'botframework-webchat-component';
 import { useStyles } from 'botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { memo } from 'react';
 
 import { useVariantClassName } from '../../styles';
-import testIds from '../../testIds';
 import SlidingDots from '../assets/SlidingDots';
 import styles from './SlidingDotsTypingIndicator.module.css';
 
