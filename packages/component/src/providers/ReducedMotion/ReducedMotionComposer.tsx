@@ -1,5 +1,4 @@
-import React, { memo, useEffect, useMemo, type ReactNode } from 'react';
-import { useStateWithRef } from 'use-state-with-ref';
+import React, { memo, useEffect, useMemo, useState, type ReactNode } from 'react';
 
 import { type ContextOf } from '../../types/ContextOf';
 import Context from './private/Context';
@@ -12,21 +11,20 @@ type ReducedMotionComposerProps = Readonly<{
 
 const ReducedMotionComposer = memo(({ children }: ReducedMotionComposerProps) => {
   const shouldReduceMotionQueryList = useMemo(() => matchMedia?.('(prefers-reduced-motion: reduce)'), []);
-  const [shouldReduceMotion, setShouldReduceMotion, shouldReduceMotionRef] = useStateWithRef(
-    () => shouldReduceMotionQueryList?.matches
-  );
+  const [shouldReduceMotion, setShouldReduceMotion] = useState(() => shouldReduceMotionQueryList?.matches);
+
   const shouldReduceMotionState = useMemo(() => Object.freeze([shouldReduceMotion] as const), [shouldReduceMotion]);
 
   const context = useMemo<ContextType>(() => Object.freeze({ shouldReduceMotionState }), [shouldReduceMotionState]);
 
   useEffect(() => {
     const handleChange = ({ matches: shouldReduceMotion }: MediaQueryListEvent) =>
-      shouldReduceMotionRef.current === shouldReduceMotion || setShouldReduceMotion(shouldReduceMotion);
+      setShouldReduceMotion(shouldReduceMotion);
 
     shouldReduceMotionQueryList.addEventListener('change', handleChange);
 
     return () => shouldReduceMotionQueryList.removeEventListener('change', handleChange);
-  }, [setShouldReduceMotion, shouldReduceMotionQueryList, shouldReduceMotionRef]);
+  }, [setShouldReduceMotion, shouldReduceMotionQueryList]);
 
   return <Context.Provider value={context}>{children}</Context.Provider>;
 });
