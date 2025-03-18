@@ -11,15 +11,16 @@ type ReducedMotionComposerProps = Readonly<{
 
 const ReducedMotionComposer = memo(({ children }: ReducedMotionComposerProps) => {
   const shouldReduceMotionQueryList = useMemo(() => matchMedia?.('(prefers-reduced-motion: reduce)'), []);
-  const [shouldReduceMotion, setShouldReduceMotion] = useState(() => shouldReduceMotionQueryList?.matches);
+  const [shouldReduceMotion, setShouldReduceMotion] = useState<boolean>(
+    () => shouldReduceMotionQueryList?.matches ?? false
+  );
 
   const shouldReduceMotionState = useMemo(() => Object.freeze([shouldReduceMotion] as const), [shouldReduceMotion]);
 
   const context = useMemo<ContextType>(() => Object.freeze({ shouldReduceMotionState }), [shouldReduceMotionState]);
 
   useEffect(() => {
-    const handleChange = ({ matches: shouldReduceMotion }: MediaQueryListEvent) =>
-      setShouldReduceMotion(shouldReduceMotion);
+    const handleChange = ({ matches }: MediaQueryListEvent) => setShouldReduceMotion(matches);
 
     shouldReduceMotionQueryList.addEventListener('change', handleChange);
 
