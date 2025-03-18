@@ -4,6 +4,7 @@ import React from 'react';
 
 import ScreenReaderText from '../ScreenReaderText';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import testIds from '../testIds';
 import useStyleSet from '../hooks/useStyleSet';
 
 const { useDirection, useLocalizer } = hooks;
@@ -31,6 +32,7 @@ const TypingAnimation = () => {
           rootClassName,
           typingAnimationStyleSet + ''
         )}
+        data-testid={testIds.typingIndicator}
       />
     </React.Fragment>
   );

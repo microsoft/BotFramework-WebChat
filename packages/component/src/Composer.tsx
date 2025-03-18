@@ -46,6 +46,7 @@ import { type HTMLContentTransformMiddleware } from './providers/HTMLContentTran
 import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
 import { LiveRegionTwinComposer } from './providers/LiveRegionTwin';
 import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
+import ReducedMotionComposer from './providers/ReducedMotion/ReducedMotionComposer';
 import useTheme from './providers/Theme/useTheme';
 import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
 import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
@@ -462,18 +463,20 @@ const Composer = ({
       <ActivityTreeComposer>
         <StyleToEmotionObjectComposer nonce={nonce}>
           <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
-            <ComposerCore
-              extraStyleSet={extraStyleSet}
-              nonce={nonce}
-              renderMarkdown={renderMarkdown}
-              styleSet={styleSet}
-              styles={theme.styles}
-              suggestedActionsAccessKey={suggestedActionsAccessKey}
-              webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-            >
-              {children}
-              {onTelemetry && <UITracker />}
-            </ComposerCore>
+            <ReducedMotionComposer>
+              <ComposerCore
+                extraStyleSet={extraStyleSet}
+                nonce={nonce}
+                renderMarkdown={renderMarkdown}
+                styleSet={styleSet}
+                styles={theme.styles}
+                suggestedActionsAccessKey={suggestedActionsAccessKey}
+                webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+              >
+                {children}
+                {onTelemetry && <UITracker />}
+              </ComposerCore>
+            </ReducedMotionComposer>
           </HTMLContentTransformComposer>
         </StyleToEmotionObjectComposer>
       </ActivityTreeComposer>
