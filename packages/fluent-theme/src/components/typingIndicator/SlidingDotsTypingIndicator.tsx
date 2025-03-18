@@ -10,10 +10,7 @@ function SlidingDotsTypingIndicator() {
   const classNames = useStyles(styles);
 
   return (
-    <div
-      className={classNames['sliding-dots-typing-indicator']}
-      data-testid={testIds.typingIndicator}
-    >
+    <div className={classNames['sliding-dots-typing-indicator']} data-testid={testIds.typingIndicator}>
       <SlidingDots className={cx(classNames['sliding-dots-typing-indicator__image'])} />
     </div>
   );
