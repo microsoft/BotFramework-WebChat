@@ -1,7 +1,8 @@
 import { hooks } from 'botframework-webchat-component';
 import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import useAssetURL from './useAssetURL';
+
+import useAssetURL from './private/useAssetURL';
 
 const { useLocalizer, useShouldReduceMotion } = hooks;
 

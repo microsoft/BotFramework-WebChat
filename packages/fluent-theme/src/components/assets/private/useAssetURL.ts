@@ -1,5 +1,5 @@
-import { type AssetName } from './AssetName';
-import useContext from './private/useContext';
+import { type AssetName } from '../AssetName';
+import useContext from './useContext';
 
 export default function useAssetURL(assetName: AssetName): readonly [URL] {
   const urlState = useContext().urlStateMap.get(assetName);
