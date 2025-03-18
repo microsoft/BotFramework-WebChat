@@ -1,12 +1,12 @@
 import { type AssetName } from './AssetName';
 import useContext from './private/useContext';
 
-export default function useAssetURL(assetName: AssetName): URL {
-  const url = useContext().urlMap.get(assetName);
+export default function useAssetURL(assetName: AssetName): readonly [URL] {
+  const urlState = useContext().urlStateMap.get(assetName);
 
-  if (!url) {
+  if (!urlState) {
     throw new Error(`botframework-webchat-fluent-theme internal: Asset "${assetName}" was not found.`);
   }
 
-  return url;
+  return urlState;
 }

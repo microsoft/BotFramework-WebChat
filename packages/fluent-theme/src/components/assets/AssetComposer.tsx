@@ -22,7 +22,10 @@ const AssetComposer = memo(({ children }: AssetComposerProps) => {
   useEffect(() => () => URL.revokeObjectURL(slidingDotsURL), [slidingDotsURL]);
 
   const context = useMemo<ContextType>(
-    () => Object.freeze({ urlMap: new Map<AssetName, URL>([['sliding dots', new URL(slidingDotsURL)]]) }),
+    () =>
+      Object.freeze({
+        urlStateMap: new Map<AssetName, readonly [URL]>([['sliding dots', Object.freeze([new URL(slidingDotsURL)])]])
+      }),
     [slidingDotsURL]
   );
 

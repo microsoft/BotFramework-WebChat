@@ -9,9 +9,9 @@ type SlidingDotsProps = Readonly<{ className: string }>;
 
 const SlidingDots = ({ className }: SlidingDotsProps) => {
   const [shouldReduceMotion] = useShouldReduceMotion();
+  const [url] = useAssetURL('sliding dots');
   const localize = useLocalizer();
   const objectElementRef = useRef<HTMLObjectElement>(null);
-  const url = useAssetURL('sliding dots');
 
   const altText = localize('TYPING_INDICATOR_ALT');
   const shouldReduceMotionRef = useRefFrom(shouldReduceMotion);
