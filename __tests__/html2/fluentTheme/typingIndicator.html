@@ -32,10 +32,9 @@
           WebChat: { FluentThemeProvider, ReactWebChat }
         } = window; // Imports in UMD fashion.
 
-        // TBD: We cannot pause SMIL animation via reduced motion yet.
-        // await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
-        //   features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
-        // });
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+        });
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
@@ -71,11 +70,6 @@
 
         // THEN: Should show typing indicator.
         await waitFor(() => expect(pageElements.typingIndicator()).toBeTruthy());
-
-        const svg = pageElements.typingIndicator().querySelector('svg');
-
-        svg?.pauseAnimations();
-        svg?.setCurrentTime(0);
 
         // THEN: Should match snapshot.
         await host.snapshot('local');
