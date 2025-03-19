@@ -6,6 +6,7 @@ import React, { memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';
 import ActivityLoader from '../components/activity/ActivityLoader';
+import AssetComposer from '../components/assets/AssetComposer';
 import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
 import { isPreChatMessageActivity, PreChatMessageActivity } from '../components/preChatActivity';
 import { PrimarySendBox } from '../components/sendBox';
@@ -74,9 +75,11 @@ const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
           styles={styles}
           typingIndicatorMiddleware={typingIndicatorMiddleware}
         >
-          <WebChatDecorator>
-            <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
-          </WebChatDecorator>
+          <AssetComposer>
+            <WebChatDecorator>
+              <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
+            </WebChatDecorator>
+          </AssetComposer>
         </ThemeProvider>
       </TelephoneKeypadProvider>
     </WebChatTheme>
