@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react-dictate-button/internal": "https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      const isLivestream = new URL(location).searchParams.has('livestream');
+
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+        });
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        render(
+          createElement(FluentThemeProvider, {}, createElement(ReactWebChat, { directLine, store })),
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Receive a bot message.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00001',
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        // WHEN: Bot send either a contentless livestream or typing activity.
+        await directLine.emulateIncomingActivity({
+          ...(isLivestream
+        ? {
+                channelData: {
+                  streamSequence: 1,
+                  streamType: 'streaming'
+                }
+              }
+            : {}),
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00002',
+          type: 'typing'
+        });
+
+        // THEN: Should show typing indicator.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeTruthy());
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: Bot send either a contentless livestream or typing activity.
+        await directLine.emulateIncomingActivity({
+          ...(isLivestream
+            ? {
+                channelData: {
+                  streamId: 'a-00002',
+                  streamType: 'final'
+                }
+              }
+            : {
+                channelData: {
+                  webChat: {
+                    styleOptions: { typingAnimationDuration: 0 }
+                  }
+                }
+              }),
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00002',
+          type: 'typing'
+        });
+
+        // THEN: Should hide typing indicator.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeFalsy());
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

@@ -122,6 +122,7 @@ Following is the list of hooks supported by Web Chat API.
 -  [`useSendTypingIndicator`](#usesendtypingindicator)
 -  [`useSendStatusByActivityKey`](#usesendstatusbyactivitykey)
 -  [`useSetNotification`](#usesetnotification)
+-  [`useShouldReduceMotion`](#useshouldreducemotion)
 -  [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
 -  [`useStartDictate`](#usestartdictate)
 -  [`useStopDictate`](#usestopdictate)
@@ -1288,6 +1289,24 @@ This hook will return a function which can be called to add or update a notifica
 The `message` field will be processed through an internal Markdown renderer. If Markdown is provided, it is recommended to provide plain text via the `alt` field for assistive technologies.
 
 The toast UI will [debounce notifications](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/NOTIFICATION.md#postponing-changes-via-debounce) that update too frequently.
+
+## `useShouldReduceMotion`
+
+> Only available on `botframework-webchat-components` package.
+
+> New in 4.19.0.
+
+<!-- prettier-ignore-start -->
+```js
+useShouldReduceMotion(): readonly [boolean]
+```
+<!-- prettier-ignore-end -->
+
+This state hook is a helper hook that will return `true` if the browser has [reduced motion](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion) enabled, otherwise, `false`.
+
+This hook is based on [`matchMedia`](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) and provides a React hook friendly wrapper for listening to state change.
+
+If it is possible to slowdown or pause animation using CSS, always use the [CSS media feature `(prefers-reduced-motion: reduce)`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion) instead. This hook is the last resort when CSS cannot be used to stop animation, such as SMIL animation.
 
 ## `useShouldSpeakIncomingActivity`
 
