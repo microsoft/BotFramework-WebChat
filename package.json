@@ -70,7 +70,7 @@
     "precommit:typecheck:core": "cd packages && cd core && npm run precommit:typecheck",
     "precommit:typecheck:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:typecheck",
     "prepare": "husky",
-    "start": "NODE_OPTIONS=--no-deprecation concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
     "start:api": "cd packages && cd api && npm start",
     "start:bundle": "cd packages && cd bundle && npm start",
     "start:component": "cd packages && cd component && npm start",
