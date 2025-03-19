@@ -3,19 +3,14 @@ import { useStyles } from 'botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { memo } from 'react';
 
-import { useVariantClassName } from '../../styles';
 import SlidingDots from '../assets/SlidingDots';
 import styles from './SlidingDotsTypingIndicator.module.css';
 
 function SlidingDotsTypingIndicator() {
   const classNames = useStyles(styles);
-  const variantClassName = useVariantClassName(classNames);
 
   return (
-    <div
-      className={cx(classNames['sliding-dots-typing-indicator'], variantClassName)}
-      data-testid={testIds.typingIndicator}
-    >
+    <div className={classNames['sliding-dots-typing-indicator']} data-testid={testIds.typingIndicator}>
       <SlidingDots className={cx(classNames['sliding-dots-typing-indicator__image'])} />
     </div>
   );
