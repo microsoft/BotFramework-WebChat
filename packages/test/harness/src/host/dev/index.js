@@ -23,7 +23,7 @@ async function main() {
   const hostIP = await findHostIP();
   const localIP = await findLocalIP();
 
-  const service = await new ChromeServiceBuilder('./chromedriver.exe')
+  const service = await new ChromeServiceBuilder('./chromedriver')
     .addArguments('--allowed-ips', localIP)
     .setHostname(hostIP)
     .setStdio(['ignore', 'ignore', 'ignore'])
