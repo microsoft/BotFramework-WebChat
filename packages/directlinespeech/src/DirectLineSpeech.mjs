@@ -3,8 +3,8 @@
 import Observable from 'core-js/features/observable/index.js';
 import random from 'math-random';
 
-import shareObservable from './shareObservable';
-import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtterance';
+import shareObservable from './shareObservable.mjs';
+import SpeechSynthesisAudioStreamUtterance from './SpeechSynthesisAudioStreamUtterance.mjs';
 
 function randomActivityId() {
   return random().toString(36).substr(2);
