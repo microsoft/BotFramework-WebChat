@@ -207,7 +207,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Fixed copy button screen reader announcement
    - Added proper ARIA attributes to link definitions component
    - Improved focus management for scroll to end button
-- Fixed [#5439](https://github.com/microsoft/BotFramework-WebChat/issues/5439). Fixed batched livestream activities are not recognized in the same session, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+- Fixed [#5439](https://github.com/microsoft/BotFramework-WebChat/issues/5439). Fixed batched livestream activities are not recognized in the same session, in PR [#5440](https://github.com/microsoft/BotFramework-WebChat/pull/5440), by [@compulim](https://github.com/compulim)
+- Fixed [#5452](https://github.com/microsoft/BotFramework-WebChat/issues/5452). With Fluent/Copilot theme, the typing indicator padding should not be squashed, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
 
 # Removed
 

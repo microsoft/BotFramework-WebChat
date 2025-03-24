@@ -1,6 +1,7 @@
 :global(.webchat-fluent) .sliding-dots-typing-indicator {
   align-self: start;
   display: flex;
+  flex-shrink: 0;
   height: 16px;
   margin: auto var(--webchat-spacingHorizontalMNudge);
 }
