@@ -20,7 +20,6 @@
       WebChat: { FluentThemeProvider, ReactWebChat }
     } = window; // Imports in UMD fashion.
 
-    // run = fn => fn();
     run(async function () {
       const { directLine, store } = testHelpers.createDirectLineEmulator();
 
@@ -87,7 +86,13 @@
       await host.sendKeys('ARROW_UP');
       await host.sendKeys('ENTER');
       await host.snapshot('local');
-      await host.sendKeys('ENTER');
+
+      await (
+        await directLine.actPostActivity(() =>
+          host.sendKeys('ENTER')
+        )
+      ).resolveAll();
+
       await host.snapshot('local');
 
       await directLine.emulateIncomingActivity({
@@ -137,7 +142,7 @@
       });
 
       await host.snapshot('local');
-    }, { ignoreErrors: true });
+    });
   </script>
 </body>
 
