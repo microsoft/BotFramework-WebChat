@@ -1,8 +1,8 @@
 import { hooks } from 'botframework-webchat-api';
 import { useCallback } from 'react';
 
-import useCodeBlockTag from '../CustomElements/useCodeBlockTagName';
 import useHTMLContentTransformContext from './private/useHTMLContentTransformContext';
+import useCustomElementsContext from '../CustomElements/private/useCustomElementsContext';
 
 const { useLocalizer } = hooks;
 
@@ -168,7 +168,7 @@ const DEFAULT_ALLOWED_TAGS: ReadonlyMap<string, Readonly<{ attributes: ReadonlyS
 );
 
 export default function useTransformHTMLContent(): (documentFragment: DocumentFragment) => DocumentFragment {
-  const [codeBlockTagName] = useCodeBlockTag();
+  const { codeBlockTagName, registrationTagName } = useCustomElementsContext();
   const { transform } = useHTMLContentTransformContext();
 
   const localize = useLocalizer();
@@ -180,8 +180,9 @@ export default function useTransformHTMLContent(): (documentFragment: DocumentFr
         allowedTags: DEFAULT_ALLOWED_TAGS,
         codeBlockTagName,
         documentFragment,
-        externalLinkAlt
+        externalLinkAlt,
+        registrationTagName
       }),
-    [codeBlockTagName, externalLinkAlt, transform]
+    [codeBlockTagName, externalLinkAlt, registrationTagName, transform]
   );
 }

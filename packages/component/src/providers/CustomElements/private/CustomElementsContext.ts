@@ -1,6 +1,10 @@
 import { createContext } from 'react';
 
-export type CustomElementsContextType = Readonly<{ codeBlockTagName: string; codeBlockCopyButtonTagName: string }>;
+export type CustomElementsContextType = Readonly<{
+  codeBlockTagName: string;
+  codeBlockCopyButtonTagName: string;
+  registrationTagName: string;
+}>;
 
 const CustomElementsContext = createContext<CustomElementsContextType>(
   new Proxy({} as CustomElementsContextType, {

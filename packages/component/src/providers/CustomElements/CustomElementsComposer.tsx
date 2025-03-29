@@ -1,13 +1,17 @@
 import mathRandom from 'math-random';
 import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
+import { defineAsCustomElementWithPortal } from 'react-define-as-custom-element';
 
 import useReactCodeBlockClass from './customElements/CodeBlock';
 import { CodeBlockCopyButtonElement } from './customElements/CodeBlockCopyButton';
+import { ReactRegistration } from './customElements/Registration';
 import CustomElementsContext from './private/CustomElementsContext';
 
 type CustomElementsComposerProps = Readonly<{
   children?: ReactNode | undefined;
 }>;
+
+const createFullTagName = (tagName: string, hash: string) => `webchat-${hash}--${tagName}` as const;
 
 const CustomElementsComposer = ({ children }: CustomElementsComposerProps) => {
   // eslint-disable-next-line no-magic-numbers
@@ -15,7 +19,7 @@ const CustomElementsComposer = ({ children }: CustomElementsComposerProps) => {
 
   const registerCustomElement = useCallback(
     (tagName: string, customElementConstructor: CustomElementConstructor): string => {
-      const fullTagName = `webchat-${hash}--${tagName}` as const;
+      const fullTagName = createFullTagName(tagName, hash);
 
       customElements.define(
         fullTagName,
@@ -47,12 +51,29 @@ const CustomElementsComposer = ({ children }: CustomElementsComposerProps) => {
     [CodeBlockClass, registerCustomElement]
   );
 
+  const [registrationTagName, RegistrationPortal] = useMemo(() => {
+    const fullTagName = createFullTagName('registration', hash);
+
+    const { Portal } = defineAsCustomElementWithPortal(
+      ReactRegistration as any,
+      fullTagName,
+      { from: 'from' },
+      { shadowRoot: { mode: 'open' } }
+    );
+    return [fullTagName, Portal];
+  }, [hash]);
+
   const context = useMemo(
-    () => Object.freeze({ codeBlockTagName, codeBlockCopyButtonTagName }),
-    [codeBlockTagName, codeBlockCopyButtonTagName]
+    () => Object.freeze({ codeBlockTagName, codeBlockCopyButtonTagName, registrationTagName }),
+    [codeBlockTagName, codeBlockCopyButtonTagName, registrationTagName]
   );
 
-  return <CustomElementsContext.Provider value={context}>{children}</CustomElementsContext.Provider>;
+  return (
+    <CustomElementsContext.Provider value={context}>
+      <RegistrationPortal />
+      {children}
+    </CustomElementsContext.Provider>
+  );
 };
 
 export default memo(CustomElementsComposer);

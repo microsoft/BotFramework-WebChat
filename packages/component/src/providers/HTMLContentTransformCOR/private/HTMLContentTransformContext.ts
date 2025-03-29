@@ -11,6 +11,7 @@ export type HTMLContentTransformRequest = Readonly<{
   codeBlockTagName: string;
   documentFragment: DocumentFragment;
   externalLinkAlt: string;
+  registrationTagName: string;
 }>;
 
 export type HTMLContentTransformFunction = (request: HTMLContentTransformRequest) => DocumentFragment;
