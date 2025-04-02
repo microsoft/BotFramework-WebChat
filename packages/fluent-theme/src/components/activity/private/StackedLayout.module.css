@@ -1,0 +1,57 @@
+&.webchat__stacked-layout {
+  position: relative;
+  /* This is to keep screen reader text in the destinated area. */
+
+  & .webchat__stacked-layout__attachment-row,
+  & .webchat__stacked-layout__main,
+  & .webchat__stacked-layout__message-row,
+  & .webchat__stacked-layout__status {
+    display: flex;
+  }
+
+  & .webchat__stacked-layout__alignment-pad {
+    flex-shrink: 0;
+  }
+
+  & .webchat__stacked-layout__attachment {
+    width: 100%;
+  }
+
+  & .webchat__stacked-layout__avatar-gutter {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  &.webchat__stacked-layout--from-user {
+    & .webchat__stacked-layout__attachment-row,
+    & .webchat__stacked-layout__main,
+    & .webchat__stacked-layout__message-row,
+    & .webchat__stacked-layout__status {
+      flex-direction: row-reverse;
+    }
+  }
+
+  & .webchat__stacked-layout__content {
+    flex: 1;
+
+    /* This is for bottom aligning an avatar with a message bubble shorter than the avatar. */
+    /* Related to the test at activityGrouping.avatarMiddleware.atBottom.js. */
+    display: flex;
+    flex-direction: column;
+
+    /* This "overflow: hidden" is to make sure text overflow will get clipped correctly. */
+    /* Related to the test at basic.js "long URLs with keep-all". */
+    overflow: hidden;
+  }
+
+  & .webchat__stacked-layout__nub-pad {
+    flex-shrink: 0;
+  }
+}
+
+:global(.webchat-fluent) .webchat__card {
+  padding: var(--webchat-spacingHorizontalS) var(--webchat-spacingHorizontalM);
+  border-radius: var(--webchat-borderRadiusMedium);
+  border: 1px solid var(--webchat-colorNeutralStroke1);
+}
