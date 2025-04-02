@@ -35,7 +35,10 @@ const Feedback = memo(({ actions, className }: Props) => {
         postActivityRef.current({
           entities: [selectedAction],
           name: 'webchat:activity-status/feedback',
-          type: 'event'
+          type: 'event',
+          channelData: {
+            feedbackLoop: { type: 'default' }
+          }
         } as any),
       DEBOUNCE_TIMEOUT
     );
