@@ -2,6 +2,8 @@ import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
+import { defaultFeedbackEntities } from './private/DefaultFeedbackEntities';
+import { isDefaultFeedbackActivity } from './private/isDefaultFeedbackActivity';
 
 import Feedback from './private/Feedback';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
@@ -12,12 +14,27 @@ type ActivityFeedbackProps = Readonly<{
   activity: WebChatActivity;
 }>;
 
+const parseActivity = (entities?: WebChatActivity['entities']) => {
+  const graph = dereferenceBlankNodes(entities || []);
+  const messageThing = getOrgSchemaMessage(graph);
+  return { graph, messageThing };
+};
+
+const useGetMessageThing = (activity: WebChatActivity) =>
+  useMemo(() => {
+    const { messageThing, graph } = parseActivity(activity.entities);
+    if (messageThing?.potentialAction) {
+      return { includeDefaultFeedback: false, messageThing, graph };
+    } else if (isDefaultFeedbackActivity(activity)) {
+      return { includeDefaultFeedback: true, ...parseActivity([defaultFeedbackEntities]) };
+    }
+    return { includeDefaultFeedback: false, ...parseActivity() };
+  }, [activity]);
+
 function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   const [{ feedbackActionsPlacement }] = useStyleOptions();
 
-  const graph = useMemo(() => dereferenceBlankNodes(activity.entities || []), [activity.entities]);
-
-  const messageThing = useMemo(() => getOrgSchemaMessage(graph), [graph]);
+  const { messageThing, graph, includeDefaultFeedback } = useGetMessageThing(activity);
 
   const feedbackActions = useMemo<ReadonlySet<OrgSchemaAction>>(() => {
     try {
@@ -46,6 +63,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
       className={cx({
         'webchat__thumb-button--large': feedbackActionsPlacement === 'activity-actions'
       })}
+      includeDefaultFeedback={includeDefaultFeedback}
     />
   );
 }

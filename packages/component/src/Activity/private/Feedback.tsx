@@ -11,12 +11,13 @@ type Props = Readonly<
   PropsWithChildren<{
     actions: ReadonlySet<OrgSchemaAction>;
     className?: string | undefined;
+    includeDefaultFeedback?: boolean;
   }>
 >;
 
 const DEBOUNCE_TIMEOUT = 500;
 
-const Feedback = memo(({ actions, className }: Props) => {
+const Feedback = memo(({ actions, className, includeDefaultFeedback }: Props) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
   const postActivity = usePostActivity();
@@ -36,15 +37,19 @@ const Feedback = memo(({ actions, className }: Props) => {
           entities: [selectedAction],
           name: 'webchat:activity-status/feedback',
           type: 'event',
-          channelData: {
-            feedbackLoop: { type: 'default' }
-          }
+          ...(includeDefaultFeedback
+            ? {
+                channelData: {
+                  feedbackLoop: { type: 'default' }
+                }
+              }
+            : {})
         } as any),
       DEBOUNCE_TIMEOUT
     );
 
     return () => clearTimeout(timeout);
-  }, [clearTimeout, postActivityRef, selectedAction, setTimeout]);
+  }, [clearTimeout, includeDefaultFeedback, postActivityRef, selectedAction, setTimeout]);
 
   const actionProps = useMemo(
     () =>

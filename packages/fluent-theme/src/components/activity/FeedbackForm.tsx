@@ -2,7 +2,7 @@ import React, { memo, useState, useMemo, useCallback } from 'react';
 import { hooks } from 'botframework-webchat-component';
 import { useStyles } from '../../styles';
 import styles from './FeedbackForm.module.css';
-import { type WebChatActivity, parseThing } from 'botframework-webchat-core';
+import { type WebChatActivity, parseThing, markActivity } from 'botframework-webchat-core';
 import StackedLayout from './private/StackedLayout';
 import TextArea from '../sendBox/TextArea';
 import cx from 'classnames';
@@ -45,15 +45,21 @@ function FeedbackForm({ activity }: Readonly<{ activity: WebChatActivity }>) {
             }
           }
         } as any);
+        if (activity.id) {
+          markActivity({ id: activity.id }, 'feedbackActionClicked', true);
+        }
         setFeedback('');
       }
     },
-    [feedback, postActivity, reactionType]
+    [activity.id, feedback, postActivity, reactionType]
   );
 
   const handleCancel = useCallback(() => {
     setFeedback('');
-  }, []);
+    if (activity.id) {
+      markActivity({ id: activity.id }, 'feedbackActionClicked', true);
+    }
+  }, [activity.id]);
 
   const handleChange = useCallback(
     event => {
