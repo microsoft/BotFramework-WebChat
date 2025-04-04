@@ -35,42 +35,55 @@
         await pageConditions.uiConnected();
 
         await directLine.emulateIncomingActivity({
-            type: 'event',
-            name: 'webchat:activity-status/feedback',
-            entities: [
-                {
-                    "@type": "LikeAction",
-                    actionStatus: "PotentialActionStatus",
-                    target: {
-                        "@type": "EntryPoint",
-                        urlTemplate: "ms-directline://postback?interaction=like"
-                    }
-                }
-            ],
-            channelData: {
-                feedbackLoop: {
-                    type: 'default'
-                }
-            }
-        });
-
-        const { activity } = await directLine.actPostActivity(() => 
-          Promise.resolve({ })
-        );
-
-        expect(activity).toEqual(expect.objectContaining({
-          type: 'invoke',
-          name: 'message/submitAction',
-          value: {
-            actionName: 'feedback',
-            actionValue: {
-              reaction: 'like',
-              feedback: {
-                feedbackText: expect.any(String),
+          type: 'event',
+          name: 'webchat:activity-status/feedback',
+          entities: [
+            {
+              '@type': 'LikeAction',
+              actionStatus: 'PotentialActionStatus',
+              target: {
+                '@type': 'EntryPoint',
+                urlTemplate: 'ms-directline://postback?interaction=like'
               }
             }
+          ],
+          channelData: {
+            feedbackLoop: {
+              type: 'default'
+            }
           }
-        }));
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        pageElements.byTestId('feedback sendbox').focus();
+
+        await host.sendKeys('ENTER');
+        await host.snapshot('local');
+        await host.sendKeys('Test feedback');
+        await host.snapshot('local');
+  
+        const { activity } = await directLine.actPostActivity(async () => {
+          await host.sendTab(1);
+          await host.sendKeys('ENTER');
+          await host.snapshot('local');
+        });
+
+        expect(activity).toEqual(
+          expect.objectContaining({
+            type: 'invoke',
+            name: 'message/submitAction',
+            value: {
+              actionName: 'feedback',
+              actionValue: {
+                reaction: 'like',
+                feedback: {
+                  feedbackText: expect.any(String)
+                }
+              }
+            }
+          })
+        );
       });
     </script>
   </body>

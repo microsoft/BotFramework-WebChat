@@ -18,7 +18,8 @@ const testIds = {
   sendBoxTelephoneKeypadButtonStar: `send box telephone keypad button star`,
   sendBoxTelephoneKeypadButtonPound: `send box telephone keypad button pound`,
   sendBoxTelephoneKeypadToolbarButton: 'send box telephone keypad toolbar button',
-  sendBoxUploadButton: 'send box upload button'
+  sendBoxUploadButton: 'send box upload button',
+  feedbackSendBox: 'feedback sendbox'
 };
 
 export default testIds;
