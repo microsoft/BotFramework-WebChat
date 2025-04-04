@@ -6,6 +6,8 @@ import { type WebChatActivity, parseThing, markActivity } from 'botframework-web
 import StackedLayout from './private/StackedLayout';
 import TextArea from '../sendBox/TextArea';
 import cx from 'classnames';
+import testIds from '../../testIds';
+
 
 const { useLocalizer, usePostActivity } = hooks;
 
@@ -78,7 +80,7 @@ function FeedbackForm({ activity }: Readonly<{ activity: WebChatActivity }>) {
         <span className={classNames['feedback-form__body1']}>{localize('FEEDBACK_FORM_TITLE')}</span>
         <form className={classNames['feedback-form']} onSubmit={handleSubmit}>
           <div className={cx(classNames['sendbox__sendbox'])}>
-            <TextArea onInput={handleChange} placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')} value={feedback} />
+            <TextArea data-testid={testIds.feedbackSendBox} onInput={handleChange} placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')} value={feedback} />
           </div>
           <span className={classNames['feedback-form__caption1']}>{'Test description'}</span>
           <div className={classNames['feedback-button__container']}>
