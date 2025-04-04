@@ -59,14 +59,11 @@
         pageElements.byTestId('feedback sendbox').focus();
 
         await host.sendKeys('ENTER');
-        await host.snapshot('local');
         await host.sendKeys('Test feedback');
-        await host.snapshot('local');
 
         const { activity } = await directLine.actPostActivity(async () => {
           await host.sendTab(1);
           await host.sendKeys('ENTER');
-          await host.snapshot('local');
         });
 
         expect(activity).toEqual(
