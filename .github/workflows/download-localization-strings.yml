@@ -8,6 +8,12 @@ on:
   workflow_dispatch: {}
 
 jobs:
+  example-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello world
+        run: echo "Hello world!"
+        
   download:
     environment: localization-database
     name: Download
