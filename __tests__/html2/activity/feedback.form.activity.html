@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const App = () => (
+          <React.Fragment>
+            <ReactWebChat
+              directLine={directLine}
+              store={store}
+              styleOptions={{
+                feedbackActionsPlacement: 'activity-actions'
+              }}
+            />
+          </React.Fragment>
+        );
+
+        render(<App />, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          type: 'message',
+          id: 'a-00000',
+          timestamp: 0,
+          text: 'This is a test message to show feedback buttons',
+          from: {
+            role: 'bot'
+          },
+          locale: 'en-US',
+          entities: [],
+          channelData: {
+            feedbackLoop: {
+              type: 'default',
+              disclaimer: 'This is a test disclaimer message'
+            }
+          }
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        pageElements.byTestId('send box text area').focus();
+        await host.sendShiftTab(2);
+
+        await host.sendKeys('ENTER');
+        await host.sendKeys('ENTER');
+
+        // const { activity } = await directLine.actPostActivity(() => Promise.resolve({}));
+
+        // expect(activity).toEqual(
+        //   expect.objectContaining({
+        //     name: 'webchat:activity-status/feedback',
+        //     type: 'event',
+        //     channelData: expect.objectContaining({
+        //       feedbackLoop: { type: 'default' }
+        //     })
+        //   })
+        // );
+      });
+    </script>
+  </body>
+</html>

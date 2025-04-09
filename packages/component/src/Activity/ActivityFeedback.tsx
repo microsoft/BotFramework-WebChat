@@ -1,18 +1,31 @@
 import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } from 'botframework-webchat-core';
-import cx from 'classnames';
-import React, { memo, useMemo } from 'react';
+import classNames from 'classnames';
+import React, { Fragment, memo, useCallback, useMemo, useState } from 'react';
 import { defaultFeedbackEntities } from './private/DefaultFeedbackEntities';
 import { isDefaultFeedbackActivity } from './private/isDefaultFeedbackActivity';
 
 import Feedback from './private/Feedback';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
+import FeedbackForm, { FeedbackType } from './private/FeedbackForm';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 const { useStyleOptions } = hooks;
 
 type ActivityFeedbackProps = Readonly<{
   activity: WebChatActivity;
 }>;
+
+const ROOT_STYLE = {
+  '&.webchat__feedback-form__root__container': {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem'
+  },
+  '&.webchat__feedback-form__root__container__child': {
+    display: 'flex'
+  }
+};
 
 const parseActivity = (entities?: WebChatActivity['entities']) => {
   const graph = dereferenceBlankNodes(entities || []);
@@ -33,6 +46,10 @@ const useGetMessageThing = (activity: WebChatActivity) =>
 
 function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   const [{ feedbackActionsPlacement }] = useStyleOptions();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [feedbackType, setFeedbackType] = useState<string | undefined>(undefined);
 
   const { messageThing, graph, includeDefaultFeedback } = useGetMessageThing(activity);
 
@@ -57,15 +74,55 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     return Object.freeze(new Set([] as OrgSchemaAction[]));
   }, [graph, messageThing?.potentialAction]);
 
-  return (
+  const disclaimer = useMemo(
+    () =>
+      includeDefaultFeedback && isDefaultFeedbackActivity(activity)
+        ? activity.channelData.feedbackLoop?.disclaimer
+        : undefined,
+    [activity, includeDefaultFeedback]
+  );
+
+  const onFeedbackActionClick = useCallback((feedbackType?: string) => {
+    if (!feedbackType) {
+      setFeedbackType(undefined);
+      setShowFeedbackForm(false);
+    } else {
+      setFeedbackType(feedbackType);
+      setShowFeedbackForm(true);
+    }
+  }, []);
+
+  const FeedbackComponent = (
     <Feedback
       actions={feedbackActions}
-      className={cx({
+      className={classNames({
         'webchat__thumb-button--large': feedbackActionsPlacement === 'activity-actions'
       })}
-      includeDefaultFeedback={includeDefaultFeedback}
+      handleFeedbackActionClick={onFeedbackActionClick}
+      isFeedbackFormSupported={includeDefaultFeedback}
     />
   );
+
+  const FeedbackFormComponent = (
+    <FeedbackForm
+      disclaimer={disclaimer}
+      feedbackType={feedbackType as FeedbackType}
+      handleCancelClick={onFeedbackActionClick}
+    />
+  );
+
+  if (feedbackActionsPlacement === 'activity-actions' && showFeedbackForm && feedbackType) {
+    return (
+      <div className={classNames('webchat__feedback-form__root__container', rootClassName)}>
+        <div className={classNames('webchat__feedback-form__root__container__child', rootClassName)}>
+          {FeedbackComponent}
+        </div>
+        {FeedbackFormComponent}
+      </div>
+    );
+  }
+
+  return <Fragment>{FeedbackComponent}</Fragment>;
 }
 
 export default memo(ActivityFeedback);

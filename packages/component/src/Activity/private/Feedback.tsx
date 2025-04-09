@@ -11,13 +11,14 @@ type Props = Readonly<
   PropsWithChildren<{
     actions: ReadonlySet<OrgSchemaAction>;
     className?: string | undefined;
-    includeDefaultFeedback?: boolean;
+    isFeedbackFormSupported?: boolean;
+    handleFeedbackActionClick: (feedbackType?: string) => void;
   }>
 >;
 
 const DEBOUNCE_TIMEOUT = 500;
 
-const Feedback = memo(({ actions, className, includeDefaultFeedback }: Props) => {
+const Feedback = memo(({ actions, className, isFeedbackFormSupported, handleFeedbackActionClick }: Props) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
   const postActivity = usePostActivity();
@@ -30,26 +31,24 @@ const Feedback = memo(({ actions, className, includeDefaultFeedback }: Props) =>
       return;
     }
 
+    if (isFeedbackFormSupported) {
+      handleFeedbackActionClick(selectedAction['@type']);
+      return;
+    }
+
     const timeout = setTimeout(
       () =>
         // TODO: We should update this to use W3C Hydra.1
         postActivityRef.current({
           entities: [selectedAction],
           name: 'webchat:activity-status/feedback',
-          type: 'event',
-          ...(includeDefaultFeedback
-            ? {
-                channelData: {
-                  feedbackLoop: { type: 'default' }
-                }
-              }
-            : {})
+          type: 'event'
         } as any),
       DEBOUNCE_TIMEOUT
     );
 
     return () => clearTimeout(timeout);
-  }, [clearTimeout, includeDefaultFeedback, postActivityRef, selectedAction, setTimeout]);
+  }, [clearTimeout, isFeedbackFormSupported, handleFeedbackActionClick, postActivityRef, selectedAction, setTimeout]);
 
   const actionProps = useMemo(
     () =>

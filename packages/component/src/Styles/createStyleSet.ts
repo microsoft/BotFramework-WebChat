@@ -20,6 +20,7 @@ import createConnectivityNotification from './StyleSet/ConnectivityNotification'
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createErrorNotificationStyle from './StyleSet/ErrorNotification';
+import createFeedbackFormStyle from './StyleSet/FeedbackForm';
 import createFileContentStyle from './StyleSet/FileContent';
 import createImageAvatarStyle from './StyleSet/ImageAvatar';
 import createInitialsAvatarStyle from './StyleSet/InitialsAvatar';
@@ -79,6 +80,7 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     dictationInterims: createDictationInterimsStyle(strictStyleOptions),
     errorBox: createErrorBoxStyle(strictStyleOptions),
     errorNotification: createErrorNotificationStyle(strictStyleOptions),
+    feedbackForm: createFeedbackFormStyle(),
     fileContent: createFileContentStyle(strictStyleOptions),
     imageAvatar: createImageAvatarStyle(),
     initialsAvatar: createInitialsAvatarStyle(strictStyleOptions),

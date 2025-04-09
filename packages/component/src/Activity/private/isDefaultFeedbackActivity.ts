@@ -7,6 +7,7 @@ type FeedbackActivity<T extends ActivityType> = WebChatActivity & {
   channelData: {
     feedbackLoop: {
       type: 'default';
+      disclaimer?: string | undefined;
     };
   };
 };
