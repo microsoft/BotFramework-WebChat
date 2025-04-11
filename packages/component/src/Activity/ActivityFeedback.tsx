@@ -41,7 +41,7 @@ const useGetMessageThing = (activity: WebChatActivity) =>
     } else if (isDefaultFeedbackActivity(activity)) {
       return { includeDefaultFeedback: true, ...parseActivity([defaultFeedbackEntities]) };
     }
-    return { includeDefaultFeedback: false, ...parseActivity() };
+    return { includeDefaultFeedback: false, messageThing, graph };
   }, [activity]);
 
 function ActivityFeedback({ activity }: ActivityFeedbackProps) {
