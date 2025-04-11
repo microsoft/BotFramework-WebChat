@@ -1,4 +1,4 @@
-import React, { memo, useState, useCallback } from 'react';
+import React, { memo, useEffect, useState, useCallback, useRef } from 'react';
 import { hooks } from 'botframework-webchat-api';
 import useStyleSet from '../../hooks/useStyleSet';
 import classNames from 'classnames';
@@ -20,16 +20,18 @@ const MultiLineTextBox = withEmoji(AutoResizeTextArea);
 function FeedbackForm({
   feedbackType,
   disclaimer,
-  handleCancelClick
+  handeFeedbackTypeChange
 }: Readonly<{
   feedbackType: FeedbackType;
   disclaimer?: string;
-  handleCancelClick: () => void;
+  handeFeedbackTypeChange: () => void;
 }>) {
   const [{ feedbackForm }] = useStyleSet();
   const localize = useLocalizer();
   const [feedback, setFeedback] = useState('');
+  const [hasFocused, setHasFocused] = useState(false);
   const postActivity = usePostActivity();
+  const feedbackTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = useCallback(
     event => {
@@ -49,15 +51,23 @@ function FeedbackForm({
           }
         } as any);
         setFeedback('');
+        handeFeedbackTypeChange();
       }
     },
-    [feedback, postActivity, feedbackType]
+    [feedback, postActivity, feedbackType, handeFeedbackTypeChange]
   );
+
+  useEffect(() => {
+    if (feedbackTextAreaRef.current && !hasFocused) {
+      setHasFocused(true);
+      feedbackTextAreaRef.current.focus();
+    }
+  }, [feedbackTextAreaRef, hasFocused]);
 
   const handleCancel = useCallback(() => {
     setFeedback('');
-    handleCancelClick();
-  }, [handleCancelClick]);
+    handeFeedbackTypeChange();
+  }, [handeFeedbackTypeChange]);
 
   const handleChange = useCallback(
     (value: string) => {
@@ -79,6 +89,7 @@ function FeedbackForm({
             data-testid={testIds.feedbackSendBox}
             onChange={handleChange}
             placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
+            ref={feedbackTextAreaRef}
             value={feedback}
           />
         </div>

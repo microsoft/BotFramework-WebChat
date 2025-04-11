@@ -58,22 +58,38 @@
         await pageConditions.numActivitiesShown(1);
 
         pageElements.byTestId('send box text area').focus();
-        await host.sendShiftTab(2);
+        await host.sendShiftTab(3);
 
         await host.sendKeys('ENTER');
         await host.sendKeys('ENTER');
 
-        // const { activity } = await directLine.actPostActivity(() => Promise.resolve({}));
+        await pageConditions.became(
+          'feedback form is open',
+          () => document.activeElement === pageElements.byTestId('feedback sendbox'),
+          1000
+        );
 
-        // expect(activity).toEqual(
-        //   expect.objectContaining({
-        //     name: 'webchat:activity-status/feedback',
-        //     type: 'event',
-        //     channelData: expect.objectContaining({
-        //       feedbackLoop: { type: 'default' }
-        //     })
-        //   })
-        // );
+        await host.sendKeys('Test feedback');
+        const { activity } = await directLine.actPostActivity(async () => {
+          await host.sendTab(1);
+          await host.sendKeys('ENTER');
+        });
+
+        expect(activity).toEqual(
+          expect.objectContaining({
+            type: 'invoke',
+            name: 'message/submitAction',
+            value: {
+              actionName: 'feedback',
+              actionValue: {
+                reaction: 'like',
+                feedback: {
+                  feedbackText: expect.any(String)
+                }
+              }
+            }
+          })
+        );
       });
     </script>
   </body>

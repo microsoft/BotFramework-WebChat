@@ -82,7 +82,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     [activity, includeDefaultFeedback]
   );
 
-  const onFeedbackActionClick = useCallback((feedbackType?: string) => {
+  const onFeedbackTypeChange = useCallback((feedbackType?: string) => {
     if (!feedbackType) {
       setFeedbackType(undefined);
       setShowFeedbackForm(false);
@@ -98,7 +98,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
       className={classNames({
         'webchat__thumb-button--large': feedbackActionsPlacement === 'activity-actions'
       })}
-      handleFeedbackActionClick={onFeedbackActionClick}
+      handleFeedbackActionClick={onFeedbackTypeChange}
       isFeedbackFormSupported={includeDefaultFeedback}
     />
   );
@@ -107,7 +107,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     <FeedbackForm
       disclaimer={disclaimer}
       feedbackType={feedbackType as FeedbackType}
-      handleCancelClick={onFeedbackActionClick}
+      handeFeedbackTypeChange={onFeedbackTypeChange}
     />
   );
 

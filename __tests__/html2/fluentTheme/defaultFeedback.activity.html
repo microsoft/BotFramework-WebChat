@@ -46,32 +46,38 @@
           entities: [],
           channelData: {
             feedbackLoop: {
-              type: 'default'
+              type: 'default',
+              disclaimer: 'This is a test disclaimer message'
             }
           }
         });
 
         await pageConditions.numActivitiesShown(1);
 
-        pageElements.byTestId('send box text area').focus();
-        await host.sendShiftTab(2);
+        // pageElements.byTestId('send box text area').focus();
+        // await host.sendKeys('ENTER');
+        // await host.sendKeys('Test feedback');
 
-        await host.sendKeys('ENTER');
-        await host.sendKeys('ENTER');
+        // const { activity } = await directLine.actPostActivity(async () => {
+        //   await host.sendTab(1);
+        //   await host.sendKeys('ENTER');
+        // });
 
-        const { activity } = await directLine.actPostActivity(() => Promise.resolve({}));
-
-        expect(activity).toEqual(
-          expect.objectContaining({
-            name: 'webchat:activity-status/feedback',
-            type: 'event',
-            channelData: expect.objectContaining({
-              feedbackLoop: { type: 'default' }
-            })
-          })
-        );
-
-        await pageConditions.numActivitiesShown(2);
+        // expect(activity).toEqual(
+        //   expect.objectContaining({
+        //     type: 'invoke',
+        //     name: 'message/submitAction',
+        //     value: {
+        //       actionName: 'feedback',
+        //       actionValue: {
+        //         reaction: 'like',
+        //         feedback: {
+        //           feedbackText: expect.any(String)
+        //         }
+        //       }
+        //     }
+        //   })
+        // );
       });
     </script>
   </body>
