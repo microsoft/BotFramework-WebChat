@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import React, { Fragment, memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { defaultFeedbackEntities } from './private/DefaultFeedbackEntities';
 import { isDefaultFeedbackActivity } from './private/isDefaultFeedbackActivity';
 
@@ -122,7 +122,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     );
   }
 
-  return <Fragment>{FeedbackComponent}</Fragment>;
+  return FeedbackComponent;
 }
 
 export default memo(ActivityFeedback);
