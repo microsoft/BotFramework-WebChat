@@ -28,6 +28,20 @@ export default function useCustomPropertiesClassName() {
       bubbleMessageMaxWidth,
       bubbleMessageMinWidth,
       bubbleMinHeight,
+      fontColorPrimary,
+      fontColorSecondary,
+      primaryButtonBackgroundColor,
+      primaryButtonBackgroundColorOnHover,
+      primaryButtonBackgroundColorOnActive,
+      primaryButtonBackgroundCoorOnDisabled,
+      secondaryButtonBackgroundColor,
+      secondaryButtonBackgroundColorOnHover,
+      secondaryButtonBorderColor,
+      textBoxBackgroundColor,
+      textBoxBorderColor,
+      textBoxBorderColorOnFocus,
+      textBoxBorderColorOnActive,
+      textBoxTextColor,
       fontSizeSmall,
       markdownExternalLinkIconImage,
       paddingRegular,
@@ -60,6 +74,26 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.MinHeightImageBubble}: ${bubbleImageMinHeight}px;
   ${CustomPropertyNames.PaddingRegular}: ${paddingRegular}px;
   ${CustomPropertyNames.SizeAvatar}: ${avatarSize}px;
+  ${CustomPropertyNames.FeedbackFormFont}: ${primaryFont};
+  ${CustomPropertyNames.FeedbackFormTitleColor}: ${fontColorPrimary};
+  ${CustomPropertyNames.FeedbackFormDisclaimerColor}: ${fontColorSecondary};
+  ${CustomPropertyNames.FeedbackFormSubmitButtonColor}: ${primaryButtonBackgroundColor};
+  ${CustomPropertyNames.FeedbackFormSubmitButtonFontColor}: ${fontColorPrimary};
+  ${CustomPropertyNames.FeedbackFormSubmitButtonHoverColor}: ${primaryButtonBackgroundColorOnHover};
+  ${CustomPropertyNames.FeedbackFormSubmitButtonActiveColor}: ${primaryButtonBackgroundColorOnActive};
+  ${CustomPropertyNames.FeedbackFormSubmitButtonDisabledColor}: ${primaryButtonBackgroundCoorOnDisabled};
+  ${CustomPropertyNames.FeedbackFormCancelButtonColor}: ${secondaryButtonBackgroundColor};
+  ${CustomPropertyNames.FeedbackFormCancelButtonBorderColor}: ${secondaryButtonBorderColor};
+  ${CustomPropertyNames.FeedbackFormCancelButtonFontColor}: ${fontColorPrimary};
+  ${CustomPropertyNames.FeedbackFormCancelButtonHoverColor}: ${secondaryButtonBackgroundColorOnHover};
+  ${CustomPropertyNames.FeedbackFormSendBoxBackgroundColor}: ${textBoxBackgroundColor};
+  ${CustomPropertyNames.FeedbackFormSendBoxBorderColor}: ${textBoxBorderColor};
+  ${CustomPropertyNames.FeedbackFormSendBoxFontColor}: ${textBoxTextColor};
+  ${CustomPropertyNames.FeedbackFormSendBoxFocusBorderColor}: ${textBoxBorderColorOnFocus};
+  ${CustomPropertyNames.FeedbackFormSendBoxActiveBorderColor}: ${textBoxBorderColorOnActive};
+  ${CustomPropertyNames.FeedbackFormSendBoxMinHeight}: ${bubbleMinHeight}px;
+  ${CustomPropertyNames.FeedbackFormSendBoxMinWidth}: ${bubbleAttachmentMinWidth}px;
+  ${CustomPropertyNames.FeedbackFormSendBoxPadding}: ${paddingRegular}px;
 }
 `;
     const [style] = makeCreateStyles(contents)();

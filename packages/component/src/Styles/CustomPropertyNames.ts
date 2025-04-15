@@ -19,7 +19,27 @@ const CustomPropertyNames = Object.freeze({
   MinWidthAttachmentBubble: '--webchat__min-width--attachment-bubble',
   MinWidthMessageBubble: '--webchat__min-width--message-bubble',
   PaddingRegular: '--webchat__padding--regular',
-  SizeAvatar: '--webchat__size--avatar'
+  SizeAvatar: '--webchat__size--avatar',
+  FeedbackFormFont: '--webchat__font--primary',
+  FeedbackFormTitleColor: '--webchat__font--color-primary',
+  FeedbackFormDisclaimerColor: '--webchat__font--color-secondary',
+  FeedbackFormSubmitButtonColor: '--webchat__color--accent',
+  FeedbackFormSubmitButtonFontColor: '--webchat__button--text--primary',
+  FeedbackFormSubmitButtonHoverColor: '--webchat__button--primary--hover',
+  FeedbackFormSubmitButtonActiveColor: '--webchat__button--primary--active',
+  FeedbackFormSubmitButtonDisabledColor: '--webchat__button--primary--disabled',
+  FeedbackFormCancelButtonColor: '--webchat__button--secondary',
+  FeedbackFormCancelButtonFontColor: '--webchat__button--text--secondary',
+  FeedbackFormCancelButtonBorderColor: '--webchat__button--secondary-border',
+  FeedbackFormCancelButtonHoverColor: '--webchat__button--secondary--hover',
+  FeedbackFormSendBoxBackgroundColor: '--webchat__textbox--background',
+  FeedbackFormSendBoxBorderColor: '--webchat__textbox--border',
+  FeedbackFormSendBoxFontColor: '--webchat__button--text--secondary',
+  FeedbackFormSendBoxFocusBorderColor: '--webchat__textbox--border--focus',
+  FeedbackFormSendBoxActiveBorderColor: '--webchat__textbox--border--selected',
+  FeedbackFormSendBoxMinHeight: '--webchat__textbox--min-height',
+  FeedbackFormSendBoxMinWidth: '--webchat__textbox--min-width',
+  FeedbackFormSendBoxPadding: '--webchat__textbox--padding'
 }) satisfies Readonly<Record<string, `--webchat__${string}`>>;
 
 export default CustomPropertyNames;

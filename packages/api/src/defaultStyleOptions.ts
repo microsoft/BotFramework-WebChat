@@ -244,7 +244,6 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   transcriptOverlayButtonColorOnHover: undefined,
 
   // Toast UI
-
   notificationDebounceTimeout: 400,
 
   hideToaster: false,
@@ -308,6 +307,21 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   codeBlockTheme: 'github-light-default' as const,
 
   feedbackActionsPlacement: 'activity-status' as const,
+
+  fontColorPrimary: 'black',
+  fontColorSecondary: 'black',
+  primaryButtonBackgroundColor: '',
+  primaryButtonBackgroundColorOnHover: '',
+  primaryButtonBackgroundColorOnActive: '',
+  primaryButtonBackgroundCoorOnDisabled: '',
+  secondaryButtonBackgroundColor: '',
+  secondaryButtonBackgroundColorOnHover: '',
+  secondaryButtonBorderColor: '',
+  textBoxBackgroundColor: '',
+  textBoxBorderColor: '',
+  textBoxBorderColorOnFocus: '',
+  textBoxBorderColorOnActive: '',
+  textBoxTextColor: '',
 
   // Speech recognition
   speechRecognitionContinuous: false

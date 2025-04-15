@@ -943,6 +943,20 @@ type StyleOptions = {
    */
   feedbackActionsPlacement?: 'activity-actions' | 'activity-status';
 
+  fontColorPrimary?: string;
+  fontColorSecondary?: string;
+  primaryButtonBackgroundColor?: string;
+  primaryButtonBackgroundColorOnHover?: string;
+  primaryButtonBackgroundColorOnActive?: string;
+  primaryButtonBackgroundCoorOnDisabled?: string;
+  secondaryButtonBackgroundColor?: string;
+  secondaryButtonBackgroundColorOnHover?: string;
+  secondaryButtonBorderColor?: string;
+  textBoxBackgroundColor?: string;
+  textBoxBorderColor?: string;
+  textBoxBorderColorOnFocus?: string;
+  textBoxBorderColorOnActive?: string;
+  textBoxTextColor?: string;
   /**
    * Use continuous mode for speech recognition. Default to `false`.
    *

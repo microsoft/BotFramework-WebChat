@@ -1,9 +1,9 @@
-import React, { memo, useEffect, useState, useCallback, useRef } from 'react';
+import React, { memo, useEffect, useState, useCallback, useRef, FormEventHandler } from 'react';
 import { hooks } from 'botframework-webchat-api';
 import useStyleSet from '../../hooks/useStyleSet';
 import classNames from 'classnames';
 import testIds from '../../testIds';
-import AutoResizeTextArea from '../../SendBox/AutoResizeTextArea';
+import TextArea from './FeedbackTextArea';
 import withEmoji from '../../withEmoji/withEmoji';
 
 const { useLocalizer, usePostActivity } = hooks;
@@ -15,7 +15,7 @@ const FeedbackOptions = {
 
 export type FeedbackType = keyof typeof FeedbackOptions;
 
-const MultiLineTextBox = withEmoji(AutoResizeTextArea);
+const MultiLineTextBox = withEmoji(TextArea);
 
 function FeedbackForm({
   feedbackType,
@@ -69,9 +69,9 @@ function FeedbackForm({
     handeFeedbackTypeChange();
   }, [handeFeedbackTypeChange]);
 
-  const handleChange = useCallback(
-    (value: string) => {
-      setFeedback(value);
+  const handleChange: FormEventHandler<HTMLTextAreaElement> = useCallback(
+    event => {
+      setFeedback(event.currentTarget.value);
     },
     [setFeedback]
   );
@@ -84,15 +84,13 @@ function FeedbackForm({
     <div>
       <span className={classNames('feedback-form__body1', feedbackForm + '')}>{localize('FEEDBACK_FORM_TITLE')}</span>
       <form className={classNames('feedback-form', feedbackForm + '')} onSubmit={handleSubmit}>
-        <div className={classNames('sendbox__sendbox', feedbackForm + '')}>
-          <MultiLineTextBox
-            data-testid={testIds.feedbackSendBox}
-            onChange={handleChange}
-            placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
-            ref={feedbackTextAreaRef}
-            value={feedback}
-          />
-        </div>
+        <MultiLineTextBox
+          data-testid={testIds.feedbackSendBox}
+          onInput={handleChange}
+          placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
+          ref={feedbackTextAreaRef}
+          value={feedback}
+        />
         {disclaimer && <span className={classNames('feedback-form__caption1', feedbackForm + '')}>{disclaimer}</span>}
         <div className={classNames('feedback-form__container', feedbackForm + '')}>
           <button className={classNames('feedback-form__button__submit', feedbackForm + '')} type="submit">

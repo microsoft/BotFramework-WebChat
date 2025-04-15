@@ -4,7 +4,7 @@ import { Components } from 'botframework-webchat-component';
 import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import React, { memo, type ReactNode } from 'react';
 
-import { ActivityDecorator, FeedbackForm, isFeedbackFormActivity } from '../components/activity';
+import { ActivityDecorator } from '../components/activity';
 import ActivityLoader from '../components/activity/ActivityLoader';
 import AssetComposer from '../components/assets/AssetComposer';
 import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
@@ -25,10 +25,6 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
     next =>
     (...args) => {
       const activity = args[0]?.activity;
-
-      if (isFeedbackFormActivity(activity)) {
-        return () => <FeedbackForm activity={activity} />;
-      }
 
       // TODO: Should show pre-chat only when it is the very first message in the chat history.
       if (isPreChatMessageActivity(activity)) {

@@ -14,7 +14,8 @@ export default function createFeedbackFormStyle() {
       fontStyle: 'normal',
       fontWeight: 400,
       fontSize: '14px',
-      lineHeight: '20px'
+      lineHeight: '20px',
+      color: CSSTokens.FeedbackFormTitleColor
     },
     '&.feedback-form__caption1': {
       fontFamily: CSSTokens.FontPrimary,
@@ -22,7 +23,7 @@ export default function createFeedbackFormStyle() {
       fontWeight: 400,
       fontSize: '10px',
       lineHeight: '14px',
-      color: '#616161'
+      color: CSSTokens.FeedbackFormDisclaimerColor
     },
     '&.feedback-form__container': {
       display: 'flex',
@@ -30,37 +31,34 @@ export default function createFeedbackFormStyle() {
       gap: '8px'
     },
     '&.feedback-form__button__submit': {
-      backgroundColor: CSSTokens.ColorAccent,
-      border: `1px solid ${CSSTokens.ColorAccent}`,
+      backgroundColor: CSSTokens.FeedbackFormSubmitButtonColor,
+      border: `1px solid ${CSSTokens.FeedbackFormSubmitButtonColor}`,
       borderRadius: '4px',
-      color: '#ffffff',
+      color: CSSTokens.FeedbackFormSubmitButtonFontColor,
       cursor: 'pointer',
-      fontSize: '14px',
-      lineHeight: '14px',
+      fontSize: '12px',
       fontFamily: CSSTokens.FontPrimary
+    },
+    '&.feedback-form__button__submit:hover': {
+      backgroundColor: CSSTokens.FeedbackFormSubmitButtonHoverColor
+    },
+    '&.feedback-form__button__submit:active': {
+      backgroundColor: CSSTokens.FeedbackFormSubmitButtonActiveColor
+    },
+    '&.feedback-form__button__submit:disabled': {
+      backgroundColor: CSSTokens.FeedbackFormSubmitButtonDisabledColor,
+      cursor: 'not-allowed'
     },
     '&.feedback-form__button__cancel': {
-      backgroundColor: 'white',
-      borderRadius: '4px',
-      cursor: 'pointer',
-      fontSize: '14px',
-      lineHeight: '14px',
-      border: `1px solid ${CSSTokens.ColorSubtle}`,
-      fontFamily: CSSTokens.FontPrimary
-    },
-    '&.sendbox__sendbox': {
       backgroundColor: '#ffffff',
       borderRadius: '4px',
-      border: `1px solid ${CSSTokens.ColorSubtle}`,
-      display: 'grid',
-      fontFamily: CSSTokens.FontPrimary,
-      fontSize: '14px',
-      gap: '6px',
-      lineHeight: '20px',
-      padding: '8px',
-      position: 'relative',
-      width: CSSTokens.MinWidthAttachmentBubble,
-      height: CSSTokens.MinHeightBubble
+      cursor: 'pointer',
+      fontSize: '12px',
+      border: `1px solid ${CSSTokens.FeedbackFormCancelButtonBorderColor}`,
+      fontFamily: CSSTokens.FontPrimary
+    },
+    '&.feedback-form__button__cancel:hover': {
+      backgroundColor: CSSTokens.FeedbackFormCancelButtonHoverColor
     }
   };
 }
