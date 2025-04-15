@@ -212,18 +212,22 @@
   --webchat__border-animation--color-2: #47cffa;
   --webchat__border-animation--color-3: #b47cf8;
   --webchat__button--text--primary: #ffffff;
+  --webchat__button--text--primary--hover: #ffffff;
+  --webchat__button--text--primary--disabled: var(--webchat-colorNeutralForeground5);
+  --webchat__button--primary--border: var(--webchat-colorBrandForeground1);
   --webchat__button--primary--hover: var(--webchat-colorBrandForeground2Hover);
   --webchat__button--primary--active: var(--webchat-colorBrandForeground2Pressed);
   --webchat__button--primary--disabled: var(--webchat-colorNeutralBackground5);
   --webchat__button--secondary: #ffffff;
-  --webchat__button--secondary-border: var(--webchat-colorNeutralStroke1);
+  --webchat__button--secondary--border: var(--webchat-colorNeutralStroke1);
   --webchat__button--text--secondary: var(--webchat-colorGray200);
+  --webchat__button--text--secondary--hover: var(--webchat-colorNeutralForeground1Hover);
   --webchat__button--secondary--hover: var(--webchat-colorNeutralBackground1Hover);
   --webchat__textbox--background: var(--webchat-colorNeutralBackground1);
   --webchat__textbox--border: var(--webchat-colorNeutralStroke1);
   --webchat__textbox--border--focus: var(--webchat-colorNeutralStroke1Selected);
   --webchat__textbox--border--selected: var(--webchat-colorCompoundBrandForeground1Hover);
-  --webchat__textbox--min-height: 40px;
+  --webchat__textbox--min-height: 60px;
   --webchat__textbox--padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalS);
   --webchat__textbox--min-width: 280px;
 }

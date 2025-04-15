@@ -52,7 +52,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   const [feedbackType, setFeedbackType] = useState<string | undefined>(undefined);
   const resetFeedbackRef = useRef<() => void>();
 
-  const { replyToId } = activity;
+  const { id } = activity;
 
   const { messageThing, graph, isFeedbackLoopSupported } = useGetMessageThing(activity);
 
@@ -114,10 +114,10 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
         disclaimer={disclaimer}
         feedbackType={feedbackType as FeedbackType}
         handeFeedbackTypeChange={onFeedbackTypeChange}
-        replyToId={replyToId}
+        replyToId={id}
       />
     ),
-    [disclaimer, feedbackType, onFeedbackTypeChange, replyToId]
+    [disclaimer, feedbackType, id, onFeedbackTypeChange]
   );
 
   if (feedbackActionsPlacement === 'activity-actions' && isFeedbackLoopSupported) {

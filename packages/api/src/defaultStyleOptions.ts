@@ -310,21 +310,28 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
 
   fontColorPrimary: 'black',
   fontColorSecondary: 'black',
+
   primaryButtonBackgroundColor: DEFAULT_ACCENT,
   primaryButtonFontColor: 'white',
-  primaryButtonBackgroundColorOnHover: DEFAULT_ACCENT,
+  primaryButtonBorderColor: DEFAULT_ACCENT,
+  primaryButtonBackgroundColorOnHover: '#004a98',
   primaryButtonBackgroundColorOnActive: DEFAULT_ACCENT,
   primaryButtonBackgroundColorOnDisabled: DEFAULT_ACCENT,
+  primaryButtonFontColorOnHover: 'white',
+  primaryButtonFontColorOnDisabled: 'white',
+
   secondaryButtonFontColor: 'black',
   secondaryButtonBackgroundColor: 'White',
-  secondaryButtonBackgroundColorOnHover: 'White',
+  secondaryButtonBackgroundColorOnHover: DEFAULT_SUBTLE,
   secondaryButtonBorderColor: DEFAULT_SUBTLE,
+  secondaryButtonFontColorOnHover: 'white',
+
   textBoxBackgroundColor: 'White',
-  textBoxBorderColor: 'black',
-  textBoxBorderColorOnFocus: 'black',
-  textBoxBorderColorOnActive: 'black',
+  textBoxBorderColor: DEFAULT_SUBTLE,
+  textBoxBorderColorOnFocus: DEFAULT_SUBTLE,
+  textBoxBorderColorOnActive: DEFAULT_ACCENT,
   textBoxTextColor: 'black',
-  textBoxMinHeight: 40,
+  textBoxMinHeight: 60,
   textBoxMinWidth: 280,
 
   // Speech recognition

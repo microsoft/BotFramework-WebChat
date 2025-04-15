@@ -28,25 +28,31 @@ export default function createFeedbackFormStyle() {
     '&.feedback-form__container': {
       display: 'flex',
       flexDirection: 'row',
-      gap: '8px'
+      gap: '8px',
+      paddingTop: '6px'
     },
     '&.feedback-form__button__submit': {
       backgroundColor: CSSTokens.FeedbackFormSubmitButtonColor,
-      border: `1px solid ${CSSTokens.FeedbackFormSubmitButtonColor}`,
+      border: `1px solid ${CSSTokens.FeedbackFormSubmitButtonBorderColor}`,
       borderRadius: '4px',
       color: CSSTokens.FeedbackFormSubmitButtonFontColor,
       cursor: 'pointer',
       fontSize: '12px',
-      fontFamily: CSSTokens.FontPrimary
+      fontFamily: CSSTokens.FontPrimary,
+      height: '24px',
+      padding: '0 8px'
     },
     '&.feedback-form__button__submit:hover': {
-      backgroundColor: CSSTokens.FeedbackFormSubmitButtonHoverColor
+      backgroundColor: CSSTokens.FeedbackFormSubmitButtonHoverColor,
+      border: `1px solid ${CSSTokens.FeedbackFormSubmitButtonHoverColor}`,
+      color: CSSTokens.FeedbackFormSubmitButtonFontColorOnHover
     },
     '&.feedback-form__button__submit:active': {
       backgroundColor: CSSTokens.FeedbackFormSubmitButtonActiveColor
     },
     '&.feedback-form__button__submit:disabled': {
       backgroundColor: CSSTokens.FeedbackFormSubmitButtonDisabledColor,
+      color: CSSTokens.FeedbackFormSubmitButtonFontColorOnDisabled,
       cursor: 'not-allowed'
     },
     '&.feedback-form__button__cancel': {
@@ -55,10 +61,14 @@ export default function createFeedbackFormStyle() {
       cursor: 'pointer',
       fontSize: '12px',
       border: `1px solid ${CSSTokens.FeedbackFormCancelButtonBorderColor}`,
-      fontFamily: CSSTokens.FontPrimary
+      color: CSSTokens.FeedbackFormCancelButtonFontColor,
+      fontFamily: CSSTokens.FontPrimary,
+      height: '24px',
+      padding: '0 8px'
     },
     '&.feedback-form__button__cancel:hover': {
-      backgroundColor: CSSTokens.FeedbackFormCancelButtonHoverColor
+      backgroundColor: CSSTokens.FeedbackFormCancelButtonHoverColor,
+      color: CSSTokens.FeedbackFormCancelButtonFontColorOnHover
     }
   };
 }

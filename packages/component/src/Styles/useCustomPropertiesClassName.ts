@@ -32,11 +32,15 @@ export default function useCustomPropertiesClassName() {
       fontColorSecondary,
       primaryButtonBackgroundColor,
       primaryButtonFontColor,
+      primaryButtonBorderColor,
       primaryButtonBackgroundColorOnHover,
       primaryButtonBackgroundColorOnActive,
       primaryButtonBackgroundColorOnDisabled,
+      primaryButtonFontColorOnDisabled,
+      primaryButtonFontColorOnHover,
       secondaryButtonBackgroundColor,
       secondaryButtonFontColor,
+      secondaryButtonFontColorOnHover,
       secondaryButtonBackgroundColorOnHover,
       secondaryButtonBorderColor,
       textBoxBackgroundColor,
@@ -83,12 +87,16 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.FeedbackFormDisclaimerColor}: ${fontColorSecondary};
   ${CustomPropertyNames.FeedbackFormSubmitButtonColor}: ${primaryButtonBackgroundColor};
   ${CustomPropertyNames.FeedbackFormSubmitButtonFontColor}: ${primaryButtonFontColor};
+  ${CustomPropertyNames.FeedbackFormSubmitButtonBorderColor}: ${primaryButtonBorderColor};
+  ${CustomPropertyNames.FeedbackFormSubmitButtonFontColorOnHover}: ${primaryButtonFontColorOnHover};
+  ${CustomPropertyNames.FeedbackFormSubmitButtonFontColorOnDisabled}: ${primaryButtonFontColorOnDisabled};
   ${CustomPropertyNames.FeedbackFormSubmitButtonHoverColor}: ${primaryButtonBackgroundColorOnHover};
   ${CustomPropertyNames.FeedbackFormSubmitButtonActiveColor}: ${primaryButtonBackgroundColorOnActive};
   ${CustomPropertyNames.FeedbackFormSubmitButtonDisabledColor}: ${primaryButtonBackgroundColorOnDisabled};
   ${CustomPropertyNames.FeedbackFormCancelButtonColor}: ${secondaryButtonBackgroundColor};
   ${CustomPropertyNames.FeedbackFormCancelButtonBorderColor}: ${secondaryButtonBorderColor};
   ${CustomPropertyNames.FeedbackFormCancelButtonFontColor}: ${secondaryButtonFontColor};
+  ${CustomPropertyNames.FeedbackFormCancelButtonFontColorOnHover}: ${secondaryButtonFontColorOnHover};
   ${CustomPropertyNames.FeedbackFormCancelButtonHoverColor}: ${secondaryButtonBackgroundColorOnHover};
   ${CustomPropertyNames.FeedbackFormSendBoxBackgroundColor}: ${textBoxBackgroundColor};
   ${CustomPropertyNames.FeedbackFormSendBoxBorderColor}: ${textBoxBorderColor};

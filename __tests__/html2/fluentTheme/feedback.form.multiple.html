@@ -34,11 +34,11 @@
 
         await pageConditions.uiConnected();
 
+        await (await directLine.emulateOutgoingActivity("What's the weather like today?")).resolveAll();
+
         await directLine.emulateIncomingActivity({
           type: 'message',
-          id: 'a-00000',
-          timestamp: 0,
-          text: 'This is a test message to show feedback buttons',
+          text: 'The weather is sunny and warm.',
           from: {
             role: 'bot'
           },
@@ -47,12 +47,35 @@
           channelData: {
             feedbackLoop: {
               type: 'default',
-              disclaimer: 'This is a test disclaimer message'
+              disclaimer:
+                'We may contact you at klewis@contoso.microsoft.com about your feedback. Learn more about how this data is used and your rights. By pressing Submit, your feedback will be used to improve our products and services. Privacy statement.'
             }
           }
         });
 
-        await pageConditions.numActivitiesShown(1);
+        await pageConditions.numActivitiesShown(2);
+
+        await (await directLine.emulateOutgoingActivity('How is the weather in Seattle today?')).resolveAll();
+
+        await directLine.emulateIncomingActivity({
+          id: 'a-00001',
+          type: 'message',
+          text: "I'm not sure how to help with that.",
+          from: {
+            role: 'bot'
+          },
+          locale: 'en-US',
+          entities: [],
+          channelData: {
+            feedbackLoop: {
+              type: 'default',
+              disclaimer:
+                'We may contact you at klewis@contoso.microsoft.com about your feedback. Learn more about how this data is used and your rights. By pressing Submit, your feedback will be used to improve our products and services. Privacy statement.'
+            }
+          }
+        });
+
+        await pageConditions.numActivitiesShown(4);
 
         pageElements.byTestId('send box text area').focus();
         await host.sendShiftTab(2);
@@ -63,7 +86,7 @@
         await pageConditions.became(
           'feedback form is open',
           () => document.activeElement === pageElements.byTestId('feedback sendbox'),
-          1000
+          20000
         );
 
         await host.snapshot('local');
@@ -78,6 +101,7 @@
           expect.objectContaining({
             type: 'invoke',
             name: 'message/submitAction',
+            replyToId: 'a-00001',
             value: {
               actionName: 'feedback',
               actionValue: {

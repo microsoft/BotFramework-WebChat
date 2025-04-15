@@ -18,9 +18,6 @@ export default function createFeedbackTextAreaStyle() {
       position: 'relative',
       minHeight: `${CSSTokens.FeedbackFormSendBoxMinHeight}`,
       minWidth: `${CSSTokens.FeedbackFormSendBoxMinWidth}`,
-      '&:focus-within': {
-        border: `1px solid ${CSSTokens.FeedbackFormSendBoxFocusBorderColor}`
-      },
       '&::after': {
         borderBottomLeftRadius: '4px',
         borderBottomRightRadius: '4px',
@@ -33,6 +30,9 @@ export default function createFeedbackTextAreaStyle() {
         position: 'absolute',
         right: '-1px',
         transition: 'clip-path 0 cubic-bezier(1, 0, 1, 1)'
+      },
+      '&:focus-within': {
+        border: `1px solid ${CSSTokens.FeedbackFormSendBoxFocusBorderColor}`
       },
       '&:focus-within::after': {
         clipPath: 'inset(calc(100% - 3px) 0 0 0)',
