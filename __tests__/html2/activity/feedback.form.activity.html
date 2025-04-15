@@ -69,6 +69,8 @@
           1000
         );
 
+        await host.snapshot('local');
+
         await host.sendKeys('Test feedback');
         const { activity } = await directLine.actPostActivity(async () => {
           await host.sendTab(1);
