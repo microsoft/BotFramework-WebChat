@@ -946,12 +946,14 @@ type StyleOptions = {
   fontColorPrimary?: string;
   fontColorSecondary?: string;
   primaryButtonBackgroundColor?: string;
+  primaryButtonFontColor?: string;
   primaryButtonBackgroundColorOnHover?: string;
   primaryButtonBackgroundColorOnActive?: string;
-  primaryButtonBackgroundCoorOnDisabled?: string;
+  primaryButtonBackgroundColorOnDisabled?: string;
   secondaryButtonBackgroundColor?: string;
   secondaryButtonBackgroundColorOnHover?: string;
   secondaryButtonBorderColor?: string;
+  secondaryButtonFontColor?: string;
   textBoxBackgroundColor?: string;
   textBoxBorderColor?: string;
   textBoxBorderColorOnFocus?: string;

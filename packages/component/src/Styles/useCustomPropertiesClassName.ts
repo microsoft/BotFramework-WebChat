@@ -31,10 +31,12 @@ export default function useCustomPropertiesClassName() {
       fontColorPrimary,
       fontColorSecondary,
       primaryButtonBackgroundColor,
+      primaryButtonFontColor,
       primaryButtonBackgroundColorOnHover,
       primaryButtonBackgroundColorOnActive,
-      primaryButtonBackgroundCoorOnDisabled,
+      primaryButtonBackgroundColorOnDisabled,
       secondaryButtonBackgroundColor,
+      secondaryButtonFontColor,
       secondaryButtonBackgroundColorOnHover,
       secondaryButtonBorderColor,
       textBoxBackgroundColor,
@@ -80,13 +82,13 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.FeedbackFormTitleColor}: ${fontColorPrimary};
   ${CustomPropertyNames.FeedbackFormDisclaimerColor}: ${fontColorSecondary};
   ${CustomPropertyNames.FeedbackFormSubmitButtonColor}: ${primaryButtonBackgroundColor};
-  ${CustomPropertyNames.FeedbackFormSubmitButtonFontColor}: ${fontColorPrimary};
+  ${CustomPropertyNames.FeedbackFormSubmitButtonFontColor}: ${primaryButtonFontColor};
   ${CustomPropertyNames.FeedbackFormSubmitButtonHoverColor}: ${primaryButtonBackgroundColorOnHover};
   ${CustomPropertyNames.FeedbackFormSubmitButtonActiveColor}: ${primaryButtonBackgroundColorOnActive};
-  ${CustomPropertyNames.FeedbackFormSubmitButtonDisabledColor}: ${primaryButtonBackgroundCoorOnDisabled};
+  ${CustomPropertyNames.FeedbackFormSubmitButtonDisabledColor}: ${primaryButtonBackgroundColorOnDisabled};
   ${CustomPropertyNames.FeedbackFormCancelButtonColor}: ${secondaryButtonBackgroundColor};
   ${CustomPropertyNames.FeedbackFormCancelButtonBorderColor}: ${secondaryButtonBorderColor};
-  ${CustomPropertyNames.FeedbackFormCancelButtonFontColor}: ${fontColorPrimary};
+  ${CustomPropertyNames.FeedbackFormCancelButtonFontColor}: ${secondaryButtonFontColor};
   ${CustomPropertyNames.FeedbackFormCancelButtonHoverColor}: ${secondaryButtonBackgroundColorOnHover};
   ${CustomPropertyNames.FeedbackFormSendBoxBackgroundColor}: ${textBoxBackgroundColor};
   ${CustomPropertyNames.FeedbackFormSendBoxBorderColor}: ${textBoxBorderColor};

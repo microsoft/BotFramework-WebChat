@@ -115,6 +115,7 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
 
           feedbackLoop?: {
             type: 'default';
+            disclaimer?: string;
           };
         }
       : Record<any, any>)
