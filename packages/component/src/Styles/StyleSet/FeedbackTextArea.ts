@@ -16,7 +16,7 @@ export default function createFeedbackTextAreaStyle() {
       lineHeight: '20px',
       padding: CSSTokens.FeedbackFormSendBoxPadding,
       position: 'relative',
-      height: `${CSSTokens.FeedbackFormSendBoxMinHeight}`,
+      minHeight: `${CSSTokens.FeedbackFormSendBoxMinHeight}`,
       minWidth: `${CSSTokens.FeedbackFormSendBoxMinWidth}`,
       '&:focus-within': {
         border: `1px solid ${CSSTokens.FeedbackFormSendBoxFocusBorderColor}`

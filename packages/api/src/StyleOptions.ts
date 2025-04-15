@@ -957,6 +957,8 @@ type StyleOptions = {
   textBoxBorderColorOnFocus?: string;
   textBoxBorderColorOnActive?: string;
   textBoxTextColor?: string;
+  textBoxMinHeight?: number;
+  textBoxMinWidth?: number;
   /**
    * Use continuous mode for speech recognition. Default to `false`.
    *

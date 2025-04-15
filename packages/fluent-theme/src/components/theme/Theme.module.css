@@ -225,7 +225,7 @@
   --webchat__textbox--border--selected: var(--webchat-colorCompoundBrandForeground1Hover);
   --webchat__textbox--min-height: 40px;
   --webchat__textbox--padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalS);
-  --webchat__textbox--min-width: 240px;
+  --webchat__textbox--min-width: 280px;
 }
 
 :global(.webchat-fluent).theme.variant-copilot :global(.webchat__css-custom-properties) {

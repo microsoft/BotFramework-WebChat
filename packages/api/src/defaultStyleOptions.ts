@@ -322,6 +322,8 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   textBoxBorderColorOnFocus: '',
   textBoxBorderColorOnActive: '',
   textBoxTextColor: '',
+  textBoxMinHeight: 40,
+  textBoxMinWidth: 280,
 
   // Speech recognition
   speechRecognitionContinuous: false

@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { defaultFeedbackEntities } from './private/DefaultFeedbackEntities';
 import { isDefaultFeedbackActivity } from './private/isDefaultFeedbackActivity';
 
@@ -37,11 +37,11 @@ const useGetMessageThing = (activity: WebChatActivity) =>
   useMemo(() => {
     const { messageThing, graph } = parseActivity(activity.entities);
     if (messageThing?.potentialAction) {
-      return { includeDefaultFeedback: false, messageThing, graph };
+      return { isFeedbackLoopSupported: false, messageThing, graph };
     } else if (isDefaultFeedbackActivity(activity)) {
-      return { includeDefaultFeedback: true, ...parseActivity([defaultFeedbackEntities]) };
+      return { isFeedbackLoopSupported: true, ...parseActivity([defaultFeedbackEntities]) };
     }
-    return { includeDefaultFeedback: false, messageThing, graph };
+    return { isFeedbackLoopSupported: false, messageThing, graph };
   }, [activity]);
 
 function ActivityFeedback({ activity }: ActivityFeedbackProps) {
@@ -50,8 +50,11 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
 
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [feedbackType, setFeedbackType] = useState<string | undefined>(undefined);
+  const resetFeedbackRef = useRef<() => void>();
 
-  const { messageThing, graph, includeDefaultFeedback } = useGetMessageThing(activity);
+  const { replyToId } = activity;
+
+  const { messageThing, graph, isFeedbackLoopSupported } = useGetMessageThing(activity);
 
   const feedbackActions = useMemo<ReadonlySet<OrgSchemaAction>>(() => {
     try {
@@ -76,48 +79,54 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
 
   const disclaimer = useMemo(
     () =>
-      includeDefaultFeedback && isDefaultFeedbackActivity(activity)
+      isFeedbackLoopSupported && isDefaultFeedbackActivity(activity)
         ? activity.channelData.feedbackLoop?.disclaimer
         : undefined,
-    [activity, includeDefaultFeedback]
+    [activity, isFeedbackLoopSupported]
   );
 
-  const onFeedbackTypeChange = useCallback((feedbackType?: string) => {
-    if (!feedbackType) {
-      setFeedbackType(undefined);
-      setShowFeedbackForm(false);
-    } else {
-      setFeedbackType(feedbackType);
-      setShowFeedbackForm(true);
+  const onFeedbackTypeChange = useCallback((newType?: string) => {
+    setFeedbackType(newType);
+    setShowFeedbackForm(newType !== undefined);
+    if (newType === undefined) {
+      resetFeedbackRef.current?.();
     }
   }, []);
 
-  const FeedbackComponent = (
-    <Feedback
-      actions={feedbackActions}
-      className={classNames({
-        'webchat__thumb-button--large': feedbackActionsPlacement === 'activity-actions'
-      })}
-      handleFeedbackActionClick={onFeedbackTypeChange}
-      isFeedbackFormSupported={includeDefaultFeedback}
-    />
+  const FeedbackComponent = useMemo(
+    () => (
+      <Feedback
+        actions={feedbackActions}
+        className={classNames({
+          'webchat__thumb-button--large': feedbackActionsPlacement === 'activity-actions'
+        })}
+        handleFeedbackActionClick={onFeedbackTypeChange}
+        isFeedbackFormSupported={isFeedbackLoopSupported}
+        resetFeedbackRef={resetFeedbackRef}
+      />
+    ),
+    [feedbackActions, feedbackActionsPlacement, isFeedbackLoopSupported, onFeedbackTypeChange]
   );
 
-  const FeedbackFormComponent = (
-    <FeedbackForm
-      disclaimer={disclaimer}
-      feedbackType={feedbackType as FeedbackType}
-      handeFeedbackTypeChange={onFeedbackTypeChange}
-    />
+  const FeedbackFormComponent = useMemo(
+    () => (
+      <FeedbackForm
+        disclaimer={disclaimer}
+        feedbackType={feedbackType as FeedbackType}
+        handeFeedbackTypeChange={onFeedbackTypeChange}
+        replyToId={replyToId}
+      />
+    ),
+    [disclaimer, feedbackType, onFeedbackTypeChange, replyToId]
   );
 
-  if (feedbackActionsPlacement === 'activity-actions' && showFeedbackForm && feedbackType) {
+  if (feedbackActionsPlacement === 'activity-actions' && isFeedbackLoopSupported) {
     return (
       <div className={classNames('webchat__feedback-form__root__container', rootClassName)}>
         <div className={classNames('webchat__feedback-form__root__container__child', rootClassName)}>
           {FeedbackComponent}
         </div>
-        {FeedbackFormComponent}
+        {showFeedbackForm && feedbackType && FeedbackFormComponent}
       </div>
     );
   }

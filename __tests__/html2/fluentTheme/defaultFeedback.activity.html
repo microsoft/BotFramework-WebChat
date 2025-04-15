@@ -39,6 +39,7 @@
           id: 'a-00000',
           timestamp: 0,
           text: 'This is a test message to show feedback buttons',
+          replyToId: 'a-00001',
           from: {
             role: 'bot'
           },
@@ -54,30 +55,40 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        // pageElements.byTestId('send box text area').focus();
-        // await host.sendKeys('ENTER');
-        // await host.sendKeys('Test feedback');
+        pageElements.byTestId('send box text area').focus();
+        await host.sendShiftTab(2);
 
-        // const { activity } = await directLine.actPostActivity(async () => {
-        //   await host.sendTab(1);
-        //   await host.sendKeys('ENTER');
-        // });
+        await host.sendKeys('ENTER');
+        await host.sendKeys('ENTER');
 
-        // expect(activity).toEqual(
-        //   expect.objectContaining({
-        //     type: 'invoke',
-        //     name: 'message/submitAction',
-        //     value: {
-        //       actionName: 'feedback',
-        //       actionValue: {
-        //         reaction: 'like',
-        //         feedback: {
-        //           feedbackText: expect.any(String)
-        //         }
-        //       }
-        //     }
-        //   })
-        // );
+        await pageConditions.became(
+          'feedback form is open',
+          () => document.activeElement === pageElements.byTestId('feedback sendbox'),
+          1000
+        );
+
+        await host.sendKeys('Test feedback');
+        const { activity } = await directLine.actPostActivity(async () => {
+          await host.sendTab(1);
+          await host.sendKeys('ENTER');
+        });
+
+        expect(activity).toEqual(
+          expect.objectContaining({
+            type: 'invoke',
+            name: 'message/submitAction',
+            replyToId: 'a-00001',
+            value: {
+              actionName: 'feedback',
+              actionValue: {
+                reaction: 'like',
+                feedback: {
+                  feedbackText: expect.any(String)
+                }
+              }
+            }
+          })
+        );
       });
     </script>
   </body>

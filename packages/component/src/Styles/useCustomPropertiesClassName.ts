@@ -41,6 +41,8 @@ export default function useCustomPropertiesClassName() {
       textBoxBorderColor,
       textBoxBorderColorOnFocus,
       textBoxBorderColorOnActive,
+      textBoxMinHeight,
+      textBoxMinWidth,
       textBoxTextColor,
       fontSizeSmall,
       markdownExternalLinkIconImage,
@@ -91,8 +93,8 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.FeedbackFormSendBoxFontColor}: ${textBoxTextColor};
   ${CustomPropertyNames.FeedbackFormSendBoxFocusBorderColor}: ${textBoxBorderColorOnFocus};
   ${CustomPropertyNames.FeedbackFormSendBoxActiveBorderColor}: ${textBoxBorderColorOnActive};
-  ${CustomPropertyNames.FeedbackFormSendBoxMinHeight}: ${bubbleMinHeight}px;
-  ${CustomPropertyNames.FeedbackFormSendBoxMinWidth}: ${bubbleAttachmentMinWidth}px;
+  ${CustomPropertyNames.FeedbackFormSendBoxMinHeight}: ${textBoxMinHeight}px;
+  ${CustomPropertyNames.FeedbackFormSendBoxMinWidth}: ${textBoxMinWidth}px;
   ${CustomPropertyNames.FeedbackFormSendBoxPadding}: ${paddingRegular}px;
 }
 `;

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, useCallback, useRef, FormEventHandler } from 'react';
+import React, { memo, useEffect, useState, useCallback, useRef } from 'react';
 import { hooks } from 'botframework-webchat-api';
 import useStyleSet from '../../hooks/useStyleSet';
 import classNames from 'classnames';
@@ -20,11 +20,13 @@ const MultiLineTextBox = withEmoji(TextArea);
 function FeedbackForm({
   feedbackType,
   disclaimer,
-  handeFeedbackTypeChange
+  handeFeedbackTypeChange,
+  replyToId
 }: Readonly<{
   feedbackType: FeedbackType;
   disclaimer?: string;
   handeFeedbackTypeChange: () => void;
+  replyToId?: string;
 }>) {
   const [{ feedbackForm }] = useStyleSet();
   const localize = useLocalizer();
@@ -40,6 +42,7 @@ function FeedbackForm({
         postActivity({
           type: 'invoke',
           name: 'message/submitAction',
+          replyToId,
           value: {
             actionName: 'feedback',
             actionValue: {
@@ -54,7 +57,7 @@ function FeedbackForm({
         handeFeedbackTypeChange();
       }
     },
-    [feedback, postActivity, feedbackType, handeFeedbackTypeChange]
+    [feedback, postActivity, replyToId, feedbackType, handeFeedbackTypeChange]
   );
 
   useEffect(() => {
@@ -69,9 +72,9 @@ function FeedbackForm({
     handeFeedbackTypeChange();
   }, [handeFeedbackTypeChange]);
 
-  const handleChange: FormEventHandler<HTMLTextAreaElement> = useCallback(
-    event => {
-      setFeedback(event.currentTarget.value);
+  const handleChange = useCallback(
+    (value: string) => {
+      setFeedback(value);
     },
     [setFeedback]
   );
@@ -86,7 +89,7 @@ function FeedbackForm({
       <form className={classNames('feedback-form', feedbackForm + '')} onSubmit={handleSubmit}>
         <MultiLineTextBox
           data-testid={testIds.feedbackSendBox}
-          onInput={handleChange}
+          onChange={handleChange}
           placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
           ref={feedbackTextAreaRef}
           value={feedback}

@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { forwardRef, Fragment, useCallback, type FormEventHandler, type KeyboardEventHandler } from 'react';
+import React, { forwardRef, Fragment, useCallback, type ChangeEventHandler, type KeyboardEventHandler } from 'react';
 import useStyleSet from '../../hooks/useStyleSet';
 
 const { useUIState } = hooks;
@@ -21,7 +21,7 @@ const TextArea = forwardRef<
      *   This ensures the flow of focus did not sent to document body
      */
     hidden?: boolean | undefined;
-    onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
+    onChange?: ChangeEventHandler<HTMLTextAreaElement> | undefined;
     placeholder?: string | undefined;
     startRows?: number | undefined;
     value?: string | undefined;
@@ -86,7 +86,7 @@ const TextArea = forwardRef<
               feedbackTextArea + ''
             )}
             data-testid={props['data-testid']}
-            onInput={props.onInput}
+            onChange={props.onChange}
             onKeyDown={handleKeyDown}
             placeholder={props.placeholder}
             readOnly={disabled}
