@@ -56,7 +56,7 @@ export default function createFeedbackFormStyle() {
       cursor: 'not-allowed'
     },
     '&.feedback-form__button__cancel': {
-      backgroundColor: '#ffffff',
+      backgroundColor: CSSTokens.FeedbackFormCancelButtonColor,
       borderRadius: '4px',
       cursor: 'pointer',
       fontSize: '12px',

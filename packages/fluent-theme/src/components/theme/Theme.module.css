@@ -211,14 +211,14 @@
   --webchat__border-animation--color-1: #464feb;
   --webchat__border-animation--color-2: #47cffa;
   --webchat__border-animation--color-3: #b47cf8;
-  --webchat__button--text--primary: #ffffff;
-  --webchat__button--text--primary--hover: #ffffff;
+  --webchat__button--text--primary: var(--webchat-colorNeutralBackground1);
+  --webchat__button--text--primary--hover: var(--webchat-colorNeutralBackground1);
   --webchat__button--text--primary--disabled: var(--webchat-colorNeutralForeground5);
   --webchat__button--primary--border: var(--webchat-colorBrandForeground1);
   --webchat__button--primary--hover: var(--webchat-colorBrandForeground2Hover);
   --webchat__button--primary--active: var(--webchat-colorBrandForeground2Pressed);
   --webchat__button--primary--disabled: var(--webchat-colorNeutralBackground5);
-  --webchat__button--secondary: #ffffff;
+  --webchat__button--secondary: var(--webchat-colorNeutralBackground1);
   --webchat__button--secondary--border: var(--webchat-colorNeutralStroke1);
   --webchat__button--text--secondary: var(--webchat-colorGray200);
   --webchat__button--text--secondary--hover: var(--webchat-colorNeutralForeground1Hover);
