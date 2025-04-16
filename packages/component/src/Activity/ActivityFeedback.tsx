@@ -36,9 +36,7 @@ const parseActivity = (entities?: WebChatActivity['entities']) => {
 const useGetMessageThing = (activity: WebChatActivity) =>
   useMemo(() => {
     const { messageThing, graph } = parseActivity(activity.entities);
-    if (messageThing?.potentialAction) {
-      return { isFeedbackLoopSupported: false, messageThing, graph };
-    } else if (isDefaultFeedbackActivity(activity)) {
+    if (isDefaultFeedbackActivity(activity)) {
       return { isFeedbackLoopSupported: true, ...parseActivity([defaultFeedbackEntities]) };
     }
     return { isFeedbackLoopSupported: false, messageThing, graph };
@@ -51,8 +49,6 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
   const [feedbackType, setFeedbackType] = useState<string | undefined>(undefined);
   const resetFeedbackRef = useRef<() => void>();
-
-  const { id } = activity;
 
   const { messageThing, graph, isFeedbackLoopSupported } = useGetMessageThing(activity);
 
@@ -114,10 +110,10 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
         disclaimer={disclaimer}
         feedbackType={feedbackType as FeedbackType}
         handeFeedbackTypeChange={onFeedbackTypeChange}
-        replyToId={id}
+        replyToId={activity.id}
       />
     ),
-    [disclaimer, feedbackType, id, onFeedbackTypeChange]
+    [activity.id, disclaimer, feedbackType, onFeedbackTypeChange]
   );
 
   if (feedbackActionsPlacement === 'activity-actions' && isFeedbackLoopSupported) {
