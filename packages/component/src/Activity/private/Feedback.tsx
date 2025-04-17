@@ -1,96 +1,53 @@
 import { hooks } from 'botframework-webchat-api';
 import { type OrgSchemaAction } from 'botframework-webchat-core';
-import React, { Fragment, memo, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
-import { useRefFrom } from 'use-ref-from';
+import React, { Fragment, memo, useMemo, type PropsWithChildren } from 'react';
 
 import FeedbackVoteButton from './VoteButton';
 
-const { usePonyfill, usePostActivity, useLocalizer } = hooks;
+const { useLocalizer } = hooks;
 
 type Props = Readonly<
   PropsWithChildren<{
     actions: ReadonlySet<OrgSchemaAction>;
     className?: string | undefined;
-    isFeedbackFormSupported?: boolean;
-    handleFeedbackActionClick: (feedbackType?: string) => void;
-    resetFeedbackRef: React.MutableRefObject<() => void>;
+    onHandleFeedbackActionClick?: (action: OrgSchemaAction) => void;
+    selectedAction?: OrgSchemaAction | undefined;
   }>
 >;
 
-const DEBOUNCE_TIMEOUT = 500;
+const Feedback = memo(({ actions, className, onHandleFeedbackActionClick, selectedAction }: Props) => {
+  const localize = useLocalizer();
 
-const Feedback = memo(
-  ({ actions, className, isFeedbackFormSupported, handleFeedbackActionClick, resetFeedbackRef }: Props) => {
-    const [{ clearTimeout, setTimeout }] = usePonyfill();
-    const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
-    const postActivity = usePostActivity();
-    const localize = useLocalizer();
+  const actionProps = useMemo(
+    () =>
+      [...actions].some(action => action.actionStatus === 'CompletedActionStatus')
+        ? {
+            disabled: true,
+            title: localize('VOTE_COMPLETE_ALT')
+          }
+        : undefined,
+    [actions, localize]
+  );
 
-    const postActivityRef = useRefFrom(postActivity);
-
-    useEffect(() => {
-      resetFeedbackRef.current = () => {
-        setSelectedAction(undefined);
-      };
-      // Only want to set the ref once
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-      if (!selectedAction) {
-        return;
-      }
-
-      if (isFeedbackFormSupported) {
-        handleFeedbackActionClick(selectedAction['@type']);
-        return;
-      }
-
-      const timeout = setTimeout(
-        () =>
-          // TODO: We should update this to use W3C Hydra.1
-          postActivityRef.current({
-            entities: [selectedAction],
-            name: 'webchat:activity-status/feedback',
-            type: 'event'
-          } as any),
-        DEBOUNCE_TIMEOUT
-      );
-
-      return () => clearTimeout(timeout);
-    }, [clearTimeout, isFeedbackFormSupported, handleFeedbackActionClick, postActivityRef, selectedAction, setTimeout]);
-
-    const actionProps = useMemo(
-      () =>
-        [...actions].some(action => action.actionStatus === 'CompletedActionStatus')
-          ? {
-              disabled: true,
-              title: localize('VOTE_COMPLETE_ALT')
-            }
-          : undefined,
-      [actions, localize]
-    );
-
-    return (
-      <Fragment>
-        {[...actions].map((action, index) => (
-          <FeedbackVoteButton
-            action={action}
-            className={className}
-            key={action['@id'] || index}
-            onClick={setSelectedAction}
-            pressed={
-              selectedAction === action ||
-              action.actionStatus === 'CompletedActionStatus' ||
-              action.actionStatus === 'ActiveActionStatus'
-            }
-            {...actionProps}
-          />
-        ))}
-      </Fragment>
-    );
-  }
-);
+  return (
+    <Fragment>
+      {[...actions].map((action, index) => (
+        <FeedbackVoteButton
+          action={action}
+          className={className}
+          key={action['@id'] || index}
+          onClick={onHandleFeedbackActionClick}
+          pressed={
+            selectedAction === action ||
+            action.actionStatus === 'CompletedActionStatus' ||
+            action.actionStatus === 'ActiveActionStatus'
+          }
+          {...actionProps}
+        />
+      ))}
+    </Fragment>
+  );
+});
 
 Feedback.displayName = 'ActivityStatusFeedback';
 

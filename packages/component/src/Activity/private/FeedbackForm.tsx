@@ -13,51 +13,59 @@ const FeedbackOptions = {
   DislikeAction: 'dislike'
 } as const;
 
-export type FeedbackType = keyof typeof FeedbackOptions;
-
 const MultiLineTextBox = withEmoji(TextArea);
 
 function FeedbackForm({
   feedbackType,
   disclaimer,
-  handeFeedbackTypeChange,
+  onResetFeedbackForm,
   replyToId
 }: Readonly<{
-  feedbackType: FeedbackType;
+  feedbackType: string;
   disclaimer?: string;
-  handeFeedbackTypeChange: () => void;
+  onResetFeedbackForm: () => void;
   replyToId?: string;
 }>) {
-  const [{ feedbackForm }] = useStyleSet();
-  const localize = useLocalizer();
-  const [feedback, setFeedback] = useState('');
-  const [hasFocused, setHasFocused] = useState(false);
-  const postActivity = usePostActivity();
   const feedbackTextAreaRef = useRef<HTMLTextAreaElement>(null);
+  const [{ feedbackForm }] = useStyleSet();
+  const [hasFocused, setHasFocused] = useState(false);
+  const localize = useLocalizer();
+  const postActivity = usePostActivity();
+  const [userFeedback, setUserFeedback] = useState('');
+
+  const handleReset = useCallback(() => {
+    setUserFeedback('');
+    onResetFeedbackForm();
+    setHasFocused(false);
+  }, [onResetFeedbackForm]);
 
   const handleSubmit = useCallback(
     event => {
       event.preventDefault();
-      if (feedback) {
-        postActivity({
-          type: 'invoke',
-          name: 'message/submitAction',
-          replyToId,
-          value: {
-            actionName: 'feedback',
-            actionValue: {
-              reaction: feedbackType === 'LikeAction' ? FeedbackOptions.LikeAction : FeedbackOptions.DislikeAction,
-              feedback: {
-                feedbackText: feedback
-              }
+      postActivity({
+        type: 'invoke',
+        name: 'message/submitAction',
+        replyToId,
+        value: {
+          actionName: 'feedback',
+          actionValue: {
+            reaction: feedbackType === 'LikeAction' ? FeedbackOptions.LikeAction : FeedbackOptions.DislikeAction,
+            feedback: {
+              feedbackText: userFeedback
             }
           }
-        } as any);
-        setFeedback('');
-        handeFeedbackTypeChange();
-      }
+        }
+      } as any);
+      handleReset();
     },
-    [feedback, postActivity, replyToId, feedbackType, handeFeedbackTypeChange]
+    [postActivity, replyToId, feedbackType, handleReset, userFeedback]
+  );
+
+  const handleChange = useCallback(
+    (value: string) => {
+      setUserFeedback(value);
+    },
+    [setUserFeedback]
   );
 
   useEffect(() => {
@@ -66,22 +74,6 @@ function FeedbackForm({
       feedbackTextAreaRef.current.focus();
     }
   }, [feedbackTextAreaRef, hasFocused]);
-
-  const handleCancel = useCallback(() => {
-    setFeedback('');
-    handeFeedbackTypeChange();
-  }, [handeFeedbackTypeChange]);
-
-  const handleChange = useCallback(
-    (value: string) => {
-      setFeedback(value);
-    },
-    [setFeedback]
-  );
-
-  if (!feedbackType) {
-    return null;
-  }
 
   return (
     <div>
@@ -92,7 +84,7 @@ function FeedbackForm({
           onChange={handleChange}
           placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
           ref={feedbackTextAreaRef}
-          value={feedback}
+          value={userFeedback}
         />
         {disclaimer && <span className={classNames('feedback-form__caption1', feedbackForm + '')}>{disclaimer}</span>}
         <div className={classNames('feedback-form__container', feedbackForm + '')}>
@@ -101,7 +93,7 @@ function FeedbackForm({
           </button>
           <button
             className={classNames('feedback-form__button__cancel', feedbackForm + '')}
-            onClick={handleCancel}
+            onClick={handleReset}
             type="button"
           >
             {localize('FEEDBACK_FORM_CANCEL_BUTTON_LABEL')}
