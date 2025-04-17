@@ -17,12 +17,12 @@ type ActivityFeedbackProps = Readonly<{
 }>;
 
 const ROOT_STYLE = {
-  '&.webchat__feedback-form__root__container': {
+  '&.webchat__feedback-form__root-container': {
     display: 'flex',
     flexDirection: 'column',
     gap: '0.5rem'
   },
-  '&.webchat__feedback-form__root__container__child': {
+  '&.webchat__feedback-form__root-container__child': {
     display: 'flex'
   }
 };
@@ -118,8 +118,8 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
 
   if (feedbackActionsPlacement === 'activity-actions' && isFeedbackLoopSupported) {
     return (
-      <div className={classNames('webchat__feedback-form__root__container', rootClassName)}>
-        <div className={classNames('webchat__feedback-form__root__container__child', rootClassName)}>
+      <div className={classNames('webchat__feedback-form__root-container', rootClassName)}>
+        <div className={classNames('webchat__feedback-form__root-container__child', rootClassName)}>
           {FeedbackComponent}
         </div>
         {showFeedbackForm && feedbackType && FeedbackFormComponent}

@@ -308,31 +308,15 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
 
   feedbackActionsPlacement: 'activity-status' as const,
 
-  fontColorPrimary: 'black',
-  fontColorSecondary: 'black',
-
-  primaryButtonBackgroundColor: DEFAULT_ACCENT,
-  primaryButtonFontColor: 'white',
-  primaryButtonBorderColor: DEFAULT_ACCENT,
-  primaryButtonBackgroundColorOnHover: '#004a98',
-  primaryButtonBackgroundColorOnActive: DEFAULT_ACCENT,
-  primaryButtonBackgroundColorOnDisabled: DEFAULT_ACCENT,
-  primaryButtonFontColorOnHover: 'white',
-  primaryButtonFontColorOnDisabled: 'white',
-
-  secondaryButtonFontColor: 'black',
-  secondaryButtonBackgroundColor: 'White',
-  secondaryButtonBackgroundColorOnHover: DEFAULT_SUBTLE,
-  secondaryButtonBorderColor: DEFAULT_SUBTLE,
-  secondaryButtonFontColorOnHover: 'white',
-
-  textBoxBackgroundColor: 'White',
-  textBoxBorderColor: DEFAULT_SUBTLE,
-  textBoxBorderColorOnFocus: DEFAULT_SUBTLE,
-  textBoxBorderColorOnActive: DEFAULT_ACCENT,
-  textBoxTextColor: 'black',
-  textBoxMinHeight: 60,
-  textBoxMinWidth: 280,
+  feedbackFormPrimaryColor: DEFAULT_ACCENT,
+  feedbackFormPrimarySubmittedColor: '#004a98',
+  feedbackFormLightestColor: 'white',
+  feedbackFormNeutralLightColor: '#E8E8E8',
+  feedbackFormNeutralMediumColor: DEFAULT_SUBTLE,
+  feedbackFormNeutralDarkColor: '#373435',
+  feedbackTextBoxMinHeight: 60,
+  feedbackTextBoxMinWidth: 280,
+  feedbackTextBoxPadding: '8px 12px',
 
   // Speech recognition
   speechRecognitionContinuous: false

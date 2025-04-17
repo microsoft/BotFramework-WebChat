@@ -7,21 +7,21 @@ export default function createFeedbackTextAreaStyle() {
       gridTemplateAreas: `'main'`,
       maxHeight: '200px',
       overflow: 'hidden',
-      backgroundColor: CSSTokens.FeedbackFormSendBoxBackgroundColor,
+      backgroundColor: CSSTokens.FeedbackFormLightest,
       borderRadius: '4px',
-      border: `1px solid ${CSSTokens.FeedbackFormSendBoxBorderColor}`,
+      border: `1px solid ${CSSTokens.FeedbackFormNeutralLight}`,
       fontFamily: CSSTokens.FontPrimary,
       fontSize: '14px',
       gap: '6px',
       lineHeight: '20px',
-      padding: CSSTokens.FeedbackFormSendBoxPadding,
+      padding: CSSTokens.FeedbackFormTextBoxPadding,
       position: 'relative',
-      minHeight: `${CSSTokens.FeedbackFormSendBoxMinHeight}`,
-      minWidth: `${CSSTokens.FeedbackFormSendBoxMinWidth}`,
+      minHeight: `${CSSTokens.FeedbackFormTextBoxMinHeight}`,
+      minWidth: `${CSSTokens.FeedbackFormTextBoxMinWidth}`,
       '&::after': {
         borderBottomLeftRadius: '4px',
         borderBottomRightRadius: '4px',
-        borderBottom: `3px solid ${CSSTokens.FeedbackFormSendBoxActiveBorderColor}`,
+        borderBottom: `3px solid ${CSSTokens.FeedbackFormNeutralLight}`,
         bottom: '-1px',
         clipPath: 'inset(calc(100% - 3px) 50% 0 50%)',
         content: '""',
@@ -32,7 +32,7 @@ export default function createFeedbackTextAreaStyle() {
         transition: 'clip-path 0 cubic-bezier(1, 0, 1, 1)'
       },
       '&:focus-within': {
-        border: `1px solid ${CSSTokens.FeedbackFormSendBoxFocusBorderColor}`
+        border: `1px solid ${CSSTokens.FeedbackFormPrimary}`
       },
       '&:focus-within::after': {
         clipPath: 'inset(calc(100% - 3px) 0 0 0)',
@@ -66,13 +66,13 @@ export default function createFeedbackTextAreaStyle() {
     '&.sendbox__text-area-input--scroll': {
       scrollbarColor: 'unset',
       scrollbarWidth: 'unset',
-      MozScrollbarColor: `${CSSTokens.FeedbackFormSubmitButtonDisabledColor} ${CSSTokens.ColorSubtle}`,
+      MozScrollbarColor: `${CSSTokens.FeedbackFormNeutralDark} ${CSSTokens.ColorSubtle}`,
       MozScrollbarWidth: 'thin',
       '&::-webkit-scrollbar': {
         width: '8px'
       },
       '&::-webkit-scrollbar-track': {
-        backgroundColor: CSSTokens.FeedbackFormSubmitButtonDisabledColor,
+        backgroundColor: CSSTokens.FeedbackFormNeutralDark,
         borderRadius: '16px'
       },
       '&::-webkit-scrollbar-thumb': {
@@ -80,7 +80,7 @@ export default function createFeedbackTextAreaStyle() {
         borderRadius: '16px'
       },
       '&::-webkit-scrollbar-corner': {
-        backgroundColor: CSSTokens.FeedbackFormSubmitButtonDisabledColor
+        backgroundColor: CSSTokens.FeedbackFormNeutralDark
       }
     }
   };

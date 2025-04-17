@@ -932,7 +932,7 @@ type StyleOptions = {
   /**
    * (EXPERIMENTAL) Feedback buttons placement
    *
-   * - `'activity-actions'` - place feedback buttons inside activity actions
+   * - `'activity-actions'` - place feedback buttons inside activity actions - will show feedback form
    * - `'activity-status'` - place feedback buttons inside activity status
    *
    * @default 'activity-status'
@@ -943,31 +943,16 @@ type StyleOptions = {
    */
   feedbackActionsPlacement?: 'activity-actions' | 'activity-status';
 
-  fontColorPrimary?: string;
-  fontColorSecondary?: string;
+  feedbackFormPrimaryColor?: string;
+  feedbackFormPrimarySubmittedColor?: string;
+  feedbackFormLightestColor?: string;
+  feedbackFormNeutralLightColor?: string;
+  feedbackFormNeutralMediumColor?: string;
+  feedbackFormNeutralDarkColor?: string;
+  feedbackTextBoxMinHeight?: number;
+  feedbackTextBoxMinWidth?: number;
+  feedbackTextBoxPadding?: string;
 
-  primaryButtonBackgroundColor?: string;
-  primaryButtonFontColor?: string;
-  primaryButtonBorderColor?: string;
-  primaryButtonBackgroundColorOnHover?: string;
-  primaryButtonBackgroundColorOnActive?: string;
-  primaryButtonBackgroundColorOnDisabled?: string;
-  primaryButtonFontColorOnHover?: string;
-  primaryButtonFontColorOnDisabled?: string;
-
-  secondaryButtonBackgroundColor?: string;
-  secondaryButtonBackgroundColorOnHover?: string;
-  secondaryButtonBorderColor?: string;
-  secondaryButtonFontColor?: string;
-  secondaryButtonFontColorOnHover?: string;
-
-  textBoxBackgroundColor?: string;
-  textBoxBorderColor?: string;
-  textBoxBorderColorOnFocus?: string;
-  textBoxBorderColorOnActive?: string;
-  textBoxTextColor?: string;
-  textBoxMinHeight?: number;
-  textBoxMinWidth?: number;
   /**
    * Use continuous mode for speech recognition. Default to `false`.
    *
