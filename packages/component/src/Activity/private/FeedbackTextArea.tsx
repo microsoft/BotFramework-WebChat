@@ -93,7 +93,7 @@ const TextArea = forwardRef<
             ref={ref}
             rows={props.startRows ?? 1}
             // eslint-disable-next-line no-magic-numbers
-            tabIndex={props.hidden ? -1 : undefined}
+            tabIndex={props.hidden || disabled ? -1 : undefined}
             value={props.value}
           />
         </Fragment>
