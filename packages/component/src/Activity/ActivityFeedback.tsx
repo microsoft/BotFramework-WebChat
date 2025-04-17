@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState } from 'react';
 import { defaultFeedbackEntities } from './private/DefaultFeedbackEntities';
 import { hasFeedbackLoop, getDisclaimer } from './private/feedbackActivity.util';
 
@@ -9,9 +9,8 @@ import Feedback from './private/Feedback';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
 import FeedbackForm from './private/FeedbackForm';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
-import { useRefFrom } from 'use-ref-from';
 
-const { useStyleOptions, usePostActivity, usePonyfill } = hooks;
+const { useStyleOptions } = hooks;
 
 type ActivityFeedbackProps = Readonly<{
   activity: WebChatActivity;
@@ -43,15 +42,9 @@ const useGetMessageThing = (activity: WebChatActivity) =>
     return { isFeedbackLoopSupported: false, messageThing, graph };
   }, [activity]);
 
-const DEBOUNCE_TIMEOUT = 500;
-
 function ActivityFeedback({ activity }: ActivityFeedbackProps) {
-  const [{ clearTimeout, setTimeout }] = usePonyfill();
-  const postActivity = usePostActivity();
-
   const [{ feedbackActionsPlacement }] = useStyleOptions();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
-  const postActivityRef = useRefFrom(postActivity);
 
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
 
@@ -78,28 +71,12 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     return Object.freeze(new Set([] as OrgSchemaAction[]));
   }, [graph, messageThing?.potentialAction]);
 
-  const handleFeedbackActionClick = useCallback((action?: OrgSchemaAction) => {
-    setSelectedAction(action);
-  }, []);
-
-  useEffect(() => {
-    if (!selectedAction) {
-      return;
-    }
-
-    const timeout = setTimeout(
-      () =>
-        // TODO: We should update this to use W3C Hydra.1
-        postActivityRef.current({
-          entities: [selectedAction],
-          name: 'webchat:activity-status/feedback',
-          type: 'event'
-        } as any),
-      DEBOUNCE_TIMEOUT
-    );
-
-    return () => clearTimeout(timeout);
-  }, [clearTimeout, postActivityRef, selectedAction, setTimeout]);
+  const handleFeedbackActionClick = useCallback(
+    (action?: OrgSchemaAction) => {
+      setSelectedAction(action === selectedAction ? undefined : action);
+    },
+    [selectedAction]
+  );
 
   const FeedbackComponent = useMemo(
     () => (
@@ -108,10 +85,12 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
         className={classNames({
           'webchat__thumb-button--large': feedbackActionsPlacement === 'activity-actions'
         })}
+        isFeedbackFormSupported={isFeedbackLoopSupported}
         onHandleFeedbackActionClick={handleFeedbackActionClick}
+        selectedAction={selectedAction}
       />
     ),
-    [feedbackActions, feedbackActionsPlacement, handleFeedbackActionClick]
+    [feedbackActions, feedbackActionsPlacement, handleFeedbackActionClick, isFeedbackLoopSupported, selectedAction]
   );
 
   const FeedbackFormComponent = useMemo(

@@ -21,7 +21,7 @@ export default function createFeedbackTextAreaStyle() {
       '&::after': {
         borderBottomLeftRadius: '4px',
         borderBottomRightRadius: '4px',
-        borderBottom: `3px solid ${CSSTokens.FeedbackFormNeutralLight}`,
+        borderBottom: `3px solid ${CSSTokens.FeedbackFormPrimary}`,
         bottom: '-1px',
         clipPath: 'inset(calc(100% - 3px) 50% 0 50%)',
         content: '""',
@@ -32,7 +32,7 @@ export default function createFeedbackTextAreaStyle() {
         transition: 'clip-path 0 cubic-bezier(1, 0, 1, 1)'
       },
       '&:focus-within': {
-        border: `1px solid ${CSSTokens.FeedbackFormPrimary}`
+        border: `1px solid ${CSSTokens.FeedbackFormNeutralLight}`
       },
       '&:focus-within::after': {
         clipPath: 'inset(calc(100% - 3px) 0 0 0)',

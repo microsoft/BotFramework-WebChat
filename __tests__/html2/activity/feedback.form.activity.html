@@ -66,7 +66,7 @@
         await host.snapshot('local');
 
         // Dismiss like button
-        await host.sendShiftTab(1);
+        await host.sendShiftTab(2);
         await host.sendKeys('ENTER');
 
         await host.snapshot('local');
@@ -102,6 +102,9 @@
         );
 
         await host.sendKeys('Test feedback');
+
+        await host.snapshot('local');
+
         const { activity } = await directLine.actPostActivity(async () => {
           await host.sendTab(1);
           await host.sendKeys('ENTER');
@@ -116,7 +119,7 @@
               actionValue: {
                 reaction: 'dislike',
                 feedback: {
-                  feedbackText: expect.any('Test feedback')
+                  feedbackText: 'Test feedback'
                 }
               }
             }
