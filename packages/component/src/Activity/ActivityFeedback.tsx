@@ -145,6 +145,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     );
   }
 
+  // If placement is not inline with activity, we don't show the feedback form.
   return FeedbackComponent;
 }
 
