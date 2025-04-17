@@ -3,7 +3,7 @@ import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } fr
 import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { defaultFeedbackEntities } from './private/DefaultFeedbackEntities';
-import { isDefaultFeedbackActivity } from './private/isDefaultFeedbackActivity';
+import { hasFeedbackLoop, getDisclaimer } from './private/feedbackActivity.util';
 
 import Feedback from './private/Feedback';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
@@ -37,7 +37,7 @@ const parseActivity = (entities?: WebChatActivity['entities']) => {
 const useGetMessageThing = (activity: WebChatActivity) =>
   useMemo(() => {
     const { messageThing, graph } = parseActivity(activity.entities);
-    if (isDefaultFeedbackActivity(activity)) {
+    if (hasFeedbackLoop(activity)) {
       return { isFeedbackLoopSupported: true, ...parseActivity([defaultFeedbackEntities]) };
     }
     return { isFeedbackLoopSupported: false, messageThing, graph };
@@ -78,14 +78,6 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     return Object.freeze(new Set([] as OrgSchemaAction[]));
   }, [graph, messageThing?.potentialAction]);
 
-  const disclaimer = useMemo(
-    () =>
-      isFeedbackLoopSupported && isDefaultFeedbackActivity(activity)
-        ? activity.channelData.feedbackLoop?.disclaimer
-        : undefined,
-    [activity, isFeedbackLoopSupported]
-  );
-
   const handleFeedbackActionClick = useCallback((action?: OrgSchemaAction) => {
     setSelectedAction(action);
   }, []);
@@ -125,13 +117,13 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   const FeedbackFormComponent = useMemo(
     () => (
       <FeedbackForm
-        disclaimer={disclaimer}
+        disclaimer={getDisclaimer(activity)}
         feedbackType={selectedAction?.['@type']}
         onResetFeedbackForm={handleFeedbackActionClick}
         replyToId={activity.id}
       />
     ),
-    [activity.id, disclaimer, handleFeedbackActionClick, selectedAction]
+    [activity, handleFeedbackActionClick, selectedAction]
   );
 
   if (feedbackActionsPlacement === 'activity-actions' && isFeedbackLoopSupported) {
