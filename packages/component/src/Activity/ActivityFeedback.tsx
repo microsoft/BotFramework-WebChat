@@ -33,22 +33,20 @@ const parseActivity = (entities?: WebChatActivity['entities']) => {
   return { graph, messageThing };
 };
 
-const useGetMessageThing = (activity: WebChatActivity) =>
-  useMemo(() => {
-    const { messageThing, graph } = parseActivity(activity.entities);
-    if (hasFeedbackLoop(activity)) {
-      return { isFeedbackLoopSupported: true, ...parseActivity([defaultFeedbackEntities]) };
-    }
-    return { isFeedbackLoopSupported: false, messageThing, graph };
-  }, [activity]);
-
 function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   const [{ feedbackActionsPlacement }] = useStyleOptions();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
 
-  const { messageThing, graph, isFeedbackLoopSupported } = useGetMessageThing(activity);
+  const isFeedbackLoopSupported = hasFeedbackLoop(activity);
+
+  const { messageThing, graph } = useMemo(() => {
+    if (isFeedbackLoopSupported) {
+      return parseActivity([defaultFeedbackEntities]);
+    }
+    return parseActivity(activity.entities);
+  }, [activity.entities, isFeedbackLoopSupported]);
 
   const feedbackActions = useMemo<ReadonlySet<OrgSchemaAction>>(() => {
     try {
