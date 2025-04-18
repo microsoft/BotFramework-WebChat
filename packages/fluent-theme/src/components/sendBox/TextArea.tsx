@@ -1,6 +1,13 @@
 import { hooks } from 'botframework-webchat-api';
 import cx from 'classnames';
-import React, { forwardRef, Fragment, useCallback, type FormEventHandler, type KeyboardEventHandler } from 'react';
+import React, {
+  forwardRef,
+  Fragment,
+  useCallback,
+  useRef,
+  type FormEventHandler,
+  type KeyboardEventHandler
+} from 'react';
 import { useStyles } from '../../styles';
 import styles from './TextArea.module.css';
 
@@ -30,13 +37,22 @@ const TextArea = forwardRef<
 >((props, ref) => {
   const [uiState] = useUIState();
   const classNames = useStyles(styles);
+  const isInCompositionRef = useRef<boolean>(false);
 
   const disabled = uiState === 'disabled';
+
+  const handleCompositionEnd = useCallback(() => {
+    isInCompositionRef.current = false;
+  }, [isInCompositionRef]);
+
+  const handleCompositionStart = useCallback(() => {
+    isInCompositionRef.current = true;
+  }, [isInCompositionRef]);
 
   const handleKeyDown = useCallback<KeyboardEventHandler<HTMLTextAreaElement>>(event => {
     // Shift+Enter adds a new line
     // Enter requests related form submission
-    if (!event.shiftKey && event.key === 'Enter') {
+    if (!event.shiftKey && event.key === 'Enter' && !isInCompositionRef.current) {
       event.preventDefault();
 
       if ('form' in event.target && event.target.form instanceof HTMLFormElement) {
@@ -84,6 +100,8 @@ const TextArea = forwardRef<
               classNames['sendbox__text-area-shared']
             )}
             data-testid={props['data-testid']}
+            onCompositionEnd={handleCompositionEnd}
+            onCompositionStart={handleCompositionStart}
             onInput={props.onInput}
             onKeyDown={handleKeyDown}
             placeholder={props.placeholder}
