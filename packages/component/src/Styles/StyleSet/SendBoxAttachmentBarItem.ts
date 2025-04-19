@@ -1,9 +1,9 @@
 import { StrictStyleOptions } from 'botframework-webchat-api';
 import { type StyleSet } from './types/StyleSet';
 
-export default function createSendBoxAttachmentStyle(_: StrictStyleOptions) {
+export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOptions) {
   return {
-    '&.webchat__send-box-attachment': {
+    '&.webchat__send-box-attachment-bar-item': {
       border: 'solid 1px rgba(0, 0, 0, .25)', // Figma has border-width of 0.96px.
       borderRadius: '8px', // Figma is 7.68px.
       display: 'grid',
@@ -14,7 +14,7 @@ export default function createSendBoxAttachmentStyle(_: StrictStyleOptions) {
       width: '96px'
     },
 
-    '& .webchat__send-box-attachment__delete-button': {
+    '& .webchat__send-box-attachment-bar-item__delete-button': {
       appearance: 'none',
       backgroundColor: 'White', // TODO: Dark theme.
       border: 'solid 1px rgba(0, 0, 0, .25)', // Figma has border-width of 0.96px.
@@ -48,16 +48,18 @@ export default function createSendBoxAttachmentStyle(_: StrictStyleOptions) {
         backgroundColor: '#F0F0F0',
         borderColor: '#E0E0E0',
         fill: '#BDBDBD'
-      }
+      },
 
-      // TODO: Do we need :focus-within?
+      '&:focus-visible': {
+        opacity: '1'
+      }
     },
 
-    '&:hover .webchat__send-box-attachment__delete-button': {
+    '&:hover .webchat__send-box-attachment-bar-item__delete-button': {
       opacity: '1'
     },
 
-    '& .webchat__send-box-attachment__preview': {
+    '& .webchat__send-box-attachment-bar-item__preview': {
       gridArea: 'body',
       height: '100%',
       objectFit: 'cover',

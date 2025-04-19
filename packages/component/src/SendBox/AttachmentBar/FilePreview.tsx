@@ -3,15 +3,16 @@ import React, { memo } from 'react';
 
 type FileAttachmentPreviewProps = Readonly<{
   attachment: SendBoxAttachment & { blob: File };
+  mode: 'text only' | 'thumbnail';
 }>;
 
 const FileAttachmentPreview = ({ attachment }: FileAttachmentPreviewProps) => (
-  <div className="webchat__send-box-attachment__preview webchat__send-box-attachment__preview--is-file">
+  <div className="webchat__send-box-attachment-bar-item__preview webchat__send-box-attachment-bar-item__preview--is-file">
     {attachment.blob.name}
   </div>
 );
 
-FileAttachmentPreview.displayName = 'FileAttachment';
+FileAttachmentPreview.displayName = 'SendBoxAttachmentBarItemFileAttachmentPreview';
 
 export default memo(FileAttachmentPreview);
 export { type FileAttachmentPreviewProps };

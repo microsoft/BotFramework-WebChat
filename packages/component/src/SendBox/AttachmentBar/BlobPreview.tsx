@@ -3,6 +3,7 @@ import React, { memo } from 'react';
 
 type BlobAttachmentPreviewProps = Readonly<{
   attachment: SendBoxAttachment & { blob: Blob };
+  mode: 'text only' | 'thumbnail';
 }>;
 
 const BlobAttachmentPreview = ({ attachment }: BlobAttachmentPreviewProps) => {
@@ -10,11 +11,13 @@ const BlobAttachmentPreview = ({ attachment }: BlobAttachmentPreviewProps) => {
   const name = attachment.blob instanceof File ? attachment.blob.name : 'An file';
 
   return (
-    <div className="webchat__send-box-attachment__preview webchat__send-box-attachment__preview--is-blob">{name}</div>
+    <div className="webchat__send-box-attachment-bar-item__preview webchat__send-box-attachment-bar-item__preview--is-blob">
+      {name}
+    </div>
   );
 };
 
-BlobAttachmentPreview.displayName = 'BlobAttachmentPreview';
+BlobAttachmentPreview.displayName = 'SendBoxAttachmentBarItemBlobAttachmentPreview';
 
 export default memo(BlobAttachmentPreview);
 export { type BlobAttachmentPreviewProps };

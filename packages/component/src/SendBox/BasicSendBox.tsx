@@ -7,7 +7,7 @@ import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject'
 import useStyleSet from '../hooks/useStyleSet';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 import useErrorMessageId from '../providers/internal/SendBox/useErrorMessageId';
-import { SendBoxAttachmentBar } from './Attachments/index';
+import { AttachmentBar } from './AttachmentBar/index';
 import DictationInterims from './DictationInterims';
 import MicrophoneButton from './MicrophoneButton';
 import SendButton from './SendButton';
@@ -76,7 +76,7 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
           ) : (
             <TextBox className="webchat__send-box__text-box" />
           )}
-          <SendBoxAttachmentBar />
+          <AttachmentBar />
         </div>
         {supportSpeechRecognition ? (
           <MicrophoneButton className={classNames(buttonClassName, 'webchat__send-box__microphone-button')} />
