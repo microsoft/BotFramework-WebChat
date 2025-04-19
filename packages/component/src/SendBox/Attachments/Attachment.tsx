@@ -4,6 +4,7 @@ import React, { memo, useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { useStyleSet } from '../../hooks';
+import testIds from '../../testIds';
 import AttachmentDeleteButton from './AttachmentDeleteButton';
 import AttachmentPreview from './AttachmentPreview';
 
@@ -23,7 +24,10 @@ const Attachment = ({ attachment, onDelete }: AttachmentProps) => {
   );
 
   return (
-    <div className={classNames(sendBoxAttachmentClassName, 'webchat__send-box-attachment')}>
+    <div
+      className={classNames(sendBoxAttachmentClassName, 'webchat__send-box-attachment')}
+      data-testid={testIds.sendBoxAttachmentBarItem}
+    >
       <AttachmentPreview attachment={attachment} />
       <AttachmentDeleteButton onClick={handleDeleteButtonClick} />
     </div>

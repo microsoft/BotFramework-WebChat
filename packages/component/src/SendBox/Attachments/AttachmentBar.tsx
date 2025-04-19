@@ -4,6 +4,7 @@ import React, { memo, useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { useStyleSet } from '../../hooks';
+import testIds from '../../testIds';
 import Attachment from './Attachment';
 
 const { useSendBoxAttachments } = hooks;
@@ -21,7 +22,10 @@ const Attachments = () => {
   );
 
   return (
-    <div className={classNames(sendBoxAttachmentBarClassName, 'webchat__send-box-attachment-bar')}>
+    <div
+      className={classNames(sendBoxAttachmentBarClassName, 'webchat__send-box-attachment-bar')}
+      data-testid={testIds.sendBoxAttachmentBar}
+    >
       <div className="webchat__send-box-attachment-bar__box">
         {sendBoxAttachments.map((attachment, index) => (
           // eslint-disable-next-line react/no-array-index-key

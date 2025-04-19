@@ -1,7 +1,9 @@
 import { hooks } from 'botframework-webchat-api';
 import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
-import React, { memo, useCallback, useRef, type FormEventHandler, type MouseEventHandler } from 'react';
+import random from 'math-random';
+import PropTypes from 'prop-types';
+import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { object, pipe, readonly, string, type InferInput } from 'valibot';
 
@@ -48,6 +50,7 @@ function UploadButton(props: UploadButtonProps) {
 
   const [{ sendAttachmentOn, uploadAccept, uploadMultiple }] = useStyleOptions();
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
+  const [inputKey, setInputKey] = useState<number>(0);
   const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachments();
   const [uiState] = useUIState();
   const focus = useFocus();
@@ -59,6 +62,7 @@ function UploadButton(props: UploadButtonProps) {
 
   const disabled = uiState === 'disabled';
   const sendAttachmentOnRef = useRefFrom(sendAttachmentOn);
+  const sendBoxAttachmentsRef = useRefFrom(sendBoxAttachments);
   const uploadFileString = localize('TEXT_INPUT_UPLOAD_BUTTON_ALT');
 
   const handleClick = useCallback<MouseEventHandler<HTMLButtonElement>>(() => inputRef.current?.click(), [inputRef]);
@@ -72,17 +76,30 @@ function UploadButton(props: UploadButtonProps) {
       //            Otherwise, if the user click the send button too quickly, it will not attach any files.
       (async function () {
         setSendBoxAttachments(
-          Object.freeze(
-            await Promise.all(
-              [...currentTarget.files].map(blob => makeThumbnail(blob).then(thumbnailURL => ({ blob, thumbnailURL })))
-            )
-          )
+          Object.freeze([
+            ...sendBoxAttachmentsRef.current,
+            ...(await Promise.all(
+              Array.from(currentTarget.files).map(async (blob: File) => {
+                const entry = sendBoxAttachmentsRef.current.find(entry => entry.blob === blob);
+
+                if (entry) {
+                  return entry;
+                }
+
+                const thumbnailURL = await makeThumbnail(blob);
+
+                return { blob, thumbnailURL };
+              })
+            ))
+          ])
         );
+
+        setInputKey(random());
 
         sendAttachmentOnRef.current === 'attach' && submit();
       })();
     },
-    [focus, makeThumbnail, sendAttachmentOnRef, setSendBoxAttachments, submit]
+    [focus, makeThumbnail, sendBoxAttachmentsRef, sendAttachmentOnRef, setInputKey, setSendBoxAttachments, submit]
   );
 
   return (
@@ -92,6 +109,9 @@ function UploadButton(props: UploadButtonProps) {
         aria-disabled={disabled}
         aria-hidden="true"
         className="webchat__upload-button--file-input"
+        // Recreates the <input> element after every upload to prevent issues in WebDriver.
+        // Otherwise, on second upload, WebDriver will resend files from first upload as new Blob/File instance and it will cause duplicates.
+        key={inputKey}
         multiple={uploadMultiple}
         onChange={disabled ? undefined : handleFileChange}
         onClick={disabled ? PREVENT_DEFAULT_HANDLER : undefined}
