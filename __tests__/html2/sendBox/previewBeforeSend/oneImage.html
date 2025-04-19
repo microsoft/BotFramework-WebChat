@@ -8,10 +8,25 @@
   </head>
   <body>
     <main id="webchat"></main>
-    <script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "@testing-library/dom": "https://esm.sh/@testing-library/dom"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { queryAllByTestId } from '@testing-library/dom';
+
+      const {
+        testHelpers: { createDirectLineEmulator },
+        WebChat: { createDirectLine, testIds }
+      } = window;
+
       run(async function () {
-        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
-        const store = testHelpers.createStore();
+        const { directLine, store } = createDirectLineEmulator();
 
         WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
@@ -20,10 +35,19 @@
         // WHEN: Upload button is clicked and a JPEG file is selected.
         await host.upload(pageElements.uploadButton(), 'seaofthieves.jpg');
 
-        // TODO: Investigates why it keep adding files, seems it does not trigger remove-all logics.
+        await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(1));
+
         await host.upload(pageElements.uploadButton(), 'forzahorizon5.jpg');
+
+        await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(2));
+
         await host.upload(pageElements.uploadButton(), 'haloinfinite.jpg');
+
+        await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(3));
+
         await host.upload(pageElements.uploadButton(), 'minecraftdungeons.jpg');
+
+        await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(4));
 
         // THEN: The image should appear as thumbnail in the send box.
         await host.snapshot('local');
