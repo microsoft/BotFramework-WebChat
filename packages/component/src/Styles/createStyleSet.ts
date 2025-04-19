@@ -32,8 +32,8 @@ import createRenderMarkdownStyle from './StyleSet/RenderMarkdown';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
 import createSendBoxStyle from './StyleSet/SendBox';
-import createSendBoxAttachmentStyle from './StyleSet/SendBoxAttachment';
 import createSendBoxAttachmentBarStyle from './StyleSet/SendBoxAttachmentBar';
+import createSendBoxAttachmentBarItemStyle from './StyleSet/SendBoxAttachmentBarItem';
 import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
@@ -92,8 +92,8 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     root: createRootStyle(strictStyleOptions),
     scrollToEndButton: createScrollToEndButtonStyle(strictStyleOptions),
     sendBox: createSendBoxStyle(strictStyleOptions),
-    sendBoxAttachment: createSendBoxAttachmentStyle(strictStyleOptions),
     sendBoxAttachmentBar: createSendBoxAttachmentBarStyle(strictStyleOptions),
+    sendBoxAttachmentBarItem: createSendBoxAttachmentBarItemStyle(strictStyleOptions),
     sendBoxButton: createSendBoxButtonStyle(strictStyleOptions),
     sendBoxTextBox: createSendBoxTextBoxStyle(strictStyleOptions),
     spinnerAnimation: createSpinnerAnimationStyle(strictStyleOptions),

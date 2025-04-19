@@ -5,9 +5,11 @@ import { useRefFrom } from 'use-ref-from';
 
 import { useStyleSet } from '../../hooks';
 import testIds from '../../testIds';
-import Attachment from './Attachment';
+import AttachmentBarItem from './AttachmentBarItem';
 
 const { useSendBoxAttachments } = hooks;
+
+const MAX_THUMBNAIL_BEFORE_TEXT_ONLY = 3;
 
 const Attachments = () => {
   const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachments();
@@ -21,6 +23,8 @@ const Attachments = () => {
     [setSendBoxAttachments, sendBoxAttachmentsRef]
   );
 
+  const mode = sendBoxAttachments.length > MAX_THUMBNAIL_BEFORE_TEXT_ONLY ? 'text only' : 'thumbnail';
+
   return (
     <div
       className={classNames(sendBoxAttachmentBarClassName, 'webchat__send-box-attachment-bar')}
@@ -29,13 +33,13 @@ const Attachments = () => {
       <div className="webchat__send-box-attachment-bar__box">
         {sendBoxAttachments.map((attachment, index) => (
           // eslint-disable-next-line react/no-array-index-key
-          <Attachment attachment={attachment} key={index} onDelete={handleAttachmentDelete} />
+          <AttachmentBarItem attachment={attachment} key={index} mode={mode} onDelete={handleAttachmentDelete} />
         ))}
       </div>
     </div>
   );
 };
 
-Attachments.displayName = 'Attachments';
+Attachments.displayName = 'SendBoxAttachmentBar';
 
 export default memo(Attachments);

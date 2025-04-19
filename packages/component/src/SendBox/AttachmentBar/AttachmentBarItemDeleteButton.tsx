@@ -11,7 +11,7 @@ const AttachmentDeleteButton = ({ onClick }: AttachmentDeleteButton) => {
   return (
     <button
       aria-label={altText}
-      className="webchat__send-box-attachment__delete-button"
+      className="webchat__send-box-attachment-bar-item__delete-button"
       onClick={onClick}
       type="button"
     >
@@ -23,7 +23,7 @@ const AttachmentDeleteButton = ({ onClick }: AttachmentDeleteButton) => {
   );
 };
 
-AttachmentDeleteButton.displayName = 'AttachmentDeleteButton';
+AttachmentDeleteButton.displayName = 'SendBoxAttachmentItemDeleteButton';
 
 export default AttachmentDeleteButton;
 export { type AttachmentDeleteButton };

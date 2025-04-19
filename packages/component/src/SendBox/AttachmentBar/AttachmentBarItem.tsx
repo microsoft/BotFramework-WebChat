@@ -5,16 +5,17 @@ import { useRefFrom } from 'use-ref-from';
 
 import { useStyleSet } from '../../hooks';
 import testIds from '../../testIds';
-import AttachmentDeleteButton from './AttachmentDeleteButton';
-import AttachmentPreview from './AttachmentPreview';
+import DeleteButton from './AttachmentBarItemDeleteButton';
+import Preview from './AttachmentBarItemPreview';
 
-type AttachmentProps = Readonly<{
+type AttachmentBarItemProps = Readonly<{
   attachment: SendBoxAttachment;
+  mode: 'text only' | 'thumbnail';
   onDelete?: ((event: Readonly<{ attachment: SendBoxAttachment }>) => void) | undefined;
 }>;
 
-const Attachment = ({ attachment, onDelete }: AttachmentProps) => {
-  const [{ sendBoxAttachment: sendBoxAttachmentClassName }] = useStyleSet();
+const AttachmentBarItem = ({ attachment, mode, onDelete }: AttachmentBarItemProps) => {
+  const [{ sendBoxAttachmentBarItem: sendBoxAttachmentBarItemClassName }] = useStyleSet();
   const attachmentRef = useRefFrom(attachment);
   const onDeleteRef = useRefFrom(onDelete);
 
@@ -25,16 +26,16 @@ const Attachment = ({ attachment, onDelete }: AttachmentProps) => {
 
   return (
     <div
-      className={classNames(sendBoxAttachmentClassName, 'webchat__send-box-attachment')}
+      className={classNames(sendBoxAttachmentBarItemClassName, 'webchat__send-box-attachment-bar-item')}
       data-testid={testIds.sendBoxAttachmentBarItem}
     >
-      <AttachmentPreview attachment={attachment} />
-      <AttachmentDeleteButton onClick={handleDeleteButtonClick} />
+      <Preview attachment={attachment} mode={mode} />
+      <DeleteButton onClick={handleDeleteButtonClick} />
     </div>
   );
 };
 
-Attachment.displayName = 'Attachment';
+AttachmentBarItem.displayName = 'SendBoxAttachmentBarItem';
 
-export default memo(Attachment);
-export { type AttachmentProps };
+export default memo(AttachmentBarItem);
+export { type AttachmentBarItemProps };
