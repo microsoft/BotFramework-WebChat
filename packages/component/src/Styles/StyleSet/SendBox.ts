@@ -1,4 +1,13 @@
 import { StrictStyleOptions } from 'botframework-webchat-api';
+import type { StyleSet } from './types/StyleSet';
+
+function stringifyNumericPixel(value: number | string): string {
+  if (typeof value === 'number') {
+    return `${value}px`;
+  }
+
+  return value;
+}
 
 export default function createSendBoxStyle({
   sendBoxBackground,
@@ -17,12 +26,23 @@ export default function createSendBoxStyle({
       '& .webchat__send-box__main': {
         alignItems: 'stretch',
         backgroundColor: sendBoxBackground,
-        borderBottom: sendBoxBorderBottom,
-        borderLeft: sendBoxBorderLeft,
-        borderRight: sendBoxBorderRight,
-        borderTop: sendBoxBorderTop,
-        minHeight: sendBoxHeight
+        borderBottom: stringifyNumericPixel(sendBoxBorderBottom),
+        borderLeft: stringifyNumericPixel(sendBoxBorderLeft),
+        borderRight: stringifyNumericPixel(sendBoxBorderRight),
+        borderTop: stringifyNumericPixel(sendBoxBorderTop),
+        display: 'grid',
+        gridTemplateAreas: 'upload-button text-box send-button',
+        gridTemplateColumns: 'auto 1fr auto',
+        gridTemplateRows: 'auto',
+        minHeight: stringifyNumericPixel(sendBoxHeight)
+      },
+
+      '& .webchat__send-box__editable': {
+        display: 'flex',
+        flexDirection: 'column',
+        overflowX: 'hidden',
+        width: '100%'
       }
     }
-  };
+  } satisfies StyleSet;
 }
