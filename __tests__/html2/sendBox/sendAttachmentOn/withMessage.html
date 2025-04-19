@@ -22,7 +22,7 @@
         await host.upload(pageElements.uploadButton(), 'seaofthieves.jpg');
 
         // THEN: A checkmark should show next to the "upload button".
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: A message is typed into the send box and the send button is clicked.
         await host.click(pageElements.sendBoxTextBox());
@@ -32,7 +32,7 @@
         // THEN: A thumbnail with a message and bot reply should show.
         await pageConditions.allOutgoingActivitiesSent();
         await pageConditions.numActivitiesShown(2);
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
