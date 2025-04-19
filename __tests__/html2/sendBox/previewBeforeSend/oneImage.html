@@ -37,24 +37,52 @@
 
         await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(1));
 
+        // THEN: Attachments should appear as thumbnail in the send box.
+        await host.snapshot('local');
+
+        // WHEN: Upload button is clicked and a second JPEG file is selected.
         await host.upload(pageElements.uploadButton(), 'forzahorizon5.jpg');
 
         await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(2));
 
+        // THEN: Attachments should appear as thumbnail in the send box.
+        await host.snapshot('local');
+
+        // WHEN: Upload button is clicked and a third JPEG file is selected.
         await host.upload(pageElements.uploadButton(), 'haloinfinite.jpg');
 
         await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(3));
 
+        // THEN: Attachments should appear as thumbnail in the send box.
+        await host.snapshot('local');
+
+        // WHEN: Upload button is clicked and a fourth JPEG file is selected.
         await host.upload(pageElements.uploadButton(), 'minecraftdungeons.jpg');
 
         await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(4));
 
-        // THEN: The image should appear as thumbnail in the send box.
+        // THEN: Attachments should appear as text-only in the send box.
         await host.snapshot('local');
 
-        // WHEN: A message is typed into the send box and the send button is clicked.
+        // WHEN: Focused in the text box.
         await host.click(pageElements.sendBoxTextBox());
-        await host.sendKeys('Hello, World!');
+
+        // WHEN: Press TAB key.
+        await host.sendKeys('TAB');
+
+        // THEN: Should focus inside the first attachment bar item.
+        expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)[0].contains(document.activeElement)).toBe(
+          true
+        );
+
+        // WHEN: Press SPACEBAR.
+        await host.sendKeys(' ');
+
+        // THEN: Should have removed the first attachment.
+        expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(3);
+
+        // THEN: Attachments should appear as thumbnail in the send box.
+        await host.snapshot('local');
       });
     </script>
   </body>
