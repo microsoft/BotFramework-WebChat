@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 type FileIconProps = Readonly<{
-  size?: 'large' | 'small';
+  size?: 'large' | 'small' | undefined;
 }>;
 
 const FileIcon = ({ size }: FileIconProps) =>

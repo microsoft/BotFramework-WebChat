@@ -1,9 +1,12 @@
+import { hooks } from 'botframework-webchat-api';
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo } from 'react';
 import { useStyleSet } from '../../../hooks';
 import FileIcon from './FileIcon';
 import ImageIcon from './ImageIcon';
+
+const { useLocalizer } = hooks;
 
 type FileAttachmentPreviewProps = Readonly<{
   attachment: SendBoxAttachment;
@@ -12,8 +15,9 @@ type FileAttachmentPreviewProps = Readonly<{
 
 const FileAttachmentPreview = ({ attachment, mode }: FileAttachmentPreviewProps) => {
   const [{ sendBoxAttachmentBarItemFilePreview: sendBoxAttachmentBarItemFilePreviewClassName }] = useStyleSet();
-  // TODO: Localize this.
-  const name = attachment.blob instanceof File ? attachment.blob.name : 'A file';
+  const localize = useLocalizer();
+  const title =
+    attachment.blob instanceof File ? attachment.blob.name : localize('SEND_BOX_ATTACHMENT_BAR_GENERIC_FILE_ALT');
 
   return mode === 'text only' ? (
     <div
@@ -22,9 +26,10 @@ const FileAttachmentPreview = ({ attachment, mode }: FileAttachmentPreviewProps)
         'webchat__send-box-attachment-bar-item-file-preview',
         'webchat__send-box-attachment-bar-item-file-preview--text-only'
       )}
+      title={title}
     >
       {attachment.thumbnailURL ? <ImageIcon /> : <FileIcon />}
-      <div className="webchat__send-box-attachment-bar-item-file-preview__text">{name}</div>
+      <div className="webchat__send-box-attachment-bar-item-file-preview__text">{title}</div>
     </div>
   ) : (
     <div
@@ -33,7 +38,7 @@ const FileAttachmentPreview = ({ attachment, mode }: FileAttachmentPreviewProps)
         'webchat__send-box-attachment-bar-item-file-preview',
         'webchat__send-box-attachment-bar-item-file-preview--thumbnail'
       )}
-      title={name}
+      title={title}
     >
       <FileIcon size="large" />
     </div>
