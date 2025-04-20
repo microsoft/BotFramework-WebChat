@@ -80,13 +80,20 @@ export default function createSendBoxAttachmentBarItemStyle({ primaryFont }: Str
         width: '23px' // Figma is 23.04px.
       },
 
-    '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--thumbnail:not(:hover):not(:focus-within) .webchat__send-box-attachment-bar-item__delete-button':
-      {
-        '@media not (prefers-reduced-motion: reduce)': {
-          // Reduced motion: disable "show on hover".
+    '@media not (prefers-reduced-motion: reduce)': {
+      '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--thumbnail:not(:hover):not(:focus-within) .webchat__send-box-attachment-bar-item__delete-button':
+        {
           opacity: '0'
         }
-      },
+    },
+
+    // Reduced motion: disable "show on hover".
+    // '@media (prefers-reduced-motion: reduce)': {
+    //   '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--thumbnail:not(:hover):not(:focus-within) .webchat__send-box-attachment-bar-item__delete-button':
+    //     {
+    //       opacity: '1'
+    //     }
+    // },
 
     // --- Preview
 
