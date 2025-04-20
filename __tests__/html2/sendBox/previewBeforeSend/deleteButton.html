@@ -48,14 +48,14 @@
         // THEN: Should focus on the attachment delete button.
         expect(document.activeElement.getAttribute('data-testid')).toBe(testIds.sendBoxAttachmentBarItemDeleteButton);
 
-        // THEN: Should match screenshot.
-        await host.snapshot('local');
-
         // WHEN: Press SPACEBAR key.
         await host.sendKeys(' ');
 
         // THEN: The attachment should be removed.
         await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(0));
+
+        // THEN: Should match screenshot.
+        await host.snapshot('local');
       });
     </script>
   </body>

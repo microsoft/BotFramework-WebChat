@@ -27,20 +27,22 @@ const Attachments = () => {
   );
 
   return (
-    <div
-      className={classNames(sendBoxAttachmentBarClassName, 'webchat__send-box-attachment-bar', {
-        'webchat__send-box-attachment-bar--text-only': mode === 'text only',
-        'webchat__send-box-attachment-bar--thumbnail': mode === 'thumbnail'
-      })}
-      data-testid={testIds.sendBoxAttachmentBar}
-    >
-      <div className="webchat__send-box-attachment-bar__box">
-        {sendBoxAttachments.map((attachment, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <AttachmentBarItem attachment={attachment} key={index} mode={mode} onDelete={handleAttachmentDelete} />
-        ))}
+    sendBoxAttachments.length > 0 && (
+      <div
+        className={classNames(sendBoxAttachmentBarClassName, 'webchat__send-box-attachment-bar', {
+          'webchat__send-box-attachment-bar--text-only': mode === 'text only',
+          'webchat__send-box-attachment-bar--thumbnail': mode === 'thumbnail'
+        })}
+        data-testid={testIds.sendBoxAttachmentBar}
+      >
+        <div className="webchat__send-box-attachment-bar__box">
+          {sendBoxAttachments.map((attachment, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <AttachmentBarItem attachment={attachment} key={index} mode={mode} onDelete={handleAttachmentDelete} />
+          ))}
+        </div>
       </div>
-    </div>
+    )
   );
 };
 
