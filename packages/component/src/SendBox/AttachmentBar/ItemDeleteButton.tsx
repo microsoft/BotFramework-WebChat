@@ -8,6 +8,8 @@ const AttachmentDeleteButton = ({ onClick }: AttachmentDeleteButton) => {
   // TODO: Localize.
   const altText = 'Delete attachment';
 
+  // TODO: Press ESC should focus back to send box.
+
   return (
     <button
       aria-label={altText}

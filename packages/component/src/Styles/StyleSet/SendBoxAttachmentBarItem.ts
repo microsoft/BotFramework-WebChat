@@ -82,7 +82,10 @@ export default function createSendBoxAttachmentBarItemStyle({ primaryFont }: Str
 
     '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--thumbnail:not(:hover):not(:focus-within) .webchat__send-box-attachment-bar-item__delete-button':
       {
-        opacity: '0'
+        '@media not (prefers-reduced-motion: reduce)': {
+          // Disable "show on hover" on reduced motion.
+          opacity: '0'
+        }
       },
 
     // --- Preview
