@@ -122,9 +122,10 @@ export default function createSendBoxAttachmentBarItemStyle({ primaryFont }: Str
     // TODO: Separate into different file.
 
     '& .webchat__send-box-attachment-bar-item-file-preview': {
+      alignItems: 'center',
+      display: 'grid',
+
       '&.webchat__send-box-attachment-bar-item-file-preview--text-only': {
-        alignItems: 'center',
-        display: 'grid',
         fontFamily: primaryFont,
         gap: '8px',
         gridTemplateColumns: 'auto 1fr'
@@ -132,7 +133,7 @@ export default function createSendBoxAttachmentBarItemStyle({ primaryFont }: Str
 
       '&.webchat__send-box-attachment-bar-item-file-preview--thumbnail': {
         height: '100%',
-        objectFit: 'cover',
+        justifyContent: 'center',
         width: '100%'
       },
 
