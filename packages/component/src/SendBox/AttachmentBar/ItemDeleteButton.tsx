@@ -1,6 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import React, { KeyboardEventHandler, useCallback } from 'react';
 import { useFocus } from '../../hooks';
+import testIds from '../../testIds';
 import DeleteIcon from './DeleteIcon';
 
 const { useLocalizer } = hooks;
@@ -28,6 +29,7 @@ const AttachmentDeleteButton = ({ onClick, size }: AttachmentDeleteButton) => {
   return (
     <button
       className="webchat__send-box-attachment-bar-item__delete-button"
+      data-testid={testIds.sendBoxAttachmentBarItemDeleteButton}
       onClick={onClick}
       onKeyDown={handleKeyDown}
       title={localize('SEND_BOX_ATTACHMENT_BAR_DELETE_BUTTON')}
