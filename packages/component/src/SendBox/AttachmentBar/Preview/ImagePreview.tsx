@@ -1,8 +1,11 @@
+import { hooks } from 'botframework-webchat-api';
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo } from 'react';
 import { useStyleSet } from '../../../hooks';
 import FilePreview from './FilePreview';
+
+const { useLocalizer } = hooks;
 
 type ImageAttachmentPreviewProps = Readonly<{
   attachment: SendBoxAttachment & {
@@ -13,7 +16,7 @@ type ImageAttachmentPreviewProps = Readonly<{
 
 const ImageAttachmentPreview = ({ attachment, mode }: ImageAttachmentPreviewProps) => {
   const [{ sendBoxAttachmentBarItemImagePreview: sendBoxAttachmentBarItemImagePreviewClassName }] = useStyleSet();
-  const name = attachment.blob instanceof File ? attachment.blob.name : 'An image';
+  const localize = useLocalizer();
 
   return mode === 'text only' ? (
     <FilePreview attachment={attachment} mode={mode} />
@@ -24,7 +27,9 @@ const ImageAttachmentPreview = ({ attachment, mode }: ImageAttachmentPreviewProp
         'webchat__send-box-attachment-bar-item-image-preview'
       )}
       src={attachment.thumbnailURL.href}
-      title={name}
+      title={
+        attachment.blob instanceof File ? attachment.blob.name : localize('SEND_BOX_ATTACHMENT_BAR_GENERIC_IMAGE_ALT')
+      }
     />
   );
 };

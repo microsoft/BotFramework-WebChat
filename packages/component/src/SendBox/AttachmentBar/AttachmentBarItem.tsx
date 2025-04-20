@@ -45,7 +45,7 @@ const AttachmentBarItem = ({ attachment, mode, onDelete }: AttachmentBarItemProp
       ref={elementRef}
     >
       <Preview attachment={attachment} mode={mode} />
-      <DeleteButton onClick={handleDeleteButtonClick} />
+      <DeleteButton onClick={handleDeleteButtonClick} size={mode === 'text only' ? 'small' : 'large'} />
     </div>
   );
 };
