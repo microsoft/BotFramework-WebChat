@@ -27,7 +27,9 @@ const FileAttachmentPreview = ({ attachment, mode }: FileAttachmentPreviewProps)
       <div className="webchat__send-box-attachment-bar-item-file-preview__text">{name}</div>
     </div>
   ) : (
-    <div className={className}>{name}</div>
+    <div className={className} title={name}>
+      <FileIcon size="large" />
+    </div>
   );
 };
 
