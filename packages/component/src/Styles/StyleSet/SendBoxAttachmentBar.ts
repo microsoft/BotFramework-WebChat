@@ -26,17 +26,13 @@ export default function createSendBoxAttachmentBarStyle(_: StrictStyleOptions) {
         gridTemplateColumns: '1fr 1fr',
 
         '&:not(:empty)': {
-          padding: '4px 4px 8px'
+          padding: '4px'
         }
       },
 
       '&.webchat__send-box-attachment-bar--thumbnail .webchat__send-box-attachment-bar__box': {
         display: 'flex',
-        scrollbarWidth: 'thin',
-
-        '&:not(:empty)': {
-          paddingBottom: '4px'
-        }
+        scrollbarWidth: 'thin'
       }
     }
   } satisfies StyleSet;
