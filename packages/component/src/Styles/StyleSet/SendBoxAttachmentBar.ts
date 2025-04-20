@@ -7,6 +7,7 @@ export default function createSendBoxAttachmentBarStyle(_: StrictStyleOptions) {
       display: 'content',
 
       '&.webchat__send-box-attachment-bar--text-only': {
+        maxHeight: '114px',
         overflowY: 'auto',
         scrollbarGutter: 'stable',
         scrollbarWidth: 'thin'
@@ -23,16 +24,19 @@ export default function createSendBoxAttachmentBarStyle(_: StrictStyleOptions) {
       '&.webchat__send-box-attachment-bar--text-only .webchat__send-box-attachment-bar__box': {
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        maxHeight: '114px',
 
         '&:not(:empty)': {
-          padding: '4px'
+          padding: '4px 4px 8px'
         }
       },
 
       '&.webchat__send-box-attachment-bar--thumbnail .webchat__send-box-attachment-bar__box': {
         display: 'flex',
-        scrollbarWidth: 'thin'
+        scrollbarWidth: 'thin',
+
+        '&:not(:empty)': {
+          paddingBottom: '4px'
+        }
       }
     }
   } satisfies StyleSet;
