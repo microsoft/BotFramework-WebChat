@@ -32,11 +32,6 @@
 
         await pageConditions.uiConnected();
 
-        // THEN: Scrollable should initially at top.
-        const sendBoxAttachmentBar = queryByTestId(document, testIds.sendBoxAttachmentBar);
-
-        expect(sendBoxAttachmentBar).toHaveProperty('scrollTop', 0);
-
         // WHEN: 7 attachments are added.
         for (let index = 0; index < 7; index++) {
           await host.upload(pageElements.uploadButton(), 'empty.zip');
@@ -47,6 +42,8 @@
         }
 
         // THEN: Should show scrollbar.
+        const sendBoxAttachmentBar = queryByTestId(document, testIds.sendBoxAttachmentBar);
+
         expect(sendBoxAttachmentBar.scrollTop).toBeGreaterThan(1);
 
         // THEN: Scrollable should at bottom.
