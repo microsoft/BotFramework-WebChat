@@ -1,5 +1,6 @@
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import React, { memo } from 'react';
+import FilePreview from './FilePreview';
 
 type ImageAttachmentPreviewProps = Readonly<{
   attachment: SendBoxAttachment & {
@@ -9,14 +10,13 @@ type ImageAttachmentPreviewProps = Readonly<{
 }>;
 
 const ImageAttachmentPreview = ({ attachment, mode }: ImageAttachmentPreviewProps) => {
-  // TODO: Localize this.
   const name = attachment.blob instanceof File ? attachment.blob.name : 'An image';
 
   return mode === 'text only' ? (
-    <div>{name}</div>
+    <FilePreview attachment={attachment} mode={mode} />
   ) : (
     <img
-      className="webchat__send-box-attachment-bar-item__preview webchat__send-box-attachment-bar-item__preview--is-image"
+      className="webchat__send-box-attachment-bar-item-image-preview"
       src={attachment.thumbnailURL.href}
       title={name}
     />

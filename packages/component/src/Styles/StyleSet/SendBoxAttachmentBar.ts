@@ -5,12 +5,34 @@ export default function createSendBoxAttachmentBarStyle(_: StrictStyleOptions) {
   return {
     '&.webchat__send-box-attachment-bar': {
       display: 'content',
-      overflowX: 'auto',
-      scrollbarWidth: 'thin',
+
+      '&.webchat__send-box-attachment-bar--text-only': {
+        overflowY: 'auto',
+        scrollbarGutter: 'stable',
+        scrollbarWidth: 'thin'
+      },
+
+      '&.webchat__send-box-attachment-bar--thumbnail': {
+        overflowX: 'auto'
+      },
 
       '& .webchat__send-box-attachment-bar__box': {
+        gap: '4px',
+
+        '&:not(:empty)': {
+          padding: '4px'
+        }
+      },
+
+      '&.webchat__send-box-attachment-bar--text-only .webchat__send-box-attachment-bar__box': {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        maxHeight: '114px'
+      },
+
+      '&.webchat__send-box-attachment-bar--thumbnail .webchat__send-box-attachment-bar__box': {
         display: 'flex',
-        gap: '4px'
+        scrollbarWidth: 'thin'
       }
     }
   } satisfies StyleSet;

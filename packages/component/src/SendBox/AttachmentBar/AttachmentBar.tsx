@@ -27,7 +27,10 @@ const Attachments = () => {
 
   return (
     <div
-      className={classNames(sendBoxAttachmentBarClassName, 'webchat__send-box-attachment-bar')}
+      className={classNames(sendBoxAttachmentBarClassName, 'webchat__send-box-attachment-bar', {
+        'webchat__send-box-attachment-bar--text-only': mode === 'text only',
+        'webchat__send-box-attachment-bar--thumbnail': mode === 'thumbnail'
+      })}
       data-testid={testIds.sendBoxAttachmentBar}
     >
       <div className="webchat__send-box-attachment-bar__box">
