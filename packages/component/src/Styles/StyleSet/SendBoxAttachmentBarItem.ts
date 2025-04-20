@@ -22,7 +22,7 @@ export default function createSendBoxAttachmentBarItemStyle({ primaryFont }: Str
         borderRadius: '8px', // Figma is 7.68px.
         gridTemplateAreas: '"body"',
         gridTemplateColumns: 'auto',
-        height: '80px', // <= 87px would fit white-space for 3 thumbnails.
+        height: '80px', // <= 87px would fit white-label design with 3 thumbnails.
         // height: '96px',
         overflow: 'hidden'
       }
@@ -83,7 +83,7 @@ export default function createSendBoxAttachmentBarItemStyle({ primaryFont }: Str
     '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--thumbnail:not(:hover):not(:focus-within) .webchat__send-box-attachment-bar-item__delete-button':
       {
         '@media not (prefers-reduced-motion: reduce)': {
-          // Disable "show on hover" on reduced motion.
+          // Reduced motion: disable "show on hover".
           opacity: '0'
         }
       },
