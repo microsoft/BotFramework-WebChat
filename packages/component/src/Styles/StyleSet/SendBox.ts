@@ -10,6 +10,7 @@ function stringifyNumericPixel(value: number | string): string {
 }
 
 export default function createSendBoxStyle({
+  paddingRegular,
   sendBoxBackground,
   sendBoxBorderBottom,
   sendBoxBorderLeft,
@@ -40,6 +41,12 @@ export default function createSendBoxStyle({
       '& .webchat__send-box__editable': {
         display: 'flex',
         flexDirection: 'column',
+        // eslint-disable-next-line no-magic-numbers
+        gap: `${paddingRegular / 2}px`,
+        // eslint-disable-next-line no-magic-numbers
+        paddingBottom: `${paddingRegular / 2}px`,
+        // eslint-disable-next-line no-magic-numbers
+        paddingTop: `${paddingRegular / 2}px`,
         overflowX: 'hidden',
         width: '100%'
       }
