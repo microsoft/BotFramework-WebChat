@@ -13,8 +13,11 @@ const MAX_THUMBNAIL_BEFORE_TEXT_ONLY = 3;
 
 const Attachments = () => {
   const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachments();
-  const sendBoxAttachmentsRef = useRefFrom(sendBoxAttachments);
   const [{ sendBoxAttachmentBar: sendBoxAttachmentBarClassName }] = useStyleSet();
+
+  const mode = sendBoxAttachments.length > MAX_THUMBNAIL_BEFORE_TEXT_ONLY ? 'text only' : 'thumbnail';
+  const sendBoxAttachmentsRef = useRefFrom(sendBoxAttachments);
+
   const handleAttachmentDelete = useCallback(
     ({ attachment }) =>
       setSendBoxAttachments(
@@ -22,8 +25,6 @@ const Attachments = () => {
       ),
     [setSendBoxAttachments, sendBoxAttachmentsRef]
   );
-
-  const mode = sendBoxAttachments.length > MAX_THUMBNAIL_BEFORE_TEXT_ONLY ? 'text only' : 'thumbnail';
 
   return (
     <div

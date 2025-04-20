@@ -1,6 +1,6 @@
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { useStyleSet } from '../../hooks';
@@ -17,12 +17,23 @@ type AttachmentBarItemProps = Readonly<{
 const AttachmentBarItem = ({ attachment, mode, onDelete }: AttachmentBarItemProps) => {
   const [{ sendBoxAttachmentBarItem: sendBoxAttachmentBarItemClassName }] = useStyleSet();
   const attachmentRef = useRefFrom(attachment);
+  const elementRef = useRef<HTMLDivElement>(null);
   const onDeleteRef = useRefFrom(onDelete);
+  const shownRef = useRef<boolean>(false);
 
   const handleDeleteButtonClick = useCallback(
     () => onDeleteRef.current?.({ attachment: attachmentRef.current }),
     [attachmentRef, onDeleteRef]
   );
+
+  // If the item is newly added, scroll it into view.
+  useEffect(() => {
+    if (!shownRef.current) {
+      shownRef.current = true;
+
+      elementRef.current?.scrollIntoView();
+    }
+  }, [elementRef, shownRef]);
 
   return (
     <div
@@ -31,6 +42,7 @@ const AttachmentBarItem = ({ attachment, mode, onDelete }: AttachmentBarItemProp
         'webchat__send-box-attachment-bar-item--thumbnail': mode === 'thumbnail'
       })}
       data-testid={testIds.sendBoxAttachmentBarItem}
+      ref={elementRef}
     >
       <Preview attachment={attachment} mode={mode} />
       <DeleteButton onClick={handleDeleteButtonClick} />

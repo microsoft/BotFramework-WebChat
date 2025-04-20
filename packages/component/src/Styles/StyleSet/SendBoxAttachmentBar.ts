@@ -17,17 +17,17 @@ export default function createSendBoxAttachmentBarStyle(_: StrictStyleOptions) {
       },
 
       '& .webchat__send-box-attachment-bar__box': {
-        gap: '4px',
-
-        '&:not(:empty)': {
-          padding: '4px'
-        }
+        gap: '4px'
       },
 
       '&.webchat__send-box-attachment-bar--text-only .webchat__send-box-attachment-bar__box': {
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        maxHeight: '114px'
+        maxHeight: '114px',
+
+        '&:not(:empty)': {
+          padding: '4px'
+        }
       },
 
       '&.webchat__send-box-attachment-bar--thumbnail .webchat__send-box-attachment-bar__box': {
