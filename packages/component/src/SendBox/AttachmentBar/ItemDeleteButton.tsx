@@ -1,20 +1,34 @@
-import React from 'react';
+import React, { KeyboardEventHandler, useCallback } from 'react';
+
+import { useFocus } from '../../hooks';
 
 type AttachmentDeleteButton = Readonly<{
   onClick?: (() => void) | undefined;
 }>;
 
 const AttachmentDeleteButton = ({ onClick }: AttachmentDeleteButton) => {
+  const focus = useFocus();
+
   // TODO: Localize.
   const altText = 'Delete attachment';
 
-  // TODO: Press ESC should focus back to send box.
+  const handleKeyDown = useCallback<KeyboardEventHandler<HTMLButtonElement>>(
+    event => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+
+        focus('sendBox');
+      }
+    },
+    [focus]
+  );
 
   return (
     <button
       aria-label={altText}
       className="webchat__send-box-attachment-bar-item__delete-button"
       onClick={onClick}
+      onKeyDown={handleKeyDown}
       type="button"
     >
       {/* TODO: The SVG seems 1-pixel shifted to left. */}
