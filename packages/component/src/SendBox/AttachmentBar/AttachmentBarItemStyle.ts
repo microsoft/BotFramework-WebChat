@@ -1,7 +1,7 @@
 import { StrictStyleOptions } from 'botframework-webchat-api';
-import { type StyleSet } from './types/StyleSet';
+import { type StyleSet } from '../../Styles/StyleSet/types/StyleSet';
 
-export default function createSendBoxAttachmentBarItemStyle({ primaryFont }: StrictStyleOptions) {
+export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOptions) {
   return {
     '&.webchat__send-box-attachment-bar-item': {
       display: 'grid',
@@ -28,7 +28,7 @@ export default function createSendBoxAttachmentBarItemStyle({ primaryFont }: Str
       }
     },
 
-    // --- DeleteButton
+    // --- Delete button
 
     '& .webchat__send-box-attachment-bar-item__delete-button': {
       appearance: 'none',
@@ -41,7 +41,7 @@ export default function createSendBoxAttachmentBarItemStyle({ primaryFont }: Str
       padding: '0',
       transition: 'opacity 50ms', // Assume ultra-fast.
 
-      // TODO: Need to center the SVG better.
+      // TODO: Any way to center the SVG better?
       alignItems: 'center',
       display: 'grid',
       justifyContent: 'center',
@@ -87,14 +87,6 @@ export default function createSendBoxAttachmentBarItemStyle({ primaryFont }: Str
         }
     },
 
-    // Reduced motion: disable "show on hover".
-    // '@media (prefers-reduced-motion: reduce)': {
-    //   '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--thumbnail:not(:hover):not(:focus-within) .webchat__send-box-attachment-bar-item__delete-button':
-    //     {
-    //       opacity: '1'
-    //     }
-    // },
-
     // --- Preview
 
     '& .webchat__send-box-attachment-bar-item__preview': {
@@ -107,40 +99,6 @@ export default function createSendBoxAttachmentBarItemStyle({ primaryFont }: Str
     '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--text-only .webchat__send-box-attachment-bar-item__preview':
       {
         paddingInline: '8px'
-      },
-
-    // --- ImagePreview
-    // TODO: Separate into different file.
-
-    '& .webchat__send-box-attachment-bar-item-image-preview': {
-      height: '100%',
-      objectFit: 'cover',
-      width: '100%'
-    },
-
-    // --- FilePreview
-    // TODO: Separate into different file.
-
-    '& .webchat__send-box-attachment-bar-item-file-preview': {
-      alignItems: 'center',
-      display: 'grid',
-
-      '&.webchat__send-box-attachment-bar-item-file-preview--text-only': {
-        fontFamily: primaryFont,
-        gap: '8px',
-        gridTemplateColumns: 'auto 1fr'
-      },
-
-      '&.webchat__send-box-attachment-bar-item-file-preview--thumbnail': {
-        height: '100%',
-        justifyContent: 'center',
-        width: '100%'
-      },
-
-      '& .webchat__send-box-attachment-bar-item-file-preview__text': {
-        overflow: 'hidden',
-        textOverflow: 'ellipsis'
       }
-    }
   } satisfies StyleSet;
 }

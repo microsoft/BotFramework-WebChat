@@ -1,5 +1,5 @@
 import { StrictStyleOptions } from 'botframework-webchat-api';
-import { type StyleSet } from './types/StyleSet';
+import { type StyleSet } from '../../Styles/StyleSet/types/StyleSet';
 
 export default function createSendBoxAttachmentBarStyle(_: StrictStyleOptions) {
   return {
