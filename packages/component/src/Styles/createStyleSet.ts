@@ -1,5 +1,9 @@
 import { normalizeStyleOptions, StyleOptions } from 'botframework-webchat-api';
 
+import createSendBoxAttachmentBarItemStyle from '../SendBox/AttachmentBar/AttachmentBarItemStyle';
+import createSendBoxAttachmentBarStyle from '../SendBox/AttachmentBar/AttachmentBarStyle';
+import createSendBoxAttachmentBarItemFilePreviewStyle from '../SendBox/AttachmentBar/Preview/FilePreviewStyle';
+import createSendBoxAttachmentBarItemImagePreviewStyle from '../SendBox/AttachmentBar/Preview/ImagePreviewStyle';
 import createActivitiesStyle from './StyleSet/Activities';
 import createActivityButtonStyle from './StyleSet/ActivityButton';
 import createActivityCopyButtonStyle from './StyleSet/ActivityCopyButton';
@@ -32,8 +36,6 @@ import createRenderMarkdownStyle from './StyleSet/RenderMarkdown';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
 import createSendBoxStyle from './StyleSet/SendBox';
-import createSendBoxAttachmentBarStyle from './StyleSet/SendBoxAttachmentBar';
-import createSendBoxAttachmentBarItemStyle from './StyleSet/SendBoxAttachmentBarItem';
 import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
@@ -94,6 +96,8 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     sendBox: createSendBoxStyle(strictStyleOptions),
     sendBoxAttachmentBar: createSendBoxAttachmentBarStyle(strictStyleOptions),
     sendBoxAttachmentBarItem: createSendBoxAttachmentBarItemStyle(strictStyleOptions),
+    sendBoxAttachmentBarItemFilePreview: createSendBoxAttachmentBarItemFilePreviewStyle(strictStyleOptions),
+    sendBoxAttachmentBarItemImagePreview: createSendBoxAttachmentBarItemImagePreviewStyle(strictStyleOptions),
     sendBoxButton: createSendBoxButtonStyle(strictStyleOptions),
     sendBoxTextBox: createSendBoxTextBoxStyle(strictStyleOptions),
     spinnerAnimation: createSpinnerAnimationStyle(strictStyleOptions),
