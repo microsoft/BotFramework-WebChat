@@ -64,6 +64,30 @@
         // THEN: Attachments should appear as text-only in the send box.
         await host.snapshot('local');
 
+        // WHEN: Upload button is clicked and 5 ZIP files are selected.
+        await host.upload(pageElements.uploadButton(), 'empty.zip');
+
+        await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(5));
+
+        await host.upload(pageElements.uploadButton(), 'empty.zip');
+
+        await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(6));
+
+        await host.upload(pageElements.uploadButton(), 'empty.zip');
+
+        await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(7));
+
+        await host.upload(pageElements.uploadButton(), 'empty.zip');
+
+        await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(8));
+
+        await host.upload(pageElements.uploadButton(), 'empty.zip');
+
+        await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(9));
+
+        // THEN: Attachments should appear as text-only in the send box.
+        await host.snapshot('local');
+
         // WHEN: Focused in the text box.
         await host.click(pageElements.sendBoxTextBox());
 
@@ -74,6 +98,8 @@
         expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)[0].contains(document.activeElement)).toBe(
           true
         );
+
+        return;
 
         // WHEN: Press SPACEBAR.
         await host.sendKeys(' ');

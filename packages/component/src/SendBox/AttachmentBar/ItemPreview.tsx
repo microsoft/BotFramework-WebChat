@@ -1,9 +1,8 @@
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import React, { memo } from 'react';
 
-import BlobPreview from './BlobPreview';
-import FilePreview from './FilePreview';
-import ImagePreview from './ImagePreview';
+import FilePreview from './Preview/FilePreview';
+import ImagePreview from './Preview/ImagePreview';
 
 type AttachmentBarItemPreviewProps = Readonly<{
   attachment: SendBoxAttachment;
@@ -12,15 +11,15 @@ type AttachmentBarItemPreviewProps = Readonly<{
 
 // TODO: Turn this into middleware.
 const AttachmentBarItemPreview = ({ attachment, mode }: AttachmentBarItemPreviewProps) => {
+  let element: React.ReactNode;
+
   if (attachment.thumbnailURL) {
-    return <ImagePreview attachment={attachment as SendBoxAttachment & { thumbnailURL: URL }} mode={mode} />;
+    element = <ImagePreview attachment={attachment as SendBoxAttachment & { thumbnailURL: URL }} mode={mode} />;
+  } else {
+    element = <FilePreview attachment={attachment as SendBoxAttachment & { blob: File }} mode={mode} />;
   }
 
-  if (attachment.blob instanceof File) {
-    return <FilePreview attachment={attachment as SendBoxAttachment & { blob: File }} mode={mode} />;
-  }
-
-  return <BlobPreview attachment={attachment} mode={mode} />;
+  return <div className="webchat__send-box-attachment-bar-item__preview">{element}</div>;
 };
 
 AttachmentBarItemPreview.displayName = 'SendBoxAttachmentBarItemPreview';
