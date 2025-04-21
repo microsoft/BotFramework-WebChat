@@ -54,6 +54,9 @@
         // THEN: The attachment should be removed.
         await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(0));
 
+        // THEN: Should focus on the send box text box.
+        expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
+
         // THEN: Should match screenshot.
         await host.snapshot('local');
       });

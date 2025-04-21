@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import { useStyleSet } from '../../hooks';
+import { useFocus, useStyleSet } from '../../hooks';
 import testIds from '../../testIds';
 import DeleteButton from './ItemDeleteButton';
 import Preview from './ItemPreview';
@@ -18,13 +18,16 @@ const AttachmentBarItem = ({ attachment, mode, onDelete }: AttachmentBarItemProp
   const [{ sendBoxAttachmentBarItem: sendBoxAttachmentBarItemClassName }] = useStyleSet();
   const attachmentRef = useRefFrom(attachment);
   const elementRef = useRef<HTMLDivElement>(null);
+  const focus = useFocus();
   const onDeleteRef = useRefFrom(onDelete);
   const shownRef = useRef<boolean>(false);
 
-  const handleDeleteButtonClick = useCallback(
-    () => onDeleteRef.current?.({ attachment: attachmentRef.current }),
-    [attachmentRef, onDeleteRef]
-  );
+  const handleDeleteButtonClick = useCallback(() => {
+    onDeleteRef.current?.({ attachment: attachmentRef.current });
+
+    // After delete, focus back to the send box.
+    focus('sendBox');
+  }, [attachmentRef, focus, onDeleteRef]);
 
   // If the item is newly added, scroll it into view.
   useEffect(() => {
