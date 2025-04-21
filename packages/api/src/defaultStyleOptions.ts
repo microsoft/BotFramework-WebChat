@@ -311,7 +311,10 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   // Speech recognition
   speechRecognitionContinuous: false,
 
-  groupActivitiesBy: ['sender', 'status']
+  groupActivitiesBy: ['sender', 'status'],
+
+  // Send box attachment bar
+  sendBoxAttachmentBarMaxThumbnail: 3
 };
 
 export default DEFAULT_OPTIONS;
