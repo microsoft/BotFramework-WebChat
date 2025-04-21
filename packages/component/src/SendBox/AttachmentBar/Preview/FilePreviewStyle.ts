@@ -21,7 +21,8 @@ export default function createSendBoxAttachmentBarItemFilePreviewStyle({ primary
 
       '& .webchat__send-box-attachment-bar-item-file-preview__text': {
         overflow: 'hidden',
-        textOverflow: 'ellipsis'
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
       }
     }
   } satisfies StyleSet;
