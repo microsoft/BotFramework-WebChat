@@ -15,7 +15,7 @@ const Attachments = () => {
   const [{ sendBoxAttachmentBarMaxThumbnail }] = useStyleOptions();
 
   const mode = useMemo(
-    () => (sendBoxAttachments.length > sendBoxAttachmentBarMaxThumbnail ? 'text only' : 'thumbnail'),
+    () => (sendBoxAttachments.length > sendBoxAttachmentBarMaxThumbnail ? 'list item' : 'thumbnail'),
     [sendBoxAttachmentBarMaxThumbnail, sendBoxAttachments]
   );
 
@@ -33,8 +33,8 @@ const Attachments = () => {
     sendBoxAttachments.length > 0 && (
       <div
         className={classNames(sendBoxAttachmentBarClassName, 'webchat__send-box-attachment-bar', {
-          'webchat__send-box-attachment-bar--text-only': mode === 'text only',
-          'webchat__send-box-attachment-bar--thumbnail': mode === 'thumbnail'
+          'webchat__send-box-attachment-bar--as-list-item': mode === 'list item',
+          'webchat__send-box-attachment-bar--as-thumbnail': mode === 'thumbnail'
         })}
         data-testid={testIds.sendBoxAttachmentBar}
       >

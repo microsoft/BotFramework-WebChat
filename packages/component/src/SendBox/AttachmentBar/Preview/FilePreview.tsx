@@ -8,18 +8,18 @@ import ImageIcon from './ImageIcon';
 type FileAttachmentPreviewProps = Readonly<{
   attachment: SendBoxAttachment;
   attachmentName: string;
-  mode: 'text only' | 'thumbnail';
+  mode: 'list item' | 'thumbnail';
 }>;
 
 const FileAttachmentPreview = ({ attachment, mode, attachmentName }: FileAttachmentPreviewProps) => {
   const [{ sendBoxAttachmentBarItemFilePreview: sendBoxAttachmentBarItemFilePreviewClassName }] = useStyleSet();
 
-  return mode === 'text only' ? (
+  return mode === 'list item' ? (
     <div
       className={classNames(
         sendBoxAttachmentBarItemFilePreviewClassName,
         'webchat__send-box-attachment-bar-item-file-preview',
-        'webchat__send-box-attachment-bar-item-file-preview--text-only'
+        'webchat__send-box-attachment-bar-item-file-preview--as-list-item'
       )}
     >
       {attachment.thumbnailURL ? <ImageIcon /> : <FileIcon />}
@@ -30,7 +30,7 @@ const FileAttachmentPreview = ({ attachment, mode, attachmentName }: FileAttachm
       className={classNames(
         sendBoxAttachmentBarItemFilePreviewClassName,
         'webchat__send-box-attachment-bar-item-file-preview',
-        'webchat__send-box-attachment-bar-item-file-preview--thumbnail'
+        'webchat__send-box-attachment-bar-item-file-preview--as-thumbnail'
       )}
     >
       <FileIcon size="large" />

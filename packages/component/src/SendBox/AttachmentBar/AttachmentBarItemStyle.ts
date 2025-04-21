@@ -8,7 +8,7 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
       flexShrink: '0',
       gridTemplateRows: 'auto',
 
-      '&.webchat__send-box-attachment-bar-item--text-only': {
+      '&.webchat__send-box-attachment-bar-item--as-list-item': {
         borderRadius: '4px',
         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.14), 0px 0px 2px rgba(0, 0, 0, 0.12)',
         gridTemplateAreas: '"body auxiliary"',
@@ -16,7 +16,7 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
         padding: '2px'
       },
 
-      '&.webchat__send-box-attachment-bar-item--thumbnail': {
+      '&.webchat__send-box-attachment-bar-item--as-thumbnail': {
         aspectRatio: '1/1',
         border: 'solid 1px rgba(0, 0, 0, .25)', // Figma has border-width of 0.96px.
         borderRadius: '8px', // Figma is 7.68px.
@@ -63,7 +63,7 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
       }
     },
 
-    '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--text-only .webchat__send-box-attachment-bar-item__delete-button':
+    '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--as-list-item .webchat__send-box-attachment-bar-item__delete-button':
       {
         border: '0',
         gridArea: 'auxiliary',
@@ -71,7 +71,7 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
         width: '24px'
       },
 
-    '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--thumbnail .webchat__send-box-attachment-bar-item__delete-button':
+    '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--as-thumbnail .webchat__send-box-attachment-bar-item__delete-button':
       {
         border: 'solid 1px #E0E0E0', // Figma has border-width of 0.96px.
         gridArea: 'body',
@@ -81,7 +81,7 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
       },
 
     '@media not (prefers-reduced-motion: reduce)': {
-      '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--thumbnail:not(:hover):not(:focus-within) .webchat__send-box-attachment-bar-item__delete-button':
+      '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--as-thumbnail:not(:hover):not(:focus-within) .webchat__send-box-attachment-bar-item__delete-button':
         {
           opacity: '0'
         }
@@ -96,7 +96,7 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
       overflow: 'hidden'
     },
 
-    '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--text-only .webchat__send-box-attachment-bar-item__preview':
+    '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--as-list-item .webchat__send-box-attachment-bar-item__preview':
       {
         paddingInline: '8px'
       }
