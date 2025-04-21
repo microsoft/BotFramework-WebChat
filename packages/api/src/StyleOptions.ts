@@ -964,6 +964,14 @@ type StyleOptions = {
 
   /**
    * Send box: maximum number of attachment item to preview as thumbnail before showing as text-only.
+   * Send box: maximum height of the attachment bar.
+   *
+   * @default 114
+   */
+  sendBoxAttachmentBarMaxHeight?: number;
+
+  /**
+   * Send box: maximum number of attachment item to preview as thumbnail before showing as list item.
    *
    * @default 3
    */

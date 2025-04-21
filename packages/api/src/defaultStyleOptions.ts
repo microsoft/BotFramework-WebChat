@@ -314,6 +314,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   groupActivitiesBy: ['sender', 'status'],
 
   // Send box attachment bar
+  sendBoxAttachmentBarMaxHeight: 114,
   sendBoxAttachmentBarMaxThumbnail: 3
 };
 
