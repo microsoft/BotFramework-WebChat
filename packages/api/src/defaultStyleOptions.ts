@@ -313,6 +313,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   speechRecognitionContinuous: false,
 
   // Send box attachment bar
+  sendBoxAttachmentBarMaxHeight: 114,
   sendBoxAttachmentBarMaxThumbnail: 3
 };
 

@@ -1,13 +1,13 @@
 import { StrictStyleOptions } from 'botframework-webchat-api';
 import { type StyleSet } from '../../Styles/StyleSet/types/StyleSet';
 
-export default function createSendBoxAttachmentBarStyle(_: StrictStyleOptions) {
+export default function createSendBoxAttachmentBarStyle({ sendBoxAttachmentBarMaxHeight }: StrictStyleOptions) {
   return {
     '&.webchat__send-box-attachment-bar': {
       display: 'content',
 
       '&.webchat__send-box-attachment-bar--as-list-item': {
-        maxHeight: '114px',
+        maxHeight: `${sendBoxAttachmentBarMaxHeight}px`,
         overflowY: 'auto',
         scrollbarGutter: 'stable',
         scrollbarWidth: 'thin'
