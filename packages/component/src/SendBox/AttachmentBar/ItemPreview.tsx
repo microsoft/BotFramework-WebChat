@@ -6,17 +6,30 @@ import ImagePreview from './Preview/ImagePreview';
 
 type AttachmentBarItemPreviewProps = Readonly<{
   attachment: SendBoxAttachment;
+  attachmentName: string;
   mode: 'text only' | 'thumbnail';
 }>;
 
 // TODO: Turn this into middleware.
-const AttachmentBarItemPreview = ({ attachment, mode }: AttachmentBarItemPreviewProps) => {
+const AttachmentBarItemPreview = ({ attachment, attachmentName, mode }: AttachmentBarItemPreviewProps) => {
   let element: React.ReactNode;
 
   if (attachment.thumbnailURL) {
-    element = <ImagePreview attachment={attachment as SendBoxAttachment & { thumbnailURL: URL }} mode={mode} />;
+    element = (
+      <ImagePreview
+        attachment={attachment as SendBoxAttachment & { thumbnailURL: URL }}
+        attachmentName={attachmentName}
+        mode={mode}
+      />
+    );
   } else {
-    element = <FilePreview attachment={attachment as SendBoxAttachment & { blob: File }} mode={mode} />;
+    element = (
+      <FilePreview
+        attachment={attachment as SendBoxAttachment & { blob: File }}
+        attachmentName={attachmentName}
+        mode={mode}
+      />
+    );
   }
 
   return <div className="webchat__send-box-attachment-bar-item__preview">{element}</div>;

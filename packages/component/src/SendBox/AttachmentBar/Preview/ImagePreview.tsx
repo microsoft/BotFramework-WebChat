@@ -1,35 +1,30 @@
-import { hooks } from 'botframework-webchat-api';
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo } from 'react';
 import { useStyleSet } from '../../../hooks';
 import FilePreview from './FilePreview';
 
-const { useLocalizer } = hooks;
-
 type ImageAttachmentPreviewProps = Readonly<{
   attachment: SendBoxAttachment & {
     thumbnailURL: URL;
   };
+  attachmentName: string;
   mode: 'text only' | 'thumbnail';
 }>;
 
-const ImageAttachmentPreview = ({ attachment, mode }: ImageAttachmentPreviewProps) => {
+const ImageAttachmentPreview = ({ attachment, mode, attachmentName }: ImageAttachmentPreviewProps) => {
   const [{ sendBoxAttachmentBarItemImagePreview: sendBoxAttachmentBarItemImagePreviewClassName }] = useStyleSet();
-  const localize = useLocalizer();
 
   return mode === 'text only' ? (
-    <FilePreview attachment={attachment} mode={mode} />
+    <FilePreview attachment={attachment} attachmentName={attachmentName} mode={mode} />
   ) : (
     <img
+      alt={attachmentName}
       className={classNames(
         sendBoxAttachmentBarItemImagePreviewClassName,
         'webchat__send-box-attachment-bar-item-image-preview'
       )}
       src={attachment.thumbnailURL.href}
-      title={
-        attachment.blob instanceof File ? attachment.blob.name : localize('SEND_BOX_ATTACHMENT_BAR_GENERIC_IMAGE_ALT')
-      }
     />
   );
 };

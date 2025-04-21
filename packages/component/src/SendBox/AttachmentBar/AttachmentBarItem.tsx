@@ -1,12 +1,15 @@
+import { hooks } from 'botframework-webchat-api';
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import React, { memo, useCallback, useEffect, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { useFocus, useStyleSet } from '../../hooks';
 import testIds from '../../testIds';
 import DeleteButton from './ItemDeleteButton';
 import Preview from './ItemPreview';
+
+const { useLocalizer } = hooks;
 
 type AttachmentBarItemProps = Readonly<{
   attachment: SendBoxAttachment;
@@ -19,8 +22,19 @@ const AttachmentBarItem = ({ attachment, mode, onDelete }: AttachmentBarItemProp
   const attachmentRef = useRefFrom(attachment);
   const elementRef = useRef<HTMLDivElement>(null);
   const focus = useFocus();
+  const localize = useLocalizer();
   const onDeleteRef = useRefFrom(onDelete);
   const shownRef = useRef<boolean>(false);
+
+  const attachmentName = useMemo(
+    () =>
+      attachment.blob instanceof File
+        ? attachment.blob.name
+        : attachment.thumbnailURL
+          ? localize('SEND_BOX_ATTACHMENT_BAR_GENERIC_IMAGE_ALT')
+          : localize('SEND_BOX_ATTACHMENT_BAR_GENERIC_FILE_ALT'),
+    [attachment, localize]
+  );
 
   const handleDeleteButtonClick = useCallback(() => {
     onDeleteRef.current?.({ attachment: attachmentRef.current });
@@ -46,9 +60,14 @@ const AttachmentBarItem = ({ attachment, mode, onDelete }: AttachmentBarItemProp
       })}
       data-testid={testIds.sendBoxAttachmentBarItem}
       ref={elementRef}
+      title={attachmentName}
     >
-      <Preview attachment={attachment} mode={mode} />
-      <DeleteButton onClick={handleDeleteButtonClick} size={mode === 'text only' ? 'small' : 'large'} />
+      <Preview attachment={attachment} attachmentName={attachmentName} mode={mode} />
+      <DeleteButton
+        attachmentName={attachmentName}
+        onClick={handleDeleteButtonClick}
+        size={mode === 'text only' ? 'small' : 'large'}
+      />
     </div>
   );
 };
