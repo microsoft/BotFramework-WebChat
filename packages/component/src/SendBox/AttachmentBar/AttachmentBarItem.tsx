@@ -13,7 +13,7 @@ const { useLocalizer } = hooks;
 
 type AttachmentBarItemProps = Readonly<{
   attachment: SendBoxAttachment;
-  mode: 'text only' | 'thumbnail';
+  mode: 'list item' | 'thumbnail';
   onDelete?: ((event: Readonly<{ attachment: SendBoxAttachment }>) => void) | undefined;
 }>;
 
@@ -55,8 +55,8 @@ const AttachmentBarItem = ({ attachment, mode, onDelete }: AttachmentBarItemProp
   return (
     <div
       className={classNames(sendBoxAttachmentBarItemClassName, 'webchat__send-box-attachment-bar-item', {
-        'webchat__send-box-attachment-bar-item--text-only': mode === 'text only',
-        'webchat__send-box-attachment-bar-item--thumbnail': mode === 'thumbnail'
+        'webchat__send-box-attachment-bar-item--as-list-item': mode === 'list item',
+        'webchat__send-box-attachment-bar-item--as-thumbnail': mode === 'thumbnail'
       })}
       data-testid={testIds.sendBoxAttachmentBarItem}
       ref={elementRef}
@@ -66,7 +66,7 @@ const AttachmentBarItem = ({ attachment, mode, onDelete }: AttachmentBarItemProp
       <DeleteButton
         attachmentName={attachmentName}
         onClick={handleDeleteButtonClick}
-        size={mode === 'text only' ? 'small' : 'large'}
+        size={mode === 'list item' ? 'small' : 'large'}
       />
     </div>
   );

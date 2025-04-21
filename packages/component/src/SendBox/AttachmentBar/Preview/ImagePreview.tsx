@@ -9,13 +9,13 @@ type ImageAttachmentPreviewProps = Readonly<{
     thumbnailURL: URL;
   };
   attachmentName: string;
-  mode: 'text only' | 'thumbnail';
+  mode: 'list item' | 'thumbnail';
 }>;
 
 const ImageAttachmentPreview = ({ attachment, mode, attachmentName }: ImageAttachmentPreviewProps) => {
   const [{ sendBoxAttachmentBarItemImagePreview: sendBoxAttachmentBarItemImagePreviewClassName }] = useStyleSet();
 
-  return mode === 'text only' ? (
+  return mode === 'list item' ? (
     <FilePreview attachment={attachment} attachmentName={attachmentName} mode={mode} />
   ) : (
     <img

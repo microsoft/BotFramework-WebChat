@@ -7,13 +7,13 @@ export default function createSendBoxAttachmentBarItemFilePreviewStyle({ primary
       alignItems: 'center',
       display: 'grid',
 
-      '&.webchat__send-box-attachment-bar-item-file-preview--text-only': {
+      '&.webchat__send-box-attachment-bar-item-file-preview--as-list': {
         fontFamily: primaryFont,
         gap: '8px',
         gridTemplateColumns: 'auto 1fr'
       },
 
-      '&.webchat__send-box-attachment-bar-item-file-preview--thumbnail': {
+      '&.webchat__send-box-attachment-bar-item-file-preview--as-thumbnail': {
         height: '100%',
         justifyContent: 'center',
         width: '100%'

@@ -7,7 +7,7 @@ import ImagePreview from './Preview/ImagePreview';
 type AttachmentBarItemPreviewProps = Readonly<{
   attachment: SendBoxAttachment;
   attachmentName: string;
-  mode: 'text only' | 'thumbnail';
+  mode: 'list item' | 'thumbnail';
 }>;
 
 // TODO: Turn this into middleware.
