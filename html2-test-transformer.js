@@ -5,10 +5,11 @@ const testRoot = resolve(__dirname, './__tests__/html2/');
 module.exports = {
   process: (_, sourcePath) => {
     const html = relative(testRoot, sourcePath);
+    const shouldSkip = sourcePath.endsWith('.skip.html');
 
     return {
       code: `
-        test(${JSON.stringify(html)}, () =>
+        test${shouldSkip ? '.skip' : ''}(${JSON.stringify(html)}, () =>
           runHTML(${JSON.stringify(`/__tests__/html2/${html}`)}));
       `
     };

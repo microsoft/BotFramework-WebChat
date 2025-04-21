@@ -1,5 +1,9 @@
 import { normalizeStyleOptions, StyleOptions } from 'botframework-webchat-api';
 
+import createSendBoxAttachmentBarItemStyle from '../SendBox/AttachmentBar/AttachmentBarItemStyle';
+import createSendBoxAttachmentBarStyle from '../SendBox/AttachmentBar/AttachmentBarStyle';
+import createSendBoxAttachmentBarItemFilePreviewStyle from '../SendBox/AttachmentBar/Preview/FilePreviewStyle';
+import createSendBoxAttachmentBarItemImagePreviewStyle from '../SendBox/AttachmentBar/Preview/ImagePreviewStyle';
 import createActivitiesStyle from './StyleSet/Activities';
 import createActivityButtonStyle from './StyleSet/ActivityButton';
 import createActivityCopyButtonStyle from './StyleSet/ActivityCopyButton';
@@ -14,8 +18,8 @@ import createCarouselFilmStripAttachment from './StyleSet/CarouselFilmStripAttac
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createChatHistoryBoxStyleSet from './StyleSet/ChatHistoryBox';
 import createCitationModalDialogStyle from './StyleSet/CitationModalDialog';
-import createCodeBlockCopyButtonStyle from './StyleSet/CodeBlockCopyButton';
 import createCodeBlockStyle from './StyleSet/CodeBlock';
+import createCodeBlockCopyButtonStyle from './StyleSet/CodeBlockCopyButton';
 import createConnectivityNotification from './StyleSet/ConnectivityNotification';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
@@ -30,18 +34,18 @@ import createMonochromeImageMaskerStyleSet from './StyleSet/MonochromeImageMaske
 import createRenderMarkdownStyle from './StyleSet/RenderMarkdown';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
-import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
 import createSendBoxStyle from './StyleSet/SendBox';
+import createSendBoxButtonStyle from './StyleSet/SendBoxButton';
 import createSendBoxTextBoxStyle from './StyleSet/SendBoxTextBox';
 import createSendStatusStyle from './StyleSet/SendStatus';
 import createSpinnerAnimationStyle from './StyleSet/SpinnerAnimation';
 import createStackedLayoutStyle from './StyleSet/StackedLayout';
-import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
 import createSuggestedActionStyle from './StyleSet/SuggestedAction';
+import createSuggestedActionsStyle from './StyleSet/SuggestedActions';
 import createTextContentStyle from './StyleSet/TextContent';
 import createThumbButtonStyle from './StyleSet/ThumbButton';
-import createToasterStyle from './StyleSet/Toaster';
 import createToastStyle from './StyleSet/Toast';
+import createToasterStyle from './StyleSet/Toaster';
 import createTooltipStyle from './StyleSet/Tooltip';
 import createTypingAnimationStyle from './StyleSet/TypingAnimation';
 import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
@@ -88,6 +92,10 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     root: createRootStyle(strictStyleOptions),
     scrollToEndButton: createScrollToEndButtonStyle(strictStyleOptions),
     sendBox: createSendBoxStyle(strictStyleOptions),
+    sendBoxAttachmentBar: createSendBoxAttachmentBarStyle(strictStyleOptions),
+    sendBoxAttachmentBarItem: createSendBoxAttachmentBarItemStyle(strictStyleOptions),
+    sendBoxAttachmentBarItemFilePreview: createSendBoxAttachmentBarItemFilePreviewStyle(strictStyleOptions),
+    sendBoxAttachmentBarItemImagePreview: createSendBoxAttachmentBarItemImagePreviewStyle(strictStyleOptions),
     sendBoxButton: createSendBoxButtonStyle(strictStyleOptions),
     sendBoxTextBox: createSendBoxTextBoxStyle(strictStyleOptions),
     spinnerAnimation: createSpinnerAnimationStyle(strictStyleOptions),

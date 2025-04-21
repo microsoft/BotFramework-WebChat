@@ -310,7 +310,11 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   feedbackActionsPlacement: 'activity-status' as const,
 
   // Speech recognition
-  speechRecognitionContinuous: false
+  speechRecognitionContinuous: false,
+
+  // Send box attachment bar
+  sendBoxAttachmentBarMaxHeight: 114,
+  sendBoxAttachmentBarMaxThumbnail: 3
 };
 
 export default DEFAULT_OPTIONS;
