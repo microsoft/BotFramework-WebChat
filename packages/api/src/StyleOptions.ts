@@ -952,6 +952,13 @@ type StyleOptions = {
    * @see https://github.com/microsoft/BotFramework-WebChat/pull/5426
    */
   speechRecognitionContinuous?: boolean | undefined;
+
+  /**
+   * Send box: maximum number of attachment item to preview as thumbnail before showing as text-only.
+   *
+   * @default 3
+   */
+  sendBoxAttachmentBarMaxThumbnail?: number;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

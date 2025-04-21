@@ -1,21 +1,24 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import { useStyleSet } from '../../hooks';
 import testIds from '../../testIds';
 import AttachmentBarItem from './AttachmentBarItem';
 
-const { useSendBoxAttachments } = hooks;
-
-const MAX_THUMBNAIL_BEFORE_TEXT_ONLY = 3;
+const { useSendBoxAttachments, useStyleOptions } = hooks;
 
 const Attachments = () => {
   const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachments();
   const [{ sendBoxAttachmentBar: sendBoxAttachmentBarClassName }] = useStyleSet();
+  const [{ sendBoxAttachmentBarMaxThumbnail }] = useStyleOptions();
 
-  const mode = sendBoxAttachments.length > MAX_THUMBNAIL_BEFORE_TEXT_ONLY ? 'text only' : 'thumbnail';
+  const mode = useMemo(
+    () => (sendBoxAttachments.length > sendBoxAttachmentBarMaxThumbnail ? 'text only' : 'thumbnail'),
+    [sendBoxAttachmentBarMaxThumbnail, sendBoxAttachments]
+  );
+
   const sendBoxAttachmentsRef = useRefFrom(sendBoxAttachments);
 
   const handleAttachmentDelete = useCallback(
