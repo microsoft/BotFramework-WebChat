@@ -92,6 +92,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - `useGroupActivitiesByName` is favored over the existing `useGroupActivities` hook for performance reason
    - Middleware which support the new grouping name init argument should only compute the grouping if they match the grouping name, or the grouping name is not specified, otherwise, should do nothing and call the downstream middleware
 - Added attachment preview for `sendAttachmentOn: "send"`, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
+- Resolved [#5463](https://github.com/microsoft/BotFramework-WebChat/issues/5463). Added attachment preview for `sendAttachmentOn: "send"`, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
    - Attaching files will no longer remove previously attached files
 
 ### Changed
