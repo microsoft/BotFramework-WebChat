@@ -1,5 +1,4 @@
 import { By } from 'selenium-webdriver';
-import { testIds } from 'botframework-webchat';
 
 const CSS_SELECTOR = `[data-testid="send box text area"]`;
 
