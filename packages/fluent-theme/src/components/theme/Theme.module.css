@@ -645,7 +645,7 @@
   background-color: var(--webchat-colorBrandForeground1);
   border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandForeground1);
   border-radius: var(--webchat-borderRadiusMedium);
-  color: #ffffff; /* Always white in dark and light mode */
+  color: var(--webchat-colorNeutralBackground1);
   cursor: pointer;
   font-family: var(--webchat-fontFamilyBase);
   font-size: var(--webchat-fontSizeBase300);
