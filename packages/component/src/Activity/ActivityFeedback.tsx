@@ -78,7 +78,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   }, [graph, messageThing?.potentialAction]);
 
   const handleFeedbackActionClick = useCallback(
-    (action?: OrgSchemaAction) => setSelectedAction(action === selectedAction ? undefined : action),
+    (action: OrgSchemaAction) => setSelectedAction(action === selectedAction ? undefined : action),
     [selectedAction, setSelectedAction]
   );
 
