@@ -12,8 +12,6 @@ const activityWithFeedbackLoopSchema = object({
 
 type FeedbackActivity = WebChatActivity & InferOutput<typeof activityWithFeedbackLoopSchema>;
 
-export const hasFeedbackLoop = (activity: WebChatActivity): activity is FeedbackActivity =>
-  safeParse(activityWithFeedbackLoopSchema, activity).success;
-
-export const getDisclaimer = (activity: WebChatActivity): string | undefined =>
-  hasFeedbackLoop(activity) ? activity.channelData.feedbackLoop.disclaimer : undefined;
+export default function hasFeedbackLoop(activity: WebChatActivity): activity is FeedbackActivity {
+  return safeParse(activityWithFeedbackLoopSchema, activity).success;
+}

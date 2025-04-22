@@ -5,7 +5,8 @@ import React, { memo, useCallback, useMemo, useState } from 'react';
 import useStyleSet from '../hooks/useStyleSet';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
 import Feedback from './private/Feedback';
-import { getDisclaimer, hasFeedbackLoop } from './private/feedbackActivity.util';
+import getDisclaimer from './private/getDisclaimer';
+import hasFeedbackLoop from './private/hasFeedbackLoop';
 import FeedbackForm from './private/FeedbackForm';
 
 const { useStyleOptions } = hooks;
