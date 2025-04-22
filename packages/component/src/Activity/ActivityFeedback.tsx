@@ -48,7 +48,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
 
   const isFeedbackLoopSupported = hasFeedbackLoop(activity);
 
-  const { messageThing, graph } = useMemo(() => {
+  const { graph, messageThing } = useMemo(() => {
     if (isFeedbackLoopSupported) {
       return parseActivity([defaultFeedbackEntities]);
     }
@@ -82,6 +82,8 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     [selectedAction, setSelectedAction]
   );
 
+  const handleFeedbackFormReset = useCallback(() => setSelectedAction(undefined), [setSelectedAction]);
+
   const FeedbackComponent = useMemo(
     () => (
       <Feedback
@@ -102,11 +104,11 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
       <FeedbackForm
         disclaimer={getDisclaimer(activity)}
         feedbackType={selectedAction?.['@type']}
-        onResetFeedbackForm={handleFeedbackActionClick}
+        onReset={handleFeedbackFormReset}
         replyToId={activity.id}
       />
     ),
-    [activity, handleFeedbackActionClick, selectedAction]
+    [activity, handleFeedbackFormReset, selectedAction]
   );
 
   if (feedbackActionsPlacement === 'activity-actions' && isFeedbackLoopSupported) {

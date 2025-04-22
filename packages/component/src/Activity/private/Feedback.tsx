@@ -21,8 +21,8 @@ const DEBOUNCE_TIMEOUT = 500;
 
 const Feedback = memo(({ actions, className, isFeedbackFormSupported, onActionClick, selectedAction }: Props) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
-  const postActivity = usePostActivity();
   const localize = useLocalizer();
+  const postActivity = usePostActivity();
 
   const postActivityRef = useRefFrom(postActivity);
 
