@@ -647,8 +647,8 @@
 }
 
 :global(.webchat-fluent).theme :global(.webchat__feedback-form__button__submit) {
-  background-color: var(--webchat-colorBrandForeground1);
-  border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandForeground1);
+  background-color: var(--webchat-colorBrandBackground);
+  border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandBackground);
   border-radius: var(--webchat-borderRadiusMedium);
   color: var(--webchat-colorNeutralForegroundOnBrand);
   cursor: pointer;
