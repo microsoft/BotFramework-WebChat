@@ -21,6 +21,8 @@
   --webchat-colorNeutralForeground4: var(--colorNeutralForeground4, #707070);
   --webchat-colorNeutralForeground5: var(--colorNeutralForeground5, #7e7e7e);
 
+  --webchat-colorNeutralForegroundOnBrand: var(--colorNeutralForegroundOnBrand, #fff);
+
   --webchat-colorNeutralBackgroundDisabled: var(--colorNeutralBackgroundDisabled, #f0f0f0);
   --webchat-colorNeutralBackground1: var(--colorNeutralBackground1, #ffffff);
   --webchat-colorNeutralBackground1Hover: var(--colorNeutralBackground1Hover, #f5f5f5);
@@ -645,7 +647,7 @@
   background-color: var(--webchat-colorBrandForeground1);
   border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandForeground1);
   border-radius: var(--webchat-borderRadiusMedium);
-  color: var(--webchat-colorNeutralBackground1);
+  color: var(--webchat-colorNeutralForegroundOnBrand);
   cursor: pointer;
   font-family: var(--webchat-fontFamilyBase);
   font-size: var(--webchat-fontSizeBase300);
