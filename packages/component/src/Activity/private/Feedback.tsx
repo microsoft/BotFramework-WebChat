@@ -12,71 +12,69 @@ type Props = Readonly<
     actions: ReadonlySet<OrgSchemaAction>;
     className?: string | undefined;
     isFeedbackFormSupported?: boolean;
-    onHandleFeedbackActionClick?: (action: OrgSchemaAction) => void;
+    onActionClick?: (action: OrgSchemaAction) => void;
     selectedAction?: OrgSchemaAction | undefined;
   }>
 >;
 
 const DEBOUNCE_TIMEOUT = 500;
 
-const Feedback = memo(
-  ({ actions, className, isFeedbackFormSupported, onHandleFeedbackActionClick, selectedAction }: Props) => {
-    const [{ clearTimeout, setTimeout }] = usePonyfill();
-    const postActivity = usePostActivity();
-    const localize = useLocalizer();
+const Feedback = memo(({ actions, className, isFeedbackFormSupported, onActionClick, selectedAction }: Props) => {
+  const [{ clearTimeout, setTimeout }] = usePonyfill();
+  const postActivity = usePostActivity();
+  const localize = useLocalizer();
 
-    const postActivityRef = useRefFrom(postActivity);
+  const postActivityRef = useRefFrom(postActivity);
 
-    useEffect(() => {
-      if (!selectedAction || isFeedbackFormSupported) {
-        return;
-      }
+  useEffect(() => {
+    if (!selectedAction || isFeedbackFormSupported) {
+      return;
+    }
 
-      const timeout = setTimeout(
-        () =>
-          // TODO: We should update this to use W3C Hydra.1
-          postActivityRef.current({
-            entities: [selectedAction],
-            name: 'webchat:activity-status/feedback',
-            type: 'event'
-          } as any),
-        DEBOUNCE_TIMEOUT
-      );
-
-      return () => clearTimeout(timeout);
-    }, [clearTimeout, isFeedbackFormSupported, postActivityRef, selectedAction, setTimeout]);
-
-    const actionProps = useMemo(
+    const timeout = setTimeout(
       () =>
-        [...actions].some(action => action.actionStatus === 'CompletedActionStatus')
-          ? {
-              disabled: true,
-              title: localize('VOTE_COMPLETE_ALT')
-            }
-          : undefined,
-      [actions, localize]
+        // TODO: We should update this to use W3C Hydra.1
+        postActivityRef.current({
+          entities: [selectedAction],
+          name: 'webchat:activity-status/feedback',
+          type: 'event'
+        } as any),
+      DEBOUNCE_TIMEOUT
     );
 
-    return (
-      <Fragment>
-        {[...actions].map((action, index) => (
-          <FeedbackVoteButton
-            action={action}
-            className={className}
-            key={action['@id'] || index}
-            onClick={onHandleFeedbackActionClick}
-            pressed={
-              selectedAction === action ||
-              action.actionStatus === 'CompletedActionStatus' ||
-              action.actionStatus === 'ActiveActionStatus'
-            }
-            {...actionProps}
-          />
-        ))}
-      </Fragment>
-    );
-  }
-);
+    return () => clearTimeout(timeout);
+  }, [clearTimeout, isFeedbackFormSupported, postActivityRef, selectedAction, setTimeout]);
+
+  const actionProps = useMemo(
+    () =>
+      [...actions].some(action => action.actionStatus === 'CompletedActionStatus')
+        ? {
+            disabled: true,
+            title: localize('VOTE_COMPLETE_ALT')
+          }
+        : undefined,
+    [actions, localize]
+  );
+
+  return (
+    <Fragment>
+      {[...actions].map((action, index) => (
+        <FeedbackVoteButton
+          action={action}
+          className={className}
+          key={action['@id'] || index}
+          onClick={onActionClick}
+          pressed={
+            selectedAction === action ||
+            action.actionStatus === 'CompletedActionStatus' ||
+            action.actionStatus === 'ActiveActionStatus'
+          }
+          {...actionProps}
+        />
+      ))}
+    </Fragment>
+  );
+});
 
 Feedback.displayName = 'ActivityStatusFeedback';
 

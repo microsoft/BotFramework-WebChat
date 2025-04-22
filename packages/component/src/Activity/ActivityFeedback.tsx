@@ -90,7 +90,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
           'webchat__thumb-button--large': feedbackActionsPlacement === 'activity-actions'
         })}
         isFeedbackFormSupported={isFeedbackLoopSupported}
-        onHandleFeedbackActionClick={handleFeedbackActionClick}
+        onActionClick={handleFeedbackActionClick}
         selectedAction={selectedAction}
       />
     ),
