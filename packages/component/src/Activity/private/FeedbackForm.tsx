@@ -1,39 +1,34 @@
-import React, { memo, useEffect, useState, useCallback, useRef } from 'react';
 import { hooks } from 'botframework-webchat-api';
-import useStyleSet from '../../hooks/useStyleSet';
 import classNames from 'classnames';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import useStyleSet from '../../hooks/useStyleSet';
 import testIds from '../../testIds';
 import TextArea from './FeedbackTextArea';
+
 const { useLocalizer, usePostActivity } = hooks;
 
-const FeedbackOptions = {
-  LikeAction: 'like',
-  DislikeAction: 'dislike'
-} as const;
-
-function FeedbackForm({
-  feedbackType,
-  disclaimer,
-  onResetFeedbackForm,
-  replyToId
-}: Readonly<{
-  feedbackType: string;
+type FeedbackFormProps = Readonly<{
   disclaimer?: string;
-  onResetFeedbackForm: () => void;
+  feedbackType: string;
+  onReset: () => void;
   replyToId?: string;
-}>) {
-  const feedbackTextAreaRef = useRef<HTMLTextAreaElement>(null);
+}>;
+
+function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: FeedbackFormProps) {
   const [{ feedbackForm }] = useStyleSet();
   const [hasFocused, setHasFocused] = useState(false);
+  const [userFeedback, setUserFeedback] = useState('');
+  const feedbackTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const localize = useLocalizer();
   const postActivity = usePostActivity();
-  const [userFeedback, setUserFeedback] = useState('');
 
   const handleReset = useCallback(() => {
     setUserFeedback('');
-    onResetFeedbackForm();
+
+    onReset();
+
     setHasFocused(false);
-  }, [onResetFeedbackForm]);
+  }, [onReset, setHasFocused, setUserFeedback]);
 
   const handleSubmit = useCallback(
     event => {
@@ -45,7 +40,7 @@ function FeedbackForm({
         value: {
           actionName: 'feedback',
           actionValue: {
-            reaction: feedbackType === 'LikeAction' ? FeedbackOptions.LikeAction : FeedbackOptions.DislikeAction,
+            reaction: feedbackType === 'LikeAction' ? 'like' : 'dislike',
             feedback: {
               feedbackText: userFeedback
             }
@@ -69,7 +64,7 @@ function FeedbackForm({
       setHasFocused(true);
       feedbackTextAreaRef.current.focus();
     }
-  }, [feedbackTextAreaRef, hasFocused]);
+  }, [feedbackTextAreaRef, hasFocused, setHasFocused]);
 
   return (
     <div>
@@ -104,4 +99,7 @@ function FeedbackForm({
     </div>
   );
 }
+
 export default memo(FeedbackForm);
+
+export { type FeedbackFormProps };
