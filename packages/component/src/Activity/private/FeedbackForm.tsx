@@ -33,6 +33,7 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
   const handleSubmit = useCallback(
     event => {
       event.preventDefault();
+
       postActivity({
         type: 'invoke',
         name: 'message/submitAction',
@@ -47,9 +48,10 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
           }
         }
       } as any);
+
       handleReset();
     },
-    [postActivity, replyToId, feedbackType, handleReset, userFeedback]
+    [feedbackType, handleReset, postActivity, replyToId, userFeedback]
   );
 
   const handleChange: React.FormEventHandler<HTMLTextAreaElement> = useCallback(
