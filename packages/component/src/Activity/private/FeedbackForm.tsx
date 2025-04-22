@@ -61,9 +61,9 @@ function FeedbackForm({
     [postActivity, replyToId, feedbackType, handleReset, userFeedback]
   );
 
-  const handleChange = useCallback(
-    (value: string) => {
-      setUserFeedback(value);
+  const handleChange: React.FormEventHandler<HTMLTextAreaElement> = useCallback(
+    event => {
+      setUserFeedback(event.currentTarget.value);
     },
     [setUserFeedback]
   );
@@ -83,7 +83,7 @@ function FeedbackForm({
       <form className={classNames('webchat__feedback-form', feedbackForm + '')} onSubmit={handleSubmit}>
         <MultiLineTextBox
           data-testid={testIds.feedbackSendBox}
-          onChange={handleChange}
+          onInput={handleChange}
           placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
           ref={feedbackTextAreaRef}
           value={userFeedback}

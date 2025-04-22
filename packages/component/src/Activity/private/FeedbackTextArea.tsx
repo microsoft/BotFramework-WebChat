@@ -1,6 +1,13 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { forwardRef, Fragment, useCallback, type ChangeEventHandler, type KeyboardEventHandler } from 'react';
+import React, {
+  forwardRef,
+  Fragment,
+  useCallback,
+  useRef,
+  type FormEventHandler,
+  type KeyboardEventHandler
+} from 'react';
 import useStyleSet from '../../hooks/useStyleSet';
 
 const { useUIState } = hooks;
@@ -21,7 +28,7 @@ const TextArea = forwardRef<
      *   This ensures the flow of focus did not sent to document body
      */
     hidden?: boolean | undefined;
-    onChange?: ChangeEventHandler<HTMLTextAreaElement> | undefined;
+    onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
     placeholder?: string | undefined;
     startRows?: number | undefined;
     value?: string | undefined;
@@ -29,13 +36,22 @@ const TextArea = forwardRef<
 >((props, ref) => {
   const [uiState] = useUIState();
   const [{ feedbackTextArea }] = useStyleSet();
+  const isInCompositionRef = useRef<boolean>(false);
 
   const disabled = uiState === 'disabled';
+
+  const handleCompositionEnd = useCallback(() => {
+    isInCompositionRef.current = false;
+  }, [isInCompositionRef]);
+
+  const handleCompositionStart = useCallback(() => {
+    isInCompositionRef.current = true;
+  }, [isInCompositionRef]);
 
   const handleKeyDown = useCallback<KeyboardEventHandler<HTMLTextAreaElement>>(event => {
     // Shift+Enter adds a new line
     // Enter requests related form submission
-    if (!event.shiftKey && event.key === 'Enter') {
+    if (!event.shiftKey && event.key === 'Enter' && !isInCompositionRef.current) {
       event.preventDefault();
 
       if ('form' in event.target && event.target.form instanceof HTMLFormElement) {
@@ -86,7 +102,9 @@ const TextArea = forwardRef<
               feedbackTextArea + ''
             )}
             data-testid={props['data-testid']}
-            onChange={props.onChange}
+            onCompositionEnd={handleCompositionEnd}
+            onCompositionStart={handleCompositionStart}
+            onInput={props.onInput}
             onKeyDown={handleKeyDown}
             placeholder={props.placeholder}
             readOnly={disabled}
