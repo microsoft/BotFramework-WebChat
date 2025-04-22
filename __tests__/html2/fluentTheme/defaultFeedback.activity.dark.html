@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/fluent-bundle.production.min.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style type="text/css">
+      .fluent-provider {
+        height: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          Fluent: { FluentProvider, createDarkTheme },
+          React,
+          ReactDOMClient: { createRoot },
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [
+            { name: 'prefers-reduced-motion', value: 'reduce' },
+            { name: 'prefers-color-scheme', value: 'dark' }
+          ]
+        });
+
+        const root = createRoot(document.getElementById('webchat'));
+
+        function renderWebChat(uiState) {
+          const theme = {
+            ...createDarkTheme({
+              10: '#12174c',
+              20: '#1a1f5b',
+              30: '#21276a',
+              40: '#293079',
+              50: '#303788',
+              60: '#384097',
+              70: '#4049a7',
+              80: '#151e80',
+              90: '#4f59c5',
+              100: '#5661d4',
+              110: '#5e69e3',
+              120: '#7982e8',
+              130: '#949bec',
+              140: '#afb5f1',
+              150: '#c9cdf6',
+              160: '#e4e6fa'
+            }),
+            colorNeutralBackground1Disabled: '#101010',
+            colorNeutralBackground1Hover: '#101010',
+            colorNeutralForeground5: '#424242'
+          };
+
+          root.render(
+            <FluentProvider className="fluent-provider" theme={theme}>
+              <FluentThemeProvider variant="fluent">
+                <ReactWebChat directLine={directLine} store={store} uiState={uiState} />
+              </FluentThemeProvider>
+            </FluentProvider>
+          );
+        }
+
+        renderWebChat();
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          type: 'message',
+          id: 'a-00000',
+          timestamp: 0,
+          text: 'This is a test message to show feedback buttons',
+          from: {
+            role: 'bot'
+          },
+          locale: 'en-US',
+          entities: [],
+          channelData: {
+            feedbackLoop: {
+              type: 'default',
+              disclaimer: 'This is a test disclaimer message'
+            }
+          }
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        pageElements.byTestId('send box text area').focus();
+        await host.sendShiftTab(2);
+
+        await host.sendKeys('ENTER');
+        await host.sendKeys('ENTER');
+
+        await host.snapshot('local');
+
+        // Dismiss like button
+        await host.sendShiftTab(2);
+        await host.sendKeys('ENTER');
+
+        await host.snapshot('local');
+
+        // Click like button
+        await host.sendKeys('ENTER');
+
+        await pageConditions.became(
+          'feedback form is open',
+          () => document.activeElement === pageElements.byTestId('feedback sendbox'),
+          1000
+        );
+
+        // Go to cancel button
+        await host.sendTab(2);
+        await host.sendKeys('ENTER');
+
+        await host.snapshot('local');
+
+        pageElements.byTestId('send box text area').focus();
+        await host.sendShiftTab(2);
+
+        await host.sendKeys('ENTER');
+        // Send dislike
+        await host.sendTab(1);
+        await host.sendKeys('ENTER');
+
+        await pageConditions.became(
+          'feedback form is open',
+          () => document.activeElement === pageElements.byTestId('feedback sendbox'),
+          1000
+        );
+
+        await host.sendKeys('Test feedback');
+
+        await host.snapshot('local');
+
+        const { activity } = await directLine.actPostActivity(async () => {
+          await host.sendTab(1);
+          await host.sendKeys('ENTER');
+        });
+
+        expect(activity).toEqual(
+          expect.objectContaining({
+            type: 'invoke',
+            name: 'message/submitAction',
+            value: {
+              actionName: 'feedback',
+              actionValue: {
+                reaction: 'dislike',
+                feedback: {
+                  feedbackText: 'Test feedback'
+                }
+              }
+            }
+          })
+        );
+      });
+    </script>
+  </body>
+</html>

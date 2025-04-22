@@ -627,7 +627,7 @@
 /* Feedback Form */
 :global(.webchat-fluent).theme :global(.webchat__feedback-form__body1) {
   font-family: var(--webchat-fontFamilyBase);
-  color: var(--webchat-colorGray200);
+  color: var(--webchat-colorNeutralForeground1);
   font-size: var(--webchat-fontSizeBase300);
   font-weight: var(--webchat-fontWeightRegular);
   line-height: var(--webchat-lineHeightBase300);
@@ -635,7 +635,7 @@
 
 :global(.webchat-fluent).theme :global(.webchat__feedback-form__caption1) {
   font-family: var(--webchat-fontFamilyBase);
-  color: var(--webchat-colorNeutralForeground3);
+  color: var(--webchat-colorNeutralForeground1);
   font-size: var(--webchat-fontSizeBase100);
   font-weight: var(--webchat-fontWeightRegular);
   line-height: var(--webchat-lineHeightBase200);
@@ -645,7 +645,7 @@
   background-color: var(--webchat-colorBrandForeground1);
   border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandForeground1);
   border-radius: var(--webchat-borderRadiusMedium);
-  color: var(--webchat-colorNeutralBackground1);
+  color: #ffffff; /* Always white in dark and light mode */
   cursor: pointer;
   font-family: var(--webchat-fontFamilyBase);
   font-size: var(--webchat-fontSizeBase300);
@@ -671,7 +671,7 @@
   background-color: var(--webchat-colorNeutralBackground1);
   border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
   border-radius: var(--webchat-borderRadiusMedium);
-  color: var(--webchat-colorNeutralForeground3);
+  color: var(--webchat-colorNeutralForeground1);
   cursor: pointer;
   font-family: var(--webchat-fontFamilyBase);
   font-size: var(--webchat-fontSizeBase300);
