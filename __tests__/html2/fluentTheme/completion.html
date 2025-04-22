@@ -20,6 +20,7 @@
 <body>
   <main id="webchat"></main>
   <script type="text/babel">
+    run = fn => fn();
     run(async function () {
       const {
         React,
@@ -39,7 +40,7 @@
 
 
         const handleKeyDown = (event) => {
-          if (event.key === 'Tab' && completion) {
+          if (event.key === 'Tab' && !event.shiftKey && event.target.localName === 'textarea' && globalMessage && completion) {
             event.preventDefault();
             setGlobalMessage([globalMessage, completion].join(' '))
             setCompletion('');
