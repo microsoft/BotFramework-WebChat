@@ -11,6 +11,22 @@
   visibility: collapse;
 }
 
+:global(.webchat-fluent) .sendbox__text-area--in-completion {
+  .sendbox__text-area-doppelganger {
+    visibility: visible;
+  }
+
+  .sendbox__text-area-input {
+    background-color: transparent;
+    color: transparent;
+    caret-color: var(--webchat-colorNeutralForeground1);
+  }
+
+  textarea::placeholder {
+    color: transparent;
+  }
+}
+
 :global(.webchat-fluent) .sendbox__text-area-shared {
   border: none;
   font: inherit;
