@@ -2,11 +2,10 @@ import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { defaultFeedbackEntities } from './private/DefaultFeedbackEntities';
-import { hasFeedbackLoop, getDisclaimer } from './private/feedbackActivity.util';
 import useStyleSet from '../hooks/useStyleSet';
-import Feedback from './private/Feedback';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
+import Feedback from './private/Feedback';
+import { getDisclaimer, hasFeedbackLoop } from './private/feedbackActivity.util';
 import FeedbackForm from './private/FeedbackForm';
 
 const { useStyleOptions } = hooks;
@@ -18,7 +17,27 @@ type ActivityFeedbackProps = Readonly<{
 const parseActivity = (entities?: WebChatActivity['entities']) => {
   const graph = dereferenceBlankNodes(entities || []);
   const messageThing = getOrgSchemaMessage(graph);
+
   return { graph, messageThing };
+};
+
+const defaultFeedbackEntities = {
+  '@context': 'https://schema.org',
+  '@id': '',
+  '@type': 'Message',
+  type: 'https://schema.org/Message',
+
+  keywords: [],
+  potentialAction: [
+    {
+      '@type': 'LikeAction',
+      actionStatus: 'PotentialActionStatus'
+    },
+    {
+      '@type': 'DislikeAction',
+      actionStatus: 'PotentialActionStatus'
+    }
+  ]
 };
 
 function ActivityFeedback({ activity }: ActivityFeedbackProps) {
@@ -33,6 +52,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     if (isFeedbackLoopSupported) {
       return parseActivity([defaultFeedbackEntities]);
     }
+
     return parseActivity(activity.entities);
   }, [activity.entities, isFeedbackLoopSupported]);
 
@@ -58,10 +78,8 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   }, [graph, messageThing?.potentialAction]);
 
   const handleFeedbackActionClick = useCallback(
-    (action?: OrgSchemaAction) => {
-      setSelectedAction(action === selectedAction ? undefined : action);
-    },
-    [selectedAction]
+    (action?: OrgSchemaAction) => setSelectedAction(action === selectedAction ? undefined : action),
+    [selectedAction, setSelectedAction]
   );
 
   const FeedbackComponent = useMemo(
