@@ -1,6 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState, type FormEventHandler } from 'react';
+import { useRefFrom } from 'use-ref-from';
 import useStyleSet from '../../hooks/useStyleSet';
 import testIds from '../../testIds';
 import TextArea from './FeedbackTextArea';
@@ -20,31 +21,30 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
   const [userFeedback, setUserFeedback] = useState('');
   const feedbackTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const localize = useLocalizer();
+  const onResetRef = useRefFrom(onReset);
   const postActivity = usePostActivity();
 
   const handleReset = useCallback(() => {
     setUserFeedback('');
 
-    onReset();
+    onResetRef.current();
 
     setHasFocused(false);
-  }, [onReset, setHasFocused, setUserFeedback]);
+  }, [onResetRef, setHasFocused, setUserFeedback]);
 
   const handleSubmit = useCallback(
     event => {
       event.preventDefault();
 
       postActivity({
-        type: 'invoke',
         name: 'message/submitAction',
         replyToId,
+        type: 'invoke',
         value: {
           actionName: 'feedback',
           actionValue: {
-            reaction: feedbackType === 'LikeAction' ? 'like' : 'dislike',
-            feedback: {
-              feedbackText: userFeedback
-            }
+            feedback: { feedbackText: userFeedback },
+            reaction: feedbackType === 'LikeAction' ? 'like' : 'dislike'
           }
         }
       } as any);
@@ -54,14 +54,15 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
     [feedbackType, handleReset, postActivity, replyToId, userFeedback]
   );
 
-  const handleChange: React.FormEventHandler<HTMLTextAreaElement> = useCallback(
-    event => {
-      setUserFeedback(event.currentTarget.value);
-    },
+  const handleChange: FormEventHandler<HTMLTextAreaElement> = useCallback(
+    event => setUserFeedback(event.currentTarget.value),
     [setUserFeedback]
   );
 
   useEffect(() => {
+    // Will focus on the text area when:
+    // 1. The component is mounted initially, or
+    // 2. User clicked on the reset button
     if (feedbackTextAreaRef.current && !hasFocused) {
       setHasFocused(true);
       feedbackTextAreaRef.current.focus();
