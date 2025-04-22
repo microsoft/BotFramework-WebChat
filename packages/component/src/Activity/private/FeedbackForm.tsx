@@ -4,16 +4,12 @@ import useStyleSet from '../../hooks/useStyleSet';
 import classNames from 'classnames';
 import testIds from '../../testIds';
 import TextArea from './FeedbackTextArea';
-import withEmoji from '../../withEmoji/withEmoji';
-
 const { useLocalizer, usePostActivity } = hooks;
 
 const FeedbackOptions = {
   LikeAction: 'like',
   DislikeAction: 'dislike'
 } as const;
-
-const MultiLineTextBox = withEmoji(TextArea);
 
 function FeedbackForm({
   feedbackType,
@@ -81,7 +77,7 @@ function FeedbackForm({
         {localize('FEEDBACK_FORM_TITLE')}
       </span>
       <form className={classNames('webchat__feedback-form', feedbackForm + '')} onSubmit={handleSubmit}>
-        <MultiLineTextBox
+        <TextArea
           data-testid={testIds.feedbackSendBox}
           onInput={handleChange}
           placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
