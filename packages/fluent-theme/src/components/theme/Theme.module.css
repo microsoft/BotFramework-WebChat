@@ -650,6 +650,7 @@
   font-family: var(--webchat-fontFamilyBase);
   font-size: var(--webchat-fontSizeBase300);
   padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalS);
+  transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
 
   &:hover {
     background-color: var(--webchat-colorBrandForeground2Hover);
@@ -676,6 +677,7 @@
   font-family: var(--webchat-fontFamilyBase);
   font-size: var(--webchat-fontSizeBase300);
   padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalS);
+  transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
 
   &:hover {
     background-color: var(--webchat-colorNeutralBackground1Hover);
