@@ -17,7 +17,7 @@ type FeedbackFormProps = Readonly<{
 
 function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: FeedbackFormProps) {
   const [{ feedbackForm }] = useStyleSet();
-  const [hasFocused, setHasFocused] = useState(false);
+  const [hasFocus, setHasFocus] = useState(false);
   const [userFeedback, setUserFeedback] = useState('');
   const feedbackTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const localize = useLocalizer();
@@ -29,8 +29,8 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
 
     onResetRef.current();
 
-    setHasFocused(false);
-  }, [onResetRef, setHasFocused, setUserFeedback]);
+    setHasFocus(false);
+  }, [onResetRef, setHasFocus, setUserFeedback]);
 
   const handleSubmit = useCallback(
     event => {
@@ -55,7 +55,7 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
   );
 
   const handleChange: FormEventHandler<HTMLTextAreaElement> = useCallback(
-    event => setUserFeedback(event.currentTarget.value),
+    ({ currentTarget: { value } }) => setUserFeedback(value),
     [setUserFeedback]
   );
 
@@ -63,11 +63,12 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
     // Will focus on the text area when:
     // 1. The component is mounted initially, or
     // 2. User clicked on the reset button
-    if (feedbackTextAreaRef.current && !hasFocused) {
-      setHasFocused(true);
+    if (feedbackTextAreaRef.current && !hasFocus) {
+      setHasFocus(true);
+
       feedbackTextAreaRef.current.focus();
     }
-  }, [feedbackTextAreaRef, hasFocused, setHasFocused]);
+  }, [feedbackTextAreaRef, hasFocus, setHasFocus]);
 
   return (
     <div>
