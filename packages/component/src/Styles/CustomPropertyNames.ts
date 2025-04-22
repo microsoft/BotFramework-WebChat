@@ -19,16 +19,7 @@ const CustomPropertyNames = Object.freeze({
   MinWidthAttachmentBubble: '--webchat__min-width--attachment-bubble',
   MinWidthMessageBubble: '--webchat__min-width--message-bubble',
   PaddingRegular: '--webchat__padding--regular',
-  SizeAvatar: '--webchat__size--avatar',
-  FeedbackFormPrimary: '--webchat__feedback-form__primary',
-  FeedbackFormPrimarySubmitted: '--webchat__feedback-form__primary--submitted',
-  FeedbackFormLightest: '--webchat__feedback-form--lightest',
-  FeedbackFormNeutralLight: '--webchat__feedback-form--neutral-light',
-  FeedbackFormNeutralMedium: '--webchat__feedback-form--neutral-medium',
-  FeedbackFormNeutralDark: '--webchat__feedback-form--neutral-dark',
-  FeedbackFormTextBoxMinHeight: '--webchat__feedback-form__text-box--min-height',
-  FeedbackFormTextBoxMinWidth: '--webchat__feedback-form__text-box--min-width',
-  FeedbackFormTextBoxPadding: '--webchat__feedback-form__text-box--padding'
+  SizeAvatar: '--webchat__size--avatar'
 }) satisfies Readonly<Record<string, `--webchat__${string}`>>;
 
 export default CustomPropertyNames;

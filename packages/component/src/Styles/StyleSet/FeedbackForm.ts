@@ -2,70 +2,78 @@ import CSSTokens from '../CSSTokens';
 
 export default function createFeedbackFormStyle() {
   return {
-    '&.feedback-form': {
+    '&.webchat__feedback-form__root-container': {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.5rem'
+    },
+    '&.webchat__feedback-form__root-container__child': {
+      display: 'flex'
+    },
+    '&.webchat__feedback-form': {
       boxSizing: 'border-box',
       display: 'grid',
       gap: '4px',
       gridTemplateRows: 'auto auto',
       position: 'relative'
     },
-    '&.feedback-form__body1': {
+    '&.webchat__feedback-form__body1': {
       fontFamily: CSSTokens.FontPrimary,
       fontStyle: 'normal',
       fontWeight: 400,
       fontSize: '14px',
       lineHeight: '20px',
-      color: CSSTokens.FeedbackFormNeutralDark
+      color: '#373435'
     },
-    '&.feedback-form__caption1': {
+    '&.webchat__feedback-form__caption1': {
       fontFamily: CSSTokens.FontPrimary,
       fontStyle: 'normal',
       fontWeight: 400,
       fontSize: '10px',
       lineHeight: '14px',
-      color: CSSTokens.FeedbackFormNeutralMedium
+      color: CSSTokens.ColorSubtle
     },
-    '&.feedback-form__container': {
+    '&.webchat__feedback-form__container': {
       display: 'flex',
       flexDirection: 'row',
       gap: '8px',
       paddingTop: '6px'
     },
-    '&.feedback-form__button__submit': {
-      backgroundColor: CSSTokens.FeedbackFormPrimary,
-      border: `1px solid ${CSSTokens.FeedbackFormPrimary}`,
+    '&.webchat__feedback-form__button__submit': {
+      backgroundColor: CSSTokens.ColorAccent,
+      border: `1px solid ${CSSTokens.ColorAccent}`,
       borderRadius: '4px',
-      color: CSSTokens.FeedbackFormLightest,
+      color: '#FFFFFF',
       cursor: 'pointer',
       fontSize: '12px',
       fontFamily: CSSTokens.FontPrimary,
       height: '24px',
       padding: '0 8px'
     },
-    '&.feedback-form__button__submit:hover': {
-      backgroundColor: CSSTokens.FeedbackFormPrimarySubmitted,
-      border: `1px solid ${CSSTokens.FeedbackFormPrimarySubmitted}`,
-      color: CSSTokens.FeedbackFormLightest
+    '&.webchat__feedback-form__button__submit:hover': {
+      backgroundColor: '#004a98',
+      border: '1px solid #004a98',
+      color: '#FFFFFF'
     },
-    '&.feedback-form__button__submit:active': {
-      backgroundColor: CSSTokens.FeedbackFormPrimarySubmitted,
-      border: `1px solid ${CSSTokens.FeedbackFormPrimarySubmitted}`,
-      color: CSSTokens.FeedbackFormLightest
+    '&.webchat__feedback-form__button__submit:active': {
+      backgroundColor: '#004a98',
+      border: '1px solid #004a98',
+      color: '#FFFFFF'
     },
-    '&.feedback-form__button__cancel': {
-      backgroundColor: CSSTokens.FeedbackFormLightest,
+    '&.webchat__feedback-form__button__cancel': {
+      backgroundColor: '#FFFFFF',
       borderRadius: '4px',
       cursor: 'pointer',
       fontSize: '12px',
-      border: `1px solid ${CSSTokens.FeedbackFormNeutralLight}`,
-      color: CSSTokens.FeedbackFormNeutralMedium,
+      border: '1px solid #E8E8E8',
+      color: CSSTokens.ColorSubtle,
       fontFamily: CSSTokens.FontPrimary,
       height: '24px',
       padding: '0 8px'
     },
-    '&.feedback-form__button__cancel:hover': {
-      backgroundColor: CSSTokens.FeedbackFormNeutralMedium,
-      color: CSSTokens.FeedbackFormLightest
+    '&.webchat__feedback-form__button__cancel:hover': {
+      backgroundColor: CSSTokens.ColorSubtle,
+      color: '#FFFFFF'
     }
   };
 }

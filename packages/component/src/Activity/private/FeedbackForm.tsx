@@ -77,8 +77,10 @@ function FeedbackForm({
 
   return (
     <div>
-      <span className={classNames('feedback-form__body1', feedbackForm + '')}>{localize('FEEDBACK_FORM_TITLE')}</span>
-      <form className={classNames('feedback-form', feedbackForm + '')} onSubmit={handleSubmit}>
+      <span className={classNames('webchat__feedback-form__body1', feedbackForm + '')}>
+        {localize('FEEDBACK_FORM_TITLE')}
+      </span>
+      <form className={classNames('webchat__feedback-form', feedbackForm + '')} onSubmit={handleSubmit}>
         <MultiLineTextBox
           data-testid={testIds.feedbackSendBox}
           onChange={handleChange}
@@ -86,13 +88,15 @@ function FeedbackForm({
           ref={feedbackTextAreaRef}
           value={userFeedback}
         />
-        {disclaimer && <span className={classNames('feedback-form__caption1', feedbackForm + '')}>{disclaimer}</span>}
-        <div className={classNames('feedback-form__container', feedbackForm + '')}>
-          <button className={classNames('feedback-form__button__submit', feedbackForm + '')} type="submit">
+        {disclaimer && (
+          <span className={classNames('webchat__feedback-form__caption1', feedbackForm + '')}>{disclaimer}</span>
+        )}
+        <div className={classNames('webchat__feedback-form__container', feedbackForm + '')}>
+          <button className={classNames('webchat__feedback-form__button__submit', feedbackForm + '')} type="submit">
             {localize('FEEDBACK_FORM_SUBMIT_BUTTON_LABEL')}
           </button>
           <button
-            className={classNames('feedback-form__button__cancel', feedbackForm + '')}
+            className={classNames('webchat__feedback-form__button__cancel', feedbackForm + '')}
             onClick={handleReset}
             type="button"
           >

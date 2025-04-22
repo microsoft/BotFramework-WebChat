@@ -47,8 +47,8 @@ const TextArea = forwardRef<
   return (
     <div
       className={classNames(
-        'sendbox__text-area',
-        { 'sendbox__text-area--hidden': props.hidden },
+        'webchat__feedback-form-text-area',
+        { 'webchat__feedback-form-text-area--hidden': props.hidden },
         feedbackTextArea + ''
       )}
       role={props.hidden ? 'hidden' : undefined}
@@ -56,9 +56,9 @@ const TextArea = forwardRef<
       {uiState === 'blueprint' ? (
         <div
           className={classNames(
-            'sendbox__text-area-doppelganger',
-            'sendbox__text-area-input--scroll',
-            'sendbox__text-area-shared',
+            'webchat__feedback-form-text-area-doppelganger',
+            'webchat__feedback-form-text-area-input--scroll',
+            'webchat__feedback-form-text-area-shared',
             feedbackTextArea + ''
           )}
         >
@@ -68,9 +68,9 @@ const TextArea = forwardRef<
         <Fragment>
           <div
             className={classNames(
-              'sendbox__text-area-doppelganger',
-              'sendbox__text-area-input--scroll',
-              'sendbox__text-area-shared',
+              'webchat__feedback-form-text-area-doppelganger',
+              'webchat__feedback-form-text-area-input--scroll',
+              'webchat__feedback-form-text-area-shared',
               feedbackTextArea + ''
             )}
           >
@@ -80,9 +80,9 @@ const TextArea = forwardRef<
             aria-disabled={disabled}
             aria-label={props['aria-label']}
             className={classNames(
-              'sendbox__text-area-input',
-              'sendbox__text-area-input--scroll',
-              'sendbox__text-area-shared',
+              'webchat__feedback-form-text-area-input',
+              'webchat__feedback-form-text-area-input--scroll',
+              'webchat__feedback-form-text-area-shared',
               feedbackTextArea + ''
             )}
             data-testid={props['data-testid']}

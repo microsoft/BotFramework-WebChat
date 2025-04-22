@@ -943,16 +943,6 @@ type StyleOptions = {
    */
   feedbackActionsPlacement?: 'activity-actions' | 'activity-status';
 
-  feedbackFormPrimaryColor?: string;
-  feedbackFormPrimarySubmittedColor?: string;
-  feedbackFormLightestColor?: string;
-  feedbackFormNeutralLightColor?: string;
-  feedbackFormNeutralMediumColor?: string;
-  feedbackFormNeutralDarkColor?: string;
-  feedbackTextBoxMinHeight?: number;
-  feedbackTextBoxMinWidth?: number;
-  feedbackTextBoxPadding?: string;
-
   /**
    * Use continuous mode for speech recognition. Default to `false`.
    *

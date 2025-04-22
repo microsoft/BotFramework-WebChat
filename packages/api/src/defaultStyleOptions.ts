@@ -308,16 +308,6 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
 
   feedbackActionsPlacement: 'activity-status' as const,
 
-  feedbackFormPrimaryColor: DEFAULT_ACCENT,
-  feedbackFormPrimarySubmittedColor: '#004a98',
-  feedbackFormLightestColor: 'white',
-  feedbackFormNeutralLightColor: '#E8E8E8',
-  feedbackFormNeutralMediumColor: DEFAULT_SUBTLE,
-  feedbackFormNeutralDarkColor: '#373435',
-  feedbackTextBoxMinHeight: 60,
-  feedbackTextBoxMinWidth: 280,
-  feedbackTextBoxPadding: '8px 12px',
-
   // Speech recognition
   speechRecognitionContinuous: false
 };

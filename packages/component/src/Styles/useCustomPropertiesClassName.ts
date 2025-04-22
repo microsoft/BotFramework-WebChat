@@ -28,15 +28,6 @@ export default function useCustomPropertiesClassName() {
       bubbleMessageMaxWidth,
       bubbleMessageMinWidth,
       bubbleMinHeight,
-      feedbackFormPrimaryColor,
-      feedbackFormPrimarySubmittedColor,
-      feedbackFormLightestColor,
-      feedbackFormNeutralLightColor,
-      feedbackFormNeutralMediumColor,
-      feedbackFormNeutralDarkColor,
-      feedbackTextBoxMinHeight,
-      feedbackTextBoxMinWidth,
-      feedbackTextBoxPadding,
       fontSizeSmall,
       markdownExternalLinkIconImage,
       paddingRegular,
@@ -69,15 +60,6 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.MinHeightImageBubble}: ${bubbleImageMinHeight}px;
   ${CustomPropertyNames.PaddingRegular}: ${paddingRegular}px;
   ${CustomPropertyNames.SizeAvatar}: ${avatarSize}px;
-  ${CustomPropertyNames.FeedbackFormPrimary}: ${feedbackFormPrimaryColor};
-  ${CustomPropertyNames.FeedbackFormPrimarySubmitted}: ${feedbackFormPrimarySubmittedColor};
-  ${CustomPropertyNames.FeedbackFormLightest}: ${feedbackFormLightestColor};
-  ${CustomPropertyNames.FeedbackFormNeutralLight}: ${feedbackFormNeutralLightColor};
-  ${CustomPropertyNames.FeedbackFormNeutralMedium}: ${feedbackFormNeutralMediumColor};
-  ${CustomPropertyNames.FeedbackFormNeutralDark}: ${feedbackFormNeutralDarkColor};
-  ${CustomPropertyNames.FeedbackFormTextBoxMinHeight}: ${feedbackTextBoxMinHeight}px;
-  ${CustomPropertyNames.FeedbackFormTextBoxMinWidth}: ${feedbackTextBoxMinWidth}px;
-  ${CustomPropertyNames.FeedbackFormTextBoxPadding}: ${feedbackTextBoxPadding};
 }
 `;
     const [style] = makeCreateStyles(contents)();

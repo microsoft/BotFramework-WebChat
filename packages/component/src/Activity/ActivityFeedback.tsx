@@ -4,28 +4,16 @@ import classNames from 'classnames';
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { defaultFeedbackEntities } from './private/DefaultFeedbackEntities';
 import { hasFeedbackLoop, getDisclaimer } from './private/feedbackActivity.util';
-
+import useStyleSet from '../hooks/useStyleSet';
 import Feedback from './private/Feedback';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
 import FeedbackForm from './private/FeedbackForm';
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 
 const { useStyleOptions } = hooks;
 
 type ActivityFeedbackProps = Readonly<{
   activity: WebChatActivity;
 }>;
-
-const ROOT_STYLE = {
-  '&.webchat__feedback-form__root-container': {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.5rem'
-  },
-  '&.webchat__feedback-form__root-container__child': {
-    display: 'flex'
-  }
-};
 
 const parseActivity = (entities?: WebChatActivity['entities']) => {
   const graph = dereferenceBlankNodes(entities || []);
@@ -35,7 +23,7 @@ const parseActivity = (entities?: WebChatActivity['entities']) => {
 
 function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   const [{ feedbackActionsPlacement }] = useStyleOptions();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const [{ feedbackForm }] = useStyleSet();
 
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
 
@@ -105,8 +93,8 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
 
   if (feedbackActionsPlacement === 'activity-actions' && isFeedbackLoopSupported) {
     return (
-      <div className={classNames('webchat__feedback-form__root-container', rootClassName)}>
-        <div className={classNames('webchat__feedback-form__root-container__child', rootClassName)}>
+      <div className={classNames('webchat__feedback-form__root-container', feedbackForm + '')}>
+        <div className={classNames('webchat__feedback-form__root-container__child', feedbackForm + '')}>
           {FeedbackComponent}
         </div>
         {selectedAction && selectedAction['@type'] && FeedbackFormComponent}

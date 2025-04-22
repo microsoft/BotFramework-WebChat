@@ -2,26 +2,26 @@ import CSSTokens from '../CSSTokens';
 
 export default function createFeedbackTextAreaStyle() {
   return {
-    '&.sendbox__text-area': {
+    '&.webchat__feedback-form-text-area': {
       display: 'grid',
       gridTemplateAreas: `'main'`,
       maxHeight: '200px',
       overflow: 'hidden',
-      backgroundColor: CSSTokens.FeedbackFormLightest,
+      backgroundColor: '#FFFFFF',
       borderRadius: '4px',
-      border: `1px solid ${CSSTokens.FeedbackFormNeutralLight}`,
+      border: '1px solid #E8E8E8',
       fontFamily: CSSTokens.FontPrimary,
       fontSize: '14px',
       gap: '6px',
       lineHeight: '20px',
-      padding: CSSTokens.FeedbackFormTextBoxPadding,
+      padding: '8px 12px',
       position: 'relative',
-      minHeight: `${CSSTokens.FeedbackFormTextBoxMinHeight}`,
-      minWidth: `${CSSTokens.FeedbackFormTextBoxMinWidth}`,
+      minHeight: '60px',
+      minWidth: '280px',
       '&::after': {
         borderBottomLeftRadius: '4px',
         borderBottomRightRadius: '4px',
-        borderBottom: `3px solid ${CSSTokens.FeedbackFormPrimary}`,
+        borderBottom: `3px solid ${CSSTokens.ColorAccent}`,
         bottom: '-1px',
         clipPath: 'inset(calc(100% - 3px) 50% 0 50%)',
         content: '""',
@@ -32,18 +32,18 @@ export default function createFeedbackTextAreaStyle() {
         transition: 'clip-path 0 cubic-bezier(1, 0, 1, 1)'
       },
       '&:focus-within': {
-        border: `1px solid ${CSSTokens.FeedbackFormNeutralLight}`
+        border: '1px solid #E8E8E8'
       },
       '&:focus-within::after': {
         clipPath: 'inset(calc(100% - 3px) 0 0 0)',
         transition: 'clip-path 200ms cubic-bezier(0, 0, 0, 1)'
       }
     },
-    '&.sendbox__text-area--hidden': {
+    '&.webchat__feedback-form-text-area--hidden': {
       height: 0,
       visibility: 'collapse'
     },
-    '&.sendbox__text-area-shared': {
+    '&.webchat__feedback-form-text-area-shared': {
       border: 'none',
       font: 'inherit',
       gridArea: 'main',
@@ -52,35 +52,31 @@ export default function createFeedbackTextAreaStyle() {
       resize: 'inherit',
       scrollbarGutter: 'stable'
     },
-    '&.sendbox__text-area-doppelganger': {
+    '&.webchat__feedback-form-text-area-doppelganger': {
       overflow: 'hidden',
       visibility: 'hidden',
       whiteSpace: 'pre-wrap'
     },
-    '&.sendbox__text-area-input': {
+    '&.webchat__feedback-form-text-area-input': {
       backgroundColor: 'inherit',
       color: 'currentColor',
       height: '100%',
       padding: 0
     },
-    '&.sendbox__text-area-input--scroll': {
+    '&.webchat__feedback-form-text-area-input--scroll': {
       scrollbarColor: 'unset',
       scrollbarWidth: 'unset',
-      MozScrollbarColor: `${CSSTokens.FeedbackFormNeutralDark} ${CSSTokens.ColorSubtle}`,
+      MozScrollbarColor: `#373435 ${CSSTokens.ColorSubtle}`,
       MozScrollbarWidth: 'thin',
       '&::-webkit-scrollbar': {
         width: '8px'
       },
-      '&::-webkit-scrollbar-track': {
-        backgroundColor: CSSTokens.FeedbackFormNeutralDark,
-        borderRadius: '16px'
-      },
       '&::-webkit-scrollbar-thumb': {
         backgroundColor: CSSTokens.ColorSubtle,
-        borderRadius: '16px'
+        borderRadius: '10px'
       },
       '&::-webkit-scrollbar-corner': {
-        backgroundColor: CSSTokens.FeedbackFormNeutralDark
+        backgroundColor: '#373435'
       }
     }
   };
