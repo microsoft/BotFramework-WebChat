@@ -63,6 +63,9 @@
   --webchat-colorBrandForegroundLinkPressed: var(--colorBrandForegroundLinkPressed, #014259);
   --webchat-colorBrandForegroundLinkSelected: var(--colorBrandForegroundLinkSelected, #01678c);
 
+  --webchat-colorBrandBackground: var(--colorBrandBackground, #077fab);
+  --webchat-colorBrandBackgroundHover: var(--colorBrandBackgroundHover, #06729a);
+  --webchat-colorBrandBackgroundPressed: var(--colorBrandBackgroundPressed, #044760);
   --webchat-colorBrandBackground2: var(--colorBrandBackground2, #def2fc);
   --webchat-colorBrandBackground2Hover: var(--colorBrandBackground2Hover, #bee7fa);
   --webchat-colorBrandBackground2Pressed: var(--colorBrandBackground2Pressed, #7fd2f5);
@@ -655,8 +658,8 @@
   transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
 
   &:hover {
-    background-color: var(--webchat-colorBrandForeground2Hover);
-    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandForeground2Hover);
+    background-color: var(--webchat-colorBrandBackgroundHover);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandBackgroundHover);
   }
 
   &:focus-visible {
@@ -665,8 +668,8 @@
   }
 
   &:active {
-    background-color: var(--webchat-colorBrandForeground2Pressed);
-    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandForeground2Pressed);
+    background-color: var(--webchat-colorBrandBackgroundPressed);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandBackgroundPressed);
   }
 }
 
