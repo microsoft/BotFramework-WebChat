@@ -82,6 +82,7 @@ function FeedbackForm({
           onInput={handleChange}
           placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
           ref={feedbackTextAreaRef}
+          startRows={3}
           value={userFeedback}
         />
         {disclaimer && (

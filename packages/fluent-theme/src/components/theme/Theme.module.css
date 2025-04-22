@@ -699,7 +699,6 @@
   gap: var(--webchat-spacingVerticalSNudge);
   padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalM);
   position: relative;
-  min-height: 60px;
   min-width: 280px;
   &::after {
     border-bottom-left-radius: var(--webchat-borderRadiusMedium);

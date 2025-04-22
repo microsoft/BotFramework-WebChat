@@ -16,7 +16,6 @@ export default function createFeedbackTextAreaStyle() {
       lineHeight: '20px',
       padding: '8px 12px',
       position: 'relative',
-      minHeight: '60px',
       minWidth: '280px',
       '&::after': {
         borderBottomLeftRadius: '4px',
