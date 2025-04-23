@@ -43,53 +43,32 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
   const activityToKeyMapRef = useRef<Readonly<ActivityToKeyMap>>(Object.freeze(new Map()));
   const clientActivityIdToKeyMapRef = useRef<Readonly<ClientActivityIdToKeyMap>>(Object.freeze(new Map()));
   const keyToActivitiesMapRef = useRef<Readonly<KeyToActivitiesMap>>(Object.freeze(new Map()));
+  const lastProcessedIndexRef = useRef(0);
 
-  // TODO: [P1] `useMemoWithPrevious` to check and cache the resulting array if it hasn't changed.
-  const activityKeysState = useMemo<readonly [readonly string[]]>(() => {
-    const { current: activityIdToKeyMap } = activityIdToKeyMapRef;
-    const { current: activityToKeyMap } = activityToKeyMapRef;
-    const { current: clientActivityIdToKeyMap } = clientActivityIdToKeyMapRef;
-    const nextActivityIdToKeyMap: ActivityIdToKeyMap = new Map();
-    const nextActivityKeys: Set<string> = new Set();
-    const nextActivityToKeyMap: ActivityToKeyMap = new Map();
-    const nextClientActivityIdToKeyMap: ClientActivityIdToKeyMap = new Map();
-    const nextKeyToActivitiesMap: KeyToActivitiesMap = new Map();
-
-    activities.forEach(activity => {
+  // Process new activities (if any)
+  if (activities.length > lastProcessedIndexRef.current) {
+    for (let i = lastProcessedIndexRef.current; i < activities.length; i++) {
+      const activity = activities[i];
       const activityId = getActivityId(activity);
       const clientActivityId = getClientActivityId(activity);
       const typingActivityId = getActivityLivestreamingMetadata(activity)?.sessionId;
 
       const key =
-        (clientActivityId &&
-          (clientActivityIdToKeyMap.get(clientActivityId) || nextClientActivityIdToKeyMap.get(clientActivityId))) ||
-        (typingActivityId &&
-          (activityIdToKeyMap.get(typingActivityId) || nextActivityIdToKeyMap.get(typingActivityId))) ||
-        (activityId && (activityIdToKeyMap.get(activityId) || nextActivityIdToKeyMap.get(activityId))) ||
-        activityToKeyMap.get(activity) ||
-        nextActivityToKeyMap.get(activity) ||
+        (clientActivityId && clientActivityIdToKeyMapRef.current.get(clientActivityId)) ||
+        (typingActivityId && activityIdToKeyMapRef.current.get(typingActivityId)) ||
+        (activityId && activityIdToKeyMapRef.current.get(activityId)) ||
+        activityToKeyMapRef.current.get(activity) ||
         uniqueId();
 
-      activityId && nextActivityIdToKeyMap.set(activityId, key);
-      clientActivityId && nextClientActivityIdToKeyMap.set(clientActivityId, key);
-      nextActivityToKeyMap.set(activity, key);
-      nextActivityKeys.add(key);
+      activityId && activityIdToKeyMapRef.current.set(activityId, key);
+      clientActivityId && clientActivityIdToKeyMapRef.current.set(clientActivityId, key);
 
-      const activities = nextKeyToActivitiesMap.has(key) ? [...nextKeyToActivitiesMap.get(key)] : [];
-
-      activities.push(activity);
-      nextKeyToActivitiesMap.set(key, Object.freeze(activities));
-    });
-
-    activityIdToKeyMapRef.current = Object.freeze(nextActivityIdToKeyMap);
-    activityToKeyMapRef.current = Object.freeze(nextActivityToKeyMap);
-    clientActivityIdToKeyMapRef.current = Object.freeze(nextClientActivityIdToKeyMap);
-    keyToActivitiesMapRef.current = Object.freeze(nextKeyToActivitiesMap);
-
-    // `nextActivityKeys` could potentially same as `prevActivityKeys` despite reference differences, we should memoize it.
-    return Object.freeze([Object.freeze([...nextActivityKeys.values()])]) as readonly [readonly string[]];
-  }, [activities, activityIdToKeyMapRef, activityToKeyMapRef, clientActivityIdToKeyMapRef, keyToActivitiesMapRef]);
-
+      activityToKeyMapRef.current.set(activity, key);
+      const existingList = keyToActivitiesMapRef.current.get(key) ?? [];
+      keyToActivitiesMapRef.current.set(key, Object.freeze([...existingList, activity]));
+    }
+    lastProcessedIndexRef.current = activities.length;
+  }
   const getActivitiesByKey: (key?: string | undefined) => readonly WebChatActivity[] | undefined = useCallback(
     (key?: string | undefined): readonly WebChatActivity[] | undefined => key && keyToActivitiesMapRef.current.get(key),
     [keyToActivitiesMapRef]
@@ -110,9 +89,14 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
     [activityIdToKeyMapRef]
   );
 
+  const activityKeys = useMemo(
+    () => Object.freeze([...keyToActivitiesMapRef.current.keys()]),
+    [activities.length]
+  );
+
   const contextValue = useMemo<ActivityKeyerContextType>(
-    () => ({ activityKeysState, getActivityByKey, getActivitiesByKey, getKeyByActivity, getKeyByActivityId }),
-    [activityKeysState, getActivitiesByKey, getActivityByKey, getKeyByActivity, getKeyByActivityId]
+    () => ({ activityKeysState: [activityKeys], getActivityByKey, getActivitiesByKey, getKeyByActivity, getKeyByActivityId }),
+    [activityKeys, getActivitiesByKey, getActivityByKey, getKeyByActivity, getKeyByActivityId]
   );
 
   const { length: numActivities } = activities;
@@ -149,7 +133,7 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
     );
   }
 
-  if (activityKeysState[0].length !== keyToActivitiesMapRef.current.size) {
+  if (activityKeys.length !== keyToActivitiesMapRef.current.size) {
     console.warn(
       'botframework-webchat internal assertion: "activityKeys.length" should be same as "keyToActivitiesMap.size".'
     );
