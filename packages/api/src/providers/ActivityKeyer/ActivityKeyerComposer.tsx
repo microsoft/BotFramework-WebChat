@@ -89,13 +89,16 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
     [activityIdToKeyMapRef]
   );
 
-  const activityKeys = useMemo(
-    () => Object.freeze([...keyToActivitiesMapRef.current.keys()]),
-    [activities.length]
-  );
+  const activityKeys = useMemo(() => Object.freeze([...keyToActivitiesMapRef.current.keys()]), [activities.length]);
 
   const contextValue = useMemo<ActivityKeyerContextType>(
-    () => ({ activityKeysState: [activityKeys], getActivityByKey, getActivitiesByKey, getKeyByActivity, getKeyByActivityId }),
+    () => ({
+      activityKeysState: [activityKeys],
+      getActivityByKey,
+      getActivitiesByKey,
+      getKeyByActivity,
+      getKeyByActivityId
+    }),
     [activityKeys, getActivitiesByKey, getActivityByKey, getKeyByActivity, getKeyByActivityId]
   );
 
