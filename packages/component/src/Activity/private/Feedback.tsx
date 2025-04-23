@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import { type OrgSchemaAction } from 'botframework-webchat-core';
-import React, { Fragment, memo, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
+import React, { Fragment, memo, useEffect, useMemo, type PropsWithChildren } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import FeedbackVoteButton from './VoteButton';
@@ -11,21 +11,23 @@ type Props = Readonly<
   PropsWithChildren<{
     actions: ReadonlySet<OrgSchemaAction>;
     className?: string | undefined;
+    isFeedbackFormSupported?: boolean;
+    onActionClick?: (action: OrgSchemaAction) => void;
+    selectedAction?: OrgSchemaAction | undefined;
   }>
 >;
 
 const DEBOUNCE_TIMEOUT = 500;
 
-const Feedback = memo(({ actions, className }: Props) => {
+const Feedback = memo(({ actions, className, isFeedbackFormSupported, onActionClick, selectedAction }: Props) => {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
-  const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
-  const postActivity = usePostActivity();
   const localize = useLocalizer();
+  const postActivity = usePostActivity();
 
   const postActivityRef = useRefFrom(postActivity);
 
   useEffect(() => {
-    if (!selectedAction) {
+    if (!selectedAction || isFeedbackFormSupported) {
       return;
     }
 
@@ -41,7 +43,7 @@ const Feedback = memo(({ actions, className }: Props) => {
     );
 
     return () => clearTimeout(timeout);
-  }, [clearTimeout, postActivityRef, selectedAction, setTimeout]);
+  }, [clearTimeout, isFeedbackFormSupported, postActivityRef, selectedAction, setTimeout]);
 
   const actionProps = useMemo(
     () =>
@@ -61,7 +63,7 @@ const Feedback = memo(({ actions, className }: Props) => {
           action={action}
           className={className}
           key={action['@id'] || index}
-          onClick={setSelectedAction}
+          onClick={onActionClick}
           pressed={
             selectedAction === action ||
             action.actionStatus === 'CompletedActionStatus' ||
