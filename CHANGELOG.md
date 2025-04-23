@@ -84,6 +84,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Set `styleOptions.speechRecognitionContinuous` to `true` with a Web Speech API provider with continuous mode support
 - Added support of [contentless activity in livestream](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/LIVESTREAMING.md#scenario-3-interim-activities-with-no-content), in PR [#5430](https://github.com/microsoft/BotFramework-WebChat/pull/5430), by [@compulim](https://github.com/compulim)
 - Added sliding dots typing indicator in Fluent theme, in PR [#5447](https://github.com/microsoft/BotFramework-WebChat/pull/5447) and PR [#5448](https://github.com/microsoft/BotFramework-WebChat/pull/5448), by [@compulim](https://github.com/compulim)
+- (Experimental) Add an ability to pass `completion` prop into Fluent send box and expose the component, in PR [#5466](https://github.com/microsoft/BotFramework-WebChat/pull/5466), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 

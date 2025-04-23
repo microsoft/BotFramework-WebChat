@@ -6,7 +6,8 @@ import React, {
   useCallback,
   useRef,
   type FormEventHandler,
-  type KeyboardEventHandler
+  type KeyboardEventHandler,
+  type ReactNode
 } from 'react';
 import { useStyles } from '../../styles';
 import styles from './TextArea.module.css';
@@ -18,6 +19,7 @@ const TextArea = forwardRef<
   Readonly<{
     'aria-label'?: string | undefined;
     className?: string | undefined;
+    completion?: ReactNode | undefined;
     'data-testid'?: string | undefined;
 
     /**
@@ -65,40 +67,26 @@ const TextArea = forwardRef<
     <div
       className={cx(
         classNames['sendbox__text-area'],
+        classNames['sendbox__text-area--scroll'],
         { [classNames['sendbox__text-area--hidden']]: props.hidden },
+        { [classNames['sendbox__text-area--in-completion']]: props.completion },
         props.className
       )}
       role={props.hidden ? 'hidden' : undefined}
     >
       {uiState === 'blueprint' ? (
-        <div
-          className={cx(
-            classNames['sendbox__text-area-doppelganger'],
-            classNames['sendbox__text-area-input--scroll'],
-            classNames['sendbox__text-area-shared']
-          )}
-        >
+        <div className={cx(classNames['sendbox__text-area-doppelganger'], classNames['sendbox__text-area-shared'])}>
           {' '}
         </div>
       ) : (
         <Fragment>
-          <div
-            className={cx(
-              classNames['sendbox__text-area-doppelganger'],
-              classNames['sendbox__text-area-input--scroll'],
-              classNames['sendbox__text-area-shared']
-            )}
-          >
-            {props.value || props.placeholder}{' '}
+          <div className={cx(classNames['sendbox__text-area-doppelganger'], classNames['sendbox__text-area-shared'])}>
+            {props.completion ? props.completion : props.value || props.placeholder}{' '}
           </div>
           <textarea
             aria-disabled={disabled}
             aria-label={props['aria-label']}
-            className={cx(
-              classNames['sendbox__text-area-input'],
-              classNames['sendbox__text-area-input--scroll'],
-              classNames['sendbox__text-area-shared']
-            )}
+            className={cx(classNames['sendbox__text-area-input'], classNames['sendbox__text-area-shared'])}
             data-testid={props['data-testid']}
             onCompositionEnd={handleCompositionEnd}
             onCompositionStart={handleCompositionStart}
