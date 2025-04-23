@@ -69,7 +69,7 @@
         await pageConditions.scrollStabilized();
         await host.snapshot();
 
-        // Should page up because the send box is no longer empty
+        // Should page up because the send box is now empty
         await host.sendKeys('BACK_SPACE', 'PAGE_UP');
         await pageConditions.scrollStabilized();
         await host.snapshot();

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  <style>
+    .completion {
+      opacity: 0.75;
+    }
+  </style>
+</head>
+
+<body>
+  <main id="webchat"></main>
+  <script type="text/babel">
+    run(async function () {
+      const {
+        React,
+        ReactDOM: { render },
+        WebChat: { 
+          FluentThemeProvider, FluentSendBox, testIds,
+          Components: { BasicWebChat, Composer }, 
+          hooks: { useSendBoxValue }
+        }
+      } = window; // Imports in UMD fashion.
+
+      const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+      const PrimarySendBox = (props) => {
+        const [globalMessage, setGlobalMessage] = useSendBoxValue();
+        const [completion, setCompletion] = React.useState('Aloha');
+
+
+        const handleKeyDown = (event) => {
+          if (event.key === 'Tab' && !event.shiftKey && event.target.localName === 'textarea' && globalMessage && completion) {
+            event.preventDefault();
+            setGlobalMessage([globalMessage, completion].join(' '))
+            setCompletion('');
+          }
+        }
+
+        const completionNode = globalMessage && completion
+          ? <>{globalMessage} <span className="completion">{completion} (press <kbd>Tab</kbd> to complete)</span></>
+          : undefined;
+
+        return (
+          <div onKeyDown={handleKeyDown}>
+            <FluentSendBox {...props} completion={completionNode} isPrimary={true} />
+          </div>
+        );
+      };
+
+      const sendBoxMiddleware = [() => () => () => PrimarySendBox];
+
+      const App = () => (
+        <Composer directLine={directLine} store={store} sendBoxMiddleware={sendBoxMiddleware}>
+          <BasicWebChat />
+        </Composer>
+      );
+
+      render(
+        <FluentThemeProvider>
+          <App />
+        </FluentThemeProvider>,
+        document.getElementById('webchat')
+      );
+
+      await pageConditions.uiConnected();
+
+      document.querySelector(`[data-testid="${testIds.sendBoxTextBox}"]`).focus();
+
+      await host.snapshot('local');
+
+      // WHEN: The text typed in.
+      await host.sendKeys('Hello');
+
+      // THEN: Send box should have completion.
+      await host.snapshot('local');
+
+      // WHEN: The tab is pressed.
+      await host.sendTab();
+
+      // THEN: Text should be completed and completion should be gone.
+      await host.snapshot('local');
+
+      // WHEN: The tab is pressed 2nd time.
+      await host.sendTab();
+
+      // THEN: The focus moves out of the Sendbox.
+      await host.snapshot('local');
+    });
+  </script>
+</body>
+
+</html>
