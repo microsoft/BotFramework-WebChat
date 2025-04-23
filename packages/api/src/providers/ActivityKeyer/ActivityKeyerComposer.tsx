@@ -48,6 +48,7 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
   // Process new activities (if any)
   if (activities.length > lastProcessedIndexRef.current) {
     for (let i = lastProcessedIndexRef.current; i < activities.length; i++) {
+      // eslint-disable-next-line security/detect-object-injection
       const activity = activities[i];
       const activityId = getActivityId(activity);
       const clientActivityId = getClientActivityId(activity);
@@ -89,7 +90,8 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
     [activityIdToKeyMapRef]
   );
 
-  const activityKeys = useMemo(() => Object.freeze([...keyToActivitiesMapRef.current.keys()]), [activities.length]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const activityKeys = useMemo(() => Object.freeze([...keyToActivitiesMapRef.current.keys()]), [activities.length]); // we want to update the keys when activities change
 
   const contextValue = useMemo<ActivityKeyerContextType>(
     () => ({
