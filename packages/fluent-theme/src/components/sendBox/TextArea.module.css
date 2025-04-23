@@ -19,8 +19,8 @@
 
   .sendbox__text-area-input {
     background-color: transparent;
-    color: transparent;
     caret-color: var(--webchat-colorNeutralForeground1);
+    color: transparent;
   }
 
   textarea::placeholder {
