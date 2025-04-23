@@ -2,7 +2,8 @@
   display: grid;
   grid-template-areas: 'main';
   max-height: 200px;
-  overflow: hidden;
+  overflow: auto;
+  scrollbar-gutter: stable;
 }
 
 :global(.webchat-fluent) .sendbox__text-area--hidden {
@@ -34,11 +35,12 @@
   outline: inherit;
   overflow-wrap: anywhere;
   resize: inherit;
-  scrollbar-gutter: stable;
 }
 
 :global(.webchat-fluent) .sendbox__text-area-doppelganger {
-  overflow: hidden;
+  overflow: visible;
+  pointer-events: none;
+  user-select: none;
   visibility: hidden;
   white-space: pre-wrap;
 }
@@ -46,11 +48,12 @@
 :global(.webchat-fluent) .sendbox__text-area-input {
   background-color: inherit;
   color: currentColor;
-  height: 100%;
+  contain: size;
+  overflow: hidden;
   padding: 0;
 }
 
-:global(.webchat-fluent) .sendbox__text-area-input--scroll {
+:global(.webchat-fluent) .sendbox__text-area--scroll {
   /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
   scrollbar-color: unset;
   scrollbar-width: unset;

@@ -67,6 +67,7 @@ const TextArea = forwardRef<
     <div
       className={cx(
         classNames['sendbox__text-area'],
+        classNames['sendbox__text-area--scroll'],
         { [classNames['sendbox__text-area--hidden']]: props.hidden },
         { [classNames['sendbox__text-area--in-completion']]: props.completion },
         props.className
@@ -74,34 +75,18 @@ const TextArea = forwardRef<
       role={props.hidden ? 'hidden' : undefined}
     >
       {uiState === 'blueprint' ? (
-        <div
-          className={cx(
-            classNames['sendbox__text-area-doppelganger'],
-            classNames['sendbox__text-area-input--scroll'],
-            classNames['sendbox__text-area-shared']
-          )}
-        >
+        <div className={cx(classNames['sendbox__text-area-doppelganger'], classNames['sendbox__text-area-shared'])}>
           {' '}
         </div>
       ) : (
         <Fragment>
-          <div
-            className={cx(
-              classNames['sendbox__text-area-doppelganger'],
-              classNames['sendbox__text-area-input--scroll'],
-              classNames['sendbox__text-area-shared']
-            )}
-          >
+          <div className={cx(classNames['sendbox__text-area-doppelganger'], classNames['sendbox__text-area-shared'])}>
             {props.completion ? props.completion : props.value || props.placeholder}{' '}
           </div>
           <textarea
             aria-disabled={disabled}
             aria-label={props['aria-label']}
-            className={cx(
-              classNames['sendbox__text-area-input'],
-              classNames['sendbox__text-area-input--scroll'],
-              classNames['sendbox__text-area-shared']
-            )}
+            className={cx(classNames['sendbox__text-area-input'], classNames['sendbox__text-area-shared'])}
             data-testid={props['data-testid']}
             onCompositionEnd={handleCompositionEnd}
             onCompositionStart={handleCompositionStart}

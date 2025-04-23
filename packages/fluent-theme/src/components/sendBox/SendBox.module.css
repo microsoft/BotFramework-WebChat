@@ -85,7 +85,7 @@
   font-size: 14px;
   line-height: 20px;
   outline: none;
-  padding: 4px 4px 0;
+  margin: var(--webchat-spacingVerticalXS) var(--webchat-spacingHorizontalXS) var(--webchat-spacingVerticalNone);
   resize: none;
 
   /* Prevent zoom on focus on iOS */
