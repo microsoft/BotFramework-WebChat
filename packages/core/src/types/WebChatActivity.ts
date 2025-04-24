@@ -112,6 +112,11 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
 
           // TODO: [P2] #3953 It seems Direct Line added a new "summary" field to cater this case.
           'webchat:fallback-text'?: string;
+
+          feedbackLoop?: {
+            type: 'default';
+            disclaimer?: string;
+          };
         }
       : Record<any, any>)
 >;
