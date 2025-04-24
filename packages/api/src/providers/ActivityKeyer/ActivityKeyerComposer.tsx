@@ -31,6 +31,7 @@ type KeyToActivitiesMap = Map<string, readonly WebChatActivity[]>;
  *
  * Local key are only persisted in memory. On refresh, they will be a new random key.
  */
+// eslint-disable-next-line complexity
 const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | undefined }>) => {
   const existingContext = useActivityKeyerContext(false);
 
@@ -51,6 +52,9 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
       // eslint-disable-next-line security/detect-object-injection
       const activity = activities[i];
       const activityId = getActivityId(activity);
+      if (!activityId) {
+        break;
+      }
       const clientActivityId = getClientActivityId(activity);
       const typingActivityId = getActivityLivestreamingMetadata(activity)?.sessionId;
 
@@ -67,8 +71,8 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
       activityToKeyMapRef.current.set(activity, key);
       const existingList = keyToActivitiesMapRef.current.get(key) ?? [];
       keyToActivitiesMapRef.current.set(key, Object.freeze([...existingList, activity]));
+      lastProcessedIndexRef.current = activities.length;
     }
-    lastProcessedIndexRef.current = activities.length;
   }
   const getActivitiesByKey: (key?: string | undefined) => readonly WebChatActivity[] | undefined = useCallback(
     (key?: string | undefined): readonly WebChatActivity[] | undefined => key && keyToActivitiesMapRef.current.get(key),
