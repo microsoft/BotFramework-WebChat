@@ -244,7 +244,6 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   transcriptOverlayButtonColorOnHover: undefined,
 
   // Toast UI
-
   notificationDebounceTimeout: 400,
 
   hideToaster: false,

@@ -932,7 +932,7 @@ type StyleOptions = {
   /**
    * (EXPERIMENTAL) Feedback buttons placement
    *
-   * - `'activity-actions'` - place feedback buttons inside activity actions
+   * - `'activity-actions'` - place feedback buttons inside activity actions - will show feedback form
    * - `'activity-status'` - place feedback buttons inside activity status
    *
    * @default 'activity-status'
