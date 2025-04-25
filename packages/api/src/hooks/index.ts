@@ -39,6 +39,7 @@ import useNotifications from './useNotifications';
 import usePerformCardAction from './usePerformCardAction';
 import usePonyfill from './usePonyfill';
 import usePostActivity from './usePostActivity';
+import useReduceActivities from './useReduceActivities';
 import useReferenceGrammarID from './useReferenceGrammarID';
 import useRelativeTimeFormatter from './useRelativeTimeFormatter';
 import useRenderAttachment from './useRenderAttachment';
@@ -113,6 +114,7 @@ export {
   usePerformCardAction,
   usePonyfill,
   usePostActivity,
+  useReduceActivities,
   useReferenceGrammarID,
   useRelativeTimeFormatter,
   useRenderAttachment,

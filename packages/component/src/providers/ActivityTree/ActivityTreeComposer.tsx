@@ -1,6 +1,6 @@
 import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
 import type { WebChatActivity } from 'botframework-webchat-core';
-import React, { useMemo, type ReactNode } from 'react';
+import React, { useMemo, useRef, type ReactNode } from 'react';
 
 import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';
 import ActivityTreeContext from './private/Context';
@@ -13,7 +13,14 @@ import type { ActivityTreeContextType } from './private/Context';
 
 type ActivityTreeComposerProps = Readonly<{ children?: ReactNode | undefined }>;
 
-const { useActivities, useActivityKeys, useCreateActivityRenderer, useGetActivitiesByKey, useGetKeyByActivity } = hooks;
+const {
+  useActivities,
+  useActivityKeys,
+  useCreateActivityRenderer,
+  useGetKeyByActivity,
+  useReduceActivities,
+  useGetActivityByKey
+} = hooks;
 
 const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
   const existingContext = useActivityTreeContext(false);
@@ -23,30 +30,48 @@ const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
   }
 
   const [rawActivities] = useActivities();
-  const getActivitiesByKey = useGetActivitiesByKey();
   const getKeyByActivity = useGetKeyByActivity();
   const activityKeys = useActivityKeys();
+  const getActivityByKey = useGetActivityByKey();
+  const activityKeysSet = new Set(activityKeys[0]);
 
-  const activities = useMemo<readonly WebChatActivity[]>(() => {
-    const activities: WebChatActivity[] = [];
+  // Persistent Map to store activities by their keys
+  const activityMapRef = useRef<Readonly<Map<string, WebChatActivity>>>(
+    Object.freeze(new Map<string, WebChatActivity>())
+  );
 
-    if (!activityKeys) {
-      return rawActivities;
-    }
+  const activities =
+    useReduceActivities<readonly WebChatActivity[]>((prevActivities = [], activity) => {
+      if (!activityKeys) {
+        return rawActivities;
+      }
 
-    for (const activity of rawActivities) {
-      // If an activity has multiple revisions, display the latest revision only at the position of the first revision.
+      // This is better than looping through all activities as bunch of stream activities will be clubbed
+      // under single key and number of iteration will be significantly less.
+      for (const key of activityMapRef.current.keys()) {
+        if (!activityKeysSet.has(key)) {
+          activityMapRef.current.delete(key);
+        }
+      }
 
-      // "Activities with same key" means "multiple revisions of same activity."
-      const activitiesWithSameKey = getActivitiesByKey(getKeyByActivity(activity));
+      const activityKey = getKeyByActivity(activity);
+
+      // we always want last revision of activity whether it is single or multiple."
+      const lastActivity = getActivityByKey(activityKey);
 
       // TODO: We may want to send all revisions of activity to the middleware so they can render UI to see previous revisions.
-      activitiesWithSameKey?.[0] === activity &&
-        activities.push(activitiesWithSameKey[activitiesWithSameKey.length - 1]);
-    }
+      if (lastActivity === activity) {
+        const activityMap = activityMapRef.current;
 
-    return Object.freeze(activities);
-  }, [activityKeys, getActivitiesByKey, getKeyByActivity, rawActivities]);
+        // Update or add the activity in the persistent Map
+        activityMap.set(activityKey, activity);
+
+        // Return the updated activities as an array
+        return Array.from(activityMap.values());
+      }
+
+      return prevActivities;
+    }) || [];
 
   const createActivityRenderer: ActivityComponentFactory = useCreateActivityRenderer();
 
