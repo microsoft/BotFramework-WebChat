@@ -184,6 +184,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - [`webpack-cli@6.0.1`](https://npmjs.com/package/webpack-cli/)
       - [`webpack@5.98.0`](https://npmjs.com/package/webpack/)
 - Fixed [#5446](https://github.com/microsoft/BotFramework-WebChat/issues/5446). Embedded `uuid` so `microsoft-cognitiveservices-speech-sdk` do not need to use dynamic loading, as this could fail in Webpack 4 environment, in PR [#5445](https://github.com/microsoft/BotFramework-WebChat/pull/5445), by [@compulim](https://github.com/compulim)
+- - Improved latency of `ActivityTreeComposer` in PR [#5468](https://github.com/microsoft/BotFramework-WebChat/pull/5468) by [@pranavjoshi001](https://github.com/pranavjoshi001)
 
 ### Fixed
 
