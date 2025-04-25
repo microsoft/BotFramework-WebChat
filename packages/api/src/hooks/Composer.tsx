@@ -43,7 +43,6 @@ import normalizeStyleOptions from '../normalizeStyleOptions';
 import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
-import ActivityListenerComposer from '../providers/ActivityListener/ActivityListenerComposer';
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
@@ -625,18 +624,16 @@ const ComposerCore = ({
 
   return (
     <WebChatAPIContext.Provider value={context}>
-      <ActivityListenerComposer>
-        <ActivitySendStatusComposer>
-          <ActivityTypingComposer>
-            <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
-              <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
-                {typeof children === 'function' ? children(context) : children}
-                <ActivitySendStatusTelemetryComposer />
-              </SendBoxToolbarMiddlewareProvider>
-            </SendBoxMiddlewareProvider>
-          </ActivityTypingComposer>
-        </ActivitySendStatusComposer>
-      </ActivityListenerComposer>
+      <ActivitySendStatusComposer>
+        <ActivityTypingComposer>
+          <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
+            <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
+              {typeof children === 'function' ? children(context) : children}
+              <ActivitySendStatusTelemetryComposer />
+            </SendBoxToolbarMiddlewareProvider>
+          </SendBoxMiddlewareProvider>
+        </ActivityTypingComposer>
+      </ActivitySendStatusComposer>
       {onTelemetry && <Tracker />}
     </WebChatAPIContext.Provider>
   );
