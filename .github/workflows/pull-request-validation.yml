@@ -281,7 +281,9 @@ jobs:
         with:
           compression-level: 0
           name: test-snapshot-diff-html-${{ matrix.shard-index }}
-          path: ./__tests__/__image_snapshots__/*/__diff_output__/*
+          path: |
+            ./__tests__/__image_snapshots__/*/__diff_output__/*
+            ./__tests__/html2/**/*.snap-*-diff.png
 
   merge-test-results:
     if: always()

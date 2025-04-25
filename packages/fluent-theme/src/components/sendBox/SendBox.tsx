@@ -1,6 +1,14 @@
 import { hooks, type SendBoxFocusOptions } from 'botframework-webchat-component';
 import cx from 'classnames';
-import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
+import React, {
+  memo,
+  ReactNode,
+  useCallback,
+  useRef,
+  useState,
+  type FormEventHandler,
+  type MouseEventHandler
+} from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { SendIcon } from '../../icons';
 import { useStyles, useVariantClassName } from '../../styles';
@@ -33,6 +41,7 @@ const {
 
 type Props = Readonly<{
   className?: string | undefined;
+  completion?: ReactNode | undefined;
   isPrimary?: boolean | undefined;
   placeholder?: string | undefined;
 }>;
@@ -198,6 +207,7 @@ function SendBox(props: Props) {
         <TextArea
           aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
           className={cx(classNames['sendbox__sendbox-text'], classNames['sendbox__text-area--in-grid'])}
+          completion={props.completion}
           data-testid={testIds.sendBoxTextBox}
           hidden={shouldShowTelephoneKeypad}
           onInput={handleMessageChange}

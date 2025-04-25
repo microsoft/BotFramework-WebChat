@@ -21,6 +21,8 @@
   --webchat-colorNeutralForeground4: var(--colorNeutralForeground4, #707070);
   --webchat-colorNeutralForeground5: var(--colorNeutralForeground5, #7e7e7e);
 
+  --webchat-colorNeutralForegroundOnBrand: var(--colorNeutralForegroundOnBrand, #fff);
+
   --webchat-colorNeutralBackgroundDisabled: var(--colorNeutralBackgroundDisabled, #f0f0f0);
   --webchat-colorNeutralBackground1: var(--colorNeutralBackground1, #ffffff);
   --webchat-colorNeutralBackground1Hover: var(--colorNeutralBackground1Hover, #f5f5f5);
@@ -61,6 +63,9 @@
   --webchat-colorBrandForegroundLinkPressed: var(--colorBrandForegroundLinkPressed, #014259);
   --webchat-colorBrandForegroundLinkSelected: var(--colorBrandForegroundLinkSelected, #01678c);
 
+  --webchat-colorBrandBackground: var(--colorBrandBackground, #077fab);
+  --webchat-colorBrandBackgroundHover: var(--colorBrandBackgroundHover, #06729a);
+  --webchat-colorBrandBackgroundPressed: var(--colorBrandBackgroundPressed, #044760);
   --webchat-colorBrandBackground2: var(--colorBrandBackground2, #def2fc);
   --webchat-colorBrandBackground2Hover: var(--colorBrandBackground2Hover, #bee7fa);
   --webchat-colorBrandBackground2Pressed: var(--colorBrandBackground2Pressed, #7fd2f5);
@@ -206,7 +211,6 @@
   --webchat__padding--regular: var(--webchat-spacingVerticalS);
   --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalMNudge)
     var(--webchat-spacingHorizontalMNudge);
-
   --webchat__border-animation--color-1: #464feb;
   --webchat__border-animation--color-2: #47cffa;
   --webchat__border-animation--color-3: #b47cf8;
@@ -231,6 +235,7 @@
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable),
 :global(.webchat-fluent).theme :global(.webchat__view-code-dialog__code-body),
 :global(.webchat-fluent).theme :global(.webchat__render-markdown [data-math-type='block']),
+:global(.webchat-fluent).theme :global(.webchat__feedback-form-text-area-input--scroll),
 :global(.webchat-fluent).theme :global(.webchat__view-code-dialog__body) {
   /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
   scrollbar-color: unset;
@@ -622,4 +627,100 @@
   line-height: var(--webchat-lineHeightBase200);
   padding: var(--webchat-spacingVerticalSNudge) var(--webchat-spacingHorizontalM);
   transition: opacity var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+}
+
+/* Feedback Form */
+:global(.webchat-fluent).theme :global(.webchat__feedback-form__body1) {
+  font-family: var(--webchat-fontFamilyBase);
+  color: var(--webchat-colorNeutralForeground1);
+  font-size: var(--webchat-fontSizeBase300);
+  font-weight: var(--webchat-fontWeightRegular);
+  line-height: var(--webchat-lineHeightBase300);
+}
+
+:global(.webchat-fluent).theme :global(.webchat__feedback-form__caption1) {
+  font-family: var(--webchat-fontFamilyBase);
+  color: var(--webchat-colorNeutralForeground1);
+  font-size: var(--webchat-fontSizeBase100);
+  font-weight: var(--webchat-fontWeightRegular);
+  line-height: var(--webchat-lineHeightBase200);
+}
+
+:global(.webchat-fluent).theme :global(.webchat__feedback-form__button__submit) {
+  background-color: var(--webchat-colorBrandBackground);
+  border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandBackground);
+  border-radius: var(--webchat-borderRadiusMedium);
+  color: var(--webchat-colorNeutralForegroundOnBrand);
+  cursor: pointer;
+  font-family: var(--webchat-fontFamilyBase);
+  font-size: var(--webchat-fontSizeBase300);
+  padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalS);
+  transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+
+  &:hover {
+    background-color: var(--webchat-colorBrandBackgroundHover);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandBackgroundHover);
+  }
+
+  &:focus-visible {
+    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
+    outline-offset: calc(var(--webchat-strokeWidthThin) * -1);
+  }
+
+  &:active {
+    background-color: var(--webchat-colorBrandBackgroundPressed);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandBackgroundPressed);
+  }
+}
+
+:global(.webchat-fluent).theme :global(.webchat__feedback-form__button__cancel) {
+  background-color: var(--webchat-colorNeutralBackground1);
+  border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
+  border-radius: var(--webchat-borderRadiusMedium);
+  color: var(--webchat-colorNeutralForeground1);
+  cursor: pointer;
+  font-family: var(--webchat-fontFamilyBase);
+  font-size: var(--webchat-fontSizeBase300);
+  padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalS);
+  transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+
+  &:hover {
+    background-color: var(--webchat-colorNeutralBackground1Hover);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1Hover);
+  }
+
+  &:focus-visible {
+    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
+    outline-offset: calc(var(--webchat-strokeWidthThin) * -1);
+  }
+
+  &:active {
+    background-color: var(--webchat-colorNeutralBackground1Pressed);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1Pressed);
+  }
+}
+
+:global(.webchat-fluent).theme :global(.webchat__feedback-form-text-area) {
+  background-color: var(--webchat-colorNeutralBackground1);
+  border-radius: var(--webchat-borderRadiusMedium);
+  border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
+  font-family: var(--webchat-fontFamilyBase);
+  font-size: var(--webchat-fontSizeBase300);
+  line-height: var(--webchat-lineHeightBase300);
+  gap: var(--webchat-spacingVerticalSNudge);
+  padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalM);
+  &::after {
+    border-bottom-left-radius: var(--webchat-borderRadiusMedium);
+    border-bottom-right-radius: var(--webchat-borderRadiusMedium);
+    border-bottom: var(--webchat-strokeWidthThicker) solid var(--webchat-colorBrandForeground1);
+    clip-path: inset(calc(100% - var(--webchat-strokeWidthThicker)) 50% 0 50%);
+    transition: clip-path var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+  }
+  &:focus-within {
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
+  }
+  &:focus-within::after {
+    clip-path: inset(calc(100% - var(--webchat-strokeWidthThicker)) 0 0 0);
+    transition: clip-path var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+  }
 }
