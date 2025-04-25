@@ -1,9 +1,9 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import { literal, object, safeParse, string, type InferOutput } from 'valibot';
+import { literal, string, object, safeParse, type InferOutput, looseObject } from 'valibot';
 
 const activityWithFeedbackLoopSchema = object({
   channelData: object({
-    feedbackLoop: object({
+    feedbackLoop: looseObject({
       disclaimer: string(),
       type: literal('default')
     })
