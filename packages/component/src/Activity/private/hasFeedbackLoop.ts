@@ -4,7 +4,7 @@ import { literal, string, object, safeParse, type InferOutput, nullish } from 'v
 const activityWithFeedbackLoopSchemaWithDisclaimer = object({
   channelData: object({
     feedbackLoop: object({
-      disclaimer: nullish(string()),
+      disclaimer: optional(string()),
       type: literal('default')
     })
   })
