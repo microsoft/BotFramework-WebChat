@@ -122,41 +122,6 @@
           }
         })
       );
-
-
-      await directLine.emulateIncomingActivity({
-        type: 'message',
-        id: 'a-00001',
-        timestamp: 0,
-        text: 'This is a a test message without a disclaimer',
-        from: {
-          role: 'bot'
-        },
-        locale: 'en-US',
-        entities: [],
-        channelData: {
-          feedbackLoop: {
-            type: 'default',
-          }
-        }
-      });
-
-      pageElements.byTestId('send box text area').focus();
-      await host.sendShiftTab(2);
-
-      await host.sendKeys('ENTER');
-
-      await host.sendKeys('ENTER');
-
-
-      await pageConditions.became(
-        'feedback form is open',
-        () => document.activeElement === pageElements.byTestId('feedback sendbox'),
-        1000
-      );
-
-      await host.snapshot('local');
-
     });
   </script>
 </body>

@@ -1,5 +1,5 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import { literal, string, object, optional, safeParse, type InferOutput } from 'valibot';
+import { literal, object, optional, safeParse, string, union, type InferOutput } from 'valibot';
 
 const activityWithFeedbackLoopSchemaWithDisclaimer = object({
   channelData: object({
@@ -18,18 +18,19 @@ const activityWithFeedbackLoopSchemaWithOutDisclaimer = object({
   })
 });
 
-type FeedbackActivityWithDisclaimer = WebChatActivity &
-  InferOutput<typeof activityWithFeedbackLoopSchemaWithDisclaimer>;
+const feedbackLoopSchema = union([
+  activityWithFeedbackLoopSchemaWithDisclaimer,
+  activityWithFeedbackLoopSchemaWithOutDisclaimer
+]);
 
-type FeedbackActivityWithoutDisclaimer = WebChatActivity &
-  InferOutput<typeof activityWithFeedbackLoopSchemaWithOutDisclaimer>;
+type FeedbackActivity = WebChatActivity & InferOutput<typeof feedbackLoopSchema>;
 
-type FeedbackActivity = FeedbackActivityWithDisclaimer | FeedbackActivityWithoutDisclaimer;
-
-export function hasDisclaimer(activity: WebChatActivity): activity is FeedbackActivityWithDisclaimer {
+export function hasDisclaimer(
+  activity: WebChatActivity
+): activity is WebChatActivity & InferOutput<typeof activityWithFeedbackLoopSchemaWithDisclaimer> {
   return safeParse(activityWithFeedbackLoopSchemaWithDisclaimer, activity).success;
 }
 
 export default function hasFeedbackLoop(activity: WebChatActivity): activity is FeedbackActivity {
-  return safeParse(activityWithFeedbackLoopSchemaWithOutDisclaimer, activity).success;
+  return safeParse(feedbackLoopSchema, activity).success;
 }
