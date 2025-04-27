@@ -8,7 +8,8 @@ export default function group<T>(
   const result: (readonly T[])[] = [];
 
   while (processing.length) {
-    const [left, right] = pick<T>(processing, getItemsOfSameGroup(processing[0]));
+    const [value] = processing;
+    const [left, right] = pick<T>(processing, [value, ...(getItemsOfSameGroup(value) || [])]);
 
     processing = left;
     result.push(right);

@@ -1,7 +1,4 @@
-export default function pick<T>(
-  array: Iterable<T>,
-  pick?: Iterable<T> | undefined
-): readonly [readonly T[], readonly T[]] {
+export default function pick<T>(array: Iterable<T>, pick: Iterable<T>): readonly [readonly T[], readonly T[]] {
   if (!pick) {
     return Object.freeze([Object.freeze(Array.from(array)), Object.freeze([])]);
   }
