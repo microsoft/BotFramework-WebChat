@@ -22,7 +22,8 @@ import ChatHistoryToolbar from './ChatHistory/ChatHistoryToolbar';
 import ScrollToEndButton from './ChatHistory/private/ScrollToEndButton';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
 import GroupedActivityContainerComposer from './Transcript/RenderingElements/RenderingElementsComposer';
-import useRenderingElements from './Transcript/RenderingElements/useRenderingElements';
+import useNumRenderingActivities from './Transcript/RenderingElements/useNumRenderingActivities';
+import useRenderedActivities from './Transcript/RenderingElements/useRenderedActivities';
 import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import { android } from './Utils/detectBrowser';
@@ -134,7 +135,9 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       [ref, rootElementRef]
     );
 
-    const [renderingElements] = useRenderingElements();
+    // const [renderingElements] = useRenderingElements();
+    const [treeNode] = useRenderedActivities();
+    const [numRenderingActivities] = useNumRenderingActivities();
 
     const scrollToBottomScrollTo: (scrollTop: number, options?: ScrollToOptions) => void = useScrollTo();
     const scrollToBottomScrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
@@ -410,7 +413,8 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       useCallback(() => focusByActivityKey(undefined), [focusByActivityKey])
     );
 
-    const hasAnyChild = !!React.Children.count(renderingElements);
+    // const hasAnyChild = !!React.Children.count(renderingElements);
+    const hasAnyChild = !!numRenderingActivities;
 
     return (
       <div
@@ -439,10 +443,8 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       >
         <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
         {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
-        <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>
-          {renderingElements}
-        </InternalTranscriptScrollable>
-        {!!renderingElements.length && (
+        <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>{treeNode}</InternalTranscriptScrollable>
+        {hasAnyChild && (
           <Fragment>
             <FocusRedirector redirectRef={rootElementRef} />
             <div

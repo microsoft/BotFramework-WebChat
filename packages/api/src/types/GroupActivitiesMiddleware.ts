@@ -3,19 +3,19 @@ import type { WebChatActivity } from 'botframework-webchat-core';
 import FunctionMiddleware, { CallFunction } from './FunctionMiddleware';
 
 type GroupActivities = CallFunction<
-  [{ activities: WebChatActivity[] }],
+  [Readonly<{ activities: readonly WebChatActivity[] }>],
   {
-    sender: WebChatActivity[][];
-    status: WebChatActivity[][];
+    sender: readonly (readonly WebChatActivity[])[];
+    status: readonly (readonly WebChatActivity[])[];
   }
 >;
 
 type GroupActivitiesMiddleware = FunctionMiddleware<
   [],
-  [{ activities: WebChatActivity[] }],
+  [Readonly<{ activities: readonly WebChatActivity[] }>],
   {
-    sender: WebChatActivity[][];
-    status: WebChatActivity[][];
+    sender: readonly (readonly WebChatActivity[])[];
+    status: readonly (readonly WebChatActivity[])[];
   }
 >;
 

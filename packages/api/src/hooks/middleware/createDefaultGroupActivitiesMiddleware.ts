@@ -3,7 +3,7 @@ import GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 import type { GlobalScopePonyfill, WebChatActivity } from 'botframework-webchat-core';
 import type { SendStatus } from '../../types/SendStatus';
 
-function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
+function bin<T>(items: readonly T[], grouping: (last: T, current: T) => boolean): readonly (readonly T[])[] {
   let lastBin: T[];
   const bins: T[][] = [];
   let lastItem: T;
@@ -19,7 +19,11 @@ function bin<T>(items: T[], grouping: (last: T, current: T) => boolean): T[][] {
     lastItem = item;
   }
 
-  return bins;
+  for (const bin in bins) {
+    Object.freeze(bin);
+  }
+
+  return Object.freeze(bins);
 }
 
 function sending(activity: WebChatActivity): SendStatus | undefined {

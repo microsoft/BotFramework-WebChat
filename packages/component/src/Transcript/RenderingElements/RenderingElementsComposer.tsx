@@ -1,16 +1,17 @@
-import { hooks } from 'botframework-webchat-api';
+import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 import { instance, map, object, optional, parse, pipe, readonly, string, type InferOutput } from 'valibot';
-import useMemoized from '../../hooks/internal/useMemoized';
-import TranscriptActivity from '../../TranscriptActivity';
-import isZeroOrPositive from '../../Utils/isZeroOrPositive';
-import useActivityTreeWithRenderer from '../../providers/ActivityTree/useActivityTreeWithRenderer';
+import useActivitiesWithRenderer from '../../providers/ActivityTree/private/useActivitiesWithRenderer';
+import group from './private/group';
 import mutableRefObject from './private/mutableRefObject';
 import reactNode from './private/reactNode';
 import RenderingElementsContext, { type RenderingElementsContextType } from './private/RenderingElementsContext';
+import RenderTranscriptActivity from './ui/RenderTranscriptActivity';
+import SenderGrouping from './ui/SenderGrouping/SenderGrouping';
+import StatusGrouping from './ui/StatusGrouping/StatusGrouping';
 
-const { useCreateAvatarRenderer, useGetKeyByActivity, useStyleOptions } = hooks;
+const { useActivities, useCreateActivityRenderer, useGetKeyByActivity, useGroupActivities } = hooks;
 
 const renderingElementsComposerPropsSchema = pipe(
   object({
@@ -26,99 +27,102 @@ type RenderingElementsComposerProps = InferOutput<typeof renderingElementsCompos
 const RenderingElementsComposer = (props: RenderingElementsComposerProps) => {
   const { activityElementMapRef, children, grouping } = parse(renderingElementsComposerPropsSchema, props);
 
-  const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
-  const [activityWithRendererTree] = useActivityTreeWithRenderer();
-  const createAvatarRenderer = useCreateAvatarRenderer();
   const getKeyByActivity = useGetKeyByActivity();
+  const groupActivities = useGroupActivities();
 
-  const hideAllTimestamps = groupTimestamp === false;
+  type ActivityWithRenderer = {
+    activity: WebChatActivity;
+    renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
+  };
 
-  const createAvatarRendererMemoized = useMemoized(
-    (activity: WebChatActivity) => createAvatarRenderer({ activity }),
-    [createAvatarRenderer]
+  const [activities] = useActivities();
+
+  const createActivityRenderer: ActivityComponentFactory = useCreateActivityRenderer();
+  const entries = useActivitiesWithRenderer(activities, createActivityRenderer);
+  const entryMap: Map<WebChatActivity, ActivityWithRenderer> = useMemo(
+    () => new Map(entries.map(entry => [entry.activity, entry])),
+    [entries]
   );
 
-  // Flatten the tree back into an array with information related to rendering.
-  const renderingElementsState = useMemo<readonly [readonly ReactNode[]]>(() => {
-    const renderingElements: ReactNode[] = [];
-    const topSideBotNub = isZeroOrPositive(bubbleNubOffset);
-    const topSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
+  function validateAllEntriesTagged<T>(entries: readonly T[], bins: readonly (readonly T[])[]): boolean {
+    return entries.every(entry => bins.some(bin => bin.includes(entry)));
+  }
 
-    activityWithRendererTree.forEach(entriesWithSameSender => {
-      const [[{ activity: firstActivity }]] = entriesWithSameSender;
-      const renderAvatar = createAvatarRendererMemoized(firstActivity);
+  const { entriesBySender, entriesByStatus } = useMemo<{
+    entriesBySender: readonly (readonly ActivityWithRenderer[])[];
+    entriesByStatus: readonly (readonly ActivityWithRenderer[])[];
+  }>(() => {
+    const visibleActivities = Object.freeze(Array.from(entryMap.keys()));
 
-      entriesWithSameSender.forEach((entriesWithSameSenderAndStatus, indexWithinSenderGroup) => {
-        const firstInSenderGroup = !indexWithinSenderGroup;
-        const lastInSenderGroup = indexWithinSenderGroup === entriesWithSameSender.length - 1;
+    const groupActivitiesResult = groupActivities({ activities: visibleActivities });
 
-        entriesWithSameSenderAndStatus.forEach(({ activity, renderActivity }, indexWithinSenderAndStatusGroup) => {
-          // We only show the timestamp at the end of the sender group. But we always show the "Send failed, retry" prompt.
-          const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
-          const key: string = getKeyByActivity(activity);
-          const lastInSenderAndStatusGroup =
-            indexWithinSenderAndStatusGroup === entriesWithSameSenderAndStatus.length - 1;
-          const topSideNub = activity.from?.role === 'user' ? topSideUserNub : topSideBotNub;
+    const activitiesBySender = groupActivitiesResult?.sender || [];
+    const activitiesByStatus = groupActivitiesResult?.status || [];
 
-          let showCallout: boolean;
+    const [entriesBySender, entriesByStatus] = [activitiesBySender, activitiesByStatus].map(bins =>
+      bins.map(bin => bin.map(activity => entryMap.get(activity)))
+    );
 
-          // Depending on the "showAvatarInGroup" setting, the avatar will render in different positions.
-          if (showAvatarInGroup === 'sender') {
-            if (topSideNub) {
-              showCallout = firstInSenderGroup && firstInSenderAndStatusGroup;
-            } else {
-              showCallout = lastInSenderGroup && lastInSenderAndStatusGroup;
-            }
-          } else if (showAvatarInGroup === 'status') {
-            if (topSideNub) {
-              showCallout = firstInSenderAndStatusGroup;
-            } else {
-              showCallout = lastInSenderAndStatusGroup;
-            }
-          } else {
-            showCallout = true;
-          }
+    if (!validateAllEntriesTagged(visibleActivities, activitiesBySender)) {
+      console.warn(
+        'botframework-webchat: Not every activities are grouped in the "sender" property. Please fix "groupActivitiesMiddleware" and group every activities.'
+      );
+    }
 
-          renderingElements.push(
-            <TranscriptActivity
-              activity={activity}
-              activityElementMapRef={activityElementMapRef}
-              // "hideTimestamp" is a render-time parameter for renderActivityStatus().
-              // If true, it will hide the timestamp, but it will continue to show the
-              // retry prompt. And show the screen reader version of the timestamp.
-              activityKey={key}
-              hideTimestamp={
-                hideAllTimestamps || indexWithinSenderAndStatusGroup !== entriesWithSameSenderAndStatus.length - 1
-              }
-              key={key}
-              renderActivity={renderActivity}
-              renderAvatar={renderAvatar}
-              showCallout={showCallout}
-            />
-          );
-        });
-      });
-    });
+    if (!validateAllEntriesTagged(visibleActivities, activitiesByStatus)) {
+      console.warn(
+        'botframework-webchat: Not every activities are grouped in the "status" property. Please fix "groupActivitiesMiddleware" and group every activities.'
+      );
+    }
 
-    return Object.freeze([renderingElements]);
-  }, [
-    activityElementMapRef,
-    activityWithRendererTree,
-    bubbleFromUserNubOffset,
-    bubbleNubOffset,
-    createAvatarRendererMemoized,
-    getKeyByActivity,
-    hideAllTimestamps,
-    showAvatarInGroup
-  ]);
+    return {
+      entriesBySender,
+      entriesByStatus
+    };
+  }, [entryMap, groupActivities]);
+
+  const renderedActivitiesState = useMemo<readonly [ReactNode]>(
+    () =>
+      Object.freeze([
+        group(entries, entry => entriesBySender.find(group => group.includes(entry))).map(entries => (
+          <SenderGrouping
+            activities={entries.map(({ activity }) => activity)}
+            key={getKeyByActivity(entries[0].activity)}
+          >
+            {group(entries, entry => entriesByStatus.find(group => group.includes(entry))).map(entries => (
+              <StatusGrouping
+                activities={entries.map(({ activity }) => activity)}
+                key={getKeyByActivity(entries[0].activity)}
+              >
+                {entries.map(({ activity, renderActivity }) => (
+                  <RenderTranscriptActivity
+                    activity={activity}
+                    key={getKeyByActivity(activity)}
+                    renderActivity={renderActivity}
+                  />
+                ))}
+              </StatusGrouping>
+            ))}
+          </SenderGrouping>
+        ))
+      ]),
+    [entries, entriesBySender, entriesByStatus, getKeyByActivity]
+  );
+
+  const numRenderingActivitiesState = useMemo<readonly [number]>(
+    () => Object.freeze([entries.length] as const),
+    [entries]
+  );
 
   const context = useMemo<RenderingElementsContextType>(
     () =>
       Object.freeze({
+        activityElementMapRef,
         grouping,
-        renderingElementsState
+        numRenderingActivitiesState,
+        renderedActivitiesState
       }),
-    [grouping, renderingElementsState]
+    [activityElementMapRef, grouping, numRenderingActivitiesState, renderedActivitiesState]
   );
 
   return <RenderingElementsContext.Provider value={context}>{children}</RenderingElementsContext.Provider>;
