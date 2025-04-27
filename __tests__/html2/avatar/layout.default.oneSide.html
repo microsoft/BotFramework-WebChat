@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { createDefaultProps } from './setup.js';
+
+      run(
+        async function () {
+          const {
+            React: { createElement },
+            ReactDOM: { render },
+            testHelpers: {
+              createStore,
+              token: { fetchDirectLineToken }
+            },
+            WebChat: { createDirectLine, ReactWebChat }
+          } = window; // Imports in UMD fashion.
+
+          const directLine = createDirectLine({ token: await fetchDirectLineToken() });
+          const store = createStore();
+
+          function renderWebChat(props) {
+            return new Promise(resolve =>
+              render(
+                createElement(ReactWebChat, { directLine, store, ...props }),
+                document.getElementById('webchat'),
+                resolve
+              )
+            );
+          }
+
+          const extraProps = new URLSearchParams(location.search).has('rtl') ? { locale: 'ar-EG' } : {};
+          let props = createDefaultProps(extraProps);
+
+          props = { ...props, styleOptions: { ...props.styleOptions, userAvatarInitials: undefined } };
+
+          await renderWebChat(props);
+
+          await pageConditions.uiConnected();
+
+          await pageObjects.sendMessageViaSendBox('normal');
+          await pageConditions.numActivitiesShown(2);
+
+          await host.snapshot('local', { skipCheckAccessibility: true });
+
+          props = createDefaultProps(extraProps);
+          props = { ...props, styleOptions: { ...props.styleOptions, botAvatarInitials: undefined } };
+
+          await renderWebChat(props);
+
+          await host.snapshot('local', { skipCheckAccessibility: true });
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>
