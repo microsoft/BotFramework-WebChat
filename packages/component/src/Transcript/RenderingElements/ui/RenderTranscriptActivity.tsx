@@ -52,15 +52,6 @@ const RenderTranscriptActivity = ({ activity, renderActivity }: RenderTranscript
     showCallout = true;
   }
 
-  // console.log({
-  //   renderAvatar,
-  //   showCallout,
-  //   isFirstInSenderGroup,
-  //   isFirstInStatusGroup,
-  //   isLastInSenderGroup,
-  //   isLastInStatusGroup
-  // });
-
   return (
     <TranscriptActivity
       activity={activity}
@@ -69,7 +60,7 @@ const RenderTranscriptActivity = ({ activity, renderActivity }: RenderTranscript
       // If true, it will hide the timestamp, but it will continue to show the
       // retry prompt. And show the screen reader version of the timestamp.
       activityKey={key}
-      hideTimestamp={hideAllTimestamps || !isLastInSenderGroup}
+      hideTimestamp={hideAllTimestamps || !isLastInStatusGroup}
       key={key}
       renderActivity={renderActivity}
       renderAvatar={renderAvatar}
