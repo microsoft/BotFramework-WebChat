@@ -21,7 +21,7 @@ import ChatHistoryBox from './ChatHistory/ChatHistoryBox';
 import ChatHistoryToolbar from './ChatHistory/ChatHistoryToolbar';
 import ScrollToEndButton from './ChatHistory/private/ScrollToEndButton';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
-import GroupedActivityContainerComposer from './Transcript/RenderingElements/RenderingElementsComposer';
+import RenderingElementsComposer from './Transcript/RenderingElements/RenderingElementsComposer';
 import useNumRenderingActivities from './Transcript/RenderingElements/useNumRenderingActivities';
 import useRenderedActivities from './Transcript/RenderingElements/useRenderedActivities';
 import FocusRedirector from './Utils/FocusRedirector';
@@ -662,13 +662,13 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className = '' }) => {
           <ChatHistoryToolbar>
             <ScrollToEndButton terminatorRef={terminatorRef} />
           </ChatHistoryToolbar>
-          <GroupedActivityContainerComposer activityElementMapRef={activityElementMapRef} grouping="">
+          <RenderingElementsComposer activityElementMapRef={activityElementMapRef} grouping="">
             <InternalTranscript
               activityElementMapRef={activityElementMapRef}
               ref={containerRef}
               terminatorRef={terminatorRef}
             />
-          </GroupedActivityContainerComposer>
+          </RenderingElementsComposer>
         </ReactScrollToBottomComposer>
       </TranscriptFocusComposer>
     </ChatHistoryBox>
