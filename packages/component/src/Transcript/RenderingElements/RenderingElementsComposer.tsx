@@ -3,11 +3,11 @@ import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 import { instance, map, object, optional, parse, pipe, readonly, string, type InferOutput } from 'valibot';
 import useActivitiesWithRenderer from '../../providers/ActivityTree/private/useActivitiesWithRenderer';
+import TranscriptActivity from '../TranscriptActivity';
 import group from './private/group';
 import mutableRefObject from './private/mutableRefObject';
 import reactNode from './private/reactNode';
 import RenderingElementsContext, { type RenderingElementsContextType } from './private/RenderingElementsContext';
-import RenderTranscriptActivity from './ui/RenderTranscriptActivity';
 import SenderGrouping from './ui/SenderGrouping/SenderGrouping';
 import StatusGrouping from './ui/StatusGrouping/StatusGrouping';
 
@@ -95,7 +95,7 @@ const RenderingElementsComposer = (props: RenderingElementsComposerProps) => {
                 key={getKeyByActivity(entries[0].activity)}
               >
                 {entries.map(({ activity, renderActivity }) => (
-                  <RenderTranscriptActivity
+                  <TranscriptActivity
                     activity={activity}
                     key={getKeyByActivity(activity)}
                     renderActivity={renderActivity}
