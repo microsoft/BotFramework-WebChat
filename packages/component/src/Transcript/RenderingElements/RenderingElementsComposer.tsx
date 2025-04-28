@@ -11,7 +11,14 @@ import RenderingElementsContext, { type RenderingElementsContextType } from './p
 import SenderGrouping from './ui/SenderGrouping/SenderGrouping';
 import StatusGrouping from './ui/StatusGrouping/StatusGrouping';
 
-const { useActivities, useCreateActivityRenderer, useGetKeyByActivity, useGroupActivities } = hooks;
+const {
+  useActivities,
+  useActivityKeys,
+  useGetActivitiesByKey,
+  useCreateActivityRenderer,
+  useGetKeyByActivity,
+  useGroupActivities
+} = hooks;
 
 const renderingElementsComposerPropsSchema = pipe(
   object({
@@ -36,12 +43,38 @@ function validateAllEntriesTagged<T>(entries: readonly T[], bins: readonly (read
 const RenderingElementsComposer = (props: RenderingElementsComposerProps) => {
   const { activityElementMapRef, children, grouping } = parse(renderingElementsComposerPropsSchema, props);
 
-  const [activities] = useActivities();
+  const [rawActivities] = useActivities();
+  const activityKeys = useActivityKeys();
   const createActivityRenderer: ActivityComponentFactory = useCreateActivityRenderer();
+  const getActivitiesByKey = useGetActivitiesByKey();
   const getKeyByActivity = useGetKeyByActivity();
   const groupActivities = useGroupActivities();
 
+  // TODO: Should move this logic into a new <LivestreamGrouping>.
+  //       The grouping would only show the latest one but it has access to previous.
+  const activities = useMemo<readonly WebChatActivity[]>(() => {
+    const activities: WebChatActivity[] = [];
+
+    if (!activityKeys) {
+      return rawActivities;
+    }
+
+    for (const activity of rawActivities) {
+      // If an activity has multiple revisions, display the latest revision only at the position of the first revision.
+
+      // "Activities with same key" means "multiple revisions of same activity."
+      const activitiesWithSameKey = getActivitiesByKey(getKeyByActivity(activity));
+
+      // TODO: We may want to send all revisions of activity to the middleware so they can render UI to see previous revisions.
+      activitiesWithSameKey?.[0] === activity &&
+        activities.push(activitiesWithSameKey[activitiesWithSameKey.length - 1]);
+    }
+
+    return Object.freeze(activities);
+  }, [activityKeys, getActivitiesByKey, getKeyByActivity, rawActivities]);
+
   const entries = useActivitiesWithRenderer(activities, createActivityRenderer);
+
   const entryMap: Map<WebChatActivity, ActivityWithRenderer> = useMemo(
     () => new Map(entries.map(entry => [entry.activity, entry])),
     [entries]
