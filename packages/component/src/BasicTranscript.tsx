@@ -13,8 +13,8 @@ import {
   useSticky
 } from 'react-scroll-to-bottom';
 
-import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode } from 'react';
-import type { ActivityElementMap } from './Transcript/types';
+import { type KeyboardEventHandler, type MutableRefObject, type ReactNode } from 'react';
+import { type ActivityElementMap } from './Transcript/types';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import ChatHistoryBox from './ChatHistory/ChatHistoryBox';
@@ -22,6 +22,7 @@ import ChatHistoryToolbar from './ChatHistory/ChatHistoryToolbar';
 import ScrollToEndButton from './ChatHistory/private/ScrollToEndButton';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
 import RenderingElementsComposer from './Transcript/RenderingElements/RenderingElementsComposer';
+import useActivityElementMapRef from './Transcript/RenderingElements/useActivityElementRef';
 import useNumRenderingActivities from './Transcript/RenderingElements/useNumRenderingActivities';
 import useRenderedActivities from './Transcript/RenderingElements/useRenderedActivities';
 import FocusRedirector from './Utils/FocusRedirector';
@@ -95,381 +96,375 @@ type ScrollToOptions = { behavior?: ScrollBehavior };
 type ScrollToPosition = { activityID?: string; scrollTop?: number };
 
 type InternalTranscriptProps = Readonly<{
-  activityElementMapRef: MutableRefObject<ActivityElementMap>;
   className?: string;
   terminatorRef: React.MutableRefObject<HTMLDivElement>;
 }>;
 
 // TODO: [P1] #4133 Add telemetry for computing how many re-render done so far.
-const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
-  ({ activityElementMapRef, className, terminatorRef }, ref) => {
-    const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
-    const [activeDescendantId] = useActiveDescendantId();
-    const [direction] = useDirection();
-    const [focusedActivityKey] = useFocusedActivityKey();
-    const [focusedExplicitly] = useFocusedExplicitly();
-    const focus = useFocus();
-    const focusByActivityKey = useFocusByActivityKey();
-    const focusRelativeActivity = useFocusRelativeActivity();
-    const getActivityByKey = useGetActivityByKey();
-    const getKeyByActivityId = useGetKeyByActivityId();
-    const localize = useLocalizer();
-    const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
-    const rootElementRef = useRef<HTMLDivElement>();
-    const terminatorLabelId = useUniqueId('webchat__basic-transcript__terminator-label');
+const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(({ className, terminatorRef }, ref) => {
+  const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
+  const [activeDescendantId] = useActiveDescendantId();
+  const [direction] = useDirection();
+  const [focusedActivityKey] = useFocusedActivityKey();
+  const [focusedExplicitly] = useFocusedExplicitly();
+  const activityElementMapRef = useActivityElementMapRef();
+  const focus = useFocus();
+  const focusByActivityKey = useFocusByActivityKey();
+  const focusRelativeActivity = useFocusRelativeActivity();
+  const getActivityByKey = useGetActivityByKey();
+  const getKeyByActivityId = useGetKeyByActivityId();
+  const localize = useLocalizer();
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const rootElementRef = useRef<HTMLDivElement>();
+  const terminatorLabelId = useUniqueId('webchat__basic-transcript__terminator-label');
 
-    const focusedActivityKeyRef = useValueRef(focusedActivityKey);
-    const terminatorText = localize('TRANSCRIPT_TERMINATOR_TEXT');
-    const transcriptAriaLabel = localize('TRANSCRIPT_ARIA_LABEL_ALT');
+  const focusedActivityKeyRef = useValueRef(focusedActivityKey);
+  const terminatorText = localize('TRANSCRIPT_TERMINATOR_TEXT');
+  const transcriptAriaLabel = localize('TRANSCRIPT_ARIA_LABEL_ALT');
 
-    const callbackRef = useCallback(
-      (element: HTMLDivElement) => {
-        if (typeof ref === 'function') {
-          ref(element);
-        } else {
-          ref.current = element;
-        }
+  const callbackRef = useCallback(
+    (element: HTMLDivElement) => {
+      if (typeof ref === 'function') {
+        ref(element);
+      } else {
+        ref.current = element;
+      }
 
-        rootElementRef.current = element;
-      },
-      [ref, rootElementRef]
-    );
+      rootElementRef.current = element;
+    },
+    [ref, rootElementRef]
+  );
 
-    const [renderedActivities] = useRenderedActivities();
-    const [numRenderingActivities] = useNumRenderingActivities();
+  const [renderedActivities] = useRenderedActivities();
+  const [numRenderingActivities] = useNumRenderingActivities();
 
-    const scrollToBottomScrollTo: (scrollTop: number, options?: ScrollToOptions) => void = useScrollTo();
-    const scrollToBottomScrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
+  const scrollToBottomScrollTo: (scrollTop: number, options?: ScrollToOptions) => void = useScrollTo();
+  const scrollToBottomScrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
 
-    const scrollTo = useCallback(
-      (position: ScrollToPosition, { behavior = 'auto' }: ScrollToOptions = {}) => {
-        if (!position) {
-          throw new Error(
-            'botframework-webchat: First argument passed to "useScrollTo" must be a ScrollPosition object.'
-          );
-        }
+  const scrollTo = useCallback(
+    (position: ScrollToPosition, { behavior = 'auto' }: ScrollToOptions = {}) => {
+      if (!position) {
+        throw new Error(
+          'botframework-webchat: First argument passed to "useScrollTo" must be a ScrollPosition object.'
+        );
+      }
 
-        const { activityID: activityId, scrollTop } = position;
+      const { activityID: activityId, scrollTop } = position;
 
-        if (typeof scrollTop !== 'undefined') {
-          scrollToBottomScrollTo(scrollTop, { behavior });
-        } else if (typeof activityId !== 'undefined') {
-          const activityBoundingBoxElement = activityElementMapRef.current
-            .get(getKeyByActivityId(activityId))
-            ?.querySelector('.webchat__basic-transcript__activity-active-descendant');
+      if (typeof scrollTop !== 'undefined') {
+        scrollToBottomScrollTo(scrollTop, { behavior });
+      } else if (typeof activityId !== 'undefined') {
+        const activityBoundingBoxElement = activityElementMapRef.current
+          .get(getKeyByActivityId(activityId))
+          ?.querySelector('.webchat__basic-transcript__activity-active-descendant');
 
-          const scrollableElement = rootElementRef.current.querySelector('.webchat__basic-transcript__scrollable');
+        const scrollableElement = rootElementRef.current.querySelector('.webchat__basic-transcript__scrollable');
 
-          if (scrollableElement && activityBoundingBoxElement) {
-            // ESLint conflict with TypeScript. The result of getClientRects() is not an Array but DOMRectList, and cannot be destructured.
-            // eslint-disable-next-line prefer-destructuring
-            const activityBoundingBoxElementClientRect = activityBoundingBoxElement.getClientRects()[0];
+        if (scrollableElement && activityBoundingBoxElement) {
+          // ESLint conflict with TypeScript. The result of getClientRects() is not an Array but DOMRectList, and cannot be destructured.
+          // eslint-disable-next-line prefer-destructuring
+          const activityBoundingBoxElementClientRect = activityBoundingBoxElement.getClientRects()[0];
 
-            // ESLint conflict with TypeScript. The result of getClientRects() is not an Array but DOMRectList, and cannot be destructured.
-            // eslint-disable-next-line prefer-destructuring
-            const scrollableElementClientRect = scrollableElement.getClientRects()[0];
+          // ESLint conflict with TypeScript. The result of getClientRects() is not an Array but DOMRectList, and cannot be destructured.
+          // eslint-disable-next-line prefer-destructuring
+          const scrollableElementClientRect = scrollableElement.getClientRects()[0];
 
-            // If either the activity or the transcript scrollable is not on DOM, we will not scroll the view.
-            if (activityBoundingBoxElementClientRect && scrollableElementClientRect) {
-              const { height: activityHeight, y: activityY } = activityBoundingBoxElementClientRect;
-              const { height: scrollableHeight } = scrollableElementClientRect;
-              const activityOffsetTop = activityY + scrollableElement.scrollTop;
+          // If either the activity or the transcript scrollable is not on DOM, we will not scroll the view.
+          if (activityBoundingBoxElementClientRect && scrollableElementClientRect) {
+            const { height: activityHeight, y: activityY } = activityBoundingBoxElementClientRect;
+            const { height: scrollableHeight } = scrollableElementClientRect;
+            const activityOffsetTop = activityY + scrollableElement.scrollTop;
 
-              const scrollTop = Math.min(activityOffsetTop, activityOffsetTop - scrollableHeight + activityHeight);
+            const scrollTop = Math.min(activityOffsetTop, activityOffsetTop - scrollableHeight + activityHeight);
 
-              scrollToBottomScrollTo(scrollTop, { behavior });
-            }
+            scrollToBottomScrollTo(scrollTop, { behavior });
           }
         }
-      },
-      [activityElementMapRef, getKeyByActivityId, rootElementRef, scrollToBottomScrollTo]
-    );
+      }
+    },
+    [activityElementMapRef, getKeyByActivityId, rootElementRef, scrollToBottomScrollTo]
+  );
 
-    const scrollToEnd = useCallback(
-      () => scrollToBottomScrollToEnd({ behavior: 'smooth' }),
-      [scrollToBottomScrollToEnd]
-    );
+  const scrollToEnd = useCallback(() => scrollToBottomScrollToEnd({ behavior: 'smooth' }), [scrollToBottomScrollToEnd]);
 
-    const scrollRelative = useCallback(
-      ({ direction, displacement }: TranscriptScrollRelativeOptions) => {
-        const { current: rootElement } = rootElementRef;
+  const scrollRelative = useCallback(
+    ({ direction, displacement }: TranscriptScrollRelativeOptions) => {
+      const { current: rootElement } = rootElementRef;
 
-        if (!rootElement) {
-          return;
-        }
+      if (!rootElement) {
+        return;
+      }
 
-        const scrollable: HTMLElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
-        let nextScrollTop: number;
+      const scrollable: HTMLElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
+      let nextScrollTop: number;
 
-        if (typeof displacement === 'number') {
+      if (typeof displacement === 'number') {
+        // eslint-disable-next-line no-magic-numbers
+        nextScrollTop = scrollable.scrollTop + (direction === 'down' ? 1 : -1) * displacement;
+      } else {
+        // eslint-disable-next-line no-magic-numbers
+        nextScrollTop = scrollable.scrollTop + (direction === 'down' ? 1 : -1) * scrollable.offsetHeight;
+      }
+
+      scrollTo(
+        {
+          scrollTop: Math.max(0, Math.min(scrollable.scrollHeight - scrollable.offsetHeight, nextScrollTop))
+        },
+        { behavior: 'smooth' }
+      );
+    },
+    [rootElementRef, scrollTo]
+  );
+
+  // Since there could be multiple instances of <BasicTranscript> inside the <Composer>, when the developer calls `scrollXXX`, we need to call it on all instances.
+  // We call `useRegisterScrollXXX` to register a callback function, the `useScrollXXX` will multiplex the call into each instance of <BasicTranscript>.
+  useRegisterScrollTo(scrollTo);
+  useRegisterScrollToEnd(scrollToEnd);
+  useRegisterScrollRelativeTranscript(scrollRelative);
+
+  const markActivityKeyAsRead = useMarkActivityKeyAsRead();
+
+  const dispatchScrollPositionWithActivityId: (scrollPosition: ScrollToPosition) => void = useDispatchScrollPosition();
+
+  // TODO: [P2] We should use IntersectionObserver to track what activity is in the scrollable.
+  //            However, IntersectionObserver is not available on IE11, we need to make a limited polyfill in React style.
+  const handleScrollPosition = useCallback(
+    ({ scrollTop }: { scrollTop: number }) => {
+      const { current: rootElement } = rootElementRef;
+
+      if (!rootElement) {
+        return;
+      }
+
+      const scrollableElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
+
+      // "getClientRects()" is not returning an array, thus, it is not destructurable.
+      // eslint-disable-next-line prefer-destructuring
+      const scrollableElementClientRect = scrollableElement.getClientRects()[0];
+
+      // If the scrollable is not mounted, we cannot measure which activity is in view. Thus, we will not fire any events.
+      if (!scrollableElementClientRect) {
+        return;
+      }
+
+      const { bottom: scrollableClientBottom } = scrollableElementClientRect;
+
+      // Find the activity just above scroll view bottom.
+      // If the scroll view is already on top, get the first activity.
+      const activityElements = Array.from(activityElementMapRef.current.entries());
+      const activityKeyJustAboveScrollBottom: string | undefined = (
+        scrollableElement.scrollTop
+          ? activityElements
+              .reverse()
+              // Add subpixel tolerance
+              .find(([, element]) => {
+                // "getClientRects()" is not returning an array, thus, it is not destructurable.
+                // eslint-disable-next-line prefer-destructuring
+                const elementClientRect = element.getClientRects()[0];
+
+                // If the activity is not attached to DOM tree, we should not count it as "bottommost visible activity", as it is not visible.
+                return elementClientRect && elementClientRect.bottom < scrollableClientBottom + 1;
+              })
+          : activityElements[0]
+      )?.[0];
+
+      // When the end-user slowly scrolling the view down, we will mark activity as read when the message fully appear on the screen.
+      activityKeyJustAboveScrollBottom && markActivityKeyAsRead(activityKeyJustAboveScrollBottom);
+
+      if (dispatchScrollPositionWithActivityId) {
+        const activity = getActivityByKey(activityKeyJustAboveScrollBottom);
+
+        dispatchScrollPositionWithActivityId({ ...(activity ? { activityID: activity.id } : {}), scrollTop });
+      }
+    },
+    [
+      activityElementMapRef,
+      dispatchScrollPositionWithActivityId,
+      getActivityByKey,
+      markActivityKeyAsRead,
+      rootElementRef
+    ]
+  );
+
+  useObserveScrollPosition(handleScrollPosition);
+
+  const handleTranscriptKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
+    event => {
+      const { target } = event;
+
+      const fromEndOfTranscriptIndicator = target === terminatorRef.current;
+      const fromTranscript = target === event.currentTarget;
+
+      if (!fromEndOfTranscriptIndicator && !fromTranscript) {
+        return;
+      }
+
+      let handled = true;
+
+      switch (event.key) {
+        case 'ArrowDown':
+          focusRelativeActivity(fromEndOfTranscriptIndicator ? 0 : 1);
+          break;
+
+        case 'ArrowUp':
           // eslint-disable-next-line no-magic-numbers
-          nextScrollTop = scrollable.scrollTop + (direction === 'down' ? 1 : -1) * displacement;
-        } else {
-          // eslint-disable-next-line no-magic-numbers
-          nextScrollTop = scrollable.scrollTop + (direction === 'down' ? 1 : -1) * scrollable.offsetHeight;
-        }
+          focusRelativeActivity(fromEndOfTranscriptIndicator ? 0 : -1);
+          break;
 
-        scrollTo(
-          {
-            scrollTop: Math.max(0, Math.min(scrollable.scrollHeight - scrollable.offsetHeight, nextScrollTop))
-          },
-          { behavior: 'smooth' }
-        );
-      },
-      [rootElementRef, scrollTo]
-    );
+        case 'End':
+          focusRelativeActivity(Infinity);
+          break;
 
-    // Since there could be multiple instances of <BasicTranscript> inside the <Composer>, when the developer calls `scrollXXX`, we need to call it on all instances.
-    // We call `useRegisterScrollXXX` to register a callback function, the `useScrollXXX` will multiplex the call into each instance of <BasicTranscript>.
-    useRegisterScrollTo(scrollTo);
-    useRegisterScrollToEnd(scrollToEnd);
-    useRegisterScrollRelativeTranscript(scrollRelative);
+        case 'Enter':
+          // This is capturing plain ENTER.
+          // When screen reader is not running, or screen reader is running outside of scan mode, the ENTER key will be captured here.
+          if (!fromEndOfTranscriptIndicator) {
+            const activityFocusTrapTarget: HTMLElement = activityElementMapRef.current
+              .get(focusedActivityKeyRef.current)
+              ?.querySelector('.webchat__basic-transcript__activity-focus-target');
+            // TODO: review focus approach:
+            // It is not clear how to handle focus without introducing something like context.
+            // Ideally we would want a way to interact with focus outside of React
+            // so it doesn't cause transcript re-renders while still having an ability
+            // to scope activity-related handlers and data in a single place.
+            activityFocusTrapTarget?.focus();
+          }
 
-    const markActivityKeyAsRead = useMarkActivityKeyAsRead();
+          break;
 
-    const dispatchScrollPositionWithActivityId: (scrollPosition: ScrollToPosition) => void =
-      useDispatchScrollPosition();
+        case 'Escape':
+          focus('sendBoxWithoutKeyboard');
+          break;
 
-    // TODO: [P2] We should use IntersectionObserver to track what activity is in the scrollable.
-    //            However, IntersectionObserver is not available on IE11, we need to make a limited polyfill in React style.
-    const handleScrollPosition = useCallback(
-      ({ scrollTop }: { scrollTop: number }) => {
-        const { current: rootElement } = rootElementRef;
+        case 'Home':
+          focusRelativeActivity(-Infinity);
+          break;
 
-        if (!rootElement) {
-          return;
-        }
+        default:
+          handled = false;
+          break;
+      }
 
-        const scrollableElement = rootElement.querySelector('.webchat__basic-transcript__scrollable');
+      if (handled) {
+        event.preventDefault();
 
-        // "getClientRects()" is not returning an array, thus, it is not destructurable.
-        // eslint-disable-next-line prefer-destructuring
-        const scrollableElementClientRect = scrollableElement.getClientRects()[0];
+        // If a custom HTML control wants to handle up/down arrow, we will prevent them from listening to this event to prevent bugs due to handling arrow keys twice.
+        event.stopPropagation();
+      }
+    },
+    [activityElementMapRef, focus, focusedActivityKeyRef, focusRelativeActivity, terminatorRef]
+  );
 
-        // If the scrollable is not mounted, we cannot measure which activity is in view. Thus, we will not fire any events.
-        if (!scrollableElementClientRect) {
-          return;
-        }
+  const handleTranscriptKeyDownCapture = useCallback<KeyboardEventHandler<HTMLDivElement>>(
+    event => {
+      const { altKey, ctrlKey, key, metaKey, target } = event;
 
-        const { bottom: scrollableClientBottom } = scrollableElementClientRect;
+      if (altKey || (ctrlKey && key !== 'v') || metaKey || (!inputtableKey(key) && key !== 'Backspace')) {
+        // Ignore if one of the utility key (except SHIFT) is pressed
+        // E.g. CTRL-C on a link in one of the message should not jump to chat box
+        // E.g. "A" or "Backspace" should jump to chat box
+        return;
+      }
 
-        // Find the activity just above scroll view bottom.
-        // If the scroll view is already on top, get the first activity.
-        const activityElements = Array.from(activityElementMapRef.current.entries());
-        const activityKeyJustAboveScrollBottom: string | undefined = (
-          scrollableElement.scrollTop
-            ? activityElements
-                .reverse()
-                // Add subpixel tolerance
-                .find(([, element]) => {
-                  // "getClientRects()" is not returning an array, thus, it is not destructurable.
-                  // eslint-disable-next-line prefer-destructuring
-                  const elementClientRect = element.getClientRects()[0];
+      // Send keystrokes to send box if we are focusing on the transcript or terminator.
+      if (target === event.currentTarget || target === terminatorRef.current) {
+        event.stopPropagation();
 
-                  // If the activity is not attached to DOM tree, we should not count it as "bottommost visible activity", as it is not visible.
-                  return elementClientRect && elementClientRect.bottom < scrollableClientBottom + 1;
-                })
-            : activityElements[0]
-        )?.[0];
+        focus('sendBox');
+      }
+    },
+    [focus, terminatorRef]
+  );
 
-        // When the end-user slowly scrolling the view down, we will mark activity as read when the message fully appear on the screen.
-        activityKeyJustAboveScrollBottom && markActivityKeyAsRead(activityKeyJustAboveScrollBottom);
+  useRegisterFocusTranscript(useCallback(() => focusByActivityKey(undefined), [focusByActivityKey]));
 
-        if (dispatchScrollPositionWithActivityId) {
-          const activity = getActivityByKey(activityKeyJustAboveScrollBottom);
+  // When the focusing activity has changed, dispatch an event to observers of "useObserveTranscriptFocus".
+  const dispatchTranscriptFocusByActivityKey = useDispatchTranscriptFocusByActivityKey();
 
-          dispatchScrollPositionWithActivityId({ ...(activity ? { activityID: activity.id } : {}), scrollTop });
-        }
-      },
-      [
-        activityElementMapRef,
-        dispatchScrollPositionWithActivityId,
-        getActivityByKey,
-        markActivityKeyAsRead,
-        rootElementRef
-      ]
-    );
+  // Dispatch a "transcript focus" event based on user selection.
+  // We should not dispatch "transcript focus" when a new activity come. Although the selection change, it is not initiated from the user.
+  useMemo(
+    () => dispatchTranscriptFocusByActivityKey(focusedExplicitly ? focusedActivityKey : undefined),
+    [dispatchTranscriptFocusByActivityKey, focusedActivityKey, focusedExplicitly]
+  );
 
-    useObserveScrollPosition(handleScrollPosition);
+  // When the transcript is being focused on, we should dispatch a "transcriptfocus" event.
+  const handleFocus = useCallback(
+    // We call "focusByActivityKey" with activity key of "true".
+    // It means, tries to focus on anything.
+    ({ currentTarget, target }) => target === currentTarget && focusByActivityKey(true, false),
+    [focusByActivityKey]
+  );
 
-    const handleTranscriptKeyDown = useCallback<KeyboardEventHandler<HTMLDivElement>>(
-      event => {
-        const { target } = event;
+  // This is required by IE11.
+  // When the user clicks on and empty space (a.k.a. filler) in an empty transcript, IE11 says the focus is on the <div className="filler">,
+  // despite the fact there are no "tabIndex" attributes set on the filler.
+  // We need to artificially send the focus back to the transcript.
+  const handleFocusFiller = useCallback(() => focusByActivityKey(undefined), [focusByActivityKey]);
 
-        const fromEndOfTranscriptIndicator = target === terminatorRef.current;
-        const fromTranscript = target === event.currentTarget;
+  // When focus into the transcript using TAB/SHIFT-TAB, scroll the focused activity into view.
+  useObserveFocusVisible(
+    rootElementRef,
+    useCallback(() => focusByActivityKey(undefined), [focusByActivityKey])
+  );
 
-        if (!fromEndOfTranscriptIndicator && !fromTranscript) {
-          return;
-        }
+  // const hasAnyChild = !!React.Children.count(renderingElements);
+  const hasAnyChild = !!numRenderingActivities;
 
-        let handled = true;
-
-        switch (event.key) {
-          case 'ArrowDown':
-            focusRelativeActivity(fromEndOfTranscriptIndicator ? 0 : 1);
-            break;
-
-          case 'ArrowUp':
-            // eslint-disable-next-line no-magic-numbers
-            focusRelativeActivity(fromEndOfTranscriptIndicator ? 0 : -1);
-            break;
-
-          case 'End':
-            focusRelativeActivity(Infinity);
-            break;
-
-          case 'Enter':
-            // This is capturing plain ENTER.
-            // When screen reader is not running, or screen reader is running outside of scan mode, the ENTER key will be captured here.
-            if (!fromEndOfTranscriptIndicator) {
-              const activityFocusTrapTarget: HTMLElement = activityElementMapRef.current
-                .get(focusedActivityKeyRef.current)
-                ?.querySelector('.webchat__basic-transcript__activity-focus-target');
-              // TODO: review focus approach:
-              // It is not clear how to handle focus without introducing something like context.
-              // Ideally we would want a way to interact with focus outside of React
-              // so it doesn't cause transcript re-renders while still having an ability
-              // to scope activity-related handlers and data in a single place.
-              activityFocusTrapTarget?.focus();
-            }
-
-            break;
-
-          case 'Escape':
-            focus('sendBoxWithoutKeyboard');
-            break;
-
-          case 'Home':
-            focusRelativeActivity(-Infinity);
-            break;
-
-          default:
-            handled = false;
-            break;
-        }
-
-        if (handled) {
-          event.preventDefault();
-
-          // If a custom HTML control wants to handle up/down arrow, we will prevent them from listening to this event to prevent bugs due to handling arrow keys twice.
-          event.stopPropagation();
-        }
-      },
-      [activityElementMapRef, focus, focusedActivityKeyRef, focusRelativeActivity, terminatorRef]
-    );
-
-    const handleTranscriptKeyDownCapture = useCallback<KeyboardEventHandler<HTMLDivElement>>(
-      event => {
-        const { altKey, ctrlKey, key, metaKey, target } = event;
-
-        if (altKey || (ctrlKey && key !== 'v') || metaKey || (!inputtableKey(key) && key !== 'Backspace')) {
-          // Ignore if one of the utility key (except SHIFT) is pressed
-          // E.g. CTRL-C on a link in one of the message should not jump to chat box
-          // E.g. "A" or "Backspace" should jump to chat box
-          return;
-        }
-
-        // Send keystrokes to send box if we are focusing on the transcript or terminator.
-        if (target === event.currentTarget || target === terminatorRef.current) {
-          event.stopPropagation();
-
-          focus('sendBox');
-        }
-      },
-      [focus, terminatorRef]
-    );
-
-    useRegisterFocusTranscript(useCallback(() => focusByActivityKey(undefined), [focusByActivityKey]));
-
-    // When the focusing activity has changed, dispatch an event to observers of "useObserveTranscriptFocus".
-    const dispatchTranscriptFocusByActivityKey = useDispatchTranscriptFocusByActivityKey();
-
-    // Dispatch a "transcript focus" event based on user selection.
-    // We should not dispatch "transcript focus" when a new activity come. Although the selection change, it is not initiated from the user.
-    useMemo(
-      () => dispatchTranscriptFocusByActivityKey(focusedExplicitly ? focusedActivityKey : undefined),
-      [dispatchTranscriptFocusByActivityKey, focusedActivityKey, focusedExplicitly]
-    );
-
-    // When the transcript is being focused on, we should dispatch a "transcriptfocus" event.
-    const handleFocus = useCallback(
-      // We call "focusByActivityKey" with activity key of "true".
-      // It means, tries to focus on anything.
-      ({ currentTarget, target }) => target === currentTarget && focusByActivityKey(true, false),
-      [focusByActivityKey]
-    );
-
-    // This is required by IE11.
-    // When the user clicks on and empty space (a.k.a. filler) in an empty transcript, IE11 says the focus is on the <div className="filler">,
-    // despite the fact there are no "tabIndex" attributes set on the filler.
-    // We need to artificially send the focus back to the transcript.
-    const handleFocusFiller = useCallback(() => focusByActivityKey(undefined), [focusByActivityKey]);
-
-    // When focus into the transcript using TAB/SHIFT-TAB, scroll the focused activity into view.
-    useObserveFocusVisible(
-      rootElementRef,
-      useCallback(() => focusByActivityKey(undefined), [focusByActivityKey])
-    );
-
-    // const hasAnyChild = !!React.Children.count(renderingElements);
-    const hasAnyChild = !!numRenderingActivities;
-
-    return (
-      <div
-        // Although Android TalkBack 12.1 does not support `aria-activedescendant`, when used, it become buggy and will narrate content twice.
-        // We are disabling `aria-activedescendant` for Android. See <ActivityRow> for details.
-        aria-activedescendant={android ? undefined : activeDescendantId}
-        aria-label={transcriptAriaLabel}
-        className={classNames(
-          'webchat__basic-transcript',
-          basicTranscriptStyleSet + '',
-          rootClassName,
-          (className || '') + ''
-        )}
-        dir={direction}
-        onFocus={handleFocus}
-        onKeyDown={handleTranscriptKeyDown}
-        onKeyDownCapture={handleTranscriptKeyDownCapture}
-        ref={callbackRef}
-        // "aria-activedescendant" will only works with a number of roles and it must be explicitly set.
-        // https://www.w3.org/TR/wai-aria/#aria-activedescendant
-        role="group"
-        // For up/down arrow key navigation across activities, this component must be included in the tab sequence.
-        // Otherwise, "aria-activedescendant" will not be narrated when the user press up/down arrow keys.
-        // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant
-        tabIndex={0}
-      >
-        <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
-        {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
-        <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>
-          {renderedActivities}
-        </InternalTranscriptScrollable>
-        {hasAnyChild && (
-          <Fragment>
-            <FocusRedirector redirectRef={rootElementRef} />
-            <div
-              aria-labelledby={terminatorLabelId}
-              className="webchat__basic-transcript__terminator"
-              ref={terminatorRef}
-              role="note"
-              tabIndex={0}
-            >
-              <div className="webchat__basic-transcript__terminator-body">
-                {/* `id` is required for `aria-labelledby` */}
-                {/* eslint-disable-next-line react/forbid-dom-props */}
-                <div className="webchat__basic-transcript__terminator-text" id={terminatorLabelId}>
-                  {terminatorText}
-                </div>
+  return (
+    <div
+      // Although Android TalkBack 12.1 does not support `aria-activedescendant`, when used, it become buggy and will narrate content twice.
+      // We are disabling `aria-activedescendant` for Android. See <ActivityRow> for details.
+      aria-activedescendant={android ? undefined : activeDescendantId}
+      aria-label={transcriptAriaLabel}
+      className={classNames(
+        'webchat__basic-transcript',
+        basicTranscriptStyleSet + '',
+        rootClassName,
+        (className || '') + ''
+      )}
+      dir={direction}
+      onFocus={handleFocus}
+      onKeyDown={handleTranscriptKeyDown}
+      onKeyDownCapture={handleTranscriptKeyDownCapture}
+      ref={callbackRef}
+      // "aria-activedescendant" will only works with a number of roles and it must be explicitly set.
+      // https://www.w3.org/TR/wai-aria/#aria-activedescendant
+      role="group"
+      // For up/down arrow key navigation across activities, this component must be included in the tab sequence.
+      // Otherwise, "aria-activedescendant" will not be narrated when the user press up/down arrow keys.
+      // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant
+      tabIndex={0}
+    >
+      <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
+      {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
+      <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>
+        {renderedActivities}
+      </InternalTranscriptScrollable>
+      {hasAnyChild && (
+        <Fragment>
+          <FocusRedirector redirectRef={rootElementRef} />
+          <div
+            aria-labelledby={terminatorLabelId}
+            className="webchat__basic-transcript__terminator"
+            ref={terminatorRef}
+            role="note"
+            tabIndex={0}
+          >
+            <div className="webchat__basic-transcript__terminator-body">
+              {/* `id` is required for `aria-labelledby` */}
+              {/* eslint-disable-next-line react/forbid-dom-props */}
+              <div className="webchat__basic-transcript__terminator-text" id={terminatorLabelId}>
+                {terminatorText}
               </div>
             </div>
-          </Fragment>
-        )}
-        <div className="webchat__basic-transcript__focus-indicator" />
-      </div>
-    );
-  }
-);
+          </div>
+        </Fragment>
+      )}
+      <div className="webchat__basic-transcript__focus-indicator" />
+    </div>
+  );
+});
 
 InternalTranscript.displayName = 'InternalTranscript';
 
@@ -479,7 +474,7 @@ type InternalTranscriptScrollableProps = Readonly<{
 }>;
 
 // Separating high-frequency hooks to improve performance.
-const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({ children, onFocusFiller }) => {
+const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTranscriptScrollableProps) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
   const [sticky]: [boolean] = useSticky();
   const localize = useLocalizer();
@@ -643,7 +638,7 @@ type BasicTranscriptProps = Readonly<{
   className: string;
 }>;
 
-const BasicTranscript: FC<BasicTranscriptProps> = ({ className = '' }) => {
+const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
   const activityElementMapRef = useRef<ActivityElementMap>(new Map());
   const containerRef = useRef<HTMLDivElement>();
 
@@ -663,11 +658,7 @@ const BasicTranscript: FC<BasicTranscriptProps> = ({ className = '' }) => {
             <ScrollToEndButton terminatorRef={terminatorRef} />
           </ChatHistoryToolbar>
           <RenderingElementsComposer activityElementMapRef={activityElementMapRef} grouping="">
-            <InternalTranscript
-              activityElementMapRef={activityElementMapRef}
-              ref={containerRef}
-              terminatorRef={terminatorRef}
-            />
+            <InternalTranscript ref={containerRef} terminatorRef={terminatorRef} />
           </RenderingElementsComposer>
         </ReactScrollToBottomComposer>
       </TranscriptFocusComposer>
