@@ -22,31 +22,30 @@ const renderingElementsComposerPropsSchema = pipe(
   readonly()
 );
 
+type ActivityWithRenderer = {
+  activity: WebChatActivity;
+  renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
+};
+
 type RenderingElementsComposerProps = InferOutput<typeof renderingElementsComposerPropsSchema>;
+
+function validateAllEntriesTagged<T>(entries: readonly T[], bins: readonly (readonly T[])[]): boolean {
+  return entries.every(entry => bins.some(bin => bin.includes(entry)));
+}
 
 const RenderingElementsComposer = (props: RenderingElementsComposerProps) => {
   const { activityElementMapRef, children, grouping } = parse(renderingElementsComposerPropsSchema, props);
 
+  const [activities] = useActivities();
+  const createActivityRenderer: ActivityComponentFactory = useCreateActivityRenderer();
   const getKeyByActivity = useGetKeyByActivity();
   const groupActivities = useGroupActivities();
 
-  type ActivityWithRenderer = {
-    activity: WebChatActivity;
-    renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
-  };
-
-  const [activities] = useActivities();
-
-  const createActivityRenderer: ActivityComponentFactory = useCreateActivityRenderer();
   const entries = useActivitiesWithRenderer(activities, createActivityRenderer);
   const entryMap: Map<WebChatActivity, ActivityWithRenderer> = useMemo(
     () => new Map(entries.map(entry => [entry.activity, entry])),
     [entries]
   );
-
-  function validateAllEntriesTagged<T>(entries: readonly T[], bins: readonly (readonly T[])[]): boolean {
-    return entries.every(entry => bins.some(bin => bin.includes(entry)));
-  }
 
   const { entriesBySender, entriesByStatus } = useMemo<{
     entriesBySender: readonly (readonly ActivityWithRenderer[])[];
