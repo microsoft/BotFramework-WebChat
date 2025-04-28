@@ -135,8 +135,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       [ref, rootElementRef]
     );
 
-    // const [renderingElements] = useRenderingElements();
-    const [treeNode] = useRenderedActivities();
+    const [renderedActivities] = useRenderedActivities();
     const [numRenderingActivities] = useNumRenderingActivities();
 
     const scrollToBottomScrollTo: (scrollTop: number, options?: ScrollToOptions) => void = useScrollTo();
@@ -443,7 +442,9 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       >
         <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
         {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
-        <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>{treeNode}</InternalTranscriptScrollable>
+        <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>
+          {renderedActivities}
+        </InternalTranscriptScrollable>
         {hasAnyChild && (
           <Fragment>
             <FocusRedirector redirectRef={rootElementRef} />

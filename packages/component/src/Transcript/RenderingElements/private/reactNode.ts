@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { custom, type CustomIssue, type CustomSchema, type ErrorMessage } from 'valibot';
 
 function reactNode(): CustomSchema<ReactNode, undefined>;
