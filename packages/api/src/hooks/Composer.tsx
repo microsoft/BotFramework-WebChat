@@ -173,6 +173,7 @@ function createCardActionContext({
   };
 }
 
+// TODO: Separate into its own <GroupActivitiesComposer>.
 function createGroupActivitiesContext({
   groupActivitiesMiddleware,
   groupTimestamp,
