@@ -86,14 +86,15 @@
         await pageConditions.became(
           'feedback form is open',
           () => document.activeElement === pageElements.byTestId('feedback sendbox'),
-          20000
+          1000
         );
 
         await host.snapshot('local');
 
         await host.sendKeys('Test feedback');
+
         const { activity } = await directLine.actPostActivity(async () => {
-          await host.sendTab(1);
+          await host.sendTab(2);
           await host.sendKeys('ENTER');
         });
 
