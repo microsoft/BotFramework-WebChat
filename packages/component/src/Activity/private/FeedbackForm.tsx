@@ -108,11 +108,7 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
           value={userFeedback}
         />
         {disclaimer && (
-          <span
-            className={classNames('webchat__feedback-form__caption1', feedbackForm + '')}
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={disclaimerHtml}
-          />
+          {disclaimerNode}
         )}
         <div className={classNames('webchat__feedback-form__container', feedbackForm + '')}>
           <button className={classNames('webchat__feedback-form__button__submit', feedbackForm + '')} type="submit">
