@@ -26,9 +26,21 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
   const postActivity = usePostActivity();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
 
-  const disclaimerHtml = {
-    __html: disclaimer ? renderMarkdownAsHTML(disclaimer) : undefined
-  };
+  const disclaimerNode = useMemo(
+    () =>
+      disclaimer ? (
+        renderMarkdownAsHTML ? (
+          <span
+            className={classNames('webchat__feedback-form__caption1', feedbackForm + '')}
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: renderMarkdownAsHTML(disclaimer) }}
+          />
+        ) : (
+          <span className={classNames('webchat__feedback-form__caption1', feedbackForm + '')}>{disclaimer}</span>
+        )
+      ) : undefined,
+    [disclaimer, feedbackForm, renderMarkdownAsHTML]
+  );
 
   const handleReset = useCallback(
     (wasFeedbackSubmitted: boolean) => {
