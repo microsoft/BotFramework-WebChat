@@ -216,7 +216,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 # Removed
 
 - Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
-- Deleted `ActivitListenerComposer` composer and `useUpsertedActivities` hook in PR [#5467](https://github.com/microsoft/BotFramework-WebChat/pull/5467) by [@pranavjoshi001](https://github.com/pranavjoshi001)
+- Removed `ActivitListenerComposer` composer and `useUpsertedActivities` hook in PR [#5467](https://github.com/microsoft/BotFramework-WebChat/pull/5467) by [@pranavjoshi001](https://github.com/pranavjoshi001)
 
 ## [4.18.0] - 2024-07-10
 
