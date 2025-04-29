@@ -49,9 +49,10 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
         }
       } as any);
 
-      handleReset();
+      setUserFeedback('');
+      setHasFocus(false);
     },
-    [feedbackType, handleReset, postActivity, replyToId, userFeedback]
+    [feedbackType, postActivity, replyToId, userFeedback]
   );
 
   const handleChange: FormEventHandler<HTMLTextAreaElement> = useCallback(
