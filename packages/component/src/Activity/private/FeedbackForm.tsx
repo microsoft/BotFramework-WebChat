@@ -11,7 +11,7 @@ const { useLocalizer, usePostActivity } = hooks;
 type FeedbackFormProps = Readonly<{
   disclaimer?: string;
   feedbackType: string;
-  onReset: () => void;
+  onReset: (wasFeedbackSubmitted: boolean) => void;
   replyToId?: string;
 }>;
 
@@ -24,13 +24,18 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
   const onResetRef = useRefFrom(onReset);
   const postActivity = usePostActivity();
 
-  const handleReset = useCallback(() => {
-    setUserFeedback('');
+  const handleReset = useCallback(
+    (wasFeedbackSubmitted: boolean) => {
+      setUserFeedback('');
+      setHasFocus(false);
+      onResetRef.current(wasFeedbackSubmitted);
+    },
+    [onResetRef, setHasFocus, setUserFeedback]
+  );
 
-    onResetRef.current();
-
-    setHasFocus(false);
-  }, [onResetRef, setHasFocus, setUserFeedback]);
+  const handleCancel = useCallback(() => {
+    handleReset(false);
+  }, [handleReset]);
 
   const handleSubmit = useCallback(
     event => {
@@ -49,10 +54,9 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
         }
       } as any);
 
-      setUserFeedback('');
-      setHasFocus(false);
+      handleReset(true);
     },
-    [feedbackType, postActivity, replyToId, userFeedback]
+    [feedbackType, handleReset, postActivity, replyToId, userFeedback]
   );
 
   const handleChange: FormEventHandler<HTMLTextAreaElement> = useCallback(
@@ -94,7 +98,7 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
           </button>
           <button
             className={classNames('webchat__feedback-form__button__cancel', feedbackForm + '')}
-            onClick={handleReset}
+            onClick={handleCancel}
             type="button"
           >
             {localize('FEEDBACK_FORM_CANCEL_BUTTON_LABEL')}

@@ -5,8 +5,7 @@ const testIds = {
   sendBoxTextBox: 'send box text area',
   typingIndicator: 'typing indicator',
   viewCodeButton: 'view code button',
-  feedbackSendBox: 'feedback sendbox',
-  thumbButtonTooltip: 'thumb button tooltip'
+  feedbackSendBox: 'feedback sendbox'
 };
 
 export default testIds;

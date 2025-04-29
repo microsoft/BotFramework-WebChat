@@ -6,7 +6,6 @@ import { useRefFrom } from 'use-ref-from';
 import ThumbButtonImage from './ThumbButton.Image';
 import useStyleSet from '../../hooks/useStyleSet';
 import { Tooltip } from '../../Tooltip';
-import testIds from '../../testIds';
 
 const { useLocalizer } = hooks;
 
@@ -58,7 +57,7 @@ const ThumbButton = memo(({ className, direction, disabled, onClick, pressed, ti
         direction={direction}
         filled={true}
       />
-      <Tooltip dataTestId={testIds.thumbButtonTooltip}>{buttonTitle}</Tooltip>
+      <Tooltip>{buttonTitle}</Tooltip>
     </button>
   );
 });

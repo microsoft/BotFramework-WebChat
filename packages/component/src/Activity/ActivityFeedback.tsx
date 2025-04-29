@@ -46,6 +46,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   const [{ feedbackForm }] = useStyleSet();
 
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
 
   const isFeedbackLoopSupported = hasFeedbackLoop(activity);
 
@@ -83,7 +84,15 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     [selectedAction, setSelectedAction]
   );
 
-  const handleFeedbackFormReset = useCallback(() => setSelectedAction(undefined), [setSelectedAction]);
+  const handleFeedbackFormReset = useCallback(
+    (wasFeedbackSubmitted: boolean) => {
+      if (!wasFeedbackSubmitted) {
+        setSelectedAction(undefined);
+      }
+      setFeedbackSubmitted(wasFeedbackSubmitted);
+    },
+    [setFeedbackSubmitted, setSelectedAction]
+  );
 
   const FeedbackComponent = useMemo(
     () => (
@@ -118,7 +127,8 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
         <div className={classNames('webchat__feedback-form__root-container__child', feedbackForm + '')}>
           {FeedbackComponent}
         </div>
-        {selectedAction && selectedAction['@type'] && FeedbackFormComponent}
+        {/* Hide feedback form if feedback has already been submitted */}
+        {!feedbackSubmitted && selectedAction && selectedAction['@type'] && FeedbackFormComponent}
       </div>
     );
   }
