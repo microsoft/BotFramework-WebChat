@@ -5,6 +5,7 @@ import { useRefFrom } from 'use-ref-from';
 import useStyleSet from '../../hooks/useStyleSet';
 import testIds from '../../testIds';
 import TextArea from './FeedbackTextArea';
+import { useRenderMarkdownAsHTML } from '../../hooks';
 
 const { useLocalizer, usePostActivity } = hooks;
 
@@ -23,6 +24,11 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
   const localize = useLocalizer();
   const onResetRef = useRefFrom(onReset);
   const postActivity = usePostActivity();
+  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
+
+  const disclaimerHtml = {
+    __html: disclaimer ? renderMarkdownAsHTML(disclaimer) : undefined
+  };
 
   const handleReset = useCallback(
     (wasFeedbackSubmitted: boolean) => {
@@ -90,7 +96,11 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
           value={userFeedback}
         />
         {disclaimer && (
-          <span className={classNames('webchat__feedback-form__caption1', feedbackForm + '')}>{disclaimer}</span>
+          <span
+            className={classNames('webchat__feedback-form__caption1', feedbackForm + '')}
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={disclaimerHtml}
+          />
         )}
         <div className={classNames('webchat__feedback-form__container', feedbackForm + '')}>
           <button className={classNames('webchat__feedback-form__button__submit', feedbackForm + '')} type="submit">

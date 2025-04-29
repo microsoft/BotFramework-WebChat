@@ -47,7 +47,7 @@
           channelData: {
             feedbackLoop: {
               type: 'default',
-              disclaimer: 'This is a test disclaimer message with **bold** text',
+              disclaimer: 'This is a test disclaimer message with **bold** text and a [link](https://microsoft.com)'
             }
           }
         });
@@ -67,7 +67,6 @@
         );
 
         await host.snapshot('local');
-        
       });
     </script>
   </body>
