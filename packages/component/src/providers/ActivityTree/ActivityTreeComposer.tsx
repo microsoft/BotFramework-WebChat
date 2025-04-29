@@ -3,9 +3,9 @@ import type { WebChatActivity } from 'botframework-webchat-core';
 import React, { useMemo, type ReactNode } from 'react';
 
 import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';
+import useInternalActivitiesWithRenderer from './private/useInternalActivitiesWithRenderer';
 import ActivityTreeContext from './private/Context';
 import { ActivityWithRenderer, ReadonlyActivityTree } from './private/types';
-import useActivitiesWithRenderer from './private/useActivitiesWithRenderer';
 import useActivityTreeWithRenderer from './private/useActivityTreeWithRenderer';
 import useActivityTreeContext from './private/useContext';
 
@@ -27,6 +27,8 @@ const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
   const getKeyByActivity = useGetKeyByActivity();
   const activityKeys = useActivityKeys();
 
+  // TODO: Should move this logic into a new <LivestreamGrouping>.
+  //       The grouping would only show the latest one but it has access to previous.
   const activities = useMemo<readonly WebChatActivity[]>(() => {
     const activities: WebChatActivity[] = [];
 
@@ -50,7 +52,7 @@ const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
 
   const createActivityRenderer: ActivityComponentFactory = useCreateActivityRenderer();
 
-  const activitiesWithRenderer = useActivitiesWithRenderer(activities, createActivityRenderer);
+  const activitiesWithRenderer = useInternalActivitiesWithRenderer(activities, createActivityRenderer);
 
   const activityTreeWithRenderer = useActivityTreeWithRenderer(activitiesWithRenderer);
 
@@ -82,12 +84,13 @@ const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
 
   const contextValue: ActivityTreeContextType = useMemo(
     () => ({
+      activitiesWithRenderer,
       activityTreeWithRendererState: Object.freeze([activityTreeWithRenderer]) as readonly [ReadonlyActivityTree],
       flattenedActivityTreeWithRendererState: Object.freeze([flattenedActivityTreeWithRenderer]) as readonly [
         readonly ActivityWithRenderer[]
       ]
     }),
-    [activityTreeWithRenderer, flattenedActivityTreeWithRenderer]
+    [activitiesWithRenderer, activityTreeWithRenderer, flattenedActivityTreeWithRenderer]
   );
 
   return <ActivityTreeContext.Provider value={contextValue}>{children}</ActivityTreeContext.Provider>;

@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { any, array, minLength, object, optional, parse, pipe, readonly, transform, type InferOutput } from 'valibot';
 import reactNode from '../../private/reactNode';
 import SenderGroupingContext, { type SenderGroupingContextType } from './private/SenderGroupingContext';
@@ -55,5 +55,5 @@ const SenderGrouping = (props: SenderGroupingProps) => {
 
 SenderGrouping.displayName = 'SenderGrouping';
 
-export default SenderGrouping;
+export default memo(SenderGrouping);
 export { type SenderGroupingProps };

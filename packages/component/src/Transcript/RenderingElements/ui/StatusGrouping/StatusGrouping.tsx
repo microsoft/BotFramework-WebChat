@@ -1,5 +1,5 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { useMemo, type ReactNode } from 'react';
+import React, { memo, useMemo, type ReactNode } from 'react';
 import StatusGroupingContext, { type StatusGroupingContextType } from './private/StatusGroupingContext';
 
 type StatusGroupingProps = Readonly<{
@@ -31,5 +31,5 @@ const StatusGrouping = ({ activities, children }: StatusGroupingProps) => {
 
 StatusGrouping.displayName = 'StatusGrouping';
 
-export default StatusGrouping;
+export default memo(StatusGrouping);
 export { type StatusGroupingProps };
