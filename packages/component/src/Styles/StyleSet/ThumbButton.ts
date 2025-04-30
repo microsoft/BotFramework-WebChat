@@ -31,15 +31,12 @@ export default function () {
         },
         '&:hover, &:active, &.webchat__thumb-button--is-pressed': {
           background: 'transparent',
-          color: CSSTokens.ColorAccent,
-          '&:is(:hover, :focus-visible, :active) > .webchat__tooltip': {
-            visibility: 'visible'
-          }
+          color: CSSTokens.ColorAccent
         },
         '&[aria-disabled="true"]': {
           color: CSSTokens.ColorSubtle,
           ':not(.webchat__thumb-button--is-pressed):is(:hover, :focus-visible, :active) > .webchat__tooltip': {
-            visibility: 'hidden'
+            display: 'none'
           }
         }
       },
