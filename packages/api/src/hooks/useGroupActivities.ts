@@ -30,7 +30,7 @@ export default function useGroupActivities(
     return ({ activities }) => {
       const result = groupActivities({ activities });
 
-      return new Map<'sender' | 'status' | string, GroupedActivities>(Object.entries(result));
+      return new Map<'sender' | 'status' | string, GroupedActivities>(Object.entries(result || {}));
     };
   }
 
