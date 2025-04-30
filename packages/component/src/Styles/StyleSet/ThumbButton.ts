@@ -29,13 +29,12 @@ export default function () {
           height: '1em',
           width: '1em'
         },
-
-        '&:hover, &:active, &.webchat__thumb-button--is-pressed': {
+        '&:hover, &:active, &.webchat__thumb-button--is-pressed, .webchat__thumb-button--is-submitted': {
           background: 'transparent',
           color: CSSTokens.ColorAccent
         },
 
-        '&[aria-disabled="true"]': {
+        ':not(.webchat__thumb-button--is-submitted)[aria-disabled="true"]': {
           color: CSSTokens.ColorSubtle
         }
       },

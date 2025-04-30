@@ -1,11 +1,11 @@
+import React, { memo, useCallback, useEffect, useRef, useState, type FormEventHandler } from 'react';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { memo, useCallback, useEffect, useRef, useState, type FormEventHandler } from 'react';
+import FeedbackFormDisclaimer from './FeedbackFormDisclaimer';
 import { useRefFrom } from 'use-ref-from';
 import useStyleSet from '../../hooks/useStyleSet';
 import testIds from '../../testIds';
 import TextArea from './FeedbackTextArea';
-import { useRenderMarkdownAsHTML } from '../../hooks';
 
 const { useLocalizer, usePostActivity } = hooks;
 
@@ -24,23 +24,6 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
   const localize = useLocalizer();
   const onResetRef = useRefFrom(onReset);
   const postActivity = usePostActivity();
-  const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
-
-  const disclaimerNode = useMemo(
-    () =>
-      disclaimer ? (
-        renderMarkdownAsHTML ? (
-          <span
-            className={classNames('webchat__feedback-form__caption1', feedbackForm + '')}
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: renderMarkdownAsHTML(disclaimer) }}
-          />
-        ) : (
-          <span className={classNames('webchat__feedback-form__caption1', feedbackForm + '')}>{disclaimer}</span>
-        )
-      ) : undefined,
-    [disclaimer, feedbackForm, renderMarkdownAsHTML]
-  );
 
   const handleReset = useCallback(
     (wasFeedbackSubmitted: boolean) => {
@@ -107,9 +90,7 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
           startRows={3}
           value={userFeedback}
         />
-        {disclaimer && (
-          {disclaimerNode}
-        )}
+        {disclaimer && <FeedbackFormDisclaimer disclaimer={disclaimer} />}
         <div className={classNames('webchat__feedback-form__container', feedbackForm + '')}>
           <button className={classNames('webchat__feedback-form__button__submit', feedbackForm + '')} type="submit">
             {localize('FEEDBACK_FORM_SUBMIT_BUTTON_LABEL')}

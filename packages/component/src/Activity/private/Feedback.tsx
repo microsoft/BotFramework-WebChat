@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import classNames from 'classnames';
 import { type OrgSchemaAction } from 'botframework-webchat-core';
 import React, { Fragment, memo, useEffect, useMemo, type PropsWithChildren } from 'react';
 import { useRefFrom } from 'use-ref-from';
@@ -61,7 +62,9 @@ const Feedback = memo(({ actions, className, isFeedbackFormSupported, onActionCl
       {[...actions].map((action, index) => (
         <FeedbackVoteButton
           action={action}
-          className={className}
+          className={classNames(className, {
+            'webchat__thumb-button--is-submitted': action['@type'] === 'CompletedActionStatus'
+          })}
           key={action['@id'] || index}
           onClick={onActionClick}
           pressed={

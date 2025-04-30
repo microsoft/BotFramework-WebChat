@@ -90,8 +90,13 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
         setSelectedAction(undefined);
       }
       setFeedbackSubmitted(wasFeedbackSubmitted);
+      setSelectedAction(
+        Object.assign({}, selectedAction, {
+          actionStatus: 'CompletedActionStatus'
+        })
+      );
     },
-    [setFeedbackSubmitted, setSelectedAction]
+    [selectedAction, setFeedbackSubmitted, setSelectedAction]
   );
 
   const FeedbackComponent = useMemo(
