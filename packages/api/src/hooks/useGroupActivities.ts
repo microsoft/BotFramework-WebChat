@@ -4,7 +4,7 @@ import useWebChatAPIContext from './internal/useWebChatAPIContext';
 
 type GroupedActivities = readonly (readonly WebChatActivity[])[];
 
-type GroupedActivitiesAsMap = Map<'sender' | 'status' | string, GroupedActivities>;
+type GroupedActivitiesAsMap = Map<string, GroupedActivities>;
 type GroupedActivitiesAsObject = Readonly<{
   sender: GroupedActivities;
   status: GroupedActivities;
@@ -30,7 +30,7 @@ export default function useGroupActivities(
     return ({ activities }) => {
       const result = groupActivities({ activities });
 
-      return new Map<'sender' | 'status' | string, GroupedActivities>(Object.entries(result || {}));
+      return new Map<string, GroupedActivities>(Object.entries(result || {}));
     };
   }
 
