@@ -29,6 +29,7 @@ export default function () {
           height: '1em',
           width: '1em'
         },
+
         '&:hover, &:active, &.webchat__thumb-button--is-pressed': {
           background: 'transparent',
           color: CSSTokens.ColorAccent
