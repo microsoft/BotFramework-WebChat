@@ -108,14 +108,22 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
       <Feedback
         actions={feedbackActions}
         className={classNames({
-          'webchat__thumb-button--large': feedbackActionsPlacement === 'activity-actions'
+          'webchat__thumb-button--large': feedbackActionsPlacement === 'activity-actions',
+          'webchat__tooltip__long--block-start': feedbackSubmitted
         })}
         isFeedbackFormSupported={isFeedbackLoopSupported}
         onActionClick={handleFeedbackActionClick}
         selectedAction={selectedAction}
       />
     ),
-    [feedbackActions, feedbackActionsPlacement, handleFeedbackActionClick, isFeedbackLoopSupported, selectedAction]
+    [
+      feedbackActions,
+      feedbackActionsPlacement,
+      feedbackSubmitted,
+      handleFeedbackActionClick,
+      isFeedbackLoopSupported,
+      selectedAction
+    ]
   );
 
   const FeedbackFormComponent = useMemo(
