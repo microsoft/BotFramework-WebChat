@@ -47,14 +47,13 @@ const Feedback = memo(({ actions, className, isFeedbackFormSupported, onActionCl
 
   const actionProps = useMemo(
     () =>
-      [...actions].some(action => action.actionStatus === 'CompletedActionStatus') ||
-      selectedAction?.actionStatus === 'CompletedActionStatus'
+      [...actions].some(action => action.actionStatus === 'CompletedActionStatus')
         ? {
             disabled: true,
             title: localize('VOTE_COMPLETE_ALT')
           }
         : undefined,
-    [actions, localize, selectedAction]
+    [actions, localize]
   );
 
   return (

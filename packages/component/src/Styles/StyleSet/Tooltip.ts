@@ -45,17 +45,22 @@ export default () => ({
     '&.webchat__tooltip--block-start': {
       insetBlockEnd: 'calc(100% + 7px)',
       insetInlineStart: '50%',
-      transform: 'translate(-20%, 0)',
-
+      transform: 'translate(-50%, 0)',
       '&::after': {
         border: '1px solid var(--webchat__tooltip-background)',
         borderBottomLeftRadius: '2px',
         clipPath: 'polygon(0% 0%, 100% 100%, 0% 100%)',
         height: 'var(--webchat__tooltip-tip-size)',
         insetBlockStart: 'calc(100% - 6px)',
-        insetInlineStart: 'calc(20% - var(--webchat__tooltip-tip-size) / 2)',
+        insetInlineStart: 'calc(50% - var(--webchat__tooltip-tip-size) / 2)',
         transform: 'rotate(-45deg)',
         width: 'var(--webchat__tooltip-tip-size)'
+      }
+    },
+    '&.webchat__tooltip__long--block-start': {
+      transform: 'translate(-20%, 0)',
+      '&::after': {
+        insetInlineStart: 'calc(20% - var(--webchat__tooltip-tip-size) / 2)'
       }
     }
   }

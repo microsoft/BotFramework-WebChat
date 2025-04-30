@@ -57,7 +57,9 @@ const ThumbButton = memo(({ className, direction, disabled, onClick, pressed, ti
         direction={direction}
         filled={true}
       />
-      <Tooltip>{buttonTitle}</Tooltip>
+      <Tooltip className={buttonTitle === title ? 'webchat__tooltip__long--block-start' : undefined}>
+        {buttonTitle}
+      </Tooltip>
     </button>
   );
 });

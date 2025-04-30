@@ -84,7 +84,9 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
       // Intentionally left blank.
     }
     return Object.freeze(new Set([] as OrgSchemaAction[]));
-  }, [feedbackSubmitted, graph, messageThing?.potentialAction, selectedAction]);
+    // Do not want to add selectedAction to the dependency array as it will cause an infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [feedbackSubmitted, graph, messageThing?.potentialAction]);
 
   const handleFeedbackActionClick = useCallback(
     (action: OrgSchemaAction) => setSelectedAction(action === selectedAction ? undefined : action),
