@@ -163,6 +163,7 @@
     "react-redux": "7.2.9",
     "react-say": "2.1.0",
     "react-scroll-to-bottom": "4.2.1-main.53844f5",
+    "react-wrap-with": "^0.2.0-main.62328fb",
     "redux": "5.0.1",
     "simple-update-in": "2.2.0",
     "use-propagate": "0.2.1",

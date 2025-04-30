@@ -12,6 +12,7 @@ import {
   useScrollToEnd,
   useSticky
 } from 'react-scroll-to-bottom';
+import { wrapWith } from 'react-wrap-with';
 
 import { type KeyboardEventHandler, type MutableRefObject, type ReactNode } from 'react';
 import { type ActivityElementMap } from './Transcript/types';
@@ -22,9 +23,10 @@ import ChatHistoryToolbar from './ChatHistory/ChatHistoryToolbar';
 import ScrollToEndButton from './ChatHistory/private/ScrollToEndButton';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
 import RenderingElementsComposer from './Transcript/RenderingElements/RenderingElementsComposer';
-import useActivityElementMapRef from './Transcript/RenderingElements/useActivityElementRef';
 import useNumRenderingActivities from './Transcript/RenderingElements/useNumRenderingActivities';
 import useRenderedActivities from './Transcript/RenderingElements/useRenderedActivities';
+import TranscriptDOMComposer from './Transcript/providers/TranscriptDOM/TranscriptDOMComposer';
+import useActivityElementMapRef from './Transcript/providers/TranscriptDOM/useActivityElementRef';
 import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import { android } from './Utils/detectBrowser';
@@ -640,7 +642,7 @@ type BasicTranscriptProps = Readonly<{
 }>;
 
 const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
-  const activityElementMapRef = useRef<ActivityElementMap>(new Map());
+  const activityElementMapRef = useActivityElementMapRef();
   const containerRef = useRef<HTMLDivElement>();
 
   const [nonce] = useNonce();
@@ -659,7 +661,7 @@ const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
             <ChatHistoryToolbar>
               <ScrollToEndButton terminatorRef={terminatorRef} />
             </ChatHistoryToolbar>
-            <RenderingElementsComposer activityElementMapRef={activityElementMapRef} grouping="">
+            <RenderingElementsComposer grouping="">
               <InternalTranscript ref={containerRef} terminatorRef={terminatorRef} />
             </RenderingElementsComposer>
           </ReactScrollToBottomComposer>
@@ -669,4 +671,5 @@ const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
   );
 };
 
-export default memo(BasicTranscript);
+export default wrapWith(TranscriptDOMComposer)(memo(BasicTranscript));
+export { type BasicTranscriptProps };

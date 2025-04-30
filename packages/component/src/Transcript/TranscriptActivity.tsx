@@ -8,17 +8,16 @@ import useLastActivityInSenderGroup from './RenderingElements/ui/SenderGrouping/
 import useRenderAvatar from './RenderingElements/ui/SenderGrouping/useRenderAvatar';
 import useFirstActivityInStatusGroup from './RenderingElements/ui/StatusGrouping/useFirstActivity';
 import useLastActivityInStatusGroup from './RenderingElements/ui/StatusGrouping/useLastActivity';
-import useActivityElementMapRef from './RenderingElements/useActivityElementRef';
+import useActivityElementMapRef from './providers/TranscriptDOM/useActivityElementRef';
 
 const { useCreateActivityStatusRenderer, useGetKeyByActivity, useStyleOptions } = hooks;
 
-function TranscriptActivity({
-  activity,
-  renderActivity
-}: Readonly<{
+type TranscriptActivityProps = Readonly<{
   activity: WebChatActivity;
   renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
-}>) {
+}>;
+
+const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProps) => {
   const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
   const activityElementMapRef = useActivityElementMapRef();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
@@ -88,6 +87,7 @@ function TranscriptActivity({
       {children}
     </ActivityRow>
   );
-}
+};
 
 export default memo(TranscriptActivity);
+export { type TranscriptActivityProps };

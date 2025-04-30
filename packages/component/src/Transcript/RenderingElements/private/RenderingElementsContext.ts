@@ -1,7 +1,6 @@
-import { createContext, type MutableRefObject, type ReactNode } from 'react';
+import { createContext, type ReactNode } from 'react';
 
 type RenderingElementsContextType = Readonly<{
-  activityElementMapRef: MutableRefObject<Map<string, HTMLElement>>;
   grouping: string;
   numRenderingActivitiesState: readonly [number];
   renderedActivitiesState: readonly [ReactNode];

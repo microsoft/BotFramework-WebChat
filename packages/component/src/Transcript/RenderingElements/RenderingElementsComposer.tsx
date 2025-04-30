@@ -1,11 +1,10 @@
 import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
-import { instance, map, object, optional, parse, pipe, readonly, string, type InferOutput } from 'valibot';
+import { object, optional, parse, pipe, readonly, string, type InferOutput } from 'valibot';
 import useActivitiesWithRenderer from '../../providers/ActivityTree/useActivitiesWithRenderer';
 import TranscriptActivity from '../TranscriptActivity';
 import group from './private/group';
-import mutableRefObject from './private/mutableRefObject';
 import reactNode from './private/reactNode';
 import RenderingElementsContext, { type RenderingElementsContextType } from './private/RenderingElementsContext';
 import SenderGrouping from './ui/SenderGrouping/SenderGrouping';
@@ -15,7 +14,6 @@ const { useGetKeyByActivity, useGroupActivities } = hooks;
 
 const renderingElementsComposerPropsSchema = pipe(
   object({
-    activityElementMapRef: mutableRefObject(map(string(), instance(HTMLElement))),
     children: optional(reactNode()),
     grouping: string()
   }),
@@ -34,7 +32,7 @@ function validateAllEntriesTagged<T>(entries: readonly T[], bins: readonly (read
 }
 
 const RenderingElementsComposer = (props: RenderingElementsComposerProps) => {
-  const { activityElementMapRef, children, grouping } = parse(renderingElementsComposerPropsSchema, props);
+  const { children, grouping } = parse(renderingElementsComposerPropsSchema, props);
 
   const getKeyByActivity = useGetKeyByActivity();
   const groupActivities = useGroupActivities();
@@ -115,12 +113,11 @@ const RenderingElementsComposer = (props: RenderingElementsComposerProps) => {
   const context = useMemo<RenderingElementsContextType>(
     () =>
       Object.freeze({
-        activityElementMapRef,
         grouping,
         numRenderingActivitiesState,
         renderedActivitiesState
       }),
-    [activityElementMapRef, grouping, numRenderingActivitiesState, renderedActivitiesState]
+    [grouping, numRenderingActivitiesState, renderedActivitiesState]
   );
 
   return <RenderingElementsContext.Provider value={context}>{children}</RenderingElementsContext.Provider>;
@@ -129,5 +126,4 @@ const RenderingElementsComposer = (props: RenderingElementsComposerProps) => {
 RenderingElementsComposer.displayName = 'RenderingElementsComposer';
 
 export default memo(RenderingElementsComposer);
-
 export { type RenderingElementsComposerProps };
