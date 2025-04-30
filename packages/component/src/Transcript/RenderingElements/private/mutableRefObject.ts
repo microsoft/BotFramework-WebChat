@@ -1,5 +1,9 @@
 import {
+  any,
+  check,
   object,
+  pipe,
+  safeParse,
   type BaseIssue,
   type BaseSchema,
   type ErrorMessage,
@@ -19,8 +23,11 @@ function mutableRefObject<
 function mutableRefObject<
   TInput extends BaseSchema<unknown, unknown, BaseIssue<unknown>>,
   const TMessage extends ErrorMessage<ObjectIssue> | undefined
->(baseSchema: TInput, message?: TMessage): ObjectSchema<{ current: TInput }, TMessage> {
-  return object({ current: baseSchema }, message);
+>(baseSchema: TInput, message?: TMessage): BaseSchema<unknown, { current: TInput }, BaseIssue<unknown>> {
+  return pipe(
+    any(),
+    check(value => safeParse(object({ current: baseSchema }, message), value).success)
+  );
 }
 
 export default mutableRefObject;

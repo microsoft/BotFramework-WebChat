@@ -1,19 +1,16 @@
-import { hooks } from 'botframework-webchat-api';
 import PropTypes from 'prop-types';
 import random from 'math-random';
 import React, { useCallback, useMemo } from 'react';
 
 import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
 import TranscriptFocusContext from './private/Context';
-import useActivityTreeWithRenderer from '../ActivityTree/useActivityTreeWithRenderer';
 import usePrevious from '../../hooks/internal/usePrevious';
 import useStateRef from '../../hooks/internal/useStateRef';
 import useValueRef from '../../hooks/internal/useValueRef';
 
 import type { FC, MutableRefObject, PropsWithChildren } from 'react';
 import type { TranscriptFocusContextType } from './private/Context';
-
-const { useGetKeyByActivity } = hooks;
+import useRenderingActivityKeys from '../ActivityTree/useRenderingActivityKeys';
 
 type TranscriptFocusComposerProps = PropsWithChildren<{
   containerRef: MutableRefObject<HTMLElement>;
@@ -34,9 +31,8 @@ function uniqueId(count = Infinity) {
 }
 
 const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, containerRef }) => {
-  const [flattenedActivityTree] = useActivityTreeWithRenderer({ flat: true });
+  const [renderingActivityKeys] = useRenderingActivityKeys();
   const [_, setRawFocusedActivityKey, rawFocusedActivityKeyRef] = useStateRef<string | undefined>();
-  const getKeyByActivity = useGetKeyByActivity();
 
   // As we need to use IDREF for `aria-activedescendant`,
   // this prefix will differentiate multiple instances of transcript on the same page.
@@ -46,11 +42,6 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
   const getDescendantIdByActivityKey: (activityKey?: string) => string | undefined = useCallback(
     (activityKey?: string) => activityKey && `webchat__transcript-focus-${prefix}__activity-${activityKey}`,
     [prefix]
-  );
-
-  const renderingActivityKeys = useMemo<readonly string[]>(
-    () => Object.freeze(flattenedActivityTree.map(({ activity }) => getKeyByActivity(activity))),
-    [flattenedActivityTree, getKeyByActivity]
   );
 
   const renderingActivityKeysRef = useValueRef<readonly string[]>(renderingActivityKeys);

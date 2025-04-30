@@ -3,11 +3,11 @@ import type { WebChatActivity } from 'botframework-webchat-core';
 import React, { useMemo, type ReactNode } from 'react';
 
 import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';
-import useInternalActivitiesWithRenderer from './private/useInternalActivitiesWithRenderer';
 import ActivityTreeContext from './private/Context';
 import { ActivityWithRenderer, ReadonlyActivityTree } from './private/types';
 import useActivityTreeWithRenderer from './private/useActivityTreeWithRenderer';
 import useActivityTreeContext from './private/useContext';
+import useInternalActivitiesWithRenderer from './private/useInternalActivitiesWithRenderer';
 
 import type { ActivityTreeContextType } from './private/Context';
 
@@ -54,6 +54,16 @@ const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
 
   const activitiesWithRenderer = useInternalActivitiesWithRenderer(activities, createActivityRenderer);
 
+  const renderingActivityKeysState = useMemo<readonly [readonly string[]]>(() => {
+    const keys = Object.freeze(activitiesWithRenderer.map(({ activity }) => getKeyByActivity(activity)));
+
+    if (keys.some(key => !key)) {
+      throw new Error('botframework-webchat: assert activitiesWithRenderer[].activity must have activity key');
+    }
+
+    return Object.freeze([keys] as const);
+  }, [activitiesWithRenderer, getKeyByActivity]);
+
   const activityTreeWithRenderer = useActivityTreeWithRenderer(activitiesWithRenderer);
 
   const flattenedActivityTreeWithRenderer = useMemoWithPrevious<Readonly<ActivityWithRenderer[]>>(
@@ -88,9 +98,10 @@ const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
       activityTreeWithRendererState: Object.freeze([activityTreeWithRenderer]) as readonly [ReadonlyActivityTree],
       flattenedActivityTreeWithRendererState: Object.freeze([flattenedActivityTreeWithRenderer]) as readonly [
         readonly ActivityWithRenderer[]
-      ]
+      ],
+      renderingActivityKeysState
     }),
-    [activitiesWithRenderer, activityTreeWithRenderer, flattenedActivityTreeWithRenderer]
+    [activitiesWithRenderer, activityTreeWithRenderer, flattenedActivityTreeWithRenderer, renderingActivityKeysState]
   );
 
   return <ActivityTreeContext.Provider value={contextValue}>{children}</ActivityTreeContext.Provider>;
