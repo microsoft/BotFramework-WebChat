@@ -29,14 +29,17 @@ export default function () {
           height: '1em',
           width: '1em'
         },
-        '&:hover, &:active, &.webchat__thumb-button--is-pressed, .webchat__thumb-button--is-submitted': {
+        '&:hover, &:active, &.webchat__thumb-button--is-pressed': {
           background: 'transparent',
-          color: CSSTokens.ColorAccent
+          color: CSSTokens.ColorAccent,
+          '&:is(:hover, :focus-visible, :active) > .webchat__tooltip': {
+            visibility: 'visible'
+          }
         },
-
-        ':not(.webchat__thumb-button--is-submitted)[aria-disabled="true"]': {
-          color: CSSTokens.ColorSubtle
-        }
+        ':not(.webchat__thumb-button--is-pressed)[aria-disabled="true"]:is(:hover, :focus-visible, :active) > .webchat__tooltip':
+          {
+            visibility: 'hidden'
+          }
       },
 
       '&:active': {

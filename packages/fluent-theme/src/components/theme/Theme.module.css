@@ -609,7 +609,7 @@
     outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
   }
 
-  :not(.webchat__thumb-button--is-submitted)[aria-disabled='true'] {
+  &[aria-disabled='true'] {
     color: var(--webchat-colorNeutralForegroundDisabled);
   }
 }

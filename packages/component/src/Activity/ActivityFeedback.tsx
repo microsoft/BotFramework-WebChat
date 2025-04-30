@@ -60,9 +60,16 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
 
   const feedbackActions = useMemo<ReadonlySet<OrgSchemaAction>>(() => {
     try {
-      const reactActions = (messageThing?.potentialAction || []).filter(
-        ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
-      );
+      const reactActions = (messageThing?.potentialAction || [])
+        .filter(({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction')
+        .map(action =>
+          Object.assign({}, action, {
+            actionStatus:
+              action['@type'] === selectedAction?.['@type'] && feedbackSubmitted
+                ? 'CompletedActionStatus'
+                : action.actionStatus
+          })
+        );
 
       if (reactActions.length) {
         return Object.freeze(new Set(reactActions));
@@ -77,7 +84,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
       // Intentionally left blank.
     }
     return Object.freeze(new Set([] as OrgSchemaAction[]));
-  }, [graph, messageThing?.potentialAction]);
+  }, [feedbackSubmitted, graph, messageThing?.potentialAction, selectedAction]);
 
   const handleFeedbackActionClick = useCallback(
     (action: OrgSchemaAction) => setSelectedAction(action === selectedAction ? undefined : action),
@@ -90,13 +97,8 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
         setSelectedAction(undefined);
       }
       setFeedbackSubmitted(wasFeedbackSubmitted);
-      setSelectedAction(
-        Object.assign({}, selectedAction, {
-          actionStatus: 'CompletedActionStatus'
-        })
-      );
     },
-    [selectedAction, setFeedbackSubmitted, setSelectedAction]
+    [setFeedbackSubmitted, setSelectedAction]
   );
 
   const FeedbackComponent = useMemo(
