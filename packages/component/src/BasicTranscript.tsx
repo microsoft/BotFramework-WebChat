@@ -28,6 +28,7 @@ import BasicTypingIndicator from './BasicTypingIndicator';
 import ChatHistoryBox from './ChatHistory/ChatHistoryBox';
 import ChatHistoryToolbar from './ChatHistory/ChatHistoryToolbar';
 import ScrollToEndButton from './ChatHistory/private/ScrollToEndButton';
+import ActivitiesWithGroupContainer from './Transcript/ActivitiesWithGroupContainer';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
 import { type ActivityElementMap } from './Transcript/types';
 import FocusRedirector from './Utils/FocusRedirector';
@@ -54,7 +55,6 @@ import ChatHistoryDOMComposer from './providers/ChatHistoryDOM/ChatHistoryDOMCom
 import useActivityElementMapRef from './providers/ChatHistoryDOM/useActivityElementRef';
 import GroupedRenderingActivitiesComposer from './providers/GroupedRenderingActivities/GroupedRenderingActivitiesComposer';
 import useNumRenderingActivities from './providers/GroupedRenderingActivities/useNumRenderingActivities';
-import useRenderedActivities from './providers/GroupedRenderingActivities/useRenderedActivities';
 import RenderingActivitiesComposer from './providers/RenderingActivities/RenderingActivitiesComposer';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
@@ -146,7 +146,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>((
     [ref, rootElementRef]
   );
 
-  const [renderedActivities] = useRenderedActivities();
   const [numRenderingActivities] = useNumRenderingActivities();
 
   const scrollToBottomScrollTo: (scrollTop: number, options?: ScrollToOptions) => void = useScrollTo();
@@ -449,7 +448,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>((
       <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
       {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
       <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>
-        {renderedActivities}
+        <ActivitiesWithGroupContainer />
       </InternalTranscriptScrollable>
       {hasAnyChild && (
         <Fragment>
@@ -649,16 +648,15 @@ type BasicTranscriptProps = Readonly<{
 }>;
 
 const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
+  const [{ stylesRoot }] = useStyleOptions();
+  const [nonce] = useNonce();
   const activityElementMapRef = useActivityElementMapRef();
   const containerRef = useRef<HTMLDivElement>();
-
-  const [nonce] = useNonce();
-  const scroller = useScroller(activityElementMapRef);
-
-  const [{ stylesRoot }] = useStyleOptions();
-  const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
-
+  const grouping = useMemo<readonly string[]>(() => Object.freeze(['sender', 'status']), []);
   const terminatorRef = useRef<HTMLDivElement>();
+
+  const scroller = useScroller(activityElementMapRef);
+  const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
 
   return (
     <ChatHistoryBox className={className}>
@@ -668,7 +666,7 @@ const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
             <ChatHistoryToolbar>
               <ScrollToEndButton terminatorRef={terminatorRef} />
             </ChatHistoryToolbar>
-            <GroupedRenderingActivitiesComposer grouping="">
+            <GroupedRenderingActivitiesComposer grouping={grouping}>
               <InternalTranscript ref={containerRef} terminatorRef={terminatorRef} />
             </GroupedRenderingActivitiesComposer>
           </ReactScrollToBottomComposer>

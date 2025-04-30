@@ -1,10 +1,10 @@
-import { type ReactNode } from 'react';
 import createContextAndHook from '../../createContextAndHook';
+import { type GroupedRenderingActivities } from '../GroupedRenderingActivities';
 
 type GroupedRenderingActivitiesContextType = Readonly<{
-  grouping: string;
+  groupedRenderingActivitiesState: readonly [readonly GroupedRenderingActivities[]];
+  groupingState: readonly [readonly string[]];
   numRenderingActivitiesState: readonly [number];
-  renderedActivitiesState: readonly [ReactNode];
 }>;
 
 const { contextComponentType, useContext } = createContextAndHook<GroupedRenderingActivitiesContextType>(
