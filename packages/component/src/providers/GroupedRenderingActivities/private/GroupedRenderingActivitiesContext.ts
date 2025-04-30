@@ -1,4 +1,5 @@
-import { createContext, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
+import createContextAndHook from '../../createContextAndHook';
 
 type GroupedRenderingActivitiesContextType = Readonly<{
   grouping: string;
@@ -6,15 +7,9 @@ type GroupedRenderingActivitiesContextType = Readonly<{
   renderedActivitiesState: readonly [ReactNode];
 }>;
 
-const GroupedRenderingActivitiesContext = createContext<GroupedRenderingActivitiesContextType>(
-  new Proxy({} as GroupedRenderingActivitiesContextType, {
-    get() {
-      throw new Error('botframework-webchat: This hook can only be used under <GroupedRenderingActivitiesComposer>');
-    }
-  })
+const { contextComponentType, useContext } = createContextAndHook<GroupedRenderingActivitiesContextType>(
+  'GroupedRenderingActivitiesContext'
 );
 
-GroupedRenderingActivitiesContext.displayName = 'GroupedRenderingActivitiesContext';
-
-export default GroupedRenderingActivitiesContext;
-export { type GroupedRenderingActivitiesContextType };
+export default contextComponentType;
+export { useContext as useGroupedRenderingActivitiesContext, type GroupedRenderingActivitiesContextType };

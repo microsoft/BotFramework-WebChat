@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import createContextAndHook from '../../createContextAndHook';
 import { type ActivityWithRenderer } from '../ActivityWithRenderer';
 
 type RenderingActivitiesContextType = Readonly<{
@@ -6,15 +6,8 @@ type RenderingActivitiesContextType = Readonly<{
   renderingActivityKeysState: readonly [readonly string[]];
 }>;
 
-const RenderingActivitiesContext = createContext<RenderingActivitiesContextType>(
-  new Proxy({} as RenderingActivitiesContextType, {
-    get() {
-      throw new Error('botframework-webchat internal: This hook can only be used under <RenderingActivitiesContext>');
-    }
-  })
-);
+const { contextComponentType, useContext } =
+  createContextAndHook<RenderingActivitiesContextType>('RenderingActivitiesContext');
 
-RenderingActivitiesContext.displayName = 'RenderingActivitiesContext';
-
-export default RenderingActivitiesContext;
-export type { RenderingActivitiesContextType };
+export default contextComponentType;
+export { useContext as useRenderingActivitiesContext, type RenderingActivitiesContextType };

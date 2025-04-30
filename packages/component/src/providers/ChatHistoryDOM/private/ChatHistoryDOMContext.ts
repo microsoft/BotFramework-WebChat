@@ -1,16 +1,11 @@
-import { createContext, type MutableRefObject } from 'react';
+import { type MutableRefObject } from 'react';
+import createContextAndHook from '../../createContextAndHook';
 
 type ChatHistoryDOMContextType = Readonly<{
   activityElementRef: MutableRefObject<Map<string, HTMLElement>>;
 }>;
 
-const ChatHistoryDOMContext = createContext<ChatHistoryDOMContextType>(
-  new Proxy({} as ChatHistoryDOMContextType, {
-    get() {
-      throw new Error(`botframework-webchat: This hook can only be used under <ChatHistoryDOMComposer>`);
-    }
-  })
-);
+const { contextComponentType, useContext } = createContextAndHook<ChatHistoryDOMContextType>('ChatHistoryDOMContext');
 
-export default ChatHistoryDOMContext;
-export { type ChatHistoryDOMContextType };
+export default contextComponentType;
+export { useContext as useChatHistoryDOMContext, type ChatHistoryDOMContextType };
