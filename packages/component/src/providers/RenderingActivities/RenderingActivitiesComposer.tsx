@@ -1,6 +1,6 @@
 import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { useMemo, type ReactNode } from 'react';
+import React, { memo, useMemo, type ReactNode } from 'react';
 
 import RenderingActivitiesContext, { type RenderingActivitiesContextType } from './private/RenderingActivitiesContext';
 import useInternalActivitiesWithRenderer from './private/useInternalActivitiesWithRenderer';
@@ -13,9 +13,9 @@ const { useActivities, useActivityKeys, useCreateActivityRenderer, useGetActivit
 
 const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerProps) => {
   const [rawActivities] = useActivities();
+  const activityKeys = useActivityKeys();
   const getActivitiesByKey = useGetActivitiesByKey();
   const getKeyByActivity = useGetKeyByActivity();
-  const activityKeys = useActivityKeys();
 
   // TODO: Should move this logic into a new <LivestreamGrouping>.
   //       The grouping would only show the latest one but it has access to previous.
@@ -65,4 +65,7 @@ const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerPr
   return <RenderingActivitiesContext.Provider value={contextValue}>{children}</RenderingActivitiesContext.Provider>;
 };
 
-export default RenderingActivitiesComposer;
+RenderingActivitiesComposer.displayName = 'RenderingActivitiesComposer';
+
+export default memo(RenderingActivitiesComposer);
+export { type RenderingActivitiesComposerProps };
