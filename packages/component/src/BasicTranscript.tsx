@@ -3,7 +3,17 @@
 
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { forwardRef, Fragment, memo, useCallback, useMemo, useRef } from 'react';
+import React, {
+  forwardRef,
+  Fragment,
+  memo,
+  useCallback,
+  useMemo,
+  useRef,
+  type KeyboardEventHandler,
+  type MutableRefObject,
+  type ReactNode
+} from 'react';
 import {
   Composer as ReactScrollToBottomComposer,
   Panel as ReactScrollToBottomPanel,
@@ -13,8 +23,6 @@ import {
   useSticky
 } from 'react-scroll-to-bottom';
 import { wrapWith } from 'react-wrap-with';
-
-import { type KeyboardEventHandler, type MutableRefObject, type ReactNode } from 'react';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import ChatHistoryBox from './ChatHistory/ChatHistoryBox';
