@@ -28,7 +28,7 @@ import BasicTypingIndicator from './BasicTypingIndicator';
 import ChatHistoryBox from './ChatHistory/ChatHistoryBox';
 import ChatHistoryToolbar from './ChatHistory/ChatHistoryToolbar';
 import ScrollToEndButton from './ChatHistory/private/ScrollToEndButton';
-import ActivitiesWithGroupContainer from './Transcript/ActivitiesWithGroupContainer';
+import ActivityTree from './Transcript/ActivityTree';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
 import { type ActivityElementMap } from './Transcript/types';
 import FocusRedirector from './Utils/FocusRedirector';
@@ -448,7 +448,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>((
       <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
       {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
       <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>
-        <ActivitiesWithGroupContainer />
+        <ActivityTree />
       </InternalTranscriptScrollable>
       {hasAnyChild && (
         <Fragment>

@@ -1,21 +1,22 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
+import { type ActivityWithRenderer } from '../../../RenderingActivities/ActivityWithRenderer';
 import StatusGroupingContext, { type StatusGroupingContextType } from './private/StatusGroupingContext';
 
 type StatusGroupingProps = Readonly<{
-  activities: readonly WebChatActivity[];
+  activitiesWithRenderer: readonly ActivityWithRenderer[];
   children?: ReactNode | undefined;
 }>;
 
-const StatusGrouping = ({ activities, children }: StatusGroupingProps) => {
-  if (activities.length <= 0) {
+const StatusGrouping = ({ activitiesWithRenderer, children }: StatusGroupingProps) => {
+  if (activitiesWithRenderer.length <= 0) {
     throw new Error('botframework-webchat: "activities" must have at least 1 activity');
   }
 
   // "activities" props must have at least 1 activity, first/last must not be undefined.
-  const firstActivity = activities[0] as WebChatActivity;
+  const firstActivity = activitiesWithRenderer[0].activity as WebChatActivity;
   // eslint-disable-next-line no-magic-numbers
-  const lastActivity = activities.at(-1) as WebChatActivity;
+  const lastActivity = activitiesWithRenderer.at(-1).activity as WebChatActivity;
 
   const context = useMemo<StatusGroupingContextType>(
     () =>
