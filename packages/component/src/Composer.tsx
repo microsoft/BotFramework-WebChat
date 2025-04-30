@@ -39,7 +39,6 @@ import createDefaultCardActionMiddleware from './Middleware/CardAction/createCor
 import createDefaultScrollToEndButtonMiddleware from './Middleware/ScrollToEndButton/createScrollToEndButtonMiddleware';
 import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
-import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
 import CustomElementsComposer from './providers/CustomElements/CustomElementsComposer';
 import HTMLContentTransformComposer from './providers/HTMLContentTransformCOR/HTMLContentTransformComposer';
 import { type HTMLContentTransformMiddleware } from './providers/HTMLContentTransformCOR/private/HTMLContentTransformContext';
@@ -460,26 +459,24 @@ const Composer = ({
       typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
       {...composerProps}
     >
-      <ActivityTreeComposer>
-        <StyleToEmotionObjectComposer nonce={nonce}>
-          <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
-            <ReducedMotionComposer>
-              <ComposerCore
-                extraStyleSet={extraStyleSet}
-                nonce={nonce}
-                renderMarkdown={renderMarkdown}
-                styleSet={styleSet}
-                styles={theme.styles}
-                suggestedActionsAccessKey={suggestedActionsAccessKey}
-                webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-              >
-                {children}
-                {onTelemetry && <UITracker />}
-              </ComposerCore>
-            </ReducedMotionComposer>
-          </HTMLContentTransformComposer>
-        </StyleToEmotionObjectComposer>
-      </ActivityTreeComposer>
+      <StyleToEmotionObjectComposer nonce={nonce}>
+        <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
+          <ReducedMotionComposer>
+            <ComposerCore
+              extraStyleSet={extraStyleSet}
+              nonce={nonce}
+              renderMarkdown={renderMarkdown}
+              styleSet={styleSet}
+              styles={theme.styles}
+              suggestedActionsAccessKey={suggestedActionsAccessKey}
+              webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+            >
+              {children}
+              {onTelemetry && <UITracker />}
+            </ComposerCore>
+          </ReducedMotionComposer>
+        </HTMLContentTransformComposer>
+      </StyleToEmotionObjectComposer>
     </APIComposer>
   );
 };

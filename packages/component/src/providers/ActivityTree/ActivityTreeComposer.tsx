@@ -1,12 +1,10 @@
 import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { useMemo, type ReactNode } from 'react';
 
-import ActivityTreeContext from './private/Context';
+import ActivityTreeContext, { type ActivityTreeContextType } from './private/Context';
 import useActivityTreeContext from './private/useContext';
 import useInternalActivitiesWithRenderer from './private/useInternalActivitiesWithRenderer';
-
-import type { ActivityTreeContextType } from './private/Context';
 
 type ActivityTreeComposerProps = Readonly<{ children?: ReactNode | undefined }>;
 

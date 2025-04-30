@@ -45,6 +45,7 @@ import {
 } from './hooks/transcriptScrollRelative';
 import useFocus from './hooks/useFocus';
 import useStyleSet from './hooks/useStyleSet';
+import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
 import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivityKey';
@@ -652,16 +653,18 @@ const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
 
   return (
     <ChatHistoryBox className={className}>
-      <TranscriptFocusComposer containerRef={containerRef}>
-        <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
-          <ChatHistoryToolbar>
-            <ScrollToEndButton terminatorRef={terminatorRef} />
-          </ChatHistoryToolbar>
-          <RenderingElementsComposer activityElementMapRef={activityElementMapRef} grouping="">
-            <InternalTranscript ref={containerRef} terminatorRef={terminatorRef} />
-          </RenderingElementsComposer>
-        </ReactScrollToBottomComposer>
-      </TranscriptFocusComposer>
+      <ActivityTreeComposer>
+        <TranscriptFocusComposer containerRef={containerRef}>
+          <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
+            <ChatHistoryToolbar>
+              <ScrollToEndButton terminatorRef={terminatorRef} />
+            </ChatHistoryToolbar>
+            <RenderingElementsComposer activityElementMapRef={activityElementMapRef} grouping="">
+              <InternalTranscript ref={containerRef} terminatorRef={terminatorRef} />
+            </RenderingElementsComposer>
+          </ReactScrollToBottomComposer>
+        </TranscriptFocusComposer>
+      </ActivityTreeComposer>
     </ChatHistoryBox>
   );
 };
