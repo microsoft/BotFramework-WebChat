@@ -36,10 +36,12 @@ export default function () {
             visibility: 'visible'
           }
         },
-        ':not(.webchat__thumb-button--is-pressed)[aria-disabled="true"]:is(:hover, :focus-visible, :active) > .webchat__tooltip':
-          {
+        '&[aria-disabled="true"]': {
+          color: CSSTokens.ColorSubtle,
+          ':not(.webchat__thumb-button--is-pressed):is(:hover, :focus-visible, :active) > .webchat__tooltip': {
             visibility: 'hidden'
           }
+        }
       },
 
       '&:active': {
