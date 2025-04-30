@@ -52,7 +52,7 @@ const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesCom
     for (const [key, activities] of groupActivities({ activities: renderingActivities })) {
       if (!validateAllEntriesTagged(renderingActivities, activities)) {
         console.warn(
-          `botframework-webchat: Not every activities are grouped in the "${key}" property. Please fix "groupActivitiesMiddleware" and group every activities.`
+          `botframework-webchat: Not every activities are grouped in the "${key}" property. Please fix "groupActivitiesMiddleware" and group every activities`
         );
       }
 
