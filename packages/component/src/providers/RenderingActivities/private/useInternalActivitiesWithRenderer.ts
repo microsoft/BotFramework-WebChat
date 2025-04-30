@@ -1,8 +1,9 @@
 import { type ActivityComponentFactory } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { useMemo } from 'react';
+
 import useMemoWithPrevious from '../../../hooks/internal/useMemoWithPrevious';
-import { type ActivityWithRenderer } from './types';
+import { type ActivityWithRenderer } from '../ActivityWithRenderer';
 
 type Call = Readonly<{
   activity: WebChatActivity;

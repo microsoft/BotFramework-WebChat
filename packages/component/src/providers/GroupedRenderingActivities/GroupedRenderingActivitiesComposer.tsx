@@ -1,18 +1,21 @@
-import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
+import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 import { object, optional, parse, pipe, readonly, string, type InferOutput } from 'valibot';
-import useActivitiesWithRenderer from '../../providers/ActivityTree/useActivitiesWithRenderer';
-import TranscriptActivity from '../TranscriptActivity';
+import TranscriptActivity from '../../Transcript/TranscriptActivity';
+import { type ActivityWithRenderer } from '../RenderingActivities/ActivityWithRenderer';
+import useActivitiesWithRenderer from '../RenderingActivities/useActivitiesWithRenderer';
 import group from './private/group';
+import GroupedRenderingActivitiesContext, {
+  type GroupedRenderingActivitiesContextType
+} from './private/GroupedRenderingActivitiesContext';
 import reactNode from './private/reactNode';
-import RenderingElementsContext, { type RenderingElementsContextType } from './private/RenderingElementsContext';
 import SenderGrouping from './ui/SenderGrouping/SenderGrouping';
 import StatusGrouping from './ui/StatusGrouping/StatusGrouping';
 
 const { useGetKeyByActivity, useGroupActivities } = hooks;
 
-const renderingElementsComposerPropsSchema = pipe(
+const groupedRenderingActivitiesComposerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
     grouping: string()
@@ -20,23 +23,17 @@ const renderingElementsComposerPropsSchema = pipe(
   readonly()
 );
 
-type ActivityWithRenderer = {
-  activity: WebChatActivity;
-  renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
-};
-
-type RenderingElementsComposerProps = InferOutput<typeof renderingElementsComposerPropsSchema>;
+type GroupedRenderingActivitiesComposerProps = InferOutput<typeof groupedRenderingActivitiesComposerPropsSchema>;
 
 function validateAllEntriesTagged<T>(entries: readonly T[], bins: readonly (readonly T[])[]): boolean {
   return entries.every(entry => bins.some(bin => bin.includes(entry)));
 }
 
-const RenderingElementsComposer = (props: RenderingElementsComposerProps) => {
-  const { children, grouping } = parse(renderingElementsComposerPropsSchema, props);
+const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesComposerProps) => {
+  const { children, grouping } = parse(groupedRenderingActivitiesComposerPropsSchema, props);
 
   const getKeyByActivity = useGetKeyByActivity();
   const groupActivities = useGroupActivities();
-
   const entries = useActivitiesWithRenderer();
 
   const entryMap: Map<WebChatActivity, ActivityWithRenderer> = useMemo(
@@ -77,6 +74,7 @@ const RenderingElementsComposer = (props: RenderingElementsComposerProps) => {
     };
   }, [entryMap, groupActivities]);
 
+  // TODO: Instead of returning ReactNode, return a structure instead.
   const renderedActivitiesState = useMemo<readonly [ReactNode]>(
     () =>
       Object.freeze([
@@ -110,7 +108,7 @@ const RenderingElementsComposer = (props: RenderingElementsComposerProps) => {
     [entries]
   );
 
-  const context = useMemo<RenderingElementsContextType>(
+  const context = useMemo<GroupedRenderingActivitiesContextType>(
     () =>
       Object.freeze({
         grouping,
@@ -120,10 +118,12 @@ const RenderingElementsComposer = (props: RenderingElementsComposerProps) => {
     [grouping, numRenderingActivitiesState, renderedActivitiesState]
   );
 
-  return <RenderingElementsContext.Provider value={context}>{children}</RenderingElementsContext.Provider>;
+  return (
+    <GroupedRenderingActivitiesContext.Provider value={context}>{children}</GroupedRenderingActivitiesContext.Provider>
+  );
 };
 
-RenderingElementsComposer.displayName = 'RenderingElementsComposer';
+GroupedRenderingActivitiesComposer.displayName = 'GroupedRenderingActivitiesComposer';
 
-export default memo(RenderingElementsComposer);
-export { type RenderingElementsComposerProps };
+export default memo(GroupedRenderingActivitiesComposer);
+export { type GroupedRenderingActivitiesComposerProps };

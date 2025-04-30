@@ -6,7 +6,4 @@ type ActivityWithRenderer = Readonly<{
   renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
 }>;
 
-type ActivityTree = ActivityWithRenderer[][][];
-type ReadonlyActivityTree = readonly (readonly (readonly ActivityWithRenderer[])[])[];
-
-export type { ActivityTree, ActivityWithRenderer, ReadonlyActivityTree };
+export type { ActivityWithRenderer };

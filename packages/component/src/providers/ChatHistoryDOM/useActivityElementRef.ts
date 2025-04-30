@@ -1,6 +1,6 @@
 import { type RefObject } from 'react';
-import useTranscriptDOMContext from './private/useTranscriptDOMContext';
+import useChatHistoryDOMContext from './private/useChatHistoryDOMContext';
 
 export default function useActivityElementMapRef(): RefObject<Map<string, HTMLElement>> {
-  return useTranscriptDOMContext().activityElementRef;
+  return useChatHistoryDOMContext().activityElementRef;
 }

@@ -1,14 +1,15 @@
 import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo } from 'react';
+
+import useActivityElementMapRef from '../providers/ChatHistoryDOM/useActivityElementRef';
+import useFirstActivityInSenderGroup from '../providers/GroupedRenderingActivities/ui/SenderGrouping/useFirstActivity';
+import useLastActivityInSenderGroup from '../providers/GroupedRenderingActivities/ui/SenderGrouping/useLastActivity';
+import useRenderAvatar from '../providers/GroupedRenderingActivities/ui/SenderGrouping/useRenderAvatar';
+import useFirstActivityInStatusGroup from '../providers/GroupedRenderingActivities/ui/StatusGrouping/useFirstActivity';
+import useLastActivityInStatusGroup from '../providers/GroupedRenderingActivities/ui/StatusGrouping/useLastActivity';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ActivityRow from './ActivityRow';
-import useFirstActivityInSenderGroup from './RenderingElements/ui/SenderGrouping/useFirstActivity';
-import useLastActivityInSenderGroup from './RenderingElements/ui/SenderGrouping/useLastActivity';
-import useRenderAvatar from './RenderingElements/ui/SenderGrouping/useRenderAvatar';
-import useFirstActivityInStatusGroup from './RenderingElements/ui/StatusGrouping/useFirstActivity';
-import useLastActivityInStatusGroup from './RenderingElements/ui/StatusGrouping/useLastActivity';
-import useActivityElementMapRef from './providers/TranscriptDOM/useActivityElementRef';
 
 const { useCreateActivityStatusRenderer, useGetKeyByActivity, useStyleOptions } = hooks;
 

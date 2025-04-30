@@ -15,18 +15,13 @@ import {
 import { wrapWith } from 'react-wrap-with';
 
 import { type KeyboardEventHandler, type MutableRefObject, type ReactNode } from 'react';
-import { type ActivityElementMap } from './Transcript/types';
 
 import BasicTypingIndicator from './BasicTypingIndicator';
 import ChatHistoryBox from './ChatHistory/ChatHistoryBox';
 import ChatHistoryToolbar from './ChatHistory/ChatHistoryToolbar';
 import ScrollToEndButton from './ChatHistory/private/ScrollToEndButton';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
-import RenderingElementsComposer from './Transcript/RenderingElements/RenderingElementsComposer';
-import useNumRenderingActivities from './Transcript/RenderingElements/useNumRenderingActivities';
-import useRenderedActivities from './Transcript/RenderingElements/useRenderedActivities';
-import TranscriptDOMComposer from './Transcript/providers/TranscriptDOM/TranscriptDOMComposer';
-import useActivityElementMapRef from './Transcript/providers/TranscriptDOM/useActivityElementRef';
+import { type ActivityElementMap } from './Transcript/types';
 import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
 import { android } from './Utils/detectBrowser';
@@ -47,7 +42,12 @@ import {
 } from './hooks/transcriptScrollRelative';
 import useFocus from './hooks/useFocus';
 import useStyleSet from './hooks/useStyleSet';
-import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
+import ChatHistoryDOMComposer from './providers/ChatHistoryDOM/ChatHistoryDOMComposer';
+import useActivityElementMapRef from './providers/ChatHistoryDOM/useActivityElementRef';
+import GroupedRenderingActivitiesComposer from './providers/GroupedRenderingActivities/GroupedRenderingActivitiesComposer';
+import useNumRenderingActivities from './providers/GroupedRenderingActivities/useNumRenderingActivities';
+import useRenderedActivities from './providers/GroupedRenderingActivities/useRenderedActivities';
+import RenderingActivitiesComposer from './providers/RenderingActivities/RenderingActivitiesComposer';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
 import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivityKey';
@@ -411,7 +411,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>((
     useCallback(() => focusByActivityKey(undefined), [focusByActivityKey])
   );
 
-  // const hasAnyChild = !!React.Children.count(renderingElements);
   const hasAnyChild = !!numRenderingActivities;
 
   return (
@@ -655,21 +654,21 @@ const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
 
   return (
     <ChatHistoryBox className={className}>
-      <ActivityTreeComposer>
+      <RenderingActivitiesComposer>
         <TranscriptFocusComposer containerRef={containerRef}>
           <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
             <ChatHistoryToolbar>
               <ScrollToEndButton terminatorRef={terminatorRef} />
             </ChatHistoryToolbar>
-            <RenderingElementsComposer grouping="">
+            <GroupedRenderingActivitiesComposer grouping="">
               <InternalTranscript ref={containerRef} terminatorRef={terminatorRef} />
-            </RenderingElementsComposer>
+            </GroupedRenderingActivitiesComposer>
           </ReactScrollToBottomComposer>
         </TranscriptFocusComposer>
-      </ActivityTreeComposer>
+      </RenderingActivitiesComposer>
     </ChatHistoryBox>
   );
 };
 
-export default wrapWith(TranscriptDOMComposer)(memo(BasicTranscript));
+export default wrapWith(ChatHistoryDOMComposer)(memo(BasicTranscript));
 export { type BasicTranscriptProps };

@@ -2,21 +2,16 @@ import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { useMemo, type ReactNode } from 'react';
 
-import ActivityTreeContext, { type ActivityTreeContextType } from './private/Context';
-import useActivityTreeContext from './private/useContext';
+import RenderingActivitiesContext, { type RenderingActivitiesContextType } from './private/RenderingActivitiesContext';
 import useInternalActivitiesWithRenderer from './private/useInternalActivitiesWithRenderer';
 
-type ActivityTreeComposerProps = Readonly<{ children?: ReactNode | undefined }>;
+type RenderingActivitiesComposerProps = Readonly<{
+  children?: ReactNode | undefined;
+}>;
 
 const { useActivities, useActivityKeys, useCreateActivityRenderer, useGetActivitiesByKey, useGetKeyByActivity } = hooks;
 
-const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
-  const existingContext = useActivityTreeContext(false);
-
-  if (existingContext) {
-    throw new Error('botframework-webchat internal: <ActivityTreeComposer> should not be nested.');
-  }
-
+const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerProps) => {
   const [rawActivities] = useActivities();
   const getActivitiesByKey = useGetActivitiesByKey();
   const getKeyByActivity = useGetKeyByActivity();
@@ -53,13 +48,13 @@ const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
     const keys = Object.freeze(activitiesWithRenderer.map(({ activity }) => getKeyByActivity(activity)));
 
     if (keys.some(key => !key)) {
-      throw new Error('botframework-webchat: assert activitiesWithRenderer[].activity must have activity key');
+      throw new Error('botframework-webchat internal: activitiesWithRenderer[].activity must have activity key');
     }
 
     return Object.freeze([keys] as const);
   }, [activitiesWithRenderer, getKeyByActivity]);
 
-  const contextValue: ActivityTreeContextType = useMemo(
+  const contextValue: RenderingActivitiesContextType = useMemo(
     () => ({
       activitiesWithRenderer,
       renderingActivityKeysState
@@ -67,7 +62,7 @@ const ActivityTreeComposer = ({ children }: ActivityTreeComposerProps) => {
     [activitiesWithRenderer, renderingActivityKeysState]
   );
 
-  return <ActivityTreeContext.Provider value={contextValue}>{children}</ActivityTreeContext.Provider>;
+  return <RenderingActivitiesContext.Provider value={contextValue}>{children}</RenderingActivitiesContext.Provider>;
 };
 
-export default ActivityTreeComposer;
+export default RenderingActivitiesComposer;

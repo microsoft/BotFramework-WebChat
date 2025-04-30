@@ -3,7 +3,7 @@ import React, { Fragment, memo, MutableRefObject, useCallback, useMemo } from 'r
 import { useAnimatingToEnd, useAtEnd, useScrollToEnd, useSticky } from 'react-scroll-to-bottom';
 import { useRefFrom } from 'use-ref-from';
 
-import useRenderingActivityKeys from '../../providers/ActivityTree/useRenderingActivityKeys';
+import useRenderingActivityKeys from '../../providers/RenderingActivities/useRenderingActivityKeys';
 import useFocusByActivityKey from '../../providers/TranscriptFocus/useFocusByActivityKey';
 
 const { useActivityKeysByRead, useCreateScrollToEndButtonRenderer, useMarkActivityKeyAsRead, useStyleOptions } = hooks;
