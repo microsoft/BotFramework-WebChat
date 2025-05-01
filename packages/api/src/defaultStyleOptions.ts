@@ -308,6 +308,8 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
 
   feedbackActionsPlacement: 'activity-status' as const,
 
+  hideFeedbackForm: false,
+
   // Speech recognition
   speechRecognitionContinuous: false
 };
