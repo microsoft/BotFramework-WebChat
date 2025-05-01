@@ -448,7 +448,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>((
       <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
       {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
       <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>
-        <ActivityTree />
+        {hasAnyChild && <ActivityTree />}
       </InternalTranscriptScrollable>
       {hasAnyChild && (
         <Fragment>
@@ -504,7 +504,9 @@ const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTrans
     [markAllAsAcknowledged, stickyChangedToTrue]
   );
 
-  const hasAnyChild = !!React.Children.count(children);
+  // We need to check if `children` is `false` or not.
+  // If `children` is `false`, React.Children.count(children) will still return 1 (truthy).
+  const hasAnyChild = !!children && !!React.Children.count(children);
 
   return (
     <React.Fragment>
