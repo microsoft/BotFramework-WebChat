@@ -84,9 +84,9 @@ const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
           typingIndicatorMiddleware={typingIndicatorMiddleware}
         >
           <AssetComposer>
-            <WebChatDecorator>
-              <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
-            </WebChatDecorator>
+            <DecoratorComposer middleware={decoratorMiddleware}>
+              <WebChatDecorator>{children}</WebChatDecorator>
+            </DecoratorComposer>
           </AssetComposer>
         </ThemeProvider>
       </TelephoneKeypadProvider>

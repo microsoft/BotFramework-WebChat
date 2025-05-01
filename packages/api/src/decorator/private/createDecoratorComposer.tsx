@@ -43,7 +43,7 @@ export default (): DecoratorComposerComponent =>
 
     const context = useMemo(() => ({ middleware }), [middleware]);
 
-    const borderMiddleware = useMemo(
+    const activityBorderMiddleware = useMemo(
       () => initActivityBorderDecoratorMiddleware(middleware, activityBorderDecoratorTypeName),
       [middleware]
     );
@@ -55,7 +55,7 @@ export default (): DecoratorComposerComponent =>
 
     return (
       <DecoratorComposerContext.Provider value={context}>
-        <ActivityBorderDecoratorMiddlewareProvider middleware={borderMiddleware}>
+        <ActivityBorderDecoratorMiddlewareProvider middleware={activityBorderMiddleware}>
           <ActivityGroupingDecoratorMiddlewareProvider middleware={activityGroupingMiddleware}>
             {children}
           </ActivityGroupingDecoratorMiddlewareProvider>
