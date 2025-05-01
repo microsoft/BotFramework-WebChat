@@ -14,7 +14,7 @@
 
 :global(.webchat-fluent) .sendbox__text-area--in-completion {
   .sendbox__text-area-doppelganger {
-    visibility: visible;
+    visibility: unset;
   }
 
   .sendbox__text-area-input {
