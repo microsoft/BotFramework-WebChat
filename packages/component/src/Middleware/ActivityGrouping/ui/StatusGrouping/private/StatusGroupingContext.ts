@@ -6,13 +6,13 @@ type StatusGroupingContextType = Readonly<{
   lastActivityState: readonly [WebChatActivity];
 }>;
 
-const StatusGroupingContext = createContext<StatusGroupingContextType>(
-  new Proxy({} as StatusGroupingContextType, {
-    get() {
-      throw new Error('botframework-webchat: This hook can only be used under <StatusGroupingContext>');
-    }
-  })
-);
+const EMPTY_STATE = Object.freeze([undefined] as const);
+
+// StatusGroupingContext may not available if `styleOptions.groupActivitiesBy` does not have `status`.
+const StatusGroupingContext = createContext<StatusGroupingContextType>({
+  firstActivityState: EMPTY_STATE,
+  lastActivityState: EMPTY_STATE
+});
 
 export default StatusGroupingContext;
 export { type StatusGroupingContextType };
