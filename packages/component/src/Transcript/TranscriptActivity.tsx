@@ -4,14 +4,13 @@ import React, { memo, useCallback, useMemo } from 'react';
 
 import useFirstActivityInSenderGroup from '../Middleware/ActivityGrouping/ui/SenderGrouping/useFirstActivity';
 import useLastActivityInSenderGroup from '../Middleware/ActivityGrouping/ui/SenderGrouping/useLastActivity';
-import useRenderAvatar from '../Middleware/ActivityGrouping/ui/SenderGrouping/useRenderAvatar';
 import useFirstActivityInStatusGroup from '../Middleware/ActivityGrouping/ui/StatusGrouping/useFirstActivity';
 import useLastActivityInStatusGroup from '../Middleware/ActivityGrouping/ui/StatusGrouping/useLastActivity';
 import useActivityElementMapRef from '../providers/ChatHistoryDOM/useActivityElementRef';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ActivityRow from './ActivityRow';
 
-const { useCreateActivityStatusRenderer, useGetKeyByActivity, useStyleOptions } = hooks;
+const { useCreateActivityStatusRenderer, useCreateAvatarRenderer, useGetKeyByActivity, useStyleOptions } = hooks;
 
 type TranscriptActivityProps = Readonly<{
   activity: WebChatActivity;
@@ -20,14 +19,27 @@ type TranscriptActivityProps = Readonly<{
 
 const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProps) => {
   const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
+  const [firstActivityInSenderGroup] = useFirstActivityInSenderGroup();
+  const [firstActivityInStatusGroup] = useFirstActivityInStatusGroup();
+  const [lastActivityInSenderGroup] = useLastActivityInSenderGroup();
+  const [lastActivityInStatusGroup] = useLastActivityInStatusGroup();
   const activityElementMapRef = useActivityElementMapRef();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
   const getKeyByActivity = useGetKeyByActivity();
-  const isFirstInSenderGroup = useFirstActivityInSenderGroup()[0] === activity;
-  const isFirstInStatusGroup = useFirstActivityInStatusGroup()[0] === activity;
-  const isLastInSenderGroup = useLastActivityInSenderGroup()[0] === activity;
-  const isLastInStatusGroup = useLastActivityInStatusGroup()[0] === activity;
-  const renderAvatar = useRenderAvatar();
+  const renderAvatar = useCreateAvatarRenderer();
+
+  const isFirstInSenderGroup =
+    firstActivityInSenderGroup === activity || typeof firstActivityInSenderGroup === 'undefined';
+  const isFirstInStatusGroup =
+    firstActivityInStatusGroup === activity || typeof firstActivityInStatusGroup === 'undefined';
+  const isLastInSenderGroup =
+    lastActivityInSenderGroup === activity || typeof lastActivityInSenderGroup === 'undefined';
+  const isLastInStatusGroup =
+    lastActivityInStatusGroup === activity || typeof lastActivityInStatusGroup === 'undefined';
+  const renderAvatarForSenderGroup = useMemo(
+    () => !!renderAvatar && renderAvatar({ activity }),
+    [activity, renderAvatar]
+  );
 
   const activityKey: string = useMemo(() => getKeyByActivity(activity), [activity, getKeyByActivity]);
   const hideAllTimestamps = groupTimestamp === false;
@@ -37,6 +49,7 @@ const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProp
     () =>
       createActivityStatusRenderer({
         activity,
+        // TODO: Is this also undefined in previous commits?
         nextVisibleActivity: undefined
       }),
     [activity, createActivityStatusRenderer]
@@ -77,10 +90,10 @@ const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProp
       renderActivity({
         hideTimestamp,
         renderActivityStatus,
-        renderAvatar,
+        renderAvatar: renderAvatarForSenderGroup,
         showCallout
       }),
-    [hideTimestamp, renderActivity, renderActivityStatus, renderAvatar, showCallout]
+    [hideTimestamp, renderActivity, renderActivityStatus, renderAvatarForSenderGroup, showCallout]
   );
 
   return (
