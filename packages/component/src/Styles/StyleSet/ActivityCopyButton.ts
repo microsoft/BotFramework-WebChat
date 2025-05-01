@@ -27,6 +27,7 @@ export default function createActivityButtonStyle() {
 
       '@keyframes webchat__activity-copy-button__copied-animation': {
         '0%': {
+          // This is set during the animation only hence shouldn't spill when hidden from the above tree
           visibility: 'visible'
         },
 
