@@ -40,7 +40,7 @@
         // WHEN: All groups are removed.
         const groupActivitiesMiddleware = () => next => request => ({});
 
-        const activityGroupingDecoratorMiddleware = [
+        const decoratorMiddleware = [
           () => next => request => {
             const DownstreamComponent = next(request);
 
@@ -59,7 +59,7 @@
 
         renderWebChat(
           {
-            activityGroupingDecoratorMiddleware,
+            decoratorMiddleware,
             directLine,
             groupActivitiesMiddleware,
             ponyfill: clock,

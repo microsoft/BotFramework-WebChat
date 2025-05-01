@@ -23,7 +23,7 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
-        const activityGroupingDecoratorMiddleware = [
+        const decoratorMiddleware = [
           () => next => request => {
             const DownstreamComponent = next(request);
 
@@ -42,7 +42,7 @@
 
         renderWebChat(
           {
-            activityGroupingDecoratorMiddleware,
+            decoratorMiddleware,
             directLine,
             ponyfill: clock,
             store,

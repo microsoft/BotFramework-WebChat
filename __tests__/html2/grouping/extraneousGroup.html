@@ -48,7 +48,7 @@
           }, [])
         });
 
-        const activityGroupingDecoratorMiddleware = [
+        const decoratorMiddleware = [
           () => next => request => {
             const DownstreamComponent = next(request);
 
@@ -67,7 +67,7 @@
 
         renderWebChat(
           {
-            activityGroupingDecoratorMiddleware,
+            decoratorMiddleware,
             directLine,
             groupActivitiesMiddleware,
             ponyfill: clock,
