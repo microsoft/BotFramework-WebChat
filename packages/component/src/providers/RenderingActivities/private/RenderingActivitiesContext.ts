@@ -1,8 +1,10 @@
+import { type ActivityComponentFactory } from 'botframework-webchat-api';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import createContextAndHook from '../../createContextAndHook';
-import { type ActivityWithRenderer } from '../ActivityWithRenderer';
 
 type RenderingActivitiesContextType = Readonly<{
-  activitiesWithRenderer: readonly ActivityWithRenderer[];
+  renderActivityCallbackMap: ReadonlyMap<WebChatActivity, Exclude<ReturnType<ActivityComponentFactory>, false>>;
+  renderingActivitiesState: readonly [readonly WebChatActivity[]];
   renderingActivityKeysState: readonly [readonly string[]];
 }>;
 

@@ -3,14 +3,13 @@ import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
 import { array, object, optional, parse, pipe, readonly, string, type InferOutput } from 'valibot';
 
-import { type ActivityWithRenderer } from '../RenderingActivities/ActivityWithRenderer';
-import useActivitiesWithRenderer from '../RenderingActivities/useActivitiesWithRenderer';
+import reactNode from '../../types/internal/reactNode';
+import useRenderingActivities from '../RenderingActivities/useRenderingActivities';
 import { type GroupedRenderingActivities } from './GroupedRenderingActivities';
 import group from './private/group';
 import GroupedRenderingActivitiesContext, {
   type GroupedRenderingActivitiesContextType
 } from './private/GroupedRenderingActivitiesContext';
-import reactNode from '../../types/internal/reactNode';
 
 const { useGetKeyByActivity, useGroupActivities } = hooks;
 
@@ -31,43 +30,35 @@ function validateAllEntriesTagged<T>(entries: readonly T[], bins: readonly (read
 const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesComposerProps) => {
   const { children, grouping } = parse(groupedRenderingActivitiesComposerPropsSchema, props);
 
+  const [activities] = useRenderingActivities();
   const getKeyByActivity = useGetKeyByActivity();
   const groupActivities = useGroupActivities('map');
   const groupingState = useMemo(() => Object.freeze([grouping] as const), [grouping]);
-  const entries = useActivitiesWithRenderer();
 
-  const entryMap: Map<WebChatActivity, ActivityWithRenderer> = useMemo(
-    () => new Map(entries.map(entry => [entry.activity, entry])),
-    [entries]
-  );
   const numRenderingActivitiesState = useMemo<readonly [number]>(
-    () => Object.freeze([entries.length] as const),
-    [entries]
+    () => Object.freeze([activities.length] as const),
+    [activities]
   );
 
-  const entriesByGroupMap = useMemo<ReadonlyMap<string, readonly (readonly ActivityWithRenderer[])[]>>(() => {
-    const entriesByGroupMap = new Map<string, readonly (readonly ActivityWithRenderer[])[]>();
-    const renderingActivities = Object.freeze(Array.from(entryMap.keys()));
+  const activitiesByGroupMap = useMemo<ReadonlyMap<string, readonly (readonly WebChatActivity[])[]>>(() => {
+    const activitiesByGroupMap = new Map<string, readonly (readonly WebChatActivity[])[]>();
 
-    for (const [key, activities] of groupActivities({ activities: renderingActivities })) {
-      if (!validateAllEntriesTagged(renderingActivities, activities)) {
+    for (const [key, value] of groupActivities({ activities })) {
+      if (!validateAllEntriesTagged(activities, value)) {
         console.warn(
           `botframework-webchat: Not every activities are grouped in the "${key}" property. Please fix "groupActivitiesMiddleware" and group every activities`
         );
       }
 
-      entriesByGroupMap.set(
-        key,
-        activities.map(bin => bin.map(activity => entryMap.get(activity)))
-      );
+      activitiesByGroupMap.set(key, value);
     }
 
-    return Object.freeze(entriesByGroupMap);
-  }, [entryMap, groupActivities]);
+    return Object.freeze(activitiesByGroupMap);
+  }, [activities, groupActivities]);
 
   const groupedRenderingActivitiesState = useMemo<readonly [readonly GroupedRenderingActivities[]]>(() => {
     function run(
-      entries: readonly ActivityWithRenderer[],
+      activities: readonly WebChatActivity[],
       groups: readonly string[]
     ): readonly GroupedRenderingActivities[] {
       const [currentGroup, ...nextGroups] = groups;
@@ -75,32 +66,32 @@ const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesCom
       if (!currentGroup) {
         return Object.freeze([
           {
-            activitiesWithRenderer: entries,
+            activities,
             children: Object.freeze([]),
-            key: getKeyByActivity(entries[0].activity),
+            key: getKeyByActivity(activities[0]),
             type: ''
           }
         ]);
       }
 
-      const entriesByGroup: readonly (readonly ActivityWithRenderer[])[] =
-        entriesByGroupMap.get(currentGroup) ?? Object.freeze(entries.map(entry => Object.freeze([entry])));
+      const activitiesByGroup: readonly (readonly WebChatActivity[])[] =
+        activitiesByGroupMap.get(currentGroup) ?? Object.freeze(activities.map(activity => Object.freeze([activity])));
 
       return Object.freeze(
-        group(entries, entry => Object.freeze(entriesByGroup.find(group => group.includes(entry)))).map(
-          groupedEntries =>
+        group(activities, entry => Object.freeze(activitiesByGroup.find(group => group.includes(entry)))).map(
+          groupedActivities =>
             Object.freeze({
-              activitiesWithRenderer: Object.freeze(groupedEntries),
-              children: run(groupedEntries, Object.freeze(nextGroups)),
-              key: getKeyByActivity(groupedEntries[0].activity),
+              activities: Object.freeze(groupedActivities),
+              children: run(groupedActivities, Object.freeze(nextGroups)),
+              key: getKeyByActivity(groupedActivities[0]),
               type: currentGroup
             })
         )
       );
     }
 
-    return Object.freeze([run(entries, Object.freeze(grouping))] as const);
-  }, [entries, entriesByGroupMap, getKeyByActivity, grouping]);
+    return Object.freeze([run(activities, Object.freeze(grouping))] as const);
+  }, [activities, activitiesByGroupMap, getKeyByActivity, grouping]);
 
   const context = useMemo<GroupedRenderingActivitiesContextType>(
     () =>

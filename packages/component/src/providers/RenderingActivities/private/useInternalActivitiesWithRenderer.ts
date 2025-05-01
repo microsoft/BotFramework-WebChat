@@ -3,7 +3,11 @@ import { type WebChatActivity } from 'botframework-webchat-core';
 import { useMemo } from 'react';
 
 import useMemoWithPrevious from '../../../hooks/internal/useMemoWithPrevious';
-import { type ActivityWithRenderer } from '../ActivityWithRenderer';
+
+type ActivityWithRenderer = Readonly<{
+  activity: WebChatActivity;
+  renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
+}>;
 
 type Call = Readonly<{
   activity: WebChatActivity;

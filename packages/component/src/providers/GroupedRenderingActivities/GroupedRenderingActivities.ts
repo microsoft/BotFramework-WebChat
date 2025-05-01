@@ -1,7 +1,7 @@
-import { type ActivityWithRenderer } from '../RenderingActivities/ActivityWithRenderer';
+import type { WebChatActivity } from 'botframework-webchat-core';
 
 type GroupedRenderingActivities = Readonly<{
-  activitiesWithRenderer: readonly ActivityWithRenderer[];
+  activities: readonly WebChatActivity[];
   children: readonly GroupedRenderingActivities[];
   key: string;
   type: string;

@@ -1,20 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import {
-  any,
-  array,
-  function_,
-  minLength,
-  object,
-  optional,
-  parse,
-  pipe,
-  readonly,
-  transform,
-  type InferOutput
-} from 'valibot';
-import { type ActivityWithRenderer } from '../../../../providers/RenderingActivities/ActivityWithRenderer';
+import { any, array, minLength, object, optional, parse, pipe, readonly, transform, type InferOutput } from 'valibot';
 import reactNode from '../../../../types/internal/reactNode';
 import SenderGroupingContext, { type SenderGroupingContextType } from './private/SenderGroupingContext';
 
@@ -22,11 +9,11 @@ const { useCreateAvatarRenderer } = hooks;
 
 const senderGroupingPropsSchema = pipe(
   object({
-    activitiesWithRenderer: pipe(
+    activities: pipe(
       array(
         pipe(
-          object({ activity: any(), renderActivity: function_() }),
-          transform(value => value as ActivityWithRenderer)
+          any(),
+          transform(value => value as WebChatActivity)
         )
       ),
       minLength(1, 'botframework-webchat: "activities" must have at least 1 activity'),
@@ -40,14 +27,14 @@ const senderGroupingPropsSchema = pipe(
 type SenderGroupingProps = InferOutput<typeof senderGroupingPropsSchema>;
 
 const SenderGrouping = (props: SenderGroupingProps) => {
-  const { activitiesWithRenderer, children } = parse(senderGroupingPropsSchema, props);
+  const { activities, children } = parse(senderGroupingPropsSchema, props);
 
   const createAvatarRenderer = useCreateAvatarRenderer();
 
   // "activities" props must have at least 1 activity, first/last must not be undefined.
-  const firstActivity = activitiesWithRenderer[0].activity as WebChatActivity;
+  const firstActivity = activities[0] as WebChatActivity;
   // eslint-disable-next-line no-magic-numbers
-  const lastActivity = activitiesWithRenderer.at(-1).activity as WebChatActivity;
+  const lastActivity = activities.at(-1) as WebChatActivity;
   const renderAvatar = useMemo(
     () => createAvatarRenderer({ activity: firstActivity }),
     [createAvatarRenderer, firstActivity]

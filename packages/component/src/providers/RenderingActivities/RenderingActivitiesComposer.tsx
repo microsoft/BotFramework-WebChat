@@ -1,4 +1,4 @@
-import { hooks } from 'botframework-webchat-api';
+import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 
@@ -43,22 +43,36 @@ const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerPr
 
   const activitiesWithRenderer = useInternalActivitiesWithRenderer(activitiesOfLatestRevision, createActivityRenderer);
 
+  const renderingActivitiesState = useMemo(
+    () => Object.freeze([activitiesWithRenderer.map(({ activity }) => activity)] as const),
+    [activitiesWithRenderer]
+  );
+
   const renderingActivityKeysState = useMemo<readonly [readonly string[]]>(() => {
-    const keys = Object.freeze(activitiesWithRenderer.map(({ activity }) => getKeyByActivity(activity)));
+    const keys = Object.freeze(renderingActivitiesState[0].map(activity => getKeyByActivity(activity)));
 
     if (keys.some(key => !key)) {
       throw new Error('botframework-webchat internal: activitiesWithRenderer[].activity must have activity key');
     }
 
     return Object.freeze([keys] as const);
-  }, [activitiesWithRenderer, getKeyByActivity]);
+  }, [renderingActivitiesState, getKeyByActivity]);
+
+  const renderActivityCallbackMap = useMemo<
+    ReadonlyMap<WebChatActivity, Exclude<ReturnType<ActivityComponentFactory>, false>>
+  >(
+    () =>
+      Object.freeze(new Map(activitiesWithRenderer.map(({ activity, renderActivity }) => [activity, renderActivity]))),
+    [activitiesWithRenderer]
+  );
 
   const contextValue: RenderingActivitiesContextType = useMemo(
     () => ({
-      activitiesWithRenderer,
+      renderActivityCallbackMap,
+      renderingActivitiesState,
       renderingActivityKeysState
     }),
-    [activitiesWithRenderer, renderingActivityKeysState]
+    [renderActivityCallbackMap, renderingActivitiesState, renderingActivityKeysState]
   );
 
   return <RenderingActivitiesContext.Provider value={contextValue}>{children}</RenderingActivitiesContext.Provider>;

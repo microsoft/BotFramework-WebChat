@@ -1,19 +1,8 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import { type ReactNode } from 'react';
 import templateMiddleware from '../../private/templateMiddleware';
 
 type ActivityGroupingDecoratorProps = {
   activities: readonly WebChatActivity[];
-  // TODO: Consider move this inside `useActivitiesWithRenderer(): (activity: Activity) => ActivityWithRenderer['renderActivity']`.
-  activitiesWithRenderer: readonly Readonly<{
-    activity: WebChatActivity;
-    renderActivity: (props: {
-      hideTimestamp: boolean;
-      renderActivityStatus: (options: { hideTimestamp: boolean }) => ReactNode;
-      renderAvatar: false | (() => Exclude<ReactNode, boolean | null | undefined>);
-      showCallout: boolean;
-    }) => ReactNode;
-  }>[];
 };
 
 type ActivityGroupingDecoratorRequest = {
