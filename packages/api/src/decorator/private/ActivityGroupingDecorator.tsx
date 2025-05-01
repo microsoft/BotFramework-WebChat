@@ -1,6 +1,6 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { Fragment, memo, useMemo, type ReactNode } from 'react';
-import { ActivityGroupingDecoratorMiddlewareProxy } from './private/ActivityGroupingDecoratorMiddleware';
+import { ActivityGroupingDecoratorMiddlewareProxy } from './ActivityGroupingDecoratorMiddleware';
 
 const ActivityGroupingDecoratorFallback = memo(({ children }) => <Fragment>{children}</Fragment>);
 

@@ -5,8 +5,12 @@ import {
   initActivityBorderDecoratorMiddleware,
   type ActivityBorderDecoratorMiddleware
 } from './ActivityBorderDecoratorMiddleware';
-
-type DecoratorMiddlewareInit = typeof activityBorderDecoratorTypeName;
+import {
+  ActivityGroupingDecoratorMiddlewareProvider,
+  activityGroupingDecoratorTypeName,
+  initActivityGroupingDecoratorMiddleware,
+  type ActivityGroupingDecoratorMiddleware
+} from './ActivityGroupingDecoratorMiddleware';
 
 export type DecoratorComposerComponent = (
   props: Readonly<{
@@ -15,9 +19,16 @@ export type DecoratorComposerComponent = (
   }>
 ) => React.JSX.Element;
 
-export type DecoratorMiddleware = (
-  init: DecoratorMiddlewareInit
-) => ReturnType<ActivityBorderDecoratorMiddleware> | false;
+export type DecoratorMiddlewareTypes = {
+  [activityBorderDecoratorTypeName]: ReturnType<ActivityBorderDecoratorMiddleware>;
+  [activityGroupingDecoratorTypeName]: ReturnType<ActivityGroupingDecoratorMiddleware>;
+};
+
+export type DecoratorMiddlewareInit = keyof DecoratorMiddlewareTypes;
+
+export type DecoratorMiddleware = {
+  [K in keyof DecoratorMiddlewareTypes]: (init: K) => DecoratorMiddlewareTypes[K] | false;
+}[keyof DecoratorMiddlewareTypes];
 
 const EMPTY_ARRAY = [];
 
@@ -28,9 +39,16 @@ export default (): DecoratorComposerComponent =>
       [middleware]
     );
 
+    const activityGroupingMiddlewares = useMemo(
+      () => initActivityGroupingDecoratorMiddleware(middleware, activityGroupingDecoratorTypeName),
+      [middleware]
+    );
+
     return (
       <ActivityBorderDecoratorMiddlewareProvider middleware={borderMiddlewares}>
-        {children}
+        <ActivityGroupingDecoratorMiddlewareProvider middleware={activityGroupingMiddlewares}>
+          {children}
+        </ActivityGroupingDecoratorMiddlewareProvider>
       </ActivityBorderDecoratorMiddlewareProvider>
     );
   };

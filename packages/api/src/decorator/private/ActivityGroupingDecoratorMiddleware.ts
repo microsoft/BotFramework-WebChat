@@ -1,5 +1,5 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import templateMiddleware from '../../private/templateMiddleware';
+import templateMiddleware from './templateMiddleware';
 
 type ActivityGroupingDecoratorProps = {
   activities: readonly WebChatActivity[];

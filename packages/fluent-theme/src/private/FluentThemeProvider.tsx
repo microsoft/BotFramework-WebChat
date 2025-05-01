@@ -1,5 +1,10 @@
 import { type ActivityMiddleware, type StyleOptions, type TypingIndicatorMiddleware } from 'botframework-webchat-api';
-import { DecoratorComposer, DecoratorMiddleware } from 'botframework-webchat-api/decorator';
+import {
+  DecoratorComposer,
+  DecoratorMiddleware,
+  type DecoratorMiddlewareInit,
+  type DecoratorMiddlewareTypes
+} from 'botframework-webchat-api/decorator';
 import { Components } from 'botframework-webchat-component';
 import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import React, { memo, type ReactNode } from 'react';
@@ -45,11 +50,14 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
 
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
-const decoratorMiddleware: DecoratorMiddleware[] = [
-  init =>
+const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
+  (init: DecoratorMiddlewareInit) =>
     init === 'activity border' &&
-    (next => request => (request.livestreamingState === 'preparing' ? ActivityLoader : next(request)))
-];
+    ((next => request =>
+      request.livestreamingState === 'preparing'
+        ? ActivityLoader
+        : next(request)) satisfies DecoratorMiddlewareTypes['activity border'])
+]);
 
 const styles = createStyles();
 

@@ -10,11 +10,7 @@ import {
   initSendBoxToolbarMiddleware,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
-import {
-  ActivityGroupingDecoratorComposer,
-  DecoratorComposer,
-  type ActivityGroupingDecoratorMiddleware
-} from 'botframework-webchat-api/decorator';
+import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -113,15 +109,13 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
         <FocusSendBoxScope>
           <ScrollRelativeTranscriptScope>
             <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
-              <DecoratorComposer>
-                <ModalDialogComposer>
-                  {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-                  <SendBoxComposer>
-                    {children}
-                    <Dictation onError={dictationOnError} />
-                  </SendBoxComposer>
-                </ModalDialogComposer>
-              </DecoratorComposer>
+              <ModalDialogComposer>
+                {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+                <SendBoxComposer>
+                  {children}
+                  <Dictation onError={dictationOnError} />
+                </SendBoxComposer>
+              </ModalDialogComposer>
             </LiveRegionTwinComposer>
           </ScrollRelativeTranscriptScope>
         </FocusSendBoxScope>
@@ -133,8 +127,8 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
 ComposerCoreUI.displayName = 'ComposerCoreUI';
 
 type ComposerCoreProps = Readonly<{
-  activityGroupingDecoratorMiddleware?: readonly ActivityGroupingDecoratorMiddleware[] | undefined;
   children?: ReactNode;
+  decoratorMiddleware?: readonly DecoratorMiddleware[] | undefined;
   extraStyleSet?: any;
   htmlContentTransformMiddleware?: readonly HTMLContentTransformMiddleware[] | undefined;
   nonce?: string;
@@ -325,7 +319,6 @@ ComposerCore.propTypes = {
 type ComposerProps = APIComposerProps & ComposerCoreProps;
 
 const Composer = ({
-  activityGroupingDecoratorMiddleware,
   activityMiddleware,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
@@ -333,6 +326,7 @@ const Composer = ({
   avatarMiddleware,
   cardActionMiddleware,
   children,
+  decoratorMiddleware,
   extraStyleSet,
   htmlContentTransformMiddleware,
   renderMarkdown,
@@ -349,15 +343,6 @@ const Composer = ({
 }: ComposerProps) => {
   const { nonce, onTelemetry } = composerProps;
   const theme = useTheme();
-
-  const patchedActivityGroupingDecoratorMiddleware = useMemo(
-    () =>
-      Object.freeze([
-        ...(activityGroupingDecoratorMiddleware || []),
-        ...createDefaultActivityGroupingDecoratorMiddleware()
-      ]),
-    [activityGroupingDecoratorMiddleware]
-  );
 
   const patchedActivityMiddleware = useMemo(
     () => [...singleToArray(activityMiddleware), ...theme.activityMiddleware, ...createDefaultActivityMiddleware()],
@@ -403,6 +388,11 @@ const Composer = ({
       ...createDefaultCardActionMiddleware()
     ],
     [cardActionMiddleware, theme.cardActionMiddleware]
+  );
+
+  const patchedDecoratorMiddleware = useMemo(
+    () => Object.freeze([...(decoratorMiddleware || []), ...createDefaultActivityGroupingDecoratorMiddleware()]),
+    [decoratorMiddleware]
   );
 
   const patchedToastMiddleware = useMemo(
@@ -477,8 +467,8 @@ const Composer = ({
     >
       <StyleToEmotionObjectComposer nonce={nonce}>
         <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
-          <ActivityGroupingDecoratorComposer middleware={patchedActivityGroupingDecoratorMiddleware}>
-            <ReducedMotionComposer>
+          <ReducedMotionComposer>
+            <DecoratorComposer middleware={patchedDecoratorMiddleware}>
               <ComposerCore
                 extraStyleSet={extraStyleSet}
                 nonce={nonce}
@@ -491,8 +481,8 @@ const Composer = ({
                 {children}
                 {onTelemetry && <UITracker />}
               </ComposerCore>
-            </ReducedMotionComposer>
-          </ActivityGroupingDecoratorComposer>
+            </DecoratorComposer>
+          </ReducedMotionComposer>
         </HTMLContentTransformComposer>
       </StyleToEmotionObjectComposer>
     </APIComposer>
