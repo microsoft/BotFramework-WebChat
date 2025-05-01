@@ -36,7 +36,7 @@ export default function () {
         },
         '&[aria-disabled="true"]': {
           color: CSSTokens.ColorSubtle,
-          ':not(.webchat__thumb-button--is-pressed):is(:hover, :focus-visible, :active) > .webchat__tooltip': {
+          '&:not(.webchat__thumb-button--is-pressed) > .webchat__tooltip': {
             display: 'none'
           }
         }
