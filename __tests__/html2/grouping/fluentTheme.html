@@ -56,8 +56,9 @@
           });
 
           const decoratorMiddleware = [
-            function rainbow(rainbow) {
-              return next => request => {
+            init =>
+              init === 'activity grouping' &&
+              (next => request => {
                 const DownstreamComponent = next(request);
 
                 if (request.type) {
@@ -70,8 +71,7 @@
                 }
 
                 return DownstreamComponent;
-              };
-            }
+              })
           ];
 
           render(

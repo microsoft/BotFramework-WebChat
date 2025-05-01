@@ -53,20 +53,22 @@
         });
 
         const decoratorMiddleware = [
-          () => next => request => {
-            const DownstreamComponent = next(request);
+          init =>
+            init === 'activity grouping' &&
+            (next => request => {
+              const DownstreamComponent = next(request);
 
-            if (request.type) {
-              return ({ activities, children }) =>
-                createElement(
-                  'div',
-                  { className: `grouping grouping--${request.type}` },
-                  createElement(DownstreamComponent, { activities }, children)
-                );
-            }
+              if (request.type) {
+                return ({ activities, children }) =>
+                  createElement(
+                    'div',
+                    { className: `grouping grouping--${request.type}` },
+                    createElement(DownstreamComponent, { activities }, children)
+                  );
+              }
 
-            return DownstreamComponent;
-          }
+              return DownstreamComponent;
+            })
         ];
 
         renderWebChat(
