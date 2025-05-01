@@ -109,7 +109,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
         actions={feedbackActions}
         className={classNames({
           'webchat__thumb-button--large': feedbackActionsPlacement === 'activity-actions',
-          'webchat__tooltip--to-right': feedbackSubmitted
+          'webchat__thumb-button--submitted': feedbackSubmitted
         })}
         isFeedbackFormSupported={isFeedbackLoopSupported}
         onActionClick={handleFeedbackActionClick}

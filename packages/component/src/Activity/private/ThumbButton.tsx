@@ -57,7 +57,7 @@ const ThumbButton = memo(({ className, direction, disabled, onClick, pressed, ti
         direction={direction}
         filled={true}
       />
-      <Tooltip className={className}>{buttonTitle}</Tooltip>
+      <Tooltip>{buttonTitle}</Tooltip>
     </button>
   );
 });

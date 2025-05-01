@@ -42,6 +42,10 @@ export default function () {
         }
       },
 
+      '&.webchat__thumb-button--submitted .webchat__tooltip': {
+        '--webchat__tooltip-anchor-inline-start': '20%'
+      },
+
       '&:active': {
         background: '#EDEBE9'
       },

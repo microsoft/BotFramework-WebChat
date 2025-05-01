@@ -11,9 +11,6 @@ export default () => ({
     '--webchat__tooltip-tip-size': '8.484px',
     '--webchat__tooltip-background': '#fff',
     '--webchat__tooltip-anchor-inline-start': '50%',
-    '&.webchat__tooltip--to-right': {
-      '--webchat__tooltip-anchor-inline-start': '20%'
-    },
 
     background: 'var(--webchat__tooltip-background)',
     borderRadius: '4px',
