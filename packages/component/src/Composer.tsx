@@ -352,7 +352,10 @@ const Composer = ({
 
   const patchedActivityGroupingDecoratorMiddleware = useMemo(
     () =>
-      Object.freeze([...activityGroupingDecoratorMiddleware, ...createDefaultActivityGroupingDecoratorMiddleware()]),
+      Object.freeze([
+        ...(activityGroupingDecoratorMiddleware || []),
+        ...createDefaultActivityGroupingDecoratorMiddleware()
+      ]),
     [activityGroupingDecoratorMiddleware]
   );
 
