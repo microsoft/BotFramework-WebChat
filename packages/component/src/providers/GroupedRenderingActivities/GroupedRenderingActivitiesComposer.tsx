@@ -29,8 +29,8 @@ function validateAllEntriesTagged<T>(entries: readonly T[], bins: readonly (read
 const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesComposerProps) => {
   const { children } = parse(groupedRenderingActivitiesComposerPropsSchema, props);
 
-  const [activities] = useRenderingActivities();
   const [{ groupActivitiesBy }] = useStyleOptions();
+  const [activities] = useRenderingActivities();
   const getKeyByActivity = useGetKeyByActivity();
   const groupActivities = useGroupActivities('map');
 
