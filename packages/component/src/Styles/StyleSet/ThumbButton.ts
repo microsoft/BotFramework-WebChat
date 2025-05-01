@@ -34,11 +34,13 @@ export default function () {
           background: 'transparent',
           color: CSSTokens.ColorAccent
         },
+
         '&[aria-disabled="true"]': {
-          color: CSSTokens.ColorSubtle,
-          '&:not(.webchat__thumb-button--is-pressed) > .webchat__tooltip': {
-            display: 'none'
-          }
+          color: CSSTokens.ColorSubtle
+        },
+
+        '&.webchat__thumb-button--submitted:not(.webchat__thumb-button--is-pressed) .webchat__tooltip': {
+          display: 'none'
         }
       },
 

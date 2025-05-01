@@ -2,12 +2,14 @@ import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo, useCallback, useMemo, useState } from 'react';
+import { useRefFrom } from 'use-ref-from';
+
 import useStyleSet from '../hooks/useStyleSet';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
 import Feedback from './private/Feedback';
+import FeedbackForm from './private/FeedbackForm';
 import getDisclaimer from './private/getDisclaimer';
 import hasFeedbackLoop from './private/hasFeedbackLoop';
-import FeedbackForm from './private/FeedbackForm';
 
 const { useStyleOptions } = hooks;
 
@@ -47,6 +49,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
 
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
   const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
+  const selectedActionRef = useRefFrom(selectedAction);
 
   const isFeedbackLoopSupported = hasFeedbackLoop(activity);
 
@@ -62,14 +65,13 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     try {
       const reactActions = (messageThing?.potentialAction || [])
         .filter(({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction')
-        .map(action =>
-          Object.assign({}, action, {
-            actionStatus:
-              action['@type'] === selectedAction?.['@type'] && feedbackSubmitted
-                ? 'CompletedActionStatus'
-                : action.actionStatus
-          })
-        );
+        .map(action => ({
+          ...action,
+          actionStatus:
+            action['@type'] === selectedActionRef.current?.['@type'] && feedbackSubmitted
+              ? 'CompletedActionStatus'
+              : action.actionStatus
+        }));
 
       if (reactActions.length) {
         return Object.freeze(new Set(reactActions));
@@ -84,9 +86,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
       // Intentionally left blank.
     }
     return Object.freeze(new Set([] as OrgSchemaAction[]));
-    // Do not want to add selectedAction to the dependency array as it will cause an infinite loop
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [feedbackSubmitted, graph, messageThing?.potentialAction]);
+  }, [feedbackSubmitted, graph, messageThing, selectedActionRef]);
 
   const handleFeedbackActionClick = useCallback(
     (action: OrgSchemaAction) => setSelectedAction(action === selectedAction ? undefined : action),

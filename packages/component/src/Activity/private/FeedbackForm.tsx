@@ -1,10 +1,11 @@
-import React, { memo, useCallback, useEffect, useRef, useState, type FormEventHandler } from 'react';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import FeedbackFormDisclaimer from './FeedbackFormDisclaimer';
+import React, { memo, useCallback, useEffect, useRef, useState, type FormEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
+
 import useStyleSet from '../../hooks/useStyleSet';
 import testIds from '../../testIds';
+import FeedbackFormDisclaimer from './FeedbackFormDisclaimer';
 import TextArea from './FeedbackTextArea';
 
 const { useLocalizer, usePostActivity } = hooks;
