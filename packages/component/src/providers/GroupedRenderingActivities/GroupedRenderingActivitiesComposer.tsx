@@ -10,7 +10,7 @@ import group from './private/group';
 import GroupedRenderingActivitiesContext, {
   type GroupedRenderingActivitiesContextType
 } from './private/GroupedRenderingActivitiesContext';
-import reactNode from './private/reactNode';
+import reactNode from '../../types/internal/reactNode';
 
 const { useGetKeyByActivity, useGroupActivities } = hooks;
 
@@ -78,7 +78,7 @@ const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesCom
             activitiesWithRenderer: entries,
             children: Object.freeze([]),
             key: getKeyByActivity(entries[0].activity),
-            type: false
+            type: ''
           }
         ]);
       }

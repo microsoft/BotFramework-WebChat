@@ -10,7 +10,7 @@ import {
   initSendBoxToolbarMiddleware,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
-import { DecoratorComposer } from 'botframework-webchat-api/decorator';
+import { ActivityGroupingDecoratorComposer, DecoratorComposer } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -32,6 +32,7 @@ import WebChatUIContext from './hooks/internal/WebChatUIContext';
 import { FocusSendBoxScope } from './hooks/sendBoxFocus';
 import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
+import createDefaultActivityGroupingDecoratorMiddleware from './Middleware/ActivityGrouping/createDefaultActivityGroupingDecoratorMiddleware';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
 import createDefaultAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
@@ -84,6 +85,7 @@ const ROOT_STYLE = {
 const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
   const [customPropertiesClassName] = useCustomPropertiesClassName();
+  const activityGroupingDecoratorMiddleware = useMemo(createDefaultActivityGroupingDecoratorMiddleware, []);
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const trackException = useTrackException();
 
@@ -109,13 +111,15 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
           <ScrollRelativeTranscriptScope>
             <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
               <DecoratorComposer>
-                <ModalDialogComposer>
-                  {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-                  <SendBoxComposer>
-                    {children}
-                    <Dictation onError={dictationOnError} />
-                  </SendBoxComposer>
-                </ModalDialogComposer>
+                <ActivityGroupingDecoratorComposer middleware={activityGroupingDecoratorMiddleware}>
+                  <ModalDialogComposer>
+                    {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+                    <SendBoxComposer>
+                      {children}
+                      <Dictation onError={dictationOnError} />
+                    </SendBoxComposer>
+                  </ModalDialogComposer>
+                </ActivityGroupingDecoratorComposer>
               </DecoratorComposer>
             </LiveRegionTwinComposer>
           </ScrollRelativeTranscriptScope>

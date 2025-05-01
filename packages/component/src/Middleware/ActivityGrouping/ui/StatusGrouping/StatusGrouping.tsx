@@ -1,6 +1,6 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
-import { type ActivityWithRenderer } from '../../../RenderingActivities/ActivityWithRenderer';
+import { type ActivityWithRenderer } from '../../../../providers/RenderingActivities/ActivityWithRenderer';
 import StatusGroupingContext, { type StatusGroupingContextType } from './private/StatusGroupingContext';
 
 type StatusGroupingProps = Readonly<{

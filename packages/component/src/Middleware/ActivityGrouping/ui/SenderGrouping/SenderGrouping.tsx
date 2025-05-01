@@ -14,8 +14,8 @@ import {
   transform,
   type InferOutput
 } from 'valibot';
-import { type ActivityWithRenderer } from '../../../RenderingActivities/ActivityWithRenderer';
-import reactNode from '../../private/reactNode';
+import { type ActivityWithRenderer } from '../../../../providers/RenderingActivities/ActivityWithRenderer';
+import reactNode from '../../../../types/internal/reactNode';
 import SenderGroupingContext, { type SenderGroupingContextType } from './private/SenderGroupingContext';
 
 const { useCreateAvatarRenderer } = hooks;

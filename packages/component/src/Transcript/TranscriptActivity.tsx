@@ -2,12 +2,12 @@ import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo } from 'react';
 
+import useFirstActivityInSenderGroup from '../Middleware/ActivityGrouping/ui/SenderGrouping/useFirstActivity';
+import useLastActivityInSenderGroup from '../Middleware/ActivityGrouping/ui/SenderGrouping/useLastActivity';
+import useRenderAvatar from '../Middleware/ActivityGrouping/ui/SenderGrouping/useRenderAvatar';
+import useFirstActivityInStatusGroup from '../Middleware/ActivityGrouping/ui/StatusGrouping/useFirstActivity';
+import useLastActivityInStatusGroup from '../Middleware/ActivityGrouping/ui/StatusGrouping/useLastActivity';
 import useActivityElementMapRef from '../providers/ChatHistoryDOM/useActivityElementRef';
-import useFirstActivityInSenderGroup from '../providers/GroupedRenderingActivities/ui/SenderGrouping/useFirstActivity';
-import useLastActivityInSenderGroup from '../providers/GroupedRenderingActivities/ui/SenderGrouping/useLastActivity';
-import useRenderAvatar from '../providers/GroupedRenderingActivities/ui/SenderGrouping/useRenderAvatar';
-import useFirstActivityInStatusGroup from '../providers/GroupedRenderingActivities/ui/StatusGrouping/useFirstActivity';
-import useLastActivityInStatusGroup from '../providers/GroupedRenderingActivities/ui/StatusGrouping/useLastActivity';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ActivityRow from './ActivityRow';
 

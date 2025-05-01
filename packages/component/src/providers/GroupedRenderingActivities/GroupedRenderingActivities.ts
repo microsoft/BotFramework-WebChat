@@ -4,7 +4,7 @@ type GroupedRenderingActivities = Readonly<{
   activitiesWithRenderer: readonly ActivityWithRenderer[];
   children: readonly GroupedRenderingActivities[];
   key: string;
-  type: string | false;
+  type: string;
 }>;
 
 export { type GroupedRenderingActivities };
