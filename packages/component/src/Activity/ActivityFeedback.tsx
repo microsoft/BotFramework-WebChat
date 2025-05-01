@@ -42,7 +42,7 @@ const defaultFeedbackEntities = {
 };
 
 function ActivityFeedback({ activity }: ActivityFeedbackProps) {
-  const [{ feedbackActionsPlacement, hideFeedbackForm }] = useStyleOptions();
+  const [{ feedbackActionsPlacement }] = useStyleOptions();
   const [{ feedbackForm }] = useStyleSet();
 
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
@@ -138,7 +138,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     [activity, handleFeedbackFormReset, selectedAction]
   );
 
-  if (!hideFeedbackForm && feedbackActionsPlacement === 'activity-actions' && isFeedbackLoopSupported) {
+  if (feedbackActionsPlacement === 'activity-actions' && isFeedbackLoopSupported) {
     return (
       <div className={classNames('webchat__feedback-form__root-container', feedbackForm + '')}>
         <div className={classNames('webchat__feedback-form__root-container__child', feedbackForm + '')}>

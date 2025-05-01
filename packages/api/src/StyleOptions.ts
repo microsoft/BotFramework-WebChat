@@ -932,7 +932,7 @@ type StyleOptions = {
   /**
    * (EXPERIMENTAL) Feedback buttons placement
    *
-   * - `'activity-actions'` - place feedback buttons inside activity actions - Includes feedback form
+   * - `'activity-actions'` - place feedback buttons inside activity actions - will show feedback form
    * - `'activity-status'` - place feedback buttons inside activity status
    *
    * @default 'activity-status'
@@ -942,13 +942,6 @@ type StyleOptions = {
    * New in 4.19.0.
    */
   feedbackActionsPlacement?: 'activity-actions' | 'activity-status';
-
-  /**
-   * Feedback form is on by default but can be hidden
-   * @default false
-   *
-   */
-  hideFeedbackForm?: boolean;
 
   /**
    * Use continuous mode for speech recognition. Default to `false`.
