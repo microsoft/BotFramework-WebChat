@@ -952,6 +952,15 @@ type StyleOptions = {
    * @see https://github.com/microsoft/BotFramework-WebChat/pull/5426
    */
   speechRecognitionContinuous?: boolean | undefined;
+
+  /**
+   * TBD.
+   *
+   * In CSS, it should be `sender,status`.
+   *
+   * @default ['sender', 'status']
+   */
+  groupActivitiesBy?: readonly string[] | undefined;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

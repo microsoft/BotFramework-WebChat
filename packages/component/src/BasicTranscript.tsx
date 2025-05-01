@@ -652,7 +652,6 @@ const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
   const [nonce] = useNonce();
   const activityElementMapRef = useActivityElementMapRef();
   const containerRef = useRef<HTMLDivElement>();
-  const grouping = useMemo<readonly string[]>(() => Object.freeze(['sender', 'status']), []);
   const terminatorRef = useRef<HTMLDivElement>();
 
   const scroller = useScroller(activityElementMapRef);
@@ -666,7 +665,7 @@ const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
             <ChatHistoryToolbar>
               <ScrollToEndButton terminatorRef={terminatorRef} />
             </ChatHistoryToolbar>
-            <GroupedRenderingActivitiesComposer grouping={grouping}>
+            <GroupedRenderingActivitiesComposer>
               <InternalTranscript ref={containerRef} terminatorRef={terminatorRef} />
             </GroupedRenderingActivitiesComposer>
           </ReactScrollToBottomComposer>

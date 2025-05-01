@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import { array, object, optional, parse, pipe, readonly, string, type InferOutput } from 'valibot';
+import { object, optional, parse, pipe, readonly, type InferOutput } from 'valibot';
 
 import reactNode from '../../types/internal/reactNode';
 import useRenderingActivities from '../RenderingActivities/useRenderingActivities';
@@ -11,12 +11,11 @@ import GroupedRenderingActivitiesContext, {
   type GroupedRenderingActivitiesContextType
 } from './private/GroupedRenderingActivitiesContext';
 
-const { useGetKeyByActivity, useGroupActivities } = hooks;
+const { useGetKeyByActivity, useGroupActivities, useStyleOptions } = hooks;
 
 const groupedRenderingActivitiesComposerPropsSchema = pipe(
   object({
-    children: optional(reactNode()),
-    grouping: pipe(array(string()), readonly())
+    children: optional(reactNode())
   }),
   readonly()
 );
@@ -28,12 +27,12 @@ function validateAllEntriesTagged<T>(entries: readonly T[], bins: readonly (read
 }
 
 const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesComposerProps) => {
-  const { children, grouping } = parse(groupedRenderingActivitiesComposerPropsSchema, props);
+  const { children } = parse(groupedRenderingActivitiesComposerPropsSchema, props);
 
   const [activities] = useRenderingActivities();
+  const [{ groupActivitiesBy }] = useStyleOptions();
   const getKeyByActivity = useGetKeyByActivity();
   const groupActivities = useGroupActivities('map');
-  const groupingState = useMemo(() => Object.freeze([grouping] as const), [grouping]);
 
   const numRenderingActivitiesState = useMemo<readonly [number]>(
     () => Object.freeze([activities.length] as const),
@@ -90,17 +89,16 @@ const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesCom
       );
     }
 
-    return Object.freeze([run(activities, Object.freeze(grouping))] as const);
-  }, [activities, activitiesByGroupMap, getKeyByActivity, grouping]);
+    return Object.freeze([run(activities, Object.freeze(groupActivitiesBy))] as const);
+  }, [activities, activitiesByGroupMap, getKeyByActivity, groupActivitiesBy]);
 
   const context = useMemo<GroupedRenderingActivitiesContextType>(
     () =>
       Object.freeze({
         groupedRenderingActivitiesState,
-        groupingState,
         numRenderingActivitiesState
       }),
-    [groupedRenderingActivitiesState, groupingState, numRenderingActivitiesState]
+    [groupedRenderingActivitiesState, numRenderingActivitiesState]
   );
 
   return (

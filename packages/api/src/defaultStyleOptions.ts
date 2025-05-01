@@ -309,7 +309,9 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   feedbackActionsPlacement: 'activity-status' as const,
 
   // Speech recognition
-  speechRecognitionContinuous: false
+  speechRecognitionContinuous: false,
+
+  groupActivitiesBy: ['sender', 'status']
 };
 
 export default DEFAULT_OPTIONS;

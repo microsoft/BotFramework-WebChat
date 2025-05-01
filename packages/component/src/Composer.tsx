@@ -10,7 +10,11 @@ import {
   initSendBoxToolbarMiddleware,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
-import { ActivityGroupingDecoratorComposer, DecoratorComposer } from 'botframework-webchat-api/decorator';
+import {
+  ActivityGroupingDecoratorComposer,
+  DecoratorComposer,
+  type ActivityGroupingDecoratorMiddleware
+} from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -85,7 +89,6 @@ const ROOT_STYLE = {
 const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
   const [customPropertiesClassName] = useCustomPropertiesClassName();
-  const activityGroupingDecoratorMiddleware = useMemo(createDefaultActivityGroupingDecoratorMiddleware, []);
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const trackException = useTrackException();
 
@@ -111,15 +114,13 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
           <ScrollRelativeTranscriptScope>
             <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
               <DecoratorComposer>
-                <ActivityGroupingDecoratorComposer middleware={activityGroupingDecoratorMiddleware}>
-                  <ModalDialogComposer>
-                    {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-                    <SendBoxComposer>
-                      {children}
-                      <Dictation onError={dictationOnError} />
-                    </SendBoxComposer>
-                  </ModalDialogComposer>
-                </ActivityGroupingDecoratorComposer>
+                <ModalDialogComposer>
+                  {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+                  <SendBoxComposer>
+                    {children}
+                    <Dictation onError={dictationOnError} />
+                  </SendBoxComposer>
+                </ModalDialogComposer>
               </DecoratorComposer>
             </LiveRegionTwinComposer>
           </ScrollRelativeTranscriptScope>
@@ -132,6 +133,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
 ComposerCoreUI.displayName = 'ComposerCoreUI';
 
 type ComposerCoreProps = Readonly<{
+  activityGroupingDecoratorMiddleware?: readonly ActivityGroupingDecoratorMiddleware[] | undefined;
   children?: ReactNode;
   extraStyleSet?: any;
   htmlContentTransformMiddleware?: readonly HTMLContentTransformMiddleware[] | undefined;
@@ -323,6 +325,7 @@ ComposerCore.propTypes = {
 type ComposerProps = APIComposerProps & ComposerCoreProps;
 
 const Composer = ({
+  activityGroupingDecoratorMiddleware,
   activityMiddleware,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
@@ -346,6 +349,12 @@ const Composer = ({
 }: ComposerProps) => {
   const { nonce, onTelemetry } = composerProps;
   const theme = useTheme();
+
+  const patchedActivityGroupingDecoratorMiddleware = useMemo(
+    () =>
+      Object.freeze([...activityGroupingDecoratorMiddleware, ...createDefaultActivityGroupingDecoratorMiddleware()]),
+    [activityGroupingDecoratorMiddleware]
+  );
 
   const patchedActivityMiddleware = useMemo(
     () => [...singleToArray(activityMiddleware), ...theme.activityMiddleware, ...createDefaultActivityMiddleware()],
@@ -465,20 +474,22 @@ const Composer = ({
     >
       <StyleToEmotionObjectComposer nonce={nonce}>
         <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
-          <ReducedMotionComposer>
-            <ComposerCore
-              extraStyleSet={extraStyleSet}
-              nonce={nonce}
-              renderMarkdown={renderMarkdown}
-              styleSet={styleSet}
-              styles={theme.styles}
-              suggestedActionsAccessKey={suggestedActionsAccessKey}
-              webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-            >
-              {children}
-              {onTelemetry && <UITracker />}
-            </ComposerCore>
-          </ReducedMotionComposer>
+          <ActivityGroupingDecoratorComposer middleware={patchedActivityGroupingDecoratorMiddleware}>
+            <ReducedMotionComposer>
+              <ComposerCore
+                extraStyleSet={extraStyleSet}
+                nonce={nonce}
+                renderMarkdown={renderMarkdown}
+                styleSet={styleSet}
+                styles={theme.styles}
+                suggestedActionsAccessKey={suggestedActionsAccessKey}
+                webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+              >
+                {children}
+                {onTelemetry && <UITracker />}
+              </ComposerCore>
+            </ReducedMotionComposer>
+          </ActivityGroupingDecoratorComposer>
         </HTMLContentTransformComposer>
       </StyleToEmotionObjectComposer>
     </APIComposer>
