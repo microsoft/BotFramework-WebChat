@@ -36,7 +36,7 @@ export default function () {
         },
         '&[aria-disabled="true"]': {
           color: CSSTokens.ColorSubtle,
-          ':not(.webchat__thumb-button--is-pressed):is(:hover, :focus-visible, :active) > .webchat__tooltip': {
+          '&:not(.webchat__thumb-button--is-pressed) > .webchat__tooltip': {
             display: 'none'
           }
         }
@@ -57,7 +57,7 @@ export default function () {
         width: 14,
 
         '&.webchat__thumb-button__image--is-stroked': {
-          visibility: 'visible'
+          visibility: 'unset'
         }
       },
 
@@ -68,7 +68,7 @@ export default function () {
           },
 
           '&.webchat__thumb-button__image--is-filled': {
-            visibility: 'visible'
+            visibility: 'unset'
           }
         }
       }
