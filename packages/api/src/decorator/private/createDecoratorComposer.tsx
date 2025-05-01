@@ -1,4 +1,4 @@
-import React, { useMemo, type ReactNode } from 'react';
+import React, { useContext, useMemo, type ReactNode } from 'react';
 import {
   ActivityBorderDecoratorMiddlewareProvider,
   activityBorderDecoratorTypeName,
@@ -11,6 +11,7 @@ import {
   initActivityGroupingDecoratorMiddleware,
   type ActivityGroupingDecoratorMiddleware
 } from './ActivityGroupingDecoratorMiddleware';
+import DecoratorComposerContext from './DecoratorComposerContext';
 
 export type DecoratorComposerComponent = (
   props: Readonly<{
@@ -33,22 +34,32 @@ export type DecoratorMiddleware = {
 const EMPTY_ARRAY = [];
 
 export default (): DecoratorComposerComponent =>
-  ({ children, middleware = EMPTY_ARRAY }) => {
-    const borderMiddlewares = useMemo(
+  ({ children, middleware: middlewareFromProps = EMPTY_ARRAY }) => {
+    const existingContext = useContext(DecoratorComposerContext);
+    const middleware = useMemo(
+      () => Object.freeze([...existingContext.middleware, ...middlewareFromProps]),
+      [existingContext, middlewareFromProps]
+    );
+
+    const context = useMemo(() => ({ middleware }), [middleware]);
+
+    const borderMiddleware = useMemo(
       () => initActivityBorderDecoratorMiddleware(middleware, activityBorderDecoratorTypeName),
       [middleware]
     );
 
-    const activityGroupingMiddlewares = useMemo(
+    const activityGroupingMiddleware = useMemo(
       () => initActivityGroupingDecoratorMiddleware(middleware, activityGroupingDecoratorTypeName),
       [middleware]
     );
 
     return (
-      <ActivityBorderDecoratorMiddlewareProvider middleware={borderMiddlewares}>
-        <ActivityGroupingDecoratorMiddlewareProvider middleware={activityGroupingMiddlewares}>
-          {children}
-        </ActivityGroupingDecoratorMiddlewareProvider>
-      </ActivityBorderDecoratorMiddlewareProvider>
+      <DecoratorComposerContext.Provider value={context}>
+        <ActivityBorderDecoratorMiddlewareProvider middleware={borderMiddleware}>
+          <ActivityGroupingDecoratorMiddlewareProvider middleware={activityGroupingMiddleware}>
+            {children}
+          </ActivityGroupingDecoratorMiddlewareProvider>
+        </ActivityBorderDecoratorMiddlewareProvider>
+      </DecoratorComposerContext.Provider>
     );
   };

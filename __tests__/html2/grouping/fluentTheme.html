@@ -22,10 +22,6 @@
         right: -2px;
         top: unset;
       }
-
-      .fluent__grouping {
-        background-color: rgba(255, 0, 0, 0.2);
-      }
     </style>
   </head>
 
@@ -60,21 +56,21 @@
           });
 
           const decoratorMiddleware = [
-            () => next => request => {
-              const DownstreamComponent = next(request);
+            function rainbow(rainbow) {
+              return next => request => {
+                const DownstreamComponent = next(request);
 
-              console.log('decorator first layer', DownstreamComponent);
+                if (request.type) {
+                  return ({ activities, children }) =>
+                    createElement(
+                      'div',
+                      { className: `grouping grouping--${request.type}` },
+                      DownstreamComponent ? createElement(DownstreamComponent, { activities }, children) : children
+                    );
+                }
 
-              if (request.type) {
-                return ({ activities, children }) =>
-                  createElement(
-                    'div',
-                    { className: `grouping grouping--${request.type}` },
-                    DownstreamComponent ? createElement(DownstreamComponent, { activities }, children) : children
-                  );
-              }
-
-              return DownstreamComponent;
+                return DownstreamComponent;
+              };
             }
           ];
 
@@ -83,7 +79,7 @@
               FluentThemeProvider,
               {},
               createElement(ReactWebChat, {
-                // decoratorMiddleware,
+                decoratorMiddleware,
                 directLine,
                 groupActivitiesMiddleware,
                 ponyfill: clock,
