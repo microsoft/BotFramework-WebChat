@@ -6,11 +6,11 @@ import TranscriptActivity from '../../../Transcript/TranscriptActivity';
 
 const { useGetKeyByActivity } = hooks;
 
-type RenderActivityGrouping = Readonly<{
+type RenderActivityGroupingProps = Readonly<{
   activities: readonly WebChatActivity[];
 }>;
 
-const RenderActivityGrouping = ({ activities }: RenderActivityGrouping) => {
+const RenderActivityGrouping = ({ activities }: RenderActivityGroupingProps) => {
   const getKeyByActivity = useGetKeyByActivity();
   const getRenderActivityCallback = useGetRenderActivityCallback();
 
@@ -30,3 +30,4 @@ const RenderActivityGrouping = ({ activities }: RenderActivityGrouping) => {
 RenderActivityGrouping.displayName = 'RenderActivityGrouping';
 
 export default memo(RenderActivityGrouping);
+export { type RenderActivityGroupingProps };
