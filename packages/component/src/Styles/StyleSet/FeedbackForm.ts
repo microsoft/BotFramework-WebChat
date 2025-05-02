@@ -17,7 +17,7 @@ export default function createFeedbackFormStyle() {
       gridTemplateRows: 'auto auto',
       position: 'relative'
     },
-    '&.webchat__feedback-form__body1': {
+    '&.webchat__feedback-form__body': {
       fontFamily: CSSTokens.FontPrimary,
       fontStyle: 'normal',
       fontWeight: 400,
@@ -25,7 +25,7 @@ export default function createFeedbackFormStyle() {
       lineHeight: '20px',
       color: '#373435'
     },
-    '&.webchat__feedback-form__caption1': {
+    '&.webchat__feedback-form__caption': {
       fontFamily: CSSTokens.FontPrimary,
       fontStyle: 'normal',
       fontWeight: 400,

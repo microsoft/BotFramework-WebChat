@@ -5,7 +5,7 @@ import { useRefFrom } from 'use-ref-from';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import testIds from '../../testIds';
-import FeedbackFormDisclaimer from './FeedbackFormDisclaimer';
+import Markdownable from '../../Attachment/Text/private/Markdownable';
 import TextArea from './FeedbackTextArea';
 
 const { useLocalizer, usePostActivity } = hooks;
@@ -70,7 +70,7 @@ function FeedbackForm({ feedbackType, disclaimer, onFeedbackFormButtonClick, rep
 
   return (
     <div>
-      <span className={classNames('webchat__feedback-form__body1', feedbackForm + '')}>
+      <span className={classNames('webchat__feedback-form__body', feedbackForm + '')}>
         {localize('FEEDBACK_FORM_TITLE')}
       </span>
       <form className={classNames('webchat__feedback-form', feedbackForm + '')} onSubmit={handleSubmit}>
@@ -82,7 +82,12 @@ function FeedbackForm({ feedbackType, disclaimer, onFeedbackFormButtonClick, rep
           startRows={3}
           value={userFeedback}
         />
-        {disclaimer && <FeedbackFormDisclaimer disclaimer={disclaimer} />}
+        {disclaimer && (
+          <Markdownable
+            className={classNames('webchat__feedback-form__caption', feedbackForm + '')}
+            text={disclaimer}
+          />
+        )}
         <div className={classNames('webchat__feedback-form__container', feedbackForm + '')}>
           <button className={classNames('webchat__feedback-form__button__submit', feedbackForm + '')} type="submit">
             {localize('FEEDBACK_FORM_SUBMIT_BUTTON_LABEL')}

@@ -630,7 +630,7 @@
 }
 
 /* Feedback Form */
-:global(.webchat-fluent).theme :global(.webchat__feedback-form__body1) {
+:global(.webchat-fluent).theme :global(.webchat__feedback-form__body) {
   font-family: var(--webchat-fontFamilyBase);
   color: var(--webchat-colorNeutralForeground1);
   font-size: var(--webchat-fontSizeBase300);
@@ -638,7 +638,7 @@
   line-height: var(--webchat-lineHeightBase300);
 }
 
-:global(.webchat-fluent).theme :global(.webchat__feedback-form__caption1) {
+:global(.webchat-fluent).theme :global(.webchat__feedback-form__caption) {
   font-family: var(--webchat-fontFamilyBase);
   color: var(--webchat-colorNeutralForeground1);
   font-size: var(--webchat-fontSizeBase100);
