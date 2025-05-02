@@ -6,9 +6,7 @@ type GroupedActivities = readonly (readonly WebChatActivity[])[];
 
 type GroupedActivitiesAsMap = Map<string, GroupedActivities>;
 type GroupedActivitiesAsObject = Readonly<{
-  sender: GroupedActivities;
-  status: GroupedActivities;
-  [others: string]: GroupedActivities;
+  [key: string]: GroupedActivities;
 }>;
 
 export default function useGroupActivities(
