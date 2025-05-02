@@ -2,7 +2,6 @@ import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { useRefFrom } from 'use-ref-from';
 
 import useStyleSet from '../hooks/useStyleSet';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
@@ -49,7 +48,6 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
 
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
   const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
-  const selectedActionRef = useRefFrom(selectedAction);
 
   const isFeedbackLoopSupported = hasFeedbackLoop(activity);
 
@@ -68,7 +66,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
         .map(action => ({
           ...action,
           actionStatus:
-            action['@type'] === selectedActionRef.current?.['@type'] && feedbackSubmitted
+            action['@type'] === selectedAction?.['@type'] && feedbackSubmitted
               ? 'CompletedActionStatus'
               : action.actionStatus
         }));
@@ -86,7 +84,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
       // Intentionally left blank.
     }
     return Object.freeze(new Set([] as OrgSchemaAction[]));
-  }, [feedbackSubmitted, graph, messageThing, selectedActionRef]);
+  }, [feedbackSubmitted, graph, messageThing, selectedAction]);
 
   const handleFeedbackActionClick = useCallback(
     (action: OrgSchemaAction) => setSelectedAction(action === selectedAction ? undefined : action),
