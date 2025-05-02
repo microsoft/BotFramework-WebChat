@@ -28,6 +28,8 @@ const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProp
   const getKeyByActivity = useGetKeyByActivity();
   const renderAvatar = useCreateAvatarRenderer();
 
+  const activityKey: string = useMemo(() => getKeyByActivity(activity), [activity, getKeyByActivity]);
+  const hideAllTimestamps = groupTimestamp === false;
   const isFirstInSenderGroup =
     firstActivityInSenderGroup === activity || typeof firstActivityInSenderGroup === 'undefined';
   const isFirstInStatusGroup =
@@ -40,9 +42,6 @@ const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProp
     () => !!renderAvatar && renderAvatar({ activity }),
     [activity, renderAvatar]
   );
-
-  const activityKey: string = useMemo(() => getKeyByActivity(activity), [activity, getKeyByActivity]);
-  const hideAllTimestamps = groupTimestamp === false;
   const isTopSideBotNub = isZeroOrPositive(bubbleNubOffset);
   const isTopSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
   const renderActivityStatus = useMemo(
