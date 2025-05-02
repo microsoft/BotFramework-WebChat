@@ -14,7 +14,11 @@ type ActivityFeedbackProps = Readonly<{
 function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   const [{ feedbackActionsPlacement }] = useStyleOptions();
 
-  const { currentFeedbackActions: feedbackActions, updateFeedbackActions } = useFeedbackActions(activity);
+  const {
+    currentFeedbackActions: feedbackActions,
+    updateFeedbackActions,
+    selectedAction
+  } = useFeedbackActions(activity);
 
   return (
     <Feedback
@@ -23,6 +27,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
         'webchat__thumb-button--large': feedbackActionsPlacement === 'activity-actions'
       })}
       onActionClick={updateFeedbackActions}
+      selectedAction={selectedAction}
     />
   );
 }

@@ -31,11 +31,15 @@ const Feedback = memo(({ actions, className, isFeedbackFormSupported, onActionCl
       return;
     }
 
+    // Do not include actionStatus if is's a legacy action
+    const { actionStatus: _actionStatus, ...rest } = selectedAction;
+    const isLegacyAction = selectedAction['@type'] === 'VoteAction';
+
     const timeout = setTimeout(
       () =>
         // TODO: We should update this to use W3C Hydra.1
         postActivityRef.current({
-          entities: [selectedAction],
+          entities: [isLegacyAction ? rest : selectedAction],
           name: 'webchat:activity-status/feedback',
           type: 'event'
         } as any),
@@ -64,7 +68,11 @@ const Feedback = memo(({ actions, className, isFeedbackFormSupported, onActionCl
           className={className}
           key={action['@id'] || index}
           onClick={onActionClick}
-          pressed={action.actionStatus === 'CompletedActionStatus' || action.actionStatus === 'ActiveActionStatus'}
+          pressed={
+            selectedAction === action ||
+            action.actionStatus === 'CompletedActionStatus' ||
+            action.actionStatus === 'ActiveActionStatus'
+          }
           {...actionProps}
         />
       ))}
