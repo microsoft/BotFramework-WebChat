@@ -9,7 +9,7 @@ const { usePonyfill, usePostActivity, useLocalizer } = hooks;
 
 type Props = Readonly<
   PropsWithChildren<{
-    actions: OrgSchemaAction[];
+    actions: readonly OrgSchemaAction[];
     className?: string | undefined;
     isFeedbackFormSupported?: boolean;
     onActionClick?: (action: OrgSchemaAction) => void;
