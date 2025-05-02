@@ -48,6 +48,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
 
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
   const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
+  const selectedActionType = selectedAction?.['@type'];
 
   const isFeedbackLoopSupported = hasFeedbackLoop(activity);
 
@@ -64,7 +65,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
       const reactActions = (messageThing?.potentialAction || [])
         .filter(({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction')
         .map(action =>
-          action['@type'] === selectedAction?.['@type'] && feedbackSubmitted
+          action['@type'] === selectedActionType && feedbackSubmitted
             ? {
                 ...action,
                 actionStatus: 'CompletedActionStatus' as const
@@ -85,7 +86,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
       // Intentionally left blank.
     }
     return Object.freeze(new Set([] as OrgSchemaAction[]));
-  }, [feedbackSubmitted, graph, messageThing, selectedAction]);
+  }, [feedbackSubmitted, graph, messageThing, selectedActionType]);
 
   const handleFeedbackActionClick = useCallback(
     (action: OrgSchemaAction) => setSelectedAction(action === selectedAction ? undefined : action),
