@@ -2,7 +2,6 @@ import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
-
 import useStyleSet from '../hooks/useStyleSet';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
 import Feedback from './private/Feedback';
