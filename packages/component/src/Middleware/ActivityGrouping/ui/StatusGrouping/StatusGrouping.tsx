@@ -1,16 +1,30 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { memo, useMemo, type ReactNode } from 'react';
+import React, { memo, useMemo } from 'react';
+import { any, array, minLength, object, optional, parse, pipe, readonly, transform, type InferOutput } from 'valibot';
+import reactNode from '../../../../types/internal/reactNode';
 import StatusGroupingContext, { type StatusGroupingContextType } from './private/StatusGroupingContext';
 
-type StatusGroupingProps = Readonly<{
-  activities: readonly WebChatActivity[];
-  children?: ReactNode | undefined;
-}>;
+const statusGroupingPropsSchema = pipe(
+  object({
+    activities: pipe(
+      array(
+        pipe(
+          any(),
+          transform(value => value as WebChatActivity)
+        )
+      ),
+      minLength(1, 'botframework-webchat: "activities" must have at least 1 activity'),
+      readonly()
+    ),
+    children: optional(reactNode())
+  }),
+  readonly()
+);
 
-const StatusGrouping = ({ activities, children }: StatusGroupingProps) => {
-  if (activities.length <= 0) {
-    throw new Error('botframework-webchat: "activities" must have at least 1 activity');
-  }
+type StatusGroupingProps = InferOutput<typeof statusGroupingPropsSchema>;
+
+const StatusGrouping = (props: StatusGroupingProps) => {
+  const { activities, children } = parse(statusGroupingPropsSchema, props);
 
   // "activities" props must have at least 1 activity, first/last must not be undefined.
   const firstActivity = activities[0] as WebChatActivity;
