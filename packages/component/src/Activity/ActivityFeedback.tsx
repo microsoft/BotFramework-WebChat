@@ -63,13 +63,14 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     try {
       const reactActions = (messageThing?.potentialAction || [])
         .filter(({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction')
-        .map(action => ({
-          ...action,
-          actionStatus:
-            action['@type'] === selectedAction?.['@type'] && feedbackSubmitted
-              ? 'CompletedActionStatus'
-              : action.actionStatus
-        }));
+        .map(action =>
+          action['@type'] === selectedAction?.['@type'] && feedbackSubmitted
+            ? {
+                ...action,
+                actionStatus: 'CompletedActionStatus' as const
+              }
+            : action
+        );
 
       if (reactActions.length) {
         return Object.freeze(new Set(reactActions));
