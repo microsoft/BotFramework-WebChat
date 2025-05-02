@@ -27,11 +27,7 @@
         const {
           React,
           ReactDOM: { render },
-          WebChat: {
-            decorator: { DecoratorComposer },
-            FluentThemeProvider,
-            ReactWebChat
-          }
+          WebChat: { FluentThemeProvider, ReactWebChat }
         } = window; // Imports in UMD fashion.
 
         function Flair({ children }) {
@@ -55,6 +51,7 @@
 
         const App = () => (
           <ReactWebChat
+            decoratorMiddleware={decoratorMiddleware}
             directLine={directLine}
             store={store}
             styleOptions={{
@@ -65,12 +62,9 @@
         );
 
         render(
-          // We need to rethink if <DecoratorComposer> should be the top-level component. Or should we introduce something else.
-          <DecoratorComposer middleware={decoratorMiddleware}>
-            <FluentThemeProvider>
-              <App />
-            </FluentThemeProvider>
-          </DecoratorComposer>,
+          <FluentThemeProvider>
+            <App />
+          </FluentThemeProvider>,
           document.getElementById('webchat')
         );
 

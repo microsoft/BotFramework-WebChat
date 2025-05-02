@@ -32,7 +32,6 @@ import WebChatUIContext from './hooks/internal/WebChatUIContext';
 import { FocusSendBoxScope } from './hooks/sendBoxFocus';
 import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
-import createDefaultActivityGroupingDecoratorMiddleware from './Middleware/ActivityGrouping/createDefaultActivityGroupingDecoratorMiddleware';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
 import createDefaultAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
@@ -390,11 +389,6 @@ const Composer = ({
     [cardActionMiddleware, theme.cardActionMiddleware]
   );
 
-  const patchedDecoratorMiddleware = useMemo(
-    () => Object.freeze([...(decoratorMiddleware || []), ...createDefaultActivityGroupingDecoratorMiddleware()]),
-    [decoratorMiddleware]
-  );
-
   const patchedToastMiddleware = useMemo(
     () => [...singleToArray(toastMiddleware), ...theme.toastMiddleware, ...createDefaultToastMiddleware()],
     [toastMiddleware, theme.toastMiddleware]
@@ -428,8 +422,8 @@ const Composer = ({
   const sendBoxMiddleware = useMemo<readonly SendBoxMiddleware[]>(
     () =>
       Object.freeze([
-        ...initSendBoxMiddleware(sendBoxMiddlewareFromProps),
-        ...initSendBoxMiddleware(theme.sendBoxMiddleware),
+        ...initSendBoxMiddleware(sendBoxMiddlewareFromProps, undefined),
+        ...initSendBoxMiddleware(theme.sendBoxMiddleware, undefined),
         ...createDefaultSendBoxMiddleware()
       ]),
     [sendBoxMiddlewareFromProps, theme.sendBoxMiddleware]
@@ -438,8 +432,8 @@ const Composer = ({
   const sendBoxToolbarMiddleware = useMemo<readonly SendBoxToolbarMiddleware[]>(
     () =>
       Object.freeze([
-        ...initSendBoxToolbarMiddleware(sendBoxToolbarMiddlewareFromProps),
-        ...initSendBoxToolbarMiddleware(theme.sendBoxToolbarMiddleware),
+        ...initSendBoxToolbarMiddleware(sendBoxToolbarMiddlewareFromProps, undefined),
+        ...initSendBoxToolbarMiddleware(theme.sendBoxToolbarMiddleware, undefined),
         ...createDefaultSendBoxToolbarMiddleware()
       ]),
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]
@@ -468,7 +462,7 @@ const Composer = ({
       <StyleToEmotionObjectComposer nonce={nonce}>
         <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
           <ReducedMotionComposer>
-            <DecoratorComposer middleware={patchedDecoratorMiddleware}>
+            <DecoratorComposer middleware={decoratorMiddleware}>
               <ComposerCore
                 extraStyleSet={extraStyleSet}
                 nonce={nonce}

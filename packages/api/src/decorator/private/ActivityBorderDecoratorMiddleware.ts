@@ -1,6 +1,6 @@
 import { type EmptyObject } from 'type-fest';
 
-import ActivityDecoratorRequest from './activityDecoratorRequest';
+import { type ActivityDecoratorRequest } from './ActivityDecoratorRequest';
 import templateMiddleware from './templateMiddleware';
 
 const {

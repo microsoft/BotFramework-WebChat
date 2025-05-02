@@ -1,4 +1,5 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
+
 import templateMiddleware from './templateMiddleware';
 
 type ActivityGroupingDecoratorProps = {

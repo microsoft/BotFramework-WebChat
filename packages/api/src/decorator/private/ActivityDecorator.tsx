@@ -1,7 +1,7 @@
 import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
 import React, { Fragment, memo, useMemo, type ReactNode } from 'react';
-import { ActivityDecoratorRequest } from '..';
 import { ActivityBorderDecoratorMiddlewareProxy } from './ActivityBorderDecoratorMiddleware';
+import { type ActivityDecoratorRequest } from './ActivityDecoratorRequest';
 
 const ActivityDecoratorFallback = memo(({ children }) => <Fragment>{children}</Fragment>);
 

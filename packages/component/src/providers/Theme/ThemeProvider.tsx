@@ -7,13 +7,13 @@ type Props = Readonly<{ children?: ReactNode | undefined } & Partial<ThemeContex
 const EMPTY_ARRAY = Object.freeze([] as const);
 
 const ThemeProvider = ({
-  children,
   activityMiddleware,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
   attachmentMiddleware,
   avatarMiddleware,
   cardActionMiddleware,
+  children,
   groupActivitiesMiddleware,
   scrollToEndButtonMiddleware,
   sendBoxMiddleware,

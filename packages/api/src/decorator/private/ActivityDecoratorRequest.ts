@@ -1,4 +1,4 @@
-type ActivityDecoratorRequestType = {
+export type ActivityDecoratorRequest = {
   /**
    * Decorate the activity as it participate in a livestreaming session.
    *
@@ -19,5 +19,3 @@ type ActivityDecoratorRequestType = {
    */
   from: 'bot' | 'channel' | `user` | undefined;
 };
-
-export default ActivityDecoratorRequestType;

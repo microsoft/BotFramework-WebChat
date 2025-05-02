@@ -7,7 +7,7 @@ const {
   // False positive, `types` is used for its typing.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   types
-} = templateMiddleware<void, void, { className?: string | undefined }>('sendBoxToolbarMiddleware');
+} = templateMiddleware<undefined, void, { className?: string | undefined }>('sendBoxToolbarMiddleware');
 
 type SendBoxToolbarMiddleware = typeof types.middleware;
 type SendBoxToolbarMiddlewareProps = typeof types.props;

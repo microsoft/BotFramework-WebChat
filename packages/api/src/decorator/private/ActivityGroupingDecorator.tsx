@@ -1,5 +1,6 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { Fragment, memo, useMemo, type ReactNode } from 'react';
+
 import { ActivityGroupingDecoratorMiddlewareProxy } from './ActivityGroupingDecoratorMiddleware';
 
 const ActivityGroupingDecoratorFallback = memo(({ children }) => <Fragment>{children}</Fragment>);
@@ -12,7 +13,7 @@ type ActivityGroupingDecoratorProps = Readonly<{
   type: string;
 }>;
 
-const ActivityGroupingDecorator = ({ activities, children, type }: ActivityGroupingDecoratorProps) => {
+function ActivityGroupingDecorator({ activities, children, type }: ActivityGroupingDecoratorProps) {
   const request = useMemo(() => ({ type }), [type]);
 
   return (
@@ -24,9 +25,7 @@ const ActivityGroupingDecorator = ({ activities, children, type }: ActivityGroup
       {children}
     </ActivityGroupingDecoratorMiddlewareProxy>
   );
-};
-
-ActivityGroupingDecorator.displayName = 'ActivityGroupingDecorator';
+}
 
 export default memo(ActivityGroupingDecorator);
 export { type ActivityGroupingDecoratorProps };
