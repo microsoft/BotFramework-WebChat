@@ -9,6 +9,7 @@ import Feedback from './private/Feedback';
 import FeedbackForm from './private/FeedbackForm';
 import getDisclaimer from './private/getDisclaimer';
 import hasFeedbackLoop from './private/hasFeedbackLoop';
+import { useRefFrom } from 'use-ref-from';
 
 const { useStyleOptions } = hooks;
 
@@ -47,8 +48,10 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   const [{ feedbackForm }] = useStyleSet();
 
   const [selectedAction, setSelectedAction] = useState<OrgSchemaAction | undefined>();
+  const selectedActionRef = useRefFrom(selectedAction);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState<boolean>(false);
-  const selectedActionType = selectedAction?.['@type'];
+  const feedbackSubmittedRef = useRefFrom(feedbackSubmitted);
+  const submittedAction = feedbackSubmitted ? selectedAction : undefined;
 
   const isFeedbackLoopSupported = hasFeedbackLoop(activity);
 
@@ -64,14 +67,7 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
     try {
       const reactActions = (messageThing?.potentialAction || [])
         .filter(({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction')
-        .map(action =>
-          action['@type'] === selectedActionType && feedbackSubmitted
-            ? {
-                ...action,
-                actionStatus: 'CompletedActionStatus' as const
-              }
-            : action
-        );
+        .map(action => (submittedAction && action['@type'] === submittedAction['@type'] ? submittedAction : action));
 
       if (reactActions.length) {
         return Object.freeze(new Set(reactActions));
@@ -86,22 +82,33 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
       // Intentionally left blank.
     }
     return Object.freeze(new Set([] as OrgSchemaAction[]));
-  }, [feedbackSubmitted, graph, messageThing, selectedActionType]);
+  }, [graph, messageThing, submittedAction]);
 
   const handleFeedbackActionClick = useCallback(
     (action: OrgSchemaAction) => setSelectedAction(action === selectedAction ? undefined : action),
     [selectedAction, setSelectedAction]
   );
 
-  const handleFeedbackFormReset = useCallback(
-    (wasFeedbackSubmitted: boolean) => {
-      if (!wasFeedbackSubmitted) {
-        setSelectedAction(undefined);
-      }
-      setFeedbackSubmitted(wasFeedbackSubmitted);
-    },
-    [setFeedbackSubmitted, setSelectedAction]
-  );
+  const handleFeedbackFormReset = useCallback(() => {
+    if (feedbackSubmittedRef.current) {
+      return;
+    }
+
+    setSelectedAction(undefined);
+    setFeedbackSubmitted(false);
+  }, [feedbackSubmittedRef]);
+
+  const handleFeedbackFormSubmit = useCallback(() => {
+    if (feedbackSubmittedRef.current || !selectedActionRef.current) {
+      return;
+    }
+
+    setSelectedAction({
+      ...selectedActionRef.current,
+      actionStatus: 'CompletedActionStatus' as const
+    });
+    setFeedbackSubmitted(true);
+  }, [feedbackSubmittedRef, selectedActionRef]);
 
   const FeedbackComponent = useMemo(
     () => (
@@ -132,10 +139,11 @@ function ActivityFeedback({ activity }: ActivityFeedbackProps) {
         disclaimer={getDisclaimer(activity)}
         feedbackType={selectedAction?.['@type']}
         onReset={handleFeedbackFormReset}
+        onSubmit={handleFeedbackFormSubmit}
         replyToId={activity.id}
       />
     ),
-    [activity, handleFeedbackFormReset, selectedAction]
+    [activity, handleFeedbackFormReset, handleFeedbackFormSubmit, selectedAction]
   );
 
   if (feedbackActionsPlacement === 'activity-actions' && isFeedbackLoopSupported) {

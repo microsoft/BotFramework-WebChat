@@ -13,31 +13,24 @@ const { useLocalizer, usePostActivity } = hooks;
 type FeedbackFormProps = Readonly<{
   disclaimer?: string;
   feedbackType: string;
-  onReset: (wasFeedbackSubmitted: boolean) => void;
+  onReset: () => void;
+  onSubmit: () => void;
   replyToId?: string;
 }>;
 
-function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: FeedbackFormProps) {
+function FeedbackForm({ feedbackType, disclaimer, onReset, onSubmit, replyToId }: FeedbackFormProps) {
   const [{ feedbackForm }] = useStyleSet();
   const [hasFocus, setHasFocus] = useState(false);
   const [userFeedback, setUserFeedback] = useState('');
   const feedbackTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const localize = useLocalizer();
   const onResetRef = useRefFrom(onReset);
+  const onSubmitRef = useRefFrom(onSubmit);
   const postActivity = usePostActivity();
 
-  const handleReset = useCallback(
-    (wasFeedbackSubmitted: boolean) => {
-      setUserFeedback('');
-      setHasFocus(false);
-      onResetRef.current(wasFeedbackSubmitted);
-    },
-    [onResetRef, setHasFocus, setUserFeedback]
-  );
-
   const handleCancel = useCallback(() => {
-    handleReset(false);
-  }, [handleReset]);
+    onResetRef.current();
+  }, [onResetRef]);
 
   const handleSubmit = useCallback(
     event => {
@@ -56,9 +49,9 @@ function FeedbackForm({ feedbackType, disclaimer, onReset, replyToId }: Feedback
         }
       } as any);
 
-      handleReset(true);
+      onSubmitRef.current();
     },
-    [feedbackType, handleReset, postActivity, replyToId, userFeedback]
+    [feedbackType, onSubmitRef, postActivity, replyToId, userFeedback]
   );
 
   const handleChange: FormEventHandler<HTMLTextAreaElement> = useCallback(
