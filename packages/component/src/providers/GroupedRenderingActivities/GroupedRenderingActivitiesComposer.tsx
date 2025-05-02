@@ -56,20 +56,20 @@ const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesCom
   }, [activities, groupActivities]);
 
   const groupedRenderingActivitiesState = useMemo<readonly [readonly GroupedRenderingActivities[]]>(() => {
-    function run(
+    const run = (
       activities: readonly WebChatActivity[],
       groups: readonly string[]
-    ): readonly GroupedRenderingActivities[] {
+    ): readonly GroupedRenderingActivities[] => {
       const [currentGroup, ...nextGroups] = groups;
 
       if (!currentGroup) {
         return Object.freeze([
-          {
+          Object.freeze({
             activities,
             children: Object.freeze([]),
             key: getKeyByActivity(activities[0]),
             type: ''
-          }
+          })
         ]);
       }
 
@@ -87,7 +87,7 @@ const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesCom
             })
         )
       );
-    }
+    };
 
     return Object.freeze([run(activities, Object.freeze(groupActivitiesBy))] as const);
   }, [activities, activitiesByGroupMap, getKeyByActivity, groupActivitiesBy]);
