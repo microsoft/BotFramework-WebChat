@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { Fragment, memo } from 'react';
 import useGetRenderActivityCallback from '../../../providers/RenderingActivities/useGetRenderActivityCallback';
 import TranscriptActivity from '../../../Transcript/TranscriptActivity';

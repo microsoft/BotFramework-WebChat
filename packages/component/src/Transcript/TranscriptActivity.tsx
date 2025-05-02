@@ -49,7 +49,6 @@ const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProp
     () =>
       createActivityStatusRenderer({
         activity,
-        // TODO: Is this also undefined in previous commits?
         nextVisibleActivity: undefined
       }),
     [activity, createActivityStatusRenderer]
