@@ -32,7 +32,7 @@ const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesCom
   const [{ groupActivitiesBy }] = useStyleOptions();
   const [activities] = useRenderingActivities();
   const getKeyByActivity = useGetKeyByActivity();
-  const groupActivities = useGroupActivities('map');
+  const groupActivities = useGroupActivities();
 
   const numRenderingActivitiesState = useMemo<readonly [number]>(
     () => Object.freeze([activities.length] as const),
@@ -42,7 +42,7 @@ const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesCom
   const activitiesByGroupMap = useMemo<ReadonlyMap<string, readonly (readonly WebChatActivity[])[]>>(() => {
     const activitiesByGroupMap = new Map<string, readonly (readonly WebChatActivity[])[]>();
 
-    for (const [key, value] of groupActivities({ activities })) {
+    for (const [key, value] of Object.entries(groupActivities({ activities }))) {
       if (!validateAllEntriesTagged(activities, value)) {
         console.warn(
           `botframework-webchat: Not every activities are grouped in the "${key}" property. Please fix "groupActivitiesMiddleware" and group every activities`
