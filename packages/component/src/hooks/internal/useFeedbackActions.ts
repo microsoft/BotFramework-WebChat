@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
 import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } from 'botframework-webchat-core';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 
 const parseActivity = (entities?: WebChatActivity['entities']) => {
@@ -14,15 +14,19 @@ export default function useFeedbackActions(activity: WebChatActivity) {
 
   const feedbackActions = useMemo<readonly OrgSchemaAction[]>(() => {
     try {
-      const reactActions = Object.freeze((messageThing?.potentialAction || []).filter(
-        ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
-      ));
+      const reactActions = Object.freeze(
+        (messageThing?.potentialAction || []).filter(
+          ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
+        )
+      );
 
       if (reactActions.length) {
         return reactActions;
       }
 
-      const voteActions = Object.freeze(graph.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction));
+      const voteActions = Object.freeze(
+        graph.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction)
+      );
 
       if (voteActions.length) {
         return voteActions;
