@@ -6,17 +6,13 @@ type GroupedActivities = readonly (readonly WebChatActivity[])[];
 
 type GroupActivities = CallFunction<
   [Readonly<{ activities: readonly WebChatActivity[] }>],
-  {
-    [key: string]: GroupedActivities;
-  }
+  { [key: string]: GroupedActivities }
 >;
 
 type GroupActivitiesMiddleware = FunctionMiddleware<
   [],
   [Readonly<{ activities: readonly WebChatActivity[] }>],
-  {
-    [key: string]: GroupedActivities;
-  }
+  { [key: string]: GroupedActivities }
 >;
 
 export default GroupActivitiesMiddleware;
