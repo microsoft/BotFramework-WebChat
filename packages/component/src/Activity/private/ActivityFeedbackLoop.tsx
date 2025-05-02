@@ -33,7 +33,7 @@ function ActivityFeedbackLoop({ activity }: ActivityFeedbackProps) {
   const activityFeedbackWithloop = useMemo(
     () =>
       Object.assign({}, activity, {
-        entities: [...activity.entities, defaultFeedbackEntities]
+        entities: [defaultFeedbackEntities]
       }),
     [activity]
   );
