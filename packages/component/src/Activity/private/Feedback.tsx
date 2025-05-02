@@ -9,7 +9,7 @@ const { usePonyfill, usePostActivity, useLocalizer } = hooks;
 
 type Props = Readonly<
   PropsWithChildren<{
-    actions: ReadonlySet<OrgSchemaAction>;
+    actions: OrgSchemaAction[];
     className?: string | undefined;
     isFeedbackFormSupported?: boolean;
     onActionClick?: (action: OrgSchemaAction) => void;
@@ -58,17 +58,13 @@ const Feedback = memo(({ actions, className, isFeedbackFormSupported, onActionCl
 
   return (
     <Fragment>
-      {[...actions].map((action, index) => (
+      {actions.map((action, index) => (
         <FeedbackVoteButton
           action={action}
           className={className}
           key={action['@id'] || index}
           onClick={onActionClick}
-          pressed={
-            selectedAction === action ||
-            action.actionStatus === 'CompletedActionStatus' ||
-            action.actionStatus === 'ActiveActionStatus'
-          }
+          pressed={action.actionStatus === 'CompletedActionStatus' || action.actionStatus === 'ActiveActionStatus'}
           {...actionProps}
         />
       ))}
