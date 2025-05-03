@@ -6,9 +6,8 @@ import {
   type WebChatActivity
 } from 'botframework-webchat-core';
 import random from 'math-random';
-import React, { memo, useCallback, useMemo, useRef, type ReactNode } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { useStateWithRef } from 'use-state-with-ref';
 
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import hasFeedbackLoop from '../private/hasFeedbackLoop';
@@ -17,20 +16,26 @@ import ActivityFeedbackContext, { type ActivityFeedbackContextType } from './pri
 const { usePonyfill, usePostActivity } = hooks;
 
 type ActivityFeedbackComposerProps = Readonly<{
+  activity: WebChatActivity;
   children?: ReactNode | undefined;
-  initialActivity: WebChatActivity;
+}>;
+
+type ActionState = Readonly<{
+  actionId: string;
+  actionStatus: 'CompletedActionStatus' | 'ActiveActionStatus';
 }>;
 
 const DEBOUNCE_TIMEOUT = 500;
 
-function ActivityFeedbackComposer({ children, initialActivity }: ActivityFeedbackComposerProps) {
+function ActivityFeedbackComposer({ children, activity: activityFromProps }: ActivityFeedbackComposerProps) {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
+
   const activity = useMemo(
     () =>
       // Force enable feedback loop until service fixed their issue.
-      hasFeedbackLoop(initialActivity)
+      hasFeedbackLoop(activityFromProps)
         ? Object.freeze({
-            ...initialActivity,
+            ...activityFromProps,
             entities: [
               {
                 '@context': 'https://schema.org',
@@ -45,24 +50,28 @@ function ActivityFeedbackComposer({ children, initialActivity }: ActivityFeedbac
               }
             ]
           })
-        : initialActivity,
-    [initialActivity]
+        : activityFromProps,
+    [activityFromProps]
   );
 
   const activityRef = useRefFrom(activity);
 
-  type ActionState = Readonly<{
-    actionId: string;
-    actionStatus: 'CompletedActionStatus' | 'ActiveActionStatus';
-  }>;
+  const actionStateRef = useRef<ActionState | undefined>(undefined);
+  const [_, setForceRefresh] = useState({});
 
-  const [actionState, setActionState, actionStateRef] = useStateWithRef<ActionState | undefined>();
+  const setActionStateWithRefresh = useCallback(
+    (actionState: ActionState | undefined) => {
+      actionStateRef.current = actionState;
+      setForceRefresh({});
+    },
+    [actionStateRef, setForceRefresh]
+  );
 
-  const rawActions = useMemo(() => {
+  const rawActions = useMemo<readonly OrgSchemaAction[]>(() => {
     function patchActions(actions: readonly OrgSchemaAction[]) {
       return actions.map(action =>
         // eslint-disable-next-line no-magic-numbers
-        action['@id'] ? action : Object.freeze({ ...action, '@id': random().toString(36).substring(2, 7) })
+        action['@id'] ? action : Object.freeze({ ...action, '@id': `_:${random().toString(36).substring(2, 7)}` })
       );
     }
 
@@ -77,6 +86,7 @@ function ActivityFeedbackComposer({ children, initialActivity }: ActivityFeedbac
       );
 
       if (reactActions.length) {
+        // actionStateRef.current = reactActions.
         return patchActions(reactActions);
       }
 
@@ -94,16 +104,35 @@ function ActivityFeedbackComposer({ children, initialActivity }: ActivityFeedbac
     return Object.freeze([]);
   }, [activity]);
 
+  useMemo(() => {
+    const activeOrCompletedAction = rawActions.find(
+      (action): action is OrgSchemaAction & { actionStatus: 'ActiveActionStatus' | 'CompletedActionStatus' } =>
+        action.actionStatus === 'ActiveActionStatus' || action.actionStatus === 'CompletedActionStatus'
+    );
+
+    actionStateRef.current = activeOrCompletedAction
+      ? {
+          actionId: activeOrCompletedAction['@id'],
+          actionStatus: activeOrCompletedAction.actionStatus
+        }
+      : undefined;
+  }, [rawActions]);
+
+  // Workaround ESLint on saying actionStateRef.current is redundant when using it directly.
+  const actionStateForActions = actionStateRef.current;
+
   const actions = useMemo(
     () =>
       Object.freeze(
         rawActions.map(action =>
-          actionState && actionState?.actionId === action['@id']
-            ? Object.freeze({ ...action, actionStatus: actionState.actionStatus } satisfies OrgSchemaAction)
-            : action
+          actionStateForActions && actionStateForActions?.actionId === action['@id']
+            ? Object.freeze({ ...action, actionStatus: actionStateForActions.actionStatus })
+            : action.actionStatus === 'PotentialActionStatus'
+              ? action
+              : Object.freeze({ ...action, actionStatus: 'PotentialActionStatus' })
         )
       ),
-    [actionState, rawActions]
+    [actionStateForActions, rawActions]
   );
 
   const actionsRef = useRefFrom(actions);
@@ -129,7 +158,7 @@ function ActivityFeedbackComposer({ children, initialActivity }: ActivityFeedbac
         );
       }
 
-      setActionState(Object.freeze({ actionId: action['@id'], actionStatus: 'CompletedActionStatus' }));
+      setActionStateWithRefresh(Object.freeze({ actionId: action['@id'], actionStatus: 'CompletedActionStatus' }));
 
       const { '@id': _id, actionStatus: _actionStatus, ...rest } = action;
       const isLegacyAction = action['@type'] === 'VoteAction';
@@ -156,7 +185,7 @@ function ActivityFeedbackComposer({ children, initialActivity }: ActivityFeedbac
         } as any);
       }
     },
-    [actionsRef, actionStateRef, activityRef, postActivity, setActionState]
+    [actionsRef, actionStateRef, activityRef, postActivity, setActionStateWithRefresh]
   );
 
   const shouldShowFeedbackForm = hasFeedbackLoop(activity);
@@ -198,7 +227,7 @@ function ActivityFeedbackComposer({ children, initialActivity }: ActivityFeedbac
         );
       }
 
-      setActionState(
+      setActionStateWithRefresh(
         action
           ? Object.freeze({
               actionId: action['@id'],
@@ -210,10 +239,12 @@ function ActivityFeedbackComposer({ children, initialActivity }: ActivityFeedbac
       if (!shouldShowFeedbackFormRef.current) {
         clearTimeout(autoSubmitTimeoutRef.current);
 
-        autoSubmitTimeoutRef.current = setTimeout(
-          () => submitCallback(actionsRef.current.find(({ '@id': id }) => id === action['@id'])),
-          DEBOUNCE_TIMEOUT
-        );
+        if (action['@id']) {
+          autoSubmitTimeoutRef.current = setTimeout(
+            () => submitCallback(actionsRef.current.find(({ '@id': id }) => id === action['@id'])),
+            DEBOUNCE_TIMEOUT
+          );
+        }
       }
     },
     [
@@ -221,7 +252,7 @@ function ActivityFeedbackComposer({ children, initialActivity }: ActivityFeedbac
       autoSubmitTimeoutRef,
       clearTimeout,
       hasSubmittedRef,
-      setActionState,
+      setActionStateWithRefresh,
       setTimeout,
       shouldAllowResubmitRef,
       shouldShowFeedbackFormRef,

@@ -124,11 +124,6 @@
           document.getElementById('webchat')
         );
 
-        await pageConditions.webChatRendered();
-
-        // Wait for "Connecting..." message to dismiss
-        // clock.tick(600);
-
         await pageConditions.uiConnected();
 
         await host.snapshot('local');

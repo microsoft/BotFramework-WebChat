@@ -17,7 +17,7 @@ type ActivityFeedbackProps = Readonly<{
 
 function ActivityFeedback({ activity }: ActivityFeedbackProps) {
   return (
-    <ActivityFeedbackComposer initialActivity={activity}>
+    <ActivityFeedbackComposer activity={activity}>
       <InternalActivityFeedback />
     </ActivityFeedbackComposer>
   );
