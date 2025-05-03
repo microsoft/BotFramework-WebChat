@@ -41,11 +41,11 @@ export default function () {
 
         '&.webchat__thumb-button--submitted:not(.webchat__thumb-button--is-pressed) .webchat__tooltip': {
           display: 'none'
-        }
-      },
+        },
 
-      '&.webchat__thumb-button--submitted .webchat__tooltip': {
-        '--webchat__tooltip-anchor-inline-start': '20%'
+        '&.webchat__thumb-button--submitted .webchat__tooltip': {
+          '--webchat__tooltip-anchor-inline-start': '20%'
+        }
       },
 
       '&:active': {
