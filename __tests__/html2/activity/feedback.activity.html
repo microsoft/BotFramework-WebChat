@@ -22,100 +22,98 @@
       run(async function () {
         WebChat.renderWebChat(
           {
-            directLine: await testHelpers.createDirectLineWithTranscript(
-              [
-                {
-                  from: {
-                    role: 'bot'
-                  },
-                  id: 'a-00000',
-                  timestamp: 0,
-                  type: 'message',
-                  text: 'This is compleded feedback action example.',
-                  entities: [
-                    {
-                      '@context': 'https://schema.org',
-                      '@id': '',
-                      '@type': 'Message',
-                      type: 'https://schema.org/Message',
-                      keywords: ['AIGeneratedContent', 'AllowCopy'],
-                      potentialAction: [
-                        {
-                          '@type': 'LikeAction',
-                          actionStatus: 'CompletedActionStatus',
-                          target: {
-                            '@type': 'EntryPoint',
-                            urlTemplate: 'ms-directline://postback?interaction=like'
-                          }
-                        },
-                        {
-                          '@type': 'DislikeAction',
-                          actionStatus: 'PotentialActionStatus',
-                          result: {
-                            '@type': 'Review',
-                            reviewBody: "I don't like it.",
-                            'reviewBody-input': {
-                              '@type': 'PropertyValueSpecification',
-                              valueMinLength: 3,
-                              valueName: 'reason'
-                            }
-                          },
-                          target: {
-                            '@type': 'EntryPoint',
-                            urlTemplate: 'ms-directline://postback?interaction=dislike{&reason}'
-                          }
-                        }
-                      ]
-                    }
-                  ]
+            directLine: await testHelpers.createDirectLineWithTranscript([
+              {
+                from: {
+                  role: 'bot'
                 },
-                {
-                  from: {
-                    role: 'bot'
-                  },
-                  id: 'a-00002',
-                  timestamp: 0,
-                  type: 'message',
-                  text: "Hi! I'm *Cody*, the devbot. How can I help?",
-                  entities: [
-                    {
-                      '@context': 'https://schema.org',
-                      '@id': '',
-                      '@type': 'Message',
-                      type: 'https://schema.org/Message',
-                      keywords: [],
-                      potentialAction: [
-                        {
-                          '@type': 'LikeAction',
-                          actionStatus: 'PotentialActionStatus',
-                          target: {
-                            '@type': 'EntryPoint',
-                            urlTemplate: 'ms-directline://postback?interaction=like'
+                id: 'a-00000',
+                timestamp: 0,
+                type: 'message',
+                text: 'This is compleded feedback action example.',
+                entities: [
+                  {
+                    '@context': 'https://schema.org',
+                    '@id': '',
+                    '@type': 'Message',
+                    type: 'https://schema.org/Message',
+                    keywords: ['AIGeneratedContent', 'AllowCopy'],
+                    potentialAction: [
+                      {
+                        '@type': 'LikeAction',
+                        actionStatus: 'CompletedActionStatus',
+                        target: {
+                          '@type': 'EntryPoint',
+                          urlTemplate: 'ms-directline://postback?interaction=like'
+                        }
+                      },
+                      {
+                        '@type': 'DislikeAction',
+                        actionStatus: 'PotentialActionStatus',
+                        result: {
+                          '@type': 'Review',
+                          reviewBody: "I don't like it.",
+                          'reviewBody-input': {
+                            '@type': 'PropertyValueSpecification',
+                            valueMinLength: 3,
+                            valueName: 'reason'
                           }
                         },
-                        {
-                          '@type': 'DislikeAction',
-                          actionStatus: 'PotentialActionStatus',
-                          result: {
-                            '@type': 'Review',
-                            reviewBody: "I don't like it.",
-                            'reviewBody-input': {
-                              '@type': 'PropertyValueSpecification',
-                              valueMinLength: 3,
-                              valueName: 'reason'
-                            }
-                          },
-                          target: {
-                            '@type': 'EntryPoint',
-                            urlTemplate: 'ms-directline://postback?interaction=dislike{&reason}'
-                          }
+                        target: {
+                          '@type': 'EntryPoint',
+                          urlTemplate: 'ms-directline://postback?interaction=dislike{&reason}'
                         }
-                      ]
-                    }
-                  ]
-                }
-              ],
-            ),
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                from: {
+                  role: 'bot'
+                },
+                id: 'a-00002',
+                timestamp: 0,
+                type: 'message',
+                text: "Hi! I'm *Cody*, the devbot. How can I help?",
+                entities: [
+                  {
+                    '@context': 'https://schema.org',
+                    '@id': '',
+                    '@type': 'Message',
+                    type: 'https://schema.org/Message',
+                    keywords: [],
+                    potentialAction: [
+                      {
+                        '@type': 'LikeAction',
+                        actionStatus: 'PotentialActionStatus',
+                        target: {
+                          '@type': 'EntryPoint',
+                          urlTemplate: 'ms-directline://postback?interaction=like'
+                        }
+                      },
+                      {
+                        '@type': 'DislikeAction',
+                        actionStatus: 'PotentialActionStatus',
+                        result: {
+                          '@type': 'Review',
+                          reviewBody: "I don't like it.",
+                          'reviewBody-input': {
+                            '@type': 'PropertyValueSpecification',
+                            valueMinLength: 3,
+                            valueName: 'reason'
+                          }
+                        },
+                        target: {
+                          '@type': 'EntryPoint',
+                          urlTemplate: 'ms-directline://postback?interaction=dislike{&reason}'
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]),
             styleOptions: {
               feedbackActionsPlacement: 'activity-actions'
             },
@@ -132,6 +130,10 @@
         await host.sendShiftTab(3);
 
         await host.sendKeys('ENTER');
+
+        // Wait for 400 ms for the tooltip to show up.
+        await new Promise(resolve => setTimeout(resolve, 400));
+
         await host.snapshot('local');
         await host.sendKeys('ENTER');
         await host.snapshot('local');
