@@ -61,11 +61,11 @@
               (next => request => {
                 const DownstreamComponent = next(request);
 
-                if (request.type) {
+                if (request.groupingName) {
                   return ({ activities, children }) =>
                     createElement(
                       'div',
-                      { className: `grouping grouping--${request.type}` },
+                      { className: `grouping grouping--${request.groupingName}` },
                       DownstreamComponent ? createElement(DownstreamComponent, { activities }, children) : children
                     );
                 }
