@@ -1,11 +1,11 @@
 import {
   type ActivityBorderDecoratorMiddleware,
   type activityBorderDecoratorTypeName
-} from './ActivityBorderDecoratorMiddleware';
+} from './private/ActivityBorderDecoratorMiddleware';
 import {
   type ActivityGroupingDecoratorMiddleware,
   type activityGroupingDecoratorTypeName
-} from './ActivityGroupingDecoratorMiddleware';
+} from './private/ActivityGroupingDecoratorMiddleware';
 
 export type DecoratorMiddlewareTypes = {
   [activityBorderDecoratorTypeName]: ReturnType<ActivityBorderDecoratorMiddleware>;

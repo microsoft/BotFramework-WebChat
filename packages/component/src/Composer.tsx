@@ -19,7 +19,7 @@ import React, { memo, useCallback, useMemo, useRef, useState, type ReactNode } f
 import { Composer as SayComposer } from 'react-say';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
-import { BuiltInDecorator } from './decorator';
+import BuiltInDecorator from './BuiltInDecorator';
 import Dictation from './Dictation';
 import ErrorBox from './ErrorBox';
 import {

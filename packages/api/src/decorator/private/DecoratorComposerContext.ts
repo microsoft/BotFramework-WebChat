@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { type DecoratorMiddleware } from './types';
+import { type DecoratorMiddleware } from '../types';
 
 type DecoratorComposerContextType = Readonly<{
   middleware: readonly DecoratorMiddleware[];
