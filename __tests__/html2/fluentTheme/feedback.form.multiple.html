@@ -89,6 +89,7 @@
           1000
         );
 
+        await pageConditions.scrollStabilized();
         await host.snapshot('local');
 
         await host.sendKeys('Test feedback');
