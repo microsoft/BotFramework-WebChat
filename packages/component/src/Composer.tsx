@@ -19,6 +19,7 @@ import React, { memo, useCallback, useMemo, useRef, useState, type ReactNode } f
 import { Composer as SayComposer } from 'react-say';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
+import { BuiltInDecorator } from './decorator';
 import Dictation from './Dictation';
 import ErrorBox from './ErrorBox';
 import {
@@ -462,20 +463,22 @@ const Composer = ({
       <StyleToEmotionObjectComposer nonce={nonce}>
         <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
           <ReducedMotionComposer>
-            <DecoratorComposer middleware={decoratorMiddleware}>
-              <ComposerCore
-                extraStyleSet={extraStyleSet}
-                nonce={nonce}
-                renderMarkdown={renderMarkdown}
-                styleSet={styleSet}
-                styles={theme.styles}
-                suggestedActionsAccessKey={suggestedActionsAccessKey}
-                webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-              >
-                {children}
-                {onTelemetry && <UITracker />}
-              </ComposerCore>
-            </DecoratorComposer>
+            <BuiltInDecorator>
+              <DecoratorComposer middleware={decoratorMiddleware}>
+                <ComposerCore
+                  extraStyleSet={extraStyleSet}
+                  nonce={nonce}
+                  renderMarkdown={renderMarkdown}
+                  styleSet={styleSet}
+                  styles={theme.styles}
+                  suggestedActionsAccessKey={suggestedActionsAccessKey}
+                  webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+                >
+                  {children}
+                  {onTelemetry && <UITracker />}
+                </ComposerCore>
+              </DecoratorComposer>
+            </BuiltInDecorator>
           </ReducedMotionComposer>
         </HTMLContentTransformComposer>
       </StyleToEmotionObjectComposer>
@@ -496,5 +499,4 @@ Composer.propTypes = {
 };
 
 export default Composer;
-
 export type { ComposerProps };
