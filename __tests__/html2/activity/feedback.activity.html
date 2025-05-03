@@ -20,8 +20,6 @@
       } = window;
 
       run(async function () {
-        const clock = lolex.createClock();
-
         WebChat.renderWebChat(
           {
             directLine: await testHelpers.createDirectLineWithTranscript(
@@ -117,9 +115,7 @@
                   ]
                 }
               ],
-              { ponyfill: clock }
             ),
-            ponyfill: clock,
             styleOptions: {
               feedbackActionsPlacement: 'activity-actions'
             },
@@ -131,7 +127,7 @@
         await pageConditions.webChatRendered();
 
         // Wait for "Connecting..." message to dismiss
-        clock.tick(600);
+        // clock.tick(600);
 
         await pageConditions.uiConnected();
 

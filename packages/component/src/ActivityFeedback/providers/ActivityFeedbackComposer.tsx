@@ -167,7 +167,9 @@ function ActivityFeedbackComposer({ children, initialActivity }: ActivityFeedbac
     [shouldShowFeedbackForm]
   );
 
-  const shouldAllowResubmit = useMemo(() => actions.find(action => action['@type'] === 'VoteAction'), [actions]);
+  // TODO: What's the proper logic of "allow resubmission"?
+  //       Right now, if feedback form is not shown, it will allow resubmission.
+  const shouldAllowResubmit = !shouldShowFeedbackForm;
   const shouldAllowResubmitRef = useRefFrom(shouldAllowResubmit);
   const shouldAllowResubmitState = useMemo<readonly [boolean]>(
     () => Object.freeze([shouldAllowResubmit]),
