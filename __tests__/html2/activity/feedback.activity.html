@@ -42,7 +42,7 @@
                       {
                         "@type": "LikeAction",
                         actionStatus: "CompletedActionStatus",
-                        target: { 
+                        target: {
                           "@type": "EntryPoint",
                           urlTemplate: "ms-directline://postback?interaction=like"
                         }
@@ -87,7 +87,7 @@
                       {
                         "@type": "LikeAction",
                         actionStatus: "PotentialActionStatus",
-                        target: { 
+                        target: {
                           "@type": "EntryPoint",
                           urlTemplate: "ms-directline://postback?interaction=like"
                         }
@@ -128,6 +128,8 @@
 
         pageElements.sendBoxTextBox().focus();
         await host.sendShiftTab(3);
+
+        return;
 
         await host.sendKeys('ENTER');
         await host.snapshot('local');

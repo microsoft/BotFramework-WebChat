@@ -646,7 +646,7 @@
   line-height: var(--webchat-lineHeightBase200);
 }
 
-:global(.webchat-fluent).theme :global(.webchat__feedback-form__button__submit) {
+:global(.webchat-fluent).theme :global(.webchat__feedback-form__submit-button) {
   background-color: var(--webchat-colorBrandBackground);
   border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandBackground);
   border-radius: var(--webchat-borderRadiusMedium);
@@ -673,7 +673,7 @@
   }
 }
 
-:global(.webchat-fluent).theme :global(.webchat__feedback-form__button__cancel) {
+:global(.webchat-fluent).theme :global(.webchat__feedback-form__cancel-button) {
   background-color: var(--webchat-colorNeutralBackground1);
   border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
   border-radius: var(--webchat-borderRadiusMedium);

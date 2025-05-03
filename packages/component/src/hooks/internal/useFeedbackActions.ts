@@ -1,19 +1,28 @@
 import { getOrgSchemaMessage, OrgSchemaAction, parseAction, WebChatActivity } from 'botframework-webchat-core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useRefFrom } from 'use-ref-from';
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 
-const parseActivity = (entities?: WebChatActivity['entities']) => {
-  const graph = dereferenceBlankNodes(entities || []);
-  const messageThing = getOrgSchemaMessage(graph);
+export default function useFeedbackActions(initialActivity: WebChatActivity): {
+  actions: readonly OrgSchemaAction[];
+  isCompleted: boolean;
+  markActionAsCompleted: (target: OrgSchemaAction) => void;
+  markActionAsSelected: (target: OrgSchemaAction) => void;
+  selectedAction: OrgSchemaAction;
+} {
+  // We can react to activity changes by throwing away our currentFeedbackActions, but saving some code for now.
+  useEffect(() => {
+    console.warn(
+      'botframework-webchat: useFeedbackActions() is skipping changes made to the activity.',
+      initialActivity
+    );
+  }, [initialActivity]);
 
-  return { graph, messageThing };
-};
-
-export default function useFeedbackActions(activity: WebChatActivity) {
-  const { graph, messageThing } = useMemo(() => parseActivity(activity.entities), [activity.entities]);
-
-  const feedbackActions = useMemo<readonly OrgSchemaAction[]>(() => {
+  const [actions, setActions] = useState<readonly OrgSchemaAction[]>(() => {
     try {
+      const graph = dereferenceBlankNodes(initialActivity.entities || []);
+      const messageThing = getOrgSchemaMessage(graph);
+
       const reactActions = Object.freeze(
         (messageThing?.potentialAction || []).filter(
           ({ '@type': type }) => type === 'LikeAction' || type === 'DislikeAction'
@@ -34,42 +43,72 @@ export default function useFeedbackActions(activity: WebChatActivity) {
     } catch {
       // Intentionally left blank.
     }
-    return [] as OrgSchemaAction[];
-  }, [graph, messageThing]);
 
-  const [currentFeedbackActions, setCurrentFeedbackActions] = useState(feedbackActions);
+    return Object.freeze([]);
+  });
 
-  // Handle feedback actions update via incoming activity
-  useEffect(() => {
-    setCurrentFeedbackActions(feedbackActions);
-  }, [feedbackActions]);
+  const isCompleted = useMemo<boolean>(
+    () => actions.some(action => action.actionStatus === 'CompletedActionStatus'),
+    [actions]
+  );
 
-  const updateFeedbackActions = useCallback(
-    (action?: OrgSchemaAction) => {
-      const newActions: OrgSchemaAction[] = currentFeedbackActions.map(feedbackAction => ({
-        ...feedbackAction,
-        actionStatus:
-          action && feedbackAction === action && action.actionStatus !== 'ActiveActionStatus'
-            ? 'ActiveActionStatus'
-            : 'PotentialActionStatus'
-      }));
-      setCurrentFeedbackActions(newActions);
+  const isCompletedRef = useRefFrom(isCompleted);
+
+  const markActionAsSelected = useCallback(
+    (target: OrgSchemaAction) => {
+      if (isCompletedRef.current) {
+        return console.warn(
+          'botframework-webchat internal: useFeedbackActions().markActionAsSelected() must not be called after feedback is completed, ignoring the call.'
+        );
+      }
+
+      setActions(actions =>
+        Object.freeze(
+          actions.map(action =>
+            action === target
+              ? Object.freeze({ ...action, actionStatus: 'ActiveActionStatus' })
+              : action.actionStatus === 'ActiveActionStatus'
+                ? Object.freeze({ ...action, actionStatus: 'PotentialActionStatus' })
+                : action
+          )
+        )
+      );
     },
-    [currentFeedbackActions, setCurrentFeedbackActions]
+    [isCompletedRef, setActions]
   );
 
-  const completeSelectedAction = useCallback(() => {
-    const newActions: OrgSchemaAction[] = currentFeedbackActions.map(feedbackAction => ({
-      ...feedbackAction,
-      actionStatus:
-        feedbackAction.actionStatus === 'ActiveActionStatus' ? 'CompletedActionStatus' : 'PotentialActionStatus'
-    }));
-    setCurrentFeedbackActions(newActions);
-  }, [currentFeedbackActions, setCurrentFeedbackActions]);
+  const markActionAsCompleted = useCallback(
+    (target: OrgSchemaAction) => {
+      if (isCompletedRef.current) {
+        return console.warn(
+          'botframework-webchat internal: useFeedbackActions().markActionAsCompleted() must not be called after feedback is completed, ignoring the call.'
+        );
+      }
 
-  const selectedAction = currentFeedbackActions.find(
-    action => action.actionStatus === 'CompletedActionStatus' || action.actionStatus === 'ActiveActionStatus'
+      setActions(actions =>
+        Object.freeze(
+          actions.map(action =>
+            action === target ? Object.freeze({ ...action, actionStatus: 'CompletedActionStatus' }) : action
+          )
+        )
+      );
+    },
+    [isCompletedRef, setActions]
   );
 
-  return { completeSelectedAction, currentFeedbackActions, updateFeedbackActions, selectedAction };
+  const selectedAction = useMemo(
+    () =>
+      actions.find(
+        ({ actionStatus }) => actionStatus === 'ActiveActionStatus' || actionStatus === 'CompletedActionStatus'
+      ),
+    [actions]
+  );
+
+  return {
+    actions,
+    isCompleted,
+    markActionAsCompleted,
+    markActionAsSelected,
+    selectedAction
+  };
 }

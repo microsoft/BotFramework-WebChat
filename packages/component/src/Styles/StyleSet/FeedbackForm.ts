@@ -7,7 +7,7 @@ export default function createFeedbackFormStyle() {
       flexDirection: 'column',
       gap: '0.5rem'
     },
-    '&.webchat__feedback-form__root-container__child': {
+    '&.webchat__feedback-form__root-child': {
       display: 'flex'
     },
     '&.webchat__feedback-form': {
@@ -39,7 +39,7 @@ export default function createFeedbackFormStyle() {
       gap: '8px',
       paddingTop: '6px'
     },
-    '&.webchat__feedback-form__button__submit': {
+    '&.webchat__feedback-form__submit-button': {
       backgroundColor: CSSTokens.ColorAccent,
       border: `1px solid ${CSSTokens.ColorAccent}`,
       borderRadius: '4px',
@@ -50,17 +50,17 @@ export default function createFeedbackFormStyle() {
       height: '24px',
       padding: '0 8px'
     },
-    '&.webchat__feedback-form__button__submit:hover': {
+    '&.webchat__feedback-form__submit-button:hover': {
       backgroundColor: '#004a98',
       border: '1px solid #004a98',
       color: '#FFFFFF'
     },
-    '&.webchat__feedback-form__button__submit:active': {
+    '&.webchat__feedback-form__submit-button:active': {
       backgroundColor: '#004a98',
       border: '1px solid #004a98',
       color: '#FFFFFF'
     },
-    '&.webchat__feedback-form__button__cancel': {
+    '&.webchat__feedback-form__cancel-button': {
       backgroundColor: '#FFFFFF',
       borderRadius: '4px',
       cursor: 'pointer',
@@ -71,7 +71,7 @@ export default function createFeedbackFormStyle() {
       height: '24px',
       padding: '0 8px'
     },
-    '&.webchat__feedback-form__button__cancel:hover': {
+    '&.webchat__feedback-form__cancel-button:hover': {
       backgroundColor: CSSTokens.ColorSubtle,
       color: '#FFFFFF'
     }

@@ -2,59 +2,48 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useRef, useState, type FormEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import { useStateWithRef } from 'use-state-with-ref';
 
+import Markdownable from '../../Attachment/Text/private/Markdownable';
 import useStyleSet from '../../hooks/useStyleSet';
 import testIds from '../../testIds';
-import Markdownable from '../../Attachment/Text/private/Markdownable';
-import TextArea from './FeedbackTextArea';
+import useActivity from '../providers/useActivity';
+import useSelectedAction from '../providers/useSelectedAction';
+import useSubmitCallback from '../providers/useSubmitCallback';
+import FeedbackTextArea from './FeedbackTextArea';
+import getDisclaimer from './getDisclaimer';
 
-const { useLocalizer, usePostActivity } = hooks;
+const { useLocalizer } = hooks;
 
-type FeedbackFormProps = Readonly<{
-  disclaimer?: string;
-  feedbackType: string;
-  onFeedbackFormButtonClick: (isSubmitted?: boolean) => void;
-  replyToId?: string;
-}>;
-
-function FeedbackForm({ feedbackType, disclaimer, onFeedbackFormButtonClick, replyToId }: FeedbackFormProps) {
+function FeedbackForm() {
   const [{ feedbackForm }] = useStyleSet();
+  const [activity] = useActivity();
   const [hasFocus, setHasFocus] = useState(false);
-  const [userFeedback, setUserFeedback] = useState('');
+  const [selectedAction, setSelectedAction] = useSelectedAction();
+  const [userFeedback, setUserFeedback, userFeedbackRef] = useStateWithRef('');
   const feedbackTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const localize = useLocalizer();
-  const onFeedbackFormButtonClickRef = useRefFrom(onFeedbackFormButtonClick);
-  const postActivity = usePostActivity();
+  const submit = useSubmitCallback();
 
-  const handleCancel = useCallback(() => {
-    onFeedbackFormButtonClickRef.current();
-  }, [onFeedbackFormButtonClickRef]);
+  const disclaimer = getDisclaimer(activity);
+  const selectedActionRef = useRefFrom(selectedAction);
 
-  const handleSubmit = useCallback(
+  const handleCancelButtonClick = useCallback(() => {
+    setSelectedAction(undefined);
+  }, [setSelectedAction]);
+
+  const handleMessageChange: FormEventHandler<HTMLTextAreaElement> = useCallback(
+    ({ currentTarget: { value } }) => setUserFeedback(value),
+    [setUserFeedback]
+  );
+
+  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
     event => {
       event.preventDefault();
 
-      postActivity({
-        name: 'message/submitAction',
-        replyToId,
-        type: 'invoke',
-        value: {
-          actionName: 'feedback',
-          actionValue: {
-            feedback: { feedbackText: userFeedback },
-            reaction: feedbackType === 'LikeAction' ? 'like' : 'dislike'
-          }
-        }
-      } as any);
-
-      onFeedbackFormButtonClickRef.current(true);
+      submit(selectedActionRef.current, userFeedbackRef.current);
     },
-    [feedbackType, onFeedbackFormButtonClickRef, postActivity, replyToId, userFeedback]
-  );
-
-  const handleChange: FormEventHandler<HTMLTextAreaElement> = useCallback(
-    ({ currentTarget: { value } }) => setUserFeedback(value),
-    [setUserFeedback]
+    [selectedActionRef, submit, userFeedbackRef]
   );
 
   useEffect(() => {
@@ -74,9 +63,9 @@ function FeedbackForm({ feedbackType, disclaimer, onFeedbackFormButtonClick, rep
         {localize('FEEDBACK_FORM_TITLE')}
       </span>
       <form className={classNames('webchat__feedback-form', feedbackForm + '')} onSubmit={handleSubmit}>
-        <TextArea
+        <FeedbackTextArea
           data-testid={testIds.feedbackSendBox}
-          onInput={handleChange}
+          onInput={handleMessageChange}
           placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
           ref={feedbackTextAreaRef}
           startRows={3}
@@ -89,12 +78,12 @@ function FeedbackForm({ feedbackType, disclaimer, onFeedbackFormButtonClick, rep
           />
         )}
         <div className={classNames('webchat__feedback-form__container', feedbackForm + '')}>
-          <button className={classNames('webchat__feedback-form__button__submit', feedbackForm + '')} type="submit">
+          <button className={classNames('webchat__feedback-form__submit-button', feedbackForm + '')} type="submit">
             {localize('FEEDBACK_FORM_SUBMIT_BUTTON_LABEL')}
           </button>
           <button
-            className={classNames('webchat__feedback-form__button__cancel', feedbackForm + '')}
-            onClick={handleCancel}
+            className={classNames('webchat__feedback-form__cancel-button', feedbackForm + '')}
+            onClick={handleCancelButtonClick}
             type="button"
           >
             {localize('FEEDBACK_FORM_CANCEL_BUTTON_LABEL')}
@@ -106,5 +95,3 @@ function FeedbackForm({ feedbackType, disclaimer, onFeedbackFormButtonClick, rep
 }
 
 export default memo(FeedbackForm);
-
-export { type FeedbackFormProps };
