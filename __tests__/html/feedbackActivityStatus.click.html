@@ -52,6 +52,10 @@
 
         const upvoteResult = await directLine.actPostActivity(async () => {
           await host.click(buttons[0]);
+
+          // Wait for 400 ms for the tooltip to show up.
+          await new Promise(resolve => setTimeout(resolve, 400));
+
           await host.snapshot();
 
           clock.tick(500);
@@ -75,6 +79,10 @@
 
         const downvoteResult = await directLine.actPostActivity(async () => {
           await host.click(buttons[1]);
+
+          // Wait for 400 ms for the tooltip to show up.
+          await new Promise(resolve => setTimeout(resolve, 400));
+
           await host.snapshot();
 
           clock.tick(500);
@@ -99,6 +107,10 @@
         const switchingResult = await directLine.actPostActivity(async () => {
           await host.click(buttons[0]);
           await host.click(buttons[1]);
+
+          // Wait for 400 ms for the tooltip to show up.
+          await new Promise(resolve => setTimeout(resolve, 400));
+
           await host.snapshot();
 
           clock.tick(500);

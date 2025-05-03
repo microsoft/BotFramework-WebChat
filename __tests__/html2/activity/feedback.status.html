@@ -24,13 +24,13 @@
           {
             directLine: await testHelpers.createDirectLineWithTranscript([
               {
-                from:{
-                  role: "bot"
+                from: {
+                  role: 'bot'
                 },
-                id: "a-00000",
+                id: 'a-00000',
                 timestamp: 0,
-                type: "message",
-                text: "This is compleded feedback action example.",
+                type: 'message',
+                text: 'This is compleded feedback action example.',
                 entities: [
                   {
                     '@context': 'https://schema.org',
@@ -40,28 +40,28 @@
                     keywords: ['AIGeneratedContent', 'AllowCopy'],
                     potentialAction: [
                       {
-                        "@type": "LikeAction",
-                        actionStatus: "CompletedActionStatus",
-                        target: { 
-                          "@type": "EntryPoint",
-                          urlTemplate: "ms-directline://postback?interaction=like"
+                        '@type': 'LikeAction',
+                        actionStatus: 'CompletedActionStatus',
+                        target: {
+                          '@type': 'EntryPoint',
+                          urlTemplate: 'ms-directline://postback?interaction=like'
                         }
                       },
                       {
-                        "@type": "DislikeAction",
-                        actionStatus: "PotentialActionStatus",
+                        '@type': 'DislikeAction',
+                        actionStatus: 'PotentialActionStatus',
                         result: {
-                          "@type": "Review",
+                          '@type': 'Review',
                           reviewBody: "I don't like it.",
-                          "reviewBody-input": {
-                            "@type": "PropertyValueSpecification",
+                          'reviewBody-input': {
+                            '@type': 'PropertyValueSpecification',
                             valueMinLength: 3,
-                            valueName: "reason"
+                            valueName: 'reason'
                           }
                         },
                         target: {
-                          "@type": "EntryPoint",
-                          urlTemplate: "ms-directline://postback?interaction=dislike{&reason}"
+                          '@type': 'EntryPoint',
+                          urlTemplate: 'ms-directline://postback?interaction=dislike{&reason}'
                         }
                       }
                     ]
@@ -72,18 +72,18 @@
                 from: {
                   role: 'user'
                 },
-                id: "a-00001",
+                id: 'a-00001',
                 timestamp: 0,
-                type: "message",
-                text: "Test",
+                type: 'message',
+                text: 'Test'
               },
               {
-                from:{
-                  role: "bot"
+                from: {
+                  role: 'bot'
                 },
-                id: "a-00002",
+                id: 'a-00002',
                 timestamp: 0,
-                type: "message",
+                type: 'message',
                 text: "Hi! I'm *Cody*, the devbot. How can I help?",
                 entities: [
                   {
@@ -94,28 +94,28 @@
                     keywords: [],
                     potentialAction: [
                       {
-                        "@type": "LikeAction",
-                        actionStatus: "PotentialActionStatus",
-                        target: { 
-                          "@type": "EntryPoint",
-                          urlTemplate: "ms-directline://postback?interaction=like"
+                        '@type': 'LikeAction',
+                        actionStatus: 'PotentialActionStatus',
+                        target: {
+                          '@type': 'EntryPoint',
+                          urlTemplate: 'ms-directline://postback?interaction=like'
                         }
                       },
                       {
-                        "@type": "DislikeAction",
-                        actionStatus: "PotentialActionStatus",
+                        '@type': 'DislikeAction',
+                        actionStatus: 'PotentialActionStatus',
                         result: {
-                          "@type": "Review",
+                          '@type': 'Review',
                           reviewBody: "I don't like it.",
-                          "reviewBody-input": {
-                            "@type": "PropertyValueSpecification",
+                          'reviewBody-input': {
+                            '@type': 'PropertyValueSpecification',
                             valueMinLength: 3,
-                            valueName: "reason"
+                            valueName: 'reason'
                           }
                         },
                         target: {
-                          "@type": "EntryPoint",
-                          urlTemplate: "ms-directline://postback?interaction=dislike{&reason}"
+                          '@type': 'EntryPoint',
+                          urlTemplate: 'ms-directline://postback?interaction=dislike{&reason}'
                         }
                       }
                     ]
@@ -123,7 +123,7 @@
                 ]
               }
             ]),
-            store: testHelpers.createStore(),
+            store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );
@@ -132,7 +132,7 @@
 
         await host.snapshot('local');
 
-        const [,, activityStatus] = pageElements.activityStatuses();
+        const [, , activityStatus] = pageElements.activityStatuses();
         const buttons = activityStatus.querySelectorAll('button');
 
         pageElements.sendBoxTextBox().focus();
@@ -140,14 +140,26 @@
         await host.sendShiftTab(3);
         await host.sendKeys('ENTER');
         await expect(document.activeElement).toBe(buttons[0]);
+
+        // Wait for 400 ms for the tooltip to show up.
+        await new Promise(resolve => setTimeout(resolve, 400));
+
         await host.snapshot('local');
 
         await host.sendTab();
         await expect(document.activeElement).toBe(buttons[1]);
+
+        // Wait for 400 ms for the tooltip to show up.
+        await new Promise(resolve => setTimeout(resolve, 400));
+
         await host.snapshot('local');
 
         await host.sendTab();
         await expect(document.activeElement).toBe(buttons[0]);
+
+        // Wait for 400 ms for the tooltip to show up.
+        await new Promise(resolve => setTimeout(resolve, 400));
+
         await host.snapshot('local');
 
         await host.sendKeys('ENTER');
