@@ -5,19 +5,18 @@ export default function createFeedbackFormStyle() {
     '&.webchat__feedback-form__root-container': {
       display: 'flex',
       flexDirection: 'column',
-      gap: '0.5rem'
+      gap: '8px'
     },
-    '&.webchat__feedback-form__root-child': {
+    '.webchat__feedback-form__root-child': {
       display: 'flex'
     },
-    '&.webchat__feedback-form': {
-      boxSizing: 'border-box',
-      display: 'grid',
+    '.webchat__feedback-form': {
+      display: 'flex',
+      flexDirection: 'column',
       gap: '4px',
-      gridTemplateRows: 'auto auto',
       position: 'relative'
     },
-    '&.webchat__feedback-form__body': {
+    '.webchat__feedback-form__body': {
       fontFamily: CSSTokens.FontPrimary,
       fontStyle: 'normal',
       fontWeight: 400,
@@ -25,7 +24,7 @@ export default function createFeedbackFormStyle() {
       lineHeight: '20px',
       color: '#373435'
     },
-    '&.webchat__feedback-form__caption': {
+    '.webchat__feedback-form__caption': {
       fontFamily: CSSTokens.FontPrimary,
       fontStyle: 'normal',
       fontWeight: 400,
@@ -33,13 +32,12 @@ export default function createFeedbackFormStyle() {
       lineHeight: '14px',
       color: CSSTokens.ColorSubtle
     },
-    '&.webchat__feedback-form__container': {
+    '.webchat__feedback-form__container': {
       display: 'flex',
-      flexDirection: 'row',
       gap: '8px',
-      paddingTop: '6px'
+      marginTop: '6px'
     },
-    '&.webchat__feedback-form__submit-button': {
+    '.webchat__feedback-form__submit-button': {
       backgroundColor: CSSTokens.ColorAccent,
       border: `1px solid ${CSSTokens.ColorAccent}`,
       borderRadius: '4px',
@@ -50,17 +48,17 @@ export default function createFeedbackFormStyle() {
       height: '24px',
       padding: '0 8px'
     },
-    '&.webchat__feedback-form__submit-button:hover': {
+    '.webchat__feedback-form__submit-button:hover': {
       backgroundColor: '#004a98',
       border: '1px solid #004a98',
       color: '#FFFFFF'
     },
-    '&.webchat__feedback-form__submit-button:active': {
+    '.webchat__feedback-form__submit-button:active': {
       backgroundColor: '#004a98',
       border: '1px solid #004a98',
       color: '#FFFFFF'
     },
-    '&.webchat__feedback-form__cancel-button': {
+    '.webchat__feedback-form__cancel-button': {
       backgroundColor: '#FFFFFF',
       borderRadius: '4px',
       cursor: 'pointer',
@@ -71,7 +69,7 @@ export default function createFeedbackFormStyle() {
       height: '24px',
       padding: '0 8px'
     },
-    '&.webchat__feedback-form__cancel-button:hover': {
+    '.webchat__feedback-form__cancel-button:hover': {
       backgroundColor: CSSTokens.ColorSubtle,
       color: '#FFFFFF'
     }

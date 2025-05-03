@@ -18,7 +18,7 @@ function FeedbackLoopWithMessage() {
 
   return (
     <div className={classNames('webchat__feedback-form__root-container', feedbackForm + '')}>
-      <div className={classNames('webchat__feedback-form__root-child', feedbackForm + '')}>
+      <div className={classNames('webchat__feedback-form__root-child')}>
         <FeedbackVoteButtonBar />
       </div>
       {isExpanded && <FeedbackForm />}

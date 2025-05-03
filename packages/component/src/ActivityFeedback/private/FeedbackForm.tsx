@@ -58,39 +58,30 @@ function FeedbackForm() {
   }, [feedbackTextAreaRef, hasFocus, setHasFocus]);
 
   return (
-    <div>
-      <span className={classNames('webchat__feedback-form__body', feedbackForm + '')}>
-        {localize('FEEDBACK_FORM_TITLE')}
-      </span>
-      <form className={classNames('webchat__feedback-form', feedbackForm + '')} onSubmit={handleSubmit}>
-        <FeedbackTextArea
-          data-testid={testIds.feedbackSendBox}
-          onInput={handleMessageChange}
-          placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
-          ref={feedbackTextAreaRef}
-          startRows={3}
-          value={userFeedback}
-        />
-        {disclaimer && (
-          <Markdownable
-            className={classNames('webchat__feedback-form__caption', feedbackForm + '')}
-            text={disclaimer}
-          />
-        )}
-        <div className={classNames('webchat__feedback-form__container', feedbackForm + '')}>
-          <button className={classNames('webchat__feedback-form__submit-button', feedbackForm + '')} type="submit">
-            {localize('FEEDBACK_FORM_SUBMIT_BUTTON_LABEL')}
-          </button>
-          <button
-            className={classNames('webchat__feedback-form__cancel-button', feedbackForm + '')}
-            onClick={handleCancelButtonClick}
-            type="button"
-          >
-            {localize('FEEDBACK_FORM_CANCEL_BUTTON_LABEL')}
-          </button>
-        </div>
-      </form>
-    </div>
+    <form className={classNames('webchat__feedback-form', feedbackForm + '')} onSubmit={handleSubmit}>
+      <span className={classNames('webchat__feedback-form__body')}>{localize('FEEDBACK_FORM_TITLE')}</span>
+      <FeedbackTextArea
+        data-testid={testIds.feedbackSendBox}
+        onInput={handleMessageChange}
+        placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
+        ref={feedbackTextAreaRef}
+        startRows={3}
+        value={userFeedback}
+      />
+      {disclaimer && <Markdownable className={classNames('webchat__feedback-form__caption')} text={disclaimer} />}
+      <div className={classNames('webchat__feedback-form__container')}>
+        <button className={classNames('webchat__feedback-form__submit-button')} type="submit">
+          {localize('FEEDBACK_FORM_SUBMIT_BUTTON_LABEL')}
+        </button>
+        <button
+          className={classNames('webchat__feedback-form__cancel-button')}
+          onClick={handleCancelButtonClick}
+          type="button"
+        >
+          {localize('FEEDBACK_FORM_CANCEL_BUTTON_LABEL')}
+        </button>
+      </div>
+    </form>
   );
 }
 
