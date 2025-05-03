@@ -125,7 +125,7 @@ function ActivityFeedbackComposer({ children, activity: activityFromProps }: Act
     () =>
       Object.freeze(
         rawActions.map(action =>
-          actionStateForActions && actionStateForActions?.actionId === action['@id']
+          actionStateForActions && actionStateForActions.actionId === action['@id']
             ? Object.freeze({ ...action, actionStatus: actionStateForActions.actionStatus })
             : action.actionStatus === 'PotentialActionStatus'
               ? action
@@ -148,9 +148,9 @@ function ActivityFeedbackComposer({ children, activity: activityFromProps }: Act
 
   const submitCallback = useCallback(
     (action: OrgSchemaAction, feedbackText?: string | undefined) => {
-      if (actionStateRef.current.actionStatus === 'CompletedActionStatus') {
+      if (actionStateRef.current?.actionStatus === 'CompletedActionStatus') {
         return console.warn(
-          'botframework-webchat internal: useFeedbackActions().markActionAsCompleted() must not be called after feedback is completed, ignoring the call.'
+          'botframework-webchat internal: useFeedbackActions().submitCallback() must not be called after feedback is completed, ignoring the call.'
         );
       } else if (!actionsRef.current.includes(action)) {
         return console.warn(
