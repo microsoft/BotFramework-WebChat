@@ -20,107 +20,118 @@
       } = window;
 
       run(async function () {
+        const clock = lolex.createClock();
+
         WebChat.renderWebChat(
           {
-            directLine: await testHelpers.createDirectLineWithTranscript([
-              {
-                from:{
-                  role: "bot"
-                },
-                id: "a-00000",
-                timestamp: 0,
-                type: "message",
-                text: "This is compleded feedback action example.",
-                entities: [
-                  {
-                    '@context': 'https://schema.org',
-                    '@id': '',
-                    '@type': 'Message',
-                    type: 'https://schema.org/Message',
-                    keywords: ['AIGeneratedContent', 'AllowCopy'],
-                    potentialAction: [
-                      {
-                        "@type": "LikeAction",
-                        actionStatus: "CompletedActionStatus",
-                        target: {
-                          "@type": "EntryPoint",
-                          urlTemplate: "ms-directline://postback?interaction=like"
-                        }
-                      },
-                      {
-                        "@type": "DislikeAction",
-                        actionStatus: "PotentialActionStatus",
-                        result: {
-                          "@type": "Review",
-                          reviewBody: "I don't like it.",
-                          "reviewBody-input": {
-                            "@type": "PropertyValueSpecification",
-                            valueMinLength: 3,
-                            valueName: "reason"
+            directLine: await testHelpers.createDirectLineWithTranscript(
+              [
+                {
+                  from: {
+                    role: 'bot'
+                  },
+                  id: 'a-00000',
+                  timestamp: 0,
+                  type: 'message',
+                  text: 'This is compleded feedback action example.',
+                  entities: [
+                    {
+                      '@context': 'https://schema.org',
+                      '@id': '',
+                      '@type': 'Message',
+                      type: 'https://schema.org/Message',
+                      keywords: ['AIGeneratedContent', 'AllowCopy'],
+                      potentialAction: [
+                        {
+                          '@type': 'LikeAction',
+                          actionStatus: 'CompletedActionStatus',
+                          target: {
+                            '@type': 'EntryPoint',
+                            urlTemplate: 'ms-directline://postback?interaction=like'
                           }
                         },
-                        target: {
-                          "@type": "EntryPoint",
-                          urlTemplate: "ms-directline://postback?interaction=dislike{&reason}"
+                        {
+                          '@type': 'DislikeAction',
+                          actionStatus: 'PotentialActionStatus',
+                          result: {
+                            '@type': 'Review',
+                            reviewBody: "I don't like it.",
+                            'reviewBody-input': {
+                              '@type': 'PropertyValueSpecification',
+                              valueMinLength: 3,
+                              valueName: 'reason'
+                            }
+                          },
+                          target: {
+                            '@type': 'EntryPoint',
+                            urlTemplate: 'ms-directline://postback?interaction=dislike{&reason}'
+                          }
                         }
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                from:{
-                  role: "bot"
+                      ]
+                    }
+                  ]
                 },
-                id: "a-00002",
-                timestamp: 0,
-                type: "message",
-                text: "Hi! I'm *Cody*, the devbot. How can I help?",
-                entities: [
-                  {
-                    '@context': 'https://schema.org',
-                    '@id': '',
-                    '@type': 'Message',
-                    type: 'https://schema.org/Message',
-                    keywords: [],
-                    potentialAction: [
-                      {
-                        "@type": "LikeAction",
-                        actionStatus: "PotentialActionStatus",
-                        target: {
-                          "@type": "EntryPoint",
-                          urlTemplate: "ms-directline://postback?interaction=like"
-                        }
-                      },
-                      {
-                        "@type": "DislikeAction",
-                        actionStatus: "PotentialActionStatus",
-                        result: {
-                          "@type": "Review",
-                          reviewBody: "I don't like it.",
-                          "reviewBody-input": {
-                            "@type": "PropertyValueSpecification",
-                            valueMinLength: 3,
-                            valueName: "reason"
+                {
+                  from: {
+                    role: 'bot'
+                  },
+                  id: 'a-00002',
+                  timestamp: 0,
+                  type: 'message',
+                  text: "Hi! I'm *Cody*, the devbot. How can I help?",
+                  entities: [
+                    {
+                      '@context': 'https://schema.org',
+                      '@id': '',
+                      '@type': 'Message',
+                      type: 'https://schema.org/Message',
+                      keywords: [],
+                      potentialAction: [
+                        {
+                          '@type': 'LikeAction',
+                          actionStatus: 'PotentialActionStatus',
+                          target: {
+                            '@type': 'EntryPoint',
+                            urlTemplate: 'ms-directline://postback?interaction=like'
                           }
                         },
-                        target: {
-                          "@type": "EntryPoint",
-                          urlTemplate: "ms-directline://postback?interaction=dislike{&reason}"
+                        {
+                          '@type': 'DislikeAction',
+                          actionStatus: 'PotentialActionStatus',
+                          result: {
+                            '@type': 'Review',
+                            reviewBody: "I don't like it.",
+                            'reviewBody-input': {
+                              '@type': 'PropertyValueSpecification',
+                              valueMinLength: 3,
+                              valueName: 'reason'
+                            }
+                          },
+                          target: {
+                            '@type': 'EntryPoint',
+                            urlTemplate: 'ms-directline://postback?interaction=dislike{&reason}'
+                          }
                         }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]),
+                      ]
+                    }
+                  ]
+                }
+              ],
+              { ponyfill: clock }
+            ),
+            ponyfill: clock,
             styleOptions: {
               feedbackActionsPlacement: 'activity-actions'
             },
-            store: testHelpers.createStore(),
+            store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );
+
+        await pageConditions.webChatRendered();
+
+        // Wait for "Connecting..." message to dismiss
+        clock.tick(600);
 
         await pageConditions.uiConnected();
 
@@ -128,8 +139,6 @@
 
         pageElements.sendBoxTextBox().focus();
         await host.sendShiftTab(3);
-
-        return;
 
         await host.sendKeys('ENTER');
         await host.snapshot('local');
