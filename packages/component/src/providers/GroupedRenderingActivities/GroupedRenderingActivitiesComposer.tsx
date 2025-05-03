@@ -40,7 +40,7 @@ const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesCom
   );
 
   const activitiesByGroupMap = useMemo<ReadonlyMap<string, readonly (readonly WebChatActivity[])[]>>(() => {
-    const activitiesByGroupMap = Object.freeze(new Map(Object.entries(groupActivities({ activities }))));
+    const activitiesByGroupMap = Object.freeze(new Map(Object.entries(groupActivities({ activities }) || {})));
 
     for (const [key, value] of activitiesByGroupMap) {
       if (!validateAllEntriesTagged(activities, value)) {
