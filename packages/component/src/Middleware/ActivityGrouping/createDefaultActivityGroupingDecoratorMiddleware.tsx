@@ -12,10 +12,10 @@ export default function createDefaultActivityGroupingDecoratorMiddleware(): read
     (init: DecoratorMiddlewareInit) =>
       init === 'activity grouping' &&
       ((() =>
-        ({ type }) =>
-          type === 'sender'
+        ({ groupingName }) =>
+          groupingName === 'sender'
             ? SenderGrouping
-            : type === 'status'
+            : groupingName === 'status'
               ? StatusGrouping
               : RenderActivityGrouping) satisfies DecoratorMiddlewareTypes['activity grouping'])
   ]);

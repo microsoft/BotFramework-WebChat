@@ -1,4 +1,8 @@
-export type ActivityDecoratorRequest = {
+import { type EmptyObject } from 'type-fest';
+
+export const activityBorderDecoratorTypeName = 'activity border' as const;
+
+export type ActivityBorderDecoratorRequest = Readonly<{
   /**
    * Decorate the activity as it participate in a livestreaming session.
    *
@@ -18,4 +22,6 @@ export type ActivityDecoratorRequest = {
    * - `undefined` - the sender is unknown
    */
   from: 'bot' | 'channel' | `user` | undefined;
-};
+}>;
+
+export type ActivityBorderDecoratorProps = EmptyObject;

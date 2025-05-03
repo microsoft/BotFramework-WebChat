@@ -1,6 +1,6 @@
 import React, { Fragment, memo, type ReactNode } from 'react';
-import InternalDecoratorComposer from '../internal/InternalDecoratorComposer';
-import { type DecoratorMiddleware } from '../types';
+import InternalDecoratorComposer from './internal/InternalDecoratorComposer';
+import { type DecoratorMiddleware } from './types';
 
 type DecoratorComposerProps = Readonly<{
   children?: ReactNode | undefined;

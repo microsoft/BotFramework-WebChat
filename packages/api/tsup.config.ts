@@ -5,8 +5,8 @@ const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
     'botframework-webchat-api': './src/index.ts',
-    'botframework-webchat-api.internal': './src/internal.ts',
-    'botframework-webchat-api.decorator': './src/decorator/index.ts'
+    'botframework-webchat-api.decorator': './src/decorator.ts',
+    'botframework-webchat-api.internal': './src/internal.ts'
   }
 };
 

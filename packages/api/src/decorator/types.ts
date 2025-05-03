@@ -1,11 +1,7 @@
-import {
-  type ActivityBorderDecoratorMiddleware,
-  type activityBorderDecoratorTypeName
-} from './private/ActivityBorderDecoratorMiddleware';
-import {
-  type ActivityGroupingDecoratorMiddleware,
-  type activityGroupingDecoratorTypeName
-} from './private/ActivityGroupingDecoratorMiddleware';
+import { type ActivityBorderDecoratorMiddleware } from './ActivityBorder/private/ActivityBorderDecoratorMiddleware';
+import { type activityBorderDecoratorTypeName } from './ActivityBorder/types';
+import { type ActivityGroupingDecoratorMiddleware } from './ActivityGrouping/private/ActivityGroupingDecoratorMiddleware';
+import { type activityGroupingDecoratorTypeName } from './ActivityGrouping/types';
 
 export type DecoratorMiddlewareTypes = {
   [activityBorderDecoratorTypeName]: ReturnType<ActivityBorderDecoratorMiddleware>;

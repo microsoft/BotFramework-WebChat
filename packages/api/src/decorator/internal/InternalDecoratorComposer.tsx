@@ -1,14 +1,14 @@
 import React, { memo, useContext, useMemo, type ReactNode } from 'react';
 import {
   ActivityBorderDecoratorMiddlewareProvider,
-  activityBorderDecoratorTypeName,
   initActivityBorderDecoratorMiddleware
-} from '../private/ActivityBorderDecoratorMiddleware';
+} from '../ActivityBorder/private/ActivityBorderDecoratorMiddleware';
+import { activityBorderDecoratorTypeName } from '../ActivityBorder/types';
 import {
   ActivityGroupingDecoratorMiddlewareProvider,
-  activityGroupingDecoratorTypeName,
   initActivityGroupingDecoratorMiddleware
-} from '../private/ActivityGroupingDecoratorMiddleware';
+} from '../ActivityGrouping/private/ActivityGroupingDecoratorMiddleware';
+import { activityGroupingDecoratorTypeName } from '../ActivityGrouping/types';
 import DecoratorComposerContext from '../private/DecoratorComposerContext';
 import { type DecoratorMiddleware } from '../types';
 

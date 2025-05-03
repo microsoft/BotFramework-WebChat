@@ -1,14 +1,9 @@
-import { type WebChatActivity } from 'botframework-webchat-core';
-
-import templateMiddleware from './templateMiddleware';
-
-type ActivityGroupingDecoratorProps = {
-  activities: readonly WebChatActivity[];
-};
-
-type ActivityGroupingDecoratorRequest = {
-  type: string;
-};
+import templateMiddleware from '../../private/templateMiddleware';
+import {
+  type ActivityGroupingDecoratorProps,
+  type ActivityGroupingDecoratorRequest,
+  type activityGroupingDecoratorTypeName
+} from '../types';
 
 const {
   initMiddleware: initActivityGroupingDecoratorMiddleware,
@@ -28,12 +23,9 @@ type ActivityGroupingDecoratorMiddlewareInit = typeof types.init;
 type ActivityGroupingDecoratorMiddlewareProps = typeof types.props;
 type ActivityGroupingDecoratorMiddlewareRequest = typeof types.request;
 
-const activityGroupingDecoratorTypeName = 'activity grouping' as const;
-
 export {
   ActivityGroupingDecoratorMiddlewareProvider,
   ActivityGroupingDecoratorMiddlewareProxy,
-  activityGroupingDecoratorTypeName,
   initActivityGroupingDecoratorMiddleware,
   type ActivityGroupingDecoratorMiddleware,
   type ActivityGroupingDecoratorMiddlewareInit,

@@ -1,6 +1,6 @@
 import React, { Fragment, memo } from 'react';
 
-import { ActivityGroupingDecorator } from 'botframework-webchat-api/decorator';
+import { ActivityGroupingProxy } from 'botframework-webchat-api/decorator';
 import { type GroupedRenderingActivities } from '../providers/GroupedRenderingActivities/GroupedRenderingActivities';
 import useGroupedRenderingActivities from '../providers/GroupedRenderingActivities/useGroupedRenderingActivities';
 
@@ -9,11 +9,11 @@ type ActivityGroupProps = Readonly<{
 }>;
 
 const ActivityTreeGroup = memo(({ group }: ActivityGroupProps) => (
-  <ActivityGroupingDecorator activities={group.activities} type={group.type}>
+  <ActivityGroupingProxy activities={group.activities} groupingName={group.groupingName}>
     {group.children.map(child => (
       <ActivityTreeGroup group={child} key={child.key} />
     ))}
-  </ActivityGroupingDecorator>
+  </ActivityGroupingProxy>
 ));
 
 ActivityTreeGroup.displayName = 'ActivityTreeGroup';

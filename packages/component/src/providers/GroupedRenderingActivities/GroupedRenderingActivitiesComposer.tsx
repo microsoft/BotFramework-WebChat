@@ -58,30 +58,30 @@ const GroupedRenderingActivitiesComposer = (props: GroupedRenderingActivitiesCom
       activities: readonly WebChatActivity[],
       groups: readonly string[]
     ): readonly GroupedRenderingActivities[] => {
-      const [currentGroup, ...nextGroups] = groups;
+      const [name, ...nextNames] = groups;
 
-      if (!currentGroup) {
+      if (!name) {
         return Object.freeze([
           Object.freeze({
             activities,
             children: Object.freeze([]),
             key: getKeyByActivity(activities[0]),
-            type: ''
+            groupingName: undefined
           })
         ]);
       }
 
       const activitiesByGroup: readonly (readonly WebChatActivity[])[] =
-        activitiesByGroupMap.get(currentGroup) ?? Object.freeze(activities.map(activity => Object.freeze([activity])));
+        activitiesByGroupMap.get(name) ?? Object.freeze(activities.map(activity => Object.freeze([activity])));
 
       return Object.freeze(
         group(activities, entry => Object.freeze(activitiesByGroup.find(group => group.includes(entry)))).map(
           groupedActivities =>
             Object.freeze({
               activities: Object.freeze(groupedActivities),
-              children: run(groupedActivities, Object.freeze(nextGroups)),
+              children: run(groupedActivities, Object.freeze(nextNames)),
               key: getKeyByActivity(groupedActivities[0]),
-              type: currentGroup
+              groupingName: name
             })
         )
       );
