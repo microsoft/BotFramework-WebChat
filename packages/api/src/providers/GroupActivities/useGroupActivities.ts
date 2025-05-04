@@ -1,13 +1,15 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-
-import useWebChatAPIContext from './internal/useWebChatAPIContext';
+import useGroupActivitiesContext from './private/useGroupActivitiesContext';
 
 type GroupedActivities = readonly (readonly WebChatActivity[])[];
 
+/**
+ * @deprecated
+ */
 export default function useGroupActivities(): ({
   activities
 }: Readonly<{ activities: readonly WebChatActivity[] }>) => Readonly<{
   [key: string]: GroupedActivities;
 }> {
-  return useWebChatAPIContext().groupActivities;
+  return useGroupActivitiesContext().groupActivities;
 }

@@ -77,7 +77,6 @@ import applyMiddleware, {
   forRenderer as applyMiddlewareForRenderer
 } from './middleware/applyMiddleware';
 import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
-import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
@@ -85,6 +84,7 @@ import observableToPromise from './utils/observableToPromise';
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import { parseUIState } from './validation/uiState';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
@@ -170,27 +170,6 @@ function createCardActionContext({
         target
       });
     }
-  };
-}
-
-// TODO: Separate into its own <GroupActivitiesComposer>.
-function createGroupActivitiesContext({
-  groupActivitiesMiddleware,
-  groupTimestamp,
-  ponyfill
-}: {
-  groupActivitiesMiddleware: readonly GroupActivitiesMiddleware[];
-  groupTimestamp: boolean | number;
-  ponyfill: GlobalScopePonyfill;
-}) {
-  const runMiddleware = applyMiddleware(
-    'group activities',
-    ...groupActivitiesMiddleware,
-    createDefaultGroupActivitiesMiddleware({ groupTimestamp, ponyfill })
-  );
-
-  return {
-    groupActivities: runMiddleware({})
   };
 }
 
@@ -367,16 +346,6 @@ const ComposerCore = ({
   const patchedSelectVoice = useMemo(
     () => selectVoice || defaultSelectVoice.bind(null, { language: locale }),
     [locale, selectVoice]
-  );
-
-  const groupActivitiesContext = useMemo(
-    () =>
-      createGroupActivitiesContext({
-        groupActivitiesMiddleware: Object.freeze([...singleToArray(groupActivitiesMiddleware)]),
-        groupTimestamp: patchedStyleOptions.groupTimestamp,
-        ponyfill
-      }),
-    [groupActivitiesMiddleware, patchedStyleOptions.groupTimestamp, ponyfill]
   );
 
   const hoistedDispatchers = useMemo(
@@ -562,7 +531,6 @@ const ComposerCore = ({
   const context = useMemo<ContextOf<React.Context<WebChatAPIContextType>>>(
     () => ({
       ...cardActionContext,
-      ...groupActivitiesContext,
       ...hoistedDispatchers,
       activityRenderer: patchedActivityRenderer,
       activityStatusRenderer: patchedActivityStatusRenderer,
@@ -595,7 +563,6 @@ const ComposerCore = ({
       cardActionContext,
       directLine,
       downscaleImageToDataURL,
-      groupActivitiesContext,
       hoistedDispatchers,
       internalErrorBoxClass,
       locale,
@@ -631,7 +598,9 @@ const ComposerCore = ({
           <ActivityTypingComposer>
             <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
               <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
-                {typeof children === 'function' ? children(context) : children}
+                <GroupActivitiesComposer groupActivitiesMiddleware={singleToArray(groupActivitiesMiddleware)}>
+                  {typeof children === 'function' ? children(context) : children}
+                </GroupActivitiesComposer>
                 <ActivitySendStatusTelemetryComposer />
               </SendBoxToolbarMiddlewareProvider>
             </SendBoxMiddlewareProvider>

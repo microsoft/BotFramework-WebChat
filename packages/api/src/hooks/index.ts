@@ -26,7 +26,7 @@ import useGetKeyByActivity from './useGetKeyByActivity';
 import useGetKeyByActivityId from './useGetKeyByActivityId';
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useGrammars from './useGrammars';
-import useGroupActivities from './useGroupActivities';
+import useGroupActivities from '../providers/GroupActivities/useGroupActivities';
 import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
 import useLastAcknowledgedActivityKey from './useLastAcknowledgedActivityKey';
