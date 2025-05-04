@@ -68,17 +68,31 @@ function shouldGroupSender(x: WebChatActivity, y: WebChatActivity): boolean {
   return roleX === roleY && idX === idY;
 }
 
+const passthrough =
+  next =>
+  (...args) =>
+    next(...args);
+
 export default function createDefaultGroupActivitiesMiddleware({
   groupTimestamp,
   ponyfill
 }: {
   groupTimestamp: boolean | number;
   ponyfill: GlobalScopePonyfill;
-}): GroupActivitiesMiddleware {
-  return () =>
-    () =>
-    ({ activities }) => ({
-      sender: bin(activities, shouldGroupSender),
-      status: bin(activities, createShouldGroupTimestamp(groupTimestamp, ponyfill))
-    });
+}): readonly GroupActivitiesMiddleware[] {
+  return Object.freeze([
+    type =>
+      type === 'sender' || typeof type === 'undefined'
+        ? next =>
+            ({ activities }) => ({ ...next({ activities }), sender: bin(activities, shouldGroupSender) })
+        : passthrough,
+    type =>
+      type === 'status' || typeof type === 'undefined'
+        ? next =>
+            ({ activities }) => ({
+              ...next({ activities }),
+              status: bin(activities, createShouldGroupTimestamp(groupTimestamp, ponyfill))
+            })
+        : passthrough
+  ]);
 }

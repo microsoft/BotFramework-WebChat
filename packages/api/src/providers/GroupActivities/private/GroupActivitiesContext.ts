@@ -1,8 +1,14 @@
+import { type WebChatActivity } from 'botframework-webchat-core';
 import { createContext } from 'react';
-import { type GroupActivities } from '../../../types/GroupActivitiesMiddleware';
 
 type GroupActivitiesContextType = {
-  groupActivities: GroupActivities;
+  groupActivities: (options: { activities: readonly WebChatActivity[] }) => Readonly<{
+    [key: string]: readonly (readonly WebChatActivity[])[];
+  }>;
+  groupActivitiesByName: (
+    activities: readonly WebChatActivity[],
+    groupingName: string
+  ) => readonly (readonly WebChatActivity[])[];
 };
 
 const GroupActivitiesContext = createContext<GroupActivitiesContextType>(

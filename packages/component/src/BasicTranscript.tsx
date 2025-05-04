@@ -53,7 +53,7 @@ import useFocus from './hooks/useFocus';
 import useStyleSet from './hooks/useStyleSet';
 import ChatHistoryDOMComposer from './providers/ChatHistoryDOM/ChatHistoryDOMComposer';
 import useActivityElementMapRef from './providers/ChatHistoryDOM/useActivityElementRef';
-import GroupedRenderingActivitiesComposer from './providers/GroupedRenderingActivities/GroupedRenderingActivitiesComposer2';
+import GroupedRenderingActivitiesComposer from './providers/GroupedRenderingActivities/GroupedRenderingActivitiesComposer';
 import useNumRenderingActivities from './providers/GroupedRenderingActivities/useNumRenderingActivities';
 import RenderingActivitiesComposer from './providers/RenderingActivities/RenderingActivitiesComposer';
 import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';

@@ -10,7 +10,7 @@ type GroupActivities = CallFunction<
 >;
 
 type GroupActivitiesMiddleware = FunctionMiddleware<
-  [],
+  [string],
   [Readonly<{ activities: readonly WebChatActivity[] }>],
   { [key: string]: GroupedActivities }
 >;
