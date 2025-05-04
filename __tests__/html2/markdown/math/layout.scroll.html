@@ -75,6 +75,7 @@
         });
 
         await pageConditions.numActivitiesShown(1);
+        await pageConditions.scrollStabilized();
 
         await host.snapshot('local');
 
