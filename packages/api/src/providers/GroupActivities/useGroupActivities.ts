@@ -4,12 +4,15 @@ import useGroupActivitiesContext from './private/useGroupActivitiesContext';
 
 type GroupedActivities = readonly (readonly WebChatActivity[])[];
 
+/**
+ * This hook will return a callback function. When called with `activities`, the callback function will run the `groupActivitiesMiddleware` and will return all groupings.
+ *
+ * @deprecated This function is deprecated and will be removed on or after 2027-05-04. Developers should migrate to [`useGroupActivitiesByName`](#usegroupactivitiesbyname) for performance reason.
+ */
 export default function useGroupActivities(): ({
-  activities,
-  group
+  activities
 }: Readonly<{
   activities: readonly WebChatActivity[];
-  group?: string | undefined;
 }>) => Readonly<{
   [key: string]: GroupedActivities;
 }> {
