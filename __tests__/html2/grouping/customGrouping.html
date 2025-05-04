@@ -39,18 +39,24 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
-        const groupActivitiesMiddleware = () => next => request => ({
-          ...next(request),
-          duo: request.activities.reduce((result, activity) => {
-            if (result.at(-1)?.length === 1) {
-              result.at(-1).push(activity);
-            } else {
-              result.push([activity]);
-            }
+        const requests = [];
 
-            return result;
-          }, [])
-        });
+        const groupActivitiesMiddleware = () => next => request => {
+          requests.push(request);
+
+          return {
+            ...next(request),
+            duo: request.activities.reduce((result, activity) => {
+              if (result.at(-1)?.length === 1) {
+                result.at(-1).push(activity);
+              } else {
+                result.push([activity]);
+              }
+
+              return result;
+            }, [])
+          };
+        };
 
         const decoratorMiddleware = [
           init =>
@@ -107,6 +113,17 @@
         }
 
         await host.snapshot('local');
+
+        expect(requests.at(-3).activities).toHaveLength(3);
+        expect(requests.at(-3).activities[0]).toEqual(expect.objectContaining({ text: 'Bot 1: t=0s' }));
+        expect(requests.at(-3).activities[1]).toEqual(expect.objectContaining({ text: 'Bot 2: t=10s' }));
+        expect(requests.at(-3).activities[2]).toEqual(expect.objectContaining({ text: 'Bot 3: t=20s' }));
+        expect(requests.at(-2).activities[0]).toEqual(expect.objectContaining({ text: 'Bot 4: t=80s' }));
+        expect(requests.at(-2).activities[1]).toEqual(expect.objectContaining({ text: 'Bot 5: t=90s' }));
+        expect(requests.at(-2).activities[2]).toEqual(expect.objectContaining({ text: 'Bot 6: t=100s' }));
+        expect(requests.at(-1).activities[0]).toEqual(expect.objectContaining({ text: 'Bot 7: t=160s' }));
+        expect(requests.at(-1).activities[1]).toEqual(expect.objectContaining({ text: 'Bot 8: t=170s' }));
+        expect(requests.at(-1).activities[2]).toEqual(expect.objectContaining({ text: 'Bot 9: t=180s' }));
       });
     </script>
   </body>

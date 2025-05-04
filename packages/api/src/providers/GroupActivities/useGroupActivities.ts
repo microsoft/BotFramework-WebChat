@@ -3,9 +3,6 @@ import useGroupActivitiesContext from './private/useGroupActivitiesContext';
 
 type GroupedActivities = readonly (readonly WebChatActivity[])[];
 
-/**
- * @deprecated
- */
 export default function useGroupActivities(): ({
   activities
 }: Readonly<{ activities: readonly WebChatActivity[] }>) => Readonly<{
