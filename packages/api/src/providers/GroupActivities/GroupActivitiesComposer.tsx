@@ -35,7 +35,9 @@ function GroupActivitiesComposer({ children, groupActivitiesMiddleware }: GroupA
 
   const groupActivities: GroupActivities = useCallback(
     ({ activities }: { activities: readonly WebChatActivity[] }) => {
-      const results = runAllMiddleware({ activities });
+      const results: Readonly<{
+        [key: string]: readonly (readonly WebChatActivity[])[];
+      }> = runAllMiddleware({ activities }) || Object.freeze({});
       const validatedResults = new Map<string, readonly (readonly WebChatActivity[])[]>();
 
       for (const [name, result] of Object.entries(results)) {
@@ -72,7 +74,9 @@ function GroupActivitiesComposer({ children, groupActivitiesMiddleware }: GroupA
       const group = groupActivitiesByGroupRef.current.get(groupingName);
 
       if (group) {
-        const result = new Map(Object.entries(group({ activities })));
+        const result: ReadonlyMap<string, readonly (readonly WebChatActivity[])[]> = new Map(
+          Object.entries(group({ activities }) || {})
+        );
 
         if (result.has(groupingName)) {
           const groupingResult = result.get(groupingName);
