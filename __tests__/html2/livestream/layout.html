@@ -73,11 +73,11 @@
 
         render(
           // TODO: We should think if <DecoratorComposer> should be a top-level element or not.
-          <DecoratorComposer middleware={decoratorMiddleware}>
-            <FluentThemeProvider>
+          <FluentThemeProvider>
+            <DecoratorComposer middleware={decoratorMiddleware}>
               <App />
-            </FluentThemeProvider>
-          </DecoratorComposer>,
+            </DecoratorComposer>
+          </FluentThemeProvider>,
           document.getElementById('webchat')
         );
 
