@@ -9,8 +9,8 @@ export {
 
 // ActivityBorderDecorator
 
-export { default as ActivityBorderProxy } from './decorator/ActivityBorder/ActivityBorderProxy';
+export { default as ActivityBorderDecorator } from './decorator/ActivityBorder/ActivityBorderDecorator';
 
 // ActivityGroupingDecorator
 
-export { default as ActivityGroupingProxy } from './decorator/ActivityGrouping/ActivityGroupingProxy';
+export { default as ActivityGroupingDecorator } from './decorator/ActivityGrouping/ActivityGroupingDecorator';

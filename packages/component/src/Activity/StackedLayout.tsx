@@ -1,7 +1,7 @@
 /* eslint complexity: ["error", 50] */
 
 import { hooks } from 'botframework-webchat-api';
-import { ActivityBorderProxy } from 'botframework-webchat-api/decorator';
+import { ActivityBorderDecorator } from 'botframework-webchat-api/decorator';
 import classNames from 'classnames';
 import React, { memo } from 'react';
 
@@ -161,7 +161,7 @@ const StackedLayout = ({
                 fromUser={fromUser}
                 nub={showNub || (hasAvatar || hasNub ? 'hidden' : false)}
               >
-                <ActivityBorderProxy activity={activity}>
+                <ActivityBorderDecorator activity={activity}>
                   {renderAttachment({
                     activity,
                     attachment: {
@@ -169,7 +169,7 @@ const StackedLayout = ({
                       contentType: textFormatToContentType('textFormat' in activity ? activity.textFormat : undefined)
                     }
                   })}
-                </ActivityBorderProxy>
+                </ActivityBorderDecorator>
               </Bubble>
             </div>
           )}

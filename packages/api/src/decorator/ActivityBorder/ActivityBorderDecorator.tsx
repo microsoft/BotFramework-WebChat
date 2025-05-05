@@ -13,12 +13,12 @@ const supportedActivityRoles: ActivityBorderDecoratorMiddlewareRequest['from'][]
   undefined
 ];
 
-type ActivityBorderDecoratorProxyProps = Readonly<{
+type ActivityBorderDecoratorProps = Readonly<{
   activity?: WebChatActivity | undefined;
   children?: ReactNode | undefined;
 }>;
 
-function ActivityBorderDecoratorProxy({ activity, children }: ActivityBorderDecoratorProxyProps) {
+function ActivityBorderDecorator({ activity, children }: ActivityBorderDecoratorProps) {
   const request = useMemo<ActivityBorderDecoratorMiddlewareRequest>(() => {
     const { type } = getActivityLivestreamingMetadata(activity) || {};
 
@@ -44,5 +44,5 @@ function ActivityBorderDecoratorProxy({ activity, children }: ActivityBorderDeco
   );
 }
 
-export default memo(ActivityBorderDecoratorProxy);
-export { type ActivityBorderDecoratorProxyProps as ActivityBorderDecoratorProps };
+export default memo(ActivityBorderDecorator);
+export { type ActivityBorderDecoratorProps };

@@ -7,13 +7,13 @@ import {
   type ActivityGroupingDecoratorMiddlewareRequest
 } from './private/ActivityGroupingDecoratorMiddleware';
 
-type ActivityGroupingDecoratorProxyProps = Readonly<{
+type ActivityGroupingDecoratorProps = Readonly<{
   activities: readonly WebChatActivity[];
   children?: ReactNode | undefined;
   groupingName: string;
 }>;
 
-function ActivityGroupingDecoratorProxy({ activities, children, groupingName }: ActivityGroupingDecoratorProxyProps) {
+function ActivityGroupingDecorator({ activities, children, groupingName }: ActivityGroupingDecoratorProps) {
   const request = useMemo<ActivityGroupingDecoratorMiddlewareRequest>(() => ({ groupingName }), [groupingName]);
 
   return (
@@ -27,5 +27,5 @@ function ActivityGroupingDecoratorProxy({ activities, children, groupingName }: 
   );
 }
 
-export default memo(ActivityGroupingDecoratorProxy);
-export { type ActivityGroupingDecoratorProxyProps };
+export default memo(ActivityGroupingDecorator);
+export { type ActivityGroupingDecoratorProps };
