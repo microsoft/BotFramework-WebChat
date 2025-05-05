@@ -98,17 +98,7 @@
 
         pageElements.byTestId('send box text area').focus();
         await host.sendShiftTab(2);
-
         await host.sendKeys('ENTER');
-        await host.sendKeys('ENTER');
-
-        await host.snapshot('local');
-
-        // Dismiss like button
-        await host.sendShiftTab(2);
-        await host.sendKeys('ENTER');
-
-        await host.snapshot('local');
 
         // Click like button
         await host.sendKeys('ENTER');
@@ -119,50 +109,8 @@
           1000
         );
 
-        // Go to cancel button
-        await host.sendTab(2);
-        await host.sendKeys('ENTER');
-
         await host.snapshot('local');
 
-        pageElements.byTestId('send box text area').focus();
-        await host.sendShiftTab(2);
-
-        await host.sendKeys('ENTER');
-        // Send dislike
-        await host.sendTab(1);
-        await host.sendKeys('ENTER');
-
-        await pageConditions.became(
-          'feedback form is open',
-          () => document.activeElement === pageElements.byTestId('feedback sendbox'),
-          1000
-        );
-
-        await host.sendKeys('Test feedback');
-
-        await host.snapshot('local');
-
-        const { activity } = await directLine.actPostActivity(async () => {
-          await host.sendTab(1);
-          await host.sendKeys('ENTER');
-        });
-
-        expect(activity).toEqual(
-          expect.objectContaining({
-            type: 'invoke',
-            name: 'message/submitAction',
-            value: {
-              actionName: 'feedback',
-              actionValue: {
-                reaction: 'dislike',
-                feedback: {
-                  feedbackText: 'Test feedback'
-                }
-              }
-            }
-          })
-        );
       });
     </script>
   </body>

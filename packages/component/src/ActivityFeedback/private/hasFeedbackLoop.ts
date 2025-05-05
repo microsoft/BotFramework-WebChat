@@ -10,7 +10,7 @@ const activityWithFeedbackLoopSchemaWithDisclaimer = object({
   })
 });
 
-const activityWithFeedbackLoopSchemaWithOutDisclaimer = object({
+const activityWithFeedbackLoopSchemaWithoutDisclaimer = object({
   channelData: object({
     feedbackLoop: object({
       type: literal('default')
@@ -20,7 +20,7 @@ const activityWithFeedbackLoopSchemaWithOutDisclaimer = object({
 
 const feedbackLoopSchema = union([
   activityWithFeedbackLoopSchemaWithDisclaimer,
-  activityWithFeedbackLoopSchemaWithOutDisclaimer
+  activityWithFeedbackLoopSchemaWithoutDisclaimer
 ]);
 
 type FeedbackActivity = WebChatActivity & InferOutput<typeof feedbackLoopSchema>;

@@ -74,8 +74,7 @@ const TextArea = forwardRef<
           className={classNames(
             'webchat__feedback-form-text-area-doppelganger',
             'webchat__feedback-form-text-area-input--scroll',
-            'webchat__feedback-form-text-area-shared',
-            feedbackTextArea + ''
+            'webchat__feedback-form-text-area-shared'
           )}
         >
           {' '}
@@ -86,8 +85,7 @@ const TextArea = forwardRef<
             className={classNames(
               'webchat__feedback-form-text-area-doppelganger',
               'webchat__feedback-form-text-area-input--scroll',
-              'webchat__feedback-form-text-area-shared',
-              feedbackTextArea + ''
+              'webchat__feedback-form-text-area-shared'
             )}
           >
             {props.value || props.placeholder}{' '}
@@ -98,8 +96,7 @@ const TextArea = forwardRef<
             className={classNames(
               'webchat__feedback-form-text-area-input',
               'webchat__feedback-form-text-area-input--scroll',
-              'webchat__feedback-form-text-area-shared',
-              feedbackTextArea + ''
+              'webchat__feedback-form-text-area-shared'
             )}
             data-testid={props['data-testid']}
             onCompositionEnd={handleCompositionEnd}

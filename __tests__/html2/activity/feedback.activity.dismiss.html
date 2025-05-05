@@ -91,6 +91,10 @@
       await host.sendShiftTab(3);
 
       await host.sendKeys('ENTER');
+
+      // Wait for 400 ms for the tooltip to show up before taking screenshot.
+      await new Promise(resolve => setTimeout(resolve, 400));
+
       await host.snapshot('local');
       await host.sendKeys('ENTER');
       await host.snapshot('local');

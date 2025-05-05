@@ -16,7 +16,6 @@ export default function createFeedbackTextAreaStyle() {
       lineHeight: '20px',
       padding: '8px 12px',
       position: 'relative',
-      minWidth: '280px',
       '&::after': {
         borderBottomLeftRadius: '4px',
         borderBottomRightRadius: '4px',
@@ -42,7 +41,7 @@ export default function createFeedbackTextAreaStyle() {
       height: 0,
       visibility: 'collapse'
     },
-    '&.webchat__feedback-form-text-area-shared': {
+    '.webchat__feedback-form-text-area-shared': {
       border: 'none',
       font: 'inherit',
       gridArea: 'main',
@@ -51,18 +50,18 @@ export default function createFeedbackTextAreaStyle() {
       resize: 'inherit',
       scrollbarGutter: 'stable'
     },
-    '&.webchat__feedback-form-text-area-doppelganger': {
+    '.webchat__feedback-form-text-area-doppelganger': {
       overflow: 'hidden',
       visibility: 'hidden',
       whiteSpace: 'pre-wrap'
     },
-    '&.webchat__feedback-form-text-area-input': {
+    '.webchat__feedback-form-text-area-input': {
       backgroundColor: 'inherit',
       color: 'currentColor',
       height: '100%',
       padding: 0
     },
-    '&.webchat__feedback-form-text-area-input--scroll': {
+    '.webchat__feedback-form-text-area-input--scroll': {
       scrollbarColor: 'unset',
       scrollbarWidth: 'unset',
       MozScrollbarColor: `#373435 ${CSSTokens.ColorSubtle}`,
