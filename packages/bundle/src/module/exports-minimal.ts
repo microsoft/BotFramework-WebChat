@@ -1,8 +1,8 @@
 import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
 import * as apiDecorator from 'botframework-webchat-api/decorator';
 import { WebChatDecorator } from 'botframework-webchat-component/decorator';
-import { Constants, createStore, createStoreWithDevTools, createStoreWithOptions } from 'botframework-webchat-core';
 import * as internal from 'botframework-webchat-component/internal';
+import { Constants, createStore, createStoreWithDevTools, createStoreWithOptions } from 'botframework-webchat-core';
 
 import ReactWebChat, {
   Components,
@@ -78,4 +78,4 @@ export {
   withEmoji
 };
 
-export type { StrictStyleOptions, StyleOptions };
+export { type StrictStyleOptions, type StyleOptions };

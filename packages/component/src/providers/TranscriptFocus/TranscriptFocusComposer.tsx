@@ -1,27 +1,18 @@
-import { hooks } from 'botframework-webchat-api';
-import PropTypes from 'prop-types';
 import random from 'math-random';
-import React, { useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
+import React, { memo, useCallback, useMemo, type MutableRefObject, type ReactNode } from 'react';
 
-import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
-import TranscriptFocusContext from './private/Context';
-import useActivityTreeWithRenderer from '../ActivityTree/useActivityTreeWithRenderer';
 import usePrevious from '../../hooks/internal/usePrevious';
 import useStateRef from '../../hooks/internal/useStateRef';
 import useValueRef from '../../hooks/internal/useValueRef';
+import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
+import useRenderingActivityKeys from '../RenderingActivities/useRenderingActivityKeys';
+import TranscriptFocusContext, { type TranscriptFocusContextType } from './private/Context';
 
-import type { FC, MutableRefObject, PropsWithChildren } from 'react';
-import type { TranscriptFocusContextType } from './private/Context';
-
-const { useGetKeyByActivity } = hooks;
-
-type TranscriptFocusComposerProps = PropsWithChildren<{
+type TranscriptFocusComposerProps = Readonly<{
+  children?: ReactNode | undefined;
   containerRef: MutableRefObject<HTMLElement>;
 }>;
-
-function last<T>(array: ArrayLike<T>) {
-  return array[array.length - 1];
-}
 
 function uniqueId(count = Infinity) {
   return (
@@ -33,10 +24,9 @@ function uniqueId(count = Infinity) {
   );
 }
 
-const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, containerRef }) => {
-  const [flattenedActivityTree] = useActivityTreeWithRenderer({ flat: true });
+const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComposerProps) => {
+  const [renderingActivityKeys] = useRenderingActivityKeys();
   const [_, setRawFocusedActivityKey, rawFocusedActivityKeyRef] = useStateRef<string | undefined>();
-  const getKeyByActivity = useGetKeyByActivity();
 
   // As we need to use IDREF for `aria-activedescendant`,
   // this prefix will differentiate multiple instances of transcript on the same page.
@@ -46,11 +36,6 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
   const getDescendantIdByActivityKey: (activityKey?: string) => string | undefined = useCallback(
     (activityKey?: string) => activityKey && `webchat__transcript-focus-${prefix}__activity-${activityKey}`,
     [prefix]
-  );
-
-  const renderingActivityKeys = useMemo<readonly string[]>(
-    () => Object.freeze(flattenedActivityTree.map(({ activity }) => getKeyByActivity(activity))),
-    [flattenedActivityTree, getKeyByActivity]
   );
 
   const renderingActivityKeysRef = useValueRef<readonly string[]>(renderingActivityKeys);
@@ -66,7 +51,9 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
   const { current: rawFocusedActivityKey } = rawFocusedActivityKeyRef;
 
   const focusedActivityKey = useMemo<string>(
-    () => (renderingActivityKeys.includes(rawFocusedActivityKey) ? rawFocusedActivityKey : last(renderingActivityKeys)),
+    () =>
+      // eslint-disable-next-line no-magic-numbers
+      renderingActivityKeys.includes(rawFocusedActivityKey) ? rawFocusedActivityKey : renderingActivityKeys.at(-1),
     [renderingActivityKeys, rawFocusedActivityKey]
   );
 
@@ -97,7 +84,8 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
         const activeDescendantId = getDescendantIdByActivityKey(
           activityKey === false
             ? // If "activityKey" is false, it means "focus nothing and reset it to the last activity".
-              last(renderingActivityKeysRef.current)
+              // eslint-disable-next-line no-magic-numbers
+              renderingActivityKeysRef.current.at(-1)
             : activityKey && activityKey !== true
               ? // If "activity" is not "undefined" and not "true", it means "focus on this activity".
                 activityKey
@@ -168,6 +156,8 @@ const TranscriptFocusComposer: FC<TranscriptFocusComposerProps> = ({ children, c
   return <TranscriptFocusContext.Provider value={contextValue}>{children}</TranscriptFocusContext.Provider>;
 };
 
+TranscriptFocusComposer.displayName = 'TranscriptFocusComposer';
+
 TranscriptFocusComposer.propTypes = {
   // PropTypes is not fully compatible with TypeScript.
   // @ts-ignore
@@ -176,4 +166,4 @@ TranscriptFocusComposer.propTypes = {
   }).isRequired
 };
 
-export default TranscriptFocusComposer;
+export default memo(TranscriptFocusComposer);

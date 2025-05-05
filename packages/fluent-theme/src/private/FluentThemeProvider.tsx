@@ -1,5 +1,10 @@
 import { type ActivityMiddleware, type StyleOptions, type TypingIndicatorMiddleware } from 'botframework-webchat-api';
-import { DecoratorComposer, DecoratorMiddleware } from 'botframework-webchat-api/decorator';
+import {
+  DecoratorComposer,
+  DecoratorMiddleware,
+  type DecoratorMiddlewareInit,
+  type DecoratorMiddlewareTypes
+} from 'botframework-webchat-api/decorator';
 import { Components } from 'botframework-webchat-component';
 import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import React, { memo, type ReactNode } from 'react';
@@ -18,7 +23,10 @@ import VariantComposer, { VariantList } from './VariantComposer';
 
 const { ThemeProvider } = Components;
 
-type Props = Readonly<{ children?: ReactNode | undefined; variant?: VariantList | undefined }>;
+type FluentThemeProviderProps = Readonly<{
+  children?: ReactNode | undefined;
+  variant?: VariantList | undefined;
+}>;
 
 const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
   () =>
@@ -45,11 +53,14 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
 
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
-const decoratorMiddleware: DecoratorMiddleware[] = [
-  init =>
+const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
+  (init: DecoratorMiddlewareInit) =>
     init === 'activity border' &&
-    (next => request => (request.livestreamingState === 'preparing' ? ActivityLoader : next(request)))
-];
+    ((next => request =>
+      request.livestreamingState === 'preparing'
+        ? ActivityLoader
+        : next(request)) satisfies DecoratorMiddlewareTypes['activity border'])
+]);
 
 const styles = createStyles();
 
@@ -64,26 +75,29 @@ const typingIndicatorMiddleware = Object.freeze([
       args[0].visible ? <SlidingDotsTypingIndicator /> : next(...args)
 ] satisfies TypingIndicatorMiddleware[]);
 
-const FluentThemeProvider = ({ children, variant = 'fluent' }: Props) => (
-  <VariantComposer variant={variant}>
-    <WebChatTheme>
-      <TelephoneKeypadProvider>
-        <ThemeProvider
-          activityMiddleware={activityMiddleware}
-          sendBoxMiddleware={sendBoxMiddleware}
-          styleOptions={fluentStyleOptions}
-          styles={styles}
-          typingIndicatorMiddleware={typingIndicatorMiddleware}
-        >
-          <AssetComposer>
-            <WebChatDecorator>
-              <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
-            </WebChatDecorator>
-          </AssetComposer>
-        </ThemeProvider>
-      </TelephoneKeypadProvider>
-    </WebChatTheme>
-  </VariantComposer>
-);
+function FluentThemeProvider({ children, variant = 'fluent' }: FluentThemeProviderProps) {
+  return (
+    <VariantComposer variant={variant}>
+      <WebChatTheme>
+        <TelephoneKeypadProvider>
+          <ThemeProvider
+            activityMiddleware={activityMiddleware}
+            sendBoxMiddleware={sendBoxMiddleware}
+            styleOptions={fluentStyleOptions}
+            styles={styles}
+            typingIndicatorMiddleware={typingIndicatorMiddleware}
+          >
+            <AssetComposer>
+              <WebChatDecorator>
+                <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
+              </WebChatDecorator>
+            </AssetComposer>
+          </ThemeProvider>
+        </TelephoneKeypadProvider>
+      </WebChatTheme>
+    </VariantComposer>
+  );
+}
 
 export default memo(FluentThemeProvider);
+export { type FluentThemeProviderProps };

@@ -26,7 +26,8 @@ import useGetKeyByActivity from './useGetKeyByActivity';
 import useGetKeyByActivityId from './useGetKeyByActivityId';
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useGrammars from './useGrammars';
-import useGroupActivities from './useGroupActivities';
+import useGroupActivities from '../providers/GroupActivities/useGroupActivities';
+import useGroupActivitiesByName from '../providers/GroupActivities/useGroupActivitiesByName';
 import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
 import useLastAcknowledgedActivityKey from './useLastAcknowledgedActivityKey';
@@ -101,6 +102,7 @@ export {
   useGetSendTimeoutForActivity,
   useGrammars,
   useGroupActivities,
+  useGroupActivitiesByName,
   useGroupTimestamp,
   useLanguage,
   useLastAcknowledgedActivityKey,

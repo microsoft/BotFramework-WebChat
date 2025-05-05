@@ -27,6 +27,7 @@
         await pageConditions.uiConnected();
 
         await pageObjects.uploadFile('empty.txt');
+        await pageConditions.allOutgoingActivitiesSent();
 
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allImagesLoaded();

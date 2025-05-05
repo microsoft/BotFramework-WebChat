@@ -10,7 +10,7 @@ import {
   initSendBoxToolbarMiddleware,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
-import { DecoratorComposer } from 'botframework-webchat-api/decorator';
+import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -19,6 +19,7 @@ import React, { memo, useCallback, useMemo, useRef, useState, type ReactNode } f
 import { Composer as SayComposer } from 'react-say';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
+import BuiltInDecorator from './BuiltInDecorator';
 import Dictation from './Dictation';
 import ErrorBox from './ErrorBox';
 import {
@@ -39,7 +40,6 @@ import createDefaultCardActionMiddleware from './Middleware/CardAction/createCor
 import createDefaultScrollToEndButtonMiddleware from './Middleware/ScrollToEndButton/createScrollToEndButtonMiddleware';
 import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
-import ActivityTreeComposer from './providers/ActivityTree/ActivityTreeComposer';
 import CustomElementsComposer from './providers/CustomElements/CustomElementsComposer';
 import HTMLContentTransformComposer from './providers/HTMLContentTransformCOR/HTMLContentTransformComposer';
 import { type HTMLContentTransformMiddleware } from './providers/HTMLContentTransformCOR/private/HTMLContentTransformContext';
@@ -109,15 +109,13 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
         <FocusSendBoxScope>
           <ScrollRelativeTranscriptScope>
             <LiveRegionTwinComposer className="webchat__live-region" fadeAfter={internalLiveRegionFadeAfter}>
-              <DecoratorComposer>
-                <ModalDialogComposer>
-                  {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
-                  <SendBoxComposer>
-                    {children}
-                    <Dictation onError={dictationOnError} />
-                  </SendBoxComposer>
-                </ModalDialogComposer>
-              </DecoratorComposer>
+              <ModalDialogComposer>
+                {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
+                <SendBoxComposer>
+                  {children}
+                  <Dictation onError={dictationOnError} />
+                </SendBoxComposer>
+              </ModalDialogComposer>
             </LiveRegionTwinComposer>
           </ScrollRelativeTranscriptScope>
         </FocusSendBoxScope>
@@ -130,6 +128,7 @@ ComposerCoreUI.displayName = 'ComposerCoreUI';
 
 type ComposerCoreProps = Readonly<{
   children?: ReactNode;
+  decoratorMiddleware?: readonly DecoratorMiddleware[] | undefined;
   extraStyleSet?: any;
   htmlContentTransformMiddleware?: readonly HTMLContentTransformMiddleware[] | undefined;
   nonce?: string;
@@ -327,6 +326,7 @@ const Composer = ({
   avatarMiddleware,
   cardActionMiddleware,
   children,
+  decoratorMiddleware,
   extraStyleSet,
   htmlContentTransformMiddleware,
   renderMarkdown,
@@ -423,8 +423,8 @@ const Composer = ({
   const sendBoxMiddleware = useMemo<readonly SendBoxMiddleware[]>(
     () =>
       Object.freeze([
-        ...initSendBoxMiddleware(sendBoxMiddlewareFromProps),
-        ...initSendBoxMiddleware(theme.sendBoxMiddleware),
+        ...initSendBoxMiddleware(sendBoxMiddlewareFromProps, undefined),
+        ...initSendBoxMiddleware(theme.sendBoxMiddleware, undefined),
         ...createDefaultSendBoxMiddleware()
       ]),
     [sendBoxMiddlewareFromProps, theme.sendBoxMiddleware]
@@ -433,8 +433,8 @@ const Composer = ({
   const sendBoxToolbarMiddleware = useMemo<readonly SendBoxToolbarMiddleware[]>(
     () =>
       Object.freeze([
-        ...initSendBoxToolbarMiddleware(sendBoxToolbarMiddlewareFromProps),
-        ...initSendBoxToolbarMiddleware(theme.sendBoxToolbarMiddleware),
+        ...initSendBoxToolbarMiddleware(sendBoxToolbarMiddlewareFromProps, undefined),
+        ...initSendBoxToolbarMiddleware(theme.sendBoxToolbarMiddleware, undefined),
         ...createDefaultSendBoxToolbarMiddleware()
       ]),
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]
@@ -460,26 +460,28 @@ const Composer = ({
       typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
       {...composerProps}
     >
-      <ActivityTreeComposer>
-        <StyleToEmotionObjectComposer nonce={nonce}>
-          <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
-            <ReducedMotionComposer>
-              <ComposerCore
-                extraStyleSet={extraStyleSet}
-                nonce={nonce}
-                renderMarkdown={renderMarkdown}
-                styleSet={styleSet}
-                styles={theme.styles}
-                suggestedActionsAccessKey={suggestedActionsAccessKey}
-                webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-              >
-                {children}
-                {onTelemetry && <UITracker />}
-              </ComposerCore>
-            </ReducedMotionComposer>
-          </HTMLContentTransformComposer>
-        </StyleToEmotionObjectComposer>
-      </ActivityTreeComposer>
+      <StyleToEmotionObjectComposer nonce={nonce}>
+        <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
+          <ReducedMotionComposer>
+            <BuiltInDecorator>
+              <DecoratorComposer middleware={decoratorMiddleware}>
+                <ComposerCore
+                  extraStyleSet={extraStyleSet}
+                  nonce={nonce}
+                  renderMarkdown={renderMarkdown}
+                  styleSet={styleSet}
+                  styles={theme.styles}
+                  suggestedActionsAccessKey={suggestedActionsAccessKey}
+                  webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+                >
+                  {children}
+                  {onTelemetry && <UITracker />}
+                </ComposerCore>
+              </DecoratorComposer>
+            </BuiltInDecorator>
+          </ReducedMotionComposer>
+        </HTMLContentTransformComposer>
+      </StyleToEmotionObjectComposer>
     </APIComposer>
   );
 };
@@ -497,5 +499,4 @@ Composer.propTypes = {
 };
 
 export default Composer;
-
 export type { ComposerProps };

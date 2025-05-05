@@ -5,7 +5,7 @@ const takeStabilizedScreenshot = require('../../common/takeStabilizedScreenshot'
 // In dev mode, we output the screenshot in console instead of checking against a PNG file.
 
 module.exports = webDriver =>
-  async function snapshot() {
+  async function snapshot(_, options) {
     await allImagesCompleted(webDriver);
 
     const base64 = await takeStabilizedScreenshot(webDriver);
@@ -29,5 +29,7 @@ module.exports = webDriver =>
       base64
     );
 
-    await checkAccessibility(webDriver)();
+    if (!options?.skipCheckAccessibility) {
+      await checkAccessibility(webDriver)();
+    }
   };

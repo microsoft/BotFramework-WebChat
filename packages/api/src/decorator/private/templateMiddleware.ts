@@ -9,7 +9,9 @@ const EMPTY_ARRAY = Object.freeze([]);
 
 // Following @types/react to use {} for props.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export default function templateMiddleware<Init, Request = any, Props extends {} = EmptyObject>(name: string) {
+export default function templateMiddleware<Init extends string, Request = any, Props extends {} = EmptyObject>(
+  name: string
+) {
   type Middleware = ComponentMiddleware<Request, Props>;
 
   const middlewareSchema = array(pipe(any(), function_()));
@@ -20,14 +22,14 @@ export default function templateMiddleware<Init, Request = any, Props extends {}
   const warnInvalid = warnOnce(`"${name}" prop is invalid`);
 
   const initMiddleware = (
-    middleware: readonly MiddlewareWithInit<Middleware, Init>[],
-    init?: Init
+    middleware: readonly MiddlewareWithInit<ComponentMiddleware<unknown, unknown>, Init>[],
+    init: Init
   ): readonly Middleware[] => {
     if (middleware) {
       if (isMiddleware(middleware)) {
         return Object.freeze(
           middleware
-            ?.map(middleware => middleware(init))
+            .map(middleware => middleware(init) as ReturnType<Middleware>)
             .filter((enhancer): enhancer is ReturnType<Middleware> => !!enhancer)
             .map(enhancer => () => enhancer)
         );

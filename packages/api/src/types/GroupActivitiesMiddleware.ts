@@ -2,21 +2,17 @@ import type { WebChatActivity } from 'botframework-webchat-core';
 
 import FunctionMiddleware, { CallFunction } from './FunctionMiddleware';
 
+type GroupedActivities = readonly (readonly WebChatActivity[])[];
+
 type GroupActivities = CallFunction<
-  [{ activities: WebChatActivity[] }],
-  {
-    sender: WebChatActivity[][];
-    status: WebChatActivity[][];
-  }
+  [Readonly<{ activities: readonly WebChatActivity[] }>],
+  { [key: string]: GroupedActivities }
 >;
 
 type GroupActivitiesMiddleware = FunctionMiddleware<
-  [],
-  [{ activities: WebChatActivity[] }],
-  {
-    sender: WebChatActivity[][];
-    status: WebChatActivity[][];
-  }
+  [string],
+  [Readonly<{ activities: readonly WebChatActivity[] }>],
+  { [key: string]: GroupedActivities }
 >;
 
 export default GroupActivitiesMiddleware;

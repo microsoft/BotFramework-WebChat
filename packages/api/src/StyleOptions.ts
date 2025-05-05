@@ -952,6 +952,15 @@ type StyleOptions = {
    * @see https://github.com/microsoft/BotFramework-WebChat/pull/5426
    */
   speechRecognitionContinuous?: boolean | undefined;
+
+  /**
+   * Defines how activities are being grouped by (in the order of appearance in the array). Default to `['sender', 'status']` or `sender,status` in CSS.
+   *
+   * Values are key of result of `groupActivitiesMiddleware`. The default implementation of `groupActivitiesMiddleware` has `sender` and `status`.
+   *
+   * To add new groupings, configure `groupActivitiesMiddleware` to output extra groups. Then, add the group names to `styleOptions.groupActivitiesBy`.
+   */
+  groupActivitiesBy?: readonly string[] | undefined;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:
