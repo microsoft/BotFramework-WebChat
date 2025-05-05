@@ -8,20 +8,6 @@
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <link href="grouping.css" rel="stylesheet" type="text/css" />
-    <style type="text/css">
-      .grouping--duo {
-        border-color: orange;
-      }
-
-      .grouping--duo::after {
-        background-color: orange;
-        bottom: -2px;
-        color: white;
-        content: 'Duo';
-        right: -2px;
-        top: unset;
-      }
-    </style>
   </head>
 
   <body>
@@ -69,7 +55,7 @@
             styleOptions: {
               botAvatarBackgroundColor: 'black',
               botAvatarInitials: 'WC',
-              groupActivitiesBy: ['sender', 'status', 'duo'],
+              groupActivitiesBy: ['sender', 'status', 'non-existing-group'],
               groupTimestamp: 30_000,
               userAvatarBackgroundColor: 'black',
               userAvatarInitials: 'WW'
