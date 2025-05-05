@@ -29,7 +29,7 @@ export default function templateMiddleware<Init extends string, Request = any, P
       if (isMiddleware(middleware)) {
         return Object.freeze(
           middleware
-            ?.map(middleware => middleware(init) as ReturnType<Middleware>)
+            .map(middleware => middleware(init) as ReturnType<Middleware>)
             .filter((enhancer): enhancer is ReturnType<Middleware> => !!enhancer)
             .map(enhancer => () => enhancer)
         );
