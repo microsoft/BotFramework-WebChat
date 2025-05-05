@@ -37,6 +37,7 @@
 
         const groupActivitiesMiddleware = () => next => request => ({
           ...next(request),
+          // Intentionally return middleware regardless of grouping name.
           duo: request.activities.reduce((result, activity) => {
             if (result.at(-1)?.length === 1) {
               result.at(-1).push(activity);

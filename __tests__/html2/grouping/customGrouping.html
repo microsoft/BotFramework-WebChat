@@ -41,22 +41,25 @@
 
         const requests = [];
 
-        const groupActivitiesMiddleware = () => next => request => {
-          requests.push(request);
+        const groupActivitiesMiddleware = name =>
+          name === 'duo'
+            ? next => request => {
+                requests.push(request);
 
-          return {
-            ...next(request),
-            duo: request.activities.reduce((result, activity) => {
-              if (result.at(-1)?.length === 1) {
-                result.at(-1).push(activity);
-              } else {
-                result.push([activity]);
+                return {
+                  ...next(request),
+                  duo: request.activities.reduce((result, activity) => {
+                    if (result.at(-1)?.length === 1) {
+                      result.at(-1).push(activity);
+                    } else {
+                      result.push([activity]);
+                    }
+
+                    return result;
+                  }, [])
+                };
               }
-
-              return result;
-            }, [])
-          };
-        };
+            : undefined;
 
         const decoratorMiddleware = [
           init =>

@@ -42,18 +42,21 @@
 
           const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
-          const groupActivitiesMiddleware = () => next => request => ({
-            ...next(request),
-            duo: request.activities.reduce((result, activity) => {
-              if (result.at(-1)?.length === 1) {
-                result.at(-1).push(activity);
-              } else {
-                result.push([activity]);
-              }
+          const groupActivitiesMiddleware = type =>
+            type === 'duo'
+              ? next => request => ({
+                  ...next(request),
+                  duo: request.activities.reduce((result, activity) => {
+                    if (result.at(-1)?.length === 1) {
+                      result.at(-1).push(activity);
+                    } else {
+                      result.push([activity]);
+                    }
 
-              return result;
-            }, [])
-          });
+                    return result;
+                  }, [])
+                })
+              : undefined;
 
           const decoratorMiddleware = [
             init =>
