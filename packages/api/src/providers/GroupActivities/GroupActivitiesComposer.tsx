@@ -3,11 +3,11 @@ import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { useRefFrom } from 'use-ref-from';
 import applyMiddleware from '../../hooks/middleware/applyMiddleware';
-import createDefaultGroupActivitiesMiddleware from '../../hooks/middleware/createDefaultGroupActivitiesMiddleware';
 import useStyleOptions from '../../hooks/useStyleOptions';
 import type GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
 import { type GroupActivities } from '../../types/GroupActivitiesMiddleware';
 import usePonyfill from '../Ponyfill/usePonyfill';
+import createDefaultGroupActivitiesMiddleware from './private/createDefaultGroupActivitiesMiddleware';
 import GroupActivitiesContext, { type GroupActivitiesContextType } from './private/GroupActivitiesContext';
 import isGroupingValid from './private/isGroupingValid';
 
