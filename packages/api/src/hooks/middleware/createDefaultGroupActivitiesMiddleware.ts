@@ -76,10 +76,10 @@ const passthrough =
 export default function createDefaultGroupActivitiesMiddleware({
   groupTimestamp,
   ponyfill
-}: {
+}: Readonly<{
   groupTimestamp: boolean | number;
   ponyfill: GlobalScopePonyfill;
-}): readonly GroupActivitiesMiddleware[] {
+}>): readonly GroupActivitiesMiddleware[] {
   return Object.freeze([
     type =>
       type === 'sender' || typeof type === 'undefined'
