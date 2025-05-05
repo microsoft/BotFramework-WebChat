@@ -5,7 +5,8 @@ export default function createFeedbackFormStyle() {
     '&.webchat__feedback-form__root-container': {
       display: 'flex',
       flexDirection: 'column',
-      gap: '8px'
+      gap: '8px',
+      width: 'inherit'
     },
     '.webchat__feedback-form__root-child': {
       display: 'flex'
