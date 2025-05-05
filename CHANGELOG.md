@@ -32,6 +32,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Please refer to PR [#5330](https://github.com/microsoft/BotFramework-WebChat/pull/5330) for details
 - HTML sanitizer is moved from `renderMarkdown` to HTML content transformer middleware, please refer to PR [#5338](https://github.com/microsoft/BotFramework-WebChat/pull/5338)
    - If you customized `renderMarkdown` with a custom HTML sanitizer, please move the HTML sanitizer to the new HTML content transformer middleware
+- `useGroupActivities` hook is being deprecated in favor of the `useGroupActivitiesByName` hook. The hook will be removed on or after 2027-05-04
 
 ### Added
 
@@ -86,6 +87,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Added sliding dots typing indicator in Fluent theme, in PR [#5447](https://github.com/microsoft/BotFramework-WebChat/pull/5447) and PR [#5448](https://github.com/microsoft/BotFramework-WebChat/pull/5448), by [@compulim](https://github.com/compulim)
 - (Experimental) Add an ability to pass `completion` prop into Fluent send box and expose the component, in PR [#5466](https://github.com/microsoft/BotFramework-WebChat/pull/5466), by [@OEvgeny](https://github.com/OEvgeny)
 - Added feedback form for like/dislike button when `feedbackActionsPlacement` is `"activity-actions"`, in PR [#5460](https://github.com/microsoft/BotFramework-WebChat/pull/5460) and in PR [#5469](https://github.com/microsoft/BotFramework-WebChat/pull/5469), by [@lexi-taylor](https://github.com/lexi-taylor) and [@OEvgeny](https://github.com/OEvgeny)
+- Added multi-dimensional grouping, `styleOptions.groupActivitiesBy`, and `useGroupActivitiesByName` hook, in PR [#5471](https://github.com/microsoft/BotFramework-WebChat/pull/5471), by [@compulim](https://github.com/compulim)
+   - Existing behavior will be kept and activities will be grouped by `sender` followed by `status`
+   - `useGroupActivitiesByName` is favored over the existing `useGroupActivities` hook for performance reason
 
 ### Changed
 
