@@ -27,7 +27,11 @@
         const {
           React,
           ReactDOM: { render },
-          WebChat: { FluentThemeProvider, ReactWebChat }
+          WebChat: {
+            decorator: { DecoratorComposer },
+            FluentThemeProvider,
+            ReactWebChat
+          }
         } = window; // Imports in UMD fashion.
 
         function Flair({ children }) {
@@ -51,7 +55,6 @@
 
         const App = () => (
           <ReactWebChat
-            decoratorMiddleware={decoratorMiddleware}
             directLine={directLine}
             store={store}
             styleOptions={{
@@ -63,7 +66,9 @@
 
         render(
           <FluentThemeProvider>
-            <App />
+            <DecoratorComposer middleware={decoratorMiddleware}>
+              <App />
+            </DecoratorComposer>
           </FluentThemeProvider>,
           document.getElementById('webchat')
         );
