@@ -68,11 +68,6 @@ function shouldGroupSender(x: WebChatActivity, y: WebChatActivity): boolean {
   return roleX === roleY && idX === idY;
 }
 
-const passthrough =
-  next =>
-  (...args) =>
-    next(...args);
-
 export default function createDefaultGroupActivitiesMiddleware({
   groupTimestamp,
   ponyfill
@@ -85,7 +80,7 @@ export default function createDefaultGroupActivitiesMiddleware({
       type === 'sender' || typeof type === 'undefined'
         ? next =>
             ({ activities }) => ({ ...next({ activities }), sender: bin(activities, shouldGroupSender) })
-        : passthrough,
+        : undefined,
     type =>
       type === 'status' || typeof type === 'undefined'
         ? next =>
@@ -93,6 +88,6 @@ export default function createDefaultGroupActivitiesMiddleware({
               ...next({ activities }),
               status: bin(activities, createShouldGroupTimestamp(groupTimestamp, ponyfill))
             })
-        : passthrough
+        : undefined
   ]);
 }
