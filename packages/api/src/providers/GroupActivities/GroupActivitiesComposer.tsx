@@ -1,7 +1,7 @@
-import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
-
 import { type WebChatActivity } from 'botframework-webchat-core';
+import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
+
 import applyMiddleware from '../../hooks/middleware/applyMiddleware';
 import useStyleOptions from '../../hooks/useStyleOptions';
 import type GroupActivitiesMiddleware from '../../types/GroupActivitiesMiddleware';
