@@ -12,6 +12,7 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
+import ActivityFeedback from '../../../ActivityFeedback/ActivityFeedback';
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
 import dereferenceBlankNodes from '../../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
@@ -25,7 +26,6 @@ import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './Me
 import isAIGeneratedActivity from './isAIGeneratedActivity';
 import isBasedOnSoftwareSourceCode from './isBasedOnSoftwareSourceCode';
 import isHTMLButtonElement from './isHTMLButtonElement';
-import ActivityFeedback from '../../../Activity/ActivityFeedback';
 
 const { useLocalizer, useStyleOptions } = hooks;
 

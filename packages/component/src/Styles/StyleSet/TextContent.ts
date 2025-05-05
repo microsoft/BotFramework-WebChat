@@ -31,7 +31,8 @@ export default function createTextContentStyle() {
       '& .webchat__text-content__activity-actions': {
         alignSelf: 'flex-start',
         display: 'flex',
-        gap: `calc(${CSSTokens.PaddingRegular} / 2)`
+        gap: `calc(${CSSTokens.PaddingRegular} / 2)`,
+        width: '100%'
       },
 
       '& .webchat__text-content__activity-actions:empty': {
