@@ -90,6 +90,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Added multi-dimensional grouping, `styleOptions.groupActivitiesBy`, and `useGroupActivitiesByName` hook, in PR [#5471](https://github.com/microsoft/BotFramework-WebChat/pull/5471), by [@compulim](https://github.com/compulim)
    - Existing behavior will be kept and activities will be grouped by `sender` followed by `status`
    - `useGroupActivitiesByName` is favored over the existing `useGroupActivities` hook for performance reason
+   - Middleware which support the new grouping name init argument should only compute the grouping if they match the grouping name, or the grouping name is not specified, otherwise, should do nothing and call the downstream middleware
 
 ### Changed
 
