@@ -23,10 +23,7 @@
 
         const App = () => (
           <React.Fragment>
-            <ReactWebChat
-              directLine={directLine}
-              store={store}
-            />
+            <ReactWebChat directLine={directLine} store={store} />
           </React.Fragment>
         );
 
@@ -55,8 +52,10 @@
         await host.sendShiftTab(3);
 
         await host.sendKeys('ENTER');
-        await host.sendKeys('ENTER');
 
+        await directLine.actPostActivity(async () => {
+          await host.sendKeys('ENTER');
+        });
 
         await expect(pageElements.byTestId('feedback sendbox')).toBeFalsy();
 
