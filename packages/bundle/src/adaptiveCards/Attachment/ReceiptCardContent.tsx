@@ -53,13 +53,15 @@ const receiptCardContentPropsSchema = pipe(
             array(
               pipe(
                 object({
-                  image: pipe(
-                    object({
-                      alt: string(),
-                      tap: optional(directLineCardActionSchema),
-                      url: string()
-                    }),
-                    readonly()
+                  image: optional(
+                    pipe(
+                      object({
+                        alt: string(),
+                        tap: optional(directLineCardActionSchema),
+                        url: string()
+                      }),
+                      readonly()
+                    )
                   ),
                   price: string(),
                   quantity: optional(string()),
