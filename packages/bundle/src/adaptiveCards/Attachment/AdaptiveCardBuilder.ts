@@ -111,7 +111,7 @@ export default class AdaptiveCardBuilder {
     }
   }
 
-  addButtons(cardActions: DirectLineCardAction[], includesOAuthButtons?: boolean) {
+  addButtons(cardActions: readonly Readonly<DirectLineCardAction>[], includesOAuthButtons?: boolean) {
     cardActions &&
       cardActions.forEach(cardAction => {
         this.card.addAction(addCardAction(cardAction, includesOAuthButtons));
@@ -136,7 +136,7 @@ export default class AdaptiveCardBuilder {
     this.addButtons(content.buttons);
   }
 
-  addImage(url: string, container?: Container, selectAction?: DirectLineCardAction, altText?: string) {
+  addImage(url: string, container?: Container, selectAction?: Readonly<DirectLineCardAction>, altText?: string) {
     container = container || this.container;
 
     const image = new Image();
@@ -151,7 +151,7 @@ export default class AdaptiveCardBuilder {
 }
 
 export interface ICommonContent {
-  buttons?: DirectLineCardAction[];
+  buttons?: readonly Readonly<DirectLineCardAction>[];
   subtitle?: string;
   text?: string;
   title?: string;

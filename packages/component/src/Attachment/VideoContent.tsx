@@ -1,6 +1,7 @@
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { memo } from 'react';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import parseProps from '../Utils/parseProps';
 import HTMLVideoContent from './HTMLVideoContent';
 import VimeoContent from './VimeoContent';
 import YouTubeContent from './YouTubeContent';
@@ -30,15 +31,22 @@ function parseURL(url) {
   return { hostname, pathname, search };
 }
 
-type VideoContentProps = {
-  alt?: string;
-  autoPlay?: boolean;
-  loop?: boolean;
-  poster?: string;
-  src: string;
-};
+const videoContentPropsSchema = pipe(
+  object({
+    alt: optional(string(), ''), // TODO: Should remove default value.
+    autoPlay: optional(boolean(), false), // TODO: Should remove default value.
+    loop: optional(boolean(), false), // TODO: Should remove default value.
+    poster: optional(string(), ''), // TODO: Should remove default value.
+    src: string()
+  }),
+  readonly()
+);
 
-const VideoContent: FC<VideoContentProps> = ({ alt, autoPlay, loop, poster, src }) => {
+type VideoContentProps = InferInput<typeof videoContentPropsSchema>;
+
+function VideoContent(props: VideoContentProps) {
+  const { alt, autoPlay, loop, poster, src } = parseProps(videoContentPropsSchema, props);
+
   const { hostname, pathname, search } = parseURL(src);
   const lastSegment = pathname.split('/').pop();
   const searchParams = new URLSearchParams(search);
@@ -59,21 +67,7 @@ const VideoContent: FC<VideoContentProps> = ({ alt, autoPlay, loop, poster, src 
     default:
       return <HTMLVideoContent alt={alt} autoPlay={autoPlay} loop={loop} poster={poster} src={src} />;
   }
-};
+}
 
-VideoContent.defaultProps = {
-  alt: '',
-  autoPlay: false,
-  loop: false,
-  poster: ''
-};
-
-VideoContent.propTypes = {
-  alt: PropTypes.string,
-  autoPlay: PropTypes.bool,
-  loop: PropTypes.bool,
-  poster: PropTypes.string,
-  src: PropTypes.string.isRequired
-};
-
-export default VideoContent;
+export default memo(VideoContent);
+export { videoContentPropsSchema, type VideoContentProps };

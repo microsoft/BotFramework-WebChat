@@ -138,6 +138,7 @@
     "swiper": "8.4.7",
     "url-search-params-polyfill": "8.2.5",
     "uuid": "8.3.2",
+    "valibot": "^1.1.0",
     "web-speech-cognitive-services": "8.1.1",
     "whatwg-fetch": "3.6.20"
   },

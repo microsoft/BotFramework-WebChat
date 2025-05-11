@@ -1,17 +1,24 @@
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
-import type { DirectLineSignInCard } from 'botframework-webchat-core';
+import { parseProps } from 'botframework-webchat-component/internal';
+import React, { memo } from 'react';
+import { any, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import CommonCard from './CommonCard';
 import useStyleSet from '../../hooks/useStyleSet';
+import CommonCard from './CommonCard';
 
-type SignInCardContentProps = {
-  actionPerformedClassName?: string;
-  content: DirectLineSignInCard;
-  disabled?: boolean;
-};
+const signInCardContentPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    content: pipe(any()),
+    disabled: optional(boolean())
+  }),
+  readonly()
+);
 
-const SignInCardContent: FC<SignInCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+type SignInCardContentProps = InferInput<typeof signInCardContentPropsSchema>;
+
+function SignInCardContent(props: SignInCardContentProps) {
+  const { actionPerformedClassName, content, disabled } = parseProps(signInCardContentPropsSchema, props);
+
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
   return (
@@ -19,17 +26,7 @@ const SignInCardContent: FC<SignInCardContentProps> = ({ actionPerformedClassNam
       <CommonCard actionPerformedClassName={actionPerformedClassName} content={content} disabled={disabled} />
     </div>
   );
-};
+}
 
-SignInCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
-};
-
-SignInCardContent.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  content: PropTypes.any.isRequired,
-  disabled: PropTypes.bool
-};
-
-export default SignInCardContent;
+export default memo(SignInCardContent);
+export { signInCardContentPropsSchema, type SignInCardContentProps };

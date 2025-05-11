@@ -1,11 +1,12 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { memo } from 'react';
+import { boolean, number, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import DownloadIcon from './Assets/DownloadIcon';
-import useStyleSet from '../hooks/useStyleSet';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import useStyleSet from '../hooks/useStyleSet';
+import parseProps from '../Utils/parseProps';
+import DownloadIcon from './Assets/DownloadIcon';
 
 const { useByteFormatter, useDirection, useLocalizer } = hooks;
 
@@ -34,7 +35,20 @@ function isAllowedProtocol(url) {
   }
 }
 
-const FileContentBadge = ({ downloadIcon, fileName, size }) => {
+const fileContentBadgePropsSchema = pipe(
+  object({
+    downloadIcon: optional(boolean(), false),
+    fileName: string(),
+    size: optional(number())
+  }),
+  readonly()
+);
+
+type FileContentBadgeProps = InferInput<typeof fileContentBadgePropsSchema>;
+
+const FileContentBadge = (props: FileContentBadgeProps) => {
+  const { downloadIcon, fileName, size } = parseProps(fileContentBadgePropsSchema, props);
+
   const [direction] = useDirection();
   const formatByte = useByteFormatter();
 
@@ -59,25 +73,21 @@ const FileContentBadge = ({ downloadIcon, fileName, size }) => {
   );
 };
 
-FileContentBadge.defaultProps = {
-  downloadIcon: false,
-  size: undefined
-};
+type FileContentProps = InferInput<typeof fileContentPropsSchema>;
 
-FileContentBadge.propTypes = {
-  downloadIcon: PropTypes.bool,
-  fileName: PropTypes.string.isRequired,
-  size: PropTypes.number
-};
+const fileContentPropsSchema = pipe(
+  object({
+    className: optional(string(), ''), // TODO: Should remove default value.
+    fileName: string(),
+    href: optional(string()),
+    size: optional(number())
+  }),
+  readonly()
+);
 
-type FileContentProps = {
-  className?: string;
-  fileName: string;
-  href?: string;
-  size?: number;
-};
+function FileContent(props: FileContentProps) {
+  const { className, href, fileName, size } = parseProps(fileContentPropsSchema, props);
 
-const FileContent: FC<FileContentProps> = ({ className, href, fileName, size }) => {
   const [{ fileContent: fileContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
   const localizeBytes = useByteFormatter();
@@ -85,10 +95,10 @@ const FileContent: FC<FileContentProps> = ({ className, href, fileName, size }) 
 
   const localizedSize = typeof size === 'number' && localizeBytes(size);
 
-  href = href && isAllowedProtocol(href) ? href : undefined;
+  const allowedHref = href && isAllowedProtocol(href) ? href : undefined;
 
   const alt = localize(
-    href
+    allowedHref
       ? localizedSize
         ? 'FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT'
         : 'FILE_CONTENT_DOWNLOADABLE_ALT'
@@ -103,12 +113,12 @@ const FileContent: FC<FileContentProps> = ({ className, href, fileName, size }) 
     <div
       className={classNames('webchat__fileContent', rootClassName, fileContentStyleSet + '', (className || '') + '')}
     >
-      {href ? (
+      {allowedHref ? (
         <a
           aria-label={alt}
           className="webchat__fileContent__buttonLink"
           download={fileName}
-          href={href}
+          href={allowedHref}
           rel="noopener noreferrer"
           target="_blank"
         >
@@ -119,19 +129,7 @@ const FileContent: FC<FileContentProps> = ({ className, href, fileName, size }) 
       )}
     </div>
   );
-};
+}
 
-FileContent.defaultProps = {
-  className: '',
-  href: undefined,
-  size: undefined
-};
-
-FileContent.propTypes = {
-  className: PropTypes.string,
-  fileName: PropTypes.string.isRequired,
-  href: PropTypes.string,
-  size: PropTypes.number
-};
-
-export default FileContent;
+export default memo(FileContent);
+export { fileContentPropsSchema, type FileContentProps };

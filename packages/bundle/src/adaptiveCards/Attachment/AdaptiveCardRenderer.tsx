@@ -1,19 +1,20 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
-import { AdaptiveCard, Action as AdaptiveCardAction, OpenUrlAction, SubmitAction } from 'adaptivecards';
+import { type Action as AdaptiveCardAction, type OpenUrlAction, type SubmitAction } from 'adaptivecards';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import { parseProps } from 'botframework-webchat-component/internal';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, {
-  KeyboardEventHandler,
-  MouseEventHandler,
-  VFC,
+  memo,
   useCallback,
   useLayoutEffect,
   useMemo,
-  useRef
+  useRef,
+  type KeyboardEventHandler,
+  type MouseEventHandler
 } from 'react';
+import { any, boolean, looseObject, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
@@ -32,19 +33,37 @@ const { useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollTo
 
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
-type AdaptiveCardRendererProps = {
-  actionPerformedClassName?: string;
-  adaptiveCard: AdaptiveCard;
-  disabled?: boolean;
-  tapAction?: DirectLineCardAction;
-};
+// TODO: Should build `directLineCardActionSchema`.
+const directLineCardActionSchema = pipe(
+  looseObject({
+    image: optional(string()),
+    title: optional(string()),
+    type: string(),
+    value: optional(string())
+  }),
+  readonly()
+);
 
-const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
-  actionPerformedClassName,
-  adaptiveCard,
-  disabled: disabledFromProps,
-  tapAction
-}) => {
+const adaptiveCardRendererPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    disabled: optional(boolean()),
+    adaptiveCard: any(),
+    tapAction: optional(directLineCardActionSchema)
+  }),
+  readonly()
+);
+
+type AdaptiveCardRendererProps = InferInput<typeof adaptiveCardRendererPropsSchema>;
+
+function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
+  const {
+    actionPerformedClassName,
+    adaptiveCard,
+    disabled: disabledFromProps,
+    tapAction
+  } = parseProps(adaptiveCardRendererPropsSchema, props);
+
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
@@ -99,7 +118,7 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
         }
       }
 
-      performCardAction(tapActionRef.current);
+      performCardAction(tapActionRef.current as DirectLineCardAction);
       scrollToEnd();
     },
     [contentRef, performCardAction, scrollToEnd, tapActionRef]
@@ -247,27 +266,7 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
       ref={contentRef}
     />
   );
-};
+}
 
-AdaptiveCardRenderer.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined,
-  tapAction: undefined
-};
-
-AdaptiveCardRenderer.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  adaptiveCard: PropTypes.any.isRequired,
-  disabled: PropTypes.bool,
-
-  // TypeScript class is not mappable to PropTypes.func
-  // @ts-ignore
-  tapAction: PropTypes.shape({
-    image: PropTypes.string,
-    title: PropTypes.string,
-    type: PropTypes.string.isRequired,
-    value: PropTypes.string
-  })
-};
-
-export default AdaptiveCardRenderer;
+export default memo(AdaptiveCardRenderer);
+export { adaptiveCardRendererPropsSchema, type AdaptiveCardRendererProps };

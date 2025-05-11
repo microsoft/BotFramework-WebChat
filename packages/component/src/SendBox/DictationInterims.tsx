@@ -3,12 +3,13 @@
 import { hooks } from 'botframework-webchat-api';
 import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { memo } from 'react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
 import testIds from '../testIds';
+import parseProps from '../Utils/parseProps';
 
 const {
   DictateState: { DICTATING, STARTING, STOPPING }
@@ -21,11 +22,18 @@ const ROOT_STYLE = {
   display: 'flex'
 };
 
-type DictationInterimsProps = {
-  className?: string;
-};
+const dictationInterimsPropsSchema = pipe(
+  object({
+    className: optional(string(), '') // TODO: Should remove default value.
+  }),
+  readonly()
+);
 
-const DictationInterims: FC<DictationInterimsProps> = ({ className }) => {
+type DictationInterimsProps = InferInput<typeof dictationInterimsPropsSchema>;
+
+function DictationInterims(props: DictationInterimsProps) {
+  const { className } = parseProps(dictationInterimsPropsSchema, props);
+
   const [dictateInterims] = useDictateInterims();
   const [dictateState] = useDictateState();
   const [{ dictationInterims: dictationInterimsStyleSet }] = useStyleSet();
@@ -62,17 +70,10 @@ const DictationInterims: FC<DictationInterimsProps> = ({ className }) => {
         </p>
       ))
   );
-};
-
-DictationInterims.defaultProps = {
-  className: ''
-};
-
-DictationInterims.propTypes = {
-  className: PropTypes.string
-};
+}
 
 // TODO: [P3] After speech started, when clicking on the transcript, it should
 //       stop the dictation and allow the user to type-correct the transcript
 
-export default DictationInterims;
+export default memo(DictationInterims);
+export { dictationInterimsPropsSchema, type DictationInterimsProps };

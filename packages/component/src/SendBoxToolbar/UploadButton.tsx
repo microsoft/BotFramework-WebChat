@@ -1,13 +1,14 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useCallback, useRef, type FC, type FormEventHandler, type MouseEventHandler } from 'react';
+import React, { memo, useCallback, useRef, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import { object, pipe, readonly, string, type InferInput } from 'valibot';
 
 import IconButton from '../SendBox/IconButton';
-import useMakeThumbnail from '../hooks/useMakeThumbnail';
+import parseProps from '../Utils/parseProps';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useFocus from '../hooks/useFocus';
+import useMakeThumbnail from '../hooks/useMakeThumbnail';
 import useStyleSet from '../hooks/useStyleSet';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import AttachmentIcon from './Assets/AttachmentIcon';
@@ -33,11 +34,18 @@ const ROOT_STYLE = {
 
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
-type UploadButtonProps = {
-  className?: string;
-};
+const uploadButtonPropsSchema = pipe(
+  object({
+    className: string()
+  }),
+  readonly()
+);
 
-const UploadButton: FC<UploadButtonProps> = ({ className }) => {
+type UploadButtonProps = InferInput<typeof uploadButtonPropsSchema>;
+
+function UploadButton(props: UploadButtonProps) {
+  const { className } = parseProps(uploadButtonPropsSchema, props);
+
   const [{ sendAttachmentOn, uploadAccept, uploadMultiple }] = useStyleOptions();
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
   const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachments();
@@ -98,14 +106,7 @@ const UploadButton: FC<UploadButtonProps> = ({ className }) => {
       </IconButton>
     </div>
   );
-};
+}
 
-UploadButton.defaultProps = {
-  className: undefined
-};
-
-UploadButton.propTypes = {
-  className: PropTypes.string
-};
-
-export default UploadButton;
+export default memo(UploadButton);
+export { uploadButtonPropsSchema, type UploadButtonProps };

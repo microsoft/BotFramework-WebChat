@@ -1,20 +1,28 @@
 /* eslint no-console: "off" */
 
 import { hooks } from 'botframework-webchat-api';
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { memo } from 'react';
+import { instance, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import ScreenReaderText from './ScreenReaderText';
 import useStyleSet from './hooks/useStyleSet';
+import ScreenReaderText from './ScreenReaderText';
+import parseProps from './Utils/parseProps';
 
 const { useLocalizer } = hooks;
 
-type ErrorBoxProps = {
-  error: Error;
-  type?: string;
-};
+const errorBoxPropsSchema = pipe(
+  object({
+    error: instance(Error),
+    type: optional(string(), '') // TODO: Should remove default value.
+  }),
+  readonly()
+);
 
-const ErrorBox: FC<ErrorBoxProps> = ({ error, type }) => {
+type ErrorBoxProps = InferInput<typeof errorBoxPropsSchema>;
+
+function ErrorBox(props: ErrorBoxProps) {
+  const { error, type } = parseProps(errorBoxPropsSchema, props);
+
   const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
   const localize = useLocalizer();
 
@@ -31,15 +39,7 @@ const ErrorBox: FC<ErrorBoxProps> = ({ error, type }) => {
       </div>
     </React.Fragment>
   );
-};
+}
 
-ErrorBox.defaultProps = {
-  type: ''
-};
-
-ErrorBox.propTypes = {
-  error: PropTypes.instanceOf(Error).isRequired,
-  type: PropTypes.string
-};
-
-export default ErrorBox;
+export default memo(ErrorBox);
+export { errorBoxPropsSchema, type ErrorBoxProps };

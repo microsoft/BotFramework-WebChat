@@ -2,12 +2,14 @@
 
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { FC, ReactNode, memo } from 'react';
+import React, { memo } from 'react';
 
-import isZeroOrPositive from '../Utils/isZeroOrPositive';
-import useStyleSet from '../hooks/useStyleSet';
+import { boolean, literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import useStyleSet from '../hooks/useStyleSet';
+import reactNode from '../types/internal/reactNode';
+import isZeroOrPositive from '../Utils/isZeroOrPositive';
+import parseProps from '../Utils/parseProps';
 
 const { useDirection, useStyleOptions } = hooks;
 
@@ -62,15 +64,22 @@ function acuteNubSVG(nubSize, strokeWidth, side, upSideDown = false) {
   );
 }
 
-type BubbleProps = {
-  'aria-hidden'?: boolean;
-  children?: ReactNode;
-  className?: string;
-  fromUser?: boolean;
-  nub?: boolean | 'hidden';
-};
+const bubblePropsSchema = pipe(
+  object({
+    'aria-hidden': optional(boolean()),
+    children: optional(reactNode()),
+    className: optional(string(), ''), // TODO: Should remove default value.
+    fromUser: optional(boolean(), false), // TODO: Should remove default value.
+    nub: optional(union([boolean(), literal('hidden')]), false) // TODO: Should remove default value.
+  }),
+  readonly()
+);
 
-const Bubble: FC<BubbleProps> = ({ 'aria-hidden': ariaHidden, children, className, fromUser, nub }) => {
+type BubbleProps = InferInput<typeof bubblePropsSchema>;
+
+function Bubble(props: BubbleProps) {
+  const { 'aria-hidden': ariaHidden, children, className, fromUser, nub } = parseProps(bubblePropsSchema, props);
+
   const [{ bubble: bubbleStyleSet }] = useStyleSet();
   const [direction] = useDirection();
   const [
@@ -121,24 +130,7 @@ const Bubble: FC<BubbleProps> = ({ 'aria-hidden': ariaHidden, children, classNam
       {nub === true && acuteNubSVG(nubSize, borderWidth, side, !isZeroOrPositive(nubOffset))}
     </div>
   );
-};
-
-Bubble.defaultProps = {
-  'aria-hidden': undefined,
-  children: undefined,
-  className: '',
-  fromUser: false,
-  nub: false
-};
-
-Bubble.propTypes = {
-  'aria-hidden': PropTypes.bool,
-  children: PropTypes.any,
-  className: PropTypes.string,
-  fromUser: PropTypes.bool,
-  nub: PropTypes.oneOf([true, false, 'hidden'])
-};
-
-Bubble.displayName = 'Bubble';
+}
 
 export default memo(Bubble);
+export { bubblePropsSchema, type BubbleProps };

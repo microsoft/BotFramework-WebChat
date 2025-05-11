@@ -1,19 +1,27 @@
 import { hooks } from 'botframework-webchat-api';
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { memo } from 'react';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../hooks/useStyleSet';
+import parseProps from '../Utils/parseProps';
 
 const { useLocalizer } = hooks;
 
-type VimeoContentProps = {
-  alt?: string;
-  autoPlay?: boolean;
-  embedID: string;
-  loop?: boolean;
-};
+const vimeoContentPropsSchema = pipe(
+  object({
+    alt: optional(string(), ''), // TODO: Should remove default value.
+    autoPlay: optional(boolean(), false), // TODO: Should remove default value.
+    embedID: string(),
+    loop: optional(boolean(), false) // TODO: Should remove default value.
+  }),
+  readonly()
+);
 
-const VimeoContent: FC<VimeoContentProps> = ({ alt, autoPlay, embedID, loop }) => {
+type VimeoContentProps = InferInput<typeof vimeoContentPropsSchema>;
+
+function VimeoContent(props: VimeoContentProps) {
+  const { alt, autoPlay, embedID, loop } = parseProps(vimeoContentPropsSchema, props);
+
   const [{ vimeoContent: vimeoContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
 
@@ -37,19 +45,7 @@ const VimeoContent: FC<VimeoContentProps> = ({ alt, autoPlay, embedID, loop }) =
       title={title}
     />
   );
-};
+}
 
-VimeoContent.defaultProps = {
-  alt: '',
-  autoPlay: false,
-  loop: false
-};
-
-VimeoContent.propTypes = {
-  alt: PropTypes.string,
-  autoPlay: PropTypes.bool,
-  embedID: PropTypes.string.isRequired,
-  loop: PropTypes.bool
-};
-
-export default VimeoContent;
+export default memo(VimeoContent);
+export { vimeoContentPropsSchema, type VimeoContentProps };

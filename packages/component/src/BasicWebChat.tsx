@@ -3,15 +3,16 @@
 
 import { SendBoxMiddlewareProxy, hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { memo } from 'react';
+import { fallback, literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 
 import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicToaster from './BasicToaster';
 import BasicTranscript from './BasicTranscript';
-import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useStyleSet from './hooks/useStyleSet';
+import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
+import parseProps from './Utils/parseProps';
 
 const { useStyleOptions } = hooks;
 
@@ -38,15 +39,26 @@ const TRANSCRIPT_STYLE = {
   }
 };
 
-// Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
-const ARIA_LANDMARK_ROLES = ['complementary', 'contentinfo', 'form', 'main', 'region'];
+const basicWebChatPropsSchema = pipe(
+  object({
+    className: optional(string(), ''), // TODO: Should remove default value.
+    role: fallback(
+      optional(
+        // Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
+        union([literal('complementary'), literal('contentinfo'), literal('form'), literal('main'), literal('region')])
+      ),
+      // Fallback to "complementary" if specified is not a valid landmark role.
+      'complementary'
+    )
+  }),
+  readonly()
+);
 
-type BasicWebChatProps = {
-  className?: string;
-  role?: 'complementary' | 'contentinfo' | 'form' | 'main' | 'region';
-};
+type BasicWebChatProps = InferInput<typeof basicWebChatPropsSchema>;
 
-const BasicWebChat: FC<BasicWebChatProps> = ({ className, role }) => {
+function BasicWebChat(props: BasicWebChatProps) {
+  const { className, role } = parseProps(basicWebChatPropsSchema, props);
+
   const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();
   const styleToEmotionObject = useStyleToEmotionObject();
@@ -56,11 +68,6 @@ const BasicWebChat: FC<BasicWebChatProps> = ({ className, role }) => {
   const sendBoxClassName = styleToEmotionObject(SEND_BOX_CSS) + '';
   const toasterClassName = styleToEmotionObject(TOASTER_STYLE) + '';
   const transcriptClassName = styleToEmotionObject(TRANSCRIPT_STYLE) + '';
-
-  // Fallback to "complementary" if specified is not a valid landmark role.
-  if (!ARIA_LANDMARK_ROLES.includes(role)) {
-    role = 'complementary';
-  }
 
   return (
     <AccessKeySinkSurface
@@ -73,20 +80,7 @@ const BasicWebChat: FC<BasicWebChatProps> = ({ className, role }) => {
       <SendBoxMiddlewareProxy className={sendBoxClassName} request={undefined} />
     </AccessKeySinkSurface>
   );
-};
+}
 
-BasicWebChat.defaultProps = {
-  className: '',
-  role: 'complementary'
-};
-
-BasicWebChat.propTypes = {
-  className: PropTypes.string,
-  // Ignoring deficiencies with TypeScript/PropTypes inference.
-  // @ts-ignore
-  role: PropTypes.oneOf(ARIA_LANDMARK_ROLES)
-};
-
-export default BasicWebChat;
-
-export type { BasicWebChatProps };
+export default memo(BasicWebChat);
+export { basicWebChatPropsSchema, type BasicWebChatProps };

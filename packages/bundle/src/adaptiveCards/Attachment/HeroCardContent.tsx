@@ -1,22 +1,63 @@
 import { hooks } from 'botframework-webchat-component';
-import PropTypes from 'prop-types';
-import React, { FC, useMemo } from 'react';
-import type { DirectLineHeroCard } from 'botframework-webchat-core';
+import { parseProps } from 'botframework-webchat-component/internal';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
+import React, { memo, useMemo } from 'react';
+import { array, boolean, looseObject, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import useStyleOptions from '../../hooks/useStyleOptions';
+import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
-import useStyleOptions from '../../hooks/useStyleOptions';
 
 const { useDirection } = hooks;
 
-type HeroCardContentProps = {
-  actionPerformedClassName?: string;
-  content: DirectLineHeroCard;
-  disabled?: boolean;
-};
+// TODO: Should build `directLineCardActionSchema`.
+const directLineCardActionSchema = pipe(
+  looseObject({
+    image: optional(string()),
+    title: optional(string()),
+    type: string(),
+    value: optional(string())
+  }),
+  readonly()
+);
 
-const HeroCardContent: FC<HeroCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const heroCardContentPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    content: pipe(
+      object({
+        buttons: pipe(array(directLineCardActionSchema), readonly()),
+        images: pipe(
+          array(
+            pipe(
+              object({
+                alt: string(),
+                tap: optional(directLineCardActionSchema),
+                url: string()
+              }),
+              readonly()
+            )
+          ),
+          readonly()
+        ),
+        subtitle: optional(string()),
+        tap: optional(directLineCardActionSchema),
+        text: optional(string()),
+        title: optional(string())
+      }),
+      readonly()
+    ),
+    disabled: optional(boolean())
+  }),
+  readonly()
+);
+
+type HeroCardContentProps = InferInput<typeof heroCardContentPropsSchema>;
+
+function HeroCardContent(props: HeroCardContentProps) {
+  const { actionPerformedClassName, content, disabled } = parseProps(heroCardContentPropsSchema, props);
+
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [styleOptions] = useStyleOptions();
   const [direction] = useDirection();
@@ -25,9 +66,13 @@ const HeroCardContent: FC<HeroCardContentProps> = ({ actionPerformedClassName, c
     const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions, direction);
 
     if (content) {
-      (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap, image.alt));
+      // TODO: Need to build `directLineCardActionSchema`.
+      (content.images || []).forEach(image =>
+        builder.addImage(image.url, null, image.tap as DirectLineCardAction, image.alt)
+      );
 
-      builder.addCommon(content);
+      // TODO: Need to build `directLineCardActionSchema`.
+      builder.addCommon(content as typeof content & { buttons: readonly DirectLineCardAction[] });
 
       return builder.card;
     }
@@ -41,28 +86,7 @@ const HeroCardContent: FC<HeroCardContentProps> = ({ actionPerformedClassName, c
       tapAction={content && content.tap}
     />
   );
-};
+}
 
-HeroCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
-};
-
-HeroCardContent.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  content: PropTypes.shape({
-    images: PropTypes.arrayOf(
-      PropTypes.shape({
-        alt: PropTypes.string.isRequired,
-        tap: PropTypes.any,
-        url: PropTypes.string.isRequired
-      })
-    ),
-    tap: PropTypes.any
-  }).isRequired,
-  disabled: PropTypes.bool
-};
-
-export default HeroCardContent;
+export default memo(HeroCardContent);
+export { heroCardContentPropsSchema, type HeroCardContentProps };

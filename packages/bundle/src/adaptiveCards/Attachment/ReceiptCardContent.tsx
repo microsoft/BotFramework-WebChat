@@ -1,14 +1,15 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 10, 15, 25, 50, 75] }] */
 
 import { hooks } from 'botframework-webchat-component';
-import PropTypes from 'prop-types';
-import React, { FC, useMemo } from 'react';
-import type { DirectLineReceiptCard } from 'botframework-webchat-core';
+import { parseProps } from 'botframework-webchat-component/internal';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
+import React, { memo, useMemo } from 'react';
+import { any, array, boolean, looseObject, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import useStyleOptions from '../../hooks/useStyleOptions';
+import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
-import useStyleOptions from '../../hooks/useStyleOptions';
 
 const { useDirection, useLocalizer } = hooks;
 
@@ -16,13 +17,81 @@ function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
 }
 
-type ReceiptCardContentProps = {
-  actionPerformedClassName?: string;
-  content: DirectLineReceiptCard;
-  disabled?: boolean;
-};
+// TODO: Should build `directLineCardActionSchema`.
+const directLineCardActionSchema = pipe(
+  looseObject({
+    image: optional(string()),
+    title: optional(string()),
+    type: string(),
+    value: optional(string())
+  }),
+  readonly()
+);
 
-const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+const receiptCardContentPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    content: pipe(
+      object({
+        buttons: optional(pipe(array(any()), readonly())),
+        facts: optional(
+          pipe(
+            array(
+              pipe(
+                object({
+                  key: optional(string()),
+                  value: optional(string())
+                }),
+                readonly()
+              )
+            ),
+            readonly()
+          )
+        ),
+        items: optional(
+          pipe(
+            array(
+              pipe(
+                object({
+                  image: pipe(
+                    object({
+                      alt: string(),
+                      tap: optional(directLineCardActionSchema),
+                      url: string()
+                    }),
+                    readonly()
+                  ),
+                  price: string(),
+                  quantity: optional(string()),
+                  subtitle: optional(string()),
+                  tap: optional(directLineCardActionSchema),
+                  text: optional(string()),
+                  title: string()
+                }),
+                readonly()
+              )
+            ),
+            readonly()
+          )
+        ),
+        tap: optional(directLineCardActionSchema),
+        tax: optional(string()),
+        title: optional(string()),
+        total: optional(string()),
+        vat: optional(string())
+      }),
+      readonly()
+    ),
+    disabled: optional(boolean())
+  }),
+  readonly()
+);
+
+type ReceiptCardContentProps = InferInput<typeof receiptCardContentPropsSchema>;
+
+function ReceiptCardContent(props: ReceiptCardContentProps) {
+  const { actionPerformedClassName, content, disabled } = parseProps(receiptCardContentPropsSchema, props);
+
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -62,9 +131,9 @@ const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassN
             const [itemImageColumn, ...columns] = builder.addColumnSet([15, 75, 10]);
 
             itemColumns = columns;
-            builder.addImage(url, itemImageColumn, imageTap, alt);
+            builder.addImage(url, itemImageColumn, imageTap as DirectLineCardAction, alt);
           } else {
-            itemColumns = builder.addColumnSet([75, 25], undefined, tap && tap);
+            itemColumns = builder.addColumnSet([75, 25], undefined, tap && (tap as DirectLineCardAction));
           }
 
           const [itemTitleColumn, itemPriceColumn] = itemColumns;
@@ -121,47 +190,7 @@ const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassN
       tapAction={content && content.tap}
     />
   );
-};
+}
 
-ReceiptCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
-};
-
-ReceiptCardContent.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  content: PropTypes.shape({
-    buttons: PropTypes.array,
-    facts: PropTypes.arrayOf(
-      PropTypes.shape({
-        key: PropTypes.string,
-        value: PropTypes.string
-      })
-    ),
-    items: PropTypes.arrayOf(
-      PropTypes.shape({
-        image: PropTypes.shape({
-          alt: PropTypes.string.isRequired,
-          tap: PropTypes.any,
-          url: PropTypes.string.isRequired
-        }),
-        price: PropTypes.string.isRequired,
-        quantity: PropTypes.string,
-        subtitle: PropTypes.string,
-        tap: PropTypes.any,
-        text: PropTypes.string,
-        title: PropTypes.string.isRequired
-      })
-    ),
-    tap: PropTypes.any,
-    tax: PropTypes.string,
-    title: PropTypes.string,
-    total: PropTypes.string,
-    vat: PropTypes.string
-  }).isRequired,
-  disabled: PropTypes.bool
-};
-
-export default ReceiptCardContent;
+export default memo(ReceiptCardContent);
+export { receiptCardContentPropsSchema, type ReceiptCardContentProps };

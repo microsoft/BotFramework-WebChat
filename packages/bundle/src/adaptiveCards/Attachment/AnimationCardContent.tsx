@@ -1,22 +1,45 @@
 /* eslint react/no-array-index-key: "off" */
 
 import { Components } from 'botframework-webchat-component';
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
-import type { DirectLineAnimationCard } from 'botframework-webchat-core';
+import { parseProps } from 'botframework-webchat-component/internal';
+import React, { memo } from 'react';
+import { array, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import CommonCard from './CommonCard';
 import useStyleSet from '../../hooks/useStyleSet';
+import CommonCard from './CommonCard';
 
 const { ImageContent, VideoContent } = Components;
 
-type AnimationCardContentProps = {
-  actionPerformedClassName?: string;
-  content: DirectLineAnimationCard;
-  disabled?: boolean;
-};
+const animationCardContentPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    content: pipe(
+      object({
+        media: pipe(
+          array(
+            pipe(
+              object({
+                profile: optional(string()),
+                url: string()
+              }),
+              readonly()
+            )
+          ),
+          readonly()
+        )
+      }),
+      readonly()
+    ),
+    disabled: boolean()
+  }),
+  readonly()
+);
 
-const AnimationCardContent: FC<AnimationCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+type AnimationCardContentProps = InferInput<typeof animationCardContentPropsSchema>;
+
+function AnimationCardContent(props: AnimationCardContentProps) {
+  const { actionPerformedClassName, content, disabled } = parseProps(animationCardContentPropsSchema, props);
+
   const { media = [] } = content;
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 
@@ -32,26 +55,7 @@ const AnimationCardContent: FC<AnimationCardContentProps> = ({ actionPerformedCl
       <CommonCard actionPerformedClassName={actionPerformedClassName} content={content} disabled={disabled} />
     </div>
   );
-};
+}
 
-AnimationCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
-};
-
-AnimationCardContent.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  content: PropTypes.shape({
-    media: PropTypes.arrayOf(
-      PropTypes.shape({
-        profile: PropTypes.string,
-        url: PropTypes.string.isRequired
-      })
-    ).isRequired
-  }).isRequired,
-  disabled: PropTypes.bool
-};
-
-export default AnimationCardContent;
+export default memo(AnimationCardContent);
+export { animationCardContentPropsSchema, type AnimationCardContentProps };

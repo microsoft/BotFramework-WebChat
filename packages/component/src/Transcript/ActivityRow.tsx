@@ -3,17 +3,17 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { forwardRef, memo, useCallback, useMemo, useRef } from 'react';
 
-import { android } from '../Utils/detectBrowser';
-import FocusTrap from './FocusTrap';
-import ScreenReaderText from '../ScreenReaderText';
 import SpeakActivity from '../Activity/Speak';
 import useActiveDescendantId from '../providers/TranscriptFocus/useActiveDescendantId';
-import useActivityAccessibleName from './useActivityAccessibleName';
 import useFocusByActivityKey from '../providers/TranscriptFocus/useFocusByActivityKey';
 import useGetDescendantIdByActivityKey from '../providers/TranscriptFocus/useGetDescendantIdByActivityKey';
+import ScreenReaderText from '../ScreenReaderText';
+import { android } from '../Utils/detectBrowser';
+import FocusTrap from './FocusTrap';
+import useActivityAccessibleName from './useActivityAccessibleName';
 
-import type { MouseEventHandler, PropsWithChildren } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
+import type { MouseEventHandler, PropsWithChildren } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
@@ -145,7 +145,10 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
       >
         {focusTrapChildren}
       </FocusTrap>
-      {shouldSpeak && <SpeakActivity activity={activity} />}
+      {shouldSpeak && (
+        // TODO: Should build `webChatActivitySchema`.
+        <SpeakActivity activity={activity as WebChatActivity & { channelData: { speechSynthesisUtterance?: any } }} />
+      )}
       <div
         className={classNames('webchat__basic-transcript__activity-indicator', {
           'webchat__basic-transcript__activity-indicator--focus': isActiveDescendant
