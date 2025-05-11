@@ -139,14 +139,14 @@ function ReceiptCardContent(props: ReceiptCardContentProps) {
       }
 
       items &&
-        items.map(({ image: { alt, tap: imageTap, url } = {}, price, quantity, subtitle, tap, text, title }) => {
+        items.map(({ image, price, quantity, subtitle, tap, text, title }) => {
           let itemColumns;
 
-          if (url) {
+          if (image?.url) {
             const [itemImageColumn, ...columns] = builder.addColumnSet([15, 75, 10]);
 
             itemColumns = columns;
-            builder.addImage(url, itemImageColumn, imageTap as DirectLineCardAction, alt);
+            builder.addImage(image?.url, itemImageColumn, image?.tap as DirectLineCardAction, image?.alt);
           } else {
             itemColumns = builder.addColumnSet([75, 25], undefined, tap && (tap as DirectLineCardAction));
           }
