@@ -27,19 +27,21 @@ const heroCardContentPropsSchema = pipe(
     actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
     content: pipe(
       object({
-        buttons: pipe(array(directLineCardActionSchema), readonly()),
-        images: pipe(
-          array(
-            pipe(
-              object({
-                alt: string(),
-                tap: optional(directLineCardActionSchema),
-                url: string()
-              }),
-              readonly()
-            )
-          ),
-          readonly()
+        buttons: optional(pipe(array(directLineCardActionSchema), readonly())),
+        images: optional(
+          pipe(
+            array(
+              pipe(
+                object({
+                  alt: string(),
+                  tap: optional(directLineCardActionSchema),
+                  url: string()
+                }),
+                readonly()
+              )
+            ),
+            readonly()
+          )
         ),
         subtitle: optional(string()),
         tap: optional(directLineCardActionSchema),
