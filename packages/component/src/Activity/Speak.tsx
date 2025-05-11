@@ -1,9 +1,10 @@
 import { hooks } from 'botframework-webchat-api';
+import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo } from 'react';
 import ReactSay, { SayUtterance } from 'react-say';
+import { useRefFrom } from 'use-ref-from';
+import { any, array, check, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
 
-import type { WebChatActivity } from 'botframework-webchat-core';
-import { any, array, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 import parseProps from '../Utils/parseProps';
 import SayAlt from './SayAlt';
 
@@ -14,41 +15,46 @@ const { useMarkActivityAsSpoken, useStyleOptions, useVoiceSelector } = hooks;
 // TODO: [P4] Consider moving this feature into BasicActivity
 //       And it has better DOM position for showing visual spoken text
 
-const speakPropsSchema = pipe(
+const speakableActivitySchema = pipe(
   object({
-    activity: pipe(
-      object({
-        attachments: optional(
-          pipe(
-            array(
-              pipe(
-                object({
-                  content: optional(any()),
-                  contentType: string(),
-                  speak: optional(string()),
-                  subtitle: optional(string()),
-                  text: optional(string()),
-                  title: optional(string())
-                }),
-                readonly()
-              )
-            ),
-            readonly()
-          )
-        ),
-        channelData: optional(
+    attachments: optional(
+      pipe(
+        array(
           pipe(
             object({
-              speechSynthesisUtterance: optional(any())
+              content: optional(any()),
+              contentType: string(),
+              speak: optional(string()),
+              subtitle: optional(string()),
+              text: optional(string()),
+              title: optional(string())
             }),
             readonly()
           )
         ),
-        speak: optional(string()),
-        text: optional(string()),
-        type: string()
-      }),
-      readonly()
+        readonly()
+      )
+    ),
+    channelData: optional(
+      pipe(
+        object({
+          speechSynthesisUtterance: optional(any())
+        }),
+        readonly()
+      )
+    ),
+    speak: optional(string()),
+    text: optional(string()),
+    type: string()
+  }),
+  readonly()
+);
+
+const speakPropsSchema = pipe(
+  object({
+    activity: pipe(
+      any(),
+      check(value => safeParse(speakableActivitySchema, value).success)
     )
   }),
   readonly()
@@ -60,12 +66,14 @@ function Speak(props: SpeakProps) {
   const { activity } = parseProps(speakPropsSchema, props);
 
   const [{ showSpokenText }] = useStyleOptions();
+  const activityRef = useRefFrom(activity);
   const markActivityAsSpoken = useMarkActivityAsSpoken();
   const selectVoice = useVoiceSelector(activity);
 
-  const markAsSpoken = useCallback(() => {
-    markActivityAsSpoken(activity as WebChatActivity);
-  }, [activity, markActivityAsSpoken]);
+  const markAsSpoken = useCallback(
+    () => markActivityAsSpoken(activityRef.current as WebChatActivity),
+    [activityRef, markActivityAsSpoken]
+  );
 
   const singleLine: false | string = useMemo(() => {
     if (activity.type !== 'message') {
