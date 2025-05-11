@@ -4,7 +4,20 @@ import { hooks } from 'botframework-webchat-component';
 import { parseProps } from 'botframework-webchat-component/internal';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import { any, array, boolean, looseObject, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import {
+  any,
+  array,
+  boolean,
+  looseObject,
+  number,
+  object,
+  optional,
+  pipe,
+  readonly,
+  string,
+  union,
+  type InferInput
+} from 'valibot';
 
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
@@ -64,7 +77,7 @@ const receiptCardContentPropsSchema = pipe(
                     )
                   ),
                   price: string(),
-                  quantity: optional(string()),
+                  quantity: optional(union([number(), string()])), // TODO: Should be string only.
                   subtitle: optional(string()),
                   tap: optional(directLineCardActionSchema),
                   text: optional(string()),
