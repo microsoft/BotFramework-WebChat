@@ -6,7 +6,7 @@ const directLineCardActionSchema = pipe(
     image: optional(string()),
     title: optional(string()),
     type: string(),
-    value: optional(string())
+    value: optional(any())
   }),
   readonly()
 );
