@@ -61,10 +61,6 @@
     "@types/react": [
       "16",
       "react@16.8.6 is our baseline"
-    ],
-    "valibot": [
-      "0",
-      "valibot@0 until they finalize @1"
     ]
   },
   "devDependencies": {

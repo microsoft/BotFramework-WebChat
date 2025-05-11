@@ -88,10 +88,6 @@
     "@babel/runtime": [
       "7.19.0",
       "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "valibot": [
-      "0",
-      "valibot@0 until they finalize @1"
     ]
   },
   "devDependencies": {

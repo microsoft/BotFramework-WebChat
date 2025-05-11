@@ -116,10 +116,6 @@
     ],
     "react-scroll-to-bottom": [
       "main"
-    ],
-    "valibot": [
-      "0",
-      "valibot@0 until they finalize @1"
     ]
   },
   "devDependencies": {
