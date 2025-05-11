@@ -22,7 +22,7 @@ const audioCardContentPropsSchema = pipe(
       }),
       readonly()
     ),
-    disabled: boolean()
+    disabled: optional(boolean())
   }),
   readonly()
 );

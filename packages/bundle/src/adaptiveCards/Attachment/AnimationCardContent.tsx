@@ -30,7 +30,7 @@ const animationCardContentPropsSchema = pipe(
       }),
       readonly()
     ),
-    disabled: boolean()
+    disabled: optional(boolean())
   }),
   readonly()
 );
