@@ -2,37 +2,21 @@
 
 import { hooks } from 'botframework-webchat-component';
 import React, { memo, useMemo } from 'react';
-import { any, array, boolean, object, optional, parse, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, custom, object, optional, parse, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
 
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
+import { directLineBasicCardSchema } from './private/directLineSchema';
 
 const { useDirection } = hooks;
 
 const thumbnailCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
-    content: pipe(
-      object({
-        buttons: pipe(array(any()), readonly()),
-        images: pipe(
-          array(
-            object({
-              alt: string(),
-              tap: optional(any()),
-              url: string()
-            })
-          ),
-          readonly()
-        ),
-        subtitle: optional(string()),
-        tap: optional(any()),
-        text: optional(string()),
-        title: optional(string())
-      }),
-      readonly()
+    content: custom<InferInput<typeof directLineBasicCardSchema>>(
+      value => safeParse(directLineBasicCardSchema, value).success
     ),
     disabled: optional(boolean())
   }),
@@ -66,11 +50,11 @@ function ThumbnailCardContent(props: ThumbnailCardContentProps) {
         );
 
         builder.addTextBlock(subtitle, { isSubtle: true, wrap: richCardWrapTitle }, firstColumn);
-        builder.addImage(url, lastColumn, tap, alt);
+        builder.addImage(url, lastColumn, tap as any, alt);
         builder.addTextBlock(text, { wrap: true });
-        builder.addButtons(buttons);
+        builder.addButtons(buttons as any);
       } else {
-        builder.addCommon(content);
+        builder.addCommon(content as any);
       }
       return builder.card;
     }

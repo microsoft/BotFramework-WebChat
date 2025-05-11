@@ -2,35 +2,19 @@
 
 import { Components } from 'botframework-webchat-component';
 import React, { memo } from 'react';
-import { array, boolean, object, optional, parse, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, custom, object, optional, parse, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import CommonCard from './CommonCard';
+import { directLineMediaCardSchema } from './private/directLineSchema';
 
 const { VideoContent } = Components;
 
 const videoCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
-    content: pipe(
-      object({
-        autoloop: optional(boolean()),
-        autostart: optional(boolean()),
-        image: optional(pipe(object({ url: string() }), readonly())),
-        media: pipe(
-          array(
-            pipe(
-              object({
-                profile: optional(string()),
-                url: string()
-              }),
-              readonly()
-            )
-          ),
-          readonly()
-        )
-      }),
-      readonly()
+    content: custom<InferInput<typeof directLineMediaCardSchema>>(
+      value => safeParse(directLineMediaCardSchema, value).success
     ),
     disabled: optional(boolean())
   }),

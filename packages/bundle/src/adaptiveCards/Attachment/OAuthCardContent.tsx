@@ -1,23 +1,21 @@
 import { hooks } from 'botframework-webchat-component';
 import { parseProps } from 'botframework-webchat-component/internal';
 import React, { memo, useMemo } from 'react';
-import { any, array, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
 
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
+import { directLineSignInCardSchema } from './private/directLineSchema';
 
 const { useDirection } = hooks;
 
 const oauthCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
-    content: pipe(
-      object({
-        buttons: pipe(array(any()), readonly())
-      }),
-      readonly()
+    content: custom<InferInput<typeof directLineSignInCardSchema>>(
+      value => safeParse(directLineSignInCardSchema, value).success
     ),
     disabled: optional(boolean())
   }),
@@ -37,8 +35,8 @@ function OAuthCardContent(props: OAuthCardContentProps) {
     if (content) {
       const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions, direction);
 
-      builder.addCommonHeaders(content);
-      builder.addButtons(content.buttons, true);
+      builder.addCommonHeaders(content as any);
+      builder.addButtons(content.buttons as any, true);
 
       return builder.card;
     }

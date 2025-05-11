@@ -1,14 +1,17 @@
 import { parseProps } from 'botframework-webchat-component/internal';
 import React, { memo } from 'react';
-import { any, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import CommonCard from './CommonCard';
+import { directLineSignInCardSchema } from './private/directLineSchema';
 
 const signInCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
-    content: pipe(any()),
+    content: custom<InferInput<typeof directLineSignInCardSchema>>(
+      value => safeParse(directLineSignInCardSchema, value).success
+    ),
     disabled: optional(boolean())
   }),
   readonly()

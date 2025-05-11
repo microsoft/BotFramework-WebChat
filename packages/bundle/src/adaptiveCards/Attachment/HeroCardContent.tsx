@@ -2,53 +2,21 @@ import { hooks } from 'botframework-webchat-component';
 import { parseProps } from 'botframework-webchat-component/internal';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import { array, boolean, looseObject, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { boolean, custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
 
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
+import { directLineBasicCardSchema } from './private/directLineSchema';
 
 const { useDirection } = hooks;
-
-// TODO: Should build `directLineCardActionSchema`.
-const directLineCardActionSchema = pipe(
-  looseObject({
-    image: optional(string()),
-    title: optional(string()),
-    type: string(),
-    value: optional(string())
-  }),
-  readonly()
-);
 
 const heroCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
     content: pipe(
-      object({
-        buttons: optional(pipe(array(directLineCardActionSchema), readonly())),
-        images: optional(
-          pipe(
-            array(
-              pipe(
-                object({
-                  alt: string(),
-                  tap: optional(directLineCardActionSchema),
-                  url: string()
-                }),
-                readonly()
-              )
-            ),
-            readonly()
-          )
-        ),
-        subtitle: optional(string()),
-        tap: optional(directLineCardActionSchema),
-        text: optional(string()),
-        title: optional(string())
-      }),
-      readonly()
+      custom<InferInput<typeof directLineBasicCardSchema>>(value => safeParse(directLineBasicCardSchema, value).success)
     ),
     disabled: optional(boolean())
   }),
