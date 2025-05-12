@@ -1,10 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React from 'react';
+import React, { memo } from 'react';
+import { boolean, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
-import useStyleSet from '../hooks/useStyleSet';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import useStyleSet from '../hooks/useStyleSet';
 
 const { useAvatarForBot, useAvatarForUser } = hooks;
 
@@ -17,7 +18,18 @@ const ROOT_STYLE = {
   }
 };
 
-const InitialsAvatar = ({ fromUser }) => {
+const initialsAvatarPropsSchema = pipe(
+  object({
+    fromUser: optional(boolean())
+  }),
+  readonly()
+);
+
+type InitialsAvatarProps = InferInput<typeof initialsAvatarPropsSchema>;
+
+function InitialsAvatar(props: InitialsAvatarProps) {
+  const { fromUser = false } = validateProps(initialsAvatarPropsSchema, props);
+
   const [{ initials: avatarInitialsForBot }] = useAvatarForBot();
   const [{ initials: avatarInitialsForUser }] = useAvatarForUser();
   const [{ initialsAvatar: initialsAvatarStyleSet }] = useStyleSet();
@@ -37,14 +49,7 @@ const InitialsAvatar = ({ fromUser }) => {
       <div className="webchat__initialsAvatar__initials">{fromUser ? avatarInitialsForUser : avatarInitialsForBot}</div>
     </div>
   );
-};
+}
 
-InitialsAvatar.defaultProps = {
-  fromUser: false
-};
-
-InitialsAvatar.propTypes = {
-  fromUser: PropTypes.bool
-};
-
-export default InitialsAvatar;
+export default memo(InitialsAvatar);
+export { initialsAvatarPropsSchema, type InitialsAvatarProps };
