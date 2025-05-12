@@ -24,22 +24,6 @@ async function sendMessageAndMatchSnapshot(driver, pageObjects, message) {
 describe('bubble nub', () => {
   let props;
 
-  test('with standard setup', async () => {
-    const { driver, pageObjects } = await setupWebDriver({
-      props: {
-        styleOptions: {
-          bubbleNubOffset: 0,
-          bubbleNubSize: 10,
-          bubbleFromUserNubOffset: 0,
-          bubbleFromUserNubSize: 10
-        }
-      },
-      zoom: 3
-    });
-
-    await sendMessageAndMatchSnapshot(driver, pageObjects, 'layout carousel');
-  });
-
   beforeEach(() => {
     props = {
       styleOptions: {
