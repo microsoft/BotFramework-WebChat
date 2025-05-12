@@ -8,5 +8,11 @@ export default function parseProps<const TSchema extends BaseSchema<unknown, unk
     return props as unknown as InferOutput<TSchema>;
   }
 
-  return parse(propsSchema, props);
+  try {
+    return parse(propsSchema, props);
+  } catch (error) {
+    console.error(error.issues);
+
+    throw error;
+  }
 }
