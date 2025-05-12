@@ -11,7 +11,7 @@ export default function parseProps<const TSchema extends BaseSchema<unknown, unk
   try {
     return parse(propsSchema, props);
   } catch (error) {
-    console.error(error.issues);
+    console.error('botframework-webchat: Error while parsing props.', error.issues);
 
     throw error;
   }
