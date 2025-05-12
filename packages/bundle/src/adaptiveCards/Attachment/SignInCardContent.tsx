@@ -1,6 +1,6 @@
-import { parseProps } from 'botframework-webchat-component/internal';
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
-import { boolean, custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import CommonCard from './CommonCard';
@@ -9,9 +9,7 @@ import { directLineSignInCardSchema } from './private/directLineSchema';
 const signInCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
-    content: custom<InferInput<typeof directLineSignInCardSchema>>(
-      value => safeParse(directLineSignInCardSchema, value).success
-    ),
+    content: directLineSignInCardSchema,
     disabled: optional(boolean())
   }),
   readonly()
@@ -20,7 +18,7 @@ const signInCardContentPropsSchema = pipe(
 type SignInCardContentProps = InferInput<typeof signInCardContentPropsSchema>;
 
 function SignInCardContent(props: SignInCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = parseProps(signInCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled } = validateProps(signInCardContentPropsSchema, props);
 
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();
 

@@ -1,6 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { Fragment, useMemo } from 'react';
 import { any, object, pipe, readonly, type InferInput } from 'valibot';
@@ -8,7 +9,6 @@ import { any, object, pipe, readonly, type InferInput } from 'valibot';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
 import activityAltText from '../Utils/activityAltText';
-import parseProps from '../Utils/parseProps';
 import LiveRegionAttachments from './private/LiveRegionAttachments';
 import LiveRegionSuggestedActions from './private/LiveRegionSuggestedActions';
 
@@ -37,7 +37,7 @@ const liveRegionActivityPropsSchema = pipe(
 type LiveRegionActivityProps = InferInput<typeof liveRegionActivityPropsSchema>;
 
 function LiveRegionActivity(props: LiveRegionActivityProps) {
-  const { activity } = parseProps(liveRegionActivityPropsSchema, props);
+  const { activity } = validateProps(liveRegionActivityPropsSchema, props);
 
   const [{ initials: botInitials }] = useAvatarForBot();
   const {

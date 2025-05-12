@@ -1,9 +1,9 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../hooks/useStyleSet';
-import parseProps from '../Utils/parseProps';
 
 const { useLocalizer } = hooks;
 
@@ -20,7 +20,7 @@ const vimeoContentPropsSchema = pipe(
 type VimeoContentProps = InferInput<typeof vimeoContentPropsSchema>;
 
 function VimeoContent(props: VimeoContentProps) {
-  const { alt, autoPlay, embedID, loop } = parseProps(vimeoContentPropsSchema, props);
+  const { alt, autoPlay, embedID, loop } = validateProps(vimeoContentPropsSchema, props);
 
   const [{ vimeoContent: vimeoContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();

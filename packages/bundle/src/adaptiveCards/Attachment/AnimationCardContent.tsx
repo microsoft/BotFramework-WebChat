@@ -1,9 +1,9 @@
 /* eslint react/no-array-index-key: "off" */
 
+import { validateProps } from 'botframework-webchat-api/internal';
 import { Components } from 'botframework-webchat-component';
-import { parseProps } from 'botframework-webchat-component/internal';
 import React, { memo } from 'react';
-import { boolean, custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import CommonCard from './CommonCard';
@@ -14,9 +14,7 @@ const { ImageContent, VideoContent } = Components;
 const animationCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
-    content: custom<InferInput<typeof directLineMediaCardSchema>>(
-      value => safeParse(directLineMediaCardSchema, value).success
-    ),
+    content: directLineMediaCardSchema,
     disabled: optional(boolean())
   }),
   readonly()
@@ -25,7 +23,7 @@ const animationCardContentPropsSchema = pipe(
 type AnimationCardContentProps = InferInput<typeof animationCardContentPropsSchema>;
 
 function AnimationCardContent(props: AnimationCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = parseProps(animationCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled } = validateProps(animationCardContentPropsSchema, props);
 
   const { media = [] } = content;
   const [{ animationCardAttachment: animationCardAttachmentStyleSet }] = useStyleSet();

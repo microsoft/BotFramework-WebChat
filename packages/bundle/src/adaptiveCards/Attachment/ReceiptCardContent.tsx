@@ -1,45 +1,22 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 10, 15, 25, 50, 75] }] */
 
+import { validateProps } from 'botframework-webchat-api/internal';
 import { hooks } from 'botframework-webchat-component';
-import { parseProps } from 'botframework-webchat-component/internal';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import {
-  any,
-  array,
-  boolean,
-  looseObject,
-  number,
-  object,
-  optional,
-  pipe,
-  readonly,
-  string,
-  union,
-  type InferInput
-} from 'valibot';
+import { any, array, boolean, number, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
+import { directLineCardActionSchema } from './private/directLineSchema';
 
 const { useDirection, useLocalizer } = hooks;
 
 function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
 }
-
-// TODO: Should build `directLineCardActionSchema`.
-const directLineCardActionSchema = pipe(
-  looseObject({
-    image: optional(string()),
-    title: optional(string()),
-    type: string(),
-    value: optional(string())
-  }),
-  readonly()
-);
 
 const receiptCardContentPropsSchema = pipe(
   object({
@@ -105,7 +82,7 @@ const receiptCardContentPropsSchema = pipe(
 type ReceiptCardContentProps = InferInput<typeof receiptCardContentPropsSchema>;
 
 function ReceiptCardContent(props: ReceiptCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = parseProps(receiptCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled } = validateProps(receiptCardContentPropsSchema, props);
 
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();

@@ -1,11 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { memo } from 'react';
 import { boolean, number, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
-import parseProps from '../Utils/parseProps';
 import DownloadIcon from './Assets/DownloadIcon';
 
 const { useByteFormatter, useDirection, useLocalizer } = hooks;
@@ -47,7 +47,7 @@ const fileContentBadgePropsSchema = pipe(
 type FileContentBadgeProps = InferInput<typeof fileContentBadgePropsSchema>;
 
 const FileContentBadge = (props: FileContentBadgeProps) => {
-  const { downloadIcon, fileName, size } = parseProps(fileContentBadgePropsSchema, props);
+  const { downloadIcon, fileName, size } = validateProps(fileContentBadgePropsSchema, props);
 
   const [direction] = useDirection();
   const formatByte = useByteFormatter();
@@ -86,7 +86,7 @@ const fileContentPropsSchema = pipe(
 );
 
 function FileContent(props: FileContentProps) {
-  const { className, href, fileName, size } = parseProps(fileContentPropsSchema, props);
+  const { className, href, fileName, size } = validateProps(fileContentPropsSchema, props);
 
   const [{ fileContent: fileContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();

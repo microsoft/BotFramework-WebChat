@@ -1,8 +1,8 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../hooks/useStyleSet';
-import parseProps from '../Utils/parseProps';
 
 const audioContentPropsSchema = pipe(
   object({
@@ -18,7 +18,7 @@ const audioContentPropsSchema = pipe(
 type AudioContentProps = InferInput<typeof audioContentPropsSchema>;
 
 function AudioContent(props: AudioContentProps) {
-  const { alt, autoPlay, loop, src } = parseProps(audioContentPropsSchema, props);
+  const { alt, autoPlay, loop, src } = validateProps(audioContentPropsSchema, props);
   const [{ audioContent: audioContentStyleSet }] = useStyleSet();
 
   return (

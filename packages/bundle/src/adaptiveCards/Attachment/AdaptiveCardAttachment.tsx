@@ -1,4 +1,4 @@
-import { parseProps } from 'botframework-webchat-component/internal';
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
 import { any, boolean, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
@@ -23,7 +23,7 @@ function AdaptiveCardAttachment(props: AdaptiveCardAttachmentProps) {
   const {
     attachment: { content },
     disabled
-  } = parseProps(adaptiveCardAttachmentPropsSchema, props);
+  } = validateProps(adaptiveCardAttachmentPropsSchema, props);
 
   return <AdaptiveCardContent content={content} disabled={disabled} />;
 }

@@ -1,8 +1,8 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
 import { any, array, object, pipe, readonly, type InferInput } from 'valibot';
 
 import computeSuggestedActionText from '../../Utils/computeSuggestedActionText';
-import parseProps from '../../Utils/parseProps';
 
 const liveRegionSuggestedActionsPropSchema = pipe(
   object({
@@ -19,7 +19,7 @@ const liveRegionSuggestedActionsPropSchema = pipe(
 type LiveRegionSuggestedActionsProps = InferInput<typeof liveRegionSuggestedActionsPropSchema>;
 
 function LiveRegionSuggestedActions(props: LiveRegionSuggestedActionsProps) {
-  const { suggestedActions } = parseProps(liveRegionSuggestedActionsPropSchema, props);
+  const { suggestedActions } = validateProps(liveRegionSuggestedActionsPropSchema, props);
 
   return (
     suggestedActions.actions?.length && (

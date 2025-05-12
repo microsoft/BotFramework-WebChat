@@ -1,3 +1,4 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { useCallback } from 'react';
 import {
   custom,
@@ -14,7 +15,6 @@ import {
 } from 'valibot';
 
 import mutableRefObject from '../types/internal/mutableRefObject';
-import parseProps from './parseProps';
 
 // This is an element, when focused, will send the focus to the ref specified in "redirectRef".
 // Although the focus is being redirected, browser will scroll this redirector element into view.
@@ -37,7 +37,7 @@ const focusRedirectorPropsSchema = pipe(
 type FocusRedirectorProps = InferInput<typeof focusRedirectorPropsSchema>;
 
 function FocusRedirector(props: FocusRedirectorProps) {
-  const { className, onFocus, redirectRef } = parseProps(focusRedirectorPropsSchema, props);
+  const { className, onFocus, redirectRef } = validateProps(focusRedirectorPropsSchema, props);
 
   const handleFocus = useCallback(() => {
     redirectRef?.current?.focus();

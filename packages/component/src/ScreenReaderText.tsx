@@ -1,10 +1,10 @@
 /* eslint react/forbid-dom-props: ["off"] */
 
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { forwardRef, memo } from 'react';
 
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
-import parseProps from './Utils/parseProps';
 
 const ROOT_STYLE = {
   // .sr-only - This component is intended to be invisible to the visual Web Chat user, but read by the AT when using a screen reader
@@ -35,7 +35,7 @@ type ScreenReaderTextProps = InferInput<typeof screenReaderTextPropsSchema>;
 
 // eslint-disable-next-line prefer-arrow-callback
 const ScreenReaderText = forwardRef<HTMLDivElement, ScreenReaderTextProps>(function ScreenReaderText(props, ref) {
-  const { 'aria-hidden': ariaHidden, id, text } = parseProps(screenReaderTextPropsSchema, props);
+  const { 'aria-hidden': ariaHidden, id, text } = validateProps(screenReaderTextPropsSchema, props);
 
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 

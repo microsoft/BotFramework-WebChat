@@ -1,12 +1,12 @@
 /* eslint no-console: "off" */
 
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
 import { instance, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from './hooks/useStyleSet';
 import ScreenReaderText from './ScreenReaderText';
-import parseProps from './Utils/parseProps';
 
 const { useLocalizer } = hooks;
 
@@ -21,7 +21,7 @@ const errorBoxPropsSchema = pipe(
 type ErrorBoxProps = InferInput<typeof errorBoxPropsSchema>;
 
 function ErrorBox(props: ErrorBoxProps) {
-  const { error, type } = parseProps(errorBoxPropsSchema, props);
+  const { error, type } = validateProps(errorBoxPropsSchema, props);
 
   const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
   const localize = useLocalizer();

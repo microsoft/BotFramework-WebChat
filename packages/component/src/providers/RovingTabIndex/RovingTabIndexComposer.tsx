@@ -1,5 +1,6 @@
 /* eslint complexity: ["error", 50] */
 
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { useCallback, useEffect, useMemo, useRef, type MutableRefObject } from 'react';
 import {
   custom,
@@ -14,7 +15,6 @@ import {
   type InferInput
 } from 'valibot';
 
-import parseProps from '../../Utils/parseProps';
 import reactNode from '../../types/internal/reactNode';
 import RovingTabIndexContext, { type RovingTabIndexContextType } from './private/Context';
 
@@ -32,7 +32,7 @@ const rovingTabIndexContextProps = pipe(
 type RovingTabIndexContextProps = InferInput<typeof rovingTabIndexContextProps>;
 
 function RovingTabIndexComposer(props: RovingTabIndexContextProps) {
-  const { children, onEscapeKey, orientation } = parseProps(rovingTabIndexContextProps, props);
+  const { children, onEscapeKey, orientation } = validateProps(rovingTabIndexContextProps, props);
 
   const activeItemIndexRef = useRef(0);
   const itemRefsRef = useRef<ItemRef[]>([]);

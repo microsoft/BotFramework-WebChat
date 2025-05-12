@@ -1,8 +1,8 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
 import { date, number, object, pipe, readonly, string, union, type InferInput } from 'valibot';
 
-import parseProps from '../Utils/parseProps';
 import AbsoluteTime from './AbsoluteTime';
 import RelativeTime from './private/RelativeTime';
 
@@ -10,7 +10,7 @@ const { useStyleOptions } = hooks;
 
 const timestampPropsSchema = pipe(
   object({
-    timestamp: union([date(), number(), string()])
+    timestamp: union([date(), number(), string()]) // TODO: Should limit to `Date`.
   }),
   readonly()
 );
@@ -18,7 +18,7 @@ const timestampPropsSchema = pipe(
 type TimestampProps = InferInput<typeof timestampPropsSchema>;
 
 function Timestamp(props: TimestampProps) {
-  const { timestamp } = parseProps(timestampPropsSchema, props);
+  const { timestamp } = validateProps(timestampPropsSchema, props);
 
   const [{ timestampFormat }] = useStyleOptions();
 

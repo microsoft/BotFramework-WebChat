@@ -1,7 +1,7 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { Fragment } from 'react';
 import { literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 
-import parseProps from '../../../Utils/parseProps';
 import useMarkAllAsRenderedEffect from './useMarkAllAsRenderedEffect';
 import useStaticElementEntries from './useStaticElementEntries';
 
@@ -28,7 +28,7 @@ function LiveRegionTwinContainer(props: LiveRegionTwinContainerProps) {
     className,
     role,
     textElementClassName
-  } = parseProps(liveRegionTwinContainerPropsSchema, props);
+  } = validateProps(liveRegionTwinContainerPropsSchema, props);
 
   const [staticElementEntries] = useStaticElementEntries();
 

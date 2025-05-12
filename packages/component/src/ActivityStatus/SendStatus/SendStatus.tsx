@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { memo, useCallback } from 'react';
 import { any, literal, object, pipe, readonly, union, type InferInput } from 'valibot';
@@ -6,7 +7,6 @@ import { any, literal, object, pipe, readonly, union, type InferInput } from 'va
 import useFocus from '../../hooks/useFocus';
 import useStyleSet from '../../hooks/useStyleSet';
 import { SENDING, SEND_FAILED, SENT } from '../../types/internal/SendStatus';
-import parseProps from '../../Utils/parseProps';
 import SendFailedRetry from './private/SendFailedRetry';
 
 const { useLocalizer, usePostActivity } = hooks;
@@ -22,7 +22,7 @@ const sendStatusPropsSchema = pipe(
 type SendStatusProps = InferInput<typeof sendStatusPropsSchema>;
 
 function SendStatus(props: SendStatusProps) {
-  const { activity, sendStatus } = parseProps(sendStatusPropsSchema, props);
+  const { activity, sendStatus } = validateProps(sendStatusPropsSchema, props);
 
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focus = useFocus();

@@ -1,7 +1,7 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import parseProps from '../Utils/parseProps';
 import HTMLVideoContent from './HTMLVideoContent';
 import VimeoContent from './VimeoContent';
 import YouTubeContent from './YouTubeContent';
@@ -45,7 +45,7 @@ const videoContentPropsSchema = pipe(
 type VideoContentProps = InferInput<typeof videoContentPropsSchema>;
 
 function VideoContent(props: VideoContentProps) {
-  const { alt, autoPlay, loop, poster, src } = parseProps(videoContentPropsSchema, props);
+  const { alt, autoPlay, loop, poster, src } = validateProps(videoContentPropsSchema, props);
 
   const { hostname, pathname, search } = parseURL(src);
   const lastSegment = pathname.split('/').pop();

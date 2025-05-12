@@ -1,4 +1,5 @@
 import { AvatarMiddleware } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
@@ -7,7 +8,6 @@ import ImageAvatar from '../../Avatar/ImageAvatar';
 import InitialsAvatar from '../../Avatar/InitialsAvatar';
 import { useStyleToEmotionObject } from '../../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../../hooks/useStyleSet';
-import parseProps from '../../Utils/parseProps';
 
 const ROOT_STYLE = {
   overflow: ['hidden', 'clip'],
@@ -32,7 +32,7 @@ const defaultAvatarPropsSchema = pipe(
 type DefaultAvatarProps = InferInput<typeof defaultAvatarPropsSchema>;
 
 function DefaultAvatar(props: DefaultAvatarProps) {
-  const { 'aria-hidden': ariaHidden, className, fromUser } = parseProps(defaultAvatarPropsSchema, props);
+  const { 'aria-hidden': ariaHidden, className, fromUser } = validateProps(defaultAvatarPropsSchema, props);
 
   const [{ avatar: avatarStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';

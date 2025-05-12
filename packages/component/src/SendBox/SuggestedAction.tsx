@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo, useCallback, type MouseEventHandler } from 'react';
@@ -14,7 +15,6 @@ import useStyleSet from '../hooks/useStyleSet';
 import useItemRef from '../providers/RovingTabIndex/useItemRef';
 import AccessibleButton from '../Utils/AccessibleButton';
 import useFocusAccessKeyEffect from '../Utils/AccessKeySink/useFocusAccessKeyEffect';
-import parseProps from '../Utils/parseProps';
 
 const { useDirection, usePerformCardAction, useStyleOptions, useSuggestedActions, useUIState } = hooks;
 
@@ -58,7 +58,7 @@ type SuggestedActionProps = InferInput<typeof suggestedActionPropsSchema>;
 
 function SuggestedAction(props: SuggestedActionProps) {
   const { buttonText, className, displayText, image, imageAlt, itemIndex, text, textClassName, type, value } =
-    parseProps(suggestedActionPropsSchema, props);
+    validateProps(suggestedActionPropsSchema, props);
 
   const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();

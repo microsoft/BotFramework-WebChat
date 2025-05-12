@@ -1,8 +1,8 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import { hooks } from 'botframework-webchat-component';
-import { parseProps } from 'botframework-webchat-component/internal';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import { boolean, custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
@@ -15,9 +15,7 @@ const { useDirection } = hooks;
 const heroCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
-    content: pipe(
-      custom<InferInput<typeof directLineBasicCardSchema>>(value => safeParse(directLineBasicCardSchema, value).success)
-    ),
+    content: directLineBasicCardSchema,
     disabled: optional(boolean())
   }),
   readonly()
@@ -26,7 +24,7 @@ const heroCardContentPropsSchema = pipe(
 type HeroCardContentProps = InferInput<typeof heroCardContentPropsSchema>;
 
 function HeroCardContent(props: HeroCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = parseProps(heroCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled } = validateProps(heroCardContentPropsSchema, props);
 
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [styleOptions] = useStyleOptions();

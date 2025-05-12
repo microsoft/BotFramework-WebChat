@@ -1,8 +1,8 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../hooks/useStyleSet';
-import parseProps from '../Utils/parseProps';
 
 const htmlVideoContentPropsSchema = pipe(
   object({
@@ -18,7 +18,7 @@ const htmlVideoContentPropsSchema = pipe(
 type HTMLVideoContentProps = InferInput<typeof htmlVideoContentPropsSchema>;
 
 function HTMLVideoContent(props: HTMLVideoContentProps) {
-  const { alt, autoPlay, loop, poster, src } = parseProps(htmlVideoContentPropsSchema, props);
+  const { alt, autoPlay, loop, poster, src } = validateProps(htmlVideoContentPropsSchema, props);
 
   const [{ videoContent: videoContentStyleSet }] = useStyleSet();
 

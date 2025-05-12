@@ -1,4 +1,5 @@
 import { SendBoxToolbarMiddlewareProxy, hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo } from 'react';
@@ -8,7 +9,6 @@ import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject'
 import useStyleSet from '../hooks/useStyleSet';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 import useErrorMessageId from '../providers/internal/SendBox/useErrorMessageId';
-import parseProps from '../Utils/parseProps';
 import DictationInterims from './DictationInterims';
 import MicrophoneButton from './MicrophoneButton';
 import SendButton from './SendButton';
@@ -47,7 +47,7 @@ const basicSendBoxPropsSchema = pipe(
 type BasicSendBoxProps = InferInput<typeof basicSendBoxPropsSchema>;
 
 function BasicSendBox(props: BasicSendBoxProps) {
-  const { className } = parseProps(basicSendBoxPropsSchema, props);
+  const { className } = validateProps(basicSendBoxPropsSchema, props);
 
   const [{ sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();

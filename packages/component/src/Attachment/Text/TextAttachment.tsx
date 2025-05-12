@@ -1,7 +1,7 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
 import { any, custom, object, optional, pipe, readonly, safeParse, startsWith, string, type InferInput } from 'valibot';
 
-import parseProps from '../../Utils/parseProps';
 import TextContent from './TextContent';
 
 const directLineAttachmentSchema = pipe(
@@ -35,7 +35,7 @@ function TextAttachment(props: TextAttachmentProps) {
   const {
     activity,
     attachment: { content, contentType }
-  } = parseProps(textAttachmentPropsSchema, props);
+  } = validateProps(textAttachmentPropsSchema, props);
 
   return <TextContent activity={activity} contentType={contentType} text={content} />;
 }

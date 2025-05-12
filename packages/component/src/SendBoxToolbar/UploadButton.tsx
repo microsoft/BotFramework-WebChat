@@ -1,11 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { memo, useCallback, useRef, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { object, pipe, readonly, string, type InferInput } from 'valibot';
 
 import IconButton from '../SendBox/IconButton';
-import parseProps from '../Utils/parseProps';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useFocus from '../hooks/useFocus';
 import useMakeThumbnail from '../hooks/useMakeThumbnail';
@@ -44,7 +44,7 @@ const uploadButtonPropsSchema = pipe(
 type UploadButtonProps = InferInput<typeof uploadButtonPropsSchema>;
 
 function UploadButton(props: UploadButtonProps) {
-  const { className } = parseProps(uploadButtonPropsSchema, props);
+  const { className } = validateProps(uploadButtonPropsSchema, props);
 
   const [{ sendAttachmentOn, uploadAccept, uploadMultiple }] = useStyleOptions();
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();

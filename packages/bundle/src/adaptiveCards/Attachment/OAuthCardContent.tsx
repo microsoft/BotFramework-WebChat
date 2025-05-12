@@ -1,7 +1,7 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import { hooks } from 'botframework-webchat-component';
-import { parseProps } from 'botframework-webchat-component/internal';
 import React, { memo, useMemo } from 'react';
-import { boolean, custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
@@ -14,9 +14,7 @@ const { useDirection } = hooks;
 const oauthCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
-    content: custom<InferInput<typeof directLineSignInCardSchema>>(
-      value => safeParse(directLineSignInCardSchema, value).success
-    ),
+    content: directLineSignInCardSchema,
     disabled: optional(boolean())
   }),
   readonly()
@@ -25,7 +23,7 @@ const oauthCardContentPropsSchema = pipe(
 type OAuthCardContentProps = InferInput<typeof oauthCardContentPropsSchema>;
 
 function OAuthCardContent(props: OAuthCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = parseProps(oauthCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled } = validateProps(oauthCardContentPropsSchema, props);
 
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();

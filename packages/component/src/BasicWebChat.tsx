@@ -2,6 +2,7 @@
 /* eslint react/no-unsafe: off */
 
 import { SendBoxMiddlewareProxy, hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { memo } from 'react';
 import { fallback, literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
@@ -12,7 +13,6 @@ import BasicTranscript from './BasicTranscript';
 import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useStyleSet from './hooks/useStyleSet';
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
-import parseProps from './Utils/parseProps';
 
 const { useStyleOptions } = hooks;
 
@@ -57,7 +57,7 @@ const basicWebChatPropsSchema = pipe(
 type BasicWebChatProps = InferInput<typeof basicWebChatPropsSchema>;
 
 function BasicWebChat(props: BasicWebChatProps) {
-  const { className, role } = parseProps(basicWebChatPropsSchema, props);
+  const { className, role } = validateProps(basicWebChatPropsSchema, props);
 
   const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();

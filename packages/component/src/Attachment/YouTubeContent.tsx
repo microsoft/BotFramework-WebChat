@@ -1,9 +1,9 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../hooks/useStyleSet';
-import parseProps from '../Utils/parseProps';
 
 const { useLocalizer } = hooks;
 
@@ -20,7 +20,7 @@ const youTubeContentPropsSchema = pipe(
 type YouTubeContentProps = InferInput<typeof youTubeContentPropsSchema>;
 
 function YouTubeContent(props: YouTubeContentProps) {
-  const { alt, autoPlay, embedID, loop } = parseProps(youTubeContentPropsSchema, props);
+  const { alt, autoPlay, embedID, loop } = validateProps(youTubeContentPropsSchema, props);
 
   const [{ youTubeContent: youTubeContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();

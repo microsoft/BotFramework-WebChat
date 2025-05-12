@@ -1,4 +1,4 @@
-import { parseProps } from 'botframework-webchat-component/internal';
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo, useMemo } from 'react';
 import { any, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
@@ -30,7 +30,7 @@ const adaptiveCardContentPropsSchema = pipe(
 type AdaptiveCardContentProps = InferInput<typeof adaptiveCardContentPropsSchema>;
 
 function AdaptiveCardContent(props: AdaptiveCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = parseProps(adaptiveCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled } = validateProps(adaptiveCardContentPropsSchema, props);
 
   const parseAdaptiveCardJSON = useParseAdaptiveCardJSON();
 

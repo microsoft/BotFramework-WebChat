@@ -1,9 +1,9 @@
 /* eslint react/no-array-index-key: "off" */
 
+import { validateProps } from 'botframework-webchat-api/internal';
 import { Components } from 'botframework-webchat-component';
-import { parseProps } from 'botframework-webchat-component/internal';
 import React, { memo } from 'react';
-import { boolean, custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import CommonCard from './CommonCard';
@@ -14,9 +14,7 @@ const { AudioContent } = Components;
 const audioCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string()),
-    content: custom<InferInput<typeof directLineMediaCardSchema>>(
-      value => safeParse(directLineMediaCardSchema, value).success
-    ),
+    content: directLineMediaCardSchema,
     disabled: optional(boolean())
   }),
   readonly()
@@ -25,7 +23,7 @@ const audioCardContentPropsSchema = pipe(
 type AudioCardContentProps = InferInput<typeof audioCardContentPropsSchema>;
 
 function AudioCardContent(props: AudioCardContentProps) {
-  const { actionPerformedClassName, content, disabled } = parseProps(audioCardContentPropsSchema, props);
+  const { actionPerformedClassName, content, disabled } = validateProps(audioCardContentPropsSchema, props);
 
   const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
   const { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = content;

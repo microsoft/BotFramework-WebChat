@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { memo, useRef, type MouseEventHandler } from 'react';
 import {
@@ -14,11 +15,10 @@ import {
   type InferInput
 } from 'valibot';
 
-import AccessibleButton from '../Utils/AccessibleButton';
-import parseProps from '../Utils/parseProps';
 import useFocusVisible from '../hooks/internal/useFocusVisible';
 import useStyleSet from '../hooks/useStyleSet';
 import reactNode from '../types/internal/reactNode';
+import AccessibleButton from '../Utils/AccessibleButton';
 
 const { useStyleOptions } = hooks;
 
@@ -36,7 +36,7 @@ const iconButtonPropsSchema = pipe(
 type IconButtonProps = InferInput<typeof iconButtonPropsSchema>;
 
 function IconButton(props: IconButtonProps) {
-  const { alt, children, className, disabled, onClick } = parseProps(iconButtonPropsSchema, props);
+  const { alt, children, className, disabled, onClick } = validateProps(iconButtonPropsSchema, props);
 
   const [{ sendBoxButton: sendBoxButtonStyleSet }] = useStyleSet();
   const [{ sendBoxButtonAlignment }] = useStyleOptions();

@@ -1,15 +1,15 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 2, 10] }] */
 
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { memo } from 'react';
-
 import { boolean, literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
+
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
 import reactNode from '../types/internal/reactNode';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
-import parseProps from '../Utils/parseProps';
 
 const { useDirection, useStyleOptions } = hooks;
 
@@ -78,7 +78,7 @@ const bubblePropsSchema = pipe(
 type BubbleProps = InferInput<typeof bubblePropsSchema>;
 
 function Bubble(props: BubbleProps) {
-  const { 'aria-hidden': ariaHidden, children, className, fromUser, nub } = parseProps(bubblePropsSchema, props);
+  const { 'aria-hidden': ariaHidden, children, className, fromUser, nub } = validateProps(bubblePropsSchema, props);
 
   const [{ bubble: bubbleStyleSet }] = useStyleSet();
   const [direction] = useDirection();

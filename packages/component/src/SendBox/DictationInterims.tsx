@@ -1,6 +1,7 @@
 /* eslint react/no-array-index-key: "off" */
 
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo } from 'react';
@@ -9,7 +10,6 @@ import { object, optional, pipe, readonly, string, type InferInput } from 'valib
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
 import testIds from '../testIds';
-import parseProps from '../Utils/parseProps';
 
 const {
   DictateState: { DICTATING, STARTING, STOPPING }
@@ -32,7 +32,7 @@ const dictationInterimsPropsSchema = pipe(
 type DictationInterimsProps = InferInput<typeof dictationInterimsPropsSchema>;
 
 function DictationInterims(props: DictationInterimsProps) {
-  const { className } = parseProps(dictationInterimsPropsSchema, props);
+  const { className } = validateProps(dictationInterimsPropsSchema, props);
 
   const [dictateInterims] = useDictateInterims();
   const [dictateState] = useDictateState();

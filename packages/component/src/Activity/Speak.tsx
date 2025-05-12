@@ -1,11 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo } from 'react';
 import ReactSay, { SayUtterance } from 'react-say';
 import { useRefFrom } from 'use-ref-from';
-import { any, array, check, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
+import { any, array, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import parseProps from '../Utils/parseProps';
 import SayAlt from './SayAlt';
 
 // TODO: [P1] Interop between Babel and esbuild.
@@ -52,10 +52,7 @@ const speakableActivitySchema = pipe(
 
 const speakPropsSchema = pipe(
   object({
-    activity: pipe(
-      any(),
-      check(value => safeParse(speakableActivitySchema, value).success)
-    )
+    activity: speakableActivitySchema
   }),
   readonly()
 );
@@ -63,7 +60,7 @@ const speakPropsSchema = pipe(
 type SpeakProps = InferInput<typeof speakPropsSchema>;
 
 function Speak(props: SpeakProps) {
-  const { activity } = parseProps(speakPropsSchema, props);
+  const { activity } = validateProps(speakPropsSchema, props);
 
   const [{ showSpokenText }] = useStyleOptions();
   const activityRef = useRefFrom(activity);

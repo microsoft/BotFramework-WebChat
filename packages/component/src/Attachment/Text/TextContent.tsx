@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { memo, useMemo } from 'react';
 
@@ -6,7 +7,6 @@ import { any, object, optional, pipe, readonly, string, type InferInput } from '
 import { useStyleToEmotionObject } from '../../hooks/internal/styleToEmotionObject';
 import useRenderMarkdownAsHTML from '../../hooks/useRenderMarkdownAsHTML';
 import CustomPropertyNames from '../../Styles/CustomPropertyNames';
-import parseProps from '../../Utils/parseProps';
 import isAIGeneratedActivity from './private/isAIGeneratedActivity';
 import MarkdownTextContent from './private/MarkdownTextContent';
 import PlainTextContent from './private/PlainTextContent';
@@ -32,7 +32,7 @@ const generatedBadgeStyle = {
 };
 
 function TextContent(props: TextContentProps) {
-  const { activity, contentType, text } = parseProps(textContentPropsSchema, props);
+  const { activity, contentType, text } = validateProps(textContentPropsSchema, props);
 
   const supportMarkdown = !!useRenderMarkdownAsHTML('message activity');
   const localize = useLocalizer();
