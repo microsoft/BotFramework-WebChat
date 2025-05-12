@@ -1,7 +1,7 @@
 /* eslint complexity: ["error", 50] */
 
 import { validateProps } from 'botframework-webchat-api/internal';
-import React, { useCallback, useEffect, useMemo, useRef, type MutableRefObject } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, type MutableRefObject } from 'react';
 import {
   custom,
   function_,
@@ -199,5 +199,5 @@ function RovingTabIndexComposer(props: RovingTabIndexContextProps) {
   return <RovingTabIndexContext.Provider value={contextValue}>{children}</RovingTabIndexContext.Provider>;
 }
 
-export default RovingTabIndexComposer;
+export default memo(RovingTabIndexComposer);
 export { rovingTabIndexContextProps, type RovingTabIndexContext };
