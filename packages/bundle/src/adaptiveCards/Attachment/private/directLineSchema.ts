@@ -47,9 +47,9 @@ const directLineBasicCardSchema = pipe(
         array(
           pipe(
             object({
-              alt: string(),
+              alt: optional(string()),
               tap: optional(directLineCardActionSchema),
-              url: string()
+              url: optional(string())
             }),
             readonly()
           )
