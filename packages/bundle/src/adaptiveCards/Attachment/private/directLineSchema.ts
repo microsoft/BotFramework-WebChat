@@ -1,4 +1,17 @@
-import { any, array, boolean, literal, looseObject, object, optional, pipe, readonly, string, union } from 'valibot';
+import {
+  any,
+  array,
+  boolean,
+  literal,
+  looseObject,
+  number,
+  object,
+  optional,
+  pipe,
+  readonly,
+  string,
+  union
+} from 'valibot';
 
 // TODO: Should build a better `directLineCardActionSchema`.
 const directLineCardActionSchema = pipe(
@@ -65,6 +78,61 @@ const directLineBasicCardSchema = pipe(
   readonly()
 );
 
+// https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-cards.md#receipt-card
+const directLineReceiptCardSchema = pipe(
+  object({
+    buttons: optional(pipe(array(any()), readonly())),
+    facts: optional(
+      pipe(
+        array(
+          pipe(
+            object({
+              key: optional(string()),
+              value: optional(string())
+            }),
+            readonly()
+          )
+        ),
+        readonly()
+      )
+    ),
+    items: optional(
+      pipe(
+        array(
+          pipe(
+            object({
+              image: optional(
+                pipe(
+                  object({
+                    alt: string(),
+                    tap: optional(directLineCardActionSchema),
+                    url: string()
+                  }),
+                  readonly()
+                )
+              ),
+              price: string(),
+              quantity: optional(union([number(), string()])), // TODO: Should be string only.
+              subtitle: optional(string()),
+              tap: optional(directLineCardActionSchema),
+              text: optional(string()),
+              title: string()
+            }),
+            readonly()
+          )
+        ),
+        readonly()
+      )
+    ),
+    tap: optional(directLineCardActionSchema),
+    tax: optional(string()),
+    title: optional(string()),
+    total: optional(string()),
+    vat: optional(string())
+  }),
+  readonly()
+);
+
 // https://github.com/microsoft/botframework-sdk/blob/master/specs/botframework-activity/botframework-cards.md#Signin-card
 const directLineSignInCardSchema = pipe(
   object({
@@ -74,4 +142,10 @@ const directLineSignInCardSchema = pipe(
   readonly()
 );
 
-export { directLineBasicCardSchema, directLineCardActionSchema, directLineMediaCardSchema, directLineSignInCardSchema };
+export {
+  directLineBasicCardSchema,
+  directLineCardActionSchema,
+  directLineMediaCardSchema,
+  directLineReceiptCardSchema,
+  directLineSignInCardSchema
+};

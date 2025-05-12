@@ -4,13 +4,13 @@ import { validateProps } from 'botframework-webchat-api/internal';
 import { hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
-import { any, array, boolean, number, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import { directLineCardActionSchema } from './private/directLineSchema';
+import { directLineReceiptCardSchema } from './private/directLineSchema';
 
 const { useDirection, useLocalizer } = hooks;
 
@@ -21,59 +21,7 @@ function nullOrUndefined(obj) {
 const receiptCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string()),
-    content: pipe(
-      object({
-        buttons: optional(pipe(array(any()), readonly())),
-        facts: optional(
-          pipe(
-            array(
-              pipe(
-                object({
-                  key: optional(string()),
-                  value: optional(string())
-                }),
-                readonly()
-              )
-            ),
-            readonly()
-          )
-        ),
-        items: optional(
-          pipe(
-            array(
-              pipe(
-                object({
-                  image: optional(
-                    pipe(
-                      object({
-                        alt: string(),
-                        tap: optional(directLineCardActionSchema),
-                        url: string()
-                      }),
-                      readonly()
-                    )
-                  ),
-                  price: string(),
-                  quantity: optional(union([number(), string()])), // TODO: Should be string only.
-                  subtitle: optional(string()),
-                  tap: optional(directLineCardActionSchema),
-                  text: optional(string()),
-                  title: string()
-                }),
-                readonly()
-              )
-            ),
-            readonly()
-          )
-        ),
-        tap: optional(directLineCardActionSchema),
-        tax: optional(string()),
-        title: optional(string()),
-        total: optional(string()),
-        vat: optional(string())
-      }),
-      readonly()
-    ),
+    content: directLineReceiptCardSchema,
     disabled: optional(boolean())
   }),
   readonly()

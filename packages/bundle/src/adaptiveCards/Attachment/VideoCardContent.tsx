@@ -2,7 +2,7 @@
 
 import { Components } from 'botframework-webchat-component';
 import React, { memo } from 'react';
-import { boolean, custom, object, optional, parse, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
+import { boolean, object, optional, parse, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import CommonCard from './CommonCard';
@@ -13,9 +13,7 @@ const { VideoContent } = Components;
 const videoCardContentPropsSchema = pipe(
   object({
     actionPerformedClassName: optional(string()),
-    content: custom<InferInput<typeof directLineMediaCardSchema>>(
-      value => safeParse(directLineMediaCardSchema, value).success
-    ),
+    content: directLineMediaCardSchema,
     disabled: optional(boolean())
   }),
   readonly()
