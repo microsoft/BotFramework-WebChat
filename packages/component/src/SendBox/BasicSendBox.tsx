@@ -1,7 +1,9 @@
 import { SendBoxToolbarMiddlewareProxy, hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import React, { FC } from 'react';
+import React, { memo } from 'react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
@@ -35,11 +37,18 @@ function useSendBoxSpeechInterimsVisible(): [boolean] {
   return [dictateState === STARTING || dictateState === DICTATING];
 }
 
-type BasicSendBoxProps = Readonly<{
-  className?: string;
-}>;
+const basicSendBoxPropsSchema = pipe(
+  object({
+    className: optional(string())
+  }),
+  readonly()
+);
 
-const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
+type BasicSendBoxProps = InferInput<typeof basicSendBoxPropsSchema>;
+
+function BasicSendBox(props: BasicSendBoxProps) {
+  const { className } = validateProps(basicSendBoxPropsSchema, props);
+
   const [{ sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition = undefined } = {}] = useWebSpeechPonyfill();
@@ -83,8 +92,7 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
       </div>
     </div>
   );
-};
+}
 
-export default BasicSendBox;
-
-export { useSendBoxSpeechInterimsVisible };
+export default memo(BasicSendBox);
+export { basicSendBoxPropsSchema, useSendBoxSpeechInterimsVisible, type BasicSendBoxProps };

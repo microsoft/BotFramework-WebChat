@@ -221,7 +221,14 @@ type ComposerCoreProps = Readonly<{
   ) => Promise<URL>;
   grammars?: any;
   groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware>;
-  internalErrorBoxClass?: ComponentType;
+  internalErrorBoxClass?:
+    | ComponentType<
+        Readonly<{
+          error: Error;
+          type?: string;
+        }>
+      >
+    | undefined;
   locale?: string;
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
@@ -675,7 +682,10 @@ ComposerCore.propTypes = {
   downscaleImageToDataURL: PropTypes.func,
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupActivitiesMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  internalErrorBoxClass: PropTypes.func, // This is for internal use only. We don't allow customization of error box.
+  // This is for internal use only. We don't allow customization of error box.
+  // - Functional component is of type PropTypes.func
+  // - Memoized functional component is of type PropTypes.object
+  internalErrorBoxClass: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   locale: PropTypes.string,
   onTelemetry: PropTypes.func,
   overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),

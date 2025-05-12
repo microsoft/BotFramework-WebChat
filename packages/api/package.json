@@ -101,10 +101,6 @@
     "react-redux": [
       "7",
       "react-redux@>7 requires newer version of React"
-    ],
-    "valibot": [
-      "0",
-      "valibot@0 until they finalize @1"
     ]
   },
   "devDependencies": {
@@ -139,7 +135,7 @@
     "redux": "5.0.1",
     "simple-update-in": "2.2.0",
     "use-ref-from": "0.1.0",
-    "valibot": "0.42.1"
+    "valibot": "1.1.0"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",

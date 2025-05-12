@@ -1,10 +1,17 @@
 import React, { memo, useMemo } from 'react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+
 import { useRenderMarkdownAsHTML } from '../../../hooks';
 
-type MarkdownableProps = Readonly<{
-  className?: string | undefined;
-  text: string;
-}>;
+const markdownablePropsSchema = pipe(
+  object({
+    className: optional(string()),
+    text: string()
+  }),
+  readonly()
+);
+
+type MarkdownableProps = InferInput<typeof markdownablePropsSchema>;
 
 function Markdownable({ className, text }: MarkdownableProps) {
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
@@ -23,4 +30,4 @@ function Markdownable({ className, text }: MarkdownableProps) {
 }
 
 export default memo(Markdownable);
-export { type MarkdownableProps };
+export { markdownablePropsSchema, type MarkdownableProps };

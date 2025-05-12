@@ -450,7 +450,7 @@ const Composer = ({
       cardActionMiddleware={patchedCardActionMiddleware}
       downscaleImageToDataURL={downscaleImageToDataURL}
       // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
-      internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
+      {...(node_env === 'development' ? { internalErrorBoxClass: ErrorBox } : {})}
       nonce={nonce}
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
       sendBoxMiddleware={sendBoxMiddleware}
