@@ -95,5 +95,4 @@ function BasicSendBox(props: BasicSendBoxProps) {
 }
 
 export default memo(BasicSendBox);
-
 export { basicSendBoxPropsSchema, useSendBoxSpeechInterimsVisible, type BasicSendBoxProps };
