@@ -1,7 +1,7 @@
 import { hooks } from 'botframework-webchat-api';
 import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
-import React, { memo, useState } from 'react';
+import React, { Fragment, memo, useState } from 'react';
 import { boolean, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import useForceRender from '../hooks/internal/useForceRender';
@@ -45,7 +45,7 @@ function ConnectivityStatusConnecting(props: ConnectivityStatusConnectingProps) 
   const slow = now >= initialRenderAt + slowConnectionAfter;
 
   return slow ? (
-    <React.Fragment>
+    <Fragment>
       <ScreenReaderText text={localize('CONNECTIVITY_STATUS_ALT', slowConnectionText)} />
       <div
         aria-hidden={true}
@@ -55,9 +55,9 @@ function ConnectivityStatusConnecting(props: ConnectivityStatusConnectingProps) 
         <WarningNotificationIcon />
         {slowConnectionText}
       </div>
-    </React.Fragment>
+    </Fragment>
   ) : (
-    <React.Fragment>
+    <Fragment>
       <ScreenReaderText
         text={localize('CONNECTIVITY_STATUS_ALT', reconnect ? interruptedConnectionText : initialConnectionText)}
       />
@@ -69,7 +69,7 @@ function ConnectivityStatusConnecting(props: ConnectivityStatusConnectingProps) 
         <SpinnerAnimation />
         {reconnect ? interruptedConnectionText : initialConnectionText}
       </div>
-    </React.Fragment>
+    </Fragment>
   );
 }
 
