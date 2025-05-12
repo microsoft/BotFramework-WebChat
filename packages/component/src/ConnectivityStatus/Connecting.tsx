@@ -1,18 +1,30 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
+import { boolean, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
+import useForceRender from '../hooks/internal/useForceRender';
+import useTimer from '../hooks/internal/useTimer';
+import useStyleSet from '../hooks/useStyleSet';
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from './Assets/SpinnerAnimation';
-import useForceRender from '../hooks/internal/useForceRender';
-import useStyleSet from '../hooks/useStyleSet';
-import useTimer from '../hooks/internal/useTimer';
 import WarningNotificationIcon from './Assets/WarningNotificationIcon';
 
 const { useDirection, useLocalizer, usePonyfill, useStyleOptions } = hooks;
 
-const ConnectivityStatusConnecting = ({ reconnect }) => {
+const connectivityStatusConnectingPropsSchema = pipe(
+  object({
+    reconnect: optional(boolean())
+  }),
+  readonly()
+);
+
+type ConnectivityStatusConnectingProps = InferInput<typeof connectivityStatusConnectingPropsSchema>;
+
+function ConnectivityStatusConnecting(props: ConnectivityStatusConnectingProps) {
+  const { reconnect = false } = validateProps(connectivityStatusConnectingPropsSchema, props);
+
   const [{ Date }] = usePonyfill();
   const [{ slowConnectionAfter }] = useStyleOptions();
   const [
@@ -59,14 +71,7 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
       </div>
     </React.Fragment>
   );
-};
+}
 
-ConnectivityStatusConnecting.defaultProps = {
-  reconnect: false
-};
-
-ConnectivityStatusConnecting.propTypes = {
-  reconnect: PropTypes.bool
-};
-
-export default ConnectivityStatusConnecting;
+export default memo(ConnectivityStatusConnecting);
+export { connectivityStatusConnectingPropsSchema, type ConnectivityStatusConnectingProps };
