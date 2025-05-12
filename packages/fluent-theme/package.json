@@ -81,7 +81,7 @@
     "inject-meta-tag": "0.0.1",
     "math-random": "2.0.1",
     "use-ref-from": "0.1.0",
-    "valibot": "^1.1.0"
+    "valibot": "1.1.0"
   },
   "peerDependencies": {
     "react": ">= 16.8.6"
