@@ -8,6 +8,7 @@ export default function parseProps<const TSchema extends BaseSchema<unknown, unk
     return props as unknown as InferOutput<TSchema>;
   }
 
+  // TODO: Default to `safeParse` unless the component is explicitly okay with strict, which clone the prop.
   try {
     return parse(propsSchema, props);
   } catch (error) {
