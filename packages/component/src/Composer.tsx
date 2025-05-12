@@ -451,7 +451,6 @@ const Composer = ({
       downscaleImageToDataURL={downscaleImageToDataURL}
       // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
       {...(node_env === 'development' ? { internalErrorBoxClass: ErrorBox } : {})}
-      // internalErrorBoxClass={node_env === 'development' ? ErrorBox : undefined}
       nonce={nonce}
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
       sendBoxMiddleware={sendBoxMiddleware}
