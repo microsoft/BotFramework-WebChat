@@ -9,10 +9,10 @@ const { useLocalizer } = hooks;
 
 const youTubeContentPropsSchema = pipe(
   object({
-    alt: optional(string(), ''),
-    autoPlay: optional(boolean(), false),
+    alt: optional(string()),
+    autoPlay: optional(boolean()),
     embedID: string(),
-    loop: optional(boolean(), false)
+    loop: optional(boolean())
   }),
   readonly()
 );
@@ -20,7 +20,7 @@ const youTubeContentPropsSchema = pipe(
 type YouTubeContentProps = InferInput<typeof youTubeContentPropsSchema>;
 
 function YouTubeContent(props: YouTubeContentProps) {
-  const { alt, autoPlay, embedID, loop } = validateProps(youTubeContentPropsSchema, props);
+  const { alt, autoPlay = false, embedID, loop = false } = validateProps(youTubeContentPropsSchema, props);
 
   const [{ youTubeContent: youTubeContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();

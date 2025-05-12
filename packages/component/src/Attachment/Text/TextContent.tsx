@@ -16,7 +16,7 @@ const { useLocalizer } = hooks;
 const textContentPropsSchema = pipe(
   object({
     activity: any(),
-    contentType: optional(string(), 'text/plain'),
+    contentType: optional(string()),
     text: string()
   }),
   readonly()
@@ -32,7 +32,7 @@ const generatedBadgeStyle = {
 };
 
 function TextContent(props: TextContentProps) {
-  const { activity, contentType, text } = validateProps(textContentPropsSchema, props);
+  const { activity, contentType = 'text/plain', text } = validateProps(textContentPropsSchema, props);
 
   const supportMarkdown = !!useRenderMarkdownAsHTML('message activity');
   const localize = useLocalizer();

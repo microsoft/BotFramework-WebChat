@@ -37,7 +37,7 @@ function isAllowedProtocol(url) {
 
 const fileContentBadgePropsSchema = pipe(
   object({
-    downloadIcon: optional(boolean(), false),
+    downloadIcon: optional(boolean()),
     fileName: string(),
     size: optional(number())
   }),
@@ -47,7 +47,7 @@ const fileContentBadgePropsSchema = pipe(
 type FileContentBadgeProps = InferInput<typeof fileContentBadgePropsSchema>;
 
 const FileContentBadge = (props: FileContentBadgeProps) => {
-  const { downloadIcon, fileName, size } = validateProps(fileContentBadgePropsSchema, props);
+  const { downloadIcon = false, fileName, size } = validateProps(fileContentBadgePropsSchema, props);
 
   const [direction] = useDirection();
   const formatByte = useByteFormatter();
