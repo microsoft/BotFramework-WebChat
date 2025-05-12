@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import {
   getOrgSchemaMessage,
   onErrorResumeNext,
@@ -9,8 +10,9 @@ import {
 import classNames from 'classnames';
 import type { Definition } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
-import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler, type ReactNode } from 'react';
+import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ActivityFeedback from '../../../ActivityFeedback/ActivityFeedback';
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
@@ -19,6 +21,7 @@ import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import { type PropsOf } from '../../../types/PropsOf';
+import reactNode from '../../../types/internal/reactNode';
 import ActivityCopyButton from './ActivityCopyButton';
 import ActivityViewCodeButton from './ActivityViewCodeButton';
 import CitationModalContext from './CitationModalContent';
@@ -37,17 +40,24 @@ type Entry = {
   url?: string | undefined;
 };
 
-type Props = Readonly<{
-  activity: WebChatActivity;
-  children?: ReactNode | undefined;
-  markdown: string;
-}>;
+const markdownTextContentPropsSchema = pipe(
+  object({
+    activity: custom<WebChatActivity>(() => true),
+    children: optional(reactNode()),
+    markdown: string()
+  }),
+  readonly()
+);
+
+type MarkdownTextContentProps = InferInput<typeof markdownTextContentPropsSchema>;
 
 function isCitationURL(url: string): boolean {
   return onErrorResumeNext(() => new URL(url))?.protocol === 'cite:';
 }
 
-const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
+function MarkdownTextContent(props: MarkdownTextContentProps) {
+  const { activity, children, markdown } = validateProps(markdownTextContentPropsSchema, props);
+
   const [{ feedbackActionsPlacement }] = useStyleOptions();
   const [
     {
@@ -252,8 +262,7 @@ const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
       </div>
     </div>
   );
-});
+}
 
-MarkdownTextContent.displayName = 'MarkdownTextContent';
-
-export default MarkdownTextContent;
+export default memo(MarkdownTextContent);
+export { markdownTextContentPropsSchema, type MarkdownTextContentProps };
