@@ -39,6 +39,8 @@
         await pageConditions.uiConnected();
 
         await pageObjects.sendMessageViaSendBox('layout single');
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
 
         await host.snapshot('local');
       });

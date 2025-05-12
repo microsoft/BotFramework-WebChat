@@ -39,6 +39,7 @@
         await pageConditions.uiConnected();
 
         await pageObjects.sendMessageViaSendBox('Hello, World!');
+        await pageConditions.numActivitiesShown(2);
 
         await host.snapshot('local');
       });

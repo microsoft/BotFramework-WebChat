@@ -31,6 +31,8 @@
         await pageConditions.uiConnected();
 
         await pageObjects.sendMessageViaSendBox('layout carousel');
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
 
         await host.snapshot('local');
       });
