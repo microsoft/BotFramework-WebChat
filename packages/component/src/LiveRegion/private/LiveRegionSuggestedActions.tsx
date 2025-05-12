@@ -8,6 +8,7 @@ const liveRegionSuggestedActionsPropSchema = pipe(
   object({
     suggestedActions: pipe(
       object({
+        // TODO: Should built `directLineCardActionSchema`.
         actions: pipe(array(any()), readonly())
       }),
       readonly()
