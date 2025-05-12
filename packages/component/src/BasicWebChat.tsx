@@ -57,7 +57,7 @@ const basicWebChatPropsSchema = pipe(
 type BasicWebChatProps = InferInput<typeof basicWebChatPropsSchema>;
 
 function BasicWebChat(props: BasicWebChatProps) {
-  const { className, role } = validateProps(basicWebChatPropsSchema, props);
+  const { className, role } = validateProps(basicWebChatPropsSchema, props, 'strict');
 
   const [{ root: rootStyleSet }] = useStyleSet();
   const [options] = useStyleOptions();
