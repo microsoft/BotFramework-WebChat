@@ -77,7 +77,7 @@ type FileContentProps = InferInput<typeof fileContentPropsSchema>;
 
 const fileContentPropsSchema = pipe(
   object({
-    className: optional(string(), ''), // TODO: Should remove default value.
+    className: optional(string()),
     fileName: string(),
     href: optional(string()),
     size: optional(number())
@@ -110,9 +110,7 @@ function FileContent(props: FileContentProps) {
   );
 
   return (
-    <div
-      className={classNames('webchat__fileContent', rootClassName, fileContentStyleSet + '', (className || '') + '')}
-    >
+    <div className={classNames('webchat__fileContent', rootClassName, fileContentStyleSet + '', className)}>
       {allowedHref ? (
         <a
           aria-label={alt}

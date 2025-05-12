@@ -36,7 +36,7 @@ const node_env = process.env.node_env || process.env.NODE_ENV;
 
 const adaptiveCardRendererPropsSchema = pipe(
   object({
-    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    actionPerformedClassName: optional(string()),
     disabled: optional(boolean()),
     adaptiveCard: any(),
     tapAction: optional(directLineCardActionSchema)

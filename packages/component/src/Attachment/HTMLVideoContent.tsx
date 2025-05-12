@@ -6,10 +6,10 @@ import useStyleSet from '../hooks/useStyleSet';
 
 const htmlVideoContentPropsSchema = pipe(
   object({
-    alt: optional(string(), ''), // TODO: Should remove default value.
-    autoPlay: optional(boolean(), false), // TODO: Should remove default value.
-    loop: optional(boolean(), false), // TODO: Should remove default value.
-    poster: optional(string(), ''), // TODO: Should remove default value.
+    alt: optional(string()),
+    autoPlay: optional(boolean()),
+    loop: optional(boolean()),
+    poster: optional(string()),
     src: string()
   }),
   readonly()
@@ -18,7 +18,7 @@ const htmlVideoContentPropsSchema = pipe(
 type HTMLVideoContentProps = InferInput<typeof htmlVideoContentPropsSchema>;
 
 function HTMLVideoContent(props: HTMLVideoContentProps) {
-  const { alt, autoPlay, loop, poster, src } = validateProps(htmlVideoContentPropsSchema, props);
+  const { alt, autoPlay = false, loop = false, poster, src } = validateProps(htmlVideoContentPropsSchema, props);
 
   const [{ videoContent: videoContentStyleSet }] = useStyleSet();
 

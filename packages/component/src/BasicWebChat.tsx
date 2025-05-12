@@ -41,7 +41,7 @@ const TRANSCRIPT_STYLE = {
 
 const basicWebChatPropsSchema = pipe(
   object({
-    className: optional(string(), ''), // TODO: Should remove default value.
+    className: optional(string()),
     role: fallback(
       optional(
         // Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
@@ -71,7 +71,7 @@ function BasicWebChat(props: BasicWebChatProps) {
 
   return (
     <AccessKeySinkSurface
-      className={classNames('webchat__surface', rootClassName, rootStyleSet + '', (className || '') + '')}
+      className={classNames('webchat__surface', rootClassName, rootStyleSet + '', className)}
       role={role}
     >
       {!options.hideToaster && <BasicToaster className={toasterClassName} />}

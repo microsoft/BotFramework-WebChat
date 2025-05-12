@@ -8,7 +8,7 @@ import { directLineSignInCardSchema } from './private/directLineSchema';
 
 const signInCardContentPropsSchema = pipe(
   object({
-    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    actionPerformedClassName: optional(string()),
     content: directLineSignInCardSchema,
     disabled: optional(boolean())
   }),

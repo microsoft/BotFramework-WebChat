@@ -6,10 +6,10 @@ import useStyleSet from '../hooks/useStyleSet';
 
 const audioContentPropsSchema = pipe(
   object({
-    alt: optional(string(), ''), // TODO: Should remove default value.
-    autoPlay: optional(boolean(), false), // TODO: Should remove default value.
-    loop: optional(boolean(), false), // TODO: Should remove default value.
-    poster: optional(string(), ''), // TODO: Should remove default value.
+    alt: optional(string()),
+    autoPlay: optional(boolean()),
+    loop: optional(boolean()),
+    poster: optional(string()),
     src: string()
   }),
   readonly()
@@ -18,7 +18,7 @@ const audioContentPropsSchema = pipe(
 type AudioContentProps = InferInput<typeof audioContentPropsSchema>;
 
 function AudioContent(props: AudioContentProps) {
-  const { alt, autoPlay, loop, src } = validateProps(audioContentPropsSchema, props);
+  const { alt, autoPlay = false, loop = false, src } = validateProps(audioContentPropsSchema, props);
   const [{ audioContent: audioContentStyleSet }] = useStyleSet();
 
   return (

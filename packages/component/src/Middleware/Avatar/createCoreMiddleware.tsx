@@ -22,8 +22,8 @@ const ROOT_STYLE = {
 
 const defaultAvatarPropsSchema = pipe(
   object({
-    'aria-hidden': optional(boolean(), true), // TODO: Should remove default value.
-    className: optional(string(), ''), // TODO: Should remove default value.
+    'aria-hidden': optional(boolean()),
+    className: optional(string()),
     fromUser: boolean()
   }),
   readonly()
@@ -32,7 +32,7 @@ const defaultAvatarPropsSchema = pipe(
 type DefaultAvatarProps = InferInput<typeof defaultAvatarPropsSchema>;
 
 function DefaultAvatar(props: DefaultAvatarProps) {
-  const { 'aria-hidden': ariaHidden, className, fromUser } = validateProps(defaultAvatarPropsSchema, props);
+  const { 'aria-hidden': ariaHidden = true, className, fromUser } = validateProps(defaultAvatarPropsSchema, props);
 
   const [{ avatar: avatarStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
@@ -45,7 +45,7 @@ function DefaultAvatar(props: DefaultAvatarProps) {
         { 'webchat__defaultAvatar--fromUser': fromUser },
         rootClassName,
         avatarStyleSet + '',
-        (className || '') + ''
+        className
       )}
     >
       <InitialsAvatar fromUser={fromUser} />

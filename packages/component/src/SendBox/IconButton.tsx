@@ -24,10 +24,10 @@ const { useStyleOptions } = hooks;
 
 const iconButtonPropsSchema = pipe(
   object({
-    alt: optional(string(), ''), // TODO: Should remove default value.
+    alt: optional(string()),
     children: optional(reactNode()),
-    className: optional(string(), ''), // TODO: Should remove default value.
-    disabled: optional(boolean(), false), // TODO: Should remove default value.
+    className: optional(string()),
+    disabled: optional(boolean()),
     onClick: optional(custom<MouseEventHandler<HTMLButtonElement>>(value => safeParse(function_(), value).success))
   }),
   readonly()
@@ -53,7 +53,7 @@ function IconButton(props: IconButtonProps) {
           'webchat__icon-button--focus-visible': focusVisible,
           'webchat__icon-button--stretch': sendBoxButtonAlignment !== 'bottom' && sendBoxButtonAlignment !== 'top'
         },
-        className + ''
+        className
       )}
       disabled={disabled}
       onClick={disabled ? undefined : onClick}

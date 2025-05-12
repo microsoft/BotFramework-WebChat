@@ -20,7 +20,7 @@ function nullOrUndefined(obj) {
 
 const receiptCardContentPropsSchema = pipe(
   object({
-    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    actionPerformedClassName: optional(string()),
     content: pipe(
       object({
         buttons: optional(pipe(array(any()), readonly())),

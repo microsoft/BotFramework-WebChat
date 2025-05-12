@@ -28,13 +28,13 @@ const ROOT_STYLE = {
 const suggestedActionPropsSchema = pipe(
   object({
     buttonText: string(),
-    className: optional(string(), ''), // TODO: Should remove default value.
-    displayText: optional(string(), ''), // TODO: Should remove default value.
-    image: optional(string(), ''), // TODO: Should remove default value.
+    className: optional(string()),
+    displayText: optional(string()),
+    image: optional(string()),
     imageAlt: optional(string()),
     itemIndex: number(),
-    text: optional(string(), ''), // TODO: Should remove default value.
-    textClassName: optional(string(), ''), // TODO: Should remove default value.
+    text: optional(string()),
+    textClassName: optional(string()),
     type: optional(
       union([
         literal('call'),
@@ -57,8 +57,18 @@ const suggestedActionPropsSchema = pipe(
 type SuggestedActionProps = InferInput<typeof suggestedActionPropsSchema>;
 
 function SuggestedAction(props: SuggestedActionProps) {
-  const { buttonText, className, displayText, image, imageAlt, itemIndex, text, textClassName, type, value } =
-    validateProps(suggestedActionPropsSchema, props);
+  const {
+    buttonText,
+    className,
+    displayText = '',
+    image = '',
+    imageAlt,
+    itemIndex,
+    text = '',
+    textClassName,
+    type,
+    value
+  } = validateProps(suggestedActionPropsSchema, props);
 
   const [_, setSuggestedActions] = useSuggestedActions();
   const [{ suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
@@ -110,7 +120,7 @@ function SuggestedAction(props: SuggestedActionProps) {
         },
         rootClassName,
         suggestedActionStyleSet + '',
-        (className || '') + ''
+        className
       )}
       disabled={uiState === 'disabled'}
       onClick={handleClick}
@@ -127,7 +137,7 @@ function SuggestedAction(props: SuggestedActionProps) {
           src={image}
         />
       )}
-      <span className={classNames('webchat__suggested-action__text', (textClassName || '') + '')}>{buttonText}</span>
+      <span className={classNames('webchat__suggested-action__text', textClassName)}>{buttonText}</span>
       <div className="webchat__suggested-action__keyboard-focus-indicator" />
     </AccessibleButton>
   );

@@ -14,7 +14,7 @@ const { useDirection } = hooks;
 
 const heroCardContentPropsSchema = pipe(
   object({
-    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    actionPerformedClassName: optional(string()),
     content: directLineBasicCardSchema,
     disabled: optional(boolean())
   }),

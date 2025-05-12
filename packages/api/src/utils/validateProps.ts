@@ -5,7 +5,7 @@ import { parse, safeParse, type BaseIssue, type BaseSchema, type InferInput, typ
  *
  * - `"no isolation"` will return the props as-is without cloning or modifications
  * - `"strict"` will isolate the props using `valibot.parse()`
- *    - Depends on schema design, it could clone object instances and remove extraneous properties from objects
+ *    - Depends on schema design, it could clone object instances, remove extraneous properties from objects, or fill in optional fields
  */
 type IsolationMode = 'no isolation' | 'strict';
 

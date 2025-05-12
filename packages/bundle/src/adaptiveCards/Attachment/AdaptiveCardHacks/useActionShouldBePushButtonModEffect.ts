@@ -2,10 +2,10 @@ import { useMemo, useRef } from 'react';
 
 import addEventListenerWithUndo from '../../DOMManipulationWithUndo/addEventListenerWithUndo';
 import bunchUndos from '../../DOMManipulationWithUndo/bunchUndos';
-import closest from './private/closest';
 import durableAddClassWithUndo from '../../DOMManipulationWithUndo/durableAddClassWithUndo';
-import findDOMNodeOwner from './private/findDOMNodeOwner';
 import setOrRemoveAttributeIfFalseWithUndo from '../../DOMManipulationWithUndo/setOrRemoveAttributeIfFalseWithUndo';
+import closest from './private/closest';
+import findDOMNodeOwner from './private/findDOMNodeOwner';
 import useAdaptiveCardModEffect from './private/useAdaptiveCardModEffect';
 import usePrevious from './private/usePrevious';
 
@@ -26,14 +26,14 @@ import type { UndoFunction } from '../../DOMManipulationWithUndo/types/UndoFunct
  */
 export default function useActionShouldBePushButtonModEffect(
   adaptiveCard: AdaptiveCard
-): readonly [(cardElement: HTMLElement, actionPerformedClassName?: string) => void, () => void] {
+): readonly [(cardElement: HTMLElement, actionPerformedClassName?: string | undefined) => void, () => void] {
   const prevAdaptiveCard = usePrevious(adaptiveCard);
   const pushedCardObjectsRef = useRef<Set<CardObject>>(new Set());
 
   prevAdaptiveCard === adaptiveCard || pushedCardObjectsRef.current.clear();
 
   const modder = useMemo(
-    () => (adaptiveCard: AdaptiveCard, cardElement: HTMLElement, actionPerformedClassName?: string) => {
+    () => (adaptiveCard: AdaptiveCard, cardElement: HTMLElement, actionPerformedClassName?: string | undefined) => {
       const undoStack: UndoFunction[] = [];
 
       Array.from(cardElement.querySelectorAll('button.ac-pushButton') as NodeListOf<HTMLButtonElement>).forEach(

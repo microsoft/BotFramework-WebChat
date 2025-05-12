@@ -33,10 +33,10 @@ function parseURL(url) {
 
 const videoContentPropsSchema = pipe(
   object({
-    alt: optional(string(), ''), // TODO: Should remove default value.
-    autoPlay: optional(boolean(), false), // TODO: Should remove default value.
-    loop: optional(boolean(), false), // TODO: Should remove default value.
-    poster: optional(string(), ''), // TODO: Should remove default value.
+    alt: optional(string()),
+    autoPlay: optional(boolean()),
+    loop: optional(boolean()),
+    poster: optional(string()),
     src: string()
   }),
   readonly()
@@ -45,7 +45,7 @@ const videoContentPropsSchema = pipe(
 type VideoContentProps = InferInput<typeof videoContentPropsSchema>;
 
 function VideoContent(props: VideoContentProps) {
-  const { alt, autoPlay, loop, poster, src } = validateProps(videoContentPropsSchema, props);
+  const { alt, autoPlay = false, loop = false, poster, src } = validateProps(videoContentPropsSchema, props);
 
   const { hostname, pathname, search } = parseURL(src);
   const lastSegment = pathname.split('/').pop();

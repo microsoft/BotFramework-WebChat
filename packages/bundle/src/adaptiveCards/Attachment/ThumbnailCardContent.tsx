@@ -14,7 +14,7 @@ const { useDirection } = hooks;
 
 const thumbnailCardContentPropsSchema = pipe(
   object({
-    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    actionPerformedClassName: optional(string()),
     content: custom<InferInput<typeof directLineBasicCardSchema>>(
       value => safeParse(directLineBasicCardSchema, value).success
     ),

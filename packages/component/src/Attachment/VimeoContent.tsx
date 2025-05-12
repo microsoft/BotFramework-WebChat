@@ -9,10 +9,10 @@ const { useLocalizer } = hooks;
 
 const vimeoContentPropsSchema = pipe(
   object({
-    alt: optional(string(), ''), // TODO: Should remove default value.
-    autoPlay: optional(boolean(), false), // TODO: Should remove default value.
+    alt: optional(string()),
+    autoPlay: optional(boolean()),
     embedID: string(),
-    loop: optional(boolean(), false) // TODO: Should remove default value.
+    loop: optional(boolean())
   }),
   readonly()
 );
@@ -20,7 +20,7 @@ const vimeoContentPropsSchema = pipe(
 type VimeoContentProps = InferInput<typeof vimeoContentPropsSchema>;
 
 function VimeoContent(props: VimeoContentProps) {
-  const { alt, autoPlay, embedID, loop } = validateProps(vimeoContentPropsSchema, props);
+  const { alt, autoPlay = false, embedID, loop = false } = validateProps(vimeoContentPropsSchema, props);
 
   const [{ vimeoContent: vimeoContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();

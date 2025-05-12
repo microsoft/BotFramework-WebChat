@@ -13,7 +13,7 @@ const { useLocalizer } = hooks;
 const errorBoxPropsSchema = pipe(
   object({
     error: instance(Error),
-    type: optional(string(), '') // TODO: Should remove default value.
+    type: optional(string())
   }),
   readonly()
 );
@@ -21,7 +21,7 @@ const errorBoxPropsSchema = pipe(
 type ErrorBoxProps = InferInput<typeof errorBoxPropsSchema>;
 
 function ErrorBox(props: ErrorBoxProps) {
-  const { error, type } = validateProps(errorBoxPropsSchema, props);
+  const { error, type = '' } = validateProps(errorBoxPropsSchema, props);
 
   const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
   const localize = useLocalizer();

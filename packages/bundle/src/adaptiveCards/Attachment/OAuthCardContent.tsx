@@ -13,7 +13,7 @@ const { useDirection } = hooks;
 
 const oauthCardContentPropsSchema = pipe(
   object({
-    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    actionPerformedClassName: optional(string()),
     content: directLineSignInCardSchema,
     disabled: optional(boolean())
   }),

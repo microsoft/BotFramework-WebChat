@@ -24,7 +24,7 @@ const ROOT_STYLE = {
 
 const dictationInterimsPropsSchema = pipe(
   object({
-    className: optional(string(), '') // TODO: Should remove default value.
+    className: optional(string())
   }),
   readonly()
 );
@@ -42,7 +42,7 @@ function DictationInterims(props: DictationInterimsProps) {
 
   return dictateState === STARTING || dictateState === STOPPING ? (
     <p
-      className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}
+      className={classNames(dictationInterimsStyleSet + '', rootClassName, className, 'status')}
       data-testid={testIds.sendBoxSpeechBox}
     >
       {dictateState === STARTING && localize('SPEECH_INPUT_STARTING')}
@@ -51,7 +51,7 @@ function DictationInterims(props: DictationInterimsProps) {
     dictateState === DICTATING &&
       (dictateInterims.length ? (
         <p
-          className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'dictating')}
+          className={classNames(dictationInterimsStyleSet + '', rootClassName, className, 'dictating')}
           data-testid={testIds.sendBoxSpeechBox}
         >
           {dictateInterims.map((interim, index) => (
@@ -63,7 +63,7 @@ function DictationInterims(props: DictationInterimsProps) {
         </p>
       ) : (
         <p
-          className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}
+          className={classNames(dictationInterimsStyleSet + '', rootClassName, className, 'status')}
           data-testid={testIds.sendBoxSpeechBox}
         >
           {localize('SPEECH_INPUT_LISTENING')}

@@ -13,7 +13,7 @@ const { ImageContent, VideoContent } = Components;
 
 const animationCardContentPropsSchema = pipe(
   object({
-    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    actionPerformedClassName: optional(string()),
     content: directLineMediaCardSchema,
     disabled: optional(boolean())
   }),

@@ -20,7 +20,7 @@ function stripSubmitAction(card) {
 
 const adaptiveCardContentPropsSchema = pipe(
   object({
-    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    actionPerformedClassName: optional(string()),
     content: optional(any()),
     disabled: optional(boolean())
   }),

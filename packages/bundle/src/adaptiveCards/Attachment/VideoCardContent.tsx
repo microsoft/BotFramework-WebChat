@@ -12,7 +12,7 @@ const { VideoContent } = Components;
 
 const videoCardContentPropsSchema = pipe(
   object({
-    actionPerformedClassName: optional(string(), ''), // TODO: Should remove default value.
+    actionPerformedClassName: optional(string()),
     content: custom<InferInput<typeof directLineMediaCardSchema>>(
       value => safeParse(directLineMediaCardSchema, value).success
     ),

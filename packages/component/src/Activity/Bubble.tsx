@@ -68,9 +68,9 @@ const bubblePropsSchema = pipe(
   object({
     'aria-hidden': optional(boolean()),
     children: optional(reactNode()),
-    className: optional(string(), ''), // TODO: Should remove default value.
-    fromUser: optional(boolean(), false), // TODO: Should remove default value.
-    nub: optional(union([boolean(), literal('hidden')]), false) // TODO: Should remove default value.
+    className: optional(string()),
+    fromUser: optional(boolean()),
+    nub: optional(union([boolean(), literal('hidden')]))
   }),
   readonly()
 );
@@ -78,7 +78,13 @@ const bubblePropsSchema = pipe(
 type BubbleProps = InferInput<typeof bubblePropsSchema>;
 
 function Bubble(props: BubbleProps) {
-  const { 'aria-hidden': ariaHidden, children, className, fromUser, nub } = validateProps(bubblePropsSchema, props);
+  const {
+    'aria-hidden': ariaHidden,
+    children,
+    className,
+    fromUser,
+    nub = false
+  } = validateProps(bubblePropsSchema, props);
 
   const [{ bubble: bubbleStyleSet }] = useStyleSet();
   const [direction] = useDirection();
@@ -122,7 +128,7 @@ function Bubble(props: BubbleProps) {
         },
         rootClassName,
         bubbleStyleSet + '',
-        (className || '') + ''
+        className
       )}
     >
       <div className="webchat__bubble__nub-pad" />
