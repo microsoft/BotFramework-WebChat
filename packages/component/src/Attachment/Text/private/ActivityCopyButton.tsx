@@ -2,7 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { instance, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { instance, nullable, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../../hooks/useStyleSet';
 import { useQueueStaticElement } from '../../../providers/LiveRegionTwin';
@@ -14,7 +14,7 @@ const { useLocalizer, useUIState } = hooks;
 const activityCopyButtonPropsSchema = pipe(
   object({
     className: optional(string()),
-    targetRef: refObject(instance(HTMLElement))
+    targetRef: refObject(nullable(instance(HTMLElement)))
   }),
   readonly()
 );
