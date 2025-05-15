@@ -13,7 +13,7 @@ import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNo
 import hasFeedbackLoop from '../private/hasFeedbackLoop';
 import ActivityFeedbackContext, { type ActivityFeedbackContextType } from './private/ActivityFeedbackContext';
 
-const { usePonyfill, usePostActivity } = hooks;
+const { usePonyfill, usePostActivity, useStyleOptions } = hooks;
 
 type ActivityFeedbackComposerProps = Readonly<{
   activity: WebChatActivity;
@@ -188,7 +188,9 @@ function ActivityFeedbackComposer({ children, activity: activityFromProps }: Act
     [actionsRef, actionStateRef, activityRef, postActivity, setActionStateWithRefresh]
   );
 
-  const shouldShowFeedbackForm = hasFeedbackLoop(activity);
+  const [{ feedbackActionsPlacement }] = useStyleOptions();
+
+  const shouldShowFeedbackForm = hasFeedbackLoop(activity) && feedbackActionsPlacement === 'activity-actions';
   const shouldShowFeedbackFormRef = useRefFrom(shouldShowFeedbackForm);
 
   const shouldShowFeedbackFormState = useMemo<readonly [boolean]>(
