@@ -219,6 +219,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed [#5452](https://github.com/microsoft/BotFramework-WebChat/issues/5452). With Fluent/Copilot theme, the typing indicator padding should not be squashed, in PR [#5453](https://github.com/microsoft/BotFramework-WebChat/pull/5453), by [@compulim](https://github.com/compulim)
 - Fixed [#5461](https://github.com/microsoft/BotFramework-WebChat/issues/5461). On macOS and Fluent skinpack applied, using Japanese IME to input some Japanese text should not send them immediately, in PR [#5462](https://github.com/microsoft/BotFramework-WebChat/pull/5462), by [@compulim](https://github.com/compulim)
 - Fixed [#5472](https://github.com/microsoft/BotFramework-WebChat/issues/5472), ensure proper inheritance from the outside of Web Chat for visibility CSS property when hidden, in PR [#5473](https://github.com/microsoft/BotFramework-WebChat/pull/5473), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5474](https://github.com/microsoft/BotFramework-WebChat/issues/5474). Bundle `globalize-runtime` and disabling its AMD glue code, in PR [#5478](https://github.com/microsoft/BotFramework-WebChat/pull/5478), by [@compulim](https://github.com/compulim)
 
 # Removed
 
