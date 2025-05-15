@@ -1,18 +1,30 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { Fragment, memo, useState } from 'react';
+import { boolean, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
+import useForceRender from '../hooks/internal/useForceRender';
+import useTimer from '../hooks/internal/useTimer';
+import useStyleSet from '../hooks/useStyleSet';
 import ScreenReaderText from '../ScreenReaderText';
 import SpinnerAnimation from './Assets/SpinnerAnimation';
-import useForceRender from '../hooks/internal/useForceRender';
-import useStyleSet from '../hooks/useStyleSet';
-import useTimer from '../hooks/internal/useTimer';
 import WarningNotificationIcon from './Assets/WarningNotificationIcon';
 
 const { useDirection, useLocalizer, usePonyfill, useStyleOptions } = hooks;
 
-const ConnectivityStatusConnecting = ({ reconnect }) => {
+const connectivityStatusConnectingPropsSchema = pipe(
+  object({
+    reconnect: optional(boolean())
+  }),
+  readonly()
+);
+
+type ConnectivityStatusConnectingProps = InferInput<typeof connectivityStatusConnectingPropsSchema>;
+
+function ConnectivityStatusConnecting(props: ConnectivityStatusConnectingProps) {
+  const { reconnect = false } = validateProps(connectivityStatusConnectingPropsSchema, props);
+
   const [{ Date }] = usePonyfill();
   const [{ slowConnectionAfter }] = useStyleOptions();
   const [
@@ -33,7 +45,7 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
   const slow = now >= initialRenderAt + slowConnectionAfter;
 
   return slow ? (
-    <React.Fragment>
+    <Fragment>
       <ScreenReaderText text={localize('CONNECTIVITY_STATUS_ALT', slowConnectionText)} />
       <div
         aria-hidden={true}
@@ -43,9 +55,9 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
         <WarningNotificationIcon />
         {slowConnectionText}
       </div>
-    </React.Fragment>
+    </Fragment>
   ) : (
-    <React.Fragment>
+    <Fragment>
       <ScreenReaderText
         text={localize('CONNECTIVITY_STATUS_ALT', reconnect ? interruptedConnectionText : initialConnectionText)}
       />
@@ -57,16 +69,9 @@ const ConnectivityStatusConnecting = ({ reconnect }) => {
         <SpinnerAnimation />
         {reconnect ? interruptedConnectionText : initialConnectionText}
       </div>
-    </React.Fragment>
+    </Fragment>
   );
-};
+}
 
-ConnectivityStatusConnecting.defaultProps = {
-  reconnect: false
-};
-
-ConnectivityStatusConnecting.propTypes = {
-  reconnect: PropTypes.bool
-};
-
-export default ConnectivityStatusConnecting;
+export default memo(ConnectivityStatusConnecting);
+export { connectivityStatusConnectingPropsSchema, type ConnectivityStatusConnectingProps };

@@ -1,21 +1,27 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import SendIcon from './Assets/SendIcon';
 import IconButton from './IconButton';
 
-import type { FC } from 'react';
-
 const { useLocalizer, useUIState } = hooks;
 
-type SendButtonProps = {
-  className?: string;
-};
+const sendButtonPropsSchema = pipe(
+  object({
+    className: optional(string())
+  }),
+  readonly()
+);
 
-const SendButton: FC<SendButtonProps> = ({ className }) => {
+type SendButtonProps = InferInput<typeof sendButtonPropsSchema>;
+
+function SendButton(props: SendButtonProps) {
+  const { className } = validateProps(sendButtonPropsSchema, props);
+
   const [uiState] = useUIState();
   const localize = useLocalizer();
   const submit = useSubmit();
@@ -32,14 +38,7 @@ const SendButton: FC<SendButtonProps> = ({ className }) => {
       <SendIcon />
     </IconButton>
   );
-};
-
-SendButton.defaultProps = {
-  className: undefined
-};
-
-SendButton.propTypes = {
-  className: PropTypes.string
-};
+}
 
 export default SendButton;
+export { sendButtonPropsSchema, type SendButtonProps };

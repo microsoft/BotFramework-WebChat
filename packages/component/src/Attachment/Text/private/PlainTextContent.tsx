@@ -1,11 +1,24 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
-import React, { Fragment, memo, type ReactNode } from 'react';
+import React, { Fragment, memo } from 'react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../../hooks/useStyleSet';
+import reactNode from '../../../types/internal/reactNode';
 
-type Props = Readonly<{ children?: ReactNode | undefined; text: string }>;
+const plainTextContentPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    text: string()
+  }),
+  readonly()
+);
 
-const PlainTextContent = memo(({ children, text }: Props) => {
+type PlainTextContentProps = InferInput<typeof plainTextContentPropsSchema>;
+
+function PlainTextContent(props: PlainTextContentProps) {
+  const { children, text } = validateProps(plainTextContentPropsSchema, props);
+
   const [{ textContent: textContentStyleSet }] = useStyleSet();
 
   return (
@@ -27,8 +40,7 @@ const PlainTextContent = memo(({ children, text }: Props) => {
       )}
     </Fragment>
   );
-});
+}
 
-PlainTextContent.displayName = 'PlainTextContent';
-
-export default PlainTextContent;
+export default memo(PlainTextContent);
+export { plainTextContentPropsSchema, type PlainTextContentProps };

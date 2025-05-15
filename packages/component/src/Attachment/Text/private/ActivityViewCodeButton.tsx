@@ -1,6 +1,8 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { memo, useCallback } from 'react';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
@@ -12,15 +14,22 @@ const CODE_ICON_URL = `data:image/svg+xml;utf8,${encodeURIComponent('<svg width=
 
 const { useLocalizer } = hooks;
 
-type Props = Readonly<{
-  className?: string | undefined;
-  code: string;
-  language?: string | undefined;
-  isAIGenerated: boolean;
-  title: string;
-}>;
+const activityViewCodeButtonPropsSchema = pipe(
+  object({
+    className: optional(string()),
+    code: string(),
+    language: optional(string()),
+    isAIGenerated: boolean(),
+    title: string()
+  }),
+  readonly()
+);
 
-const ViewCodeButton = ({ className, code, language, title = '', isAIGenerated = false }: Props) => {
+type ActivityViewCodeButtonProps = InferInput<typeof activityViewCodeButtonPropsSchema>;
+
+const ActivityViewCodeButton = (props: ActivityViewCodeButtonProps) => {
+  const { className, code, language, title, isAIGenerated } = validateProps(activityViewCodeButtonPropsSchema, props);
+
   const [{ activityButton, viewCodeDialog }] = useStyleSet();
   const showModal = useShowModal();
   const localize = useLocalizer();
@@ -54,4 +63,5 @@ const ViewCodeButton = ({ className, code, language, title = '', isAIGenerated =
   );
 };
 
-export default memo(ViewCodeButton);
+export default memo(ActivityViewCodeButton);
+export { activityViewCodeButtonPropsSchema, type ActivityViewCodeButtonProps };

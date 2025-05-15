@@ -61,10 +61,6 @@
     "@types/react": [
       "16",
       "react@16.8.6 is our baseline"
-    ],
-    "valibot": [
-      "0",
-      "valibot@0 until they finalize @1"
     ]
   },
   "devDependencies": {
@@ -85,7 +81,7 @@
     "inject-meta-tag": "0.0.1",
     "math-random": "2.0.1",
     "use-ref-from": "0.1.0",
-    "valibot": "0.42.1"
+    "valibot": "1.1.0"
   },
   "peerDependencies": {
     "react": ">= 16.8.6"
