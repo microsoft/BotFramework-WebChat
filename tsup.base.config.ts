@@ -26,7 +26,6 @@ const baseConfig: Options & { target: Target[] } = {
     // Test case at /__tests__/html2/hosting/requirejs.html.
     options.define = options.define || {};
     options.define.define = 'undefined';
-    options.define['define.amd'] = 'undefined';
 
     options.legalComments = 'linked';
   },
