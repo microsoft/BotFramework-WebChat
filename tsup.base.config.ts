@@ -17,6 +17,11 @@ const baseConfig: Options & { target: Target[] } = {
     ...(npm_package_version ? { npm_package_version } : {})
   },
   esbuildOptions: options => {
+    options.define = options.define || {};
+
+    options.define.define = 'undefined';
+    options.define['define.amd'] = 'undefined';
+
     options.legalComments = 'linked';
   },
   esbuildPlugins:
