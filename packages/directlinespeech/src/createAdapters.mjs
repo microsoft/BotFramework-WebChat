@@ -7,11 +7,11 @@ import {
   PropertyId
 } from 'microsoft-cognitiveservices-speech-sdk';
 
-import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory';
-import DirectLineSpeech from './DirectLineSpeech';
-import patchDialogServiceConnectorInline from './patchDialogServiceConnectorInline';
-import refreshDirectLineToken from './utils/refreshDirectLineToken';
-import resolveFunctionOrReturnValue from './resolveFunctionOrReturnValue';
+import createWebSpeechPonyfillFactory from './createWebSpeechPonyfillFactory.mjs';
+import DirectLineSpeech from './DirectLineSpeech.mjs';
+import patchDialogServiceConnectorInline from './patchDialogServiceConnectorInline.mjs';
+import refreshDirectLineToken from './utils/refreshDirectLineToken.mjs';
+import resolveFunctionOrReturnValue from './resolveFunctionOrReturnValue.mjs';
 
 const DIRECT_LINE_TOKEN_RENEWAL_INTERVAL = 900000; // 15 minutes
 const TOKEN_RENEWAL_INTERVAL = 120000;
