@@ -76,11 +76,14 @@ import { fileURLToPath } from 'url';
   const bundleFileURL = new URL('../src/external/PrecompiledGlobalize.bundle.js', import.meta.url);
 
   await esbuild.build({
-    entryPoints: [fileURLToPath(outputFileURL)],
+    banner: {
+      js: '/* eslint-disable */'
+    },
     bundle: true,
     define: {
       'define.amd': 'false'
     },
+    entryPoints: [fileURLToPath(outputFileURL)],
     format: 'esm',
     outfile: fileURLToPath(bundleFileURL)
   });
