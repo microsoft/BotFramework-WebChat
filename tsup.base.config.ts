@@ -17,6 +17,16 @@ const baseConfig: Options & { target: Target[] } = {
     ...(npm_package_version ? { npm_package_version } : {})
   },
   esbuildOptions: options => {
+    // esbuild don't touch AMD but it also don't remove AMD glue code.
+    // Some of our packages prefers AMD over CJS via UMD and it also use anonymous modules.
+    // This combination conflict with RequireJS if it present in the system.
+    // We are removing AMD glue code manually, just like how Rollup does.
+    // Read more at https://github.com/evanw/esbuild/issues/1348.
+    // Also https://github.com/rollup/plugins/blob/e1a5ef99f1578eb38a8c87563cb9651db228f3bd/packages/commonjs/src/transform-commonjs.js#L328.
+    // Test case at /__tests__/html2/hosting/requirejs.html.
+    options.define = options.define || {};
+    options.define.define = 'undefined';
+
     options.legalComments = 'linked';
   },
   esbuildPlugins:
