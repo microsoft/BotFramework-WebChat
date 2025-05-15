@@ -44,15 +44,15 @@ import { fileURLToPath } from 'url';
     globalizeCompiler.compile(formattersAndParsers, {
       template: ({ code, dependencies }) =>
         `
-      /* eslint-disable */
-      import Globalize from 'globalize/dist/globalize-runtime';
+/* eslint-disable */
+import Globalize from 'globalize/dist/globalize-runtime';
 
-      ${dependencies.map(name => `import 'globalize/dist/${name}';`).join('\n')}
+${dependencies.map(name => `import 'globalize/dist/${name}';`).join('\n')}
 
-      ${code}
+${code}
 
-      export default Globalize;
-      `
+export default Globalize;
+`
     }),
     { parser: 'babel' }
   );
@@ -81,7 +81,8 @@ import { fileURLToPath } from 'url';
     },
     bundle: true,
     define: {
-      'define.amd': 'false'
+      define: 'undefined',
+      'define.amd': 'undefined'
     },
     entryPoints: [fileURLToPath(outputFileURL)],
     format: 'esm',
