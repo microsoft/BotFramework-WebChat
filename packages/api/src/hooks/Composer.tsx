@@ -37,7 +37,7 @@ import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
 import StyleOptions from '../StyleOptions';
-import PrecompiledGlobalize from '../external/PrecompiledGlobalize.bundle';
+import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import usePonyfill from '../hooks/usePonyfill';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import normalizeStyleOptions from '../normalizeStyleOptions';

@@ -1,5 +1,4 @@
 import cldrData from 'botframework-webchat-cldr-data';
-import * as esbuild from 'esbuild';
 import { existsSync } from 'fs';
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import Globalize from 'globalize';
@@ -72,23 +71,4 @@ export default Globalize;
 
   // eslint-disable-next-line no-console
   console.log(`Successfully compiled globalize to ${relative(cwd(), fileURLToPath(outputFileURL))}.`);
-
-  const bundleFileURL = new URL('../src/external/PrecompiledGlobalize.bundle.js', import.meta.url);
-
-  await esbuild.build({
-    banner: {
-      js: '/* eslint-disable */'
-    },
-    bundle: true,
-    define: {
-      define: 'undefined',
-      'define.amd': 'undefined'
-    },
-    entryPoints: [fileURLToPath(outputFileURL)],
-    format: 'esm',
-    outfile: fileURLToPath(bundleFileURL)
-  });
-
-  // eslint-disable-next-line no-console
-  console.log(`Successfully bundled globalize to ${relative(cwd(), fileURLToPath(bundleFileURL))}.`);
 })();
