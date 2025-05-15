@@ -37,7 +37,6 @@ import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
 import StyleOptions from '../StyleOptions';
-import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import usePonyfill from '../hooks/usePonyfill';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import normalizeStyleOptions from '../normalizeStyleOptions';
@@ -48,7 +47,6 @@ import ActivityListenerComposer from '../providers/ActivityListener/ActivityList
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
-import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
 import ActivityMiddleware from '../types/ActivityMiddleware';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
@@ -82,6 +80,11 @@ import createDefaultCardActionMiddleware from './middleware/createDefaultCardAct
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
+
+// PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
+// @ts-ignore
+import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import { parseUIState } from './validation/uiState';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
