@@ -1,4 +1,5 @@
 import cldrData from 'botframework-webchat-cldr-data';
+import * as esbuild from 'esbuild';
 import { existsSync } from 'fs';
 import { mkdir, readFile, writeFile } from 'fs/promises';
 import Globalize from 'globalize';
@@ -43,15 +44,15 @@ import { fileURLToPath } from 'url';
     globalizeCompiler.compile(formattersAndParsers, {
       template: ({ code, dependencies }) =>
         `
-/* eslint-disable */
-import Globalize from 'globalize/dist/globalize-runtime';
+      /* eslint-disable */
+      import Globalize from 'globalize/dist/globalize-runtime';
 
-${dependencies.map(name => `import 'globalize/dist/${name}';`).join('\n')}
+      ${dependencies.map(name => `import 'globalize/dist/${name}';`).join('\n')}
 
-${code}
+      ${code}
 
-export default Globalize;
-`
+      export default Globalize;
+      `
     }),
     { parser: 'babel' }
   );
@@ -71,4 +72,19 @@ export default Globalize;
 
   // eslint-disable-next-line no-console
   console.log(`Successfully compiled globalize to ${relative(cwd(), fileURLToPath(outputFileURL))}.`);
+
+  const bundleFileURL = new URL('../src/external/PrecompiledGlobalize.bundle.js', import.meta.url);
+
+  await esbuild.build({
+    entryPoints: [fileURLToPath(outputFileURL)],
+    bundle: true,
+    define: {
+      'define.amd': 'false'
+    },
+    format: 'esm',
+    outfile: fileURLToPath(bundleFileURL)
+  });
+
+  // eslint-disable-next-line no-console
+  console.log(`Successfully bundled globalize to ${relative(cwd(), fileURLToPath(bundleFileURL))}.`);
 })();
