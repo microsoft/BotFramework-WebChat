@@ -221,6 +221,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed [#5472](https://github.com/microsoft/BotFramework-WebChat/issues/5472), ensure proper inheritance from the outside of Web Chat for visibility CSS property when hidden, in PR [#5473](https://github.com/microsoft/BotFramework-WebChat/pull/5473), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed [#5474](https://github.com/microsoft/BotFramework-WebChat/issues/5474). Disable AMD glue code in bundle, in PR [#5478](https://github.com/microsoft/BotFramework-WebChat/pull/5478), by [@compulim](https://github.com/compulim)
    - Downstreamers who use our CommonJS and ES Modules output with esbuild will need to disable AMD themselves to prevent conflict with RequireJS
+- Fixed [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX). Fixed feedback form buttons should not squash other buttons, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX), by [@compulim](https://github.com/compulim)
 
 # Removed
 

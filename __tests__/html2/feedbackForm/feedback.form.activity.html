@@ -63,7 +63,7 @@
         await host.sendKeys('ENTER');
         await host.sendKeys('ENTER');
 
-        await host.snapshot('local');
+        return await host.snapshot('local');
 
         // Dismiss like button
         await host.sendShiftTab(2);

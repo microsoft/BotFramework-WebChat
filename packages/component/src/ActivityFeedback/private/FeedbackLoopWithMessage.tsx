@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { memo, useMemo } from 'react';
+import React, { Fragment, memo, useMemo } from 'react';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import useHasSubmitted from '../providers/useHasSubmitted';
@@ -17,12 +17,13 @@ function FeedbackLoopWithMessage() {
   const isExpanded = useMemo(() => !hasSubmitted && !!selectedAction, [hasSubmitted, selectedAction]);
 
   return (
-    <div className={classNames('webchat__feedback-form__root-container', feedbackForm + '')}>
-      <div className={classNames('webchat__feedback-form__root-child')}>
+    <Fragment>
+      <div className={classNames('webchat__feedback-form-button-bar', feedbackForm + '')}>
         <FeedbackVoteButtonBar />
       </div>
+      {/* We put the form outside of the container to let it wrap to next line instead of keeping it the same line as the like/dislike buttons. */}
       {isExpanded && <FeedbackForm />}
-    </div>
+    </Fragment>
   );
 }
 
