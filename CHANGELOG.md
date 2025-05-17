@@ -87,6 +87,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Added sliding dots typing indicator in Fluent theme, in PR [#5447](https://github.com/microsoft/BotFramework-WebChat/pull/5447) and PR [#5448](https://github.com/microsoft/BotFramework-WebChat/pull/5448), by [@compulim](https://github.com/compulim)
 - (Experimental) Add an ability to pass `completion` prop into Fluent send box and expose the component, in PR [#5466](https://github.com/microsoft/BotFramework-WebChat/pull/5466), by [@OEvgeny](https://github.com/OEvgeny)
 - Added feedback form for like/dislike button when `feedbackActionsPlacement` is `"activity-actions"`, in PR [#5460](https://github.com/microsoft/BotFramework-WebChat/pull/5460), PR [#5469](https://github.com/microsoft/BotFramework-WebChat/pull/5469), and PR [5470](https://github.com/microsoft/BotFramework-WebChat/pull/5470) by [@lexi-taylor](https://github.com/lexi-taylor) and [@OEvgeny](https://github.com/OEvgeny)
+   - <kbd>ESCAPE</kbd> key should reset the feedback form, in PR [#5480](https://github.com/microsoft/BotFramework-WebChat/pull/5480), by [@compulim](https://github.com/compulim)
 - Added multi-dimensional grouping, `styleOptions.groupActivitiesBy`, and `useGroupActivitiesByName` hook, in PR [#5471](https://github.com/microsoft/BotFramework-WebChat/pull/5471), by [@compulim](https://github.com/compulim)
    - Existing behavior will be kept and activities will be grouped by `sender` followed by `status`
    - `useGroupActivitiesByName` is favored over the existing `useGroupActivities` hook for performance reason
@@ -222,7 +223,6 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed [#5474](https://github.com/microsoft/BotFramework-WebChat/issues/5474). Disable AMD glue code in bundle, in PR [#5478](https://github.com/microsoft/BotFramework-WebChat/pull/5478), by [@compulim](https://github.com/compulim)
    - Downstreamers who use our CommonJS and ES Modules output with esbuild will need to disable AMD themselves to prevent conflict with RequireJS
 - Fixed [#5479](https://github.com/microsoft/BotFramework-WebChat/issues/5479). Fixed feedback form buttons should not squash other buttons, in PR [#5480](https://github.com/microsoft/BotFramework-WebChat/pull/5480), by [@compulim](https://github.com/compulim)
-   - <kbd>ESCAPE</kbd> key should reset the feedback form
 
 # Removed
 
