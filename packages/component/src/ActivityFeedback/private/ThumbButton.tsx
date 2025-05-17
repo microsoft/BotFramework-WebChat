@@ -1,11 +1,12 @@
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { forwardRef, memo, useCallback, useMemo, type ForwardedRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import ThumbButtonImage from './ThumbButton.Image';
 import useStyleSet from '../../hooks/useStyleSet';
+import testIds from '../../testIds';
 import { Tooltip } from '../../Tooltip';
+import ThumbButtonImage from './ThumbButton.Image';
 
 const { useLocalizer } = hooks;
 
@@ -18,7 +19,10 @@ type Props = Readonly<{
   title?: string | undefined;
 }>;
 
-const ThumbButton = memo(({ className, direction, disabled, onClick, pressed, title }: Props) => {
+function ThumbButton(
+  { className, direction, disabled, onClick, pressed, title }: Props,
+  ref: ForwardedRef<HTMLButtonElement>
+) {
   const [{ thumbButton }] = useStyleSet();
   const localize = useLocalizer();
   const onClickRef = useRefFrom(onClick);
@@ -41,7 +45,9 @@ const ThumbButton = memo(({ className, direction, disabled, onClick, pressed, ti
         className,
         thumbButton + ''
       )}
+      data-testid={testIds.feedbackButton}
       onClick={handleClick}
+      ref={ref}
       type="button"
     >
       <ThumbButtonImage
@@ -60,8 +66,6 @@ const ThumbButton = memo(({ className, direction, disabled, onClick, pressed, ti
       <Tooltip>{buttonTitle}</Tooltip>
     </button>
   );
-});
+}
 
-ThumbButton.displayName = 'ThumbButton';
-
-export default ThumbButton;
+export default memo(forwardRef<HTMLButtonElement, Props>(ThumbButton));

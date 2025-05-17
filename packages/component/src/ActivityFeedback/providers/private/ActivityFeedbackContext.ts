@@ -1,8 +1,9 @@
 import { type OrgSchemaAction, type WebChatActivity } from 'botframework-webchat-core';
-import { createContext } from 'react';
+import { createContext, type Dispatch, type SetStateAction } from 'react';
 
 type ActivityFeedbackContextType = Readonly<{
   actionsState: readonly [readonly OrgSchemaAction[]];
+  feedbackTextState: readonly [string, Dispatch<SetStateAction<string>>];
   hasSubmittedState: readonly [boolean];
   activityState: readonly [WebChatActivity];
   selectedActionState: readonly [OrgSchemaAction, (action: OrgSchemaAction) => void];

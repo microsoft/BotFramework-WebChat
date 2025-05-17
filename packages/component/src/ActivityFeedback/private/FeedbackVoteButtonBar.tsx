@@ -1,25 +1,21 @@
-import React, { Fragment, memo, type ReactNode } from 'react';
+import React, { memo } from 'react';
+import classNames from 'classnames';
 
+import useStyleSet from '../../hooks/useStyleSet';
 import useActions from '../providers/useActions';
 import FeedbackVoteButton from './FeedbackVoteButton';
 
-type FeedbackVoteButtonBarProps = Readonly<{
-  children?: ReactNode | undefined;
-}>;
-
 function FeedbackVoteButtonBar() {
+  const [{ feedbackForm }] = useStyleSet();
   const [actions] = useActions();
 
   return (
-    <Fragment>
+    <div className={classNames('webchat__feedback-vote-button-bar', feedbackForm + '')}>
       {actions.map((action, index) => (
         <FeedbackVoteButton action={action} key={action['@id'] || index} />
       ))}
-    </Fragment>
+    </div>
   );
 }
 
-FeedbackVoteButtonBar.displayName = 'FeedbackVoteButtonBar';
-
 export default memo(FeedbackVoteButtonBar);
-export { type FeedbackVoteButtonBarProps };

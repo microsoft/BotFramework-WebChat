@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import {
   getOrgSchemaMessage,
   parseAction,
@@ -6,19 +7,29 @@ import {
   type WebChatActivity
 } from 'botframework-webchat-core';
 import random from 'math-random';
-import React, { memo, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
+import React, { memo, useCallback, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import { wrapWith } from 'react-wrap-with';
 import { useRefFrom } from 'use-ref-from';
+import { useStateWithRef } from 'use-state-with-ref';
+import { custom, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
+import reactNode from '../../types/internal/reactNode';
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import hasFeedbackLoop from '../private/hasFeedbackLoop';
 import ActivityFeedbackContext, { type ActivityFeedbackContextType } from './private/ActivityFeedbackContext';
+import { FocusPropagationScope } from './private/FocusPropagation';
 
 const { usePonyfill, usePostActivity } = hooks;
 
-type ActivityFeedbackComposerProps = Readonly<{
-  activity: WebChatActivity;
-  children?: ReactNode | undefined;
-}>;
+const activityFeedbackComposerPropsSchema = pipe(
+  object({
+    activity: custom<WebChatActivity>(value => safeParse(object({}), value).success),
+    children: optional(reactNode())
+  }),
+  readonly()
+);
+
+type ActivityFeedbackComposerProps = InferInput<typeof activityFeedbackComposerPropsSchema>;
 
 type ActionState = Readonly<{
   actionId: string;
@@ -27,9 +38,11 @@ type ActionState = Readonly<{
 
 const DEBOUNCE_TIMEOUT = 500;
 
-function ActivityFeedbackComposer({ children, activity: activityFromProps }: ActivityFeedbackComposerProps) {
-  const [{ clearTimeout, setTimeout }] = usePonyfill();
+function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
+  const { children, activity: activityFromProps } = validateProps(activityFeedbackComposerPropsSchema, props);
 
+  const [{ clearTimeout, setTimeout }] = usePonyfill();
+  const [feedbackText, setFeedbackText, feedbackTextRef] = useStateWithRef<string | undefined>();
   const activity = useMemo(
     () =>
       // Force enable feedback loop until service fixed their issue.
@@ -147,7 +160,7 @@ function ActivityFeedbackComposer({ children, activity: activityFromProps }: Act
   const hasSubmittedRef = useRefFrom(hasSubmitted);
 
   const submitCallback = useCallback(
-    (action: OrgSchemaAction, feedbackText?: string | undefined) => {
+    (action: OrgSchemaAction) => {
       if (actionStateRef.current?.actionStatus === 'CompletedActionStatus') {
         return console.warn(
           'botframework-webchat internal: useFeedbackActions().submitCallback() must not be called after feedback is completed, ignoring the call.'
@@ -161,10 +174,11 @@ function ActivityFeedbackComposer({ children, activity: activityFromProps }: Act
       setActionStateWithRefresh(Object.freeze({ actionId: action['@id'], actionStatus: 'CompletedActionStatus' }));
 
       const { '@id': _id, actionStatus: _actionStatus, ...rest } = action;
+      const { current: feedbackText } = feedbackTextRef;
       const isLegacyAction = action['@type'] === 'VoteAction';
 
       // TODO: We should update this to use W3C Hydra.1
-      if (feedbackText) {
+      if (typeof feedbackText === 'undefined') {
         postActivity({
           name: 'message/submitAction',
           replyToId: activityRef.current.id,
@@ -185,7 +199,7 @@ function ActivityFeedbackComposer({ children, activity: activityFromProps }: Act
         } as any);
       }
     },
-    [actionsRef, actionStateRef, activityRef, postActivity, setActionStateWithRefresh]
+    [actionsRef, actionStateRef, activityRef, feedbackTextRef, postActivity, setActionStateWithRefresh]
   );
 
   const shouldShowFeedbackForm = hasFeedbackLoop(activity);
@@ -270,6 +284,11 @@ function ActivityFeedbackComposer({ children, activity: activityFromProps }: Act
     [actions]
   );
 
+  const feedbackTextState = useMemo<readonly [string, Dispatch<SetStateAction<string>>]>(
+    () => Object.freeze([feedbackText, setFeedbackText]),
+    [feedbackText, setFeedbackText]
+  );
+
   const hasSubmittedState = useMemo<readonly [boolean]>(() => Object.freeze([hasSubmitted]), [hasSubmitted]);
 
   const activityState = useMemo<readonly [WebChatActivity]>(() => Object.freeze([activity]), [activity]);
@@ -278,6 +297,7 @@ function ActivityFeedbackComposer({ children, activity: activityFromProps }: Act
     () => ({
       actionsState,
       activityState,
+      feedbackTextState,
       hasSubmittedState,
       selectedActionState,
       shouldAllowResubmitState,
@@ -287,6 +307,7 @@ function ActivityFeedbackComposer({ children, activity: activityFromProps }: Act
     [
       actionsState,
       activityState,
+      feedbackTextState,
       hasSubmittedState,
       selectedActionState,
       shouldAllowResubmitState,
@@ -298,5 +319,5 @@ function ActivityFeedbackComposer({ children, activity: activityFromProps }: Act
   return <ActivityFeedbackContext.Provider value={context}>{children}</ActivityFeedbackContext.Provider>;
 }
 
-export default memo(ActivityFeedbackComposer);
-export { type ActivityFeedbackComposerProps };
+export default memo(wrapWith(FocusPropagationScope)(ActivityFeedbackComposer));
+export { activityFeedbackComposerPropsSchema, type ActivityFeedbackComposerProps };

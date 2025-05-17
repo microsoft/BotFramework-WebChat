@@ -2,8 +2,13 @@ import CSSTokens from '../CSSTokens';
 
 export default function createFeedbackFormStyle() {
   return {
-    '&.webchat__feedback-form-button-bar': {
-      display: 'flex'
+    '&.webchat__feedback-form-real': {
+      display: 'contents'
+    },
+
+    '&.webchat__feedback-vote-button-bar': {
+      display: 'flex',
+      gap: '2px'
     },
 
     '&.webchat__feedback-form': {
