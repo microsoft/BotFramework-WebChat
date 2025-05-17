@@ -17,7 +17,7 @@ import reactNode from '../../types/internal/reactNode';
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import hasFeedbackLoop from '../private/hasFeedbackLoop';
 import ActivityFeedbackContext, { type ActivityFeedbackContextType } from './private/ActivityFeedbackContext';
-import { FocusPropagationScope } from './private/FocusPropagation';
+import { ActivityFeedbackFocusPropagationScope } from './private/FocusPropagation';
 
 const { usePonyfill, usePostActivity } = hooks;
 
@@ -319,5 +319,5 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   return <ActivityFeedbackContext.Provider value={context}>{children}</ActivityFeedbackContext.Provider>;
 }
 
-export default memo(wrapWith(FocusPropagationScope)(ActivityFeedbackComposer));
+export default memo(wrapWith(ActivityFeedbackFocusPropagationScope)(ActivityFeedbackComposer));
 export { activityFeedbackComposerPropsSchema, type ActivityFeedbackComposerProps };
