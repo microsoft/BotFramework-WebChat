@@ -10,9 +10,16 @@ import ActivityFeedbackComposer from './providers/ActivityFeedbackComposer';
 import useActivityFeedbackHooks from './providers/useActivityFeedbackHooks';
 
 function InternalActivityFeedback() {
-  const { useFeedbackText, useFocusFeedbackButton, useSelectedActions, useShouldShowFeedbackForm, useSubmit } =
-    useActivityFeedbackHooks();
+  const {
+    useActions,
+    useFeedbackText,
+    useFocusFeedbackButton,
+    useSelectedActions,
+    useShouldShowFeedbackForm,
+    useSubmit
+  } = useActivityFeedbackHooks();
 
+  const [actions] = useActions();
   const [{ feedbackForm }] = useStyleSet();
   const [_, setFeedbackText] = useFeedbackText();
   const [selectedAction, setSelectedAction] = useSelectedActions();
@@ -49,14 +56,16 @@ function InternalActivityFeedback() {
   );
 
   return (
-    <form
-      className={classNames('webchat__feedback-form', feedbackForm + '')}
-      onKeyDown={handleKeyDown}
-      onReset={handleReset}
-      onSubmit={handleSubmit}
-    >
-      {shouldShowFeedbackForm ? <FeedbackLoopWithMessage /> : <FeedbackLoopWithoutMessage />}
-    </form>
+    !!actions.length && (
+      <form
+        className={classNames('webchat__feedback-form', feedbackForm + '')}
+        onKeyDown={handleKeyDown}
+        onReset={handleReset}
+        onSubmit={handleSubmit}
+      >
+        {shouldShowFeedbackForm ? <FeedbackLoopWithMessage /> : <FeedbackLoopWithoutMessage />}
+      </form>
+    )
   );
 }
 
