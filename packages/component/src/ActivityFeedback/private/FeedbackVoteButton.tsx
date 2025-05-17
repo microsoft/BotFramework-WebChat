@@ -2,6 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import { custom, literal, object, optional, pipe, readonly, safeParse, union, type InferInput } from 'valibot';
 
 import { useListenToFocus } from '../providers/private/FocusPropagation';
 import useHasSubmitted from '../providers/useHasSubmitted';
@@ -12,9 +13,28 @@ import ThumbButton from './ThumbButton';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
-type FeedbackVoteButtonProps = Readonly<{
-  action: OrgSchemaAction;
-}>;
+const feedbackVoteButtonPropsSchema = pipe(
+  object({
+    action: custom<OrgSchemaAction>(
+      value =>
+        safeParse(
+          union([
+            object({
+              '@type': union([literal('DislikeAction'), literal('LikeAction')])
+            }),
+            object({
+              '@type': literal('VoteAction'),
+              actionOption: optional(union([literal('downvote'), literal('upvote')]))
+            })
+          ]),
+          value
+        ).success
+    )
+  }),
+  readonly()
+);
+
+type FeedbackVoteButtonProps = InferInput<typeof feedbackVoteButtonPropsSchema>;
 
 function FeedbackVoteButton({ action }: FeedbackVoteButtonProps) {
   const [{ feedbackActionsPlacement }] = useStyleOptions();
@@ -62,4 +82,4 @@ function FeedbackVoteButton({ action }: FeedbackVoteButtonProps) {
 }
 
 export default memo(FeedbackVoteButton);
-export { type FeedbackVoteButtonProps };
+export { feedbackVoteButtonPropsSchema, type FeedbackVoteButtonProps };

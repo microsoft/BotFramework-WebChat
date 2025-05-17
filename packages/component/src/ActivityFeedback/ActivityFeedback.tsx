@@ -52,7 +52,7 @@ function InternalActivityFeedback() {
 
   return (
     <form
-      className={classNames('webchat__feedback-form-real', feedbackForm + '')}
+      className={classNames('webchat__feedback-form', feedbackForm + '')}
       onKeyDown={handleKeyDown}
       onReset={handleReset}
       onSubmit={handleSubmit}
