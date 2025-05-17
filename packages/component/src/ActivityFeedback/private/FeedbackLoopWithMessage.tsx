@@ -1,13 +1,14 @@
 import React, { Fragment, memo, useMemo } from 'react';
 
-import useHasSubmitted from '../providers/useHasSubmitted';
-import useSelectedAction from '../providers/useSelectedAction';
+import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
 import FeedbackForm from './FeedbackForm';
 import FeedbackVoteButtonBar from './FeedbackVoteButtonBar';
 
 function FeedbackLoopWithMessage() {
+  const { useHasSubmitted, useSelectedActions } = useActivityFeedbackHooks();
+
   const [hasSubmitted] = useHasSubmitted();
-  const [selectedAction] = useSelectedAction();
+  const [selectedAction] = useSelectedActions();
 
   // Hide feedback form if feedback has already been submitted
   const isExpanded = useMemo(() => !hasSubmitted && !!selectedAction, [hasSubmitted, selectedAction]);

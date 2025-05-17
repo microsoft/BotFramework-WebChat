@@ -1,9 +1,11 @@
 import React, { memo } from 'react';
 
-import useActions from '../providers/useActions';
+import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
 import FeedbackVoteButton from './FeedbackVoteButton';
 
 function FeedbackVoteButtonBar() {
+  const { useActions } = useActivityFeedbackHooks();
+
   const [actions] = useActions();
 
   return (

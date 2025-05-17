@@ -3,8 +3,8 @@ import { createPropagation } from 'use-propagate';
 
 const {
   PropagationScope: ActivityFeedbackFocusPropagationScope,
-  useListen: useListenToFocus,
-  usePropagate: usePropagateFocus
+  useListen: useListenToActivityFeedbackFocus,
+  usePropagate: usePropagateActivityFeedbackFocus
 } = createPropagation<OrgSchemaAction>();
 
-export { ActivityFeedbackFocusPropagationScope, useListenToFocus, usePropagateFocus };
+export { ActivityFeedbackFocusPropagationScope, useListenToActivityFeedbackFocus, usePropagateActivityFeedbackFocus };

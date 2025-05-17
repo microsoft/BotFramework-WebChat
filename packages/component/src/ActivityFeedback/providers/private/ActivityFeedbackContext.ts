@@ -2,14 +2,15 @@ import { type OrgSchemaAction, type WebChatActivity } from 'botframework-webchat
 import { createContext, type Dispatch, type SetStateAction } from 'react';
 
 type ActivityFeedbackContextType = Readonly<{
-  actionsState: readonly [readonly OrgSchemaAction[]];
-  feedbackTextState: readonly [string, Dispatch<SetStateAction<string>>];
-  hasSubmittedState: readonly [boolean];
-  activityState: readonly [WebChatActivity];
-  selectedActionState: readonly [OrgSchemaAction, (action: OrgSchemaAction) => void];
-  shouldAllowResubmitState: readonly [boolean];
-  shouldShowFeedbackFormState: readonly [boolean];
-  submitCallback: (action: OrgSchemaAction) => void;
+  useActions: () => readonly [readonly OrgSchemaAction[]];
+  useActivity: () => readonly [WebChatActivity];
+  useFeedbackText: () => readonly [string, Dispatch<SetStateAction<string>>];
+  useFocusFeedbackButton: () => (action: OrgSchemaAction) => void;
+  useHasSubmitted: () => readonly [boolean];
+  useSelectedActions: () => readonly [OrgSchemaAction, (action: OrgSchemaAction) => void];
+  useShouldAllowResubmit: () => readonly [boolean];
+  useShouldShowFeedbackForm: () => readonly [boolean];
+  useSubmit: () => (action: OrgSchemaAction) => void;
 }>;
 
 const ActivityFeedbackContext = createContext<ActivityFeedbackContextType>(

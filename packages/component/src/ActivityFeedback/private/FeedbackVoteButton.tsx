@@ -4,11 +4,8 @@ import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { custom, literal, object, optional, pipe, readonly, safeParse, union, type InferInput } from 'valibot';
 
-import { useListenToFocus } from '../providers/private/FocusPropagation';
-import useHasSubmitted from '../providers/useHasSubmitted';
-import useSelectedAction from '../providers/useSelectedAction';
-import useShouldAllowResubmit from '../providers/useShouldAllowResubmit';
-import useShouldShowFeedbackForm from '../providers/useShouldShowFeedbackForm';
+import { useListenToActivityFeedbackFocus } from '../providers/private/FocusPropagation';
+import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
 import ThumbButton from './ThumbButton';
 
 const { useLocalizer, useStyleOptions } = hooks;
@@ -37,9 +34,13 @@ const feedbackVoteButtonPropsSchema = pipe(
 type FeedbackVoteButtonProps = InferInput<typeof feedbackVoteButtonPropsSchema>;
 
 function FeedbackVoteButton({ action }: FeedbackVoteButtonProps) {
+  const { useHasSubmitted, useShouldAllowResubmit, useShouldShowFeedbackForm, useSelectedActions } =
+    useActivityFeedbackHooks();
+
   const [{ feedbackActionsPlacement }] = useStyleOptions();
   const [hasSubmitted] = useHasSubmitted();
-  const [selectedAction, setSelectedAction] = useSelectedAction();
+  // const [selectedAction, setSelectedAction] = selectedActionState;
+  const [selectedAction, setSelectedAction] = useSelectedActions();
   const [shouldAllowResubmit] = useShouldAllowResubmit();
   const [shouldShowFeedbackForm] = useShouldShowFeedbackForm();
   const actionRef = useRefFrom(action);
@@ -65,7 +66,9 @@ function FeedbackVoteButton({ action }: FeedbackVoteButtonProps) {
   );
   const disabled = hasSubmitted && !shouldAllowResubmit;
 
-  useListenToFocus(useCallback(target => target === actionRef.current && buttonRef.current?.focus(), [actionRef]));
+  useListenToActivityFeedbackFocus(
+    useCallback(target => target === actionRef.current && buttonRef.current?.focus(), [actionRef])
+  );
 
   return (
     <ThumbButton

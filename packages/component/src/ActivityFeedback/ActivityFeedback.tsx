@@ -7,37 +7,35 @@ import useStyleSet from '../hooks/useStyleSet';
 import FeedbackLoopWithMessage from './private/FeedbackLoopWithMessage';
 import FeedbackLoopWithoutMessage from './private/FeedbackLoopWithoutMessage';
 import ActivityFeedbackComposer from './providers/ActivityFeedbackComposer';
-import useFeedbackText from './providers/useFeedbackText';
-import useFocusAction from './providers/useFocusAction';
-import useSelectedAction from './providers/useSelectedAction';
-import useShouldShowFeedbackForm from './providers/useShouldShowFeedbackForm';
-import useSubmitCallback from './providers/useSubmitCallback';
+import useActivityFeedbackHooks from './providers/useActivityFeedbackHooks';
 
 function InternalActivityFeedback() {
-  const [{ feedbackForm }] = useStyleSet();
-  const [feedbackText, setFeedbackText] = useFeedbackText();
-  const [selectedAction, setSelectedAction] = useSelectedAction();
-  const [shouldShowFeedbackForm] = useShouldShowFeedbackForm();
-  const focusAction = useFocusAction();
-  const submit = useSubmitCallback();
+  const { useFeedbackText, useFocusFeedbackButton, useSelectedActions, useShouldShowFeedbackForm, useSubmit } =
+    useActivityFeedbackHooks();
 
-  const feedbackTextRef = useRefFrom(feedbackText);
+  const [{ feedbackForm }] = useStyleSet();
+  const [_, setFeedbackText] = useFeedbackText();
+  const [selectedAction, setSelectedAction] = useSelectedActions();
+  const [shouldShowFeedbackForm] = useShouldShowFeedbackForm();
+  const focusFeedbackButton = useFocusFeedbackButton();
+  const submit = useSubmit();
+
   const selectedActionRef = useRefFrom(selectedAction);
 
   const handleReset = useCallback<FormEventHandler<HTMLFormElement>>(() => {
-    focusAction(selectedActionRef.current);
+    focusFeedbackButton(selectedActionRef.current);
 
     setFeedbackText(undefined);
     setSelectedAction(undefined);
-  }, [focusAction, selectedActionRef, setFeedbackText, setSelectedAction]);
+  }, [focusFeedbackButton, selectedActionRef, setFeedbackText, setSelectedAction]);
 
   const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
     event => {
       event.preventDefault();
 
-      submit(selectedActionRef.current, feedbackTextRef.current);
+      submit(selectedActionRef.current);
     },
-    [feedbackTextRef, selectedActionRef, submit]
+    [selectedActionRef, submit]
   );
 
   const handleKeyDown = useCallback<KeyboardEventHandler<HTMLFormElement>>(

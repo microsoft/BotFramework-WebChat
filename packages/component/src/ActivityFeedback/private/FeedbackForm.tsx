@@ -3,16 +3,18 @@ import React, { memo, useCallback, useEffect, useRef, useState, type FormEventHa
 
 import Markdownable from '../../Attachment/Text/private/Markdownable';
 import testIds from '../../testIds';
-import useActivity from '../providers/useActivity';
+import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
 import FeedbackTextArea from './FeedbackTextArea';
 import getDisclaimer from './getDisclaimer';
 
 const { useLocalizer } = hooks;
 
 function FeedbackForm() {
+  const { useActivity, useFeedbackText } = useActivityFeedbackHooks();
+
   const [activity] = useActivity();
   const [hasFocus, setHasFocus] = useState(false);
-  const [userFeedback, setUserFeedback] = useState('');
+  const [userFeedback, setUserFeedback] = useFeedbackText();
   const feedbackTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const localize = useLocalizer();
 

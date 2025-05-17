@@ -17,7 +17,7 @@ import reactNode from '../../types/internal/reactNode';
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import hasFeedbackLoop from '../private/hasFeedbackLoop';
 import ActivityFeedbackContext, { type ActivityFeedbackContextType } from './private/ActivityFeedbackContext';
-import { ActivityFeedbackFocusPropagationScope } from './private/FocusPropagation';
+import { ActivityFeedbackFocusPropagationScope, usePropagateActivityFeedbackFocus } from './private/FocusPropagation';
 
 const { usePonyfill, usePostActivity } = hooks;
 
@@ -159,7 +159,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
   const hasSubmittedRef = useRefFrom(hasSubmitted);
 
-  const submitCallback = useCallback(
+  const submit = useCallback(
     (action: OrgSchemaAction) => {
       if (actionStateRef.current?.actionStatus === 'CompletedActionStatus') {
         return console.warn(
@@ -178,7 +178,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       const isLegacyAction = action['@type'] === 'VoteAction';
 
       // TODO: We should update this to use W3C Hydra.1
-      if (typeof feedbackText === 'undefined') {
+      if (typeof feedbackText !== 'undefined') {
         postActivity({
           name: 'message/submitAction',
           replyToId: activityRef.current.id,
@@ -203,8 +203,8 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   );
 
   const shouldShowFeedbackForm = hasFeedbackLoop(activity);
-  const shouldShowFeedbackFormRef = useRefFrom(shouldShowFeedbackForm);
 
+  const shouldShowFeedbackFormRef = useRefFrom(shouldShowFeedbackForm);
   const shouldShowFeedbackFormState = useMemo<readonly [boolean]>(
     () => Object.freeze([shouldShowFeedbackForm] as const),
     [shouldShowFeedbackForm]
@@ -213,6 +213,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   // TODO: What's the proper logic of "allow resubmission"?
   //       Right now, if feedback form is not shown, it will allow resubmission.
   const shouldAllowResubmit = !shouldShowFeedbackForm;
+
   const shouldAllowResubmitRef = useRefFrom(shouldAllowResubmit);
   const shouldAllowResubmitState = useMemo<readonly [boolean]>(
     () => Object.freeze([shouldAllowResubmit]),
@@ -255,7 +256,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
         if (action['@id']) {
           autoSubmitTimeoutRef.current = setTimeout(
-            () => submitCallback(actionsRef.current.find(({ '@id': id }) => id === action['@id'])),
+            () => submit(actionsRef.current.find(({ '@id': id }) => id === action['@id'])),
             DEBOUNCE_TIMEOUT
           );
         }
@@ -270,7 +271,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       setTimeout,
       shouldAllowResubmitRef,
       shouldShowFeedbackFormRef,
-      submitCallback
+      submit
     ]
   );
 
@@ -279,7 +280,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
     [selectedAction, setSelectedAction]
   );
 
-  const actionsState = useMemo<ActivityFeedbackContextType['actionsState']>(
+  const actionsState = useMemo<readonly [readonly OrgSchemaAction[]]>(
     () => Object.freeze([actions] as const),
     [actions]
   );
@@ -292,27 +293,40 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const hasSubmittedState = useMemo<readonly [boolean]>(() => Object.freeze([hasSubmitted]), [hasSubmitted]);
 
   const activityState = useMemo<readonly [WebChatActivity]>(() => Object.freeze([activity]), [activity]);
+  const focusFeedbackButton = usePropagateActivityFeedbackFocus();
+
+  const useActions = useCallback(() => actionsState, [actionsState]);
+  const useActivity = useCallback(() => activityState, [activityState]);
+  const useFeedbackText = useCallback(() => feedbackTextState, [feedbackTextState]);
+  const useFocusFeedbackButton = useCallback(() => focusFeedbackButton, [focusFeedbackButton]);
+  const useHasSubmitted = useCallback(() => hasSubmittedState, [hasSubmittedState]);
+  const useSelectedActions = useCallback(() => selectedActionState, [selectedActionState]);
+  const useShouldAllowResubmit = useCallback(() => shouldAllowResubmitState, [shouldAllowResubmitState]);
+  const useShouldShowFeedbackForm = useCallback(() => shouldShowFeedbackFormState, [shouldShowFeedbackFormState]);
+  const useSubmit = useCallback(() => submit, [submit]);
 
   const context = useMemo<ActivityFeedbackContextType>(
     () => ({
-      actionsState,
-      activityState,
-      feedbackTextState,
-      hasSubmittedState,
-      selectedActionState,
-      shouldAllowResubmitState,
-      shouldShowFeedbackFormState,
-      submitCallback
+      useActions,
+      useActivity,
+      useFeedbackText,
+      useFocusFeedbackButton,
+      useHasSubmitted,
+      useSelectedActions,
+      useShouldAllowResubmit,
+      useShouldShowFeedbackForm,
+      useSubmit
     }),
     [
-      actionsState,
-      activityState,
-      feedbackTextState,
-      hasSubmittedState,
-      selectedActionState,
-      shouldAllowResubmitState,
-      shouldShowFeedbackFormState,
-      submitCallback
+      useActions,
+      useActivity,
+      useFeedbackText,
+      useFocusFeedbackButton,
+      useHasSubmitted,
+      useSelectedActions,
+      useShouldAllowResubmit,
+      useShouldShowFeedbackForm,
+      useSubmit
     ]
   );
 
