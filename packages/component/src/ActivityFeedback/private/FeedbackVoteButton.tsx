@@ -1,6 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
 import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction } from 'botframework-webchat-core';
-import classNames from 'classnames';
 import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
@@ -24,7 +23,7 @@ function FeedbackVoteButton({ action }: FeedbackVoteButtonProps) {
   const [shouldAllowResubmit] = useShouldAllowResubmit();
   const [shouldShowFeedbackForm] = useShouldShowFeedbackForm();
   const actionRef = useRefFrom(action);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const buttonRef = useRef<HTMLInputElement>(null);
   const direction = useMemo(() => {
     if (
       action['@type'] === 'DislikeAction' ||
@@ -50,15 +49,13 @@ function FeedbackVoteButton({ action }: FeedbackVoteButtonProps) {
 
   return (
     <ThumbButton
-      className={classNames({
-        'webchat__thumb-button--large': shouldShowFeedbackForm || feedbackActionsPlacement === 'activity-actions',
-        'webchat__thumb-button--submitted': hasSubmitted
-      })}
       direction={direction}
       disabled={disabled}
       onClick={handleClick}
       pressed={selectedAction === action}
       ref={buttonRef}
+      size={shouldShowFeedbackForm || feedbackActionsPlacement === 'activity-actions' ? 'large' : 'small'}
+      submitted={hasSubmitted}
       title={disabled ? localize('VOTE_COMPLETE_ALT') : undefined}
     />
   );

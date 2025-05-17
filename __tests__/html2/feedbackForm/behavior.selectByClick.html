@@ -3,21 +3,25 @@
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
   </head>
   <body>
-    <main id="webchat" style="position: relative"></main>
-    <script type="text/babel">
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
       run(async function () {
         const {
-          React,
-          ReactDOM: { render },
-          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+          WebChat: { renderWebChat, testIds }
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
@@ -26,12 +30,7 @@
           feedbackActionsPlacement: 'activity-actions'
         };
 
-        render(
-          <FluentThemeProvider>
-            <ReactWebChat directLine={directLine} store={store} styleOptions={styleOptions} />
-          </FluentThemeProvider>,
-          document.getElementById('webchat')
-        );
+        renderWebChat({ directLine, store, styleOptions }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
@@ -47,7 +46,6 @@
               '@id': '',
               '@type': 'Message',
               type: 'https://schema.org/Message',
-              keywords: ['AllowCopy'],
               potentialAction: [
                 {
                   '@type': 'LikeAction',
@@ -83,17 +81,17 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        // THEN: It should match the snapshot.
-        await host.snapshot('local');
+        // WHEN: The first feedback button is clicked.
+        await host.click(document.querySelector(`[data-testid="${testIds.feedbackButton}"]`));
 
-        // WHEN: Feedback form is opened.
-        document.querySelector(`[data-testid="${testIds.sendBoxTextBox}"]`).focus();
-        await host.sendShiftTab(2);
-        await host.sendKeys('ENTER');
-        await host.sendTab();
-        await host.sendKeys('SPACE');
+        // THEN: The like button should be pressed.
+        expect(
+          Array.from(document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)).map(
+            element => element.checked
+          )
+        ).toEqual([true, false]);
 
-        // THEN: It should match the snapshot.
+        // THEN: Should match the snapshot.
         await host.snapshot('local');
       });
     </script>

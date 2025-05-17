@@ -96,7 +96,7 @@
       await new Promise(resolve => setTimeout(resolve, 400));
 
       await host.snapshot('local');
-      await host.sendKeys('ENTER');
+      await host.sendKeys('SPACE');
       await host.snapshot('local');
 
       await directLine.emulateIncomingActivity({

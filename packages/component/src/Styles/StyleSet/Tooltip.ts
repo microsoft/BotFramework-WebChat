@@ -2,11 +2,15 @@ export default () => ({
   '*:has(> &.webchat__tooltip)': {
     position: 'relative',
 
-    '&:is(:hover, :focus-visible, :active) > .webchat__tooltip': {
-      opacity: 1,
-      transitionDelay: '400ms'
-    }
+    // For <button>, the tooltip will be placed inside <button>.
+    // For <input type="checkbox/radio">, the tooltip will be placed after <input>.
+    '&:is(:hover, :focus-visible, :active) > .webchat__tooltip, &:has(:is(:hover, :focus-visible, :active)) > .webchat__tooltip':
+      {
+        opacity: 1,
+        transitionDelay: '400ms'
+      }
   },
+
   '&.webchat__tooltip': {
     '--webchat__tooltip-tip-size': '8.484px',
     '--webchat__tooltip-background': '#fff',

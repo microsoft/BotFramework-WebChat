@@ -96,16 +96,16 @@
         await host.sendShiftTab(3);
         await host.sendKeys('UP', 'ENTER');
         await host.sendTab();
-        await host.sendKeys('ENTER');
+        await host.sendKeys('SPACE');
 
         console.log(document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`));
 
         // THEN: The dislike button should be pressed.
         expect(
-          Array.from(document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)).map(element =>
-            element.getAttribute('aria-pressed')
+          Array.from(document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)).map(
+            element => element.checked
           )
-        ).toEqual(['false', 'true']);
+        ).toEqual([false, true]);
 
         // THEN: It should focus on the feedback box.
         await waitFor(() =>
@@ -123,10 +123,10 @@
 
         // THEN: It should unselect all feedback buttons.
         expect(
-          Array.from(document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)).map(element =>
-            element.getAttribute('aria-pressed')
+          Array.from(document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)).map(
+            element => element.checked
           )
-        ).toEqual(['false', 'false']);
+        ).toEqual([false, false]);
 
         // THEN: Should focus on the dislike button.
         await waitFor(() =>
