@@ -222,6 +222,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed [#5474](https://github.com/microsoft/BotFramework-WebChat/issues/5474). Disable AMD glue code in bundle, in PR [#5478](https://github.com/microsoft/BotFramework-WebChat/pull/5478), by [@compulim](https://github.com/compulim)
    - Downstreamers who use our CommonJS and ES Modules output with esbuild will need to disable AMD themselves to prevent conflict with RequireJS
 - Fixed [#5479](https://github.com/microsoft/BotFramework-WebChat/issues/5479). Fixed feedback form buttons should not squash other buttons, in PR [#5480](https://github.com/microsoft/BotFramework-WebChat/pull/5480), by [@compulim](https://github.com/compulim)
+   - <kbd>ESCAPE</kbd> key should reset the feedback form
 
 # Removed
 
