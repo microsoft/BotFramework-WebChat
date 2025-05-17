@@ -834,14 +834,15 @@ Use the command to install required dependencies:
           await host.snapshot();
           await host.sendKeys('TAB');
           await host.snapshot();
-          await host.sendKeys('ENTER');
+          await host.sendKeys('SPACE');
           await host.snapshot();
           await host.sendKeys('TAB');
           await host.snapshot();
-          await host.sendKeys('ENTER');
+          await host.sendKeys('SPACE');
           await host.snapshot();
-          await host.sendKeys('ESCAPE');
-          await host.sendKeys('ESCAPE');
+          await host.sendKeys('ESCAPE'); // Clear feedback but still focused on feedback button
+          await host.sendKeys('ESCAPE'); // Focus on activity
+          await host.sendKeys('ESCAPE'); // Clear activity selection
           await host.snapshot();
         }
       }));

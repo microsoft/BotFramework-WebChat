@@ -254,7 +254,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       if (!shouldShowFeedbackFormRef.current) {
         clearTimeout(autoSubmitTimeoutRef.current);
 
-        if (action['@id']) {
+        if (action?.['@id']) {
           autoSubmitTimeoutRef.current = setTimeout(
             () => submit(actionsRef.current.find(({ '@id': id }) => id === action['@id'])),
             DEBOUNCE_TIMEOUT

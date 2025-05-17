@@ -98,8 +98,6 @@
         await host.sendTab();
         await host.sendKeys('SPACE');
 
-        console.log(document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`));
-
         // THEN: The dislike button should be pressed.
         expect(
           Array.from(document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)).map(

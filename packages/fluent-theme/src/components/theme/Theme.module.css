@@ -642,10 +642,9 @@
     line-height: var(--webchat-lineHeightBase300);
   }
 
-  /* This rule seems bogus. */
-  /* :global(.webchat__feedback-form__form) {
+  :global(.webchat__feedback-form__form) {
     gap: var(--webchat-spacingVerticalXS);
-  } */
+  }
 
   :global(.webchat__feedback-form__form-footer) {
     color: var(--webchat-colorNeutralForeground1);
