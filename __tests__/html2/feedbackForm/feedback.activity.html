@@ -70,15 +70,6 @@
               },
               {
                 from: {
-                  role: 'user'
-                },
-                id: 'a-00001',
-                timestamp: 0,
-                type: 'message',
-                text: 'Test'
-              },
-              {
-                from: {
                   role: 'bot'
                 },
                 id: 'a-00002',
@@ -123,6 +114,9 @@
                 ]
               }
             ]),
+            styleOptions: {
+              feedbackActionsPlacement: 'activity-actions'
+            },
             store: testHelpers.createStore()
           },
           document.getElementById('webchat')
@@ -132,37 +126,20 @@
 
         await host.snapshot('local');
 
-        const [, , activityStatus] = pageElements.activityStatuses();
-        const buttons = activityStatus.querySelectorAll('button');
-
         pageElements.sendBoxTextBox().focus();
-
         await host.sendShiftTab(3);
-        await host.sendKeys('ENTER');
-        await expect(document.activeElement).toBe(buttons[0]);
-
-        // Wait for 400 ms for the tooltip to show up.
-        await new Promise(resolve => setTimeout(resolve, 400));
-
-        await host.snapshot('local');
-
-        await host.sendTab();
-        await expect(document.activeElement).toBe(buttons[1]);
-
-        // Wait for 400 ms for the tooltip to show up.
-        await new Promise(resolve => setTimeout(resolve, 400));
-
-        await host.snapshot('local');
-
-        await host.sendTab();
-        await expect(document.activeElement).toBe(buttons[0]);
-
-        // Wait for 400 ms for the tooltip to show up.
-        await new Promise(resolve => setTimeout(resolve, 400));
-
-        await host.snapshot('local');
 
         await host.sendKeys('ENTER');
+
+        // Wait for 400 ms for the tooltip to show up.
+        await new Promise(resolve => setTimeout(resolve, 400));
+
+        await host.snapshot('local');
+        await host.sendKeys('SPACE');
+        await host.snapshot('local');
+        await host.sendKeys('TAB');
+        await host.snapshot('local');
+        await host.sendKeys('SPACE');
         await host.snapshot('local');
       });
     </script>

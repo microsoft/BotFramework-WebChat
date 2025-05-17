@@ -1,27 +1,76 @@
-import { WebChatActivity } from 'botframework-webchat-core';
-import React, { memo } from 'react';
+import classNames from 'classnames';
+import React, { memo, useCallback, type FormEventHandler, type KeyboardEventHandler } from 'react';
+import { Extract, wrapWith } from 'react-wrap-with';
+import { useRefFrom } from 'use-ref-from';
+
+import useStyleSet from '../hooks/useStyleSet';
 import FeedbackLoopWithMessage from './private/FeedbackLoopWithMessage';
 import FeedbackLoopWithoutMessage from './private/FeedbackLoopWithoutMessage';
 import ActivityFeedbackComposer from './providers/ActivityFeedbackComposer';
-import useShouldShowFeedbackForm from './providers/useShouldShowFeedbackForm';
+import useActivityFeedbackHooks from './providers/useActivityFeedbackHooks';
 
-const InternalActivityFeedback = memo(() =>
-  useShouldShowFeedbackForm()[0] ? <FeedbackLoopWithMessage /> : <FeedbackLoopWithoutMessage />
-);
+function InternalActivityFeedback() {
+  const {
+    useActions,
+    useFeedbackText,
+    useFocusFeedbackButton,
+    useSelectedActions,
+    useShouldShowFeedbackForm,
+    useSubmit
+  } = useActivityFeedbackHooks();
 
-InternalActivityFeedback.displayName = 'InternalActivityFeedback';
+  const [actions] = useActions();
+  const [{ feedbackForm }] = useStyleSet();
+  const [_, setFeedbackText] = useFeedbackText();
+  const [selectedAction, setSelectedAction] = useSelectedActions();
+  const [shouldShowFeedbackForm] = useShouldShowFeedbackForm();
+  const focusFeedbackButton = useFocusFeedbackButton();
+  const submit = useSubmit();
 
-type ActivityFeedbackProps = Readonly<{
-  activity: WebChatActivity;
-}>;
+  const selectedActionRef = useRefFrom(selectedAction);
 
-function ActivityFeedback({ activity }: ActivityFeedbackProps) {
+  const handleReset = useCallback<FormEventHandler<HTMLFormElement>>(() => {
+    focusFeedbackButton(selectedActionRef.current);
+
+    setFeedbackText(undefined);
+    setSelectedAction(undefined);
+  }, [focusFeedbackButton, selectedActionRef, setFeedbackText, setSelectedAction]);
+
+  const handleSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
+    event => {
+      event.preventDefault();
+
+      submit(selectedActionRef.current);
+    },
+    [selectedActionRef, submit]
+  );
+
+  const handleKeyDown = useCallback<KeyboardEventHandler<HTMLFormElement>>(
+    event => {
+      if (event.key === 'Escape' && selectedActionRef.current) {
+        event.stopPropagation();
+        event.currentTarget.reset();
+      }
+    },
+    [selectedActionRef]
+  );
+
   return (
-    <ActivityFeedbackComposer activity={activity}>
-      <InternalActivityFeedback />
-    </ActivityFeedbackComposer>
+    !!actions.length && (
+      <form
+        className={classNames('webchat__feedback-form', feedbackForm + '')}
+        onKeyDown={handleKeyDown}
+        onReset={handleReset}
+        onSubmit={handleSubmit}
+      >
+        {shouldShowFeedbackForm ? <FeedbackLoopWithMessage /> : <FeedbackLoopWithoutMessage />}
+      </form>
+    )
   );
 }
 
+const ActivityFeedback = wrapWith(ActivityFeedbackComposer, { activity: Extract })(InternalActivityFeedback);
+
+ActivityFeedback.displayName = 'ActivityFeedback';
+
 export default memo(ActivityFeedback);
-export { type ActivityFeedbackProps };
