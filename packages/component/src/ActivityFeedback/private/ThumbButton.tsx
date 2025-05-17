@@ -1,7 +1,9 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { forwardRef, memo, useCallback, useMemo, type ForwardedRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import { boolean, function_, literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import testIds from '../../testIds';
@@ -10,19 +12,23 @@ import ThumbButtonImage from './ThumbButton.Image';
 
 const { useLocalizer } = hooks;
 
-type Props = Readonly<{
-  className?: string | undefined;
-  direction: 'down' | 'up';
-  disabled?: boolean | undefined;
-  onClick?: () => void;
-  pressed?: boolean;
-  title?: string | undefined;
-}>;
+const thumbButtonPropsSchema = pipe(
+  object({
+    className: optional(string()),
+    direction: union([literal('down'), literal('up')]),
+    disabled: optional(boolean()),
+    onClick: optional(function_()),
+    pressed: optional(boolean()),
+    title: optional(string())
+  }),
+  readonly()
+);
 
-function ThumbButton(
-  { className, direction, disabled, onClick, pressed, title }: Props,
-  ref: ForwardedRef<HTMLButtonElement>
-) {
+type ThumbButtonProps = InferInput<typeof thumbButtonPropsSchema>;
+
+function ThumbButton(props: ThumbButtonProps, ref: ForwardedRef<HTMLButtonElement>) {
+  const { className, direction, disabled, onClick, pressed, title } = validateProps(thumbButtonPropsSchema, props);
+
   const [{ thumbButton }] = useStyleSet();
   const localize = useLocalizer();
   const onClickRef = useRefFrom(onClick);
@@ -68,4 +74,5 @@ function ThumbButton(
   );
 }
 
-export default memo(forwardRef<HTMLButtonElement, Props>(ThumbButton));
+export default memo(forwardRef<HTMLButtonElement, ThumbButtonProps>(ThumbButton));
+export { thumbButtonPropsSchema, type ThumbButtonProps };
