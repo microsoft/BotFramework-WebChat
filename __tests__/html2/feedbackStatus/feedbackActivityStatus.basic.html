@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -9,6 +9,10 @@
   <body>
     <main id="webchat"></main>
     <script>
+      const {
+        WebChat: { testIds }
+      } = window;
+
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
@@ -41,10 +45,10 @@
           type: 'message'
         });
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         const [activityStatus] = pageElements.activityStatuses();
-        const buttons = activityStatus.querySelectorAll('button');
+        const buttons = pageElements.allByTestId(testIds.feedbackButton);
 
         pageElements.sendBoxTextBox().focus();
 
@@ -55,7 +59,7 @@
         // Wait for 400 ms for the tooltip to show up.
         await new Promise(resolve => setTimeout(resolve, 400));
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         await host.sendTab();
         await expect(document.activeElement).toBe(buttons[1]);
@@ -63,7 +67,7 @@
         // Wait for 400 ms for the tooltip to show up.
         await new Promise(resolve => setTimeout(resolve, 400));
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         await host.sendTab();
         await expect(document.activeElement).toBe(buttons[0]);
@@ -71,7 +75,7 @@
         // Wait for 400 ms for the tooltip to show up.
         await new Promise(resolve => setTimeout(resolve, 400));
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

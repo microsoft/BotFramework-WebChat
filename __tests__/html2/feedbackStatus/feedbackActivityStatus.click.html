@@ -10,6 +10,10 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
+        const {
+          WebChat: { testIds }
+        } = window;
+
         const clock = lolex.createClock();
         const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
 
@@ -43,10 +47,11 @@
           type: 'message'
         });
 
-        await host.snapshot();
+        await pageConditions.numActivitiesShown(1);
 
-        const [activityStatus] = pageElements.activityStatuses();
-        const buttons = activityStatus.querySelectorAll('button');
+        await host.snapshot('local');
+
+        const buttons = pageElements.allByTestId(testIds.feedbackButton);
 
         pageElements.sendBoxTextBox().focus();
 
@@ -56,7 +61,7 @@
           // Wait for 400 ms for the tooltip to show up.
           await new Promise(resolve => setTimeout(resolve, 400));
 
-          await host.snapshot();
+          await host.snapshot('local');
 
           clock.tick(500);
         });
@@ -83,7 +88,7 @@
           // Wait for 400 ms for the tooltip to show up.
           await new Promise(resolve => setTimeout(resolve, 400));
 
-          await host.snapshot();
+          await host.snapshot('local');
 
           clock.tick(500);
         });
@@ -111,7 +116,7 @@
           // Wait for 400 ms for the tooltip to show up.
           await new Promise(resolve => setTimeout(resolve, 400));
 
-          await host.snapshot();
+          await host.snapshot('local');
 
           clock.tick(500);
         });

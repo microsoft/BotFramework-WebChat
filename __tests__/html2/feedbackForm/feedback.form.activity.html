@@ -16,7 +16,7 @@
         const {
           React,
           ReactDOM: { render },
-          WebChat: { ReactWebChat }
+          WebChat: { ReactWebChat, testIds }
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
@@ -65,11 +65,11 @@
 
         await host.snapshot('local');
 
-        // Dismiss like button
+        // WHEN: Like button is dismissed by tapping on it again.
         await host.sendShiftTab(2);
         await host.sendKeys('SPACE');
 
-        // Click like button
+        // WHEN: Like button is tapped again.
         await host.sendKeys('SPACE');
 
         await pageConditions.became(
@@ -78,11 +78,14 @@
           1000
         );
 
-        // Go to cancel button
+        // WHEN: The cancel button is clicked.
         await host.sendTab(2);
         await host.sendKeys('ENTER');
 
-        await host.snapshot('local');
+        // WHEN: Should focus on the Like button as it was the action that just cancelled.
+        expect(document.activeElement).toEqual(document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)[0]);
+
+        return await host.snapshot('local');
 
         // WHEN: Click on dislike button to re-open feedback form
         await host.sendTab(1);
