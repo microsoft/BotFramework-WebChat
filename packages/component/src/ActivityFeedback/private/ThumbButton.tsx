@@ -76,7 +76,7 @@ function ThumbButton(props: ThumbButtonProps, ref: ForwardedRef<HTMLInputElement
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         ref={ref}
-        type="checkbox"
+        type="radio"
       />
       <ThumbButtonImage
         className={classNames('webchat__thumb-button__image', 'webchat__thumb-button__image--is-stroked', {
