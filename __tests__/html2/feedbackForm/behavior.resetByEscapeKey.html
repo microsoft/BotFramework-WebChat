@@ -94,21 +94,16 @@
         // WHEN: Feedback form is opened.
         document.querySelector(`[data-testid="${testIds.sendBoxTextBox}"]`).focus();
         await host.sendShiftTab(3);
-        await host.sendKeys('UP', 'ENTER');
-        await host.sendTab();
-        await host.sendKeys('SPACE');
+        await host.sendKeys('UP', 'ENTER', 'RIGHT', 'SPACE');
 
         // THEN: The dislike button should be pressed.
-        expect(
-          Array.from(document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)).map(
-            element => element.checked
-          )
-        ).toEqual([false, true]);
+        expect(Array.from(pageElements.allByTestId(testIds.feedbackButton)).map(element => element.checked)).toEqual([
+          false,
+          true
+        ]);
 
         // THEN: It should focus on the feedback box.
-        await waitFor(() =>
-          expect(document.activeElement).toBe(document.querySelector(`[data-testid="${testIds.feedbackSendBox}"]`))
-        );
+        await waitFor(() => expect(document.activeElement).toBe(pageElements.allByTestId(testIds.feedbackSendBox)[0]));
 
         // THEN: Should match the snapshot.
         await host.snapshot('local');
@@ -117,21 +112,15 @@
         await host.sendKeys('ESCAPE');
 
         // THEN: It should hide the feedback form.
-        () => expect(document.querySelector(`[data-testid="${testIds.feedbackSendBox}"]`)).toBeFalsy();
+        () => expect(pageElements.allByTestId(testIds.feedbackSendBox)[0]).toBeFalsy();
 
         // THEN: It should unselect all feedback buttons.
-        expect(
-          Array.from(document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)).map(
-            element => element.checked
-          )
-        ).toEqual([false, false]);
+        expect(Array.from(pageElements.allByTestId(testIds.feedbackButton)).map(element => element.checked)).toEqual(
+          [false, false]
+        );
 
         // THEN: Should focus on the dislike button.
-        await waitFor(() =>
-          expect(document.activeElement).toBe(
-            document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`).item(1)
-          )
-        );
+        await waitFor(() => expect(document.activeElement).toBe(pageElements.allByTestId(testIds.feedbackButton)[1]));
 
         // THEN: Should match the snapshot.
         await host.snapshot('local');
