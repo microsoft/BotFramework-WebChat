@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
@@ -26,16 +27,19 @@ const feedbackVoteButtonPropsSchema = pipe(
           ]),
           value
         ).success
-    )
+    ),
+    as: union([literal('button'), literal('radio')])
   }),
   readonly()
 );
 
 type FeedbackVoteButtonProps = InferInput<typeof feedbackVoteButtonPropsSchema>;
 
-function FeedbackVoteButton({ action }: FeedbackVoteButtonProps) {
+function FeedbackVoteButton(props: FeedbackVoteButtonProps) {
   const { useHasSubmitted, useShouldAllowResubmit, useShouldShowFeedbackForm, useSelectedActions } =
     useActivityFeedbackHooks();
+
+  const { action, as } = validateProps(feedbackVoteButtonPropsSchema, props);
 
   const [{ feedbackActionsPlacement }] = useStyleOptions();
   const [hasSubmitted] = useHasSubmitted();
@@ -72,6 +76,7 @@ function FeedbackVoteButton({ action }: FeedbackVoteButtonProps) {
 
   return (
     <ThumbButton
+      as={as}
       direction={direction}
       disabled={disabled}
       onClick={handleClick}

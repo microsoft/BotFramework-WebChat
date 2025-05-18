@@ -14,6 +14,7 @@ const { useLocalizer } = hooks;
 
 const thumbButtonPropsSchema = pipe(
   object({
+    as: union([literal('button'), literal('radio')]),
     className: optional(string()),
     direction: union([literal('down'), literal('up')]),
     disabled: optional(boolean()),
@@ -29,7 +30,7 @@ const thumbButtonPropsSchema = pipe(
 type ThumbButtonProps = InferInput<typeof thumbButtonPropsSchema>;
 
 function ThumbButton(props: ThumbButtonProps, ref: ForwardedRef<HTMLInputElement>) {
-  const { className, direction, disabled, onClick, pressed, size, submitted, title } = validateProps(
+  const { as, className, direction, disabled, onClick, pressed, size, submitted, title } = validateProps(
     thumbButtonPropsSchema,
     props
   );
@@ -43,7 +44,7 @@ function ThumbButton(props: ThumbButtonProps, ref: ForwardedRef<HTMLInputElement
     [direction, localize, title]
   );
 
-  const handleChange = useCallback(() => !disabled && onClickRef.current?.(), [disabled, onClickRef]);
+  const handleClickOrChange = useCallback(() => !disabled && onClickRef.current?.(), [disabled, onClickRef]);
 
   const handleKeyDown = useCallback<KeyboardEventHandler<HTMLInputElement>>(event => {
     // Do not submit the <form> via ENTER key.
@@ -65,7 +66,6 @@ function ThumbButton(props: ThumbButtonProps, ref: ForwardedRef<HTMLInputElement
       <input
         aria-disabled={disabled ? 'true' : undefined}
         aria-label={buttonTitle}
-        checked={pressed}
         className={classNames(
           'webchat__thumb-button__input',
           { 'webchat__thumb-button__input--is-pressed': pressed },
@@ -73,10 +73,19 @@ function ThumbButton(props: ThumbButtonProps, ref: ForwardedRef<HTMLInputElement
           thumbButton + ''
         )}
         data-testid={testIds.feedbackButton}
-        onChange={handleChange}
         onKeyDown={handleKeyDown}
         ref={ref}
-        type="checkbox"
+        {...(as === 'radio'
+          ? {
+              checked: pressed,
+              onChange: handleClickOrChange,
+              type: 'radio'
+            }
+          : {
+              'aria-pressed': pressed,
+              onClick: handleClickOrChange,
+              type: 'button'
+            })}
       />
       <ThumbButtonImage
         className={classNames('webchat__thumb-button__image', 'webchat__thumb-button__image--is-stroked', {

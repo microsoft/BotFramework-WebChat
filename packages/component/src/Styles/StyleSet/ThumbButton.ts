@@ -44,7 +44,7 @@ export default function () {
         }
       },
 
-      '&:has(.webchat__thumb-button__input:not([aria-disabled="true"]):hover), &:has(.webchat__thumb-button__input:checked)':
+      '&:has(.webchat__thumb-button__input:not([aria-disabled="true"]):hover), &:has(.webchat__thumb-button__input:checked), &:has(.webchat__thumb-button__input[aria-pressed="true"])':
         {
           '& .webchat__thumb-button__image': {
             '&.webchat__thumb-button__image--is-stroked': {
@@ -75,7 +75,7 @@ export default function () {
           width: '1em'
         },
 
-        '&:has(.webchat__thumb-button__input:hover, .webchat__thumb-button__input:active, .webchat__thumb-button__input:checked) .webchat__thumb-button__image':
+        '&:has(.webchat__thumb-button__input:hover, .webchat__thumb-button__input:active, .webchat__thumb-button__input:checked, webchat__thumb-button__input[aria-pressed="true"]) .webchat__thumb-button__image':
           {
             background: 'transparent',
             color: CSSTokens.ColorAccent
@@ -85,7 +85,7 @@ export default function () {
           color: CSSTokens.ColorSubtle
         },
 
-        '&.webchat__thumb-button--has-submitted:has(.webchat__thumb-button__input:not(:checked)) .webchat__thumb-button__tooltip':
+        '&.webchat__thumb-button--has-submitted:has(.webchat__thumb-button__input:not(:checked):not([aria-pressed="true"])) .webchat__thumb-button__tooltip':
           {
             display: 'none'
           },

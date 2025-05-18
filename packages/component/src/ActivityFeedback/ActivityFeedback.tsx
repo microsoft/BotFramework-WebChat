@@ -28,6 +28,7 @@ function InternalActivityFeedback() {
   const submit = useSubmit();
 
   const selectedActionRef = useRefFrom(selectedAction);
+  const shouldShowFeedbackFormRef = useRefFrom(shouldShowFeedbackForm);
 
   const handleReset = useCallback<FormEventHandler<HTMLFormElement>>(() => {
     focusFeedbackButton(selectedActionRef.current);
@@ -47,12 +48,14 @@ function InternalActivityFeedback() {
 
   const handleKeyDown = useCallback<KeyboardEventHandler<HTMLFormElement>>(
     event => {
-      if (event.key === 'Escape' && selectedActionRef.current) {
+      // ESCAPE key should clear the feedback form and unselect like/dislike as they are radio button.
+      // In non-form mode, the like/dislike are actions, so they should not be unselected.
+      if (event.key === 'Escape' && selectedActionRef.current && shouldShowFeedbackFormRef.current) {
         event.stopPropagation();
         event.currentTarget.reset();
       }
     },
-    [selectedActionRef]
+    [selectedActionRef, shouldShowFeedbackFormRef]
   );
 
   return (
