@@ -82,13 +82,13 @@
         });
 
         // THEN: The like button should be selected.
-        expect(pageElements.allByTestId(testIds.feedbackButton)[0].checked).toBe(true);
+        expect(pageElements.allByTestId(testIds.feedbackButton)[0].matches('[aria-pressed="true"]')).toBe(true);
 
-        // WHEN: Escape key is pressed
-        await host.sendKeys('ESCAPE');
+        // WHEN: SPACE key is pressed again.
+          await host.sendKeys('SPACE');
 
         // THEN: The like button should be unselected.
-        expect(pageElements.allByTestId(testIds.feedbackButton)[0].checked).toBe(false);
+        expect(pageElements.allByTestId(testIds.feedbackButton)[0].matches('[aria-pressed="true"]')).toBe(false);
       });
     </script>
   </body>
