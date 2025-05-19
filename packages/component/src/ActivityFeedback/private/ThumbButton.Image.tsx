@@ -1,7 +1,7 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
 import { boolean, literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 
-import { validateProps } from 'botframework-webchat-api/internal';
 import ThumbDislike16Filled from './ThumbDislike16Filled';
 import ThumbDislike16Regular from './ThumbDislike16Regular';
 import ThumbLike16Filled from './ThumbLike16Filled';
