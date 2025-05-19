@@ -7,9 +7,7 @@ type ActivityFeedbackContextType = Readonly<{
   useFeedbackText: () => readonly [string, Dispatch<SetStateAction<string>>];
   useFocusFeedbackButton: () => (action: OrgSchemaAction) => void;
   useHasSubmitted: () => readonly [boolean];
-  useSelectedActions: () => readonly [OrgSchemaAction, (action: OrgSchemaAction) => void];
-  useShouldAllowResubmit: () => readonly [boolean];
-  useShouldShowFeedbackForm: () => readonly [boolean];
+  useSelectedAction: () => readonly [OrgSchemaAction, (action: OrgSchemaAction) => void];
   useSubmit: () => (action: OrgSchemaAction) => void;
 }>;
 

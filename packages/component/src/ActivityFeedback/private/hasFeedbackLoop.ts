@@ -25,12 +25,18 @@ const feedbackLoopSchema = union([
 
 type FeedbackActivity = WebChatActivity & InferOutput<typeof feedbackLoopSchema>;
 
+/**
+ * @deprecated
+ */
 export function hasDisclaimer(
   activity: WebChatActivity
 ): activity is WebChatActivity & InferOutput<typeof activityWithFeedbackLoopSchemaWithDisclaimer> {
   return safeParse(activityWithFeedbackLoopSchemaWithDisclaimer, activity).success;
 }
 
+/**
+ * @deprecated
+ */
 export default function hasFeedbackLoop(activity: WebChatActivity): activity is FeedbackActivity {
   return safeParse(feedbackLoopSchema, activity).success;
 }

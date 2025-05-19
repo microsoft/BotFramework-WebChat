@@ -15,6 +15,8 @@ import { custom, object, optional, pipe, readonly, safeParse, type InferInput } 
 
 import reactNode from '../../types/internal/reactNode';
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
+import canActionResubmit from '../private/canActionResubmit';
+import getDisclaimerFromFeedbackLoop from '../private/getDisclaimerFromFeedbackLoop';
 import hasFeedbackLoop from '../private/hasFeedbackLoop';
 import ActivityFeedbackContext, { type ActivityFeedbackContextType } from './private/ActivityFeedbackContext';
 import { ActivityFeedbackFocusPropagationScope, usePropagateActivityFeedbackFocus } from './private/FocusPropagation';
@@ -43,7 +45,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [feedbackText, setFeedbackText, feedbackTextRef] = useStateWithRef<string | undefined>();
-  const activity = useMemo(
+  const activity: WebChatActivity = useMemo(
     () =>
       // Force enable feedback loop until service fixed their issue.
       hasFeedbackLoop(activityFromProps)
@@ -57,8 +59,26 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
                 type: 'https://schema.org/Message',
                 keywords: [],
                 potentialAction: [
-                  { '@type': 'LikeAction', actionStatus: 'PotentialActionStatus' },
-                  { '@type': 'DislikeAction', actionStatus: 'PotentialActionStatus' }
+                  {
+                    '@type': 'LikeAction',
+                    actionStatus: 'PotentialActionStatus',
+                    result: [
+                      {
+                        '@type': 'UserReview',
+                        description: getDisclaimerFromFeedbackLoop(activityFromProps)
+                      }
+                    ]
+                  },
+                  {
+                    '@type': 'DislikeAction',
+                    actionStatus: 'PotentialActionStatus',
+                    result: [
+                      {
+                        '@type': 'UserReview',
+                        description: getDisclaimerFromFeedbackLoop(activityFromProps)
+                      }
+                    ]
+                  }
                 ]
               }
             ]
@@ -82,10 +102,28 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
   const rawActions = useMemo<readonly OrgSchemaAction[]>(() => {
     function patchActions(actions: readonly OrgSchemaAction[]) {
-      return actions.map(action =>
+      actions = actions.map(action =>
         // eslint-disable-next-line no-magic-numbers
         action['@id'] ? action : Object.freeze({ ...action, '@id': `_:${random().toString(36).substring(2, 7)}` })
       );
+
+      const deprecatedFeedbackLoopChannelData = activity.channelData?.feedbackLoop;
+
+      if (deprecatedFeedbackLoopChannelData) {
+        actions = actions.map(action =>
+          action.result
+            ? action
+            : {
+                ...action,
+                result: {
+                  '@type': 'UserReview',
+                  description: deprecatedFeedbackLoopChannelData?.disclaimer
+                }
+              }
+        );
+      }
+
+      return actions;
     }
 
     try {
@@ -99,15 +137,20 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       );
 
       if (reactActions.length) {
-        // actionStateRef.current = reactActions.
         return patchActions(reactActions);
       }
 
       const voteActions = Object.freeze(
         graph.filter(({ type }) => type === 'https://schema.org/VoteAction').map(parseAction)
+        // TODO: Instead of processing VoteAction, convert it to LikeAction/DislikeAction.
+        // .map(action => ({
+        //   ...action,
+        //   '@type': action.actionOption === 'downvote' ? 'DislikeAction' : 'LikeAction'
+        // }))
       );
 
       if (voteActions.length) {
+        // VoteAction is deprecated and was never published publicly.
         return patchActions(voteActions);
       }
     } catch {
@@ -202,24 +245,6 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
     [actionsRef, actionStateRef, activityRef, feedbackTextRef, postActivity, setActionStateWithRefresh]
   );
 
-  const shouldShowFeedbackForm = hasFeedbackLoop(activity);
-
-  const shouldShowFeedbackFormRef = useRefFrom(shouldShowFeedbackForm);
-  const shouldShowFeedbackFormState = useMemo<readonly [boolean]>(
-    () => Object.freeze([shouldShowFeedbackForm] as const),
-    [shouldShowFeedbackForm]
-  );
-
-  // TODO: What's the proper logic of "allow resubmission"?
-  //       Right now, if feedback form is not shown, it will allow resubmission.
-  const shouldAllowResubmit = !shouldShowFeedbackForm;
-
-  const shouldAllowResubmitRef = useRefFrom(shouldAllowResubmit);
-  const shouldAllowResubmitState = useMemo<readonly [boolean]>(
-    () => Object.freeze([shouldAllowResubmit]),
-    [shouldAllowResubmit]
-  );
-
   const selectedAction = useMemo<OrgSchemaAction | undefined>(
     () =>
       actions.find(
@@ -232,7 +257,10 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
   const setSelectedAction = useCallback(
     (action: OrgSchemaAction | undefined) => {
-      if (hasSubmittedRef.current && !shouldAllowResubmitRef.current) {
+      // If the action require a UserReview, do not allow resubmit.
+      const shouldAllowResubmit = canActionResubmit(action);
+
+      if (hasSubmittedRef.current && !shouldAllowResubmit) {
         return console.warn(
           'botframework-webchat internal: useFeedbackActions().setSelectedAction() must not be called after feedback is completed as it does not allow resubmission, ignoring the call.'
         );
@@ -251,7 +279,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
           : undefined
       );
 
-      if (!shouldShowFeedbackFormRef.current) {
+      if (shouldAllowResubmit) {
         clearTimeout(autoSubmitTimeoutRef.current);
 
         if (action?.['@id']) {
@@ -262,17 +290,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
         }
       }
     },
-    [
-      actionsRef,
-      autoSubmitTimeoutRef,
-      clearTimeout,
-      hasSubmittedRef,
-      setActionStateWithRefresh,
-      setTimeout,
-      shouldAllowResubmitRef,
-      shouldShowFeedbackFormRef,
-      submit
-    ]
+    [actionsRef, autoSubmitTimeoutRef, clearTimeout, hasSubmittedRef, setActionStateWithRefresh, setTimeout, submit]
   );
 
   const selectedActionState = useMemo<readonly [OrgSchemaAction, (action: OrgSchemaAction) => void]>(
@@ -301,8 +319,6 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const useFocusFeedbackButton = useCallback(() => focusFeedbackButton, [focusFeedbackButton]);
   const useHasSubmitted = useCallback(() => hasSubmittedState, [hasSubmittedState]);
   const useSelectedActions = useCallback(() => selectedActionState, [selectedActionState]);
-  const useShouldAllowResubmit = useCallback(() => shouldAllowResubmitState, [shouldAllowResubmitState]);
-  const useShouldShowFeedbackForm = useCallback(() => shouldShowFeedbackFormState, [shouldShowFeedbackFormState]);
   const useSubmit = useCallback(() => submit, [submit]);
 
   const context = useMemo<ActivityFeedbackContextType>(
@@ -312,22 +328,10 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       useFeedbackText,
       useFocusFeedbackButton,
       useHasSubmitted,
-      useSelectedActions,
-      useShouldAllowResubmit,
-      useShouldShowFeedbackForm,
+      useSelectedAction: useSelectedActions,
       useSubmit
     }),
-    [
-      useActions,
-      useActivity,
-      useFeedbackText,
-      useFocusFeedbackButton,
-      useHasSubmitted,
-      useSelectedActions,
-      useShouldAllowResubmit,
-      useShouldShowFeedbackForm,
-      useSubmit
-    ]
+    [useActions, useActivity, useFeedbackText, useFocusFeedbackButton, useHasSubmitted, useSelectedActions, useSubmit]
   );
 
   return <ActivityFeedbackContext.Provider value={context}>{children}</ActivityFeedbackContext.Provider>;

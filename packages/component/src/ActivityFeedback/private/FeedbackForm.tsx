@@ -5,20 +5,20 @@ import Markdownable from '../../Attachment/Text/private/Markdownable';
 import testIds from '../../testIds';
 import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
 import FeedbackTextArea from './FeedbackTextArea';
-import getDisclaimer from './getDisclaimer';
+import getDisclaimerFromReviewAction from './getDisclaimerFromReviewAction';
 
 const { useLocalizer } = hooks;
 
 function FeedbackForm() {
-  const { useActivity, useFeedbackText } = useActivityFeedbackHooks();
+  const { useFeedbackText, useSelectedAction } = useActivityFeedbackHooks();
 
-  const [activity] = useActivity();
+  const [selectedAction] = useSelectedAction();
   const [hasFocus, setHasFocus] = useState(false);
   const [userFeedback, setUserFeedback] = useFeedbackText();
   const feedbackTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const localize = useLocalizer();
 
-  const disclaimer = getDisclaimer(activity);
+  const disclaimer = getDisclaimerFromReviewAction(selectedAction);
 
   const handleMessageChange: FormEventHandler<HTMLTextAreaElement> = useCallback(
     ({ currentTarget: { value } }) => setUserFeedback(value),

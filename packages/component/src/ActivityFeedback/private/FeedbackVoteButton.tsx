@@ -8,6 +8,8 @@ import { custom, literal, object, optional, pipe, readonly, safeParse, union, ty
 import { useListenToActivityFeedbackFocus } from '../providers/private/FocusPropagation';
 import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
 import ThumbButton from './ThumbButton';
+import canActionResubmit from './canActionResubmit';
+import isActionRequireReview from './isActionRequireReview';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
@@ -36,16 +38,13 @@ const feedbackVoteButtonPropsSchema = pipe(
 type FeedbackVoteButtonProps = InferInput<typeof feedbackVoteButtonPropsSchema>;
 
 function FeedbackVoteButton(props: FeedbackVoteButtonProps) {
-  const { useHasSubmitted, useShouldAllowResubmit, useShouldShowFeedbackForm, useSelectedActions } =
-    useActivityFeedbackHooks();
+  const { useHasSubmitted, useSelectedAction: useSelectedActions } = useActivityFeedbackHooks();
 
   const { action, as } = validateProps(feedbackVoteButtonPropsSchema, props);
 
   const [{ feedbackActionsPlacement }] = useStyleOptions();
   const [hasSubmitted] = useHasSubmitted();
   const [selectedAction, setSelectedAction] = useSelectedActions();
-  const [shouldAllowResubmit] = useShouldAllowResubmit();
-  const [shouldShowFeedbackForm] = useShouldShowFeedbackForm();
   const actionRef = useRefFrom(action);
   const buttonRef = useRef<HTMLInputElement>(null);
   const direction = useMemo(() => {
@@ -67,7 +66,7 @@ function FeedbackVoteButton(props: FeedbackVoteButtonProps) {
     () => setSelectedAction(actionRef.current === selectedActionRef.current ? undefined : actionRef.current),
     [actionRef, selectedActionRef, setSelectedAction]
   );
-  const disabled = hasSubmitted && !shouldAllowResubmit;
+  const disabled = hasSubmitted && !canActionResubmit(action);
 
   useListenToActivityFeedbackFocus(
     useCallback(target => target === actionRef.current && buttonRef.current?.focus(), [actionRef])
@@ -81,7 +80,7 @@ function FeedbackVoteButton(props: FeedbackVoteButtonProps) {
       onClick={handleClick}
       pressed={selectedAction === action}
       ref={buttonRef}
-      size={shouldShowFeedbackForm || feedbackActionsPlacement === 'activity-actions' ? 'large' : 'small'}
+      size={isActionRequireReview(action) || feedbackActionsPlacement === 'activity-actions' ? 'large' : 'small'}
       submitted={hasSubmitted}
       title={disabled ? localize('VOTE_COMPLETE_ALT') : undefined}
     />

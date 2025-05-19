@@ -15,6 +15,11 @@ import { thing, type Thing } from './Thing';
  */
 export type Action = Thing & {
   /**
+   * A sub property of object. The options subject to this action. Supersedes [`option`](https://schema.org/option).
+   */
+  actionOption?: string | Thing;
+
+  /**
    * Indicates the current disposition of the Action.
    *
    * @see https://schema.org/actionStatus
@@ -32,10 +37,16 @@ export type Action = Thing & {
    * @see https://schema.org/provider
    */
   provider?: Project | undefined;
+
+  /**
+   * The result produced in the action. E.g. John wrote *a book*.
+   */
+  result?: Thing | undefined;
 };
 
 export const action = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
   thing({
+    actionOption: orgSchemaProperty(string()),
     actionStatus: orgSchemaProperty(
       pipe(
         string(),
@@ -43,6 +54,7 @@ export const action = <TEntries extends ObjectEntries>(entries?: TEntries | unde
       )
     ),
     provider: orgSchemaProperty(lazy(() => project())),
+    result: orgSchemaProperty(thing()),
 
     ...entries
   });
