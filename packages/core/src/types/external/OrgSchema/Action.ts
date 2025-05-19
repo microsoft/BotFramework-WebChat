@@ -3,6 +3,7 @@ import { lazy, parse, picklist, pipe, string, type ObjectEntries } from 'valibot
 import orgSchemaProperty from './private/orgSchemaProperty';
 import { project, type Project } from './Project';
 import { thing, type Thing } from './Thing';
+import { userReview, type UserReview } from './UserReview';
 
 /**
  * An action performed by a direct agent and indirect participants upon a direct object. Optionally happens at a location with the help of an inanimate instrument. The execution of the action may produce a result. Specific action sub-type documentation specifies the exact expectation of each argument/role.
@@ -41,7 +42,7 @@ export type Action = Thing & {
   /**
    * The result produced in the action. E.g. John wrote *a book*.
    */
-  result?: Thing | undefined;
+  result?: Thing | UserReview | undefined;
 };
 
 export const action = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
@@ -54,7 +55,7 @@ export const action = <TEntries extends ObjectEntries>(entries?: TEntries | unde
       )
     ),
     provider: orgSchemaProperty(lazy(() => project())),
-    result: orgSchemaProperty(thing()),
+    result: orgSchemaProperty(userReview()),
 
     ...entries
   });

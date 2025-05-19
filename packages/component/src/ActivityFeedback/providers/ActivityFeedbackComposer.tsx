@@ -65,7 +65,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
                     result: [
                       {
                         '@type': 'UserReview',
-                        description: getDisclaimerFromFeedbackLoop(activityFromProps)
+                        reviewAspect: getDisclaimerFromFeedbackLoop(activityFromProps)
                       }
                     ]
                   },
@@ -75,7 +75,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
                     result: [
                       {
                         '@type': 'UserReview',
-                        description: getDisclaimerFromFeedbackLoop(activityFromProps)
+                        reviewAspect: getDisclaimerFromFeedbackLoop(activityFromProps)
                       }
                     ]
                   }
