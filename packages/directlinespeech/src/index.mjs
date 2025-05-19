@@ -1,7 +1,7 @@
 /* global process:readonly */
 import 'core-js/features/object/entries.js';
 
-import createAdapters from './createAdapters';
+import createAdapters from './createAdapters.mjs';
 
 const buildTool = process.env.build_tool;
 const moduleFormat = process.env.module_format;
@@ -26,4 +26,12 @@ if (typeof HTMLDocument !== 'undefined' && typeof document !== 'undefined' && do
   packageMeta.setAttribute('content', `version=${version}; build_tool=${buildTool}; format=${moduleFormat}`);
 
   document.head.appendChild(packageMeta);
+}
+
+if (moduleFormat === 'global') {
+  window.DirectLineSpeech = Object.freeze({
+    ...window.DirectLineSpeech,
+    buildInfo,
+    createAdapters
+  });
 }

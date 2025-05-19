@@ -1,4 +1,4 @@
-import fetchJSON from './fetchJSON';
+import fetchJSON from './fetchJSON.mjs';
 
 // Refreshes the given token
 export default async function refreshDirectLineToken(token) {

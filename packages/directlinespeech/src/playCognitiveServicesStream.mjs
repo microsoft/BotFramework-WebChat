@@ -2,7 +2,7 @@
 /* eslint no-await-in-loop: "off" */
 /* eslint prefer-destructuring: "off" */
 
-import createMultiBufferingPlayer from './createMultiBufferingPlayer';
+import createMultiBufferingPlayer from './createMultiBufferingPlayer.mjs';
 
 // Safari requires an audio buffer with a sample rate of 22050 Hz.
 // Using a minimum sample rate of 44100 Hz as an example, the Speech SDK's default 16000 Hz will be upsampled to 48000 Hz.

@@ -1,4 +1,4 @@
-import withResolvers from './utils/withResolvers';
+import withResolvers from './utils/withResolvers.mjs';
 
 export default function createTaskQueue() {
   let queueWithCurrent = [];
