@@ -85,13 +85,13 @@ function BasicSendBox(props: BasicSendBoxProps) {
           ) : (
             <TextBox className="webchat__send-box__text-box" />
           )}
-          <AttachmentBar />
         </div>
         {supportSpeechRecognition ? (
           <MicrophoneButton className={classNames(buttonClassName, 'webchat__send-box__microphone-button')} />
         ) : (
           <SendButton className={buttonClassName} />
         )}
+        <AttachmentBar className="webchat__send-box__attachment-bar" />
       </div>
     </div>
   );

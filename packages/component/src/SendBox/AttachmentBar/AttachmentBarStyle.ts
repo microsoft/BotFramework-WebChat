@@ -5,6 +5,7 @@ export default function createSendBoxAttachmentBarStyle({ sendBoxAttachmentBarMa
   return {
     '&.webchat__send-box-attachment-bar': {
       display: 'content',
+      gridArea: 'attachment-bar',
 
       '&.webchat__send-box-attachment-bar--as-list-item': {
         maxHeight: `${sendBoxAttachmentBarMaxHeight}px`,

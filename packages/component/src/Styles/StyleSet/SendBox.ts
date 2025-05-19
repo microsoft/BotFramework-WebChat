@@ -32,9 +32,9 @@ export default function createSendBoxStyle({
         borderRight: stringifyNumericPixel(sendBoxBorderRight),
         borderTop: stringifyNumericPixel(sendBoxBorderTop),
         display: 'grid',
-        gridTemplateAreas: 'upload-button text-box send-button',
+        gridTemplateAreas: '"upload-button text-box send-button" "attachment-bar attachment-bar attachment-bar"',
         gridTemplateColumns: 'auto 1fr auto',
-        gridTemplateRows: 'auto',
+        gridTemplateRows: 'auto auto',
         minHeight: stringifyNumericPixel(sendBoxHeight)
       },
 
@@ -49,6 +49,11 @@ export default function createSendBoxStyle({
         paddingTop: `${paddingRegular / 2}px`,
         overflowX: 'hidden',
         width: '100%'
+      },
+
+      '& .webchat__send-box__attachment-bar': {
+        padding: `${paddingRegular}px`,
+        paddingBlockStart: `0px`
       }
     }
   } satisfies StyleSet;
