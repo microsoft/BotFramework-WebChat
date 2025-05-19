@@ -43,7 +43,6 @@ function FeedbackVoteButton(props: FeedbackVoteButtonProps) {
 
   const [{ feedbackActionsPlacement }] = useStyleOptions();
   const [hasSubmitted] = useHasSubmitted();
-  // const [selectedAction, setSelectedAction] = selectedActionState;
   const [selectedAction, setSelectedAction] = useSelectedActions();
   const [shouldAllowResubmit] = useShouldAllowResubmit();
   const [shouldShowFeedbackForm] = useShouldShowFeedbackForm();
