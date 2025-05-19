@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat" style="position: relative"></main>
+    <script type="module">
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const styleOptions = {
+          feedbackActionsPlacement: 'activity-actions'
+        };
+
+        const { searchParams } = new URL(location);
+        const webChatElement = createElement(ReactWebChat, { directLine, store, styleOptions });
+
+        render(
+          searchParams.get('theme') === 'fluent'
+            ? createElement(FluentThemeProvider, {}, webChatElement)
+            : webChatElement,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            feedbackLoop: {
+              disclaimer:
+                'Aliquip nisi dolore irure sit sunt laboris qui veniam amet enim officia. Labore non consectetur eu elit. Ipsum cillum nostrud culpa consequat est est reprehenderit irure sunt cillum adipisicing. Veniam laboris laborum enim ipsum.',
+              type: 'default'
+            }
+          },
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              type: 'https://schema.org/Message',
+              keywords: ['AllowCopy'],
+              potentialAction: [
+                {
+                  '@type': 'LikeAction',
+                  actionStatus: 'PotentialActionStatus',
+                  target: {
+                    '@type': 'EntryPoint',
+                    urlTemplate: 'ms-directline://postback?interaction=like'
+                  }
+                },
+                {
+                  '@type': 'DislikeAction',
+                  actionStatus: 'PotentialActionStatus',
+                  result: {
+                    '@type': 'Review',
+                    reviewBody: "I don't like it.",
+                    'reviewBody-input': {
+                      '@type': 'PropertyValueSpecification',
+                      valueMinLength: 3,
+                      valueName: 'reason'
+                    }
+                  },
+                  target: {
+                    '@type': 'EntryPoint',
+                    urlTemplate: 'ms-directline://postback?interaction=dislike{&reason}'
+                  }
+                }
+              ]
+            }
+          ],
+          text: `Excepteur cillum sint aliqua duis non consequat deserunt sint veniam commodo quis consequat irure. Consequat fugiat ut aute veniam reprehenderit laborum commodo culpa. Duis ipsum id ea exercitation.`,
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: It should match the snapshot.
+        await host.snapshot('local');
+
+        // WHEN: Feedback form is opened.
+        await host.click(document.querySelector(`[data-testid="${testIds.feedbackButton}"]`));
+
+        // THEN: It should match the snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

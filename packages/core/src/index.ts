@@ -69,6 +69,7 @@ import type { CreativeWork as OrgSchemaCreativeWork } from './types/external/Org
 import type { DefinedTerm as OrgSchemaDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
 import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Project';
 import type { Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
+import type { UserReview as OrgSchemaUserReview } from './types/external/OrgSchema/UserReview';
 
 const Constants = { ActivityClientState, DictateState };
 const buildTool = process.env.build_tool;
@@ -149,6 +150,7 @@ export type {
   OrgSchemaDefinedTerm,
   OrgSchemaProject,
   OrgSchemaThing,
+  OrgSchemaUserReview,
   PromiseWithResolvers,
   SendBoxAttachment,
   WebChatActivity

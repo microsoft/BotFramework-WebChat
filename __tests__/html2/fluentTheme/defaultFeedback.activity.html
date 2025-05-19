@@ -59,16 +59,15 @@
       await host.sendShiftTab(2);
 
       await host.sendKeys('ENTER');
-      await host.sendKeys('ENTER');
+      await host.sendKeys('SPACE');
 
       await host.snapshot('local');
 
       // Dismiss like button
-      await host.sendShiftTab(2);
-      await host.sendKeys('ENTER');
+      await host.sendKeys('ESCAPE');
 
       // Click like button
-      await host.sendKeys('ENTER');
+      await host.sendKeys('SPACE');
 
       await pageConditions.became(
         'feedback form is open',
@@ -82,13 +81,8 @@
 
       await host.snapshot('local');
 
-      pageElements.byTestId('send box text area').focus();
-      await host.sendShiftTab(2);
-
-      await host.sendKeys('ENTER');
       // Send dislike
-      await host.sendTab(1);
-      await host.sendKeys('ENTER');
+      await host.sendKeys('RIGHT', 'SPACE');
 
       await pageConditions.became(
         'feedback form is open',
