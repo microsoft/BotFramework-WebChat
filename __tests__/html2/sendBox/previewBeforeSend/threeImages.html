@@ -25,11 +25,19 @@
         WebChat: { createDirectLine, testIds }
       } = window;
 
+      const { searchParams } = new URL(location.href);
+
       run(async function () {
         // We enable reduced motion by default, disable it first.
         await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
           features: [{ name: 'prefers-reduced-motion', value: '' }]
         });
+
+        if (searchParams.get('theme') === 'dark') {
+          await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+            features: [{ name: 'prefers-colors-scheme', value: 'dark' }]
+          });
+        }
 
         const { directLine, store } = createDirectLineEmulator();
 

@@ -32,9 +32,7 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
 
     '& .webchat__send-box-attachment-bar-item__delete-button': {
       appearance: 'none',
-      backgroundColor: 'White', // TODO: Dark theme.
       borderRadius: '4px', // BorderRadiusXS is not defined in Fluent UI, guessing it is 4px.
-      fill: '#242424', // TODO: Dark theme.
       gridArea: 'body',
       justifySelf: 'end',
       opacity: '1',
@@ -46,21 +44,56 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
       display: 'grid',
       justifyContent: 'center',
 
-      '&:hover': {
-        backgroundColor: '#F5F5F5',
-        borderColor: '#C7C7C7'
+      // https://react.fluentui.dev/?path=/docs/theme-colors--docs
+      '@media not (prefers-color-scheme: dark)': {
+        backgroundColor: 'White', // Background/colorNeutralBackground1
+        borderColor: '#D1D1D1', // Stroke/colorNeutralStroke1
+        color: '#242424', // Background/colorNeutralForeground1
+
+        '&:hover': {
+          backgroundColor: '#F5F5F5', // Background/colorNeutralBackground1Hover
+          borderColor: '#C7C7C7' // Stroke/colorNeutralStroke1Hover
+        },
+
+        '&:active': {
+          backgroundColor: '#E0E0E0', // Background/colorNeutralBackground1Pressed
+          borderColor: '#C7C7C7' // Stroke/colorNeutralStroke1Pressed
+        },
+
+        '&:disabled, &[aria-diabled]': {
+          backgroundColor: '#F0F0F0', // Background/colorNeutralBackgroundDisabled
+          borderColor: '#E0E0E0', // Stroke/colorNeutralStrokeDisabled
+          color: '#BDBDBD' // Stroke/colorNeutralForegroundDisabled
+        }
       },
 
-      '&:active': {
-        backgroundColor: '#E0E0E0',
-        borderColor: '#C7C7C7'
-      },
+      '@media (prefers-color-scheme: dark)': {
+        backgroundColor: '#292929', // Background/colorNeutralBackground1
+        borderColor: '#666666', // Stroke/colorNeutralStroke1
+        color: '#FFFFFF', // Background/colorNeutralBackground1
 
-      '&:disabled, &[aria-diabled]': {
-        backgroundColor: '#F0F0F0',
-        borderColor: '#E0E0E0',
-        fill: '#BDBDBD'
+        '&:hover': {
+          backgroundColor: '#3D3D3D', // Background/colorNeutralBackground1Hover
+          borderColor: '#757575' // Stroke/colorNeutralStroke1Hover
+        },
+
+        '&:active': {
+          backgroundColor: '#1F1F1F', // Background/colorNeutralBackground1Pressed
+          borderColor: '#6B6B6B' // Stroke/colorNeutralStroke1Pressed
+        },
+
+        '&:disabled, &[aria-diabled]': {
+          backgroundColor: '#141414', // Background/colorNeutralBackgroundDisabled
+          borderColor: '#424242', // Stroke/colorNeutralStrokeDisabled
+          color: '#5C5C5C' // Stroke/colorNeutralForegroundDisabled
+        }
       }
+    },
+
+    '& .webchat__send-box-attachment-bar-item__delete-icon-masker': {
+      backgroundColor: 'currentcolor',
+      height: '20px',
+      width: '20px'
     },
 
     '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--as-list-item .webchat__send-box-attachment-bar-item__delete-button':
@@ -73,7 +106,8 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
 
     '&.webchat__send-box-attachment-bar-item.webchat__send-box-attachment-bar-item--as-thumbnail .webchat__send-box-attachment-bar-item__delete-button':
       {
-        border: 'solid 1px #E0E0E0', // Figma has border-width of 0.96px.
+        borderStyle: 'solid', // Border color will be set elsewhere.
+        borderWidth: '1px', // Figma has border-width of 0.96px.
         gridArea: 'body',
         height: '23px', // Figma is 23.04px.
         margin: '8px', // Figma is 7.68px.
