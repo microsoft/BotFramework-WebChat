@@ -3,6 +3,7 @@ import { type StyleSet } from '../../Styles/StyleSet/types/StyleSet';
 
 export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOptions) {
   return {
+    /* #region List item */
     '&.webchat__send-box-attachment-bar-item': {
       display: 'grid',
       flexShrink: '0',
@@ -26,9 +27,9 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
         overflow: 'hidden'
       }
     },
+    /* #endregion */
 
-    // --- Delete button
-
+    /* #region Delete button */
     '& .webchat__send-box-attachment-bar-item__delete-button': {
       appearance: 'none',
       borderRadius: '4px', // BorderRadiusXS is not defined in Fluent UI, guessing it is 4px.
@@ -119,9 +120,9 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
           opacity: '0'
         }
     },
+    /* #endregion */
 
-    // --- Preview
-
+    /* #region Preview */
     '& .webchat__send-box-attachment-bar-item__preview': {
       alignItems: 'center',
       display: 'grid',
@@ -133,5 +134,6 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
       {
         paddingInline: '8px'
       }
+    /* #endregion */
   } satisfies StyleSet;
 }
