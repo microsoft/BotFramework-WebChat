@@ -1,5 +1,5 @@
-import { StrictStyleOptions } from 'botframework-webchat-api';
-import type { StyleSet } from './types/StyleSet';
+import { type StrictStyleOptions } from 'botframework-webchat-api';
+import { type StyleSet } from './types/StyleSet';
 
 function stringifyNumericPixel(value: number | string): string {
   if (typeof value === 'number') {
@@ -32,10 +32,16 @@ export default function createSendBoxStyle({
         borderRight: stringifyNumericPixel(sendBoxBorderRight),
         borderTop: stringifyNumericPixel(sendBoxBorderTop),
         display: 'grid',
-        gridTemplateAreas: '"upload-button text-box send-button" "attachment-bar attachment-bar attachment-bar"',
+        gridTemplateAreas: '"upload-button text-box send-button"',
         gridTemplateColumns: 'auto 1fr auto',
-        gridTemplateRows: 'auto auto',
-        minHeight: stringifyNumericPixel(sendBoxHeight)
+        gridTemplateRows: 'auto',
+        minHeight: stringifyNumericPixel(sendBoxHeight),
+
+        // For unknown reason, if the attachment bar does not exist, the second row is still occupying about 1px, we need to hide it.
+        '&:has(.webchat__send-box__attachment-bar)': {
+          gridTemplateAreas: '"upload-button text-box send-button" "attachment-bar attachment-bar attachment-bar"',
+          gridTemplateRows: 'auto auto'
+        }
       },
 
       '& .webchat__send-box__editable': {
