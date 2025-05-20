@@ -2,7 +2,6 @@ import { hooks } from 'botframework-webchat-api';
 import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import random from 'math-random';
-import PropTypes from 'prop-types';
 import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { object, pipe, readonly, string, type InferInput } from 'valibot';
