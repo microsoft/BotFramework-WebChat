@@ -4,7 +4,6 @@ import { type StyleSet } from '../../Styles/StyleSet/types/StyleSet';
 export default function createSendBoxAttachmentBarStyle({ sendBoxAttachmentBarMaxHeight }: StrictStyleOptions) {
   return {
     '&.webchat__send-box-attachment-bar': {
-      display: 'content',
       gridArea: 'attachment-bar',
 
       '&.webchat__send-box-attachment-bar--as-list-item': {
