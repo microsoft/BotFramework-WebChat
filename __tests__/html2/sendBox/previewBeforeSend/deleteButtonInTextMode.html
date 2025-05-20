@@ -48,8 +48,8 @@
           );
         }
 
-        // WHEN: Press TAB key twice.
-        await host.sendKeys('TAB');
+        // WHEN: Press TAB key twice to move the focus to the delete button.
+        await host.sendKeys('TAB', 'TAB');
 
         // THEN: Should focus on the attachment delete button of the 4th attachment.
         expect(document.activeElement.getAttribute('data-testid')).toBe(testIds.sendBoxAttachmentBarItemDeleteButton);
