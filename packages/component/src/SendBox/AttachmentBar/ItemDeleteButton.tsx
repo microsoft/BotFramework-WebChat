@@ -1,18 +1,28 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { KeyboardEventHandler, useCallback } from 'react';
+import { function_, object, optional, picklist, pipe, readonly, string, type InferInput } from 'valibot';
+
 import { useFocus } from '../../hooks';
 import testIds from '../../testIds';
 import DeleteIcon from './DeleteIcon';
 
 const { useLocalizer } = hooks;
 
-type AttachmentDeleteButton = Readonly<{
-  attachmentName: string;
-  onClick?: (() => void) | undefined;
-  size?: 'large' | 'small' | undefined;
-}>;
+const attachmentDeleteButtonPropsSchema = pipe(
+  object({
+    attachmentName: string(),
+    onClick: optional(function_()),
+    size: optional(picklist(['large', 'small']))
+  }),
+  readonly()
+);
 
-const AttachmentDeleteButton = ({ attachmentName, onClick, size }: AttachmentDeleteButton) => {
+type AttachmentDeleteButtonProps = InferInput<typeof attachmentDeleteButtonPropsSchema>;
+
+function AttachmentDeleteButton(props: AttachmentDeleteButtonProps) {
+  const { attachmentName, onClick, size } = validateProps(attachmentDeleteButtonPropsSchema, props);
+
   const focus = useFocus();
   const localize = useLocalizer();
 
@@ -40,9 +50,7 @@ const AttachmentDeleteButton = ({ attachmentName, onClick, size }: AttachmentDel
       <DeleteIcon size={size} />
     </button>
   );
-};
-
-AttachmentDeleteButton.displayName = 'SendBoxAttachmentItemDeleteButton';
+}
 
 export default AttachmentDeleteButton;
-export { type AttachmentDeleteButton };
+export { attachmentDeleteButtonPropsSchema, type AttachmentDeleteButtonProps };

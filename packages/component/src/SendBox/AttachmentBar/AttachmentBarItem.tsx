@@ -3,7 +3,6 @@ import { type SendBoxAttachment } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
-
 import {
   custom,
   function_,
@@ -17,6 +16,7 @@ import {
   union,
   type InferInput
 } from 'valibot';
+
 import { useFocus, useStyleSet } from '../../hooks';
 import testIds from '../../testIds';
 import DeleteButton from './ItemDeleteButton';

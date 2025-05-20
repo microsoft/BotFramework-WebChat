@@ -1,11 +1,20 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
+import { type InferInput, object, optional, picklist, pipe, readonly } from 'valibot';
 
-type FileIconProps = Readonly<{
-  size?: 'large' | 'small' | undefined;
-}>;
+const fileIconPropsSchema = pipe(
+  object({
+    size: optional(picklist(['large', 'small']))
+  }),
+  readonly()
+);
 
-const FileIcon = ({ size }: FileIconProps) =>
-  size === 'large' ? (
+type FileIconProps = InferInput<typeof fileIconPropsSchema>;
+
+function FileIcon(props: FileIconProps) {
+  const { size } = validateProps(fileIconPropsSchema, props);
+
+  return size === 'large' ? (
     <svg fill="none" height="36" viewBox="0 0 36 36" width="36" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M7.386 33H28.6C28.816 33 29 32.83 29 32.628V10H23.4C22.628 10 22 9.372 22 8.6V3H7.4C7.184 3 7 3.17 7 3.372V32.642C7 32.839 7.173 33 7.386 33Z"
@@ -39,7 +48,7 @@ const FileIcon = ({ size }: FileIconProps) =>
       />
     </svg>
   );
+}
 
 export default memo(FileIcon);
-
-export { type FileIconProps };
+export { fileIconPropsSchema, type FileIconProps };

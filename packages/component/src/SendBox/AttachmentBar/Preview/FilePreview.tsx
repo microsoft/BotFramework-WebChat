@@ -1,17 +1,32 @@
-import { type SendBoxAttachment } from 'botframework-webchat-core';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { memo } from 'react';
+import { object, picklist, pipe, readonly, string, type InferInput } from 'valibot';
+
 import { useStyleSet } from '../../../hooks';
 import FileIcon from './FileIcon';
 import ImageIcon from './ImageIcon';
+import { sendBoxAttachmentSchema } from './sendBoxAttachment';
 
-type FileAttachmentPreviewProps = Readonly<{
-  attachment: SendBoxAttachment;
-  attachmentName: string;
-  mode: 'list item' | 'thumbnail';
-}>;
+const sendBoxAttachmentBarItemFileAttachmentPreviewPropsSchema = pipe(
+  object({
+    attachment: sendBoxAttachmentSchema,
+    attachmentName: string(),
+    mode: picklist(['list item', 'thumbnail'])
+  }),
+  readonly()
+);
 
-const FileAttachmentPreview = ({ attachment, mode, attachmentName }: FileAttachmentPreviewProps) => {
+type SendBoxAttachmentBarItemFileAttachmentPreviewProps = InferInput<
+  typeof sendBoxAttachmentBarItemFileAttachmentPreviewPropsSchema
+>;
+
+function SendBoxAttachmentBarItemFileAttachmentPreview(props: SendBoxAttachmentBarItemFileAttachmentPreviewProps) {
+  const { attachment, mode, attachmentName } = validateProps(
+    sendBoxAttachmentBarItemFileAttachmentPreviewPropsSchema,
+    props
+  );
+
   const [{ sendBoxAttachmentBarItemFilePreview: sendBoxAttachmentBarItemFilePreviewClassName }] = useStyleSet();
 
   return mode === 'list item' ? (
@@ -36,9 +51,10 @@ const FileAttachmentPreview = ({ attachment, mode, attachmentName }: FileAttachm
       <FileIcon size="large" />
     </div>
   );
+}
+
+export default memo(SendBoxAttachmentBarItemFileAttachmentPreview);
+export {
+  sendBoxAttachmentBarItemFileAttachmentPreviewPropsSchema,
+  type SendBoxAttachmentBarItemFileAttachmentPreviewProps
 };
-
-FileAttachmentPreview.displayName = 'SendBoxAttachmentBarItemFileAttachmentPreview';
-
-export default memo(FileAttachmentPreview);
-export { type FileAttachmentPreviewProps };

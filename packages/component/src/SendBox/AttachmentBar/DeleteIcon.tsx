@@ -1,11 +1,20 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import React, { memo } from 'react';
+import { type InferInput, object, optional, picklist, pipe, readonly } from 'valibot';
 
-type DeleteIconProps = Readonly<{
-  size?: 'large' | 'small' | undefined;
-}>;
+const deleteIconPropsSchema = pipe(
+  object({
+    size: optional(picklist(['large', 'small']))
+  }),
+  readonly()
+);
 
-const DeleteIcon = ({ size }: DeleteIconProps) =>
-  size === 'large' ? (
+type DeleteIconProps = InferInput<typeof deleteIconPropsSchema>;
+
+function DeleteIcon(props: DeleteIconProps) {
+  const { size } = validateProps(deleteIconPropsSchema, props);
+
+  return size === 'large' ? (
     <svg fill="none" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M4.60507 5.12706L4.66061 5.06059C4.82723 4.89396 5.08588 4.87545 5.27295 5.00505L5.33943 5.06059L9.80002 9.52128L14.2606 5.06059C14.4481 4.87314 14.752 4.87314 14.9394 5.06059C15.1269 5.24804 15.1269 5.55196 14.9394 5.73941L10.4787 10.2L14.9394 14.6606C15.1061 14.8272 15.1246 15.0859 14.995 15.2729L14.9394 15.3394C14.7728 15.506 14.5142 15.5245 14.3271 15.395L14.2606 15.3394L9.80002 10.8787L5.33943 15.3394C5.15198 15.5269 4.84806 15.5269 4.66061 15.3394C4.47316 15.152 4.47316 14.848 4.66061 14.6606L9.1213 10.2L4.66061 5.73941C4.49398 5.57279 4.47547 5.31414 4.60507 5.12706L4.66061 5.06059L4.60507 5.12706Z"
@@ -20,7 +29,7 @@ const DeleteIcon = ({ size }: DeleteIconProps) =>
       />
     </svg>
   );
+}
 
 export default memo(DeleteIcon);
-
-export { type DeleteIconProps };
+export { deleteIconPropsSchema, type DeleteIconProps };

@@ -1,17 +1,27 @@
+import { validateProps } from 'botframework-webchat-api/internal';
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import React, { memo } from 'react';
+import { object, picklist, pipe, readonly, string, type InferInput } from 'valibot';
 
 import FilePreview from './Preview/FilePreview';
 import ImagePreview from './Preview/ImagePreview';
+import { sendBoxAttachmentSchema } from './Preview/sendBoxAttachment';
 
-type AttachmentBarItemPreviewProps = Readonly<{
-  attachment: SendBoxAttachment;
-  attachmentName: string;
-  mode: 'list item' | 'thumbnail';
-}>;
+const sendBoxAttachmentBarItemPreviewPropsSchema = pipe(
+  object({
+    attachment: sendBoxAttachmentSchema,
+    attachmentName: string(),
+    mode: picklist(['list item', 'thumbnail'])
+  }),
+  readonly()
+);
+
+type SendBoxAttachmentBarItemPreviewProps = InferInput<typeof sendBoxAttachmentBarItemPreviewPropsSchema>;
 
 // TODO: Turn this into middleware.
-const AttachmentBarItemPreview = ({ attachment, attachmentName, mode }: AttachmentBarItemPreviewProps) => {
+function SendBoxAttachmentBarItemPreview(props: SendBoxAttachmentBarItemPreviewProps) {
+  const { attachment, attachmentName, mode } = validateProps(sendBoxAttachmentBarItemPreviewPropsSchema, props);
+
   let element: React.ReactNode;
 
   if (attachment.thumbnailURL) {
@@ -33,9 +43,7 @@ const AttachmentBarItemPreview = ({ attachment, attachmentName, mode }: Attachme
   }
 
   return <div className="webchat__send-box-attachment-bar-item__preview">{element}</div>;
-};
+}
 
-AttachmentBarItemPreview.displayName = 'SendBoxAttachmentBarItemPreview';
-
-export default memo(AttachmentBarItemPreview);
-export { type AttachmentBarItemPreviewProps };
+export default memo(SendBoxAttachmentBarItemPreview);
+export { sendBoxAttachmentBarItemPreviewPropsSchema, type SendBoxAttachmentBarItemPreviewProps };

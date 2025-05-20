@@ -1,18 +1,31 @@
-import { type SendBoxAttachment } from 'botframework-webchat-core';
+import { validateProps } from 'botframework-webchat-api/internal';
 import classNames from 'classnames';
 import React, { memo } from 'react';
+import { object, picklist, pipe, readonly, string, type InferInput } from 'valibot';
+
 import { useStyleSet } from '../../../hooks';
 import FilePreview from './FilePreview';
+import { sendBoxAttachmentSchema } from './sendBoxAttachment';
 
-type ImageAttachmentPreviewProps = Readonly<{
-  attachment: SendBoxAttachment & {
-    thumbnailURL: URL;
-  };
-  attachmentName: string;
-  mode: 'list item' | 'thumbnail';
-}>;
+const sendBoxAttachmentBarItemImageAttachmentPreviewPropsSchema = pipe(
+  object({
+    attachment: sendBoxAttachmentSchema,
+    attachmentName: string(),
+    mode: picklist(['list item', 'thumbnail'])
+  }),
+  readonly()
+);
 
-const ImageAttachmentPreview = ({ attachment, mode, attachmentName }: ImageAttachmentPreviewProps) => {
+type SendBoxAttachmentBarItemImageAttachmentPreviewProps = InferInput<
+  typeof sendBoxAttachmentBarItemImageAttachmentPreviewPropsSchema
+>;
+
+function SendBoxAttachmentBarItemImageAttachmentPreview(props: SendBoxAttachmentBarItemImageAttachmentPreviewProps) {
+  const { attachment, mode, attachmentName } = validateProps(
+    sendBoxAttachmentBarItemImageAttachmentPreviewPropsSchema,
+    props
+  );
+
   const [{ sendBoxAttachmentBarItemImagePreview: sendBoxAttachmentBarItemImagePreviewClassName }] = useStyleSet();
 
   return mode === 'list item' ? (
@@ -27,9 +40,10 @@ const ImageAttachmentPreview = ({ attachment, mode, attachmentName }: ImageAttac
       src={attachment.thumbnailURL.href}
     />
   );
+}
+
+export default memo(SendBoxAttachmentBarItemImageAttachmentPreview);
+export {
+  sendBoxAttachmentBarItemImageAttachmentPreviewPropsSchema,
+  type SendBoxAttachmentBarItemImageAttachmentPreviewProps
 };
-
-ImageAttachmentPreview.displayName = 'SendBoxAttachmentBarItemImageAttachmentPreview';
-
-export default memo(ImageAttachmentPreview);
-export { type ImageAttachmentPreviewProps };
