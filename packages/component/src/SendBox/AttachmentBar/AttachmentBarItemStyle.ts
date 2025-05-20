@@ -39,11 +39,6 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
       padding: '0',
       transition: 'opacity 50ms', // Assume ultra-fast.
 
-      // TODO: Any way to center the SVG better?
-      alignItems: 'center',
-      display: 'grid',
-      justifyContent: 'center',
-
       // https://react.fluentui.dev/?path=/docs/theme-colors--docs
       '@media not (prefers-color-scheme: dark)': {
         backgroundColor: 'White', // Background/colorNeutralBackground1
