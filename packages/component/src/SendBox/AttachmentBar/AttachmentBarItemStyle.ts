@@ -23,7 +23,6 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
         gridTemplateAreas: '"body"',
         gridTemplateColumns: 'auto',
         height: '80px', // <= 87px would fit white-label design with 3 thumbnails.
-        // height: '96px',
         overflow: 'hidden'
       }
     },

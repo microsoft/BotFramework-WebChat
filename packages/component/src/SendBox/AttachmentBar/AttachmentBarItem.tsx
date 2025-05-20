@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
@@ -45,7 +46,9 @@ const sendBoxAttachmentBarItemPropsSchema = pipe(
 
 type SendBoxAttachmentBarItemProps = InferInput<typeof sendBoxAttachmentBarItemPropsSchema>;
 
-function SendBoxAttachmentBarItem({ attachment, mode, onDelete }: SendBoxAttachmentBarItemProps) {
+function SendBoxAttachmentBarItem(props: SendBoxAttachmentBarItemProps) {
+  const { attachment, mode, onDelete } = validateProps(sendBoxAttachmentBarItemPropsSchema, props);
+
   const [{ sendBoxAttachmentBarItem: sendBoxAttachmentBarItemClassName }] = useStyleSet();
   const attachmentRef = useRefFrom(attachment);
   const elementRef = useRef<HTMLDivElement>(null);
