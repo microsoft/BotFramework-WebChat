@@ -4,6 +4,19 @@ import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
+import {
+  custom,
+  function_,
+  instance,
+  object,
+  optional,
+  picklist,
+  pipe,
+  readonly,
+  safeParse,
+  union,
+  type InferInput
+} from 'valibot';
 import { useFocus, useStyleSet } from '../../hooks';
 import testIds from '../../testIds';
 import DeleteButton from './ItemDeleteButton';
@@ -11,13 +24,28 @@ import Preview from './ItemPreview';
 
 const { useLocalizer } = hooks;
 
-type AttachmentBarItemProps = Readonly<{
-  attachment: SendBoxAttachment;
-  mode: 'list item' | 'thumbnail';
-  onDelete?: ((event: Readonly<{ attachment: SendBoxAttachment }>) => void) | undefined;
-}>;
+const sendBoxAttachmentBarItemPropsSchema = pipe(
+  object({
+    attachment: pipe(
+      object({
+        blob: union([instance(Blob), instance(File)]),
+        thumbnailURL: optional(instance(URL))
+      }),
+      readonly()
+    ),
+    mode: picklist(['list item', 'thumbnail']),
+    onDelete: optional(
+      custom<(event: Readonly<{ attachment: SendBoxAttachment }>) => void>(
+        value => safeParse(function_(), value).success
+      )
+    )
+  }),
+  readonly()
+);
 
-const AttachmentBarItem = ({ attachment, mode, onDelete }: AttachmentBarItemProps) => {
+type SendBoxAttachmentBarItemProps = InferInput<typeof sendBoxAttachmentBarItemPropsSchema>;
+
+function SendBoxAttachmentBarItem({ attachment, mode, onDelete }: SendBoxAttachmentBarItemProps) {
   const [{ sendBoxAttachmentBarItem: sendBoxAttachmentBarItemClassName }] = useStyleSet();
   const attachmentRef = useRefFrom(attachment);
   const elementRef = useRef<HTMLDivElement>(null);
@@ -70,9 +98,7 @@ const AttachmentBarItem = ({ attachment, mode, onDelete }: AttachmentBarItemProp
       />
     </div>
   );
-};
+}
 
-AttachmentBarItem.displayName = 'SendBoxAttachmentBarItem';
-
-export default memo(AttachmentBarItem);
-export { type AttachmentBarItemProps };
+export default memo(SendBoxAttachmentBarItem);
+export { sendBoxAttachmentBarItemPropsSchema, type SendBoxAttachmentBarItemProps };
