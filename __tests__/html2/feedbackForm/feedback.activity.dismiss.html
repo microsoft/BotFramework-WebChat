@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+</head>
+
+<body>
+  <main id="webchat"></main>
+  <script type="text/babel" data-presets="env,stage-3,react">
+    const {
+      React: { useMemo },
+      WebChat: {
+        hooks: { useDirection }
+      }
+    } = window;
+
+    run(async function () {
+      const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+      WebChat.renderWebChat(
+        {
+          directLine,
+          styleOptions: {
+            feedbackActionsPlacement: 'activity-actions'
+          },
+          store,
+        },
+        document.getElementById('webchat')
+      );
+
+      await pageConditions.uiConnected();
+
+      await directLine.emulateIncomingActivity({
+        from: {
+          role: "bot"
+        },
+        id: "a-00002",
+        timestamp: 0,
+        type: "message",
+        text: "This is the message recieving feedback",
+        entities: [
+          {
+            '@context': 'https://schema.org',
+            '@id': '',
+            '@type': 'Message',
+            type: 'https://schema.org/Message',
+            keywords: [],
+            potentialAction: [
+              {
+                "@type": "LikeAction",
+                actionStatus: "PotentialActionStatus",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: "ms-directline://postback?interaction=like"
+                }
+              },
+              {
+                "@type": "DislikeAction",
+                actionStatus: "PotentialActionStatus",
+                result: {
+                  "@type": "Review",
+                  reviewBody: "I don't like it.",
+                  "reviewBody-input": {
+                    "@type": "PropertyValueSpecification",
+                    valueMinLength: 3,
+                    valueName: "reason"
+                  }
+                },
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: "ms-directline://postback?interaction=dislike{&reason}"
+                }
+              }
+            ]
+          }
+        ]
+      });
+
+      await pageConditions.numActivitiesShown(1);
+
+      await host.snapshot('local');
+
+      pageElements.sendBoxTextBox().focus();
+      await host.sendShiftTab(3);
+
+      await host.sendKeys('ENTER');
+
+      // Wait for 400 ms for the tooltip to show up before taking screenshot.
+      await new Promise(resolve => setTimeout(resolve, 400));
+
+      await host.snapshot('local');
+      await host.sendKeys('SPACE');
+      await host.snapshot('local');
+
+      await directLine.emulateIncomingActivity({
+        from: {
+          role: "bot"
+        },
+        id: "a-00002",
+        timestamp: 0,
+        type: "message",
+        text: "This is the message with dismissed feedback",
+        entities: [
+          {
+            '@context': 'https://schema.org',
+            '@id': '',
+            '@type': 'Message',
+            type: 'https://schema.org/Message',
+            keywords: [],
+            potentialAction: [
+              {
+                "@type": "LikeAction",
+                actionStatus: "PotentialActionStatus",
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: "ms-directline://postback?interaction=like"
+                }
+              },
+              {
+                "@type": "DislikeAction",
+                actionStatus: "PotentialActionStatus",
+                result: {
+                  "@type": "Review",
+                  reviewBody: "I don't like it.",
+                  "reviewBody-input": {
+                    "@type": "PropertyValueSpecification",
+                    valueMinLength: 3,
+                    valueName: "reason"
+                  }
+                },
+                target: {
+                  "@type": "EntryPoint",
+                  urlTemplate: "ms-directline://postback?interaction=dislike{&reason}"
+                }
+              }
+            ]
+          }
+        ]
+      });
+
+      await host.snapshot('local');
+    }, { ignoreErrors: true });
+  </script>
+</body>
+
+</html>

@@ -21,7 +21,8 @@
       const {
         React: { useMemo },
         WebChat: {
-          hooks: { useDirection }
+          hooks: { useDirection },
+          testIds
         }
       } = window;
 
@@ -139,7 +140,7 @@
         await host.snapshot('local');
 
         const [,, activityStatus] = pageElements.activityStatuses();
-        const buttons = activityStatus.querySelectorAll('button');
+        const buttons = activityStatus.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`);
 
         pageElements.sendBoxTextBox().focus();
 
@@ -168,7 +169,7 @@
 
         await host.snapshot('local');
 
-        await host.sendKeys('ENTER');
+        await host.sendKeys('SPACE');
         await host.snapshot('local');
       });
     </script>

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const {
+          WebChat: { renderWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const styleOptions = {
+          feedbackActionsPlacement: 'activity-actions'
+        };
+
+        renderWebChat({ directLine, store, styleOptions }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            feedbackLoop: {
+              type: 'default'
+            }
+          },
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              type: 'https://schema.org/Message',
+              potentialAction: [
+                {
+                  '@type': 'LikeAction',
+                  actionStatus: 'PotentialActionStatus',
+                  target: {
+                    '@type': 'EntryPoint',
+                    urlTemplate: 'ms-directline://postback?interaction=like'
+                  }
+                },
+                {
+                  '@type': 'DislikeAction',
+                  actionStatus: 'PotentialActionStatus',
+                  result: {
+                    '@type': 'Review',
+                    reviewBody: "I don't like it.",
+                    'reviewBody-input': {
+                      '@type': 'PropertyValueSpecification',
+                      valueMinLength: 3,
+                      valueName: 'reason'
+                    }
+                  },
+                  target: {
+                    '@type': 'EntryPoint',
+                    urlTemplate: 'ms-directline://postback?interaction=dislike{&reason}'
+                  }
+                }
+              ]
+            }
+          ],
+          text: `Occaecat cillum amet ipsum amet pariatur proident commodo eiusmod cupidatat voluptate.`,
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // WHEN: The first feedback button is clicked.
+        await host.click(document.querySelector(`[data-testid="${testIds.feedbackButton}"]`));
+
+        // THEN: The like button should be pressed.
+        expect(
+          Array.from(document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)).map(
+            element => element.checked
+          )
+        ).toEqual([true, false]);
+
+        // THEN: Should match the snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

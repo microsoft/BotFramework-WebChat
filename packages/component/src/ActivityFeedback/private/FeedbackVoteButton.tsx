@@ -1,28 +1,52 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from 'botframework-webchat-api/internal';
 import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction } from 'botframework-webchat-core';
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import { custom, literal, object, optional, pipe, readonly, safeParse, union, type InferInput } from 'valibot';
 
-import classNames from 'classnames';
-import useHasSubmitted from '../providers/useHasSubmitted';
-import useSelectedAction from '../providers/useSelectedAction';
-import useShouldAllowResubmit from '../providers/useShouldAllowResubmit';
-import useShouldShowFeedbackForm from '../providers/useShouldShowFeedbackForm';
+import { useListenToActivityFeedbackFocus } from '../providers/private/FocusPropagation';
+import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
 import ThumbButton from './ThumbButton';
+import canActionResubmit from './canActionResubmit';
+import isActionRequireReview from './isActionRequireReview';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
-type FeedbackVoteButtonProps = Readonly<{
-  action: OrgSchemaAction;
-}>;
+const feedbackVoteButtonPropsSchema = pipe(
+  object({
+    action: custom<OrgSchemaAction>(
+      value =>
+        safeParse(
+          union([
+            object({
+              '@type': union([literal('DislikeAction'), literal('LikeAction')])
+            }),
+            object({
+              '@type': literal('VoteAction'),
+              actionOption: optional(union([literal('downvote'), literal('upvote')]))
+            })
+          ]),
+          value
+        ).success
+    ),
+    as: union([literal('button'), literal('radio')])
+  }),
+  readonly()
+);
 
-function FeedbackVoteButton({ action }: FeedbackVoteButtonProps) {
+type FeedbackVoteButtonProps = InferInput<typeof feedbackVoteButtonPropsSchema>;
+
+function FeedbackVoteButton(props: FeedbackVoteButtonProps) {
+  const { useHasSubmitted, useSelectedAction: useSelectedActions } = useActivityFeedbackHooks();
+
+  const { action, as } = validateProps(feedbackVoteButtonPropsSchema, props);
+
   const [{ feedbackActionsPlacement }] = useStyleOptions();
   const [hasSubmitted] = useHasSubmitted();
-  const [selectedAction, setSelectedAction] = useSelectedAction();
-  const [shouldAllowResubmit] = useShouldAllowResubmit();
-  const [shouldShowFeedbackForm] = useShouldShowFeedbackForm();
+  const [selectedAction, setSelectedAction] = useSelectedActions();
   const actionRef = useRefFrom(action);
+  const buttonRef = useRef<HTMLInputElement>(null);
   const direction = useMemo(() => {
     if (
       action['@type'] === 'DislikeAction' ||
@@ -42,22 +66,26 @@ function FeedbackVoteButton({ action }: FeedbackVoteButtonProps) {
     () => setSelectedAction(actionRef.current === selectedActionRef.current ? undefined : actionRef.current),
     [actionRef, selectedActionRef, setSelectedAction]
   );
-  const disabled = hasSubmitted && !shouldAllowResubmit;
+  const disabled = hasSubmitted && !canActionResubmit(action);
+
+  useListenToActivityFeedbackFocus(
+    useCallback(target => target === actionRef.current && buttonRef.current?.focus(), [actionRef])
+  );
 
   return (
     <ThumbButton
-      className={classNames({
-        'webchat__thumb-button--large': shouldShowFeedbackForm || feedbackActionsPlacement === 'activity-actions',
-        'webchat__thumb-button--submitted': hasSubmitted
-      })}
+      as={as}
       direction={direction}
       disabled={disabled}
       onClick={handleClick}
       pressed={selectedAction === action}
+      ref={buttonRef}
+      size={isActionRequireReview(action) || feedbackActionsPlacement === 'activity-actions' ? 'large' : 'small'}
+      submitted={hasSubmitted}
       title={disabled ? localize('VOTE_COMPLETE_ALT') : undefined}
     />
   );
 }
 
 export default memo(FeedbackVoteButton);
-export { type FeedbackVoteButtonProps };
+export { feedbackVoteButtonPropsSchema, type FeedbackVoteButtonProps };
