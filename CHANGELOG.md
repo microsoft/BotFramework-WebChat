@@ -53,6 +53,10 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Added support for liner message activities in the Fluent theme, in PR [#5272](https://github.com/microsoft/BotFramework-WebChat/pull/5272), by [@OEvgeny](https://github.com/OEvgeny)
 - Added new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
 - (Experimental) Added support for using Web Chat inside a shadow DOM, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
+
+### Removed
+
+- Fixes [#5433](https://github.com/microsoft/BotFramework-WebChat/issues/5433). Removed dependency on `abort-controller-es5` in favor of the standard `abort-controller` package to prevent multiple versions of esbuild from being installed, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
    - Added `styleOptions.stylesRoot` property allowing users to specify the root node where Web Chat styles should be placed, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
    - Added the `ThemeProvider.styles` property, allowing theme packages to place styles into the same root node as Web Chat, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
    - Added `nonce` for Fluent and `react-scroll-to-bottom` injected styles, in PR [#5196](https://github.com/microsoft/BotFramework-WebChat/pull/5196), by [@OEvgeny](https://github.com/OEvgeny)
