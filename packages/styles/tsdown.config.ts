@@ -1,5 +1,5 @@
-import { defineConfig } from 'tsup';
-import baseConfig from '../../tsup.base.config';
+import { defineConfig } from 'tsdown';
+import baseConfig from '../../tsdown.base.config';
 
 const config: typeof baseConfig = {
   ...baseConfig,

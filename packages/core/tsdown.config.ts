@@ -1,10 +1,11 @@
-import { defineConfig } from 'tsup';
-import baseConfig from '../../tsup.base.config';
+import { defineConfig } from 'tsdown';
+import baseConfig from '../../tsdown.base.config';
 
 const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
-    'botframework-webchat-react-valibot': './src/index.ts'
+    'botframework-webchat-core': './src/index.ts',
+    'botframework-webchat-core.internal': './src/internal/index.ts'
   }
 };
 

@@ -1,8 +1,9 @@
 import { injectCSSPlugin } from 'botframework-webchat-styles/build';
-import { defineConfig, Options } from 'tsup';
-import baseConfig from '../../tsup.base.config';
+import { defineConfig } from 'tsdown';
+import baseConfig from '../../tsdown.base.config';
 import { componentStyleContent as componentStyleContentPlaceholder } from './src/Styles/createStyles';
 import { decoratorStyleContent as decoratorStyleContentPlaceholder } from './src/decorator/private/createStyles';
+import LightningCSS from 'unplugin-lightningcss';
 
 const config: typeof baseConfig = {
   ...baseConfig,
@@ -11,11 +12,14 @@ const config: typeof baseConfig = {
     'botframework-webchat-component.internal': './src/internal.ts',
     'botframework-webchat-component.decorator': './src/decorator/index.ts'
   },
+  plugins: [
+    LightningCSS.rolldown()
+  ],
   esbuildPlugins: [
     ...(baseConfig.esbuildPlugins ?? []),
     injectCSSPlugin({ stylesPlaceholder: componentStyleContentPlaceholder }),
     injectCSSPlugin({ stylesPlaceholder: decoratorStyleContentPlaceholder })
-  ]
+  ],
 };
 
 export default defineConfig([

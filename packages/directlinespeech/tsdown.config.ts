@@ -1,6 +1,6 @@
 import { join } from 'path';
-import { defineConfig } from 'tsup';
-import baseConfig from '../../tsup.base.config';
+import { defineConfig } from 'tsdown';
+import baseConfig from '../../tsdown.base.config';
 
 // Redirect import paths for "microsoft-cognitiveservices-speech-sdk(...)"
 // to point to es2015 distribution for all importing modules
