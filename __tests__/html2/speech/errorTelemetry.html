@@ -78,7 +78,7 @@
         );
 
         // THEN: Should construct the SpeechRecognition() instance and call start().
-        expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1));
 
         const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
 

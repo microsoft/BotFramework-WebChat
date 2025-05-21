@@ -4,6 +4,7 @@ import activityActiveDescendantLabels from './activityActiveDescendantLabels';
 import activityAttachments from './activityAttachments';
 import activityContents from './activityContents';
 import activityStatuses from './activityStatuses';
+import allByTestId from './allByTestId';
 import byTestId from './byTestId';
 import connectivityStatus from './connectivityStatus';
 import focusedActivity from './focusedActivity';
@@ -31,6 +32,7 @@ export {
   activityAttachments,
   activityContents,
   activityStatuses,
+  allByTestId,
   byTestId,
   connectivityStatus,
   focusedActivity,

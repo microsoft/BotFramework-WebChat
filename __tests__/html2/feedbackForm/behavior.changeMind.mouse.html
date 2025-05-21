@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const {
+          WebChat: { renderWebChat, testIds }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const styleOptions = {
+          feedbackActionsPlacement: 'activity-actions'
+        };
+
+        renderWebChat({ directLine, store, styleOptions }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          channelData: {
+            feedbackLoop: {
+              type: 'default'
+            }
+          },
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              type: 'https://schema.org/Message',
+              potentialAction: [
+                {
+                  '@type': 'LikeAction',
+                  actionStatus: 'PotentialActionStatus',
+                  target: {
+                    '@type': 'EntryPoint',
+                    urlTemplate: 'ms-directline://postback?interaction=like'
+                  }
+                },
+                {
+                  '@type': 'DislikeAction',
+                  actionStatus: 'PotentialActionStatus',
+                  result: {
+                    '@type': 'Review',
+                    reviewBody: "I don't like it.",
+                    'reviewBody-input': {
+                      '@type': 'PropertyValueSpecification',
+                      valueMinLength: 3,
+                      valueName: 'reason'
+                    }
+                  },
+                  target: {
+                    '@type': 'EntryPoint',
+                    urlTemplate: 'ms-directline://postback?interaction=dislike{&reason}'
+                  }
+                }
+              ]
+            }
+          ],
+          text: `Exercitation ex enim tempor elit tempor pariatur eiusmod ex duis est in Lorem velit sunt.`,
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // WHEN: The like button is tapped.
+        await host.click(pageElements.allByTestId(testIds.feedbackButton)[0]);
+
+        // THEN: Should focus on the feedback form text box.
+        await waitFor(() => expect(document.activeElement).toBe(pageElements.allByTestId(testIds.feedbackSendBox)[0]));
+
+        // WHEN: The dislike button is tapped.
+        await host.click(pageElements.allByTestId(testIds.feedbackButton)[1]);
+
+        // THEN: The dislike button should be focused.
+        expect(document.activeElement).toBe(pageElements.allByTestId(testIds.feedbackButton)[1]);
+
+        // THEN: The dislike button should be selected.
+        expect(pageElements.allByTestId(testIds.feedbackButton)[1].matches(':checked')).toBe(true);
+
+        // WHEN: Type a message in the feedback box and submit.
+        await host.click(pageElements.allByTestId(testIds.feedbackSendBox)[0]);
+        await host.sendKeys('Nostrud ad irure commodo magna pariatur aliqua.');
+
+        // THEN: It should submit with dislike.
+        const { activity } = await directLine.actPostActivity(() => host.sendKeys('ENTER'));
+
+        expect(activity).toEqual(
+          expect.objectContaining({
+            type: 'invoke',
+            value: {
+              actionName: 'feedback',
+              actionValue: {
+                feedback: {
+                  feedbackText: 'Nostrud ad irure commodo magna pariatur aliqua.'
+                },
+                reaction: 'dislike'
+              }
+            }
+          })
+        );
+      });
+    </script>
+  </body>
+</html>

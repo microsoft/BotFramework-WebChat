@@ -100,9 +100,10 @@
         await host.sendShiftTab(2);
         await host.sendKeys('ENTER');
 
-        // Click like button
-        await host.sendKeys('ENTER');
+        // WHEN: The like button is being clicked.
+        await host.sendKeys('SPACE');
 
+        // THEN: Should open the feedback form.
         await pageConditions.became(
           'feedback form is open',
           () => document.activeElement === pageElements.byTestId('feedback sendbox'),

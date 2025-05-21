@@ -12,6 +12,7 @@ import useStyleSet from '../../hooks/useStyleSet';
 
 const { useUIState } = hooks;
 
+// TODO: Need review. Dedupe with send box text area.
 const TextArea = forwardRef<
   HTMLTextAreaElement,
   Readonly<{
