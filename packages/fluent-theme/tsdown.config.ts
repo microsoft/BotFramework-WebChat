@@ -1,9 +1,10 @@
 import { join } from 'node:path';
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsdown';
 import { fileURLToPath } from 'node:url';
-import baseConfig from '../../tsup.base.config';
+import baseConfig from '../../tsdown.base.config';
 import { fluentStyleContent as fluentStyleContentPlaceholder } from './src/styles/createStyles';
 import { injectCSSPlugin } from 'botframework-webchat-styles/build';
+import LightningCSS from 'unplugin-lightningcss';
 
 const umdResolvePlugin = {
   name: 'umd-resolve',
@@ -39,10 +40,9 @@ export default defineConfig([
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
     env: { ...baseConfig.env, module_format: 'commonjs' },
-    loader: {
-      ...baseConfig.loader,
-      '.css': 'local-css'
-    },
+    plugins: [
+      LightningCSS.rolldown()
+    ],
     esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })],
     format: ['cjs'],
     target: [...baseConfig.target, 'es2019']
@@ -50,21 +50,19 @@ export default defineConfig([
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
-    loader: {
-      ...baseConfig.loader,
-      '.css': 'local-css'
-    },
+    plugins: [
+      LightningCSS.rolldown()
+    ],
     esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })],
     format: ['esm']
   },
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme.development': './src/bundle.ts' },
-    loader: {
-      ...baseConfig.loader,
-      '.css': 'local-css'
-    },
     esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }), umdResolvePlugin],
+    plugins: [
+      LightningCSS.rolldown()
+    ],
     format: 'iife',
     outExtension() {
       return { js: '.js' };
@@ -73,11 +71,10 @@ export default defineConfig([
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme.production.min': './src/bundle.ts' },
-    loader: {
-      ...baseConfig.loader,
-      '.css': 'local-css'
-    },
     esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }), umdResolvePlugin],
+    plugins: [
+      LightningCSS.rolldown()
+    ],
     format: 'iife',
     minify: true,
     outExtension() {

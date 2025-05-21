@@ -1,0 +1,3 @@
+{
+  extends: ['github>sxzz/renovate-config'],
+}

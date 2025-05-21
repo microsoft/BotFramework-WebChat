@@ -1,5 +1,5 @@
 import { resolve } from 'path';
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsdown';
 import { fileURLToPath } from 'url';
 
 const target = ['chrome100', 'safari16'];
