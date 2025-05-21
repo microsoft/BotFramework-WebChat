@@ -42,12 +42,23 @@ export async function transformCssModule(
   const compiledId = actualId
     .replaceAll('\\', '/')
     .replace(/\.module\.css$/, '.module_built.css')
+
+  const classes = Object.fromEntries(
+    Object.entries(res.exports ?? {}).map(([key, value]) => [key, value.name]),
+  )
+  let exports = `const classes = ${JSON.stringify(classes)}\nexport default classes\n`
+  const i = 0
+  for (const key of Object.keys(classes)) {
+    const sanitizedKey = `_${key.replaceAll(/\W/g, '_')}${i}`
+    exports +=
+      `\nconst ${sanitizedKey} = classes[${JSON.stringify(key)}]\n` +
+      `export { ${sanitizedKey} as ${JSON.stringify(key)} }\n`
+  }
+
   return {
     code: res.code.toString(),
     map: 'map' in res ? res.map?.toString() : undefined,
     id: compiledId,
-    exports: res.exports
-      ? `export default ${JSON.stringify(res.exports)}`
-      : '',
+    exports,
   }
 }
