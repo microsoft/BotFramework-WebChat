@@ -1,5 +1,5 @@
 import path from 'path';
-import { defineConfig } from 'tsup';
+import { defineConfig } from 'tsdown';
 import baseConfig from '../../tsdown.base.config';
 
 // Redirect import paths for "microsoft-cognitiveservices-speech-sdk(...)"
@@ -48,7 +48,7 @@ const config: typeof baseConfig = {
     // Webpack 4: "Can't import the named export 'rewrite' from non EcmaScript module (only default export is available)"
     'shiki', // shiki -> @shikijs/core -> @shikijs/engine-javascript -> regex
     // Issues related to Webpack 4 when it tries to statically analyze dependencies.
-    // The way `microsoft-cognitiveservices-speech-sdk` imported the `uuid` package (in their `Guid.js`) is causing esbuild/tsup to proxy require() into __require() for dynamic loading.
+    // The way `microsoft-cognitiveservices-speech-sdk` imported the `uuid` package (in their `Guid.js`) is causing esbuild/tsdown to proxy require() into __require() for dynamic loading.
     // Webpack 4 cannot statically analyze the code and failed with error "Critical dependency: require function is used in a way in which dependencies cannot be statically extracted".
     'uuid'
   ]
