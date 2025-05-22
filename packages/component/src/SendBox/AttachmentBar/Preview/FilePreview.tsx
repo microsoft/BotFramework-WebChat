@@ -4,8 +4,7 @@ import React, { memo } from 'react';
 import { object, picklist, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { useStyleSet } from '../../../hooks';
-import FileIcon from './FileIcon';
-import ImageIcon from './ImageIcon';
+import ModdableIcon from '../../../ModdableIcon/ModdableIcon';
 import { sendBoxAttachmentSchema } from './sendBoxAttachment';
 
 const sendBoxAttachmentBarItemFileAttachmentPreviewPropsSchema = pipe(
@@ -34,10 +33,14 @@ function SendBoxAttachmentBarItemFileAttachmentPreview(props: SendBoxAttachmentB
       className={classNames(
         sendBoxAttachmentBarItemFilePreviewClassName,
         'webchat__send-box-attachment-bar-item-file-preview',
-        'webchat__send-box-attachment-bar-item-file-preview--as-list-item'
+        'webchat__send-box-attachment-bar-item-file-preview--as-list-item',
+        {
+          'webchat__send-box-attachment-bar-item-file-preview--is-file': !attachment.thumbnailURL,
+          'webchat__send-box-attachment-bar-item-file-preview--is-image': attachment.thumbnailURL
+        }
       )}
     >
-      {attachment.thumbnailURL ? <ImageIcon /> : <FileIcon />}
+      <ModdableIcon />
       <div className="webchat__send-box-attachment-bar-item-file-preview__text">{attachmentName}</div>
     </div>
   ) : (
@@ -45,10 +48,11 @@ function SendBoxAttachmentBarItemFileAttachmentPreview(props: SendBoxAttachmentB
       className={classNames(
         sendBoxAttachmentBarItemFilePreviewClassName,
         'webchat__send-box-attachment-bar-item-file-preview',
-        'webchat__send-box-attachment-bar-item-file-preview--as-thumbnail'
+        'webchat__send-box-attachment-bar-item-file-preview--as-thumbnail',
+        'webchat__send-box-attachment-bar-item-file-preview--is-file'
       )}
     >
-      <FileIcon size="large" />
+      <ModdableIcon />
     </div>
   );
 }

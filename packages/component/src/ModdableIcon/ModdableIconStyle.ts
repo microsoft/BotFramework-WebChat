@@ -13,7 +13,7 @@ export default function createModdableIconStyle() {
       backgroundSize: 'var(--webchat__moddable-icon--size, 1em)',
 
       // 2. If image is not set, fallback to solid color.
-      backgroundColor: 'var(--webchat__moddable-icon--color, currentColor)',
+      backgroundColor: 'var(--webchat__moddable-icon--color, transparent)',
 
       // 3. Set the mask if any.
       maskImage: 'var(--webchat__moddable-icon--mask)', // TODO: Need to think about 3P customization story.
