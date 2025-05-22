@@ -80,7 +80,7 @@ const iifeConfig = {
   platform: 'browser',
   target: [...config.target, 'es2019'],
   noExternal: [
-    // ...iifeDeps,
+    ...iifeDeps,
     ...config.noExternal,
   ],
   outputOptions(outputOptions) {
