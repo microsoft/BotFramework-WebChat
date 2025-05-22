@@ -19,6 +19,19 @@ const disablePlugin = (pluginName: string): Plugin => ({
   }
 });
 
+const cssPlugin = lightningCssPlugin({
+  include: [/\.module\.css$/u],
+  options: {
+    cssModules: {
+      pattern: 'w[hash]_[local]',
+      pure: true,
+      animation: false,
+      grid: false,
+      customIdents: false
+    }
+  }
+});
+
 const baseConfig: Options & { target: Target[] } = {
   dts: true,
   env: {
@@ -68,22 +81,10 @@ const baseConfig: Options & { target: Target[] } = {
             loader: 'tsx',
             name: 'babel-plugin-istanbul:tsx',
             predicate: istanbulPredicate
-          })
+          }),
+          cssPlugin
         ]
-      : [
-          lightningCssPlugin({
-            include: [/\.module\.css$/u],
-            options: {
-              cssModules: {
-                pattern: 'w[hash]_[local]',
-                pure: true,
-                animation: false,
-                grid: false,
-                customIdents: false
-              }
-            }
-          })
-        ],
+      : [cssPlugin],
   format: 'esm',
   loader: { '.js': 'jsx' },
   metafile: true,
