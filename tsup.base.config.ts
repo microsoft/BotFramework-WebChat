@@ -75,7 +75,7 @@ const baseConfig: Options & { target: Target[] } = {
             include: [/\.module\.css$/u],
             options: {
               cssModules: {
-                pattern: 'w[hash]',
+                pattern: 'w[hash]_[local]',
                 pure: true,
                 animation: false,
                 grid: false,
