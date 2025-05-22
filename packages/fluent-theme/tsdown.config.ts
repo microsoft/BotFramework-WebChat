@@ -5,33 +5,38 @@ import baseConfig from '../../tsdown.base.config';
 import { fluentStyleContent as fluentStyleContentPlaceholder } from './src/styles/createStyles';
 import { injectCSSPlugin } from 'botframework-webchat-styles/build';
 import LightningCSS from 'unplugin-lightningcss';
+import type { Plugin } from 'rollup';
 
-const umdResolvePlugin = {
+import pkg from './package.json';
+
+const iifeDeps = [
+  'botframework-webchat-component/decorator',
+  'botframework-webchat-api/decorator',
+  'botframework-webchat-component/internal'
+].concat(Object.keys(pkg.dependencies));
+
+const umdResolvePlugin: Plugin = {
   name: 'umd-resolve',
-  setup(build) {
-    build.onResolve({ filter: /^react$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/react.ts')
-    }));
-
-    build.onResolve({ filter: /^botframework-webchat-api$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/index.ts')
-    }));
-
-    build.onResolve({ filter: /^botframework-webchat-api\/decorator$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/decorator.ts')
-    }));
-
-    build.onResolve({ filter: /^botframework-webchat-component$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/index.ts')
-    }));
-
-    build.onResolve({ filter: /^botframework-webchat-component\/internal$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/internal.ts')
-    }));
-
-    build.onResolve({ filter: /^botframework-webchat-component\/decorator$/u }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/decorator.ts')
-    }));
+  resolveId(source) {
+    if (source === 'react') {
+      return join(fileURLToPath(import.meta.url), '../src/external.umd/react.ts');
+    }
+    if (source === 'botframework-webchat-api') {
+      return join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/index.ts');
+    }
+    if (source === 'botframework-webchat-api/decorator') {
+      return join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/decorator.ts');
+    }
+    if (source === 'botframework-webchat-component') {
+      return join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/index.ts');
+    }
+    if (source === 'botframework-webchat-component/internal') {
+      return join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/internal.ts');
+    }
+    if (source === 'botframework-webchat-component/decorator') {
+      return join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/decorator.ts');
+    }
+    return null;
   }
 };
 
@@ -40,20 +45,25 @@ export default defineConfig([
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
     env: { ...baseConfig.env, module_format: 'commonjs' },
-    plugins: [
-      LightningCSS.rolldown()
+    plugins: [LightningCSS.rolldown()],
+    esbuildPlugins: [
+      ...(baseConfig.esbuildPlugins || []),
+      injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
     ],
     esbuildPlugins: [
       ...(baseConfig.esbuildPlugins || []),
-      injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })],
+      injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
+    ],
     format: ['cjs'],
-    target: [...baseConfig.target, 'es2019']
+    target: [...baseConfig.target, 'es2019'],
   },
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
-    plugins: [
-      LightningCSS.rolldown()
+    plugins: [LightningCSS.rolldown()],
+    esbuildPlugins: [
+      ...(baseConfig.esbuildPlugins || []),
+      injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
     ],
     esbuildPlugins: [
       ...(baseConfig.esbuildPlugins || []),
@@ -68,13 +78,17 @@ export default defineConfig([
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
       umdResolvePlugin
     ],
-    plugins: [
-      LightningCSS.rolldown()
-    ],
+    plugins: [LightningCSS.rolldown(), umdResolvePlugin],
     format: 'iife',
-    outExtension() {
-      return { js: '.js' };
-    }
+    outputOptions(outputOptions) {
+      outputOptions.entryFileNames = '[name].js';
+      outputOptions.globals = {
+        react: 'React',
+        'react/jsx-runtime': 'React'
+      };
+      return outputOptions;
+    },
+    noExternal: iifeDeps
   },
   {
     ...baseConfig,
@@ -84,13 +98,17 @@ export default defineConfig([
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
       umdResolvePlugin
     ],
-    plugins: [
-      LightningCSS.rolldown()
-    ],
+    plugins: [LightningCSS.rolldown(), umdResolvePlugin],
     format: 'iife',
     minify: true,
-    outExtension() {
-      return { js: '.js' };
-    }
+    outputOptions(outputOptions) {
+      outputOptions.entryFileNames = '[name].js';
+      outputOptions.globals = {
+        react: 'React',
+        'react/jsx-runtime': 'React'
+      };
+      return outputOptions;
+    },
+    noExternal: iifeDeps
   }
 ]);
