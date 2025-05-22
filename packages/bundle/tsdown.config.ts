@@ -3,7 +3,7 @@ import { defineConfig } from 'tsdown';
 import baseConfig from '../../tsdown.base.config';
 import type { Plugin as RollupPlugin } from 'rollup';
 
-import pkg from './package.json'
+import pkg from './package.json';
 
 const iifeDeps = Object.keys(pkg.dependencies);
 
@@ -79,14 +79,11 @@ const iifeConfig = {
   format: 'iife',
   platform: 'browser',
   target: [...config.target, 'es2019'],
-  noExternal: [
-    ...iifeDeps,
-    ...config.noExternal,
-  ],
+  noExternal: [...iifeDeps, ...config.noExternal],
   outputOptions(outputOptions) {
     outputOptions.entryFileNames = '[name].js';
     return outputOptions;
-  },
+  }
 };
 
 export default defineConfig([
@@ -100,7 +97,7 @@ export default defineConfig([
   {
     ...iifeConfig,
     entry: {
-      'webchat': './src/bundle/index.ts'
+      webchat: './src/bundle/index.ts'
     }
   },
   {
@@ -112,7 +109,7 @@ export default defineConfig([
   {
     ...config,
     format: 'esm'
-  },
+  }
   // {
   //   ...config,
   //   format: 'cjs',
