@@ -1,11 +1,36 @@
 import { type Options } from 'tsup';
 import { babelPlugin, defaultPredicate, type Predicate } from './esbuildBabelPluginIstanbul';
+import lightningCssPlugin from 'unplugin-lightningcss/esbuild';
 
 type Target = Exclude<Options['target'], Array<unknown> | undefined>;
 
 const env = process.env.NODE_ENV || 'development';
 const { npm_package_version } = process.env;
 const istanbulPredicate: Predicate = args => defaultPredicate(args) && !/\.worker\.[cm]?[jt]s$/u.test(args.path);
+
+type Plugin = NonNullable<Options['plugins']>[number];
+const disablePlugin = (pluginName: string): Plugin => ({
+  name: `disable-plugin-${pluginName}`,
+  esbuildOptions: options => {
+    const plugin = options.plugins?.find(({ name }) => name === pluginName);
+    if (plugin) {
+      plugin.setup = () => Promise.resolve();
+    }
+  }
+});
+
+const cssPlugin = lightningCssPlugin({
+  include: [/\.module\.css$/u],
+  options: {
+    cssModules: {
+      pattern: 'w[hash]_[local]',
+      pure: true,
+      animation: false,
+      grid: false,
+      customIdents: false
+    }
+  }
+});
 
 const baseConfig: Options & { target: Target[] } = {
   dts: true,
@@ -16,6 +41,7 @@ const baseConfig: Options & { target: Target[] } = {
     NODE_ENV: env,
     ...(npm_package_version ? { npm_package_version } : {})
   },
+  plugins: [disablePlugin('postcss'), disablePlugin('svelte')],
   esbuildOptions: options => {
     // esbuild don't touch AMD but it also don't remove AMD glue code.
     // Some of our packages prefers AMD over CJS via UMD and it also use anonymous modules.
@@ -55,9 +81,10 @@ const baseConfig: Options & { target: Target[] } = {
             loader: 'tsx',
             name: 'babel-plugin-istanbul:tsx',
             predicate: istanbulPredicate
-          })
+          }),
+          cssPlugin
         ]
-      : [],
+      : [cssPlugin],
   format: 'esm',
   loader: { '.js': 'jsx' },
   metafile: true,

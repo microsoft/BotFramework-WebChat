@@ -39,32 +39,30 @@ export default defineConfig([
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
     env: { ...baseConfig.env, module_format: 'commonjs' },
-    loader: {
-      ...baseConfig.loader,
-      '.css': 'local-css'
-    },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })],
+    esbuildPlugins: [
+      ...(baseConfig.esbuildPlugins || []),
+      injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
+    ],
     format: ['cjs'],
     target: [...baseConfig.target, 'es2019']
   },
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
-    loader: {
-      ...baseConfig.loader,
-      '.css': 'local-css'
-    },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })],
+    esbuildPlugins: [
+      ...(baseConfig.esbuildPlugins || []),
+      injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
+    ],
     format: ['esm']
   },
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme.development': './src/bundle.ts' },
-    loader: {
-      ...baseConfig.loader,
-      '.css': 'local-css'
-    },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }), umdResolvePlugin],
+    esbuildPlugins: [
+      ...(baseConfig.esbuildPlugins || []),
+      injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
+      umdResolvePlugin
+    ],
     format: 'iife',
     outExtension() {
       return { js: '.js' };
@@ -75,9 +73,12 @@ export default defineConfig([
     entry: { 'botframework-webchat-fluent-theme.production.min': './src/bundle.ts' },
     loader: {
       ...baseConfig.loader,
-      '.css': 'local-css'
     },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }), umdResolvePlugin],
+    esbuildPlugins: [
+      ...(baseConfig.esbuildPlugins || []),
+      injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
+      umdResolvePlugin
+    ],
     format: 'iife',
     minify: true,
     outExtension() {
