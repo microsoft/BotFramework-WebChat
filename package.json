@@ -37,8 +37,7 @@
     "biome": "biome check ./packages",
     "browser": "node ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html/",
     "browser:watch": "node-dev --no-notify --respawn ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html/",
-    "build:plugin": "cd packages/unplugin-lightningcss && npm run build",
-    "build": "npm run build:plugin && npm run build --if-present --workspaces",
+    "build": "npm run build --if-present --workspaces",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0) && npm run bump:packages && npm run bump:samples",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -209,7 +208,7 @@
     "tsdown": "^0.11.12",
     "typescript": "^5.7.3",
     "typescript-plugin-css-modules": "^5.1.0",
-    "unplugin-lightningcss": "file:./packages/unplugin-lightningcss",
+    "unplugin-lightningcss": "^0.4.1",
     "xmlbuilder": "^15.1.1"
   },
   "dependencies": {
