@@ -12,7 +12,7 @@
     "node": ">= 14.0.0"
   },
   "scripts": {
-    "build": "npm run build:babel && npm run build:esbuild",
+    "skip-build": "npm run build:babel && npm run build:esbuild",
     "build:babel": "babel --config-file ./babel.config.json --out-dir lib src",
     "build:esbuild": "esbuild lib/browser/index.js --bundle --define:define=undefined --define:process.env.CI=undefined --outfile=dist/test-harness.js --sourcemap --target=chrome100",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
