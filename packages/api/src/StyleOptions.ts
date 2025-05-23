@@ -961,6 +961,21 @@ type StyleOptions = {
    * To add new groupings, configure `groupActivitiesMiddleware` to output extra groups. Then, add the group names to `styleOptions.groupActivitiesBy`.
    */
   groupActivitiesBy?: readonly string[] | undefined;
+
+  /**
+   * Send box: maximum number of attachment item to preview as thumbnail before showing as text-only.
+   * Send box: maximum height of the attachment bar.
+   *
+   * @default 114
+   */
+  sendBoxAttachmentBarMaxHeight?: number;
+
+  /**
+   * Send box: maximum number of attachment item to preview as thumbnail before showing as list item.
+   *
+   * @default 3
+   */
+  sendBoxAttachmentBarMaxThumbnail?: number;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:

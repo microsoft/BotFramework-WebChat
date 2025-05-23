@@ -10,11 +10,24 @@
   <body>
     <main id="webchat"></main>
     <script>
+      const {
+        WebChat: { testIds }
+      } = window;
+
       run(async function () {
         const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
 
-        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: {
+              sendBoxTextWrap: true
+            }
+          },
+          document.getElementById('webchat')
+        );
 
         await pageConditions.uiConnected();
 
@@ -22,17 +35,24 @@
         await host.upload(pageElements.uploadButton(), 'seaofthieves.jpg');
 
         // THEN: A checkmark should show next to the "upload button".
-        await host.snapshot();
+        await host.snapshot('local');
 
-        // WHEN: A message is typed into the send box and the send button is clicked.
-        await host.click(pageElements.sendBoxTextBox());
-        await host.sendKeys('Hello, World!\n');
-        // await host.click(pageElements.sendButton());
+        // WHEN: A message is typed into the send box.
+        await host.click(pageElements.byTestId(testIds.sendBoxTextBox));
+        await host.sendKeys(
+          'Sint occaecat cillum anim ea id reprehenderit aliquip consequat adipisicing irure Lorem consectetur.'
+        );
+
+        // THEN: The attachment bar should show preview of the attachment.
+        await host.snapshot('local');
+
+        // WHEN: Send button is clicked.
+        await host.click(pageElements.sendButton());
 
         // THEN: A thumbnail with a message and bot reply should show.
         await pageConditions.allOutgoingActivitiesSent();
         await pageConditions.numActivitiesShown(2);
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
