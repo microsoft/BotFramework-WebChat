@@ -3,8 +3,8 @@ import { type StyleSet } from '../Styles/StyleSet/types/StyleSet';
 export default function createModdableIconStyle() {
   return {
     '&.webchat__moddable-icon': {
-      height: '100%',
-      width: '100%',
+      height: 'var(--webchat__moddable-icon--size, 1em)',
+      width: 'var(--webchat__moddable-icon--size, 1em)',
 
       // 1. Use the image as texture.
       backgroundImage: 'var(--webchat__moddable-icon--image, none)',

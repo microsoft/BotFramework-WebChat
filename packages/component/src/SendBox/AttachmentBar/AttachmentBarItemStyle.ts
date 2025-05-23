@@ -33,6 +33,9 @@ export default function createSendBoxAttachmentBarItemStyle(_: StrictStyleOption
     '& .webchat__send-box-attachment-bar-item__delete-button': {
       appearance: 'none',
       borderRadius: '4px', // BorderRadiusXS is not defined in Fluent UI, guessing it is 4px.
+      display: 'grid', // Center the image
+      alignItems: 'center',
+      justifyContent: 'center',
       gridArea: 'body',
       justifySelf: 'end',
       opacity: '1',

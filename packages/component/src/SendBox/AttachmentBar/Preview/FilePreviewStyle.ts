@@ -15,7 +15,7 @@ export default function createSendBoxAttachmentBarItemFilePreviewStyle({ primary
 
       '&.webchat__send-box-attachment-bar-item-file-preview--as-thumbnail': {
         height: '100%',
-        justifyContent: 'stretch',
+        justifyContent: 'center',
         width: '100%'
       },
 
