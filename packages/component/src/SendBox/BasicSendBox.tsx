@@ -78,6 +78,7 @@ function BasicSendBox(props: BasicSendBoxProps) {
     >
       <SuggestedActions />
       <div className="webchat__send-box__main">
+        <AttachmentBar className="webchat__send-box__attachment-bar" />
         <SendBoxToolbarMiddlewareProxy className={buttonClassName} request={undefined} />
         <div className="webchat__send-box__editable">
           {speechInterimsVisible ? (
@@ -91,7 +92,6 @@ function BasicSendBox(props: BasicSendBoxProps) {
         ) : (
           <SendButton className={buttonClassName} />
         )}
-        <AttachmentBar className="webchat__send-box__attachment-bar" />
       </div>
     </div>
   );

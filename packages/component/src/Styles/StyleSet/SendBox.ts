@@ -39,7 +39,7 @@ export default function createSendBoxStyle({
 
         // For unknown reason, if the attachment bar does not exist, the second row is still occupying about 1px, we need to hide it.
         '&:has(.webchat__send-box__attachment-bar)': {
-          gridTemplateAreas: '"upload-button text-box send-button" "attachment-bar attachment-bar attachment-bar"',
+          gridTemplateAreas: '"attachment-bar attachment-bar attachment-bar" "upload-button text-box send-button"',
           gridTemplateRows: 'auto auto'
         }
       },
@@ -59,7 +59,7 @@ export default function createSendBoxStyle({
 
       '& .webchat__send-box__attachment-bar': {
         padding: `${paddingRegular}px`,
-        paddingBlockStart: `0px`
+        paddingBlockEnd: `0px`
       }
     }
   } satisfies StyleSet;
