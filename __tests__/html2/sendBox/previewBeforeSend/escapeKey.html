@@ -43,10 +43,10 @@
         await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(1));
 
         // WHEN: Press TAB key twice to move the focus to the delete button.
-        await host.sendKeys('TAB', 'TAB');
+        await host.sendShifTab(2);
 
         // THEN: Should focus on the attachment delete button.
-        expect(document.activeElement.getAttribute('data-testid')).toBe(testIds.sendBoxAttachmentBarItemDeleteButton);
+        expect(document.activeElement).toBe(pageElements.allByTestId(testIds.sendBoxAttachmentBarItemDeleteButton)[0]);
 
         // THEN: Should match screenshot.
         await host.snapshot('local');

@@ -48,11 +48,11 @@
           );
         }
 
-        // WHEN: Press TAB key twice to move the focus to the delete button.
-        await host.sendKeys('TAB', 'TAB');
+        // WHEN: Press SHIFT-TAB key 5 times to move the focus to the delete button of the first attachment.
+        await host.sendShiftTab(5);
 
-        // THEN: Should focus on the attachment delete button of the 4th attachment.
-        expect(document.activeElement.getAttribute('data-testid')).toBe(testIds.sendBoxAttachmentBarItemDeleteButton);
+        // THEN: Should focus on the attachment delete button of the first attachment.
+        expect(document.activeElement).toBe(pageElements.allByTestId(testIds.sendBoxAttachmentBarItemDeleteButton)[0]);
 
         // WHEN: Press SPACEBAR key.
         await host.sendKeys(' ');
