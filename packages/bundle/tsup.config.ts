@@ -38,7 +38,7 @@ const config: typeof baseConfig = {
     SPEECH_CONDUCT_OCSP_CHECK: '',
     SPEECH_OCSP_CACHE_ROOT: ''
   },
-  esbuildPlugins: [...(baseConfig.esbuildPlugins || []), resolveCognitiveServicesToES2015],
+  esbuildPlugins: [resolveCognitiveServicesToES2015],
   noExternal: [
     '@babel/runtime',
     'memoize-one',
