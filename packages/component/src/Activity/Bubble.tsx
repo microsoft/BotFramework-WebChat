@@ -1,14 +1,13 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 1, 2, 10] }] */
 
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-api/internal';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { memo } from 'react';
 import { boolean, literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
-import reactNode from '../types/internal/reactNode';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 
 const { useDirection, useStyleOptions } = hooks;

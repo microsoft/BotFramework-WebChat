@@ -34,12 +34,7 @@
         await directLine.emulateIncomingActivity({
           from: { role: 'bot' },
           suggestedActions: {
-            actions: [
-              {
-                title: 'Aloha!',
-                type: 'imBack'
-              }
-            ],
+            actions: [{ title: 'Aloha!', type: 'imBack' }],
             to: ''
           },
           text: 'Hello, World!',
@@ -51,6 +46,21 @@
         // THEN: Should have one suggested action button shown.
         expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(1);
         expect(pageElements.allByTestId(testIds.suggestedActionButton)[0]).toHaveProperty('textContent', 'Aloha!');
+
+        // THEN: getState() should have 1 suggested actions and origin activity.
+        expect(store.getState().suggestedActions).toHaveLength(1);
+        expect(store.getState().suggestedActions[0]).toEqual({ title: 'Aloha!', type: 'imBack' });
+        expect(store.getState().suggestedActionsOriginActivity).toEqual({
+          activity: expect.objectContaining({
+            from: { role: 'bot' },
+            suggestedActions: {
+              actions: [{ title: 'Aloha!', type: 'imBack' }],
+              to: ''
+            },
+            text: 'Hello, World!',
+            type: 'message'
+          })
+        });
 
         // WHEN: Dispatching "WEB_CHAT/CLEAR_SUGGESTED_ACTIONS" action.
         store.dispatch({ type: 'WEB_CHAT/CLEAR_SUGGESTED_ACTIONS' });

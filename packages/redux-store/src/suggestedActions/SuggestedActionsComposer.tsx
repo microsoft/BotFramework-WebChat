@@ -1,0 +1,78 @@
+import {
+  CLEAR_SUGGESTED_ACTIONS,
+  SET_SUGGESTED_ACTIONS,
+  setSuggestedActionsActionSchema,
+  WebChatActivity,
+  type DirectLineCardAction
+} from 'botframework-webchat-core';
+import { setSuggestedActionsOriginActivityRaw, setSuggestedActionsRaw } from 'botframework-webchat-core/internal';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { type Action } from 'redux';
+import { object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
+
+import reduxStoreSchema from '../private/reduxStoreSchema';
+import SuggestedActionsContext, { type SuggestedActionsContextType } from './private/SuggestedActionsContext';
+
+const suggestedActionsComposerPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    store: reduxStoreSchema
+  }),
+  readonly()
+);
+
+type SuggestedActionsComposerProps = InferInput<typeof suggestedActionsComposerPropsSchema>;
+
+const EMPTY_ARRAY = Object.freeze([]);
+
+function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
+  const {
+    children,
+    store: { dispatch }
+  } = validateProps(suggestedActionsComposerPropsSchema, props);
+
+  const [originActivity, setOriginActivity] = useState<WebChatActivity | undefined>();
+  const [suggestedActions, setSuggestedActions] = useState<readonly DirectLineCardAction[]>(EMPTY_ARRAY);
+
+  // #region Redux store sync
+  const handleAction = useCallback(
+    (action: Action) => {
+      if (action.type === CLEAR_SUGGESTED_ACTIONS) {
+        setSuggestedActions(EMPTY_ARRAY);
+      } else if (action.type === SET_SUGGESTED_ACTIONS) {
+        const {
+          payload: { originActivity, suggestedActions }
+        } = parse(setSuggestedActionsActionSchema, action);
+
+        setOriginActivity(originActivity);
+        setSuggestedActions(Object.freeze(Array.from(suggestedActions)));
+      }
+    },
+    [setOriginActivity, setSuggestedActions]
+  );
+
+  useMemo(() => dispatch(setSuggestedActionsRaw(suggestedActions)), [dispatch, suggestedActions]);
+  useMemo(() => dispatch(setSuggestedActionsOriginActivityRaw(originActivity)), [dispatch, originActivity]);
+
+  useEffect(() => {
+    dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK' });
+
+    return () => {
+      dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/UNREGISTER_ACTION_SINK' });
+    };
+  }, [dispatch, handleAction]);
+  // #endregion
+
+  const useSuggestedActions = useCallback<SuggestedActionsContextType['useSuggestedActions']>(
+    () => Object.freeze([suggestedActions, setSuggestedActions, Object.freeze({ activity: originActivity })]),
+    [originActivity, setSuggestedActions, suggestedActions]
+  );
+
+  const context = useMemo<SuggestedActionsContextType>(() => ({ useSuggestedActions }), [useSuggestedActions]);
+
+  return <SuggestedActionsContext.Provider value={context}>{children}</SuggestedActionsContext.Provider>;
+}
+
+export default memo(SuggestedActionsComposer);
+export { suggestedActionsComposerPropsSchema, type SuggestedActionsComposerProps };

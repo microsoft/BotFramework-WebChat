@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import { number, object } from 'valibot';
 import validateProps from './validateProps';
 

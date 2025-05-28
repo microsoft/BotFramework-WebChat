@@ -10,7 +10,8 @@ function reactNode<
 function reactNode<
   const TMessage extends ErrorMessage<CustomIssue> | undefined = ErrorMessage<CustomIssue> | undefined
 >(message?: TMessage): CustomSchema<ReactNode, TMessage> {
-  return custom<ReactNode, TMessage>(() => true, message);
+  // TODO: Why do we need force cast?
+  return custom<ReactNode, TMessage>(() => true, message as TMessage);
 }
 
 export default reactNode;

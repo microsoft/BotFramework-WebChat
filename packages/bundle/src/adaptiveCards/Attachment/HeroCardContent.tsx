@@ -1,4 +1,4 @@
-import { validateProps } from 'botframework-webchat-api/internal';
+import { validateProps } from 'botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';

@@ -1,10 +1,9 @@
-import { validateProps } from 'botframework-webchat-api/internal';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { Fragment, memo } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../../hooks/useStyleSet';
-import reactNode from '../../../types/internal/reactNode';
 
 const plainTextContentPropsSchema = pipe(
   object({

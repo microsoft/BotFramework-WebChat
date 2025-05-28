@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-api/internal';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { memo, useRef, type MouseEventHandler } from 'react';
 import {
@@ -17,7 +17,6 @@ import {
 
 import useFocusVisible from '../hooks/internal/useFocusVisible';
 import useStyleSet from '../hooks/useStyleSet';
-import reactNode from '../types/internal/reactNode';
 import AccessibleButton from '../Utils/AccessibleButton';
 
 const { useStyleOptions } = hooks;

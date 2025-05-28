@@ -2,7 +2,7 @@
 /* eslint react/no-unsafe: off */
 
 import { SendBoxMiddlewareProxy, hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-api/internal';
+import { validateProps } from 'botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { memo } from 'react';
 import { fallback, literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';

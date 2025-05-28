@@ -49,8 +49,8 @@
     "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
   "files": [
-    "./dist/**/*",
     "./*.js",
+    "./dist/**/*",
     "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
@@ -71,7 +71,9 @@
   },
   "localDependencies": {
     "botframework-webchat-cldr-data": "development",
-    "botframework-webchat-core": "production"
+    "botframework-webchat-core": "production",
+    "botframework-webchat-react-valibot": "development",
+    "botframework-webchat-store": "development"
   },
   "pinDependencies": {
     "@babel/cli": [
@@ -115,6 +117,8 @@
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "botframework-webchat-cldr-data": "36.0.0-0",
+    "botframework-webchat-react-valibot": "^0.0.0-0",
+    "botframework-webchat-redux-store": "^0.0.0-0",
     "concurrently": "^9.1.2",
     "core-js": "^3.40.0",
     "cross-env": "^7.0.3",

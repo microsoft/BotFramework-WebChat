@@ -1,5 +1,17 @@
 import { parse, safeParse, type BaseIssue, type BaseSchema, type InferInput, type InferOutput } from 'valibot';
 
+declare global {
+  interface EnvironmentVariables {
+    NODE_ENV?: string | undefined;
+  }
+
+  interface Process {
+    env: EnvironmentVariables;
+  }
+
+  const process: Process;
+}
+
 /**
  * Specifies the props isolation mode.
  *
@@ -49,7 +61,10 @@ export default function validateProps<const TSchema extends BaseSchema<unknown, 
   try {
     return parse(propsSchema, props);
   } catch (error) {
-    console.error('botframework-webchat: Validation error while parsing props.', error.issues);
+    console.error(
+      'botframework-webchat: Validation error while parsing props.',
+      error && typeof error === 'object' && 'issues' in error && error.issues
+    );
 
     throw error;
   }

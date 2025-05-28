@@ -1,4 +1,4 @@
-import { validateProps } from 'botframework-webchat-api/internal';
+import { validateProps } from 'botframework-webchat-react-valibot';
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import React, { memo } from 'react';
 import { object, picklist, pipe, readonly, string, type InferInput } from 'valibot';

@@ -1,5 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
 
+import { reactNode } from 'botframework-webchat-react-valibot';
 import React, { forwardRef, type MouseEventHandler } from 'react';
 import {
   boolean,
@@ -15,8 +16,6 @@ import {
   string,
   type InferInput
 } from 'valibot';
-
-import reactNode from '../types/internal/reactNode';
 
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 

@@ -31,6 +31,7 @@ import {
   type OneOrMany,
   type WebChatActivity
 } from 'botframework-webchat-core';
+import { ReduxStoreComposer } from 'botframework-webchat-redux-store';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { Provider } from 'react-redux';
@@ -762,11 +763,13 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
 
   return (
     <Provider context={WebChatReduxContext} store={memoizedStore}>
-      <ActivityKeyerComposer>
-        <ActivityAcknowledgementComposer>
-          <ComposerCore onTelemetry={onTelemetry} {...props} />
-        </ActivityAcknowledgementComposer>
-      </ActivityKeyerComposer>
+      <ReduxStoreComposer store={memoizedStore}>
+        <ActivityKeyerComposer>
+          <ActivityAcknowledgementComposer>
+            <ComposerCore onTelemetry={onTelemetry} {...props} />
+          </ActivityAcknowledgementComposer>
+        </ActivityKeyerComposer>
+      </ReduxStoreComposer>
     </Provider>
   );
 };

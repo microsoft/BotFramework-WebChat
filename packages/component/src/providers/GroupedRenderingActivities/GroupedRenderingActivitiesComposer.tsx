@@ -3,12 +3,12 @@ import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
 import { object, optional, parse, pipe, readonly, type InferOutput } from 'valibot';
 
-import reactNode from '../../types/internal/reactNode';
 import useRenderingActivities from '../RenderingActivities/useRenderingActivities';
 import { type GroupedRenderingActivities } from './GroupedRenderingActivities';
 import GroupedRenderingActivitiesContext, {
   type GroupedRenderingActivitiesContextType
 } from './private/GroupedRenderingActivitiesContext';
+import { reactNode } from 'botframework-webchat-react-valibot';
 
 const { useGetKeyByActivity, useGroupActivitiesByName, useStyleOptions } = hooks;
 

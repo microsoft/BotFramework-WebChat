@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
 import { type Action as AdaptiveCardAction, type OpenUrlAction, type SubmitAction } from 'adaptivecards';
-import { validateProps } from 'botframework-webchat-api/internal';
+import { validateProps } from 'botframework-webchat-react-valibot';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';

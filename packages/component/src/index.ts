@@ -60,6 +60,15 @@ import * as componentHooks from './hooks/index';
 
 export { type SendBoxFocusOptions } from './hooks/index';
 
+declare global {
+  interface EnvironmentVariables {
+    build_tool?: string | undefined;
+    module_format?: string | undefined;
+    node_env?: string | undefined;
+    npm_package_version?: string | undefined;
+  }
+}
+
 const hooks = {
   ...apiHooks,
   ...componentHooks

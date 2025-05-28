@@ -1,6 +1,6 @@
 /* eslint complexity: ["error", 50] */
 
-import { validateProps } from 'botframework-webchat-api/internal';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import React, { memo, useCallback, useEffect, useMemo, useRef, type MutableRefObject } from 'react';
 import {
   custom,
@@ -15,7 +15,6 @@ import {
   type InferInput
 } from 'valibot';
 
-import reactNode from '../../types/internal/reactNode';
 import RovingTabIndexContext, { type RovingTabIndexContextType } from './private/Context';
 
 type ItemRef = MutableRefObject<HTMLElement | undefined>;

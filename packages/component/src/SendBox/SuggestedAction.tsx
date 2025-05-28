@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-api/internal';
+import { validateProps } from 'botframework-webchat-react-valibot';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo, useCallback, type MouseEventHandler } from 'react';

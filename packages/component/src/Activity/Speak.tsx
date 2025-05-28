@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-api/internal';
+import { validateProps } from 'botframework-webchat-react-valibot';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo } from 'react';
 import ReactSay, { SayUtterance } from 'react-say';

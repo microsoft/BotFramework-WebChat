@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-api/internal';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import {
   getOrgSchemaMessage,
   onErrorResumeNext,
@@ -21,7 +21,6 @@ import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import { type PropsOf } from '../../../types/PropsOf';
-import reactNode from '../../../types/internal/reactNode';
 import ActivityCopyButton from './ActivityCopyButton';
 import ActivityViewCodeButton from './ActivityViewCodeButton';
 import CitationModalContext from './CitationModalContent';

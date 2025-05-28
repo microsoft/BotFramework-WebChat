@@ -1,4 +1,4 @@
-import { validateProps } from 'botframework-webchat-api/internal';
+import { validateProps } from 'botframework-webchat-react-valibot';
 import React, { memo } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 

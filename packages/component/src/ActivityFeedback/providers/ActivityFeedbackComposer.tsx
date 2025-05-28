@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-api/internal';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import {
   getOrgSchemaMessage,
   parseAction,
@@ -13,7 +13,6 @@ import { useRefFrom } from 'use-ref-from';
 import { useStateWithRef } from 'use-state-with-ref';
 import { custom, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
-import reactNode from '../../types/internal/reactNode';
 import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import canActionResubmit from '../private/canActionResubmit';
 import getDisclaimerFromFeedbackLoop from '../private/getDisclaimerFromFeedbackLoop';

@@ -34,14 +34,8 @@
         store.dispatch({
           payload: {
             suggestedActions: [
-              {
-                title: 'Hello, World!',
-                type: 'imBack'
-              },
-              {
-                title: 'Aloha!',
-                type: 'imBack'
-              }
+              { title: 'Hello, World!', type: 'imBack' },
+              { title: 'Aloha!', type: 'imBack' }
             ]
           },
           type: 'WEB_CHAT/SET_SUGGESTED_ACTIONS'
@@ -52,8 +46,16 @@
 
         // THEN: Should show 2 suggested actions.
         await waitFor(() => expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(2));
-        expect(pageElements.allByTestId(testIds.suggestedActionButton)[0]).toHaveProperty('textContent', 'Hello, World!');
+        expect(pageElements.allByTestId(testIds.suggestedActionButton)[0]).toHaveProperty(
+          'textContent',
+          'Hello, World!'
+        );
         expect(pageElements.allByTestId(testIds.suggestedActionButton)[1]).toHaveProperty('textContent', 'Aloha!');
+
+        // THEN: getState() should have 2 suggested actions.
+        expect(store.getState().suggestedActions).toHaveLength(2);
+        expect(store.getState().suggestedActions[0]).toEqual({ title: 'Hello, World!', type: 'imBack' });
+        expect(store.getState().suggestedActions[1]).toEqual({ title: 'Aloha!', type: 'imBack' });
       });
     </script>
   </body>
