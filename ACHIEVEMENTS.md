@@ -45,6 +45,15 @@ A curated list of major achievements by the Web Chat team. This document celebra
 
 ## 🎨 UI & Theming
 
+### 📎 Attachment Preview for `sendAttachmentOn: "send"`
+
+**Goal:** Improve multi-file upload UX by introducing persistent attachment previews.  
+**By:** [@compulim](https://github.com/compulim) in [PR #5464](https://github.com/microsoft/BotFramework-WebChat/pull/5464)
+
+- Added `SendBoxAttachmentBar` to allow users to preview and remove attachments before sending.
+- Previews switch between thumbnails and list mode based on count and accessibility settings.
+- Enhances multi-folder upload workflows and aligns with modern messaging UX.
+
 ### 🧾 Code Block Rendering & Highlighting System
 
 **Goal:** Unify and polish code block rendering across Markdown and UI components.  
