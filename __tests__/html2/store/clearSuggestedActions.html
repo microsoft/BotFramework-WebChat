@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator },
+          WebChat: { testIds }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Receive an activity with a suggested action.
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          suggestedActions: {
+            actions: [
+              {
+                title: 'Aloha!',
+                type: 'imBack'
+              }
+            ],
+            to: ''
+          },
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should have one suggested action button shown.
+        expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(1);
+        expect(pageElements.allByTestId(testIds.suggestedActionButton)[0]).toHaveProperty('textContent', 'Aloha!');
+
+        // WHEN: Dispatching "WEB_CHAT/CLEAR_SUGGESTED_ACTIONS" action.
+        store.dispatch({ type: 'WEB_CHAT/CLEAR_SUGGESTED_ACTIONS' });
+
+        // THEN: Should not remove activity.
+        expect(pageElements.activities()).toHaveLength(1);
+
+        // THEN: Should have cleared suggested action.
+        await waitFor(() => expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(0));
+      });
+    </script>
+  </body>
+</html>

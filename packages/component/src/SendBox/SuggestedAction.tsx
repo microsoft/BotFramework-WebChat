@@ -13,6 +13,7 @@ import useFocus from '../hooks/useFocus';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 import useItemRef from '../providers/RovingTabIndex/useItemRef';
+import testIds from '../testIds';
 import AccessibleButton from '../Utils/AccessibleButton';
 import useFocusAccessKeyEffect from '../Utils/AccessKeySink/useFocusAccessKeyEffect';
 
@@ -122,6 +123,7 @@ function SuggestedAction(props: SuggestedActionProps) {
         suggestedActionStyleSet + '',
         className
       )}
+      data-testid={testIds.suggestedActionButton}
       disabled={uiState === 'disabled'}
       onClick={handleClick}
       ref={focusRef}
