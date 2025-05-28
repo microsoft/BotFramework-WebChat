@@ -45,6 +45,15 @@ A curated list of major achievements by the Web Chat team. This document celebra
 
 ## 🎨 UI & Theming
 
+### 🧾 Code Block Rendering & Highlighting System
+
+**Goal:** Unify and polish code block rendering across Markdown and UI components.
+**By:** [@OEvgeny](https://github.com/OEvgeny), [@compulim](https://github.com/compulim) in [PR #5334](https://github.com/microsoft/BotFramework-WebChat/pull/5334), [#5335](https://github.com/microsoft/BotFramework-WebChat/pull/5335), [#5336](https://github.com/microsoft/BotFramework-WebChat/pull/5336), [#5389](https://github.com/microsoft/BotFramework-WebChat/pull/5389)
+
+- Introduced syntax highlighting for markdown blocks using Shiki.
+- Added copy buttons to all rendered code blocks and dialogs.
+- Unified presentation of fenced blocks with accessibility and clipboard improvements.
+
 ### ✨ Fluent Theme Overhaul
 
 **Goal:** Expand and refine Fluent UI styling across all components.
@@ -60,6 +69,14 @@ A curated list of major achievements by the Web Chat team. This document celebra
 
 - Introduced `WebChatDecorator` and `ActivityDecorator`.
 - Supports animated borders and style options with minimal code changes.
+
+### 🗂️ Starter Prompts
+
+**Goal:** Enhance onboarding by offering users suggested starter prompts before interaction.
+**By:** [@compulim](https://github.com/compulim), [@OEvgeny](https://github.com/OEvgeny)
+
+- Experimental pre-chat messages added in [PR #5255](https://github.com/microsoft/BotFramework-WebChat/pull/5255) and [#5263](https://github.com/microsoft/BotFramework-WebChat/pull/5263)
+- Fluent blueprint implementation in [#5270](https://github.com/microsoft/BotFramework-WebChat/pull/5270), [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), [#5279](https://github.com/microsoft/BotFramework-WebChat/pull/5279), [#5284](https://github.com/microsoft/BotFramework-WebChat/pull/5284)
 
 ---
 
@@ -99,7 +116,7 @@ A curated list of major achievements by the Web Chat team. This document celebra
 **By:** [@compulim](https://github.com/compulim), [@OEvgeny](https://github.com/OEvgeny) in [PR #5332](https://github.com/microsoft/BotFramework-WebChat/pull/5332), [#5381](https://github.com/microsoft/BotFramework-WebChat/pull/5381)
 
 - Integrated `katex` via `micromark-extension-math`.
-- Supports `\[ \]`, `\( \)`, and `$$ $$` syntax.
+- Supports `\\[ \\]`, `\\( \\)`, and `$$ $$` syntax.
 
 ---
 
@@ -112,6 +129,16 @@ A curated list of major achievements by the Web Chat team. This document celebra
 
 - Rewrote key hooks (`useActivityWithRenderer`, `useMemoized`) for efficiency.
 - Prevents excessive renders in large conversations.
+
+### 🧮 Multi-Dimensional Grouping Support
+
+**Goal:** Improve activity grouping logic and performance.
+**By:** [@compulim](https://github.com/compulim) in [PR #5471](https://github.com/microsoft/BotFramework-WebChat/pull/5471)
+
+- Added `styleOptions.groupActivitiesBy` and `useGroupActivitiesByName` hook.
+- Keeps existing `sender` + `status` behavior as default.
+- New hook preferred for performance.
+- Middleware can optionally compute groupings by name.
 
 ### 🧪 `valibot` Props Validation
 
