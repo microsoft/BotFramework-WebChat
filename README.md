@@ -19,11 +19,13 @@ Web Chat supports [Content Security Policy (CSP)](https://developer.mozilla.org/
 
 > This section points out important version notes. For further information, please see the related links and check the [`CHANGELOG.md`](https://github.com/microsoft/BotFramework-WebChat/blob/main/CHANGELOG.md)
 
+[Our achievements](https://github.com/microsoft/BotFramework-WebChat/blob/main/ACHIEVEMENTS.md)
+
 Notes: web developers are advised to use [`~` (tilde range)](https://github.com/npm/node-semver?tab=readme-ov-file#tilde-ranges-123-12-1) to select minor versions, which contains new features and/or fixes. Use [`^` (caret range)](https://github.com/npm/node-semver?tab=readme-ov-file#caret-ranges-123-025-004) to select major versions, which may contains breaking changes.
 
 ## 4.19.0 notable changes
 
--  Supports informative message in [livestreaming](./docs/LIVESTREAMING.md)
+- Supports informative message in [livestreaming](./docs/LIVESTREAMING.md)
 
 ## 4.18.0 notable changes
 
@@ -101,8 +103,8 @@ window.WebChat.renderWebChat(
 );
 ```
 
--  Web Chat will apply the maximum schema available according to the Adaptive Cards version (as of this patch, schema 1.3) by default.
--  An invalid version will revert to Web Chat's default.
+- Web Chat will apply the maximum schema available according to the Adaptive Cards version (as of this patch, schema 1.3) by default.
+- An invalid version will revert to Web Chat's default.
 
 ## Visual focus changes to transcript in Web Chat 4.12.0
 
@@ -163,9 +165,9 @@ We strongly recommend using the token API instead of providing the app with your
 
 For further reading, please see the following links:
 
--  Using Web Chat with [Azure Bot Services authentication](https://blog.botframework.com/2018/09/01/using-webchat-with-azure-bot-services-authentication/)
+- Using Web Chat with [Azure Bot Services authentication](https://blog.botframework.com/2018/09/01/using-webchat-with-azure-bot-services-authentication/)
 
--  [Enhanced Direct Line authentication features](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
+- [Enhanced Direct Line authentication features](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
 
 ## Integrate with JavaScript
 
@@ -279,11 +281,11 @@ To use Redux DevTools, use the `createStoreWithDevTools` function for creating a
 
 There are some limitations when using the Redux DevTools:
 
--  The Redux store uses side-effects via [`redux-saga`](https://github.com/redux-saga/redux-saga). Time-traveling may break the UI.
--  Many UI states are stored in React context and state. They are not exposed in the Redux store.
--  Some time-sensitive UIs are based on real-time clock and not affected by time-traveling.
--  Dispatching actions are not officially supported. Please use [hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md) instead.
--  Actions and reducers may move in and out of Redux store across versions. [Hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md) is the official API for accessing the UI.
+- The Redux store uses side-effects via [`redux-saga`](https://github.com/redux-saga/redux-saga). Time-traveling may break the UI.
+- Many UI states are stored in React context and state. They are not exposed in the Redux store.
+- Some time-sensitive UIs are based on real-time clock and not affected by time-traveling.
+- Dispatching actions are not officially supported. Please use [hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md) instead.
+- Actions and reducers may move in and out of Redux store across versions. [Hooks API](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/HOOKS.md) is the official API for accessing the UI.
 
 # Customizing the Web Chat UI
 
@@ -324,10 +326,10 @@ If you need Web Chat in Internet Explorer 11, please see the [ES5 bundle demo](h
 
 Please note, however:
 
--  Web Chat does not support Internet Explorer older than version 11
--  Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5. If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Microsoft Edge.
--  Web Chat has no plan to support samples for IE11 (ES5).
-   -  For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
+- Web Chat does not support Internet Explorer older than version 11
+- Customization as shown in non-ES5 samples are not supported for Internet Explorer. Because IE11 is a non-modern browser, it does not support ES6, and many samples that use arrow functions and modern promises would need to be manually converted to ES5. If you are in need of heavy customization for your app, we strongly recommend developing your app for a modern browser like Google Chrome or Microsoft Edge.
+- Web Chat has no plan to support samples for IE11 (ES5).
+   - For customers who wish to manually rewrite our other samples to work in IE11, we recommend looking into converting code from ES6+ to ES5 using polyfills and transpilers like [`babel`](https://babeljs.io/docs/en/next/babel-standalone.html).
 
 ## Accessibility
 
@@ -353,9 +355,9 @@ View the [Technical Support Guide](https://github.com/microsoft/BotFramework-Web
 
 Web Chat supports a wide-range of speech engines for a natural chat experience with a bot. This section outlines the different engines that are supported:
 
--  [Direct Line Speech](#integrate-with-direct-line-speech)
--  [Cognitive Services Speech Services](#integrate-with-cognitive-services-speech-services)
--  [Browser-provided engine or other engines](#browser-provided-engine-or-other-engines)
+- [Direct Line Speech](#integrate-with-direct-line-speech)
+- [Cognitive Services Speech Services](#integrate-with-cognitive-services-speech-services)
+- [Browser-provided engine or other engines](#browser-provided-engine-or-other-engines)
 
 ### Integrate with Direct Line Speech
 
