@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
 
 import { reactNode } from 'botframework-webchat-react-valibot';
-import React, { forwardRef, type MouseEventHandler } from 'react';
+import React, { forwardRef, memo, type MouseEventHandler } from 'react';
 import {
   boolean,
   custom,
@@ -22,6 +22,7 @@ const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 const accessibleButtonPropsSchema = pipe(
   object({
     'aria-hidden': optional(boolean()),
+    'aria-keyshortcuts': optional(string()),
     children: optional(reactNode()),
     className: optional(string()),
     'data-testid': optional(string()),
@@ -56,12 +57,23 @@ type AccessibleButtonProps = InferInput<typeof accessibleButtonPropsSchema>;
 
 const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
   (
-    { 'aria-hidden': ariaHidden, children, className, 'data-testid': dataTestId, disabled, onClick, tabIndex, title },
+    {
+      'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyShortcuts,
+      children,
+      className,
+      'data-testid': dataTestId,
+      disabled,
+      onClick,
+      tabIndex,
+      title
+    },
     ref
   ) => (
     <button
       aria-disabled={disabled || undefined}
       aria-hidden={ariaHidden}
+      aria-keyshortcuts={ariaKeyShortcuts}
       className={className}
       data-testid={dataTestId}
       onClick={disabled ? PREVENT_DEFAULT_HANDLER : onClick}
@@ -77,5 +89,5 @@ const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
 
 AccessibleButton.displayName = 'AccessibleButton';
 
-export default AccessibleButton;
+export default memo(AccessibleButton);
 export { accessibleButtonPropsSchema, type AccessibleButtonProps };
