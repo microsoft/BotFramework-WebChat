@@ -1,6 +1,7 @@
 plugins:
   - react
   - react-hooks
+  - local-rules
 
 extends:
   - plugin:react/recommended
@@ -15,6 +16,7 @@ settings:
     version: detect
 
 rules:
+  local-rules/forbid-use-hook-producer: error
   react/button-has-type: error
   react/default-props-match-prop-types: error
   react/destructuring-assignment: error
