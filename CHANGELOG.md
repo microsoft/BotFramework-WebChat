@@ -230,6 +230,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 # Removed
 
 - Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
+- Fixes [#5433](https://github.com/microsoft/BotFramework-WebChat/issues/5433). Removed dependency on `abort-controller-es5` in favor of the standard `abort-controller` package to prevent multiple versions of esbuild from being installed, in PR [#5483](https://github.com/microsoft/BotFramework-WebChat/pull/5483), by [@copilot](https://github.com/copilot)
 
 ## [4.18.0] - 2024-07-10
 

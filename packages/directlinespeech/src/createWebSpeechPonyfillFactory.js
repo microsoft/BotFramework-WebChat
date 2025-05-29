@@ -1,6 +1,6 @@
 /* eslint class-methods-use-this: ["error", { "exceptMethods": ["cancel", "getVoices", "speak"] }] */
 
-import { AbortController } from 'abort-controller-es5';
+import { AbortController } from 'abort-controller';
 import { createSpeechRecognitionPonyfillFromRecognizer } from 'web-speech-cognitive-services';
 
 import createTaskQueue from './createTaskQueue';
