@@ -5,7 +5,7 @@ import {
   WebChatActivity,
   type DirectLineCardAction
 } from 'botframework-webchat-core';
-import { setSuggestedActionsOriginActivityRaw, setSuggestedActionsRaw } from 'botframework-webchat-core/internal';
+import { setRawState } from 'botframework-webchat-core/internal';
 import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { type Action } from 'redux';
@@ -52,8 +52,11 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
     [setOriginActivity, setSuggestedActions]
   );
 
-  useMemo(() => dispatch(setSuggestedActionsRaw(suggestedActions)), [dispatch, suggestedActions]);
-  useMemo(() => dispatch(setSuggestedActionsOriginActivityRaw(originActivity)), [dispatch, originActivity]);
+  useMemo(() => dispatch(setRawState('suggestedActions', suggestedActions)), [dispatch, suggestedActions]);
+  useMemo(
+    () => dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity })),
+    [dispatch, originActivity]
+  );
 
   useEffect(() => {
     dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK' });
