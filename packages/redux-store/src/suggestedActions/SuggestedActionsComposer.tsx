@@ -35,7 +35,7 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
   const [originActivity, setOriginActivity] = useState<WebChatActivity | undefined>();
   const [suggestedActions, setSuggestedActions] = useState<readonly DirectLineCardAction[]>(EMPTY_ARRAY);
 
-  // #region Redux store sync
+  // #region Replicate to Redux store
   const handleAction = useCallback(
     (action: Action) => {
       if (action.type === CLEAR_SUGGESTED_ACTIONS) {
