@@ -1,14 +1,20 @@
 import { type Action } from 'redux';
-import { custom, function_, literal, object, safeParse, type InferOutput } from 'valibot';
+import { custom, function_, literal, object, pipe, readonly, safeParse, type InferOutput } from 'valibot';
 
 const REGISTER_ACTION_SINK = 'WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK' as const;
 
-const registerActionSinkActionSchema = object({
-  payload: object({
-    sink: custom<(action: Action) => void>(value => safeParse(function_(), value).success)
+const registerActionSinkActionSchema = pipe(
+  object({
+    payload: pipe(
+      object({
+        sink: custom<(action: Action) => void>(value => safeParse(function_(), value).success)
+      }),
+      readonly()
+    ),
+    type: literal(REGISTER_ACTION_SINK)
   }),
-  type: literal(REGISTER_ACTION_SINK)
-});
+  readonly()
+);
 
 type RegisterActionSinkAction = InferOutput<typeof registerActionSinkActionSchema>;
 
