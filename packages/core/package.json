@@ -39,9 +39,9 @@
     "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
   "files": [
+    "./*.js",
     "./dist/**/*",
-    "./src/**/*",
-    "*.js"
+    "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/packages/core#readme",
   "tsd": {

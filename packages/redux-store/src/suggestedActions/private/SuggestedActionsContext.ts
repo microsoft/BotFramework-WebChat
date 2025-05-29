@@ -5,7 +5,7 @@ type SuggestedActionsContextType = Readonly<{
   useSuggestedActions: () => readonly [
     readonly DirectLineCardAction[],
     Dispatch<SetStateAction<readonly DirectLineCardAction[]>>,
-    Readonly<{ activity: WebChatActivity | undefined }>
+    Readonly<{ activity: undefined | WebChatActivity }>
   ];
 }>;
 

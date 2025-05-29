@@ -73,7 +73,7 @@
     "botframework-webchat-cldr-data": "development",
     "botframework-webchat-core": "production",
     "botframework-webchat-react-valibot": "development",
-    "botframework-webchat-store": "development"
+    "botframework-webchat-redux-store": "development"
   },
   "pinDependencies": {
     "@babel/cli": [

@@ -32,7 +32,7 @@ export default function setSuggestedActions(
   return {
     type: SET_SUGGESTED_ACTIONS,
     payload: { originActivity, suggestedActions }
-  } satisfies SetSuggestedActionsAction;
+  };
 }
 
 export { SET_SUGGESTED_ACTIONS, setSuggestedActionsActionSchema, type SetSuggestedActionsAction };

@@ -12,11 +12,12 @@ const registerActionSinkActionSchema = object({
 
 type RegisterActionSinkAction = InferOutput<typeof registerActionSinkActionSchema>;
 
-export default function registerActionSink(sink: (action: Action) => void): RegisterActionSinkAction {
+function registerActionSink(sink: (action: Action) => void): RegisterActionSinkAction {
   return {
     payload: { sink },
     type: REGISTER_ACTION_SINK
-  } satisfies RegisterActionSinkAction;
+  };
 }
 
+export default registerActionSink;
 export { REGISTER_ACTION_SINK, registerActionSinkActionSchema, type RegisterActionSinkAction };

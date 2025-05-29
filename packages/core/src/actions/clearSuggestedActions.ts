@@ -11,10 +11,10 @@ const clearSuggestedActionsActionSchema = pipe(
 
 type ClearSuggestedActionsAction = InferOutput<typeof clearSuggestedActionsActionSchema>;
 
-export default function clearSuggestedActions() {
+export default function clearSuggestedActions(): ClearSuggestedActionsAction {
   return {
     type: CLEAR_SUGGESTED_ACTIONS
-  } satisfies ClearSuggestedActionsAction;
+  };
 }
 
 export { CLEAR_SUGGESTED_ACTIONS, clearSuggestedActionsActionSchema, type ClearSuggestedActionsAction };
