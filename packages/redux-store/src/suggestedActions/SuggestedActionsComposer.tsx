@@ -9,7 +9,7 @@ import { setRawState } from 'botframework-webchat-core/internal';
 import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { type Action } from 'redux';
-import { object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import reduxStoreSchema from '../private/reduxStoreSchema';
 import SuggestedActionsContext, { type SuggestedActionsContextType } from './private/SuggestedActionsContext';
@@ -49,12 +49,16 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
         setOriginActivity(undefined);
         setSuggestedActionsRaw(EMPTY_ARRAY);
       } else if (action.type === SET_SUGGESTED_ACTIONS) {
-        const {
-          payload: { originActivity, suggestedActions }
-        } = parse(setSuggestedActionsActionSchema, action);
+        const result = safeParse(setSuggestedActionsActionSchema, action);
 
-        setOriginActivity(originActivity);
-        setSuggestedActionsRaw(Object.freeze(Array.from(suggestedActions)));
+        if (result.success) {
+          const {
+            payload: { originActivity, suggestedActions }
+          } = result.output;
+
+          setOriginActivity(originActivity);
+          setSuggestedActionsRaw(Object.freeze(Array.from(suggestedActions)));
+        }
       }
     },
     [setOriginActivity, setSuggestedActionsRaw]
