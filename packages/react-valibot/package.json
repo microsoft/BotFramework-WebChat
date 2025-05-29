@@ -2,6 +2,7 @@
   "name": "botframework-webchat-react-valibot",
   "version": "0.0.0-0",
   "description": "The botframework-webchat react-valibot package",
+  "types": "./dist/botframework-webchat-react-valibot.d.ts",
   "exports": {
     ".": {
       "import": {

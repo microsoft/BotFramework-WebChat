@@ -2,6 +2,7 @@
   "name": "botframework-webchat-redux-store",
   "version": "0.0.0-0",
   "description": "The botframework-webchat redux-store package",
+  "types": "./dist/botframework-webchat-redux-store.d.ts",
   "exports": {
     ".": {
       "import": {

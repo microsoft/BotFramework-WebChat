@@ -52,6 +52,7 @@ test('when in strict isolation then failure should throw', () => {
 });
 
 test('when under production mode and isolation is not specified then failure should warn', () => {
+  // @ts-expect-error Accessing process without @types/node.
   process.env.NODE_ENV = 'production';
 
   const props = { two: 2 };
@@ -60,6 +61,7 @@ test('when under production mode and isolation is not specified then failure sho
 });
 
 test('when under production mode and no isolation then failure should warn', () => {
+  // @ts-expect-error Accessing process without @types/node.
   process.env.NODE_ENV = 'production';
 
   const props = { two: 2 };
@@ -68,6 +70,7 @@ test('when under production mode and no isolation then failure should warn', () 
 });
 
 test('when under production mode and in strict isolation then failure should warn', () => {
+  // @ts-expect-error Accessing process without @types/node.
   process.env.NODE_ENV = 'production';
 
   const props = { two: 2 };

@@ -1,17 +1,5 @@
 import { parse, safeParse, type BaseIssue, type BaseSchema, type InferInput, type InferOutput } from 'valibot';
 
-declare global {
-  interface EnvironmentVariables {
-    NODE_ENV?: string | undefined;
-  }
-
-  interface Process {
-    env: EnvironmentVariables;
-  }
-
-  const process: Process;
-}
-
 /**
  * Specifies the props isolation mode.
  *
@@ -48,7 +36,8 @@ export default function validateProps<const TSchema extends BaseSchema<unknown, 
   props: InferInput<TSchema>,
   isolationMode?: IsolationMode | undefined
 ): InferInput<TSchema> | InferOutput<TSchema> {
-  if (process.env.NODE_ENV === 'production') {
+  // @ts-expect-error Accessing process without @types/node.
+  if ((process as any).env.NODE_ENV === 'production') {
     return props as unknown as InferInput<TSchema>;
   }
 
