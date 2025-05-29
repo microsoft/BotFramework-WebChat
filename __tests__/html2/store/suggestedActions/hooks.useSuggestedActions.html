@@ -13,14 +13,13 @@
     <script type="importmap">
       {
         "imports": {
-          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
-          "react-dictate-button/internal": "https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs"
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs"
         }
       }
     </script>
     <script type="module">
       import { waitFor } from '@testduet/wait-for';
-      import renderHook from '../hooks/private/renderHook.js';
+      import renderHook from '../../hooks/private/renderHook.js';
 
       const {
         React: { createElement },
@@ -56,7 +55,7 @@
 
         await pageConditions.uiConnected();
 
-        // THEN: `useSuggestedActions` should return empty array.
+        // THEN: useSuggestedActions() getter should return empty array.
         await waitFor(() =>
           expect(renderResult).toHaveProperty('result.current', [[], expect.anything(), { activity: undefined }])
         );
@@ -75,7 +74,7 @@
           type: 'message'
         });
 
-        // THEN: useSuggestedActions() should return 2 suggested actions.
+        // THEN: useSuggestedActions() getter should return 2 suggested actions and origin activity.
         renderResult.rerender();
 
         await waitFor(() =>
@@ -84,7 +83,7 @@
               { title: 'Hello, World!', type: 'imBack' },
               { title: 'Aloha!', type: 'imBack' }
             ],
-            expect.anything(),
+            expect.any(Function),
             {
               activity: expect.objectContaining({
                 from: { role: 'bot' },
@@ -102,7 +101,7 @@
           ])
         );
 
-        // WHEN: useSuggestedActions() is called with 1 suggested action.
+        // WHEN: useSuggestedActions() setter is called with 1 suggested action.
         renderResult.rerender({ suggestedActions: [{ title: 'Good morning!', type: 'imBack' }] });
 
         // THEN: Should show 1 suggested action.
@@ -117,8 +116,8 @@
         await waitFor(() =>
           expect(renderResult).toHaveProperty('result.current', [
             [{ title: 'Good morning!', type: 'imBack' }],
-            expect.anything(),
-            expect.anything()
+            expect.any(Function),
+            { activity: undefined }
           ])
         );
 
@@ -135,7 +134,7 @@
         // THEN: Should return 0 suggested actions.
         renderResult.rerender();
         await waitFor(() =>
-          expect(renderResult).toHaveProperty('result.current', [[], expect.anything(), expect.anything()])
+          expect(renderResult).toHaveProperty('result.current', [[], expect.any(Function), { activity: undefined }])
         );
 
         // THEN: getState() should have 1 suggested action.

@@ -2,6 +2,8 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -17,16 +19,27 @@
     </script>
     <script type="module">
       import { waitFor } from '@testduet/wait-for';
+      import renderHook from '../../hooks/private/renderHook.js';
 
       run(async function () {
         const {
+          React: { createElement },
           testHelpers: { createDirectLineEmulator },
-          WebChat: { testIds }
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            hooks: { useSuggestedActions },
+            testIds
+          }
         } = window;
 
         const { directLine, store } = createDirectLineEmulator();
 
-        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+        // WHEN: Render initially.
+        const renderResult = renderHook(() => useSuggestedActions(), {
+          legacyRoot: true,
+          wrapper: ({ children }) =>
+            createElement(Composer, { directLine, store }, createElement(BasicWebChat), children)
+        });
 
         await pageConditions.uiConnected();
 
@@ -56,6 +69,17 @@
         expect(store.getState().suggestedActions).toHaveLength(2);
         expect(store.getState().suggestedActions[0]).toEqual({ title: 'Hello, World!', type: 'imBack' });
         expect(store.getState().suggestedActions[1]).toEqual({ title: 'Aloha!', type: 'imBack' });
+
+        // THEN: useSuggestedActions() should have 2 suggested actions.
+        renderResult.rerender();
+        expect(renderResult).toHaveProperty('result.current', [
+          [
+            { title: 'Hello, World!', type: 'imBack' },
+            { title: 'Aloha!', type: 'imBack' }
+          ],
+          expect.any(Function),
+          { activity: undefined }
+        ]);
       });
     </script>
   </body>

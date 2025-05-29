@@ -67,10 +67,7 @@ export default function renderHook(
     return { rerender: render, unmount: () => ReactDOM.unmountComponentAtNode(element) };
   };
 
-  const { rerender: baseRerender, unmount } = render(
-    React.createElement(TestComponent, { renderCallbackProps: initialProps }),
-    renderOptions
-  );
+  const { rerender: baseRerender, unmount } = render({ renderCallbackProps: initialProps });
 
   function rerender(rerenderCallbackProps) {
     return baseRerender({ renderCallbackProps: rerenderCallbackProps });
