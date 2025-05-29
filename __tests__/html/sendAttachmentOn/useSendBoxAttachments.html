@@ -54,7 +54,7 @@
           const fileReader = new FileReader();
 
           fileReader.onerror = reject;
-          fileReader.onload = () => resolve(fileReader.result);
+          fileReader.onload = () => resolve(new URL(fileReader.result));
           fileReader.readAsDataURL(thumbnailBlob);
         });
 
@@ -64,7 +64,7 @@
           useSendBoxAttachments()[1](attachmentsRef.current);
         });
 
-        // THEN: It should show checkmark on the button.
+        // THEN: It should show checkmark on the button and file preview.
         await host.snapshot();
 
         // WHEN: `useSendBoxAttachments` hook is called to get the attachments.

@@ -56,6 +56,8 @@
           await pageObjects.sendMessageViaSendBox('no avatar');
           await pageConditions.numActivitiesShown(6);
 
+          await pageConditions.allOutgoingActivitiesSent();
+
           await host.snapshot('local', { skipCheckAccessibility: true });
 
           await renderWebChat({

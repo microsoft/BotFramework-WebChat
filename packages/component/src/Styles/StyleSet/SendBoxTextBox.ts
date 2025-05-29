@@ -13,7 +13,12 @@ export default function createSendBoxTextBoxStyle({
     '&.webchat__send-box-text-box': {
       alignItems: 'center',
       fontFamily: primaryFont,
-      padding: paddingRegular,
+      // eslint-disable-next-line no-magic-numbers
+      paddingBottom: paddingRegular / 2,
+      paddingLeft: paddingRegular,
+      paddingRight: paddingRegular,
+      // eslint-disable-next-line no-magic-numbers
+      paddingTop: paddingRegular / 2,
       position: 'relative',
 
       '& .webchat__send-box-text-box__input': {
