@@ -1,9 +1,7 @@
-// import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
-import { validateProps } from 'botframework-webchat-api/internal';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import React, { createContext, memo, useContext, useEffect, useMemo, useState } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
-import reactNode from '../../types/internal/reactNode';
 import useStableStateHook from './private/useStableStateHook';
 
 const clipboardWritePermissionComposerPropsSchema = pipe(

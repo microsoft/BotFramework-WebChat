@@ -1,11 +1,10 @@
-// import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
-import { validateProps } from 'botframework-webchat-api/internal';
-import React, { Fragment, memo, useCallback, useEffect, useMemo } from 'react';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
+import React, { Fragment, memo, useEffect, useMemo } from 'react';
 import { wrapWith } from 'react-wrap-with';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
-import reactNode from '../../types/internal/reactNode';
 import createStateContextWithHook from './private/createStateContextWithHook';
+import useGetterState from './private/useGetterState';
 
 const clipboardWritePermissionComposerPropsSchema = pipe(
   object({
@@ -22,9 +21,7 @@ const { Composer: PermissionGrantedComposer, useValue: useRawPermissionGranted }
 function useClipboardWritePermissionHooks(): Readonly<{
   usePermissionGranted: () => readonly [boolean];
 }> {
-  const [permissionGranted] = useRawPermissionGranted();
-
-  const usePermissionGranted = useCallback(() => Object.freeze([permissionGranted] as const), [permissionGranted]);
+  const usePermissionGranted = useGetterState(useRawPermissionGranted());
 
   return useMemo(() => Object.freeze({ usePermissionGranted }), [usePermissionGranted]);
 }

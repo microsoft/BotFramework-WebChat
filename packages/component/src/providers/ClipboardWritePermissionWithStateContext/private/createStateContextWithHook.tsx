@@ -1,5 +1,4 @@
-// import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
-import { validateProps } from 'botframework-webchat-api/internal';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import React, {
   createContext,
   memo,
@@ -12,7 +11,6 @@ import React, {
   type SetStateAction
 } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
-import reactNode from '../../../types/internal/reactNode';
 
 type GenericContextType<T> = Readonly<{
   valueState: readonly [T, Dispatch<SetStateAction<T>>];
