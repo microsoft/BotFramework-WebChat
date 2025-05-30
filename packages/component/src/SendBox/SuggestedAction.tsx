@@ -17,7 +17,7 @@ import testIds from '../testIds';
 import AccessibleButton from '../Utils/AccessibleButton';
 import useFocusAccessKeyEffect from '../Utils/AccessKeySink/useFocusAccessKeyEffect';
 
-const { useDirection, usePerformCardAction, useStyleOptions, useSuggestedActions, useUIState } = hooks;
+const { useDirection, usePerformCardAction, useStyleOptions, useSuggestedActionsHooks, useUIState } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__suggested-action': {
@@ -71,7 +71,7 @@ function SuggestedAction(props: SuggestedActionProps) {
     value
   } = validateProps(suggestedActionPropsSchema, props);
 
-  const [_, setSuggestedActions] = useSuggestedActions();
+  const [_, setSuggestedActions] = useSuggestedActionsHooks().useSuggestedActions();
   const [{ suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const [accessKey] = useSuggestedActionsAccessKey();

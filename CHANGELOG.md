@@ -33,6 +33,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - HTML sanitizer is moved from `renderMarkdown` to HTML content transformer middleware, please refer to PR [#5338](https://github.com/microsoft/BotFramework-WebChat/pull/5338)
    - If you customized `renderMarkdown` with a custom HTML sanitizer, please move the HTML sanitizer to the new HTML content transformer middleware
 - `useGroupActivities` hook is being deprecated in favor of the `useGroupActivitiesByName` hook. The hook will be removed on or after 2027-05-04
+- `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook. The hook will be removed on or after 2027-05-30
 
 ### Added
 
@@ -231,6 +232,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 # Removed
 
 - Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
+- `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook, in PR [#5489](https://github.com/microsoft/BotFramework-WebChat/pull/5489), by [@compulim](https://github.com/compulim)
 
 ## [4.18.0] - 2024-07-10
 

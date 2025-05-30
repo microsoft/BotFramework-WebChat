@@ -16,7 +16,7 @@ import useStyleSet from '../hooks/useStyleSet';
 import RovingTabIndexComposer from '../providers/RovingTabIndex/RovingTabIndexComposer';
 import SuggestedAction from './SuggestedAction';
 
-const { useDirection, useLocalizer, useStyleOptions, useSuggestedActions } = hooks;
+const { useDirection, useLocalizer, useStyleOptions, useSuggestedActionsHooks } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__suggested-actions': {
@@ -201,7 +201,7 @@ type SuggestedActionsProps = Readonly<{
 }>;
 
 const SuggestedActions = ({ className }: SuggestedActionsProps) => {
-  const [suggestedActions] = useSuggestedActions();
+  const [suggestedActions] = useSuggestedActionsHooks().useSuggestedActions();
   const [{ suggestedActionLayout, suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const localize = useLocalizer();
   const focus = useFocus();
