@@ -25,17 +25,18 @@ export default function useStableStateHook<T>(
   useEffect(() => propagate(value), [propagate, value]);
 
   // One-off variable to hack around ESLint rules without disabling react-hooks/rules-of-hooks.
-  const useHook = () => {
-    const [propagatedValue, setPropagatedValue] = useState<T>(valueRef.current);
+  const _useListen = useListen;
+  const _useMemo = useMemo;
+  const _useState = useState;
 
-    useListen(setPropagatedValue);
+  return useCallback(() => {
+    const [propagatedValue, setPropagatedValue] = _useState<T>(valueRef.current);
 
-    return useMemo(
+    _useListen(setPropagatedValue);
+
+    return _useMemo(
       () => Object.freeze(setValue ? ([propagatedValue, setValue] as const) : ([propagatedValue] as const)),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       [propagatedValue, setValue]
     );
-  };
-
-  return useCallback(useHook, [useListen, setValue, valueRef]);
+  }, [_useMemo, _useListen, _useState, setValue, valueRef]);
 }
