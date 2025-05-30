@@ -26,9 +26,7 @@ function useClipboardWritePermissionHooks(): Readonly<{
 
   const usePermissionGranted = useCallback(() => Object.freeze([permissionGranted] as const), [permissionGranted]);
 
-  const hooks = useMemo(() => Object.freeze({ usePermissionGranted }), [usePermissionGranted]);
-
-  return hooks;
+  return useMemo(() => Object.freeze({ usePermissionGranted }), [usePermissionGranted]);
 }
 
 function ClipboardWritePermissionComposer_(props: ClipboardWritePermissionComposerProps) {
