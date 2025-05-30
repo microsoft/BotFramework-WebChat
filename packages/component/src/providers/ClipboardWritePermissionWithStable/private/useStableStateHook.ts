@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import { useCallback, useEffect, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import { createPropagation } from 'use-propagate';
 import { useRefFrom } from 'use-ref-from';
+
+import useRefWithInit from './useRefWithInit';
 
 export default function useStableStateHook<T>(value: T): () => readonly [T];
 
@@ -13,12 +15,8 @@ export default function useStableStateHook<T>(
   value: T,
   setValue?: Dispatch<SetStateAction<T>> | undefined
 ): () => readonly [T, Dispatch<SetStateAction<T>>] | readonly [T] {
-  const propagationRef = useRef<ReturnType<typeof createPropagation<T>>>();
+  const propagationRef = useRefWithInit<ReturnType<typeof createPropagation<T>>>(() => createPropagation<T>());
   const valueRef = useRefFrom(value);
-
-  if (!propagationRef.current) {
-    propagationRef.current = createPropagation<T>();
-  }
 
   const {
     current: { usePropagate, useListen }
@@ -28,6 +26,7 @@ export default function useStableStateHook<T>(
 
   useEffect(() => propagate(value), [propagate, value]);
 
+  // One-off variable to hack around ESLint rules without disabling react-hooks/rules-of-hooks.
   const useHook = () => {
     const [propagatedValue, setPropagatedValue] = useState<T>(valueRef.current);
 
