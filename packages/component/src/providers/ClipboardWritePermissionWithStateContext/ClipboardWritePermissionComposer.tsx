@@ -3,7 +3,7 @@ import React, { Fragment, memo, useEffect, useMemo } from 'react';
 import { wrapWith } from 'react-wrap-with';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
-import createStateContextWithHook from './private/createStateContextWithHook';
+import createBitContext from './private/createBitContext';
 import useGetterState from './private/useGetterState';
 
 const clipboardWritePermissionComposerPropsSchema = pipe(
@@ -15,8 +15,7 @@ const clipboardWritePermissionComposerPropsSchema = pipe(
 
 type ClipboardWritePermissionComposerProps = InferInput<typeof clipboardWritePermissionComposerPropsSchema>;
 
-const { Composer: PermissionGrantedComposer, useValue: usePermissionGranted } =
-  createStateContextWithHook<boolean>(false);
+const { Composer: PermissionGrantedComposer, useState: usePermissionGranted } = createBitContext<boolean>(false);
 
 function useClipboardWritePermissionHooks(): Readonly<{
   usePermissionGranted: () => readonly [boolean];
@@ -34,7 +33,7 @@ function ClipboardWritePermissionComposer_(props: ClipboardWritePermissionCompos
   useEffect(() => {
     let unmounted = false;
 
-    (async function () {
+    (async () => {
       if ((await navigator.permissions.query({ name: 'clipboard-write' as any })).state === 'granted') {
         unmounted || setPermissionGranted(true);
       }
