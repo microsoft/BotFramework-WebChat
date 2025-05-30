@@ -36,6 +36,7 @@ export default function useStableStateHook<T>(
 
     return _useMemo(
       () => Object.freeze(setValue ? ([propagatedValue, setValue] as const) : ([propagatedValue] as const)),
+      // This deps is not checked by ESLint, verify with care.
       [propagatedValue, setValue]
     );
   }, [_useMemo, _useListen, _useState, setValue, valueRef]);
