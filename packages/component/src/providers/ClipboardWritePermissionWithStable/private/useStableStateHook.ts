@@ -2,8 +2,6 @@ import { useCallback, useEffect, useMemo, useState, type Dispatch, type SetState
 import { createPropagation } from 'use-propagate';
 import { useRefFrom } from 'use-ref-from';
 
-import useRefWithInit from './useRefWithInit';
-
 export default function useStableStateHook<T>(value: T): () => readonly [T];
 
 export default function useStableStateHook<T>(
@@ -15,9 +13,7 @@ export default function useStableStateHook<T>(
   value: T,
   setValue?: Dispatch<SetStateAction<T>> | undefined
 ): () => readonly [T, Dispatch<SetStateAction<T>>] | readonly [T] {
-  const {
-    current: { usePropagate, useListen }
-  } = useRefWithInit<ReturnType<typeof createPropagation<T>>>(() => createPropagation<T>());
+  const [{ usePropagate, useListen }] = useState(() => createPropagation<T>());
   const valueRef = useRefFrom(value);
 
   const propagate = usePropagate();
