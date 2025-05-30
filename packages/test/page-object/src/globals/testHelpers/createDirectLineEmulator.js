@@ -1,9 +1,9 @@
+import { withResolvers } from 'botframework-webchat-base/utils';
 import Observable from 'core-js/features/observable';
 import random from 'math-random';
 import updateIn from 'simple-update-in';
 
 import createDeferredObservable from '../../utils/createDeferredObservable';
-import withResolvers from '../../utils/withResolvers';
 import became from '../pageConditions/became';
 import { createStoreWithOptions } from './createStore';
 import shareObservable from './shareObservable';
