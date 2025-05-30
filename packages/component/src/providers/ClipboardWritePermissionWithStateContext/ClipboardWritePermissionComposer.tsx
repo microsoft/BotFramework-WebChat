@@ -25,7 +25,7 @@ function useClipboardWritePermissionHooks(): Readonly<{
   return useMemo(() => Object.freeze({ usePermissionGranted: usePermissionGranted_ }), [usePermissionGranted_]);
 }
 
-function ClipboardWritePermissionComposer_(props: ClipboardWritePermissionComposerProps) {
+function ClipboardWritePermissionComposer(props: ClipboardWritePermissionComposerProps) {
   const { children } = validateProps(clipboardWritePermissionComposerPropsSchema, props);
 
   const [_, setPermissionGranted] = usePermissionGranted();
@@ -47,7 +47,5 @@ function ClipboardWritePermissionComposer_(props: ClipboardWritePermissionCompos
   return <Fragment>{children}</Fragment>;
 }
 
-const ClipboardWritePermissionComposer = wrapWith(PermissionGrantedComposer)(memo(ClipboardWritePermissionComposer_));
-
-export default memo(ClipboardWritePermissionComposer);
+export default memo(wrapWith(PermissionGrantedComposer)(memo(ClipboardWritePermissionComposer)));
 export { useClipboardWritePermissionHooks };
