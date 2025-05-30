@@ -1,10 +1,14 @@
 import { hooks } from 'botframework-webchat-api';
 import { validateProps } from 'botframework-webchat-react-valibot';
 import classNames from 'classnames';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef } from 'react';
+import { wrapWith } from 'react-wrap-with';
 import { instance, nullable, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../../hooks/useStyleSet';
+import ClipboardWritePermissionComposer, {
+  useClipboardWritePermissionHooks
+} from '../../../providers/ClipboardWritePermission/ClipboardWritePermissionComposer';
 import { useQueueStaticElement } from '../../../providers/LiveRegionTwin';
 import refObject from '../../../types/internal/refObject';
 import ActivityButton from './ActivityButton';
@@ -23,11 +27,11 @@ type ActivityCopyButtonProps = InferInput<typeof activityCopyButtonPropsSchema>;
 
 const COPY_ICON_URL = `data:image/svg+xml;utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none"><path d="M8.5 2C7.39543 2 6.5 2.89543 6.5 4V14C6.5 15.1046 7.39543 16 8.5 16H14.5C15.6046 16 16.5 15.1046 16.5 14V4C16.5 2.89543 15.6046 2 14.5 2H8.5ZM7.5 4C7.5 3.44772 7.94772 3 8.5 3H14.5C15.0523 3 15.5 3.44772 15.5 4V14C15.5 14.5523 15.0523 15 14.5 15H8.5C7.94772 15 7.5 14.5523 7.5 14V4ZM4.5 6.00001C4.5 5.25973 4.9022 4.61339 5.5 4.26758V14.5C5.5 15.8807 6.61929 17 8 17H14.2324C13.8866 17.5978 13.2403 18 12.5 18H8C6.067 18 4.5 16.433 4.5 14.5V6.00001Z" fill="#000000"/></svg>')}`;
 
-const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
+function ActivityCopyButton(props: ActivityCopyButtonProps) {
   const { className, targetRef } = validateProps(activityCopyButtonPropsSchema, props);
 
   const [{ activityButton, activityCopyButton }] = useStyleSet();
-  const [permissionGranted, setPermissionGranted] = useState(false);
+  const [permissionGranted] = useClipboardWritePermissionHooks().usePermissionGranted();
   const [uiState] = useUIState();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const localize = useLocalizer();
@@ -73,20 +77,6 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
     queueStaticElement(<div className="webchat__activity-copy-button__copy-announcement">{copiedText}</div>);
   }, [buttonRef, copiedText, queueStaticElement, targetRef]);
 
-  useEffect(() => {
-    let unmounted = false;
-
-    (async function () {
-      if ((await navigator.permissions.query({ name: 'clipboard-write' as any })).state === 'granted') {
-        unmounted || setPermissionGranted(true);
-      }
-    })();
-
-    return () => {
-      unmounted = true;
-    };
-  }, [setPermissionGranted]);
-
   return (
     <ActivityButton
       className={classNames(
@@ -106,9 +96,7 @@ const ActivityCopyButton = (props: ActivityCopyButtonProps) => {
       <span className="webchat__activity-copy-button__copied-text">{copiedText}</span>
     </ActivityButton>
   );
-};
+}
 
-ActivityCopyButton.displayName = 'ActivityCopyButton';
-
-export default memo(ActivityCopyButton);
+export default memo(wrapWith(ClipboardWritePermissionComposer)(ActivityCopyButton));
 export { activityCopyButtonPropsSchema, type ActivityCopyButtonProps };
