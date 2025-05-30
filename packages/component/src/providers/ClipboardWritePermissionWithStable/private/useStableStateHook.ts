@@ -15,12 +15,10 @@ export default function useStableStateHook<T>(
   value: T,
   setValue?: Dispatch<SetStateAction<T>> | undefined
 ): () => readonly [T, Dispatch<SetStateAction<T>>] | readonly [T] {
-  const propagationRef = useRefWithInit<ReturnType<typeof createPropagation<T>>>(() => createPropagation<T>());
-  const valueRef = useRefFrom(value);
-
   const {
     current: { usePropagate, useListen }
-  } = propagationRef;
+  } = useRefWithInit<ReturnType<typeof createPropagation<T>>>(() => createPropagation<T>());
+  const valueRef = useRefFrom(value);
 
   const propagate = usePropagate();
 
