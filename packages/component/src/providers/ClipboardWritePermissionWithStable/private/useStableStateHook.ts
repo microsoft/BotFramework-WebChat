@@ -1,6 +1,21 @@
-import { useCallback, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
+import { useCallback, useMemo, useState, type Dispatch, type RefObject, type SetStateAction } from 'react';
 import { createPropagation } from 'use-propagate';
 import { useRefFrom } from 'use-ref-from';
+
+const useCreateHook = <T>(
+  setValue: Dispatch<SetStateAction<T>> | undefined,
+  useListen: (listener: (value: T) => void) => void,
+  valueRef: RefObject<T>
+) => {
+  const [propagatedValue, setPropagatedValue] = useState<T>(valueRef.current);
+
+  useListen(setPropagatedValue);
+
+  return useMemo(
+    () => Object.freeze(setValue ? ([propagatedValue, setValue] as const) : ([propagatedValue] as const)),
+    [propagatedValue, setValue]
+  );
+};
 
 export default function useStableStateHook<T>(value: T): () => readonly [T];
 
@@ -21,19 +36,10 @@ export default function useStableStateHook<T>(
   useMemo(() => propagate(value), [propagate, value]);
 
   // Hack around ESLint rules without disabling react-hooks/rules-of-hooks.
-  const _useListen = useListen;
-  const _useMemo = useMemo;
-  const _useState = useState;
+  const _useCreateHook = useCreateHook;
 
-  return useCallback(() => {
-    const [propagatedValue, setPropagatedValue] = _useState<T>(valueRef.current);
-
-    _useListen(setPropagatedValue);
-
-    return _useMemo(
-      () => Object.freeze(setValue ? ([propagatedValue, setValue] as const) : ([propagatedValue] as const)),
-      // This deps is not checked by ESLint, verify with care.
-      [propagatedValue, setValue]
-    );
-  }, [_useMemo, _useListen, _useState, setValue, valueRef]);
+  return useCallback(
+    () => _useCreateHook(setValue, useListen, valueRef),
+    [_useCreateHook, setValue, useListen, valueRef]
+  );
 }
