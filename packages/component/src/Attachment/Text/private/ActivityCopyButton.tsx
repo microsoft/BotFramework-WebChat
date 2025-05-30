@@ -8,7 +8,7 @@ import { instance, nullable, object, optional, pipe, readonly, string, type Infe
 import useStyleSet from '../../../hooks/useStyleSet';
 import ClipboardWritePermissionComposer, {
   useClipboardWritePermissionHooks
-} from '../../../providers/ClipboardWritePermissionWithStable/ClipboardWritePermissionComposer';
+} from '../../../providers/ClipboardWritePermissionWithStateContext/ClipboardWritePermissionComposer';
 import { useQueueStaticElement } from '../../../providers/LiveRegionTwin';
 import refObject from '../../../types/internal/refObject';
 import ActivityButton from './ActivityButton';
