@@ -9,6 +9,12 @@ import { parse, safeParse, type BaseIssue, type BaseSchema, type InferInput, typ
  */
 type IsolationMode = 'no isolation' | 'strict';
 
+declare const process: {
+  env: {
+    NODE_ENV?: string | undefined;
+  };
+};
+
 export default function validateProps<const TSchema extends BaseSchema<unknown, unknown, BaseIssue<unknown>>>(
   propsSchema: TSchema,
   props: unknown,
@@ -36,8 +42,7 @@ export default function validateProps<const TSchema extends BaseSchema<unknown, 
   props: InferInput<TSchema>,
   isolationMode?: IsolationMode | undefined
 ): InferInput<TSchema> | InferOutput<TSchema> {
-  // @ts-expect-error Accessing process without @types/node.
-  if ((process as any).env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production') {
     return props as unknown as InferInput<TSchema>;
   }
 

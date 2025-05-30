@@ -65,9 +65,17 @@ const hooks = {
   ...componentHooks
 };
 
-const buildTool = (process as any).env.build_tool;
-const moduleFormat = (process as any).env.module_format;
-const version = (process as any).env.npm_package_version;
+declare const process: {
+  env: {
+    build_tool: string;
+    module_format: string;
+    npm_package_version: string;
+  };
+};
+
+const buildTool = process.env.build_tool;
+const moduleFormat = process.env.module_format;
+const version = process.env.npm_package_version;
 
 const buildInfo = { buildTool, moduleFormat, version };
 
