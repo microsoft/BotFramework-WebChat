@@ -24,7 +24,7 @@ export default function useStableStateHook<T>(
 
   useEffect(() => propagate(value), [propagate, value]);
 
-  // One-off variable to hack around ESLint rules without disabling react-hooks/rules-of-hooks.
+  // Hack around ESLint rules without disabling react-hooks/rules-of-hooks.
   const _useListen = useListen;
   const _useMemo = useMemo;
   const _useState = useState;
