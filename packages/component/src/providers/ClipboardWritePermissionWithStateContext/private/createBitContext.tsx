@@ -3,7 +3,6 @@ import React, {
   createContext,
   memo,
   useContext,
-  useMemo,
   useState,
   type ComponentType,
   type Dispatch,
@@ -11,9 +10,7 @@ import React, {
 } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
-type BitContextType<T> = Readonly<{
-  state: readonly [T, Dispatch<SetStateAction<T>>];
-}>;
+type BitContextType<T> = readonly [T, Dispatch<SetStateAction<T>>];
 
 const bitComposerPropsSchema = pipe(
   object({
@@ -39,15 +36,13 @@ export default function createBitContext<T>(initialValue: T): Readonly<{
   function BitComposer(props: BitComposerProps) {
     const { children } = validateProps(bitComposerPropsSchema, props);
 
-    const state = useState<BitContextType<T>['state'][0]>(() => initialValue);
-
-    const context = useMemo<BitContextType<T>>(() => Object.freeze({ state }), [state]);
+    const context = useState<BitContextType<T>[0]>(() => initialValue);
 
     return <AtomContext.Provider value={context}>{children}</AtomContext.Provider>;
   }
 
   return Object.freeze({
     Composer: memo(BitComposer),
-    useState: () => useContext(AtomContext).state
+    useState: () => useContext(AtomContext)
   });
 }
