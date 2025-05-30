@@ -15,21 +15,21 @@ const clipboardWritePermissionComposerPropsSchema = pipe(
 
 type ClipboardWritePermissionComposerProps = InferInput<typeof clipboardWritePermissionComposerPropsSchema>;
 
-const { Composer: PermissionGrantedComposer, useValue: useRawPermissionGranted } =
+const { Composer: PermissionGrantedComposer, useValue: usePermissionGranted } =
   createStateContextWithHook<boolean>(false);
 
 function useClipboardWritePermissionHooks(): Readonly<{
   usePermissionGranted: () => readonly [boolean];
 }> {
-  const usePermissionGranted = useGetterState(useRawPermissionGranted());
+  const usePermissionGranted_ = useGetterState(usePermissionGranted());
 
-  return useMemo(() => Object.freeze({ usePermissionGranted }), [usePermissionGranted]);
+  return useMemo(() => Object.freeze({ usePermissionGranted: usePermissionGranted_ }), [usePermissionGranted_]);
 }
 
 function ClipboardWritePermissionComposer_(props: ClipboardWritePermissionComposerProps) {
   const { children } = validateProps(clipboardWritePermissionComposerPropsSchema, props);
 
-  const [_, setPermissionGranted] = useRawPermissionGranted();
+  const [_, setPermissionGranted] = usePermissionGranted();
 
   useEffect(() => {
     let unmounted = false;
