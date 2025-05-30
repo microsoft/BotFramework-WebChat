@@ -4,7 +4,8 @@ import baseConfig from '../../tsup.base.config';
 const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
-    'botframework-webchat-core': './src/index.ts'
+    'botframework-webchat-core': './src/index.ts',
+    'botframework-webchat-core.internal': './src/internal/index.ts'
   }
 };
 

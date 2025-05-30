@@ -64,6 +64,7 @@
     "botframework-webchat-api": "production",
     "botframework-webchat-component": "production",
     "botframework-webchat-core": "production",
+    "botframework-webchat-react-valibot": "development",
     "isomorphic-react": "development",
     "isomorphic-react-dom": "development"
   },
@@ -157,6 +158,7 @@
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "botframework-webchat-base": "0.0.0-0",
+    "botframework-webchat-react-valibot": "0.0.0-0",
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
     "esbuild": "^0.25.0",

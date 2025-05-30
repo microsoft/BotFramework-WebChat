@@ -1,7 +1,7 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
+import { reactNode } from 'botframework-webchat-react-valibot';
 import React, { memo, useMemo } from 'react';
 import { any, array, minLength, object, optional, parse, pipe, readonly, transform, type InferOutput } from 'valibot';
-import reactNode from '../../../../types/internal/reactNode';
 import StatusGroupingContext, { type StatusGroupingContextType } from './private/StatusGroupingContext';
 
 const statusGroupingPropsSchema = pipe(

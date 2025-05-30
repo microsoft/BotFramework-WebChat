@@ -1,4 +1,4 @@
-import { validateProps } from 'botframework-webchat-api/internal';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { forwardRef, memo, useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
@@ -16,7 +16,6 @@ import {
 } from 'valibot';
 
 import useStyleSet from '../../../hooks/useStyleSet';
-import reactNode from '../../../types/internal/reactNode';
 import MonochromeImageMasker from '../../../Utils/MonochromeImageMasker';
 
 const activityButtonPropsSchema = pipe(

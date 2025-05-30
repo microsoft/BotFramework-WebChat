@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-api/internal';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
+import { validateProps } from 'botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { memo, useCallback, type MouseEventHandler } from 'react';
 import { any, literal, number, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
@@ -13,10 +13,11 @@ import useFocus from '../hooks/useFocus';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 import useItemRef from '../providers/RovingTabIndex/useItemRef';
+import testIds from '../testIds';
 import AccessibleButton from '../Utils/AccessibleButton';
 import useFocusAccessKeyEffect from '../Utils/AccessKeySink/useFocusAccessKeyEffect';
 
-const { useDirection, usePerformCardAction, useStyleOptions, useSuggestedActions, useUIState } = hooks;
+const { useDirection, usePerformCardAction, useStyleOptions, useSuggestedActionsHooks, useUIState } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__suggested-action': {
@@ -70,7 +71,7 @@ function SuggestedAction(props: SuggestedActionProps) {
     value
   } = validateProps(suggestedActionPropsSchema, props);
 
-  const [_, setSuggestedActions] = useSuggestedActions();
+  const [_, setSuggestedActions] = useSuggestedActionsHooks().useSuggestedActions();
   const [{ suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const [accessKey] = useSuggestedActionsAccessKey();
@@ -122,6 +123,7 @@ function SuggestedAction(props: SuggestedActionProps) {
         suggestedActionStyleSet + '',
         className
       )}
+      data-testid={testIds.suggestedActionButton}
       disabled={uiState === 'disabled'}
       onClick={handleClick}
       ref={focusRef}

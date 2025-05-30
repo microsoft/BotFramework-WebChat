@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-api/internal';
+import { validateProps } from 'botframework-webchat-react-valibot';
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';

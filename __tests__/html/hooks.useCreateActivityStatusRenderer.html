@@ -51,6 +51,7 @@
         );
 
         await pageConditions.webChatRendered();
+        await pageConditions.uiConnected();
 
         await directLine.emulateIncomingActivity({
           // Setting sequence ID to simplify the order of these test cases.

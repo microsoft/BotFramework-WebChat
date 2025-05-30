@@ -14,6 +14,16 @@
         "types": "./dist/botframework-webchat-core.d.ts",
         "default": "./dist/botframework-webchat-core.js"
       }
+    },
+    "./internal": {
+      "import": {
+        "types": "./dist/botframework-webchat-core.internal.d.mts",
+        "default": "./dist/botframework-webchat-core.internal.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core.internal.d.ts",
+        "default": "./dist/botframework-webchat-core.internal.js"
+      }
     }
   },
   "publishConfig": {
@@ -29,6 +39,7 @@
     "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
   "files": [
+    "./*.js",
     "./dist/**/*",
     "./src/**/*"
   ],

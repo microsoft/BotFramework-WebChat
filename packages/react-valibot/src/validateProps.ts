@@ -9,6 +9,12 @@ import { parse, safeParse, type BaseIssue, type BaseSchema, type InferInput, typ
  */
 type IsolationMode = 'no isolation' | 'strict';
 
+declare const process: {
+  env: {
+    NODE_ENV?: string | undefined;
+  };
+};
+
 export default function validateProps<const TSchema extends BaseSchema<unknown, unknown, BaseIssue<unknown>>>(
   propsSchema: TSchema,
   props: unknown,
@@ -49,7 +55,10 @@ export default function validateProps<const TSchema extends BaseSchema<unknown, 
   try {
     return parse(propsSchema, props);
   } catch (error) {
-    console.error('botframework-webchat: Validation error while parsing props.', error.issues);
+    console.error(
+      'botframework-webchat: Validation error while parsing props.',
+      error && typeof error === 'object' && 'issues' in error && error.issues
+    );
 
     throw error;
   }
