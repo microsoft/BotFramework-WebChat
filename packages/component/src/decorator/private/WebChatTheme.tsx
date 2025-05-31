@@ -7,7 +7,7 @@ type WebChatThemeProps = Readonly<{
   readonly children?: ReactNode | undefined;
 }>;
 
-const styles = createStyles();
+const styles = createStyles('component/decorator');
 
 function WebChatTheme({ children }: WebChatThemeProps) {
   return <ThemeProvider styles={styles}>{children}</ThemeProvider>;

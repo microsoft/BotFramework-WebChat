@@ -62,7 +62,7 @@ const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
         : next(request)) satisfies DecoratorMiddlewareTypes['activity border'])
 ]);
 
-const styles = createStyles();
+const styles = createStyles('fluent-theme');
 
 const fluentStyleOptions: StyleOptions = Object.freeze({
   feedbackActionsPlacement: 'activity-actions'
