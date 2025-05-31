@@ -1,11 +1,11 @@
 import { validateProps } from 'botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { useStyles } from 'botframework-webchat-styles/react';
 import React, { memo } from 'react';
 import { object, picklist, pipe, readonly, string, type InferInput } from 'valibot';
 
-import { useStyleSet } from '../../../hooks';
 import FilePreview from './FilePreview';
 import { sendBoxAttachmentSchema } from './sendBoxAttachment';
+import styles from './ImagePreview.module.css';
 
 const sendBoxAttachmentBarItemImageAttachmentPreviewPropsSchema = pipe(
   object({
@@ -26,17 +26,14 @@ function SendBoxAttachmentBarItemImageAttachmentPreview(props: SendBoxAttachment
     props
   );
 
-  const [{ sendBoxAttachmentBarItemImagePreview: sendBoxAttachmentBarItemImagePreviewClassName }] = useStyleSet();
+  const classNames = useStyles(styles); // Renamed to avoid conflict with classnames import
 
   return mode === 'list item' ? (
     <FilePreview attachment={attachment} attachmentName={attachmentName} mode={mode} />
   ) : (
     <img
       alt={attachmentName}
-      className={classNames(
-        sendBoxAttachmentBarItemImagePreviewClassName,
-        'webchat__send-box-attachment-bar-item-image-preview'
-      )}
+      className={classNames['send-box-attachment-bar-item-image-preview']}
       src={attachment.thumbnailURL.href}
     />
   );

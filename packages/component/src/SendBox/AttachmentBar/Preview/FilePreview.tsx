@@ -1,11 +1,12 @@
 import { validateProps } from 'botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { useStyles } from 'botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, { memo } from 'react';
 import { object, picklist, pipe, readonly, string, type InferInput } from 'valibot';
 
-import { useStyleSet } from '../../../hooks';
-import ModdableIcon from '../../../ModdableIcon/ModdableIcon';
+import { ComponentIcon } from '../../../Icon';
 import { sendBoxAttachmentSchema } from './sendBoxAttachment';
+import styles from './FilePreview.module.css'; // Added import for css modules
 
 const sendBoxAttachmentBarItemFileAttachmentPreviewPropsSchema = pipe(
   object({
@@ -26,33 +27,31 @@ function SendBoxAttachmentBarItemFileAttachmentPreview(props: SendBoxAttachmentB
     props
   );
 
-  const [{ sendBoxAttachmentBarItemFilePreview: sendBoxAttachmentBarItemFilePreviewClassName }] = useStyleSet();
+  const classNames = useStyles(styles);
 
   return mode === 'list item' ? (
     <div
-      className={classNames(
-        sendBoxAttachmentBarItemFilePreviewClassName,
-        'webchat__send-box-attachment-bar-item-file-preview',
-        'webchat__send-box-attachment-bar-item-file-preview--as-list-item',
+      className={cx(
+        classNames['send-box-attachment-bar-item-file-preview'],
+        classNames['send-box-attachment-bar-item-file-preview--as-list-item'],
         {
-          'webchat__send-box-attachment-bar-item-file-preview--is-file': !attachment.thumbnailURL,
-          'webchat__send-box-attachment-bar-item-file-preview--is-image': attachment.thumbnailURL
+          [classNames['send-box-attachment-bar-item-file-preview--is-file']]: !attachment.thumbnailURL,
+          [classNames['send-box-attachment-bar-item-file-preview--is-image']]: attachment.thumbnailURL
         }
       )}
     >
-      <ModdableIcon />
-      <div className="webchat__send-box-attachment-bar-item-file-preview__text">{attachmentName}</div>
+      <ComponentIcon />
+      <div className={classNames['send-box-attachment-bar-item-file-preview__text']}>{attachmentName}</div>
     </div>
   ) : (
     <div
-      className={classNames(
-        sendBoxAttachmentBarItemFilePreviewClassName,
-        'webchat__send-box-attachment-bar-item-file-preview',
-        'webchat__send-box-attachment-bar-item-file-preview--as-thumbnail',
-        'webchat__send-box-attachment-bar-item-file-preview--is-file'
+      className={cx(
+        classNames['send-box-attachment-bar-item-file-preview'],
+        classNames['send-box-attachment-bar-item-file-preview--as-thumbnail'],
+        classNames['send-box-attachment-bar-item-file-preview--is-file']
       )}
     >
-      <ModdableIcon />
+      <ComponentIcon />
     </div>
   );
 }

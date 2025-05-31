@@ -51,6 +51,7 @@ import useTheme from './providers/Theme/useTheme';
 import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
 import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
+import WebChatTheme from './Styles/WebChatTheme';
 import useCustomPropertiesClassName from './Styles/useCustomPropertiesClassName';
 import { type ContextOf } from './types/ContextOf';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
@@ -318,7 +319,7 @@ ComposerCore.propTypes = {
 
 type ComposerProps = APIComposerProps & ComposerCoreProps;
 
-const Composer = ({
+const InternalComposer = ({
   activityMiddleware,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
@@ -485,6 +486,12 @@ const Composer = ({
     </APIComposer>
   );
 };
+
+const Composer = (props: ComposerProps) => (
+  <WebChatTheme>
+    <InternalComposer {...props} />
+  </WebChatTheme>
+);
 
 Composer.defaultProps = {
   ...APIComposer.defaultProps,

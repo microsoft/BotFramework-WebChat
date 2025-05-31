@@ -32,6 +32,7 @@ export default function useCustomPropertiesClassName() {
       markdownExternalLinkIconImage,
       paddingRegular,
       primaryFont,
+      sendBoxAttachmentBarMaxHeight,
       subtle,
       timestampColor
     } = styleOptions;
@@ -52,6 +53,7 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.FontSizeSmall}: ${fontSizeSmall};
   ${CustomPropertyNames.IconURLExternalLink}: ${markdownExternalLinkIconImage};
   ${CustomPropertyNames.MaxHeightImageBubble}: ${bubbleImageMaxHeight}px;
+  ${CustomPropertyNames.MaxHeightSendBoxAttachmentBar}: ${sendBoxAttachmentBarMaxHeight}px;
   ${CustomPropertyNames.MaxWidthAttachmentBubble}: ${bubbleAttachmentMaxWidth}px;
   ${CustomPropertyNames.MinWidthAttachmentBubble}: ${bubbleAttachmentMinWidth}px;
   ${CustomPropertyNames.MaxWidthMessageBubble}: ${bubbleMessageMaxWidth}px;
