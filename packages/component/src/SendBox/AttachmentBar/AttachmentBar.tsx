@@ -1,11 +1,12 @@
 import { hooks } from 'botframework-webchat-api';
 import { validateProps } from 'botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { type InferInput, object, optional, pipe, readonly, string } from 'valibot';
+import { useStyles } from 'botframework-webchat-styles/react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import { useStyleSet } from '../../hooks';
+import styles from './AttachmentBar.module.css';
 import testIds from '../../testIds';
 import AttachmentBarItem from './AttachmentBarItem';
 
@@ -24,7 +25,7 @@ function SendBoxAttachmentBar(props: SendBoxAttachmentBarProps) {
   const { className } = validateProps(sendBoxAttachmentBarPropsSchema, props);
 
   const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachments();
-  const [{ sendBoxAttachmentBar: sendBoxAttachmentBarClassName }] = useStyleSet();
+  const classNames = useStyles(styles);
   const [{ sendBoxAttachmentBarMaxThumbnail }] = useStyleOptions();
 
   const mode = useMemo(
@@ -45,18 +46,17 @@ function SendBoxAttachmentBar(props: SendBoxAttachmentBarProps) {
   return (
     sendBoxAttachments.length > 0 && (
       <div
-        className={classNames(
-          sendBoxAttachmentBarClassName,
-          'webchat__send-box-attachment-bar',
+        className={cx(
+          classNames['send-box-attachment-bar'],
           {
-            'webchat__send-box-attachment-bar--as-list-item': mode === 'list item',
-            'webchat__send-box-attachment-bar--as-thumbnail': mode === 'thumbnail'
+            [classNames['send-box-attachment-bar--as-list-item']]: mode === 'list item',
+            [classNames['send-box-attachment-bar--as-thumbnail']]: mode === 'thumbnail'
           },
           className
         )}
         data-testid={testIds.sendBoxAttachmentBar}
       >
-        <div className="webchat__send-box-attachment-bar__box">
+        <div className={classNames['send-box-attachment-bar--box']}>
           {sendBoxAttachments.map((attachment, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <AttachmentBarItem attachment={attachment} key={index} mode={mode} onDelete={handleAttachmentDelete} />

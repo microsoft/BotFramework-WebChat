@@ -1,7 +1,8 @@
 import { hooks } from 'botframework-webchat-api';
 import { validateProps } from 'botframework-webchat-react-valibot';
 import { type SendBoxAttachment } from 'botframework-webchat-core';
-import classNames from 'classnames';
+import { useStyles } from 'botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, { memo, useCallback, useEffect, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import {
@@ -18,10 +19,11 @@ import {
   type InferInput
 } from 'valibot';
 
-import { useFocus, useStyleSet } from '../../hooks';
+import { useFocus } from '../../hooks';
 import testIds from '../../testIds';
 import DeleteButton from './ItemDeleteButton';
 import Preview from './ItemPreview';
+import styles from './AttachmentBarItem.module.css';
 
 const { useLocalizer } = hooks;
 
@@ -49,7 +51,7 @@ type SendBoxAttachmentBarItemProps = InferInput<typeof sendBoxAttachmentBarItemP
 function SendBoxAttachmentBarItem(props: SendBoxAttachmentBarItemProps) {
   const { attachment, mode, onDelete } = validateProps(sendBoxAttachmentBarItemPropsSchema, props);
 
-  const [{ sendBoxAttachmentBarItem: sendBoxAttachmentBarItemClassName }] = useStyleSet();
+  const classNames = useStyles(styles);
   const attachmentRef = useRefFrom(attachment);
   const elementRef = useRef<HTMLDivElement>(null);
   const focus = useFocus();
@@ -85,20 +87,16 @@ function SendBoxAttachmentBarItem(props: SendBoxAttachmentBarItemProps) {
 
   return (
     <div
-      className={classNames(sendBoxAttachmentBarItemClassName, 'webchat__send-box-attachment-bar-item', {
-        'webchat__send-box-attachment-bar-item--as-list-item': mode === 'list item',
-        'webchat__send-box-attachment-bar-item--as-thumbnail': mode === 'thumbnail'
+      className={cx(classNames['send-box-attachment-bar-item'], {
+        [classNames['send-box-attachment-bar-item--as-list-item']]: mode === 'list item',
+        [classNames['send-box-attachment-bar-item--as-thumbnail']]: mode === 'thumbnail'
       })}
       data-testid={testIds.sendBoxAttachmentBarItem}
       ref={elementRef}
       title={attachmentName}
     >
       <Preview attachment={attachment} attachmentName={attachmentName} mode={mode} />
-      <DeleteButton
-        attachmentName={attachmentName}
-        onClick={handleDeleteButtonClick}
-        size={mode === 'list item' ? 'small' : 'large'}
-      />
+      <DeleteButton attachmentName={attachmentName} onClick={handleDeleteButtonClick} />
     </div>
   );
 }
