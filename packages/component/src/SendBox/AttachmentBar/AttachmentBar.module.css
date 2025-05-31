@@ -16,7 +16,7 @@
     gap: 4px;
   }
 
-  &.send-box-attachment-bar--as-list-item .send-box-attachment-bar--box {
+  &.send-box-attachment-bar--as-list-item .send-box-attachment-bar__box {
     display: grid;
     grid-template-columns: 1fr 1fr;
 
@@ -25,7 +25,7 @@
     }
   }
 
-  &.send-box-attachment-bar--as-thumbnail .send-box-attachment-bar--box {
+  &.send-box-attachment-bar--as-thumbnail .send-box-attachment-bar__box {
     display: flex;
     scrollbar-width: thin;
   }
