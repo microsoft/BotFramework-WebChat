@@ -1,8 +1,7 @@
+import { useStableStateHook } from 'botframework-webchat-react-context';
 import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import React, { createContext, memo, useContext, useEffect, useMemo, useState } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
-
-import useStableStateHook from './private/useStableStateHook';
 
 const clipboardWritePermissionComposerPropsSchema = pipe(
   object({

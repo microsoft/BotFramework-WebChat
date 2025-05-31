@@ -1,11 +1,11 @@
-import { useCallback, useMemo, useState, type Dispatch, type RefObject, type SetStateAction } from 'react';
+import { useCallback, useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import { createPropagation } from 'use-propagate';
 import { useRefFrom } from 'use-ref-from';
 
 const useCreateHook = <T>(
   setValue: Dispatch<SetStateAction<T>> | undefined,
   useListen: (listener: (value: T) => void) => void,
-  valueRef: RefObject<T>
+  valueRef: Readonly<{ current: T }>
 ) => {
   const [propagatedValue, setPropagatedValue] = useState<T>(valueRef.current);
 

@@ -1,17 +1,17 @@
 {
-  "name": "botframework-webchat-react-valibot",
+  "name": "botframework-webchat-react-context",
   "version": "0.0.0-0",
-  "description": "The botframework-webchat react-valibot package",
-  "types": "./dist/botframework-webchat-react-valibot.d.ts",
+  "description": "The botframework-webchat react-context package",
+  "types": "./dist/botframework-webchat-react-context.d.ts",
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/botframework-webchat-react-valibot.d.mts",
-        "default": "./dist/botframework-webchat-react-valibot.mjs"
+        "types": "./dist/botframework-webchat-react-context.d.mts",
+        "default": "./dist/botframework-webchat-react-context.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-react-valibot.d.ts",
-        "default": "./dist/botframework-webchat-react-valibot.js"
+        "types": "./dist/botframework-webchat-react-context.d.ts",
+        "default": "./dist/botframework-webchat-react-context.js"
       }
     }
   },
@@ -28,7 +28,7 @@
     "./dist/**/*",
     "./src/**/*"
   ],
-  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/react-valibot#readme",
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/react-context#readme",
   "private": true,
   "scripts": {
     "build": "npm run build:tsup",

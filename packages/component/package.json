@@ -72,6 +72,7 @@
     "botframework-webchat-api": "production",
     "botframework-webchat-base": "development",
     "botframework-webchat-core": "production",
+    "botframework-webchat-react-context": "development",
     "botframework-webchat-react-valibot": "development",
     "botframework-webchat-styles": "development"
   },
@@ -131,6 +132,7 @@
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "botframework-webchat-base": "0.0.0-0",
+    "botframework-webchat-react-context": "^0.0.0-0",
     "botframework-webchat-react-valibot": "^0.0.0-0",
     "botframework-webchat-styles": "0.0.0-0",
     "concurrently": "^9.1.2",

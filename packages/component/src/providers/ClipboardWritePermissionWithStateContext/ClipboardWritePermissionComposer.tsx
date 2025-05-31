@@ -1,10 +1,8 @@
+import { createBitContext, useGetterState } from 'botframework-webchat-react-context';
 import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import React, { Fragment, memo, useEffect, useMemo } from 'react';
 import { wrapWith } from 'react-wrap-with';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
-
-import createBitContext from './private/createBitContext';
-import useGetterState from './private/useGetterState';
 
 const clipboardWritePermissionComposerPropsSchema = pipe(
   object({
