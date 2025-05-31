@@ -39,6 +39,7 @@ import SuggestedActions from './SendBox/SuggestedActions';
 import SendTextBox from './SendBox/TextBox';
 import UploadButton from './SendBoxToolbar/UploadButton';
 import MonochromeImageMasker from './Utils/MonochromeImageMasker';
+import { AttachmentBar } from './SendBox/AttachmentBar';
 
 import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
@@ -111,6 +112,7 @@ const Components = {
   Timestamp,
 
   // Components for recomposing send box
+  AttachmentBar,
   DictationInterims,
   MicrophoneButton,
   SendButton,

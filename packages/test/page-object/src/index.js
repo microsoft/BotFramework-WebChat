@@ -10,6 +10,7 @@ import * as pageConditions from './globals/pageConditions/index';
 import * as pageElements from './globals/pageElements/index';
 import * as pageObjects from './globals/pageObjects/index';
 import * as testHelpers from './globals/testHelpers/index';
+import renderWebChat from './globals/renderWebChat';
 import withResolvers from './utils/withResolvers';
 
 window.classNames = classNames;
@@ -22,3 +23,4 @@ window.pageElements = pageElements;
 window.pageObjects = pageObjects;
 window.testHelpers = testHelpers;
 window.updateIn = updateIn;
+window.renderWebChat = renderWebChat;

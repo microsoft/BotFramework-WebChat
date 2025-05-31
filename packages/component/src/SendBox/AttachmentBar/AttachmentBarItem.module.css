@@ -30,7 +30,7 @@
   /* https://react.fluentui.dev/?path=/docs/theme-colors--docs */
   appearance: none;
   align-items: center;
-  background-color: White; /* Background/colorNeutralBackground1 */
+  background-color: #ffffff; /* Background/colorNeutralBackground1 */
   border-color: #d1d1d1; /* Stroke/colorNeutralStroke1 */
   border-radius: 4px; /* BorderRadiusXS is not defined in Fluent UI, guessing it is 4px. */
   cursor: pointer;
