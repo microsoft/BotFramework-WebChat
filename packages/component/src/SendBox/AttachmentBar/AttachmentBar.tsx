@@ -56,7 +56,7 @@ function SendBoxAttachmentBar(props: SendBoxAttachmentBarProps) {
         )}
         data-testid={testIds.sendBoxAttachmentBar}
       >
-        <div className={classNames['send-box-attachment-bar--box']}>
+        <div className={classNames['send-box-attachment-bar__box']}>
           {sendBoxAttachments.map((attachment, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <AttachmentBarItem attachment={attachment} key={index} mode={mode} onDelete={handleAttachmentDelete} />

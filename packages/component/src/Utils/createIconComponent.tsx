@@ -2,7 +2,7 @@ import { useStyles } from 'botframework-webchat-styles/react';
 import { validateProps } from 'botframework-webchat-react-valibot';
 import cx from 'classnames';
 import { object, optional, pipe, readonly, picklist } from 'valibot';
-import React from 'react';
+import React, { type ComponentType } from 'react';
 
 type CSSModule = {
   readonly [key: string | `${string}--${string}`]: any;
@@ -29,7 +29,7 @@ function createPropsSchema(styles: CSSModule) {
 
 export default function createIconComponent<T extends { className?: string | undefined }>(
   styles: CSSModule,
-  BaseIcon: React.ComponentType<T>
+  BaseIcon: ComponentType<T>
 ) {
   const propsSchema = createPropsSchema(styles);
   return (props => {

@@ -1,7 +1,7 @@
 import { validateProps } from 'botframework-webchat-react-valibot';
 import { useStyles } from 'botframework-webchat-styles/react';
 import cx from 'classnames';
-import React from 'react';
+import React, { memo } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import createIconComponent from '../Utils/createIconComponent';
@@ -9,9 +9,9 @@ import styles from './ComponentIcon.module.css';
 
 const componentIconPropsSchema = pipe(
   object({
+    appearance: optional(string()),
     className: optional(string()),
     icon: optional(string()),
-    appearance: optional(string()),
     size: optional(string())
   }),
   readonly()
@@ -31,5 +31,5 @@ const ComponentIcon = createIconComponent(styles, BaseComponentIcon);
 
 ComponentIcon.displayName = 'ComponentIcon';
 
-export default ComponentIcon;
-export type { ComponentIconProps };
+export default memo(ComponentIcon);
+export { componentIconPropsSchema, type ComponentIconProps };  

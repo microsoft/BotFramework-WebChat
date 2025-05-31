@@ -12,7 +12,7 @@
     overflow-x: auto;
   }
 
-  .send-box-attachment-bar--box {
+  .send-box-attachment-bar__box {
     gap: 4px;
   }
 

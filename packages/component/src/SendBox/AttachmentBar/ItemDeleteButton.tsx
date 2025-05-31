@@ -1,7 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import { validateProps } from 'botframework-webchat-react-valibot';
 import { useStyles } from 'botframework-webchat-styles/react';
-import cx from 'classnames';
 import React, { KeyboardEventHandler, useCallback } from 'react';
 import { function_, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
@@ -25,7 +24,6 @@ type AttachmentDeleteButtonProps = InferInput<typeof attachmentDeleteButtonProps
 function AttachmentDeleteButton(props: AttachmentDeleteButtonProps) {
   const { attachmentName, onClick } = validateProps(attachmentDeleteButtonPropsSchema, props);
   const classNames = useStyles(styles);
-
   const focus = useFocus();
   const localize = useLocalizer();
 
@@ -43,7 +41,7 @@ function AttachmentDeleteButton(props: AttachmentDeleteButtonProps) {
   return (
     <button
       aria-label={localize('SEND_BOX_ATTACHMENT_BAR_DELETE_BUTTON_ALT', attachmentName)}
-      className={cx(classNames['send-box-attachment-bar-item__delete-button'])}
+      className={classNames['send-box-attachment-bar-item__delete-button']}
       data-testid={testIds.sendBoxAttachmentBarItemDeleteButton}
       onClick={onClick}
       onKeyDown={handleKeyDown}

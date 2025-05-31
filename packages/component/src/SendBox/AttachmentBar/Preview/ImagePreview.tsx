@@ -1,6 +1,5 @@
 import { validateProps } from 'botframework-webchat-react-valibot';
 import { useStyles } from 'botframework-webchat-styles/react';
-import cx from 'classnames';
 import React, { memo } from 'react';
 import { object, picklist, pipe, readonly, string, type InferInput } from 'valibot';
 
@@ -34,7 +33,7 @@ function SendBoxAttachmentBarItemImageAttachmentPreview(props: SendBoxAttachment
   ) : (
     <img
       alt={attachmentName}
-      className={cx(classNames['send-box-attachment-bar-item-image-preview'])}
+      className={classNames['send-box-attachment-bar-item-image-preview']}
       src={attachment.thumbnailURL.href}
     />
   );
