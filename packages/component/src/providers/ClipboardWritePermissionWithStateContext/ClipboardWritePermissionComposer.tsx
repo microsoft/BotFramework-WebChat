@@ -1,4 +1,4 @@
-import { createBitContext, useGetterState } from 'botframework-webchat-react-context';
+import { createBitContext, useReadonlyState } from 'botframework-webchat-react-context';
 import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import React, { Fragment, memo, useEffect, useMemo } from 'react';
 import { wrapWith } from 'react-wrap-with';
@@ -18,7 +18,7 @@ const { Composer: PermissionGrantedComposer, useState: usePermissionGranted } = 
 function useClipboardWritePermissionHooks(): Readonly<{
   usePermissionGranted: () => readonly [boolean];
 }> {
-  const usePermissionGranted_ = useGetterState(usePermissionGranted());
+  const usePermissionGranted_ = useReadonlyState(usePermissionGranted());
 
   return useMemo(
     () =>
