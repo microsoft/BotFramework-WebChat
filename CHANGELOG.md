@@ -93,8 +93,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Existing behavior will be kept and activities will be grouped by `sender` followed by `status`
    - `useGroupActivitiesByName` is favored over the existing `useGroupActivities` hook for performance reason
    - Middleware which support the new grouping name init argument should only compute the grouping if they match the grouping name, or the grouping name is not specified, otherwise, should do nothing and call the downstream middleware
-- Resolved [#5463](https://github.com/microsoft/BotFramework-WebChat/issues/5463). Added attachment preview for `sendAttachmentOn: "send"`, in PR [#5464](https://github.com/microsoft/BotFramework-WebChat/pull/5464), by [@compulim](https://github.com/compulim)
+- Resolved [#5463](https://github.com/microsoft/BotFramework-WebChat/issues/5463). Added attachment preview for `sendAttachmentOn: "send"`, in PR [#5464](https://github.com/microsoft/BotFramework-WebChat/pull/5464), by [@compulim](https://github.com/compulim), in PR [#5492](https://github.com/microsoft/BotFramework-WebChat/pull/5492), by [@OEvgeny](https://github.com/OEvgeny)
    - Attaching files will no longer remove previously attached files
+   - Updated Fluent theme to use the new attachment preview feature
 
 ### Changed
 
