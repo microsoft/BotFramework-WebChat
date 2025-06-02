@@ -49,7 +49,7 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
       setOriginActivity(undefined);
       setSuggestedActionsRaw(suggestedActions);
     },
-    [setSuggestedActionsRaw]
+    [setOriginActivity, setSuggestedActionsRaw]
   );
 
   // #region Replicate to Redux store
