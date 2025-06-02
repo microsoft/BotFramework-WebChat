@@ -21,6 +21,6 @@ window.Observable = Observable;
 window.pageConditions = pageConditions;
 window.pageElements = pageElements;
 window.pageObjects = pageObjects;
+window.renderWebChat = renderWebChat;
 window.testHelpers = testHelpers;
 window.updateIn = updateIn;
-window.renderWebChat = renderWebChat;

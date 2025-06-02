@@ -9,6 +9,7 @@ export default function renderWebChat(props, container) {
 
   const { searchParams } = new URL(window.location.href);
   const isFluentTheme = searchParams.get('theme') === 'fluent';
+  const isCopilotVariant = searchParams.get('variant') === 'copilot';
 
   if (isFluentTheme) {
     if (!window.React || !window.ReactDOM) {
@@ -23,10 +24,22 @@ export default function renderWebChat(props, container) {
         Components: { ReactWebChat }
       }
     } = window;
-    render(React.createElement(FluentThemeProvider, null, React.createElement(ReactWebChat, props)), container);
+    render(
+      React.createElement(
+        FluentThemeProvider,
+        {
+          ...(isCopilotVariant && { variant: 'copilot' })
+        },
+        React.createElement(ReactWebChat, props)
+      ),
+      container
+    );
   } else {
+    if (isCopilotVariant) {
+      throw new Error('Copilot variant is only supported with Fluent theme');
+    }
     window.WebChat.renderWebChat(props, container);
   }
 
-  return { isFluentTheme };
+  return { isFluentTheme, isCopilotVariant };
 }
