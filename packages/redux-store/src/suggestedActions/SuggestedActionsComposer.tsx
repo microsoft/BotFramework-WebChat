@@ -6,8 +6,10 @@ import {
   type DirectLineCardAction
 } from 'botframework-webchat-core';
 import { setRawState } from 'botframework-webchat-core/internal';
+import { createBitContext } from 'botframework-webchat-react-context';
 import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import { wrapWith } from 'react-wrap-with';
 import { type Action } from 'redux';
 import { object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
@@ -24,6 +26,14 @@ const suggestedActionsComposerPropsSchema = pipe(
 
 type SuggestedActionsComposerProps = InferInput<typeof suggestedActionsComposerPropsSchema>;
 
+const { Composer: OriginActivityComposer, useState: useOriginActivity } = createBitContext<WebChatActivity | undefined>(
+  undefined
+);
+
+const { Composer: SuggestedActionsActivityComposer, useState: useSuggestedActionsFromBit } = createBitContext<
+  readonly DirectLineCardAction[]
+>(Object.freeze([]));
+
 const EMPTY_ARRAY = Object.freeze([]);
 
 function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
@@ -32,8 +42,8 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
     store: { dispatch }
   } = validateProps(suggestedActionsComposerPropsSchema, props);
 
-  const [originActivity, setOriginActivity] = useState<WebChatActivity | undefined>();
-  const [suggestedActions, setSuggestedActionsRaw] = useState<readonly DirectLineCardAction[]>(EMPTY_ARRAY);
+  const [originActivity, setOriginActivity] = useOriginActivity();
+  const [suggestedActions, setSuggestedActionsRaw] = useSuggestedActionsFromBit();
   const setSuggestedActions = useCallback<typeof setSuggestedActionsRaw>(
     suggestedActions => {
       setOriginActivity(undefined);
@@ -89,5 +99,8 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
   return <SuggestedActionsContext.Provider value={context}>{children}</SuggestedActionsContext.Provider>;
 }
 
-export default memo(SuggestedActionsComposer);
+export default wrapWith(SuggestedActionsActivityComposer)(
+  wrapWith(OriginActivityComposer)(memo(SuggestedActionsComposer))
+);
+
 export { suggestedActionsComposerPropsSchema, type SuggestedActionsComposerProps };
