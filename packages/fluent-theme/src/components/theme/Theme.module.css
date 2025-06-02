@@ -172,7 +172,7 @@
   --webchat-strokeWidthThicker: var(--strokeWidthThicker, 3px);
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/durations.ts */
-  --webchat-durationUltraFast: var(--durationUltraFast, 0);
+  --webchat-durationUltraFast: var(--durationUltraFast, 50ms);
   --webchat-durationNormal: var(--durationNormal, 200ms);
   --webchat-durationUltraSlow: var(--durationUltraSlow, 500ms);
 
@@ -224,6 +224,7 @@
 }
 
 /* Scrollbars */
+:global(.webchat-fluent).theme :global(.send-box-attachment-bar.send-box-attachment-bar--as-list-item),
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable),
 :global(.webchat-fluent).theme :global(.webchat__view-code-dialog__code-body),
 :global(.webchat-fluent).theme :global(.webchat__render-markdown [data-math-type='block']),

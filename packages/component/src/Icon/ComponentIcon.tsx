@@ -32,4 +32,4 @@ const ComponentIcon = createIconComponent(styles, BaseComponentIcon);
 ComponentIcon.displayName = 'ComponentIcon';
 
 export default memo(ComponentIcon);
-export { componentIconPropsSchema, type ComponentIconProps };  
+export { componentIconPropsSchema, type ComponentIconProps };
