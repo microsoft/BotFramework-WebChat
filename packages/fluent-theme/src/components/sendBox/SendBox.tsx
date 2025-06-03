@@ -1,4 +1,4 @@
-import { hooks, type SendBoxFocusOptions } from 'botframework-webchat-component';
+import { hooks, Components, type SendBoxFocusOptions } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, {
   memo,
@@ -17,7 +17,6 @@ import { DropZone } from '../dropZone';
 import { SuggestedActions } from '../suggestedActions';
 import { TelephoneKeypadSurrogate, useTelephoneKeypadShown, type DTMF } from '../telephoneKeypad';
 import AddAttachmentButton from './AddAttachmentButton';
-import Attachments from './Attachments';
 import ErrorMessage from './ErrorMessage';
 import useSubmitError from './private/useSubmitError';
 import useTranscriptNavigation from './private/useTranscriptNavigation';
@@ -38,6 +37,8 @@ const {
   useStyleOptions,
   useUIState
 } = hooks;
+
+const { AttachmentBar } = Components;
 
 type Props = Readonly<{
   className?: string | undefined;
@@ -138,14 +139,9 @@ function SendBox(props: Props) {
         )
       );
 
-      setAttachments(newAttachments);
-
-      // TODO: Currently in the UX, we have no way to remove attachments.
-      //       Keep concatenating doesn't make sense in current UX.
-      //       When end-user can remove attachment, we should enable the code again.
-      // setAttachments(attachments => attachments.concat(newAttachments));
+      setAttachments(attachmentsRef.current.concat(newAttachments));
     },
-    [makeThumbnail, setAttachments]
+    [attachmentsRef, makeThumbnail, setAttachments]
   );
 
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
@@ -221,7 +217,15 @@ function SendBox(props: Props) {
           isHorizontal={false}
           onButtonClick={handleTelephoneKeypadButtonClick}
         />
-        <Attachments attachments={attachments} className={classNames['sendbox__attachment--in-grid']} />
+        {!isBlueprint && (
+          <AttachmentBar
+            className={cx(
+              'webchat__send-box__attachment-bar',
+              classNames['sendbox__attachment-bar'],
+              classNames['sendbox__attachment-bar--in-grid']
+            )}
+          />
+        )}
         <div className={cx(classNames['sendbox__sendbox-controls'], classNames['sendbox__sendbox-controls--in-grid'])}>
           {shouldShowMessageLength && (
             <div

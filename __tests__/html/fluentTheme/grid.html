@@ -12,8 +12,8 @@
     <style>
       .sendbox-variant-1 .webchat-fluent .sendbox__sendbox {
         grid-template:
-          [telephone-keypad-start] "text-area controls" [attachment telephone-keypad-end]
-          / [telephone-keypad text-area attachment] 3fr [controls] 1fr;
+          [telephone-keypad-start] "text-area controls" [attachment-bar telephone-keypad-end]
+          / [telephone-keypad text-area attachment-bar] 3fr [controls] 1fr;
       }
       .sendbox-variant-1 .webchat-fluent .sendbox__toolbar {
         place-self: end;
@@ -21,9 +21,9 @@
 
       .sendbox-variant-2 .webchat-fluent .sendbox__sendbox {
         grid-template: [telephone-keypad-start] "text-area"
-          [attachment telephone-keypad-end]
+          [attachment-bar telephone-keypad-end]
           "controls" /
-          [telephone-keypad text-area attachment controls] 1fr;
+          [telephone-keypad text-area attachment-bar controls] 1fr;
       }
     </style>
   </head>

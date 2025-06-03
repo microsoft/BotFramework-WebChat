@@ -16,6 +16,7 @@ const config: typeof baseConfig = {
     'botframework-webchat-component.decorator': './src/decorator/index.ts'
   },
   esbuildPlugins: [
+    ...(baseConfig.esbuildPlugins ?? []),
     injectCSSPlugin({ stylesPlaceholder: componentStyleContentPlaceholder }),
     injectCSSPlugin({ stylesPlaceholder: decoratorStyleContentPlaceholder })
   ]

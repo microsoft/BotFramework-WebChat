@@ -1,20 +1,20 @@
 import { hooks } from 'botframework-webchat-api';
 import { validateProps } from 'botframework-webchat-react-valibot';
-import classNames from 'classnames';
+import { useStyles } from 'botframework-webchat-styles/react';
 import React, { KeyboardEventHandler, useCallback } from 'react';
-import { function_, object, optional, picklist, pipe, readonly, string, type InferInput } from 'valibot';
+import { function_, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { useFocus } from '../../hooks';
-import ModdableIcon from '../../ModdableIcon/ModdableIcon';
+import { ComponentIcon } from '../../Icon';
 import testIds from '../../testIds';
+import styles from './AttachmentBarItem.module.css';
 
 const { useLocalizer } = hooks;
 
 const attachmentDeleteButtonPropsSchema = pipe(
   object({
     attachmentName: string(),
-    onClick: optional(function_()),
-    size: optional(picklist(['large', 'small']))
+    onClick: optional(function_())
   }),
   readonly()
 );
@@ -22,8 +22,8 @@ const attachmentDeleteButtonPropsSchema = pipe(
 type AttachmentDeleteButtonProps = InferInput<typeof attachmentDeleteButtonPropsSchema>;
 
 function AttachmentDeleteButton(props: AttachmentDeleteButtonProps) {
-  const { attachmentName, onClick, size } = validateProps(attachmentDeleteButtonPropsSchema, props);
-
+  const { attachmentName, onClick } = validateProps(attachmentDeleteButtonPropsSchema, props);
+  const classNames = useStyles(styles);
   const focus = useFocus();
   const localize = useLocalizer();
 
@@ -41,17 +41,18 @@ function AttachmentDeleteButton(props: AttachmentDeleteButtonProps) {
   return (
     <button
       aria-label={localize('SEND_BOX_ATTACHMENT_BAR_DELETE_BUTTON_ALT', attachmentName)}
-      className={classNames('webchat__send-box-attachment-bar-item__delete-button', {
-        'webchat__send-box-attachment-bar-item__delete-button--large': size === 'large',
-        'webchat__send-box-attachment-bar-item__delete-button--small': size !== 'large'
-      })}
+      className={classNames['send-box-attachment-bar-item__delete-button']}
       data-testid={testIds.sendBoxAttachmentBarItemDeleteButton}
       onClick={onClick}
       onKeyDown={handleKeyDown}
       title={localize('SEND_BOX_ATTACHMENT_BAR_DELETE_BUTTON_TOOLTIP')}
       type="button"
     >
-      <ModdableIcon />
+      <ComponentIcon
+        appearance="text"
+        className={classNames['send-box-attachment-bar-item__dismiss-icon']}
+        icon="dismiss"
+      />
     </button>
   );
 }

@@ -1,0 +1,5 @@
+:global(.webchat) .send-box-attachment-bar-item-image-preview {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}

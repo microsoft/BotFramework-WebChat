@@ -1,11 +1,13 @@
 import { validateProps } from 'botframework-webchat-react-valibot';
 import { type SendBoxAttachment } from 'botframework-webchat-core';
+import { useStyles } from 'botframework-webchat-styles/react';
 import React, { memo } from 'react';
 import { object, picklist, pipe, readonly, string, type InferInput } from 'valibot';
 
 import FilePreview from './Preview/FilePreview';
 import ImagePreview from './Preview/ImagePreview';
 import { sendBoxAttachmentSchema } from './Preview/sendBoxAttachment';
+import styles from './AttachmentBarItem.module.css';
 
 const sendBoxAttachmentBarItemPreviewPropsSchema = pipe(
   object({
@@ -21,6 +23,7 @@ type SendBoxAttachmentBarItemPreviewProps = InferInput<typeof sendBoxAttachmentB
 // TODO: Turn this into middleware.
 function SendBoxAttachmentBarItemPreview(props: SendBoxAttachmentBarItemPreviewProps) {
   const { attachment, attachmentName, mode } = validateProps(sendBoxAttachmentBarItemPreviewPropsSchema, props);
+  const classNames = useStyles(styles);
 
   let element: React.ReactNode;
 
@@ -42,7 +45,7 @@ function SendBoxAttachmentBarItemPreview(props: SendBoxAttachmentBarItemPreviewP
     );
   }
 
-  return <div className="webchat__send-box-attachment-bar-item__preview">{element}</div>;
+  return <div className={classNames['send-box-attachment-bar-item__preview']}>{element}</div>;
 }
 
 export default memo(SendBoxAttachmentBarItemPreview);

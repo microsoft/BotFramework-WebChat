@@ -2,9 +2,13 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
   </head>
   <body>
     <main id="webchat"></main>
@@ -33,7 +37,7 @@
 
         const { directLine, store } = createDirectLineEmulator();
 
-        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+        const { isFluentTheme } = renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
@@ -42,8 +46,14 @@
 
         await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(1));
 
-        // WHEN: Press TAB key twice to move the focus to the delete button.
-        await host.sendShiftTab(2);
+        if (isFluentTheme) {
+          // WHEN: Focus send box and press TAB key to move the focus to the delete button of the first attachment.
+          document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`)?.focus();
+          await host.sendTab(1);
+        } else {
+          // WHEN: Press TAB key twice to move the focus to the delete button.
+          await host.sendShiftTab(2);
+        }
 
         // THEN: Should focus on the attachment delete button.
         expect(document.activeElement).toBe(pageElements.allByTestId(testIds.sendBoxAttachmentBarItemDeleteButton)[0]);
