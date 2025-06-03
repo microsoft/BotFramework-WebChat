@@ -25,7 +25,7 @@ export default function createBitContext<T>(initialValue: T): Readonly<{
   Composer: ComponentType<BitComposerProps>;
   useState(): readonly [T, Dispatch<SetStateAction<T>>];
 }> {
-  const AtomContext = createContext<BitContextType<T>>(
+  const BitContext = createContext<BitContextType<T>>(
     new Proxy({} as BitContextType<T>, {
       get() {
         throw new Error('botframework-webchat: This hook can only be used under its corresponding context.');
@@ -38,11 +38,11 @@ export default function createBitContext<T>(initialValue: T): Readonly<{
 
     const context = useState<BitContextType<T>[0]>(() => initialValue);
 
-    return <AtomContext.Provider value={context}>{children}</AtomContext.Provider>;
+    return <BitContext.Provider value={context}>{children}</BitContext.Provider>;
   }
 
   return Object.freeze({
     Composer: memo(BitComposer),
-    useState: () => useContext(AtomContext)
+    useState: () => useContext(BitContext)
   });
 }
