@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import React, {
   memo,
   useCallback,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -15,6 +16,7 @@ import React, {
   type MouseEventHandler
 } from 'react';
 import { any, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { useRefFrom } from 'use-ref-from';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
@@ -214,14 +216,11 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   }, [adaptiveCard, handleExecuteAction]);
 
   useLayoutEffect(() => {
-    const { current } = contentRef;
-
-    current?.appendChild(element);
-
-    return () => {
-      current?.removeChild(element);
-    };
+    contentRef.current?.replaceChildren(element);
   }, [contentRef, element]);
+
+  const elementRef = useRefFrom(element);
+  useEffect(() => () => elementRef.current?.remove(), [elementRef]);
 
   // Apply all mods regardless whether the element changed or not.
   // This is because we have undoed mods when we call the `useXXXModEffect` hook.
