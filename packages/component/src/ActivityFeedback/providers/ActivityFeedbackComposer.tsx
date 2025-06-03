@@ -44,10 +44,13 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [feedbackText, setFeedbackText, feedbackTextRef] = useStateWithRef<string | undefined>();
+
+  const isFeedbackLoopEnabled = useMemo(() => hasFeedbackLoop(activityFromProps), [activityFromProps]);
+
   const activity: WebChatActivity = useMemo(
     () =>
       // Force enable feedback loop until service fixed their issue.
-      hasFeedbackLoop(activityFromProps)
+      isFeedbackLoopEnabled
         ? Object.freeze({
             ...activityFromProps,
             entities: [
@@ -83,7 +86,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
             ]
           })
         : activityFromProps,
-    [activityFromProps]
+    [activityFromProps, isFeedbackLoopEnabled]
   );
 
   const activityRef = useRefFrom(activity);
@@ -219,8 +222,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       const { current: feedbackText } = feedbackTextRef;
       const isLegacyAction = action['@type'] === 'VoteAction';
 
-      // TODO: We should update this to use W3C Hydra.1
-      if (typeof feedbackText !== 'undefined') {
+      if (isFeedbackLoopEnabled) {
         postActivity({
           name: 'message/submitAction',
           replyToId: activityRef.current.id,
@@ -228,7 +230,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
           value: {
             actionName: 'feedback',
             actionValue: {
-              feedback: { feedbackText },
+              feedback: { feedbackText: feedbackText || '' },
               reaction: action['@type'] === 'LikeAction' ? 'like' : 'dislike'
             }
           }
@@ -241,7 +243,15 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
         } as any);
       }
     },
-    [actionsRef, actionStateRef, activityRef, feedbackTextRef, postActivity, setActionStateWithRefresh]
+    [
+      actionsRef,
+      actionStateRef,
+      activityRef,
+      feedbackTextRef,
+      isFeedbackLoopEnabled,
+      postActivity,
+      setActionStateWithRefresh
+    ]
   );
 
   const selectedAction = useMemo<OrgSchemaAction | undefined>(
