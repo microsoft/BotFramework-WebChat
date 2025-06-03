@@ -71,7 +71,7 @@
 
       await new Promise(resolve => setTimeout(resolve, 200));
 
-      let observedMutations
+      let observedMutations;
       new MutationObserver((mutations) => {
         observedMutations = mutations;
       }).observe(adaptiveCardEl, { childList: true });
