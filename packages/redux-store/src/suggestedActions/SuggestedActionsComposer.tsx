@@ -5,15 +5,21 @@ import {
   WebChatActivity,
   type DirectLineCardAction
 } from 'botframework-webchat-core';
-import { setRawState } from 'botframework-webchat-core/internal';
+import {
+  POST_ACTIVITY_PENDING,
+  postActivityPendingActionSchema,
+  setRawState
+} from 'botframework-webchat-core/internal';
 import { createBitContext } from 'botframework-webchat-react-context';
 import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { wrapWith } from 'react-wrap-with';
 import { type Action } from 'redux';
+import { useRefFrom } from 'use-ref-from';
 import { object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import reduxStoreSchema from '../private/reduxStoreSchema';
+import useWhileConnectedHooks from '../whileConnected/useWhileConnectedHooks';
 import SuggestedActionsContext, { type SuggestedActionsContextType } from './private/SuggestedActionsContext';
 
 const suggestedActionsComposerPropsSchema = pipe(
@@ -42,6 +48,7 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
     store: { dispatch }
   } = validateProps(suggestedActionsComposerPropsSchema, props);
 
+  const [connectionDetails] = useWhileConnectedHooks().useConnectionDetails();
   const [originActivity, setOriginActivity] = useOriginActivity();
   const [suggestedActions, setSuggestedActionsRaw] = useSuggestedActionsFromBit();
   const setSuggestedActions = useCallback<typeof setSuggestedActionsRaw>(
@@ -51,6 +58,8 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
     },
     [setOriginActivity, setSuggestedActionsRaw]
   );
+
+  const connectionDetailsRef = useRefFrom(connectionDetails);
 
   // #region Replicate to Redux store
   const handleAction = useCallback(
@@ -68,6 +77,16 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
 
           setOriginActivity(originActivity);
           setSuggestedActionsRaw(Object.freeze(Array.from(suggestedActions)));
+        }
+      } else if (action.type === POST_ACTIVITY_PENDING) {
+        // TODO: Add test.
+        if (connectionDetailsRef.current) {
+          const result = safeParse(postActivityPendingActionSchema, action);
+
+          if (result.success) {
+            setOriginActivity(undefined);
+            setSuggestedActionsRaw(EMPTY_ARRAY);
+          }
         }
       }
     },

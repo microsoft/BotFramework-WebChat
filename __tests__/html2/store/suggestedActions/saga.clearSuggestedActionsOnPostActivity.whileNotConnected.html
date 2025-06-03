@@ -74,9 +74,24 @@
           type: 'message'
         });
 
-        // THEN: useSuggestedActions() getter should return 2 suggested actions and origin activity.
-        renderResult.rerender();
+        // WHEN: Reconnecting.
+        const { resolve } = directLine.emulateReconnect();
 
+        // THEN: "Network interruption" connectivity status should be shown.
+        await waitFor(() =>
+          expect(pageElements.connectivityStatus().textContent).toEqual(
+            expect.stringContaining('Network interruption occurred.')
+          )
+        );
+
+        // WHEN: A message is being sent programmatically.
+        directLine.emulateOutgoingActivity({
+          text: 'Good morning!',
+          type: 'message'
+        });
+
+        // THEN: useSuggestedActions() should continue to return 2 suggested actions.
+        renderResult.rerender();
         await waitFor(() =>
           expect(renderResult).toHaveProperty('result.current', [
             [
@@ -84,61 +99,16 @@
               { title: 'Aloha!', type: 'imBack' }
             ],
             expect.any(Function),
-            {
-              activity: expect.objectContaining({
-                from: { role: 'bot' },
-                suggestedActions: {
-                  actions: [
-                    { title: 'Hello, World!', type: 'imBack' },
-                    { title: 'Aloha!', type: 'imBack' }
-                  ],
-                  to: ''
-                },
-                text: 'Hello, World!',
-                type: 'message'
-              })
-            }
+            { activity: expect.any(Object) }
           ])
         );
 
-        // WHEN: useSuggestedActions() setter is called with 1 suggested action.
-        renderResult.rerender({ suggestedActions: [{ title: 'Good morning!', type: 'imBack' }] });
+        // WHEN: Direct Line is reconnected.
+        resolve();
+        await pageConditions.uiConnected();
 
-        // THEN: Should show 1 suggested action.
-        await waitFor(() => expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(1));
-        expect(pageElements.allByTestId(testIds.suggestedActionButton)[0]).toHaveProperty(
-          'textContent',
-          'Good morning!'
-        );
-
-        // THEN: Should return 1 suggested action.
-        renderResult.rerender();
-        await waitFor(() =>
-          expect(renderResult).toHaveProperty('result.current', [
-            [{ title: 'Good morning!', type: 'imBack' }],
-            expect.any(Function),
-            { activity: undefined }
-          ])
-        );
-
-        // THEN: getState() should have 1 suggested action.
-        expect(store.getState().suggestedActions).toHaveLength(1);
-        expect(store.getState().suggestedActions[0]).toEqual({ title: 'Good morning!', type: 'imBack' });
-
-        // WHEN: useSuggestedActions() is called with no suggested actions.
-        renderResult.rerender({ suggestedActions: [] });
-
-        // THEN: UI should hide suggested actions.
-        await waitFor(() => expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(0));
-
-        // THEN: useSuggestedActions() should return no suggested actions.
-        renderResult.rerender();
-        await waitFor(() =>
-          expect(renderResult).toHaveProperty('result.current', [[], expect.any(Function), { activity: undefined }])
-        );
-
-        // THEN: getState() should have no suggested actions.
-        expect(store.getState().suggestedActions).toHaveLength(0);
+        // TODO: After fixing postActivitySaga() silently failed while postActivity without connection (!whileConnected),
+        //       write a test to prove reconnect will remove suggested actions.
       });
     </script>
   </body>

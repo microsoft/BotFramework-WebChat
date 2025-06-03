@@ -1,35 +1,31 @@
 import { all, call, cancelled, put, race, select, take, takeEvery } from 'redux-saga/effects';
 
-import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
+import { INCOMING_ACTIVITY, type IncomingActivityAction } from '../actions/incomingActivity';
 import {
   POST_ACTIVITY,
   POST_ACTIVITY_FULFILLED,
   POST_ACTIVITY_IMPEDED,
   POST_ACTIVITY_PENDING,
-  POST_ACTIVITY_REJECTED
+  POST_ACTIVITY_REJECTED,
+  type PostActivityAction,
+  type PostActivityFulfilledAction,
+  type PostActivityImpededAction,
+  type PostActivityPendingAction,
+  type PostActivityRejectedAction
 } from '../actions/postActivity';
+import languageSelector from '../selectors/language';
+import sendTimeoutSelector from '../selectors/sendTimeout';
+import { type DirectLineActivity } from '../types/external/DirectLineActivity';
+import { type DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
+import { type GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
+import { type WebChatOutgoingActivity } from '../types/internal/WebChatOutgoingActivity';
+import { type WebChatActivity } from '../types/WebChatActivity';
 import dateToLocaleISOString from '../utils/dateToLocaleISOString';
 import deleteKey from '../utils/deleteKey';
-import languageSelector from '../selectors/language';
-import observeOnce from './effects/observeOnce';
-import sendTimeoutSelector from '../selectors/sendTimeout';
 import sleep from '../utils/sleep';
 import uniqueID from '../utils/uniqueID';
+import observeOnce from './effects/observeOnce';
 import whileConnected from './effects/whileConnected';
-
-import type { DirectLineActivity } from '../types/external/DirectLineActivity';
-import type { DirectLineJSBotConnection } from '../types/external/DirectLineJSBotConnection';
-import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
-import type { IncomingActivityAction } from '../actions/incomingActivity';
-import type {
-  PostActivityAction,
-  PostActivityFulfilledAction,
-  PostActivityImpededAction,
-  PostActivityPendingAction,
-  PostActivityRejectedAction
-} from '../actions/postActivity';
-import type { WebChatActivity } from '../types/WebChatActivity';
-import type { WebChatOutgoingActivity } from '../types/internal/WebChatOutgoingActivity';
 
 // After 5 minutes, the saga will stop from listening for echo backs and consider the outgoing message as permanently undeliverable.
 // This value must be equals to or larger than the user-defined `styleOptions.sendTimeout`.
@@ -157,6 +153,13 @@ function* postActivity(
           payload: { activity: outgoingActivity }
         } as PostActivityImpededAction);
 
+        // redux-saga silenced the error thrown.
+        if (echoed) {
+          console.error('botframework-webchat: Timed out while waiting for postActivity to return any values');
+        } else {
+          console.error('botframework-webchat: Timed out while waiting for outgoing message to echo back');
+        }
+
         yield call(sleep, HARD_SEND_TIMEOUT - sendTimeout, ponyfill);
 
         throw !echoed
@@ -188,6 +191,7 @@ function* postActivity(
 }
 
 export default function* postActivitySaga(ponyfill: GlobalScopePonyfill) {
+  // TODO: If posting activity programmatically while disconnected, it should dispatch POST_ACTIVITY_REJECTED instead of silently failed.
   yield whileConnected(function* postActivityWhileConnected({
     directLine,
     userID,

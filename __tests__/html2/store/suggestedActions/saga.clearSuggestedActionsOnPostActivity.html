@@ -74,59 +74,14 @@
           type: 'message'
         });
 
-        // THEN: useSuggestedActions() getter should return 2 suggested actions and origin activity.
-        renderResult.rerender();
+        // WHEN: A message is being sent.
+        pageElements.byTestId(testIds.sendBoxTextBox).focus();
 
-        await waitFor(() =>
-          expect(renderResult).toHaveProperty('result.current', [
-            [
-              { title: 'Hello, World!', type: 'imBack' },
-              { title: 'Aloha!', type: 'imBack' }
-            ],
-            expect.any(Function),
-            {
-              activity: expect.objectContaining({
-                from: { role: 'bot' },
-                suggestedActions: {
-                  actions: [
-                    { title: 'Hello, World!', type: 'imBack' },
-                    { title: 'Aloha!', type: 'imBack' }
-                  ],
-                  to: ''
-                },
-                text: 'Hello, World!',
-                type: 'message'
-              })
-            }
-          ])
-        );
-
-        // WHEN: useSuggestedActions() setter is called with 1 suggested action.
-        renderResult.rerender({ suggestedActions: [{ title: 'Good morning!', type: 'imBack' }] });
-
-        // THEN: Should show 1 suggested action.
-        await waitFor(() => expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(1));
-        expect(pageElements.allByTestId(testIds.suggestedActionButton)[0]).toHaveProperty(
-          'textContent',
-          'Good morning!'
-        );
-
-        // THEN: Should return 1 suggested action.
-        renderResult.rerender();
-        await waitFor(() =>
-          expect(renderResult).toHaveProperty('result.current', [
-            [{ title: 'Good morning!', type: 'imBack' }],
-            expect.any(Function),
-            { activity: undefined }
-          ])
-        );
-
-        // THEN: getState() should have 1 suggested action.
-        expect(store.getState().suggestedActions).toHaveLength(1);
-        expect(store.getState().suggestedActions[0]).toEqual({ title: 'Good morning!', type: 'imBack' });
-
-        // WHEN: useSuggestedActions() is called with no suggested actions.
-        renderResult.rerender({ suggestedActions: [] });
+        await (
+          await directLine.actPostActivity(async () => {
+            await host.sendKeys('Good morning!', 'ENTER');
+          })
+        ).resolveAll();
 
         // THEN: UI should hide suggested actions.
         await waitFor(() => expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(0));
