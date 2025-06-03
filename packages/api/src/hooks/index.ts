@@ -72,11 +72,7 @@ import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
 
-export {
-  useSendBoxAttachmentsHooks,
-  useSuggestedActionsHooks,
-  useWhileConnectedHooks
-} from 'botframework-webchat-redux-store';
+export { useSendBoxHooks, useSuggestedActionsHooks, useWhileConnectedHooks } from 'botframework-webchat-redux-store';
 
 export {
   useActiveTyping,

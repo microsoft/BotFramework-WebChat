@@ -1,14 +1,14 @@
 import { useCallback } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import { useSendBoxAttachmentsHooks } from './index';
+import { useSendBoxHooks } from './index';
 import useWebChatAPIContext from './internal/useWebChatAPIContext';
 import useTrackEvent from './useTrackEvent';
 
 export default function useSubmitSendBox(): (method?: string, { channelData }?: { channelData: any }) => void {
   // TODO: Move the logic into APIContext.submitSendBox.
   // eslint-disable-next-line local-rules/forbid-use-hook-producer
-  const [sendBoxAttachments] = useSendBoxAttachmentsHooks().useSendBoxAttachments();
+  const [sendBoxAttachments] = useSendBoxHooks().useSendBoxAttachments();
   const { submitSendBox } = useWebChatAPIContext();
   const trackEvent = useTrackEvent();
 

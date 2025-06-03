@@ -1,7 +1,9 @@
 import { type SendBoxAttachment } from 'botframework-webchat-core';
 import {
+  SET_SEND_BOX,
   SET_SEND_BOX_ATTACHMENTS,
   setRawState,
+  setSendBoxActionSchema,
   setSendBoxAttachmentsActionSchema
 } from 'botframework-webchat-core/internal';
 import { createBitContext } from 'botframework-webchat-react-context';
@@ -12,9 +14,9 @@ import { object, optional, pipe, readonly, safeParse, type InferInput } from 'va
 
 import reduxStoreSchema from '../private/reduxStoreSchema';
 import ReduxActionSinkComposer, { type ReduxActionHandler } from '../reduxActionSink/ReduxActionSinkComposer';
-import SendBoxAttachmentsContext, { type SendBoxAttachmentsContextType } from './private/SendBoxAttachmentsContext';
+import SendBoxContext, { type SendBoxContextType } from './private/SendBoxContext';
 
-const sendBoxAttachmentsComposerPropsSchema = pipe(
+const sendBoxComposerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
     store: reduxStoreSchema
@@ -22,20 +24,23 @@ const sendBoxAttachmentsComposerPropsSchema = pipe(
   readonly()
 );
 
-type SendBoxAttachmentsComposerProps = InferInput<typeof sendBoxAttachmentsComposerPropsSchema>;
+type SendBoxComposerProps = InferInput<typeof sendBoxComposerPropsSchema>;
 
-const { Composer: AttachmentsConposer, useState: useSendBoxAttachments } = createBitContext<
+const { Composer: SendBoxAttachmentsComposer, useState: useSendBoxAttachments } = createBitContext<
   readonly SendBoxAttachment[]
 >(Object.freeze([]));
 
-function SendBoxAttachmentsComposer(props: SendBoxAttachmentsComposerProps) {
+const { Composer: SendBoxTextValueComposer, useState: useSendBoxTextValue } = createBitContext<string>('');
+
+function SendBoxComposer(props: SendBoxComposerProps) {
   const {
     children,
     store,
     store: { dispatch }
-  } = validateProps(sendBoxAttachmentsComposerPropsSchema, props);
+  } = validateProps(sendBoxComposerPropsSchema, props);
 
   const [attachments, setAttachments] = useSendBoxAttachments();
+  const [textValue, setTextValue] = useSendBoxTextValue();
 
   // #region Replicate to Redux store
   const handleAction = useCallback<ReduxActionHandler>(
@@ -51,6 +56,17 @@ function SendBoxAttachmentsComposer(props: SendBoxAttachmentsComposerProps) {
             { result }
           );
         }
+      } else if (action.type === SET_SEND_BOX) {
+        const result = safeParse(setSendBoxActionSchema, action);
+
+        if (result.success) {
+          setTextValue(result.output.payload.text);
+        } else {
+          console.warn(
+            `botframework-webchat: Received action of type "${action.type}" but its content is not valid, ignoring.`,
+            { result }
+          );
+        }
       }
     },
     [setAttachments]
@@ -59,20 +75,25 @@ function SendBoxAttachmentsComposer(props: SendBoxAttachmentsComposerProps) {
   useMemo(() => {
     dispatch(setRawState('sendBoxAttachments', attachments));
   }, [attachments, dispatch]);
+
+  useMemo(() => {
+    dispatch(setRawState('sendBoxValue', { text: textValue }));
+  }, [dispatch, textValue]);
   // #endregion
 
-  const context = useMemo<SendBoxAttachmentsContextType>(
+  const context = useMemo<SendBoxContextType>(
     () => ({
-      useSendBoxAttachments
+      useSendBoxAttachments,
+      useSendBoxValue: useSendBoxTextValue
     }),
-    [useSendBoxAttachments]
+    [useSendBoxAttachments, useSendBoxTextValue]
   );
 
   return (
     <ReduxActionSinkComposer onAction={handleAction} store={store}>
-      <SendBoxAttachmentsContext.Provider value={context}>{children}</SendBoxAttachmentsContext.Provider>
+      <SendBoxContext.Provider value={context}>{children}</SendBoxContext.Provider>
     </ReduxActionSinkComposer>
   );
 }
 
-export default wrapWith(AttachmentsConposer)(memo(SendBoxAttachmentsComposer));
+export default wrapWith(SendBoxAttachmentsComposer)(wrapWith(SendBoxTextValueComposer)(memo(SendBoxComposer)));

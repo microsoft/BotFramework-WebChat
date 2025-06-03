@@ -1,4 +1,4 @@
-import { array, literal, object, pipe, readonly, union, type InferOutput } from 'valibot';
+import { array, literal, object, pipe, readonly, string, union, type InferOutput } from 'valibot';
 
 import { sendBoxAttachmentSchema } from '../../types/SendBoxAttachment';
 import { suggestedActionsStateSchema } from '../types/suggestedActions';
@@ -13,6 +13,13 @@ const setRawStateActionSchema = pipe(
         object({
           name: literal('sendBoxAttachments'),
           state: pipe(array(sendBoxAttachmentSchema), readonly())
+        }),
+        readonly()
+      ),
+      pipe(
+        object({
+          name: literal('sendBoxValue'),
+          state: pipe(object({ text: string() }), readonly())
         }),
         readonly()
       ),
@@ -41,6 +48,11 @@ type SetRawStateAction = InferOutput<typeof setRawStateActionSchema>;
 // Due to limitation of TypeScript, we need to specify overloading functions.
 export default function setRawState(
   name: 'sendBoxAttachments',
+  state: (SetRawStateAction['payload'] & { name: typeof name })['state']
+): SetRawStateAction;
+
+export default function setRawState(
+  name: 'sendBoxValue',
   state: (SetRawStateAction['payload'] & { name: typeof name })['state']
 ): SetRawStateAction;
 

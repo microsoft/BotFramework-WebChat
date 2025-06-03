@@ -9,4 +9,5 @@ export { CONNECT_FULFILLING } from '../actions/connect';
 export { DISCONNECT_PENDING } from '../actions/disconnect';
 export { POST_ACTIVITY_PENDING, postActivityPendingActionSchema } from '../actions/postActivity';
 export { RECONNECT_FULFILLING, RECONNECT_PENDING } from '../actions/reconnect';
+export { SET_SEND_BOX, setSendBoxActionSchema } from '../actions/setSendBox';
 export { SET_SEND_BOX_ATTACHMENTS, setSendBoxAttachmentsActionSchema } from '../actions/setSendBoxAttachments';

@@ -14,7 +14,7 @@ import useStyleSet from '../hooks/useStyleSet';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import AttachmentIcon from './Assets/AttachmentIcon';
 
-const { useSendBoxAttachmentsHooks, useLocalizer, useStyleOptions, useUIState } = hooks;
+const { useSendBoxHooks, useLocalizer, useStyleOptions, useUIState } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__upload-button': {
@@ -50,7 +50,7 @@ function UploadButton(props: UploadButtonProps) {
   const [{ sendAttachmentOn, uploadAccept, uploadMultiple }] = useStyleOptions();
   const [{ uploadButton: uploadButtonStyleSet }] = useStyleSet();
   const [inputKey, setInputKey] = useState<number>(0);
-  const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachmentsHooks().useSendBoxAttachments();
+  const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxHooks().useSendBoxAttachments();
   const [uiState] = useUIState();
   const focus = useFocus();
   const inputRef = useRef<HTMLInputElement>(null);

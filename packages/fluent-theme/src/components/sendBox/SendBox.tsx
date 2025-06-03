@@ -31,8 +31,7 @@ const {
   useLocalizer,
   useMakeThumbnail,
   useRegisterFocusSendBox,
-  useSendBoxAttachmentsHooks,
-  useSendBoxValue,
+  useSendBoxHooks,
   useSendMessage,
   useStyleOptions,
   useUIState
@@ -49,8 +48,8 @@ type Props = Readonly<{
 
 function SendBox(props: Props) {
   const [{ hideTelephoneKeypadButton, hideUploadButton, maxMessageLength }] = useStyleOptions();
-  const [attachments, setAttachments] = useSendBoxAttachmentsHooks().useSendBoxAttachments();
-  const [globalMessage, setGlobalMessage] = useSendBoxValue();
+  const [attachments, setAttachments] = useSendBoxHooks().useSendBoxAttachments();
+  const [globalMessage, setGlobalMessage] = useSendBoxHooks().useSendBoxValue();
   const [localMessage, setLocalMessage] = useState('');
   const [telephoneKeypadShown] = useTelephoneKeypadShown();
   const [uiState] = useUIState();

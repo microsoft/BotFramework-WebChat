@@ -21,7 +21,7 @@ const {
   useDictateInterims,
   useDictateState,
   useLocalizer,
-  useSendBoxValue,
+  useSendBoxHooks,
   useShouldSpeakIncomingActivity,
   useStartDictate,
   useStopDictate,
@@ -46,7 +46,9 @@ const ROOT_STYLE = {
 };
 
 function useMicrophoneButtonClick(): () => void {
-  const [, setSendBox] = useSendBoxValue();
+  // TODO: Move useMicrophoneButtonClick() into useSendBoxHooks().
+  // eslint-disable-next-line local-rules/forbid-use-hook-producer
+  const [, setSendBox] = useSendBoxHooks().useSendBoxValue();
   const [, setShouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
   const [dictateInterims] = useDictateInterims();
   const [dictateState] = useDictateState();

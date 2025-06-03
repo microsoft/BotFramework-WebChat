@@ -10,7 +10,7 @@ import testIds from '../../testIds';
 import styles from './AttachmentBar.module.css';
 import AttachmentBarItem from './AttachmentBarItem';
 
-const { useSendBoxAttachmentsHooks, useStyleOptions } = hooks;
+const { useSendBoxHooks, useStyleOptions } = hooks;
 
 const sendBoxAttachmentBarPropsSchema = pipe(
   object({
@@ -24,7 +24,7 @@ type SendBoxAttachmentBarProps = InferInput<typeof sendBoxAttachmentBarPropsSche
 function SendBoxAttachmentBar(props: SendBoxAttachmentBarProps) {
   const { className } = validateProps(sendBoxAttachmentBarPropsSchema, props);
 
-  const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxAttachmentsHooks().useSendBoxAttachments();
+  const [sendBoxAttachments, setSendBoxAttachments] = useSendBoxHooks().useSendBoxAttachments();
   const classNames = useStyles(styles);
   const [{ sendBoxAttachmentBarMaxThumbnail }] = useStyleOptions();
 

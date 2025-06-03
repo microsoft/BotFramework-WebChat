@@ -7,7 +7,7 @@ import { useStyles } from '../../styles/index.js';
 import testIds from '../../testIds.js';
 import styles from './StarterPromptsCardAction.module.css';
 
-const { useFocus, useRenderMarkdownAsHTML, useSendBoxValue, useUIState } = hooks;
+const { useFocus, useRenderMarkdownAsHTML, useSendBoxHooks, useUIState } = hooks;
 const { MonochromeImageMasker } = Components;
 
 type Props = Readonly<{
@@ -16,7 +16,7 @@ type Props = Readonly<{
 }>;
 
 const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
-  const [_, setSendBoxValue] = useSendBoxValue();
+  const [_, setSendBoxValue] = useSendBoxHooks().useSendBoxValue();
   const [uiState] = useUIState();
   const classNames = useStyles(styles);
   const focus = useFocus();
