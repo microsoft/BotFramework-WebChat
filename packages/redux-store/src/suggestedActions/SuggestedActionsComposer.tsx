@@ -79,6 +79,7 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
           setSuggestedActionsRaw(Object.freeze(Array.from(suggestedActions)));
         }
       } else if (action.type === POST_ACTIVITY_PENDING) {
+        // TODO: This catcher has no alternatives in React hook, that means, once we remove Redux store, this would stop working.
         // TODO: Add test for "not connected, should not clear suggested actions."
         if (connectionDetailsRef.current) {
           const result = safeParse(postActivityPendingActionSchema, action);
