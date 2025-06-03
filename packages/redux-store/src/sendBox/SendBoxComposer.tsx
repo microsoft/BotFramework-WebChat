@@ -77,7 +77,7 @@ function SendBoxComposer(props: SendBoxComposerProps) {
   }, [attachments, dispatch]);
 
   useMemo(() => {
-    dispatch(setRawState('sendBoxValue', { text: textValue }));
+    dispatch(setRawState('sendBoxValue', textValue));
   }, [dispatch, textValue]);
   // #endregion
 

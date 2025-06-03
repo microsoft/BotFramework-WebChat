@@ -19,7 +19,7 @@ const setRawStateActionSchema = pipe(
       pipe(
         object({
           name: literal('sendBoxValue'),
-          state: pipe(object({ text: string() }), readonly())
+          state: string()
         }),
         readonly()
       ),
