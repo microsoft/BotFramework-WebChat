@@ -27,7 +27,7 @@
         const initialSendBoxAttachments = await pageObjects.runHook(hooks =>
           useDeprecatedHook
             ? hooks.useSendBoxAttachments()[0]
-            : hooks.useSendBoxAttachmentsHooks().useSendBoxAttachments()[0]
+            : hooks.useSendBoxHooks().useSendBoxAttachments()[0]
         );
 
         // THEN: It should return empty array.
@@ -68,7 +68,7 @@
           if (useDeprecatedHook) {
             hooks.useSendBoxAttachments()[1](attachmentsRef.current);
           } else {
-            hooks.useSendBoxAttachmentsHooks().useSendBoxAttachments()[1](attachmentsRef.current);
+            hooks.useSendBoxHooks().useSendBoxAttachments()[1](attachmentsRef.current);
           }
         });
 
@@ -79,7 +79,7 @@
         const sendBoxAttachments = await pageObjects.runHook(hooks =>
           useDeprecatedHook
             ? hooks.useSendBoxAttachments()[0]
-            : hooks.useSendBoxAttachmentsHooks().useSendBoxAttachments()[0]
+            : hooks.useSendBoxHooks().useSendBoxAttachments()[0]
         );
 
         // THEN: It should return 1 attachment.
@@ -98,7 +98,7 @@
         const finalSendBoxAttachments = await pageObjects.runHook(hooks =>
           useDeprecatedHook
             ? hooks.useSendBoxAttachments()[0]
-            : hooks.useSendBoxAttachmentsHooks().useSendBoxAttachments()[0]
+            : hooks.useSendBoxHooks().useSendBoxAttachments()[0]
         );
 
         // THEN: It should return 0 attachments.
