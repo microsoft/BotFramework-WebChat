@@ -111,9 +111,9 @@
 
       // THEN: the Adaptive Card is re-rendered resulting in a single DOM mutation
       expect(observedMutations.length).toBe(1);
-      expect(observedMutations.[0].type).toBe('childList');
-      expect(observedMutations.[0].addedNodes[0]).toBe(adaptiveCardEl.children[0]);
-      expect(observedMutations.[0].removedNodes[0]).toBe(currentRenderedChild);
+      expect(observedMutations[0].type).toBe('childList');
+      expect(observedMutations[0].addedNodes[0]).toBe(adaptiveCardEl.children[0]);
+      expect(observedMutations[0].removedNodes[0]).toBe(currentRenderedChild);
 
       await host.snapshot('local');
     });
