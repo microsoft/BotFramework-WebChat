@@ -12,13 +12,14 @@ import {
 } from 'botframework-webchat-core/internal';
 import { createBitContext } from 'botframework-webchat-react-context';
 import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { wrapWith } from 'react-wrap-with';
 import { type Action } from 'redux';
 import { useRefFrom } from 'use-ref-from';
 import { object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import reduxStoreSchema from '../private/reduxStoreSchema';
+import ReduxActionSinkComposer from '../reduxActionSink/ReduxActionSinkComposer';
 import useWhileConnectedHooks from '../whileConnected/useWhileConnectedHooks';
 import SuggestedActionsContext, { type SuggestedActionsContextType } from './private/SuggestedActionsContext';
 
@@ -45,6 +46,7 @@ const EMPTY_ARRAY = Object.freeze([]);
 function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
   const {
     children,
+    store,
     store: { dispatch }
   } = validateProps(suggestedActionsComposerPropsSchema, props);
 
@@ -99,14 +101,6 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
     () => dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity })),
     [dispatch, originActivity]
   );
-
-  useEffect(() => {
-    dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK' });
-
-    return () => {
-      dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/UNREGISTER_ACTION_SINK' });
-    };
-  }, [dispatch, handleAction]);
   // #endregion
 
   const useSuggestedActions = useCallback<SuggestedActionsContextType['useSuggestedActions']>(
@@ -116,7 +110,11 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
 
   const context = useMemo<SuggestedActionsContextType>(() => ({ useSuggestedActions }), [useSuggestedActions]);
 
-  return <SuggestedActionsContext.Provider value={context}>{children}</SuggestedActionsContext.Provider>;
+  return (
+    <ReduxActionSinkComposer onAction={handleAction} store={store}>
+      <SuggestedActionsContext.Provider value={context}>{children}</SuggestedActionsContext.Provider>
+    </ReduxActionSinkComposer>
+  );
 }
 
 export default wrapWith(SuggestedActionsActivityComposer)(

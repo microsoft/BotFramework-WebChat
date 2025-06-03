@@ -6,13 +6,14 @@ import {
 } from 'botframework-webchat-core/internal';
 import { createBitContext, useReadonlyState } from 'botframework-webchat-react-context';
 import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
-import React, { memo, useCallback, useEffect, useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { wrapWith } from 'react-wrap-with';
 import { type Action } from 'redux';
 import { useRefFrom } from 'use-ref-from';
 import { object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
 
 import reduxStoreSchema from '../private/reduxStoreSchema';
+import ReduxActionSinkComposer from '../reduxActionSink/ReduxActionSinkComposer';
 import { connectionDetailsSchema, type ConnectionDetails } from './ConnectionDetails';
 import WhileConnectedContext, { type WhileConnectedContextType } from './private/WhileConnectedContext';
 
@@ -31,10 +32,7 @@ const { Composer: ConnectionDetailsComposer, useState: useConnectionDetailsFromB
 >(undefined);
 
 function WhileConnectedComposer(props: WhileConnectedComposerProps) {
-  const {
-    children,
-    store: { dispatch }
-  } = validateProps(whileConnectedComposerPropsSchema, props);
+  const { children, store } = validateProps(whileConnectedComposerPropsSchema, props);
 
   const connectionDetailsState = useConnectionDetailsFromBit();
 
@@ -65,14 +63,6 @@ function WhileConnectedComposer(props: WhileConnectedComposerProps) {
     },
     [connectionDetailsRef, setConnectionDetails]
   );
-
-  useEffect(() => {
-    dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK' });
-
-    return () => {
-      dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/UNREGISTER_ACTION_SINK' });
-    };
-  }, [dispatch, handleAction]);
   // #endregion
 
   const context = useMemo<WhileConnectedContextType>(
@@ -80,7 +70,11 @@ function WhileConnectedComposer(props: WhileConnectedComposerProps) {
     [useConnectionDetails]
   );
 
-  return <WhileConnectedContext.Provider value={context}>{children}</WhileConnectedContext.Provider>;
+  return (
+    <ReduxActionSinkComposer onAction={handleAction} store={store}>
+      <WhileConnectedContext.Provider value={context}>{children}</WhileConnectedContext.Provider>
+    </ReduxActionSinkComposer>
+  );
 }
 
 export default wrapWith(ConnectionDetailsComposer)(memo(WhileConnectedComposer));
