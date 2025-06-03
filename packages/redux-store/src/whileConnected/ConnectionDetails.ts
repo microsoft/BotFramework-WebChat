@@ -1,9 +1,14 @@
 import { type DirectLineJSBotConnection } from 'botframework-webchat-core';
+import { type InferOutput, custom, object, pipe, string, undefinedable } from 'valibot';
 
-type ConnectionDetails = Readonly<{
-  directLine: DirectLineJSBotConnection;
-  userId: string;
-  username: string;
-}>;
+const connectionDetailsSchema = pipe(
+  object({
+    directLine: custom<DirectLineJSBotConnection>(() => true),
+    userId: undefinedable(string()),
+    username: undefinedable(string())
+  })
+);
 
-export { type ConnectionDetails };
+type ConnectionDetails = InferOutput<typeof connectionDetailsSchema>;
+
+export { connectionDetailsSchema, type ConnectionDetails };

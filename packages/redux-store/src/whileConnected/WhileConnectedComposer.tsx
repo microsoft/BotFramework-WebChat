@@ -10,10 +10,10 @@ import React, { memo, useCallback, useEffect, useMemo } from 'react';
 import { wrapWith } from 'react-wrap-with';
 import { type Action } from 'redux';
 import { useRefFrom } from 'use-ref-from';
-import { object, optional, pipe, readonly, type InferInput } from 'valibot';
+import { object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
 
 import reduxStoreSchema from '../private/reduxStoreSchema';
-import { type ConnectionDetails } from './ConnectionDetails';
+import { connectionDetailsSchema, type ConnectionDetails } from './ConnectionDetails';
 import WhileConnectedContext, { type WhileConnectedContextType } from './private/WhileConnectedContext';
 
 const whileConnectedComposerPropsSchema = pipe(
@@ -53,7 +53,7 @@ function WhileConnectedComposer(props: WhileConnectedComposerProps) {
       } else {
         if (action.type === CONNECT_FULFILLING || action.type === RECONNECT_FULFILLING) {
           setConnectionDetails(
-            Object.freeze({
+            parse(connectionDetailsSchema, {
               // TODO: Add valibot to underlying action.
               directLine: (action as any).payload.directLine,
               userId: (action as any).meta.userId,
