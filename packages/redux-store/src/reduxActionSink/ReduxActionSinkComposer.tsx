@@ -17,6 +17,8 @@ const reduxActionSinkComposerPropsSchema = pipe(
 
 type ReduxActionSinkComposerProps = InferInput<typeof reduxActionSinkComposerPropsSchema>;
 
+type ReduxActionHandler = ReduxActionSinkComposerProps['onAction'];
+
 function ReduxActionSinkComposer(props: ReduxActionSinkComposerProps) {
   const {
     children,
@@ -43,4 +45,4 @@ function ReduxActionSinkComposer(props: ReduxActionSinkComposerProps) {
 
 export default memo(ReduxActionSinkComposer);
 
-export { reduxActionSinkComposerPropsSchema, type ReduxActionSinkComposerProps };
+export { reduxActionSinkComposerPropsSchema, type ReduxActionHandler, type ReduxActionSinkComposerProps };

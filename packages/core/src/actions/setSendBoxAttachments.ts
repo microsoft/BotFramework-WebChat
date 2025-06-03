@@ -1,12 +1,25 @@
-import type { SendBoxAttachment } from '../types/SendBoxAttachment';
+import { array, literal, object, parse, pipe, readonly, type InferOutput } from 'valibot';
 
-const SET_SEND_BOX_ATTACHMENTS = 'WEB_CHAT/SET_SEND_BOX_ATTACHMENTS';
+import { sendBoxAttachmentSchema, type SendBoxAttachment } from '../types/SendBoxAttachment';
 
-export default function setSendBoxAttachments(attachments: readonly SendBoxAttachment[]) {
-  return {
-    type: SET_SEND_BOX_ATTACHMENTS,
-    payload: { attachments }
-  };
+const SET_SEND_BOX_ATTACHMENTS = 'WEB_CHAT/SET_SEND_BOX_ATTACHMENTS' as const;
+
+const setSendBoxAttachmentsActionSchema = pipe(
+  object({
+    payload: pipe(array(sendBoxAttachmentSchema), readonly()),
+    type: literal(SET_SEND_BOX_ATTACHMENTS)
+  }),
+  readonly()
+);
+
+type SetSendBoxAttachmentsAction = InferOutput<typeof setSendBoxAttachmentsActionSchema>;
+
+function setSendBoxAttachments(attachments: readonly SendBoxAttachment[]) {
+  return parse(setSendBoxAttachmentsActionSchema, {
+    payload: attachments,
+    type: SET_SEND_BOX_ATTACHMENTS
+  });
 }
 
-export { SET_SEND_BOX_ATTACHMENTS };
+export default setSendBoxAttachments;
+export { SET_SEND_BOX_ATTACHMENTS, setSendBoxAttachmentsActionSchema, type SetSendBoxAttachmentsAction };

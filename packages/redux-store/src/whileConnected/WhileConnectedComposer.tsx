@@ -10,7 +10,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { wrapWith } from 'react-wrap-with';
 import { type Action } from 'redux';
 import { useRefFrom } from 'use-ref-from';
-import { object, optional, parse, pipe, readonly, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import reduxStoreSchema from '../private/reduxStoreSchema';
 import ReduxActionSinkComposer from '../reduxActionSink/ReduxActionSinkComposer';
@@ -50,14 +50,21 @@ function WhileConnectedComposer(props: WhileConnectedComposerProps) {
         }
       } else {
         if (action.type === CONNECT_FULFILLING || action.type === RECONNECT_FULFILLING) {
-          setConnectionDetails(
-            parse(connectionDetailsSchema, {
-              // TODO: Add valibot to underlying action.
-              directLine: (action as any).payload.directLine,
-              userId: (action as any).meta.userId,
-              username: (action as any).meta.username
-            })
-          );
+          const result = safeParse(connectionDetailsSchema, {
+            // TODO: Add valibot to underlying action.
+            directLine: (action as any).payload.directLine,
+            userId: (action as any).meta.userId,
+            username: (action as any).meta.username
+          });
+
+          if (result.success) {
+            setConnectionDetails(result.output);
+          } else {
+            console.warn(
+              `botframework-webchat: Received action of type "${action.type}" but its content is not valid, ignoring.`,
+              { result }
+            );
+          }
         }
       }
     },

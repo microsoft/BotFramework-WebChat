@@ -3,6 +3,7 @@ import React, { memo } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import reduxStoreSchema from './private/reduxStoreSchema';
+import SendBoxAttachmentsComposer from './sendBoxAttachments/SendBoxAttachmentsComposer';
 import SuggestedActionsComposer from './suggestedActions/SuggestedActionsComposer';
 import WhileConnectedComposer from './whileConnected/WhileConnectedComposer';
 
@@ -26,7 +27,9 @@ function ReduxStoreComposer(props: ReduxStoreComposerProps) {
 
   return (
     <WhileConnectedComposer store={store}>
-      <SuggestedActionsComposer store={store}>{children}</SuggestedActionsComposer>
+      <SendBoxAttachmentsComposer store={store}>
+        <SuggestedActionsComposer store={store}>{children}</SuggestedActionsComposer>
+      </SendBoxAttachmentsComposer>
     </WhileConnectedComposer>
   );
 }

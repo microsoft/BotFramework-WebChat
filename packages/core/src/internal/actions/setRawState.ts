@@ -1,5 +1,6 @@
-import { literal, object, pipe, readonly, union, type InferOutput } from 'valibot';
+import { array, literal, object, pipe, readonly, union, type InferOutput } from 'valibot';
 
+import { sendBoxAttachmentSchema } from '../../types/SendBoxAttachment';
 import { suggestedActionsStateSchema } from '../types/suggestedActions';
 import { suggestedActionsOriginActivityStateSchema } from '../types/suggestedActionsOriginActivity';
 
@@ -8,6 +9,13 @@ const SET_RAW_STATE = 'WEB_CHAT_INTERNAL/SET_RAW_STATE' as const;
 const setRawStateActionSchema = pipe(
   object({
     payload: union([
+      pipe(
+        object({
+          name: literal('sendBoxAttachments'),
+          state: pipe(array(sendBoxAttachmentSchema), readonly())
+        }),
+        readonly()
+      ),
       pipe(
         object({
           name: literal('suggestedActions'),
@@ -31,6 +39,11 @@ const setRawStateActionSchema = pipe(
 type SetRawStateAction = InferOutput<typeof setRawStateActionSchema>;
 
 // Due to limitation of TypeScript, we need to specify overloading functions.
+export default function setRawState(
+  name: 'sendBoxAttachments',
+  state: (SetRawStateAction['payload'] & { name: typeof name })['state']
+): SetRawStateAction;
+
 export default function setRawState(
   name: 'suggestedActions',
   state: (SetRawStateAction['payload'] & { name: typeof name })['state']
