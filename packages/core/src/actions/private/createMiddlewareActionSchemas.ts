@@ -17,7 +17,7 @@ const allowedSuffixSchema = picklist(['FULFILLED', 'IMPEDED', 'PENDING']);
 
 type AllowedSuffix = InferOutput<typeof allowedSuffixSchema>;
 
-const suffixesSchema = array(allowedSuffixSchema);
+const allowedSuffixesSchema = array(allowedSuffixSchema);
 
 export default function createMiddlewareActionSchemas<
   const TName extends string,
@@ -40,7 +40,7 @@ export default function createMiddlewareActionSchemas<
     }>;
   } = {} as any;
 
-  for (const suffix of parse(suffixesSchema, suffixes)) {
+  for (const suffix of parse(allowedSuffixesSchema, suffixes)) {
     // We use allowlist to filter the suffix.
     // eslint-disable-next-line security/detect-object-injection
     result[suffix] = {
