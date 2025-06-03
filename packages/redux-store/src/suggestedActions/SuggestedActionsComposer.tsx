@@ -79,7 +79,7 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
           setSuggestedActionsRaw(Object.freeze(Array.from(suggestedActions)));
         }
       } else if (action.type === POST_ACTIVITY_PENDING) {
-        // TODO: Add test.
+        // TODO: Add test for "not connected, should not clear suggested actions."
         if (connectionDetailsRef.current) {
           const result = safeParse(postActivityPendingActionSchema, action);
 

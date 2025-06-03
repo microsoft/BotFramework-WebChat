@@ -155,9 +155,13 @@ function* postActivity(
 
         // redux-saga silenced the error thrown.
         if (echoed) {
-          console.error('botframework-webchat: Timed out while waiting for postActivity to return any values');
+          console.warn('botframework-webchat: Timed out while waiting for postActivity to return any values', {
+            activity: outgoingActivity
+          });
         } else {
-          console.error('botframework-webchat: Timed out while waiting for outgoing message to echo back');
+          console.warn('botframework-webchat: Timed out while waiting for outgoing message to echo back', {
+            activity: outgoingActivity
+          });
         }
 
         yield call(sleep, HARD_SEND_TIMEOUT - sendTimeout, ponyfill);
