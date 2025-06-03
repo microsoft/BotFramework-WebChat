@@ -222,6 +222,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       const { current: feedbackText } = feedbackTextRef;
       const isLegacyAction = action['@type'] === 'VoteAction';
 
+      // TODO: We should update this to use W3C Hydra.1
       if (isFeedbackLoopEnabled) {
         postActivity({
           name: 'message/submitAction',
