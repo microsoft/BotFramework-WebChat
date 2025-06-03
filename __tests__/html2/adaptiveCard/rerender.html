@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+</head>
+
+<body>
+  <main id="webchat"></main>
+  <script>
+    const {
+      React: { useMemo },
+      WebChat: {
+        hooks: { useDirection }
+      }
+    } = window;
+
+    run(async function () {
+      const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+      renderWebChat(
+        {
+          directLine,
+          store,
+        },
+        document.getElementById('webchat')
+      );
+
+      await pageConditions.uiConnected();
+
+      await directLine.emulateIncomingActivity({
+        from: {
+          role: "bot"
+        },
+        id: "a-00002",
+        timestamp: 0,
+        type: "message",
+        attachments: [
+          {
+            contentType: 'application/vnd.microsoft.card.adaptive',
+            content: {
+              type: 'AdaptiveCard',
+              body: [
+                {
+                  type: 'TextBlock',
+                  text: 'This is the initial message',
+                  wrap: true
+                }
+              ],
+              actions: [
+                {
+                  type: 'Action.Submit',
+                  title: 'Submit card'
+                }
+              ],
+              $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+              version: '1.0'
+            }
+          }
+        ]
+      });
+
+      const adaptiveCardEl = document.querySelector('.webchat__adaptive-card-renderer');
+      const [currentRenderedChild] = adaptiveCardEl.children;
+
+      await new Promise(resolve => setTimeout(resolve, 200));
+
+      let observedMutations;
+      new MutationObserver((mutations) => {
+        observedMutations = mutations;
+      }).observe(adaptiveCardEl, { childList: true });
+
+      // WHEN: we receive a new activity with the same ID
+      await directLine.emulateIncomingActivity({
+        from: {
+          role: "bot"
+        },
+        id: "a-00002",
+        timestamp: 0,
+        type: "message",
+        attachments: [
+          {
+            contentType: 'application/vnd.microsoft.card.adaptive',
+            content: {
+              type: 'AdaptiveCard',
+              body: [
+                {
+                  type: 'TextBlock',
+                  text: 'This is the message',
+                  wrap: true
+                }
+              ],
+              actions: [
+                {
+                  type: 'Action.Submit',
+                  title: 'Submit card'
+                }
+              ],
+              $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+              version: '1.0'
+            }
+          }
+        ]
+      });
+
+      // THEN: the Adaptive Card is re-rendered resulting in a single DOM mutation
+      expect(observedMutations.length).toBe(1);
+      expect(observedMutations[0].type).toBe('childList');
+      expect(observedMutations[0].addedNodes[0]).toBe(adaptiveCardEl.children[0]);
+      expect(observedMutations[0].removedNodes[0]).toBe(currentRenderedChild);
+
+      await host.snapshot('local');
+    });
+  </script>
+</body>
+
+</html>
