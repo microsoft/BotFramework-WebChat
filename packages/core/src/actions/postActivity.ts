@@ -16,19 +16,20 @@ const postActivityActionSchema = pipe(
 
 const middlewareActionSchemas = createMiddlewareActionSchemas(
   POST_ACTIVITY,
+  ['FULFILLED', 'IMPEDED', 'PENDING'],
   pipe(object({ activity: custom<WebChatActivity>(() => true) }), readonly()),
   pipe(object({ clientActivityID: string(), method: string() }), readonly())
 );
 
-const POST_ACTIVITY_FULFILLED = middlewareActionSchemas.fulfilled.name;
-const POST_ACTIVITY_IMPEDED = middlewareActionSchemas.impeded.name;
-const POST_ACTIVITY_PENDING = middlewareActionSchemas.pending.name;
-const POST_ACTIVITY_REJECTED = middlewareActionSchemas.rejected.name;
+const POST_ACTIVITY_FULFILLED = middlewareActionSchemas.FULFILLED.name;
+const POST_ACTIVITY_IMPEDED = middlewareActionSchemas.IMPEDED.name;
+const POST_ACTIVITY_PENDING = middlewareActionSchemas.PENDING.name;
+const POST_ACTIVITY_REJECTED = middlewareActionSchemas.REJECTED.name;
 
-const postActivityFulfilledActionSchema = middlewareActionSchemas.fulfilled.schema;
-const postActivityImpededActionSchema = middlewareActionSchemas.impeded.schema;
-const postActivityPendingActionSchema = middlewareActionSchemas.pending.schema;
-const postActivityRejectedActionSchema = middlewareActionSchemas.rejected.schema;
+const postActivityFulfilledActionSchema = middlewareActionSchemas.FULFILLED.schema;
+const postActivityImpededActionSchema = middlewareActionSchemas.IMPEDED.schema;
+const postActivityPendingActionSchema = middlewareActionSchemas.PENDING.schema;
+const postActivityRejectedActionSchema = middlewareActionSchemas.REJECTED.schema;
 
 type PostActivityAction = InferOutput<typeof postActivityActionSchema>;
 type PostActivityFulfilledAction = InferOutput<typeof postActivityFulfilledActionSchema>;
