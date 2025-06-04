@@ -5,8 +5,8 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import AccessibleInputText from '../Utils/AccessibleInputText';
 import navigableEvent from '../Utils/TypeFocusSink/navigableEvent';
 import { ie11 } from '../Utils/detectBrowser';
-import { useRegisterFocusSendBox, type SendBoxFocusOptions } from '../hooks/sendBoxFocus';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import { useRegisterFocusSendBox, type SendBoxFocusOptions } from '../hooks/sendBoxFocus';
 import useScrollDown from '../hooks/useScrollDown';
 import useScrollUp from '../hooks/useScrollUp';
 import useStyleSet from '../hooks/useStyleSet';
@@ -17,7 +17,7 @@ import AutoResizeTextArea from './AutoResizeTextArea';
 import type { MutableRefObject } from 'react';
 import testIds from '../testIds';
 
-const { useLocalizer, usePonyfill, useSendBoxValue, useStopDictate, useStyleOptions, useUIState } = hooks;
+const { useLocalizer, usePonyfill, useSendBoxHooks, useStopDictate, useStyleOptions, useUIState } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__send-box-text-box': {
@@ -56,7 +56,9 @@ function useTextBoxSubmit(): SubmitTextBoxFunction {
 }
 
 function useTextBoxValue(): [string, (textBoxValue: string) => void] {
-  const [value, setValue] = useSendBoxValue();
+  // TODO: Move speech-related feature into useSendBoxHooks().
+  // eslint-disable-next-line local-rules/forbid-use-hook-producer
+  const [value, setValue] = useSendBoxHooks().useSendBoxValue();
   const stopDictate = useStopDictate();
 
   const setter = useCallback<(nextValue: string) => void>(
@@ -80,7 +82,7 @@ const SingleLineTextBox = withEmoji(AccessibleInputText);
 const MultiLineTextBox = withEmoji(AutoResizeTextArea);
 
 const TextBox = ({ className = '' }: Readonly<{ className?: string | undefined }>) => {
-  const [value, setValue] = useSendBoxValue();
+  const [value, setValue] = useSendBoxHooks().useSendBoxValue();
   const [{ sendBoxTextBox: sendBoxTextBoxStyleSet }] = useStyleSet();
   const [{ emojiSet, sendBoxTextWrap }] = useStyleOptions();
   const [{ setTimeout }] = usePonyfill();

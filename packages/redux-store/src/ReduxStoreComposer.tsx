@@ -3,7 +3,9 @@ import React, { memo } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import reduxStoreSchema from './private/reduxStoreSchema';
+import SendBoxComposer from './sendBox/SendBoxComposer';
 import SuggestedActionsComposer from './suggestedActions/SuggestedActionsComposer';
+import WhileConnectedComposer from './whileConnected/WhileConnectedComposer';
 
 const reduxStoreComposerPropsSchema = pipe(
   object({
@@ -23,7 +25,13 @@ type ReduxStoreComposerProps = InferInput<typeof reduxStoreComposerPropsSchema>;
 function ReduxStoreComposer(props: ReduxStoreComposerProps) {
   const { children, store } = validateProps(reduxStoreComposerPropsSchema, props);
 
-  return <SuggestedActionsComposer store={store}>{children}</SuggestedActionsComposer>;
+  return (
+    <WhileConnectedComposer store={store}>
+      <SendBoxComposer store={store}>
+        <SuggestedActionsComposer store={store}>{children}</SuggestedActionsComposer>
+      </SendBoxComposer>
+    </WhileConnectedComposer>
+  );
 }
 
 export default memo(ReduxStoreComposer);

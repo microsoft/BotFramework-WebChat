@@ -2,7 +2,6 @@ import { type Saga } from 'redux-saga';
 import { fork } from 'redux-saga/effects';
 
 import actionSinkSaga from './sagas/actionSinkSaga';
-import clearSuggestedActionsOnPostActivitySaga from './sagas/clearSuggestedActionsOnPostActivitySaga';
 import connectionStatusToNotificationSaga from './sagas/connectionStatusToNotificationSaga';
 import connectionStatusUpdateSaga from './sagas/connectionStatusUpdateSaga';
 import connectSaga from './sagas/connectSaga';
@@ -35,7 +34,6 @@ export default function createSagas({ ponyfill }: CreateSagasOptions): Saga {
     // TODO: [P2] Since fork() silently catches all exceptions, we need to find a way to console.error them out.
 
     yield fork(actionSinkSaga);
-    yield fork(clearSuggestedActionsOnPostActivitySaga);
     yield fork(connectionStatusToNotificationSaga);
     yield fork(connectionStatusUpdateSaga);
     yield fork(connectSaga);

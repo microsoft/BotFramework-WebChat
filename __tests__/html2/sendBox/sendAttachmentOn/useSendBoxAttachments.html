@@ -12,6 +12,7 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
+        const useDeprecatedHook = new URL(location).searchParams.has('deprecated');
         const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
 
@@ -23,8 +24,10 @@
         await pageConditions.uiConnected();
 
         // WHEN: `useSendBoxAttachments` hook is called to get the attachments.
-        const initialSendBoxAttachments = await pageObjects.runHook(
-          ({ useSendBoxAttachments }) => useSendBoxAttachments()[0]
+        const initialSendBoxAttachments = await pageObjects.runHook(hooks =>
+          useDeprecatedHook
+            ? hooks.useSendBoxAttachments()[0]
+            : hooks.useSendBoxHooks().useSendBoxAttachments()[0]
         );
 
         // THEN: It should return empty array.
@@ -59,16 +62,25 @@
         });
 
         // WHEN: `useSendBoxAttachments` hook is called to set an attachment.
-        await pageObjects.runHook(({ useSendBoxAttachments }) => {
+        await pageObjects.runHook(hooks => {
           const attachmentsRef = React.useRef([{ blob, thumbnailURL }]);
-          useSendBoxAttachments()[1](attachmentsRef.current);
+
+          if (useDeprecatedHook) {
+            hooks.useSendBoxAttachments()[1](attachmentsRef.current);
+          } else {
+            hooks.useSendBoxHooks().useSendBoxAttachments()[1](attachmentsRef.current);
+          }
         });
 
         // THEN: It should show checkmark on the button and file preview.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: `useSendBoxAttachments` hook is called to get the attachments.
-        const sendBoxAttachments = await pageObjects.runHook(({ useSendBoxAttachments }) => useSendBoxAttachments()[0]);
+        const sendBoxAttachments = await pageObjects.runHook(hooks =>
+          useDeprecatedHook
+            ? hooks.useSendBoxAttachments()[0]
+            : hooks.useSendBoxHooks().useSendBoxAttachments()[0]
+        );
 
         // THEN: It should return 1 attachment.
         expect(sendBoxAttachments).toHaveLength(1);
@@ -80,11 +92,13 @@
         // THEN: It should send the attachment (each "run hook" is an activity).
         await pageConditions.allOutgoingActivitiesSent();
         await pageConditions.numActivitiesShown(5);
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: `useSendBoxAttachments` hook is called to get the attachments.
-        const finalSendBoxAttachments = await pageObjects.runHook(
-          ({ useSendBoxAttachments }) => useSendBoxAttachments()[0]
+        const finalSendBoxAttachments = await pageObjects.runHook(hooks =>
+          useDeprecatedHook
+            ? hooks.useSendBoxAttachments()[0]
+            : hooks.useSendBoxHooks().useSendBoxAttachments()[0]
         );
 
         // THEN: It should return 0 attachments.

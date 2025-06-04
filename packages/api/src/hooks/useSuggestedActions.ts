@@ -1,7 +1,7 @@
 import { useSuggestedActionsHooks } from 'botframework-webchat-redux-store';
 
 /**
- * @deprecated Use `useSuggestedActionsHooks().useSuggestedActions` instead. This hook will be removed on or after 2027-05-30.
+ * @deprecated Use `useSuggestedActionsHooks().useSuggestedActions()` instead. This hook will be removed on or after 2027-05-30.
  */
 export default function useSuggestedActions() {
   // Provides a path for backward compatibility during deprecation.

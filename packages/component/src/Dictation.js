@@ -15,7 +15,7 @@ const {
   useDictateState,
   useEmitTypingIndicator,
   useLanguage,
-  useSendBoxValue,
+  useSendBoxHooks,
   useSendTypingIndicator,
   useShouldSpeakIncomingActivity,
   useStopDictate,
@@ -31,7 +31,7 @@ const {
 const Dictation = ({ onError }) => {
   const [, setDictateAbortable] = useSettableDictateAbortable();
   const [, setDictateInterims] = useDictateInterims();
-  const [, setSendBox] = useSendBoxValue();
+  const [, setSendBox] = useSendBoxHooks().useSendBoxValue();
   const [, setShouldSpeakIncomingActivity] = useShouldSpeakIncomingActivity();
   const [{ SpeechGrammarList, SpeechRecognition } = {}] = useWebSpeechPonyfill();
   const [{ speechRecognitionContinuous }] = useStyleOptions();
