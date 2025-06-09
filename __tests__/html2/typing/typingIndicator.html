@@ -8,6 +8,11 @@
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style>
+      #webchat .webchat__typing-indicator {
+        background-image: url(data:image/gif;base64,R0lGODlhQAAYAPUAAOzv8evu8Ort7+fq7Ons7ujr7eXo6uTn6ebp6+Xn6ezu8OPm6N/i49/i5OHk5uDj5d/h49PV17/BwsLExdja3MvNz72/wL7Awc/S08TGyMDCw9TW2NbZ2tvd39nc3d3f4ens7bO0tbS2t7GztLW3uK6vsMnLzamqq7m7vK2ur6yurp2en6KjpJeXmI2NjpGSkpOUlJiYmZqbmwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQABwD/ACwAAAAAQAAYAAAG8ECAcEgsGo/IpHLJbDqf0Kh0Sq1ar9isdsvtegOGgTAwLBQPRQNAMAw0HGRAPA4gVAMUjWW/KA89IiqCHkJqbHImMS4uKxFjcnVFdgpOeHuXEghCZgAeKYKgHURsiYumHI9DdlQSmHsYkEIooKAoRQErpqYndKpVrXvAFn60tL0QL7qLMWKxQqtSwhbARSXFgkUPycoyIKmRrJfBG36zxRKjACzKLiG94ELNTwwXroecByPFfQCGABAwdHX79owKmQoTMkRYxWlIhkAZEhQSIoDMhxItZJDgR4YMNADNKHkZSbKkyZMoU6pcybKly5dBAAA7);  background-color: black;
+      }
+    </style>
   </head>
   <body>
     <main id="webchat"></main>
@@ -38,8 +43,8 @@
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        render(
-          createElement(FluentThemeProvider, {}, createElement(ReactWebChat, { directLine, store })),
+        renderWebChat(
+          { directLine, store },
           document.getElementById('webchat')
         );
 
@@ -49,28 +54,28 @@
         await directLine.emulateIncomingActivity({
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 'a-00001',
-          text: 'In minim amet culpa adipisicing aliqua culpa minim culpa officia culpa laboris non commodo. Velit nisi ut sit amet in sunt eu voluptate Lorem eu do sint proident aute. Nulla nisi commodo consectetur anim id non ut est anim veniam occaecat excepteur dolor nulla. Adipisicing et dolor ex cillum sit ipsum amet labore officia dolor non ad aliquip officia. Irure quis occaecat cupidatat ut commodo culpa eiusmod ipsum pariatur. Excepteur aliqua consectetur anim laborum enim ipsum tempor occaecat voluptate.',
+          text: 'In minim amet culpa adipisicing aliqua culpa minim culpa officia culpa laboris non commodo.',
           type: 'message'
         });
 
         await directLine.emulateIncomingActivity({
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 'a-00002',
-          text: 'Excepteur enim tempor ex do magna elit consectetur elit incididunt. Amet reprehenderit cupidatat amet velit nostrud esse est dolor proident ex ut deserunt. Velit veniam minim esse laboris irure esse duis dolor sint culpa. Sit ullamco eiusmod consectetur enim elit cillum sit elit irure ut commodo ad. Cillum ad mollit est labore culpa proident sunt tempor culpa pariatur elit laborum.',
+          text: 'Excepteur enim tempor ex do magna elit consectetur elit incididunt.',
           type: 'message'
         });
 
         await directLine.emulateIncomingActivity({
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 'a-00003',
-          text: 'Ad minim fugiat sint et laboris consectetur eu ut in nisi fugiat cillum est labore. Et proident tempor veniam ex est incididunt Lorem. Culpa sit id eu voluptate.',
+          text: 'Ad minim fugiat sint et laboris consectetur eu ut in nisi fugiat cillum est labore.',
           type: 'message'
         });
 
         await directLine.emulateIncomingActivity({
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 'a-00004',
-          text: 'Est voluptate eiusmod ad Lorem irure amet sint ea aliqua labore eu do nostrud exercitation. Non adipisicing non amet laborum. Anim fugiat minim cupidatat consequat ipsum minim ex mollit commodo ut aliqua quis consequat dolore. Cupidatat tempor laborum consectetur eiusmod cillum do consequat ad pariatur amet magna aliquip occaecat officia.',
+          text: 'Est voluptate eiusmod ad Lorem irure amet sint ea aliqua labore eu do nostrud exercitation.',
           type: 'message'
         });
 
