@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style>
+      #webchat .webchat__typing-indicator {
+        background-image: url(data:image/gif;base64,R0lGODlhQAAYAPUAAOzv8evu8Ort7+fq7Ons7ujr7eXo6uTn6ebp6+Xn6ezu8OPm6N/i49/i5OHk5uDj5d/h49PV17/BwsLExdja3MvNz72/wL7Awc/S08TGyMDCw9TW2NbZ2tvd39nc3d3f4ens7bO0tbS2t7GztLW3uK6vsMnLzamqq7m7vK2ur6yurp2en6KjpJeXmI2NjpGSkpOUlJiYmZqbmwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQABwD/ACwAAAAAQAAYAAAG8ECAcEgsGo/IpHLJbDqf0Kh0Sq1ar9isdsvtegOGgTAwLBQPRQNAMAw0HGRAPA4gVAMUjWW/KA89IiqCHkJqbHImMS4uKxFjcnVFdgpOeHuXEghCZgAeKYKgHURsiYumHI9DdlQSmHsYkEIooKAoRQErpqYndKpVrXvAFn60tL0QL7qLMWKxQqtSwhbARSXFgkUPycoyIKmRrJfBG36zxRKjACzKLiG94ELNTwwXroecByPFfQCGABAwdHX79owKmQoTMkRYxWlIhkAZEhQSIoDMhxItZJDgR4YMNADNKHkZSbKkyZMoU6pcybKly5dBAAA7);  background-color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react-dictate-button/internal": "https://unpkg.com/react-dictate-button@main/dist/react-dictate-button.internal.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      const isLivestream = new URL(location).searchParams.has('livestream');
+
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+        });
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        renderWebChat(
+          { directLine, store },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Receive a bot message.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00001',
+          text: 'In minim amet culpa adipisicing aliqua culpa minim culpa officia culpa laboris non commodo. Velit nisi ut sit amet in sunt eu voluptate Lorem eu do sint proident aute. Nulla nisi commodo consectetur anim id non ut est anim veniam occaecat excepteur dolor nulla. Adipisicing et dolor ex cillum sit ipsum amet labore officia dolor non ad aliquip officia. Irure quis occaecat cupidatat ut commodo culpa eiusmod ipsum pariatur. Excepteur aliqua consectetur anim laborum enim ipsum tempor occaecat voluptate.',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00002',
+          text: 'Excepteur enim tempor ex do magna elit consectetur elit incididunt. Amet reprehenderit cupidatat amet velit nostrud esse est dolor proident ex ut deserunt. Velit veniam minim esse laboris irure esse duis dolor sint culpa. Sit ullamco eiusmod consectetur enim elit cillum sit elit irure ut commodo ad. Cillum ad mollit est labore culpa proident sunt tempor culpa pariatur elit laborum.',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00003',
+          text: 'Ad minim fugiat sint et laboris consectetur eu ut in nisi fugiat cillum est labore. Et proident tempor veniam ex est incididunt Lorem. Culpa sit id eu voluptate.',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00004',
+          text: 'Est voluptate eiusmod ad Lorem irure amet sint ea aliqua labore eu do nostrud exercitation. Non adipisicing non amet laborum. Anim fugiat minim cupidatat consequat ipsum minim ex mollit commodo ut aliqua quis consequat dolore. Cupidatat tempor laborum consectetur eiusmod cillum do consequat ad pariatur amet magna aliquip occaecat officia.',
+          type: 'message'
+        });
+
+        // WHEN: Bot send either a contentless livestream or typing activity.
+        await directLine.emulateIncomingActivity({
+          ...(isLivestream
+        ? {
+                channelData: {
+                  streamSequence: 1,
+                  streamType: 'streaming'
+                }
+              }
+            : {}),
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00002',
+          type: 'typing'
+        });
+
+        // THEN: Should show typing indicator.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeTruthy());
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: Bot send either a contentless livestream or typing activity.
+        await directLine.emulateIncomingActivity({
+          ...(isLivestream
+            ? {
+                channelData: {
+                  streamId: 'a-00002',
+                  streamType: 'final'
+                }
+              }
+            : {
+                channelData: {
+                  webChat: {
+                    styleOptions: { typingAnimationDuration: 0 }
+                  }
+                }
+              }),
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00002',
+          type: 'typing'
+        });
+
+        // THEN: Should hide typing indicator.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeFalsy());
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
