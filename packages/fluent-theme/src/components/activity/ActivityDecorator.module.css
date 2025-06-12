@@ -319,6 +319,10 @@
     color: var(--webchat-colorNeutralForeground3);
   }
 
+  :global(.webchat__link-definitions__message-sensitivity-label-text) {
+    color: var(--webchat-colorNeutralForeground4);
+  }
+
   :global(.webchat__link-definitions__header-chevron) {
     fill: var(--webchat-colorNeutralForeground3);
     font-size: var(--webchat__font-size--small);

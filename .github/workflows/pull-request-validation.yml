@@ -58,7 +58,6 @@ jobs:
           ./__tests__/
           ./packages/bundle/dist/
           ./packages/fluent-theme/dist/
-          ./packages/test/fluent-bundle/dist/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
           ./packages/test/web-server/dist/
