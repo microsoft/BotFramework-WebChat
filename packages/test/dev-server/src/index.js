@@ -59,34 +59,6 @@ const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../
     )
   );
 
-  app.use(
-    '/__dist__/fluent-bundle.development.js',
-    express.static(
-      resolve(fileURLToPath(import.meta.url), '../../../../test/fluent-bundle/dist/fluent-bundle.development.js')
-    )
-  );
-
-  app.use(
-    '/__dist__/fluent-bundle.development.js.map',
-    express.static(
-      resolve(fileURLToPath(import.meta.url), '../../../../test/fluent-bundle/dist/fluent-bundle.development.js.map')
-    )
-  );
-
-  app.use(
-    '/__dist__/fluent-bundle.production.min.js',
-    express.static(
-      resolve(fileURLToPath(import.meta.url), '../../../../test/fluent-bundle/dist/fluent-bundle.production.min.js')
-    )
-  );
-
-  app.use(
-    '/__dist__/fluent-bundle.production.min.js.map',
-    express.static(
-      resolve(fileURLToPath(import.meta.url), '../../../../test/fluent-bundle/dist/fluent-bundle.production.min.js.map')
-    )
-  );
-
   app.use('/__dist__/webchat*', express.static(resolve(fileURLToPath(import.meta.url), '../../../bundle/dist')));
 
   // Other requests will be served by `serve-handler` based on `/serve-test.json`.
