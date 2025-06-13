@@ -2,13 +2,23 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/"
+        }
+      }
+    </script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
     <style>
       webchat-element {
         display: contents;
@@ -20,42 +30,44 @@
       <main id="webchat"></main>
     </webchat-element>
 
-    <script type="text/babel">
-      const {
-        React,
-        ReactDOM: { render },
-        WebChat: { FluentThemeProvider, ReactWebChat }
-      } = window; // Imports in UMD fashion.
-
-      class WebChatElement extends HTMLElement {
-        constructor() {
-          super();
-
-          this.attachShadow({ mode: 'open' });
-        }
-
-        connectedCallback() {
-          const slot = document.createElement('slot');
-
-          this.shadowRoot.appendChild(slot);
-
-          const directLine = testHelpers.createDirectLineWithTranscript(
-            testHelpers.transcriptNavigation.generateTranscript()
-          );
-          const store = testHelpers.createStore();
-
-          const App = () => <ReactWebChat directLine={directLine} store={store} />;
-
-          render(
-            <FluentThemeProvider>
-              <App />
-            </FluentThemeProvider>,
-            this.querySelector('#webchat')
-          );
-        }
-      }
+    <script type="module">
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
 
       run(async function () {
+        const {
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        class WebChatElement extends HTMLElement {
+          constructor() {
+            super();
+
+            this.attachShadow({ mode: 'open' });
+          }
+
+          connectedCallback() {
+            const slot = document.createElement('slot');
+
+            this.shadowRoot.appendChild(slot);
+
+            const directLine = testHelpers.createDirectLineWithTranscript(
+              testHelpers.transcriptNavigation.generateTranscript()
+            );
+            const store = testHelpers.createStore();
+
+            const App = () => React.createElement(ReactWebChat, { directLine: directLine, store: store });
+
+            const root = createRoot(this.querySelector('#webchat'));
+
+            root.render(
+              React.createElement(FluentThemeProvider, null,
+                React.createElement(App)
+              )
+            );
+          }
+        }
+
         customElements.define('webchat-element', WebChatElement);
 
         pageElements.root(document.querySelector('webchat-element'));
