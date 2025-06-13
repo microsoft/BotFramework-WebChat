@@ -45,7 +45,6 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
 
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [feedbackText, setFeedbackText, feedbackTextRef] = useStateWithRef<string | undefined>();
-
   const activity: WebChatActivity = useMemo(
     () =>
       // Force enable feedback loop until service fixed their issue.
