@@ -26,7 +26,7 @@ const feedbackLoopSchema = union([
 type FeedbackActivity = WebChatActivity & InferOutput<typeof feedbackLoopSchema>;
 
 /**
- * @deprecated
+ * @deprecated This helper function should only use for patching the service. After patching, should use `getDisclaimerFormReviewAction` instead.
  */
 export function hasDisclaimer(
   activity: WebChatActivity
@@ -35,7 +35,7 @@ export function hasDisclaimer(
 }
 
 /**
- * @deprecated
+ * @deprecated This helper function should only use for patching the service. After patching, should use `isActionRequireReview` instead.
  */
 export default function hasFeedbackLoop(activity: WebChatActivity): activity is FeedbackActivity {
   return safeParse(feedbackLoopSchema, activity).success;
