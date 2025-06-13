@@ -90,7 +90,7 @@
           document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)[0]
         );
 
-        // TODO: Remove return and fix the test below.
+        // THEN: Should match snapshot.
         await host.snapshot('local');
 
         // WHEN: Click on dislike button to re-open feedback form
