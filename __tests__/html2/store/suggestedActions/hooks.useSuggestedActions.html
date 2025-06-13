@@ -128,16 +128,16 @@
         // WHEN: useSuggestedActions() is called with no suggested actions.
         renderResult.rerender({ suggestedActions: [] });
 
-        // THEN: Should hide suggested actions.
+        // THEN: UI should hide suggested actions.
         await waitFor(() => expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(0));
 
-        // THEN: Should return 0 suggested actions.
+        // THEN: useSuggestedActions() should return no suggested actions.
         renderResult.rerender();
         await waitFor(() =>
           expect(renderResult).toHaveProperty('result.current', [[], expect.any(Function), { activity: undefined }])
         );
 
-        // THEN: getState() should have 1 suggested action.
+        // THEN: getState() should have no suggested actions.
         expect(store.getState().suggestedActions).toHaveLength(0);
       });
     </script>

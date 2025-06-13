@@ -6,6 +6,10 @@ import { decoratorStyleContent as decoratorStyleContentPlaceholder } from './src
 
 const config: typeof baseConfig = {
   ...baseConfig,
+  esbuildOptions(options) {
+    options.define.WEBCHAT_PERF_CONTEXT = JSON.stringify('bit context');
+    // options.define.WEBCHAT_PERF_CONTEXT = JSON.stringify('stable state');
+  },
   entry: {
     'botframework-webchat-component': './src/index.ts',
     'botframework-webchat-component.internal': './src/internal.ts',

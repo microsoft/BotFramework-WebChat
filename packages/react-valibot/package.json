@@ -55,6 +55,5 @@
   },
   "peerDependencies": {
     "react": ">= 16.8.6"
-  },
-  "main": "index.js"
+  }
 }
