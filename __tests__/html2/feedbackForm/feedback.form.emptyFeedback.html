@@ -6,18 +6,10 @@
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
   </head>
+
   <body>
     <main id="webchat"></main>
-    <script type="importmap">
-      {
-        "imports": {
-          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
-        }
-      }
-    </script>
     <script type="module">
-      import { waitFor } from '@testduet/wait-for';
-
       run(async function () {
         const {
           WebChat: { renderWebChat, testIds }
@@ -29,15 +21,15 @@
           {
             directLine,
             store,
-            styleOptions: {
-              feedbackActionsPlacement: 'activity-actions'
-            }
+            styleOptions: { feedbackActionsPlacement: 'activity-actions' }
           },
           document.getElementById('webchat')
         );
 
         await pageConditions.uiConnected();
+        pageElements.byTestId(testIds.sendBoxTextBox).focus();
 
+        // GIVEN: An activity with feedback form.
         await directLine.emulateIncomingActivity({
           type: 'message',
           id: 'a-00000',
@@ -58,59 +50,24 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        pageElements.byTestId('send box text area').focus();
+        // WHEN: Focus on the like button.
         await host.sendShiftTab(3);
+        await host.sendKeys('ENTER', 'SPACE');
 
-        await host.sendKeys('ENTER');
-        await host.sendKeys('SPACE');
-
-        await host.snapshot('local');
-
-        // WHEN: Like button is dismissed by tapping on it again.
-        await host.sendKeys('ESCAPE');
-
-        // THEN: Should focus on the like button.
-        await waitFor(() => expect(document.activeElement).toBe(pageElements.allByTestId('feedback button')[0]));
-
-        // WHEN: Like button is tapped again.
-        await host.sendKeys('SPACE');
-
+        // THEN: The feedback form should be expanded.
         await pageConditions.became(
           'feedback form is open',
-          () => document.activeElement === pageElements.byTestId('feedback sendbox'),
+          () => document.activeElement === pageElements.byTestId(testIds.feedbackSendBox),
           1000
         );
 
-        // WHEN: The cancel button is clicked.
-        await host.sendTab(2);
-        await host.sendKeys('ENTER');
-
-        // WHEN: Should focus on the Like button as it was the action that just cancelled.
-        expect(document.activeElement).toEqual(
-          document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)[0]
-        );
-
-        // THEN: Should match snapshot.
-        await host.snapshot('local');
-
-        // WHEN: Click on dislike button to re-open feedback form
-        await host.sendKeys('RIGHT', 'SPACE');
-
-        await pageConditions.became(
-          'feedback form is open',
-          () => document.activeElement === pageElements.byTestId('feedback sendbox'),
-          1000
-        );
-
-        await host.sendKeys('Test feedback');
-
-        await host.snapshot('local');
-
+        // WHEN: An empty feedback is being submitted.
         const { activity } = await directLine.actPostActivity(async () => {
           await host.sendTab(1);
           await host.sendKeys('ENTER');
         });
 
+        // THEN: Should post a "message/submitAction".
         expect(activity).toEqual(
           expect.objectContaining({
             type: 'invoke',
@@ -118,15 +75,26 @@
             value: {
               actionName: 'feedback',
               actionValue: {
-                reaction: 'dislike',
+                reaction: 'like',
                 feedback: {
-                  feedbackText: 'Test feedback'
+                  feedbackText: ''
                 }
               }
             }
           })
         );
 
+        // THEN: Feedback form should be collapsed.
+        await expect(pageElements.byTestId(testIds.feedbackSendBox)).toBeFalsy();
+
+        // THEN: All feedback buttons should be grayed out.
+        await expect(
+          Array.from(pageElements.allByTestId(testIds.feedbackButton)).every(
+            buttonElement => buttonElement.getAttribute('aria-disabled') === 'true'
+          )
+        ).toBe(true);
+
+        // THEN: Should match snapshot.
         await host.snapshot('local');
       });
     </script>

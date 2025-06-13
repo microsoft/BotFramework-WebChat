@@ -1,11 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
-import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import {
   getOrgSchemaMessage,
   parseAction,
   type OrgSchemaAction,
   type WebChatActivity
 } from 'botframework-webchat-core';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import random from 'math-random';
 import React, { memo, useCallback, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { wrapWith } from 'react-wrap-with';
@@ -19,6 +19,7 @@ import getDisclaimerFromFeedbackLoop from '../private/getDisclaimerFromFeedbackL
 import hasFeedbackLoop from '../private/hasFeedbackLoop';
 import ActivityFeedbackContext, { type ActivityFeedbackContextType } from './private/ActivityFeedbackContext';
 import { ActivityFeedbackFocusPropagationScope, usePropagateActivityFeedbackFocus } from './private/FocusPropagation';
+import isActionRequireReview from '../private/isActionRequireReview';
 
 const { usePonyfill, usePostActivity } = hooks;
 
@@ -220,7 +221,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       const isLegacyAction = action['@type'] === 'VoteAction';
 
       // TODO: We should update this to use W3C Hydra.1
-      if (typeof feedbackText !== 'undefined') {
+      if (isActionRequireReview(action)) {
         postActivity({
           name: 'message/submitAction',
           replyToId: activityRef.current.id,
@@ -228,7 +229,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
           value: {
             actionName: 'feedback',
             actionValue: {
-              feedback: { feedbackText },
+              feedback: { feedbackText: feedbackText || '' },
               reaction: action['@type'] === 'LikeAction' ? 'like' : 'dislike'
             }
           }
