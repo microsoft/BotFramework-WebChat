@@ -90,11 +90,11 @@
           document.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`)[0]
         );
 
-        return await host.snapshot('local');
+        // TODO: Remove return and fix the test below.
+        await host.snapshot('local');
 
         // WHEN: Click on dislike button to re-open feedback form
-        await host.sendTab(1);
-        await host.sendKeys('SPACE');
+        await host.sendKeys('RIGHT', 'SPACE');
 
         await pageConditions.became(
           'feedback form is open',
