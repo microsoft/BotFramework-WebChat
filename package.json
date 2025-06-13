@@ -32,8 +32,7 @@
     "./packages/directlinespeech",
     "./packages/bundle",
     "./packages/test/page-object",
-    "./packages/fluent-theme",
-    "./packages/test/fluent-bundle"
+    "./packages/fluent-theme"
   ],
   "scripts": {
     "biome": "biome check ./packages",
@@ -89,7 +88,6 @@
     "start:redux-store": "cd packages && cd redux-store && npm start",
     "start:server": "serve -p 5000",
     "start:test-dev-server": "cd packages && cd test && cd dev-server && npm start",
-    "start:test-fluent-bundle": "cd packages && cd test && cd fluent-bundle && npm start",
     "start:test-harness": "cd packages && cd test && cd harness && npm start",
     "start:test-page-object": "cd packages && cd test && cd page-object && npm start",
     "test": "jest --watch"
