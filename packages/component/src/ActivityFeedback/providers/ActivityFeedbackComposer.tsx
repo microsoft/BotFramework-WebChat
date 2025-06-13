@@ -1,11 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
-import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import {
   getOrgSchemaMessage,
   parseAction,
   type OrgSchemaAction,
   type WebChatActivity
 } from 'botframework-webchat-core';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import random from 'math-random';
 import React, { memo, useCallback, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { wrapWith } from 'react-wrap-with';
@@ -19,6 +19,7 @@ import getDisclaimerFromFeedbackLoop from '../private/getDisclaimerFromFeedbackL
 import hasFeedbackLoop from '../private/hasFeedbackLoop';
 import ActivityFeedbackContext, { type ActivityFeedbackContextType } from './private/ActivityFeedbackContext';
 import { ActivityFeedbackFocusPropagationScope, usePropagateActivityFeedbackFocus } from './private/FocusPropagation';
+import isActionRequireReview from '../private/isActionRequireReview';
 
 const { usePonyfill, usePostActivity } = hooks;
 
@@ -45,12 +46,10 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
   const [{ clearTimeout, setTimeout }] = usePonyfill();
   const [feedbackText, setFeedbackText, feedbackTextRef] = useStateWithRef<string | undefined>();
 
-  const isFeedbackLoopEnabled = useMemo(() => hasFeedbackLoop(activityFromProps), [activityFromProps]);
-
   const activity: WebChatActivity = useMemo(
     () =>
       // Force enable feedback loop until service fixed their issue.
-      isFeedbackLoopEnabled
+      hasFeedbackLoop(activityFromProps)
         ? Object.freeze({
             ...activityFromProps,
             entities: [
@@ -86,7 +85,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
             ]
           })
         : activityFromProps,
-    [activityFromProps, isFeedbackLoopEnabled]
+    [activityFromProps]
   );
 
   const activityRef = useRefFrom(activity);
@@ -223,7 +222,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
       const isLegacyAction = action['@type'] === 'VoteAction';
 
       // TODO: We should update this to use W3C Hydra.1
-      if (isFeedbackLoopEnabled) {
+      if (isActionRequireReview(action)) {
         postActivity({
           name: 'message/submitAction',
           replyToId: activityRef.current.id,
@@ -244,15 +243,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
         } as any);
       }
     },
-    [
-      actionsRef,
-      actionStateRef,
-      activityRef,
-      feedbackTextRef,
-      isFeedbackLoopEnabled,
-      postActivity,
-      setActionStateWithRefresh
-    ]
+    [actionsRef, actionStateRef, activityRef, feedbackTextRef, postActivity, setActionStateWithRefresh]
   );
 
   const selectedAction = useMemo<OrgSchemaAction | undefined>(
