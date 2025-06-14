@@ -44,8 +44,6 @@
       <div class="controls">
         <h3>RPC Controls</h3>
         <button onclick="focusWebChatSendBox()">Focus Send Box</button>
-        <button onclick="focusWebChatSendBoxWithoutKeyboard()">Focus Send Box (No Keyboard)</button>
-        <button onclick="focusWebChatTranscript()">Focus Transcript</button>
 
         <div class="status" id="status">Ready to test RPC calls</div>
       </div>
@@ -57,7 +55,6 @@
     </div>
 
     <script>
-      // RPC functions for communicating with WebChat in iframe
       function updateStatus(message) {
         document.getElementById('status').textContent = message;
         console.log('RPC:', message);
@@ -66,59 +63,22 @@
       function focusWebChatSendBox() {
         const webChatIframe = document.getElementById('webchat-iframe');
         if (webChatIframe && webChatIframe.contentWindow) {
-          webChatIframe.contentWindow.postMessage(
-            {
-              type: 'WEBCHAT_FOCUS',
-              target: 'sendBox'
-            },
-            '*'
-          );
+          webChatIframe.contentWindow.postMessage({
+            type: 'WEBCHAT_FOCUS',
+            target: 'sendBox'
+          });
           updateStatus('Sent focus sendBox command');
         } else {
           updateStatus('Error: iframe not found or not loaded');
         }
       }
 
-      function focusWebChatSendBoxWithoutKeyboard() {
-        const webChatIframe = document.getElementById('webchat-iframe');
-        if (webChatIframe && webChatIframe.contentWindow) {
-          webChatIframe.contentWindow.postMessage(
-            {
-              type: 'WEBCHAT_FOCUS',
-              target: 'sendBoxWithoutKeyboard'
-            },
-            '*'
-          );
-          updateStatus('Sent focus sendBox (no keyboard) command');
-        } else {
-          updateStatus('Error: iframe not found or not loaded');
-        }
-      }
-
-      function focusWebChatTranscript() {
-        const webChatIframe = document.getElementById('webchat-iframe');
-        if (webChatIframe && webChatIframe.contentWindow) {
-          webChatIframe.contentWindow.postMessage(
-            {
-              type: 'WEBCHAT_FOCUS',
-              target: 'main'
-            },
-            '*'
-          );
-          updateStatus('Sent focus transcript command');
-        } else {
-          updateStatus('Error: iframe not found or not loaded');
-        }
-      }
-
-      // Listen for responses from iframe
       window.addEventListener('message', function (event) {
         if (event.data && event.data.type === 'WEBCHAT_READY') {
           updateStatus('WebChat iframe is ready for RPC commands');
         }
       });
 
-      // Initialize
       document.addEventListener('DOMContentLoaded', function () {
         updateStatus('Loading WebChat iframe...');
       });
