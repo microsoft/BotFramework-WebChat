@@ -49,6 +49,7 @@ import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
 import ReducedMotionComposer from './providers/ReducedMotion/ReducedMotionComposer';
 import useTheme from './providers/Theme/useTheme';
 import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
+import PostMessageListener from './PostMessageListener';
 import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import WebChatTheme from './Styles/WebChatTheme';
@@ -477,6 +478,7 @@ const InternalComposer = ({
                 >
                   {children}
                   {onTelemetry && <UITracker />}
+                  <PostMessageListener />
                 </ComposerCore>
               </DecoratorComposer>
             </BuiltInDecorator>

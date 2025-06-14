@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Web Chat: Cross-iframe RPC Focus Control (WebChat iframe)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- 
+    For demo purposes, we are using the development version of Web Chat with the LATEST tag.
+    When you are using Web Chat for production, you should pin the version to a specific version
+    and do not use the LATEST tag.
+  -->
+    <script crossorigin="anonymous" src="https://cdn.botframework.com/botframework-webchat/latest/webchat.js"></script>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        background-color: #f7f7f7;
+      }
+
+      #webchat {
+        height: 100%;
+        width: 100%;
+      }
+
+      .status-indicator {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        padding: 8px 12px;
+        background: #007acc;
+        color: white;
+        border-radius: 4px;
+        font-family: Arial, sans-serif;
+        font-size: 12px;
+        z-index: 1000;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="webchat" role="main"></div>
+    <div class="status-indicator" id="status">RPC Ready</div>
+
+    <script>
+      (async function () {
+        // Create a Direct Line token
+        // In production, this should be done on your server to avoid exposing the secret
+        const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
+        const { token } = await res.json();
+        const directLine = window.WebChat.createDirectLine({ token });
+
+        // Status indicator management
+        function updateStatus(message) {
+          const statusEl = document.getElementById('status');
+          statusEl.textContent = message;
+          console.log('WebChat RPC Status:', message);
+
+          // Auto-hide status after 3 seconds
+          setTimeout(() => {
+            if (statusEl.textContent === message) {
+              statusEl.textContent = 'RPC Ready';
+            }
+          }, 3000);
+        }
+
+        // PostMessage listener for RPC commands
+        window.addEventListener('message', async event => {
+          // Basic security: only accept messages from parent window
+          if (event.source !== window.parent) {
+            return;
+          }
+
+          const { type, target } = event.data || {};
+
+          // Handle focus commands
+          if (type === 'WEBCHAT_FOCUS') {
+            try {
+              updateStatus(`Focusing: ${target}`);
+
+              // Access WebChat's focus hook through the global API
+              if (window.WebChat && window.WebChat.hooks && window.WebChat.hooks.useFocus) {
+                // We need to call this within a React component context
+                // For now, let's try a direct DOM approach as fallback
+
+                if (target === 'sendBox' || target === 'sendBoxWithoutKeyboard') {
+                  // Find the send box input
+                  const sendBoxInput =
+                    document.querySelector('[data-testid="sendBoxTextBox"]') ||
+                    document.querySelector('input[placeholder*="Type"]') ||
+                    document.querySelector('.webchat__send-box input') ||
+                    document.querySelector('[role="textbox"]');
+
+                  if (sendBoxInput) {
+                    sendBoxInput.focus();
+                    updateStatus(`Focused: ${target} (DOM fallback)`);
+                  } else {
+                    updateStatus(`Send box input not found`);
+                  }
+                } else if (target === 'main') {
+                  // Find the transcript area
+                  const transcript =
+                    document.querySelector('[role="log"]') ||
+                    document.querySelector('.webchat__basic-transcript') ||
+                    document.querySelector('[data-testid="transcript"]');
+
+                  if (transcript) {
+                    transcript.focus();
+                    updateStatus(`Focused: transcript (DOM fallback)`);
+                  } else {
+                    updateStatus(`Transcript not found`);
+                  }
+                }
+              } else {
+                updateStatus(`WebChat hooks not available`);
+              }
+            } catch (error) {
+              updateStatus(`Focus error: ${error.message}`);
+              console.error('WebChat focus error:', error);
+            }
+          }
+        });
+
+        // Initialize WebChat
+        window.WebChat.renderWebChat(
+          {
+            directLine: directLine,
+            userID: 'iframe-rpc-user',
+            username: 'iframe-rpc-user',
+            locale: 'en-US'
+          },
+          document.getElementById('webchat')
+        );
+
+        updateStatus('WebChat loaded');
+
+        // Send a welcome message when ready
+        directLine.connectionStatus$.subscribe(connectionStatus => {
+          if (connectionStatus === 2) {
+            // 2 = 'Online'
+            directLine
+              .postActivity({
+                from: { id: 'iframe-rpc-user', name: 'iframe-rpc-user' },
+                name: 'webchatJoin',
+                type: 'event',
+                value: { language: window.navigator.language }
+              })
+              .subscribe(
+                id => console.log('Posted greeting with ID', id),
+                error => console.log('Error posting greeting', error)
+              );
+          }
+        });
+
+        // Let parent know we're ready
+        window.parent.postMessage(
+          {
+            type: 'WEBCHAT_READY'
+          },
+          '*'
+        );
+      })().catch(err => {
+        console.error('Error initializing WebChat:', err);
+        document.getElementById('webchat').innerHTML = `
+        <div style="padding: 20px; text-align: center; color: #d73a49;">
+          <h3>Failed to initialize WebChat</h3>
+          <p>Error: ${err.message}</p>
+          <p>Please check the console for more details.</p>
+        </div>
+      `;
+      });
+    </script>
+  </body>
+</html>
