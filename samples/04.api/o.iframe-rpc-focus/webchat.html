@@ -46,19 +46,15 @@
 
     <script>
       (async function () {
-        // Create a Direct Line token
-        // In production, this should be done on your server to avoid exposing the secret
         const res = await fetch('https://webchat-mockbot.azurewebsites.net/directline/token', { method: 'POST' });
         const { token } = await res.json();
         const directLine = window.WebChat.createDirectLine({ token });
 
-        // Status indicator management
         function updateStatus(message) {
           const statusEl = document.getElementById('status');
           statusEl.textContent = message;
           console.log('WebChat RPC Status:', message);
 
-          // Auto-hide status after 3 seconds
           setTimeout(() => {
             if (statusEl.textContent === message) {
               statusEl.textContent = 'RPC Ready';
@@ -66,55 +62,29 @@
           }, 3000);
         }
 
-        // PostMessage listener for RPC commands
         window.addEventListener('message', async event => {
-          // Basic security: only accept messages from parent window
           if (event.source !== window.parent) {
             return;
           }
 
-          const { type, target } = event.data || {};
+          const { type } = event.data ?? {};
 
           // Handle focus commands
           if (type === 'WEBCHAT_FOCUS') {
             try {
-              updateStatus(`Focusing: ${target}`);
+              updateStatus('Focusing input...');
 
-              // Access WebChat's focus hook through the global API
-              if (window.WebChat && window.WebChat.hooks && window.WebChat.hooks.useFocus) {
-                // We need to call this within a React component context
-                // For now, let's try a direct DOM approach as fallback
+              if (window.WebChat) {
+                const sendBoxInput = document.querySelector('.webchat__send-box input');
 
-                if (target === 'sendBox' || target === 'sendBoxWithoutKeyboard') {
-                  // Find the send box input
-                  const sendBoxInput =
-                    document.querySelector('[data-testid="sendBoxTextBox"]') ||
-                    document.querySelector('input[placeholder*="Type"]') ||
-                    document.querySelector('.webchat__send-box input') ||
-                    document.querySelector('[role="textbox"]');
-
-                  if (sendBoxInput) {
-                    sendBoxInput.focus();
-                    updateStatus(`Focused: ${target} (DOM fallback)`);
-                  } else {
-                    updateStatus(`Send box input not found`);
-                  }
-                } else if (target === 'main') {
-                  // Find the transcript area
-                  const transcript =
-                    document.querySelector('[role="log"]') ||
-                    document.querySelector('.webchat__basic-transcript') ||
-                    document.querySelector('[data-testid="transcript"]');
-
-                  if (transcript) {
-                    transcript.focus();
-                    updateStatus(`Focused: transcript (DOM fallback)`);
-                  } else {
-                    updateStatus(`Transcript not found`);
-                  }
+                if (sendBoxInput) {
+                  sendBoxInput.focus();
+                  updateStatus('Focused input');
+                } else {
+                  updateStatus(`input not found`);
                 }
               } else {
-                updateStatus(`WebChat hooks not available`);
+                updateStatus(`WebChat not available`);
               }
             } catch (error) {
               updateStatus(`Focus error: ${error.message}`);
@@ -123,7 +93,6 @@
           }
         });
 
-        // Initialize WebChat
         window.WebChat.renderWebChat(
           {
             directLine: directLine,
@@ -136,7 +105,6 @@
 
         updateStatus('WebChat loaded');
 
-        // Send a welcome message when ready
         directLine.connectionStatus$.subscribe(connectionStatus => {
           if (connectionStatus === 2) {
             // 2 = 'Online'
@@ -154,13 +122,9 @@
           }
         });
 
-        // Let parent know we're ready
-        window.parent.postMessage(
-          {
-            type: 'WEBCHAT_READY'
-          },
-          '*'
-        );
+        window.parent.postMessage({
+          type: 'WEBCHAT_READY'
+        });
       })().catch(err => {
         console.error('Error initializing WebChat:', err);
         document.getElementById('webchat').innerHTML = `
