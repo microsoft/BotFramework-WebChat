@@ -67,15 +67,14 @@
             return;
           }
 
-          const { type } = event.data ?? {};
+          const { type, target } = event.data ?? {};
 
-          // Handle focus commands
           if (type === 'WEBCHAT_FOCUS') {
             try {
               updateStatus('Focusing input...');
 
-              if (window.WebChat) {
-                const sendBoxInput = document.querySelector('.webchat__send-box input');
+              if (window.WebChat && target === 'sendBox') {
+                const sendBoxInput = document.querySelector('[data-id=webchat-sendbox-input]');
 
                 if (sendBoxInput) {
                   sendBoxInput.focus();
