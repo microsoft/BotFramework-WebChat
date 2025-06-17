@@ -1,0 +1,75 @@
+:global(.webchat) .text-area {
+  display: grid;
+  font-family: var(--webchat__font--primary);
+  grid-template-areas: 'main';
+  max-height: var(--webchat__text-area--max-height, 200px);
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+:global(.webchat) .text-area--hidden {
+  /* TODO: Not perfect way of hiding the text box. */
+  height: 0;
+  visibility: collapse;
+}
+
+:global(.webchat) .text-area--in-completion {
+  .text-area-doppelganger {
+    visibility: unset;
+  }
+
+  .text-area-input {
+    background-color: transparent;
+    caret-color: var(--webchat__text-area--carret-color, #242424);
+    color: transparent;
+  }
+
+  textarea::placeholder {
+    color: transparent;
+  }
+}
+
+:global(.webchat) .text-area-shared {
+  border: none;
+  font: inherit;
+  grid-area: main;
+  outline: inherit;
+  overflow-wrap: anywhere;
+  resize: inherit;
+}
+
+:global(.webchat) .text-area-doppelganger {
+  overflow: visible;
+  pointer-events: none;
+  user-select: none;
+  visibility: hidden;
+  white-space: pre-wrap;
+}
+
+:global(.webchat) .text-area-input {
+  background-color: inherit;
+  color: currentColor;
+  contain: size;
+  overflow: hidden;
+  padding: 0;
+}
+
+:global(.webchat) .text-area--scroll {
+  scrollbar-color: unset;
+  scrollbar-width: unset;
+  -moz-scrollbar-color: #373435 var(--webchat__color--subtle);
+  -moz-scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--webchat__color--subtle);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background-color: #373435;
+  }
+}

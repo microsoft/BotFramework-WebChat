@@ -23,7 +23,6 @@ import useTranscriptNavigation from './private/useTranscriptNavigation';
 import useUniqueId from './private/useUniqueId';
 import styles from './SendBox.module.css';
 import TelephoneKeypadToolbarButton from './TelephoneKeypadToolbarButton';
-import TextArea from './TextArea';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
 
 const {
@@ -38,7 +37,7 @@ const {
   useUIState
 } = hooks;
 
-const { AttachmentBar } = Components;
+const { AttachmentBar, TextArea } = Components;
 
 type Props = Readonly<{
   className?: string | undefined;
@@ -202,7 +201,7 @@ function SendBox(props: Props) {
       >
         <TextArea
           aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
-          className={cx(classNames['sendbox__sendbox-text'], classNames['sendbox__text-area--in-grid'])}
+          className={cx(classNames['sendbox__sendbox-text-area'], classNames['sendbox__text-area--in-grid'])}
           completion={props.completion}
           data-testid={testIds.sendBoxTextBox}
           hidden={shouldShowTelephoneKeypad}

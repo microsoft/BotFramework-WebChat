@@ -1,23 +1,26 @@
 import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
+import { useStyles } from 'botframework-webchat-styles/react';
+import cx from 'classnames';
 import React, {
   forwardRef,
   Fragment,
   useCallback,
   useRef,
   type FormEventHandler,
-  type KeyboardEventHandler
+  type KeyboardEventHandler,
+  type ReactNode
 } from 'react';
-import useStyleSet from '../../hooks/useStyleSet';
+
+import styles from './TextArea.module.css';
 
 const { useUIState } = hooks;
 
-// TODO: Need review. Dedupe with send box text area.
 const TextArea = forwardRef<
   HTMLTextAreaElement,
   Readonly<{
     'aria-label'?: string | undefined;
     className?: string | undefined;
+    completion?: ReactNode | undefined;
     'data-testid'?: string | undefined;
 
     /**
@@ -36,7 +39,7 @@ const TextArea = forwardRef<
   }>
 >((props, ref) => {
   const [uiState] = useUIState();
-  const [{ feedbackTextArea }] = useStyleSet();
+  const classNames = useStyles(styles);
   const isInCompositionRef = useRef<boolean>(false);
 
   const disabled = uiState === 'disabled';
@@ -63,42 +66,26 @@ const TextArea = forwardRef<
 
   return (
     <div
-      className={classNames(
-        'webchat__feedback-form-text-area',
-        { 'webchat__feedback-form-text-area--hidden': props.hidden },
-        feedbackTextArea + ''
+      className={cx(
+        classNames['text-area'],
+        classNames['text-area--scroll'],
+        { [classNames['text-area--hidden']]: props.hidden },
+        { [classNames['text-area--in-completion']]: props.completion },
+        props.className
       )}
       role={props.hidden ? 'hidden' : undefined}
     >
       {uiState === 'blueprint' ? (
-        <div
-          className={classNames(
-            'webchat__feedback-form-text-area-doppelganger',
-            'webchat__feedback-form-text-area-input--scroll',
-            'webchat__feedback-form-text-area-shared'
-          )}
-        >
-          {' '}
-        </div>
+        <div className={cx(classNames['text-area-doppelganger'], classNames['text-area-shared'])}> </div>
       ) : (
         <Fragment>
-          <div
-            className={classNames(
-              'webchat__feedback-form-text-area-doppelganger',
-              'webchat__feedback-form-text-area-input--scroll',
-              'webchat__feedback-form-text-area-shared'
-            )}
-          >
-            {props.value || props.placeholder}{' '}
+          <div className={cx(classNames['text-area-doppelganger'], classNames['text-area-shared'])}>
+            {props.completion ? props.completion : props.value || props.placeholder}{' '}
           </div>
           <textarea
             aria-disabled={disabled}
             aria-label={props['aria-label']}
-            className={classNames(
-              'webchat__feedback-form-text-area-input',
-              'webchat__feedback-form-text-area-input--scroll',
-              'webchat__feedback-form-text-area-shared'
-            )}
+            className={cx(classNames['text-area-input'], classNames['text-area-shared'])}
             data-testid={props['data-testid']}
             onCompositionEnd={handleCompositionEnd}
             onCompositionStart={handleCompositionStart}
@@ -109,7 +96,7 @@ const TextArea = forwardRef<
             ref={ref}
             rows={props.startRows ?? 1}
             // eslint-disable-next-line no-magic-numbers
-            tabIndex={props.hidden || disabled ? -1 : undefined}
+            tabIndex={props.hidden ? -1 : undefined}
             value={props.value}
           />
         </Fragment>

@@ -1,15 +1,19 @@
 import { hooks } from 'botframework-webchat-api';
+import { useStyles } from 'botframework-webchat-styles/react';
 import React, { memo, useCallback, useEffect, useRef, useState, type FormEventHandler } from 'react';
 
 import Markdownable from '../../Attachment/Text/private/Markdownable';
 import testIds from '../../testIds';
+import { TextArea } from '../../TextArea';
 import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
-import FeedbackTextArea from './FeedbackTextArea';
 import getDisclaimerFromReviewAction from './getDisclaimerFromReviewAction';
+
+import styles from './FeedbackForm.module.css';
 
 const { useLocalizer } = hooks;
 
 function FeedbackForm() {
+  const classNames = useStyles(styles);
   const { useFeedbackText, useSelectedAction } = useActivityFeedbackHooks();
 
   const [selectedAction] = useSelectedAction();
@@ -37,22 +41,25 @@ function FeedbackForm() {
   }, [feedbackTextAreaRef, hasFocus, setHasFocus]);
 
   return (
-    <div className="webchat__feedback-form__form">
-      <span className="webchat__feedback-form__form-header">{localize('FEEDBACK_FORM_TITLE')}</span>
-      <FeedbackTextArea
-        data-testid={testIds.feedbackSendBox}
-        onInput={handleMessageChange}
-        placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
-        ref={feedbackTextAreaRef}
-        startRows={3}
-        value={userFeedback}
-      />
-      {disclaimer && <Markdownable className="webchat__feedback-form__form-footer" text={disclaimer} />}
-      <div className="webchat__feedback-form__submission-button-bar">
-        <button className="webchat__feedback-form__submit-button" type="submit">
+    <div className={classNames['feedback-form__form']}>
+      <span className={classNames['feedback-form__form-header']}>{localize('FEEDBACK_FORM_TITLE')}</span>
+      <div className={classNames['feedback-form__text-box']}>
+        <TextArea
+          className={classNames['feedback-form__text-area']}
+          data-testid={testIds.feedbackSendBox}
+          onInput={handleMessageChange}
+          placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
+          ref={feedbackTextAreaRef}
+          startRows={3}
+          value={userFeedback}
+        />
+      </div>
+      {disclaimer && <Markdownable className={classNames['feedback-form__form-footer']} text={disclaimer} />}
+      <div className={classNames['feedback-form__submission-button-bar']}>
+        <button className={classNames['feedback-form__submit-button']} type="submit">
           {localize('FEEDBACK_FORM_SUBMIT_BUTTON_LABEL')}
         </button>
-        <button className="webchat__feedback-form__cancel-button" type="reset">
+        <button className={classNames['feedback-form__cancel-button']} type="reset">
           {localize('FEEDBACK_FORM_CANCEL_BUTTON_LABEL')}
         </button>
       </div>

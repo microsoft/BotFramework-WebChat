@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Feedback Form: Scrollbar behavior when input is long</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/",
+          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      import ReactDOM from 'react-dom';
+      window.React = React;
+      window.ReactDOM = ReactDOM;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      run(async function () {
+        const {
+          WebChat: { testIds }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const { isFluentTheme } = renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { feedbackActionsPlacement: 'activity-actions' }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        pageElements.byTestId(testIds.sendBoxTextBox).focus();
+
+        // GIVEN: An activity with feedback form.
+        await directLine.emulateIncomingActivity({
+          type: 'message',
+          id: 'a-00000',
+          timestamp: 0,
+          text: 'This is a test message to show feedback buttons',
+          from: {
+            role: 'bot'
+          },
+          locale: 'en-US',
+          entities: [],
+          channelData: {
+            feedbackLoop: {
+              type: 'default',
+              disclaimer: 'This is a test disclaimer message'
+            }
+          }
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // WHEN: Focus on the like button.
+        if (isFluentTheme) {
+          await host.sendShiftTab(1);
+          await host.sendKeys('ARROW_UP');
+          await host.sendKeys('ENTER', 'SPACE');
+        } else {
+          await host.sendShiftTab(3);
+          await host.sendKeys('ENTER', 'SPACE');
+        }
+
+        // THEN: The feedback form should be expanded.
+        await pageConditions.became(
+          'feedback form is open',
+          () => document.activeElement === pageElements.byTestId(testIds.feedbackSendBox),
+          1000
+        );
+
+        // WHEN: The form is filled with more than 10 lines of text.
+        await host.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris '.repeat(12));
+        
+        // THEN: The feedback form should have scroll visible
+        await host.snapshot('local');
+
+        // WHEN: The text area is not focused.
+        await host.sendTab(1);
+
+        // THEN: The feedback form should have scrollbar hidden.
+        await host.snapshot('local');
+
+        // WHEN: A feedback form with scroll is being submitted.
+        await directLine.actPostActivity(async () => {
+          await host.sendKeys('ENTER');
+        });
+
+
+        // THEN: Feedback form should be collapsed.
+        await expect(pageElements.byTestId(testIds.feedbackSendBox)).toBeFalsy();
+
+        // THEN: All feedback buttons should be grayed out.
+        await expect(
+          Array.from(pageElements.allByTestId(testIds.feedbackButton)).every(
+            buttonElement => buttonElement.getAttribute('aria-disabled') === 'true'
+          )
+        ).toBe(true);
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

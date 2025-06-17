@@ -1,21 +1,23 @@
-import classNames from 'classnames';
+import { useStyles } from 'botframework-webchat-styles/react';
 import React, { memo, useCallback, useMemo, type FormEventHandler, type KeyboardEventHandler } from 'react';
 import { Extract, wrapWith } from 'react-wrap-with';
 import { useRefFrom } from 'use-ref-from';
 
-import useStyleSet from '../hooks/useStyleSet';
 import FeedbackForm from './private/FeedbackForm';
 import FeedbackVoteButtonBar from './private/FeedbackVoteButtonBar';
 import isActionRequireReview from './private/isActionRequireReview';
 import ActivityFeedbackComposer from './providers/ActivityFeedbackComposer';
 import useActivityFeedbackHooks from './providers/useActivityFeedbackHooks';
 
+import styles from './private/FeedbackForm.module.css';
+
 function InternalActivityFeedback() {
+  const classNames = useStyles(styles);
+
   const { useActions, useFeedbackText, useFocusFeedbackButton, useHasSubmitted, useSelectedAction, useSubmit } =
     useActivityFeedbackHooks();
 
   const [_, setFeedbackText] = useFeedbackText();
-  const [{ feedbackForm }] = useStyleSet();
   const [actions] = useActions();
   const [hasSubmitted] = useHasSubmitted();
   const [selectedAction, setSelectedAction] = useSelectedAction();
@@ -62,7 +64,7 @@ function InternalActivityFeedback() {
   return (
     !!actions.length && (
       <form
-        className={classNames('webchat__feedback-form', feedbackForm + '')}
+        className={classNames['feedback-form']}
         onKeyDown={handleKeyDown}
         onReset={handleReset}
         onSubmit={handleSubmit}
