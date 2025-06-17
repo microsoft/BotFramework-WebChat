@@ -52,8 +52,10 @@ const config: typeof baseConfig = {
     SPEECH_CONDUCT_OCSP_CHECK: '',
     SPEECH_OCSP_CACHE_ROOT: ''
   },
-  plugins: [resolveCognitiveServicesToES2015],
+  plugins: [resolveCognitiveServicesToES2015, resolveReact],
   noExternal: [
+    'react',
+    'isomorphic-react',
     '@babel/runtime',
     'memoize-one',
     'microsoft-cognitiveservices-speech-sdk',
@@ -76,9 +78,9 @@ const iifeConfig = {
     module_format: 'global'
   },
   plugins: [...config.plugins, resolveReact],
-  format: 'iife',
+  format: 'umd',
   platform: 'browser',
-  target: [...config.target, 'es2019'],
+  // target: [...config.target, 'es2019'],
   noExternal: [...iifeDeps, ...config.noExternal],
   outputOptions(outputOptions) {
     outputOptions.entryFileNames = '[name].js';

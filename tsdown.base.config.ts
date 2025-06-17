@@ -1,6 +1,6 @@
 import { type Options } from 'tsup';
 import { babelPlugin, defaultPredicate, type Predicate } from './esbuildBabelPluginIstanbul';
-import lightningCssPlugin from 'unplugin-lightningcss/esbuild';
+import lightningCssPlugin from 'unplugin-lightningcss/rolldown';
 
 type Target = Exclude<Options['target'], Array<unknown> | undefined>;
 
@@ -41,7 +41,10 @@ const baseConfig: Options & { target: Target[] } = {
     NODE_ENV: env,
     ...(npm_package_version ? { npm_package_version } : {})
   },
-  plugins: [disablePlugin('postcss'), disablePlugin('svelte')],
+  // plugins: [disablePlugin('postcss'), disablePlugin('svelte')],
+  inputOptions: {
+    jsx: 'react'
+  },
   esbuildOptions: options => {
     // esbuild don't touch AMD but it also don't remove AMD glue code.
     // Some of our packages prefers AMD over CJS via UMD and it also use anonymous modules.
@@ -92,7 +95,7 @@ const baseConfig: Options & { target: Target[] } = {
   platform: 'browser',
   sourcemap: true,
   splitting: true,
-  target: ['chrome100', 'firefox100', 'safari15'] satisfies Target[]
+  target: ['chrome110', 'firefox110', 'safari16'] satisfies Target[]
 };
 
 export default baseConfig;
