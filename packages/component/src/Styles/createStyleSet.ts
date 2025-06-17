@@ -20,7 +20,6 @@ import createConnectivityNotification from './StyleSet/ConnectivityNotification'
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
 import createErrorNotificationStyle from './StyleSet/ErrorNotification';
-import createFeedbackFormStyle from './StyleSet/FeedbackForm';
 import createFileContentStyle from './StyleSet/FileContent';
 import createImageAvatarStyle from './StyleSet/ImageAvatar';
 import createInitialsAvatarStyle from './StyleSet/InitialsAvatar';
@@ -53,7 +52,6 @@ import createViewCodeDialogStyle from './StyleSet/ViewCodeDialog';
 import createVimeoContentStyle from './StyleSet/VimeoContent';
 import createWarningNotificationStyle from './StyleSet/WarningNotification';
 import createYouTubeContentStyle from './StyleSet/YouTubeContent';
-import createFeedbackTextAreaStyle from './StyleSet/FeedbackTextArea';
 
 // TODO: [P4] We should add a notice for people who want to use "styleSet" instead of "styleOptions".
 //       "styleSet" is actually CSS stylesheet and it is based on the DOM tree.
@@ -111,8 +109,6 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     // - Use CSS var instead of strictStyleOptions
     chatHistoryBox: createChatHistoryBoxStyleSet(),
     citationModalDialog: createCitationModalDialogStyle(),
-    feedbackForm: createFeedbackFormStyle(),
-    feedbackTextArea: createFeedbackTextAreaStyle(),
     linkDefinitions: createLinkDefinitionsStyle(),
     modalDialog: createModalDialogStyle(),
     renderMarkdown: createRenderMarkdownStyle(),

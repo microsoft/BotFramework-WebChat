@@ -40,6 +40,7 @@ import SendTextBox from './SendBox/TextBox';
 import UploadButton from './SendBoxToolbar/UploadButton';
 import MonochromeImageMasker from './Utils/MonochromeImageMasker';
 import { AttachmentBar } from './SendBox/AttachmentBar';
+import { TextArea } from './TextArea';
 
 import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
@@ -118,6 +119,7 @@ const Components = {
   SendButton,
   SendTextBox,
   SuggestedActions,
+  TextArea,
   UploadButton,
 
   // Components for localization

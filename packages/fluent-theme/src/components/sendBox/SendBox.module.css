@@ -139,7 +139,7 @@
   }
 }
 
-:global(.webchat-fluent) .sendbox__sendbox-text {
+:global(.webchat-fluent) .sendbox__sendbox-text-area {
   background-color: transparent;
   border: none;
   flex: auto;
@@ -149,6 +149,8 @@
   outline: none;
   margin: var(--webchat-spacingVerticalXS) var(--webchat-spacingHorizontalXS) var(--webchat-spacingVerticalNone);
   resize: none;
+
+  --webchat__text-area--carret-color: var(--webchat-colorNeutralForeground1);
 
   /* Prevent zoom on focus on iOS */
   @media only screen and (hover: none) and (pointer: coarse) {

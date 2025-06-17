@@ -1,9 +1,12 @@
 import { validateProps } from 'botframework-webchat-react-valibot';
+import { useStyles } from 'botframework-webchat-styles/react';
 import React, { memo } from 'react';
 import { literal, object, pipe, readonly, union, type InferInput } from 'valibot';
 
 import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
 import FeedbackVoteButton from './FeedbackVoteButton';
+
+import styles from './FeedbackForm.module.css';
 
 const feedbackVoteButtonBarPropsSchema = pipe(
   object({
@@ -15,6 +18,7 @@ const feedbackVoteButtonBarPropsSchema = pipe(
 type FeedbackVoteButtonBarProps = InferInput<typeof feedbackVoteButtonBarPropsSchema>;
 
 function FeedbackVoteButtonBar(props: FeedbackVoteButtonBarProps) {
+  const classNames = useStyles(styles);
   const { buttonAs } = validateProps(feedbackVoteButtonBarPropsSchema, props);
 
   const { useActions } = useActivityFeedbackHooks();
@@ -22,7 +26,7 @@ function FeedbackVoteButtonBar(props: FeedbackVoteButtonBarProps) {
   const [actions] = useActions();
 
   return (
-    <div className="webchat__feedback-form__vote-button-bar">
+    <div className={classNames['feedback-form__vote-button-bar']}>
       {actions.map((action, index) => (
         <FeedbackVoteButton action={action} as={buttonAs} key={action['@id'] || index} />
       ))}
