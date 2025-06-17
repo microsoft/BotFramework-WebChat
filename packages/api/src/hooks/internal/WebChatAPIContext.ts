@@ -3,8 +3,7 @@ import {
   type Observable,
   type WebChatActivity,
   type sendFiles,
-  type sendMessage,
-  type setSendBoxAttachments
+  type sendMessage
 } from 'botframework-webchat-core';
 import { createContext, type ComponentType } from 'react';
 
@@ -78,7 +77,6 @@ export type WebChatAPIContextType = {
   setDictateState?: (dictateState: number) => void;
   setNotification?: (notification: Notification) => void;
   setSendBox?: (value: string) => void;
-  setSendBoxAttachments?: (...args: Parameters<typeof setSendBoxAttachments>) => void;
   setSendTimeout?: (timeout: number) => void;
   startDictate?: () => void;
   startSpeakingActivity?: () => void;

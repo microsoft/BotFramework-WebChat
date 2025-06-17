@@ -11,7 +11,7 @@ import { useLiveRegion } from '../../../providers/LiveRegionTwin';
 import SendBoxContext from './private/Context';
 import { type ContextType, type SendError } from './private/types';
 
-const { useConnectivityStatus, useLocalizer, useSendBoxAttachments, useSendBoxValue, useSubmitSendBox } = hooks;
+const { useConnectivityStatus, useLocalizer, useSendBoxHooks, useSubmitSendBox } = hooks;
 
 const SUBMIT_ERROR_MESSAGE_STYLE = {
   '&.webchat__submit-error-message': {
@@ -51,10 +51,10 @@ type SendBoxComposerProps = Readonly<{ children?: ReactNode | undefined }>;
 
 // TODO: [P2] Complete this component.
 const SendBoxComposer = ({ children }: SendBoxComposerProps) => {
-  const [attachments] = useSendBoxAttachments();
+  const [attachments] = useSendBoxHooks().useSendBoxAttachments();
   const [connectivityStatus] = useConnectivityStatus();
   const [error, setError] = useState<SendError | false>(false);
-  const [sendBoxValue] = useSendBoxValue();
+  const [sendBoxValue] = useSendBoxHooks().useSendBoxValue();
   const apiSubmitSendBox = useSubmitSendBox();
   const focus = useFocus();
   const localize = useLocalizer();

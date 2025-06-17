@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import renderHook from '../../hooks/private/renderHook.js';
+
+      const {
+        React: { createElement },
+        testHelpers: { createDirectLineEmulator },
+        WebChat: {
+          Components: { BasicWebChat, Composer },
+          hooks: { useSuggestedActions },
+          testIds
+        }
+      } = window;
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+        const WebChatWrapper = ({ children }) =>
+          createElement(Composer, { directLine, store }, createElement(BasicWebChat), children);
+
+        // WHEN: Render initially.
+        const renderResult = renderHook(
+          props => {
+            const state = useSuggestedActions();
+
+            if (props) {
+              state[1](props.suggestedActions);
+            } else {
+              return state;
+            }
+          },
+          {
+            legacyRoot: true,
+            wrapper: WebChatWrapper
+          }
+        );
+
+        await pageConditions.uiConnected();
+
+        // THEN: useSuggestedActions() getter should return empty array.
+        await waitFor(() =>
+          expect(renderResult).toHaveProperty('result.current', [[], expect.anything(), { activity: undefined }])
+        );
+
+        // WHEN: An activity with 2 suggested actions is received.
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          suggestedActions: {
+            actions: [
+              { title: 'Hello, World!', type: 'imBack' },
+              { title: 'Aloha!', type: 'imBack' }
+            ],
+            to: ''
+          },
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        // WHEN: Reconnecting.
+        const { resolve } = directLine.emulateReconnect();
+
+        // THEN: "Network interruption" connectivity status should be shown.
+        await waitFor(() =>
+          expect(pageElements.connectivityStatus().textContent).toEqual(
+            expect.stringContaining('Network interruption occurred.')
+          )
+        );
+
+        // WHEN: A message is being sent programmatically.
+        directLine.emulateOutgoingActivity({
+          text: 'Good morning!',
+          type: 'message'
+        });
+
+        // THEN: useSuggestedActions() should continue to return 2 suggested actions.
+        renderResult.rerender();
+        await waitFor(() =>
+          expect(renderResult).toHaveProperty('result.current', [
+            [
+              { title: 'Hello, World!', type: 'imBack' },
+              { title: 'Aloha!', type: 'imBack' }
+            ],
+            expect.any(Function),
+            { activity: expect.any(Object) }
+          ])
+        );
+
+        // WHEN: Direct Line is reconnected.
+        resolve();
+        await pageConditions.uiConnected();
+
+        // TODO: After fixing postActivitySaga() silently failed while postActivity without connection (!whileConnected),
+        //       write a test to prove reconnect will remove suggested actions.
+      });
+    </script>
+  </body>
+</html>

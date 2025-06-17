@@ -1,23 +1,15 @@
-import type { SendBoxAttachment } from 'botframework-webchat-core';
-import { useMemo } from 'react';
+import { type SendBoxAttachment } from 'botframework-webchat-core';
+import { useSendBoxHooks } from 'botframework-webchat-redux-store';
+import { type Dispatch, type SetStateAction } from 'react';
 
-import { useSelector } from './internal/WebChatReduxContext';
-import useWebChatAPIContext from './internal/useWebChatAPIContext';
-
+/**
+ * @deprecated Use `useSendBoxHooks().useSendBoxAttachments()` instead. This hook will be removed on or after 2027-05-30.
+ */
 export default function useSendBoxAttachments(): readonly [
   readonly SendBoxAttachment[],
-  // TODO: This should be Dispatch<SetStateAction<...>>, however Redux doesn't support this signature.
-  //       When we move out of Redux, we should change it.
-  (attachments: readonly SendBoxAttachment[]) => void
+  Dispatch<SetStateAction<readonly SendBoxAttachment[]>>
 ] {
-  // TODO: We should use the selector from "core" package.
-  const sendBoxAttachments = useSelector(
-    ({ sendBoxAttachments }) => sendBoxAttachments as readonly SendBoxAttachment[]
-  );
-  const { setSendBoxAttachments } = useWebChatAPIContext();
-
-  return useMemo(
-    () => Object.freeze([sendBoxAttachments, setSendBoxAttachments]),
-    [sendBoxAttachments, setSendBoxAttachments]
-  );
+  // Provides a path for backward compatibility during deprecation.
+  // eslint-disable-next-line local-rules/forbid-use-hook-producer
+  return useSendBoxHooks().useSendBoxAttachments();
 }

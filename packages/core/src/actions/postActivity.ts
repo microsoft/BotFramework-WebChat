@@ -1,47 +1,41 @@
-import type { WebChatActivity } from '../types/WebChatActivity';
+import { custom, literal, object, pipe, readonly, string, type InferOutput } from 'valibot';
 
-type PostActivityActionType = 'DIRECT_LINE/POST_ACTIVITY';
-type PostActivityFulfilledActionType = 'DIRECT_LINE/POST_ACTIVITY_FULFILLED';
-type PostActivityImpededActionType = 'DIRECT_LINE/POST_ACTIVITY_IMPEDED';
-type PostActivityPendingActionType = 'DIRECT_LINE/POST_ACTIVITY_PENDING';
-type PostActivityRejectedActionType = 'DIRECT_LINE/POST_ACTIVITY_REJECTED';
+import { type WebChatActivity } from '../types/WebChatActivity';
+import createMiddlewareActionSchemas from './private/createMiddlewareActionSchemas';
 
-type PostActivityAction = {
-  meta: { method: string };
-  payload: { activity: WebChatActivity };
-  type: PostActivityActionType;
-};
+const POST_ACTIVITY = 'DIRECT_LINE/POST_ACTIVITY';
 
-type PostActivityFulfilledAction = {
-  meta: { clientActivityID: string; method: string };
-  payload: { activity: WebChatActivity };
-  type: PostActivityFulfilledActionType;
-};
+const postActivityActionSchema = pipe(
+  object({
+    meta: pipe(object({ method: string() }), readonly()),
+    payload: pipe(object({ activity: custom<WebChatActivity>(() => true) }), readonly()),
+    type: literal(POST_ACTIVITY)
+  }),
+  readonly()
+);
 
-type PostActivityImpededAction = {
-  meta: { clientActivityID: string; method: string };
-  payload: { activity: WebChatActivity };
-  type: PostActivityImpededActionType;
-};
+const middlewareActionSchemas = createMiddlewareActionSchemas(
+  POST_ACTIVITY,
+  ['FULFILLED', 'IMPEDED', 'PENDING'],
+  pipe(object({ activity: custom<WebChatActivity>(() => true) }), readonly()),
+  pipe(object({ clientActivityID: string(), method: string() }), readonly())
+);
 
-type PostActivityPendingAction = {
-  meta: { clientActivityID: string; method: string };
-  payload: { activity: WebChatActivity };
-  type: PostActivityPendingActionType;
-};
+const POST_ACTIVITY_FULFILLED = middlewareActionSchemas.FULFILLED.name;
+const POST_ACTIVITY_IMPEDED = middlewareActionSchemas.IMPEDED.name;
+const POST_ACTIVITY_PENDING = middlewareActionSchemas.PENDING.name;
+const POST_ACTIVITY_REJECTED = middlewareActionSchemas.REJECTED.name;
 
-type PostActivityRejectedAction = {
-  error: true;
-  meta: { clientActivityID: string; method: string };
-  payload: Error;
-  type: PostActivityRejectedActionType;
-};
+const postActivityFulfilledActionSchema = middlewareActionSchemas.FULFILLED.schema;
+const postActivityImpededActionSchema = middlewareActionSchemas.IMPEDED.schema;
+const postActivityPendingActionSchema = middlewareActionSchemas.PENDING.schema;
+const postActivityRejectedActionSchema = middlewareActionSchemas.REJECTED.schema;
 
-const POST_ACTIVITY: PostActivityActionType = 'DIRECT_LINE/POST_ACTIVITY';
-const POST_ACTIVITY_FULFILLED: PostActivityFulfilledActionType = `${POST_ACTIVITY}_FULFILLED`;
-const POST_ACTIVITY_IMPEDED: PostActivityImpededActionType = `${POST_ACTIVITY}_IMPEDED`;
-const POST_ACTIVITY_PENDING: PostActivityPendingActionType = `${POST_ACTIVITY}_PENDING`;
-const POST_ACTIVITY_REJECTED: PostActivityRejectedActionType = `${POST_ACTIVITY}_REJECTED`;
+type PostActivityAction = InferOutput<typeof postActivityActionSchema>;
+type PostActivityFulfilledAction = InferOutput<typeof postActivityFulfilledActionSchema>;
+type PostActivityImpededAction = InferOutput<typeof postActivityImpededActionSchema>;
+type PostActivityPendingAction = InferOutput<typeof postActivityPendingActionSchema>;
+type PostActivityRejectedAction = InferOutput<typeof postActivityRejectedActionSchema>;
 
 function postActivity(activity: WebChatActivity, method = 'keyboard'): PostActivityAction {
   return {
@@ -52,11 +46,20 @@ function postActivity(activity: WebChatActivity, method = 'keyboard'): PostActiv
 }
 
 export default postActivity;
-export { POST_ACTIVITY, POST_ACTIVITY_FULFILLED, POST_ACTIVITY_IMPEDED, POST_ACTIVITY_PENDING, POST_ACTIVITY_REJECTED };
-export type {
-  PostActivityAction,
-  PostActivityFulfilledAction,
-  PostActivityImpededAction,
-  PostActivityPendingAction,
-  PostActivityRejectedAction
+export {
+  POST_ACTIVITY,
+  POST_ACTIVITY_FULFILLED,
+  POST_ACTIVITY_IMPEDED,
+  POST_ACTIVITY_PENDING,
+  POST_ACTIVITY_REJECTED,
+  postActivityActionSchema,
+  postActivityFulfilledActionSchema,
+  postActivityImpededActionSchema,
+  postActivityPendingActionSchema,
+  postActivityRejectedActionSchema,
+  type PostActivityAction,
+  type PostActivityFulfilledAction,
+  type PostActivityImpededAction,
+  type PostActivityPendingAction,
+  type PostActivityRejectedAction
 };

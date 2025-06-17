@@ -1,17 +1,6 @@
-import { SET_SEND_BOX_ATTACHMENTS } from '../actions/setSendBoxAttachments';
-import type { SendBoxAttachment } from '../types/SendBoxAttachment';
+import { type SendBoxAttachment } from '../types/SendBoxAttachment';
+import createRawReducer from './private/createRawReducer';
 
-const DEFAULT_STATE: readonly SendBoxAttachment[] = Object.freeze([]);
+const sendBoxAttachments = createRawReducer<readonly SendBoxAttachment[]>('sendBoxAttachments', Object.freeze([]));
 
-export default function sendBoxAttachments(state = DEFAULT_STATE, { payload, type }): readonly SendBoxAttachment[] {
-  switch (type) {
-    case SET_SEND_BOX_ATTACHMENTS:
-      state = payload.attachments;
-      break;
-
-    default:
-      break;
-  }
-
-  return state;
-}
+export default sendBoxAttachments;

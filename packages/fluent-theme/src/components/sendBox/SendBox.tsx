@@ -1,4 +1,4 @@
-import { hooks, Components, type SendBoxFocusOptions } from 'botframework-webchat-component';
+import { Components, hooks, type SendBoxFocusOptions } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, {
   memo,
@@ -30,8 +30,7 @@ const {
   useLocalizer,
   useMakeThumbnail,
   useRegisterFocusSendBox,
-  useSendBoxAttachments,
-  useSendBoxValue,
+  useSendBoxHooks,
   useSendMessage,
   useStyleOptions,
   useUIState
@@ -48,8 +47,8 @@ type Props = Readonly<{
 
 function SendBox(props: Props) {
   const [{ hideTelephoneKeypadButton, hideUploadButton, maxMessageLength }] = useStyleOptions();
-  const [attachments, setAttachments] = useSendBoxAttachments();
-  const [globalMessage, setGlobalMessage] = useSendBoxValue();
+  const [attachments, setAttachments] = useSendBoxHooks().useSendBoxAttachments();
+  const [globalMessage, setGlobalMessage] = useSendBoxHooks().useSendBoxValue();
   const [localMessage, setLocalMessage] = useState('');
   const [telephoneKeypadShown] = useTelephoneKeypadShown();
   const [uiState] = useUIState();

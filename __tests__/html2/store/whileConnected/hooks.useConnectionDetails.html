@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import renderHook from '../../hooks/private/renderHook.js';
+
+      const {
+        React: { createElement },
+        testHelpers: { createDirectLineEmulator },
+        WebChat: {
+          Components: { BasicWebChat, Composer },
+          hooks: { useWhileConnectedHooks },
+          testIds
+        }
+      } = window;
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator({ autoConnect: false });
+        const WebChatWrapper = ({ children }) =>
+          createElement(Composer, { directLine, store }, createElement(BasicWebChat), children);
+
+        // WHEN: Direct Line is not connected.
+        const renderResult = renderHook(props => useWhileConnectedHooks().useConnectionDetails(), {
+          legacyRoot: true,
+          wrapper: WebChatWrapper
+        });
+
+        // THEN: useConnectionDetails() should return [undefined].
+        expect(renderResult).toHaveProperty('result.current', [undefined]);
+
+        // WHEN: Direct Line is connected.
+        directLine.emulateConnected();
+        await pageConditions.uiConnected();
+
+        // THEN: useConnectionDetails() should return the connection details.
+        expect(renderResult).toHaveProperty('result.current', [
+          {
+            directLine,
+            userId: undefined,
+            username: expect.any(String)
+          }
+        ]);
+
+        // WHEN: Direct Line is disconnected.
+        const { resolve } = directLine.emulateReconnect();
+
+        // THEN: "Network interruption" connectivity status should be shown.
+        await waitFor(() =>
+          expect(pageElements.connectivityStatus().textContent).toEqual(
+            expect.stringContaining('Network interruption occurred.')
+          )
+        );
+
+        // THEN: useConnectionDetails() should return [undefined].
+        expect(renderResult).toHaveProperty('result.current', [undefined]);
+
+        // WHEN: Direct Line is reconnected.
+        resolve();
+        await pageConditions.uiConnected();
+
+        // THEN: useConnectionDetails() should return the connection details.
+        expect(renderResult).toHaveProperty('result.current', [
+          {
+            directLine,
+            userId: undefined,
+            username: expect.any(String)
+          }
+        ]);
+      });
+    </script>
+  </body>
+</html>

@@ -5,13 +5,22 @@ import {
   WebChatActivity,
   type DirectLineCardAction
 } from 'botframework-webchat-core';
-import { setRawState } from 'botframework-webchat-core/internal';
+import {
+  POST_ACTIVITY_PENDING,
+  postActivityPendingActionSchema,
+  setRawState
+} from 'botframework-webchat-core/internal';
+import { createBitContext } from 'botframework-webchat-react-context';
 import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
+import { wrapWith } from 'react-wrap-with';
 import { type Action } from 'redux';
+import { useRefFrom } from 'use-ref-from';
 import { object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import reduxStoreSchema from '../private/reduxStoreSchema';
+import ReduxActionSinkComposer from '../reduxActionSink/ReduxActionSinkComposer';
+import useWhileConnectedHooks from '../whileConnected/useWhileConnectedHooks';
 import SuggestedActionsContext, { type SuggestedActionsContextType } from './private/SuggestedActionsContext';
 
 const suggestedActionsComposerPropsSchema = pipe(
@@ -24,23 +33,35 @@ const suggestedActionsComposerPropsSchema = pipe(
 
 type SuggestedActionsComposerProps = InferInput<typeof suggestedActionsComposerPropsSchema>;
 
+const { Composer: OriginActivityComposer, useState: useOriginActivity } = createBitContext<WebChatActivity | undefined>(
+  undefined
+);
+
+const { Composer: SuggestedActionsActivityComposer, useState: useSuggestedActionsFromBit } = createBitContext<
+  readonly DirectLineCardAction[]
+>(Object.freeze([]));
+
 const EMPTY_ARRAY = Object.freeze([]);
 
 function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
   const {
     children,
+    store,
     store: { dispatch }
   } = validateProps(suggestedActionsComposerPropsSchema, props);
 
-  const [originActivity, setOriginActivity] = useState<WebChatActivity | undefined>();
-  const [suggestedActions, setSuggestedActionsRaw] = useState<readonly DirectLineCardAction[]>(EMPTY_ARRAY);
+  const [connectionDetails] = useWhileConnectedHooks().useConnectionDetails();
+  const [originActivity, setOriginActivity] = useOriginActivity();
+  const [suggestedActions, setSuggestedActionsRaw] = useSuggestedActionsFromBit();
   const setSuggestedActions = useCallback<typeof setSuggestedActionsRaw>(
     suggestedActions => {
       setOriginActivity(undefined);
       setSuggestedActionsRaw(suggestedActions);
     },
-    [setSuggestedActionsRaw]
+    [setOriginActivity, setSuggestedActionsRaw]
   );
+
+  const connectionDetailsRef = useRefFrom(connectionDetails);
 
   // #region Replicate to Redux store
   const handleAction = useCallback(
@@ -58,6 +79,27 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
 
           setOriginActivity(originActivity);
           setSuggestedActionsRaw(Object.freeze(Array.from(suggestedActions)));
+        } else {
+          console.warn(
+            `botframework-webchat: Received action of type "${action.type}" but its content is not valid, ignoring.`,
+            { result }
+          );
+        }
+      } else if (action.type === POST_ACTIVITY_PENDING) {
+        // TODO: This catcher has no alternatives in React hook, that means, once we remove Redux store, this would stop working.
+        // TODO: Add test for "not connected, should not clear suggested actions."
+        if (connectionDetailsRef.current) {
+          const result = safeParse(postActivityPendingActionSchema, action);
+
+          if (result.success) {
+            setOriginActivity(undefined);
+            setSuggestedActionsRaw(EMPTY_ARRAY);
+          } else {
+            console.warn(
+              `botframework-webchat: Received action of type "${action.type}" but its content is not valid, ignoring.`,
+              { result }
+            );
+          }
         }
       }
     },
@@ -69,14 +111,6 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
     () => dispatch(setRawState('suggestedActionsOriginActivity', { activity: originActivity })),
     [dispatch, originActivity]
   );
-
-  useEffect(() => {
-    dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/REGISTER_ACTION_SINK' });
-
-    return () => {
-      dispatch({ payload: { sink: handleAction }, type: 'WEB_CHAT_INTERNAL/UNREGISTER_ACTION_SINK' });
-    };
-  }, [dispatch, handleAction]);
   // #endregion
 
   const useSuggestedActions = useCallback<SuggestedActionsContextType['useSuggestedActions']>(
@@ -86,8 +120,15 @@ function SuggestedActionsComposer(props: SuggestedActionsComposerProps) {
 
   const context = useMemo<SuggestedActionsContextType>(() => ({ useSuggestedActions }), [useSuggestedActions]);
 
-  return <SuggestedActionsContext.Provider value={context}>{children}</SuggestedActionsContext.Provider>;
+  return (
+    <ReduxActionSinkComposer onAction={handleAction} store={store}>
+      <SuggestedActionsContext.Provider value={context}>{children}</SuggestedActionsContext.Provider>
+    </ReduxActionSinkComposer>
+  );
 }
 
-export default memo(SuggestedActionsComposer);
+export default wrapWith(SuggestedActionsActivityComposer)(
+  wrapWith(OriginActivityComposer)(memo(SuggestedActionsComposer))
+);
+
 export { suggestedActionsComposerPropsSchema, type SuggestedActionsComposerProps };
