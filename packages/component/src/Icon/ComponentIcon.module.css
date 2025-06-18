@@ -26,6 +26,10 @@
 /* #region: Appearance */
 :global(.webchat) .appearance--text {
   --webchat__component-icon--color: currentColor;
+
+  @media (forced-colors: active) {
+    --webchat__component-icon--color: canvasText;
+  }
 }
 /* #endregion */
 
