@@ -2,6 +2,7 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { memo, type PropsWithChildren, useCallback, useLayoutEffect, useRef } from 'react';
 
+import { ComponentIcon } from '../../../Icon';
 import useStyleSet from '../../../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
@@ -49,18 +50,7 @@ const ModalDialog = memo(
               onClick={handleCloseButtonClick}
               type="button"
             >
-              <div className="webchat__modal-dialog__close-button-border">
-                <svg
-                  className="webchat__modal-dialog__close-button-image"
-                  // "focusable" attribute is only available in IE11 and "tabIndex={-1}" does not work.
-                  focusable={false}
-                  role="presentation"
-                  viewBox="0 0 2048 2048"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M2048 136l-888 888 888 888-136 136-888-888-888 888L0 1912l888-888L0 136 136 0l888 888L1912 0l136 136z" />
-                </svg>
-              </div>
+              <ComponentIcon appearance="text" className="webchat__modal-dialog__close-button-icon" icon="dismiss" />
             </button>
           </div>
           <div className="webchat__modal-dialog__body">{children}</div>

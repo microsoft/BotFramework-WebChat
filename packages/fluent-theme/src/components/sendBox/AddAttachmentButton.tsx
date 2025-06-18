@@ -1,7 +1,8 @@
 import { hooks } from 'botframework-webchat-component';
 import React, { useCallback, useRef, type ChangeEventHandler, memo } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { AttachmentIcon } from '../../icons';
+
+import { FluentIcon } from '../icon';
 import testIds from '../../testIds';
 import { ToolbarButton } from './Toolbar';
 import styles from './AddAttachmentButton.module.css';
@@ -56,7 +57,7 @@ function AddAttachmentButton(
         data-testid={testIds.sendBoxUploadButton}
         onClick={handleClick}
       >
-        <AttachmentIcon />
+        <FluentIcon appearance="text" icon="attachment" />
       </ToolbarButton>
     </div>
   );

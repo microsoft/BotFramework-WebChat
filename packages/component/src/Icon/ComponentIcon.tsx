@@ -2,16 +2,20 @@ import { validateProps } from 'botframework-webchat-react-valibot';
 import { useStyles } from 'botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { memo } from 'react';
-import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import { literal, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import createIconComponent from '../Utils/createIconComponent';
 import styles from './ComponentIcon.module.css';
 
 const componentIconPropsSchema = pipe(
   object({
+    'aria-hidden': optional(literal('true')),
+    'aria-label': optional(string()),
     appearance: optional(string()),
     className: optional(string()),
+    direction: optional(string()),
     icon: optional(string()),
+    role: optional(string()),
     size: optional(string())
   }),
   readonly()
@@ -20,11 +24,23 @@ const componentIconPropsSchema = pipe(
 type ComponentIconProps = InferInput<typeof componentIconPropsSchema>;
 
 function BaseComponentIcon(props: ComponentIconProps) {
-  const { className } = validateProps(componentIconPropsSchema, props);
+  const {
+    className,
+    'aria-hidden': ariaHidden,
+    'aria-label': ariaLabel,
+    role
+  } = validateProps(componentIconPropsSchema, props);
 
   const classNames = useStyles(styles);
 
-  return <div className={cx(classNames['component-icon'], className)} />;
+  return (
+    <div
+      aria-hidden={ariaHidden}
+      aria-label={ariaLabel}
+      className={cx(classNames['component-icon'], className)}
+      role={role}
+    />
+  );
 }
 
 const ComponentIcon = createIconComponent(styles, BaseComponentIcon);

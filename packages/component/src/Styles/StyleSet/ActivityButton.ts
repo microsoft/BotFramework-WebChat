@@ -39,7 +39,10 @@ export default function createActivityButtonStyle() {
 
       '& .webchat__activity-button__icon': {
         height: '20px',
-        width: '20px'
+        width: '20px',
+
+        '--webchat__component-icon--color': '#707070',
+        '--webchat__component-icon--size': '20px'
       }
     }
   };

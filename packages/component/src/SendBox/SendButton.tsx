@@ -4,11 +4,11 @@ import classNames from 'classnames';
 import React, { useCallback } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import { ComponentIcon } from '../Icon';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
-import SendIcon from './Assets/SendIcon';
 import IconButton from './IconButton';
 
-const { useLocalizer, useUIState } = hooks;
+const { useDirection, useLocalizer, useUIState } = hooks;
 
 const sendButtonPropsSchema = pipe(
   object({
@@ -20,6 +20,7 @@ const sendButtonPropsSchema = pipe(
 type SendButtonProps = InferInput<typeof sendButtonPropsSchema>;
 
 function SendButton(props: SendButtonProps) {
+  const [direction] = useDirection();
   const { className } = validateProps(sendButtonPropsSchema, props);
 
   const [uiState] = useUIState();
@@ -35,7 +36,12 @@ function SendButton(props: SendButtonProps) {
       disabled={uiState === 'disabled'}
       onClick={handleClick}
     >
-      <SendIcon />
+      <ComponentIcon
+        appearance="text"
+        className="webchat__send-icon"
+        direction={direction === 'rtl' ? 'rtl' : 'follow'}
+        icon="send"
+      />
     </IconButton>
   );
 }

@@ -2,6 +2,8 @@ import classNames from 'classnames';
 import React, { memo, useCallback, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { useStateWithRef } from 'use-state-with-ref';
+
+import { ComponentIcon } from '../../../Icon';
 import testIds from '../../../testIds';
 import wrapAsCustomElement from './wrapAsCustomElement';
 
@@ -70,10 +72,11 @@ const CodeBlockCopyButton = memo(
         onClick={handleClick}
         type="button"
       >
-        <div
+        <ComponentIcon
           aria-hidden={pressed ? 'true' : undefined}
           aria-label={copyAlt}
           className="webchat__code-block-copy-button__icon webchat__code-block-copy-button__icon--copy"
+          icon={pressed ? 'copy-code-checkmark' : 'copy-code'}
           role="img"
         />
         <div

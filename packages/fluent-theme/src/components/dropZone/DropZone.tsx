@@ -11,7 +11,7 @@ import React, {
 } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import { AddDocumentIcon } from '../../icons';
+import { FluentIcon } from '../icon';
 import testIds from '../../testIds';
 import styles from './DropZone.module.css';
 import { useStyles } from '../../styles';
@@ -131,7 +131,7 @@ const DropZone = (props: { readonly onFilesAdded: (files: File[]) => void }) => 
       onDrop={handleDrop}
       ref={dropZoneRef}
     >
-      <AddDocumentIcon className={classNames['sendbox__attachment-drop-zone-icon']} />
+      <FluentIcon appearance="text" className={classNames['sendbox__attachment-drop-zone-icon']} icon="add-document" />
       {localize('TEXT_INPUT_DROP_ZONE')}
     </div>
   ) : null;
