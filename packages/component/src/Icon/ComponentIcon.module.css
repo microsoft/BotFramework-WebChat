@@ -90,4 +90,8 @@
 :global(.webchat) .icon--thumb-down-filled {
   --webchat__component-icon--mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill="currentColor" d="M13.094 4.62a3.5 3.5 0 0 0-4.377-2.727l-4.95 1.375a2 2 0 0 0-1.43 1.558l-.224 1.196c-.165.879.46 1.647 1.157 1.936.255.106.546.253.853.458 1.68 1.119 2.48 2.636 3.016 3.925.096.232.188.47.277.699.146.376.284.73.416 1.001.111.227.245.455.42.63.186.188.435.329.748.329.357 0 .666-.124.912-.34.235-.207.393-.481.502-.761.214-.554.281-1.251.29-1.893A14.73 14.73 0 0 0 10.577 10h.512a2.5 2.5 0 0 0 2.457-2.961l-.453-2.42Z"/></svg>');
 }
+
+:global(.webchat) .icon--download {
+  --webchat__component-icon--mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 31.8 46"><path fill="currentColor" d="m26.8 23.8-10.9 11L5 23.8l1.6-1.6 8.2 8.3V5H17v25.5l8.2-8.3 1.6 1.6zM5.8 41v-2.2H26V41H5.8z"/></svg>');
+}
 /* #endregion */
