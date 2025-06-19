@@ -229,7 +229,7 @@ function ActivityFeedbackComposer(props: ActivityFeedbackComposerProps) {
           value: {
             actionName: 'feedback',
             actionValue: {
-              feedback: { feedbackText: feedbackText || '' },
+              feedback: JSON.stringify({ feedbackText: feedbackText || '' }),
               reaction: action['@type'] === 'LikeAction' ? 'like' : 'dislike'
             }
           }

@@ -108,9 +108,9 @@
               actionName: 'feedback',
               actionValue: {
                 reaction: 'like',
-                feedback: {
-                  feedbackText: expect.any(String)
-                }
+                feedback: JSON.stringify({
+                  feedbackText: 'Test feedback'
+                })
               }
             }
           })
