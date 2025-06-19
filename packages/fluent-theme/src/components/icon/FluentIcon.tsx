@@ -26,7 +26,7 @@ function BaseFluentIcon(props: FluentIconProps) {
   const classNames = useStyles(styles);
 
   const maskStyle = useMemo(
-    () => (props.mask ? ({ '--webchat__fluent-icon--mask': `url('${props.mask}')` } as CSSProperties) : {}),
+    () => (props.mask ? ({ '--webchat__fluent-icon--mask': `url('${encodeURI(props.mask)}')` } as CSSProperties) : {}),
     [props.mask]
   );
 
