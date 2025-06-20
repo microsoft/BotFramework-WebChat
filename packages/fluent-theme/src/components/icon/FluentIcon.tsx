@@ -9,11 +9,8 @@ import styles from './FluentIcon.module.css';
 
 const baseFluentIconPropsSchema = pipe(
   object({
-    appearance: optional(string()),
     className: optional(string()),
-    icon: optional(string()),
-    mask: optional(string()),
-    size: optional(string())
+    mask: optional(string())
   }),
   readonly()
 );
