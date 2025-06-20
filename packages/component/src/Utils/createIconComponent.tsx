@@ -4,11 +4,15 @@ import cx from 'classnames';
 import { object, optional, pipe, readonly, picklist } from 'valibot';
 import React, { type ComponentType } from 'react';
 
-type CSSModule = {
-  readonly [key: string | `${string}--${string}`]: any;
+type Prefixes<T> = T extends `${infer P}--${string}` ? P : never;
+
+type SuffixesOf<Prefix extends string, T> = T extends `${Prefix}--${infer S}` ? S : never;
+
+type VariantMap<T> = {
+  [P in Prefixes<keyof T>]?: SuffixesOf<P, keyof T>;
 };
 
-function createPropsSchema(styles: CSSModule) {
+function createPropsSchema(styles: CSSModuleClasses) {
   const props = Object.keys(styles).reduce((acc, key) => {
     const [base, modifier] = key.split('--');
     if (modifier) {
@@ -27,8 +31,8 @@ function createPropsSchema(styles: CSSModule) {
   );
 }
 
-export default function createIconComponent<T extends { className?: string | undefined }>(
-  styles: CSSModule,
+export default function createIconComponent<T extends { className?: string | undefined }, K extends CSSModuleClasses>(
+  styles: K,
   BaseIcon: ComponentType<T>
 ) {
   const propsSchema = createPropsSchema(styles);
@@ -40,5 +44,5 @@ export default function createIconComponent<T extends { className?: string | und
     const classes = Object.entries(validatedProps).map(([key, value]) => classNames[`${key}--${value}`]);
 
     return <BaseIcon className={cx(className, classes)} {...(rest as T)} />;
-  }) as typeof BaseIcon & { displayName?: string | undefined };
+  }) as ComponentType<VariantMap<K> & T>;
 }
