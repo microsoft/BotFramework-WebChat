@@ -45,6 +45,14 @@ A curated list of major achievements by the Web Chat team. This document celebra
 
 ## 🎨 UI & Theming
 
+### 🎨 Icon Customization via CSS Variables
+
+**Goal:** Enable developers to customize Web Chat and Fluent theme icons without JavaScript overrides.  
+**By:** [@OEvgeny](https://github.com/OEvgeny) in [PR #5413](https://github.com/microsoft/BotFramework-WebChat/pull/5413), [#5502](https://github.com/microsoft/BotFramework-WebChat/pull/5502)
+
+- Introduced CSS variable-based icon customization system for Web Chat and Fluent theme.
+- Reworked existing icons and fully enabled across Web Chat components.
+
 ### 📎 Attachment Preview for `sendAttachmentOn: "send"`
 
 **Goal:** Improve multi-file upload UX by introducing persistent attachment previews.  

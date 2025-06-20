@@ -63,6 +63,7 @@ export default function () {
         width: '30px',
 
         '& .webchat__thumb-button__input': {
+          background: 'currentColor',
           height: '30px',
           width: '30px'
         },
@@ -76,7 +77,6 @@ export default function () {
 
         '&:has(.webchat__thumb-button__input:is(:hover, :active, :checked, [aria-pressed="true"])) .webchat__thumb-button__image':
           {
-            background: 'transparent',
             color: CSSTokens.ColorAccent
           },
 

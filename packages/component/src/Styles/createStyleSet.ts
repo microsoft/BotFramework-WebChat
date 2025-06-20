@@ -26,7 +26,6 @@ import createInitialsAvatarStyle from './StyleSet/InitialsAvatar';
 import createLinkDefinitionsStyle from './StyleSet/LinkDefinitions';
 import createMicrophoneButtonStyle from './StyleSet/MicrophoneButton';
 import createModalDialogStyle from './StyleSet/ModalDialog';
-import createMonochromeImageMaskerStyleSet from './StyleSet/MonochromeImageMasker';
 import createRenderMarkdownStyle from './StyleSet/RenderMarkdown';
 import createRootStyle from './StyleSet/Root';
 import createScrollToEndButtonStyle from './StyleSet/ScrollToEndButton';
@@ -83,7 +82,6 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     imageAvatar: createImageAvatarStyle(),
     initialsAvatar: createInitialsAvatarStyle(strictStyleOptions),
     microphoneButton: createMicrophoneButtonStyle(strictStyleOptions),
-    monochromeImageMasker: createMonochromeImageMaskerStyleSet(),
     options: { ...strictStyleOptions }, // Cloned to make sure no additional modifications will propagate up.
     root: createRootStyle(strictStyleOptions),
     scrollToEndButton: createScrollToEndButtonStyle(strictStyleOptions),

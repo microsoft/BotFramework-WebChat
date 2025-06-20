@@ -122,6 +122,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - [`web-speech-cognitive-services@8.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
       - [`react-dictate-button@4.0.0`](https://npmjs.com/package/react-dictate-button)
 - Enabled icon customization in Fluent theme through CSS variables, in PR [#5413](https://github.com/microsoft/BotFramework-WebChat/pull/5413), by [@OEvgeny](https://github.com/OEvgeny)
+   - Reworked, enabled in Web Chat, in PR [#5502](https://github.com/microsoft/BotFramework-WebChat/pull/5502), by [@OEvgeny](https://github.com/OEvgeny)
 - Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5427](https://github.com/microsoft/BotFramework-WebChat/pull/5427)
    - Production dependencies
       - [`core-js-pure@3.40.0`](https://npmjs.com/package/core-js-pure/)

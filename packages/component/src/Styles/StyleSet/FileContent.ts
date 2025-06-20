@@ -27,7 +27,8 @@ export default function createFileContentStyle({
     },
 
     '& .webchat__fileContent__downloadIcon': {
-      fill: accent,
+      color: accent,
+      fontSize: '33px',
       padding: paddingRegular,
 
       '&:not(.webchat__fileContent__downloadIcon--rtl)': {

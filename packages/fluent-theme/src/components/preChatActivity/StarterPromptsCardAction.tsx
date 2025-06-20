@@ -1,14 +1,16 @@
-import { Components, hooks } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
+
 import { useStyles } from '../../styles/index.js';
 import testIds from '../../testIds.js';
+import { FluentIcon } from '../icon';
+
 import styles from './StarterPromptsCardAction.module.css';
 
 const { useFocus, useRenderMarkdownAsHTML, useSendBoxValue, useUIState } = hooks;
-const { MonochromeImageMasker } = Components;
 
 type Props = Readonly<{
   className?: string | undefined;
@@ -56,9 +58,10 @@ const StarterPromptsCardAction = ({ className, messageBackAction }: Props) => {
     >
       <div className={classNames['pre-chat-message-activity__card-action-title']}>{title}</div>
       {'image' in messageBackAction && messageBackAction.image && (
-        <MonochromeImageMasker
+        <FluentIcon
+          appearance="text"
           className={classNames['pre-chat-message-activity__card-action-image']}
-          src={messageBackAction.image}
+          mask={messageBackAction.image}
         />
       )}
       <div

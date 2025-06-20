@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Render custom icons replaced via CSS</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/",
+          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      import ReactDOM from 'react-dom';
+
+      window.React = React;
+      window.ReactDOM = ReactDOM;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style>
+      #webchat .webchat__send-box__main .component-icon.icon--send,
+      #webchat .sendbox__toolbar-button .fluent-icon.icon--send {
+        --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='2 2 22 22'%3E%3Cpath fill='%23000' d='M4 18.5v-13L19.423 12zM5 17l11.85-5L5 7v3.885L9.846 12L5 13.116zm0 0V7z'/%3E%3C/svg%3E");
+        --webchat__component-icon--mask: var(--icon);
+        --webchat__fluent-icon--mask: var(--icon);
+      }
+
+      #webchat .webchat__send-box__main .component-icon.icon--attachment,
+      #webchat .sendbox__toolbar-button .fluent-icon.icon--attachment {
+        --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='2 2 22 22'%3E%3Cpath fill='%23000' d='M16.346 11.385V6.769h1v4.616zm-5.538 5.457q-.452-.269-.726-.734q-.274-.466-.274-1.031V6.769h1zM11.96 21q-2.271 0-3.846-1.595t-1.575-3.867v-8.73q0-1.587 1.09-2.697Q8.722 3 10.309 3t2.678 1.11t1.091 2.698V14h-1V6.789q-.006-1.166-.802-1.977T10.308 4q-1.163 0-1.966.821q-.804.821-.804 1.987v8.73q-.005 1.853 1.283 3.157Q10.11 20 11.961 20q.556 0 1.056-.124t.945-.372v1.11q-.468.2-.972.293q-.505.093-1.03.093m4.386-1v-2.616h-2.615v-1h2.615V13.77h1v2.615h2.616v1h-2.616V20z'/%3E%3C/svg%3E");
+        --webchat__component-icon--mask: var(--icon);
+        --webchat__fluent-icon--mask: var(--icon);
+      }
+
+      #webchat .webchat__activity-button .component-icon.icon--view-code {
+        --webchat__component-icon--mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M8 17.308L2.692 12L8 6.692l.714.714l-4.6 4.6L8.708 16.6zm8 0l-.713-.714l4.6-4.6L15.292 7.4L16 6.692L21.308 12z'/%3E%3C/svg%3E");
+      }
+
+      #webchat .webchat__activity-button .component-icon.icon--copy {
+        --webchat__component-icon--mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M9.116 17q-.691 0-1.153-.462T7.5 15.385V4.615q0-.69.463-1.153T9.116 3h7.769q.69 0 1.153.462t.462 1.153v10.77q0 .69-.462 1.152T16.884 17zm0-1h7.769q.23 0 .423-.192t.192-.423V4.615q0-.23-.192-.423T16.884 4H9.116q-.231 0-.424.192t-.192.423v10.77q0 .23.192.423t.423.192m-3 4q-.69 0-1.153-.462T4.5 18.385V6.615h1v11.77q0 .23.192.423t.423.192h8.77v1zM8.5 16V4z'/%3E%3C/svg%3E");
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        const aiMessageEntity = {
+          '@context': 'https://schema.org',
+          '@id': '',
+          '@type': 'Message',
+          keywords: ['AIGeneratedContent', 'AllowCopy'],
+          type: 'https://schema.org/Message'
+        };
+
+        directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          entities: [{
+            ...aiMessageEntity,
+            isBasedOn: {
+              '@type': 'SoftwareSourceCode',
+              'programmingLanguage': 'python',
+              "text": `print("Hello, World!")`
+            }
+          }],
+          type: "message",
+          text: `This example demonstrates custom icons in Web Chat`,
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should render the icon.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

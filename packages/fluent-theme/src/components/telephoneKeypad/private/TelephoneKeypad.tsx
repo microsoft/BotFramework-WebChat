@@ -3,14 +3,14 @@ import cx from 'classnames';
 import React, { memo, useCallback, useEffect, useRef, type KeyboardEventHandler, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import Button from './Button';
 // import HorizontalDialPadController from './HorizontalDialPadController';
+import { useStyles } from '../../../styles';
 import testIds from '../../../testIds';
+import { FluentIcon } from '../../icon';
 import { type DTMF } from '../types';
 import useShown from '../useShown';
+import Button from './Button';
 import styles from './TelephoneKeypad.module.css';
-import { useStyles } from '../../../styles';
-import { InfoSmallIcon } from '../../../icons';
 
 const { LocalizedString } = Components;
 
@@ -128,7 +128,7 @@ const TelephoneKeypad = memo(({ autoFocus, className, onButtonClick, isHorizonta
         <Button button="#" data-testid={testIds.sendBoxTelephoneKeypadButtonPound} onClick={handleButtonPoundClick} />
       </Orientation>
       <div className={classNames['telephone-keypad__info-message']}>
-        <InfoSmallIcon />
+        <FluentIcon appearance="text" icon="info-16" />
         <LocalizedString
           linkClassName={classNames['telephone-keypad__info-message-link']}
           stringIds="TELEPHONE_KEYPAD_INPUT_MESSAGE"

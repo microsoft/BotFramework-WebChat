@@ -10,7 +10,8 @@ import React, {
   type MouseEventHandler
 } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { SendIcon } from '../../icons';
+
+import { FluentIcon } from '../icon';
 import { useStyles, useVariantClassName } from '../../styles';
 import testIds from '../../testIds';
 import { DropZone } from '../dropZone';
@@ -245,7 +246,7 @@ function SendBox(props: Props) {
               disabled={isMessageLengthExceeded || shouldShowTelephoneKeypad}
               type="submit"
             >
-              <SendIcon />
+              <FluentIcon appearance="text" icon="send" />
             </ToolbarButton>
           </Toolbar>
         </div>

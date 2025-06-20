@@ -220,6 +220,12 @@
   }
 }
 
+:global(.webchat-fluent)
+  .activity-decorator
+  :global(.webchat__stacked-layout .webchat__bubble .webchat__fileContent__downloadIcon) {
+  color: var(--webchat-colorBrandForegroundLink);
+}
+
 /* Markdown links and citation links */
 :global(.webchat-fluent)
   .activity-decorator
