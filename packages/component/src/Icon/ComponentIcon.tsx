@@ -1,35 +1,29 @@
 import { validateProps } from 'botframework-webchat-react-valibot';
 import { useStyles } from 'botframework-webchat-styles/react';
 import cx from 'classnames';
-import React, { memo, type ComponentProps } from 'react';
+import React, { memo } from 'react';
 import { literal, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import createIconComponent from '../Utils/createIconComponent';
 import styles from './ComponentIcon.module.css';
 
-const componentIconPropsSchema = pipe(
+const baseComponentIconPropsSchema = pipe(
   object({
     'aria-hidden': optional(literal('true')),
     'aria-label': optional(string()),
-    appearance: optional(string()),
     className: optional(string()),
-    direction: optional(string()),
-    icon: optional(string()),
-    role: optional(string()),
-    size: optional(string())
+    role: optional(string())
   }),
   readonly()
 );
 
-type ComponentIconProps = InferInput<typeof componentIconPropsSchema>;
-
-function BaseComponentIcon(props: ComponentIconProps) {
+function BaseComponentIcon(props: InferInput<typeof baseComponentIconPropsSchema>) {
   const {
     className,
     'aria-hidden': ariaHidden,
     'aria-label': ariaLabel,
     role
-  } = validateProps(componentIconPropsSchema, props);
+  } = validateProps(baseComponentIconPropsSchema, props);
 
   const classNames = useStyles(styles);
 
@@ -43,11 +37,23 @@ function BaseComponentIcon(props: ComponentIconProps) {
   );
 }
 
-const ComponentIcon = createIconComponent(styles, BaseComponentIcon);
-
-type IconType = ComponentProps<typeof ComponentIcon>['icon'];
+const { component: ComponentIcon, modifierPropsSchema: componentIconModifiersPropsSchema } = createIconComponent(
+  styles,
+  ['appearance', 'direction', 'icon'],
+  BaseComponentIcon
+);
 
 ComponentIcon.displayName = 'ComponentIcon';
 
+const componentIconPropsSchema = pipe(
+  object({
+    ...baseComponentIconPropsSchema.entries,
+    ...componentIconModifiersPropsSchema.entries
+  }),
+  readonly()
+);
+
+type ComponentIconProps = InferInput<typeof componentIconPropsSchema>;
+
 export default memo(ComponentIcon);
-export { componentIconPropsSchema, type ComponentIconProps, type IconType };
+export { componentIconPropsSchema, type ComponentIconProps };

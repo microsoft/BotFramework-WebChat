@@ -16,7 +16,7 @@ import {
 } from 'valibot';
 
 import useStyleSet from '../../../hooks/useStyleSet';
-import { ComponentIcon, type IconType } from '../../../Icon';
+import { ComponentIcon, componentIconPropsSchema } from '../../../Icon';
 
 const activityButtonPropsSchema = pipe(
   object({
@@ -24,7 +24,7 @@ const activityButtonPropsSchema = pipe(
     className: optional(string()),
     'data-testid': optional(string()),
     disabled: optional(boolean()),
-    icon: optional(custom<IconType>(value => typeof value === 'string')),
+    icon: componentIconPropsSchema.entries.icon,
     onClick: optional(custom<() => void>(value => safeParse(function_(), value).success)),
     text: optional(string())
   }),

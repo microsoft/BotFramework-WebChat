@@ -7,7 +7,7 @@ import { object, optional, pipe, readonly, string, type InferInput } from 'valib
 
 import styles from './FluentIcon.module.css';
 
-const FluentIconPropsSchema = pipe(
+const baseFluentIconPropsSchema = pipe(
   object({
     appearance: optional(string()),
     className: optional(string()),
@@ -18,10 +18,8 @@ const FluentIconPropsSchema = pipe(
   readonly()
 );
 
-type FluentIconProps = InferInput<typeof FluentIconPropsSchema>;
-
-function BaseFluentIcon(props: FluentIconProps) {
-  const { className } = validateProps(FluentIconPropsSchema, props);
+function BaseFluentIcon(props: InferInput<typeof baseFluentIconPropsSchema>) {
+  const { className } = validateProps(baseFluentIconPropsSchema, props);
 
   const classNames = useStyles(styles);
 
@@ -34,9 +32,23 @@ function BaseFluentIcon(props: FluentIconProps) {
   return <div className={cx(classNames['fluent-icon'], className)} style={maskStyle} />;
 }
 
-const FluentIcon = createIconComponent(styles, BaseFluentIcon);
+const { component: FluentIcon, modifierPropsSchema } = createIconComponent(
+  styles,
+  ['appearance', 'icon'],
+  BaseFluentIcon
+);
 
 FluentIcon.displayName = 'FluentIcon';
 
+const fluentIconPropsSchema = pipe(
+  object({
+    ...baseFluentIconPropsSchema.entries,
+    ...modifierPropsSchema.entries
+  }),
+  readonly()
+);
+
+type FluentIconProps = InferInput<typeof fluentIconPropsSchema>;
+
 export default memo(FluentIcon);
-export { FluentIconPropsSchema, type FluentIconProps };
+export { fluentIconPropsSchema, type FluentIconProps };
