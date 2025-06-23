@@ -1,1 +1,1 @@
-export { default as ComponentIcon } from './ComponentIcon';
+export { default as ComponentIcon, componentIconPropsSchema } from './ComponentIcon';

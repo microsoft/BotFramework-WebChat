@@ -6,7 +6,7 @@ import { boolean, number, object, optional, pipe, readonly, string, type InferIn
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
-import DownloadIcon from './Assets/DownloadIcon';
+import { ComponentIcon } from '../Icon';
 
 const { useByteFormatter, useDirection, useLocalizer } = hooks;
 
@@ -61,12 +61,13 @@ const FileContentBadge = (props: FileContentBadgeProps) => {
         {!!localizedSize && <div className="webchat__fileContent__size">{localizedSize}</div>}
       </div>
       {downloadIcon && (
-        <DownloadIcon
+        <ComponentIcon
+          appearance="text"
           className={classNames(
             'webchat__fileContent__downloadIcon',
             direction === 'rtl' && 'webchat__fileContent__downloadIcon--rtl'
           )}
-          size={1.5}
+          icon="download"
         />
       )}
     </React.Fragment>

@@ -12,7 +12,7 @@ import useDictateAbortable from '../hooks/useDictateAbortable';
 import useStyleSet from '../hooks/useStyleSet';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 import { useLiveRegion } from '../providers/LiveRegionTwin';
-import MicrophoneIcon from './Assets/MicrophoneIcon';
+import { ComponentIcon } from '../Icon';
 import IconButton from './IconButton';
 
 const { DictateState } = Constants;
@@ -144,7 +144,11 @@ const MicrophoneButton = ({ className }: MicrophoneButtonProps) => {
         disabled={disabled}
         onClick={click}
       >
-        <MicrophoneIcon className="webchat__microphone-button__icon" />
+        <ComponentIcon
+          appearance="text"
+          className="webchat__microphone-icon webchat__microphone-button__icon"
+          icon="microphone"
+        />
       </IconButton>
       <div className="sr-only" id="webchatSendBoxMicrophoneButton">
         {message}

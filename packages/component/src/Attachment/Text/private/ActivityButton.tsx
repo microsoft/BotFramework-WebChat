@@ -16,7 +16,7 @@ import {
 } from 'valibot';
 
 import useStyleSet from '../../../hooks/useStyleSet';
-import MonochromeImageMasker from '../../../Utils/MonochromeImageMasker';
+import { ComponentIcon, componentIconPropsSchema } from '../../../Icon';
 
 const activityButtonPropsSchema = pipe(
   object({
@@ -24,7 +24,7 @@ const activityButtonPropsSchema = pipe(
     className: optional(string()),
     'data-testid': optional(string()),
     disabled: optional(boolean()),
-    iconURL: optional(string()),
+    icon: componentIconPropsSchema.entries.icon,
     onClick: optional(custom<() => void>(value => safeParse(function_(), value).success)),
     text: optional(string())
   }),
@@ -39,7 +39,7 @@ const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props
     className,
     'data-testid': dataTestId,
     disabled,
-    iconURL,
+    icon,
     onClick,
     text
   } = validateProps(activityButtonPropsSchema, props);
@@ -60,7 +60,7 @@ const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props
       tabIndex={disabled ? -1 : undefined}
       type="button"
     >
-      {iconURL && <MonochromeImageMasker className="webchat__activity-button__icon" src={iconURL} />}
+      {icon && <ComponentIcon appearance="text" className="webchat__activity-button__icon" icon={icon} />}
       {text && <span className="webchat__activity-button__text">{text}</span>}
       {children}
     </button>

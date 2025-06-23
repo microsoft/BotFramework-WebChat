@@ -395,8 +395,8 @@
     border-color: var(--webchat-colorStrokeFocus2);
   }
 
-  :global(.webchat__modal-dialog__close-button-image) {
-    fill: currentColor;
+  :global(.webchat__modal-dialog__close-button-icon) {
+    color: currentColor;
   }
 }
 
@@ -420,7 +420,7 @@
     transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
 
     :global(.webchat__code-block-copy-button__icon) {
-      background-color: currentColor;
+      --webchat__component-icon--color: currentColor;
     }
 
     &:hover {
@@ -578,6 +578,8 @@
   :global(.webchat__activity-button__icon) {
     height: 20px;
     width: 20px;
+
+    --webchat__component-icon--color: var(--webchat-colorNeutralForeground2);
   }
 }
 
