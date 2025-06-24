@@ -48,11 +48,11 @@ function templateMiddleware<Init extends string, Request = any, Props extends {}
     initMiddleware,
     Provider,
     Proxy,
-    '~types': {
-      init: undefined as Init,
-      middleware: undefined as Middleware,
-      props: undefined as Props,
-      request: undefined as Request
+    '~types': undefined as {
+      init: Init;
+      middleware: Middleware;
+      props: Props;
+      request: Request;
     }
   };
 }
