@@ -1,4 +1,8 @@
-import templateMiddleware from '../../../decorator/private/templateMiddleware';
-
 // TODO: We should move them to a common directory.
-export default templateMiddleware;
+export {
+  default,
+  type InferInit,
+  type InferMiddleware,
+  type InferProps,
+  type InferRequest
+} from '../../../decorator/private/templateMiddleware';

@@ -1,5 +1,10 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import templateMiddleware from '../../private/templateMiddleware';
+import templateMiddleware, {
+  type InferInit,
+  type InferMiddleware,
+  type InferProps,
+  type InferRequest
+} from '../../private/templateMiddleware';
 import { type activityGroupingDecoratorTypeName } from '../types';
 
 type Request = Readonly<{
@@ -13,19 +18,21 @@ type Props = Readonly<{
   activities: readonly WebChatActivity[];
 }>;
 
+const template = templateMiddleware<typeof activityGroupingDecoratorTypeName, Request, Props>(
+  'ActivityGroupingDecoratorMiddleware'
+);
+
 const {
   initMiddleware: initActivityGroupingDecoratorMiddleware,
   Provider: ActivityGroupingDecoratorMiddlewareProvider,
   Proxy: ActivityGroupingDecoratorMiddlewareProxy,
-  // False positive, `types` is used for its typing.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  types
-} = templateMiddleware<typeof activityGroupingDecoratorTypeName, Request, Props>('ActivityGroupingDecoratorMiddleware');
+  '~types': _types
+} = template;
 
-type ActivityGroupingDecoratorMiddleware = typeof types.middleware;
-type ActivityGroupingDecoratorMiddlewareInit = typeof types.init;
-type ActivityGroupingDecoratorMiddlewareProps = typeof types.props;
-type ActivityGroupingDecoratorMiddlewareRequest = typeof types.request;
+type ActivityGroupingDecoratorMiddleware = InferMiddleware<typeof template>;
+type ActivityGroupingDecoratorMiddlewareInit = InferInit<typeof template>;
+type ActivityGroupingDecoratorMiddlewareProps = InferProps<typeof template>;
+type ActivityGroupingDecoratorMiddlewareRequest = InferRequest<typeof template>;
 
 export {
   ActivityGroupingDecoratorMiddlewareProvider,

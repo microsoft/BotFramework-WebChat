@@ -1,5 +1,10 @@
 import type { EmptyObject } from 'type-fest';
-import templateMiddleware from '../../private/templateMiddleware';
+import templateMiddleware, {
+  type InferInit,
+  type InferMiddleware,
+  type InferProps,
+  type InferRequest
+} from '../../private/templateMiddleware';
 import { type activityBorderDecoratorTypeName } from '../types';
 
 type Request = Readonly<{
@@ -26,19 +31,21 @@ type Request = Readonly<{
 
 type Props = EmptyObject;
 
+const template = templateMiddleware<typeof activityBorderDecoratorTypeName, Request, Props>(
+  'ActivityBorderDecoratorMiddleware'
+);
+
 const {
   initMiddleware: initActivityBorderDecoratorMiddleware,
   Provider: ActivityBorderDecoratorMiddlewareProvider,
   Proxy: ActivityBorderDecoratorMiddlewareProxy,
-  // False positive, `types` is used for its typing.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  types
-} = templateMiddleware<typeof activityBorderDecoratorTypeName, Request, Props>('ActivityBorderDecoratorMiddleware');
+  '~types': _types
+} = template;
 
-type ActivityBorderDecoratorMiddleware = typeof types.middleware;
-type ActivityBorderDecoratorMiddlewareInit = typeof types.init;
-type ActivityBorderDecoratorMiddlewareProps = typeof types.props;
-type ActivityBorderDecoratorMiddlewareRequest = typeof types.request;
+type ActivityBorderDecoratorMiddleware = InferMiddleware<typeof template>;
+type ActivityBorderDecoratorMiddlewareInit = InferInit<typeof template>;
+type ActivityBorderDecoratorMiddlewareProps = InferProps<typeof template>;
+type ActivityBorderDecoratorMiddlewareRequest = InferRequest<typeof template>;
 
 export {
   ActivityBorderDecoratorMiddlewareProvider,

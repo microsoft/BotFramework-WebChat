@@ -3,7 +3,7 @@
 import { render } from '@testing-library/react';
 import React, { Fragment, type ReactNode } from 'react';
 
-import templateMiddleware from './templateMiddleware';
+import templateMiddleware, { type InferMiddleware } from './templateMiddleware';
 
 type ButtonProps = Readonly<{ children?: ReactNode | undefined }>;
 type LinkProps = Readonly<{ children?: ReactNode | undefined; href: string }>;
@@ -20,27 +20,15 @@ const InternalLinkImpl = ({ children, href }: LinkProps) => <a href={href}>{chil
 
 // User story for using templateMiddleware as a building block for uber middleware.
 test('an uber middleware', () => {
-  const {
-    initMiddleware: initButtonMiddleware,
-    Provider: ButtonProvider,
-    Proxy: Button,
-    // False positive, `types` is used for its typing.
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    types: buttonTypes
-  } = templateMiddleware<'button', void, ButtonProps>('Button');
+  const buttonTemplate = templateMiddleware<'button', void, ButtonProps>('Button');
+  const { initMiddleware: initButtonMiddleware, Provider: ButtonProvider, Proxy: Button } = buttonTemplate;
 
-  type ButtonMiddleware = typeof buttonTypes.middleware;
+  type ButtonMiddleware = InferMiddleware<typeof buttonTemplate>;
 
-  const {
-    initMiddleware: initLinkMiddleware,
-    Provider: LinkProvider,
-    Proxy: Link,
-    // False positive, `types` is used for its typing.
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    types: linkTypes
-  } = templateMiddleware<'link', { external: boolean }, LinkProps>('Link');
+  const linkTemplate = templateMiddleware<'link', { external: boolean }, LinkProps>('Link');
+  const { initMiddleware: initLinkMiddleware, Provider: LinkProvider, Proxy: Link } = linkTemplate;
 
-  type LinkMiddleware = typeof linkTypes.middleware;
+  type LinkMiddleware = InferMiddleware<typeof linkTemplate>;
 
   const buttonMiddleware: ButtonMiddleware[] = [init => init === 'button' && (() => () => ButtonImpl)];
   const linkMiddleware: LinkMiddleware[] = [

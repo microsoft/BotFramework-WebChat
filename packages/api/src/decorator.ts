@@ -1,11 +1,7 @@
 // Decorator general
 
 export { default as DecoratorComposer } from './decorator/DecoratorComposer';
-export {
-  type DecoratorMiddleware,
-  type DecoratorMiddlewareInit,
-  type DecoratorMiddlewareTypes
-} from './decorator/types';
+export { activityBorderMiddleware, activityGroupingMiddleware, type DecoratorMiddleware } from './decorator/types';
 
 // ActivityBorderDecorator
 

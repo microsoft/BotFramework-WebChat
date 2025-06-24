@@ -1,23 +1,30 @@
-import templateMiddleware from './private/templateMiddleware';
+import templateMiddleware, {
+  type InferInit,
+  type InferMiddleware,
+  type InferProps,
+  type InferRequest
+} from './private/templateMiddleware';
+
+const template = templateMiddleware<undefined, void, { className?: string | undefined }>('sendBoxToolbarMiddleware');
 
 const {
   initMiddleware: initSendBoxToolbarMiddleware,
   Provider: SendBoxToolbarMiddlewareProvider,
   Proxy: SendBoxToolbarMiddlewareProxy,
-  // False positive, `types` is used for its typing.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  types
-} = templateMiddleware<undefined, void, { className?: string | undefined }>('sendBoxToolbarMiddleware');
+  '~types': _types
+} = template;
 
-type SendBoxToolbarMiddleware = typeof types.middleware;
-type SendBoxToolbarMiddlewareProps = typeof types.props;
-type SendBoxToolbarMiddlewareRequest = typeof types.request;
+type SendBoxToolbarMiddleware = InferMiddleware<typeof template>;
+type SendBoxToolbarMiddlewareInit = InferInit<typeof template>;
+type SendBoxToolbarMiddlewareProps = InferProps<typeof template>;
+type SendBoxToolbarMiddlewareRequest = InferRequest<typeof template>;
 
 export {
+  initSendBoxToolbarMiddleware,
   SendBoxToolbarMiddlewareProvider,
   SendBoxToolbarMiddlewareProxy,
-  initSendBoxToolbarMiddleware,
   type SendBoxToolbarMiddleware,
+  type SendBoxToolbarMiddlewareInit,
   type SendBoxToolbarMiddlewareProps,
   type SendBoxToolbarMiddlewareRequest
 };
