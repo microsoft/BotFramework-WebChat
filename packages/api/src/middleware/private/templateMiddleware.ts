@@ -25,11 +25,19 @@ function templateMiddleware<Request = any, Props extends {} = EmptyObject>(name:
   ): readonly Middleware[] => {
     if (middleware) {
       if (isArrayOfFunction(middleware)) {
-        // TODO: [P*] We assume middleware is Function[], we should do more checks.
         return Object.freeze(
           middleware
-            // TODO: [P*] Checks if the return value is of type function or false.
-            .map(middleware => middleware(name) as ReturnType<Middleware> | false)
+            .map(middleware => {
+              const result = middleware(name);
+
+              if (typeof result !== 'function') {
+                console.warn(`botframework-webchat: ${name}.middleware must return enhancer function`);
+
+                return false;
+              }
+
+              return result;
+            })
             .filter((enhancer): enhancer is ReturnType<Middleware> => !!enhancer)
             .map(enhancer => () => enhancer)
         );
