@@ -1,6 +1,5 @@
 import { warnOnce } from 'botframework-webchat-core';
 import { createChainOfResponsibility, type ComponentMiddleware } from 'react-chain-of-responsibility';
-import { type EmptyObject } from 'type-fest';
 import { array, function_, safeParse, type InferOutput } from 'valibot';
 
 type MiddlewareWithInit<M extends ComponentMiddleware<any, any, any>, I> = (init: I) => ReturnType<M> | false;
@@ -15,8 +14,8 @@ const EMPTY_ARRAY = Object.freeze([]);
 
 // Following @types/react to use {} for props.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-function templateMiddleware<Request = any, Props extends {} = EmptyObject>(name: string) {
-  type Middleware = ComponentMiddleware<Request, Props>;
+function templateMiddleware<Request, Props extends {}>(name: string) {
+  type Middleware = ComponentMiddleware<Request, Props, string>;
 
   const createMiddleware = (enhancer: ReturnType<Middleware>): Middleware => {
     const factory = init => init === name && enhancer;
@@ -31,7 +30,7 @@ function templateMiddleware<Request = any, Props extends {} = EmptyObject>(name:
   const warnInvalid = warnOnce(`"${name}" middleware prop must be an array of function`);
 
   const extractMiddleware = (
-    middleware: readonly MiddlewareWithInit<ComponentMiddleware<unknown, unknown>, unknown>[] | undefined
+    middleware: readonly MiddlewareWithInit<ComponentMiddleware<unknown, unknown>, string>[] | undefined
   ): readonly Middleware[] => {
     if (middleware) {
       if (isArrayOfFunction(middleware)) {
