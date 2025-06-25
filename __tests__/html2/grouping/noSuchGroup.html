@@ -30,7 +30,10 @@
       run(async function () {
         const {
           React: { createElement },
-          WebChat: { renderWebChat }
+          WebChat: {
+            decorator: { createActivityGroupingMiddleware },
+            renderWebChat
+          }
         } = window; // Imports in UMD fashion.
 
         const clock = lolex.createClock();
@@ -41,22 +44,20 @@
         const groupActivitiesMiddleware = () => next => request => ({});
 
         const decoratorMiddleware = [
-          init =>
-            init === 'activity grouping' &&
-            (next => request => {
-              const DownstreamComponent = next(request);
+          createActivityGroupingMiddleware(next => request => {
+            const DownstreamComponent = next(request);
 
-              if (request.groupingName) {
-                return ({ activities, children }) =>
-                  createElement(
-                    'div',
-                    { className: `grouping grouping--${request.groupingName}` },
-                    createElement(DownstreamComponent, { activities }, children)
-                  );
-              }
+            if (request.groupingName) {
+              return ({ activities, children }) =>
+                createElement(
+                  'div',
+                  { className: `grouping grouping--${request.groupingName}` },
+                  createElement(DownstreamComponent, { activities }, children)
+                );
+            }
 
-              return DownstreamComponent;
-            })
+            return DownstreamComponent;
+          })
         ];
 
         renderWebChat(

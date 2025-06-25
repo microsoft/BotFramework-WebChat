@@ -1,6 +1,9 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import templateMiddleware from '../../private/templateMiddleware';
-import { type activityGroupingDecoratorTypeName } from '../types';
+import templateMiddleware, {
+  type InferMiddleware,
+  type InferProps,
+  type InferRequest
+} from '../../../middleware/private/templateMiddleware';
 
 type Request = Readonly<{
   /**
@@ -13,26 +16,25 @@ type Props = Readonly<{
   activities: readonly WebChatActivity[];
 }>;
 
-const {
-  initMiddleware: initActivityGroupingDecoratorMiddleware,
-  Provider: ActivityGroupingDecoratorMiddlewareProvider,
-  Proxy: ActivityGroupingDecoratorMiddlewareProxy,
-  // False positive, `types` is used for its typing.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  types
-} = templateMiddleware<typeof activityGroupingDecoratorTypeName, Request, Props>('ActivityGroupingDecoratorMiddleware');
+const template = templateMiddleware<Request, Props>('activity grouping');
 
-type ActivityGroupingDecoratorMiddleware = typeof types.middleware;
-type ActivityGroupingDecoratorMiddlewareInit = typeof types.init;
-type ActivityGroupingDecoratorMiddlewareProps = typeof types.props;
-type ActivityGroupingDecoratorMiddlewareRequest = typeof types.request;
+const {
+  createMiddleware: createActivityGroupingMiddleware,
+  extractMiddleware: extractActivityGroupingDecoratorMiddleware,
+  Provider: ActivityGroupingDecoratorMiddlewareProvider,
+  Proxy: ActivityGroupingDecoratorMiddlewareProxy
+} = template;
+
+type ActivityGroupingDecoratorMiddleware = InferMiddleware<typeof template>;
+type ActivityGroupingDecoratorMiddlewareProps = InferProps<typeof template>;
+type ActivityGroupingDecoratorMiddlewareRequest = InferRequest<typeof template>;
 
 export {
   ActivityGroupingDecoratorMiddlewareProvider,
   ActivityGroupingDecoratorMiddlewareProxy,
-  initActivityGroupingDecoratorMiddleware,
+  createActivityGroupingMiddleware,
+  extractActivityGroupingDecoratorMiddleware,
   type ActivityGroupingDecoratorMiddleware,
-  type ActivityGroupingDecoratorMiddlewareInit,
   type ActivityGroupingDecoratorMiddlewareProps,
   type ActivityGroupingDecoratorMiddlewareRequest
 };

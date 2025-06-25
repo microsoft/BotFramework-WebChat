@@ -33,7 +33,7 @@
           React,
           ReactDOM: { render },
           WebChat: {
-            decorator: { DecoratorComposer },
+            decorator: { createActivityBorderMiddleware, DecoratorComposer },
             FluentThemeProvider,
             ReactWebChat
           }
@@ -52,15 +52,15 @@
         }
 
         const decoratorMiddleware = [
-          init =>
-            init === 'activity border' &&
-            (next => request => (request.livestreamingState === 'completing' ? Flair : next(request))),
-          init =>
-            init === 'activity border' &&
-            (next => request => (request.livestreamingState === 'preparing' ? Loader : next(request))),
-          init =>
-            init === 'activity border' &&
-            (next => request => (request.livestreamingState === 'ongoing' ? FlairOngoing : next(request)))
+          createActivityBorderMiddleware(
+            next => request => (request.livestreamingState === 'completing' ? Flair : next(request))
+          ),
+          createActivityBorderMiddleware(
+            next => request => (request.livestreamingState === 'preparing' ? Loader : next(request))
+          ),
+          createActivityBorderMiddleware(
+            next => request => (request.livestreamingState === 'ongoing' ? FlairOngoing : next(request))
+          )
         ];
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();

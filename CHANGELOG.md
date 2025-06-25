@@ -34,6 +34,11 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - If you customized `renderMarkdown` with a custom HTML sanitizer, please move the HTML sanitizer to the new HTML content transformer middleware
 - `useGroupActivities` hook is being deprecated in favor of the `useGroupActivitiesByName` hook. The hook will be removed on or after 2027-05-04
 - `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook. The hook will be removed on or after 2027-05-30
+- The following middleware should be created using their respective factory function:
+   - `activityBorderDecoratorMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
+   - `activityGroupingDecoratorMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
+   - `sendBoxMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
+   - `sendBoxToolbarMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
 
 ### Added
 
@@ -329,7 +334,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - `useSendMessage` hook is updated to support sending attachments with a message
    - `useSendBoxAttachments` hook is added to get/set attachments in the send box
 - Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb), in PR [#5048](https://github.com/microsoft/BotFramework-WebChat/pull/5048)
-- Added `sendBoxMiddleware` and `sendBoxToolbarMiddleware`, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
+- Added `sendBoxMiddleware` and `sendBoxToolbarMiddleware`, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120) and [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
+   - Instead of passing barebone middleware, use the `createSendBoxMiddleware()` and `createSendBoxToolbarMiddleware()` factory function correspondingly, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
 - (Experimental) Added `botframework-webchat-fluent-theme` package for applying Fluent UI theme to Web Chat, by [@compulim](https://github.com/compulim) and [@OEvgeny](https://github.com/OEvgeny)
    - Initial commit, in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
    - Inherits Fluent CSS palette if available, in PR [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)

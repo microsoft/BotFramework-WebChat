@@ -93,8 +93,8 @@
         // THEN: Should match snapshot.
         await host.snapshot('local');
 
-        // WHEN: Click on dislike button to re-open feedback form
-        await host.sendKeys('RIGHT', 'SPACE');
+        // WHEN: Press right arrow key to select the dislike button (radio button).
+        await host.sendKeys('RIGHT');
 
         await pageConditions.became(
           'feedback form is open',

@@ -1,8 +1,10 @@
 import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
+
 import PassthroughFallback from '../private/PassthroughFallback';
 import {
   ActivityBorderDecoratorMiddlewareProxy,
+  createActivityBorderMiddleware,
   type ActivityBorderDecoratorMiddlewareRequest
 } from './private/ActivityBorderDecoratorMiddleware';
 
@@ -23,6 +25,7 @@ function ActivityBorderDecorator({ activity, children }: ActivityBorderDecorator
     const { type } = getActivityLivestreamingMetadata(activity) || {};
 
     return {
+      from: supportedActivityRoles.includes(activity?.from?.role) ? activity?.from?.role : undefined,
       livestreamingState:
         type === 'final activity'
           ? 'completing'
@@ -32,8 +35,7 @@ function ActivityBorderDecorator({ activity, children }: ActivityBorderDecorator
               ? 'ongoing'
               : type === 'contentless'
                 ? undefined // No bubble is shown for "contentless" livestream, should not decorate.
-                : undefined,
-      from: supportedActivityRoles.includes(activity?.from?.role) ? activity?.from?.role : undefined
+                : undefined
     };
   }, [activity]);
 
@@ -45,4 +47,4 @@ function ActivityBorderDecorator({ activity, children }: ActivityBorderDecorator
 }
 
 export default memo(ActivityBorderDecorator);
-export { type ActivityBorderDecoratorProps };
+export { createActivityBorderMiddleware, type ActivityBorderDecoratorProps };

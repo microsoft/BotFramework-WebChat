@@ -1,6 +1,9 @@
-import type { EmptyObject } from 'type-fest';
-import templateMiddleware from '../../private/templateMiddleware';
-import { type activityBorderDecoratorTypeName } from '../types';
+import { type ReactNode } from 'react';
+import templateMiddleware, {
+  type InferMiddleware,
+  type InferProps,
+  type InferRequest
+} from '../../../middleware/private/templateMiddleware';
 
 type Request = Readonly<{
   /**
@@ -24,28 +27,27 @@ type Request = Readonly<{
   from: 'bot' | 'channel' | `user` | undefined;
 }>;
 
-type Props = EmptyObject;
+type Props = Readonly<{ children?: ReactNode | undefined }>;
+
+const template = templateMiddleware<Request, Props>('activity border');
 
 const {
-  initMiddleware: initActivityBorderDecoratorMiddleware,
+  createMiddleware: createActivityBorderMiddleware,
+  extractMiddleware: extractActivityBorderDecoratorMiddleware,
   Provider: ActivityBorderDecoratorMiddlewareProvider,
-  Proxy: ActivityBorderDecoratorMiddlewareProxy,
-  // False positive, `types` is used for its typing.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  types
-} = templateMiddleware<typeof activityBorderDecoratorTypeName, Request, Props>('ActivityBorderDecoratorMiddleware');
+  Proxy: ActivityBorderDecoratorMiddlewareProxy
+} = template;
 
-type ActivityBorderDecoratorMiddleware = typeof types.middleware;
-type ActivityBorderDecoratorMiddlewareInit = typeof types.init;
-type ActivityBorderDecoratorMiddlewareProps = typeof types.props;
-type ActivityBorderDecoratorMiddlewareRequest = typeof types.request;
+type ActivityBorderDecoratorMiddleware = InferMiddleware<typeof template>;
+type ActivityBorderDecoratorMiddlewareProps = InferProps<typeof template>;
+type ActivityBorderDecoratorMiddlewareRequest = InferRequest<typeof template>;
 
 export {
   ActivityBorderDecoratorMiddlewareProvider,
   ActivityBorderDecoratorMiddlewareProxy,
-  initActivityBorderDecoratorMiddleware,
+  createActivityBorderMiddleware,
+  extractActivityBorderDecoratorMiddleware,
   type ActivityBorderDecoratorMiddleware,
-  type ActivityBorderDecoratorMiddlewareInit,
   type ActivityBorderDecoratorMiddlewareProps,
   type ActivityBorderDecoratorMiddlewareRequest
 };

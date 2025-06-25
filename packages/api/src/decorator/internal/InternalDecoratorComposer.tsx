@@ -1,14 +1,12 @@
 import React, { memo, useContext, useMemo, type ReactNode } from 'react';
 import {
   ActivityBorderDecoratorMiddlewareProvider,
-  initActivityBorderDecoratorMiddleware
+  extractActivityBorderDecoratorMiddleware
 } from '../ActivityBorder/private/ActivityBorderDecoratorMiddleware';
-import { activityBorderDecoratorTypeName } from '../ActivityBorder/types';
 import {
   ActivityGroupingDecoratorMiddlewareProvider,
-  initActivityGroupingDecoratorMiddleware
+  extractActivityGroupingDecoratorMiddleware
 } from '../ActivityGrouping/private/ActivityGroupingDecoratorMiddleware';
-import { activityGroupingDecoratorTypeName } from '../ActivityGrouping/types';
 import DecoratorComposerContext from '../private/DecoratorComposerContext';
 import { type DecoratorMiddleware } from '../types';
 
@@ -34,13 +32,10 @@ function InternalDecoratorComposer({
     [existingContext, middlewareFromProps, priority]
   );
 
-  const activityBorderMiddleware = useMemo(
-    () => initActivityBorderDecoratorMiddleware(middleware, activityBorderDecoratorTypeName),
-    [middleware]
-  );
+  const activityBorderMiddleware = useMemo(() => extractActivityBorderDecoratorMiddleware(middleware), [middleware]);
 
   const activityGroupingMiddleware = useMemo(
-    () => initActivityGroupingDecoratorMiddleware(middleware, activityGroupingDecoratorTypeName),
+    () => extractActivityGroupingDecoratorMiddleware(middleware),
     [middleware]
   );
 

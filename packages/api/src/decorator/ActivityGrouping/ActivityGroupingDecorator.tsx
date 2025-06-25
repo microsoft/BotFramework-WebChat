@@ -4,6 +4,7 @@ import React, { memo, useMemo, type ReactNode } from 'react';
 import PassthroughFallback from '../private/PassthroughFallback';
 import {
   ActivityGroupingDecoratorMiddlewareProxy,
+  createActivityGroupingMiddleware,
   type ActivityGroupingDecoratorMiddlewareRequest
 } from './private/ActivityGroupingDecoratorMiddleware';
 
@@ -28,4 +29,4 @@ function ActivityGroupingDecorator({ activities, children, groupingName }: Activ
 }
 
 export default memo(ActivityGroupingDecorator);
-export { type ActivityGroupingDecoratorProps };
+export { createActivityGroupingMiddleware, type ActivityGroupingDecoratorProps };
