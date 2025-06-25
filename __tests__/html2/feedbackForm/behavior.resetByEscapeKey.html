@@ -94,7 +94,9 @@
         // WHEN: Feedback form is opened.
         document.querySelector(`[data-testid="${testIds.sendBoxTextBox}"]`).focus();
         await host.sendShiftTab(3);
-        await host.sendKeys('UP', 'ENTER', 'RIGHT', 'SPACE');
+
+        // WHEN: Select the activity, then press right arrow key to select the dislike button (radio button).
+        await host.sendKeys('UP', 'ENTER', 'RIGHT');
 
         // THEN: The dislike button should be pressed.
         expect(Array.from(pageElements.allByTestId(testIds.feedbackButton)).map(element => element.checked)).toEqual([
