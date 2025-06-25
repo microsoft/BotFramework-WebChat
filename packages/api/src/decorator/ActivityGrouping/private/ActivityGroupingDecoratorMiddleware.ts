@@ -16,7 +16,7 @@ type Props = Readonly<{
   activities: readonly WebChatActivity[];
 }>;
 
-const template = templateMiddleware<Request, Props>('ActivityGroupingDecoratorMiddleware');
+const template = templateMiddleware<Request, Props>('activity grouping');
 
 const {
   createMiddleware: createActivityGroupingMiddleware,

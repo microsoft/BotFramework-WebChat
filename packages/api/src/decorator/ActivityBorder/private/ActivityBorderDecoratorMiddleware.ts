@@ -29,7 +29,7 @@ type Request = Readonly<{
 
 type Props = Readonly<{ children?: ReactNode | undefined }>;
 
-const template = templateMiddleware<Request, Props>('ActivityBorderDecoratorMiddleware');
+const template = templateMiddleware<Request, Props>('activity border');
 
 const {
   createMiddleware: createActivityBorderMiddleware,
