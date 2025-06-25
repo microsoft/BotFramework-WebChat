@@ -10,8 +10,7 @@ const {
   createMiddleware: createSendBoxToolbarMiddleware,
   extractMiddleware: extractSendBoxToolbarMiddleware,
   Provider: SendBoxToolbarMiddlewareProvider,
-  Proxy: SendBoxToolbarMiddlewareProxy,
-  '~types': _types
+  Proxy: SendBoxToolbarMiddlewareProxy
 } = template;
 
 type SendBoxToolbarMiddleware = InferMiddleware<typeof template>;
