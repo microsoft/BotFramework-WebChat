@@ -1,14 +1,43 @@
-import React, { Fragment, memo, type ReactNode } from 'react';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
+import React, { Fragment, memo, useMemo, type ReactNode } from 'react';
+import { array, custom, object, optional, pipe, readonly, safeParse } from 'valibot';
+
+import { middlewareFactoryMarker } from '../middleware/private/templateMiddleware';
 import InternalDecoratorComposer from './internal/InternalDecoratorComposer';
 import { type DecoratorMiddleware } from './types';
 
+const decoratorComposerPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    middleware: optional(pipe(array(custom<DecoratorMiddleware>(value => typeof value === 'function')), readonly()))
+  }),
+  readonly()
+);
+
+const warnInvalidMiddlewarePropsSchema = optional(
+  array(custom(value => value[middlewareFactoryMarker satisfies symbol] === middlewareFactoryMarker))
+);
+
 type DecoratorComposerProps = Readonly<{
   children?: ReactNode | undefined;
+  // TODO: How could we mark `middleware` as readonly if we use InferInput<typeof decoratorComposerPropsSchema>?
+  //       Intersection doesn't work.
   middleware?: readonly DecoratorMiddleware[] | undefined;
 }>;
 
-function DecoratorComposer({ children, middleware }: DecoratorComposerProps) {
+function DecoratorComposer(props: DecoratorComposerProps) {
+  const { children, middleware } = validateProps(decoratorComposerPropsSchema, props);
+
   // TODO: [P*] Checks if all middleware are created using `createXXXMiddleware`, warns if it's not.
+  useMemo(() => {
+    if (!safeParse(warnInvalidMiddlewarePropsSchema, middleware).success) {
+      console.warn(
+        'botframework-webchat: "middleware" props passed to <DecoratorComposer> should be created using createXXXMiddleware() functions.',
+        { middleware }
+      );
+    }
+  }, [middleware]);
+
   return middleware ? (
     <InternalDecoratorComposer middleware={middleware} priority="normal">
       {children}

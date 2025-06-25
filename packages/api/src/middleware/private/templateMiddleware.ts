@@ -6,6 +6,7 @@ import { array, function_, safeParse, type InferOutput } from 'valibot';
 type MiddlewareWithInit<M extends ComponentMiddleware<any, any, any>, I> = (init: I) => ReturnType<M> | false;
 
 const arrayOfFunctionSchema = array(function_());
+const middlewareFactoryMarker = Symbol();
 
 const isArrayOfFunction = (middleware: unknown): middleware is InferOutput<typeof arrayOfFunctionSchema> =>
   safeParse(arrayOfFunctionSchema, middleware).success;
@@ -45,11 +46,16 @@ function templateMiddleware<Request = any, Props extends {} = EmptyObject>(name:
   Provider.displayName = `${name}Provider`;
   Proxy.displayName = `${name}Proxy`;
 
+  const createMiddleware = (enhancer: ReturnType<Middleware>): Middleware => {
+    const factory = init => init === name && enhancer;
+
+    factory[middlewareFactoryMarker satisfies symbol] = middlewareFactoryMarker;
+
+    return factory;
+  };
+
   return {
-    createMiddleware:
-      (enhancer: ReturnType<Middleware>): Middleware =>
-      init =>
-        init === name && enhancer,
+    createMiddleware,
     extractMiddleware,
     Provider,
     Proxy,
@@ -66,4 +72,4 @@ type InferProps<T extends { '~types': { props } }> = T['~types']['props'];
 type InferRequest<T extends { '~types': { request } }> = T['~types']['request'];
 
 export default templateMiddleware;
-export { type InferMiddleware, type InferProps, type InferRequest };
+export { middlewareFactoryMarker, type InferMiddleware, type InferProps, type InferRequest };
