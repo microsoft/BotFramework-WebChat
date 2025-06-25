@@ -3,10 +3,10 @@ import {
   DecoratorComposer,
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import React, { memo } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
-import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import BorderFlair from './BorderFlair';
 import BorderLoader from './BorderLoader';
 import WebChatTheme from './WebChatTheme';
