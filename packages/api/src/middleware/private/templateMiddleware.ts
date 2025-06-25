@@ -18,6 +18,14 @@ const EMPTY_ARRAY = Object.freeze([]);
 function templateMiddleware<Request = any, Props extends {} = EmptyObject>(name: string) {
   type Middleware = ComponentMiddleware<Request, Props>;
 
+  const createMiddleware = (enhancer: ReturnType<Middleware>): Middleware => {
+    const factory = init => init === name && enhancer;
+
+    factory[middlewareFactoryMarker satisfies symbol] = middlewareFactoryMarker;
+
+    return factory;
+  };
+
   const warnInvalid = warnOnce(`"${name}" prop is invalid`);
 
   const extractMiddleware = (
@@ -53,14 +61,6 @@ function templateMiddleware<Request = any, Props extends {} = EmptyObject>(name:
 
   Provider.displayName = `${name}Provider`;
   Proxy.displayName = `${name}Proxy`;
-
-  const createMiddleware = (enhancer: ReturnType<Middleware>): Middleware => {
-    const factory = init => init === name && enhancer;
-
-    factory[middlewareFactoryMarker satisfies symbol] = middlewareFactoryMarker;
-
-    return factory;
-  };
 
   return {
     createMiddleware,
