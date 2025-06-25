@@ -49,4 +49,4 @@ function DecoratorComposer(props: DecoratorComposerProps) {
 }
 
 export default memo(DecoratorComposer);
-export { type DecoratorComposerProps };
+export { decoratorComposerPropsSchema, type DecoratorComposerProps };
