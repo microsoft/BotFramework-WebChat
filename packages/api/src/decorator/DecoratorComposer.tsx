@@ -28,7 +28,6 @@ type DecoratorComposerProps = Readonly<{
 function DecoratorComposer(props: DecoratorComposerProps) {
   const { children, middleware } = validateProps(decoratorComposerPropsSchema, props);
 
-  // TODO: [P*] Checks if all middleware are created using `createXXXMiddleware`, warns if it's not.
   useMemo(() => {
     if (!safeParse(warnInvalidMiddlewarePropsSchema, middleware).success) {
       console.warn(
