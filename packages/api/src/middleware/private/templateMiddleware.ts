@@ -28,7 +28,7 @@ function templateMiddleware<Request = any, Props extends {} = EmptyObject>(name:
     return factory;
   };
 
-  const warnInvalid = warnOnce(`"${name}" middleware prop is must be an array of function`);
+  const warnInvalid = warnOnce(`"${name}" middleware prop must be an array of function`);
 
   const extractMiddleware = (
     middleware: readonly MiddlewareWithInit<ComponentMiddleware<unknown, unknown>, unknown>[] | undefined
