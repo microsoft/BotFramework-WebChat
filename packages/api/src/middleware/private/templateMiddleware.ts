@@ -30,8 +30,8 @@ function templateMiddleware<Request = any, Props extends {} = EmptyObject>(name:
             .map(middleware => {
               const result = middleware(name);
 
-              if (typeof result !== 'function') {
-                console.warn(`botframework-webchat: ${name}.middleware must return enhancer function`);
+              if (typeof result !== 'function' && result !== false) {
+                console.warn(`botframework-webchat: ${name}.middleware must return enhancer function or false`);
 
                 return false;
               }
