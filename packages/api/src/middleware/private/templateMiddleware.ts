@@ -27,7 +27,7 @@ function templateMiddleware<Request, Props extends {}>(name: string) {
     return factory;
   };
 
-  const warnInvalid = warnOnce(`"${name}" middleware prop must be an array of function`);
+  const warnInvalidExtraction = warnOnce(`Middleware passed for extraction of "${name}" must be an array of function`);
 
   const extractMiddleware = (
     middleware: readonly MiddlewareWithInit<ComponentMiddleware<unknown, unknown>, string>[] | undefined
@@ -52,7 +52,7 @@ function templateMiddleware<Request, Props extends {}>(name: string) {
         );
       }
 
-      warnInvalid();
+      warnInvalidExtraction();
     }
 
     return EMPTY_ARRAY;
