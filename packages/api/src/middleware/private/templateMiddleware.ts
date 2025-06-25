@@ -45,7 +45,7 @@ function templateMiddleware<Request = any, Props extends {} = EmptyObject>(name:
 
   return {
     createMiddleware:
-      (enhancer: ReturnType<Middleware>): ((init: string) => ReturnType<Middleware> | false) =>
+      (enhancer: ReturnType<Middleware>): Middleware =>
       init =>
         init === name && enhancer,
     extractMiddleware,

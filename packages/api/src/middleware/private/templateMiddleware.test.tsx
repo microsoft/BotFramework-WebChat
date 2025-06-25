@@ -21,19 +21,29 @@ const InternalLinkImpl = ({ children, href }: LinkProps) => <a href={href}>{chil
 // User story for using templateMiddleware as a building block for uber middleware.
 test('an uber middleware', () => {
   const buttonTemplate = templateMiddleware<void, ButtonProps>('Button');
-  const { extractMiddleware: extractButtonMiddleware, Provider: ButtonProvider, Proxy: Button } = buttonTemplate;
+  const {
+    createMiddleware: createButtonMiddleware,
+    extractMiddleware: extractButtonMiddleware,
+    Provider: ButtonProvider,
+    Proxy: Button
+  } = buttonTemplate;
 
   type ButtonMiddleware = InferMiddleware<typeof buttonTemplate>;
 
   const linkTemplate = templateMiddleware<{ external: boolean }, LinkProps>('Link');
-  const { extractMiddleware: extractLinkMiddleware, Provider: LinkProvider, Proxy: Link } = linkTemplate;
+  const {
+    createMiddleware: createLinkMiddleware,
+    extractMiddleware: extractLinkMiddleware,
+    Provider: LinkProvider,
+    Proxy: Link
+  } = linkTemplate;
 
   type LinkMiddleware = InferMiddleware<typeof linkTemplate>;
 
-  const buttonMiddleware: ButtonMiddleware[] = [init => init === 'button' && (() => () => ButtonImpl)];
+  const buttonMiddleware: ButtonMiddleware[] = [createButtonMiddleware(() => () => ButtonImpl)];
   const linkMiddleware: LinkMiddleware[] = [
-    init => init === 'link' && (next => request => (request.external ? ExternalLinkImpl : next(request))),
-    init => init === 'link' && (() => () => InternalLinkImpl)
+    createLinkMiddleware(next => request => (request.external ? ExternalLinkImpl : next(request))),
+    createLinkMiddleware(() => () => InternalLinkImpl)
   ];
 
   const App = ({
