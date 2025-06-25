@@ -1,11 +1,9 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import templateMiddleware, {
-  type InferInit,
   type InferMiddleware,
   type InferProps,
   type InferRequest
-} from '../../private/templateMiddleware';
-import { type activityGroupingDecoratorTypeName } from '../types';
+} from '../../../middleware/private/templateMiddleware';
 
 type Request = Readonly<{
   /**
@@ -18,28 +16,25 @@ type Props = Readonly<{
   activities: readonly WebChatActivity[];
 }>;
 
-const template = templateMiddleware<typeof activityGroupingDecoratorTypeName, Request, Props>(
-  'ActivityGroupingDecoratorMiddleware'
-);
+const template = templateMiddleware<Request, Props>('ActivityGroupingDecoratorMiddleware');
 
 const {
-  initMiddleware: initActivityGroupingDecoratorMiddleware,
+  createMiddleware: createActivityGroupingMiddleware,
+  extractMiddleware: extractActivityGroupingDecoratorMiddleware,
   Provider: ActivityGroupingDecoratorMiddlewareProvider,
-  Proxy: ActivityGroupingDecoratorMiddlewareProxy,
-  '~types': _types
+  Proxy: ActivityGroupingDecoratorMiddlewareProxy
 } = template;
 
 type ActivityGroupingDecoratorMiddleware = InferMiddleware<typeof template>;
-type ActivityGroupingDecoratorMiddlewareInit = InferInit<typeof template>;
 type ActivityGroupingDecoratorMiddlewareProps = InferProps<typeof template>;
 type ActivityGroupingDecoratorMiddlewareRequest = InferRequest<typeof template>;
 
 export {
   ActivityGroupingDecoratorMiddlewareProvider,
   ActivityGroupingDecoratorMiddlewareProxy,
-  initActivityGroupingDecoratorMiddleware,
+  createActivityGroupingMiddleware,
+  extractActivityGroupingDecoratorMiddleware,
   type ActivityGroupingDecoratorMiddleware,
-  type ActivityGroupingDecoratorMiddlewareInit,
   type ActivityGroupingDecoratorMiddlewareProps,
   type ActivityGroupingDecoratorMiddlewareRequest
 };

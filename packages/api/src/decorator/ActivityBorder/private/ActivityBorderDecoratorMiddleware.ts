@@ -1,11 +1,9 @@
-import type { EmptyObject } from 'type-fest';
+import { type ReactNode } from 'react';
 import templateMiddleware, {
-  type InferInit,
   type InferMiddleware,
   type InferProps,
   type InferRequest
-} from '../../private/templateMiddleware';
-import { type activityBorderDecoratorTypeName } from '../types';
+} from '../../../middleware/private/templateMiddleware';
 
 type Request = Readonly<{
   /**
@@ -29,30 +27,27 @@ type Request = Readonly<{
   from: 'bot' | 'channel' | `user` | undefined;
 }>;
 
-type Props = EmptyObject;
+type Props = Readonly<{ children?: ReactNode | undefined }>;
 
-const template = templateMiddleware<typeof activityBorderDecoratorTypeName, Request, Props>(
-  'ActivityBorderDecoratorMiddleware'
-);
+const template = templateMiddleware<Request, Props>('ActivityBorderDecoratorMiddleware');
 
 const {
-  initMiddleware: initActivityBorderDecoratorMiddleware,
+  createMiddleware: createActivityBorderMiddleware,
+  extractMiddleware: extractActivityBorderDecoratorMiddleware,
   Provider: ActivityBorderDecoratorMiddlewareProvider,
-  Proxy: ActivityBorderDecoratorMiddlewareProxy,
-  '~types': _types
+  Proxy: ActivityBorderDecoratorMiddlewareProxy
 } = template;
 
 type ActivityBorderDecoratorMiddleware = InferMiddleware<typeof template>;
-type ActivityBorderDecoratorMiddlewareInit = InferInit<typeof template>;
 type ActivityBorderDecoratorMiddlewareProps = InferProps<typeof template>;
 type ActivityBorderDecoratorMiddlewareRequest = InferRequest<typeof template>;
 
 export {
   ActivityBorderDecoratorMiddlewareProvider,
   ActivityBorderDecoratorMiddlewareProxy,
-  initActivityBorderDecoratorMiddleware,
+  createActivityBorderMiddleware,
+  extractActivityBorderDecoratorMiddleware,
   type ActivityBorderDecoratorMiddleware,
-  type ActivityBorderDecoratorMiddlewareInit,
   type ActivityBorderDecoratorMiddlewareProps,
   type ActivityBorderDecoratorMiddlewareRequest
 };

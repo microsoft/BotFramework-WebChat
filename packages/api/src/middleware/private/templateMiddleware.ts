@@ -9,7 +9,7 @@ const EMPTY_ARRAY = Object.freeze([]);
 
 // Following @types/react to use {} for props.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-function templateMiddleware<Init extends string, Request = any, Props extends {} = EmptyObject>(name: string) {
+function templateMiddleware<Request = any, Props extends {} = EmptyObject>(name: string) {
   type Middleware = ComponentMiddleware<Request, Props>;
 
   const middlewareSchema = array(pipe(any(), function_()));
@@ -19,15 +19,14 @@ function templateMiddleware<Init extends string, Request = any, Props extends {}
 
   const warnInvalid = warnOnce(`"${name}" prop is invalid`);
 
-  const initMiddleware = (
-    middleware: readonly MiddlewareWithInit<ComponentMiddleware<unknown, unknown>, unknown>[],
-    init: unknown
+  const extractMiddleware = (
+    middleware: readonly MiddlewareWithInit<ComponentMiddleware<unknown, unknown>, unknown>[]
   ): readonly Middleware[] => {
     if (middleware) {
       if (isMiddleware(middleware)) {
         return Object.freeze(
           middleware
-            .map(middleware => middleware(init) as ReturnType<Middleware>)
+            .map(middleware => middleware(name) as ReturnType<Middleware>)
             .filter((enhancer): enhancer is ReturnType<Middleware> => !!enhancer)
             .map(enhancer => () => enhancer)
         );
@@ -45,11 +44,14 @@ function templateMiddleware<Init extends string, Request = any, Props extends {}
   Proxy.displayName = `${name}Proxy`;
 
   return {
-    initMiddleware,
+    createMiddleware:
+      (enhancer: ReturnType<Middleware>): ((init: string) => ReturnType<Middleware> | false) =>
+      init =>
+        init === name && enhancer,
+    extractMiddleware,
     Provider,
     Proxy,
     '~types': undefined as {
-      init: Init;
       middleware: Middleware;
       props: Props;
       request: Request;
@@ -58,9 +60,8 @@ function templateMiddleware<Init extends string, Request = any, Props extends {}
 }
 
 type InferMiddleware<T extends { '~types': { middleware } }> = T['~types']['middleware'];
-type InferInit<T extends { '~types': { init } }> = T['~types']['init'];
 type InferProps<T extends { '~types': { props } }> = T['~types']['props'];
 type InferRequest<T extends { '~types': { request } }> = T['~types']['request'];
 
 export default templateMiddleware;
-export { type InferInit, type InferMiddleware, type InferProps, type InferRequest, type MiddlewareWithInit };
+export { type InferMiddleware, type InferProps, type InferRequest };

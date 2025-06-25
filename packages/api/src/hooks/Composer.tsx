@@ -40,6 +40,11 @@ import updateIn from 'simple-update-in';
 import StyleOptions from '../StyleOptions';
 import usePonyfill from '../hooks/usePonyfill';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
+import { SendBoxMiddlewareProvider, type SendBoxMiddleware } from '../middleware/SendBoxMiddleware';
+import {
+  SendBoxToolbarMiddlewareProvider,
+  type SendBoxToolbarMiddleware
+} from '../middleware/SendBoxToolbarMiddleware';
 import normalizeStyleOptions from '../normalizeStyleOptions';
 import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
@@ -67,8 +72,6 @@ import createCustomEvent from '../utils/createCustomEvent';
 import isObject from '../utils/isObject';
 import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
-import { SendBoxMiddlewareProvider, type SendBoxMiddleware } from './internal/SendBoxMiddleware';
-import { SendBoxToolbarMiddlewareProvider, type SendBoxToolbarMiddleware } from './internal/SendBoxToolbarMiddleware';
 import Tracker from './internal/Tracker';
 import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';

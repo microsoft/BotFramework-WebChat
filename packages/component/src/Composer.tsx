@@ -5,9 +5,9 @@ import type {
 } from 'botframework-webchat-api';
 import {
   Composer as APIComposer,
+  extractSendBoxMiddleware,
+  extractSendBoxToolbarMiddleware,
   hooks,
-  initSendBoxMiddleware,
-  initSendBoxToolbarMiddleware,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
@@ -51,8 +51,8 @@ import useTheme from './providers/Theme/useTheme';
 import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
 import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
-import WebChatTheme from './Styles/WebChatTheme';
 import useCustomPropertiesClassName from './Styles/useCustomPropertiesClassName';
+import WebChatTheme from './Styles/WebChatTheme';
 import { type ContextOf } from './types/ContextOf';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
@@ -424,8 +424,8 @@ const InternalComposer = ({
   const sendBoxMiddleware = useMemo<readonly SendBoxMiddleware[]>(
     () =>
       Object.freeze([
-        ...initSendBoxMiddleware(sendBoxMiddlewareFromProps, undefined),
-        ...initSendBoxMiddleware(theme.sendBoxMiddleware, undefined),
+        ...extractSendBoxMiddleware(sendBoxMiddlewareFromProps),
+        ...extractSendBoxMiddleware(theme.sendBoxMiddleware),
         ...createDefaultSendBoxMiddleware()
       ]),
     [sendBoxMiddlewareFromProps, theme.sendBoxMiddleware]
@@ -434,8 +434,8 @@ const InternalComposer = ({
   const sendBoxToolbarMiddleware = useMemo<readonly SendBoxToolbarMiddleware[]>(
     () =>
       Object.freeze([
-        ...initSendBoxToolbarMiddleware(sendBoxToolbarMiddlewareFromProps, undefined),
-        ...initSendBoxToolbarMiddleware(theme.sendBoxToolbarMiddleware, undefined),
+        ...extractSendBoxToolbarMiddleware(sendBoxToolbarMiddlewareFromProps),
+        ...extractSendBoxToolbarMiddleware(theme.sendBoxToolbarMiddleware),
         ...createDefaultSendBoxToolbarMiddleware()
       ]),
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]

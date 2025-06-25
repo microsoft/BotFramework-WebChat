@@ -3,6 +3,8 @@ import React, { memo, useMemo, type ReactNode } from 'react';
 import PassthroughFallback from '../private/PassthroughFallback';
 import {
   ActivityBorderDecoratorMiddlewareProxy,
+  createActivityBorderMiddleware,
+  type ActivityBorderDecoratorMiddlewareProps,
   type ActivityBorderDecoratorMiddlewareRequest
 } from './private/ActivityBorderDecoratorMiddleware';
 
@@ -45,4 +47,9 @@ function ActivityBorderDecorator({ activity, children }: ActivityBorderDecorator
 }
 
 export default memo(ActivityBorderDecorator);
-export { type ActivityBorderDecoratorProps };
+export {
+  createActivityBorderMiddleware,
+  type ActivityBorderDecoratorMiddlewareProps,
+  type ActivityBorderDecoratorMiddlewareRequest,
+  type ActivityBorderDecoratorProps
+};

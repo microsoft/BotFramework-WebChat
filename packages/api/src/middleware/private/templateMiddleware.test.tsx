@@ -20,13 +20,13 @@ const InternalLinkImpl = ({ children, href }: LinkProps) => <a href={href}>{chil
 
 // User story for using templateMiddleware as a building block for uber middleware.
 test('an uber middleware', () => {
-  const buttonTemplate = templateMiddleware<'button', void, ButtonProps>('Button');
-  const { initMiddleware: initButtonMiddleware, Provider: ButtonProvider, Proxy: Button } = buttonTemplate;
+  const buttonTemplate = templateMiddleware<void, ButtonProps>('Button');
+  const { extractMiddleware: extractButtonMiddleware, Provider: ButtonProvider, Proxy: Button } = buttonTemplate;
 
   type ButtonMiddleware = InferMiddleware<typeof buttonTemplate>;
 
-  const linkTemplate = templateMiddleware<'link', { external: boolean }, LinkProps>('Link');
-  const { initMiddleware: initLinkMiddleware, Provider: LinkProvider, Proxy: Link } = linkTemplate;
+  const linkTemplate = templateMiddleware<{ external: boolean }, LinkProps>('Link');
+  const { extractMiddleware: extractLinkMiddleware, Provider: LinkProvider, Proxy: Link } = linkTemplate;
 
   type LinkMiddleware = InferMiddleware<typeof linkTemplate>;
 
@@ -45,9 +45,9 @@ test('an uber middleware', () => {
   }>) => (
     <Fragment>
       {/* TODO: Should not case middleware to any */}
-      <ButtonProvider middleware={initButtonMiddleware(middleware as any, 'button')}>
+      <ButtonProvider middleware={extractButtonMiddleware(middleware as any)}>
         {/* TODO: Should not case middleware to any */}
-        <LinkProvider middleware={initLinkMiddleware(middleware as any, 'link')}>{children}</LinkProvider>
+        <LinkProvider middleware={extractLinkMiddleware(middleware as any)}>{children}</LinkProvider>
       </ButtonProvider>
     </Fragment>
   );

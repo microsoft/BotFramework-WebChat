@@ -1,6 +1,6 @@
 import { type ActivityMiddleware, type StyleOptions, type TypingIndicatorMiddleware } from 'botframework-webchat-api';
 import {
-  activityBorderMiddleware,
+  createActivityBorderMiddleware,
   DecoratorComposer,
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
@@ -53,7 +53,7 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
 const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
-  activityBorderMiddleware(
+  createActivityBorderMiddleware(
     next => request => (request.livestreamingState === 'preparing' ? ActivityLoader : next(request))
   )
 ]);
