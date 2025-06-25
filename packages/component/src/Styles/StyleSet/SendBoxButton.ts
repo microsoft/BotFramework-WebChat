@@ -27,13 +27,15 @@ export default function createSendBoxButtonStyle({
       appearance: 'none',
       backgroundColor: 'Transparent',
       border: 0,
+      color: sendBoxButtonColor || subtle,
       display: 'flex',
-      fill: sendBoxButtonColor || subtle,
       justifyContent: 'center',
       outline: 0,
       padding: 0,
       position: 'relative',
       width: sendBoxHeight, // We use the sendBoxHeight, so the button looks square
+
+      '--webchat__component-icon--size': '28px',
 
       '&:not(.webchat__icon-button--stretch)': {
         height: sendBoxHeight
@@ -42,7 +44,7 @@ export default function createSendBoxButtonStyle({
       // Order of style preferences (based on effort of user gesture): disabled > active > hover > focus.
       // Keyboard focus indicator styles applied by :focus-visible do not conflict with :active/:hover/:focus, so it is not included here.
       '&:disabled, &[aria-disabled="true"]': {
-        fill: sendBoxButtonColorOnDisabled,
+        color: sendBoxButtonColorOnDisabled,
 
         '& .webchat__icon-button__shade': {
           backgroundColor: sendBoxButtonShadeColorOnDisabled
@@ -51,7 +53,7 @@ export default function createSendBoxButtonStyle({
 
       '&:not(:disabled):not([aria-disabled="true"])': {
         '&:active': {
-          fill: sendBoxButtonColorOnActive,
+          color: sendBoxButtonColorOnActive,
 
           '& .webchat__icon-button__shade': {
             backgroundColor: sendBoxButtonShadeColorOnActive
@@ -60,7 +62,7 @@ export default function createSendBoxButtonStyle({
 
         '&:not(:active)': {
           '&:hover': {
-            fill: sendBoxButtonColorOnHover,
+            color: sendBoxButtonColorOnHover,
 
             '& .webchat__icon-button__shade': {
               backgroundColor: sendBoxButtonShadeColorOnHover
@@ -69,7 +71,7 @@ export default function createSendBoxButtonStyle({
 
           '&:not(:hover)': {
             '&:focus': {
-              fill: sendBoxButtonColorOnFocus,
+              color: sendBoxButtonColorOnFocus,
 
               '& .webchat__icon-button__shade': {
                 backgroundColor: sendBoxButtonShadeColorOnFocus

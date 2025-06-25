@@ -7,9 +7,11 @@ import useInjectStyles from './hooks/internal/useInjectStyles';
 import { useLiveRegion } from './providers/LiveRegionTwin/index';
 import parseDocumentFragmentFromString from './Utils/parseDocumentFragmentFromString';
 import serializeDocumentFragmentIntoString from './Utils/serializeDocumentFragmentIntoString';
+import createIconComponent from './Utils/createIconComponent';
 
 export {
   CodeHighlighterComposer,
+  createIconComponent,
   parseDocumentFragmentFromString,
   serializeDocumentFragmentIntoString,
   useCodeHighlighter,

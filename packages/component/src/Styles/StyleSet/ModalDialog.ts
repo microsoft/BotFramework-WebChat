@@ -71,6 +71,9 @@ export default function createModalDialogStyleSet() {
       '& .webchat__modal-dialog__close-button': {
         height: 30,
         width: 30,
+        padding: 0,
+
+        '--webchat__component-icon--size': '16px',
 
         [NOT_FORCED_COLORS_SELECTOR]: {
           appearance: 'none',
@@ -110,20 +113,17 @@ export default function createModalDialogStyleSet() {
         }
       },
 
-      '& .webchat__modal-dialog__close-button-image': {
-        height: 10,
-        width: 10,
-
+      '& .webchat__modal-dialog__close-button-icon': {
         [LIGHT_THEME_SELECTOR]: {
-          fill: '#323130' // neutralPrimary (gray160)
+          color: '#323130' // neutralPrimary (gray160)
         },
 
         [DARK_THEME_SELECTOR]: {
-          fill: '#F3F2F1' // neutralPrimary (gray160)
+          color: '#F3F2F1' // neutralPrimary (gray160)
         },
 
         [FORCED_COLORS_SELECTOR]: {
-          fill: 'currentcolor'
+          color: 'currentcolor'
         }
       },
 

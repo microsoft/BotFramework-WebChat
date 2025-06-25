@@ -1,7 +1,7 @@
 import React, { memo, useCallback } from 'react';
 
 import { hooks } from 'botframework-webchat-component';
-import { TelephoneKeypadIcon } from '../../icons';
+import { FluentIcon } from '../icon';
 import testIds from '../../testIds';
 import { useTelephoneKeypadShown } from '../telephoneKeypad';
 import { ToolbarButton } from './Toolbar';
@@ -21,7 +21,7 @@ const TelephoneKeypadToolbarButton = memo(() => {
       onClick={handleClick}
       selected={telephoneKeypadShown}
     >
-      <TelephoneKeypadIcon />
+      <FluentIcon appearance="text" icon="keypad" />
     </ToolbarButton>
   );
 });
