@@ -18,7 +18,7 @@ function templateMiddleware<Request, Props extends {}>(name: string) {
   type Middleware = ComponentMiddleware<Request, Props, string>;
 
   const createMiddleware = (enhancer: ReturnType<Middleware>): Middleware => {
-    const factory = init => init === name && enhancer;
+    const factory: Middleware = init => init === name && enhancer;
 
     // This is for checking if the middleware is created via factory function or not.
     // We recommend middleware to be created using factory function.
