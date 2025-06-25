@@ -1,9 +1,14 @@
 import { warnOnce } from 'botframework-webchat-core';
 import { createChainOfResponsibility, type ComponentMiddleware } from 'react-chain-of-responsibility';
 import { type EmptyObject } from 'type-fest';
-import { any, array, function_, pipe, safeParse, type InferOutput } from 'valibot';
+import { array, function_, safeParse, type InferOutput } from 'valibot';
 
 type MiddlewareWithInit<M extends ComponentMiddleware<any, any, any>, I> = (init: I) => ReturnType<M> | false;
+
+const arrayOfFunctionSchema = array(function_());
+
+const isArrayOfFunction = (middleware: unknown): middleware is InferOutput<typeof arrayOfFunctionSchema> =>
+  safeParse(arrayOfFunctionSchema, middleware).success;
 
 const EMPTY_ARRAY = Object.freeze([]);
 
@@ -12,21 +17,18 @@ const EMPTY_ARRAY = Object.freeze([]);
 function templateMiddleware<Request = any, Props extends {} = EmptyObject>(name: string) {
   type Middleware = ComponentMiddleware<Request, Props>;
 
-  const middlewareSchema = array(pipe(any(), function_()));
-
-  const isMiddleware = (middleware: unknown): middleware is InferOutput<typeof middlewareSchema> =>
-    safeParse(middlewareSchema, middleware).success;
-
   const warnInvalid = warnOnce(`"${name}" prop is invalid`);
 
   const extractMiddleware = (
-    middleware: readonly MiddlewareWithInit<ComponentMiddleware<unknown, unknown>, unknown>[]
+    middleware: readonly MiddlewareWithInit<ComponentMiddleware<unknown, unknown>, unknown>[] | undefined
   ): readonly Middleware[] => {
     if (middleware) {
-      if (isMiddleware(middleware)) {
+      if (isArrayOfFunction(middleware)) {
+        // TODO: [P*] We assume middleware is Function[], we should do more checks.
         return Object.freeze(
           middleware
-            .map(middleware => middleware(name) as ReturnType<Middleware>)
+            // TODO: [P*] Checks if the return value is of type function or false.
+            .map(middleware => middleware(name) as ReturnType<Middleware> | false)
             .filter((enhancer): enhancer is ReturnType<Middleware> => !!enhancer)
             .map(enhancer => () => enhancer)
         );

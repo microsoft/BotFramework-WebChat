@@ -1,4 +1,8 @@
-import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
+import {
+  createActivityBorderMiddleware,
+  DecoratorComposer,
+  type DecoratorMiddleware
+} from 'botframework-webchat-api/decorator';
 import React, { memo, type ReactNode } from 'react';
 
 import BorderFlair from './BorderFlair';
@@ -6,12 +10,12 @@ import BorderLoader from './BorderLoader';
 import WebChatTheme from './WebChatTheme';
 
 const middleware: readonly DecoratorMiddleware[] = Object.freeze([
-  init =>
-    init === 'activity border' &&
-    (next => request => (request.livestreamingState === 'completing' ? BorderFlair : next(request))),
-  init =>
-    init === 'activity border' &&
-    (next => request => (request.livestreamingState === 'preparing' ? BorderLoader : next(request)))
+  createActivityBorderMiddleware(
+    next => request => (request.livestreamingState === 'completing' ? BorderFlair : next(request))
+  ),
+  createActivityBorderMiddleware(
+    next => request => (request.livestreamingState === 'preparing' ? BorderLoader : next(request))
+  )
 ]);
 
 type WebChatDecoratorProps = Readonly<{

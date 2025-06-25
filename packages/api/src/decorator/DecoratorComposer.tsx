@@ -8,6 +8,7 @@ type DecoratorComposerProps = Readonly<{
 }>;
 
 function DecoratorComposer({ children, middleware }: DecoratorComposerProps) {
+  // TODO: [P*] Checks if all middleware are created using `createXXXMiddleware`, warns if it's not.
   return middleware ? (
     <InternalDecoratorComposer middleware={middleware} priority="normal">
       {children}

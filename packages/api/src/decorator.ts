@@ -8,8 +8,6 @@ export { type DecoratorMiddleware } from './decorator/types';
 export {
   default as ActivityBorderDecorator,
   createActivityBorderMiddleware,
-  type ActivityBorderDecoratorMiddlewareProps,
-  type ActivityBorderDecoratorMiddlewareRequest,
   type ActivityBorderDecoratorProps
 } from './decorator/ActivityBorder/ActivityBorderDecorator';
 

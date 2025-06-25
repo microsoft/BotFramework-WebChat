@@ -1,6 +1,4 @@
-import { createActivityBorderMiddleware } from './ActivityBorder/private/ActivityBorderDecoratorMiddleware';
-import { createActivityGroupingMiddleware } from './ActivityGrouping/private/ActivityGroupingDecoratorMiddleware';
+import { ActivityBorderDecoratorMiddleware } from './ActivityBorder/private/ActivityBorderDecoratorMiddleware';
+import { ActivityGroupingDecoratorMiddleware } from './ActivityGrouping/private/ActivityGroupingDecoratorMiddleware';
 
-export type DecoratorMiddleware =
-  | ReturnType<typeof createActivityBorderMiddleware>
-  | ReturnType<typeof createActivityGroupingMiddleware>;
+export type DecoratorMiddleware = ActivityBorderDecoratorMiddleware | ActivityGroupingDecoratorMiddleware;
