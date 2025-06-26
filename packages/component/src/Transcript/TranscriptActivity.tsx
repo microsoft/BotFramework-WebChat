@@ -1,23 +1,31 @@
-import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
+import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
+import { validateProps } from 'botframework-webchat-react-valibot';
 import React, { memo, useCallback, useMemo } from 'react';
+import { custom, object, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import useFirstActivityInSenderGroup from '../Middleware/ActivityGrouping/ui/SenderGrouping/useFirstActivity';
 import useLastActivityInSenderGroup from '../Middleware/ActivityGrouping/ui/SenderGrouping/useLastActivity';
 import useFirstActivityInStatusGroup from '../Middleware/ActivityGrouping/ui/StatusGrouping/useFirstActivity';
 import useLastActivityInStatusGroup from '../Middleware/ActivityGrouping/ui/StatusGrouping/useLastActivity';
 import useActivityElementMapRef from '../providers/ChatHistoryDOM/useActivityElementRef';
+import useGetRenderActivityCallback from '../providers/RenderingActivities/useGetRenderActivityCallback';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import ActivityRow from './ActivityRow';
 
 const { useCreateActivityStatusRenderer, useCreateAvatarRenderer, useGetKeyByActivity, useStyleOptions } = hooks;
 
-type TranscriptActivityProps = Readonly<{
-  activity: WebChatActivity;
-  renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
-}>;
+const transcriptActivityPropsSchema = pipe(
+  object({
+    activity: custom<WebChatActivity>(value => safeParse(object({}), value).success)
+  }),
+  readonly()
+);
 
-const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProps) => {
+type TranscriptActivityProps = InferInput<typeof transcriptActivityPropsSchema>;
+
+const TranscriptActivity = (props: TranscriptActivityProps) => {
+  const { activity } = validateProps(transcriptActivityPropsSchema, props);
   const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
   const [firstActivityInSenderGroup] = useFirstActivityInSenderGroup();
   const [firstActivityInStatusGroup] = useFirstActivityInStatusGroup();
@@ -26,6 +34,7 @@ const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProp
   const activityElementMapRef = useActivityElementMapRef();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
   const getKeyByActivity = useGetKeyByActivity();
+  const getRenderActivityCallback = useGetRenderActivityCallback();
   const renderAvatar = useCreateAvatarRenderer();
 
   const activityKey: string = useMemo(() => getKeyByActivity(activity), [activity, getKeyByActivity]);
@@ -82,6 +91,8 @@ const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProp
   } else {
     showCallout = true;
   }
+
+  const renderActivity = getRenderActivityCallback(activity);
 
   const children = useMemo(
     () =>
