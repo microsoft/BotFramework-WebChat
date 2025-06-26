@@ -69,7 +69,7 @@ const StackedLayoutInner = memo(
     const showNub = showCallout && hasNub && (topAlignedCallout || !hasAttachments);
 
     return (
-      <Fragment>
+      <div className={classNames['stacked-layout__main']}>
         <div className={cx(classNames['stacked-layout__avatar-gutter'])}>
           {showAvatar && renderAvatar && renderAvatar()}
         </div>
@@ -95,10 +95,10 @@ const StackedLayoutInner = memo(
               </Bubble>
             </div>
           )}
+          <div className={classNames['stacked-layout__attachment-list']}>{children}</div>
         </div>
-        <div className={classNames['stacked-layout__attachment-list']}>{children}</div>
         <div className={cx(classNames['stacked-layout__alignment-pad'])} />
-      </Fragment>
+      </div>
     );
   }
 );
