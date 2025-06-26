@@ -1,0 +1,24 @@
+:global(.webchat) .collapsible-content {
+  &[open] .collapsible-content__chevron {
+    transform: rotate(180deg);
+  }
+}
+
+:global(.webchat) .collapsible-content__summary {
+  cursor: pointer;
+  display: inline-flex;
+  gap: calc(var(--webchat__padding--regular) / 2);
+  list-style: none;
+  margin: var(--webchat__padding--regular);
+  padding: 0;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+}
+
+:global(.webchat) .collapsible-content__content {
+  display: flex;
+  flex-direction: column;
+  margin-block-start: calc(var(--webchat__padding--regular) * -1);
+}

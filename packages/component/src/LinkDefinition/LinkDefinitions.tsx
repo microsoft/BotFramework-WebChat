@@ -12,7 +12,7 @@ import React, {
 } from 'react';
 
 import useStyleSet from '../hooks/useStyleSet';
-import Chevron from './private/Chevron';
+import { ComponentIcon } from '../Icon';
 
 const { useLocalizer } = hooks;
 const { count: childrenCount, map: childrenMap } = Children;
@@ -83,7 +83,7 @@ const LinkDefinitions = <TAccessoryProps extends {}>({
       >
         <div className="webchat__link-definitions__header-section webchat__link-definitions__header-section--left">
           <div className="webchat__link-definitions__header-text">{headerText}</div>
-          <Chevron />
+          <ComponentIcon appearance="text" className="webchat__link-definitions__header-chevron" icon="chevron" />
         </div>
         <div className="webchat__link-definitions__header-section webchat__link-definitions__header-section--right">
           {accessoryComponentType && (

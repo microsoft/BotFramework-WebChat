@@ -199,6 +199,7 @@
   --webchat__line-height--small: var(--webchat-lineHeightBase200);
   --webchat__line-height--medium: var(--webchat-lineHeightBase300);
   --webchat__max-width--bubble: var(--webchat-bubble-maxWidth);
+  --webchat__max-width--attachment-bubble: var(--webchat-bubble-maxWidth);
   --webchat__min-height--bubble: var(--webchat-bubble-minHeight);
   --webchat__padding--regular: var(--webchat-spacingVerticalS);
   --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalMNudge)
@@ -224,6 +225,7 @@
 }
 
 /* Scrollbars */
+:global(.webchat-fluent).theme :global(.code-block-content .code-block-content__code-block),
 :global(.webchat-fluent).theme :global(.send-box-attachment-bar.send-box-attachment-bar--as-list-item),
 :global(.webchat-fluent).theme :global(.text-area.text-area--scroll),
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable),

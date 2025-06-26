@@ -39,7 +39,7 @@ function BaseComponentIcon(props: InferInput<typeof baseComponentIconPropsSchema
 
 const { component: ComponentIcon, modifierPropsSchema: componentIconModifiersPropsSchema } = createIconComponent(
   styles,
-  ['appearance', 'direction', 'icon'] as const,
+  ['appearance', 'direction', 'icon'],
   BaseComponentIcon
 );
 

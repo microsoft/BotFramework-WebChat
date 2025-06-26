@@ -3,7 +3,7 @@ import { hooks } from 'botframework-webchat-api';
 import { ReactNode, useMemo, useRef } from 'react';
 
 import { useStyleSet } from '../../../hooks';
-import { defaultHighlightCode, HighlightCodeFn } from '../../../hooks/internal/codeHighlighter';
+import { defaultHighlightCode, HighlightCodeFn } from '../../../hooks/internal/codeHighlighter/index';
 import { parseDocumentFragmentFromString, useCodeHighlighter } from '../../../internal';
 
 const { useStyleOptions, useLocalizer } = hooks;
