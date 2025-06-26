@@ -1,10 +1,15 @@
 :global(.webchat-fluent) .activity-loader {
+  align-self: flex-start;
   flex: none;
   height: 8px;
-  margin: var(--webchat-spacingHorizontalM) 0 0 18px;
+  margin: var(--webchat-spacingVerticalM) 0 0 18px;
   width: auto;
 
   &.variant-fluent {
-    margin: 0 0 var(--webchat-spacingHorizontalM) var(--webchat-spacingVerticalSNudge);
+    margin: 0 0 var(--webchat-spacingVerticalM) var(--webchat-spacingHorizontalNudge);
+  }
+
+  &.variant-copilot {
+    margin: var(--webchat-spacingVerticalXS) 0 0 -10px;
   }
 }

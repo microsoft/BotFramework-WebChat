@@ -1,5 +1,6 @@
+/* eslint complexity: ["error", 21] */
 import { ActivityMiddleware } from 'botframework-webchat-api';
-import { getActivityLivestreamingMetadata } from 'botframework-webchat-core';
+import { getActivityLivestreamingMetadata, getOrgSchemaMessage } from 'botframework-webchat-core';
 import React from 'react';
 
 import CarouselLayout from '../../Activity/CarouselLayout';
@@ -15,6 +16,7 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
         // TODO: [P4] Can we simplify these if-statement to something more readable?
 
         const { type } = activity;
+        const messageThing = getOrgSchemaMessage(activity.entities);
 
         // Filter out activities that should not visible.
         if (
@@ -24,14 +26,14 @@ export default function createCoreMiddleware(): ActivityMiddleware[] {
           // Do not show content for contentless livestream interims, or finalized activity without content.
           (type === 'typing' &&
             (getActivityLivestreamingMetadata(activity)?.type === 'contentless' ||
-              !(activity['text'] || activity.attachments?.length > 0))) ||
+              !(activity['text'] || activity.attachments?.length > 0 || messageThing?.abstract))) ||
           (type === 'message' &&
             // Do not show postback
             (activity.channelData?.postBack ||
               // Do not show messageBack if displayText is undefined
               (activity.channelData?.messageBack && !activity.channelData.messageBack.displayText) ||
               // Do not show empty bubbles (no text and attachments)
-              !(activity.text || activity.attachments?.length)))
+              !(activity.text || activity.attachments?.length || messageThing?.abstract)))
         ) {
           return false;
         } else if (type === 'message' || type === 'typing') {
