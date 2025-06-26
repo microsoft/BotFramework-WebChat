@@ -24,10 +24,11 @@ const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hoo
 
 type StackedLayoutInnerProps = Readonly<{
   activity: WebChatActivity;
-  hasDisplayText: boolean;
-  hasAttachments: boolean;
   children?: ReactNode | undefined;
   fromUser: boolean;
+  hasAttachments: boolean;
+  hasDisplayText: boolean;
+  id: string;
   renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>) | undefined;
   renderBubbleContent: (title?: string | undefined) => ReactNode;
   showCallout?: boolean | undefined;
@@ -36,10 +37,11 @@ type StackedLayoutInnerProps = Readonly<{
 const StackedLayoutInner = memo(
   ({
     activity,
-    hasDisplayText,
-    hasAttachments,
     children,
     fromUser,
+    hasAttachments,
+    hasDisplayText,
+    id,
     renderAvatar,
     renderBubbleContent,
     showCallout
@@ -47,7 +49,6 @@ const StackedLayoutInner = memo(
     const [styleOptions] = useStyleOptions();
     const [{ initials: botInitials }] = useAvatarForBot();
     const [{ initials: userInitials }] = useAvatarForUser();
-    const ariaLabelId = useUniqueId('webchat__stacked-layout__main');
     const localize = useLocalizer();
     const classNames = useStyles(styles);
 
@@ -80,7 +81,7 @@ const StackedLayoutInner = memo(
               className={cx(classNames['stacked-layout__message-row'])}
               // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
               /* eslint-disable-next-line react/forbid-dom-props */
-              id={ariaLabelId}
+              id={id}
               role="group"
             >
               <ScreenReaderText text={greetingAlt} />
@@ -281,6 +282,7 @@ const StackedLayout = ({
         fromUser={fromUser}
         hasAttachments={attachmentChildren.length > 0}
         hasDisplayText={!!activityDisplayText?.length || isCollapsible}
+        id={ariaLabelId}
         renderAvatar={renderAvatar}
         renderBubbleContent={renderBubbleContent}
         showCallout={showCallout}
