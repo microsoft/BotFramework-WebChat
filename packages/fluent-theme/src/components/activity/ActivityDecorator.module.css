@@ -118,6 +118,14 @@
     color: var(--webchat-colorNeutralForeground4);
     margin: var(--webchat__bubble--block-padding) var(--webchat__bubble--inline-padding) 0;
   }
+
+  :global(.stacked-layout__attachment-row) {
+    margin-block-start: var(--webchat-spacingVerticalMNudge);
+  }
+
+  &:global(.stacked-layout--no-message .stacked-layout__attachment-row) {
+    margin-block-start: 0;
+  }
 }
 
 /* Stacked layout which has message bubble */
