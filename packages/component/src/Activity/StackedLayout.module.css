@@ -46,12 +46,12 @@
   }
 
   .stacked-layout__attachment-row {
-    margin-top: var(--webchat__padding--regular);
+    margin-block-start: var(--webchat__padding--regular);
     width: 100%;
   }
 
   &.stacked-layout--no-message .stacked-layout__attachment-list .stacked-layout__attachment-row:first-child {
-    margin-top: 0;
+    margin-block-start: 0;
   }
 
   .stacked-layout__avatar-gutter {
