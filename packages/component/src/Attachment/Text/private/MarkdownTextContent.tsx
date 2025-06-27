@@ -243,7 +243,10 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
         </LinkDefinitions>
       )}
       <div className="webchat__text-content__activity-actions">
-        {activity.type === 'message' && isBasedOnSoftwareSourceCode(messageThing) && messageThing.isBasedOn.text ? (
+        {activity.type === 'message' &&
+        isBasedOnSoftwareSourceCode(messageThing) &&
+        messageThing.isBasedOn.text &&
+        !messageThing.keywords?.includes?.('Collapsible') ? (
           <ActivityViewCodeButton
             className="webchat__text-content__activity-view-code-button"
             code={messageThing.isBasedOn.text}

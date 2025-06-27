@@ -94,4 +94,8 @@
 :global(.webchat) .icon--download {
   --webchat__component-icon--mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 31.8 46"><path fill="currentColor" d="m26.8 23.8-10.9 11L5 23.8l1.6-1.6 8.2 8.3V5H17v25.5l8.2-8.3 1.6 1.6zM5.8 41v-2.2H26V41H5.8z"/></svg>');
 }
+
+:global(.webchat) .icon--chevron {
+  --webchat__component-icon--mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path fill="currentColor" d="M3.146 5.646a.5.5 0 0 1 .708 0L8 9.793l4.146-4.147a.5.5 0 0 1 .708.708l-4.5 4.5a.5.5 0 0 1-.708 0l-4.5-4.5a.5.5 0 0 1 0-.708Z"/></svg>');
+}
 /* #endregion */
