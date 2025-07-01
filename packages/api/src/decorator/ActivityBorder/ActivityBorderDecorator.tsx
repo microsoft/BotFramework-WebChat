@@ -7,6 +7,7 @@ import {
   createActivityBorderMiddleware,
   type ActivityBorderDecoratorMiddlewareRequest
 } from './private/ActivityBorderDecoratorMiddleware';
+import ActivityBorderDecoratorRequestContext from './private/ActivityBorderDecoratorRequestContext';
 
 const supportedActivityRoles: ActivityBorderDecoratorMiddlewareRequest['from'][] = [
   'bot',
@@ -39,12 +40,17 @@ function ActivityBorderDecorator({ activity, children }: ActivityBorderDecorator
     };
   }, [activity]);
 
+  const requestValue = useMemo(() => Object.freeze({ request }), [request]);
+
   return (
-    <ActivityBorderDecoratorMiddlewareProxy fallbackComponent={PassthroughFallback} request={request}>
-      {children}
-    </ActivityBorderDecoratorMiddlewareProxy>
+    <ActivityBorderDecoratorRequestContext.Provider value={requestValue}>
+      <ActivityBorderDecoratorMiddlewareProxy fallbackComponent={PassthroughFallback} request={request}>
+        {children}
+      </ActivityBorderDecoratorMiddlewareProxy>
+    </ActivityBorderDecoratorRequestContext.Provider>
   );
 }
 
 export default memo(ActivityBorderDecorator);
 export { createActivityBorderMiddleware, type ActivityBorderDecoratorProps };
+export { ActivityBorderDecoratorRequestContext as ActivityBorderDecoratorRequest };

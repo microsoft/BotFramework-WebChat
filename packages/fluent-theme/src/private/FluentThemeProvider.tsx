@@ -1,11 +1,15 @@
+/* eslint-disable prefer-arrow-callback */
 import { type ActivityMiddleware, type StyleOptions, type TypingIndicatorMiddleware } from 'botframework-webchat-api';
 import {
+  ActivityBorderDecoratorRequest,
   createActivityBorderMiddleware,
   DecoratorComposer,
+  InferDecoratorRequest,
+  useDecoratorRequest,
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
+import { BorderFlair } from 'botframework-webchat-component/decorator';
 import { Components } from 'botframework-webchat-component';
-import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import React, { memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';
@@ -19,6 +23,7 @@ import { WebChatTheme } from '../components/theme';
 import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
 import { createStyles } from '../styles';
 import VariantComposer, { VariantList } from './VariantComposer';
+import { composePipeline } from './composePipeline';
 
 const { ThemeProvider } = Components;
 
@@ -52,10 +57,30 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
 
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
+const Decorator = composePipeline<InferDecoratorRequest<typeof ActivityBorderDecoratorRequest>>([
+  function FluentBorderLoader({ request, Next, ...props }) {
+    return (
+      <ActivityLoader showLoader={request.livestreamingState === 'preparing'}>
+        <Next {...props} />
+      </ActivityLoader>
+    );
+  },
+  function FluentBorderFlair({ request, Next, ...props }) {
+    return (
+      <BorderFlair showFlair={request.livestreamingState === 'completing'}>
+        <Next {...props} />
+      </BorderFlair>
+    );
+  }
+]);
+
+const DecoratorWithRequest = memo(function DecoratorWithRequest(props) {
+  const request = useDecoratorRequest(ActivityBorderDecoratorRequest);
+  return <Decorator {...props} request={request} />;
+});
+
 const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
-  createActivityBorderMiddleware(
-    next => request => (request.livestreamingState === 'preparing' ? ActivityLoader : next(request))
-  )
+  createActivityBorderMiddleware(() => () => DecoratorWithRequest)
 ]);
 
 const styles = createStyles('fluent-theme');
@@ -84,9 +109,7 @@ function FluentThemeProvider({ children, variant = 'fluent' }: FluentThemeProvid
             typingIndicatorMiddleware={typingIndicatorMiddleware}
           >
             <AssetComposer>
-              <WebChatDecorator>
-                <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
-              </WebChatDecorator>
+              <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
             </AssetComposer>
           </ThemeProvider>
         </TelephoneKeypadProvider>

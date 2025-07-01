@@ -6,14 +6,17 @@ import { useVariantClassName } from '../../styles';
 import SlidingDots from '../assets/SlidingDots';
 import styles from './ActivityLoader.module.css';
 
-function FluentActivityLoader({ children }: Readonly<{ children?: ReactNode | undefined }>) {
+function FluentActivityLoader({
+  children,
+  showLoader = true
+}: Readonly<{ children?: ReactNode | undefined; showLoader?: boolean }>) {
   const classNames = useStyles(styles);
   const variantClassName = useVariantClassName(classNames);
 
   return (
     <Fragment>
       {children}
-      <SlidingDots className={cx(classNames['activity-loader'], variantClassName)} />
+      {showLoader && <SlidingDots className={cx(classNames['activity-loader'], variantClassName)} />}
     </Fragment>
   );
 }

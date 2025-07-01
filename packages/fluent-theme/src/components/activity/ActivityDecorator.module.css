@@ -258,6 +258,7 @@
   border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
   font-size: var(--webchat-fontSizeBase300);
   font-weight: var(--webchat-fontWeightRegular);
+  margin-block: 0;
   margin-inline: var(--webchat__bubble--inline-padding);
 
   :global(.code-block-content__header) {
@@ -270,6 +271,9 @@
   }
 
   :global(.webchat__code-block-copy-button) {
+    --webchat__code-block__copy-button--color: var(--webchat-colorNeutralForeground1);
+    --webchat__code-block__copy-button--background: var(--webchat-colorNeutralBackground3);
+
     margin-block-start: var(--webchat-spacingVerticalM);
     margin-inline-end: var(--webchat-spacingHorizontalL);
     position: absolute;

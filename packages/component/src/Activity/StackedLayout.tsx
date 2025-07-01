@@ -271,7 +271,7 @@ const StackedLayout = ({
         [classNames['stacked-layout--extra-trailing']]: extraTrailing,
         [classNames['stacked-layout--hide-avatar']]: hasAvatar && !showAvatar,
         [classNames['stacked-layout--hide-nub']]: hasNub && !showNub,
-        [classNames['stacked-layout--no-message']]: !activityDisplayText,
+        [classNames['stacked-layout--no-message']]: !activityDisplayText && !isCollapsible,
         [classNames['stacked-layout--show-avatar']]: showAvatar,
         [classNames['stacked-layout--show-nub']]: showNub,
         [classNames['stacked-layout--top-callout']]: topAlignedCallout
