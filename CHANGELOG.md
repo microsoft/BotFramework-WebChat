@@ -235,6 +235,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Downstreamers who use our CommonJS and ES Modules output with esbuild will need to disable AMD themselves to prevent conflict with RequireJS
 - Fixed [#5479](https://github.com/microsoft/BotFramework-WebChat/issues/5479). Fixed feedback form buttons should not squash other buttons, in PR [#5480](https://github.com/microsoft/BotFramework-WebChat/pull/5480), by [@compulim](https://github.com/compulim)
    - Migrated to radio button for like/dislike where form submission is required
+- Fixed long citation identifiers break activity layout, in PR [#5507](https://github.com/microsoft/BotFramework-WebChat/pull/5507), by [@OEvgeny](https://github.com/OEvgeny)
 
 # Removed
 

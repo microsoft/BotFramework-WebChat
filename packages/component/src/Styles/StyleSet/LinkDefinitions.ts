@@ -91,19 +91,19 @@ export default function createLinkDefinitionsStyleSet() {
       },
 
       '.webchat__link-definitions__badge': {
-        alignItems: 'center',
         alignSelf: 'flex-start',
         borderRadius: '4px',
         borderStyle: 'solid',
         borderWidth: 1,
-        display: 'flex',
         flexShrink: 0,
         fontSize: '75%',
-        justifyContent: 'center',
         margin: 4,
+        maxWidth: '4em',
         minWidth: '1em',
         overflow: 'hidden',
         padding: 2,
+        textAlign: 'center',
+        textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
 
         [LIGHT_THEME_SELECTOR]: {
