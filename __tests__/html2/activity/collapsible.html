@@ -29,44 +29,6 @@
       .fui-FluentProvider {
         height: 100%;
       }
-/* 
-      .activity-decorator,
-      .collapsible-content,
-      .stacked-layout__message-row {
-        position: relative;
-      }
-
-      .activity-decorator::after,
-      .collapsible-content::after,
-      .stacked-layout__message-row::after {
-        --color: 118 0 0;
-        content: 'activity-decorator';
-        position: absolute;
-        top: 0;
-        right: 0;
-        border: 1px solid rgb(var(--color));
-        background: rgb(var(--color) / 0.5);
-        display: inline-block;
-        width: 33%;
-        word-break: break-all;
-        color: #fff;
-      }
-
-      .stacked-layout__message-row::after {
-        --color: 0 118 0;
-        content: 'stacked-layout__message-row ' attr(id);
-        top: unset;
-        bottom: 0;
-      }
-
-      .collapsible-content::after {
-        --color: 0 0 118;
-        content: 'collapsible-content ' attr(id);
-        top: unset;
-        right: unset;
-        bottom: 0;
-        left: 0;
-      } */
     </style>
   </head>
   <body>
@@ -91,7 +53,6 @@
           return summaries.at(-1).getAttribute('aria-expanded') === 'true';
         }, 500);
       }
-      // run = fn => fn()
 
       run(async function () {
         const {

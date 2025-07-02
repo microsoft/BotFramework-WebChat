@@ -57,7 +57,7 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
 
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
-const Decorator = composePipeline<InferDecoratorRequest<typeof ActivityBorderDecoratorRequest>>([
+const FluentDecorator = composePipeline<InferDecoratorRequest<typeof ActivityBorderDecoratorRequest>>([
   function FluentBorderLoader({ request, Next, ...props }) {
     return (
       <ActivityLoader showLoader={request.livestreamingState === 'preparing'}>
@@ -74,13 +74,17 @@ const Decorator = composePipeline<InferDecoratorRequest<typeof ActivityBorderDec
   }
 ]);
 
-const DecoratorWithRequest = memo(function DecoratorWithRequest(props) {
+FluentDecorator.displayName = 'FluentDecorator';
+
+const FluentDecoratorWithRequest = memo(function DecoratorWithRequest(props) {
   const request = useDecoratorRequest(ActivityBorderDecoratorRequest);
-  return <Decorator {...props} request={request} />;
+  return <FluentDecorator {...props} request={request} />;
 });
 
+FluentDecoratorWithRequest.displayName = 'FluentDecoratorWithRequest';
+
 const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
-  createActivityBorderMiddleware(() => () => DecoratorWithRequest)
+  createActivityBorderMiddleware(() => () => FluentDecoratorWithRequest)
 ]);
 
 const styles = createStyles('fluent-theme');

@@ -1,41 +1,51 @@
-import React, { Fragment, memo, type ReactNode } from 'react';
+/* eslint-disable prefer-arrow-callback */
+import React, { Fragment, memo, type ComponentType, type ReactNode } from 'react';
 
 type PipelineProps<R, P> = Readonly<{ request: R }> & P;
+type InnerPipelineProps<R, P> = PipelineProps<R, P> & Readonly<{ originalRequest: R }>;
 
-type OptionalRequest<P, R> = Omit<PipelineProps<R, P>, 'request'> & { request?: R | undefined };
-
-type StageComponent<R, P> = React.ComponentType<
+type NextComponent<P, R> = ComponentType<P & Readonly<{ request?: R | undefined }>>;
+type ComposedComponent<P, R> = ComponentType<InnerPipelineProps<R, P>>;
+type StageComponent<R, P> = ComponentType<
   PipelineProps<R, P> & {
-    Next: React.ComponentType<OptionalRequest<PipelineProps<R, P>, R>>;
+    Next: NextComponent<P, R>;
   }
 >;
+type PipelineComponent<P, R> = ComponentType<PipelineProps<R, P>>;
 
-const PassthroughComp = ({ children }: Readonly<{ children: ReactNode | undefined }>) => (
-  <Fragment>{children}</Fragment>
-);
+const Passthrough = memo(function Passthrough({ children }: Readonly<{ children?: ReactNode | undefined }>) {
+  return <Fragment>{children}</Fragment>;
+});
 
 export function composePipeline<
-  R,
-  P extends { children?: ReactNode | undefined } = { children?: ReactNode | undefined }
->(
-  origStages: StageComponent<R, P>[],
-  Passthrough = PassthroughComp
-): React.FC<OptionalRequest<PipelineProps<R, P>, R>> {
-  const stages = origStages.map(Stage => memo(Stage)) as StageComponent<R, P>[];
-  function Pipeline(props: PipelineProps<R, P>) {
-    const { request: originalRequest, ...restProps } = props;
+  Request,
+  Props extends { children?: ReactNode | undefined } = { children?: ReactNode | undefined }
+>(stages: StageComponent<Request, Props>[], PassthroughComponent = Passthrough): PipelineComponent<Props, Request> {
+  const ComposedPipeline = stages.reduceRight<ComposedComponent<Props, Request>>((Next, Stage) => {
+    const StageMemo = memo(Stage);
 
-    const Composed = stages.reduceRight<React.ComponentType<PipelineProps<R, P>>>(
-      (Next, Stage) =>
-        // @ts-expect-error: PropTypes issue
-        ({ request = originalRequest, ...innerRest }) => <Stage Next={Next} request={request} {...(innerRest as P)} />,
+    const StageWrapper = memo<InnerPipelineProps<Request, Props>>(({ originalRequest, request, ...innerRest }) => {
+      const resolvedRequest = request ?? originalRequest;
+      return (
+        <StageMemo
+          Next={Next as NextComponent<Props, Request>}
+          request={resolvedRequest}
+          {...(innerRest as Props)}
+          originalRequest={originalRequest}
+        />
+      );
+    });
+    StageWrapper.displayName = `${Stage.displayName || Stage.name}Stage`;
+    return StageWrapper;
+  }, PassthroughComponent);
 
-      // @ts-expect-error: PropTypes issue
-      ({ request: _, ...innerRest }) => <Passthrough {...(innerRest as P)} />
-    );
+  ComposedPipeline.displayName = `ComposedPipeline(${stages.length})`;
 
-    return <Composed request={originalRequest} {...(restProps as unknown as P)} />;
-  }
+  return memo(function Pipeline(props: PipelineProps<Request, Props>) {
+    const { request, ...restProps } = props;
 
-  return memo(Pipeline) as unknown as React.FC<OptionalRequest<PipelineProps<R, P>, R>>;
+    return <ComposedPipeline request={request} {...(restProps as unknown as Props)} originalRequest={request} />;
+  });
 }
+
+export type { NextComponent, PipelineProps, PipelineComponent, StageComponent };
