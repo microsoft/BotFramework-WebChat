@@ -13,7 +13,7 @@ type StageComponent<R, P> = ComponentType<
 >;
 type PipelineComponent<P, R> = ComponentType<PipelineProps<R, P>>;
 
-const Passthrough = memo(function Passthrough({ children }: Readonly<{ children?: ReactNode | undefined }>) {
+const Passthrough = memo(function PipelinePassthrough({ children }: Readonly<{ children?: ReactNode | undefined }>) {
   return <Fragment>{children}</Fragment>;
 });
 
@@ -35,11 +35,9 @@ export function composePipeline<
         />
       );
     });
-    StageWrapper.displayName = `${Stage.displayName || Stage.name}Stage`;
+    StageWrapper.displayName = `PipelineStage(Memo(${Stage.displayName || Stage.name}))`;
     return StageWrapper;
   }, PassthroughComponent);
-
-  ComposedPipeline.displayName = `ComposedPipeline(${stages.length})`;
 
   return memo(function Pipeline(props: PipelineProps<Request, Props>) {
     const { request, ...restProps } = props;

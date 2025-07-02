@@ -74,7 +74,7 @@ const FluentDecorator = composePipeline<InferDecoratorRequest<typeof ActivityBor
   }
 ]);
 
-FluentDecorator.displayName = 'FluentDecorator';
+FluentDecorator.displayName = 'FluentDecoratorPipeline';
 
 const FluentDecoratorWithRequest = memo(function DecoratorWithRequest(props) {
   const request = useDecoratorRequest(ActivityBorderDecoratorRequest);
