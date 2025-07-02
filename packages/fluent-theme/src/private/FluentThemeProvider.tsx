@@ -8,7 +8,7 @@ import {
   useDecoratorRequest,
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
-import { BorderFlair } from 'botframework-webchat-component/decorator';
+import { BorderFlair, WebChatDecorator } from 'botframework-webchat-component/decorator';
 import { Components } from 'botframework-webchat-component';
 import React, { memo, type ReactNode } from 'react';
 
@@ -22,8 +22,8 @@ import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
 import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
 import { createStyles } from '../styles';
-import VariantComposer, { VariantList } from './VariantComposer';
 import { composePipeline } from './composePipeline';
+import VariantComposer, { VariantList } from './VariantComposer';
 
 const { ThemeProvider } = Components;
 
@@ -113,7 +113,9 @@ function FluentThemeProvider({ children, variant = 'fluent' }: FluentThemeProvid
             typingIndicatorMiddleware={typingIndicatorMiddleware}
           >
             <AssetComposer>
-              <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
+              <WebChatDecorator>
+                <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
+              </WebChatDecorator>
             </AssetComposer>
           </ThemeProvider>
         </TelephoneKeypadProvider>
