@@ -277,9 +277,9 @@
   display: inline-flex;
   font-size: var(--webchat-fontSizeBase100);
   font-weight: var(--webchat-fontWeightSemibold);
-  height: 14px;
+  min-height: 12.4px;
   justify-content: center;
-  line-height: var(--webchat-lineHeightBase100);
+  line-height: 12.4px;
   margin-left: var(--webchat-spacingHorizontalXXS);
   margin-right: var(--webchat-spacingHorizontalXXS);
   min-width: 14px;
