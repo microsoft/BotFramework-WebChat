@@ -250,7 +250,7 @@ function SendBox(props: Props) {
             </ToolbarButton>
           </Toolbar>
         </div>
-        {!hideUploadButton &&<DropZone onFilesAdded={handleAddFiles} />}
+        {!hideUploadButton && <DropZone onFilesAdded={handleAddFiles} />}
         <ErrorMessage error={errorMessage} id={errorMessageId} />
       </div>
     </form>
