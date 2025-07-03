@@ -84,10 +84,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--webchat-spacingVerticalS);
-    margin-block: calc(var(--webchat-spacingVerticalXS) * -1);
-    margin-inline: 24px calc(var(--webchat-spacingHorizontalXS) * -1);
-    padding-block: var(--webchat-spacingVerticalXS);
-    padding-inline: var(--webchat-spacingHorizontalXS);
+    margin-block: calc(var(--webchat-spacingVerticalS) * -1);
+    margin-inline: 20px calc(var(--webchat-spacingHorizontalS) * -1);
+    padding-block: var(--webchat-spacingVerticalS);
+    padding-inline: var(--webchat-spacingHorizontalS);
   }
 
   :global(.webchat__bubble .collapsible-content .collapsible-content__content .stacked-layout__attachment-list) {
