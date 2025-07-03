@@ -8,8 +8,8 @@ type ActivityBorderDecoratorRequestContextType = Readonly<{
 const ActivityBorderDecoratorRequestContext = createContext<ActivityBorderDecoratorRequestContextType>(
   Object.freeze({
     request: Object.freeze({
-      livestreamingState: undefined,
-      from: undefined
+      from: undefined,
+      livestreamingState: undefined
     })
   })
 );

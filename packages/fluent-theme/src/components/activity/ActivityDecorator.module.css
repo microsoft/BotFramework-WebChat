@@ -84,8 +84,9 @@
     display: flex;
     flex-direction: column;
     gap: var(--webchat-spacingVerticalS);
+    margin-block: calc(var(--webchat-spacingVerticalS) * -1);
     margin-inline-start: 28px;
-    overflow: visible;
+    padding-block: var(--webchat-spacingVerticalS);
   }
 
   :global(.webchat__bubble .collapsible-content .collapsible-content__content .stacked-layout__attachment-list) {
