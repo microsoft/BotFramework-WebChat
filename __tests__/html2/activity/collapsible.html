@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Collapsible activity</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/",
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <style type="text/css">
+      #webchat {
+        width: 640px;
+      }
+      .fui-FluentProvider {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
+      import { waitFor } from '@testduet/wait-for';
+
+      async function openLastActivity() {
+        let summaries;
+        await waitFor(() => {
+          summaries = Array.from(document.querySelectorAll('summary.collapsible-content__summary'));
+          return summaries.length > 0;
+        }, 500);
+
+        summaries.at(-1).focus();
+        await host.sendKeys('ENTER');
+
+        await waitFor(() => {
+          return summaries.at(-1).getAttribute('aria-expanded') === 'true';
+        }, 500);
+      }
+
+      run(async function () {
+        const {
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const searchParams = new URLSearchParams(location.search);
+        const variant = searchParams.get('variant');
+        const theme = searchParams.get('fluent-theme');
+
+        await host.windowSize(640, 1024, document.getElementById('webchat'));
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [
+            { name: 'prefers-reduced-motion', value: 'reduce' },
+            ...(theme === 'dark' || theme === 'light'
+              ? [{ name: 'prefers-color-scheme', value: theme }]
+              : [])
+          ]
+        });
+
+        const root = createRoot(document.getElementById('webchat'));
+
+        let fluentTheme;
+        let codeBlockTheme;
+
+        if (theme === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches && theme !== 'light') {
+          fluentTheme = {
+            ...createDarkTheme({
+              10: '#12174c',
+              20: '#1a1f5b',
+              30: '#21276a',
+              40: '#293079',
+              50: '#303788',
+              60: '#384097',
+              70: '#4049a7',
+              80: '#151e80',
+              90: '#4f59c5',
+              100: '#5661d4',
+              110: '#5e69e3',
+              120: '#7982e8',
+              130: '#949bec',
+              140: '#afb5f1',
+              150: '#c9cdf6',
+              160: '#e4e6fa'
+            }),
+            colorNeutralBackground1Disabled: '#101010',
+            colorNeutralBackground1Hover: '#101010',
+            colorNeutralForeground5: '#424242'
+          };
+          codeBlockTheme = 'github-dark-default';
+        } else {
+          fluentTheme = {
+            ...webLightTheme,
+            // Original is #242424 which is too light for fui-FluentProvider to pass our a11y
+            colorNeutralForeground1: '#1b1b1b',
+          };
+          codeBlockTheme = 'github-light-default';
+        }
+
+        // TODO: code block github theme triggers accessibility violation
+        if (variant) {
+          window.checkAccessibility = async () => {}
+        }
+
+        const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
+
+        root.render(
+          variant === 'copilot' || variant === 'fluent' ? 
+            React.createElement(
+              FluentProvider,
+              { className: 'fui-FluentProvider', theme: fluentTheme },
+              React.createElement(
+                FluentThemeProvider,
+                { variant: variant },
+                React.createElement(ReactWebChat, webChatProps)
+              )
+            ) :
+            React.createElement(ReactWebChat, webChatProps)
+        );
+
+        await pageConditions.uiConnected();
+
+      const CODE = `import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_sine_waves():
+    """Create a beautiful visualization of sine waves with different frequencies."""
+    # Generate time points
+    t = np.linspace(0, 10, 1000)
+
+    # Create waves with different frequencies and phases
+    wave1 = np.sin(t)
+    wave2 = 0.5 * np.sin(2 * t + np.pi/4)
+    wave3 = 0.3 * np.sin(3 * t + np.pi/3)
+
+    # Combine waves
+    combined = wave1 + wave2 + wave3
+
+    # Create a stylish plot
+    plt.style.use('seaborn-darkgrid')
+    plt.figure(figsize=(12, 8))
+
+    # Plot individual waves
+    plt.plot(t, wave1, label='Primary Wave', alpha=0.5)
+    plt.plot(t, wave2, label='Second Harmonic', alpha=0.5)
+    plt.plot(t, wave3, label='Third Harmonic', alpha=0.5)
+
+    # Plot combined wave with a thicker line
+    plt.plot(t, combined, 'r-',
+            label='Combined Wave',
+            linewidth=2)
+
+    plt.title('Harmonic Wave Composition', fontsize=14)
+    plt.xlabel('Time', fontsize=12)
+    plt.ylabel('Amplitude', fontsize=12)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+
+    # Show the plot
+    plt.tight_layout()
+    plt.show()
+
+# Generate the visualization
+plot_sine_waves()`;
+
+        const botIcon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJIAAACQCAMAAADUbcK3AAAC+lBMVEUAAADxX0TJpYvTsaLPsJn+a0zUuqTQspv4ZEj+XTvMdmP/akr6Wjr/c1TzUzbTtqH/ZUPRtJ3StZ7VuqXPrZTj1Mf/YT//ZkXh0cT8YUP+bUzgzcDRt6P0Vzv+YT/6akz/ZkX/bEzj1Mj/aUnUuKP/YkDh08f+aEjStp//XTv/YD3Rs5z/Xz3QsZrKqY/StaHi1MfaNx//YkL/Y0LMq5LNrJPKp43/b1Di08jTt6D/YkD+aUn8cFLLqY/+Wjzi08bLpoz/cVH/ZkX+bk/3Qyrg0cPUt6LcxrTWvar/eVrqRy//ZEL3QSb/XTrLqpDcxrXUuaP/a0r6Wjv0PiPj1cj1QSbxRCnhz8L+f2LMq5L/e134RSn5NR36e17dybrZwK77TTD6TjPg0cP/fV/QsZnrPif8RCv5KhT8PSTaxLP8RirXvqv5OyHEJRL/bEzJpYr/eVrEJxL9LBb+SS3/f1/8UDDPoYznRSr8JA/fzLzMLBbh08fbx7fXwK7VvKjcybrey7zYw7PWvqvUuqX/aEfezb/fz8HStqHRtZ//YkH/akrg0cXaxbT/bk7/ZUX/bEv/cVLYwrD/c1T/YT7TuKP/ZEP/TjH/b1D/RSv/UzXg0MP/Qyj/NRz/dlj/eFr/Nx7/Xj7/SC3/dVb/Xjv/elz/cFH/YEL/UDP/PSP/aEn/VTnJp43/Sy//QSb/OSD/OyL/XUH/MRnbopLcrZ3YlIPWjn3/WT3/WDn/PyXLqY/PemjPsZrcqJfLq5Lano7ThHL/a07/LhfMrZTTgG/RfWvLbFr/ZUjOr5fTi3nQgG7Nc2H/WjrNb13/KhPesKHWkYDVh3b/fmHZm4vSh3XPd2X/fF7fva7YlobXmYjeuKnTtJ7DIxHl18vXi3nBHAzDEgfLZlXvTzL/JQ/kQCbIWEf4VTfgtabSc2L4XkDDMiDQLhngwrPUqpbnloHbk4Hri3XfhnLMKBTXHw/lp5XvgmnzdFjtY0vwKBTjIhDRo4/loIzpeWPFRDLZSTWF0Fo2AAAAe3RSTlMABv4JGCQNTAv9/kIdGRTCUSjoPTTnmVxDNy0aExD+/e7nv9eyp1j+8+DV1LRyZmMs/vXKw7OlpYF8dWb89ejY1MrBuZuZkoBWUin9/fXpsqGCgnxpT0Ii696EbP767OrNwKeWimP8/NjW1dO3rpKOcTbt6b6o9uHAv5XpuSJiAAAOYElEQVR42uyXSajTUBSG38OZOlRwnp51xFmcUXEWcQTnCUERRURE1J3jog6JNi19ZDLRJNWXpDFpUoU04kCei7goCi4UFFeCIoi4cFjoxnNvWuusUKdFv4VVVx/3nPOfk7oaNWrUqFGjRo0aNWrUqFGjRo0aNb5Fh14LF0Za1df9H9R36BXpvnzy7Nlzd3dvX/fPqe/YqufCPZNnx1KpBBk4O1f+W6f6vh0Xrdk4b3z/RMJPklnVECRpx9S6f0d9/aJt83ZIkpjPWRwn6GJzs8jJybkd6v4RoLN5XOD7CXgcxbJzusXxTjaRSAyM1v192oLOrmGx2PQUpinhk1mAJJMJILa77u9S32rhhsGbd+wbl0iHlLSaWJZNIJLjtrSKTps6dVq051+oYNtWC/dsnTt+xnaBz6bPpiuAEgsgIVXzlsydPRAYP2fw8kjfuj9H30WRacsnz4k5BUUwXT8DpNms6riGYRRkivRh5CjZYKyczYAZScbj8cX9Ry6PtP39Lvh1IqtXztsywzU0RRBMA54IhKCtTc7ydE+HzmY0XmMUwZZ0pRBPhkoURdPjRv7+7GyLgnnD3BmawgkcpzCGymaQkK+aHqiYmlHgGc6zcwgPhi5OkqCURK8ESgQxfGqr39jJbTvA3tqwf929e/cunE35vt+UPnvuLAhlmgItZytutimFSWQJ2XUdKgsqQDwJv1n0TKDUOGxF+9+3uCKgc/fuvQuIcwjwwUYpxxMVMp0uz1oCAyKhkUp8qtQ47Pfkecc1K+YiHQyWKhtB2QJT0t2P04+cKkZJklCazWxDf1S7UKlxeLT691k0b+ew2CYQQhVjA0pVAz8TPlOadBVdNym2VDKSdmRZpZKhU5Y2BNgvM7r36tVz2uD+FI2dlo5sW21H99wyoyF94S74sA5vcggBNbJh8Ixi6RbjkLiJ4i5qbBtaW7cURtNgAHOiqDPyUBj9+o69us8Jn6ndsO5VKrWazGbu3b1795zvmoKiGa4D8QNqAgAzV1DJJlQ1SuN0NHMMDy46zJsk5WxL4Yt0nJzWEWdZZM44GpTkpSPrq3ukhdBEQNphOM0N/FQGdRAbqA6gBuADpMiCoAuM4dBx2G2BCpHFQDYVZDoOkN1Kgx8duBgptZtR3bXZYQMSupB2OcZhPw7bWQxKJAQb8DmPcZLQ2rizQ1BAYuTNPetCuvVHlTvfrnvbquq2FYQypKHwfkUo1CkLkY6SE5xEZfrL44+g1IKwd3XpVSLjaazUrWN1SkiIEwz2HjI6m4GdCjHJNqXC/ZogHdO2TRLvfsgfvDgoCuvAX9UCl7/tbSwp9B0ZVm5kVXHZfgUv5HSNPIeN0oFhwoEm2QLjUtks5RhKLi9yagobkSqv6HBXwmozZJWQi5og3r4tMnS3XuXKjUNK54dXpVS/erumpsPI9jVdysGAw/QLOTGPyXFGHOdjk2pKzc15SbcsOHJvYx7fFgWDpunxkc+bCZSqoefss+dKQh70cJYNT0cSoiBcZAkWjJoCRRI9xlVpCi0OmWdMBQKhKBMEFDJWDuzB43AzjQel6vobGwWmwAdsOlNq7XQKKgU24V5Lup4kGGqQLXc2RagEQSA/MKKfbGwbdsGcxUipql4COuy5ewEFtyI47NnPhq2811IJSrMlTc3iUcNGJSiMrEgrw/7uPpBGSv1W/PrEtRg7ZNWQHmtbf9ZMkQvprKNxipMJxz/NonPfxxmJTxGV53KeES+FUZwmVChf2YkoMF5eDL8w+6I9B83UL/rLubR2yPwBM2cOmPK5VquBBsMpRoA2LYptF/rEhB0HfUOrENSMZeuKjPOIcgqw9zh03PGFYrEAc8DZ+byt4fxuOy2GD5R+w375y6D3lJkHEI8OdB0wZUiPsb1DrfbzFMbNYiEfHsTyLAEWLxy0ngD/sGGTMTIJRiTlMpYkiiLEAPrT9mwJxlLUzfNEt57wMdM9NhSfluMG//I+WTXzETKqaIEVaHWcNj0TXiKBqetwvAYoqANXU9DihVuXxJkdh5bJSxaDE6kAcgid04oEMDLaoefy/kNxei4eHvnlRxqAZSpWjx4hrd6te22CHjp3LuWKEpPNnC11duUDKdwijNisG/HSYqs0N00AjcMnT44lSqdl/251v8oQKNvXwGstWDedTWV8Pqf46cyXX5CJEMpqzhnxig+2AQhM0R3K+tD66P8Xz/n1D4L5Xb+pdKZr1+dPX71s2G4rfipdAmxAqWyUdBQxr8jYqOJUEeLyZsCWv1PGR3/aSX26tBk9atSYNp0HnPqG0KlTp86cOfb8/tNXL16+3jQdgtoP4IBTFMXkXYjubKAWYLtIOq9iI8qB8RQsS1D4841Eo1zgFTvfnOeTWCkbHzqne9+fBFGXUZMmThixfsSIToO6fs/o+LHnwP2nd169e/G64Ylnw6wJeOQs9AM+HA9PBEYy2n0AjFweRs5GI9fcLAkMzWIlsv/gaMefCU1cdv0WcPXqw0NnvmUESsePH39+P+TBnXcv3799++yZW3ALPBzXloXO8AIENxLSLFG0BYXBh7eXQ2EAW1jRzjeSeAiSA3f/5Au8ZZtJy25ev37zJlK6evrUd4yAg0jnwYOndwB4K1TDN9MbhtIqQJX2WrzISZABRYIKextqBhSKMnwnEckUOz02e/K0n+y2lqMnXLly5aPSsVPfNTp2EAuB0eU7lzGos96AVQNJlvYswduixdNfzFojRu4/cPbcycujPwvt1qNnXbmIlXDhTnzL6ExodOwIKCEhxLUy8Fjv3zQ0NAwdOjSgZU4UTSKc/lCnYnS+ODjaq8MvJDYyuoiMsNLJwz8wOnb0PjIqC10CbiDg58XrNw3Pnmne7du5AlUyaizikjWGSvJ5zdsIU/ZzPrRnbyFNhnEcx596x9aiWjsUluZFWKzMNNLIwPImlaiUjkTRiSI6ERUdcTM7bdFuohGVQYU3XVRiKZoWQhaZyxxLUjfdWk7MkEgv0qig3/M8LjvYfF/b1s2+d959eA7/ve+rLnnkSE565kRWSwARSPQYcRHlOJoaG0tKSj6wPn755N2woT0WmtPYv/LiuresumtFdwpu3S1++/bAGiKmecup6AEWKSVBodNlTQgkOmFp/kXkaGKm+tLS0tbW1o/oC67hu1jb5Wu48+V4wbx0u+B6MX3cxaNvwaElYkTa9JGcFD9bJxOIEBVQdCKvmYvYlnESRJRUU1MDFVyfvN6lG4qv36SXDBXayvDZi75gXrFhOopoXhojpaUrZGyET28JIALpNUhYo19F9RT0imW3d3yb09u79MqNc/x0X6RBhmZOFiOSrYMIpHWzCWvt4pZBbz8XgZTbzNaIkfi2AdQvqqp6jp586+lr876LBYjnJykXiFkkQTeSL1KKQFhJUwOL8vJe3/8hcrA14iDEPBUNDb7379u87bHnzhXSLbtNvwnYkHKGqC8AMbNB4ovEi5oQUITyX96j8V3jILsdC1QFD0Cja2t9nd1zYMI7XhH9ZcO5Li/AM+/BFWJERLaPk5LVhBW9qiWgCOW+fshFDISYqLoaC4QVGo18na73c9qWsmt2jcamwY6j44go0jx+31IIL2ngKFHQYKJcSzO7/3Qe1SO6TDhGbNMQJ3X39PXWFV2yXTyHE4UNxHPKrtVECiltnn/fpg4lQhfucxHitx+rxEhcVPvV5fb09C1VxvovG23GCiKJ9Mh/uqdPGEqELIZ7EDUOJmqA6Gmnx+PpaWsHaUC0jL0tiTtLEIGUrOMXcNX5IUUg5RsdjUzET1IVThI72+xwv/C5PJ7uOd52JQXZ2Ji8opw2iYhMPhsikNYl8D/nt4gQWSz5Tge//q12OzzV4NCzDc+Lp0+/uj0uNgVs7MoV48pt2LNG9BuboEtjvyZpyTJ24UASI8q/cN8BUWsrVoiT/CDU6XYz0s1b1+gAuHu3qGjP6lFEdPL0NPabuzw1hl+4oc4RE1FTE12iAVIFSDAxkqsbM6AI/z8tp+/fZctmrYFIfPuW82clTaJaIElbqQgFXCNGMtxvpCT7AKnf5HO56VjaUXf9ZlkhUi6cNmkEkZI6vf8ZV79NK4vaKlaEnI7SP0U4SpTU17ujoPAGu2ozpX8i3bb8EX+idGricqayXRMjMhgMxq6aP0TYN5fbjUF5KZaL5o4nkpOlcBJeBJyncsWL0ElTE0AVDR0dHS8QBb1542ZTyauEB98iF4wlw0iR/Ji9myCrRYIIJOOprvpqiCgJHOTzefqnUuHFss0rJ00hw0kOEyeZTfmSRMjo7Gp69aShg20aJX3lI6BMOePQ+jVjcK6HaUrRVHLSBWkikE6ecnZ9Lnn1pLafxEbAkS0TF4yfNI4MP0G3Lb7SWWk2mw1nJYpYVNVUX4MfuorRe/fuPb5y++rJU8g/JkvMUWn0ZpPhTOAJObiIZars+vz5cPr+/fvHjSBBKUaxLUel2r1R/Bqhn0RWqwlpMkhQE2TqrK1XJezaHyJrfCIJdvJVV/9BZDap1CToRU34B5FZn0OCX9LWqxJF8PhFwd83/rZ7ddgisylOTUJQ0qLhizSpAglBMZkSRGhAhEXSkpC0dpF0ESdpUuUkNGVuDDiz0WAihEUKUTHHciXefi7SJAokVE3fmSdtHrFMGWoSuuZvzJMuUulICFu7eKOE28/TKOQklGmzpYr0iTEkpAlRMElao1SIQps8K9sS8ByFXQRTVLbICYniU2UkDAna7E3iJqRelQBRWIpevNNwYcgJ6dSosgQSthJ3Dz2P9JiQ4Sw6c5MlkMhkVWnlJKwJMm3mTsPfRCZ9nCI6rCKOitamZm+C6fd5ZNXHZ2SpAfofybRZmXG7Nxn9V85otOo1qowEhVog/y+oEjIzcuJUKC4uJyM1kXr+e3jx1CqQVqeOIZEiRYoUKVKkSJEiRYoUtL4DkaWZtZT0Fr4AAAAASUVORK5CYII=';
+
+        const aiMessageEntity = {
+          '@context': 'https://schema.org',
+          '@id': '',
+          '@type': 'Message',
+          keywords: ['AIGeneratedContent', 'AnalysisMessage'],
+          type: 'https://schema.org/Message',
+          author: {
+            '@context': 'https://schema.org',
+            '@type': 'Person',
+            image: botIcon,
+            name: 'Agent',
+          }
+        };
+
+        const waveSvg = `data:image/svg+xml;utf8,${encodeURIComponent(`
+<svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Primary Wave -->
+  <path d="M0,100 C50,50 100,150 150,100 C200,50 250,150 300,100 C350,50 400,150 400,100"
+        stroke="#3B82F6" fill="none" stroke-width="2" opacity="0.5"/>
+
+  <!-- Second Harmonic -->
+  <path d="M0,100 C25,75 50,125 75,100 C100,75 125,125 150,100 C175,75 200,125 225,100 C250,75 275,125 300,100 C325,75 350,125 375,100 C400,75 400,125 400,100"
+        stroke="#10B981" fill="none" stroke-width="2" opacity="0.5"/>
+
+  <!-- Combined Wave -->
+  <path d="M0,100 C40,30 80,170 120,100 C160,30 200,170 240,100 C280,30 320,170 360,100 C380,65 400,135 400,100"
+        stroke="#EF4444" fill="none" stroke-width="3"/>
+
+  <!-- Grid Lines -->
+  <line x1="0" y1="100" x2="400" y2="100" stroke="#CBD5E1" stroke-width="0.5" stroke-dasharray="4"/>
+  <line x1="100" y1="0" x2="100" y2="200" stroke="#CBD5E1" stroke-width="0.5" stroke-dasharray="4"/>
+  <line x1="200" y1="0" x2="200" y2="200" stroke="#CBD5E1" stroke-width="0.5" stroke-dasharray="4"/>
+  <line x1="300" y1="0" x2="300" y2="200" stroke="#CBD5E1" stroke-width="0.5" stroke-dasharray="4"/>
+</svg>`)}`;
+
+
+        directLine.emulateIncomingActivity({
+          from: { role: 'user' },
+          type: 'message',
+          text: `Message from user.`
+        });
+
+        directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          entities: [{
+            ...aiMessageEntity,
+            keywords: []
+          }],
+          id: "a4c0c01d-c06e-4dde-9278-265c607b545b",
+          type: "typing",
+          text: "Informative…",
+          channelData: {
+            streamType: "informative",
+            streamSequence: 1
+          }
+        });
+
+        await host.snapshot('local');
+
+        directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          entities: [
+            {
+              ...aiMessageEntity,
+              keywords: ['Collapsible'],
+              abstract: 'Informative…', 
+              isBasedOn: {
+                '@type': 'SoftwareSourceCode',
+                programmingLanguage: 'python',
+                text: CODE
+              }
+            }
+          ],
+          channelData: {
+            streamType: "informative",
+            streamSequence: 2
+          },
+          type: 'typing',
+          id: "a4c0c01d-c06e-4dde-9278-265c607b545b",
+          text: ''
+        });
+
+
+        await pageConditions.numActivitiesShown(2);
+
+        await host.snapshot('local');
+
+        await openLastActivity();
+
+        await host.snapshot('local');
+
+        directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          entities: [
+            {
+              ...aiMessageEntity,
+              keywords: ['Collapsible'],
+              abstract: 'This is multiple lines text in abstract which is used to describe the content of the message.',
+              isBasedOn: {
+                '@type': 'SoftwareSourceCode',
+                programmingLanguage: 'python',
+                text: CODE
+              }
+            }
+          ],
+          channelData: {
+            streamType: "final",
+            streamSequence: 3
+          },
+          id: "a4c0c01d-c06e-4dde-9278-265c607b545b",
+          type: 'message',
+          text: `The final message has no View Code button as it is collapsible`,
+        });
+
+        await host.snapshot('local');
+
+        await host.sendKeys('ESCAPE');
+
+        directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          entities: [
+            {
+              ...aiMessageEntity,
+              abstract: 'This is multiple lines text in abstract which is used to describe the content of the message.',
+              isBasedOn: {
+                '@type': 'SoftwareSourceCode',
+                programmingLanguage: 'python',
+                text: CODE
+              }
+            }
+          ],
+          channelData: {
+            streamType: "final",
+            streamSequence: 2
+          },
+          type: 'message',
+          text: `The non-collapsible message should have Show Code button`,
+        });
+
+        await host.snapshot('local');
+
+        // Generated from https://placeholder.pics/svg/320x180.
+        const LANDSCAPE_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="320" height="180"><rect x="2" y="2" width="316" height="176" style="fill:%23DEDEDE;stroke:%23555555;stroke-width:2"/><text x="50%" y="50%" font-size="18" text-anchor="middle" alignment-baseline="middle" font-family="monospace, sans-serif" fill="%23555555">320×180 (16:9)</text></svg>`;
+
+        // Generated from https://placeholder.pics/svg/180x320.
+        const PORTRAIT_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="320"><rect x="2" y="2" width="176" height="316" style="fill:%23DEDEDE;stroke:%23555555;stroke-width:2"/><text x="50%" y="50%" font-size="18" text-anchor="middle" alignment-baseline="middle" font-family="monospace, sans-serif" fill="%23555555">180×320 (9:16)</text></svg>`;
+
+        // Generated from https://placeholder.pics/svg/640x180.
+        const WIDE_SVG = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="180"><rect x="2" y="2" width="636" height="176" style="fill:%23DEDEDE;stroke:%23555555;stroke-width:2"/><text x="50%" y="50%" font-size="18" text-anchor="middle" alignment-baseline="middle" font-family="monospace, sans-serif" fill="%23555555">640×180 (32:9)</text></svg>`;
+
+
+        directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          id: '41.0',
+          text: '',
+          entities: [
+            {
+              ...aiMessageEntity,
+              keywords: ['Collapsible'],
+              abstract: 'Collapsible activity with multiple attachments and code, but no body',
+              isBasedOn: {
+                '@type': 'SoftwareSourceCode',
+                programmingLanguage: 'python',
+                text: "print('Hello World!')"
+              }
+            }
+          ],
+          attachments: [
+            {
+              contentType: 'image/jpeg',
+              contentUrl:
+                'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg',
+              name: 'front of Surface Pro'
+            },
+            {
+              contentType: 'image/jpeg',
+              contentUrl:
+                'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg',
+              name: 'back of Surface Pro'
+            }
+          ],
+          type: 'message'
+        });
+
+        await host.snapshot('local');
+
+        await openLastActivity();
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

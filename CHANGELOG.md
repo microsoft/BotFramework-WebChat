@@ -101,6 +101,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Resolved [#5463](https://github.com/microsoft/BotFramework-WebChat/issues/5463). Added attachment preview for `sendAttachmentOn: "send"`, in PR [#5464](https://github.com/microsoft/BotFramework-WebChat/pull/5464), by [@compulim](https://github.com/compulim), in PR [#5492](https://github.com/microsoft/BotFramework-WebChat/pull/5492), by [@OEvgeny](https://github.com/OEvgeny)
    - Attaching files will no longer remove previously attached files
    - Updated Fluent theme to use the new attachment preview feature
+- Added collapsible activity and activity with abstract handling, in PR [#5506](https://github.com/microsoft/BotFramework-WebChat/pull/5506), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 

@@ -1,11 +1,15 @@
+/* eslint-disable prefer-arrow-callback */
 import { type ActivityMiddleware, type StyleOptions, type TypingIndicatorMiddleware } from 'botframework-webchat-api';
 import {
+  ActivityBorderDecoratorRequest,
   createActivityBorderMiddleware,
   DecoratorComposer,
+  type InferDecoratorRequest,
+  useDecoratorRequest,
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
+import { BorderFlair, WebChatDecorator } from 'botframework-webchat-component/decorator';
 import { Components } from 'botframework-webchat-component';
-import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import React, { memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';
@@ -18,6 +22,7 @@ import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
 import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
 import { createStyles } from '../styles';
+import { composePipeline } from './composePipeline';
 import VariantComposer, { VariantList } from './VariantComposer';
 
 const { ThemeProvider } = Components;
@@ -52,10 +57,34 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
 
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
+const FluentDecorator = composePipeline<InferDecoratorRequest<typeof ActivityBorderDecoratorRequest>>([
+  function FluentBorderLoader({ request, Next, ...props }) {
+    return (
+      <ActivityLoader showLoader={request.livestreamingState === 'preparing'}>
+        <Next {...props} />
+      </ActivityLoader>
+    );
+  },
+  function FluentBorderFlair({ request, Next, ...props }) {
+    return (
+      <BorderFlair showFlair={request.livestreamingState === 'completing'}>
+        <Next {...props} />
+      </BorderFlair>
+    );
+  }
+]);
+
+FluentDecorator.displayName = 'FluentDecoratorPipeline';
+
+const FluentDecoratorWithRequest = memo(function DecoratorWithRequest(props) {
+  const request = useDecoratorRequest(ActivityBorderDecoratorRequest);
+  return <FluentDecorator {...props} request={request} />;
+});
+
+FluentDecoratorWithRequest.displayName = 'FluentDecoratorWithRequest';
+
 const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
-  createActivityBorderMiddleware(
-    next => request => (request.livestreamingState === 'preparing' ? ActivityLoader : next(request))
-  )
+  createActivityBorderMiddleware(() => () => FluentDecoratorWithRequest)
 ]);
 
 const styles = createStyles('fluent-theme');

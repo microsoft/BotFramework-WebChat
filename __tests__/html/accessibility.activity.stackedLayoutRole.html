@@ -23,7 +23,7 @@
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.scrollToBottomCompleted();
 
-        const messageRole = document.querySelector('.webchat__stacked-layout__message-row').getAttribute('role');
+        const messageRole = document.querySelector('.stacked-layout__message-row').getAttribute('role');
 
         expect(messageRole).toEqual('group');
       });
