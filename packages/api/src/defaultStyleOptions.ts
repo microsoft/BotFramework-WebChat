@@ -99,7 +99,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
 
   // Send box
   hideSendBox: false,
-  hideUploadButton: false,
+  disableFileUpload: false,
   hideTelephoneKeypadButton: true,
   microphoneButtonColorOnDictate: '#F33',
   sendBoxBackground: 'White',

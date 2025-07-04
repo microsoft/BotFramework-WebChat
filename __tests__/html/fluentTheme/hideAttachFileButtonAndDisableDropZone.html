@@ -23,7 +23,7 @@
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const App = () => (
-          <ReactWebChat directLine={directLine} store={store} styleOptions={{ hideUploadButton: true }} />
+          <ReactWebChat directLine={directLine} store={store} styleOptions={{ disableFileUpload: true }} />
         );
 
         render(
@@ -37,6 +37,7 @@
 
         // THEN: No attach button should be render.
         expect(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton)).toBeFalsy();
+        expect(pageElements.byTestId(WebChat.testIds.sendBoxDropZone)).toBeFalsy();
         await host.snapshot();
       });
     </script>
