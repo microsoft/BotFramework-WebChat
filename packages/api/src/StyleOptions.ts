@@ -297,7 +297,7 @@ type StyleOptions = {
    */
 
   hideSendBox?: boolean;
-  hideUploadButton?: boolean;
+  disableFileUpload?: boolean;
 
   /**
    * (EXPERIMENTAL) `true`, if the telephone keypad button should be shown, otherwise, `false`. Defaults to `true`.

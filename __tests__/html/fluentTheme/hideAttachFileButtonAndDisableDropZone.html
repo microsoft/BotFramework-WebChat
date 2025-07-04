@@ -23,7 +23,7 @@
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const App = () => (
-          <ReactWebChat directLine={directLine} store={store} styleOptions={{ hideUploadButton: true }} />
+          <ReactWebChat directLine={directLine} store={store} styleOptions={{ disableFileUpload: true }} />
         );
 
         render(
