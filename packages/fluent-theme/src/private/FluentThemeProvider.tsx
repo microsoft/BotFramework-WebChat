@@ -4,7 +4,7 @@ import {
   ActivityBorderDecoratorRequest,
   createActivityBorderMiddleware,
   DecoratorComposer,
-  InferDecoratorRequest,
+  type InferDecoratorRequest,
   useDecoratorRequest,
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
