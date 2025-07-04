@@ -1,7 +1,7 @@
 :global(.webchat) .stacked-layout {
+  font-family: var(--webchat__font--primary);
+  margin-inline: var(--webchat__padding--regular);
   position: relative; /* This is to keep screen reader text in the destinated area. */
-  margin-left: var(--webchat__padding--regular);
-  margin-right: var(--webchat__padding--regular);
 
   .stacked-layout__attachment-row,
   .stacked-layout__main,
