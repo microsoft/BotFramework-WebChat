@@ -297,6 +297,7 @@ type StyleOptions = {
    */
 
   hideSendBox?: boolean;
+  hideUploadButton?: boolean;
   disableFileUpload?: boolean;
 
   /**

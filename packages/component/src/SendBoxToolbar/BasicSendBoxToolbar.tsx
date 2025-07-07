@@ -6,9 +6,9 @@ import UploadButton from './UploadButton';
 const { useStyleOptions } = hooks;
 
 function BasicSendBoxToolbar({ className }: SendBoxToolbarMiddlewareProps) {
-  const [{ disableFileUpload }] = useStyleOptions();
+  const [{ disableFileUpload, hideUploadButton }] = useStyleOptions();
 
-  return !disableFileUpload && <UploadButton className={className} />;
+  return (!disableFileUpload || !hideUploadButton) && <UploadButton className={className} />;
 }
 
 export default memo(BasicSendBoxToolbar);
