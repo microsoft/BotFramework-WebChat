@@ -63,8 +63,8 @@ export const handleEsm = async (req, res) => {
     res.setHeader('Content-Type', 'application/javascript');
     return res.end(outJS);
   } catch (err) {
-    console.error('ESM proxy error:', err);
+    console.error('ESM proxy error:', err.stack);
     res.writeHead(500);
-    return res.end(err.stack);
+    return res.end("An internal server error occurred");
   }
 };
