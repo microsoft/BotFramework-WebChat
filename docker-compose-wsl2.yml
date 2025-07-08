@@ -3,6 +3,15 @@ version: '3'
 services:
   # On Windows, run with COMPOSE_CONVERT_WINDOWS_PATHS=1
 
+  esm:
+    image: ghcr.io/esm-dev/esm.sh:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - NPM_REGISTRY=https://registry.npmjs.org/
+    volumes:
+      - esm_data:/esmd
+
   chrome:
     image: selenium/node-chrome:110.0
     depends_on:
@@ -56,3 +65,6 @@ services:
     ports:
       - '4445:4445'
     stop_grace_period: 5s
+
+volumes:
+  esm_data:

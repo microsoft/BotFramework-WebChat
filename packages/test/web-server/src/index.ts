@@ -5,6 +5,8 @@ import { createServer as createSecureServer } from 'node:https';
 import selfsigned from 'selfsigned';
 import handleServe from 'serve-handler';
 
+import { handleEsm } from './handleEsm';
+
 const {
   // eslint-disable-next-line no-magic-numbers
   env: { PORT = 5081, PORTS = 5443 }
@@ -15,7 +17,13 @@ const {
   const attrs = [{ name: 'commonName', value: 'webchat2' }];
   const pems = selfsigned.generate(attrs, { days: 365 });
 
-  const handler = (req, res) => handleServe(req, res, config);
+  const handler = (req, res) => {
+    if (req.url.startsWith('/esm/')) {
+      return handleEsm(req, res);
+    }
+
+    return handleServe(req, res, config);
+  };
 
   createSecureServer(
     {
