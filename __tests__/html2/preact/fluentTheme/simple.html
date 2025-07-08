@@ -1,67 +1,174 @@
 <!doctype html>
 <html lang="en-US">
-  <head>
-    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
-    <script src="https://unpkg.com/preact@10.25.4/dist/preact.umd.js"></script>
+
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+  <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+  <!-- <script src="https://unpkg.com/preact@10.25.4/dist/preact.umd.js"></script>
     <script src="https://unpkg.com/preact@10.25.4/hooks/dist/hooks.umd.js"></script>
     <script src="https://unpkg.com/preact@10.25.4/compat/dist/compat.umd.js"></script>
     <script>
       // Expose Preact's compat as React for WebChat
       window.React = preactCompat;
       window.ReactDOM = preactCompat;
-    </script>
-    <script crossorigin="anonymous" src="/test-harness.js"></script>
-    <script crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
-  </head>
-  <body>
-    <main id="webchat"></main>
-    <script type="text/babel">
-      run(async function () {
-        const {
-          React,
-          ReactDOM: { render },
-          WebChat: { FluentThemeProvider, ReactWebChat }
-        } = window; // Imports in UMD fashion.
+    </script> -->
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.development.js"></script>
 
-        const { directLine, store } = testHelpers.createDirectLineEmulator();
+  <style>
+    .bold {
+      font-weight: bold;
+    }
 
-        const App = () => <ReactWebChat directLine={directLine} store={store} />;
+    .italic {
+      font-style: italic;
+    }
 
-        render(
-          <FluentThemeProvider>
-            <App />
-          </FluentThemeProvider>,
-          document.getElementById('webchat')
+    .subtle {
+      color: #999;
+    }
+
+    main {
+      position: relative;
+    }
+
+    pre {
+    }
+  </style>
+</head>
+
+<body>
+  <main id="webchat"></main>
+  <script type="text/babel">
+    run = fn => fn();
+    run(async function () {
+      const {
+        React,
+        ReactDOM: { render },
+        WebChat: { FluentThemeProvider, ReactWebChat, templateDecorator }
+      } = window; // Imports in UMD fashion.
+
+
+      const testDecorator = templateDecorator('TestDecorator');
+
+      const FinalComponent = ({ children, ...props }) => (
+        <>
+          {children} <pre>{JSON.stringify(props, null, 2)}</pre>
+        </>
+      );
+
+      console.log(testDecorator);
+
+      const { Provider, Proxy, createMiddleware } = testDecorator;
+
+      const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+      // render(
+      //   <Provider middleware={[createMiddleware(FinalComponent)]}>
+      //     <Provider
+      //       middleware={[
+      //         createMiddleware(({ Next, children, ...props }) =>
+      //           <Next {...props} foo={123}>
+      //             _foo={props.foo}&nbsp;
+      //             {children}c
+      //           </Next>),
+      //         createMiddleware(({ Next, children, ...props }) =>
+      //           <Next {...props}>
+      //             {children}a
+      //           </Next>),
+      //       ]}>
+      //       <Provider
+      //         middleware={[
+      //           createMiddleware(({ Next, children, ...props }) =>
+      //             <Next {...props}>
+      //               {children}b
+      //             </Next>)
+      //         ]}>
+      //         <Proxy foo="bar" />
+      //       </Provider>
+      //       <Proxy bar="buz" children="hello" />
+      //     </Provider>
+      //     <Proxy bar="buz" children="hello" />
+      //   </Provider>,
+      //   document.getElementById('webchat')
+      // );
+
+
+      const ApplyClass = ({ Next, children, className, ...rest }) => <Next {...rest}><span className={className}>{children}</span></Next>;
+
+      const ApplyBold = ({ Next, children, bold, className = '', ...rest }) => (
+        <Next {...rest} className={bold ? className + ' bold' : className}>
+          {children}
+        </Next>
+      );
+
+      const ApplyItalic = ({ Next, children, italic, className = '', ...rest }) => (
+        <Next {...rest} className={italic ? className + ' italic' : className}>
+          {children}
+        </Next>
+      );
+
+      const RandomChild = ({ Next, children, ...rest }) => (
+        <Next {...rest}>
+          {children} {React.useState(() => Math.random().toFixed(2))[0]}
+        </Next>
+      );
+
+      const UpdateState = ({ Next, children, state = [0, () => {}], ...rest }) => {
+        const [value, setValue] = state;
+        return (
+          <Next {...rest}>
+            {children} {value}
+            <button onClick={() => setValue(Math.random().toFixed(2))}>Update</button>
+          </Next>
         );
+      };
 
-        await pageConditions.uiConnected();
+      const App = () => (
+        <Provider middleware={[createMiddleware(ApplyBold), createMiddleware(RandomChild), createMiddleware(UpdateState), createMiddleware(ApplyItalic), createMiddleware(ApplyClass), createMiddleware(FinalComponent)]}>
+          <Proxy bold={true} italic={true} state={React.useState()} request={{ foo: 'bar' }}>
+            hello
+          </Proxy>
+          <Proxy italic={true} className="subtle" request={{ bar: 'buz' }}>
+            world
+          </Proxy>
+        </Provider>
+      );
 
-        await directLine.emulateIncomingActivity(
-          'Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
-        );
+      render(<App />,
+        document.getElementById('webchat')
+      )
 
-        await pageConditions.numActivitiesShown(1);
+      await pageConditions.uiConnected();
 
-        // THEN: Fluent theme should be loaded.
-        const buildInfo = Object.fromEntries(
-          document
-            .querySelector('head > meta[name="botframework-webchat:fluent-theme"]')
-            .content.split(';')
-            .map(value => value.trim().split('='))
-        );
+      await directLine.emulateIncomingActivity(
+        'Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
+      );
 
-        expect(buildInfo).toHaveProperty('build-tool', 'tsup');
-        expect(buildInfo).toHaveProperty('module-format', 'esmodules');
-        expect(buildInfo.version).toMatch(/^\d+\.\d+\.\d+($|-)/u);
+      await pageConditions.numActivitiesShown(1);
 
-        expect(window.WebChat.FluentThemeProvider).toBeTruthy();
+      // THEN: Fluent theme should be loaded.
+      const buildInfo = Object.fromEntries(
+        document
+          .querySelector('head > meta[name="botframework-webchat:fluent-theme"]')
+          .content.split(';')
+          .map(value => value.trim().split('='))
+      );
 
-        // THEN: Should render the activity.
-        await host.snapshot('local');
-      });
-    </script>
-  </body>
+      expect(buildInfo).toHaveProperty('build-tool', 'tsup');
+      expect(buildInfo).toHaveProperty('module-format', 'esmodules');
+      expect(buildInfo.version).toMatch(/^\d+\.\d+\.\d+($|-)/u);
+
+      expect(window.WebChat.FluentThemeProvider).toBeTruthy();
+
+      // THEN: Should render the activity.
+      await host.snapshot('local');
+    });
+  </script>
+</body>
+
 </html>
