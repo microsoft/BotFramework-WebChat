@@ -1,7 +1,6 @@
 import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo, type ReactNode } from 'react';
 
-import PassthroughFallback from '../private/PassthroughFallback';
 import {
   ActivityBorderDecoratorMiddlewareProxy,
   createActivityBorderMiddleware,
@@ -40,15 +39,7 @@ function ActivityBorderDecorator({ activity, children }: ActivityBorderDecorator
     };
   }, [activity]);
 
-  const requestValue = useMemo(() => Object.freeze({ request }), [request]);
-
-  return (
-    <ActivityBorderDecoratorRequestContext.Provider value={requestValue}>
-      <ActivityBorderDecoratorMiddlewareProxy fallbackComponent={PassthroughFallback} request={request}>
-        {children}
-      </ActivityBorderDecoratorMiddlewareProxy>
-    </ActivityBorderDecoratorRequestContext.Provider>
-  );
+  return <ActivityBorderDecoratorMiddlewareProxy request={request}>{children}</ActivityBorderDecoratorMiddlewareProxy>;
 }
 
 export default memo(ActivityBorderDecorator);

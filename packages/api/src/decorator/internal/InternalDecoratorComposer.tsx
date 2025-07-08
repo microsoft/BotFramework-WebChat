@@ -1,12 +1,4 @@
 import React, { memo, useContext, useMemo, type ReactNode } from 'react';
-import {
-  ActivityBorderDecoratorMiddlewareProvider,
-  extractActivityBorderDecoratorMiddleware
-} from '../ActivityBorder/private/ActivityBorderDecoratorMiddleware';
-import {
-  ActivityGroupingDecoratorMiddlewareProvider,
-  extractActivityGroupingDecoratorMiddleware
-} from '../ActivityGrouping/private/ActivityGroupingDecoratorMiddleware';
 import DecoratorComposerContext from '../private/DecoratorComposerContext';
 import { type DecoratorMiddleware } from '../types';
 
@@ -32,24 +24,9 @@ function InternalDecoratorComposer({
     [existingContext, middlewareFromProps, priority]
   );
 
-  const activityBorderMiddleware = useMemo(() => extractActivityBorderDecoratorMiddleware(middleware), [middleware]);
-
-  const activityGroupingMiddleware = useMemo(
-    () => extractActivityGroupingDecoratorMiddleware(middleware),
-    [middleware]
-  );
-
   const context = useMemo(() => ({ middleware }), [middleware]);
 
-  return (
-    <DecoratorComposerContext.Provider value={context}>
-      <ActivityBorderDecoratorMiddlewareProvider middleware={activityBorderMiddleware}>
-        <ActivityGroupingDecoratorMiddlewareProvider middleware={activityGroupingMiddleware}>
-          {children}
-        </ActivityGroupingDecoratorMiddlewareProvider>
-      </ActivityBorderDecoratorMiddlewareProvider>
-    </DecoratorComposerContext.Provider>
-  );
+  return <DecoratorComposerContext.Provider value={context}>{children}</DecoratorComposerContext.Provider>;
 }
 
 export default memo(InternalDecoratorComposer);

@@ -1,8 +1,29 @@
 import { createContext } from 'react';
-import { ActivityBorderDecoratorMiddlewareRequest } from './ActivityBorderDecoratorMiddleware';
+
+type ActivityBorderDecoratorRequest = Readonly<{
+  /**
+   * Decorate the activity as it participate in a livestreaming session.
+   *
+   * - `"completing"` - decorate as the livestreaming is completing
+   * - `"ongoing"` - decorate as the livestreaming is ongoing
+   * - `"preparing"` - decorate as the livestreaming is being prepared
+   * - `undefined` - not participated in a livestreaming session
+   */
+  livestreamingState: 'completing' | 'ongoing' | 'preparing' | undefined;
+
+  /**
+   * Gets the role of the sender for the activity.
+   *
+   * - `"bot"` - the sender is a bot or other users
+   * - `"channel"` - the sender is the channel service
+   * - `"user"` - the sender is the current user
+   * - `undefined` - the sender is unknown
+   */
+  from: 'bot' | 'channel' | `user` | undefined;
+}>;
 
 type ActivityBorderDecoratorRequestContextType = Readonly<{
-  request: ActivityBorderDecoratorMiddlewareRequest;
+  request: ActivityBorderDecoratorRequest;
 }>;
 
 const ActivityBorderDecoratorRequestContext = createContext<ActivityBorderDecoratorRequestContextType>(
@@ -15,4 +36,4 @@ const ActivityBorderDecoratorRequestContext = createContext<ActivityBorderDecora
 );
 
 export default ActivityBorderDecoratorRequestContext;
-export { type ActivityBorderDecoratorRequestContextType };
+export { type ActivityBorderDecoratorRequestContextType, type ActivityBorderDecoratorRequest };

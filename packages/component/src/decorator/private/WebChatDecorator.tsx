@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow-callback */
 import {
   createActivityBorderMiddleware,
   DecoratorComposer,
@@ -12,12 +13,20 @@ import BorderLoader from './BorderLoader';
 import WebChatTheme from './WebChatTheme';
 
 const middleware: readonly DecoratorMiddleware[] = Object.freeze([
-  createActivityBorderMiddleware(
-    next => request => (request.livestreamingState === 'completing' ? BorderFlair : next(request))
-  ),
-  createActivityBorderMiddleware(
-    next => request => (request.livestreamingState === 'preparing' ? BorderLoader : next(request))
-  )
+  createActivityBorderMiddleware(function BorderFlairDecorator({ request, Next, ...props }) {
+    return (
+      <BorderFlair showFlair={props.showFlair ?? request.livestreamingState === 'completing'}>
+        <Next {...props} showFlair={false} />
+      </BorderFlair>
+    );
+  }),
+  createActivityBorderMiddleware(function BorderLoaderDecorator({ request, Next, ...props }) {
+    return (
+      <BorderLoader showLoader={props.showLoader ?? request.livestreamingState === 'preparing'}>
+        <Next {...props} showLoader={false} />
+      </BorderLoader>
+    );
+  })
 ]);
 
 const webChatDecoratorPropsSchema = pipe(
