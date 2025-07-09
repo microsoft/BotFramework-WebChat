@@ -35,7 +35,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - `useGroupActivities` hook is being deprecated in favor of the `useGroupActivitiesByName` hook. The hook will be removed on or after 2027-05-04
 - `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook. The hook will be removed on or after 2027-05-30
 - The following middleware should be created using their respective factory function:
-   - `activityBorderDecoratorMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
+   - `activityBorderDecoratorMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504), [#5510](https://github.com/microsoft/BotFramework-WebChat/pull/5510)
    - `activityGroupingDecoratorMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
    - `sendBoxMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
    - `sendBoxToolbarMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
