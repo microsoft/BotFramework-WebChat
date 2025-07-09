@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 -  Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb)
+-  Added `ComposerRef` type and ref-based focus control to `Composer` component, enabling programmatic focus of the send box input via `focusSendBoxInput()` method
 
 ### Fixed
 
