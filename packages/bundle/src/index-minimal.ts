@@ -19,6 +19,8 @@ import ReactWebChat, {
   withEmoji
 } from 'botframework-webchat-component';
 
+export type { ComposerRef } from 'botframework-webchat-component';
+
 import addVersion from './addVersion';
 import coreRenderWebChat from './renderWebChat';
 import createBrowserWebSpeechPonyfillFactory from './createBrowserWebSpeechPonyfillFactory';

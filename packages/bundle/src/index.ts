@@ -2,6 +2,7 @@
 // window['WebChat'] is required for TypeScript
 
 export * from './index-minimal';
+export type { ComposerRef } from './index-minimal';
 
 import { Components as MinimalComponents, hooks, version, withEmoji } from './index-minimal';
 import AdaptiveCardContent from './adaptiveCards/Attachment/AdaptiveCardContent';
