@@ -6,9 +6,10 @@ services:
   esm:
     image: ghcr.io/esm-dev/esm.sh:latest
     ports:
-      - "8080:8080"
+      - "5999:80"
     environment:
       - NPM_REGISTRY=https://registry.npmjs.org/
+      - ESMPORT=80
     volumes:
       - esm_data:/esmd
 

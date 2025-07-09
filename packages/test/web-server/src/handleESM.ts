@@ -42,7 +42,11 @@ const ruleConfig = {
 export async function handleESM(req, res) {
   try {
     const targetPath = req.url.replace(/^\/esm/u, '');
-    const upstreamUrl = `http://esm:8080${targetPath}`;
+    if (!targetPath.startsWith('/')) {
+      res.writeHead(400);
+      return res.end('Invalid ESM path');
+    }
+    const upstreamUrl = `http://esm${targetPath}`;
 
     const upstreamRes = await fetch(upstreamUrl);
     if (!upstreamRes.ok) {
