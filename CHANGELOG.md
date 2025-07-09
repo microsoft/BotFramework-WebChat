@@ -102,6 +102,12 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Attaching files will no longer remove previously attached files
    - Updated Fluent theme to use the new attachment preview feature
 - Added collapsible activity and activity with abstract handling, in PR [#5506](https://github.com/microsoft/BotFramework-WebChat/pull/5506), in PR [#5513](https://github.com/microsoft/BotFramework-WebChat/pull/5513), by [@OEvgeny](https://github.com/OEvgeny)
+- Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb)
+- Added `ComposerRef` type and ref-based focus control to `Composer` component, enabling programmatic focus of the send box input via `focusSendBoxInput()` method
+
+### Fixed
+
+- Fixes [#5050](https://github.com/microsoft/BotFramework-WebChat/issues/5050). Fixed focus should not blur briefly after tapping on a suggested action, by [@compulim](https://github.com/compulim), in PR [#5097](https://github.com/microsoft/BotFramework-WebChat/issues/pull/5097)
 
 ### Changed
 
