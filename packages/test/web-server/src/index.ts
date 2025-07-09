@@ -5,7 +5,7 @@ import { createServer as createSecureServer } from 'node:https';
 import selfsigned from 'selfsigned';
 import handleServe from 'serve-handler';
 
-import { handleEsm } from './handleEsm';
+import { handleESM } from './handleESM';
 
 const {
   // eslint-disable-next-line no-magic-numbers
@@ -19,7 +19,7 @@ const {
 
   const handler = (req, res) => {
     if (req.url.startsWith('/esm/')) {
-      return handleEsm(req, res);
+      return handleESM(req, res);
     }
 
     return handleServe(req, res, config);

@@ -39,7 +39,7 @@ const ruleConfig = {
   fix: '/esm$A'
 };
 
-export const handleEsm = async (req, res) => {
+export async function handleESM(req, res) {
   try {
     const targetPath = req.url.replace(/^\/esm/u, '');
     const upstreamUrl = `http://esm:8080${targetPath}`;
@@ -65,6 +65,6 @@ export const handleEsm = async (req, res) => {
   } catch (err) {
     console.error('ESM proxy error:', err.stack);
     res.writeHead(500);
-    return res.end("An internal server error occurred");
+    return res.end('An internal server error occurred');
   }
-};
+}
