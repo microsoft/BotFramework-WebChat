@@ -244,6 +244,10 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook, in PR [#5489](https://github.com/microsoft/BotFramework-WebChat/pull/5489), by [@compulim](https://github.com/compulim)
 - Fixed core internal import in legacy CommonJS environments, in [5509](https://github.com/microsoft/BotFramework-WebChat/pull/5509), by [@OEvgeny](https://github.com/OEvgeny)
 
+# Samples
+
+-  Added [`06.recomposing-ui\f.continuous-speech-recognition`](../../samples/06.recomposing-ui/f.continuous-speech-recognition) for continuous listening recomposing sample, in PR [#5431](https://github.com/microsoft/BotFramework-WebChat/pull/5431), by [@RushikeshGavali](https://github.com/RushikeshGavali)
+
 ## [4.18.0] - 2024-07-10
 
 ### Added
