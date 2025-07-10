@@ -6,7 +6,7 @@ import { ActivityBorderDecorator } from 'botframework-webchat-api/decorator';
 import { getActivityLivestreamingMetadata, getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
 import { useStyles } from 'botframework-webchat-styles/react';
 import cx from 'classnames';
-import React, { Fragment, memo, useCallback, useMemo, type ReactNode } from 'react';
+import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
 
 import isBasedOnSoftwareSourceCode from '../Attachment/Text/private/isBasedOnSoftwareSourceCode';
 import ScreenReaderText from '../ScreenReaderText';
@@ -75,7 +75,7 @@ const StackedLayoutInner = memo(
           {showAvatar && renderAvatar && renderAvatar()}
         </div>
         <div className={cx(classNames['stacked-layout__content'])}>
-          {!!hasDisplayText && (
+          {!!(hasDisplayText || messageThing?.abstract) && (
             <div
               aria-roledescription="message"
               className={cx(classNames['stacked-layout__message-row'])}
@@ -98,7 +98,7 @@ const StackedLayoutInner = memo(
           )}
           <div className={classNames['stacked-layout__attachment-list']}>{children}</div>
         </div>
-        <div className={cx(classNames['stacked-layout__alignment-pad'])} />
+        <div className={classNames['stacked-layout__alignment-pad']} />
       </div>
     );
   }
@@ -166,16 +166,17 @@ const StackedLayout = ({
 
   const renderMainBubbleContent = useCallback(
     (title = '') => (
-      <Fragment>
+      <div className={classNames['stacked-layout__bubble']}>
         {title && <div className={classNames['stacked-layout__title']}>{title}</div>}
-        {renderAttachment({
-          activity,
-          attachment: {
-            content: activityDisplayText,
-            contentType: textFormatToContentType('textFormat' in activity ? activity.textFormat : undefined)
-          }
-        })}
-      </Fragment>
+        {activityDisplayText &&
+          renderAttachment({
+            activity,
+            attachment: {
+              content: activityDisplayText,
+              contentType: textFormatToContentType('textFormat' in activity ? activity.textFormat : undefined)
+            }
+          })}
+      </div>
     ),
     [activity, activityDisplayText, classNames, renderAttachment]
   );
@@ -287,7 +288,7 @@ const StackedLayout = ({
         renderBubbleContent={renderBubbleContent}
         showCallout={showCallout}
       >
-        {!isCollapsible && attachmentChildren}
+        {!isCollapsible && attachmentChildren.length > 0 && attachmentChildren}
       </StackedLayoutInner>
       {typeof renderActivityStatus === 'function' && (
         <div className={cx(classNames['stacked-layout__status'])}>

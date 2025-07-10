@@ -47,8 +47,8 @@ const livestreamingActivitySchema = union([
       streamType: literal('informative')
     }),
     id: string(),
-    // Informative message must have "text".
-    text: string(),
+    // Informative may not have "text", but should have abstract instead (checked later)
+    text: optional(undefinedable(string())),
     type: literal('typing'),
     entities: optional(array(any()), EMPTY_ARRAY)
   }),
