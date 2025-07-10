@@ -18,3 +18,5 @@ ENTRYPOINT ["node", "./index.js"]
 ADD serve-test.json /var/web/serve.json
 ADD packages/test/web-server/dist/index.js /var/web/
 RUN echo {}>/var/web/package.json
+WORKDIR /var/web/
+RUN npm i @ast-grep/napi@0.38.6

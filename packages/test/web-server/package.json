@@ -25,6 +25,7 @@
     "serve-handler": "6.1.6"
   },
   "devDependencies": {
+    "@ast-grep/napi": "^0.38.6",
     "tsup": "^8.3.6"
   }
 }
