@@ -6,7 +6,8 @@
   width: auto;
 
   &.variant-fluent {
-    margin: 0 0 var(--webchat-spacingVerticalM) var(--webchat-spacingHorizontalSNudge);
+    margin: 0 var(--webchat-spacingHorizontalSNudge) var(--webchat-spacingVerticalM)
+      var(--webchat-spacingHorizontalSNudge);
   }
 
   &.variant-copilot {

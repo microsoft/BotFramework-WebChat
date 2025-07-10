@@ -21,11 +21,19 @@
     width: var(--webchat__padding--regular);
   }
 
+  .stacked-layout__bubble {
+    display: contents;
+  }
+
   .stacked-layout__title {
     color: var(--webchat__color--subtle);
     font-size: 1.1em;
-    margin-block-start: var(--webchat__padding--regular);
+    margin-block: var(--webchat__padding--regular);
     margin-inline: var(--webchat__padding--regular);
+
+    &:not(:only-child) {
+      margin-block-end: 0;
+    }
   }
 
   .stacked-layout__attachment {

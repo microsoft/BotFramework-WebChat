@@ -21,7 +21,7 @@
       window.React = React;
     </script>
     <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.development.js"></script>
     <style type="text/css">
       #webchat {
         width: 640px;
@@ -246,6 +246,25 @@ plot_sine_waves()`;
           entities: [
             {
               ...aiMessageEntity,
+              keywords: [],
+              abstract: 'Only abstract…',
+            }
+          ],
+          channelData: {
+            streamType: "informative",
+            streamSequence: 2
+          },
+          type: 'typing',
+          id: "a4c0c01d-c06e-4dde-9278-265c607b545b",
+        });
+
+        await host.snapshot('local');
+
+        directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          entities: [
+            {
+              ...aiMessageEntity,
               keywords: ['Collapsible'],
               abstract: 'Informative…', 
               isBasedOn: {
@@ -257,13 +276,12 @@ plot_sine_waves()`;
           ],
           channelData: {
             streamType: "informative",
-            streamSequence: 2
+            streamSequence: 3
           },
           type: 'typing',
           id: "a4c0c01d-c06e-4dde-9278-265c607b545b",
           text: ''
         });
-
 
         await pageConditions.numActivitiesShown(2);
 
@@ -289,7 +307,7 @@ plot_sine_waves()`;
           ],
           channelData: {
             streamType: "final",
-            streamSequence: 3
+            streamSequence: 4
           },
           id: "a4c0c01d-c06e-4dde-9278-265c607b545b",
           type: 'message',

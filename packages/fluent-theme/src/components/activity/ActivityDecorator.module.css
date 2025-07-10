@@ -118,7 +118,7 @@
     font-size: var(--webchat-fontSizeBase400);
     line-height: var(--webchat-lineHeightBase400);
     color: var(--webchat-colorNeutralForeground4);
-    margin: var(--webchat__bubble--block-padding) var(--webchat__bubble--inline-padding) 0;
+    margin: var(--webchat__bubble--block-padding) var(--webchat__bubble--inline-padding);
   }
 
   :global(.stacked-layout__attachment-row) {
