@@ -18,6 +18,7 @@
 
       .flair--ongoing {
         outline-color: green;
+        border-radius: var(--webchat-borderRadiusXLarge);
       }
 
       .loader {
@@ -39,28 +40,28 @@
           }
         } = window; // Imports in UMD fashion.
 
-        function Flair({ children }) {
-          return <div className="flair">{children}</div>;
+        function Flair({ request, Next, ...props }) {
+          return <div className={request.livestreamingState === 'completing' ? 'flair' : ''}>
+            <Next {...props} />
+          </div>;
         }
 
-        function FlairOngoing({ children }) {
-          return <div className="flair flair--ongoing">{children}</div>;
+        function FlairOngoing({ request, Next, ...props }) {
+          return <div className={request.livestreamingState === 'ongoing' ? 'flair flair--ongoing' : ''}>
+            <Next {...props} />
+          </div>;
         }
 
-        function Loader({ children }) {
-          return <div className="loader">{children}</div>;
+        function Loader({ request, Next, ...props }) {
+          return <div className={request.livestreamingState === 'preparing' ? 'loader' : ''}>
+            <Next {...props} showLoader={false} />
+          </div>;
         }
 
         const decoratorMiddleware = [
-          createActivityBorderMiddleware(
-            next => request => (request.livestreamingState === 'completing' ? Flair : next(request))
-          ),
-          createActivityBorderMiddleware(
-            next => request => (request.livestreamingState === 'preparing' ? Loader : next(request))
-          ),
-          createActivityBorderMiddleware(
-            next => request => (request.livestreamingState === 'ongoing' ? FlairOngoing : next(request))
-          )
+          createActivityBorderMiddleware(Flair),
+          createActivityBorderMiddleware(FlairOngoing),
+          createActivityBorderMiddleware(Loader)
         ];
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
