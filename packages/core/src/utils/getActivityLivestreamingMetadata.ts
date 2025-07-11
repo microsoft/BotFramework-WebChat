@@ -20,6 +20,7 @@ import {
 } from 'valibot';
 
 import { type WebChatActivity } from '../types/WebChatActivity';
+import getOrgSchemaMessage from './getOrgSchemaMessage';
 
 const EMPTY_ARRAY = Object.freeze([]);
 
@@ -132,7 +133,11 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
         : {
             sequenceNumber: streamData.streamSequence,
             sessionId,
-            type: !(output.text || output.attachments?.length)
+            type: !(
+              output.text ||
+              output.attachments?.length ||
+              ('entities' in output && getOrgSchemaMessage(output.entities)?.abstract)
+            )
               ? 'contentless'
               : streamData.streamType === 'informative'
                 ? 'informative message'

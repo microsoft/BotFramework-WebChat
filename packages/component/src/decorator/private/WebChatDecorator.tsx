@@ -1,24 +1,46 @@
-import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
-import React, { memo, type ReactNode } from 'react';
+/* eslint-disable prefer-arrow-callback */
+import {
+  createActivityBorderMiddleware,
+  DecoratorComposer,
+  type DecoratorMiddleware
+} from 'botframework-webchat-api/decorator';
+import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
+import React, { memo } from 'react';
+import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import BorderFlair from './BorderFlair';
 import BorderLoader from './BorderLoader';
 import WebChatTheme from './WebChatTheme';
 
 const middleware: readonly DecoratorMiddleware[] = Object.freeze([
-  init =>
-    init === 'activity border' &&
-    (next => request => (request.livestreamingState === 'completing' ? BorderFlair : next(request))),
-  init =>
-    init === 'activity border' &&
-    (next => request => (request.livestreamingState === 'preparing' ? BorderLoader : next(request)))
+  createActivityBorderMiddleware(function BorderFlairDecorator({ request, Next, ...props }) {
+    return (
+      <BorderFlair showFlair={props.showFlair ?? request.livestreamingState === 'completing'}>
+        <Next {...props} showFlair={false} />
+      </BorderFlair>
+    );
+  }),
+  createActivityBorderMiddleware(function BorderLoaderDecorator({ request, Next, ...props }) {
+    return (
+      <BorderLoader showLoader={props.showLoader ?? request.livestreamingState === 'preparing'}>
+        <Next {...props} showLoader={false} />
+      </BorderLoader>
+    );
+  })
 ]);
 
-type WebChatDecoratorProps = Readonly<{
-  readonly children?: ReactNode | undefined;
-}>;
+const webChatDecoratorPropsSchema = pipe(
+  object({
+    children: optional(reactNode())
+  }),
+  readonly()
+);
 
-function WebChatDecorator({ children }: WebChatDecoratorProps) {
+type WebChatDecoratorProps = InferInput<typeof webChatDecoratorPropsSchema>;
+
+function WebChatDecorator(props: WebChatDecoratorProps) {
+  const { children } = validateProps(webChatDecoratorPropsSchema, props);
+
   return (
     <WebChatTheme>
       <DecoratorComposer middleware={middleware}>{children}</DecoratorComposer>
@@ -27,4 +49,4 @@ function WebChatDecorator({ children }: WebChatDecoratorProps) {
 }
 
 export default memo(WebChatDecorator);
-export { type WebChatDecoratorProps };
+export { webChatDecoratorPropsSchema, type WebChatDecoratorProps };

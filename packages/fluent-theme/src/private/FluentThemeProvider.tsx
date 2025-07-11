@@ -1,12 +1,12 @@
+/* eslint-disable prefer-arrow-callback */
 import { type ActivityMiddleware, type StyleOptions, type TypingIndicatorMiddleware } from 'botframework-webchat-api';
 import {
+  createActivityBorderMiddleware,
   DecoratorComposer,
-  DecoratorMiddleware,
-  type DecoratorMiddlewareInit,
-  type DecoratorMiddlewareTypes
+  type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
-import { Components } from 'botframework-webchat-component';
 import { WebChatDecorator } from 'botframework-webchat-component/decorator';
+import { Components } from 'botframework-webchat-component';
 import React, { memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';
@@ -54,12 +54,13 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
 const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
-  (init: DecoratorMiddlewareInit) =>
-    init === 'activity border' &&
-    ((next => request =>
-      request.livestreamingState === 'preparing'
-        ? ActivityLoader
-        : next(request)) satisfies DecoratorMiddlewareTypes['activity border'])
+  createActivityBorderMiddleware(function FluentBorderLoader({ request, Next, ...props }) {
+    return (
+      <ActivityLoader showLoader={props.showLoader ?? request.livestreamingState === 'preparing'}>
+        <Next {...props} showLoader={false} />
+      </ActivityLoader>
+    );
+  })
 ]);
 
 const styles = createStyles('fluent-theme');

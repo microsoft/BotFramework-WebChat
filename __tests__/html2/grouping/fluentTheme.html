@@ -35,7 +35,11 @@
           const {
             React: { createElement },
             ReactDOM: { render },
-            WebChat: { FluentThemeProvider, ReactWebChat }
+            WebChat: {
+              decorator: { createActivityGroupingMiddleware },
+              FluentThemeProvider,
+              ReactWebChat
+            }
           } = window; // Imports in UMD fashion.
 
           const clock = lolex.createClock();
@@ -59,22 +63,20 @@
               : undefined;
 
           const decoratorMiddleware = [
-            init =>
-              init === 'activity grouping' &&
-              (next => request => {
-                const DownstreamComponent = next(request);
+            createActivityGroupingMiddleware(next => request => {
+              const DownstreamComponent = next(request);
 
-                if (request.groupingName) {
-                  return ({ activities, children }) =>
-                    createElement(
-                      'div',
-                      { className: `grouping grouping--${request.groupingName}` },
-                      DownstreamComponent ? createElement(DownstreamComponent, { activities }, children) : children
-                    );
-                }
+              if (request.groupingName) {
+                return ({ activities, children }) =>
+                  createElement(
+                    'div',
+                    { className: `grouping grouping--${request.groupingName}` },
+                    DownstreamComponent ? createElement(DownstreamComponent, { activities }, children) : children
+                  );
+              }
 
-                return DownstreamComponent;
-              })
+              return DownstreamComponent;
+            })
           ];
 
           render(

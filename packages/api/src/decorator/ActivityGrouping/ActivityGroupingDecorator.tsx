@@ -1,11 +1,15 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { memo, useMemo, type ReactNode } from 'react';
+import React, { memo, useContext, useMemo, type ReactNode } from 'react';
 
 import PassthroughFallback from '../private/PassthroughFallback';
 import {
+  ActivityGroupingDecoratorMiddlewareProvider,
   ActivityGroupingDecoratorMiddlewareProxy,
+  createActivityGroupingMiddleware,
+  extractActivityGroupingDecoratorMiddleware,
   type ActivityGroupingDecoratorMiddlewareRequest
 } from './private/ActivityGroupingDecoratorMiddleware';
+import DecoratorComposerContext from '../private/DecoratorComposerContext';
 
 type ActivityGroupingDecoratorProps = Readonly<{
   activities: readonly WebChatActivity[];
@@ -15,17 +19,25 @@ type ActivityGroupingDecoratorProps = Readonly<{
 
 function ActivityGroupingDecorator({ activities, children, groupingName }: ActivityGroupingDecoratorProps) {
   const request = useMemo<ActivityGroupingDecoratorMiddlewareRequest>(() => ({ groupingName }), [groupingName]);
+  const { middleware } = useContext(DecoratorComposerContext);
+
+  const activityGroupingMiddleware = useMemo(
+    () => extractActivityGroupingDecoratorMiddleware(middleware),
+    [middleware]
+  );
 
   return (
-    <ActivityGroupingDecoratorMiddlewareProxy
-      activities={activities}
-      fallbackComponent={PassthroughFallback}
-      request={request}
-    >
-      {children}
-    </ActivityGroupingDecoratorMiddlewareProxy>
+    <ActivityGroupingDecoratorMiddlewareProvider middleware={activityGroupingMiddleware}>
+      <ActivityGroupingDecoratorMiddlewareProxy
+        activities={activities}
+        fallbackComponent={PassthroughFallback}
+        request={request}
+      >
+        {children}
+      </ActivityGroupingDecoratorMiddlewareProxy>
+    </ActivityGroupingDecoratorMiddlewareProvider>
   );
 }
 
 export default memo(ActivityGroupingDecorator);
-export { type ActivityGroupingDecoratorProps };
+export { createActivityGroupingMiddleware, type ActivityGroupingDecoratorProps };

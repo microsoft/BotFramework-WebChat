@@ -40,10 +40,14 @@ export default function createMarkdownStyle() {
         background: 'transparent',
         border: 0,
         cursor: 'pointer',
+        display: 'inline-block',
         fontFamily: 'unset',
         fontSize: 'unset',
+        overflow: 'hidden',
         padding: 0,
         textDecoration: 'underline',
+        textOverflow: 'ellipsis',
+        verticalAlign: 'bottom',
         whiteSpace: 'nowrap',
 
         [FORCED_COLORS_SELECTOR]: {
@@ -56,6 +60,11 @@ export default function createMarkdownStyle() {
       },
 
       '& .webchat__render-markdown__pure-identifier': {
+        display: 'inline-block',
+        maxWidth: '100%',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        verticalAlign: 'bottom',
         whiteSpace: 'nowrap'
       },
 

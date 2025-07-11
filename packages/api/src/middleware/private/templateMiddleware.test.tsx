@@ -3,7 +3,7 @@
 import { render } from '@testing-library/react';
 import React, { Fragment, type ReactNode } from 'react';
 
-import templateMiddleware from './templateMiddleware';
+import templateMiddleware, { type InferMiddleware } from './templateMiddleware';
 
 type ButtonProps = Readonly<{ children?: ReactNode | undefined }>;
 type LinkProps = Readonly<{ children?: ReactNode | undefined; href: string }>;
@@ -20,32 +20,30 @@ const InternalLinkImpl = ({ children, href }: LinkProps) => <a href={href}>{chil
 
 // User story for using templateMiddleware as a building block for uber middleware.
 test('an uber middleware', () => {
+  const buttonTemplate = templateMiddleware<void, ButtonProps>('Button');
   const {
-    initMiddleware: initButtonMiddleware,
+    createMiddleware: createButtonMiddleware,
+    extractMiddleware: extractButtonMiddleware,
     Provider: ButtonProvider,
-    Proxy: Button,
-    // False positive, `types` is used for its typing.
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    types: buttonTypes
-  } = templateMiddleware<'button', void, ButtonProps>('Button');
+    Proxy: Button
+  } = buttonTemplate;
 
-  type ButtonMiddleware = typeof buttonTypes.middleware;
+  type ButtonMiddleware = InferMiddleware<typeof buttonTemplate>;
 
+  const linkTemplate = templateMiddleware<{ external: boolean }, LinkProps>('Link');
   const {
-    initMiddleware: initLinkMiddleware,
+    createMiddleware: createLinkMiddleware,
+    extractMiddleware: extractLinkMiddleware,
     Provider: LinkProvider,
-    Proxy: Link,
-    // False positive, `types` is used for its typing.
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    types: linkTypes
-  } = templateMiddleware<'link', { external: boolean }, LinkProps>('Link');
+    Proxy: Link
+  } = linkTemplate;
 
-  type LinkMiddleware = typeof linkTypes.middleware;
+  type LinkMiddleware = InferMiddleware<typeof linkTemplate>;
 
-  const buttonMiddleware: ButtonMiddleware[] = [init => init === 'button' && (() => () => ButtonImpl)];
+  const buttonMiddleware: ButtonMiddleware[] = [createButtonMiddleware(() => () => ButtonImpl)];
   const linkMiddleware: LinkMiddleware[] = [
-    init => init === 'link' && (next => request => (request.external ? ExternalLinkImpl : next(request))),
-    init => init === 'link' && (() => () => InternalLinkImpl)
+    createLinkMiddleware(next => request => (request.external ? ExternalLinkImpl : next(request))),
+    createLinkMiddleware(() => () => InternalLinkImpl)
   ];
 
   const App = ({
@@ -57,9 +55,9 @@ test('an uber middleware', () => {
   }>) => (
     <Fragment>
       {/* TODO: Should not case middleware to any */}
-      <ButtonProvider middleware={initButtonMiddleware(middleware as any, 'button')}>
+      <ButtonProvider middleware={extractButtonMiddleware(middleware as any)}>
         {/* TODO: Should not case middleware to any */}
-        <LinkProvider middleware={initLinkMiddleware(middleware as any, 'link')}>{children}</LinkProvider>
+        <LinkProvider middleware={extractLinkMiddleware(middleware as any)}>{children}</LinkProvider>
       </ButtonProvider>
     </Fragment>
   );

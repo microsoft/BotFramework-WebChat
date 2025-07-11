@@ -1,0 +1,38 @@
+:global(.webchat) .code-block-content {
+  border-block: var(--webchat__border-width--bubble) var(--webchat__border-style--bubble)
+    var(--webchat__border-color--bubble);
+  border-radius: var(--webchat__border-radius--bubble);
+  display: block;
+  font-family: var(--webchat__font--primary);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  margin-block-end: calc(var(--webchat__border-width--bubble) * -1);
+  overflow: hidden;
+  overflow: clip;
+  position: relative;
+}
+
+:global(.webchat) .code-block-content__header {
+  align-items: center;
+  display: flex;
+  gap: var(--webchat__padding--regular);
+  justify-content: space-between;
+  padding: var(--webchat__padding--regular);
+}
+
+:global(.webchat) .code-block-content__title {
+  font-weight: 600;
+
+  &::first-letter {
+    text-transform: uppercase;
+  }
+}
+
+:global(.webchat) .code-block-content__code-block {
+  border: none;
+  margin: 0;
+  max-height: 360px;
+  overflow-y: auto;
+  padding: var(--webchat__padding--regular) 8px var(--webchat__padding--regular) var(--webchat__padding--regular);
+}

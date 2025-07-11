@@ -34,6 +34,11 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - If you customized `renderMarkdown` with a custom HTML sanitizer, please move the HTML sanitizer to the new HTML content transformer middleware
 - `useGroupActivities` hook is being deprecated in favor of the `useGroupActivitiesByName` hook. The hook will be removed on or after 2027-05-04
 - `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook. The hook will be removed on or after 2027-05-30
+- The following middleware should be created using their respective factory function:
+   - `activityBorderDecoratorMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504), [#5510](https://github.com/microsoft/BotFramework-WebChat/pull/5510)
+   - `activityGroupingDecoratorMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
+   - `sendBoxMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
+   - `sendBoxToolbarMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
 
 ### Added
 
@@ -96,6 +101,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Resolved [#5463](https://github.com/microsoft/BotFramework-WebChat/issues/5463). Added attachment preview for `sendAttachmentOn: "send"`, in PR [#5464](https://github.com/microsoft/BotFramework-WebChat/pull/5464), by [@compulim](https://github.com/compulim), in PR [#5492](https://github.com/microsoft/BotFramework-WebChat/pull/5492), by [@OEvgeny](https://github.com/OEvgeny)
    - Attaching files will no longer remove previously attached files
    - Updated Fluent theme to use the new attachment preview feature
+- Added collapsible activity and activity with abstract handling, in PR [#5506](https://github.com/microsoft/BotFramework-WebChat/pull/5506), in PR [#5513](https://github.com/microsoft/BotFramework-WebChat/pull/5513), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Changed
 
@@ -230,11 +236,13 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Downstreamers who use our CommonJS and ES Modules output with esbuild will need to disable AMD themselves to prevent conflict with RequireJS
 - Fixed [#5479](https://github.com/microsoft/BotFramework-WebChat/issues/5479). Fixed feedback form buttons should not squash other buttons, in PR [#5480](https://github.com/microsoft/BotFramework-WebChat/pull/5480), by [@compulim](https://github.com/compulim)
    - Migrated to radio button for like/dislike where form submission is required
+- Fixed long citation identifiers break activity layout, in PR [#5507](https://github.com/microsoft/BotFramework-WebChat/pull/5507), by [@OEvgeny](https://github.com/OEvgeny)
 
 # Removed
 
 - Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
 - `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook, in PR [#5489](https://github.com/microsoft/BotFramework-WebChat/pull/5489), by [@compulim](https://github.com/compulim)
+- Fixed core internal import in legacy CommonJS environments, in [5509](https://github.com/microsoft/BotFramework-WebChat/pull/5509), by [@OEvgeny](https://github.com/OEvgeny)
 
 ## [4.18.0] - 2024-07-10
 
@@ -329,7 +337,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - `useSendMessage` hook is updated to support sending attachments with a message
    - `useSendBoxAttachments` hook is added to get/set attachments in the send box
 - Resolves [#5081](https://github.com/microsoft/BotFramework-WebChat/issues/5081). Added `uploadAccept` and `uploadMultiple` style options, by [@ms-jb](https://github.com/ms-jb), in PR [#5048](https://github.com/microsoft/BotFramework-WebChat/pull/5048)
-- Added `sendBoxMiddleware` and `sendBoxToolbarMiddleware`, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
+- Added `sendBoxMiddleware` and `sendBoxToolbarMiddleware`, by [@compulim](https://github.com/compulim), in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120) and [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
+   - Instead of passing barebone middleware, use the `createSendBoxMiddleware()` and `createSendBoxToolbarMiddleware()` factory function correspondingly, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
 - (Experimental) Added `botframework-webchat-fluent-theme` package for applying Fluent UI theme to Web Chat, by [@compulim](https://github.com/compulim) and [@OEvgeny](https://github.com/OEvgeny)
    - Initial commit, in PR [#5120](https://github.com/microsoft/BotFramework-WebChat/pull/5120)
    - Inherits Fluent CSS palette if available, in PR [#5122](https://github.com/microsoft/BotFramework-WebChat/pull/5122)

@@ -4,7 +4,10 @@ import { useStyles } from 'botframework-webchat-styles/react';
 
 import styles from './BorderFlair.module.css';
 
-function BorderFlair({ children }: Readonly<{ children?: ReactNode | undefined }>) {
+function BorderFlair({
+  children,
+  showFlair = true
+}: Readonly<{ children?: ReactNode | undefined; showFlair?: boolean }>) {
   const classNames = useStyles(styles);
   const [isComplete, setComplete] = useState(false);
 
@@ -16,13 +19,19 @@ function BorderFlair({ children }: Readonly<{ children?: ReactNode | undefined }
     []
   );
 
+  if (!showFlair && isComplete) {
+    setComplete(false);
+  }
+
   return (
     <Fragment>
       {children}
-      <div
-        className={cx(classNames['border-flair'], isComplete && classNames['border-flair--complete'])}
-        onAnimationEnd={handleAnimationEnd}
-      />
+      {showFlair && (
+        <div
+          className={cx(classNames['border-flair'], isComplete && classNames['border-flair--complete'])}
+          onAnimationEnd={handleAnimationEnd}
+        />
+      )}
     </Fragment>
   );
 }

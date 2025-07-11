@@ -1,14 +1,4 @@
 import React, { memo, useContext, useMemo, type ReactNode } from 'react';
-import {
-  ActivityBorderDecoratorMiddlewareProvider,
-  initActivityBorderDecoratorMiddleware
-} from '../ActivityBorder/private/ActivityBorderDecoratorMiddleware';
-import { activityBorderDecoratorTypeName } from '../ActivityBorder/types';
-import {
-  ActivityGroupingDecoratorMiddlewareProvider,
-  initActivityGroupingDecoratorMiddleware
-} from '../ActivityGrouping/private/ActivityGroupingDecoratorMiddleware';
-import { activityGroupingDecoratorTypeName } from '../ActivityGrouping/types';
 import DecoratorComposerContext from '../private/DecoratorComposerContext';
 import { type DecoratorMiddleware } from '../types';
 
@@ -34,27 +24,9 @@ function InternalDecoratorComposer({
     [existingContext, middlewareFromProps, priority]
   );
 
-  const activityBorderMiddleware = useMemo(
-    () => initActivityBorderDecoratorMiddleware(middleware, activityBorderDecoratorTypeName),
-    [middleware]
-  );
-
-  const activityGroupingMiddleware = useMemo(
-    () => initActivityGroupingDecoratorMiddleware(middleware, activityGroupingDecoratorTypeName),
-    [middleware]
-  );
-
   const context = useMemo(() => ({ middleware }), [middleware]);
 
-  return (
-    <DecoratorComposerContext.Provider value={context}>
-      <ActivityBorderDecoratorMiddlewareProvider middleware={activityBorderMiddleware}>
-        <ActivityGroupingDecoratorMiddlewareProvider middleware={activityGroupingMiddleware}>
-          {children}
-        </ActivityGroupingDecoratorMiddlewareProvider>
-      </ActivityBorderDecoratorMiddlewareProvider>
-    </DecoratorComposerContext.Provider>
-  );
+  return <DecoratorComposerContext.Provider value={context}>{children}</DecoratorComposerContext.Provider>;
 }
 
 export default memo(InternalDecoratorComposer);
