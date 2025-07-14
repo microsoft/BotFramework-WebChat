@@ -49,6 +49,7 @@ export default function createSendBoxStyle({
         flexDirection: 'column',
         // eslint-disable-next-line no-magic-numbers
         gap: `${paddingRegular / 2}px`,
+        gridArea: 'text-box',
         // eslint-disable-next-line no-magic-numbers
         paddingBottom: `${paddingRegular / 2}px`,
         // eslint-disable-next-line no-magic-numbers
@@ -60,6 +61,14 @@ export default function createSendBoxStyle({
       '& .webchat__send-box__attachment-bar': {
         padding: `${paddingRegular}px`,
         paddingBlockEnd: `0px`
+      },
+
+      '& .webchat__upload-button': {
+        gridArea: 'upload-button'
+      },
+
+      '& .webchat__send-button': {
+        gridArea: 'send-button'
       }
     }
   } satisfies StyleSet;

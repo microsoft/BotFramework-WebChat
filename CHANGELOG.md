@@ -102,7 +102,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Attaching files will no longer remove previously attached files
    - Updated Fluent theme to use the new attachment preview feature
 - Added collapsible activity and activity with abstract handling, in PR [#5506](https://github.com/microsoft/BotFramework-WebChat/pull/5506), in PR [#5513](https://github.com/microsoft/BotFramework-WebChat/pull/5513), by [@OEvgeny](https://github.com/OEvgeny)
-- Added disableFileUpload boolean to handle both hiding of file attachment button and disabling of fileupload DropZone rendering logic inside SendBox.tsx when true, in PR [#5508](https://github.com/microsoft/BotFramework-WebChat/pull/5508), by [@JamesNewbyAtMicrosoft](https://github.com/JamesNewbyAtMicrosoft)
+- Added `disableFileUpload` flag to completelly disable file upload feature, in PR [#5508](https://github.com/microsoft/BotFramework-WebChat/pull/5508), by [@JamesNewbyAtMicrosoft](https://github.com/JamesNewbyAtMicrosoft)
 
 ### Changed
 

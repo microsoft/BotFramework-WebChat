@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en-US">
   <head>
+    <title>Disable file upload</title>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
     <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
     <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
@@ -12,33 +13,22 @@
   </head>
   <body>
     <main id="webchat"></main>
-    <script type="text/babel">
+    <script>
       run(async function () {
-        const {
-          React,
-          ReactDOM: { render },
-          WebChat: { FluentThemeProvider, ReactWebChat }
-        } = window; // Imports in UMD fashion.
-
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        const App = () => (
-          <ReactWebChat directLine={directLine} store={store} styleOptions={{ disableFileUpload: true }} />
-        );
-
-        render(
-          <FluentThemeProvider>
-            <App />
-          </FluentThemeProvider>,
-          document.getElementById('webchat')
-        );
+        renderWebChat({
+          directLine,
+          store,
+          styleOptions: { disableFileUpload: true }
+        }, document.getElementById('webchat')); 
 
         await pageConditions.uiConnected();
 
         // THEN: No attach button should be render.
         expect(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton)).toBeFalsy();
         expect(pageElements.byTestId(WebChat.testIds.sendBoxDropZone)).toBeFalsy();
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

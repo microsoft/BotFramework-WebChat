@@ -297,8 +297,15 @@ type StyleOptions = {
    */
 
   hideSendBox?: boolean;
+
+  /**
+   * Indicates if the upload file button should be hidden.
+   *
+   * @default false
+   *
+   * @deprecated deprecated since 4.18.0: obsolated by {@linkcode disableFileUpload}.  This option will be removed on or after 2027-07-14.
+   */
   hideUploadButton?: boolean;
-  disableFileUpload?: boolean;
 
   /**
    * (EXPERIMENTAL) `true`, if the telephone keypad button should be shown, otherwise, `false`. Defaults to `true`.
@@ -977,6 +984,15 @@ type StyleOptions = {
    * @default 3
    */
   sendBoxAttachmentBarMaxThumbnail?: number;
+
+  /**
+   * Indicates if file upload should be disabled.
+   *
+   * @default false
+   *
+   * New in 4.19.0.
+   */
+  disableFileUpload?: boolean;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:
