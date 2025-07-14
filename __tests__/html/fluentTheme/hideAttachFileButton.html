@@ -23,14 +23,7 @@
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const App = () => (
-          <ReactWebChat 
-            directLine={directLine} 
-            store={store} 
-            styleOptions={{ hideUploadButton: true, hideTelephoneKeypadButton: false }}
-            overrideLocalizedStrings={{
-              TELEPHONE_KEYPAD_INPUT_MESSAGE: 'Only supports single-digit input. [Learn more](https://aka.ms/ms)'
-            }}
-          />
+          <ReactWebChat directLine={directLine} store={store} styleOptions={{ hideUploadButton: true }} />
         );
 
         render(
@@ -42,25 +35,8 @@
 
         await pageConditions.uiConnected();
 
-        await directLine.emulateIncomingActivity(
-          'Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
-        );
-
-        await pageConditions.numActivitiesShown(1);
-
-        // WHEN: Telephone keypad button is clicked.
-        await host.click(
-          document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTelephoneKeypadToolbarButton}"]`)
-        );
-
-        // THEN: Should show the telephone keypad with custom link
-        await host.snapshot();
-
-        // WHEN: The link is focused
-        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTelephoneKeypadToolbarButton}"]`).focus();
-        await host.sendShiftTab();
-
-        // THEN: Should display a focused state
+        // THEN: No attach button should be render.
+        expect(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton)).toBeFalsy();
         await host.snapshot();
       });
     </script>
