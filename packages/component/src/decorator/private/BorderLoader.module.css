@@ -10,10 +10,6 @@
   }
 }
 
-:global(.webchat) .border-loader {
-  border-radius: inherit;
-}
-
 :global(.webchat) .border-loader__track {
   --webchat-decorator-borderLoader-borderSize: var(--webchat-borderLoader-borderSize, 4px);
 

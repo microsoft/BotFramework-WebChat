@@ -1,0 +1,143 @@
+:global(.webchat) .stacked-layout {
+  font-family: var(--webchat__font--primary);
+  margin-inline: var(--webchat__padding--regular);
+  position: relative; /* This is to keep screen reader text in the destinated area. */
+
+  .stacked-layout__attachment-row,
+  .stacked-layout__main,
+  .stacked-layout__message-row,
+  .stacked-layout__status {
+    display: flex;
+  }
+
+  .stacked-layout__alignment-pad {
+    flex-shrink: 0;
+    transition-duration: var(--webchat__transition-duration);
+    transition-property: width;
+    width: 0;
+  }
+
+  &.stacked-layout--extra-trailing .stacked-layout__alignment-pad {
+    width: var(--webchat__padding--regular);
+  }
+
+  .stacked-layout__bubble {
+    display: contents;
+  }
+
+  .stacked-layout__title {
+    color: var(--webchat__color--subtle);
+    font-size: 1.1em;
+    margin-block: var(--webchat__padding--regular);
+    margin-inline: var(--webchat__padding--regular);
+
+    &:not(:only-child) {
+      margin-block-end: 0;
+    }
+  }
+
+  .stacked-layout__attachment {
+    max-width: var(--webchat__max-width--attachment-bubble);
+    min-width: var(--webchat__min-width--attachment-bubble);
+    transition-duration: var(--webchat__transition-duration);
+    transition-property: max-width, min-width;
+    width: 100%;
+  }
+
+  .stacked-layout__attachment-list {
+    display: flex;
+    flex-direction: column;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  .stacked-layout__attachment-row {
+    margin-block-start: var(--webchat__padding--regular);
+    width: 100%;
+  }
+
+  &.stacked-layout--no-message .stacked-layout__attachment-list .stacked-layout__attachment-row:first-child {
+    margin-block-start: 0;
+  }
+
+  .stacked-layout__avatar-gutter {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition-duration: var(--webchat__transition-duration);
+    transition-property: width;
+    width: 0;
+  }
+
+  &.stacked-layout--from-user {
+    .stacked-layout__attachment-row,
+    .stacked-layout__main,
+    .stacked-layout__message-row,
+    .stacked-layout__status {
+      flex-direction: row-reverse;
+    }
+  }
+
+  .stacked-layout__content {
+    flex: 1;
+
+    /* This is for bottom aligning an avatar with a message bubble shorter than the avatar. */
+    /* Related to the test at activityGrouping.avatarMiddleware.atBottom.js. */
+    display: flex;
+    flex-direction: column;
+
+    /* This "overflow: hidden" is to make sure text overflow will get clipped correctly. */
+    /* Related to the test at basic.js "long URLs with keep-all". */
+    overflow: hidden;
+  }
+
+  .stacked-layout__message {
+    max-width: var(--webchat__max-width--message-bubble);
+    min-width: var(--webchat__min-width--message-bubble);
+    overflow: hidden;
+    transition-duration: var(--webchat__transition-duration);
+    transition-property: max-width;
+  }
+
+  .stacked-layout__nub-pad {
+    flex-shrink: 0;
+    transition-duration: var(--webchat__transition-duration);
+    transition-property: width;
+    width: 0;
+  }
+
+  &.stacked-layout--hide-avatar,
+  &.stacked-layout--show-avatar {
+    .stacked-layout__avatar-gutter {
+      width: var(--webchat__size--avatar);
+    }
+  }
+
+  &.stacked-layout--hide-avatar,
+  &.stacked-layout--show-avatar,
+  &.stacked-layout--hide-nub,
+  &.stacked-layout--show-nub {
+    .stacked-layout__attachment {
+      max-width: calc(var(--webchat__max-width--attachment-bubble) + var(--webchat__padding--regular));
+      min-width: calc(var(--webchat__min-width--attachment-bubble) + var(--webchat__padding--regular));
+    }
+
+    .stacked-layout__message {
+      max-width: calc(var(--webchat__max-width--message-bubble) + var(--webchat__padding--regular));
+      min-width: calc(var(--webchat__min-width--message-bubble) + var(--webchat__padding--regular));
+    }
+
+    .stacked-layout__nub-pad {
+      width: var(--webchat__padding--regular);
+    }
+  }
+
+  &:not(.stacked-layout--top-callout) {
+    .stacked-layout__avatar-gutter,
+    .stacked-layout__content {
+      justify-content: flex-end;
+    }
+  }
+}

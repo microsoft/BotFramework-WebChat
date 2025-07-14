@@ -23,6 +23,10 @@ export default function useCustomPropertiesClassName() {
       borderAnimationColor3,
       bubbleAttachmentMaxWidth,
       bubbleAttachmentMinWidth,
+      bubbleBorderColor,
+      bubbleBorderRadius,
+      bubbleBorderStyle,
+      bubbleBorderWidth,
       bubbleImageMaxHeight,
       bubbleImageMinHeight,
       bubbleMessageMaxWidth,
@@ -46,6 +50,10 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.BorderAnimationColor1}: ${borderAnimationColor1};
   ${CustomPropertyNames.BorderAnimationColor2}: ${borderAnimationColor2};
   ${CustomPropertyNames.BorderAnimationColor3}: ${borderAnimationColor3};
+  ${CustomPropertyNames.BorderColorBubble}: ${bubbleBorderColor};
+  ${CustomPropertyNames.BorderRadiusBubble}: ${bubbleBorderRadius}px;
+  ${CustomPropertyNames.BorderStyleBubble}: ${bubbleBorderStyle};
+  ${CustomPropertyNames.BorderWidthBubble}: ${bubbleBorderWidth}px;
   ${CustomPropertyNames.ColorAccent}: ${accent};
   ${CustomPropertyNames.ColorSubtle}: ${subtle};
   ${CustomPropertyNames.ColorTimestamp}: ${timestampColor || subtle};
