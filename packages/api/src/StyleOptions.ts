@@ -303,7 +303,7 @@ type StyleOptions = {
    *
    * @default false
    *
-   * @deprecated deprecated since 4.18.0: obsolated by {@linkcode disableFileUpload}.  This option will be removed on or after 2027-07-14.
+   * @deprecated deprecated since 4.18.0: obsolated by {@linkcode disableFileUpload}. This option will be removed on or after 2027-07-14.
    */
   hideUploadButton?: boolean;
 
