@@ -102,10 +102,6 @@ function patchActivity(
         return 'unknown';
       });
     }
-    // if !metadata && type == typing
-    else if (activity.type === 'typing') {
-      activity = updateIn(activity, ['text'], () => '');
-    }
 
     let sequenceId: number;
 
