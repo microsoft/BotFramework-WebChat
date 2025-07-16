@@ -12,6 +12,11 @@ import {
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
+import {
+  createActivityPolyMiddlewareFromLegacy,
+  PolyMiddlewareComposer,
+  type PolyMiddleware
+} from 'botframework-webchat-middleware';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
@@ -33,6 +38,7 @@ import WebChatUIContext from './hooks/internal/WebChatUIContext';
 import { FocusSendBoxScope } from './hooks/sendBoxFocus';
 import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
+import LegacyActivityBridge from './Middleware/Activity/private/LegacyActivityBridge';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
 import createDefaultAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
@@ -441,6 +447,15 @@ const InternalComposer = ({
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]
   );
 
+  const polyMiddlewareArray = useMemo<readonly PolyMiddleware[]>(
+    () =>
+      Object.freeze([
+        // TODO: Add <FallbackComponent>.
+        createActivityPolyMiddlewareFromLegacy(LegacyActivityBridge, () => undefined, ...patchedActivityMiddleware)
+      ]),
+    [patchedActivityMiddleware]
+  );
+
   return (
     <APIComposer
       activityMiddleware={patchedActivityMiddleware}
@@ -464,22 +479,24 @@ const InternalComposer = ({
       <StyleToEmotionObjectComposer nonce={nonce}>
         <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
           <ReducedMotionComposer>
-            <BuiltInDecorator>
-              <DecoratorComposer middleware={decoratorMiddleware}>
-                <ComposerCore
-                  extraStyleSet={extraStyleSet}
-                  nonce={nonce}
-                  renderMarkdown={renderMarkdown}
-                  styleSet={styleSet}
-                  styles={theme.styles}
-                  suggestedActionsAccessKey={suggestedActionsAccessKey}
-                  webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-                >
-                  {children}
-                  {onTelemetry && <UITracker />}
-                </ComposerCore>
-              </DecoratorComposer>
-            </BuiltInDecorator>
+            <PolyMiddlewareComposer middleware={polyMiddlewareArray}>
+              <BuiltInDecorator>
+                <DecoratorComposer middleware={decoratorMiddleware}>
+                  <ComposerCore
+                    extraStyleSet={extraStyleSet}
+                    nonce={nonce}
+                    renderMarkdown={renderMarkdown}
+                    styleSet={styleSet}
+                    styles={theme.styles}
+                    suggestedActionsAccessKey={suggestedActionsAccessKey}
+                    webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+                  >
+                    {children}
+                    {onTelemetry && <UITracker />}
+                  </ComposerCore>
+                </DecoratorComposer>
+              </BuiltInDecorator>
+            </PolyMiddlewareComposer>
           </ReducedMotionComposer>
         </HTMLContentTransformComposer>
       </StyleToEmotionObjectComposer>

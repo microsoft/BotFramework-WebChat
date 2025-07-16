@@ -1,20 +1,19 @@
-import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
+import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
+import { useBuildRenderActivityCallback, type ActivityPolyMiddlewareRenderer } from 'botframework-webchat-middleware';
 import React, { memo, useMemo, type ReactNode } from 'react';
 
 import RenderingActivitiesContext, { type RenderingActivitiesContextType } from './private/RenderingActivitiesContext';
-import useInternalActivitiesWithRenderer from './private/useInternalActivitiesWithRenderer';
 
 type RenderingActivitiesComposerProps = Readonly<{
   children?: ReactNode | undefined;
 }>;
 
-const { useActivities, useActivityKeys, useCreateActivityRenderer, useGetActivitiesByKey, useGetKeyByActivity } = hooks;
+const { useActivities, useActivityKeys, useGetActivitiesByKey, useGetKeyByActivity } = hooks;
 
 const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerProps) => {
   const [activities] = useActivities();
   const activityKeys = useActivityKeys();
-  const createActivityRenderer = useCreateActivityRenderer();
   const getActivitiesByKey = useGetActivitiesByKey();
   const getKeyByActivity = useGetKeyByActivity();
 
@@ -41,38 +40,47 @@ const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerPr
     return Object.freeze(activitiesOfLatestRevision);
   }, [activityKeys, getActivitiesByKey, getKeyByActivity, activities]);
 
-  const activitiesWithRenderer = useInternalActivitiesWithRenderer(activitiesOfLatestRevision, createActivityRenderer);
+  const renderActivity = useBuildRenderActivityCallback();
 
-  const renderingActivitiesState = useMemo(
-    () => Object.freeze([activitiesWithRenderer.map(({ activity }) => activity)] as const),
-    [activitiesWithRenderer]
+  const activityRendererMap = useMemo<ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>>(
+    () =>
+      Object.freeze(
+        new Map(
+          activitiesOfLatestRevision
+            .map(activity => [activity, renderActivity({ activity })] as const)
+            .filter((tuple): tuple is [WebChatActivity, ActivityPolyMiddlewareRenderer] => !!tuple[1])
+        )
+      ),
+    [activitiesOfLatestRevision, renderActivity]
+  );
+
+  const renderingActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
+    () => Object.freeze([Object.freeze(Array.from(activityRendererMap.keys()))]),
+    [activityRendererMap]
   );
 
   const renderingActivityKeysState = useMemo<readonly [readonly string[]]>(() => {
     const keys = Object.freeze(renderingActivitiesState[0].map(activity => getKeyByActivity(activity)));
 
     if (keys.some(key => !key)) {
-      throw new Error('botframework-webchat internal: activitiesWithRenderer[].activity must have activity key');
+      throw new Error('botframework-webchat internal: activityRendererMap[].activity must have activity key');
     }
 
     return Object.freeze([keys] as const);
-  }, [renderingActivitiesState, getKeyByActivity]);
+  }, [getKeyByActivity, renderingActivitiesState]);
 
-  const renderActivityCallbackMap = useMemo<
-    ReadonlyMap<WebChatActivity, Exclude<ReturnType<ActivityComponentFactory>, false>>
-  >(
-    () =>
-      Object.freeze(new Map(activitiesWithRenderer.map(({ activity, renderActivity }) => [activity, renderActivity]))),
-    [activitiesWithRenderer]
+  const activityRendererMapState = useMemo<readonly [ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>]>(
+    () => Object.freeze([activityRendererMap]),
+    [activityRendererMap]
   );
 
   const contextValue: RenderingActivitiesContextType = useMemo(
     () => ({
-      renderActivityCallbackMap,
+      activityRendererMapState,
       renderingActivitiesState,
       renderingActivityKeysState
     }),
-    [renderActivityCallbackMap, renderingActivitiesState, renderingActivityKeysState]
+    [activityRendererMapState, renderingActivitiesState, renderingActivityKeysState]
   );
 
   return <RenderingActivitiesContext.Provider value={contextValue}>{children}</RenderingActivitiesContext.Provider>;
