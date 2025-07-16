@@ -1,4 +1,5 @@
 import { warnOnce } from 'botframework-webchat-core';
+import React, { memo, type ReactNode } from 'react';
 import { createChainOfResponsibility, type ComponentMiddleware } from 'react-chain-of-responsibility';
 import { array, function_, safeParse, type InferOutput } from 'valibot';
 
@@ -58,15 +59,30 @@ function templateMiddleware<Request, Props extends {}>(name: string) {
     return EMPTY_ARRAY;
   };
 
-  const { Provider, Proxy } = createChainOfResponsibility<Request, Props>();
+  const { Provider, Proxy } = createChainOfResponsibility<Request, Props, string>();
 
-  Provider.displayName = `${name}Provider`;
+  type TemplatedProviderProps = {
+    readonly children?: ReactNode | undefined;
+    readonly middleware: readonly Middleware[];
+  };
+
+  // eslint-disable-next-line prefer-arrow-callback
+  const TemplatedProvider = memo(function TemplatedProvider({ children, middleware }: TemplatedProviderProps) {
+    return (
+      <Provider init={name} middleware={middleware}>
+        {children}
+      </Provider>
+    );
+  });
+
+  TemplatedProvider.displayName = `${name}Provider`;
+
   Proxy.displayName = `${name}Proxy`;
 
   return {
     createMiddleware,
     extractMiddleware,
-    Provider,
+    Provider: TemplatedProvider,
     Proxy,
     '~types': undefined as {
       middleware: Middleware;
