@@ -25,7 +25,6 @@ interface StreamingData {
   streamId?: string;
   streamSequence?: number;
   streamType: string;
-  [key: string]: any;
 }
 
 const streamSequenceSchema = pipe(number(), integer(), minValue(1));
