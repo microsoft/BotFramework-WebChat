@@ -187,12 +187,19 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
       type: 'contentless' | 'final activity' | 'informative message' | 'interim activity';
     }>
   | undefined {
-  let activityResult;
-  let streamingDataResult;
+  let activityResult: any;
+  let streamingDataResult: any;
 
   if (activity.entities) {
     activityResult = safeParse(entitiesStreamingActivitySchema, activity);
     streamingDataResult = safeParse(streamingDataSchema, activity.entities[0]);
+  } else {
+    activityResult = {
+      success: false
+    };
+    streamingDataResult = {
+      success: false
+    };
   }
 
   if (!(activityResult.success && streamingDataResult.success) && activity.channelData) {
