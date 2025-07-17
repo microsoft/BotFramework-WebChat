@@ -37,6 +37,8 @@ const activityExtras = {
   id: string()
 };
 
+const { text: _text, ...activityExtrasFinal } = activityExtras;
+
 const channelDataStreamingActivitySchema = union([
   // Interim.
   object({
@@ -87,14 +89,12 @@ const channelDataStreamingActivitySchema = union([
       streamType: literal('final')
     }),
     entities: optional(array(any()), EMPTY_ARRAY),
-    ...activityExtras
+    text: optional(undefinedable(literal(''))),
+    ...activityExtrasFinal
   })
 ]);
 
-// Extra Activity
-
 const entitiesStreamingActivitySchema = union([
-  // Same thing but for entities
   object({
     type: literal('typing'),
     entities: array(
@@ -151,7 +151,8 @@ const entitiesStreamingActivitySchema = union([
       })
     ),
     channelData: any(),
-    ...activityExtras
+    text: optional(undefinedable(literal(''))),
+    ...activityExtrasFinal
   })
 ]);
 
