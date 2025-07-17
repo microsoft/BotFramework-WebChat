@@ -14,20 +14,21 @@ import {
   undefinedable,
   union
 } from 'valibot';
+import type { InferOutput } from 'valibot';
 
 import { type WebChatActivity } from '../types/WebChatActivity';
 import getOrgSchemaMessage from './getOrgSchemaMessage';
 
 const EMPTY_ARRAY = Object.freeze([]);
 
-const streamSequenceSchema = pipe(number(), integer(), minValue(1));
+interface StreamingData {
+  streamId?: string;
+  streamSequence?: number;
+  streamType: string;
+  [key: string]: any;
+}
 
-const streamingDataSchema = object({
-  streamId: optional(undefinedable(string())),
-  streamSequence: optional(streamSequenceSchema),
-  streamType: union([literal('streaming'), literal('informative'), literal('final')]),
-  type: optional(string())
-});
+const streamSequenceSchema = pipe(number(), integer(), minValue(1));
 
 const channelDataStreamingActivitySchema = union([
   // Interim.
@@ -163,6 +164,9 @@ const entitiesStreamingActivitySchema = union([
   })
 ]);
 
+type EntitiesStreamingActivity = InferOutput<typeof entitiesStreamingActivitySchema>;
+type ChannelDataStreamingActivity = InferOutput<typeof channelDataStreamingActivitySchema>;
+
 /**
  * Gets the livestreaming metadata of the activity, or `undefined` if the activity is not participating in a livestreaming session.
  *
@@ -187,50 +191,43 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
       type: 'contentless' | 'final activity' | 'informative message' | 'interim activity';
     }>
   | undefined {
-  let activityResult: any;
-  let streamingDataResult: any;
+  let activityData: EntitiesStreamingActivity | ChannelDataStreamingActivity | undefined;
+
+  let streamingData: StreamingData | undefined;
 
   if (activity.entities) {
-    activityResult = safeParse(entitiesStreamingActivitySchema, activity);
-    streamingDataResult = safeParse(streamingDataSchema, activity.entities[0]);
-  } else {
-    activityResult = {
-      success: false
-    };
-    streamingDataResult = {
-      success: false
-    };
+    const result = safeParse(entitiesStreamingActivitySchema, activity);
+    activityData = result.success ? result.output : undefined;
+    streamingData = result.success ? activityData.entities[0] : undefined;
   }
 
-  if (!(activityResult.success && streamingDataResult.success) && activity.channelData) {
-    activityResult = safeParse(channelDataStreamingActivitySchema, activity);
-    streamingDataResult = safeParse(streamingDataSchema, activity.channelData);
+  if (!activityData && activity.channelData) {
+    const result = safeParse(channelDataStreamingActivitySchema, activity);
+    activityData = result.success ? result.output : undefined;
+    streamingData = result.success ? activityData.entities[0] : undefined;
   }
 
-  if (activityResult.success && streamingDataResult.success) {
-    const { output } = activityResult;
-    const { output: streamData } = streamingDataResult;
-
+  if (activityData && streamingData) {
     // If the activity is the first in the session, session ID should be the activity ID.
-    const sessionId = streamData.streamId || output.id;
+    const sessionId = streamingData.streamId || activityData.id;
 
     return Object.freeze(
-      streamData.streamType === 'final'
+      streamingData.streamType === 'final'
         ? {
             sequenceNumber: Infinity,
             sessionId,
             type: 'final activity'
           }
         : {
-            sequenceNumber: streamData.streamSequence,
+            sequenceNumber: streamingData.streamSequence,
             sessionId,
             type: !(
-              output.text ||
-              output.attachments?.length ||
-              ('entities' in output && getOrgSchemaMessage(output.entities))
+              activityData.text ||
+              activityData.attachments?.length ||
+              ('entities' in activityData && getOrgSchemaMessage(activity.entities))
             )
               ? 'contentless'
-              : streamData.streamType === 'informative'
+              : streamingData.streamType === 'informative'
                 ? 'informative message'
                 : 'interim activity'
           }
