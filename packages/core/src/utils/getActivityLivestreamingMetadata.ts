@@ -22,19 +22,14 @@ const EMPTY_ARRAY = Object.freeze([]);
 
 const streamSequenceSchema = pipe(number(), integer(), minValue(1));
 
-type StreamData = {
-  streamId?: string;
-  streamSequence?: number;
-  streamType?: string;
-};
-
-const streamDataSchema = object({
+const streamingDataSchema = object({
   streamId: optional(undefinedable(string())),
   streamSequence: optional(streamSequenceSchema),
-  streamType: union([literal('streaming'), literal('informative'), literal('final')])
+  streamType: union([literal('streaming'), literal('informative'), literal('final')]),
+  type: optional(string())
 });
 
-const livestreamingActivitySchema = union([
+const channelDataStreamingActivitySchema = union([
   // Interim.
   object({
     attachments: optional(array(any()), EMPTY_ARRAY),
@@ -97,6 +92,77 @@ const livestreamingActivitySchema = union([
   })
 ]);
 
+const entitiesStreamingActivitySchema = union([
+  // Same thing but for entities
+  object({
+    attachments: optional(array(any()), EMPTY_ARRAY),
+    entities: array(
+      object({
+        // "streamId" is optional for the very first activity in the session.
+        streamId: optional(undefinedable(string())),
+        streamSequence: streamSequenceSchema,
+        streamType: literal('streaming')
+      })
+    ),
+    channelData: any(),
+    id: string(),
+    // "text" is optional. If not set or empty, it presents a contentless activity.
+    text: optional(undefinedable(string())),
+    type: literal('typing')
+  }),
+  // Informative message.
+  object({
+    attachments: optional(array(any()), EMPTY_ARRAY),
+    entities: array(
+      object({
+        // "streamId" is optional for the very first activity in the session.
+        streamId: optional(undefinedable(string())),
+        streamSequence: streamSequenceSchema,
+        streamType: literal('informative')
+      })
+    ),
+    channelData: any(),
+    id: string(),
+    // Informative may not have "text", but should have abstract instead (checked later)
+    text: optional(undefinedable(string())),
+    type: literal('typing')
+  }),
+  // Conclude with a message.
+  object({
+    attachments: optional(array(any()), EMPTY_ARRAY),
+    entities: array(
+      object({
+        // "streamId" is required for the final activity in the session.
+        // The final activity must not be the sole activity in the session.
+        streamId: pipe(string(), nonEmpty()),
+        streamType: literal('final')
+      })
+    ),
+    channelData: any(),
+    id: string(),
+    // If "text" is empty, it represents "regretting" the livestream.
+    text: optional(undefinedable(string())),
+    type: literal('message')
+  }),
+  // Conclude without a message.
+  object({
+    attachments: optional(array(any()), EMPTY_ARRAY),
+    entities: array(
+      object({
+        // "streamId" is required for the final activity in the session.
+        // The final activity must not be the sole activity in the session.
+        streamId: pipe(string(), nonEmpty()),
+        streamType: literal('final')
+      })
+    ),
+    channelData: any(),
+    id: string(),
+    // If "text" is not set or empty, it represents "regretting" the livestream.
+    text: optional(undefinedable(literal(''))),
+    type: literal('typing')
+  })
+]);
+
 /**
  * Gets the livestreaming metadata of the activity, or `undefined` if the activity is not participating in a livestreaming session.
  *
@@ -121,20 +187,30 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
       type: 'contentless' | 'final activity' | 'informative message' | 'interim activity';
     }>
   | undefined {
-  const result = safeParse(livestreamingActivitySchema, activity);
+  let activityResult;
+  let streamingDataResult;
 
-  if (result.success) {
-    const { output } = result;
-
-    let streamData: StreamData;
-
-    if (safeParse(streamDataSchema, output.entities[0]).success) {
-      [streamData] = output.entities;
-    } else if (safeParse(streamDataSchema, output.channelData).success) {
-      streamData = output.channelData;
+  if (activity.entities) {
+    streamingDataResult = safeParse(streamingDataSchema, activity.entities[0]);
+    if (streamingDataResult.success) {
+      activityResult = safeParse(entitiesStreamingActivitySchema, activity);
+    } else if (activity.channelData) {
+      streamingDataResult = safeParse(streamingDataSchema, activity.channelData);
+      if (streamingDataResult.success) {
+        activityResult = safeParse(channelDataStreamingActivitySchema, activity);
+      } else {
+        return undefined;
+      }
     } else {
       return undefined;
     }
+  } else {
+    return undefined;
+  }
+
+  if (activityResult.success && streamingDataResult.success) {
+    const { output } = activityResult;
+    const { output: streamData } = streamingDataResult;
 
     // If the activity is the first in the session, session ID should be the activity ID.
     const sessionId = streamData.streamId || output.id;
