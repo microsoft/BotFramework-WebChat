@@ -196,7 +196,7 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
   if (!activityData && activity.channelData) {
     const result = safeParse(channelDataStreamingActivitySchema, activity);
     activityData = result.success ? result.output : undefined;
-    streamingData = result.success ? activityData.entities[0] : undefined;
+    streamingData = result.success ? activityData.channelData : undefined;
   }
 
   if (activityData && streamingData) {
