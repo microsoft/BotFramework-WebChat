@@ -3,7 +3,6 @@ import {
   array,
   integer,
   literal,
-  looseObject,
   minValue,
   nonEmpty,
   number,
@@ -23,10 +22,11 @@ const EMPTY_ARRAY = Object.freeze([]);
 
 const streamSequenceSchema = pipe(number(), integer(), minValue(1));
 
-const streamingDataSchema = looseObject({
+const streamingDataSchema = object({
   streamId: optional(undefinedable(string())),
   streamSequence: optional(streamSequenceSchema),
-  streamType: union([literal('streaming'), literal('informative'), literal('final')])
+  streamType: union([literal('streaming'), literal('informative'), literal('final')]),
+  type: optional(string())
 });
 
 const channelDataStreamingActivitySchema = union([
@@ -97,7 +97,7 @@ const entitiesStreamingActivitySchema = union([
   object({
     attachments: optional(array(any()), EMPTY_ARRAY),
     entities: array(
-      looseObject({
+      object({
         // "streamId" is optional for the very first activity in the session.
         streamId: optional(undefinedable(string())),
         streamSequence: streamSequenceSchema,
@@ -114,7 +114,7 @@ const entitiesStreamingActivitySchema = union([
   object({
     attachments: optional(array(any()), EMPTY_ARRAY),
     entities: array(
-      looseObject({
+      object({
         // "streamId" is optional for the very first activity in the session.
         streamId: optional(undefinedable(string())),
         streamSequence: streamSequenceSchema,
@@ -131,7 +131,7 @@ const entitiesStreamingActivitySchema = union([
   object({
     attachments: optional(array(any()), EMPTY_ARRAY),
     entities: array(
-      looseObject({
+      object({
         // "streamId" is required for the final activity in the session.
         // The final activity must not be the sole activity in the session.
         streamId: pipe(string(), nonEmpty()),
@@ -148,7 +148,7 @@ const entitiesStreamingActivitySchema = union([
   object({
     attachments: optional(array(any()), EMPTY_ARRAY),
     entities: array(
-      looseObject({
+      object({
         // "streamId" is required for the final activity in the session.
         // The final activity must not be the sole activity in the session.
         streamId: pipe(string(), nonEmpty()),
