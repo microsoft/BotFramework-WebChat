@@ -191,21 +191,13 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
   let streamingDataResult;
 
   if (activity.entities) {
+    activityResult = safeParse(entitiesStreamingActivitySchema, activity);
     streamingDataResult = safeParse(streamingDataSchema, activity.entities[0]);
-    if (streamingDataResult.success) {
-      activityResult = safeParse(entitiesStreamingActivitySchema, activity);
-    } else if (activity.channelData) {
-      streamingDataResult = safeParse(streamingDataSchema, activity.channelData);
-      if (streamingDataResult.success) {
-        activityResult = safeParse(channelDataStreamingActivitySchema, activity);
-      } else {
-        return undefined;
-      }
-    } else {
-      return undefined;
-    }
-  } else {
-    return undefined;
+  }
+
+  if (!(activityResult.success && streamingDataResult.success) && activity.channelData) {
+    activityResult = safeParse(channelDataStreamingActivitySchema, activity);
+    streamingDataResult = safeParse(streamingDataSchema, activity.channelData);
   }
 
   if (activityResult.success && streamingDataResult.success) {
