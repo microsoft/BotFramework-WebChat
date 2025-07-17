@@ -3,6 +3,7 @@ import {
   array,
   integer,
   literal,
+  looseObject,
   minValue,
   nonEmpty,
   number,
@@ -22,11 +23,10 @@ const EMPTY_ARRAY = Object.freeze([]);
 
 const streamSequenceSchema = pipe(number(), integer(), minValue(1));
 
-const streamingDataSchema = object({
+const streamingDataSchema = looseObject({
   streamId: optional(undefinedable(string())),
   streamSequence: optional(streamSequenceSchema),
-  streamType: union([literal('streaming'), literal('informative'), literal('final')]),
-  type: optional(string())
+  streamType: union([literal('streaming'), literal('informative'), literal('final')])
 });
 
 const channelDataStreamingActivitySchema = union([
@@ -97,14 +97,14 @@ const entitiesStreamingActivitySchema = union([
   object({
     attachments: optional(array(any()), EMPTY_ARRAY),
     entities: array(
-      object({
+      looseObject({
         // "streamId" is optional for the very first activity in the session.
         streamId: optional(undefinedable(string())),
         streamSequence: streamSequenceSchema,
         streamType: literal('streaming')
       })
     ),
-    channelData: optional(any()),
+    channelData: any(),
     id: string(),
     // "text" is optional. If not set or empty, it presents a contentless activity.
     text: optional(undefinedable(string())),
@@ -114,14 +114,14 @@ const entitiesStreamingActivitySchema = union([
   object({
     attachments: optional(array(any()), EMPTY_ARRAY),
     entities: array(
-      object({
+      looseObject({
         // "streamId" is optional for the very first activity in the session.
         streamId: optional(undefinedable(string())),
         streamSequence: streamSequenceSchema,
         streamType: literal('informative')
       })
     ),
-    channelData: optional(any()),
+    channelData: any(),
     id: string(),
     // Informative may not have "text", but should have abstract instead (checked later)
     text: optional(undefinedable(string())),
@@ -131,14 +131,14 @@ const entitiesStreamingActivitySchema = union([
   object({
     attachments: optional(array(any()), EMPTY_ARRAY),
     entities: array(
-      object({
+      looseObject({
         // "streamId" is required for the final activity in the session.
         // The final activity must not be the sole activity in the session.
         streamId: pipe(string(), nonEmpty()),
         streamType: literal('final')
       })
     ),
-    channelData: optional(any()),
+    channelData: any(),
     id: string(),
     // If "text" is empty, it represents "regretting" the livestream.
     text: optional(undefinedable(string())),
@@ -148,14 +148,14 @@ const entitiesStreamingActivitySchema = union([
   object({
     attachments: optional(array(any()), EMPTY_ARRAY),
     entities: array(
-      object({
+      looseObject({
         // "streamId" is required for the final activity in the session.
         // The final activity must not be the sole activity in the session.
         streamId: pipe(string(), nonEmpty()),
         streamType: literal('final')
       })
     ),
-    channelData: optional(any()),
+    channelData: any(),
     id: string(),
     // If "text" is not set or empty, it represents "regretting" the livestream.
     text: optional(undefinedable(literal(''))),
@@ -193,21 +193,14 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
   if (activity.entities) {
     activityResult = safeParse(entitiesStreamingActivitySchema, activity);
     streamingDataResult = safeParse(streamingDataSchema, activity.entities[0]);
-  } else {
-    activityResult = {
-      success: false
-    };
-    streamingDataResult = {
-      success: false
-    };
   }
 
-  if (!(activityResult.success && streamingDataResult.success) && activity.channelData) {
+  if (!(activityResult?.success && streamingDataResult?.success) && activity.channelData) {
     activityResult = safeParse(channelDataStreamingActivitySchema, activity);
     streamingDataResult = safeParse(streamingDataSchema, activity.channelData);
   }
 
-  if (activityResult.success && streamingDataResult.success) {
+  if (activityResult?.success && streamingDataResult?.success) {
     const { output } = activityResult;
     const { output: streamData } = streamingDataResult;
 
