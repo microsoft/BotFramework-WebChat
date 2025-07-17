@@ -193,14 +193,21 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
   if (activity.entities) {
     activityResult = safeParse(entitiesStreamingActivitySchema, activity);
     streamingDataResult = safeParse(streamingDataSchema, activity.entities[0]);
+  } else {
+    activityResult = {
+      success: false
+    };
+    streamingDataResult = {
+      success: false
+    };
   }
 
-  if (!(activityResult?.success && streamingDataResult?.success) && activity.channelData) {
+  if (!(activityResult.success && streamingDataResult.success) && activity.channelData) {
     activityResult = safeParse(channelDataStreamingActivitySchema, activity);
     streamingDataResult = safeParse(streamingDataSchema, activity.channelData);
   }
 
-  if (activityResult?.success && streamingDataResult?.success) {
+  if (activityResult.success && streamingDataResult.success) {
     const { output } = activityResult;
     const { output: streamData } = streamingDataResult;
 
@@ -220,7 +227,7 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
             type: !(
               output.text ||
               output.attachments?.length ||
-              ('entities' in output && getOrgSchemaMessage(output.entities)?.citation)
+              ('entities' in output && getOrgSchemaMessage(output.entities))
             )
               ? 'contentless'
               : streamData.streamType === 'informative'
