@@ -104,7 +104,7 @@ const entitiesStreamingActivitySchema = union([
         streamType: literal('streaming')
       })
     ),
-    channelData: any(),
+    channelData: optional(any()),
     id: string(),
     // "text" is optional. If not set or empty, it presents a contentless activity.
     text: optional(undefinedable(string())),
@@ -121,7 +121,7 @@ const entitiesStreamingActivitySchema = union([
         streamType: literal('informative')
       })
     ),
-    channelData: any(),
+    channelData: optional(any()),
     id: string(),
     // Informative may not have "text", but should have abstract instead (checked later)
     text: optional(undefinedable(string())),
@@ -138,7 +138,7 @@ const entitiesStreamingActivitySchema = union([
         streamType: literal('final')
       })
     ),
-    channelData: any(),
+    channelData: optional(any()),
     id: string(),
     // If "text" is empty, it represents "regretting" the livestream.
     text: optional(undefinedable(string())),
@@ -155,7 +155,7 @@ const entitiesStreamingActivitySchema = union([
         streamType: literal('final')
       })
     ),
-    channelData: any(),
+    channelData: optional(any()),
     id: string(),
     // If "text" is not set or empty, it represents "regretting" the livestream.
     text: optional(undefinedable(literal(''))),
@@ -227,7 +227,7 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
             type: !(
               output.text ||
               output.attachments?.length ||
-              ('entities' in output && getOrgSchemaMessage(output.entities))
+              ('entities' in output && getOrgSchemaMessage(output.entities)?.citation)
             )
               ? 'contentless'
               : streamData.streamType === 'informative'
