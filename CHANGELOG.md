@@ -39,6 +39,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - `activityGroupingDecoratorMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
    - `sendBoxMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
    - `sendBoxToolbarMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
+- Updated file-based import with `.js` extension and removed the file extension from build config, by [@compulim](https://github.com/compulim), in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
 
 ### Added
 
@@ -123,9 +124,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Switched math block syntax from `$$` to Tex-style `\[ \]` and `\( \)` delimiters with improved rendering and error handling, in PR [#5353](https://github.com/microsoft/BotFramework-WebChat/pull/5353), by [@OEvgeny](https://github.com/OEvgeny)
 - Improved avatar display and grouping behavior by fixing rendering issues and activity sender identification, in PR [#5346](https://github.com/microsoft/BotFramework-WebChat/pull/5346), by [@OEvgeny](https://github.com/OEvgeny)
 - Activity "copy" button will use `outerHTML` and `textContent` for clipboard content, in PR [#5378](https://github.com/microsoft/BotFramework-WebChat/pull/5378), by [@compulim](https://github.com/compulim)
-- Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385), [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400), [#5426](https://github.com/microsoft/BotFramework-WebChat/pull/5426), and [#5476](https://github.com/microsoft/BotFramework-WebChat/pull/5476)
+- Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385), [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400), [#5426](https://github.com/microsoft/BotFramework-WebChat/pull/5426), [#5476](https://github.com/microsoft/BotFramework-WebChat/pull/5476), and [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
    - Production dependencies
-      - [`web-speech-cognitive-services@8.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
+      - [`web-speech-cognitive-services@8.1.3`](https://npmjs.com/package/web-speech-cognitive-services)
       - [`react-dictate-button@4.0.0`](https://npmjs.com/package/react-dictate-button)
 - Enabled icon customization in Fluent theme through CSS variables, in PR [#5413](https://github.com/microsoft/BotFramework-WebChat/pull/5413), by [@OEvgeny](https://github.com/OEvgeny)
    - Reworked, enabled in Web Chat, in PR [#5502](https://github.com/microsoft/BotFramework-WebChat/pull/5502), by [@OEvgeny](https://github.com/OEvgeny)
