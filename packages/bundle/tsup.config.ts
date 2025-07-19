@@ -8,7 +8,7 @@ const resolveCognitiveServicesToES2015 = {
   name: 'microsoft-cognitiveservices-speech-sdk',
   setup(build) {
     build.onResolve({ filter: /microsoft-cognitiveservices-speech-sdk.+/u }, args => ({
-      path: path.join(process.cwd(), '../../node_modules', args.path.replace('distrib/lib', 'distrib/es2015') + '.js')
+      path: path.join(process.cwd(), '../../node_modules', args.path.replace('distrib/lib', 'distrib/es2015'))
     }));
   }
 };
