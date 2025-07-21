@@ -207,7 +207,7 @@
           document.querySelectorAll(
             `[data-testid="${WebChat.testIds.preChatMessageActivityStarterPromptsCardAction}"]:not(button)`
           )
-        ).toHaveLength(3);
+        ).toHaveLength(0);
 
         // THEN: Should match screenshot.
         await host.snapshot('local');

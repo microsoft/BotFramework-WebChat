@@ -12,15 +12,15 @@ import {
   AudioStreamNodeErrorEvent,
   Events,
   EventSource
-} from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Exports';
+} from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Exports.js';
 
-import { AudioStreamFormatImpl } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioStreamFormat';
+import { AudioStreamFormatImpl } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Audio/AudioStreamFormat.js';
 
 import {
   connectivity as Connectivity,
   ISpeechConfigAudioDevice,
   type as Type
-} from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/Exports';
+} from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.speech/Exports.js';
 
 import { isForbiddenPropertyName, withResolvers } from 'botframework-webchat-core';
 import { v4 } from 'uuid';
