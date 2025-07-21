@@ -89,7 +89,7 @@ const entitiesStreamingActivitySchema = union([
   object({
     type: literal('typing'),
     entities: array(activeSchema),
-    channelData: any(),
+    channelData: optional(any()),
     ...activityExtras
   }),
   // Conclude with a message.
@@ -97,7 +97,7 @@ const entitiesStreamingActivitySchema = union([
     // If "text" is empty, it represents "regretting" the livestream.
     type: literal('message'),
     entities: array(finalActivitySchema),
-    channelData: any(),
+    channelData: optional(any()),
     ...activityExtras
   }),
   // Conclude without a message.
@@ -105,7 +105,7 @@ const entitiesStreamingActivitySchema = union([
     // If "text" is empty, it represents "regretting" the livestream.
     type: literal('typing'),
     entities: array(finalActivitySchema),
-    channelData: any(),
+    channelData: optional(any()),
     text: optional(undefinedable(literal(''))),
     ...activityExtrasFinal
   })
