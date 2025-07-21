@@ -102,6 +102,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Attaching files will no longer remove previously attached files
    - Updated Fluent theme to use the new attachment preview feature
 - Added collapsible activity and activity with abstract handling, in PR [#5506](https://github.com/microsoft/BotFramework-WebChat/pull/5506), in PR [#5513](https://github.com/microsoft/BotFramework-WebChat/pull/5513), by [@OEvgeny](https://github.com/OEvgeny)
+- Added livestreaming support for livestreaming data in `entities` in PR []() by [@kylerohn](https://github.com/kylerohn)
 
 ### Changed
 
