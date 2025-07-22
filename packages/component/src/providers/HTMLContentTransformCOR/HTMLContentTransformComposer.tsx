@@ -13,7 +13,7 @@ type HTMLContentTransformComposerProps = Readonly<{
 
 const HTMLContentTransformComposer = memo(({ children, middleware }: HTMLContentTransformComposerProps) => {
   const transform = useMemo<HTMLContentTransformFunction>(() => {
-    const enhancers = middleware.map(enhancer => enhancer()).reverse();
+    const enhancers = (middleware || []).map(enhancer => enhancer()).reverse();
 
     return enhancers.reduce(
       (chain: HTMLContentTransformFunction, fn) => fn(chain),
