@@ -1,5 +1,5 @@
-import addVersion from './addVersion';
-import * as minimal from '../module/exports-minimal.js';
+import addVersion from '../addVersion';
+import * as minimal from '../actual/minimal.js';
 
 const buildInfo = Object.freeze({
   ...minimal.buildInfo,

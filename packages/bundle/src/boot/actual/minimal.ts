@@ -13,10 +13,10 @@ import ReactWebChat, {
   withEmoji
 } from 'botframework-webchat-component';
 
-import createBrowserWebSpeechPonyfillFactory from '../createBrowserWebSpeechPonyfillFactory';
-import defaultCreateDirectLine from '../createDirectLine';
-import defaultCreateDirectLineAppServiceExtension from '../createDirectLineAppServiceExtension';
-import coreRenderWebChat from '../renderWebChat';
+import createBrowserWebSpeechPonyfillFactory from '../../createBrowserWebSpeechPonyfillFactory';
+import defaultCreateDirectLine from '../../createDirectLine';
+import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAppServiceExtension';
+import coreRenderWebChat from '../../renderWebChat';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
