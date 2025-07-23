@@ -36,7 +36,6 @@ const baseConfig: Options & { target: Target[] } = {
   dts: true,
   env: {
     build_tool: 'tsup',
-    module_format: 'esmodules',
     node_env: env,
     NODE_ENV: env,
     ...(npm_package_version ? { npm_package_version } : {})

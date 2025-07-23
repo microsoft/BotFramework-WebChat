@@ -1,14 +1,8 @@
 /** @jest-environment @happy-dom/jest-environment */
 
-describe('importing full bundle', () => {
+describe('importing minimal bundle', () => {
   beforeEach(() => {
-    jest.spyOn(console, 'warn').mockImplementation(() => {
-      // Intentionally left blank.
-    });
-
-    // "adaptivecards" is trying to load "swiper", which is ESM only, mocking it
-    jest.mock('swiper', () => ({}));
-    jest.requireActual('../../../dist/botframework-webchat.js');
+    jest.requireActual('../../../dist/botframework-webchat.minimal.mjs');
   });
 
   test('should have injected <meta> tag', () => {
@@ -25,8 +19,8 @@ describe('importing full bundle', () => {
         .get('botframework-webchat:bundle')
         .split(';')
         .map(value => value.trim())
-    ).toEqual(expect.arrayContaining(['build-tool=tsup', 'module-format=commonjs']));
+    ).toEqual(expect.arrayContaining(['build-tool=tsup', 'module-format=esmodules']));
 
-    expect(metaMap.get('botframework-webchat:bundle:variant')).toBe('full');
+    expect(metaMap.get('botframework-webchat:bundle:variant')).toBe('minimal');
   });
 });

@@ -78,10 +78,18 @@ export default defineConfig([
   },
   {
     ...config,
+    env: {
+      ...config.env,
+      module_format: 'esmodules'
+    },
     format: 'esm'
   },
   {
     ...config,
+    env: {
+      ...config.env,
+      module_format: 'commonjs'
+    },
     format: 'cjs',
     target: [...config.target, 'es2019']
   }
