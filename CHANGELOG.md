@@ -128,9 +128,9 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Switched math block syntax from `$$` to Tex-style `\[ \]` and `\( \)` delimiters with improved rendering and error handling, in PR [#5353](https://github.com/microsoft/BotFramework-WebChat/pull/5353), by [@OEvgeny](https://github.com/OEvgeny)
 - Improved avatar display and grouping behavior by fixing rendering issues and activity sender identification, in PR [#5346](https://github.com/microsoft/BotFramework-WebChat/pull/5346), by [@OEvgeny](https://github.com/OEvgeny)
 - Activity "copy" button will use `outerHTML` and `textContent` for clipboard content, in PR [#5378](https://github.com/microsoft/BotFramework-WebChat/pull/5378), by [@compulim](https://github.com/compulim)
-- Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385), [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400), [#5426](https://github.com/microsoft/BotFramework-WebChat/pull/5426), and [#5476](https://github.com/microsoft/BotFramework-WebChat/pull/5476)
+- Bumped dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5385](https://github.com/microsoft/BotFramework-WebChat/pull/5385), [#5400](https://github.com/microsoft/BotFramework-WebChat/pull/5400), [#5426](https://github.com/microsoft/BotFramework-WebChat/pull/5426), [#5476](https://github.com/microsoft/BotFramework-WebChat/pull/5476), and [#5516](https://github.com/microsoft/BotFramework-WebChat/pull/5516)
    - Production dependencies
-      - [`web-speech-cognitive-services@8.1.0`](https://npmjs.com/package/web-speech-cognitive-services)
+      - [`web-speech-cognitive-services@8.1.3`](https://npmjs.com/package/web-speech-cognitive-services)
       - [`react-dictate-button@4.0.0`](https://npmjs.com/package/react-dictate-button)
 - Enabled icon customization in Fluent theme through CSS variables, in PR [#5413](https://github.com/microsoft/BotFramework-WebChat/pull/5413), by [@OEvgeny](https://github.com/OEvgeny)
    - Reworked, enabled in Web Chat, in PR [#5502](https://github.com/microsoft/BotFramework-WebChat/pull/5502), by [@OEvgeny](https://github.com/OEvgeny)
@@ -210,6 +210,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed [#5446](https://github.com/microsoft/BotFramework-WebChat/issues/5446). Embedded `uuid` so `microsoft-cognitiveservices-speech-sdk` do not need to use dynamic loading, as this could fail in Webpack 4 environment, in PR [#5445](https://github.com/microsoft/BotFramework-WebChat/pull/5445), by [@compulim](https://github.com/compulim)
 - Fixed [#5476](https://github.com/microsoft/BotFramework-WebChat/issues/5476). Modernizing components through memoization and use [`valibot`](https://npmjs.com/package/valibot) for props validation, by [@compulim](https://github.com/compulim)
 - Ported `useSuggestedActions` to use React hooks as backend instead of Redux store, in PR [#5489](https://github.com/microsoft/BotFramework-WebChat/pull/5489), by [@compulim](https://github.com/compulim)
+- Removed `StarterPromptsCardAction` during `blueprint` ui state in PR [#5477](https://github.com/microsoft/BotFramework-WebChat/pull/5477), by [@jcheung824](https://github.com/jcheung824)
 
 ### Fixed
 
@@ -242,6 +243,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed [#5479](https://github.com/microsoft/BotFramework-WebChat/issues/5479). Fixed feedback form buttons should not squash other buttons, in PR [#5480](https://github.com/microsoft/BotFramework-WebChat/pull/5480), by [@compulim](https://github.com/compulim)
    - Migrated to radio button for like/dislike where form submission is required
 - Fixed long citation identifiers break activity layout, in PR [#5507](https://github.com/microsoft/BotFramework-WebChat/pull/5507), by [@OEvgeny](https://github.com/OEvgeny)
+- Updated file-based import with `.js` extension and removed the file extension from build config, by [@compulim](https://github.com/compulim), in PR [#5516](https://github.com/microsoft/BotFramework-WebChat/pull/5516)
+- Fixed [#5518](https://github.com/microsoft/BotFramework-WebChat/issues/5518). Minimal bundled build should work properly, in PR [#5507](https://github.com/microsoft/BotFramework-WebChat/pull/5507), by [@compulim](https://github.com/compulim)
 
 # Removed
 
