@@ -1,8 +1,8 @@
 // Importing polyfills required for IE11/ES5.
 import './polyfill';
 
-import addVersion from './addVersion';
-import * as es5 from '../module/exports-es5';
+import addVersion from '../addVersion';
+import * as es5 from '../actual/full-es5';
 
 const buildInfo = Object.freeze({
   ...es5.buildInfo,

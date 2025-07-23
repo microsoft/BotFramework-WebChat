@@ -1,12 +1,11 @@
-import { buildInfo as minimalBuildInfo, version } from './exports-minimal';
-import defaultCreateDirectLine from '../createDirectLine';
-import defaultCreateDirectLineAppServiceExtension from '../createDirectLineAppServiceExtension';
+import defaultCreateDirectLine from '../../createDirectLine';
+import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAppServiceExtension';
+import ReactWebChat from './full';
+import { buildInfo as minimalBuildInfo, version } from './minimal';
 
-export * from './exports';
+const buildInfo = Object.freeze({ ...minimalBuildInfo, variant: 'full-es5' });
 
-export const buildInfo = Object.freeze({ ...minimalBuildInfo, variant: 'full-es5' });
-
-export const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {
+const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {
   (options as any).botAgent &&
     console.warn(
       'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
@@ -15,7 +14,7 @@ export const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDi
   return defaultCreateDirectLine({ ...options, botAgent: `WebChat/${version} (ES5)` });
 };
 
-export const createDirectLineAppServiceExtension = (
+const createDirectLineAppServiceExtension = (
   options: Omit<Parameters<typeof defaultCreateDirectLineAppServiceExtension>[0], 'botAgent'>
 ) => {
   (options as any).botAgent &&
@@ -25,3 +24,7 @@ export const createDirectLineAppServiceExtension = (
 
   return defaultCreateDirectLineAppServiceExtension({ ...options, botAgent: `WebChat/${version} (ES5)` });
 };
+
+export * from './full';
+export { buildInfo, createDirectLine, createDirectLineAppServiceExtension };
+export default ReactWebChat;
