@@ -30,20 +30,7 @@ const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
 const buildInfo = Object.freeze({ ...minimalBuildInfo, variant: 'full' });
 
-export {
-  Constants,
-  concatMiddleware,
-  createBrowserWebSpeechPonyfillFactory,
-  createStore,
-  createStoreWithDevTools,
-  createStoreWithOptions,
-  decorator,
-  internal,
-  testIds,
-  version
-} from './minimal';
-
-export const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {
+const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {
   (options as any).botAgent &&
     console.warn(
       'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
@@ -52,7 +39,7 @@ export const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDi
   return defaultCreateDirectLine({ ...options, botAgent: `WebChat/${version} (Full)` });
 };
 
-export const createDirectLineAppServiceExtension = (
+const createDirectLineAppServiceExtension = (
   options: Omit<Parameters<typeof defaultCreateDirectLineAppServiceExtension>[0], 'botAgent'>
 ) => {
   (options as any).botAgent &&
@@ -94,7 +81,18 @@ type StyleOptions = FullBundleStyleOptions;
 type StrictStyleOptions = StrictFullBundleStyleOptions;
 
 export default ReactWebChat;
-
+export {
+  Constants,
+  concatMiddleware,
+  createBrowserWebSpeechPonyfillFactory,
+  createStore,
+  createStoreWithDevTools,
+  createStoreWithOptions,
+  decorator,
+  internal,
+  testIds,
+  version
+} from './minimal';
 export {
   Components,
   ReactWebChat,
@@ -102,12 +100,15 @@ export {
   createAdaptiveCardsAttachmentForScreenReaderMiddleware,
   createAdaptiveCardsAttachmentMiddleware,
   createCognitiveServicesSpeechServicesPonyfillFactory,
+  createDirectLine,
+  createDirectLineAppServiceExtension,
   createDirectLineSpeechAdapters,
   createStyleSet,
   patchedHooks as hooks,
   renderMarkdown,
   renderWebChat,
-  withEmoji
+  withEmoji,
+  type AdaptiveCardsPackage,
+  type StrictStyleOptions,
+  type StyleOptions
 };
-
-export type { AdaptiveCardsPackage, StrictStyleOptions, StyleOptions };
