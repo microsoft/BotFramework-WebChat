@@ -1,4 +1,5 @@
 const testIds = {
+  basicSendBoxUploadButton: 'basic send box toolbar upload button',
   codeBlockCopyButton: 'code block copy button',
   copyButton: 'copy button',
   feedbackButton: 'feedback button',

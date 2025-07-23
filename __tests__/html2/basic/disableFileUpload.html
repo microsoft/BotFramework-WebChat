@@ -17,17 +17,71 @@
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        renderWebChat({
-          directLine,
-          store,
-          styleOptions: { disableFileUpload: true }
-        }, document.getElementById('webchat')); 
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { disableFileUpload: true }
+          },
+          document.getElementById('webchat')
+        );
 
         await pageConditions.uiConnected();
 
-        // THEN: No attach button should be render.
+        // DOM-based checks
         expect(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton)).toBeFalsy();
         expect(pageElements.byTestId(WebChat.testIds.sendBoxDropZone)).toBeFalsy();
+
+        // Keyboard interaction: try to tab to the upload button
+        await pageObjects.focusSendBoxTextBox();
+        await host.sendTab();
+        console.log('document.activeElement', document.activeElement);
+
+        expect(document.activeElement).not.toBe(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton));
+       
+        // Simulate drag-and-drop using dispatchEvent
+        const sendBox = document.querySelector('[role="form"]');
+        if (sendBox) {
+          const dataTransfer = new DataTransfer();
+          const file = new File(['dummy content'], 'test.txt', { type: 'text/plain' });
+          dataTransfer.items.add(file);
+
+          const dragEnterEvent = new DragEvent('dragenter', {
+            bubbles: true,
+            cancelable: true,
+            dataTransfer
+          });
+
+          const dragOverEvent = new DragEvent('dragover', {
+            bubbles: true,
+            cancelable: true,
+            dataTransfer
+          });
+
+          const dropEvent = new DragEvent('drop', {
+            bubbles: true,
+            cancelable: true,
+            dataTransfer
+          });
+
+          sendBox.dispatchEvent(dragEnterEvent);
+          sendBox.dispatchEvent(dragOverEvent);
+          sendBox.dispatchEvent(dropEvent);
+
+          // Drop zone should still not appear
+          expect(pageElements.byTestId(WebChat.testIds.sendBoxDropZone)).toBeFalsy();
+          
+          // Attachment bar item should not appear
+          expect(pageElements.byTestId(WebChat.testIds.sendBoxAttachmentBarItem)).toBeFalsy();
+
+          await host.snapshot('drag-and-drop-disabled');
+        }
+
+        // Hover interaction: hover over the send box area
+        await host.hover(document.querySelector('[role="form"]'));
+        await host.snapshot('hover-over-sendbox-toolbar');
+
+        // Final visual confirmation
         await host.snapshot('local');
       });
     </script>
