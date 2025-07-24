@@ -488,14 +488,6 @@ The screen reader should read "Bot said: Where are you from? One attachment. Mes
 
 The screen reader should read "Bot said: Where are you from? Bot attached. Menu item, 1 of 2, United States. Menu item, 2 of 2, Hong Kong. Send at May 26th 8:08 PM."
 
-# UX: Keyboard help screen
-
-> This is introduced in PR [#4108](https://github.com/microsoft/BotFramework-WebChat/pull/4108).
-
-To help keyboard users on how to navigate the chat history, we have a keyboard help screen. Its activation is similar to the common "skip to content" accessible link and can only be activated through <kbd>TAB</kbd> key.
-
-![Keyboard help screen](https://user-images.githubusercontent.com/1622400/153072728-5d903a2a-dfe2-45bb-800d-d79e8afd95c8.png)
-
 # Do's and don't
 
 ## Do

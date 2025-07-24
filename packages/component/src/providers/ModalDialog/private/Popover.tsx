@@ -21,7 +21,7 @@ const ModalDialog = memo(
     const dialogRef = useRef<HTMLDialogElement>(null);
     const localize = useLocalizer();
 
-    const closeButtonAlt = localize('KEYBOARD_HELP_CLOSE_BUTTON_ALT');
+    const closeButtonAlt = localize('CLOSE_BUTTON_ALT');
 
     const handleCloseButtonClick = useCallback(() => dialogRef.current?.close(), [dialogRef]);
 

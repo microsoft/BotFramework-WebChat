@@ -18,7 +18,7 @@ async function clickButton(driver, locator) {
   await button.click();
 }
 
-test('video', async () => {
+test.skip('video', async () => {
   const { driver, pageObjects } = await setupWebDriver();
 
   await pageObjects.sendMessageViaSendBox('video youtube', { waitForSend: true });

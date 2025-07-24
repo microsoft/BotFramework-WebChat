@@ -33,7 +33,10 @@ describe.each([
     }
 
     const { token } = await (
-      await fetch('https://webchat-mockbot3.azurewebsites.net/api/token/directline', { method: 'POST' })
+      await fetch(
+        'https://hawo-mockbot4-token-app.blueriver-ce85e8f0.westus.azurecontainerapps.io/api/token/directline',
+        { method: 'POST' }
+      )
     ).json();
 
     const params = new URLSearchParams({

@@ -74,7 +74,7 @@ jobs:
       - run: ls -l docker.zip
 
       - name: Upload Docker artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docker
           path: docker.zip
@@ -154,9 +154,9 @@ jobs:
 
       - if: always()
         name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-result
+          name: test-result-unit
           path: |
             ./coverage/jest-*.json
             ./coverage/lcov-*.info
@@ -226,7 +226,7 @@ jobs:
           node-version: ${{ env.node-version }}
 
       - name: Download Docker artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: docker
 
@@ -236,11 +236,11 @@ jobs:
 
       - run: npm clean-install
 
-      - name: Run docker-compose build
-        run: docker-compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
+      - name: Run docker compose build
+        run: docker compose -f docker-compose-wsl2.yml build --build-arg REGISTRY=mcr.microsoft.com/mirror/docker/library
 
-      - name: Run docker-compose up
-        run: docker-compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
+      - name: Run docker compose up
+        run: docker compose -f docker-compose-wsl2.yml up --detach --scale chrome=2
 
       - name: Wait for Docker to be ready
         run: |
@@ -269,7 +269,7 @@ jobs:
 
       - if: always()
         name: Print Docker logs
-        run: docker-compose -f docker-compose-wsl2.yml logs
+        run: docker compose -f docker-compose-wsl2.yml logs
 
       - if: always()
         name: Append ID to test result
@@ -284,9 +284,9 @@ jobs:
 
       - if: always()
         name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-result
+          name: test-result-html-${{ matrix.shard-index }}
           path: |
             ./coverage/jest-*.json
             ./coverage/lcov-*.info
@@ -295,9 +295,9 @@ jobs:
 
       - if: failure()
         name: Upload test snapshot diffs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-snapshot-diff
+          name: test-snapshot-diff-html-${{ matrix.shard-index }}
           path: ./__tests__/__image_snapshots__/*/__diff_output__/*
 
   merge-test-result:
@@ -309,8 +309,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Merge test result artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          delete-merged: true
+          name: test-result
+          pattern: test-result-*
+
       - name: Download test results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: test-result
 
@@ -318,28 +325,7 @@ jobs:
         run: sudo apt install -y lcov
 
       - name: Merge lcov-*.info
-        run: |
-          lcov \
-            --rc lcov_branch_coverage=1 \
-            --add-tracefile lcov-1.info \
-            --add-tracefile lcov-2.info \
-            --add-tracefile lcov-3.info \
-            --add-tracefile lcov-4.info \
-            --add-tracefile lcov-5.info \
-            --add-tracefile lcov-6.info \
-            --add-tracefile lcov-7.info \
-            --add-tracefile lcov-8.info \
-            --add-tracefile lcov-9.info \
-            --add-tracefile lcov-10.info \
-            --add-tracefile lcov-11.info \
-            --add-tracefile lcov-12.info \
-            --add-tracefile lcov-13.info \
-            --add-tracefile lcov-14.info \
-            --add-tracefile lcov-15.info \
-            --add-tracefile lcov-16.info \
-            --add-tracefile lcov-17.info \
-            --add-tracefile lcov-unit.info \
-            --output-file lcov.info
+        run: find . -name "lcov-*.info" -type f | xargs -i echo "--add-tracefile {}" | xargs lcov --rc lcov_branch_coverage=1 --output-file lcov.info
 
       - if: always()
         name: Print coverage list
@@ -351,3 +337,20 @@ jobs:
           echo \`\`\` >> $GITHUB_STEP_SUMMARY
           lcov --rc lcov_branch_coverage=1 --summary lcov.info | tee --append $GITHUB_STEP_SUMMARY
           echo \`\`\` >> $GITHUB_STEP_SUMMARY
+
+  merge-test-snapshots:
+    if: always()
+    name: Merge test snapshots
+    needs:
+      - html-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - continue-on-error: true # Do not error out when no artifacts to merge, see https://github.com/actions/upload-artifact/issues/524
+        name: Merge test snapshots artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          compression-level: 0
+          delete-merged: true
+          name: test-snapshot-diff
+          pattern: test-snapshot-diff-*

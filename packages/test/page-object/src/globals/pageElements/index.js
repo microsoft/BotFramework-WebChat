@@ -6,7 +6,6 @@ import activityStatuses from './activityStatuses';
 import byTestId from './byTestId';
 import connectivityStatus from './connectivityStatus';
 import focusedActivity from './focusedActivity';
-import keyboardHelpScreenCloseButton from './keyboardHelpScreenCloseButton';
 import linkDefinitions from './linkDefinitions';
 import microphoneButton from './microphoneButton';
 import scrollToEndButton from './scrollToEndButton';
@@ -31,7 +30,6 @@ export {
   byTestId,
   connectivityStatus,
   focusedActivity,
-  keyboardHelpScreenCloseButton,
   linkDefinitions,
   microphoneButton,
   scrollToEndButton,

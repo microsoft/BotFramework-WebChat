@@ -143,6 +143,7 @@ module.exports = {
     // Packages, such as "uuid", export itself for browser as ES5 + ESM.
     // Since jest@28 cannot consume ESM yet, we need to transpile these packages.
     `/node_modules/(?!(${TRANSFORM_IGNORE_PACKAGES.join('|')})/)`,
+    '/packages/(?:test/)?\\w+/(?:lib|dist|\\w+\\.js)/',
     ...defaults.transformIgnorePatterns.filter(pattern => pattern !== '/node_modules/')
   ]
 };
