@@ -28,10 +28,12 @@ const FocusTrap = ({
   const onFocusRef = useRefFrom(onFocus);
   const onLeaveRef = useRefFrom(onLeave);
 
-  const getTabbableElementsInBody = useCallback(
-    () => tabbableElements(bodyRef.current).filter(element => element.getAttribute('aria-disabled') !== 'true'),
-    [bodyRef]
-  );
+  const getTabbableElementsInBody = useCallback(() => {
+    const nestedTraps = Array.from(bodyRef.current?.querySelectorAll('.webchat__focus-trap'));
+    return tabbableElements(bodyRef.current)
+      .filter(element => element.getAttribute('aria-disabled') !== 'true')
+      .filter(element => !nestedTraps.some(trap => trap.contains(element)));
+  }, [bodyRef]);
 
   const focusOrTriggerLeave = useCallback(
     (element: HTMLElement | undefined) => (element ? element.focus() : onLeaveRef.current?.()),
@@ -85,6 +87,8 @@ const FocusTrap = ({
         event.stopPropagation();
 
         focusOrTriggerLeave(focusables.at(0));
+      } else if (bodyRef.current.contains(target)) {
+        event.stopPropagation();
       }
     },
     [focusOrTriggerLeave, getTabbableElementsInBody]
@@ -109,7 +113,13 @@ const FocusTrap = ({
 
   return (
     <Fragment>
-      <div onBlur={handleBlur} onFocus={handleFocus} onKeyDown={handleBodyKeyDown} ref={bodyRef}>
+      <div
+        className="webchat__focus-trap"
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+        onKeyDown={handleBodyKeyDown}
+        ref={bodyRef}
+      >
         {children}
       </div>
       <div aria-hidden="true" className={targetClassName} onFocus={handleTrapFocus} tabIndex={-1} />

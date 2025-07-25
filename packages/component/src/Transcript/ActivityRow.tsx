@@ -15,6 +15,12 @@ import useActivityAccessibleName from './useActivityAccessibleName';
 import type { WebChatActivity } from 'botframework-webchat-core';
 import type { MouseEventHandler, PropsWithChildren } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import {
+  TranscriptFocusContent,
+  TranscriptFocusContentActiveDescendant,
+  TranscriptFocusContentBody,
+  TranscriptFocusIndicator
+} from './TranscriptFocus';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
@@ -58,9 +64,9 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   const focusTrapChildren = useMemo(
     () => (
-      <div className="webchat__basic-transcript__activity-body" ref={bodyRef}>
+      <TranscriptFocusContentBody className="webchat__basic-transcript__activity-body" ref={bodyRef}>
         {children}
-      </div>
+      </TranscriptFocusContentBody>
     ),
     [bodyRef, children]
   );
@@ -108,14 +114,16 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   return (
     // TODO: [P2] Add `aria-roledescription="message"` for better AX, need localization strings.
-    <article
+    <TranscriptFocusContent
       className={classNames('webchat__basic-transcript__activity', {
         'webchat__basic-transcript__activity--acknowledged': acknowledged,
         'webchat__basic-transcript__activity--read': read
       })}
-      // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <LiveRegionActivity>).
+      focused={isActiveDescendant}
       onMouseDownCapture={handleMouseDownCapture}
+      // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <LiveRegionActivity>).
       ref={wrappedRef}
+      tag="article"
     >
       {/* TODO: [P1] File a crbug for TalkBack. It should not able to read the content twice when scanning. */}
 
@@ -127,7 +135,7 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
           As Android does not support active descendant, we are hiding the whole DOM element altogether. */}
 
       {!android && (
-        <div
+        <TranscriptFocusContentActiveDescendant
           aria-labelledby={descendantLabelId}
           className="webchat__basic-transcript__activity-active-descendant"
           // "id" is required for "aria-labelledby"
@@ -136,7 +144,7 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
           role="article"
         >
           <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
-        </div>
+        </TranscriptFocusContentActiveDescendant>
       )}
       <FocusTrap
         onFocus={handleDescendantFocus}
@@ -149,12 +157,8 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
         // TODO: Should build `webChatActivitySchema`.
         <SpeakActivity activity={activity as WebChatActivity & { channelData: { speechSynthesisUtterance?: any } }} />
       )}
-      <div
-        className={classNames('webchat__basic-transcript__activity-indicator', {
-          'webchat__basic-transcript__activity-indicator--focus': isActiveDescendant
-        })}
-      />
-    </article>
+      <TranscriptFocusIndicator />
+    </TranscriptFocusContent>
   );
 });
 

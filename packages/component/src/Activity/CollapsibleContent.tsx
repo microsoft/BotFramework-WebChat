@@ -56,7 +56,7 @@ function CollapsibleContent(props: CollapsibleContentProps) {
         ref={summaryRef}
         role="button"
       >
-        {summary && <span>{summary}</span>}
+        {summary && <span className={classNames['collapsible-content__summary-text']}>{summary}</span>}
         <ComponentIcon appearance="text" className={classNames['collapsible-content__chevron']} icon="chevron" />
       </summary>
       <div className={classNames['collapsible-content__content']}>{children}</div>

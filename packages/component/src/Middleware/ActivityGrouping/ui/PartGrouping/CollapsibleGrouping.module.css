@@ -1,0 +1,54 @@
+:global(.webchat) .collapsible-grouping {
+  border: var(--webchat__border-width--bubble) var(--webchat__border-style--bubble) var(--webchat__border-color--bubble);
+  border-radius: var(--webchat__border-radius--bubble);
+  display: block;
+  font-family: var(--webchat__font--primary);
+  font-style: normal;
+  font-weight: 400;
+  margin-inline: var(--webchat__padding--regular);
+  max-width: var(--webchat__max-width--message-bubble);
+  min-width: var(--webchat__min-width--message-bubble);
+  overflow: clip;
+  position: relative;
+  box-sizing: border-box;
+}
+
+:global(.webchat) .collapsible-grouping__header {
+  border-block-end: var(--webchat__border-width--bubble) var(--webchat__border-style--bubble) var(--webchat__border-color--bubble);
+  align-items: center;
+  display: flex;
+  gap: var(--webchat__padding--regular);
+  justify-content: space-between;
+  padding: var(--webchat__padding--regular);
+  position: relative;
+}
+
+:global(.webchat) .collapsible-grouping__title {
+  font-size: 1.1em;
+}
+
+:global(.webchat) .collapsible-grouping__toggle {}
+
+:global(.webchat) .collapsible-grouping__chevron {
+  transition: transform 0.2s ease;
+}
+
+:global(.webchat) .collapsible-grouping--open .collapsible-grouping__chevron {
+  transform: rotate(180deg);
+}
+
+:global(.webchat) .collapsible-grouping__content {
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+  height: 0;
+  interpolate-size: allow-keywords;
+  transition: visibility 0s, height 0.2s ease;
+  margin: calc(var(--webchat__padding--regular) * -1);
+  padding: var(--webchat__padding--regular);
+}
+
+:global(.webchat) .collapsible-grouping__content--open {
+  visibility: unset;
+  height: auto;
+}

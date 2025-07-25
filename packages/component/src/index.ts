@@ -53,6 +53,13 @@ import {
   type HTMLContentTransformMiddleware,
   type HTMLContentTransformRequest
 } from './providers/HTMLContentTransformCOR/index';
+import {
+  ActivityLogicalGroupingComposer,
+  useAddLogicalGrouping,
+  useGetLogicalGroupKey,
+  type ActivityLogicalGroupingComposerProps,
+  type LogicalGrouping
+} from './providers/ActivityLogicalGrouping/index';
 import ThemeProvider from './providers/Theme/ThemeProvider';
 import testIds from './testIds';
 import withEmoji from './withEmoji/withEmoji';
@@ -128,6 +135,7 @@ const Components = {
 export default ReactWebChat;
 
 export {
+  ActivityLogicalGroupingComposer,
   buildInfo,
   Components,
   concatMiddleware,
@@ -140,17 +148,21 @@ export {
   hooks,
   localize,
   testIds,
+  useAddLogicalGrouping,
+  useGetLogicalGroupKey,
   version,
   withEmoji
 };
 
 export type {
+  ActivityLogicalGroupingComposerProps,
   BasicWebChatProps,
   ComposerProps,
   HTMLContentTransformEnhancer,
   HTMLContentTransformFunction,
   HTMLContentTransformMiddleware,
   HTMLContentTransformRequest,
+  LogicalGrouping,
   ReactWebChatProps,
   WebChatActivity
 };

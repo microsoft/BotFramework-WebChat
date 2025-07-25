@@ -5,6 +5,7 @@
   display: flex;
   flex-wrap: nowrap;
   gap: var(--webchat-spacingHorizontalS);
+  margin-inline: var(--webchat-spacingHorizontalM);
   max-width: var(--webchat__bubble--max-width);
 }
 

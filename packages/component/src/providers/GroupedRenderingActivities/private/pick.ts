@@ -5,18 +5,16 @@ export default function pick<T>(array: Iterable<T>, pick: Iterable<T>): readonly
 
   const pickArray = Array.from(pick);
 
-  const [left, right] = Array.from(array).reduce(
-    ([left, right], item) => {
-      if (pickArray.includes(item)) {
-        right.push(item);
-      } else {
-        left.push(item);
-      }
+  const left: T[] = [];
+  const right: T[] = [];
 
-      return [left, right];
-    },
-    [[], []]
-  );
+  for (const item of Array.from(array)) {
+    if (pickArray.includes(item)) {
+      right.push(item);
+    } else {
+      left.push(item);
+    }
+  }
 
   return Object.freeze([Object.freeze(left), Object.freeze(right)]);
 }

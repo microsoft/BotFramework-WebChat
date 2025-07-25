@@ -1,0 +1,99 @@
+/* Focus area container */
+
+:global(.webchat) .transcript-focus-area {
+  outline: 0;
+
+  .transcript-focus-area__indicator, .transcript-focus-area__transcript-indicator {
+    box-sizing: border-box;
+    font-size: 0;
+    height: 0;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    width: 0;
+  }
+
+  &:focus .transcript-focus-area__content--focused .transcript-focus-area__indicator {
+    border-color: var(--webchat__border-color--transcript-activity-visual-keyboard-indicator);
+    border-style: var(--webchat__border-style--transcript-activity-visual-keyboard-indicator);
+    border-width: var(--webchat__border-width--transcript-activity-visual-keyboard-indicator);
+    height: calc(100% - var(--webchat__padding--regular) / 2);
+    margin: 0 calc(var(--webchat__padding--regular) / 2);
+    width: calc(100% - var(--webchat__padding--regular));
+  }
+
+  &:focus .transcript-focus-area__content--focused .transcript-focus-area__content .transcript-focus-area__indicator {
+    opacity: 0;
+  }
+
+  &:focus-visible .transcript-focus-area__transcript-indicator, .transcript-focus-area__terminator:focus-visible + .transcript-focus-area__transcript-indicator {
+    border-color: var(--webchat__border-color--transcript-visual-keyboard-indicator);
+    border-style: var(--webchat__border-style--transcript-visual-keyboard-indicator);
+    border-width: var(--webchat__border-width--transcript-visual-keyboard-indicator);
+    height: 100%;
+    width: 100%;
+  }
+
+  .transcript-focus-area__content {
+    padding-top: calc(var(--webchat__padding--regular) / 2);
+    position: relative;
+
+    &:first-child {
+      margin-top: calc(var(--webchat__padding--regular) / 2);
+    }
+
+    &:not(:first-child) {
+      margin-top: calc(var(--webchat__padding--regular) / -2);
+    }
+  }
+
+  /* When the content is focused as active descendant, scrollIntoView() will scroll this invisible div into view. */
+  .transcript-focus-area__content-active-descendant {
+    height: 100%;
+    left: 0;
+    margin-top: calc(var(--webchat__padding--regular) / -2);
+    padding-bottom: calc(var(--webchat__padding--regular) / 2);
+    /* The bounding box is expanded to both top and bottom to scroll focus indicator into view. */
+    /* We should ignore clicks to make sure this expansion don't register click as focus. */
+    /* Otherwise, when clicking on the very bottom edge of the activity, it will focus on next activity instead. */
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+
+  .transcript-focus-area__content-body:not(:empty) {
+    padding-bottom: var(--webchat__padding--regular);
+  }
+
+  .transcript-focus-area__terminator {
+    bottom: 0;
+    height: 0;
+    outline: 0;
+    position: relative;
+    width: 100%;
+  }
+
+  .transcript-focus-area__terminator-body {
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+  }
+
+  .transcript-focus-area__terminator:not(:focus) .transcript-focus-area__terminator-body {
+    display: none;
+  }
+
+  .transcript-focus-area__terminator-text {
+    background: var(--webchat__background--transcript-terminator);
+    border-radius: var(--webchat__border-radius--transcript-terminator);
+    color: var(--webchat__color--transcript-terminator);
+    font-family: var(--webchat__font--primary);
+    font-size: var(--webchat__font-size--transcript-terminator);
+    margin: calc(var(--webchat__padding--regular) / 2);
+    padding: calc(var(--webchat__padding--regular) / 2);
+  }
+}

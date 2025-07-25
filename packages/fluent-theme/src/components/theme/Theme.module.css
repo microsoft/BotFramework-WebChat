@@ -284,37 +284,37 @@
 /* Transcript focus indicator color when in focus-visible state */
 :global(.webchat-fluent).theme
   :global(
-    .webchat__basic-transcript
-    .webchat__basic-transcript__terminator:focus-visible
-    + .webchat__basic-transcript__focus-indicator
+    .transcript-focus-area
+    .transcript-focus-area__terminator
+    + .transcript-focus-area__transcript-indicator
   ) {
   border-color: var(--webchat-colorStrokeFocus2);
 }
 
-/* Transcript Activity indicator without focus-visible state */
+/* Transcript Content indicator without focus-visible state */
 :global(.webchat-fluent).theme
-  :global(.webchat__basic-transcript:not(:focus-visible) .webchat__basic-transcript__activity-indicator--focus) {
+  :global(.transcript-focus-area:not(:focus-visible) .transcript-focus-area__indicator) {
   /* Hide activity focus when no focus-visible state */
   display: none;
 }
 
-/* Transcript Focus indicator when activity focused */
+/* Transcript Focus indicator when content focused */
 :global(.webchat-fluent).theme
-  :global(.webchat__basic-transcript:focus-visible:has(.webchat__basic-transcript__activity-indicator--focus)) {
-  :global(.webchat__basic-transcript__focus-indicator) {
+  :global(.transcript-focus-area:focus-visible:has(.transcript-focus-area__content--focused)) {
+  :global(.transcript-focus-area__indicator) {
     /* Hide transcript focus when an activity is focused */
     display: none;
   }
 }
 
-/* Transcript focused activity */
+/* Transcript focused content */
 :global(.webchat-fluent).theme
   :global(
-    .webchat__basic-transcript:focus-visible
-    .webchat__basic-transcript__activity:has(.webchat__basic-transcript__activity-indicator--focus)
+    .transcript-focus-area:focus-visible
+    .transcript-focus-area__content--focused
   ) {
-  :global(.webchat__basic-transcript__activity-indicator--focus) {
-    /* Hide transcript activity focus when the activity is focused */
+  :global(.transcript-focus-area__indicator) {
+    /* Hide transcript activity focus when the content is focused */
     display: none;
   }
 

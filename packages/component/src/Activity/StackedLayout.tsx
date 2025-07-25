@@ -17,21 +17,25 @@ import AttachmentRow from './AttachmentRow';
 import Bubble from './Bubble';
 import CodeBlockContent from './CodeBlockContent';
 import CollapsibleContent from './CollapsibleContent';
+import StackedLayoutMain from './StackedLayoutMain';
+import StackedLayoutRoot from './StackedLayoutRoot';
+import StackedLayoutStatus from './StackedLayoutStatus';
+import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 
 import styles from './StackedLayout.module.css';
 
-const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
+const { useAvatarForBot, useAvatarForUser, useLocalizer, useGetKeyByActivity, useStyleOptions } = hooks;
 
 type StackedLayoutInnerProps = Readonly<{
   activity: WebChatActivity;
   children?: ReactNode | undefined;
   fromUser: boolean;
-  hasAttachments: boolean;
   hasDisplayText: boolean;
   id: string;
   renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>) | undefined;
   renderBubbleContent: (title?: string | undefined) => ReactNode;
-  showCallout?: boolean | undefined;
+  showAvatar?: boolean | undefined;
+  showNub?: boolean | undefined;
 }>;
 
 const StackedLayoutInner = memo(
@@ -39,12 +43,12 @@ const StackedLayoutInner = memo(
     activity,
     children,
     fromUser,
-    hasAttachments,
     hasDisplayText,
     id,
     renderAvatar,
     renderBubbleContent,
-    showCallout
+    showAvatar,
+    showNub
   }: StackedLayoutInnerProps) => {
     const [styleOptions] = useStyleOptions();
     const [{ initials: botInitials }] = useAvatarForBot();
@@ -53,53 +57,42 @@ const StackedLayoutInner = memo(
     const classNames = useStyles(styles);
 
     const messageThing = useMemo(() => getOrgSchemaMessage(activity.entities), [activity]);
-    const { bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize } = styleOptions;
+    const { bubbleNubSize, bubbleFromUserNubSize } = styleOptions;
     const greetingAlt = (
       fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
     ).replace(/\s{2,}/gu, ' ');
 
     const initials = fromUser ? userInitials : botInitials;
-    const nubOffset = fromUser ? bubbleFromUserNubOffset : bubbleNubOffset;
     const nubSize = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
 
     const hasAvatar = initials || typeof initials === 'string';
     const hasNub = typeof nubSize === 'number';
-    const topAlignedCallout = isZeroOrPositive(nubOffset);
-
-    const showAvatar = showCallout && hasAvatar && !!renderAvatar;
-    const showNub = showCallout && hasNub && (topAlignedCallout || !hasAttachments);
 
     return (
-      <div className={classNames['stacked-layout__main']}>
-        <div className={cx(classNames['stacked-layout__avatar-gutter'])}>
-          {showAvatar && renderAvatar && renderAvatar()}
-        </div>
-        <div className={cx(classNames['stacked-layout__content'])}>
-          {!!(hasDisplayText || messageThing?.abstract) && (
-            <div
-              aria-roledescription="message"
-              className={cx(classNames['stacked-layout__message-row'])}
-              // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
-              /* eslint-disable-next-line react/forbid-dom-props */
-              id={id}
-              role="group"
+      <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
+        {!!(hasDisplayText || messageThing?.abstract) && (
+          <div
+            aria-roledescription="message"
+            className={cx(classNames['stacked-layout__message-row'])}
+            // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
+            /* eslint-disable-next-line react/forbid-dom-props */
+            id={id}
+            role="group"
+          >
+            <ScreenReaderText text={greetingAlt} />
+            <Bubble
+              className={classNames['stacked-layout__message']}
+              fromUser={fromUser}
+              nub={showNub || (hasAvatar || hasNub ? 'hidden' : false)}
             >
-              <ScreenReaderText text={greetingAlt} />
-              <Bubble
-                className={classNames['stacked-layout__message']}
-                fromUser={fromUser}
-                nub={showNub || (hasAvatar || hasNub ? 'hidden' : false)}
-              >
-                <ActivityBorderDecorator activity={activity}>
-                  {renderBubbleContent(messageThing?.abstract)}
-                </ActivityBorderDecorator>
-              </Bubble>
-            </div>
-          )}
-          <div className={classNames['stacked-layout__attachment-list']}>{children}</div>
-        </div>
-        <div className={classNames['stacked-layout__alignment-pad']} />
-      </div>
+              <ActivityBorderDecorator activity={activity}>
+                {renderBubbleContent(messageThing?.abstract)}
+              </ActivityBorderDecorator>
+            </Bubble>
+          </div>
+        )}
+        <div className={classNames['stacked-layout__attachment-list']}>{children}</div>
+      </StackedLayoutMain>
     );
   }
 );
@@ -158,11 +151,13 @@ const StackedLayout = ({
   const hasNub = typeof nubSize === 'number';
   const hasOtherNub = typeof otherNubSize === 'number';
   const topAlignedCallout = isZeroOrPositive(nubOffset);
+  const activityKey = useGetKeyByActivity()(activity);
+  const isInGroup = !!useGetLogicalGroupKey()(activityKey);
 
   const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
 
-  const showAvatar = showCallout && hasAvatar && !!renderAvatar;
-  const showNub = showCallout && hasNub && (topAlignedCallout || !attachments?.length);
+  const showAvatar = !isInGroup && showCallout && hasAvatar && !!renderAvatar;
+  const showNub = !isInGroup && showCallout && hasNub && (topAlignedCallout || !attachments?.length);
 
   const renderMainBubbleContent = useCallback(
     (title = '') => (
@@ -255,7 +250,10 @@ const StackedLayout = ({
 
   const renderCollapsibleBubbleContent = useCallback(
     (title = '') => (
-      <CollapsibleContent summary={title} summaryClassName={classNames['stacked-layout__title']}>
+      <CollapsibleContent
+        summary={title}
+        summaryClassName={cx(classNames['stacked-layout__title'], classNames['stacked-layout__title--collapsible'])}
+      >
         <div className={classNames['stacked-layout__attachment-list']}>{attachmentChildren}</div>
       </CollapsibleContent>
     ),
@@ -265,40 +263,33 @@ const StackedLayout = ({
   const renderBubbleContent = isCollapsible ? renderCollapsibleBubbleContent : renderMainBubbleContent;
 
   return (
-    <div
-      aria-labelledby={activityDisplayText ? ariaLabelId : undefined}
-      className={cx('webchat__stacked-layout', classNames['stacked-layout'], {
-        [classNames['stacked-layout--from-user']]: fromUser,
-        [classNames['stacked-layout--extra-trailing']]: extraTrailing,
-        [classNames['stacked-layout--hide-avatar']]: hasAvatar && !showAvatar,
-        [classNames['stacked-layout--hide-nub']]: hasNub && !showNub,
-        [classNames['stacked-layout--no-message']]: !activityDisplayText && !isCollapsible,
-        [classNames['stacked-layout--show-avatar']]: showAvatar,
-        [classNames['stacked-layout--show-nub']]: showNub,
-        [classNames['stacked-layout--top-callout']]: topAlignedCallout
-      })}
+    <StackedLayoutRoot
+      ariaLabelId={activityDisplayText ? ariaLabelId : undefined}
+      extraTrailing={extraTrailing}
+      fromUser={fromUser}
+      hideAvatar={hasAvatar && !showAvatar}
+      hideNub={hasNub && !showNub}
+      noMessage={!activityDisplayText && !isCollapsible}
+      showAvatar={showAvatar}
+      showNub={showNub}
+      topCallout={topAlignedCallout}
     >
       <StackedLayoutInner
         activity={activity}
         fromUser={fromUser}
-        hasAttachments={attachmentChildren.length > 0}
         hasDisplayText={!!activityDisplayText?.length || isCollapsible}
         id={ariaLabelId}
         renderAvatar={renderAvatar}
         renderBubbleContent={renderBubbleContent}
-        showCallout={showCallout}
+        showAvatar={showAvatar}
+        showNub={showNub}
       >
         {!isCollapsible && attachmentChildren.length > 0 && attachmentChildren}
       </StackedLayoutInner>
-      {typeof renderActivityStatus === 'function' && (
-        <div className={cx(classNames['stacked-layout__status'])}>
-          <div className={cx(classNames['stacked-layout__avatar-gutter'])} />
-          <div className={cx(classNames['stacked-layout__nub-pad'])} />
-          {renderActivityStatus({ hideTimestamp })}
-          <div className={cx(classNames['stacked-layout__alignment-pad'])} />
-        </div>
+      {renderActivityStatus && !isInGroup && (
+        <StackedLayoutStatus>{renderActivityStatus({ hideTimestamp })}</StackedLayoutStatus>
       )}
-    </div>
+    </StackedLayoutRoot>
   );
 };
 

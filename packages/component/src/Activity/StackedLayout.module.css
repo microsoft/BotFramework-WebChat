@@ -91,6 +91,10 @@
     /* This "overflow: hidden" is to make sure text overflow will get clipped correctly. */
     /* Related to the test at basic.js "long URLs with keep-all". */
     overflow: hidden;
+
+    .stacked-layout__avatar-gutter {
+      display: none;
+    }
   }
 
   .stacked-layout__message {
@@ -99,6 +103,10 @@
     overflow: hidden;
     transition-duration: var(--webchat__transition-duration);
     transition-property: max-width;
+
+    &:has(.stacked-layout__title--collapsible) {
+      flex: auto;
+    }
   }
 
   .stacked-layout__nub-pad {

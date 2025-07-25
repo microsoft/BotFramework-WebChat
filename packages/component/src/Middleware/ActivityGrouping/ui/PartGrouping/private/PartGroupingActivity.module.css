@@ -1,0 +1,8 @@
+:global(.webchat) .part-grouping-activity__focusable {
+  display: contents;
+}
+
+:global(.webchat) .part-grouping-activity__focusable-body {
+  position: relative;
+  padding-block-start: calc(var(--webchat__padding--regular) / 2);
+}

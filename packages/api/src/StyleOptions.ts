@@ -954,7 +954,7 @@ type StyleOptions = {
   speechRecognitionContinuous?: boolean | undefined;
 
   /**
-   * Defines how activities are being grouped by (in the order of appearance in the array). Default to `['sender', 'status']` or `sender,status` in CSS.
+   * Defines how activities are being grouped by (in the order of appearance in the array). Default to `['sender', 'status', 'part']` or `sender,status` in CSS.
    *
    * Values are key of result of `groupActivitiesMiddleware`. The default implementation of `groupActivitiesMiddleware` has `sender` and `status`.
    *

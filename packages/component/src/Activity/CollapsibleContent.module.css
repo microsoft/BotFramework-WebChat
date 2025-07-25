@@ -1,4 +1,6 @@
 :global(.webchat) .collapsible-content {
+  display: flex;
+
   &[open] .collapsible-content__chevron {
     transform: rotate(180deg);
   }
@@ -22,8 +24,11 @@
   }
 }
 
+:global(.webchat) .collapsible-content__summary-text {
+  flex: auto;
+}
+
 :global(.webchat) .collapsible-content__content {
   display: flex;
   flex-direction: column;
-  margin-block-start: calc(var(--webchat__padding--regular) * -1);
 }
