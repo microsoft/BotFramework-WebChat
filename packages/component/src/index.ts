@@ -3,7 +3,7 @@ import { type WebChatActivity } from 'botframework-webchat-core';
 
 import ReactWebChat, { ReactWebChatProps } from './ReactWebChat';
 
-import Composer, { ComposerProps } from './Composer';
+import Composer, { ComposerProps, ComposerRef } from './Composer';
 
 import AccessKeySinkSurface from './Utils/AccessKeySink/Surface';
 
@@ -147,6 +147,7 @@ export {
 export type {
   BasicWebChatProps,
   ComposerProps,
+  ComposerRef,
   HTMLContentTransformEnhancer,
   HTMLContentTransformFunction,
   HTMLContentTransformMiddleware,
