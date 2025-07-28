@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <!-- <script crossorigin="anonymous" src="https://unpkg.com/botframework-webchat@main/dist/webchat-es5.js"></script> -->
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { createElement } from 'react';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        const activityMiddleware = [
+          () => next => request => next(request),
+          () => next => request => {
+            const render = next(request);
+
+            if (!request.activity.entities) {
+              return render;
+            }
+
+            expect(request.activity).toEqual(
+              expect.objectContaining({
+                text: 'Do you like my response?',
+                type: 'message'
+              })
+            );
+
+            return (renderAttachment, options) => {
+              // TODO: Test every of the following deeply to make sure they are working as expected.
+              expect(typeof renderAttachment).toBe('function');
+              expect(options.hideTimestamp).toEqual(false);
+              expect(typeof options.renderActivityStatus).toBe('function');
+              expect(options.renderAvatar).toBe(false);
+              expect(options.showCallout).toEqual(false);
+
+              return createElement('div', { style: { border: 'solid 2px red' } }, render(renderAttachment, options));
+            };
+          }
+        ];
+
+        WebChat.renderWebChat(
+          {
+            activityMiddleware,
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          text: 'This is the solution.\n\n\\[x - 1 = 0\\]\n\n\\[x = 1\\]',
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@id': '',
+              '@type': 'Message',
+              additionalType: 'Feedback'
+            }
+          ],
+          text: 'Do you like my response?',
+          type: 'message'
+        });
+      });
+    </script>
+  </body>
+</html>

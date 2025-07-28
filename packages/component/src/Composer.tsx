@@ -451,7 +451,7 @@ const InternalComposer = ({
     () =>
       Object.freeze([
         // TODO: Add <FallbackComponent>.
-        createActivityPolyMiddlewareFromLegacy(LegacyActivityBridge, () => undefined, ...patchedActivityMiddleware)
+        createActivityPolyMiddlewareFromLegacy(LegacyActivityBridge, () => null, ...patchedActivityMiddleware)
       ]),
     [patchedActivityMiddleware]
   );
