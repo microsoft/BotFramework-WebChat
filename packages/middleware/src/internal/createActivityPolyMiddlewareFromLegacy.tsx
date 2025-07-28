@@ -1,7 +1,8 @@
-import { type ActivityMiddleware, type RenderAttachment } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { composeEnhancer } from 'handler-chain';
 import React, { type ComponentType, type ReactNode } from 'react';
+import type ActivityMiddleware from '../legacy/activityMiddleware';
+import { type RenderAttachment } from '../legacy/attachmentMiddleware';
 
 import { custom, function_, never, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 import {
