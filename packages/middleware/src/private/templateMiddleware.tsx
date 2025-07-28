@@ -1,4 +1,5 @@
 import { warnOnce } from 'botframework-webchat-core';
+import { type Enhancer } from 'handler-chain';
 import React, { memo, type ReactNode } from 'react';
 import {
   createChainOfResponsibility,
@@ -12,8 +13,6 @@ import {
 } from 'react-chain-of-responsibility/preview';
 import { array, function_, safeParse, type InferOutput } from 'valibot';
 
-import { type GenericEnhancer } from '../types/GenericMiddleware';
-
 const arrayOfFunctionSchema = array(function_());
 // TODO: Move marker inside templateMiddleware. Think if every type of middleware should have their own marker and not crossed.
 const middlewareFactoryMarker = Symbol();
@@ -21,7 +20,7 @@ const middlewareFactoryMarker = Symbol();
 const isArrayOfFunction = (middleware: unknown): middleware is InferOutput<typeof arrayOfFunctionSchema> =>
   safeParse(arrayOfFunctionSchema, middleware).success;
 
-const BYPASS_ENHANCER: GenericEnhancer<any, any> = next => request => next(request);
+const BYPASS_ENHANCER: Enhancer<any, any> = next => request => next(request);
 const EMPTY_ARRAY = Object.freeze([]);
 
 // Following @types/react to use {} for props.

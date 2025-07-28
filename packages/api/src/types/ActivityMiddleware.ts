@@ -1,6 +1,8 @@
-import type { ReactNode } from 'react';
-import type { RenderAttachment } from './AttachmentMiddleware';
-import type { WebChatActivity } from 'botframework-webchat-core';
+// TODO: Move this to botframework-webchat-middleware.
+import { type WebChatActivity } from 'botframework-webchat-core';
+import { type ReactNode } from 'react';
+
+import { type RenderAttachment } from './AttachmentMiddleware';
 
 type ActivityProps = {
   hideTimestamp: boolean;
