@@ -5,6 +5,16 @@
   "main": "./dist/botframework-webchat-middleware.js",
   "types": "./dist/botframework-webchat-middleware.d.ts",
   "exports": {
+    "./legacy": {
+      "import": {
+        "types": "./dist/botframework-webchat-middleware.legacy.d.mts",
+        "default": "./dist/botframework-webchat-middleware.legacy.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-middleware.legacy.d.ts",
+        "default": "./dist/botframework-webchat-middleware.legacy.js"
+      }
+    },
     ".": {
       "import": {
         "types": "./dist/botframework-webchat-middleware.d.mts",

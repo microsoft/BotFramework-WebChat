@@ -1,7 +1,6 @@
 import { isValidElement, useMemo } from 'react';
+import { type ActivityComponentFactory, type RenderAttachment } from 'botframework-webchat-middleware/legacy';
 
-import { ActivityComponentFactory } from '../../types/ActivityMiddleware';
-import { RenderAttachment } from '../../types/AttachmentMiddleware';
 import useRenderAttachment from '../useRenderAttachment';
 import useWebChatAPIContext from './useWebChatAPIContext';
 

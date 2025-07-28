@@ -1,4 +1,10 @@
 // TODO: Move the pattern to re-export.
+import {
+  type ActivityComponentFactory,
+  type ActivityMiddleware,
+  type AttachmentMiddleware,
+  type RenderAttachment
+} from 'botframework-webchat-middleware/legacy';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import defaultStyleOptions from './defaultStyleOptions';
 import Composer, { ComposerProps } from './hooks/Composer';
@@ -9,12 +15,10 @@ import { type DebouncedNotification, type DebouncedNotifications } from './hooks
 import { type PostActivityFile } from './hooks/useSendFiles';
 import { localize } from './localization/Localize';
 import normalizeStyleOptions from './normalizeStyleOptions';
-import ActivityMiddleware, { type ActivityComponentFactory } from './types/ActivityMiddleware';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from './types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware, {
   AttachmentForScreenReaderComponentFactory
 } from './types/AttachmentForScreenReaderMiddleware';
-import AttachmentMiddleware, { type RenderAttachment } from './types/AttachmentMiddleware';
 import AvatarMiddleware, { type AvatarComponentFactory } from './types/AvatarMiddleware';
 import CardActionMiddleware, { type PerformCardAction } from './types/CardActionMiddleware';
 import { type ContextOf } from './types/ContextOf';

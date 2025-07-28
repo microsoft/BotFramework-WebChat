@@ -6,13 +6,12 @@ import {
   type sendMessage,
   type setSendBoxAttachments
 } from 'botframework-webchat-core';
+import { type LegacyActivityRenderer, type RenderAttachment } from 'botframework-webchat-middleware/legacy';
 import { createContext, type ComponentType } from 'react';
 
 import { StrictStyleOptions } from '../../StyleOptions';
-import { LegacyActivityRenderer } from '../../types/ActivityMiddleware';
 import { RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
 import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
-import { RenderAttachment } from '../../types/AttachmentMiddleware';
 import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
 import { PerformCardAction } from '../../types/CardActionMiddleware';
 import { GroupActivities } from '../../types/GroupActivitiesMiddleware';

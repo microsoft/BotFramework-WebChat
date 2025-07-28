@@ -1,8 +1,8 @@
-// TODO: Move this to botframework-webchat-middleware.
+// TODO: This is moved from /api, need to revisit/rewrite everything in this file.
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { type ReactNode } from 'react';
 
-import { type RenderAttachment } from './AttachmentMiddleware';
+import { type RenderAttachment } from './attachmentMiddleware';
 
 type ActivityProps = {
   hideTimestamp: boolean;
