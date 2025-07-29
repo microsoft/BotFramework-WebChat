@@ -121,21 +121,13 @@ type InferenceHelper<Request, Props extends object> = {
   };
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type InferHandler<T extends InferenceHelper<any, any>> = T['~types']['handler'];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type InferHandlerResult<T extends InferenceHelper<any, any>> = T['~types']['handlerResult'];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type InferMiddleware<T extends InferenceHelper<any, any>> = T['~types']['middleware'];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type InferProps<T extends InferenceHelper<any, any>> = T['~types']['props'];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type InferProviderProps<T extends InferenceHelper<any, any>> = T['~types']['providerProps'];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type InferProxyProps<T extends InferenceHelper<any, any>> = T['~types']['proxyProps'];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type InferRenderer<T extends InferenceHelper<any, any>> = T['~types']['renderer'];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type InferRequest<T extends InferenceHelper<any, any>> = T['~types']['request'];
 
 export default templateMiddleware;
