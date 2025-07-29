@@ -1,7 +1,8 @@
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { useBuildRenderActivityCallback, type ActivityPolyMiddlewareRenderer } from 'botframework-webchat-middleware';
-import React, { memo, useMemo, type ReactNode } from 'react';
+import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
+import { useReduceMemo } from 'use-reduce-memo';
 
 import RenderingActivitiesContext, { type RenderingActivitiesContextType } from './private/RenderingActivitiesContext';
 
@@ -42,16 +43,22 @@ const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerPr
 
   const renderActivity = useBuildRenderActivityCallback();
 
-  const activityRendererMap = useMemo<ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>>(
-    () =>
-      Object.freeze(
-        new Map(
-          activitiesOfLatestRevision
-            .map(activity => [activity, renderActivity({ activity })] as const)
-            .filter((tuple): tuple is [WebChatActivity, ActivityPolyMiddlewareRenderer] => !!tuple[1])
-        )
-      ),
-    [activitiesOfLatestRevision, renderActivity]
+  const activityRendererMap = useReduceMemo(
+    activitiesOfLatestRevision,
+    useCallback<
+      (
+        activityRendererMap: ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>,
+        activity: WebChatActivity
+      ) => ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>
+    >(
+      (activityRendererMap, activity) => {
+        const renderer = renderActivity({ activity });
+
+        return renderer ? Object.freeze(new Map(activityRendererMap).set(activity, renderer)) : activityRendererMap;
+      },
+      [renderActivity]
+    ),
+    new Map<WebChatActivity, ActivityPolyMiddlewareRenderer>()
   );
 
   const renderingActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(

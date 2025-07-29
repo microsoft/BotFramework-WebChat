@@ -145,6 +145,7 @@
     "redux": "5.0.1",
     "simple-update-in": "2.2.0",
     "use-propagate": "0.2.1",
+    "use-reduce-memo": "^0.1.0-main.1384637",
     "use-ref-from": "0.1.0",
     "use-state-with-ref": "0.1.0",
     "valibot": "1.1.0"
