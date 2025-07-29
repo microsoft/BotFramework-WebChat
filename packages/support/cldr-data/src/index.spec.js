@@ -20,6 +20,6 @@ const childProcess = require('child_process');
 test('should load CLDR data', () =>
   new Promise((resolve, reject) =>
     childProcess
-      .fork(join(__dirname, './index.spec.mjs'))
+      .fork(join(__dirname, './index.spec-actual.mjs'))
       .on('exit', exitCode => (exitCode ? reject(exitCode) : resolve()))
   ));

@@ -1,6 +1,6 @@
 import { expectNotAssignable } from 'tsd';
 
-import { createDirectLine } from '../../src/module/exports';
+import { createDirectLine } from '../../src/boot/exports/full';
 
 // "botAgent" is a forbidden option.
 type CreateDirectLineInit = Parameters<typeof createDirectLine>[0];

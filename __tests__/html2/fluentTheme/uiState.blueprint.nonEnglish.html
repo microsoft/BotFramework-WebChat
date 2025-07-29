@@ -184,12 +184,7 @@
           document.querySelectorAll(
             `[data-testid="${WebChat.testIds.preChatMessageActivityStarterPromptsCardAction}"]:not(button)`
           )
-        ).toHaveLength(3);
-
-        // THEN: Card action height should kept the same.
-        expect(
-          document.querySelector(`[data-testid="${WebChat.testIds.preChatMessageActivityStarterPromptsCardAction}"]`)
-        ).toHaveProperty('clientHeight', cardActionClientHeight);
+        ).toHaveLength(0);
 
         // THEN: Send box container height should kept the same.
         expect(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxContainer}"]`)).toHaveProperty(

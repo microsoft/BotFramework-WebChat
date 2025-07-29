@@ -1,6 +1,6 @@
 import { expectNotAssignable } from 'tsd';
 
-import { createStyleSet } from '../../src/module/exports';
+import { createStyleSet } from '../../src/boot/exports/full';
 
 type CreateStyleSetInit = Parameters<typeof createStyleSet>[0];
 

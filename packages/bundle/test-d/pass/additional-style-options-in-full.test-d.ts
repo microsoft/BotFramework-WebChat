@@ -1,3 +1,3 @@
-import { createStyleSet } from '../../src/module/exports';
+import { createStyleSet } from '../../src/boot/exports/full';
 
 createStyleSet({ cardEmphasisBackgroundColor: 'orange' });

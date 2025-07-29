@@ -1,6 +1,6 @@
 import { expectNotAssignable } from 'tsd';
 
-import { createStyleSet } from '../../src/module/exports-minimal';
+import { createStyleSet } from '../../src/boot/exports/minimal';
 
 type CreateStyleSetInit = Parameters<typeof createStyleSet>[0];
 

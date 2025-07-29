@@ -1,9 +1,9 @@
+import { injectCSSPlugin } from 'botframework-webchat-styles/build';
 import { join } from 'node:path';
-import { defineConfig } from 'tsup';
 import { fileURLToPath } from 'node:url';
+import { defineConfig } from 'tsup';
 import baseConfig from '../../tsup.base.config';
 import { fluentStyleContent as fluentStyleContentPlaceholder } from './src/styles/createStyles';
-import { injectCSSPlugin } from 'botframework-webchat-styles/build';
 
 const umdResolvePlugin = {
   name: 'umd-resolve',
@@ -49,6 +49,7 @@ export default defineConfig([
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
+    env: { ...baseConfig.env, module_format: 'esmodules' },
     esbuildPlugins: [
       ...(baseConfig.esbuildPlugins || []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
@@ -58,6 +59,7 @@ export default defineConfig([
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme.development': './src/bundle.ts' },
+    env: { ...baseConfig.env, module_format: 'global' },
     esbuildPlugins: [
       ...(baseConfig.esbuildPlugins || []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
@@ -71,8 +73,9 @@ export default defineConfig([
   {
     ...baseConfig,
     entry: { 'botframework-webchat-fluent-theme.production.min': './src/bundle.ts' },
+    env: { ...baseConfig.env, module_format: 'global' },
     loader: {
-      ...baseConfig.loader,
+      ...baseConfig.loader
     },
     esbuildPlugins: [
       ...(baseConfig.esbuildPlugins || []),

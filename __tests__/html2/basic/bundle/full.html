@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        WebChat.renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        await host.snapshot('local');
+
+        const metaMap = new Map(
+          Array.from(document.querySelectorAll('meta'))
+            .filter(element => element.name.startsWith('botframework-webchat'))
+            .map(element => [element.name, element.getAttribute('content')])
+        );
+
+        expect(metaMap.has('botframework-webchat:api')).toBe(true);
+        expect(metaMap.get('botframework-webchat:bundle:variant')).toBe('full');
+        expect(metaMap.has('botframework-webchat:bundle:version')).toBe(true);
+        expect(metaMap.has('botframework-webchat:bundle')).toBe(true);
+        expect(metaMap.has('botframework-webchat:component')).toBe(true);
+        expect(metaMap.has('botframework-webchat:core:version')).toBe(true);
+        expect(metaMap.has('botframework-webchat:core')).toBe(true);
+        expect(metaMap.has('botframework-webchat:ui:version')).toBe(true);
+
+        expect(
+          metaMap
+            .get('botframework-webchat:bundle')
+            .split(';')
+            .map(value => value.trim())
+        ).toEqual(expect.arrayContaining(['variant=full', 'build-tool=tsup', 'module-format=global']));
+      });
+    </script>
+  </body>
+</html>

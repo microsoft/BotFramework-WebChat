@@ -1,6 +1,6 @@
 import { expectNotAssignable } from 'tsd';
 
-import { hooks } from '../../src/module/exports-minimal';
+import { hooks } from '../../src/boot/exports/minimal';
 
 type StyleOptions = ReturnType<typeof hooks.useStyleOptions>[0];
 

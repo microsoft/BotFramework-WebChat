@@ -1,8 +1,8 @@
 import { expectNotAssignable } from 'tsd';
 
-import { hooks } from '../../src/module/exports';
+import { hooks } from '../../src/boot/exports/full';
 
-const [styleOptions] = hooks.useStyleOptions();
+const [_styleOptions] = hooks.useStyleOptions();
 
 // eslint-disable-next-line no-magic-numbers
-expectNotAssignable<typeof styleOptions.cardEmphasisBackgroundColor>(123);
+expectNotAssignable<typeof _styleOptions.cardEmphasisBackgroundColor>(123);
