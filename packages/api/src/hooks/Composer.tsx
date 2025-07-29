@@ -31,6 +31,7 @@ import {
   type OneOrMany,
   type WebChatActivity
 } from 'botframework-webchat-core';
+import { type ActivityMiddleware, type AttachmentMiddleware } from 'botframework-webchat-middleware/legacy';
 import { ReduxStoreComposer } from 'botframework-webchat-redux-store';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
@@ -54,10 +55,8 @@ import ActivitySendStatusComposer from '../providers/ActivitySendStatus/Activity
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
-import ActivityMiddleware from '../types/ActivityMiddleware';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
-import AttachmentMiddleware from '../types/AttachmentMiddleware';
 import AvatarMiddleware from '../types/AvatarMiddleware';
 import CardActionMiddleware from '../types/CardActionMiddleware';
 import { type ContextOf } from '../types/ContextOf';

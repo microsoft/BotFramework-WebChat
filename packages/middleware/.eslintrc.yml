@@ -1,0 +1,10 @@
+extends:
+  - ../../.eslintrc.production.yml
+
+# This package is compatible with web browser.
+env:
+  browser: true
+
+rules:
+  # React functional component is better in function style than arrow style
+  prefer-arrow-callback: off
