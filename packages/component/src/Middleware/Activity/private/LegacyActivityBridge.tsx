@@ -88,7 +88,7 @@ function LegacyActivityBridge(props: BridgeComponentProps) {
     showCallout = true;
   }
 
-  const node = useMemo(
+  const children = useMemo(
     () =>
       render(renderAttachment, {
         hideTimestamp,
@@ -96,12 +96,12 @@ function LegacyActivityBridge(props: BridgeComponentProps) {
         renderAvatar: renderAvatarForSenderGroup,
         showCallout
       }),
-    [render, hideTimestamp, renderActivityStatus, renderAttachment, renderAvatarForSenderGroup, showCallout]
+    [hideTimestamp, render, renderActivityStatus, renderAttachment, renderAvatarForSenderGroup, showCallout]
   );
 
   return (
     <ActivityRow activity={activity} ref={activityCallbackRef}>
-      {node}
+      {children}
     </ActivityRow>
   );
 }
