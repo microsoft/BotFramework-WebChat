@@ -17,7 +17,7 @@
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
-        WebChat.renderWebChat(
+        const { isFluentTheme } = renderWebChat(
           {
             directLine,
             store,
@@ -35,13 +35,13 @@
         // Keyboard interaction: try to tab to the upload button
         await pageObjects.focusSendBoxTextBox();
         await host.sendTab();
-        console.log('document.activeElement', document.activeElement);
 
         expect(document.activeElement).not.toBe(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton));
        
         // Simulate drag-and-drop using dispatchEvent
-        const sendBox = document.querySelector('[role="form"]');
-        if (sendBox) {
+        const sendBox = pageElements.byTestId(WebChat.testIds.sendBoxContainer);
+
+        if (isFluentTheme) {
           const dataTransfer = new DataTransfer();
           const file = new File(['dummy content'], 'test.txt', { type: 'text/plain' });
           dataTransfer.items.add(file);
@@ -74,12 +74,12 @@
           // Attachment bar item should not appear
           expect(pageElements.byTestId(WebChat.testIds.sendBoxAttachmentBarItem)).toBeFalsy();
 
-          await host.snapshot('drag-and-drop-disabled');
+          await host.snapshot('local'); 
         }
 
         // Hover interaction: hover over the send box area
-        await host.hover(document.querySelector('[role="form"]'));
-        await host.snapshot('hover-over-sendbox-toolbar');
+        await host.hover(pageElements.byTestId(WebChat.testIds.sendBoxContainer));
+        await host.snapshot('local');
 
         // Final visual confirmation
         await host.snapshot('local');
