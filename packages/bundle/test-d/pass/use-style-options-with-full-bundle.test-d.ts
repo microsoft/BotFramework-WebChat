@@ -1,4 +1,4 @@
-import { hooks } from '../../src/module/exports';
+import { hooks } from '../../src/boot/exports/full';
 
 const [styleOptions] = hooks.useStyleOptions();
 

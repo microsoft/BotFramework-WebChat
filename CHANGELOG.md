@@ -245,6 +245,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed long citation identifiers break activity layout, in PR [#5507](https://github.com/microsoft/BotFramework-WebChat/pull/5507), by [@OEvgeny](https://github.com/OEvgeny)
 - Updated file-based import with `.js` extension and removed the file extension from build config, by [@compulim](https://github.com/compulim), in PR [#5516](https://github.com/microsoft/BotFramework-WebChat/pull/5516)
 - Fixed [#5518](https://github.com/microsoft/BotFramework-WebChat/issues/5518). Minimal bundled build should work properly, in PR [#5507](https://github.com/microsoft/BotFramework-WebChat/pull/5507), by [@compulim](https://github.com/compulim)
+- Fixed [#5520](https://github.com/microsoft/BotFramework-WebChat/issues/5520). Version information should be injected when installed via npm, in PR [#5521](https://github.com/microsoft/BotFramework-WebChat/pull/5521), by [@compulim](https://github.com/compulim)
 
 # Removed
 

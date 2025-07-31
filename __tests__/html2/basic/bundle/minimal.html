@@ -47,6 +47,13 @@
         expect(metaMap.has('botframework-webchat:core:version')).toBe(true);
         expect(metaMap.has('botframework-webchat:core')).toBe(true);
         expect(metaMap.has('botframework-webchat:ui:version')).toBe(true);
+
+        expect(
+          metaMap
+            .get('botframework-webchat:bundle')
+            .split(';')
+            .map(value => value.trim())
+        ).toEqual(expect.arrayContaining(['variant=minimal', 'build-tool=tsup', 'module-format=global']));
       });
     </script>
   </body>

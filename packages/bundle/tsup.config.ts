@@ -26,9 +26,9 @@ const resolveReact = {
 const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
-    'botframework-webchat': './src/module/exports.ts',
-    'botframework-webchat.es5': './src/module/exports-es5.ts',
-    'botframework-webchat.minimal': './src/module/exports-minimal.ts'
+    'botframework-webchat': './src/boot/exports/full.ts',
+    'botframework-webchat.es5': './src/boot/exports/full-es5.ts',
+    'botframework-webchat.minimal': './src/boot/exports/minimal.ts'
   },
   env: {
     ...baseConfig.env,
@@ -60,14 +60,11 @@ export default defineConfig([
     ...config,
     dts: false,
     entry: {
-      webchat: './src/bundle/index.ts',
-      'webchat-es5': './src/bundle/index-es5.ts',
-      'webchat-minimal': './src/bundle/index-minimal.ts'
+      webchat: './src/boot/bundle/full.ts',
+      'webchat-es5': './src/boot/bundle/full-es5.ts',
+      'webchat-minimal': './src/boot/bundle/minimal.ts'
     },
-    env: {
-      ...config.env,
-      module_format: 'global'
-    },
+    env: { ...config.env, module_format: 'global' },
     esbuildPlugins: [...config.esbuildPlugins, resolveReact],
     format: 'iife',
     outExtension() {
@@ -78,10 +75,12 @@ export default defineConfig([
   },
   {
     ...config,
+    env: { ...config.env, module_format: 'esmodules' },
     format: 'esm'
   },
   {
     ...config,
+    env: { ...config.env, module_format: 'commonjs' },
     format: 'cjs',
     target: [...config.target, 'es2019']
   }

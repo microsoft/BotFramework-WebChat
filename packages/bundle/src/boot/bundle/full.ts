@@ -1,7 +1,7 @@
 import './modern-polyfill';
 
-import addVersion from './addVersion';
-import * as full from '../module/exports';
+import addVersion from '../addVersion';
+import * as full from '../actual/full';
 
 const buildInfo = Object.freeze({
   ...full.buildInfo,
