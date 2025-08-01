@@ -61,6 +61,10 @@
     "@types/react": [
       "16",
       "react@16.8.6 is our baseline"
+    ],
+    "typescript": [
+      "~5.8.3",
+      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ]
   },
   "devDependencies": {
@@ -71,7 +75,7 @@
     "botframework-webchat-base": "0.0.0-0",
     "botframework-webchat-styles": "0.0.0-0",
     "tsup": "^8.5.0",
-    "typescript": "^5.9.2"
+    "typescript": "~5.8.3"
   },
   "dependencies": {
     "botframework-webchat-api": "0.0.0-0",

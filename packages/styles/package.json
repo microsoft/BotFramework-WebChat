@@ -74,14 +74,21 @@
     "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
     "start:tsup": "npm run build:tsup -- --watch"
   },
+  "pinDependencies": {
+    "typescript": [
+      "~5.8.3",
+      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
+    ]
+  },
   "devDependencies": {
     "@jridgewell/sourcemap-codec": "^1.5.4",
     "@tsconfig/strictest": "^2.0.5",
     "@types/node": "^24.1.0",
     "botframework-webchat-base": "0.0.0-0",
     "cross-env": "^10.0.0",
+    "tsup": "^8.5.0",
     "type-fest": "^4.41.0",
-    "typescript": "^5.9.2"
+    "typescript": "~5.8.3"
   },
   "peerDependencies": {
     "react": ">= 16.8.6"

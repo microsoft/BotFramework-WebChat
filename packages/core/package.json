@@ -75,7 +75,12 @@
   "localDependences": {
     "botframework-webchat-base": "development"
   },
-  "pinDependencies": {},
+  "pinDependencies": {
+    "typescript": [
+      "~5.8.3",
+      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
+    ]
+  },
   "devDependencies": {
     "@babel/cli": "^7.28.0",
     "@babel/core": "^7.28.0",
@@ -91,7 +96,7 @@
     "cross-env": "^10.0.0",
     "tsd": "^0.32.0",
     "type-fest": "^4.41.0",
-    "typescript": "^5.9.2"
+    "typescript": "~5.8.3"
   },
   "dependencies": {
     "@babel/runtime": "7.28.2",

@@ -52,12 +52,18 @@
   "pinDependencies": {
     "@types/react": [
       "16"
+    ],
+    "typescript": [
+      "~5.8.3",
+      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ]
   },
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.5",
     "@types/react": "^16.14.65",
-    "botframework-webchat-react-valibot": "^0.0.0-0"
+    "botframework-webchat-react-valibot": "^0.0.0-0",
+    "tsup": "^8.5.0",
+    "typescript": "~5.8.3"
   },
   "dependencies": {
     "botframework-webchat-core": "0.0.0-0",

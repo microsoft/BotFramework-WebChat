@@ -85,6 +85,10 @@
       "^8.2.6",
       "required by Adaptive Cards but they forget to include in adaptivecards@3.0.2"
     ],
+    "typescript": [
+      "~5.8.3",
+      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
+    ],
     "uuid": [
       "8",
       "uuid@9 emit non-ES5 build because of default parameters"
@@ -144,7 +148,7 @@
     "micromark-util-types": "^2.0.2",
     "tsd": "^0.32.0",
     "type-fest": "^4.41.0",
-    "typescript": "^5.9.2"
+    "typescript": "~5.8.3"
   },
   "peerDependencies": {
     "react": ">= 16.8.6",

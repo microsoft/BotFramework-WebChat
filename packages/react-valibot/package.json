@@ -49,11 +49,17 @@
   "pinDependencies": {
     "@types/react": [
       "16"
+    ],
+    "typescript": [
+      "~5.8.3",
+      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ]
   },
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.5",
-    "@types/react": "^16.14.65"
+    "@types/react": "^16.14.65",
+    "tsup": "^8.5.0",
+    "typescript": "~5.8.3"
   },
   "dependencies": {
     "valibot": "1.1.0"
