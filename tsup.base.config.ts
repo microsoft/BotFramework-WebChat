@@ -1,6 +1,6 @@
 import { type Options } from 'tsup';
-import { babelPlugin, defaultPredicate, type Predicate } from './esbuildBabelPluginIstanbul';
 import lightningCssPlugin from 'unplugin-lightningcss/esbuild';
+import { babelPlugin, defaultPredicate, type Predicate } from './esbuildBabelPluginIstanbul';
 
 type Target = Exclude<Options['target'], Array<unknown> | undefined>;
 
@@ -59,25 +59,33 @@ const baseConfig: Options & { target: Target[] } = {
     env === 'test'
       ? [
           babelPlugin({
-            filter: /\.[cm]?js$/u,
+            // ESBuild use Go regular expressions and does not understand Unicode flag.
+            // eslint-disable-next-line require-unicode-regexp
+            filter: /\.[cm]?js$/,
             loader: 'jsx',
             name: 'babel-plugin-istanbul:js',
             predicate: istanbulPredicate
           }),
           babelPlugin({
-            filter: /\.jsx$/u,
+            // ESBuild use Go regular expressions and does not understand Unicode flag.
+            // eslint-disable-next-line require-unicode-regexp
+            filter: /\.jsx$/,
             loader: 'jsx',
             name: 'babel-plugin-istanbul:jsx',
             predicate: istanbulPredicate
           }),
           babelPlugin({
-            filter: /\.[cm]?ts$/u,
+            // ESBuild use Go regular expressions and does not understand Unicode flag.
+            // eslint-disable-next-line require-unicode-regexp
+            filter: /\.[cm]?ts$/,
             loader: 'ts',
             name: 'babel-plugin-istanbul:ts',
             predicate: istanbulPredicate
           }),
           babelPlugin({
-            filter: /\.tsx$/u,
+            // ESBuild use Go regular expressions and does not understand Unicode flag.
+            // eslint-disable-next-line require-unicode-regexp
+            filter: /\.tsx$/,
             loader: 'tsx',
             name: 'babel-plugin-istanbul:tsx',
             predicate: istanbulPredicate
