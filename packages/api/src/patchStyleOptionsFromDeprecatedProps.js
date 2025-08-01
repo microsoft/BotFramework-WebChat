@@ -12,7 +12,7 @@ export default function patchStyleOptionsFromDeprecatedProps(styleOptions) {
 
   // Rectify deprecated "hideUploadButton" into "disableFileUpload"
   if (styleOptions.hideUploadButton !== undefined) {
-    console.warn('Web Chat: "hideUploadButton" is deprecated. Please use "disableFileUpload" instead.');
+    console.warn('botframework-webchat: `styleOptions.hideUploadButton` is being deprecated in favor of `styleOptions.disableFileUpload`. The option will be removed on or after 2027-07-14.');
 
     styleOptions = updateIn(styleOptions, ['disableFileUpload'], () => !!styleOptions.hideUploadButton);
   }
