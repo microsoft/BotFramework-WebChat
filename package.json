@@ -136,6 +136,10 @@
     "strip-ansi": [
       "6",
       "strip-ansi@7 dropped support of CommonJS"
+    ],
+    "typescript": [
+      "5.8",
+      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ]
   },
   "devDependencies": {
