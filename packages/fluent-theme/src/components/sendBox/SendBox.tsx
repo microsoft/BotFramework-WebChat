@@ -48,7 +48,7 @@ type Props = Readonly<{
 }>;
 
 function SendBox(props: Props) {
-  const [{ hideTelephoneKeypadButton, hideUploadButton, maxMessageLength }] = useStyleOptions();
+  const [{ disableFileUpload, hideTelephoneKeypadButton, maxMessageLength }] = useStyleOptions();
   const [attachments, setAttachments] = useSendBoxAttachments();
   const [globalMessage, setGlobalMessage] = useSendBoxValue();
   const [localMessage, setLocalMessage] = useState('');
@@ -238,7 +238,7 @@ function SendBox(props: Props) {
           )}
           <Toolbar>
             {!hideTelephoneKeypadButton && <TelephoneKeypadToolbarButton />}
-            {!hideUploadButton && <AddAttachmentButton onFilesAdded={handleAddFiles} />}
+            {!disableFileUpload && <AddAttachmentButton onFilesAdded={handleAddFiles} />}
             <ToolbarSeparator />
             <ToolbarButton
               aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
@@ -250,7 +250,7 @@ function SendBox(props: Props) {
             </ToolbarButton>
           </Toolbar>
         </div>
-        <DropZone onFilesAdded={handleAddFiles} />
+        {!disableFileUpload && <DropZone onFilesAdded={handleAddFiles} />}
         <ErrorMessage error={errorMessage} id={errorMessageId} />
       </div>
     </form>

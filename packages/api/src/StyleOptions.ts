@@ -297,6 +297,14 @@ type StyleOptions = {
    */
 
   hideSendBox?: boolean;
+
+  /**
+   * Indicates if the upload file button should be hidden.
+   *
+   * @default false
+   *
+   * @deprecated deprecated since 4.18.0: obsolated by {@linkcode disableFileUpload}. This option will be removed on or after 2027-07-14.
+   */
   hideUploadButton?: boolean;
 
   /**
@@ -976,6 +984,15 @@ type StyleOptions = {
    * @default 3
    */
   sendBoxAttachmentBarMaxThumbnail?: number;
+
+  /**
+   * Indicates if file upload should be disabled.
+   *
+   * @default false
+   *
+   * New in 4.19.0.
+   */
+  disableFileUpload?: boolean;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:
@@ -985,7 +1002,12 @@ type StyleOptions = {
 type StrictStyleOptions = Required<
   Omit<
     StyleOptions,
-    'bubbleImageHeight' | 'bubbleMaxWidth' | 'bubbleMinWidth' | 'hideScrollToEndButton' | 'newMessagesButtonFontSize'
+    | 'bubbleImageHeight'
+    | 'bubbleMaxWidth'
+    | 'bubbleMinWidth'
+    | 'hideScrollToEndButton'
+    | 'hideUploadButton'
+    | 'newMessagesButtonFontSize'
   >
 > & {
   bubbleFromUserNubOffset: number;

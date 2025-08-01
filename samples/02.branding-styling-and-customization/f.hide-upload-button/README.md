@@ -1,21 +1,21 @@
 # Sample - Disable the Upload Button
 
--  Prevent users from sending attachments to the bot by disabling the upload button.
+- Prevent users from sending attachments to the bot by disabling the upload button.
 
 # Test out the hosted sample
 
--  [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/f.hide-upload-button)
+- [Try out MockBot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/f.hide-upload-button)
 
 # How to run
 
--  Fork this repository
--  Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/f.hide-upload-button` in command line
--  Run `npx serve`
--  Browse to [http://localhost:5000/](http://localhost:5000/)
+- Fork this repository
+- Navigate to `/Your-Local-WebChat/samples/02.branding-styling-and-customization/f.hide-upload-button` in command line
+- Run `npx serve`
+- Browse to [http://localhost:5000/](http://localhost:5000/)
 
 # Things to try out
 
--  Note that there is no upload button in the Send Box
+- Note that there is no upload button in the Send Box
 
 # Code
 
@@ -31,7 +31,7 @@ By modifying the `styleOptions` object passed into the renderer, we can disable 
   window.WebChat.renderWebChat({
     directLine: window.WebChat.createDirectLine({ token }),
 +   styleOptions: {
-+     hideUploadButton: true
++     disableFileUpload: true
 +   }
   }, document.getElementById('webchat'));
 ```
@@ -75,7 +75,7 @@ Here is the finished `index.html`:
           {
             directLine: window.WebChat.createDirectLine({ token }),
             styleOptions: {
-              hideUploadButton: true
+              disableFileUpload: true
             }
           },
           document.getElementById('webchat')
@@ -91,7 +91,7 @@ Here is the finished `index.html`:
 
 # Further reading
 
--  [Branding styling bot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/a.branding-web-chat) | [(Branding styling source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/02.branding-styling-and-customization/a.branding-web-chat)
+- [Branding styling bot](https://microsoft.github.io/BotFramework-WebChat/02.branding-styling-and-customization/a.branding-web-chat) | [(Branding styling source code)](https://github.com/microsoft/BotFramework-WebChat/tree/main/samples/02.branding-styling-and-customization/a.branding-web-chat)
 
 ## Full list of Web Chat hosted samples
 

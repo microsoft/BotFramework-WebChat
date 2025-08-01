@@ -98,14 +98,15 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   autoScrollSnapOnPageOffset: 0, // TODO: Rename from "autoScrollSnapOnPageoffset".
 
   // Send box
+  disableFileUpload: false,
   hideSendBox: false,
-  hideUploadButton: false,
   hideTelephoneKeypadButton: true,
+  hideUploadButton: undefined, // Deprecated as of 4.19.0.
   microphoneButtonColorOnDictate: '#F33',
+  sendAttachmentOn: 'send',
   sendBoxBackground: 'White',
   uploadAccept: undefined,
   uploadMultiple: true,
-  sendAttachmentOn: 'send',
 
   // Send box buttons
   sendBoxButtonColor: undefined,
