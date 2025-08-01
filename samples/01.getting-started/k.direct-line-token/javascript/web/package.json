@@ -10,16 +10,10 @@
     "start": "node-dev --no-notify --respawn .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "pinDependencies": {
-    "node-fetch": [
-      "2",
-      "^3 dropped support of CommonJS"
-    ]
-  },
+  "pinDependencies": {},
   "dependencies": {
     "dotenv": "^16.4.5",
     "http-proxy": "^1.18.1",
-    "node-fetch": "^2.7.0",
     "restify": "^11.1.0"
   },
   "devDependencies": {

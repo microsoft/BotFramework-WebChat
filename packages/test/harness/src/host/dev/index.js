@@ -5,7 +5,6 @@ const { Builder, logging } = require('selenium-webdriver');
 const { Options: ChromeOptions, ServiceBuilder: ChromeServiceBuilder } = require('selenium-webdriver/chrome');
 const AbortController = require('abort-controller');
 const expect = require('expect');
-const fetch = require('node-fetch');
 
 const createDevProxies = require('./createDevProxies');
 const findHostIP = require('./utils/findHostIP');

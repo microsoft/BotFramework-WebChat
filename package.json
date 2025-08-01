@@ -125,10 +125,6 @@
       "29",
       "jest-image-snapshot@6.5.1 does not support jest@29 yet"
     ],
-    "node-fetch": [
-      "2",
-      "node-fetch@3 dropped support of CommonJS"
-    ],
     "react": [
       "16.8.6",
       "using react@16.8.6 to make sure this is the minimum supported version"
@@ -183,7 +179,6 @@
     "lint-staged": "^15.4.3",
     "lolex": "^6.0.0",
     "node-dev": "^8.0.0",
-    "node-fetch": "^2.7.0",
     "nodemon": "^3.1.9",
     "prettier": "^3.5.1",
     "selenium-webdriver": "^4.28.1",

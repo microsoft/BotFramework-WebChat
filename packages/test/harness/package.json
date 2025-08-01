@@ -46,10 +46,6 @@
       "29",
       "jest@30 is not supported by jest-image-snapshot@6.5.1"
     ],
-    "node-fetch": [
-      "2",
-      "node-fetch@3 dropped support of CommonJS"
-    ],
     "strip-ansi": [
       "6",
       "strip-ansi@7 dropped support of CommonJS"
@@ -80,7 +76,6 @@
     "jest-environment-node": "^29.7.0",
     "jest-image-snapshot": "^6.5.1",
     "node-dev": "^8.0.0",
-    "node-fetch": "^2.7.0",
     "selenium-webdriver": "^4.34.0",
     "serve": "^14.2.4",
     "strip-ansi": "^6.0.1"

@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 // Helper function for fetching network resource as JSON
 module.exports = async function fetchJSON(url, options) {
   const res = await fetch(url, {

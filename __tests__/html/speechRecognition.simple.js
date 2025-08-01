@@ -1,7 +1,5 @@
 /** @jest-environment ./packages/test/harness/src/host/jest/WebDriverEnvironment.js */
 
-const fetch = require('node-fetch');
-
 const {
   COGNITIVE_SERVICES_REGION,
   COGNITIVE_SERVICES_SUBSCRIPTION_KEY,

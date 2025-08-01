@@ -9,7 +9,6 @@ require('global-agent/bootstrap');
 
 const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middleware');
 const express = require('express');
-const fetch = require('node-fetch');
 const removeInline = require('./removeInline');
 const sleep = require('../../common/utils/sleep');
 

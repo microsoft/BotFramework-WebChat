@@ -54,10 +54,6 @@
     "microsoft-cognitiveservices-speech-sdk": [
       "1.17.0",
       "needs to bump manually"
-    ],
-    "node-fetch": [
-      "2",
-      "node-fetch@3 dropped support of CommonJS"
     ]
   },
   "devDependencies": {
@@ -81,7 +77,6 @@
     "global-agent": "^3.0.0",
     "has-resolved": "^1.1.0",
     "jest": "^30.0.5",
-    "node-fetch": "^2.7.0",
     "prettier": "^3.6.2",
     "serve": "^14.2.4",
     "simple-update-in": "^2.2.0",
