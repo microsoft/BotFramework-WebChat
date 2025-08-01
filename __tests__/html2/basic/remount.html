@@ -48,6 +48,8 @@
 
         render(createElement(SystemUnderTest, { dir: 'rtl' }), document.getElementById('webchat'));
 
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(1);
         await host.snapshot('local');
       });
     </script>
