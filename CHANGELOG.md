@@ -39,6 +39,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - `activityGroupingDecoratorMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
    - `sendBoxMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
    - `sendBoxToolbarMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
+- `styleOptions.hideUploadButton` is being deprecated in favor of `styleOptions.disableFileUpload`. The option will be removed on or after 2027-07-14
 
 ### Added
 
@@ -103,9 +104,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Updated Fluent theme to use the new attachment preview feature
 - Added collapsible activity and activity with abstract handling, in PR [#5506](https://github.com/microsoft/BotFramework-WebChat/pull/5506), in PR [#5513](https://github.com/microsoft/BotFramework-WebChat/pull/5513), by [@OEvgeny](https://github.com/OEvgeny)
 - Added `disableFileUpload` flag to completelly disable file upload feature, in PR [#5508](https://github.com/microsoft/BotFramework-WebChat/pull/5508), by [@JamesNewbyAtMicrosoft](https://github.com/JamesNewbyAtMicrosoft)
-  - Deprecated `hideUploadButton` in favor of `disableFileUpload`.
-  - Updated `BasicSendBoxToolbar` to rely solely on `disableFileUpload`.
-
+   - Deprecated `hideUploadButton` in favor of `disableFileUpload`.
+   - Updated `BasicSendBoxToolbar` to rely solely on `disableFileUpload`.
 
 ### Changed
 
