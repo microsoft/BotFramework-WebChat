@@ -43,7 +43,7 @@
         await pageConditions.uiConnected();
         
         expect(warnings).toEqual([
-          'Web Chat: "hideUploadButton" is deprecated. Please use "disableFileUpload" instead.'
+          'botframework-webchat: `styleOptions.hideUploadButton` is being deprecated in favor of `styleOptions.disableFileUpload`. The option will be removed on or after 2027-07-14.'
         ]);
 
         // THEN: No attach button should be render.
