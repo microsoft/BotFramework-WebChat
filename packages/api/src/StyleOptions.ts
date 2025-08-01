@@ -1002,7 +1002,12 @@ type StyleOptions = {
 type StrictStyleOptions = Required<
   Omit<
     StyleOptions,
-    'bubbleImageHeight' | 'bubbleMaxWidth' | 'bubbleMinWidth' | 'hideScrollToEndButton' | 'newMessagesButtonFontSize'
+    | 'bubbleImageHeight'
+    | 'bubbleMaxWidth'
+    | 'bubbleMinWidth'
+    | 'hideScrollToEndButton'
+    | 'hideUploadButton'
+    | 'newMessagesButtonFontSize'
   >
 > & {
   bubbleFromUserNubOffset: number;

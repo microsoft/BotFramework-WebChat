@@ -101,7 +101,7 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   disableFileUpload: false,
   hideSendBox: false,
   hideTelephoneKeypadButton: true,
-  hideUploadButton: false,
+  hideUploadButton: undefined, // Deprecated as of 4.19.0.
   microphoneButtonColorOnDictate: '#F33',
   sendAttachmentOn: 'send',
   sendBoxBackground: 'White',
