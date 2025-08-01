@@ -9,6 +9,7 @@ const TRANSFORM_IGNORE_PACKAGES = [
   'decode-named-character-reference',
   'mdast-util-from-markdown',
   'mdast-util-to-string',
+  'merge-refs',
   'micromark-core-commonmark',
   'micromark-extension-gfm',
   'micromark-extension-gfm-autolink-literal',
