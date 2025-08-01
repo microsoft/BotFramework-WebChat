@@ -13,7 +13,6 @@ import useMakeThumbnail from '../hooks/useMakeThumbnail';
 import useStyleSet from '../hooks/useStyleSet';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
 import AttachmentIcon from './Assets/AttachmentIcon';
-import testIds from '../testIds';
 
 const { useSendBoxAttachments, useLocalizer, useStyleOptions, useUIState } = hooks;
 
@@ -121,13 +120,7 @@ function UploadButton(props: UploadButtonProps) {
         tabIndex={-1}
         type="file"
       />
-      <IconButton
-        alt={uploadFileString}
-        aria-label={uploadFileString}
-        data-testid={testIds.basicSendBoxUploadButton}
-        disabled={disabled}
-        onClick={handleClick}
-      >
+      <IconButton alt={uploadFileString} aria-label={uploadFileString} disabled={disabled} onClick={handleClick}>
         <AttachmentIcon checked={!!sendBoxAttachments.length} />
       </IconButton>
     </div>
