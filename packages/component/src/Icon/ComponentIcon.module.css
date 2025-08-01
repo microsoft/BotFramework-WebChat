@@ -53,7 +53,11 @@
 :global(.webchat) .icon--send {
   --webchat__component-icon--mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 45.7 33.8"><path clipRule="evenodd" d="M8.55 25.25l21.67-7.25H11zm2.41-9.47h19.26l-21.67-7.23zm-6 13l4-11.9L5 5l35.7 11.9z"/></svg>');
 
-  &.direction--follow:dir(rtl),
+  /* We can merge two styles together. If browser doesn't understand :dir(rtl), it will drop the other one. */
+  &.direction--follow:dir(rtl) {
+    transform: scale(-1, 1);
+  }
+
   &.direction--rtl {
     transform: scale(-1, 1);
   }
