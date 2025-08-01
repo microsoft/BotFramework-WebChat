@@ -75,38 +75,13 @@
   "localDependences": {
     "botframework-webchat-base": "development"
   },
-  "pinDependencies": {
-    "@babel/cli": [
-      "7.18.10",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/core": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/plugin-transform-runtime": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/plugin-transform-typescript": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/preset-env": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/runtime": [
-      "7.19.0",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ]
-  },
+  "pinDependencies": {},
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/plugin-transform-runtime": "^7.19.1",
-    "@babel/plugin-transform-typescript": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
+    "@babel/cli": "^7.28.0",
+    "@babel/core": "^7.28.0",
+    "@babel/plugin-transform-runtime": "^7.28.0",
+    "@babel/plugin-transform-typescript": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
     "@types/node": "^24.1.0",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
@@ -119,7 +94,7 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@babel/runtime": "7.19.0",
+    "@babel/runtime": "7.28.2",
     "@redux-devtools/extension": "3.3.0",
     "jwt-decode": "4.0.0",
     "math-random": "2.0.1",

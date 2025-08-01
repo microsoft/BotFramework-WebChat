@@ -93,33 +93,13 @@
     "test": "jest --watch"
   },
   "pinDependencies": {
-    "@babel/plugin-transform-runtime": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/preset-env": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/preset-react": [
-      "7.18.6",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/preset-typescript": [
-      "7.18.6",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/runtime": [
-      "7.19.0",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
     "@testing-library/react": [
       "12",
       "@testing-library/react@12 is targeting react@16"
     ],
     "@types/jest": [
-      "28",
-      "pinned jest@28"
+      "29",
+      "pinned jest@29"
     ],
     "@types/react": [
       "16",
@@ -130,8 +110,8 @@
       "react@16.8.6 is our baseline"
     ],
     "babel-jest": [
-      "28",
-      "jest-image-snapshot@5.2.0 does not support jest@29 yet"
+      "29",
+      "jest-image-snapshot@6.5.1 does not support jest@29 yet"
     ],
     "eslint": [
       "8",
@@ -142,12 +122,8 @@
       "get-port@6 dropped support of CommonJS"
     ],
     "jest": [
-      "28",
-      "jest-image-snapshot@5.2.0 does not support jest@29 yet"
-    ],
-    "lerna": [
-      "6",
-      "lerna@7 use npm workspaces and we fund the migration work"
+      "29",
+      "jest-image-snapshot@6.5.1 does not support jest@29 yet"
     ],
     "node-fetch": [
       "2",

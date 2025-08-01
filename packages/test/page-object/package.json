@@ -27,24 +27,7 @@
   "localDependencies": {
     "botframework-webchat": "production"
   },
-  "pinDependencies": {
-    "@babel/cli": [
-      "7.18.10",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/core": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/preset-env": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/preset-react": [
-      "7.18.6",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ]
-  },
+  "pinDependencies": {},
   "dependencies": {
     "base64-arraybuffer": "1.0.2",
     "bent": "7.3.12",
@@ -60,10 +43,10 @@
     "simple-update-in": "2.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
-    "@babel/preset-react": "^7.18.6",
+    "@babel/cli": "^7.28.0",
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "@babel/preset-react": "^7.27.1",
     "concurrently": "^9.2.0",
     "esbuild": "^0.25.8"
   }

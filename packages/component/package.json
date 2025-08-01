@@ -76,26 +76,6 @@
     "botframework-webchat-styles": "development"
   },
   "pinDependencies": {
-    "@babel/cli": [
-      "7.18.10",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/core": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/preset-env": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/preset-react": [
-      "7.18.6",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/preset-typescript": [
-      "7.18.6",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
     "@types/react": [
       "16",
       "react@16.8.6 is our baseline"
@@ -120,11 +100,11 @@
     ]
   },
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
-    "@babel/preset-react": "^7.18.6",
-    "@babel/preset-typescript": "^7.18.6",
+    "@babel/cli": "^7.28.0",
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "@babel/preset-react": "^7.27.1",
+    "@babel/preset-typescript": "^7.27.1",
     "@types/mdast": "^4.0.4",
     "@types/node": "^24.1.0",
     "@types/react": "^16.14.65",
