@@ -46,9 +46,14 @@
     "start:tsup": "npm run build:tsup -- --watch"
   },
   "localDependencies": {},
+  "pinDependencies": {
+    "@types/react": [
+      "16"
+    ]
+  },
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.5",
-    "@types/react": "^16.14.62"
+    "@types/react": "^16.14.65"
   },
   "dependencies": {
     "valibot": "1.1.0"

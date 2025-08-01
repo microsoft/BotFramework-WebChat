@@ -59,10 +59,10 @@
   },
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.5",
-    "@types/node": "^22.13.4",
-    "core-js-pure": "^3.40.0",
-    "cross-env": "^7.0.3",
-    "type-fest": "^4.34.1",
-    "typescript": "^5.7.3"
+    "@types/node": "^24.1.0",
+    "core-js-pure": "^3.44.0",
+    "cross-env": "^10.0.0",
+    "type-fest": "^4.41.0",
+    "typescript": "^5.9.2"
   }
 }

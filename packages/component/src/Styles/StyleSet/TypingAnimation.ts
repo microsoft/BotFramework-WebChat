@@ -14,7 +14,7 @@ export default function createTypingAnimationStyle({
 }: StrictStyleOptions) {
   defaultImageBlobURL ||
     (defaultImageBlobURL = URL.createObjectURL(
-      new Blob([toByteArray(DEFAULT_IMAGE_BASE64)], { type: DEFAULT_IMAGE_TYPE })
+      new Blob([new Uint8Array(toByteArray(DEFAULT_IMAGE_BASE64))], { type: DEFAULT_IMAGE_TYPE })
     ));
 
   const backgroundImage = typingAnimationBackgroundImage || `url('${defaultImageBlobURL}')`;

@@ -9,6 +9,7 @@
     "pretty": true,
     "resolveJsonModule": true, // Required for localization files
     "skipLibCheck": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "target": "ESNext"
   }
 }

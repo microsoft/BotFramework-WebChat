@@ -50,12 +50,12 @@
     "bent": "7.3.12",
     "botframework-webchat": "0.0.0-0",
     "classnames": "2.5.1",
-    "core-js": "3.40.0",
-    "core-js-pure": "3.40.0",
+    "core-js": "3.44.0",
+    "core-js-pure": "3.44.0",
     "event-iterator": "2.0.0",
     "event-target-shim": "6.0.2",
     "math-random": "2.0.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.42.0",
+    "microsoft-cognitiveservices-speech-sdk": "1.45.0",
     "prop-types": "15.8.1",
     "simple-update-in": "2.2.0"
   },
@@ -64,7 +64,7 @@
     "@babel/core": "^7.19.1",
     "@babel/preset-env": "^7.19.1",
     "@babel/preset-react": "^7.18.6",
-    "concurrently": "^9.1.2",
-    "esbuild": "^0.25.0"
+    "concurrently": "^9.2.0",
+    "esbuild": "^0.25.8"
   }
 }

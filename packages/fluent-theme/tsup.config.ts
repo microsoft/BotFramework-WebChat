@@ -8,27 +8,39 @@ import { fluentStyleContent as fluentStyleContentPlaceholder } from './src/style
 const umdResolvePlugin = {
   name: 'umd-resolve',
   setup(build) {
-    build.onResolve({ filter: /^react$/u }, () => ({
+    // ESBuild use Go regular expressions and does not understand Unicode flag.
+    // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /^react$/ }, () => ({
       path: join(fileURLToPath(import.meta.url), '../src/external.umd/react.ts')
     }));
 
-    build.onResolve({ filter: /^botframework-webchat-api$/u }, () => ({
+    // ESBuild use Go regular expressions and does not understand Unicode flag.
+    // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /^botframework-webchat-api$/ }, () => ({
       path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/index.ts')
     }));
 
-    build.onResolve({ filter: /^botframework-webchat-api\/decorator$/u }, () => ({
+    // ESBuild use Go regular expressions and does not understand Unicode flag.
+    // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /^botframework-webchat-api\/decorator$/ }, () => ({
       path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/decorator.ts')
     }));
 
-    build.onResolve({ filter: /^botframework-webchat-component$/u }, () => ({
+    // ESBuild use Go regular expressions and does not understand Unicode flag.
+    // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /^botframework-webchat-component$/ }, () => ({
       path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/index.ts')
     }));
 
-    build.onResolve({ filter: /^botframework-webchat-component\/internal$/u }, () => ({
+    // ESBuild use Go regular expressions and does not understand Unicode flag.
+    // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /^botframework-webchat-component\/internal$/ }, () => ({
       path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/internal.ts')
     }));
 
-    build.onResolve({ filter: /^botframework-webchat-component\/decorator$/u }, () => ({
+    // ESBuild use Go regular expressions and does not understand Unicode flag.
+    // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /^botframework-webchat-component\/decorator$/ }, () => ({
       path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/decorator.ts')
     }));
   }

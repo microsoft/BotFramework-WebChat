@@ -33,6 +33,6 @@
     "redux": "5.0.1"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.8"
   }
 }
