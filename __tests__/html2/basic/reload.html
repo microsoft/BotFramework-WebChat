@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          React: { createElement, useMemo },
+          ReactDOM: { render },
+          testHelpers: { createDirectLineEmulator, createDirectLineWithTranscript },
+          WebChat: { ReactWebChat }
+        } = window;
+
+        // let { directLine, store } = createDirectLineEmulator();
+
+        const SystemUnderTest = ({ dir }) => {
+          const directLine = useMemo(
+            () =>
+              createDirectLineWithTranscript([
+                {
+                  text: `Hello, World!`,
+                  type: 'message',
+                  timestamp: '2000-01-23T12:34:56.12345Z'
+                }
+              ]),
+            []
+          );
+
+          const store = testHelpers.createStore();
+
+          return createElement(ReactWebChat, { directLine, dir, store });
+        };
+
+        render(createElement(SystemUnderTest, { dir: 'auto' }), document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+        await pageConditions.numActivitiesShown(1);
+
+        await host.snapshot('local');
+
+        render(createElement(SystemUnderTest, { dir: 'rtl' }), document.getElementById('webchat'));
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

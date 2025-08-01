@@ -127,7 +127,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const getKeyByActivityId = useGetKeyByActivityId();
     const localize = useLocalizer();
     const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
-    const rootElementRef = useRef<HTMLDivElement>();
+    const rootElementRef = useRef<HTMLDivElement>(null);
     const terminatorLabelId = useUniqueId('webchat__basic-transcript__terminator-label');
 
     const focusedActivityKeyRef = useValueRef(focusedActivityKey);
@@ -659,8 +659,8 @@ const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
   const [{ stylesRoot }] = useStyleOptions();
   const [nonce] = useNonce();
   const activityElementMapRef = useActivityElementMapRef();
-  const containerRef = useRef<HTMLDivElement>();
-  const terminatorRef = useRef<HTMLDivElement>();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const terminatorRef = useRef<HTMLDivElement>(null);
 
   const scroller = useScroller(activityElementMapRef);
   const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
