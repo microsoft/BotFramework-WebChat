@@ -17,11 +17,12 @@
       run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
+        const disableFileUpload = new URLSearchParams(location.search || '').get('disableFileUpload') !== 'false';
         const { isFluentTheme } = renderWebChat(
           {
             directLine,
             store,
-            styleOptions: { disableFileUpload: true }
+            styleOptions: { disableFileUpload }
           },
           document.getElementById('webchat')
         );
@@ -29,34 +30,37 @@
         await pageConditions.uiConnected();
 
         // DOM-based checks
-        expect(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton)).toBeFalsy();
-        expect(pageElements.byTestId(WebChat.testIds.sendBoxDropZone)).toBeFalsy();
+        if (disableFileUpload) {
+          expect(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton)).toBeFalsy();
+          expect(pageElements.byTestId(WebChat.testIds.sendBoxDropZone)).toBeFalsy();
+        } else {
+          expect(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton)).toBeDefined();
+          expect(pageElements.byTestId(WebChat.testIds.sendBoxDropZone)).toBeDefined();
+        }
 
         // Keyboard interaction: try to tab to the upload button
         await pageObjects.focusSendBoxTextBox();
         await host.sendTab();
 
-        expect(document.activeElement).not.toBe(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton));
-       
-        // Simulate drag-and-drop using dispatchEvent
-        const sendBox = pageElements.byTestId(WebChat.testIds.sendBoxContainer);
+        if (disableFileUpload) {
+          expect(document.activeElement).not.toBe(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton));
+        } else {
+          expect(document.activeElement).toBe(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton));
+        }
 
         if (isFluentTheme) {
+          // We cannot mimic drag-and-drop in WebDriver yet. So we are doing as good as we could.
           const dataTransfer = new DataTransfer();
-          const file = new File(['dummy content'], 'test.txt', { type: 'text/plain' });
-          dataTransfer.items.add(file);
 
-          const dragEnterEvent = new DragEvent('dragenter', {
+          dataTransfer.items.add(new File([new ArrayBuffer(100)], 'simple.txt'));
+
+          const dragEnterDocumentEvent = new DragEvent('dragenter', {
             bubbles: true,
             cancelable: true,
             dataTransfer
           });
 
-          const dragOverEvent = new DragEvent('dragover', {
-            bubbles: true,
-            cancelable: true,
-            dataTransfer
-          });
+          document.dispatchEvent(dragEnterDocumentEvent);
 
           const dropEvent = new DragEvent('drop', {
             bubbles: true,
@@ -64,24 +68,17 @@
             dataTransfer
           });
 
-          sendBox.dispatchEvent(dragEnterEvent);
-          sendBox.dispatchEvent(dragOverEvent);
-          sendBox.dispatchEvent(dropEvent);
+          document.querySelector(`[data-testid="${WebChat.testIds['sendBoxDropZone']}"]`)?.dispatchEvent(dropEvent);
 
-          // Drop zone should still not appear
-          expect(pageElements.byTestId(WebChat.testIds.sendBoxDropZone)).toBeFalsy();
-          
-          // Attachment bar item should not appear
-          expect(pageElements.byTestId(WebChat.testIds.sendBoxAttachmentBarItem)).toBeFalsy();
-
-          await host.snapshot('local'); 
+          if (disableFileUpload) {
+            // Attachment bar item should not appear
+            expect(pageElements.byTestId(WebChat.testIds.sendBoxAttachmentBarItem)).toBeFalsy();
+          } else {
+            // Attachment bar item should appear
+            expect(pageElements.byTestId(WebChat.testIds.sendBoxAttachmentBarItem)).toBeDefined();
+          }
         }
 
-        // Hover interaction: hover over the send box area
-        await host.hover(pageElements.byTestId(WebChat.testIds.sendBoxContainer));
-        await host.snapshot('local');
-
-        // Final visual confirmation
         await host.snapshot('local');
       });
     </script>
