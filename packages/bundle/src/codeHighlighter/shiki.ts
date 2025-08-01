@@ -1,16 +1,16 @@
 // `shiki/core` entry does not include any themes or languages or the wasm binary.
-import { createHighlighterCore, type ThemeRegistrationRaw } from 'shiki/core';
-import { createJavaScriptRegexEngine } from 'shiki/engine-javascript.mjs';
+import { createHighlighterCore, type DynamicImportThemeRegistration, type ThemeRegistration } from 'shiki/core';
+import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 
 // directly import the theme and language modules, only the ones you imported will be bundled.
-import themeGitHubDark from 'shiki/themes/github-dark-default.mjs';
-import themeGitHubLight from 'shiki/themes/github-light-default.mjs';
 
-import languageJavaScript from 'shiki/langs/js.mjs';
-import languagePython from 'shiki/langs/py.mjs';
-import languageTypeScript from 'shiki/langs/ts.mjs';
+// TODO: [P*] Check if this hurts tree shaking.
+import { bundledLanguages } from 'shiki/langs';
+import { bundledThemes } from 'shiki/themes';
 
-function addjustTheme(theme: ThemeRegistrationRaw): ThemeRegistrationRaw {
+async function adjustTheme(getTheme: DynamicImportThemeRegistration): Promise<ThemeRegistration> {
+  const { default: theme } = await getTheme();
+
   return {
     ...theme,
     colors: {
@@ -20,10 +20,13 @@ function addjustTheme(theme: ThemeRegistrationRaw): ThemeRegistrationRaw {
   };
 }
 
-function createHighlighter() {
+async function createHighlighter() {
   return createHighlighterCore({
-    themes: [addjustTheme(themeGitHubDark), addjustTheme(themeGitHubLight)],
-    langs: [languageJavaScript, languagePython, languageTypeScript],
+    themes: [
+      await adjustTheme(bundledThemes['github-dark-default']),
+      await adjustTheme(bundledThemes['github-light-default'])
+    ],
+    langs: [bundledLanguages.javascript, bundledLanguages.python, bundledLanguages.typescript],
     engine: createJavaScriptRegexEngine()
   });
 }
