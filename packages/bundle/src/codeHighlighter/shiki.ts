@@ -1,16 +1,22 @@
 // `shiki/core` entry does not include any themes or languages or the wasm binary.
-import { createHighlighterCore, type DynamicImportThemeRegistration, type ThemeRegistration } from 'shiki/core';
+import { createHighlighterCore, type ThemeRegistration } from 'shiki/core';
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 
-// directly import the theme and language modules, only the ones you imported will be bundled.
+// Directly import the theme and language modules, only the ones you imported will be bundled.
 
-// TODO: [P*] Check if this hurts tree shaking.
-import { bundledLanguages } from 'shiki/langs';
-import { bundledThemes } from 'shiki/themes';
+// Named import vs. file-based import:
+// - Named imports
+//   - webchat*.js file size is the same, tree shaking is good
+//   - It emits more *.mjs files, huge tarball size
+// - File-based imports
+//   - It emits less *.mjs files, good tarball size
+import languageJavaScript from 'shiki/langs/js.mjs';
+import languagePython from 'shiki/langs/py.mjs';
+import languageTypeScript from 'shiki/langs/ts.mjs';
+import themeGitHubDark from 'shiki/themes/github-dark-default.mjs';
+import themeGitHubLight from 'shiki/themes/github-light-default.mjs';
 
-async function adjustTheme(getTheme: DynamicImportThemeRegistration): Promise<ThemeRegistration> {
-  const { default: theme } = await getTheme();
-
+function adjustTheme(theme: ThemeRegistration): ThemeRegistration {
   return {
     ...theme,
     colors: {
@@ -20,13 +26,10 @@ async function adjustTheme(getTheme: DynamicImportThemeRegistration): Promise<Th
   };
 }
 
-async function createHighlighter() {
+function createHighlighter() {
   return createHighlighterCore({
-    themes: [
-      await adjustTheme(bundledThemes['github-dark-default']),
-      await adjustTheme(bundledThemes['github-light-default'])
-    ],
-    langs: [bundledLanguages.javascript, bundledLanguages.python, bundledLanguages.typescript],
+    themes: [adjustTheme(themeGitHubDark), adjustTheme(themeGitHubLight)],
+    langs: [languageJavaScript, languagePython, languageTypeScript],
     engine: createJavaScriptRegexEngine()
   });
 }
