@@ -4,13 +4,13 @@ import {
   custom,
   function_,
   instance,
+  nullable,
   object,
   optional,
   pipe,
   readonly,
   safeParse,
   string,
-  undefinedable,
   type InferInput
 } from 'valibot';
 
@@ -29,7 +29,7 @@ const focusRedirectorPropsSchema = pipe(
   object({
     className: optional(string()),
     onFocus: optional(custom<() => void>(value => safeParse(function_(), value).success)),
-    redirectRef: optional(mutableRefObject(undefinedable(instance(HTMLElement))))
+    redirectRef: optional(mutableRefObject(nullable(instance(HTMLElement))))
   }),
   readonly()
 );

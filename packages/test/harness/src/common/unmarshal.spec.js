@@ -26,7 +26,7 @@ describe('Unmarshalling value of', () => {
         }
       })
     ).toMatchInlineSnapshot(`
-      Object {
+      {
         "boolean": true,
         "null": null,
         "number": 123,
@@ -48,7 +48,7 @@ describe('Unmarshalling value of', () => {
         }
       ])
     ).toMatchInlineSnapshot(`
-      Array [
+      [
         true,
         123,
         null,

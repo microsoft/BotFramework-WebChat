@@ -1,24 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`should dereference unconnected blank nodes in array in cyclic fashion 1`] = `
-Object {
+{
   "@type": "Book",
-  "about": Array [
-    Object {
+  "about": [
+    {
       "@id": "_:isaac",
       "@type": "Person",
       "name": "Isaac Stevens",
-      "worksFor": Object {
+      "worksFor": {
         "@id": "_:uw",
         "@type": "Organization",
         "founder": [Circular],
         "name": "University of Washington",
       },
     },
-    Object {
+    {
       "@id": "_:uw",
       "@type": "Organization",
-      "founder": Object {
+      "founder": {
         "@id": "_:isaac",
         "@type": "Person",
         "name": "Isaac Stevens",
@@ -27,7 +27,7 @@ Object {
       "name": "University of Washington",
     },
   ],
-  "author": Object {
+  "author": {
     "@type": "Person",
     "name": "Edmond S. Meany",
   },
@@ -36,13 +36,13 @@ Object {
 `;
 
 exports[`should dereference unconnected blank nodes in cyclic fashion 1`] = `
-Object {
+{
   "@type": "Book",
-  "author": Object {
+  "author": {
     "@id": "_:isaac",
     "@type": "Person",
     "name": "Isaac Stevens",
-    "worksFor": Object {
+    "worksFor": {
       "@id": "_:uw",
       "@type": "Organization",
       "founder": [Circular],
@@ -50,10 +50,10 @@ Object {
     },
   },
   "name": "Report of Explorations for a Route for the Pacific Railroad near the 47th and 49th Parallels of North Latitude, from St. Paul, Minnesota, to Puget Sound",
-  "sourceOrganization": Object {
+  "sourceOrganization": {
     "@id": "_:uw",
     "@type": "Organization",
-    "founder": Object {
+    "founder": {
       "@id": "_:isaac",
       "@type": "Person",
       "name": "Isaac Stevens",
@@ -65,22 +65,22 @@ Object {
 `;
 
 exports[`should dereference unconnected blank nodes in the graph 1`] = `
-Array [
-  Object {
+[
+  {
     "@id": "_:isaac",
     "@type": "Person",
     "name": "Isaac Stevens",
-    "worksFor": Object {
+    "worksFor": {
       "@id": "_:uw",
       "@type": "Organization",
       "founder": [Circular],
       "name": "University of Washington",
     },
   },
-  Object {
+  {
     "@id": "_:uw",
     "@type": "Organization",
-    "founder": Object {
+    "founder": {
       "@id": "_:isaac",
       "@type": "Person",
       "name": "Isaac Stevens",

@@ -20,25 +20,12 @@
   "author": "Microsoft Corporation",
   "license": "MIT",
   "localDependencies": {},
-  "pinDependencies": {
-    "@babel/cli": [
-      "7.18.10",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/core": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ],
-    "@babel/preset-env": [
-      "7.19.1",
-      "@babel/*@7.21 is causing out-of-memory (OOM) issues"
-    ]
-  },
+  "pinDependencies": {},
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.1",
-    "@babel/preset-env": "^7.19.1",
-    "webpack": "^5.98.0",
+    "@babel/cli": "^7.28.0",
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "webpack": "^5.101.0",
     "webpack-cli": "^6.0.1"
   }
 }

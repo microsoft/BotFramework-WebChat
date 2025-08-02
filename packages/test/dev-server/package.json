@@ -16,15 +16,10 @@
   },
   "type": "module",
   "localDependencies": {},
-  "pinDependencies": {
-    "http-proxy-middleware": [
-      "2",
-      "http-proxy-middleware@3 has breaking changes, need time to migrate"
-    ]
-  },
+  "pinDependencies": {},
   "devDependencies": {
-    "compression": "^1.8.0",
-    "express": "^4.21.2",
+    "compression": "^1.8.1",
+    "express": "^5.1.0",
     "serve-handler": "^6.1.6"
   }
 }

@@ -17,47 +17,47 @@ test('getter should get suggested actions', async () => {
   await driver.wait(suggestedActionsShown(), timeouts.directLine);
 
   await expect(pageObjects.runHook('useSuggestedActions', [], result => result[0])).resolves.toMatchInlineSnapshot(`
-          Array [
-            Object {
+          [
+            {
               "image": "https://corinagum.github.io/BotFramework-Offline-MockBot/assets/square-icon.png",
               "title": "IM back as string",
               "type": "imBack",
               "value": "postback imback-string",
             },
-            Object {
+            {
               "image": "https://corinagum.github.io/BotFramework-Offline-MockBot/assets/square-icon-red.png",
               "title": "Post back as string",
               "type": "postBack",
               "value": "postback postback-string",
             },
-            Object {
+            {
               "image": "https://corinagum.github.io/BotFramework-Offline-MockBot/assets/square-icon-green.png",
               "text": "Some text",
               "title": "Post back as JSON",
               "type": "postBack",
-              "value": Object {
+              "value": {
                 "hello": "World!",
               },
             },
-            Object {
+            {
               "displayText": "say Hello World!",
               "image": "https://corinagum.github.io/BotFramework-Offline-MockBot/assets/square-icon-purple.png",
               "text": "Some text",
               "title": "Message back as JSON with display text",
               "type": "messageBack",
-              "value": Object {
+              "value": {
                 "hello": "World!",
               },
             },
-            Object {
+            {
               "image": "https://corinagum.github.io/BotFramework-Offline-MockBot/assets/square-icon-purple.png",
               "title": "Message back as JSON without display text",
               "type": "messageBack",
-              "value": Object {
+              "value": {
                 "hello": "World!",
               },
             },
-            Object {
+            {
               "displayText": "Aloha",
               "image": "https://corinagum.github.io/BotFramework-Offline-MockBot/assets/square-icon-purple.png",
               "text": "echo Hello",

@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 const TOKEN_URL_TEMPLATE = 'https://{region}.api.cognitive.microsoft.com/sts/v1.0/issueToken';
 
 async function fetchBaseSpeechCredentialsFromSubscriptionKey({ region, subscriptionKey }) {

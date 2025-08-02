@@ -52,10 +52,10 @@ describe('useTrackDimension', () => {
         window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'ping' || name === 'ping2')
       )
     ).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "hello": "aloha",
@@ -68,9 +68,9 @@ describe('useTrackDimension', () => {
           "name": "ping",
           "type": "event",
         },
-        Object {
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -93,10 +93,10 @@ describe('useTrackDimension', () => {
     await expect(
       driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'ping'))
     ).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -119,10 +119,10 @@ describe('useTrackDimension', () => {
     await expect(
       driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'ping'))
     ).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",

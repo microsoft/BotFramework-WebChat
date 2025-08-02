@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 module.exports = async function fetchJSON(url, options) {
   const res = await fetch(url, {
     ...options,

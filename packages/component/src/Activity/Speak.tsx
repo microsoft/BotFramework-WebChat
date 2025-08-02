@@ -1,15 +1,14 @@
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-react-valibot';
 import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { memo, useCallback, useMemo } from 'react';
-import ReactSay, { SayUtterance } from 'react-say';
+import { validateProps } from 'botframework-webchat-react-valibot';
+import React, { Fragment, memo, useCallback, useMemo } from 'react';
+import Say, { SayUtterance } from 'react-say';
 import { useRefFrom } from 'use-ref-from';
 import { any, array, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 import SayAlt from './SayAlt';
 
-// TODO: [P1] Interop between Babel and esbuild.
-const Say = 'default' in ReactSay ? ReactSay.default : ReactSay;
 const { useMarkActivityAsSpoken, useStyleOptions, useVoiceSelector } = hooks;
 
 // TODO: [P4] Consider moving this feature into BasicActivity
@@ -63,6 +62,7 @@ function Speak(props: SpeakProps) {
   const { activity } = validateProps(speakPropsSchema, props);
 
   const [{ showSpokenText }] = useStyleOptions();
+  const [webSpeechPonyfill] = useWebSpeechPonyfill();
   const activityRef = useRefFrom(activity);
   const markActivityAsSpoken = useMarkActivityAsSpoken();
   const selectVoice = useVoiceSelector(activity);
@@ -101,14 +101,25 @@ function Speak(props: SpeakProps) {
 
   return (
     !!activity && (
-      <React.Fragment>
+      <Fragment>
         {speechSynthesisUtterance ? (
-          <SayUtterance onEnd={markAsSpoken} onError={markAsSpoken} utterance={speechSynthesisUtterance} />
+          <SayUtterance
+            onEnd={markAsSpoken}
+            onError={markAsSpoken}
+            ponyfill={webSpeechPonyfill}
+            utterance={speechSynthesisUtterance}
+          />
         ) : (
-          <Say onEnd={markAsSpoken} onError={markAsSpoken} text={singleLine} voice={selectVoice} />
+          <Say
+            onEnd={markAsSpoken}
+            onError={markAsSpoken}
+            ponyfill={webSpeechPonyfill}
+            text={singleLine}
+            voice={selectVoice}
+          />
         )}
         {!!showSpokenText && <SayAlt speak={singleLine} />}
-      </React.Fragment>
+      </Fragment>
     )
   );
 }

@@ -1,16 +1,22 @@
 // `shiki/core` entry does not include any themes or languages or the wasm binary.
-import { createHighlighterCore, type ThemeRegistrationRaw } from 'shiki/core';
-import { createJavaScriptRegexEngine } from 'shiki/engine-javascript.mjs';
+import { createHighlighterCore, type ThemeRegistration } from 'shiki/core';
+import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
 
-// directly import the theme and language modules, only the ones you imported will be bundled.
-import themeGitHubDark from 'shiki/themes/github-dark-default.mjs';
-import themeGitHubLight from 'shiki/themes/github-light-default.mjs';
+// Directly import the theme and language modules, only the ones you imported will be bundled.
 
+// Named import vs. file-based import:
+// - Named imports
+//   - webchat*.js file size is the same, tree shaking is good
+//   - It emits more *.mjs files, huge tarball size
+// - File-based imports
+//   - It emits less *.mjs files, good tarball size
 import languageJavaScript from 'shiki/langs/js.mjs';
 import languagePython from 'shiki/langs/py.mjs';
 import languageTypeScript from 'shiki/langs/ts.mjs';
+import themeGitHubDark from 'shiki/themes/github-dark-default.mjs';
+import themeGitHubLight from 'shiki/themes/github-light-default.mjs';
 
-function addjustTheme(theme: ThemeRegistrationRaw): ThemeRegistrationRaw {
+function adjustTheme(theme: ThemeRegistration): ThemeRegistration {
   return {
     ...theme,
     colors: {
@@ -22,9 +28,9 @@ function addjustTheme(theme: ThemeRegistrationRaw): ThemeRegistrationRaw {
 
 function createHighlighter() {
   return createHighlighterCore({
-    themes: [addjustTheme(themeGitHubDark), addjustTheme(themeGitHubLight)],
+    engine: createJavaScriptRegexEngine(),
     langs: [languageJavaScript, languagePython, languageTypeScript],
-    engine: createJavaScriptRegexEngine()
+    themes: [adjustTheme(themeGitHubDark), adjustTheme(themeGitHubLight)]
   });
 }
 

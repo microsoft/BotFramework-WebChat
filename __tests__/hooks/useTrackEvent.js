@@ -43,10 +43,10 @@ describe('useTrackEvent', () => {
     await expect(
       driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
     ).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -69,10 +69,10 @@ describe('useTrackEvent', () => {
     await expect(
       driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
     ).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -95,10 +95,10 @@ describe('useTrackEvent', () => {
     await expect(
       driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
     ).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": 123,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -121,10 +121,10 @@ describe('useTrackEvent', () => {
     await expect(
       driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
     ).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": "aloha",
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -147,13 +147,13 @@ describe('useTrackEvent', () => {
     await expect(
       driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'hello'))
     ).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
-          "data": Object {
+      [
+        {
+          "data": {
             "hello": "aloha",
             "one": 1,
           },
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",

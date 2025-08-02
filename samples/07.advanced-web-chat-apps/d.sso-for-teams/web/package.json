@@ -10,17 +10,11 @@
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
-  "pinDependencies": {
-    "node-fetch": [
-      "2",
-      "^3 does not support CommonJS"
-    ]
-  },
+  "pinDependencies": {},
   "dependencies": {
     "dotenv": "^16.4.5",
     "http-proxy": "^1.18.1",
     "math-random": "^2.0.1",
-    "node-fetch": "^2.7.0",
     "restify": "^11.1.0"
   },
   "devDependencies": {

@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 import buildSSML from './buildSSML';
 import isSSML from './isSSML';
 

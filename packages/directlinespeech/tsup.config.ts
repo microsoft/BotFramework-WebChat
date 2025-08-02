@@ -7,7 +7,9 @@ import baseConfig from '../../tsup.base.config';
 const resolveCognitiveServicesToES2015 = {
   name: 'microsoft-cognitiveservices-speech-sdk',
   setup(build) {
-    build.onResolve({ filter: /microsoft-cognitiveservices-speech-sdk.+/u }, args => ({
+    // ESBuild use Go regular expressions and does not understand Unicode flag.
+    // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /microsoft-cognitiveservices-speech-sdk.+/ }, args => ({
       path: join(process.cwd(), 'node_modules', args.path.replace('distrib/lib', 'distrib/es2015') + '.js')
     }));
   }
