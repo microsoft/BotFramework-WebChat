@@ -28,9 +28,9 @@ function adjustTheme(theme: ThemeRegistration): ThemeRegistration {
 
 function createHighlighter() {
   return createHighlighterCore({
-    themes: [adjustTheme(themeGitHubDark), adjustTheme(themeGitHubLight)],
+    engine: createJavaScriptRegexEngine(),
     langs: [languageJavaScript, languagePython, languageTypeScript],
-    engine: createJavaScriptRegexEngine()
+    themes: [adjustTheme(themeGitHubDark), adjustTheme(themeGitHubLight)]
   });
 }
 
