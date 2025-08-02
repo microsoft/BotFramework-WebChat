@@ -1,17 +1,14 @@
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { validateProps } from 'botframework-webchat-react-valibot';
-import React, { memo, useCallback, useMemo } from 'react';
-import ReactSay, { SayUtterance } from 'react-say';
+import React, { Fragment, memo, useCallback, useMemo } from 'react';
+import Say, { SayUtterance } from 'react-say';
 import { useRefFrom } from 'use-ref-from';
 import { any, array, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 import SayAlt from './SayAlt';
 
-// TODO: [P*] Do we still need this?
-// TODO: [P1] Interop between Babel and esbuild.
-const Say = 'default' in ReactSay ? (ReactSay.default as typeof ReactSay) : ReactSay;
 const { useMarkActivityAsSpoken, useStyleOptions, useVoiceSelector } = hooks;
 
 // TODO: [P4] Consider moving this feature into BasicActivity
@@ -104,7 +101,7 @@ function Speak(props: SpeakProps) {
 
   return (
     !!activity && (
-      <React.Fragment>
+      <Fragment>
         {speechSynthesisUtterance ? (
           <SayUtterance
             onEnd={markAsSpoken}
@@ -122,7 +119,7 @@ function Speak(props: SpeakProps) {
           />
         )}
         {!!showSpokenText && <SayAlt speak={singleLine} />}
-      </React.Fragment>
+      </Fragment>
     )
   );
 }
