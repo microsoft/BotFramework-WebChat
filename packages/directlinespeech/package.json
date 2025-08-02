@@ -47,9 +47,21 @@
   "license": "MIT",
   "localDependencies": {},
   "pinDependencies": {
+    "@types/jest": [
+      "29",
+      "pinned jest@29"
+    ],
+    "babel-jest": [
+      "29",
+      "jest-image-snapshot@6.5.1 does not support jest@29 yet"
+    ],
     "eslint": [
       "8",
       "@typescript-eslint/eslint-plugin does not support eslint@9 yet"
+    ],
+    "jest": [
+      "29",
+      "jest-image-snapshot@6.5.1 does not support jest@29 yet"
     ],
     "microsoft-cognitiveservices-speech-sdk": [
       "1.17.0",
@@ -61,10 +73,10 @@
     "@babel/core": "^7.28.0",
     "@babel/plugin-transform-runtime": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
-    "@types/jest": "^30.0.0",
+    "@types/jest": "^29.5.14",
     "@typescript-eslint/eslint-plugin": "^8.38.0",
     "@typescript-eslint/parser": "^8.38.0",
-    "babel-jest": "^30.0.5",
+    "babel-jest": "^29.7.0",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "concurrently": "^9.2.0",
@@ -76,7 +88,7 @@
     "eslint-plugin-security": "^3.0.1",
     "global-agent": "^3.0.0",
     "has-resolved": "^1.1.0",
-    "jest": "^30.0.5",
+    "jest": "^29.7.0",
     "prettier": "^3.6.2",
     "serve": "^14.2.4",
     "simple-update-in": "^2.2.0",
