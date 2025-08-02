@@ -10,28 +10,26 @@
 'use strict';
 
 import Q from 'q';
-import requestProgress from 'request-progress';
-import request from 'request';
 import path from 'path';
 import fs from 'fs';
 
 const workingDir = process.cwd();
 
-function getRequestOptions(options) {
-  options = Object.assign({}, options, {
-    // Get response as a buffer
-    encoding: null,
-
-    // The default download path redirects to a CDN URL.
-    followRedirect: true,
-
-    // If going through proxy, spoof the User-Agent, since may commerical proxies block blank or unknown agents in headers
+function getFetchOptions(options) {
+  const fetchOptions = {
+    method: 'GET',
+    redirect: 'follow', // equivalent to followRedirect: true
     headers: {
       'User-Agent': 'curl/7.21.4 (universal-apple-darwin11.0) libcurl/7.21.4 OpenSSL/0.9.8r zlib/1.2.5'
     }
-  });
+  };
 
-  return options;
+  // Merge any additional options
+  if (options && options.headers) {
+    fetchOptions.headers = { ...fetchOptions.headers, ...options.headers };
+  }
+
+  return fetchOptions;
 }
 
 function fetchFromFilesystem(src) {
@@ -114,7 +112,7 @@ function download(src) {
   }
 
   const downloadDfd = Q.defer();
-  const options = getRequestOptions(src);
+  const options = getFetchOptions(src);
 
   function notify(state) {
     downloadDfd.notify(state);
@@ -123,48 +121,74 @@ function download(src) {
   // eslint-disable-next-line no-console
   console.log('GET `' + src.url + '`');
 
-  requestProgress(
-    request(options, (error, response, body) => {
-      if (error) {
-        error.message =
-          'Error making request.\n' +
-          error.stack +
-          '\n\nPlease report this full log at https://github.com/rxaviers/cldr-data-downloader';
-
-        downloadDfd.reject(error);
-
-        throw error;
-      } else if (!response) {
-        error = new Error(
-          'Something unexpected happened, please report this full log at https://github.com/rxaviers/cldr-data-downloader'
-        );
-
-        downloadDfd.reject(error);
-
-        throw error;
-        // eslint-disable-next-line no-magic-numbers
-      } else if (response.statusCode !== 200) {
-        error = new Error(
+  // Use fetch instead of request
+  fetch(src.url, options)
+    .then(async response => {
+      if (!response.ok) {
+        const error = new Error(
           'Error requesting archive.\nStatus: ' +
-            response.statusCode +
+            response.status +
             '\nRequest options: ' +
             // eslint-disable-next-line no-magic-numbers
             JSON.stringify(options, null, 2) +
             '\nResponse headers: ' +
             // eslint-disable-next-line no-magic-numbers
-            JSON.stringify(response.headers, null, 2) +
+            JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2) +
             '\nMake sure your network and proxy settings are correct.\n\nIf you continue to have issues, please report this full log at https://github.com/rxaviers/cldr-data-downloader'
         );
         downloadDfd.reject(error);
-
         throw error;
       }
 
-      notify({ received: body.length, percent: 100 });
+      // Get the content length for progress tracking
+      const contentLength = parseInt(response.headers.get('content-length'), 10);
+      const reader = response.body.getReader();
+      const chunks = [];
+      let receivedLength = 0;
 
-      downloadDfd.resolve(body);
+      // Read the response in chunks to track progress
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        // eslint-disable-next-line no-await-in-loop
+        const { done, value } = await reader.read();
+
+        if (done) {
+          break;
+        }
+
+        chunks.push(value);
+        receivedLength += value.length;
+
+        // Notify progress if we have content length
+        if (contentLength) {
+          // eslint-disable-next-line no-magic-numbers
+          const percent = Math.round((receivedLength / contentLength) * 100);
+          notify({ total: contentLength, received: receivedLength, percent });
+        }
+      }
+
+      // Combine all chunks into a single buffer
+      const body = new Uint8Array(receivedLength);
+      let position = 0;
+      for (const chunk of chunks) {
+        body.set(chunk, position);
+        position += chunk.length;
+      }
+
+      // Final progress notification
+      notify({ total: receivedLength, received: receivedLength, percent: 100 });
+
+      downloadDfd.resolve(Buffer.from(body));
     })
-  ).on('progress', notify);
+    .catch(error => {
+      error.message =
+        'Error making request.\n' +
+        error.stack +
+        '\n\nPlease report this full log at https://github.com/rxaviers/cldr-data-downloader';
+
+      downloadDfd.reject(error);
+      throw error;
+    });
 
   return downloadDfd.promise;
 }
