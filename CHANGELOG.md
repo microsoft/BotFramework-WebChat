@@ -236,8 +236,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed [#5476](https://github.com/microsoft/BotFramework-WebChat/issues/5476). Modernizing components through memoization and use [`valibot`](https://npmjs.com/package/valibot) for props validation, by [@compulim](https://github.com/compulim)
 - Ported `useSuggestedActions` to use React hooks as backend instead of Redux store, in PR [#5489](https://github.com/microsoft/BotFramework-WebChat/pull/5489), by [@compulim](https://github.com/compulim)
 - Removed `StarterPromptsCardAction` during `blueprint` ui state in PR [#5477](https://github.com/microsoft/BotFramework-WebChat/pull/5477), by [@jcheung824](https://github.com/jcheung824)
-- Removed `abort-controller-es5` package in `botframework-directlinespeech-sdk` package, in PR [#5530](https://github.com/microsoft/BotFramework-WebChat/pull/5530)
-- Removed `request` and `request-progress` package in `cldr-data-downloader` package, in PR [#5530](https://github.com/microsoft/BotFramework-WebChat/pull/5530)
+- Removed `abort-controller-es5` package in `botframework-directlinespeech-sdk` package, in PR [#5530](https://github.com/microsoft/BotFramework-WebChat/pull/5530), by [@compulim](https://github.com/compulim)
+- Removed `request` and `request-progress` package in `cldr-data-downloader` package, in PR [#5530](https://github.com/microsoft/BotFramework-WebChat/pull/5530), by [@copilot](https://github.com/copilot) and [@compulim](https://github.com/compulim)
 
 ### Fixed
 
