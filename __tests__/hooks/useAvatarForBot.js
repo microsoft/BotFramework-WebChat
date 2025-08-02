@@ -18,7 +18,7 @@ test('getter should return image and initial of avatar for bot', async () => {
   const [{ image, initials }] = await pageObjects.runHook('useAvatarForBot');
 
   expect({ image, initials }).toMatchInlineSnapshot(`
-    Object {
+    {
       "image": "about:blank#bot-icon",
       "initials": "WC",
     }

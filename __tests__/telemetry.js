@@ -38,10 +38,10 @@ describe('telemetry', () => {
     await expect(
       driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ name }) => name === 'init'))
     ).resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",

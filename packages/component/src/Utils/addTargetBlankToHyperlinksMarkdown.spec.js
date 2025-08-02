@@ -10,7 +10,7 @@ test('add to external links', () => {
   const html = markdownIt.renderer.render(updatedTree);
 
   expect(html).toMatchInlineSnapshot(
-    `"Hello, <a href=\\"https://microsoft.com/\\" rel=\\"noopener noreferrer\\" target=\\"_blank\\">Microsoft</a>!"`
+    `"Hello, <a href="https://microsoft.com/" rel="noopener noreferrer" target="_blank">Microsoft</a>!"`
   );
 });
 
@@ -21,7 +21,7 @@ test("don't add for hashes", () => {
   const updatedTree = addTargetBlankToHyperlinksMarkdown(tree);
   const html = markdownIt.renderer.render(updatedTree);
 
-  expect(html).toMatchInlineSnapshot(`"Hello, <a href=\\"#microsoft\\">Microsoft</a>!"`);
+  expect(html).toMatchInlineSnapshot(`"Hello, <a href="#microsoft">Microsoft</a>!"`);
 });
 
 test("don't add for searches", () => {
@@ -31,7 +31,7 @@ test("don't add for searches", () => {
   const updatedTree = addTargetBlankToHyperlinksMarkdown(tree);
   const html = markdownIt.renderer.render(updatedTree);
 
-  expect(html).toMatchInlineSnapshot(`"Hello, <a href=\\"?q=microsoft\\">Microsoft</a>!"`);
+  expect(html).toMatchInlineSnapshot(`"Hello, <a href="?q=microsoft">Microsoft</a>!"`);
 });
 
 test("don't add for cross references", () => {
@@ -41,5 +41,5 @@ test("don't add for cross references", () => {
   const updatedTree = addTargetBlankToHyperlinksMarkdown(tree);
   const html = markdownIt.renderer.render(updatedTree);
 
-  expect(html).toMatchInlineSnapshot(`"Hello, <a href=\\"#microsoft\\">Microsoft</a>!"`);
+  expect(html).toMatchInlineSnapshot(`"Hello, <a href="#microsoft">Microsoft</a>!"`);
 });

@@ -11,7 +11,7 @@ test('getter should return grammars set in props', async () => {
   const [grammars] = await pageObjects.runHook('useGrammars');
 
   expect(grammars).toMatchInlineSnapshot(`
-    Array [
+    [
       "Tuen Mun",
       "Yuen Long",
     ]
