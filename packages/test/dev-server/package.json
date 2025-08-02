@@ -1,5 +1,5 @@
 {
-  "name": "@webchat/dev-server",
+  "name": "@msinternal/dev-server",
   "version": "0.0.0-0",
   "description": "Development server for Web Chat",
   "main": "./src/index.js",

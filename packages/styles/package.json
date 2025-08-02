@@ -1,5 +1,5 @@
 {
-  "name": "botframework-webchat-styles",
+  "name": "@msinternal/botframework-webchat-styles",
   "version": "0.0.0-0",
   "description": "The botframework-webchat styles package",
   "main": "./dist/botframework-webchat-styles.js",

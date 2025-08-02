@@ -1,5 +1,5 @@
 {
-  "name": "botframework-webchat-cldr-data",
+  "name": "@msinternal/botframework-webchat-cldr-data",
   "version": "36.0.0-0",
   "engines": {
     "node": ">= 12"

@@ -1,5 +1,5 @@
 {
-  "name": "test-page-object",
+  "name": "@msinternal/test-page-object",
   "version": "0.0.0-0",
   "description": "",
   "private": true,
