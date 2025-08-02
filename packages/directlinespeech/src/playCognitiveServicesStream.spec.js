@@ -102,9 +102,9 @@ test('should play 16-bit chunked stream to AudioContext', async () => {
   }));
 
   expect(nodes).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "channelData": Array [
+    [
+      {
+        "channelData": [
           Float32Array [
             0,
             0,
@@ -121,8 +121,8 @@ test('should play 16-bit chunked stream to AudioContext', async () => {
         "samplesPerSec": 48000,
         "startAtTime": 0,
       },
-      Object {
-        "channelData": Array [
+      {
+        "channelData": [
           Float32Array [
             -1,
             -1,
