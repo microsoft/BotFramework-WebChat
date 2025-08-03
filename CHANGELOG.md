@@ -134,7 +134,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - [`react-dictate-button@4.0.0`](https://npmjs.com/package/react-dictate-button)
 - Enabled icon customization in Fluent theme through CSS variables, in PR [#5413](https://github.com/microsoft/BotFramework-WebChat/pull/5413), by [@OEvgeny](https://github.com/OEvgeny)
    - Reworked, enabled in Web Chat, in PR [#5502](https://github.com/microsoft/BotFramework-WebChat/pull/5502), by [@OEvgeny](https://github.com/OEvgeny)
-- Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5427](https://github.com/microsoft/BotFramework-WebChat/pull/5427), PR [#5529](https://github.com/microsoft/BotFramework-WebChat/pull/5529), and PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/pull/XXX)
+- Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5427](https://github.com/microsoft/BotFramework-WebChat/pull/5427), PR [#5529](https://github.com/microsoft/BotFramework-WebChat/pull/5529), and PR [#5532](https://github.com/microsoft/BotFramework-WebChat/pull/5532)
    - Production dependencies
       - [`@babel/runtime@7.28.2`](https://npmjs.com/package/@babel/runtime/v/7.28.2)
       - [`botframework-directlinejs@0.15.6`](https://npmjs.com/package/botframework-directlinejs/v/0.15.6)
