@@ -88,10 +88,6 @@
       "13",
       "markdown-it@14.1.0 has module field and it is breaking Webpack 4 because cross loading CJS and ESM"
     ],
-    "react-film": [
-      "3.1.1-main.f623bf6",
-      "TEMPORARY: Use a custom version to verify build"
-    ],
     "react-redux": [
       "7"
     ],
@@ -141,7 +137,7 @@
     "punycode": "2.3.1",
     "react-chain-of-responsibility": "0.3.0",
     "react-dictate-button": "4.0.0",
-    "react-film": "3.1.1-main.f623bf6",
+    "react-film": "4.0.0",
     "react-redux": "7.2.9",
     "react-say": "2.2.0",
     "react-scroll-to-bottom": "4.2.1-main.53844f5",
