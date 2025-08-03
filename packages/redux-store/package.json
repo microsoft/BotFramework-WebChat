@@ -46,8 +46,8 @@
     "start:tsup": "npm run build:tsup -- --watch"
   },
   "localDependencies": {
-    "botframework-webchat-core": "production",
-    "botframework-webchat-react-valibot": "development"
+    "@msinternal/botframework-webchat-react-valibot": "development",
+    "botframework-webchat-core": "production"
   },
   "pinDependencies": {
     "@types/react": [
@@ -59,9 +59,9 @@
     ]
   },
   "devDependencies": {
+    "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",
     "@tsconfig/strictest": "^2.0.5",
     "@types/react": "^16.14.65",
-    "botframework-webchat-react-valibot": "^0.0.0-0",
     "tsup": "^8.5.0",
     "typescript": "~5.8.3"
   },

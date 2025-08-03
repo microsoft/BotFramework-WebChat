@@ -1,4 +1,4 @@
-import { injectCSSPlugin } from 'botframework-webchat-styles/build';
+import { injectCSSPlugin } from '@msinternal/botframework-webchat-styles/build';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'tsup';

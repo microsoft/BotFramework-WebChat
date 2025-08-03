@@ -9,6 +9,6 @@
 	},
 	"extends": [
 		"@tsconfig/strictest/tsconfig.json",
-		"botframework-webchat-styles/tsconfig.json"
+		"@msinternal/botframework-webchat-styles/tsconfig.json"
 	]
 }

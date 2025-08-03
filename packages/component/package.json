@@ -69,11 +69,11 @@
     "start": "npm run build:tsup -- --onSuccess=\"touch ../bundle/src/FullComposer.tsx\" --watch"
   },
   "localDependencies": {
+    "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-react-valibot": "development",
+    "@msinternal/botframework-webchat-styles": "development",
     "botframework-webchat-api": "production",
-    "botframework-webchat-base": "development",
-    "botframework-webchat-core": "production",
-    "botframework-webchat-react-valibot": "development",
-    "botframework-webchat-styles": "development"
+    "botframework-webchat-core": "production"
   },
   "pinDependencies": {
     "@types/react": [
@@ -109,14 +109,14 @@
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
+    "@msinternal/botframework-webchat-base": "0.0.0-0",
+    "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",
+    "@msinternal/botframework-webchat-styles": "0.0.0-0",
     "@types/mdast": "^4.0.4",
     "@types/node": "^24.1.0",
     "@types/react": "^16.14.65",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "botframework-webchat-base": "0.0.0-0",
-    "botframework-webchat-react-valibot": "^0.0.0-0",
-    "botframework-webchat-styles": "0.0.0-0",
     "concurrently": "^9.2.0",
     "core-js": "^3.44.0",
     "cross-env": "^10.0.0",

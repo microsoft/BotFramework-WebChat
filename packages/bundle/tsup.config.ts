@@ -22,7 +22,7 @@ const resolveReact = {
     // ESBuild use Go regular expressions and does not understand Unicode flag.
     // eslint-disable-next-line require-unicode-regexp
     build.onResolve({ filter: /^(react|react-dom)$/ }, ({ path: pkgNamne }) => ({
-      path: path.join(process.cwd(), '../../node_modules', `isomorphic-${pkgNamne}/dist/${pkgNamne}.js`)
+      path: path.join(process.cwd(), '../../node_modules', `@msinternal/isomorphic-${pkgNamne}/dist/${pkgNamne}.js`)
     }));
   }
 };

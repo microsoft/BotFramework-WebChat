@@ -4,7 +4,7 @@ import {
   DecoratorComposer,
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
-import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo } from 'react';
 import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 

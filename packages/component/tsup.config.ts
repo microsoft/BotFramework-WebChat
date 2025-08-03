@@ -1,4 +1,4 @@
-import { injectCSSPlugin } from 'botframework-webchat-styles/build';
+import { injectCSSPlugin } from '@msinternal/botframework-webchat-styles/build';
 import { defineConfig, Options } from 'tsup';
 import baseConfig from '../../tsup.base.config';
 import { componentStyleContent as componentStyleContentPlaceholder } from './src/Styles/createStyles';

@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { type Action as AdaptiveCardAction, type OpenUrlAction, type SubmitAction } from 'adaptivecards';
-import { validateProps } from 'botframework-webchat-react-valibot';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
@@ -15,8 +15,8 @@ import React, {
   type KeyboardEventHandler,
   type MouseEventHandler
 } from 'react';
-import { any, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 import { useRefFrom } from 'use-ref-from';
+import { any, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';

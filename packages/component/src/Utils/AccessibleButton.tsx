@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
 
-import { reactNode } from 'botframework-webchat-react-valibot';
+import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
 import React, { forwardRef, memo, type MouseEventHandler } from 'react';
 import {
   boolean,

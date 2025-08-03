@@ -1,4 +1,4 @@
-import { withResolvers } from 'botframework-webchat-base/utils';
+import { withResolvers } from '@msinternal/botframework-webchat-base/utils';
 import Observable from 'core-js/features/observable';
 import random from 'math-random';
 import updateIn from 'simple-update-in';

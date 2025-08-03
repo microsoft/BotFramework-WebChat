@@ -1,6 +1,6 @@
 import React, { Fragment, memo, useCallback, useState, type ReactNode } from 'react';
 import cx from 'classnames';
-import { useStyles } from 'botframework-webchat-styles/react';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 
 import styles from './BorderFlair.module.css';
 

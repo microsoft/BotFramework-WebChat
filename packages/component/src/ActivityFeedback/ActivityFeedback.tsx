@@ -1,4 +1,4 @@
-import { useStyles } from 'botframework-webchat-styles/react';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import React, { memo, useCallback, useMemo, type FormEventHandler, type KeyboardEventHandler } from 'react';
 import { Extract, wrapWith } from 'react-wrap-with';
 import { useRefFrom } from 'use-ref-from';

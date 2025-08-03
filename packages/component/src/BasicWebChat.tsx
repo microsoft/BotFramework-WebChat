@@ -1,8 +1,8 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
 /* eslint react/no-unsafe: off */
 
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { SendBoxMiddlewareProxy, hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { memo } from 'react';
 import { fallback, literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';

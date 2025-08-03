@@ -1,3 +1,4 @@
+import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,
   connect as createConnectAction,
@@ -31,7 +32,6 @@ import {
   type OneOrMany,
   type WebChatActivity
 } from 'botframework-webchat-core';
-import { ReduxStoreComposer } from 'botframework-webchat-redux-store';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { Provider } from 'react-redux';

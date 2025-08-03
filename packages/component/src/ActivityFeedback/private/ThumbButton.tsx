@@ -1,5 +1,5 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { forwardRef, memo, useCallback, useMemo, type ForwardedRef, type KeyboardEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';

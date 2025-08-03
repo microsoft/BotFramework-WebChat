@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-react-valibot';
-import { useStyles } from 'botframework-webchat-styles/react';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import React, { KeyboardEventHandler, useCallback } from 'react';
 import { function_, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
