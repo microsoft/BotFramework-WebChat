@@ -33,7 +33,7 @@ jobs:
 
       - run: npx version-from-git --no-git-tag-version
 
-      - run: npm clean-install --no-production
+      - run: npm clean-install --ignore-scripts --no-production
 
       - name: Propagate versions
         run: npm version --no-git-tag-version --no-workspaces-update --workspaces `cat package.json | jq -r .version`
