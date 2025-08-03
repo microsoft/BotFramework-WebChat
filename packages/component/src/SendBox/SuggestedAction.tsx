@@ -1,6 +1,6 @@
 import { hooks } from 'botframework-webchat-api';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
-import { validateProps } from 'botframework-webchat-react-valibot';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { memo, useCallback, type MouseEventHandler } from 'react';
 import { any, literal, number, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';

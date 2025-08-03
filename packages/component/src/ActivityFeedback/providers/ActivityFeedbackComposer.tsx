@@ -1,3 +1,4 @@
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import {
   getOrgSchemaMessage,
@@ -5,7 +6,6 @@ import {
   type OrgSchemaAction,
   type WebChatActivity
 } from 'botframework-webchat-core';
-import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import random from 'math-random';
 import React, { memo, useCallback, useMemo, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { wrapWith } from 'react-wrap-with';
@@ -17,9 +17,9 @@ import dereferenceBlankNodes from '../../Utils/JSONLinkedData/dereferenceBlankNo
 import canActionResubmit from '../private/canActionResubmit';
 import getDisclaimerFromFeedbackLoop from '../private/getDisclaimerFromFeedbackLoop';
 import hasFeedbackLoop from '../private/hasFeedbackLoop';
+import isActionRequireReview from '../private/isActionRequireReview';
 import ActivityFeedbackContext, { type ActivityFeedbackContextType } from './private/ActivityFeedbackContext';
 import { ActivityFeedbackFocusPropagationScope, usePropagateActivityFeedbackFocus } from './private/FocusPropagation';
-import isActionRequireReview from '../private/isActionRequireReview';
 
 const { usePonyfill, usePostActivity } = hooks;
 

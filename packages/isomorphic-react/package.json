@@ -1,5 +1,5 @@
 {
-  "name": "isomorphic-react",
+  "name": "@msinternal/isomorphic-react",
   "description": "Exports window.React if available, otherwise, exports require('react').",
   "version": "0.0.0-0",
   "main": "dist/react.js",

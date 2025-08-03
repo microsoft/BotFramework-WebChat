@@ -4,7 +4,7 @@ import { hooks } from 'botframework-webchat-api';
 import type { RenderAttachment } from 'botframework-webchat-api';
 import { ActivityBorderDecorator } from 'botframework-webchat-api/decorator';
 import { getActivityLivestreamingMetadata, getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
-import { useStyles } from 'botframework-webchat-styles/react';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
 

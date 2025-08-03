@@ -1,6 +1,6 @@
 /* eslint complexity: ["error", 50] */
 
-import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useCallback, useEffect, useMemo, useRef, type MutableRefObject } from 'react';
 import {
   custom,

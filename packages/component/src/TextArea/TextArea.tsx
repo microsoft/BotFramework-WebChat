@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import { useStyles } from 'botframework-webchat-styles/react';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, {
   forwardRef,

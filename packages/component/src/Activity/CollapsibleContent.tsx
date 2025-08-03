@@ -1,12 +1,12 @@
-import { useStyles } from 'botframework-webchat-styles/react';
-import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
+import random from 'math-random';
 import React, { memo, ReactEventHandler, useCallback, useRef, useState } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
-import random from 'math-random';
 
-import styles from './CollapsibleContent.module.css';
 import { ComponentIcon } from '../Icon';
+import styles from './CollapsibleContent.module.css';
 
 const collapsibleContentPropsSchema = pipe(
   object({

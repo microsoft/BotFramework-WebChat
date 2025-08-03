@@ -1,4 +1,4 @@
-import { makeCreateStyles } from 'botframework-webchat-styles';
+import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
 
 export const fluentStyleContent = '@--FLUENT-STYLES-CONTENT--@';
 

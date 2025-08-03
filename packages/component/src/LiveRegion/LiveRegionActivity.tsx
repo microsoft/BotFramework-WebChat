@@ -1,7 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-react-valibot';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { Fragment, useMemo } from 'react';
 import { any, object, pipe, readonly, type InferInput } from 'valibot';

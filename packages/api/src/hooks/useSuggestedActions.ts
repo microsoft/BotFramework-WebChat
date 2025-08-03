@@ -1,4 +1,4 @@
-import { useSuggestedActionsHooks } from 'botframework-webchat-redux-store';
+import { useSuggestedActionsHooks } from '@msinternal/botframework-webchat-redux-store';
 
 /**
  * @deprecated Use `useSuggestedActionsHooks().useSuggestedActions` instead. This hook will be removed on or after 2027-05-30.

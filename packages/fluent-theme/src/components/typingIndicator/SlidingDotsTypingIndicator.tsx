@@ -1,5 +1,5 @@
 import { testIds } from 'botframework-webchat-component';
-import { useStyles } from 'botframework-webchat-styles/react';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { memo } from 'react';
 

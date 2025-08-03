@@ -1,4 +1,4 @@
-import { validateProps } from 'botframework-webchat-react-valibot';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { useCallback } from 'react';
 import {
   custom,

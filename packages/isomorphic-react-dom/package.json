@@ -1,5 +1,5 @@
 {
-  "name": "isomorphic-react-dom",
+  "name": "@msinternal/isomorphic-react-dom",
   "description": "Exports window.ReactDOM if available, otherwise, exports require('react-dom').",
   "version": "0.0.0-0",
   "main": "dist/react-dom.js",

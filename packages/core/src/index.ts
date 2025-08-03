@@ -1,4 +1,4 @@
-import { withResolvers, type PromiseWithResolvers } from 'botframework-webchat-base/utils';
+import { withResolvers, type PromiseWithResolvers } from '@msinternal/botframework-webchat-base/utils';
 import connect from './actions/connect';
 import disconnect from './actions/disconnect';
 import dismissNotification from './actions/dismissNotification';

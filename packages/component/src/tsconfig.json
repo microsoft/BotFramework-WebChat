@@ -10,6 +10,6 @@
     "target": "ESNext"
   },
   "extends": [
-		"botframework-webchat-styles/tsconfig.json"
+		"@msinternal/botframework-webchat-styles/tsconfig.json"
 	]
 }

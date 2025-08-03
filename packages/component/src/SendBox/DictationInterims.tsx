@@ -1,7 +1,7 @@
 /* eslint react/no-array-index-key: "off" */
 
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-react-valibot';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, { memo } from 'react';

@@ -1,4 +1,4 @@
-import { validateProps } from 'botframework-webchat-react-valibot';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { Fragment } from 'react';
 import { literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 

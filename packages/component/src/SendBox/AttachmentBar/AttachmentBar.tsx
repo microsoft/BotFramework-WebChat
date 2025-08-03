@@ -1,9 +1,9 @@
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-react-valibot';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import cx from 'classnames';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { useStyles } from 'botframework-webchat-styles/react';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import styles from './AttachmentBar.module.css';

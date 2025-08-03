@@ -1,1 +1,1 @@
-/// <reference types="botframework-webchat-styles/env" />
+/// <reference types="@msinternal/botframework-webchat-styles/env" />

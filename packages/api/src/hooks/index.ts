@@ -72,7 +72,7 @@ import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
 
-export { useSuggestedActionsHooks } from 'botframework-webchat-redux-store';
+export { useSuggestedActionsHooks } from '@msinternal/botframework-webchat-redux-store';
 
 export {
   useActiveTyping,

@@ -1,6 +1,6 @@
 /* eslint react/no-array-index-key: "off" */
 
-import { validateProps } from 'botframework-webchat-react-valibot';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { Components } from 'botframework-webchat-component';
 import React, { memo } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';

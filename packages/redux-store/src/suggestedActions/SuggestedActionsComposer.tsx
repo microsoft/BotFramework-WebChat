@@ -6,7 +6,7 @@ import {
   type DirectLineCardAction
 } from 'botframework-webchat-core';
 import { setRawState } from 'botframework-webchat-core/internal';
-import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { type Action } from 'redux';
 import { object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';

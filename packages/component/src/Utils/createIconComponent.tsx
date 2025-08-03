@@ -1,5 +1,5 @@
-import { useStyles } from 'botframework-webchat-styles/react';
-import { validateProps } from 'botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import cx from 'classnames';
 import { object, optional, picklist, pipe, readonly, type OptionalSchema, type PicklistSchema } from 'valibot';
 import React, { type ComponentType } from 'react';

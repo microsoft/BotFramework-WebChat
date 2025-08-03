@@ -1,6 +1,6 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
-import { validateProps } from 'botframework-webchat-react-valibot';
 import React, { Fragment, memo, useCallback, useMemo } from 'react';
 import Say, { SayUtterance } from 'react-say';
 import { useRefFrom } from 'use-ref-from';

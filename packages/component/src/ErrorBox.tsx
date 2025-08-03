@@ -1,7 +1,7 @@
 /* eslint no-console: "off" */
 
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import { validateProps } from 'botframework-webchat-react-valibot';
 import React, { memo } from 'react';
 import { instance, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 

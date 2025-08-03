@@ -1,10 +1,10 @@
+import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
 import { hooks } from 'botframework-webchat-api';
-import { makeCreateStyles } from 'botframework-webchat-styles';
 import random from 'math-random';
 import { useMemo } from 'react';
-import CustomPropertyNames from './CustomPropertyNames';
 import useInjectStyles from '../hooks/internal/useInjectStyles';
 import useNonce from '../hooks/internal/useNonce';
+import CustomPropertyNames from './CustomPropertyNames';
 
 const { useStyleOptions } = hooks;
 

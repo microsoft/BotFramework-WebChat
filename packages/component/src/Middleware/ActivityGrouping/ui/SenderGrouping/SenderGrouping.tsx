@@ -1,5 +1,5 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
-import { reactNode } from 'botframework-webchat-react-valibot';
+import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useMemo } from 'react';
 import { any, array, minLength, object, optional, parse, pipe, readonly, transform, type InferOutput } from 'valibot';
 import SenderGroupingContext, { type SenderGroupingContextType } from './private/SenderGroupingContext';

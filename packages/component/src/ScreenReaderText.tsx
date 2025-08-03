@@ -1,6 +1,6 @@
 /* eslint react/forbid-dom-props: ["off"] */
 
-import { validateProps } from 'botframework-webchat-react-valibot';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { forwardRef, memo } from 'react';
 
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
