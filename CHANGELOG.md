@@ -134,7 +134,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - [`react-dictate-button@4.0.0`](https://npmjs.com/package/react-dictate-button)
 - Enabled icon customization in Fluent theme through CSS variables, in PR [#5413](https://github.com/microsoft/BotFramework-WebChat/pull/5413), by [@OEvgeny](https://github.com/OEvgeny)
    - Reworked, enabled in Web Chat, in PR [#5502](https://github.com/microsoft/BotFramework-WebChat/pull/5502), by [@OEvgeny](https://github.com/OEvgeny)
-- Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5427](https://github.com/microsoft/BotFramework-WebChat/pull/5427) and PR [#5529](https://github.com/microsoft/BotFramework-WebChat/pull/5529)
+- Bumped all dependencies to the latest versions, by [@compulim](https://github.com/compulim) in PR [#5427](https://github.com/microsoft/BotFramework-WebChat/pull/5427), PR [#5529](https://github.com/microsoft/BotFramework-WebChat/pull/5529), and PR [#5532](https://github.com/microsoft/BotFramework-WebChat/pull/5532)
    - Production dependencies
       - [`@babel/runtime@7.28.2`](https://npmjs.com/package/@babel/runtime/v/7.28.2)
       - [`botframework-directlinejs@0.15.6`](https://npmjs.com/package/botframework-directlinejs/v/0.15.6)
@@ -151,6 +151,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - [`microsoft-cognitiveservices-speech-sdk@1.45.0`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk/v/1.45.0)
       - [`mime@4.0.7`](https://npmjs.com/package/mime/v/4.0.7)
       - [`react-chain-of-responsibility@0.3.0`](https://npmjs.com/package/react-chain-of-responsibility/v/0.3.0)
+      - [`react-film@4.0.0`](https://npmjs.com/package/react-film/v/4.0.0)
       - [`react-say@2.2.0`](https://npmjs.com/package/react-say/v/2.2.0)
       - [`react-scroll-to-bottom@4.2.0`](https://npmjs.com/package/react-scroll-to-bottom/v/4.2.0)
       - [`react-wrap-with@0.1.0`](https://npmjs.com/package/react-wrap-with/v/0.1.0)

@@ -4,13 +4,12 @@ import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useCallback, useMemo, useRef } from 'react';
-// eslint-disable-next-line import/no-named-as-default
-import BasicFilm, { createBasicStyleSet as createBasicStyleSetForReactFilm } from 'react-film';
+import { createBasicStyleSet as createBasicStyleSetForReactFilm, ReactFilm } from 'react-film';
 
 import computeSuggestedActionText from '../Utils/computeSuggestedActionText';
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useFocusWithin from '../hooks/internal/useFocusWithin';
 import useNonce from '../hooks/internal/useNonce';
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useFocus from '../hooks/useFocus';
 import useStyleSet from '../hooks/useStyleSet';
 import RovingTabIndexComposer from '../providers/RovingTabIndex/RovingTabIndexComposer';
@@ -89,7 +88,7 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
       role="toolbar"
     >
       {!!children && !!React.Children.count(children) && (
-        <BasicFilm
+        <ReactFilm
           autoCenter={false}
           className="webchat__suggested-actions__carousel"
           dir={direction}
@@ -102,7 +101,7 @@ const SuggestedActionCarouselContainer = ({ children, className, label }) => {
           styleSet={filmStyleSet}
         >
           {children}
-        </BasicFilm>
+        </ReactFilm>
       )}
       <div className="webchat__suggested-actions__focus-indicator" />
     </div>
