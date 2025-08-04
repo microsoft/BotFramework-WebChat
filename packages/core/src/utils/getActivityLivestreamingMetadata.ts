@@ -21,9 +21,15 @@ import getOrgSchemaMessage from './getOrgSchemaMessage';
 
 const EMPTY_ARRAY = Object.freeze([]);
 
+/**
+ * Represents streaming data fields in a streaming Activity
+ */
 interface StreamingData {
+  /** The unique ID of the stream */
   streamId?: string;
+  /** The sequence number of the streaming message */
   streamSequence?: number;
+  /** The type of streaming message (streaming, informative, or final) */
   streamType: string;
 }
 
