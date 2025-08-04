@@ -35,18 +35,19 @@ interface StreamingData {
 
 const streamSequenceSchema = pipe(number(), integer(), minValue(1));
 
-// Extra fields required for each activity
-const activityExtras = {
+// Fields required for every activity
+const activityFieldsSchema = {
   // "text" is optional. If not set or empty, it presents a contentless activity.
   text: optional(undefinedable(string())),
   attachments: optional(array(any()), EMPTY_ARRAY),
   id: string()
 };
 
-const { text: _text, ...activityExtrasFinal } = activityExtras;
+// Final Activities have different requirements for "text" fields
+const { text: _text, ...activityFieldsFinalSchema } = activityFieldsSchema;
 
 // Interim or Informative Activities
-const activeSchema = object({
+const ongoingStreamSchema = object({
   // "streamId" is optional for the very first activity in the session.
   streamId: optional(undefinedable(string())),
   streamSequence: streamSequenceSchema,
@@ -54,7 +55,7 @@ const activeSchema = object({
 });
 
 // Final Activities
-const finalActivitySchema = object({
+const finalStreamSchema = object({
   // "streamId" is required for the final activity in the session.
   // The final activity must not be the sole activity in the session.
   streamId: pipe(string(), nonEmpty()),
@@ -66,26 +67,26 @@ const channelDataStreamingActivitySchema = union([
   // Informative may not have "text", but should have abstract instead (checked later)
   object({
     type: literal('typing'),
-    channelData: activeSchema,
+    channelData: ongoingStreamSchema,
     entities: optional(array(any()), EMPTY_ARRAY),
-    ...activityExtras
+    ...activityFieldsSchema
   }),
   // Conclude with a message.
   object({
     // If "text" is empty, it represents "regretting" the livestream.
     type: literal('message'),
-    channelData: finalActivitySchema,
+    channelData: finalStreamSchema,
     entities: optional(array(any()), EMPTY_ARRAY),
-    ...activityExtras
+    ...activityFieldsSchema
   }),
   // Conclude without a message.
   object({
     // If "text" is not set or empty, it represents "regretting" the livestream.
     type: literal('typing'),
-    channelData: finalActivitySchema,
+    channelData: finalStreamSchema,
     entities: optional(array(any()), EMPTY_ARRAY),
     text: optional(undefinedable(literal(''))),
-    ...activityExtrasFinal
+    ...activityFieldsFinalSchema
   })
 ]);
 
@@ -94,26 +95,26 @@ const entitiesStreamingActivitySchema = union([
   // Informative may not have "text", but should have abstract instead (checked later)
   object({
     type: literal('typing'),
-    entities: array(activeSchema),
+    entities: array(ongoingStreamSchema),
     channelData: optional(any()),
-    ...activityExtras
+    ...activityFieldsSchema
   }),
   // Conclude with a message.
   object({
     // If "text" is empty, it represents "regretting" the livestream.
     type: literal('message'),
-    entities: array(finalActivitySchema),
+    entities: array(finalStreamSchema),
     channelData: optional(any()),
-    ...activityExtras
+    ...activityFieldsSchema
   }),
   // Conclude without a message.
   object({
     // If "text" is empty, it represents "regretting" the livestream.
     type: literal('typing'),
-    entities: array(finalActivitySchema),
+    entities: array(finalStreamSchema),
     channelData: optional(any()),
     text: optional(undefinedable(literal(''))),
-    ...activityExtrasFinal
+    ...activityFieldsFinalSchema
   })
 ]);
 
