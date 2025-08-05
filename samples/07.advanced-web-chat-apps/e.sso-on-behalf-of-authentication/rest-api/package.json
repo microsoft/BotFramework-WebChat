@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
-  "scripts": {
-    "bump": "if [ `cat package.json | jq -r '(.devDependencies // {} + .devDependencies // {}) | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}), (.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]') && (npm audit fix || exit 0); fi",
-    "start": "node-dev --no-notify --respawn ."
-  },
   "author": "William Wong <compulim@hotmail.com> (http://compulim.info/)",
   "license": "MIT",
+  "private": true,
+  "scripts": {
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0) && npm run bump:packages && npm run bump:samples",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "start": "node-dev --no-notify --respawn ."
+  },
   "pinDependencies": {},
   "dependencies": {
     "dotenv": "^16.4.5",
