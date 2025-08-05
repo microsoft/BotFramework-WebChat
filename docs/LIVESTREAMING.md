@@ -72,7 +72,8 @@ Bot developers would need to implement the livestreaming as outlined in this sec
 >    "entities": [
 >       {
 >          "streamSequence": 1,
->          "streamType": "streaming"
+>          "streamType": "streaming",
+>          "type": "streaminfo"
 >       }
 >    ],
 >    "text": "A quick",
