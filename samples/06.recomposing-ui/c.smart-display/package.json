@@ -1,6 +1,6 @@
 {
-  "name": "sample-customization-smart-display",
-  "version": "0.0.0-0",
+  "name": "@msinternal/sample-customization-smart-display",
+  "version": "0.1.0",
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/06.recomposing-ui/c.smart-display/",
   "scripts": {
@@ -11,6 +11,9 @@
     "start": "npm run build -- --servedir=./public"
   },
   "pinDependencies": {
+    "botframework-webchat": [
+      "main"
+    ],
     "react": [
       "16.8.6",
       "using react@16.8.6 to make sure this is the minimum supported version"
@@ -25,12 +28,12 @@
     ]
   },
   "dependencies": {
-    "botframework-webchat": "4.18.0",
+    "botframework-webchat": "4.18.1-main.20250804.93043a9",
     "classnames": "2.5.1",
     "punycode": "2.3.1",
     "react": "16.8.6",
     "react-dom": "16.8.6",
-    "react-film": "3.1.0",
+    "react-film": "4.0.0",
     "react-redux": "7.2.9",
     "redux": "5.0.1"
   },

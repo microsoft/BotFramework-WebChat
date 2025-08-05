@@ -13,6 +13,7 @@
     "./06.recomposing-ui/e.extending-ui"
   ],
   "scripts": {
-    "build": "npm run build --workspaces"
+    "build": "npm run build --workspaces",
+    "bump": "npm run bump --workspaces"
   }
 }
