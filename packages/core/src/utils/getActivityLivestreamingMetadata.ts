@@ -46,28 +46,17 @@ const activityFieldsSchema = {
 // Final Activities have different requirements for "text" fields
 const { text: _text, ...activityFieldsFinalSchema } = activityFieldsSchema;
 
-// Interim or Informative Activities
-const ongoingStreamSchema = object({
-  // "streamId" is optional for the very first activity in the session.
-  streamId: optional(undefinedable(string())),
-  streamSequence: streamSequenceSchema,
-  streamType: union([literal('streaming'), literal('informative')])
-});
-
-// Final Activities
-const finalStreamSchema = object({
-  // "streamId" is required for the final activity in the session.
-  // The final activity must not be the sole activity in the session.
-  streamId: pipe(string(), nonEmpty()),
-  streamType: literal('final')
-});
-
 const channelDataStreamingActivitySchema = union([
   // Interim or Informative message
   // Informative may not have "text", but should have abstract instead (checked later)
   object({
     type: literal('typing'),
-    channelData: ongoingStreamSchema,
+    channelData: object({
+      // "streamId" is optional for the very first activity in the session.
+      streamId: optional(undefinedable(string())),
+      streamSequence: streamSequenceSchema,
+      streamType: union([literal('streaming'), literal('informative')])
+    }),
     entities: optional(array(any()), EMPTY_ARRAY),
     ...activityFieldsSchema
   }),
@@ -75,7 +64,12 @@ const channelDataStreamingActivitySchema = union([
   object({
     // If "text" is empty, it represents "regretting" the livestream.
     type: literal('message'),
-    channelData: finalStreamSchema,
+    channelData: object({
+      // "streamId" is required for the final activity in the session.
+      // The final activity must not be the sole activity in the session.
+      streamId: pipe(string(), nonEmpty()),
+      streamType: literal('final')
+    }),
     entities: optional(array(any()), EMPTY_ARRAY),
     ...activityFieldsSchema
   }),
@@ -83,7 +77,12 @@ const channelDataStreamingActivitySchema = union([
   object({
     // If "text" is not set or empty, it represents "regretting" the livestream.
     type: literal('typing'),
-    channelData: finalStreamSchema,
+    channelData: object({
+      // "streamId" is required for the final activity in the session.
+      // The final activity must not be the sole activity in the session.
+      streamId: pipe(string(), nonEmpty()),
+      streamType: literal('final')
+    }),
     entities: optional(array(any()), EMPTY_ARRAY),
     text: optional(undefinedable(literal(''))),
     ...activityFieldsFinalSchema
@@ -95,7 +94,15 @@ const entitiesStreamingActivitySchema = union([
   // Informative may not have "text", but should have abstract instead (checked later)
   object({
     type: literal('typing'),
-    entities: array(ongoingStreamSchema),
+    entities: array(
+      object({
+        // "streamId" is optional for the very first activity in the session.
+        streamId: optional(undefinedable(string())),
+        streamSequence: streamSequenceSchema,
+        streamType: union([literal('streaming'), literal('informative')]),
+        type: literal('streaminfo')
+      })
+    ),
     channelData: optional(any()),
     ...activityFieldsSchema
   }),
@@ -103,7 +110,15 @@ const entitiesStreamingActivitySchema = union([
   object({
     // If "text" is empty, it represents "regretting" the livestream.
     type: literal('message'),
-    entities: array(finalStreamSchema),
+    entities: array(
+      object({
+        // "streamId" is required for the final activity in the session.
+        // The final activity must not be the sole activity in the session.
+        streamId: pipe(string(), nonEmpty()),
+        streamType: literal('final'),
+        type: literal('streaminfo')
+      })
+    ),
     channelData: optional(any()),
     ...activityFieldsSchema
   }),
@@ -111,7 +126,15 @@ const entitiesStreamingActivitySchema = union([
   object({
     // If "text" is empty, it represents "regretting" the livestream.
     type: literal('typing'),
-    entities: array(finalStreamSchema),
+    entities: array(
+      object({
+        // "streamId" is required for the final activity in the session.
+        // The final activity must not be the sole activity in the session.
+        streamId: pipe(string(), nonEmpty()),
+        streamType: literal('final'),
+        type: literal('streaminfo')
+      })
+    ),
     channelData: optional(any()),
     text: optional(undefinedable(literal(''))),
     ...activityFieldsFinalSchema
