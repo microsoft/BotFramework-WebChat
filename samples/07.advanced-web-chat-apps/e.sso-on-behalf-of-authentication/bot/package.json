@@ -1,5 +1,5 @@
 {
-  "name": "bot-authentication-msgraph",
+  "name": "@msinternal/bot-authentication-msgraph",
   "version": "1.0.0",
   "description": "Bot Builder v4 using OAuthCard with AAD and accessing user details via MS Graph APIs sample",
   "author": "Microsoft",

@@ -1,8 +1,11 @@
 {
-  "name": "single-sign-on-app",
+  "name": "@msinternal/single-sign-on-app",
   "version": "0.1.0",
   "private": true,
   "pinDependencies": {
+    "botframework-webchat": [
+      "main"
+    ],
     "react": [
       "16.14"
     ],

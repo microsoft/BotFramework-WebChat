@@ -1,5 +1,5 @@
 {
-  "name": "single-sign-on-bot",
+  "name": "@msinternal/single-sign-on-bot",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",

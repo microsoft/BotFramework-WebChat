@@ -1,5 +1,5 @@
 {
-  "name": "single-sign-on-app",
+  "name": "@msinternal/single-sign-on-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
