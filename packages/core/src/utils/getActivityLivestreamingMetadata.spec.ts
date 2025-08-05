@@ -101,7 +101,8 @@ describe.each([['with "streamId"' as const], ['without "streamId"' as const]])('
           {
             ...(variant === 'with "streamId"' ? { streamId: 'a-00001' } : {}),
             streamSequence: 1,
-            streamType: 'streaming'
+            streamType: 'streaming',
+            type: 'streaminfo'
           }
         ],
         channelData: {},
@@ -134,7 +135,8 @@ describe.each([['with "streamId"' as const], ['without "streamId"' as const]])('
           {
             ...(variant === 'with "streamId"' ? { streamId: 'a-00001' } : {}),
             streamSequence: 1,
-            streamType: 'informative'
+            streamType: 'informative',
+            type: 'streaminfo'
           }
         ],
         channelData: {},
@@ -166,7 +168,8 @@ describe.each([['with "streamId"' as const], ['without "streamId"' as const]])('
         entities: [
           {
             ...(variant === 'with "streamId"' ? { streamId: 'a-00001' } : {}),
-            streamType: 'final'
+            streamType: 'final',
+            type: 'streaminfo'
           }
         ],
         channelData: {},
@@ -204,7 +207,7 @@ test('activity with "streamType" of "streaming" without critical fields should r
 test('activity with "streamType" of "streaming" without critical fields should return undefined (entities)', () =>
   expect(
     getActivityLivestreamingMetadata({
-      entities: [{ streamType: 'streaming' }],
+      entities: [{ streamType: 'streaming', type: 'streaminfo' }],
       channelData: {},
       type: 'typing'
     } as any)
@@ -235,7 +238,7 @@ describe.each([
   ['decimal', 1.234, false]
 ])('activity with %s "streamSequence" should return undefined (entities)', (_, streamSequence, isValid) => {
   const activity = {
-    entities: [{ streamSequence, streamType: 'streaming' }],
+    entities: [{ streamSequence, streamType: 'streaming', type: 'streaminfo' }],
     channelData: {},
     id: 'a-00001',
     text: '',
@@ -275,7 +278,7 @@ describe('"typing" activity with "streamType" of "final" (entities)', () => {
   test('should return undefined if "text" field is defined', () =>
     expect(
       getActivityLivestreamingMetadata({
-        entities: [{ streamId: 'a-00001', streamType: 'final' }],
+        entities: [{ streamId: 'a-00001', streamType: 'final', type: 'streaminfo' }],
         channelData: {},
         id: 'a-00002',
         text: 'Final "typing" activity, must not have "text".',
@@ -286,7 +289,7 @@ describe('"typing" activity with "streamType" of "final" (entities)', () => {
   test('should return truthy if "text" field is not defined', () =>
     expect(
       getActivityLivestreamingMetadata({
-        entities: [{ streamId: 'a-00001', streamType: 'final' }],
+        entities: [{ streamId: 'a-00001', streamType: 'final', type: 'streaminfo' }],
         channelData: {},
         id: 'a-00002',
         // Final activity can be "typing" if it does not have "text".
@@ -307,7 +310,7 @@ test('activity with "streamType" of "streaming" without "content" should return 
 test('activity with "streamType" of "streaming" without "content" should return type of "contentless" (entities)', () =>
   expect(
     getActivityLivestreamingMetadata({
-      entities: [{ streamSequence: 1, streamType: 'streaming' }],
+      entities: [{ streamSequence: 1, streamType: 'streaming', type: 'streaminfo' }],
       channelData: {},
       id: 'a-00001',
       type: 'typing'
