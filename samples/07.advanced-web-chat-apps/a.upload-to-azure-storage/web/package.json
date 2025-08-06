@@ -21,12 +21,12 @@
     }
   },
   "dependencies": {
-    "@azure/storage-blob": "^12.17.0",
-    "dotenv": "^16.4.5",
+    "@azure/storage-blob": "^12.28.0",
+    "dotenv": "^17.2.1",
     "http-proxy": "^1.18.1",
     "math-random": "^2.0.1",
     "restify": "^11.1.0",
-    "uuid": "^9.0.1"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "node-dev": "^8.0.0"

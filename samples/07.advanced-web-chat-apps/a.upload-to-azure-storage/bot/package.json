@@ -29,11 +29,11 @@
     }
   },
   "dependencies": {
-    "@azure/storage-blob": "^12.17.0",
-    "botbuilder": "^4.22.2",
-    "botbuilder-dialogs": "^4.22.2",
+    "@azure/storage-blob": "^12.28.0",
+    "botbuilder": "^4.23.2",
+    "botbuilder-dialogs": "^4.23.2",
     "bytes": "^3.1.2",
-    "dotenv": "^16.4.5",
+    "dotenv": "^17.2.1",
     "restify": "^11.1.0"
   },
   "devDependencies": {

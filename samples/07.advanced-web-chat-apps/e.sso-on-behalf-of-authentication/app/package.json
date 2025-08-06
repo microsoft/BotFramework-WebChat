@@ -15,16 +15,16 @@
   },
   "dependencies": {
     "base64-arraybuffer": "^1.0.2",
-    "botframework-webchat": "^4.17.0",
+    "botframework-webchat": "^4.18.1-main.20250804.93043a9",
     "math-random": "^2.0.1",
     "msal": "^1.4.18",
-    "office-ui-fabric-react": "^7.204.0",
+    "office-ui-fabric-react": "^7.204.1",
     "prop-types": "^15.8.1",
     "react": "16.14",
     "react-dom": "16.14"
   },
   "devDependencies": {
-    "http-proxy-middleware": "^3.0.0",
+    "http-proxy-middleware": "^3.0.5",
     "react-scripts": "^5.0.1"
   },
   "scripts": {

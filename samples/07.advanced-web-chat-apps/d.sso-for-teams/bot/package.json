@@ -30,9 +30,9 @@
     }
   },
   "dependencies": {
-    "botbuilder": "^4.22.2",
-    "botbuilder-dialogs": "^4.22.2",
-    "dotenv": "^16.4.5",
+    "botbuilder": "^4.23.2",
+    "botbuilder-dialogs": "^4.23.2",
+    "dotenv": "^17.2.1",
     "restify": "^11.1.0"
   },
   "devDependencies": {
