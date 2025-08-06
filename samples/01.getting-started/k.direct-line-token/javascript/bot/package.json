@@ -14,7 +14,7 @@
   },
   "pinDependencies": {
     "botbuilder": [
-      "4.23",
+      "^4.23.2",
       "botbuilder has a bad @latest pointing to 4.17.0-blobs1"
     ]
   },
