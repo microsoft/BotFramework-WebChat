@@ -22,6 +22,12 @@
       "botbuilder-dialogs has a bad @latest pointing to 4.17.0-blobs1"
     ]
   },
+  "overrides": {
+    "restify": {
+      "find-my-way": "^8.2.2",
+      "send": "^0.19.1"
+    }
+  },
   "dependencies": {
     "@azure/storage-blob": "^12.17.0",
     "botbuilder": "^4.22.2",

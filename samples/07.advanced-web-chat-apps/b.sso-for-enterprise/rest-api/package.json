@@ -13,6 +13,12 @@
     "start": "node-dev --no-notify --respawn ."
   },
   "pinDependencies": {},
+  "overrides": {
+    "restify": {
+      "find-my-way": "^8.2.2",
+      "send": "^0.19.1"
+    }
+  },
   "dependencies": {
     "dotenv": "^16.4.5",
     "http-proxy": "^1.18.1",
