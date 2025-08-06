@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
-  "author": "William Wong <compulim@hotmail.com> (http://compulim.info/)",
+  "author": "Microsoft Corporation",
   "license": "MIT",
   "private": true,
   "scripts": {
