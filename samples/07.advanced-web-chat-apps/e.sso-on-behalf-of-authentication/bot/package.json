@@ -34,7 +34,8 @@
       "7.32.0"
     ],
     "eslint-plugin-promise": [
-      "5.1.0"
+      "6",
+      "eslint-config-standard requires eslint-plugin-promise@6"
     ]
   },
   "dependencies": {
