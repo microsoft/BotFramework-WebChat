@@ -31,7 +31,8 @@
       "botbuilder-dialogs has a bad @latest pointing to 4.17.0-blobs1"
     ],
     "eslint": [
-      "7.32.0"
+      "8",
+      "eslint-config-standard requires eslint@8"
     ],
     "eslint-plugin-promise": [
       "6",
