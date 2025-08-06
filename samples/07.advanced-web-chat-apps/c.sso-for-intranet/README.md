@@ -1,3 +1,5 @@
+> 💥 The sample has been archived and will no longer receive updates.
+
 # Single sign-on demo for Intranet apps using OAuth
 
 ![samples/07.c.sso-for-intranet](https://github.com/microsoft/BotFramework-WebChat/workflows/samples/07.c.sso-for-intranet/badge.svg)
@@ -12,15 +14,15 @@ In this demo, we will show you how to authorize a user to access resources on an
 
 This sample is a simplified and reduced version of the sample "[Single sign-on demo for enterprise apps using OAuth](https://microsoft.github.io/BotFramework-WebChat/07.advanced-web-chat-apps/b.sso-for-enterprise)". There are notable differences:
 
--  In this demo, we are targeting a traditional web page instead of single-page application
-   -  Page navigation and refresh are allowed on a traditional web page, but are restricted on a single-page application
--  We will only allow an authenticated user access to the page and the bot
--  Since we only allow authenticated access
-   -  We no longer have UI buttons for sign-in and sign-out, and only use plain HTML instead of a React app
-   -  We no longer send the sign-in and sign-out event activity to the bot
--  We only support a single [OAuth 2.0](https://tools.ietf.org/html/rfc6749)) provider; in this demo, we are using [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/)
-   -  Azure Active Directory supports PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)), which we are using PKCE to simplify setup
-   -  If you are using GitHub or other OAuth providers that do not support PKCE, you should use a client secret
+- In this demo, we are targeting a traditional web page instead of single-page application
+   - Page navigation and refresh are allowed on a traditional web page, but are restricted on a single-page application
+- We will only allow an authenticated user access to the page and the bot
+- Since we only allow authenticated access
+   - We no longer have UI buttons for sign-in and sign-out, and only use plain HTML instead of a React app
+   - We no longer send the sign-in and sign-out event activity to the bot
+- We only support a single [OAuth 2.0](https://tools.ietf.org/html/rfc6749)) provider; in this demo, we are using [Azure Active Directory](https://azure.microsoft.com/en-us/services/active-directory/)
+   - Azure Active Directory supports PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)), which we are using PKCE to simplify setup
+   - If you are using GitHub or other OAuth providers that do not support PKCE, you should use a client secret
 
 This demo does not include any threat models and is designed for educational purposes only. When you design a production system, threat-modelling is an important task to make sure your system is secure and provide a way to quickly identify potential source of data breaches. IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) and [OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01#section-9) is a good starting point for threat-modelling when using OAuth 2.0.
 
@@ -43,43 +45,43 @@ To host this demo, you will need to clone the code and run locally.
 
 1. Clone this repository
 1. Create two files for environment variables, `/bot/.env` and `/web/.env`
-   -  In `/web/.env`:
-      -  Write `OAUTH_REDIRECT_URI=http://localhost:5000/api/oauth/callback`
-         -  When Azure Active Directory completes the authorization flow, it will send the browser to this URL. This URL must be accessible by the browser from the end-user machine
+   - In `/web/.env`:
+      - Write `OAUTH_REDIRECT_URI=http://localhost:5000/api/oauth/callback`
+         - When Azure Active Directory completes the authorization flow, it will send the browser to this URL. This URL must be accessible by the browser from the end-user machine
 
 ## Setup OAuth via Azure Active Directory
 
 If you want to authenticate on Azure Active Directory, follow the steps below.
 
--  Go to your [Azure Active Directory](https://ms.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview)
--  Create a new application
+- Go to your [Azure Active Directory](https://ms.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview)
+- Create a new application
    1. Select "App registrations"
    1. Click "New registration"
    1. Fill out "Name", for example, "Web Chat SSO Sample"
    1. In "Redirect URI (optional)" section, add a new entry
       1. Select "Public client (mobile & desktop)" as type
-         -  Instead of client secret, we are using PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)) to exchange for authorization token, thus, we need to set it to ["Public client" instead of "Web"](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code#use-the-authorization-code-to-request-an-access-token)
+         - Instead of client secret, we are using PKCE ([RFC 7636](https://tools.ietf.org/html/rfc7636)) to exchange for authorization token, thus, we need to set it to ["Public client" instead of "Web"](https://docs.microsoft.com/en-us/azure/active-directory/develop/v1-protocols-oauth-code#use-the-authorization-code-to-request-an-access-token)
       1. Enter `http://localhost:5000/api/oauth/callback` as the redirect URI
-         -  This must match `OAUTH_REDIRECT_URI` in `/web/.env` we saved earlier
-   -  Click "Register"
--  Save the client ID
+         - This must match `OAUTH_REDIRECT_URI` in `/web/.env` we saved earlier
+   - Click "Register"
+- Save the client ID
    1. Select "Overview"
    1. On the main pane, copy the content of "Application (client) ID" to `/web/.env`, it should looks be a GUID
-      -  `OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd`
+      - `OAUTH_CLIENT_ID=12345678abcd-1234-5678-abcd-12345678abcd`
 
 ## Setup Azure Bot Services
 
 You can follow our instructions on how to [create an Azure Bot resource](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart?view=azure-bot-service-4.0&tabs=userassigned#create-the-resource).
 
 1. Save the Microsoft App ID and password to `/bot/.env`
-   -  ```
-      MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
-      MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
-      ```
+   - ```
+     MICROSOFT_APP_ID=12345678-1234-5678-abcd-12345678abcd
+     MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
+     ```
 1. Save the Web Chat secret to `/web/.env`
-   -  ```
-      DIRECT_LINE_SECRET=<your-direct-line-secret>
-      ```
+   - ```
+     DIRECT_LINE_SECRET=<your-direct-line-secret>
+     ```
 
 > When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer [to this page on how to generate a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
 
@@ -87,12 +89,12 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 1. Run `ngrok http -host-header=localhost:3978 3978`
 1. Update your Bot Channel Registration. You can use [Azure CLI](https://aka.ms/az-cli) or [Azure Portal](https://portal.azure.com)
-   -  Via Azure CLI
-      -  Run `az bot update --resource-group <your-bot-rg> --name <your-bot-name> --subscription <your-subscription-id> --endpoint "https://a1b2c3d4.ngrok.io/api/messages"`
-   -  Via Azure Portal
-      -  Browse to your Bot Channel Registration
-      -  Select "Settings"
-      -  In "Configuration" section, set "Messaging Endpoint" to `https://a1b2c3d4.ngrok.io/api/messages`
+   - Via Azure CLI
+      - Run `az bot update --resource-group <your-bot-rg> --name <your-bot-name> --subscription <your-subscription-id> --endpoint "https://a1b2c3d4.ngrok.io/api/messages"`
+   - Via Azure Portal
+      - Browse to your Bot Channel Registration
+      - Select "Settings"
+      - In "Configuration" section, set "Messaging Endpoint" to `https://a1b2c3d4.ngrok.io/api/messages`
 
 ## Prepare and run the code
 
@@ -103,43 +105,43 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 # Things to try out
 
--  Type, "Hello" in Web Chat
-   -  The bot should be able to identify your full name by using your access token on Microsoft Graph
+- Type, "Hello" in Web Chat
+   - The bot should be able to identify your full name by using your access token on Microsoft Graph
 
 # Code
 
--  `/bot/` is the bot server
--  `/web/` is the REST API for handling OAuth requests
-   -  `GET /api/oauth/authorize` will redirect to Azure AD OAuth authorize page at https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize
-   -  `GET /api/oauth/callback` will handle callback from Azure AD OAuth
-   -  `GET /api/directline/token` will generate a new Direct Line token for the React app
-   -  It will serve a static `index.html`
-   -  During development-time, it will also serve the bot server via `/api/messages`
-      -  To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
-      -  This will forward all traffic from `https://a1b2c3d4.ngrok.io/api/messages` to `https://localhost:3978/api/messages`
+- `/bot/` is the bot server
+- `/web/` is the REST API for handling OAuth requests
+   - `GET /api/oauth/authorize` will redirect to Azure AD OAuth authorize page at https://login.microsoftonline.com/organizations/oauth2/v2.0/authorize
+   - `GET /api/oauth/callback` will handle callback from Azure AD OAuth
+   - `GET /api/directline/token` will generate a new Direct Line token for the React app
+   - It will serve a static `index.html`
+   - During development-time, it will also serve the bot server via `/api/messages`
+      - To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
+      - This will forward all traffic from `https://a1b2c3d4.ngrok.io/api/messages` to `https://localhost:3978/api/messages`
 
 # Overview
 
 This sample includes multiple parts:
 
--  A basic web page that:
-   -  Checks your access token or redirects to OAuth provider if it is not present or valid
-   -  Is integrated with Web Chat and piggybacks your OAuth access token on every user-initiated activity through `channelData.oauthAccessToken`
--  Bot
-   -  On every message, it will extract the OAuth access token and obtain user's full name from Microsoft Graph
+- A basic web page that:
+   - Checks your access token or redirects to OAuth provider if it is not present or valid
+   - Is integrated with Web Chat and piggybacks your OAuth access token on every user-initiated activity through `channelData.oauthAccessToken`
+- Bot
+   - On every message, it will extract the OAuth access token and obtain user's full name from Microsoft Graph
 
 ## Assumptions
 
--  Developer has an existing Intranet web app that uses OAuth to access protected resources
-   -  We assume the OAuth access token lives in the browser's memory and is accessible through JavaScript
-      -  Access token can live in browser memory but must be secured during transmit through the use of TLS
-      -  More about security considerations can be found at [IETF RFC 6749 Section 10.3](https://tools.ietf.org/html/rfc6749#section-10.3)
+- Developer has an existing Intranet web app that uses OAuth to access protected resources
+   - We assume the OAuth access token lives in the browser's memory and is accessible through JavaScript
+      - Access token can live in browser memory but must be secured during transmit through the use of TLS
+      - More about security considerations can be found at [IETF RFC 6749 Section 10.3](https://tools.ietf.org/html/rfc6749#section-10.3)
 
 ## Goals
 
--  Website and bot conversation supports authenticated access only
-   -  If the end-user is not authenticated or does not carry a valid authenticated token, they will be redirected to OAuth provider
--  Bot will receive OAuth access token from the website
+- Website and bot conversation supports authenticated access only
+   - If the end-user is not authenticated or does not carry a valid authenticated token, they will be redirected to OAuth provider
+- Bot will receive OAuth access token from the website
 
 ## Content of the `.env` files
 
@@ -176,11 +178,11 @@ To reset application authorization, please follow the steps below.
 
 ## Related articles
 
--  [RFC 6749: The OAuth 2.0 Authorization Framework](https://tools.ietf.org/html/rfc6749)
--  [RFC 6819: OAuth 2.0 Threat Model and Security Considerations](https://tools.ietf.org/html/rfc6819)
--  [RFC 7636: Proof Key for Code Exchange by OAuth Public Clients](https://tools.ietf.org/html/rfc7636)
--  [IETF Draft: OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01)
--  [Bot Framework Blog: Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
+- [RFC 6749: The OAuth 2.0 Authorization Framework](https://tools.ietf.org/html/rfc6749)
+- [RFC 6819: OAuth 2.0 Threat Model and Security Considerations](https://tools.ietf.org/html/rfc6819)
+- [RFC 7636: Proof Key for Code Exchange by OAuth Public Clients](https://tools.ietf.org/html/rfc7636)
+- [IETF Draft: OAuth 2.0 for Browser-Based Apps](https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-01)
+- [Bot Framework Blog: Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
 
 ## OAuth access token vs. refresh token
 
@@ -192,11 +194,11 @@ In your production scenario, you may want to obtain the refresh token with "Auth
 
 To reduce complexity, this sample is limited in scope. In your production system, you should consider enhancing it and review its threat model.
 
--  Refreshing the access token
-   -  Using silent prompt for refreshing access token
-      -  Some OAuth providers support `?prompt=none` for refreshing access token silently through `<iframe>`
-   -  Using Authorization Code Grant flow with refresh token
-      -  Save the refresh token on the server side of your web app. Never expose it to the browser or the bot
-      -  This will also create a smooth UX by reducing the need for UI popups
--  Threat model
-   -  IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) is a good starting point for threat-modelling when using OAuth 2.0
+- Refreshing the access token
+   - Using silent prompt for refreshing access token
+      - Some OAuth providers support `?prompt=none` for refreshing access token silently through `<iframe>`
+   - Using Authorization Code Grant flow with refresh token
+      - Save the refresh token on the server side of your web app. Never expose it to the browser or the bot
+      - This will also create a smooth UX by reducing the need for UI popups
+- Threat model
+   - IETF [RFC 6819](https://tools.ietf.org/html/rfc6819) is a good starting point for threat-modelling when using OAuth 2.0
