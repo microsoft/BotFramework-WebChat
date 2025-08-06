@@ -35,6 +35,7 @@
     "./packages/fluent-theme"
   ],
   "scripts": {
+    "audit-all": "find -name package-lock.json | xargs dirname | xargs -I {} sh -c 'cd {} && npm audit'",
     "biome": "biome check ./packages",
     "browser": "node ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html/",
     "browser:watch": "node-dev --no-notify --respawn ./packages/test/harness/src/host/dev/index http://localhost:5001/__tests__/html/",
@@ -43,7 +44,7 @@
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
     "bump:packages": "npm run bump --workspaces",
-    "bump:samples": "cd samples && npm run bump --workspaces",
+    "bump:samples": "cd samples && npm run bump",
     "docker": "npm run docker:up",
     "docker:down": "docker compose -f docker-compose-wsl2.yml down --rmi all",
     "docker:up": "docker compose -f docker-compose-wsl2.yml down && docker compose -f docker-compose-wsl2.yml up --build --scale chrome=4",

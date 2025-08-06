@@ -1,20 +1,39 @@
 {
-  "name": "bot",
+  "name": "@msinternal/bot",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
-  "scripts": {
-    "bump": "if [ `cat package.json | jq -r '(.devDependencies // {} + .devDependencies // {}) | length'` -ne 0 ]; then npm install --legacy-peer-deps $(cat package.json | jq -r '(.pinDependencies // {}) as $p | ((.dependencies // {}), (.devDependencies // {}) | keys) | map(. + \"@\" + ($p[.] // [\"latest\"])[0]) | .[]') && (npm audit fix || exit 0); fi",
-    "start": "node-dev --no-notify --respawn ."
-  },
   "author": "Microsoft Corporation",
   "license": "MIT",
+  "private": true,
+  "scripts": {
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "start": "node-dev --no-notify --respawn ."
+  },
+  "pinDependencies": {
+    "botbuilder": [
+      "^4.23.2",
+      "botbuilder has a bad @latest pointing to 4.17.0-blobs1"
+    ],
+    "botbuilder-dialogs": [
+      "^4.23.2",
+      "botbuilder-dialogs has a bad @latest pointing to 4.17.0-blobs1"
+    ]
+  },
+  "overrides": {
+    "restify": {
+      "find-my-way": "^8.2.2",
+      "send": "^0.19.1"
+    }
+  },
   "dependencies": {
-    "@azure/storage-blob": "^12.17.0",
-    "botbuilder": "^4.22.2",
-    "botbuilder-dialogs": "^4.22.2",
+    "@azure/storage-blob": "^12.28.0",
+    "botbuilder": "^4.23.2",
+    "botbuilder-dialogs": "^4.23.2",
     "bytes": "^3.1.2",
-    "dotenv": "^16.4.5",
+    "dotenv": "^17.2.1",
     "restify": "^11.1.0"
   },
   "devDependencies": {
