@@ -21,7 +21,7 @@
     "react-dom": "16.14"
   },
   "devDependencies": {
-    "http-proxy-middleware": "^3.0.0",
+    "http-proxy-middleware": "^3.0.5",
     "react-scripts": "^5.0.1"
   },
   "scripts": {
