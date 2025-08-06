@@ -1,7 +1,7 @@
 {
   "name": "@msinternal/sample-getting-started-sharepoint-web-part",
   "version": "0.0.0-0",
-  "description": "",
+  "description": "A simple SharePoint web part using React template hosting Web Chat from NPM. The SharePoint Framework (SPFx) development environment is hosted under Docker.",
   "main": "src/proxy.js",
   "author": "Microsoft Corporation",
   "license": "MIT",
@@ -15,6 +15,5 @@
     "start": "docker run --rm -it -p 4321:54321 -p 35729:35729 spfx"
   },
   "pinDependencies": {},
-  "dependencies": {},
   "devDependencies": {}
 }

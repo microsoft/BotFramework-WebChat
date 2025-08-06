@@ -2,6 +2,7 @@
   "name": "@msinternal/botframework-webchat-samples-root",
   "private": true,
   "workspaces": [
+    "./01.getting-started/l.sharepoint-web-part",
     "./04.api/e.piping-to-redux",
     "./04.api/f.selectable-activity",
     "./04.api/g.chat-send-history",
