@@ -3,9 +3,9 @@
   "description": "TypeScript configuration files",
   "version": "0.0.0-0",
   "exports": {
-    "./current": "./src/tsconfig.current.json",
-    "./features/cssModules": "./src/features/tsconfig.cssModules.json",
-    "./legacy": "./src/tsconfig.legacy.json"
+    "./current": "./src/current/tsconfig.json",
+    "./features/cssModules": "./src/features/cssModules/tsconfig.json",
+    "./legacy": "./src/legacy/tsconfig.json"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
