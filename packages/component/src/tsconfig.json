@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
     "checkJs": false,
     "downlevelIteration": true
   },
-  "extends": "@msinternal/botframework-webchat-tsconfig/current"
+  "extends": "@msinternal/botframework-webchat-tsconfig/legacy"
 }
