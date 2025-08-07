@@ -1,5 +1,4 @@
 const { EventTarget, Event } = require('event-target-shim');
-const AbortController = require('abort-controller');
 
 const sleep = require('../../common/utils/sleep');
 
