@@ -3,5 +3,8 @@
     "allowSyntheticDefaultImports": true,
     "checkJs": false
   },
-  "extends": "@msinternal/botframework-webchat-tsconfig/current"
+  "extends": [
+    "@msinternal/botframework-webchat-tsconfig/current",
+    "@msinternal/botframework-webchat-tsconfig/features/cssModules"
+  ]
 }
