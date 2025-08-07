@@ -2,5 +2,5 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
   },
-  "extends": "@botframework-webchat-tsconfig/current"
+  "extends": "@msinternal/botframework-webchat-tsconfig/current"
 }
