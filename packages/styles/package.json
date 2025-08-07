@@ -35,7 +35,6 @@
         "default": "./dist/botframework-webchat-styles.react.js"
       }
     },
-    "./tsconfig.json": "./src/ts-config/config.json",
     "./env": {
       "types": "./src/env.d.ts"
     }
