@@ -19,11 +19,6 @@
     ]
   },
   "overrides": {
-    "hpack.js": {
-      "readable-stream": {
-        "string_decoder": "^1.2.0"
-      }
-    },
     "restify": {
       "find-my-way": "^8.2.2",
       "send": "^0.19.1"
