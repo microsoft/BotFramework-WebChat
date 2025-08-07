@@ -1,4 +1,6 @@
 {
+  "exclude": [
+    "**/*.spec.ts"
+  ],
   "extends": "@msinternal/botframework-webchat-tsconfig/legacy",
-  "files": ["index.ts"] // This will ignore *.spec.ts.
 }
