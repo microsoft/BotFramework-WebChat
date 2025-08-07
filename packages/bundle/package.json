@@ -60,6 +60,7 @@
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development",
     "@msinternal/isomorphic-react": "development",
     "@msinternal/isomorphic-react-dom": "development",
     "botframework-directlinespeech-sdk": "production",
@@ -131,6 +132,7 @@
     "@babel/preset-typescript": "^7.27.1",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
     "@msinternal/isomorphic-react": "^0.0.0-0",
     "@msinternal/isomorphic-react-dom": "^0.0.0-0",
     "@types/dom-speech-recognition": "^0.0.6",

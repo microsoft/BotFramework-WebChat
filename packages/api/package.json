@@ -73,6 +73,7 @@
     "@msinternal/botframework-webchat-cldr-data": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "@msinternal/botframework-webchat-redux-store": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development",
     "botframework-webchat-core": "production"
   },
   "pinDependencies": {
@@ -97,6 +98,7 @@
     "@msinternal/botframework-webchat-cldr-data": "36.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",
     "@msinternal/botframework-webchat-redux-store": "^0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
     "@types/dom-speech-recognition": "^0.0.6",
     "@types/node": "^24.1.0",
     "@types/react": "^16.14.65",

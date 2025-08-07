@@ -43,7 +43,9 @@
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "npm run build -- --watch"
   },
-  "localDependencies": {},
+  "localDependencies": {
+    "@msinternal/botframework-webchat-tsconfig": "development"
+  },
   "pinDependencies": {
     "@types/react": [
       "16"
@@ -54,6 +56,7 @@
     ]
   },
   "devDependencies": {
+    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
     "@tsconfig/strictest": "^2.0.5",
     "@types/react": "^16.14.65",
     "tsup": "^8.5.0",

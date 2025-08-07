@@ -15,6 +15,7 @@
   "keywords": [],
   "cldr-data-coverage": "full",
   "workspaces": [
+    "./packages/tsconfig",
     "./packages/base",
     "./packages/test/dev-server",
     "./packages/test/harness",
