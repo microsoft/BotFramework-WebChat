@@ -23,7 +23,7 @@
   "scripts": {
     "build": "npm run build:tsup && npm run build:babel && npm run build:webpack",
     "build:babel": "cross-env build_tool=babel module_format=commonjs babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
-    "build:tsup": "tsup --config ./tsup.config.ts",
+    "build:tsup": "tsup",
     "build:webpack": "npm run build:webpack:development && npm run build:webpack:production",
     "build:webpack:development": "cross-env node_env=development webpack-cli",
     "build:webpack:production": "cross-env node_env=production webpack-cli",

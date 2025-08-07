@@ -55,8 +55,7 @@
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "scripts": {
-    "build": "npm run build:tsup",
-    "build:tsup": "tsup --config ./tsup.config.ts",
+    "build": "tsup",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -66,7 +65,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "npm run build:tsup -- --onSuccess=\"touch ../bundle/src/FullComposer.tsx\" --watch"
+    "start": "npm run build -- --onSuccess=\"touch ../bundle/src/FullComposer.tsx\" --watch"
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
@@ -100,7 +99,6 @@
     ]
   },
   "devDependencies": {
-    "@babel/cli": "^7.28.0",
     "@babel/core": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
@@ -113,10 +111,8 @@
     "@types/react": "^16.14.65",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "concurrently": "^9.2.0",
     "core-js": "^3.44.0",
     "cross-env": "^10.0.0",
-    "node-dev": "^8.0.0",
     "type-fest": "^4.41.0",
     "typescript": "~5.8.3"
   },

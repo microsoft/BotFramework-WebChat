@@ -283,7 +283,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 
 ### Samples
 
-- Sample `01.getting-started/l.sharepoint-web-part` and samples under `07.advanced-web-chat-apps` is being archived and will no longer receive updates, in PR [#5533](https://github.com/microsoft/BotFramework-WebChat/pull/5533), by [@compulim](https://github.com/compulim)
+- Sample `01.getting-started/l.sharepoint-web-part`, `01.getting-started/k.direct-line-token`, and samples under `07.advanced-web-chat-apps` is being archived and will no longer receive updates, in PR [#5533](https://github.com/microsoft/BotFramework-WebChat/pull/5533), [#5536](https://github.com/microsoft/BotFramework-WebChat/pull/5536), and [#5537](https://github.com/microsoft/BotFramework-WebChat/pull/5537), by [@compulim](https://github.com/compulim)
 
 ## [4.18.0] - 2024-07-10
 

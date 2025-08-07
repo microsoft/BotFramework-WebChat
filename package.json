@@ -157,14 +157,12 @@
     "@types/react-dom": "^16.9.25",
     "@typescript-eslint/eslint-plugin": "^8.38.0",
     "@typescript-eslint/parser": "^8.38.0",
-    "abort-controller": "^3.0.0",
     "babel-jest": "^29.7.0",
     "babel-plugin-istanbul": "^7.0.0",
     "concurrently": "^9.2.0",
     "core-js": "^3.44.0",
     "cross-env": "^10.0.0",
     "dotenv": "^17.2.1",
-    "error-stack-parser": "^2.1.4",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
@@ -184,7 +182,6 @@
     "lint-staged": "^16.1.2",
     "lolex": "^6.0.0",
     "node-dev": "^8.0.0",
-    "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
     "selenium-webdriver": "^4.34.0",
     "serve": "^14.2.4",
@@ -193,8 +190,7 @@
     "tsup": "^8.5.0",
     "typescript": "~5.8.3",
     "typescript-plugin-css-modules": "^5.2.0",
-    "unplugin-lightningcss": "^0.4.1",
-    "xmlbuilder": "^15.1.1"
+    "unplugin-lightningcss": "^0.4.1"
   },
   "dependencies": {
     "react": "16.8.6",
