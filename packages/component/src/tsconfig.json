@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "checkJs": false,
     "downlevelIteration": true
   },
   "extends": [
