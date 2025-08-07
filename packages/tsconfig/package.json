@@ -31,6 +31,7 @@
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json"
   },
   "devDependencies": {
-    "@tsconfig/strictest": "^2.0.5"
+    "@tsconfig/strictest": "^2.0.5",
+    "typescript-plugin-css-modules": "^5.2.0"
   }
 }
