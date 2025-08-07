@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import speakableActivity from '../definitions/speakableActivity';
 
 describe('speakableActivity', () => {

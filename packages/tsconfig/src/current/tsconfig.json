@@ -6,9 +6,7 @@
     "noEmit": true,
     "skipLibCheck": true,
     "target": "ESNext",
-
-    // TODO: Add "types: []" to disable default types.
-    // "types": []
+    "types": [] // Platform neutrality: disable loading default types
   },
   "extends": "@tsconfig/strictest/tsconfig.json"
 }

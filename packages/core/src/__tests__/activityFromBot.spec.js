@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import activityFromBot from '../definitions/activityFromBot';
 
 describe('activityFromBot', () => {

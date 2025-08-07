@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 2] }] */
 
 import { runSaga } from 'redux-saga';

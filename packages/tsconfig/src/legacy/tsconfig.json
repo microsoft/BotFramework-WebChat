@@ -7,6 +7,7 @@
     "noEmit": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "types": [] // Platform neutrality: disable loading default types
   }
 }

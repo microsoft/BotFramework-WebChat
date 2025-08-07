@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 /**
  * @jest-environment @happy-dom/jest-environment
  * @jest-environment-options { "customExportConditions": ["node"] }

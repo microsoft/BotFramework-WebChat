@@ -88,6 +88,7 @@
     "@babel/preset-env": "^7.28.0",
     "@msinternal/botframework-webchat-base": "^0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.1.0",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
