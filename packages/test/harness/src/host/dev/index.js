@@ -3,7 +3,6 @@
 
 const { Builder, logging } = require('selenium-webdriver');
 const { Options: ChromeOptions, ServiceBuilder: ChromeServiceBuilder } = require('selenium-webdriver/chrome');
-const AbortController = require('abort-controller');
 const expect = require('expect');
 
 const createDevProxies = require('./createDevProxies');
