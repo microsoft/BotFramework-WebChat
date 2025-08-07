@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
     "checkJs": false,
-    "downlevelIteration": true,
-    "plugins": [{ "name": "typescript-plugin-css-modules" }]
+    "downlevelIteration": true
   },
-  "extends": "@msinternal/botframework-webchat-tsconfig/legacy"
+  "extends": [
+    "@msinternal/botframework-webchat-tsconfig/legacy",
+    "@msinternal/botframework-webchat-tsconfig/features/cssModules"
+  ]
 }
