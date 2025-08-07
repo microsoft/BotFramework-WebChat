@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
+
+    // TODO: Add "types: []" to disable default types.
+    // "types": []
+  },
+  "extends": "@tsconfig/strictest/tsconfig.json"
+}
