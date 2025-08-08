@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -70,6 +70,9 @@
           // THEN: The message should have status of "Sending".
           await activityStatusInnerTextContained('Sending');
 
+          // THEN: It should match snapshot.
+          await host.snapshot('local');
+
           // WHEN: `postActivity` is rejected.
           sendMessage.rejectPostActivity(new Error('artificial error'));
 
@@ -84,6 +87,9 @@
 
           // THEN: The message should have status of "Send failed. Retry.".
           await activityStatusInnerTextContained('Send failed. Retry.');
+
+          // THEN: It should match snapshot.
+          await host.snapshot('local');
         },
         { ignoreErrors: true }
       );

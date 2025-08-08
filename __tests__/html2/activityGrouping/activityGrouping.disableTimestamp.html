@@ -70,16 +70,16 @@
 
         await directLine.emulateIncomingActivity('Quis sit aliquip sit velit in velit magna culpa velit qui.');
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         clock.tick(29000);
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         await resolveAll1();
         await resolveAll2();
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

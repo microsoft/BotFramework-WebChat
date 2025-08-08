@@ -8,6 +8,38 @@
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .avatar-with-online-status {
+        position: relative;
+      }
+
+      .avatar-with-online-status .avatar-with-online-status__status {
+        background-color: White;
+        border-radius: 50%;
+        border: solid 2px White;
+        bottom: -2px;
+        height: 10px;
+        position: absolute;
+        transition: background-color 200ms;
+        width: 10px;
+      }
+
+      .avatar-with-online-status:not(.avatar-with-online-status--rtl) .avatar-with-online-status__status {
+        right: -2px;
+      }
+
+      .avatar-with-online-status.avatar-with-online-status--rtl .avatar-with-online-status__status {
+        left: -2px;
+      }
+
+      .avatar-with-online-status .avatar-with-online-status__status.avatar-with-online-status__status--online {
+        background-color: #090;
+      }
+
+      .avatar-with-online-status .avatar-with-online-status__status.avatar-with-online-status__status--busy {
+        background-color: Red;
+      }
+    </style>
   </head>
   <body>
     <main id="webchat"></main>
@@ -21,6 +53,17 @@
 
       run(async function () {
         await host.windowSize(undefined, 1280, document.getElementById('webchat'));
+
+        const AvatarWithOnlineStatus = ({ children }) => {
+          const [direction] = useDirection();
+
+          return (
+            <div className={`avatar-with-online-status${direction === 'rtl' ? ' avatar-with-online-status--rtl' : ''}`}>
+              {children}
+              <div className={`avatar-with-online-status__status avatar-with-online-status__status--online`} />
+            </div>
+          );
+        };
 
         const PortraitAvatar = ({ fromUser }) => {
           const style = useMemo(() => ({ borderRadius: 4, width: '100%' }), []);
@@ -37,7 +80,17 @@
             const [{ activity, fromUser, ...otherArgs }] = args;
             const { id } = activity;
 
-            return <PortraitAvatar fromUser={fromUser} />;
+            if (/^(1|2)/.test(id)) {
+              return <PortraitAvatar fromUser={fromUser} />;
+            } else if (/^3/.test(id)) {
+              const renderNext = next({ activity, fromUser, ...otherArgs });
+
+              return renderNext && (() => <AvatarWithOnlineStatus>{renderNext()}</AvatarWithOnlineStatus>);
+            } else if (id === '4.0' || id === '5.0') {
+              return false;
+            }
+
+            return next(...args);
           };
 
         WebChat.renderWebChat(
@@ -54,7 +107,7 @@
               {
                 from: { role: 'bot' },
                 id: '1.1',
-                text: 'Minim ut laboris enim nostrud magna.',
+                text: 'Minim ut laboris enim nostrud magna irure occaecat laborum occaecat ex.',
                 timestamp: -300001,
                 type: 'message'
               },
@@ -75,6 +128,36 @@
                 type: 'message'
               },
               {
+                from: { role: 'bot' },
+                id: '3.0',
+                text: 'Nulla irure laborum officia tempor aute consequat eiusmod nisi velit ipsum magna.',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                id: '3.1',
+                text: 'Minim fugiat aute do ea veniam.',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '4.0',
+                text: 'This activity has avatar disabled.',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '4.1',
+                text: 'Although this activity has avatar, it is in the same group of activities with avatar disabled. So no avatar will be shown. A blank gutter space is expected.',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
                 attachmentLayout: 'carousel',
                 attachments: [
                   {
@@ -88,35 +171,18 @@
                     contentUrl:
                       'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg',
                     name: 'back of Surface Pro'
-                  },
-                  {
-                    contentType: 'image/jpeg',
-                    contentUrl:
-                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface3.jpg',
-                    name: 'side of Surface Pro'
                   }
                 ],
                 from: { role: 'bot' },
-                id: '3.0',
-                text: '',
+                id: '5.0',
+                text: 'This activity has avatar disabled.',
                 timestamp: 0,
                 type: 'message'
               },
               {
-                attachmentLayout: 'stacked',
-                attachments: [
-                  {
-                    contentType: 'image/jpeg',
-                    contentUrl:
-                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface4.jpg',
-                    thumbnailUrl:
-                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface4.jpg'
-                  }
-                ],
-                channelData: { state: 'sent' },
-                from: { role: 'user' },
-                id: '4.0',
-                text: '',
+                from: { role: 'bot' },
+                id: '5.1',
+                text: 'Although this activity has avatar, it is in the same group of activities with avatar disabled. So no avatar will be shown. A blank gutter space is expected.',
                 timestamp: 0,
                 type: 'message'
               }
@@ -130,10 +196,10 @@
               bubbleFromUserBackground: '#0063B1',
               bubbleFromUserBorderColor: '#0063B1',
               bubbleFromUserBorderRadius: 4,
-              bubbleFromUserNubOffset: -0,
+              bubbleFromUserNubOffset: 0,
               bubbleFromUserNubSize: 10,
               bubbleFromUserTextColor: 'White',
-              bubbleNubOffset: -0,
+              bubbleNubOffset: 0,
               bubbleNubSize: 10,
               bubbleTextColor: 'White',
               groupTimestamp: 5000,
@@ -146,7 +212,7 @@
         await pageConditions.uiConnected();
         await pageConditions.allImagesLoaded();
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

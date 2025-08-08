@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -23,7 +23,8 @@
           await pageObjects.sendMessageViaSendBox('unknown attachment');
           await pageConditions.minNumActivitiesShown(2);
 
-          await host.snapshot();
+          // This snapshot differs with NODE_ENV, we need to make it pass in NODE_ENV !== 'production'
+          await host.snapshot('local');
         },
         { ignoreErrors: true }
       );

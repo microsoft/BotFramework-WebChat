@@ -59,14 +59,17 @@
 
           await pageConditions.webChatRendered();
 
-          clock.tick(600);
+          clock.tick(400);
 
-          // GIVEN: Send a message
+          // SETUP: Send a message and resolve the call to `postActivity()`.
           await pageConditions.uiConnected();
 
-          const sendMessage = await directLine.actPostActivity(() =>
-            pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false })
+          const sendMessage = await directLine.actPostActivity(
+            () => pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false }),
+            { id: 'a00001' }
           );
+
+          sendMessage.resolvePostActivity();
 
           // THEN: `channelData.state` should be "sending".
           await activityChannelDataStateBecame('sending');
@@ -77,19 +80,10 @@
           // THEN: The message should have status of "Sending".
           await activityStatusInnerTextContained('Sending');
 
-          // WHEN: The echo back activity arrived.
-          await sendMessage.echoBack();
+          // THEN: It should match snapshot.
+          await host.snapshot('local');
 
-          // THEN: `channelData.state` should be undefined.
-          await activityChannelDataStateBecame(undefined);
-
-          // THEN: `channelData['webchat:send-status']` should be "sending".
-          await activityChannelDataWebChatSendStatusBecame('sending');
-
-          // THEN: The message should have status of "Sending".
-          await activityStatusInnerTextContained('Sending');
-
-          // WHEN: After 20 seconds (at t=20s).
+          // WHEN: After 20 seconds.
           clock.tick(20000);
 
           // THEN: `channelData.state` should be "send failed".
@@ -98,20 +92,24 @@
           // THEN: `channelData['webchat:send-status']` should be "sending".
           await activityChannelDataWebChatSendStatusBecame('sending');
 
-          // THEN: The message should have status of "Send failed", based on `styleOptions.sendTimeout`.
-          await activityStatusInnerTextContained('Send failed');
+          // THEN: The message should have status of "Send failed. Retry."
+          //       This is because the message passed 20s as defined in `styleOptions.sendTimeout`.
+          await activityStatusInnerTextContained('Send failed. Retry.');
+
+          // THEN: It should match snapshot.
+          await host.snapshot('local');
 
           // WHEN: After 280 seconds (at t=5m).
           clock.tick(280000);
+
+          // THEN: The console should have an error message saying "timed out while waiting for outgoing message to echo back".
+          await pageConditions.errorMessageLogged('timed out while waiting for outgoing message to echo back');
 
           // THEN: `channelData.state` should be "send failed".
           await activityChannelDataStateBecame('send failed');
 
           // THEN: `channelData['webchat:send-status']` should be "send failed".
           await activityChannelDataWebChatSendStatusBecame('send failed');
-
-          // THEN: The console should have an error message saying "timed out while waiting for postActivity to return any values".
-          await pageConditions.errorMessageLogged('timed out while waiting for postActivity to return any values');
 
           // THEN: The message should have status of "Send failed. Retry.".
           await activityStatusInnerTextContained('Send failed. Retry.');
