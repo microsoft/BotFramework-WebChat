@@ -53,6 +53,7 @@
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-styles": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development",
     "botframework-webchat-api": "production",
     "botframework-webchat-component": "production",
     "botframework-webchat-core": "production"
@@ -70,6 +71,7 @@
   "devDependencies": {
     "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@msinternal/botframework-webchat-styles": "0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
     "@tsconfig/strictest": "^2.0.5",
     "@types/math-random": "^1.0.2",
     "@types/node": "^24.1.0",

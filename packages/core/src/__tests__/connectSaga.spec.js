@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 /* eslint no-magic-numbers: "off" */
 
 import connectSaga from '../sagas/connectSaga';

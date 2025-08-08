@@ -7,6 +7,9 @@
  */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-global-assign */
+
+/// <reference types="jest" />
+
 let consoleWarns;
 let createCognitiveServicesSpeechServicesPonyfillFactory;
 let createSpeechServicesPonyfill;

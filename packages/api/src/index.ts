@@ -48,9 +48,9 @@ export {
 } from './middleware/SendBoxToolbarMiddleware';
 // #endregion
 
-const buildTool = process.env.build_tool;
-const moduleFormat = process.env.module_format;
-const version = process.env.npm_package_version;
+const buildTool = process?.env?.build_tool;
+const moduleFormat = process?.env?.module_format;
+const version = process?.env?.npm_package_version;
 
 const buildInfo = { buildTool, moduleFormat, version };
 

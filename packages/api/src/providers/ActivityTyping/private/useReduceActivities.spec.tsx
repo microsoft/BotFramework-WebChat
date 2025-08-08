@@ -1,4 +1,6 @@
 /** @jest-environment @happy-dom/jest-environment */
+/// <reference types="jest" />
+/// <reference types="node" />
 
 import { render, type RenderResult } from '@testing-library/react';
 import type { WebChatActivity } from 'botframework-webchat-core';

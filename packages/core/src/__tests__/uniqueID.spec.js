@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import uniqueId from '../utils/uniqueID';
 
 describe('uniqueID', () => {

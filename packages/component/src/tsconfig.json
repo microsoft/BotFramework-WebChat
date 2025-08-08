@@ -1,15 +1,10 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
-    "jsx": "react",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "noEmit": true,
-    "skipLibCheck": true,
-    "target": "ESNext"
+    "types": ["dom-speech-recognition"]
   },
   "extends": [
-		"@msinternal/botframework-webchat-styles/tsconfig.json"
-	]
+    "@msinternal/botframework-webchat-tsconfig/legacy",
+    "@msinternal/botframework-webchat-tsconfig/features/cssModules"
+  ]
 }

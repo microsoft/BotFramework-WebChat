@@ -15,6 +15,7 @@
   "keywords": [],
   "cldr-data-coverage": "full",
   "workspaces": [
+    "./packages/tsconfig",
     "./packages/base",
     "./packages/test/dev-server",
     "./packages/test/harness",
@@ -189,7 +190,6 @@
     "strip-ansi": "^6.0.1",
     "tsup": "^8.5.0",
     "typescript": "~5.8.3",
-    "typescript-plugin-css-modules": "^5.2.0",
     "unplugin-lightningcss": "^0.4.1"
   },
   "dependencies": {

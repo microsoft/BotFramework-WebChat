@@ -35,7 +35,6 @@
         "default": "./dist/botframework-webchat-styles.react.js"
       }
     },
-    "./tsconfig.json": "./src/ts-config/config.json",
     "./env": {
       "types": "./src/env.d.ts"
     }
@@ -55,9 +54,6 @@
     "./src/**/*",
     "*.js"
   ],
-  "localDependencies": {
-    "@msinternal/botframework-webchat-base": "development"
-  },
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/styles#readme",
   "scripts": {
     "build": "tsup",
@@ -72,6 +68,10 @@
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "npm run build -- --watch"
   },
+  "localDependencies": {
+    "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development"
+  },
   "pinDependencies": {
     "typescript": [
       "~5.8.3",
@@ -81,6 +81,7 @@
   "devDependencies": {
     "@jridgewell/sourcemap-codec": "^1.5.4",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
     "@tsconfig/strictest": "^2.0.5",
     "@types/node": "^24.1.0",
     "cross-env": "^10.0.0",

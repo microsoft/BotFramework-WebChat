@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import extractHostnameWithSubdomain from './extractHostnameWithSubdomain';
 
 test.each([
