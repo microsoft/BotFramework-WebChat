@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          suggestedActions: {
+            to: [],
+            actions: [
+              {
+                type: 'imBack',
+                title: 'A',
+                image:
+                  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAK0lEQVQ4T2P8z8Dwn4GKgHHUQIpDczQMKQ5ChtEwHA1DMkJgNNmQEWhoWgBMAiftPRtHngAAAABJRU5ErkJggg==',
+                imageAltText: 'red square'
+              },
+              {
+                type: 'imBack',
+                title: 'B',
+                image:
+                  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAUCAYAAAD/Rn+7AAAAPElEQVRIS+3SsQkAAAgDwbi5m+sQ34i8fUAuqXQmh698ELajIASMggpSAZp3gwpSAZp3gwpSAZp3g+8FF89vHgEqUcfjAAAAAElFTkSuQmCC',
+                // If `imageAltText` is missing, `text` field shall be used for image alt text.
+                // https://github.com/microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#image-alt-text
+                text: 'green rectangle'
+              }
+            ]
+          },
+          text: 'Please select one of the actions below.',
+          timestamp: 0,
+          type: 'message'
+        });
+
+        const imageAltTexts = [].map.call(pageElements.suggestedActions(), element =>
+          element.getElementsByTagName('img')[0].getAttribute('alt')
+        );
+
+        expect(imageAltTexts).toEqual(['red square', 'green rectangle']);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
