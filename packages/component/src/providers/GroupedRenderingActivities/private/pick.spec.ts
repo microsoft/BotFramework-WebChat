@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import pick from './pick';
 
 test('when no item should return empty', () => {

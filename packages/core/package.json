@@ -56,8 +56,7 @@
     }
   },
   "scripts": {
-    "build": "npm run build:tsup",
-    "build:tsup": "tsup --config ./tsup.config.ts",
+    "build": "tsup",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -67,13 +66,14 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "npm run build:tsup -- --onSuccess=\"touch ../api/src/index.ts\" --watch"
+    "start": "npm run build -- --onSuccess=\"touch ../api/src/index.ts\" --watch"
   },
   "engines": {
     "node": ">=12.0.0"
   },
   "localDependences": {
-    "@msinternal/botframework-webchat-base": "development"
+    "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development"
   },
   "pinDependencies": {
     "typescript": [
@@ -82,17 +82,17 @@
     ]
   },
   "devDependencies": {
-    "@babel/cli": "^7.28.0",
     "@babel/core": "^7.28.0",
     "@babel/plugin-transform-runtime": "^7.28.0",
     "@babel/plugin-transform-typescript": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "@msinternal/botframework-webchat-base": "^0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.1.0",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "botframework-directlinejs": "^0.15.6",
-    "concurrently": "^9.2.0",
     "cross-env": "^10.0.0",
     "tsd": "^0.32.0",
     "type-fest": "^4.41.0",

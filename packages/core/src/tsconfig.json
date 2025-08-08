@@ -1,13 +1,7 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "jsx": "react",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "noEmit": true,
-    "resolveJsonModule": true, // Required for localization files
-    "skipLibCheck": true,
-    "target": "ESNext"
+    "types": []
   },
-  "files": ["index.ts"]
+  "exclude": ["**/*.spec.ts"],
+  "extends": "@msinternal/botframework-webchat-tsconfig/legacy"
 }

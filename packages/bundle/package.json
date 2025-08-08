@@ -45,8 +45,7 @@
     }
   },
   "scripts": {
-    "build": "npm run build:tsup",
-    "build:tsup": "tsup --config ./tsup.config.ts",
+    "build": "tsup",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -56,11 +55,12 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "npm run build:tsup -- --watch"
+    "start": "npm run build -- --watch"
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development",
     "@msinternal/isomorphic-react": "development",
     "@msinternal/isomorphic-react-dom": "development",
     "botframework-directlinespeech-sdk": "production",
@@ -125,7 +125,6 @@
     "whatwg-fetch": "3.6.20"
   },
   "devDependencies": {
-    "@babel/cli": "^7.28.0",
     "@babel/core": "^7.28.0",
     "@babel/plugin-transform-runtime": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
@@ -133,6 +132,7 @@
     "@babel/preset-typescript": "^7.27.1",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
     "@msinternal/isomorphic-react": "^0.0.0-0",
     "@msinternal/isomorphic-react-dom": "^0.0.0-0",
     "@types/dom-speech-recognition": "^0.0.6",
@@ -142,7 +142,6 @@
     "@types/uuid": "^10.0.0",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "concurrently": "^9.2.0",
     "cross-env": "^10.0.0",
     "esbuild": "^0.25.8",
     "micromark-util-types": "^2.0.2",

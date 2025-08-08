@@ -240,6 +240,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Removed `StarterPromptsCardAction` during `blueprint` ui state in PR [#5477](https://github.com/microsoft/BotFramework-WebChat/pull/5477), by [@jcheung824](https://github.com/jcheung824)
 - Removed `abort-controller-es5` package in `botframework-directlinespeech-sdk` package, in PR [#5530](https://github.com/microsoft/BotFramework-WebChat/pull/5530), by [@compulim](https://github.com/compulim)
 - Removed `request` and `request-progress` package in `cldr-data-downloader` package, in PR [#5530](https://github.com/microsoft/BotFramework-WebChat/pull/5530), by [@copilot](https://github.com/copilot) and [@compulim](https://github.com/compulim)
+- Added internal package `@msinternal/botframework-webchat-tsconfig` to centralize TypeScript configuration files, in PR [#5539](https://github.com/microsoft/BotFramework-WebChat/pull/5539), by [@compulim](https://github.com/compulim)
 
 ### Fixed
 
@@ -281,6 +282,10 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
 - `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook, in PR [#5489](https://github.com/microsoft/BotFramework-WebChat/pull/5489), by [@compulim](https://github.com/compulim)
 - Fixed core internal import in legacy CommonJS environments, in [5509](https://github.com/microsoft/BotFramework-WebChat/pull/5509), by [@OEvgeny](https://github.com/OEvgeny)
+
+### Samples
+
+- Sample `01.getting-started/l.sharepoint-web-part`, `01.getting-started/k.direct-line-token`, and samples under `07.advanced-web-chat-apps` is being archived and will no longer receive updates, in PR [#5533](https://github.com/microsoft/BotFramework-WebChat/pull/5533), [#5536](https://github.com/microsoft/BotFramework-WebChat/pull/5536), and [#5537](https://github.com/microsoft/BotFramework-WebChat/pull/5537), by [@compulim](https://github.com/compulim)
 
 ## [4.18.0] - 2024-07-10
 

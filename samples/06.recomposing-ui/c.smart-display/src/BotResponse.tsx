@@ -2,7 +2,7 @@ import './BotResponse.css';
 
 import { Components, createAdaptiveCardsAttachmentMiddleware, hooks } from 'botframework-webchat';
 import React, { memo, useMemo } from 'react';
-import Film from 'react-film';
+import { ReactFilm } from 'react-film';
 
 import useLastBotActivity from './hooks/useLastBotActivity';
 
@@ -25,13 +25,13 @@ function BotResponse({ lastReadActivityID }) {
         {!!(lastBotActivity as any).text && (
           <div className="App-BotResponse-Activity">{(lastBotActivity as any).text}</div>
         )}
-        <Film className="App-BotResponse-Attachments" showScrollBar={false}>
+        <ReactFilm className="App-BotResponse-Attachments" showScrollBar={false}>
           {((lastBotActivity as any).attachments || []).map((attachment, index) => (
             <div className="App-BotResponse-Attachment" key={index}>
               {renderAttachment({ activity: lastBotActivity, attachment })}
             </div>
           ))}
-        </Film>
+        </ReactFilm>
         {lastBotActivity.channelData?.speak && <SpeakActivity activity={lastBotActivity} />}
       </div>
     )

@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "skipLibCheck": true,
+    "target": "ESNext",
+    "types": [] // Platform neutrality: disable loading default types
+  },
+  "extends": "@tsconfig/strictest/tsconfig.json"
+}

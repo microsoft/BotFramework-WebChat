@@ -43,8 +43,7 @@
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "private": true,
   "scripts": {
-    "build": "npm run build:tsup",
-    "build:tsup": "tsup --config ./tsup.config.ts",
+    "build": "tsup",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -54,8 +53,10 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
-    "start:tsup": "npm run build:tsup -- --watch"
+    "start": "npm run build -- --watch"
+  },
+  "localDependencies": {
+    "@msinternal/botframework-webchat-tsconfig": "development"
   },
   "pinDependencies": {
     "typescript": [
@@ -64,6 +65,7 @@
     ]
   },
   "devDependencies": {
+    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
     "@tsconfig/strictest": "^2.0.5",
     "@types/node": "^24.1.0",
     "core-js-pure": "^3.44.0",
