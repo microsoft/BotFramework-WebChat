@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const clock = lolex.createClock();
+        const directLine = testHelpers.accessibility.delayActivity.createDirectLineForTest({
+          ponyfill: clock,
+          withReplyToId: false
+        });
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store: testHelpers.createStoreWithOptions({ ponyfill: clock })
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        // Wait for "Connecting..." message to dismiss
+        clock.tick(600);
+
+        await pageObjects.sendMessageViaSendBox('Hello, World!', { waitForSend: false });
+
+        // This screenshot should show:
+        // 1. User-initiated message "Hello, World!" is still sending (with "Sending" status)
+        // 2. Bot-initiated message "You said: Hello, World!"
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.became('directLine.numActivities became 1', () => directLine.numActivities === 1, 15000);
+        await host.snapshot('local');
+
+        directLine.releaseEchoBackOnce();
+
+        // This screenshot should show:
+        // 1. User-initiated message "Hello, World!" and is successfully sent (with "Just now" timestamp)
+        // 2. Bot-initiated message "You said: Hello, World!"
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
