@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import group from './group';
 
 test('when nothing is passed should return empty array', () => {

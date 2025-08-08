@@ -72,7 +72,8 @@
     "node": ">=12.0.0"
   },
   "localDependences": {
-    "@msinternal/botframework-webchat-base": "development"
+    "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development"
   },
   "pinDependencies": {
     "typescript": [
@@ -86,6 +87,8 @@
     "@babel/plugin-transform-typescript": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "@msinternal/botframework-webchat-base": "^0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.1.0",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",

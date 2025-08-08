@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import deleteKey from '../utils/deleteKey';
 
 describe('deleteKey', () => {

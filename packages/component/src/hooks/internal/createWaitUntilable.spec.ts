@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import createWaitUntilable, { type WaitUntilable } from './createWaitUntilable';
 
 type Deferred<T> = {

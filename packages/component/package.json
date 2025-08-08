@@ -71,6 +71,7 @@
     "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "@msinternal/botframework-webchat-styles": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development",
     "botframework-webchat-api": "production",
     "botframework-webchat-core": "production"
   },
@@ -106,6 +107,9 @@
     "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",
     "@msinternal/botframework-webchat-styles": "0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
+    "@types/dom-speech-recognition": "^0.0.6",
+    "@types/jest": "^30.0.0",
     "@types/mdast": "^4.0.4",
     "@types/node": "^24.1.0",
     "@types/react": "^16.14.65",
