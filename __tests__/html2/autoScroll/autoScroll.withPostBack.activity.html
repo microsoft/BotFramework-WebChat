@@ -168,7 +168,7 @@
         // EXPECT: Transcript already reached snap point (1 activity), it should not scroll further below.
         await pageConditions.scrollStabilized(scrollTop);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

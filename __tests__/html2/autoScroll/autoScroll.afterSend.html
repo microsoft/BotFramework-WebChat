@@ -36,7 +36,7 @@
         // THEN: It should scroll to bottom after send.
         await pageConditions.scrollToBottomCompleted();
         await pageConditions.minNumActivitiesShown(4);
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

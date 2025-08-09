@@ -165,7 +165,7 @@
         // EXPECT: Pause scrolling when the "Minim voluptate" activity (index = 6) is at the top of the screen.
         await pageConditions.scrollStabilized(pageObjects.getActivityBoundingBoxes()[6].top);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

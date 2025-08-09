@@ -108,7 +108,7 @@
         // EXPECT: Transcript should not scroll further than the "Minim voluptate" activity.
         await pageConditions.scrollStabilized(scrollTop);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
