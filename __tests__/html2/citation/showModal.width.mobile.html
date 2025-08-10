@@ -41,15 +41,14 @@
           type: 'message'
         });
 
+        await host.snapshot('local');
+
         const markdownElement = pageElements.activities()[0].querySelector('.webchat__text-content__markdown');
         const markdownButtons = markdownElement.querySelectorAll('button');
 
         await host.click(markdownButtons[0]);
-        await host.snapshot();
 
-        await host.sendTab();
-        await host.sendKeys('ESCAPE');
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

@@ -41,14 +41,15 @@
           type: 'message'
         });
 
-        const markdownElement = pageElements.activities()[0].querySelector('.webchat__text-content__markdown');
-        const markdownButtons = markdownElement.querySelectorAll('button');
+        await host.snapshot('local');
 
-        await host.click(markdownButtons[0]);
-        await host.snapshot();
+        const summary = pageElements.linkDefinitions()[0].querySelector('summary');
 
-        await host.sendKeys(' ');
-        await host.snapshot();
+        await host.click(summary);
+        await host.snapshot('local');
+
+        await host.click(summary);
+        await host.snapshot('local');
       });
     </script>
   </body>
