@@ -103,7 +103,7 @@
         expect(sending[1].activity.channelData.state).toBeUndefined();
 
         // THEN: It should show message in order of "2", "1", followed by "0".
-        await host.snapshot();
+        await host.snapshot('local');
 
         // WHEN: The first message has echoed back with a timestamp of 1.
         sending[0].resolve({
@@ -122,7 +122,7 @@
         // THEN: It should show message in the order of "1", "2", followed by "0".
         //       "1" should be marked as sent.
         //       "0" should be sending.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // THEN: The first outgoing message should appears first, before the bot's message.
         //       The first outgoing message has a smaller timestamp (t=1) than the bot's message (t=2).
@@ -150,7 +150,7 @@
         ]);
 
         // THEN: It should show message in the order of "0", "1", followed by "2".
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

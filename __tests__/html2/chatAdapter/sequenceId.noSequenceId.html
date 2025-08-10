@@ -44,7 +44,7 @@
         await pageConditions.scrollToBottomCompleted();
 
         // THEN: It should show a chat history sorted based on "ts" field.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

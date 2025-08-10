@@ -24,7 +24,7 @@
         await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
         await pageConditions.minNumActivitiesShown(3);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
