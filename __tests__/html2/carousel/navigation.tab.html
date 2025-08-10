@@ -41,7 +41,7 @@
             document.activeElement === document.activeElement.parentElement.children[0],
           1000
         );
-        await host.snapshot();
+        await host.snapshot('local');
 
         // Second focus is not very stable because of its position, we are skipping snapshotting it.
         // Third focus inside carousel
@@ -59,7 +59,7 @@
           5,
           5000
         );
-        await host.snapshot();
+        await host.snapshot('local');
 
         // Press ESCAPE key should focus the activity.
         await host.sendKeys('ESCAPE');
@@ -74,7 +74,7 @@
           5,
           5000
         );
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

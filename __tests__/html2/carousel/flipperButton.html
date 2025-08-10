@@ -12,7 +12,6 @@
       run(async function () {
         WebChat.renderWebChat(
           {
-            dir: 'rtl',
             directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
             store: testHelpers.createStore()
           },
@@ -29,22 +28,8 @@
 
         expect(carouselFilmstrip.scrollLeft).toBe(0);
 
-        // WHEN: Left flipper is clicked. In RTL, the left flipper goes next.
-        const leftFlipper = carouselLayout.querySelector('[aria-label="Next"]');
-
-        // Improve test reliability by hover before click on flipper button.
-        await host.hover(leftFlipper);
-        await testHelpers.sleep(500);
-        await host.click(leftFlipper);
-
-        // THEN: It should scroll left.
-        await pageConditions.became('Carousel should scroll left', () => carouselFilmstrip.scrollLeft < -100, 1000);
-
-        await testHelpers.sleep(500); // Wait both flippers to fade in.
-        await host.snapshot();
-
-        // WHEN: Right flipper is clicked. In RTL, the right flipper goes back.
-        const rightFlipper = carouselLayout.querySelector('[aria-label="Previous"]');
+        // WHEN: Right flipper is clicked.
+        const rightFlipper = carouselLayout.querySelector('[aria-label="Next"]');
 
         // Improve test reliability by hover before click on flipper button.
         await host.hover(rightFlipper);
@@ -52,14 +37,28 @@
         await host.click(rightFlipper);
 
         // THEN: It should scroll right.
+        await pageConditions.became('Carousel should scroll right', () => carouselFilmstrip.scrollLeft > 100, 1000);
+
+        await testHelpers.sleep(500); // Wait both flippers to fade in.
+        await host.snapshot('local');
+
+        // WHEN: Left flipper is clicked.
+        const leftFlipper = carouselLayout.querySelector('[aria-label="Previous"]');
+
+        // Improve test reliability by hover before click on flipper button.
+        await host.hover(leftFlipper);
+        await testHelpers.sleep(500);
+        await host.click(leftFlipper);
+
+        // THEN: It should scroll left.
         await pageConditions.became(
-          'Carousel should scroll right',
+          'Carousel should scroll left',
           () => Math.abs(carouselFilmstrip.scrollLeft) < 1,
           1000
         ); // 1 pixel for tolerance.
 
         await testHelpers.sleep(500); // Wait for right flipper to fade away.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
