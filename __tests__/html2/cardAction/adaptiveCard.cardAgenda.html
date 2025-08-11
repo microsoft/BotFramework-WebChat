@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -10,21 +10,19 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const { domain, token } = await testHelpers.token.fetchDirectLineAppServiceExtensionToken();
-
         WebChat.renderWebChat(
           {
-            directLine: await WebChat.createDirectLineAppServiceExtension({ domain, token }),
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
             store: testHelpers.createStore()
           },
           document.getElementById('webchat')
         );
 
         await pageConditions.uiConnected();
-        await pageObjects.sendMessageViaSendBox('echo Hello, World!', { waitForSend: true });
-        await pageConditions.minNumActivitiesShown(3);
+        await pageObjects.sendMessageViaSendBox('card agenda', { waitForSend: true });
+        await pageConditions.minNumActivitiesShown(2);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

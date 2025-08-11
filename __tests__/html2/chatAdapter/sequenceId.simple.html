@@ -48,7 +48,7 @@
         await pageConditions.scrollToBottomCompleted();
 
         // THEN: It should show a transcript sorted based on "seq" field.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
