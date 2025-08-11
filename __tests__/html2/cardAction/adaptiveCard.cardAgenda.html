@@ -22,7 +22,7 @@
         await pageObjects.sendMessageViaSendBox('card agenda', { waitForSend: true });
         await pageConditions.minNumActivitiesShown(2);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
