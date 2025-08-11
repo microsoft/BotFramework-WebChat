@@ -2,6 +2,18 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 import { hooks } from 'botframework-webchat-api';
+import classNames from 'classnames';
+import React, {
+  forwardRef,
+  Fragment,
+  memo,
+  useCallback,
+  useMemo,
+  useRef,
+  type KeyboardEventHandler,
+  type MutableRefObject,
+  type ReactNode
+} from 'react';
 import {
   Composer as ReactScrollToBottomComposer,
   Panel as ReactScrollToBottomPanel,
@@ -10,55 +22,51 @@ import {
   useScrollToEnd,
   useSticky
 } from 'react-scroll-to-bottom';
-import classNames from 'classnames';
-import React, { forwardRef, Fragment, memo, useCallback, useMemo, useRef } from 'react';
+import { wrapWith } from 'react-wrap-with';
 
-import type { ActivityElementMap } from './Transcript/types';
-import type { FC, KeyboardEventHandler, MutableRefObject, ReactNode } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
-
-import { android } from './Utils/detectBrowser';
 import BasicTypingIndicator from './BasicTypingIndicator';
-import FocusRedirector from './Utils/FocusRedirector';
-import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
-import isZeroOrPositive from './Utils/isZeroOrPositive';
-import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
-import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
-import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
-import useActivityTreeWithRenderer from './providers/ActivityTree/useActivityTreeWithRenderer';
-import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
-import useDispatchTranscriptFocusByActivityKey from './hooks/internal/useDispatchTranscriptFocusByActivityKey';
-import useFocus from './hooks/useFocus';
-import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivityKey';
-import useFocusedActivityKey from './providers/TranscriptFocus/useFocusedActivityKey';
-import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicitly';
-import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
 import ChatHistoryBox from './ChatHistory/ChatHistoryBox';
 import ChatHistoryToolbar from './ChatHistory/ChatHistoryToolbar';
 import ScrollToEndButton from './ChatHistory/private/ScrollToEndButton';
+import ActivityTree from './Transcript/ActivityTree';
+import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
+import { type ActivityElementMap } from './Transcript/types';
+import FocusRedirector from './Utils/FocusRedirector';
+import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
+import { android } from './Utils/detectBrowser';
+import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
+import useDispatchScrollPosition from './hooks/internal/useDispatchScrollPosition';
+import useDispatchTranscriptFocusByActivityKey from './hooks/internal/useDispatchTranscriptFocusByActivityKey';
+import useNonce from './hooks/internal/useNonce';
 import useObserveFocusVisible from './hooks/internal/useObserveFocusVisible';
 import usePrevious from './hooks/internal/usePrevious';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
 import useRegisterScrollTo from './hooks/internal/useRegisterScrollTo';
 import useRegisterScrollToEnd from './hooks/internal/useRegisterScrollToEnd';
-import useStyleSet from './hooks/useStyleSet';
-import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import useUniqueId from './hooks/internal/useUniqueId';
 import useValueRef from './hooks/internal/useValueRef';
-import TranscriptActivity from './TranscriptActivity';
-import useMemoized from './hooks/internal/useMemoized';
 import {
   useRegisterScrollRelativeTranscript,
   type TranscriptScrollRelativeOptions
 } from './hooks/transcriptScrollRelative';
-import useNonce from './hooks/internal/useNonce';
+import useFocus from './hooks/useFocus';
+import useStyleSet from './hooks/useStyleSet';
+import ChatHistoryDOMComposer from './providers/ChatHistoryDOM/ChatHistoryDOMComposer';
+import useActivityElementMapRef from './providers/ChatHistoryDOM/useActivityElementRef';
+import GroupedRenderingActivitiesComposer from './providers/GroupedRenderingActivities/GroupedRenderingActivitiesComposer';
+import useNumRenderingActivities from './providers/GroupedRenderingActivities/useNumRenderingActivities';
+import RenderingActivitiesComposer from './providers/RenderingActivities/RenderingActivitiesComposer';
+import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocusComposer';
+import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
+import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivityKey';
+import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
+import useFocusedActivityKey from './providers/TranscriptFocus/useFocusedActivityKey';
+import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicitly';
 
 const {
   useActivityKeys,
-  useCreateAvatarRenderer,
   useDirection,
   useGetActivityByKey,
-  useGetKeyByActivity,
   useGetKeyByActivityId,
   useLastAcknowledgedActivityKey,
   useLocalizer,
@@ -99,35 +107,30 @@ type ScrollToOptions = { behavior?: ScrollBehavior };
 type ScrollToPosition = { activityID?: string; scrollTop?: number };
 
 type InternalTranscriptProps = Readonly<{
-  activityElementMapRef: MutableRefObject<ActivityElementMap>;
   className?: string;
   terminatorRef: React.MutableRefObject<HTMLDivElement>;
 }>;
 
 // TODO: [P1] #4133 Add telemetry for computing how many re-render done so far.
 const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
-  ({ activityElementMapRef, className, terminatorRef }, ref) => {
+  ({ className, terminatorRef }: InternalTranscriptProps, ref) => {
     const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
-    const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
     const [activeDescendantId] = useActiveDescendantId();
-    const [activityWithRendererTree] = useActivityTreeWithRenderer();
     const [direction] = useDirection();
     const [focusedActivityKey] = useFocusedActivityKey();
     const [focusedExplicitly] = useFocusedExplicitly();
-    const createAvatarRenderer = useCreateAvatarRenderer();
+    const activityElementMapRef = useActivityElementMapRef();
     const focus = useFocus();
     const focusByActivityKey = useFocusByActivityKey();
     const focusRelativeActivity = useFocusRelativeActivity();
     const getActivityByKey = useGetActivityByKey();
-    const getKeyByActivity = useGetKeyByActivity();
     const getKeyByActivityId = useGetKeyByActivityId();
     const localize = useLocalizer();
     const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
-    const rootElementRef = useRef<HTMLDivElement>();
+    const rootElementRef = useRef<HTMLDivElement>(null);
     const terminatorLabelId = useUniqueId('webchat__basic-transcript__terminator-label');
 
     const focusedActivityKeyRef = useValueRef(focusedActivityKey);
-    const hideAllTimestamps = groupTimestamp === false;
     const terminatorText = localize('TRANSCRIPT_TERMINATOR_TEXT');
     const transcriptAriaLabel = localize('TRANSCRIPT_ARIA_LABEL_ALT');
 
@@ -144,84 +147,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       [ref, rootElementRef]
     );
 
-    const createAvatarRendererMemoized = useMemoized(
-      (activity: WebChatActivity) => createAvatarRenderer({ activity }),
-      [createAvatarRenderer]
-    );
-
-    // Flatten the tree back into an array with information related to rendering.
-    const renderingElements = useMemo(() => {
-      const renderingElements: ReactNode[] = [];
-      const topSideBotNub = isZeroOrPositive(bubbleNubOffset);
-      const topSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
-
-      activityWithRendererTree.forEach(entriesWithSameSender => {
-        const [[{ activity: firstActivity }]] = entriesWithSameSender;
-        const renderAvatar = createAvatarRendererMemoized(firstActivity);
-
-        entriesWithSameSender.forEach((entriesWithSameSenderAndStatus, indexWithinSenderGroup) => {
-          const firstInSenderGroup = !indexWithinSenderGroup;
-          const lastInSenderGroup = indexWithinSenderGroup === entriesWithSameSender.length - 1;
-
-          entriesWithSameSenderAndStatus.forEach(({ activity, renderActivity }, indexWithinSenderAndStatusGroup) => {
-            // We only show the timestamp at the end of the sender group. But we always show the "Send failed, retry" prompt.
-            const firstInSenderAndStatusGroup = !indexWithinSenderAndStatusGroup;
-            const key: string = getKeyByActivity(activity);
-            const lastInSenderAndStatusGroup =
-              indexWithinSenderAndStatusGroup === entriesWithSameSenderAndStatus.length - 1;
-            const topSideNub = activity.from?.role === 'user' ? topSideUserNub : topSideBotNub;
-
-            let showCallout: boolean;
-
-            // Depending on the "showAvatarInGroup" setting, the avatar will render in different positions.
-            if (showAvatarInGroup === 'sender') {
-              if (topSideNub) {
-                showCallout = firstInSenderGroup && firstInSenderAndStatusGroup;
-              } else {
-                showCallout = lastInSenderGroup && lastInSenderAndStatusGroup;
-              }
-            } else if (showAvatarInGroup === 'status') {
-              if (topSideNub) {
-                showCallout = firstInSenderAndStatusGroup;
-              } else {
-                showCallout = lastInSenderAndStatusGroup;
-              }
-            } else {
-              showCallout = true;
-            }
-
-            renderingElements.push(
-              <TranscriptActivity
-                activity={activity}
-                activityElementMapRef={activityElementMapRef}
-                // "hideTimestamp" is a render-time parameter for renderActivityStatus().
-                // If true, it will hide the timestamp, but it will continue to show the
-                // retry prompt. And show the screen reader version of the timestamp.
-                activityKey={key}
-                hideTimestamp={
-                  hideAllTimestamps || indexWithinSenderAndStatusGroup !== entriesWithSameSenderAndStatus.length - 1
-                }
-                key={key}
-                renderActivity={renderActivity}
-                renderAvatar={renderAvatar}
-                showCallout={showCallout}
-              />
-            );
-          });
-        });
-      });
-
-      return renderingElements;
-    }, [
-      activityElementMapRef,
-      activityWithRendererTree,
-      bubbleFromUserNubOffset,
-      bubbleNubOffset,
-      createAvatarRendererMemoized,
-      getKeyByActivity,
-      hideAllTimestamps,
-      showAvatarInGroup
-    ]);
+    const [numRenderingActivities] = useNumRenderingActivities();
 
     const scrollToBottomScrollTo: (scrollTop: number, options?: ScrollToOptions) => void = useScrollTo();
     const scrollToBottomScrollToEnd: (options?: ScrollToOptions) => void = useScrollToEnd();
@@ -497,7 +423,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
       useCallback(() => focusByActivityKey(undefined), [focusByActivityKey])
     );
 
-    const hasAnyChild = !!React.Children.count(renderingElements);
+    const hasAnyChild = !!numRenderingActivities;
 
     return (
       <div
@@ -527,9 +453,9 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
         {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
         <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>
-          {renderingElements}
+          {hasAnyChild && <ActivityTree />}
         </InternalTranscriptScrollable>
-        {!!renderingElements.length && (
+        {hasAnyChild && (
           <Fragment>
             <FocusRedirector redirectRef={rootElementRef} />
             <div
@@ -563,7 +489,7 @@ type InternalTranscriptScrollableProps = Readonly<{
 }>;
 
 // Separating high-frequency hooks to improve performance.
-const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({ children, onFocusFiller }) => {
+const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTranscriptScrollableProps) => {
   const [{ activities: activitiesStyleSet }] = useStyleSet();
   const [sticky]: [boolean] = useSticky();
   const localize = useLocalizer();
@@ -584,7 +510,9 @@ const InternalTranscriptScrollable: FC<InternalTranscriptScrollableProps> = ({ c
     [markAllAsAcknowledged, stickyChangedToTrue]
   );
 
-  const hasAnyChild = !!React.Children.count(children);
+  // We need to check if `children` is `false` or not.
+  // If `children` is `false`, React.Children.count(children) will still return 1 (truthy).
+  const hasAnyChild = !!children && !!React.Children.count(children);
 
   return (
     <React.Fragment>
@@ -727,34 +655,33 @@ type BasicTranscriptProps = Readonly<{
   className: string;
 }>;
 
-const BasicTranscript: FC<BasicTranscriptProps> = ({ className = '' }) => {
-  const activityElementMapRef = useRef<ActivityElementMap>(new Map());
-  const containerRef = useRef<HTMLDivElement>();
-
-  const [nonce] = useNonce();
-  const scroller = useScroller(activityElementMapRef);
-
+const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
   const [{ stylesRoot }] = useStyleOptions();
-  const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
+  const [nonce] = useNonce();
+  const activityElementMapRef = useActivityElementMapRef();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const terminatorRef = useRef<HTMLDivElement>(null);
 
-  const terminatorRef = useRef<HTMLDivElement>();
+  const scroller = useScroller(activityElementMapRef);
+  const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
 
   return (
     <ChatHistoryBox className={className}>
-      <TranscriptFocusComposer containerRef={containerRef}>
-        <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
-          <ChatHistoryToolbar>
-            <ScrollToEndButton terminatorRef={terminatorRef} />
-          </ChatHistoryToolbar>
-          <InternalTranscript
-            activityElementMapRef={activityElementMapRef}
-            ref={containerRef}
-            terminatorRef={terminatorRef}
-          />
-        </ReactScrollToBottomComposer>
-      </TranscriptFocusComposer>
+      <RenderingActivitiesComposer>
+        <TranscriptFocusComposer containerRef={containerRef}>
+          <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
+            <ChatHistoryToolbar>
+              <ScrollToEndButton terminatorRef={terminatorRef} />
+            </ChatHistoryToolbar>
+            <GroupedRenderingActivitiesComposer>
+              <InternalTranscript ref={containerRef} terminatorRef={terminatorRef} />
+            </GroupedRenderingActivitiesComposer>
+          </ReactScrollToBottomComposer>
+        </TranscriptFocusComposer>
+      </RenderingActivitiesComposer>
     </ChatHistoryBox>
   );
 };
 
-export default memo(BasicTranscript);
+export default wrapWith(ChatHistoryDOMComposer)(memo(BasicTranscript));
+export { type BasicTranscriptProps };

@@ -7,6 +7,9 @@
  */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-global-assign */
+
+/// <reference types="jest" />
+
 let consoleWarns;
 let createCognitiveServicesSpeechServicesPonyfillFactory;
 let createSpeechServicesPonyfill;
@@ -137,7 +140,7 @@ test('supplying both audioConfig and audioInputDeviceId', () => {
   ponyfillFactory({});
 
   expect(consoleWarns[0]).toMatchInlineSnapshot(
-    `"botframework-webchat: \\"audioConfig\\" and \\"audioInputDeviceId\\" cannot be set at the same time; ignoring \\"audioInputDeviceId\\"."`
+    `"botframework-webchat: "audioConfig" and "audioInputDeviceId" cannot be set at the same time; ignoring "audioInputDeviceId"."`
   );
 
   expect(createSpeechServicesPonyfill.mock.calls[0][0].audioConfig).toBe(audioConfig);

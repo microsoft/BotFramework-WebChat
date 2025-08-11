@@ -1,13 +1,26 @@
 <!doctype html>
 <html lang="en-US">
   <head>
+    <title>Copy Button Layout: Test copy button layout with fluent theme</title>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.26.5/babel.min.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/",
+          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme"
+        }
+      }
+    </script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/fluent-bundle.production.min.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
     <style>
       .fui-FluentProvider {
         display: contents;
@@ -18,23 +31,35 @@
   </head>
   <body>
     <main id="webchat" style="position: relative"></main>
-    <script type="text/babel">
+    <script type="module">
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
+
       run(async function () {
         const {
-          Fluent: { createDarkTheme, createLightTheme, FluentProvider },
-          ReactDOMClient: { createRoot },
           WebChat: { FluentThemeProvider, ReactWebChat }
-        } = window; // Imports in UMD fashion.
+        } = window;
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         const searchParams = new URLSearchParams(location.search);
+        const variant = searchParams.get('variant');
+        const theme = searchParams.get('theme');
+
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [
+            { name: 'prefers-reduced-motion', value: 'reduce' },
+            ...(theme === 'dark' || theme === 'light'
+              ? [{ name: 'prefers-color-scheme', value: theme }]
+              : [])
+          ]
+        });
+
         const styleOptions = {
           botAvatarBackgroundColor: '#304E7A',
           botAvatarImage:
             'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAK0lEQVQ4T2P8z8Dwn4GKgHHUQIpDczQMKQ5ChtEwHA1DMkJgNNmQEWhoWgBMAiftPRtHngAAAABJRU5ErkJggg=='
         };
-
-        const App = () => <ReactWebChat directLine={directLine} store={store} styleOptions={styleOptions} />;
 
         const customBrandRamp = {
           10: '#124C32',
@@ -55,25 +80,33 @@
           160: '#E4FAF1'
         };
 
+        let fluentTheme;
+
+        if (theme === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          fluentTheme = createDarkTheme(customBrandRamp);
+        } else {
+          fluentTheme = {
+            ...webLightTheme,
+            // Original is #242424 which is too light for fui-FluentProvider to pass our a11y
+            colorNeutralForeground1: '#1b1b1b'
+          };
+        }
+
         const root = createRoot(document.getElementById('webchat'));
 
-        if (searchParams.get('variant') === 'copilot' || searchParams.get('variant') === 'fluent') {
-          root.render(
-            <FluentProvider
-              theme={
-                searchParams.get('theme') === 'dark'
-                  ? createDarkTheme(customBrandRamp)
-                  : createLightTheme(customBrandRamp)
-              }
-            >
-              <FluentThemeProvider variant={searchParams.get('variant') || ''}>
-                <App />
-              </FluentThemeProvider>
-            </FluentProvider>
-          );
-        } else {
-          root.render(<App />);
-        }
+        root.render(
+          variant === 'copilot' || variant === 'fluent' ? 
+            React.createElement(
+              FluentProvider,
+              { theme: fluentTheme },
+              React.createElement(
+                FluentThemeProvider,
+                { variant: variant },
+                React.createElement(ReactWebChat, { directLine, store, styleOptions })
+              )
+            ) :
+            React.createElement(ReactWebChat, { directLine, store, styleOptions })
+        );
 
         await pageConditions.uiConnected();
 

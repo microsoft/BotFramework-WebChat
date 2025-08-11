@@ -29,8 +29,8 @@
         await pageObjects.runHook(({ useSendFiles }) => useSendFiles()([fileBlob]));
 
         // THEN: It should send the file.
-        await pageConditions.allOutgoingActivitiesSent();
         await pageConditions.numActivitiesShown(3);
+        await pageConditions.allOutgoingActivitiesSent();
         await host.snapshot();
 
         // THEN: Should print deprecation warning.

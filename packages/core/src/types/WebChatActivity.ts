@@ -112,6 +112,11 @@ type ChannelData<SendStatus extends SupportedSendStatus | undefined, Type extend
 
           // TODO: [P2] #3953 It seems Direct Line added a new "summary" field to cater this case.
           'webchat:fallback-text'?: string;
+
+          feedbackLoop?: {
+            type: 'default';
+            disclaimer?: string;
+          };
         }
       : Record<any, any>)
 >;
@@ -169,15 +174,20 @@ type MessageActivityEssence = {
 // https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#typing-activity
 type TypingActivityEssence =
   | {
+      attachmentLayout?: 'carousel' | 'stacked';
+      attachments?: DirectLineAttachment[];
+      text?: undefined;
       type: 'typing';
     }
   | {
+      attachmentLayout?: 'carousel' | 'stacked';
+      attachments?: DirectLineAttachment[];
       channelData: {
         streamId?: string | undefined;
         streamSequence: number;
-        streamType: 'informative' | 'streaming';
+        streamType: 'informative' | 'streaming' | 'final';
       };
-      text: string;
+      text?: string | undefined;
       type: 'typing';
     };
 

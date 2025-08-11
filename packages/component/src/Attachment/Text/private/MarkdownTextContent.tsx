@@ -1,4 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import {
   getOrgSchemaMessage,
   onErrorResumeNext,
@@ -9,9 +10,11 @@ import {
 import classNames from 'classnames';
 import type { Definition } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
-import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler, type ReactNode } from 'react';
+import React, { memo, useCallback, useMemo, useRef, type MouseEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import ActivityFeedback from '../../../ActivityFeedback/ActivityFeedback';
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
 import dereferenceBlankNodes from '../../../Utils/JSONLinkedData/dereferenceBlankNodes';
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
@@ -25,7 +28,6 @@ import MessageSensitivityLabel, { type MessageSensitivityLabelProps } from './Me
 import isAIGeneratedActivity from './isAIGeneratedActivity';
 import isBasedOnSoftwareSourceCode from './isBasedOnSoftwareSourceCode';
 import isHTMLButtonElement from './isHTMLButtonElement';
-import ActivityFeedback from '../../../Activity/ActivityFeedback';
 
 const { useLocalizer, useStyleOptions } = hooks;
 
@@ -37,17 +39,24 @@ type Entry = {
   url?: string | undefined;
 };
 
-type Props = Readonly<{
-  activity: WebChatActivity;
-  children?: ReactNode | undefined;
-  markdown: string;
-}>;
+const markdownTextContentPropsSchema = pipe(
+  object({
+    activity: custom<WebChatActivity>(() => true),
+    children: optional(reactNode()),
+    markdown: string()
+  }),
+  readonly()
+);
+
+type MarkdownTextContentProps = InferInput<typeof markdownTextContentPropsSchema>;
 
 function isCitationURL(url: string): boolean {
   return onErrorResumeNext(() => new URL(url))?.protocol === 'cite:';
 }
 
-const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
+function MarkdownTextContent(props: MarkdownTextContentProps) {
+  const { activity, children, markdown } = validateProps(markdownTextContentPropsSchema, props);
+
   const [{ feedbackActionsPlacement }] = useStyleOptions();
   const [
     {
@@ -234,7 +243,10 @@ const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
         </LinkDefinitions>
       )}
       <div className="webchat__text-content__activity-actions">
-        {activity.type === 'message' && isBasedOnSoftwareSourceCode(messageThing) && messageThing.isBasedOn.text ? (
+        {activity.type === 'message' &&
+        isBasedOnSoftwareSourceCode(messageThing) &&
+        messageThing.isBasedOn.text &&
+        !messageThing.keywords?.includes?.('Collapsible') ? (
           <ActivityViewCodeButton
             className="webchat__text-content__activity-view-code-button"
             code={messageThing.isBasedOn.text}
@@ -252,8 +264,7 @@ const MarkdownTextContent = memo(({ activity, children, markdown }: Props) => {
       </div>
     </div>
   );
-});
+}
 
-MarkdownTextContent.displayName = 'MarkdownTextContent';
-
-export default MarkdownTextContent;
+export default memo(MarkdownTextContent);
+export { markdownTextContentPropsSchema, type MarkdownTextContentProps };

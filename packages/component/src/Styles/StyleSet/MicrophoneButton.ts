@@ -6,7 +6,7 @@ export default function createMicrophoneButtonStyle({ microphoneButtonColorOnDic
       '&.webchat__microphone-button--dictating .webchat__microphone-button__button': {
         '&, &:focus, &:hover': {
           '& .webchat__microphone-button__icon': {
-            fill: microphoneButtonColorOnDictate
+            '--webchat__component-icon--color': microphoneButtonColorOnDictate
           }
         }
       }

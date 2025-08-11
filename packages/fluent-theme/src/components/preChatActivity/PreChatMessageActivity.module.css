@@ -22,7 +22,7 @@
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__body--blueprint {
-  opacity: 60%;
+  opacity: 65%;
 
   .pre-chat-message-activity__body-avatar {
     filter: grayscale(1);
@@ -46,6 +46,7 @@
 }
 
 :global(.webchat-fluent) .pre-chat-message-activity__body-subtitle {
+  color: var(--webchat-colorNeutralForeground1);
   font-size: var(--webchat-fontSizeBase300);
   line-height: var(--webchat-lineHeightBase300);
   overflow-wrap: anywhere;

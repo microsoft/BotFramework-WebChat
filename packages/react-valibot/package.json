@@ -1,0 +1,73 @@
+{
+  "name": "@msinternal/botframework-webchat-react-valibot",
+  "version": "0.0.0-0",
+  "description": "The botframework-webchat react-valibot package",
+  "types": "./dist/botframework-webchat-react-valibot.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-react-valibot.d.mts",
+        "default": "./dist/botframework-webchat-react-valibot.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-react-valibot.d.ts",
+        "default": "./dist/botframework-webchat-react-valibot.js"
+      }
+    }
+  },
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/BotFramework-WebChat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
+  },
+  "files": [
+    "./dist/**/*",
+    "./src/**/*"
+  ],
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/react-valibot#readme",
+  "private": true,
+  "scripts": {
+    "build": "tsup",
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "eslint": "npm run precommit",
+    "postversion": "cat package.json | jq '.version as $V | (.localDependencies // {} | with_entries(select(.value == \"production\") | { key: .key, value: $V })) as $L1 | (.localDependencies // {} | with_entries(select(.value == \"development\") | { key: .key, value: $V })) as $L2 | ((.dependencies // {}) + $L1 | to_entries | sort_by(.key) | from_entries) as $D1 | ((.devDependencies // {}) + $L2 | to_entries | sort_by(.key) | from_entries) as $D2 | . + { dependencies: $D1, devDependencies: $D2 }' > package-temp.json && mv package-temp.json package.json",
+    "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
+    "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
+    "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
+    "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
+    "start": "npm run build -- --watch"
+  },
+  "localDependencies": {
+    "@msinternal/botframework-webchat-tsconfig": "development"
+  },
+  "pinDependencies": {
+    "@types/react": [
+      "16"
+    ],
+    "typescript": [
+      "~5.8.3",
+      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
+    ]
+  },
+  "devDependencies": {
+    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
+    "@tsconfig/strictest": "^2.0.5",
+    "@types/jest": "^30.0.0",
+    "@types/react": "^16.14.65",
+    "tsup": "^8.5.0",
+    "typescript": "~5.8.3"
+  },
+  "dependencies": {
+    "valibot": "1.1.0"
+  },
+  "peerDependencies": {
+    "react": ">= 16.8.6"
+  },
+  "main": "index.js"
+}

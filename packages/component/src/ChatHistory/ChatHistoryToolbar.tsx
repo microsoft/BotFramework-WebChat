@@ -1,10 +1,23 @@
 import { hooks } from 'botframework-webchat-api';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
-import React, { memo, ReactNode } from 'react';
+import React, { memo } from 'react';
+import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 const { useDirection } = hooks;
 
-function ChatHistoryToolbar({ children }: Readonly<{ children: ReactNode }>) {
+const chatHistoryToolbarPropsSchema = pipe(
+  object({
+    children: optional(reactNode())
+  }),
+  readonly()
+);
+
+type ChatHistoryToolbarProps = InferInput<typeof chatHistoryToolbarPropsSchema>;
+
+function ChatHistoryToolbar(props: ChatHistoryToolbarProps) {
+  const { children } = validateProps(chatHistoryToolbarPropsSchema, props);
+
   const [direction] = useDirection();
 
   return (
@@ -20,3 +33,4 @@ function ChatHistoryToolbar({ children }: Readonly<{ children: ReactNode }>) {
 }
 
 export default memo(ChatHistoryToolbar);
+export { chatHistoryToolbarPropsSchema, type ChatHistoryToolbarProps };

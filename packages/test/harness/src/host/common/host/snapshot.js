@@ -7,7 +7,7 @@ const takeStabilizedScreenshot = require('../takeStabilizedScreenshot');
 const testRoot = join(__dirname, '../../../../../../../__tests__/html/');
 
 module.exports = webDriver =>
-  async function snapshot(mode) {
+  async function snapshot(mode, options) {
     await allImagesCompleted(webDriver);
 
     const screenshot = await takeStabilizedScreenshot(webDriver);
@@ -25,5 +25,7 @@ module.exports = webDriver =>
           }
     );
 
-    await checkAccessibilty(webDriver)();
+    if (!options?.skipCheckAccessibility) {
+      await checkAccessibilty(webDriver)();
+    }
   };

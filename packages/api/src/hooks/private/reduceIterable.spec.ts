@@ -1,5 +1,3 @@
-/* eslint-disable no-magic-numbers */
-
 import reduceIterable from './reduceIterable';
 
 describe('when called with a summation reducer', () => {

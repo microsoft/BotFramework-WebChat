@@ -1,3 +1,5 @@
+import useGroupActivities from '../providers/GroupActivities/useGroupActivities';
+import useGroupActivitiesByName from '../providers/GroupActivities/useGroupActivitiesByName';
 import useActiveTyping from './useActiveTyping';
 import useActivities from './useActivities';
 import useActivityKeys from './useActivityKeys';
@@ -26,7 +28,6 @@ import useGetKeyByActivity from './useGetKeyByActivity';
 import useGetKeyByActivityId from './useGetKeyByActivityId';
 import useGetSendTimeoutForActivity from './useGetSendTimeoutForActivity';
 import useGrammars from './useGrammars';
-import useGroupActivities from './useGroupActivities';
 import useGroupTimestamp from './useGroupTimestamp';
 import useLanguage from './useLanguage';
 import useLastAcknowledgedActivityKey from './useLastAcknowledgedActivityKey';
@@ -71,6 +72,8 @@ import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
 
+export { useSuggestedActionsHooks } from '@msinternal/botframework-webchat-redux-store';
+
 export {
   useActiveTyping,
   useActivities,
@@ -101,6 +104,7 @@ export {
   useGetSendTimeoutForActivity,
   useGrammars,
   useGroupActivities,
+  useGroupActivitiesByName,
   useGroupTimestamp,
   useLanguage,
   useLastAcknowledgedActivityKey,

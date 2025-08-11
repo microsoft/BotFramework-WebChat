@@ -90,7 +90,7 @@
 
         // AFTER: Microphone button is clicked.
         // THEN: Should construct a SpeechRecognition() instance.
-        expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1));
 
         const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
 

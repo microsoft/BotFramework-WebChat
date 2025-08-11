@@ -43,7 +43,14 @@ export type WebChatAPIContextType = {
   emitTypingIndicator?: () => void;
   grammars?: any;
   groupActivities?: GroupActivities;
-  internalErrorBoxClass?: ComponentType;
+  internalErrorBoxClass?:
+    | ComponentType<
+        Readonly<{
+          error: Error;
+          type?: string;
+        }>
+      >
+    | undefined;
   language?: string;
   localizedGlobalizeState?: PrecompiledGlobalize[];
   localizedStrings?: { [language: string]: LocalizedStrings };

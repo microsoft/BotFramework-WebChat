@@ -1,17 +1,24 @@
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import React, { memo } from 'react';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../hooks/useStyleSet';
 
-type AudioContentProps = {
-  alt?: string;
-  autoPlay?: boolean;
-  loop?: boolean;
-  poster?: string;
-  src: string;
-};
+const audioContentPropsSchema = pipe(
+  object({
+    alt: optional(string()),
+    autoPlay: optional(boolean()),
+    loop: optional(boolean()),
+    poster: optional(string()),
+    src: string()
+  }),
+  readonly()
+);
 
-const AudioContent: FC<AudioContentProps> = ({ alt, autoPlay, loop, src }) => {
+type AudioContentProps = InferInput<typeof audioContentPropsSchema>;
+
+function AudioContent(props: AudioContentProps) {
+  const { alt, autoPlay = false, loop = false, src } = validateProps(audioContentPropsSchema, props);
   const [{ audioContent: audioContentStyleSet }] = useStyleSet();
 
   return (
@@ -24,23 +31,7 @@ const AudioContent: FC<AudioContentProps> = ({ alt, autoPlay, loop, src }) => {
       src={src}
     />
   );
-};
+}
 
-AudioContent.defaultProps = {
-  alt: '',
-  autoPlay: false,
-  loop: false,
-  poster: ''
-};
-
-AudioContent.propTypes = {
-  alt: PropTypes.string,
-  autoPlay: PropTypes.bool,
-  loop: PropTypes.bool,
-  // We will keep the "poster" prop for #3315.
-  // eslint-disable-next-line react/no-unused-prop-types
-  poster: PropTypes.string,
-  src: PropTypes.string.isRequired
-};
-
-export default AudioContent;
+export default memo(AudioContent);
+export { audioContentPropsSchema, type AudioContentProps };

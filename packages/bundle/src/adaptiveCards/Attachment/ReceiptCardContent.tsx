@@ -1,14 +1,16 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, 10, 15, 25, 50, 75] }] */
 
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-component';
-import PropTypes from 'prop-types';
-import React, { FC, useMemo } from 'react';
-import type { DirectLineReceiptCard } from 'botframework-webchat-core';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
+import React, { memo, useMemo } from 'react';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import useStyleOptions from '../../hooks/useStyleOptions';
+import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
-import useStyleOptions from '../../hooks/useStyleOptions';
+import { directLineReceiptCardSchema } from './private/directLineSchema';
 
 const { useDirection, useLocalizer } = hooks;
 
@@ -16,13 +18,20 @@ function nullOrUndefined(obj) {
   return obj === null || typeof obj === 'undefined';
 }
 
-type ReceiptCardContentProps = {
-  actionPerformedClassName?: string;
-  content: DirectLineReceiptCard;
-  disabled?: boolean;
-};
+const receiptCardContentPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string()),
+    content: directLineReceiptCardSchema,
+    disabled: optional(boolean())
+  }),
+  readonly()
+);
 
-const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+type ReceiptCardContentProps = InferInput<typeof receiptCardContentPropsSchema>;
+
+function ReceiptCardContent(props: ReceiptCardContentProps) {
+  const { actionPerformedClassName, content, disabled } = validateProps(receiptCardContentPropsSchema, props);
+
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -55,16 +64,16 @@ const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassN
       }
 
       items &&
-        items.map(({ image: { alt, tap: imageTap, url } = {}, price, quantity, subtitle, tap, text, title }) => {
+        items.map(({ image, price, quantity, subtitle, tap, text, title }) => {
           let itemColumns;
 
-          if (url) {
+          if (image?.url) {
             const [itemImageColumn, ...columns] = builder.addColumnSet([15, 75, 10]);
 
             itemColumns = columns;
-            builder.addImage(url, itemImageColumn, imageTap, alt);
+            builder.addImage(image?.url, itemImageColumn, image?.tap as DirectLineCardAction, image?.alt);
           } else {
-            itemColumns = builder.addColumnSet([75, 25], undefined, tap && tap);
+            itemColumns = builder.addColumnSet([75, 25], undefined, tap && (tap as DirectLineCardAction));
           }
 
           const [itemTitleColumn, itemPriceColumn] = itemColumns;
@@ -121,47 +130,7 @@ const ReceiptCardContent: FC<ReceiptCardContentProps> = ({ actionPerformedClassN
       tapAction={content && content.tap}
     />
   );
-};
+}
 
-ReceiptCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
-};
-
-ReceiptCardContent.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  content: PropTypes.shape({
-    buttons: PropTypes.array,
-    facts: PropTypes.arrayOf(
-      PropTypes.shape({
-        key: PropTypes.string,
-        value: PropTypes.string
-      })
-    ),
-    items: PropTypes.arrayOf(
-      PropTypes.shape({
-        image: PropTypes.shape({
-          alt: PropTypes.string.isRequired,
-          tap: PropTypes.any,
-          url: PropTypes.string.isRequired
-        }),
-        price: PropTypes.string.isRequired,
-        quantity: PropTypes.string,
-        subtitle: PropTypes.string,
-        tap: PropTypes.any,
-        text: PropTypes.string,
-        title: PropTypes.string.isRequired
-      })
-    ),
-    tap: PropTypes.any,
-    tax: PropTypes.string,
-    title: PropTypes.string,
-    total: PropTypes.string,
-    vat: PropTypes.string
-  }).isRequired,
-  disabled: PropTypes.bool
-};
-
-export default ReceiptCardContent;
+export default memo(ReceiptCardContent);
+export { receiptCardContentPropsSchema, type ReceiptCardContentProps };

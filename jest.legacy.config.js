@@ -9,6 +9,7 @@ const TRANSFORM_IGNORE_PACKAGES = [
   'decode-named-character-reference',
   'mdast-util-from-markdown',
   'mdast-util-to-string',
+  'merge-refs',
   'micromark-core-commonmark',
   'micromark-extension-gfm',
   'micromark-extension-gfm-autolink-literal',
@@ -47,7 +48,7 @@ module.exports = {
     npm_package_version: '0.0.0-0.jest'
   },
   moduleDirectories: ['node_modules', 'packages'],
-  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
+  moduleFileExtensions: ['js', 'jsx', 'mjs', 'ts', 'tsx'],
   rootDir: './',
   setupFilesAfterEnv: [
     '<rootDir>/__tests__/setup/setupDotEnv.js',
@@ -76,14 +77,14 @@ module.exports = {
   ],
   transform: {
     '[\\/]__tests__[\\/]html[\\/]': '<rootDir>/babel-passthru-transformer.js',
-    '\\.[jt]sx?$': '<rootDir>/babel-jest-config.js'
+    '\\.m?[jt]sx?$': '<rootDir>/babel-jest-config.js'
   },
   transformIgnorePatterns: [
     // jest-environment-jsdom import packages as browser.
     // Packages, such as "uuid", export itself for browser as ES5 + ESM.
     // Since jest@28 cannot consume ESM yet, we need to transpile these packages.
     `/node_modules/(?!(${TRANSFORM_IGNORE_PACKAGES.join('|')})/)`,
-    '/packages/(?:test/)?\\w+/(?:lib/|dist/|\\w+\\.js)',
+    '/packages/(?:test/)?\\w+/(?:lib/|dist/.+?\\.js$|\\w+\\.js)',
     ...defaults.transformIgnorePatterns.filter(pattern => pattern !== '/node_modules/')
   ]
 };

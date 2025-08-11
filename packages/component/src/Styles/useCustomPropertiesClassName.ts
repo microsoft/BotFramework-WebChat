@@ -1,10 +1,10 @@
+import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
 import { hooks } from 'botframework-webchat-api';
-import { makeCreateStyles } from 'botframework-webchat-styles';
 import random from 'math-random';
 import { useMemo } from 'react';
-import CustomPropertyNames from './CustomPropertyNames';
 import useInjectStyles from '../hooks/internal/useInjectStyles';
 import useNonce from '../hooks/internal/useNonce';
+import CustomPropertyNames from './CustomPropertyNames';
 
 const { useStyleOptions } = hooks;
 
@@ -23,6 +23,10 @@ export default function useCustomPropertiesClassName() {
       borderAnimationColor3,
       bubbleAttachmentMaxWidth,
       bubbleAttachmentMinWidth,
+      bubbleBorderColor,
+      bubbleBorderRadius,
+      bubbleBorderStyle,
+      bubbleBorderWidth,
       bubbleImageMaxHeight,
       bubbleImageMinHeight,
       bubbleMessageMaxWidth,
@@ -32,6 +36,7 @@ export default function useCustomPropertiesClassName() {
       markdownExternalLinkIconImage,
       paddingRegular,
       primaryFont,
+      sendBoxAttachmentBarMaxHeight,
       subtle,
       timestampColor
     } = styleOptions;
@@ -45,6 +50,10 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.BorderAnimationColor1}: ${borderAnimationColor1};
   ${CustomPropertyNames.BorderAnimationColor2}: ${borderAnimationColor2};
   ${CustomPropertyNames.BorderAnimationColor3}: ${borderAnimationColor3};
+  ${CustomPropertyNames.BorderColorBubble}: ${bubbleBorderColor};
+  ${CustomPropertyNames.BorderRadiusBubble}: ${bubbleBorderRadius}px;
+  ${CustomPropertyNames.BorderStyleBubble}: ${bubbleBorderStyle};
+  ${CustomPropertyNames.BorderWidthBubble}: ${bubbleBorderWidth}px;
   ${CustomPropertyNames.ColorAccent}: ${accent};
   ${CustomPropertyNames.ColorSubtle}: ${subtle};
   ${CustomPropertyNames.ColorTimestamp}: ${timestampColor || subtle};
@@ -52,6 +61,7 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.FontSizeSmall}: ${fontSizeSmall};
   ${CustomPropertyNames.IconURLExternalLink}: ${markdownExternalLinkIconImage};
   ${CustomPropertyNames.MaxHeightImageBubble}: ${bubbleImageMaxHeight}px;
+  ${CustomPropertyNames.MaxHeightSendBoxAttachmentBar}: ${sendBoxAttachmentBarMaxHeight}px;
   ${CustomPropertyNames.MaxWidthAttachmentBubble}: ${bubbleAttachmentMaxWidth}px;
   ${CustomPropertyNames.MinWidthAttachmentBubble}: ${bubbleAttachmentMinWidth}px;
   ${CustomPropertyNames.MaxWidthMessageBubble}: ${bubbleMessageMaxWidth}px;

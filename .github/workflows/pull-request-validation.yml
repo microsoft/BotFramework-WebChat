@@ -38,7 +38,7 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: npm
 
-      - run: npm clean-install --strict-peer-deps
+      - run: npm clean-install --ignore-scripts --strict-peer-deps
 
       - run: npm run build --if-present # Add instrumentation code
 
@@ -58,7 +58,6 @@ jobs:
           ./__tests__/
           ./packages/bundle/dist/
           ./packages/fluent-theme/dist/
-          ./packages/test/fluent-bundle/dist/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
           ./packages/test/web-server/dist/
@@ -281,7 +280,9 @@ jobs:
         with:
           compression-level: 0
           name: test-snapshot-diff-html-${{ matrix.shard-index }}
-          path: ./__tests__/__image_snapshots__/*/__diff_output__/*
+          path: |
+            ./__tests__/__image_snapshots__/*/__diff_output__/*
+            ./__tests__/html2/**/*.snap-*-diff.png
 
   merge-test-results:
     if: always()

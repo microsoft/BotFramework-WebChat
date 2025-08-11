@@ -117,7 +117,13 @@ We prefer using end-to-end visual regression tests (VRT) for pixel-perfect and w
 
 ### Running tests manually
 
-Download [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and extract to the project root.
+Download OS-specific version of [ChromeDriver](https://googlechromelabs.github.io/chrome-for-testing/) and extract to the project root.
+
+For MacOS
+
+   Give execute permission: `chmod +x ./chromedriver`
+
+   Remove quarantine flag: `xattr -d com.apple.quarantine ./chromedriver`
 
 Run `npm run browser`. It will open a new browser window to http://localhost:5001/**tests**/html/. Then, navigate to the test file.
 

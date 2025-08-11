@@ -51,31 +51,33 @@
     "start": "npm run build -- --watch"
   },
   "localDependencies": {
+    "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-styles": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development",
     "botframework-webchat-api": "production",
-    "botframework-webchat-base": "development",
     "botframework-webchat-component": "production",
-    "botframework-webchat-core": "production",
-    "botframework-webchat-styles": "development"
+    "botframework-webchat-core": "production"
   },
   "pinDependencies": {
     "@types/react": [
       "16",
       "react@16.8.6 is our baseline"
     ],
-    "valibot": [
-      "0",
-      "valibot@0 until they finalize @1"
+    "typescript": [
+      "~5.8.3",
+      "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ]
   },
   "devDependencies": {
+    "@msinternal/botframework-webchat-base": "0.0.0-0",
+    "@msinternal/botframework-webchat-styles": "0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
     "@tsconfig/strictest": "^2.0.5",
     "@types/math-random": "^1.0.2",
-    "@types/node": "^22.13.4",
-    "@types/react": "^16.14.62",
-    "botframework-webchat-base": "0.0.0-0",
-    "botframework-webchat-styles": "0.0.0-0",
-    "tsup": "^8.3.6",
-    "typescript": "^5.7.3"
+    "@types/node": "^24.1.0",
+    "@types/react": "^16.14.65",
+    "tsup": "^8.5.0",
+    "typescript": "~5.8.3"
   },
   "dependencies": {
     "botframework-webchat-api": "0.0.0-0",
@@ -85,7 +87,7 @@
     "inject-meta-tag": "0.0.1",
     "math-random": "2.0.1",
     "use-ref-from": "0.1.0",
-    "valibot": "0.42.1"
+    "valibot": "1.1.0"
   },
   "peerDependencies": {
     "react": ">= 16.8.6"

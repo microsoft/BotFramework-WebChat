@@ -1,5 +1,7 @@
+import { type Saga } from 'redux-saga';
 import { fork } from 'redux-saga/effects';
 
+import actionSinkSaga from './sagas/actionSinkSaga';
 import clearSuggestedActionsOnPostActivitySaga from './sagas/clearSuggestedActionsOnPostActivitySaga';
 import connectionStatusToNotificationSaga from './sagas/connectionStatusToNotificationSaga';
 import connectionStatusUpdateSaga from './sagas/connectionStatusUpdateSaga';
@@ -22,9 +24,7 @@ import startSpeakActivityOnPostActivitySaga from './sagas/startSpeakActivityOnPo
 import stopDictateOnCardActionSaga from './sagas/stopDictateOnCardActionSaga';
 import stopSpeakingActivityOnInputSaga from './sagas/stopSpeakingActivityOnInputSaga';
 import submitSendBoxSaga from './sagas/submitSendBoxSaga';
-
-import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
-import type { Saga } from 'redux-saga';
+import { type GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 
 type CreateSagasOptions = {
   ponyfill: GlobalScopePonyfill;
@@ -34,6 +34,7 @@ export default function createSagas({ ponyfill }: CreateSagasOptions): Saga {
   return function* () {
     // TODO: [P2] Since fork() silently catches all exceptions, we need to find a way to console.error them out.
 
+    yield fork(actionSinkSaga);
     yield fork(clearSuggestedActionsOnPostActivitySaga);
     yield fork(connectionStatusToNotificationSaga);
     yield fork(connectionStatusUpdateSaga);

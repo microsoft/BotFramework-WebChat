@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <title>Fluent Theme fallback: uses fluent theme if present</title>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.3.1",
+        "react-dom": "https://esm.sh/react-dom@18.3.1",
+        "react-dom/": "https://esm.sh/react-dom@18.3.1/",
+        "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme"
+      }
+    }
+  </script>
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script type="module">
+    import React from 'react';
+    window.React = React;
+  </script>
+  <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  <style>
+    .fui-FluentProvider {
+      display: contents;
+
+      --webchat__color--surface: var(--colorNeutralBackground3);
+    }
+  </style>
+</head>
+
+<body>
+  <main id="webchat"></main>
+  <script type="module">
+    import React from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
+
+    run(async function () {
+      const {
+        WebChat: { FluentThemeProvider, ReactWebChat }
+      } = window; // Imports in UMD fashion.
+
+      const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+      const root = createRoot(document.getElementById('webchat'));
+
+      const url = new URL(window.location.href);
+      const theme = url.searchParams.get('fluent-theme') ?? 'light';
+
+      const customBrandRamp = {
+        10: '#124C32',
+        20: '#1A5B3E',
+        30: '#216A4A',
+        40: '#297956',
+        50: '#308861',
+        60: '#38976D',
+        70: '#40A779',
+        80: '#158051',
+        90: '#4FC590',
+        100: '#56D49C',
+        110: '#5EE3A8',
+        120: '#79E8B7',
+        130: '#94ECC5',
+        140: '#AFF1D3',
+        150: '#C9F6E2',
+        160: '#E4FAF1'
+      };
+
+      const App = () => React.createElement(ReactWebChat, { directLine, store, styleOptions: { hideTelephoneKeypadButton: false } });
+
+      const themes = {
+        'dark': createDarkTheme(customBrandRamp),
+        'light': webLightTheme,
+      };
+
+      root.render(
+        React.createElement(FluentProvider, { theme: themes[theme] },
+          React.createElement(FluentThemeProvider, null,
+            React.createElement(App)
+          )
+        )
+      );
+
+      await pageConditions.uiConnected();
+
+      await directLine.emulateIncomingActivity(
+        'Eiusmod anim adipisicing cupidatat adipisicing officia sint qui consequat veniam id aute.'
+      );
+
+      await pageConditions.numActivitiesShown(1);
+
+      document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
+
+      await (await directLine.actPostActivity(() => host.sendKeys('Hello, World!\n'))).resolveAll();
+      await host.snapshot('local');
+
+      await directLine.emulateIncomingActivity({
+        type: 'message',
+        textFormat: 'plain',
+        text: 'Please select one of the actions below',
+        suggestedActions: {
+          actions: [
+            {
+              image: `https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/square-icon-purple.png`,
+              imageAltText: 'a purple square',
+              displayText: 'say Hello World!',
+              title: 'Message back as JSON with display text',
+              text: 'Some text',
+              type: 'messageBack',
+              value: {
+                hello: 'World!'
+              }
+            }
+          ],
+          to: []
+        }
+      });
+      // THEN: Should send the activity.
+      await pageConditions.numActivitiesShown(3);
+      await pageConditions.allOutgoingActivitiesSent();
+      await host.snapshot('local');
+
+      // WHEN: Telephone keypad button is clicked.
+      await host.click(
+        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTelephoneKeypadToolbarButton}"]`)
+      );
+
+      // THEN: Should show the telephone keypad with button "1" focused.
+      expect(document.activeElement).toBe(
+        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTelephoneKeypadButton1}"]`)
+      );
+      await pageConditions.scrollToBottomCompleted();
+      await host.snapshot('local');
+
+      // THEN: Close keypad
+      await host.click(
+        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTelephoneKeypadToolbarButton}"]`)
+      );
+
+      // THEN: Upload file
+      await pageObjects.uploadFile('seaofthieves.jpg');
+
+      // THEN: Should show attachments
+      await host.snapshot('local');
+    });
+  </script>
+</body>
+
+</html>

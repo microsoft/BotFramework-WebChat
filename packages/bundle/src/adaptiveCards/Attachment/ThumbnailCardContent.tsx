@@ -1,24 +1,31 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [25, 75] }] */
 
 import { hooks } from 'botframework-webchat-component';
-import PropTypes from 'prop-types';
-import React, { FC, useMemo } from 'react';
-import type { DirectLineThumbnailCard } from 'botframework-webchat-core';
+import React, { memo, useMemo } from 'react';
+import { boolean, object, optional, parse, pipe, readonly, string, type InferInput } from 'valibot';
 
+import useStyleOptions from '../../hooks/useStyleOptions';
+import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
-import useStyleOptions from '../../hooks/useStyleOptions';
+import { directLineBasicCardSchema } from './private/directLineSchema';
 
 const { useDirection } = hooks;
 
-type ThumbnailCardContentProps = {
-  actionPerformedClassName?: string;
-  content: DirectLineThumbnailCard;
-  disabled?: boolean;
-};
+const thumbnailCardContentPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string()),
+    content: directLineBasicCardSchema,
+    disabled: optional(boolean())
+  }),
+  readonly()
+);
 
-const ThumbnailCardContent: FC<ThumbnailCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+type ThumbnailCardContentProps = InferInput<typeof thumbnailCardContentPropsSchema>;
+
+function ThumbnailCardContent(props: ThumbnailCardContentProps) {
+  const { actionPerformedClassName, content, disabled } = parse(thumbnailCardContentPropsSchema, props);
+
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -41,11 +48,11 @@ const ThumbnailCardContent: FC<ThumbnailCardContentProps> = ({ actionPerformedCl
         );
 
         builder.addTextBlock(subtitle, { isSubtle: true, wrap: richCardWrapTitle }, firstColumn);
-        builder.addImage(url, lastColumn, tap, alt);
+        builder.addImage(url, lastColumn, tap as any, alt);
         builder.addTextBlock(text, { wrap: true });
-        builder.addButtons(buttons);
+        builder.addButtons(buttons as any);
       } else {
-        builder.addCommon(content);
+        builder.addCommon(content as any);
       }
       return builder.card;
     }
@@ -59,32 +66,7 @@ const ThumbnailCardContent: FC<ThumbnailCardContentProps> = ({ actionPerformedCl
       tapAction={content && content.tap}
     />
   );
-};
+}
 
-ThumbnailCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
-};
-
-ThumbnailCardContent.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  content: PropTypes.shape({
-    buttons: PropTypes.array,
-    images: PropTypes.arrayOf(
-      PropTypes.shape({
-        alt: PropTypes.string.isRequired,
-        tap: PropTypes.any,
-        url: PropTypes.string.isRequired
-      })
-    ),
-    subtitle: PropTypes.string,
-    tap: PropTypes.any,
-    text: PropTypes.string,
-    title: PropTypes.string
-  }).isRequired,
-  disabled: PropTypes.bool
-};
-
-export default ThumbnailCardContent;
+export default memo(ThumbnailCardContent);
+export { thumbnailCardContentPropsSchema, type ThumbnailCardContentProps };

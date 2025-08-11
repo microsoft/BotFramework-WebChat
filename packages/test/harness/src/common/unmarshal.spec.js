@@ -26,7 +26,7 @@ describe('Unmarshalling value of', () => {
         }
       })
     ).toMatchInlineSnapshot(`
-      Object {
+      {
         "boolean": true,
         "null": null,
         "number": 123,
@@ -40,7 +40,6 @@ describe('Unmarshalling value of', () => {
     expect(
       unmarshal([
         true,
-        // eslint-disable-next-line no-magic-numbers
         123,
         null,
         'string',
@@ -49,7 +48,7 @@ describe('Unmarshalling value of', () => {
         }
       ])
     ).toMatchInlineSnapshot(`
-      Array [
+      [
         true,
         123,
         null,

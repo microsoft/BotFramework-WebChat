@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <link href="grouping.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      .grouping--duo {
+        border-color: orange;
+      }
+
+      .grouping--duo::after {
+        background-color: orange;
+        bottom: -2px;
+        color: white;
+        content: 'Duo';
+        right: -2px;
+        top: unset;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      run(
+        async function () {
+          await host.windowSize(undefined, 960, document.querySelector('main'));
+
+          const {
+            React: { createElement },
+            ReactDOM: { render },
+            WebChat: {
+              decorator: { createActivityGroupingMiddleware },
+              FluentThemeProvider,
+              ReactWebChat
+            }
+          } = window; // Imports in UMD fashion.
+
+          const clock = lolex.createClock();
+
+          const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+          const groupActivitiesMiddleware = type =>
+            type === 'duo'
+              ? next => request => ({
+                  ...next(request),
+                  duo: request.activities.reduce((result, activity) => {
+                    if (result.at(-1)?.length === 1) {
+                      result.at(-1).push(activity);
+                    } else {
+                      result.push([activity]);
+                    }
+
+                    return result;
+                  }, [])
+                })
+              : undefined;
+
+          const decoratorMiddleware = [
+            createActivityGroupingMiddleware(next => request => {
+              const DownstreamComponent = next(request);
+
+              if (request.groupingName) {
+                return ({ activities, children }) =>
+                  createElement(
+                    'div',
+                    { className: `grouping grouping--${request.groupingName}` },
+                    DownstreamComponent ? createElement(DownstreamComponent, { activities }, children) : children
+                  );
+              }
+
+              return DownstreamComponent;
+            })
+          ];
+
+          render(
+            createElement(
+              FluentThemeProvider,
+              {},
+              createElement(ReactWebChat, {
+                decoratorMiddleware,
+                directLine,
+                groupActivitiesMiddleware,
+                ponyfill: clock,
+                store,
+                styleOptions: {
+                  botAvatarBackgroundColor: 'black',
+                  botAvatarInitials: 'WC',
+                  groupActivitiesBy: ['sender', 'status', 'duo'],
+                  groupTimestamp: 30_000,
+                  userAvatarBackgroundColor: 'black',
+                  userAvatarInitials: 'WW'
+                }
+              })
+            ),
+            document.getElementById('webchat')
+          );
+
+          await pageConditions.webChatRendered();
+
+          clock.tick(600);
+
+          await pageConditions.uiConnected();
+
+          for (let index = 0; index < 9; index++) {
+            await directLine.emulateIncomingActivity({
+              from: { id: 'bot', role: 'bot' },
+              text: `Bot ${index + 1}: t=${(clock.Date.now() - 600) / 1_000}s`,
+              type: 'message'
+            });
+
+            clock.tick(index % 3 === 2 ? 60_000 : 10_000);
+          }
+
+          await host.snapshot('local');
+        },
+        { ignoreErrors: true }
+      );
+    </script>
+  </body>
+</html>

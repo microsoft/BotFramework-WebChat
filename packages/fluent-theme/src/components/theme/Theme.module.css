@@ -1,11 +1,3 @@
-:global {
-  /* biome-ignore format: do not print each class on the new line */
-  .a, .b, .c, .d, .e, .f, .g, .h, .i, .j, .k, .l, .m, .n, .o, .p, .q, .r, .s, .t, .v, .w, .u, .x, .y, .z,
-  .A, .B, .C, .D, .E, .F, .G, .H, .I, .J, .K, .L, .M, .N, .O, .P, .Q, .R, .S, .T, .V, .W, .U, .X, .Y, .Z {
-    /* esbuild considers empty global classes as used and removes them due to lack of rules */
-  }
-}
-
 :global(.webchat-fluent).theme {
   display: contents;
 
@@ -20,6 +12,8 @@
   --webchat-colorNeutralForeground3: var(--colorNeutralForeground3, #616161);
   --webchat-colorNeutralForeground4: var(--colorNeutralForeground4, #707070);
   --webchat-colorNeutralForeground5: var(--colorNeutralForeground5, #7e7e7e);
+
+  --webchat-colorNeutralForegroundOnBrand: var(--colorNeutralForegroundOnBrand, #fff);
 
   --webchat-colorNeutralBackgroundDisabled: var(--colorNeutralBackgroundDisabled, #f0f0f0);
   --webchat-colorNeutralBackground1: var(--colorNeutralBackground1, #ffffff);
@@ -61,6 +55,9 @@
   --webchat-colorBrandForegroundLinkPressed: var(--colorBrandForegroundLinkPressed, #014259);
   --webchat-colorBrandForegroundLinkSelected: var(--colorBrandForegroundLinkSelected, #01678c);
 
+  --webchat-colorBrandBackground: var(--colorBrandBackground, #077fab);
+  --webchat-colorBrandBackgroundHover: var(--colorBrandBackgroundHover, #06729a);
+  --webchat-colorBrandBackgroundPressed: var(--colorBrandBackgroundPressed, #044760);
   --webchat-colorBrandBackground2: var(--colorBrandBackground2, #def2fc);
   --webchat-colorBrandBackground2Hover: var(--colorBrandBackground2Hover, #bee7fa);
   --webchat-colorBrandBackground2Pressed: var(--colorBrandBackground2Pressed, #7fd2f5);
@@ -175,7 +172,7 @@
   --webchat-strokeWidthThicker: var(--strokeWidthThicker, 3px);
 
   /* https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/durations.ts */
-  --webchat-durationUltraFast: var(--durationUltraFast, 0);
+  --webchat-durationUltraFast: var(--durationUltraFast, 50ms);
   --webchat-durationNormal: var(--durationNormal, 200ms);
   --webchat-durationUltraSlow: var(--durationUltraSlow, 500ms);
 
@@ -202,11 +199,11 @@
   --webchat__line-height--small: var(--webchat-lineHeightBase200);
   --webchat__line-height--medium: var(--webchat-lineHeightBase300);
   --webchat__max-width--bubble: var(--webchat-bubble-maxWidth);
+  --webchat__max-width--attachment-bubble: var(--webchat-bubble-maxWidth);
   --webchat__min-height--bubble: var(--webchat-bubble-minHeight);
   --webchat__padding--regular: var(--webchat-spacingVerticalS);
   --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalMNudge)
     var(--webchat-spacingHorizontalMNudge);
-
   --webchat__border-animation--color-1: #464feb;
   --webchat__border-animation--color-2: #47cffa;
   --webchat__border-animation--color-3: #b47cf8;
@@ -228,10 +225,13 @@
 }
 
 /* Scrollbars */
+:global(.webchat-fluent).theme :global(.code-block-content .code-block-content__code-block),
+:global(.webchat-fluent).theme :global(.send-box-attachment-bar.send-box-attachment-bar--as-list-item),
+:global(.webchat-fluent).theme :global(.text-area.text-area--scroll),
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable),
-:global(.webchat-fluent).theme :global(.webchat__view-code-dialog__code-body),
 :global(.webchat-fluent).theme :global(.webchat__render-markdown [data-math-type='block']),
-:global(.webchat-fluent).theme :global(.webchat__view-code-dialog__body) {
+:global(.webchat-fluent).theme :global(.webchat__view-code-dialog__body),
+:global(.webchat-fluent).theme :global(.webchat__view-code-dialog__code-body) {
   /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
   scrollbar-color: unset;
   scrollbar-width: unset;
@@ -254,7 +254,12 @@
     width: var(--webchat-spacingVerticalMNudge);
   }
 
-  &:hover::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+
+  &:hover::-webkit-scrollbar-thumb,
+  &:has(> :global(.text-area-input:focus))::-webkit-scrollbar-thumb {
     background-clip: padding-box;
     background-color: var(--webchat-colorNeutralForeground5);
     border-radius: 10px;
@@ -392,8 +397,8 @@
     border-color: var(--webchat-colorStrokeFocus2);
   }
 
-  :global(.webchat__modal-dialog__close-button-image) {
-    fill: currentColor;
+  :global(.webchat__modal-dialog__close-button-icon) {
+    color: currentColor;
   }
 }
 
@@ -417,7 +422,7 @@
     transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
 
     :global(.webchat__code-block-copy-button__icon) {
-      background-color: currentColor;
+      --webchat__component-icon--color: currentColor;
     }
 
     &:hover {
@@ -575,6 +580,8 @@
   :global(.webchat__activity-button__icon) {
     height: 20px;
     width: 20px;
+
+    --webchat__component-icon--color: var(--webchat-colorNeutralForeground2);
   }
 }
 
@@ -598,13 +605,15 @@
 
 /* Feedback button */
 :global(.webchat-fluent).theme :global(.webchat__thumb-button) {
-  color: var(--webchat-colorNeutralForeground1);
+  :global(.webchat__thumb-button__image) {
+    color: var(--webchat-colorNeutralForeground1);
+  }
 
-  &:focus-visible {
+  &:has(:global(.webchat__thumb-button__input):focus-visible) {
     outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
   }
 
-  &[aria-disabled='true'] {
+  &:has(:global(.webchat__thumb-button__input)[aria-disabled='true']) :global(.webchat__thumb-button__image) {
     color: var(--webchat-colorNeutralForegroundDisabled);
   }
 }
@@ -622,4 +631,102 @@
   line-height: var(--webchat-lineHeightBase200);
   padding: var(--webchat-spacingVerticalSNudge) var(--webchat-spacingHorizontalM);
   transition: opacity var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+}
+
+/* Feedback Form */
+:global(.webchat-fluent).theme :global(.feedback-form) {
+  :global(.feedback-form__form-header) {
+    color: var(--webchat-colorNeutralForeground1);
+    font-size: var(--webchat-fontSizeBase300);
+    font-weight: var(--webchat-fontWeightRegular);
+    line-height: var(--webchat-lineHeightBase300);
+  }
+
+  :global(.feedback-form__form) {
+    gap: var(--webchat-spacingVerticalXS);
+  }
+
+  :global(.feedback-form__form-footer) {
+    color: var(--webchat-colorNeutralForeground1);
+    font-size: var(--webchat-fontSizeBase100);
+    font-weight: var(--webchat-fontWeightRegular);
+    line-height: var(--webchat-lineHeightBase200);
+  }
+
+  :global(.feedback-form__submit-button) {
+    background-color: var(--webchat-colorBrandBackground);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandBackground);
+    border-radius: var(--webchat-borderRadiusMedium);
+    color: var(--webchat-colorNeutralForegroundOnBrand);
+    cursor: pointer;
+    font-size: var(--webchat-fontSizeBase300);
+    padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalS);
+    transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+
+    &:hover {
+      background-color: var(--webchat-colorBrandBackgroundHover);
+      border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandBackgroundHover);
+    }
+
+    &:focus-visible {
+      outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
+      outline-offset: calc(var(--webchat-strokeWidthThin) * -1);
+    }
+
+    &:active {
+      background-color: var(--webchat-colorBrandBackgroundPressed);
+      border: var(--webchat-strokeWidthThin) solid var(--webchat-colorBrandBackgroundPressed);
+    }
+  }
+
+  :global(.feedback-form__cancel-button) {
+    background-color: var(--webchat-colorNeutralBackground1);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
+    border-radius: var(--webchat-borderRadiusMedium);
+    color: var(--webchat-colorNeutralForeground1);
+    cursor: pointer;
+    font-size: var(--webchat-fontSizeBase300);
+    padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalS);
+    transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+
+    &:hover {
+      background-color: var(--webchat-colorNeutralBackground1Hover);
+      border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1Hover);
+      color: currentColor;
+    }
+
+    &:focus-visible {
+      outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
+      outline-offset: calc(var(--webchat-strokeWidthThin) * -1);
+    }
+
+    &:active {
+      background-color: var(--webchat-colorNeutralBackground1Pressed);
+      border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1Pressed);
+    }
+  }
+
+  :global(.feedback-form__text-box) {
+    background-color: var(--webchat-colorNeutralBackground1);
+    border-radius: var(--webchat-borderRadiusMedium);
+    border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
+    font-size: var(--webchat-fontSizeBase300);
+    line-height: var(--webchat-lineHeightBase300);
+    gap: var(--webchat-spacingVerticalSNudge);
+    padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalM);
+
+    &::after {
+      border-bottom-left-radius: var(--webchat-borderRadiusMedium);
+      border-bottom-right-radius: var(--webchat-borderRadiusMedium);
+      border-bottom: var(--webchat-strokeWidthThicker) solid var(--webchat-colorBrandForeground1);
+      clip-path: inset(calc(100% - var(--webchat-strokeWidthThicker)) 50% 0 50%);
+    }
+    &:focus-within {
+      border: var(--webchat-strokeWidthThin) solid var(--webchat-colorNeutralStroke1);
+    }
+    &:focus-within::after {
+      clip-path: inset(calc(100% - var(--webchat-strokeWidthThicker)) 0 0 0);
+      transition: clip-path var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
+    }
+  }
 }

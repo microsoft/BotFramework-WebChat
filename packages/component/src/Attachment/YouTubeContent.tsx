@@ -1,19 +1,27 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { memo } from 'react';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../hooks/useStyleSet';
 
 const { useLocalizer } = hooks;
 
-type YouTubeContentProps = {
-  alt?: string;
-  autoPlay?: boolean;
-  embedID: string;
-  loop?: boolean;
-};
+const youTubeContentPropsSchema = pipe(
+  object({
+    alt: optional(string()),
+    autoPlay: optional(boolean()),
+    embedID: string(),
+    loop: optional(boolean())
+  }),
+  readonly()
+);
 
-const YouTubeContent: FC<YouTubeContentProps> = ({ alt, autoPlay, embedID, loop }) => {
+type YouTubeContentProps = InferInput<typeof youTubeContentPropsSchema>;
+
+function YouTubeContent(props: YouTubeContentProps) {
+  const { alt, autoPlay = false, embedID, loop = false } = validateProps(youTubeContentPropsSchema, props);
+
   const [{ youTubeContent: youTubeContentStyleSet }] = useStyleSet();
   const localize = useLocalizer();
 
@@ -35,19 +43,7 @@ const YouTubeContent: FC<YouTubeContentProps> = ({ alt, autoPlay, embedID, loop 
       title={title}
     />
   );
-};
+}
 
-YouTubeContent.defaultProps = {
-  alt: '',
-  autoPlay: false,
-  loop: false
-};
-
-YouTubeContent.propTypes = {
-  alt: PropTypes.string,
-  autoPlay: PropTypes.bool,
-  embedID: PropTypes.string.isRequired,
-  loop: PropTypes.bool
-};
-
-export default YouTubeContent;
+export default memo(YouTubeContent);
+export { youTubeContentPropsSchema, type YouTubeContentProps };

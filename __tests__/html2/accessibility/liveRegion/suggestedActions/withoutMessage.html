@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/accessibility.liveRegionAttachment.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const baseActivity = {
+          from: {
+            id: 'bot',
+            role: 'bot'
+          },
+          textFormat: 'markdown',
+          timestamp: new Date(2000, 0, 1, 12, 34, 56, 789).toISOString(),
+          type: 'message'
+        };
+
+        WebChat.renderWebChat(
+          {
+            directLine: testHelpers.createDirectLineWithTranscript([
+              {
+                ...baseActivity,
+                suggestedActions: {
+                  actions: [
+                    {
+                      title: 'What can I say?',
+                      type: 'imBack'
+                    },
+                    {
+                      title: 'What is the weather?',
+                      type: 'imBack'
+                    }
+                  ]
+                }
+              }
+            ]),
+            store: testHelpers.createStore(),
+            styleOptions: {
+              internalLiveRegionFadeAfter: 60000
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.liveRegionStabilized();
+
+        const screenReaderTexts = [].map.call(pageElements.liveRegion().children, child =>
+          testHelpers.getAllTextContents(child).join('\n')
+        );
+
+        expect(screenReaderTexts).toEqual([
+          'connecting',
+          'Bot said:\nWhat can I say?\nWhat is the weather?',
+          'Message has suggested actions. Press Alt Shift A to select them.'
+        ]);
+
+        // The screenshot should show the suggested actions as HTML <button> and verify we sent a <button> to screen reader.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

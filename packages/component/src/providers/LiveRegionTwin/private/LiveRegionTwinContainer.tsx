@@ -1,29 +1,35 @@
-import PropTypes from 'prop-types';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { Fragment } from 'react';
-
-import type { VFC } from 'react';
+import { literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 
 import useMarkAllAsRenderedEffect from './useMarkAllAsRenderedEffect';
 import useStaticElementEntries from './useStaticElementEntries';
 
-type LiveRegionTwinContainerProps = {
-  'aria-label'?: string;
-  'aria-live': 'assertive' | 'polite';
-  'aria-roledescription'?: string;
-  className?: string;
-  role?: string;
-  textElementClassName?: string;
-};
+const liveRegionTwinContainerPropsSchema = pipe(
+  object({
+    'aria-label': optional(string()),
+    'aria-live': union([literal('assertive'), literal('polite')]),
+    'aria-roledescription': optional(string()),
+    className: optional(string()),
+    role: optional(string()),
+    textElementClassName: optional(string())
+  }),
+  readonly()
+);
+
+type LiveRegionTwinContainerProps = InferInput<typeof liveRegionTwinContainerPropsSchema>;
 
 // This container is marked as private because we assume there is only one instance under the <LiveRegionTwinContext>.
-const LiveRegionTwinContainer: VFC<LiveRegionTwinContainerProps> = ({
-  'aria-label': ariaLabel,
-  'aria-live': ariaLive,
-  'aria-roledescription': ariaRoleDescription,
-  className,
-  role,
-  textElementClassName
-}) => {
+function LiveRegionTwinContainer(props: LiveRegionTwinContainerProps) {
+  const {
+    'aria-label': ariaLabel,
+    'aria-live': ariaLive,
+    'aria-roledescription': ariaRoleDescription,
+    className,
+    role,
+    textElementClassName
+  } = validateProps(liveRegionTwinContainerPropsSchema, props);
+
   const [staticElementEntries] = useStaticElementEntries();
 
   // We assume there is only one instance under the <LiveRegionTwinContext>.
@@ -52,25 +58,7 @@ const LiveRegionTwinContainer: VFC<LiveRegionTwinContainerProps> = ({
       })}
     </div>
   );
-};
-
-LiveRegionTwinContainer.defaultProps = {
-  'aria-label': undefined,
-  'aria-roledescription': undefined,
-  className: undefined,
-  role: undefined,
-  textElementClassName: undefined
-};
-
-LiveRegionTwinContainer.propTypes = {
-  'aria-label': PropTypes.string,
-  // PropTypes.oneOf() returns type of `string`, but not `'assertive' | 'polite'`.
-  // @ts-ignore
-  'aria-live': PropTypes.oneOf(['assertive', 'polite']).isRequired,
-  'aria-roledescription': PropTypes.string,
-  className: PropTypes.string,
-  role: PropTypes.string,
-  textElementClassName: PropTypes.string
-};
+}
 
 export default LiveRegionTwinContainer;
+export { liveRegionTwinContainerPropsSchema, type LiveRegionTwinContainerProps };

@@ -27,7 +27,7 @@
         await pageConditions.uiConnected();
 
         await pageObjects.sendMessageViaSendBox('conversationstart');
-        await pageConditions.minNumActivitiesShown(1);
+        await pageConditions.minNumActivitiesShown(2);
 
         await host.snapshot();
       });

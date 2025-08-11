@@ -21,7 +21,8 @@
       const {
         React: { useMemo },
         WebChat: {
-          hooks: { useDirection }
+          hooks: { useDirection },
+          testIds
         }
       } = window;
 
@@ -48,7 +49,7 @@
                       {
                         "@type": "LikeAction",
                         actionStatus: "CompletedActionStatus",
-                        target: { 
+                        target: {
                           "@type": "EntryPoint",
                           urlTemplate: "ms-directline://postback?interaction=like"
                         }
@@ -102,7 +103,7 @@
                       {
                         "@type": "LikeAction",
                         actionStatus: "PotentialActionStatus",
-                        target: { 
+                        target: {
                           "@type": "EntryPoint",
                           urlTemplate: "ms-directline://postback?interaction=like"
                         }
@@ -139,24 +140,36 @@
         await host.snapshot('local');
 
         const [,, activityStatus] = pageElements.activityStatuses();
-        const buttons = activityStatus.querySelectorAll('button');
+        const buttons = activityStatus.querySelectorAll(`[data-testid="${testIds.feedbackButton}"]`);
 
         pageElements.sendBoxTextBox().focus();
 
         await host.sendShiftTab(3);
         await host.sendKeys('ENTER');
         await expect(document.activeElement).toBe(buttons[0]);
+
+        // Wait for 400 ms for the tooltip to show up.
+        await new Promise(resolve => setTimeout(resolve, 400));
+
         await host.snapshot('local');
 
         await host.sendTab();
         await expect(document.activeElement).toBe(buttons[1]);
+
+        // Wait for 400 ms for the tooltip to show up.
+        await new Promise(resolve => setTimeout(resolve, 400));
+
         await host.snapshot('local');
 
         await host.sendTab();
         await expect(document.activeElement).toBe(buttons[0]);
+
+        // Wait for 400 ms for the tooltip to show up.
+        await new Promise(resolve => setTimeout(resolve, 400));
+
         await host.snapshot('local');
 
-        await host.sendKeys('ENTER');
+        await host.sendKeys('SPACE');
         await host.snapshot('local');
       });
     </script>

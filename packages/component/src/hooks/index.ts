@@ -1,4 +1,5 @@
 import { useTransformHTMLContent } from '../providers/HTMLContentTransformCOR/index';
+import useShouldReduceMotion from '../providers/ReducedMotion/useShouldReduceMotion';
 import useDictateAbortable from './useDictateAbortable';
 import useFocus from './useFocus';
 import useMakeThumbnail from './useMakeThumbnail';
@@ -41,6 +42,7 @@ export {
   useSendFiles,
   // We are overwriting the `useSendMessage` hook from bf-wc-api and adding thumbnailing support.
   useSendMessage,
+  useShouldReduceMotion,
   useStyleSet,
   useTextBoxSubmit,
   useTextBoxValue,

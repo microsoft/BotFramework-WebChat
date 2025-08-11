@@ -136,13 +136,13 @@
 
         const data = [];
         for (const entry of commits.values()) {
-          const { 
-            commit, 
+          const {
+            commit,
             'Transcript nested-update actual': transcriptNestedUpdate = 0,
             'Transcript update actual': transcriptUpdate = 0,
             'Activity update actual': activityUpdate = 0,
             'Activity mount actual': acivityMount = 0,
-            activitiesCount 
+            activitiesCount
           } = entry;
           if (acivityMount || transcriptNestedUpdate || transcriptUpdate || activityUpdate) {
             data.push({ index: data.length, commit, activityUpdate, acivityMount, transcriptNestedUpdate, transcriptUpdate, activitiesCount })
@@ -285,7 +285,7 @@ Render time slightly moves with count:\t  ${prettyBool(() => [covariance < 50, c
             .attr("clip-path", clip)
             .attr("fill", "LightSteelBlue")
             .attr("d", areaTU(data, x));
-              
+
         const pathAM = svg.append("path")
           .attr("clip-path", clip)
           .attr("fill", "LavenderBlush")

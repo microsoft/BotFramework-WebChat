@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import dereferenceBlankNodes from './dereferenceBlankNodes';
 
 test('should leave non-blank node as-is', () => {

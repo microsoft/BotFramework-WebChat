@@ -7,7 +7,7 @@ ERROR.stack = 'stack';
 describe('Marshalling value of', () => {
   test('error', () => {
     expect(marshal(ERROR)).toMatchInlineSnapshot(`
-      Object {
+      {
         "__type": "error",
         "message": "message",
         "stack": "stack",
@@ -26,9 +26,9 @@ describe('Marshalling value of', () => {
         undef: undefined
       })
     ).toMatchInlineSnapshot(`
-      Object {
+      {
         "boolean": true,
-        "error": Object {
+        "error": {
           "__type": "error",
           "message": "message",
           "stack": "stack",
@@ -36,7 +36,7 @@ describe('Marshalling value of', () => {
         "null": null,
         "number": 123,
         "string": "string",
-        "undef": Object {
+        "undef": {
           "__type": "undefined",
         },
       }
@@ -44,11 +44,10 @@ describe('Marshalling value of', () => {
   });
 
   test('array', () => {
-    // eslint-disable-next-line no-magic-numbers
     expect(marshal([true, ERROR, 123, null, 'string', undefined])).toMatchInlineSnapshot(`
-      Array [
+      [
         true,
-        Object {
+        {
           "__type": "error",
           "message": "message",
           "stack": "stack",
@@ -56,7 +55,7 @@ describe('Marshalling value of', () => {
         123,
         null,
         "string",
-        Object {
+        {
           "__type": "undefined",
         },
       ]

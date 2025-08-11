@@ -1,22 +1,30 @@
 /* eslint react/no-array-index-key: "off" */
 
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { Components } from 'botframework-webchat-component';
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
-import type { DirectLineAudioCard } from 'botframework-webchat-core';
+import React, { memo } from 'react';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import CommonCard from './CommonCard';
 import useStyleSet from '../../hooks/useStyleSet';
+import CommonCard from './CommonCard';
+import { directLineMediaCardSchema } from './private/directLineSchema';
 
 const { AudioContent } = Components;
 
-type AudioCardContentProps = {
-  actionPerformedClassName?: string;
-  content: DirectLineAudioCard;
-  disabled?: boolean;
-};
+const audioCardContentPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string()),
+    content: directLineMediaCardSchema,
+    disabled: optional(boolean())
+  }),
+  readonly()
+);
 
-const AudioCardContent: FC<AudioCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+type AudioCardContentProps = InferInput<typeof audioCardContentPropsSchema>;
+
+function AudioCardContent(props: AudioCardContentProps) {
+  const { actionPerformedClassName, content, disabled } = validateProps(audioCardContentPropsSchema, props);
+
   const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
   const { autostart = false, autoloop = false, image: { url: imageURL = '' } = {}, media = [] } = content;
 
@@ -32,30 +40,7 @@ const AudioCardContent: FC<AudioCardContentProps> = ({ actionPerformedClassName,
       <CommonCard actionPerformedClassName={actionPerformedClassName} content={content} disabled={disabled} />
     </div>
   );
-};
+}
 
-AudioCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
-};
-
-AudioCardContent.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  content: PropTypes.shape({
-    autostart: PropTypes.bool,
-    autoloop: PropTypes.bool,
-    image: PropTypes.shape({
-      url: PropTypes.string.isRequired
-    }),
-    media: PropTypes.arrayOf(
-      PropTypes.shape({
-        url: PropTypes.string.isRequired
-      }).isRequired
-    ).isRequired
-  }).isRequired,
-  disabled: PropTypes.bool
-};
-
-export default AudioCardContent;
+export default memo(AudioCardContent);
+export { audioCardContentPropsSchema, type AudioCardContentProps };

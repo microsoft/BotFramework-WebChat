@@ -297,6 +297,14 @@ type StyleOptions = {
    */
 
   hideSendBox?: boolean;
+
+  /**
+   * Indicates if the upload file button should be hidden.
+   *
+   * @default false
+   *
+   * @deprecated deprecated since 4.18.0: obsolated by {@linkcode disableFileUpload}. This option will be removed on or after 2027-07-14.
+   */
   hideUploadButton?: boolean;
 
   /**
@@ -932,7 +940,7 @@ type StyleOptions = {
   /**
    * (EXPERIMENTAL) Feedback buttons placement
    *
-   * - `'activity-actions'` - place feedback buttons inside activity actions
+   * - `'activity-actions'` - place feedback buttons inside activity actions - will show feedback form
    * - `'activity-status'` - place feedback buttons inside activity status
    *
    * @default 'activity-status'
@@ -952,6 +960,39 @@ type StyleOptions = {
    * @see https://github.com/microsoft/BotFramework-WebChat/pull/5426
    */
   speechRecognitionContinuous?: boolean | undefined;
+
+  /**
+   * Defines how activities are being grouped by (in the order of appearance in the array). Default to `['sender', 'status']` or `sender,status` in CSS.
+   *
+   * Values are key of result of `groupActivitiesMiddleware`. The default implementation of `groupActivitiesMiddleware` has `sender` and `status`.
+   *
+   * To add new groupings, configure `groupActivitiesMiddleware` to output extra groups. Then, add the group names to `styleOptions.groupActivitiesBy`.
+   */
+  groupActivitiesBy?: readonly string[] | undefined;
+
+  /**
+   * Send box: maximum number of attachment item to preview as thumbnail before showing as text-only.
+   * Send box: maximum height of the attachment bar.
+   *
+   * @default 114
+   */
+  sendBoxAttachmentBarMaxHeight?: number;
+
+  /**
+   * Send box: maximum number of attachment item to preview as thumbnail before showing as list item.
+   *
+   * @default 3
+   */
+  sendBoxAttachmentBarMaxThumbnail?: number;
+
+  /**
+   * Indicates if file upload should be disabled.
+   *
+   * @default false
+   *
+   * New in 4.19.0.
+   */
+  disableFileUpload?: boolean;
 };
 
 // StrictStyleOptions is only used internally in Web Chat and for simplifying our code:
@@ -961,7 +1002,12 @@ type StyleOptions = {
 type StrictStyleOptions = Required<
   Omit<
     StyleOptions,
-    'bubbleImageHeight' | 'bubbleMaxWidth' | 'bubbleMinWidth' | 'hideScrollToEndButton' | 'newMessagesButtonFontSize'
+    | 'bubbleImageHeight'
+    | 'bubbleMaxWidth'
+    | 'bubbleMinWidth'
+    | 'hideScrollToEndButton'
+    | 'hideUploadButton'
+    | 'newMessagesButtonFontSize'
   >
 > & {
   bubbleFromUserNubOffset: number;

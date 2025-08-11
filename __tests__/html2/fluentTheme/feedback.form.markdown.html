@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const App = () => <ReactWebChat directLine={directLine} store={store} />;
+
+        render(
+          <FluentThemeProvider>
+            <App />
+          </FluentThemeProvider>,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          type: 'message',
+          id: 'a-00000',
+          timestamp: 0,
+          text: 'This is a test message to show feedback buttons',
+          from: {
+            role: 'bot'
+          },
+          locale: 'en-US',
+          entities: [],
+          channelData: {
+            feedbackLoop: {
+              type: 'default',
+              disclaimer: 'This is a test disclaimer message with **bold** text and a [link](https://microsoft.com)'
+            }
+          }
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        pageElements.byTestId('send box text area').focus();
+        await host.sendShiftTab(2);
+
+        await host.sendKeys('ENTER');
+        await host.sendKeys('SPACE');
+
+        await pageConditions.became(
+          'feedback form is open',
+          () => document.activeElement === pageElements.byTestId('feedback sendbox'),
+          1000
+        );
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

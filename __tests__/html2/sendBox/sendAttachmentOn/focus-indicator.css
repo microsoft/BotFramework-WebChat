@@ -1,0 +1,4 @@
+*:focus {
+  background-color: yellow !important;
+  outline: dashed 2px Red !important;
+}

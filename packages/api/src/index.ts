@@ -1,21 +1,8 @@
+// TODO: Move the pattern to re-export.
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import defaultStyleOptions from './defaultStyleOptions';
 import Composer, { ComposerProps } from './hooks/Composer';
 import * as hooks from './hooks/index';
-import {
-  SendBoxMiddlewareProxy,
-  initSendBoxMiddleware,
-  type SendBoxMiddleware,
-  type SendBoxMiddlewareProps,
-  type SendBoxMiddlewareRequest
-} from './hooks/internal/SendBoxMiddleware';
-import {
-  SendBoxToolbarMiddlewareProxy,
-  initSendBoxToolbarMiddleware,
-  type SendBoxToolbarMiddleware,
-  type SendBoxToolbarMiddlewareProps,
-  type SendBoxToolbarMiddlewareRequest
-} from './hooks/internal/SendBoxToolbarMiddleware';
 import concatMiddleware from './hooks/middleware/concatMiddleware';
 import { type ActivityStatusRenderer } from './hooks/useCreateActivityStatusRenderer'; // TODO: [P1] This line should export the one from the version from "middleware rework" workstream.
 import { type DebouncedNotification, type DebouncedNotifications } from './hooks/useDebouncedNotifications';
@@ -43,26 +30,31 @@ import TypingIndicatorMiddleware, { type RenderTypingIndicator } from './types/T
 import { type WebSpeechPonyfill } from './types/WebSpeechPonyfill';
 import { type WebSpeechPonyfillFactory } from './types/WebSpeechPonyfillFactory';
 
-const buildTool = process.env.build_tool;
-const moduleFormat = process.env.module_format;
-const version = process.env.npm_package_version;
+// #region Re-export
+export {
+  extractSendBoxMiddleware,
+  SendBoxMiddlewareProxy,
+  type SendBoxMiddleware,
+  type SendBoxMiddlewareProps,
+  type SendBoxMiddlewareRequest
+} from './middleware/SendBoxMiddleware';
+
+export {
+  extractSendBoxToolbarMiddleware,
+  SendBoxToolbarMiddlewareProxy,
+  type SendBoxToolbarMiddleware,
+  type SendBoxToolbarMiddlewareProps,
+  type SendBoxToolbarMiddlewareRequest
+} from './middleware/SendBoxToolbarMiddleware';
+// #endregion
+
+const buildTool = process?.env?.build_tool;
+const moduleFormat = process?.env?.module_format;
+const version = process?.env?.npm_package_version;
 
 const buildInfo = { buildTool, moduleFormat, version };
 
-export {
-  Composer,
-  SendBoxMiddlewareProxy,
-  SendBoxToolbarMiddlewareProxy,
-  buildInfo,
-  concatMiddleware,
-  defaultStyleOptions,
-  hooks,
-  initSendBoxMiddleware,
-  initSendBoxToolbarMiddleware,
-  localize,
-  normalizeStyleOptions,
-  version
-};
+export { buildInfo, Composer, concatMiddleware, defaultStyleOptions, hooks, localize, normalizeStyleOptions, version };
 
 export type {
   ActivityComponentFactory,
@@ -90,12 +82,6 @@ export type {
   RenderTypingIndicator,
   ScrollToEndButtonComponentFactory,
   ScrollToEndButtonMiddleware,
-  SendBoxMiddleware,
-  SendBoxMiddlewareProps,
-  SendBoxMiddlewareRequest,
-  SendBoxToolbarMiddleware,
-  SendBoxToolbarMiddlewareProps,
-  SendBoxToolbarMiddlewareRequest,
   SendStatus,
   StrictStyleOptions,
   StyleOptions,

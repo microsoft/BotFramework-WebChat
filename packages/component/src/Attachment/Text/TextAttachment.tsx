@@ -1,20 +1,44 @@
-import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { memo, type FC } from 'react';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import React, { memo } from 'react';
+import { any, custom, object, optional, pipe, readonly, safeParse, startsWith, string, type InferInput } from 'valibot';
 
-import { type WebChatAttachment } from '../private/types/WebChatAttachment';
 import TextContent from './TextContent';
 
-type Props = Readonly<{
-  activity: WebChatActivity;
-  attachment: WebChatAttachment & {
-    contentType: `text/${string}`;
-  };
-}>;
+const directLineAttachmentSchema = pipe(
+  object({
+    content: optional(string()),
+    contentType: string(),
+    contentUrl: optional(string()),
+    name: optional(string()),
+    thumbnailUrl: optional(string())
+  }),
+  readonly()
+);
 
-const TextAttachment: FC<Props> = memo(({ activity, attachment: { content, contentType } }: Props) => (
-  <TextContent activity={activity} contentType={contentType} text={content} />
-));
+const textAttachmentPropsSchema = pipe(
+  object({
+    activity: any(),
+    attachment: pipe(
+      object({
+        ...directLineAttachmentSchema.entries,
+        contentType: custom<`text/${string}`>(value => safeParse(pipe(string(), startsWith('text/')), value).success)
+      }),
+      readonly()
+    )
+  }),
+  readonly()
+);
 
-TextAttachment.displayName = 'TextAttachment';
+type TextAttachmentProps = InferInput<typeof textAttachmentPropsSchema>;
 
-export default TextAttachment;
+function TextAttachment(props: TextAttachmentProps) {
+  const {
+    activity,
+    attachment: { content, contentType }
+  } = validateProps(textAttachmentPropsSchema, props);
+
+  return <TextContent activity={activity} contentType={contentType} text={content} />;
+}
+
+export default memo(TextAttachment);
+export { textAttachmentPropsSchema, type TextAttachmentProps };

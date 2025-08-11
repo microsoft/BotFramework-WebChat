@@ -48,7 +48,7 @@
         );
 
         expect(buildInfo).toHaveProperty('build-tool', 'tsup');
-        expect(buildInfo).toHaveProperty('module-format', 'esmodules');
+        expect(buildInfo).toHaveProperty('module-format', 'global');
         expect(buildInfo.version).toMatch(/^\d+\.\d+\.\d+($|-)/u);
 
         expect(window.WebChat.FluentThemeProvider).toBeTruthy();

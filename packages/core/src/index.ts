@@ -1,6 +1,4 @@
-import { withResolvers, type PromiseWithResolvers } from 'botframework-webchat-base/utils';
-
-import clearSuggestedActions from './actions/clearSuggestedActions';
+import { withResolvers, type PromiseWithResolvers } from '@msinternal/botframework-webchat-base/utils';
 import connect from './actions/connect';
 import disconnect from './actions/disconnect';
 import dismissNotification from './actions/dismissNotification';
@@ -46,6 +44,20 @@ import onErrorResumeNext from './utils/onErrorResumeNext';
 import singleToArray from './utils/singleToArray';
 import warnOnce from './utils/warnOnce';
 
+export {
+  CLEAR_SUGGESTED_ACTIONS,
+  default as clearSuggestedActions,
+  clearSuggestedActionsActionSchema,
+  type ClearSuggestedActionsAction
+} from './actions/clearSuggestedActions';
+
+export {
+  SET_SUGGESTED_ACTIONS,
+  default as setSuggestedActions,
+  setSuggestedActionsActionSchema,
+  type SetSuggestedActionsAction
+} from './actions/setSuggestedActions';
+
 import type { GlobalScopePonyfill } from './types/GlobalScopePonyfill';
 import type { SendBoxAttachment } from './types/SendBoxAttachment';
 import type { WebChatActivity } from './types/WebChatActivity';
@@ -69,6 +81,7 @@ import type { CreativeWork as OrgSchemaCreativeWork } from './types/external/Org
 import type { DefinedTerm as OrgSchemaDefinedTerm } from './types/external/OrgSchema/DefinedTerm';
 import type { Project as OrgSchemaProject } from './types/external/OrgSchema/Project';
 import type { Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
+import type { UserReview as OrgSchemaUserReview } from './types/external/OrgSchema/UserReview';
 
 const Constants = { ActivityClientState, DictateState };
 const buildTool = process.env.build_tool;
@@ -79,7 +92,6 @@ const buildInfo = { buildTool, moduleFormat, version };
 
 export {
   buildInfo,
-  clearSuggestedActions,
   connect,
   Constants,
   createStore,
@@ -149,6 +161,7 @@ export type {
   OrgSchemaDefinedTerm,
   OrgSchemaProject,
   OrgSchemaThing,
+  OrgSchemaUserReview,
   PromiseWithResolvers,
   SendBoxAttachment,
   WebChatActivity

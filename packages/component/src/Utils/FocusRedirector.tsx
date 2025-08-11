@@ -1,7 +1,20 @@
-import PropTypes from 'prop-types';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { useCallback } from 'react';
+import {
+  custom,
+  function_,
+  instance,
+  nullable,
+  object,
+  optional,
+  pipe,
+  readonly,
+  safeParse,
+  string,
+  type InferInput
+} from 'valibot';
 
-import type { FC, MutableRefObject } from 'react';
+import mutableRefObject from '../types/internal/mutableRefObject';
 
 // This is an element, when focused, will send the focus to the ref specified in "redirectRef".
 // Although the focus is being redirected, browser will scroll this redirector element into view.
@@ -12,13 +25,20 @@ import type { FC, MutableRefObject } from 'react';
 // When this focus redirector is put inside a scrollable container, you may want to resize or reposition
 // it to prevent unintentional scroll done by the browser default behavior.
 
-type FocusRedirectorProps = {
-  className?: string;
-  onFocus?: () => void;
-  redirectRef?: MutableRefObject<HTMLElement>;
-};
+const focusRedirectorPropsSchema = pipe(
+  object({
+    className: optional(string()),
+    onFocus: optional(custom<() => void>(value => safeParse(function_(), value).success)),
+    redirectRef: optional(mutableRefObject(nullable(instance(HTMLElement))))
+  }),
+  readonly()
+);
 
-const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirectRef }) => {
+type FocusRedirectorProps = InferInput<typeof focusRedirectorPropsSchema>;
+
+function FocusRedirector(props: FocusRedirectorProps) {
+  const { className, onFocus, redirectRef } = validateProps(focusRedirectorPropsSchema, props);
+
   const handleFocus = useCallback(() => {
     redirectRef?.current?.focus();
     onFocus && onFocus();
@@ -32,22 +52,7 @@ const FocusRedirector: FC<FocusRedirectorProps> = ({ className, onFocus, redirec
   //             However, reacting with browse mode is currently okay. Just better to leave it alone.
 
   return <div className={className} onFocus={handleFocus} tabIndex={0} />;
-};
-
-FocusRedirector.defaultProps = {
-  className: undefined,
-  onFocus: undefined,
-  redirectRef: undefined
-};
-
-FocusRedirector.propTypes = {
-  className: PropTypes.string,
-  onFocus: PropTypes.func,
-  // PropTypes is not fully compatible with TypeScript.
-  // @ts-ignore
-  redirectRef: PropTypes.shape({
-    current: PropTypes.instanceOf(HTMLElement)
-  })
-};
+}
 
 export default FocusRedirector;
+export { focusRedirectorPropsSchema, type FocusRedirectorProps };

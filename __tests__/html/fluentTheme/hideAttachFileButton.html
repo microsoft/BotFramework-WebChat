@@ -20,6 +20,13 @@
           WebChat: { FluentThemeProvider, ReactWebChat }
         } = window; // Imports in UMD fashion.
 
+        const warnings = [];
+        const warn = console.warn.bind(console);
+        console.warn = (message) => {
+          warnings.push(message);
+          warn(message);
+        };
+
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const App = () => (
@@ -34,10 +41,15 @@
         );
 
         await pageConditions.uiConnected();
+        
+        expect(warnings).toEqual([
+          'botframework-webchat: `styleOptions.hideUploadButton` is being deprecated in favor of `styleOptions.disableFileUpload`. The option will be removed on or after 2027-07-14.'
+        ]);
 
         // THEN: No attach button should be render.
         expect(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton)).toBeFalsy();
         await host.snapshot();
+
       });
     </script>
   </body>

@@ -10,12 +10,12 @@ import {
 import classNames from 'classnames';
 import React, { memo, useMemo } from 'react';
 
+import ActivityFeedback from '../ActivityFeedback/ActivityFeedback';
 import useStyleSet from '../hooks/useStyleSet';
 import dereferenceBlankNodes from '../Utils/JSONLinkedData/dereferenceBlankNodes';
 import Originator from './private/Originator';
-import Timestamp from './Timestamp';
-import ActivityFeedback from '../Activity/ActivityFeedback';
 import StatusSlot from './StatusSlot';
+import Timestamp from './Timestamp';
 
 const { useStyleOptions } = hooks;
 

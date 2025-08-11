@@ -1,0 +1,32 @@
+:global(.webchat) .send-box-attachment-bar {
+  grid-area: attachment-bar;
+
+  &.send-box-attachment-bar--as-list-item {
+    max-height: var(--webchat__max-height--send-box-attachment-bar);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+  }
+
+  &.send-box-attachment-bar--as-thumbnail {
+    overflow-x: auto;
+  }
+
+  .send-box-attachment-bar__box {
+    gap: 4px;
+  }
+
+  &.send-box-attachment-bar--as-list-item .send-box-attachment-bar__box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    &:not(:empty) {
+      padding: 4px;
+    }
+  }
+
+  &.send-box-attachment-bar--as-thumbnail .send-box-attachment-bar__box {
+    display: flex;
+    scrollbar-width: thin;
+  }
+}

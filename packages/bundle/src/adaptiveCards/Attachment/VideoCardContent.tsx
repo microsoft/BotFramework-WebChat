@@ -1,27 +1,29 @@
 /* eslint react/no-array-index-key: "off" */
 
 import { Components } from 'botframework-webchat-component';
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
-import type { DirectLineVideoCard } from 'botframework-webchat-core';
+import React, { memo } from 'react';
+import { boolean, object, optional, parse, pipe, readonly, string, type InferInput } from 'valibot';
 
-import CommonCard from './CommonCard';
 import useStyleSet from '../../hooks/useStyleSet';
+import CommonCard from './CommonCard';
+import { directLineMediaCardSchema } from './private/directLineSchema';
 
 const { VideoContent } = Components;
 
-type VideoCardContentProps = {
-  actionPerformedClassName?: string;
-  content: DirectLineVideoCard & {
-    autoloop?: boolean;
-    autostart?: boolean;
-    image?: { url?: string };
-    media?: { profile?: string; url?: string }[];
-  };
-  disabled?: boolean;
-};
+const videoCardContentPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string()),
+    content: directLineMediaCardSchema,
+    disabled: optional(boolean())
+  }),
+  readonly()
+);
 
-const VideoCardContent: FC<VideoCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+type VideoCardContentProps = InferInput<typeof videoCardContentPropsSchema>;
+
+function VideoCardContent(props: VideoCardContentProps) {
+  const { actionPerformedClassName, content, disabled } = parse(videoCardContentPropsSchema, props);
+
   const { autoloop, autostart, image: { url: imageURL } = { url: undefined }, media } = content;
   const [{ audioCardAttachment: audioCardAttachmentStyleSet }] = useStyleSet();
 
@@ -37,31 +39,7 @@ const VideoCardContent: FC<VideoCardContentProps> = ({ actionPerformedClassName,
       <CommonCard actionPerformedClassName={actionPerformedClassName} content={content} disabled={disabled} />
     </div>
   );
-};
+}
 
-VideoCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
-};
-
-VideoCardContent.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  content: PropTypes.shape({
-    autoloop: PropTypes.bool,
-    autostart: PropTypes.bool,
-    image: PropTypes.shape({
-      url: PropTypes.string.isRequired
-    }),
-    media: PropTypes.arrayOf(
-      PropTypes.shape({
-        profile: PropTypes.string,
-        url: PropTypes.string.isRequired
-      })
-    ).isRequired
-  }).isRequired,
-  disabled: PropTypes.bool
-};
-
-export default VideoCardContent;
+export default memo(VideoCardContent);
+export { videoCardContentPropsSchema, type VideoCardContentProps };

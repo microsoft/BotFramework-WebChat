@@ -109,6 +109,8 @@
 
         await pageConditions.numActivitiesShown(5);
 
+        await pageConditions.allImagesLoaded();
+
         await host.snapshot('local');
       });
     </script>

@@ -1,4 +1,5 @@
 /** @jest-environment @happy-dom/jest-environment */
+/// <reference types="jest" />
 
 import {
   parseDocumentFragmentFromString,

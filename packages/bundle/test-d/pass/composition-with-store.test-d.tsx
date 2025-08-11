@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { Components, createStore } from '../../src/module/exports';
+import { Components, createStore } from '../../src/boot/exports/full';
 
 const { BasicWebChat, Composer } = Components;
 

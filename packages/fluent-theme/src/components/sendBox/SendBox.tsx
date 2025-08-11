@@ -1,22 +1,29 @@
-import { hooks, type SendBoxFocusOptions } from 'botframework-webchat-component';
+import { hooks, Components, type SendBoxFocusOptions } from 'botframework-webchat-component';
 import cx from 'classnames';
-import React, { memo, useCallback, useRef, useState, type FormEventHandler, type MouseEventHandler } from 'react';
+import React, {
+  memo,
+  ReactNode,
+  useCallback,
+  useRef,
+  useState,
+  type FormEventHandler,
+  type MouseEventHandler
+} from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { SendIcon } from '../../icons';
+
+import { FluentIcon } from '../icon';
 import { useStyles, useVariantClassName } from '../../styles';
 import testIds from '../../testIds';
 import { DropZone } from '../dropZone';
 import { SuggestedActions } from '../suggestedActions';
 import { TelephoneKeypadSurrogate, useTelephoneKeypadShown, type DTMF } from '../telephoneKeypad';
 import AddAttachmentButton from './AddAttachmentButton';
-import Attachments from './Attachments';
 import ErrorMessage from './ErrorMessage';
 import useSubmitError from './private/useSubmitError';
 import useTranscriptNavigation from './private/useTranscriptNavigation';
 import useUniqueId from './private/useUniqueId';
 import styles from './SendBox.module.css';
 import TelephoneKeypadToolbarButton from './TelephoneKeypadToolbarButton';
-import TextArea from './TextArea';
 import { Toolbar, ToolbarButton, ToolbarSeparator } from './Toolbar';
 
 const {
@@ -31,14 +38,17 @@ const {
   useUIState
 } = hooks;
 
+const { AttachmentBar, TextArea } = Components;
+
 type Props = Readonly<{
   className?: string | undefined;
+  completion?: ReactNode | undefined;
   isPrimary?: boolean | undefined;
   placeholder?: string | undefined;
 }>;
 
 function SendBox(props: Props) {
-  const [{ hideTelephoneKeypadButton, hideUploadButton, maxMessageLength }] = useStyleOptions();
+  const [{ disableFileUpload, hideTelephoneKeypadButton, maxMessageLength }] = useStyleOptions();
   const [attachments, setAttachments] = useSendBoxAttachments();
   const [globalMessage, setGlobalMessage] = useSendBoxValue();
   const [localMessage, setLocalMessage] = useState('');
@@ -129,14 +139,9 @@ function SendBox(props: Props) {
         )
       );
 
-      setAttachments(newAttachments);
-
-      // TODO: Currently in the UX, we have no way to remove attachments.
-      //       Keep concatenating doesn't make sense in current UX.
-      //       When end-user can remove attachment, we should enable the code again.
-      // setAttachments(attachments => attachments.concat(newAttachments));
+      setAttachments(attachmentsRef.current.concat(newAttachments));
     },
-    [makeThumbnail, setAttachments]
+    [attachmentsRef, makeThumbnail, setAttachments]
   );
 
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = useCallback(
@@ -197,7 +202,8 @@ function SendBox(props: Props) {
       >
         <TextArea
           aria-label={isMessageLengthExceeded ? localize('TEXT_INPUT_LENGTH_EXCEEDED_ALT') : localize('TEXT_INPUT_ALT')}
-          className={cx(classNames['sendbox__sendbox-text'], classNames['sendbox__text-area--in-grid'])}
+          className={cx(classNames['sendbox__sendbox-text-area'], classNames['sendbox__text-area--in-grid'])}
+          completion={props.completion}
           data-testid={testIds.sendBoxTextBox}
           hidden={shouldShowTelephoneKeypad}
           onInput={handleMessageChange}
@@ -211,7 +217,15 @@ function SendBox(props: Props) {
           isHorizontal={false}
           onButtonClick={handleTelephoneKeypadButtonClick}
         />
-        <Attachments attachments={attachments} className={classNames['sendbox__attachment--in-grid']} />
+        {!isBlueprint && (
+          <AttachmentBar
+            className={cx(
+              'webchat__send-box__attachment-bar',
+              classNames['sendbox__attachment-bar'],
+              classNames['sendbox__attachment-bar--in-grid']
+            )}
+          />
+        )}
         <div className={cx(classNames['sendbox__sendbox-controls'], classNames['sendbox__sendbox-controls--in-grid'])}>
           {shouldShowMessageLength && (
             <div
@@ -224,7 +238,7 @@ function SendBox(props: Props) {
           )}
           <Toolbar>
             {!hideTelephoneKeypadButton && <TelephoneKeypadToolbarButton />}
-            {!hideUploadButton && <AddAttachmentButton onFilesAdded={handleAddFiles} />}
+            {!disableFileUpload && <AddAttachmentButton onFilesAdded={handleAddFiles} />}
             <ToolbarSeparator />
             <ToolbarButton
               aria-label={localize('TEXT_INPUT_SEND_BUTTON_ALT')}
@@ -232,11 +246,11 @@ function SendBox(props: Props) {
               disabled={isMessageLengthExceeded || shouldShowTelephoneKeypad}
               type="submit"
             >
-              <SendIcon />
+              <FluentIcon appearance="text" icon="send" />
             </ToolbarButton>
           </Toolbar>
         </div>
-        <DropZone onFilesAdded={handleAddFiles} />
+        {!disableFileUpload && <DropZone onFilesAdded={handleAddFiles} />}
         <ErrorMessage error={errorMessage} id={errorMessageId} />
       </div>
     </form>

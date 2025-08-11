@@ -1,5 +1,4 @@
 const encodeBase64URL = require('./encodeBase64URL');
-const fetch = require('node-fetch');
 
 // Exchanges an access token from OAuth provider.
 module.exports = async function exchangeAccessToken(

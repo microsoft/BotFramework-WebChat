@@ -1,5 +1,4 @@
 import { AudioStreamFormat } from 'microsoft-cognitiveservices-speech-sdk';
-import fetch from 'node-fetch';
 
 const DEFAULT_LANGUAGE = 'en-US';
 const RECOGNITION_URL_TEMPLATE =

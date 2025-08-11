@@ -1,18 +1,41 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1] }] */
 
-import PropTypes from 'prop-types';
-import React, { forwardRef, MouseEventHandler, ReactNode, useRef } from 'react';
+import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
+import React, { forwardRef, memo, type MouseEventHandler } from 'react';
+import {
+  boolean,
+  custom,
+  function_,
+  literal,
+  number,
+  object,
+  optional,
+  pipe,
+  readonly,
+  safeParse,
+  string,
+  type InferInput
+} from 'valibot';
 
 const PREVENT_DEFAULT_HANDLER = event => event.preventDefault();
 
-type AccessibleButtonProps = {
-  'aria-hidden'?: boolean;
-  children?: ReactNode;
-  disabled?: boolean;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-  tabIndex?: number;
-  type: 'button';
-} & React.ButtonHTMLAttributes<HTMLButtonElement>;
+const accessibleButtonPropsSchema = pipe(
+  object({
+    'aria-hidden': optional(boolean()),
+    'aria-keyshortcuts': optional(string()),
+    children: optional(reactNode()),
+    className: optional(string()),
+    'data-testid': optional(string()),
+    disabled: optional(boolean()),
+    onClick: custom<MouseEventHandler<HTMLButtonElement>>(value => safeParse(function_(), value).success),
+    tabIndex: optional(number()),
+    title: optional(string()),
+    type: literal('button')
+  }),
+  readonly()
+);
+
+type AccessibleButtonProps = InferInput<typeof accessibleButtonPropsSchema>;
 
 // Differences between <button> and <AccessibleButton>:
 // - Disable behavior
@@ -33,46 +56,38 @@ type AccessibleButtonProps = {
 // - If the widget is contained by a <form>, the developer need to filter out some `onSubmit` event caused by this widget
 
 const AccessibleButton = forwardRef<HTMLButtonElement, AccessibleButtonProps>(
-  ({ 'aria-hidden': ariaHidden, children, disabled, onClick, tabIndex, ...props }, forwardedRef) => {
-    const targetRef = useRef();
-
-    const ref = forwardedRef || targetRef;
-
-    return (
-      <button
-        aria-disabled={disabled || undefined}
-        aria-hidden={ariaHidden}
-        onClick={disabled ? PREVENT_DEFAULT_HANDLER : onClick}
-        ref={ref}
-        tabIndex={disabled ? -1 : tabIndex}
-        {...props}
-        type="button"
-      >
-        {children}
-      </button>
-    );
-  }
+  (
+    {
+      'aria-hidden': ariaHidden,
+      'aria-keyshortcuts': ariaKeyShortcuts,
+      children,
+      className,
+      'data-testid': dataTestId,
+      disabled,
+      onClick,
+      tabIndex,
+      title
+    },
+    ref
+  ) => (
+    <button
+      aria-disabled={disabled || undefined}
+      aria-hidden={ariaHidden}
+      aria-keyshortcuts={ariaKeyShortcuts}
+      className={className}
+      data-testid={dataTestId}
+      onClick={disabled ? PREVENT_DEFAULT_HANDLER : onClick}
+      ref={ref}
+      tabIndex={disabled ? -1 : tabIndex}
+      title={title}
+      type="button"
+    >
+      {children}
+    </button>
+  )
 );
-
-AccessibleButton.defaultProps = {
-  'aria-hidden': undefined,
-  children: undefined,
-  disabled: undefined,
-  onClick: undefined,
-  tabIndex: undefined
-};
 
 AccessibleButton.displayName = 'AccessibleButton';
 
-AccessibleButton.propTypes = {
-  'aria-hidden': PropTypes.bool,
-  children: PropTypes.any,
-  disabled: PropTypes.bool,
-  onClick: PropTypes.func,
-  tabIndex: PropTypes.number,
-  // TypeScript class is not mappable to PropTypes.oneOf(['button'])
-  // @ts-ignore
-  type: PropTypes.oneOf(['button']).isRequired
-};
-
-export default AccessibleButton;
+export default memo(AccessibleButton);
+export { accessibleButtonPropsSchema, type AccessibleButtonProps };

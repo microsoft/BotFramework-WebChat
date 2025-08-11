@@ -3,6 +3,7 @@ import { lazy, parse, picklist, pipe, string, type ObjectEntries } from 'valibot
 import orgSchemaProperty from './private/orgSchemaProperty';
 import { project, type Project } from './Project';
 import { thing, type Thing } from './Thing';
+import { userReview, type UserReview } from './UserReview';
 
 /**
  * An action performed by a direct agent and indirect participants upon a direct object. Optionally happens at a location with the help of an inanimate instrument. The execution of the action may produce a result. Specific action sub-type documentation specifies the exact expectation of each argument/role.
@@ -14,6 +15,11 @@ import { thing, type Thing } from './Thing';
  * @see https://schema.org/Action
  */
 export type Action = Thing & {
+  /**
+   * A sub property of object. The options subject to this action. Supersedes [`option`](https://schema.org/option).
+   */
+  actionOption?: string | Thing;
+
   /**
    * Indicates the current disposition of the Action.
    *
@@ -32,10 +38,16 @@ export type Action = Thing & {
    * @see https://schema.org/provider
    */
   provider?: Project | undefined;
+
+  /**
+   * The result produced in the action. E.g. John wrote *a book*.
+   */
+  result?: Thing | UserReview | undefined;
 };
 
 export const action = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
   thing({
+    actionOption: orgSchemaProperty(string()),
     actionStatus: orgSchemaProperty(
       pipe(
         string(),
@@ -43,6 +55,7 @@ export const action = <TEntries extends ObjectEntries>(entries?: TEntries | unde
       )
     ),
     provider: orgSchemaProperty(lazy(() => project())),
+    result: orgSchemaProperty(userReview()),
 
     ...entries
   });

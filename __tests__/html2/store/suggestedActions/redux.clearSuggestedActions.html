@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import renderHook from '../../hooks/private/renderHook.js';
+
+      run(async function () {
+        const {
+          React: { createElement },
+          testHelpers: { createDirectLineEmulator },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            hooks: { useSuggestedActions },
+            testIds
+          }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        // WHEN: Render initially.
+        const renderResult = renderHook(() => useSuggestedActions(), {
+          legacyRoot: true,
+          wrapper: ({ children }) =>
+            createElement(Composer, { directLine, store }, createElement(BasicWebChat), children)
+        });
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Receive an activity with a suggested action.
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          suggestedActions: {
+            actions: [{ title: 'Aloha!', type: 'imBack' }],
+            to: ''
+          },
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should have one suggested action button shown.
+        expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(1);
+        expect(pageElements.allByTestId(testIds.suggestedActionButton)[0]).toHaveProperty('textContent', 'Aloha!');
+
+        // THEN: getState() should have 1 suggested actions and origin activity.
+        expect(store.getState().suggestedActions).toHaveLength(1);
+        expect(store.getState().suggestedActions[0]).toEqual({ title: 'Aloha!', type: 'imBack' });
+        expect(store.getState().suggestedActionsOriginActivity).toEqual({
+          activity: expect.objectContaining({
+            from: { role: 'bot' },
+            suggestedActions: {
+              actions: [{ title: 'Aloha!', type: 'imBack' }],
+              to: ''
+            },
+            text: 'Hello, World!',
+            type: 'message'
+          })
+        });
+
+        // WHEN: Dispatching "WEB_CHAT/CLEAR_SUGGESTED_ACTIONS" action.
+        store.dispatch({ type: 'WEB_CHAT/CLEAR_SUGGESTED_ACTIONS' });
+
+        // THEN: Should not remove activity.
+        expect(pageElements.activities()).toHaveLength(1);
+
+        // THEN: Should have cleared suggested action.
+        await waitFor(() => expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(0));
+
+        // THEN: useSuggestedActions() should have emptied.
+        renderResult.rerender();
+        expect(renderResult).toHaveProperty('result.current', [[], expect.any(Function), { activity: undefined }]);
+      });
+    </script>
+  </body>
+</html>

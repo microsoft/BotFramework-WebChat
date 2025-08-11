@@ -1,17 +1,25 @@
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import React, { memo } from 'react';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../hooks/useStyleSet';
 
-type HTMLVideoContentProps = {
-  alt?: string;
-  autoPlay?: boolean;
-  loop?: boolean;
-  poster?: string;
-  src: string;
-};
+const htmlVideoContentPropsSchema = pipe(
+  object({
+    alt: optional(string()),
+    autoPlay: optional(boolean()),
+    loop: optional(boolean()),
+    poster: optional(string()),
+    src: string()
+  }),
+  readonly()
+);
 
-const HTMLVideoContent: FC<HTMLVideoContentProps> = ({ alt, autoPlay, loop, poster, src }) => {
+type HTMLVideoContentProps = InferInput<typeof htmlVideoContentPropsSchema>;
+
+function HTMLVideoContent(props: HTMLVideoContentProps) {
+  const { alt, autoPlay = false, loop = false, poster, src } = validateProps(htmlVideoContentPropsSchema, props);
+
   const [{ videoContent: videoContentStyleSet }] = useStyleSet();
 
   return (
@@ -25,21 +33,7 @@ const HTMLVideoContent: FC<HTMLVideoContentProps> = ({ alt, autoPlay, loop, post
       src={src}
     />
   );
-};
+}
 
-HTMLVideoContent.defaultProps = {
-  alt: '',
-  autoPlay: false,
-  loop: false,
-  poster: ''
-};
-
-HTMLVideoContent.propTypes = {
-  alt: PropTypes.string,
-  autoPlay: PropTypes.bool,
-  loop: PropTypes.bool,
-  poster: PropTypes.string,
-  src: PropTypes.string.isRequired
-};
-
-export default HTMLVideoContent;
+export default memo(HTMLVideoContent);
+export { htmlVideoContentPropsSchema, type HTMLVideoContentProps };

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Disable file upload</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const disableFileUpload = new URLSearchParams(location.search || '').get('disableFileUpload') !== 'false';
+        const { isFluentTheme } = renderWebChat(
+          {
+            directLine,
+            store,
+            styleOptions: { disableFileUpload }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // DOM-based checks
+        if (disableFileUpload) {
+          expect(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton)).toBeFalsy();
+          expect(pageElements.byTestId(WebChat.testIds.sendBoxDropZone)).toBeFalsy();
+        } else {
+          expect(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton)).toBeDefined();
+          expect(pageElements.byTestId(WebChat.testIds.sendBoxDropZone)).toBeDefined();
+        }
+
+        // Keyboard interaction: try to tab to the upload button
+        await pageObjects.focusSendBoxTextBox();
+        await host.sendTab();
+
+        if (disableFileUpload) {
+          expect(document.activeElement).not.toBe(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton));
+        } else {
+          expect(document.activeElement).toBe(pageElements.byTestId(WebChat.testIds.sendBoxUploadButton));
+        }
+
+        if (isFluentTheme) {
+          // We cannot mimic drag-and-drop in WebDriver yet. So we are doing as good as we could.
+          const dataTransfer = new DataTransfer();
+
+          dataTransfer.items.add(new File([new ArrayBuffer(100)], 'simple.txt'));
+
+          const dragEnterDocumentEvent = new DragEvent('dragenter', {
+            bubbles: true,
+            cancelable: true,
+            dataTransfer
+          });
+
+          document.dispatchEvent(dragEnterDocumentEvent);
+
+          const dropEvent = new DragEvent('drop', {
+            bubbles: true,
+            cancelable: true,
+            dataTransfer
+          });
+
+          document.querySelector(`[data-testid="${WebChat.testIds['sendBoxDropZone']}"]`)?.dispatchEvent(dropEvent);
+
+          if (disableFileUpload) {
+            // Attachment bar item should not appear
+            expect(pageElements.byTestId(WebChat.testIds.sendBoxAttachmentBarItem)).toBeFalsy();
+          } else {
+            // Attachment bar item should appear
+            expect(pageElements.byTestId(WebChat.testIds.sendBoxAttachmentBarItem)).toBeDefined();
+          }
+        }
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

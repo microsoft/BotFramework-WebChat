@@ -3,18 +3,13 @@ import React, { Fragment, memo, MutableRefObject, useCallback, useMemo } from 'r
 import { useAnimatingToEnd, useAtEnd, useScrollToEnd, useSticky } from 'react-scroll-to-bottom';
 import { useRefFrom } from 'use-ref-from';
 
-import useActivityTreeWithRenderer from '../../providers/ActivityTree/useActivityTreeWithRenderer';
+import useRenderingActivityKeys from '../../providers/RenderingActivities/useRenderingActivityKeys';
 import useFocusByActivityKey from '../../providers/TranscriptFocus/useFocusByActivityKey';
 
-const {
-  useActivityKeysByRead,
-  useCreateScrollToEndButtonRenderer,
-  useGetKeyByActivity,
-  useMarkActivityKeyAsRead,
-  useStyleOptions
-} = hooks;
+const { useActivityKeysByRead, useCreateScrollToEndButtonRenderer, useMarkActivityKeyAsRead, useStyleOptions } = hooks;
 
 const useScrollToEndRenderResult = (terminatorRef: MutableRefObject<HTMLDivElement>) => {
+  const [renderingActivityKeys] = useRenderingActivityKeys();
   const [sticky]: [boolean] = useSticky();
   const [animatingToEnd]: [boolean] = useAnimatingToEnd();
   const [atEnd]: [boolean] = useAtEnd();
@@ -46,14 +41,6 @@ const useScrollToEndRenderResult = (terminatorRef: MutableRefObject<HTMLDivEleme
   //       2. If "acknowledged" is "undefined", we set it to:
   //          a. true, if there are no egress activities yet
   //          b. Otherwise, false
-
-  const [flattenedActivityTreeWithRenderer] = useActivityTreeWithRenderer({ flat: true });
-  const getKeyByActivity = useGetKeyByActivity();
-
-  const renderingActivityKeys: string[] = useMemo<string[]>(
-    () => flattenedActivityTreeWithRenderer.map(({ activity }) => getKeyByActivity(activity)),
-    [flattenedActivityTreeWithRenderer, getKeyByActivity]
-  );
 
   const renderingActivityKeysRef = useRefFrom(renderingActivityKeys);
 

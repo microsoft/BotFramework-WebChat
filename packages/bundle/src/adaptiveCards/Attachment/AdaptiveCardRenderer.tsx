@@ -1,19 +1,22 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [-1, 0, 2] }] */
 
-import { AdaptiveCard, Action as AdaptiveCardAction, OpenUrlAction, SubmitAction } from 'adaptivecards';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { type Action as AdaptiveCardAction, type OpenUrlAction, type SubmitAction } from 'adaptivecards';
 import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, {
-  KeyboardEventHandler,
-  MouseEventHandler,
-  VFC,
+  memo,
   useCallback,
+  useEffect,
   useLayoutEffect,
   useMemo,
-  useRef
+  useRef,
+  type KeyboardEventHandler,
+  type MouseEventHandler
 } from 'react';
+import { useRefFrom } from 'use-ref-from';
+import { any, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useStyleSet from '../../hooks/useStyleSet';
 import useAdaptiveCardsHostConfig from '../hooks/useAdaptiveCardsHostConfig';
@@ -25,6 +28,7 @@ import useActiveElementModEffect from './AdaptiveCardHacks/useActiveElementModEf
 import useDisabledModEffect from './AdaptiveCardHacks/useDisabledModEffect';
 import usePersistValuesModEffect from './AdaptiveCardHacks/usePersistValuesModEffect';
 import useRoleModEffect from './AdaptiveCardHacks/useRoleModEffect';
+import { directLineCardActionSchema } from './private/directLineSchema';
 import renderAdaptiveCard from './private/renderAdaptiveCard';
 
 const { ErrorBox } = Components;
@@ -32,19 +36,26 @@ const { useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollTo
 
 const node_env = process.env.node_env || process.env.NODE_ENV;
 
-type AdaptiveCardRendererProps = {
-  actionPerformedClassName?: string;
-  adaptiveCard: AdaptiveCard;
-  disabled?: boolean;
-  tapAction?: DirectLineCardAction;
-};
+const adaptiveCardRendererPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string()),
+    disabled: optional(boolean()),
+    adaptiveCard: any(),
+    tapAction: optional(directLineCardActionSchema)
+  }),
+  readonly()
+);
 
-const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
-  actionPerformedClassName,
-  adaptiveCard,
-  disabled: disabledFromProps,
-  tapAction
-}) => {
+type AdaptiveCardRendererProps = InferInput<typeof adaptiveCardRendererPropsSchema>;
+
+function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
+  const {
+    actionPerformedClassName,
+    adaptiveCard,
+    disabled: disabledFromProps,
+    tapAction
+  } = validateProps(adaptiveCardRendererPropsSchema, props);
+
   const [{ adaptiveCardRenderer: adaptiveCardRendererStyleSet }] = useStyleSet();
   const [{ GlobalSettings, HostConfig }] = useAdaptiveCardsPackage();
   const [adaptiveCardsHostConfig] = useAdaptiveCardsHostConfig();
@@ -99,7 +110,7 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
         }
       }
 
-      performCardAction(tapActionRef.current);
+      performCardAction(tapActionRef.current as DirectLineCardAction);
       scrollToEnd();
     },
     [contentRef, performCardAction, scrollToEnd, tapActionRef]
@@ -205,14 +216,11 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
   }, [adaptiveCard, handleExecuteAction]);
 
   useLayoutEffect(() => {
-    const { current } = contentRef;
-
-    current?.appendChild(element);
-
-    return () => {
-      current?.removeChild(element);
-    };
+    contentRef.current?.replaceChildren(element);
   }, [contentRef, element]);
+
+  const elementRef = useRefFrom(element);
+  useEffect(() => () => elementRef.current?.remove(), [elementRef]);
 
   // Apply all mods regardless whether the element changed or not.
   // This is because we have undoed mods when we call the `useXXXModEffect` hook.
@@ -247,27 +255,7 @@ const AdaptiveCardRenderer: VFC<AdaptiveCardRendererProps> = ({
       ref={contentRef}
     />
   );
-};
+}
 
-AdaptiveCardRenderer.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined,
-  tapAction: undefined
-};
-
-AdaptiveCardRenderer.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  adaptiveCard: PropTypes.any.isRequired,
-  disabled: PropTypes.bool,
-
-  // TypeScript class is not mappable to PropTypes.func
-  // @ts-ignore
-  tapAction: PropTypes.shape({
-    image: PropTypes.string,
-    title: PropTypes.string,
-    type: PropTypes.string.isRequired,
-    value: PropTypes.string
-  })
-};
-
-export default AdaptiveCardRenderer;
+export default memo(AdaptiveCardRenderer);
+export { adaptiveCardRendererPropsSchema, type AdaptiveCardRendererProps };

@@ -1,0 +1,5 @@
+#webchat .border-loader__loader,
+#webchat .border-flair {
+  animation-delay: -1s !important;
+  animation-play-state: paused !important;
+}

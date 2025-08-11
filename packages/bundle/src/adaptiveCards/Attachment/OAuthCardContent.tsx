@@ -1,22 +1,30 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-component';
-import PropTypes from 'prop-types';
-import React, { FC, useMemo } from 'react';
-import type { DirectLineOAuthCard } from 'botframework-webchat-core';
+import React, { memo, useMemo } from 'react';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import useStyleOptions from '../../hooks/useStyleOptions';
+import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
-import useStyleOptions from '../../hooks/useStyleOptions';
+import { directLineSignInCardSchema } from './private/directLineSchema';
 
 const { useDirection } = hooks;
 
-type OAuthCardContentProps = {
-  actionPerformedClassName?: string;
-  content: DirectLineOAuthCard;
-  disabled?: boolean;
-};
+const oauthCardContentPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string()),
+    content: directLineSignInCardSchema,
+    disabled: optional(boolean())
+  }),
+  readonly()
+);
 
-const OAuthCardContent: FC<OAuthCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+type OAuthCardContentProps = InferInput<typeof oauthCardContentPropsSchema>;
+
+function OAuthCardContent(props: OAuthCardContentProps) {
+  const { actionPerformedClassName, content, disabled } = validateProps(oauthCardContentPropsSchema, props);
+
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [direction] = useDirection();
   const [styleOptions] = useStyleOptions();
@@ -25,8 +33,8 @@ const OAuthCardContent: FC<OAuthCardContentProps> = ({ actionPerformedClassName,
     if (content) {
       const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions, direction);
 
-      builder.addCommonHeaders(content);
-      builder.addButtons(content.buttons, true);
+      builder.addCommonHeaders(content as any);
+      builder.addButtons(content.buttons as any, true);
 
       return builder.card;
     }
@@ -39,21 +47,7 @@ const OAuthCardContent: FC<OAuthCardContentProps> = ({ actionPerformedClassName,
       disabled={disabled}
     />
   );
-};
+}
 
-OAuthCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
-};
-
-OAuthCardContent.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  content: PropTypes.shape({
-    buttons: PropTypes.array
-  }).isRequired,
-  disabled: PropTypes.bool
-};
-
-export default OAuthCardContent;
+export default memo(OAuthCardContent);
+export { oauthCardContentPropsSchema, type OAuthCardContentProps };

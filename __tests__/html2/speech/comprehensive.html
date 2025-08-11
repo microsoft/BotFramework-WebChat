@@ -85,7 +85,7 @@
         expect(speechSynthesis).toHaveProperty('speaking', false);
 
         // THEN: Should construct SpeechRecognition().
-        expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1);
+        await waitFor(() => expect(ponyfill.SpeechRecognition).toHaveBeenCalledTimes(1));
 
         const { value: speechRecognition1 } = ponyfill.SpeechRecognition.mock.results[0];
 

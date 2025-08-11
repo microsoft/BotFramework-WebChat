@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        await host.windowSize(1080, 1920);
+
+        document.getElementById('webchat').style.zoom = 3;
+
+        WebChat.renderWebChat(
+          {
+            directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+            store: testHelpers.createStore(),
+            styleOptions: {
+              botAvatarInitials: 'WC',
+              bubbleBorderColor: 'red',
+              bubbleBorderRadius: 10,
+              bubbleBorderWidth: 2,
+              bubbleFromUserBorderColor: 'green',
+              bubbleFromUserBorderRadius: 10,
+              bubbleFromUserNubOffset: 0,
+              bubbleFromUserNubSize: 10,
+              bubbleFromUserBorderWidth: 2,
+              bubbleNubOffset: 0,
+              bubbleNubSize: 10,
+              userAvatarInitials: 'WW'
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await pageObjects.sendMessageViaSendBox('layout single');
+        await pageConditions.numActivitiesShown(2);
+        await pageConditions.allImagesLoaded();
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

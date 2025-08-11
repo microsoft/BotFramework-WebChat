@@ -1,21 +1,38 @@
 /* eslint complexity: ["error", 50] */
 
-import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import React, { memo, useCallback, useEffect, useMemo, useRef, type MutableRefObject } from 'react';
+import {
+  custom,
+  function_,
+  literal,
+  object,
+  optional,
+  pipe,
+  readonly,
+  safeParse,
+  union,
+  type InferInput
+} from 'valibot';
 
-import RovingTabIndexContext from './private/Context';
-
-import type { FC, MutableRefObject, PropsWithChildren } from 'react';
-import type { RovingTabIndexContextType } from './private/Context';
+import RovingTabIndexContext, { type RovingTabIndexContextType } from './private/Context';
 
 type ItemRef = MutableRefObject<HTMLElement | undefined>;
 
-type RovingTabIndexContextProps = PropsWithChildren<{
-  onEscapeKey?: () => void;
-  orientation?: 'horizontal' | 'vertical';
-}>;
+const rovingTabIndexContextProps = pipe(
+  object({
+    children: optional(reactNode()),
+    onEscapeKey: optional(custom<() => void>(value => safeParse(function_(), value).success)),
+    orientation: optional(union([literal('horizontal'), literal('vertical')]), 'horizontal')
+  }),
+  readonly()
+);
 
-const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEscapeKey, orientation }) => {
+type RovingTabIndexContextProps = InferInput<typeof rovingTabIndexContextProps>;
+
+function RovingTabIndexComposer(props: RovingTabIndexContextProps) {
+  const { children, onEscapeKey, orientation } = validateProps(rovingTabIndexContextProps, props);
+
   const activeItemIndexRef = useRef(0);
   const itemRefsRef = useRef<ItemRef[]>([]);
 
@@ -179,16 +196,7 @@ const RovingTabIndexComposer: FC<RovingTabIndexContextProps> = ({ children, onEs
   });
 
   return <RovingTabIndexContext.Provider value={contextValue}>{children}</RovingTabIndexContext.Provider>;
-};
+}
 
-RovingTabIndexComposer.defaultProps = {
-  onEscapeKey: undefined,
-  orientation: 'horizontal'
-};
-
-RovingTabIndexComposer.propTypes = {
-  onEscapeKey: PropTypes.func,
-  orientation: PropTypes.oneOf(['horizontal', 'vertical'])
-};
-
-export default RovingTabIndexComposer;
+export default memo(RovingTabIndexComposer);
+export { rovingTabIndexContextProps, type RovingTabIndexContext };

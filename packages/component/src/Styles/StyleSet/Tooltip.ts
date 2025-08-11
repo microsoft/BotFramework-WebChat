@@ -2,14 +2,19 @@ export default () => ({
   '*:has(> &.webchat__tooltip)': {
     position: 'relative',
 
-    '&:is(:hover, :focus-visible, :active) > .webchat__tooltip': {
-      opacity: 1,
-      transitionDelay: '400ms'
-    }
+    // For <button>, the tooltip will be placed inside <button>.
+    // For <input type="checkbox/radio">, the tooltip will be placed after <input>.
+    '&:is(:hover, :focus-visible, :active) > .webchat__tooltip, &:has(:is(:hover, :focus-visible, :active)) > .webchat__tooltip':
+      {
+        opacity: 1,
+        transitionDelay: '400ms'
+      }
   },
+
   '&.webchat__tooltip': {
     '--webchat__tooltip-tip-size': '8.484px',
     '--webchat__tooltip-background': '#fff',
+    '--webchat__tooltip-anchor-inline-start': '50%',
 
     background: 'var(--webchat__tooltip-background)',
     borderRadius: '4px',
@@ -45,15 +50,14 @@ export default () => ({
     '&.webchat__tooltip--block-start': {
       insetBlockEnd: 'calc(100% + 7px)',
       insetInlineStart: '50%',
-      transform: 'translate(-50%, 0)',
-
+      transform: 'translate(calc(-1 * var(--webchat__tooltip-anchor-inline-start)), 0)',
       '&::after': {
         border: '1px solid var(--webchat__tooltip-background)',
         borderBottomLeftRadius: '2px',
         clipPath: 'polygon(0% 0%, 100% 100%, 0% 100%)',
         height: 'var(--webchat__tooltip-tip-size)',
         insetBlockStart: 'calc(100% - 6px)',
-        insetInlineStart: 'calc(50% - var(--webchat__tooltip-tip-size) / 2)',
+        insetInlineStart: 'calc(var(--webchat__tooltip-anchor-inline-start) - var(--webchat__tooltip-tip-size) / 2)',
         transform: 'rotate(-45deg)',
         width: 'var(--webchat__tooltip-tip-size)'
       }

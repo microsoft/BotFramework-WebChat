@@ -18,7 +18,7 @@
         await pageConditions.uiConnected();
 
         // THEN: It should warn about the invalid middleware.
-        await pageConditions.warnMessageLogged('"sendBoxMiddleware" prop is invalid.');
+        await pageConditions.warnMessageLogged('must be an array of function');
 
         // THEN: It should render the default send box.
         await host.snapshot();

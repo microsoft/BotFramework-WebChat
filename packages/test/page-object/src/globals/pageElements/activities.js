@@ -1,5 +1,5 @@
 import transcript from './transcript';
 
 export default function activities() {
-  return transcript().querySelectorAll('.webchat__basic-transcript__activity');
+  return Object.freeze(Array.from(transcript()?.querySelectorAll('.webchat__basic-transcript__activity') || []));
 }

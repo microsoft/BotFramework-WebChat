@@ -1,3 +1,5 @@
+> 💥 The sample has been archived and will no longer receive updates.
+
 # Upload attachment to Azure Storage demo
 
 ![samples/07.a.upload-to-azure-storage](https://github.com/microsoft/BotFramework-WebChat/workflows/samples/07.a.upload-to-azure-storage/badge.svg)
@@ -45,13 +47,13 @@ This will create a new Azure Storage for temporary storage of user uploads.
 1. Save the account name and key
    1. Select "Access keys"
    1. Copy "Storage account name" and save it to both `/bot/.env` and `/web/.env`
-      -  ```
-         AZURE_STORAGE_ACCOUNT_NAME=youraccountname
-         ```
+      - ```
+        AZURE_STORAGE_ACCOUNT_NAME=youraccountname
+        ```
    1. Copy "Key" of "key1" and save it to both `/bot/.env` and `/web/.env`
-      -  ```
-         AZURE_STORAGE_ACCOUNT_KEY=<your-azure-storage-account-key>
-         ```
+      - ```
+        AZURE_STORAGE_ACCOUNT_KEY=<your-azure-storage-account-key>
+        ```
 1. Create a new blob container named "userupload"
    1. Select "Blobs"
    1. Click "+ Container"
@@ -74,14 +76,14 @@ This will create a new Azure Storage for temporary storage of user uploads.
 You can follow our instructions on how to [create an Azure Bot resource](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart?view=azure-bot-service-4.0&tabs=userassigned#create-the-resource).
 
 1. Save the Microsoft App ID and password to `/bot/.env`
-   -  ```
-      MICROSOFT_APP_ID=12345678abcd-1234-5678-abcd-12345678abcd
-      MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
-      ```
+   - ```
+     MICROSOFT_APP_ID=12345678abcd-1234-5678-abcd-12345678abcd
+     MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
+     ```
 1. Save the Web Chat secret to `/web/.env`
-   -  ```
-      DIRECT_LINE_SECRET=<your-direct-line-secret>
-      ```
+   - ```
+     DIRECT_LINE_SECRET=<your-direct-line-secret>
+     ```
 
 > When you are building your production bot, never expose your Web Chat or Direct Line secret to the client. Instead, you should use the secret to generate a limited token and send it to the client. For information, please refer the documentation on [Direct Line token generation](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token) and the [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/).
 
@@ -89,12 +91,12 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 1. Run `ngrok http -host-header=localhost:3978 3978`
 1. Update your Bot Channel Registration. You can use [Azure CLI](https://aka.ms/az-cli) or [Azure Portal](https://portal.azure.com)
-   -  Via Azure CLI
-      -  Run `az bot update --resource-group <your-bot-rg> --name <your-bot-name> --subscription <your-subscription-id> --endpoint "https://a1b2c3d4.ngrok.io/api/messages"`
-   -  Via Azure Portal
-      -  Browse to your Bot Channel Registration
-      -  Select "Settings"
-      -  In "Configuration" section, set "Messaging Endpoint" to `https://a1b2c3d4.ngrok.io/api/messages`
+   - Via Azure CLI
+      - Run `az bot update --resource-group <your-bot-rg> --name <your-bot-name> --subscription <your-subscription-id> --endpoint "https://a1b2c3d4.ngrok.io/api/messages"`
+   - Via Azure Portal
+      - Browse to your Bot Channel Registration
+      - Select "Settings"
+      - In "Configuration" section, set "Messaging Endpoint" to `https://a1b2c3d4.ngrok.io/api/messages`
 
 ## Prepare and run the code
 
@@ -105,38 +107,38 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 # Things to try out
 
--  Type anything to the bot, it should reply and ask you to upload files
--  Upload a file
-   -  It should response with the file size of each file you uploaded
-   -  In your Azure Storage container, you will see the uploaded files
+- Type anything to the bot, it should reply and ask you to upload files
+- Upload a file
+   - It should response with the file size of each file you uploaded
+   - In your Azure Storage container, you will see the uploaded files
 
 # Code
 
--  `/bot/` is the bot server
--  `/web/` is the REST API for distributing Shared Access Signature tokens
-   -  `GET /api/directline/token` will generate a new Direct Line token for the React app
-   -  `GET /api/azurestorage/uploadsastoken` will generate a new Shared Access Signature token for the web app to upload a file
-   -  During development-time, it will also serve the bot server via `/api/messages/`
-      -  To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
+- `/bot/` is the bot server
+- `/web/` is the REST API for distributing Shared Access Signature tokens
+   - `GET /api/directline/token` will generate a new Direct Line token for the React app
+   - `GET /api/azurestorage/uploadsastoken` will generate a new Shared Access Signature token for the web app to upload a file
+   - During development-time, it will also serve the bot server via `/api/messages/`
+      - To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
 
 # Overview
 
 This sample includes multiple parts:
 
--  A basic web page with Web Chat integrated via JavaScript bundle
--  An Azure Storage with blob container named `userupload`
--  A Restify web server for distributing tokens
-   -  A REST API that generate Direct Line token for new conversations
-   -  A REST API that generate Shared Access Signature token for temporary storage of attachment
--  A bot that would verify and process uploaded attachment
+- A basic web page with Web Chat integrated via JavaScript bundle
+- An Azure Storage with blob container named `userupload`
+- A Restify web server for distributing tokens
+   - A REST API that generate Direct Line token for new conversations
+   - A REST API that generate Shared Access Signature token for temporary storage of attachment
+- A bot that would verify and process uploaded attachment
 
 ## Goals
 
--  When end-user send one or more attachments, it will be uploaded to Azure Storage using Shared Access Signature token
-   -  For security reason, the token should not allow the bearer to re-download the file
-   -  After upload, Web Chat will send an event activity named "upload" to the bot with blob URLs
--  When the bot receive the "upload" event activity, it will start validating each uploaded blob and process it
--  Azure Storage for temporary upload will be automatically cleaned up daily
+- When end-user send one or more attachments, it will be uploaded to Azure Storage using Shared Access Signature token
+   - For security reason, the token should not allow the bearer to re-download the file
+   - After upload, Web Chat will send an event activity named "upload" to the bot with blob URLs
+- When the bot receive the "upload" event activity, it will start validating each uploaded blob and process it
+- Azure Storage for temporary upload will be automatically cleaned up daily
 
 ### Uploading attachment
 
@@ -197,7 +199,7 @@ Since revoking the URL created through `createObjectURL` is not trivial, there i
 
 # Further reading
 
--  [Create an Azure Bot resource](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart?view=azure-bot-service-4.0&tabs=userassigned#create-the-resource)
--  [Generating a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token)
--  [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
--  [Azure Storage: Setting up storage lifecycle management](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-lifecycle-management-concepts)
+- [Create an Azure Bot resource](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart?view=azure-bot-service-4.0&tabs=userassigned#create-the-resource)
+- [Generating a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token)
+- [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
+- [Azure Storage: Setting up storage lifecycle management](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-lifecycle-management-concepts)

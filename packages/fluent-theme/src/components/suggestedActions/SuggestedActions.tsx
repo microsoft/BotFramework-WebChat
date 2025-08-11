@@ -8,7 +8,7 @@ import RovingFocusProvider from './private/rovingFocus';
 import SuggestedAction from './SuggestedAction';
 import styles from './SuggestedActions.module.css';
 
-const { useFocus, useLocalizer, useStyleOptions, useStyleSet, useSuggestedActions, useUIState } = hooks;
+const { useFocus, useLocalizer, useStyleOptions, useStyleSet, useSuggestedActionsHooks, useUIState } = hooks;
 
 function SuggestedActionStackedOrFlowContainer(
   props: Readonly<{
@@ -45,7 +45,7 @@ function SuggestedActionStackedOrFlowContainer(
 function SuggestedActions() {
   const classNames = useStyles(styles);
   const localize = useLocalizer();
-  const [suggestedActions, _, { activity }] = useSuggestedActions();
+  const [suggestedActions, _, { activity }] = useSuggestedActionsHooks().useSuggestedActions();
   const focus = useFocus();
 
   const handleEscapeKey = useCallback(() => {

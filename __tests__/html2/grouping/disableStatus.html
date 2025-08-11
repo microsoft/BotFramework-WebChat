@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <link href="grouping.css" rel="stylesheet" type="text/css" />
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      run(async function () {
+        const {
+          React: { createElement },
+          WebChat: {
+            decorator: { createActivityGroupingMiddleware },
+            renderWebChat
+          }
+        } = window; // Imports in UMD fashion.
+
+        const clock = lolex.createClock();
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        const decoratorMiddleware = [
+          createActivityGroupingMiddleware(next => request => {
+            const DownstreamComponent = next(request);
+
+            if (request.groupingName) {
+              return ({ activities, children }) =>
+                createElement(
+                  'div',
+                  { className: `grouping grouping--${request.groupingName}` },
+                  createElement(DownstreamComponent, { activities }, children)
+                );
+            }
+
+            return DownstreamComponent;
+          })
+        ];
+
+        renderWebChat(
+          {
+            decoratorMiddleware,
+            directLine,
+            ponyfill: clock,
+            store,
+            styleOptions: {
+              botAvatarBackgroundColor: 'black',
+              botAvatarInitials: 'WC',
+              groupActivitiesBy: ['sender'],
+              groupTimestamp: 30_000,
+              userAvatarBackgroundColor: 'black',
+              userAvatarInitials: 'WW'
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(600);
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: `Bot 1: t=${(clock.Date.now() - 600) / 1_000}s`,
+          timestamp: 0,
+          type: 'message'
+        });
+
+        clock.tick(10_000);
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: `Bot 2: t=${(clock.Date.now() - 600) / 1_000}s`,
+          type: 'message'
+        });
+
+        clock.tick(110_000);
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: `Bot 3: t=${(clock.Date.now() - 600) / 1_000}s`,
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'user', role: 'user' },
+          text: `User 1: t=${(clock.Date.now() - 600) / 1_000}s`,
+          type: 'message'
+        });
+
+        clock.tick(10_000);
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'user', role: 'user' },
+          text: `User 2: t=${(clock.Date.now() - 600) / 1_000}s`,
+          type: 'message'
+        });
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

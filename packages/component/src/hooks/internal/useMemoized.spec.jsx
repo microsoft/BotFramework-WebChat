@@ -1,7 +1,7 @@
 /** @jest-environment @happy-dom/jest-environment */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-undef */
+
 /* eslint no-magic-numbers: "off" */
+
 import React from 'react';
 import { render } from 'react-dom';
 import { act } from 'react-dom/test-utils';

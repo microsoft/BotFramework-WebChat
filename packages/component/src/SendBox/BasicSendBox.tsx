@@ -1,12 +1,15 @@
 import { SendBoxToolbarMiddlewareProxy, hooks } from 'botframework-webchat-api';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import React, { FC } from 'react';
+import React, { memo } from 'react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
 import useWebSpeechPonyfill from '../hooks/useWebSpeechPonyfill';
 import useErrorMessageId from '../providers/internal/SendBox/useErrorMessageId';
+import { AttachmentBar } from './AttachmentBar/index';
 import DictationInterims from './DictationInterims';
 import MicrophoneButton from './MicrophoneButton';
 import SendButton from './SendButton';
@@ -23,7 +26,6 @@ const ROOT_STYLE = {
   '&.webchat__send-box': {
     '& .webchat__send-box__button': { flexShrink: 0 },
     '& .webchat__send-box__dictation-interims': { flex: 10000 },
-    '& .webchat__send-box__main': { display: 'flex' },
     '& .webchat__send-box__microphone-button': { flex: 1 },
     '& .webchat__send-box__text-box': { flex: 10000 }
   }
@@ -35,11 +37,18 @@ function useSendBoxSpeechInterimsVisible(): [boolean] {
   return [dictateState === STARTING || dictateState === DICTATING];
 }
 
-type BasicSendBoxProps = Readonly<{
-  className?: string;
-}>;
+const basicSendBoxPropsSchema = pipe(
+  object({
+    className: optional(string())
+  }),
+  readonly()
+);
 
-const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
+type BasicSendBoxProps = InferInput<typeof basicSendBoxPropsSchema>;
+
+function BasicSendBox(props: BasicSendBoxProps) {
+  const { className } = validateProps(basicSendBoxPropsSchema, props);
+
   const [{ sendBoxButtonAlignment }] = useStyleOptions();
   const [{ sendBox: sendBoxStyleSet }] = useStyleSet();
   const [{ SpeechRecognition = undefined } = {}] = useWebSpeechPonyfill();
@@ -69,12 +78,15 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
     >
       <SuggestedActions />
       <div className="webchat__send-box__main">
+        <AttachmentBar className="webchat__send-box__attachment-bar" />
         <SendBoxToolbarMiddlewareProxy className={buttonClassName} request={undefined} />
-        {speechInterimsVisible ? (
-          <DictationInterims className="webchat__send-box__dictation-interims" />
-        ) : (
-          <TextBox className="webchat__send-box__text-box" />
-        )}
+        <div className="webchat__send-box__editable">
+          {speechInterimsVisible ? (
+            <DictationInterims className="webchat__send-box__dictation-interims" />
+          ) : (
+            <TextBox className="webchat__send-box__text-box" />
+          )}
+        </div>
         {supportSpeechRecognition ? (
           <MicrophoneButton className={classNames(buttonClassName, 'webchat__send-box__microphone-button')} />
         ) : (
@@ -83,8 +95,7 @@ const BasicSendBox: FC<BasicSendBoxProps> = ({ className }) => {
       </div>
     </div>
   );
-};
+}
 
-export default BasicSendBox;
-
-export { useSendBoxSpeechInterimsVisible };
+export default memo(BasicSendBox);
+export { basicSendBoxPropsSchema, useSendBoxSpeechInterimsVisible, type BasicSendBoxProps };

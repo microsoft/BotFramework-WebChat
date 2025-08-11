@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import isUnconnectedBlankNode from './isUnconnectedBlankNode';
 
 test('passing a blank node identifier should return true', () =>

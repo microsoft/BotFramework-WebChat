@@ -98,14 +98,15 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   autoScrollSnapOnPageOffset: 0, // TODO: Rename from "autoScrollSnapOnPageoffset".
 
   // Send box
+  disableFileUpload: false,
   hideSendBox: false,
-  hideUploadButton: false,
   hideTelephoneKeypadButton: true,
+  hideUploadButton: undefined, // Deprecated as of 4.19.0.
   microphoneButtonColorOnDictate: '#F33',
+  sendAttachmentOn: 'send',
   sendBoxBackground: 'White',
   uploadAccept: undefined,
   uploadMultiple: true,
-  sendAttachmentOn: 'send',
 
   // Send box buttons
   sendBoxButtonColor: undefined,
@@ -244,7 +245,6 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   transcriptOverlayButtonColorOnHover: undefined,
 
   // Toast UI
-
   notificationDebounceTimeout: 400,
 
   hideToaster: false,
@@ -310,7 +310,13 @@ const DEFAULT_OPTIONS: Required<StyleOptions> = {
   feedbackActionsPlacement: 'activity-status' as const,
 
   // Speech recognition
-  speechRecognitionContinuous: false
+  speechRecognitionContinuous: false,
+
+  groupActivitiesBy: ['sender', 'status'],
+
+  // Send box attachment bar
+  sendBoxAttachmentBarMaxHeight: 114,
+  sendBoxAttachmentBarMaxThumbnail: 3
 };
 
 export default DEFAULT_OPTIONS;

@@ -1,21 +1,28 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import { ComponentIcon } from '../Icon';
 import useSubmit from '../providers/internal/SendBox/useSubmit';
-import SendIcon from './Assets/SendIcon';
 import IconButton from './IconButton';
 
-import type { FC } from 'react';
+const { useDirection, useLocalizer, useUIState } = hooks;
 
-const { useLocalizer, useUIState } = hooks;
+const sendButtonPropsSchema = pipe(
+  object({
+    className: optional(string())
+  }),
+  readonly()
+);
 
-type SendButtonProps = {
-  className?: string;
-};
+type SendButtonProps = InferInput<typeof sendButtonPropsSchema>;
 
-const SendButton: FC<SendButtonProps> = ({ className }) => {
+function SendButton(props: SendButtonProps) {
+  const [direction] = useDirection();
+  const { className } = validateProps(sendButtonPropsSchema, props);
+
   const [uiState] = useUIState();
   const localize = useLocalizer();
   const submit = useSubmit();
@@ -29,17 +36,15 @@ const SendButton: FC<SendButtonProps> = ({ className }) => {
       disabled={uiState === 'disabled'}
       onClick={handleClick}
     >
-      <SendIcon />
+      <ComponentIcon
+        appearance="text"
+        className="webchat__send-icon"
+        direction={direction === 'rtl' ? 'rtl' : 'follow'}
+        icon="send"
+      />
     </IconButton>
   );
-};
-
-SendButton.defaultProps = {
-  className: undefined
-};
-
-SendButton.propTypes = {
-  className: PropTypes.string
-};
+}
 
 export default SendButton;
+export { sendButtonPropsSchema, type SendButtonProps };

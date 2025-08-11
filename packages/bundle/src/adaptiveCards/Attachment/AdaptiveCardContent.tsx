@@ -1,8 +1,9 @@
-import PropTypes from 'prop-types';
-import React, { FC, useMemo } from 'react';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import React, { memo, useMemo } from 'react';
+import { any, boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 import useParseAdaptiveCardJSON from '../hooks/internal/useParseAdaptiveCardJSON';
+import AdaptiveCardRenderer from './AdaptiveCardRenderer';
 
 function stripSubmitAction(card) {
   if (!card.actions) {
@@ -17,13 +18,20 @@ function stripSubmitAction(card) {
   return { ...card, nextActions };
 }
 
-type AdaptiveCardContentProps = {
-  actionPerformedClassName?: string;
-  content: any;
-  disabled?: boolean;
-};
+const adaptiveCardContentPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string()),
+    content: optional(any()),
+    disabled: optional(boolean())
+  }),
+  readonly()
+);
 
-const AdaptiveCardContent: FC<AdaptiveCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+type AdaptiveCardContentProps = InferInput<typeof adaptiveCardContentPropsSchema>;
+
+function AdaptiveCardContent(props: AdaptiveCardContentProps) {
+  const { actionPerformedClassName, content, disabled } = validateProps(adaptiveCardContentPropsSchema, props);
+
   const parseAdaptiveCardJSON = useParseAdaptiveCardJSON();
 
   const card = useMemo(
@@ -47,17 +55,7 @@ const AdaptiveCardContent: FC<AdaptiveCardContentProps> = ({ actionPerformedClas
       />
     )
   );
-};
+}
 
-AdaptiveCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
-};
-
-AdaptiveCardContent.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  content: PropTypes.any.isRequired,
-  disabled: PropTypes.bool
-};
-
-export default AdaptiveCardContent;
+export default memo(AdaptiveCardContent);
+export { adaptiveCardContentPropsSchema, type AdaptiveCardContentProps };

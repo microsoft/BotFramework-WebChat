@@ -1,13 +1,10 @@
-import { useEffect, useState } from 'react';
-import * as React from 'react';
 import ReactWebChat, { createDirectLine, createDirectLineAppServiceExtension } from 'botframework-webchat';
+import React, { memo, useEffect, useState } from 'react';
 
 import { IWebChatProps } from './IWebChatProps';
 import styles from './WebChat.module.scss';
 
-import type { VFC } from 'react';
-
-const WebChat: VFC<IWebChatProps> = ({ domain, token }) => {
+function WebChat({ domain, token }: IWebChatProps) {
   const [directLine, setDirectLine] = useState();
 
   useEffect(() => {
@@ -19,6 +16,6 @@ const WebChat: VFC<IWebChatProps> = ({ domain, token }) => {
   }, [setDirectLine]);
 
   return <section className={styles.webChat}>{!!directLine && <ReactWebChat directLine={directLine} />}</section>;
-};
+}
 
-export default WebChat;
+export default memo(WebChat);

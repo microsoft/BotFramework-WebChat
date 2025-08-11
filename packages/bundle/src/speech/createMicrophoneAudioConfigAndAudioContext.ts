@@ -1,5 +1,5 @@
-import { ChunkedArrayBufferStream } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Exports';
-import { PcmRecorder } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports';
+import { ChunkedArrayBufferStream } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common/Exports.js';
+import { PcmRecorder } from 'microsoft-cognitiveservices-speech-sdk/distrib/lib/src/common.browser/Exports.js';
 
 import { AudioStreamNode, DeviceInfo, Format } from './CustomAudioInputStream';
 import bytesPerSample from './bytesPerSample';

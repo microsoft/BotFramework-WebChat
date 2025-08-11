@@ -1,38 +1,46 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { memo, useMemo } from 'react';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ShieldIcon from './ShieldIcon';
 
-type MessageSensitivityLabelProps = Readonly<{
-  className?: string | undefined;
-  color?: string | undefined;
-  isEncrypted?: boolean | undefined;
-  name?: string | undefined;
-  title?: string | undefined;
-}>;
+const messageSensitivityLabelPropsSchema = pipe(
+  object({
+    className: optional(string()),
+    color: optional(string()),
+    isEncrypted: optional(boolean()),
+    name: optional(string()),
+    title: optional(string())
+  }),
+  readonly()
+);
 
-const MessageSensitivityLabel = memo(({ className, color, isEncrypted, name, title }: MessageSensitivityLabelProps) => (
-  <div
-    className={classNames(
-      'webchat__link-definitions__message-sensitivity-label',
-      {
-        'webchat__link-definitions__message-sensitivity-label--is-encrypted': isEncrypted
-      },
-      className
-    )}
-    title={useMemo(() => [name, title].filter(Boolean).join('\n\n'), [name, title])}
-  >
-    <ShieldIcon
-      className="webchat__link-definitions__message-sensitivity-label-icon"
-      fillColor={color}
-      hasLock={isEncrypted}
-    />
-    <span className="webchat__link-definitions__message-sensitivity-label-text">{name}</span>
-  </div>
-));
+type MessageSensitivityLabelProps = InferInput<typeof messageSensitivityLabelPropsSchema>;
 
-MessageSensitivityLabel.displayName = 'MessageSensitivityLabel';
+function MessageSensitivityLabel(props: MessageSensitivityLabelProps) {
+  const { className, color, isEncrypted, name, title } = validateProps(messageSensitivityLabelPropsSchema, props);
 
-export default MessageSensitivityLabel;
+  return (
+    <div
+      className={classNames(
+        'webchat__link-definitions__message-sensitivity-label',
+        {
+          'webchat__link-definitions__message-sensitivity-label--is-encrypted': isEncrypted
+        },
+        className
+      )}
+      title={useMemo(() => [name, title].filter(Boolean).join('\n\n'), [name, title])}
+    >
+      <ShieldIcon
+        className="webchat__link-definitions__message-sensitivity-label-icon"
+        fillColor={color}
+        hasLock={isEncrypted}
+      />
+      <span className="webchat__link-definitions__message-sensitivity-label-text">{name}</span>
+    </div>
+  );
+}
 
-export type { MessageSensitivityLabelProps };
+export default memo(MessageSensitivityLabel);
+export { messageSensitivityLabelPropsSchema, type MessageSensitivityLabelProps };

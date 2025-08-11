@@ -53,3 +53,23 @@ test('one middleware ran twice by a single upstream middleware', () => {
 
   expect(work(1)).toEqual(210);
 });
+
+test('a middleware return undefined after setup should be skipped', () => {
+  const enhancer = concatMiddleware(
+    () => next => value => next(value + 2),
+    () => undefined,
+    () => next => value => next(value * 3)
+  );
+
+  expect(enhancer()(value => value)(5)).toEqual(21); // (5 + 2) * 3
+});
+
+test('an undefined middleware should be skipped', () => {
+  const enhancer = concatMiddleware(
+    () => next => value => next(value + 2),
+    undefined,
+    () => next => value => next(value * 3)
+  );
+
+  expect(enhancer()(value => value)(5)).toEqual(21); // (5 + 2) * 3
+});

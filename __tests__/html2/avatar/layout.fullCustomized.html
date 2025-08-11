@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { createFullCustomizedProps } from './setup.js';
+      run(
+        async function () {
+          const {
+            React: { createElement },
+            ReactDOM: { render },
+            testHelpers: {
+              createStore,
+              token: { fetchDirectLineToken }
+            },
+            WebChat: { createDirectLine, ReactWebChat }
+          } = window; // Imports in UMD fashion.
+
+          const directLine = createDirectLine({ token: await fetchDirectLineToken() });
+          const store = createStore();
+
+          await host.windowSize(undefined, 768, document.getElementById('webchat'));
+
+          function renderWebChat(props) {
+            return new Promise(resolve =>
+              render(
+                createElement(ReactWebChat, { directLine, store, ...props }),
+                document.getElementById('webchat'),
+                resolve
+              )
+            );
+          }
+
+          const extraProps = new URLSearchParams(location.search).has('rtl') ? { locale: 'ar-EG' } : {};
+          const defaultProps = createFullCustomizedProps(extraProps);
+
+          await renderWebChat(defaultProps);
+
+          await pageConditions.uiConnected();
+
+          await pageObjects.sendMessageViaSendBox('normal');
+          await pageConditions.numActivitiesShown(2);
+
+          await pageObjects.sendMessageViaSendBox('override avatar');
+          await pageConditions.numActivitiesShown(4);
+
+          await pageObjects.sendMessageViaSendBox('no avatar');
+          await pageConditions.numActivitiesShown(6);
+
+          await host.snapshot('local', { skipCheckAccessibility: true });
+
+          await renderWebChat({
+            ...defaultProps,
+            styleOptions: {
+              ...defaultProps.styleOptions,
+              botAvatarInitials: undefined,
+              userAvatarInitials: undefined
+            }
+          });
+
+          await host.snapshot('local', { skipCheckAccessibility: true });
+        },
+        { skipCheckAccessibility: true }
+      );
+    </script>
+  </body>
+</html>

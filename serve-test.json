@@ -40,22 +40,6 @@
       "destination": "packages/fluent-theme/dist/botframework-webchat-fluent-theme.production.min.js.map"
     },
     {
-      "source": "/__dist__/fluent-bundle.development.js",
-      "destination": "packages/test/fluent-bundle/dist/fluent-bundle.development.js"
-    },
-    {
-      "source": "/__dist__/fluent-bundle.development.js.map",
-      "destination": "packages/test/fluent-bundle/dist/fluent-bundle.development.js.map"
-    },
-    {
-      "source": "/__dist__/fluent-bundle.production.min.js",
-      "destination": "packages/test/fluent-bundle/dist/fluent-bundle.production.min.js"
-    },
-    {
-      "source": "/__dist__/fluent-bundle.production.min.js.map",
-      "destination": "packages/test/fluent-bundle/dist/fluent-bundle.production.min.js.map"
-    },
-    {
       "source": "/__dist__/webchat.js",
       "destination": "packages/bundle/dist/webchat.js"
     },
@@ -114,6 +98,7 @@
     "/**/*.ico",
     "/**/*.js",
     "/**/*.json",
-    "/**/*.map"
+    "/**/*.map",
+    "/**/*.png"
   ]
 }

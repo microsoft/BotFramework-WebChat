@@ -1,21 +1,23 @@
 import { hooks } from 'botframework-webchat-api';
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { MouseEventHandler, useCallback, VFC } from 'react';
+import React, { memo, useCallback, type MouseEventHandler } from 'react';
+import { any, literal, number, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
 
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useFocusVisible from '../hooks/internal/useFocusVisible';
 import useLocalizeAccessKey from '../hooks/internal/useLocalizeAccessKey';
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useSuggestedActionsAccessKey from '../hooks/internal/useSuggestedActionsAccessKey';
 import useFocus from '../hooks/useFocus';
 import useScrollToEnd from '../hooks/useScrollToEnd';
 import useStyleSet from '../hooks/useStyleSet';
 import useItemRef from '../providers/RovingTabIndex/useItemRef';
+import testIds from '../testIds';
 import AccessibleButton from '../Utils/AccessibleButton';
 import useFocusAccessKeyEffect from '../Utils/AccessKeySink/useFocusAccessKeyEffect';
 
-const { useDirection, usePerformCardAction, useStyleOptions, useSuggestedActions, useUIState } = hooks;
+const { useDirection, usePerformCardAction, useStyleOptions, useSuggestedActionsHooks, useUIState } = hooks;
 
 const ROOT_STYLE = {
   '&.webchat__suggested-action': {
@@ -24,42 +26,52 @@ const ROOT_STYLE = {
   }
 };
 
-type SuggestedActionProps = {
-  buttonText: string;
-  className?: string;
-  displayText?: string;
-  image?: string;
-  imageAlt?: string;
-  itemIndex: number;
-  text?: string;
-  textClassName?: string;
-  type?:
-    | 'call'
-    | 'downloadFile'
-    | 'imBack'
-    | 'messageBack'
-    | 'openUrl'
-    | 'playAudio'
-    | 'playVideo'
-    | 'postBack'
-    | 'showImage'
-    | 'signin';
-  value?: any;
-};
+const suggestedActionPropsSchema = pipe(
+  object({
+    buttonText: string(),
+    className: optional(string()),
+    displayText: optional(string()),
+    image: optional(string()),
+    imageAlt: optional(string()),
+    itemIndex: number(),
+    text: optional(string()),
+    textClassName: optional(string()),
+    type: optional(
+      union([
+        literal('call'),
+        literal('downloadFile'),
+        literal('imBack'),
+        literal('messageBack'),
+        literal('openUrl'),
+        literal('playAudio'),
+        literal('playVideo'),
+        literal('postBack'),
+        literal('showImage'),
+        literal('signin')
+      ])
+    ),
+    value: any()
+  }),
+  readonly()
+);
 
-const SuggestedAction: VFC<SuggestedActionProps> = ({
-  buttonText,
-  className,
-  displayText,
-  image,
-  imageAlt,
-  itemIndex,
-  text,
-  textClassName,
-  type,
-  value
-}) => {
-  const [_, setSuggestedActions] = useSuggestedActions();
+type SuggestedActionProps = InferInput<typeof suggestedActionPropsSchema>;
+
+function SuggestedAction(props: SuggestedActionProps) {
+  const {
+    buttonText,
+    className,
+    displayText = '',
+    image = '',
+    imageAlt,
+    itemIndex,
+    text = '',
+    textClassName,
+    type,
+    value
+  } = validateProps(suggestedActionPropsSchema, props);
+
+  const [_, setSuggestedActions] = useSuggestedActionsHooks().useSuggestedActions();
   const [{ suggestedActionsStackedLayoutButtonTextWrap }] = useStyleOptions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const [accessKey] = useSuggestedActionsAccessKey();
@@ -109,8 +121,9 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
         },
         rootClassName,
         suggestedActionStyleSet + '',
-        (className || '') + ''
+        className
       )}
+      data-testid={testIds.suggestedActionButton}
       disabled={uiState === 'disabled'}
       onClick={handleClick}
       ref={focusRef}
@@ -126,36 +139,11 @@ const SuggestedAction: VFC<SuggestedActionProps> = ({
           src={image}
         />
       )}
-      <span className={classNames('webchat__suggested-action__text', (textClassName || '') + '')}>{buttonText}</span>
+      <span className={classNames('webchat__suggested-action__text', textClassName)}>{buttonText}</span>
       <div className="webchat__suggested-action__keyboard-focus-indicator" />
     </AccessibleButton>
   );
-};
+}
 
-SuggestedAction.defaultProps = {
-  className: '',
-  displayText: '',
-  image: '',
-  imageAlt: undefined,
-  text: '',
-  textClassName: '',
-  type: undefined,
-  value: undefined
-};
-
-SuggestedAction.propTypes = {
-  buttonText: PropTypes.string.isRequired,
-  className: PropTypes.string,
-  displayText: PropTypes.string,
-  image: PropTypes.string,
-  imageAlt: PropTypes.string,
-  itemIndex: PropTypes.number.isRequired,
-  text: PropTypes.string,
-  textClassName: PropTypes.string,
-  // TypeScript class is not mappable to PropTypes.
-  // @ts-ignore
-  type: PropTypes.string,
-  value: PropTypes.any
-};
-
-export default SuggestedAction;
+export default memo(SuggestedAction);
+export { suggestedActionPropsSchema, type SuggestedActionProps };

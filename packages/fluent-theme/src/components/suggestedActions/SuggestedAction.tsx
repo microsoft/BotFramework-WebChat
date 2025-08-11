@@ -9,7 +9,7 @@ import AccessibleButton from './AccessibleButton';
 import { useRovingFocusItemRef } from './private/rovingFocus';
 import styles from './SuggestedAction.module.css';
 
-const { useFocus, usePerformCardAction, useScrollToEnd, useStyleSet, useSuggestedActions, useUIState } = hooks;
+const { useFocus, usePerformCardAction, useScrollToEnd, useStyleSet, useSuggestedActionsHooks, useUIState } = hooks;
 
 type SuggestedActionProps = Readonly<{
   buttonText: string | undefined;
@@ -44,7 +44,7 @@ function SuggestedAction({
   type,
   value
 }: SuggestedActionProps) {
-  const [_, setSuggestedActions] = useSuggestedActions();
+  const [_, setSuggestedActions] = useSuggestedActionsHooks().useSuggestedActions();
   const [{ suggestedAction: suggestedActionStyleSet }] = useStyleSet();
   const [uiState] = useUIState();
   const focus = useFocus();

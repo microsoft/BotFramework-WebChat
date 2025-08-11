@@ -1,18 +1,16 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [2] }] */
 
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import React, { Fragment, useMemo } from 'react';
+import { any, object, pipe, readonly, type InferInput } from 'valibot';
 
+import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
 import activityAltText from '../Utils/activityAltText';
 import LiveRegionAttachments from './private/LiveRegionAttachments';
 import LiveRegionSuggestedActions from './private/LiveRegionSuggestedActions';
-import useRenderMarkdownAsHTML from '../hooks/useRenderMarkdownAsHTML';
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
-
-import type { VFC } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
 
 const { useAvatarForBot, useLocalizer } = hooks;
 
@@ -29,11 +27,18 @@ const ROOT_STYLE = {
   }
 };
 
-type LiveRegionActivityProps = {
-  activity: WebChatActivity;
-};
+const liveRegionActivityPropsSchema = pipe(
+  object({
+    activity: any()
+  }),
+  readonly()
+);
 
-const LiveRegionActivity: VFC<LiveRegionActivityProps> = ({ activity }) => {
+type LiveRegionActivityProps = InferInput<typeof liveRegionActivityPropsSchema>;
+
+function LiveRegionActivity(props: LiveRegionActivityProps) {
+  const { activity } = validateProps(liveRegionActivityPropsSchema, props);
+
   const [{ initials: botInitials }] = useAvatarForBot();
   const {
     from: { role },
@@ -71,12 +76,7 @@ const LiveRegionActivity: VFC<LiveRegionActivityProps> = ({ activity }) => {
       )}
     </article>
   );
-};
-
-LiveRegionActivity.propTypes = {
-  activity: PropTypes.any.isRequired
-};
+}
 
 export default LiveRegionActivity;
-
-export type { LiveRegionActivityProps };
+export { liveRegionActivityPropsSchema, type LiveRegionActivityProps };

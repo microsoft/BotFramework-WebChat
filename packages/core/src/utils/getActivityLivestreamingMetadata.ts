@@ -1,30 +1,84 @@
-import { integer, literal, minValue, number, object, optional, pipe, safeParse, string, union } from 'valibot';
+import {
+  any,
+  array,
+  integer,
+  literal,
+  minValue,
+  nonEmpty,
+  number,
+  object,
+  optional,
+  pipe,
+  safeParse,
+  string,
+  undefinedable,
+  union
+} from 'valibot';
 
 import { type WebChatActivity } from '../types/WebChatActivity';
+import getOrgSchemaMessage from './getOrgSchemaMessage';
+
+const EMPTY_ARRAY = Object.freeze([]);
 
 const streamSequenceSchema = pipe(number(), integer(), minValue(1));
 
 const livestreamingActivitySchema = union([
+  // Interim.
   object({
+    attachments: optional(array(any()), EMPTY_ARRAY),
     channelData: object({
       // "streamId" is optional for the very first activity in the session.
-      streamId: optional(string()),
+      streamId: optional(undefinedable(string())),
       streamSequence: streamSequenceSchema,
-      streamType: union([literal('informative'), literal('streaming')])
+      streamType: literal('streaming')
     }),
     id: string(),
-    text: string(),
+    // "text" is optional. If not set or empty, it presents a contentless activity.
+    text: optional(undefinedable(string())),
     type: literal('typing')
   }),
+  // Informative message.
   object({
+    attachments: optional(array(any()), EMPTY_ARRAY),
     channelData: object({
-      // "streamId" is required for the final activity in the session. The final activity must not be the sole activity in the session.
-      streamId: string(),
+      // "streamId" is optional for the very first activity in the session.
+      streamId: optional(undefinedable(string())),
+      streamSequence: streamSequenceSchema,
+      streamType: literal('informative')
+    }),
+    id: string(),
+    // Informative may not have "text", but should have abstract instead (checked later)
+    text: optional(undefinedable(string())),
+    type: literal('typing'),
+    entities: optional(array(any()), EMPTY_ARRAY)
+  }),
+  // Conclude with a message.
+  object({
+    attachments: optional(array(any()), EMPTY_ARRAY),
+    channelData: object({
+      // "streamId" is required for the final activity in the session.
+      // The final activity must not be the sole activity in the session.
+      streamId: pipe(string(), nonEmpty()),
       streamType: literal('final')
     }),
     id: string(),
-    text: string(),
+    // If "text" is empty, it represents "regretting" the livestream.
+    text: optional(undefinedable(string())),
     type: literal('message')
+  }),
+  // Conclude without a message.
+  object({
+    attachments: optional(array(any()), EMPTY_ARRAY),
+    channelData: object({
+      // "streamId" is required for the final activity in the session.
+      // The final activity must not be the sole activity in the session.
+      streamId: pipe(string(), nonEmpty()),
+      streamType: literal('final')
+    }),
+    id: string(),
+    // If "text" is not set or empty, it represents "regretting" the livestream.
+    text: optional(undefinedable(literal(''))),
+    type: literal('typing')
   })
 ]);
 
@@ -34,7 +88,8 @@ const livestreamingActivitySchema = union([
  * - `sessionId` - ID of the livestreaming session
  * - `sequenceNumber` - sequence number of the activity
  * - `type`
- *   - `"interim activity"` - current response, could be empty, partial-from-start, or complete response.
+ *   - `"contentless"` - ongoing but no content, should show indicator
+ *   - `"interim activity"` - current response, could be partial-from-start, or complete response.
  *     More activities are expected. Future interim activities always replace past interim activities, enable erasing or backtracking response.
  *   - `"informative message"` - optional side-channel informative message describing the current response, e.g. "Searching your document library".
  *     Always replace past informative messages. May interleave with interim activities.
@@ -48,7 +103,7 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
   | Readonly<{
       sessionId: string;
       sequenceNumber: number;
-      type: 'final activity' | 'informative message' | 'interim activity';
+      type: 'contentless' | 'final activity' | 'informative message' | 'interim activity';
     }>
   | undefined {
   const result = safeParse(livestreamingActivitySchema, activity);
@@ -69,7 +124,15 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
         : {
             sequenceNumber: output.channelData.streamSequence,
             sessionId,
-            type: output.channelData.streamType === 'informative' ? 'informative message' : 'interim activity'
+            type: !(
+              output.text ||
+              output.attachments?.length ||
+              ('entities' in output && getOrgSchemaMessage(output.entities)?.abstract)
+            )
+              ? 'contentless'
+              : output.channelData.streamType === 'informative'
+                ? 'informative message'
+                : 'interim activity'
           }
     );
   }

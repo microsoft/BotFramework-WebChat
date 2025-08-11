@@ -20,14 +20,6 @@ parserOptions:
 
 overrides:
   - files:
-      - '__tests__/**/*.js'
-      - '*.spec.js'
-      - '*.test.js'
-
-    env:
-      jest: true
-
-  - files:
       - 'jest.config.js'
       - 'jest.*.config.js'
 
@@ -84,6 +76,24 @@ overrides:
 
       # Shorthanding if-condition with && and ||.
       '@typescript-eslint/no-unused-expressions': off
+
+  - files:
+      - '__tests__/**/*.js'
+      - '**/*.spec.js'
+      - '**/*.spec.jsx'
+      - '**/*.spec.ts'
+      - '**/*.spec.tsx'
+      - '**/*.test.js'
+      - '**/*.test.jsx'
+      - '**/*.test.ts'
+      - '**/*.test.tsx'
+
+    env:
+      jest: true
+
+    rules:
+      '@typescript-eslint/no-require-imports': off
+      no-magic-numbers: off
 
 rules:
   # Only list rules that are not in *:recommended set

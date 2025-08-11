@@ -1,0 +1,12 @@
+:global(.webchat-fluent) .sliding-dots-typing-indicator {
+  align-self: start;
+  display: flex;
+  flex: none;
+  height: 16px;
+  margin: auto var(--webchat-spacingHorizontalMNudge) var(--webchat-spacingVerticalNone);
+}
+
+:global(.webchat-fluent) .sliding-dots-typing-indicator__image {
+  height: 6px;
+  width: auto;
+}

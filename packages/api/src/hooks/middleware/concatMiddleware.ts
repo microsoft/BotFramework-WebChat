@@ -6,10 +6,11 @@ export default function concatMiddleware<Setup, Result>(
   ...middleware: Middleware<Setup, Result>[]
 ): Middleware<Setup, Result> {
   return setupArgs => {
-    const setup = middleware.reduce(
-      (setup, middleware) => (middleware ? [...setup, middleware(setupArgs)] : setup),
-      []
-    );
+    const setup = middleware.reduce((setup, middleware) => {
+      const enhancer = middleware?.(setupArgs);
+
+      return enhancer ? [...setup, enhancer] : setup;
+    }, []);
 
     return last => {
       const stack = setup.slice();

@@ -15,14 +15,16 @@
       run(async function () {
         const {
           ReactDOM: { render },
+          testHelpers: { createDirectLineEmulator },
           WebChat: {
             Components: { BasicWebChat, Composer },
             hooks: { useTypingIndicatorVisible }
           }
         } = window; // Imports in UMD fashion.
 
-        const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
-        const store = testHelpers.createStore();
+        const clock = lolex.createClock();
+
+        const { directLine, store } = createDirectLineEmulator({ ponyfill: clock });
 
         let typingIndicatorVisible;
 
@@ -33,15 +35,30 @@
         };
 
         render(
-          <Composer directLine={directLine} store={store}>
+          <Composer directLine={directLine} ponyfill={clock} store={store}>
             <BasicWebChat />
             <RunFunction />
           </Composer>,
           document.getElementById('webchat')
         );
 
+        await pageConditions.webChatRendered();
+
+        clock.tick(600);
+
         await pageConditions.uiConnected();
-        await pageObjects.sendMessageViaSendBox('typing 1');
+
+        await (
+          await directLine.actPostActivity(() => {
+            pageObjects.sendMessageViaSendBox('typing 1');
+          })
+        ).resolveAll();
+
+        await directLine.emulateIncomingActivity('Typing indicator should go away after 5 seconds.');
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          type: 'typing'
+        });
         await pageConditions.numActivitiesShown(2);
 
         expect(typingIndicatorVisible).toBe(true);

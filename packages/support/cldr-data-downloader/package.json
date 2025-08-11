@@ -1,5 +1,5 @@
 {
-  "name": "botframework-webchat-cldr-data-downloader",
+  "name": "@msinternal/botframework-webchat-cldr-data-downloader",
   "version": "0.3.5-0",
   "engines": {
     "node": ">= 12"
@@ -53,8 +53,6 @@
     "adm-zip": "0.5.16",
     "nopt": "8.1.0",
     "progress": "2.0.3",
-    "q": "1.5.1",
-    "request": "2.88.2",
-    "request-progress": "3.0.0"
+    "q": "1.5.1"
   }
 }

@@ -1,29 +1,32 @@
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
-import type { DirectLineAttachment } from 'botframework-webchat-core';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import React, { memo } from 'react';
+import { any, boolean, object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import AdaptiveCardContent from './AdaptiveCardContent';
 
-type AdaptiveCardAttachmentProps = {
-  attachment: DirectLineAttachment;
-  disabled?: boolean;
-};
-
-const AdaptiveCardAttachment: FC<AdaptiveCardAttachmentProps> = ({ attachment: { content }, disabled }) => (
-  <AdaptiveCardContent content={content} disabled={disabled} />
+const adaptiveCardAttachmentPropsSchema = pipe(
+  object({
+    attachment: pipe(
+      object({
+        content: optional(any())
+      }),
+      readonly()
+    ),
+    disabled: optional(boolean())
+  }),
+  readonly()
 );
 
-export default AdaptiveCardAttachment;
+type AdaptiveCardAttachmentProps = InferInput<typeof adaptiveCardAttachmentPropsSchema>;
 
-AdaptiveCardAttachment.defaultProps = {
-  disabled: undefined
-};
+function AdaptiveCardAttachment(props: AdaptiveCardAttachmentProps) {
+  const {
+    attachment: { content },
+    disabled
+  } = validateProps(adaptiveCardAttachmentPropsSchema, props);
 
-AdaptiveCardAttachment.propTypes = {
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  attachment: PropTypes.shape({
-    content: PropTypes.any.isRequired
-  }).isRequired,
-  disabled: PropTypes.bool
-};
+  return <AdaptiveCardContent content={content} disabled={disabled} />;
+}
+
+export default memo(AdaptiveCardAttachment);
+export { adaptiveCardAttachmentPropsSchema, type AdaptiveCardAttachmentProps };

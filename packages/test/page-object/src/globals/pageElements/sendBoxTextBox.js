@@ -1,6 +1,8 @@
+import { testIds } from 'botframework-webchat';
+
 import root from './root';
 
-const CSS_SELECTOR = '[role="form"] > * > form > input[type="text"], [role="form"] > * > form textarea';
+const CSS_SELECTOR = `[data-testid="${testIds.sendBoxTextBox}"]`;
 
 export default function sendBoxTextBox() {
   return root().querySelector(CSS_SELECTOR);

@@ -1,24 +1,29 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { memo } from 'react';
+import { date, number, object, pipe, readonly, string, union, type InferInput } from 'valibot';
 
 import AbsoluteTime from './AbsoluteTime';
 import RelativeTime from './private/RelativeTime';
 
 const { useStyleOptions } = hooks;
 
-type TimestampProps = {
-  timestamp: string;
-};
+const timestampPropsSchema = pipe(
+  object({
+    timestamp: union([date(), number(), string()]) // TODO: Should limit to `Date`.
+  }),
+  readonly()
+);
 
-const Timestamp: FC<TimestampProps> = ({ timestamp }) => {
+type TimestampProps = InferInput<typeof timestampPropsSchema>;
+
+function Timestamp(props: TimestampProps) {
+  const { timestamp } = validateProps(timestampPropsSchema, props);
+
   const [{ timestampFormat }] = useStyleOptions();
 
   return timestampFormat === 'relative' ? <RelativeTime value={timestamp} /> : <AbsoluteTime value={timestamp} />;
-};
+}
 
-Timestamp.propTypes = {
-  timestamp: PropTypes.string.isRequired
-};
-
-export default Timestamp;
+export default memo(Timestamp);
+export { timestampPropsSchema, type TimestampProps };

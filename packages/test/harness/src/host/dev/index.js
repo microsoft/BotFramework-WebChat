@@ -3,9 +3,7 @@
 
 const { Builder, logging } = require('selenium-webdriver');
 const { Options: ChromeOptions, ServiceBuilder: ChromeServiceBuilder } = require('selenium-webdriver/chrome');
-const AbortController = require('abort-controller');
 const expect = require('expect');
-const fetch = require('node-fetch');
 
 const createDevProxies = require('./createDevProxies');
 const findHostIP = require('./utils/findHostIP');
@@ -23,7 +21,7 @@ async function main() {
   const hostIP = await findHostIP();
   const localIP = await findLocalIP();
 
-  const service = await new ChromeServiceBuilder('./chromedriver.exe')
+  const service = await new ChromeServiceBuilder('./chromedriver')
     .addArguments('--allowed-ips', localIP)
     .setHostname(hostIP)
     .setStdio(['ignore', 'ignore', 'ignore'])

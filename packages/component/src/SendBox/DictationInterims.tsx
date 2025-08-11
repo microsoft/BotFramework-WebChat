@@ -1,10 +1,11 @@
 /* eslint react/no-array-index-key: "off" */
 
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { Constants } from 'botframework-webchat-core';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { memo } from 'react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useStyleSet from '../hooks/useStyleSet';
@@ -21,11 +22,18 @@ const ROOT_STYLE = {
   display: 'flex'
 };
 
-type DictationInterimsProps = {
-  className?: string;
-};
+const dictationInterimsPropsSchema = pipe(
+  object({
+    className: optional(string())
+  }),
+  readonly()
+);
 
-const DictationInterims: FC<DictationInterimsProps> = ({ className }) => {
+type DictationInterimsProps = InferInput<typeof dictationInterimsPropsSchema>;
+
+function DictationInterims(props: DictationInterimsProps) {
+  const { className } = validateProps(dictationInterimsPropsSchema, props);
+
   const [dictateInterims] = useDictateInterims();
   const [dictateState] = useDictateState();
   const [{ dictationInterims: dictationInterimsStyleSet }] = useStyleSet();
@@ -34,7 +42,7 @@ const DictationInterims: FC<DictationInterimsProps> = ({ className }) => {
 
   return dictateState === STARTING || dictateState === STOPPING ? (
     <p
-      className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}
+      className={classNames(dictationInterimsStyleSet + '', rootClassName, className, 'status')}
       data-testid={testIds.sendBoxSpeechBox}
     >
       {dictateState === STARTING && localize('SPEECH_INPUT_STARTING')}
@@ -43,7 +51,7 @@ const DictationInterims: FC<DictationInterimsProps> = ({ className }) => {
     dictateState === DICTATING &&
       (dictateInterims.length ? (
         <p
-          className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'dictating')}
+          className={classNames(dictationInterimsStyleSet + '', rootClassName, className, 'dictating')}
           data-testid={testIds.sendBoxSpeechBox}
         >
           {dictateInterims.map((interim, index) => (
@@ -55,24 +63,17 @@ const DictationInterims: FC<DictationInterimsProps> = ({ className }) => {
         </p>
       ) : (
         <p
-          className={classNames(dictationInterimsStyleSet + '', rootClassName, (className || '') + '', 'status')}
+          className={classNames(dictationInterimsStyleSet + '', rootClassName, className, 'status')}
           data-testid={testIds.sendBoxSpeechBox}
         >
           {localize('SPEECH_INPUT_LISTENING')}
         </p>
       ))
   );
-};
-
-DictationInterims.defaultProps = {
-  className: ''
-};
-
-DictationInterims.propTypes = {
-  className: PropTypes.string
-};
+}
 
 // TODO: [P3] After speech started, when clicking on the transcript, it should
 //       stop the dictation and allow the user to type-correct the transcript
 
-export default DictationInterims;
+export default memo(DictationInterims);
+export { dictationInterimsPropsSchema, type DictationInterimsProps };

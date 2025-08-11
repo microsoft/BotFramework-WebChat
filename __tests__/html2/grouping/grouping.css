@@ -1,0 +1,37 @@
+.grouping {
+  border-style: solid;
+  border-width: 2px;
+  margin: 2px;
+  position: relative;
+}
+
+.grouping::after {
+  font-family: sans-serif;
+  font-size: smaller;
+  height: calc(1em + 2px);
+  padding: 2px 6px;
+  position: absolute;
+  top: 0;
+}
+
+.grouping--sender {
+  border-color: #e00;
+}
+
+.grouping--sender::after {
+  background-color: #e00;
+  color: white;
+  content: 'Sender';
+  right: -2px;
+}
+
+.grouping--status {
+  border-color: green;
+}
+
+.grouping--status::after {
+  background-color: green;
+  color: white;
+  content: 'Status';
+  left: -2px;
+}

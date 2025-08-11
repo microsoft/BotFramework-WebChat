@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="./css/pauseAnimation.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: {
+            decorator: { WebChatDecorator },
+            ReactWebChat
+          }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const styleOptions = {
+          // Non-animated typing indicator.
+          typingAnimationBackgroundImage: `url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAUACgDASIAAhEBAxEB/8QAGgABAQACAwAAAAAAAAAAAAAAAAYCBwMFCP/EACsQAAECBQIEBQUAAAAAAAAAAAECAwAEBQYRBxITIjFBMlFhccFScoGh8f/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD0lctx023JVD9UeKOIcNoSNylkdcCMbauSmXHLOPUx8r4ZAcQtO1SM9Mj5iO1gtWo1syc7S2zMKYSptbIPNgnII8/5HBpRZ9RpaKjNVVCpUzLPAQ1nmA7qPl6fmAondRrcaqhkVTiiQrYXgglsH7vnpHc3DcNNoEimaqT4Q2s4bCRuUs+gEaLd05uNFVMmiS3o3YEwFDhlP1Z7e3WLzUuzahUKHRk0zM07TmeApvOFLGEjcM9+Xp6wFnbN0Uu5GnF0x4qW1je2tO1Sc9Djy9oRD6QWlU6PPzVSqjRlgtksttKPMcqBKiO3h/cIDacIQgEIQgEIQgP/2Q==')`
+        };
+
+        // renderWebChat({ directLine, store, styleOptions }, document.getElementById('webchat'));
+
+        render(
+          createElement(
+            WebChatDecorator,
+            {},
+            createElement(ReactWebChat, {
+              directLine,
+              store,
+              styleOptions
+            })
+          ),
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // ---
+
+        // WHEN: Receive an empty livestream.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamSequence: 1, streamType: 'streaming' },
+          from: { id: 'bot', role: 'bot' },
+          id: 'a-00001',
+          type: 'typing'
+        });
+
+        // THEN: Should show typing indicator.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeTruthy());
+
+        // THEN: Should show no messages.
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(0));
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: Receive another chunk livestream.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamSequence: 1, streamType: 'streaming' },
+          from: { id: 'bot', role: 'bot' },
+          id: 'a-00002',
+          text: 'A quick brown fox',
+          type: 'typing'
+        });
+
+        // THEN: Should show message.
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(1));
+        await waitFor(() =>
+          expect(pageElements.activityContents()[0]).toHaveProperty('textContent', 'A quick brown fox')
+        );
+
+        // THEN: Should hide typing indicator.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeFalsy());
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: The second livestream is finished.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: 'a-00002', streamType: 'final' },
+          from: { id: 'bot', role: 'bot' },
+          id: crypto.randomUUID(),
+          text: 'A quick brown fox jumped over the lazy dogs.',
+          type: 'message'
+        });
+
+        // THEN: Should show message.
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(1));
+        await waitFor(() =>
+          expect(pageElements.activityContents()[0]).toHaveProperty(
+            'textContent',
+            'A quick brown fox jumped over the lazy dogs.'
+          )
+        );
+
+        // THEN: Should show typing indicator.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeTruthy());
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+
+        // ---
+
+        // WHEN: The contentless livestream is finished.
+        await directLine.emulateIncomingActivity({
+          channelData: { streamId: 'a-00001', streamType: 'final' },
+          from: { id: 'bot', role: 'bot' },
+          id: crypto.randomUUID(),
+          type: 'typing'
+        });
+
+        // THEN: Should hide typing indicator.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeFalsy());
+
+        // THEN: Should not show additional message.
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(1));
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

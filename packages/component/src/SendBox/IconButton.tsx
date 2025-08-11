@@ -1,23 +1,42 @@
 import { hooks } from 'botframework-webchat-api';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { FC, MouseEventHandler, ReactNode, useRef } from 'react';
+import React, { memo, useRef, type MouseEventHandler } from 'react';
+import {
+  boolean,
+  custom,
+  function_,
+  object,
+  optional,
+  pipe,
+  readonly,
+  safeParse,
+  string,
+  type InferInput
+} from 'valibot';
 
-import AccessibleButton from '../Utils/AccessibleButton';
 import useFocusVisible from '../hooks/internal/useFocusVisible';
 import useStyleSet from '../hooks/useStyleSet';
+import AccessibleButton from '../Utils/AccessibleButton';
 
 const { useStyleOptions } = hooks;
 
-type IconButtonProps = {
-  alt?: string;
-  children?: ReactNode;
-  className?: string;
-  disabled?: boolean;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-};
+const iconButtonPropsSchema = pipe(
+  object({
+    alt: optional(string()),
+    children: optional(reactNode()),
+    className: optional(string()),
+    disabled: optional(boolean()),
+    onClick: optional(custom<MouseEventHandler<HTMLButtonElement>>(value => safeParse(function_(), value).success))
+  }),
+  readonly()
+);
 
-const IconButton: FC<IconButtonProps> = ({ alt, children, className, disabled, onClick }) => {
+type IconButtonProps = InferInput<typeof iconButtonPropsSchema>;
+
+function IconButton(props: IconButtonProps) {
+  const { alt, children, className, disabled, onClick } = validateProps(iconButtonPropsSchema, props);
+
   const [{ sendBoxButton: sendBoxButtonStyleSet }] = useStyleSet();
   const [{ sendBoxButtonAlignment }] = useStyleOptions();
   const buttonRef = useRef<HTMLButtonElement>();
@@ -33,7 +52,7 @@ const IconButton: FC<IconButtonProps> = ({ alt, children, className, disabled, o
           'webchat__icon-button--focus-visible': focusVisible,
           'webchat__icon-button--stretch': sendBoxButtonAlignment !== 'bottom' && sendBoxButtonAlignment !== 'top'
         },
-        className + ''
+        className
       )}
       disabled={disabled}
       onClick={disabled ? undefined : onClick}
@@ -46,22 +65,7 @@ const IconButton: FC<IconButtonProps> = ({ alt, children, className, disabled, o
       <div className="webchat__icon-button__keyboard-focus-indicator" />
     </AccessibleButton>
   );
-};
+}
 
-IconButton.defaultProps = {
-  alt: '',
-  children: undefined,
-  className: '',
-  disabled: false,
-  onClick: undefined
-};
-
-IconButton.propTypes = {
-  alt: PropTypes.string,
-  children: PropTypes.any,
-  className: PropTypes.string,
-  disabled: PropTypes.bool,
-  onClick: PropTypes.func
-};
-
-export default IconButton;
+export default memo(IconButton);
+export { iconButtonPropsSchema, type IconButtonProps };

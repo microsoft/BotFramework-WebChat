@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="./css/pauseAnimation.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+
+      const attachmentLayout = new URL(location).searchParams.get('layout') === 'carousel' ? 'carousel' : undefined;
+
+      run(async function () {
+        const {
+          React: { createElement },
+          ReactDOM: { render },
+          WebChat: {
+            Components: { BasicWebChat, Composer },
+            decorator: { WebChatDecorator }
+          }
+        } = window; // Imports in UMD fashion.
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const styleOptions = {
+          // Non-animated typing indicator.
+          typingAnimationBackgroundImage: `url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAUACgDASIAAhEBAxEB/8QAGgABAQACAwAAAAAAAAAAAAAAAAYCBwMFCP/EACsQAAECBQIEBQUAAAAAAAAAAAECAwAEBQYRBxITIjFBMlFhccFScoGh8f/EABQBAQAAAAAAAAAAAAAAAAAAAAD/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwD0lctx023JVD9UeKOIcNoSNylkdcCMbauSmXHLOPUx8r4ZAcQtO1SM9Mj5iO1gtWo1syc7S2zMKYSptbIPNgnII8/5HBpRZ9RpaKjNVVCpUzLPAQ1nmA7qPl6fmAondRrcaqhkVTiiQrYXgglsH7vnpHc3DcNNoEimaqT4Q2s4bCRuUs+gEaLd05uNFVMmiS3o3YEwFDhlP1Z7e3WLzUuzahUKHRk0zM07TmeApvOFLGEjcM9+Xp6wFnbN0Uu5GnF0x4qW1je2tO1Sc9Djy9oRD6QWlU6PPzVSqjRlgtksttKPMcqBKiO3h/cIDacIQgEIQgEIQgP/2Q==')`
+        };
+
+        render(
+          createElement(
+            WebChatDecorator,
+            {},
+            createElement(
+              Composer,
+              {
+                directLine,
+                store,
+                styleOptions
+              },
+              createElement(BasicWebChat)
+            )
+          ),
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: Bot start a livestream without content.
+        await directLine.emulateIncomingActivity({
+          attachmentLayout,
+          channelData: { streamSequence: 1, streamType: 'streaming' },
+          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+          id: 'a-00001',
+          timestamp: 1,
+          type: 'typing'
+        });
+
+        // THEN: Should display no messages.
+        await waitFor(() => expect(pageElements.activities()).toHaveLength(0));
+
+        // THEN: Should display typing indicator.
+        await waitFor(() => expect(pageElements.typingIndicator()).toBeTruthy());
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

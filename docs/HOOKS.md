@@ -14,10 +14,10 @@ Web Chat exposes APIs through React Hooks. This API surface enables us to freely
 
 We design our hooks largely with two basic shapes:
 
--  Actions, these are functions that you can call at any time to perform a side-effect
--  Properties, these are getter functions with an optional setter
-   -  This is same as [React State Hook pattern](https://reactjs.org/docs/hooks-state.html), but setters are optional
-   -  If the value is changed, React will call your render function again
+- Actions, these are functions that you can call at any time to perform a side-effect
+- Properties, these are getter functions with an optional setter
+   - This is same as [React State Hook pattern](https://reactjs.org/docs/hooks-state.html), but setters are optional
+   - If the value is changed, React will call your render function again
 
 ### Actions
 
@@ -51,94 +51,97 @@ setSendBoxValue('Hello, World!');
 
 Following is the list of hooks supported by Web Chat API.
 
--  [`useActiveTyping`](#useactivetyping)
--  [`useActivities`](#useactivities)
--  [`useActivityKeysByRead`](#useactivitykeysbyread)
--  [`useAdaptiveCardsHostConfig`](#useadaptivecardshostconfig)
--  [`useAdaptiveCardsPackage`](#useadaptivecardspackage)
--  [`useAvatarForBot`](#useavatarforbot)
--  [`useAvatarForUser`](#useavatarforuser)
--  [`useByteFormatter`](#useByteFormatter)
--  [`useConnectivityStatus`](#useconnectivitystatus)
--  [`useCreateActivityRenderer`](#usecreateactivityrenderer)
--  [`useCreateActivityStatusRenderer`](#usecreateactivitystatusrenderer)
--  [`useCreateAttachmentForScreenReaderRenderer`](#useCreateAttachmentForScreenReaderRenderer)
--  [`useCreateAttachmentRenderer`](#usecreateattachmentrenderer)
--  [`useCreateAvatarRenderer`](#usecreateavatarrenderer)
--  [`useDateFormatter`](#useDateFormatter)
--  [`useDebouncedNotification`](#usedebouncednotification)
--  [`useDictateAbortable`](#usedictateabortable)
--  [`useDictateInterims`](#usedictateinterims)
--  [`useDictateState`](#usedictatestate)
--  [`useDirection`](#useDirection)
--  [`useDisabled`](#usedisabled)
--  [`useDismissNotification`](#usedismissnotification)
--  [`useEmitTypingIndicator`](#useemittypingindicator)
--  [`useFocus`](#usefocus)
--  [`useFocusSendBox`](#usefocussendbox)
--  [`useGetActivitiesByKey`](#usegetactivitiesbykey)
--  [`useGetActivityByKey`](#usegetactivitybykey)
--  [`useGetHasAcknowledgedByActivityKey`](#usegethasacknowledgedbyactivitykey)
--  [`useGetKeyByActivity`](#usegetkeybyactivity)
--  [`useGetKeyByActivityId`](#usegetkeybyactivityid)
--  [`useGetSendTimeoutForActivity`](#usegetsendtimeoutforactivity)
--  [`useGrammars`](#usegrammars)
--  [`useGroupTimestamp`](#usegrouptimestamp)
--  [`useLanguage`](#uselanguage)
--  [`useLastAcknowledgedActivityKey`](#uselastacknowledgedactivitykey)
--  [`useLastReadActivityKey`](#uselastreadactivitykey)
--  [`useLastTypingAt`](#uselasttypingat) (Deprecated)
--  [`useLocalize`](#uselocalize) (Deprecated)
--  [`useLocalizer`](#useLocalizer)
--  [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
--  [`useMarkActivityKeyAsRead`](#usemarkactivitykeyasread)
--  [`useMarkAllAsAcknowledged`](#usemarkallasacknowledged)
--  [`useNotification`](#usenotification)
--  [`useObserveScrollPosition`](#useobservescrollposition)
--  [`useObserveTranscriptFocus`](#useobservetranscriptfocus)
--  [`usePerformCardAction`](#useperformcardaction)
--  [`usePostActivity`](#usepostactivity)
--  [`useReferenceGrammarID`](#usereferencegrammarid)
--  [`useRelativeTimeFormatter`](#useRelativeTimeFormatter)
--  [`useRenderActivity`](#userenderactivity) (Deprecated)
--  [`useRenderActivityStatus`](#userenderactivitystatus) (Deprecated)
--  [`useRenderAttachment`](#userenderattachment)
--  [`useRenderAvatar`](#userenderavatar) (Deprecated)
--  [`useRenderMarkdownAsHTML`](#userendermarkdownashtml)
--  [`useRenderToast`](#userendertoast)
--  [`useRenderTypingIndicator`](#userendertypingindicator)
--  [`useScrollDown`](#usescrolldown)
--  [`useScrollTo`](#usescrollto)
--  [`useScrollToEnd`](#usescrolltoend)
--  [`useScrollUp`](#usescrollup)
--  [`useSendBoxAttachments`](#usesendboxattachments)
--  [`useSendBoxValue`](#usesendboxvalue)
--  [`useSendEvent`](#usesendevent)
--  [`useSendFiles`](#usesendfiles) (Deprecated)
--  [`useSendMessage`](#usesendmessage)
--  [`useSendMessageBack`](#usesendmessageback)
--  [`useSendPostBack`](#usesendpostback)
--  [`useSendTimeoutForActivity`](#usesendtimeoutforactivity) (Deprecated)
--  [`useSendTypingIndicator`](#usesendtypingindicator)
--  [`useSendStatusByActivityKey`](#usesendstatusbyactivitykey)
--  [`useSetNotification`](#usesetnotification)
--  [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
--  [`useStartDictate`](#usestartdictate)
--  [`useStopDictate`](#usestopdictate)
--  [`useStyleOptions`](#usestyleoptions)
--  [`useStyleSet`](#usestyleset)
--  [`useSubmitSendBox`](#usesubmitsendbox)
--  [`useSuggestedActions`](#usesuggestedactions)
--  [`useTimeoutForSend`](#usetimeoutforsend)
--  [`useTrackDimension`](#usetrackdimension)
--  [`useTrackEvent`](#usetrackevent)
--  [`useTrackException`](#usetrackexception)
--  [`useTrackTiming`](#usetracktiming)
--  [`useUIState`](#useuistate)
--  [`useUserID`](#useuserid)
--  [`useUsername`](#useusername)
--  [`useVoiceSelector`](#usevoiceselector)
--  [`useWebSpeechPonyfill`](#usewebspeechponyfill)
+- [`useActiveTyping`](#useactivetyping)
+- [`useActivities`](#useactivities)
+- [`useActivityKeysByRead`](#useactivitykeysbyread)
+- [`useAdaptiveCardsHostConfig`](#useadaptivecardshostconfig)
+- [`useAdaptiveCardsPackage`](#useadaptivecardspackage)
+- [`useAvatarForBot`](#useavatarforbot)
+- [`useAvatarForUser`](#useavatarforuser)
+- [`useByteFormatter`](#useByteFormatter)
+- [`useConnectivityStatus`](#useconnectivitystatus)
+- [`useCreateActivityRenderer`](#usecreateactivityrenderer)
+- [`useCreateActivityStatusRenderer`](#usecreateactivitystatusrenderer)
+- [`useCreateAttachmentForScreenReaderRenderer`](#useCreateAttachmentForScreenReaderRenderer)
+- [`useCreateAttachmentRenderer`](#usecreateattachmentrenderer)
+- [`useCreateAvatarRenderer`](#usecreateavatarrenderer)
+- [`useDateFormatter`](#useDateFormatter)
+- [`useDebouncedNotification`](#usedebouncednotification)
+- [`useDictateAbortable`](#usedictateabortable)
+- [`useDictateInterims`](#usedictateinterims)
+- [`useDictateState`](#usedictatestate)
+- [`useDirection`](#useDirection)
+- [`useDisabled`](#usedisabled)
+- [`useDismissNotification`](#usedismissnotification)
+- [`useEmitTypingIndicator`](#useemittypingindicator)
+- [`useFocus`](#usefocus)
+- [`useFocusSendBox`](#usefocussendbox)
+- [`useGetActivitiesByKey`](#usegetactivitiesbykey)
+- [`useGetActivityByKey`](#usegetactivitybykey)
+- [`useGetHasAcknowledgedByActivityKey`](#usegethasacknowledgedbyactivitykey)
+- [`useGetKeyByActivity`](#usegetkeybyactivity)
+- [`useGetKeyByActivityId`](#usegetkeybyactivityid)
+- [`useGetSendTimeoutForActivity`](#usegetsendtimeoutforactivity)
+- [`useGrammars`](#usegrammars)
+- [`useGroupActivities`](#usegroupactivities) (Deprecated)
+- [`useGroupActivitiesByName`](#usegroupactivitiesbyname)
+- [`useGroupTimestamp`](#usegrouptimestamp)
+- [`useLanguage`](#uselanguage)
+- [`useLastAcknowledgedActivityKey`](#uselastacknowledgedactivitykey)
+- [`useLastReadActivityKey`](#uselastreadactivitykey)
+- [`useLastTypingAt`](#uselasttypingat) (Deprecated)
+- [`useLocalize`](#uselocalize) (Deprecated)
+- [`useLocalizer`](#useLocalizer)
+- [`useMarkActivityAsSpoken`](#usemarkactivityasspoken)
+- [`useMarkActivityKeyAsRead`](#usemarkactivitykeyasread)
+- [`useMarkAllAsAcknowledged`](#usemarkallasacknowledged)
+- [`useNotification`](#usenotification)
+- [`useObserveScrollPosition`](#useobservescrollposition)
+- [`useObserveTranscriptFocus`](#useobservetranscriptfocus)
+- [`usePerformCardAction`](#useperformcardaction)
+- [`usePostActivity`](#usepostactivity)
+- [`useReferenceGrammarID`](#usereferencegrammarid)
+- [`useRelativeTimeFormatter`](#useRelativeTimeFormatter)
+- [`useRenderActivity`](#userenderactivity) (Deprecated)
+- [`useRenderActivityStatus`](#userenderactivitystatus) (Deprecated)
+- [`useRenderAttachment`](#userenderattachment)
+- [`useRenderAvatar`](#userenderavatar) (Deprecated)
+- [`useRenderMarkdownAsHTML`](#userendermarkdownashtml)
+- [`useRenderToast`](#userendertoast)
+- [`useRenderTypingIndicator`](#userendertypingindicator)
+- [`useScrollDown`](#usescrolldown)
+- [`useScrollTo`](#usescrollto)
+- [`useScrollToEnd`](#usescrolltoend)
+- [`useScrollUp`](#usescrollup)
+- [`useSendBoxAttachments`](#usesendboxattachments)
+- [`useSendBoxValue`](#usesendboxvalue)
+- [`useSendEvent`](#usesendevent)
+- [`useSendFiles`](#usesendfiles) (Deprecated)
+- [`useSendMessage`](#usesendmessage)
+- [`useSendMessageBack`](#usesendmessageback)
+- [`useSendPostBack`](#usesendpostback)
+- [`useSendTimeoutForActivity`](#usesendtimeoutforactivity) (Deprecated)
+- [`useSendTypingIndicator`](#usesendtypingindicator)
+- [`useSendStatusByActivityKey`](#usesendstatusbyactivitykey)
+- [`useSetNotification`](#usesetnotification)
+- [`useShouldReduceMotion`](#useshouldreducemotion)
+- [`useShouldSpeakIncomingActivity`](#useshouldspeakincomingactivity)
+- [`useStartDictate`](#usestartdictate)
+- [`useStopDictate`](#usestopdictate)
+- [`useStyleOptions`](#usestyleoptions)
+- [`useStyleSet`](#usestyleset)
+- [`useSubmitSendBox`](#usesubmitsendbox)
+- [`useSuggestedActions`](#usesuggestedactions)
+- [`useTimeoutForSend`](#usetimeoutforsend)
+- [`useTrackDimension`](#usetrackdimension)
+- [`useTrackEvent`](#usetrackevent)
+- [`useTrackException`](#usetrackexception)
+- [`useTrackTiming`](#usetracktiming)
+- [`useUIState`](#useuistate)
+- [`useUserID`](#useuserid)
+- [`useUsername`](#useusername)
+- [`useVoiceSelector`](#usevoiceselector)
+- [`useWebSpeechPonyfill`](#usewebspeechponyfill)
 
 ## `useActiveTyping`
 
@@ -168,8 +171,8 @@ The `expireAfter` argument can override the inactivity timer. If `expireAfter` i
 
 The `type` property will tell if the participant is livestreaming or busy preparing its response:
 
--  `busy` indicates the participant is busy preparing the response
--  `livestream` indicates the participant is sending its response as it is being prepared
+- `busy` indicates the participant is busy preparing the response
+- `livestream` indicates the participant is sending its response as it is being prepared
 
 > This hook will trigger render of your component if one or more typing information is expired or removed.
 
@@ -269,14 +272,14 @@ useConnectivityStatus(): [string]
 
 This hook will return the Direct Line connectivity status:
 
--  `connected`: Connected
--  `connectingslow`: Connecting is incomplete and more than 15 seconds have passed
--  `error`: Connection error
--  `notconnected`: Not connected, related to invalid credentials
--  `reconnected`: Reconnected after interruption
--  `reconnecting`: Reconnecting after interruption
--  `sagaerror`: Errors on JavaScript renderer; please see the browser's console
--  `uninitialized`: Initial connectivity state; never connected and not attempting to connect.
+- `connected`: Connected
+- `connectingslow`: Connecting is incomplete and more than 15 seconds have passed
+- `error`: Connection error
+- `notconnected`: Not connected, related to invalid credentials
+- `reconnected`: Reconnected after interruption
+- `reconnecting`: Reconnecting after interruption
+- `sagaerror`: Errors on JavaScript renderer; please see the browser's console
+- `uninitialized`: Initial connectivity state; never connected and not attempting to connect.
 
 ## `useCreateActivityRenderer`
 
@@ -305,8 +308,8 @@ If the activity middleware wants to hide the activity, it must return `false` in
 
 For `renderActivityStatus` and `renderAvatar`, it could be one of the followings:
 
--  `false`: Do not render activity status or avatar.
--  `() => React.Element`: Render activity status or avatar by calling this function.
+- `false`: Do not render activity status or avatar.
+- `() => React.Element`: Render activity status or avatar by calling this function.
 
 If `showCallout` is truthy, the activity should render the bubble nub and an avatar. The activity should call [`useStyleOptions`](#usestyleoptions) to get the styling for the bubble nub, including but not limited to: fill and outline color, offset from top/bottom, size.
 
@@ -448,11 +451,11 @@ useDictateState(): [string]
 
 This hook will return one of the following dictation states:
 
--  `IDLE`: Recognition engine is idle; not recognizing
--  `WILL_START`: Will start recognition after synthesis completed
--  `STARTING`: Recognition engine is starting; not accepting any inputs
--  `DICTATING`: Recognition engine is accepting input
--  `STOPPING`: Recognition engine is stopping; not accepting any inputs
+- `IDLE`: Recognition engine is idle; not recognizing
+- `WILL_START`: Will start recognition after synthesis completed
+- `STARTING`: Recognition engine is starting; not accepting any inputs
+- `DICTATING`: Recognition engine is accepting input
+- `STOPPING`: Recognition engine is stopping; not accepting any inputs
 
 > Please refer to `Constants.DictateState` in `botframework-webchat-core` for up-to-date details.
 
@@ -468,8 +471,8 @@ useDirection(): [string]
 
 This hook will return one of two language directions:
 
--  `ltr` or otherwise: Web Chat UI will display as left-to-right
--  `rtl`: Web Chat UI will display as right-to-left
+- `ltr` or otherwise: Web Chat UI will display as left-to-right
+- `rtl`: Web Chat UI will display as right-to-left
 
 This value will be automatically configured based on the `locale` of Web Chat.
 
@@ -521,11 +524,11 @@ When called, This hook will return a function that can be called to set the focu
 
 Please use this function with cautions. When changing focus programmatically, user may lose focus on what they were working on. Also, this may affect accessibility.
 
--  `main` will focus on transcript.
-   -  We do not provide any visual cues when focusing on transcript, this may affect accessibility and usability, please use with cautions.
--  `sendBox` will focus on send box.
-   -  This will activate the virtual keyboard if your device have one.
--  `sendBoxWithoutKeyboard` will focus on send box, without activating the virtual keyboard.
+- `main` will focus on transcript.
+   - We do not provide any visual cues when focusing on transcript, this may affect accessibility and usability, please use with cautions.
+- `sendBox` will focus on send box.
+   - This will activate the virtual keyboard if your device have one.
+- `sendBoxWithoutKeyboard` will focus on send box, without activating the virtual keyboard.
 
 ## `useFocusSendBox`
 
@@ -624,6 +627,37 @@ useGrammars(): [string[]]
 This hook will return grammars for speech-to-text. Grammars is a list of words provided by the implementer for the speech-to-text engine to bias towards. It is commonly used for selecting the correct words with same or similar pronunciations, e.g. Bellevue vs. Bellview vs. Bellvue.
 
 To modify this value, change the value in the style options prop passed to Web Chat.
+
+## `useGroupActivities`
+
+> This function is deprecated and will be removed on or after 2027-05-04. Developers should migrate to [`useGroupActivitiesByName`](#usegroupactivitiesbyname) for performance reason.
+
+<!-- prettier-ignore-start -->
+```js
+useGroupActivities(): ({
+  activities: readonly WebChatActivity[];
+}) => {
+  [key: string]: WebChatActivity[][];
+};
+```
+<!-- prettier-ignore-end -->
+
+This hook will return a callback function. When called with `activities`, the callback function will run the `groupActivitiesMiddleware` and will return all groupings.
+
+## `useGroupActivitiesByName`
+
+<!-- prettier-ignore-start -->
+```js
+useGroupActivitiesByName(): (
+  activities: readonly WebChatActivity[],
+  name: string
+) => WebChatActivity[][];
+```
+<!-- prettier-ignore-end -->
+
+This hook will return a callback function. When called with `activities`, the callback function will run the `groupActivitiesMiddleware` for the specified grouping name.
+
+Unlike the [`useGroupActivities`](#usegroupactivities) hook which provide result for all groupings, this hook only provide result for the specified grouping name and the grouping name must be one of the name specified in `styleOptions.groupActivitiesBy`.
 
 ## `useGroupTimestamp`
 
@@ -895,9 +929,9 @@ When called, this function will post the activity on behalf of the user, to the 
 
 You can use this function to send any type of activity to the bot, however we highly recommend limiting the [activity types](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/ACTIVITYTYPES.md) to one of the following:
 
--  `event`
--  `message`
--  `typing`
+- `event`
+- `message`
+- `typing`
 
 ## `useReferenceGrammarID`
 
@@ -1065,9 +1099,9 @@ useRenderTypingIndicator():
 
 This function is for rendering typing indicator for all participants of the conversation. This function is a composition of `typingIndicatorMiddleware`, which is passed as a prop to `<ReactWebChat>` or `<Composer>`. The caller will pass the following arguments:
 
--  `activeTyping` lists of participants who are actively typing.
--  `typing` lists participants who did not explicitly stopped typing. This list is a superset of `activeTyping`.
--  `visible` indicates whether typing indicator should be shown in normal case. This is based on participants in `activeTyping` and their `role` (role not equal to `"user"`).
+- `activeTyping` lists of participants who are actively typing.
+- `typing` lists participants who did not explicitly stopped typing. This list is a superset of `activeTyping`.
+- `visible` indicates whether typing indicator should be shown in normal case. This is based on participants in `activeTyping` and their `role` (role not equal to `"user"`).
 
 ## `useScrollDown`
 
@@ -1172,8 +1206,8 @@ useSendFiles(): (files: (Blob | File)[]) => void
 
 When called, this function will send a message activity with one or more [File](https://developer.mozilla.org/en-US/docs/Web/API/File) attachments to the bot, including these operations:
 
--  Convert [File](https://developer.mozilla.org/en-US/docs/Web/API/File) into object URL
--  Generate thumbnail and will use a Web Worker and an offscreen canvas if supported
+- Convert [File](https://developer.mozilla.org/en-US/docs/Web/API/File) into object URL
+- Generate thumbnail and will use a Web Worker and an offscreen canvas if supported
 
 If you are using an `ArrayBuffer`, you can use `FileReader` to convert it into a blob before calling [`URL.createObjectURL`](https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL).
 
@@ -1289,6 +1323,24 @@ The `message` field will be processed through an internal Markdown renderer. If 
 
 The toast UI will [debounce notifications](https://github.com/microsoft/BotFramework-WebChat/tree/main/docs/NOTIFICATION.md#postponing-changes-via-debounce) that update too frequently.
 
+## `useShouldReduceMotion`
+
+> Only available on `botframework-webchat-components` package.
+
+> New in 4.19.0.
+
+<!-- prettier-ignore-start -->
+```js
+useShouldReduceMotion(): readonly [boolean]
+```
+<!-- prettier-ignore-end -->
+
+This state hook is a helper hook that will return `true` if the browser has [reduced motion](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion) enabled, otherwise, `false`.
+
+This hook is based on [`matchMedia`](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) and provides a React hook friendly wrapper for listening to state change.
+
+If it is possible to slowdown or pause animation using CSS, always use the [CSS media feature `(prefers-reduced-motion: reduce)`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion) instead. This hook is the last resort when CSS cannot be used to stop animation, such as SMIL animation.
+
 ## `useShouldSpeakIncomingActivity`
 
 <!-- prettier-ignore-start -->
@@ -1402,11 +1454,11 @@ useUIState(): ['blueprint' | 'disabled' | undefined]
 
 This hook will return whether the UI should be rendered in blueprint mode, as disabled, or normally. This can be set via the `uiState` props.
 
--  `"blueprint"` will render as few UI elements as possible and should be non-functional
-   -  Useful for loading scenarios
--  `"disabled"` will render most UI elements as non-functional
-   -  Scrolling may continue to trigger read acknowledgements
--  `undefined` will render normally
+- `"blueprint"` will render as few UI elements as possible and should be non-functional
+   - Useful for loading scenarios
+- `"disabled"` will render most UI elements as non-functional
+   - Scrolling may continue to trigger read acknowledgements
+- `undefined` will render normally
 
 Note: `uiState` props that precedence over the deprecated `disabled` props.
 
@@ -1471,8 +1523,8 @@ These are hooks specific provide specific user experience.
 
 These are hooks that are specific for the microphone button.
 
--  [`useMicrophoneButtonClick`](#usemicrophonebuttonclick)
--  [`useMicrophoneButtonDisabled`](#usemicrophonebuttondisabled)
+- [`useMicrophoneButtonClick`](#usemicrophonebuttonclick)
+- [`useMicrophoneButtonDisabled`](#usemicrophonebuttondisabled)
 
 ### `useMicrophoneButtonClick`
 
@@ -1500,7 +1552,7 @@ This value can be partly controllable through Web Chat props.
 
 These are hooks that are specific for the send box.
 
--  [`useSendBoxSpeechInterimsVisible`](#usesendboxspeechinterimsvisible)
+- [`useSendBoxSpeechInterimsVisible`](#usesendboxspeechinterimsvisible)
 
 ### `useSendBoxSpeechInterimsVisible`
 
@@ -1516,8 +1568,8 @@ This hook will return whether the send box should show speech interims.
 
 These are hooks that are specific to the text box in the send box.
 
--  [`useTextBoxSubmit`](#usetextboxsubmit)
--  [`useTextBoxValue`](#usetextboxvalue)
+- [`useTextBoxSubmit`](#usetextboxsubmit)
+- [`useTextBoxValue`](#usetextboxvalue)
 
 ### `useTextBoxSubmit`
 
@@ -1550,7 +1602,7 @@ The setter function will call the setter of [`useSendBoxValue`](#usesendboxvalue
 
 These are hooks that are specific to the typing indicator.
 
--  [`useTypingIndicatorVisible`](#usetypingindicatorvisible)
+- [`useTypingIndicatorVisible`](#usetypingindicatorvisible)
 
 ### `useTypingIndicatorVisible`
 
@@ -1649,10 +1701,10 @@ Multiple activities could share the same activity key if they are revision of ea
 
 Following hooks are designed to help navigating between activity, activity ID and activity keys:
 
--  [`useGetActivitiesByKey`](#usegetactivitiesbykey)
--  [`useGetActivityByKey`](#usegetactivitybykey)
--  [`useGetKeyByActivity`](#usegetkeybyactivity)
--  [`useGetKeyByActivityId`](#usegetkeybyactivityid)
+- [`useGetActivitiesByKey`](#usegetactivitiesbykey)
+- [`useGetActivityByKey`](#usegetactivitybykey)
+- [`useGetKeyByActivity`](#usegetkeybyactivity)
+- [`useGetKeyByActivityId`](#usegetkeybyactivityid)
 
 ## What is acknowledged activity?
 

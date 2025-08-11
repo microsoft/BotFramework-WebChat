@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import createOnEventShim from './createOnEventShim';
 
 describe('A shimmed event target', () => {

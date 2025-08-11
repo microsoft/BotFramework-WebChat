@@ -42,10 +42,10 @@ describe('useTrackException', () => {
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ error }) => error)))
       .resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",
@@ -69,10 +69,10 @@ describe('useTrackException', () => {
 
     await expect(driver.executeScript(() => window.WebChatTest.telemetryMeasurements.filter(({ error }) => error)))
       .resolves.toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "data": null,
-          "dimensions": Object {
+          "dimensions": {
             "capability:downscaleImage:workerType": "web worker",
             "capability:renderer": "html",
             "prop:locale": "en-US",

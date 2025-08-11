@@ -1,3 +1,4 @@
+import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,
   connect as createConnectAction,
@@ -39,6 +40,11 @@ import updateIn from 'simple-update-in';
 import StyleOptions from '../StyleOptions';
 import usePonyfill from '../hooks/usePonyfill';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
+import { SendBoxMiddlewareProvider, type SendBoxMiddleware } from '../middleware/SendBoxMiddleware';
+import {
+  SendBoxToolbarMiddlewareProvider,
+  type SendBoxToolbarMiddleware
+} from '../middleware/SendBoxToolbarMiddleware';
 import normalizeStyleOptions from '../normalizeStyleOptions';
 import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
@@ -66,8 +72,6 @@ import createCustomEvent from '../utils/createCustomEvent';
 import isObject from '../utils/isObject';
 import mapMap from '../utils/mapMap';
 import normalizeLanguage from '../utils/normalizeLanguage';
-import { SendBoxMiddlewareProvider, type SendBoxMiddleware } from './internal/SendBoxMiddleware';
-import { SendBoxToolbarMiddlewareProvider, type SendBoxToolbarMiddleware } from './internal/SendBoxToolbarMiddleware';
 import Tracker from './internal/Tracker';
 import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
@@ -77,7 +81,6 @@ import applyMiddleware, {
   forRenderer as applyMiddlewareForRenderer
 } from './middleware/applyMiddleware';
 import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
-import createDefaultGroupActivitiesMiddleware from './middleware/createDefaultGroupActivitiesMiddleware';
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
@@ -85,6 +88,7 @@ import observableToPromise from './utils/observableToPromise';
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import { parseUIState } from './validation/uiState';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
@@ -173,26 +177,6 @@ function createCardActionContext({
   };
 }
 
-function createGroupActivitiesContext({
-  groupActivitiesMiddleware,
-  groupTimestamp,
-  ponyfill
-}: {
-  groupActivitiesMiddleware: readonly GroupActivitiesMiddleware[];
-  groupTimestamp: boolean | number;
-  ponyfill: GlobalScopePonyfill;
-}) {
-  const runMiddleware = applyMiddleware(
-    'group activities',
-    ...groupActivitiesMiddleware,
-    createDefaultGroupActivitiesMiddleware({ groupTimestamp, ponyfill })
-  );
-
-  return {
-    groupActivities: runMiddleware({})
-  };
-}
-
 function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStrings) {
   if (!overrideLocalizedStrings) {
     return localizedStrings;
@@ -241,7 +225,14 @@ type ComposerCoreProps = Readonly<{
   ) => Promise<URL>;
   grammars?: any;
   groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware>;
-  internalErrorBoxClass?: ComponentType;
+  internalErrorBoxClass?:
+    | ComponentType<
+        Readonly<{
+          error: Error;
+          type?: string;
+        }>
+      >
+    | undefined;
   locale?: string;
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
@@ -366,16 +357,6 @@ const ComposerCore = ({
   const patchedSelectVoice = useMemo(
     () => selectVoice || defaultSelectVoice.bind(null, { language: locale }),
     [locale, selectVoice]
-  );
-
-  const groupActivitiesContext = useMemo(
-    () =>
-      createGroupActivitiesContext({
-        groupActivitiesMiddleware: Object.freeze([...singleToArray(groupActivitiesMiddleware)]),
-        groupTimestamp: patchedStyleOptions.groupTimestamp,
-        ponyfill
-      }),
-    [groupActivitiesMiddleware, patchedStyleOptions.groupTimestamp, ponyfill]
   );
 
   const hoistedDispatchers = useMemo(
@@ -561,7 +542,6 @@ const ComposerCore = ({
   const context = useMemo<ContextOf<React.Context<WebChatAPIContextType>>>(
     () => ({
       ...cardActionContext,
-      ...groupActivitiesContext,
       ...hoistedDispatchers,
       activityRenderer: patchedActivityRenderer,
       activityStatusRenderer: patchedActivityStatusRenderer,
@@ -594,7 +574,6 @@ const ComposerCore = ({
       cardActionContext,
       directLine,
       downscaleImageToDataURL,
-      groupActivitiesContext,
       hoistedDispatchers,
       internalErrorBoxClass,
       locale,
@@ -630,7 +609,9 @@ const ComposerCore = ({
           <ActivityTypingComposer>
             <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
               <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
-                {typeof children === 'function' ? children(context) : children}
+                <GroupActivitiesComposer groupActivitiesMiddleware={singleToArray(groupActivitiesMiddleware)}>
+                  {typeof children === 'function' ? children(context) : children}
+                </GroupActivitiesComposer>
                 <ActivitySendStatusTelemetryComposer />
               </SendBoxToolbarMiddlewareProvider>
             </SendBoxMiddlewareProvider>
@@ -705,7 +686,10 @@ ComposerCore.propTypes = {
   downscaleImageToDataURL: PropTypes.func,
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupActivitiesMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  internalErrorBoxClass: PropTypes.func, // This is for internal use only. We don't allow customization of error box.
+  // This is for internal use only. We don't allow customization of error box.
+  // - Functional component is of type PropTypes.func
+  // - Memoized functional component is of type PropTypes.object
+  internalErrorBoxClass: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   locale: PropTypes.string,
   onTelemetry: PropTypes.func,
   overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
@@ -782,11 +766,13 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
 
   return (
     <Provider context={WebChatReduxContext} store={memoizedStore}>
-      <ActivityKeyerComposer>
-        <ActivityAcknowledgementComposer>
-          <ComposerCore onTelemetry={onTelemetry} {...props} />
-        </ActivityAcknowledgementComposer>
-      </ActivityKeyerComposer>
+      <ReduxStoreComposer store={memoizedStore}>
+        <ActivityKeyerComposer>
+          <ActivityAcknowledgementComposer>
+            <ComposerCore onTelemetry={onTelemetry} {...props} />
+          </ActivityAcknowledgementComposer>
+        </ActivityKeyerComposer>
+      </ReduxStoreComposer>
     </Provider>
   );
 };

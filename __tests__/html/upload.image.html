@@ -22,6 +22,7 @@
         await pageConditions.uiConnected();
         await pageObjects.uploadFile('seaofthieves.jpg');
         await pageConditions.numActivitiesShown(2);
+        await pageConditions.allOutgoingActivitiesSent();
 
         await host.snapshot();
       });

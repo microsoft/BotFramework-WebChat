@@ -1,33 +1,24 @@
-import type clearSuggestedActions from '../actions/clearSuggestedActions';
-import { CLEAR_SUGGESTED_ACTIONS } from '../actions/clearSuggestedActions';
-import type setSuggestedActions from '../actions/setSuggestedActions';
-import { SET_SUGGESTED_ACTIONS } from '../actions/setSuggestedActions';
-import type { WebChatActivity } from '../types/WebChatActivity';
+import { type Action } from 'redux';
+import { parse } from 'valibot';
 
-type ClearSuggestedActions = ReturnType<typeof clearSuggestedActions>;
-type SetSuggestedActions = ReturnType<typeof setSuggestedActions>;
-type State = Readonly<{ activity: undefined | WebChatActivity }>;
+import { SET_RAW_STATE, setRawStateActionSchema } from '../internal/actions/setRawState';
+import { type SuggestedActionsOriginActivityState } from '../internal/types/suggestedActionsOriginActivity';
 
-const DEFAULT_STATE: State = Object.freeze({ activity: undefined });
+const DEFAULT_STATE: SuggestedActionsOriginActivityState = Object.freeze({ activity: undefined });
 
-export default function suggestedActionsOriginActivity(
-  state = DEFAULT_STATE,
-  action: ClearSuggestedActions | SetSuggestedActions
-): State {
-  switch (action.type) {
-    case SET_SUGGESTED_ACTIONS:
-      state = { activity: action.payload.originActivity };
+function suggestedActionsOriginActivity(
+  state: SuggestedActionsOriginActivityState = DEFAULT_STATE,
+  action: Action
+): SuggestedActionsOriginActivityState {
+  if (action.type === SET_RAW_STATE) {
+    const parsedAction = parse(setRawStateActionSchema, action);
 
-      break;
-
-    case CLEAR_SUGGESTED_ACTIONS:
-      state = DEFAULT_STATE;
-
-      break;
-
-    default:
-      break;
+    if (parsedAction.payload.name === 'suggestedActionsOriginActivity') {
+      ({ state } = parsedAction.payload);
+    }
   }
 
   return state;
 }
+
+export default suggestedActionsOriginActivity;

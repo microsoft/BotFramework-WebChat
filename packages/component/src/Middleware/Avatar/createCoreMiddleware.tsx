@@ -1,12 +1,13 @@
 import { AvatarMiddleware } from 'botframework-webchat-api';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { FC } from 'react';
+import React, { memo } from 'react';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ImageAvatar from '../../Avatar/ImageAvatar';
 import InitialsAvatar from '../../Avatar/InitialsAvatar';
-import useStyleSet from '../../hooks/useStyleSet';
 import { useStyleToEmotionObject } from '../../hooks/internal/styleToEmotionObject';
+import useStyleSet from '../../hooks/useStyleSet';
 
 const ROOT_STYLE = {
   overflow: ['hidden', 'clip'],
@@ -19,13 +20,20 @@ const ROOT_STYLE = {
   }
 };
 
-type DefaultAvatarProps = {
-  'aria-hidden'?: boolean;
-  className?: string;
-  fromUser: boolean;
-};
+const defaultAvatarPropsSchema = pipe(
+  object({
+    'aria-hidden': optional(boolean()),
+    className: optional(string()),
+    fromUser: boolean()
+  }),
+  readonly()
+);
 
-const DefaultAvatar: FC<DefaultAvatarProps> = ({ 'aria-hidden': ariaHidden, className, fromUser }) => {
+type DefaultAvatarProps = InferInput<typeof defaultAvatarPropsSchema>;
+
+function DefaultAvatar(props: DefaultAvatarProps) {
+  const { 'aria-hidden': ariaHidden = true, className, fromUser } = validateProps(defaultAvatarPropsSchema, props);
+
   const [{ avatar: avatarStyleSet }] = useStyleSet();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
 
@@ -37,25 +45,14 @@ const DefaultAvatar: FC<DefaultAvatarProps> = ({ 'aria-hidden': ariaHidden, clas
         { 'webchat__defaultAvatar--fromUser': fromUser },
         rootClassName,
         avatarStyleSet + '',
-        (className || '') + ''
+        className
       )}
     >
       <InitialsAvatar fromUser={fromUser} />
       <ImageAvatar fromUser={fromUser} />
     </div>
   );
-};
-
-DefaultAvatar.defaultProps = {
-  'aria-hidden': true,
-  className: ''
-};
-
-DefaultAvatar.propTypes = {
-  'aria-hidden': PropTypes.bool,
-  className: PropTypes.string,
-  fromUser: PropTypes.bool.isRequired
-};
+}
 
 export default function createCoreAvatarMiddleware(): AvatarMiddleware[] {
   return [
@@ -73,4 +70,6 @@ export default function createCoreAvatarMiddleware(): AvatarMiddleware[] {
   ];
 }
 
-export { DefaultAvatar };
+const MemoizedDefaultAvatar = memo(DefaultAvatar);
+
+export { MemoizedDefaultAvatar as DefaultAvatar, defaultAvatarPropsSchema, type DefaultAvatarProps };

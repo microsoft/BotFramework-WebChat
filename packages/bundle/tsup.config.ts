@@ -7,8 +7,10 @@ import baseConfig from '../../tsup.base.config';
 const resolveCognitiveServicesToES2015 = {
   name: 'microsoft-cognitiveservices-speech-sdk',
   setup(build) {
-    build.onResolve({ filter: /microsoft-cognitiveservices-speech-sdk.+/u }, args => ({
-      path: path.join(process.cwd(), '../../node_modules', args.path.replace('distrib/lib', 'distrib/es2015') + '.js')
+    // ESBuild use Go regular expressions and does not understand Unicode flag.
+    // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /microsoft-cognitiveservices-speech-sdk.+/ }, args => ({
+      path: path.join(process.cwd(), '../../node_modules', args.path.replace('distrib/lib', 'distrib/es2015'))
     }));
   }
 };
@@ -17,8 +19,10 @@ const resolveCognitiveServicesToES2015 = {
 const resolveReact = {
   name: 'isomorphic-react',
   setup(build) {
-    build.onResolve({ filter: /^(react|react-dom)$/u }, ({ path: pkgNamne }) => ({
-      path: path.join(process.cwd(), '../../node_modules', `isomorphic-${pkgNamne}/dist/${pkgNamne}.js`)
+    // ESBuild use Go regular expressions and does not understand Unicode flag.
+    // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /^(react|react-dom)$/ }, ({ path: pkgNamne }) => ({
+      path: path.join(process.cwd(), '../../node_modules', `@msinternal/isomorphic-${pkgNamne}/dist/${pkgNamne}.js`)
     }));
   }
 };
@@ -26,9 +30,9 @@ const resolveReact = {
 const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
-    'botframework-webchat': './src/module/exports.ts',
-    'botframework-webchat.es5': './src/module/exports-es5.ts',
-    'botframework-webchat.minimal': './src/module/exports-minimal.ts'
+    'botframework-webchat': './src/boot/exports/full.ts',
+    'botframework-webchat.es5': './src/boot/exports/full-es5.ts',
+    'botframework-webchat.minimal': './src/boot/exports/minimal.ts'
   },
   env: {
     ...baseConfig.env,
@@ -38,7 +42,7 @@ const config: typeof baseConfig = {
     SPEECH_CONDUCT_OCSP_CHECK: '',
     SPEECH_OCSP_CACHE_ROOT: ''
   },
-  esbuildPlugins: [...(baseConfig.esbuildPlugins || []), resolveCognitiveServicesToES2015],
+  esbuildPlugins: [resolveCognitiveServicesToES2015],
   noExternal: [
     '@babel/runtime',
     'memoize-one',
@@ -46,7 +50,11 @@ const config: typeof baseConfig = {
     'web-speech-cognitive-services',
     // Belows are the dependency chain related to "regex" where it is named export-only and does not work on Webpack 4/PPUX (CJS cannot import named export).
     // Webpack 4: "Can't import the named export 'rewrite' from non EcmaScript module (only default export is available)"
-    'shiki' // shiki -> @shikijs/core -> @shikijs/engine-javascript -> regex
+    'shiki', // shiki -> @shikijs/core -> @shikijs/engine-javascript -> regex
+    // Issues related to Webpack 4 when it tries to statically analyze dependencies.
+    // The way `microsoft-cognitiveservices-speech-sdk` imported the `uuid` package (in their `Guid.js`) is causing esbuild/tsup to proxy require() into __require() for dynamic loading.
+    // Webpack 4 cannot statically analyze the code and failed with error "Critical dependency: require function is used in a way in which dependencies cannot be statically extracted".
+    'uuid'
   ]
 };
 
@@ -56,14 +64,11 @@ export default defineConfig([
     ...config,
     dts: false,
     entry: {
-      webchat: './src/bundle/index.ts',
-      'webchat-es5': './src/bundle/index-es5.ts',
-      'webchat-minimal': './src/bundle/index-minimal.ts'
+      webchat: './src/boot/bundle/full.ts',
+      'webchat-es5': './src/boot/bundle/full-es5.ts',
+      'webchat-minimal': './src/boot/bundle/minimal.ts'
     },
-    env: {
-      ...config.env,
-      module_format: 'global'
-    },
+    env: { ...config.env, module_format: 'global' },
     esbuildPlugins: [...config.esbuildPlugins, resolveReact],
     format: 'iife',
     outExtension() {
@@ -74,10 +79,12 @@ export default defineConfig([
   },
   {
     ...config,
+    env: { ...config.env, module_format: 'esmodules' },
     format: 'esm'
   },
   {
     ...config,
+    env: { ...config.env, module_format: 'commonjs' },
     format: 'cjs',
     target: [...config.target, 'es2019']
   }

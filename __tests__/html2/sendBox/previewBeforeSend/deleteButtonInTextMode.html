@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "@testing-library/dom": "https://esm.sh/@testing-library/dom"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { queryAllByTestId } from '@testing-library/dom';
+
+      const {
+        testHelpers: { createDirectLineEmulator },
+        WebChat: { createDirectLine, testIds }
+      } = window;
+
+      run(async function () {
+        // We enable reduced motion by default, disable it first.
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [{ name: 'prefers-reduced-motion', value: '' }]
+        });
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        const { isFluentTheme } = renderWebChat({ directLine, store }, document.getElementById('webchat'));
+
+        await pageConditions.uiConnected();
+
+        // WHEN: 4 files are uploaded.
+        for (const filename of ['seaofthieves.jpg', 'forzahorizon5.jpg', 'haloinfinite.jpg', 'minecraftdungeons.jpg']) {
+          const { length: numAttachment } = queryAllByTestId(document, testIds.sendBoxAttachmentBarItem);
+
+          await host.upload(pageElements.uploadButton(), filename);
+
+          await waitFor(() =>
+            expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(numAttachment + 1)
+          );
+        }
+
+        if (isFluentTheme) {
+          // WHEN: Focus send box and press TAB key to move the focus to the delete button of the first attachment.
+          document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`)?.focus();
+          await host.sendTab(1);
+        } else {
+          // WHEN: Press SHIFT-TAB key 5 times to move the focus to the delete button of the first attachment.
+          await host.sendShiftTab(5);
+        }
+
+        // THEN: Should focus on the attachment delete button of the first attachment.
+        expect(document.activeElement).toBe(pageElements.allByTestId(testIds.sendBoxAttachmentBarItemDeleteButton)[0]);
+
+        // WHEN: Press SPACEBAR key.
+        await host.sendKeys(' ');
+
+        // THEN: The attachment should be removed.
+        await waitFor(() => expect(queryAllByTestId(document, testIds.sendBoxAttachmentBarItem)).toHaveLength(3));
+
+        // THEN: Should focus on the send box text box.
+        expect(document.activeElement).toBe(pageElements.sendBoxTextBox());
+
+        // THEN: Should match screenshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

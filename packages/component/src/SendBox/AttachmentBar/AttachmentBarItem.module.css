@@ -1,0 +1,135 @@
+/* #region List item */
+:global(.webchat) .send-box-attachment-bar-item {
+  display: grid;
+  flex-shrink: 0;
+  grid-template-rows: auto;
+  font-family: var(--webchat__font--primary);
+
+  &.send-box-attachment-bar-item--as-list-item {
+    border-radius: 4px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.14), 0px 0px 2px rgba(0, 0, 0, 0.12);
+    grid-template-areas: 'body auxiliary';
+    grid-template-columns: 1fr auto;
+    padding: 2px;
+  }
+
+  &.send-box-attachment-bar-item--as-thumbnail {
+    aspect-ratio: 1 / 1;
+    border: solid 1px rgba(0, 0, 0, 0.25); /* Figma has border-width of 0.96px. */
+    border-radius: 8px; /* Figma is 7.68px. */
+    grid-template-areas: 'body';
+    grid-template-columns: auto;
+    height: 80px; /* <= 87px would fit white-label design with 3 thumbnails. */
+    overflow: hidden;
+  }
+}
+/* #endregion */
+
+/* #region Delete button */
+:global(.webchat) .send-box-attachment-bar-item__delete-button {
+  /* https://react.fluentui.dev/?path=/docs/theme-colors--docs */
+  appearance: none;
+  align-items: center;
+  background-color: #ffffff; /* Background/colorNeutralBackground1 */
+  border-color: #d1d1d1; /* Stroke/colorNeutralStroke1 */
+  border-radius: 4px; /* BorderRadiusXS is not defined in Fluent UI, guessing it is 4px. */
+  cursor: pointer;
+  grid-area: body;
+  justify-self: end;
+  opacity: 1;
+  padding: 0;
+  transition: opacity 50ms; /* Assume ultra-fast. */
+  color: #242424; /* Background/colorNeutralForeground1 */
+  --webchat__component-icon--size: 19px;
+
+  &:hover {
+    background-color: #f5f5f5; /* Background/colorNeutralBackground1Hover */
+    border-color: #c7c7c7; /* Stroke/colorNeutralStroke1Hover */
+  }
+
+  &:active {
+    background-color: #e0e0e0; /* Background/colorNeutralBackground1Pressed */
+    border-color: #c7c7c7; /* Stroke/colorNeutralStroke1Pressed */
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    background-color: #f0f0f0; /* Background/colorNeutralBackgroundDisabled */
+    border-color: #e0e0e0; /* Stroke/colorNeutralStrokeDisabled */
+    color: #bdbdbd; /* Stroke/colorNeutralForegroundDisabled */
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :global(.webchat.theme--prefers-color-scheme) .send-box-attachment-bar-item__delete-button {
+    background-color: #292929; /* Background/colorNeutralBackground1 */
+    border-color: #666666; /* Stroke/colorNeutralStroke1 */
+    color: #ffffff; /* Background/colorNeutralBackground1 */
+
+    &:hover {
+      background-color: #3d3d3d; /* Background/colorNeutralBackground1Hover */
+      border-color: #757575; /* Stroke/colorNeutralStroke1Hover */
+    }
+
+    &:active {
+      background-color: #1f1f1f; /* Background/colorNeutralBackground1Pressed */
+      border-color: #6b6b6b; /* Stroke/colorNeutralStroke1Pressed */
+    }
+
+    &:disabled,
+    &[aria-disabled='true'] {
+      background-color: #141414; /* Background/colorNeutralBackgroundDisabled */
+      border-color: #424242; /* Stroke/colorNeutralStrokeDisabled */
+      color: #5c5c5c; /* Stroke/colorNeutralForegroundDisabled */
+    }
+  }
+}
+
+:global(.webchat)
+  .send-box-attachment-bar-item.send-box-attachment-bar-item--as-list-item
+  .send-box-attachment-bar-item__delete-button {
+  border: 0;
+  grid-area: auxiliary;
+  height: 24px;
+  width: 24px;
+
+  .send-box-attachment-bar-item__dismiss-icon {
+    --webchat__component-icon--size: 7px;
+    --webchat__component-icon--mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg"><path d="M0.0885911 0.215694L0.146447 0.146447C0.320013 -0.0271197 0.589437 -0.046405 0.784306 0.0885911L0.853553 0.146447L4 3.293L7.14645 0.146447C7.34171 -0.0488154 7.65829 -0.0488154 7.85355 0.146447C8.04882 0.341709 8.04882 0.658291 7.85355 0.853553L4.707 4L7.85355 7.14645C8.02712 7.32001 8.0464 7.58944 7.91141 7.78431L7.85355 7.85355C7.67999 8.02712 7.41056 8.0464 7.21569 7.91141L7.14645 7.85355L4 4.707L0.853553 7.85355C0.658291 8.04882 0.341709 8.04882 0.146447 7.85355C-0.0488154 7.65829 -0.0488154 7.34171 0.146447 7.14645L3.293 4L0.146447 0.853553C-0.0271197 0.679987 -0.046405 0.410563 0.0885911 0.215694L0.146447 0.146447L0.0885911 0.215694Z"/></svg>');
+  }
+}
+
+:global(.webchat)
+  .send-box-attachment-bar-item.send-box-attachment-bar-item--as-thumbnail
+  .send-box-attachment-bar-item__delete-button {
+  border-style: solid; /* Border color will be set elsewhere. */
+  border-width: 1px; /* Figma has border-width of 0.96px. */
+  grid-area: body; /* This was already set, but keeping for explicitness from original */
+  height: 23px; /* Figma is 23.04px. */
+  margin: 8px; /* Figma is 7.68px. */
+  width: 23px; /* Figma is 23.04px. */
+}
+
+@media not (prefers-reduced-motion: reduce) {
+  :global(.webchat)
+    .send-box-attachment-bar-item.send-box-attachment-bar-item--as-thumbnail:not(:hover):not(:focus-within)
+    .send-box-attachment-bar-item__delete-button {
+    opacity: 0;
+  }
+}
+/* #endregion */
+
+/* #region Preview */
+:global(.webchat) .send-box-attachment-bar-item__preview {
+  align-items: center;
+  display: grid;
+  grid-area: body;
+  overflow: hidden;
+}
+
+:global(.webchat)
+  .send-box-attachment-bar-item.send-box-attachment-bar-item--as-list-item
+  .send-box-attachment-bar-item__preview {
+  padding-inline: 8px;
+}
+/* #endregion */

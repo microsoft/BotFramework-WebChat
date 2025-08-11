@@ -1,22 +1,31 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-component';
-import PropTypes from 'prop-types';
-import React, { FC, useMemo } from 'react';
-import type { DirectLineHeroCard } from 'botframework-webchat-core';
+import { type DirectLineCardAction } from 'botframework-webchat-core';
+import React, { memo, useMemo } from 'react';
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
+import useStyleOptions from '../../hooks/useStyleOptions';
+import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
 import AdaptiveCardBuilder from './AdaptiveCardBuilder';
 import AdaptiveCardRenderer from './AdaptiveCardRenderer';
-import useAdaptiveCardsPackage from '../hooks/useAdaptiveCardsPackage';
-import useStyleOptions from '../../hooks/useStyleOptions';
+import { directLineBasicCardSchema } from './private/directLineSchema';
 
 const { useDirection } = hooks;
 
-type HeroCardContentProps = {
-  actionPerformedClassName?: string;
-  content: DirectLineHeroCard;
-  disabled?: boolean;
-};
+const heroCardContentPropsSchema = pipe(
+  object({
+    actionPerformedClassName: optional(string()),
+    content: directLineBasicCardSchema,
+    disabled: optional(boolean())
+  }),
+  readonly()
+);
 
-const HeroCardContent: FC<HeroCardContentProps> = ({ actionPerformedClassName, content, disabled }) => {
+type HeroCardContentProps = InferInput<typeof heroCardContentPropsSchema>;
+
+function HeroCardContent(props: HeroCardContentProps) {
+  const { actionPerformedClassName, content, disabled } = validateProps(heroCardContentPropsSchema, props);
+
   const [adaptiveCardsPackage] = useAdaptiveCardsPackage();
   const [styleOptions] = useStyleOptions();
   const [direction] = useDirection();
@@ -25,9 +34,13 @@ const HeroCardContent: FC<HeroCardContentProps> = ({ actionPerformedClassName, c
     const builder = new AdaptiveCardBuilder(adaptiveCardsPackage, styleOptions, direction);
 
     if (content) {
-      (content.images || []).forEach(image => builder.addImage(image.url, null, image.tap, image.alt));
+      // TODO: Need to build `directLineCardActionSchema`.
+      (content.images || []).forEach(image =>
+        builder.addImage(image.url, null, image.tap as DirectLineCardAction, image.alt)
+      );
 
-      builder.addCommon(content);
+      // TODO: Need to build `directLineCardActionSchema`.
+      builder.addCommon(content as typeof content & { buttons: readonly DirectLineCardAction[] });
 
       return builder.card;
     }
@@ -41,28 +54,7 @@ const HeroCardContent: FC<HeroCardContentProps> = ({ actionPerformedClassName, c
       tapAction={content && content.tap}
     />
   );
-};
+}
 
-HeroCardContent.defaultProps = {
-  actionPerformedClassName: '',
-  disabled: undefined
-};
-
-HeroCardContent.propTypes = {
-  actionPerformedClassName: PropTypes.string,
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  content: PropTypes.shape({
-    images: PropTypes.arrayOf(
-      PropTypes.shape({
-        alt: PropTypes.string.isRequired,
-        tap: PropTypes.any,
-        url: PropTypes.string.isRequired
-      })
-    ),
-    tap: PropTypes.any
-  }).isRequired,
-  disabled: PropTypes.bool
-};
-
-export default HeroCardContent;
+export default memo(HeroCardContent);
+export { heroCardContentPropsSchema, type HeroCardContentProps };

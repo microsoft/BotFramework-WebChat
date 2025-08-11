@@ -30,7 +30,7 @@ type ComponentEnhancer<TComponentFactoryArguments extends any[], TProps> = (
  * The signature of the middleware is:
  *
  * ```
- * (...args: SetupArguments) => (next: Enhancer) => (...args: ComponentFactoryArguments) => false | React.FC<Props>
+ * (...args: SetupArguments) => (next: Enhancer) => (...args: ComponentFactoryArguments) => false | React.ComponentType<Props>
  * ```
  */
 type ComponentMiddleware<TSetupArguments extends any[], TComponentFactoryArguments extends any[], TProps> = (

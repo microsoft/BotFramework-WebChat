@@ -1,18 +1,28 @@
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
-import React, { Fragment, memo, ReactNode } from 'react';
+import React, { Fragment, memo } from 'react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useCodeBlockTag from '../../../providers/CustomElements/useCodeBlockTagName';
 
-type Props = Readonly<{
-  children?: ReactNode | undefined;
-  className?: string | undefined;
-  code: string;
-  language: string;
-  title: string;
-}>;
+const codeContentPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    className: optional(string()),
+    code: string(),
+    language: string(),
+    title: string()
+  }),
+  readonly()
+);
 
-const CodeContent = memo(({ children, className, code, language, title }: Props) => {
+type CodeContentProps = InferInput<typeof codeContentPropsSchema>;
+
+function CodeContent(props: CodeContentProps) {
+  const { children, className, code, language, title } = validateProps(codeContentPropsSchema, props);
+
   const [, CodeBlock] = useCodeBlockTag();
+
   return (
     <Fragment>
       <div className={'webchat__view-code-dialog__header'}>
@@ -24,8 +34,7 @@ const CodeContent = memo(({ children, className, code, language, title }: Props)
       {children}
     </Fragment>
   );
-});
-
-CodeContent.displayName = 'CodeContent';
+}
 
 export default memo(CodeContent);
+export { codeContentPropsSchema, type CodeContentProps };

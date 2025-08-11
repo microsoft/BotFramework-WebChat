@@ -1,10 +1,9 @@
 /* eslint react/forbid-dom-props: ["off"] */
 
-import PropTypes from 'prop-types';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { forwardRef, memo } from 'react';
 
-import type { VFC } from 'react';
-
+import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 import { useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 
 const ROOT_STYLE = {
@@ -23,41 +22,35 @@ const ROOT_STYLE = {
   width: 1
 };
 
-type ScreenReaderTextProps = {
-  'aria-hidden'?: boolean;
-  id?: string;
-  text: string;
-};
-
-const ScreenReaderText: VFC<ScreenReaderTextProps> = forwardRef<HTMLDivElement, ScreenReaderTextProps>(
-  ({ 'aria-hidden': ariaHidden, id, text }, ref) => {
-    const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
-
-    if (ariaHidden && !id) {
-      console.warn(
-        'botframework-webchat assertion: when "aria-hidden" is set, the screen reader text should be read by "aria-labelledby". Thus, "id" must be set.'
-      );
-    }
-
-    return (
-      <div aria-hidden={ariaHidden} className={rootClassName} id={id} ref={ref}>
-        {text}
-      </div>
-    );
-  }
+const screenReaderTextPropsSchema = pipe(
+  object({
+    'aria-hidden': optional(boolean()),
+    id: optional(string()),
+    text: string()
+  }),
+  readonly()
 );
 
-ScreenReaderText.defaultProps = {
-  'aria-hidden': undefined,
-  id: undefined
-};
+type ScreenReaderTextProps = InferInput<typeof screenReaderTextPropsSchema>;
 
-ScreenReaderText.propTypes = {
-  'aria-hidden': PropTypes.bool,
-  id: PropTypes.string,
-  text: PropTypes.string.isRequired
-};
+// eslint-disable-next-line prefer-arrow-callback
+const ScreenReaderText = forwardRef<HTMLDivElement, ScreenReaderTextProps>(function ScreenReaderText(props, ref) {
+  const { 'aria-hidden': ariaHidden, id, text } = validateProps(screenReaderTextPropsSchema, props);
 
-ScreenReaderText.displayName = 'ScreenReaderText';
+  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+
+  if (ariaHidden && !id) {
+    console.warn(
+      'botframework-webchat assertion: when "aria-hidden" is set, the screen reader text should be read by "aria-labelledby". Thus, "id" must be set.'
+    );
+  }
+
+  return (
+    <div aria-hidden={ariaHidden} className={rootClassName} id={id} ref={ref}>
+      {text}
+    </div>
+  );
+});
 
 export default memo(ScreenReaderText);
+export { screenReaderTextPropsSchema, type ScreenReaderTextProps };

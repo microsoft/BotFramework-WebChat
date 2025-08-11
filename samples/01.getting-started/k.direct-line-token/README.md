@@ -1,3 +1,5 @@
+> 💥 The sample has been archived and will no longer receive updates.
+
 # Direct Line Token Sample
 
 # Description
@@ -43,28 +45,28 @@ You can follow our instructions on how to [create an Azure Bot resource](https:/
 <details><summary>JavaScript</summary>
 
 1. Save the Microsoft App ID and password to `/bot/.env`
-   -  ```
-      MICROSOFT_APP_ID=12345678abcd-1234-5678-abcd-12345678abcd
-      MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
-      ```
+   - ```
+     MICROSOFT_APP_ID=12345678abcd-1234-5678-abcd-12345678abcd
+     MICROSOFT_APP_PASSWORD=<your-microsoft-app-password>
+     ```
 1. Save the Web Chat secret to `/web/.env`
-   -  ```
-      DIRECT_LINE_SECRET=<your-direct-line-secret>
-      ```
+   - ```
+     DIRECT_LINE_SECRET=<your-direct-line-secret>
+     ```
 
 </details>
 
 <details><summary>C#</summary>
 
 1. Save the Microsoft App ID and password to `/bot/appsettings.json`
-   -  ```
-      "MicrosoftAppId": "12345678abcd-1234-5678-abcd-12345678abcd"
-      "MicrosoftAppPassword": "<your-microsoft-app-password>"
-      ```
+   - ```
+     "MicrosoftAppId": "12345678abcd-1234-5678-abcd-12345678abcd"
+     "MicrosoftAppPassword": "<your-microsoft-app-password>"
+     ```
 1. Save the Web Chat secret to `/web/appsettings.json`
-   -  ```
-      "DirectLineSecret": "<your-direct-line-secret>"
-      ```
+   - ```
+     "DirectLineSecret": "<your-direct-line-secret>"
+     ```
 
 </details>
 
@@ -72,26 +74,24 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 1. Run `ngrok http -host-header=localhost:3978 3978`
 1. Update your Bot Channel Registration. You can use [Azure CLI](https://aka.ms/az-cli) or [Azure Portal](https://portal.azure.com)
-   -  Via Azure CLI
-      -  Run `az bot update --resource-group <your-bot-rg> --name <your-bot-name> --subscription <your-subscription-id> --endpoint "https://a1b2c3d4.ngrok.io/api/messages"`
-   -  Via Azure Portal
-      -  Browse to your Bot Channel Registration
-      -  Select "Settings"
-      -  In "Configuration" section, set "Messaging Endpoint" to `https://a1b2c3d4.ngrok.io/api/messages`
+   - Via Azure CLI
+      - Run `az bot update --resource-group <your-bot-rg> --name <your-bot-name> --subscription <your-subscription-id> --endpoint "https://a1b2c3d4.ngrok.io/api/messages"`
+   - Via Azure Portal
+      - Browse to your Bot Channel Registration
+      - Select "Settings"
+      - In "Configuration" section, set "Messaging Endpoint" to `https://a1b2c3d4.ngrok.io/api/messages`
 
 ## Prepare and run the code
 
 1. Under each of `bot`, and `web` folder, run the following commands, depending on your language:
 
    <details><summary>JavaScript</summary>
-
    1. `npm install`
    1. `npm start`
 
    </details>
 
    <details><summary>C#</summary>
-
    1. `dotnet build`
    1. `dotnet run`
 
@@ -101,18 +101,18 @@ During development, you will run your bot locally. Azure Bot Services will send 
 
 # Things to try out
 
--  Type anything to the bot. It should reply with your user ID, which will stay the same for the duration of the session.
--  Open a new browser tab to http://localhost:5000 and type anything to the bot. It should reply with a different user ID since it has generated a different Direct Line token.
+- Type anything to the bot. It should reply with your user ID, which will stay the same for the duration of the session.
+- Open a new browser tab to http://localhost:5000 and type anything to the bot. It should reply with a different user ID since it has generated a different Direct Line token.
 
 # Code
 
 The code is organized into two separate folders:
 
--  `/bot/` is the bot server
--  `/web/` is the REST API for generating Direct Line tokens
-   -  `GET /api/directline/token` will generate a new Direct Line token for the app. The token will be bound to a random user ID.
-   -  During development-time, it will also serve the bot server via `/api/messages/`
-      -  To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
+- `/bot/` is the bot server
+- `/web/` is the REST API for generating Direct Line tokens
+   - `GET /api/directline/token` will generate a new Direct Line token for the app. The token will be bound to a random user ID.
+   - During development-time, it will also serve the bot server via `/api/messages/`
+      - To enable this feature, add `PROXY_BOT_URL=http://localhost:3978` to `/web/.env`
 
 ## Constructing the user ID
 
@@ -246,9 +246,9 @@ Note that we do _not_ specify a user ID when initiating Web Chat. Direct Line wi
 
 This sample includes multiple parts:
 
--  **The UI** is a static HTML/JS web page with Web Chat integrated via JavaScript bundle. It makes a POST request to the backend API and uses the resulting Direct Line token to render Web Chat.
--  **The backend API** generates Direct Line tokens. Each generated token is bound to a new, randomly-generated user ID.
--  **The bot** is a bare-bones bot that responds to every message by sending the user's ID.
+- **The UI** is a static HTML/JS web page with Web Chat integrated via JavaScript bundle. It makes a POST request to the backend API and uses the resulting Direct Line token to render Web Chat.
+- **The backend API** generates Direct Line tokens. Each generated token is bound to a new, randomly-generated user ID.
+- **The bot** is a bare-bones bot that responds to every message by sending the user's ID.
 
 ## Motivation
 
@@ -342,6 +342,6 @@ The flow could be:
 
 # Further reading
 
--  [Create an Azure Bot resource](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart?view=azure-bot-service-4.0&tabs=userassigned#create-the-resource)
--  [Generating a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token)
--  [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)
+- [Create an Azure Bot resource](https://docs.microsoft.com/en-us/azure/bot-service/abs-quickstart?view=azure-bot-service-4.0&tabs=userassigned#create-the-resource)
+- [Generating a Direct Line token](https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-token)
+- [Enhanced Direct Line Authentication feature](https://blog.botframework.com/2018/09/25/enhanced-direct-line-authentication-features/)

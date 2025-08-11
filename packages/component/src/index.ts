@@ -38,7 +38,8 @@ import SendButton from './SendBox/SendButton';
 import SuggestedActions from './SendBox/SuggestedActions';
 import SendTextBox from './SendBox/TextBox';
 import UploadButton from './SendBoxToolbar/UploadButton';
-import MonochromeImageMasker from './Utils/MonochromeImageMasker';
+import { AttachmentBar } from './SendBox/AttachmentBar';
+import { TextArea } from './TextArea';
 
 import createCoreAttachmentMiddleware from './Attachment/createMiddleware';
 import createCoreActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
@@ -63,6 +64,14 @@ export { type SendBoxFocusOptions } from './hooks/index';
 const hooks = {
   ...apiHooks,
   ...componentHooks
+};
+
+declare const process: {
+  env: {
+    build_tool: string;
+    module_format: string;
+    npm_package_version: string;
+  };
 };
 
 const buildTool = process.env.build_tool;
@@ -103,18 +112,17 @@ const Components = {
   Timestamp,
 
   // Components for recomposing send box
+  AttachmentBar,
   DictationInterims,
   MicrophoneButton,
   SendButton,
   SendTextBox,
   SuggestedActions,
+  TextArea,
   UploadButton,
 
   // Components for localization
-  LocalizedString,
-
-  // Components for theming
-  MonochromeImageMasker
+  LocalizedString
 };
 
 export default ReactWebChat;

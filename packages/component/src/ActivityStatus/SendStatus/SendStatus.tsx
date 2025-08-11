@@ -1,24 +1,29 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
-import React, { FC, useCallback } from 'react';
-import type { WebChatActivity } from 'botframework-webchat-core';
+import React, { memo, useCallback } from 'react';
+import { any, literal, object, pipe, readonly, union, type InferInput } from 'valibot';
 
-import { SENDING, SEND_FAILED, SENT } from '../../types/internal/SendStatus';
-import SendFailedRetry from './private/SendFailedRetry';
 import useFocus from '../../hooks/useFocus';
 import useStyleSet from '../../hooks/useStyleSet';
-
-import type { SendStatus as SendStatusType } from '../../types/internal/SendStatus';
+import { SENDING, SEND_FAILED, SENT } from '../../types/internal/SendStatus';
+import SendFailedRetry from './private/SendFailedRetry';
 
 const { useLocalizer, usePostActivity } = hooks;
 
-type SendStatusProps = {
-  activity: WebChatActivity;
-  sendStatus: SendStatusType;
-};
+const sendStatusPropsSchema = pipe(
+  object({
+    activity: any(),
+    sendStatus: union([literal(SENDING), literal(SEND_FAILED), literal(SENT)])
+  }),
+  readonly()
+);
 
-const SendStatus: FC<SendStatusProps> = ({ activity, sendStatus }) => {
+type SendStatusProps = InferInput<typeof sendStatusPropsSchema>;
+
+function SendStatus(props: SendStatusProps) {
+  const { activity, sendStatus } = validateProps(sendStatusPropsSchema, props);
+
   const [{ sendStatus: sendStatusStyleSet }] = useStyleSet();
   const focus = useFocus();
   const localize = useLocalizer();
@@ -46,13 +51,7 @@ const SendStatus: FC<SendStatusProps> = ({ activity, sendStatus }) => {
       </span>
     </React.Fragment>
   );
-};
+}
 
-SendStatus.propTypes = {
-  activity: PropTypes.any.isRequired,
-  // PropTypes cannot fully capture TypeScript types.
-  // @ts-ignore
-  sendStatus: PropTypes.oneOf([SENDING, SEND_FAILED, SENT]).isRequired
-};
-
-export default SendStatus;
+export default memo(SendStatus);
+export { sendStatusPropsSchema, type SendStatusProps };

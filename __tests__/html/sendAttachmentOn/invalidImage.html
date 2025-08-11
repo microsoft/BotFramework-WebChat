@@ -32,8 +32,8 @@
           );
 
           // THEN: It should send the file.
-          await pageConditions.allOutgoingActivitiesSent();
           await pageConditions.numActivitiesShown(3);
+          await pageConditions.allOutgoingActivitiesSent();
           await host.snapshot();
         },
         { ignoreErrors: 'The source image could not be decoded.' }

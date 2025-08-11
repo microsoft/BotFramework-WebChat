@@ -1,15 +1,24 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { Fragment, memo, useMemo } from 'react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 
-type Props = Readonly<{
-  headerText?: string;
-  markdown: string;
-}>;
+const citationModalContentPropsSchema = pipe(
+  object({
+    headerText: optional(string()),
+    markdown: string()
+  }),
+  readonly()
+);
 
-const CitationModalContent = memo(({ headerText, markdown }: Props) => {
+type CitationModalContentProps = InferInput<typeof citationModalContentPropsSchema>;
+
+function CitationModalContent(props: CitationModalContentProps) {
+  const { headerText, markdown } = validateProps(citationModalContentPropsSchema, props);
+
   const [{ renderMarkdown: renderMarkdownStyleSet }] = useStyleSet();
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('citation modal');
 
@@ -34,8 +43,7 @@ const CitationModalContent = memo(({ headerText, markdown }: Props) => {
       )}
     </Fragment>
   );
-});
+}
 
-CitationModalContent.displayName = 'CitationModalContent';
-
-export default CitationModalContent;
+export default memo(CitationModalContent);
+export { citationModalContentPropsSchema, type CitationModalContentProps };

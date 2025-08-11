@@ -1,29 +1,53 @@
 <!doctype html>
 <html lang="en-US">
   <head>
+    <title>Markdown Math Layout Scroll: Test markdown math layout scroll with fluent theme</title>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/",
+          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme"
+        }
+      }
+    </script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/fluent-bundle.production.min.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
   </head>
 
   <body>
     <main id="webchat"></main>
-    <script type="text/babel">
+    <script type="module">
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
+
       run(async function () {
         const {
-          Fluent: { createDarkTheme, createLightTheme, FluentProvider },
-          ReactDOMClient: { createRoot },
           WebChat: { FluentThemeProvider, ReactWebChat, testIds }
-        } = window; // Imports in UMD fashion.
+        } = window;
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
         const searchParams = new URLSearchParams(location.search);
+        const variant = searchParams.get('variant');
+        const theme = searchParams.get('theme');
 
-        const App = () => <ReactWebChat directLine={directLine} store={store} />;
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [
+            { name: 'prefers-reduced-motion', value: 'reduce' },
+            ...(theme === 'dark' || theme === 'light'
+              ? [{ name: 'prefers-color-scheme', value: theme }]
+              : [])
+          ]
+        });
 
         const customBrandRamp = {
           10: '#124C32',
@@ -44,25 +68,33 @@
           160: '#E4FAF1'
         };
 
+        let fluentTheme;
+
+        if (theme === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          fluentTheme = createDarkTheme(customBrandRamp);
+        } else {
+          fluentTheme = {
+            ...webLightTheme,
+            // Original is #242424 which is too light for fui-FluentProvider to pass our a11y
+            colorNeutralForeground1: '#1b1b1b'
+          };
+        }
+
         const root = createRoot(document.getElementById('webchat'));
 
-        if (searchParams.get('variant') === 'copilot' || searchParams.get('variant') === 'fluent') {
-          root.render(
-            <FluentProvider
-              theme={
-                searchParams.get('theme') === 'dark'
-                  ? createDarkTheme(customBrandRamp)
-                  : createLightTheme(customBrandRamp)
-              }
-            >
-              <FluentThemeProvider variant={searchParams.get('variant') || ''}>
-                <App />
-              </FluentThemeProvider>
-            </FluentProvider>
-          );
-        } else {
-          root.render(<App />);
-        }
+        root.render(
+          variant === 'copilot' || variant === 'fluent' ? 
+            React.createElement(
+              FluentProvider,
+              { theme: fluentTheme },
+              React.createElement(
+                FluentThemeProvider,
+                { variant: variant },
+                React.createElement(ReactWebChat, { directLine, store })
+              )
+            ) :
+            React.createElement(ReactWebChat, { directLine, store })
+        );
 
         await pageConditions.uiConnected();
 
@@ -75,6 +107,7 @@
         });
 
         await pageConditions.numActivitiesShown(1);
+        await pageConditions.scrollStabilized();
 
         await host.snapshot('local');
 

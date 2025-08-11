@@ -1,72 +1,110 @@
 /* eslint complexity: ["error", 50] */
 
 import { hooks } from 'botframework-webchat-api';
-import { ActivityDecorator } from 'botframework-webchat-api/decorator';
-import classNames from 'classnames';
-import React, { memo } from 'react';
+import type { RenderAttachment } from 'botframework-webchat-api';
+import { ActivityBorderDecorator } from 'botframework-webchat-api/decorator';
+import { getActivityLivestreamingMetadata, getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import cx from 'classnames';
+import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
 
+import isBasedOnSoftwareSourceCode from '../Attachment/Text/private/isBasedOnSoftwareSourceCode';
 import ScreenReaderText from '../ScreenReaderText';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import textFormatToContentType from '../Utils/textFormatToContentType';
-import useStyleSet from '../hooks/useStyleSet';
-import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
 import useUniqueId from '../hooks/internal/useUniqueId';
+import AttachmentRow from './AttachmentRow';
 import Bubble from './Bubble';
+import CodeBlockContent from './CodeBlockContent';
+import CollapsibleContent from './CollapsibleContent';
 
-import type { RenderAttachment } from 'botframework-webchat-api';
-import { getActivityLivestreamingMetadata, type WebChatActivity } from 'botframework-webchat-core';
-import type { ReactNode } from 'react';
+import styles from './StackedLayout.module.css';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useStyleOptions } = hooks;
 
-const ROOT_STYLE = {
-  '&.webchat__stacked-layout': {
-    position: 'relative', // This is to keep screen reader text in the destinated area.
+type StackedLayoutInnerProps = Readonly<{
+  activity: WebChatActivity;
+  children?: ReactNode | undefined;
+  fromUser: boolean;
+  hasAttachments: boolean;
+  hasDisplayText: boolean;
+  id: string;
+  renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>) | undefined;
+  renderBubbleContent: (title?: string | undefined) => ReactNode;
+  showCallout?: boolean | undefined;
+}>;
 
-    '& .webchat__stacked-layout__attachment-row, & .webchat__stacked-layout__main, & .webchat__stacked-layout__message-row, & .webchat__stacked-layout__status':
-      {
-        display: 'flex'
-      },
+const StackedLayoutInner = memo(
+  ({
+    activity,
+    children,
+    fromUser,
+    hasAttachments,
+    hasDisplayText,
+    id,
+    renderAvatar,
+    renderBubbleContent,
+    showCallout
+  }: StackedLayoutInnerProps) => {
+    const [styleOptions] = useStyleOptions();
+    const [{ initials: botInitials }] = useAvatarForBot();
+    const [{ initials: userInitials }] = useAvatarForUser();
+    const localize = useLocalizer();
+    const classNames = useStyles(styles);
 
-    '& .webchat__stacked-layout__alignment-pad': {
-      flexShrink: 0
-    },
+    const messageThing = useMemo(() => getOrgSchemaMessage(activity.entities), [activity]);
+    const { bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize } = styleOptions;
+    const greetingAlt = (
+      fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
+    ).replace(/\s{2,}/gu, ' ');
 
-    '& .webchat__stacked-layout__attachment': {
-      width: '100%'
-    },
+    const initials = fromUser ? userInitials : botInitials;
+    const nubOffset = fromUser ? bubbleFromUserNubOffset : bubbleNubOffset;
+    const nubSize = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
 
-    '& .webchat__stacked-layout__avatar-gutter': {
-      display: 'flex',
-      flexDirection: 'column',
-      flexShrink: 0
-    },
+    const hasAvatar = initials || typeof initials === 'string';
+    const hasNub = typeof nubSize === 'number';
+    const topAlignedCallout = isZeroOrPositive(nubOffset);
 
-    '&.webchat__stacked-layout--from-user': {
-      '& .webchat__stacked-layout__attachment-row, & .webchat__stacked-layout__main, & .webchat__stacked-layout__message-row, & .webchat__stacked-layout__status':
-        {
-          flexDirection: 'row-reverse'
-        }
-    },
+    const showAvatar = showCallout && hasAvatar && !!renderAvatar;
+    const showNub = showCallout && hasNub && (topAlignedCallout || !hasAttachments);
 
-    '& .webchat__stacked-layout__content': {
-      flex: 1,
-
-      // This is for bottom aligning an avatar with a message bubble shorter than the avatar.
-      // Related to the test at activityGrouping.avatarMiddleware.atBottom.js.
-      display: 'flex',
-      flexDirection: 'column',
-
-      // This "overflow: hidden" is to make sure text overflow will get clipped correctly.
-      // Related to the test at basic.js "long URLs with keep-all".
-      overflow: 'hidden'
-    },
-
-    '& .webchat__stacked-layout__nub-pad': {
-      flexShrink: 0
-    }
+    return (
+      <div className={classNames['stacked-layout__main']}>
+        <div className={cx(classNames['stacked-layout__avatar-gutter'])}>
+          {showAvatar && renderAvatar && renderAvatar()}
+        </div>
+        <div className={cx(classNames['stacked-layout__content'])}>
+          {!!(hasDisplayText || messageThing?.abstract) && (
+            <div
+              aria-roledescription="message"
+              className={cx(classNames['stacked-layout__message-row'])}
+              // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
+              /* eslint-disable-next-line react/forbid-dom-props */
+              id={id}
+              role="group"
+            >
+              <ScreenReaderText text={greetingAlt} />
+              <Bubble
+                className={classNames['stacked-layout__message']}
+                fromUser={fromUser}
+                nub={showNub || (hasAvatar || hasNub ? 'hidden' : false)}
+              >
+                <ActivityBorderDecorator activity={activity}>
+                  {renderBubbleContent(messageThing?.abstract)}
+                </ActivityBorderDecorator>
+              </Bubble>
+            </div>
+          )}
+          <div className={classNames['stacked-layout__attachment-list']}>{children}</div>
+        </div>
+        <div className={classNames['stacked-layout__alignment-pad']} />
+      </div>
+    );
   }
-};
+);
+
+StackedLayoutInner.displayName = 'StackedLayoutInner';
 
 type StackedLayoutProps = Readonly<{
   activity: WebChatActivity;
@@ -88,29 +126,26 @@ const StackedLayout = ({
   const [styleOptions] = useStyleOptions();
   const [{ initials: botInitials }] = useAvatarForBot();
   const [{ initials: userInitials }] = useAvatarForUser();
-  const [{ stackedLayout: stackedLayoutStyleSet }] = useStyleSet();
   const ariaLabelId = useUniqueId('webchat__stacked-layout__id');
   const localize = useLocalizer();
-  const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
+  const classNames = useStyles(styles);
 
   const { bubbleNubOffset, bubbleNubSize, bubbleFromUserNubOffset, bubbleFromUserNubSize } = styleOptions;
 
-  const isMessage = activity.type === 'message';
+  const isMessageOrTyping = activity.type === 'message' || activity.type === 'typing';
 
-  const attachments = (isMessage && activity.attachments) || [];
+  const attachments = useMemo(() => (isMessageOrTyping && activity.attachments) || [], [activity, isMessageOrTyping]);
   const fromUser = activity.from.role === 'user';
-  const messageBackDisplayText: string = (isMessage && activity.channelData?.messageBack?.displayText) || '';
+  const messageBackDisplayText: string = (isMessageOrTyping && activity.channelData?.messageBack?.displayText) || '';
+  const messageThing = useMemo(() => getOrgSchemaMessage(activity.entities), [activity]);
+  const isCollapsible = useMemo(() => messageThing?.keywords?.includes('Collapsible'), [messageThing]);
 
   const isLivestreaming = !!getActivityLivestreamingMetadata(activity);
-  const activityDisplayText = isMessage
+  const activityDisplayText = isMessageOrTyping
     ? messageBackDisplayText || activity.text
     : isLivestreaming && 'text' in activity
-      ? activity.text
+      ? (activity.text as string)
       : '';
-  const attachedAlt = localize(fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT');
-  const greetingAlt = (
-    fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
-  ).replace(/\s{2,}/gu, ' ');
 
   const initials = fromUser ? userInitials : botInitials;
   const nubOffset = fromUser ? bubbleFromUserNubOffset : bubbleNubOffset;
@@ -129,82 +164,138 @@ const StackedLayout = ({
   const showAvatar = showCallout && hasAvatar && !!renderAvatar;
   const showNub = showCallout && hasNub && (topAlignedCallout || !attachments?.length);
 
+  const renderMainBubbleContent = useCallback(
+    (title = '') => (
+      <div className={classNames['stacked-layout__bubble']}>
+        {title && <div className={classNames['stacked-layout__title']}>{title}</div>}
+        {activityDisplayText &&
+          renderAttachment({
+            activity,
+            attachment: {
+              content: activityDisplayText,
+              contentType: textFormatToContentType('textFormat' in activity ? activity.textFormat : undefined)
+            }
+          })}
+      </div>
+    ),
+    [activity, activityDisplayText, classNames, renderAttachment]
+  );
+
+  const attachmentChildren = useMemo(() => {
+    const syntheticAttachments = [];
+
+    const attachmentAlt = localize(
+      fromUser ? 'ACTIVITY_YOU_ATTACHED_ALT' : 'ACTIVITY_BOT_ATTACHED_ALT',
+      otherInitials || ''
+    );
+
+    if (isCollapsible && 'text' in activity && activity.text) {
+      syntheticAttachments.push(
+        <AttachmentRow
+          attachedAlt={attachmentAlt}
+          fromUser={fromUser}
+          hasAvatar={!!hasAvatar}
+          hasNub={!!hasNub}
+          key={syntheticAttachments.length}
+          showBubble={false}
+        >
+          {renderMainBubbleContent()}
+        </AttachmentRow>
+      );
+    }
+
+    if (isCollapsible && isBasedOnSoftwareSourceCode(messageThing)) {
+      syntheticAttachments.push(
+        <AttachmentRow
+          attachedAlt={attachmentAlt}
+          fromUser={fromUser}
+          hasAvatar={!!hasAvatar}
+          hasNub={!!hasNub}
+          key={syntheticAttachments.length}
+          showBubble={false}
+        >
+          <CodeBlockContent
+            code={messageThing.isBasedOn.text}
+            key={syntheticAttachments.length}
+            language={messageThing.isBasedOn.programmingLanguage}
+            title={messageThing.isBasedOn.programmingLanguage}
+          />
+        </AttachmentRow>
+      );
+    }
+
+    return syntheticAttachments.concat(
+      attachments.map((attachment, index) => (
+        <AttachmentRow
+          attachedAlt={attachmentAlt}
+          fromUser={fromUser}
+          hasAvatar={!!hasAvatar}
+          hasNub={!!hasNub}
+          /* eslint-disable-next-line react/no-array-index-key */
+          key={index + syntheticAttachments.length}
+          showBubble={isCollapsible ? false : true}
+        >
+          {renderAttachment({ activity, attachment })}
+        </AttachmentRow>
+      ))
+    );
+  }, [
+    activity,
+    attachments,
+    fromUser,
+    hasAvatar,
+    hasNub,
+    isCollapsible,
+    localize,
+    messageThing,
+    otherInitials,
+    renderAttachment,
+    renderMainBubbleContent
+  ]);
+
+  const renderCollapsibleBubbleContent = useCallback(
+    (title = '') => (
+      <CollapsibleContent summary={title} summaryClassName={classNames['stacked-layout__title']}>
+        <div className={classNames['stacked-layout__attachment-list']}>{attachmentChildren}</div>
+      </CollapsibleContent>
+    ),
+    [attachmentChildren, classNames]
+  );
+
+  const renderBubbleContent = isCollapsible ? renderCollapsibleBubbleContent : renderMainBubbleContent;
+
   return (
     <div
       aria-labelledby={activityDisplayText ? ariaLabelId : undefined}
-      className={classNames('webchat__stacked-layout', rootClassName, stackedLayoutStyleSet + '', {
-        'webchat__stacked-layout--extra-trailing': extraTrailing,
-        'webchat__stacked-layout--from-user': fromUser,
-        'webchat__stacked-layout--hide-avatar': hasAvatar && !showAvatar,
-        'webchat__stacked-layout--hide-nub': hasNub && !showNub,
-        'webchat__stacked-layout--no-message': !activityDisplayText,
-        'webchat__stacked-layout--show-avatar': showAvatar,
-        'webchat__stacked-layout--show-nub': showNub,
-        'webchat__stacked-layout--top-callout': topAlignedCallout
+      className={cx('webchat__stacked-layout', classNames['stacked-layout'], {
+        [classNames['stacked-layout--from-user']]: fromUser,
+        [classNames['stacked-layout--extra-trailing']]: extraTrailing,
+        [classNames['stacked-layout--hide-avatar']]: hasAvatar && !showAvatar,
+        [classNames['stacked-layout--hide-nub']]: hasNub && !showNub,
+        [classNames['stacked-layout--no-message']]: !activityDisplayText && !isCollapsible,
+        [classNames['stacked-layout--show-avatar']]: showAvatar,
+        [classNames['stacked-layout--show-nub']]: showNub,
+        [classNames['stacked-layout--top-callout']]: topAlignedCallout
       })}
     >
-      <div className="webchat__stacked-layout__main">
-        <div className="webchat__stacked-layout__avatar-gutter">{showAvatar && renderAvatar()}</div>
-        <div className="webchat__stacked-layout__content">
-          {!!activityDisplayText && (
-            <div
-              aria-roledescription="message"
-              className="webchat__stacked-layout__message-row"
-              // Disable "Prop `id` is forbidden on DOM Nodes" rule because we are using the ID prop for accessibility.
-              /* eslint-disable-next-line react/forbid-dom-props */
-              id={ariaLabelId}
-              role="group"
-            >
-              <ScreenReaderText text={greetingAlt} />
-              <Bubble
-                className="webchat__stacked-layout__message"
-                fromUser={fromUser}
-                nub={showNub || (hasAvatar || hasNub ? 'hidden' : false)}
-              >
-                <ActivityDecorator activity={activity}>
-                  {renderAttachment({
-                    activity,
-                    attachment: {
-                      content: activityDisplayText,
-                      contentType: textFormatToContentType('textFormat' in activity ? activity.textFormat : undefined)
-                    }
-                  })}
-                </ActivityDecorator>
-              </Bubble>
-            </div>
-          )}
-          {attachments.map((attachment, index) => (
-            <div
-              aria-roledescription="attachment"
-              className={classNames('webchat__stacked-layout__attachment-row', {
-                'webchat__stacked-layout__attachment-row--first': !index
-              })}
-              /* attachments do not have an ID, it is always indexed by number */
-              /* eslint-disable-next-line react/no-array-index-key */
-              key={index}
-              role="group"
-            >
-              <ScreenReaderText text={attachedAlt} />
-              <Bubble
-                className="webchat__stacked-layout__attachment"
-                fromUser={fromUser}
-                /* eslint-disable-next-line react/no-array-index-key */
-                key={index}
-                nub={hasAvatar || hasNub ? 'hidden' : false}
-              >
-                {renderAttachment({ activity, attachment })}
-              </Bubble>
-            </div>
-          ))}
-        </div>
-        <div className="webchat__stacked-layout__alignment-pad" />
-      </div>
+      <StackedLayoutInner
+        activity={activity}
+        fromUser={fromUser}
+        hasAttachments={attachmentChildren.length > 0}
+        hasDisplayText={!!activityDisplayText?.length || isCollapsible}
+        id={ariaLabelId}
+        renderAvatar={renderAvatar}
+        renderBubbleContent={renderBubbleContent}
+        showCallout={showCallout}
+      >
+        {!isCollapsible && attachmentChildren.length > 0 && attachmentChildren}
+      </StackedLayoutInner>
       {typeof renderActivityStatus === 'function' && (
-        <div className="webchat__stacked-layout__status">
-          <div className="webchat__stacked-layout__avatar-gutter" />
-          <div className="webchat__stacked-layout__nub-pad" />
+        <div className={cx(classNames['stacked-layout__status'])}>
+          <div className={cx(classNames['stacked-layout__avatar-gutter'])} />
+          <div className={cx(classNames['stacked-layout__nub-pad'])} />
           {renderActivityStatus({ hideTimestamp })}
-          <div className="webchat__stacked-layout__alignment-pad" />
+          <div className={cx(classNames['stacked-layout__alignment-pad'])} />
         </div>
       )}
     </div>

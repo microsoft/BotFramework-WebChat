@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+  <head>
+    <script>
+      const url = new URL('./longURL', location);
+
+      url.searchParams.set('break', 'keep-all');
+      url.searchParams.set('text', '箸より重いものを持ったことがない箸より重いものを持ったことがない');
+
+      location = url;
+    </script>
+  </head>
+  <body></body>
+</html>

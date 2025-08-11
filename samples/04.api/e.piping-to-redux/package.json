@@ -1,5 +1,5 @@
 {
-  "name": "sample-customization-piping-to-redux",
+  "name": "@msinternal/sample-customization-piping-to-redux",
   "version": "0.1.0",
   "private": true,
   "homepage": "https://microsoft.github.io/BotFramework-WebChat/04.api/e.piping-to-redux/",
@@ -7,10 +7,13 @@
     "build": "esbuild --bundle --entry-names=[name]/[ext]/main --jsx=automatic --loader:.jpg=file --minify --outdir=./public/static/ --sourcemap app=./src/index.tsx",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
-    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localPeerDependencies // []) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "start": "npm run build -- --servedir=./public"
   },
   "pinDependencies": {
+    "botframework-webchat": [
+      "main"
+    ],
     "react": [
       "16.8.6",
       "using react@16.8.6 to make sure this is the minimum supported version"
@@ -25,14 +28,13 @@
     ]
   },
   "dependencies": {
-    "botframework-webchat": "4.18.0",
-    "punycode": "2.3.1",
-    "react": "16.8.6",
-    "react-dom": "16.8.6",
-    "react-redux": "7.2.9",
-    "redux": "5.0.1"
+    "botframework-webchat": "^4.18.1-main.20250804.93043a9",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-redux": "^7.2.9",
+    "redux": "^5.0.1"
   },
   "devDependencies": {
-    "esbuild": "^0.25.0"
+    "esbuild": "^0.25.8"
   }
 }

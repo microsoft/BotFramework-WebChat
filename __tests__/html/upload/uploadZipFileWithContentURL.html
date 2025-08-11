@@ -52,6 +52,7 @@
         await pageConditions.uiConnected();
 
         await pageObjects.uploadFile('empty.zip');
+        await pageConditions.allOutgoingActivitiesSent();
 
         await pageConditions.minNumActivitiesShown(2);
         await pageConditions.allImagesLoaded();

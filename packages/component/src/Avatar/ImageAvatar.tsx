@@ -1,9 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import classNames from 'classnames';
 import React, { memo } from 'react';
+import { boolean, object, pipe, readonly, type InferInput } from 'valibot';
 
-import useStyleSet from '../hooks/useStyleSet';
 import { useStyleToEmotionObject } from '../hooks/internal/styleToEmotionObject';
+import useStyleSet from '../hooks/useStyleSet';
 
 const { useAvatarForBot, useAvatarForUser } = hooks;
 
@@ -14,7 +16,18 @@ const ROOT_STYLE = {
   }
 };
 
-const ImageAvatar = memo(({ fromUser }: Readonly<{ fromUser: boolean }>) => {
+const imageAvatarPropsSchema = pipe(
+  object({
+    fromUser: boolean()
+  }),
+  readonly()
+);
+
+type ImageAvatarProps = InferInput<typeof imageAvatarPropsSchema>;
+
+const ImageAvatar = (props: ImageAvatarProps) => {
+  const { fromUser } = validateProps(imageAvatarPropsSchema, props);
+
   const [{ image: avatarImageForBot }] = useAvatarForBot();
   const [{ image: avatarImageForUser }] = useAvatarForUser();
   const [{ imageAvatar: imageAvatarStyleSet }] = useStyleSet();
@@ -29,6 +42,7 @@ const ImageAvatar = memo(({ fromUser }: Readonly<{ fromUser: boolean }>) => {
       </div>
     )
   );
-});
+};
 
-export default ImageAvatar;
+export default memo(ImageAvatar);
+export { imageAvatarPropsSchema, type ImageAvatarProps };

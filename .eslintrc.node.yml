@@ -36,7 +36,6 @@ rules:
         - istanbul-lib-coverage
         - jest-environment-node
         - jest-image-snapshot
-        - node-fetch
         - selenium-webdriver
         - strip-ansi
   node/prefer-global/buffer: error

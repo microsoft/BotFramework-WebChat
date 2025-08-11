@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs"
+        }
+      }
+    </script>
+    <script type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import renderHook from '../../hooks/private/renderHook.js';
+
+      const {
+        React: { createElement },
+        testHelpers: { createDirectLineEmulator },
+        WebChat: {
+          Components: { BasicWebChat, Composer },
+          hooks: { useSuggestedActions },
+          testIds
+        }
+      } = window;
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+        const WebChatWrapper = ({ children }) =>
+          createElement(Composer, { directLine, store }, createElement(BasicWebChat), children);
+
+        // WHEN: Render initially.
+        const renderResult = renderHook(
+          props => {
+            const state = useSuggestedActions();
+
+            if (props) {
+              state[1](props.suggestedActions);
+            } else {
+              return state;
+            }
+          },
+          {
+            legacyRoot: true,
+            wrapper: WebChatWrapper
+          }
+        );
+
+        await pageConditions.uiConnected();
+
+        // THEN: useSuggestedActions() getter should return empty array.
+        await waitFor(() =>
+          expect(renderResult).toHaveProperty('result.current', [[], expect.anything(), { activity: undefined }])
+        );
+
+        // WHEN: An activity with 2 suggested actions is received.
+        await directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          suggestedActions: {
+            actions: [
+              { title: 'Hello, World!', type: 'imBack' },
+              { title: 'Aloha!', type: 'imBack' }
+            ],
+            to: ''
+          },
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        // THEN: useSuggestedActions() getter should return 2 suggested actions and origin activity.
+        renderResult.rerender();
+
+        await waitFor(() =>
+          expect(renderResult).toHaveProperty('result.current', [
+            [
+              { title: 'Hello, World!', type: 'imBack' },
+              { title: 'Aloha!', type: 'imBack' }
+            ],
+            expect.any(Function),
+            {
+              activity: expect.objectContaining({
+                from: { role: 'bot' },
+                suggestedActions: {
+                  actions: [
+                    { title: 'Hello, World!', type: 'imBack' },
+                    { title: 'Aloha!', type: 'imBack' }
+                  ],
+                  to: ''
+                },
+                text: 'Hello, World!',
+                type: 'message'
+              })
+            }
+          ])
+        );
+
+        // WHEN: useSuggestedActions() setter is called with 1 suggested action.
+        renderResult.rerender({ suggestedActions: [{ title: 'Good morning!', type: 'imBack' }] });
+
+        // THEN: Should show 1 suggested action.
+        await waitFor(() => expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(1));
+        expect(pageElements.allByTestId(testIds.suggestedActionButton)[0]).toHaveProperty(
+          'textContent',
+          'Good morning!'
+        );
+
+        // THEN: Should return 1 suggested action.
+        renderResult.rerender();
+        await waitFor(() =>
+          expect(renderResult).toHaveProperty('result.current', [
+            [{ title: 'Good morning!', type: 'imBack' }],
+            expect.any(Function),
+            { activity: undefined }
+          ])
+        );
+
+        // THEN: getState() should have 1 suggested action.
+        expect(store.getState().suggestedActions).toHaveLength(1);
+        expect(store.getState().suggestedActions[0]).toEqual({ title: 'Good morning!', type: 'imBack' });
+
+        // WHEN: useSuggestedActions() is called with no suggested actions.
+        renderResult.rerender({ suggestedActions: [] });
+
+        // THEN: Should hide suggested actions.
+        await waitFor(() => expect(pageElements.allByTestId(testIds.suggestedActionButton)).toHaveLength(0));
+
+        // THEN: Should return 0 suggested actions.
+        renderResult.rerender();
+        await waitFor(() =>
+          expect(renderResult).toHaveProperty('result.current', [[], expect.any(Function), { activity: undefined }])
+        );
+
+        // THEN: getState() should have 1 suggested action.
+        expect(store.getState().suggestedActions).toHaveLength(0);
+      });
+    </script>
+  </body>
+</html>

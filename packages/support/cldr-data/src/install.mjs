@@ -18,7 +18,7 @@ import { readPackageUp } from 'read-pkg-up';
 import child_process from 'child_process';
 // False alarm.
 // eslint-disable-next-line node/no-missing-import
-import cldrDownloader from 'botframework-webchat-cldr-data-downloader';
+import cldrDownloader from '@msinternal/botframework-webchat-cldr-data-downloader';
 import glob from 'glob';
 import path from 'path';
 
