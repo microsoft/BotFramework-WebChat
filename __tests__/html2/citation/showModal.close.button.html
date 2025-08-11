@@ -28,7 +28,6 @@
               '@context': 'https://schema.org',
               '@id': 'cite:1',
               '@type': 'Claim',
-              name: "Should Be Visible",
               type: 'https://schema.org/Claim',
               text: 'Reprehenderit exercitation laborum labore ut. Nostrud do et ut nostrud nisi excepteur labore adipisicing nostrud nostrud ipsum id dolore. Anim aliquip incididunt incididunt sunt sit proident consectetur exercitation qui aliqua aliquip adipisicing nisi et. Id commodo labore sunt quis do aute cillum laborum veniam [proident](https://bing.com/).'
             }
@@ -37,18 +36,19 @@
 
 [1]: https://support.microsoft.com/en-us/windows/use-a-proxy-server-in-windows-03096c53-0554-4ffe-b6ab-8b1deee8dae1
 [2]: https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/configure-proxy-server-settings "Configure proxy server settings - Windows Server"
-[3]: cite:1 "should be hidden"
+[3]: cite:1 "Citation-1"
 `,
           type: 'message'
         });
 
-        const linkDefinitionItems = pageElements.linkDefinitions()[0].querySelectorAll('[role="listitem"] > *');
+        const markdownElement = pageElements.activities()[0].querySelector('.webchat__text-content__markdown');
+        const markdownButtons = markdownElement.querySelectorAll('button');
 
-        await host.click(linkDefinitionItems[2]);
-        await host.snapshot();
+        await host.click(markdownButtons[0]);
+        await host.snapshot('local');
 
-        await host.sendTab();
-        await host.snapshot();
+        await host.sendKeys(' ');
+        await host.snapshot('local');
       });
     </script>
   </body>
