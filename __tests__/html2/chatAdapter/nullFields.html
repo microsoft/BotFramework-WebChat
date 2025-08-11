@@ -74,7 +74,7 @@
         await pageConditions.suggestedActionsShown();
         await pageConditions.allImagesLoaded();
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
