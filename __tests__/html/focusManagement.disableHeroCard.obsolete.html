@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -15,13 +15,28 @@
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
         WebChat: {
-          Components: { HeroCardContent }
+          Components: { HeroCardContent },
+          hooks: { useActivities }
         }
       } = window;
 
       run(async function () {
         const store = testHelpers.createStore();
         const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
+
+        const AutoDisableHeroCardContent = ({ activity, attachment }) => {
+          const [activities] = useActivities();
+          const messageActivities = activities.filter(activity => activity.type === 'message');
+          const isMostRecentMessageActivity = messageActivities.pop() === activity;
+
+          return (
+            <HeroCardContent
+              actionPerformedClassName="card__action--performed"
+              content={attachment.content}
+              disabled={!isMostRecentMessageActivity}
+            />
+          );
+        };
 
         WebChat.renderWebChat(
           {
@@ -35,13 +50,7 @@
                 const mostRecent = messageActivities.pop() === activity;
 
                 if (attachment.contentType === 'application/vnd.microsoft.card.hero') {
-                  return (
-                    <HeroCardContent
-                      actionPerformedClassName="card__action--performed"
-                      content={attachment.content}
-                      disabled={!mostRecent}
-                    />
-                  );
+                  return <AutoDisableHeroCardContent activity={activity} attachment={attachment} />;
                 }
 
                 return next(...args);
