@@ -18,25 +18,29 @@
           document.getElementById('webchat')
         );
 
-        // SETUP: Send "help" after connect.
         await pageConditions.uiConnected();
-        await pageObjects.sendMessageViaSendBox('help');
+
+        // GIVEN: A ready-to-submit Adaptive Card with suggested actions shown below
+        await pageObjects.sendMessageViaSendBox('card inputs', { waitForSend: true });
         await pageConditions.minNumActivitiesShown(2);
+
+        await pageObjects.sendMessageViaSendBox('suggested-actions', { waitForSend: true });
+        await pageConditions.suggestedActionsShown();
         await pageConditions.scrollToBottomCompleted();
 
-        // WHEN: Scroll to top.
-        await pageObjects.scrollToTop();
+        // To submit the input form, the number field is mandatory.
+        document.querySelector('.ac-adaptiveCard input[type="number"]').value = '1';
 
-        // THEN: It should not show the "New messages" button.
-        await pageConditions.scrollToEndButtonHidden();
+        // WHEN: The Adaptive Card is being submitted.
+        const submitButton = await document.querySelector('button.ac-pushButton:nth-of-type(2)');
 
-        // WHEN: Send "Hello, World!" message.
-        await pageObjects.sendMessageViaSendBox('Hello, World!');
+        await submitButton.click();
+        await pageConditions.minNumActivitiesShown(5);
 
-        // THEN: It should scroll to bottom after send.
+        // THEN: It should stick to the bottom.
         await pageConditions.scrollToBottomCompleted();
-        await pageConditions.minNumActivitiesShown(4);
-        await host.snapshot();
+
+        await host.snapshot('local');
       });
     </script>
   </body>

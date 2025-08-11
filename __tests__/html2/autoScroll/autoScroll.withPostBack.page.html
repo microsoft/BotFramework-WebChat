@@ -130,7 +130,7 @@
             directLine,
             store: testHelpers.createStore(),
             styleOptions: {
-              autoScrollSnapOnActivity: 1
+              autoScrollSnapOnPage: 1
             }
           },
           document.getElementById('webchat')
@@ -151,24 +151,21 @@
 
         await pageConditions.numActivitiesShown(7);
 
-        // EXPECT: Transcript should continue scroll to reveal "Minim voluptate" activity.
+        // EXPECT: After sending a post back activity, the bot responded "Minim voluptate" and transcript should scroll to see the whole activity.
         await pageConditions.scrollToBottomCompleted();
-
-        // SETUP: Transcript already reached snap point (1 activity), remember the "scrollTop", transcript should not scroll further anymore.
-        const { scrollTop } = pageElements.transcriptScrollable();
 
         directLine.activityDeferredObservable.next(
           createActivity(
-            'Voluptate occaecat sunt est incididunt qui duis in adipisicing. Eu exercitation duis labore reprehenderit. Consectetur elit quis exercitation Lorem quis velit sunt. Irure anim labore officia tempor anim veniam est quis. Cillum et fugiat amet eu. Et sunt non voluptate ea irure dolore elit non ex commodo aute veniam.'
+            'Voluptate occaecat sunt est incididunt qui duis in adipisicing. Eu exercitation duis labore reprehenderit. Consectetur elit quis exercitation Lorem quis velit sunt. Irure anim labore officia tempor anim veniam est quis. Cillum et fugiat amet eu. Et sunt non voluptate ea irure dolore elit non ex commodo aute veniam.\n\nEiusmod laboris duis do reprehenderit. In tempor aute eiusmod pariatur cupidatat commodo excepteur ipsum pariatur. Ea aliqua quis et aliqua Lorem et incididunt nisi. Nostrud aliquip adipisicing esse commodo ullamco reprehenderit tempor proident dolor exercitation consequat id. Non ut exercitation dolor cillum in est non culpa ipsum magna magna mollit et.\n\nAdipisicing elit do nulla aliquip nisi dolore ea ullamco est ullamco ad eiusmod. Velit dolore Lorem sit dolor deserunt deserunt. Nostrud dolore mollit incididunt dolor sit qui anim velit exercitation duis dolor do qui. Elit sunt eu nulla laboris dolore labore duis proident commodo. Reprehenderit eu irure do elit. Tempor ullamco excepteur ea sunt adipisicing culpa non ipsum sit.'
           )
         );
 
         await pageConditions.numActivitiesShown(8);
 
-        // EXPECT: Transcript already reached snap point (1 activity), it should not scroll further below.
-        await pageConditions.scrollStabilized(scrollTop);
+        // EXPECT: Pause scrolling when the "Minim voluptate" activity (index = 6) is at the top of the screen.
+        await pageConditions.scrollStabilized(pageObjects.getActivityBoundingBoxes()[6].top);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
