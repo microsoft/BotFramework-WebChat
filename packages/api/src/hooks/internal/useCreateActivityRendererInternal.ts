@@ -1,5 +1,8 @@
+import {
+  type ActivityComponentFactory,
+  type RenderAttachment
+} from '@msinternal/botframework-webchat-middleware/legacy';
 import { isValidElement, useMemo } from 'react';
-import { type ActivityComponentFactory, type RenderAttachment } from 'botframework-webchat-middleware/legacy';
 
 import useRenderAttachment from '../useRenderAttachment';
 import useWebChatAPIContext from './useWebChatAPIContext';

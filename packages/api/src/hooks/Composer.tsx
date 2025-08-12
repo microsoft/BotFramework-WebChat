@@ -1,3 +1,4 @@
+import { type ActivityMiddleware, type AttachmentMiddleware } from '@msinternal/botframework-webchat-middleware/legacy';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,
@@ -32,8 +33,6 @@ import {
   type OneOrMany,
   type WebChatActivity
 } from 'botframework-webchat-core';
-import { type ActivityMiddleware, type AttachmentMiddleware } from 'botframework-webchat-middleware/legacy';
-import { ReduxStoreComposer } from 'botframework-webchat-redux-store';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { Provider } from 'react-redux';

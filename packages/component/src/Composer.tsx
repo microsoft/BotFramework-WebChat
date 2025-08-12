@@ -1,3 +1,8 @@
+import {
+  createActivityPolyMiddlewareFromLegacy,
+  PolyMiddlewareComposer,
+  type PolyMiddleware
+} from '@msinternal/botframework-webchat-middleware';
 import type {
   ComposerProps as APIComposerProps,
   SendBoxMiddleware,
@@ -12,11 +17,6 @@ import {
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
-import {
-  createActivityPolyMiddlewareFromLegacy,
-  PolyMiddlewareComposer,
-  type PolyMiddleware
-} from 'botframework-webchat-middleware';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';

@@ -1,3 +1,4 @@
+import { type LegacyActivityRenderer, type RenderAttachment } from '@msinternal/botframework-webchat-middleware/legacy';
 import {
   type DirectLineJSBotConnection,
   type Observable,
@@ -6,7 +7,6 @@ import {
   type sendMessage,
   type setSendBoxAttachments
 } from 'botframework-webchat-core';
-import { type LegacyActivityRenderer, type RenderAttachment } from 'botframework-webchat-middleware/legacy';
 import { createContext, type ComponentType } from 'react';
 
 import { StrictStyleOptions } from '../../StyleOptions';

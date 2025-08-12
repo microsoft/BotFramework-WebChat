@@ -1,6 +1,6 @@
+import { bridgeComponentPropsSchema, type BridgeComponentProps } from '@msinternal/botframework-webchat-middleware';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import { bridgeComponentPropsSchema, type BridgeComponentProps } from 'botframework-webchat-middleware';
-import { validateProps } from 'botframework-webchat-react-valibot';
 import React, { memo, useCallback, useMemo } from 'react';
 
 import useActivityElementMapRef from '../../../providers/ChatHistoryDOM/useActivityElementRef';

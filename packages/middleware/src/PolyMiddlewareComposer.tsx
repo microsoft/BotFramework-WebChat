@@ -1,4 +1,4 @@
-import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useMemo } from 'react';
 import {
   array,

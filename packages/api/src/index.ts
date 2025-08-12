@@ -4,7 +4,7 @@ import {
   type ActivityMiddleware,
   type AttachmentMiddleware,
   type RenderAttachment
-} from 'botframework-webchat-middleware/legacy';
+} from '@msinternal/botframework-webchat-middleware/legacy';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import defaultStyleOptions from './defaultStyleOptions';
 import Composer, { ComposerProps } from './hooks/Composer';

@@ -1,5 +1,5 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { type WebChatActivity } from 'botframework-webchat-core';
-import { validateProps } from 'botframework-webchat-react-valibot';
 import React, { memo, useMemo } from 'react';
 import { custom, object, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
