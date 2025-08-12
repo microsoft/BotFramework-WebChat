@@ -25,7 +25,7 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/heads/') }}
         run: npx version-from-git --no-git-tag-version
 
-      - run: npm clean-install --ignore-scripts
+      - run: npm clean-install
 
       - name: Propagate versions
         run: npm version --no-git-tag-version --workspaces `cat package.json | jq -r .version`
