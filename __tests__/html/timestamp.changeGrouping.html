@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -35,18 +35,30 @@
         await pageConditions.minNumActivitiesShown(3);
 
         // THEN: There should be 3 activities in total: 1 from user, followed by 2 from the bot.
+        expect(
+          pageElements.activityStatuses().map(element => element.querySelector('[aria-hidden="true"]')?.textContent)
+        ).toEqual(['Just now', undefined, 'Just now']);
+
         await host.snapshot();
 
         // WHEN: `styleOptions.groupTimestamp` is set to 0, which means, every activity is on its own group.
         renderWebChat({ styleOptions: { groupTimestamp: 0 } });
 
         // THEN: Every messages should have timestamp on its own.
+        expect(
+          pageElements.activityStatuses().map(element => element.querySelector('[aria-hidden="true"]')?.textContent)
+        ).toEqual(['Just now', 'Just now', 'Just now']);
+
         await host.snapshot();
 
         // WHEN: `styleOptions.groupTimestamp` is set to false, which means, timestamp is disabled.
         renderWebChat({ styleOptions: { groupTimestamp: false } });
 
         // THEN: No messages should have timestamp on it.
+        expect(
+          pageElements.activityStatuses().map(element => element.querySelector('[aria-hidden="true"]')?.textContent)
+        ).toEqual([undefined, undefined, undefined]);
+
         await host.snapshot();
       });
     </script>
