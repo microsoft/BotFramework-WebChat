@@ -30,7 +30,7 @@ test('should not warn if middleware return false', () => {
 
   jest.spyOn(console, 'warn').mockImplementation(warn);
 
-  template.extractMiddleware([() => false]);
+  template.extractMiddleware([() => false as any]);
 
   expect(warn).toHaveBeenCalledTimes(0);
 });
