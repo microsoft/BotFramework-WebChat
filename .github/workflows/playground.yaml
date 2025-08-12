@@ -16,7 +16,7 @@ jobs:
       - name: Checking out for ${{ github.ref }}
         uses: actions/checkout@v2
 
-      - run: npm clean-install
+      - run: npm clean-install --ignore-scripts
 
       - run: |
           npm run build

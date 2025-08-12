@@ -30,7 +30,7 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: npm
 
-      - run: npm clean-install
+      - run: npm clean-install --ignore-scripts
         working-directory: ./samples
 
       - name: Run npm run build
