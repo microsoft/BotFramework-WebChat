@@ -73,7 +73,7 @@
         const sendMessage5 = await directLine.emulateOutgoingActivity('This activity is being sent.');
 
         clock.tick(4000);
-        await host.snapshot();
+        await host.snapshot('local');
 
         clock.tick(1000);
         await sendMessage5.echoBack(activity => ({
@@ -81,7 +81,7 @@
           text: 'Nostrud proident nisi dolore deserunt veniam labore labore mollit veniam.'
         }));
         sendMessage5.resolvePostActivity();
-        await host.snapshot();
+        await host.snapshot('local');
 
         clock.tick(1000);
         await sendMessage2.echoBack(activity => ({
@@ -89,7 +89,7 @@
           text: 'Excepteur culpa culpa ullamco consectetur et dolor excepteur cillum enim nostrud ex do.'
         }));
         sendMessage2.resolvePostActivity();
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
