@@ -34,6 +34,14 @@ function PolyMiddlewareComposer(props: PolyMiddlewareComposerProps) {
 
   const activityPolyMiddleware = useMemo(() => extractActivityPolyMiddleware(middleware), [middleware]);
 
+  // Didn't thoroughly think through this part yet, but I am using the first approach for now:
+
+  // 1. <XXXProvider> for every type of middleware
+  //    - If props.middleware changed and only one middleware changed, we could cache other middleware types
+  // 2. Single <Provider>
+  //    - useBuildRenderCallback should pre-build (apply) the callback (multiple middleware -> single enhancer)
+  //    - The callback will be invalidated on middleware (of target type) change
+
   return (
     <ActivityPolyMiddlewareProvider middleware={activityPolyMiddleware}>{children}</ActivityPolyMiddlewareProvider>
   );
