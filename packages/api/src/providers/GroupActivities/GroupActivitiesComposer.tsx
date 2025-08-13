@@ -67,7 +67,7 @@ function GroupActivitiesComposer({ children, groupActivitiesMiddleware }: GroupA
   const groupActivitiesByRef = useRefFrom(groupActivitiesBy);
 
   // When `groupActivitiesMiddleware` or `styleOptions.groupActivities` changed, the callback should be invalidated.
-  // The invalidation should cause downstreamers to re-render.
+  // The invalidation will help hook callers to re-render.
   const groupActivitiesByName = useCallback<
     (activities: readonly WebChatActivity[], groupingName: string) => readonly (readonly WebChatActivity[])[]
   >(
