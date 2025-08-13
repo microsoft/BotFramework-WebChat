@@ -66,14 +66,14 @@ const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerPr
     new Map<WebChatActivity, ActivityPolyMiddlewareRenderer>()
   );
 
-  const activityRendererMap = useMemo<ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>>(
-    () => Object.freeze(writableActivityRendererMap),
+  const activityRendererMapState = useMemo<readonly [ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>]>(
+    () => Object.freeze([Object.freeze(writableActivityRendererMap)]),
     [writableActivityRendererMap]
   );
 
   const renderingActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
-    () => Object.freeze([Object.freeze(Array.from(activityRendererMap.keys()))]),
-    [activityRendererMap]
+    () => Object.freeze([Object.freeze(Array.from(activityRendererMapState[0].keys()))]),
+    [activityRendererMapState]
   );
 
   const renderingActivityKeysState = useMemo<readonly [readonly string[]]>(() => {
@@ -85,11 +85,6 @@ const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerPr
 
     return Object.freeze([keys] as const);
   }, [getKeyByActivity, renderingActivitiesState]);
-
-  const activityRendererMapState = useMemo<readonly [ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>]>(
-    () => Object.freeze([activityRendererMap]),
-    [activityRendererMap]
-  );
 
   const contextValue: RenderingActivitiesContextType = useMemo(
     () => ({
