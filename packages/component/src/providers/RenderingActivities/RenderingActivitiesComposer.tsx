@@ -46,22 +46,29 @@ const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerPr
 
   const renderActivity = useBuildRenderActivityCallback();
 
-  const activityRendererMap = useReduceMemo(
+  const writableActivityRendererMap = useReduceMemo(
     activitiesOfLatestRevision,
     useCallback<
       (
-        activityRendererMap: ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>,
+        activityRendererMap: Map<WebChatActivity, ActivityPolyMiddlewareRenderer>,
         activity: WebChatActivity
-      ) => ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>
+      ) => Map<WebChatActivity, ActivityPolyMiddlewareRenderer>
     >(
       (activityRendererMap, activity) => {
         const renderer = renderActivity({ activity });
 
-        return renderer ? Object.freeze(new Map(activityRendererMap).set(activity, renderer)) : activityRendererMap;
+        renderer && activityRendererMap.set(activity, renderer);
+
+        return activityRendererMap;
       },
       [renderActivity]
     ),
     new Map<WebChatActivity, ActivityPolyMiddlewareRenderer>()
+  );
+
+  const activityRendererMap = useMemo<ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>>(
+    () => Object.freeze(writableActivityRendererMap),
+    [writableActivityRendererMap]
   );
 
   const renderingActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
