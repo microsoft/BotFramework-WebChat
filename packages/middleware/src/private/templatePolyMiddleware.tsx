@@ -57,7 +57,7 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
         return Object.freeze(
           middleware
             .map(middleware => {
-              // TODO: Validate every middleware is created through `createMiddleware()`.
+              // TODO: [P*] Validate every middleware is created through `createMiddleware()`.
               const result = middleware(name);
 
               if (typeof result !== 'function' && result) {
