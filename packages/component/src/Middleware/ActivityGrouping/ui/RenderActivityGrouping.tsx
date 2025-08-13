@@ -28,6 +28,8 @@ const RenderActivityGrouping = (props: RenderActivityGroupingProps) => {
       {activities.map(activity => {
         const children = activityRendererMap.get(activity)?.({});
 
+        // TODO: [P0] Activity key can be reused by multiple activities of same livestream group.
+        //            We should update ActivityKeyer to have another more unique ID.
         return children && <Fragment key={getKeyByActivity(activity)}>{children}</Fragment>;
       })}
     </Fragment>
