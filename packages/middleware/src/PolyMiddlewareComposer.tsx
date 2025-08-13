@@ -39,8 +39,9 @@ function PolyMiddlewareComposer(props: PolyMiddlewareComposerProps) {
   // 1. <XXXProvider> for every type of middleware
   //    - If props.middleware changed and only one middleware changed, we could cache other middleware types
   // 2. Single <Provider>
-  //    - useBuildRenderCallback should pre-build (apply) the callback (multiple middleware -> single enhancer)
+  //    - `useBuildRenderCallback()` should pre-build (apply) the callback (multiple middleware -> single enhancer)
   //    - The callback will be invalidated on middleware (of target type) change
+  //    - <Proxy> will need to be rebuilt, as it use a different `useBuildRenderCallback()`
 
   return (
     <ActivityPolyMiddlewareProvider middleware={activityPolyMiddleware}>{children}</ActivityPolyMiddlewareProvider>
