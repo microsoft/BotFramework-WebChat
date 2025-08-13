@@ -35,6 +35,8 @@ import { type WebSpeechPonyfill } from './types/WebSpeechPonyfill';
 import { type WebSpeechPonyfillFactory } from './types/WebSpeechPonyfillFactory';
 
 // #region Re-export
+export { activityComponent, createActivityPolyMiddleware } from '@msinternal/botframework-webchat-middleware';
+
 export {
   extractSendBoxMiddleware,
   SendBoxMiddlewareProxy,
