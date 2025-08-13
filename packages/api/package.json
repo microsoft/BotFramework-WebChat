@@ -96,6 +96,7 @@
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@msinternal/botframework-webchat-cldr-data": "36.0.0-0",
+    "@msinternal/botframework-webchat-middleware": "^0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",
     "@msinternal/botframework-webchat-redux-store": "^0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
