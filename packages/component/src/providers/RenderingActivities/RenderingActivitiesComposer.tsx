@@ -46,20 +46,19 @@ const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerPr
 
   const renderActivity = useBuildRenderActivityCallback();
 
-  const writableActivityRendererMap = useReduceMemo(
+  const activityRendererMap = useReduceMemo(
     activitiesOfLatestRevision,
     useCallback<
       (
-        activityRendererMap: Map<WebChatActivity, ActivityPolyMiddlewareRenderer>,
+        activityRendererMap: ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>,
         activity: WebChatActivity
-      ) => Map<WebChatActivity, ActivityPolyMiddlewareRenderer>
+      ) => ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>
     >(
       (activityRendererMap, activity) => {
         const renderer = renderActivity({ activity });
 
-        renderer && activityRendererMap.set(activity, renderer);
-
-        return activityRendererMap;
+        // Return value must be immutable because it could be cached by `useReduceMemo()`.
+        return renderer ? Object.freeze(new Map(activityRendererMap).set(activity, renderer)) : activityRendererMap;
       },
       [renderActivity]
     ),
@@ -67,8 +66,8 @@ const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerPr
   );
 
   const activityRendererMapState = useMemo<readonly [ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>]>(
-    () => Object.freeze([Object.freeze(writableActivityRendererMap)]),
-    [writableActivityRendererMap]
+    () => Object.freeze([Object.freeze(activityRendererMap)]),
+    [activityRendererMap]
   );
 
   const renderingActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
