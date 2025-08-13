@@ -1,11 +1,3 @@
 {
-  "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "jsx": "react",
-    "moduleResolution": "Bundler",
-    "noEmit": true,
-    "skipLibCheck": true,
-    "target": "ESNext"
-  },
-  "extends": "@tsconfig/strictest"
+  "extends": "@msinternal/botframework-webchat-tsconfig/current"
 }
