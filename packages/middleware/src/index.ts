@@ -24,4 +24,4 @@ export {
 } from './internal/createActivityPolyMiddlewareFromLegacy';
 
 export { default as PolyMiddlewareComposer } from './PolyMiddlewareComposer';
-export { type Init, type PolyMiddleware } from './types/PolyMiddleware';
+export { type PolyMiddleware } from './types/PolyMiddleware';
