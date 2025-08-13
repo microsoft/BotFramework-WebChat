@@ -17,7 +17,7 @@ const renderActivityGroupingPropsSchema = pipe(
 
 type RenderActivityGroupingProps = Readonly<InferInput<typeof renderActivityGroupingPropsSchema>>;
 
-const RenderActivityGrouping = (props: RenderActivityGroupingProps) => {
+function RenderActivityGrouping(props: RenderActivityGroupingProps) {
   const { activities } = validateProps(renderActivityGroupingPropsSchema, props);
 
   const [activityRendererMap] = useActivityRendererMap();
@@ -34,9 +34,7 @@ const RenderActivityGrouping = (props: RenderActivityGroupingProps) => {
       })}
     </Fragment>
   );
-};
-
-RenderActivityGrouping.displayName = 'RenderActivityGrouping';
+}
 
 export default memo(RenderActivityGrouping);
 export { renderActivityGroupingPropsSchema, type RenderActivityGroupingProps };
