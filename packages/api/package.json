@@ -120,7 +120,7 @@
     "iter-fest": "0.3.0",
     "math-random": "2.0.1",
     "prop-types": "15.8.1",
-    "react-chain-of-responsibility": "0.3.0",
+    "react-chain-of-responsibility": "0.4.0-main.5f5cc2f",
     "react-redux": "7.2.9",
     "redux": "5.0.1",
     "simple-update-in": "2.2.0",
