@@ -1,8 +1,8 @@
-import templateMiddleware from './templateMiddleware';
+import templatePolyMiddleware from './templatePolyMiddleware';
 
 test('should warn if middleware is not an array of function', () => {
   const warn = jest.fn();
-  const template = templateMiddleware('Check' as any);
+  const template = templatePolyMiddleware('Check' as any);
 
   jest.spyOn(console, 'warn').mockImplementation(warn);
 
@@ -14,7 +14,7 @@ test('should warn if middleware is not an array of function', () => {
 
 test('should warn if middleware did not return function', () => {
   const warn = jest.fn();
-  const template = templateMiddleware('Check' as any);
+  const template = templatePolyMiddleware('Check' as any);
 
   jest.spyOn(console, 'warn').mockImplementation(warn);
 
@@ -26,7 +26,7 @@ test('should warn if middleware did not return function', () => {
 
 test('should not warn if middleware return false', () => {
   const warn = jest.fn();
-  const template = templateMiddleware('Check' as any);
+  const template = templatePolyMiddleware('Check' as any);
 
   jest.spyOn(console, 'warn').mockImplementation(warn);
 
@@ -37,7 +37,7 @@ test('should not warn if middleware return false', () => {
 
 test('should not warn if middleware return function', () => {
   const warn = jest.fn();
-  const template = templateMiddleware('Check' as any);
+  const template = templatePolyMiddleware('Check' as any);
 
   jest.spyOn(console, 'warn').mockImplementation(warn);
 

@@ -3,7 +3,7 @@ import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
 import { custom, object, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
-import templateMiddleware, {
+import templatePolyMiddleware, {
   type InferHandler,
   type InferHandlerResult,
   type InferMiddleware,
@@ -11,7 +11,7 @@ import templateMiddleware, {
   type InferProviderProps,
   type InferRenderer,
   type InferRequest
-} from './private/templateMiddleware';
+} from './private/templatePolyMiddleware';
 
 const {
   createMiddleware: createActivityPolyMiddleware,
@@ -20,7 +20,7 @@ const {
   Proxy,
   reactComponent: activityComponent,
   useBuildRenderCallback: useBuildRenderActivityCallback
-} = templateMiddleware<{ readonly activity: WebChatActivity }, { readonly children?: never }>('activity');
+} = templatePolyMiddleware<{ readonly activity: WebChatActivity }, { readonly children?: never }>('activity');
 
 type ActivityPolyMiddleware = InferMiddleware<typeof ActivityPolyMiddlewareProvider>;
 type ActivityPolyMiddlewareHandler = InferHandler<typeof ActivityPolyMiddlewareProvider>;

@@ -25,7 +25,7 @@ const EMPTY_ARRAY = Object.freeze([]);
 
 // Following @types/react to use {} for props.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-function templateMiddleware<Request, Props extends {}>(name: string) {
+function templatePolyMiddleware<Request, Props extends {}>(name: string) {
   const { Provider, Proxy, reactComponent, useBuildRenderCallback } = createChainOfResponsibility<
     Request,
     Props,
@@ -130,7 +130,7 @@ type InferProxyProps<T extends InferenceHelper<any, any>> = T['~types']['proxyPr
 type InferRenderer<T extends InferenceHelper<any, any>> = T['~types']['renderer'];
 type InferRequest<T extends InferenceHelper<any, any>> = T['~types']['request'];
 
-export default templateMiddleware;
+export default templatePolyMiddleware;
 export {
   middlewareFactoryMarker,
   type InferHandler,

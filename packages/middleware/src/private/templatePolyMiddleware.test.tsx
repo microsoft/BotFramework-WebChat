@@ -3,7 +3,7 @@
 import { render } from '@testing-library/react';
 import React, { type ReactNode } from 'react';
 
-import templateMiddleware, { type InferMiddleware } from './templateMiddleware';
+import templatePolyMiddleware, { type InferMiddleware } from './templatePolyMiddleware';
 
 type ButtonProps = Readonly<{ children?: ReactNode | undefined }>;
 type LinkProps = Readonly<{ children?: ReactNode | undefined; href: string }>;
@@ -20,7 +20,7 @@ const InternalLinkImpl = ({ children, href }: LinkProps) => <a href={href}>{chil
 
 // User story for using templateMiddleware as a building block for uber middleware.
 test('an uber middleware', () => {
-  const buttonTemplate = templateMiddleware<void, ButtonProps>('Button' as any);
+  const buttonTemplate = templatePolyMiddleware<void, ButtonProps>('Button' as any);
   const {
     createMiddleware: createButtonMiddleware,
     extractMiddleware: extractButtonMiddleware,
@@ -31,7 +31,7 @@ test('an uber middleware', () => {
 
   type ButtonMiddleware = InferMiddleware<typeof ButtonProvider>;
 
-  const linkTemplate = templateMiddleware<{ external: boolean }, LinkProps>('Link' as any);
+  const linkTemplate = templatePolyMiddleware<{ external: boolean }, LinkProps>('Link' as any);
   const {
     createMiddleware: createLinkMiddleware,
     extractMiddleware: extractLinkMiddleware,
