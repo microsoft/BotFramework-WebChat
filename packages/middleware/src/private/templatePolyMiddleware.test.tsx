@@ -1,4 +1,5 @@
 /** @jest-environment @happy-dom/jest-environment */
+/// <reference types="jest" />
 
 import { render } from '@testing-library/react';
 import React, { type ReactNode } from 'react';

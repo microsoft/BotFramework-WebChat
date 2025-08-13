@@ -1,3 +1,5 @@
+/// <reference types="jest" />
+
 import templatePolyMiddleware from './templatePolyMiddleware';
 
 test('should warn if middleware is not an array of function', () => {
