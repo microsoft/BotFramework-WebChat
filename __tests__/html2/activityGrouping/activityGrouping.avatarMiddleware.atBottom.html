@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        React: { useMemo },
+        WebChat: {
+          hooks: { useDirection }
+        }
+      } = window;
+
+      run(async function () {
+        await host.windowSize(undefined, 1280, document.getElementById('webchat'));
+
+        const PortraitAvatar = ({ fromUser }) => {
+          const style = useMemo(() => ({ borderRadius: 4, width: '100%' }), []);
+
+          return (
+            <img alt="Rinna" src={fromUser ? '/assets/user-avatar.jpg' : '/assets/bot-avatar.jpg'} style={style} />
+          );
+        };
+
+        const avatarMiddleware =
+          () =>
+          next =>
+          (...args) => {
+            const [{ activity, fromUser, ...otherArgs }] = args;
+            const { id } = activity;
+
+            return <PortraitAvatar fromUser={fromUser} />;
+          };
+
+        WebChat.renderWebChat(
+          {
+            avatarMiddleware,
+            directLine: await testHelpers.createDirectLineWithTranscript([
+              {
+                from: { role: 'bot' },
+                id: '1.0',
+                text: 'Cillum ea irure amet reprehenderit minim.',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                from: { role: 'bot' },
+                id: '1.1',
+                text: 'Minim ut laboris enim nostrud magna.',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '2.0',
+                text: 'Tempor deserunt ut enim eu elit.',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '2.1',
+                text: 'Elit occaecat quis velit qui ad.',
+                timestamp: -300001,
+                type: 'message'
+              },
+              {
+                attachmentLayout: 'carousel',
+                attachments: [
+                  {
+                    contentType: 'image/jpeg',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface1.jpg',
+                    name: 'front of Surface Pro'
+                  },
+                  {
+                    contentType: 'image/jpeg',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface2.jpg',
+                    name: 'back of Surface Pro'
+                  },
+                  {
+                    contentType: 'image/jpeg',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface3.jpg',
+                    name: 'side of Surface Pro'
+                  }
+                ],
+                from: { role: 'bot' },
+                id: '3.0',
+                text: '',
+                timestamp: 0,
+                type: 'message'
+              },
+              {
+                attachmentLayout: 'stacked',
+                attachments: [
+                  {
+                    contentType: 'image/jpeg',
+                    contentUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface4.jpg',
+                    thumbnailUrl:
+                      'https://raw.githubusercontent.com/compulim/BotFramework-MockBot/master/public/assets/surface4.jpg'
+                  }
+                ],
+                channelData: { state: 'sent' },
+                from: { role: 'user' },
+                id: '4.0',
+                text: '',
+                timestamp: 0,
+                type: 'message'
+              }
+            ]),
+            store: testHelpers.createStore(),
+            styleOptions: {
+              botAvatarInitials: 'Bot',
+              bubbleBackground: '#0063B1',
+              bubbleBorderColor: '#0063B1',
+              bubbleBorderRadius: 4,
+              bubbleFromUserBackground: '#0063B1',
+              bubbleFromUserBorderColor: '#0063B1',
+              bubbleFromUserBorderRadius: 4,
+              bubbleFromUserNubOffset: -0,
+              bubbleFromUserNubSize: 10,
+              bubbleFromUserTextColor: 'White',
+              bubbleNubOffset: -0,
+              bubbleNubSize: 10,
+              bubbleTextColor: 'White',
+              groupTimestamp: 5000,
+              userAvatarInitials: 'You'
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+        await pageConditions.allImagesLoaded();
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

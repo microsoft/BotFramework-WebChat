@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const clock = lolex.createClock();
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store,
+            styleOptions: {
+              botAvatarInitials: 'Bot',
+              bubbleBackground: '#0063B1',
+              bubbleBorderColor: '#0063B1',
+              bubbleBorderRadius: 4,
+              bubbleFromUserBackground: '#0063B1',
+              bubbleFromUserBorderColor: '#0063B1',
+              bubbleFromUserBorderRadius: 4,
+              bubbleFromUserNubOffset: 0,
+              bubbleFromUserNubSize: 10,
+              bubbleFromUserTextColor: 'White',
+              bubbleNubOffset: 0,
+              bubbleNubSize: 10,
+              bubbleTextColor: 'White',
+              groupTimestamp: false,
+              userAvatarInitials: 'You'
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        clock.tick(1000);
+
+        await directLine.emulateIncomingActivity(
+          'Culpa qui non id occaecat consectetur veniam laborum Lorem nulla commodo.'
+        );
+
+        await (
+          await directLine.emulateOutgoingActivity(
+            'Est labore mollit do cillum cillum est amet tempor quis reprehenderit veniam sunt.'
+          )
+        ).resolveAll();
+
+        const { resolveAll: resolveAll1 } = await directLine.emulateOutgoingActivity(
+          'Elit adipisicing laborum sit anim.'
+        );
+
+        clock.tick(295000);
+
+        const { resolveAll: resolveAll2 } = await directLine.emulateOutgoingActivity(
+          'Nostrud enim enim ipsum pariatur commodo.'
+        );
+
+        await (await directLine.emulateOutgoingActivity('Culpa id proident sit officia aliquip.')).resolveAll();
+
+        clock.tick(5000);
+
+        await directLine.emulateIncomingActivity('Quis sit aliquip sit velit in velit magna culpa velit qui.');
+
+        await host.snapshot('local');
+
+        clock.tick(29000);
+
+        await host.snapshot('local');
+
+        await resolveAll1();
+        await resolveAll2();
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        await host.windowSize(undefined, 1280, document.getElementById('webchat'));
+
+        const clock = lolex.createClock();
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator({ ponyfill: clock });
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            ponyfill: clock,
+            store,
+            styleOptions: {
+              groupTimestamp: 60000,
+              sendTimeout: 5000
+            }
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.webChatRendered();
+
+        directLine.emulateIncomingActivity('Ullamco mollit sunt officia consectetur ex commodo.');
+
+        directLine.emulateIncomingActivity(
+          'Enim labore laboris Lorem qui exercitation adipisicing labore excepteur commodo reprehenderit velit.'
+        );
+
+        clock.tick(60001);
+
+        directLine.emulateIncomingActivity('Anim do voluptate eiusmod nostrud fugiat.');
+
+        clock.tick(54000);
+
+        const sendMessage1 = await directLine.emulateOutgoingActivity(
+          'This will not be grouped initially because the next activity is not sent.'
+        );
+
+        await sendMessage1.echoBack();
+        sendMessage1.resolvePostActivity();
+
+        const sendMessage2 = await directLine.emulateOutgoingActivity('A retry prompt must show on this activity.');
+
+        clock.tick(1000);
+
+        const sendMessage3 = await directLine.emulateOutgoingActivity(
+          'Do anim irure in laborum qui aliquip dolor officia aliqua do aute exercitation deserunt.'
+        );
+
+        await sendMessage3.echoBack();
+        sendMessage3.resolvePostActivity();
+
+        const sendMessage4 = await directLine.emulateOutgoingActivity(
+          'The timestamp is shown because the next activity is not sent. When it is sent, the timestamp will be hidden.'
+        );
+
+        await sendMessage4.echoBack();
+        sendMessage4.resolvePostActivity();
+
+        clock.tick(2000);
+
+        const sendMessage5 = await directLine.emulateOutgoingActivity('This activity is being sent.');
+
+        clock.tick(4000);
+        await host.snapshot('local');
+
+        clock.tick(1000);
+        await sendMessage5.echoBack(activity => ({
+          ...activity,
+          text: 'Nostrud proident nisi dolore deserunt veniam labore labore mollit veniam.'
+        }));
+        sendMessage5.resolvePostActivity();
+        await host.snapshot('local');
+
+        clock.tick(1000);
+        await sendMessage2.echoBack(activity => ({
+          ...activity,
+          text: 'Excepteur culpa culpa ullamco consectetur et dolor excepteur cillum enim nostrud ex do.'
+        }));
+        sendMessage2.resolvePostActivity();
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
