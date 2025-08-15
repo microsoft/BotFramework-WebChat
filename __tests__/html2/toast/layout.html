@@ -37,7 +37,7 @@
 
         await pageConditions.uiConnected();
         await pageConditions.toastShown(/privacy\spolicy/iu);
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

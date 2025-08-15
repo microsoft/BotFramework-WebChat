@@ -39,39 +39,19 @@
         await pageConditions.toasterExpandable();
         await pageConditions.toasterExpanded(false);
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         await pageObjects.clickToasterHeader();
         await pageConditions.toasterExpanded();
         await pageConditions.toastShown(2);
 
-        await host.snapshot();
+        await host.snapshot('local');
 
-        store.dispatch({
-          type: 'WEB_CHAT/DISMISS_NOTIFICATION',
-          payload: {
-            id: '2'
-          }
-        });
-
-        await pageConditions.toastShown(1);
-        await pageConditions.toasterExpandable(false);
-
-        await host.snapshot();
-
-        store.dispatch({
-          type: 'WEB_CHAT/SET_NOTIFICATION',
-          payload: {
-            id: '3',
-            level: 'success',
-            message: 'Notification 3.'
-          }
-        });
-
-        await pageConditions.toasterExpandable();
+        await pageObjects.clickToasterHeader();
         await pageConditions.toasterExpanded(false);
+        await pageConditions.toasterExpandable();
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

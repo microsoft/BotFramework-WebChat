@@ -37,21 +37,31 @@
         });
 
         await pageConditions.toasterExpandable();
-        await pageConditions.toasterExpanded(false);
-
-        await host.snapshot();
-
         await pageObjects.clickToasterHeader();
-        await pageConditions.toasterExpanded();
         await pageConditions.toastShown(2);
 
-        await host.snapshot();
+        await host.snapshot('local');
 
-        await pageObjects.clickToasterHeader();
-        await pageConditions.toasterExpanded(false);
-        await pageConditions.toasterExpandable();
+        store.dispatch({
+          type: 'WEB_CHAT/SET_NOTIFICATION',
+          payload: {
+            id: '1',
+            level: 'info',
+            message: 'Notification 1, placed to top.'
+          }
+        });
 
-        await host.snapshot();
+        // Wait for the DOM to reflect the change.
+        await pageConditions.became(
+          'Notification 1 should move to top.',
+          () =>
+            ~document
+              .querySelector(`.webchat__toaster__listItem`)
+              ?.innerText?.indexOf('Notification 1, placed to top.'),
+          1000
+        );
+
+        await host.snapshot('local');
       });
     </script>
   </body>

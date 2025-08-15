@@ -34,7 +34,7 @@
         await pageConditions.toastShown(1);
         await pageConditions.toastShown('Please read our privacy policy.');
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         store.dispatch({
           type: 'WEB_CHAT/SET_NOTIFICATION',
@@ -52,7 +52,7 @@
 
         await pageConditions.toastShown('Please read our privacy policy again.');
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         store.dispatch({
           type: 'WEB_CHAT/DISMISS_NOTIFICATION',
@@ -68,7 +68,7 @@
 
         await pageConditions.toastShown(0);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
