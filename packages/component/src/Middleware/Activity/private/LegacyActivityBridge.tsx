@@ -1,23 +1,15 @@
-import { bridgeComponentPropsSchema, type BridgeComponentProps } from '@msinternal/botframework-webchat-middleware';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import React, { memo, useCallback, useMemo } from 'react';
+import { bridgeComponentPropsSchema, type BridgeComponentProps } from 'botframework-webchat-api/internal';
+import React, { Fragment, memo, useMemo } from 'react';
 
-import useActivityElementMapRef from '../../../providers/ChatHistoryDOM/useActivityElementRef';
-import ActivityRow from '../../../Transcript/ActivityRow';
 import isZeroOrPositive from '../../../Utils/isZeroOrPositive';
 import useFirstActivityInSenderGroup from '../../ActivityGrouping/ui/SenderGrouping/useFirstActivity';
 import useLastActivityInSenderGroup from '../../ActivityGrouping/ui/SenderGrouping/useLastActivity';
 import useFirstActivityInStatusGroup from '../../ActivityGrouping/ui/StatusGrouping/useFirstActivity';
 import useLastActivityInStatusGroup from '../../ActivityGrouping/ui/StatusGrouping/useLastActivity';
 
-const {
-  useCreateActivityStatusRenderer,
-  useCreateAvatarRenderer,
-  useGetKeyByActivity,
-  useRenderAttachment,
-  useStyleOptions
-} = hooks;
+const { useCreateActivityStatusRenderer, useCreateAvatarRenderer, useRenderAttachment, useStyleOptions } = hooks;
 
 function LegacyActivityBridge(props: BridgeComponentProps) {
   const { activity, render } = validateProps(bridgeComponentPropsSchema, props);
@@ -27,9 +19,7 @@ function LegacyActivityBridge(props: BridgeComponentProps) {
   const [firstActivityInStatusGroup] = useFirstActivityInStatusGroup();
   const [lastActivityInSenderGroup] = useLastActivityInSenderGroup();
   const [lastActivityInStatusGroup] = useLastActivityInStatusGroup();
-  const activityElementMapRef = useActivityElementMapRef();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
-  const getKeyByActivity = useGetKeyByActivity();
   const renderAttachment = useRenderAttachment();
   const renderAvatar = useCreateAvatarRenderer();
 
@@ -57,15 +47,6 @@ function LegacyActivityBridge(props: BridgeComponentProps) {
     [activity, createActivityStatusRenderer]
   );
 
-  const activityKey: string = useMemo(() => getKeyByActivity(activity), [activity, getKeyByActivity]);
-  const activityCallbackRef = useCallback(
-    (activityElement: HTMLElement) => {
-      activityElement
-        ? activityElementMapRef.current.set(activityKey, activityElement)
-        : activityElementMapRef.current.delete(activityKey);
-    },
-    [activityElementMapRef, activityKey]
-  );
   const hideTimestamp = hideAllTimestamps || !isLastInStatusGroup;
   const isTopSideNub = activity.from?.role === 'user' ? isTopSideUserNub : isTopSideBotNub;
 
@@ -99,11 +80,7 @@ function LegacyActivityBridge(props: BridgeComponentProps) {
     [hideTimestamp, render, renderActivityStatus, renderAttachment, renderAvatarForSenderGroup, showCallout]
   );
 
-  return (
-    <ActivityRow activity={activity} ref={activityCallbackRef}>
-      {children}
-    </ActivityRow>
-  );
+  return <Fragment>{children}</Fragment>;
 }
 
 export default memo(LegacyActivityBridge);

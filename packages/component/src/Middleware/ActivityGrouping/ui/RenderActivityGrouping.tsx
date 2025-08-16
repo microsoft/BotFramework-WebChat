@@ -5,6 +5,7 @@ import React, { Fragment, memo } from 'react';
 import { array, custom, object, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import useActivityRendererMap from '../../../providers/RenderingActivities/useActivityRendererMap';
+import RenderActivity from './RenderActivity';
 
 const { useGetKeyByActivity } = hooks;
 
@@ -30,7 +31,7 @@ function RenderActivityGrouping(props: RenderActivityGroupingProps) {
 
         // TODO: [P0] Activity key can be reused by multiple activities of same livestream group.
         //            We should update ActivityKeyer to have another more unique ID.
-        return children && <Fragment key={getKeyByActivity(activity)}>{children}</Fragment>;
+        return children && <RenderActivity activity={activity} key={getKeyByActivity(activity)} />;
       })}
     </Fragment>
   );

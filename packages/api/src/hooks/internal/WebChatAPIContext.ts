@@ -1,4 +1,4 @@
-import { type LegacyActivityRenderer, type RenderAttachment } from '@msinternal/botframework-webchat-middleware/legacy';
+import { type RenderAttachment } from '@msinternal/botframework-webchat-middleware/legacy';
 import {
   type DirectLineJSBotConnection,
   type Observable,
@@ -23,7 +23,6 @@ import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
 import { RenderToast } from '../../types/ToastMiddleware';
 
 export type WebChatAPIContextType = {
-  activityRenderer?: LegacyActivityRenderer;
   activityStatusRenderer: RenderActivityStatus;
   attachmentForScreenReaderRenderer?: AttachmentForScreenReaderComponentFactory;
   attachmentRenderer?: RenderAttachment;

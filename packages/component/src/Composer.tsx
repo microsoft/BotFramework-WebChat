@@ -1,9 +1,5 @@
-import {
-  createActivityPolyMiddlewareFromLegacy,
-  PolyMiddlewareComposer,
-  type PolyMiddleware
-} from '@msinternal/botframework-webchat-middleware';
 import type {
+  ActivityMiddleware,
   ComposerProps as APIComposerProps,
   SendBoxMiddleware,
   SendBoxToolbarMiddleware
@@ -16,7 +12,9 @@ import {
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
-import { singleToArray } from 'botframework-webchat-core';
+import { createActivityPolyMiddlewareFromLegacy } from 'botframework-webchat-api/internal';
+import { type PolyMiddleware } from 'botframework-webchat-api/middleware';
+import { singleToArray, type OneOrMany } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
@@ -134,6 +132,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
 ComposerCoreUI.displayName = 'ComposerCoreUI';
 
 type ComposerCoreProps = Readonly<{
+  activityMiddleware?: OneOrMany<ActivityMiddleware>;
   children?: ReactNode;
   decoratorMiddleware?: readonly DecoratorMiddleware[] | undefined;
   extraStyleSet?: any;
@@ -468,6 +467,7 @@ const InternalComposer = ({
       // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
       {...(node_env === 'development' ? { internalErrorBoxClass: ErrorBox } : {})}
       nonce={nonce}
+      polyMiddleware={polyMiddlewareArray}
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
       sendBoxMiddleware={sendBoxMiddleware}
       sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}
@@ -479,24 +479,22 @@ const InternalComposer = ({
       <StyleToEmotionObjectComposer nonce={nonce}>
         <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
           <ReducedMotionComposer>
-            <PolyMiddlewareComposer middleware={polyMiddlewareArray}>
-              <BuiltInDecorator>
-                <DecoratorComposer middleware={decoratorMiddleware}>
-                  <ComposerCore
-                    extraStyleSet={extraStyleSet}
-                    nonce={nonce}
-                    renderMarkdown={renderMarkdown}
-                    styleSet={styleSet}
-                    styles={theme.styles}
-                    suggestedActionsAccessKey={suggestedActionsAccessKey}
-                    webSpeechPonyfillFactory={webSpeechPonyfillFactory}
-                  >
-                    {children}
-                    {onTelemetry && <UITracker />}
-                  </ComposerCore>
-                </DecoratorComposer>
-              </BuiltInDecorator>
-            </PolyMiddlewareComposer>
+            <BuiltInDecorator>
+              <DecoratorComposer middleware={decoratorMiddleware}>
+                <ComposerCore
+                  extraStyleSet={extraStyleSet}
+                  nonce={nonce}
+                  renderMarkdown={renderMarkdown}
+                  styleSet={styleSet}
+                  styles={theme.styles}
+                  suggestedActionsAccessKey={suggestedActionsAccessKey}
+                  webSpeechPonyfillFactory={webSpeechPonyfillFactory}
+                >
+                  {children}
+                  {onTelemetry && <UITracker />}
+                </ComposerCore>
+              </DecoratorComposer>
+            </BuiltInDecorator>
           </ReducedMotionComposer>
         </HTMLContentTransformComposer>
       </StyleToEmotionObjectComposer>

@@ -2,47 +2,26 @@ import {
   type ActivityComponentFactory,
   type RenderAttachment
 } from '@msinternal/botframework-webchat-middleware/legacy';
-import { isValidElement, useMemo } from 'react';
+import { useCallback } from 'react';
 
-import useRenderAttachment from '../useRenderAttachment';
-import useWebChatAPIContext from './useWebChatAPIContext';
+import { useBuildRenderActivityCallback } from '@msinternal/botframework-webchat-middleware';
 
+// TODO: [P*] Add tests.
 export default function useCreateActivityRendererInternal(
+  /**
+   * TODO: [P*] Need a deprecation path.
+   *
+   * @deprecated
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   renderAttachmentOverride?: RenderAttachment
 ): ActivityComponentFactory {
-  const { activityRenderer: createActivityRenderer } = useWebChatAPIContext();
-  const defaultRenderAttachment = useRenderAttachment();
+  const render = useBuildRenderActivityCallback();
 
-  const renderAttachment: RenderAttachment = renderAttachmentOverride || defaultRenderAttachment;
-
-  return useMemo(
-    () =>
-      (...createActivityRendererOptions) => {
-        const renderActivity = createActivityRenderer(...createActivityRendererOptions);
-
-        if (!renderActivity) {
-          return false;
-        }
-
-        return renderActivityOptions => {
-          if (isValidElement(renderActivity)) {
-            return renderActivity;
-          }
-
-          const activityElement = renderActivity(
-            (...renderAttachmentArgs) => renderAttachment(...renderAttachmentArgs),
-            renderActivityOptions
-          );
-
-          // "activityElement" cannot be false. If the middleware want to hide the "activityElement", it should return "false" when we call createActivityRenderer().
-          activityElement ||
-            console.warn(
-              'botframework-webchat: To hide an activity, the activity renderer should return false. It should not return a function that will return false when called.'
-            );
-
-          return activityElement;
-        };
-      },
-    [createActivityRenderer, renderAttachment]
+  return useCallback(
+    ({ activity }) =>
+      () =>
+        render({ activity })?.({}),
+    [render]
   );
 }

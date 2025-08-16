@@ -34,6 +34,16 @@
         "types": "./dist/botframework-webchat-api.decorator.d.ts",
         "default": "./dist/botframework-webchat-api.decorator.js"
       }
+    },
+    "./middleware": {
+      "import": {
+        "types": "./dist/botframework-webchat-api.middleware.d.mts",
+        "default": "./dist/botframework-webchat-api.middleware.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-api.middleware.d.ts",
+        "default": "./dist/botframework-webchat-api.middleware.js"
+      }
     }
   },
   "publishConfig": {

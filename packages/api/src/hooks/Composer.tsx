@@ -1,3 +1,4 @@
+import { PolyMiddlewareComposer, type PolyMiddleware } from '@msinternal/botframework-webchat-middleware';
 import { type ActivityMiddleware, type AttachmentMiddleware } from '@msinternal/botframework-webchat-middleware/legacy';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
@@ -202,6 +203,13 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
 // Ignoring it in TypeScript version should be safe, as we have `propTypes` version to protect us.
 
 type ComposerCoreProps = Readonly<{
+  /**
+   * TODO: [P*] Think about deprecation path.
+   *            We cannot upgrade activityMiddleware in `api` package because the upgrade requires
+   *            default activity grouping middleware from `component` package.
+   *
+   * @deprecated
+   */
   activityMiddleware?: OneOrMany<ActivityMiddleware>;
   activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware>;
   attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
@@ -233,6 +241,7 @@ type ComposerCoreProps = Readonly<{
       >
     | undefined;
   locale?: string;
+  polyMiddleware?: readonly PolyMiddleware[];
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
   renderMarkdown?: (
@@ -263,7 +272,6 @@ type ComposerCoreProps = Readonly<{
 }>;
 
 const ComposerCore = ({
-  activityMiddleware,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
   attachmentMiddleware,
@@ -280,6 +288,7 @@ const ComposerCore = ({
   locale,
   onTelemetry,
   overrideLocalizedStrings,
+  polyMiddleware,
   renderMarkdown,
   scrollToEndButtonMiddleware,
   selectVoice,
@@ -400,25 +409,6 @@ const ComposerCore = ({
       );
     },
     [telemetryDimensionsRef]
-  );
-
-  const patchedActivityRenderer = useMemo(
-    () =>
-      applyMiddlewareForRenderer(
-        'activity',
-        { strict: false },
-        ...singleToArray(activityMiddleware),
-        () =>
-          () =>
-          ({ activity }) => {
-            if (activity) {
-              throw new Error(`No renderer for activity of type "${activity.type}"`);
-            } else {
-              throw new Error('No activity to render');
-            }
-          }
-      )({}),
-    [activityMiddleware]
   );
 
   const patchedActivityStatusRenderer = useMemo<RenderActivityStatus>(
@@ -542,7 +532,6 @@ const ComposerCore = ({
     () => ({
       ...cardActionContext,
       ...hoistedDispatchers,
-      activityRenderer: patchedActivityRenderer,
       activityStatusRenderer: patchedActivityStatusRenderer,
       attachmentForScreenReaderRenderer: patchedAttachmentForScreenReaderRenderer,
       attachmentRenderer: patchedAttachmentRenderer,
@@ -578,7 +567,6 @@ const ComposerCore = ({
       locale,
       localizedGlobalize,
       onTelemetry,
-      patchedActivityRenderer,
       patchedActivityStatusRenderer,
       patchedAttachmentForScreenReaderRenderer,
       patchedAttachmentRenderer,
@@ -609,7 +597,9 @@ const ComposerCore = ({
             <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
               <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
                 <GroupActivitiesComposer groupActivitiesMiddleware={singleToArray(groupActivitiesMiddleware)}>
-                  {typeof children === 'function' ? children(context) : children}
+                  <PolyMiddlewareComposer middleware={polyMiddleware}>
+                    {typeof children === 'function' ? children(context) : children}
+                  </PolyMiddlewareComposer>
                 </GroupActivitiesComposer>
                 <ActivitySendStatusTelemetryComposer />
               </SendBoxToolbarMiddlewareProvider>
@@ -629,7 +619,6 @@ const ComposerCore = ({
  *       We should decide which data is needed for React but not in other environment such as CLI/VSCode
  */
 ComposerCore.defaultProps = {
-  activityMiddleware: undefined,
   activityStatusMiddleware: undefined,
   attachmentForScreenReaderMiddleware: undefined,
   attachmentMiddleware: undefined,
@@ -658,7 +647,6 @@ ComposerCore.defaultProps = {
 };
 
 ComposerCore.propTypes = {
-  activityMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentForScreenReaderMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),

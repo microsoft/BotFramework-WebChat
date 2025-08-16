@@ -1,7 +1,7 @@
 import {
   useBuildRenderActivityCallback,
   type ActivityPolyMiddlewareRenderer
-} from '@msinternal/botframework-webchat-middleware';
+} from 'botframework-webchat-api/middleware';
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
