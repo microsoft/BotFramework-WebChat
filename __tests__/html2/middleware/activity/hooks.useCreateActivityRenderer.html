@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -61,7 +61,7 @@
         await pageConditions.uiConnected();
         await pageConditions.became('Done', () => document.querySelector('.done'), 1000);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
