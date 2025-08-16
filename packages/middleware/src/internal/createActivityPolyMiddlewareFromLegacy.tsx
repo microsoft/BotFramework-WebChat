@@ -1,7 +1,7 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { composeEnhancer } from 'handler-chain';
 import React, { type ComponentType, type ReactNode } from 'react';
-import type ActivityMiddleware from '../legacy/activityMiddleware';
+import { type LegacyActivityMiddleware } from '../legacy/activityMiddleware';
 import { type RenderAttachment } from '../legacy/attachmentMiddleware';
 
 import { custom, function_, never, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
@@ -23,7 +23,7 @@ type LegacyRenderFunction = (
   }
 ) => Exclude<ReactNode, boolean>;
 
-const bridgeComponentPropsSchema = pipe(
+const legacyActivityBridgeComponentPropsSchema = pipe(
   object({
     activity: webChatActivitySchema,
     children: optional(never()),
@@ -32,7 +32,9 @@ const bridgeComponentPropsSchema = pipe(
   readonly()
 );
 
-type BridgeComponentProps = Readonly<InferInput<typeof bridgeComponentPropsSchema> & { children?: never }>;
+type LegacyActivityBridgeComponentProps = Readonly<
+  InferInput<typeof legacyActivityBridgeComponentPropsSchema> & { children?: never }
+>;
 
 const fallbackComponentPropsSchema = pipe(
   object({
@@ -45,16 +47,16 @@ const fallbackComponentPropsSchema = pipe(
 type FallbackComponentProps = Readonly<InferInput<typeof fallbackComponentPropsSchema> & { children?: never }>;
 
 function createActivityPolyMiddlewareFromLegacy(
-  bridgeComponent: ComponentType<BridgeComponentProps>,
+  bridgeComponent: ComponentType<LegacyActivityBridgeComponentProps>,
   // Use lowercase for argument name, but we need uppercase for JSX.
   fallbackComponent: ComponentType<FallbackComponentProps>,
-  ...middleware: readonly ActivityMiddleware[]
+  ...middleware: readonly LegacyActivityMiddleware[]
 ): ActivityPolyMiddleware;
 
 function createActivityPolyMiddlewareFromLegacy(
-  bridgeComponent: ComponentType<BridgeComponentProps>,
+  bridgeComponent: ComponentType<LegacyActivityBridgeComponentProps>,
   FallbackComponent: ComponentType<FallbackComponentProps>,
-  ...middleware: readonly ActivityMiddleware[]
+  ...middleware: readonly LegacyActivityMiddleware[]
 ): ActivityPolyMiddleware {
   const legacyEnhancer = composeEnhancer(...middleware.map(middleware => middleware()));
 
@@ -77,8 +79,8 @@ function createActivityPolyMiddlewareFromLegacy(
 export default createActivityPolyMiddlewareFromLegacy;
 
 export {
-  bridgeComponentPropsSchema,
   fallbackComponentPropsSchema,
-  type BridgeComponentProps,
-  type FallbackComponentProps
+  legacyActivityBridgeComponentPropsSchema,
+  type FallbackComponentProps,
+  type LegacyActivityBridgeComponentProps
 };

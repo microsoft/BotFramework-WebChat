@@ -1,8 +1,8 @@
 // TODO: Move the pattern to re-export.
 import {
-  type ActivityComponentFactory,
-  type ActivityMiddleware,
   type AttachmentMiddleware,
+  type LegacyActivityComponentFactory,
+  type LegacyActivityMiddleware,
   type RenderAttachment
 } from '@msinternal/botframework-webchat-middleware/legacy';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
@@ -63,8 +63,10 @@ const buildInfo = { buildTool, moduleFormat, version };
 export { buildInfo, Composer, concatMiddleware, defaultStyleOptions, hooks, localize, normalizeStyleOptions, version };
 
 export type {
-  ActivityComponentFactory,
-  ActivityMiddleware,
+  /** @deprecated Use `polyMiddleware` instead, this will be removed on or after 2027-08-16. */
+  LegacyActivityComponentFactory as ActivityComponentFactory,
+  /** @deprecated Use `polyMiddleware` instead, this will be removed on or after 2027-08-16. */
+  LegacyActivityMiddleware as ActivityMiddleware,
   ActivityStatusMiddleware,
   ActivityStatusRenderer,
   AttachmentForScreenReaderComponentFactory,

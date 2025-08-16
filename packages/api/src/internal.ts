@@ -2,9 +2,9 @@ import LowPriorityDecoratorComposer from './decorator/internal/LowPriorityDecora
 import useSetDictateState from './hooks/internal/useSetDictateState';
 
 export {
-  bridgeComponentPropsSchema,
   createActivityPolyMiddlewareFromLegacy,
-  type BridgeComponentProps
+  legacyActivityBridgeComponentPropsSchema,
+  type LegacyActivityBridgeComponentProps
 } from '@msinternal/botframework-webchat-middleware';
 
 export { LowPriorityDecoratorComposer, useSetDictateState };

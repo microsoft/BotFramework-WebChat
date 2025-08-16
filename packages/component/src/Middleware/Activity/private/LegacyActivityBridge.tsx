@@ -1,7 +1,10 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import { bridgeComponentPropsSchema, type BridgeComponentProps } from 'botframework-webchat-api/internal';
-import React, { Fragment, memo, useMemo } from 'react';
+import {
+  legacyActivityBridgeComponentPropsSchema,
+  type LegacyActivityBridgeComponentProps
+} from 'botframework-webchat-api/internal';
+import React, { Fragment, memo, useMemo, type ReactNode } from 'react';
 
 import isZeroOrPositive from '../../../Utils/isZeroOrPositive';
 import useFirstActivityInSenderGroup from '../../ActivityGrouping/ui/SenderGrouping/useFirstActivity';
@@ -11,8 +14,13 @@ import useLastActivityInStatusGroup from '../../ActivityGrouping/ui/StatusGroupi
 
 const { useCreateActivityStatusRenderer, useCreateAvatarRenderer, useRenderAttachment, useStyleOptions } = hooks;
 
-function LegacyActivityBridge(props: BridgeComponentProps) {
-  const { activity, render } = validateProps(bridgeComponentPropsSchema, props);
+function LegacyActivityBridge(
+  props: LegacyActivityBridgeComponentProps & {
+    readonly renderActivityStatus: (options: { hideTimestamp: boolean }) => ReactNode;
+  }
+) {
+  const { activity, render } = validateProps(legacyActivityBridgeComponentPropsSchema, props);
+  const { renderActivityStatus: renderActivityStatusFromProps } = props;
 
   const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
   const [firstActivityInSenderGroup] = useFirstActivityInSenderGroup();
@@ -40,11 +48,12 @@ function LegacyActivityBridge(props: BridgeComponentProps) {
   const isTopSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
   const renderActivityStatus = useMemo(
     () =>
+      renderActivityStatusFromProps ||
       createActivityStatusRenderer({
         activity,
         nextVisibleActivity: undefined
       }),
-    [activity, createActivityStatusRenderer]
+    [activity, createActivityStatusRenderer, renderActivityStatusFromProps]
   );
 
   const hideTimestamp = hideAllTimestamps || !isLastInStatusGroup;

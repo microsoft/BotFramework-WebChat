@@ -16,11 +16,11 @@ export {
 } from './activityPolyMiddleware';
 
 export {
-  bridgeComponentPropsSchema,
   default as createActivityPolyMiddlewareFromLegacy,
   fallbackComponentPropsSchema,
-  type BridgeComponentProps,
-  type FallbackComponentProps
+  legacyActivityBridgeComponentPropsSchema,
+  type FallbackComponentProps,
+  type LegacyActivityBridgeComponentProps
 } from './internal/createActivityPolyMiddlewareFromLegacy';
 
 export { default as PolyMiddlewareComposer } from './PolyMiddlewareComposer';

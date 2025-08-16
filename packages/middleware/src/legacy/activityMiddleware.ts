@@ -4,35 +4,37 @@ import { type ReactNode } from 'react';
 
 import { type RenderAttachment } from './attachmentMiddleware';
 
-type ActivityProps = {
+// TODO: [P*] Consider prefixing all these with Legacy*.
+type LegacyActivityProps = {
+  children?: never | undefined;
   hideTimestamp: boolean;
   renderActivityStatus: (options: { hideTimestamp: boolean }) => ReactNode;
   renderAvatar: false | (() => Exclude<ReactNode, boolean | null | undefined>);
   showCallout: boolean;
 };
 
-type ActivityComponent = (props: ActivityProps) => Exclude<ReactNode, boolean | null | undefined>;
+type LegacyActivityComponent = (props: LegacyActivityProps) => Exclude<ReactNode, boolean | null | undefined>;
 
-type ActivityComponentFactoryOptions = {
+type LegacyActivityComponentFactoryOptions = {
   activity: WebChatActivity;
   nextVisibleActivity: WebChatActivity;
 };
 
-type ActivityComponentFactory = (options: ActivityComponentFactoryOptions) => ActivityComponent | false;
+type LegacyActivityComponentFactory = (
+  options: LegacyActivityComponentFactoryOptions
+) => LegacyActivityComponent | false;
 
 // TODO: [P2] This is inherited from our older signature (pre-hook) which requires passing "renderAttachment" argument.
 //       With hooks, the middleware should not need "renderAttachment", they can grab it from "useCreateAttachmentRenderer" hook.
 type LegacyRenderActivity = (
   renderAttachment: RenderAttachment,
-  { hideTimestamp, renderActivityStatus, renderAvatar, showCallout }: ActivityProps
+  { hideTimestamp, renderActivityStatus, renderAvatar, showCallout }: LegacyActivityProps
 ) => Exclude<ReactNode, boolean>;
 
-type LegacyActivityRenderer = (options: ActivityComponentFactoryOptions) => LegacyRenderActivity | false;
+type LegacyActivityRenderer = (options: LegacyActivityComponentFactoryOptions) => LegacyRenderActivity | false;
 
 // The middleware created by the web developer, are using the legacy signature (with "renderAttachment" argument).
-type ActivityEnhancer = (next: LegacyActivityRenderer) => LegacyActivityRenderer;
-type ActivityMiddleware = () => ActivityEnhancer;
+type LegacyActivityEnhancer = (next: LegacyActivityRenderer) => LegacyActivityRenderer;
+type LegacyActivityMiddleware = () => LegacyActivityEnhancer;
 
-export default ActivityMiddleware;
-
-export type { ActivityComponentFactory, LegacyActivityRenderer };
+export type { LegacyActivityComponentFactory, LegacyActivityMiddleware, LegacyActivityProps, LegacyActivityRenderer };

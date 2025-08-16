@@ -1,5 +1,8 @@
 import { PolyMiddlewareComposer, type PolyMiddleware } from '@msinternal/botframework-webchat-middleware';
-import { type ActivityMiddleware, type AttachmentMiddleware } from '@msinternal/botframework-webchat-middleware/legacy';
+import {
+  type AttachmentMiddleware,
+  type LegacyActivityMiddleware
+} from '@msinternal/botframework-webchat-middleware/legacy';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,
@@ -210,7 +213,7 @@ type ComposerCoreProps = Readonly<{
    *
    * @deprecated
    */
-  activityMiddleware?: OneOrMany<ActivityMiddleware>;
+  activityMiddleware?: OneOrMany<LegacyActivityMiddleware>;
   activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware>;
   attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
   attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
