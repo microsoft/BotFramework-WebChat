@@ -4,7 +4,6 @@ import { type ReactNode } from 'react';
 
 import { type RenderAttachment } from './attachmentMiddleware';
 
-// TODO: [P*] Consider prefixing all these with Legacy*.
 type LegacyActivityProps = {
   children?: never | undefined;
   hideTimestamp: boolean;
