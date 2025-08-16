@@ -1,4 +1,5 @@
 import type {
+  ActivityMiddleware,
   ComposerProps as APIComposerProps,
   SendBoxMiddleware,
   SendBoxToolbarMiddleware
@@ -11,7 +12,9 @@ import {
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
-import { singleToArray } from 'botframework-webchat-core';
+import { createActivityPolyMiddlewareFromLegacy } from 'botframework-webchat-api/internal';
+import { type PolyMiddleware } from 'botframework-webchat-api/middleware';
+import { singleToArray, type OneOrMany } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
@@ -33,6 +36,7 @@ import WebChatUIContext from './hooks/internal/WebChatUIContext';
 import { FocusSendBoxScope } from './hooks/sendBoxFocus';
 import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
+import LegacyActivityBridge from './Middleware/Activity/private/LegacyActivityBridge';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
 import createDefaultAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
@@ -128,6 +132,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
 ComposerCoreUI.displayName = 'ComposerCoreUI';
 
 type ComposerCoreProps = Readonly<{
+  activityMiddleware?: OneOrMany<ActivityMiddleware>;
   children?: ReactNode;
   decoratorMiddleware?: readonly DecoratorMiddleware[] | undefined;
   extraStyleSet?: any;
@@ -441,6 +446,15 @@ const InternalComposer = ({
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]
   );
 
+  const polyMiddlewareArray = useMemo<readonly PolyMiddleware[]>(
+    () =>
+      Object.freeze([
+        // TODO: Add <FallbackComponent>.
+        createActivityPolyMiddlewareFromLegacy(LegacyActivityBridge, () => null, ...patchedActivityMiddleware)
+      ]),
+    [patchedActivityMiddleware]
+  );
+
   return (
     <APIComposer
       activityMiddleware={patchedActivityMiddleware}
@@ -453,6 +467,7 @@ const InternalComposer = ({
       // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
       {...(node_env === 'development' ? { internalErrorBoxClass: ErrorBox } : {})}
       nonce={nonce}
+      polyMiddleware={polyMiddlewareArray}
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
       sendBoxMiddleware={sendBoxMiddleware}
       sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}

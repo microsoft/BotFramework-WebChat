@@ -1,4 +1,5 @@
-import { ReactNode } from 'react';
+// TODO: This is moved from /api, need to revisit/rewrite everything in this file.
+import { type ReactNode } from 'react';
 import type { DirectLineAttachment, WebChatActivity } from 'botframework-webchat-core';
 
 type AttachmentProps = {

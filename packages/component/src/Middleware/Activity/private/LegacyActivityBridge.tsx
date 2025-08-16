@@ -1,34 +1,28 @@
-import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
-import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { memo, useCallback, useMemo } from 'react';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { hooks } from 'botframework-webchat-api';
+import { bridgeComponentPropsSchema, type BridgeComponentProps } from 'botframework-webchat-api/internal';
+import React, { Fragment, memo, useMemo } from 'react';
 
-import useFirstActivityInSenderGroup from '../Middleware/ActivityGrouping/ui/SenderGrouping/useFirstActivity';
-import useLastActivityInSenderGroup from '../Middleware/ActivityGrouping/ui/SenderGrouping/useLastActivity';
-import useFirstActivityInStatusGroup from '../Middleware/ActivityGrouping/ui/StatusGrouping/useFirstActivity';
-import useLastActivityInStatusGroup from '../Middleware/ActivityGrouping/ui/StatusGrouping/useLastActivity';
-import useActivityElementMapRef from '../providers/ChatHistoryDOM/useActivityElementRef';
-import isZeroOrPositive from '../Utils/isZeroOrPositive';
-import ActivityRow from './ActivityRow';
+import isZeroOrPositive from '../../../Utils/isZeroOrPositive';
+import useFirstActivityInSenderGroup from '../../ActivityGrouping/ui/SenderGrouping/useFirstActivity';
+import useLastActivityInSenderGroup from '../../ActivityGrouping/ui/SenderGrouping/useLastActivity';
+import useFirstActivityInStatusGroup from '../../ActivityGrouping/ui/StatusGrouping/useFirstActivity';
+import useLastActivityInStatusGroup from '../../ActivityGrouping/ui/StatusGrouping/useLastActivity';
 
-const { useCreateActivityStatusRenderer, useCreateAvatarRenderer, useGetKeyByActivity, useStyleOptions } = hooks;
+const { useCreateActivityStatusRenderer, useCreateAvatarRenderer, useRenderAttachment, useStyleOptions } = hooks;
 
-type TranscriptActivityProps = Readonly<{
-  activity: WebChatActivity;
-  renderActivity: Exclude<ReturnType<ActivityComponentFactory>, false>;
-}>;
+function LegacyActivityBridge(props: BridgeComponentProps) {
+  const { activity, render } = validateProps(bridgeComponentPropsSchema, props);
 
-const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProps) => {
   const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
   const [firstActivityInSenderGroup] = useFirstActivityInSenderGroup();
   const [firstActivityInStatusGroup] = useFirstActivityInStatusGroup();
   const [lastActivityInSenderGroup] = useLastActivityInSenderGroup();
   const [lastActivityInStatusGroup] = useLastActivityInStatusGroup();
-  const activityElementMapRef = useActivityElementMapRef();
   const createActivityStatusRenderer = useCreateActivityStatusRenderer();
-  const getKeyByActivity = useGetKeyByActivity();
+  const renderAttachment = useRenderAttachment();
   const renderAvatar = useCreateAvatarRenderer();
 
-  const activityKey: string = useMemo(() => getKeyByActivity(activity), [activity, getKeyByActivity]);
   const hideAllTimestamps = groupTimestamp === false;
   const isFirstInSenderGroup =
     firstActivityInSenderGroup === activity || typeof firstActivityInSenderGroup === 'undefined';
@@ -53,14 +47,6 @@ const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProp
     [activity, createActivityStatusRenderer]
   );
 
-  const activityCallbackRef = useCallback(
-    (activityElement: HTMLElement) => {
-      activityElement
-        ? activityElementMapRef.current.set(activityKey, activityElement)
-        : activityElementMapRef.current.delete(activityKey);
-    },
-    [activityElementMapRef, activityKey]
-  );
   const hideTimestamp = hideAllTimestamps || !isLastInStatusGroup;
   const isTopSideNub = activity.from?.role === 'user' ? isTopSideUserNub : isTopSideBotNub;
 
@@ -85,21 +71,16 @@ const TranscriptActivity = ({ activity, renderActivity }: TranscriptActivityProp
 
   const children = useMemo(
     () =>
-      renderActivity({
+      render(renderAttachment, {
         hideTimestamp,
         renderActivityStatus,
         renderAvatar: renderAvatarForSenderGroup,
         showCallout
       }),
-    [hideTimestamp, renderActivity, renderActivityStatus, renderAvatarForSenderGroup, showCallout]
+    [hideTimestamp, render, renderActivityStatus, renderAttachment, renderAvatarForSenderGroup, showCallout]
   );
 
-  return (
-    <ActivityRow activity={activity} ref={activityCallbackRef}>
-      {children}
-    </ActivityRow>
-  );
-};
+  return <Fragment>{children}</Fragment>;
+}
 
-export default memo(TranscriptActivity);
-export { type TranscriptActivityProps };
+export default memo(LegacyActivityBridge);

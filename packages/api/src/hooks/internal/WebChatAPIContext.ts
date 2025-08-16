@@ -1,3 +1,4 @@
+import { type RenderAttachment } from '@msinternal/botframework-webchat-middleware/legacy';
 import {
   type DirectLineJSBotConnection,
   type Observable,
@@ -9,10 +10,8 @@ import {
 import { createContext, type ComponentType } from 'react';
 
 import { StrictStyleOptions } from '../../StyleOptions';
-import { LegacyActivityRenderer } from '../../types/ActivityMiddleware';
 import { RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
 import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';
-import { RenderAttachment } from '../../types/AttachmentMiddleware';
 import { AvatarComponentFactory } from '../../types/AvatarMiddleware';
 import { PerformCardAction } from '../../types/CardActionMiddleware';
 import { GroupActivities } from '../../types/GroupActivitiesMiddleware';
@@ -24,7 +23,6 @@ import TelemetryMeasurementEvent from '../../types/TelemetryMeasurementEvent';
 import { RenderToast } from '../../types/ToastMiddleware';
 
 export type WebChatAPIContextType = {
-  activityRenderer?: LegacyActivityRenderer;
   activityStatusRenderer: RenderActivityStatus;
   attachmentForScreenReaderRenderer?: AttachmentForScreenReaderComponentFactory;
   attachmentRenderer?: RenderAttachment;
