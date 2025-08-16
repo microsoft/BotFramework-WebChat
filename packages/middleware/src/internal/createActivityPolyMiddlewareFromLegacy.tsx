@@ -4,7 +4,20 @@ import React, { type ComponentType, type ReactNode } from 'react';
 import { type LegacyActivityMiddleware } from '../legacy/activityMiddleware';
 import { type RenderAttachment } from '../legacy/attachmentMiddleware';
 
-import { custom, function_, never, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
+import {
+  boolean,
+  custom,
+  function_,
+  literal,
+  never,
+  object,
+  optional,
+  pipe,
+  readonly,
+  safeParse,
+  union,
+  type InferInput
+} from 'valibot';
 import {
   activityComponent,
   createActivityPolyMiddleware,
@@ -27,7 +40,20 @@ const legacyActivityBridgeComponentPropsSchema = pipe(
   object({
     activity: webChatActivitySchema,
     children: optional(never()),
-    render: custom<LegacyRenderFunction>(value => safeParse(function_(), value).success)
+    render: custom<LegacyRenderFunction>(value => safeParse(function_(), value).success),
+
+    // The following extraneous props should be removed once `useCreateActivityRenderer()` is removed.
+    hideTimestamp: optional(boolean()),
+    renderActivityStatus: optional(
+      custom<(options: { hideTimestamp: boolean }) => ReactNode>(value => safeParse(function_(), value).success)
+    ),
+    renderAvatar: optional(
+      union([
+        literal(false),
+        custom<() => Exclude<ReactNode, boolean | null | undefined>>(value => safeParse(function_(), value).success)
+      ])
+    ),
+    showCallout: optional(boolean())
   }),
   readonly()
 );

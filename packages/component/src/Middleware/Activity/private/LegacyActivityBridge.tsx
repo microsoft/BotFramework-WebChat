@@ -4,7 +4,7 @@ import {
   legacyActivityBridgeComponentPropsSchema,
   type LegacyActivityBridgeComponentProps
 } from 'botframework-webchat-api/internal';
-import React, { Fragment, memo, useMemo, type ReactNode } from 'react';
+import React, { Fragment, memo, useMemo } from 'react';
 
 import isZeroOrPositive from '../../../Utils/isZeroOrPositive';
 import useFirstActivityInSenderGroup from '../../ActivityGrouping/ui/SenderGrouping/useFirstActivity';
@@ -14,13 +14,15 @@ import useLastActivityInStatusGroup from '../../ActivityGrouping/ui/StatusGroupi
 
 const { useCreateActivityStatusRenderer, useCreateAvatarRenderer, useRenderAttachment, useStyleOptions } = hooks;
 
-function LegacyActivityBridge(
-  props: LegacyActivityBridgeComponentProps & {
-    readonly renderActivityStatus: (options: { hideTimestamp: boolean }) => ReactNode;
-  }
-) {
-  const { activity, render } = validateProps(legacyActivityBridgeComponentPropsSchema, props);
-  const { renderActivityStatus: renderActivityStatusFromProps } = props;
+function LegacyActivityBridge(props: LegacyActivityBridgeComponentProps) {
+  const {
+    activity,
+    hideTimestamp: hideTimestampFromProps,
+    render,
+    renderActivityStatus: renderActivityStatusFromProps,
+    renderAvatar: renderAvatarFromProps,
+    showCallout: showCalloutFromProps
+  } = validateProps(legacyActivityBridgeComponentPropsSchema, props);
 
   const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
   const [firstActivityInSenderGroup] = useFirstActivityInSenderGroup();
@@ -48,12 +50,11 @@ function LegacyActivityBridge(
   const isTopSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
   const renderActivityStatus = useMemo(
     () =>
-      renderActivityStatusFromProps ||
       createActivityStatusRenderer({
         activity,
         nextVisibleActivity: undefined
       }),
-    [activity, createActivityStatusRenderer, renderActivityStatusFromProps]
+    [activity, createActivityStatusRenderer]
   );
 
   const hideTimestamp = hideAllTimestamps || !isLastInStatusGroup;
@@ -81,12 +82,24 @@ function LegacyActivityBridge(
   const children = useMemo(
     () =>
       render(renderAttachment, {
-        hideTimestamp,
-        renderActivityStatus,
-        renderAvatar: renderAvatarForSenderGroup,
-        showCallout
+        hideTimestamp: typeof hideTimestampFromProps === 'undefined' ? hideTimestamp : hideTimestampFromProps,
+        renderActivityStatus:
+          typeof renderActivityStatusFromProps === 'undefined' ? renderActivityStatus : renderActivityStatusFromProps,
+        renderAvatar: typeof renderAvatarFromProps === 'undefined' ? renderAvatarForSenderGroup : renderAvatarFromProps,
+        showCallout: typeof showCalloutFromProps === 'undefined' ? showCallout : showCalloutFromProps
       }),
-    [hideTimestamp, render, renderActivityStatus, renderAttachment, renderAvatarForSenderGroup, showCallout]
+    [
+      hideTimestamp,
+      hideTimestampFromProps,
+      render,
+      renderActivityStatus,
+      renderActivityStatusFromProps,
+      renderAttachment,
+      renderAvatarForSenderGroup,
+      renderAvatarFromProps,
+      showCallout,
+      showCalloutFromProps
+    ]
   );
 
   return <Fragment>{children}</Fragment>;
