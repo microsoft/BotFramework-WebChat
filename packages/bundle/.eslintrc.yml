@@ -6,3 +6,9 @@ extends:
 # When React Native work land, this package will be consumed by both web browser and React Native, via entrypoints.
 env:
   browser: true
+
+rules:
+  no-restricted-imports:
+    - error
+    - message: 'To prevent duplicated import, @msinternal/botframework-webchat-middleware is only allowed to import in botframework-webchat-api.'
+      name: '@msinternal/botframework-webchat-middleware'
