@@ -34,7 +34,9 @@
         const {
           testHelpers: { createDirectLineEmulator },
           WebChat: {
+            activityComponent,
             Components: { Composer },
+            createActivityPolyMiddleware,
             hooks: { useActivities, useBuildRenderActivityCallback }
           }
         } = window;
@@ -53,12 +55,30 @@
         });
 
         const rootElement = document.getElementsByTagName('main')[0];
+        const activityMiddleware = [
+          () =>
+            next =>
+            ({ activity }) =>
+            (renderAttachment, options) =>
+              createElement(
+                'div',
+                {},
+                renderAttachment({
+                  activity,
+                  attachment: {
+                    content: activity.text,
+                    contentType: 'text/markdown'
+                  }
+                })
+              )
+        ];
 
         // WHEN: <SystemUnderTest> is being rendered.
         createRoot(rootElement).render(
           createElement(
             Composer,
             {
+              activityMiddleware,
               directLine,
               store
             },
@@ -72,7 +92,7 @@
         // WHEN: A message "Hello, World!" arrives.
         await directLine.emulateIncomingActivity(
           {
-            text: 'Hello, World!',
+            text: 'Hello, **World**!',
             type: 'message'
           },
           { skipWait: true }

@@ -34,7 +34,9 @@
         const {
           testHelpers: { createDirectLineEmulator },
           WebChat: {
+            activityComponent,
             Components: { Composer },
+            createActivityPolyMiddleware,
             hooks: { useActivities, useBuildRenderActivityCallback }
           }
         } = window;
@@ -53,14 +55,25 @@
         });
 
         const rootElement = document.getElementsByTagName('main')[0];
+        const activityMiddleware = [
+          () =>
+            next =>
+            ({ activity }) =>
+            (_, { renderAvatar }) =>
+              createElement('div', {}, renderAvatar())
+        ];
 
         // WHEN: <SystemUnderTest> is being rendered.
         createRoot(rootElement).render(
           createElement(
             Composer,
             {
+              activityMiddleware,
               directLine,
-              store
+              store,
+              styleOptions: {
+                botAvatarInitials: 'WC'
+              }
             },
             createElement(SystemUnderTest)
           )
@@ -80,9 +93,7 @@
 
         // THEN: Should render the message "Hello, World!"
         await waitFor(() => expect(rootElement?.getElementsByTagName('ol')[0]?.children).toHaveLength(1));
-        await waitFor(() =>
-          expect(rootElement?.querySelector('ol li')?.textContent.includes('Hello, World!')).toBe(true)
-        );
+        await waitFor(() => expect(rootElement?.querySelector('ol li')?.textContent.includes('WC')).toBe(true));
 
         // THEN: Should match snapshot.
         await host.snapshot('local');

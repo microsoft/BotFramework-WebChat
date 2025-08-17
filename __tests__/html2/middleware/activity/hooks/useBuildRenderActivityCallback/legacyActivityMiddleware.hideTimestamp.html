@@ -34,8 +34,11 @@
         const {
           testHelpers: { createDirectLineEmulator },
           WebChat: {
+            activityComponent,
             Components: { Composer },
-            hooks: { useActivities, useBuildRenderActivityCallback }
+            createActivityPolyMiddleware,
+            hooks: { useActivities, useBuildRenderActivityCallback },
+            ReactWebChat
           }
         } = window;
 
@@ -53,35 +56,48 @@
         });
 
         const rootElement = document.getElementsByTagName('main')[0];
+        const activityMiddleware = [
+          () =>
+            next =>
+            ({ activity }) =>
+            (_, { hideTimestamp }) =>
+              createElement('div', {}, '' + hideTimestamp)
+        ];
 
-        // WHEN: <SystemUnderTest> is being rendered.
+        // WHEN: Web Chat is being rendered.
+        // TODO: [P1] Currently, `hideTimestamp` relies on activity grouping.
+        //            However, there are no ways to render activity grouping outside of <BasicTranscript>.
+        //            We should have a way to simply render activity grouping.
         createRoot(rootElement).render(
-          createElement(
-            Composer,
-            {
-              directLine,
-              store
-            },
-            createElement(SystemUnderTest)
-          )
+          createElement(ReactWebChat, {
+            activityMiddleware,
+            directLine,
+            store
+          })
         );
 
-        // THEN: Should render no list items.
-        await waitFor(() => expect(rootElement?.getElementsByTagName('ol')[0]?.children).toHaveLength(0));
+        await pageConditions.uiConnected();
 
-        // WHEN: A message "Hello, World!" arrives.
-        await directLine.emulateIncomingActivity(
-          {
-            text: 'Hello, World!',
-            type: 'message'
-          },
-          { skipWait: true }
-        );
+        // WHEN: Two messages arrives: "Hello, World!" and "Aloha!"
+        await directLine.emulateIncomingActivity({
+          text: 'Hello, World!',
+          timestamp: 0,
+          type: 'message'
+        });
 
-        // THEN: Should render the message "Hello, World!"
-        await waitFor(() => expect(rootElement?.getElementsByTagName('ol')[0]?.children).toHaveLength(1));
+        await directLine.emulateIncomingActivity({
+          text: 'Aloha!',
+          timestamp: 0,
+          type: 'message'
+        });
+
+        // THEN: Should render both messages.
+        await waitFor(() => expect(rootElement?.querySelector('.webchat__basic-transcript__transcript')?.children).toHaveLength(2));
         await waitFor(() =>
-          expect(rootElement?.querySelector('ol li')?.textContent.includes('Hello, World!')).toBe(true)
+          expect(rootElement?.querySelector('.webchat__basic-transcript__transcript article:first-child')?.textContent.includes('true')).toBe(true)
+        );
+        await waitFor(() =>
+          expect(rootElement?.querySelector('.webchat__basic-transcript__transcript article:last-child')?.textContent.includes('false')).toBe(true)
         );
 
         // THEN: Should match snapshot.

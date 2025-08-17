@@ -34,7 +34,9 @@
         const {
           testHelpers: { createDirectLineEmulator },
           WebChat: {
+            activityComponent,
             Components: { Composer },
+            createActivityPolyMiddleware,
             hooks: { useActivities, useBuildRenderActivityCallback }
           }
         } = window;
@@ -52,7 +54,19 @@
           );
         });
 
+        const MyActivity = memo(function MyActivity({ text }) {
+          return createElement('div', {}, text);
+        });
+
         const rootElement = document.getElementsByTagName('main')[0];
+        const polyMiddleware = [
+          // activityPolyMiddleware only has props of { children?: never }, everything is extraneous.
+          createActivityPolyMiddleware(
+            () =>
+              ({ activity }) =>
+                activityComponent(MyActivity, { text: activity.text })
+          )
+        ];
 
         // WHEN: <SystemUnderTest> is being rendered.
         createRoot(rootElement).render(
@@ -60,6 +74,7 @@
             Composer,
             {
               directLine,
+              polyMiddleware,
               store
             },
             createElement(SystemUnderTest)

@@ -34,7 +34,9 @@
         const {
           testHelpers: { createDirectLineEmulator },
           WebChat: {
+            activityComponent,
             Components: { Composer },
+            createActivityPolyMiddleware,
             hooks: { useActivities, useBuildRenderActivityCallback }
           }
         } = window;
@@ -53,12 +55,22 @@
         });
 
         const rootElement = document.getElementsByTagName('main')[0];
+        const activityMiddleware = [
+          // Make sure passthrough still working.
+          () => next => request => next(request),
+          () =>
+            next =>
+            ({ activity }) =>
+            (renderAttachment, options) =>
+              createElement('div', {}, `Legacy: ${activity.text}`)
+        ];
 
         // WHEN: <SystemUnderTest> is being rendered.
         createRoot(rootElement).render(
           createElement(
             Composer,
             {
+              activityMiddleware,
               directLine,
               store
             },
