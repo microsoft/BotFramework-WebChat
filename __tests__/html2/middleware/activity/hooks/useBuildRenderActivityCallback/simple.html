@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "expect": "https://esm.sh/expect?bundle=true",
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/"
+        }
+      }
+    </script>
+    <script type="module">
+      import React from 'react';
+
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/test-harness.js"></script>
+    <script defer crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script defer type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { expect } from 'expect';
+      import React, { createElement, Fragment } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator },
+          WebChat: {
+            Components: { Composer },
+            hooks: { useActivities, useBuildRenderActivityCallback }
+          }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        function SystemUnderTest() {
+          const [activities] = useActivities();
+          const renderActivity = useBuildRenderActivityCallback();
+
+          return activities.length
+            ? createElement(
+                Fragment,
+                {},
+                activities.map(activity => renderActivity({ activity })?.({}))
+              )
+            : createElement(Fragment, {}, 'Empty');
+        }
+
+        const rootElement = document.getElementsByTagName('main')[0];
+
+        // WHEN: <SystemUnderTest> is being rendered.
+        createRoot(rootElement).render(
+          createElement(
+            Composer,
+            {
+              directLine,
+              store
+            },
+            createElement(SystemUnderTest)
+          )
+        );
+
+        // THEN: Should render "Empty".
+        await waitFor(() => expect(rootElement?.textContent).toBe('Empty'));
+
+        // WHEN: A message "Hello, World!" arrives.
+        await directLine.emulateIncomingActivity(
+          {
+            text: 'Hello, World!',
+            type: 'message'
+          },
+          { skipWait: true }
+        );
+
+        // THEN: Should render the message "Hello, World!"
+        await waitFor(() => expect(rootElement?.textContent.includes('Hello, World!')).toBe(true));
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
