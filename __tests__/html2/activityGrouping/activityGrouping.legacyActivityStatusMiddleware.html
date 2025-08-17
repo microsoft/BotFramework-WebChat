@@ -100,11 +100,11 @@
           'This message should have status "Sending...", then turn to "Send failed".'
         );
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         clock.tick(20000);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

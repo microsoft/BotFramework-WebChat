@@ -23,7 +23,8 @@
           await pageObjects.sendMessageViaSendBox('unknown activity');
           await pageConditions.minNumActivitiesShown(1);
 
-          await host.snapshot();
+          // This snapshot differs with NODE_ENV, we need to make it pass in NODE_ENV !== 'production'
+          await host.snapshot('local');
         },
         { ignoreErrors: true }
       );
