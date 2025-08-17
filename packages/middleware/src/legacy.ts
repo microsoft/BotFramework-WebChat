@@ -4,4 +4,5 @@ export {
   type LegacyActivityProps,
   type LegacyActivityRenderer
 } from './legacy/activityMiddleware';
-export { type default as AttachmentMiddleware, type RenderAttachment } from './legacy/attachmentMiddleware';
+
+export { type LegacyAttachmentMiddleware, type LegacyRenderAttachment } from './legacy/attachmentMiddleware';

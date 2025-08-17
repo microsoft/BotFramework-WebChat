@@ -5,6 +5,6 @@ export {
   createActivityPolyMiddlewareFromLegacy,
   legacyActivityBridgeComponentPropsSchema,
   type LegacyActivityBridgeComponentProps
-} from '@msinternal/botframework-webchat-middleware';
+} from '@msinternal/botframework-webchat-middleware/internal';
 
 export { LowPriorityDecoratorComposer, useSetDictateState };

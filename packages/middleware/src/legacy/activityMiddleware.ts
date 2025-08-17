@@ -2,7 +2,7 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { type ReactNode } from 'react';
 
-import { type RenderAttachment } from './attachmentMiddleware';
+import { type LegacyRenderAttachment } from './attachmentMiddleware';
 
 type LegacyActivityProps = {
   children?: never | undefined;
@@ -26,7 +26,7 @@ type LegacyActivityComponentFactory = (
 // TODO: [P2] This is inherited from our older signature (pre-hook) which requires passing "renderAttachment" argument.
 //       With hooks, the middleware should not need "renderAttachment", they can grab it from "useCreateAttachmentRenderer" hook.
 type LegacyRenderActivity = (
-  renderAttachment: RenderAttachment,
+  renderAttachment: LegacyRenderAttachment,
   { hideTimestamp, renderActivityStatus, renderAvatar, showCallout }: LegacyActivityProps
 ) => Exclude<ReactNode, boolean>;
 

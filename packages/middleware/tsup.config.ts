@@ -5,6 +5,7 @@ const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
     'botframework-webchat-middleware': './src/index.ts',
+    'botframework-webchat-middleware.internal': './src/internal.ts',
     'botframework-webchat-middleware.legacy': './src/legacy.ts'
   }
 };

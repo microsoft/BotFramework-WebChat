@@ -1,9 +1,9 @@
 // TODO: Move the pattern to re-export.
 import {
-  type AttachmentMiddleware,
   type LegacyActivityComponentFactory,
   type LegacyActivityMiddleware,
-  type RenderAttachment
+  type LegacyAttachmentMiddleware,
+  type LegacyRenderAttachment
 } from '@msinternal/botframework-webchat-middleware/legacy';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import defaultStyleOptions from './defaultStyleOptions';
@@ -71,7 +71,8 @@ export type {
   ActivityStatusRenderer,
   AttachmentForScreenReaderComponentFactory,
   AttachmentForScreenReaderMiddleware,
-  AttachmentMiddleware,
+  /** @deprecated Use `polyMiddleware` instead, this will be removed on or after 2027-08-16. */
+  LegacyAttachmentMiddleware as AttachmentMiddleware,
   AvatarComponentFactory,
   AvatarMiddleware,
   CardActionMiddleware,
@@ -85,7 +86,7 @@ export type {
   PerformCardAction,
   PostActivityFile,
   RenderActivityStatus,
-  RenderAttachment,
+  LegacyRenderAttachment as RenderAttachment,
   RenderToast,
   RenderTypingIndicator,
   ScrollToEndButtonComponentFactory,

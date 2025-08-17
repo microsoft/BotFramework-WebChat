@@ -1,4 +1,4 @@
-import { type RenderAttachment } from '@msinternal/botframework-webchat-middleware/legacy';
+import { type LegacyRenderAttachment } from '@msinternal/botframework-webchat-middleware/legacy';
 import {
   type DirectLineJSBotConnection,
   type Observable,
@@ -25,7 +25,7 @@ import { RenderToast } from '../../types/ToastMiddleware';
 export type WebChatAPIContextType = {
   activityStatusRenderer: RenderActivityStatus;
   attachmentForScreenReaderRenderer?: AttachmentForScreenReaderComponentFactory;
-  attachmentRenderer?: RenderAttachment;
+  attachmentRenderer?: LegacyRenderAttachment;
   avatarRenderer: AvatarComponentFactory;
   clearSuggestedActions?: () => void;
   dir?: string;

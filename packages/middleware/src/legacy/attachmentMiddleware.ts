@@ -1,17 +1,15 @@
 // TODO: This is moved from /api, need to revisit/rewrite everything in this file.
+import { type DirectLineAttachment, type WebChatActivity } from 'botframework-webchat-core';
 import { type ReactNode } from 'react';
-import type { DirectLineAttachment, WebChatActivity } from 'botframework-webchat-core';
 
-type AttachmentProps = {
+type LegacyAttachmentProps = {
   activity: WebChatActivity;
   attachment: DirectLineAttachment;
 };
 
-type RenderAttachment = (props?: AttachmentProps) => ReactNode;
+type LegacyRenderAttachment = (props?: LegacyAttachmentProps) => ReactNode;
 
-type AttachmentEnhancer = (next: RenderAttachment) => RenderAttachment;
-type AttachmentMiddleware = () => AttachmentEnhancer;
+type LegacyAttachmentEnhancer = (next: LegacyRenderAttachment) => LegacyRenderAttachment;
+type LegacyAttachmentMiddleware = () => LegacyAttachmentEnhancer;
 
-export default AttachmentMiddleware;
-
-export type { RenderAttachment };
+export { type LegacyAttachmentMiddleware, type LegacyRenderAttachment };

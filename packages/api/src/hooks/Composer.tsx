@@ -1,6 +1,6 @@
 import { PolyMiddlewareComposer, type PolyMiddleware } from '@msinternal/botframework-webchat-middleware';
 import {
-  type AttachmentMiddleware,
+  type LegacyAttachmentMiddleware,
   type LegacyActivityMiddleware
 } from '@msinternal/botframework-webchat-middleware/legacy';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
@@ -216,7 +216,7 @@ type ComposerCoreProps = Readonly<{
   activityMiddleware?: OneOrMany<LegacyActivityMiddleware>;
   activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware>;
   attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
-  attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
+  attachmentMiddleware?: OneOrMany<LegacyAttachmentMiddleware>;
   avatarMiddleware?: OneOrMany<AvatarMiddleware>;
   cardActionMiddleware?: OneOrMany<CardActionMiddleware>;
   children?: ReactNode | ((context: ContextOf<React.Context<WebChatAPIContextType>>) => ReactNode);

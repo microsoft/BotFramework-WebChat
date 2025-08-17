@@ -2,7 +2,7 @@ import { type WebChatActivity } from 'botframework-webchat-core';
 import { composeEnhancer } from 'handler-chain';
 import React, { type ComponentType, type ReactNode } from 'react';
 import { type LegacyActivityMiddleware } from '../legacy/activityMiddleware';
-import { type RenderAttachment } from '../legacy/attachmentMiddleware';
+import { type LegacyRenderAttachment } from '../legacy/attachmentMiddleware';
 
 import {
   boolean,
@@ -27,7 +27,7 @@ import {
 const webChatActivitySchema = custom<WebChatActivity>(value => safeParse(object({}), value).success);
 
 type LegacyRenderFunction = (
-  renderAttachment: RenderAttachment,
+  renderAttachment: LegacyRenderAttachment,
   options: {
     readonly hideTimestamp: boolean;
     readonly renderActivityStatus: (options: { hideTimestamp: boolean }) => ReactNode;
