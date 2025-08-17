@@ -77,7 +77,7 @@
   },
   "dependencies": {
     "handler-chain": "^0.1.0",
-    "react-chain-of-responsibility": "0.4.0-main.5f5cc2f",
+    "react-chain-of-responsibility": "^0.4.0-main.9e06f00",
     "valibot": "1.1.0"
   }
 }
