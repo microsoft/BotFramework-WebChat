@@ -35,7 +35,7 @@
 
         await pageConditions.toastShown(0);
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         updateProps({
           styleOptions: {
@@ -45,7 +45,7 @@
 
         await pageConditions.toastShown(1);
 
-        await host.snapshot();
+        await host.snapshot('local');
 
         updateProps({
           styleOptions: {
@@ -55,7 +55,7 @@
 
         await pageConditions.toastShown(0);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
