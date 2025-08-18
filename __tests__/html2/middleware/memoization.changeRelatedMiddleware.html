@@ -130,7 +130,7 @@
           document.getElementById('webchat')
         );
 
-        // THEN: Should render twice.
+        // THEN: Should render twice, because a related middleware changed.
         expect(renderCall).toHaveBeenCalledTimes(2);
 
         // THEN: Should capture a green badge.
