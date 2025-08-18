@@ -6,6 +6,8 @@ import { array, function_, safeParse, type InferOutput } from 'valibot';
 type MiddlewareWithInit<M extends ComponentMiddleware<any, any, any>, I> = (init: I) => ReturnType<M> | false;
 
 const arrayOfFunctionSchema = array(function_());
+
+/** @deprecated New middleware should use `templatePolyMiddleware`. */
 const middlewareFactoryMarker = Symbol();
 
 const isArrayOfFunction = (middleware: unknown): middleware is InferOutput<typeof arrayOfFunctionSchema> =>
@@ -13,6 +15,7 @@ const isArrayOfFunction = (middleware: unknown): middleware is InferOutput<typeo
 
 const EMPTY_ARRAY = Object.freeze([]);
 
+/** @deprecated New middleware should use `templatePolyMiddleware`. */
 // Following @types/react to use {} for props.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 function templateMiddleware<Request, Props extends {}>(name: string) {
@@ -92,8 +95,11 @@ function templateMiddleware<Request, Props extends {}>(name: string) {
   };
 }
 
+/** @deprecated New middleware should use `templatePolyMiddleware`. */
 type InferMiddleware<T extends { '~types': { middleware } }> = T['~types']['middleware'];
+/** @deprecated New middleware should use `templatePolyMiddleware`. */
 type InferProps<T extends { '~types': { props } }> = T['~types']['props'];
+/** @deprecated New middleware should use `templatePolyMiddleware`. */
 type InferRequest<T extends { '~types': { request } }> = T['~types']['request'];
 
 export default templateMiddleware;
