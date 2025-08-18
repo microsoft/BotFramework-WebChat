@@ -8,7 +8,7 @@ test('should warn if middleware is not an array of function', () => {
 
   jest.spyOn(console, 'warn').mockImplementation(warn);
 
-  template.extractMiddleware(1 as any);
+  template.extractEnhancer(1 as any);
 
   expect(warn).toHaveBeenCalledTimes(1);
   expect(warn).toHaveBeenNthCalledWith(1, expect.stringContaining('must be an array of function'));
@@ -26,7 +26,7 @@ test('should not warn if middleware return false', () => {
 
   jest.spyOn(console, 'warn').mockImplementation(warn);
 
-  template.extractMiddleware([template.createMiddleware(() => false as any)]);
+  template.extractEnhancer([template.createMiddleware(() => false as any)]);
 
   expect(warn).toHaveBeenCalledTimes(0);
 });
@@ -37,7 +37,7 @@ test('should not warn if middleware return function', () => {
 
   jest.spyOn(console, 'warn').mockImplementation(warn);
 
-  template.extractMiddleware([template.createMiddleware(() => () => 1 as any)]);
+  template.extractEnhancer([template.createMiddleware(() => () => 1 as any)]);
 
   expect(warn).toHaveBeenCalledTimes(0);
 });

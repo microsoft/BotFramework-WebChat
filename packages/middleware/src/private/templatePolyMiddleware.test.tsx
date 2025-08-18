@@ -26,7 +26,7 @@ test('an uber middleware', () => {
   const buttonTemplate = templatePolyMiddleware<void, ButtonProps>('Button' as any);
   const {
     createMiddleware: createButtonMiddleware,
-    extractMiddleware: extractButtonMiddleware,
+    extractEnhancer: extractButtonEnhancer,
     Provider: ButtonProvider,
     Proxy: Button,
     reactComponent: buttonComponent
@@ -37,7 +37,7 @@ test('an uber middleware', () => {
   const linkTemplate = templatePolyMiddleware<{ external: boolean }, LinkProps>('Link' as any);
   const {
     createMiddleware: createLinkMiddleware,
-    extractMiddleware: extractLinkMiddleware,
+    extractEnhancer: extractLinkEnhancer,
     Provider: LinkProvider,
     Proxy: Link,
     reactComponent: linkComponent
@@ -59,9 +59,11 @@ test('an uber middleware', () => {
     middleware: ReadonlyArray<ButtonMiddleware | LinkMiddleware>;
   }>) => (
     /* TODO: Should not cast middleware to any */
-    <ButtonProvider middleware={extractButtonMiddleware(middleware as any)}>
+    <ButtonProvider middleware={extractButtonEnhancer(middleware as any).map(enhancer => () => enhancer)}>
       {/* TODO: Should not cast middleware to any */}
-      <LinkProvider middleware={extractLinkMiddleware(middleware as any)}>{children}</LinkProvider>
+      <LinkProvider middleware={extractLinkEnhancer(middleware as any).map(enhancer => () => enhancer)}>
+        {children}
+      </LinkProvider>
     </ButtonProvider>
   );
 
