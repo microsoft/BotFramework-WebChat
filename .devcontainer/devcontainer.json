@@ -1,0 +1,8 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/typescript-node",
+  "features": {
+    "ghcr.io/wxw-matt/devcontainer-features/apt:0": {
+      "packages": "libssl3"
+    }
+  }
+}
