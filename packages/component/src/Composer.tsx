@@ -335,6 +335,7 @@ const InternalComposer = ({
   decoratorMiddleware,
   extraStyleSet,
   htmlContentTransformMiddleware,
+  polyMiddleware: polyMiddlewareFromProps,
   renderMarkdown,
   scrollToEndButtonMiddleware,
   sendBoxMiddleware: sendBoxMiddlewareFromProps,
@@ -446,13 +447,14 @@ const InternalComposer = ({
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]
   );
 
-  const polyMiddlewareArray = useMemo<readonly PolyMiddleware[]>(
+  const polyMiddleware = useMemo<readonly PolyMiddleware[]>(
     () =>
       Object.freeze([
         // TODO: Add <FallbackComponent>.
+        ...(polyMiddlewareFromProps || []),
         createActivityPolyMiddlewareFromLegacy(LegacyActivityBridge, () => null, ...patchedActivityMiddleware)
       ]),
-    [patchedActivityMiddleware]
+    [patchedActivityMiddleware, polyMiddlewareFromProps]
   );
 
   return (
@@ -467,7 +469,7 @@ const InternalComposer = ({
       // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
       {...(node_env === 'development' ? { internalErrorBoxClass: ErrorBox } : {})}
       nonce={nonce}
-      polyMiddleware={polyMiddlewareArray}
+      polyMiddleware={polyMiddleware}
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
       sendBoxMiddleware={sendBoxMiddleware}
       sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}

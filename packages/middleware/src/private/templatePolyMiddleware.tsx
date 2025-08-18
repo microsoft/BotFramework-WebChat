@@ -14,8 +14,6 @@ import {
 import { array, function_, safeParse, type InferOutput } from 'valibot';
 
 const arrayOfFunctionSchema = array(function_());
-// TODO: Move marker inside templateMiddleware. Think if every type of middleware should have their own marker and not crossed.
-const middlewareFactoryMarker = Symbol();
 
 const isArrayOfFunction = (middleware: unknown): middleware is InferOutput<typeof arrayOfFunctionSchema> =>
   safeParse(arrayOfFunctionSchema, middleware).success;
@@ -34,6 +32,8 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
 
   type TemplatedEnhancer = ReturnType<InferOrganicMiddleware<typeof Provider>>;
   type TemplatedMiddleware = (init: string) => TemplatedEnhancer;
+
+  const middlewareFactoryMarker = Symbol();
 
   const createMiddleware = (enhancer: TemplatedEnhancer): TemplatedMiddleware => {
     const factory: TemplatedMiddleware = init => (init === name ? enhancer : BYPASS_ENHANCER);
@@ -57,7 +57,12 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
         return Object.freeze(
           middleware
             .map(middleware => {
-              // TODO: [P*] Validate every middleware is created through `createMiddleware()`.
+              if (!(middlewareFactoryMarker in middleware)) {
+                console.warn(`botframework-webchat: ${name}.middleware must be created via factory function`);
+
+                return false;
+              }
+
               const result = middleware(name);
 
               if (typeof result !== 'function' && result) {
@@ -132,7 +137,6 @@ type InferRequest<T extends InferenceHelper<any, any>> = T['~types']['request'];
 
 export default templatePolyMiddleware;
 export {
-  middlewareFactoryMarker,
   type InferHandler,
   type InferHandlerResult,
   type InferMiddleware,
