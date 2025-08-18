@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      import ReactDOM from 'react-dom';
+
+      window.React = React;
+      window.ReactDOM = ReactDOM;
+    </script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .system-under-test__activity {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .system-under-test__counter {
+        background-color: DarkSlateGray;
+        border-radius: 4px;
+        color: White;
+        font-family: sans-serif;
+        font-size: 75%;
+        margin-left: 10px;
+        padding: 0.2em 0.4em;
+        width: fit-content;
+      }
+
+      .system-under-test__counter.system-under-test__counter--red {
+        background-color: Red;
+      }
+
+      .system-under-test__counter.system-under-test__counter--green {
+        background-color: Green;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { fn } from 'jest-mock';
+      import { createElement } from 'react';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator },
+          WebChat: { activityComponent, createActivityPolyMiddleware }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        const renderCall = fn(() => renderCall.mock.calls.length);
+
+        const MyActivityMiddleware = ({ activity, renderNext, variant }) => {
+          const numCalled = renderCall();
+
+          return createElement(
+            'div',
+            { className: 'system-under-test__activity' },
+            createElement('div', {}, renderNext?.render()),
+            createElement(
+              'small',
+              { className: `system-under-test__counter system-under-test__counter--${variant}` },
+              `Rendered times: ${numCalled}`
+            )
+          );
+        };
+
+        const activityPolyMiddlewareRed = createActivityPolyMiddleware(
+          next => request =>
+            activityComponent(MyActivityMiddleware, {
+              activity: request.activity,
+              renderNext: next(request),
+              variant: 'red'
+            })
+        );
+
+        const activityPolyMiddlewareGreen = createActivityPolyMiddleware(
+          next => request =>
+            activityComponent(MyActivityMiddleware, {
+              activity: request.activity,
+              renderNext: next(request),
+              variant: 'green'
+            })
+        );
+
+        const dummyPolyMiddleware = init => init === 'dummy' && (next => request => next(request));
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            polyMiddleware: [activityPolyMiddlewareRed],
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        // THEN: Should render once.
+        expect(renderCall).toHaveBeenCalledTimes(1);
+
+        // THEN: Should capture a red badge.
+        await host.snapshot('local');
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            polyMiddleware: [activityPolyMiddlewareGreen],
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        // THEN: Should render twice.
+        expect(renderCall).toHaveBeenCalledTimes(2);
+
+        // THEN: Should capture a green badge.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
