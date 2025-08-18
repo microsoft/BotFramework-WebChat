@@ -33,25 +33,25 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
   type TemplatedEnhancer = ReturnType<InferOrganicMiddleware<typeof Provider>>;
   type TemplatedMiddleware = (init: string) => TemplatedEnhancer;
 
-  const middlewareFactoryMarker = Symbol();
+  const middlewareFactoryTag = Symbol();
 
   const middlewareSchema = pipe(
     function_(),
-    check(value => value === BYPASS_ENHANCER || middlewareFactoryMarker in value)
+    check(value => value === BYPASS_ENHANCER || middlewareFactoryTag in value)
   );
 
   const createMiddleware = (enhancer: TemplatedEnhancer): TemplatedMiddleware => {
     parse(function_(`botframework-webchat: ${name} enhancer must be of type function.`), enhancer);
 
-    // Clone the enhancer function and add a marker.
-    const markedEnhancer = enhancer.bind(undefined);
+    // Clone the enhancer function and tag it.
+    const taggedEnhancer = enhancer.bind(undefined);
 
     // This is for checking if the middleware is created via factory function or not.
     // We enforce middleware to be created using factory function.
-    (markedEnhancer as any)[middlewareFactoryMarker satisfies symbol] = undefined;
+    (taggedEnhancer as any)[middlewareFactoryTag satisfies symbol] = undefined;
 
     // TODO: [P*] Remove one-use.
-    const factory: TemplatedMiddleware = init => (init === name ? markedEnhancer : BYPASS_ENHANCER);
+    const factory: TemplatedMiddleware = init => (init === name ? taggedEnhancer : BYPASS_ENHANCER);
 
     return factory;
   };
