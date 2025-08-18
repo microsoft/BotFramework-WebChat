@@ -63,7 +63,7 @@
           type: 'message'
         });
 
-        // THEN: Should render the message.
+        // THEN: Should render the message using built-in middleware.
         await waitFor(() =>
           expect(rootElement?.querySelector('.webchat__basic-transcript__transcript')?.children).toHaveLength(1)
         );

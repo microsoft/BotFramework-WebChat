@@ -52,6 +52,7 @@
           return createElement('div', {}, 'Should not render this');
         });
 
+        // Middleware that looks legitimate but we should skip it because it was created without using the factory function.
         const polyMiddleware = [init => init === 'activity' && (next => request => activityComponent(Dummy))];
         const rootElement = document.getElementsByTagName('main')[0];
 
