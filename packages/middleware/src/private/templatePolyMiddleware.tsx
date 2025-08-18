@@ -11,7 +11,7 @@ import {
   type ProviderProps,
   type ProxyProps
 } from 'react-chain-of-responsibility/preview';
-import { array, function_, safeParse, type InferOutput } from 'valibot';
+import { array, check, function_, pipe, safeParse, type InferOutput } from 'valibot';
 
 const arrayOfFunctionSchema = array(function_());
 
@@ -35,6 +35,11 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
 
   const middlewareFactoryMarker = Symbol();
 
+  const middlewareSchema = pipe(
+    function_(),
+    check(value => middlewareFactoryMarker in value)
+  );
+
   const createMiddleware = (enhancer: TemplatedEnhancer): TemplatedMiddleware => {
     const factory: TemplatedMiddleware = init => (init === name ? enhancer : BYPASS_ENHANCER);
 
@@ -57,15 +62,15 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
         return Object.freeze(
           middleware
             .map(middleware => {
-              if (!(middlewareFactoryMarker in middleware)) {
-                console.warn(`botframework-webchat: ${name}.middleware must be created via factory function`);
+              if (!safeParse(middlewareSchema, middleware).success) {
+                console.warn(`botframework-webchat: ${name}.middleware must be created using its factory function`);
 
                 return false;
               }
 
               const result = middleware(name);
 
-              if (typeof result !== 'function' && result) {
+              if (typeof result !== 'function' && result !== false) {
                 console.warn(`botframework-webchat: ${name}.middleware must return enhancer function or false`);
 
                 return false;
