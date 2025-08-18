@@ -3,7 +3,7 @@ export {
   ActivityPolyMiddlewareProvider,
   ActivityPolyMiddlewareProxy,
   createActivityPolyMiddleware,
-  extractActivityPolyMiddleware,
+  extractActivityEnhancer,
   useBuildRenderActivityCallback,
   type ActivityPolyMiddleware,
   type ActivityPolyMiddlewareHandler,

@@ -3,7 +3,7 @@ export {
   ActivityPolyMiddlewareProvider,
   ActivityPolyMiddlewareProxy,
   createActivityPolyMiddleware,
-  extractActivityPolyMiddleware,
+  extractActivityEnhancer,
   useBuildRenderActivityCallback,
   type ActivityPolyMiddleware,
   type ActivityPolyMiddlewareHandler,
@@ -18,3 +18,4 @@ export {
 // TODO: [P0] Add tests for nesting `polyMiddleware`.
 export { default as PolyMiddlewareComposer } from './PolyMiddlewareComposer';
 export { type PolyMiddleware } from './types/PolyMiddleware';
+
