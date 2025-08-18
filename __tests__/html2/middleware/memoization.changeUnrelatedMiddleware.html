@@ -75,6 +75,8 @@
             })
         );
 
+        // TODO: We should update the test to use another type of polyMiddleware to show something actually changed.
+        //       Currently, we only have activityPolyMiddleware, hard to tell if the test is testing things properly.
         const dummyPolyMiddleware = init => init === 'dummy' && (next => request => next(request));
 
         WebChat.renderWebChat(

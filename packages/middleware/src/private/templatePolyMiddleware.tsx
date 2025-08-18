@@ -58,9 +58,7 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
 
   const warnInvalidExtraction = warnOnce(`Middleware passed for extraction of "${name}" must be an array of function`);
 
-  const extractMiddleware = (
-    middleware: readonly TemplatedMiddleware[] | undefined
-  ): readonly TemplatedMiddleware[] => {
+  const extractEnhancer = (middleware: readonly TemplatedMiddleware[] | undefined): readonly TemplatedEnhancer[] => {
     if (middleware) {
       if (isArrayOfFunction(middleware)) {
         return Object.freeze(
@@ -81,7 +79,6 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
               return result;
             })
             .filter((enhancer): enhancer is ReturnType<TemplatedMiddleware> => !!enhancer)
-            .map(enhancer => () => enhancer)
         );
       }
 
@@ -112,7 +109,7 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
 
   return {
     createMiddleware,
-    extractMiddleware,
+    extractEnhancer,
     Provider: TemplatedProvider as typeof TemplatedProvider & InferenceHelper<Request, Props>,
     Proxy,
     reactComponent,

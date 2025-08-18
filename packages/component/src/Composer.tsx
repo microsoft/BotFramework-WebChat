@@ -447,14 +447,22 @@ const InternalComposer = ({
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]
   );
 
+  const polyMiddlewareForLegacyActivityMiddleware = useMemo<readonly PolyMiddleware[]>(
+    () =>
+      Object.freeze([
+        createActivityPolyMiddlewareFromLegacy(LegacyActivityBridge, () => null, ...patchedActivityMiddleware)
+      ]),
+    [patchedActivityMiddleware]
+  );
+
   const polyMiddleware = useMemo<readonly PolyMiddleware[]>(
     () =>
       Object.freeze([
         // TODO: Add <FallbackComponent>.
         ...(polyMiddlewareFromProps || []),
-        createActivityPolyMiddlewareFromLegacy(LegacyActivityBridge, () => null, ...patchedActivityMiddleware)
+        ...polyMiddlewareForLegacyActivityMiddleware
       ]),
-    [patchedActivityMiddleware, polyMiddlewareFromProps]
+    [polyMiddlewareForLegacyActivityMiddleware, polyMiddlewareFromProps]
   );
 
   return (

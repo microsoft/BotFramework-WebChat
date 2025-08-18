@@ -13,7 +13,8 @@ import {
   type InferInput
 } from 'valibot';
 
-import { ActivityPolyMiddlewareProvider, extractActivityPolyMiddleware } from './activityPolyMiddleware';
+import { ActivityPolyMiddlewareProvider, extractActivityEnhancer } from './activityPolyMiddleware';
+import useMemoWithPrevious from './internal/useMemoWithPrevious';
 import { PolyMiddleware } from './types/PolyMiddleware';
 
 const polyMiddlewareComposerPropsSchema = pipe(
@@ -34,7 +35,20 @@ function PolyMiddlewareComposer(props: PolyMiddlewareComposerProps) {
 
   // TODO: [P0] Add tests, one type of middleware change, should not affect the other type.
   //            Probably we will need to have a special <ActivityProvider> that take enhancer instead of middleware.
-  const activityPolyMiddleware = useMemo(() => extractActivityPolyMiddleware(middleware), [middleware]);
+  const activityEnhancers = useMemoWithPrevious<ReturnType<typeof extractActivityEnhancer>>(
+    (prevActivityEnhancers = []) => {
+      const activityEnhancers = extractActivityEnhancer(middleware);
+
+      // Checks for array equality, return previous version if nothing has changed.
+      return prevActivityEnhancers.length === activityEnhancers.length &&
+        activityEnhancers.every((middleware, index) => Object.is(middleware, prevActivityEnhancers.at(index)))
+        ? prevActivityEnhancers
+        : activityEnhancers;
+    },
+    [middleware]
+  );
+
+  const activityPolyMiddleware = useMemo(() => activityEnhancers.map(enhancer => () => enhancer), [activityEnhancers]);
 
   // Didn't thoroughly think through this part yet, but I am using the first approach for now:
 

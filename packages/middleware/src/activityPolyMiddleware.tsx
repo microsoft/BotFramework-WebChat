@@ -15,7 +15,7 @@ import templatePolyMiddleware, {
 
 const {
   createMiddleware: createActivityPolyMiddleware,
-  extractMiddleware: extractActivityPolyMiddleware,
+  extractEnhancer: extractActivityEnhancer,
   Provider: ActivityPolyMiddlewareProvider,
   Proxy,
   reactComponent: activityComponent,
@@ -53,7 +53,7 @@ export {
   ActivityPolyMiddlewareProvider,
   ActivityPolyMiddlewareProxy,
   createActivityPolyMiddleware,
-  extractActivityPolyMiddleware,
+  extractActivityEnhancer,
   useBuildRenderActivityCallback,
   type ActivityPolyMiddleware,
   type ActivityPolyMiddlewareHandler,
