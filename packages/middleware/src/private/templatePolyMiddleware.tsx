@@ -11,7 +11,7 @@ import {
   type ProviderProps,
   type ProxyProps
 } from 'react-chain-of-responsibility/preview';
-import { array, check, function_, pipe, safeParse, type InferOutput } from 'valibot';
+import { array, check, function_, parse, pipe, safeParse, type InferOutput } from 'valibot';
 
 const arrayOfFunctionSchema = array(function_());
 
@@ -37,17 +37,21 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
 
   const middlewareSchema = pipe(
     function_(),
-    check(value => middlewareFactoryMarker in value)
+    check(value => value === BYPASS_ENHANCER || middlewareFactoryMarker in value)
   );
 
   const createMiddleware = (enhancer: TemplatedEnhancer): TemplatedMiddleware => {
-    const factory: TemplatedMiddleware = init => (init === name ? enhancer : BYPASS_ENHANCER);
+    parse(function_(`botframework-webchat: ${name} enhancer must be of type function.`), enhancer);
+
+    // Clone the enhancer function and add a marker.
+    const markedEnhancer = enhancer.bind(undefined);
 
     // This is for checking if the middleware is created via factory function or not.
     // We enforce middleware to be created using factory function.
+    (markedEnhancer as any)[middlewareFactoryMarker satisfies symbol] = undefined;
 
-    // TODO: Consider using valibot for validation, plus using "Symbol in object" check.
-    (factory as any)[middlewareFactoryMarker satisfies symbol] = middlewareFactoryMarker;
+    // TODO: [P*] Remove one-use.
+    const factory: TemplatedMiddleware = init => (init === name ? markedEnhancer : BYPASS_ENHANCER);
 
     return factory;
   };
@@ -62,16 +66,14 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
         return Object.freeze(
           middleware
             .map(middleware => {
-              if (!safeParse(middlewareSchema, middleware).success) {
-                console.warn(`botframework-webchat: ${name}.middleware must be created using its factory function`);
-
-                return false;
-              }
-
               const result = middleware(name);
 
               if (typeof result !== 'function' && result !== false) {
                 console.warn(`botframework-webchat: ${name}.middleware must return enhancer function or false`);
+
+                return false;
+              } else if (!safeParse(middlewareSchema, result).success) {
+                console.warn(`botframework-webchat: ${name}.middleware must be created using its factory function`);
 
                 return false;
               }
