@@ -21,6 +21,8 @@ const InternalLinkImpl = ({ children, href }: LinkProps) => <a href={href}>{chil
 
 // User story for using templateMiddleware as a building block for uber middleware.
 test('an uber middleware', () => {
+  jest.spyOn(console, 'warn');
+
   const buttonTemplate = templatePolyMiddleware<void, ButtonProps>('Button' as any);
   const {
     createMiddleware: createButtonMiddleware,
@@ -96,4 +98,6 @@ test('an uber middleware', () => {
   </a>
 </div>
 `);
+
+  expect(console.warn).not.toHaveBeenCalled();
 });
