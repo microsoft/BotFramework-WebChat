@@ -21,7 +21,7 @@ import { WebChatTheme } from '../components/theme';
 import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
 import { createStyles } from '../styles';
 import VariantComposer, { VariantList } from './VariantComposer';
-import PartGroupingWithHeader from '../components/activity/PartGroupingWithHeader';
+import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
 
 const { ThemeProvider } = Components;
 
@@ -58,7 +58,7 @@ const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
   createActivityGroupingMiddleware(next => request => {
     if (request.groupingName === 'part') {
-      return PartGroupingWithHeader;
+      return PartGroupDecorator;
     }
     return next(request);
   }),

@@ -68,6 +68,7 @@ const bubblePropsSchema = pipe(
     'aria-hidden': optional(boolean()),
     children: optional(reactNode()),
     className: optional(string()),
+    contentClassName: optional(string()),
     fromUser: optional(boolean()),
     nub: optional(union([boolean(), literal('hidden')]))
   }),
@@ -81,6 +82,7 @@ function Bubble(props: BubbleProps) {
     'aria-hidden': ariaHidden,
     children,
     className,
+    contentClassName,
     fromUser,
     nub = false
   } = validateProps(bubblePropsSchema, props);
@@ -131,7 +133,7 @@ function Bubble(props: BubbleProps) {
       )}
     >
       <div className="webchat__bubble__nub-pad" />
-      <div className="webchat__bubble__content">{children}</div>
+      <div className={classNames('webchat__bubble__content', contentClassName)}>{children}</div>
       {nub === true && acuteNubSVG(nubSize, borderWidth, side, !isZeroOrPositive(nubOffset))}
     </div>
   );

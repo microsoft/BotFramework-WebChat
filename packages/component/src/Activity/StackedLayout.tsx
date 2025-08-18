@@ -23,6 +23,7 @@ import StackedLayoutStatus from './StackedLayoutStatus';
 import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 
 import styles from './StackedLayout.module.css';
+import { ComponentIcon } from '../Icon';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useGetKeyByActivity, useStyleOptions } = hooks;
 
@@ -159,9 +160,30 @@ const StackedLayout = ({
   const showAvatar = !isInGroup && showCallout && hasAvatar && !!renderAvatar;
   const showNub = !isInGroup && showCallout && hasNub && (topAlignedCallout || !attachments?.length);
 
+  const showStatus = !!messageThing?.creativeWorkStatus || isInGroup;
+
+  const messageStatus = useMemo(
+    () =>
+      showStatus && (
+        <div
+          className={cx(classNames['stacked-layout__message-status'], {
+            [classNames['stacked-layout__message-status--final']]: messageThing?.creativeWorkStatus === 'published'
+          })}
+        >
+          <ComponentIcon
+            appearance="text"
+            className={classNames['stacked-layout__message-status-complete-icon']}
+            icon="checkmark-circle"
+          />
+        </div>
+      ),
+    [classNames, messageThing?.creativeWorkStatus, showStatus]
+  );
+
   const renderMainBubbleContent = useCallback(
     (title = '') => (
       <div className={classNames['stacked-layout__bubble']}>
+        {messageStatus}
         {title && <div className={classNames['stacked-layout__title']}>{title}</div>}
         {activityDisplayText &&
           renderAttachment({
@@ -173,7 +195,7 @@ const StackedLayout = ({
           })}
       </div>
     ),
-    [activity, activityDisplayText, classNames, renderAttachment]
+    [activity, activityDisplayText, classNames, messageStatus, renderAttachment]
   );
 
   const attachmentChildren = useMemo(() => {
@@ -250,14 +272,17 @@ const StackedLayout = ({
 
   const renderCollapsibleBubbleContent = useCallback(
     (title = '') => (
-      <CollapsibleContent
-        summary={title}
-        summaryClassName={cx(classNames['stacked-layout__title'], classNames['stacked-layout__title--collapsible'])}
-      >
-        <div className={classNames['stacked-layout__attachment-list']}>{attachmentChildren}</div>
-      </CollapsibleContent>
+      <div className={classNames['stacked-layout__bubble']}>
+        {messageStatus}
+        <CollapsibleContent
+          summary={title}
+          summaryClassName={cx(classNames['stacked-layout__title'], classNames['stacked-layout__title--collapsible'])}
+        >
+          <div className={classNames['stacked-layout__attachment-list']}>{attachmentChildren}</div>
+        </CollapsibleContent>
+      </div>
     ),
-    [attachmentChildren, classNames]
+    [attachmentChildren, classNames, messageStatus]
   );
 
   const renderBubbleContent = isCollapsible ? renderCollapsibleBubbleContent : renderMainBubbleContent;

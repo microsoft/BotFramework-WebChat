@@ -455,7 +455,6 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             <TranscriptFocusTerminator ref={terminatorRef} role="note" tabIndex={0} />
           </Fragment>
         )}
-        <TranscriptFocusIndicator type="transcript" />
       </TranscriptFocusArea>
     );
   }

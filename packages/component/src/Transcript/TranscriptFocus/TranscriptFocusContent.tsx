@@ -3,6 +3,7 @@ import React, { forwardRef, type HTMLAttributes } from 'react';
 import { useStyles } from 'botframework-webchat-styles/react';
 
 import styles from './TranscriptFocus.module.css';
+import TranscriptFocusIndicator from './TranscriptFocusIndicator';
 
 type TranscriptFocusContentProps = HTMLAttributes<HTMLDivElement> &
   Readonly<{
@@ -11,7 +12,7 @@ type TranscriptFocusContentProps = HTMLAttributes<HTMLDivElement> &
   }>;
 
 const TranscriptFocusContent = forwardRef<HTMLDivElement, TranscriptFocusContentProps>(
-  ({ className, tag: Tag = 'div', focused = false, ...props }, ref) => {
+  ({ className, children, tag: Tag = 'div', focused = false, ...props }, ref) => {
     const classNames = useStyles(styles);
 
     return (
@@ -23,7 +24,10 @@ const TranscriptFocusContent = forwardRef<HTMLDivElement, TranscriptFocusContent
           className
         )}
         ref={ref}
-      />
+      >
+        <div className={classNames['transcript-focus-area__content-root']}>{children}</div>
+        <TranscriptFocusIndicator />
+      </Tag>
     );
   }
 );

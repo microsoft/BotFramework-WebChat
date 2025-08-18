@@ -31,6 +31,10 @@
     .fui-FluentProvider {
       height: 100%;
     }
+
+    .theme.variant-copilot {
+      --webchat__color--surface: var(--webchat-colorGrey98);
+    }
   </style>
 </head>
 
@@ -232,6 +236,7 @@ plot_sine_waves()`;
         {
           entities: [
             {
+              ...aiMessageEntity,
               '@id': '',
               '@type': 'Message',
               type: 'https://schema.org/Message',
@@ -248,6 +253,7 @@ plot_sine_waves()`;
         {
           entities: [
             {
+              ...aiMessageEntity,
               '@id': '',
               '@type': 'Message',
               type: 'https://schema.org/Message',
@@ -268,6 +274,7 @@ plot_sine_waves()`;
               '@type': 'Message',
               type: 'https://schema.org/Message',
               abstract: 'Writing plot code',
+              creativeWorkStatus: 'published',
               isPartOf: {
                 '@id': 'h-00001',
                 '@type': 'HowTo'
@@ -279,8 +286,9 @@ plot_sine_waves()`;
         },
         {
           channelData: {
+            streamId: 'a-00003',
             streamSequence: 1,
-            streamType: 'chunk'
+            streamType: 'informative',
           },
           entities: [
             {
@@ -300,12 +308,12 @@ plot_sine_waves()`;
               },
             }
           ],
-          id: 'a-00004'
+          id: 'a-00004',
         },
         {
           channelData: {
             streamId: 'a-00004',
-            streamType: 'final'
+            streamType: 'final',
           },
           entities: [
             {
@@ -334,35 +342,54 @@ plot_sine_waves()`;
         }
       ];
 
-      directLine.emulateIncomingActivity(activities[0]);
-      directLine.emulateIncomingActivity(activities[1]);
-      directLine.emulateIncomingActivity(activities[2]);
-      directLine.emulateIncomingActivity(activities[3]);
-      directLine.emulateIncomingActivity(activities[4]);
-      directLine.emulateIncomingActivity(activities[5]);
+      // directLine.emulateIncomingActivity(activities[0]);
+      // directLine.emulateIncomingActivity(activities[1]);
+      // directLine.emulateIncomingActivity(activities[2]);
+      // directLine.emulateIncomingActivity(activities[3]);
+      // directLine.emulateIncomingActivity(activities[4]);
+      // directLine.emulateIncomingActivity(activities[5]);
 
       directLine.emulateIncomingActivity({
         ...activities[0],
         id: 'a-00001-1',
         entities: [{
           ...activities[0].entities[0],
-          isPartOf: {
-            '@id': 'h-00002',
-            '@type': 'HowTo',
-          }
+          creativeWorkStatus: 'published',
+          isPartOf: null
         }],
       });
+
       directLine.emulateIncomingActivity({
-        ...activities[1],
+        ...activities[5],
         id: 'a-00001-2',
         entities: [{
           ...activities[0].entities[0],
-          isPartOf: {
-            '@id': 'h-00002',
-            '@type': 'HowTo',
-          }
+          creativeWorkStatus: 'published',
+          keywords: ['Collapsible'],
+          isPartOf: null
         }],
-      });/*
+      });
+
+
+      directLine.emulateIncomingActivity(activities[0]);
+      directLine.emulateIncomingActivity(activities[1]);
+      directLine.emulateIncomingActivity(activities[2]);
+      directLine.emulateIncomingActivity(activities[3]);
+      // directLine.emulateIncomingActivity(activities[4]);
+      directLine.emulateIncomingActivity(activities[5]);
+
+      // directLine.emulateIncomingActivity({
+      //   ...activities[1],
+      //   id: 'a-00001-2',
+      //   entities: [{
+      //     ...activities[0].entities[0],
+      //     isPartOf: {
+      //       '@id': 'h-00002',
+      //       '@type': 'HowTo',
+      //     }
+      //   }],
+      // });
+      /*
       directLine.emulateIncomingActivity({
         from: { role: 'bot' },
         entities: [{

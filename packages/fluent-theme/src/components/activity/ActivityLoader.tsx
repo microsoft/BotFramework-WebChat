@@ -8,15 +8,16 @@ import styles from './ActivityLoader.module.css';
 
 function FluentActivityLoader({
   children,
+  className,
   showLoader = true
-}: Readonly<{ children?: ReactNode | undefined; showLoader?: boolean }>) {
+}: Readonly<{ children?: ReactNode | undefined; className?: string | undefined; showLoader?: boolean }>) {
   const classNames = useStyles(styles);
   const variantClassName = useVariantClassName(classNames);
 
   return (
     <Fragment>
       {children}
-      {showLoader && <SlidingDots className={cx(classNames['activity-loader'], variantClassName)} />}
+      {showLoader && <SlidingDots className={cx(classNames['activity-loader'], variantClassName, className)} />}
     </Fragment>
   );
 }

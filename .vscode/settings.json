@@ -4,5 +4,6 @@
     "packages/*/lib": false
   },
   "typescript.tsdk": "node_modules/typescript/lib",
-  "prettier.prettierPath": "./node_modules/prettier"
+  "prettier.prettierPath": "./node_modules/prettier",
+  "oxc.enable": true
 }

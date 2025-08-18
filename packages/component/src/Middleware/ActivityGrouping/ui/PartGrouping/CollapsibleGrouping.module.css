@@ -5,7 +5,6 @@
   font-family: var(--webchat__font--primary);
   font-style: normal;
   font-weight: 400;
-  margin-inline: var(--webchat__padding--regular);
   max-width: var(--webchat__max-width--message-bubble);
   min-width: var(--webchat__min-width--message-bubble);
   overflow: clip;
@@ -14,7 +13,8 @@
 }
 
 :global(.webchat) .collapsible-grouping__header {
-  border-block-end: var(--webchat__border-width--bubble) var(--webchat__border-style--bubble) var(--webchat__border-color--bubble);
+  border-block-end: var(--webchat__border-width--bubble) var(--webchat__border-style--bubble)
+    var(--webchat__border-color--bubble);
   align-items: center;
   display: flex;
   gap: var(--webchat__padding--regular);
@@ -27,7 +27,8 @@
   font-size: 1.1em;
 }
 
-:global(.webchat) .collapsible-grouping__toggle {}
+:global(.webchat) .collapsible-grouping__toggle {
+}
 
 :global(.webchat) .collapsible-grouping__chevron {
   transition: transform 0.2s ease;

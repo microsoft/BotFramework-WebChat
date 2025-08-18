@@ -2,20 +2,35 @@
 
 :global(.webchat) .transcript-focus-area {
   outline: 0;
+  display: grid;
+  grid-template-areas: 'content';
 
-  .transcript-focus-area__indicator, .transcript-focus-area__transcript-indicator {
+  .transcript-focus-area__indicator,
+  .transcript-focus-area__transcript-indicator {
     box-sizing: border-box;
     font-size: 0;
-    height: 0;
-    left: 0;
+    /* height: 0; */
+    /* left: 0; */
     pointer-events: none;
-    position: absolute;
+    /* position: absolute;
     top: 0;
-    width: 0;
+    width: 0; */
+    grid-area: content;
+    min-height: 0;
   }
 
-  &:focus .transcript-focus-area__content--focused .transcript-focus-area__indicator {
-    border-color: var(--webchat__border-color--transcript-activity-visual-keyboard-indicator);
+  .transcript-focus-area__root,
+  .transcript-focus-area__content-root {
+    grid-area: content;
+    min-height: 0;
+  }
+
+  .transcript-focus-area__content-root {
+    padding-top: calc(var(--webchat__padding--regular) / 2);
+  }
+
+  &:focus .transcript-focus-area__content--focused > .transcript-focus-area__indicator {
+    border-color: var(--webchat__color--transcript-activity-visual-keyboard-indicator);
     border-style: var(--webchat__border-style--transcript-activity-visual-keyboard-indicator);
     border-width: var(--webchat__border-width--transcript-activity-visual-keyboard-indicator);
     height: calc(100% - var(--webchat__padding--regular) / 2);
@@ -23,21 +38,20 @@
     width: calc(100% - var(--webchat__padding--regular));
   }
 
-  &:focus .transcript-focus-area__content--focused .transcript-focus-area__content .transcript-focus-area__indicator {
-    opacity: 0;
-  }
-
-  &:focus-visible .transcript-focus-area__transcript-indicator, .transcript-focus-area__terminator:focus-visible + .transcript-focus-area__transcript-indicator {
+  &:focus-visible .transcript-focus-area__transcript-indicator,
+  .transcript-focus-area__terminator:focus-visible + .transcript-focus-area__transcript-indicator {
     border-color: var(--webchat__border-color--transcript-visual-keyboard-indicator);
     border-style: var(--webchat__border-style--transcript-visual-keyboard-indicator);
     border-width: var(--webchat__border-width--transcript-visual-keyboard-indicator);
-    height: 100%;
-    width: 100%;
+    /* height: 100%;
+    width: 100%; */
   }
 
   .transcript-focus-area__content {
-    padding-top: calc(var(--webchat__padding--regular) / 2);
-    position: relative;
+    /* padding-top: calc(var(--webchat__padding--regular) / 2); */
+    /* position: relative; */
+    display: grid;
+    grid-template-areas: 'content';
 
     &:first-child {
       margin-top: calc(var(--webchat__padding--regular) / 2);
@@ -50,17 +64,19 @@
 
   /* When the content is focused as active descendant, scrollIntoView() will scroll this invisible div into view. */
   .transcript-focus-area__content-active-descendant {
-    height: 100%;
-    left: 0;
+    /* height: 100%; */
+    /* left: 0; */
     margin-top: calc(var(--webchat__padding--regular) / -2);
     padding-bottom: calc(var(--webchat__padding--regular) / 2);
     /* The bounding box is expanded to both top and bottom to scroll focus indicator into view. */
     /* We should ignore clicks to make sure this expansion don't register click as focus. */
     /* Otherwise, when clicking on the very bottom edge of the activity, it will focus on next activity instead. */
     pointer-events: none;
-    position: absolute;
-    top: 0;
+    /* position: absolute; */
+    /* top: 0; */
     width: 100%;
+    grid-area: content;
+    min-height: 0;
   }
 
   .transcript-focus-area__content-body:not(:empty) {
@@ -68,19 +84,23 @@
   }
 
   .transcript-focus-area__terminator {
-    bottom: 0;
-    height: 0;
-    outline: 0;
-    position: relative;
+    /* bottom: 0; */
+    /* height: 0; */
+    /* outline: 0; */
+    /* position: relative; */
     width: 100%;
+    display: grid;
+    grid-template-areas: 'content';
   }
 
   .transcript-focus-area__terminator-body {
-    bottom: 0;
+    /* bottom: 0; */
     display: flex;
     justify-content: center;
-    position: absolute;
+    /* position: absolute; */
     width: 100%;
+    grid-area: content;
+    min-height: 0;
   }
 
   .transcript-focus-area__terminator:not(:focus) .transcript-focus-area__terminator-body {

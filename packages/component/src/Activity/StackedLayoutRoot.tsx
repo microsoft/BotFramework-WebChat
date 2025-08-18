@@ -11,6 +11,7 @@ type StackedLayoutRootProps = Readonly<{
   fromUser?: boolean | undefined;
   hideAvatar?: boolean | undefined;
   hideNub?: boolean | undefined;
+  isGroup?: boolean | undefined;
   noMessage?: boolean | undefined;
   showAvatar?: boolean | undefined;
   showNub?: boolean | undefined;
@@ -25,6 +26,7 @@ const StackedLayoutRoot = memo(
     fromUser,
     hideAvatar,
     hideNub,
+    isGroup,
     noMessage,
     showAvatar,
     showNub,
@@ -40,6 +42,7 @@ const StackedLayoutRoot = memo(
           [classNames['stacked-layout--extra-trailing']]: extraTrailing,
           [classNames['stacked-layout--hide-avatar']]: hideAvatar && !showAvatar,
           [classNames['stacked-layout--hide-nub']]: hideNub,
+          [classNames['stacked-layout--group']]: isGroup,
           [classNames['stacked-layout--no-message']]: !noMessage,
           [classNames['stacked-layout--show-avatar']]: showAvatar,
           [classNames['stacked-layout--show-nub']]: showNub,

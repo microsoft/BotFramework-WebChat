@@ -113,7 +113,6 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
           {children}
         </FocusTrap>
         <TranscriptFocusContentActiveDescendant id={groupingActivityDescendantId} />
-        <TranscriptFocusIndicator />
       </TranscriptFocusContentBody>
     </TranscriptFocusContent>
   );
@@ -157,7 +156,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const [{ initials: botInitials }] = useAvatarForBot();
 
   const hasAvatar = botInitials || typeof botInitials === 'string';
-  const showAvatar = !!renderAvatar && hasAvatar && showCallout;
+  const showAvatar = showCallout && hasAvatar && !!renderAvatar;
   const [{ bubbleNubOffset }] = useStyleOptions();
 
   const topAlignedCallout = isZeroOrPositive(bubbleNubOffset);
@@ -169,7 +168,12 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
 
   return (
     <FocusablePartGroupingActivity activity={firstActivity}>
-      <StackedLayoutRoot hideAvatar={!showAvatar} showAvatar={hasAvatar && showAvatar} topCallout={topAlignedCallout}>
+      <StackedLayoutRoot
+        hideAvatar={hasAvatar && !showAvatar}
+        isGroup={true}
+        showAvatar={showAvatar}
+        topCallout={topAlignedCallout}
+      >
         <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
           <CollapsibleGrouping isOpen={isGroupOpen} onToggle={setIsGroupOpen} title={lastMessage?.abstract || ''}>
             {children}

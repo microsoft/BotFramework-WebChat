@@ -1,5 +1,6 @@
 :global(.webchat) .collapsible-content {
   display: flex;
+  flex-direction: column;
 
   &[open] .collapsible-content__chevron {
     transform: rotate(180deg);

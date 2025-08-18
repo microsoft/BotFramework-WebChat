@@ -157,7 +157,6 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
         // TODO: Should build `webChatActivitySchema`.
         <SpeakActivity activity={activity as WebChatActivity & { channelData: { speechSynthesisUtterance?: any } }} />
       )}
-      <TranscriptFocusIndicator />
     </TranscriptFocusContent>
   );
 });
