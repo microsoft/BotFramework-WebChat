@@ -15,5 +15,6 @@ export {
   type ActivityPolyMiddlewareRequest
 } from './activityPolyMiddleware';
 
+// TODO: [P0] Add tests for nesting `polyMiddleware`.
 export { default as PolyMiddlewareComposer } from './PolyMiddlewareComposer';
 export { type PolyMiddleware } from './types/PolyMiddleware';
