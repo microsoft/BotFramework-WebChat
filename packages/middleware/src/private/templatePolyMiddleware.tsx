@@ -52,10 +52,7 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
     // We enforce middleware to be created using factory function.
     Object.defineProperty(taggedEnhancer, middlewareFactoryTag, { enumerable: false });
 
-    // TODO: [P*] Remove one-use.
-    const factory: TemplatedMiddleware = init => (init === name ? taggedEnhancer : BYPASS_ENHANCER);
-
-    return factory;
+    return init => (init === name ? taggedEnhancer : BYPASS_ENHANCER);
   };
 
   const warnInvalidExtraction = warnOnce(`Middleware passed for extraction of "${name}" must be an array of function`);
