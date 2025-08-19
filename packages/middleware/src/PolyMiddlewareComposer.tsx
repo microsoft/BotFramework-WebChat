@@ -33,8 +33,6 @@ type PolyMiddlewareComposerProps = Readonly<InferInput<typeof polyMiddlewareComp
 function PolyMiddlewareComposer(props: PolyMiddlewareComposerProps) {
   const { children, middleware } = validateProps(polyMiddlewareComposerPropsSchema, props);
 
-  // TODO: [P0] Add tests, one type of middleware change, should not affect the other type.
-  //            Probably we will need to have a special <ActivityProvider> that take enhancer instead of middleware.
   const activityEnhancers = useMemoWithPrevious<ReturnType<typeof extractActivityEnhancer>>(
     (prevActivityEnhancers = []) => {
       const activityEnhancers = extractActivityEnhancer(middleware);

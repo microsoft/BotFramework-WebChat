@@ -94,6 +94,7 @@ function createActivityPolyMiddlewareFromLegacy(
       const legacyResult = legacyHandler({ activity, nextVisibleActivity: undefined as any });
 
       if (!legacyResult) {
+        // Legacy cannot fallback to poly middleware due to signature incompatibility.
         return undefined;
       }
 

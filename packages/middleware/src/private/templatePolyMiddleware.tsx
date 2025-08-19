@@ -45,7 +45,7 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
   const createMiddleware = (enhancer: TemplatedEnhancer): TemplatedMiddleware => {
     parse(function_(`botframework-webchat: ${name} enhancer must be of type function.`), enhancer);
 
-    // Clone the enhancer function and tag it.
+    // Clone the enhancer function and tag it, so we leave the original enhancer as-is.
     const taggedEnhancer = enhancer.bind(undefined);
 
     // This is for checking if the middleware is created via factory function or not.
