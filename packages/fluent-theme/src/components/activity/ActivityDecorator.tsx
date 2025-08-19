@@ -1,24 +1,14 @@
 import { WebChatActivity } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, { ReactNode, memo } from 'react';
-import useVariants from '../../private/useVariants';
 import { useStyles, useVariantClassName } from '../../styles';
 import styles from './ActivityDecorator.module.css';
-import CopilotMessageHeader from './CopilotMessageHeader';
 
-function ActivityDecorator({ activity, children }: Readonly<{ activity: WebChatActivity; children: ReactNode }>) {
+function ActivityDecorator({ children }: Readonly<{ activity: WebChatActivity; children: ReactNode }>) {
   const classNames = useStyles(styles);
-  const variants = useVariants();
   const variantClassName = useVariantClassName(styles);
 
-  const shouldRenderHeader = variants.includes('copilot') && activity?.from?.role === 'bot' && !!children;
-
-  return (
-    <div className={cx(classNames['activity-decorator'], variantClassName)}>
-      {shouldRenderHeader && <CopilotMessageHeader activity={activity} />}
-      {children}
-    </div>
-  );
+  return <div className={cx(classNames['activity-decorator'], variantClassName)}>{children}</div>;
 }
 
 ActivityDecorator.displayName = 'ActivityDecorator';
