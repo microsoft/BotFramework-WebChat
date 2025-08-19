@@ -1,5 +1,5 @@
 import { type EmptyObject } from 'type-fest';
-import { lazy, literal, looseObject, optional, parse, pipe, string, union, type ObjectEntries } from 'valibot';
+import { lazy, literal, looseObject, optional, parse, pipe, string, type ObjectEntries } from 'valibot';
 
 import { action, type Action } from './Action';
 import orgSchemaProperties from './private/orgSchemaProperties';

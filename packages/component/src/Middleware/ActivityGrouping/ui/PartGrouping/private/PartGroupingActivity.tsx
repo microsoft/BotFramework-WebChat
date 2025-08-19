@@ -15,7 +15,7 @@ import useGetGroupDescendantIdByActivityKey from '../../../../../providers/Trans
 import {
   TranscriptFocusContent,
   TranscriptFocusContentActiveDescendant,
-  TranscriptFocusContentBody,
+  TranscriptFocusContentBody
 } from '../../../../../Transcript/TranscriptFocus';
 import useFocusByGroupKey from '../../../../../providers/TranscriptFocus/useFocusByGroupKey';
 import FocusTrap from '../../../../../Transcript/FocusTrap';
@@ -94,10 +94,7 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
   );
 
   return (
-    <TranscriptFocusContent
-      focused={isActiveDescendant}
-      ref={groupCallbackRef}
-    >
+    <TranscriptFocusContent focused={isActiveDescendant} ref={groupCallbackRef}>
       <TranscriptFocusContentBody>
         <FocusTrap
           onFocus={handleDescendantFocus}
