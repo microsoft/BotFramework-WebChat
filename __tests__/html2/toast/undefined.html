@@ -47,7 +47,7 @@
 
           await pageConditions.uiConnected();
           await pageConditions.toastShown(1);
-          await host.snapshot();
+          await host.snapshot('local');
         },
         { ignoreErrors: true }
       );
