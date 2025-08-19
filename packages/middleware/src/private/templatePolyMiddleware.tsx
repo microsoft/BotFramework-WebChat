@@ -50,7 +50,7 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
 
     // This is for checking if the middleware is created via factory function or not.
     // We enforce middleware to be created using factory function.
-    (taggedEnhancer as any)[middlewareFactoryTag satisfies symbol] = undefined;
+    Object.defineProperty(taggedEnhancer, middlewareFactoryTag, { enumerable: false });
 
     // TODO: [P*] Remove one-use.
     const factory: TemplatedMiddleware = init => (init === name ? taggedEnhancer : BYPASS_ENHANCER);
