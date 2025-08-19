@@ -35,3 +35,15 @@
   content: 'Status';
   left: -2px;
 }
+
+.grouping--part {
+  border-color: darkorange;
+}
+
+.grouping--part::after {
+  background-color: darkorange;
+  color: white;
+  content: 'Part';
+  top: unset;
+  bottom: -2px;
+}
