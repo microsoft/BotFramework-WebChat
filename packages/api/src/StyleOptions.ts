@@ -215,7 +215,7 @@ type StyleOptions = {
   connectivityTextSize?: number | string;
   failedConnectivity?: number | string;
   slowConnectivity?: string;
-  notificationText?: string; 
+  notificationText?: string;
 
   /**
    * Slow connection status will render after x amount of time with no service response

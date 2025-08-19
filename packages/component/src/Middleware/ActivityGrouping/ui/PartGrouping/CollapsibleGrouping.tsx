@@ -1,14 +1,15 @@
 import { useStyles } from 'botframework-webchat-styles/react';
 import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
 import cx from 'classnames';
+import random from 'math-random';
 import React, { memo, useCallback, useRef, useState } from 'react';
 import { boolean, custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
-import random from 'math-random';
+import { useRefFrom } from 'use-ref-from';
+
+import ActivityButton from '../../../../Attachment/Text/private/ActivityButton';
+import { ComponentIcon } from '../../../../Icon';
 
 import styles from './CollapsibleGrouping.module.css';
-import { ComponentIcon } from '../../../../Icon';
-import ActivityButton from '../../../../Attachment/Text/private/ActivityButton';
-import { useRefFrom } from 'use-ref-from';
 
 const collapsibleGroupingPropsSchema = pipe(
   object({

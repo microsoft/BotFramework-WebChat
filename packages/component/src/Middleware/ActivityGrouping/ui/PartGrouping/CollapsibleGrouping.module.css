@@ -36,12 +36,12 @@
 :global(.webchat) .collapsible-grouping__content {
   display: flex;
   flex-direction: column;
-  visibility: hidden;
   height: 0;
   interpolate-size: allow-keywords;
-  transition: visibility 0s, height 0.2s ease;
   margin: calc(var(--webchat__padding--regular) * -1);
   padding: var(--webchat__padding--regular);
+  transition: visibility 0s, height 0.2s ease;
+  visibility: hidden;
 }
 
 :global(.webchat) .collapsible-grouping__content--open {
