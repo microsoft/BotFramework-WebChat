@@ -2,6 +2,7 @@
 import { type ActivityMiddleware, type StyleOptions, type TypingIndicatorMiddleware } from 'botframework-webchat-api';
 import {
   createActivityBorderMiddleware,
+  createActivityGroupingMiddleware,
   DecoratorComposer,
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
@@ -20,6 +21,7 @@ import { WebChatTheme } from '../components/theme';
 import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
 import { createStyles } from '../styles';
 import VariantComposer, { VariantList } from './VariantComposer';
+import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
 
 const { ThemeProvider } = Components;
 
@@ -54,6 +56,12 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
 const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
+  createActivityGroupingMiddleware(next => request => {
+    if (request.groupingName === 'part') {
+      return PartGroupDecorator;
+    }
+    return next(request);
+  }),
   createActivityBorderMiddleware(function FluentBorderLoader({ request, Next, ...props }) {
     return (
       <ActivityLoader showLoader={props.showLoader ?? request.livestreamingState === 'preparing'}>
