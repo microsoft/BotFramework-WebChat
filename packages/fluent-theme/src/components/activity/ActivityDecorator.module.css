@@ -63,12 +63,9 @@
   --webchat__bubble--max-width: 100%;
   --webchat__bubble--min-height: 20px;
 
-  display: flex;
-  flex-flow: column nowrap;
-  gap: var(--webchat-spacingVerticalS);
-  margin-inline: var(--webchat-spacingHorizontalM);
   padding: var(--webchat-spacingVerticalMNudge) var(--webchat-spacingHorizontalM) var(--webchat-spacingVerticalM);
   position: relative;
+  margin-inline: var(--webchat-spacingHorizontalNone);
 
   :global(.stacked-layout) {
     margin: 0;
@@ -85,7 +82,7 @@
     flex-direction: column;
     gap: var(--webchat-spacingVerticalS);
     margin-block: calc(var(--webchat-spacingVerticalS) * -1);
-    margin-inline: 20px calc(var(--webchat-spacingHorizontalS) * -1);
+    margin-inline: calc(var(--webchat-spacingHorizontalS) * -1);
     padding-block: var(--webchat-spacingVerticalS);
     padding-inline: var(--webchat-spacingHorizontalS);
   }
