@@ -18,6 +18,7 @@
   .transcript-focus-area__content-root {
     grid-area: content;
     min-height: 0;
+    min-width: 0;
   }
 
   .transcript-focus-area__content-root {
