@@ -1,9 +1,11 @@
 import { type EmptyObject } from 'type-fest';
-import { lazy, literal, looseObject, optional, parse, pipe, string, type ObjectEntries } from 'valibot';
+import { lazy, literal, looseObject, optional, parse, pipe, string, union, type ObjectEntries } from 'valibot';
 
 import { action, type Action } from './Action';
 import orgSchemaProperties from './private/orgSchemaProperties';
 import orgSchemaProperty from './private/orgSchemaProperty';
+import type OneOrMany from '../../OneOrMany';
+import { creativeWork, type CreativeWork } from './CreativeWork';
 
 /**
  * The most generic type of item.
@@ -58,6 +60,13 @@ export type Thing = {
    * @see https://schema.org/url
    */
   url?: string | undefined;
+
+  /**
+   * Indicates an item or CreativeWork that this item, or CreativeWork (in some sense), is part of.
+   *
+   * @see https://schema.org/isPartOf
+   */
+  isPartOf?: OneOrMany<CreativeWork> | undefined;
 };
 
 const thingEntries = {
@@ -70,7 +79,8 @@ const thingEntries = {
   description: orgSchemaProperty(string()),
   name: orgSchemaProperty(string()),
   potentialAction: orgSchemaProperties(lazy(() => action())),
-  url: orgSchemaProperty(string())
+  url: orgSchemaProperty(string()),
+  isPartOf: orgSchemaProperties(lazy(() => creativeWork()))
 };
 
 export const thing = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
