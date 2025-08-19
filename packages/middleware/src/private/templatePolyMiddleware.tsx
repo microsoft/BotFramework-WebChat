@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import { warnOnce } from 'botframework-webchat-core';
 import { type Enhancer } from 'handler-chain';
 import React, { memo, type ReactNode } from 'react';
@@ -93,8 +95,8 @@ function templatePolyMiddleware<Request, Props extends {}>(name: string) {
     children,
     middleware
   }: {
-    children?: ReactNode | undefined;
-    middleware: readonly TemplatedMiddleware[];
+    readonly children?: ReactNode | undefined;
+    readonly middleware: readonly TemplatedMiddleware[];
   }) {
     return (
       <Provider init={name} middleware={middleware}>
