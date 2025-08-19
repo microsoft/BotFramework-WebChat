@@ -1,8 +1,8 @@
+import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
+import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
-import { reactNode } from 'botframework-webchat-react-valibot';
 import React, { memo, useCallback, useMemo, useState } from 'react';
 import { array, minLength, object, optional, pipe, readonly, transform, any, parse, type InferOutput } from 'valibot';
-import { hooks } from 'botframework-webchat-api';
 
 import usePartGroupingLogicalGroup, { getPartGropKey } from './usePartGroupingLogicalGroup';
 import CollapsibleGrouping from '../CollapsibleGrouping';

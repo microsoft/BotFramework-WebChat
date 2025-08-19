@@ -1,7 +1,8 @@
+import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
 import { type WebChatActivity, getOrgSchemaMessage } from 'botframework-webchat-core';
-import { reactNode } from 'botframework-webchat-react-valibot';
 import React, { Fragment, memo, useMemo } from 'react';
 import { any, array, minLength, object, optional, parse, pipe, readonly, transform, type InferOutput } from 'valibot';
+
 import PartGroupingContext, { type PartGroupingContextType } from './private/PartGroupingContext';
 import PartGroupingActivity from './private/PartGroupingActivity';
 

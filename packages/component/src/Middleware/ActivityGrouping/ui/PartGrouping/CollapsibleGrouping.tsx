@@ -1,5 +1,6 @@
-import { useStyles } from 'botframework-webchat-styles/react';
-import { reactNode, validateProps } from 'botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+
 import cx from 'classnames';
 import random from 'math-random';
 import React, { memo, useCallback, useRef, useState } from 'react';
