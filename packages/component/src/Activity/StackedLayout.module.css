@@ -131,8 +131,8 @@
 
     &:has(.stacked-layout__message-status) {
       grid-template:
-        'status content' 1fr
-        'status content' 1fr
+        'status content'
+        'status content'
         / min-content auto;
     }
   }
@@ -186,8 +186,8 @@
     }
     &:has(.stacked-layout__message-status--final) .stacked-layout__bubble {
       grid-template:
-        'status content' 1fr
-        'status content' 1fr
+        'status content'
+        'status content'
         / min-content auto;
     }
     &:has(.stacked-layout__message-status--final) .stacked-layout__message-status {
