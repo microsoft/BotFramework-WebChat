@@ -40,10 +40,10 @@ const StackedLayoutRoot = memo(
         className={cx('webchat__stacked-layout', classNames['stacked-layout'], {
           [classNames['stacked-layout--from-user']]: fromUser,
           [classNames['stacked-layout--extra-trailing']]: extraTrailing,
-          [classNames['stacked-layout--hide-avatar']]: hideAvatar && !showAvatar,
+          [classNames['stacked-layout--hide-avatar']]: hideAvatar,
           [classNames['stacked-layout--hide-nub']]: hideNub,
           [classNames['stacked-layout--group']]: isGroup,
-          [classNames['stacked-layout--no-message']]: !noMessage,
+          [classNames['stacked-layout--no-message']]: noMessage,
           [classNames['stacked-layout--show-avatar']]: showAvatar,
           [classNames['stacked-layout--show-nub']]: showNub,
           [classNames['stacked-layout--top-callout']]: topCallout
