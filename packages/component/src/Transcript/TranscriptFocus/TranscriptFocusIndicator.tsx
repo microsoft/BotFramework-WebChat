@@ -1,4 +1,3 @@
-/* eslint-disable react/require-default-props */
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { forwardRef, type HTMLAttributes } from 'react';

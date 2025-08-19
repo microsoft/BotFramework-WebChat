@@ -18,7 +18,7 @@ import { useRefFrom } from 'use-ref-from';
 import {
   TranscriptFocusContent,
   TranscriptFocusContentActiveDescendant,
-  TranscriptFocusContentBody,
+  TranscriptFocusContentBody
 } from './TranscriptFocus';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
@@ -138,7 +138,6 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
           aria-labelledby={descendantLabelId}
           className="webchat__basic-transcript__activity-active-descendant"
           // "id" is required for "aria-labelledby"
-          // eslint-disable-next-line react/forbid-dom-props
           id={descendantId}
           role="article"
         >
