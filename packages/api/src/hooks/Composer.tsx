@@ -211,6 +211,14 @@ type ComposerCoreProps = Readonly<{
    *            We cannot upgrade activityMiddleware in `api` package because the upgrade requires
    *            default activity grouping middleware from `component` package.
    *
+   * When the activity middleware is passed/polyfilled here, we assume the call pattern remains legacy.
+   * The caller should also be responsible for passing `hideTimestamp`, et al.
+   *
+   * Or should we think otherwise:
+   * - If the newer `useBuildRenderActivityCallback` is being used, no `hideTimestamp` is required.
+   *    - `hideTimestamp` will be computed, if it's inside grouping, it's true/false. If no grouping, it's always false.
+   * - If the older `useCreateActivityRenderer` is being used, `hideTimestamp` must be passed.
+   *
    * @deprecated
    */
   activityMiddleware?: OneOrMany<LegacyActivityMiddleware>;
