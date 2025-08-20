@@ -21,6 +21,8 @@ import useFocusByGroupKey from '../../../../../providers/TranscriptFocus/useFocu
 import FocusTrap from '../../../../../Transcript/FocusTrap';
 import useRenderActivityProps from '../../../../../Transcript/hooks/useRenderActivityProps';
 import isZeroOrPositive from '../../../../../Utils/isZeroOrPositive';
+import { android } from '../../../../../Utils/detectBrowser';
+import TranscriptActivityList from '../../../../../Transcript/TranscriptFocus/TranscriptActivityList';
 
 const { useAvatarForBot, useStyleOptions, useGetKeyByActivity } = hooks;
 
@@ -94,7 +96,11 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
   );
 
   return (
-    <TranscriptFocusContent focused={isActiveDescendant} ref={groupCallbackRef}>
+    <TranscriptFocusContent 
+      activeDescendant={!android && (
+        <TranscriptFocusContentActiveDescendant id={groupingActivityDescendantId} />
+      )}
+      focused={isActiveDescendant} ref={groupCallbackRef}>
       <TranscriptFocusContentBody>
         <FocusTrap
           onFocus={handleDescendantFocus}
@@ -103,7 +109,6 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
         >
           {children}
         </FocusTrap>
-        <TranscriptFocusContentActiveDescendant id={groupingActivityDescendantId} />
       </TranscriptFocusContentBody>
     </TranscriptFocusContent>
   );
@@ -167,7 +172,9 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
       >
         <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
           <CollapsibleGrouping isOpen={isGroupOpen} onToggle={setIsGroupOpen} title={lastMessage?.abstract || ''}>
-            {children}
+            <TranscriptActivityList>
+              {children}
+            </TranscriptActivityList>
           </CollapsibleGrouping>
         </StackedLayoutMain>
         {renderActivityStatus && <StackedLayoutStatus>{renderActivityStatus({ hideTimestamp })}</StackedLayoutStatus>}
