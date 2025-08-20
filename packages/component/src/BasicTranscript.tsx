@@ -63,6 +63,7 @@ import useFocusedKey from './providers/TranscriptFocus/useFocusedKey';
 import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicitly';
 import { ActivityLogicalGroupingComposer } from './providers/ActivityLogicalGrouping';
 import { TranscriptFocusArea, TranscriptFocusTerminator } from './Transcript/TranscriptFocus';
+import TranscriptActivityList from './Transcript/TranscriptFocus/TranscriptActivityList';
 
 const {
   useActivityKeys,
@@ -498,13 +499,13 @@ const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTrans
       <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
         <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
         {hasAnyChild && (
-          <section
+          <TranscriptActivityList
             aria-roledescription={transcriptRoleDescription}
             className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
             role="feed"
           >
             {children}
-          </section>
+          </TranscriptActivityList>
         )}
         <BasicTypingIndicator />
       </ReactScrollToBottomPanel>

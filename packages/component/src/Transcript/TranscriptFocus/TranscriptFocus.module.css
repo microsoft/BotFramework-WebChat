@@ -4,14 +4,17 @@
   outline: 0;
   display: grid;
   grid-template-areas: 'content';
+  
+  --webchat__transcript--spacing: 10px;
 
   .transcript-focus-area__indicator,
   .transcript-focus-area__transcript-indicator {
     box-sizing: border-box;
     font-size: 0;
-    pointer-events: none;
     grid-area: content;
+    isolation: isolate;
     min-height: 0;
+    pointer-events: none;
   }
 
   .transcript-focus-area__root,
@@ -22,42 +25,39 @@
   }
 
   .transcript-focus-area__content-root {
-    padding-top: calc(var(--webchat__padding--regular) / 2);
+    padding-block-start: calc(var(--webchat__transcript--spacing) / 2);
   }
 
   &:focus .transcript-focus-area__content--focused > .transcript-focus-area__indicator {
     border-color: var(--webchat__color--transcript-activity-visual-keyboard-indicator);
     border-style: var(--webchat__border-style--transcript-activity-visual-keyboard-indicator);
     border-width: var(--webchat__border-width--transcript-activity-visual-keyboard-indicator);
-    height: calc(100% - var(--webchat__padding--regular) / 2);
-    margin: 0 calc(var(--webchat__padding--regular) / 2);
-    width: calc(100% - var(--webchat__padding--regular));
+    height: calc(100% - var(--webchat__transcript--spacing) / 2);
+    margin: 0 calc(var(--webchat__transcript--spacing) / 2);
+    width: calc(100% - var(--webchat__transcript--spacing));
   }
 
   &:focus-visible .transcript-focus-area__transcript-indicator,
-  .transcript-focus-area__terminator:focus-visible + .transcript-focus-area__transcript-indicator {
+  .transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible) + .transcript-focus-area__transcript-indicator {
     border-color: var(--webchat__border-color--transcript-visual-keyboard-indicator);
     border-style: var(--webchat__border-style--transcript-visual-keyboard-indicator);
     border-width: var(--webchat__border-width--transcript-visual-keyboard-indicator);
   }
 
+  .transcript-focus-area__activity-list {
+    padding-block-start: var(--webchat__transcript--spacing);
+  }
+
   .transcript-focus-area__content {
     display: grid;
     grid-template-areas: 'content';
-
-    &:first-child {
-      margin-top: calc(var(--webchat__padding--regular) / 2);
-    }
-
-    &:not(:first-child) {
-      margin-top: calc(var(--webchat__padding--regular) / -2);
-    }
+    margin-block-start: calc(var(--webchat__transcript--spacing) / -2);
   }
 
   /* When the content is focused as active descendant, scrollIntoView() will scroll this invisible div into view. */
   .transcript-focus-area__content-active-descendant {
-    margin-top: calc(var(--webchat__padding--regular) / -2);
-    padding-bottom: calc(var(--webchat__padding--regular) / 2);
+    margin-block-start: calc(var(--webchat__transcript--spacing) / -2);
+    padding-bottom: calc(var(--webchat__transcript--spacing) / 2);
     /* The bounding box is expanded to both top and bottom to scroll focus indicator into view. */
     /* We should ignore clicks to make sure this expansion don't register click as focus. */
     /* Otherwise, when clicking on the very bottom edge of the activity, it will focus on next activity instead. */
@@ -68,21 +68,21 @@
   }
 
   .transcript-focus-area__content-body:not(:empty) {
-    padding-bottom: var(--webchat__padding--regular);
+    padding-block-end: var(--webchat__transcript--spacing);
   }
 
   .transcript-focus-area__terminator {
+    height: 0;
+    outline: 0;
+    position: relative;
     width: 100%;
-    display: grid;
-    grid-template-areas: 'content';
   }
 
   .transcript-focus-area__terminator-body {
     display: flex;
+    inset: auto 0 0 0;
     justify-content: center;
-    width: 100%;
-    grid-area: content;
-    min-height: 0;
+    position: absolute;
   }
 
   .transcript-focus-area__terminator:not(:focus) .transcript-focus-area__terminator-body {
@@ -95,7 +95,7 @@
     color: var(--webchat__color--transcript-terminator);
     font-family: var(--webchat__font--primary);
     font-size: var(--webchat__font-size--transcript-terminator);
-    margin: calc(var(--webchat__padding--regular) / 2);
-    padding: calc(var(--webchat__padding--regular) / 2);
+    margin: calc(var(--webchat__transcript--spacing) / 2);
+    padding: calc(var(--webchat__transcript--spacing) / 2);
   }
 }

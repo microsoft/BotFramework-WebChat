@@ -1,16 +1,11 @@
 :global(.webchat-fluent) .part-grouping-decorator {
-  display: grid;
   font-family: var(--webchat-fontFamilyBase);
-  gap: var(--webchat-spacingVerticalS);
-  margin-inline: var(--webchat-spacingHorizontalM) var(--webchat-spacingHorizontalXXL);
-
-  :global(.stacked-layout) {
-    margin-inline: var(--webchat-spacingHorizontalNone);
-  }
+  display: contents;
 
   :global(.stacked-layout .collapsible-grouping__header) {
     padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalNone);
     position: relative;
+    margin-block-end: calc(var(--webchat-spacingVerticalS) + var(--webchat__transcript--spacing) / 2);
 
     :global(.webchat__activity-button) {
       background: transparent;
@@ -88,6 +83,12 @@
   }
 
   &.variant-copilot {
+    margin-inline: var(--webchat-spacingHorizontalM) var(--webchat-spacingHorizontalXXL);
+
+    :global(.stacked-layout) {
+      margin-inline: var(--webchat-spacingHorizontalNone);
+    }
+
     :global(.collapsible-grouping__content) {
       anchor-name: --webchat-flair;
       background: var(--webchat-colorNeutralBackground1);
