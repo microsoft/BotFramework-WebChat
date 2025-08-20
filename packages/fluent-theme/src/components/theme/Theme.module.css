@@ -284,7 +284,7 @@
 
 /* Transcript focus indicator color when in focus-visible state */
 :global(.webchat-fluent).theme
-  :global(.transcript-focus-area .transcript-focus-area__terminator + .transcript-focus-area__transcript-indicator) {
+  :global(.transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible) + .transcript-focus-area__transcript-indicator) {
   border-color: var(--webchat-colorStrokeFocus2);
 }
 
