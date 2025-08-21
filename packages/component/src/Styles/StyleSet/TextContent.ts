@@ -11,7 +11,8 @@ export default function createTextContentStyle() {
       '&.webchat__text-content--is-markdown': {
         display: 'flex',
         flexDirection: 'column',
-        gap: CSSTokens.PaddingRegular
+        gap: CSSTokens.PaddingRegular,
+        minWidth: 0
       },
 
       '& .webchat__text-content__markdown img:not(.webchat__render-markdown__external-link-icon)': {
