@@ -40,7 +40,7 @@
     gap: var(--webchat-spacingVerticalM);
   }
 
-  :global(.stacked-layout .stacked-layout__title),
+  :global(.collapsible-grouping__content .stacked-layout .stacked-layout__title),
   :global(.collapsible-grouping__title) {
     color: var(--webchat-colorNeutralForeground2);
     font-size: var(--webchat-fontSizeBase300);
