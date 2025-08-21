@@ -9,7 +9,7 @@
       "LocItems": [
         {
           "SourceFile": "packages\\api\\src\\Localization\\en-US.json",
-          "OutputPath": "packages\\api\\src\\Localization\\{Lang}.resx",
+          "OutputPath": "packages\\api\\src\\Localization\\{Lang}.json",
           "CopyOption": "UsePlaceholders"
         }
       ]
