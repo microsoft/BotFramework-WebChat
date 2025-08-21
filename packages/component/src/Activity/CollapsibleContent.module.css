@@ -11,6 +11,7 @@
   display: inline-flex;
   font-family: var(--webchat__font--primary);
   gap: calc(var(--webchat__padding--regular) / 2);
+  justify-self: self-start;
   list-style: none;
   margin: var(--webchat__padding--regular);
   padding: 0;
