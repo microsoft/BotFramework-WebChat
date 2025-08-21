@@ -8,8 +8,8 @@
       "_CloneLanguageSet.comment": "Find the details at https://dev.azure.com/ceapex/CEINTL/_git/SWSys-Build-XLoc?path=/src/OneBranchPackages/Localization.Languages/Localization.CloneLanguageSets.json",
       "LocItems": [
         {
-          "SourceFile": "packages\\api\\src\\Localization\\en-US.json",
-          "OutputPath": "packages\\api\\src\\Localization\\{Lang}.json",
+          "SourceFile": "packages\\api\\src\\localization\\en-US.json",
+          "OutputPath": "packages\\api\\src\\localization\\{Lang}.json",
           "CopyOption": "UsePlaceholders"
         }
       ]
