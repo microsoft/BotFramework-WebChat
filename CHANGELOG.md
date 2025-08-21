@@ -107,6 +107,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 -  Added `disableFileUpload` flag to completelly disable file upload feature, in PR [#5508](https://github.com/microsoft/BotFramework-WebChat/pull/5508), by [@JamesNewbyAtMicrosoft](https://github.com/JamesNewbyAtMicrosoft)
    -  Deprecated `hideUploadButton` in favor of `disableFileUpload`.
    -  Updated `BasicSendBoxToolbar` to rely solely on `disableFileUpload`.
+- Added `ComposerRef` type and ref-based focus control to `Composer` component, enabling programmatic focus of the send box input via `focusSendBoxInput()` method, by [@marclundgren](https://github.com/marclundgren), in PR [#5512](https://github.com/microsoft/BotFramework-WebChat/pull/5512)
 -  Added `ComposerRef` type and ref-based focus control to `Composer` component, enabling programmatic focus of the send box input via `focusSendBoxInput()` method, by [@marclundgren](https://github.com/marclundgren), in PR [#5512](https://github.com/microsoft/BotFramework-WebChat/pull/5512)
 
 ### Changed
