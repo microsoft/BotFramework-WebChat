@@ -1,11 +1,13 @@
 :global(.webchat-fluent) .part-grouping-decorator {
   font-family: var(--webchat-fontFamilyBase);
-  display: contents;
+
+  .part-grouping-decorator__header {
+    padding-block: var(--webchat-spacingVerticalS);
+  }
 
   :global(.stacked-layout .collapsible-grouping__header) {
     padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalNone);
     position: relative;
-    margin-block-end: calc(var(--webchat-spacingVerticalS) + var(--webchat__transcript--spacing) / 2);
 
     :global(.webchat__activity-button) {
       background: transparent;
@@ -83,7 +85,10 @@
   }
 
   &.variant-copilot {
-    margin-inline: var(--webchat-spacingHorizontalM) var(--webchat-spacingHorizontalXXL);
+    /* anchor-name: --webchat-flair; */
+    position: relative;
+    padding-inline-start: var(--webchat-spacingHorizontalM);
+    margin-inline-end: var(--webchat-spacingHorizontalXXL);
 
     :global(.stacked-layout) {
       margin-inline: var(--webchat-spacingHorizontalNone);
