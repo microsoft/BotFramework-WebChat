@@ -1,5 +1,6 @@
-import React, { memo, useMemo, type CSSProperties } from 'react';
 import { WebChatActivity, hooks } from 'botframework-webchat-component';
+import cx from 'classnames';
+import React, { memo, useMemo, type CSSProperties } from 'react';
 
 import useActivityStyleOptions from './private/useActivityStyleOptions';
 import isAIGeneratedActivity from './private/isAIGeneratedActivity';
@@ -9,7 +10,7 @@ import styles from './CopilotMessageHeader.module.css';
 
 const { useLocalizer } = hooks;
 
-function CopilotMessageHeader({ activity }: Readonly<{ activity?: WebChatActivity | undefined }>) {
+function CopilotMessageHeader({ activity, className }: Readonly<{ activity?: WebChatActivity | undefined; className?: string | undefined }>) {
   const [{ botAvatarImage, botAvatarBackgroundColor }] = useActivityStyleOptions(activity);
   const classNames = useStyles(styles);
   const localize = useLocalizer();
@@ -25,7 +26,7 @@ function CopilotMessageHeader({ activity }: Readonly<{ activity?: WebChatActivit
   const botTitle = author?.name || activity?.from?.name;
 
   return (
-    <div className={classNames['copilot-message-header']}>
+    <div className={cx(classNames['copilot-message-header'], className)}>
       {avatarImage && (
         <img
           alt={localize('AVATAR_ALT', botTitle)}

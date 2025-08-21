@@ -26,7 +26,7 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
 
   return (
     <div className={cx(classNames['part-grouping-decorator'], variantClassName)}>
-      {shouldRenderHeader && <CopilotMessageHeader activity={activity} />}
+      {shouldRenderHeader && <CopilotMessageHeader className={classNames['part-grouping-decorator__header']} activity={activity} />}
       <PartGrouping {...props} />
     </div>
   );
