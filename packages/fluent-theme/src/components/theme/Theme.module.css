@@ -379,7 +379,7 @@
 /* Transcript with a single pre-chat activity */
 :global(.webchat-fluent).theme
   :global(
-    .webchat__basic-transcript:has(.webchat__basic-transcript__activity:only-child):has(.pre-chat-message-activity)
+    .webchat__basic-transcript:has(.part-grouping-decorator:only-child):has(.pre-chat-message-activity)
     .webchat__basic-transcript__filler
   ) {
   /* limit grow to half of the size to center the activity */
