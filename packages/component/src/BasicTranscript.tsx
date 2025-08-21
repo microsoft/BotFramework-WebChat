@@ -61,7 +61,6 @@ import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivit
 import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
 import useFocusedKey from './providers/TranscriptFocus/useFocusedKey';
 import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicitly';
-import { ActivityLogicalGroupingComposer } from './providers/ActivityLogicalGrouping';
 import { TranscriptFocusArea, TranscriptFocusTerminator } from './Transcript/TranscriptFocus';
 import TranscriptActivityList from './Transcript/TranscriptFocus/TranscriptActivityList';
 
@@ -647,20 +646,18 @@ const BasicTranscript = ({ className = '' }: BasicTranscriptProps) => {
 
   return (
     <ChatHistoryBox className={className}>
-      <ActivityLogicalGroupingComposer>
-        <RenderingActivitiesComposer>
-          <TranscriptFocusComposer containerRef={containerRef}>
-            <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
-              <ChatHistoryToolbar>
-                <ScrollToEndButton terminatorRef={terminatorRef} />
-              </ChatHistoryToolbar>
-              <GroupedRenderingActivitiesComposer>
-                <InternalTranscript ref={containerRef} terminatorRef={terminatorRef} />
-              </GroupedRenderingActivitiesComposer>
-            </ReactScrollToBottomComposer>
-          </TranscriptFocusComposer>
-        </RenderingActivitiesComposer>
-      </ActivityLogicalGroupingComposer>
+      <RenderingActivitiesComposer>
+        <TranscriptFocusComposer containerRef={containerRef}>
+          <ReactScrollToBottomComposer nonce={nonce} scroller={scroller} styleOptions={styleOptions}>
+            <ChatHistoryToolbar>
+              <ScrollToEndButton terminatorRef={terminatorRef} />
+            </ChatHistoryToolbar>
+            <GroupedRenderingActivitiesComposer>
+              <InternalTranscript ref={containerRef} terminatorRef={terminatorRef} />
+            </GroupedRenderingActivitiesComposer>
+          </ReactScrollToBottomComposer>
+        </TranscriptFocusComposer>
+      </RenderingActivitiesComposer>
     </ChatHistoryBox>
   );
 };

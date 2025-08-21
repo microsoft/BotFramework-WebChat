@@ -38,6 +38,7 @@ import createDefaultCardActionMiddleware from './Middleware/CardAction/createCor
 import createDefaultScrollToEndButtonMiddleware from './Middleware/ScrollToEndButton/createScrollToEndButtonMiddleware';
 import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddleware';
 import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
+import { ActivityLogicalGroupingComposer } from './providers/ActivityLogicalGrouping';
 import CustomElementsComposer from './providers/CustomElements/CustomElementsComposer';
 import HTMLContentTransformComposer from './providers/HTMLContentTransformCOR/HTMLContentTransformComposer';
 import { type HTMLContentTransformMiddleware } from './providers/HTMLContentTransformCOR/private/HTMLContentTransformContext';
@@ -109,7 +110,9 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
               <ModalDialogComposer>
                 {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
                 <SendBoxComposer>
-                  {children}
+                  <ActivityLogicalGroupingComposer>
+                    {children}
+                  </ActivityLogicalGroupingComposer>
                   <Dictation onError={dictationOnError} />
                 </SendBoxComposer>
               </ModalDialogComposer>
