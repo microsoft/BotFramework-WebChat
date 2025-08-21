@@ -1,0 +1,18 @@
+{
+  "_comment": "Find the details on 'Author Localization Project File' at https://eng.ms/docs/cloud-ai-platform/azure-core/azure-experiences-and-ecosystems/cme-international-customer-exp/software-localization-onelocbuild/onelocbuild/onboarding/localizationproject or https://aka.ms/OneLocBuild",
+  "Projects": [
+    {
+      "LanguageSet": "CRM_44_Languages",
+      "_LanguageSet.comment": "Find the details at https://dev.azure.com/ceapex/CEINTL/_git/SWSys-Build-XLoc?path=/src/OneBranchPackages/Localization.Languages/Localization.Languages.props",
+      "CloneLanguageSet": "BizApp_CloneLanguages1",
+      "_CloneLanguageSet.comment": "Find the details at https://dev.azure.com/ceapex/CEINTL/_git/SWSys-Build-XLoc?path=/src/OneBranchPackages/Localization.Languages/Localization.CloneLanguageSets.json",
+      "LocItems": [
+        {
+          "SourceFile": "packages\\api\\src\\Localization\\en-US.json",
+          "OutputPath": "packages\\api\\src\\Localization\\{Lang}.resx",
+          "CopyOption": "UsePlaceholders"
+        }
+      ]
+    }
+  ]
+}
