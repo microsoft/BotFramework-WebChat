@@ -4,7 +4,7 @@
     {
       "LanguageSet": "CRM_44_Languages",
       "_LanguageSet.comment": "Find the details at https://dev.azure.com/ceapex/CEINTL/_git/SWSys-Build-XLoc?path=/src/OneBranchPackages/Localization.Languages/Localization.Languages.props",
-      "CloneLanguageSet": "BizApp_CloneLanguages1",
+      "CloneLanguageSet": "BizApp_CloneLanguages8",
       "_CloneLanguageSet.comment": "Find the details at https://dev.azure.com/ceapex/CEINTL/_git/SWSys-Build-XLoc?path=/src/OneBranchPackages/Localization.Languages/Localization.CloneLanguageSets.json",
       "LocItems": [
         {
