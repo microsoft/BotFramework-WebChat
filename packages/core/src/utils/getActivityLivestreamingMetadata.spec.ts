@@ -1,24 +1,42 @@
+import type { ArraySlice } from 'type-fest';
 import { type WebChatActivity } from '../types/WebChatActivity';
 import getActivityLivestreamingMetadata from './getActivityLivestreamingMetadata';
 
+function injectInto<T>(
+  where: 'channelData' | 'entities',
+  metadata: T,
+  activity: Partial<WebChatActivity>
+): WebChatActivity {
+  return {
+    ...(where === 'entities' ? { entities: [{ ...metadata, type: 'streaminfo' }] } : { channelData: metadata }),
+    ...activity
+  } as WebChatActivity;
+}
+
 describe.each([['channelData' as const], ['entities' as const]])('using %s', where => {
+  let inject: (...args: ArraySlice<Parameters<typeof injectInto>, 1>) => ReturnType<typeof injectInto>;
+
+  beforeEach(() => {
+    inject = injectInto.bind(undefined, where);
+  });
+
   describe.each([['with "streamId"' as const], ['without "streamId"' as const]])('activity %s', variant => {
     describe('activity with "streamType" of "streaming"', () => {
       let activity: WebChatActivity;
 
       beforeEach(() => {
-        const metadata = {
-          ...(variant === 'with "streamId"' ? { streamId: 'a-00001' } : {}),
-          streamSequence: 1,
-          streamType: 'streaming'
-        };
-
-        activity = {
-          ...(where === 'entities' ? { entities: [{ ...metadata, type: 'streaminfo' }] } : { channelData: metadata }),
-          id: 'a-00002',
-          text: 'Hello, World!',
-          type: 'typing'
-        } as any;
+        activity = inject(
+          {
+            ...(variant === 'with "streamId"' ? { streamId: 'a-00001' } : {}),
+            streamSequence: 1,
+            streamType: 'streaming'
+          },
+          {
+            id: 'a-00002',
+            text: 'Hello, World!',
+            type: 'typing'
+          }
+        );
       });
 
       test('should return type of "interim activity"', () =>
@@ -39,18 +57,18 @@ describe.each([['channelData' as const], ['entities' as const]])('using %s', whe
       let activity: WebChatActivity;
 
       beforeEach(() => {
-        const metadata = {
-          ...(variant === 'with "streamId"' ? { streamId: 'a-00001' } : {}),
-          streamSequence: 1,
-          streamType: 'informative'
-        };
-
-        activity = {
-          ...(where === 'entities' ? { entities: [{ ...metadata, type: 'streaminfo' }] } : { channelData: metadata }),
-          id: 'a-00002',
-          text: 'Hello, World!',
-          type: 'typing'
-        } as any;
+        activity = inject(
+          {
+            ...(variant === 'with "streamId"' ? { streamId: 'a-00001' } : {}),
+            streamSequence: 1,
+            streamType: 'informative'
+          },
+          {
+            id: 'a-00002',
+            text: 'Hello, World!',
+            type: 'typing'
+          }
+        );
       });
 
       test('should return type of "informative message"', () =>
@@ -71,17 +89,17 @@ describe.each([['channelData' as const], ['entities' as const]])('using %s', whe
       let activity: WebChatActivity;
 
       beforeEach(() => {
-        const metadata = {
-          ...(variant === 'with "streamId"' ? { streamId: 'a-00001' } : {}),
-          streamType: 'final'
-        };
-
-        activity = {
-          ...(where === 'entities' ? { entities: [{ ...metadata, type: 'streaminfo' }] } : { channelData: metadata }),
-          id: 'a-00002',
-          text: 'Hello, World!',
-          type: 'message'
-        } as any;
+        activity = inject(
+          {
+            ...(variant === 'with "streamId"' ? { streamId: 'a-00001' } : {}),
+            streamType: 'final'
+          },
+          {
+            id: 'a-00002',
+            text: 'Hello, World!',
+            type: 'message'
+          }
+        );
       });
 
       if (variant === 'with "streamId"') {
@@ -114,14 +132,18 @@ describe.each([['channelData' as const], ['entities' as const]])('using %s', whe
     ['zero', 0, false],
     ['decimal', 1.234, false]
   ])('activity with %s "streamSequence" should return undefined', (_, streamSequence, isValid) => {
-    const metadata = { streamId: 'a-00001', streamSequence, streamType: 'streaming' };
-
-    const activity = {
-      ...(where === 'entities' ? { entities: [{ ...metadata, type: 'streaminfo' }] } : { channelData: metadata }),
-      id: 'a-00002',
-      text: '',
-      type: 'typing'
-    } as any;
+    const activity = inject(
+      {
+        streamId: 'a-00001',
+        streamSequence,
+        streamType: 'streaming'
+      },
+      {
+        id: 'a-00002',
+        text: '',
+        type: 'typing'
+      }
+    );
 
     if (isValid) {
       expect(getActivityLivestreamingMetadata(activity)).toBeTruthy();
@@ -132,41 +154,56 @@ describe.each([['channelData' as const], ['entities' as const]])('using %s', whe
 
   describe('"typing" activity with "streamType" of "final"', () => {
     test('should return undefined if "text" field is defined', () => {
-      const metadata = { streamId: 'a-00001', streamType: 'final' };
-
       expect(
-        getActivityLivestreamingMetadata({
-          ...(where === 'entities' ? { entities: [{ ...metadata, type: 'streaminfo' }] } : { channelData: metadata }),
-          id: 'a-00002',
-          text: 'Final "typing" activity, must not have "text".',
-          type: 'typing'
-        } as any)
+        getActivityLivestreamingMetadata(
+          inject(
+            {
+              streamId: 'a-00001',
+              streamType: 'final'
+            },
+            {
+              id: 'a-00002',
+              text: 'Final "typing" activity, must not have "text".',
+              type: 'typing'
+            }
+          )
+        )
       ).toBeUndefined();
     });
 
     test('should return truthy if "text" field is not defined', () => {
-      const metadata = { streamId: 'a-00001', streamType: 'final' };
-
       expect(
-        getActivityLivestreamingMetadata({
-          ...(where === 'entities' ? { entities: [{ ...metadata, type: 'streaminfo' }] } : { channelData: metadata }),
-          id: 'a-00002',
-          // Final activity can be "typing" if it does not have "text".
-          type: 'typing'
-        } as any)
+        getActivityLivestreamingMetadata(
+          inject(
+            {
+              streamId: 'a-00001',
+              streamType: 'final'
+            },
+            {
+              id: 'a-00002',
+              // Final activity can be "typing" if it does not have "text".
+              type: 'typing'
+            }
+          )
+        )
       ).toHaveProperty('type', 'final activity');
     });
   });
 
   test('activity with "streamType" of "streaming" without "content" should return type of "contentless"', () => {
-    const metadata = { streamSequence: 1, streamType: 'streaming' };
-
     expect(
-      getActivityLivestreamingMetadata({
-        ...(where === 'entities' ? { entities: [{ ...metadata, type: 'streaminfo' }] } : { channelData: metadata }),
-        id: 'a-00001',
-        type: 'typing'
-      } as any)
+      getActivityLivestreamingMetadata(
+        inject(
+          {
+            streamSequence: 1,
+            streamType: 'streaming'
+          },
+          {
+            id: 'a-00001',
+            type: 'typing'
+          }
+        )
+      )
     ).toHaveProperty('type', 'contentless');
   });
 });
