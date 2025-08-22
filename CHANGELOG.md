@@ -107,6 +107,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Added `disableFileUpload` flag to completelly disable file upload feature, in PR [#5508](https://github.com/microsoft/BotFramework-WebChat/pull/5508), by [@JamesNewbyAtMicrosoft](https://github.com/JamesNewbyAtMicrosoft)
    - Deprecated `hideUploadButton` in favor of `disableFileUpload`.
    - Updated `BasicSendBoxToolbar` to rely solely on `disableFileUpload`.
+- Added support for livestreaming via `entities[type="streaminfo"]` in PR [#5517](https://github.com/microsoft/BotFramework-WebChat/pull/5517) by [@kylerohn](https://github.com/kylerohn) and [@compulim](https://github.com/compulim)
 
 ### Changed
 

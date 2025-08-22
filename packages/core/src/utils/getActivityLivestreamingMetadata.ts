@@ -1,7 +1,10 @@
 import {
   any,
   array,
+  check,
+  findItem,
   integer,
+  is,
   literal,
   minValue,
   nonEmpty,
@@ -11,8 +14,13 @@ import {
   pipe,
   safeParse,
   string,
+  transform,
   undefinedable,
-  union
+  union,
+  type ErrorMessage,
+  type ObjectEntries,
+  type ObjectIssue,
+  type ObjectSchema
 } from 'valibot';
 
 import { type WebChatActivity } from '../types/WebChatActivity';
@@ -22,64 +30,110 @@ const EMPTY_ARRAY = Object.freeze([]);
 
 const streamSequenceSchema = pipe(number(), integer(), minValue(1));
 
+function eitherChannelDataOrEntities<
+  TActivityEntries extends ObjectEntries,
+  TActivityMessage extends ErrorMessage<ObjectIssue> | undefined,
+  TMetadataEntries extends ObjectEntries,
+  TMetadataMessage extends ErrorMessage<ObjectIssue> | undefined
+>(
+  activitySchema: ObjectSchema<TActivityEntries, TActivityMessage>,
+  metadataSchema: ObjectSchema<TMetadataEntries, TMetadataMessage>
+) {
+  const metadataInEntitiesSchema = object({
+    ...metadataSchema.entries,
+    type: literal('streaminfo')
+  });
+
+  return union([
+    object({
+      ...activitySchema.entries,
+      channelData: metadataSchema
+    }),
+    pipe(
+      object({
+        ...activitySchema.entries,
+        // We use `findItem`/`filterItem` than `variant`/`someItem` because the output of the latter is an union type.
+        // Consider `{ type: string } | { streamId: string; type: 'streaminfo' }`, it turns into `{ type: string }` immediately.
+
+        // TODO: [P2] valibot@1.1.0 did not infer output type for `filterItem()`, only infer for `findItem()`.
+        //       Bump valibot@latest and see if they solved the issue.
+        entities: pipe(
+          array(any()),
+          findItem(value => is(metadataInEntitiesSchema, value)),
+          check(value => !!value)
+        )
+      }),
+      transform(({ entities, ...value }) => ({ ...value, streamInfoEntity: entities }))
+    )
+  ]);
+}
+
 const livestreamingActivitySchema = union([
   // Interim.
-  object({
-    attachments: optional(array(any()), EMPTY_ARRAY),
-    channelData: object({
+  eitherChannelDataOrEntities(
+    object({
+      attachments: optional(array(any()), EMPTY_ARRAY),
+      id: string(),
+      // "text" is optional. If not set or empty, it presents a contentless activity.
+      text: optional(undefinedable(string())),
+      type: literal('typing')
+    }),
+    object({
       // "streamId" is optional for the very first activity in the session.
       streamId: optional(undefinedable(string())),
       streamSequence: streamSequenceSchema,
       streamType: literal('streaming')
-    }),
-    id: string(),
-    // "text" is optional. If not set or empty, it presents a contentless activity.
-    text: optional(undefinedable(string())),
-    type: literal('typing')
-  }),
+    })
+  ),
   // Informative message.
-  object({
-    attachments: optional(array(any()), EMPTY_ARRAY),
-    channelData: object({
+  eitherChannelDataOrEntities(
+    object({
+      attachments: optional(array(any()), EMPTY_ARRAY),
+      id: string(),
+      // Informative may not have "text", but should have abstract instead (checked later)
+      text: optional(undefinedable(string())),
+      type: literal('typing'),
+      entities: optional(array(any()), EMPTY_ARRAY)
+    }),
+    object({
       // "streamId" is optional for the very first activity in the session.
       streamId: optional(undefinedable(string())),
       streamSequence: streamSequenceSchema,
       streamType: literal('informative')
-    }),
-    id: string(),
-    // Informative may not have "text", but should have abstract instead (checked later)
-    text: optional(undefinedable(string())),
-    type: literal('typing'),
-    entities: optional(array(any()), EMPTY_ARRAY)
-  }),
+    })
+  ),
   // Conclude with a message.
-  object({
-    attachments: optional(array(any()), EMPTY_ARRAY),
-    channelData: object({
+  eitherChannelDataOrEntities(
+    object({
+      attachments: optional(array(any()), EMPTY_ARRAY),
+      id: string(),
+      // If "text" is empty, it represents "regretting" the livestream.
+      text: optional(undefinedable(string())),
+      type: literal('message')
+    }),
+    object({
       // "streamId" is required for the final activity in the session.
       // The final activity must not be the sole activity in the session.
       streamId: pipe(string(), nonEmpty()),
       streamType: literal('final')
-    }),
-    id: string(),
-    // If "text" is empty, it represents "regretting" the livestream.
-    text: optional(undefinedable(string())),
-    type: literal('message')
-  }),
+    })
+  ),
   // Conclude without a message.
-  object({
-    attachments: optional(array(any()), EMPTY_ARRAY),
-    channelData: object({
+  eitherChannelDataOrEntities(
+    object({
+      attachments: optional(array(any()), EMPTY_ARRAY),
+      id: string(),
+      // If "text" is not set or empty, it represents "regretting" the livestream.
+      text: optional(undefinedable(literal(''))),
+      type: literal('typing')
+    }),
+    object({
       // "streamId" is required for the final activity in the session.
       // The final activity must not be the sole activity in the session.
       streamId: pipe(string(), nonEmpty()),
       streamType: literal('final')
-    }),
-    id: string(),
-    // If "text" is not set or empty, it represents "regretting" the livestream.
-    text: optional(undefinedable(literal(''))),
-    type: literal('typing')
-  })
+    })
+  )
 ]);
 
 /**
@@ -110,19 +164,20 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
 
   if (result.success) {
     const { output } = result;
+    const livestreamMetadata = 'channelData' in output ? output.channelData : output.streamInfoEntity;
 
     // If the activity is the first in the session, session ID should be the activity ID.
-    const sessionId = output.channelData.streamId || output.id;
+    const sessionId = livestreamMetadata.streamId || output.id;
 
     return Object.freeze(
-      output.channelData.streamType === 'final'
+      livestreamMetadata.streamType === 'final'
         ? {
             sequenceNumber: Infinity,
             sessionId,
             type: 'final activity'
           }
         : {
-            sequenceNumber: output.channelData.streamSequence,
+            sequenceNumber: livestreamMetadata.streamSequence,
             sessionId,
             type: !(
               output.text ||
@@ -130,7 +185,7 @@ export default function getActivityLivestreamingMetadata(activity: WebChatActivi
               ('entities' in output && getOrgSchemaMessage(output.entities)?.abstract)
             )
               ? 'contentless'
-              : output.channelData.streamType === 'informative'
+              : livestreamMetadata.streamType === 'informative'
                 ? 'informative message'
                 : 'interim activity'
           }
