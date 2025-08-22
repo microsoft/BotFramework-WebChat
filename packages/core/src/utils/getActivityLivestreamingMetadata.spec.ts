@@ -1,4 +1,5 @@
-import type { ArraySlice } from 'type-fest';
+import { type ArraySlice } from 'type-fest';
+
 import { type WebChatActivity } from '../types/WebChatActivity';
 import getActivityLivestreamingMetadata from './getActivityLivestreamingMetadata';
 
