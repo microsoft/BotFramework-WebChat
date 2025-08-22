@@ -65,7 +65,8 @@ To simplify this documentation, we are using the term "bot" instead of "copilot"
 Bot developers would need to implement the livestreaming as outlined in this section. The implementation below will enable livestreaming to both Azure Bot Services and Teams.
 
 > [!NOTE]
-> In the scenarios below, the livestream metadata is inside the `channelData` field. BotFramework-WebChat checks both `channelData` and the first element of the `entities` field for livestreaming metadata. It will appear in different places depending on the platform used to communicate with BotFramework-WebChat:
+>
+> Web Chat supports livestreaming data in both `channelData` or `entities[type="streaminfo"]` field and can be used interchangeably. The following code snippet shows the livestream data in `entities` field.
 >
 > ```json
 > {
@@ -76,7 +77,7 @@ Bot developers would need to implement the livestreaming as outlined in this sec
 >          "type": "streaminfo"
 >       }
 >    ],
->    "text": "A quick",
+>    "text": "...",
 >    "type": "typing"
 > }
 > ```
