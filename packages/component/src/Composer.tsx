@@ -1,5 +1,4 @@
 import type {
-  ActivityMiddleware,
   ComposerProps as APIComposerProps,
   SendBoxMiddleware,
   SendBoxToolbarMiddleware
@@ -12,7 +11,7 @@ import {
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
-import { singleToArray, type OneOrMany } from 'botframework-webchat-core';
+import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
@@ -129,7 +128,6 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
 ComposerCoreUI.displayName = 'ComposerCoreUI';
 
 type ComposerCoreProps = Readonly<{
-  activityMiddleware?: OneOrMany<ActivityMiddleware>;
   children?: ReactNode;
   decoratorMiddleware?: readonly DecoratorMiddleware[] | undefined;
   extraStyleSet?: any;
