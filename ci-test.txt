@@ -1,0 +1,2 @@
+This is a minimal test file to check CI behavior on clean upstream main.
+Created for testing whether CI build issues are specific to our PR changes.
