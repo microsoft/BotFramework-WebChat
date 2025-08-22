@@ -118,13 +118,17 @@ describe.each([['channelData' as const], ['entities' as const]])('using %s', whe
   });
 
   test('activity with "streamType" of "streaming" without critical fields should return undefined', () => {
-    const metadata = { streamType: 'streaming' };
-
     expect(
-      getActivityLivestreamingMetadata({
-        ...(where === 'entities' ? { entities: [{ ...metadata, type: 'streaminfo' }] } : { channelData: metadata }),
-        type: 'typing'
-      } as any)
+      getActivityLivestreamingMetadata(
+        inject(
+          {
+            streamType: 'streaming'
+          },
+          {
+            type: 'typing'
+          }
+        )
+      )
     ).toBeUndefined();
   });
 
