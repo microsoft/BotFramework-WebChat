@@ -29,17 +29,6 @@ const EMPTY_ARRAY = Object.freeze([]);
 
 const streamSequenceSchema = pipe(number(), integer(), minValue(1));
 
-// Fields required for every activity
-const activityFieldsSchema = {
-  // "text" is optional. If not set or empty, it presents a contentless activity.
-  text: optional(undefinedable(string())),
-  attachments: optional(array(any()), EMPTY_ARRAY),
-  id: string()
-};
-
-// Final Activities have different requirements for "text" fields
-const { text: _text, ...activityFieldsFinalSchema } = activityFieldsSchema;
-
 function eitherChannelDataOrEntities<
   TActivityEntries extends ObjectEntries,
   TActivityMessage extends ErrorMessage<ObjectIssue> | undefined,
@@ -78,27 +67,47 @@ function eitherChannelDataOrEntities<
 }
 
 const livestreamingActivitySchema = union([
-  // Interim or Informative message
-  // Informative may not have "text", but should have abstract instead (checked later)
+  // Interim.
   eitherChannelDataOrEntities(
     object({
-      type: literal('typing'),
-      ...activityFieldsSchema
+      attachments: optional(array(any()), EMPTY_ARRAY),
+      id: string(),
+      // "text" is optional. If not set or empty, it presents a contentless activity.
+      text: optional(undefinedable(string())),
+      type: literal('typing')
     }),
-    // "streamId" is optional for the very first activity in the session.
     object({
+      // "streamId" is optional for the very first activity in the session.
       streamId: optional(undefinedable(string())),
       streamSequence: streamSequenceSchema,
-      streamType: union([literal('streaming'), literal('informative')])
+      streamType: literal('streaming')
     })
   ),
-
+  // Informative message.
+  eitherChannelDataOrEntities(
+    object({
+      attachments: optional(array(any()), EMPTY_ARRAY),
+      id: string(),
+      // Informative may not have "text", but should have abstract instead (checked later)
+      text: optional(undefinedable(string())),
+      type: literal('typing'),
+      entities: optional(array(any()), EMPTY_ARRAY)
+    }),
+    object({
+      // "streamId" is optional for the very first activity in the session.
+      streamId: optional(undefinedable(string())),
+      streamSequence: streamSequenceSchema,
+      streamType: literal('informative')
+    })
+  ),
   // Conclude with a message.
   eitherChannelDataOrEntities(
     object({
+      attachments: optional(array(any()), EMPTY_ARRAY),
+      id: string(),
       // If "text" is empty, it represents "regretting" the livestream.
-      type: literal('message'),
-      ...activityFieldsSchema
+      text: optional(undefinedable(string())),
+      type: literal('message')
     }),
     object({
       // "streamId" is required for the final activity in the session.
@@ -107,14 +116,14 @@ const livestreamingActivitySchema = union([
       streamType: literal('final')
     })
   ),
-
   // Conclude without a message.
   eitherChannelDataOrEntities(
     object({
+      attachments: optional(array(any()), EMPTY_ARRAY),
+      id: string(),
       // If "text" is not set or empty, it represents "regretting" the livestream.
-      type: literal('typing'),
       text: optional(undefinedable(literal(''))),
-      ...activityFieldsFinalSchema
+      type: literal('typing')
     }),
     object({
       // "streamId" is required for the final activity in the session.
