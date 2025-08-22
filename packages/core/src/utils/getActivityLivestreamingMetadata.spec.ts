@@ -117,7 +117,7 @@ describe.each([['channelData' as const], ['entities' as const]])('using %s', whe
     });
   });
 
-  test('activity with "streamType" of "streaming" without critical fields should return undefined', () => {
+  test('activity with "streamType" of "streaming" without critical fields should return undefined', () =>
     expect(
       getActivityLivestreamingMetadata(
         inject(
@@ -129,8 +129,7 @@ describe.each([['channelData' as const], ['entities' as const]])('using %s', whe
           }
         )
       )
-    ).toBeUndefined();
-  });
+    ).toBeUndefined());
 
   test.each([
     ['integer', 1, true],
@@ -158,7 +157,7 @@ describe.each([['channelData' as const], ['entities' as const]])('using %s', whe
   });
 
   describe('"typing" activity with "streamType" of "final"', () => {
-    test('should return undefined if "text" field is defined', () => {
+    test('should return undefined if "text" field is defined', () =>
       expect(
         getActivityLivestreamingMetadata(
           inject(
@@ -173,10 +172,9 @@ describe.each([['channelData' as const], ['entities' as const]])('using %s', whe
             }
           )
         )
-      ).toBeUndefined();
-    });
+      ).toBeUndefined());
 
-    test('should return truthy if "text" field is not defined', () => {
+    test('should return truthy if "text" field is not defined', () =>
       expect(
         getActivityLivestreamingMetadata(
           inject(
@@ -191,11 +189,10 @@ describe.each([['channelData' as const], ['entities' as const]])('using %s', whe
             }
           )
         )
-      ).toHaveProperty('type', 'final activity');
-    });
+      ).toHaveProperty('type', 'final activity'));
   });
 
-  test('activity with "streamType" of "streaming" without "content" should return type of "contentless"', () => {
+  test('activity with "streamType" of "streaming" without "content" should return type of "contentless"', () =>
     expect(
       getActivityLivestreamingMetadata(
         inject(
@@ -209,9 +206,92 @@ describe.each([['channelData' as const], ['entities' as const]])('using %s', whe
           }
         )
       )
-    ).toHaveProperty('type', 'contentless');
-  });
+    ).toHaveProperty('type', 'contentless'));
 });
 
 test('invalid activity should return undefined', () =>
   expect(getActivityLivestreamingMetadata('invalid' as any)).toBeUndefined());
+
+test('should prefer channelData over entities', () =>
+  expect(
+    getActivityLivestreamingMetadata({
+      channelData: {
+        streamId: 'a-channelData',
+        streamSequence: 2,
+        streamType: 'streaming'
+      },
+      entities: [
+        {
+          streamId: 'a-entities',
+          streamSequence: 2,
+          streamType: 'streaming',
+          type: 'streaminfo'
+        }
+      ],
+      id: 'a-00002',
+      type: 'typing'
+    } as any)
+  ).toHaveProperty('sessionId', 'a-channelData'));
+
+test('should prefer first entity', () =>
+  expect(
+    getActivityLivestreamingMetadata({
+      entities: [
+        {
+          streamId: 'a-first',
+          streamSequence: 2,
+          streamType: 'streaming',
+          type: 'streaminfo'
+        },
+        {
+          streamId: 'a-second',
+          streamSequence: 2,
+          streamType: 'streaming',
+          type: 'streaminfo'
+        }
+      ],
+      id: 'a-00002',
+      type: 'typing'
+    } as any)
+  ).toHaveProperty('sessionId', 'a-first'));
+
+test('channelData-based livestreaming metadata should be harmony with other entities', () =>
+  expect(
+    getActivityLivestreamingMetadata({
+      channelData: {
+        streamSequence: 1,
+        streamType: 'streaming'
+      },
+      entities: [
+        {
+          '@context': 'https://schema.org',
+          '@id': '',
+          '@type': 'Message',
+          type: 'https://schema.org/Message'
+        }
+      ],
+      id: 'a-00001',
+      type: 'typing'
+    } as any)
+  ).toHaveProperty('sequenceNumber', 1));
+
+test('entity-based livestreaming metadata should be harmony with other entities', () =>
+  expect(
+    getActivityLivestreamingMetadata({
+      entities: [
+        {
+          '@context': 'https://schema.org',
+          '@id': '',
+          '@type': 'Message',
+          type: 'https://schema.org/Message'
+        },
+        {
+          streamSequence: 1,
+          streamType: 'streaming',
+          type: 'streaminfo'
+        }
+      ],
+      id: 'a-00001',
+      type: 'typing'
+    } as any)
+  ).toHaveProperty('sequenceNumber', 1));
