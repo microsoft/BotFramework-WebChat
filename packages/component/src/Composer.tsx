@@ -60,8 +60,6 @@ import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlin
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
 
-import { type FocusSendBoxInit } from './types/internal/FocusSendBoxInit';
-
 export type ComposerRef = {
   focusSendBoxInput: () => Promise<void>;
 };
