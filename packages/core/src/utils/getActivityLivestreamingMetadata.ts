@@ -1,6 +1,7 @@
 import {
   any,
   array,
+  check,
   findItem,
   integer,
   is,
@@ -58,7 +59,8 @@ function eitherChannelDataOrEntities<
         //       Bump valibot@latest and see if they solved the issue.
         entities: pipe(
           array(any()),
-          findItem(value => is(metadataInEntitiesSchema, value))
+          findItem(value => is(metadataInEntitiesSchema, value)),
+          check(value => !!value)
         )
       }),
       transform(({ entities, ...value }) => ({ ...value, streamInfoEntity: entities }))
