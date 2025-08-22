@@ -7,4 +7,6 @@ export {
   type LegacyActivityBridgeComponentProps
 } from '@msinternal/botframework-webchat-middleware/internal';
 
+export { LegacyActivityContextProvider, type LegacyActivityContextType } from './legacy/LegacyActivityBridgeContext';
+
 export { LowPriorityDecoratorComposer, useSetDictateState };

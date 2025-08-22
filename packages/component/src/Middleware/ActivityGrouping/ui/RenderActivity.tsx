@@ -5,7 +5,7 @@ import React, { memo, useCallback, useMemo } from 'react';
 import useActivityElementMapRef from '../../../providers/ChatHistoryDOM/useActivityElementRef';
 import useActivityRendererMap from '../../../providers/RenderingActivities/useActivityRendererMap';
 import ActivityRow from '../../../Transcript/ActivityRow';
-import LegacyActivityComposer from './LegacyActivityComposer';
+import LegacyActivityBridgeComposer from './LegacyActivityBridgeComposer';
 
 const { useGetKeyByActivity } = hooks;
 
@@ -29,7 +29,7 @@ function RenderActivity({ activity }: { readonly activity: WebChatActivity }) {
 
   return (
     <ActivityRow activity={activity} ref={activityCallbackRef}>
-      <LegacyActivityComposer activity={activity}>{activityNode}</LegacyActivityComposer>
+      <LegacyActivityBridgeComposer activity={activity}>{activityNode}</LegacyActivityBridgeComposer>
     </ActivityRow>
   );
 }

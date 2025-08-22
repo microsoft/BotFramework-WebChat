@@ -1,17 +1,17 @@
-import type { LegacyRenderAttachment } from '@msinternal/botframework-webchat-middleware/legacy';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { createContext, memo, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { custom, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
+import { LegacyActivityContextProvider, type LegacyActivityContextType } from 'botframework-webchat-api/internal';
 import isZeroOrPositive from '../../../Utils/isZeroOrPositive';
 import useFirstActivityInSenderGroup from '../../ActivityGrouping/ui/SenderGrouping/useFirstActivity';
 import useLastActivityInSenderGroup from '../../ActivityGrouping/ui/SenderGrouping/useLastActivity';
 import useFirstActivityInStatusGroup from '../../ActivityGrouping/ui/StatusGrouping/useFirstActivity';
 import useLastActivityInStatusGroup from '../../ActivityGrouping/ui/StatusGrouping/useLastActivity';
 
-const { useCreateActivityStatusRenderer, useCreateAvatarRenderer, useRenderAttachment, useStyleOptions } = hooks;
+const { useStyleOptions } = hooks;
 
 const webChatActivitySchema = custom<WebChatActivity>(value => safeParse(object({}), value).success);
 
@@ -23,25 +23,17 @@ const legacyActivityComposerPropsSchema = pipe(
   readonly()
 );
 
-type LegacyActivityComposerProps = InferInput<typeof legacyActivityComposerPropsSchema>;
+type LegacyActivityBridgeComposerProps = InferInput<typeof legacyActivityComposerPropsSchema>;
 
-type LegacyActivityContextType = {
-  readonly hideTimestamp: boolean;
-  readonly renderActivityStatus: ReturnType<ReturnType<typeof useCreateActivityStatusRenderer>>;
-  readonly renderAttachment: LegacyRenderAttachment;
-  readonly renderAvatar: false | ReturnType<ReturnType<typeof useCreateAvatarRenderer>>;
-  readonly showCallout: boolean;
-};
-
-const LegacyActivityContext = createContext<LegacyActivityContextType>({
-  hideTimestamp: false,
-  renderActivityStatus: undefined,
-  renderAttachment: undefined,
-  renderAvatar: undefined,
-  showCallout: false
-});
-
-function LegacyActivityComposer(props: LegacyActivityComposerProps) {
+/**
+ * This component is for adding props to legacy activity middleware renderer for backward compatibility.
+ * These props cannot be computed in `api` packages because they requires knowledge about activity grouping.
+ *
+ * @param props.activity The activity to be rendered by the legacy activity middleware.
+ * @param props.children Actual rendering of the activity with the legacy activity middleware.
+ * @returns A component that would add legacy props to legacy activity middleware renderer.
+ */
+function LegacyActivityBridgeComposer(props: LegacyActivityBridgeComposerProps) {
   const { activity, children } = validateProps(legacyActivityComposerPropsSchema, props);
 
   const [{ bubbleFromUserNubOffset, bubbleNubOffset, groupTimestamp, showAvatarInGroup }] = useStyleOptions();
@@ -49,9 +41,6 @@ function LegacyActivityComposer(props: LegacyActivityComposerProps) {
   const [firstActivityInStatusGroup] = useFirstActivityInStatusGroup();
   const [lastActivityInSenderGroup] = useLastActivityInSenderGroup();
   const [lastActivityInStatusGroup] = useLastActivityInStatusGroup();
-  const createActivityStatusRenderer = useCreateActivityStatusRenderer();
-  const renderAttachment = useRenderAttachment();
-  const renderAvatar = useCreateAvatarRenderer();
 
   const hideAllTimestamps = groupTimestamp === false;
   const isFirstInSenderGroup =
@@ -62,20 +51,8 @@ function LegacyActivityComposer(props: LegacyActivityComposerProps) {
     lastActivityInSenderGroup === activity || typeof lastActivityInSenderGroup === 'undefined';
   const isLastInStatusGroup =
     lastActivityInStatusGroup === activity || typeof lastActivityInStatusGroup === 'undefined';
-  const renderAvatarForSenderGroup = useMemo(
-    () => !!renderAvatar && renderAvatar({ activity }),
-    [activity, renderAvatar]
-  );
   const isTopSideBotNub = isZeroOrPositive(bubbleNubOffset);
   const isTopSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
-  const renderActivityStatus = useMemo(
-    () =>
-      createActivityStatusRenderer({
-        activity,
-        nextVisibleActivity: undefined
-      }),
-    [activity, createActivityStatusRenderer]
-  );
 
   const hideTimestamp = hideAllTimestamps || !isLastInStatusGroup;
   const isTopSideNub = activity.from?.role === 'user' ? isTopSideUserNub : isTopSideBotNub;
@@ -100,19 +77,15 @@ function LegacyActivityComposer(props: LegacyActivityComposerProps) {
   }
 
   const context = useMemo<LegacyActivityContextType>(
-    () => ({
-      hideTimestamp,
-      renderActivityStatus,
-      renderAttachment,
-      renderAvatar: renderAvatarForSenderGroup,
-      showCallout
-    }),
-    [hideTimestamp, renderActivityStatus, renderAttachment, renderAvatarForSenderGroup, showCallout]
+    () =>
+      Object.freeze({
+        hideTimestamp,
+        showCallout
+      }),
+    [hideTimestamp, showCallout]
   );
 
-  return <LegacyActivityContext.Provider value={context}>{children}</LegacyActivityContext.Provider>;
+  return <LegacyActivityContextProvider value={context}>{children}</LegacyActivityContextProvider>;
 }
 
-// TODO: Move this under its own folder.
-export default memo(LegacyActivityComposer);
-export { LegacyActivityContext, LegacyActivityContextType };
+export default memo(LegacyActivityBridgeComposer);

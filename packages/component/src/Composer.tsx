@@ -12,8 +12,6 @@ import {
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
-import { createActivityPolyMiddlewareFromLegacy } from 'botframework-webchat-api/internal';
-import { type PolyMiddleware } from 'botframework-webchat-api/middleware';
 import { singleToArray, type OneOrMany } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -36,7 +34,6 @@ import WebChatUIContext from './hooks/internal/WebChatUIContext';
 import { FocusSendBoxScope } from './hooks/sendBoxFocus';
 import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
-import LegacyActivityBridge from './Middleware/Activity/private/LegacyActivityBridge';
 import createDefaultActivityStatusMiddleware from './Middleware/ActivityStatus/createCoreMiddleware';
 import createDefaultAttachmentForScreenReaderMiddleware from './Middleware/AttachmentForScreenReader/createCoreMiddleware';
 import createDefaultAvatarMiddleware from './Middleware/Avatar/createCoreMiddleware';
@@ -335,7 +332,7 @@ const InternalComposer = ({
   decoratorMiddleware,
   extraStyleSet,
   htmlContentTransformMiddleware,
-  polyMiddleware: polyMiddlewareFromProps,
+  polyMiddleware,
   renderMarkdown,
   scrollToEndButtonMiddleware,
   sendBoxMiddleware: sendBoxMiddlewareFromProps,
@@ -445,24 +442,6 @@ const InternalComposer = ({
         ...createDefaultSendBoxToolbarMiddleware()
       ]),
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]
-  );
-
-  const polyMiddlewareForLegacyActivityMiddleware = useMemo<readonly PolyMiddleware[]>(
-    () =>
-      Object.freeze([
-        createActivityPolyMiddlewareFromLegacy(LegacyActivityBridge, () => null, ...patchedActivityMiddleware)
-      ]),
-    [patchedActivityMiddleware]
-  );
-
-  const polyMiddleware = useMemo<readonly PolyMiddleware[]>(
-    () =>
-      Object.freeze([
-        // TODO: Add <FallbackComponent>.
-        ...(polyMiddlewareFromProps || []),
-        ...polyMiddlewareForLegacyActivityMiddleware
-      ]),
-    [polyMiddlewareForLegacyActivityMiddleware, polyMiddlewareFromProps]
   );
 
   return (

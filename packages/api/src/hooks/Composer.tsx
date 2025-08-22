@@ -1,7 +1,8 @@
 import { PolyMiddlewareComposer, type PolyMiddleware } from '@msinternal/botframework-webchat-middleware';
+import { createActivityPolyMiddlewareFromLegacy } from '@msinternal/botframework-webchat-middleware/internal';
 import {
-  type LegacyAttachmentMiddleware,
-  type LegacyActivityMiddleware
+  type LegacyActivityMiddleware,
+  type LegacyAttachmentMiddleware
 } from '@msinternal/botframework-webchat-middleware/legacy';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
@@ -91,6 +92,7 @@ import observableToPromise from './utils/observableToPromise';
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+import LegacyActivityBridge from '../legacy/LegacyActivityBridge';
 import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import { parseUIState } from './validation/uiState';
 
@@ -207,19 +209,7 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
 
 type ComposerCoreProps = Readonly<{
   /**
-   * TODO: [P*] Think about deprecation path.
-   *            We cannot upgrade activityMiddleware in `api` package because the upgrade requires
-   *            default activity grouping middleware from `component` package.
-   *
-   * When the activity middleware is passed/polyfilled here, we assume the call pattern remains legacy.
-   * The caller should also be responsible for passing `hideTimestamp`, et al.
-   *
-   * Or should we think otherwise:
-   * - If the newer `useBuildRenderActivityCallback` is being used, no `hideTimestamp` is required.
-   *    - `hideTimestamp` will be computed, if it's inside grouping, it's true/false. If no grouping, it's always false.
-   * - If the older `useCreateActivityRenderer` is being used, `hideTimestamp` must be passed.
-   *
-   * @deprecated
+   * @deprecated The `activityMiddleware` prop is being deprecated, please use `polyMiddleware` instead. This prop will be removed on or after 2027-08-21.
    */
   activityMiddleware?: OneOrMany<LegacyActivityMiddleware>;
   activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware>;
@@ -283,6 +273,7 @@ type ComposerCoreProps = Readonly<{
 }>;
 
 const ComposerCore = ({
+  activityMiddleware,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
   attachmentMiddleware,
@@ -299,7 +290,7 @@ const ComposerCore = ({
   locale,
   onTelemetry,
   overrideLocalizedStrings,
-  polyMiddleware,
+  polyMiddleware: polyMiddlewareFromProps,
   renderMarkdown,
   scrollToEndButtonMiddleware,
   selectVoice,
@@ -526,6 +517,20 @@ const ComposerCore = ({
         () => () => () => false
       )() as any,
     [scrollToEndButtonMiddleware]
+  );
+
+  const polyMiddlewareForLegacyActivityMiddleware = useMemo<readonly PolyMiddleware[]>(
+    () =>
+      Object.freeze([
+        // TODO: Add <FallbackComponent>.
+        createActivityPolyMiddlewareFromLegacy(LegacyActivityBridge, () => null, ...singleToArray(activityMiddleware))
+      ]),
+    [activityMiddleware]
+  );
+
+  const polyMiddleware = useMemo<readonly PolyMiddleware[]>(
+    () => Object.freeze([...(polyMiddlewareFromProps || []), ...polyMiddlewareForLegacyActivityMiddleware]),
+    [polyMiddlewareForLegacyActivityMiddleware, polyMiddlewareFromProps]
   );
 
   /**
