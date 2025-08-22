@@ -1,9 +1,9 @@
-import type { ErrorMessage, InferOutput, ObjectEntries, ObjectIssue, ObjectSchema } from 'valibot';
 import {
   any,
   array,
   findItem,
   integer,
+  is,
   literal,
   minValue,
   nonEmpty,
@@ -15,7 +15,11 @@ import {
   string,
   transform,
   undefinedable,
-  union
+  union,
+  type ErrorMessage,
+  type ObjectEntries,
+  type ObjectIssue,
+  type ObjectSchema
 } from 'valibot';
 
 import { type WebChatActivity } from '../types/WebChatActivity';
@@ -50,10 +54,6 @@ function eitherChannelDataOrEntities<
     type: literal('streaminfo')
   });
 
-  function isStreamInfoEntity(value: unknown): value is InferOutput<typeof metadataInEntitiesSchema> {
-    return safeParse(metadataInEntitiesSchema, value).success;
-  }
-
   return union([
     object({
       ...activitySchema.entries,
@@ -67,7 +67,10 @@ function eitherChannelDataOrEntities<
 
         // TODO: [P2] valibot@1.1.0 did not infer output type for `filterItem()`, only infer for `findItem()`.
         //       Bump valibot@latest and see if they solved the issue.
-        entities: pipe(array(any()), findItem(isStreamInfoEntity))
+        entities: pipe(
+          array(any()),
+          findItem(value => is(metadataInEntitiesSchema, value))
+        )
       }),
       transform(({ entities, ...value }) => ({ ...value, streamInfoEntity: entities }))
     )
