@@ -14,4 +14,4 @@ export {
   type ActivityPolyMiddlewareRenderer,
   type ActivityPolyMiddlewareRequest,
   type PolyMiddleware
-} from '@msinternal/botframework-webchat-middleware';
+} from '@msinternal/botframework-webchat-api-middleware';

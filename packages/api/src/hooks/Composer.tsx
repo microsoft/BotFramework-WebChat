@@ -1,9 +1,9 @@
-import { PolyMiddlewareComposer, type PolyMiddleware } from '@msinternal/botframework-webchat-middleware';
-import { createActivityPolyMiddlewareFromLegacy } from '@msinternal/botframework-webchat-middleware/internal';
+import { PolyMiddlewareComposer, type PolyMiddleware } from '@msinternal/botframework-webchat-api-middleware';
+import { createActivityPolyMiddlewareFromLegacy } from '@msinternal/botframework-webchat-api-middleware/internal';
 import {
   type LegacyActivityMiddleware,
   type LegacyAttachmentMiddleware
-} from '@msinternal/botframework-webchat-middleware/legacy';
+} from '@msinternal/botframework-webchat-api-middleware/legacy';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,

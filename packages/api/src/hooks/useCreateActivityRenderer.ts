@@ -1,8 +1,8 @@
-import { useBuildRenderActivityCallback } from '@msinternal/botframework-webchat-middleware';
+import { useBuildRenderActivityCallback } from '@msinternal/botframework-webchat-api-middleware';
 import {
   type LegacyActivityComponentFactory,
   type LegacyActivityProps
-} from '@msinternal/botframework-webchat-middleware/legacy';
+} from '@msinternal/botframework-webchat-api-middleware/legacy';
 import { useCallback } from 'react';
 
 /**

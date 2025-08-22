@@ -4,7 +4,7 @@ import {
   type LegacyActivityMiddleware,
   type LegacyAttachmentMiddleware,
   type LegacyRenderAttachment
-} from '@msinternal/botframework-webchat-middleware/legacy';
+} from '@msinternal/botframework-webchat-api-middleware/legacy';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import defaultStyleOptions from './defaultStyleOptions';
 import Composer, { ComposerProps } from './hooks/Composer';
@@ -35,7 +35,7 @@ import { type WebSpeechPonyfill } from './types/WebSpeechPonyfill';
 import { type WebSpeechPonyfillFactory } from './types/WebSpeechPonyfillFactory';
 
 // #region Re-export
-export { activityComponent, createActivityPolyMiddleware } from '@msinternal/botframework-webchat-middleware';
+export { activityComponent, createActivityPolyMiddleware } from '@msinternal/botframework-webchat-api-middleware';
 
 // TODO: [P0] Exports `polyMiddlewareComposer` so activity renderer could use `polyMiddleware` to use their own attachment renderers.
 

@@ -1,4 +1,4 @@
-import { type LegacyRenderAttachment } from '@msinternal/botframework-webchat-middleware/legacy';
+import { type LegacyRenderAttachment } from '@msinternal/botframework-webchat-api-middleware/legacy';
 import {
   type DirectLineJSBotConnection,
   type Observable,

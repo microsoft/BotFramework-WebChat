@@ -5,7 +5,7 @@ export {
   createActivityPolyMiddlewareFromLegacy,
   legacyActivityBridgeComponentPropsSchema,
   type LegacyActivityBridgeComponentProps
-} from '@msinternal/botframework-webchat-middleware/internal';
+} from '@msinternal/botframework-webchat-api-middleware/internal';
 
 export { LegacyActivityContextProvider, type LegacyActivityContextType } from './legacy/LegacyActivityBridgeContext';
 
