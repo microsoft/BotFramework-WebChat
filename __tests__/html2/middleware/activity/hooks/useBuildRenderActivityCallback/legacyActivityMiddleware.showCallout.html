@@ -44,17 +44,6 @@
 
         const { directLine, store } = createDirectLineEmulator();
 
-        const SystemUnderTest = memo(function SystemUnderTest() {
-          const [activities] = useActivities();
-          const renderActivity = useBuildRenderActivityCallback();
-
-          return createElement(
-            'ol',
-            {},
-            activities.map(activity => createElement('li', {}, renderActivity({ activity })?.({})))
-          );
-        });
-
         const rootElement = document.getElementsByTagName('main')[0];
         const activityMiddleware = [
           () =>
@@ -65,9 +54,6 @@
         ];
 
         // WHEN: Web Chat is being rendered.
-        // TODO: [P1] Currently, `showCallout` relies on activity grouping.
-        //            However, there are no ways to render activity grouping outside of <BasicTranscript>.
-        //            We should have a way to simply render activity grouping.
         createRoot(rootElement).render(
           createElement(ReactWebChat, {
             activityMiddleware,

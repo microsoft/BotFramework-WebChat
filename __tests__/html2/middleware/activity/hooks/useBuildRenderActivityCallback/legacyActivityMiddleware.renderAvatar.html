@@ -35,9 +35,9 @@
           testHelpers: { createDirectLineEmulator },
           WebChat: {
             activityComponent,
-            Components: { Composer },
             createActivityPolyMiddleware,
-            hooks: { useActivities, useBuildRenderActivityCallback }
+            hooks: { useActivities, useBuildRenderActivityCallback },
+            ReactWebChat
           }
         } = window;
 
@@ -65,22 +65,18 @@
 
         // WHEN: <SystemUnderTest> is being rendered.
         createRoot(rootElement).render(
-          createElement(
-            Composer,
-            {
-              activityMiddleware,
-              directLine,
-              store,
-              styleOptions: {
-                botAvatarInitials: 'WC'
-              }
-            },
-            createElement(SystemUnderTest)
-          )
+          createElement(ReactWebChat, {
+            activityMiddleware,
+            directLine,
+            store,
+            styleOptions: {
+              botAvatarInitials: 'WC'
+            }
+          })
         );
 
         // THEN: Should render no list items.
-        await waitFor(() => expect(rootElement?.getElementsByTagName('ol')[0]?.children).toHaveLength(0));
+        await pageConditions.uiConnected();
 
         // WHEN: A message "Hello, World!" arrives.
         await directLine.emulateIncomingActivity(
@@ -92,8 +88,16 @@
         );
 
         // THEN: Should render the message "Hello, World!"
-        await waitFor(() => expect(rootElement?.getElementsByTagName('ol')[0]?.children).toHaveLength(1));
-        await waitFor(() => expect(rootElement?.querySelector('ol li')?.textContent.includes('WC')).toBe(true));
+        await waitFor(() =>
+          expect(rootElement?.querySelector('.webchat__basic-transcript__transcript')?.children).toHaveLength(1)
+        );
+        await waitFor(() =>
+          expect(
+            rootElement
+              ?.querySelector('.webchat__basic-transcript__transcript article:first-child')
+              ?.textContent.includes('WC')
+          ).toBe(true)
+        );
 
         // THEN: Should match snapshot.
         await host.snapshot('local');
