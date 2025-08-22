@@ -44,14 +44,13 @@ function eitherChannelDataOrEntities<
 >(
   activitySchema: ObjectSchema<TActivityEntries, TActivityMessage>,
   metadataSchema: ObjectSchema<TMetadataEntries, TMetadataMessage>
-  // metadataSchema: TMetadataSchema
 ) {
   const metadataInEntitiesSchema = object({
     ...metadataSchema.entries,
     type: literal('streaminfo')
   });
 
-  function isStreamInfoEntity(value: unknown): value is InferOutput<typeof metadataSchema> {
+  function isStreamInfoEntity(value: unknown): value is InferOutput<typeof metadataInEntitiesSchema> {
     return safeParse(metadataInEntitiesSchema, value).success;
   }
 
