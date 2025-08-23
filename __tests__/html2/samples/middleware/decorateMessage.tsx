@@ -6,30 +6,34 @@ await import('botframework-webchat');
 await import('botframework-webchat/middleware');
 
 // #region Sample code
-import ReactWebChat, { createStoreWithOptions } from 'botframework-webchat';
-import { type WebChatActivity } from 'botframework-webchat-core';
+import ReactWebChat, { createStoreWithOptions, hooks } from 'botframework-webchat';
 import {
   activityComponent,
   createActivityPolyMiddleware,
-  type ActivityPolyMiddlewareProps
+  type ActivityPolyMiddlewareProps,
+  type ActivityPolyMiddlewareRenderer
 } from 'botframework-webchat/middleware';
-import React, { memo } from 'react';
+import React, { Fragment, memo, useMemo } from 'react';
 import { render } from 'react-dom';
+
+const { useStyleOptions } = hooks;
 // #endregion Sample code
 
 run(async () => {
   // #region Sample code
 
-  type ChannelMessageProps = ActivityPolyMiddlewareProps & {
-    readonly activity: WebChatActivity & {
-      type: 'message';
-    };
+  type MessageBorderProps = ActivityPolyMiddlewareProps & {
+    readonly render: ActivityPolyMiddlewareRenderer | undefined;
   };
 
-  const ChannelMessage = memo<ChannelMessageProps>(function ChannelMessage({ activity }) {
+  const MessageBorder = memo<MessageBorderProps>(function MessageBorder({ render }) {
+    const [{ accent }] = useStyleOptions();
+
+    const style = useMemo(() => ({ outlineColor: accent }), [accent]);
+
     return (
-      <div className="channel-message">
-        <div className="channel-message__body">{activity.text}</div>
+      <div className="message-border" style={style}>
+        <Fragment>{render?.({})}</Fragment>
       </div>
     );
   });
@@ -38,8 +42,12 @@ run(async () => {
     createActivityPolyMiddleware(next => request => {
       const { activity } = request;
 
-      if (activity.from.role === 'channel' && activity.type === 'message') {
-        return activityComponent(ChannelMessage, { activity });
+      if (activity.type === 'message') {
+        const render = next(request)?.render;
+
+        return activityComponent<MessageBorderProps>(MessageBorder, {
+          render
+        });
       }
 
       return next(request);
@@ -58,12 +66,6 @@ run(async () => {
   );
 
   await pageConditions.uiConnected();
-
-  await directLine.emulateIncomingActivity({
-    from: { id: 'channel', role: 'channel' },
-    text: 'An agent has joined the conversation',
-    type: 'message'
-  });
 
   await directLine.emulateIncomingActivity({
     from: { id: 'bot', role: 'bot' },
