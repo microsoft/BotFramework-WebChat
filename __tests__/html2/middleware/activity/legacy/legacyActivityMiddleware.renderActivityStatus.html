@@ -48,21 +48,11 @@
           () =>
             next =>
             ({ activity }) =>
-            (renderAttachment, options) =>
-              createElement(
-                'div',
-                {},
-                renderAttachment({
-                  activity,
-                  attachment: {
-                    content: activity.text,
-                    contentType: 'text/markdown'
-                  }
-                })
-              )
+            (_, { renderActivityStatus }) =>
+              createElement('div', {}, renderActivityStatus())
         ];
 
-        // WHEN: <SystemUnderTest> is being rendered.
+        // WHEN: Web Chat is being rendered.
         createRoot(rootElement).render(
           createElement(ReactWebChat, {
             activityMiddleware,
@@ -77,16 +67,20 @@
         // WHEN: A message "Hello, World!" arrives.
         await directLine.emulateIncomingActivity(
           {
-            text: 'Hello, **World**!',
+            text: 'Hello, World!',
             type: 'message'
           },
           { skipWait: true }
         );
 
         // THEN: Should render the message "Hello, World!"
-        await pageConditions.numActivitiesShown(0);
+        await pageConditions.numActivitiesShown(1);
         await waitFor(() =>
-          expect(rootElement?.querySelector('.webchat__basic-transcript__transcript article:first-child')?.textContent.includes('Hello, World!')).toBe(true)
+          expect(
+            rootElement
+              ?.querySelector('.webchat__basic-transcript__transcript article:first-child')
+              ?.textContent.includes('Just now')
+          ).toBe(true)
         );
 
         // THEN: Should match snapshot.

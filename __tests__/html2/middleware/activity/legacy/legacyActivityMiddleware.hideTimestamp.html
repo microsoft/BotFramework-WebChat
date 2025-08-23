@@ -35,6 +35,7 @@
           testHelpers: { createDirectLineEmulator },
           WebChat: {
             activityComponent,
+            Components: { Composer },
             createActivityPolyMiddleware,
             hooks: { useActivities, useBuildRenderActivityCallback },
             ReactWebChat
@@ -43,60 +44,46 @@
 
         const { directLine, store } = createDirectLineEmulator();
 
-        const SystemUnderTest = memo(function SystemUnderTest() {
-          const [activities] = useActivities();
-          const renderActivity = useBuildRenderActivityCallback();
-
-          return createElement(
-            'ol',
-            {},
-            activities.map(activity => createElement('li', {}, renderActivity({ activity })?.({})))
-          );
-        });
-
         const rootElement = document.getElementsByTagName('main')[0];
         const activityMiddleware = [
           () =>
             next =>
             ({ activity }) =>
-            (_, { renderAvatar }) =>
-              createElement('div', {}, renderAvatar())
+            (_, { hideTimestamp }) =>
+              createElement('div', {}, '' + hideTimestamp)
         ];
 
-        // WHEN: <SystemUnderTest> is being rendered.
+        // WHEN: Web Chat is being rendered.
         createRoot(rootElement).render(
           createElement(ReactWebChat, {
             activityMiddleware,
             directLine,
-            store,
-            styleOptions: {
-              botAvatarInitials: 'WC'
-            }
+            store
           })
         );
 
-        // THEN: Should render no list items.
         await pageConditions.uiConnected();
 
-        // WHEN: A message "Hello, World!" arrives.
-        await directLine.emulateIncomingActivity(
-          {
-            text: 'Hello, World!',
-            type: 'message'
-          },
-          { skipWait: true }
-        );
+        // WHEN: Two messages arrives: "Hello, World!" and "Aloha!"
+        await directLine.emulateIncomingActivity({
+          text: 'Hello, World!',
+          timestamp: 0,
+          type: 'message'
+        });
 
-        // THEN: Should render the message "Hello, World!"
+        await directLine.emulateIncomingActivity({
+          text: 'Aloha!',
+          timestamp: 0,
+          type: 'message'
+        });
+
+        // THEN: Should render both messages.
+        await waitFor(() => expect(rootElement?.querySelector('.webchat__basic-transcript__transcript')?.children).toHaveLength(2));
         await waitFor(() =>
-          expect(rootElement?.querySelector('.webchat__basic-transcript__transcript')?.children).toHaveLength(1)
+          expect(rootElement?.querySelector('.webchat__basic-transcript__transcript article:first-child')?.textContent.includes('true')).toBe(true)
         );
         await waitFor(() =>
-          expect(
-            rootElement
-              ?.querySelector('.webchat__basic-transcript__transcript article:first-child')
-              ?.textContent.includes('WC')
-          ).toBe(true)
+          expect(rootElement?.querySelector('.webchat__basic-transcript__transcript article:last-child')?.textContent.includes('false')).toBe(true)
         );
 
         // THEN: Should match snapshot.

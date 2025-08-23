@@ -21,6 +21,11 @@
     <script defer crossorigin="anonymous" src="/test-harness.js"></script>
     <script defer crossorigin="anonymous" src="/test-page-object.js"></script>
     <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .my-activity {
+        border: solid 2px red;
+      }
+    </style>
   </head>
   <body>
     <main id="webchat"></main>
@@ -35,34 +40,54 @@
           testHelpers: { createDirectLineEmulator },
           WebChat: {
             activityComponent,
+            Components: { Composer },
             createActivityPolyMiddleware,
-            hooks: { useActivities, useBuildRenderActivityCallback },
-            ReactWebChat
+            hooks: { useActivities, useBuildRenderActivityCallback }
           }
         } = window;
 
         const { directLine, store } = createDirectLineEmulator();
 
+        const SystemUnderTest = memo(function SystemUnderTest() {
+          const [activities] = useActivities();
+          const renderActivity = useBuildRenderActivityCallback();
+
+          return createElement(
+            'ol',
+            {},
+            activities.map(activity => createElement('li', {}, renderActivity({ activity })?.({})))
+          );
+        });
+
+        const MyActivity = ({ activity, renderNext }) =>
+          createElement('div', { className: 'my-activity' }, renderNext?.(), createElement('div', {}, activity.text));
+
         const rootElement = document.getElementsByTagName('main')[0];
-        const activityMiddleware = [
-          () =>
-            next =>
-            ({ activity }) =>
-            (_, { renderActivityStatus }) =>
-              createElement('div', {}, renderActivityStatus())
+        const polyMiddleware = [
+          // Make sure passthrough still working.
+          createActivityPolyMiddleware(next => request => next(request)),
+          createActivityPolyMiddleware(next => request => {
+            const renderNext = next(request)?.render;
+
+            return activityComponent(MyActivity, { activity: request.activity, renderNext });
+          })
         ];
 
         // WHEN: <SystemUnderTest> is being rendered.
         createRoot(rootElement).render(
-          createElement(ReactWebChat, {
-            activityMiddleware,
-            directLine,
-            store
-          })
+          createElement(
+            Composer,
+            {
+              directLine,
+              polyMiddleware,
+              store
+            },
+            createElement(SystemUnderTest)
+          )
         );
 
         // THEN: Should render no list items.
-        await pageConditions.uiConnected();
+        await waitFor(() => expect(rootElement?.getElementsByTagName('ol')[0]?.children).toHaveLength(0));
 
         // WHEN: A message "Hello, World!" arrives.
         await directLine.emulateIncomingActivity(
@@ -74,13 +99,9 @@
         );
 
         // THEN: Should render the message "Hello, World!"
-        await pageConditions.numActivitiesShown(1);
+        await waitFor(() => expect(rootElement?.getElementsByTagName('ol')[0]?.children).toHaveLength(1));
         await waitFor(() =>
-          expect(
-            rootElement
-              ?.querySelector('.webchat__basic-transcript__transcript article:first-child')
-              ?.textContent.includes('Just now')
-          ).toBe(true)
+          expect(rootElement?.querySelector('ol li')?.textContent.includes('Hello, World!')).toBe(true)
         );
 
         // THEN: Should match snapshot.
