@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Sample</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="https://esm.sh/tsx" type="module"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <style type="text/css">
+      .channel-message {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .channel-message__body {
+        background-color: #666;
+        border-radius: 100px;
+        color: White;
+        font-family: sans-serif;
+        font-size: small;
+        padding: .2em .5em;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script src="../dist/middleware/channelMessage.js" type="module"></script>
+  </body>
+</html>
