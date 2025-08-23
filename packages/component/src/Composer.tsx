@@ -328,7 +328,7 @@ const InternalComposer = ({
   decoratorMiddleware,
   extraStyleSet,
   htmlContentTransformMiddleware,
-  polyMiddleware,
+  polymiddleware,
   renderMarkdown,
   scrollToEndButtonMiddleware,
   sendBoxMiddleware: sendBoxMiddlewareFromProps,
@@ -452,7 +452,7 @@ const InternalComposer = ({
       // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
       {...(node_env === 'development' ? { internalErrorBoxClass: ErrorBox } : {})}
       nonce={nonce}
-      polyMiddleware={polyMiddleware}
+      polymiddleware={polymiddleware}
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
       sendBoxMiddleware={sendBoxMiddleware}
       sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}

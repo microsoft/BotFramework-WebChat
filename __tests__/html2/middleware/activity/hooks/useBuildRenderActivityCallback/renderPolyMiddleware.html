@@ -39,10 +39,9 @@
         const {
           testHelpers: { createDirectLineEmulator },
           WebChat: {
-            activityComponent,
             Components: { Composer },
-            createActivityPolyMiddleware,
-            hooks: { useActivities, useBuildRenderActivityCallback }
+            hooks: { useActivities, useBuildRenderActivityCallback },
+            middleware: { activityComponent, createActivityPolymiddleware }
           }
         } = window;
 
@@ -63,10 +62,10 @@
           createElement('div', { className: 'my-activity' }, renderNext?.(), createElement('div', {}, activity.text));
 
         const rootElement = document.getElementsByTagName('main')[0];
-        const polyMiddleware = [
+        const polymiddleware = [
           // Make sure passthrough still working.
-          createActivityPolyMiddleware(next => request => next(request)),
-          createActivityPolyMiddleware(next => request => {
+          createActivityPolymiddleware(next => request => next(request)),
+          createActivityPolymiddleware(next => request => {
             const renderNext = next(request)?.render;
 
             return activityComponent(MyActivity, { activity: request.activity, renderNext });
@@ -79,7 +78,7 @@
             Composer,
             {
               directLine,
-              polyMiddleware,
+              polymiddleware,
               store
             },
             createElement(SystemUnderTest)

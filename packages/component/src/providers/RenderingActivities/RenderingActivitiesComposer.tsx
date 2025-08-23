@@ -1,6 +1,6 @@
 import {
   useBuildRenderActivityCallback,
-  type ActivityPolyMiddlewareRenderer
+  type ActivityPolymiddlewareRenderer
 } from 'botframework-webchat-api/middleware';
 import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
@@ -50,9 +50,9 @@ const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerPr
     activitiesOfLatestRevision,
     useCallback<
       (
-        activityRendererMap: ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>,
+        activityRendererMap: ReadonlyMap<WebChatActivity, ActivityPolymiddlewareRenderer>,
         activity: WebChatActivity
-      ) => ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>
+      ) => ReadonlyMap<WebChatActivity, ActivityPolymiddlewareRenderer>
     >(
       (activityRendererMap, activity) => {
         const renderer = renderActivity({ activity });
@@ -62,10 +62,10 @@ const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerPr
       },
       [renderActivity]
     ),
-    new Map<WebChatActivity, ActivityPolyMiddlewareRenderer>()
+    new Map<WebChatActivity, ActivityPolymiddlewareRenderer>()
   );
 
-  const activityRendererMapState = useMemo<readonly [ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>]>(
+  const activityRendererMapState = useMemo<readonly [ReadonlyMap<WebChatActivity, ActivityPolymiddlewareRenderer>]>(
     () => Object.freeze([Object.freeze(activityRendererMap)]),
     [activityRendererMap]
   );

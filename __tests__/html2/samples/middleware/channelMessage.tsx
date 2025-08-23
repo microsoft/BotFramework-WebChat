@@ -10,8 +10,8 @@ import ReactWebChat, { createStoreWithOptions } from 'botframework-webchat';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import {
   activityComponent,
-  createActivityPolyMiddleware,
-  type ActivityPolyMiddlewareProps
+  createActivityPolymiddleware,
+  type ActivityPolymiddlewareProps
 } from 'botframework-webchat/middleware';
 import React, { memo } from 'react';
 import { render } from 'react-dom';
@@ -20,7 +20,7 @@ import { render } from 'react-dom';
 run(async () => {
   // #region Sample code
 
-  type ChannelMessageProps = ActivityPolyMiddlewareProps & {
+  type ChannelMessageProps = ActivityPolymiddlewareProps & {
     readonly activity: WebChatActivity & {
       type: 'message';
     };
@@ -34,8 +34,8 @@ run(async () => {
     );
   });
 
-  const polyMiddleware = [
-    createActivityPolyMiddleware(next => request => {
+  const polymiddleware = [
+    createActivityPolymiddleware(next => request => {
       const { activity } = request;
 
       if (activity.from.role === 'channel' && activity.type === 'message') {
@@ -53,7 +53,7 @@ run(async () => {
   const { directLine, store } = testHelpers.createDirectLineEmulator();
 
   render(
-    <ReactWebChat directLine={directLine} polyMiddleware={polyMiddleware} store={store} />,
+    <ReactWebChat directLine={directLine} polymiddleware={polymiddleware} store={store} />,
     document.getElementsByTagName('main')[0]!
   );
 

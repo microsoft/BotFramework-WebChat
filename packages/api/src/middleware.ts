@@ -1,17 +1,17 @@
 export {
   activityComponent,
-  ActivityPolyMiddlewareProvider,
-  ActivityPolyMiddlewareProxy,
-  // TODO: Rename to activityPolyMiddleware
-  createActivityPolyMiddleware,
+  ActivityPolymiddlewareProvider,
+  ActivityPolymiddlewareProxy,
+  // TODO: Rename to activityPolymiddleware
+  createActivityPolymiddleware,
   useBuildRenderActivityCallback,
-  type ActivityPolyMiddleware,
-  type ActivityPolyMiddlewareHandler,
-  type ActivityPolyMiddlewareHandlerResult,
-  type ActivityPolyMiddlewareProps,
-  type ActivityPolyMiddlewareProviderProps,
-  type ActivityPolyMiddlewareProxyProps,
-  type ActivityPolyMiddlewareRenderer,
-  type ActivityPolyMiddlewareRequest,
-  type PolyMiddleware
+  type ActivityPolymiddleware,
+  type ActivityPolymiddlewareHandler,
+  type ActivityPolymiddlewareHandlerResult,
+  type ActivityPolymiddlewareProps,
+  type ActivityPolymiddlewareProviderProps,
+  type ActivityPolymiddlewareProxyProps,
+  type ActivityPolymiddlewareRenderer,
+  type ActivityPolymiddlewareRequest,
+  type Polymiddleware
 } from '@msinternal/botframework-webchat-api-middleware';

@@ -29,13 +29,13 @@ import ReactWebChat, { createStoreWithOptions } from 'botframework-webchat';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import {
    activityComponent,
-   createActivityPolyMiddleware,
-   type ActivityPolyMiddlewareProps
+   createActivityPolymiddleware,
+   type ActivityPolymiddlewareProps
 } from 'botframework-webchat/middleware';
 import React, { memo } from 'react';
 import { render } from 'react-dom';
 
-type ChannelMessageProps = ActivityPolyMiddlewareProps & {
+type ChannelMessageProps = ActivityPolymiddlewareProps & {
    readonly activity: WebChatActivity & {
       type: 'message';
    };
@@ -49,8 +49,8 @@ const ChannelMessage = memo<ChannelMessageProps>(function ChannelMessage({ activ
    );
 });
 
-const polyMiddleware = [
-   createActivityPolyMiddleware(next => request => {
+const polymiddleware = [
+   createActivityPolymiddleware(next => request => {
       const { activity } = request;
 
       if (activity.from.role === 'channel' && activity.type === 'message') {
@@ -79,17 +79,17 @@ This sample demonstrates the following:
 import ReactWebChat, { createStoreWithOptions, hooks } from 'botframework-webchat';
 import {
    activityComponent,
-   createActivityPolyMiddleware,
-   type ActivityPolyMiddlewareProps,
-   type ActivityPolyMiddlewareRenderer
+   createActivityPolymiddleware,
+   type ActivityPolymiddlewareProps,
+   type ActivityPolymiddlewareRenderer
 } from 'botframework-webchat/middleware';
 import React, { Fragment, memo, useMemo } from 'react';
 import { render } from 'react-dom';
 
 const { useStyleOptions } = hooks;
 
-type MessageBorderProps = ActivityPolyMiddlewareProps & {
-   readonly render: ActivityPolyMiddlewareRenderer | undefined;
+type MessageBorderProps = ActivityPolymiddlewareProps & {
+   readonly render: ActivityPolymiddlewareRenderer | undefined;
 };
 
 const MessageBorder = memo<MessageBorderProps>(function MessageBorder({ render }) {
@@ -104,8 +104,8 @@ const MessageBorder = memo<MessageBorderProps>(function MessageBorder({ render }
    );
 });
 
-const polyMiddleware = [
-   createActivityPolyMiddleware(next => request => {
+const polymiddleware = [
+   createActivityPolymiddleware(next => request => {
       const { activity } = request;
 
       if (activity.type === 'message') {

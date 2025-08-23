@@ -20,7 +20,7 @@ export default function useCreateActivityRenderer(): LegacyActivityComponentFact
       //            Use the following commented line once we move to stricter tsconfig.
       //            (props: LegacyActivityProps) =>
       (
-        /** @deprecated Some props are only processed by the legacy activity middleware and may not be processed by the newer activity middleware registered via `polyMiddleware`. */
+        /** @deprecated Some props are only processed by the legacy activity middleware and may not be processed by the newer activity middleware registered via `polymiddleware`. */
         props: LegacyActivityProps & { children?: never }
       ) =>
         render({ activity })?.(props),

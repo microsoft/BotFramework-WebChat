@@ -35,9 +35,8 @@ import { type WebSpeechPonyfill } from './types/WebSpeechPonyfill';
 import { type WebSpeechPonyfillFactory } from './types/WebSpeechPonyfillFactory';
 
 // #region Re-export
-export { activityComponent, createActivityPolyMiddleware } from '@msinternal/botframework-webchat-api-middleware';
 
-// TODO: [P0] Exports `polyMiddlewareComposer` so activity renderer could use `polyMiddleware` to use their own attachment renderers.
+// TODO: [P*] Exports `polymiddlewareComposer` so activity renderer could use `polymiddleware` to use their own attachment renderers.
 
 export {
   extractSendBoxMiddleware,
@@ -65,15 +64,15 @@ const buildInfo = { buildTool, moduleFormat, version };
 export { buildInfo, Composer, concatMiddleware, defaultStyleOptions, hooks, localize, normalizeStyleOptions, version };
 
 export type {
-  /** @deprecated Use `polyMiddleware` instead, this will be removed on or after 2027-08-16. */
+  /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */
   LegacyActivityComponentFactory as ActivityComponentFactory,
-  /** @deprecated Use `polyMiddleware` instead, this will be removed on or after 2027-08-16. */
+  /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */
   LegacyActivityMiddleware as ActivityMiddleware,
   ActivityStatusMiddleware,
   ActivityStatusRenderer,
   AttachmentForScreenReaderComponentFactory,
   AttachmentForScreenReaderMiddleware,
-  /** @deprecated Use `polyMiddleware` instead, this will be removed on or after 2027-08-16. */
+  /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */
   LegacyAttachmentMiddleware as AttachmentMiddleware,
   AvatarComponentFactory,
   AvatarMiddleware,

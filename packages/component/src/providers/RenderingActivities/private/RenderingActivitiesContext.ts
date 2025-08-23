@@ -1,9 +1,9 @@
-import { type ActivityPolyMiddlewareRenderer } from 'botframework-webchat-api/middleware';
+import { type ActivityPolymiddlewareRenderer } from 'botframework-webchat-api/middleware';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import createContextAndHook from '../../createContextAndHook';
 
 type RenderingActivitiesContextType = Readonly<{
-  activityRendererMapState: readonly [ReadonlyMap<WebChatActivity, ActivityPolyMiddlewareRenderer>];
+  activityRendererMapState: readonly [ReadonlyMap<WebChatActivity, ActivityPolymiddlewareRenderer>];
   renderingActivitiesState: readonly [readonly WebChatActivity[]];
   renderingActivityKeysState: readonly [readonly string[]];
 }>;

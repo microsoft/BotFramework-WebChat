@@ -13,25 +13,25 @@ import {
   type InferInput
 } from 'valibot';
 
-import { ActivityPolyMiddlewareProvider, extractActivityEnhancer } from './activityPolyMiddleware';
+import { ActivityPolymiddlewareProvider, extractActivityEnhancer } from './activityPolymiddleware';
 import useMemoWithPrevious from './internal/useMemoWithPrevious';
-import { PolyMiddleware } from './types/PolyMiddleware';
+import { Polymiddleware } from './types/Polymiddleware';
 
-const polyMiddlewareComposerPropsSchema = pipe(
+const polymiddlewareComposerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
     middleware: pipe(
-      custom<readonly PolyMiddleware[]>(value => safeParse(array(function_()), value).success),
-      transform<readonly PolyMiddleware[], readonly PolyMiddleware[]>(value => Object.freeze(Array.from(value)))
+      custom<readonly Polymiddleware[]>(value => safeParse(array(function_()), value).success),
+      transform<readonly Polymiddleware[], readonly Polymiddleware[]>(value => Object.freeze(Array.from(value)))
     )
   }),
   readonly()
 );
 
-type PolyMiddlewareComposerProps = Readonly<InferInput<typeof polyMiddlewareComposerPropsSchema>>;
+type PolymiddlewareComposerProps = Readonly<InferInput<typeof polymiddlewareComposerPropsSchema>>;
 
-function PolyMiddlewareComposer(props: PolyMiddlewareComposerProps) {
-  const { children, middleware } = validateProps(polyMiddlewareComposerPropsSchema, props);
+function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
+  const { children, middleware } = validateProps(polymiddlewareComposerPropsSchema, props);
 
   const activityEnhancers = useMemoWithPrevious<ReturnType<typeof extractActivityEnhancer>>(
     (prevActivityEnhancers = []) => {
@@ -46,7 +46,7 @@ function PolyMiddlewareComposer(props: PolyMiddlewareComposerProps) {
     [middleware]
   );
 
-  const activityPolyMiddleware = useMemo(() => activityEnhancers.map(enhancer => () => enhancer), [activityEnhancers]);
+  const activityPolymiddleware = useMemo(() => activityEnhancers.map(enhancer => () => enhancer), [activityEnhancers]);
 
   // Didn't thoroughly think through this part yet, but I am using the first approach for now:
 
@@ -58,9 +58,9 @@ function PolyMiddlewareComposer(props: PolyMiddlewareComposerProps) {
   //    - <Proxy> will need to be rebuilt, as it use a different `useBuildRenderCallback()`
 
   return (
-    <ActivityPolyMiddlewareProvider middleware={activityPolyMiddleware}>{children}</ActivityPolyMiddlewareProvider>
+    <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>{children}</ActivityPolymiddlewareProvider>
   );
 }
 
-export default memo(PolyMiddlewareComposer);
-export { polyMiddlewareComposerPropsSchema, type PolyMiddlewareComposerProps };
+export default memo(PolymiddlewareComposer);
+export { polymiddlewareComposerPropsSchema, type PolymiddlewareComposerProps };

@@ -20,9 +20,9 @@ import {
 } from 'valibot';
 import {
   activityComponent,
-  createActivityPolyMiddleware,
-  type ActivityPolyMiddleware
-} from '../activityPolyMiddleware';
+  createActivityPolymiddleware,
+  type ActivityPolymiddleware
+} from '../activityPolymiddleware';
 
 const webChatActivitySchema = custom<WebChatActivity>(value => safeParse(object({}), value).success);
 
@@ -72,21 +72,21 @@ const fallbackComponentPropsSchema = pipe(
 
 type FallbackComponentProps = Readonly<InferInput<typeof fallbackComponentPropsSchema> & { children?: never }>;
 
-function createActivityPolyMiddlewareFromLegacy(
+function createActivityPolymiddlewareFromLegacy(
   bridgeComponent: ComponentType<LegacyActivityBridgeComponentProps>,
   // Use lowercase for argument name, but we need uppercase for JSX.
   fallbackComponent: ComponentType<FallbackComponentProps>,
   ...middleware: readonly LegacyActivityMiddleware[]
-): ActivityPolyMiddleware;
+): ActivityPolymiddleware;
 
-function createActivityPolyMiddlewareFromLegacy(
+function createActivityPolymiddlewareFromLegacy(
   bridgeComponent: ComponentType<LegacyActivityBridgeComponentProps>,
   FallbackComponent: ComponentType<FallbackComponentProps>,
   ...middleware: readonly LegacyActivityMiddleware[]
-): ActivityPolyMiddleware {
+): ActivityPolymiddleware {
   const legacyEnhancer = composeEnhancer(...middleware.map(middleware => middleware()));
 
-  return createActivityPolyMiddleware(() => {
+  return createActivityPolymiddleware(() => {
     const legacyHandler = legacyEnhancer(request => () => <FallbackComponent activity={request.activity} />);
 
     return ({ activity }) => {
@@ -103,7 +103,7 @@ function createActivityPolyMiddlewareFromLegacy(
   });
 }
 
-export default createActivityPolyMiddlewareFromLegacy;
+export default createActivityPolymiddlewareFromLegacy;
 
 export {
   fallbackComponentPropsSchema,

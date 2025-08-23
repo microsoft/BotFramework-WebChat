@@ -49,7 +49,9 @@
       run(async function () {
         const {
           testHelpers: { createDirectLineEmulator },
-          WebChat: { activityComponent, createActivityPolyMiddleware }
+          WebChat: {
+            middleware: { activityComponent, createActivityPolymiddleware }
+          }
         } = window;
 
         const { directLine, store } = createDirectLineEmulator();
@@ -67,7 +69,7 @@
           );
         };
 
-        const activityPolyMiddleware = createActivityPolyMiddleware(
+        const activityPolymiddleware = createActivityPolymiddleware(
           next => request =>
             activityComponent(MyActivityMiddleware, {
               activity: request.activity,
@@ -75,14 +77,14 @@
             })
         );
 
-        // TODO: We should update the test to use another type of polyMiddleware to show something actually changed.
-        //       Currently, we only have activityPolyMiddleware, hard to tell if the test is testing things properly.
-        const dummyPolyMiddleware = init => init === 'dummy' && (next => request => next(request));
+        // TODO: We should update the test to use another type of polymiddleware to show something actually changed.
+        //       Currently, we only have activityPolymiddleware, hard to tell if the test is testing things properly.
+        const dummyPolymiddleware = init => init === 'dummy' && (next => request => next(request));
 
         WebChat.renderWebChat(
           {
             directLine,
-            polyMiddleware: [dummyPolyMiddleware, activityPolyMiddleware],
+            polymiddleware: [dummyPolymiddleware, activityPolymiddleware],
             store
           },
           document.getElementById('webchat')
@@ -104,7 +106,7 @@
           {
             directLine,
             // Modify an unrelated middleware.
-            polyMiddleware: [dummyPolyMiddleware.bind(), activityPolyMiddleware],
+            polymiddleware: [dummyPolymiddleware.bind(), activityPolymiddleware],
             store
           },
           document.getElementById('webchat')

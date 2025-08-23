@@ -36,10 +36,9 @@
         const {
           testHelpers: { createDirectLineEmulator },
           WebChat: {
-            activityComponent,
             Components: { Composer },
-            createActivityPolyMiddleware,
             hooks: { useActivities, useBuildRenderActivityCallback },
+            middleware: { activityComponent },
             ReactWebChat
           }
         } = window;
@@ -53,14 +52,14 @@
         });
 
         // Middleware that looks legitimate but we should skip it because it was created without using the factory function.
-        const polyMiddleware = [init => init === 'activity' && (next => request => activityComponent(Dummy))];
+        const polymiddleware = [init => init === 'activity' && (next => request => activityComponent(Dummy))];
         const rootElement = document.getElementsByTagName('main')[0];
 
         // WHEN: Web Chat is being rendered.
         createRoot(rootElement).render(
           createElement(ReactWebChat, {
             directLine,
-            polyMiddleware,
+            polymiddleware,
             store
           })
         );

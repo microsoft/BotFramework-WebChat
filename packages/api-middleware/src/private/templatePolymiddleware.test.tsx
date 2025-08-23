@@ -4,7 +4,7 @@
 import { render } from '@testing-library/react';
 import React, { type ReactNode } from 'react';
 
-import templatePolyMiddleware, { type InferMiddleware } from './templatePolyMiddleware';
+import templatePolymiddleware, { type InferMiddleware } from './templatePolymiddleware';
 
 type ButtonProps = Readonly<{ children?: ReactNode | undefined }>;
 type LinkProps = Readonly<{ children?: ReactNode | undefined; href: string }>;
@@ -23,7 +23,7 @@ const InternalLinkImpl = ({ children, href }: LinkProps) => <a href={href}>{chil
 test('an uber middleware', () => {
   jest.spyOn(console, 'warn');
 
-  const buttonTemplate = templatePolyMiddleware<void, ButtonProps>('Button' as any);
+  const buttonTemplate = templatePolymiddleware<void, ButtonProps>('Button' as any);
   const {
     createMiddleware: createButtonMiddleware,
     extractEnhancer: extractButtonEnhancer,
@@ -34,7 +34,7 @@ test('an uber middleware', () => {
 
   type ButtonMiddleware = InferMiddleware<typeof ButtonProvider>;
 
-  const linkTemplate = templatePolyMiddleware<{ external: boolean }, LinkProps>('Link' as any);
+  const linkTemplate = templatePolymiddleware<{ external: boolean }, LinkProps>('Link' as any);
   const {
     createMiddleware: createLinkMiddleware,
     extractEnhancer: extractLinkEnhancer,

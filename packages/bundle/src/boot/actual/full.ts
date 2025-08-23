@@ -82,10 +82,8 @@ type StrictStyleOptions = StrictFullBundleStyleOptions;
 
 export default ReactWebChat;
 export {
-  activityComponent,
   Constants,
   concatMiddleware,
-  createActivityPolyMiddleware,
   createBrowserWebSpeechPonyfillFactory,
   createStore,
   createStoreWithDevTools,

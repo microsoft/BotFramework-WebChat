@@ -1,20 +1,20 @@
 export {
   activityComponent,
-  ActivityPolyMiddlewareProvider,
-  ActivityPolyMiddlewareProxy,
-  createActivityPolyMiddleware,
+  ActivityPolymiddlewareProvider,
+  ActivityPolymiddlewareProxy,
+  createActivityPolymiddleware,
   extractActivityEnhancer,
   useBuildRenderActivityCallback,
-  type ActivityPolyMiddleware,
-  type ActivityPolyMiddlewareHandler,
-  type ActivityPolyMiddlewareHandlerResult,
-  type ActivityPolyMiddlewareProps,
-  type ActivityPolyMiddlewareProviderProps,
-  type ActivityPolyMiddlewareProxyProps,
-  type ActivityPolyMiddlewareRenderer,
-  type ActivityPolyMiddlewareRequest
-} from './activityPolyMiddleware';
+  type ActivityPolymiddleware,
+  type ActivityPolymiddlewareHandler,
+  type ActivityPolymiddlewareHandlerResult,
+  type ActivityPolymiddlewareProps,
+  type ActivityPolymiddlewareProviderProps,
+  type ActivityPolymiddlewareProxyProps,
+  type ActivityPolymiddlewareRenderer,
+  type ActivityPolymiddlewareRequest
+} from './activityPolymiddleware';
 
-// TODO: [P0] Add tests for nesting `polyMiddleware`.
-export { default as PolyMiddlewareComposer } from './PolyMiddlewareComposer';
-export { type PolyMiddleware } from './types/PolyMiddleware';
+// TODO: [P0] Add tests for nesting `polymiddleware`.
+export { default as PolymiddlewareComposer } from './PolymiddlewareComposer';
+export { type Polymiddleware } from './types/Polymiddleware';

@@ -8,7 +8,7 @@ import { legacyActivityBridgeComponentPropsSchema, type LegacyActivityBridgeComp
 import { useLegacyActivityContext } from './LegacyActivityBridgeContext';
 
 /**
- * This component is solely for `createActivityPolyMiddlewareFromLegacy`.
+ * This component is solely for `createActivityPolymiddlewareFromLegacy`.
  *
  * @param props Legacy activity middleware props, includes `hideTimestamp`, `renderActivityStatus`, `renderAvatar`, and `showCallout`.
  * @returns An activity node rendered using the `props.render()` of type `LegacyRenderFunction`.

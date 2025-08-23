@@ -34,10 +34,9 @@
         const {
           testHelpers: { createDirectLineEmulator },
           WebChat: {
-            activityComponent,
             Components: { Composer },
-            createActivityPolyMiddleware,
-            hooks: { useActivities, useBuildRenderActivityCallback }
+            hooks: { useActivities, useBuildRenderActivityCallback },
+            middleware: { activityComponent, createActivityPolymiddleware }
           }
         } = window;
 
@@ -59,9 +58,9 @@
         });
 
         const rootElement = document.getElementsByTagName('main')[0];
-        const polyMiddleware = [
-          // activityPolyMiddleware only has props of { children?: never }, everything is extraneous.
-          createActivityPolyMiddleware(
+        const polymiddleware = [
+          // activityPolymiddleware only has props of { children?: never }, everything is extraneous.
+          createActivityPolymiddleware(
             () =>
               ({ activity }) =>
                 activityComponent(MyActivity, { text: activity.text })
@@ -74,7 +73,7 @@
             Composer,
             {
               directLine,
-              polyMiddleware,
+              polymiddleware,
               store
             },
             createElement(SystemUnderTest)

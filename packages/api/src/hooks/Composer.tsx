@@ -1,5 +1,5 @@
-import { PolyMiddlewareComposer, type PolyMiddleware } from '@msinternal/botframework-webchat-api-middleware';
-import { createActivityPolyMiddlewareFromLegacy } from '@msinternal/botframework-webchat-api-middleware/internal';
+import { PolymiddlewareComposer, type Polymiddleware } from '@msinternal/botframework-webchat-api-middleware';
+import { createActivityPolymiddlewareFromLegacy } from '@msinternal/botframework-webchat-api-middleware/internal';
 import {
   type LegacyActivityMiddleware,
   type LegacyAttachmentMiddleware
@@ -209,7 +209,7 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
 
 type ComposerCoreProps = Readonly<{
   /**
-   * @deprecated The `activityMiddleware` prop is being deprecated, please use `polyMiddleware` instead. This prop will be removed on or after 2027-08-21.
+   * @deprecated The `activityMiddleware` prop is being deprecated, please use `polymiddleware` instead. This prop will be removed on or after 2027-08-21.
    */
   activityMiddleware?: OneOrMany<LegacyActivityMiddleware>;
   activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware>;
@@ -242,7 +242,7 @@ type ComposerCoreProps = Readonly<{
       >
     | undefined;
   locale?: string;
-  polyMiddleware?: readonly PolyMiddleware[];
+  polymiddleware?: readonly Polymiddleware[];
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
   renderMarkdown?: (
@@ -290,7 +290,7 @@ const ComposerCore = ({
   locale,
   onTelemetry,
   overrideLocalizedStrings,
-  polyMiddleware: polyMiddlewareFromProps,
+  polymiddleware: polymiddlewareFromProps,
   renderMarkdown,
   scrollToEndButtonMiddleware,
   selectVoice,
@@ -519,18 +519,18 @@ const ComposerCore = ({
     [scrollToEndButtonMiddleware]
   );
 
-  const polyMiddlewareForLegacyActivityMiddleware = useMemo<readonly PolyMiddleware[]>(
+  const polymiddlewareForLegacyActivityMiddleware = useMemo<readonly Polymiddleware[]>(
     () =>
       Object.freeze([
         // TODO: Add <FallbackComponent>.
-        createActivityPolyMiddlewareFromLegacy(LegacyActivityBridge, () => null, ...singleToArray(activityMiddleware))
+        createActivityPolymiddlewareFromLegacy(LegacyActivityBridge, () => null, ...singleToArray(activityMiddleware))
       ]),
     [activityMiddleware]
   );
 
-  const polyMiddleware = useMemo<readonly PolyMiddleware[]>(
-    () => Object.freeze([...(polyMiddlewareFromProps || []), ...polyMiddlewareForLegacyActivityMiddleware]),
-    [polyMiddlewareForLegacyActivityMiddleware, polyMiddlewareFromProps]
+  const polymiddleware = useMemo<readonly Polymiddleware[]>(
+    () => Object.freeze([...(polymiddlewareFromProps || []), ...polymiddlewareForLegacyActivityMiddleware]),
+    [polymiddlewareForLegacyActivityMiddleware, polymiddlewareFromProps]
   );
 
   /**
@@ -613,9 +613,9 @@ const ComposerCore = ({
             <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
               <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
                 <GroupActivitiesComposer groupActivitiesMiddleware={singleToArray(groupActivitiesMiddleware)}>
-                  <PolyMiddlewareComposer middleware={polyMiddleware}>
+                  <PolymiddlewareComposer middleware={polymiddleware}>
                     {typeof children === 'function' ? children(context) : children}
-                  </PolyMiddlewareComposer>
+                  </PolymiddlewareComposer>
                 </GroupActivitiesComposer>
                 <ActivitySendStatusTelemetryComposer />
               </SendBoxToolbarMiddlewareProvider>

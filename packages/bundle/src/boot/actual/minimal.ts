@@ -1,9 +1,4 @@
-import {
-  activityComponent,
-  createActivityPolyMiddleware,
-  type StrictStyleOptions,
-  type StyleOptions
-} from 'botframework-webchat-api';
+import { type StrictStyleOptions, type StyleOptions } from 'botframework-webchat-api';
 import * as apiDecorator from 'botframework-webchat-api/decorator';
 import * as componentDecorator from 'botframework-webchat-component/decorator';
 import * as internal from 'botframework-webchat-component/internal';
@@ -63,12 +58,10 @@ const decorator = Object.freeze({
 
 export default ReactWebChat;
 export {
-  activityComponent,
   buildInfo,
   Components,
   concatMiddleware,
   Constants,
-  createActivityPolyMiddleware, // TODO: Should we export this under "middleware" object or named exports?
   createBrowserWebSpeechPonyfillFactory,
   createDirectLine,
   createDirectLineAppServiceExtension,

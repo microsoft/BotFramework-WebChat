@@ -9,9 +9,9 @@ await import('botframework-webchat/middleware');
 import ReactWebChat, { createStoreWithOptions, hooks } from 'botframework-webchat';
 import {
   activityComponent,
-  createActivityPolyMiddleware,
-  type ActivityPolyMiddlewareProps,
-  type ActivityPolyMiddlewareRenderer
+  createActivityPolymiddleware,
+  type ActivityPolymiddlewareProps,
+  type ActivityPolymiddlewareRenderer
 } from 'botframework-webchat/middleware';
 import React, { Fragment, memo, useMemo } from 'react';
 import { render } from 'react-dom';
@@ -22,8 +22,8 @@ const { useStyleOptions } = hooks;
 run(async () => {
   // #region Sample code
 
-  type MessageBorderProps = ActivityPolyMiddlewareProps & {
-    readonly render: ActivityPolyMiddlewareRenderer | undefined;
+  type MessageBorderProps = ActivityPolymiddlewareProps & {
+    readonly render: ActivityPolymiddlewareRenderer | undefined;
   };
 
   const MessageBorder = memo<MessageBorderProps>(function MessageBorder({ render }) {
@@ -38,8 +38,8 @@ run(async () => {
     );
   });
 
-  const polyMiddleware = [
-    createActivityPolyMiddleware(next => request => {
+  const polymiddleware = [
+    createActivityPolymiddleware(next => request => {
       const { activity } = request;
 
       if (activity.type === 'message') {
@@ -61,7 +61,7 @@ run(async () => {
   const { directLine, store } = testHelpers.createDirectLineEmulator();
 
   render(
-    <ReactWebChat directLine={directLine} polyMiddleware={polyMiddleware} store={store} />,
+    <ReactWebChat directLine={directLine} polymiddleware={polymiddleware} store={store} />,
     document.getElementsByTagName('main')[0]!
   );
 

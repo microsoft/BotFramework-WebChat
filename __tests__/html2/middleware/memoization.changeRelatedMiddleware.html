@@ -57,7 +57,9 @@
       run(async function () {
         const {
           testHelpers: { createDirectLineEmulator },
-          WebChat: { activityComponent, createActivityPolyMiddleware }
+          WebChat: {
+            middleware: { activityComponent, createActivityPolymiddleware }
+          }
         } = window;
 
         const { directLine, store } = createDirectLineEmulator();
@@ -79,7 +81,7 @@
           );
         };
 
-        const activityPolyMiddlewareRed = createActivityPolyMiddleware(
+        const activityPolymiddlewareRed = createActivityPolymiddleware(
           next => request =>
             activityComponent(MyActivityMiddleware, {
               activity: request.activity,
@@ -88,7 +90,7 @@
             })
         );
 
-        const activityPolyMiddlewareGreen = createActivityPolyMiddleware(
+        const activityPolymiddlewareGreen = createActivityPolymiddleware(
           next => request =>
             activityComponent(MyActivityMiddleware, {
               activity: request.activity,
@@ -97,12 +99,12 @@
             })
         );
 
-        const dummyPolyMiddleware = init => init === 'dummy' && (next => request => next(request));
+        const dummyPolymiddleware = init => init === 'dummy' && (next => request => next(request));
 
         WebChat.renderWebChat(
           {
             directLine,
-            polyMiddleware: [activityPolyMiddlewareRed],
+            polymiddleware: [activityPolymiddlewareRed],
             store
           },
           document.getElementById('webchat')
@@ -124,7 +126,7 @@
         WebChat.renderWebChat(
           {
             directLine,
-            polyMiddleware: [activityPolyMiddlewareGreen],
+            polymiddleware: [activityPolymiddlewareGreen],
             store
           },
           document.getElementById('webchat')

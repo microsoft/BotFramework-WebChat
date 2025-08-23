@@ -1,7 +1,7 @@
 export {
-  default as createActivityPolyMiddlewareFromLegacy,
+  default as createActivityPolymiddlewareFromLegacy,
   fallbackComponentPropsSchema,
   legacyActivityBridgeComponentPropsSchema,
   type FallbackComponentProps,
   type LegacyActivityBridgeComponentProps
-} from './internal/createActivityPolyMiddlewareFromLegacy';
+} from './internal/createActivityPolymiddlewareFromLegacy';
