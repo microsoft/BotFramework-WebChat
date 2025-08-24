@@ -540,9 +540,15 @@ Composer.defaultProps = {
 };
 
 Composer.propTypes = {
-  ...APIComposer.propTypes,
-  ...ComposerCore.propTypes,
-  children: PropTypes.any
+  children: PropTypes.any,
+  extraStyleSet: PropTypes.any,
+  nonce: PropTypes.string,
+  renderMarkdown: PropTypes.func,
+  styleSet: PropTypes.any,
+  suggestedActionsAccessKey: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.string]),
+  webSpeechPonyfillFactory: PropTypes.func,
+  decoratorMiddleware: PropTypes.any,
+  htmlContentTransformMiddleware: PropTypes.any
 };
 
 export default Composer;
