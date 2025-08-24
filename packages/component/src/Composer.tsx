@@ -10,7 +10,7 @@ import {
   hooks,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
-import { DecoratorComposer } from 'botframework-webchat-api/decorator';
+import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -53,6 +53,7 @@ import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddlewar
 import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
 import CustomElementsComposer from './providers/CustomElements/CustomElementsComposer';
 import HTMLContentTransformComposer from './providers/HTMLContentTransformCOR/HTMLContentTransformComposer';
+import { type HTMLContentTransformMiddleware } from './providers/HTMLContentTransformCOR/private/HTMLContentTransformContext';
 import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
 import { LiveRegionTwinComposer } from './providers/LiveRegionTwin';
 import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
@@ -167,6 +168,11 @@ type ComposerCoreProps = Readonly<{
   styleSet?: any;
   suggestedActionsAccessKey?: string | false;
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
+}>;
+
+type ComposerAdditionalProps = Readonly<{
+  decoratorMiddleware?: any;
+  htmlContentTransformMiddleware?: any;
 }>;
 
 const ComposerCore = ({
@@ -339,10 +345,12 @@ ComposerCore.propTypes = {
   renderMarkdown: PropTypes.func,
   styleSet: PropTypes.any,
   suggestedActionsAccessKey: PropTypes.oneOfType([PropTypes.oneOf([false]), PropTypes.string]),
-  webSpeechPonyfillFactory: PropTypes.func
+  webSpeechPonyfillFactory: PropTypes.func,
+  decoratorMiddleware: PropTypes.any,
+  htmlContentTransformMiddleware: PropTypes.any
 };
 
-type ComposerProps = APIComposerProps & ComposerCoreProps;
+type ComposerProps = APIComposerProps & ComposerCoreProps & ComposerAdditionalProps;
 
 const InternalComposer = forwardRef<ComposerRef, ComposerProps>(
   (
