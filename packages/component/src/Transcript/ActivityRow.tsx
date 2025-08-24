@@ -15,6 +15,11 @@ import useActivityAccessibleName from './useActivityAccessibleName';
 import type { WebChatActivity } from 'botframework-webchat-core';
 import type { MouseEventHandler, PropsWithChildren } from 'react';
 import { useRefFrom } from 'use-ref-from';
+import {
+  TranscriptFocusContent,
+  TranscriptFocusContentActiveDescendant,
+  TranscriptFocusContentBody
+} from './TranscriptFocus';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
 
@@ -58,9 +63,9 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   const focusTrapChildren = useMemo(
     () => (
-      <div className="webchat__basic-transcript__activity-body" ref={bodyRef}>
+      <TranscriptFocusContentBody className="webchat__basic-transcript__activity-body" ref={bodyRef}>
         {children}
-      </div>
+      </TranscriptFocusContentBody>
     ),
     [bodyRef, children]
   );
@@ -108,36 +113,35 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   return (
     // TODO: [P2] Add `aria-roledescription="message"` for better AX, need localization strings.
-    <article
-      className={classNames('webchat__basic-transcript__activity', {
-        'webchat__basic-transcript__activity--acknowledged': acknowledged,
-        'webchat__basic-transcript__activity--read': read
-      })}
-      // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <LiveRegionActivity>).
-      onMouseDownCapture={handleMouseDownCapture}
-      ref={wrappedRef}
-    >
-      {/* TODO: [P1] File a crbug for TalkBack. It should not able to read the content twice when scanning. */}
-
-      {/* The following <div> is designed for active descendant only.
-          We want to prevent screen reader from scanning the content that is authored only for active descendant.
-          The specific content should only read when user press UP/DOWN arrow keys to change `aria-activedescendant`.
-          However, Android TalkBack 12.1 is buggy when the there is an element with ID of one of the `aria-activedescendant` potential candidates,
-          TalkBack will narrate the message content twice (i.e. content of `bodyRef`), regardless whether the ID is currently set as `aria-activedescendant` or not.
-          As Android does not support active descendant, we are hiding the whole DOM element altogether. */}
-
-      {!android && (
-        <div
+    /* TODO: [P1] File a crbug for TalkBack. It should not able to read the content twice when scanning. */
+    /* The following <div> is designed for active descendant only.
+        We want to prevent screen reader from scanning the content that is authored only for active descendant.
+        The specific content should only read when user press UP/DOWN arrow keys to change `aria-activedescendant`.
+        However, Android TalkBack 12.1 is buggy when the there is an element with ID of one of the `aria-activedescendant` potential candidates,
+        TalkBack will narrate the message content twice (i.e. content of `bodyRef`), regardless whether the ID is currently set as `aria-activedescendant` or not.
+        As Android does not support active descendant, we are hiding the whole DOM element altogether. */
+    <TranscriptFocusContent
+      activeDescendant={!android && (
+        <TranscriptFocusContentActiveDescendant
           aria-labelledby={descendantLabelId}
           className="webchat__basic-transcript__activity-active-descendant"
           // "id" is required for "aria-labelledby"
-          // eslint-disable-next-line react/forbid-dom-props
           id={descendantId}
           role="article"
         >
           <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
-        </div>
+        </TranscriptFocusContentActiveDescendant>
       )}
+      className={classNames('webchat__basic-transcript__activity', {
+        'webchat__basic-transcript__activity--acknowledged': acknowledged,
+        'webchat__basic-transcript__activity--read': read
+      })}
+      focused={isActiveDescendant}
+      onMouseDownCapture={handleMouseDownCapture}
+      // When NVDA is in browse mode, using up/down arrow key to "browse" will dispatch "click" and "mousedown" events for <article> element (inside <LiveRegionActivity>).
+      ref={wrappedRef}
+      tag="article"
+    >
       <FocusTrap
         onFocus={handleDescendantFocus}
         onLeave={handleLeaveFocusTrap}
@@ -149,12 +153,7 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
         // TODO: Should build `webChatActivitySchema`.
         <SpeakActivity activity={activity as WebChatActivity & { channelData: { speechSynthesisUtterance?: any } }} />
       )}
-      <div
-        className={classNames('webchat__basic-transcript__activity-indicator', {
-          'webchat__basic-transcript__activity-indicator--focus': isActiveDescendant
-        })}
-      />
-    </article>
+    </TranscriptFocusContent>
   );
 });
 

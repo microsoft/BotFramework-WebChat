@@ -1,4 +1,6 @@
 :global(.webchat) .collapsible-content {
+  display: grid;
+
   &[open] .collapsible-content__chevron {
     transform: rotate(180deg);
   }
@@ -9,6 +11,7 @@
   display: inline-flex;
   font-family: var(--webchat__font--primary);
   gap: calc(var(--webchat__padding--regular) / 2);
+  justify-self: self-start;
   list-style: none;
   margin: var(--webchat__padding--regular);
   padding: 0;
@@ -22,8 +25,11 @@
   }
 }
 
+:global(.webchat) .collapsible-content__summary-text {
+  flex: auto;
+}
+
 :global(.webchat) .collapsible-content__content {
   display: flex;
   flex-direction: column;
-  margin-block-start: calc(var(--webchat__padding--regular) * -1);
 }
