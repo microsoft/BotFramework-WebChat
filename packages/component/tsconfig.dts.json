@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig/src/current/tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "skipLibCheck": true,
+    "noImplicitAny": false,
+    "strict": false,
+    "strictNullChecks": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "exactOptionalPropertyTypes": false,
+    "noImplicitReturns": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "lib": ["es2022", "dom", "dom.iterable"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["**/*.test.*", "**/*.spec.*", "dist"]
+}

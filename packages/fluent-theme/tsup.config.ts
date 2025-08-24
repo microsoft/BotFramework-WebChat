@@ -56,7 +56,8 @@ export default defineConfig([
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
     ],
     format: ['cjs'],
-    target: [...baseConfig.target, 'es2019']
+    target: [...baseConfig.target, 'es2019'],
+    tsconfig: './tsconfig.dts.json'
   },
   {
     ...baseConfig,
@@ -66,7 +67,8 @@ export default defineConfig([
       ...(baseConfig.esbuildPlugins || []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
     ],
-    format: ['esm']
+    format: ['esm'],
+    tsconfig: './tsconfig.dts.json'
   },
   {
     ...baseConfig,
@@ -80,7 +82,8 @@ export default defineConfig([
     format: 'iife',
     outExtension() {
       return { js: '.js' };
-    }
+    },
+    tsconfig: './tsconfig.dts.json'
   },
   {
     ...baseConfig,
@@ -98,6 +101,7 @@ export default defineConfig([
     minify: true,
     outExtension() {
       return { js: '.js' };
-    }
+    },
+    tsconfig: './tsconfig.dts.json'
   }
 ]);

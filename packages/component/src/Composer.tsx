@@ -10,12 +10,22 @@ import {
   hooks,
   WebSpeechPonyfillFactory
 } from 'botframework-webchat-api';
-import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
+import { DecoratorComposer } from 'botframework-webchat-api/decorator';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { forwardRef, Fragment, memo, useCallback, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from 'react';
+import React, {
+  forwardRef,
+  Fragment,
+  memo,
+  useCallback,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode
+} from 'react';
 import { Composer as SayComposer } from 'react-say';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
@@ -43,7 +53,6 @@ import createDefaultToastMiddleware from './Middleware/Toast/createCoreMiddlewar
 import createDefaultTypingIndicatorMiddleware from './Middleware/TypingIndicator/createCoreMiddleware';
 import CustomElementsComposer from './providers/CustomElements/CustomElementsComposer';
 import HTMLContentTransformComposer from './providers/HTMLContentTransformCOR/HTMLContentTransformComposer';
-import { type HTMLContentTransformMiddleware } from './providers/HTMLContentTransformCOR/private/HTMLContentTransformContext';
 import SendBoxComposer from './providers/internal/SendBox/SendBoxComposer';
 import { LiveRegionTwinComposer } from './providers/LiveRegionTwin';
 import ModalDialogComposer from './providers/ModalDialog/ModalDialogComposer';
@@ -54,7 +63,6 @@ import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddle
 import createStyleSet from './Styles/createStyleSet';
 import useCustomPropertiesClassName from './Styles/useCustomPropertiesClassName';
 import WebChatTheme from './Styles/WebChatTheme';
-import { type ContextOf } from './types/ContextOf';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
 import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
@@ -88,7 +96,9 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
 
-type ComposerCoreUIProps = Readonly<{ children?: ReactNode | undefined }>;
+type ComposerCoreUIProps = Readonly<{
+  children: ReactNode;
+}>;
 
 const ROOT_STYLE = {
   '&.webchat__css-custom-properties': {
@@ -111,7 +121,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   const trackException = useTrackException();
 
   const dictationOnError = useCallback(
-    (errorEvent: SpeechRecognitionErrorEvent) => {
+    (errorEvent: Event & { error: string }) => {
       // Ignore aborted error as it is likely user clicking on the microphone button to abort recognition.
       if (errorEvent.error !== 'aborted') {
         const nativeError = new Error('Speech recognition failed');
@@ -150,18 +160,12 @@ ComposerCoreUI.displayName = 'ComposerCoreUI';
 
 type ComposerCoreProps = Readonly<{
   children?: ReactNode;
-  decoratorMiddleware?: readonly DecoratorMiddleware[] | undefined;
   extraStyleSet?: any;
-  htmlContentTransformMiddleware?: readonly HTMLContentTransformMiddleware[] | undefined;
   nonce?: string;
-  renderMarkdown?: (
-    markdown: string,
-    newLineOptions: { markdownRespectCRLF: boolean },
-    linkOptions: { externalLinkAlt: string }
-  ) => string;
+  renderMarkdown?: any;
+  styles?: readonly (HTMLLinkElement | HTMLStyleElement)[];
   styleSet?: any;
-  styles?: readonly HTMLStyleElement[];
-  suggestedActionsAccessKey?: boolean | string;
+  suggestedActionsAccessKey?: string | false;
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
 }>;
 
@@ -270,7 +274,7 @@ const ComposerCore = ({
 
   useInjectStyles(styles, nonce);
 
-  const context = useMemo<ContextOf<typeof WebChatUIContext>>(
+  const context = useMemo(
     () => ({
       dictateAbortable,
       dispatchScrollPosition,

@@ -15,7 +15,8 @@ const config: typeof baseConfig = {
     ...(baseConfig.esbuildPlugins ?? []),
     injectCSSPlugin({ stylesPlaceholder: componentStyleContentPlaceholder }),
     injectCSSPlugin({ stylesPlaceholder: decoratorStyleContentPlaceholder })
-  ]
+  ],
+  tsconfig: './tsconfig.dts.json'
 };
 
 export default defineConfig([
