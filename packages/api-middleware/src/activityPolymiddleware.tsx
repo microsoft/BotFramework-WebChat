@@ -3,6 +3,7 @@ import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useMemo } from 'react';
 import { custom, object, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
+import createErrorBoundaryMiddleware from './private/createErrorBoundaryMiddleware';
 import templatePolymiddleware, {
   type InferHandler,
   type InferHandlerResult,
@@ -16,19 +17,19 @@ import templatePolymiddleware, {
 const {
   createMiddleware: createActivityPolymiddleware,
   extractEnhancer: extractActivityEnhancer,
-  Provider: ActivityPolymiddlewareProvider,
+  Provider,
   Proxy,
   reactComponent: activityComponent,
   useBuildRenderCallback: useBuildRenderActivityCallback
 } = templatePolymiddleware<{ readonly activity: WebChatActivity }, { readonly children?: never }>('activity');
 
-type ActivityPolymiddleware = InferMiddleware<typeof ActivityPolymiddlewareProvider>;
-type ActivityPolymiddlewareHandler = InferHandler<typeof ActivityPolymiddlewareProvider>;
-type ActivityPolymiddlewareHandlerResult = InferHandlerResult<typeof ActivityPolymiddlewareProvider>;
-type ActivityPolymiddlewareProps = InferProps<typeof ActivityPolymiddlewareProvider>;
-type ActivityPolymiddlewareRenderer = InferRenderer<typeof ActivityPolymiddlewareProvider>;
-type ActivityPolymiddlewareRequest = InferRequest<typeof ActivityPolymiddlewareProvider>;
-type ActivityPolymiddlewareProviderProps = InferProviderProps<typeof ActivityPolymiddlewareProvider>;
+type ActivityPolymiddleware = InferMiddleware<typeof Provider>;
+type ActivityPolymiddlewareHandler = InferHandler<typeof Provider>;
+type ActivityPolymiddlewareHandlerResult = InferHandlerResult<typeof Provider>;
+type ActivityPolymiddlewareProps = InferProps<typeof Provider>;
+type ActivityPolymiddlewareRenderer = InferRenderer<typeof Provider>;
+type ActivityPolymiddlewareRequest = InferRequest<typeof Provider>;
+type ActivityPolymiddlewareProviderProps = InferProviderProps<typeof Provider>;
 
 const activityPolymiddlewareProxyPropsSchema = pipe(
   object({
@@ -46,6 +47,31 @@ const ActivityPolymiddlewareProxy = memo(function ActivityPolymiddlewareProxy(pr
   const request = useMemo(() => ({ activity }), [activity]);
 
   return <Proxy request={request} />;
+});
+
+const ActivityPolymiddlewareProvider = memo(function ActivityPolymiddlewareProvider({
+  children,
+  middleware
+}: ActivityPolymiddlewareProviderProps) {
+  return (
+    <Provider
+      // Decorates middleware with <ErrorBoundary>.
+      middleware={useMemo(
+        () =>
+          Object.freeze([
+            createErrorBoundaryMiddleware({
+              createMiddleware: createActivityPolymiddleware,
+              reactComponent: activityComponent,
+              where: 'Activity polymiddleware'
+            }),
+            ...middleware
+          ]),
+        [middleware]
+      )}
+    >
+      {children}
+    </Provider>
+  );
 });
 
 export {

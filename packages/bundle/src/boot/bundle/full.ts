@@ -1,7 +1,8 @@
 import './modern-polyfill';
 
-import addVersion from '../addVersion';
 import * as full from '../actual/full';
+import * as middleware from '../actual/middleware';
+import addVersion from '../addVersion';
 
 const buildInfo = Object.freeze({
   ...full.buildInfo,
@@ -15,7 +16,8 @@ const { createStoreWithDevTools: _createStoreWithDevTools, ...finalFull } = full
 window['WebChat'] = Object.freeze({
   ...window['WebChat'],
   ...finalFull,
-  buildInfo
+  buildInfo,
+  middleware
 });
 
 addVersion(buildInfo);

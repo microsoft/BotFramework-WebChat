@@ -10,7 +10,6 @@ export {
   activityComponent,
   ActivityPolymiddlewareProvider,
   ActivityPolymiddlewareProxy,
-  // TODO: Rename to activityPolymiddleware
   createActivityPolymiddleware,
   useBuildRenderActivityCallback,
   type ActivityPolymiddleware,
@@ -22,4 +21,20 @@ export {
   type ActivityPolymiddlewareRenderer,
   type ActivityPolymiddlewareRequest,
   type Polymiddleware
+} from 'botframework-webchat-api/middleware';
+
+export {
+  createErrorBoxPolymiddleware,
+  errorBoxComponent,
+  ErrorBoxPolymiddlewareProvider,
+  ErrorBoxPolymiddlewareProxy,
+  useBuildRenderErrorBoxCallback,
+  type ErrorBoxPolymiddleware,
+  type ErrorBoxPolymiddlewareHandler,
+  type ErrorBoxPolymiddlewareHandlerResult,
+  type ErrorBoxPolymiddlewareProps,
+  type ErrorBoxPolymiddlewareProviderProps,
+  type ErrorBoxPolymiddlewareProxyProps,
+  type ErrorBoxPolymiddlewareRenderer,
+  type ErrorBoxPolymiddlewareRequest
 } from 'botframework-webchat-api/middleware';

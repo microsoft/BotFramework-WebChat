@@ -26,11 +26,12 @@ const EMPTY_ARRAY = Object.freeze([]);
 // Following @types/react to use {} for props.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 function templatePolymiddleware<Request, Props extends {}>(name: string) {
-  const { Provider, Proxy, reactComponent, useBuildRenderCallback } = createChainOfResponsibility<
-    Request,
-    Props,
-    string
-  >();
+  const {
+    Provider,
+    Proxy,
+    reactComponent,
+    useBuildRenderCallback: useBuildRenderCallbackRaw
+  } = createChainOfResponsibility<Request, Props, string>();
 
   type TemplatedEnhancer = ReturnType<InferOrganicMiddleware<typeof Provider>>;
   type TemplatedMiddleware = (init: string) => TemplatedEnhancer;
@@ -57,7 +58,9 @@ function templatePolymiddleware<Request, Props extends {}>(name: string) {
 
   const warnInvalidExtraction = warnOnce(`Middleware passed for extraction of "${name}" must be an array of function`);
 
-  const extractEnhancer = (middleware: readonly TemplatedMiddleware[] | undefined): readonly TemplatedEnhancer[] => {
+  const extractEnhancer = (
+    middleware: readonly ((init: string) => ComponentEnhancer<any, any>)[] | undefined
+  ): readonly TemplatedEnhancer[] => {
     if (middleware) {
       if (isArrayOfFunction(middleware)) {
         return Object.freeze(
@@ -70,7 +73,7 @@ function templatePolymiddleware<Request, Props extends {}>(name: string) {
 
                 return false;
               } else if (!safeParse(middlewareSchema, result).success) {
-                console.warn(`botframework-webchat: ${name}.middleware must be created using its factory function`);
+                console.warn(`botframework-webchat: ${name}.middleware must be created using factory function`);
 
                 return false;
               }
@@ -106,6 +109,26 @@ function templatePolymiddleware<Request, Props extends {}>(name: string) {
 
   Proxy.displayName = `${name}Proxy`;
 
+  const useBuildRenderCallback = () => {
+    try {
+      return useBuildRenderCallbackRaw();
+    } catch (error) {
+      if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string') {
+        if (error.message.includes('middleware must return value constructed by reactComponent()')) {
+          const customError = new Error(
+            `botframework-webchat: middleware must return value constructed by ${name}Component()`
+          );
+
+          customError.cause = error;
+
+          throw customError;
+        }
+      }
+
+      throw error;
+    }
+  };
+
   return {
     createMiddleware,
     extractEnhancer,
@@ -122,7 +145,7 @@ type InferenceHelper<Request, Props extends object> = {
     handlerResult: ComponentHandlerResult<Props>;
     middleware: (init: string) => ComponentEnhancer<Request, Props>;
     props: Props;
-    providerProps: ProviderProps<Request, Props, string>;
+    providerProps: Pick<ProviderProps<Request, Props, string>, 'children' | 'middleware'>;
     proxyProps: ProxyProps<Request, Props>;
     renderer: ComponentRenderer<Props>;
     request: Request;

@@ -14,6 +14,7 @@ import {
 } from 'valibot';
 
 import { ActivityPolymiddlewareProvider, extractActivityEnhancer } from './activityPolymiddleware';
+import { ErrorBoxPolymiddlewareProvider, extractErrorBoxEnhancer } from './errorBoxPolymiddleware';
 import useMemoWithPrevious from './internal/useMemoWithPrevious';
 import { Polymiddleware } from './types/Polymiddleware';
 
@@ -48,6 +49,21 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   const activityPolymiddleware = useMemo(() => activityEnhancers.map(enhancer => () => enhancer), [activityEnhancers]);
 
+  const errorBoxEnhancers = useMemoWithPrevious<ReturnType<typeof extractErrorBoxEnhancer>>(
+    (prevErrorBoxEnhancers = []) => {
+      const errorBoxEnhancers = extractErrorBoxEnhancer(middleware);
+
+      // Checks for array equality, return previous version if nothing has changed.
+      return prevErrorBoxEnhancers.length === errorBoxEnhancers.length &&
+        errorBoxEnhancers.every((middleware, index) => Object.is(middleware, prevErrorBoxEnhancers.at(index)))
+        ? prevErrorBoxEnhancers
+        : errorBoxEnhancers;
+    },
+    [middleware]
+  );
+
+  const errorBoxPolymiddleware = useMemo(() => errorBoxEnhancers.map(enhancer => () => enhancer), [errorBoxEnhancers]);
+
   // Didn't thoroughly think through this part yet, but I am using the first approach for now:
 
   // 1. <XXXProvider> for every type of middleware
@@ -58,7 +74,9 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
   //    - <Proxy> will need to be rebuilt, as it use a different `useBuildRenderCallback()`
 
   return (
-    <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>{children}</ActivityPolymiddlewareProvider>
+    <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>
+      <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>{children}</ErrorBoxPolymiddlewareProvider>
+    </ActivityPolymiddlewareProvider>
   );
 }
 

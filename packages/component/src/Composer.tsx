@@ -9,6 +9,11 @@ import {
   type SendBoxToolbarMiddleware
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
+import {
+  createErrorBoxPolymiddleware,
+  errorBoxComponent,
+  type Polymiddleware
+} from 'botframework-webchat-api/middleware';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -19,7 +24,7 @@ import { Composer as SayComposer } from 'react-say';
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import BuiltInDecorator from './BuiltInDecorator';
 import Dictation from './Dictation';
-import ErrorBox from './ErrorBox';
+import ErrorBox, { type ErrorBoxProps } from './ErrorBox';
 import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
@@ -440,6 +445,21 @@ const InternalComposer = ({
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]
   );
 
+  const patchedPolymiddleware = useMemo<readonly Polymiddleware[]>(
+    () =>
+      Object.freeze([
+        ...polymiddleware,
+        createErrorBoxPolymiddleware(
+          () => request =>
+            errorBoxComponent<ErrorBoxProps & { readonly children?: never }>(ErrorBox, {
+              error: request.error,
+              type: request.where
+            })
+        )
+      ]),
+    [polymiddleware]
+  );
+
   return (
     <APIComposer
       activityMiddleware={patchedActivityMiddleware}
@@ -452,7 +472,7 @@ const InternalComposer = ({
       // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
       {...(node_env === 'development' ? { internalErrorBoxClass: ErrorBox } : {})}
       nonce={nonce}
-      polymiddleware={polymiddleware}
+      polymiddleware={patchedPolymiddleware}
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
       sendBoxMiddleware={sendBoxMiddleware}
       sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}
