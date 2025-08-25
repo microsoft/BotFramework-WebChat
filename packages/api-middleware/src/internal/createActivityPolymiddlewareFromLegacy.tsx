@@ -90,7 +90,7 @@ function createActivityPolymiddlewareFromLegacy(
     const legacyHandler = legacyEnhancer(request => () => <FallbackComponent activity={request.activity} />);
 
     return ({ activity }) => {
-      // TODO: `nextVisibleActivity` is deprecated and should be removed.
+      // TODO: [P1] `nextVisibleActivity` is deprecated and should be removed.
       const legacyResult = legacyHandler({ activity, nextVisibleActivity: undefined as any });
 
       if (!legacyResult) {
