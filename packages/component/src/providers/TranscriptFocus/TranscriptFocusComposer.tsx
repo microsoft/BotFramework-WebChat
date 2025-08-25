@@ -126,6 +126,9 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       } else if (activityKey) {
         setRawFocusedActivityKey(activityKey);
         focusByGroupKey(undefined, false);
+      } else if (activityKey === undefined) {
+        handleFocus(undefined);
+        return;
       }
 
       const groupKey = typeof activityKey === 'string' && getGroupKeyByActivityKey(activityKey);
