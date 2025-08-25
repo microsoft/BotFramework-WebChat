@@ -448,7 +448,7 @@ const InternalComposer = ({
   const patchedPolymiddleware = useMemo<readonly Polymiddleware[]>(
     () =>
       Object.freeze([
-        ...polymiddleware,
+        ...(polymiddleware || []),
         createErrorBoxPolymiddleware(
           () => request =>
             errorBoxComponent<ErrorBoxProps & { readonly children?: never }>(ErrorBox, {
