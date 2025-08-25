@@ -1,0 +1,14 @@
+.channel-message {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.channel-message__body {
+  background-color: #666;
+  border-radius: 100px;
+  color: White;
+  font-family: sans-serif;
+  font-size: small;
+  padding: 0.2em 0.5em;
+}

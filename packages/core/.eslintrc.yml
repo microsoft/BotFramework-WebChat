@@ -5,3 +5,11 @@ extends:
 # TODO: #3212 When we move to React Native, we should disable this.
 env:
   browser: true
+
+rules:
+  no-restricted-imports:
+    - error
+    - patterns:
+        - group:
+            - '@msinternal/botframework-webchat-api-*'
+          message: 'To prevent duplicated import, @msinternal/botframework-webchat-api-* is only allowed to import in botframework-webchat-api.'

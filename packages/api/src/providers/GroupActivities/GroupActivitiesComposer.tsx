@@ -64,14 +64,15 @@ function GroupActivitiesComposer({ children, groupActivitiesMiddleware }: GroupA
     [groupActivitiesBy, runMiddleware]
   );
 
-  const groupActivitiesByGroupRef = useRefFrom(groupActivitiesByGroup);
   const groupActivitiesByRef = useRefFrom(groupActivitiesBy);
 
+  // When `groupActivitiesMiddleware` or `styleOptions.groupActivities` changed, the callback should be invalidated.
+  // The invalidation will help hook callers to re-render.
   const groupActivitiesByName = useCallback<
     (activities: readonly WebChatActivity[], groupingName: string) => readonly (readonly WebChatActivity[])[]
   >(
     (activities, groupingName) => {
-      const group = groupActivitiesByGroupRef.current.get(groupingName);
+      const group = groupActivitiesByGroup.get(groupingName);
 
       if (group) {
         const result: ReadonlyMap<string, readonly (readonly WebChatActivity[])[]> = new Map(
@@ -97,7 +98,7 @@ function GroupActivitiesComposer({ children, groupActivitiesMiddleware }: GroupA
 
       return Object.freeze(activities.map(activity => Object.freeze([activity])));
     },
-    [groupActivitiesByGroupRef, groupActivitiesByRef]
+    [groupActivitiesByGroup, groupActivitiesByRef]
   );
 
   const context = useMemo<GroupActivitiesContextType>(

@@ -1,5 +1,6 @@
-import addVersion from '../addVersion';
+import * as middleware from '../actual/middleware';
 import * as minimal from '../actual/minimal.js';
+import addVersion from '../addVersion';
 
 const buildInfo = Object.freeze({
   ...minimal.buildInfo,
@@ -13,7 +14,8 @@ const { createStoreWithDevTools: _createStoreWithDevTools, ...finalMinimal } = m
 window['WebChat'] = Object.freeze({
   ...window['WebChat'],
   ...finalMinimal,
-  buildInfo
+  buildInfo,
+  middleware
 });
 
 addVersion(buildInfo);

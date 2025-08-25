@@ -32,6 +32,7 @@ const config: typeof baseConfig = {
   entry: {
     'botframework-webchat': './src/boot/exports/full.ts',
     'botframework-webchat.es5': './src/boot/exports/full-es5.ts',
+    'botframework-webchat.middleware': './src/boot/exports/middleware.ts',
     'botframework-webchat.minimal': './src/boot/exports/minimal.ts'
   },
   env: {

@@ -1,3 +1,9 @@
+import { PolymiddlewareComposer, type Polymiddleware } from '@msinternal/botframework-webchat-api-middleware';
+import { createActivityPolymiddlewareFromLegacy } from '@msinternal/botframework-webchat-api-middleware/internal';
+import {
+  type LegacyActivityMiddleware,
+  type LegacyAttachmentMiddleware
+} from '@msinternal/botframework-webchat-api-middleware/legacy';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,
@@ -54,10 +60,8 @@ import ActivitySendStatusComposer from '../providers/ActivitySendStatus/Activity
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
-import ActivityMiddleware from '../types/ActivityMiddleware';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
-import AttachmentMiddleware from '../types/AttachmentMiddleware';
 import AvatarMiddleware from '../types/AvatarMiddleware';
 import CardActionMiddleware from '../types/CardActionMiddleware';
 import { type ContextOf } from '../types/ContextOf';
@@ -88,6 +92,7 @@ import observableToPromise from './utils/observableToPromise';
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
+import LegacyActivityBridge from '../legacy/LegacyActivityBridge';
 import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import { parseUIState } from './validation/uiState';
 
@@ -203,10 +208,13 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
 // Ignoring it in TypeScript version should be safe, as we have `propTypes` version to protect us.
 
 type ComposerCoreProps = Readonly<{
-  activityMiddleware?: OneOrMany<ActivityMiddleware>;
+  /**
+   * @deprecated The `activityMiddleware` prop is being deprecated, please use `polymiddleware` instead. This prop will be removed on or after 2027-08-21.
+   */
+  activityMiddleware?: OneOrMany<LegacyActivityMiddleware>;
   activityStatusMiddleware?: OneOrMany<ActivityStatusMiddleware>;
   attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
-  attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
+  attachmentMiddleware?: OneOrMany<LegacyAttachmentMiddleware>;
   avatarMiddleware?: OneOrMany<AvatarMiddleware>;
   cardActionMiddleware?: OneOrMany<CardActionMiddleware>;
   children?: ReactNode | ((context: ContextOf<React.Context<WebChatAPIContextType>>) => ReactNode);
@@ -234,6 +242,7 @@ type ComposerCoreProps = Readonly<{
       >
     | undefined;
   locale?: string;
+  polymiddleware?: readonly Polymiddleware[];
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
   overrideLocalizedStrings?: LocalizedStrings | ((strings: LocalizedStrings, language: string) => LocalizedStrings);
   renderMarkdown?: (
@@ -281,6 +290,7 @@ const ComposerCore = ({
   locale,
   onTelemetry,
   overrideLocalizedStrings,
+  polymiddleware: polymiddlewareFromProps,
   renderMarkdown,
   scrollToEndButtonMiddleware,
   selectVoice,
@@ -403,25 +413,6 @@ const ComposerCore = ({
     [telemetryDimensionsRef]
   );
 
-  const patchedActivityRenderer = useMemo(
-    () =>
-      applyMiddlewareForRenderer(
-        'activity',
-        { strict: false },
-        ...singleToArray(activityMiddleware),
-        () =>
-          () =>
-          ({ activity }) => {
-            if (activity) {
-              throw new Error(`No renderer for activity of type "${activity.type}"`);
-            } else {
-              throw new Error('No activity to render');
-            }
-          }
-      )({}),
-    [activityMiddleware]
-  );
-
   const patchedActivityStatusRenderer = useMemo<RenderActivityStatus>(
     () =>
       applyMiddlewareForRenderer(
@@ -528,6 +519,20 @@ const ComposerCore = ({
     [scrollToEndButtonMiddleware]
   );
 
+  const polymiddlewareForLegacyActivityMiddleware = useMemo<readonly Polymiddleware[]>(
+    () =>
+      Object.freeze([
+        // TODO: Add <FallbackComponent>.
+        createActivityPolymiddlewareFromLegacy(LegacyActivityBridge, () => null, ...singleToArray(activityMiddleware))
+      ]),
+    [activityMiddleware]
+  );
+
+  const polymiddleware = useMemo<readonly Polymiddleware[]>(
+    () => Object.freeze([...(polymiddlewareFromProps || []), ...polymiddlewareForLegacyActivityMiddleware]),
+    [polymiddlewareForLegacyActivityMiddleware, polymiddlewareFromProps]
+  );
+
   /**
    * This is a heavy function, and it is expected to be only called when there is a need to recreate business logic, e.g.
    * - User ID changed, causing all send* functions to be updated
@@ -543,7 +548,6 @@ const ComposerCore = ({
     () => ({
       ...cardActionContext,
       ...hoistedDispatchers,
-      activityRenderer: patchedActivityRenderer,
       activityStatusRenderer: patchedActivityStatusRenderer,
       attachmentForScreenReaderRenderer: patchedAttachmentForScreenReaderRenderer,
       attachmentRenderer: patchedAttachmentRenderer,
@@ -579,7 +583,6 @@ const ComposerCore = ({
       locale,
       localizedGlobalize,
       onTelemetry,
-      patchedActivityRenderer,
       patchedActivityStatusRenderer,
       patchedAttachmentForScreenReaderRenderer,
       patchedAttachmentRenderer,
@@ -610,7 +613,9 @@ const ComposerCore = ({
             <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
               <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
                 <GroupActivitiesComposer groupActivitiesMiddleware={singleToArray(groupActivitiesMiddleware)}>
-                  {typeof children === 'function' ? children(context) : children}
+                  <PolymiddlewareComposer middleware={polymiddleware}>
+                    {typeof children === 'function' ? children(context) : children}
+                  </PolymiddlewareComposer>
                 </GroupActivitiesComposer>
                 <ActivitySendStatusTelemetryComposer />
               </SendBoxToolbarMiddlewareProvider>
@@ -630,7 +635,6 @@ const ComposerCore = ({
  *       We should decide which data is needed for React but not in other environment such as CLI/VSCode
  */
 ComposerCore.defaultProps = {
-  activityMiddleware: undefined,
   activityStatusMiddleware: undefined,
   attachmentForScreenReaderMiddleware: undefined,
   attachmentMiddleware: undefined,
@@ -659,7 +663,6 @@ ComposerCore.defaultProps = {
 };
 
 ComposerCore.propTypes = {
-  activityMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   activityStatusMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentForScreenReaderMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   attachmentMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),

@@ -72,6 +72,7 @@ import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
 
+export { useBuildRenderActivityCallback } from '@msinternal/botframework-webchat-api-middleware';
 export { useSuggestedActionsHooks } from '@msinternal/botframework-webchat-redux-store';
 
 export {

@@ -1,4 +1,4 @@
-import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
+import { type StrictStyleOptions, type StyleOptions } from 'botframework-webchat-api';
 import * as apiDecorator from 'botframework-webchat-api/decorator';
 import * as componentDecorator from 'botframework-webchat-component/decorator';
 import * as internal from 'botframework-webchat-component/internal';

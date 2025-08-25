@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        const telemetryMeasurements = [];
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            onTelemetry: event => {
+              const { data, dimensions, duration, error, fatal, name, type, value } = event;
+
+              telemetryMeasurements.push({
+                data,
+                dimensions,
+                duration,
+                error,
+                fatal,
+                name,
+                type,
+                value
+              });
+            },
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await expect(telemetryMeasurements.filter(({ name }) => name === 'init')).toEqual([
+          {
+            data: undefined,
+            dimensions: {
+              'capability:downscaleImage:workerType': 'web worker',
+              'capability:renderer': 'html',
+              'prop:locale': 'en-US',
+              'prop:speechRecognition': 'false',
+              'prop:speechSynthesis': 'false'
+            },
+            duration: undefined,
+            error: undefined,
+            fatal: undefined,
+            name: 'init',
+            type: 'event',
+            value: undefined
+          }
+        ]);
+      });
+    </script>
+  </body>
+</html>

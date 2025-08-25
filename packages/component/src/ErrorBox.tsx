@@ -2,17 +2,17 @@
 
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import React, { memo } from 'react';
-import { instance, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import React, { memo, useEffect } from 'react';
+import { object, optional, pipe, readonly, string, unknown, type InferInput } from 'valibot';
 
 import useStyleSet from './hooks/useStyleSet';
 import ScreenReaderText from './ScreenReaderText';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useTrackException } = hooks;
 
 const errorBoxPropsSchema = pipe(
   object({
-    error: instance(Error),
+    error: unknown(),
     type: optional(string())
   }),
   readonly()
@@ -25,6 +25,20 @@ function ErrorBox(props: ErrorBoxProps) {
 
   const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
   const localize = useLocalizer();
+  const trackException = useTrackException();
+
+  useEffect(() => {
+    let rectifiedError: Error;
+
+    if (error instanceof Error) {
+      rectifiedError = error;
+    } else {
+      rectifiedError = new Error('Unknown error occured');
+      rectifiedError.cause = error;
+    }
+
+    trackException(rectifiedError, false);
+  }, [error, trackException]);
 
   return (
     <React.Fragment>
@@ -32,10 +46,15 @@ function ErrorBox(props: ErrorBoxProps) {
       <div className={errorBoxStyleSet}>
         <div>{type}</div>
         {/* The callstack between production and development are different, thus, we should hide it for visual regression test */}
-        <details>
-          <summary>{error.message}</summary>
-          <pre>{error.stack}</pre>
-        </details>
+        {error instanceof Error ? (
+          <details>
+            <summary>{error.message}</summary>
+            <pre>{error.stack}</pre>
+          </details>
+        ) : (
+          // eslint-disable-next-line no-magic-numbers
+          <pre>{JSON.stringify(error, null, 2)}</pre>
+        )}
       </div>
     </React.Fragment>
   );

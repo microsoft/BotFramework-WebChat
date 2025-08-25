@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/"
+        }
+      }
+    </script>
+    <script type="module">
+      import React from 'react';
+
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/test-harness.js"></script>
+    <script defer crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .my-activity {
+        border: solid 2px red;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script defer type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import { fn, spyOn } from 'jest-mock';
+      import React, { createElement, memo } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator },
+          WebChat: {
+            Components: { Composer },
+            hooks: { useActivities, useBuildRenderActivityCallback },
+            middleware: { activityComponent, createActivityPolymiddleware },
+            ReactWebChat
+          }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        function ThrowOnRender() {
+          throw new Error('Throw on render');
+        }
+
+        const rootElement = document.getElementsByTagName('main')[0];
+        const polymiddleware = [createActivityPolymiddleware(next => request => activityComponent(ThrowOnRender))];
+
+        // WHEN: Web Chat is being rendered.
+        createRoot(rootElement).render(
+          createElement(ReactWebChat, {
+            directLine,
+            polymiddleware,
+            store
+          })
+        );
+
+        // WHEN: Web Chat is connected.
+        await pageConditions.uiConnected();
+
+        const consoleError = fn((...args) => console.warn(...args));
+
+        spyOn(console, 'error').mockImplementationOnce(consoleError);
+
+        // WHEN: A message "Hello, World!" arrives.
+        await directLine.emulateIncomingActivity({
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        // THEN: Should show the activity as a red box.
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should have error log.
+        expect(consoleError).toHaveBeenCalledTimes(1);
+        expect(consoleError.mock.calls[0][0]).toBeInstanceOf(Error);
+        expect(consoleError.mock.calls[0][0].message).toBe('Throw on render');
+
+        // THEN: Should show a red box.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

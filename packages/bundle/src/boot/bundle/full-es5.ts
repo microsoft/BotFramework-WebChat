@@ -1,8 +1,9 @@
 // Importing polyfills required for IE11/ES5.
 import './polyfill';
 
-import addVersion from '../addVersion';
 import * as es5 from '../actual/full-es5';
+import * as middleware from '../actual/middleware';
+import addVersion from '../addVersion';
 
 const buildInfo = Object.freeze({
   ...es5.buildInfo,
@@ -16,7 +17,8 @@ const { createStoreWithDevTools: _createStoreWithDevTools, ...finalES5 } = es5;
 window['WebChat'] = Object.freeze({
   ...window['WebChat'],
   ...finalES5,
-  buildInfo
+  buildInfo,
+  middleware
 });
 
 addVersion(buildInfo);
