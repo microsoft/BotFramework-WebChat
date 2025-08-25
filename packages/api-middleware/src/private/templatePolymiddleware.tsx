@@ -13,7 +13,7 @@ import {
   type ProviderProps,
   type ProxyProps
 } from 'react-chain-of-responsibility/preview';
-import { array, check, function_, parse, pipe, safeParse, type InferOutput } from 'valibot';
+import { array, check, function_, literal, parse, pipe, safeParse, union, type InferOutput } from 'valibot';
 
 const arrayOfFunctionSchema = array(function_());
 
@@ -38,10 +38,13 @@ function templatePolymiddleware<Request, Props extends {}>(name: string) {
 
   const middlewareFactoryTag = Symbol();
 
-  const middlewareSchema = pipe(
-    function_(),
-    check(value => value === BYPASS_ENHANCER || middlewareFactoryTag in value)
-  );
+  const middlewareSchema = union([
+    pipe(
+      function_(),
+      check(value => value === BYPASS_ENHANCER || middlewareFactoryTag in value)
+    ),
+    literal(false)
+  ]);
 
   const createMiddleware = (enhancer: TemplatedEnhancer): TemplatedMiddleware => {
     parse(function_(`botframework-webchat: ${name} enhancer must be of type function.`), enhancer);
