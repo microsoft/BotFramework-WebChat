@@ -95,7 +95,7 @@
         await pageConditions.minNumActivitiesShown(6);
         await pageConditions.scrollStabilized();
 
-        const activityElementAtBottomOfView = document.querySelectorAll('.webchat__basic-transcript__activity')[4];
+        const activityElementAtBottomOfView = document.querySelectorAll('.webchat__basic-transcript__activity .transcript-focus-area__content-active-descendant-wrap')[4];
 
         expect(scrollable.scrollTop).toBe(
           activityElementAtBottomOfView.offsetTop +
