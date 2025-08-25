@@ -1,4 +1,4 @@
-import React, { Component, Fragment, memo, type ErrorInfo, type ReactNode } from 'react';
+import React, { Component, createElement, Fragment, memo, type ErrorInfo, type ReactNode } from 'react';
 
 import { ErrorBoxPolymiddlewareProxy } from '../errorBoxPolymiddleware';
 
@@ -44,14 +44,14 @@ class ErrorBoundaryForRenderFunction<Props> extends Component<
   }
 
   override render() {
-    const { errorBoundaryWhere } = this.props;
+    const { errorBoundaryWhere, ...otherProps } = this.props;
     const { didCatch, error } = this.state;
 
     return didCatch ? (
       <ErrorBoxPolymiddlewareProxy error={error} where={errorBoundaryWhere} />
     ) : (
       // We assume the original props must not contain "errorBoundaryRenderFunction".
-      <RenderFunctionComponent<Props> {...this.props} />
+      <RenderFunctionComponent<Props> {...(otherProps as any)} />
     );
   }
 }
