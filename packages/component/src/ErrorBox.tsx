@@ -2,13 +2,13 @@
 
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import { object, optional, pipe, readonly, string, unknown, type InferInput } from 'valibot';
 
 import useStyleSet from './hooks/useStyleSet';
 import ScreenReaderText from './ScreenReaderText';
 
-const { useLocalizer } = hooks;
+const { useLocalizer, useTrackException } = hooks;
 
 const errorBoxPropsSchema = pipe(
   object({
@@ -25,6 +25,26 @@ function ErrorBox(props: ErrorBoxProps) {
 
   const [{ errorBox: errorBoxStyleSet }] = useStyleSet();
   const localize = useLocalizer();
+  const trackException = useTrackException();
+
+  useEffect(() => {
+    let rectifiedError: Error;
+
+    if (error instanceof Error) {
+      rectifiedError = error;
+    } else {
+      rectifiedError = new Error('Unknown error occured');
+      rectifiedError.cause = error;
+    }
+
+    trackException(rectifiedError, false);
+  }, [error, trackException]);
+
+  useEffect(() => {
+    console.group(`botframework-webchat: ${type}`);
+    console.error(error);
+    console.groupEnd();
+  }, [error, type]);
 
   return (
     <React.Fragment>
