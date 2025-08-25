@@ -11,11 +11,13 @@ const TranscriptFocusContentActiveDescendant = forwardRef<HTMLDivElement, Transc
     const classNames = useStyles(styles);
 
     return (
-      <div
-        {...props}
-        className={cx(classNames['transcript-focus-area__content-active-descendant'], className)}
-        ref={ref}
-      />
+      <div className={classNames['transcript-focus-area__content-active-descendant-wrap']}>
+        <div
+          {...props}
+          className={cx(classNames['transcript-focus-area__content-active-descendant'], className)}
+          ref={ref}
+        />
+      </div>
     );
   }
 );

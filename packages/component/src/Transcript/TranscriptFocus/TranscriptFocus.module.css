@@ -54,8 +54,16 @@
     margin-block-start: calc(var(--webchat__transcript--spacing) / -2);
   }
 
-  /* When the content is focused as active descendant, scrollIntoView() will scroll this invisible div into view. */
-  .transcript-focus-area__content-active-descendant {
+  /*
+    TODO: see if we can remove the wrapper along with absolute/relative positioning by:
+    - Using intersection observer to observe a given activity is in the view
+    - Supplying the edge we'd like the focus indicator to align with
+
+    Browser handles differently both bounding boxes and scroll into view for static vs relative/absolute positioning.
+    To account for the differences, we use absolute/relative positioning as the rest of our code assumes so.
+  */
+  .transcript-focus-area__content-active-descendant-wrap {
+    position: relative;
     margin-block-start: calc(var(--webchat__transcript--spacing) / -2);
     padding-bottom: calc(var(--webchat__transcript--spacing) / 2);
     /* The bounding box is expanded to both top and bottom to scroll focus indicator into view. */
@@ -65,6 +73,12 @@
     width: 100%;
     grid-area: content;
     min-height: 0;
+  }
+
+  /* When the content is focused as active descendant, scrollIntoView() will scroll this invisible div into view. */
+  .transcript-focus-area__content-active-descendant {
+    position: absolute;
+    inset: 0;
   }
 
   .transcript-focus-area__content-body:not(:empty) {
