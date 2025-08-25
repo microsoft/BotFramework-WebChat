@@ -20,16 +20,19 @@ export default function createErrorBoundaryMiddleware<Request, Props extends {}>
     try {
       result = next(request);
 
-      return reactComponent<
-        // TODO: [P*] Fix unknown.
-        Props & {
-          readonly errorBoundaryRenderFunction: (props: unknown) => { render: () => ReactNode };
-          readonly errorBoundaryWhere: string;
-        }
-      >(
-        ErrorBoundaryForRenderFunction,
-        // TODO: [P*] Fix any.
-        { errorBoundaryRenderFunction: result?.render, errorBoundaryWhere: where } as any
+      return (
+        result &&
+        reactComponent<
+          // TODO: [P*] Fix unknown.
+          Props & {
+            readonly errorBoundaryRenderFunction: (props: unknown) => { render: () => ReactNode };
+            readonly errorBoundaryWhere: string;
+          }
+        >(
+          ErrorBoundaryForRenderFunction,
+          // TODO: [P*] Fix any.
+          { errorBoundaryRenderFunction: result?.render, errorBoundaryWhere: where } as any
+        )
       );
     } catch (error) {
       // Simplify code by re-assigning to `error`.
