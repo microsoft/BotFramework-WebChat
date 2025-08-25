@@ -40,12 +40,6 @@ function ErrorBox(props: ErrorBoxProps) {
     trackException(rectifiedError, false);
   }, [error, trackException]);
 
-  useEffect(() => {
-    console.group(`botframework-webchat: ${type}`);
-    console.error(error);
-    console.groupEnd();
-  }, [error, type]);
-
   return (
     <React.Fragment>
       <ScreenReaderText text={localize('ACTIVITY_ERROR_BOX_TITLE')} />
