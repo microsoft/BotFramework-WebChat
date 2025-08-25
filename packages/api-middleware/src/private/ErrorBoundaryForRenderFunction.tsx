@@ -1,4 +1,4 @@
-import React, { Component, createElement, Fragment, memo, type ErrorInfo, type ReactNode } from 'react';
+import React, { Component, Fragment, memo, type ErrorInfo, type ReactNode } from 'react';
 
 import { ErrorBoxPolymiddlewareProxy } from '../errorBoxPolymiddleware';
 
