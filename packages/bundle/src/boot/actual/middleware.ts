@@ -1,4 +1,4 @@
-// TODO: Unsure why export * will not export anything for /__tests__/html2/samples.
+// TODO: [P1] Unsure why export * will not export anything for /__tests__/html2/samples.
 
 // ```
 // ▲ [WARNING] Import "activityComponent" will always be undefined because the file "../../../packages/bundle/dist/botframework-webchat.middleware.mjs" has no exports [import-is-undefined]
