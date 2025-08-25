@@ -13,7 +13,6 @@ import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
 import ReactWebChat, {
   Components,
   concatMiddleware,
-  connectToWebChat,
   createStyleSet,
   hooks,
   withEmoji
@@ -21,7 +20,7 @@ import ReactWebChat, {
 
 export type { ComposerRef } from 'botframework-webchat-component';
 
-import addVersion from './addVersion';
+import addVersion from './boot/addVersion';
 import coreRenderWebChat from './renderWebChat';
 import createBrowserWebSpeechPonyfillFactory from './createBrowserWebSpeechPonyfillFactory';
 import defaultCreateDirectLine from './createDirectLine';
@@ -52,7 +51,6 @@ export default ReactWebChat;
 export {
   Components,
   concatMiddleware,
-  connectToWebChat,
   Constants,
   createBrowserWebSpeechPonyfillFactory,
   createStore,
@@ -71,7 +69,6 @@ export type { StyleOptions, StrictStyleOptions };
 window['WebChat'] = {
   ...window['WebChat'],
   concatMiddleware,
-  connectToWebChat,
   Constants,
   createBrowserWebSpeechPonyfillFactory,
   createDirectLine,
