@@ -1,15 +1,12 @@
 export {
   activityComponent,
-  ActivityPolymiddlewareProvider,
   ActivityPolymiddlewareProxy,
   createActivityPolymiddleware,
-  extractActivityEnhancer,
   useBuildRenderActivityCallback,
   type ActivityPolymiddleware,
   type ActivityPolymiddlewareHandler,
   type ActivityPolymiddlewareHandlerResult,
   type ActivityPolymiddlewareProps,
-  type ActivityPolymiddlewareProviderProps,
   type ActivityPolymiddlewareProxyProps,
   type ActivityPolymiddlewareRenderer,
   type ActivityPolymiddlewareRequest
@@ -18,15 +15,12 @@ export {
 export {
   createErrorBoxPolymiddleware,
   errorBoxComponent,
-  ErrorBoxPolymiddlewareProvider,
   ErrorBoxPolymiddlewareProxy,
-  extractErrorBoxEnhancer,
   useBuildRenderErrorBoxCallback,
   type ErrorBoxPolymiddleware,
   type ErrorBoxPolymiddlewareHandler,
   type ErrorBoxPolymiddlewareHandlerResult,
   type ErrorBoxPolymiddlewareProps,
-  type ErrorBoxPolymiddlewareProviderProps,
   type ErrorBoxPolymiddlewareProxyProps,
   type ErrorBoxPolymiddlewareRenderer,
   type ErrorBoxPolymiddlewareRequest
