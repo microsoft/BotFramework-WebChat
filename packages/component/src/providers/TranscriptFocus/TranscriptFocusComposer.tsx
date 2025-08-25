@@ -318,12 +318,22 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
 
       const { current: focusedActivityKey } = focusedActivityKeyRef;
 
+      const isHeaderFocused = !!activeGroupDescendantId;
+
+      if (delta === 0) {
+        if (isHeaderFocused) {
+          focusByGroupKey(rawFocusedActivityGroupKey, true);
+        } else {
+          focusByActivityKey(focusedActivityKey, true);
+        }
+        return;
+      }
+
       if (Math.abs(delta) > 1) {
         return handleDeltaNavigation(delta);
       }
 
       const direction = delta < 0 ? 'up' : 'down';
-      const isHeaderFocused = !!activeGroupDescendantId;
 
       // Handle navigation from a focused group header
       if (isHeaderFocused && rawFocusedActivityGroupKey) {
