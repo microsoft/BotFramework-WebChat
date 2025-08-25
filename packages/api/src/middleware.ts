@@ -4,7 +4,6 @@ export { PolymiddlewareComposer, type Polymiddleware } from '@msinternal/botfram
 
 export {
   activityComponent,
-  ActivityPolymiddlewareProvider,
   ActivityPolymiddlewareProxy,
   createActivityPolymiddleware,
   useBuildRenderActivityCallback,
@@ -12,7 +11,6 @@ export {
   type ActivityPolymiddlewareHandler,
   type ActivityPolymiddlewareHandlerResult,
   type ActivityPolymiddlewareProps,
-  type ActivityPolymiddlewareProviderProps,
   type ActivityPolymiddlewareProxyProps,
   type ActivityPolymiddlewareRenderer,
   type ActivityPolymiddlewareRequest
@@ -21,14 +19,12 @@ export {
 export {
   createErrorBoxPolymiddleware,
   errorBoxComponent,
-  ErrorBoxPolymiddlewareProvider,
   ErrorBoxPolymiddlewareProxy,
   useBuildRenderErrorBoxCallback,
   type ErrorBoxPolymiddleware,
   type ErrorBoxPolymiddlewareHandler,
   type ErrorBoxPolymiddlewareHandlerResult,
   type ErrorBoxPolymiddlewareProps,
-  type ErrorBoxPolymiddlewareProviderProps,
   type ErrorBoxPolymiddlewareProxyProps,
   type ErrorBoxPolymiddlewareRenderer,
   type ErrorBoxPolymiddlewareRequest

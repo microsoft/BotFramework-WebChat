@@ -23,14 +23,15 @@ export default function createErrorBoundaryMiddleware<Request, Props extends {}>
       return (
         result &&
         reactComponent<
-          // TODO: [P*] Fix unknown.
+          // TODO: [P0] Fix unknown.
           Props & {
+            // Need to be unknown here because memo() hid the generic type.
             readonly errorBoundaryRenderFunction: (props: unknown) => { render: () => ReactNode };
             readonly errorBoundaryWhere: string;
           }
         >(
           ErrorBoundaryForRenderFunction,
-          // TODO: [P*] Fix any.
+          // TODO: [P0] Fix any, consider using React context to add extraneous props.
           { errorBoundaryRenderFunction: result?.render, errorBoundaryWhere: where } as any
         )
       );
@@ -41,14 +42,14 @@ export default function createErrorBoundaryMiddleware<Request, Props extends {}>
 
       // Thrown before render, show the red box immediately.
       return reactComponent<
-        // TODO: [P*] Fix unknown.
+        // Need to be unknown here because memo() hid the generic type.
         Props & {
           readonly errorBoundaryRenderFunction: (props: unknown) => { render: () => ReactNode };
           readonly errorBoundaryWhere: string;
         }
       >(
         ErrorBoundaryForRenderFunction,
-        // TODO: [P*] Fix any.
+        // TODO: [P0] Fix any, consider using React context to add extraneous props.
         {
           errorBoundaryRenderFunction: () => {
             throw error;

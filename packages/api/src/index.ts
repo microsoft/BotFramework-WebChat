@@ -36,8 +36,6 @@ import { type WebSpeechPonyfillFactory } from './types/WebSpeechPonyfillFactory'
 
 // #region Re-export
 
-// TODO: [P*] Exports `polymiddlewareComposer` so activity renderer could use `polymiddleware` to use their own attachment renderers.
-
 export {
   extractSendBoxMiddleware,
   SendBoxMiddlewareProxy,
