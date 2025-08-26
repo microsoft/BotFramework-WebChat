@@ -40,14 +40,15 @@
   }
 
   .transcript-focus-area__activity-list {
-    padding-block: var(--webchat__transcript--spacing);
     display: grid;
     gap: var(--webchat__transcript--spacing);
+    padding-block: var(--webchat__transcript--spacing);
   }
 
   .transcript-focus-area__content {
     display: grid;
     grid-template-areas: 'content';
+    min-width: 0;
 
     > * {
       grid-area: content;
