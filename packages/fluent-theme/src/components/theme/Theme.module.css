@@ -310,8 +310,8 @@
     display: none;
   }
 
-  /* Transcript ctivity focused directly */
-  > :global(.transcript-focus-area__content-root > .webchat__focus-trap .webchat__bubble) {
+  /* Transcript activity focused directly */
+  > :global(.webchat__focus-trap .webchat__bubble) {
     display: grid;
     grid-template-areas: 'focused-content';
     position: static;

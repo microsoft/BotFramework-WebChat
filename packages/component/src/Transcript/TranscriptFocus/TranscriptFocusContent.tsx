@@ -1,19 +1,16 @@
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
-import React, { forwardRef, ReactNode, type HTMLAttributes } from 'react';
+import React, { forwardRef, type HTMLAttributes } from 'react';
 
 import styles from './TranscriptFocus.module.css';
-import TranscriptFocusIndicator from './TranscriptFocusIndicator';
 
-type TranscriptFocusContentProps = HTMLAttributes<HTMLDivElement> &
-  Readonly<{
-    activeDescendant?: ReactNode | undefined;
-    tag?: React.ElementType;
-    focused?: boolean;
-  }>;
+type TranscriptFocusContentProps = HTMLAttributes<HTMLDivElement> & {
+  focused?: boolean;
+  tag?: string | React.JSXElementConstructor<any>;
+};
 
 const TranscriptFocusContent = forwardRef<HTMLDivElement, TranscriptFocusContentProps>(
-  ({ activeDescendant, className, children, tag: Tag = 'div', focused = false, ...props }, ref) => {
+  ({ className, focused, tag: Tag = 'div', ...props }, ref) => {
     const classNames = useStyles(styles);
 
     return (
@@ -25,11 +22,7 @@ const TranscriptFocusContent = forwardRef<HTMLDivElement, TranscriptFocusContent
           className
         )}
         ref={ref}
-      >
-        {activeDescendant}
-        <div className={classNames['transcript-focus-area__content-root']}>{children}</div>
-        <TranscriptFocusIndicator />
-      </Tag>
+      />
     );
   }
 );
