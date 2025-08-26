@@ -40,7 +40,7 @@
   }
 
   .transcript-focus-area__activity-list {
-    padding-block-start: var(--webchat__transcript--spacing);
+    padding-block: var(--webchat__transcript--spacing);
     display: grid;
     gap: var(--webchat__transcript--spacing);
   }
