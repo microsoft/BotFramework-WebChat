@@ -1,5 +1,6 @@
 :global(.webchat-fluent) .part-grouping-decorator {
   font-family: var(--webchat-fontFamilyBase);
+  min-width: 0;
 
   .part-grouping-decorator__header {
     padding-block: var(--webchat-spacingVerticalS);
