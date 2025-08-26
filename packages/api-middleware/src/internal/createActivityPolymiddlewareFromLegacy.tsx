@@ -1,9 +1,6 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { composeEnhancer } from 'handler-chain';
 import { type ComponentType, type ReactNode } from 'react';
-import { type LegacyActivityMiddleware } from '../legacy/activityMiddleware';
-import { type LegacyRenderAttachment } from '../legacy/attachmentMiddleware';
-
 import {
   boolean,
   custom,
@@ -18,11 +15,14 @@ import {
   union,
   type InferInput
 } from 'valibot';
+
 import {
   activityComponent,
   createActivityPolymiddleware,
   type ActivityPolymiddleware
 } from '../activityPolymiddleware';
+import { type LegacyActivityMiddleware } from '../legacy/activityMiddleware';
+import { type LegacyRenderAttachment } from '../legacy/attachmentMiddleware';
 
 const webChatActivitySchema = custom<WebChatActivity>(value => safeParse(object({}), value).success);
 
@@ -71,7 +71,10 @@ const fallbackComponentPropsSchema = pipe(
 );
 
 type FallbackComponentProps = Readonly<InferInput<typeof fallbackComponentPropsSchema> & { children?: never }>;
-type RenderFallbackComponentCallback = (request: { activity: WebChatActivity }) => ReactNode;
+interface RenderFallbackComponentCallback {
+  // Returns { render(): ReactNode } so we don't confuse with function component.
+  (request: { activity: WebChatActivity }): { readonly render: () => ReactNode };
+}
 
 function createActivityPolymiddlewareFromLegacy(
   bridgeComponent: ComponentType<LegacyActivityBridgeComponentProps>,
@@ -88,7 +91,9 @@ function createActivityPolymiddlewareFromLegacy(
   const legacyEnhancer = composeEnhancer(...middleware.map(middleware => middleware()));
 
   return createActivityPolymiddleware(() => {
-    const legacyHandler = legacyEnhancer(request => () => renderFallbackComponent({ activity: request.activity }));
+    const legacyHandler = legacyEnhancer(
+      request => () => renderFallbackComponent({ activity: request.activity })?.render()
+    );
 
     return ({ activity }) => {
       // TODO: [P1] `nextVisibleActivity` is deprecated and should be removed.

@@ -524,9 +524,11 @@ const ComposerCore = ({
       Object.freeze([
         createActivityPolymiddlewareFromLegacy(
           LegacyActivityBridge,
-          ({ activity }) => {
-            throw new Error(`No renderer for activity of type "${activity.type}"`);
-          },
+          ({ activity }) => ({
+            render: () => {
+              throw new Error(`No renderer for activity of type "${activity.type}"`);
+            }
+          }),
           ...singleToArray(activityMiddleware)
         )
       ]),
