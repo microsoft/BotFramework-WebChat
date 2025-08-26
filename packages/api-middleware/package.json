@@ -58,7 +58,7 @@
   "localDependencies": {
     "botframework-webchat-base": "development"
   },
-  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/middleware#readme",
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/api-middleware#readme",
   "scripts": {
     "build": "tsup --config ./tsup.config.ts",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
