@@ -522,8 +522,13 @@ const ComposerCore = ({
   const polymiddlewareForLegacyActivityMiddleware = useMemo<readonly Polymiddleware[]>(
     () =>
       Object.freeze([
-        // TODO: Add <FallbackComponent>.
-        createActivityPolymiddlewareFromLegacy(LegacyActivityBridge, () => null, ...singleToArray(activityMiddleware))
+        createActivityPolymiddlewareFromLegacy(
+          LegacyActivityBridge,
+          ({ activity }) => {
+            throw new Error(`No renderer for activity of type "${activity.type}"`);
+          },
+          ...singleToArray(activityMiddleware)
+        )
       ]),
     [activityMiddleware]
   );

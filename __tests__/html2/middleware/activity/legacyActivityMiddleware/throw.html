@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18.3.1"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { fn, spyOn } from 'jest-mock';
+      import { createElement } from 'react';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        const activityMiddleware = [
+          () => next => request => next(request),
+          () => next => request => {
+            throw new Error('Throw on render');
+          }
+        ];
+
+        WebChat.renderWebChat(
+          {
+            activityMiddleware,
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const consoleError = fn(console.warn.bind(console));
+
+        spyOn(console, 'error').mockImplementationOnce(consoleError);
+
+        await directLine.emulateIncomingActivity({
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        expect(consoleError).toHaveBeenCalledTimes(1);
+        expect(consoleError.mock.calls[0][0]).toBeInstanceOf(Error);
+        expect(consoleError.mock.calls[0][0].message).toBe('Throw on render');
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

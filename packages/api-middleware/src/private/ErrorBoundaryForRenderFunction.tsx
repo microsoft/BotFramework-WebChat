@@ -39,6 +39,12 @@ class ErrorBoundaryForRenderFunction<Props> extends Component<
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  override componentDidCatch(): void {
+    // Intentionally left blank.
+    // If this function is not overridden, React will not console.error() the error.
+  }
+
   static getDerivedStateFromError(error: unknown): ErrorBoundaryForRenderFunctionState {
     return { didCatch: true, error };
   }

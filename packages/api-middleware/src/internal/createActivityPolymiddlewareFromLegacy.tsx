@@ -71,23 +71,24 @@ const fallbackComponentPropsSchema = pipe(
 );
 
 type FallbackComponentProps = Readonly<InferInput<typeof fallbackComponentPropsSchema> & { children?: never }>;
+type RenderFallbackComponentCallback = (request: { activity: WebChatActivity }) => ReactNode;
 
 function createActivityPolymiddlewareFromLegacy(
   bridgeComponent: ComponentType<LegacyActivityBridgeComponentProps>,
   // Use lowercase for argument name, but we need uppercase for JSX.
-  fallbackComponent: ComponentType<FallbackComponentProps>,
+  renderFallbackComponent: RenderFallbackComponentCallback,
   ...middleware: readonly LegacyActivityMiddleware[]
 ): ActivityPolymiddleware;
 
 function createActivityPolymiddlewareFromLegacy(
   bridgeComponent: ComponentType<LegacyActivityBridgeComponentProps>,
-  FallbackComponent: ComponentType<FallbackComponentProps>,
+  renderFallbackComponent: RenderFallbackComponentCallback,
   ...middleware: readonly LegacyActivityMiddleware[]
 ): ActivityPolymiddleware {
   const legacyEnhancer = composeEnhancer(...middleware.map(middleware => middleware()));
 
   return createActivityPolymiddleware(() => {
-    const legacyHandler = legacyEnhancer(request => () => <FallbackComponent activity={request.activity} />);
+    const legacyHandler = legacyEnhancer(request => () => renderFallbackComponent({ activity: request.activity }));
 
     return ({ activity }) => {
       // TODO: [P1] `nextVisibleActivity` is deprecated and should be removed.
