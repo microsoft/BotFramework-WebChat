@@ -37,11 +37,13 @@
 
         const { directLine, store } = createDirectLineEmulator();
 
+        const onTelemetry = fn();
         const polymiddleware = [createErrorBoxPolymiddleware(() => () => undefined)];
 
         WebChat.renderWebChat(
           {
             directLine,
+            onTelemetry,
             polymiddleware,
             store
           },
@@ -72,6 +74,12 @@
         expect(consoleError).toHaveBeenCalledTimes(1);
         expect(consoleError.mock.calls[0][0]).toBeInstanceOf(Error);
         expect(consoleError.mock.calls[0][0].message).toBe('No renderer for activity of type "something-new"');
+
+        // THEN: Should emit as exception event despite no error box.
+        const exceptionEvent = onTelemetry.mock.calls.find(call => call[0]?.type === 'exception');
+
+        expect(exceptionEvent).toBeTruthy();
+        expect(exceptionEvent[0].error.message).toBe('No renderer for activity of type "something-new"');
 
         // THEN: Should render 1 message activity and no error box.
         // TODO: [P4] Currently, we can't make fallback component emit no element for red box.

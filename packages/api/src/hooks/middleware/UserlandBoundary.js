@@ -1,8 +1,8 @@
+import { ErrorBoxPolymiddlewareProxy } from '@msinternal/botframework-webchat-api-middleware';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
 import ErrorBoundary from '../utils/ErrorBoundary';
-import ErrorBox from '../internal/ErrorBox';
 
 const UserlandBoundary = ({ children, type }) => {
   const [error, setError] = useState();
@@ -10,7 +10,7 @@ const UserlandBoundary = ({ children, type }) => {
   const handleError = useCallback(error => setError(error), []);
 
   return error ? (
-    <ErrorBox error={error} type={type} />
+    <ErrorBoxPolymiddlewareProxy error={error} where={type} />
   ) : (
     <ErrorBoundary onError={handleError}>{children}</ErrorBoundary>
   );

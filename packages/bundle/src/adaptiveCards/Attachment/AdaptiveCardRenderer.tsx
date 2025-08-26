@@ -2,7 +2,8 @@
 
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { type Action as AdaptiveCardAction, type OpenUrlAction, type SubmitAction } from 'adaptivecards';
-import { Components, getTabIndex, hooks } from 'botframework-webchat-component';
+import { ErrorBoxPolymiddlewareProxy } from 'botframework-webchat-api/middleware';
+import { getTabIndex, hooks } from 'botframework-webchat-component';
 import { type DirectLineCardAction } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import React, {
@@ -31,7 +32,6 @@ import useRoleModEffect from './AdaptiveCardHacks/useRoleModEffect';
 import { directLineCardActionSchema } from './private/directLineSchema';
 import renderAdaptiveCard from './private/renderAdaptiveCard';
 
-const { ErrorBox } = Components;
 const { useLocalizer, usePerformCardAction, useRenderMarkdownAsHTML, useScrollToEnd, useUIState } = hooks;
 
 const node_env = process.env.node_env || process.env.NODE_ENV;
@@ -246,7 +246,10 @@ function AdaptiveCardRenderer(props: AdaptiveCardRendererProps) {
   errors?.length && console.warn('botframework-webchat: Failed to render Adaptive Cards.', errors);
 
   return errors?.length ? (
-    node_env === 'development' && <ErrorBox error={errors[0]} type={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')} />
+    // TODO: Move to debug package.
+    node_env === 'development' && (
+      <ErrorBoxPolymiddlewareProxy error={errors[0]} where={localize('ADAPTIVE_CARD_ERROR_BOX_TITLE_RENDER')} />
+    )
   ) : (
     <div
       className={classNames(adaptiveCardRendererStyleSet + '', 'webchat__adaptive-card-renderer')}

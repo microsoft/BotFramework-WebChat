@@ -34,11 +34,13 @@
             throw new Error('Throw on render');
           }
         ];
+        const onTelemetry = fn();
 
         WebChat.renderWebChat(
           {
             activityMiddleware,
             directLine,
+            onTelemetry,
             store
           },
           document.getElementById('webchat')
@@ -58,6 +60,12 @@
         expect(consoleError).toHaveBeenCalledTimes(1);
         expect(consoleError.mock.calls[0][0]).toBeInstanceOf(Error);
         expect(consoleError.mock.calls[0][0].message).toBe('Throw on render');
+
+        // THEN: Should emit as exception event.
+        const exceptionEvent = onTelemetry.mock.calls.find(call => call[0]?.type === 'exception');
+
+        expect(exceptionEvent).toBeTruthy();
+        expect(exceptionEvent[0].error.message).toBe('Throw on render');
 
         await host.snapshot('local');
       });

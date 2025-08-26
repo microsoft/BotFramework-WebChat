@@ -50,17 +50,19 @@
 
         const { directLine, store } = createDirectLineEmulator();
 
-        const rootElement = document.getElementsByTagName('main')[0];
+        const onTelemetry = fn();
         const polymiddleware = [
           createActivityPolymiddleware(next => request => ({
             render: () => createElement('div', {}, 'Should not render because this is not under activityComponent()')
           }))
         ];
+        const rootElement = document.getElementsByTagName('main')[0];
 
         // WHEN: Web Chat is being rendered.
         createRoot(rootElement).render(
           createElement(ReactWebChat, {
             directLine,
+            onTelemetry,
             polymiddleware,
             store
           })
@@ -69,7 +71,7 @@
         // WHEN: Web Chat is connected.
         await pageConditions.uiConnected();
 
-        const consoleError = fn((...args) => console.warn(...args));
+        const consoleError = fn(console.warn.bind(console));
 
         spyOn(console, 'error').mockImplementationOnce(consoleError);
 
@@ -86,6 +88,14 @@
         expect(consoleError).toHaveBeenCalledTimes(1);
         expect(consoleError.mock.calls[0][0].cause.name).toBe('ValiError');
         expect(consoleError.mock.calls[0][0].message).toBe(
+          'botframework-webchat: middleware must return value constructed by their corresponding factory function'
+        );
+
+        // THEN: Should emit as exception event.
+        const exceptionEvent = onTelemetry.mock.calls.find(call => call[0]?.type === 'exception');
+
+        expect(exceptionEvent).toBeTruthy();
+        expect(exceptionEvent[0].error.message).toBe(
           'botframework-webchat: middleware must return value constructed by their corresponding factory function'
         );
 

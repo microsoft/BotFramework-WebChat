@@ -91,6 +91,7 @@ import observableToPromise from './utils/observableToPromise';
 
 // PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
 // @ts-ignore
+import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import LegacyActivityBridge from '../legacy/LegacyActivityBridge';
 import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
@@ -536,7 +537,14 @@ const ComposerCore = ({
   );
 
   const polymiddleware = useMemo<readonly Polymiddleware[]>(
-    () => Object.freeze([...(polymiddlewareFromProps || []), ...polymiddlewareForLegacyActivityMiddleware]),
+    () =>
+      Object.freeze([
+        // Error box telemetry polymiddleware is special and has a much higher priority.
+        // This guarantees telemetry is always emitted for exception and no other polymiddleware can override this behavior.
+        errorBoxTelemetryPolymiddleware,
+        ...(polymiddlewareFromProps || []),
+        ...polymiddlewareForLegacyActivityMiddleware
+      ]),
     [polymiddlewareForLegacyActivityMiddleware, polymiddlewareFromProps]
   );
 
