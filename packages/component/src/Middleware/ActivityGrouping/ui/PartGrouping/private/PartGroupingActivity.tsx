@@ -14,8 +14,9 @@ import useActiveDescendantId from '../../../../../providers/TranscriptFocus/useA
 import useGetGroupDescendantIdByActivityKey from '../../../../../providers/TranscriptFocus/useGetGroupDescendantIdByActivityKey';
 import {
   TranscriptFocusContent,
+  TranscriptFocusContentOverlay,
   TranscriptFocusContentActiveDescendant,
-  TranscriptFocusContentBody
+  TranscriptFocusIndicator
 } from '../../../../../Transcript/TranscriptFocus';
 import useFocusByGroupKey from '../../../../../providers/TranscriptFocus/useFocusByGroupKey';
 import FocusTrap from '../../../../../Transcript/FocusTrap';
@@ -96,20 +97,18 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
   );
 
   return (
-    <TranscriptFocusContent 
-      activeDescendant={!android && (
-        <TranscriptFocusContentActiveDescendant id={groupingActivityDescendantId} />
-      )}
-      focused={isActiveDescendant} ref={groupCallbackRef}>
-      <TranscriptFocusContentBody>
-        <FocusTrap
-          onFocus={handleDescendantFocus}
-          onLeave={handleLeaveFocusTrap}
-          targetClassName="webchat__basic-transcript__group-focus-target"
-        >
-          {children}
-        </FocusTrap>
-      </TranscriptFocusContentBody>
+    <TranscriptFocusContent focused={isActiveDescendant} ref={groupCallbackRef}>
+      <TranscriptFocusContentOverlay>
+        {!android && <TranscriptFocusContentActiveDescendant id={groupingActivityDescendantId} />}
+        <TranscriptFocusIndicator type="content" />
+      </TranscriptFocusContentOverlay>
+      <FocusTrap
+        onFocus={handleDescendantFocus}
+        onLeave={handleLeaveFocusTrap}
+        targetClassName="webchat__basic-transcript__group-focus-target"
+      >
+        {children}
+      </FocusTrap>
     </TranscriptFocusContent>
   );
 }

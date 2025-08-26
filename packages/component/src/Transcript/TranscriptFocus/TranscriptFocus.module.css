@@ -24,17 +24,12 @@
     min-width: 0;
   }
 
-  .transcript-focus-area__content-root {
-    padding-block-start: calc(var(--webchat__transcript--spacing) / 2);
-  }
-
-  &:focus .transcript-focus-area__content--focused > .transcript-focus-area__indicator {
+  &:focus .transcript-focus-area__content--focused > .transcript-focus-area__content-overlay .transcript-focus-area__indicator {
     border-color: var(--webchat__color--transcript-activity-visual-keyboard-indicator);
     border-style: var(--webchat__border-style--transcript-activity-visual-keyboard-indicator);
     border-width: var(--webchat__border-width--transcript-activity-visual-keyboard-indicator);
-    height: calc(100% - var(--webchat__transcript--spacing) / 2);
-    margin: 0 calc(var(--webchat__transcript--spacing) / 2);
-    width: calc(100% - var(--webchat__transcript--spacing));
+    inset: calc(var(--webchat__transcript--spacing) / -2) calc(var(--webchat__transcript--spacing) / 2) calc(var(--webchat__transcript--spacing) / -2) calc(var(--webchat__transcript--spacing) / 2);
+    position: absolute;
   }
 
   &:focus-visible .transcript-focus-area__transcript-indicator,
@@ -46,12 +41,17 @@
 
   .transcript-focus-area__activity-list {
     padding-block-start: var(--webchat__transcript--spacing);
+    display: grid;
+    gap: var(--webchat__transcript--spacing);
   }
 
   .transcript-focus-area__content {
     display: grid;
     grid-template-areas: 'content';
-    margin-block-start: calc(var(--webchat__transcript--spacing) / -2);
+
+    > * {
+      grid-area: content;
+    }
   }
 
   /*
@@ -62,7 +62,7 @@
     Browser handles differently both bounding boxes and scroll into view for static vs relative/absolute positioning.
     To account for the differences, we use absolute/relative positioning as the rest of our code assumes so.
   */
-  .transcript-focus-area__content-active-descendant-wrap {
+  .transcript-focus-area__content-overlay {
     position: relative;
     /* The bounding box is expanded to both top and bottom to scroll focus indicator into view. */
     /* We should ignore clicks to make sure this expansion don't register click as focus. */
@@ -76,11 +76,7 @@
   /* When the content is focused as active descendant, scrollIntoView() will scroll this invisible div into view. */
   .transcript-focus-area__content-active-descendant {
     position: absolute;
-    inset: calc(var(--webchat__transcript--spacing) / -2) 0 0 0;
-  }
-
-  .transcript-focus-area__content-body:not(:empty) {
-    padding-block-end: var(--webchat__transcript--spacing);
+    inset: calc(var(--webchat__transcript--spacing) / -1) 0 calc(var(--webchat__transcript--spacing) / -1) 0;
   }
 
   .transcript-focus-area__terminator {

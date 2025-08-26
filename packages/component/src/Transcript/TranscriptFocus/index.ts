@@ -1,5 +1,6 @@
 export { default as TranscriptFocusArea, type TranscriptFocusAreaProps } from './TranscriptFocusArea';
 export { default as TranscriptFocusContent, type TranscriptFocusContentProps } from './TranscriptFocusContent';
+export { default as TranscriptFocusContentOverlay, type TranscriptFocusContentOverlayProps } from './TranscriptFocusContentOverlay';
 export {
   default as TranscriptFocusContentActiveDescendant,
   type TranscriptFocusContentActiveDescendantProps
