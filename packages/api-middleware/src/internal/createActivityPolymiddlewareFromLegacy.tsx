@@ -1,6 +1,6 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { composeEnhancer } from 'handler-chain';
-import React, { type ComponentType, type ReactNode } from 'react';
+import { type ComponentType, type ReactNode } from 'react';
 import { type LegacyActivityMiddleware } from '../legacy/activityMiddleware';
 import { type LegacyRenderAttachment } from '../legacy/attachmentMiddleware';
 
