@@ -18,7 +18,8 @@ import { useRefFrom } from 'use-ref-from';
 import {
   TranscriptFocusContent,
   TranscriptFocusContentActiveDescendant,
-  TranscriptFocusContentBody
+  TranscriptFocusContentOverlay,
+  TranscriptFocusIndicator
 } from './TranscriptFocus';
 
 const { useActivityKeysByRead, useGetHasAcknowledgedByActivityKey, useGetKeyByActivity } = hooks;
@@ -63,9 +64,9 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
 
   const focusTrapChildren = useMemo(
     () => (
-      <TranscriptFocusContentBody className="webchat__basic-transcript__activity-body" ref={bodyRef}>
+      <div className="webchat__basic-transcript__activity-body" ref={bodyRef}>
         {children}
-      </TranscriptFocusContentBody>
+      </div>
     ),
     [bodyRef, children]
   );
@@ -121,17 +122,6 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
         TalkBack will narrate the message content twice (i.e. content of `bodyRef`), regardless whether the ID is currently set as `aria-activedescendant` or not.
         As Android does not support active descendant, we are hiding the whole DOM element altogether. */
     <TranscriptFocusContent
-      activeDescendant={!android && (
-        <TranscriptFocusContentActiveDescendant
-          aria-labelledby={descendantLabelId}
-          className="webchat__basic-transcript__activity-active-descendant"
-          // "id" is required for "aria-labelledby"
-          id={descendantId}
-          role="article"
-        >
-          <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
-        </TranscriptFocusContentActiveDescendant>
-      )}
       className={classNames('webchat__basic-transcript__activity', {
         'webchat__basic-transcript__activity--acknowledged': acknowledged,
         'webchat__basic-transcript__activity--read': read
@@ -142,6 +132,20 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
       ref={wrappedRef}
       tag="article"
     >
+      <TranscriptFocusContentOverlay>
+        {!android && (
+          <TranscriptFocusContentActiveDescendant
+            aria-labelledby={descendantLabelId}
+            className="webchat__basic-transcript__activity-active-descendant"
+            // "id" is required for "aria-labelledby"
+            id={descendantId}
+            role="article"
+          >
+            <ScreenReaderText aria-hidden={true} id={descendantLabelId} text={accessibleName} />
+          </TranscriptFocusContentActiveDescendant>
+        )}
+        <TranscriptFocusIndicator type="content" />
+      </TranscriptFocusContentOverlay>
       <FocusTrap
         onFocus={handleDescendantFocus}
         onLeave={handleLeaveFocusTrap}
