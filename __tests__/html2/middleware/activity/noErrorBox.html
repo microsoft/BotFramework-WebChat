@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18.3.1"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <!-- <script crossorigin="anonymous" src="https://unpkg.com/botframework-webchat@main/dist/webchat-es5.js"></script> -->
+    <style type="text/css">
+      .webchat__basic-transcript__activity {
+        border: solid 1px red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { createElement, memo } from 'react';
+      import { fn, spyOn } from 'jest-mock';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator },
+          WebChat: {
+            middleware: { createErrorBoxPolymiddleware }
+          }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        const polymiddleware = [createErrorBoxPolymiddleware(() => () => undefined)];
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            polymiddleware,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        const consoleError = fn(console.warn.bind(console));
+
+        spyOn(console, 'error').mockImplementationOnce(consoleError);
+
+        // WHEN: A message activity is received.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        // WHEN: An activity with unknown type is received.
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: 'Do you like my response?',
+          type: 'something-new'
+        });
+
+        // THEN: Should console.error about "no renderer".
+        expect(consoleError).toHaveBeenCalledTimes(1);
+        expect(consoleError.mock.calls[0][0]).toBeInstanceOf(Error);
+        expect(consoleError.mock.calls[0][0].message).toBe('No renderer for activity of type "something-new"');
+
+        // THEN: Should render 1 message activity and no error box.
+        // TODO: [P4] Currently, we can't make fallback component emit no element for red box.
+        //            This is because error boundary can't unmount itself (cannot ask middleware not to render when error box reached some states.)
+        //            We will render 2 activities for now until we found a solution.
+        // await pageConditions.numActivitiesShown(1);
+        await pageConditions.numActivitiesShown(2);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
