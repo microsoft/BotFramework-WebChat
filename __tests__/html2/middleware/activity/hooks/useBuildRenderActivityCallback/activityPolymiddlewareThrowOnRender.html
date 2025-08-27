@@ -13,14 +13,14 @@
         }
       }
     </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script type="module">
       import React from 'react';
-
       window.React = React;
     </script>
-    <script defer crossorigin="anonymous" src="/test-harness.js"></script>
-    <script defer crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" defer src="/__dist__/botframework-webchat-debug-theme.development.js"></script>
     <style type="text/css">
       .my-activity {
         border: solid 2px red;
@@ -39,7 +39,7 @@
         const {
           testHelpers: { createDirectLineEmulator },
           WebChat: {
-            Components: { Composer },
+            DebugProvider,
             hooks: { useActivities, useBuildRenderActivityCallback },
             middleware: { activityComponent, createActivityPolymiddleware },
             ReactWebChat
@@ -56,14 +56,18 @@
         const polymiddleware = [createActivityPolymiddleware(next => request => activityComponent(ThrowOnRender))];
         const rootElement = document.getElementsByTagName('main')[0];
 
-        // WHEN: Web Chat is being rendered.
-        createRoot(rootElement).render(
-          createElement(ReactWebChat, {
-            directLine,
-            onTelemetry,
-            polymiddleware,
-            store
-          })
+        // WHEN: Web Chat is being rendered with <DebugProvider>.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(
+            DebugProvider,
+            {},
+            createElement(ReactWebChat, {
+              directLine,
+              onTelemetry,
+              polymiddleware,
+              store
+            })
+          )
         );
 
         // WHEN: Web Chat is connected.

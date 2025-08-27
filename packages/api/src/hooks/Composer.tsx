@@ -617,7 +617,7 @@ const ComposerCore = ({
             <SendBoxMiddlewareProvider middleware={sendBoxMiddleware || EMPTY_ARRAY}>
               <SendBoxToolbarMiddlewareProvider middleware={sendBoxToolbarMiddleware || EMPTY_ARRAY}>
                 <GroupActivitiesComposer groupActivitiesMiddleware={singleToArray(groupActivitiesMiddleware)}>
-                  <PolymiddlewareComposer middleware={polymiddleware}>
+                  <PolymiddlewareComposer polymiddleware={polymiddleware}>
                     {typeof children === 'function' ? children(context) : children}
                   </PolymiddlewareComposer>
                 </GroupActivitiesComposer>

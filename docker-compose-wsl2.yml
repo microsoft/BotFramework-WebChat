@@ -44,6 +44,7 @@ services:
       - ./__tests__/html/:/var/web/__tests__/html/
       - ./__tests__/html2/:/var/web/__tests__/html2/
       - ./packages/bundle/dist/:/var/web/packages/bundle/dist/
+      - ./packages/debug-theme/dist/:/var/web/packages/debug-theme/dist/
       - ./packages/fluent-theme/dist/:/var/web/packages/fluent-theme/dist/
       - ./packages/test/harness/dist/:/var/web/packages/test/harness/dist/
       - ./packages/test/page-object/dist/:/var/web/packages/test/page-object/dist/

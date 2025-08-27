@@ -39,6 +39,7 @@
 
         const onTelemetry = fn();
 
+        // WHEN: Web Chat is being rendered with <DebugProvider>.
         createRoot(document.getElementById('webchat')).render(
           createElement(
             DebugProvider,

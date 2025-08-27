@@ -21,8 +21,7 @@ import { Polymiddleware } from './types/Polymiddleware';
 const polymiddlewareComposerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
-    // TODO: [P*] Rename to `polymiddleware`.
-    middleware: pipe(
+    polymiddleware: pipe(
       custom<readonly Polymiddleware[]>(value => safeParse(array(function_()), value).success),
       transform<readonly Polymiddleware[], readonly Polymiddleware[]>(value => Object.freeze(Array.from(value)))
     )
@@ -33,11 +32,11 @@ const polymiddlewareComposerPropsSchema = pipe(
 type PolymiddlewareComposerProps = Readonly<InferInput<typeof polymiddlewareComposerPropsSchema>>;
 
 function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
-  const { children, middleware } = validateProps(polymiddlewareComposerPropsSchema, props);
+  const { children, polymiddleware } = validateProps(polymiddlewareComposerPropsSchema, props);
 
   const activityEnhancers = useMemoWithPrevious<ReturnType<typeof extractActivityEnhancer>>(
     (prevActivityEnhancers = []) => {
-      const activityEnhancers = extractActivityEnhancer(middleware);
+      const activityEnhancers = extractActivityEnhancer(polymiddleware);
 
       // Checks for array equality, return previous version if nothing has changed.
       return prevActivityEnhancers.length === activityEnhancers.length &&
@@ -45,14 +44,14 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
         ? prevActivityEnhancers
         : activityEnhancers;
     },
-    [middleware]
+    [polymiddleware]
   );
 
   const activityPolymiddleware = useMemo(() => activityEnhancers.map(enhancer => () => enhancer), [activityEnhancers]);
 
   const errorBoxEnhancers = useMemoWithPrevious<ReturnType<typeof extractErrorBoxEnhancer>>(
     (prevErrorBoxEnhancers = []) => {
-      const errorBoxEnhancers = extractErrorBoxEnhancer(middleware);
+      const errorBoxEnhancers = extractErrorBoxEnhancer(polymiddleware);
 
       // Checks for array equality, return previous version if nothing has changed.
       return prevErrorBoxEnhancers.length === errorBoxEnhancers.length &&
@@ -60,7 +59,7 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
         ? prevErrorBoxEnhancers
         : errorBoxEnhancers;
     },
-    [middleware]
+    [polymiddleware]
   );
 
   const errorBoxPolymiddleware = useMemo(() => errorBoxEnhancers.map(enhancer => () => enhancer), [errorBoxEnhancers]);

@@ -6,13 +6,20 @@
       {
         "imports": {
           "jest-mock": "https://esm.sh/jest-mock",
-          "react": "https://esm.sh/react@18.3.1"
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/"
         }
       }
     </script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" defer src="/__dist__/botframework-webchat-debug-theme.development.js"></script>
   </head>
 
   <body>
@@ -20,10 +27,12 @@
     <script type="module">
       import { fn, spyOn } from 'jest-mock';
       import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
 
       run(async function () {
         const {
-          testHelpers: { createDirectLineEmulator }
+          testHelpers: { createDirectLineEmulator },
+          WebChat: { DebugProvider, ReactWebChat }
         } = window;
 
         const { directLine, store } = createDirectLineEmulator();
@@ -36,14 +45,18 @@
         ];
         const onTelemetry = fn();
 
-        WebChat.renderWebChat(
-          {
-            activityMiddleware,
-            directLine,
-            onTelemetry,
-            store
-          },
-          document.getElementById('webchat')
+        // WHEN: Web Chat is being rendered with <DebugProvider>.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(
+            DebugProvider,
+            {},
+            createElement(ReactWebChat, {
+              activityMiddleware,
+              directLine,
+              onTelemetry,
+              store
+            })
+          )
         );
 
         await pageConditions.uiConnected();
