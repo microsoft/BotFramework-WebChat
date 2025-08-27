@@ -127,8 +127,8 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
         setRawFocusedActivityKey(activityKey);
         focusByGroupKey(undefined, false);
       } else if (activityKey === undefined) {
-        handleFocus(undefined);
-        return;
+        // if nothing is supplied assume we want to focus current activity and scroll it into view
+        withFocus = true;
       }
 
       const groupKey = typeof activityKey === 'string' && getGroupKeyByActivityKey(activityKey);
