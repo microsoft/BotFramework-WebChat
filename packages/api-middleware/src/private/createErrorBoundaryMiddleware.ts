@@ -23,7 +23,7 @@ export default function createErrorBoundaryMiddleware<Request, Props extends {}>
 
       return (
         result &&
-        reactComponent(ErrorBoundaryForRenderFunction, {
+        reactComponent<ErrorBoundaryForRenderFunctionProps<Props>>(ErrorBoundaryForRenderFunction, {
           errorBoundaryRenderFunction: result?.render,
           errorBoundaryWhere: where
           // TODO: [P1] Fix force casting by using React Context to hide internal props.
@@ -35,7 +35,7 @@ export default function createErrorBoundaryMiddleware<Request, Props extends {}>
       error = unwrapIfValiError(error);
 
       // Thrown before render, show the red box immediately.
-      return reactComponent(ErrorBoundaryForRenderFunction, {
+      return reactComponent<ErrorBoundaryForRenderFunctionProps<Props>>(ErrorBoundaryForRenderFunction, {
         errorBoundaryRenderFunction: () => {
           throw error;
         },
