@@ -61,12 +61,12 @@ export default function validateProps<const TSchema extends BaseSchema<unknown, 
   try {
     return parse(propsSchema, props);
   } catch (error) {
-    const ourError = new Error('botframework-webchat: Validation error while parsing props.');
+    const validationError = new Error('botframework-webchat: Validation error while parsing props.');
 
-    console.error(ourError, error && typeof error === 'object' && 'issues' in error && error.issues);
+    console.error(validationError, error && typeof error === 'object' && 'issues' in error && error.issues);
 
-    ourError.cause = error;
+    validationError.cause = error;
 
-    throw ourError;
+    throw validationError;
   }
 }
