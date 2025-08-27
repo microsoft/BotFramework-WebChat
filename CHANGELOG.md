@@ -41,6 +41,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - `sendBoxToolbarMiddleware`, related to PR [#5504](https://github.com/microsoft/BotFramework-WebChat/pull/5504)
 - `styleOptions.hideUploadButton` is being deprecated in favor of `styleOptions.disableFileUpload`. The option will be removed on or after 2027-07-14
 - `botframework-directlinespeech-sdk` no longer ponyfill `AbortController`, it is supported by modern browsers, in PR [#5530](https://github.com/microsoft/BotFramework-WebChat/pull/5530)
+- `activityMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2027-08-16, related to PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
 
 ### Added
 
@@ -108,6 +109,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Deprecated `hideUploadButton` in favor of `disableFileUpload`.
    - Updated `BasicSendBoxToolbar` to rely solely on `disableFileUpload`.
 - Added support for livestreaming via `entities[type="streaminfo"]` in PR [#5517](https://github.com/microsoft/BotFramework-WebChat/pull/5517) by [@kylerohn](https://github.com/kylerohn) and [@compulim](https://github.com/compulim)
+- Added `polymiddleware`, a new [universal middleware for every UIs](./docs/MIDDLEWARE.md), by [@compulim](https://github.com/compulim) in PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
 
 ### Changed
 
@@ -151,7 +153,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - [`micromark@4.0.2`](https://npmjs.com/package/micromark/v/4.0.2)
       - [`microsoft-cognitiveservices-speech-sdk@1.45.0`](https://npmjs.com/package/microsoft-cognitiveservices-speech-sdk/v/1.45.0)
       - [`mime@4.0.7`](https://npmjs.com/package/mime/v/4.0.7)
-      - [`react-chain-of-responsibility@0.3.0`](https://npmjs.com/package/react-chain-of-responsibility/v/0.3.0)
+      - [`react-chain-of-responsibility@0.4.0-main.2a72139`](https://npmjs.com/package/react-chain-of-responsibility/v/0.4.0-main.2a72139)
       - [`react-film@4.0.0`](https://npmjs.com/package/react-film/v/4.0.0)
       - [`react-say@2.2.0`](https://npmjs.com/package/react-say/v/2.2.0)
       - [`react-scroll-to-bottom@4.2.0`](https://npmjs.com/package/react-scroll-to-bottom/v/4.2.0)
@@ -282,6 +284,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
 - `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook, in PR [#5489](https://github.com/microsoft/BotFramework-WebChat/pull/5489), by [@compulim](https://github.com/compulim)
 - Fixed core internal import in legacy CommonJS environments, in [5509](https://github.com/microsoft/BotFramework-WebChat/pull/5509), by [@OEvgeny](https://github.com/OEvgeny)
+- `activityMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2027-08-16, related to PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
 
 ### Samples
 
