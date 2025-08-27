@@ -20,8 +20,12 @@
     </script>
     <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
     <script crossorigin="anonymous" defer src="/__dist__/botframework-webchat-debug-theme.development.js"></script>
+    <style type="text/css">
+      .webchat > .error-box {
+        border: solid 1px red;
+      }
+    </style>
   </head>
-
   <body>
     <main id="webchat"></main>
     <script type="module">
@@ -47,7 +51,7 @@
 
           const errorBox = renderErrorBox({ error: new Error('Hello, World!'), where: 'Artificial' });
 
-          return errorBox?.({});
+          return createElement('div', { className: 'error-box' }, errorBox?.({}));
         };
 
         const hasDebugProvider = !new URL(location.href).searchParams.has('no-debug-provider');
