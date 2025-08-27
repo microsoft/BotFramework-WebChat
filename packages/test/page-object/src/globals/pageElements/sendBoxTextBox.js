@@ -1,11 +1,5 @@
-import { testIds } from 'botframework-webchat';
-
 import root from './root';
 
-const CSS_SELECTOR = `[data-testid="${testIds.sendBoxTextBox}"]`;
-
 export default function sendBoxTextBox() {
-  return root().querySelector(CSS_SELECTOR);
+  return root().querySelector(`[data-testid="${window.WebChat.testIds.sendBoxTextBox}"]`);
 }
-
-export { CSS_SELECTOR };
