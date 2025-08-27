@@ -53,25 +53,21 @@ const ActivityPolymiddlewareProvider = memo(function ActivityPolymiddlewareProvi
   children,
   middleware
 }: ActivityPolymiddlewareProviderProps) {
-  return (
-    <Provider
-      // Decorates middleware with <ErrorBoundary>.
-      middleware={useMemo(
-        () =>
-          Object.freeze([
-            createErrorBoundaryMiddleware({
-              createMiddleware: createActivityPolymiddleware,
-              reactComponent: activityComponent,
-              where: 'Activity polymiddleware'
-            }),
-            ...middleware
-          ]),
-        [middleware]
-      )}
-    >
-      {children}
-    </Provider>
+  // Decorates middleware with <ErrorBoundary>.
+  const middlewareWithErrorBoundary = useMemo(
+    () =>
+      Object.freeze([
+        createErrorBoundaryMiddleware({
+          createMiddleware: createActivityPolymiddleware,
+          reactComponent: activityComponent,
+          where: 'Activity polymiddleware'
+        }),
+        ...middleware
+      ]),
+    [middleware]
   );
+
+  return <Provider middleware={middlewareWithErrorBoundary}>{children}</Provider>;
 });
 
 export {
