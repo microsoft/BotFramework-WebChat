@@ -1,6 +1,7 @@
-import { type ReactNode } from 'react';
 import { type ComponentHandlerResult } from 'react-chain-of-responsibility/preview';
-import ErrorBoundaryForRenderFunction from './ErrorBoundaryForRenderFunction';
+import ErrorBoundaryForRenderFunction, {
+  type ErrorBoundaryForRenderFunctionProps
+} from './ErrorBoundaryForRenderFunction';
 import type templatePolymiddleware from './templatePolymiddleware';
 import unwrapIfValiError from './unwrapIfValiError';
 
@@ -22,18 +23,11 @@ export default function createErrorBoundaryMiddleware<Request, Props extends {}>
 
       return (
         result &&
-        reactComponent<
-          // TODO: [P0] Fix unknown.
-          Props & {
-            // Need to be unknown here because memo() hid the generic type.
-            readonly errorBoundaryRenderFunction: (props: unknown) => { render: () => ReactNode };
-            readonly errorBoundaryWhere: string;
-          }
-        >(
-          ErrorBoundaryForRenderFunction,
-          // TODO: [P0] Fix any, consider using React context to add extraneous props.
-          { errorBoundaryRenderFunction: result?.render, errorBoundaryWhere: where } as any
-        )
+        reactComponent(ErrorBoundaryForRenderFunction, {
+          errorBoundaryRenderFunction: result?.render,
+          errorBoundaryWhere: where
+          // TODO: [P1] Fix force casting by using React Context to hide internal props.
+        } as unknown as ErrorBoundaryForRenderFunctionProps<Props>)
       );
     } catch (error) {
       // Simplify code by re-assigning to `error`.
@@ -41,22 +35,13 @@ export default function createErrorBoundaryMiddleware<Request, Props extends {}>
       error = unwrapIfValiError(error);
 
       // Thrown before render, show the red box immediately.
-      return reactComponent<
-        // Need to be unknown here because memo() hid the generic type.
-        Props & {
-          readonly errorBoundaryRenderFunction: (props: unknown) => { render: () => ReactNode };
-          readonly errorBoundaryWhere: string;
-        }
-      >(
-        ErrorBoundaryForRenderFunction,
-        // TODO: [P0] Fix any, consider using React context to add extraneous props.
-        {
-          errorBoundaryRenderFunction: () => {
-            throw error;
-          },
-          errorBoundaryWhere: where
-        } as any
-      );
+      return reactComponent(ErrorBoundaryForRenderFunction, {
+        errorBoundaryRenderFunction: () => {
+          throw error;
+        },
+        errorBoundaryWhere: where
+        // TODO: [P1] Fix force casting by using React Context to hide internal props.
+      } as unknown as ErrorBoundaryForRenderFunctionProps<Props>);
     }
   });
 }
