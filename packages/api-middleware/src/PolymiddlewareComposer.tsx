@@ -21,6 +21,7 @@ import { Polymiddleware } from './types/Polymiddleware';
 const polymiddlewareComposerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
+    // TODO: [P*] Rename to `polymiddleware`.
     middleware: pipe(
       custom<readonly Polymiddleware[]>(value => safeParse(array(function_()), value).success),
       transform<readonly Polymiddleware[], readonly Polymiddleware[]>(value => Object.freeze(Array.from(value)))

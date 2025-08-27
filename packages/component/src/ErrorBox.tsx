@@ -2,7 +2,7 @@
 
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
-import React, { memo, useEffect } from 'react';
+import React, { Fragment, memo, useEffect } from 'react';
 import { object, optional, pipe, readonly, string, unknown, type InferInput } from 'valibot';
 
 import useStyleSet from './hooks/useStyleSet';
@@ -10,6 +10,9 @@ import ScreenReaderText from './ScreenReaderText';
 
 const { useLocalizer, useTrackException } = hooks;
 
+/**
+ * @deprecated This component is deprecated and will be removed on or after 2027-08-16.
+ */
 const errorBoxPropsSchema = pipe(
   object({
     error: unknown(),
@@ -18,8 +21,14 @@ const errorBoxPropsSchema = pipe(
   readonly()
 );
 
+/**
+ * @deprecated This component is deprecated and will be removed on or after 2027-08-16.
+ */
 type ErrorBoxProps = InferInput<typeof errorBoxPropsSchema>;
 
+/**
+ * @deprecated This component is deprecated and will be removed on or after 2027-08-16.
+ */
 function ErrorBox(props: ErrorBoxProps) {
   const { error, type = '' } = validateProps(errorBoxPropsSchema, props);
 
@@ -41,7 +50,7 @@ function ErrorBox(props: ErrorBoxProps) {
   }, [error, trackException]);
 
   return (
-    <React.Fragment>
+    <Fragment>
       <ScreenReaderText text={localize('ACTIVITY_ERROR_BOX_TITLE')} />
       <div className={errorBoxStyleSet}>
         <div>{type}</div>
@@ -56,7 +65,7 @@ function ErrorBox(props: ErrorBoxProps) {
           <pre>{JSON.stringify(error, null, 2)}</pre>
         )}
       </div>
-    </React.Fragment>
+    </Fragment>
   );
 }
 

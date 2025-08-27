@@ -25,58 +25,59 @@
   <body>
     <main id="webchat"></main>
     <script type="module">
-      import { createElement, memo } from 'react';
-      import { createRoot } from 'react-dom/client';
       import { fn, spyOn } from 'jest-mock';
+      import { createElement, Fragment, memo } from 'react';
+      import { createRoot } from 'react-dom/client';
 
       run(async function () {
         const {
           testHelpers: { createDirectLineEmulator },
-          WebChat: { DebugProvider, ReactWebChat }
+          WebChat: {
+            Components: { Composer, ThemeProvider },
+            DebugProvider,
+            middleware: { createErrorBoxPolymiddleware, errorBoxComponent, useBuildRenderErrorBoxCallback },
+            ReactWebChat
+          }
         } = window;
 
         const { directLine, store } = createDirectLineEmulator();
 
+        const SystemUnderTest = () => {
+          const renderErrorBox = useBuildRenderErrorBoxCallback();
+
+          const errorBox = renderErrorBox({ error: new Error('Hello, World!'), where: 'Artificial' });
+
+          return errorBox?.({});
+        };
+
+        const hasDebugProvider = !new URL(location.href).searchParams.has('no-debug-provider');
         const onTelemetry = fn();
 
         createRoot(document.getElementById('webchat')).render(
           createElement(
-            DebugProvider,
+            hasDebugProvider ? DebugProvider : Fragment,
             {},
-            createElement(ReactWebChat, {
-              directLine,
-              onTelemetry,
-              store
-            })
+            createElement(
+              Composer,
+              {
+                directLine,
+                onTelemetry,
+                store
+              },
+              createElement(SystemUnderTest)
+            )
           )
         );
 
         await pageConditions.uiConnected();
 
-        const consoleError = fn(console.warn.bind(console));
-
-        spyOn(console, 'error').mockImplementationOnce(consoleError);
-
-        await directLine.emulateIncomingActivity({
-          from: { id: 'bot', role: 'bot' },
-          text: 'Do you like my response?',
-          type: 'something-new'
-        });
-
-        // THEN: Should console.error about "no renderer".
-        expect(consoleError).toHaveBeenCalledTimes(1);
-        expect(consoleError.mock.calls[0][0]).toBeInstanceOf(Error);
-        expect(consoleError.mock.calls[0][0].message).toBe('No renderer for activity of type "something-new"');
-
         // THEN: Should emit as exception event.
         const exceptionEvent = onTelemetry.mock.calls.find(call => call[0]?.type === 'exception');
 
         expect(exceptionEvent).toBeTruthy();
-        expect(exceptionEvent[0].error.message).toBe('No renderer for activity of type "something-new"');
+        expect(exceptionEvent[0].error.message).toBe('Hello, World!');
 
-        // THEN: Should render one red box.
-        await pageConditions.numActivitiesShown(1);
-
+        // THEN: Should render a red box with DebugProvider.
         await host.snapshot('local');
       });
     </script>

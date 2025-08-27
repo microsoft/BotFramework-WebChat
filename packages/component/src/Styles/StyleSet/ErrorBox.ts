@@ -13,13 +13,13 @@ export default function createErrorBoxStyle({ monospaceFont, primaryFont }: Stri
     WebkitOverflowScrolling: 'touch',
 
     '& > :first-child': {
-      backgroundColor: '#EF0000',
+      backgroundColor: '#B60000', // WCAG AAA: Contrast ratio >= 7:1.
       color: 'White',
       padding: '5px 10px'
     },
 
     '& > :last-child': {
-      borderColor: '#EF0000',
+      borderColor: '#B60000', // WCAG AAA: Contrast ratio >= 7:1.
       borderStyle: 'dashed',
       borderBottomWidth: 2,
       borderLeftWidth: 2,

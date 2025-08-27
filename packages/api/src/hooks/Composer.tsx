@@ -39,7 +39,7 @@ import {
   type WebChatActivity
 } from 'botframework-webchat-core';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
@@ -234,14 +234,6 @@ type ComposerCoreProps = Readonly<{
   ) => Promise<URL>;
   grammars?: any;
   groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware>;
-  internalErrorBoxClass?:
-    | ComponentType<
-        Readonly<{
-          error: Error;
-          type?: string;
-        }>
-      >
-    | undefined;
   locale?: string;
   polymiddleware?: readonly Polymiddleware[];
   onTelemetry?: (event: TelemetryMeasurementEvent) => void;
@@ -287,7 +279,6 @@ const ComposerCore = ({
   downscaleImageToDataURL,
   grammars,
   groupActivitiesMiddleware,
-  internalErrorBoxClass,
   locale,
   onTelemetry,
   overrideLocalizedStrings,
@@ -571,7 +562,6 @@ const ComposerCore = ({
       directLine,
       downscaleImageToDataURL,
       grammars: patchedGrammars,
-      internalErrorBoxClass,
       language: locale,
       localizedGlobalizeState: [localizedGlobalize],
       localizedStrings: patchedLocalizedStrings,
@@ -594,7 +584,6 @@ const ComposerCore = ({
       directLine,
       downscaleImageToDataURL,
       hoistedDispatchers,
-      internalErrorBoxClass,
       locale,
       localizedGlobalize,
       onTelemetry,
@@ -661,7 +650,6 @@ ComposerCore.defaultProps = {
   downscaleImageToDataURL: undefined,
   grammars: [],
   groupActivitiesMiddleware: undefined,
-  internalErrorBoxClass: undefined,
   locale: window.navigator.language || 'en-US',
   onTelemetry: undefined,
   overrideLocalizedStrings: undefined,
@@ -704,10 +692,6 @@ ComposerCore.propTypes = {
   downscaleImageToDataURL: PropTypes.func,
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupActivitiesMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
-  // This is for internal use only. We don't allow customization of error box.
-  // - Functional component is of type PropTypes.func
-  // - Memoized functional component is of type PropTypes.object
-  internalErrorBoxClass: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),
   locale: PropTypes.string,
   onTelemetry: PropTypes.func,
   overrideLocalizedStrings: PropTypes.oneOfType([PropTypes.any, PropTypes.func]),

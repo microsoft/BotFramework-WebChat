@@ -34,6 +34,7 @@
     "./packages/directlinespeech",
     "./packages/bundle",
     "./packages/test/page-object",
+    "./packages/debug-theme",
     "./packages/fluent-theme"
   ],
   "scripts": {
@@ -61,6 +62,7 @@
     "precommit:eslint:bundle": "cd packages && cd bundle && npm run precommit:eslint",
     "precommit:eslint:component": "cd packages && cd component && npm run precommit:eslint",
     "precommit:eslint:core": "cd packages && cd core && npm run precommit:eslint",
+    "precommit:eslint:debug-theme": "cd packages && cd debug-theme && npm run precommit:eslint",
     "precommit:eslint:directlinespeech": "cd packages && cd directlinespeech && npm run precommit:eslint",
     "precommit:eslint:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:eslint",
     "precommit:eslint:isomorphic-react-dom": "cd packages && cd isomorphic-react-dom && npm run precommit:eslint",
@@ -78,6 +80,7 @@
     "precommit:typecheck:bundle": "cd packages && cd bundle && npm run precommit:typecheck",
     "precommit:typecheck:component": "cd packages && cd component && npm run precommit:typecheck",
     "precommit:typecheck:core": "cd packages && cd core && npm run precommit:typecheck",
+    "precommit:typecheck:debug-theme": "cd packages && cd debug-theme && npm run precommit:typecheck",
     "precommit:typecheck:fluent-theme": "cd packages && cd fluent-theme && npm run precommit:typecheck",
     "precommit:typecheck:react-valibot": "cd packages && cd react-valibot && npm run precommit:typecheck",
     "precommit:typecheck:redux-store": "cd packages && cd redux-store && npm run precommit:typecheck",
@@ -88,6 +91,7 @@
     "start:bundle": "cd packages && cd bundle && npm start",
     "start:component": "cd packages && cd component && npm start",
     "start:core": "cd packages && cd core && npm start",
+    "start:debug-theme": "cd packages && cd debug-theme && npm start",
     "start:directlinespeech": "cd packages && cd directlinespeech && npm start",
     "start:fluent-theme": "cd packages && cd fluent-theme && npm start",
     "start:react-valibot": "cd packages && cd react-valibot && npm start",

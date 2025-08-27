@@ -15,6 +15,7 @@ const ThemeProvider = ({
   cardActionMiddleware,
   children,
   groupActivitiesMiddleware,
+  polymiddleware,
   scrollToEndButtonMiddleware,
   sendBoxMiddleware,
   sendBoxToolbarMiddleware,
@@ -65,6 +66,11 @@ const ThemeProvider = ({
     [groupActivitiesMiddleware, existingContext.groupActivitiesMiddleware]
   );
 
+  const mergedPolymiddleware = useMemo<ThemeContextType['polymiddleware']>(
+    () => Object.freeze([...(polymiddleware || EMPTY_ARRAY), ...existingContext.polymiddleware]),
+    [polymiddleware, existingContext.polymiddleware]
+  );
+
   const mergedScrollToEndButtonMiddleware = useMemo<ThemeContextType['scrollToEndButtonMiddleware']>(
     () =>
       Object.freeze([...(scrollToEndButtonMiddleware || EMPTY_ARRAY), ...existingContext.scrollToEndButtonMiddleware]),
@@ -110,6 +116,7 @@ const ThemeProvider = ({
       avatarMiddleware: mergedAvatarMiddleware,
       cardActionMiddleware: mergedCardActionMiddleware,
       groupActivitiesMiddleware: mergedGroupActivitiesMiddleware,
+      polymiddleware: mergedPolymiddleware,
       scrollToEndButtonMiddleware: mergedScrollToEndButtonMiddleware,
       sendBoxMiddleware: mergedSendBoxMiddleware,
       sendBoxToolbarMiddleware: mergedSendBoxToolbarMiddleware,
@@ -126,6 +133,7 @@ const ThemeProvider = ({
       mergedAvatarMiddleware,
       mergedCardActionMiddleware,
       mergedGroupActivitiesMiddleware,
+      mergedPolymiddleware,
       mergedScrollToEndButtonMiddleware,
       mergedSendBoxMiddleware,
       mergedSendBoxToolbarMiddleware,

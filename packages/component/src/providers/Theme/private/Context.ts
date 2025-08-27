@@ -13,12 +13,14 @@ import type {
   ToastMiddleware,
   TypingIndicatorMiddleware
 } from 'botframework-webchat-api';
+import { type Polymiddleware } from 'botframework-webchat-api/middleware';
 import { createContext } from 'react';
 
 const EMPTY_ARRAY = Object.freeze([] as const);
 const EMPTY_OBJECT = Object.freeze({} as const);
 
 export type ThemeContextType = {
+  /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */
   activityMiddleware: readonly ActivityMiddleware[];
   activityStatusMiddleware: readonly ActivityStatusMiddleware[];
   attachmentForScreenReaderMiddleware: readonly AttachmentForScreenReaderMiddleware[];
@@ -26,6 +28,7 @@ export type ThemeContextType = {
   avatarMiddleware: readonly AvatarMiddleware[];
   cardActionMiddleware: readonly CardActionMiddleware[];
   groupActivitiesMiddleware: readonly GroupActivitiesMiddleware[];
+  polymiddleware: readonly Polymiddleware[];
   scrollToEndButtonMiddleware: readonly ScrollToEndButtonMiddleware[];
   sendBoxMiddleware: readonly SendBoxMiddleware[];
   sendBoxToolbarMiddleware: readonly SendBoxToolbarMiddleware[];
@@ -43,6 +46,7 @@ export default createContext<ThemeContextType>({
   avatarMiddleware: EMPTY_ARRAY,
   cardActionMiddleware: EMPTY_ARRAY,
   groupActivitiesMiddleware: EMPTY_ARRAY,
+  polymiddleware: EMPTY_ARRAY,
   scrollToEndButtonMiddleware: EMPTY_ARRAY,
   sendBoxMiddleware: EMPTY_ARRAY,
   sendBoxToolbarMiddleware: EMPTY_ARRAY,

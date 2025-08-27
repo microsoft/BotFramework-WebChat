@@ -1,14 +1,19 @@
-import { createErrorBoxPolymiddleware, errorBoxComponent } from '@msinternal/botframework-webchat-api-middleware';
+import {
+  createErrorBoxPolymiddleware,
+  errorBoxComponent,
+  ErrorBoxPolymiddlewareHandlerResult
+} from '@msinternal/botframework-webchat-api-middleware';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { memo, useEffect } from 'react';
-import { never, object, optional, pipe, readonly, unknown, type InferInput } from 'valibot';
+import { memo, useEffect, type ReactElement } from 'react';
+import { custom, never, object, optional, pipe, readonly, unknown, type InferInput } from 'valibot';
 
 import { useTrackException } from '../hooks';
 
 const errorBoxTelemetryHeadlessPropsSchema = pipe(
   object({
     children: optional(never()),
-    error: unknown()
+    error: unknown(),
+    render: optional(custom<ErrorBoxPolymiddlewareHandlerResult['render']>(value => typeof value === 'function'))
   }),
   readonly()
 );
@@ -18,7 +23,7 @@ type ErrorBoxTelemetryHeadlessProps = InferInput<typeof errorBoxTelemetryHeadles
 // Use traditional function for component name.
 // eslint-disable-next-line prefer-arrow-callback
 const ErrorBoxTelemetryHeadless = memo(function ErrorBoxTelemetryHeadless(props: ErrorBoxTelemetryHeadlessProps) {
-  const { error } = validateProps(errorBoxTelemetryHeadlessPropsSchema, props);
+  const { error, render } = validateProps(errorBoxTelemetryHeadlessPropsSchema, props);
   const trackException = useTrackException();
 
   useEffect(() => {
@@ -34,13 +39,15 @@ const ErrorBoxTelemetryHeadless = memo(function ErrorBoxTelemetryHeadless(props:
     }
   }, [error, trackException]);
 
-  return null;
+  // TODO: [P*] Fix this, I think it should return `ReactNode`.
+  return render?.() as ReactElement;
 });
 
 const errorBoxTelemetryPolymiddleware = createErrorBoxPolymiddleware(
-  () => request =>
+  next => request =>
     errorBoxComponent(ErrorBoxTelemetryHeadless, {
-      error: request.error
+      error: request.error,
+      render: next(request)?.render
     })
 );
 

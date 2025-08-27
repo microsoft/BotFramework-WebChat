@@ -9,11 +9,7 @@ import {
   type SendBoxToolbarMiddleware
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
-import {
-  createErrorBoxPolymiddleware,
-  errorBoxComponent,
-  type Polymiddleware
-} from 'botframework-webchat-api/middleware';
+import { type Polymiddleware } from 'botframework-webchat-api/middleware';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -24,7 +20,6 @@ import { Composer as SayComposer } from 'react-say';
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import BuiltInDecorator from './BuiltInDecorator';
 import Dictation from './Dictation';
-import ErrorBox, { type ErrorBoxProps } from './ErrorBox';
 import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
@@ -63,8 +58,6 @@ import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions, useTrackException } = hooks;
-
-const node_env = process.env.node_env || process.env.NODE_ENV;
 
 function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
@@ -395,6 +388,11 @@ const InternalComposer = ({
     [cardActionMiddleware, theme.cardActionMiddleware]
   );
 
+  const patchedPolymiddleware = useMemo<readonly Polymiddleware[]>(
+    () => Object.freeze([...(polymiddleware || []), ...theme.polymiddleware]),
+    [polymiddleware, theme.polymiddleware]
+  );
+
   const patchedToastMiddleware = useMemo(
     () => [...singleToArray(toastMiddleware), ...theme.toastMiddleware, ...createDefaultToastMiddleware()],
     [toastMiddleware, theme.toastMiddleware]
@@ -445,21 +443,6 @@ const InternalComposer = ({
     [sendBoxToolbarMiddlewareFromProps, theme.sendBoxToolbarMiddleware]
   );
 
-  const patchedPolymiddleware = useMemo<readonly Polymiddleware[]>(
-    () =>
-      Object.freeze([
-        ...(polymiddleware || []),
-        createErrorBoxPolymiddleware(
-          () => request =>
-            errorBoxComponent<ErrorBoxProps & { readonly children?: never }>(ErrorBox, {
-              error: request.error,
-              type: request.where
-            })
-        )
-      ]),
-    [polymiddleware]
-  );
-
   return (
     <APIComposer
       activityMiddleware={patchedActivityMiddleware}
@@ -469,8 +452,6 @@ const InternalComposer = ({
       avatarMiddleware={patchedAvatarMiddleware}
       cardActionMiddleware={patchedCardActionMiddleware}
       downscaleImageToDataURL={downscaleImageToDataURL}
-      // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
-      {...(node_env === 'development' ? { internalErrorBoxClass: ErrorBox } : {})}
       nonce={nonce}
       polymiddleware={patchedPolymiddleware}
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
