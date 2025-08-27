@@ -64,7 +64,7 @@
 
         await pageConditions.uiConnected();
 
-        // WHEN: A messages arrive "Hello, World!".
+        // WHEN: A message arrive "Hello, World!".
         await directLine.emulateIncomingActivity({
           text: 'Hello, World!',
           type: 'message'

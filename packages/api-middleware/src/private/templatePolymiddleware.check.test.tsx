@@ -20,7 +20,7 @@ test('should throw if middleware is not a function', () => {
   expect(() => template.createMiddleware(1 as any)).toThrow('enhancer must be of type function');
 });
 
-test('should not warn if middleware return false', () => {
+test('should not warn if middleware returns false', () => {
   const warn = jest.fn();
   const template = templatePolymiddleware('Check' as any);
 
@@ -31,7 +31,7 @@ test('should not warn if middleware return false', () => {
   expect(warn).toHaveBeenCalledTimes(0);
 });
 
-test('should not warn if middleware return function', () => {
+test('should not warn if middleware returns function', () => {
   const warn = jest.fn();
   const template = templatePolymiddleware('Check' as any);
 
