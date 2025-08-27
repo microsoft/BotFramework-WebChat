@@ -24,9 +24,7 @@
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:esbuild": "npm run build:esbuild -- --watch"
   },
-  "localDependencies": {
-    "botframework-webchat": "production"
-  },
+  "localDependencies": {},
   "pinDependencies": {},
   "dependencies": {
     "base64-arraybuffer": "1.0.2",
