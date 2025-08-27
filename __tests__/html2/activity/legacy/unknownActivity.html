@@ -63,7 +63,7 @@
         spyOn(console, 'error').mockImplementationOnce(consoleError);
 
         await pageObjects.sendMessageViaSendBox('unknown activity');
-        await pageConditions.numActivitiesShown(1);
+        await pageConditions.numActivitiesShown(2);
 
         // THEN: Should have error log.
         expect(consoleError).toHaveBeenCalledTimes(1);
