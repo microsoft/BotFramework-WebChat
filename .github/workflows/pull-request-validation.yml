@@ -57,6 +57,7 @@ jobs:
           ./package.json
           ./__tests__/
           ./packages/bundle/dist/
+          ./packages/debug-theme/dist/
           ./packages/fluent-theme/dist/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
