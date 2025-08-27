@@ -4,7 +4,7 @@ import {
   ErrorBoxPolymiddlewareHandlerResult
 } from '@msinternal/botframework-webchat-api-middleware';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { memo, useEffect, type ReactElement } from 'react';
+import { memo, useEffect } from 'react';
 import { custom, never, object, optional, pipe, readonly, unknown, type InferInput } from 'valibot';
 
 import { useTrackException } from '../hooks';
@@ -39,8 +39,7 @@ const ErrorBoxTelemetryHeadless = memo(function ErrorBoxTelemetryHeadless(props:
     }
   }, [error, trackException]);
 
-  // TODO: [P*] Fix this, I think it should return `ReactNode`.
-  return render?.() as ReactElement;
+  return render?.();
 });
 
 const errorBoxTelemetryPolymiddleware = createErrorBoxPolymiddleware(

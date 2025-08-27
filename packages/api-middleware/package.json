@@ -87,7 +87,7 @@
   },
   "dependencies": {
     "handler-chain": "^0.1.0",
-    "react-chain-of-responsibility": "^0.4.0-main.9e06f00",
+    "react-chain-of-responsibility": "^0.4.0-main.2a72139",
     "react-wrap-with": "0.1.0",
     "valibot": "1.1.0"
   }
