@@ -110,6 +110,12 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Updated `BasicSendBoxToolbar` to rely solely on `disableFileUpload`.
 - Added support for livestreaming via `entities[type="streaminfo"]` in PR [#5517](https://github.com/microsoft/BotFramework-WebChat/pull/5517) by [@kylerohn](https://github.com/kylerohn) and [@compulim](https://github.com/compulim)
 - Added `polymiddleware`, a new [universal middleware for every UIs](./docs/MIDDLEWARE.md), by [@compulim](https://github.com/compulim) in PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
+   - Added `polymiddleware` to `<ThemeProvider>`
+   - Currently supports activity middleware and the new error box middleware
+- New internal packages, by [@compulim](https://github.com/compulim) in PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
+   - `@msinternal/botframework-webchat-api-middleware` for middleware branch of API package
+   - `@msinternal/botframework-webchat-debug-theme` package for enabling debugging scenarios
+   - `@msinternal/botframework-webchat-react-hooks` for helpers for React hooks
 
 ### Changed
 
@@ -279,7 +285,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed [#5518](https://github.com/microsoft/BotFramework-WebChat/issues/5518). Minimal bundled build should work properly, in PR [#5507](https://github.com/microsoft/BotFramework-WebChat/pull/5507), by [@compulim](https://github.com/compulim)
 - Fixed [#5520](https://github.com/microsoft/BotFramework-WebChat/issues/5520). Version information should be injected when installed via npm, in PR [#5521](https://github.com/microsoft/BotFramework-WebChat/pull/5521), by [@compulim](https://github.com/compulim)
 
-# Removed
+### Removed
 
 - Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
 - `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook, in PR [#5489](https://github.com/microsoft/BotFramework-WebChat/pull/5489), by [@compulim](https://github.com/compulim)
