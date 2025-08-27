@@ -1,33 +1,82 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/"
+        }
+      }
+    </script>
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" defer src="/__dist__/botframework-webchat-debug-theme.development.js"></script>
   </head>
   <body>
     <main id="webchat"></main>
-    <script>
-      run(
-        async function () {
-          WebChat.renderWebChat(
-            {
-              directLine: WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
-              store: testHelpers.createStore()
-            },
-            document.getElementById('webchat')
-          );
+    <script type="module">
+      import { fn, spyOn } from 'jest-mock';
+      import React, { createElement, memo } from 'react';
+      import { createRoot } from 'react-dom/client';
 
-          await pageConditions.uiConnected();
-          await pageObjects.sendMessageViaSendBox('unknown activity');
-          await pageConditions.minNumActivitiesShown(1);
+      run(async function () {
+        const {
+          testHelpers: { createStore },
+          WebChat: {
+            createDirectLine,
+            DebugProvider,
+            hooks: { useActivities, useBuildRenderActivityCallback },
+            middleware: { activityComponent, createActivityPolymiddleware },
+            ReactWebChat
+          }
+        } = window;
 
-          // This snapshot differs with NODE_ENV, we need to make it pass in NODE_ENV !== 'production'
-          await host.snapshot('local');
-        },
-        { ignoreErrors: true }
-      );
+        const onTelemetry = fn();
+        const rootElement = document.getElementsByTagName('main')[0];
+
+        // WHEN: Web Chat is being rendered with <DebugProvider>.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(
+            DebugProvider,
+            {},
+            createElement(ReactWebChat, {
+              directLine: createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() }),
+              onTelemetry,
+              store: createStore()
+            })
+          )
+        );
+
+        await pageConditions.uiConnected();
+
+        const consoleError = fn(console.warn.bind(console));
+
+        spyOn(console, 'error').mockImplementationOnce(consoleError);
+
+        await pageObjects.sendMessageViaSendBox('unknown activity');
+        await pageConditions.numActivitiesShown(1);
+
+        // THEN: Should have error log.
+        expect(consoleError).toHaveBeenCalledTimes(1);
+        expect(consoleError.mock.calls[0][0].message).toBe('No renderer for activity of type "x-unknown-activity"');
+
+        // THEN: Should emit as exception event.
+        const exceptionEvent = onTelemetry.mock.calls.find(call => call[0]?.type === 'exception');
+
+        expect(exceptionEvent).toBeTruthy();
+        expect(exceptionEvent[0].error.message).toBe('No renderer for activity of type "x-unknown-activity"');
+
+        await host.snapshot('local');
+      });
     </script>
   </body>
 </html>
