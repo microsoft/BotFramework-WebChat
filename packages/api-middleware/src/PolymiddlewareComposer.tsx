@@ -1,3 +1,4 @@
+import { useMemoWithPrevious } from '@msinternal/botframework-webchat-react-hooks';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo, useMemo } from 'react';
 import {
@@ -15,7 +16,6 @@ import {
 
 import { ActivityPolymiddlewareProvider, extractActivityEnhancer } from './activityPolymiddleware';
 import { ErrorBoxPolymiddlewareProvider, extractErrorBoxEnhancer } from './errorBoxPolymiddleware';
-import useMemoWithPrevious from './internal/useMemoWithPrevious';
 import { Polymiddleware } from './types/Polymiddleware';
 
 const polymiddlewareComposerPropsSchema = pipe(

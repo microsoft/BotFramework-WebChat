@@ -1,38 +1,18 @@
 {
-  "name": "@msinternal/botframework-webchat-api-middleware",
+  "name": "@msinternal/botframework-webchat-react-hooks",
   "version": "0.0.0-0",
-  "description": "botframework-webchat-api/middleware package",
-  "main": "./dist/botframework-webchat-api-middleware.js",
-  "types": "./dist/botframework-webchat-api-middleware.d.ts",
+  "description": "botframework-webchat-react-hooks package",
+  "main": "./dist/botframework-webchat-react-hooks.js",
+  "types": "./dist/botframework-webchat-react-hooks.d.ts",
   "exports": {
-    "./internal": {
-      "import": {
-        "types": "./dist/botframework-webchat-api-middleware.internal.d.mts",
-        "default": "./dist/botframework-webchat-api-middleware.internal.mjs"
-      },
-      "require": {
-        "types": "./dist/botframework-webchat-api-middleware.internal.d.ts",
-        "default": "./dist/botframework-webchat-api-middleware.internal.js"
-      }
-    },
-    "./legacy": {
-      "import": {
-        "types": "./dist/botframework-webchat-api-middleware.legacy.d.mts",
-        "default": "./dist/botframework-webchat-api-middleware.legacy.mjs"
-      },
-      "require": {
-        "types": "./dist/botframework-webchat-api-middleware.legacy.d.ts",
-        "default": "./dist/botframework-webchat-api-middleware.legacy.js"
-      }
-    },
     ".": {
       "import": {
-        "types": "./dist/botframework-webchat-api-middleware.d.mts",
-        "default": "./dist/botframework-webchat-api-middleware.mjs"
+        "types": "./dist/botframework-webchat-react-hooks.d.mts",
+        "default": "./dist/botframework-webchat-react-hooks.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-api-middleware.d.ts",
-        "default": "./dist/botframework-webchat-api-middleware.js"
+        "types": "./dist/botframework-webchat-react-hooks.d.ts",
+        "default": "./dist/botframework-webchat-react-hooks.js"
       }
     },
     "./tsconfig.json": "./src/ts-config/config.json",
@@ -55,12 +35,8 @@
     "./src/**/*",
     "*.js"
   ],
-  "localDependencies": {
-    "@msinternal/botframework-webchat-base": "development",
-    "@msinternal/botframework-webchat-react-hooks": "development",
-    "@msinternal/botframework-webchat-react-valibot": "development"
-  },
-  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/api-middleware#readme",
+  "localDependencies": {},
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/react-hooks#readme",
   "scripts": {
     "build": "tsup --config ./tsup.config.ts",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
@@ -72,26 +48,10 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "npm run build -- --onSuccess=\"touch ../api/src/index.ts\" --watch"
+    "start": "npm run build -- --onSuccess=\"touch ../api-middleware/src/index.ts\" --watch"
   },
-  "devDependencies": {
-    "@jridgewell/sourcemap-codec": "^1.5.0",
-    "@msinternal/botframework-webchat-base": "0.0.0-0",
-    "@msinternal/botframework-webchat-react-hooks": "^0.0.0-0",
-    "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",
-    "@tsconfig/strictest": "^2.0.5",
-    "@types/node": "^22.13.4",
-    "cross-env": "^7.0.3",
-    "type-fest": "^4.34.1",
-    "typescript": "^5.7.3"
-  },
+  "devDependencies": {},
   "peerDependencies": {
     "react": ">= 16.8.6"
-  },
-  "dependencies": {
-    "handler-chain": "^0.1.0",
-    "react-chain-of-responsibility": "^0.4.0-main.2a72139",
-    "react-wrap-with": "0.1.0",
-    "valibot": "1.1.0"
   }
 }

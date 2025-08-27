@@ -80,7 +80,9 @@
     "start": "npm run build:tsup -- --onSuccess=\"touch ../component/src/index.ts\" --watch"
   },
   "localDependencies": {
+    "@msinternal/botframework-webchat-api-middleware": "development",
     "@msinternal/botframework-webchat-cldr-data": "development",
+    "@msinternal/botframework-webchat-react-hooks": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "@msinternal/botframework-webchat-redux-store": "development",
     "@msinternal/botframework-webchat-tsconfig": "development",
@@ -107,6 +109,7 @@
     "@babel/preset-typescript": "^7.27.1",
     "@msinternal/botframework-webchat-api-middleware": "^0.0.0-0",
     "@msinternal/botframework-webchat-cldr-data": "36.0.0-0",
+    "@msinternal/botframework-webchat-react-hooks": "^0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",
     "@msinternal/botframework-webchat-redux-store": "^0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
