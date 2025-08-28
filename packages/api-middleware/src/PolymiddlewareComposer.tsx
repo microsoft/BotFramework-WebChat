@@ -71,7 +71,7 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
   // 2. Single <Provider>
   //    - `useBuildRenderCallback()` should pre-build (apply) the callback (multiple middleware -> single enhancer)
   //    - The callback will be invalidated on middleware (of target type) change
-  //    - <Proxy> will need to be rebuilt, as it use a different `useBuildRenderCallback()`
+  //    - <Proxy> will need to be rebuilt, as it uses a different `useBuildRenderCallback()`
 
   return (
     <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>

@@ -89,7 +89,7 @@ import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
 
-// PrecompileGlobalize is a generated file and is not ES module. TypeScript don't work with UMD.
+// PrecompileGlobalize is a generated file and is not ES module. TypeScript doesn't work with UMD.
 // @ts-ignore
 import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
