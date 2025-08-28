@@ -132,6 +132,17 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
       ref={wrappedRef}
       tag="article"
     >
+      <FocusTrap
+        onFocus={handleDescendantFocus}
+        onLeave={handleLeaveFocusTrap}
+        targetClassName="webchat__basic-transcript__activity-focus-target"
+      >
+        {focusTrapChildren}
+      </FocusTrap>
+      {shouldSpeak && (
+        // TODO: Should build `webChatActivitySchema`.
+        <SpeakActivity activity={activity as WebChatActivity & { channelData: { speechSynthesisUtterance?: any } }} />
+      )}
       <TranscriptFocusContentOverlay>
         {!android && (
           <TranscriptFocusContentActiveDescendant
@@ -146,17 +157,6 @@ const ActivityRow = forwardRef<HTMLElement, ActivityRowProps>(({ activity, child
         )}
         <TranscriptFocusIndicator type="content" />
       </TranscriptFocusContentOverlay>
-      <FocusTrap
-        onFocus={handleDescendantFocus}
-        onLeave={handleLeaveFocusTrap}
-        targetClassName="webchat__basic-transcript__activity-focus-target"
-      >
-        {focusTrapChildren}
-      </FocusTrap>
-      {shouldSpeak && (
-        // TODO: Should build `webChatActivitySchema`.
-        <SpeakActivity activity={activity as WebChatActivity & { channelData: { speechSynthesisUtterance?: any } }} />
-      )}
     </TranscriptFocusContent>
   );
 });
