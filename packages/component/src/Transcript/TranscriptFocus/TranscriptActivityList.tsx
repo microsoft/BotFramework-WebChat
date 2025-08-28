@@ -10,7 +10,9 @@ const TranscriptActivityList = forwardRef<HTMLDivElement, TranscriptActivityList
   ({ className, ...props }, ref) => {
     const classNames = useStyles(styles);
 
-    return <section {...props} className={cx(classNames['transcript-focus-area__activity-list'], className)} ref={ref} />;
+    return (
+      <section {...props} className={cx(classNames['transcript-focus-area__activity-list'], className)} ref={ref} />
+    );
   }
 );
 
