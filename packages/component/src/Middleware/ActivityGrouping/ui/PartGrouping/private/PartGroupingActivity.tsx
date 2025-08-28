@@ -98,10 +98,6 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
 
   return (
     <TranscriptFocusContent focused={isActiveDescendant} ref={groupCallbackRef}>
-      <TranscriptFocusContentOverlay>
-        {!android && <TranscriptFocusContentActiveDescendant id={groupingActivityDescendantId} />}
-        <TranscriptFocusIndicator type="content" />
-      </TranscriptFocusContentOverlay>
       <FocusTrap
         onFocus={handleDescendantFocus}
         onLeave={handleLeaveFocusTrap}
@@ -109,6 +105,10 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
       >
         {children}
       </FocusTrap>
+      <TranscriptFocusContentOverlay>
+        {!android && <TranscriptFocusContentActiveDescendant id={groupingActivityDescendantId} />}
+        <TranscriptFocusIndicator type="content" />
+      </TranscriptFocusContentOverlay>
     </TranscriptFocusContent>
   );
 }
