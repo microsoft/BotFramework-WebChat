@@ -99,6 +99,10 @@ const ROOT_STYLE = {
 
     '& .webchat__basic-transcript__transcript': {
       listStyleType: 'none'
+    },
+
+    '& .webchat__basic-transcript__activity-focus-target': {
+      pointerEvents: 'none'
     }
   }
 };
