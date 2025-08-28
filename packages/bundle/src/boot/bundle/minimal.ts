@@ -1,19 +1,15 @@
 import * as middleware from '../actual/middleware';
-import * as minimal from '../actual/minimal.js';
+import * as actual from '../actual/minimal.js';
 import addVersion from '../addVersion';
 
-const buildInfo = Object.freeze({
-  ...minimal.buildInfo,
-  buildTool: process.env.build_tool,
-  moduleFormat: process.env.module_format
-});
+const buildInfo = Object.freeze({ ...actual.buildInfo, moduleFormat: process.env.module_format });
 
 // Until we have a development-specific bundle, we are not shipping createStoreWithDevTools in bundle.
-const { createStoreWithDevTools: _createStoreWithDevTools, ...finalMinimal } = minimal;
+const { createStoreWithDevTools: _createStoreWithDevTools, ...exports } = actual;
 
 window['WebChat'] = Object.freeze({
   ...window['WebChat'],
-  ...finalMinimal,
+  ...exports,
   buildInfo,
   middleware
 });

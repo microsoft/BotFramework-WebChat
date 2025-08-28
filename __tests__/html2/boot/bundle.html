@@ -33,6 +33,12 @@
 
         const { WebChat } = window;
 
+        // THEN: `window.WebChat` should be a plain object.
+        expect(typeof WebChat).toBe('object');
+
+        // THEN: It should have "ReactWebChat".
+        expect(WebChat).toHaveProperty('ReactWebChat', expect.any(Function));
+
         // THEN: It should have bits from "core" package.
         expect(WebChat).toHaveProperty('Constants', expect.any(Object));
 
