@@ -4,6 +4,10 @@
   &[open] .collapsible-content__chevron {
     transform: rotate(180deg);
   }
+
+  &[open] .collapsible-content__summary {
+    margin-block-end: 0;
+  }
 }
 
 :global(.webchat) .collapsible-content__summary {

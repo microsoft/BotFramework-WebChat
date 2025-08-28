@@ -26,10 +26,10 @@
     font-size: 1.1em;
     margin-block: var(--webchat__padding--regular);
     margin-inline: var(--webchat__padding--regular);
+  }
 
-    &:not(:only-child) {
-      margin-block-end: 0;
-    }
+  .stacked-layout__bubble > .stacked-layout__title:not(:only-child) {
+    margin-block-end: 0;
   }
 
   .stacked-layout__attachment {
@@ -95,10 +95,6 @@
     overflow: hidden;
     transition-duration: var(--webchat__transition-duration);
     transition-property: max-width;
-
-    &:has(.stacked-layout__title--collapsible) {
-      flex: auto;
-    }
   }
 
   .stacked-layout__message-row {
