@@ -45,8 +45,14 @@
         // THEN: It should focus on the last activity.
         expect(pageElements.focusedActivity()).toBe(lastActivity);
 
-        // WHEN: Clicking on the pixel above the top left-most pixel of the last activity.
-        await host.clickAt(lastActivityClientRect.left, lastActivityClientRect.top - 1);
+        // WHEN: Clicking on the 9 pixels above the top left-most pixel of the last activity.
+        await host.clickAt(lastActivityClientRect.left, lastActivityClientRect.top - 9);
+
+        // THEN: It should still focus on the last activity.
+        expect(pageElements.focusedActivity()).toBe(lastActivity);
+
+        // WHEN: Clicking on the 10 pixels above the top left-most pixel of the last activity.
+        await host.clickAt(lastActivityClientRect.left, lastActivityClientRect.top - 10);
 
         // THEN: It should focus on the second last activity.
         expect(pageElements.focusedActivity()).toBe(secondLastActivity);
