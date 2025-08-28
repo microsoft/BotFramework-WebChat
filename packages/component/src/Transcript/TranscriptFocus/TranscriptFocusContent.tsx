@@ -1,3 +1,4 @@
+/* eslint-disable react/require-default-props */
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { forwardRef, type HTMLAttributes } from 'react';
@@ -5,8 +6,8 @@ import React, { forwardRef, type HTMLAttributes } from 'react';
 import styles from './TranscriptFocus.module.css';
 
 type TranscriptFocusContentProps = HTMLAttributes<HTMLDivElement> & {
-  focused?: boolean;
-  tag?: string | React.JSXElementConstructor<any>;
+  readonly focused?: boolean;
+  readonly tag?: string | React.JSXElementConstructor<any>;
 };
 
 const TranscriptFocusContent = forwardRef<HTMLDivElement, TranscriptFocusContentProps>(

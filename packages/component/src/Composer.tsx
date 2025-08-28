@@ -110,9 +110,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
               <ModalDialogComposer>
                 {/* When <SendBoxComposer> is finalized, it will be using an independent instance that lives inside <BasicSendBox>. */}
                 <SendBoxComposer>
-                  <ActivityLogicalGroupingComposer>
-                    {children}
-                  </ActivityLogicalGroupingComposer>
+                  <ActivityLogicalGroupingComposer>{children}</ActivityLogicalGroupingComposer>
                   <Dictation onError={dictationOnError} />
                 </SendBoxComposer>
               </ModalDialogComposer>

@@ -10,16 +10,7 @@ const TranscriptFocusContentOverlay = forwardRef<HTMLDivElement, TranscriptFocus
   ({ className, ...props }, ref) => {
     const classNames = useStyles(styles);
 
-    return (
-      <div
-        {...props}
-        className={cx(
-          classNames['transcript-focus-area__content-overlay'],
-          className
-        )}
-        ref={ref}
-      />
-    );
+    return <div {...props} className={cx(classNames['transcript-focus-area__content-overlay'], className)} ref={ref} />;
   }
 );
 

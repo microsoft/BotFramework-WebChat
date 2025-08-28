@@ -171,9 +171,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
       >
         <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
           <CollapsibleGrouping isOpen={isGroupOpen} onToggle={setIsGroupOpen} title={lastMessage?.abstract || ''}>
-            <TranscriptActivityList>
-              {children}
-            </TranscriptActivityList>
+            <TranscriptActivityList>{children}</TranscriptActivityList>
           </CollapsibleGrouping>
         </StackedLayoutMain>
         {renderActivityStatus && <StackedLayoutStatus>{renderActivityStatus({ hideTimestamp })}</StackedLayoutStatus>}

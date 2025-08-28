@@ -10,7 +10,10 @@ import styles from './CopilotMessageHeader.module.css';
 
 const { useLocalizer } = hooks;
 
-function CopilotMessageHeader({ activity, className }: Readonly<{ activity?: WebChatActivity | undefined; className?: string | undefined }>) {
+function CopilotMessageHeader({
+  activity,
+  className
+}: Readonly<{ activity?: WebChatActivity | undefined; className?: string | undefined }>) {
   const [{ botAvatarImage, botAvatarBackgroundColor }] = useActivityStyleOptions(activity);
   const classNames = useStyles(styles);
   const localize = useLocalizer();
