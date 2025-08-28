@@ -152,7 +152,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
               rawFocusedActivityKeyRef.current
       );
 
-      withFocus && activeDescendantId && handleFocus(activeDescendantId);
+      withFocus && handleFocus(activeDescendantId);
     },
     [
       focusByGroupKey,
