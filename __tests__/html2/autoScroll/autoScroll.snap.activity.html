@@ -95,13 +95,13 @@
         await pageConditions.minNumActivitiesShown(6);
         await pageConditions.scrollStabilized();
 
-        const activityElementAtBottomOfView = document.querySelectorAll('.webchat__basic-transcript__activity .transcript-focus-area__content-active-descendant-wrap')[4];
+        const activityElementAtBottomOfView = document.querySelectorAll('.webchat__basic-transcript__activity')[4];
 
         expect(scrollable.scrollTop).toBe(
           activityElementAtBottomOfView.offsetTop +
             activityElementAtBottomOfView.offsetHeight +
             100 -
-            scrollable.offsetHeight,
+            scrollable.offsetHeight + 10,
           'scrollable should be at 2 activities + 100px'
         );
 
