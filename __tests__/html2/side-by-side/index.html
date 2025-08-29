@@ -846,7 +846,7 @@ Use the command to install required dependencies:
           await host.snapshot('local');
           await host.sendKeys('ENTER');
           // hide timestamp to not fail snapshot if is not relative
-          sendbox.parentElement.parentElement.parentElement.parentElement.querySelector('.webchat__basic-transcript__activity:last-child .stacked-layout__status').style.opacity = 0;
+          sendbox.parentElement.parentElement.parentElement.parentElement.querySelector('.part-grouping-decorator:last-child .stacked-layout__status').style.opacity = 0;
           await host.snapshot('local');
           await host.sendShiftTab();
           await host.snapshot('local');
