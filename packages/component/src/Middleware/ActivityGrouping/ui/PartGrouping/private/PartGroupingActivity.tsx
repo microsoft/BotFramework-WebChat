@@ -130,7 +130,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
     [activities, getKeyByActivity]
   );
 
-  const { shouldSkipRender } = usePartGroupingLogicalGroup({
+  usePartGroupingLogicalGroup({
     activityKeys,
     isCollapsed: !isGroupOpen
   });
@@ -153,11 +153,6 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const [{ bubbleNubOffset }] = useStyleOptions();
 
   const topAlignedCallout = isZeroOrPositive(bubbleNubOffset);
-
-  // Skip render if this is the initial grouping setup
-  if (shouldSkipRender) {
-    return null;
-  }
 
   return (
     <FocusablePartGroupingActivity activity={firstActivity}>

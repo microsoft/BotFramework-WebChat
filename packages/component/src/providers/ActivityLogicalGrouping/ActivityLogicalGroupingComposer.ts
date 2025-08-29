@@ -1,6 +1,4 @@
-import { useMemoWithPrevious } from '@msinternal/botframework-webchat-react-hooks';
-import { memo, createElement, useCallback, useMemo, useState, type ReactNode } from 'react';
-import { useRefFrom } from 'use-ref-from';
+import { memo, createElement, useCallback, useMemo, type ReactNode, useRef } from 'react';
 
 import ActivityLogicalGroupingContext, {
   type ActivityLogicalGroupingContextType,
@@ -13,77 +11,34 @@ type ActivityLogicalGroupingComposerProps = Readonly<{
 }>;
 
 const ActivityLogicalGroupingComposer = ({ children }: ActivityLogicalGroupingComposerProps) => {
-  const [logicalGroupings, setLogicalGroupings] = useState<readonly LogicalGrouping[]>([]);
-  const logicalGroupingsRef = useRefFrom(logicalGroupings);
+  const logicalGroupingsRef = useRef<Map<string, LogicalGrouping>>(new Map());
+  const activityToGroupMapRef = useRef<ReadonlyMap<string, string | undefined>>(new Map());
 
-  // Create a map from activity key to group key for quick lookups with reference stability
-  const activityToGroupMap = useMemoWithPrevious(
-    (prevMap?: ReadonlyMap<string, string>) => {
-      const newMap = new Map<string, string>();
+  const addLogicalGrouping = useCallback(
+    (grouping: LogicalGrouping) => {
+      const prevGroupingKeys = logicalGroupingsRef.current.get(grouping.id)?.activityKeys ?? [];
 
-      logicalGroupings.forEach(group => {
-        group.activityKeys.forEach(activityKey => {
-          activityKey && newMap.set(activityKey, group.id);
-        });
-      });
+      logicalGroupingsRef.current.set(grouping.id, grouping);
 
-      // Check if the map content has actually changed
-      if (prevMap && prevMap.size === newMap.size) {
-        let hasChanged = false;
-        for (const [key, value] of newMap) {
-          if (prevMap.get(key) !== value) {
-            hasChanged = true;
-            break;
-          }
-        }
+      const toRemoveSet = new Set(prevGroupingKeys).difference(new Set(grouping.activityKeys));
+      const toAddSet = new Set(grouping.activityKeys).difference(new Set(prevGroupingKeys));
 
-        if (!hasChanged) {
-          // Return the previous map to maintain reference stability
-          return prevMap;
-        }
-      }
-
-      return newMap;
+      activityToGroupMapRef.current = new Map([
+        ...[...activityToGroupMapRef.current].filter(([, value]) => !!value && !toRemoveSet.has(value)),
+        ...[...toAddSet].map(activityKey => [activityKey, grouping.id] as const)
+      ]);
     },
-    [logicalGroupings]
+    [logicalGroupingsRef]
   );
-
-  const activityToGroupMapRef = useRefFrom(activityToGroupMap);
-
-  const addLogicalGrouping = useCallback((grouping: LogicalGrouping) => {
-    setLogicalGroupings(prev => {
-      // Remove any existing grouping with the same ID and add the new one
-      const filtered = prev.filter(existing => existing.id !== grouping.id);
-      return Object.freeze([...filtered, grouping]);
-    });
-  }, []);
 
   const getLogicalGroupKey = useCallback(
     (activityKey: string): string | undefined => activityToGroupMapRef.current.get(activityKey),
     [activityToGroupMapRef]
   );
 
-  const shouldFocusLogicalGroup = useCallback(
-    (activityKey: string): boolean => {
-      const groupKey = activityToGroupMapRef.current.get(activityKey);
-      if (!groupKey) {
-        return false;
-      }
-
-      const group = logicalGroupingsRef.current.find(g => g.id === groupKey);
-      if (!group || !group.getGroupState) {
-        return false;
-      }
-
-      const groupState = group.getGroupState();
-      return !groupState.isCollapsed;
-    },
-    [activityToGroupMapRef, logicalGroupingsRef]
-  );
-
   const getGroupState = useCallback(
     (groupKey: string): GroupState | undefined => {
-      const group = logicalGroupingsRef.current.find(g => g.id === groupKey);
+      const group = logicalGroupingsRef.current.get(groupKey);
       return group?.getGroupState?.();
     },
     [logicalGroupingsRef]
@@ -91,7 +46,7 @@ const ActivityLogicalGroupingComposer = ({ children }: ActivityLogicalGroupingCo
 
   const getGroupBoundaries = useCallback(
     (groupKey: string): [string, string] => {
-      const group = logicalGroupingsRef.current.find(g => g.id === groupKey);
+      const group = logicalGroupingsRef.current.get(groupKey);
       if (!group || !group.activityKeys.length) {
         return [undefined, undefined];
       }
@@ -101,28 +56,14 @@ const ActivityLogicalGroupingComposer = ({ children }: ActivityLogicalGroupingCo
     [logicalGroupingsRef]
   );
 
-  const activityToGroupMapState = useMemo<readonly [ReadonlyMap<string, string>]>(
-    () => Object.freeze([activityToGroupMap] as const),
-    [activityToGroupMap]
-  );
-
   const contextValue: ActivityLogicalGroupingContextType = useMemo(
     () => ({
       addLogicalGrouping,
       getLogicalGroupKey,
-      shouldFocusLogicalGroup,
       getGroupState,
-      getGroupBoundaries,
-      activityToGroupMapState
+      getGroupBoundaries
     }),
-    [
-      addLogicalGrouping,
-      getLogicalGroupKey,
-      shouldFocusLogicalGroup,
-      getGroupState,
-      getGroupBoundaries,
-      activityToGroupMapState
-    ]
+    [addLogicalGrouping, getLogicalGroupKey, getGroupState, getGroupBoundaries]
   );
 
   return createElement(ActivityLogicalGroupingContext.Provider, { value: contextValue }, children);
