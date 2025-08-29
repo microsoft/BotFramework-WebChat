@@ -77,10 +77,10 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
     [groupKey, focusByGroupKey]
   );
 
-  // When a child of the activity receives focus, notify the transcript to set the `aria-activedescendant` to this activity.
+  // When a child of the group receives focus, notify the transcript to set the `aria-activedescendant` to this activity.
   const handleDescendantFocus: () => void = useCallback(() => focusSelf(false), [focusSelf]);
 
-  // When receive Escape key from descendant, focus back to the activity.
+  // When receive Escape key from descendant, focus back to the group.
   const handleLeaveFocusTrap = useCallback(() => focusSelf(), [focusSelf]);
 
   const isActiveDescendant = groupingActivityDescendantId === activeDescendantId;
@@ -118,6 +118,13 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const getKeyByActivity = useGetKeyByActivity();
   const [isGroupOpen, setIsGroupOpen] = useState(true);
 
+  const messages = useMemo(
+    () => activities.map(activity => getOrgSchemaMessage(activity.entities)).filter(message => !!message),
+    [activities]
+  );
+  // eslint-disable-next-line no-magic-numbers
+  const lastMessage = messages.at(-1);
+
   const activityKeys = useMemo(
     () => activities.map(activity => getKeyByActivity(activity)),
     [activities, getKeyByActivity]
@@ -125,25 +132,16 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
 
   const { shouldSkipRender } = usePartGroupingLogicalGroup({
     activityKeys,
-    isGroupOpen
+    isCollapsed: !isGroupOpen
   });
 
   const firstActivity = activities.at(0);
   // eslint-disable-next-line no-magic-numbers
   const lastActivity = activities.at(-1);
 
-  const lastMessage = useMemo(
-    () =>
-      getOrgSchemaMessage(
-        (
-          activities
-            .toReversed()
-            .find(
-              activity => 'streamType' in activity.channelData && activity.channelData.streamType === 'informative'
-            ) || lastActivity
-        )?.entities
-      ),
-    [activities, lastActivity]
+  const currentMessage = useMemo(
+    () => messages.toReversed().find(message => message.creativeWorkStatus === 'incomplete') || lastMessage,
+    [messages, lastMessage]
   );
 
   const { renderAvatar, showCallout } = useRenderActivityProps(firstActivity);
@@ -170,7 +168,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
         topCallout={topAlignedCallout}
       >
         <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
-          <CollapsibleGrouping isOpen={isGroupOpen} onToggle={setIsGroupOpen} title={lastMessage?.abstract || ''}>
+          <CollapsibleGrouping isOpen={isGroupOpen} onToggle={setIsGroupOpen} title={currentMessage?.abstract || ''}>
             <TranscriptActivityList>{children}</TranscriptActivityList>
           </CollapsibleGrouping>
         </StackedLayoutMain>
