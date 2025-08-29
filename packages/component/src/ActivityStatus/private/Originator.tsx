@@ -25,7 +25,9 @@ const originatorPropsSchema = pipe(
 
 type OriginatorProps = InferInput<typeof originatorPropsSchema>;
 
-const Originator = memo((props: OriginatorProps) => {
+// Regular function is better for React function component.
+// eslint-disable-next-line prefer-arrow-callback
+const Originator = memo(function Originator(props: OriginatorProps) {
   const {
     project: { name, slogan, url }
   } = validateProps(originatorPropsSchema, props);
@@ -50,8 +52,6 @@ const Originator = memo((props: OriginatorProps) => {
     <span className="webchat__activity-status__originator">{text}</span>
   );
 });
-
-Originator.displayName = 'Originator';
 
 export default Originator;
 export { originatorPropsSchema, type OriginatorProps };
