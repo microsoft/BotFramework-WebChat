@@ -69,6 +69,7 @@
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-react-hooks": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "@msinternal/botframework-webchat-styles": "development",
     "@msinternal/botframework-webchat-tsconfig": "development",
@@ -105,6 +106,7 @@
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
+    "@msinternal/botframework-webchat-react-hooks": "^0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",
     "@msinternal/botframework-webchat-styles": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
@@ -135,7 +137,7 @@
     "merge-refs": "2.0.0",
     "prop-types": "15.8.1",
     "punycode": "2.3.1",
-    "react-chain-of-responsibility": "0.3.0",
+    "react-chain-of-responsibility": "^0.4.0-main.2a72139",
     "react-dictate-button": "4.0.0",
     "react-film": "4.0.0",
     "react-redux": "7.2.9",
@@ -145,6 +147,7 @@
     "redux": "5.0.1",
     "simple-update-in": "2.2.0",
     "use-propagate": "0.2.1",
+    "use-reduce-memo": "^0.1.0-main.1384637",
     "use-ref-from": "0.1.0",
     "use-state-with-ref": "0.1.0",
     "valibot": "1.1.0"

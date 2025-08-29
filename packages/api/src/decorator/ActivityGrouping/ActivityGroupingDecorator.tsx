@@ -1,6 +1,7 @@
 import { type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useContext, useMemo, type ReactNode } from 'react';
 
+import DecoratorComposerContext from '../private/DecoratorComposerContext';
 import PassthroughFallback from '../private/PassthroughFallback';
 import {
   ActivityGroupingDecoratorMiddlewareProvider,
@@ -9,7 +10,6 @@ import {
   extractActivityGroupingDecoratorMiddleware,
   type ActivityGroupingDecoratorMiddlewareRequest
 } from './private/ActivityGroupingDecoratorMiddleware';
-import DecoratorComposerContext from '../private/DecoratorComposerContext';
 
 type ActivityGroupingDecoratorProps = Readonly<{
   activities: readonly WebChatActivity[];

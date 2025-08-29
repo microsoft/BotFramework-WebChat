@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main></main>
+    <script type="module">
+      import { Component, createElement, memo } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      const MyComponent = memo(function MyComponent(props) {
+        console.log('MyComponent', { props });
+
+        throw new Error('ARTIFICIAL');
+      });
+
+      const ErrorBoundary = memo(
+        class ErrorBoundary extends Component {
+          constructor(props) {
+            super(props);
+
+            this.state = {
+              didCatch: false,
+              error: undefined
+            };
+          }
+
+          static getDerivedStateFromError(error) {
+            console.log('getDerivedStateFromError', error);
+
+            return { didCatch: true, error };
+          }
+
+          render() {
+            return this.state.didCatch ? 'GOT ERROR' : this.props.children;
+          }
+        }
+      );
+
+      createRoot(document.getElementsByTagName('main')[0]).render(
+        createElement(ErrorBoundary, {}, createElement(MyComponent))
+      );
+    </script>
+  </body>
+</html>

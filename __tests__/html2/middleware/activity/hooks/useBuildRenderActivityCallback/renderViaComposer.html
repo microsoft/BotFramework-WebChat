@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/"
+        }
+      }
+    </script>
+    <script type="module">
+      import React from 'react';
+
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/test-harness.js"></script>
+    <script defer crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style type="text/css">
+      .my-activity {
+        border: solid 2px red;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script defer type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import React, { createElement, memo } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator },
+          WebChat: {
+            middleware: { activityComponent, createActivityPolymiddleware },
+            Components: { Composer },
+            hooks: { useActivities, useBuildRenderActivityCallback },
+            ReactWebChat
+          }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        const MyActivity = ({ activity, renderNext }) =>
+          createElement('div', { className: 'my-activity' }, renderNext?.(), createElement('div', {}, activity.text));
+
+        const rootElement = document.getElementsByTagName('main')[0];
+        const polymiddleware = [
+          // Make sure passthrough still working.
+          createActivityPolymiddleware(next => request => next(request)),
+          createActivityPolymiddleware(next => request => {
+            const renderNext = next(request)?.render;
+
+            return activityComponent(MyActivity, { activity: request.activity, renderNext });
+          })
+        ];
+
+        function SystemUnderTest() {
+          const renderActivity = useBuildRenderActivityCallback();
+
+          return renderActivity({
+            activity: {
+              from: { id: 'bot', role: 'bot' },
+              text: 'Hello, World!',
+              type: 'message'
+            }
+          })?.({});
+        }
+
+        // WHEN: <SystemUnderTest> is being rendered.
+        createRoot(rootElement).render(
+          createElement(
+            Composer,
+            {
+              directLine,
+              polymiddleware,
+              store
+            },
+            createElement(SystemUnderTest)
+          )
+        );
+
+        // THEN: Should render no list items.
+        await pageConditions.uiConnected();
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

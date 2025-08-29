@@ -2,6 +2,7 @@
 !/__tests__
 /__tests__/__image_snapshots__
 !/packages/bundle/dist
+!/packages/debug-theme/dist
 !/packages/fluent-theme/dist
 !/packages/playground/build
 !/packages/test/fluent-bundle/dist

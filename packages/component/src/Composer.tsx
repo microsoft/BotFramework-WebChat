@@ -1,16 +1,15 @@
-import type {
-  ComposerProps as APIComposerProps,
-  SendBoxMiddleware,
-  SendBoxToolbarMiddleware
-} from 'botframework-webchat-api';
 import {
   Composer as APIComposer,
   extractSendBoxMiddleware,
   extractSendBoxToolbarMiddleware,
   hooks,
-  WebSpeechPonyfillFactory
+  WebSpeechPonyfillFactory,
+  type ComposerProps as APIComposerProps,
+  type SendBoxMiddleware,
+  type SendBoxToolbarMiddleware
 } from 'botframework-webchat-api';
 import { DecoratorComposer, type DecoratorMiddleware } from 'botframework-webchat-api/decorator';
+import { type Polymiddleware } from 'botframework-webchat-api/middleware';
 import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
@@ -21,7 +20,6 @@ import { Composer as SayComposer } from 'react-say';
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
 import BuiltInDecorator from './BuiltInDecorator';
 import Dictation from './Dictation';
-import ErrorBox from './ErrorBox';
 import {
   speechSynthesis as bypassSpeechSynthesis,
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
@@ -60,8 +58,6 @@ import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions, useTrackException } = hooks;
-
-const node_env = process.env.node_env || process.env.NODE_ENV;
 
 function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
@@ -330,6 +326,7 @@ const InternalComposer = ({
   decoratorMiddleware,
   extraStyleSet,
   htmlContentTransformMiddleware,
+  polymiddleware,
   renderMarkdown,
   scrollToEndButtonMiddleware,
   sendBoxMiddleware: sendBoxMiddlewareFromProps,
@@ -391,6 +388,11 @@ const InternalComposer = ({
     [cardActionMiddleware, theme.cardActionMiddleware]
   );
 
+  const patchedPolymiddleware = useMemo<readonly Polymiddleware[]>(
+    () => Object.freeze([...(polymiddleware || []), ...theme.polymiddleware]),
+    [polymiddleware, theme.polymiddleware]
+  );
+
   const patchedToastMiddleware = useMemo(
     () => [...singleToArray(toastMiddleware), ...theme.toastMiddleware, ...createDefaultToastMiddleware()],
     [toastMiddleware, theme.toastMiddleware]
@@ -450,9 +452,8 @@ const InternalComposer = ({
       avatarMiddleware={patchedAvatarMiddleware}
       cardActionMiddleware={patchedCardActionMiddleware}
       downscaleImageToDataURL={downscaleImageToDataURL}
-      // Under dev server of create-react-app, "NODE_ENV" will be set to "development".
-      {...(node_env === 'development' ? { internalErrorBoxClass: ErrorBox } : {})}
       nonce={nonce}
+      polymiddleware={patchedPolymiddleware}
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
       sendBoxMiddleware={sendBoxMiddleware}
       sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}

@@ -5,9 +5,11 @@ import {
 } from './hooks/internal/codeHighlighter/index';
 import useInjectStyles from './hooks/internal/useInjectStyles';
 import { useLiveRegion } from './providers/LiveRegionTwin/index';
+import createIconComponent from './Utils/createIconComponent';
 import parseDocumentFragmentFromString from './Utils/parseDocumentFragmentFromString';
 import serializeDocumentFragmentIntoString from './Utils/serializeDocumentFragmentIntoString';
-import createIconComponent from './Utils/createIconComponent';
+
+export { default as ScreenReaderText } from './ScreenReaderText';
 
 export {
   CodeHighlighterComposer,

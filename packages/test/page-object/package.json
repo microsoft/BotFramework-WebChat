@@ -24,14 +24,11 @@
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:esbuild": "npm run build:esbuild -- --watch"
   },
-  "localDependencies": {
-    "botframework-webchat": "production"
-  },
+  "localDependencies": {},
   "pinDependencies": {},
   "dependencies": {
     "base64-arraybuffer": "1.0.2",
     "bent": "7.3.12",
-    "botframework-webchat": "0.0.0-0",
     "classnames": "2.5.1",
     "core-js": "3.44.0",
     "core-js-pure": "3.44.0",

@@ -1,35 +1,22 @@
-import { StrictStyleOptions, StyleOptions } from 'botframework-webchat-api';
 import * as apiDecorator from 'botframework-webchat-api/decorator';
+import ReactWebChat from 'botframework-webchat-component';
 import * as componentDecorator from 'botframework-webchat-component/decorator';
 import * as internal from 'botframework-webchat-component/internal';
-import { Constants, createStore, createStoreWithDevTools, createStoreWithOptions } from 'botframework-webchat-core';
 
-import ReactWebChat, {
-  Components,
-  concatMiddleware,
-  createStyleSet,
-  hooks,
-  testIds,
-  withEmoji
-} from 'botframework-webchat-component';
-
-import createBrowserWebSpeechPonyfillFactory from '../../createBrowserWebSpeechPonyfillFactory';
 import defaultCreateDirectLine from '../../createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAppServiceExtension';
 import coreRenderWebChat from '../../renderWebChat';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
-const buildTool = process.env.build_tool;
-const moduleFormat = process.env.module_format;
-const version = process.env.npm_package_version;
-
 const buildInfo = Object.freeze({
-  buildTool,
-  moduleFormat,
+  buildTool: process.env.build_tool,
+  moduleFormat: 'unknown',
   variant: 'minimal',
-  version
+  version: process.env.npm_package_version
 });
+
+const { version } = buildInfo;
 
 const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {
   (options as any).botAgent &&
@@ -56,27 +43,31 @@ const decorator = Object.freeze({
   ...componentDecorator
 });
 
-export default ReactWebChat;
+// #region Re-exports
+export { type StrictStyleOptions, type StyleOptions } from 'botframework-webchat-api';
 export {
-  buildInfo,
   Components,
   concatMiddleware,
-  Constants,
-  createBrowserWebSpeechPonyfillFactory,
+  createStyleSet,
+  hooks,
+  testIds,
+  withEmoji
+} from 'botframework-webchat-component';
+export { Constants, createStore, createStoreWithDevTools, createStoreWithOptions } from 'botframework-webchat-core';
+export { default as createBrowserWebSpeechPonyfillFactory } from '../../createBrowserWebSpeechPonyfillFactory';
+// #endregion
+
+// #region Local exports
+export default ReactWebChat;
+
+export {
+  buildInfo,
   createDirectLine,
   createDirectLineAppServiceExtension,
-  createStore,
-  createStoreWithDevTools,
-  createStoreWithOptions,
-  createStyleSet,
   decorator,
-  hooks,
   internal,
   ReactWebChat,
   renderWebChat,
-  testIds,
-  version,
-  withEmoji,
-  type StrictStyleOptions,
-  type StyleOptions
+  version
 };
+// #endregion

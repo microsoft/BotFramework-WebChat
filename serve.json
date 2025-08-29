@@ -3,6 +3,22 @@
   "redirects": [
     { "source": "/", "destination": "samples/index.html" },
     {
+      "source": "/botframework-webchat-debug-theme.development.js",
+      "destination": "packages/debug-theme/dist/botframework-webchat-debug-theme.development.js"
+    },
+    {
+      "source": "/botframework-webchat-debug-theme.development.js.map",
+      "destination": "packages/debug-theme/dist/botframework-webchat-debug-theme.development.js.map"
+    },
+    {
+      "source": "/botframework-webchat-debug-theme.production.min.js",
+      "destination": "packages/debug-theme/dist/botframework-webchat-debug-theme.production.min.js"
+    },
+    {
+      "source": "/botframework-webchat-debug-theme.production.min.js.map",
+      "destination": "packages/debug-theme/dist/botframework-webchat-debug-theme.production.min.js.map"
+    },
+    {
       "source": "/botframework-webchat-fluent-theme.development.js",
       "destination": "packages/fluent-theme/dist/botframework-webchat-fluent-theme.development.js"
     },

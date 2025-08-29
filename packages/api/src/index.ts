@@ -1,4 +1,10 @@
 // TODO: Move the pattern to re-export.
+import {
+  type LegacyActivityComponentFactory,
+  type LegacyActivityMiddleware,
+  type LegacyAttachmentMiddleware,
+  type LegacyRenderAttachment
+} from '@msinternal/botframework-webchat-api-middleware/legacy';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import defaultStyleOptions from './defaultStyleOptions';
 import Composer, { ComposerProps } from './hooks/Composer';
@@ -9,12 +15,10 @@ import { type DebouncedNotification, type DebouncedNotifications } from './hooks
 import { type PostActivityFile } from './hooks/useSendFiles';
 import { localize } from './localization/Localize';
 import normalizeStyleOptions from './normalizeStyleOptions';
-import ActivityMiddleware, { type ActivityComponentFactory } from './types/ActivityMiddleware';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from './types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware, {
   AttachmentForScreenReaderComponentFactory
 } from './types/AttachmentForScreenReaderMiddleware';
-import AttachmentMiddleware, { type RenderAttachment } from './types/AttachmentMiddleware';
 import AvatarMiddleware, { type AvatarComponentFactory } from './types/AvatarMiddleware';
 import CardActionMiddleware, { type PerformCardAction } from './types/CardActionMiddleware';
 import { type ContextOf } from './types/ContextOf';
@@ -31,6 +35,7 @@ import { type WebSpeechPonyfill } from './types/WebSpeechPonyfill';
 import { type WebSpeechPonyfillFactory } from './types/WebSpeechPonyfillFactory';
 
 // #region Re-export
+
 export {
   extractSendBoxMiddleware,
   SendBoxMiddlewareProxy,
@@ -57,13 +62,16 @@ const buildInfo = { buildTool, moduleFormat, version };
 export { buildInfo, Composer, concatMiddleware, defaultStyleOptions, hooks, localize, normalizeStyleOptions, version };
 
 export type {
-  ActivityComponentFactory,
-  ActivityMiddleware,
+  /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */
+  LegacyActivityComponentFactory as ActivityComponentFactory,
+  /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */
+  LegacyActivityMiddleware as ActivityMiddleware,
   ActivityStatusMiddleware,
   ActivityStatusRenderer,
   AttachmentForScreenReaderComponentFactory,
   AttachmentForScreenReaderMiddleware,
-  AttachmentMiddleware,
+  /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */
+  LegacyAttachmentMiddleware as AttachmentMiddleware,
   AvatarComponentFactory,
   AvatarMiddleware,
   CardActionMiddleware,
@@ -77,7 +85,7 @@ export type {
   PerformCardAction,
   PostActivityFile,
   RenderActivityStatus,
-  RenderAttachment,
+  LegacyRenderAttachment as RenderAttachment,
   RenderToast,
   RenderTypingIndicator,
   ScrollToEndButtonComponentFactory,

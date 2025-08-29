@@ -42,6 +42,12 @@ export default function validateProps<const TSchema extends BaseSchema<unknown, 
   props: InferInput<TSchema>,
   isolationMode?: IsolationMode | undefined
 ): InferInput<TSchema> | InferOutput<TSchema> {
+  // When an error boundary caught an error, React will render some components again with `props` of `undefined`.
+  if (typeof props === 'undefined') {
+    // This is probably React rendering while an error is caught, assume it is okay.
+    return;
+  }
+
   if (process.env.NODE_ENV === 'production') {
     return props as unknown as InferInput<TSchema>;
   }
@@ -55,11 +61,12 @@ export default function validateProps<const TSchema extends BaseSchema<unknown, 
   try {
     return parse(propsSchema, props);
   } catch (error) {
-    console.error(
-      'botframework-webchat: Validation error while parsing props.',
-      error && typeof error === 'object' && 'issues' in error && error.issues
-    );
+    const validationError = new Error('botframework-webchat: Validation error while parsing props.');
 
-    throw error;
+    console.error(validationError, error && typeof error === 'object' && 'issues' in error && error.issues);
+
+    validationError.cause = error;
+
+    throw validationError;
   }
 }

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/"
+        }
+      }
+    </script>
+    <script type="module">
+      import React from 'react';
+
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/test-harness.js"></script>
+    <script defer crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script defer type="module">
+      import { waitFor } from '@testduet/wait-for';
+      import React, { createElement, memo } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator },
+          WebChat: {
+            Components: { Composer },
+            hooks: { useActivities, useBuildRenderActivityCallback },
+            ReactWebChat
+          }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        const rootElement = document.getElementsByTagName('main')[0];
+
+        // WHEN: Web Chat is being rendered.
+        createRoot(rootElement).render(
+          createElement(ReactWebChat, {
+            directLine,
+            polymiddleware: [],
+            store
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        // WHEN: A messages arrive "Hello, World!".
+        await directLine.emulateIncomingActivity({
+          text: 'Hello, World!',
+          type: 'message'
+        });
+
+        // THEN: Should render the message using built-in middleware.
+        await waitFor(() =>
+          expect(rootElement?.querySelector('.webchat__basic-transcript__transcript')?.children).toHaveLength(1)
+        );
+
+        await waitFor(() =>
+          expect(
+            rootElement
+              ?.querySelector('.webchat__basic-transcript__transcript article')
+              ?.textContent.includes('Hello, World!')
+          ).toBe(true)
+        );
+
+        // THEN: Should match snapshot.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

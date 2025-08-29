@@ -1,5 +1,5 @@
+import { ErrorBoxPolymiddlewareProxy } from '@msinternal/botframework-webchat-api-middleware';
 import React, { isValidElement } from 'react';
-import ErrorBox from '../internal/ErrorBox';
 import concatMiddleware from './concatMiddleware';
 import UserlandBoundary from './UserlandBoundary';
 
@@ -22,7 +22,7 @@ export function forLegacyRenderer(type, ...middleware) {
           try {
             return fn(...args);
           } catch (err) {
-            return <ErrorBox error={err} type={`render of ${type}`} />;
+            return <ErrorBoxPolymiddlewareProxy error={err} where={`render of ${type}`} />;
           }
         }}
       </UserlandBoundary>
@@ -42,7 +42,7 @@ export function forLegacyRenderer(type, ...middleware) {
 export function forRenderer(type, { strict = false } = {}, ...middleware) {
   return (...setupArgs) => {
     const runMiddleware = concatMiddleware(...middleware)(...setupArgs)(() => (
-      <ErrorBox error={new Error(`reached terminator of ${type}`)} type={type} />
+      <ErrorBoxPolymiddlewareProxy error={new Error(`reached terminator of ${type}`)} where={type} />
     ));
 
     return (...createRendererArgs) => {
@@ -73,13 +73,13 @@ export function forRenderer(type, { strict = false } = {}, ...middleware) {
 
                 return element;
               } catch (err) {
-                return <ErrorBox error={err} type={`render of ${type}`} />;
+                return <ErrorBoxPolymiddlewareProxy error={err} where={`render of ${type}`} />;
               }
             }}
           </UserlandBoundary>
         );
       } catch (err) {
-        return <ErrorBox error={err} type={`render of ${type}`} />;
+        return <ErrorBoxPolymiddlewareProxy error={err} where={`render of ${type}`} />;
       }
     };
   };

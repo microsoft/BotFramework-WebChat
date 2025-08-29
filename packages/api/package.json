@@ -34,6 +34,16 @@
         "types": "./dist/botframework-webchat-api.decorator.d.ts",
         "default": "./dist/botframework-webchat-api.decorator.js"
       }
+    },
+    "./middleware": {
+      "import": {
+        "types": "./dist/botframework-webchat-api.middleware.d.mts",
+        "default": "./dist/botframework-webchat-api.middleware.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-api.middleware.d.ts",
+        "default": "./dist/botframework-webchat-api.middleware.js"
+      }
     }
   },
   "publishConfig": {
@@ -70,7 +80,9 @@
     "start": "npm run build:tsup -- --onSuccess=\"touch ../component/src/index.ts\" --watch"
   },
   "localDependencies": {
+    "@msinternal/botframework-webchat-api-middleware": "development",
     "@msinternal/botframework-webchat-cldr-data": "development",
+    "@msinternal/botframework-webchat-react-hooks": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "@msinternal/botframework-webchat-redux-store": "development",
     "@msinternal/botframework-webchat-tsconfig": "development",
@@ -95,7 +107,9 @@
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
+    "@msinternal/botframework-webchat-api-middleware": "^0.0.0-0",
     "@msinternal/botframework-webchat-cldr-data": "36.0.0-0",
+    "@msinternal/botframework-webchat-react-hooks": "^0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",
     "@msinternal/botframework-webchat-redux-store": "^0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
@@ -119,7 +133,7 @@
     "iter-fest": "0.3.0",
     "math-random": "2.0.1",
     "prop-types": "15.8.1",
-    "react-chain-of-responsibility": "0.3.0",
+    "react-chain-of-responsibility": "^0.4.0-main.2a72139",
     "react-redux": "7.2.9",
     "redux": "5.0.1",
     "simple-update-in": "2.2.0",

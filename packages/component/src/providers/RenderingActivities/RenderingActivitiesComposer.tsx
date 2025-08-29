@@ -1,20 +1,23 @@
-import { hooks, type ActivityComponentFactory } from 'botframework-webchat-api';
+import {
+  useBuildRenderActivityCallback,
+  type ActivityPolymiddlewareRenderer
+} from 'botframework-webchat-api/middleware';
+import { hooks } from 'botframework-webchat-api';
 import { type WebChatActivity } from 'botframework-webchat-core';
-import React, { memo, useMemo, type ReactNode } from 'react';
+import React, { memo, useCallback, useMemo, type ReactNode } from 'react';
+import { useReduceMemo } from 'use-reduce-memo';
 
 import RenderingActivitiesContext, { type RenderingActivitiesContextType } from './private/RenderingActivitiesContext';
-import useInternalActivitiesWithRenderer from './private/useInternalActivitiesWithRenderer';
 
 type RenderingActivitiesComposerProps = Readonly<{
   children?: ReactNode | undefined;
 }>;
 
-const { useActivities, useActivityKeys, useCreateActivityRenderer, useGetActivitiesByKey, useGetKeyByActivity } = hooks;
+const { useActivities, useActivityKeys, useGetActivitiesByKey, useGetKeyByActivity } = hooks;
 
 const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerProps) => {
   const [activities] = useActivities();
   const activityKeys = useActivityKeys();
-  const createActivityRenderer = useCreateActivityRenderer();
   const getActivitiesByKey = useGetActivitiesByKey();
   const getKeyByActivity = useGetKeyByActivity();
 
@@ -41,38 +44,54 @@ const RenderingActivitiesComposer = ({ children }: RenderingActivitiesComposerPr
     return Object.freeze(activitiesOfLatestRevision);
   }, [activityKeys, getActivitiesByKey, getKeyByActivity, activities]);
 
-  const activitiesWithRenderer = useInternalActivitiesWithRenderer(activitiesOfLatestRevision, createActivityRenderer);
+  const renderActivity = useBuildRenderActivityCallback();
 
-  const renderingActivitiesState = useMemo(
-    () => Object.freeze([activitiesWithRenderer.map(({ activity }) => activity)] as const),
-    [activitiesWithRenderer]
+  const activityRendererMap = useReduceMemo(
+    activitiesOfLatestRevision,
+    useCallback<
+      (
+        activityRendererMap: ReadonlyMap<WebChatActivity, ActivityPolymiddlewareRenderer>,
+        activity: WebChatActivity
+      ) => ReadonlyMap<WebChatActivity, ActivityPolymiddlewareRenderer>
+    >(
+      (activityRendererMap, activity) => {
+        const renderer = renderActivity({ activity });
+
+        // Return value must be immutable because it could be cached by `useReduceMemo()`.
+        return renderer ? Object.freeze(new Map(activityRendererMap).set(activity, renderer)) : activityRendererMap;
+      },
+      [renderActivity]
+    ),
+    new Map<WebChatActivity, ActivityPolymiddlewareRenderer>()
+  );
+
+  const activityRendererMapState = useMemo<readonly [ReadonlyMap<WebChatActivity, ActivityPolymiddlewareRenderer>]>(
+    () => Object.freeze([Object.freeze(activityRendererMap)]),
+    [activityRendererMap]
+  );
+
+  const renderingActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
+    () => Object.freeze([Object.freeze(Array.from(activityRendererMapState[0].keys()))]),
+    [activityRendererMapState]
   );
 
   const renderingActivityKeysState = useMemo<readonly [readonly string[]]>(() => {
     const keys = Object.freeze(renderingActivitiesState[0].map(activity => getKeyByActivity(activity)));
 
     if (keys.some(key => !key)) {
-      throw new Error('botframework-webchat internal: activitiesWithRenderer[].activity must have activity key');
+      throw new Error('botframework-webchat internal: activityRendererMap[].activity must have activity key');
     }
 
     return Object.freeze([keys] as const);
-  }, [renderingActivitiesState, getKeyByActivity]);
-
-  const renderActivityCallbackMap = useMemo<
-    ReadonlyMap<WebChatActivity, Exclude<ReturnType<ActivityComponentFactory>, false>>
-  >(
-    () =>
-      Object.freeze(new Map(activitiesWithRenderer.map(({ activity, renderActivity }) => [activity, renderActivity]))),
-    [activitiesWithRenderer]
-  );
+  }, [getKeyByActivity, renderingActivitiesState]);
 
   const contextValue: RenderingActivitiesContextType = useMemo(
     () => ({
-      renderActivityCallbackMap,
+      activityRendererMapState,
       renderingActivitiesState,
       renderingActivityKeysState
     }),
-    [renderActivityCallbackMap, renderingActivitiesState, renderingActivityKeysState]
+    [activityRendererMapState, renderingActivitiesState, renderingActivityKeysState]
   );
 
   return <RenderingActivitiesContext.Provider value={contextValue}>{children}</RenderingActivitiesContext.Provider>;

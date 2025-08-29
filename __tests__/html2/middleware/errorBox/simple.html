@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" defer src="/__dist__/botframework-webchat-debug-theme.development.js"></script>
+    <style type="text/css">
+      .webchat > .error-box {
+        border: solid 1px red;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { fn, spyOn } from 'jest-mock';
+      import { createElement, Fragment, memo } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator },
+          WebChat: {
+            Components: { Composer, ThemeProvider },
+            DebugProvider,
+            middleware: { createErrorBoxPolymiddleware, errorBoxComponent, useBuildRenderErrorBoxCallback },
+            ReactWebChat
+          }
+        } = window;
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        const SystemUnderTest = () => {
+          const renderErrorBox = useBuildRenderErrorBoxCallback();
+
+          const errorBox = renderErrorBox({ error: new Error('Hello, World!'), where: 'Artificial' });
+
+          return createElement('div', { className: 'error-box' }, errorBox?.({}));
+        };
+
+        const hasDebugProvider = !new URL(location.href).searchParams.has('no-debug-provider');
+        const onTelemetry = fn();
+
+        createRoot(document.getElementById('webchat')).render(
+          createElement(
+            hasDebugProvider ? DebugProvider : Fragment,
+            {},
+            createElement(
+              Composer,
+              {
+                directLine,
+                onTelemetry,
+                store
+              },
+              createElement(SystemUnderTest)
+            )
+          )
+        );
+
+        await pageConditions.uiConnected();
+
+        // THEN: Should emit as exception event.
+        const exceptionEvent = onTelemetry.mock.calls.find(call => call[0]?.type === 'exception');
+
+        expect(exceptionEvent).toBeTruthy();
+        expect(exceptionEvent[0].error.message).toBe('Hello, World!');
+
+        // THEN: Should render a red box with DebugProvider.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

@@ -9,22 +9,14 @@ import ReceiptCardContent from '../../adaptiveCards/Attachment/ReceiptCardConten
 import SignInCardContent from '../../adaptiveCards/Attachment/SignInCardContent';
 import ThumbnailCardContent from '../../adaptiveCards/Attachment/ThumbnailCardContent';
 import VideoCardContent from '../../adaptiveCards/Attachment/VideoCardContent';
-import createAdaptiveCardsAttachmentForScreenReaderMiddleware from '../../adaptiveCards/createAdaptiveCardsAttachmentForScreenReaderMiddleware';
-import createAdaptiveCardsAttachmentMiddleware from '../../adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
 import useAdaptiveCardsHostConfig from '../../adaptiveCards/hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../../adaptiveCards/hooks/useAdaptiveCardsPackage';
-import createCognitiveServicesSpeechServicesPonyfillFactory from '../../createCognitiveServicesSpeechServicesPonyfillFactory';
 import defaultCreateDirectLine from '../../createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAppServiceExtension';
-import createDirectLineSpeechAdapters from '../../createDirectLineSpeechAdapters';
-import createStyleSet from '../../createFullStyleSet';
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useStyleSet from '../../hooks/useStyleSet';
-import renderMarkdown from '../../markdown/renderMarkdown';
 import coreRenderWebChat from '../../renderWebChat';
-import { type AdaptiveCardsPackage } from '../../types/AdaptiveCardsPackage';
-import FullBundleStyleOptions, { StrictFullBundleStyleOptions } from '../../types/FullBundleStyleOptions';
-import { Components as MinimalComponents, hooks, buildInfo as minimalBuildInfo, version, withEmoji } from './minimal';
+import { buildInfo as minimalBuildInfo, Components as minimalComponents, hooks as minimalHooks } from './minimal';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
@@ -36,7 +28,7 @@ const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLin
       'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
     );
 
-  return defaultCreateDirectLine({ ...options, botAgent: `WebChat/${version} (Full)` });
+  return defaultCreateDirectLine({ ...options, botAgent: `WebChat/${buildInfo.version} (Full)` });
 };
 
 const createDirectLineAppServiceExtension = (
@@ -47,18 +39,19 @@ const createDirectLineAppServiceExtension = (
       'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
     );
 
-  return defaultCreateDirectLineAppServiceExtension({ ...options, botAgent: `WebChat/${version} (Full)` });
+  return defaultCreateDirectLineAppServiceExtension({ ...options, botAgent: `WebChat/${buildInfo.version} (Full)` });
 };
 
-const patchedHooks = Object.freeze({
-  ...hooks,
+const hooks = Object.freeze({
+  ...minimalHooks,
   useAdaptiveCardsHostConfig,
   useAdaptiveCardsPackage,
   useStyleOptions,
   useStyleSet
 });
 
-const AdditionalComponents = Object.freeze({
+const Components = Object.freeze({
+  ...minimalComponents,
   AdaptiveCardContent,
   AnimationCardContent,
   AudioCardContent,
@@ -70,20 +63,23 @@ const AdditionalComponents = Object.freeze({
   SignInCardContent,
   ThumbnailCardContent,
   VideoCardContent
-});
+} as const);
 
-const Components: Readonly<typeof MinimalComponents & typeof AdditionalComponents> = Object.freeze({
-  ...MinimalComponents,
-  ...AdditionalComponents
-});
-
-type StyleOptions = FullBundleStyleOptions;
-type StrictStyleOptions = StrictFullBundleStyleOptions;
-
-export default ReactWebChat;
+// #region Re-exports
+export { default as createAdaptiveCardsAttachmentForScreenReaderMiddleware } from '../../adaptiveCards/createAdaptiveCardsAttachmentForScreenReaderMiddleware';
+export { default as createAdaptiveCardsAttachmentMiddleware } from '../../adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
+export { default as createCognitiveServicesSpeechServicesPonyfillFactory } from '../../createCognitiveServicesSpeechServicesPonyfillFactory';
+export { default as createDirectLineSpeechAdapters } from '../../createDirectLineSpeechAdapters';
+export { default as createStyleSet } from '../../createFullStyleSet';
+export { default as renderMarkdown } from '../../markdown/renderMarkdown';
+export { type AdaptiveCardsPackage } from '../../types/AdaptiveCardsPackage';
 export {
-  Constants,
+  type StrictFullBundleStyleOptions as StrictStyleOptions,
+  type default as StyleOptions
+} from '../../types/FullBundleStyleOptions';
+export {
   concatMiddleware,
+  Constants,
   createBrowserWebSpeechPonyfillFactory,
   createStore,
   createStoreWithDevTools,
@@ -91,24 +87,21 @@ export {
   decorator,
   internal,
   testIds,
-  version
+  version,
+  withEmoji
 } from './minimal';
+// #endregion
+
+// #region Local exports
+export default ReactWebChat;
+
 export {
-  Components,
-  ReactWebChat,
   buildInfo,
-  createAdaptiveCardsAttachmentForScreenReaderMiddleware,
-  createAdaptiveCardsAttachmentMiddleware,
-  createCognitiveServicesSpeechServicesPonyfillFactory,
+  Components,
   createDirectLine,
   createDirectLineAppServiceExtension,
-  createDirectLineSpeechAdapters,
-  createStyleSet,
-  patchedHooks as hooks,
-  renderMarkdown,
-  renderWebChat,
-  withEmoji,
-  type AdaptiveCardsPackage,
-  type StrictStyleOptions,
-  type StyleOptions
+  hooks,
+  ReactWebChat,
+  renderWebChat
 };
+// #endregion

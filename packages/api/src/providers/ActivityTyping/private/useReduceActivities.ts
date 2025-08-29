@@ -1,6 +1,7 @@
+import { useMemoWithPrevious } from '@msinternal/botframework-webchat-react-hooks';
 import { type WebChatActivity } from 'botframework-webchat-core';
+
 import { useActivities } from '../../../hooks';
-import useMemoWithPrevious from './useMemoWithPrevious';
 
 type Entry<T> = Readonly<{
   activity: WebChatActivity;
