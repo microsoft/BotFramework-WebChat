@@ -229,7 +229,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
 
   // The main text of the citation entry (e.g. the title of the document). Used as the content of the main link and, if it exists, the header of the popup window.
   const getEntryMainText = (entry: Entry) =>
-    entry.claim?.name ?? entry.claim?.appearance?.name ?? entry.markdownDefinition.title;
+    entry.claim?.name ?? entry.claim?.appearance?.name ?? (entry.markdownDefinition.title || undefined);
 
   // Optional alternate name for the entry, used as a subtitle beneath the link
   const getEntryBadgeName = (entry: Entry) => entry.claim?.appearance?.usageInfo?.name;
