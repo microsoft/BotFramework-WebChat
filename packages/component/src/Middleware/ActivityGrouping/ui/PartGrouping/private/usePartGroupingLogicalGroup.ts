@@ -1,4 +1,5 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
+import { useRefFrom } from 'use-ref-from';
 
 import { useAddLogicalGrouping } from '../../../../../providers/ActivityLogicalGrouping';
 
@@ -6,7 +7,7 @@ const getPartGropKey = (key: string) => `part-grouping-${key}`;
 
 type UsePartGroupingLogicalGroupOptions = {
   activityKeys: readonly string[];
-  isGroupOpen: boolean;
+  isCollapsed: boolean;
 };
 
 type UsePartGroupingLogicalGroupReturn = {
@@ -21,34 +22,37 @@ type UsePartGroupingLogicalGroupReturn = {
  */
 function usePartGroupingLogicalGroup({
   activityKeys,
-  isGroupOpen
+  isCollapsed
 }: UsePartGroupingLogicalGroupOptions): UsePartGroupingLogicalGroupReturn {
   const addLogicalGrouping = useAddLogicalGrouping();
-  const isInitialGroupingRef = useRef(true);
 
-  const shouldSkipRender = useMemo(() => {
-    const isInitialGrouping = isInitialGroupingRef.current;
+  useMemo(
+    () =>
+      addLogicalGrouping({
+        // use activity key for group identifier as there should be only one logical group per activity
+        id: getPartGropKey(activityKeys.at(0)),
+        name: 'part',
+        activityKeys: [...activityKeys],
+        getGroupState: () => ({
+          isCollapsed
+        })
+      }),
+    [activityKeys, addLogicalGrouping, isCollapsed]
+  );
 
-    addLogicalGrouping({
-      // use activity key for group identifier as there should be only one logical group per activity
-      id: getPartGropKey(activityKeys.at(0)),
-      name: 'part',
-      activityKeys: [...activityKeys],
-      getGroupState: () => ({
-        isCollapsed: !isGroupOpen
-      })
-    });
+  const addLogicalGroupingRef = useRef(addLogicalGrouping);
+  const activityKeysRef = useRefFrom(activityKeys);
 
-    // If this is the initial grouping, mark it and skip render
-    if (isInitialGrouping) {
-      isInitialGroupingRef.current = false;
-      return true;
-    }
-
-    return false;
-  }, [activityKeys, addLogicalGrouping, isGroupOpen]);
-
-  return { shouldSkipRender };
+  useEffect(
+    () => () =>
+      addLogicalGroupingRef.current({
+        id: getPartGropKey(activityKeysRef.current.at(0)),
+        name: 'part(removed)',
+        activityKeys: [],
+        getGroupState: () => ({ isCollapsed: false })
+      }),
+    [activityKeysRef, addLogicalGroupingRef]
+  );
 }
 
 export default usePartGroupingLogicalGroup;

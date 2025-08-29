@@ -14,10 +14,8 @@ type LogicalGrouping = Readonly<{
 type ActivityLogicalGroupingContextType = Readonly<{
   addLogicalGrouping: (grouping: LogicalGrouping) => void;
   getLogicalGroupKey: (activityKey: string) => string | undefined;
-  shouldFocusLogicalGroup: (activityKey: string) => boolean;
   getGroupState: (groupKey: string) => GroupState | undefined;
   getGroupBoundaries: (groupKey: string) => [string | undefined, string | undefined];
-  activityToGroupMapState: readonly [ReadonlyMap<string, string>];
 }>;
 
 const { contextComponentType, useContext } = createContextAndHook<ActivityLogicalGroupingContextType>(
