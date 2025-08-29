@@ -2,9 +2,9 @@ import { useCallback } from 'react';
 import { useTransformHTMLContent } from '../../providers/HTMLContentTransformCOR';
 
 type LinkInfo = {
+  openInNewTab: boolean;
   originalHref: string;
   sanitizedHref: string | undefined;
-  target: string | undefined;
 };
 
 export default function useSanitizeLinkCallback(): (href: string) => LinkInfo {
@@ -25,9 +25,9 @@ export default function useSanitizeLinkCallback(): (href: string) => LinkInfo {
       const transformedAnchorElement = transformedFragment.querySelector('a');
 
       return {
+        openInNewTab: !!transformedAnchorElement?.getAttribute('target'),
         originalHref: href,
-        sanitizedHref: transformedAnchorElement?.getAttribute('href') || undefined,
-        target: transformedAnchorElement?.getAttribute('target') || undefined
+        sanitizedHref: transformedAnchorElement?.getAttribute('href') || undefined
       };
     },
     [transformHTMLContent]
