@@ -1,3 +1,4 @@
+import { useMemoWithPrevious } from '@msinternal/botframework-webchat-react-hooks';
 import { memo, createElement, useCallback, useMemo, useState, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
@@ -6,7 +7,6 @@ import ActivityLogicalGroupingContext, {
   type LogicalGrouping,
   type GroupState
 } from './private/ActivityLogicalGroupingContext';
-import useMemoWithPrevious from '../../hooks/internal/useMemoWithPrevious';
 
 type ActivityLogicalGroupingComposerProps = Readonly<{
   children?: ReactNode | undefined;
