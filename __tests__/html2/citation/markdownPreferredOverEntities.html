@@ -79,12 +79,12 @@
         await host.snapshot('local');
 
         const markdownElement = pageElements.activities()[0].querySelector('.webchat__text-content__markdown');
-        const markdownLinks = markdownElement.querySelectorAll('a');
+        const markdownClickableLinks = markdownElement.querySelectorAll('a[href]');
 
         // The javascript: shouldn't be a link.
-        expect(markdownLinks).toHaveLength(1);
+        expect(markdownClickableLinks).toHaveLength(1);
 
-        expect(markdownLinks[0].getAttribute('href')).toBe('https://aka.ms/correct-link');
+        expect(markdownClickableLinks[0].getAttribute('href')).toBe('https://aka.ms/correct-link');
 
         const linkDefinitionItems = pageElements.linkDefinitions()[0].querySelectorAll('[role="listitem"] > *');
 

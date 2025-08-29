@@ -17,6 +17,7 @@ import { custom, object, optional, pipe, readonly, string, type InferInput } fro
 import ActivityFeedback from '../../../ActivityFeedback/ActivityFeedback';
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
 import dereferenceBlankNodes from '../../../Utils/JSONLinkedData/dereferenceBlankNodes';
+import useSanitizeLinkCallback from '../../../hooks/internal/useSanitizeLinkCallback';
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
@@ -99,75 +100,85 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
     [citationModalDialogStyleSet, citationModalDialogLabel, showModal]
   );
 
+  const sanitizeLink = useSanitizeLinkCallback();
+
   const entries = useMemo<readonly Entry[]>(
     () =>
       Object.freeze(
-        markdownDefinitions.map<Entry>(markdownDefinition => {
-          const messageCitation = messageThing?.citation
-            ?.map(parseClaim)
-            .find(({ position }) => '' + position === markdownDefinition.identifier);
+        markdownDefinitions
+          .map<Entry | undefined>(markdownDefinition => {
+            const messageCitation = messageThing?.citation
+              ?.map(parseClaim)
+              .find(({ position }) => '' + position === markdownDefinition.identifier);
 
-          if (messageCitation) {
-            if (messageCitation.appearance?.url && messageCitation.appearance.url !== markdownDefinition.url) {
-              console.warn(
-                'botframework-webchat: When "Message.citation[].url" is set in entities, it must match its corresponding URL in Markdown link reference definition',
-                {
-                  citation: messageCitation,
-                  markdownDefinition,
-                  url: {
-                    citation: messageCitation.appearance.url,
-                    markdown: markdownDefinition.url
+            // After HTML content transform (or sanitization), the link could be gone.
+            // In that case, Markdown will not render the link. We also need to remove it from citation.
+            if (!sanitizeLink(markdownDefinition.url).sanitizedHref) {
+              return;
+            }
+
+            if (messageCitation) {
+              if (messageCitation.appearance?.url && messageCitation.appearance.url !== markdownDefinition.url) {
+                console.warn(
+                  'botframework-webchat: When "Message.citation[].url" is set in entities, it must match its corresponding URL in Markdown link reference definition',
+                  {
+                    citation: messageCitation,
+                    markdownDefinition,
+                    url: {
+                      citation: messageCitation.appearance.url,
+                      markdown: markdownDefinition.url
+                    }
                   }
-                }
-              );
+                );
+              }
+
+              return {
+                claim: messageCitation,
+                key: markdownDefinition.url,
+                handleClick:
+                  messageCitation?.appearance && !messageCitation.appearance.url
+                    ? () =>
+                        showClaimModal(
+                          messageCitation.appearance.name ?? markdownDefinition.title,
+                          messageCitation.appearance.text,
+                          messageCitation.alternateName
+                        )
+                    : undefined,
+                markdownDefinition,
+                url: markdownDefinition.url
+              };
+            }
+
+            const rootLevelClaim = graph
+              .filter(({ type }) => type === 'https://schema.org/Claim')
+              .map(parseClaim)
+              .find(({ '@id': id }) => id === markdownDefinition.url);
+
+            if (rootLevelClaim) {
+              return {
+                claim: rootLevelClaim,
+                key: markdownDefinition.url,
+                handleClick: isCitationURL(rootLevelClaim['@id'])
+                  ? () =>
+                      showClaimModal(
+                        rootLevelClaim.name ?? markdownDefinition.title,
+                        rootLevelClaim.text,
+                        rootLevelClaim.alternateName
+                      )
+                  : undefined,
+                markdownDefinition
+              };
             }
 
             return {
-              claim: messageCitation,
               key: markdownDefinition.url,
-              handleClick:
-                messageCitation?.appearance && !messageCitation.appearance.url
-                  ? () =>
-                      showClaimModal(
-                        messageCitation.appearance.name ?? markdownDefinition.title,
-                        messageCitation.appearance.text,
-                        messageCitation.alternateName
-                      )
-                  : undefined,
               markdownDefinition,
               url: markdownDefinition.url
             };
-          }
-
-          const rootLevelClaim = graph
-            .filter(({ type }) => type === 'https://schema.org/Claim')
-            .map(parseClaim)
-            .find(({ '@id': id }) => id === markdownDefinition.url);
-
-          if (rootLevelClaim) {
-            return {
-              claim: rootLevelClaim,
-              key: markdownDefinition.url,
-              handleClick: isCitationURL(rootLevelClaim['@id'])
-                ? () =>
-                    showClaimModal(
-                      rootLevelClaim.name ?? markdownDefinition.title,
-                      rootLevelClaim.text,
-                      rootLevelClaim.alternateName
-                    )
-                : undefined,
-              markdownDefinition
-            };
-          }
-
-          return {
-            key: markdownDefinition.url,
-            markdownDefinition,
-            url: markdownDefinition.url
-          };
-        })
+          })
+          .filter(Boolean)
       ),
-    [graph, markdownDefinitions, messageThing, showClaimModal]
+    [graph, markdownDefinitions, messageThing, sanitizeLink, showClaimModal]
   );
 
   const entriesRef = useRefFrom(entries);
