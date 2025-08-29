@@ -118,7 +118,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - `@msinternal/botframework-webchat-api-middleware` for middleware branch of API package
    - `@msinternal/botframework-webchat-debug-theme` package for enabling debugging scenarios
    - `@msinternal/botframework-webchat-react-hooks` for helpers for React hooks
-- Added link sanitization, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim)
+- Added link sanitization and ESLint rules, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
