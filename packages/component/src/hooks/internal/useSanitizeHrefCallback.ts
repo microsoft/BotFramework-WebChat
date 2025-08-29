@@ -8,6 +8,8 @@ type LinkInfo = {
 };
 
 export default function useSanitizeHrefCallback(): (href: string) => LinkInfo {
+  // Although clumsy, we are using HTML content transformer for sanitizing links.
+  // This make sure we have a single centralized facility for sanitization.
   const transformHTMLContent = useTransformHTMLContent();
 
   return useCallback(
