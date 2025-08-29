@@ -1,12 +1,13 @@
 import { type OrgSchemaProject } from 'botframework-webchat-core';
 import React, { memo } from 'react';
-import useSanitizeLinkCallback from '../../hooks/internal/useSanitizeLinkCallback';
+
+import useSanitizeHrefCallback from '../../hooks/internal/useSanitizeHrefCallback';
 
 type Props = Readonly<{ project: OrgSchemaProject }>;
 
 const Originator = memo(({ project }: Props) => {
   const { name, slogan, url } = project;
-  const sanitizeLink = useSanitizeLinkCallback();
+  const sanitizeLink = useSanitizeHrefCallback();
 
   const { sanitizedHref } = sanitizeLink(url);
   const text = slogan || name;

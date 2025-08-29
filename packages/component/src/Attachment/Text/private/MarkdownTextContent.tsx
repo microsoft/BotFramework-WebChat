@@ -17,7 +17,7 @@ import { custom, object, optional, pipe, readonly, string, type InferInput } fro
 import ActivityFeedback from '../../../ActivityFeedback/ActivityFeedback';
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
 import dereferenceBlankNodes from '../../../Utils/JSONLinkedData/dereferenceBlankNodes';
-import useSanitizeLinkCallback from '../../../hooks/internal/useSanitizeLinkCallback';
+import useSanitizeHrefCallback from '../../../hooks/internal/useSanitizeHrefCallback';
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
@@ -37,7 +37,7 @@ type Entry = {
   handleClick?: (() => void) | undefined;
   key: string;
   markdownDefinition: Definition;
-  url?: string | undefined;
+  sanitizedHref?: string | undefined;
 };
 
 const markdownTextContentPropsSchema = pipe(
@@ -100,7 +100,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
     [citationModalDialogStyleSet, citationModalDialogLabel, showModal]
   );
 
-  const sanitizeLink = useSanitizeLinkCallback();
+  const sanitizeHref = useSanitizeHrefCallback();
 
   const entries = useMemo<readonly Entry[]>(
     () =>
@@ -113,7 +113,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
 
             // After HTML content transform (or sanitization), the link could be gone.
             // In that case, Markdown will not render the link. We also need to remove it from citation.
-            if (!sanitizeLink(markdownDefinition.url).sanitizedHref) {
+            if (!sanitizeHref(markdownDefinition.url).sanitizedHref) {
               return;
             }
 
@@ -145,7 +145,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
                         )
                     : undefined,
                 markdownDefinition,
-                url: markdownDefinition.url
+                sanitizedHref: markdownDefinition.url
               };
             }
 
@@ -173,12 +173,12 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
             return {
               key: markdownDefinition.url,
               markdownDefinition,
-              url: markdownDefinition.url
+              sanitizedHref: markdownDefinition.url
             };
           })
           .filter(Boolean)
       ),
-    [graph, markdownDefinitions, messageThing, sanitizeLink, showClaimModal]
+    [graph, markdownDefinitions, messageThing, sanitizeHref, showClaimModal]
   );
 
   const entriesRef = useRefFrom(entries);
@@ -261,8 +261,8 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
               identifier={entry.markdownDefinition.label}
               key={entry.key}
               onClick={entry.handleClick}
+              sanitizedHref={entry.sanitizedHref}
               text={getEntryMainText(entry)}
-              url={entry.url}
             />
           ))}
         </LinkDefinitions>

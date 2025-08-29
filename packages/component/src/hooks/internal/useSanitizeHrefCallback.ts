@@ -7,7 +7,7 @@ type LinkInfo = {
   sanitizedHref: string | undefined;
 };
 
-export default function useSanitizeLinkCallback(): (href: string) => LinkInfo {
+export default function useSanitizeHrefCallback(): (href: string) => LinkInfo {
   const transformHTMLContent = useTransformHTMLContent();
 
   return useCallback(

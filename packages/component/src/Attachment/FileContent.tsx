@@ -25,6 +25,7 @@ const ROOT_STYLE = {
   }
 };
 
+// TODO: Consider using `useSanitizeHrefCallback`, which underlying use `sanitize-html` or whatever in HTML content transformer.
 const ALLOWED_PROTOCOLS = ['blob:', 'data:', 'http:', 'https:'];
 
 function isAllowedProtocol(url) {
@@ -96,10 +97,10 @@ function FileContent(props: FileContentProps) {
 
   const localizedSize = typeof size === 'number' && localizeBytes(size);
 
-  const allowedHref = href && isAllowedProtocol(href) ? href : undefined;
+  const sanitizedHref = href && isAllowedProtocol(href) ? href : undefined;
 
   const alt = localize(
-    allowedHref
+    sanitizedHref
       ? localizedSize
         ? 'FILE_CONTENT_DOWNLOADABLE_WITH_SIZE_ALT'
         : 'FILE_CONTENT_DOWNLOADABLE_ALT'
@@ -112,12 +113,14 @@ function FileContent(props: FileContentProps) {
 
   return (
     <div className={classNames('webchat__fileContent', rootClassName, fileContentStyleSet + '', className)}>
-      {allowedHref ? (
+      {sanitizedHref ? (
+        // URL is sanitized.
+        // eslint-disable-next-line react/forbid-elements
         <a
           aria-label={alt}
           className="webchat__fileContent__buttonLink"
           download={fileName}
-          href={allowedHref}
+          href={sanitizedHref}
           rel="noopener noreferrer"
           target="_blank"
         >
