@@ -3,7 +3,6 @@ import { type WebChatActivity, getOrgSchemaMessage } from 'botframework-webchat-
 import React, { Fragment, memo, useMemo } from 'react';
 import { any, array, minLength, object, optional, parse, pipe, readonly, transform, type InferOutput } from 'valibot';
 
-import PartGroupingContext, { type PartGroupingContextType } from './private/PartGroupingContext';
 import PartGroupingActivity from './private/PartGroupingActivity';
 
 const statusGroupingPropsSchema = pipe(
@@ -47,22 +46,10 @@ function PartGrouping(props: PartGroupingProps) {
 
   const isGroup = activities.length > 1 || !!lastMessage?.isPartOf?.[0]?.['@id'];
 
-  const context = useMemo<PartGroupingContextType>(
-    () =>
-      Object.freeze({
-        activities
-      }),
-    [activities]
-  );
-
-  return (
-    <PartGroupingContext.Provider value={context}>
-      {isGroup ? (
-        <PartGroupingActivity activities={activities}>{children}</PartGroupingActivity>
-      ) : (
-        <Fragment>{children}</Fragment>
-      )}
-    </PartGroupingContext.Provider>
+  return isGroup ? (
+    <PartGroupingActivity activities={activities}>{children}</PartGroupingActivity>
+  ) : (
+    <Fragment>{children}</Fragment>
   );
 }
 
