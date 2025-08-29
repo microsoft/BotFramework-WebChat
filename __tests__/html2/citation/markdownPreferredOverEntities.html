@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              type: 'https://schema.org/Message',
+              citation: [
+                {
+                  '@id': ':_doesnt-care-1',
+                  '@type': 'Claim',
+                  appearance: {
+                    '@type': 'DigitalDocument',
+                    encodingFormat: 'application/octet-stream',
+                    url: 'https://aka.ms/bad-link'
+                  },
+                  position: '1'
+                }
+              ]
+            }
+          ],
+          text: `Ea officia[1] elit laboris[2] reprehenderit laborum elit ipsum qui eiusmod.
+
+[1]: https://aka.ms/correct-link
+[2]: javascript:alert(1)
+`,
+          type: 'message'
+        });
+
+        await host.snapshot('local');
+
+        const markdownElement = pageElements.activities()[0].querySelector('.webchat__text-content__markdown');
+        const markdownLinks = markdownElement.querySelectorAll('a');
+
+        // The javascript: shouldn't be a link.
+        expect(markdownLinks).toHaveLength(1);
+
+        expect(markdownLinks[0].getAttribute('href')).toBe('https://aka.ms/correct-link');
+
+        const linkDefinitionItems = pageElements.linkDefinitions()[0].querySelectorAll('[role="listitem"] > *');
+
+        // THe javascript: link is gone in Markdown, should be ignored in citation as well.
+        expect(linkDefinitionItems).toHaveLength(1);
+
+        expect(linkDefinitionItems[0].getAttribute('href')).toBe('https://aka.ms/correct-link');
+      });
+    </script>
+  </body>
+</html>

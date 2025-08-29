@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        WebChat.renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              type: 'https://schema.org/Message',
+              citation: [
+                {
+                  '@id': ':_doesnt-care-1',
+                  '@type': 'Claim',
+                  appearance: {
+                    '@type': 'DigitalDocument',
+                    encodingFormat: 'application/octet-stream',
+                    url: 'https://aka.ms/claim'
+                  },
+                  claimInterpreter: {
+                    '@type': 'Project',
+                    slogan: 'Surfaced with **Azure OpenAI**',
+                    url: 'javascript:alert(1)'
+                  },
+                  position: '1'
+                }
+              ]
+            }
+          ],
+          text: `Fugiat excepteur anim irure consectetur ex nisi eu deserunt officia tempor eu et excepteur.[1]
+
+[1]: https://aka.ms/claim
+`,
+          type: 'message'
+        });
+
+        await host.snapshot('local');
+
+        const markdownElement = pageElements.activities()[0].querySelector('.webchat__text-content__markdown');
+        const markdownLinks = markdownElement.querySelectorAll('a');
+
+        // The javascript: shouldn't be a link.
+        expect(markdownLinks).toHaveLength(1);
+
+        expect(markdownLinks[0].getAttribute('href')).toBe('https://aka.ms/claim');
+
+        const claimInterpreterElement = pageElements.activities()[0].querySelector('.webchat__activity-status__originator');
+
+        expect(claimInterpreterElement).toHaveProperty('tagName', 'SPAN');
+        expect(claimInterpreterElement).toHaveProperty('textContent', 'Surfaced with Azure OpenAI');
+      });
+    </script>
+  </body>
+</html>

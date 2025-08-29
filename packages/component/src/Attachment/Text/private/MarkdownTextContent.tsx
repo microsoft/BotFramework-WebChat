@@ -1,5 +1,5 @@
-import { hooks } from 'botframework-webchat-api';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { hooks } from 'botframework-webchat-api';
 import {
   getOrgSchemaMessage,
   onErrorResumeNext,
@@ -108,6 +108,20 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
             .find(({ position }) => '' + position === markdownDefinition.identifier);
 
           if (messageCitation) {
+            if (messageCitation.appearance?.url && messageCitation.appearance.url !== markdownDefinition.url) {
+              console.warn(
+                'botframework-webchat: When "Message.citation[].url" is set in entities, it must match its corresponding URL in Markdown link reference definition',
+                {
+                  citation: messageCitation,
+                  markdownDefinition,
+                  url: {
+                    citation: messageCitation.appearance.url,
+                    markdown: markdownDefinition.url
+                  }
+                }
+              );
+            }
+
             return {
               claim: messageCitation,
               key: markdownDefinition.url,
@@ -121,7 +135,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
                       )
                   : undefined,
               markdownDefinition,
-              url: messageCitation?.appearance ? messageCitation.appearance.url : markdownDefinition.url
+              url: markdownDefinition.url
             };
           }
 
