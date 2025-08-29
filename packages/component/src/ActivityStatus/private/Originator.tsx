@@ -1,15 +1,38 @@
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { type OrgSchemaProject } from 'botframework-webchat-core';
 import React, { memo } from 'react';
+import { custom, object, optional, pipe, readonly, safeParse, string, type InferInput } from 'valibot';
 
 import useSanitizeHrefCallback from '../../hooks/internal/useSanitizeHrefCallback';
 
-type Props = Readonly<{ project: OrgSchemaProject }>;
+const originatorPropsSchema = pipe(
+  object({
+    // TODO: [P1] We should build this schema into `OrgSchemaProject` instead, or build a Schema.org query library.
+    project: custom<OrgSchemaProject>(
+      value =>
+        safeParse(
+          object({
+            name: optional(string()),
+            slogan: optional(string()),
+            url: optional(string())
+          }),
+          value
+        ).success
+    )
+  }),
+  readonly()
+);
 
-const Originator = memo(({ project }: Props) => {
-  const { name, slogan, url } = project;
-  const sanitizeLink = useSanitizeHrefCallback();
+type OriginatorProps = InferInput<typeof originatorPropsSchema>;
 
-  const { sanitizedHref } = sanitizeLink(url);
+const Originator = memo((props: OriginatorProps) => {
+  const {
+    project: { name, slogan, url }
+  } = validateProps(originatorPropsSchema, props);
+
+  const sanitizeHref = useSanitizeHrefCallback();
+
+  const { sanitizedHref } = sanitizeHref(url);
   const text = slogan || name;
 
   return sanitizedHref ? (
@@ -31,3 +54,4 @@ const Originator = memo(({ project }: Props) => {
 Originator.displayName = 'Originator';
 
 export default Originator;
+export { originatorPropsSchema, type OriginatorProps };
