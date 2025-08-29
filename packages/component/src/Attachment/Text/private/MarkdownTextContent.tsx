@@ -113,7 +113,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
 
             // After HTML content transform (or sanitization), the link could be gone.
             // In that case, Markdown will not render the link. We also need to remove it from citation.
-            if (!sanitizeHref(markdownDefinition.url).sanitizedHref) {
+            if (!isCitationURL(markdownDefinition.url) && !sanitizeHref(markdownDefinition.url).sanitizedHref) {
               return;
             }
 
