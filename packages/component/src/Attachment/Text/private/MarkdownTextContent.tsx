@@ -1,5 +1,5 @@
-import { hooks } from 'botframework-webchat-api';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { hooks } from 'botframework-webchat-api';
 import {
   getOrgSchemaMessage,
   onErrorResumeNext,
@@ -17,6 +17,7 @@ import { custom, object, optional, pipe, readonly, string, type InferInput } fro
 import ActivityFeedback from '../../../ActivityFeedback/ActivityFeedback';
 import { LinkDefinitionItem, LinkDefinitions } from '../../../LinkDefinition/index';
 import dereferenceBlankNodes from '../../../Utils/JSONLinkedData/dereferenceBlankNodes';
+import useSanitizeHrefCallback from '../../../hooks/internal/useSanitizeHrefCallback';
 import useRenderMarkdownAsHTML from '../../../hooks/useRenderMarkdownAsHTML';
 import useStyleSet from '../../../hooks/useStyleSet';
 import useShowModal from '../../../providers/ModalDialog/useShowModal';
@@ -33,11 +34,21 @@ const { useLocalizer, useStyleOptions } = hooks;
 
 type Entry = {
   claim?: OrgSchemaClaim | undefined;
-  handleClick?: (() => void) | undefined;
+  /** Do not use the key as URL, it is not sanitized. */
   key: string;
   markdownDefinition: Definition;
-  url?: string | undefined;
-};
+} & (
+  | {
+      // Inline citation.
+      handleClick: () => void;
+      sanitizedHref?: undefined;
+    }
+  | {
+      // Citation link.
+      handleClick?: undefined;
+      sanitizedHref: string;
+    }
+);
 
 const markdownTextContentPropsSchema = pipe(
   object({
@@ -52,6 +63,14 @@ type MarkdownTextContentProps = InferInput<typeof markdownTextContentPropsSchema
 
 function isCitationURL(url: string): boolean {
   return onErrorResumeNext(() => new URL(url))?.protocol === 'cite:';
+}
+
+function isCitingInline(claim: OrgSchemaClaim): claim is OrgSchemaClaim & {
+  appearance: {
+    url?: undefined;
+  };
+} {
+  return !!claim.appearance && !claim.appearance.url;
 }
 
 function MarkdownTextContent(props: MarkdownTextContentProps) {
@@ -99,61 +118,112 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
     [citationModalDialogStyleSet, citationModalDialogLabel, showModal]
   );
 
+  const sanitizeHref = useSanitizeHrefCallback();
+
   const entries = useMemo<readonly Entry[]>(
     () =>
       Object.freeze(
-        markdownDefinitions.map<Entry>(markdownDefinition => {
-          const messageCitation = messageThing?.citation
-            ?.map(parseClaim)
-            .find(({ position }) => '' + position === markdownDefinition.identifier);
+        markdownDefinitions
+          .map<Entry | undefined>(markdownDefinition => {
+            let messageCitation: OrgSchemaClaim | undefined = messageThing?.citation
+              ?.map(parseClaim)
+              .find(({ position }) => '' + position === markdownDefinition.identifier);
 
-          if (messageCitation) {
-            return {
-              claim: messageCitation,
-              key: markdownDefinition.url,
-              handleClick:
-                messageCitation?.appearance && !messageCitation.appearance.url
-                  ? () =>
-                      showClaimModal(
-                        messageCitation.appearance.name ?? markdownDefinition.title,
-                        messageCitation.appearance.text,
-                        messageCitation.alternateName
-                      )
-                  : undefined,
-              markdownDefinition,
-              url: messageCitation?.appearance ? messageCitation.appearance.url : markdownDefinition.url
-            };
-          }
+            if (!messageCitation) {
+              const rootLevelClaim = graph
+                .filter(({ type }) => type === 'https://schema.org/Claim')
+                .map(parseClaim)
+                .find(({ '@id': id }) => id === markdownDefinition.url);
 
-          const rootLevelClaim = graph
-            .filter(({ type }) => type === 'https://schema.org/Claim')
-            .map(parseClaim)
-            .find(({ '@id': id }) => id === markdownDefinition.url);
+              if (rootLevelClaim) {
+                console.warn(
+                  'botframework-webchat: Root-level `Claim` thing is deprecated, please use `Message[@id=""].citation[@type="Claim"]` instead. It will be removed on or after 2027-08-29.'
+                );
 
-          if (rootLevelClaim) {
-            return {
-              claim: rootLevelClaim,
-              key: markdownDefinition.url,
-              handleClick: isCitationURL(rootLevelClaim['@id'])
-                ? () =>
+                messageCitation = {
+                  '@context': 'https://schema.org',
+                  '@id': markdownDefinition.url,
+                  '@type': 'Claim',
+                  alternateName: rootLevelClaim.alternateName,
+                  appearance: isCitationURL(rootLevelClaim['@id'])
+                    ? {
+                        '@type': 'DigitalDocument',
+                        name: rootLevelClaim.name,
+                        text: rootLevelClaim.text
+                      }
+                    : {
+                        '@type': 'DigitalDocument',
+                        url: markdownDefinition.url
+                      }
+                };
+              }
+            }
+
+            const { url } = markdownDefinition;
+            const { sanitizedHref } = sanitizeHref(markdownDefinition.url);
+
+            // After HTML content transform (or sanitization), the link could be gone.
+            // In that case, Markdown will not render the link. We also need to remove it from citation.
+            if (messageCitation) {
+              // For inline citation, the URL is an opaque string to us.
+              // We don't care if it's sanitized or not.
+              if (isCitingInline(messageCitation)) {
+                const { appearance } = messageCitation;
+
+                return {
+                  claim: messageCitation,
+                  key: url,
+                  handleClick: () =>
                     showClaimModal(
-                      rootLevelClaim.name ?? markdownDefinition.title,
-                      rootLevelClaim.text,
-                      rootLevelClaim.alternateName
-                    )
-                : undefined,
-              markdownDefinition
-            };
-          }
+                      appearance.name ?? markdownDefinition.title,
+                      appearance.text,
+                      messageCitation.alternateName
+                    ),
+                  markdownDefinition
+                };
+              }
 
-          return {
-            key: markdownDefinition.url,
-            markdownDefinition,
-            url: markdownDefinition.url
-          };
-        })
+              // Not inline citation, we care about the URL.
+              // Warn if it break single source of truth principle, we still use the URL from Markdown.
+              if (messageCitation.appearance?.url && messageCitation.appearance.url !== url) {
+                console.warn(
+                  'botframework-webchat: When "Message.citation[].url" is set in entities, it must match its corresponding URL in Markdown link reference definition',
+                  {
+                    citation: messageCitation,
+                    markdownDefinition,
+                    url: {
+                      citation: messageCitation.appearance.url,
+                      markdown: url
+                    }
+                  }
+                );
+              }
+
+              if (sanitizedHref) {
+                // URL is sanitized and is not inline citation.
+                return {
+                  claim: messageCitation,
+                  key: markdownDefinition.url,
+                  markdownDefinition,
+                  sanitizedHref: markdownDefinition.url // Single source of truth.
+                };
+              }
+
+              // Not sanitized and not inline, remove it from citation.
+              return;
+            }
+
+            return (
+              sanitizedHref && {
+                key: markdownDefinition.url,
+                markdownDefinition,
+                sanitizedHref
+              }
+            );
+          })
+          .filter(Boolean)
       ),
-    [graph, markdownDefinitions, messageThing, showClaimModal]
+    [graph, markdownDefinitions, messageThing, sanitizeHref, showClaimModal]
   );
 
   const entriesRef = useRefFrom(entries);
@@ -204,7 +274,7 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
 
   // The main text of the citation entry (e.g. the title of the document). Used as the content of the main link and, if it exists, the header of the popup window.
   const getEntryMainText = (entry: Entry) =>
-    entry.claim?.name ?? entry.claim?.appearance?.name ?? entry.markdownDefinition.title;
+    entry.claim?.name ?? entry.claim?.appearance?.name ?? (entry.markdownDefinition.title || undefined);
 
   // Optional alternate name for the entry, used as a subtitle beneath the link
   const getEntryBadgeName = (entry: Entry) => entry.claim?.appearance?.usageInfo?.name;
@@ -236,8 +306,8 @@ function MarkdownTextContent(props: MarkdownTextContentProps) {
               identifier={entry.markdownDefinition.label}
               key={entry.key}
               onClick={entry.handleClick}
+              sanitizedHref={entry.sanitizedHref}
               text={getEntryMainText(entry)}
-              url={entry.url}
             />
           ))}
         </LinkDefinitions>

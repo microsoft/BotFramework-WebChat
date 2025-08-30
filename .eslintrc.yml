@@ -94,6 +94,7 @@ overrides:
     rules:
       '@typescript-eslint/no-require-imports': off
       no-magic-numbers: off
+      'react/forbid-elements': off
 
 rules:
   # Only list rules that are not in *:recommended set

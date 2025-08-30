@@ -1,4 +1,6 @@
-import LinkDefinitionItem from './LinkDefinitionItem';
-import LinkDefinitions from './LinkDefinitions';
-
-export { LinkDefinitionItem, LinkDefinitions };
+export {
+  default as LinkDefinitionItem,
+  type LinkDefinitionItemProps,
+  linkDefinitionItemPropsSchema
+} from './LinkDefinitionItem';
+export { default as LinkDefinitions } from './LinkDefinitions';
