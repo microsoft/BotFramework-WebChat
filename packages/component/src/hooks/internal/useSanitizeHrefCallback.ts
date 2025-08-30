@@ -16,7 +16,7 @@ export default function useSanitizeHrefCallback(): (href: string) => LinkInfo {
     href => {
       const anchorElement = document.createElement('a');
 
-      anchorElement.setAttribute('href', href);
+      anchorElement.setAttribute('href', href || '');
 
       const fragment = document.createDocumentFragment();
 
