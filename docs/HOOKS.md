@@ -58,6 +58,7 @@ Following is the list of hooks supported by Web Chat API.
 - [`useAdaptiveCardsPackage`](#useadaptivecardspackage)
 - [`useAvatarForBot`](#useavatarforbot)
 - [`useAvatarForUser`](#useavatarforuser)
+- [`useBuildRenderActivityCallback`](#usebuildrenderactivitycallback)
 - [`useByteFormatter`](#useByteFormatter)
 - [`useConnectivityStatus`](#useconnectivitystatus)
 - [`useCreateActivityRenderer`](#usecreateactivityrenderer)
@@ -249,6 +250,35 @@ useAvatarForUser(): [{
 This hook will return the image and initials of the user. Both image and initials are optional and can be falsy.
 
 To set the avatar for the user, change the props passed to Web Chat via style options.
+
+## `useBuildRenderActivityCallback`
+
+> New in 4.19.0.
+
+<!-- prettier-ignore-start -->
+```ts
+useBuildRenderActivityCallback():
+  (request: { activity: WebChatActivty }) =>
+  (props: { children?: never }) =>
+    {
+      render: (overridingProps?: Partial<Props> | undefined) => ReactElement | null
+    };
+```
+<!-- prettier-ignore-end -->
+
+The hook will return a function, when called with request and props, will return a render function to render the activity.
+
+<!-- TODO: [P*] Finish this. -->
+
+### ActivityPolymiddlewareProxy
+
+<!-- prettier-ignore-start -->
+```tsx
+<ActivityPolymiddlewareProxy activity={} />
+```
+<!-- prettier-ignore-end -->
+
+<!-- TODO: [P*] Finish this. -->
 
 ## `useByteFormatter`
 

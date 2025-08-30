@@ -1,5 +1,7 @@
 # Middleware
 
+<!-- TODO: [P*] Stated that we do not allow activity (things in request) to be modified across middleware. -->
+
 ## Recipes
 
 ### Show channel message as a badge
@@ -120,3 +122,23 @@ const polymiddleware = [
    })
 ];
 ```
+
+## Behaviors
+
+### Legacy middleware with downstreamer of polymiddleware
+
+<!-- TODO: [P*] Finish this. -->
+
+<!--
+
+Add test to prove this is working in:
+
+- Legacy to legacy, override request/prop is okay
+- Polymiddleware to legacy, override request/prop is NOT okay
+- Legacy to polymiddleware, override request/prop is NOT okay
+
+For better protection, legacy middleware cannot change and pass a new copy of activity to polymiddleware. Polymiddleware will always receive the original copy of the activity.
+
+TODO: Should we add "allowModifiedRequest"? Should it be on a per-middleware level? Should it be an option in the upstreamer or downstreamer or both?
+
+-->

@@ -1,6 +1,15 @@
+import {
+  activityComponent,
+  createActivityPolymiddleware,
+  type ActivityPolymiddleware
+} from '@msinternal/botframework-webchat-api-middleware';
+import {
+  type LegacyActivityMiddleware,
+  type LegacyRenderAttachment
+} from '@msinternal/botframework-webchat-api-middleware/legacy';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { composeEnhancer } from 'handler-chain';
-import { type ComponentType, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import {
   boolean,
   custom,
@@ -16,13 +25,7 @@ import {
   type InferInput
 } from 'valibot';
 
-import {
-  activityComponent,
-  createActivityPolymiddleware,
-  type ActivityPolymiddleware
-} from '../activityPolymiddleware';
-import { type LegacyActivityMiddleware } from '../legacy/activityMiddleware';
-import { type LegacyRenderAttachment } from '../legacy/attachmentMiddleware';
+import LegacyActivityBridge from './LegacyActivityBridge';
 
 const webChatActivitySchema = custom<WebChatActivity>(value => safeParse(object({}), value).success);
 
@@ -71,39 +74,26 @@ const fallbackComponentPropsSchema = pipe(
 );
 
 type FallbackComponentProps = Readonly<InferInput<typeof fallbackComponentPropsSchema> & { children?: never }>;
-interface RenderFallbackComponentCallback {
-  // Returns { render(): ReactNode } so we don't confuse with function component.
-  (request: { activity: WebChatActivity }): { readonly render: () => ReactNode };
-}
 
 function createActivityPolymiddlewareFromLegacy(
-  bridgeComponent: ComponentType<LegacyActivityBridgeComponentProps>,
-  // Use lowercase for argument name, but we need uppercase for JSX.
-  renderFallbackComponent: RenderFallbackComponentCallback,
-  ...middleware: readonly LegacyActivityMiddleware[]
-): ActivityPolymiddleware;
-
-function createActivityPolymiddlewareFromLegacy(
-  bridgeComponent: ComponentType<LegacyActivityBridgeComponentProps>,
-  renderFallbackComponent: RenderFallbackComponentCallback,
   ...middleware: readonly LegacyActivityMiddleware[]
 ): ActivityPolymiddleware {
   const legacyEnhancer = composeEnhancer(...middleware.map(middleware => middleware()));
 
-  return createActivityPolymiddleware(() => {
-    const legacyHandler = legacyEnhancer(
-      request => () => renderFallbackComponent({ activity: request.activity })?.render()
-    );
+  return createActivityPolymiddleware(next => {
+    const legacyHandler = legacyEnhancer(request => {
+      const handler = next(request);
 
-    return ({ activity }) => {
-      const legacyResult = legacyHandler({ activity });
+      return !!handler && (() => handler.render({}));
+    });
 
-      if (!legacyResult) {
-        // Legacy cannot fallback to poly middleware due to signature incompatibility.
-        return undefined;
-      }
+    return request => {
+      // TODO: [P*] Fix this once PR #5565 is merged.
+      const legacyResult = legacyHandler(request as any);
 
-      return activityComponent(bridgeComponent, { activity, render: legacyResult });
+      return legacyResult
+        ? activityComponent(LegacyActivityBridge, { activity: request.activity, render: legacyResult })
+        : undefined;
     };
   });
 }
