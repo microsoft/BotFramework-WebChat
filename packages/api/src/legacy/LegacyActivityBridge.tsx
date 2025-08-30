@@ -32,13 +32,7 @@ function LegacyActivityBridge(props: LegacyActivityBridgeComponentProps) {
   const renderAvatarRaw = useCreateAvatarRenderer();
 
   const renderActivityStatus = useMemo(
-    () =>
-      createActivityStatusRenderer(
-        Object.freeze({
-          activity,
-          nextVisibleActivity: undefined
-        })
-      ),
+    () => createActivityStatusRenderer(Object.freeze({ activity })),
     [activity, createActivityStatusRenderer]
   );
   const renderAvatar = useMemo(

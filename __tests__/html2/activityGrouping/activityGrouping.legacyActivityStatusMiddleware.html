@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -38,8 +38,8 @@
                 activity: {
                   from: { role }
                 },
-                sendState,
-                sameTimestampGroup
+                hideTimestamp,
+                sendState
               }
             ] = args;
 
@@ -56,7 +56,7 @@
                   <span className="activity-status__send-failed">Send failed.</span>
                 </span>
               );
-            } else if (!sameTimestampGroup) {
+            } else if (!hideTimestamp) {
               return (
                 <span className="activity-status">
                   <span className="activity-status__timestamp-pretext">{role === 'user' ? 'User at ' : 'Bot at '}</span>

@@ -42,6 +42,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - `styleOptions.hideUploadButton` is being deprecated in favor of `styleOptions.disableFileUpload`. The option will be removed on or after 2027-07-14
 - `botframework-directlinespeech-sdk` no longer ponyfill `AbortController`, it is supported by modern browsers, in PR [#5530](https://github.com/microsoft/BotFramework-WebChat/pull/5530)
 - `activityMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2027-08-16, related to PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
+- Deprecation of `activityMiddleware.nextVisibleActivity` is completed, in PR [#XXX](https://github.com/microsoft/BotFramework-WebChat/issues/XXX), by [@compulim](https://github.com/compulim)
 
 ### Added
 
