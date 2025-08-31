@@ -1,17 +1,13 @@
-import { type ComponentType } from 'react';
 import { type ComponentHandlerResult } from 'react-chain-of-responsibility/preview';
-import ErrorBoundaryForRenderFunction, {
-  type ErrorBoundaryForRenderFunctionProps
-} from './ErrorBoundaryForRenderFunction';
+import { ErrorBoundaryBody, ErrorBoundaryWrapper } from './ErrorBoundaryForRenderFunction';
 import type templatePolymiddleware from './templatePolymiddleware';
 import unwrapIfValiError from './unwrapIfValiError';
 
-// Following @types/react to use {} for props.
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export default function createErrorBoundaryMiddleware<Request, Props extends {}>({
   createMiddleware,
-  where,
-  reactComponent
+  reactComponent,
+  where
 }: Pick<ReturnType<typeof templatePolymiddleware<Request, Props>>, 'createMiddleware' | 'reactComponent'> & {
   where: string;
 }) {
@@ -24,14 +20,13 @@ export default function createErrorBoundaryMiddleware<Request, Props extends {}>
 
       return (
         result &&
-        reactComponent(
-          ErrorBoundaryForRenderFunction as ComponentType<ErrorBoundaryForRenderFunctionProps<Props>>,
-          {
-            errorBoundaryRenderFunction: result?.render,
-            errorBoundaryWhere: where
-            // TODO: [P1] Fix force casting by using React Context to hide internal props.
-          } as unknown as ErrorBoundaryForRenderFunctionProps<Props>
-        )
+        reactComponent(ErrorBoundaryBody, undefined, {
+          wrapperComponent: ErrorBoundaryWrapper,
+          wrapperProps: {
+            renderFunction: result?.render,
+            where
+          }
+        })
       );
     } catch (error) {
       // Simplify code by re-assigning to `error`.
@@ -39,16 +34,15 @@ export default function createErrorBoundaryMiddleware<Request, Props extends {}>
       error = unwrapIfValiError(error);
 
       // Thrown before render, show the red box immediately.
-      return reactComponent(
-        ErrorBoundaryForRenderFunction as ComponentType<ErrorBoundaryForRenderFunctionProps<Props>>,
-        {
-          errorBoundaryRenderFunction: () => {
+      return reactComponent(ErrorBoundaryBody, undefined, {
+        wrapperComponent: ErrorBoundaryWrapper,
+        wrapperProps: {
+          renderFunction() {
             throw error;
           },
-          errorBoundaryWhere: where
-          // TODO: [P1] Fix force casting by using React Context to hide internal props.
-        } as unknown as ErrorBoundaryForRenderFunctionProps<Props>
-      );
+          where
+        }
+      });
     }
   });
 }

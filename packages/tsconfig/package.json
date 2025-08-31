@@ -35,6 +35,5 @@
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.5",
     "typescript-plugin-css-modules": "^5.2.0"
-  },
-  "dependencies": {}
+  }
 }
