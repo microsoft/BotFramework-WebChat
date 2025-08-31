@@ -45,34 +45,38 @@
 
         const rootElement = document.getElementsByTagName('main')[0];
 
-        const polymiddleware = [
-          createActivityPolymiddlewareFromLegacy(
-            () => next => request => {
-              const child = next({
-                activity: {
-                  ...request.activity,
-                  text: request.activity.text.toUpperCase()
-                }
-              });
+        const Downstream = function Downstream({ request }) {
+          return createElement(
+            'div',
+            {},
+            createElement('div', {}, `<Downstream data-activity-text="${request.activity.text}" />`)
+          );
+        };
 
-              return () =>
+        const polymiddleware = [
+          createActivityPolymiddlewareFromLegacy(() => next => request => {
+            // Modify request, it should warn and revert.
+            const child = next({
+              activity: {
+                ...request.activity,
+                text: request.activity.text.toUpperCase()
+              }
+            });
+
+            return () =>
+              createElement(
+                'div',
+                {},
                 createElement(
                   'div',
                   {},
-                  createElement('div', {}, `<Upstream data-activity-text="${request.activity.text}">`),
-                  child(),
-                  createElement('div', {}, '</Upstream>')
-                );
-            },
-            () => next => request => {
-              return () =>
-                createElement(
-                  'div',
-                  {},
-                  createElement('div', {}, `<Downstream data-activity-text="${request.activity.text}" />`)
-                );
-            }
-          )
+                  `<Upstream data-activity-text="${request.activity.text}">`,
+                  child?.(),
+                  `</Upstream>`
+                )
+              );
+          }),
+          createActivityPolymiddleware(next => request => activityComponent(Downstream, { request }))
         ];
 
         // WHEN: Web Chat is being rendered.
@@ -105,11 +109,11 @@
 
         expect(activity).toHaveProperty(
           'textContent',
-          '<Upstream data-activity-text="Hello, World!"><Downstream data-activity-text="HELLO, WORLD!" /></Upstream>'
+          '<Upstream data-activity-text="Hello, World!"><Downstream data-activity-text="Hello, World!" /></Upstream>'
         );
 
         // THEN: Should not warn because request change is allowed in legacy activity middleware.
-        await expect(console.warn).toHaveBeenCalledTimes(0);
+        await expect(console.warn).toHaveBeenCalledTimes(1);
 
         // THEN: Should match snapshot.
         await host.snapshot('local');
