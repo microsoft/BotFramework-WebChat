@@ -1,4 +1,4 @@
-import { type ComponentHandlerResult } from 'react-chain-of-responsibility/preview';
+import type { ReactElement } from 'react';
 import { ErrorBoundaryBody, ErrorBoundaryWrapper } from './ErrorBoundaryForRenderFunction';
 import type templatePolymiddleware from './templatePolymiddleware';
 import unwrapIfValiError from './unwrapIfValiError';
@@ -12,37 +12,24 @@ export default function createErrorBoundaryMiddleware<Request, Props extends {}>
   where: string;
 }) {
   return createMiddleware(next => request => {
-    // TODO: [P1] Simplify this code.
-    let result: ComponentHandlerResult<Props> | undefined;
+    let result: { readonly render: (overridingProps?: Partial<Props> | undefined) => ReactElement | null } | undefined;
 
     try {
       result = next(request);
-
-      return (
-        result &&
-        reactComponent(ErrorBoundaryBody, undefined, {
-          wrapperComponent: ErrorBoundaryWrapper,
-          wrapperProps: {
-            renderFunction: result?.render,
-            where
-          }
-        })
-      );
     } catch (error) {
-      // Simplify code by re-assigning to `error`.
-      // eslint-disable-next-line no-ex-assign
-      error = unwrapIfValiError(error);
-
-      // Thrown before render, show the red box immediately.
-      return reactComponent(ErrorBoundaryBody, undefined, {
-        wrapperComponent: ErrorBoundaryWrapper,
-        wrapperProps: {
-          renderFunction() {
-            throw error;
-          },
-          where
+      result = {
+        render() {
+          throw unwrapIfValiError(error);
         }
-      });
+      };
     }
+
+    return (
+      result &&
+      reactComponent(ErrorBoundaryBody, undefined, {
+        wrapperComponent: ErrorBoundaryWrapper,
+        wrapperProps: { renderFunction: result?.render, where }
+      })
+    );
   });
 }
