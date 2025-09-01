@@ -193,39 +193,50 @@ Polymiddleware enforces immutability of requests. Unlike legacy middleware, an u
 
 ### Why we think polymiddleware is better?
 
-We start using middleware (or chain of responsibility) pattern for UI customization since late 2018 when React hooks is still in its womb. Over the past 7.5 years, we learnt a lot.
+Since late 2018, we start adopting middleware programming pattern for UI customization. At the time, React hooks is still in its womb. Over the past 7.5 years of journey, we learnt a lot. Polymiddleware combined all our learnings and is our mature approach for deep customization.
 
 - In other languages, middleware is called "chain of responsibility"
    - Unique characteristics in Web Chat: bidirectional, synchronous, early termination
-- Middleware overriding request offers flexibility but makes it very hard to debug
-   - Rendering become inconsistent when a buggy middleware is in the chain
-      - One middleware could change activity type and cause havoc
+   - The economy of middleware/chain-of-responsibility in plain English
+      - "In Web Chat, result is a render function"
+      - "Handler process a request and return a result"
+      - "Enhancer is a handler working in a chain: it process the request, pass it to the next enhancer to process, when it return, process it again, and then return"
+      - "Middleware initialize the chain of enhancers"
+      - "`applyMiddleware()` compile middleware back to a single handler"
+- Allowing middleware to override request improves flexibility but also impact debuggability
+   - When a middleware in the chain is bugged, rendering could become inconsistent
+   - One middleware could change activity type and cause havoc
 - Middleware should return render function than a React component
-   - Impossible to set a default prop (binding props) in React component without wasted rendering and various performance issues
-   - Hooks cannot be used in render function
+   - Impossible to set a dynamic value as a default prop value in React component without wasted rendering and various performance issues
+      - Binding props to a component always re-render despite no actual value change
+   - Render function cannot use hooks
    - Render function and React component can be transformed to each other
-- Ability to use hooks in middleware will reduce props and moving parts
-- Build-time vs. render-time
-   - Request is build-time variable and primarily used to "decide whether middleware should add/remove/replace/decorate UI"
+   - Ideal scenario: web devs pass a React component, Web Chat render using render function
+- Ability to use hooks in middleware will reduce prop-passing and result in cleaner interface
+- Clear distinction between build-time and render-time
+   - Request is a build-time variable and primarily used to "decide whether middleware should add/remove/replace/decorate UI"
    - Props and hooks are render-time variable and is for "how to render the UI"
 - All UI-rendering middleware should share same API signature
    - Card action and group activity middleware could be exempted because they are not UI-rendering
 - Versioning API change is difficult
-   - Factory function can help backward and forward compatibility
-- Props should be hide using React context as a wrapper
-- Rendering flavor/variant should be part of the request but not a separate middleware
+   - Factory function can help backward and forward compatibility, similar to building a SDK for an API
+- Props should be hidden by using wrapping React context
+- Flavor of rendering should be part of the request but not a separate middleware
    - "Attachment middleware for screen reader" could be avoided by adding a "for screen reader" flag in the request
-- Everything should be a middleware, whether they are concrete (such as button and icon) or composed (such as send box)
-- Error boundary should be the topmost middleware in the chain
+- Everything should be a middleware, whether they are concrete (such as button and icon) or composed (such as send box, which is composed by text box and send button)
+- Error boundary should be the topmost decorative middleware in the chain
+- When re-rendering is needed due to middleware change, its corresponding callback hook should be invalidated
+   - When no middleware change, the callback hook should never be invalidated
+- To render a middleware with a request, it can be either done by calling a callback hook, or rendering a proxy component
 
 ### Polyfilling legacy middleware
 
-Legacy middleware passed to deprecating props such as `activityMiddleware` will be polyfilled to polymiddleware after other polymiddleware passed via the `polymiddleware` prop.
+Legacy middleware passed to deprecating props such as `activityMiddleware` will be polyfilled to polymiddleware and placed after other polymiddleware passed via the `polymiddleware` prop. In other words, legacy middleware has lower priority than polymiddleware.
 
-Special polymiddleware factory functions allow input of legacy middleware and output as polymiddleware. This helps the transition period. However, these special factory functions is also marked as deprecated.
+Special polymiddleware factory functions such as `createActivityPolymiddlewareFromLegacy()` allow input of legacy middleware and output as polymiddleware. This helps the transition period. However, these special factory functions is also marked as deprecated.
 
-### Why `createActivityPolymiddlewareFromLegacy` accepts an arary of legacy middleware instead of one?
+### Why `createActivityPolymiddlewareFromLegacy()` accepts an array of legacy middleware instead of one?
 
 Polymiddleware enforces immutability of requests, which differs from the behavior of legacy middleware.
 
-When multiple legacy middleware are passed as an array into `createActivityPolymiddlewareFromLegacy()`, they are combined into a single polymiddleware. This allows requests to be modified between legacy middleware, provided they are part of the array.
+When multiple legacy middleware are passed as an array to `createActivityPolymiddlewareFromLegacy()`, they are combined into a single polymiddleware. This allows requests to be modified between legacy middleware, provided they are part of the array.
