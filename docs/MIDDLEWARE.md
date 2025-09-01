@@ -1,6 +1,8 @@
 # Middleware
 
-<!-- TODO: [P*] Stated that we do not allow activity (things in request) to be modified across middleware. -->
+Middleware serves as a core element of Web Chat's architecture, enabling deep and cascaded UI customization.
+
+<!-- TODO: More docs -->
 
 ## Recipes
 
@@ -125,20 +127,22 @@ const polymiddleware = [
 
 ## Behaviors
 
-### Legacy middleware with downstreamer of polymiddleware
+### Polymiddleware vs. legacy middleware
 
-<!-- TODO: [P*] Finish this. -->
+Polymiddleware is a unification of multiple legacy middleware into a single prop.
 
-<!--
+Previously, legacy middleware would sometimes return a render function and other times return a React component. Polymiddleware standardizes this behavior by requiring all middleware to return results created using a factory function.
 
-Add test to prove this is working in:
+Polymiddleware enforces immutability of requests. Unlike legacy middleware, an upstreamer in polymiddleware is prohibited from passing a modified request to a downstreamer.
 
-- Legacy to legacy, override request/prop is okay
-- Polymiddleware to legacy, override request/prop is NOT okay
-- Legacy to polymiddleware, override request/prop is NOT okay
+### Polyfilling legacy middleware
 
-For better protection, legacy middleware cannot change and pass a new copy of activity to polymiddleware. Polymiddleware will always receive the original copy of the activity.
+Legacy middleware passed to deprecating props such as `activityMiddleware` will be polyfilled to polymiddleware after other polymiddleware passed via the `polymiddleware` prop.
 
-TODO: Should we add "allowModifiedRequest"? Should it be on a per-middleware level? Should it be an option in the upstreamer or downstreamer or both?
+Special polymiddleware factory functions allow input of legacy middleware and output as polymiddleware. This helps the transition period. However, these special factory functions is also marked as deprecated.
 
--->
+### Why `createActivityPolymiddlewareFromLegacy` accepts an arary of legacy middleware instead of one?
+
+Polymiddleware enforces immutability of requests, which differs from the behavior of legacy middleware.
+
+When multiple legacy middleware are passed as an array into `createActivityPolymiddlewareFromLegacy()`, they are combined into a single polymiddleware. This allows requests to be modified between legacy middleware, provided they are part of the array.
