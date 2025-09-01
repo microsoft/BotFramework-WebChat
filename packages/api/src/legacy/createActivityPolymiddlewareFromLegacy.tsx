@@ -75,6 +75,13 @@ const fallbackComponentPropsSchema = pipe(
 
 type FallbackComponentProps = Readonly<InferInput<typeof fallbackComponentPropsSchema> & { children?: never }>;
 
+/**
+ * Polyfill legacy activity middleware into a polymiddleware.
+ *
+ * @deprecated Legacy activity middleware is being deprecated and will be removed on or after 2027-08-16.
+ * @param middleware An array of legacy activity middleware.
+ * @returns A polymiddleware composed by legacy activity middleware.
+ */
 function createActivityPolymiddlewareFromLegacy(
   ...middleware: readonly LegacyActivityMiddleware[]
 ): ActivityPolymiddleware {
