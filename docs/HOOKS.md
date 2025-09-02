@@ -253,32 +253,57 @@ To set the avatar for the user, change the props passed to Web Chat via style op
 
 ## `useBuildRenderActivityCallback`
 
-> New in 4.19.0.
+> New in 4.19.0. Read more about this at [MIDDLEWARE.md](./MIDDLEWARE.md).
 
 <!-- prettier-ignore-start -->
 ```ts
 useBuildRenderActivityCallback():
-  (request: { activity: WebChatActivty }) =>
-  (props: { children?: never }) =>
-    {
-      render: (overridingProps?: Partial<Props> | undefined) => ReactElement | null
-    };
+  (request: { activity: WebChatActivity }}) =>
+    (
+      (props: { children?: never }) => ReactElement | null
+    ) | undefined;
 ```
 <!-- prettier-ignore-end -->
 
-The hook will return a function, when called with request and props, will return a render function to render the activity.
+The hook will return a function, when called with request and props, will return a render function to render the activity, or `undefined` if the activity should not be rendered.
 
-<!-- TODO: [P*] Finish this. -->
+The following code snippet demonstrates rendering of activity using `useBuildRenderActivityCallback()`.
 
-### ActivityPolymiddlewareProxy
+```ts
+function MyComponent({ activity }: { readonly activity: WebChatActivity }) {
+  const renderActivity = useBuildRenderActivityCallback();
+  const renderFunction = renderActivity({ activity });
+
+  return renderFunction && <Fragment>{renderFunction({})}</Fragment>;
+}
+```
+
+### `<ActivityPolymiddlewareProxy>`
+
+`<ActivityPolymiddlewareProxy>` is a simpler way to render an activity.
 
 <!-- prettier-ignore-start -->
 ```tsx
-<ActivityPolymiddlewareProxy activity={} />
+const ActivityPolymiddlewareProxy: ComponentType<{ readonly activity: WebChatActivity }>;
 ```
 <!-- prettier-ignore-end -->
 
-<!-- TODO: [P*] Finish this. -->
+The following code demonstrates using `<ActivityPolymiddlewareProxy>` to render an activity.
+
+<!-- prettier-ignore-start -->
+```tsx
+function MyComponent({ activity }: { readonly activity: WebChatActivity }) {
+  return <ActivityPolymiddlewareProxy activity={activity} />;
+}
+```
+<!-- prettier-ignore-end -->
+
+Differences between `useBuildRenderActivityCallback()` and `<ActivityPolymiddlewareProxy>`:
+
+- `useBuildRenderActivityCallback()` allows precise render control
+   - Developers can control how the render function is being used and what to do if the polymiddleware decided not to render the activity
+- `<ActivityPolymiddlewareProxy>` always render an element
+   - If the polymiddleware decided not to render the activity, it will always render an empty/headless element (returning `false`)
 
 ## `useByteFormatter`
 
