@@ -15,12 +15,22 @@ Polymiddleware is our unified architecture for middleware. All middleware will b
 
 ```tsx
 function MyChatApp() {
-  const polymiddleware = useMemo(() => [
-    createActivityPolymiddleware(...),
-    createActivityPolymiddleware(...),
-    createActivityPolymiddleware(...),
-    createErrorBoxPolymiddleware(...)
-  ], []);
+  const polymiddleware = useMemo(
+    () => [
+      createActivityPolymiddleware(
+        next => request =>
+          request.activity.type === 'event'
+            ? // Handle rendering of event activity thru <EventActivity activity={request.activity}>.
+              reactComponent(EventActivity, { activity: request.activity })
+            : // Continue downstream.
+              next(request)
+      )
+      createActivityPolymiddleware(...),
+      createActivityPolymiddleware(...),
+      createErrorBoxPolymiddleware(...)
+    ],
+    []
+  );
 
   return (
     <ReactWebChat
