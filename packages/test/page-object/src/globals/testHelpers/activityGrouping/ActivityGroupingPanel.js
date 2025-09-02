@@ -1,5 +1,6 @@
-import ActivityGroupingContext from './ActivityGroupingContext';
 import classNames from 'classnames';
+
+import ActivityGroupingContext from './ActivityGroupingContext';
 import Toggle from './Toggle';
 
 // Use React from window (UMD) instead of import.
@@ -395,6 +396,8 @@ const ActivityGroupingPanel = () => {
           </div>
           <hr />
           <div>
+            {/* This is test code. */}
+            {/* eslint-disable-next-line react/forbid-elements */}
             <a href={url} rel="noopener noreferrer" target="_blank">
               {'Open in new window'}
             </a>
