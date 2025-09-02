@@ -96,8 +96,7 @@ function createActivityPolymiddlewareFromLegacy(
     );
 
     return ({ activity }) => {
-      // TODO: [P1] `nextVisibleActivity` is deprecated and should be removed.
-      const legacyResult = legacyHandler({ activity, nextVisibleActivity: undefined as any });
+      const legacyResult = legacyHandler({ activity });
 
       if (!legacyResult) {
         // Legacy cannot fallback to poly middleware due to signature incompatibility.

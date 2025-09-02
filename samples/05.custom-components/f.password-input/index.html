@@ -82,7 +82,7 @@
 
         const { useCallback, useState } = window.React;
 
-        const PasswordInputActivity = ({ activity, nextVisibleActivity }) => {
+        const PasswordInputActivity = ({ activity }) => {
           const [twoFACode, setTwoFACode] = useState('');
           const [submitted, setSubmitted] = useState(false);
           const renderActivityStatus = useCreateActivityStatusRenderer()({ activity, sendState: 'sent' });
@@ -140,13 +140,13 @@
         const activityMiddleware =
           () =>
           next =>
-          ({ activity, nextVisibleActivity, ...otherArgs }) => {
+          ({ activity, ...otherArgs }) => {
             const { name, type } = activity;
 
             if (type === 'event' && name === 'passwordInput') {
-              return () => <PasswordInputActivity activity={activity} nextVisibleActivity={nextVisibleActivity} />;
+              return () => <PasswordInputActivity activity={activity} />;
             } else {
-              return next({ activity, nextVisibleActivity, ...otherArgs });
+              return next({ activity, ...otherArgs });
             }
           };
 
