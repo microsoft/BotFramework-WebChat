@@ -289,11 +289,11 @@ Over the past 7.5 years of journey, we learnt a lot. Polymiddleware combined all
    - Card action and group activity middleware could be exempted because they are not UI-rendering
 - Versioning API change is difficult
    - Factory function can help backward and forward compatibility, similar to building a SDK for an API
-- Props should be hidden by using wrapping React context
+- Internal props could be hide by using wrapping React context
 - Flavor of rendering should be part of the request but not a separate middleware
-   - "Attachment middleware for screen reader" could be avoided by adding a "for screen reader" flag in the request
+   - "Attachment middleware for screen reader" could be avoided by adding a "for screen reader" flag in the request for regular attachment middleware
 - Everything should be a middleware, whether they are concrete (such as button and icon) or composed (such as send box, which is composed by text box and send button)
-- Error boundary should be the topmost decorative middleware in the chain
+- Error boundary should be the topmost decorative enhancer in the chain
 - When re-rendering is needed due to middleware change, its corresponding callback hook should be invalidated
    - When no middleware change, the callback hook should never be invalidated
 - To render a middleware with a request, it can be either done by calling a callback hook, or rendering a proxy component
