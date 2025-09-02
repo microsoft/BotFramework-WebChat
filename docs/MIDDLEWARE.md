@@ -235,20 +235,20 @@ For a message activity of "Hello, World!", it will render:
 
 We introduced polymiddleware in 2025-08-16. Based on our 2-year deprecation rule, legacy middleware will be removed on or after 2027-08-16. The following table should deprecation dates for various legacy middleware.
 
-| Legacy middleware            | Remove on or after |
-| ---------------------------- | ------------------ |
-| Activity                     | 2027-08-16         |
-| Activity status              | (TBD)              |
-| Attachment                   | (TBD)              |
-| Attachment for screen reader | (TBD)              |
-| Avatar                       | (TBD)              |
-| Card action                  | (TBD)              |
-| Group activities             | (TBD)              |
-| Scroll to end button         | (TBD)              |
-| Send box                     | (TBD)              |
-| Send box toolbar             | (TBD)              |
-| Toast                        | (TBD)              |
-| Typing indicator             | (TBD)              |
+| Legacy middleware            | Pull request                                                            | Remove on or after |
+| ---------------------------- | ----------------------------------------------------------------------- | ------------------ |
+| Activity                     | PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515) | 2027-08-16         |
+| Activity status              |                                                                         | (TBD)              |
+| Attachment                   |                                                                         | (TBD)              |
+| Attachment for screen reader |                                                                         | (TBD)              |
+| Avatar                       |                                                                         | (TBD)              |
+| Card action                  |                                                                         | (TBD)              |
+| Group activities             |                                                                         | (TBD)              |
+| Scroll to end button         |                                                                         | (TBD)              |
+| Send box                     |                                                                         | (TBD)              |
+| Send box toolbar             |                                                                         | (TBD)              |
+| Toast                        |                                                                         | (TBD)              |
+| Typing indicator             |                                                                         | (TBD)              |
 
 ### Polymiddleware vs. legacy middleware
 
