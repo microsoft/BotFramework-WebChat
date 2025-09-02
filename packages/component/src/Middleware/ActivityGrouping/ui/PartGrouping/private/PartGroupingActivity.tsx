@@ -1,7 +1,7 @@
 import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
-import React, { memo, useCallback, useMemo, useState } from 'react';
+import React, { memo, useCallback, useMemo, useState, type MouseEventHandler } from 'react';
 import {
   any,
   array,
@@ -94,6 +94,11 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
   // When receive Escape key from descendant, focus back to the group.
   const handleLeaveFocusTrap = useCallback(() => focusSelf(), [focusSelf]);
 
+  // When the user press UP/DOWN arrow keys, we put a visual focus indicator around the focused group.
+  // We should do the same for mouse, when the user click on the activity, we should also put a visual focus indicator around the activity.
+  // We are doing it in event capture phase to prevent descendants from stopping event propagation to us.
+  const handleMouseDownCapture: MouseEventHandler = useCallback(() => focusSelf(false), [focusSelf]);
+
   const isActiveDescendant = groupingActivityDescendantId === activeDescendantId;
 
   const activityElementMapRef = useActivityElementMapRef();
@@ -108,7 +113,11 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
   );
 
   return (
-    <TranscriptFocusContent focused={isActiveDescendant} ref={groupCallbackRef}>
+    <TranscriptFocusContent
+      focused={isActiveDescendant}
+      onMouseDownCapture={handleMouseDownCapture}
+      ref={groupCallbackRef}
+    >
       <FocusTrap
         onFocus={handleDescendantFocus}
         onLeave={handleLeaveFocusTrap}
