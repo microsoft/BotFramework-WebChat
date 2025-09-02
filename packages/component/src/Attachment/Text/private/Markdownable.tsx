@@ -6,6 +6,7 @@ import { useRenderMarkdownAsHTML } from '../../../hooks';
 const markdownablePropsSchema = pipe(
   object({
     className: optional(string()),
+    id: optional(string()),
     text: string()
   }),
   readonly()
@@ -13,7 +14,7 @@ const markdownablePropsSchema = pipe(
 
 type MarkdownableProps = InferInput<typeof markdownablePropsSchema>;
 
-function Markdownable({ className, text }: MarkdownableProps) {
+function Markdownable({ className, text, id }: MarkdownableProps) {
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
 
   const innerHTML = useMemo<Readonly<{ __html: string }> | undefined>(
@@ -23,9 +24,9 @@ function Markdownable({ className, text }: MarkdownableProps) {
 
   return innerHTML ? (
     // eslint-disable-next-line react/no-danger
-    <span className={className} dangerouslySetInnerHTML={innerHTML} />
+    <span id={id} className={className} dangerouslySetInnerHTML={innerHTML} />
   ) : (
-    <span className={className}>{text}</span>
+    <span id={id} className={className}>{text}</span>
   );
 }
 

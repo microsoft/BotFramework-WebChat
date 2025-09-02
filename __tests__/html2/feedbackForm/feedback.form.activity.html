@@ -81,6 +81,14 @@
           1000
         );
 
+        // Validate aria labelledby is present for feedback form and matching elements are present
+        const feedbackFormSendBox = pageElements.byTestId('feedback sendbox');
+        const ariaLabelledBy = feedbackFormSendBox.getAttribute('aria-labelledby');
+        expect(ariaLabelledBy).toContain('feedback-form__form-header__id');
+        expect(ariaLabelledBy).toContain('feedback-form__form-footer__id');
+        expect(ariaLabelledBy).toContain('feedback-form__text-area__id');
+        await pageObjects.verifyDOMIntegrity();
+
         // WHEN: The cancel button is clicked.
         await host.sendTab(2);
         await host.sendKeys('ENTER');

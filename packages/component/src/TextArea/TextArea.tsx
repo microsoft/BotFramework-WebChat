@@ -19,6 +19,7 @@ const TextArea = forwardRef<
   HTMLTextAreaElement,
   Readonly<{
     'aria-label'?: string | undefined;
+    'aria-labelledby'?: string | undefined;
     className?: string | undefined;
     completion?: ReactNode | undefined;
     'data-testid'?: string | undefined;
@@ -32,6 +33,7 @@ const TextArea = forwardRef<
      *   This ensures the flow of focus did not sent to document body
      */
     hidden?: boolean | undefined;
+    id?: string | undefined;
     onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
     placeholder?: string | undefined;
     startRows?: number | undefined;
@@ -85,8 +87,10 @@ const TextArea = forwardRef<
           <textarea
             aria-disabled={disabled}
             aria-label={props['aria-label']}
+            aria-labelledby={props['aria-labelledby']}
             className={cx(classNames['text-area-input'], classNames['text-area-shared'])}
             data-testid={props['data-testid']}
+            id={props['id']}
             onCompositionEnd={handleCompositionEnd}
             onCompositionStart={handleCompositionStart}
             onInput={props.onInput}
