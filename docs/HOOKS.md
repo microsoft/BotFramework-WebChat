@@ -298,7 +298,7 @@ function MyComponent({ activity }: { readonly activity: WebChatActivity }) {
 ```
 <!-- prettier-ignore-end -->
 
-Differences between `useBuildRenderActivityCallback()` and `<ActivityPolymiddlewareProxy>`:
+Main differences between `useBuildRenderActivityCallback()` and `<ActivityPolymiddlewareProxy>`:
 
 - `useBuildRenderActivityCallback()` allows precise render control
    - Developers can control how the render function is being used and what to do if the polymiddleware decided not to render the activity

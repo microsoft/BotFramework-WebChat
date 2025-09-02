@@ -132,6 +132,24 @@ const polymiddleware = [
 ];
 ```
 
+### Using the new `<XXXPolymiddlewareProxy>`
+
+Every type of polymiddleware now comes with its corresponding proxy component. It is the easiest way to render a polymiddleware.
+
+```tsx
+const ActivityPolymiddlewareProxy: ComponentType<{ readonly activity: WebChatActivity }>;
+```
+
+The following code demonstrates using `<ActivityPolymiddlewareProxy>` to render an activity.
+
+<!-- prettier-ignore-start -->
+```tsx
+function MyComponent({ activity }: { readonly activity: WebChatActivity }) {
+  return <ActivityPolymiddlewareProxy activity={activity} />;
+}
+```
+<!-- prettier-ignore-end -->
+
 ### Mixing polymiddleware with legacy middleware
 
 > Notes: legacy middleware is deprecated and will be removed on or after 2027-08-16.
@@ -240,3 +258,12 @@ Special polymiddleware factory functions such as `createActivityPolymiddlewareFr
 Polymiddleware enforces immutability of requests, which differs from the behavior of legacy middleware.
 
 When multiple legacy middleware are passed as an array to `createActivityPolymiddlewareFromLegacy()`, they are combined into a single polymiddleware. This allows requests to be modified between legacy middleware, provided they are part of the array.
+
+### When to use `useBuildRenderXXXCallback()` vs. `<XXXPolymiddlewareProxy>`?
+
+Their main differences:
+
+- `useBuildRenderXXXCallback()` allows precise render control
+   - Developers can control how the render function is being used and what to do if the polymiddleware decided not to render the activity
+- `<XXXPolymiddlewareProxy>` always render an element
+   - If the polymiddleware decided not to render, the proxy will still render an empty/headless element (returning `false`)
