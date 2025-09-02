@@ -181,6 +181,8 @@ const polymiddleware = [
 
 Every type of polymiddleware now comes with its corresponding proxy component. It is the easiest way to render a polymiddleware.
 
+The proxy component acts as an intermediary, forwarding request to the polymiddleware. The polymiddleware processes the request and returns a render function, which the proxy morphs into the final rendered output.
+
 ```tsx
 const ActivityPolymiddlewareProxy: ComponentType<{ readonly activity: WebChatActivity }>;
 ```
