@@ -108,10 +108,26 @@
     margin-block: calc(var(--webchat__padding--regular) + 1px);
     place-self: start;
     font-size: 1.1em;
+    display: grid;
+    grid-template-areas: "message-status-icon";
+
+    > * {
+      grid-area: message-status-icon;
+    }
   }
 
-  .stacked-layout__message-status-complete-icon {
+  .stacked-layout__message-status-unset-icon,
+  .stacked-layout__message-status-complete-icon,
+  .stacked-layout__message-status-loader {
     visibility: hidden;
+  }
+
+  .stacked-layout__message-status--unset .stacked-layout__message-status-unset-icon {
+    visibility: unset;
+  }
+
+  .stacked-layout__message-status--incomplete .stacked-layout__message-status-loader {
+    visibility: unset;
   }
 
   .stacked-layout__message-status--final .stacked-layout__message-status-complete-icon {
@@ -177,17 +193,23 @@
     .stacked-layout__bubble {
       grid-template: 'content' 1fr / 1fr;
     }
+    
     .stacked-layout__message-status {
       display: none;
     }
-    &:has(.stacked-layout__message-status--final) .stacked-layout__bubble {
-      grid-template:
-        'status content'
-        'status content'
-        / min-content auto;
-    }
-    &:has(.stacked-layout__message-status--final) .stacked-layout__message-status {
-      display: flex;
+    
+    &:has(.stacked-layout__message-status--final), 
+    &:has(.stacked-layout__message-status--incomplete) {
+      .stacked-layout__bubble {
+        grid-template:
+          'status content'
+          'status content'
+          / min-content auto;
+      }
+
+      .stacked-layout__message-status {
+        display: grid;
+      }
     }
   }
 }

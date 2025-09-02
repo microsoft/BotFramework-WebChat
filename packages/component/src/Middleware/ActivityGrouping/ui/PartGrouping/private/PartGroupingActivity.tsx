@@ -1,4 +1,5 @@
 import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo, useState, type MouseEventHandler } from 'react';
@@ -37,6 +38,8 @@ import isZeroOrPositive from '../../../../../Utils/isZeroOrPositive';
 import { android } from '../../../../../Utils/detectBrowser';
 import TranscriptActivityList from '../../../../../Transcript/TranscriptFocus/TranscriptActivityList';
 
+import styles from './PartGroupingActivity.module.css';
+
 const { useAvatarForBot, useStyleOptions, useGetKeyByActivity } = hooks;
 
 const partGroupingActivityPropsSchema = pipe(
@@ -65,8 +68,9 @@ const partGroupingFocusableActivityPropsSchema = pipe(
       transform(value => value as WebChatActivity),
       readonly()
     ),
-    groupKey: string(),
-    children: optional(reactNode())
+    children: optional(reactNode()),
+    className: optional(string()),
+    groupKey: string()
   }),
   readonly()
 );
@@ -75,7 +79,7 @@ type FocusablePartGroupingActivityProps = InferOutput<typeof partGroupingFocusab
 
 function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps) {
   const [activeDescendantId] = useActiveDescendantId();
-  const { activity, children, groupKey } = parse(partGroupingFocusableActivityPropsSchema, props);
+  const { activity, children, className, groupKey } = parse(partGroupingFocusableActivityPropsSchema, props);
 
   const getGroupDescendantIdByActivityKey = useGetGroupDescendantIdByActivityKey();
   const focusByGroupKey = useFocusByGroupKey();
@@ -114,6 +118,7 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
 
   return (
     <TranscriptFocusContent
+      className={className}
       focused={isActiveDescendant}
       onMouseDownCapture={handleMouseDownCapture}
       ref={groupCallbackRef}
@@ -134,6 +139,7 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
 }
 
 function PartGroupingActivity(props: PartGroupingActivityProps) {
+  const classNames = useStyles(styles);
   const { activities, children } = parse(partGroupingActivityPropsSchema, props);
   const getKeyByActivity = useGetKeyByActivity();
   const [isGroupOpen, setIsGroupOpen] = useState(true);
@@ -175,7 +181,11 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const topAlignedCallout = isZeroOrPositive(bubbleNubOffset);
 
   return (
-    <FocusablePartGroupingActivity activity={firstActivity} groupKey={groupKey}>
+    <FocusablePartGroupingActivity
+      activity={firstActivity}
+      className={classNames['part-grouping-activity']}
+      groupKey={groupKey}
+    >
       <StackedLayoutRoot
         hideAvatar={hasAvatar && !showAvatar}
         isGroup={true}
@@ -184,7 +194,9 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
       >
         <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
           <CollapsibleGrouping isOpen={isGroupOpen} onToggle={setIsGroupOpen} title={currentMessage?.abstract || ''}>
-            <TranscriptActivityList>{children}</TranscriptActivityList>
+            <TranscriptActivityList className={classNames['part-grouping-activity__activities']}>
+              {children}
+            </TranscriptActivityList>
           </CollapsibleGrouping>
         </StackedLayoutMain>
         {renderActivityStatus && <StackedLayoutStatus>{renderActivityStatus({ hideTimestamp })}</StackedLayoutStatus>}

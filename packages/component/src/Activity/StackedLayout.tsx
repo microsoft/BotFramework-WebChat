@@ -24,6 +24,7 @@ import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 
 import styles from './StackedLayout.module.css';
 import { ComponentIcon } from '../Icon';
+import MessageStatusLoader from './private/MessageStatusLoader';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useGetKeyByActivity, useStyleOptions } = hooks;
 
@@ -167,14 +168,23 @@ const StackedLayout = ({
       showStatus && (
         <div
           className={cx(classNames['stacked-layout__message-status'], {
-            [classNames['stacked-layout__message-status--final']]: messageThing?.creativeWorkStatus === 'published'
+            [classNames['stacked-layout__message-status--unset']]: !messageThing?.creativeWorkStatus,
+            [classNames['stacked-layout__message-status--final']]: messageThing?.creativeWorkStatus === 'published',
+            [classNames['stacked-layout__message-status--incomplete']]:
+              messageThing?.creativeWorkStatus === 'incomplete'
           })}
         >
+          <ComponentIcon
+            appearance="text"
+            className={classNames['stacked-layout__message-status-unset-icon']}
+            icon="unchecked-circle"
+          />
           <ComponentIcon
             appearance="text"
             className={classNames['stacked-layout__message-status-complete-icon']}
             icon="checkmark-circle"
           />
+          <MessageStatusLoader className={classNames['stacked-layout__message-status-loader']} />
         </div>
       ),
     [classNames, messageThing?.creativeWorkStatus, showStatus]
