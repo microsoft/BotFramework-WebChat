@@ -260,9 +260,11 @@ Polymiddleware enforces immutability of requests. Unlike legacy middleware, an u
 
 ### Why we think polymiddleware is better?
 
-Since late 2018, we start adopting middleware programming pattern for UI customization. At the time, React hooks is still in its womb. Over the past 7.5 years of journey, we learnt a lot. Polymiddleware combined all our learnings and is our mature approach for deep customization.
+Since late 2018, we start adopting middleware programming pattern for UI customization. At the time, React hooks is still in its womb.
 
-- In other languages, middleware is called "chain of responsibility"
+Over the past 7.5 years of journey, we learnt a lot. Polymiddleware combined all our learnings and is our mature approach for deep customization.
+
+- In other languages, middleware is called "chain of responsibility" pattern
    - Unique characteristics in Web Chat: bidirectional, synchronous, early termination
    - The economy of middleware/chain-of-responsibility in plain English
       - "In Web Chat, result is a render function"
@@ -298,7 +300,7 @@ Since late 2018, we start adopting middleware programming pattern for UI customi
 
 ### Polyfilling legacy middleware
 
-Legacy middleware passed to deprecating props such as `activityMiddleware` will be polyfilled to polymiddleware and placed after other polymiddleware passed via the `polymiddleware` prop. In other words, legacy middleware has lower priority than polymiddleware.
+Legacy middleware passed to deprecating props such as `activityMiddleware` will be upgraded to polymiddleware automatically and placed after other polymiddleware passed via the `polymiddleware` prop. In other words, legacy middleware has lower priority than polymiddleware.
 
 Special polymiddleware factory functions such as `createActivityPolymiddlewareFromLegacy()` allow input of legacy middleware and output as polymiddleware. This helps the transition period. However, these special factory functions is also marked as deprecated.
 
@@ -316,3 +318,16 @@ Their main differences:
    - Developers can control how the render function is being used and what to do if the polymiddleware decided not to render the activity
 - `<XXXPolymiddlewareProxy>` always render an element
    - If the polymiddleware decided not to render, the proxy will still render an empty/headless element (function component returning `null`)
+
+### Priorities in polymiddleware
+
+While we try to hide and internalize priorities between polymiddleware, there are special cases that prioritization would help. The following table shows how polymiddleware are prioritized.
+
+| Priority | Type                    | Description                                                                                                                                             |
+| -------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Highest  | Error boundary          | <p>All polymiddleware has an error boundary wrapper to control error propagation.</p><p>Error will be rendered using the `ErrorBox` polymiddleware.</p> |
+| Normal   | `polymiddleware` props  | Polymiddleware passed to `polymiddleware` prop.                                                                                                         |
+| Low      | Legacy middleware props | Legacy middleware passed to their corresponding prop (such as `activityMiddleware`) and upgraded automatically.                                         |
+| Lowest   | Catch-all as error      | Requests not handled by any polymiddleware in the chain will thrown as error.                                                                           |
+
+Priorities is used internally and will not expose as a feature.
