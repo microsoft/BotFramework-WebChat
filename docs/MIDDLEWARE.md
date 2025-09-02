@@ -14,7 +14,7 @@ Middleware operates in a cascading sequence, where the execution order plays a c
 Polymiddleware is our unified architecture for middleware. All middleware will be passed to a single `polymiddleware` prop.
 
 ```tsx
-function MyChatApp() {
+function MyChatUI() {
   const polymiddleware = useMemo(
     () => [
       createActivityPolymiddleware(
@@ -27,6 +27,8 @@ function MyChatApp() {
       )
       createActivityPolymiddleware(...),
       createActivityPolymiddleware(...),
+
+      // Handle rendering of error box.
       createErrorBoxPolymiddleware(...)
     ],
     []
@@ -49,8 +51,8 @@ function MyChatApp() {
 
 The following are supported polymiddleware types:
 
-- Activity
-- Error box
+- Activity (PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515))
+- Error box (PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515))
 
 ## Recipes
 
