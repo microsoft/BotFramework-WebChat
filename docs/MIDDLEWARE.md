@@ -264,8 +264,8 @@ Since late 2018, we start adopting middleware programming pattern for UI customi
 
 Over the past 7.5 years of journey, we learnt a lot. Polymiddleware combined all our learnings and is our mature approach for deep customization.
 
-- In other languages, middleware is called "chain of responsibility" pattern
-   - Unique characteristics in Web Chat: bidirectional, synchronous, early termination
+- Middleware is officially called the ["chain of responsibility" pattern](https://refactoring.guru/design-patterns/chain-of-responsibility)
+   - Unique characteristics in Web Chat: bidirectional, synchronous, allow early termination
    - The economy of middleware/chain-of-responsibility in plain English
       - "In Web Chat, result is a render function"
       - "Handler process a request and return a result"
