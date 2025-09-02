@@ -303,7 +303,7 @@ Main differences between `useBuildRenderActivityCallback()` and `<ActivityPolymi
 - `useBuildRenderActivityCallback()` allows precise render control
    - Developers can control how the render function is being used and what to do if the polymiddleware decided not to render the activity
 - `<ActivityPolymiddlewareProxy>` always render an element
-   - If the polymiddleware decided not to render the activity, it will always render an empty/headless element (returning `false`)
+   - If the polymiddleware decided not to render the activity, it will always render an empty/headless element (function component returning `null`)
 
 ## `useByteFormatter`
 
