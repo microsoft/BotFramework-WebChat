@@ -7,6 +7,20 @@ extends:
   - plugin:react/recommended
   - plugin:react-hooks/recommended
 
+overrides:
+  - files:
+      - '__tests__/**/*.js'
+      - '**/*.spec.jsx'
+      - '**/*.spec.tsx'
+      - '**/*.test.jsx'
+      - '**/*.test.tsx'
+
+    env:
+      jest: true
+
+    rules:
+      'react/forbid-elements': off
+
 parserOptions:
   ecmaFeatures:
     jsx: true
@@ -29,6 +43,10 @@ rules:
     - error
     - forbid:
         - id
+  react/forbid-elements:
+    - error
+    - forbid:
+      - a
   react/jsx-boolean-value:
     - error
     - always

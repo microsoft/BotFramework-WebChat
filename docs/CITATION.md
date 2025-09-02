@@ -30,10 +30,10 @@ The activity graph should have a [Message thing](#message-thing).
 
 A [Message thing](https://schema.org/Message) represent the message activity itself and act as the root of the [activity graph](#activity-graph). It must have the following fields:
 
--  `@context` of `"https://schema.org"`
--  `@id` of `""` (an empty string means self in JSON-LD fashion)
--  `@type` of `"Message"`
--  `type` of `"https://schema.org/Message"`
+- `@context` of `"https://schema.org"`
+- `@id` of `""` (an empty string means self in JSON-LD fashion)
+- `@type` of `"Message"`
+- `type` of `"https://schema.org/Message"`
 
 ### Non-URL citation
 
@@ -53,7 +53,7 @@ Bot developers should implement citations as outlined in this section to ensure 
 
 Notes:
 
--  The third citation is a non-URL citation, its link `cite:1` is currently ignored
+- The third citation is a non-URL citation, its link `cite:1` is ignored and treated as an opaque string
 
 ```
 Sure, you should override the default proxy settings[1]​[2], when your proxy server requires authentication[3].
@@ -73,8 +73,10 @@ Sure, you should override the default proxy settings[1]​[2], when your proxy s
 
 Please refer to the graph for details of each fields. Notably:
 
--  Only compact from is supported (i.e. nested objects), other forms and object references are not supported unless stated otherwise
--  Subclasses are not supported. If the object is expected to be `Message`, it must not be `EmailMessage` (subclass)
+- Only compact from is supported (i.e. nested objects), other forms and object references are not supported unless stated otherwise
+- Subclasses are not supported. If the object is expected to be `Message`, it must not be `EmailMessage` (subclass)
+
+> Notes: In some older versions of Web Chat, we were using root-level and unconnected `Claim` thing. This is strictly used internally and its usage is being deprecated.
 
 #### Sample payload
 
@@ -193,7 +195,11 @@ We use `position` instead of `@id` to match the link definition in Markdown to t
 
 ### Source of truths
 
-If there are deviations of information in Markdown and Message thing, the Message thing should take precedence over the Markdown, given the receiver understood the Message thing.
+> This is updated in PR [5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564) in 2025-08-29.
+
+~If there are deviations of information in Markdown and Message thing, the Message thing should take precedence over the Markdown, given the receiver understood the Message thing.~
+
+If there are deviations of information in Markdown and Message thing, the Markdown should take precedence over the Message thing. This is to support plain text channels (text/SMS) as they do not have capacity to display content from the Message thing.
 
 ### `usageInfo` on the `Message` thing should be a blank node
 
@@ -203,4 +209,4 @@ In JSON-LD, blank node means a node that does not have any contents but `@id` an
 
 ## Further reading
 
--  [Microsoft Teams: Bot messages with AI-generated content](https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/bot-messages-ai-generated-content?tabs=after%2Cbotmessage#citations)
+- [Microsoft Teams: Bot messages with AI-generated content](https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/bot-messages-ai-generated-content?tabs=after%2Cbotmessage#citations)

@@ -42,6 +42,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - `styleOptions.hideUploadButton` is being deprecated in favor of `styleOptions.disableFileUpload`. The option will be removed on or after 2027-07-14
 - `botframework-directlinespeech-sdk` no longer ponyfill `AbortController`, it is supported by modern browsers, in PR [#5530](https://github.com/microsoft/BotFramework-WebChat/pull/5530)
 - `activityMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2027-08-16, related to PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
+- Root-level (unconnected) `Claim` entity is being deprecated, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim). It will be removed on or after 2027-08-29
+   - Use `entities[@id=""][@type="Message"].citation[@type="Claim"]` instead
 - `activityStatusMiddleware.nextVisibleActivity` and `activityStatusMiddleware.sameTimestampGroup` is removed after deprecation, in PR [#5565](https://github.com/microsoft/BotFramework-WebChat/issues/5565), by [@compulim](https://github.com/compulim)
 
 ### Added
@@ -117,6 +119,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - `@msinternal/botframework-webchat-api-middleware` for middleware branch of API package
    - `@msinternal/botframework-webchat-debug-theme` package for enabling debugging scenarios
    - `@msinternal/botframework-webchat-react-hooks` for helpers for React hooks
+- Added link sanitization and ESLint rules, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
@@ -292,6 +295,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook, in PR [#5489](https://github.com/microsoft/BotFramework-WebChat/pull/5489), by [@compulim](https://github.com/compulim)
 - Fixed core internal import in legacy CommonJS environments, in [5509](https://github.com/microsoft/BotFramework-WebChat/pull/5509), by [@OEvgeny](https://github.com/OEvgeny)
 - `activityMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2027-08-16, related to PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
+- Root-level (unconnected) `Claim` entity is being deprecated, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim). It will be removed on or after 2027-08-29
+   - Use `entities[@id=""][@type="Message"].citation[@type="Claim"]` instead
 - `activityStatusMiddleware.nextVisibleActivity` and `activityStatusMiddleware.sameTimestampGroup` is being deprecated and will be removed on or after 2022-07-22, in PR [#4362](https://github.com/microsoft/BotFramework-WebChat/issues/4362), by [@compulim](https://github.com/compulim)
    - Completed deprecation, in PR [#5565](https://github.com/microsoft/BotFramework-WebChat/issues/5565), by [@compulim](https://github.com/compulim)
 
