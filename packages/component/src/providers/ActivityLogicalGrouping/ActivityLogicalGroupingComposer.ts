@@ -5,6 +5,7 @@ import ActivityLogicalGroupingContext, {
   type LogicalGrouping,
   type GroupState
 } from './private/ActivityLogicalGroupingContext';
+import useStateWithOptimisticRef from './private/useStateWithOptimisticRef';
 
 type ActivityLogicalGroupingComposerProps = Readonly<{
   children?: ReactNode | undefined;
@@ -12,23 +13,37 @@ type ActivityLogicalGroupingComposerProps = Readonly<{
 
 const ActivityLogicalGroupingComposer = ({ children }: ActivityLogicalGroupingComposerProps) => {
   const logicalGroupingsRef = useRef<Map<string, LogicalGrouping>>(new Map());
-  const activityToGroupMapRef = useRef<ReadonlyMap<string, string | undefined>>(new Map());
+  const [_activityToGroupMap, setActivityToGroupMap, activityToGroupMapRef] = useStateWithOptimisticRef<
+    ReadonlyMap<string, string | undefined>
+  >(new Map());
 
   const addLogicalGrouping = useCallback(
     (grouping: LogicalGrouping) => {
-      const prevGroupingKeys = logicalGroupingsRef.current.get(grouping.id)?.activityKeys ?? [];
+      const prevGroupingKeys = logicalGroupingsRef.current.get(grouping.key)?.activityKeys ?? [];
 
-      logicalGroupingsRef.current.set(grouping.id, grouping);
+      logicalGroupingsRef.current.set(grouping.key, grouping);
 
       const toRemoveSet = new Set(prevGroupingKeys).difference(new Set(grouping.activityKeys));
       const toAddSet = new Set(grouping.activityKeys).difference(new Set(prevGroupingKeys));
 
-      activityToGroupMapRef.current = new Map([
-        ...[...activityToGroupMapRef.current].filter(([, value]) => !!value && !toRemoveSet.has(value)),
-        ...[...toAddSet].map(activityKey => [activityKey, grouping.id] as const)
-      ]);
+      setActivityToGroupMap(
+        new Map(
+          [].concat(
+            Array.from(activityToGroupMapRef.current).filter(([, value]) => !!value && !toRemoveSet.has(value)),
+            Array.from(toAddSet).map(activityKey => [activityKey, grouping.key] as const)
+          )
+        )
+      );
     },
-    [logicalGroupingsRef]
+    [activityToGroupMapRef, setActivityToGroupMap]
+  );
+
+  const removeLogicalGrouping = useCallback(
+    (key: string) => {
+      logicalGroupingsRef.current.delete(key);
+      setActivityToGroupMap(new Map([...activityToGroupMapRef.current].filter(([, value]) => value !== key)));
+    },
+    [activityToGroupMapRef, setActivityToGroupMap]
   );
 
   const getLogicalGroupKey = useCallback(
@@ -61,9 +76,10 @@ const ActivityLogicalGroupingComposer = ({ children }: ActivityLogicalGroupingCo
       addLogicalGrouping,
       getLogicalGroupKey,
       getGroupState,
-      getGroupBoundaries
+      getGroupBoundaries,
+      removeLogicalGrouping
     }),
-    [addLogicalGrouping, getLogicalGroupKey, getGroupState, getGroupBoundaries]
+    [addLogicalGrouping, getLogicalGroupKey, getGroupState, getGroupBoundaries, removeLogicalGrouping]
   );
 
   return createElement(ActivityLogicalGroupingContext.Provider, { value: contextValue }, children);

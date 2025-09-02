@@ -1,5 +1,6 @@
 export { default as ActivityLogicalGroupingComposer } from './ActivityLogicalGroupingComposer';
 export { default as useAddLogicalGrouping } from './useAddLogicalGrouping';
+export { default as useRemoveLogicalGrouping } from './useRemoveLogicalGrouping';
 export { default as useGetLogicalGroupKey } from './useGetLogicalGroupKey';
 export { default as useGetGroupState } from './useGetGroupState';
 export type { ActivityLogicalGroupingComposerProps } from './ActivityLogicalGroupingComposer';
