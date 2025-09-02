@@ -321,13 +321,15 @@ Their main differences:
 
 ### Priorities in polymiddleware
 
-While we try to hide and internalize priorities between polymiddleware, there are special cases that prioritization would help. The following table shows how polymiddleware are prioritized.
+> Priorities is used internally and will not expose as a feature.
 
-| Priority | Type                    | Description                                                                                                                                             |
-| -------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Highest  | Error boundary          | <p>All polymiddleware has an error boundary wrapper to control error propagation.</p><p>Error will be rendered using the `ErrorBox` polymiddleware.</p> |
-| Normal   | `polymiddleware` props  | Polymiddleware passed to `polymiddleware` prop.                                                                                                         |
-| Low      | Legacy middleware props | Legacy middleware passed to their corresponding prop (such as `activityMiddleware`) and upgraded automatically.                                         |
-| Lowest   | Catch-all as error      | Requests not handled by any polymiddleware in the chain will thrown as error.                                                                           |
+While we try to hide and internalize priorities between polymiddleware, there are special cases that prioritization would help.
 
-Priorities is used internally and will not expose as a feature.
+The following table shows how polymiddleware are prioritized.
+
+| Priority | Type               | Description                                                                                                                                             |
+| -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Highest  | Error boundary     | <p>All polymiddleware has an error boundary wrapper to control error propagation.</p><p>Error will be rendered using the `ErrorBox` polymiddleware.</p> |
+| Normal   | Polymiddleware     | Polymiddleware passed to the `polymiddleware` prop.                                                                                                     |
+| Low      | Legacy middleware  | Legacy middleware passed to their corresponding prop (such as `activityMiddleware`) and upgraded automatically.                                         |
+| Lowest   | Catch-all as error | Requests not handled by any polymiddleware in the chain will be thrown as an error.                                                                     |
