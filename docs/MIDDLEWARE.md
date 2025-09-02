@@ -9,7 +9,38 @@ Middleware operates in a cascading sequence, where the execution order plays a c
 - Replace existing UI
 - Decorate existing UI
 
-<!-- TODO: More docs -->
+## What is polymiddleware?
+
+Polymiddleware is our unified architecture for middleware. All middleware will be passed to a single `polymiddleware` prop.
+
+```tsx
+function MyChatApp() {
+  const polymiddleware = useMemo(() => [
+    createActivityPolymiddleware(...),
+    createActivityPolymiddleware(...),
+    createActivityPolymiddleware(...),
+    createErrorBoxPolymiddleware(...)
+  ], []);
+
+  return (
+    <ReactWebChat
+      polymiddleware={polymiddleware}
+      // ... other props ...
+    />
+  );
+}
+```
+
+> Legacy middleware are polyfilled to `polymiddleware` automatically until they reached end of support. See [this section for deprecation dates](#when-will-legacy-middleware-removed).
+
+### List of polymiddleware types
+
+> We are working on migrating all legacy middleware to polymiddleware.
+
+The following are supported polymiddleware types:
+
+- Activity
+- Error box
 
 ## Recipes
 
@@ -131,6 +162,8 @@ const polymiddleware = [
    })
 ];
 ```
+
+## Features
 
 ### Using the new `<XXXPolymiddlewareProxy>`
 
