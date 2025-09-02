@@ -195,6 +195,8 @@ function MyComponent({ activity }: { readonly activity: WebChatActivity }) {
 ```
 <!-- prettier-ignore-end -->
 
+Refer to [this section](#when-to-use-usebuildrenderxxxcallback-vs-xxxpolymiddlewareproxy) to determine whether to use the hook or the proxy component.
+
 ### Mixing polymiddleware with legacy middleware
 
 > Notes: legacy middleware is deprecated and will be removed on or after 2027-08-16.
