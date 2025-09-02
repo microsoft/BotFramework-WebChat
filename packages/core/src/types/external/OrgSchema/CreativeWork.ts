@@ -1,4 +1,4 @@
-import { lazy, literal, object, parse, string, union, type ObjectEntries } from 'valibot';
+import { lazy, literal, number, object, parse, string, union, type ObjectEntries } from 'valibot';
 
 import { definedTerm, type DefinedTerm } from './DefinedTerm';
 import orgSchemaProperties from './private/orgSchemaProperties';
@@ -62,6 +62,13 @@ export type CreativeWork = Thing & {
   pattern?: DefinedTerm | undefined;
 
   /**
+   * The position of an item in a series or sequence of items.
+   *
+   * @see https://schema.org/position
+   */
+  position?: number;
+
+  /**
    * The textual content of this CreativeWork.
    *
    * @see https://schema.org/text
@@ -104,6 +111,7 @@ export const creativeWork = <TEntries extends ObjectEntries>(entries?: TEntries 
     isBasedOn: orgSchemaProperty(lazy(() => creativeWork())),
     keywords: orgSchemaProperties(union([lazy(() => definedTerm()), string()])),
     pattern: orgSchemaProperty(lazy(() => definedTerm())),
+    position: orgSchemaProperty(number()),
     text: orgSchemaProperty(string()),
     usageInfo: orgSchemaProperty(lazy(() => creativeWork())),
 

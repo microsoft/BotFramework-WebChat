@@ -44,7 +44,7 @@ function PartGrouping(props: PartGroupingProps) {
     [activities, lastActivity]
   );
 
-  const isGroup = activities.length > 1 || !!lastMessage?.isPartOf?.[0]?.['@id'];
+  const isGroup = activities.length > 1 || !!lastMessage?.isPartOf?.['@id'];
 
   return isGroup ? (
     <PartGroupingActivity activities={activities}>{children}</PartGroupingActivity>
