@@ -90,6 +90,8 @@ const TextArea = forwardRef<
             aria-labelledby={props['aria-labelledby']}
             className={cx(classNames['text-area-input'], classNames['text-area-shared'])}
             data-testid={props['data-testid']}
+            // "id" is required for "aria-labelledby"
+            // eslint-disable-next-line react/forbid-dom-props
             id={props['id']}
             onCompositionEnd={handleCompositionEnd}
             onCompositionStart={handleCompositionStart}

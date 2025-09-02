@@ -47,7 +47,14 @@ function FeedbackForm() {
 
   return (
     <div className={classNames['feedback-form__form']}>
-      <span className={classNames['feedback-form__form-header']} id={feedbackFormHeaderId}>{localize('FEEDBACK_FORM_TITLE')}</span>
+      <span
+        className={classNames['feedback-form__form-header']}
+        // "id" is required for "aria-labelledby"
+        // eslint-disable-next-line react/forbid-dom-props
+        id={feedbackFormHeaderId}
+      >
+        {localize('FEEDBACK_FORM_TITLE')}
+      </span>
       <div className={classNames['feedback-form__text-box']}>
         <TextArea
           aria-label={localize('FEEDBACK_FORM_PLACEHOLDER')}
@@ -62,7 +69,9 @@ function FeedbackForm() {
           value={userFeedback}
         />
       </div>
-      {disclaimer && <Markdownable id={disclaimerId} className={classNames['feedback-form__form-footer']} text={disclaimer} />}
+      {disclaimer && (
+        <Markdownable className={classNames['feedback-form__form-footer']} id={disclaimerId} text={disclaimer} />
+      )}
       <div className={classNames['feedback-form__submission-button-bar']}>
         <button className={classNames['feedback-form__submit-button']} type="submit">
           {localize('FEEDBACK_FORM_SUBMIT_BUTTON_LABEL')}

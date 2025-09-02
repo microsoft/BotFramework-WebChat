@@ -23,10 +23,15 @@ function Markdownable({ className, text, id }: MarkdownableProps) {
   );
 
   return innerHTML ? (
-    // eslint-disable-next-line react/no-danger
-    <span id={id} className={className} dangerouslySetInnerHTML={innerHTML} />
+    // "id" is required for "aria-labelledby"
+    // eslint-disable-next-line react/forbid-dom-props, react/no-danger
+    <span className={className} dangerouslySetInnerHTML={innerHTML} id={id} />
   ) : (
-    <span id={id} className={className}>{text}</span>
+    // "id" is required for "aria-labelledby"
+    // eslint-disable-next-line react/forbid-dom-props
+    <span className={className} id={id}>
+      {text}
+    </span>
   );
 }
 
