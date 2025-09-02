@@ -273,15 +273,15 @@ Over the past 7.5 years of journey, we learnt a lot. Polymiddleware combined all
       - "Middleware initialize the chain of enhancers"
       - "`applyMiddleware()` compile middleware back to a single handler"
 - Allowing middleware to override request improves flexibility but also impact debuggability
-   - When a middleware in the chain is bugged, rendering could become inconsistent
-   - One middleware could change activity type and cause havoc
+   - A bug in a middleware within the chain can cause havoc
+      - For instance, a middleware might alter the activity content before passing it downstream, potentially causing unexpected behavior
 - Middleware should return render function than a React component
-   - Impossible to set a dynamic value as a default prop value in React component without wasted rendering and various performance issues
+   - Impossible to set a dynamic value as a default (bound) prop value in React component without wasted rendering and various performance issues
       - Binding props to a component always re-render despite no actual value change
    - Render function cannot use hooks
    - Render function and React component can be transformed to each other
-   - Ideal scenario: web devs pass a React component, Web Chat render using render function
-- Ability to use hooks in middleware will reduce prop-passing and result in cleaner interface
+   - Ideal scenario: producer pass a React component, consumer receive a render function
+- Ability to use hooks in middleware will reduce number of props and result in cleaner interface
 - Clear distinction between build-time and render-time
    - Request is a build-time variable and primarily used to "decide whether middleware should add/remove/replace/decorate UI"
    - Props and hooks are render-time variable and is for "how to render the UI"
