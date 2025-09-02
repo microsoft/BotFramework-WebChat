@@ -111,7 +111,7 @@ export const creativeWork = <TEntries extends ObjectEntries>(entries?: TEntries 
     isBasedOn: orgSchemaProperty(lazy(() => creativeWork())),
     keywords: orgSchemaProperties(union([lazy(() => definedTerm()), string()])),
     pattern: orgSchemaProperty(lazy(() => definedTerm())),
-    position: orgSchemaProperty(number()),
+    position: orgSchemaProperty(union([number(), string()])),
     text: orgSchemaProperty(string()),
     usageInfo: orgSchemaProperty(lazy(() => creativeWork())),
 

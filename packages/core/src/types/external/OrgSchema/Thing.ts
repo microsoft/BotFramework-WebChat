@@ -76,10 +76,10 @@ const thingEntries = {
   additionalType: orgSchemaProperty(string()),
   alternateName: orgSchemaProperty(string()),
   description: orgSchemaProperty(string()),
+  isPartOf: orgSchemaProperty(lazy(() => creativeWork())),
   name: orgSchemaProperty(string()),
   potentialAction: orgSchemaProperties(lazy(() => action())),
-  url: orgSchemaProperty(string()),
-  isPartOf: orgSchemaProperty(lazy(() => creativeWork()))
+  url: orgSchemaProperty(string())
 };
 
 export const thing = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
