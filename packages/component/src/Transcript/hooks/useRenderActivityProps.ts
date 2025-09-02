@@ -45,11 +45,7 @@ const useRenderActivityProps = (activity: WebChatActivity): RenderActivityProps 
   const isTopSideUserNub = isZeroOrPositive(bubbleFromUserNubOffset);
 
   const renderActivityStatus = useMemo(
-    () =>
-      createActivityStatusRenderer({
-        activity,
-        nextVisibleActivity: undefined
-      }),
+    () => createActivityStatusRenderer({ activity }),
     [activity, createActivityStatusRenderer]
   );
 
