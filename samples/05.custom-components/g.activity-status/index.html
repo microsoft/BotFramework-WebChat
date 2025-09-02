@@ -66,8 +66,8 @@
             activity: {
               from: { role }
             },
-            sendState,
-            sameTimestampGroup
+            hideTimestamp,
+            sendState
           } = args;
 
           if (sendState === 'sending') {
@@ -75,7 +75,7 @@
           } else if (sendState === 'send failed') {
             // Custom retry logic can be added when rendering the "Send failed." status.
             return <span className="activityStatus">Send failed.</span>;
-          } else if (!sameTimestampGroup) {
+          } else if (!hideTimestamp) {
             return (
               <span className="activityStatus activityStatus__timestamp">
                 <span className="activityStatus__timestampPretext">{role === 'user' ? 'User at ' : 'Bot at '}</span>

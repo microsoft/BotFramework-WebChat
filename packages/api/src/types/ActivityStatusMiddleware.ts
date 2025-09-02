@@ -1,5 +1,5 @@
-import type { ReactElement } from 'react';
 import type { WebChatActivity } from 'botframework-webchat-core';
+import type { ReactElement } from 'react';
 
 import type { SendStatus } from '../types/SendStatus';
 
@@ -8,14 +8,6 @@ type RenderActivityStatusOptions = {
   activity: WebChatActivity;
   hideTimestamp: boolean;
   sendState: SendStatus;
-
-  // "nextVisibleActivity" is for backward compatibility, please remove this line on or after 2022-07-22.
-  /** @deprecated */
-  nextVisibleActivity: WebChatActivity;
-
-  // "sameTimestampGroup" is for backward compatibility, please remove this line on or after 2022-07-22.
-  /** @deprecated */
-  sameTimestampGroup: boolean;
 };
 
 type RenderActivityStatus = (options: RenderActivityStatusOptions) => ReactElement;

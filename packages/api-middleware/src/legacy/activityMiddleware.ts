@@ -16,7 +16,6 @@ type LegacyActivityComponent = (props: LegacyActivityProps) => Exclude<ReactNode
 
 type LegacyActivityComponentFactoryOptions = {
   activity: WebChatActivity;
-  nextVisibleActivity: WebChatActivity;
 };
 
 type LegacyActivityComponentFactory = (

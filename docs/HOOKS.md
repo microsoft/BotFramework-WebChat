@@ -959,6 +959,8 @@ This hook will return a function that, when called with a `Date` object, `number
 
 ## `useRenderActivity`
 
+> Deprecation notes: this hook is being deprecated and replaced by `useBuildRenderActivityCallback`, it will be removed on or after 2027-08-16.
+
 <!-- prettier-ignore-start -->
 ```js
 useRenderActivity(
