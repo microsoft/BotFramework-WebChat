@@ -4,7 +4,6 @@ import { lazy, literal, looseObject, optional, parse, pipe, string, type ObjectE
 import { action, type Action } from './Action';
 import orgSchemaProperties from './private/orgSchemaProperties';
 import orgSchemaProperty from './private/orgSchemaProperty';
-import type OneOrMany from '../../OneOrMany';
 import { creativeWork, type CreativeWork } from './CreativeWork';
 
 /**
@@ -66,7 +65,7 @@ export type Thing = {
    *
    * @see https://schema.org/isPartOf
    */
-  isPartOf?: OneOrMany<CreativeWork> | undefined;
+  isPartOf?: CreativeWork | undefined;
 };
 
 const thingEntries = {
@@ -80,7 +79,7 @@ const thingEntries = {
   name: orgSchemaProperty(string()),
   potentialAction: orgSchemaProperties(lazy(() => action())),
   url: orgSchemaProperty(string()),
-  isPartOf: orgSchemaProperties(lazy(() => creativeWork()))
+  isPartOf: orgSchemaProperty(lazy(() => creativeWork()))
 };
 
 export const thing = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
