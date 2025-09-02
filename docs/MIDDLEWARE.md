@@ -166,7 +166,7 @@ For a message activity of "Hello, World!", it will render:
 
 ### When will legacy middleware removed?
 
-We started the polymiddleware in 2025-08-16. Based on our 2-year deprecation rule, legacy middleware will be removed on or after 2027-08-16. The following table should deprecation dates for various legacy middleware.
+We introduced polymiddleware in 2025-08-16. Based on our 2-year deprecation rule, legacy middleware will be removed on or after 2027-08-16. The following table should deprecation dates for various legacy middleware.
 
 | Legacy middleware            | Remove on or after |
 | ---------------------------- | ------------------ |
