@@ -2,9 +2,21 @@ import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
 import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo, useState } from 'react';
-import { array, minLength, object, optional, pipe, readonly, transform, any, parse, type InferOutput } from 'valibot';
+import {
+  any,
+  array,
+  minLength,
+  object,
+  optional,
+  parse,
+  pipe,
+  readonly,
+  string,
+  transform,
+  type InferOutput
+} from 'valibot';
 
-import usePartGroupingLogicalGroup, { getPartGropKey } from './usePartGroupingLogicalGroup';
+import usePartGroupingLogicalGroup from './usePartGroupingLogicalGroup';
 import CollapsibleGrouping from '../CollapsibleGrouping';
 import useActivityElementMapRef from '../../../../../providers/ChatHistoryDOM/useActivityElementRef';
 import StackedLayoutMain from '../../../../../Activity/StackedLayoutMain';
@@ -53,6 +65,7 @@ const partGroupingFocusableActivityPropsSchema = pipe(
       transform(value => value as WebChatActivity),
       readonly()
     ),
+    groupKey: string(),
     children: optional(reactNode())
   }),
   readonly()
@@ -62,15 +75,13 @@ type FocusablePartGroupingActivityProps = InferOutput<typeof partGroupingFocusab
 
 function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps) {
   const [activeDescendantId] = useActiveDescendantId();
-  const { activity, children } = parse(partGroupingFocusableActivityPropsSchema, props);
+  const { activity, children, groupKey } = parse(partGroupingFocusableActivityPropsSchema, props);
 
   const getGroupDescendantIdByActivityKey = useGetGroupDescendantIdByActivityKey();
   const focusByGroupKey = useFocusByGroupKey();
 
   const getKeyByActivity = useGetKeyByActivity();
   const groupingActivityDescendantId = getGroupDescendantIdByActivityKey(getKeyByActivity(activity));
-
-  const groupKey = useMemo(() => getPartGropKey(getKeyByActivity(activity)), [getKeyByActivity, activity]);
 
   const focusSelf = useCallback<(withFocus?: boolean) => void>(
     (withFocus?: boolean) => focusByGroupKey(groupKey, withFocus),
@@ -130,7 +141,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
     [activities, getKeyByActivity]
   );
 
-  usePartGroupingLogicalGroup({
+  const groupKey = usePartGroupingLogicalGroup({
     activityKeys,
     isCollapsed: !isGroupOpen
   });
@@ -155,7 +166,7 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
   const topAlignedCallout = isZeroOrPositive(bubbleNubOffset);
 
   return (
-    <FocusablePartGroupingActivity activity={firstActivity}>
+    <FocusablePartGroupingActivity activity={firstActivity} groupKey={groupKey}>
       <StackedLayoutRoot
         hideAvatar={hasAvatar && !showAvatar}
         isGroup={true}
