@@ -327,9 +327,9 @@ While polymiddleware priorities are hidden and internal, and their usage are min
 
 The following table shows how polymiddleware are prioritized.
 
-| Priority | Type               | Description                                                                                                                                             |
-| -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Highest  | Error boundary     | <p>All polymiddleware has an error boundary wrapper to control error propagation.</p><p>Error will be rendered using the `ErrorBox` polymiddleware.</p> |
-| Normal   | Polymiddleware     | Polymiddleware passed to the `polymiddleware` prop.                                                                                                     |
-| Low      | Legacy middleware  | Legacy middleware passed to their corresponding prop (such as `activityMiddleware`) and upgraded automatically.                                         |
-| Lowest   | Catch-all as error | Requests not handled by any polymiddleware in the chain will be thrown as an error.                                                                     |
+| Priority | Type               | Description                                                                                                                                                                                 |
+| -------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Highest  | Error boundary     | <p>All polymiddleware has an error boundary wrapper to control error propagation.</p><p>Error will be rendered using the `ErrorBox` polymiddleware and reported via `onTelemetry` prop.</p> |
+| Normal   | Polymiddleware     | Polymiddleware passed to the `polymiddleware` prop.                                                                                                                                         |
+| Low      | Legacy middleware  | Legacy middleware passed to their corresponding prop (such as `activityMiddleware`) and upgraded automatically.                                                                             |
+| Lowest   | Catch-all as error | Requests not handled by any polymiddleware in the chain will be thrown as an error.                                                                                                         |
