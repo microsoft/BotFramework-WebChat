@@ -323,7 +323,7 @@ Their main differences:
 
 > Priorities is used internally and will not expose as a feature.
 
-While we try to hide and internalize priorities between polymiddleware, there are special cases that prioritization would help.
+While polymiddleware priorities are hidden and internal, and their usage are minimized as much as possible, there are special cases that priorities would help.
 
 The following table shows how polymiddleware are prioritized.
 
