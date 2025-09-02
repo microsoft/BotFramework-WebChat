@@ -95,8 +95,7 @@ function createActivityPolymiddlewareFromLegacy(
     });
 
     return request => {
-      // TODO: [P*] Fix this once PR #5565 is merged.
-      const legacyResult = legacyHandler(request as any);
+      const legacyResult = legacyHandler(request);
 
       return legacyResult
         ? activityComponent(LegacyActivityBridge, { activity: request.activity, render: legacyResult })
