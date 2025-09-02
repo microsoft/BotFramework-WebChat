@@ -1,7 +1,8 @@
 /** @jest-environment @happy-dom/jest-environment */
 /* eslint-disable security/detect-object-injection */
-
 /* eslint no-magic-numbers: "off" */
+
+import 'core-js/features/set/index.js';
 
 import React, { useContext, useMemo } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
@@ -69,8 +70,7 @@ describe('TranscriptFocusComposer - focusRelativeActivity', () => {
         const groups = new Map();
         for (const [activityKey, groupKey] of Object.entries(config.groupKeyMappings)) {
           const group = groups.get(groupKey) ?? {
-            id: groupKey,
-            name: `Group for ${groupKey}`,
+            key: groupKey,
             activityKeys: [],
             getGroupState: () => config.groupStates[groupKey]
           };
