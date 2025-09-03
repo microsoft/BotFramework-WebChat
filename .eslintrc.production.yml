@@ -39,3 +39,8 @@ rules:
       message: Use clock functions from ponyfill
     - name: setTimeout
       message: Use clock functions from ponyfill
+  no-restricted-properties:
+    - error
+    - object: URL
+      property: createObjectURL
+      message: Make sure content type is sanitized before presenting the URL in HTML

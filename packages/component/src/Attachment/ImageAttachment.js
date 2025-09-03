@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import ImageContent from './ImageContent';
 import readDataURIToBlob from '../Utils/readDataURIToBlob';
+import ImageContent from './ImageContent';
 
 const ImageAttachment = ({ attachment }) => {
   let imageURL = attachment.thumbnailUrl || attachment.contentUrl;
@@ -12,7 +12,13 @@ const ImageAttachment = ({ attachment }) => {
   const blob = readDataURIToBlob(imageURL);
 
   if (blob) {
-    imageURL = URL.createObjectURL(blob);
+    // Only allow image/* for image, otherwise, treat it as binary.
+    // eslint-disable-next-line no-restricted-properties
+    imageURL = URL.createObjectURL(
+      new Blob([blob], {
+        type: blob.type.startsWith('image/') ? blob.type : 'application/octet-stream'
+      })
+    );
   }
 
   return <ImageContent alt={attachment.name} src={imageURL} />;

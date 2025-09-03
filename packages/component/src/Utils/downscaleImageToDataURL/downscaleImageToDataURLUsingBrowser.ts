@@ -39,6 +39,8 @@ function createCanvas(width: number, height: number): HTMLCanvasElement {
 }
 
 function loadImageFromBlob(blob: Blob): Promise<HTMLImageElement> {
+  // Blob is only loaded in <img>.
+  // eslint-disable-next-line no-restricted-properties
   const blobURL = URL.createObjectURL(blob);
 
   return new Promise<HTMLImageElement>((resolve, reject) => {
