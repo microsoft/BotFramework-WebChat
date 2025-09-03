@@ -1,7 +1,7 @@
-import { type WebChatActivity } from 'botframework-webchat-core';
+import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
 import { PartGrouping } from 'botframework-webchat-component/internal';
 import cx from 'classnames';
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 
 import CopilotMessageHeader from './CopilotMessageHeader';
 import useVariants from '../../private/useVariants';
@@ -16,16 +16,30 @@ type PartGroupingDecoratorProps = Readonly<{
 
 function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
   const {
-    activities: [activity]
+    activities: [activity, ...restActivities]
   } = props;
   const variants = useVariants();
   const classNames = useStyles(styles);
   const variantClassName = useVariantClassName(styles);
 
+  const isInGroup = useMemo(
+    () =>
+      restActivities.length > 0 || !!(activity?.entities && getOrgSchemaMessage(activity.entities)?.isPartOf?.['@id']),
+    [activity, restActivities.length]
+  );
+
   const shouldRenderHeader = variants.includes('copilot') && activity?.from?.role === 'bot';
 
   return (
-    <div className={cx(classNames['part-grouping-decorator'], variantClassName)}>
+    <div
+      className={cx(
+        classNames['part-grouping-decorator'],
+        {
+          [classNames['part-grouping-decorator--group']]: isInGroup
+        },
+        variantClassName
+      )}
+    >
       {shouldRenderHeader && (
         <CopilotMessageHeader activity={activity} className={classNames['part-grouping-decorator__header']} />
       )}

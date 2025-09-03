@@ -225,7 +225,7 @@
     }
   }
 
-  &:has(:not(.collapsible-grouping__content)) :global(.webchat__bubble:not(.webchat__bubble--from-user) .webchat__bubble__content) {
+  &:not(.part-grouping-decorator--group) :global(.webchat__bubble:not(.webchat__bubble--from-user) .webchat__bubble__content) {
     anchor-name: --webchat-flair;
     max-width: unset;
   }
