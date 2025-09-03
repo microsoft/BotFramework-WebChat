@@ -15,6 +15,8 @@ export default function createSpinnerAnimationStyle({
   spinnerAnimationPadding
 }: StrictStyleOptions) {
   defaultImageBlobURL ||
+    // Content is hardcoded.
+    // eslint-disable-next-line no-restricted-properties
     (defaultImageBlobURL = URL.createObjectURL(
       new Blob([new Uint8Array(toByteArray(DEFAULT_IMAGE_BASE64))], { type: DEFAULT_IMAGE_TYPE })
     ));
