@@ -34,6 +34,7 @@ export default function useSendFiles(): (files: readonly File[]) => void {
                   size: file.size,
                   thumbnail: thumbnailURL?.toString(),
                   // The URL is passed to chat adapter and should be treated as binary.
+                  // Just in case the chat adapter naively echo back, it should show up as binary.
                   // eslint-disable-next-line no-restricted-properties
                   url: URL.createObjectURL(new Blob([file], { type: 'application/octet-stream' }))
                 }))
