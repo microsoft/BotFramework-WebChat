@@ -14,7 +14,7 @@ const markdownablePropsSchema = pipe(
 
 type MarkdownableProps = InferInput<typeof markdownablePropsSchema>;
 
-function Markdownable({ className, text, id }: MarkdownableProps) {
+function Markdownable({ className, id, text }: MarkdownableProps) {
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
 
   const innerHTML = useMemo<Readonly<{ __html: string }> | undefined>(
