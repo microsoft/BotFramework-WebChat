@@ -12,7 +12,10 @@ function* postActivityWithMessage({
       {
         attachments: attachments.map(({ blob, thumbnailURL }) => ({
           contentType: (blob instanceof File && blob.type) || 'application/octet-stream',
-          contentUrl: URL.createObjectURL(blob),
+          // Chat adapter should download the file as binary.
+          // In case the chat adapter naively echo back the URL, it will be treated as binary.
+          // eslint-disable-next-line no-restricted-properties
+          contentUrl: URL.createObjectURL(new Blob([blob], { type: 'application/octet-stream' })),
           name: blob instanceof File ? blob.name : undefined,
           thumbnailUrl: thumbnailURL?.toString()
         })),

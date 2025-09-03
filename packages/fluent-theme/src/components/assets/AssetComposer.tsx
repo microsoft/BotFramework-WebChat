@@ -15,6 +15,8 @@ const SLIDING_DOTS_SVG_STRING =
 
 const AssetComposer = memo(({ children }: AssetComposerProps) => {
   const slidingDotsURL = useMemo(
+    // Content is hardcoded.
+    // eslint-disable-next-line no-restricted-properties
     () => URL.createObjectURL(new Blob([SLIDING_DOTS_SVG_STRING], { type: 'image/svg+xml' })),
     []
   );
