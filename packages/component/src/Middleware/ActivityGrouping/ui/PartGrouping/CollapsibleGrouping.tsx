@@ -1,6 +1,6 @@
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-
+import { hooks } from 'botframework-webchat-api';
 import cx from 'classnames';
 import random from 'math-random';
 import React, { memo, useCallback, useRef, useState } from 'react';
@@ -11,6 +11,8 @@ import ActivityButton from '../../../../Attachment/Text/private/ActivityButton';
 import { ComponentIcon } from '../../../../Icon';
 
 import styles from './CollapsibleGrouping.module.css';
+
+const { useLocalizer } = hooks;
 
 const collapsibleGroupingPropsSchema = pipe(
   object({
@@ -48,6 +50,7 @@ function CollapsibleGrouping(props: CollapsibleGroupingProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const isOpenRef = useRefFrom(isOpen);
   const onToggleRef = useRefFrom(onToggle);
+  const localize = useLocalizer();
 
   const handleToggle = useCallback(() => {
     const newIsOpen = !isOpenRef.current;
@@ -58,6 +61,8 @@ function CollapsibleGrouping(props: CollapsibleGroupingProps) {
     }
     onToggleRef.current?.(newIsOpen);
   }, [isOpenRef, onToggleRef]);
+
+  const text = isOpen ? localize('COLLAPSE_BUTTON_LESS') : localize('COLLAPSE_BUTTON_MORE');
 
   return (
     <div className={cx(classNames['collapsible-grouping'], { [classNames['collapsible-grouping--open']]: isOpen })}>
@@ -70,9 +75,9 @@ function CollapsibleGrouping(props: CollapsibleGroupingProps) {
           className={cx(classNames['collapsible-grouping__toggle'])}
           onClick={handleToggle}
           ref={buttonRef}
+          text={text}
         >
           <ComponentIcon appearance="text" className={classNames['collapsible-grouping__chevron']} icon="chevron" />
-          {isOpen ? 'Show less' : 'Show more'}
         </ActivityButton>
       </div>
       <div
