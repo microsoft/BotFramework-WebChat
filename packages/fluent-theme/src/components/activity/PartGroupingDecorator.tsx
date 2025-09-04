@@ -28,6 +28,9 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
     [activity, restActivities.length]
   );
 
+  const isFromUser = activity?.from?.role === 'user';
+  const isFromBot = activity?.from?.role === 'bot';
+
   const shouldRenderHeader = variants.includes('copilot') && activity?.from?.role === 'bot';
 
   return (
@@ -35,7 +38,9 @@ function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
       className={cx(
         classNames['part-grouping-decorator'],
         {
-          [classNames['part-grouping-decorator--group']]: isInGroup
+          [classNames['part-grouping-decorator--group']]: isInGroup,
+          [classNames['part-grouping-decorator--from-user']]: isFromUser,
+          [classNames['part-grouping-decorator--from-bot']]: isFromBot
         },
         variantClassName
       )}
