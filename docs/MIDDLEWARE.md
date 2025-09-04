@@ -22,7 +22,7 @@ function MyChatUI() {
           request.activity.type === 'event'
             ? // Handle rendering of event activity thru <EventActivity activity={request.activity}>.
               reactComponent(EventActivity, { activity: request.activity })
-            : // Continue downstream.
+            : // Continue rendering.
               next(request)
       )
       createActivityPolymiddleware(...),
@@ -43,7 +43,7 @@ function MyChatUI() {
 }
 ```
 
-> Legacy middleware are polyfilled to `polymiddleware` automatically until they reached end of support. See [this section for deprecation dates](#when-will-legacy-middleware-removed).
+> Legacy middleware, such as `activityMiddleware`, are polyfilled to `polymiddleware` automatically until they reached end of support. See [this section for deprecation dates](#when-will-legacy-middleware-removed).
 
 ### List of polymiddleware types
 
@@ -181,7 +181,7 @@ const polymiddleware = [
 
 Every type of polymiddleware now comes with its corresponding proxy component. It is the easiest way to render a polymiddleware.
 
-The proxy component acts as an intermediary, forwarding request to the polymiddleware. The polymiddleware processes the request and returns a render function, which the proxy morphs into the final rendered output.
+The proxy component acts as an intermediary, forwarding request to the polymiddleware. The polymiddleware processes the request and returns a render function, which the proxy will morphs into the final rendered output.
 
 ```tsx
 const ActivityPolymiddlewareProxy: ComponentType<{ readonly activity: WebChatActivity }>;
@@ -206,8 +206,9 @@ Refer to [this section](#when-to-use-usebuildrenderxxxcallback-vs-xxxpolymiddlew
 The following code snippet a legacy activity middleware followed by polymiddleware.
 
 ```tsx
-const MyActivity = ({ request }) =>
-  <div className="polymiddleware">{request.activity.text}</div>
+const MyActivity = memo(function MyActivity({ request }) {
+  return <div className="polymiddleware">{request.activity.text}</div>
+});
 
 const polymiddleware = [
   // Legacy activity middleware
@@ -218,7 +219,7 @@ const polymiddleware = [
   },
   // Polymiddleware handling activity request
   createActivityPolymiddleware(next => request => activityComponent(MyActivity, { request }))
-]
+];
 ```
 
 For a message activity of "Hello, World!", it will render:
