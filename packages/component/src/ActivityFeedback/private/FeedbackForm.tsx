@@ -17,7 +17,6 @@ function FeedbackForm() {
   const { useFeedbackText, useSelectedAction } = useActivityFeedbackHooks();
   const feedbackFormHeaderId = useUniqueId('feedback-form__form-header__id');
   const disclaimerId = useUniqueId('feedback-form__form-footer__id');
-  const textAreaId = useUniqueId('feedback-form__text-area__id');
 
   const [selectedAction] = useSelectedAction();
   const [hasFocus, setHasFocus] = useState(false);
@@ -43,8 +42,6 @@ function FeedbackForm() {
     }
   }, [feedbackTextAreaRef, hasFocus, setHasFocus]);
 
-  const textAreaAriaLabelledBy = `${feedbackFormHeaderId} ${textAreaId}${disclaimer ? ` ${disclaimerId}` : ''}`;
-
   return (
     <div className={classNames['feedback-form__form']}>
       <span
@@ -57,11 +54,10 @@ function FeedbackForm() {
       </span>
       <div className={classNames['feedback-form__text-box']}>
         <TextArea
-          aria-label={localize('FEEDBACK_FORM_PLACEHOLDER')}
-          aria-labelledby={textAreaAriaLabelledBy}
+          aria-describedby={disclaimer ? disclaimerId : undefined}
+          aria-labelledby={feedbackFormHeaderId}
           className={classNames['feedback-form__text-area']}
           data-testid={testIds.feedbackSendBox}
-          id={textAreaId}
           onInput={handleMessageChange}
           placeholder={localize('FEEDBACK_FORM_PLACEHOLDER')}
           ref={feedbackTextAreaRef}

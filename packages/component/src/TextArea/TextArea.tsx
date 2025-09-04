@@ -18,7 +18,7 @@ const { useUIState } = hooks;
 const TextArea = forwardRef<
   HTMLTextAreaElement,
   Readonly<{
-    'aria-label'?: string | undefined;
+    'aria-describedby'?: string | undefined;
     'aria-labelledby'?: string | undefined;
     className?: string | undefined;
     completion?: ReactNode | undefined;
@@ -33,7 +33,6 @@ const TextArea = forwardRef<
      *   This ensures the flow of focus did not sent to document body
      */
     hidden?: boolean | undefined;
-    id?: string | undefined;
     onInput?: FormEventHandler<HTMLTextAreaElement> | undefined;
     placeholder?: string | undefined;
     startRows?: number | undefined;
@@ -85,14 +84,11 @@ const TextArea = forwardRef<
             {props.completion ? props.completion : props.value || props.placeholder}{' '}
           </div>
           <textarea
+            aria-describedby={props['aria-describedby']}
             aria-disabled={disabled}
-            aria-label={props['aria-label']}
             aria-labelledby={props['aria-labelledby']}
             className={cx(classNames['text-area-input'], classNames['text-area-shared'])}
             data-testid={props['data-testid']}
-            // "id" is required for "aria-labelledby"
-            // eslint-disable-next-line react/forbid-dom-props
-            id={props['id']}
             onCompositionEnd={handleCompositionEnd}
             onCompositionStart={handleCompositionStart}
             onInput={props.onInput}

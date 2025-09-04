@@ -85,8 +85,8 @@
         const feedbackFormSendBox = pageElements.byTestId('feedback sendbox');
         const ariaLabelledBy = feedbackFormSendBox.getAttribute('aria-labelledby');
         expect(ariaLabelledBy).toContain('feedback-form__form-header__id');
-        expect(ariaLabelledBy).toContain('feedback-form__form-footer__id');
-        expect(ariaLabelledBy).toContain('feedback-form__text-area__id');
+        const ariaDescribedBy = feedbackFormSendBox.getAttribute('aria-describedby');
+        expect(ariaDescribedBy).toContain('feedback-form__disclaimer__id');
         await pageObjects.verifyDOMIntegrity();
 
         // WHEN: The cancel button is clicked.
