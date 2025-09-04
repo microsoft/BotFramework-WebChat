@@ -81,12 +81,13 @@ const TextArea = forwardRef<
       ) : (
         <Fragment>
           <div className={cx(classNames['text-area-doppelganger'], classNames['text-area-shared'])}>
-            {props.completion ? props.completion : props.value || props.placeholder}{' '}
+            {props.completion ? props.completion : props.value}{' '}
           </div>
           <textarea
             aria-describedby={props['aria-describedby']}
             aria-disabled={disabled}
             aria-labelledby={props['aria-labelledby']}
+            aria-placeholder={props.placeholder}
             className={cx(classNames['text-area-input'], classNames['text-area-shared'])}
             data-testid={props['data-testid']}
             onCompositionEnd={handleCompositionEnd}
