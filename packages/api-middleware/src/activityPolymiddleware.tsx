@@ -57,6 +57,9 @@ const ActivityPolymiddlewareProvider = memo(function ActivityPolymiddlewareProvi
   const middlewareWithErrorBoundary = useMemo(
     () =>
       Object.freeze([
+        // TODO: [P1] Should we simplify this middleware signature and allow error boundary middleware to run on every type of middleware?
+        //            (init: any) => next => (request: undefined) => reactComponentForAll()
+        //            We can't do it today because we have sanity check that prevent `reactComponent()` from different middleware cross-polluting each other.
         createErrorBoundaryMiddleware({
           createMiddleware: createActivityPolymiddleware,
           reactComponent: activityComponent,
