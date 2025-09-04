@@ -8,7 +8,6 @@
   font-weight: 400;
   max-width: var(--webchat__max-width--message-bubble);
   min-width: var(--webchat__min-width--message-bubble);
-  overflow: clip;
   position: relative;
 }
 
@@ -39,6 +38,9 @@
   flex-direction: column;
   height: 0;
   interpolate-size: allow-keywords;
+  margin: calc(var(--webchat__padding--regular) / -2);
+  overflow: clip;
+  padding: calc(var(--webchat__padding--regular) / 2);
   transition: visibility 0s, height 0.2s ease;
   visibility: hidden;
 }
@@ -46,9 +48,4 @@
 :global(.webchat) .collapsible-grouping__content--open {
   visibility: unset;
   height: auto;
-
-  .collapsible-grouping__header {
-    border-block-end: var(--webchat__border-width--bubble) var(--webchat__border-style--bubble)
-      var(--webchat__border-color--bubble);
-  }
 }
