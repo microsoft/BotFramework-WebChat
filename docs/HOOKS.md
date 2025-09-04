@@ -280,7 +280,7 @@ function MyComponent({ activity }: { readonly activity: WebChatActivity }) {
 
 ### `<ActivityPolymiddlewareProxy>`
 
-`<ActivityPolymiddlewareProxy>` is a simpler way to render an activity.
+`<ActivityPolymiddlewareProxy>` is a simpler way to render an activity via polymiddleware.
 
 <!-- prettier-ignore-start -->
 ```tsx
