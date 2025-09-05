@@ -1,0 +1,5 @@
+:global(.webchat) .part-grouping-activity {
+  .part-grouping-activity__activities {
+    padding-block: 0 var(--webchat__padding--regular);
+  }
+}

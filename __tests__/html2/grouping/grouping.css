@@ -1,7 +1,12 @@
 .grouping {
   border-style: solid;
   border-width: 2px;
+  box-sizing: border-box;
+  display: grid;
+  gap: inherit;
   margin: 2px;
+  min-width: 0;
+  padding: 2px;
   position: relative;
 }
 
@@ -34,4 +39,17 @@
   color: white;
   content: 'Status';
   left: -2px;
+}
+
+.grouping--part {
+  border-color: darkorange;
+}
+
+.grouping--part::after {
+  background-color: darkorange;
+  bottom: -2px;
+  color: white;
+  content: 'Part';
+  left: -2px;
+  top: unset;
 }
