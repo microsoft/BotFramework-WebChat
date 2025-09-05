@@ -1,4 +1,3 @@
-/* eslint-disable no-magic-numbers */
 import { getOrgSchemaMessage, type GlobalScopePonyfill, type WebChatActivity } from 'botframework-webchat-core';
 
 import type GroupActivitiesMiddleware from '../../../types/GroupActivitiesMiddleware';
@@ -102,9 +101,8 @@ export default function createDefaultGroupActivitiesMiddleware({
                   ([last], [current]) =>
                     typeof last?.isPartOf?.['@id'] === 'string' && last.isPartOf['@id'] === current?.isPartOf?.['@id']
                 ).map(bin =>
-                  bin
-                    .toSorted(([m1], [m2]) => (m1.position < m2.position ? -1 : m1.position > m2.position ? 1 : 0))
-                    .map(([, activity]) => activity)
+                  // Position-based sorting is now handled at the reducer level
+                  bin.map(([, activity]) => activity)
                 )
               };
             }
