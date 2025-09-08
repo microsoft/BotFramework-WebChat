@@ -12,7 +12,7 @@ const DEPENDENT_PATHS = [
   'redux-store/src/index.ts'
 ];
 
-const config: typeof baseConfig = {
+const commonConfig: typeof baseConfig = {
   ...baseConfig,
   entry: {
     'botframework-webchat-react-valibot': './src/index.ts'
@@ -22,14 +22,14 @@ const config: typeof baseConfig = {
 
 export default defineConfig([
   {
-    ...config,
+    ...commonConfig,
     env: { ...baseConfig.env, module_format: 'esmodules' },
     format: 'esm'
   },
   {
-    ...config,
+    ...commonConfig,
     env: { ...baseConfig.env, module_format: 'commonjs' },
     format: 'cjs',
-    target: [...config.target, 'es2019']
+    target: [...commonConfig.target, 'es2019']
   }
 ]);
