@@ -62,9 +62,9 @@
   /* #region Collapsible grouping */
   :global(.stacked-layout .collapsible-grouping__header) {
     justify-content: flex-start;
-    place-self: start;
     min-width: 0;
     padding: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalNone);
+    place-self: start;
     position: relative;
 
     :global(.webchat__activity-button) {
@@ -84,11 +84,11 @@
     }
 
     :global(.webchat__activity-button__text) {
-      position: absolute;
       font-size: 0;
-      width: 0;
       height: 0;
       overflow: clip;
+      position: absolute;
+      width: 0;
     }
   }
 
@@ -138,8 +138,8 @@
     }
 
     :global(.activity-decorator .webchat__bubble .webchat__bubble__content) {
-      gap: var(--webchat-spacingVerticalXS);
       box-sizing: content-box;
+      gap: var(--webchat-spacingVerticalXS);
     }
   }
   /* #endregion */
@@ -159,9 +159,9 @@
     }
 
     :global(.stacked-layout__main .stacked-layout__title) {
+      color: var(--webchat-colorNeutralForeground4);
       font-size: var(--webchat-fontSizeBase400);
       line-height: var(--webchat-lineHeightBase400);
-      color: var(--webchat-colorNeutralForeground4);
       margin: var(--webchat__bubble--block-padding) var(--webchat__bubble--inline-padding);
     }
 
@@ -373,8 +373,8 @@
 
 /* Decorator Copilot variant */
 :global(.webchat-fluent) .part-grouping-decorator.variant-copilot {
-  position: relative;
   padding-inline-start: var(--webchat-spacingHorizontalMNudge);
+  position: relative;
 
   :global(.webchat__activity-status) {
     margin: 0 0 var(--webchat-spacingHorizontalXXS);
@@ -472,8 +472,8 @@
   }
 
   :global(.webchat__bubble:not(.webchat__bubble--from-user)::after) {
-    outline-offset: 5px;
     margin-block: var(--webchat-spacingVerticalXS);
+    outline-offset: 5px;
 
     --webchat__bubble--border-radius: calc(var(--webchat-borderRadius2XLarge) - 8px);
   }

@@ -2,8 +2,9 @@ import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
 import React, { forwardRef, type HTMLAttributes } from 'react';
 
-import styles from './TranscriptFocus.module.css';
 import TranscriptFocusIndicator from './TranscriptFocusIndicator';
+
+import styles from './TranscriptFocus.module.css';
 
 type TranscriptFocusAreaProps = HTMLAttributes<HTMLDivElement>;
 

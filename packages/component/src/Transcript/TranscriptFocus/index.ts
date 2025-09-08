@@ -1,3 +1,4 @@
+export { default as TranscriptActivityList, type TranscriptActivityListProps } from './TranscriptActivityList';
 export { default as TranscriptFocusArea, type TranscriptFocusAreaProps } from './TranscriptFocusArea';
 export { default as TranscriptFocusContent, type TranscriptFocusContentProps } from './TranscriptFocusContent';
 export {

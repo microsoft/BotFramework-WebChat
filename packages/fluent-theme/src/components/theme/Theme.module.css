@@ -340,13 +340,13 @@
 
   :global(.collapsible-grouping)::after {
     border-radius: var(--webchat__bubble--border-radius);
-    content: '';
     border: none;
-    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
-    position: absolute;
-    pointer-events: none;
+    content: '';
     inset: 0;
     isolation: isolate;
+    outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
+    pointer-events: none;
+    position: absolute;
   }
 
   :global(.activity-decorator .webchat__bubble .webchat__bubble__nub-pad) {

@@ -104,12 +104,12 @@
 
   .stacked-layout__message-status {
     color: var(--webchat__color--subtle);
-    margin-inline-start: var(--webchat__padding--regular);
-    margin-block: calc(var(--webchat__padding--regular) + 1px);
-    place-self: start;
-    font-size: 1.1em;
     display: grid;
+    font-size: 1.1em;
     grid-template-areas: "message-status-icon";
+    margin-block: calc(var(--webchat__padding--regular) + 1px);
+    margin-inline-start: var(--webchat__padding--regular);
+    place-self: start;
 
     > * {
       grid-area: message-status-icon;

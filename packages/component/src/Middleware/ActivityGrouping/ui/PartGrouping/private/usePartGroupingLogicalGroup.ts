@@ -1,9 +1,9 @@
+import random from 'math-random';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import random from 'math-random';
+import { useStateWithRef } from 'use-state-with-ref';
 
 import { useAddLogicalGrouping, useRemoveLogicalGrouping } from '../../../../../providers/ActivityLogicalGrouping';
-import { useStateWithRef } from 'use-state-with-ref';
 
 type UsePartGroupingLogicalGroupOptions = {
   activityKeys: readonly string[];

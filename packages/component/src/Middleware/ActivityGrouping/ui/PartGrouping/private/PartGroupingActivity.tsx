@@ -17,26 +17,26 @@ import {
   type InferOutput
 } from 'valibot';
 
-import usePartGroupingLogicalGroup from './usePartGroupingLogicalGroup';
-import CollapsibleGrouping from '../CollapsibleGrouping';
-import useActivityElementMapRef from '../../../../../providers/ChatHistoryDOM/useActivityElementRef';
 import StackedLayoutMain from '../../../../../Activity/StackedLayoutMain';
 import StackedLayoutRoot from '../../../../../Activity/StackedLayoutRoot';
 import StackedLayoutStatus from '../../../../../Activity/StackedLayoutStatus';
+import useActivityElementMapRef from '../../../../../providers/ChatHistoryDOM/useActivityElementRef';
 import useActiveDescendantId from '../../../../../providers/TranscriptFocus/useActiveDescendantId';
 import useGetGroupDescendantIdByActivityKey from '../../../../../providers/TranscriptFocus/useGetGroupDescendantIdByActivityKey';
+import useFocusByGroupKey from '../../../../../providers/TranscriptFocus/useFocusByGroupKey';
+import FocusTrap from '../../../../../Transcript/FocusTrap';
+import useRenderActivityProps from '../../../../../Transcript/hooks/useRenderActivityProps';
 import {
+  TranscriptActivityList,
   TranscriptFocusContent,
   TranscriptFocusContentOverlay,
   TranscriptFocusContentActiveDescendant,
   TranscriptFocusIndicator
 } from '../../../../../Transcript/TranscriptFocus';
-import useFocusByGroupKey from '../../../../../providers/TranscriptFocus/useFocusByGroupKey';
-import FocusTrap from '../../../../../Transcript/FocusTrap';
-import useRenderActivityProps from '../../../../../Transcript/hooks/useRenderActivityProps';
 import isZeroOrPositive from '../../../../../Utils/isZeroOrPositive';
 import { android } from '../../../../../Utils/detectBrowser';
-import TranscriptActivityList from '../../../../../Transcript/TranscriptFocus/TranscriptActivityList';
+import CollapsibleGrouping from '../CollapsibleGrouping';
+import usePartGroupingLogicalGroup from './usePartGroupingLogicalGroup';
 
 import styles from './PartGroupingActivity.module.css';
 

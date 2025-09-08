@@ -46,6 +46,6 @@
 }
 
 :global(.webchat) .collapsible-grouping__content--open {
-  visibility: unset;
   height: auto;
+  visibility: unset;
 }

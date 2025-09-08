@@ -2,9 +2,9 @@ import { type EmptyObject } from 'type-fest';
 import { lazy, literal, looseObject, optional, parse, pipe, string, type ObjectEntries } from 'valibot';
 
 import { action, type Action } from './Action';
+import { creativeWork, type CreativeWork } from './CreativeWork';
 import orgSchemaProperties from './private/orgSchemaProperties';
 import orgSchemaProperty from './private/orgSchemaProperty';
-import { creativeWork, type CreativeWork } from './CreativeWork';
 
 /**
  * The most generic type of item.

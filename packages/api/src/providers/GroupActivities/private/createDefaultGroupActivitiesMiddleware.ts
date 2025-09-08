@@ -100,10 +100,7 @@ export default function createDefaultGroupActivitiesMiddleware({
                   messages,
                   ([last], [current]) =>
                     typeof last?.isPartOf?.['@id'] === 'string' && last.isPartOf['@id'] === current?.isPartOf?.['@id']
-                ).map(bin =>
-                  // Position-based sorting is now handled at the reducer level
-                  bin.map(([, activity]) => activity)
-                )
+                ).map(bin => bin.map(([, activity]) => activity))
               };
             }
         : undefined

@@ -13,6 +13,7 @@ import ScreenReaderText from '../ScreenReaderText';
 import isZeroOrPositive from '../Utils/isZeroOrPositive';
 import textFormatToContentType from '../Utils/textFormatToContentType';
 import useUniqueId from '../hooks/internal/useUniqueId';
+import { ComponentIcon } from '../Icon';
 import AttachmentRow from './AttachmentRow';
 import Bubble from './Bubble';
 import CodeBlockContent from './CodeBlockContent';
@@ -20,11 +21,10 @@ import CollapsibleContent from './CollapsibleContent';
 import StackedLayoutMain from './StackedLayoutMain';
 import StackedLayoutRoot from './StackedLayoutRoot';
 import StackedLayoutStatus from './StackedLayoutStatus';
+import MessageStatusLoader from './private/MessageStatusLoader';
 import { useGetLogicalGroupKey } from '../providers/ActivityLogicalGrouping';
 
 import styles from './StackedLayout.module.css';
-import { ComponentIcon } from '../Icon';
-import MessageStatusLoader from './private/MessageStatusLoader';
 
 const { useAvatarForBot, useAvatarForUser, useLocalizer, useGetKeyByActivity, useStyleOptions } = hooks;
 

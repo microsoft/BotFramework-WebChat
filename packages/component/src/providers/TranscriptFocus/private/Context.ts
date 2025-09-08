@@ -6,8 +6,8 @@ type TranscriptFocusContextType = {
   focusByActivityKey: (activityKey: boolean | string | undefined, withFocus: boolean | undefined) => void;
   focusByGroupKey: (groupKey: string | undefined, withFocus: boolean | undefined) => void;
   focusedActivityKeyState: readonly [string];
-  focusedGroupKeyState: readonly [string];
   focusedExplicitlyState: readonly [boolean];
+  focusedGroupKeyState: readonly [string];
   focusRelativeActivity: (delta: number) => void;
   getDescendantIdByActivityKey: (activityKey?: string) => string | undefined;
   getGroupDescendantIdByActivityKey: (activityKey?: string) => string | undefined;

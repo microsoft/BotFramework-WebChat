@@ -1,9 +1,9 @@
 /* Focus area container */
 
 :global(.webchat) .transcript-focus-area {
-  outline: 0;
   display: grid;
   grid-template-areas: 'content';
+  outline: 0;
   
   --webchat__transcript--spacing: 10px;
 
@@ -65,20 +65,20 @@
     To account for the differences, we use absolute/relative positioning as the rest of our code assumes so.
   */
   .transcript-focus-area__content-overlay {
-    position: relative;
+    min-height: 0;
+    grid-area: content;
     /* The bounding box is expanded to both top and bottom to scroll focus indicator into view. */
     /* We should ignore clicks to make sure this expansion don't register click as focus. */
     /* Otherwise, when clicking on the very bottom edge of the activity, it will focus on next activity instead. */
     pointer-events: none;
+    position: relative;
     width: 100%;
-    grid-area: content;
-    min-height: 0;
   }
 
   /* When the content is focused as active descendant, scrollIntoView() will scroll this invisible div into view. */
   .transcript-focus-area__content-active-descendant {
-    position: absolute;
     inset: calc(var(--webchat__transcript--spacing) / -1) 0 calc(var(--webchat__transcript--spacing) / -1) 0;
+    position: absolute;
   }
 
   .transcript-focus-area__terminator {
