@@ -39,6 +39,7 @@ const baseConfig: Options & {
   target: Target[];
 } = {
   define: {
+    // TSD does not support define, thus we need to use `globalThis.*` instead.
     'globalThis.WEB_CHAT_BUILD_INFO_BUILD_TOOL': '"tsup"',
     'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"unknown"',
     'globalThis.WEB_CHAT_BUILD_INFO_VERSION': JSON.stringify(process.env.npm_package_version || '0.0.0-unknown')
