@@ -35,7 +35,7 @@ type StackedLayoutInnerProps = Readonly<{
   hasDisplayText: boolean;
   id: string;
   renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>) | undefined;
-  renderBubbleContent: (title?: string | undefined) => ReactNode;
+  renderBubbleContent: (title?: string | undefined, showStatus?: boolean) => ReactNode;
   showAvatar?: boolean | undefined;
   showNub?: boolean | undefined;
 }>;
@@ -191,9 +191,9 @@ const StackedLayout = ({
   );
 
   const renderMainBubbleContent = useCallback(
-    (title = '') => (
+    (title = '', withStatus = true) => (
       <div className={classNames['stacked-layout__bubble']}>
-        {messageStatus}
+        {withStatus && messageStatus}
         {title && <div className={classNames['stacked-layout__title']}>{title}</div>}
         {activityDisplayText &&
           renderAttachment({
@@ -226,7 +226,7 @@ const StackedLayout = ({
           key={syntheticAttachments.length}
           showBubble={false}
         >
-          {renderMainBubbleContent()}
+          {renderMainBubbleContent('', false)}
         </AttachmentRow>
       );
     }
