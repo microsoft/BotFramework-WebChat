@@ -1,24 +1,28 @@
 import { defineConfig } from 'tsup';
 import baseConfig from '../../tsup.base.config';
 
-const config: typeof baseConfig = {
+// TODO: [P1] Compute this automatically.
+const DEPENDENT_PATHS = ['api'];
+
+const commonConfig: typeof baseConfig = {
   ...baseConfig,
   entry: {
     'botframework-webchat-core': './src/index.ts',
     'botframework-webchat-core.internal': './src/internal/index.ts'
-  }
+  },
+  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/index.ts`).join(' ')}`
 };
 
 export default defineConfig([
   {
-    ...config,
-    env: { ...config.env, module_format: 'esmodules' },
+    ...commonConfig,
+    define: { ...commonConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"esmodules"' },
     format: 'esm'
   },
   {
-    ...config,
-    env: { ...config.env, module_format: 'commonjs' },
+    ...commonConfig,
+    define: { ...commonConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"commonjs"' },
     format: 'cjs',
-    target: [...config.target, 'es2019']
+    target: [...commonConfig.target, 'es2019']
   }
 ]);

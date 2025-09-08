@@ -15,6 +15,16 @@
         "default": "./dist/botframework-webchat-base.js"
       }
     },
+    "./dom-utils": {
+      "import": {
+        "types": "./dist/botframework-webchat-base.dom-utils.d.mts",
+        "default": "./dist/botframework-webchat-base.dom-utils.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-base.dom-utils.d.ts",
+        "default": "./dist/botframework-webchat-base.dom-utils.js"
+      }
+    },
     "./utils": {
       "import": {
         "types": "./dist/botframework-webchat-base.utils.d.mts",
@@ -72,5 +82,8 @@
     "cross-env": "^10.0.0",
     "type-fest": "^4.41.0",
     "typescript": "~5.8.3"
+  },
+  "dependencies": {
+    "change-case": "5.4.4"
   }
 }

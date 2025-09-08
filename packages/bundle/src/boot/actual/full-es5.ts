@@ -1,8 +1,9 @@
 import defaultCreateDirectLine from '../../createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAppServiceExtension';
-import ReactWebChat, { buildInfo as fullBuildInfo } from './full';
+import buildInfo from '../buildInfo';
+import ReactWebChat from './full';
 
-const buildInfo = Object.freeze({ ...fullBuildInfo, variant: 'full-es5' });
+buildInfo.set('variant', 'full-es5');
 
 const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {
   (options as any).botAgent &&
@@ -31,5 +32,5 @@ export * from './full';
 // #region Local exports
 export default ReactWebChat;
 
-export { buildInfo, createDirectLine, createDirectLineAppServiceExtension };
+export { createDirectLine, createDirectLineAppServiceExtension };
 // #endregion

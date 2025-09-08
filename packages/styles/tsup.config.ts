@@ -1,13 +1,17 @@
 import { defineConfig } from 'tsup';
 import baseConfig from '../../tsup.base.config';
 
+// TODO: [P1] Compute this automatically.
+const DEPENDENT_PATHS = ['component', 'fluent-theme'];
+
 const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
     'botframework-webchat-styles': './src/index.ts',
     'botframework-webchat-styles.build': './src/build/index.ts',
     'botframework-webchat-styles.react': './src/react/index.ts'
-  }
+  },
+  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/index.ts`).join(' ')}`
 };
 
 export default defineConfig([

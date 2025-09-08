@@ -66,20 +66,6 @@ const hooks = {
   ...componentHooks
 };
 
-declare const process: {
-  env: {
-    build_tool: string;
-    module_format: string;
-    npm_package_version: string;
-  };
-};
-
-const buildTool = process.env.build_tool;
-const moduleFormat = process.env.module_format;
-const version = process.env.npm_package_version;
-
-const buildInfo = { buildTool, moduleFormat, version };
-
 const Components = {
   BasicWebChat,
   Composer,
@@ -128,7 +114,6 @@ const Components = {
 export default ReactWebChat;
 
 export {
-  buildInfo,
   Components,
   concatMiddleware,
   Context,
@@ -140,7 +125,6 @@ export {
   hooks,
   localize,
   testIds,
-  version,
   withEmoji
 };
 
@@ -154,3 +138,11 @@ export type {
   ReactWebChatProps,
   WebChatActivity
 };
+
+// #region Build info
+import buildInfo from './buildInfo';
+
+const { readonlyObject, version } = buildInfo;
+
+export { readonlyObject as buildInfo, version };
+// #endregion

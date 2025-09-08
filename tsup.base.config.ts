@@ -32,7 +32,17 @@ const cssPlugin = lightningCssPlugin({
   }
 });
 
-const baseConfig: Options & { target: Target[] } = {
+const baseConfig: Options & {
+  define: Record<string, string>;
+  esbuildPlugins: Plugin[];
+  onSuccess: string;
+  target: Target[];
+} = {
+  define: {
+    WEB_CHAT_BUILD_INFO_BUILD_TOOL: '"tsup"',
+    WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"unknown"',
+    WEB_CHAT_BUILD_INFO_VERSION: JSON.stringify(process.env.npm_package_version || '0.0.0-unknown')
+  },
   dts: true,
   env: {
     build_tool: 'tsup',
@@ -41,7 +51,6 @@ const baseConfig: Options & { target: Target[] } = {
     NODE_ENV: env,
     ...(npm_package_version ? { npm_package_version } : {})
   },
-  plugins: [disablePlugin('postcss'), disablePlugin('svelte')],
   esbuildOptions: options => {
     // esbuild don't touch AMD but it also don't remove AMD glue code.
     // Some of our packages prefers AMD over CJS via UMD and it also use anonymous modules.
@@ -98,9 +107,16 @@ const baseConfig: Options & { target: Target[] } = {
   metafile: true,
   minify: env === 'production' || env === 'test',
   platform: 'browser',
+  plugins: [disablePlugin('postcss'), disablePlugin('svelte')],
   sourcemap: true,
   splitting: true,
-  target: ['chrome100', 'firefox100', 'safari15'] satisfies Target[]
+  target: ['chrome100', 'firefox100', 'safari15'] satisfies Target[],
+
+  // tsup@8.5.0 do not write to output atomically.
+  // Thus, when building in parallel, some of the files will be emptied.
+  // We are writing output to /dist.tmp/ and copy everything back to /dist/.
+  onSuccess: 'mkdir -p ./dist/ && cp ./dist.tmp/* ./dist/',
+  outDir: './dist.tmp/'
 };
 
 export default baseConfig;

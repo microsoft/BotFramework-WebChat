@@ -49,8 +49,8 @@ const umdResolvePlugin = {
 export default defineConfig([
   {
     ...baseConfig,
+    define: { ...baseConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"commonjs"' },
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
-    env: { ...baseConfig.env, module_format: 'commonjs' },
     esbuildPlugins: [
       ...(baseConfig.esbuildPlugins || []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
@@ -60,8 +60,8 @@ export default defineConfig([
   },
   {
     ...baseConfig,
+    define: { ...baseConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"esmodules"' },
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
-    env: { ...baseConfig.env, module_format: 'esmodules' },
     esbuildPlugins: [
       ...(baseConfig.esbuildPlugins || []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
@@ -70,8 +70,8 @@ export default defineConfig([
   },
   {
     ...baseConfig,
+    define: { ...baseConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"global"' },
     entry: { 'botframework-webchat-fluent-theme.development': './src/bundle.ts' },
-    env: { ...baseConfig.env, module_format: 'global' },
     esbuildPlugins: [
       ...(baseConfig.esbuildPlugins || []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
@@ -84,8 +84,8 @@ export default defineConfig([
   },
   {
     ...baseConfig,
+    define: { ...baseConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"global"' },
     entry: { 'botframework-webchat-fluent-theme.production.min': './src/bundle.ts' },
-    env: { ...baseConfig.env, module_format: 'global' },
     loader: {
       ...baseConfig.loader
     },

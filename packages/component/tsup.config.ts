@@ -1,10 +1,13 @@
 import { injectCSSPlugin } from '@msinternal/botframework-webchat-styles/build';
-import { defineConfig, Options } from 'tsup';
+import { defineConfig } from 'tsup';
 import baseConfig from '../../tsup.base.config';
 import { componentStyleContent as componentStyleContentPlaceholder } from './src/Styles/createStyles';
 import { decoratorStyleContent as decoratorStyleContentPlaceholder } from './src/decorator/private/createStyles';
 
-const config: typeof baseConfig = {
+// TODO: [P1] Compute this automatically.
+const DEPENDENT_PATHS = ['bundle'];
+
+const commonConfig: typeof baseConfig = {
   ...baseConfig,
   entry: {
     'botframework-webchat-component': './src/index.ts',
@@ -15,19 +18,20 @@ const config: typeof baseConfig = {
     ...(baseConfig.esbuildPlugins ?? []),
     injectCSSPlugin({ stylesPlaceholder: componentStyleContentPlaceholder }),
     injectCSSPlugin({ stylesPlaceholder: decoratorStyleContentPlaceholder })
-  ]
+  ],
+  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/index.ts`).join(' ')}`
 };
 
 export default defineConfig([
   {
-    ...config,
-    env: { ...config.env, module_format: 'esmodules' },
+    ...commonConfig,
+    define: { ...commonConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"esmodules"' },
     format: 'esm'
   },
   {
-    ...config,
-    env: { ...config.env, module_format: 'commonjs' },
+    ...commonConfig,
+    define: { ...commonConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"commonjs"' },
     format: 'cjs',
-    target: [...config.target, 'es2019']
+    target: [...commonConfig.target, 'es2019']
   }
 ]);

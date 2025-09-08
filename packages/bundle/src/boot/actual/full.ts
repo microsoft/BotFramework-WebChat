@@ -16,11 +16,14 @@ import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAp
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useStyleSet from '../../hooks/useStyleSet';
 import coreRenderWebChat from '../../renderWebChat';
-import { buildInfo as minimalBuildInfo, Components as minimalComponents, hooks as minimalHooks } from './minimal';
+import buildInfo from '../buildInfo';
+import { Components as minimalComponents, hooks as minimalHooks } from './minimal';
+
+buildInfo.set('variant', 'full');
+
+const { readonlyObject: buildInfoReadonlyObject, version } = buildInfo;
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
-
-const buildInfo = Object.freeze({ ...minimalBuildInfo, variant: 'full' });
 
 const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {
   (options as any).botAgent &&
@@ -28,7 +31,7 @@ const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLin
       'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
     );
 
-  return defaultCreateDirectLine({ ...options, botAgent: `WebChat/${buildInfo.version} (Full)` });
+  return defaultCreateDirectLine({ ...options, botAgent: `WebChat/${version} (Full)` });
 };
 
 const createDirectLineAppServiceExtension = (
@@ -39,7 +42,7 @@ const createDirectLineAppServiceExtension = (
       'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
     );
 
-  return defaultCreateDirectLineAppServiceExtension({ ...options, botAgent: `WebChat/${buildInfo.version} (Full)` });
+  return defaultCreateDirectLineAppServiceExtension({ ...options, botAgent: `WebChat/${version} (Full)` });
 };
 
 const hooks = Object.freeze({
@@ -87,7 +90,6 @@ export {
   decorator,
   internal,
   testIds,
-  version,
   withEmoji
 } from './minimal';
 // #endregion
@@ -96,12 +98,13 @@ export {
 export default ReactWebChat;
 
 export {
-  buildInfo,
+  buildInfoReadonlyObject as buildInfo,
   Components,
   createDirectLine,
   createDirectLineAppServiceExtension,
   hooks,
   ReactWebChat,
-  renderWebChat
+  renderWebChat,
+  version
 };
 // #endregion

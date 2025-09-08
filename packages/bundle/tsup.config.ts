@@ -27,7 +27,7 @@ const resolveReact = {
   }
 };
 
-const config: typeof baseConfig = {
+const commonConfig: typeof baseConfig = {
   ...baseConfig,
   entry: {
     'botframework-webchat': './src/boot/exports/full.ts',
@@ -62,31 +62,31 @@ const config: typeof baseConfig = {
 export default defineConfig([
   // Build IIFE before CJS/ESM to make npm start faster.
   {
-    ...config,
+    ...commonConfig,
+    define: { ...commonConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"global"' },
     dts: false,
     entry: {
       webchat: './src/boot/bundle/full.ts',
       'webchat-es5': './src/boot/bundle/full-es5.ts',
       'webchat-minimal': './src/boot/bundle/minimal.ts'
     },
-    env: { ...config.env, module_format: 'global' },
-    esbuildPlugins: [...config.esbuildPlugins, resolveReact],
+    esbuildPlugins: [...commonConfig.esbuildPlugins, resolveReact],
     format: 'iife',
     outExtension() {
       return { js: '.js' };
     },
     platform: 'browser',
-    target: [...config.target, 'es2019']
+    target: [...commonConfig.target, 'es2019']
   },
   {
-    ...config,
-    env: { ...config.env, module_format: 'esmodules' },
+    ...commonConfig,
+    define: { ...commonConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"esmodules"' },
     format: 'esm'
   },
   {
-    ...config,
-    env: { ...config.env, module_format: 'commonjs' },
+    ...commonConfig,
+    define: { ...commonConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"commonjs"' },
     format: 'cjs',
-    target: [...config.target, 'es2019']
+    target: [...commonConfig.target, 'es2019']
   }
 ]);

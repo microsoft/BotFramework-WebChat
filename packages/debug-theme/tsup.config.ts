@@ -41,19 +41,21 @@ const umdResolvePlugin = {
 export default defineConfig([
   {
     ...baseConfig,
+    define: { ...baseConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"esmodules"' },
     entry: { 'botframework-webchat-debug-theme': './src/index.ts' },
     format: 'esm'
   },
   {
     ...baseConfig,
+    define: { ...baseConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"commonjs"' },
     entry: { 'botframework-webchat-debug-theme': './src/index.ts' },
     format: 'cjs',
     target: [...baseConfig.target, 'es2019']
   },
   {
     ...baseConfig,
+    define: { ...baseConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"global"' },
     entry: { 'botframework-webchat-debug-theme.development': './src/bundle.ts' },
-    env: { ...baseConfig.env, module_format: 'global' },
     esbuildPlugins: [...(baseConfig.esbuildPlugins || []), umdResolvePlugin],
     format: 'iife',
     outExtension() {
@@ -62,8 +64,8 @@ export default defineConfig([
   },
   {
     ...baseConfig,
+    define: { ...baseConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"global"' },
     entry: { 'botframework-webchat-debug-theme.production.min': './src/bundle.ts' },
-    env: { ...baseConfig.env, module_format: 'global' },
     loader: {
       ...baseConfig.loader
     },
