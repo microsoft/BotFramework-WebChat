@@ -313,7 +313,7 @@
   }
  
   &.part-grouping-decorator--group  :global(.stacked-layout .webchat__bubble .collapsible-content .collapsible-content__content) {
-    margin-block: var(--webchat-spacingVerticalNone);
+    margin-block: var(--webchat__bubble--block-padding) var(--webchat-spacingVerticalNone);
   }
 }
 
@@ -357,6 +357,11 @@
     color: var(--webchat-colorNeutralForeground1);
     max-width: 100%;
     min-height: var(--webchat__bubble--min-height);
+  }
+
+  &.part-grouping-decorator--group :global(.webchat__bubble .webchat__bubble__content) {
+    margin-block: calc(var(--webchat-spacingVerticalS) * -1);
+    padding-block: var(--webchat-spacingVerticalS);
   }
 
   &:where(:not(.part-grouping-decorator--group).part-grouping-decorator--from-bot) :global(.webchat__bubble .webchat__bubble__content) {
