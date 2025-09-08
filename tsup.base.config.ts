@@ -117,10 +117,11 @@ const baseConfig: Options & {
 
   // Writing output to /dist.tmp/ and copy everything back to /dist/ for better atomicity.
 
-  // "onSuccess" runs before DTS, we need to wait until *.d.ts are emitted.
+  // "onSuccess" runs in parallel of DTS, we need to wait until *.d.ts are emitted.
+  // Filed a bug, https://github.com/egoist/tsup/issues/1363.
 
   // All instances of tsup will try to copy at the same time and could fail with "cp: cannot create regular file './dist/...': File exists".
-  // We will retry.
+  // We can have multiple config writing to their own folder and copy-merge. But then each config will own their version of `onSuccess`, could be messy.
 
   onSuccess: `while [ -z "$(find ./dist.tmp -name '*.d.ts' -print -quit)" ]; do sleep 0.2; done; mkdir -p ./dist/; until cp ./dist.tmp/* ./dist/; do sleep 0.5; done`,
   outDir: './dist.tmp/'
