@@ -15,16 +15,6 @@
         "default": "./dist/botframework-webchat-base.js"
       }
     },
-    "./dom-utils": {
-      "import": {
-        "types": "./dist/botframework-webchat-base.dom-utils.d.mts",
-        "default": "./dist/botframework-webchat-base.dom-utils.mjs"
-      },
-      "require": {
-        "types": "./dist/botframework-webchat-base.dom-utils.d.ts",
-        "default": "./dist/botframework-webchat-base.dom-utils.js"
-      }
-    },
     "./utils": {
       "import": {
         "types": "./dist/botframework-webchat-base.utils.d.mts",

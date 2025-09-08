@@ -1,4 +1,4 @@
-import setMetaTag from '../dom-utils/setMetaTag';
+import setMetaTag from './setMetaTag';
 
 type BaseBuildInfoObject = {
   readonly buildTool?: string | undefined;

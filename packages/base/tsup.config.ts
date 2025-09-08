@@ -8,7 +8,6 @@ const config: typeof baseConfig = {
   ...baseConfig,
   entry: {
     'botframework-webchat-base': './src/index.ts',
-    'botframework-webchat-base.dom-utils': './src/dom-utils/index.ts',
     'botframework-webchat-base.utils': './src/utils/index.ts'
   },
   onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/index.ts`).join(' ')}`
