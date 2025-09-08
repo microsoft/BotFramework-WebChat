@@ -4,7 +4,7 @@ import baseConfig from '../../tsup.base.config';
 // TODO: [P1] Compute this automatically.
 const DEPENDENT_PATHS = ['api/src/index.ts', 'api-middleware/src/index.ts'];
 
-const config: typeof baseConfig = {
+const commonConfig: typeof baseConfig = {
   ...baseConfig,
   entry: {
     'botframework-webchat-react-hooks': './src/index.ts'
@@ -14,12 +14,12 @@ const config: typeof baseConfig = {
 
 export default defineConfig([
   {
-    ...config,
+    ...commonConfig,
     format: 'esm'
   },
   {
-    ...config,
+    ...commonConfig,
     format: 'cjs',
-    target: [...config.target, 'es2019']
+    target: [...commonConfig.target, 'es2019']
   }
 ]);
