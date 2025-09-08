@@ -5,7 +5,7 @@ import { componentStyleContent as componentStyleContentPlaceholder } from './src
 import { decoratorStyleContent as decoratorStyleContentPlaceholder } from './src/decorator/private/createStyles';
 
 // TODO: [P1] Compute this automatically.
-const DEPENDENT_PATHS = ['bundle'];
+const DEPENDENT_PATHS = ['bundle/src/boot/exports/full.ts'];
 
 const commonConfig: typeof baseConfig = {
   ...baseConfig,
@@ -19,7 +19,7 @@ const commonConfig: typeof baseConfig = {
     injectCSSPlugin({ stylesPlaceholder: componentStyleContentPlaceholder }),
     injectCSSPlugin({ stylesPlaceholder: decoratorStyleContentPlaceholder })
   ],
-  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/buildInfo.ts`).join(' ')}`
+  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`
 };
 
 export default defineConfig([

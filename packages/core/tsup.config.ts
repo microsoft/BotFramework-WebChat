@@ -2,7 +2,7 @@ import { defineConfig } from 'tsup';
 import baseConfig from '../../tsup.base.config';
 
 // TODO: [P1] Compute this automatically.
-const DEPENDENT_PATHS = ['api'];
+const DEPENDENT_PATHS = ['api/src/index.ts'];
 
 const commonConfig: typeof baseConfig = {
   ...baseConfig,
@@ -10,7 +10,7 @@ const commonConfig: typeof baseConfig = {
     'botframework-webchat-core': './src/index.ts',
     'botframework-webchat-core.internal': './src/internal/index.ts'
   },
-  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/buildInfo.ts`).join(' ')}`
+  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`
 };
 
 export default defineConfig([

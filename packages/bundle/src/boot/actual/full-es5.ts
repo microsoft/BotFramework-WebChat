@@ -1,6 +1,6 @@
 import defaultCreateDirectLine from '../../createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAppServiceExtension';
-import buildInfo from '../buildInfo';
+import buildInfo from '../../buildInfo';
 import ReactWebChat from './full';
 
 buildInfo.set('variant', 'full-es5');
