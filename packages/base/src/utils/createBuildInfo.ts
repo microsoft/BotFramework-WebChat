@@ -40,6 +40,8 @@ class BuildInfo implements ReadonlyBuildInfo {
 
   #commit() {
     setMetaTag(this.name, this.#map);
+
+    this.version && setMetaTag(`${this.name}:version`, this.version);
   }
 
   delete(key: string) {
@@ -64,7 +66,7 @@ class BuildInfo implements ReadonlyBuildInfo {
   }
 }
 
-function createBuildInfo(name: `botframework-webchat:${string}`): ReadonlyBuildInfo {
+function createBuildInfo(name: 'botframework-webchat' | `botframework-webchat:${string}`): ReadonlyBuildInfo {
   return new BuildInfo(name);
 }
 
