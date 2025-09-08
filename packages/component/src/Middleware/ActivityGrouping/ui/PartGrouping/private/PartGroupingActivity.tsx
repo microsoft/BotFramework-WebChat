@@ -122,6 +122,7 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
       focused={isActiveDescendant}
       onMouseDownCapture={handleMouseDownCapture}
       ref={groupCallbackRef}
+      role="article"
     >
       <FocusTrap
         onFocus={handleDescendantFocus}
