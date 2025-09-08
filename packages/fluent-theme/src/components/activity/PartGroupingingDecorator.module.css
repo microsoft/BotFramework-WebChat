@@ -175,9 +175,12 @@
   }
 
   &.part-grouping-decorator--group :global(.stacked-layout .stacked-layout__main .stacked-layout__title),
-  &.part-grouping-decorator--group :global(.stacked-layout .stacked-layout__main .collapsible-content__summary),
-  &.part-grouping-decorator--group :global(.stacked-layout .stacked-layout__main .stacked-layout__message-status) {
+  &.part-grouping-decorator--group :global(.stacked-layout .stacked-layout__main .collapsible-content__summary) {
     margin: var(--webchat-spacingVerticalXS) var(--webchat__bubble--inline-padding);
+  }
+
+  &.part-grouping-decorator--group :global(.stacked-layout .stacked-layout__main .stacked-layout__message-status) {
+    margin-block: var(--webchat-spacingVerticalXS);
   }
 
   /* Stacked layout which has message bubble */
