@@ -3,10 +3,10 @@ import ReactWebChat from 'botframework-webchat-component';
 import * as componentDecorator from 'botframework-webchat-component/decorator';
 import * as internal from 'botframework-webchat-component/internal';
 
+import buildInfo from '../../buildInfo';
 import defaultCreateDirectLine from '../../createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAppServiceExtension';
 import coreRenderWebChat from '../../renderWebChat';
-import buildInfo from '../buildInfo';
 
 buildInfo.set('variant', 'minimal');
 

@@ -10,7 +10,7 @@ const config: typeof baseConfig = {
     'botframework-webchat-base': './src/index.ts',
     'botframework-webchat-base.utils': './src/utils/index.ts'
   },
-  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/index.ts`).join(' ')}`
+  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/buildInfo.ts`).join(' ')}`
 };
 
 export default defineConfig([

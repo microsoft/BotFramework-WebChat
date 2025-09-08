@@ -9,7 +9,7 @@ const config: typeof baseConfig = {
   entry: {
     'botframework-webchat-react-valibot': './src/index.ts'
   },
-  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/index.ts`).join(' ')}`
+  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/buildInfo.ts`).join(' ')}`
 };
 
 export default defineConfig([

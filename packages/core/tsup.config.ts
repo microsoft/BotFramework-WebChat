@@ -10,7 +10,7 @@ const commonConfig: typeof baseConfig = {
     'botframework-webchat-core': './src/index.ts',
     'botframework-webchat-core.internal': './src/internal/index.ts'
   },
-  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/index.ts`).join(' ')}`
+  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/buildInfo.ts`).join(' ')}`
 };
 
 export default defineConfig([

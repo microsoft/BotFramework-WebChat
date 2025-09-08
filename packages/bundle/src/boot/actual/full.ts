@@ -11,12 +11,12 @@ import ThumbnailCardContent from '../../adaptiveCards/Attachment/ThumbnailCardCo
 import VideoCardContent from '../../adaptiveCards/Attachment/VideoCardContent';
 import useAdaptiveCardsHostConfig from '../../adaptiveCards/hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../../adaptiveCards/hooks/useAdaptiveCardsPackage';
+import buildInfo from '../../buildInfo';
 import defaultCreateDirectLine from '../../createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAppServiceExtension';
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useStyleSet from '../../hooks/useStyleSet';
 import coreRenderWebChat from '../../renderWebChat';
-import buildInfo from '../buildInfo';
 import { Components as minimalComponents, hooks as minimalHooks } from './minimal';
 
 buildInfo.set('variant', 'full');

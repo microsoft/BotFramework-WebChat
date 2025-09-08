@@ -11,7 +11,7 @@ const config: typeof baseConfig = {
     'botframework-webchat-api-middleware.internal': './src/internal.ts',
     'botframework-webchat-api-middleware.legacy': './src/legacy.ts'
   },
-  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/index.ts`).join(' ')}`
+  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}/src/buildInfo.ts`).join(' ')}`
 };
 
 export default defineConfig([
