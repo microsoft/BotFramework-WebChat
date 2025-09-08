@@ -8,7 +8,7 @@ type BaseBuildInfoObject = {
 
 interface ReadonlyBuildInfo {
   get name(): string;
-  get readonlyObject(): BaseBuildInfoObject;
+  get object(): BaseBuildInfoObject;
   get version(): string | undefined;
 
   delete(key: string): void;
@@ -30,7 +30,7 @@ class BuildInfo implements ReadonlyBuildInfo {
     return this.#name;
   }
 
-  get readonlyObject() {
+  get object() {
     return this.#object;
   }
 

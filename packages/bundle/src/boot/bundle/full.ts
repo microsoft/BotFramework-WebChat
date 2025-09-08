@@ -10,6 +10,6 @@ const { createStoreWithDevTools: _createStoreWithDevTools, ...exports } = actual
 window['WebChat'] = Object.freeze({
   ...window['WebChat'],
   ...exports,
-  buildInfo: buildInfo.readonlyObject,
+  buildInfo: buildInfo.object,
   middleware
 });

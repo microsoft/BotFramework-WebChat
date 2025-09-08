@@ -3,7 +3,7 @@ export { default as DebugProvider, debugProviderPropsSchema, type DebugProviderP
 // #region Build info
 import buildInfo from './buildInfo';
 
-const { readonlyObject, version } = buildInfo;
+const { object: buildInfoObject, version } = buildInfo;
 
-export { readonlyObject as buildInfo, version };
+export { buildInfoObject as buildInfo, version };
 // #endregion

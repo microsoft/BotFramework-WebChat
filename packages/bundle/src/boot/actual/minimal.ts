@@ -10,7 +10,7 @@ import buildInfo from '../buildInfo';
 
 buildInfo.set('variant', 'minimal');
 
-const { readonlyObject: buildInfoReadonlyObject, version } = buildInfo;
+const { object: buildInfoObject, version } = buildInfo;
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
@@ -57,7 +57,7 @@ export { default as createBrowserWebSpeechPonyfillFactory } from '../../createBr
 export default ReactWebChat;
 
 export {
-  buildInfoReadonlyObject as buildInfo,
+  buildInfoObject as buildInfo,
   createDirectLine,
   createDirectLineAppServiceExtension,
   decorator,

@@ -21,7 +21,7 @@ import { Components as minimalComponents, hooks as minimalHooks } from './minima
 
 buildInfo.set('variant', 'full');
 
-const { readonlyObject: buildInfoReadonlyObject, version } = buildInfo;
+const { object: buildInfoObject, version } = buildInfo;
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
@@ -98,7 +98,7 @@ export {
 export default ReactWebChat;
 
 export {
-  buildInfoReadonlyObject as buildInfo,
+  buildInfoObject as buildInfo,
   Components,
   createDirectLine,
   createDirectLineAppServiceExtension,
