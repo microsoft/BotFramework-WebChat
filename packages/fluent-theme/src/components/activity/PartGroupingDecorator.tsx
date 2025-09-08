@@ -7,7 +7,7 @@ import CopilotMessageHeader from './CopilotMessageHeader';
 import useVariants from '../../private/useVariants';
 import { useStyles, useVariantClassName } from '../../styles';
 
-import styles from './PartGroupingingDecorator.module.css';
+import styles from './PartGroupingDecorator.module.css';
 
 type PartGroupingDecoratorProps = Readonly<{
   activities: readonly WebChatActivity[];
