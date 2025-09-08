@@ -964,7 +964,7 @@ type StyleOptions = {
   /**
    * Defines how activities are being grouped by (in the order of appearance in the array). Default to `['sender', 'status', 'part']` or `sender,status` in CSS.
    *
-   * Values are key of result of `groupActivitiesMiddleware`. The default implementation of `groupActivitiesMiddleware` has `sender` and `status`.
+   * Values are key of result of `groupActivitiesMiddleware`. The default implementation of `groupActivitiesMiddleware` has `sender`, `status`, and `part`.
    *
    * To add new groupings, configure `groupActivitiesMiddleware` to output extra groups. Then, add the group names to `styleOptions.groupActivitiesBy`.
    */
