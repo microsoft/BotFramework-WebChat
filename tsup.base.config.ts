@@ -124,7 +124,7 @@ const baseConfig: Options & {
   // All instances of tsup will try to copy at the same time and could fail with "cp: cannot create regular file './dist/...': File exists".
   // We can have multiple config writing to their own folder and copy-merge. But then each config will own their version of `onSuccess`, could be messy.
 
-  onSuccess: `while [ -z "$(find ./dist.tmp -name '*.d.ts' -print -quit)" ]; do sleep 0.2; done; mkdir -p ./dist/; until cp ./dist.tmp/* ./dist/; do sleep 0.5; done`,
+  onSuccess: `while [ -z "$(find ./dist.tmp \\( -name '*.d.ts' -o -name '*.d.mts' \\) -print -quit)" ]; do sleep 0.2; done; mkdir -p ./dist/; sleep 0.5; until cp ./dist.tmp/* ./dist/; do sleep 0.5; done`,
   outDir: './dist.tmp/'
 };
 
