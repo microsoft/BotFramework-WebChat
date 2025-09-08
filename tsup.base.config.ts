@@ -116,7 +116,7 @@ const baseConfig: Options & {
   // Thus, when building in parallel, some of the files will be emptied.
   // We are writing output to /dist.tmp/ and copy everything back to /dist/.
   // "onSuccess" runs before DTS, we need to wait until *.d.ts are emitted.
-  onSuccess: 'while [ ! -f ./dist.tmp/*.d.ts ]; do sleep 0.2; done; mkdir -p ./dist/ && cp ./dist.tmp/* ./dist/',
+  onSuccess: `while [ -z "$(find ./dist.tmp -name '*.d.ts' -print -quit)" ]; do sleep 0.2; done; mkdir -p ./dist/ && cp ./dist.tmp/* ./dist/`,
   outDir: './dist.tmp/'
 };
 
