@@ -23,6 +23,7 @@ function* postActivityWithMessage({
           ...channelData,
           attachmentSizes: attachments.map(({ blob: { size } }) => size)
         },
+        deliveryMode: 'stream',
         text: text || undefined,
         textFormat: 'plain',
         type: 'message'
