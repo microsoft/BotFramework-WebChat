@@ -110,7 +110,8 @@
           }),
           colorNeutralBackground1Disabled: '#101010',
           colorNeutralBackground1Hover: '#101010',
-          colorNeutralForeground5: '#424242'
+          colorNeutralForeground5: '#424242',
+          colorGrey98: '#1b1b1b'
         };
         codeBlockTheme = 'github-dark-default';
       } else {
@@ -118,6 +119,7 @@
           ...webLightTheme,
           // Original is #242424 which is too light for fui-FluentProvider to pass our a11y
           colorNeutralForeground1: '#1b1b1b',
+          colorGrey98: '#faf9f8'
         };
         codeBlockTheme = 'github-light-default';
       }
@@ -133,22 +135,6 @@
         variant === 'copilot' || variant === 'fluent' ?
           React.createElement(
             FluentProvider,
-            { className: 'fui-FluentProvider', theme: fluentTheme },
-            React.createElement(
-              FluentThemeProvider,
-              { variant: variant },
-              React.createElement(ReactWebChat, webChatProps)
-            )
-          ) :
-          React.createElement(ReactWebChat, webChatProps)
-      );
-
-      await pageConditions.uiConnected();
-
-      root.render(
-        variant === 'copilot' || variant === 'fluent' ?
-          React.createElement(
-            'div' || FluentProvider,
             { className: 'fui-FluentProvider', theme: fluentTheme },
             React.createElement(
               FluentThemeProvider,
