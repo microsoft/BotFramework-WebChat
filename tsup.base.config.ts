@@ -114,9 +114,15 @@ const baseConfig: Options & {
 
   // tsup@8.5.0 do not write to output atomically.
   // Thus, when building in parallel, some of the files will be emptied.
-  // We are writing output to /dist.tmp/ and copy everything back to /dist/.
+
+  // Writing output to /dist.tmp/ and copy everything back to /dist/ for better atomicity.
+
   // "onSuccess" runs before DTS, we need to wait until *.d.ts are emitted.
-  onSuccess: `while [ -z "$(find ./dist.tmp -name '*.d.ts' -print -quit)" ]; do sleep 0.2; done; mkdir -p ./dist/ && cp ./dist.tmp/* ./dist/`,
+
+  // All instances of tsup will try to copy at the same time and could fail with "cp: cannot create regular file './dist/...': File exists".
+  // We will retry.
+
+  onSuccess: `while [ -z "$(find ./dist.tmp -name '*.d.ts' -print -quit)" ]; do sleep 0.2; done; mkdir -p ./dist/; until cp ./dist.tmp/* ./dist/; do sleep 0.5; done`,
   outDir: './dist.tmp/'
 };
 
