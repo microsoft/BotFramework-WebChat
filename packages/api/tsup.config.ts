@@ -18,13 +18,13 @@ const commonConfig: typeof baseConfig = {
 export default defineConfig([
   {
     ...commonConfig,
-    define: { ...commonConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"esmodules"' },
+    define: { ...commonConfig.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"' },
     format: 'esm',
     noExternal: ['globalize']
   },
   {
     ...commonConfig,
-    define: { ...commonConfig.define, WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"commonjs"' },
+    define: { ...commonConfig.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"commonjs"' },
     format: 'cjs',
     target: [...commonConfig.target, 'es2019']
   }

@@ -39,9 +39,9 @@ const baseConfig: Options & {
   target: Target[];
 } = {
   define: {
-    WEB_CHAT_BUILD_INFO_BUILD_TOOL: '"tsup"',
-    WEB_CHAT_BUILD_INFO_MODULE_FORMAT: '"unknown"',
-    WEB_CHAT_BUILD_INFO_VERSION: JSON.stringify(process.env.npm_package_version || '0.0.0-unknown')
+    'globalThis.WEB_CHAT_BUILD_INFO_BUILD_TOOL': '"tsup"',
+    'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"unknown"',
+    'globalThis.WEB_CHAT_BUILD_INFO_VERSION': JSON.stringify(process.env.npm_package_version || '0.0.0-unknown')
   },
   dts: true,
   env: {
