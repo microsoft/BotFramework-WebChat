@@ -4,4 +4,5 @@
 /node_modules/
 /tsup.config.bundled_*.mjs
 
+# Custom ignore below
 /src/external/
