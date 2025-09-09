@@ -1,0 +1,111 @@
+/* Focus area container */
+
+:global(.webchat) .transcript-focus-area {
+  display: grid;
+  grid-template-areas: 'content';
+  outline: 0;
+  
+  --webchat__transcript--spacing: 10px;
+
+  .transcript-focus-area__indicator,
+  .transcript-focus-area__transcript-indicator {
+    box-sizing: border-box;
+    font-size: 0;
+    grid-area: content;
+    isolation: isolate;
+    min-height: 0;
+    pointer-events: none;
+  }
+
+  .transcript-focus-area__root,
+  .transcript-focus-area__content-root {
+    grid-area: content;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  &:focus .transcript-focus-area__content--focused > .transcript-focus-area__content-overlay .transcript-focus-area__indicator {
+    border-color: var(--webchat__color--transcript-activity-visual-keyboard-indicator);
+    border-style: var(--webchat__border-style--transcript-activity-visual-keyboard-indicator);
+    border-width: var(--webchat__border-width--transcript-activity-visual-keyboard-indicator);
+    inset: calc(var(--webchat__transcript--spacing) / -2) calc(var(--webchat__transcript--spacing) / 2) calc(var(--webchat__transcript--spacing) / -2) calc(var(--webchat__transcript--spacing) / 2);
+    position: absolute;
+  }
+
+  &:focus-visible .transcript-focus-area__transcript-indicator,
+  .transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible) + .transcript-focus-area__transcript-indicator {
+    border-color: var(--webchat__border-color--transcript-visual-keyboard-indicator);
+    border-style: var(--webchat__border-style--transcript-visual-keyboard-indicator);
+    border-width: var(--webchat__border-width--transcript-visual-keyboard-indicator);
+  }
+
+  .transcript-focus-area__activity-list {
+    display: grid;
+    gap: var(--webchat__transcript--spacing);
+    padding-block: var(--webchat__transcript--spacing);
+  }
+
+  .transcript-focus-area__content {
+    display: grid;
+    grid-template-areas: 'content';
+    min-width: 0;
+
+    > * {
+      grid-area: content;
+      min-width: 0;
+    }
+  }
+
+  /*
+    TODO: see if we can remove the wrapper along with absolute/relative positioning by:
+    - Using intersection observer to observe a given activity is in the view
+    - Supplying the edge we'd like the focus indicator to align with
+
+    Browser handles differently both bounding boxes and scroll into view for static vs relative/absolute positioning.
+    To account for the differences, we use absolute/relative positioning as the rest of our code assumes so.
+  */
+  .transcript-focus-area__content-overlay {
+    min-height: 0;
+    grid-area: content;
+    /* The bounding box is expanded to both top and bottom to scroll focus indicator into view. */
+    /* We should ignore clicks to make sure this expansion don't register click as focus. */
+    /* Otherwise, when clicking on the very bottom edge of the activity, it will focus on next activity instead. */
+    pointer-events: none;
+    position: relative;
+    width: 100%;
+  }
+
+  /* When the content is focused as active descendant, scrollIntoView() will scroll this invisible div into view. */
+  .transcript-focus-area__content-active-descendant {
+    inset: calc(var(--webchat__transcript--spacing) / -1) 0 calc(var(--webchat__transcript--spacing) / -1) 0;
+    position: absolute;
+  }
+
+  .transcript-focus-area__terminator {
+    height: 0;
+    outline: 0;
+    position: relative;
+    width: 100%;
+  }
+
+  .transcript-focus-area__terminator-body {
+    display: flex;
+    inset: auto 0 0 0;
+    justify-content: center;
+    position: absolute;
+  }
+
+  .transcript-focus-area__terminator:not(:focus) .transcript-focus-area__terminator-body {
+    display: none;
+  }
+
+  .transcript-focus-area__terminator-text {
+    background: var(--webchat__background--transcript-terminator);
+    border-radius: var(--webchat__border-radius--transcript-terminator);
+    color: var(--webchat__color--transcript-terminator);
+    font-family: var(--webchat__font--primary);
+    font-size: var(--webchat__font-size--transcript-terminator);
+    margin: calc(var(--webchat__transcript--spacing) / 2);
+    padding: calc(var(--webchat__transcript--spacing) / 2);
+  }
+}

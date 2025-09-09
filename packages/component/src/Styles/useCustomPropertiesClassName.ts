@@ -38,7 +38,17 @@ export default function useCustomPropertiesClassName() {
       primaryFont,
       sendBoxAttachmentBarMaxHeight,
       subtle,
-      timestampColor
+      timestampColor,
+      transcriptActivityVisualKeyboardIndicatorColor,
+      transcriptActivityVisualKeyboardIndicatorStyle,
+      transcriptActivityVisualKeyboardIndicatorWidth,
+      transcriptTerminatorBackgroundColor,
+      transcriptTerminatorBorderRadius,
+      transcriptTerminatorColor,
+      transcriptTerminatorFontSize,
+      transcriptVisualKeyboardIndicatorColor,
+      transcriptVisualKeyboardIndicatorStyle,
+      transcriptVisualKeyboardIndicatorWidth
     } = styleOptions;
 
     // eslint-disable-next-line no-magic-numbers
@@ -47,18 +57,28 @@ export default function useCustomPropertiesClassName() {
     const contents = `
 .${webchatCustomPropertiesClass}.${randomClass} {
   display: contents;
+  ${CustomPropertyNames.BackgroundTranscriptTerminator}: ${transcriptTerminatorBackgroundColor};
   ${CustomPropertyNames.BorderAnimationColor1}: ${borderAnimationColor1};
   ${CustomPropertyNames.BorderAnimationColor2}: ${borderAnimationColor2};
   ${CustomPropertyNames.BorderAnimationColor3}: ${borderAnimationColor3};
   ${CustomPropertyNames.BorderColorBubble}: ${bubbleBorderColor};
   ${CustomPropertyNames.BorderRadiusBubble}: ${bubbleBorderRadius}px;
+  ${CustomPropertyNames.BorderRadiusTranscriptTerminator}: ${transcriptTerminatorBorderRadius}px;
   ${CustomPropertyNames.BorderStyleBubble}: ${bubbleBorderStyle};
+  ${CustomPropertyNames.BorderStyleTranscriptActivityVisualKeyboardIndicator}: ${transcriptActivityVisualKeyboardIndicatorStyle};
+  ${CustomPropertyNames.BorderStyleTranscriptVisualKeyboardIndicator}: ${transcriptVisualKeyboardIndicatorStyle};
   ${CustomPropertyNames.BorderWidthBubble}: ${bubbleBorderWidth}px;
+  ${CustomPropertyNames.BorderWidthTranscriptActivityVisualKeyboardIndicator}: ${transcriptActivityVisualKeyboardIndicatorWidth}px;
+  ${CustomPropertyNames.BorderWidthTranscriptVisualKeyboardIndicator}: ${transcriptVisualKeyboardIndicatorWidth}px;
   ${CustomPropertyNames.ColorAccent}: ${accent};
   ${CustomPropertyNames.ColorSubtle}: ${subtle};
   ${CustomPropertyNames.ColorTimestamp}: ${timestampColor || subtle};
+  ${CustomPropertyNames.ColorTranscriptActivityVisualKeyboardIndicator}: ${transcriptActivityVisualKeyboardIndicatorColor};
+  ${CustomPropertyNames.ColorTranscriptTerminator}: ${transcriptTerminatorColor};
+  ${CustomPropertyNames.ColorTranscriptVisualKeyboardIndicator}: ${transcriptVisualKeyboardIndicatorColor};
   ${CustomPropertyNames.FontPrimary}: ${primaryFont};
   ${CustomPropertyNames.FontSizeSmall}: ${fontSizeSmall};
+  ${CustomPropertyNames.FontSizeTranscriptTerminator}: ${transcriptTerminatorFontSize}px;
   ${CustomPropertyNames.IconURLExternalLink}: ${markdownExternalLinkIconImage};
   ${CustomPropertyNames.MaxHeightImageBubble}: ${bubbleImageMaxHeight}px;
   ${CustomPropertyNames.MaxHeightSendBoxAttachmentBar}: ${sendBoxAttachmentBarMaxHeight}px;

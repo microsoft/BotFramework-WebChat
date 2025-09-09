@@ -102,7 +102,7 @@
 
         // THEN: It should scroll activity #2 in the view and align it to the top.
         expect(pageElements.transcriptScrollable().scrollTop).toBe(
-          pageElements.activities()[1].offsetTop - 5 // 5px is the margin
+          pageElements.activities()[1].offsetTop - 10 // 10px is the gap
         );
         await host.snapshot();
       });

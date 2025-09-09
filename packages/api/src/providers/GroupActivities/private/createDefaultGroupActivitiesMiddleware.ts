@@ -1,4 +1,4 @@
-import { type GlobalScopePonyfill, type WebChatActivity } from 'botframework-webchat-core';
+import { getOrgSchemaMessage, type GlobalScopePonyfill, type WebChatActivity } from 'botframework-webchat-core';
 
 import type GroupActivitiesMiddleware from '../../../types/GroupActivitiesMiddleware';
 import { type SendStatus } from '../../../types/SendStatus';
@@ -88,6 +88,21 @@ export default function createDefaultGroupActivitiesMiddleware({
               ...next({ activities }),
               status: bin(activities, createShouldGroupTimestamp(groupTimestamp, ponyfill))
             })
+        : undefined,
+    type =>
+      type === 'part'
+        ? next =>
+            ({ activities }) => {
+              const messages = activities.map(activity => [getOrgSchemaMessage(activity.entities), activity] as const);
+              return {
+                ...next({ activities }),
+                part: bin(
+                  messages,
+                  ([last], [current]) =>
+                    typeof last?.isPartOf?.['@id'] === 'string' && last.isPartOf['@id'] === current?.isPartOf?.['@id']
+                ).map(bin => bin.map(([, activity]) => activity))
+              };
+            }
         : undefined
   ]);
 }

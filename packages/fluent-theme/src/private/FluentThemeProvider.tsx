@@ -2,15 +2,17 @@
 import { type ActivityMiddleware, type StyleOptions, type TypingIndicatorMiddleware } from 'botframework-webchat-api';
 import {
   createActivityBorderMiddleware,
+  createActivityGroupingMiddleware,
   DecoratorComposer,
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
-import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import { Components } from 'botframework-webchat-component';
+import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import React, { memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';
 import ActivityLoader from '../components/activity/ActivityLoader';
+import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
 import AssetComposer from '../components/assets/AssetComposer';
 import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
 import { isPreChatMessageActivity, PreChatMessageActivity } from '../components/preChatActivity';
@@ -54,6 +56,12 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
 const sendBoxMiddleware = [() => () => () => PrimarySendBox];
 
 const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
+  createActivityGroupingMiddleware(next => request => {
+    if (request.groupingName === 'part') {
+      return PartGroupDecorator;
+    }
+    return next(request);
+  }),
   createActivityBorderMiddleware(function FluentBorderLoader({ request, Next, ...props }) {
     return (
       <ActivityLoader showLoader={props.showLoader ?? request.livestreamingState === 'preparing'}>

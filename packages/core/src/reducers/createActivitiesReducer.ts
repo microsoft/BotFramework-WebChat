@@ -13,6 +13,7 @@ import {
 } from '../actions/postActivity';
 import { SENDING, SEND_FAILED, SENT } from '../types/internal/SendStatus';
 import getActivityLivestreamingMetadata from '../utils/getActivityLivestreamingMetadata';
+import getOrgSchemaMessage from '../utils/getOrgSchemaMessage';
 import findBeforeAfter from './private/findBeforeAfter';
 
 import type { Reducer } from 'redux';
@@ -74,6 +75,10 @@ function patchActivity(
   activity = updateIn(activity, ['channelData'], channelData => ({ ...channelData }));
   activity = updateIn(activity, ['channelData', 'webChat', 'receivedAt'], () => Date.now());
 
+  const messageEntity = getOrgSchemaMessage(activity.entities);
+  const entityPosition = messageEntity?.position;
+  const entityPartOf = messageEntity?.isPartOf?.['@id'];
+
   const {
     channelData: { 'webchat:sequence-id': sequenceId }
   } = activity;
@@ -128,6 +133,13 @@ function patchActivity(
     activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], () => sequenceId);
   }
 
+  if (typeof entityPosition === 'number') {
+    activity = updateIn(activity, ['channelData', 'webchat:entity-position'], () => entityPosition);
+  }
+  if (typeof entityPartOf === 'string') {
+    activity = updateIn(activity, ['channelData', 'webchat:entity-part-of'], () => entityPartOf);
+  }
+
   return activity;
 }
 
@@ -165,10 +177,25 @@ function upsertActivityWithSort(
       !(nextClientActivityID && clientActivityID === nextClientActivityID) && !(id && id === nextActivity.id)
   );
 
-  // Then, find the right (sorted) place to insert the new activity at, based on sequence ID.
-  const indexToInsert = nextActivities.findIndex(
-    ({ channelData: { 'webchat:sequence-id': sequenceId } = {} }) => (sequenceId || 0) > (nextSequenceId || 0)
-  );
+  const nextEntityPosition = nextActivity.channelData?.['webchat:entity-position'];
+  const nextPartOf = nextActivity.channelData?.['webchat:entity-part-of'];
+
+  const indexToInsert = nextActivities.findIndex(({ channelData = {} }) => {
+    const currentSequenceId = channelData['webchat:sequence-id'] || 0;
+    const currentPosition = channelData['webchat:entity-position'];
+    const currentPartOf = channelData['webchat:entity-part-of'];
+
+    const bothHavePosition = typeof currentPosition === 'number' && typeof nextEntityPosition === 'number';
+    const bothArePartOf = typeof currentPartOf === 'string' && currentPartOf === nextPartOf;
+
+    // For activities in the same creative work part, position is primary sort key
+    if (bothHavePosition && bothArePartOf) {
+      return currentPosition > nextEntityPosition;
+    }
+
+    // For activities not in the same part or without positions follow sequence ID order
+    return (currentSequenceId || 0) > (nextSequenceId || 0);
+  });
 
   // If no right place are found, append it
   nextActivities.splice(~indexToInsert ? indexToInsert : nextActivities.length, 0, nextActivity);

@@ -2,6 +2,7 @@ import { type EmptyObject } from 'type-fest';
 import { lazy, literal, looseObject, optional, parse, pipe, string, type ObjectEntries } from 'valibot';
 
 import { action, type Action } from './Action';
+import { creativeWork, type CreativeWork } from './CreativeWork';
 import orgSchemaProperties from './private/orgSchemaProperties';
 import orgSchemaProperty from './private/orgSchemaProperty';
 
@@ -58,6 +59,13 @@ export type Thing = {
    * @see https://schema.org/url
    */
   url?: string | undefined;
+
+  /**
+   * Indicates an item or CreativeWork that this item, or CreativeWork (in some sense), is part of.
+   *
+   * @see https://schema.org/isPartOf
+   */
+  isPartOf?: CreativeWork | undefined;
 };
 
 const thingEntries = {
@@ -68,6 +76,7 @@ const thingEntries = {
   additionalType: orgSchemaProperty(string()),
   alternateName: orgSchemaProperty(string()),
   description: orgSchemaProperty(string()),
+  isPartOf: orgSchemaProperty(lazy(() => creativeWork())),
   name: orgSchemaProperty(string()),
   potentialAction: orgSchemaProperties(lazy(() => action())),
   url: orgSchemaProperty(string())
