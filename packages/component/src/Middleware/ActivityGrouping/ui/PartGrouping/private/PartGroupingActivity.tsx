@@ -58,7 +58,7 @@ type PartGroupingActivityProps = InferOutput<typeof partGroupingActivityPropsSch
 
 const partGroupingFocusableActivityPropsSchema = pipe(
   object({
-    activity: pipe(custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success)),
+    activity: custom<WebChatActivity>(value => safeParse(object({}), value).success),
     children: optional(reactNode()),
     className: optional(string()),
     groupKey: string()
