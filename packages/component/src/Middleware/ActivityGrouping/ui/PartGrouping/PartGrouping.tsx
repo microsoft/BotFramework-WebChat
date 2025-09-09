@@ -59,7 +59,5 @@ function PartGrouping(props: PartGroupingProps) {
   );
 }
 
-PartGrouping.displayName = 'PartGrouping';
-
 export default memo(PartGrouping);
 export { partGroupingPropsSchema, type PartGroupingProps };
