@@ -68,7 +68,10 @@ const partGroupingFocusableActivityPropsSchema = pipe(
 
 type FocusablePartGroupingActivityProps = InferOutput<typeof partGroupingFocusableActivityPropsSchema>;
 
-function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps) {
+// eslint-disable-next-line prefer-arrow-callback
+const FocusablePartGroupingActivity = memo(function FocusablePartGroupingActivity(
+  props: FocusablePartGroupingActivityProps
+) {
   const [activeDescendantId] = useActiveDescendantId();
   const { activity, children, className, groupKey } = parse(partGroupingFocusableActivityPropsSchema, props);
 
@@ -128,7 +131,7 @@ function FocusablePartGroupingActivity(props: FocusablePartGroupingActivityProps
       </TranscriptFocusContentOverlay>
     </TranscriptFocusContent>
   );
-}
+});
 
 function PartGroupingActivity(props: PartGroupingActivityProps) {
   const classNames = useStyles(styles);
@@ -196,8 +199,6 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
     </FocusablePartGroupingActivity>
   );
 }
-
-PartGroupingActivity.displayName = 'PartGroupingActivity';
 
 export default memo(PartGroupingActivity);
 export { type PartGroupingActivityProps, partGroupingActivityPropsSchema };
