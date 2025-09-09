@@ -200,4 +200,4 @@ function PartGroupingActivity(props: PartGroupingActivityProps) {
 PartGroupingActivity.displayName = 'PartGroupingActivity';
 
 export default memo(PartGroupingActivity);
-export { type PartGroupingActivityProps };
+export { type PartGroupingActivityProps, partGroupingActivityPropsSchema };
