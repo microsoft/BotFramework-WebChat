@@ -6,12 +6,13 @@ import {
   DecoratorComposer,
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
-import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import { Components } from 'botframework-webchat-component';
+import { WebChatDecorator } from 'botframework-webchat-component/decorator';
 import React, { memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';
 import ActivityLoader from '../components/activity/ActivityLoader';
+import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
 import AssetComposer from '../components/assets/AssetComposer';
 import { isLinerMessageActivity, LinerMessageActivity } from '../components/linerActivity';
 import { isPreChatMessageActivity, PreChatMessageActivity } from '../components/preChatActivity';
@@ -21,7 +22,6 @@ import { WebChatTheme } from '../components/theme';
 import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
 import { createStyles } from '../styles';
 import VariantComposer, { VariantList } from './VariantComposer';
-import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
 
 const { ThemeProvider } = Components;
 
