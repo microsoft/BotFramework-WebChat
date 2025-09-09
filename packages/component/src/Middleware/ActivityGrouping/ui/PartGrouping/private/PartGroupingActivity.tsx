@@ -1,4 +1,4 @@
-import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
@@ -9,7 +9,6 @@ import {
   minLength,
   object,
   optional,
-  parse,
   pipe,
   readonly,
   safeParse,
@@ -72,8 +71,9 @@ type FocusablePartGroupingActivityProps = InferOutput<typeof partGroupingFocusab
 const FocusablePartGroupingActivity = memo(function FocusablePartGroupingActivity(
   props: FocusablePartGroupingActivityProps
 ) {
+  const { activity, children, className, groupKey } = validateProps(partGroupingFocusableActivityPropsSchema, props);
+
   const [activeDescendantId] = useActiveDescendantId();
-  const { activity, children, className, groupKey } = parse(partGroupingFocusableActivityPropsSchema, props);
 
   const getGroupDescendantIdByActivityKey = useGetGroupDescendantIdByActivityKey();
   const focusByGroupKey = useFocusByGroupKey();
@@ -134,8 +134,9 @@ const FocusablePartGroupingActivity = memo(function FocusablePartGroupingActivit
 });
 
 function PartGroupingActivity(props: PartGroupingActivityProps) {
+  const { activities, children } = validateProps(partGroupingActivityPropsSchema, props);
+
   const classNames = useStyles(styles);
-  const { activities, children } = parse(partGroupingActivityPropsSchema, props);
   const getKeyByActivity = useGetKeyByActivity();
   const [isGroupOpen, setIsGroupOpen] = useState(true);
 
