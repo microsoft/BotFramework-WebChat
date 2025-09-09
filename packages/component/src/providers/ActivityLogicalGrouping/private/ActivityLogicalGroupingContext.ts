@@ -5,9 +5,9 @@ type GroupState = Readonly<{
 }>;
 
 type LogicalGrouping = Readonly<{
-  key: string;
   activityKeys: string[];
   getGroupState?: () => GroupState;
+  key: string;
 }>;
 
 type ActivityLogicalGroupingContextType = Readonly<{
@@ -26,6 +26,6 @@ export default contextComponentType;
 export {
   useContext as useActivityLogicalGroupingContext,
   type ActivityLogicalGroupingContextType,
-  type LogicalGrouping,
-  type GroupState
+  type GroupState,
+  type LogicalGrouping
 };
