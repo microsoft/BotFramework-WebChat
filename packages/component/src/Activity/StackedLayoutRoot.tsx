@@ -39,6 +39,7 @@ const StackedLayoutRoot = memo((props: StackedLayoutRootProps) => {
     showNub,
     topCallout
   } = validateProps(stackedLayoutRootPropsSchema, props);
+
   const classNames = useStyles(styles);
 
   return (

@@ -1,14 +1,23 @@
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';
-import React, { memo, type ReactNode } from 'react';
+import React, { memo } from 'react';
+import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import styles from './StackedLayout.module.css';
 
-type StackedLayoutStatusProps = Readonly<{
-  children?: ReactNode | undefined;
-}>;
+const stackedLayoutStatusPropsSchema = pipe(
+  object({
+    children: optional(reactNode())
+  }),
+  readonly()
+);
 
-const StackedLayoutStatus = memo(({ children }: StackedLayoutStatusProps) => {
+type StackedLayoutStatusProps = InferInput<typeof stackedLayoutStatusPropsSchema>;
+
+const StackedLayoutStatus = memo((props: StackedLayoutStatusProps) => {
+  const { children } = validateProps(stackedLayoutStatusPropsSchema, props);
+
   const classNames = useStyles(styles);
 
   return (
@@ -24,3 +33,4 @@ const StackedLayoutStatus = memo(({ children }: StackedLayoutStatusProps) => {
 StackedLayoutStatus.displayName = 'StackedLayoutStatus';
 
 export default StackedLayoutStatus;
+export { stackedLayoutStatusPropsSchema, type StackedLayoutStatusProps };

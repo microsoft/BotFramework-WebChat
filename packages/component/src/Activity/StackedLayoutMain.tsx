@@ -18,6 +18,7 @@ type StackedLayoutMainProps = InferOutput<typeof stackedLayoutMainPropsSchema>;
 
 const StackedLayoutMain = memo((props: StackedLayoutMainProps) => {
   const { avatar, children } = validateProps(stackedLayoutMainPropsSchema, props);
+
   const classNames = useStyles(styles);
 
   return (
