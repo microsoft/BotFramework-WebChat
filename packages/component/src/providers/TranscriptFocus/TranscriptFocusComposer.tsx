@@ -3,12 +3,12 @@ import random from 'math-random';
 import PropTypes from 'prop-types';
 import React, { memo, useCallback, useMemo, type MutableRefObject, type ReactNode } from 'react';
 
-import { useGetLogicalGroupKey, useGetGroupState } from '../ActivityLogicalGrouping';
-import useGetLogicalGroupBoundaries from '../ActivityLogicalGrouping/useGetLogicalGroupBoundaries';
 import usePrevious from '../../hooks/internal/usePrevious';
 import useStateRef from '../../hooks/internal/useStateRef';
 import useValueRef from '../../hooks/internal/useValueRef';
 import scrollIntoViewWithBlockNearest from '../../Utils/scrollIntoViewWithBlockNearest';
+import { useGetGroupState, useGetLogicalGroupKey } from '../ActivityLogicalGrouping';
+import useGetLogicalGroupBoundaries from '../ActivityLogicalGrouping/useGetLogicalGroupBoundaries';
 import useRenderingActivityKeys from '../RenderingActivities/useRenderingActivityKeys';
 import TranscriptFocusContext, { type TranscriptFocusContextType } from './private/Context';
 
@@ -49,7 +49,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
 
   const getGroupDescendantIdByActivityKey: (activityKey?: string) => string | undefined = useCallback(
     (activityKey?: string) => activityKey && getGroupDescendantIdByGroupKey(getGroupKeyByActivityKey(activityKey)),
-    [getGroupKeyByActivityKey, getGroupDescendantIdByGroupKey]
+    [getGroupDescendantIdByGroupKey, getGroupKeyByActivityKey]
   );
 
   const renderingActivityKeysRef = useValueRef<readonly string[]>(renderingActivityKeys);
@@ -156,14 +156,14 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
     },
     [
       focusByGroupKey,
+      focusedActivityKeyRef,
+      getDescendantIdByActivityKey,
       getGroupKeyByActivityKey,
       getGroupState,
-      getDescendantIdByActivityKey,
-      renderingActivityKeysRef,
-      rawFocusedActivityKeyRef,
       handleFocus,
-      setRawFocusedActivityKey,
-      focusedActivityKeyRef
+      rawFocusedActivityKeyRef,
+      renderingActivityKeysRef,
+      setRawFocusedActivityKey
     ]
   );
 
@@ -240,13 +240,13 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       }
     },
     [
-      rawFocusedActivityGroupKeyRef,
-      renderingActivityKeysRef,
-      getGroupState,
-      getGroupBoundaries,
       focusByActivityKey,
       focusByGroupKey,
-      getGroupKeyByActivityKey
+      getGroupBoundaries,
+      getGroupKeyByActivityKey,
+      getGroupState,
+      rawFocusedActivityGroupKeyRef,
+      renderingActivityKeysRef
     ]
   );
 
@@ -278,7 +278,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
         focusByActivityKey(nextActivityKey, true);
       }
     },
-    [getGroupKeyByActivityKey, getGroupBoundaries, getGroupState, focusByActivityKey, focusByGroupKey]
+    [focusByActivityKey, focusByGroupKey, getGroupBoundaries, getGroupKeyByActivityKey, getGroupState]
   );
 
   // Helper function to handle delta > 1 navigation
@@ -377,19 +377,19 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
       }
     },
     [
-      renderingActivityKeysRef,
-      rawFocusedActivityGroupKeyRef,
-      focusedActivityKeyRef,
-      handleDeltaNavigation,
       activeGroupDescendantId,
-      getGroupKeyByActivityKey,
+      focusByActivityKey,
+      focusByGroupKey,
+      focusedActivityKeyRef,
       getGroupBoundaries,
+      getGroupKeyByActivityKey,
       getGroupState,
       getNextActivityLinear,
-      focusByActivityKey,
+      handleDeltaNavigation,
+      handleGroupTransition,
       handleHeaderTransition,
-      focusByGroupKey,
-      handleGroupTransition
+      rawFocusedActivityGroupKeyRef,
+      renderingActivityKeysRef
     ]
   );
 
@@ -409,14 +409,14 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
     [
       activeDescendantId,
       activeGroupDescendantId,
-      getDescendantIdByActivityKey,
-      getGroupDescendantIdByActivityKey,
       focusByActivityKey,
       focusByGroupKey,
       focusedActivityKey,
+      focusRelativeActivity,
+      getDescendantIdByActivityKey,
+      getGroupDescendantIdByActivityKey,
       rawFocusedActivityGroupKey,
-      rawFocusedActivityKey,
-      focusRelativeActivity
+      rawFocusedActivityKey
     ]
   );
 
