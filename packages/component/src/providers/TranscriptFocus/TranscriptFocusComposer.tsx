@@ -293,6 +293,7 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
         if (targetActivityKey) {
           focusByActivityKey(targetActivityKey, true);
         }
+        return;
       }
 
       // For delta > 1, handle multi-step navigation
