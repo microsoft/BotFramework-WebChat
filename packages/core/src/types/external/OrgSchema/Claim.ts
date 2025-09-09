@@ -1,4 +1,4 @@
-import { lazy, number, parse, string, union, type ObjectEntries } from 'valibot';
+import { lazy, parse, type ObjectEntries } from 'valibot';
 
 import { creativeWork, type CreativeWork } from './CreativeWork';
 import { project, type Project } from './Project';
@@ -27,20 +27,12 @@ export type Claim = CreativeWork & {
    * @see https://schema.org/claimInterpreter.
    */
   claimInterpreter?: Project | undefined;
-
-  /**
-   * The position of an item in a series or sequence of items.
-   *
-   * @see https://schema.org/position.
-   */
-  position?: number | string;
 };
 
 export const claim = <TEntries extends ObjectEntries>(entries?: TEntries | undefined) =>
   creativeWork({
     appearance: orgSchemaProperty(lazy(() => creativeWork())),
     claimInterpreter: orgSchemaProperty(lazy(() => project())),
-    position: orgSchemaProperty(union([number(), string()])),
 
     ...entries
   });

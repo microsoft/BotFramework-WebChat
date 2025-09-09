@@ -1,4 +1,4 @@
-import { lazy, object, parse, string, union, type ObjectEntries } from 'valibot';
+import { lazy, literal, number, object, parse, string, union, type ObjectEntries } from 'valibot';
 
 import { definedTerm, type DefinedTerm } from './DefinedTerm';
 import orgSchemaProperties from './private/orgSchemaProperties';
@@ -36,6 +36,13 @@ export type CreativeWork = Thing & {
   citation?: readonly CreativeWork[] | undefined;
 
   /**
+   * The status of the creative work, such as whether it is incomplete or published.
+   *
+   * @see https://schema.org/creativeWorkStatus
+   */
+  creativeWorkStatus?: 'incomplete' | 'published' | undefined;
+
+  /**
    * The schema.org [isBasedOn](https://schema.org/isBasedOn) property provides a resource from which this work is derived or from which it is a modification or adaptation.
    */
   isBasedOn?: CreativeWork | undefined;
@@ -53,6 +60,13 @@ export type CreativeWork = Thing & {
    * @see https://schema.org/pattern
    */
   pattern?: DefinedTerm | undefined;
+
+  /**
+   * The position of an item in a series or sequence of items.
+   *
+   * @see https://schema.org/position
+   */
+  position?: number;
 
   /**
    * The textual content of this CreativeWork.
@@ -93,9 +107,11 @@ export const creativeWork = <TEntries extends ObjectEntries>(entries?: TEntries 
     abstract: orgSchemaProperty(string()),
     author: orgSchemaProperty(union([person(), string()])),
     citation: orgSchemaProperties(lazy(() => creativeWork())),
+    creativeWorkStatus: orgSchemaProperty(union([literal('incomplete'), literal('published')])),
     isBasedOn: orgSchemaProperty(lazy(() => creativeWork())),
     keywords: orgSchemaProperties(union([lazy(() => definedTerm()), string()])),
     pattern: orgSchemaProperty(lazy(() => definedTerm())),
+    position: orgSchemaProperty(union([number(), string()])),
     text: orgSchemaProperty(string()),
     usageInfo: orgSchemaProperty(lazy(() => creativeWork())),
 
