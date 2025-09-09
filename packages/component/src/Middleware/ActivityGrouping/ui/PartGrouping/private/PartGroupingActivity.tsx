@@ -4,16 +4,16 @@ import { hooks } from 'botframework-webchat-api';
 import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo, useState, type MouseEventHandler } from 'react';
 import {
-  any,
   array,
+  custom,
   minLength,
   object,
   optional,
   parse,
   pipe,
   readonly,
+  safeParse,
   string,
-  transform,
   type InferOutput
 } from 'valibot';
 
@@ -22,19 +22,19 @@ import StackedLayoutRoot from '../../../../../Activity/StackedLayoutRoot';
 import StackedLayoutStatus from '../../../../../Activity/StackedLayoutStatus';
 import useActivityElementMapRef from '../../../../../providers/ChatHistoryDOM/useActivityElementRef';
 import useActiveDescendantId from '../../../../../providers/TranscriptFocus/useActiveDescendantId';
-import useGetGroupDescendantIdByActivityKey from '../../../../../providers/TranscriptFocus/useGetGroupDescendantIdByActivityKey';
 import useFocusByGroupKey from '../../../../../providers/TranscriptFocus/useFocusByGroupKey';
+import useGetGroupDescendantIdByActivityKey from '../../../../../providers/TranscriptFocus/useGetGroupDescendantIdByActivityKey';
 import FocusTrap from '../../../../../Transcript/FocusTrap';
 import useRenderActivityProps from '../../../../../Transcript/hooks/useRenderActivityProps';
 import {
   TranscriptActivityList,
   TranscriptFocusContent,
-  TranscriptFocusContentOverlay,
   TranscriptFocusContentActiveDescendant,
+  TranscriptFocusContentOverlay,
   TranscriptFocusIndicator
 } from '../../../../../Transcript/TranscriptFocus';
-import isZeroOrPositive from '../../../../../Utils/isZeroOrPositive';
 import { android } from '../../../../../Utils/detectBrowser';
+import isZeroOrPositive from '../../../../../Utils/isZeroOrPositive';
 import CollapsibleGrouping from '../CollapsibleGrouping';
 import usePartGroupingLogicalGroup from './usePartGroupingLogicalGroup';
 
@@ -45,12 +45,7 @@ const { useAvatarForBot, useStyleOptions, useGetKeyByActivity } = hooks;
 const partGroupingActivityPropsSchema = pipe(
   object({
     activities: pipe(
-      array(
-        pipe(
-          any(),
-          transform(value => value as WebChatActivity)
-        )
-      ),
+      array(pipe(custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success))),
       minLength(1, 'botframework-webchat: "activities" must have at least 1 activity'),
       readonly()
     ),
@@ -63,11 +58,7 @@ type PartGroupingActivityProps = InferOutput<typeof partGroupingActivityPropsSch
 
 const partGroupingFocusableActivityPropsSchema = pipe(
   object({
-    activity: pipe(
-      any(),
-      transform(value => value as WebChatActivity),
-      readonly()
-    ),
+    activity: pipe(custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success)),
     children: optional(reactNode()),
     className: optional(string()),
     groupKey: string()
