@@ -1,7 +1,11 @@
 /// <reference lib="dom" />
 
-// change-case/kebabCase() is about 1.5 KiB.
-import { kebabCase } from 'change-case';
+function kebabCase(value: string): string {
+  return value
+    .replace(/([ _A-Z])/gu, '-$1')
+    .replace(/[A-Z]/gu, c => c.toLowerCase())
+    .replace(/([-]+)/gu, '-');
+}
 
 export default function setMetaTag(name: string, content: string): void;
 export default function setMetaTag(name: string, contentMap: ReadonlyMap<string, string | undefined>): void;
