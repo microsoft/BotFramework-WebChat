@@ -1,10 +1,24 @@
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { WebChatActivity } from 'botframework-webchat-component';
 import cx from 'classnames';
 import React, { ReactNode, memo } from 'react';
+import { object, optional, pipe, readonly, type InferInput } from 'valibot';
+
 import { useStyles, useVariantClassName } from '../../styles';
 import styles from './ActivityDecorator.module.css';
 
-function ActivityDecorator({ children }: Readonly<{ activity: WebChatActivity; children: ReactNode }>) {
+const activityDecoratorPropsSchema = pipe(
+  object({
+    children: optional(reactNode())
+  }),
+  readonly()
+);
+
+type ActivityDecoratorProps = InferInput<typeof activityDecoratorPropsSchema>;
+
+function ActivityDecorator(props: Readonly<{ activity: WebChatActivity; children: ReactNode }>) {
+  const { children } = validateProps(activityDecoratorPropsSchema, props);
+
   const classNames = useStyles(styles);
   const variantClassName = useVariantClassName(styles);
 
@@ -14,3 +28,4 @@ function ActivityDecorator({ children }: Readonly<{ activity: WebChatActivity; c
 ActivityDecorator.displayName = 'ActivityDecorator';
 
 export default memo(ActivityDecorator);
+export { activityDecoratorPropsSchema, type ActivityDecoratorProps };
