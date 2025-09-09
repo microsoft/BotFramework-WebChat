@@ -30,6 +30,8 @@ import ChatHistoryToolbar from './ChatHistory/ChatHistoryToolbar';
 import ScrollToEndButton from './ChatHistory/private/ScrollToEndButton';
 import ActivityTree from './Transcript/ActivityTree';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
+import { TranscriptFocusArea, TranscriptFocusTerminator } from './Transcript/TranscriptFocus';
+import TranscriptActivityList from './Transcript/TranscriptFocus/TranscriptActivityList';
 import { type ActivityElementMap } from './Transcript/types';
 import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
@@ -59,10 +61,8 @@ import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocus
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
 import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivityKey';
 import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
-import useFocusedKey from './providers/TranscriptFocus/useFocusedKey';
 import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicitly';
-import { TranscriptFocusArea, TranscriptFocusTerminator } from './Transcript/TranscriptFocus';
-import TranscriptActivityList from './Transcript/TranscriptFocus/TranscriptActivityList';
+import useFocusedKey from './providers/TranscriptFocus/useFocusedKey';
 
 const {
   useActivityKeys,
