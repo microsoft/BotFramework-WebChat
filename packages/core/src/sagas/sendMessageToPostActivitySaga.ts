@@ -1,12 +1,14 @@
-import { put, takeEvery } from 'redux-saga/effects';
+import { put, select, takeEvery } from 'redux-saga/effects';
 
 import postActivity from '../actions/postActivity';
 import sendMessage, { SEND_MESSAGE } from '../actions/sendMessage';
 import whileConnected from './effects/whileConnected';
+import enableStreaming from '../selectors/enableStreaming';
 
 function* postActivityWithMessage({
   payload: { attachments = [], channelData, method, text }
 }: ReturnType<typeof sendMessage>) {
+  const isStreamingEnabled = yield select(enableStreaming);
   yield put(
     postActivity(
       {
@@ -23,7 +25,7 @@ function* postActivityWithMessage({
           ...channelData,
           attachmentSizes: attachments.map(({ blob: { size } }) => size)
         },
-        deliveryMode: 'stream',
+        ...(isStreamingEnabled && { deliveryMode: 'stream' }),
         text: text || undefined,
         textFormat: 'plain',
         type: 'message'

@@ -18,6 +18,7 @@ import setSendBox from './actions/setSendBox';
 import setSendBoxAttachments from './actions/setSendBoxAttachments';
 import setSendTimeout from './actions/setSendTimeout';
 import setSendTypingIndicator from './actions/setSendTypingIndicator';
+import setEnableStreaming from './actions/setEnableStreaming';
 import startDictate from './actions/startDictate';
 import startSpeakingActivity from './actions/startSpeakingActivity';
 import stopDictate from './actions/stopDictate';
@@ -121,6 +122,7 @@ export {
   sendPostBack,
   setDictateInterims,
   setDictateState,
+  setEnableStreaming,
   setLanguage,
   setNotification,
   setSendBox,
