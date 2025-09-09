@@ -397,14 +397,14 @@ const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComp
     () => ({
       activeDescendantIdState: Object.freeze([activeDescendantId]) as readonly [string],
       activeGroupDescendantIdState: Object.freeze([activeGroupDescendantId]) as readonly [string],
-      getDescendantIdByActivityKey,
-      getGroupDescendantIdByActivityKey,
       focusByActivityKey,
       focusByGroupKey,
       focusedActivityKeyState: Object.freeze([focusedActivityKey]) as readonly [string],
-      focusedGroupKeyState: Object.freeze([rawFocusedActivityGroupKey]) as readonly [string],
       focusedExplicitlyState: Object.freeze([!!rawFocusedActivityKey]) as readonly [boolean],
-      focusRelativeActivity
+      focusedGroupKeyState: Object.freeze([rawFocusedActivityGroupKey]) as readonly [string],
+      focusRelativeActivity,
+      getDescendantIdByActivityKey,
+      getGroupDescendantIdByActivityKey
     }),
     [
       activeDescendantId,
