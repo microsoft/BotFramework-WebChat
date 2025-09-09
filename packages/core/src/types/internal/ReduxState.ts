@@ -14,6 +14,7 @@ type ReduxState = {
   sendTimeout: number;
   sendTypingIndicator: boolean;
   shouldSpeakIncomingActivity: boolean;
+  enableStreaming: boolean;
 };
 
 export type { ReduxState };

@@ -21,6 +21,7 @@ import {
   sendPostBack,
   setDictateInterims,
   setDictateState,
+  setEnableStreaming,
   setLanguage,
   setNotification,
   setSendBox,
@@ -111,6 +112,7 @@ const DISPATCHERS = {
   sendPostBack,
   setDictateInterims,
   setDictateState,
+  setEnableStreaming,
   setNotification,
   setSendBox,
   setSendBoxAttachments,
@@ -232,6 +234,7 @@ type ComposerCoreProps = Readonly<{
     type: string,
     quality: number
   ) => Promise<URL>;
+  enableStreaming?: boolean;
   grammars?: any;
   groupActivitiesMiddleware?: OneOrMany<GroupActivitiesMiddleware>;
   locale?: string;
@@ -277,6 +280,7 @@ const ComposerCore = ({
   directLine,
   disabled,
   downscaleImageToDataURL,
+  enableStreaming,
   grammars,
   groupActivitiesMiddleware,
   locale,
@@ -316,6 +320,10 @@ const ComposerCore = ({
   useEffect(() => {
     dispatch(setSendTypingIndicator(!!sendTypingIndicator));
   }, [dispatch, sendTypingIndicator]);
+
+  useEffect(() => {
+    dispatch(setEnableStreaming(!!enableStreaming));
+  }, [dispatch, enableStreaming]);
 
   useEffect(() => {
     dispatch(
@@ -648,6 +656,7 @@ ComposerCore.defaultProps = {
   dir: 'auto',
   disabled: false,
   downscaleImageToDataURL: undefined,
+  enableStreaming: false,
   grammars: [],
   groupActivitiesMiddleware: undefined,
   locale: window.navigator.language || 'en-US',
@@ -690,6 +699,7 @@ ComposerCore.propTypes = {
   }).isRequired,
   disabled: PropTypes.bool,
   downscaleImageToDataURL: PropTypes.func,
+  enableStreaming: PropTypes.bool,
   grammars: PropTypes.arrayOf(PropTypes.string),
   groupActivitiesMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   locale: PropTypes.string,
