@@ -1,17 +1,26 @@
-import { memo, createElement, useCallback, useMemo, type ReactNode, useRef } from 'react';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { createElement, memo, useCallback, useMemo, useRef } from 'react';
+import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import ActivityLogicalGroupingContext, {
   type ActivityLogicalGroupingContextType,
-  type LogicalGrouping,
-  type GroupState
+  type GroupState,
+  type LogicalGrouping
 } from './private/ActivityLogicalGroupingContext';
 import useStateWithOptimisticRef from './private/useStateWithOptimisticRef';
 
-type ActivityLogicalGroupingComposerProps = Readonly<{
-  children?: ReactNode | undefined;
-}>;
+const activityLogicalGroupingComposerPropsSchema = pipe(
+  object({
+    children: optional(reactNode())
+  }),
+  readonly()
+);
 
-const ActivityLogicalGroupingComposer = ({ children }: ActivityLogicalGroupingComposerProps) => {
+type ActivityLogicalGroupingComposerProps = InferInput<typeof activityLogicalGroupingComposerPropsSchema>;
+
+const ActivityLogicalGroupingComposer = (props: ActivityLogicalGroupingComposerProps) => {
+  const { children } = validateProps(activityLogicalGroupingComposerPropsSchema, props);
+
   const logicalGroupingsRef = useRef<Map<string, LogicalGrouping>>(new Map());
   const [_activityToGroupMap, setActivityToGroupMap, activityToGroupMapRef] = useStateWithOptimisticRef<
     ReadonlyMap<string, string | undefined>
@@ -88,4 +97,4 @@ const ActivityLogicalGroupingComposer = ({ children }: ActivityLogicalGroupingCo
 ActivityLogicalGroupingComposer.displayName = 'ActivityLogicalGroupingComposer';
 
 export default memo(ActivityLogicalGroupingComposer);
-export { type ActivityLogicalGroupingComposerProps };
+export { activityLogicalGroupingComposerPropsSchema, type ActivityLogicalGroupingComposerProps };
