@@ -2,7 +2,7 @@
 <html lang="en-US">
 
 <head>
-  <title>Part grouping</title>
+  <title>Part grouping: position</title>
   <link href="/assets/index.css" rel="stylesheet" type="text/css" />
   <script type="importmap">
       {
@@ -45,21 +45,6 @@
     import { createRoot } from 'react-dom/client';
     import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
     import { waitFor } from '@testduet/wait-for';
-
-    async function openLastActivity() {
-      let summaries;
-      await waitFor(() => {
-        summaries = Array.from(document.querySelectorAll('summary.collapsible-content__summary'));
-        return summaries.length > 0;
-      }, 500);
-
-      summaries.at(-1).focus();
-      await host.sendKeys('ENTER');
-
-      await waitFor(() => {
-        return summaries.at(-1).getAttribute('aria-expanded') === 'true';
-      }, 500);
-    }
 
     run(async function () {
       const {
@@ -146,51 +131,6 @@
 
       await pageConditions.uiConnected();
 
-      const CODE = `import numpy as np
-import matplotlib.pyplot as plt
-
-def plot_sine_waves():
-    """Create a beautiful visualization of sine waves with different frequencies."""
-    # Generate time points
-    t = np.linspace(0, 10, 1000)
-
-    # Create waves with different frequencies and phases
-    wave1 = np.sin(t)
-    wave2 = 0.5 * np.sin(2 * t + np.pi/4)
-    wave3 = 0.3 * np.sin(3 * t + np.pi/3)
-
-    # Combine waves
-    combined = wave1 + wave2 + wave3
-
-    # Create a stylish plot
-    plt.style.use('seaborn-darkgrid')
-    plt.figure(figsize=(12, 8))
-
-    # Plot individual waves
-    plt.plot(t, wave1, label='Primary Wave', alpha=0.5)
-    plt.plot(t, wave2, label='Second Harmonic', alpha=0.5)
-    plt.plot(t, wave3, label='Third Harmonic', alpha=0.5)
-
-    # Plot combined wave with a thicker line
-    plt.plot(t, combined, 'r-',
-            label='Combined Wave',
-            linewidth=2)
-
-    plt.title('Harmonic Wave Composition', fontsize=14)
-    plt.xlabel('Time', fontsize=12)
-    plt.ylabel('Amplitude', fontsize=12)
-    plt.legend()
-    plt.grid(True, alpha=0.3)
-
-    # Show the plot
-    plt.tight_layout()
-    plt.show()
-
-# Generate the visualization
-plot_sine_waves()`;
-
-      const graphSvg = `data:image/svg+xml;utf8,${encodeURIComponent(`<svg width="480" height="480" viewBox="-2 -2 4 4" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Graph of x^2 + y^2 = 0 (single point at origin)">\n  <defs>\n    <marker id="arrow" viewBox="-3 -3 6 6" refX="0" refY="0" markerWidth="4" markerHeight="4" orient="auto">\n      <path d="M-3,-2 L 0,0 L -3,2" fill="none" stroke="#444" stroke-width="0.012"/>\n    </marker>\n    <style><![CDATA[\n      .axis   { stroke:#444; stroke-width:0.012; stroke-linecap:round; }\n      .tickMaj{ stroke:#666; stroke-width:0.008; stroke-linecap:round; }\n      .tickMin{ stroke:#666; stroke-width:0.007200000000000001; stroke-linecap:round; opacity:.75; }\n      .grid   { stroke:#ddd; stroke-width:0.006; }\n      .ring   { fill:#444; stroke: #000; stroke-width:0.01; fill-opacity:0.22; }\n      .label  { fill:#222; font-family:Inter, "Times New Roman", serif; font-size:0.14px; }\n      text    { dominant-baseline:alphabetic; }\n      svg     { shape-rendering:geometricPrecision; }\n    ]]></style>\n  </defs>\n\n  \x3C!-- Flip only geometry so Y points up -->\n  <g transform="scale(1,-1)">\n    \n    \x3C!-- Axes -->\n    <line x1="-2" y1="0" x2="1.94" y2="0" class="axis" marker-end="url(#arrow)"/>\n    <line x1="0" y1="-2" x2="0" y2="1.94" class="axis" marker-end="url(#arrow)"/>\n\n    \x3C!-- Ticks -->\n    <line x1="-2" y1="-0.06" x2="-2" y2="0.06" class="tickMaj"/><line x1="-1" y1="-0.06" x2="-1" y2="0.06" class="tickMaj"/><line x1="1" y1="-0.06" x2="1" y2="0.06" class="tickMaj"/><line x1="2" y1="-0.06" x2="2" y2="0.06" class="tickMaj"/><line x1="-0.06" y1="-2" x2="0.06" y2="-2" class="tickMaj"/><line x1="-0.06" y1="-1" x2="0.06" y2="-1" class="tickMaj"/><line x1="-0.06" y1="1" x2="0.06" y2="1" class="tickMaj"/><line x1="-0.06" y1="2" x2="0.06" y2="2" class="tickMaj"/>\n\n    \x3C!-- The solution: elegant dot + faint ring -->\n    <circle cx="0" cy="0" r="0.05" class="ring"/>\n  </g>\n\n  \x3C!-- Upright labels (SVG coords: +y is down) -->\n  <text x="1.88" y="0.16" class="label">x</text>\n  <text x="-0.12" y="-1.82" class="label">y</text>\n\n  \x3C!-- Numeric labels at ±1 -->\n  <text x="1"   y="0.16" class="label" text-anchor="middle">1</text>\n  <text x="-1"  y="0.16" class="label" text-anchor="middle">−1</text>\n  <text x="-0.14" y="-1" class="label" text-anchor="end">1</text>\n  <text x="-0.14" y="1" class="label" text-anchor="end">−1</text>\n\n  \x3C!-- Equation -->\n  <text x="-1.9" y="1.74" class="label" style="font-style:italic; font-size:0.18px;">x² + y² = 0</text>\n</svg>`)}`;
-
       const botIcon = 'data:image/png;base64,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';
 
       const aiMessageEntity = {
@@ -204,14 +144,19 @@ plot_sine_waves()`;
           '@type': 'Person',
           image: botIcon,
           name: 'Research',
+        },
+        isPartOf: {
+          '@id': 'h-00001',
+          '@type': 'HowTo',
         }
       };
 
-      const withCreativeWorkStatus = (activity, status) => ({
+      const withPosition = (activity, position, abstract) => ({
         ...activity,
         entities: activity.entities.map(entity => ({
           ...entity,
-          creativeWorkStatus: status
+          position,
+          abstract
         }))
       });
 
@@ -226,189 +171,107 @@ plot_sine_waves()`;
           entities: [
             {
               ...aiMessageEntity,
-              '@id': '',
-              '@type': 'Message',
-              type: 'https://schema.org/Message',
-              abstract: 'Considering equation solutions',
-              position: 1,
-              isPartOf: {
-                '@id': 'h-00001',
-                '@type': 'HowTo'
-              }
             }
           ],
-          id: 'a-00001',
-          text: 'The equation \\(x^2 + y^2 = 0\\) has only one solution: \\((0, 0)\\). This means the graph would only plot a single point at the origin.'
+          id: 'a-00001'
         },
         {
           entities: [
             {
               ...aiMessageEntity,
-              '@id': '',
-              '@type': 'Message',
-              type: 'https://schema.org/Message',
-              abstract: 'Planning plot implementation',
-              position: 2,
-              isPartOf: {
-                '@id': 'h-00001',
-                '@type': 'HowTo'
-              }
             }
           ],
-          id: 'a-00002',
-          text: "I'm preparing to plot the equation \\(x^2 + y^2 = 0\\) as a single point at the origin. I'll use matplotlib to create a scatter plot and save the graph as a PNG file."
+          id: 'a-00002'
         },
         {
           entities: [
             {
-              '@id': '',
-              '@type': 'Message',
-              type: 'https://schema.org/Message',
-              abstract: 'Writing plot code',
-              position: 3,
-              isPartOf: {
-                '@id': 'h-00001',
-                '@type': 'HowTo'
-              }
+              ...aiMessageEntity,
             }
           ],
-          id: 'a-00003',
-          text: "I'm preparing to generate Python code using matplotlib to scatter a point at the origin \\((0,0)\\), representing the equation \\(x^2 + y^2 = 0\\). I'll include gridlines for better visualization and save the plot as a PNG."
+          id: 'a-00003'
         },
         {
-          channelData: {
-            streamId: 'a-00003',
-            streamSequence: 1,
-            streamType: 'informative',
-          },
           entities: [
             {
-              '@id': '',
-              '@type': 'Message',
-              type: 'https://schema.org/Message',
-              abstract: 'Coding & Executing ...',
-              position: 4,
-              isBasedOf: [
-                {
-                  '@type': 'SoftwareSourceCode',
-                  text: '# Plot a graph for '
-                }
-              ],
-              isPartOf: {
-                '@id': 'h-00001',
-                '@type': 'HowTo'
-              },
-            }
-          ],
-          id: 'a-00004',
-        },
-        {
-          channelData: {
-            streamId: 'a-00004',
-            // final is causing troubles with updating message entity
-            // streamType: 'final',
-          },
-          entities: [
-            {
-              '@id': '',
-              '@type': 'Message',
-              type: 'https://schema.org/Message',
-              abstract: 'Coding & Executing ...',
-              position: 4,
-              isBasedOn: [
-                {
-                  '@type': 'SoftwareSourceCode',
-                  programmingLanguage: 'python',
-                  text: "# Plot a graph for equation x^2 + y^2 = 0 using Python, and save the result as output\nimport matplotlib.pyplot as plt\nimport numpy as np\n\n# Only point that satisfies x^2 + y^2 = 0 is (0, 0)\nx = [0]\ny = [0]\n\n# Create a figure and axis\nfig, ax = plt.subplots()\nax.scatter(x, y, color='red', s=100)  # plot the single point in red with size 100.\n\n# Add grid and axis lines that cross the center\nax.axhline(color='black', linewidth=0.5)\nax.axvline(color='black', linewidth=0.5)\n\n# Setting the aspect ratio to be equal\nax.set_aspect('equal')\n\n# Label axes\nax.set_xlabel('x')\nax.set_ylabel('y')\n\ntitle = \"Graph of equation x^2 + y^2 = 0\"\nax.set_title(title)\n\n# Set the limits for x and y axes to see point clearly\nax.set_xlim(-1,1)\nax.set_ylim(-1,1)\n\n# Save the plot to a file\nplt.savefig('output.png')\nplt.close(fig)"
-                }
-              ],
-              isPartOf: {
-                '@id': 'h-00001',
-                '@type': 'HowTo'
-              },
-              keywords: ['Collapsible']
+              ...aiMessageEntity,
             }
           ],
           id: 'a-00004'
         },
         {
-          text: `The equation \\(x^2 + y^2 = 0\\) has only one real solution: the point at the origin \\((0, 0)\\). This is because both \\(x^2\\) and \\(y^2\\) are non-negative, and their sum can only be zero if both are zero.\n\nHere's the graph showing that single point:\n\n![Graph](${graphSvg})\n\nWould you like to explore similar equations or see how this compares to something like \\(x^2 + y^2 = r^2\\) for \\(r > 0\\)?`
-        }
+          entities: [
+            {
+              ...aiMessageEntity,
+            }
+          ],
+          id: 'a-00005'
+        },
       ];
 
-      // When activities are sent:
-      // 1st is sent with status 'incomplete' to show the work has started
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(0), 'incomplete'));
-      // 2nd is sent with status not set to show the work is in
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(1), undefined));
+      // Test Case 1: Initial activities with positions
+      // When: adding activities with specific positions
+      directLine.emulateIncomingActivity(withPosition(activities.at(0), 2, 'two'));
+      directLine.emulateIncomingActivity(withPosition(activities.at(1), 4, 'four'));
 
-      // Then: show both activities in the list:
-      // 1st with the loading indicator
-      // 2nd with an empty status indicator
+      // Then: show activities positioned according to their position values
       await pageConditions.numActivitiesShown(3);
       await host.snapshot('local');
 
-      // When marking the 1st activity as 'published':
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(0), 'published'));
+      // Test Case 2: Insertion before existing activities
+      // When: adding an activity with position 1 (before existing position 2)
+      directLine.emulateIncomingActivity(withPosition(activities.at(2), 1, 'one'));
 
-      // Then: show the 1st activity in the list with the 'published' status indicator
-      await pageConditions.numActivitiesShown(3);
+      // Then: show the new activity inserted before the existing ones
+      await pageConditions.numActivitiesShown(4);
       await host.snapshot('local');
 
-      // When adding activities to the list:
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(2), undefined));
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(3), undefined));
+      // Test Case 3: Insertion after existing activities
+      // When: adding an activity with position 5 (after existing position 4)
+      directLine.emulateIncomingActivity(withPosition(activities.at(3), 5, 'five'));
 
-      // Then: show all added activities in the list with corresponding status:
+      // Then: show the new activity inserted after the existing ones
       await pageConditions.numActivitiesShown(5);
       await host.snapshot('local');
 
-      // When marking the 2nd activity as 'incomplete':
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(1), 'incomplete'));
+      // Test Case 4: Insertion between existing activities
+      // When: adding an activity with position 3 (between positions 2 and 4)
+      directLine.emulateIncomingActivity(withPosition(activities.at(4), 3, 'three'));
 
-      // Then: show the 2nd activity in the list with the loading status indicator
-      await pageConditions.numActivitiesShown(5);
+      // Then: show the new activity inserted between existing activities
+      await pageConditions.numActivitiesShown(6);
       await host.snapshot('local');
 
-      // When marking the 2rd activity as 'published' and the 3th as 'published':
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(1), 'published'));
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(2), 'published'));
+      // Test Case 5: Update position from none set
+      // When: updating an existing activity to remove its position
+      directLine.emulateIncomingActivity(withPosition(activities.at(0), undefined, 'two updated to no position'));
 
-      // Then: both activities should show the 'published' status indicator
-      await pageConditions.numActivitiesShown(5);
+      // Then: show the activity moved to end (no position)
+      await pageConditions.numActivitiesShown(6);
       await host.snapshot('local');
 
-      // When setting status of the last activity to 'incomplete':
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(3), 'incomplete'));
+      // Test Case 6: Update position from set position to different position
+      // When: updating an activity's position from 3 to 1
+      directLine.emulateIncomingActivity(withPosition(activities.at(4), 1, 'three updated to one'));
 
-      // Then: the last activity should show the loading status indicator
-      await pageConditions.numActivitiesShown(5);
+      // Then: show the activity moved to the beginning
+      await pageConditions.numActivitiesShown(6);
       await host.snapshot('local');
 
-      // When updating the last activity with code content:
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(4), 'incomplete'));
+      // Test Case 7: Update position from set position to another set position
+      // When: updating an activity's position from 5 to 2
+      directLine.emulateIncomingActivity(withPosition(activities.at(3), 2, 'five updated to two'));
 
-      // Then: the last activity should show the loading status indicator and chevron
-      await pageConditions.numActivitiesShown(5);
+      // Then: show the activity moved to position 2
+      await pageConditions.numActivitiesShown(6);
       await host.snapshot('local');
 
-      // When clicking on the chevron:
-      await openLastActivity();
+      // Test Case 8: Multiple position updates
+      // When: updating multiple activities' positions simultaneously
+      directLine.emulateIncomingActivity(withPosition(activities.at(1), 6, 'four updated to six'));
+      directLine.emulateIncomingActivity(withPosition(activities.at(2), 3, 'one updated to three'));
 
-      // Then: the last activity should expand to show the code content
-      await host.snapshot('local');
-
-      // When marking the last activity as 'published':
-      directLine.emulateIncomingActivity(withCreativeWorkStatus(activities.at(4), 'published'));
-
-      // Then: the last activity should show the 'published' status indicator and remain open
-      await pageConditions.numActivitiesShown(5);
-      await host.snapshot('local');
-
-      // When adding a closing message:
-      directLine.emulateIncomingActivity(activities.at(5));
-
-      // Then: show the closing message after the list
+      // Then: show all activities repositioned according to new positions
       await pageConditions.numActivitiesShown(6);
       await host.snapshot('local');
     });
