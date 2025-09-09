@@ -45,7 +45,6 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Root-level (unconnected) `Claim` entity is being deprecated, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim). It will be removed on or after 2027-08-29
    - Use `entities[@id=""][@type="Message"].citation[@type="Claim"]` instead
 - `activityStatusMiddleware.nextVisibleActivity` and `activityStatusMiddleware.sameTimestampGroup` is removed after deprecation, in PR [#5565](https://github.com/microsoft/BotFramework-WebChat/issues/5565), by [@compulim](https://github.com/compulim)
-- streamed response enabled by default for directline in PR [#5467](https://github.com/microsoft/BotFramework-WebChat/pull/5467), by [pranavjoshi001](https://github.com/pranavjoshi001)
 
 ### Added
 
@@ -122,6 +121,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - `@msinternal/botframework-webchat-react-hooks` for helpers for React hooks
 - Added link sanitization and ESLint rules, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim)
 - Added blob URL sanitization and ESLint rules, in PR [#5568](https://github.com/microsoft/BotFramework-WebChat/pull/5568), by [@compulim](https://github.com/compulim)
+- Added new prop `enableStreaming` to composer that activates streamed responses in PR [#5467](https://github.com/microsoft/BotFramework-WebChat/pull/5467), by [pranavjoshi001](https://github.com/pranavjoshi001)
 
 ### Changed
 
