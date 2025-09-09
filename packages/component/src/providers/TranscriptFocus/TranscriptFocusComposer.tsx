@@ -24,14 +24,14 @@ function uniqueId(count = Infinity) {
 }
 
 const TranscriptFocusComposer = ({ children, containerRef }: TranscriptFocusComposerProps) => {
-  const getGroupKeyByActivityKey = useGetLogicalGroupKey();
-  const getGroupBoundaries = useGetLogicalGroupBoundaries();
-  const getGroupState = useGetGroupState();
-  const [renderingActivityKeys] = useRenderingActivityKeys();
   const [rawFocusedActivityGroupKey, setRawFocusedActivityGroupKey, rawFocusedActivityGroupKeyRef] = useStateRef<
     string | undefined
   >();
+  const [renderingActivityKeys] = useRenderingActivityKeys();
   const [, setRawFocusedActivityKey, rawFocusedActivityKeyRef] = useStateRef<string | undefined>();
+  const getGroupBoundaries = useGetLogicalGroupBoundaries();
+  const getGroupKeyByActivityKey = useGetLogicalGroupKey();
+  const getGroupState = useGetGroupState();
 
   // As we need to use IDREF for `aria-activedescendant`,
   // this prefix will differentiate multiple instances of transcript on the same page.
