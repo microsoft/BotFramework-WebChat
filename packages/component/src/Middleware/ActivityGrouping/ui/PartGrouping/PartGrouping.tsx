@@ -1,19 +1,25 @@
 import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
-import { type WebChatActivity, getOrgSchemaMessage } from 'botframework-webchat-core';
+import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
 import React, { Fragment, memo, useMemo } from 'react';
-import { any, array, minLength, object, optional, parse, pipe, readonly, transform, type InferOutput } from 'valibot';
+import {
+  array,
+  custom,
+  minLength,
+  object,
+  optional,
+  parse,
+  pipe,
+  readonly,
+  safeParse,
+  type InferOutput
+} from 'valibot';
 
 import PartGroupingActivity from './private/PartGroupingActivity';
 
-const statusGroupingPropsSchema = pipe(
+const partGroupingPropsSchema = pipe(
   object({
     activities: pipe(
-      array(
-        pipe(
-          any(),
-          transform(value => value as WebChatActivity)
-        )
-      ),
+      array(custom<Readonly<WebChatActivity>>(value => safeParse(object({}), value).success)),
       minLength(1, 'botframework-webchat: "activities" must have at least 1 activity'),
       readonly()
     ),
@@ -22,10 +28,10 @@ const statusGroupingPropsSchema = pipe(
   readonly()
 );
 
-type PartGroupingProps = InferOutput<typeof statusGroupingPropsSchema>;
+type PartGroupingProps = InferOutput<typeof partGroupingPropsSchema>;
 
 function PartGrouping(props: PartGroupingProps) {
-  const { activities, children } = parse(statusGroupingPropsSchema, props);
+  const { activities, children } = parse(partGroupingPropsSchema, props);
 
   // eslint-disable-next-line no-magic-numbers
   const lastActivity = activities.at(-1);
@@ -56,4 +62,4 @@ function PartGrouping(props: PartGroupingProps) {
 PartGrouping.displayName = 'PartGrouping';
 
 export default memo(PartGrouping);
-export { type PartGroupingProps };
+export { partGroupingPropsSchema, type PartGroupingProps };
