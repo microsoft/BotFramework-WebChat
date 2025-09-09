@@ -2,9 +2,10 @@
 
 function kebabCase(value: string): string {
   return value
-    .replace(/([ _A-Z])/gu, '-$1')
-    .replace(/[A-Z]/gu, c => c.toLowerCase())
-    .replace(/([-]+)/gu, '-');
+    .replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/gu, '$1-$2')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/gu, '-')
+    .replace(/^-+|-+$/gu, '');
 }
 
 export default function setMetaTag(name: string, content: string): void;
