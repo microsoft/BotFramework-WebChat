@@ -1,5 +1,6 @@
 import { defineConfig } from 'tsup';
-import baseConfig from '../../tsup.base.config';
+
+import { applyConfig } from '../../tsup.base.config';
 
 // TODO: [P1] Compute this automatically.
 const DEPENDENT_PATHS = [
@@ -12,14 +13,14 @@ const DEPENDENT_PATHS = [
   'fluent-theme/src/index.ts'
 ];
 
-const commonConfig: typeof baseConfig = {
-  ...baseConfig,
+const commonConfig = applyConfig(config => ({
+  ...config,
   entry: {
     'botframework-webchat-base': './src/index.ts',
     'botframework-webchat-base.utils': './src/utils/index.ts'
   },
-  onSuccess: `${baseConfig.onSuccess} && touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`
-};
+  onSuccess: `touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`
+}));
 
 export default defineConfig([
   {

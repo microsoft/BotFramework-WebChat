@@ -1,6 +1,7 @@
 import path from 'path';
 import { defineConfig } from 'tsup';
-import baseConfig from '../../tsup.base.config';
+
+import { applyConfig } from '../../tsup.base.config';
 
 // Redirect import paths for "microsoft-cognitiveservices-speech-sdk(...)"
 // to point to es2015 distribution for all importing modules
@@ -27,8 +28,8 @@ const resolveReact = {
   }
 };
 
-const commonConfig: typeof baseConfig = {
-  ...baseConfig,
+const commonConfig = applyConfig(config => ({
+  ...config,
   entry: {
     'botframework-webchat': './src/boot/exports/full.ts',
     'botframework-webchat.es5': './src/boot/exports/full-es5.ts',
@@ -36,15 +37,15 @@ const commonConfig: typeof baseConfig = {
     'botframework-webchat.minimal': './src/boot/exports/minimal.ts'
   },
   env: {
-    ...baseConfig.env,
-
+    ...config.env,
     // Followings are required by microsoft-cognitiveservices-speech-sdk:
     NODE_TLS_REJECT_UNAUTHORIZED: '',
     SPEECH_CONDUCT_OCSP_CHECK: '',
     SPEECH_OCSP_CACHE_ROOT: ''
   },
-  esbuildPlugins: [resolveCognitiveServicesToES2015],
+  esbuildPlugins: [...config.esbuildPlugins, resolveCognitiveServicesToES2015],
   noExternal: [
+    ...(config.noExternal ?? []),
     '@babel/runtime',
     'memoize-one',
     'microsoft-cognitiveservices-speech-sdk',
@@ -57,13 +58,16 @@ const commonConfig: typeof baseConfig = {
     // Webpack 4 cannot statically analyze the code and failed with error "Critical dependency: require function is used in a way in which dependencies cannot be statically extracted".
     'uuid'
   ]
-};
+}));
 
 export default defineConfig([
   // Build IIFE before CJS/ESM to make npm start faster.
   {
     ...commonConfig,
-    define: { ...commonConfig.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"global"' },
+    define: {
+      ...commonConfig.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"global"'
+    },
     dts: false,
     entry: {
       webchat: './src/boot/bundle/full.ts',
@@ -80,12 +84,18 @@ export default defineConfig([
   },
   {
     ...commonConfig,
-    define: { ...commonConfig.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"' },
+    define: {
+      ...commonConfig.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"'
+    },
     format: 'esm'
   },
   {
     ...commonConfig,
-    define: { ...commonConfig.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"commonjs"' },
+    define: {
+      ...commonConfig.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"commonjs"'
+    },
     format: 'cjs',
     target: [...commonConfig.target, 'es2019']
   }

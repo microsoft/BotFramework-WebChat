@@ -2,7 +2,8 @@ import { injectCSSPlugin } from '@msinternal/botframework-webchat-styles/build';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'tsup';
-import baseConfig from '../../tsup.base.config';
+
+import { applyConfig } from '../../tsup.base.config';
 import { fluentStyleContent as fluentStyleContentPlaceholder } from './src/styles/createStyles';
 
 const umdResolvePlugin = {
@@ -47,33 +48,42 @@ const umdResolvePlugin = {
 };
 
 export default defineConfig([
-  {
-    ...baseConfig,
-    define: { ...baseConfig.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"commonjs"' },
+  applyConfig(config => ({
+    ...config,
+    define: {
+      ...config.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"commonjs"'
+    },
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
     esbuildPlugins: [
-      ...(baseConfig.esbuildPlugins || []),
+      ...(config.esbuildPlugins || []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
     ],
     format: ['cjs'],
-    target: [...baseConfig.target, 'es2019']
-  },
-  {
-    ...baseConfig,
-    define: { ...baseConfig.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"' },
+    target: [...config.target, 'es2019']
+  })),
+  applyConfig(config => ({
+    ...config,
+    define: {
+      ...config.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"'
+    },
     entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
     esbuildPlugins: [
-      ...(baseConfig.esbuildPlugins || []),
+      ...(config.esbuildPlugins || []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
     ],
     format: ['esm']
-  },
-  {
-    ...baseConfig,
-    define: { ...baseConfig.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"global"' },
+  })),
+  applyConfig(config => ({
+    ...config,
+    define: {
+      ...config.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"global"'
+    },
     entry: { 'botframework-webchat-fluent-theme.development': './src/bundle.ts' },
     esbuildPlugins: [
-      ...(baseConfig.esbuildPlugins || []),
+      ...(config.esbuildPlugins || []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
       umdResolvePlugin
     ],
@@ -81,16 +91,16 @@ export default defineConfig([
     outExtension() {
       return { js: '.js' };
     }
-  },
-  {
-    ...baseConfig,
-    define: { ...baseConfig.define, 'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"global"' },
-    entry: { 'botframework-webchat-fluent-theme.production.min': './src/bundle.ts' },
-    loader: {
-      ...baseConfig.loader
+  })),
+  applyConfig(config => ({
+    ...config,
+    define: {
+      ...config.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"global"'
     },
+    entry: { 'botframework-webchat-fluent-theme.production.min': './src/bundle.ts' },
     esbuildPlugins: [
-      ...(baseConfig.esbuildPlugins || []),
+      ...(config.esbuildPlugins || []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
       umdResolvePlugin
     ],
@@ -99,5 +109,5 @@ export default defineConfig([
     outExtension() {
       return { js: '.js' };
     }
-  }
+  }))
 ]);
