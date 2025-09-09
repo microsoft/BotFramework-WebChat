@@ -128,7 +128,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - `'incomplete'` - show loader aside from the message
       - `'published'` - show checkmark aside from the message
    - Added a `position` property support for the `Message` entity
-      - The `position` property takes precedence over existing sequence id
+      - The `position` property takes precedence over existing sequence ID
 
 ### Changed
 
