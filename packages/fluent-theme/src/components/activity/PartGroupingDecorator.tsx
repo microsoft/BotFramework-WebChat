@@ -1,23 +1,35 @@
-import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { PartGrouping } from 'botframework-webchat-component/internal';
+import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
 import cx from 'classnames';
-import React, { memo, useMemo } from 'react';
+import React, { memo, useMemo, type ReactNode } from 'react';
+import { array, custom, object, optional, pipe, readonly, safeParse } from 'valibot';
 
-import CopilotMessageHeader from './CopilotMessageHeader';
 import useVariants from '../../private/useVariants';
 import { useStyles, useVariantClassName } from '../../styles';
+import CopilotMessageHeader from './CopilotMessageHeader';
 
 import styles from './PartGroupingDecorator.module.css';
 
-type PartGroupingDecoratorProps = Readonly<{
-  activities: readonly WebChatActivity[];
-  children?: React.ReactNode;
-}>;
+const partGroupingDecoratorPropsSchema = pipe(
+  object({
+    activities: pipe(array(custom<WebChatActivity>(value => safeParse(object({}), value).success)), readonly()),
+    children: optional(reactNode())
+  }),
+  readonly()
+);
+
+// TODO: [P2] InferInput does not add the required readonly, need to have a better way to define props.
+type PartGroupingDecoratorProps = {
+  readonly activities: readonly WebChatActivity[];
+  readonly children?: ReactNode | undefined;
+};
 
 function PartGroupingDecorator(props: PartGroupingDecoratorProps) {
   const {
     activities: [activity, ...restActivities]
-  } = props;
+  } = validateProps(partGroupingDecoratorPropsSchema, props);
+
   const variants = useVariants();
   const classNames = useStyles(styles);
   const variantClassName = useVariantClassName(styles);
