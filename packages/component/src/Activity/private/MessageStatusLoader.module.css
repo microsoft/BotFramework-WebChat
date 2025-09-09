@@ -1,4 +1,3 @@
-
 :global(.webchat) .message-status-loader {
   --webchat__component-icon--mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='3'/></svg>");
   animation: message-status-loader__pulse 1.5s ease-in-out infinite;
