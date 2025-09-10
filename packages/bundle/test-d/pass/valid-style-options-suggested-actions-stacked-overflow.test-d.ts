@@ -1,3 +1,5 @@
+import '../setup';
+
 import { createStyleSet } from '../../src/boot/exports/full';
 
 // Related to #4081.

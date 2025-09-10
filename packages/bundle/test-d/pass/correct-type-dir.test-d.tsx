@@ -1,3 +1,5 @@
+import '../setup';
+
 import React from 'react';
 
 import ReactWebChat from '../../src/boot/exports/full';

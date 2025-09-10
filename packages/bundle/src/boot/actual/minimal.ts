@@ -3,20 +3,16 @@ import ReactWebChat from 'botframework-webchat-component';
 import * as componentDecorator from 'botframework-webchat-component/decorator';
 import * as internal from 'botframework-webchat-component/internal';
 
+import buildInfo from '../../buildInfo';
 import defaultCreateDirectLine from '../../createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAppServiceExtension';
 import coreRenderWebChat from '../../renderWebChat';
 
+buildInfo.set('variant', 'minimal');
+
+const { object: buildInfoObject, version } = buildInfo;
+
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
-
-const buildInfo = Object.freeze({
-  buildTool: process.env.build_tool,
-  moduleFormat: 'unknown',
-  variant: 'minimal',
-  version: process.env.npm_package_version
-});
-
-const { version } = buildInfo;
 
 const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {
   (options as any).botAgent &&
@@ -61,7 +57,7 @@ export { default as createBrowserWebSpeechPonyfillFactory } from '../../createBr
 export default ReactWebChat;
 
 export {
-  buildInfo,
+  buildInfoObject as buildInfo,
   createDirectLine,
   createDirectLineAppServiceExtension,
   decorator,

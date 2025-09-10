@@ -1,6 +1,7 @@
 import path from 'path';
 import { defineConfig } from 'tsup';
-import baseConfig from '../../tsup.base.config';
+
+import { applyConfig } from '../../tsup.base.config';
 
 // Redirect import paths for "microsoft-cognitiveservices-speech-sdk(...)"
 // to point to es2015 distribution for all importing modules
@@ -27,8 +28,8 @@ const resolveReact = {
   }
 };
 
-const config: typeof baseConfig = {
-  ...baseConfig,
+const commonConfig = applyConfig(config => ({
+  ...config,
   entry: {
     'botframework-webchat': './src/boot/exports/full.ts',
     'botframework-webchat.es5': './src/boot/exports/full-es5.ts',
@@ -36,15 +37,16 @@ const config: typeof baseConfig = {
     'botframework-webchat.minimal': './src/boot/exports/minimal.ts'
   },
   env: {
-    ...baseConfig.env,
-
+    ...config.env,
     // Followings are required by microsoft-cognitiveservices-speech-sdk:
     NODE_TLS_REJECT_UNAUTHORIZED: '',
     SPEECH_CONDUCT_OCSP_CHECK: '',
     SPEECH_OCSP_CACHE_ROOT: ''
   },
+  // Intentionally overriding existing esbuild plugins.
   esbuildPlugins: [resolveCognitiveServicesToES2015],
   noExternal: [
+    ...(config.noExternal ?? []),
     '@babel/runtime',
     'memoize-one',
     'microsoft-cognitiveservices-speech-sdk',
@@ -57,36 +59,45 @@ const config: typeof baseConfig = {
     // Webpack 4 cannot statically analyze the code and failed with error "Critical dependency: require function is used in a way in which dependencies cannot be statically extracted".
     'uuid'
   ]
-};
+}));
 
 export default defineConfig([
   // Build IIFE before CJS/ESM to make npm start faster.
   {
-    ...config,
+    ...commonConfig,
+    define: {
+      ...commonConfig.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"global"'
+    },
     dts: false,
     entry: {
       webchat: './src/boot/bundle/full.ts',
       'webchat-es5': './src/boot/bundle/full-es5.ts',
       'webchat-minimal': './src/boot/bundle/minimal.ts'
     },
-    env: { ...config.env, module_format: 'global' },
-    esbuildPlugins: [...config.esbuildPlugins, resolveReact],
+    esbuildPlugins: [...commonConfig.esbuildPlugins, resolveReact],
     format: 'iife',
     outExtension() {
       return { js: '.js' };
     },
     platform: 'browser',
-    target: [...config.target, 'es2019']
+    target: [...commonConfig.target, 'es2019']
   },
   {
-    ...config,
-    env: { ...config.env, module_format: 'esmodules' },
+    ...commonConfig,
+    define: {
+      ...commonConfig.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"'
+    },
     format: 'esm'
   },
   {
-    ...config,
-    env: { ...config.env, module_format: 'commonjs' },
+    ...commonConfig,
+    define: {
+      ...commonConfig.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"commonjs"'
+    },
     format: 'cjs',
-    target: [...config.target, 'es2019']
+    target: [...commonConfig.target, 'es2019']
   }
 ]);
