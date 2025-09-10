@@ -1,3 +1,5 @@
+import '../setup';
+
 import React from 'react';
 
 import { Components } from '../../src/boot/exports/full';

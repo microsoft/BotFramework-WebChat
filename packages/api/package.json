@@ -77,10 +77,11 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "npm run build:tsup -- --onSuccess=\"touch ../component/src/index.ts\" --watch"
+    "start": "npm run build:tsup -- --watch"
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-api-middleware": "development",
+    "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-cldr-data": "development",
     "@msinternal/botframework-webchat-react-hooks": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
@@ -108,6 +109,7 @@
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@msinternal/botframework-webchat-api-middleware": "^0.0.0-0",
+    "@msinternal/botframework-webchat-base": "^0.0.0-0",
     "@msinternal/botframework-webchat-cldr-data": "36.0.0-0",
     "@msinternal/botframework-webchat-react-hooks": "^0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",

@@ -69,7 +69,7 @@
 
         await pageConditions.focusedActivityInView();
         expect(pageElements.transcriptScrollable().scrollTop + pageElements.transcriptScrollable().offsetHeight).toBe(
-          activity29.offsetTop + activity29.offsetHeight
+          activity29.offsetTop + activity29.offsetHeight + 10 // account for gap between activities
         );
         await host.snapshot();
 
@@ -99,7 +99,7 @@
         // THEN: It should scroll activity #29 in the view.
         await pageConditions.focusedActivityInView();
         expect(pageElements.transcriptScrollable().scrollTop).toBe(
-          [...pageElements.activities()].reverse()[2].offsetTop - 5 // 5px is the margin
+          [...pageElements.activities()].reverse()[2].offsetTop - 10 // account for gap between activities
         );
 
         // THEN: It should show activity #29 completely with top aligned and appropriate spacing.

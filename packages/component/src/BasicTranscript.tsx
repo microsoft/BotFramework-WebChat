@@ -30,6 +30,8 @@ import ChatHistoryToolbar from './ChatHistory/ChatHistoryToolbar';
 import ScrollToEndButton from './ChatHistory/private/ScrollToEndButton';
 import ActivityTree from './Transcript/ActivityTree';
 import LiveRegionTranscript from './Transcript/LiveRegionTranscript';
+import { TranscriptFocusArea, TranscriptFocusTerminator } from './Transcript/TranscriptFocus';
+import TranscriptActivityList from './Transcript/TranscriptFocus/TranscriptActivityList';
 import { type ActivityElementMap } from './Transcript/types';
 import FocusRedirector from './Utils/FocusRedirector';
 import inputtableKey from './Utils/TypeFocusSink/inputtableKey';
@@ -43,7 +45,6 @@ import usePrevious from './hooks/internal/usePrevious';
 import useRegisterFocusTranscript from './hooks/internal/useRegisterFocusTranscript';
 import useRegisterScrollTo from './hooks/internal/useRegisterScrollTo';
 import useRegisterScrollToEnd from './hooks/internal/useRegisterScrollToEnd';
-import useUniqueId from './hooks/internal/useUniqueId';
 import useValueRef from './hooks/internal/useValueRef';
 import {
   useRegisterScrollRelativeTranscript,
@@ -60,8 +61,8 @@ import TranscriptFocusComposer from './providers/TranscriptFocus/TranscriptFocus
 import useActiveDescendantId from './providers/TranscriptFocus/useActiveDescendantId';
 import useFocusByActivityKey from './providers/TranscriptFocus/useFocusByActivityKey';
 import useFocusRelativeActivity from './providers/TranscriptFocus/useFocusRelativeActivity';
-import useFocusedActivityKey from './providers/TranscriptFocus/useFocusedActivityKey';
 import useFocusedExplicitly from './providers/TranscriptFocus/useFocusedExplicitly';
+import useFocusedKey from './providers/TranscriptFocus/useFocusedKey';
 
 const {
   useActivityKeys,
@@ -98,6 +99,10 @@ const ROOT_STYLE = {
 
     '& .webchat__basic-transcript__transcript': {
       listStyleType: 'none'
+    },
+
+    '& .webchat__basic-transcript__activity-focus-target': {
+      pointerEvents: 'none'
     }
   }
 };
@@ -114,12 +119,11 @@ type InternalTranscriptProps = Readonly<{
 // TODO: [P1] #4133 Add telemetry for computing how many re-render done so far.
 const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
   ({ className, terminatorRef }: InternalTranscriptProps, ref) => {
-    const [{ basicTranscript: basicTranscriptStyleSet }] = useStyleSet();
     const [activeDescendantId] = useActiveDescendantId();
     const [direction] = useDirection();
-    const [focusedActivityKey] = useFocusedActivityKey();
+    const [focusedKey] = useFocusedKey();
     const [focusedExplicitly] = useFocusedExplicitly();
-    const activityElementMapRef = useActivityElementMapRef();
+    const focusElementMapRef = useActivityElementMapRef();
     const focus = useFocus();
     const focusByActivityKey = useFocusByActivityKey();
     const focusRelativeActivity = useFocusRelativeActivity();
@@ -128,10 +132,8 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const localize = useLocalizer();
     const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
     const rootElementRef = useRef<HTMLDivElement>(null);
-    const terminatorLabelId = useUniqueId('webchat__basic-transcript__terminator-label');
 
-    const focusedActivityKeyRef = useValueRef(focusedActivityKey);
-    const terminatorText = localize('TRANSCRIPT_TERMINATOR_TEXT');
+    const focusedKeyRef = useValueRef(focusedKey);
     const transcriptAriaLabel = localize('TRANSCRIPT_ARIA_LABEL_ALT');
 
     const callbackRef = useCallback(
@@ -165,7 +167,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         if (typeof scrollTop !== 'undefined') {
           scrollToBottomScrollTo(scrollTop, { behavior });
         } else if (typeof activityId !== 'undefined') {
-          const activityBoundingBoxElement = activityElementMapRef.current
+          const activityBoundingBoxElement = focusElementMapRef.current
             .get(getKeyByActivityId(activityId))
             ?.querySelector('.webchat__basic-transcript__activity-active-descendant');
 
@@ -193,7 +195,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           }
         }
       },
-      [activityElementMapRef, getKeyByActivityId, rootElementRef, scrollToBottomScrollTo]
+      [focusElementMapRef, getKeyByActivityId, rootElementRef, scrollToBottomScrollTo]
     );
 
     const scrollToEnd = useCallback(
@@ -266,7 +268,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
 
         // Find the activity just above scroll view bottom.
         // If the scroll view is already on top, get the first activity.
-        const activityElements = Array.from(activityElementMapRef.current.entries());
+        const activityElements = Array.from(focusElementMapRef.current.entries());
         const activityKeyJustAboveScrollBottom: string | undefined = (
           scrollableElement.scrollTop
             ? activityElements
@@ -293,7 +295,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         }
       },
       [
-        activityElementMapRef,
+        focusElementMapRef,
         dispatchScrollPositionWithActivityId,
         getActivityByKey,
         markActivityKeyAsRead,
@@ -334,9 +336,10 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
             // This is capturing plain ENTER.
             // When screen reader is not running, or screen reader is running outside of scan mode, the ENTER key will be captured here.
             if (!fromEndOfTranscriptIndicator) {
-              const activityFocusTrapTarget: HTMLElement = activityElementMapRef.current
-                .get(focusedActivityKeyRef.current)
-                ?.querySelector('.webchat__basic-transcript__activity-focus-target');
+              const focusElement = focusElementMapRef.current?.get(focusedKeyRef.current);
+              const activityFocusTrapTarget: HTMLElement =
+                focusElement?.querySelector('.webchat__basic-transcript__group-focus-target') ??
+                focusElement?.querySelector('.webchat__basic-transcript__activity-focus-target');
               // TODO: review focus approach:
               // It is not clear how to handle focus without introducing something like context.
               // Ideally we would want a way to interact with focus outside of React
@@ -367,7 +370,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
           event.stopPropagation();
         }
       },
-      [activityElementMapRef, focus, focusedActivityKeyRef, focusRelativeActivity, terminatorRef]
+      [focusElementMapRef, focus, focusedKeyRef, focusRelativeActivity, terminatorRef]
     );
 
     const handleTranscriptKeyDownCapture = useCallback<KeyboardEventHandler<HTMLDivElement>>(
@@ -399,8 +402,8 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     // Dispatch a "transcript focus" event based on user selection.
     // We should not dispatch "transcript focus" when a new activity come. Although the selection change, it is not initiated from the user.
     useMemo(
-      () => dispatchTranscriptFocusByActivityKey(focusedExplicitly ? focusedActivityKey : undefined),
-      [dispatchTranscriptFocusByActivityKey, focusedActivityKey, focusedExplicitly]
+      () => dispatchTranscriptFocusByActivityKey(focusedExplicitly ? focusedKey : undefined),
+      [dispatchTranscriptFocusByActivityKey, focusedKey, focusedExplicitly]
     );
 
     // When the transcript is being focused on, we should dispatch a "transcriptfocus" event.
@@ -426,17 +429,12 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
     const hasAnyChild = !!numRenderingActivities;
 
     return (
-      <div
+      <TranscriptFocusArea
         // Although Android TalkBack 12.1 does not support `aria-activedescendant`, when used, it become buggy and will narrate content twice.
         // We are disabling `aria-activedescendant` for Android. See <ActivityRow> for details.
         aria-activedescendant={android ? undefined : activeDescendantId}
         aria-label={transcriptAriaLabel}
-        className={classNames(
-          'webchat__basic-transcript',
-          basicTranscriptStyleSet + '',
-          rootClassName,
-          (className || '') + ''
-        )}
+        className={classNames('webchat__basic-transcript', rootClassName, (className || '') + '')}
         dir={direction}
         onFocus={handleFocus}
         onKeyDown={handleTranscriptKeyDown}
@@ -450,7 +448,7 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         // https://www.w3.org/TR/wai-aria-practices-1.1/#kbd_focus_activedescendant
         tabIndex={0}
       >
-        <LiveRegionTranscript activityElementMapRef={activityElementMapRef} />
+        <LiveRegionTranscript activityElementMapRef={focusElementMapRef} />
         {hasAnyChild && <FocusRedirector redirectRef={terminatorRef} />}
         <InternalTranscriptScrollable onFocusFiller={handleFocusFiller}>
           {hasAnyChild && <ActivityTree />}
@@ -458,25 +456,10 @@ const InternalTranscript = forwardRef<HTMLDivElement, InternalTranscriptProps>(
         {hasAnyChild && (
           <Fragment>
             <FocusRedirector redirectRef={rootElementRef} />
-            <div
-              aria-labelledby={terminatorLabelId}
-              className="webchat__basic-transcript__terminator"
-              ref={terminatorRef}
-              role="note"
-              tabIndex={0}
-            >
-              <div className="webchat__basic-transcript__terminator-body">
-                {/* `id` is required for `aria-labelledby` */}
-                {/* eslint-disable-next-line react/forbid-dom-props */}
-                <div className="webchat__basic-transcript__terminator-text" id={terminatorLabelId}>
-                  {terminatorText}
-                </div>
-              </div>
-            </div>
+            <TranscriptFocusTerminator ref={terminatorRef} role="note" tabIndex={0} />
           </Fragment>
         )}
-        <div className="webchat__basic-transcript__focus-indicator" />
-      </div>
+      </TranscriptFocusArea>
     );
   }
 );
@@ -519,13 +502,13 @@ const InternalTranscriptScrollable = ({ children, onFocusFiller }: InternalTrans
       <ReactScrollToBottomPanel className="webchat__basic-transcript__scrollable">
         <div aria-hidden={true} className="webchat__basic-transcript__filler" onFocus={onFocusFiller} />
         {hasAnyChild && (
-          <section
+          <TranscriptActivityList
             aria-roledescription={transcriptRoleDescription}
             className={classNames(activitiesStyleSet + '', 'webchat__basic-transcript__transcript')}
             role="feed"
           >
             {children}
-          </section>
+          </TranscriptActivityList>
         )}
         <BasicTypingIndicator />
       </ReactScrollToBottomPanel>

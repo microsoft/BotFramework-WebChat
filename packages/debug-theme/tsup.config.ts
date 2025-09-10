@@ -1,7 +1,8 @@
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'tsup';
-import baseConfig from '../../tsup.base.config';
+
+import { applyConfig } from '../../tsup.base.config';
 
 const umdResolvePlugin = {
   name: 'umd-resolve',
@@ -39,39 +40,58 @@ const umdResolvePlugin = {
 };
 
 export default defineConfig([
-  {
-    ...baseConfig,
-    entry: { 'botframework-webchat-debug-theme': './src/index.ts' },
+  applyConfig(config => ({
+    ...config,
+    define: {
+      ...config.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"'
+    },
+    entry: {
+      'botframework-webchat-debug-theme': './src/index.ts'
+    },
     format: 'esm'
-  },
-  {
-    ...baseConfig,
-    entry: { 'botframework-webchat-debug-theme': './src/index.ts' },
+  })),
+  applyConfig(config => ({
+    ...config,
+    define: {
+      ...config.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"commonjs"'
+    },
+    entry: {
+      'botframework-webchat-debug-theme': './src/index.ts'
+    },
     format: 'cjs',
-    target: [...baseConfig.target, 'es2019']
-  },
-  {
-    ...baseConfig,
-    entry: { 'botframework-webchat-debug-theme.development': './src/bundle.ts' },
-    env: { ...baseConfig.env, module_format: 'global' },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), umdResolvePlugin],
+    target: [...config.target, 'es2019']
+  })),
+  applyConfig(config => ({
+    ...config,
+    define: {
+      ...config.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"global"'
+    },
+    entry: {
+      'botframework-webchat-debug-theme.development': './src/bundle.ts'
+    },
+    esbuildPlugins: [...(config.esbuildPlugins || []), umdResolvePlugin],
     format: 'iife',
     outExtension() {
       return { js: '.js' };
     }
-  },
-  {
-    ...baseConfig,
-    entry: { 'botframework-webchat-debug-theme.production.min': './src/bundle.ts' },
-    env: { ...baseConfig.env, module_format: 'global' },
-    loader: {
-      ...baseConfig.loader
+  })),
+  applyConfig(config => ({
+    ...config,
+    define: {
+      ...config.define,
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"global"'
     },
-    esbuildPlugins: [...(baseConfig.esbuildPlugins || []), umdResolvePlugin],
+    entry: {
+      'botframework-webchat-debug-theme.production.min': './src/bundle.ts'
+    },
+    esbuildPlugins: [...(config.esbuildPlugins || []), umdResolvePlugin],
     format: 'iife',
     minify: true,
     outExtension() {
       return { js: '.js' };
     }
-  }
+  }))
 ]);
