@@ -5,7 +5,7 @@ import { applyConfig } from '../../tsup.base.config';
 // TODO: [P1] Compute this automatically.
 const DEPENDENT_PATHS = ['api/src/index.ts'];
 
-const commonConfig = applyConfig(config=>({
+const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
     'botframework-webchat-api-middleware': './src/index.ts',
