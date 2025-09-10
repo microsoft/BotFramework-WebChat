@@ -23,12 +23,16 @@ const config = applyConfig(config => ({
   },
   env: {
     ...config.env,
+
+    build_tool: 'tsup',
+
     // Followings are required by microsoft-cognitiveservices-speech-sdk:
     NODE_TLS_REJECT_UNAUTHORIZED: '',
     SPEECH_CONDUCT_OCSP_CHECK: '',
     SPEECH_OCSP_CACHE_ROOT: ''
   },
-  esbuildPlugins: [...config.esbuildPlugins, resolveCognitiveServicesToES2015],
+  // Intentionally overriding existing esbuild plugins.
+  esbuildPlugins: [resolveCognitiveServicesToES2015],
   // We need to internalize event-target-shim because it appear as transient packages with a different version.
   noExternal: [...(config.noExternal ?? []), 'event-target-shim']
 }));
