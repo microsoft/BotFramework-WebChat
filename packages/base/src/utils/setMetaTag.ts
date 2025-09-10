@@ -1,11 +1,8 @@
 /// <reference lib="dom" />
 
+// Courtesy of https://stackoverflow.com/a/67243723.
 function kebabCase(value: string): string {
-  return value
-    .replace(/([a-z0-9]|(?=[A-Z]))([A-Z])/gu, '$1-$2')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/gu, '-')
-    .replace(/^-+|-+$/gu, '');
+  return value.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase());
 }
 
 export default function setMetaTag(name: string, content: string): void;
