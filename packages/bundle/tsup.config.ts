@@ -43,7 +43,8 @@ const commonConfig = applyConfig(config => ({
     SPEECH_CONDUCT_OCSP_CHECK: '',
     SPEECH_OCSP_CACHE_ROOT: ''
   },
-  esbuildPlugins: [...config.esbuildPlugins, resolveCognitiveServicesToES2015],
+  // Intentionally overriding existing esbuild plugins.
+  esbuildPlugins: [resolveCognitiveServicesToES2015],
   noExternal: [
     ...(config.noExternal ?? []),
     '@babel/runtime',
