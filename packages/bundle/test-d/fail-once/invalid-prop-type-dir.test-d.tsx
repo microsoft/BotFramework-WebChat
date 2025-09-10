@@ -1,3 +1,5 @@
+import '../setup';
+
 import { type ComponentType } from 'react';
 import { expectNotAssignable } from 'tsd';
 

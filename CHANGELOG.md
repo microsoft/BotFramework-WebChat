@@ -129,6 +129,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - `'published'` - show checkmark aside from the message
    - Added a `position` property support for the `Message` entity
       - The `position` property takes precedence over existing sequence ID
+- Unified build info and injection of `<meta>` tag, in PR [#5571](https://github.com/microsoft/BotFramework-WebChat/pull/5571), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
