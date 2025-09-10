@@ -21,19 +21,15 @@
     width: var(--webchat__padding--regular);
   }
 
-  .stacked-layout__bubble {
-    display: contents;
-  }
-
   .stacked-layout__title {
     color: var(--webchat__color--subtle);
     font-size: 1.1em;
     margin-block: var(--webchat__padding--regular);
     margin-inline: var(--webchat__padding--regular);
+  }
 
-    &:not(:only-child) {
-      margin-block-end: 0;
-    }
+  .stacked-layout__bubble > .stacked-layout__title:not(:only-child) {
+    margin-block-end: 0;
   }
 
   .stacked-layout__attachment {
@@ -101,6 +97,58 @@
     transition-property: max-width;
   }
 
+  .stacked-layout__message-row {
+    display: flex;
+    gap: var(--webchat__padding--regular);
+  }
+
+  .stacked-layout__message-status {
+    color: var(--webchat__color--subtle);
+    display: grid;
+    font-size: 1.1em;
+    grid-template-areas: "message-status-icon";
+    margin-block: calc(var(--webchat__padding--regular) + 1px);
+    margin-inline-start: var(--webchat__padding--regular);
+    place-self: start;
+
+    > * {
+      grid-area: message-status-icon;
+    }
+  }
+
+  .stacked-layout__message-status-unset-icon,
+  .stacked-layout__message-status-complete-icon,
+  .stacked-layout__message-status-loader {
+    visibility: hidden;
+  }
+
+  .stacked-layout__message-status--unset .stacked-layout__message-status-unset-icon {
+    visibility: unset;
+  }
+
+  .stacked-layout__message-status--incomplete .stacked-layout__message-status-loader {
+    visibility: unset;
+  }
+
+  .stacked-layout__message-status--final .stacked-layout__message-status-complete-icon {
+    visibility: unset;
+  }
+
+  .stacked-layout__bubble {
+    display: grid;
+
+    > .stacked-layout__message-status {
+      grid-area: status;
+    }
+
+    &:has(.stacked-layout__message-status) {
+      grid-template:
+        'status content'
+        'status content'
+        / min-content auto;
+    }
+  }
+
   .stacked-layout__nub-pad {
     flex-shrink: 0;
     transition-duration: var(--webchat__transition-duration);
@@ -138,6 +186,30 @@
     .stacked-layout__avatar-gutter,
     .stacked-layout__content {
       justify-content: flex-end;
+    }
+  }
+
+  &.stacked-layout--group {
+    .stacked-layout__bubble {
+      grid-template: 'content' 1fr / 1fr;
+    }
+    
+    .stacked-layout__message-status {
+      display: none;
+    }
+    
+    &:has(.stacked-layout__message-status--final), 
+    &:has(.stacked-layout__message-status--incomplete) {
+      .stacked-layout__bubble {
+        grid-template:
+          'status content'
+          'status content'
+          / min-content auto;
+      }
+
+      .stacked-layout__message-status {
+        display: grid;
+      }
     }
   }
 }
