@@ -80,4 +80,4 @@ The table below explains each individual property in the sample payload.
 
 - Related pull requests
   - [Initial commit](https://github.com/microsoft/BotFramework-WebChat/pull/5553)
-- [Test cases](../__tests__/html2/part-grouping)
+- [Test cases](/__tests__/html2/part-grouping)
