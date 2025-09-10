@@ -2,7 +2,7 @@
 
 // Courtesy of https://stackoverflow.com/a/67243723.
 function kebabCase(value: string): string {
-  return value.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase());
+  return value.replace(/[A-Z]+(?![a-z])|[A-Z]/gu, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase());
 }
 
 export default function setMetaTag(name: string, content: string): void;
