@@ -1,6 +1,7 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { hooks } from 'botframework-webchat-api';
-import classNames from 'classnames';
+import cx from 'classnames';
 import React, { memo, useCallback } from 'react';
 import { boolean, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
@@ -9,6 +10,8 @@ import useShowModal from '../../../providers/ModalDialog/useShowModal';
 import LocalizedString from '../../../Utils/LocalizedString';
 import ActivityButton from './ActivityButton';
 import CodeContent from './CodeContent';
+
+import styles from './ViewCodeDialog.module.css';
 
 const { useLocalizer } = hooks;
 
@@ -27,8 +30,9 @@ type ActivityViewCodeButtonProps = InferInput<typeof activityViewCodeButtonProps
 
 const ActivityViewCodeButton = (props: ActivityViewCodeButtonProps) => {
   const { className, code, language, title, isAIGenerated } = validateProps(activityViewCodeButtonPropsSchema, props);
+  const classNames = useStyles(styles);
 
-  const [{ activityButton, viewCodeDialog }] = useStyleSet();
+  const [{ activityButton }] = useStyleSet();
   const showModal = useShowModal();
   const localize = useLocalizer();
 
@@ -37,22 +41,22 @@ const ActivityViewCodeButton = (props: ActivityViewCodeButtonProps) => {
       () => (
         <CodeContent code={code} language={language} title={title}>
           {isAIGenerated && (
-            <div className={'webchat__view-code-dialog__footer'}>
+            <div className={classNames['view-code-dialog__footer']}>
               <LocalizedString linkClassName={'webchat__view-code-dialog__link'} stringIds="ACTIVITY_CODE_CAUTION" />
             </div>
           )}
         </CodeContent>
       ),
       {
-        className: classNames('webchat__view-code-dialog', viewCodeDialog),
+        className: cx('webchat__view-code-dialog', classNames['view-code-dialog']),
         'aria-label': localize('ACTIVITY_CODE_ALT', title ?? '')
       }
     );
-  }, [code, isAIGenerated, language, localize, showModal, title, viewCodeDialog]);
+  }, [code, isAIGenerated, language, localize, showModal, title, classNames]);
 
   return (
     <ActivityButton
-      className={classNames(activityButton, 'webchat__activity-button', className)}
+      className={cx(activityButton, 'webchat__activity-button', className)}
       data-testid="view code button"
       icon="view-code"
       onClick={showCodeModal}
