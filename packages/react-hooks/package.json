@@ -50,7 +50,6 @@
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "npm run build -- --watch"
   },
-  "devDependencies": {},
   "peerDependencies": {
     "react": ">= 16.8.6"
   }

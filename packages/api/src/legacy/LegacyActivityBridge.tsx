@@ -4,8 +4,11 @@ import React, { Fragment, memo, useMemo } from 'react';
 import useCreateActivityStatusRenderer from '../hooks/useCreateActivityStatusRenderer';
 import useCreateAvatarRenderer from '../hooks/useCreateAvatarRenderer';
 import useRenderAttachment from '../hooks/useRenderAttachment';
-import { legacyActivityBridgeComponentPropsSchema, type LegacyActivityBridgeComponentProps } from '../internal';
 import { useLegacyActivityContext } from './LegacyActivityBridgeContext';
+import {
+  legacyActivityBridgeComponentPropsSchema,
+  type LegacyActivityBridgeComponentProps
+} from './createActivityPolymiddlewareFromLegacy';
 
 /**
  * This component is solely for `createActivityPolymiddlewareFromLegacy`.

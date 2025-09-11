@@ -9,7 +9,6 @@ const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
     'botframework-webchat-api-middleware': './src/index.ts',
-    'botframework-webchat-api-middleware.internal': './src/internal.ts',
     'botframework-webchat-api-middleware.legacy': './src/legacy.ts'
   },
   onSuccess: `touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`

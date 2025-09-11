@@ -139,6 +139,16 @@ A curated list of major achievements by the Web Chat team. This document celebra
 
 ## 🚀 Performance & Developer Experience
 
+
+### 🧩 Introduction of PolyMiddleware
+
+**Goal:** Enable composable, reusable, and unified way for managing middleware.  
+**By:** [@compulim](https://github.com/compulim) in [PR #5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515), [#5566](https://github.com/microsoft/BotFramework-WebChat/pull/5566)
+
+- Allows multiple middleware to be composed and applied from a single place.
+- Simplifies extension, testing, and maintenance of middleware logic.
+- Lays groundwork for Web Chat becomoming an UI orchestration.
+
 ### 🧠 Memoization & Hook Optimizations
 
 **Goal:** Reduce rerenders and memory footprint.  
