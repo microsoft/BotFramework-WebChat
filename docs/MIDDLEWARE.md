@@ -1,6 +1,6 @@
 # Middleware
 
-Middleware serves as a core element of Web Chat's architecture, enabling deep and cascaded UI customization.
+Middleware is a core part of Web Chat's architecture, enabling deep and cascaded UI customization.
 
 Middleware operates in a cascading sequence, where the execution order plays a critical role. An upstream middleware can influence whether and how the downstream middleware renders. Middleware can perform the following operations:
 
@@ -11,7 +11,7 @@ Middleware operates in a cascading sequence, where the execution order plays a c
 
 ## What is polymiddleware?
 
-Polymiddleware is our unified architecture for middleware. All middleware will be passed to a single `polymiddleware` prop.
+Polymiddleware is our unified approach to middleware. All middleware are now passed via a single `polymiddleware` prop.
 
 ```tsx
 function MyChatUI() {
@@ -43,7 +43,7 @@ function MyChatUI() {
 }
 ```
 
-> Legacy middleware, such as `activityMiddleware`, are automatically converted (polyfilled) to `polymiddleware` until the end of support. See [this section for deprecation dates](#when-will-legacy-middleware-removed).
+> Legacy middleware, such as `activityMiddleware`, are automatically converted (polyfilled) to `polymiddleware` until the end of support. See [this section for deprecation dates](#deprecation-dates).
 
 ### List of polymiddleware types
 
@@ -232,25 +232,6 @@ For a message activity of "Hello, World!", it will render:
 
 ## Behaviors
 
-### When will legacy middleware be removed?
-
-We introduced polymiddleware in 2025-08-16. Based on our 2-year deprecation rule, legacy middleware will be removed on or after 2027-08-16. The following table shows deprecation dates for various legacy middleware.
-
-| Legacy middleware            | Pull request                                                            | Remove on or after |
-| ---------------------------- | ----------------------------------------------------------------------- | ------------------ |
-| Activity                     | PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515) | 2027-08-16         |
-| Activity status              |                                                                         | (TBD)              |
-| Attachment                   |                                                                         | (TBD)              |
-| Attachment for screen reader |                                                                         | (TBD)              |
-| Avatar                       |                                                                         | (TBD)              |
-| Card action                  |                                                                         | (TBD)              |
-| Group activities             |                                                                         | (TBD)              |
-| Scroll to end button         |                                                                         | (TBD)              |
-| Send box                     |                                                                         | (TBD)              |
-| Send box toolbar             |                                                                         | (TBD)              |
-| Toast                        |                                                                         | (TBD)              |
-| Typing indicator             |                                                                         | (TBD)              |
-
 ### Polymiddleware vs. legacy middleware
 
 Polymiddleware is a unification of multiple legacy middleware into a single prop.
@@ -334,3 +315,22 @@ The following table shows how polymiddleware are prioritized.
 | Normal   | Polymiddleware     | Polymiddleware passed to the `polymiddleware` prop.                                                                                                                                         |
 | Low      | Legacy middleware  | Legacy middleware passed to their corresponding prop (such as `activityMiddleware`) and upgraded automatically.                                                                             |
 | Lowest   | Catch-all as error | Requests not handled by any polymiddleware in the chain will be thrown as an error.                                                                                                         |
+
+## Deprecation dates
+
+We introduced polymiddleware in 2025-08-16. Based on our 2-year deprecation rule, legacy middleware will be removed on or after 2027-08-16. The following table shows deprecation dates for various legacy middleware.
+
+| Legacy middleware            | Pull request                                                            | Remove on or after |
+| ---------------------------- | ----------------------------------------------------------------------- | ------------------ |
+| Activity                     | PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515) | 2027-08-16         |
+| Activity status              |                                                                         | (TBD)              |
+| Attachment                   |                                                                         | (TBD)              |
+| Attachment for screen reader |                                                                         | (TBD)              |
+| Avatar                       |                                                                         | (TBD)              |
+| Card action                  |                                                                         | (TBD)              |
+| Group activities             |                                                                         | (TBD)              |
+| Scroll to end button         |                                                                         | (TBD)              |
+| Send box                     |                                                                         | (TBD)              |
+| Send box toolbar             |                                                                         | (TBD)              |
+| Toast                        |                                                                         | (TBD)              |
+| Typing indicator             |                                                                         | (TBD)              |
