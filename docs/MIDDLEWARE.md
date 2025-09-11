@@ -20,7 +20,7 @@ function MyChatUI() {
       createActivityPolymiddleware(
         next => request =>
           request.activity.type === 'event'
-            ? // Handle rendering of event activity thru <EventActivity activity={request.activity}>.
+            ? // Handle rendering of event activity though <EventActivity activity={request.activity}>.
               reactComponent(EventActivity, { activity: request.activity })
             : // Continue rendering.
               next(request)
@@ -43,7 +43,7 @@ function MyChatUI() {
 }
 ```
 
-> Legacy middleware, such as `activityMiddleware`, are polyfilled to `polymiddleware` automatically until they reached end of support. See [this section for deprecation dates](#when-will-legacy-middleware-removed).
+> Legacy middleware, such as `activityMiddleware`, are automatically converted (polyfilled) to `polymiddleware` until the end of support. See [this section for deprecation dates](#when-will-legacy-middleware-removed).
 
 ### List of polymiddleware types
 
@@ -181,7 +181,7 @@ const polymiddleware = [
 
 Every type of polymiddleware now comes with its corresponding proxy component. It is the easiest way to render a polymiddleware.
 
-The proxy component acts as an intermediary, forwarding request to the polymiddleware. The polymiddleware processes the request and returns a render function, which the proxy will morphs into the final rendered output.
+The proxy component acts as an intermediary, forwarding request to the polymiddleware. The polymiddleware processes the request and returns a render function, which the proxy will morph into the final rendered output.
 
 ```tsx
 const ActivityPolymiddlewareProxy: ComponentType<{ readonly activity: WebChatActivity }>;
@@ -203,7 +203,7 @@ Refer to [this section](#when-to-use-usebuildrenderxxxcallback-vs-xxxpolymiddlew
 
 > Notes: legacy middleware is deprecated and will be removed on or after 2027-08-16.
 
-The following code snippet a legacy activity middleware followed by polymiddleware.
+The following code snippet shows a legacy activity middleware followed by polymiddleware.
 
 ```tsx
 const MyActivity = memo(function MyActivity({ request }) {
@@ -234,7 +234,7 @@ For a message activity of "Hello, World!", it will render:
 
 ### When will legacy middleware be removed?
 
-We introduced polymiddleware in 2025-08-16. Based on our 2-year deprecation rule, legacy middleware will be removed on or after 2027-08-16. The following table should deprecation dates for various legacy middleware.
+We introduced polymiddleware in 2025-08-16. Based on our 2-year deprecation rule, legacy middleware will be removed on or after 2027-08-16. The following table shows deprecation dates for various legacy middleware.
 
 | Legacy middleware            | Pull request                                                            | Remove on or after |
 | ---------------------------- | ----------------------------------------------------------------------- | ------------------ |
@@ -277,7 +277,7 @@ Over the past 7.5 years of journey, we learnt a lot. Polymiddleware combined all
    - A bug in a middleware within the chain can cause havoc
       - For instance, a middleware might alter the activity content before passing it downstream, potentially causing unexpected behavior
 - Middleware should return render function than a React component
-   - Impossible to set a dynamic value as a default (bound) prop value in React component without wasted rendering and various performance issues
+   - Impossible to set a dynamic value as a default (bound) prop value in a React component without causing unnecessary rendering and performance issues
       - Binding props to a component always re-render despite no actual value change
    - Render function cannot use hooks
    - Render function and React component can be transformed to each other
@@ -313,7 +313,7 @@ When multiple legacy middleware are passed as an array to `createActivityPolymid
 
 ### When to use `useBuildRenderXXXCallback()` vs. `<XXXPolymiddlewareProxy>`?
 
-Their main differences:
+The main differences are:
 
 - `useBuildRenderXXXCallback()` allows precise render control
    - Developers can control how the render function is being used and what to do if the polymiddleware decided not to render the activity
@@ -322,7 +322,7 @@ Their main differences:
 
 ### Priorities in polymiddleware
 
-> Priorities is used internally and will not expose as a feature.
+> Priorities are used internally and are not exposed as a feature.
 
 While polymiddleware priorities are hidden and internal, and their usage are minimized as much as possible, there are special cases that priorities would help.
 
