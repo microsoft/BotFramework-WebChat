@@ -1,3 +1,4 @@
+// Promise.withResolvers() is about 90 KiB.
 // @ts-expect-error: no types available
 import coreJSWithResolvers from 'core-js-pure/features/promise/with-resolvers.js';
 

@@ -1,18 +1,13 @@
-import { injectMetaTag } from 'inject-meta-tag';
-
 import { SendBox as FluentSendBox } from './components/sendBox/index';
 import FluentThemeProvider from './private/FluentThemeProvider';
 import testIds from './testIds';
 
-const buildTool = process?.env?.['build_tool'];
-const moduleFormat = process?.env?.['module_format'];
-const version = process?.env?.['npm_package_version'];
+export { FluentSendBox, FluentThemeProvider, testIds };
 
-const buildInfo = { buildTool, moduleFormat, version };
+// #region Build info
+import buildInfo from './buildInfo';
 
-injectMetaTag(
-  'botframework-webchat:fluent-theme',
-  `version=${version || ''}; build-tool=${buildTool || ''}; module-format=${moduleFormat || ''}`
-);
+const { object: buildInfoObject, version } = buildInfo;
 
-export { buildInfo, FluentSendBox, FluentThemeProvider, testIds };
+export { buildInfoObject as buildInfo, version };
+// #endregion

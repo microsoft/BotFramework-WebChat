@@ -84,14 +84,8 @@ import type { Thing as OrgSchemaThing } from './types/external/OrgSchema/Thing';
 import type { UserReview as OrgSchemaUserReview } from './types/external/OrgSchema/UserReview';
 
 const Constants = { ActivityClientState, DictateState };
-const buildTool = process.env.build_tool;
-const moduleFormat = process.env.module_format;
-const version = process.env.npm_package_version;
-
-const buildInfo = { buildTool, moduleFormat, version };
 
 export {
-  buildInfo,
   connect,
   Constants,
   createStore,
@@ -104,7 +98,6 @@ export {
   getOrgSchemaMessage,
   isForbiddenPropertyName,
   markActivity,
-  moduleFormat,
   onErrorResumeNext,
   parseAction,
   parseClaim,
@@ -133,7 +126,6 @@ export {
   stopDictate,
   stopSpeakingActivity,
   submitSendBox,
-  version,
   warnOnce,
   withResolvers
 };
@@ -166,3 +158,11 @@ export type {
   SendBoxAttachment,
   WebChatActivity
 };
+
+// #region Build info
+import buildInfo from './buildInfo';
+
+const { object: buildInfoObject, version } = buildInfo;
+
+export { buildInfoObject as buildInfo, version };
+// #endregion

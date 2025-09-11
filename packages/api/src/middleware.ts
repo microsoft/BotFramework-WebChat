@@ -29,3 +29,5 @@ export {
   type ErrorBoxPolymiddlewareRenderer,
   type ErrorBoxPolymiddlewareRequest
 } from '@msinternal/botframework-webchat-api-middleware';
+
+export { default as createActivityPolymiddlewareFromLegacy } from './legacy/createActivityPolymiddlewareFromLegacy';

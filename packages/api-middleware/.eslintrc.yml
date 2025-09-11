@@ -7,5 +7,8 @@ env:
   browser: true
 
 rules:
-  # React functional component is better in function style than arrow style
+  # React functional component is better in function style than arrow style.
   prefer-arrow-callback: off
+
+  # React already deprecated default props.
+  react/require-default-props: off

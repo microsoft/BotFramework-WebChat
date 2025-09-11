@@ -1,3 +1,5 @@
+import '../setup';
+
 import { expectNotAssignable } from 'tsd';
 
 import { createStyleSet } from '../../src/boot/exports/minimal';

@@ -53,13 +53,7 @@ export {
 } from './middleware/SendBoxToolbarMiddleware';
 // #endregion
 
-const buildTool = process?.env?.build_tool;
-const moduleFormat = process?.env?.module_format;
-const version = process?.env?.npm_package_version;
-
-const buildInfo = { buildTool, moduleFormat, version };
-
-export { buildInfo, Composer, concatMiddleware, defaultStyleOptions, hooks, localize, normalizeStyleOptions, version };
+export { Composer, concatMiddleware, defaultStyleOptions, hooks, localize, normalizeStyleOptions };
 
 export type {
   /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */
@@ -99,3 +93,11 @@ export type {
   WebSpeechPonyfill,
   WebSpeechPonyfillFactory
 };
+
+// #region Build info
+import buildInfo from './buildInfo';
+
+const { object: buildInfoObject, version } = buildInfo;
+
+export { buildInfoObject as buildInfo, version };
+// #endregion

@@ -112,7 +112,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Deprecated `hideUploadButton` in favor of `disableFileUpload`.
    - Updated `BasicSendBoxToolbar` to rely solely on `disableFileUpload`.
 - Added support for livestreaming via `entities[type="streaminfo"]` in PR [#5517](https://github.com/microsoft/BotFramework-WebChat/pull/5517) by [@kylerohn](https://github.com/kylerohn) and [@compulim](https://github.com/compulim)
-- Added `polymiddleware`, a new [universal middleware for every UIs](./docs/MIDDLEWARE.md), by [@compulim](https://github.com/compulim) in PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
+- Added `polymiddleware`, a new [universal middleware for every UIs](./docs/MIDDLEWARE.md), by [@compulim](https://github.com/compulim) in PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515) and [#5566](https://github.com/microsoft/BotFramework-WebChat/pull/5566)
    - Added `polymiddleware` to `<ThemeProvider>`
    - Currently supports activity middleware and the new error box middleware
 - New internal packages, by [@compulim](https://github.com/compulim) in PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
@@ -129,6 +129,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - `'published'` - show checkmark aside from the message
    - Added a `position` property support for the `Message` entity
       - The `position` property takes precedence over existing sequence ID
+- Unified build info and injection of `<meta>` tag, in PR [#5571](https://github.com/microsoft/BotFramework-WebChat/pull/5571), by [@compulim](https://github.com/compulim)
+- Added documentation for `isPartOf` property, in PR [#5573](https://github.com/microsoft/BotFramework-WebChat/pull/5573), by [@compulim](https://github.com/compulim)
 
 ### Changed
 

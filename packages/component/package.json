@@ -65,7 +65,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "npm run build -- --onSuccess=\"touch ../bundle/src/FullComposer.tsx\" --watch"
+    "start": "npm run build -- --watch"
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
@@ -137,7 +137,7 @@
     "merge-refs": "2.0.0",
     "prop-types": "15.8.1",
     "punycode": "2.3.1",
-    "react-chain-of-responsibility": "^0.4.0-main.2a72139",
+    "react-chain-of-responsibility": "^0.4.0-main.c2f17da",
     "react-dictate-button": "4.0.0",
     "react-film": "4.0.0",
     "react-redux": "7.2.9",
