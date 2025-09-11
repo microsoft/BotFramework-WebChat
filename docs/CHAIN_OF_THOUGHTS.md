@@ -6,31 +6,31 @@ Chain-of-Thought reasoning enables users to follow the logical progression of id
 
 ## Terminology
 
-| Term  | Description                    |
-| ----- | ------------------------------ |
-| Chain | The whole Chain-of-Thought.    |
-| Step  | A reasoning step in the chain. |
+| Term  | Description                            |
+| ----- | -------------------------------------- |
+| Chain | The complete Chain-of-Thought sequence |
+| Step  | A reasoning step in the chain.         |
 
 ## Must-knows
 
 - A chain must have one or more steps
-- A step is materialized as a message activity, it can be either a complete message or a [livestreaming](./LIVESTREAMING.md) message
-- A chain is not materialized, it is only represented by an ID (a.k.a. chain ID)
+- Each step is implemented as a message activity (either complete or [livestreaming](./LIVESTREAMING.md) message)
+- Chains are identified by an ID rather than being materialized objects
 - Chain ID is treated as an opaque string and local to the conversation
-- Step is associated to the chain by the chain ID
+- Steps are linked to chains through the chain ID
 
 ## Design decisions
 
 ### Why use Schema.org `HowTo` and `HowToStep`?
 
-We are leveraging [`HowTo`](https://schema.org/HowTo) and [`HowToStep`](https://schema.org/HowToStep) type to represent the chain and the step correspondingly.
+We are leveraging [`HowTo`](https://schema.org/HowTo) and [`HowToStep`](https://schema.org/HowToStep) type to represent the chain and the step respectively.
 
 Their definitions:
 
 - [`HowTo`](https://schema.org/HowTo): "Instructions that explain how to achieve a result by performing a sequence of steps."
 - [`HowToStep`](https://schema.org/HowToStep): "A step in the instructions for how to achieve a result."
 
-The definitions of `HowTo` and `HowToStep` capture the metaphor of Chain-of-Thought precisely. Thus, the payload is based from them.
+The definitions of `HowTo` and `HowToStep` capture the metaphor of Chain-of-Thought precisely. Thus, the payload is based on them.
 
 ## Sample payload
 
@@ -63,7 +63,7 @@ The table below explains each individual property in the sample payload.
 
 | Type      | Property   | Required | Description                                                                                                                                           |
 | --------- | ---------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Message` |            |          | This root entity represent the message itself. In the sample, it is `entities[@id=""]`.                                                               |
+| `Message` |            |          | This root entity represents the message itself. In the sample, it is `entities[@id=""]`.                                                              |
 |           | `@context` | Yes      | Must be `"https://schema.org"`.                                                                                                                       |
 |           | `@id`      | Yes      | Must be empty string `""`, it represents the message itself.                                                                                          |
 |           | `@type`    | Yes      | Must be `"Message"`.                                                                                                                                  |
