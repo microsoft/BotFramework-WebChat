@@ -244,6 +244,8 @@ Polymiddleware enforces immutability of requests. Unlike legacy middleware, an u
 
 Since late 2018, we start adopting middleware programming pattern for UI customization. At the time, React hooks is still in its womb.
 
+Middleware in Web Chat follows the "chain of responsibility" pattern, allowing handlers to process requests in sequence. Each middleware can handle, modify, or decorate a request before passing it downstream, and can also process the result as it propagates back up the chain.
+
 Over the past 7.5 years of journey, we learnt a lot. Polymiddleware combined all our learnings and is our mature approach for deep customization.
 
 - Middleware is officially called the ["chain of responsibility" pattern](https://refactoring.guru/design-patterns/chain-of-responsibility)
