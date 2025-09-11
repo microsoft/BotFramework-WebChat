@@ -1,3 +1,5 @@
+import '../setup';
+
 import { expectNotAssignable } from 'tsd';
 
 import { createDirectLine } from '../../src/boot/exports/full';
