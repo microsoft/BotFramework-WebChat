@@ -1,4 +1,4 @@
-# Chain of Thoughts
+# Chain-of-Thoughts
 
 Web Chat supports Chain-of-Thoughts (CoT) UI for reasoning.
 
