@@ -1,5 +1,3 @@
-/* eslint-disable react/require-default-props */
-
 import { warnOnce } from 'botframework-webchat-core';
 import { type Enhancer } from 'handler-chain';
 import React, { memo, type ReactNode } from 'react';
