@@ -10,35 +10,28 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        const canvas = document.createElement('canvas');
-
-        canvas.setAttribute('height', '1');
-        canvas.setAttribute('width', '1');
-
-        const context = canvas.getContext('2d');
-
-        context.fillStyle = 'Red';
-        context.fillRect(0, 0, 1, 1);
-
-        const dataURL = canvas.toDataURL('image/gif');
-
         const directLine = testHelpers.createDirectLineWithTranscript([
           {
             attachments: [
               {
                 contentType: 'application/octet-stream',
-                contentUrl: 'http://bing.com/',
-                name: 'http://bing.com/'
+                contentUrl: './filename.zip',
+                name: './filename.zip'
               },
               {
                 contentType: 'application/octet-stream',
-                contentUrl: 'https://bing.com/',
-                name: 'https://bing.com/'
+                contentUrl: 'javascript:alert()',
+                name: 'javascript:alert()'
               },
               {
                 contentType: 'application/octet-stream',
-                contentUrl: dataURL,
-                name: 'data-url.gif'
+                contentUrl: 'tel:123',
+                name: 'tel:123'
+              },
+              {
+                contentType: 'application/octet-stream',
+                contentUrl: 'map:47.641944,-122.127222',
+                name: 'map:47.641944,-122.127222'
               }
             ],
             from: {
@@ -63,8 +56,8 @@
         await pageConditions.uiConnected();
         await pageConditions.numActivitiesShown(1);
 
-        // THEN: It should show download icon next to each attachments.
-        await host.snapshot();
+        // THEN: It should not show download icon next to each attachments.
+        await host.snapshot('local');
       });
     </script>
   </body>
