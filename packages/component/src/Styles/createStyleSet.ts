@@ -14,8 +14,6 @@ import createCarouselFilmStripAttachment from './StyleSet/CarouselFilmStripAttac
 import createCarouselFlipper from './StyleSet/CarouselFlipper';
 import createChatHistoryBoxStyleSet from './StyleSet/ChatHistoryBox';
 import createCitationModalDialogStyle from './StyleSet/CitationModalDialog';
-import createCodeBlockStyle from './StyleSet/CodeBlock';
-import createCodeBlockCopyButtonStyle from './StyleSet/CodeBlockCopyButton';
 import createConnectivityNotification from './StyleSet/ConnectivityNotification';
 import createDictationInterimsStyle from './StyleSet/DictationInterims';
 import createErrorBoxStyle from './StyleSet/ErrorBox';
@@ -47,7 +45,6 @@ import createTypingIndicatorStyle from './StyleSet/TypingIndicator';
 import createUploadButtonStyle from './StyleSet/UploadButton';
 import createVideoAttachmentStyle from './StyleSet/VideoAttachment';
 import createVideoContentStyle from './StyleSet/VideoContent';
-import createViewCodeDialogStyle from './StyleSet/ViewCodeDialog';
 import createVimeoContentStyle from './StyleSet/VimeoContent';
 import createWarningNotificationStyle from './StyleSet/WarningNotification';
 import createYouTubeContentStyle from './StyleSet/YouTubeContent';
@@ -72,8 +69,6 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     carouselFilmStrip: createCarouselFilmStrip(strictStyleOptions),
     carouselFilmStripAttachment: createCarouselFilmStripAttachment(strictStyleOptions),
     carouselFlipper: createCarouselFlipper(strictStyleOptions),
-    codeBlock: createCodeBlockStyle(),
-    codeBlockCopyButton: createCodeBlockCopyButtonStyle(),
     connectivityNotification: createConnectivityNotification(strictStyleOptions),
     dictationInterims: createDictationInterimsStyle(strictStyleOptions),
     errorBox: createErrorBoxStyle(strictStyleOptions),
@@ -113,7 +108,6 @@ export default function createStyleSet(styleOptions: StyleOptions) {
     sendStatus: createSendStatusStyle(),
     textContent: createTextContentStyle(),
     thumbButton: createThumbButtonStyle(),
-    tooltip: createTooltipStyle(),
-    viewCodeDialog: createViewCodeDialogStyle()
+    tooltip: createTooltipStyle()
   } as const);
 }

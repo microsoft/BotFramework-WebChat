@@ -1,0 +1,35 @@
+:global(.webchat) .code-block {
+  background: var(--webchat__background--code-block, inherit);
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+  color: var(--webchat__color--code-block, currentColor);
+  display: block;
+  margin: 16px 0;
+  overflow: hidden;
+  padding: 4px 4px 4px 8px;
+  line-height: normal;
+}
+
+:global(.webchat) .code-block:has(.code-block__theme--github-dark-default) {
+  background: var(--webchat__background--code-block, #0d1117);
+  color: var(--webchat__color--code-block, #e6edf3);
+}
+
+:global(.webchat) .code-block:has(.code-block__theme--github-light-default) {
+  background: var(--webchat__background--code-block, #ffffff);
+  color: var(--webchat__color--code-block, #1f2328);
+}
+
+:global(.webchat) .code-block:has(.code-block__body:focus-visible):focus-within {
+  outline: 2px solid #000;
+  outline-offset: -2px;
+}
+
+:global(.webchat) .code-block__body {
+  margin: 0;
+  outline: none;
+  white-space: pre-wrap;
+  /* TODO: align with the rest of code blocks */
+  line-height: unset;
+  display: inline;
+}
