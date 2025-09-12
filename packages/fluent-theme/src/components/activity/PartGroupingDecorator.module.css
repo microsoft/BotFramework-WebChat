@@ -268,7 +268,7 @@
       padding-inline: var(--webchat-spacingHorizontalL) var(--webchat-spacingHorizontalS);
     }
   
-    :global(.webchat__code-block-copy-button) {
+    :global(.code-block-copy-button) {
       --webchat__code-block__copy-button--color: var(--webchat-colorNeutralForeground1);
       --webchat__code-block__copy-button--background: var(--webchat-colorNeutralBackground3);
   

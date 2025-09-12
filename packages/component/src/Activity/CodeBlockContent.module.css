@@ -29,7 +29,7 @@
   }
 }
 
-:global(.webchat) .code-block-content__code-block {
+:global(.webchat) .code-block-content .code-block-content__code-block {
   border: none;
   margin: 0;
   max-height: 360px;

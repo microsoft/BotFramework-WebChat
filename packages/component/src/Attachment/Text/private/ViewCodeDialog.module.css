@@ -1,0 +1,60 @@
+:global(.webchat) .view-code-dialog {
+  box-sizing: border-box;
+  display: grid;
+  height: 100%;
+  max-height: 100vh;
+  overflow: hidden;
+  padding: 1rem;
+  place-items: center;
+}
+
+:global(.webchat) .view-code-dialog :global(.webchat__modal-dialog__box) {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  max-width: 100%;
+  position: relative;
+}
+
+:global(.webchat) .view-code-dialog :global(.webchat__modal-dialog__close-button-layout) {
+  position: absolute;
+  right: 0;
+}
+
+:global(.webchat) .view-code-dialog :global(.webchat__modal-dialog__body) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--webchat__padding--regular);
+  overflow: hidden;
+}
+
+:global(.webchat) .view-code-dialog__header {
+  align-items: center;
+  display: flex;
+  padding-inline-end: 30px;
+}
+
+:global(.webchat) .view-code-dialog__title {
+  margin: 0 auto 0 0;
+  text-transform: capitalize;
+}
+
+:global(.webchat) .view-code-dialog .view-code-dialog__body {
+  border: none;
+  border-radius: 0;
+  overflow: auto;
+  height: 100%;
+}
+
+:global(.webchat) .view-code-dialog :global(.code-block__body) {
+  display: block;
+  /* TODO: align with the rest of code blocks */
+  line-height: normal;
+  padding: 16px 0;
+}
+
+:global(.webchat) .view-code-dialog__footer {
+  color: var(--webchat__color--subtle);
+  line-height: 20px;
+}
+
