@@ -37,7 +37,7 @@
         await pageConditions.uiConnected();
 
         // THEN: The attachment should have a download icon which means the attachment is downloadable.
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

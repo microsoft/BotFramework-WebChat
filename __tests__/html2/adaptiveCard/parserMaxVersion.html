@@ -63,17 +63,17 @@
 
         // When no maxVersion is specified, it should use the latest.
         // The screenshot should have the "Label" text.
-        await host.snapshot();
+        await host.snapshot('local');
 
         // When maxVersion is specified, it should use that version.
         // The screenshot should not have the "Label" text, as it was introduced in 1.3.
         renderWebChatWithMaxVersion('1.2');
-        await host.snapshot();
+        await host.snapshot('local');
 
         // When maxVersion is specified but invalid, it should use the latest.
         // The screenshot should have the "Label" text.
         renderWebChatWithMaxVersion('x.y.z');
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

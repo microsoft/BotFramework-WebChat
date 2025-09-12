@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/"
+        }
+      }
+    </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script crossorigin="anonymous" defer src="/__dist__/webchat-es5.js"></script>
+    <script crossorigin="anonymous" defer src="/__dist__/botframework-webchat-debug-theme.development.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import { fn, spyOn } from 'jest-mock';
+      import React, { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      run(async function () {
+        const {
+          testHelpers: { createStore },
+          WebChat: { DebugProvider, ReactWebChat }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        // GIVEN: Web Chat is being rendered with <DebugProvider>.
+        createRoot(document.getElementById('webchat')).render(
+          createElement(DebugProvider, {}, createElement(ReactWebChat, { directLine, store }))
+        );
+
+        await pageConditions.uiConnected();
+
+        const consoleWarn = fn(console.log.bind(console));
+
+        spyOn(console, 'warn').mockImplementationOnce(consoleWarn);
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              contentType: 'application/vnd.microsoft.card.adaptive',
+              content: {
+                // WHEN: We want to render a failing Adaptive Cards, adding "*" here to fail the renderer.
+                type: '*AdaptiveCard*',
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                version: '1.5',
+                body: [
+                  {
+                    text: 'Hello, World!',
+                    type: 'TextBlock'
+                  }
+                ]
+              }
+            }
+          ],
+          type: 'message'
+        });
+
+        // THEN: Should have error log.
+        expect(consoleWarn).toHaveBeenCalledTimes(1);
+        expect(consoleWarn.mock.calls[0][0]).toBe(
+          `botframework-webchat: Failed to render Adaptive Cards.`
+        );
+        expect(consoleWarn.mock.calls[0][1][0].message).toBe(
+          `Invalid or missing card type. Make sure the card's type property is set to "AdaptiveCard".`
+        );
+
+        // THEN: Should show red box.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>
