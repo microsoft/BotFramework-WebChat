@@ -14,6 +14,9 @@
         WebChat.renderWebChat(
           {
             directLine: WebChat.createDirectLine({
+              conversationStartProperties: {
+                locale: 'en-US'
+              },
               token: await testHelpers.token.fetchDirectLineToken()
             }),
             store: testHelpers.createStore()
@@ -26,7 +29,7 @@
         await pageObjects.sendMessageViaSendBox('conversationstart');
         await pageConditions.minNumActivitiesShown(2);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>

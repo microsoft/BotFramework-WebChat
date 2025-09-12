@@ -29,7 +29,7 @@
         await pageObjects.sendMessageViaSendBox('conversationstart');
         await pageConditions.minNumActivitiesShown(2);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
