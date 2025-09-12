@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel">
+      run(async function () {
+        const {
+          React,
+          ReactDOM: { render },
+          WebChat: { ReactWebChat }
+        } = window; // Imports in UMD fashion.
+
+        const aiMessageEntity = {
+          '@context': 'https://schema.org',
+          '@id': '',
+          '@type': 'Message',
+          keywords: ['AIGeneratedContent', 'AllowCopy'],
+          type: 'https://schema.org/Message'
+        };
+
+        const waveSvg = `data:image/svg+xml;utf8,${encodeURIComponent(`
+<svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Primary Wave -->
+  <path d="M0,100 C50,50 100,150 150,100 C200,50 250,150 300,100 C350,50 400,150 400,100"
+        stroke="#3B82F6" fill="none" stroke-width="2" opacity="0.5"/>
+
+  <!-- Second Harmonic -->
+  <path d="M0,100 C25,75 50,125 75,100 C100,75 125,125 150,100 C175,75 200,125 225,100 C250,75 275,125 300,100 C325,75 350,125 375,100 C400,75 400,125 400,100"
+        stroke="#10B981" fill="none" stroke-width="2" opacity="0.5"/>
+
+  <!-- Combined Wave -->
+  <path d="M0,100 C40,30 80,170 120,100 C160,30 200,170 240,100 C280,30 320,170 360,100 C380,65 400,135 400,100"
+        stroke="#EF4444" fill="none" stroke-width="3"/>
+
+  <!-- Grid Lines -->
+  <line x1="0" y1="100" x2="400" y2="100" stroke="#CBD5E1" stroke-width="0.5" stroke-dasharray="4"/>
+  <line x1="100" y1="0" x2="100" y2="200" stroke="#CBD5E1" stroke-width="0.5" stroke-dasharray="4"/>
+  <line x1="200" y1="0" x2="200" y2="200" stroke="#CBD5E1" stroke-width="0.5" stroke-dasharray="4"/>
+  <line x1="300" y1="0" x2="300" y2="200" stroke="#CBD5E1" stroke-width="0.5" stroke-dasharray="4"/>
+</svg>`)}`;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        render(
+          <ReactWebChat directLine={directLine} store={store} />,
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        directLine.emulateIncomingActivity({
+          from: { role: 'bot' },
+          entities: [{
+            ...aiMessageEntity,
+            isBasedOn: {
+              '@type': 'SoftwareSourceCode',
+              'programmingLanguage': 'python',
+              "text": `import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_sine_waves():
+    """Create a beautiful visualization of sine waves with different frequencies."""
+    # Generate time points
+    t = np.linspace(0, 10, 1000)
+
+    # Create waves with different frequencies and phases
+    wave1 = np.sin(t)
+    wave2 = 0.5 * np.sin(2 * t + np.pi/4)
+    wave3 = 0.3 * np.sin(3 * t + np.pi/3)
+
+    # Combine waves
+    combined = wave1 + wave2 + wave3
+
+    # Create a stylish plot
+    plt.style.use('seaborn-darkgrid')
+    plt.figure(figsize=(12, 8))
+
+    # Plot individual waves
+    plt.plot(t, wave1, label='Primary Wave', alpha=0.5)
+    plt.plot(t, wave2, label='Second Harmonic', alpha=0.5)
+    plt.plot(t, wave3, label='Third Harmonic', alpha=0.5)
+
+    # Plot combined wave with a thicker line
+    plt.plot(t, combined, 'r-',
+            label='Combined Wave',
+            linewidth=2)
+
+    plt.title('Harmonic Wave Composition', fontsize=14)
+    plt.xlabel('Time', fontsize=12)
+    plt.ylabel('Amplitude', fontsize=12)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+
+    # Show the plot
+    plt.tight_layout()
+    plt.show()
+
+# Generate the visualization
+plot_sine_waves()`
+            }
+          }],
+          type: "message",
+          text: `This example demonstrates creating a beautiful visualization of harmonic waves using Python's Matplotlib library. The code generates three sine waves with different frequencies and phases, then combines them to show wave interference patterns.\n<img alt="wave plot" src="${waveSvg}">`,
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        // When: Focus the "Code" button
+        const codeButton = document.querySelector(`[data-testid="${WebChat.testIds.viewCodeButton}"]`);
+        codeButton.focus();
+
+        // Then: Shows a focus ring around the "Code" button
+        expect(document.activeElement).toBe(codeButton);
+
+        // WHEN: Press ENTER on the "Code" button.
+        await host.sendKeys('ENTER');
+
+        // WHEN: Press Tab to focus copy button.
+        await host.sendTab();
+
+        // THEN: Shows a focus ring around the "Copy" button.
+        await host.snapshot('local');
+
+        // WHEN: Press Tab to focus code block.
+        await host.sendTab();
+
+        // THEN: Shows a focus ring around the code block.
+        await host.snapshot('local');
+
+        // WHEN: Press ARROW_DOWN to scroll down the code block.
+        await host.sendKeys('ARROW_DOWN');
+        await host.sendKeys('ARROW_DOWN');
+
+        // // THEN: The code block should scroll down.
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

@@ -7,9 +7,15 @@ export default function tabbableElements(element?: HTMLElement): HTMLElement[] {
     ) || [];
 
   return ([] as HTMLElement[]).filter.call(candidates, (element: HTMLElement) => {
+    const style = window.getComputedStyle(element);
+
+    if (style.visibility === 'hidden' || style.display === 'none' || style.display === 'contents') {
+      return false;
+    }
+
     const tabIndexAttribute = element.attributes.getNamedItem('tabindex');
 
-    if (tabIndexAttribute && tabIndexAttribute.specified) {
+    if (tabIndexAttribute) {
       const value = parseInt(tabIndexAttribute.value, 10);
 
       return value >= 0 || (isNaN(value) && element.nodeName.toLowerCase() === 'input');

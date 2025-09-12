@@ -1,0 +1,63 @@
+:global(.webchat) .code-block-copy-button {
+  align-items: center;
+  appearance: none;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid #d1d1d1;
+  color: #242424;
+  display: grid;
+  float: right; /* Use "inline-end" after we update Chromium in Docker */
+  gap: 4px;
+  justify-content: center;
+  margin-inline-start: var(--webchat__padding--regular);
+  padding: 3px;
+}
+
+:global(.webchat) .code-block-copy-button:hover {
+  background: #f5f5f5;
+  border: 1px solid #c7c7c7;
+  color: #242424;
+}
+
+:global(.webchat) .code-block-copy-button:active {
+  background: #e0e0e0;
+  border: 1px solid #b3b3b3;
+  color: #242424;
+}
+
+:global(.webchat) .code-block-copy-button:focus-visible {
+  background: #fff;
+  outline: 2px solid #000;
+  outline-offset: -2px;
+}
+
+:global(.webchat) .code-block-copy-button[aria-disabled="true"] {
+  background: #f0f0f0;
+  border: 1px solid #e0e0e0;
+  color: #bdbdbd;
+  cursor: not-allowed;
+}
+
+:global(.webchat) .code-block-copy-button__icon {
+  grid-column: 1;
+  grid-row: 1;
+  --webchat__component-icon--color: #707070;
+  --webchat__component-icon--size: 16px;
+}
+
+:global(.webchat) .code-block-copy-button__icon--copied {
+  opacity: 0;
+}
+
+:global(.webchat) .code-block-copy-button--copied .code-block-copy-button__icon {
+  animation: code-block-copy-button__copied-animation 0.5s linear;
+}
+
+@keyframes code-block-copy-button__copied-animation {
+  0% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: unset;
+  }
+}

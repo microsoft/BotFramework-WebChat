@@ -1,4 +1,5 @@
-import classNames from 'classnames';
+import cx from 'classnames';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import React, { memo, useCallback, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { useStateWithRef } from 'use-state-with-ref';
@@ -6,6 +7,8 @@ import { useStateWithRef } from 'use-state-with-ref';
 import { ComponentIcon } from '../../../Icon';
 import testIds from '../../../testIds';
 import wrapAsCustomElement from './wrapAsCustomElement';
+
+import styles from './CodeBlockCopyButton.module.css';
 
 export type CodeBlockCopyButtonProps = Readonly<{
   className: string;
@@ -21,6 +24,7 @@ const CodeBlockCopyButton = memo(
     'data-alt-copy': copyAlt,
     'data-value': value
   }: CodeBlockCopyButtonProps) => {
+    const classNames = useStyles(styles);
     const [disabled, setDisabled, disabledRef] = useStateWithRef(false);
     const [pressed, setPressed] = useState(false);
     const valueRef = useRefFrom(value);
@@ -64,8 +68,8 @@ const CodeBlockCopyButton = memo(
         aria-disabled={disabled}
         aria-live="assertive"
         aria-pressed={pressed ? 'true' : undefined}
-        className={classNames(className, 'webchat__code-block-copy-button', {
-          'webchat__code-block-copy-button--copied': pressed
+        className={cx(className, classNames['code-block-copy-button'], {
+          [classNames['code-block-copy-button--copied']]: pressed
         })}
         data-testid={testIds.codeBlockCopyButton}
         onAnimationEnd={handleAnimationEnd}
@@ -75,14 +79,14 @@ const CodeBlockCopyButton = memo(
         <ComponentIcon
           aria-hidden={pressed ? 'true' : undefined}
           aria-label={copyAlt}
-          className="webchat__code-block-copy-button__icon webchat__code-block-copy-button__icon--copy"
+          className={cx(classNames['code-block-copy-button__icon'], classNames['code-block-copy-button__icon--copy'])}
           icon={pressed ? 'copy-code-checkmark' : 'copy-code'}
           role="img"
         />
         <div
           aria-hidden={pressed ? undefined : 'true'}
           aria-label={copiedAlt}
-          className="webchat__code-block-copy-button__icon webchat__code-block-copy-button__icon--copied"
+          className={cx(classNames['code-block-copy-button__icon'], classNames['code-block-copy-button__icon--copied'])}
           role="img"
         />
       </button>
