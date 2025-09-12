@@ -6,6 +6,7 @@ import { useRenderMarkdownAsHTML } from '../../../hooks';
 const markdownablePropsSchema = pipe(
   object({
     className: optional(string()),
+    id: optional(string()),
     text: string()
   }),
   readonly()
@@ -13,7 +14,7 @@ const markdownablePropsSchema = pipe(
 
 type MarkdownableProps = InferInput<typeof markdownablePropsSchema>;
 
-function Markdownable({ className, text }: MarkdownableProps) {
+function Markdownable({ className, id, text }: MarkdownableProps) {
   const renderMarkdownAsHTML = useRenderMarkdownAsHTML('message activity');
 
   const innerHTML = useMemo<Readonly<{ __html: string }> | undefined>(
@@ -22,10 +23,15 @@ function Markdownable({ className, text }: MarkdownableProps) {
   );
 
   return innerHTML ? (
-    // eslint-disable-next-line react/no-danger
-    <span className={className} dangerouslySetInnerHTML={innerHTML} />
+    // "id" is required for "aria-labelledby"
+    // eslint-disable-next-line react/forbid-dom-props, react/no-danger
+    <span className={className} dangerouslySetInnerHTML={innerHTML} id={id} />
   ) : (
-    <span className={className}>{text}</span>
+    // "id" is required for "aria-labelledby"
+    // eslint-disable-next-line react/forbid-dom-props
+    <span className={className} id={id}>
+      {text}
+    </span>
   );
 }
 
