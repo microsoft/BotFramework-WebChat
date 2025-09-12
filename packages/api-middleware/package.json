@@ -79,7 +79,6 @@
     "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@msinternal/botframework-webchat-react-hooks": "^0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",
-    "@tsconfig/strictest": "^2.0.5",
     "@types/node": "^22.13.4",
     "cross-env": "^7.0.3",
     "type-fest": "^4.34.1",
