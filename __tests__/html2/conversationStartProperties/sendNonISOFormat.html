@@ -15,7 +15,7 @@
           {
             directLine: WebChat.createDirectLine({
               conversationStartProperties: {
-                locale: 'zh-CN'
+                locale: '1a2b3c'
               },
               token: await testHelpers.token.fetchDirectLineToken()
             }),
@@ -29,7 +29,7 @@
         await pageObjects.sendMessageViaSendBox('conversationstart');
         await pageConditions.minNumActivitiesShown(2);
 
-        await host.snapshot();
+        await host.snapshot('local');
       });
     </script>
   </body>
