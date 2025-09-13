@@ -37,6 +37,7 @@ const TRANSFORM_IGNORE_PACKAGES = [
   'micromark-util-sanitize-uri',
   'micromark-util-subtokenize',
   'micromark',
+  'microsoft-cognitiveservices-speech-sdk',
   'mime',
   'unist-util-stringify-position',
   'uuid'
