@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-indent */
+
 import React from 'react';
 
 import { AttachmentMiddleware } from 'botframework-webchat-api';
