@@ -6,7 +6,7 @@ import { componentStyleContent as componentStyleContentPlaceholder } from './src
 import { decoratorStyleContent as decoratorStyleContentPlaceholder } from './src/decorator/private/createStyles';
 
 // TODO: [P1] Compute this automatically.
-const DEPENDENT_PATHS = ['bundle/src/boot/exports/full.ts'];
+const DEPENDENT_PATHS = ['bundle/src/exports/full.ts'];
 
 const commonConfig = applyConfig(config => ({
   ...config,

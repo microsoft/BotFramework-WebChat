@@ -1,6 +1,4 @@
 {
-  "compilerOptions": {
-    "types": ["dom-speech-recognition"]
-  },
-  "extends": "@msinternal/botframework-webchat-tsconfig/legacy"
+  "compilerOptions": {},
+  "extends": "@msinternal/botframework-webchat-tsconfig/current"
 }

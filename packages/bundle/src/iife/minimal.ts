@@ -1,8 +1,15 @@
+import buildInfo from '../buildInfo';
+import * as middleware from '../middleware';
+import * as actual from '../minimal';
 import './polyfill/modern';
 
-import buildInfo from '../../buildInfo';
-import * as actual from '../actual/full';
-import * as middleware from '../actual/middleware';
+declare global {
+  interface Window {
+    WebChat: any;
+  }
+}
+
+buildInfo.set('variant', 'minimal');
 
 // Until we have a development-specific bundle, we are not shipping createStoreWithDevTools in bundle.
 const { createStoreWithDevTools: _createStoreWithDevTools, ...exports } = actual;

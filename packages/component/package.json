@@ -117,7 +117,6 @@
     "@types/react": "^16.14.65",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "core-js": "^3.44.0",
     "cross-env": "^10.0.0",
     "type-fest": "^4.41.0",
     "typescript": "~5.8.3"

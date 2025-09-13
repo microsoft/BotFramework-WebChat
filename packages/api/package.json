@@ -121,7 +121,6 @@
     "@types/react": "^16.14.65",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "core-js": "^3.44.0",
     "cross-env": "^10.0.0",
     "globalize-compiler": "^1.1.1",
     "iana-tz-data": "^2019.1.0",
@@ -132,18 +131,19 @@
   "dependencies": {
     "botframework-webchat-core": "0.0.0-0",
     "globalize": "1.7.0",
+    "handler-chain": "0.1.0",
     "iter-fest": "0.3.0",
     "math-random": "2.0.1",
     "prop-types": "15.8.1",
     "react-chain-of-responsibility": "0.4.0-main.c2f17da",
     "react-redux": "7.2.9",
+    "react-wrap-with": "0.1.0",
     "redux": "5.0.1",
     "simple-update-in": "2.2.0",
     "use-ref-from": "0.1.0",
     "valibot": "1.1.0"
   },
   "peerDependencies": {
-    "react": ">= 16.8.6",
-    "react-dom": ">= 16.8.6"
+    "react": ">= 16.8.6"
   }
 }

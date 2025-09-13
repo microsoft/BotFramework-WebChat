@@ -3,21 +3,15 @@ import { defineConfig } from 'tsup';
 import { applyConfig } from '../../tsup.base.config';
 
 // TODO: [P1] Compute this automatically.
-const DEPENDENT_PATHS = [
-  'api/src/index.ts',
-  'api-middleware/src/index.ts',
-  'bundle/src/full.ts',
-  'component/src/index.ts',
-  'core/src/index.ts',
-  'debug-theme/src/index.ts',
-  'fluent-theme/src/index.ts'
-];
+const DEPENDENT_PATHS = ['bundle/src/full.ts'];
 
 const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
-    'botframework-webchat-base': './src/index.ts',
-    'botframework-webchat-base.utils': './src/utils/index.ts'
+    'botframework-webchat-preset.full': './src/boot/actual/full.ts',
+    // TODO: [P*] I think we don't need to port preset/middleware, just import from api/middleware.
+    // 'botframework-webchat-preset.middleware': './src/boot/actual/middleware.ts',
+    'botframework-webchat-preset.minimal': './src/boot/actual/minimal.ts'
   },
   onSuccess: `touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`
 }));

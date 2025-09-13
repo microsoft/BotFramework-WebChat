@@ -7,22 +7,24 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/botframework-webchat.d.mts",
-        "default": "./dist/botframework-webchat.mjs"
+        "bundle // TODO: [P*] Think if we should export fat/bundled using conditions": "./dist/botframework-webchat.d.mts",
+        "types": "./exports/botframework-webchat.d.mts",
+        "default": "./exports/botframework-webchat.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat.d.ts",
-        "default": "./dist/botframework-webchat.js"
+        "types": "./exports/botframework-webchat.d.ts",
+        "default": "./exports/botframework-webchat.js"
       }
     },
     "./middleware": {
       "import": {
-        "types": "./dist/botframework-webchat.middleware.d.mts",
-        "default": "./dist/botframework-webchat.middleware.mjs"
+        "bundle // TODO: [P*] Think if we should export fat/bundled using conditions": "./dist/botframework-webchat.middleware.d.mts",
+        "types": "./exports/botframework-webchat.middleware.d.mts",
+        "default": "./exports/botframework-webchat.middleware.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat.middleware.d.ts",
-        "default": "./dist/botframework-webchat.middleware.js"
+        "types": "./exports/botframework-webchat.middleware.d.ts",
+        "default": "./exports/botframework-webchat.middleware.js"
       }
     }
   },
@@ -41,6 +43,7 @@
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/#readme",
   "files": [
     "./dist/**/*",
+    "./exports/**/*",
     "./src/**/*"
   ],
   "tsd": {
@@ -69,14 +72,10 @@
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
-    "@msinternal/botframework-webchat-react-valibot": "development",
+    "@msinternal/botframework-webchat-preset": "development",
     "@msinternal/botframework-webchat-tsconfig": "development",
     "@msinternal/isomorphic-react": "development",
-    "@msinternal/isomorphic-react-dom": "development",
-    "botframework-directlinespeech-sdk": "production",
-    "botframework-webchat-api": "production",
-    "botframework-webchat-component": "production",
-    "botframework-webchat-core": "production"
+    "@msinternal/isomorphic-react-dom": "development"
   },
   "pinDependencies": {
     "@types/react": [
@@ -105,7 +104,6 @@
     ]
   },
   "dependencies": {
-    "@babel/runtime": "7.28.2",
     "adaptivecards": "3.0.2",
     "botframework-directlinejs": "0.15.6",
     "botframework-directlinespeech-sdk": "0.0.0-0",
@@ -135,28 +133,12 @@
     "whatwg-fetch": "3.6.20"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.0",
-    "@babel/plugin-transform-runtime": "^7.28.0",
-    "@babel/preset-env": "^7.28.0",
-    "@babel/preset-react": "^7.27.1",
-    "@babel/preset-typescript": "^7.27.1",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
-    "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
+    "@msinternal/botframework-webchat-preset": "^0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
     "@msinternal/isomorphic-react": "^0.0.0-0",
     "@msinternal/isomorphic-react-dom": "^0.0.0-0",
-    "@types/dom-speech-recognition": "^0.0.6",
-    "@types/mdast": "^4.0.4",
-    "@types/node": "^24.1.0",
-    "@types/react": "^16.14.65",
-    "@types/uuid": "^10.0.0",
-    "babel-plugin-istanbul": "^7.0.0",
-    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "cross-env": "^10.0.0",
-    "esbuild": "^0.25.8",
-    "micromark-util-types": "^2.0.2",
     "tsd": "^0.32.0",
-    "type-fest": "^4.41.0",
     "typescript": "~5.8.3"
   },
   "peerDependencies": {

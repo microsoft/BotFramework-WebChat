@@ -1,6 +1,6 @@
 /** @jest-environment @happy-dom/jest-environment */
 
-import Observable from 'core-js/features/observable';
+import Observable from 'core-js-pure/features/observable';
 
 import shareObservable from './shareObservable';
 

@@ -1,28 +1,38 @@
 {
-  "name": "@msinternal/botframework-webchat-base",
+  "name": "@msinternal/botframework-webchat-preset",
+  "description": "",
   "version": "0.0.0-0",
-  "description": "Base botframework-webchat package",
-  "main": "./dist/botframework-webchat-base.js",
-  "types": "./dist/botframework-webchat-base.d.ts",
+  "main": "./dist/botframework-webchat-preset.js",
+  "types": "./dist/botframework-webchat-preset.d.ts",
   "exports": {
-    ".": {
+    "./full": {
       "import": {
-        "types": "./dist/botframework-webchat-base.d.mts",
-        "default": "./dist/botframework-webchat-base.mjs"
+        "types": "./dist/botframework-webchat-preset.full.d.mts",
+        "default": "./dist/botframework-webchat-preset.full.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-base.d.ts",
-        "default": "./dist/botframework-webchat-base.js"
+        "types": "./dist/botframework-webchat-preset.full.d.ts",
+        "default": "./dist/botframework-webchat-preset.full.js"
       }
     },
-    "./utils": {
+    "./middleware": {
       "import": {
-        "types": "./dist/botframework-webchat-base.utils.d.mts",
-        "default": "./dist/botframework-webchat-base.utils.mjs"
+        "types": "./dist/botframework-webchat-preset.middleware.d.mts",
+        "default": "./dist/botframework-webchat-preset.middleware.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-base.utils.d.ts",
-        "default": "./dist/botframework-webchat-base.utils.js"
+        "types": "./dist/botframework-webchat-preset.middleware.d.ts",
+        "default": "./dist/botframework-webchat-preset.middleware.js"
+      }
+    },
+    "./minimal": {
+      "import": {
+        "types": "./dist/botframework-webchat-preset.minimal.d.mts",
+        "default": "./dist/botframework-webchat-preset.minimal.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-preset.minimal.d.ts",
+        "default": "./dist/botframework-webchat-preset.minimal.js"
       }
     }
   },
@@ -57,20 +67,55 @@
     "start": "npm run build -- --watch"
   },
   "localDependencies": {
-    "@msinternal/botframework-webchat-tsconfig": "development"
+    "@msinternal/botframework-webchat-tsconfig": "development",
+    "botframework-directlinespeech-sdk": "production",
+    "botframework-webchat-api": "production",
+    "botframework-webchat-component": "production",
+    "botframework-webchat-core": "production"
   },
   "pinDependencies": {
+    "@types/react": [
+      "16",
+      "react@16.8.6 is our baseline"
+    ],
     "typescript": [
       "~5.8.3",
       "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ]
   },
+  "peerDependencies": {
+    "adaptivecards": "^3.0.2",
+    "botframework-directlinejs": "^0.15.6",
+    "botframework-directlinespeech-sdk": "^0.0.0-0",
+    "botframework-webchat-api": "^0.0.0-0",
+    "botframework-webchat-component": "^0.0.0-0",
+    "botframework-webchat-core": "^0.0.0-0",
+    "classnames": "^2.5.1",
+    "katex": "^0.16.22",
+    "math-random": "^2.0.1",
+    "mdast-util-from-markdown": "^2.0.2",
+    "memoize-one": "^6.0.0",
+    "micromark": "^4.0.2",
+    "micromark-extension-gfm": "^3.0.0",
+    "micromark-util-character": "^2.1.1",
+    "microsoft-cognitiveservices-speech-sdk": "^1.45.0",
+    "prop-types": "^15.8.1",
+    "punycode": "^2.3.1",
+    "react": ">= 16.8.6",
+    "react-dom": ">= 16.8.6",
+    "sanitize-html": "^2.17.0",
+    "shiki": "^2.5.0",
+    "swiper": "^8.4.7",
+    "url-search-params-polyfill": "^8.2.5",
+    "use-ref-from": "^0.1.0",
+    "uuid": "^8.3.2",
+    "valibot": "^1.1.0",
+    "web-speech-cognitive-services": "^8.1.3"
+  },
   "devDependencies": {
     "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
-    "@types/node": "^24.1.0",
-    "core-js-pure": "^3.44.0",
-    "cross-env": "^10.0.0",
-    "type-fest": "^4.41.0",
+    "@types/dom-speech-recognition": "^0.0.6",
+    "@types/react": "^16.14.65",
     "typescript": "~5.8.3"
   }
 }

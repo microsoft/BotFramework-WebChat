@@ -1,7 +1,7 @@
 // eslint no-magic-numbers: "off"
 
 // Importing from "bundle" as we do not expose this function.
-import createAudioConfig from '../../../../../../../bundle/src/speech/createAudioConfig';
+import createAudioConfig from '../../../../../../../preset/src/speech/createAudioConfig';
 
 const QUORUM_SIZE = 9600;
 

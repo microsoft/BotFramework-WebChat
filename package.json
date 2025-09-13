@@ -33,6 +33,7 @@
     "./packages/isomorphic-react-dom",
     "./packages/component",
     "./packages/directlinespeech",
+    "./packages/preset",
     "./packages/bundle",
     "./packages/test/page-object",
     "./packages/debug-theme",

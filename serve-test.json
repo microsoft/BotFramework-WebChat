@@ -80,6 +80,10 @@
       "destination": "packages/bundle/dist/webchat-minimal.js.map"
     },
     {
+      "source": "/packages/bundle/dist/:filename",
+      "destination": "packages/bundle/dist/:filename"
+    },
+    {
       "source": "/test-harness.js",
       "destination": "packages/test/harness/dist/test-harness.js"
     },
