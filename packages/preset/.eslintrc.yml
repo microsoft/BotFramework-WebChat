@@ -1,7 +1,0 @@
-extends:
-  - ../../.eslintrc.production.yml
-  - ../../.eslintrc.react.yml
-
-# This package is compatible with web browser.
-env:
-  browser: true

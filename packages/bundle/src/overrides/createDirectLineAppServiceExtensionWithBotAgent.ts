@@ -1,4 +1,4 @@
-import { createDirectLineAppServiceExtension as defaultCreateDirectLineAppServiceExtension } from '@msinternal/botframework-webchat-preset';
+import defaultCreateDirectLineAppServiceExtension from '../package-preset/createDirectLineAppServiceExtension';
 
 export default function createDirectLineAppServiceExtensionWithBotAgent(botAgent: string) {
   return (options: Omit<Parameters<typeof defaultCreateDirectLineAppServiceExtension>[0], 'botAgent'>) => {

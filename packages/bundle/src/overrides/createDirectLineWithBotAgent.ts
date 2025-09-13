@@ -1,4 +1,4 @@
-import { createDirectLine as defaultCreateDirectLine } from '@msinternal/botframework-webchat-preset';
+import defaultCreateDirectLine from '../package-preset/createDirectLine';
 
 export default function createDirectLineWithBotAgent(botAgent: string) {
   return (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {

@@ -71,8 +71,8 @@ function buildApplyConfig(format: Format, bundled: boolean) {
 }
 
 export default defineConfig([
-  // buildConfig('cjs', true),
-  // buildConfig('esm', true),
+  buildApplyConfig('cjs', true)(),
+  buildApplyConfig('esm', true)(),
   buildApplyConfig('cjs', false)(),
   buildApplyConfig('esm', false)(),
   buildApplyConfig(

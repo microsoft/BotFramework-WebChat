@@ -1,4 +1,12 @@
 {
-  "compilerOptions": {},
-  "extends": "@msinternal/botframework-webchat-tsconfig/current"
+  "compilerOptions": {
+    "types": ["dom-speech-recognition"],
+
+    // Remove this section once all files are TypeScript.
+    // #region Allow JS
+    "allowJs": true,
+    "checkJs": false
+    // #endregion
+  },
+  "extends": "@msinternal/botframework-webchat-tsconfig/legacy"
 }

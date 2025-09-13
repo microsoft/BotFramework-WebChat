@@ -73,7 +73,6 @@
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
-    "@msinternal/botframework-webchat-preset": "development",
     "@msinternal/botframework-webchat-tsconfig": "development",
     "@msinternal/isomorphic-react": "development",
     "@msinternal/isomorphic-react-dom": "development"
@@ -135,7 +134,6 @@
   },
   "devDependencies": {
     "@msinternal/botframework-webchat-base": "^0.0.0-0",
-    "@msinternal/botframework-webchat-preset": "^0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
     "@msinternal/isomorphic-react": "^0.0.0-0",
     "@msinternal/isomorphic-react-dom": "^0.0.0-0",

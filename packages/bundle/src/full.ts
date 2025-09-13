@@ -1,5 +1,27 @@
-// import ReactWebChat from '@msinternal/botframework-webchat-preset/full';
-
-// TODO: [P1] We should allowlist than "export *".
-export * from '@msinternal/botframework-webchat-preset/full';
-// export default ReactWebChat;
+export {
+  buildInfo,
+  Components,
+  concatMiddleware,
+  Constants,
+  createAdaptiveCardsAttachmentForScreenReaderMiddleware,
+  createAdaptiveCardsAttachmentMiddleware,
+  createBrowserWebSpeechPonyfillFactory,
+  createCognitiveServicesSpeechServicesPonyfillFactory,
+  createDirectLineSpeechAdapters,
+  createStore,
+  createStoreWithDevTools,
+  createStoreWithOptions,
+  createStyleSet,
+  decorator,
+  hooks,
+  internal,
+  ReactWebChat,
+  renderMarkdown,
+  renderWebChat,
+  testIds,
+  version,
+  withEmoji,
+  type AdaptiveCardsPackage,
+  type StrictStyleOptions,
+  type StyleOptions
+} from './package-preset/boot/actual/full';
