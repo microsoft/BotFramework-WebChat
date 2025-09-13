@@ -5,11 +5,13 @@ import createDirectLineWithBotAgent from '../overrides/createDirectLineWithBotAg
 
 buildInfo.set('variant', 'full');
 
+const { object: buildInfoObject } = buildInfo;
+
 const createDirectLine = createDirectLineWithBotAgent(`WebChat/${buildInfo.version} (Full)`);
 const createDirectLineAppServiceExtension = createDirectLineAppServiceExtensionWithBotAgent(
   `WebChat/${buildInfo.version} (Full)`
 );
 
 export * from '../full';
-export { buildInfo, createDirectLine, createDirectLineAppServiceExtension };
+export { buildInfoObject as buildInfo, createDirectLine, createDirectLineAppServiceExtension };
 export default ReactWebChat;
