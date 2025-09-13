@@ -54,8 +54,6 @@ export { default as createBrowserWebSpeechPonyfillFactory } from '../../createBr
 // #endregion
 
 // #region Local exports
-export default ReactWebChat;
-
 export {
   buildInfoObject as buildInfo,
   createDirectLine,

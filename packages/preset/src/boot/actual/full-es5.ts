@@ -1,7 +1,6 @@
+import buildInfo from '../../buildInfo';
 import defaultCreateDirectLine from '../../createDirectLine';
 import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAppServiceExtension';
-import buildInfo from '../../buildInfo';
-import ReactWebChat from './full';
 
 buildInfo.set('variant', 'full-es5');
 
@@ -30,7 +29,5 @@ export * from './full';
 // #endregion
 
 // #region Local exports
-export default ReactWebChat;
-
 export { createDirectLine, createDirectLineAppServiceExtension };
 // #endregion

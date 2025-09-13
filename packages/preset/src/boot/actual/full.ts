@@ -95,8 +95,6 @@ export {
 // #endregion
 
 // #region Local exports
-export default ReactWebChat;
-
 export {
   buildInfoObject as buildInfo,
   Components,
