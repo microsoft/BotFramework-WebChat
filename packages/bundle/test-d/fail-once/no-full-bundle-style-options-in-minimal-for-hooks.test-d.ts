@@ -1,8 +1,9 @@
 import '../setup';
 
 import { expectNotAssignable } from 'tsd';
+import '../../src/iife/minimal';
 
-import { hooks } from '../../src/boot/exports/minimal';
+const { hooks } = window['WebChat'];
 
 type StyleOptions = ReturnType<typeof hooks.useStyleOptions>[0];
 

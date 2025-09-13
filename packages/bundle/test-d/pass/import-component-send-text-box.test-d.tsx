@@ -2,7 +2,7 @@ import '../setup';
 
 import React from 'react';
 
-import { Components } from '../../src/boot/exports/full';
+import { Components } from '../../src/exports/full';
 
 const { SendTextBox } = Components;
 
