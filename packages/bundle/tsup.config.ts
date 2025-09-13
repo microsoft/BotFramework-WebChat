@@ -21,9 +21,14 @@ function buildConfig(format: Format, bundled: boolean): Options {
     ...config,
     define: {
       ...config.define,
-      WEB_CHAT_BUILD_INFO_MODULE_FORMAT: JSON.stringify(
-        format === 'cjs' ? 'commonjs' : format === 'esm' ? 'esmodules' : format === 'iife' ? 'global' : 'unknown'
-      )
+      'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT':
+        format === 'cjs'
+          ? '"commonjs"'
+          : format === 'esm'
+            ? '"esmodules"'
+            : format === 'iife'
+              ? '"global"'
+              : '"unknown"'
     },
     entry: {
       'botframework-webchat': './src/exports/full.ts',
