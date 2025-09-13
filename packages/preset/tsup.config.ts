@@ -8,6 +8,7 @@ const DEPENDENT_PATHS = ['bundle/src/full.ts'];
 const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
+    'botframework-webchat-preset': './src/boot/actual/index.ts',
     'botframework-webchat-preset.full': './src/boot/actual/full.ts',
     // TODO: [P*] I think we don't need to port preset/middleware, just import from api/middleware.
     // 'botframework-webchat-preset.middleware': './src/boot/actual/middleware.ts',

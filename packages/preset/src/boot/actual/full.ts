@@ -12,8 +12,6 @@ import VideoCardContent from '../../adaptiveCards/Attachment/VideoCardContent';
 import useAdaptiveCardsHostConfig from '../../adaptiveCards/hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../../adaptiveCards/hooks/useAdaptiveCardsPackage';
 import buildInfo from '../../buildInfo';
-import defaultCreateDirectLine from '../../createDirectLine';
-import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAppServiceExtension';
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useStyleSet from '../../hooks/useStyleSet';
 import coreRenderWebChat from '../../renderWebChat';
@@ -24,26 +22,6 @@ buildInfo.set('variant', 'full');
 const { object: buildInfoObject, version } = buildInfo;
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
-
-const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {
-  (options as any).botAgent &&
-    console.warn(
-      'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
-    );
-
-  return defaultCreateDirectLine({ ...options, botAgent: `WebChat/${version} (Full)` });
-};
-
-const createDirectLineAppServiceExtension = (
-  options: Omit<Parameters<typeof defaultCreateDirectLineAppServiceExtension>[0], 'botAgent'>
-) => {
-  (options as any).botAgent &&
-    console.warn(
-      'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
-    );
-
-  return defaultCreateDirectLineAppServiceExtension({ ...options, botAgent: `WebChat/${version} (Full)` });
-};
 
 const hooks = Object.freeze({
   ...minimalHooks,
@@ -95,14 +73,5 @@ export {
 // #endregion
 
 // #region Local exports
-export {
-  buildInfoObject as buildInfo,
-  Components,
-  createDirectLine,
-  createDirectLineAppServiceExtension,
-  hooks,
-  ReactWebChat,
-  renderWebChat,
-  version
-};
+export { buildInfoObject as buildInfo, Components, hooks, ReactWebChat, renderWebChat, version };
 // #endregion

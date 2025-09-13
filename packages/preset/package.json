@@ -5,6 +5,16 @@
   "main": "./dist/botframework-webchat-preset.js",
   "types": "./dist/botframework-webchat-preset.d.ts",
   "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/botframework-webchat-preset.d.mts",
+        "default": "./dist/botframework-webchat-preset.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-preset.d.ts",
+        "default": "./dist/botframework-webchat-preset.js"
+      }
+    },
     "./full": {
       "import": {
         "types": "./dist/botframework-webchat-preset.full.d.mts",

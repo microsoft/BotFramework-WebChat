@@ -1,7 +1,8 @@
 import buildInfo from '../buildInfo';
 import * as actual from '../full';
 import * as middleware from '../middleware';
-// import './polyfill/modern';
+import createDirectLineAppServiceExtensionWithBotAgent from '../overrides/createDirectLineAppServiceExtensionWithBotAgent';
+import createDirectLineWithBotAgent from '../overrides/createDirectLineWithBotAgent';
 
 declare global {
   interface Window {
@@ -18,5 +19,9 @@ window['WebChat'] = Object.freeze({
   ...window['WebChat'],
   ...exports,
   buildInfo: buildInfo.object,
+  createDirectLine: createDirectLineWithBotAgent(`WebChat/${buildInfo.version} (Full)`),
+  createDirectLineAppServiceExtension: createDirectLineAppServiceExtensionWithBotAgent(
+    `WebChat/${buildInfo.version} (Full)`
+  ),
   middleware
 });
