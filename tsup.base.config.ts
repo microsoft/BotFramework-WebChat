@@ -10,6 +10,7 @@ const { npm_package_version } = process.env;
 const istanbulPredicate: Predicate = args => defaultPredicate(args) && !/\.worker\.[cm]?[jt]s$/u.test(args.path);
 
 type Plugin = NonNullable<Options['plugins']>[number];
+
 const disablePlugin = (pluginName: string): Plugin => ({
   name: `disable-plugin-${pluginName}`,
   esbuildOptions: options => {
@@ -141,12 +142,19 @@ function applyConfig(
   // TODO: [P1] This merge is not elegant, we should move to Promise.
   const rectifiedOptions = {
     ...nextOptions,
-    onSuccess: [
-      `while [ -z "$(find ${tmpDir} \\( -name '*.d.ts' -o -name '*.d.mts' \\) -print -quit)" ]; do sleep 0.2; done; mkdir -p ${outDir}; sleep 0.5; until cp ${tmpDir}/* ${outDir} 2>/dev/null; do sleep 0.5; done`,
-      nextOptions.onSuccess
-    ]
-      .filter(Boolean)
-      .join(' && '),
+    onSuccess: nextOptions.dts
+      ? [
+          `while [ -z "$(find ${tmpDir} \\( -name '*.d.ts' -o -name '*.d.mts' \\) -print -quit)" ]; do sleep 0.2; done; mkdir -p ${outDir}; sleep 0.5; until cp ${tmpDir}/* ${outDir} 2>/dev/null; do sleep 0.5; done`,
+          nextOptions.onSuccess
+        ]
+          .filter(Boolean)
+          .join(' && ')
+      : [
+          `mkdir -p ${outDir}; sleep 0.5; until cp ${tmpDir}/* ${outDir} 2>/dev/null; do sleep 0.5; done`,
+          nextOptions.onSuccess
+        ]
+          .filter(Boolean)
+          .join(' && '),
     outDir: tmpDir
   };
 
