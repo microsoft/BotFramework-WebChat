@@ -6,7 +6,7 @@ import AddFullBundle, { type AddFullBundleProps } from './AddFullBundle';
 
 const { Composer } = Components;
 
-type FullComposerProps = ComposerProps & AddFullBundleProps;
+type FullComposerProps = ComposerProps & Omit<AddFullBundleProps, 'children'>;
 
 const FullComposer = (props: FullComposerProps) => (
   <AddFullBundle {...props}>
