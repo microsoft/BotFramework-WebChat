@@ -42,6 +42,8 @@ const ErrorBoxPolymiddlewareProxyPropsSchema = pipe(
 type ErrorBoxPolymiddlewareProxyProps = Readonly<InferInput<typeof ErrorBoxPolymiddlewareProxyPropsSchema>>;
 
 // A friendlier version than the organic <Proxy>.
+// Use traditional function for component name.
+// eslint-disable-next-line prefer-arrow-callback
 const ErrorBoxPolymiddlewareProxy = memo(function ErrorBoxPolymiddlewareProxy(props: ErrorBoxPolymiddlewareProxyProps) {
   const { error, where } = validateProps(ErrorBoxPolymiddlewareProxyPropsSchema, props);
 

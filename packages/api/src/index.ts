@@ -1,11 +1,4 @@
 // TODO: Move the pattern to re-export.
-import {
-  type LegacyActivityComponentFactory,
-  type LegacyActivityMiddleware,
-  type LegacyAttachmentMiddleware,
-  type LegacyRenderAttachment
-} from '@msinternal/botframework-webchat-api-middleware/legacy';
-import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import defaultStyleOptions from './defaultStyleOptions';
 import Composer, { ComposerProps } from './hooks/Composer';
 import * as hooks from './hooks/index';
@@ -15,6 +8,13 @@ import { type DebouncedNotification, type DebouncedNotifications } from './hooks
 import { type PostActivityFile } from './hooks/useSendFiles';
 import { localize } from './localization/Localize';
 import normalizeStyleOptions from './normalizeStyleOptions';
+import {
+  type LegacyActivityComponentFactory,
+  type LegacyActivityMiddleware,
+  type LegacyAttachmentMiddleware,
+  type LegacyRenderAttachment
+} from './package-api-middleware/legacy';
+import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from './types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware, {
   AttachmentForScreenReaderComponentFactory

@@ -1,9 +1,7 @@
-import { useBuildRenderActivityCallback } from '@msinternal/botframework-webchat-api-middleware';
-import {
-  type LegacyActivityComponentFactory,
-  type LegacyActivityProps
-} from '@msinternal/botframework-webchat-api-middleware/legacy';
 import { useCallback } from 'react';
+
+import { useBuildRenderActivityCallback } from '../package-api-middleware/index';
+import { type LegacyActivityComponentFactory, type LegacyActivityProps } from '../package-api-middleware/legacy';
 
 /**
  * @deprecated Use useBuildRenderActivityCallback() instead, this hook will be removed on or after 2027-08-16.

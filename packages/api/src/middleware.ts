@@ -1,4 +1,4 @@
-export { PolymiddlewareComposer, type Polymiddleware } from '@msinternal/botframework-webchat-api-middleware';
+export { PolymiddlewareComposer, type Polymiddleware } from './package-api-middleware/index';
 
 // Separated import sections for easier templating.
 
@@ -14,7 +14,7 @@ export {
   type ActivityPolymiddlewareProxyProps,
   type ActivityPolymiddlewareRenderer,
   type ActivityPolymiddlewareRequest
-} from '@msinternal/botframework-webchat-api-middleware';
+} from './package-api-middleware/index';
 
 export {
   createErrorBoxPolymiddleware,
@@ -28,6 +28,6 @@ export {
   type ErrorBoxPolymiddlewareProxyProps,
   type ErrorBoxPolymiddlewareRenderer,
   type ErrorBoxPolymiddlewareRequest
-} from '@msinternal/botframework-webchat-api-middleware';
+} from './package-api-middleware/index';
 
 export { default as createActivityPolymiddlewareFromLegacy } from './legacy/createActivityPolymiddlewareFromLegacy';

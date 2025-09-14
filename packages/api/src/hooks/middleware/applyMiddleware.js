@@ -1,5 +1,6 @@
-import { ErrorBoxPolymiddlewareProxy } from '@msinternal/botframework-webchat-api-middleware';
 import React, { isValidElement } from 'react';
+
+import { ErrorBoxPolymiddlewareProxy } from '../../package-api-middleware/index';
 import concatMiddleware from './concatMiddleware';
 import UserlandBoundary from './UserlandBoundary';
 

@@ -41,6 +41,8 @@ const activityPolymiddlewareProxyPropsSchema = pipe(
 type ActivityPolymiddlewareProxyProps = Readonly<InferInput<typeof activityPolymiddlewareProxyPropsSchema>>;
 
 // A friendlier version than the organic <Proxy>.
+// Use traditional function for component name.
+// eslint-disable-next-line prefer-arrow-callback
 const ActivityPolymiddlewareProxy = memo(function ActivityPolymiddlewareProxy(props: ActivityPolymiddlewareProxyProps) {
   const { activity } = validateProps(activityPolymiddlewareProxyPropsSchema, props);
 
@@ -49,6 +51,8 @@ const ActivityPolymiddlewareProxy = memo(function ActivityPolymiddlewareProxy(pr
   return <Proxy request={request} />;
 });
 
+// Use traditional function for component name.
+// eslint-disable-next-line prefer-arrow-callback
 const ActivityPolymiddlewareProvider = memo(function ActivityPolymiddlewareProvider({
   children,
   middleware

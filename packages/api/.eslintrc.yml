@@ -5,3 +5,7 @@ extends:
 # TODO: #3212 When we move to React Native, we should disable this.
 env:
   browser: true
+
+rules:
+  react/require-default-props:
+    - off

@@ -92,6 +92,8 @@ function templatePolymiddleware<Request, Props extends {}>(name: string) {
   };
 
   // Bind "init" props.
+  // Use traditional function for component name.
+  // eslint-disable-next-line prefer-arrow-callback
   const TemplatedProvider = memo(function TemplatedProvider({
     children,
     middleware

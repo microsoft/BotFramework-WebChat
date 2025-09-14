@@ -1,4 +1,3 @@
-import { type LegacyRenderAttachment } from '@msinternal/botframework-webchat-api-middleware/legacy';
 import {
   type DirectLineJSBotConnection,
   type Observable,
@@ -9,6 +8,7 @@ import {
 } from 'botframework-webchat-core';
 import { createContext } from 'react';
 
+import { type LegacyRenderAttachment } from '../../package-api-middleware/legacy';
 import { StrictStyleOptions } from '../../StyleOptions';
 import { RenderActivityStatus } from '../../types/ActivityStatusMiddleware';
 import { AttachmentForScreenReaderComponentFactory } from '../../types/AttachmentForScreenReaderMiddleware';

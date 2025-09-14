@@ -80,7 +80,6 @@
     "start": "npm run build:tsup -- --watch"
   },
   "localDependencies": {
-    "@msinternal/botframework-webchat-api-middleware": "development",
     "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-webchat-cldr-data": "development",
     "@msinternal/botframework-webchat-react-hooks": "development",
@@ -108,7 +107,6 @@
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
-    "@msinternal/botframework-webchat-api-middleware": "^0.0.0-0",
     "@msinternal/botframework-webchat-base": "^0.0.0-0",
     "@msinternal/botframework-webchat-cldr-data": "36.0.0-0",
     "@msinternal/botframework-webchat-react-hooks": "^0.0.0-0",
