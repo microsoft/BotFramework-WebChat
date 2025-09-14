@@ -5,7 +5,6 @@ import { applyConfig } from '../../tsup.base.config';
 // TODO: [P1] Compute this automatically.
 const DEPENDENT_PATHS = [
   'api/src/index.ts',
-  'api-middleware/src/index.ts',
   'bundle/src/full.ts',
   'component/src/index.ts',
   'core/src/index.ts',

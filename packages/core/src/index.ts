@@ -1,4 +1,3 @@
-import { withResolvers, type PromiseWithResolvers } from '@msinternal/botframework-webchat-base/utils';
 import connect from './actions/connect';
 import disconnect from './actions/disconnect';
 import dismissNotification from './actions/dismissNotification';
@@ -85,6 +84,8 @@ import type { UserReview as OrgSchemaUserReview } from './types/external/OrgSche
 
 const Constants = { ActivityClientState, DictateState };
 
+export { default as withResolvers, type PromiseWithResolvers } from './utils/withResolvers';
+
 export {
   connect,
   Constants,
@@ -126,8 +127,7 @@ export {
   stopDictate,
   stopSpeakingActivity,
   submitSendBox,
-  warnOnce,
-  withResolvers
+  warnOnce
 };
 
 export type {
@@ -154,7 +154,6 @@ export type {
   OrgSchemaProject,
   OrgSchemaThing,
   OrgSchemaUserReview,
-  PromiseWithResolvers,
   SendBoxAttachment,
   WebChatActivity
 };
