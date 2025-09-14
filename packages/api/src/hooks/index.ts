@@ -72,8 +72,8 @@ import useUserID from './useUserID';
 import useUsername from './useUsername';
 import useVoiceSelector from './useVoiceSelector';
 
-export { useSuggestedActionsHooks } from '@msinternal/botframework-webchat-redux-store';
 export { useBuildRenderActivityCallback } from '../package-api-middleware/index';
+export { default as useSuggestedActionsHooks } from './useSuggestedActionsHooks';
 
 export {
   useActiveTyping,
