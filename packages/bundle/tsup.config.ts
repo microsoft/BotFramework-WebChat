@@ -47,7 +47,7 @@ function buildApplyConfig(format: Format, bundled: boolean) {
           SPEECH_OCSP_CACHE_ROOT: ''
         },
         // Intentionally overriding existing esbuild plugins.
-        esbuildPlugins: [],
+        esbuildPlugins: bundled ? [resolveReact] : [],
         format,
         noExternal: bundled
           ? [/./u]

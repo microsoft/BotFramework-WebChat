@@ -7,8 +7,15 @@
   </head>
   <body>
     <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/dist/botframework-webchat.mjs"
+        }
+      }
+    </script>
     <script type="module">
-      import { createDirectLine, createStoreWithOptions, renderWebChat } from '/packages/bundle/dist/botframework-webchat.mjs';
+      import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
 
       run(async function () {
         const {
@@ -29,6 +36,12 @@
         );
 
         await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity('Hello, World!');
+
+        await pageConditions.numActivitiesShown(1);
+
+        await host.snapshot('local');
       });
     </script>
   </body>

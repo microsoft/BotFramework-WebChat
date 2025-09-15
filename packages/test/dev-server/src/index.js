@@ -102,6 +102,11 @@ const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../
 
   app.use(/^\/__dist__\/webchat.*$/u, express.static(resolve(fileURLToPath(import.meta.url), '../../../bundle/dist')));
 
+  app.use(
+    /^\/__dist__\/packages\/bundle\/dist\/*$/u,
+    express.static(resolve(fileURLToPath(import.meta.url), '../../../bundle/dist'))
+  );
+
   // Other requests will be served by `serve-handler` based on `/serve-test.json`.
   app.use((req, res) => serve(req, res, { ...serveConfigJSON, public: resolveFromRepositoryRoot() }));
 
