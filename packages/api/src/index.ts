@@ -7,7 +7,7 @@ import {
 } from '@msinternal/botframework-webchat-api-middleware/legacy';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import defaultStyleOptions from './defaultStyleOptions';
-import Composer, { ComposerProps } from './hooks/Composer';
+import Composer, { ComposerProps, ComposerCoreChildrenRenderProp } from './hooks/Composer';
 import * as hooks from './hooks/index';
 import concatMiddleware from './hooks/middleware/concatMiddleware';
 import { type ActivityStatusRenderer } from './hooks/useCreateActivityStatusRenderer'; // TODO: [P1] This line should export the one from the version from "middleware rework" workstream.
@@ -70,6 +70,7 @@ export type {
   AvatarMiddleware,
   CardActionMiddleware,
   ComposerProps,
+  ComposerCoreChildrenRenderProp,
   ContextOf,
   DebouncedNotification,
   DebouncedNotifications,

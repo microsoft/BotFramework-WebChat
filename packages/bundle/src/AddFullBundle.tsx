@@ -14,12 +14,14 @@ import { type AdaptiveCardsPackage } from './types/AdaptiveCardsPackage';
 import { type StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 import useComposerProps from './useComposerProps';
 
+type AddFullBundleChildren = ({ extraStyleSet }: { extraStyleSet: any }) => ReactNode;
+
 type AddFullBundleProps = Readonly<{
   adaptiveCardsHostConfig?: any;
   adaptiveCardsPackage?: AdaptiveCardsPackage;
   attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
   attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
-  children: ({ extraStyleSet }: { extraStyleSet: any }) => ReactNode;
+  children: AddFullBundleChildren;
   htmlContentTransformMiddleware?: HTMLContentTransformMiddleware[];
   renderMarkdown?: (
     markdown: string,
@@ -74,4 +76,4 @@ function AddFullBundle({
 
 export default memo(AddFullBundle);
 
-export type { AddFullBundleProps };
+export type { AddFullBundleProps, AddFullBundleChildren };
