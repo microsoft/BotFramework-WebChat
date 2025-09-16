@@ -5,7 +5,7 @@
   height: 100vh;
   left: 0;
   position: absolute;
-  text-shadow: 0 0 1vmin rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 1vmin rgba(0, 0, 0, .5);
   top: 0;
   width: 100vw;
 }

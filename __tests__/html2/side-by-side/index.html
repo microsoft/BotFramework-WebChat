@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="en-US">
-  <head>
-    <title>Two Chat panes side-by-side using Fluent theme</title>
-    <link href="/assets/index.css" rel="stylesheet" type="text/css">
-    <script type="importmap">
+
+<head>
+  <title>Two Chat panes side-by-side using Fluent theme</title>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script type="importmap">
     {
       "imports": {
         "react": "https://esm.sh/react@18.3.1",
@@ -13,16 +14,16 @@
       }
     }
   </script>
-    <script crossorigin="anonymous" src="/test-harness.js"></script>
-    <script crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script type="module">
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script type="module">
     import React from 'react';
     window.React = React;
   </script>
-    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
 
-    <style>
+  <style>
     :root:has(.theme-provider.light) {
       --colorBrandBackground2: hsl(237, 100%, 96%);
       --colorBrandForeground1: hsl(237, 99%, 28%);
@@ -94,11 +95,11 @@
       animation-play-state: paused !important;
     }
   </style>
-  </head>
+</head>
 
-  <body>
-    <main id="webchat"></main>
-    <script type="module">
+<body>
+  <main id="webchat"></main>
+  <script type="module">
     import React from 'react';
     import { createRoot } from 'react-dom/client';
     import { FluentProvider, createDarkTheme } from '@fluentui/react-components';
@@ -914,5 +915,6 @@ Use the command to install required dependencies:
 
     window.checkAccessibility = async () => {}
   </script>
-  </body>
+</body>
+
 </html>

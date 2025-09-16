@@ -9,7 +9,7 @@
 .App-BotResponse-Activity {
   background-color: White;
   border-radius: 2vmin;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 10px rgba(0, 0, 0, .5);
   color: Black;
   font-size: 4vmin;
   margin: 4vmin 4vmin 0;
@@ -25,7 +25,7 @@
 .App-BotResponse-Attachments .App-BotResponse-Attachment {
   background-color: White;
   border-radius: 1vmin;
-  box-shadow: 0 0 1vmin rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 1vmin rgba(0, 0, 0, .5);
   margin: 2vmin 0 2vmin 2vmin;
   width: 30vmin;
 }

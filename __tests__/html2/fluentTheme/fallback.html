@@ -1,9 +1,10 @@
 <!doctype html>
 <html lang="en-US">
-  <head>
-    <title>Fluent Theme fallback: uses fluent theme if present</title>
-    <link href="/assets/index.css" rel="stylesheet" type="text/css">
-    <script type="importmap">
+
+<head>
+  <title>Fluent Theme fallback: uses fluent theme if present</title>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script type="importmap">
     {
       "imports": {
         "react": "https://esm.sh/react@18.3.1",
@@ -13,26 +14,26 @@
       }
     }
   </script>
-    <script crossorigin="anonymous" src="/test-harness.js"></script>
-    <script crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script type="module">
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script type="module">
     import React from 'react';
     window.React = React;
   </script>
-    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
-    <style>
+  <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+  <style>
     .fui-FluentProvider {
       display: contents;
 
       --webchat__color--surface: var(--colorNeutralBackground3);
     }
   </style>
-  </head>
+</head>
 
-  <body>
-    <main id="webchat"></main>
-    <script type="module">
+<body>
+  <main id="webchat"></main>
+  <script type="module">
     import React from 'react';
     import { createRoot } from 'react-dom/client';
     import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
@@ -146,5 +147,6 @@
       await host.snapshot('local');
     });
   </script>
-  </body>
+</body>
+
 </html>

@@ -1,10 +1,5 @@
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-}
+html, body { height: 100%; }
+body { margin: 0 }
 * {
   box-sizing: border-box;
   font-family: 'Calibri', 'Helvetica Neue', 'Arial', 'sans-serif';
@@ -39,7 +34,7 @@ body {
 }
 
 .activity-wrapper.selected {
-  background: #dcebfc;
+  background: #DCEBFC;
 }
 
 .inspector {

@@ -1,11 +1,12 @@
 <!doctype html>
 <html lang="en-US">
-  <head>
-    <link href="/assets/index.css" rel="stylesheet" type="text/css">
-    <script crossorigin="anonymous" src="/test-harness.js"></script>
-    <script crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <style>
+
+<head>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  <style>
     form {
       display: flex;
       flex-flow: column nowrap;
@@ -17,17 +18,20 @@
       padding: 4px;
     }
   </style>
-  </head>
+</head>
 
-  <body>
-    <template id="form">
-      <form data-webchat-include-activity-id="activityId" data-webchat-include-activity-key="activityKey">
-        <button>Send form</button>
-        <output></output>
-      </form>
-    </template>
-    <main onsubmit="handleSubmit(event)" id="webchat"></main>
-    <script>
+<body>
+  <template id="form">
+<form
+  data-webchat-include-activity-id="activityId"
+  data-webchat-include-activity-key="activityKey"
+>
+  <button>Send form</button>
+  <output></output>
+</form>
+  </template>
+  <main onsubmit="handleSubmit(event)" id="webchat"></main>
+  <script>
     function handleSubmit(event) {
       const form = event.target;
       event.preventDefault();
@@ -89,5 +93,6 @@
       await host.snapshot('local');
     });
   </script>
-  </body>
+</body>
+
 </html>
