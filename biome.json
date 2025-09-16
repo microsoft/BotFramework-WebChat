@@ -49,14 +49,5 @@
         "noDescendingSpecificity": "off"
       }
     }
-  },
-  "html": {
-    "formatter": {
-      "enabled": true,
-      "lineWidth": 120,
-      "lineEnding": "lf",
-      "bracketSameLine": false,
-      "indentScriptAndStyle": true
-    }
   }
 }
