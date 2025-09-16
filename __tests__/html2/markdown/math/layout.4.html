@@ -1,12 +1,11 @@
 <!doctype html>
 <html lang="en-US">
-
-<head>
-  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-  <script crossorigin="anonymous" src="/test-harness.js"></script>
-  <script crossorigin="anonymous" src="/test-page-object.js"></script>
-  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-  <style>
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css">
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style>
     [data-math-type=error] {
       color: #9d0000;
       border: 1px dashed currentColor;
@@ -15,65 +14,33 @@
       border-radius: 2px;
     }
   </style>
-</head>
+  </head>
 
-<body>
-  <template id="messages">
-    <x-message>
-## Basic Notation
-
-Regular text with inline math \(x + y\) in the middle of a sentence.
-
-## Variables and Exponents
-
-1. Powers: Let's calculate \(x^2\) and \(y^3\)
-2. Subscripts: The sequence \(a_1, a_2, ..., a_n\)
-3. Both: Temperature is \(T_{room} = 20^{\circ}C\)
-
-## Greek Letters
-
-1. Common variables: \(\alpha\), \(\beta\), \(\gamma\), \(\theta\)
-2. Physics constants: Planck's constant \(\hbar\)
-3. Math constants: \(\pi \approx 3.14159\)
-    </x-message>
-    <x-message>
-## Operators
-
-1. Multiplication: \(5 \times 4\), \(5 \cdot 4\)
-2. Division: \(a \div b\), \(\frac{a}{b}\)
-3. Plus/minus: \(x \pm y\)
-
-## Functions
-
-1. Trigonometry: \(\sin(x)\), \(\cos(x)\), \(\tan(x)\)
-2. Logarithms: \(\log(x)\), \(\ln(x)\)
-3. Limits: \(\lim_{x \to \infty}\)
-
-## Special Symbols
-
-1. Infinity: \(\infty\)
-2. Approximately: \(\approx\)
-3. Not equal: \(\neq\)
-4. Less than or equal: \(\leq\)
-5. Greater than or equal: \(\geq\)
-    </x-message>
-    <x-message>
-## Complex Examples
-
-1. Chemical equation: \(H_2O + CO_2 \rightarrow H_2CO_3\)
-2. Physics formula: \(F = ma\)
-3. Statistics: \(\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i\)
-4. Probability: \(P(A|B) = \frac{P(B|A)P(A)}{P(B)}\)
-
-## Common Errors to Avoid
-
-1. Closing parenthesis is required: \(x^2
-2. Invalid operator is rendered: \(5 +* 3\)
-3. Syntax error renders error: \([\frac{1}{2\)
-    </x-message>
-  </template>
-  <main id="webchat"></main>
-  <script>
+  <body>
+    <template id="messages">
+      <x-message>
+        ## Basic Notation Regular text with inline math \(x + y\) in the middle of a sentence. ## Variables and
+        Exponents 1. Powers: Let's calculate \(x^2\) and \(y^3\) 2. Subscripts: The sequence \(a_1, a_2, ..., a_n\) 3.
+        Both: Temperature is \(T_{room} = 20^{\circ}C\) ## Greek Letters 1. Common variables: \(\alpha\), \(\beta\),
+        \(\gamma\), \(\theta\) 2. Physics constants: Planck's constant \(\hbar\) 3. Math constants: \(\pi \approx
+        3.14159\)
+      </x-message>
+      <x-message>
+        ## Operators 1. Multiplication: \(5 \times 4\), \(5 \cdot 4\) 2. Division: \(a \div b\), \(\frac{a}{b}\) 3.
+        Plus/minus: \(x \pm y\) ## Functions 1. Trigonometry: \(\sin(x)\), \(\cos(x)\), \(\tan(x)\) 2. Logarithms:
+        \(\log(x)\), \(\ln(x)\) 3. Limits: \(\lim_{x \to \infty}\) ## Special Symbols 1. Infinity: \(\infty\) 2.
+        Approximately: \(\approx\) 3. Not equal: \(\neq\) 4. Less than or equal: \(\leq\) 5. Greater than or equal:
+        \(\geq\)
+      </x-message>
+      <x-message>
+        ## Complex Examples 1. Chemical equation: \(H_2O + CO_2 \rightarrow H_2CO_3\) 2. Physics formula: \(F = ma\) 3.
+        Statistics: \(\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i\) 4. Probability: \(P(A|B) = \frac{P(B|A)P(A)}{P(B)}\) ##
+        Common Errors to Avoid 1. Closing parenthesis is required: \(x^2 2. Invalid operator is rendered: \(5 +* 3\) 3.
+        Syntax error renders error: \([\frac{1}{2\)
+      </x-message>
+    </template>
+    <main id="webchat"></main>
+    <script>
     run(async function () {
       await host.windowSize(640, 720, document.getElementById('webchat'));
 
@@ -98,6 +65,5 @@ Regular text with inline math \(x + y\) in the middle of a sentence.
       }
     });
   </script>
-</body>
-
+  </body>
 </html>

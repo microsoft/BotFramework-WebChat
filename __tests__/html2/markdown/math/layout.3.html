@@ -1,12 +1,11 @@
 <!doctype html>
 <html lang="en-US">
-
-<head>
-  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-  <script crossorigin="anonymous" src="/test-harness.js"></script>
-  <script crossorigin="anonymous" src="/test-page-object.js"></script>
-  <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-  <style>
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css">
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <style>
     [data-math-type=error] {
       color: #9d0000;
       border: 1px dashed currentColor;
@@ -15,87 +14,31 @@
       border-radius: 2px;
     }
   </style>
-</head>
+  </head>
 
-<body>
-  <template id="messages">
-    <x-message>
-## Basic Math
-
-1. Simple arithmetic: \(2 + 2 = 4\)
-
-2. Fractions:
-\[\frac{1}{2} + \frac{1}{3} = \frac{5}{6}\]
-
-## Algebra
-
-3. Quadratic formula:
-\[x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}\]
-
-4. Binomial expansion:
-\[(x + y)^2 = x^2 + 2xy + y^2\]
-    </x-message>
-    <x-message>
-## Calculus
-
-5. Derivative notation:
-\[\frac{d}{dx} x^n = nx^{n-1}\]
-
-6. Integration:
-\[\int_0^1 x^2 dx = \frac{1}{3}\]
-
-7. Taylor series:
-\[e^x = \sum_{n=0}^{\infty} \frac{x^n}{n!}\]
-
-## Linear Algebra
-
-8. Matrix multiplication:
-\[
-\begin{pmatrix}
-a & b \\
-c & d
-\end{pmatrix}
-\begin{pmatrix}
-x \\
-y
-\end{pmatrix} =
-\begin{pmatrix}
-ax + by \\
-cx + dy
-\end{pmatrix}
-\]
-
-9. Determinant:
-\[\det\begin{pmatrix}
-a & b \\
-c & d
-\end{pmatrix} = ad - bc\]
-    </x-message>
-    <x-message>
-## Physics
-
-10. Einstein's mass-energy equivalence:
-\[E = mc^2\]
-
-11. Schrödinger equation:
-\[i\hbar\frac{\partial}{\partial t}\Psi = \hat{H}\Psi\]
-
-## Invalid input examples
-
-12. Wrong expression is rendered: \(2++2\)
-
-13. Inline closing delimeter is required: \(x^2
-
-14. Katex syntax error:
-\[\int_0^\infty e^{-x} dx = 1 +}\]
-
-15. LLM generation error:
-\[
-\\]
-    </x-message>
-  </template>
-  <main id="webchat"></main>
-  <script>
+  <body>
+    <template id="messages">
+      <x-message>
+        ## Basic Math 1. Simple arithmetic: \(2 + 2 = 4\) 2. Fractions: \[\frac{1}{2} + \frac{1}{3} = \frac{5}{6}\] ##
+        Algebra 3. Quadratic formula: \[x = \frac{-b \pm \sqrt{b^2 - 4ac }} {2a}\] 4. Binomial expansion: \[(x + y)^2 =
+        x^2 + 2xy + y^2\]
+      </x-message>
+      <x-message>
+        ## Calculus 5. Derivative notation: \[\frac{d}{dx} x^n = nx^{n-1}\] 6. Integration: \[\int_0^1 x^2 dx =
+        \frac{1}{3}\] 7. Taylor series: \[e^x = \sum_{n=0}^{\infty} \frac{x^n}{n!}\] ## Linear Algebra 8. Matrix
+        multiplication: \[ \begin{pmatrix} a & b \\ c & d \end{pmatrix} \begin{pmatrix} x \\ y \end{pmatrix} =
+        \begin{pmatrix} ax + by \\ cx + dy \end{pmatrix} \] 9. Determinant: \[\det\begin{pmatrix} a & b \\ c & d
+        \end{pmatrix} = ad - bc\]
+      </x-message>
+      <x-message>
+        ## Physics 10. Einstein's mass-energy equivalence: \[E = mc^2\] 11. Schrödinger equation:
+        \[i\hbar\frac{\partial}{\partial t}\Psi = \hat{H}\Psi\] ## Invalid input examples 12. Wrong expression is
+        rendered: \(2++2\) 13. Inline closing delimeter is required: \(x^2 14. Katex syntax error: \[\int_0^\infty
+        e^{-x} dx = 1 +}\] 15. LLM generation error: \[ \\]
+      </x-message>
+    </template>
+    <main id="webchat"></main>
+    <script>
     run(async function () {
       await host.windowSize(640, 720, document.getElementById('webchat'));
 
@@ -120,6 +63,5 @@ c & d
       }
     });
   </script>
-</body>
-
+  </body>
 </html>

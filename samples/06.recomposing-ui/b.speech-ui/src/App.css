@@ -33,7 +33,7 @@
 
 .App-speech-button {
   background-color: transparent;
-  border: solid 2px #61DAFB;
+  border: solid 2px #61dafb;
   border-radius: 50%;
   margin: 0;
   outline: 0;
@@ -49,12 +49,12 @@
 }
 
 .App-speech-button > svg {
-  fill: #61DAFB;
+  fill: #61dafb;
 }
 
 .App-speech-button.dictating {
-  background-color: #EF0000;
-  border-color: #EF0000;
+  background-color: #ef0000;
+  border-color: #ef0000;
 }
 
 .App-speech-button.dictating > svg {
@@ -64,7 +64,7 @@
 .App-speech-interims {
   align-items: center;
   bottom: 5vmin;
-  color: #61DAFB;
+  color: #61dafb;
   display: flex;
   font-size: 8vmin;
   height: 18vmin;

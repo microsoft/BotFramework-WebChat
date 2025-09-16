@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -98,7 +98,7 @@
 
           // When Web Chat wants to send files, we intercept this action and send an event instead.
           if (type === 'WEB_CHAT/SEND_FILES') {
-            (async function() {
+            (async function () {
               // Tells the bot that you are uploading files. This is optional.
               dispatch({ type: 'WEB_CHAT/SEND_TYPING' });
 

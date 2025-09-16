@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en-US">
   <head>
-    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <link href="/assets/index.css" rel="stylesheet" type="text/css">
     <script crossorigin="anonymous" src="/test-harness.js"></script>
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
@@ -10,24 +10,14 @@
   <body>
     <template id="messages">
       <x-message snapshot-ignore>
-```javascript
-console.log('JavaScript code block using tripple ` delimiters');
-```
-----
-    Code block using indent
-    also has copy button
-    but no highlighting</x-message>
-    <x-message>
-```javascript
-export default function JavaScript(is, supported) { using shiki; }
-```
-```typescript
-export default type TypeScript = (is, supported): { using: shiki; }
-```
-```python
-def Python(is_supported): return {'using': 'shiki'}
-```
-    </x-message>
+        ```javascript console.log('JavaScript code block using tripple ` delimiters'); ``` ---- Code block using indent
+        also has copy button but no highlighting
+      </x-message>
+      <x-message>
+        ```javascript export default function JavaScript(is, supported) { using shiki; } ``` ```typescript export
+        default type TypeScript = (is, supported): { using: shiki; } ``` ```python def Python(is_supported): return
+        {'using': 'shiki'} ```
+      </x-message>
     </template>
     <main id="webchat"></main>
     <script>

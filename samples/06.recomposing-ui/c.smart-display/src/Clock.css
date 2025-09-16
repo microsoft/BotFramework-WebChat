@@ -6,7 +6,7 @@
   font-weight: 200;
   padding: 4vmin;
   position: absolute;
-  text-shadow: 0 0 1vmin rgba(0, 0, 0, .5);
+  text-shadow: 0 0 1vmin rgba(0, 0, 0, 0.5);
 }
 
 .App-Clock-Text {

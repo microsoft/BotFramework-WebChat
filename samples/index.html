@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <title>Web Chat samples</title>
@@ -13,10 +13,10 @@
       'use strict';
 
       fetch('README.md')
-        .then(function(res) {
+        .then(function (res) {
           return res.text();
         })
-        .then(function(markdown) {
+        .then(function (markdown) {
           const element = document.createElement('div');
 
           element.innerHTML = window.markdownit().render(markdown);

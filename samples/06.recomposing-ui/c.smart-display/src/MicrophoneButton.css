@@ -2,7 +2,7 @@
   align-items: center;
   background-color: transparent;
   border-radius: 50%;
-  border: solid .4vmin White;
+  border: solid 0.4vmin White;
   bottom: 4vmin;
   color: White;
   display: flex;
@@ -10,7 +10,7 @@
   height: 18vmin;
   justify-content: center;
   margin: 0;
-  opacity: .2;
+  opacity: 0.2;
   outline: 0;
   position: absolute;
   right: 4vmin;
@@ -18,12 +18,12 @@
 
   /* The icon looks a bit off-center, shifting to compensate */
   padding-left: 1vmin;
-  padding-top: .5vmin;
+  padding-top: 0.5vmin;
 }
 
 .App-MicrophoneButton:active,
 .App-MicrophoneButton:hover {
-  opacity: .4;
+  opacity: 0.4;
 }
 
 .App-MicrophoneButton > svg {
@@ -31,8 +31,8 @@
 }
 
 .App-MicrophoneButton.dictating {
-  background-color: #EF0000;
-  border-color: #EF0000;
+  background-color: #ef0000;
+  border-color: #ef0000;
   opacity: 1;
 }
 

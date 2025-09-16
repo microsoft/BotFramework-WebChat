@@ -4,9 +4,9 @@
 
 .sso__profileMenu {
   background-color: White;
-  border: solid 1px #EEE;
+  border: solid 1px #eee;
   border-radius: 4px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, .08);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.08);
   color: #333;
   cursor: pointer;
   list-style-type: none;
@@ -26,7 +26,7 @@
 
 .sso__profileMenuItem > * {
   overflow: hidden;
-  padding: .6em .8em;
+  padding: 0.6em 0.8em;
   text-overflow: ellipsis;
 }
 
@@ -57,22 +57,22 @@
 .sso__profileMenuItem > a:hover,
 .sso__profileMenuItem > button:focus,
 .sso__profileMenuItem > button:hover {
-  background-color: #EEE;
+  background-color: #eee;
 }
 
 .sso__profileMenuItem > a:active,
 .sso__profileMenuItem > button:active {
-  background-color: #CCC;
+  background-color: #ccc;
   color: White;
   transition: background-color 0s;
 }
 
 .sso__profileMenuItem:not(:last-child) {
-  border-bottom: solid 1px #EEE;
+  border-bottom: solid 1px #eee;
 }
 
 .sso__profileAvatar {
-  background-color: #E6E6E6;
+  background-color: #e6e6e6;
   background-repeat: no-repeat;
   background-size: cover;
   border: solid 4px White;
@@ -87,11 +87,11 @@
 
 .sso__profileAvatar:focus,
 .sso__profileAvatar:hover {
-  border-color: #EEE;
+  border-color: #eee;
 }
 
 .sso__profileAvatar:active {
-  border-color: #CCC;
+  border-color: #ccc;
   transition: border-color 0s;
 }
 

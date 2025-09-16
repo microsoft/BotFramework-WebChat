@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <title>Web Chat: Activity grouping</title>
@@ -56,7 +56,8 @@
         border: solid 2px #ccc;
         border-radius: 4px;
         bottom: 0;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
           'Helvetica Neue', sans-serif;
         font-size: 14px;
         margin: 10px;
@@ -260,8 +261,7 @@
               ],
               from: { role: 'bot' },
               id: '2.1',
-              text:
-                'Esse pariatur enim reprehenderit magna anim in. Eiusmod eiusmod officia laboris aute proident officia.',
+              text: 'Esse pariatur enim reprehenderit magna anim in. Eiusmod eiusmod officia laboris aute proident officia.',
               timestamp: new Date().toISOString(),
               type: 'message'
             });
@@ -343,19 +343,20 @@
           const styleComboNumber = getComboNumber(styleValues);
           const setStyleComboNumber = useCallback(value => comboNumberSetter(value, styleSetters), [...styleSetters]);
 
-          const handleStyleComboNumberChange = useCallback(({ target: { value } }) => setStyleComboNumber(value), [
-            setStyleComboNumber
-          ]);
+          const handleStyleComboNumberChange = useCallback(
+            ({ target: { value } }) => setStyleComboNumber(value),
+            [setStyleComboNumber]
+          );
 
-          const handlePlusOneStyleComboNumber = useCallback(() => setStyleComboNumber(styleComboNumber + 1), [
-            styleComboNumber,
-            setStyleComboNumber
-          ]);
+          const handlePlusOneStyleComboNumber = useCallback(
+            () => setStyleComboNumber(styleComboNumber + 1),
+            [styleComboNumber, setStyleComboNumber]
+          );
 
-          const handleMinusOneStyleComboNumber = useCallback(() => setStyleComboNumber(styleComboNumber - 1), [
-            styleComboNumber,
-            setStyleComboNumber
-          ]);
+          const handleMinusOneStyleComboNumber = useCallback(
+            () => setStyleComboNumber(styleComboNumber - 1),
+            [styleComboNumber, setStyleComboNumber]
+          );
 
           const viewValueAndSetters = [
             [wide, setWide],
@@ -368,19 +369,20 @@
           const viewComboNumber = getComboNumber(viewValues);
           const setViewComboNumber = useCallback(value => comboNumberSetter(value, viewSetters), [...viewSetters]);
 
-          const handleViewComboNumberChange = useCallback(({ target: { value } }) => setViewComboNumber(value), [
-            setViewComboNumber
-          ]);
+          const handleViewComboNumberChange = useCallback(
+            ({ target: { value } }) => setViewComboNumber(value),
+            [setViewComboNumber]
+          );
 
-          const handlePlusOneViewComboNumber = useCallback(() => setViewComboNumber(viewComboNumber + 1), [
-            viewComboNumber,
-            setViewComboNumber
-          ]);
+          const handlePlusOneViewComboNumber = useCallback(
+            () => setViewComboNumber(viewComboNumber + 1),
+            [viewComboNumber, setViewComboNumber]
+          );
 
-          const handleMinusOneViewComboNumber = useCallback(() => setViewComboNumber(viewComboNumber - 1), [
-            viewComboNumber,
-            setViewComboNumber
-          ]);
+          const handleMinusOneViewComboNumber = useCallback(
+            () => setViewComboNumber(viewComboNumber - 1),
+            [viewComboNumber, setViewComboNumber]
+          );
 
           const handleAddMessage = useCallback(() => {
             activityDeferredObservable.next({
@@ -408,9 +410,10 @@
             setShowAvatarInGroup('status');
           }, [setShowAvatarForEveryActivity, setShowAvatarInGroup]);
 
-          const setShowAvatarInGroupType = useCallback(sender => setShowAvatarInGroup('sender'), [
-            setShowAvatarInGroup
-          ]);
+          const setShowAvatarInGroupType = useCallback(
+            sender => setShowAvatarInGroup('sender'),
+            [setShowAvatarInGroup]
+          );
 
           const groupingValueAndSetters = [
             [!showAvatarForEveryActivity && showAvatarInGroup === 'status', setShowAvatarInGroupType],
@@ -421,24 +424,25 @@
           const groupingSetters = groupingValueAndSetters.map(([_, setter]) => setter);
 
           const groupingComboNumber = getComboNumber(groupingValues);
-          const setGroupingComboNumber = useCallback(value => comboNumberSetter(value, groupingSetters), [
-            ...groupingSetters
-          ]);
+          const setGroupingComboNumber = useCallback(
+            value => comboNumberSetter(value, groupingSetters),
+            [...groupingSetters]
+          );
 
           const handleGroupingComboNumberChange = useCallback(
             ({ target: { value } }) => setGroupingComboNumber(value),
             [setGroupingComboNumber]
           );
 
-          const handlePlusOneGroupingComboNumber = useCallback(() => setGroupingComboNumber(groupingComboNumber + 1), [
-            groupingComboNumber,
-            setGroupingComboNumber
-          ]);
+          const handlePlusOneGroupingComboNumber = useCallback(
+            () => setGroupingComboNumber(groupingComboNumber + 1),
+            [groupingComboNumber, setGroupingComboNumber]
+          );
 
-          const handleMinusOneGroupingComboNumber = useCallback(() => setGroupingComboNumber(groupingComboNumber - 1), [
-            groupingComboNumber,
-            setGroupingComboNumber
-          ]);
+          const handleMinusOneGroupingComboNumber = useCallback(
+            () => setGroupingComboNumber(groupingComboNumber - 1),
+            [groupingComboNumber, setGroupingComboNumber]
+          );
 
           const styleOptions = useMemo(
             () => ({
