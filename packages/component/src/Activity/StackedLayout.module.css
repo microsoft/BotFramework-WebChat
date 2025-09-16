@@ -106,7 +106,7 @@
     color: var(--webchat__color--subtle);
     display: grid;
     font-size: 1.1em;
-    grid-template-areas: "message-status-icon";
+    grid-template-areas: 'message-status-icon';
     margin-block: calc(var(--webchat__padding--regular) + 1px);
     margin-inline-start: var(--webchat__padding--regular);
     place-self: start;
@@ -193,12 +193,12 @@
     .stacked-layout__bubble {
       grid-template: 'content' 1fr / 1fr;
     }
-    
+
     .stacked-layout__message-status {
       display: none;
     }
-    
-    &:has(.stacked-layout__message-status--final), 
+
+    &:has(.stacked-layout__message-status--final),
     &:has(.stacked-layout__message-status--incomplete) {
       .stacked-layout__bubble {
         grid-template:
