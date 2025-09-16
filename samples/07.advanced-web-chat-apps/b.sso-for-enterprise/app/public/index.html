@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -151,31 +151,28 @@
 
         WebChat.renderWebChat(
           {
-            cardActionMiddleware:
-              () =>
-              next =>
-              async ({ cardAction, getSignInUrl }) => {
-                // To sign in, the bot will send a card action with a custom URL.
-                // We are using "about:blank" as the placeholder URL.
-                const { type, value } = cardAction;
+            cardActionMiddleware: () => next => async ({ cardAction, getSignInUrl }) => {
+              // To sign in, the bot will send a card action with a custom URL.
+              // We are using "about:blank" as the placeholder URL.
+              const { type, value } = cardAction;
 
-                if (type === 'openUrl' && value === 'about:blank#sign-into-aad') {
-                  // Request the page to start sign-in flow for Azure Active Directory.
-                  const signInEvent = new Event('signin');
+              if (type === 'openUrl' && value === 'about:blank#sign-into-aad') {
+                // Request the page to start sign-in flow for Azure Active Directory.
+                const signInEvent = new Event('signin');
 
-                  signInEvent.data = { provider: 'aad' };
-                  window.dispatchEvent(signInEvent);
-                } else if (type === 'openUrl' && value === 'about:blank#sign-into-github') {
-                  // Request the page to start sign-in flow for GitHub OAuth app.
-                  const signInEvent = new Event('signin');
+                signInEvent.data = { provider: 'aad' };
+                window.dispatchEvent(signInEvent);
+              } else if (type === 'openUrl' && value === 'about:blank#sign-into-github') {
+                // Request the page to start sign-in flow for GitHub OAuth app.
+                const signInEvent = new Event('signin');
 
-                  signInEvent.data = { provider: 'github' };
-                  window.dispatchEvent(signInEvent);
-                } else {
-                  // Non-SSO related actions, fallback to default behavior.
-                  return next({ cardAction, getSignInUrl });
-                }
-              },
+                signInEvent.data = { provider: 'github' };
+                window.dispatchEvent(signInEvent);
+              } else {
+                // Non-SSO related actions, fallback to default behavior.
+                return next({ cardAction, getSignInUrl });
+              }
+            },
             directLine: WebChat.createDirectLine({ token }),
             store,
             styleOptions: {
