@@ -51,12 +51,8 @@
     "start": "npm run build -- --watch"
   },
   "localDependencies": {
-    "@msinternal/botframework-webchat-base": "development",
-    "@msinternal/botframework-webchat-styles": "development",
     "@msinternal/botframework-webchat-tsconfig": "development",
-    "botframework-webchat-api": "production",
-    "botframework-webchat-component": "production",
-    "botframework-webchat-core": "production"
+    "botframework-webchat": "production"
   },
   "pinDependencies": {
     "@types/react": [
@@ -69,8 +65,6 @@
     ]
   },
   "devDependencies": {
-    "@msinternal/botframework-webchat-base": "0.0.0-0",
-    "@msinternal/botframework-webchat-styles": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
     "@types/math-random": "^1.0.2",
     "@types/node": "^24.1.0",
@@ -79,9 +73,7 @@
     "typescript": "~5.8.3"
   },
   "dependencies": {
-    "botframework-webchat-api": "0.0.0-0",
-    "botframework-webchat-component": "0.0.0-0",
-    "botframework-webchat-core": "0.0.0-0",
+    "botframework-webchat": "0.0.0-0",
     "classnames": "2.5.1",
     "inject-meta-tag": "0.0.1",
     "math-random": "2.0.1",

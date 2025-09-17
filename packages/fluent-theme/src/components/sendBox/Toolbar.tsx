@@ -1,6 +1,7 @@
-import { hooks } from 'botframework-webchat-api';
+import { hooks } from 'botframework-webchat';
 import cx from 'classnames';
 import React, { memo, type MouseEventHandler, type ReactNode } from 'react';
+
 import { useStyles } from '../../styles';
 import styles from './Toolbar.module.css';
 

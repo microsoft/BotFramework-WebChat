@@ -83,7 +83,7 @@ export default defineConfig([
     },
     entry: { 'botframework-webchat-fluent-theme.development': './src/bundle.ts' },
     esbuildPlugins: [
-      ...(config.esbuildPlugins || []),
+      // ...(config.esbuildPlugins || []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
       umdResolvePlugin
     ],
@@ -100,7 +100,7 @@ export default defineConfig([
     },
     entry: { 'botframework-webchat-fluent-theme.production.min': './src/bundle.ts' },
     esbuildPlugins: [
-      ...(config.esbuildPlugins || []),
+      // ...(config.esbuildPlugins || []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
       umdResolvePlugin
     ],

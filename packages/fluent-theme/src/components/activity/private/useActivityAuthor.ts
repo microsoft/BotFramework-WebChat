@@ -1,5 +1,5 @@
+import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat/internal';
 import { useMemo } from 'react';
-import { getOrgSchemaMessage, type WebChatActivity } from 'botframework-webchat-core';
 
 export default function useActivityAuthor(activity?: WebChatActivity | undefined) {
   return useMemo(() => {
