@@ -14,7 +14,7 @@
         "types": "./exports/botframework-webchat-fluent-theme.d.mts",
         "default": "./exports/botframework-webchat-fluent-theme.mjs"
       },
-      "required": {
+      "require": {
         "bundle // TODO: [P*] Think if we should export fat/bundled using conditions": "./dist/botframework-webchat-fluent-theme.js",
         "types": "./exports/botframework-webchat-fluent-theme.d.ts",
         "default": "./exports/botframework-webchat-fluent-theme.js"
@@ -86,9 +86,7 @@
     "typescript": "~5.8.3"
   },
   "dependencies": {
-    "botframework-webchat-api": "0.0.0-0",
-    "botframework-webchat-component": "0.0.0-0",
-    "botframework-webchat-core": "0.0.0-0",
+    "botframework-webchat": "0.0.0-0",
     "classnames": "2.5.1",
     "inject-meta-tag": "0.0.1",
     "math-random": "2.0.1",
