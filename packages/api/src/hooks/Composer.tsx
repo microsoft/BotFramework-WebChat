@@ -1,8 +1,3 @@
-import { PolymiddlewareComposer, type Polymiddleware } from '@msinternal/botframework-webchat-api-middleware';
-import {
-  type LegacyActivityMiddleware,
-  type LegacyAttachmentMiddleware
-} from '@msinternal/botframework-webchat-api-middleware/legacy';
 import { ReduxStoreComposer } from '@msinternal/botframework-webchat-redux-store';
 import {
   clearSuggestedActions,
@@ -54,6 +49,8 @@ import {
   type SendBoxToolbarMiddleware
 } from '../middleware/SendBoxToolbarMiddleware';
 import normalizeStyleOptions from '../normalizeStyleOptions';
+import { PolymiddlewareComposer, type Polymiddleware } from '../package-api-middleware/index';
+import { type LegacyActivityMiddleware, type LegacyAttachmentMiddleware } from '../package-api-middleware/legacy';
 import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
@@ -93,8 +90,6 @@ import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
 import { parseUIState } from './validation/uiState';
-
-// List of Redux actions factory we are hoisting as Web Chat functions
 const DISPATCHERS = {
   clearSuggestedActions,
   dismissNotification,

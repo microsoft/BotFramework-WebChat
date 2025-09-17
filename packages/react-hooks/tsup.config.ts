@@ -3,7 +3,7 @@ import { defineConfig } from 'tsup';
 import { applyConfig } from '../../tsup.base.config';
 
 // TODO: [P1] Compute this automatically.
-const DEPENDENT_PATHS = ['api/src/index.ts', 'api-middleware/src/index.ts'];
+const DEPENDENT_PATHS = ['api/src/index.ts'];
 
 const commonConfig = applyConfig(config => ({
   ...config,

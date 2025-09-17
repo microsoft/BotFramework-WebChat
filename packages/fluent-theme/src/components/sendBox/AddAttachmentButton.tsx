@@ -1,12 +1,12 @@
-import { hooks } from 'botframework-webchat-component';
-import React, { useCallback, useRef, type ChangeEventHandler, memo } from 'react';
+import { hooks } from 'botframework-webchat';
+import React, { memo, useCallback, useRef, type ChangeEventHandler } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import { FluentIcon } from '../icon';
-import testIds from '../../testIds';
-import { ToolbarButton } from './Toolbar';
-import styles from './AddAttachmentButton.module.css';
 import { useStyles } from '../../styles';
+import testIds from '../../testIds';
+import { FluentIcon } from '../icon';
+import styles from './AddAttachmentButton.module.css';
+import { ToolbarButton } from './Toolbar';
 
 const { useLocalizer, useStyleOptions } = hooks;
 

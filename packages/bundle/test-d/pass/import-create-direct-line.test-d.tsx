@@ -1,5 +1,5 @@
 import '../setup';
 
-import { createDirectLine } from '../../src/boot/exports/full';
+import { createDirectLine } from '../../src/exports/full';
 
 createDirectLine({ token: 'faketoken' });

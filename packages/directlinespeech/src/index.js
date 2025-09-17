@@ -1,5 +1,7 @@
 /* global process:readonly */
-import 'core-js/features/object/entries.js';
+
+// TODO: [P*] Polyfill at the final bundle.
+// import 'core-js/features/object/entries.js';
 
 import createAdapters from './createAdapters';
 

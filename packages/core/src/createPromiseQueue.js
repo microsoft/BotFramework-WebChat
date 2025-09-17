@@ -1,4 +1,4 @@
-import { withResolvers } from '@msinternal/botframework-webchat-base/utils';
+import withResolvers from './utils/withResolvers';
 
 export default function createPromiseQueue() {
   let promiseWithResolvers;

@@ -1,6 +1,6 @@
+import { hooks, type StrictStyleOptions } from 'botframework-webchat';
+import { type WebChatActivity } from 'botframework-webchat/internal';
 import { useMemo } from 'react';
-import { hooks, type WebChatActivity } from 'botframework-webchat-component';
-import { type StrictStyleOptions } from 'botframework-webchat-api';
 
 const { useStyleOptions } = hooks;
 

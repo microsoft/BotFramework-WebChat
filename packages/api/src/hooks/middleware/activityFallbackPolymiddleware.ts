@@ -1,6 +1,7 @@
-import { activityComponent, createActivityPolymiddleware } from '@msinternal/botframework-webchat-api-middleware';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { memo } from 'react';
+
+import { activityComponent, createActivityPolymiddleware } from '../../package-api-middleware/index';
 
 // eslint-disable-next-line prefer-arrow-callback
 const NoActivityToRenderComponent = memo(function NoActivityToRenderComponent({

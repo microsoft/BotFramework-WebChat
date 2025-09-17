@@ -80,6 +80,22 @@
       "destination": "packages/bundle/dist/webchat-minimal.js.map"
     },
     {
+      "source": "/__dist__/packages/bundle/dist/:filename",
+      "destination": "packages/bundle/dist/:filename"
+    },
+    {
+      "source": "/__dist__/packages/bundle/dist/:path/:filename",
+      "destination": "packages/bundle/dist/:path/:filename"
+    },
+    {
+      "source": "/__dist__/packages/debug-theme/dist/:filename",
+      "destination": "packages/debug-theme/dist/:filename"
+    },
+    {
+      "source": "/__dist__/packages/fluent-theme/dist/:filename",
+      "destination": "packages/fluent-theme/dist/:filename"
+    },
+    {
       "source": "/test-harness.js",
       "destination": "packages/test/harness/dist/test-harness.js"
     },

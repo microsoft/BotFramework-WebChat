@@ -1,13 +1,13 @@
-import {
-  createErrorBoxPolymiddleware,
-  errorBoxComponent,
-  ErrorBoxPolymiddlewareHandlerResult
-} from '@msinternal/botframework-webchat-api-middleware';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { memo, useEffect } from 'react';
 import { custom, never, object, optional, pipe, readonly, unknown, type InferInput } from 'valibot';
 
 import { useTrackException } from '../hooks';
+import {
+  createErrorBoxPolymiddleware,
+  errorBoxComponent,
+  ErrorBoxPolymiddlewareHandlerResult
+} from '../package-api-middleware/index';
 
 const errorBoxTelemetryHeadlessPropsSchema = pipe(
   object({

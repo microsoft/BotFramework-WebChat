@@ -1,12 +1,3 @@
-import {
-  activityComponent,
-  createActivityPolymiddleware,
-  type ActivityPolymiddleware
-} from '@msinternal/botframework-webchat-api-middleware';
-import {
-  type LegacyActivityMiddleware,
-  type LegacyRenderAttachment
-} from '@msinternal/botframework-webchat-api-middleware/legacy';
 import { type WebChatActivity } from 'botframework-webchat-core';
 import { composeEnhancer } from 'handler-chain';
 import { type ReactNode } from 'react';
@@ -25,6 +16,12 @@ import {
   type InferInput
 } from 'valibot';
 
+import {
+  activityComponent,
+  createActivityPolymiddleware,
+  type ActivityPolymiddleware
+} from '../package-api-middleware/index';
+import { type LegacyActivityMiddleware, type LegacyRenderAttachment } from '../package-api-middleware/legacy';
 import LegacyActivityBridge from './LegacyActivityBridge';
 
 const webChatActivitySchema = custom<WebChatActivity>(value => safeParse(object({}), value).success);

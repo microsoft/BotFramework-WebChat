@@ -2,8 +2,6 @@
 /* eslint-disable security/detect-object-injection */
 /* eslint no-magic-numbers: "off" */
 
-import 'core-js/features/set/index.js';
-
 import React, { useContext, useMemo } from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import { act } from 'react-dom/test-utils';

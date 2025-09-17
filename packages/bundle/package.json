@@ -2,27 +2,40 @@
   "name": "botframework-webchat",
   "version": "0.0.0-0",
   "description": "A highly-customizable web-based chat client for Azure Bot Services.",
-  "main": "./dist/botframework-webchat.js",
-  "types": "./dist/botframework-webchat.d.ts",
+  "main": "./exports/botframework-webchat.js",
+  "types": "./exports/botframework-webchat.d.ts",
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/botframework-webchat.d.mts",
-        "default": "./dist/botframework-webchat.mjs"
+        "bundle // TODO: [P*] Think if we should export fat/bundled using conditions": "./dist/botframework-webchat.d.mts",
+        "types": "./exports/botframework-webchat.d.mts",
+        "default": "./exports/botframework-webchat.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat.d.ts",
-        "default": "./dist/botframework-webchat.js"
+        "types": "./exports/botframework-webchat.d.ts",
+        "default": "./exports/botframework-webchat.js"
+      }
+    },
+    "./internal": {
+      "import": {
+        "bundle // TODO: [P*] Think if we should export fat/bundled using conditions": "./dist/botframework-webchat/internal.d.mts",
+        "types": "./exports/botframework-webchat/internal.d.mts",
+        "default": "./exports/botframework-webchat/internal.mjs"
+      },
+      "require": {
+        "types": "./exports/botframework-webchat/internal.d.ts",
+        "default": "./exports/botframework-webchat/internal.js"
       }
     },
     "./middleware": {
       "import": {
-        "types": "./dist/botframework-webchat.middleware.d.mts",
-        "default": "./dist/botframework-webchat.middleware.mjs"
+        "bundle // TODO: [P*] Think if we should export fat/bundled using conditions": "./dist/botframework-webchat/middleware.d.mts",
+        "types": "./exports/botframework-webchat/middleware.d.mts",
+        "default": "./exports/botframework-webchat/middleware.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat.middleware.d.ts",
-        "default": "./dist/botframework-webchat.middleware.js"
+        "types": "./exports/botframework-webchat/middleware.d.ts",
+        "default": "./exports/botframework-webchat/middleware.js"
       }
     }
   },
@@ -41,6 +54,9 @@
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/#readme",
   "files": [
     "./dist/**/*",
+    "./exports/**/*",
+    "./internal.js",
+    "./middleware.js",
     "./src/**/*"
   ],
   "tsd": {
@@ -55,7 +71,11 @@
     }
   },
   "scripts": {
-    "build": "tsup",
+    "build": "npm run build:tsup && npm run build:validate",
+    "build:tsup": "tsup",
+    "build:validate": "npm run build:validate:import && npm run build:validate:internal",
+    "build:validate:import": "if grep -R -n -P --include='*.mjs' '}\\s*from\\s*\"[^.]' ./dist/; then echo '*.mjs files should not import from other packages' >&2; exit 1; fi",
+    "build:validate:internal": "if grep -R -n -F --include='*.d.ts' --include='*.d.mts' '@msinternal/' ./dist/; then echo '*.d.ts files should not import \"@msinternal/*\"' >&2; exit 1; fi",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -65,18 +85,18 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "npm run build -- --watch"
+    "start": "npm run build:tsup -- --watch",
+    "test:tsd": "../../node_modules/.bin/tsd"
   },
   "localDependencies": {
-    "@msinternal/botframework-webchat-base": "development",
-    "@msinternal/botframework-webchat-react-valibot": "development",
-    "@msinternal/botframework-webchat-tsconfig": "development",
-    "@msinternal/isomorphic-react": "development",
-    "@msinternal/isomorphic-react-dom": "development",
     "botframework-directlinespeech-sdk": "production",
     "botframework-webchat-api": "production",
     "botframework-webchat-component": "production",
-    "botframework-webchat-core": "production"
+    "botframework-webchat-core": "production",
+    "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development",
+    "@msinternal/isomorphic-react": "development",
+    "@msinternal/isomorphic-react-dom": "development"
   },
   "pinDependencies": {
     "@types/react": [
@@ -105,7 +125,6 @@
     ]
   },
   "dependencies": {
-    "@babel/runtime": "7.28.2",
     "adaptivecards": "3.0.2",
     "botframework-directlinejs": "0.15.6",
     "botframework-directlinespeech-sdk": "0.0.0-0",
@@ -135,28 +154,11 @@
     "whatwg-fetch": "3.6.20"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.0",
-    "@babel/plugin-transform-runtime": "^7.28.0",
-    "@babel/preset-env": "^7.28.0",
-    "@babel/preset-react": "^7.27.1",
-    "@babel/preset-typescript": "^7.27.1",
-    "@msinternal/botframework-webchat-base": "0.0.0-0",
-    "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
+    "@msinternal/botframework-webchat-base": "^0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
     "@msinternal/isomorphic-react": "^0.0.0-0",
     "@msinternal/isomorphic-react-dom": "^0.0.0-0",
-    "@types/dom-speech-recognition": "^0.0.6",
-    "@types/mdast": "^4.0.4",
-    "@types/node": "^24.1.0",
-    "@types/react": "^16.14.65",
-    "@types/uuid": "^10.0.0",
-    "babel-plugin-istanbul": "^7.0.0",
-    "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "cross-env": "^10.0.0",
-    "esbuild": "^0.25.8",
-    "micromark-util-types": "^2.0.2",
     "tsd": "^0.32.0",
-    "type-fest": "^4.41.0",
     "typescript": "~5.8.3"
   },
   "peerDependencies": {

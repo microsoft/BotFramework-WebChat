@@ -1,4 +1,4 @@
-import { type WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat/internal';
 
 export default function isLinerMessageActivity(
   activity: undefined | WebChatActivity

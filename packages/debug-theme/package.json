@@ -38,7 +38,9 @@
   "localDependencies": {},
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/debug-theme#readme",
   "scripts": {
-    "build": "tsup --config ./tsup.config.ts",
+    "build": "npm run build:tsup && npm run build:validate",
+    "build:tsup": "tsup",
+    "build:validate": "if grep -R -n -F --include='*.d.ts' --include='*.d.mts' '@msinternal/' ./dist/; then echo '*.d.ts files should not import \"@msinternal/*\"' >&2; exit 1; fi",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -48,7 +50,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "npm run build -- --watch"
+    "start": "npm run build:tsup -- --watch"
   },
   "peerDependencies": {
     "react": ">= 16.8.6"

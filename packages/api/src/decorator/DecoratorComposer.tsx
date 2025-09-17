@@ -21,7 +21,7 @@ const warnInvalidMiddlewarePropsSchema = optional(
 type DecoratorComposerProps = Omit<InferInput<typeof decoratorComposerPropsSchema>, 'middleware'> & {
   // Mark "middleware" as read-only.
   // Otherwise, passing a read-only middleware would fail because we prefer writable.
-  // eslint-disable-next-line react/require-default-props, react/no-unused-prop-types
+  // eslint-disable-next-line react/no-unused-prop-types
   readonly middleware?: readonly DecoratorMiddleware[] | undefined;
 };
 

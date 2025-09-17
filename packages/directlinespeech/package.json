@@ -21,9 +21,10 @@
     }
   },
   "scripts": {
-    "build": "npm run build:tsup && npm run build:babel && npm run build:webpack",
+    "build": "npm run build:tsup && npm run build:babel && npm run build:webpack && npm run build:validate",
     "build:babel": "cross-env build_tool=babel module_format=commonjs babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
     "build:tsup": "tsup",
+    "build:validate": "if grep -R -n -F --include='*.d.ts' --include='*.d.mts' '@msinternal/' ./dist/; then echo '*.d.ts files should not import \"@msinternal/*\"' >&2; exit 1; fi",
     "build:webpack": "npm run build:webpack:development && npm run build:webpack:production",
     "build:webpack:development": "cross-env node_env=development webpack-cli",
     "build:webpack:production": "cross-env node_env=production webpack-cli",

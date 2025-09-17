@@ -21,6 +21,7 @@ export default defineConfig([
       ...commonConfig.define,
       'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"'
     },
+    dts: { resolve: true },
     format: 'esm'
   },
   {
@@ -29,6 +30,7 @@ export default defineConfig([
       ...commonConfig.define,
       'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"commonjs"'
     },
+    dts: { resolve: true },
     format: 'cjs',
     target: [...commonConfig.target, 'es2019']
   }

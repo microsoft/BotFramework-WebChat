@@ -22,3 +22,4 @@ const Context = createContext<ContextType>(Object.create({}, defaultContextValue
 Context.displayName = 'AssetComposerContext';
 
 export default Context;
+export { type ContextType };

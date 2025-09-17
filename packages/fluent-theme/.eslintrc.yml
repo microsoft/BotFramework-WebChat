@@ -9,3 +9,12 @@ env:
 rules:
   react/destructuring-assignment: off
   react/require-default-props: off
+  no-restricted-imports:
+    - error
+    - patterns:
+      - group:
+        - botframework-webchat-*
+        - '!botframework-webchat-base' # It is okay to import from private packages.
+        - '!botframework-webchat-react-valibot' # It is okay to import from private packages.
+        - '!botframework-webchat-styles' # It is okay to import from private packages.
+        message: Imports only from "bundle" package but not other packages under it

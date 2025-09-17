@@ -1,4 +1,4 @@
-import { createIconComponent } from 'botframework-webchat-component/internal';
+import { createIconComponent } from 'botframework-webchat/internal';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import cx from 'classnames';

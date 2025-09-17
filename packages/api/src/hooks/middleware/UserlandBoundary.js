@@ -1,7 +1,7 @@
-import { ErrorBoxPolymiddlewareProxy } from '@msinternal/botframework-webchat-api-middleware';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
+import { ErrorBoxPolymiddlewareProxy } from '../../package-api-middleware/index';
 import ErrorBoundary from '../utils/ErrorBoundary';
 
 const UserlandBoundary = ({ children, type }) => {

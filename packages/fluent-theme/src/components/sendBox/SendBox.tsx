@@ -1,4 +1,4 @@
-import { hooks, Components, type SendBoxFocusOptions } from 'botframework-webchat-component';
+import { Components, hooks } from 'botframework-webchat';
 import cx from 'classnames';
 import React, {
   memo,
@@ -11,10 +11,10 @@ import React, {
 } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import { FluentIcon } from '../icon';
 import { useStyles, useVariantClassName } from '../../styles';
 import testIds from '../../testIds';
 import { DropZone } from '../dropZone';
+import { FluentIcon } from '../icon';
 import { SuggestedActions } from '../suggestedActions';
 import { TelephoneKeypadSurrogate, useTelephoneKeypadShown, type DTMF } from '../telephoneKeypad';
 import AddAttachmentButton from './AddAttachmentButton';
@@ -75,7 +75,7 @@ function SendBox(props: Props) {
 
   useRegisterFocusSendBox(
     useCallback(
-      ({ noKeyboard, waitUntil }: SendBoxFocusOptions) => {
+      ({ noKeyboard, waitUntil }) => {
         if (!inputRef.current) {
           return;
         }

@@ -1,8 +1,7 @@
-import { type ContextOf } from 'botframework-webchat-api';
 import { useContext as useReactContext } from 'react';
 
-import Context from './Context';
+import Context, { ContextType } from './Context';
 
-export default function useContext(): ContextOf<typeof Context> {
+export default function useContext(): ContextType {
   return useReactContext(Context);
 }

@@ -1,5 +1,5 @@
-import { hooks } from 'botframework-webchat-component';
-import { type DirectLineCardAction } from 'botframework-webchat-core';
+import { hooks } from 'botframework-webchat';
+import { type DirectLineCardAction } from 'botframework-webchat/internal';
 import cx from 'classnames';
 import React, { MouseEventHandler, memo, useCallback } from 'react';
 

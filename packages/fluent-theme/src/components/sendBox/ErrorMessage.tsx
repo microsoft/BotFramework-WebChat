@@ -1,4 +1,4 @@
-import { useLiveRegion } from 'botframework-webchat-component/internal';
+import { useLiveRegion } from 'botframework-webchat/internal';
 import React, { memo } from 'react';
 import { useStyles } from '../../styles';
 import styles from './ErrorMessage.module.css';

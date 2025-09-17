@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <style type="text/css">
+      /* TODO: [P*] Can we eliminate this style? */
+      .fui-FluentProvider,
+      .webchat-fluent {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme",
+          "botframework-webchat": "/__dist__/packages/bundle/dist/botframework-webchat.mjs",
+          "botframework-webchat/internal": "/__dist__/packages/bundle/dist/botframework-webchat/internal.mjs",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/dist/botframework-webchat-fluent-theme.mjs",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script type="module">
+      import React from 'react';
+
+      // We should allow using React from environment.
+      // When web devs import Web Chat as <script type="module">, we want to enable customization.
+      // Customization requires React.createElement() and calling some hooks.
+      window.React = React;
+    </script>
+    <script type="module">
+      import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
+      import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      const { useStyleOptions } = hooks;
+      const {
+        testHelpers: { createDirectLineEmulator }
+      } = window;
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        const fluentTheme = {
+          ...createDarkTheme({
+            10: '#12174c',
+            20: '#1a1f5b',
+            30: '#21276a',
+            40: '#293079',
+            50: '#303788',
+            60: '#384097',
+            70: '#4049a7',
+            80: '#151e80',
+            90: '#4f59c5',
+            100: '#5661d4',
+            110: '#5e69e3',
+            120: '#7982e8',
+            130: '#949bec',
+            140: '#afb5f1',
+            150: '#c9cdf6',
+            160: '#e4e6fa'
+          }),
+          colorNeutralBackground1Disabled: '#101010',
+          colorNeutralBackground1Hover: '#101010',
+          colorNeutralForeground5: '#424242'
+        };
+
+        createRoot(document.getElementsByTagName('main')[0]).render(
+          createElement(
+            FluentProvider,
+            { className: 'fui-FluentProvider', theme: fluentTheme },
+            createElement(
+              FluentThemeProvider,
+              { variant: 'fluent' },
+              createElement(ReactWebChat, { directLine, store })
+            )
+          )
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity('Hello, World!');
+
+        await pageConditions.numActivitiesShown(1);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import { Components } from 'botframework-webchat-component';
+import { Components } from 'botframework-webchat';
 import cx from 'classnames';
 import React, { memo, useCallback, useEffect, useRef, type KeyboardEventHandler, type ReactNode } from 'react';
 import { useRefFrom } from 'use-ref-from';

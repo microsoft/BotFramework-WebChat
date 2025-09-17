@@ -1,4 +1,4 @@
-/* global Observable */
+import Observable from 'core-js-pure/features/observable';
 
 export default function shareObservable(observable) {
   let observers = [];

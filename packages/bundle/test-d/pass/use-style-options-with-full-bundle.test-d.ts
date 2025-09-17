@@ -1,6 +1,6 @@
 import '../setup';
 
-import { hooks } from '../../src/boot/exports/full';
+import { hooks } from '../../src/exports/full';
 
 const [styleOptions] = hooks.useStyleOptions();
 
