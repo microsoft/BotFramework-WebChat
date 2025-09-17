@@ -4,7 +4,7 @@
   display: grid;
   grid-template-areas: 'content';
   outline: 0;
-  
+
   --webchat__transcript--spacing: 10px;
 
   .transcript-focus-area__indicator,
@@ -24,16 +24,21 @@
     min-width: 0;
   }
 
-  &:focus .transcript-focus-area__content--focused > .transcript-focus-area__content-overlay .transcript-focus-area__indicator {
+  &:focus
+    .transcript-focus-area__content--focused
+    > .transcript-focus-area__content-overlay
+    .transcript-focus-area__indicator {
     border-color: var(--webchat__color--transcript-activity-visual-keyboard-indicator);
     border-style: var(--webchat__border-style--transcript-activity-visual-keyboard-indicator);
     border-width: var(--webchat__border-width--transcript-activity-visual-keyboard-indicator);
-    inset: calc(var(--webchat__transcript--spacing) / -2) calc(var(--webchat__transcript--spacing) / 2) calc(var(--webchat__transcript--spacing) / -2) calc(var(--webchat__transcript--spacing) / 2);
+    inset: calc(var(--webchat__transcript--spacing) / -2) calc(var(--webchat__transcript--spacing) / 2)
+      calc(var(--webchat__transcript--spacing) / -2) calc(var(--webchat__transcript--spacing) / 2);
     position: absolute;
   }
 
   &:focus-visible .transcript-focus-area__transcript-indicator,
-  .transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible) + .transcript-focus-area__transcript-indicator {
+  .transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible)
+    + .transcript-focus-area__transcript-indicator {
     border-color: var(--webchat__border-color--transcript-visual-keyboard-indicator);
     border-style: var(--webchat__border-style--transcript-visual-keyboard-indicator);
     border-width: var(--webchat__border-width--transcript-visual-keyboard-indicator);

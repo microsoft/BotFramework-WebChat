@@ -277,9 +277,8 @@
   }
 }
 
-:global(.webchat-fluent).theme.variant-copilot
-  :global(.transcript-focus-area) {
-    --webchat__transcript--spacing: var(--webchat-spacingVerticalM);
+:global(.webchat-fluent).theme.variant-copilot :global(.transcript-focus-area) {
+  --webchat__transcript--spacing: var(--webchat-spacingVerticalM);
 }
 
 :global(.webchat-fluent).theme.variant-copilot
@@ -289,7 +288,10 @@
 
 /* Transcript focus indicator color when in focus-visible state */
 :global(.webchat-fluent).theme
-  :global(.transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible) + .transcript-focus-area__transcript-indicator) {
+  :global(
+    .transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible)
+    + .transcript-focus-area__transcript-indicator
+  ) {
   border-color: var(--webchat-colorStrokeFocus2);
 }
 
@@ -334,7 +336,8 @@
     }
   }
 
-  &:has(:global(.collapsible-grouping)) > :global(.transcript-focus-area__content-overlay .transcript-focus-area__indicator) {
+  &:has(:global(.collapsible-grouping))
+    > :global(.transcript-focus-area__content-overlay .transcript-focus-area__indicator) {
     display: none;
   }
 
@@ -376,7 +379,8 @@
 }
 
 /* Transcript focused content copilot variant */
-:global(.webchat-fluent).theme.variant-copilot :global(.transcript-focus-area:focus-visible .transcript-focus-area__content--focused) {
+:global(.webchat-fluent).theme.variant-copilot
+  :global(.transcript-focus-area:focus-visible .transcript-focus-area__content--focused) {
   :global(.collapsible-grouping)::after {
     inset: -2px -4px;
   }

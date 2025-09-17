@@ -31,7 +31,7 @@
   outline-offset: -2px;
 }
 
-:global(.webchat) .code-block-copy-button[aria-disabled="true"] {
+:global(.webchat) .code-block-copy-button[aria-disabled='true'] {
   background: #f0f0f0;
   border: 1px solid #e0e0e0;
   color: #bdbdbd;

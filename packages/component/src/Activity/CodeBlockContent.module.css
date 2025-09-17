@@ -1,6 +1,5 @@
 :global(.webchat) .code-block-content {
-  border: var(--webchat__border-width--bubble) var(--webchat__border-style--bubble)
-    var(--webchat__border-color--bubble);
+  border: var(--webchat__border-width--bubble) var(--webchat__border-style--bubble) var(--webchat__border-color--bubble);
   border-radius: var(--webchat__border-radius--bubble);
   display: block;
   font-family: var(--webchat__font--primary);
@@ -9,8 +8,11 @@
   font-weight: 400;
   margin: 0 calc(var(--webchat__border-width--bubble) * -1) calc(var(--webchat__border-width--bubble) * -1);
   overflow: hidden;
-  overflow: clip;
   position: relative;
+
+  @supports (overflow: clip) {
+    overflow: clip;
+  }
 }
 
 :global(.webchat) .code-block-content__header {
