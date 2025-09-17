@@ -107,6 +107,16 @@ const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../
     express.static(resolve(fileURLToPath(import.meta.url), '../../../bundle/dist'))
   );
 
+  app.use(
+    /^\/__dist__\/packages\/debug-theme\/dist\/*$/u,
+    express.static(resolve(fileURLToPath(import.meta.url), '../../../debug-theme/dist'))
+  );
+
+  app.use(
+    /^\/__dist__\/packages\/fluent-theme\/dist\/*$/u,
+    express.static(resolve(fileURLToPath(import.meta.url), '../../../fluent-theme/dist'))
+  );
+
   // Other requests will be served by `serve-handler` based on `/serve-test.json`.
   app.use((req, res) => serve(req, res, { ...serveConfigJSON, public: resolveFromRepositoryRoot() }));
 

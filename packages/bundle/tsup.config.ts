@@ -38,7 +38,8 @@ function buildApplyConfig(format: Format, bundled: boolean) {
         },
         entry: {
           'botframework-webchat': './src/exports/full.ts',
-          'botframework-webchat.middleware': './src/exports/middleware.ts'
+          'botframework-webchat/internal': './src/exports/internal.ts',
+          'botframework-webchat/middleware': './src/exports/middleware.ts'
         },
         env: {
           // Followings are required by microsoft-cognitiveservices-speech-sdk:

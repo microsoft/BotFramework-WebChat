@@ -1,4 +1,4 @@
-import { hooks } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat';
 import cx from 'classnames';
 import React, {
   memo,

@@ -2,8 +2,8 @@
   "name": "botframework-webchat",
   "version": "0.0.0-0",
   "description": "A highly-customizable web-based chat client for Azure Bot Services.",
-  "main": "./dist/botframework-webchat.js",
-  "types": "./dist/botframework-webchat.d.ts",
+  "main": "./exports/botframework-webchat.js",
+  "types": "./exports/botframework-webchat.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -16,15 +16,26 @@
         "default": "./exports/botframework-webchat.js"
       }
     },
-    "./middleware": {
+    "./internal": {
       "import": {
-        "bundle // TODO: [P*] Think if we should export fat/bundled using conditions": "./dist/botframework-webchat.middleware.d.mts",
-        "types": "./exports/botframework-webchat.middleware.d.mts",
-        "default": "./exports/botframework-webchat.middleware.mjs"
+        "bundle // TODO: [P*] Think if we should export fat/bundled using conditions": "./dist/botframework-webchat/internal.d.mts",
+        "types": "./exports/botframework-webchat/internal.d.mts",
+        "default": "./exports/botframework-webchat/internal.mjs"
       },
       "require": {
-        "types": "./exports/botframework-webchat.middleware.d.ts",
-        "default": "./exports/botframework-webchat.middleware.js"
+        "types": "./exports/botframework-webchat/internal.d.ts",
+        "default": "./exports/botframework-webchat/internal.js"
+      }
+    },
+    "./middleware": {
+      "import": {
+        "bundle // TODO: [P*] Think if we should export fat/bundled using conditions": "./dist/botframework-webchat/middleware.d.mts",
+        "types": "./exports/botframework-webchat/middleware.d.mts",
+        "default": "./exports/botframework-webchat/middleware.mjs"
+      },
+      "require": {
+        "types": "./exports/botframework-webchat/middleware.d.ts",
+        "default": "./exports/botframework-webchat/middleware.js"
       }
     }
   },
@@ -44,6 +55,8 @@
   "files": [
     "./dist/**/*",
     "./exports/**/*",
+    "./internal.js",
+    "./middleware.js",
     "./src/**/*"
   ],
   "tsd": {
@@ -60,7 +73,9 @@
   "scripts": {
     "build": "npm run build:tsup && npm run build:validate",
     "build:tsup": "tsup",
-    "build:validate": "if grep -R -n -F --include='*.d.ts' --include='*.d.mts' '@msinternal/' ./dist/; then echo '*.d.ts files should not import \"@msinternal/*\"' >&2; exit 1; fi",
+    "build:validate": "npm run build:validate:import && npm run build:validate:internal",
+    "build:validate:import": "if grep -R -n -P --include='*.mjs' '}\\s*from\\s*\"[^.]' ./dist/; then echo '*.mjs files should not import from other packages' >&2; exit 1; fi",
+    "build:validate:internal": "if grep -R -n -F --include='*.d.ts' --include='*.d.mts' '@msinternal/' ./dist/; then echo '*.d.ts files should not import \"@msinternal/*\"' >&2; exit 1; fi",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",

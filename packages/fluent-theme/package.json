@@ -2,20 +2,22 @@
   "name": "botframework-webchat-fluent-theme",
   "version": "0.0.0-0",
   "description": "Fluent theme for Bot Framework Web Chat",
-  "main": "./dist/botframework-webchat-fluent-theme.js",
-  "types": "./dist/botframework-webchat-fluent-theme.d.ts",
+  "main": "./exports/botframework-webchat-fluent-theme.js",
+  "types": "./exports/botframework-webchat-fluent-theme.d.ts",
   "publishConfig": {
     "access": "public"
   },
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/botframework-webchat-fluent-theme.d.mts",
-        "default": "./dist/botframework-webchat-fluent-theme.mjs"
+        "bundle // TODO: [P*] Think if we should export fat/bundled using conditions": "./dist/botframework-webchat-fluent-theme.mjs",
+        "types": "./exports/botframework-webchat-fluent-theme.d.mts",
+        "default": "./exports/botframework-webchat-fluent-theme.mjs"
       },
       "required": {
-        "types": "./dist/botframework-webchat-fluent-theme.d.ts",
-        "default": "./dist/botframework-webchat-fluent-theme.js"
+        "bundle // TODO: [P*] Think if we should export fat/bundled using conditions": "./dist/botframework-webchat-fluent-theme.js",
+        "types": "./exports/botframework-webchat-fluent-theme.d.ts",
+        "default": "./exports/botframework-webchat-fluent-theme.js"
       }
     }
   },
@@ -40,7 +42,9 @@
   "scripts": {
     "build": "npm run build:tsup && npm run build:validate",
     "build:tsup": "tsup",
-    "build:validate": "if grep -R -n -F --include='*.d.ts' --include='*.d.mts' '@msinternal/' ./dist/; then echo '*.d.ts files should not import \"@msinternal/*\"' >&2; exit 1; fi",
+    "build:validate": "npm run build:validate:import && npm run build:validate:internal",
+    "build:validate:import": "if grep -R -n -P --include='*.mjs' '}\\s*from\\s*\"(?!(\\.|botframework-webchat(\"|/)))' ./dist/; then echo '*.mjs files should not import from other packages' >&2; exit 1; fi",
+    "build:validate:internal": "if grep -R -n -F --include='*.d.ts' --include='*.d.mts' '@msinternal/' ./dist/; then echo '*.d.ts files should not import \"@msinternal/*\"' >&2; exit 1; fi",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -77,6 +81,7 @@
     "@types/math-random": "^1.0.2",
     "@types/node": "^24.1.0",
     "@types/react": "^16.14.65",
+    "escape-string-regexp": "^5.0.0",
     "tsup": "^8.5.0",
     "typescript": "~5.8.3"
   },

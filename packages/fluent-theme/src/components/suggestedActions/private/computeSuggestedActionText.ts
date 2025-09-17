@@ -1,4 +1,4 @@
-import type { DirectLineCardAction } from 'botframework-webchat-core';
+import { type DirectLineCardAction } from 'botframework-webchat/internal';
 
 // Please refer to this article to find out how to compute the "button text" for suggested action.
 // https://github.com/Microsoft/botframework-sdk/blob/main/specs/botframework-activity/botframework-activity.md#card-action

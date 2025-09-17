@@ -144,13 +144,13 @@ function applyConfig(
     ...nextOptions,
     onSuccess: nextOptions.dts
       ? [
-          `while [ -z "$(find ${tmpDir} \\( -name '*.d.ts' -o -name '*.d.mts' \\) -print -quit)" ]; do sleep 0.2; done; mkdir -p ${outDir}; sleep 0.5; until cp ${tmpDir}/* ${outDir} 2>/dev/null; do sleep 0.5; done`,
+          `while [ -z "$(find ${tmpDir} \\( -name '*.d.ts' -o -name '*.d.mts' \\) -print -quit)" ]; do sleep 0.2; done; mkdir -p ${outDir}; sleep 0.5; until cp --recursive ${tmpDir}/* ${outDir} 2>/dev/null; do sleep 0.5; done`,
           nextOptions.onSuccess
         ]
           .filter(Boolean)
           .join(' && ')
       : [
-          `mkdir -p ${outDir}; sleep 0.5; until cp ${tmpDir}/* ${outDir} 2>/dev/null; do sleep 0.5; done`,
+          `mkdir -p ${outDir}; sleep 0.5; until cp --recursive ${tmpDir}/* ${outDir} 2>/dev/null; do sleep 0.5; done`,
           nextOptions.onSuccess
         ]
           .filter(Boolean)

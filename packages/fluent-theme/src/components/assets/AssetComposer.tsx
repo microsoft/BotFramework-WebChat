@@ -1,10 +1,7 @@
-import { type ContextOf } from 'botframework-webchat-api';
 import React, { memo, useEffect, useMemo, type ReactNode } from 'react';
 
 import { type AssetName } from './AssetName';
-import Context from './private/Context';
-
-type ContextType = ContextOf<typeof Context>;
+import Context, { type ContextType } from './private/Context';
 
 type AssetComposerProps = Readonly<{
   children?: ReactNode | undefined;
