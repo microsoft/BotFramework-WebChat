@@ -78,14 +78,16 @@ function buildApplyConfig(format: Format, bundled: boolean) {
         entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
         esbuildPlugins: [
           // Intentionally overriding existing esbuild plugins.
-          // ...(config.esbuildPlugins || []),
+          ...(config.esbuildPlugins || []),
           injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
           reactResolvePlugin
         ],
         external: bundled ? EXTERNAL_PACKAGES : undefined,
         format,
         noExternal: bundled
-          ? [new RegExp(`^(?!${EXTERNAL_PACKAGES.map(packageName => `(${packageName}($|\/))`, 'u').join('|')}).+`)]
+          ? // The pattern is being escaped properly.
+            // eslint-disable-next-line security/detect-non-literal-regexp
+            [new RegExp(`^(?!${EXTERNAL_PACKAGES.map(packageName => `(${packageName}($|/))`, 'u').join('|')}).+`, 'u')]
           : [
               ...(config.noExternal ?? []),
               '@babel/runtime',
@@ -100,7 +102,7 @@ function buildApplyConfig(format: Format, bundled: boolean) {
               'uuid'
             ],
         outDirWithTemp: bundled ? undefined : ['./exports/', './exports.tmp/'],
-        target: format === 'cjs' || format === 'iife' ? [...config.target, 'es2019'] : config.target
+        target: format === 'cjs' ? [...config.target, 'es2019'] : config.target
       })
     );
 }
@@ -117,11 +119,8 @@ export default defineConfig([
   )(config => ({
     ...config,
     entry: { 'botframework-webchat-fluent-theme.development': './src/bundle.ts' },
-    esbuildPlugins: [
-      ...(config.esbuildPlugins || []),
-      umdResolvePlugin,
-      injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
-    ],
+    // esbuildPlugins: [...(config.esbuildPlugins || []), umdResolvePlugin],
+    esbuildPlugins: [umdResolvePlugin],
     outExtension() {
       return { js: '.js' };
     }
@@ -132,11 +131,9 @@ export default defineConfig([
   )(config => ({
     ...config,
     entry: { 'botframework-webchat-fluent-theme.production.min': './src/bundle.ts' },
-    esbuildPlugins: [
-      ...(config.esbuildPlugins || []),
-      umdResolvePlugin,
-      injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
-    ],
+    // esbuildPlugins: [...(config.esbuildPlugins || []), umdResolvePlugin],
+    esbuildPlugins: [umdResolvePlugin],
+    minify: true,
     outExtension() {
       return { js: '.js' };
     }
