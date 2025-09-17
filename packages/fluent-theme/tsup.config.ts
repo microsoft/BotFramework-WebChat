@@ -78,7 +78,7 @@ function buildApplyConfig(format: Format, bundled: boolean) {
         entry: { 'botframework-webchat-fluent-theme': './src/index.ts' },
         esbuildPlugins: [
           // Intentionally overriding existing esbuild plugins.
-          ...(config.esbuildPlugins || []),
+          // ...(config.esbuildPlugins || []),
           injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
           reactResolvePlugin
         ],
@@ -119,8 +119,8 @@ export default defineConfig([
   )(config => ({
     ...config,
     entry: { 'botframework-webchat-fluent-theme.development': './src/bundle.ts' },
-    // esbuildPlugins: [...(config.esbuildPlugins || []), umdResolvePlugin],
-    esbuildPlugins: [umdResolvePlugin],
+    esbuildPlugins: [...(config.esbuildPlugins || []), umdResolvePlugin],
+    // esbuildPlugins: [umdResolvePlugin],
     outExtension() {
       return { js: '.js' };
     }
@@ -131,8 +131,8 @@ export default defineConfig([
   )(config => ({
     ...config,
     entry: { 'botframework-webchat-fluent-theme.production.min': './src/bundle.ts' },
-    // esbuildPlugins: [...(config.esbuildPlugins || []), umdResolvePlugin],
-    esbuildPlugins: [umdResolvePlugin],
+    esbuildPlugins: [...(config.esbuildPlugins || []), umdResolvePlugin],
+    // esbuildPlugins: [umdResolvePlugin],
     minify: true,
     outExtension() {
       return { js: '.js' };
