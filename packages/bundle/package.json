@@ -15,6 +15,16 @@
         "default": "./dist/botframework-webchat.js"
       }
     },
+    "./internal": {
+      "import": {
+        "types": "./dist/botframework-webchat.internal.d.mts",
+        "default": "./dist/botframework-webchat.internal.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat.internal.d.ts",
+        "default": "./dist/botframework-webchat.internal.js"
+      }
+    },
     "./middleware": {
       "import": {
         "types": "./dist/botframework-webchat.middleware.d.mts",

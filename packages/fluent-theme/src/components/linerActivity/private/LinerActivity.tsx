@@ -1,5 +1,6 @@
-import { type WebChatActivity } from 'botframework-webchat-core';
+import { type WebChatActivity } from 'botframework-webchat/internal';
 import React, { memo } from 'react';
+
 import { useStyles } from '../../../styles/index.js';
 import styles from './LinerMessageActivity.module.css';
 

@@ -131,6 +131,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - The `position` property takes precedence over existing sequence ID
 - Unified build info and injection of `<meta>` tag, in PR [#5571](https://github.com/microsoft/BotFramework-WebChat/pull/5571), by [@compulim](https://github.com/compulim)
 - Added documentation for `isPartOf` property, in PR [#5573](https://github.com/microsoft/BotFramework-WebChat/pull/5573), by [@compulim](https://github.com/compulim)
+- `fluent-theme`: Changed dependencies to import solely from the "bundle" package, in PR [#5584](https://github.com/microsoft/BotFramework-WebChat/pull/5584), by [@compulim](https://github.com/compulim)
 
 ### Changed
 

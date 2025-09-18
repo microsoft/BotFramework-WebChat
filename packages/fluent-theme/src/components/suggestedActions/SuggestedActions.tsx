@@ -1,6 +1,7 @@
-import { hooks } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat';
 import cx from 'classnames';
 import React, { memo, useCallback, type ReactNode } from 'react';
+
 import { useStyles } from '../../styles';
 import { isPreChatMessageActivity } from '../preChatActivity';
 import computeSuggestedActionText from './private/computeSuggestedActionText';

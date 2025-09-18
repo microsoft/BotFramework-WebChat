@@ -1,11 +1,12 @@
-import { hooks } from 'botframework-webchat-component';
-import { type WebChatActivity } from 'botframework-webchat-core';
+import { hooks } from 'botframework-webchat';
+import { type WebChatActivity } from 'botframework-webchat/internal';
 import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
+
 import { useStyles } from '../../styles/index.js';
+import { useActivityAuthor } from '../activity/index.js';
 import styles from './PreChatMessageActivity.module.css';
 import StarterPromptsToolbar from './StarterPromptsToolbar.js';
-import { useActivityAuthor } from '../activity/index.js';
 
 type Props = Readonly<{ activity: WebChatActivity & { type: 'message' } }>;
 
