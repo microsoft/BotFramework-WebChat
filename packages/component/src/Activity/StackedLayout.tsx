@@ -32,7 +32,9 @@ type StackedLayoutInnerProps = Readonly<{
   activity: WebChatActivity;
   children?: ReactNode | undefined;
   fromUser: boolean;
+  hasAvatar: boolean;
   hasDisplayText: boolean;
+  hasNub: boolean;
   id: string;
   renderAvatar?: false | (() => Exclude<ReactNode, boolean | null | undefined>) | undefined;
   renderBubbleContent: (title?: string | undefined, showStatus?: boolean) => ReactNode;
@@ -45,30 +47,23 @@ const StackedLayoutInner = memo(
     activity,
     children,
     fromUser,
+    hasAvatar,
     hasDisplayText,
+    hasNub,
     id,
     renderAvatar,
     renderBubbleContent,
     showAvatar,
     showNub
   }: StackedLayoutInnerProps) => {
-    const [styleOptions] = useStyleOptions();
     const [{ initials: botInitials }] = useAvatarForBot();
-    const [{ initials: userInitials }] = useAvatarForUser();
     const localize = useLocalizer();
     const classNames = useStyles(styles);
 
     const messageThing = useMemo(() => getOrgSchemaMessage(activity.entities), [activity]);
-    const { bubbleNubSize, bubbleFromUserNubSize } = styleOptions;
     const greetingAlt = (
       fromUser ? localize('ACTIVITY_YOU_SAID_ALT') : localize('ACTIVITY_BOT_SAID_ALT', botInitials || '')
     ).replace(/\s{2,}/gu, ' ');
-
-    const initials = fromUser ? userInitials : botInitials;
-    const nubSize = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
-
-    const hasAvatar = initials || typeof initials === 'string';
-    const hasNub = typeof nubSize === 'number';
 
     return (
       <StackedLayoutMain avatar={showAvatar && renderAvatar && renderAvatar()}>
@@ -147,18 +142,18 @@ const StackedLayout = ({
   const nubSize = fromUser ? bubbleFromUserNubSize : bubbleNubSize;
   const otherInitials = fromUser ? botInitials : userInitials;
   const otherNubSize = fromUser ? bubbleNubSize : bubbleFromUserNubSize;
+  const activityKey = useGetKeyByActivity()(activity);
+  const isInGroup = !!useGetLogicalGroupKey()(activityKey);
 
-  const hasAvatar = initials || typeof initials === 'string';
+  const hasAvatar = (initials || typeof initials === 'string') && !isInGroup;
   const hasOtherAvatar = otherInitials || typeof otherInitials === 'string';
   const hasNub = typeof nubSize === 'number';
   const hasOtherNub = typeof otherNubSize === 'number';
   const topAlignedCallout = isZeroOrPositive(nubOffset);
-  const activityKey = useGetKeyByActivity()(activity);
-  const isInGroup = !!useGetLogicalGroupKey()(activityKey);
 
   const extraTrailing = !hasOtherAvatar && hasOtherNub; // This is for bot message with user nub and no user avatar. And vice versa.
 
-  const showAvatar = !isInGroup && showCallout && hasAvatar && !!renderAvatar;
+  const showAvatar = showCallout && hasAvatar && !!renderAvatar;
   const showNub = !isInGroup && showCallout && hasNub && (topAlignedCallout || !attachments?.length);
 
   const showStatus = !!messageThing?.creativeWorkStatus || isInGroup;
@@ -304,6 +299,7 @@ const StackedLayout = ({
       fromUser={fromUser}
       hideAvatar={hasAvatar && !showAvatar}
       hideNub={hasNub && !showNub}
+      isActivity={true}
       noMessage={!activityDisplayText && !isCollapsible}
       showAvatar={showAvatar}
       showNub={showNub}
@@ -312,7 +308,9 @@ const StackedLayout = ({
       <StackedLayoutInner
         activity={activity}
         fromUser={fromUser}
+        hasAvatar={hasAvatar}
         hasDisplayText={!!activityDisplayText?.length || isCollapsible}
+        hasNub={hasNub}
         id={ariaLabelId}
         renderAvatar={renderAvatar}
         renderBubbleContent={renderBubbleContent}
