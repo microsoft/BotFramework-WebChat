@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Part grouping: navigation</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+        {
+          "imports": {
+            "react": "https://esm.sh/react@18.3.1",
+            "react-dom": "https://esm.sh/react-dom@18.3.1",
+            "react-dom/": "https://esm.sh/react-dom@18.3.1/",
+            "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+            "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme"
+          }
+        }
+      </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script defer crossorigin="anonymous"src="/__dist__/botframework-webchat-fluent-theme.development.js"></script>
+    <style type="text/css">
+      #webchat {
+        width: 640px;
+      }
+
+      .fui-FluentProvider {
+        height: 100%;
+      }
+
+      .theme.variant-copilot {
+        --webchat__color--surface: var(--colorGrey98);
+      }
+
+      #key-history {
+        align-items: center;
+        display: flex;
+        gap: 0.5em;
+        left: 0.5em;
+        padding: 0.5em;
+        position: fixed;
+        top: 0.5em;
+        z-index: 1;
+        font-size: 3rem;
+      }
+
+      #key-history kbd {
+        background-color: #f7f7f7;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-shadow: 0 1px 0 #aaaaaa44, 0 2px 0 #ffffff44 inset;
+        color: #222;
+        font-weight: bold;
+        padding: 0.2em 0.6em;
+        text-align: center;
+      }
+      #key-history kbd:last-of-type {
+        background-color: #e4e8ec;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="key-history" aria-hidden="true"></div>
+    <main id="webchat"></main>
+    <script type="module">
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
+      import { waitFor } from '@testduet/wait-for';
+
+      const KEY_MAP = {
+        ArrowDown: '↓',
+        ArrowUp: '↑'
+      };
+
+      const keyHistory = [];
+      const keyHistoryElement = document.getElementById('key-history');
+
+      const updateKeyHistory = () => {
+        const children = keyHistory.slice(-3).map(key => {
+          const kbd = document.createElement('kbd');
+
+          kbd.textContent = key;
+          return kbd;
+        });
+
+        keyHistoryElement.replaceChildren(...children);
+      };
+
+      window.addEventListener(
+        'keydown',
+        event => {
+          keyHistory.push(KEY_MAP[event.key] || event.key);
+          updateKeyHistory();
+        },
+        { capture: true }
+      );
+
+      updateKeyHistory();
+
+      run(async function () {
+        const {
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const searchParams = new URLSearchParams(location.search);
+        const variant = searchParams.get('variant');
+        const theme = searchParams.get('fluent-theme');
+
+        await host.windowSize(640, 1024, document.getElementById('webchat'));
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+        });
+
+        const root = createRoot(document.getElementById('webchat'));
+
+        let fluentTheme;
+        let codeBlockTheme;
+
+        if (theme === 'dark' || (window.matchMedia('(prefers-color-scheme: dark)').matches && theme !== 'light')) {
+          fluentTheme = createDarkTheme({ brand: { 100: '#5661d4' } });
+          codeBlockTheme = 'github-dark-default';
+        } else {
+          fluentTheme = webLightTheme;
+          codeBlockTheme = 'github-light-default';
+        }
+
+        if (variant) {
+          window.checkAccessibility = async () => {};
+        }
+
+        const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
+
+        root.render(
+          variant === 'copilot' || variant === 'fluent'
+            ? React.createElement(
+                FluentProvider,
+                { className: 'fui-FluentProvider', theme: fluentTheme },
+                React.createElement(
+                  FluentThemeProvider,
+                  { variant: variant },
+                  React.createElement(ReactWebChat, webChatProps)
+                )
+              )
+            : React.createElement(ReactWebChat, webChatProps)
+        );
+
+        await pageConditions.uiConnected();
+
+        const createActivity = (id, text, groupId) => ({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              abstract: text,
+              author: { name: 'Research' },
+              isPartOf: { '@id': groupId, '@type': 'HowTo' },
+              keywords: ['AIGeneratedContent', 'AnalysisMessage'],
+              position: parseInt(id.split('-').pop(), 10),
+              type: 'https://schema.org/Message'
+            }
+          ],
+          id,
+          type: 'message'
+        });
+
+        directLine.emulateIncomingActivity({ from: { role: 'user' }, text: `Message from user.`, type: 'message' });
+        await pageConditions.numActivitiesShown(1);
+
+        // Setup: Send all activities.
+        directLine.emulateIncomingActivity(createActivity('activity-1', 'Activity 1'));
+        directLine.emulateIncomingActivity(createActivity('g1-activity-1', 'Group 1, Activity 1', 'g-00001'));
+        directLine.emulateIncomingActivity(createActivity('g1-activity-2', 'Group 1, Activity 2', 'g-00001'));
+        directLine.emulateIncomingActivity(createActivity('g2-activity-1', 'Group 2, Activity 1', 'g-00002'));
+        directLine.emulateIncomingActivity(createActivity('g2-activity-2', 'Group 2, Activity 2', 'g-00002'));
+        directLine.emulateIncomingActivity(createActivity('activity-2', 'Activity 2'));
+
+        await pageConditions.numActivitiesShown(7);
+        await pageObjects.focusTranscript();
+
+        const activities = pageElements.activities();
+
+        // Test Case 1: Expanded group navigation.
+        // When: Navigating up from the last activity.
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-1));
+
+        await host.sendKeys('ARROW_UP'); // activity-2 -> g2-activity-2
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-2));
+
+        await host.sendKeys('ARROW_UP'); // g2-activity-2 -> g2-activity-1
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-3));
+
+        await host.sendKeys('ARROW_UP'); // g2-activity-1 -> group 2 header
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        await host.sendKeys('ARROW_UP'); // group 2 header -> g1-activity-2
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-4));
+
+        // When: Navigating down.
+        await host.sendKeys('ARROW_DOWN'); // g1-activity-2 -> group 2 header
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        await host.sendKeys('ARROW_DOWN'); // group 2 header -> g2-activity-1
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-3));
+
+        // Test Case 2: Collapsed group navigation.
+        // When: Collapsing group 1 and group 2.
+        const groupHeaders = () => document.querySelectorAll('.collapsible-grouping__header .webchat__activity-button');
+        await waitFor(async () => expect(groupHeaders()).toHaveLength(2));
+
+        for (const header of groupHeaders()) {
+          header.click();
+        }
+        await waitFor(async () => expect(document.querySelectorAll('button[aria-expanded="false"]')).toHaveLength(2));
+        await pageObjects.focusTranscript();
+
+        // Then: Focus should be on the last activity.
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-3));
+
+        await host.sendKeys('ARROW_DOWN'); // group 2 header -> activity-2
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-1));
+
+        // When: Navigating up.
+        await host.sendKeys('ARROW_UP'); // activity-2 -> group 2 header
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        await host.sendKeys('ARROW_UP'); // group 2 header -> group 1 header
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        await host.sendKeys('ARROW_UP'); // group 1 header -> activity-1
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-6));
+
+        // When: Navigating down.
+        await host.sendKeys('ARROW_DOWN'); // activity-1 -> group 1 header
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        await host.sendKeys('ARROW_DOWN'); // group 1 header -> group 2 header
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        await host.sendKeys('ARROW_DOWN'); // group 2 header -> activity-2
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-1));
+
+        // Test Case 3: Mixed group navigation.
+        // When: Expanding group 1, keeping group 2 collapsed.
+        const collapsedGroupHeaders = () => document.querySelectorAll('button[aria-expanded="false"]');
+        await waitFor(async () => expect(collapsedGroupHeaders()).toHaveLength(2));
+        collapsedGroupHeaders()[0].click(); // Expand group 1.
+        await waitFor(async () => expect(document.querySelectorAll('button[aria-expanded="true"]')).toHaveLength(1));
+        await pageObjects.focusTranscript();
+
+        // Then: Focus should be on the last activity.
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-1));
+
+        // When: Navigating up.
+        await host.sendKeys('ARROW_UP'); // activity-2 -> group 2 header (collapsed)
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        await host.sendKeys('ARROW_UP'); // group 2 header -> g1-activity-2 (expanded)
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-4));
+
+        await host.sendKeys('ARROW_UP'); // g1-activity-2 -> g1-activity-1
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-5));
+
+        await host.sendKeys('ARROW_UP'); // g1-activity-1 -> group 1 header
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        await host.sendKeys('ARROW_UP'); // group 1 header -> activity-1
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-6));
+
+        // When: Navigating down.
+        await host.sendKeys('ARROW_DOWN'); // activity-1 -> group 1 header
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        await host.sendKeys('ARROW_DOWN'); // group 1 header -> g1-activity-1
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-5));
+
+        await host.sendKeys('ARROW_DOWN'); // g1-activity-1 -> g1-activity-2
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-4));
+        await host.sendKeys('ARROW_DOWN'); // g1-activity-2 -> group 2 header (collapsed)
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+        await host.sendKeys('ARROW_DOWN'); // group 2 header -> activity-2
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(activities.at(-1));
+      });
+    </script>
+  </body>
+</html>
