@@ -167,7 +167,7 @@
   &.stacked-layout--show-avatar,
   &.stacked-layout--hide-nub,
   &.stacked-layout--show-nub {
-    &.stacked--activity .stacked-layout__attachment {
+    &.stacked-layout--activity .stacked-layout__attachment {
       max-width: calc(var(--webchat__max-width--attachment-bubble) + var(--webchat__padding--regular));
       min-width: calc(var(--webchat__min-width--attachment-bubble) + var(--webchat__padding--regular));
     }
@@ -193,8 +193,8 @@
     &.stacked-layout--hide-avatar,
     &.stacked-layout--show-avatar {
       > .stacked-layout__main > .stacked-layout__avatar-gutter {
+        margin-inline-end: var(--webchat__padding--regular);
         width: var(--webchat__size--avatar);
-        padding-inline-end: var(--webchat__padding--regular);
       }
     }
 
