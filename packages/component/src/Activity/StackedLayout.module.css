@@ -192,7 +192,7 @@
   &.stacked-layout--group {
     &.stacked-layout--hide-avatar,
     &.stacked-layout--show-avatar {
-      > .stacked-layout__main >  .stacked-layout__avatar-gutter {
+      > .stacked-layout__main > .stacked-layout__avatar-gutter {
         width: var(--webchat__size--avatar);
         padding-inline-end: var(--webchat__padding--regular);
       }
