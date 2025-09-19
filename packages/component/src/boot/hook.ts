@@ -52,8 +52,6 @@ const {
   useSendBoxAttachments,
   useSendBoxValue,
   useSendEvent,
-  useSendFiles,
-  useSendMessage,
   useSendMessageBack,
   useSendPostBack,
   useSendStatusByActivityKey,
@@ -130,8 +128,6 @@ export {
   useSendBoxAttachments,
   useSendBoxValue,
   useSendEvent,
-  useSendFiles,
-  useSendMessage,
   useSendMessageBack,
   useSendPostBack,
   useSendStatusByActivityKey,
@@ -156,4 +152,30 @@ export {
   useVoiceSelector
 };
 
-export * from '../hooks/index';
+export {
+  useDictateAbortable,
+  useFocus,
+  useMakeThumbnail,
+  useMicrophoneButtonClick,
+  useMicrophoneButtonDisabled,
+  useObserveScrollPosition,
+  useObserveTranscriptFocus,
+  useRegisterFocusSendBox,
+  useRenderMarkdownAsHTML,
+  useScrollDown,
+  useScrollTo,
+  useScrollToEnd,
+  useScrollUp,
+  useSendBoxSpeechInterimsVisible,
+  // We are overwriting the `useSendFiles` hook from bf-wc-api and adding thumbnailing support.
+  useSendFiles,
+  // We are overwriting the `useSendMessage` hook from bf-wc-api and adding thumbnailing support.
+  useSendMessage,
+  useShouldReduceMotion,
+  useStyleSet,
+  useTextBoxSubmit,
+  useTextBoxValue,
+  useTransformHTMLContent,
+  useTypingIndicatorVisible,
+  useWebSpeechPonyfill
+} from '../hooks/index';
