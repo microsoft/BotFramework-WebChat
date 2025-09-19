@@ -4,6 +4,7 @@ export * from '../actual/minimal';
 export * from '../actual/full';
 export {
   createStyleSet,
+  ReactWebChat as default,
   ReactWebChat,
   renderWebChat,
   version,

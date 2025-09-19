@@ -10,7 +10,7 @@ const { version } = buildInfo;
 
 // #region Overrides
 export { default as createStyleSet } from '../../createFullStyleSet';
-export { ReactWebChat as default, ReactWebChat } from './component/full';
+export { ReactWebChat } from './component/full';
 export { renderWebChat } from './renderWebChat/full';
 export { type StrictStyleOptions, type StyleOptions } from './styleOptions/full';
 export { version };
