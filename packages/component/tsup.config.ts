@@ -12,8 +12,10 @@ const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
     'botframework-webchat-component': './src/index.ts',
-    'botframework-webchat-component.internal': './src/internal.ts',
-    'botframework-webchat-component.decorator': './src/decorator/index.ts'
+    'botframework-webchat-component.component': './src/boot/component.ts',
+    'botframework-webchat-component.decorator': './src/boot/decorator.ts',
+    'botframework-webchat-component.hook': './src/boot/hook.ts',
+    'botframework-webchat-component.internal': './src/boot/internal.ts'
   },
   esbuildPlugins: [
     ...(config.esbuildPlugins ?? []),

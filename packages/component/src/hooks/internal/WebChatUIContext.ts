@@ -3,7 +3,25 @@ import { createContext, type MutableRefObject } from 'react';
 import { type FocusTranscriptInit } from '../../types/internal/FocusTranscriptInit';
 
 export type ContextType = {
-  focusTranscriptCallbacksRef: MutableRefObject<((init: FocusTranscriptInit) => Promise<void>)[]>;
+  focusTranscriptCallbacksRef: MutableRefObject<((init?: FocusTranscriptInit | undefined) => Promise<void>)[]>;
+
+  // TODO: [P0] Infer the following types.
+  dictateAbortable: any;
+  dispatchScrollPosition: any;
+  dispatchTranscriptFocusByActivityKey: any;
+  internalMarkdownItState: [any];
+  internalRenderMarkdownInline: any;
+  nonce: any;
+  numTranscriptFocusObservers: any;
+  observeScrollPosition: any;
+  observeTranscriptFocus: any;
+  renderMarkdown: any;
+  scrollToCallbacksRef: any;
+  scrollToEndCallbacksRef: any;
+  setDictateAbortable: any;
+  styleSet: any;
+  suggestedActionsAccessKey: any;
+  webSpeechPonyfill: any;
 };
 
 const context = createContext<ContextType>(undefined as ContextType);

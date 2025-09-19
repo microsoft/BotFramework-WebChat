@@ -3,8 +3,9 @@ import { hooks } from 'botframework-webchat-api';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { ReactNode, useMemo, useRef } from 'react';
 
+import { useCodeHighlighter } from '../../../hooks/internal/codeHighlighter';
 import { defaultHighlightCode, HighlightCodeFn } from '../../../hooks/internal/codeHighlighter/index';
-import { parseDocumentFragmentFromString, useCodeHighlighter } from '../../../internal';
+import parseDocumentFragmentFromString from '../../../Utils/parseDocumentFragmentFromString';
 
 import styles from './CodeBlock.module.css';
 
