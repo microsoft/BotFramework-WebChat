@@ -19,10 +19,8 @@ const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
     'botframework-webchat': './src/boot/exports/full.ts',
-    'botframework-webchat.es5': './src/boot/exports/full-es5.ts',
     'botframework-webchat.internal': './src/boot/exports/internal.ts',
-    'botframework-webchat.middleware': './src/boot/exports/middleware.ts',
-    'botframework-webchat.minimal': './src/boot/exports/minimal.ts'
+    'botframework-webchat.middleware': './src/boot/exports/middleware.ts'
   },
   env: {
     ...config.env,
