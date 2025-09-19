@@ -301,6 +301,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed [#5520](https://github.com/microsoft/BotFramework-WebChat/issues/5520). Version information should be injected when installed via npm, in PR [#5521](https://github.com/microsoft/BotFramework-WebChat/pull/5521), by [@compulim](https://github.com/compulim)
 - Fixed aria-label only announcing placeholder in feedback form, in PR [#5567](https://github.com/microsoft/BotFramework-WebChat/pull/5567)
 - Fixed placing focus on the code block content, so it is possible to scroll code via keyboard, in PR [#5575](https://github.com/microsoft/BotFramework-WebChat/pull/5575), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5581](https://github.com/microsoft/BotFramework-WebChat/issues/5581). Activities should be displayed after upgrading via `npm install`, in PR [#5582](https://github.com/microsoft/BotFramework-WebChat/pull/5582), by [@compulim](https://github.com/compulim)
 - Fixed Composer props types not resolving correctly in React 16 in PR [#5580](https://github.com/microsoft/BotFramework-WebChat/pull/5580),
 by [@lexi-taylor](https://github.com/lexi-taylor)
 

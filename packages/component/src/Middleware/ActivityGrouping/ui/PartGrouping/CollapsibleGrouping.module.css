@@ -41,7 +41,9 @@
   margin: calc(var(--webchat__padding--regular) / -2);
   overflow: clip;
   padding: calc(var(--webchat__padding--regular) / 2);
-  transition: visibility 0s, height 0.2s ease;
+  transition:
+    visibility 0s,
+    height 0.2s ease;
   visibility: hidden;
 }
 

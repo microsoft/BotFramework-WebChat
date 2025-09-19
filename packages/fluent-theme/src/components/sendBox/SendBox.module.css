@@ -105,9 +105,10 @@
     background-color: var(--webchat-colorNeutralBackground1);
     border-radius: var(--webchat-borderRadiusMedium);
     color: var(--webchat-colorNeutralForeground1);
-    transition: background-color var(--webchat-durationNormal) var(--webchat-curveAccelerateMid), color
-      var(--webchat-durationNormal) var(--webchat-curveAccelerateMid), opacity var(--webchat-durationUltraFast)
-      var(--webchat-curveAccelerateMid);
+    transition:
+      background-color var(--webchat-durationNormal) var(--webchat-curveAccelerateMid),
+      color var(--webchat-durationNormal) var(--webchat-curveAccelerateMid),
+      opacity var(--webchat-durationUltraFast) var(--webchat-curveAccelerateMid);
 
     &:hover {
       background-color: var(--webchat-colorNeutralBackground1Hover);
