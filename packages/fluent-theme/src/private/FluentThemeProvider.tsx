@@ -1,13 +1,14 @@
 /* eslint-disable prefer-arrow-callback */
-import { type ActivityMiddleware, type StyleOptions, type TypingIndicatorMiddleware } from 'botframework-webchat-api';
+import { Components, type StyleOptions } from 'botframework-webchat';
 import {
   createActivityBorderMiddleware,
   createActivityGroupingMiddleware,
   DecoratorComposer,
-  type DecoratorMiddleware
-} from 'botframework-webchat-api/decorator';
-import { Components } from 'botframework-webchat-component';
-import { WebChatDecorator } from 'botframework-webchat-component/decorator';
+  WebChatDecorator,
+  type ActivityMiddleware,
+  type DecoratorMiddleware,
+  type TypingIndicatorMiddleware
+} from 'botframework-webchat/internal';
 import React, { memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';

@@ -121,7 +121,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - `@msinternal/botframework-webchat-react-hooks` for helpers for React hooks
 - Added link sanitization and ESLint rules, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim)
 - Added blob URL sanitization and ESLint rules, in PR [#5568](https://github.com/microsoft/BotFramework-WebChat/pull/5568), by [@compulim](https://github.com/compulim)
-- Added visual message grouping following the `isPartOf` property of the `Message` entity, in PR [#5553](https://github.com/microsoft/BotFramework-WebChat/pull/5553), by [@OEvgeny](https://github.com/OEvgeny)
+- Added visual message grouping following the `isPartOf` property of the `Message` entity, in PR [#5553](https://github.com/microsoft/BotFramework-WebChat/pull/5553), in PR [#5585](https://github.com/microsoft/BotFramework-WebChat/pull/5585), by [@OEvgeny](https://github.com/OEvgeny)
    - The mode is suitable for providing chain-of-thought reasoning
    - Added visual indication of `creativeWorkStatus` property in `Message` entity:
       - `undefined` - no indicator is shown
@@ -131,6 +131,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - The `position` property takes precedence over existing sequence ID
 - Unified build info and injection of `<meta>` tag, in PR [#5571](https://github.com/microsoft/BotFramework-WebChat/pull/5571), by [@compulim](https://github.com/compulim)
 - Added documentation for `isPartOf` property, in PR [#5573](https://github.com/microsoft/BotFramework-WebChat/pull/5573), by [@compulim](https://github.com/compulim)
+- `fluent-theme`: Changed dependencies to import solely from the "bundle" package, in PR [#5584](https://github.com/microsoft/BotFramework-WebChat/pull/5584), by [@compulim](https://github.com/compulim)
 
 ### Changed
 

@@ -31,8 +31,7 @@ const config = applyConfig(config => ({
     SPEECH_CONDUCT_OCSP_CHECK: '',
     SPEECH_OCSP_CACHE_ROOT: ''
   },
-  // Intentionally overriding existing esbuild plugins.
-  esbuildPlugins: [resolveCognitiveServicesToES2015],
+  esbuildPlugins: [...(config.esbuildPlugins ?? []), resolveCognitiveServicesToES2015],
   // We need to internalize event-target-shim because it appear as transient packages with a different version.
   noExternal: [...(config.noExternal ?? []), 'event-target-shim']
 }));

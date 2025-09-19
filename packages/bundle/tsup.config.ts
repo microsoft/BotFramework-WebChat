@@ -33,6 +33,7 @@ const commonConfig = applyConfig(config => ({
   entry: {
     'botframework-webchat': './src/boot/exports/full.ts',
     'botframework-webchat.es5': './src/boot/exports/full-es5.ts',
+    'botframework-webchat.internal': './src/boot/exports/internal.ts',
     'botframework-webchat.middleware': './src/boot/exports/middleware.ts',
     'botframework-webchat.minimal': './src/boot/exports/minimal.ts'
   },
@@ -43,8 +44,7 @@ const commonConfig = applyConfig(config => ({
     SPEECH_CONDUCT_OCSP_CHECK: '',
     SPEECH_OCSP_CACHE_ROOT: ''
   },
-  // Intentionally overriding existing esbuild plugins.
-  esbuildPlugins: [resolveCognitiveServicesToES2015],
+  esbuildPlugins: [...(config.esbuildPlugins ?? []), resolveCognitiveServicesToES2015],
   noExternal: [
     ...(config.noExternal ?? []),
     '@babel/runtime',
@@ -75,7 +75,7 @@ export default defineConfig([
       'webchat-es5': './src/boot/bundle/full-es5.ts',
       'webchat-minimal': './src/boot/bundle/minimal.ts'
     },
-    esbuildPlugins: [...commonConfig.esbuildPlugins, resolveReact],
+    esbuildPlugins: [...(commonConfig.esbuildPlugins ?? []), resolveReact],
     format: 'iife',
     outExtension() {
       return { js: '.js' };

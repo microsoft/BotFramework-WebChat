@@ -39,7 +39,12 @@ const TRANSFORM_IGNORE_PACKAGES = [
   'micromark',
   'mime',
   'unist-util-stringify-position',
-  'uuid'
+  'uuid',
+
+  // Related to Adaptive Cards.
+  'dom7',
+  'ssr-window',
+  'swiper'
 ];
 
 module.exports = {

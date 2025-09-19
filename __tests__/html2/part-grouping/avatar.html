@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+  <title>Avatar layout: grouped</title>
+  <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@18.3.1",
+          "react-dom": "https://esm.sh/react-dom@18.3.1",
+          "react-dom/": "https://esm.sh/react-dom@18.3.1/",
+          "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs"
+        }
+      }
+    </script>
+  <script crossorigin="anonymous" src="/test-harness.js"></script>
+  <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  <script type="module">
+    import React from 'react';
+    window.React = React;
+  </script>
+  <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+</head>
+
+<body>
+  <main id="webchat"></main>
+  <script type="module">
+    import React from 'react';
+    import { createRoot } from 'react-dom/client';
+
+    run(async function () {
+      const {
+        WebChat: { ReactWebChat }
+      } = window;
+
+      const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+      const root = createRoot(document.getElementById('webchat'));
+      let webChatProps = { directLine, store };
+
+      const render = () => {
+        root.render(React.createElement(ReactWebChat, webChatProps));
+      };
+
+      const aiMessageEntity = {
+        '@context': 'https://schema.org',
+        '@id': '',
+        '@type': 'Message',
+        type: 'https://schema.org/Message',
+        author: {
+          '@context': 'https://schema.org',
+          '@type': 'Person',
+          name: 'Research',
+        }
+      };
+
+      render();
+
+      await pageConditions.uiConnected();
+
+      const botGroup1 = { isPartOf: { '@id': '_:bot-group-1', '@type': 'HowTo' } };
+      const botGroup2 = { isPartOf: { '@id': '_:bot-group-2', '@type': 'HowTo' } };
+
+      const botIcon = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="%235563B1"/></svg>';
+
+      // Test Case 1: No bot avatar for grouped messages
+      directLine.emulateIncomingActivity({ from: { role: 'bot' }, text: 'Message 1.1', entities: [{ ...aiMessageEntity, ...botGroup1 }] });
+      directLine.emulateIncomingActivity({ from: { role: 'bot' }, text: 'Message 1.2', entities: [{ ...aiMessageEntity, ...botGroup1 }] });
+      directLine.emulateIncomingActivity({ from: { role: 'bot' }, text: 'Message 2.1', entities: [{ ...aiMessageEntity, ...botGroup2 }] });
+      directLine.emulateIncomingActivity({ from: { role: 'bot' }, text: 'Message 2.2', entities: [{ ...aiMessageEntity, ...botGroup2 }] });
+      directLine.emulateIncomingActivity({ from: { role: 'bot' }, text: 'Out of group' });
+      await pageConditions.numActivitiesShown(5);
+      await host.snapshot('local');
+
+      // Test Case 2: Bot avatar with initials
+      webChatProps = { ...webChatProps, styleOptions: { botAvatarInitials: 'B' } };
+      render();
+      await pageConditions.numActivitiesShown(5);
+      await host.snapshot('local');
+
+      // Test Case 3: Bot avatar with custom image
+      webChatProps = { ...webChatProps, styleOptions: { botAvatarImage: botIcon, botAvatarInitials: 'B' } };
+      render();
+      await pageConditions.numActivitiesShown(5);
+      await host.snapshot('local');
+
+      // Test Case 4: No user avatar
+      directLine.emulateIncomingActivity({ from: { role: 'user' }, text: 'User message 1.1' });
+      await pageConditions.numActivitiesShown(6);
+      await host.snapshot('local');
+
+      // Test Case 5: User avatar with initials
+      webChatProps = { ...webChatProps, styleOptions: { ...webChatProps.styleOptions, userAvatarInitials: 'U' } };
+      render();
+      await pageConditions.numActivitiesShown(6);
+      await host.snapshot('local');
+    });
+  </script>
+</body>
+
+</html>

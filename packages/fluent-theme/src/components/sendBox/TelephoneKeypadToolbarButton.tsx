@@ -1,8 +1,8 @@
+import { hooks } from 'botframework-webchat';
 import React, { memo, useCallback } from 'react';
 
-import { hooks } from 'botframework-webchat-component';
-import { FluentIcon } from '../icon';
 import testIds from '../../testIds';
+import { FluentIcon } from '../icon';
 import { useTelephoneKeypadShown } from '../telephoneKeypad';
 import { ToolbarButton } from './Toolbar';
 
