@@ -2,7 +2,7 @@ import '../setup';
 
 import { expectNotAssignable } from 'tsd';
 
-import { createStyleSet } from '../../src/boot/exports/minimal';
+import { createStyleSet } from '../../src/boot/actual/minimal';
 
 type CreateStyleSetInit = Parameters<typeof createStyleSet>[0];
 

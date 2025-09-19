@@ -2,7 +2,7 @@ import '../setup';
 
 import { expectNotAssignable } from 'tsd';
 
-import { hooks } from '../../src/boot/exports/minimal';
+import { hooks } from '../../src/boot/actual/minimal';
 
 type StyleOptions = ReturnType<typeof hooks.useStyleOptions>[0];
 

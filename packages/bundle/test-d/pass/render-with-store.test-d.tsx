@@ -3,7 +3,7 @@ import '../setup';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { Components, createStore } from '../../src/boot/exports/full';
+import { Components, createStore } from '../../src/boot/actual/full';
 
 const { Composer } = Components;
 

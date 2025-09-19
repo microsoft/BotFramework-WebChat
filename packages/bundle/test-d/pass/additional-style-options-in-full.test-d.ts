@@ -1,5 +1,5 @@
 import '../setup';
 
-import { createStyleSet } from '../../src/boot/exports/full';
+import { createStyleSet } from '../../src/boot/actual/full';
 
 createStyleSet({ cardEmphasisBackgroundColor: 'orange' });
