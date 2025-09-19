@@ -8,7 +8,6 @@ import {
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
 import defaultStyleOptions from './defaultStyleOptions';
 import Composer, { ComposerProps } from './hooks/Composer';
-import * as hooks from './hooks/index';
 import concatMiddleware from './hooks/middleware/concatMiddleware';
 import { type ActivityStatusRenderer } from './hooks/useCreateActivityStatusRenderer'; // TODO: [P1] This line should export the one from the version from "middleware rework" workstream.
 import { type DebouncedNotification, type DebouncedNotifications } from './hooks/useDebouncedNotifications';
@@ -53,7 +52,9 @@ export {
 } from './middleware/SendBoxToolbarMiddleware';
 // #endregion
 
-export { Composer, concatMiddleware, defaultStyleOptions, hooks, localize, normalizeStyleOptions };
+export * as hooks from './boot/hook';
+
+export { Composer, concatMiddleware, defaultStyleOptions, localize, normalizeStyleOptions };
 
 export type {
   /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */

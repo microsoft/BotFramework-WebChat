@@ -9,9 +9,10 @@ const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
     'botframework-webchat-api': './src/index.ts',
-    'botframework-webchat-api.decorator': './src/decorator.ts',
-    'botframework-webchat-api.internal': './src/internal.ts',
-    'botframework-webchat-api.middleware': './src/middleware.ts'
+    'botframework-webchat-api.decorator': './src/boot/decorator.ts',
+    'botframework-webchat-api.hook': './src/boot/hook.ts',
+    'botframework-webchat-api.internal': './src/boot/internal.ts',
+    'botframework-webchat-api.middleware': './src/boot/middleware.ts'
   },
   onSuccess: `touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`
 }));
