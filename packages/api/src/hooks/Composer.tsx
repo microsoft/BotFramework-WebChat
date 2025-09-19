@@ -200,8 +200,6 @@ function mergeStringsOverrides(localizedStrings, language, overrideLocalizedStri
   return { ...localizedStrings, ...overrideLocalizedStrings };
 }
 
-type ComposerCoreChildrenRenderProp = (context: ContextOf<React.Context<WebChatAPIContextType>>) => ReactNode;
-
 // It seems "react/require-default-props" did not pick up `ComposerCore.defaultProps`.
 // And it falsely complaint `optional?: string` must have a corresponding `ComposerCore.defaultProps.optional = undefined`, even we already set it below.
 // Since we set both TypeScript `Props` class and `ComposerCore.propTypes`, this check will be done there as well.
@@ -217,7 +215,7 @@ type ComposerCoreProps = Readonly<{
   attachmentMiddleware?: OneOrMany<LegacyAttachmentMiddleware>;
   avatarMiddleware?: OneOrMany<AvatarMiddleware>;
   cardActionMiddleware?: OneOrMany<CardActionMiddleware>;
-  children?: ReactNode | ComposerCoreChildrenRenderProp;
+  children?: ReactNode | ((context: ContextOf<React.Context<WebChatAPIContextType>>) => ReactNode);
   dir?: string;
   directLine: DirectLineJSBotConnection;
   /**
@@ -819,4 +817,4 @@ Composer.propTypes = {
 
 export default Composer;
 
-export type { ComposerProps, ComposerCoreChildrenRenderProp };
+export type { ComposerProps };

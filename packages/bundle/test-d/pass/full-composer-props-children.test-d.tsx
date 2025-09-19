@@ -4,8 +4,10 @@ import React from 'react';
 import { expectAssignable } from 'tsd';
 
 import { type FullComposerProps } from '../../src/FullComposer';
+import { type ComposerProps } from 'botframework-webchat-component';
 import { Components } from 'botframework-webchat-component';
-import { type ComposerCoreChildrenRenderProp } from 'botframework-webchat-api';
+
+type ComposerCoreChildrenRenderProp = ComposerProps['children'];
 
 // We want to assert that `children` on FullComposerProps accepts:
 // 1. React.ReactNode
