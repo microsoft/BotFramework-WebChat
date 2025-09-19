@@ -1,5 +1,5 @@
 import coreRenderWebChat from '../../../renderWebChat';
-import { ReactWebChat } from '../reactWebChat/minimal';
+import { ReactWebChat } from '../component/minimal';
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
 
