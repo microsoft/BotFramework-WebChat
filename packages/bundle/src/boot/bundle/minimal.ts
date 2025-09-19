@@ -1,10 +1,10 @@
 import buildInfo from '../../buildInfo';
-import * as internal from '../exports/internal';
-import * as middleware from '../exports/middleware';
-import * as minimal from '../exports/minimal.js';
+import * as internal from '../actual/internal';
+import * as middleware from '../actual/middleware';
+import * as actual from '../actual/minimal.js';
 
 // Until we have a development-specific bundle, we are not shipping createStoreWithDevTools in bundle.
-const { createStoreWithDevTools: _createStoreWithDevTools, ...exports } = minimal;
+const { createStoreWithDevTools: _createStoreWithDevTools, ...exports } = actual;
 
 window['WebChat'] = Object.freeze({
   ...window['WebChat'],
