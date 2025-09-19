@@ -3,19 +3,6 @@ import { defineConfig } from 'tsup';
 
 import { applyConfig } from '../../tsup.base.config';
 
-// Redirect import paths for "microsoft-cognitiveservices-speech-sdk(...)"
-// to point to es2015 distribution for all importing modules
-const resolveCognitiveServicesToES2015 = {
-  name: 'microsoft-cognitiveservices-speech-sdk',
-  setup(build) {
-    // ESBuild use Go regular expressions and does not understand Unicode flag.
-    // eslint-disable-next-line require-unicode-regexp
-    build.onResolve({ filter: /microsoft-cognitiveservices-speech-sdk.+/ }, args => ({
-      path: path.join(process.cwd(), '../../node_modules', args.path.replace('distrib/lib', 'distrib/es2015'))
-    }));
-  }
-};
-
 // Redirect import paths for "react" and "react-dom"
 const resolveReact = {
   name: 'isomorphic-react',
@@ -44,7 +31,6 @@ const commonConfig = applyConfig(config => ({
     SPEECH_CONDUCT_OCSP_CHECK: '',
     SPEECH_OCSP_CACHE_ROOT: ''
   },
-  esbuildPlugins: [...(config.esbuildPlugins ?? []), resolveCognitiveServicesToES2015],
   noExternal: [
     ...(config.noExternal ?? []),
     '@babel/runtime',
