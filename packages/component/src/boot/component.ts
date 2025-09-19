@@ -1,4 +1,5 @@
 import Composer, { type ComposerProps } from '../Composer';
+import ReactWebChat, { ReactWebChatProps } from '../ReactWebChat';
 
 // Components for restructuring BasicWebChat
 import BasicConnectivityStatus from '../BasicConnectivityStatus';
@@ -63,6 +64,7 @@ export {
   ImageContent,
   LocalizedString,
   MicrophoneButton,
+  ReactWebChat,
   SendButton,
   SendStatus,
   SendTextBox,
@@ -78,4 +80,4 @@ export {
   YouTubeContent
 };
 
-export type { BasicWebChatProps, ComposerProps };
+export type { BasicWebChatProps, ComposerProps, ReactWebChatProps };

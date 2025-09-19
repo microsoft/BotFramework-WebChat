@@ -1,28 +1,26 @@
 export * from './minimalSet';
 
-import ReactWebChat from '../../FullReactWebChat';
+// #region Build info
 import buildInfo from '../../buildInfo';
-import coreRenderWebChat from '../../renderWebChat';
 
 buildInfo.set('variant', 'full');
 
 const { version } = buildInfo;
+// #endregion
 
-const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
-
-// Overrides.
+// #region Overrides
 export { default as createStyleSet } from '../../createFullStyleSet';
-export {
-  type StrictFullBundleStyleOptions as StrictStyleOptions,
-  type default as StyleOptions
-} from '../../types/FullBundleStyleOptions';
-export { ReactWebChat, renderWebChat, version };
-export default ReactWebChat;
+export { ReactWebChat as default, ReactWebChat } from './component/fullSet';
+export { renderWebChat } from './renderWebChat/fullSet';
+export { type StrictStyleOptions, type StyleOptions } from './styleOptions/fullSet';
+export { version };
+// #endregion
 
-// Adds.
+// #region Adds
 export { default as createAdaptiveCardsAttachmentForScreenReaderMiddleware } from '../../adaptiveCards/createAdaptiveCardsAttachmentForScreenReaderMiddleware';
 export { default as createAdaptiveCardsAttachmentMiddleware } from '../../adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
 export { default as createCognitiveServicesSpeechServicesPonyfillFactory } from '../../createCognitiveServicesSpeechServicesPonyfillFactory';
 export { default as createDirectLineSpeechAdapters } from '../../createDirectLineSpeechAdapters';
 export { default as renderMarkdown } from '../../markdown/renderMarkdown';
 export { type AdaptiveCardsPackage } from '../../types/AdaptiveCardsPackage';
+// #endregion

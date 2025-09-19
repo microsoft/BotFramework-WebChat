@@ -19,6 +19,7 @@ export {
   ImageContent,
   LocalizedString,
   MicrophoneButton,
+  ReactWebChat,
   SendButton,
   SendStatus,
   SendTextBox,
