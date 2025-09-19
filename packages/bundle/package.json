@@ -115,7 +115,7 @@
     ]
   },
   "dependencies": {
-    "@babel/runtime": "7.28.2",
+    "@babel/runtime": "7.28.4",
     "adaptivecards": "3.0.2",
     "botframework-directlinejs": "0.15.6",
     "botframework-directlinespeech-sdk": "0.0.0-0",
