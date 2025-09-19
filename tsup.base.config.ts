@@ -51,17 +51,17 @@ function applyConfig(
   overrideOptions: (
     options: Omit<Options, 'entry' | 'onSuccess'> & {
       define: Record<string, string>;
-      esbuildPlugins: EsbuildPlugin[];
+      esbuildPlugins: Plugin[];
       target: Target[];
     }
-  ) => Options & {
+  ) => Omit<Options, 'outDir'> & {
     define: Record<string, string>;
-    esbuildPlugins: EsbuildPlugin[];
+    esbuildPlugins: Plugin[];
     target: Target[];
-  }
+  } & { outDirWithTemp?: [`./${string}/`, `./${string}/`] | undefined }
 ): Options & {
   define: Record<string, string>;
-  esbuildPlugins: EsbuildPlugin[];
+  esbuildPlugins: Plugin[];
   target: Target[];
 } {
   const nextOptions = overrideOptions({
@@ -150,16 +150,28 @@ function applyConfig(
   // All instances of tsup will try to copy at the same time and could fail with "cp: cannot create regular file './dist/...': File exists".
   // We can have multiple config writing to their own folder and copy-merge. But then each config will own their version of `onSuccess`, could be messy.
 
-  // TODO: [P1] This merge is not elegant, we should move to Promise.
-  nextOptions.onSuccess = [
-    `while [ -z "$(find ./dist.tmp \\( -name '*.d.ts' -o -name '*.d.mts' \\) -print -quit)" ]; do sleep 0.2; done; mkdir -p ./dist/; sleep 0.5; until cp ./dist.tmp/* ./dist/; do sleep 0.5; done`,
-    nextOptions.onSuccess
-  ]
-    .filter(Boolean)
-    .join(' && ');
-  nextOptions.outDir = './dist.tmp/';
+  const [outDir = './dist/', tmpDir = './dist.tmp/'] = nextOptions.outDirWithTemp || [];
 
-  return nextOptions;
+  // TODO: [P1] This merge is not elegant, we should move to Promise.
+  const rectifiedOptions = {
+    ...nextOptions,
+    onSuccess: nextOptions.dts
+      ? [
+          `while [ -z "$(find ${tmpDir} \\( -name '*.d.ts' -o -name '*.d.mts' \\) -print -quit)" ]; do sleep 0.2; done; mkdir -p ${outDir}; sleep 0.5; until cp --recursive ${tmpDir}/* ${outDir} 2>/dev/null; do sleep 0.5; done`,
+          nextOptions.onSuccess
+        ]
+          .filter(Boolean)
+          .join(' && ')
+      : [
+          `mkdir -p ${outDir}; sleep 0.5; until cp --recursive ${tmpDir}/* ${outDir} 2>/dev/null; do sleep 0.5; done`,
+          nextOptions.onSuccess
+        ]
+          .filter(Boolean)
+          .join(' && '),
+    outDir: tmpDir
+  };
+
+  return rectifiedOptions;
 }
 
 export { applyConfig };
