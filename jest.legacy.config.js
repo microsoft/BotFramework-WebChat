@@ -41,6 +41,9 @@ const TRANSFORM_IGNORE_PACKAGES = [
   'unist-util-stringify-position',
   'uuid',
 
+  // Related to Speech SDK.
+  'microsoft-cognitiveservices-speech-sdk',
+
   // Related to Adaptive Cards.
   'dom7',
   'ssr-window',
