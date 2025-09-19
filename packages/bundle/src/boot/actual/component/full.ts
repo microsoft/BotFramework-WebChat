@@ -1,4 +1,4 @@
-export * from './minimalSet';
+export * from './minimal';
 
 // Adds.
 export { default as AdaptiveCardContent } from '../../../adaptiveCards/Attachment/AdaptiveCardContent';

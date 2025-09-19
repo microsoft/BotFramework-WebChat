@@ -1,1 +1,1 @@
-export * from '../actual/hook/fullSet';
+export * from '../actual/hook/full';

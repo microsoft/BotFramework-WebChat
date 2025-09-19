@@ -1,4 +1,4 @@
-export * from './minimalSet';
+export * from './minimal';
 
 // #region Build info
 import buildInfo from '../../buildInfo';
@@ -10,9 +10,9 @@ const { version } = buildInfo;
 
 // #region Overrides
 export { default as createStyleSet } from '../../createFullStyleSet';
-export { ReactWebChat as default, ReactWebChat } from './component/fullSet';
-export { renderWebChat } from './renderWebChat/fullSet';
-export { type StrictStyleOptions, type StyleOptions } from './styleOptions/fullSet';
+export { ReactWebChat as default, ReactWebChat } from './component/full';
+export { renderWebChat } from './renderWebChat/full';
+export { type StrictStyleOptions, type StyleOptions } from './styleOptions/full';
 export { version };
 // #endregion
 

@@ -1,1 +1,1 @@
-export * from '../actual/component/fullSet';
+export * from '../actual/component/full';

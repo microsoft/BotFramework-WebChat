@@ -1,4 +1,4 @@
-export * from './minimalSet';
+export * from './minimal';
 
 // Adds.
 export { default as useAdaptiveCardsHostConfig } from '../../../adaptiveCards/hooks/useAdaptiveCardsHostConfig';
