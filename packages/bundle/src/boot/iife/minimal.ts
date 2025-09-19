@@ -1,4 +1,5 @@
 import buildInfo from '../../buildInfo';
+import * as internal from '../exports/internal';
 import * as middleware from '../exports/middleware';
 import * as minimal from '../exports/minimal.js';
 
@@ -9,5 +10,6 @@ window['WebChat'] = Object.freeze({
   ...window['WebChat'],
   ...exports,
   buildInfo: buildInfo.object,
+  internal,
   middleware
 });
