@@ -6,4 +6,4 @@ import buildInfo from '../../buildInfo';
 buildInfo.set('variant', 'full-es5');
 
 // "./full" is IIFE, just importing it will inject to globalThis.
-import './full';
+import './webchat';

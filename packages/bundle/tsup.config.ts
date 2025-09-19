@@ -55,9 +55,9 @@ export default defineConfig([
     },
     dts: false,
     entry: {
-      webchat: './src/boot/iife/full.ts',
-      'webchat-es5': './src/boot/iife/full-es5.ts',
-      'webchat-minimal': './src/boot/iife/minimal.ts'
+      webchat: './src/boot/iife/webchat.ts',
+      'webchat-es5': './src/boot/iife/webchat-es5.ts',
+      'webchat-minimal': './src/boot/iife/webchat-minimal.ts'
     },
     esbuildPlugins: [...(commonConfig.esbuildPlugins ?? []), resolveReact],
     format: 'iife',
