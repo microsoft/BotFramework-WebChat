@@ -3,7 +3,7 @@ import '../setup';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import ReactWebChat, { createDirectLine } from '../../src/boot/actual/full';
+import ReactWebChat, { createDirectLine } from '../../src/boot/exports/index';
 
 const directLine = createDirectLine({ token: '...' });
 
