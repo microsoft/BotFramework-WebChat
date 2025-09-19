@@ -7,5 +7,16 @@ export {
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
 export { WebChatDecorator } from 'botframework-webchat-component/decorator';
-export { createIconComponent, PartGrouping, useLiveRegion } from 'botframework-webchat-component/internal';
+export {
+  CodeHighlighterComposer,
+  createIconComponent,
+  parseDocumentFragmentFromString,
+  PartGrouping,
+  ScreenReaderText,
+  serializeDocumentFragmentIntoString,
+  useCodeHighlighter,
+  useInjectStyles,
+  useLiveRegion,
+  type HighlightCodeFn
+} from 'botframework-webchat-component/internal';
 export { getOrgSchemaMessage, type DirectLineCardAction, type WebChatActivity } from 'botframework-webchat-core';
