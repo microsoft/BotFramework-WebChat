@@ -4,6 +4,7 @@ import { type FocusTranscriptInit } from '../../types/internal/FocusTranscriptIn
 
 export type ContextType = {
   focusTranscriptCallbacksRef: MutableRefObject<((init?: FocusTranscriptInit | undefined) => Promise<void>)[]>;
+  nonce: string | undefined;
 
   // TODO: [P0] Infer the following types.
   dictateAbortable: any;
@@ -11,7 +12,6 @@ export type ContextType = {
   dispatchTranscriptFocusByActivityKey: any;
   internalMarkdownItState: [any];
   internalRenderMarkdownInline: any;
-  nonce: any;
   numTranscriptFocusObservers: any;
   observeScrollPosition: any;
   observeTranscriptFocus: any;
