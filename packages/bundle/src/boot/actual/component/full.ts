@@ -1,6 +1,6 @@
 export * from './minimal';
 
-// Adds.
+// #region Adds
 export { default as AdaptiveCardContent } from '../../../adaptiveCards/Attachment/AdaptiveCardContent';
 export { default as AnimationCardContent } from '../../../adaptiveCards/Attachment/AnimationCardContent';
 export { default as AudioCardContent } from '../../../adaptiveCards/Attachment/AudioCardContent';
@@ -11,6 +11,8 @@ export { default as SignInCardContent } from '../../../adaptiveCards/Attachment/
 export { default as ThumbnailCardContent } from '../../../adaptiveCards/Attachment/ThumbnailCardContent';
 export { default as VideoCardContent } from '../../../adaptiveCards/Attachment/VideoCardContent';
 export { default as ReactWebChat } from '../../../FullReactWebChat';
+// #endregion
 
-// Overrides.
+// #region Overrides
 export { default as Composer } from '../../../FullComposer';
+// #endregion

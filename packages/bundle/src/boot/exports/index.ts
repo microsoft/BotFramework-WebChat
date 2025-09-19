@@ -1,4 +1,4 @@
-export * from '../actual/minimal';
+export * from './minimal';
 
 // #region Overrides
 export * from '../actual/full';
