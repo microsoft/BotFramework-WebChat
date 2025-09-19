@@ -12,8 +12,6 @@ import VideoCardContent from '../../adaptiveCards/Attachment/VideoCardContent';
 import useAdaptiveCardsHostConfig from '../../adaptiveCards/hooks/useAdaptiveCardsHostConfig';
 import useAdaptiveCardsPackage from '../../adaptiveCards/hooks/useAdaptiveCardsPackage';
 import buildInfo from '../../buildInfo';
-import defaultCreateDirectLine from '../../createDirectLine';
-import defaultCreateDirectLineAppServiceExtension from '../../createDirectLineAppServiceExtension';
 import useStyleOptions from '../../hooks/useStyleOptions';
 import useStyleSet from '../../hooks/useStyleSet';
 import coreRenderWebChat from '../../renderWebChat';
@@ -21,29 +19,9 @@ import { Components as minimalComponents, hooks as minimalHooks } from './minima
 
 buildInfo.set('variant', 'full');
 
-const { object: buildInfoObject, version } = buildInfo;
+const { version } = buildInfo;
 
 const renderWebChat = coreRenderWebChat.bind(null, ReactWebChat);
-
-const createDirectLine = (options: Omit<Parameters<typeof defaultCreateDirectLine>[0], 'botAgent'>) => {
-  (options as any).botAgent &&
-    console.warn(
-      'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
-    );
-
-  return defaultCreateDirectLine({ ...options, botAgent: `WebChat/${version} (Full)` });
-};
-
-const createDirectLineAppServiceExtension = (
-  options: Omit<Parameters<typeof defaultCreateDirectLineAppServiceExtension>[0], 'botAgent'>
-) => {
-  (options as any).botAgent &&
-    console.warn(
-      'Web Chat: Developers are not currently allowed to set botAgent. See https://github.com/microsoft/BotFramework-WebChat/issues/2119 for more details.'
-    );
-
-  return defaultCreateDirectLineAppServiceExtension({ ...options, botAgent: `WebChat/${version} (Full)` });
-};
 
 const hooks = Object.freeze({
   ...minimalHooks,
@@ -68,43 +46,22 @@ const Components = Object.freeze({
   VideoCardContent
 } as const);
 
-// #region Re-exports
-export { default as createAdaptiveCardsAttachmentForScreenReaderMiddleware } from '../../adaptiveCards/createAdaptiveCardsAttachmentForScreenReaderMiddleware';
-export { default as createAdaptiveCardsAttachmentMiddleware } from '../../adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
-export { default as createCognitiveServicesSpeechServicesPonyfillFactory } from '../../createCognitiveServicesSpeechServicesPonyfillFactory';
-export { default as createDirectLineSpeechAdapters } from '../../createDirectLineSpeechAdapters';
+// First, exports everything from minimal.
+export * from './minimal';
+
+// Then, overrides exports of minimal.
 export { default as createStyleSet } from '../../createFullStyleSet';
-export { default as renderMarkdown } from '../../markdown/renderMarkdown';
-export { type AdaptiveCardsPackage } from '../../types/AdaptiveCardsPackage';
 export {
   type StrictFullBundleStyleOptions as StrictStyleOptions,
   type default as StyleOptions
 } from '../../types/FullBundleStyleOptions';
-export {
-  concatMiddleware,
-  Constants,
-  createBrowserWebSpeechPonyfillFactory,
-  createStore,
-  createStoreWithDevTools,
-  createStoreWithOptions,
-  decorator,
-  internal,
-  testIds,
-  withEmoji
-} from './minimal';
-// #endregion
-
-// #region Local exports
+export { Components, hooks, ReactWebChat, renderWebChat, version };
 export default ReactWebChat;
 
-export {
-  buildInfoObject as buildInfo,
-  Components,
-  createDirectLine,
-  createDirectLineAppServiceExtension,
-  hooks,
-  ReactWebChat,
-  renderWebChat,
-  version
-};
-// #endregion
+// Lastly, adds new exports.
+export { default as createAdaptiveCardsAttachmentForScreenReaderMiddleware } from '../../adaptiveCards/createAdaptiveCardsAttachmentForScreenReaderMiddleware';
+export { default as createAdaptiveCardsAttachmentMiddleware } from '../../adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
+export { default as createCognitiveServicesSpeechServicesPonyfillFactory } from '../../createCognitiveServicesSpeechServicesPonyfillFactory';
+export { default as createDirectLineSpeechAdapters } from '../../createDirectLineSpeechAdapters';
+export { default as renderMarkdown } from '../../markdown/renderMarkdown';
+export { type AdaptiveCardsPackage } from '../../types/AdaptiveCardsPackage';

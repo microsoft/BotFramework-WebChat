@@ -18,7 +18,7 @@ const resolveReact = {
 const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
-    'botframework-webchat': './src/boot/exports/full.ts',
+    'botframework-webchat': './src/boot/exports/index.ts',
     'botframework-webchat.internal': './src/boot/exports/internal.ts',
     'botframework-webchat.middleware': './src/boot/exports/middleware.ts'
   },
