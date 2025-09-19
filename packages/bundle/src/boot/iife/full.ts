@@ -1,11 +1,11 @@
 import './polyfill/modern';
 
 import buildInfo from '../../buildInfo';
-import * as actual from '../actual/full';
-import * as middleware from '../actual/middleware';
+import * as full from '../exports/full';
+import * as middleware from '../exports/middleware';
 
 // Until we have a development-specific bundle, we are not shipping createStoreWithDevTools in bundle.
-const { createStoreWithDevTools: _createStoreWithDevTools, ...exports } = actual;
+const { createStoreWithDevTools: _createStoreWithDevTools, ...exports } = full;
 
 window['WebChat'] = Object.freeze({
   ...window['WebChat'],
