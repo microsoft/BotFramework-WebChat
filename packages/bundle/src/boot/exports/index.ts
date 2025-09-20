@@ -13,10 +13,8 @@ export {
 } from '../actual/full';
 // #endregion
 
-// #region Backward compatibility
+// #region Overrides for backward compatibility
 // Web devs should move to named exports instead.
 export * as Components from '../actual/component/full';
-export * as decorator from '../actual/decorator';
 export * as hooks from '../actual/hook/full';
-export * as internal from '../actual/internal';
 // #endregion
