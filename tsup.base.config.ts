@@ -51,17 +51,17 @@ function applyConfig(
   overrideOptions: (
     options: Omit<Options, 'entry' | 'onSuccess'> & {
       define: Record<string, string>;
-      esbuildPlugins: Plugin[];
+      esbuildPlugins: EsbuildPlugin[];
       target: Target[];
     }
   ) => Omit<Options, 'outDir'> & {
     define: Record<string, string>;
-    esbuildPlugins: Plugin[];
+    esbuildPlugins: EsbuildPlugin[];
     target: Target[];
   } & { outDirWithTemp?: [`./${string}/`, `./${string}/`] | undefined }
 ): Options & {
   define: Record<string, string>;
-  esbuildPlugins: Plugin[];
+  esbuildPlugins: EsbuildPlugin[];
   target: Target[];
 } {
   const nextOptions = overrideOptions({
