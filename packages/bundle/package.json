@@ -15,6 +15,26 @@
         "default": "./dist/botframework-webchat.js"
       }
     },
+    "./component": {
+      "import": {
+        "types": "./dist/botframework-webchat.component.d.mts",
+        "default": "./dist/botframework-webchat.component.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat.component.d.ts",
+        "default": "./dist/botframework-webchat.component.js"
+      }
+    },
+    "./hook": {
+      "import": {
+        "types": "./dist/botframework-webchat.hook.d.mts",
+        "default": "./dist/botframework-webchat.hook.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat.hook.d.ts",
+        "default": "./dist/botframework-webchat.hook.js"
+      }
+    },
     "./internal": {
       "import": {
         "types": "./dist/botframework-webchat.internal.d.mts",
