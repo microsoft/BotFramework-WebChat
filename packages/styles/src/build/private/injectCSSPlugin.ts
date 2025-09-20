@@ -1,7 +1,8 @@
 import { decode, encode } from '@jridgewell/sourcemap-codec';
-import type { Plugin } from 'esbuild';
+import type { OutputFile, Plugin } from 'esbuild';
 
 export interface InjectCSSPluginOptions {
+  getCSSText?: ((source: OutputFile, cssFiles: OutputFile[]) => string | undefined | void) | undefined;
   stylesPlaceholder: string;
 }
 
@@ -19,10 +20,19 @@ function updateMappings(encoded: string, startIndex: number, offset: number) {
   return encode(mappings);
 }
 
-export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOptions): Plugin {
+export default function injectCSSPlugin({ getCSSText, stylesPlaceholder }: InjectCSSPluginOptions): Plugin {
   if (!stylesPlaceholder) {
     throw new Error('inject-css-plugin: no placeholder for styles provided');
   }
+
+  getCSSText =
+    getCSSText ||
+    ((source, cssFiles) => {
+      const entryName = source.path.replace(/(\.js|\.mjs)$/u, '');
+      const css = cssFiles.find(f => f.path.replace(/(\.css)$/u, '') === entryName);
+
+      return css?.text;
+    });
 
   const stylesPlaceholderQuoted = JSON.stringify(stylesPlaceholder);
 
@@ -30,14 +40,15 @@ export default function injectCSSPlugin({ stylesPlaceholder }: InjectCSSPluginOp
     name: `inject-css-plugin(${stylesPlaceholder})`,
     setup(build) {
       build.onEnd(({ outputFiles = [] }) => {
+        const cssFiles = outputFiles.filter(({ path }) => path.match(/(\.css)$/u));
+
         for (const file of outputFiles) {
           if (file.path.match(/(\.js|\.mjs)$/u)) {
-            const entryName = file.path.replace(/(\.js|\.mjs)$/u, '');
-            const css = outputFiles.find(f => f.path.replace(/(\.css)$/u, '') === entryName);
-
+            const text = getCSSText(file, cssFiles);
             const jsText = file?.text;
-            if (css && jsText?.includes(stylesPlaceholderQuoted)) {
-              const cssText = JSON.stringify(css.text);
+
+            if (text && jsText?.includes(stylesPlaceholderQuoted)) {
+              const cssText = JSON.stringify(text);
               const index = jsText.indexOf(stylesPlaceholderQuoted);
               const map = outputFiles.find(f => f.path.replace(/(\.map)$/u, '') === file.path);
 

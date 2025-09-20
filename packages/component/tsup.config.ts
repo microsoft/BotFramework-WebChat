@@ -19,7 +19,11 @@ const commonConfig = applyConfig(config => ({
   },
   esbuildPlugins: [
     ...(config.esbuildPlugins ?? []),
-    injectCSSPlugin({ stylesPlaceholder: componentStyleContentPlaceholder }),
+    injectCSSPlugin({
+      getCSSText: (_source, cssFiles) =>
+        cssFiles.find(({ path }) => path.endsWith('botframework-webchat-component.component.css'))?.text,
+      stylesPlaceholder: componentStyleContentPlaceholder
+    }),
     injectCSSPlugin({ stylesPlaceholder: decoratorStyleContentPlaceholder })
   ],
   onSuccess: `touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`
