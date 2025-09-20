@@ -20,6 +20,8 @@ const commonConfig = applyConfig(config => ({
   esbuildPlugins: [
     ...(config.esbuildPlugins ?? []),
     injectCSSPlugin({
+      // esbuild does not fully support CSS code splitting, every entry point has its own CSS file.
+      // Related to https://github.com/evanw/esbuild/issues/608.
       getCSSText: (_source, cssFiles) =>
         cssFiles.find(({ path }) => path.endsWith('botframework-webchat-component.component.css'))?.text,
       stylesPlaceholder: componentStyleContentPlaceholder
