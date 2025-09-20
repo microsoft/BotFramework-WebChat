@@ -105,6 +105,7 @@ export {
   useTextBoxValue,
   useTransformHTMLContent,
   useTypingIndicatorVisible,
-  useWebSpeechPonyfill
+  useWebSpeechPonyfill,
+  type SendBoxFocusOptions
 } from '../hooks/index';
 // #endregion

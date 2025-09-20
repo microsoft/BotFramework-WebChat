@@ -1,4 +1,3 @@
-export type * from 'botframework-webchat-component/component';
 export {
   AccessKeySinkSurface,
   AttachmentBar,
@@ -32,5 +31,8 @@ export {
   UploadButton,
   VideoContent,
   VimeoContent,
-  YouTubeContent
+  YouTubeContent,
+  type BasicWebChatProps,
+  type ComposerProps,
+  type ReactWebChatProps
 } from 'botframework-webchat-component/component';
