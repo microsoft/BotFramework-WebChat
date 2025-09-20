@@ -132,6 +132,11 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Unified build info and injection of `<meta>` tag, in PR [#5571](https://github.com/microsoft/BotFramework-WebChat/pull/5571), by [@compulim](https://github.com/compulim)
 - Added documentation for `isPartOf` property, in PR [#5573](https://github.com/microsoft/BotFramework-WebChat/pull/5573), by [@compulim](https://github.com/compulim)
 - `fluent-theme`: Changed dependencies to import solely from the "bundle" package, in PR [#5584](https://github.com/microsoft/BotFramework-WebChat/pull/5584), by [@compulim](https://github.com/compulim)
+- Improved bundling, in PR [#5588](https://github.com/microsoft/BotFramework-WebChat/pull/5588), by [@compulim](https://github.com/compulim)
+   - New named exports
+      - `api`: `botframework-webchat-api/hook`
+      - `bundle`: `botframework-webchat/component`, `botframework-webchat/decorator` (internal-use), `botframework-webchat/hook`
+      - `component`: `botframework-webchat-component/component`, `botframework-webchat-component/hook`
 
 ### Changed
 
