@@ -1,4 +1,3 @@
-export type * from 'botframework-webchat-component/hook';
 export {
   useActiveTyping,
   useActivities,
@@ -95,5 +94,6 @@ export {
   useUserID,
   useUsername,
   useVoiceSelector,
-  useWebSpeechPonyfill
+  useWebSpeechPonyfill,
+  type SendBoxFocusOptions
 } from 'botframework-webchat-component/hook';

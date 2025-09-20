@@ -25,6 +25,16 @@
         "default": "./dist/botframework-webchat.component.js"
       }
     },
+    "./decorator": {
+      "import": {
+        "types": "./dist/botframework-webchat.decorator.d.mts",
+        "default": "./dist/botframework-webchat.decorator.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat.decorator.d.ts",
+        "default": "./dist/botframework-webchat.decorator.js"
+      }
+    },
     "./hook": {
       "import": {
         "types": "./dist/botframework-webchat.hook.d.mts",
