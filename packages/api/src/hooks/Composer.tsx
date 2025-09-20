@@ -46,8 +46,8 @@ import StyleOptions from '../StyleOptions';
 import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import usePonyfill from '../hooks/usePonyfill';
+import createActivityPolymiddlewareFromLegacy from '../legacy/createActivityPolymiddlewareFromLegacy';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
-import { createActivityPolymiddlewareFromLegacy } from '../middleware';
 import { SendBoxMiddlewareProvider, type SendBoxMiddleware } from '../middleware/SendBoxMiddleware';
 import {
   SendBoxToolbarMiddlewareProvider,

@@ -15,16 +15,6 @@
         "default": "./dist/botframework-webchat-api.js"
       }
     },
-    "./internal": {
-      "import": {
-        "types": "./dist/botframework-webchat-api.internal.d.mts",
-        "default": "./dist/botframework-webchat-api.internal.mjs"
-      },
-      "require": {
-        "types": "./dist/botframework-webchat-api.internal.d.ts",
-        "default": "./dist/botframework-webchat-api.internal.js"
-      }
-    },
     "./decorator": {
       "import": {
         "types": "./dist/botframework-webchat-api.decorator.d.mts",
@@ -33,6 +23,26 @@
       "require": {
         "types": "./dist/botframework-webchat-api.decorator.d.ts",
         "default": "./dist/botframework-webchat-api.decorator.js"
+      }
+    },
+    "./hook": {
+      "import": {
+        "types": "./dist/botframework-webchat-api.hook.d.mts",
+        "default": "./dist/botframework-webchat-api.hook.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-api.hook.d.ts",
+        "default": "./dist/botframework-webchat-api.hook.js"
+      }
+    },
+    "./internal": {
+      "import": {
+        "types": "./dist/botframework-webchat-api.internal.d.mts",
+        "default": "./dist/botframework-webchat-api.internal.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-api.internal.d.ts",
+        "default": "./dist/botframework-webchat-api.internal.js"
       }
     },
     "./middleware": {

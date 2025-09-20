@@ -15,14 +15,14 @@
         "default": "./dist/botframework-webchat-component.js"
       }
     },
-    "./internal": {
+    "./component": {
       "import": {
-        "types": "./dist/botframework-webchat-component.internal.d.mts",
-        "default": "./dist/botframework-webchat-component.internal.mjs"
+        "types": "./dist/botframework-webchat-component.component.d.mts",
+        "default": "./dist/botframework-webchat-component.component.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-component.internal.d.ts",
-        "default": "./dist/botframework-webchat-component.internal.js"
+        "types": "./dist/botframework-webchat-component.component.d.ts",
+        "default": "./dist/botframework-webchat-component.component.js"
       }
     },
     "./decorator": {
@@ -33,6 +33,26 @@
       "require": {
         "types": "./dist/botframework-webchat-component.decorator.d.ts",
         "default": "./dist/botframework-webchat-component.decorator.js"
+      }
+    },
+    "./hook": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.hook.d.mts",
+        "default": "./dist/botframework-webchat-component.hook.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-component.hook.d.ts",
+        "default": "./dist/botframework-webchat-component.hook.js"
+      }
+    },
+    "./internal": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.internal.d.mts",
+        "default": "./dist/botframework-webchat-component.internal.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-component.internal.d.ts",
+        "default": "./dist/botframework-webchat-component.internal.js"
       }
     }
   },
@@ -49,8 +69,8 @@
     "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
   "files": [
-    "./dist/**/*",
     "./*.js",
+    "./dist/**/*",
     "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",

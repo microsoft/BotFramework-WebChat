@@ -23,8 +23,11 @@ const umdResolvePlugin = {
 
     // ESBuild use Go regular expressions and does not understand Unicode flag.
     // eslint-disable-next-line require-unicode-regexp
-    build.onResolve({ filter: /^botframework-webchat-api\/decorator$/ }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-api/decorator.ts')
+    build.onResolve({ filter: /^botframework-webchat-api\// }, args => ({
+      path: join(
+        fileURLToPath(import.meta.url),
+        `../src/external.umd/botframework-webchat-api/${args.path.split('/').slice(1).join('/')}.ts`
+      )
     }));
 
     // ESBuild use Go regular expressions and does not understand Unicode flag.
@@ -35,14 +38,11 @@ const umdResolvePlugin = {
 
     // ESBuild use Go regular expressions and does not understand Unicode flag.
     // eslint-disable-next-line require-unicode-regexp
-    build.onResolve({ filter: /^botframework-webchat-component\/internal$/ }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/internal.ts')
-    }));
-
-    // ESBuild use Go regular expressions and does not understand Unicode flag.
-    // eslint-disable-next-line require-unicode-regexp
-    build.onResolve({ filter: /^botframework-webchat-component\/decorator$/ }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../src/external.umd/botframework-webchat-component/decorator.ts')
+    build.onResolve({ filter: /^botframework-webchat-component\// }, args => ({
+      path: join(
+        fileURLToPath(import.meta.url),
+        `../src/external.umd/botframework-webchat-component/${args.path.split('/').slice(1).join('/')}.ts`
+      )
     }));
   }
 };

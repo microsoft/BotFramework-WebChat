@@ -3,7 +3,7 @@ import '../setup';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import ReactWebChat, { createDirectLine, createStyleSet } from '../../src/boot/exports/minimal';
+import ReactWebChat, { createDirectLine, createStyleSet } from '../../src/boot/exports/index';
 
 const directLine = createDirectLine({ token: '...' });
 const styleOptions = { accent: 'black', cardEmphasisBackgroundColor: 'orange' };

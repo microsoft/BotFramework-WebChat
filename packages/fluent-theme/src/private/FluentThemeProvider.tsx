@@ -5,10 +5,9 @@ import {
   createActivityGroupingMiddleware,
   DecoratorComposer,
   WebChatDecorator,
-  type ActivityMiddleware,
-  type DecoratorMiddleware,
-  type TypingIndicatorMiddleware
-} from 'botframework-webchat/internal';
+  type DecoratorMiddleware
+} from 'botframework-webchat/decorator';
+import { type ActivityMiddleware, type TypingIndicatorMiddleware } from 'botframework-webchat/internal';
 import React, { memo, type ReactNode } from 'react';
 
 import { ActivityDecorator } from '../components/activity';

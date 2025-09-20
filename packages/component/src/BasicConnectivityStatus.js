@@ -8,29 +8,29 @@ import ConnectivityStatusJavaScriptError from './ConnectivityStatus/JavaScriptEr
 
 const { useDebouncedNotifications } = hooks;
 
-const BasicConnectivityStatus = () => {
+const BasicConnectivityStatus = ({ className }) => {
   const [{ connectivitystatus: connectivityStatus }] = useDebouncedNotifications();
 
   if (!connectivityStatus) {
-    return false;
+    return null;
   }
 
   switch (connectivityStatus.message) {
     case 'connecting':
-      return <ConnectivityStatusConnecting />;
+      return <ConnectivityStatusConnecting className={className} />;
 
     case 'javascripterror':
-      return <ConnectivityStatusJavaScriptError />;
+      return <ConnectivityStatusJavaScriptError className={className} />;
 
     case 'failedtoconnect':
-      return <ConnectivityStatusFailedToConnect />;
+      return <ConnectivityStatusFailedToConnect className={className} />;
 
     case 'reconnecting':
-      return <ConnectivityStatusConnecting reconnect={true} />;
+      return <ConnectivityStatusConnecting className={className} reconnect={true} />;
 
     case 'connected':
     default:
-      return <ConnectivityStatusConnected />;
+      return <ConnectivityStatusConnected className={className} />;
   }
 };
 
