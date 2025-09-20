@@ -1,7 +1,7 @@
 import useWebChatUIContext from './useWebChatUIContext';
 
-export default function useNonce(): [string | undefined] {
+export default function useNonce(): readonly [string | undefined] {
   const { nonce } = useWebChatUIContext();
 
-  return [nonce];
+  return Object.freeze([nonce]);
 }
