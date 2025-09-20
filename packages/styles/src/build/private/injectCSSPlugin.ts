@@ -44,17 +44,16 @@ export default function injectCSSPlugin({ getCSSText, stylesPlaceholder }: Injec
 
         for (const file of outputFiles) {
           if (file.path.match(/(\.js|\.mjs)$/u)) {
-            const text = getCSSText(file, cssFiles);
+            const cssText = getCSSText(file, cssFiles);
             const jsText = file?.text;
 
-            if (text && jsText?.includes(stylesPlaceholderQuoted)) {
-              const cssText = JSON.stringify(text);
+            if (cssText && jsText?.includes(stylesPlaceholderQuoted)) {
               const index = jsText.indexOf(stylesPlaceholderQuoted);
               const map = outputFiles.find(f => f.path.replace(/(\.map)$/u, '') === file.path);
 
               const updatedJsText = [
                 jsText.slice(0, index),
-                cssText,
+                JSON.stringify(cssText),
                 jsText.slice(index + stylesPlaceholderQuoted.length)
               ].join('');
 
