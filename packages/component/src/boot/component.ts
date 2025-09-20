@@ -1,83 +1,45 @@
-import Composer, { type ComposerProps } from '../Composer';
-import ReactWebChat, { ReactWebChatProps } from '../ReactWebChat';
+export { default as Composer, type ComposerProps } from '../Composer';
+export { default as ReactWebChat, type ReactWebChatProps } from '../ReactWebChat';
 
 // Components for restructuring BasicWebChat
-import BasicConnectivityStatus from '../BasicConnectivityStatus';
-import BasicToaster from '../BasicToaster';
-import BasicTranscript from '../BasicTranscript';
-import BasicWebChat, { type BasicWebChatProps } from '../BasicWebChat';
-import BasicSendBox from '../SendBox/BasicSendBox';
-import BasicSendBoxToolbar from '../SendBoxToolbar/BasicSendBoxToolbar';
-import AccessKeySinkSurface from '../Utils/AccessKeySink/Surface';
+export { default as BasicConnectivityStatus } from '../BasicConnectivityStatus';
+export { default as BasicToaster } from '../BasicToaster';
+export { default as BasicTranscript } from '../BasicTranscript';
+export { default as BasicWebChat, type BasicWebChatProps } from '../BasicWebChat';
+export { default as BasicSendBox } from '../SendBox/BasicSendBox';
+export { default as BasicSendBoxToolbar } from '../SendBoxToolbar/BasicSendBoxToolbar';
+export { default as AccessKeySinkSurface } from '../Utils/AccessKeySink/Surface';
 
 // Components for recomposing activities and attachments
-import AudioContent from '../Attachment/AudioContent';
-import FileContent from '../Attachment/FileContent';
-import HTMLVideoContent from '../Attachment/HTMLVideoContent';
-import ImageContent from '../Attachment/ImageContent';
-import TextContent from '../Attachment/Text/TextContent';
-import VideoContent from '../Attachment/VideoContent';
-import VimeoContent from '../Attachment/VimeoContent';
-import YouTubeContent from '../Attachment/YouTubeContent';
+export { default as AudioContent } from '../Attachment/AudioContent';
+export { default as FileContent } from '../Attachment/FileContent';
+export { default as HTMLVideoContent } from '../Attachment/HTMLVideoContent';
+export { default as ImageContent } from '../Attachment/ImageContent';
+export { default as TextContent } from '../Attachment/Text/TextContent';
+export { default as VideoContent } from '../Attachment/VideoContent';
+export { default as VimeoContent } from '../Attachment/VimeoContent';
+export { default as YouTubeContent } from '../Attachment/YouTubeContent';
 
 // Components for recomposing transcript
-import Avatar from '../Activity/Avatar';
-import Bubble from '../Activity/Bubble';
-import SpeakActivity from '../Activity/Speak';
-import SendStatus from '../ActivityStatus/SendStatus/SendStatus';
-import Timestamp from '../ActivityStatus/Timestamp';
-import ErrorBox from '../ErrorBox';
+export { default as Avatar } from '../Activity/Avatar';
+export { default as Bubble } from '../Activity/Bubble';
+export { default as SpeakActivity } from '../Activity/Speak';
+export { default as SendStatus } from '../ActivityStatus/SendStatus/SendStatus';
+export { default as Timestamp } from '../ActivityStatus/Timestamp';
+export { default as ErrorBox } from '../ErrorBox';
 
 // Components for recomposing send box
-import { AttachmentBar } from '../SendBox/AttachmentBar/index';
-import DictationInterims from '../SendBox/DictationInterims';
-import MicrophoneButton from '../SendBox/MicrophoneButton';
-import SendButton from '../SendBox/SendButton';
-import SuggestedActions from '../SendBox/SuggestedActions';
-import SendTextBox from '../SendBox/TextBox';
-import UploadButton from '../SendBoxToolbar/UploadButton';
-import { TextArea } from '../TextArea/index';
+export { AttachmentBar } from '../SendBox/AttachmentBar/index';
+export { default as DictationInterims } from '../SendBox/DictationInterims';
+export { default as MicrophoneButton } from '../SendBox/MicrophoneButton';
+export { default as SendButton } from '../SendBox/SendButton';
+export { default as SuggestedActions } from '../SendBox/SuggestedActions';
+export { default as SendTextBox } from '../SendBox/TextBox';
+export { default as UploadButton } from '../SendBoxToolbar/UploadButton';
+export { TextArea } from '../TextArea/index';
 
 // Components for localization
-import LocalizedString from '../Utils/LocalizedString';
+export { default as LocalizedString } from '../Utils/LocalizedString';
 
 // Components for theme packs
-import ThemeProvider from '../providers/Theme/ThemeProvider';
-
-export {
-  AccessKeySinkSurface,
-  AttachmentBar,
-  AudioContent,
-  Avatar,
-  BasicConnectivityStatus,
-  BasicSendBox,
-  BasicSendBoxToolbar,
-  BasicToaster,
-  BasicTranscript,
-  BasicWebChat,
-  Bubble,
-  Composer,
-  DictationInterims,
-  ErrorBox,
-  FileContent,
-  HTMLVideoContent,
-  ImageContent,
-  LocalizedString,
-  MicrophoneButton,
-  ReactWebChat,
-  SendButton,
-  SendStatus,
-  SendTextBox,
-  SpeakActivity,
-  SuggestedActions,
-  TextArea,
-  TextContent,
-  ThemeProvider,
-  Timestamp,
-  UploadButton,
-  VideoContent,
-  VimeoContent,
-  YouTubeContent
-};
-
-export type { BasicWebChatProps, ComposerProps, ReactWebChatProps };
+export { default as ThemeProvider } from '../providers/Theme/ThemeProvider';
