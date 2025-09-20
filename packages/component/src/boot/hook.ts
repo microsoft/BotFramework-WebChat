@@ -1,81 +1,3 @@
-import { hooks as apiHooks } from 'botframework-webchat-api';
-
-const {
-  useActiveTyping,
-  useActivities,
-  useActivityKeys,
-  useActivityKeysByRead,
-  useAvatarForBot,
-  useAvatarForUser,
-  useBuildRenderActivityCallback,
-  useByteFormatter,
-  useConnectivityStatus,
-  useCreateActivityRenderer,
-  useCreateActivityStatusRenderer,
-  useCreateAttachmentForScreenReaderRenderer,
-  useCreateAvatarRenderer,
-  useCreateScrollToEndButtonRenderer,
-  useDateFormatter,
-  useDebouncedNotifications,
-  useDictateInterims,
-  useDictateState,
-  useDirection,
-  useDisabled,
-  useDismissNotification,
-  useEmitTypingIndicator,
-  useGetActivitiesByKey,
-  useGetActivityByKey,
-  useGetHasAcknowledgedByActivityKey,
-  useGetKeyByActivity,
-  useGetKeyByActivityId,
-  useGetSendTimeoutForActivity,
-  useGrammars,
-  useGroupActivities,
-  useGroupActivitiesByName,
-  useGroupTimestamp,
-  useLanguage,
-  useLastAcknowledgedActivityKey,
-  useLastReadActivityKey,
-  useLocalizer,
-  useMarkActivityAsSpoken,
-  useMarkActivityKeyAsRead,
-  useMarkAllAsAcknowledged,
-  useNotifications,
-  usePerformCardAction,
-  usePonyfill,
-  usePostActivity,
-  useReferenceGrammarID,
-  useRelativeTimeFormatter,
-  useRenderAttachment,
-  useRenderToast,
-  useRenderTypingIndicator,
-  useSendBoxAttachments,
-  useSendBoxValue,
-  useSendEvent,
-  useSendMessageBack,
-  useSendPostBack,
-  useSendStatusByActivityKey,
-  useSendTimeoutForActivity,
-  useSendTypingIndicator,
-  useSetNotification,
-  useShouldSpeakIncomingActivity,
-  useStartDictate,
-  useStopDictate,
-  useStyleOptions,
-  useSubmitSendBox,
-  useSuggestedActions,
-  useSuggestedActionsHooks,
-  useTimeoutForSend,
-  useTrackDimension,
-  useTrackEvent,
-  useTrackException,
-  useTrackTiming,
-  useUIState,
-  useUserID,
-  useUsername,
-  useVoiceSelector
-} = apiHooks;
-
 export {
   useActiveTyping,
   useActivities,
@@ -150,8 +72,18 @@ export {
   useUserID,
   useUsername,
   useVoiceSelector
-};
+} from 'botframework-webchat-api/hook';
 
+// #region Overrides
+export {
+  // We are overwriting the `useSendFiles` hook from bf-wc-api and adding thumbnailing support.
+  useSendFiles,
+  // We are overwriting the `useSendMessage` hook from bf-wc-api and adding thumbnailing support.
+  useSendMessage
+} from '../hooks/index';
+// #endregion
+
+// #region Adds
 export {
   useDictateAbortable,
   useFocus,
@@ -167,10 +99,6 @@ export {
   useScrollToEnd,
   useScrollUp,
   useSendBoxSpeechInterimsVisible,
-  // We are overwriting the `useSendFiles` hook from bf-wc-api and adding thumbnailing support.
-  useSendFiles,
-  // We are overwriting the `useSendMessage` hook from bf-wc-api and adding thumbnailing support.
-  useSendMessage,
   useShouldReduceMotion,
   useStyleSet,
   useTextBoxSubmit,
@@ -179,3 +107,4 @@ export {
   useTypingIndicatorVisible,
   useWebSpeechPonyfill
 } from '../hooks/index';
+// #endregion
