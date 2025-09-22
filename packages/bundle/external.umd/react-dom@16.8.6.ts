@@ -1,5 +1,7 @@
 import ReactDOM from 'react-dom';
 
+globalThis.ReactDOM = globalThis.ReactDOM || ReactDOM;
+
 export const {
   createPortal,
   findDOMNode,
@@ -10,6 +12,6 @@ export const {
   unstable_batchedUpdates,
   unstable_renderSubtreeIntoContainer,
   version
-} = window.ReactDOM || ReactDOM;
+} = globalThis.ReactDOM;
 
-export default window.ReactDOM || ReactDOM;
+export default globalThis.ReactDOM;

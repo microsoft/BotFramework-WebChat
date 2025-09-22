@@ -1,5 +1,7 @@
 import React from 'react';
 
+globalThis.React = globalThis.React || React;
+
 export const {
   Children,
   cloneElement,
@@ -27,8 +29,6 @@ export const {
   useRef,
   useState,
   version
-} = window.React || React;
+} = globalThis.React;
 
-export default window.React || React;
-
-window.React = React;
+export default globalThis.React;
