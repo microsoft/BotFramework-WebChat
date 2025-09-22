@@ -10,19 +10,11 @@
     <script type="importmap">
       {
         "imports": {
-          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
-          "react": "https://esm.sh/react@18",
-          "react-dom": "https://esm.sh/react-dom@18"
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js"
         }
       }
     </script>
-    <script type="module">
-      import React from 'react';
-      import ReactDOM from 'react-dom';
-
-      window.React = React;
-      window.ReactDOM = ReactDOM;
-    </script>
+    <!-- Test loading with window.React/DOM and not. -->
     <script type="module">
       import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
 

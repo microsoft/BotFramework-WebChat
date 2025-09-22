@@ -1,20 +1,19 @@
-export {
+import React from 'react';
+
+export const {
   Children,
-  Component,
   cloneElement,
+  Component,
   createContext,
   createElement,
   createFactory,
   createRef,
-  default,
   forwardRef,
   Fragment,
   isValidElement,
-  JSX,
   lazy,
   memo,
   Profiler,
-  SetStateAction,
   StrictMode,
   Suspense,
   useCallback,
@@ -28,4 +27,8 @@ export {
   useRef,
   useState,
   version
-} from 'react';
+} = window.React || React;
+
+export default window.React || React;
+
+window.React = React;

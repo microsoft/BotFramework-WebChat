@@ -1,6 +1,7 @@
-export {
+import ReactDOM from 'react-dom';
+
+export const {
   createPortal,
-  default,
   findDOMNode,
   flushSync,
   hydrate,
@@ -9,4 +10,6 @@ export {
   unstable_batchedUpdates,
   unstable_renderSubtreeIntoContainer,
   version
-} from 'react-dom';
+} = window.ReactDOM || ReactDOM;
+
+export default window.ReactDOM || ReactDOM;

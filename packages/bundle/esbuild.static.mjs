@@ -5,28 +5,19 @@
 
 import * as esbuild from 'esbuild';
 import { resolve as importMetaResolve } from 'import-meta-resolve';
-import { dirname, join, resolve } from 'path';
+import { dirname, resolve } from 'path';
 import { readPackageUp } from 'read-pkg-up';
 import { fileURLToPath, pathToFileURL } from 'url';
 
-const umdResolvePlugin = {
-  name: 'umd-resolve',
-  setup(build) {
-    // ESBuild use Go regular expressions and does not understand Unicode flag.
-    // eslint-disable-next-line require-unicode-regexp
-    build.onResolve({ filter: /^react$/ }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../../fluent-theme/src/external.umd/react.ts')
-    }));
-
-    build.onResolve({ filter: /^react-dom$/ }, () => ({
-      path: join(fileURLToPath(import.meta.url), '../../fluent-theme/src/external.umd/react-dom.ts')
-    }));
-
-    // build.onResolve({ filter: /microsoft-cognitiveservices-speech-sdk/ }, () => ({
-    //   path: resolve('../../node_modules/microsoft-cognitiveservices-speech-sdk/distrib/lib/src/sdk/Exports.js')
-    // }));
-  }
-};
+const CJS = [
+  'adaptivecards@3.0.2',
+  'base64-js@1.5.1',
+  'botframework-directlinejs@0.15.6',
+  'microsoft-cognitiveservices-speech-sdk',
+  'react@16.8.6',
+  'react-dom@16.8.6',
+  'react-is@17.0.2'
+];
 
 function extractName(entry) {
   const tokens = entry.split('/');
@@ -62,7 +53,7 @@ async function readPackageUpForReal(cwd) {
   return result;
 }
 
-async function addConfig2(
+async function addConfig(
   /** @type { import('esbuild').OnResolveArgs } */
   args
 ) {
@@ -104,7 +95,7 @@ async function addConfig2(
     // console.log(name, currentConfig.entryPoints);
   }
 
-  return `./${entryNames.replace(/\[name\]/g, flatName(namedExports || moduleName.split('/').at(-1)))}.js`
+  return `./${entryNames.replace(/\[name\]/g, flatName(namedExports || moduleName.split('/').at(-1)))}.js`;
 }
 
 function getFirstConfig() {
@@ -126,7 +117,7 @@ async function crawl() {
       bundle: true,
       format: 'esm',
       loader: { '.js': 'jsx' },
-      minify: true,
+      // minify: true,
       outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
       platform: 'browser',
       sourcemap: true,
@@ -134,31 +125,47 @@ async function crawl() {
       write: true,
       /** @type { import('esbuild').Plugin[] } */
       plugins: [
-        umdResolvePlugin,
+        // umdResolvePlugin,
         {
           name: 'static-builder',
           setup(build) {
             build.onResolve({ filter: /^[^.]/ }, async args => {
               if (args.path === 'mime') {
                 return undefined;
-              } else if (args.pluginData === 'npm') {
-                return undefined;
               }
 
               if (args.kind === 'import-statement') {
-                if (args.importer.includes('external.umd')) {
-                  return undefined;
+                for (const fullName of CJS) {
+                  const [name] = fullName.split('@');
+
+                  if (args.path === name && args.importer.endsWith(`/${fullName}.ts`)) {
+                    // Prevent external.umd from looping to self.
+                    return undefined;
+                  }
                 }
 
-                const path = await addConfig2(args);
+                const path = await addConfig(args);
 
                 importMap.set(args.path, path);
 
                 return { external: true, path };
+              } else if (args.kind === 'require-call') {
+                if (
+                  args.path === 'react' &&
+                  (args.importer.includes('/react-dom.production.min.js') ||
+                    args.importer.includes('/react-dom.development.js'))
+                ) {
+                  return { path: 'global-react', namespace: 'stub' };
+                }
               }
 
               return undefined;
             });
+
+            build.onLoad({ filter: /^global-react$/, namespace: 'stub' }, () => ({
+              contents: 'module.exports = globalThis.React;',
+              resolveDir: resolve(fileURLToPath(import.meta.url), '../static')
+            }));
           }
         }
       ]
@@ -168,34 +175,18 @@ async function crawl() {
   }
 }
 
-const CJS = [
-  'adaptivecards@3.0.2',
-  'base64-js@1.5.1',
-  'botframework-directlinejs@0.15.6',
-  'microsoft-cognitiveservices-speech-sdk',
-  'react',
-  'react-dom',
-  'react-is@17.0.2'
-];
-
 (async () => {
-  const {
-    packageJson: { name }
-  } = await readPackageUp({ cwd: process.argv[2] });
+  const name = process.argv[3];
 
-  configs.set(name, {
+  configs.set('', {
     chunkNames: `[name]-[hash]`,
     entryNames: `[name]`,
-    entryPoints: [
-      {
-        in: process.argv[2],
-        out: name
-      }
-    ]
+    entryPoints: [{ in: process.argv[2], out: name }]
   });
 
   for (const moduleId of CJS) {
     configs.set(moduleId, {
+      // TODO: Unsure why.
       chunkNames: `${flatName(moduleId.replace('@', '__'))}__[name]-[hash]`,
       entryNames: `${flatName(moduleId.replace('@', '__'))}__[name]`,
       entryPoints: {
@@ -203,8 +194,6 @@ const CJS = [
       }
     });
   }
-
-  console.log(resolve(fileURLToPath(import.meta.url), `../static/`));
 
   for (let i = 0; i < 10000; i++) {
     // eslint-disable-next-line no-await-in-loop
