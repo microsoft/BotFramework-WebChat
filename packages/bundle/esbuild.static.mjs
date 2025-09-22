@@ -77,8 +77,8 @@ async function addConfig2(
     /** @type { import('esbuild').BuildOptions } */
     currentConfig = {
       absWorkingDir: dirname(packagePath),
-      chunkNames: `${flatName(name)}.[name].chunk-[hash]`,
-      entryNames: `${flatName(name)}.[name]`,
+      chunkNames: `${flatName(name)}___[name]___[hash]`,
+      entryNames: `${flatName(name)}___[name]`,
       entryPoints: {}
     };
 
@@ -98,7 +98,7 @@ async function addConfig2(
     // console.log(name, currentConfig.entryPoints);
   }
 
-  return `./${flatName(moduleName)}.${flatName(namedExports || moduleName.split('/').at(-1))}.js`;
+  return `./${flatName(moduleName)}___${flatName(namedExports || moduleName.split('/').at(-1))}.js`;
 }
 
 function getFirstConfig() {
@@ -176,7 +176,7 @@ const CJS = [
   } = await readPackageUp({ cwd: process.argv[2] });
 
   configs.set(name, {
-    chunkNames: `[name].chunk.[hash]`,
+    chunkNames: `[name]___chunk___[hash]`,
     entryNames: `[name]`,
     entryPoints: [
       {
@@ -188,10 +188,10 @@ const CJS = [
 
   for (const moduleId of CJS) {
     configs.set(moduleId, {
-      chunkNames: `[name].chunk.[hash]`,
-      entryNames: `[name]`,
+      chunkNames: `${flatName(moduleId)}___[name]___[hash]`,
+      entryNames: `[name]`, // Unsure why this isn't moduleId___name.
       entryPoints: {
-        [`${moduleId}.${moduleId}`]: `./external.umd/${moduleId}.ts`
+        [`${moduleId}___${moduleId}`]: `./external.umd/${moduleId}.ts`
       }
     });
   }
