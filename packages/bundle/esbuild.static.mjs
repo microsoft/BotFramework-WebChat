@@ -13,7 +13,7 @@ const CJS = [
   'adaptivecards@3.0.2',
   'base64-js@1.5.1',
   'botframework-directlinejs@0.15.6',
-  'microsoft-cognitiveservices-speech-sdk',
+  // 'microsoft-cognitiveservices-speech-sdk',
   'react@16.8.6',
   'react-dom@16.8.6',
   'react-is@17.0.2'
