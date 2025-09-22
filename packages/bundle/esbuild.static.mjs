@@ -38,6 +38,9 @@ function extractName(entry) {
 /** @type { Map<string, import('esbuild').BuildOptions> } */
 const configs = new Map();
 
+/** @type { Map<string, string> } */
+const importMap = new Map();
+
 function flatName(name) {
   return name.replace(/\//gu, '.').replace(/^@/u, '');
 }
@@ -146,6 +149,8 @@ async function crawl() {
 
                 const path = await addConfig2(args);
 
+                importMap.set(args.path, path);
+
                 return { external: true, path };
               }
 
@@ -203,5 +208,13 @@ const CJS = [
     await crawl();
   }
 
-  console.log(configs);
+  console.log(
+    JSON.stringify(
+      {
+        imports: Object.fromEntries(Array.from(importMap.entries()).sort(([x], [y]) => (x > y ? 1 : x < y ? -1 : 0)))
+      },
+      null,
+      2
+    )
+  );
 })();
