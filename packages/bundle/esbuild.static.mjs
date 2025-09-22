@@ -74,6 +74,7 @@ async function addConfig(
     /** @type { import('esbuild').BuildOptions } */
     currentConfig = {
       absWorkingDir: dirname(packagePath),
+      banner: { js: `/* botframework-webchat@0.0.0-0 - ${fullName} */` },
       chunkNames: `${flatName(name)}__${version}__[name]-[hash]`,
       entryNames,
       entryPoints: {}
@@ -179,6 +180,7 @@ async function crawl() {
   const name = process.argv[3];
 
   configs.set('', {
+    banner: { js: `/* botframework-webchat@0.0.0-0 */` },
     chunkNames: `[name]-[hash]`,
     entryNames: `[name]`,
     entryPoints: [{ in: process.argv[2], out: name }]
@@ -186,7 +188,7 @@ async function crawl() {
 
   for (const moduleId of CJS) {
     configs.set(moduleId, {
-      // TODO: Unsure why.
+      banner: { js: `/* botframework-webchat@0.0.0-0 - ${moduleId} */` },
       chunkNames: `${flatName(moduleId.replace('@', '__'))}__[name]-[hash]`,
       entryNames: `${flatName(moduleId.replace('@', '__'))}__[name]`,
       entryPoints: {
