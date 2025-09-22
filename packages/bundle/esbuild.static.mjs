@@ -182,7 +182,7 @@ const CJS = [
   } = await readPackageUp({ cwd: process.argv[2] });
 
   configs.set(name, {
-    chunkNames: `[name]___chunk___[hash]`,
+    chunkNames: `[name]___[hash]`,
     entryNames: `[name]`,
     entryPoints: [
       {
@@ -195,9 +195,9 @@ const CJS = [
   for (const moduleId of CJS) {
     configs.set(moduleId, {
       chunkNames: `${flatName(moduleId.replace('@', '-'))}___[name]___[hash]`,
-      entryNames: `[name]`, // Unsure why this isn't moduleId___name.
+      entryNames: `${flatName(moduleId.replace('@', '-'))}___[name]`,
       entryPoints: {
-        [`${moduleId.replace('@', '-')}___${moduleId.split('@')[0]}`]: `./external.umd/${moduleId}.ts`
+        [`${moduleId.split('@')[0]}`]: `./external.umd/${moduleId}.ts`
       }
     });
   }
