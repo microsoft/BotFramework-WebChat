@@ -19,8 +19,8 @@ export { version };
 // #region Adds
 export { default as createAdaptiveCardsAttachmentForScreenReaderMiddleware } from '../../adaptiveCards/createAdaptiveCardsAttachmentForScreenReaderMiddleware';
 export { default as createAdaptiveCardsAttachmentMiddleware } from '../../adaptiveCards/createAdaptiveCardsAttachmentMiddleware';
-export { default as createCognitiveServicesSpeechServicesPonyfillFactory } from '../../createCognitiveServicesSpeechServicesPonyfillFactory';
-export { default as createDirectLineSpeechAdapters } from '../../createDirectLineSpeechAdapters';
+// export { default as createCognitiveServicesSpeechServicesPonyfillFactory } from '../../createCognitiveServicesSpeechServicesPonyfillFactory';
+// export { default as createDirectLineSpeechAdapters } from '../../createDirectLineSpeechAdapters';
 export { default as renderMarkdown } from '../../markdown/renderMarkdown';
 export { type AdaptiveCardsPackage } from '../../types/AdaptiveCardsPackage';
 // #endregion
