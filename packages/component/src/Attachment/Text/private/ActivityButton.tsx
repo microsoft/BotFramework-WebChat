@@ -20,6 +20,9 @@ import { ComponentIcon, componentIconPropsSchema } from '../../../Icon';
 
 const activityButtonPropsSchema = pipe(
   object({
+    'aria-controls': optional(string()),
+    'aria-expanded': optional(boolean()),
+    'aria-pressed': optional(boolean()),
     children: optional(reactNode()),
     className: optional(string()),
     'data-testid': optional(string()),
@@ -35,6 +38,9 @@ type ActivityButtonProps = InferInput<typeof activityButtonPropsSchema>;
 
 const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props, ref) => {
   const {
+    'aria-controls': ariaControls,
+    'aria-expanded': ariaExpanded,
+    'aria-pressed': ariaPressed,
     children,
     className,
     'data-testid': dataTestId,
@@ -51,7 +57,10 @@ const ActivityButton = forwardRef<HTMLButtonElement, ActivityButtonProps>((props
 
   return (
     <button
+      aria-controls={ariaControls}
       aria-disabled={disabled ? 'true' : undefined}
+      aria-expanded={ariaExpanded}
+      aria-pressed={ariaPressed}
       className={classNames(activityButton, 'webchat__activity-button', className)}
       data-testid={dataTestId}
       onClick={disabled ? undefined : handleClick}
