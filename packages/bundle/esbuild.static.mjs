@@ -68,9 +68,10 @@ async function addConfig2(
 ) {
   const result = fileURLToPath(importMetaResolve(args.path, pathToFileURL(args.resolveDir)));
   const { packageJson, path: packagePath } = await readPackageUpForReal(result);
-  const { name } = packageJson;
+  const { name, version } = packageJson;
+  const fullName = `${name}@${version}`;
 
-  let currentConfig = configs.get(name);
+  let currentConfig = configs.get(fullName);
 
   if (!args.path.startsWith(name)) {
     throw new Error(`args.path must starts with name, args.path = ${args.path}, name = ${name}`);
@@ -80,12 +81,12 @@ async function addConfig2(
     /** @type { import('esbuild').BuildOptions } */
     currentConfig = {
       absWorkingDir: dirname(packagePath),
-      chunkNames: `${flatName(name)}___[name]___[hash]`,
-      entryNames: `${flatName(name)}___[name]`,
+      chunkNames: `${flatName(name)}-${version}___[name]___[hash]`,
+      entryNames: `${flatName(name)}-${version}___[name]`,
       entryPoints: {}
     };
 
-    configs.set(name, currentConfig);
+    configs.set(fullName, currentConfig);
   }
 
   const entries = new Map(Object.entries(currentConfig.entryPoints));
@@ -101,7 +102,7 @@ async function addConfig2(
     // console.log(name, currentConfig.entryPoints);
   }
 
-  return `./${flatName(moduleName)}___${flatName(namedExports || moduleName.split('/').at(-1))}.js`;
+  return `./${flatName(moduleName)}-${version}___${flatName(namedExports || moduleName.split('/').at(-1))}.js`;
 }
 
 function getFirstConfig() {
@@ -166,13 +167,13 @@ async function crawl() {
 }
 
 const CJS = [
-  'adaptivecards',
-  'base64-js',
-  'botframework-directlinejs',
+  'adaptivecards@3.0.2',
+  'base64-js@1.5.1',
+  'botframework-directlinejs@0.15.6',
   'microsoft-cognitiveservices-speech-sdk',
   'react',
   'react-dom',
-  'react-is'
+  'react-is@17.0.2'
 ];
 
 (async () => {
@@ -193,10 +194,10 @@ const CJS = [
 
   for (const moduleId of CJS) {
     configs.set(moduleId, {
-      chunkNames: `${flatName(moduleId)}___[name]___[hash]`,
+      chunkNames: `${flatName(moduleId.replace('@', '-'))}___[name]___[hash]`,
       entryNames: `[name]`, // Unsure why this isn't moduleId___name.
       entryPoints: {
-        [`${moduleId}___${moduleId}`]: `./external.umd/${moduleId}.ts`
+        [`${moduleId.replace('@', '-')}___${moduleId.split('@')[0]}`]: `./external.umd/${moduleId}.ts`
       }
     });
   }
@@ -208,13 +209,13 @@ const CJS = [
     await crawl();
   }
 
-  console.log(
-    JSON.stringify(
-      {
-        imports: Object.fromEntries(Array.from(importMap.entries()).sort(([x], [y]) => (x > y ? 1 : x < y ? -1 : 0)))
-      },
-      null,
-      2
-    )
-  );
+  // console.log(
+  //   JSON.stringify(
+  //     {
+  //       imports: Object.fromEntries(Array.from(importMap.entries()).sort(([x], [y]) => (x > y ? 1 : x < y ? -1 : 0)))
+  //     },
+  //     null,
+  //     2
+  //   )
+  // );
 })();
