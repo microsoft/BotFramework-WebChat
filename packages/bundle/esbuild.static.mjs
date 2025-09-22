@@ -81,7 +81,7 @@ async function addConfig2(
     /** @type { import('esbuild').BuildOptions } */
     currentConfig = {
       absWorkingDir: dirname(packagePath),
-      chunkNames: `${flatName(name)}-${version}___[name]___[hash]`,
+      chunkNames: `${flatName(name)}-${version}___[name]-[hash]`,
       entryNames: `${flatName(name)}-${version}___[name]`,
       entryPoints: {}
     };
@@ -182,7 +182,7 @@ const CJS = [
   } = await readPackageUp({ cwd: process.argv[2] });
 
   configs.set(name, {
-    chunkNames: `[name]___[hash]`,
+    chunkNames: `[name]-[hash]`,
     entryNames: `[name]`,
     entryPoints: [
       {
@@ -194,7 +194,7 @@ const CJS = [
 
   for (const moduleId of CJS) {
     configs.set(moduleId, {
-      chunkNames: `${flatName(moduleId.replace('@', '-'))}___[name]___[hash]`,
+      chunkNames: `${flatName(moduleId.replace('@', '-'))}___[name]-[hash]`,
       entryNames: `${flatName(moduleId.replace('@', '-'))}___[name]`,
       entryPoints: {
         [`${moduleId.split('@')[0]}`]: `./external.umd/${moduleId}.ts`
