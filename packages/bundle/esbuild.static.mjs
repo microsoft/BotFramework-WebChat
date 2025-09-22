@@ -77,13 +77,13 @@ async function addConfig2(
     throw new Error(`args.path must starts with name, args.path = ${args.path}, name = ${name}`);
   }
 
-  const entryNames = `${flatName(name)}~${version}___[name]`;
+  const entryNames = `${flatName(name)}__${version}__[name]`;
 
   if (!currentConfig) {
     /** @type { import('esbuild').BuildOptions } */
     currentConfig = {
       absWorkingDir: dirname(packagePath),
-      chunkNames: `${flatName(name)}~${version}___[name]-[hash]`,
+      chunkNames: `${flatName(name)}__${version}__[name]-[hash]`,
       entryNames,
       entryPoints: {}
     };
@@ -196,8 +196,8 @@ const CJS = [
 
   for (const moduleId of CJS) {
     configs.set(moduleId, {
-      chunkNames: `${flatName(moduleId.replace('@', '~'))}___[name]-[hash]`,
-      entryNames: `${flatName(moduleId.replace('@', '~'))}___[name]`,
+      chunkNames: `${flatName(moduleId.replace('@', '__'))}__[name]-[hash]`,
+      entryNames: `${flatName(moduleId.replace('@', '__'))}__[name]`,
       entryPoints: {
         [`${moduleId.split('@')[0]}`]: `./external.umd/${moduleId}.ts`
       }
