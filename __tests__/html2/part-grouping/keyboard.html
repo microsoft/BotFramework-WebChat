@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Part grouping: keyboard expand/collapse</title>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+        {
+          "imports": {
+            "react": "https://esm.sh/react@18.3.1",
+            "react-dom": "https://esm.sh/react-dom@18.3.1",
+            "react-dom/": "https://esm.sh/react-dom@18.3.1/",
+            "@testduet/wait-for": "https://unpkg.com/@testduet/wait-for@main/dist/wait-for.mjs",
+            "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme"
+          }
+        }
+      </script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script type="module">
+      import React from 'react';
+      window.React = React;
+    </script>
+    <script defer crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <script defer crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.development.js"></script>
+    <style type="text/css">
+      #webchat {
+        width: 640px;
+      }
+
+      .fui-FluentProvider {
+        height: 100%;
+      }
+
+      .theme.variant-copilot {
+        --webchat__color--surface: var(--colorGrey98);
+      }
+
+      #key-history {
+        align-items: center;
+        display: flex;
+        gap: 0.5em;
+        left: 0.5em;
+        padding: 0.5em;
+        position: fixed;
+        top: 0.5em;
+        z-index: 1;
+        font-size: 3rem;
+      }
+
+      #key-history kbd {
+        background-color: #f7f7f7;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-shadow: 0 1px 0 #aaaaaa44, 0 2px 0 #ffffff44 inset;
+        color: #222;
+        font-weight: bold;
+        padding: 0.2em 0.6em;
+        text-align: center;
+      }
+      #key-history kbd:last-of-type {
+        background-color: #e4e8ec;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="key-history" aria-hidden="true"></div>
+    <main id="webchat"></main>
+    <script type="module">
+      import React from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
+      import { waitFor } from '@testduet/wait-for';
+
+      const KEY_MAP = {
+        ArrowDown: '↓',
+        ArrowUp: '↑',
+        Enter: '⏎',
+        Escape: 'Esc'
+      };
+
+      const keyHistory = [];
+      const keyHistoryElement = document.getElementById('key-history');
+
+      const updateKeyHistory = () => {
+        const children = keyHistory.slice(-3).map(key => {
+          const kbd = document.createElement('kbd');
+
+          kbd.textContent = key;
+          return kbd;
+        });
+
+        keyHistoryElement.replaceChildren(...children);
+      };
+
+      window.addEventListener(
+        'keydown',
+        event => {
+          keyHistory.push(KEY_MAP[event.key] || event.key);
+          updateKeyHistory();
+        },
+        { capture: true }
+      );
+
+      updateKeyHistory();
+
+      run(async function () {
+        const {
+          WebChat: { FluentThemeProvider, ReactWebChat }
+        } = window;
+
+        const { directLine, store } = testHelpers.createDirectLineEmulator();
+
+        const searchParams = new URLSearchParams(location.search);
+        const variant = searchParams.get('variant');
+        const theme = searchParams.get('fluent-theme');
+
+        await host.windowSize(640, 1024, document.getElementById('webchat'));
+        await host.sendDevToolsCommand('Emulation.setEmulatedMedia', {
+          features: [{ name: 'prefers-reduced-motion', value: 'reduce' }]
+        });
+
+        const root = createRoot(document.getElementById('webchat'));
+
+        let fluentTheme;
+        let codeBlockTheme;
+
+        if (theme === 'dark' || (window.matchMedia('(prefers-color-scheme: dark)').matches && theme !== 'light')) {
+          fluentTheme = createDarkTheme({ brand: { 100: '#5661d4' } });
+          codeBlockTheme = 'github-dark-default';
+        } else {
+          fluentTheme = webLightTheme;
+          codeBlockTheme = 'github-light-default';
+        }
+
+        if (variant) {
+          window.checkAccessibility = async () => {};
+        }
+
+        const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
+
+        root.render(
+          variant === 'copilot' || variant === 'fluent'
+            ? React.createElement(
+                FluentProvider,
+                { className: 'fui-FluentProvider', theme: fluentTheme },
+                React.createElement(
+                  FluentThemeProvider,
+                  { variant: variant },
+                  React.createElement(ReactWebChat, webChatProps)
+                )
+              )
+            : React.createElement(ReactWebChat, webChatProps)
+        );
+
+        await pageConditions.uiConnected();
+
+        const createActivity = (id, text, groupId) => ({
+          entities: [
+            {
+              '@context': 'https://schema.org',
+              '@id': '',
+              '@type': 'Message',
+              abstract: text,
+              author: { name: 'Research' },
+              isPartOf: { '@id': groupId, '@type': 'HowTo' },
+              keywords: ['AIGeneratedContent', 'AnalysisMessage'],
+              position: parseInt(id.split('-').pop(), 10),
+              type: 'https://schema.org/Message'
+            }
+          ],
+          id,
+          type: 'message'
+        });
+
+        directLine.emulateIncomingActivity({ from: { role: 'user' }, text: `Message from user.`, type: 'message' });
+        await pageConditions.numActivitiesShown(1);
+
+        // Setup: Send all activities to create two groups.
+        directLine.emulateIncomingActivity(createActivity('activity-1', 'Activity 1'));
+        directLine.emulateIncomingActivity(createActivity('g1-activity-1', 'Group 1, Activity 1', 'g-00001'));
+        directLine.emulateIncomingActivity(createActivity('g1-activity-2', 'Group 1, Activity 2', 'g-00001'));
+        directLine.emulateIncomingActivity(createActivity('g2-activity-1', 'Group 2, Activity 1', 'g-00002'));
+        directLine.emulateIncomingActivity(createActivity('g2-activity-2', 'Group 2, Activity 2', 'g-00002'));
+        directLine.emulateIncomingActivity(createActivity('activity-2', 'Activity 2'));
+
+        await pageConditions.numActivitiesShown(7);
+        await pageObjects.focusTranscript();
+
+        const groupHeaders = () => document.querySelectorAll('.collapsible-grouping__header');
+        const expandCollapseButtons = () => document.querySelectorAll('.collapsible-grouping__header .webchat__activity-button');
+        const expandedGroups = () => document.querySelectorAll('.collapsible-grouping__header .webchat__activity-button[aria-expanded="true"]');
+        const collapsedGroups = () => document.querySelectorAll('.collapsible-grouping__header .webchat__activity-button[aria-expanded="false"]');
+
+        await waitFor(async () => expect(groupHeaders()).toHaveLength(2));
+        await waitFor(async () => expect(expandCollapseButtons()).toHaveLength(2));
+
+        // Test Case 1: Keyboard collapse from group header
+        // When: Navigating to group 1 header and pressing ENTER
+        await host.sendKeys('ARROW_UP'); // activity-2 -> g2-activity-2
+        await host.sendKeys('ARROW_UP'); // g2-activity-2 -> g2-activity-1
+        await host.sendKeys('ARROW_UP'); // g2-activity-1 -> group 2 header
+        await host.sendKeys('ARROW_UP'); // group 2 header -> g1-activity-2
+        await host.sendKeys('ARROW_UP'); // g1-activity-2 -> g1-activity-1
+        await host.sendKeys('ARROW_UP'); // g1-activity-1 -> group 1 header
+
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+        expect(expandedGroups()).toHaveLength(2);
+
+        // When: Pressing ENTER to focus the collapse/expand button
+        await host.sendKeys('ENTER');
+        await host.snapshot('local');
+        expect(document.activeElement).toBe(expandCollapseButtons()[0]);
+
+        // When: Pressing ENTER again to collapse the group
+        await host.sendKeys('ENTER');
+        await waitFor(async () => expect(collapsedGroups()).toHaveLength(1));
+        await host.snapshot('local');
+        expect(expandedGroups()).toHaveLength(1);
+
+        // When: Pressing ESCAPE to return focus to group header
+        await host.sendKeys('ESCAPE');
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        // Test Case 2: Keyboard expand from collapsed group header
+        // When: Pressing ENTER to focus the expand button
+        await host.sendKeys('ENTER');
+        await host.snapshot('local');
+        expect(document.activeElement).toBe(expandCollapseButtons()[0]);
+
+        // When: Pressing ENTER again to expand the group
+        await host.sendKeys('ENTER');
+        await waitFor(async () => expect(expandedGroups()).toHaveLength(2));
+        await host.snapshot('local');
+        expect(collapsedGroups()).toHaveLength(0);
+
+        // When: Pressing ESCAPE to return focus to group header
+        await host.sendKeys('ESCAPE');
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        // Test Case 3: Navigate to second group and test keyboard interaction
+        // When: Navigating to group 2 header
+        await host.sendKeys('ARROW_DOWN'); // group 1 header -> group 1 activity-1
+        await host.sendKeys('ARROW_DOWN'); // group 1 activity-1 -> group 1 activity-2
+        await host.sendKeys('ARROW_DOWN'); // group 1 activity-2 -> group 2 header
+
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        // When: Pressing ENTER to focus the collapse/expand button
+        await host.sendKeys('ENTER');
+        await host.snapshot('local');
+        expect(document.activeElement).toBe(expandCollapseButtons()[1]);
+
+        // When: Pressing ENTER again to collapse group 2
+        await host.sendKeys('ENTER');
+        await waitFor(async () => expect(collapsedGroups()).toHaveLength(1));
+        await host.snapshot('local');
+        expect(expandedGroups()).toHaveLength(1);
+
+        // When: Pressing ESCAPE to return focus to group header
+        await host.sendKeys('ESCAPE');
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        // Test Case 4: Test both groups collapsed navigation
+        // When: Collapsing group 1 as well
+        await host.sendKeys('ARROW_UP'); // group 2 header -> group 1 activity-2
+        await host.sendKeys('ARROW_UP'); // group 1 activity-2 -> group 1 activity-1
+        await host.sendKeys('ARROW_UP'); // group 1 activity-1 -> group 1 header
+        await host.sendKeys('ENTER'); // Focus expand/collapse button
+        await host.sendKeys('ENTER'); // Collapse group 1
+        await waitFor(async () => expect(collapsedGroups()).toHaveLength(2));
+        await host.snapshot('local');
+
+        await host.sendKeys('ESCAPE'); // Return to group header
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+
+        // Test Case 5: Expand both groups back
+        // When: Expanding group 1
+        await host.sendKeys('ENTER'); // Focus expand button
+        await host.sendKeys('ENTER'); // Expand group 1
+        await waitFor(async () => expect(expandedGroups()).toHaveLength(1));
+        await host.snapshot('local');
+
+        await host.sendKeys('ESCAPE'); // Return to group header
+
+        // When: Navigating to group 2 and expanding it
+        await host.sendKeys('ARROW_DOWN'); // group 1 header -> group 1 activity-1
+        await host.sendKeys('ARROW_DOWN'); // group 1 activity-1 -> group 1 activity-2
+        await host.sendKeys('ARROW_DOWN'); // group 1 activity-2 -> group 2 header
+        await host.sendKeys('ENTER'); // Focus expand button
+        await host.sendKeys('ENTER'); // Expand group 2
+        await waitFor(async () => expect(expandedGroups()).toHaveLength(2));
+        await host.snapshot('local');
+
+        await host.sendKeys('ESCAPE'); // Return to group header
+        await host.snapshot('local');
+        expect(pageElements.focusedActivity()).toBe(undefined);
+        expect(collapsedGroups()).toHaveLength(0);
+      });
+    </script>
+  </body>
+</html>
