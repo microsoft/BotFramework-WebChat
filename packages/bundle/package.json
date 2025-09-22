@@ -64,7 +64,8 @@
         "types": "./dist/botframework-webchat.middleware.d.ts",
         "default": "./dist/botframework-webchat.middleware.js"
       }
-    }
+    },
+    "./static/*": "./static/*"
   },
   "publishConfig": {
     "access": "public"
@@ -81,7 +82,8 @@
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/#readme",
   "files": [
     "./dist/**/*",
-    "./src/**/*"
+    "./src/**/*",
+    "./static/**/*"
   ],
   "tsd": {
     "compilerOptions": {
