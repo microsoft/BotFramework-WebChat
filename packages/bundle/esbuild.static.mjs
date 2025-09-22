@@ -77,12 +77,14 @@ async function addConfig2(
     throw new Error(`args.path must starts with name, args.path = ${args.path}, name = ${name}`);
   }
 
+  const entryNames = `${flatName(name)}~${version}___[name]`;
+
   if (!currentConfig) {
     /** @type { import('esbuild').BuildOptions } */
     currentConfig = {
       absWorkingDir: dirname(packagePath),
-      chunkNames: `${flatName(name)}-${version}___[name]-[hash]`,
-      entryNames: `${flatName(name)}-${version}___[name]`,
+      chunkNames: `${flatName(name)}~${version}___[name]-[hash]`,
+      entryNames,
       entryPoints: {}
     };
 
@@ -102,7 +104,7 @@ async function addConfig2(
     // console.log(name, currentConfig.entryPoints);
   }
 
-  return `./${flatName(moduleName)}-${version}___${flatName(namedExports || moduleName.split('/').at(-1))}.js`;
+  return `./${entryNames.replace(/\[name\]/g, flatName(namedExports || moduleName.split('/').at(-1)))}.js`
 }
 
 function getFirstConfig() {
@@ -194,8 +196,8 @@ const CJS = [
 
   for (const moduleId of CJS) {
     configs.set(moduleId, {
-      chunkNames: `${flatName(moduleId.replace('@', '-'))}___[name]-[hash]`,
-      entryNames: `${flatName(moduleId.replace('@', '-'))}___[name]`,
+      chunkNames: `${flatName(moduleId.replace('@', '~'))}___[name]-[hash]`,
+      entryNames: `${flatName(moduleId.replace('@', '~'))}___[name]`,
       entryPoints: {
         [`${moduleId.split('@')[0]}`]: `./external.umd/${moduleId}.ts`
       }
