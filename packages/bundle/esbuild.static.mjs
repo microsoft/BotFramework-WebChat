@@ -129,7 +129,7 @@ async function crawl() {
       minify: true,
       outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
       platform: 'browser',
-      sourcemap: false,
+      sourcemap: true,
       splitting: true,
       write: true,
       /** @type { import('esbuild').Plugin[] } */
