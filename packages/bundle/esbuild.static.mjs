@@ -13,7 +13,6 @@ const CJS = [
   'adaptivecards@3.0.2',
   'base64-js@1.5.1',
   'botframework-directlinejs@0.15.6',
-  // 'microsoft-cognitiveservices-speech-sdk',
   'react@16.8.6',
   'react-dom@16.8.6',
   'react-is@17.0.2'
@@ -92,10 +91,11 @@ async function addConfig(
   const entries = new Map(Object.entries(currentConfig.entryPoints));
 
   const [moduleName, namedExports] = extractName(args.path);
+  const entryName = flatName(namedExports || moduleName.split('/').at(-1));
 
-  if (!entries.has(args.path)) {
+  if (!entries.has(entryName)) {
     // console.log('---', args.path, namedExports);
-    entries.set(flatName(namedExports), args.path);
+    entries.set(entryName, args.path);
     currentConfig.entryPoints = Object.fromEntries(Array.from(entries.entries()));
     currentConfig.write = true;
 
@@ -121,6 +121,9 @@ async function crawl() {
   if (config) {
     await esbuild.build({
       ...config,
+      alias: {
+        'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk'
+      },
       bundle: true,
       format: 'esm',
       loader: { '.js': 'jsx' },

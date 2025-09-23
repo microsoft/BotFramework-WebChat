@@ -1,0 +1,37 @@
+{
+  "name": "@msinternal/microsoft-cognitiveservices-speech-sdk",
+  "description": "Rebundle microsoft-cognitiveservices-speech-sdk",
+  "version": "0.0.0-0",
+  "author": "Microsoft Corporation",
+  "private": true,
+  "exports": {
+    ".": "./dist/index.js",
+    "./distrib/lib/microsoft.cognitiveservices.speech.sdk.js": {
+      "import": "./dist/index.js"
+    },
+    "./distrib/lib/src/common/AudioSourceEvents.js": {
+      "import": "./dist/common/AudioSourceEvents.js"
+    },
+    "./distrib/lib/src/common/Exports.js": {
+      "import": "./dist/common/Exports.js"
+    },
+    "./distrib/lib/src/common.browser/Exports.js": {
+      "import": "./dist/common.browser/Exports.js"
+    },
+    "./distrib/lib/src/common.speech/Exports.js": {
+      "import": "./dist/common.speech/Exports.js"
+    },
+    "./distrib/lib/src/sdk/Audio/AudioStreamFormat.js": {
+      "import": "./dist/sdk/Audio/AudioStreamFormat.js"
+    },
+    "./distrib/lib/src/sdk/Exports.js": {
+      "import": "./dist/sdk/Exports.js"
+    }
+  },
+  "scripts": {
+    "build": "esbuild --bundle=true --format=esm --outdir=dist --platform=browser --splitting ./src/common/* ./src/common.browser/* ./src/common.speech/* ./src/index.ts ./src/sdk/Audio/AudioStreamFormat.ts ./src/sdk/Exports.ts"
+  },
+  "dependencies": {
+    "microsoft-cognitiveservices-speech-sdk": "^1.17.0"
+  }
+}

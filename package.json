@@ -32,6 +32,7 @@
     "./packages/isomorphic-react",
     "./packages/isomorphic-react-dom",
     "./packages/component",
+    "./packages/speech-sdk",
     "./packages/directlinespeech",
     "./packages/bundle",
     "./packages/test/page-object",

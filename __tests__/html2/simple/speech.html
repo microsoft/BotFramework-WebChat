@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/botframework-webchat@main/dist/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script>
+      run(async function () {
+        const {
+          testHelpers: {
+            createDirectLineEmulator,
+            token: { fetchSpeechServicesCredentials }
+          },
+          WebChat: {
+            createCognitiveServicesSpeechServicesPonyfillFactory,
+            createDirectLine,
+            createStoreWithOptions,
+            renderWebChat
+          }
+        } = window;
+
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions };
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        const { token, region } = await fetchSpeechServicesCredentials();
+
+        console.log(token, region);
+
+        const credentials = () => ({ region, token: `Bearer ${token}` });
+
+        renderWebChat(
+          {
+            directLine,
+            store,
+            webSpeechPonyfillFactory: createCognitiveServicesSpeechServicesPonyfillFactory({ credentials })
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity('Hello, World!');
+
+        await pageConditions.numActivitiesShown(1);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

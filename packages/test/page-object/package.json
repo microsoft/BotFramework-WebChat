@@ -35,7 +35,7 @@
     "event-iterator": "2.0.0",
     "event-target-shim": "6.0.2",
     "math-random": "2.0.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.45.0",
+    "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "prop-types": "15.8.1",
     "simple-update-in": "2.2.0"
   },
