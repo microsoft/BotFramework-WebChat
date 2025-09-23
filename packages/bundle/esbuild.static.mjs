@@ -57,7 +57,13 @@ async function addConfig(
   /** @type { import('esbuild').OnResolveArgs } */
   args
 ) {
-  const result = fileURLToPath(importMetaResolve(args.path, pathToFileURL(args.resolveDir)));
+  const fileURL = importMetaResolve(args.path, pathToFileURL(args.resolveDir) + '/');
+
+  if (fileURL.startsWith('node:')) {
+    return;
+  }
+
+  const result = fileURLToPath(fileURL);
   const { packageJson, path: packagePath } = await readPackageUpForReal(result);
   const { name, version } = packageJson;
   const fullName = `${name}@${version}`;
@@ -130,41 +136,89 @@ async function crawl() {
         {
           name: 'static-builder',
           setup(build) {
+            // build.onLoad({ filter: /.*/ }, async args => {
+            //   try {
+            //     // eslint-disable-next-line security/detect-non-literal-fs-filename
+            //     const source = await readFile(args.path, { encoding: 'utf-8' });
+
+            //     // if (args.path.includes('/react/')) {
+            //     //   console.log(source);
+            //     // }
+
+            //     // if (args.path.includes('html-dom-parser')) {
+            //     //   console.log(args);
+            //     // }
+
+            //     const root = parse(Lang.JavaScript, source).root();
+
+            //     const node = root.find('module.exports = require($MATCH)');
+            //     const edit = node.replace(
+            //       `export * from ${node.getMatch('MATCH').text()}; export { default } from ${node.getMatch('MATCH').text()};`
+            //     );
+
+            //     const node3 = root.find('module.exports = $MATCH');
+            //     const edit3 = node3.replace(`export default ${node.getMatch('MATCH').text()};`);
+
+            //     // console.log(node);
+
+            //     const node2 = root.findAll('var $VAR = require($MODULE);');
+            //     // console.log(node2);
+            //     const edit2 = node2.map(node =>
+            //       node.replace(`import ${node.getMatch('VAR').text()} from ${node.getMatch('MODULE').text()};`)
+            //     );
+
+            //     if (args.path === 'hoist-non-react-statics') {
+            //       console.log(edit2);
+            //     }
+
+            //     const newSource = node.commitEdits([edit, ...edit2, edit3]);
+
+            //     return { contents: newSource };
+            //   } catch (error) {
+            //     return undefined;
+            //   }
+            // });
+
             build.onResolve({ filter: /^[^.]/ }, async args => {
               if (args.path === 'mime') {
                 return undefined;
               }
 
               if (args.kind === 'import-statement') {
-                for (const fullName of CJS) {
-                  const [name] = fullName.split('@');
-
-                  if (args.path === name && args.importer.endsWith(`/${fullName}.ts`)) {
-                    // Prevent external.umd from looping to self.
-                    return undefined;
-                  }
+                // Prevent external.umd from looping to self.
+                if (args.importer.includes('external.umd')) {
+                  return undefined;
                 }
 
+                // for (const fullName of CJS) {
+                //   const [name] = fullName.split('@');
+
+                //   if (args.path === name && args.importer.endsWith(`/${fullName}.ts`)) {
+                //     // Prevent external.umd from looping to self.
+                //     return undefined;
+                //   }
+                // }
+
                 const path = await addConfig(args);
+
+                if (!path) {
+                  return undefined;
+                }
 
                 importMap.set(args.path, path);
 
                 return { external: true, path };
               } else if (args.kind === 'require-call') {
-                if (
-                  args.path === 'react' &&
-                  (args.importer.includes('/react-dom.production.min.js') ||
-                    args.importer.includes('/react-dom.development.js'))
-                ) {
-                  return { path: 'global-react', namespace: 'stub' };
+                if (args.path === 'react') {
+                  return { path: 'stub:react', namespace: 'stub' };
                 }
               }
 
               return undefined;
             });
 
-            build.onLoad({ filter: /^global-react$/, namespace: 'stub' }, () => ({
-              contents: 'module.exports = globalThis.React;',
+            build.onLoad({ filter: /^stub:react$/, namespace: 'stub' }, () => ({
+              contents: "export * from 'react'; export { default } from 'react';",
               resolveDir: resolve(fileURLToPath(import.meta.url), '../static')
             }));
           }

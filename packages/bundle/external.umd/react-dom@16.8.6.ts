@@ -1,8 +1,7 @@
 import ReactDOM from 'react-dom';
 
-globalThis.ReactDOM = globalThis.ReactDOM || ReactDOM;
-
 export const {
+  __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
   createPortal,
   findDOMNode,
   flushSync,
@@ -10,8 +9,12 @@ export const {
   render,
   unmountComponentAtNode,
   unstable_batchedUpdates,
+  unstable_createPortal,
+  unstable_createRoot,
+  unstable_flushControlled,
+  unstable_interactiveUpdates,
   unstable_renderSubtreeIntoContainer,
   version
-} = globalThis.ReactDOM;
+} = ReactDOM;
 
-export default globalThis.ReactDOM;
+export default ReactDOM;

@@ -1,8 +1,7 @@
 import React from 'react';
 
-globalThis.React = globalThis.React || React;
-
 export const {
+  __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
   Children,
   cloneElement,
   Component,
@@ -16,8 +15,11 @@ export const {
   lazy,
   memo,
   Profiler,
+  PureComponent,
   StrictMode,
   Suspense,
+  unstable_ConcurrentMode,
+  unstable_Profiler,
   useCallback,
   useContext,
   useDebugValue,
@@ -29,6 +31,6 @@ export const {
   useRef,
   useState,
   version
-} = globalThis.React;
+} = React;
 
-export default globalThis.React;
+export default React;
