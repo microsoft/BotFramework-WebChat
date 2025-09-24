@@ -97,7 +97,7 @@
     }
   },
   "scripts": {
-    "build": "npm run build:static || npm run build:tsup",
+    "build": "npm run build:static && npm run build:tsup",
     "build:static": "node ./esbuild.static.mjs ./src/boot/exports/index.ts botframework-webchat",
     "build:tsup": "tsup",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
