@@ -25,6 +25,18 @@ module.exports = {
   'packages/react-hooks/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:react-hooks'],
   'packages/react-valibot/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:react-valibot'],
   'packages/redux-store/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:redux-store'],
+  'packages/repack-adaptivecards/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:repack-adaptivecards'],
+  'packages/repack-base64-js/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:repack-base64-js'],
+  'packages/repack-botframework-directlinejs/src/**/*.{mjs,js,ts,tsx}': [
+    'npm run precommit:eslint:repack-botframework-directlinejs'
+  ],
+  'packages/repack-microsoft-cognitiveservices-speech-sdk/src/**/*.{mjs,js,ts,tsx}': [
+    'npm run precommit:eslint:repack-microsoft-cognitiveservices-speech-sdk'
+  ],
+  'packages/repack-object-assign/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:repack-object-assign'],
+  'packages/repack-react/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:repack-react'],
+  'packages/repack-react-dom/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:repack-react-dom'],
+  'packages/repack-react-is/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:repack-react-is'],
   'packages/styles/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:styles'],
   'packages/support/cldr-data/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:support-cldr-data'],
   'packages/support/cldr-data-downloader/src/**/*.{mjs,js,ts,tsx}': [
