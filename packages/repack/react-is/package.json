@@ -1,6 +1,6 @@
 {
-  "name": "@msinternal/react-dom",
-  "description": "Repack of react-dom",
+  "name": "@msinternal/react-is",
+  "description": "Repack of react-is",
   "version": "0.0.0-0",
   "author": "Microsoft Corporation",
   "private": true,
@@ -9,7 +9,7 @@
     ".": "./dist/index.js"
   },
   "scripts": {
-    "build": "node ./build.js",
+    "build": "esbuild --bundle=true --format=esm --outdir=dist --platform=browser --splitting --sourcemap ./src/index.js",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -19,7 +19,17 @@
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false"
   },
   "localDependencies": {},
+  "pinDependencies": {
+    "react-is": [
+      "17.0.2",
+      "Bump with React"
+    ]
+  },
+  "dependencies": {
+    "react-is": "17.0.2"
+  },
   "devDependencies": {
+    "@types/react-is": "^17.0.7",
     "esbuild": "^0.25.10"
   }
 }

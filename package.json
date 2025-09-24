@@ -38,6 +38,7 @@
     "./packages/repack/microsoft-cognitiveservices-speech-sdk",
     "./packages/repack/react",
     "./packages/repack/react-dom",
+    "./packages/repack/react-is",
     "./packages/directlinespeech",
     "./packages/bundle",
     "./packages/test/page-object",

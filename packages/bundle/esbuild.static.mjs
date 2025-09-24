@@ -9,7 +9,7 @@ import { dirname, resolve } from 'path';
 import { readPackageUp } from 'read-pkg-up';
 import { fileURLToPath, pathToFileURL } from 'url';
 
-const CJS = ['react-is@17.0.2'];
+const CJS = [];
 
 function extractName(entry) {
   const tokens = entry.split('/');
@@ -120,7 +120,8 @@ async function crawl() {
         'botframework-directlinejs': '@msinternal/botframework-directlinejs',
         'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk',
         react: '@msinternal/react',
-        'react-dom': '@msinternal/react-dom'
+        'react-dom': '@msinternal/react-dom',
+        'react-is': '@msinternal/react-is'
       },
       bundle: true,
       format: 'esm',
@@ -157,10 +158,10 @@ async function crawl() {
                 importMap.set(args.path, path);
 
                 return { external: true, path };
-              // } else if (args.kind === 'require-call') {
-              //   if (args.path === 'react') {
-              //     return { path: 'stub:react', namespace: 'stub' };
-              //   }
+                // } else if (args.kind === 'require-call') {
+                //   if (args.path === 'react') {
+                //     return { path: 'stub:react', namespace: 'stub' };
+                //   }
               }
 
               return undefined;
