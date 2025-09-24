@@ -109,7 +109,6 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "rebuild:static": "clear && (rm -r static || true ) && node ./esbuild.static.mjs ./src/boot/exports/index.ts botframework-webchat",
     "start": "cross-env NODE_OPTIONS=--no-deprecation concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
     "start:static": "npm run build:static -- --watch",
     "start:tsup": "npm run build:tsup -- --watch",

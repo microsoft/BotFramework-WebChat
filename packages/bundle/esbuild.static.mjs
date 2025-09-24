@@ -53,6 +53,25 @@ const BASE_CONFIG = {
   ]
 };
 
+function createWatcherPlugin(name) {
+  /** @type { import('esbuild').Plugin } */
+  return {
+    name: 'watcher',
+    setup(build) {
+      let buildStart = Date.now();
+
+      console.log(`${name} Running in watch mode`);
+
+      build.onStart(() => {
+        buildStart = Date.now();
+        console.log(`${name} Build start`);
+      });
+
+      build.onEnd(() => console.log(`${name} ⚡ Build success in ${Date.now() - buildStart}ms`));
+    }
+  };
+}
+
 /**
  * Extracts the package name and the named exports path from an entry string.
  *
@@ -180,31 +199,18 @@ async function buildNextConfig() {
   }
 
   if (watch === '--watch') {
-    const rootConfig = { ...configs.get(''), ...BASE_CONFIG };
+    const ourConfigs = [];
 
-    await (
-      await context({
-        ...rootConfig,
-        /** @type { import('esbuild').Plugin[] } */
-        plugins: [
-          ...rootConfig.plugins,
-          {
-            name: 'watcher',
-            setup(build) {
-              let buildStart = Date.now();
+    for (const [key, config] of configs) {
+      if (!key || key.startsWith('botframework-webchat')) {
+        const ourConfig = { ...config, ...BASE_CONFIG };
 
-              console.log(`Running in watch mode`);
+        ourConfig.plugins.push(createWatcherPlugin(key || output));
 
-              build.onStart(() => {
-                buildStart = Date.now();
-                console.log(`Build start`);
-              });
+        ourConfigs.push(ourConfig);
+      }
+    }
 
-              build.onEnd(() => console.log(`⚡ Build success in ${Date.now() - buildStart}ms`));
-            }
-          }
-        ]
-      })
-    ).watch();
+    await Promise.all(ourConfigs.map(async config => (await context(config)).watch()));
   }
 })();
