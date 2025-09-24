@@ -190,7 +190,7 @@ async function buildNextConfig() {
           {
             name: 'watcher',
             setup(build) {
-              build.onEnd(() => console.log(`/static is built`));
+              build.onEnd(() => console.log(`/static has been built`));
               build.onStart(() => console.log('Building /static'));
             }
           }
