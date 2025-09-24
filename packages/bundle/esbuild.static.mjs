@@ -3,6 +3,7 @@
 /* eslint-env node */
 /* eslint-disable no-console */
 /* eslint-disable no-magic-numbers */
+/* eslint-disable no-restricted-globals */
 
 import { build, context } from 'esbuild';
 import { resolve as importMetaResolve } from 'import-meta-resolve';
@@ -190,8 +191,16 @@ async function buildNextConfig() {
           {
             name: 'watcher',
             setup(build) {
-              build.onEnd(() => console.log(`/static has been built`));
-              build.onStart(() => console.log('Building /static'));
+              let buildStart = Date.now();
+
+              console.log(`Running in watch mode`);
+
+              build.onStart(() => {
+                buildStart = Date.now();
+                console.log(`Build start`);
+              });
+
+              build.onEnd(() => console.log(`⚡ Build success in ${Date.now() - buildStart}ms`));
             }
           }
         ]
