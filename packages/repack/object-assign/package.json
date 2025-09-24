@@ -1,0 +1,21 @@
+{
+  "name": "@msinternal/object-assign",
+  "description": "Delete of object-assign",
+  "version": "0.0.0-0",
+  "author": "Microsoft Corporation",
+  "private": true,
+  "type": "commonjs",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
+    "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
+    "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
+    "eslint": "npm run precommit",
+    "precommit": "npm run precommit:eslint -- src",
+    "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0"
+  },
+  "localDependencies": {},
+  "pinDependencies": {}
+}

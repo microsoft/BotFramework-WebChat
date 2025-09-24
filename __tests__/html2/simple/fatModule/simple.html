@@ -10,7 +10,9 @@
     <script type="importmap">
       {
         "imports": {
-          "botframework-webchat": "/__dist__/packages/bundle/dist/botframework-webchat.mjs"
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
         }
       }
     </script>
@@ -27,13 +29,7 @@
 
         const { directLine, store } = createDirectLineEmulator();
 
-        renderWebChat(
-          {
-            directLine,
-            store
-          },
-          document.getElementById('webchat')
-        );
+        renderWebChat({ directLine, store }, document.getElementById('webchat'));
 
         await pageConditions.uiConnected();
 
@@ -42,6 +38,8 @@
         await pageConditions.numActivitiesShown(1);
 
         await host.snapshot('local');
+
+        expect(typeof globalThis.React).toBe('undefined');
       });
     </script>
   </body>
