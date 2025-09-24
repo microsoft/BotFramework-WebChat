@@ -35,6 +35,7 @@
     "./packages/repack/adaptivecards",
     "./packages/repack/base64-js",
     "./packages/repack/botframework-directlinejs",
+    "./packages/repack/html-react-parser",
     "./packages/repack/microsoft-cognitiveservices-speech-sdk",
     "./packages/repack/object-assign",
     "./packages/repack/react",

@@ -18,9 +18,10 @@
       }
     </script>
     <script type="module">
-      import { createDirectLine, createStoreWithOptions, hooks, renderWebChat } from 'botframework-webchat';
+      import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
       import { activityComponent, createActivityPolymiddleware } from 'botframework-webchat/middleware';
       import { createElement } from 'react';
+      import { render } from 'react-dom';
 
       const { useStyleOptions } = hooks;
       const {
@@ -44,8 +45,8 @@
           );
         }
 
-        renderWebChat(
-          {
+        render(
+          createElement(ReactWebChat, {
             directLine,
             polymiddleware: [
               createActivityPolymiddleware(
@@ -53,7 +54,7 @@
               )
             ],
             store
-          },
+          }),
           document.getElementsByTagName('main')[0]
         );
 

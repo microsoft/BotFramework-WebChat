@@ -11,26 +11,26 @@ import { dirname, resolve } from 'path';
 import { readPackageUp } from 'read-pkg-up';
 import { fileURLToPath, pathToFileURL } from 'url';
 
-const isomorphicReactPlugin = {
-  name: 'isomorphic-react',
-  setup(build) {
-    // eslint-disable-next-line require-unicode-regexp
-    build.onResolve({ filter: /^(react|react-dom)$/, namespace: 'file' }, ({ path }) => ({
-      namespace: 'isomorphic-react',
-      path
-    }));
+// const isomorphicReactPlugin = {
+//   name: 'isomorphic-react',
+//   setup(build) {
+//     // eslint-disable-next-line require-unicode-regexp
+//     build.onResolve({ filter: /^(react|react-dom)$/, namespace: 'file' }, ({ path }) => ({
+//       namespace: 'isomorphic-react',
+//       path
+//     }));
 
-    // eslint-disable-next-line require-unicode-regexp
-    build.onLoad({ filter: /^react$/, namespace: 'isomorphic-react' }, () => ({
-      contents: "import React from 'react'; module.exports = globalThis.React || React;"
-    }));
+//     // eslint-disable-next-line require-unicode-regexp
+//     build.onLoad({ filter: /^react$/, namespace: 'isomorphic-react' }, () => ({
+//       contents: "import React from 'react'; module.exports = globalThis.React || React;"
+//     }));
 
-    // eslint-disable-next-line require-unicode-regexp
-    build.onLoad({ filter: /^react-dom$/, namespace: 'isomorphic-react' }, () => ({
-      contents: "import ReactDOM from 'react-dom'; module.exports = globalThis.ReactDOM || ReactDOM;"
-    }));
-  }
-};
+//     // eslint-disable-next-line require-unicode-regexp
+//     build.onLoad({ filter: /^react-dom$/, namespace: 'isomorphic-react' }, () => ({
+//       contents: "import ReactDOM from 'react-dom'; module.exports = globalThis.ReactDOM || ReactDOM;"
+//     }));
+//   }
+// };
 
 function createWatcherPlugin(name) {
   /** @type { import('esbuild').Plugin } */
@@ -150,13 +150,13 @@ const BASE_CONFIG = {
     adaptivecards: '@msinternal/adaptivecards',
     'base64-js': '@msinternal/base64-js',
     'botframework-directlinejs': '@msinternal/botframework-directlinejs',
+    'html-react-parser': '@msinternal/html-react-parser',
     'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk',
     'object-assign': '@msinternal/object-assign',
-    react: '@msinternal/react',
-    'react-dom': '@msinternal/react-dom',
     'react-is': '@msinternal/react-is'
   },
   bundle: true,
+  external: ['react', 'react-dom'],
   format: 'esm',
   loader: { '.js': 'jsx' },
   minify: true,
@@ -168,12 +168,16 @@ const BASE_CONFIG = {
 
   /** @type { import('esbuild').Plugin[] } */
   plugins: [
-    isomorphicReactPlugin,
     {
       name: 'static-builder',
       setup(build) {
         // eslint-disable-next-line require-unicode-regexp
         build.onResolve({ filter: /^[^.]/ }, async args => {
+          // "external" field only works if the plug-in give up (return undefined.)
+          if (args.path === 'react' || args.path === 'react-dom') {
+            return undefined;
+          }
+
           // Only ESM can be externalized, CJS cannot be externalized because require() is not guaranteed to be at top-level.
           if (args.kind === 'import-statement') {
             const path = await addConfig(args);
@@ -218,6 +222,23 @@ async function buildNextConfig() {
       'botframework-webchat.hook': './src/boot/exports/hook.ts',
       'botframework-webchat.internal': './src/boot/exports/internal.ts',
       'botframework-webchat.middleware': './src/boot/exports/middleware.ts'
+    }
+  });
+
+  // Put `react` and `react-dom` under `/static` for conveniences when using in sovereign cloud or airgapped environment.
+  configs.set('react', {
+    chunkNames: `react.[name]-[hash]`,
+    entryNames: `[name]`,
+    entryPoints: {
+      '': '@msinternal/react'
+    }
+  });
+
+  configs.set('react-dom', {
+    chunkNames: `react-dom.[name]-[hash]`,
+    entryNames: `[name]`,
+    entryPoints: {
+      '': '@msinternal/react-dom'
     }
   });
 

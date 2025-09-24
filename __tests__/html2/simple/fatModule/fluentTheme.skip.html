@@ -21,21 +21,9 @@
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
           "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat.internal.mjs",
           "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/dist/botframework-webchat-fluent-theme.mjs",
-          "react": "https://esm.sh/react@18",
-          "react-dom": "https://esm.sh/react-dom@18",
-          "react-dom/": "https://esm.sh/react-dom@18/"
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
         }
       }
-    </script>
-    <script type="module">
-      import React from 'react';
-      import ReactDOM from 'react-dom';
-
-      // We should allow using React from environment.
-      // When web devs import Web Chat as <script type="module">, we want to enable customization.
-      // Customization requires React.createElement() and calling some hooks.
-      window.React = React;
-      window.ReactDOM = ReactDOM;
     </script>
     <script type="module">
       import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
