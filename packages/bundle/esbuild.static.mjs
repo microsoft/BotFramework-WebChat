@@ -9,13 +9,7 @@ import { dirname, resolve } from 'path';
 import { readPackageUp } from 'read-pkg-up';
 import { fileURLToPath, pathToFileURL } from 'url';
 
-const CJS = [
-  'base64-js@1.5.1',
-  'botframework-directlinejs@0.15.6',
-  'react@16.8.6',
-  'react-dom@16.8.6',
-  'react-is@17.0.2'
-];
+const CJS = ['botframework-directlinejs@0.15.6', 'react@16.8.6', 'react-dom@16.8.6', 'react-is@17.0.2'];
 
 function extractName(entry) {
   const tokens = entry.split('/');
@@ -122,6 +116,7 @@ async function crawl() {
       ...config,
       alias: {
         adaptivecards: '@msinternal/adaptivecards',
+        'base64-js': '@msinternal/base64-js',
         'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk'
       },
       bundle: true,

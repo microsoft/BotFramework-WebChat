@@ -4,11 +4,8 @@
   "version": "0.0.0-0",
   "author": "Microsoft Corporation",
   "private": true,
-  "exports": {
-    ".": {
-      "import": "./dist/index.js"
-    }
-  },
+  "type": "module",
+  "main": "./dist/index.js",
   "scripts": {
     "build": "esbuild --bundle=true --format=esm --outdir=dist --platform=browser --splitting ./src/*",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",

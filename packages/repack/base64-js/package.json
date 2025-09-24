@@ -1,22 +1,13 @@
 {
-  "name": "@msinternal/microsoft-cognitiveservices-speech-sdk",
-  "description": "Repack of microsoft-cognitiveservices-speech-sdk",
+  "name": "@msinternal/base64-js",
+  "description": "Repack of base64-js",
   "version": "0.0.0-0",
   "author": "Microsoft Corporation",
   "private": true,
   "type": "module",
-  "exports": {
-    ".": "./dist/index.js",
-    "./distrib/lib/microsoft.cognitiveservices.speech.sdk.js": "./dist/index.js",
-    "./distrib/lib/src/common/AudioSourceEvents.js": "./dist/common/AudioSourceEvents.js",
-    "./distrib/lib/src/common/Exports.js": "./dist/common/Exports.js",
-    "./distrib/lib/src/common.browser/Exports.js": "./dist/common.browser/Exports.js",
-    "./distrib/lib/src/common.speech/Exports.js": "./dist/common.speech/Exports.js",
-    "./distrib/lib/src/sdk/Audio/AudioStreamFormat.js": "./dist/sdk/Audio/AudioStreamFormat.js",
-    "./distrib/lib/src/sdk/Exports.js": "./dist/sdk/Exports.js"
-  },
+  "main": "./dist/index.js",
   "scripts": {
-    "build": "esbuild --bundle=true --format=esm --outdir=dist --platform=browser --splitting ./src/common/* ./src/common.browser/* ./src/common.speech/* ./src/index.ts ./src/sdk/Audio/AudioStreamFormat.ts ./src/sdk/Exports.ts",
+    "build": "esbuild --bundle=true --format=esm --outdir=dist --platform=browser --splitting ./src/*",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -26,14 +17,9 @@
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false"
   },
   "localDependencies": {},
-  "pinDependencies": {
-    "microsoft-cognitiveservices-speech-sdk": [
-      "1.17.0",
-      "<=1.45.0 is using new protocol that does not connect may need some tune."
-    ]
-  },
+  "pinDependencies": {},
   "dependencies": {
-    "microsoft-cognitiveservices-speech-sdk": "1.17.0"
+    "base64-js": "1.5.1"
   },
   "devDependencies": {
     "esbuild": "^0.25.10"
