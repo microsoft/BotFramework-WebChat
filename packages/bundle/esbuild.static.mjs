@@ -184,12 +184,19 @@ async function buildNextConfig() {
 
 (async () => {
   // eslint-disable-next-line prefer-destructuring
-  const [_0, _1, input, output, watch] = process.argv;
+  const [_0, _1, watch] = process.argv;
 
   configs.set('', {
     chunkNames: `[name]-[hash]`,
     entryNames: `[name]`,
-    entryPoints: [{ in: input, out: output }]
+    entryPoints: {
+      'botframework-webchat': './src/boot/exports/index.ts',
+      'botframework-webchat.component': './src/boot/exports/component.ts',
+      'botframework-webchat.decorator': './src/boot/exports/decorator.ts',
+      'botframework-webchat.hook': './src/boot/exports/hook.ts',
+      'botframework-webchat.internal': './src/boot/exports/internal.ts',
+      'botframework-webchat.middleware': './src/boot/exports/middleware.ts'
+    }
   });
 
   // Prevent infinite-loop.
