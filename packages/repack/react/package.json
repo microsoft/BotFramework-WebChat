@@ -19,9 +19,17 @@
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false"
   },
   "localDependencies": {},
-  "devDependencies": {
-    "esbuild": "^0.25.10"
+  "pinDependencies": {
+    "react": [
+      "16.8.6",
+      "Bump React manually"
+    ]
   },
-  "main": "index.js",
-  "license": "ISC"
+  "dependencies": {
+    "react": "16.8.6"
+  },
+  "devDependencies": {
+    "@types/react": "^16.14.65",
+    "esbuild": "^0.25.10"
+  }
 }

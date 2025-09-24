@@ -19,7 +19,17 @@
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false"
   },
   "localDependencies": {},
+  "pinDependencies": {
+    "react-dom": [
+      "16.8.6",
+      "Bump React manually"
+    ]
+  },
+  "dependencies": {
+    "react-dom": "16.8.6"
+  },
   "devDependencies": {
+    "@types/react-dom": "^16.9.25",
     "esbuild": "^0.25.10"
   }
 }
