@@ -134,6 +134,7 @@
     "start:repack-adaptivecards": "cd packages && cd repack && cd adaptivecards && npm start",
     "start:repack-base64-js": "cd packages && cd repack && cd base64-js && npm start",
     "start:repack-botframework-directlinejs": "cd packages && cd repack && cd botframework-directlinejs && npm start",
+    "start:repack-html-react-parser": "cd packages && cd repack && cd html-react-parser && npm start",
     "start:repack-microsoft-cognitiveservices-speech-sdk": "cd packages && cd repack && cd microsoft-cognitiveservices-speech-sdk && npm start",
     "start:repack-react": "cd packages && cd repack && cd react && npm start",
     "start:repack-react-dom": "cd packages && cd repack && cd react-dom && npm start",
