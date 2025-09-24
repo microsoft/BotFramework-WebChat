@@ -39,8 +39,6 @@
 
         const { token, region } = await fetchSpeechServicesCredentials();
 
-        console.log(token, region);
-
         const credentials = () => ({ region, authorizationToken: `Bearer ${token}` });
 
         renderWebChat(
