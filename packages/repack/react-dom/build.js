@@ -7,7 +7,7 @@
 import * as esbuild from 'esbuild';
 
 (async () => {
-  const context = await esbuild.context({
+  const config = {
     alias: {
       'object-assign': '@msinternal/object-assign'
     },
@@ -34,11 +34,13 @@ import * as esbuild from 'esbuild';
         }
       }
     ]
-  });
+  };
 
   if (process.argv[2] === '--watch') {
+    const context = await esbuild.context(config);
+
     await context.watch();
   } else {
-    await context.build();
+    await esbuild.build(config);
   }
 })();
