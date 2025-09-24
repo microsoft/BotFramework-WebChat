@@ -117,6 +117,7 @@ async function buildNextConfig() {
       'base64-js': '@msinternal/base64-js',
       'botframework-directlinejs': '@msinternal/botframework-directlinejs',
       'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk',
+      'object-assign': '@msinternal/object-assign',
       react: '@msinternal/react',
       'react-dom': '@msinternal/react-dom',
       'react-is': '@msinternal/react-is'
