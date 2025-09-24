@@ -11,6 +11,7 @@ esbuild.build({
   outdir: './dist/',
   platform: 'browser',
   splitting: true,
+  sourcemap: true,
   /** @type { import('esbuild').Plugin[] } */
   plugins: [
     {
