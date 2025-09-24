@@ -11,6 +11,16 @@ import { dirname, resolve } from 'path';
 import { readPackageUp } from 'read-pkg-up';
 import { fileURLToPath, pathToFileURL } from 'url';
 
+const isomorphicReactPlugin = {
+  name: 'isomorphic-react',
+  setup(build) {
+    // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /^(react|react-dom)$/ }, ({ path: pkgName }) => ({
+      path: resolve(fileURLToPath(import.meta.url), `../../isomorphic-${pkgName}/dist/${pkgName}.js`)
+    }));
+  }
+};
+
 const BASE_CONFIG = {
   alias: {
     adaptivecards: '@msinternal/adaptivecards',
@@ -18,8 +28,10 @@ const BASE_CONFIG = {
     'botframework-directlinejs': '@msinternal/botframework-directlinejs',
     'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk',
     'object-assign': '@msinternal/object-assign',
-    react: '@msinternal/react',
-    'react-dom': '@msinternal/react-dom',
+    // TODO: [P0] We probably don't need repack React as we have isomorphic React.
+    //            Can we make isomorphic React an esbuild plugin instead?
+    // react: '@msinternal/react',
+    // 'react-dom': '@msinternal/react-dom',
     'react-is': '@msinternal/react-is'
   },
   bundle: true,
@@ -34,6 +46,7 @@ const BASE_CONFIG = {
 
   /** @type { import('esbuild').Plugin[] } */
   plugins: [
+    isomorphicReactPlugin,
     {
       name: 'static-builder',
       setup(build) {
@@ -187,7 +200,7 @@ async function buildNextConfig() {
   const [_0, _1, watch] = process.argv;
 
   configs.set('', {
-    chunkNames: `[name]-[hash]`,
+    chunkNames: `botframework-webchat.[name]-[hash]`,
     entryNames: `[name]`,
     entryPoints: {
       'botframework-webchat': './src/boot/exports/index.ts',
