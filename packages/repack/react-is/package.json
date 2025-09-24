@@ -21,15 +21,15 @@
   "localDependencies": {},
   "pinDependencies": {
     "react-is": [
-      "17.0.2",
+      "16.13.1",
       "Bump with React"
     ]
   },
   "dependencies": {
-    "react-is": "17.0.2"
+    "react-is": "16.13.1"
   },
   "devDependencies": {
-    "@types/react-is": "^17.0.7",
+    "@types/react-is": "^16.7.5",
     "esbuild": "^0.25.10"
   }
 }
