@@ -61,7 +61,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: bundle
-          path: 'packages/bundle/dist/**/*'
+          path: |
+            packages/bundle/dist/**/*
+            packages/bundle/stable/**/*
 
       - name: Upload npm-tarball
         uses: actions/upload-artifact@v2

@@ -137,6 +137,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - `api`: `botframework-webchat-api/hook`
       - `bundle`: `botframework-webchat/component`, `botframework-webchat/decorator` (internal-use), `botframework-webchat/hook`
       - `component`: `botframework-webchat-component/component`, `botframework-webchat-component/hook`
+- (Experimental) Added support for importing via `<script type="module">`, by [@compulim](https://github.com/compulim) in PR [#5592](https://github.com/microsoft/BotFramework-WebChat/pull/5592)
 
 ### Changed
 

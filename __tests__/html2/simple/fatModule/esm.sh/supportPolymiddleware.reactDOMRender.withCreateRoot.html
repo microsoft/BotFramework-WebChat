@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat.middleware.js",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script type="module">
+      import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
+      import { activityComponent, createActivityPolymiddleware } from 'botframework-webchat/middleware';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      const { useStyleOptions } = hooks;
+      const {
+        testHelpers: { createDirectLineEmulator }
+      } = window;
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        function MyMiddleware({ nextResult }) {
+          // THEN: Web Chat hooks can be called.
+          const [{ accent }] = useStyleOptions();
+
+          return createElement(
+            'div',
+            { style: { borderColor: accent, borderStyle: 'solid', borderWidth: 2 } },
+            nextResult?.render({})
+          );
+        }
+
+        createRoot(document.getElementsByTagName('main')[0]).render(
+          createElement(ReactWebChat, {
+            directLine,
+            polymiddleware: [
+              createActivityPolymiddleware(
+                next => request => activityComponent(MyMiddleware, { nextResult: next(request) })
+              )
+            ],
+            store
+          })
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity('Hello, World!');
+
+        await pageConditions.numActivitiesShown(1);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

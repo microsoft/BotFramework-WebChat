@@ -64,7 +64,8 @@
         "types": "./dist/botframework-webchat.middleware.d.ts",
         "default": "./dist/botframework-webchat.middleware.js"
       }
-    }
+    },
+    "./static/*": "./static/*"
   },
   "publishConfig": {
     "access": "public"
@@ -81,7 +82,8 @@
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/#readme",
   "files": [
     "./dist/**/*",
-    "./src/**/*"
+    "./src/**/*",
+    "./static/**/*"
   ],
   "tsd": {
     "compilerOptions": {
@@ -95,7 +97,9 @@
     }
   },
   "scripts": {
-    "build": "tsup",
+    "build": "npm run build:static && npm run build:tsup",
+    "build:static": "node ./esbuild.static.mjs",
+    "build:tsup": "tsup",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -105,15 +109,25 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "npm run build -- --watch",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
+    "start:static": "npm run build:static -- --watch",
+    "start:tsup": "npm run build:tsup -- --watch",
     "test:tsd": "tsd"
   },
   "localDependencies": {
+    "@msinternal/adaptivecards": "development",
+    "@msinternal/base64-js": "development",
     "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-directlinejs": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "@msinternal/botframework-webchat-tsconfig": "development",
     "@msinternal/isomorphic-react": "development",
     "@msinternal/isomorphic-react-dom": "development",
+    "@msinternal/microsoft-cognitiveservices-speech-sdk": "development",
+    "@msinternal/object-assign": "development",
+    "@msinternal/react-dom": "development",
+    "@msinternal/react": "development",
+    "@msinternal/react-is": "development",
     "botframework-directlinespeech-sdk": "production",
     "botframework-webchat-api": "production",
     "botframework-webchat-component": "production",
@@ -162,7 +176,7 @@
     "micromark": "4.0.2",
     "micromark-extension-gfm": "3.0.0",
     "micromark-util-character": "2.1.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.45.0",
+    "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "prop-types": "15.8.1",
     "punycode": "2.3.1",
     "sanitize-html": "2.17.0",
@@ -181,11 +195,19 @@
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
+    "@msinternal/adaptivecards": "0.0.0-0",
+    "@msinternal/base64-js": "0.0.0-0",
+    "@msinternal/botframework-directlinejs": "0.0.0-0",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
-    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
-    "@msinternal/isomorphic-react": "^0.0.0-0",
-    "@msinternal/isomorphic-react-dom": "^0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
+    "@msinternal/isomorphic-react": "0.0.0-0",
+    "@msinternal/isomorphic-react-dom": "0.0.0-0",
+    "@msinternal/microsoft-cognitiveservices-speech-sdk": "0.0.0-0",
+    "@msinternal/object-assign": "0.0.0-0",
+    "@msinternal/react": "0.0.0-0",
+    "@msinternal/react-dom": "0.0.0-0",
+    "@msinternal/react-is": "0.0.0-0",
     "@types/dom-speech-recognition": "^0.0.6",
     "@types/mdast": "^4.0.4",
     "@types/node": "^24.1.0",
@@ -195,7 +217,9 @@
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "cross-env": "^10.0.0",
     "esbuild": "^0.25.8",
+    "import-meta-resolve": "^4.2.0",
     "micromark-util-types": "^2.0.2",
+    "read-pkg-up": "^11.0.0",
     "tsd": "^0.32.0",
     "type-fest": "^4.41.0",
     "typescript": "~5.8.3"

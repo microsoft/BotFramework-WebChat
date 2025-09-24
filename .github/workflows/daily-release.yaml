@@ -78,7 +78,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bundles
-          path: packages/bundle/dist/**/*
+          path: |
+            packages/bundle/dist/**/*
+            packages/bundle/stable/**/*
 
       - name: Upload tarballs
         uses: actions/upload-artifact@v4
