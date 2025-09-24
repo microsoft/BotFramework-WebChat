@@ -15,55 +15,21 @@ const isomorphicReactPlugin = {
   name: 'isomorphic-react',
   setup(build) {
     // eslint-disable-next-line require-unicode-regexp
-    build.onResolve({ filter: /^(react|react-dom)$/ }, ({ path: pkgName }) => ({
-      path: resolve(fileURLToPath(import.meta.url), `../../isomorphic-${pkgName}/dist/${pkgName}.js`)
+    build.onResolve({ filter: /^(react|react-dom)$/, namespace: 'file' }, ({ path }) => ({
+      namespace: 'isomorphic-react',
+      path
+    }));
+
+    // eslint-disable-next-line require-unicode-regexp
+    build.onLoad({ filter: /^react$/, namespace: 'isomorphic-react' }, () => ({
+      contents: "import React from 'react'; module.exports = globalThis.React || React;"
+    }));
+
+    // eslint-disable-next-line require-unicode-regexp
+    build.onLoad({ filter: /^react-dom$/, namespace: 'isomorphic-react' }, () => ({
+      contents: "import ReactDOM from 'react-dom'; module.exports = globalThis.ReactDOM || ReactDOM;"
     }));
   }
-};
-
-const BASE_CONFIG = {
-  alias: {
-    adaptivecards: '@msinternal/adaptivecards',
-    'base64-js': '@msinternal/base64-js',
-    'botframework-directlinejs': '@msinternal/botframework-directlinejs',
-    'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk',
-    'object-assign': '@msinternal/object-assign',
-    // TODO: [P0] We probably don't need repack React as we have isomorphic React.
-    //            Can we make isomorphic React an esbuild plugin instead?
-    // react: '@msinternal/react',
-    // 'react-dom': '@msinternal/react-dom',
-    'react-is': '@msinternal/react-is'
-  },
-  bundle: true,
-  format: 'esm',
-  loader: { '.js': 'jsx' },
-  minify: true,
-  outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
-  platform: 'browser',
-  sourcemap: true,
-  splitting: true,
-  write: true,
-
-  /** @type { import('esbuild').Plugin[] } */
-  plugins: [
-    isomorphicReactPlugin,
-    {
-      name: 'static-builder',
-      setup(build) {
-        // eslint-disable-next-line require-unicode-regexp
-        build.onResolve({ filter: /^[^.]/ }, async args => {
-          // Only ESM can be externalized, CJS cannot be externalized because require() is not guaranteed to be at top-level.
-          if (args.kind === 'import-statement') {
-            const path = await addConfig(args);
-
-            return path ? { external: true, path } : undefined;
-          }
-
-          return undefined;
-        });
-      }
-    }
-  ]
 };
 
 function createWatcherPlugin(name) {
@@ -178,6 +144,49 @@ function getPendingConfig() {
     }
   }
 }
+
+const BASE_CONFIG = {
+  alias: {
+    adaptivecards: '@msinternal/adaptivecards',
+    'base64-js': '@msinternal/base64-js',
+    'botframework-directlinejs': '@msinternal/botframework-directlinejs',
+    'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk',
+    'object-assign': '@msinternal/object-assign',
+    react: '@msinternal/react',
+    'react-dom': '@msinternal/react-dom',
+    'react-is': '@msinternal/react-is'
+  },
+  bundle: true,
+  format: 'esm',
+  loader: { '.js': 'jsx' },
+  minify: true,
+  outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
+  platform: 'browser',
+  sourcemap: true,
+  splitting: true,
+  write: true,
+
+  /** @type { import('esbuild').Plugin[] } */
+  plugins: [
+    isomorphicReactPlugin,
+    {
+      name: 'static-builder',
+      setup(build) {
+        // eslint-disable-next-line require-unicode-regexp
+        build.onResolve({ filter: /^[^.]/ }, async args => {
+          // Only ESM can be externalized, CJS cannot be externalized because require() is not guaranteed to be at top-level.
+          if (args.kind === 'import-statement') {
+            const path = await addConfig(args);
+
+            return path ? { external: true, path } : undefined;
+          }
+
+          return undefined;
+        });
+      }
+    }
+  ]
+};
 
 async function buildNextConfig() {
   const config = getPendingConfig();
