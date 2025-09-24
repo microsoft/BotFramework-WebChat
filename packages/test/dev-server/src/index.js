@@ -101,7 +101,6 @@ const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../
   );
 
   app.use(
-    // /^\/__dist__\/packages\/bundle\/static\/.*$/u,
     '/__dist__/packages/bundle/static/',
     express.static(resolve(fileURLToPath(import.meta.url), '../../../bundle/static'))
   );
