@@ -1,14 +1,23 @@
 /// <reference types="node" />
 
+/* eslint-env node */
 /* eslint-disable no-magic-numbers */
 
-import * as esbuild from 'esbuild';
+import { build } from 'esbuild';
 import { resolve as importMetaResolve } from 'import-meta-resolve';
 import { dirname, resolve } from 'path';
 import { readPackageUp } from 'read-pkg-up';
 import { fileURLToPath, pathToFileURL } from 'url';
 
-function extractName(entry) {
+/**
+ * Extracts the package name and the named exports path from an entry string.
+ *
+ * @param {string} entry - The entry string, typically a module path.
+ *                         If the entry starts with '@', it is treated as a scoped package.
+ * @returns {[string, string]} - A tuple where the first element is the package name
+ *                               and the second element is the remaining path (named exports).
+ */
+function extractPackageNameAndNamedExports(entry) {
   const tokens = entry.split('/');
   const names = tokens.splice(0, entry.startsWith('@') ? 2 : 1);
 
@@ -18,59 +27,52 @@ function extractName(entry) {
 /** @type { Map<string, import('esbuild').BuildOptions> } */
 const configs = new Map();
 
-/** @type { Map<string, string> } */
-const importMap = new Map();
-
 function flatName(name) {
   return name.replace(/\//gu, '.').replace(/^@/u, '');
 }
 
-// Some packages has `package.json` inside their /dist.
-async function readPackageUpForReal(cwd) {
-  const work = async function (cwd) {
+// Some packages has `package.json` inside their /dist for specifying CJS/ESM, they are not the publishing package.json.
+function readRealPackageUp(cwd) {
+  const work = async cwd => {
     const result = await readPackageUp({ cwd });
 
-    if (!result.packageJson.name) {
-      return work(cwd.split('/').slice(0, -1).join('/'));
-    }
-
-    return result;
+    return result.packageJson.name ? result : work(dirname(cwd));
   };
 
-  const result = await work(cwd);
-
-  return result;
+  return work(cwd);
 }
 
 async function addConfig(
   /** @type { import('esbuild').OnResolveArgs } */
-  args
+  { path, resolveDir }
 ) {
-  const fileURL = importMetaResolve(args.path, pathToFileURL(args.resolveDir) + '/');
+  const importPathURL = importMetaResolve(path, pathToFileURL(resolveDir) + '/');
 
-  if (fileURL.startsWith('node:')) {
+  if (!importPathURL.startsWith('file:')) {
     return;
   }
 
-  const result = fileURLToPath(fileURL);
-  const { packageJson, path: packagePath } = await readPackageUpForReal(result);
-  const { name, version } = packageJson;
+  const {
+    packageJson: { name, version },
+    path: packagePath
+  } = await readRealPackageUp(fileURLToPath(importPathURL));
+
   const fullName = `${name}@${version}`;
 
-  let currentConfig = configs.get(fullName);
-
-  if (!args.path.startsWith(name)) {
-    throw new Error(`args.path must starts with name, args.path = ${args.path}, name = ${name}`);
+  if (!path.startsWith(name)) {
+    throw new Error(`args.path must starts with name, args.path = ${path}, name = ${name}`);
   }
 
-  const entryNames = `${flatName(name)}__${version}__[name]`;
+  const familyName = `${flatName(name)}__${version}`;
+  const entryNames = `${familyName}__[name]`;
+
+  let currentConfig = configs.get(fullName);
 
   if (!currentConfig) {
     /** @type { import('esbuild').BuildOptions } */
     currentConfig = {
       absWorkingDir: dirname(packagePath),
-      banner: { js: `/* botframework-webchat@0.0.0-0 - ${fullName} */` },
-      chunkNames: `${flatName(name)}__${version}__[name]-[hash]`,
+      chunkNames: `${familyName}__[name]-[hash]`,
       entryNames,
       entryPoints: {}
     };
@@ -80,97 +82,93 @@ async function addConfig(
 
   const entries = new Map(Object.entries(currentConfig.entryPoints));
 
-  const [moduleName, namedExports] = extractName(args.path);
+  const [moduleName, namedExports] = extractPackageNameAndNamedExports(path);
   const entryName = flatName(namedExports || moduleName.split('/').at(-1));
 
   if (!entries.has(entryName)) {
-    // console.log('---', args.path, namedExports);
-    entries.set(entryName, args.path);
+    entries.set(entryName, path);
+
     currentConfig.entryPoints = Object.fromEntries(Array.from(entries.entries()));
     currentConfig.write = true;
-
-    // console.log(name, currentConfig.entryPoints);
   }
 
-  return `./${entryNames.replace(/\[name\]/g, flatName(namedExports || moduleName.split('/').at(-1)))}.js`;
+  return `./${entryNames.replace(/\[name\]/gu, entryName)}.js`;
 }
 
-function getFirstConfig() {
+function getPendingConfig() {
   for (const value of configs.values()) {
     if (value.write !== false) {
-      value.write = false;
-
       return value;
     }
   }
 }
 
-async function crawl() {
-  const config = getFirstConfig();
+async function buildNextConfig() {
+  const config = getPendingConfig();
 
-  if (config) {
-    await esbuild.build({
-      ...config,
-      alias: {
-        adaptivecards: '@msinternal/adaptivecards',
-        'base64-js': '@msinternal/base64-js',
-        'botframework-directlinejs': '@msinternal/botframework-directlinejs',
-        'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk',
-        react: '@msinternal/react',
-        'react-dom': '@msinternal/react-dom',
-        'react-is': '@msinternal/react-is'
-      },
-      bundle: true,
-      format: 'esm',
-      loader: { '.js': 'jsx' },
-      // minify: true,
-      outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
-      platform: 'browser',
-      sourcemap: true,
-      splitting: true,
-      write: true,
-      /** @type { import('esbuild').Plugin[] } */
-      plugins: [
-        {
-          name: 'static-builder',
-          setup(build) {
-            // eslint-disable-next-line require-unicode-regexp
-            build.onResolve({ filter: /^[^.]/ }, async args => {
-              if (args.kind === 'import-statement') {
-                const path = await addConfig(args);
-
-                if (!path) {
-                  return undefined;
-                }
-
-                importMap.set(args.path, path);
-
-                return { external: true, path };
-              }
-
-              return undefined;
-            });
-          }
-        }
-      ]
-    });
-
-    config.write = false;
+  if (!config) {
+    return;
   }
+
+  await build({
+    ...config,
+    alias: {
+      adaptivecards: '@msinternal/adaptivecards',
+      'base64-js': '@msinternal/base64-js',
+      'botframework-directlinejs': '@msinternal/botframework-directlinejs',
+      'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk',
+      react: '@msinternal/react',
+      'react-dom': '@msinternal/react-dom',
+      'react-is': '@msinternal/react-is'
+    },
+    bundle: true,
+    format: 'esm',
+    loader: { '.js': 'jsx' },
+    minify: true,
+    outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
+    platform: 'browser',
+    sourcemap: true,
+    splitting: true,
+    write: true,
+
+    /** @type { import('esbuild').Plugin[] } */
+    plugins: [
+      {
+        name: 'static-builder',
+        setup(build) {
+          // eslint-disable-next-line require-unicode-regexp
+          build.onResolve({ filter: /^[^.]/ }, async args => {
+            // Only ESM can be externalized, CJS cannot be externalized because require() is not guaranteed to be at top-level.
+            if (args.kind === 'import-statement') {
+              const path = await addConfig(args);
+
+              return path ? { external: true, path } : undefined;
+            }
+
+            return undefined;
+          });
+        }
+      }
+    ]
+  });
+
+  // HACK: We are using the "write" field to signal the config is completed.
+  config.write = false;
 }
 
 (async () => {
-  const name = process.argv[3];
+  // eslint-disable-next-line prefer-destructuring
+  const [_0, _1, input, output] = process.argv;
 
   configs.set('', {
-    banner: { js: `/* botframework-webchat@0.0.0-0 */` },
     chunkNames: `[name]-[hash]`,
     entryNames: `[name]`,
-    entryPoints: [{ in: process.argv[2], out: name }]
+    entryPoints: [{ in: input, out: output }]
   });
 
+  // Prevent infinite-loop.
   for (let i = 0; i < 10000; i++) {
     // eslint-disable-next-line no-await-in-loop
-    await crawl();
+    await buildNextConfig();
   }
 })();
