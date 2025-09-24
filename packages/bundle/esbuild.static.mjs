@@ -10,7 +10,6 @@ import { readPackageUp } from 'read-pkg-up';
 import { fileURLToPath, pathToFileURL } from 'url';
 
 const CJS = [
-  'adaptivecards@3.0.2',
   'base64-js@1.5.1',
   'botframework-directlinejs@0.15.6',
   'react@16.8.6',
@@ -122,6 +121,7 @@ async function crawl() {
     await esbuild.build({
       ...config,
       alias: {
+        adaptivecards: '@msinternal/adaptivecards',
         'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk'
       },
       bundle: true,
@@ -139,49 +139,6 @@ async function crawl() {
         {
           name: 'static-builder',
           setup(build) {
-            // build.onLoad({ filter: /.*/ }, async args => {
-            //   try {
-            //     // eslint-disable-next-line security/detect-non-literal-fs-filename
-            //     const source = await readFile(args.path, { encoding: 'utf-8' });
-
-            //     // if (args.path.includes('/react/')) {
-            //     //   console.log(source);
-            //     // }
-
-            //     // if (args.path.includes('html-dom-parser')) {
-            //     //   console.log(args);
-            //     // }
-
-            //     const root = parse(Lang.JavaScript, source).root();
-
-            //     const node = root.find('module.exports = require($MATCH)');
-            //     const edit = node.replace(
-            //       `export * from ${node.getMatch('MATCH').text()}; export { default } from ${node.getMatch('MATCH').text()};`
-            //     );
-
-            //     const node3 = root.find('module.exports = $MATCH');
-            //     const edit3 = node3.replace(`export default ${node.getMatch('MATCH').text()};`);
-
-            //     // console.log(node);
-
-            //     const node2 = root.findAll('var $VAR = require($MODULE);');
-            //     // console.log(node2);
-            //     const edit2 = node2.map(node =>
-            //       node.replace(`import ${node.getMatch('VAR').text()} from ${node.getMatch('MODULE').text()};`)
-            //     );
-
-            //     if (args.path === 'hoist-non-react-statics') {
-            //       console.log(edit2);
-            //     }
-
-            //     const newSource = node.commitEdits([edit, ...edit2, edit3]);
-
-            //     return { contents: newSource };
-            //   } catch (error) {
-            //     return undefined;
-            //   }
-            // });
-
             build.onResolve({ filter: /^[^.]/ }, async args => {
               if (args.path === 'mime') {
                 return undefined;
@@ -192,15 +149,6 @@ async function crawl() {
                 if (args.importer.includes('external.umd')) {
                   return undefined;
                 }
-
-                // for (const fullName of CJS) {
-                //   const [name] = fullName.split('@');
-
-                //   if (args.path === name && args.importer.endsWith(`/${fullName}.ts`)) {
-                //     // Prevent external.umd from looping to self.
-                //     return undefined;
-                //   }
-                // }
 
                 const path = await addConfig(args);
 
@@ -258,14 +206,4 @@ async function crawl() {
     // eslint-disable-next-line no-await-in-loop
     await crawl();
   }
-
-  // console.log(
-  //   JSON.stringify(
-  //     {
-  //       imports: Object.fromEntries(Array.from(importMap.entries()).sort(([x], [y]) => (x > y ? 1 : x < y ? -1 : 0)))
-  //     },
-  //     null,
-  //     2
-  //   )
-  // );
 })();
