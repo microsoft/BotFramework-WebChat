@@ -34,6 +34,7 @@
     "./packages/component",
     "./packages/repack/adaptivecards",
     "./packages/repack/base64-js",
+    "./packages/repack/botframework-directlinejs",
     "./packages/repack/microsoft-cognitiveservices-speech-sdk",
     "./packages/directlinespeech",
     "./packages/bundle",
