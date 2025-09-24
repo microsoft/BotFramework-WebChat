@@ -14,7 +14,6 @@
         }
       }
     </script>
-    <!-- Test loading with window.React/DOM and not. -->
     <script type="module">
       import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
 
@@ -73,6 +72,8 @@
         await pageConditions.numActivitiesShown(1);
 
         await host.snapshot('local');
+
+        expect(typeof globalThis.React).toBe('undefined');
       });
     </script>
   </body>
