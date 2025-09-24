@@ -199,7 +199,7 @@ async function buildNextConfig() {
   // eslint-disable-next-line prefer-destructuring
   const [_0, _1, watch] = process.argv;
 
-  configs.set('', {
+  configs.set('botframework-webchat', {
     chunkNames: `botframework-webchat.[name]-[hash]`,
     entryNames: `[name]`,
     entryPoints: {
@@ -222,10 +222,10 @@ async function buildNextConfig() {
     const ourConfigs = [];
 
     for (const [key, config] of configs) {
-      if (!key || key.startsWith('botframework-webchat')) {
+      if (key.startsWith('botframework-webchat')) {
         const ourConfig = { ...config, ...BASE_CONFIG };
 
-        ourConfig.plugins.push(createWatcherPlugin(key || output));
+        ourConfig.plugins.push(createWatcherPlugin(key));
 
         ourConfigs.push(ourConfig);
       }
