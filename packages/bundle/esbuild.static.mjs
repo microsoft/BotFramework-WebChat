@@ -1,13 +1,56 @@
 /// <reference types="node" />
 
 /* eslint-env node */
+/* eslint-disable no-console */
 /* eslint-disable no-magic-numbers */
 
-import { build } from 'esbuild';
+import { build, context } from 'esbuild';
 import { resolve as importMetaResolve } from 'import-meta-resolve';
 import { dirname, resolve } from 'path';
 import { readPackageUp } from 'read-pkg-up';
 import { fileURLToPath, pathToFileURL } from 'url';
+
+const BASE_CONFIG = {
+  alias: {
+    adaptivecards: '@msinternal/adaptivecards',
+    'base64-js': '@msinternal/base64-js',
+    'botframework-directlinejs': '@msinternal/botframework-directlinejs',
+    'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk',
+    'object-assign': '@msinternal/object-assign',
+    react: '@msinternal/react',
+    'react-dom': '@msinternal/react-dom',
+    'react-is': '@msinternal/react-is'
+  },
+  bundle: true,
+  format: 'esm',
+  loader: { '.js': 'jsx' },
+  minify: true,
+  outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
+  platform: 'browser',
+  sourcemap: true,
+  splitting: true,
+  write: true,
+
+  /** @type { import('esbuild').Plugin[] } */
+  plugins: [
+    {
+      name: 'static-builder',
+      setup(build) {
+        // eslint-disable-next-line require-unicode-regexp
+        build.onResolve({ filter: /^[^.]/ }, async args => {
+          // Only ESM can be externalized, CJS cannot be externalized because require() is not guaranteed to be at top-level.
+          if (args.kind === 'import-statement') {
+            const path = await addConfig(args);
+
+            return path ? { external: true, path } : undefined;
+          }
+
+          return undefined;
+        });
+      }
+    }
+  ]
+};
 
 /**
  * Extracts the package name and the named exports path from an entry string.
@@ -112,45 +155,7 @@ async function buildNextConfig() {
 
   await build({
     ...config,
-    alias: {
-      adaptivecards: '@msinternal/adaptivecards',
-      'base64-js': '@msinternal/base64-js',
-      'botframework-directlinejs': '@msinternal/botframework-directlinejs',
-      'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk',
-      'object-assign': '@msinternal/object-assign',
-      react: '@msinternal/react',
-      'react-dom': '@msinternal/react-dom',
-      'react-is': '@msinternal/react-is'
-    },
-    bundle: true,
-    format: 'esm',
-    loader: { '.js': 'jsx' },
-    minify: true,
-    outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
-    platform: 'browser',
-    sourcemap: true,
-    splitting: true,
-    write: true,
-
-    /** @type { import('esbuild').Plugin[] } */
-    plugins: [
-      {
-        name: 'static-builder',
-        setup(build) {
-          // eslint-disable-next-line require-unicode-regexp
-          build.onResolve({ filter: /^[^.]/ }, async args => {
-            // Only ESM can be externalized, CJS cannot be externalized because require() is not guaranteed to be at top-level.
-            if (args.kind === 'import-statement') {
-              const path = await addConfig(args);
-
-              return path ? { external: true, path } : undefined;
-            }
-
-            return undefined;
-          });
-        }
-      }
-    ]
+    ...BASE_CONFIG
   });
 
   // HACK: We are using the "write" field to signal the config is completed.
@@ -159,7 +164,7 @@ async function buildNextConfig() {
 
 (async () => {
   // eslint-disable-next-line prefer-destructuring
-  const [_0, _1, input, output] = process.argv;
+  const [_0, _1, input, output, watch] = process.argv;
 
   configs.set('', {
     chunkNames: `[name]-[hash]`,
@@ -171,5 +176,26 @@ async function buildNextConfig() {
   for (let i = 0; i < 10000; i++) {
     // eslint-disable-next-line no-await-in-loop
     await buildNextConfig();
+  }
+
+  if (watch === '--watch') {
+    const rootConfig = { ...configs.get(''), ...BASE_CONFIG };
+
+    await (
+      await context({
+        ...rootConfig,
+        /** @type { import('esbuild').Plugin[] } */
+        plugins: [
+          ...rootConfig.plugins,
+          {
+            name: 'watcher',
+            setup(build) {
+              build.onEnd(() => console.log(`/static is built`));
+              build.onStart(() => console.log('Building /static'));
+            }
+          }
+        ]
+      })
+    ).watch();
   }
 })();
