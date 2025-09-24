@@ -36,6 +36,7 @@
     "./packages/repack/base64-js",
     "./packages/repack/botframework-directlinejs",
     "./packages/repack/microsoft-cognitiveservices-speech-sdk",
+    "./packages/repack/object-assign",
     "./packages/repack/react",
     "./packages/repack/react-dom",
     "./packages/repack/react-is",

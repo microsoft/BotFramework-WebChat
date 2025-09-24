@@ -32,7 +32,7 @@ function flatName(name) {
 }
 
 // Some packages has `package.json` inside their /dist for specifying CJS/ESM, they are not the publishing package.json.
-function readRealPackageUp(cwd) {
+function readPublishingPackageJSONUp(cwd) {
   const work = async cwd => {
     const result = await readPackageUp({ cwd });
 
@@ -55,7 +55,7 @@ async function addConfig(
   const {
     packageJson: { name, version },
     path: packagePath
-  } = await readRealPackageUp(fileURLToPath(importPathURL));
+  } = await readPublishingPackageJSONUp(fileURLToPath(importPathURL));
 
   const fullName = `${name}@${version}`;
 

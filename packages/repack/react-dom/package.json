@@ -18,7 +18,9 @@
     "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false"
   },
-  "localDependencies": {},
+  "localDependencies": {
+    "@msinternal/object-assign": "development"
+  },
   "pinDependencies": {
     "react-dom": [
       "16.8.6",
@@ -29,6 +31,7 @@
     "react-dom": "16.8.6"
   },
   "devDependencies": {
+    "@msinternal/object-assign": "0.0.0-0",
     "@types/react-dom": "^16.9.25",
     "esbuild": "^0.25.10"
   }

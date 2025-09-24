@@ -5,6 +5,9 @@
 import * as esbuild from 'esbuild';
 
 esbuild.build({
+  alias: {
+    'object-assign': '@msinternal/object-assign'
+  },
   bundle: true,
   entryPoints: ['./src/index.ts'],
   format: 'esm',
