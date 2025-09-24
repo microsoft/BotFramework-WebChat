@@ -30,6 +30,7 @@ module.exports = {
   'packages/repack-botframework-directlinejs/src/**/*.{mjs,js,ts,tsx}': [
     'npm run precommit:eslint:repack-botframework-directlinejs'
   ],
+  'packages/repack-html-react-parser/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:repack-html-react-parser'],
   'packages/repack-microsoft-cognitiveservices-speech-sdk/src/**/*.{mjs,js,ts,tsx}': [
     'npm run precommit:eslint:repack-microsoft-cognitiveservices-speech-sdk'
   ],
