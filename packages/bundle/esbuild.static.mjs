@@ -9,7 +9,7 @@ import { dirname, resolve } from 'path';
 import { readPackageUp } from 'read-pkg-up';
 import { fileURLToPath, pathToFileURL } from 'url';
 
-const CJS = ['react@16.8.6', 'react-dom@16.8.6', 'react-is@17.0.2'];
+const CJS = ['react-is@17.0.2'];
 
 function extractName(entry) {
   const tokens = entry.split('/');
@@ -118,7 +118,9 @@ async function crawl() {
         adaptivecards: '@msinternal/adaptivecards',
         'base64-js': '@msinternal/base64-js',
         'botframework-directlinejs': '@msinternal/botframework-directlinejs',
-        'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk'
+        'microsoft-cognitiveservices-speech-sdk': '@msinternal/microsoft-cognitiveservices-speech-sdk',
+        react: '@msinternal/react',
+        'react-dom': '@msinternal/react-dom'
       },
       bundle: true,
       format: 'esm',
@@ -155,19 +157,19 @@ async function crawl() {
                 importMap.set(args.path, path);
 
                 return { external: true, path };
-              } else if (args.kind === 'require-call') {
-                if (args.path === 'react') {
-                  return { path: 'stub:react', namespace: 'stub' };
-                }
+              // } else if (args.kind === 'require-call') {
+              //   if (args.path === 'react') {
+              //     return { path: 'stub:react', namespace: 'stub' };
+              //   }
               }
 
               return undefined;
             });
 
-            build.onLoad({ filter: /^stub:react$/, namespace: 'stub' }, () => ({
-              contents: "export * from 'react'; export { default } from 'react';",
-              resolveDir: resolve(fileURLToPath(import.meta.url), '../static')
-            }));
+            // build.onLoad({ filter: /^stub:react$/, namespace: 'stub' }, () => ({
+            //   contents: "export * from 'react'; export { default } from 'react';",
+            //   resolveDir: resolve(fileURLToPath(import.meta.url), '../static')
+            // }));
           }
         }
       ]

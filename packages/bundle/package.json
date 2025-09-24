@@ -192,6 +192,8 @@
     "@msinternal/isomorphic-react": "^0.0.0-0",
     "@msinternal/isomorphic-react-dom": "^0.0.0-0",
     "@msinternal/microsoft-cognitiveservices-speech-sdk": "0.0.0-0",
+    "@msinternal/react": "0.0.0-0",
+    "@msinternal/react-dom": "0.0.0-0",
     "@types/dom-speech-recognition": "^0.0.6",
     "@types/mdast": "^4.0.4",
     "@types/node": "^24.1.0",

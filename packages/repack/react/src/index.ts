@@ -1,6 +1,7 @@
 import React from 'react';
 
 export const {
+  // @ts-expect-error @types/react hid this export.
   __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
   Children,
   cloneElement,
@@ -18,7 +19,9 @@ export const {
   PureComponent,
   StrictMode,
   Suspense,
+  // @ts-expect-error @types/react hid this export.
   unstable_ConcurrentMode,
+  // @ts-expect-error React hid this export.
   unstable_Profiler,
   useCallback,
   useContext,
