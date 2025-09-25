@@ -7,6 +7,7 @@
 
 import { build, context } from 'esbuild';
 import { resolve } from 'path';
+import { readPackage } from 'read-pkg';
 import { fileURLToPath } from 'url';
 
 // eslint-disable-next-line no-unused-vars
@@ -119,40 +120,70 @@ async function buildNextConfig() {
   config.write = false;
 }
 
+function* getKeysRecursive(exports) {
+  for (const [key, value] of Object.entries(exports)) {
+    yield key;
+
+    if (typeof value !== 'string') {
+      yield* getKeysRecursive(value);
+    }
+  }
+}
+
+const IGNORED_OWN_PACKAGES = [
+  // Not exporting Direct Line Speech.
+  'botframework-directlinespeech-sdk',
+  // We will export bundle from `/src/boot/` folder directly.
+  'botframework-webchat',
+  // `fluent-theme` is higher level than bundle, we will export from the package itself separately.
+  'botframework-webchat-fluent-theme'
+];
+
 (async () => {
   // eslint-disable-next-line prefer-destructuring
   const [_0, _1, watch] = process.argv;
 
+  const { workspaces } = await readPackage({ cwd: resolve(fileURLToPath(import.meta.url), '../../../') });
+
+  const allOwnExports = new Set();
+
+  for (const path of workspaces) {
+    // eslint-disable-next-line no-await-in-loop
+    const packageJson = await readPackage({ cwd: resolve(fileURLToPath(import.meta.url), '../../..', path) });
+
+    if (packageJson.private || !packageJson.exports || IGNORED_OWN_PACKAGES.includes(packageJson.name)) {
+      continue;
+    }
+
+    for (const key of getKeysRecursive(packageJson.exports)) {
+      key.startsWith('.') && allOwnExports.add(`${packageJson.name}${key.slice(1)}`);
+    }
+  }
+
   // Rules to select what packages to externalize:
-  // - All of our published packages
+  // - All of our own published packages
   //    - Web devs can import our stuff just like they are on npm
   // - Peer dependencies, such as `react` and `react-dom`
   //    - Web devs can use import map to reconfigure what version of dependencies they want
+
+  const entryPoints = {
+    'botframework-webchat': './src/boot/exports/index.ts',
+    'botframework-webchat/component': './src/boot/exports/component.ts',
+    'botframework-webchat/decorator': './src/boot/exports/decorator.ts',
+    'botframework-webchat/hook': './src/boot/exports/hook.ts',
+    'botframework-webchat/internal': './src/boot/exports/internal.ts',
+    'botframework-webchat/middleware': './src/boot/exports/middleware.ts',
+    ...allOwnExports.keys().reduce((entryPoints, key) => ({ ...entryPoints, [key]: key }), {})
+  };
+
+  console.log('Exporting the following own entry points:');
+  console.log(entryPoints);
 
   configs.set('botframework-webchat', {
     chunkNames: `[name]-[hash]`,
     entryNames: `[dir]/[name]`,
     // TODO: [P1] This list should be computed automatically to prevent missing exports.
-    entryPoints: {
-      'botframework-webchat': './src/boot/exports/index.ts',
-      'botframework-webchat/component': './src/boot/exports/component.ts',
-      'botframework-webchat/decorator': './src/boot/exports/decorator.ts',
-      'botframework-webchat/hook': './src/boot/exports/hook.ts',
-      'botframework-webchat/internal': './src/boot/exports/internal.ts',
-      'botframework-webchat/middleware': './src/boot/exports/middleware.ts',
-      'botframework-webchat-core': 'botframework-webchat-core',
-      'botframework-webchat-core/internal': 'botframework-webchat-core/internal',
-      'botframework-webchat-api': 'botframework-webchat-api',
-      'botframework-webchat-api/decorator': 'botframework-webchat-api/decorator',
-      'botframework-webchat-api/hook': 'botframework-webchat-api/hook',
-      'botframework-webchat-api/internal': 'botframework-webchat-api/internal',
-      'botframework-webchat-api/middleware': 'botframework-webchat-api/middleware',
-      'botframework-webchat-component': 'botframework-webchat-component',
-      'botframework-webchat-component/component': 'botframework-webchat-component/component',
-      'botframework-webchat-component/decorator': 'botframework-webchat-component/decorator',
-      'botframework-webchat-component/hook': 'botframework-webchat-component/hook',
-      'botframework-webchat-component/internal': 'botframework-webchat-component/internal'
-    }
+    entryPoints
   });
 
   // Put `react` and `react-dom` under `/static` for conveniences when using in sovereign cloud or airgapped environment.

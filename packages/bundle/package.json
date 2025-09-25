@@ -218,6 +218,7 @@
     "cross-env": "^10.0.0",
     "esbuild": "^0.25.8",
     "micromark-util-types": "^2.0.2",
+    "read-pkg": "^9.0.1",
     "tsd": "^0.32.0",
     "type-fest": "^4.41.0",
     "typescript": "~5.8.3"
