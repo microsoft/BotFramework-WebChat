@@ -11,26 +11,27 @@ import { dirname, resolve } from 'path';
 import { readPackageUp } from 'read-pkg-up';
 import { fileURLToPath, pathToFileURL } from 'url';
 
-// const isomorphicReactPlugin = {
-//   name: 'isomorphic-react',
-//   setup(build) {
-//     // eslint-disable-next-line require-unicode-regexp
-//     build.onResolve({ filter: /^(react|react-dom)$/, namespace: 'file' }, ({ path }) => ({
-//       namespace: 'isomorphic-react',
-//       path
-//     }));
+// eslint-disable-next-line no-unused-vars
+const isomorphicReactPlugin = {
+  name: 'isomorphic-react',
+  setup(build) {
+    // eslint-disable-next-line require-unicode-regexp
+    build.onResolve({ filter: /^(react|react-dom)$/, namespace: 'file' }, ({ path }) => ({
+      namespace: 'isomorphic-react',
+      path
+    }));
 
-//     // eslint-disable-next-line require-unicode-regexp
-//     build.onLoad({ filter: /^react$/, namespace: 'isomorphic-react' }, () => ({
-//       contents: "import React from 'react'; module.exports = globalThis.React || React;"
-//     }));
+    // eslint-disable-next-line require-unicode-regexp
+    build.onLoad({ filter: /^react$/, namespace: 'isomorphic-react' }, () => ({
+      contents: "import React from 'react'; module.exports = globalThis.React || React;"
+    }));
 
-//     // eslint-disable-next-line require-unicode-regexp
-//     build.onLoad({ filter: /^react-dom$/, namespace: 'isomorphic-react' }, () => ({
-//       contents: "import ReactDOM from 'react-dom'; module.exports = globalThis.ReactDOM || ReactDOM;"
-//     }));
-//   }
-// };
+    // eslint-disable-next-line require-unicode-regexp
+    build.onLoad({ filter: /^react-dom$/, namespace: 'isomorphic-react' }, () => ({
+      contents: "import ReactDOM from 'react-dom'; module.exports = globalThis.ReactDOM || ReactDOM;"
+    }));
+  }
+};
 
 function createWatcherPlugin(name) {
   /** @type { import('esbuild').Plugin } */
@@ -239,6 +240,25 @@ async function buildNextConfig() {
     entryNames: `[name]`,
     entryPoints: {
       '': '@msinternal/react-dom'
+    }
+  });
+
+  configs.set('react-18', {
+    chunkNames: `react.18/[name]-[hash]`, // Some web servers are not good at handling @.
+    entryNames: `[dir]/[name]`,
+    entryPoints: {
+      'react.18': '@msinternal/react-18',
+      'react.18/jsx-dev-runtime': '@msinternal/react-18/jsx-dev-runtime',
+      'react.18/jsx-runtime': '@msinternal/react-18/jsx-runtime'
+    }
+  });
+
+  configs.set('react-dom-18', {
+    chunkNames: `react-dom.18/[name]-[hash]`, // Some web servers are not good at handling @.
+    entryNames: `[dir]/[name]`,
+    entryPoints: {
+      'react-dom.18': '@msinternal/react-dom-18',
+      'react-dom.18/client': '@msinternal/react-dom-18/client'
     }
   });
 
