@@ -182,7 +182,6 @@ const IGNORED_OWN_PACKAGES = [
   configs.set('botframework-webchat', {
     chunkNames: `[name]-[hash]`,
     entryNames: `[dir]/[name]`,
-    // TODO: [P1] This list should be computed automatically to prevent missing exports.
     entryPoints
   });
 
