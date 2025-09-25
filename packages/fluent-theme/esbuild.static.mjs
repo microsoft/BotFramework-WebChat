@@ -55,6 +55,7 @@ const config = {
   plugins: [
     injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
     {
+      // `write` is set to `false`, we need to emit files ourselves.
       name: 'emit-output',
       setup(build) {
         build.onEnd(async args => {
