@@ -90,7 +90,7 @@ const BASE_CONFIG = {
       name: 'static-builder',
       setup(build) {
         // eslint-disable-next-line require-unicode-regexp
-        build.onResolve({ filter: /^[^.]/ }, async args => {
+        build.onResolve({ filter: /^[^.]/ }, args => {
           // "external" field only works if the plug-in give up (return undefined.)
           if (args.path === 'react' || args.path === 'react-dom') {
             return undefined;
