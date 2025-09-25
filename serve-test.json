@@ -84,6 +84,10 @@
       "destination": "packages/bundle/static/:filename"
     },
     {
+      "source": "/__dist__/packages/fluent-theme/static/:filename",
+      "destination": "packages/fluent-theme/static/:filename"
+    },
+    {
       "source": "/test-harness.js",
       "destination": "packages/test/harness/dist/test-harness.js"
     },

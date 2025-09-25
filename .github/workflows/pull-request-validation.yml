@@ -60,6 +60,7 @@ jobs:
           ./packages/bundle/static/
           ./packages/debug-theme/dist/
           ./packages/fluent-theme/dist/
+          ./packages/fluent-theme/static/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
           ./packages/test/web-server/dist/
