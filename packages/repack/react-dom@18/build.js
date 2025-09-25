@@ -9,9 +9,6 @@ import * as esbuild from 'esbuild';
 (async () => {
   /** @type { import('esbuild').BuildOptions } */
   const config = {
-    alias: {
-      'object-assign': '@msinternal/object-assign'
-    },
     bundle: true,
     chunkNames: 'react-dom.18.[name]-[hash]',
     entryPoints: { 'react-dom': './src/index.ts', 'react-dom/client': './src/client.ts' },
