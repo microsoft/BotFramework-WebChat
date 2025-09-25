@@ -83,25 +83,7 @@ const BASE_CONFIG = {
   platform: 'browser',
   sourcemap: true,
   splitting: true,
-  write: true,
-
-  /** @type { import('esbuild').Plugin[] } */
-  plugins: [
-    {
-      name: 'static-builder',
-      setup(build) {
-        // eslint-disable-next-line require-unicode-regexp
-        build.onResolve({ filter: /^[^.]/ }, args => {
-          // "external" field only works if the plug-in give up (return undefined.)
-          if (args.path === 'react' || args.path === 'react-dom') {
-            return undefined;
-          }
-
-          return undefined;
-        });
-      }
-    }
-  ]
+  write: true
 };
 
 async function buildNextConfig() {
