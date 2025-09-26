@@ -58,9 +58,11 @@ Serving Web Chat code from your own service is recommended for these environment
 
 #### React versioning
 
-To choose between different version of React runtime, modify the import map and reference the version of your choice. React runtime must be loaded as ES Modules (ESM). UMD variant is not supported. You may need to use a smart CDN service to load React runtime as ESM.
+For React web app, it is critical to have all React components rendered using the same version and instance of React runtime.
 
-When deploying to locked down environment, clients may not have access to smart CDN service for ESM flavor of React runtime. For conveniences, Web Chat repacked React 16.8.6 and React 18 as ESM under the `/static/` directory.
+To choose between different version of React runtime, modify the import map and reference the version of your choice. React runtime must be loaded as ES Modules (ESM) instead of UMD. You may need to use a smart CDN service to load React runtime as ESM.
+
+When deploying to locked down environment, clients may not have access to smart CDN service. For conveniences, Web Chat repacked React 16.8.6 and React 18 as ESM under the `/static/` directory.
 
 <details>
 <summary>For React 18</summary>
@@ -118,7 +120,7 @@ The following code snippet will host Web Chat using an IIFE build.
 </script>
 ```
 
-For React versioning, Web Chat will use the React runtime (in UMD flavor) from `window.React` variable. If it is not available, Web Chat will use a React runtime bundled in Web Chat instead.
+For React versioning, Web Chat will use the React runtime (in UMD flavor) from `window.React` variable. If it is not available, Web Chat will use the React runtime bundled with Web Chat.
 </details>
 
 ### NPM: Import via `npm install`
