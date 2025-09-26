@@ -38,6 +38,8 @@ Copy and paste the following code snippet into your HTML page. It imports React 
 </script>
 <script type="module">
   import { createDirectLine, ReactWebChat, renderWebChat } from 'botframework-webchat';
+
+  // ...
 </script>
 ```
 
@@ -55,8 +57,11 @@ Copy and paste the following code snippet into your HTML page. It imports React 
     }
   }
 </script>
+
 <script type="module">
   import { createDirectLine, ReactWebChat, renderWebChat } from 'botframework-webchat';
+
+  // ...
 </script>
 ```
 </details>
@@ -134,8 +139,11 @@ The following code snippet will host Web Chat using an IIFE build.
 
 ```html
 <script src="https://cdn.botframework.com/4.19.0/static/botframework-webchat.js"></script>
+
 <script>
   const { createDirectLine, ReactWebChat, renderWebChat } = window.WebChat;
+
+  // ...
 </script>
 ```
 
