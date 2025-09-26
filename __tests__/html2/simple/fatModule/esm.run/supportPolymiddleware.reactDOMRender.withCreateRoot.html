@@ -11,6 +11,7 @@
       {
         "imports": {
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
           "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat/middleware.js",
           "react": "https://cdn.jsdelivr.net/npm/react@18.3.1/+esm",
           "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@18.3.1/+esm",
@@ -20,11 +21,11 @@
     </script>
     <script type="module">
       import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
+      import { useStyleOptions } from 'botframework-webchat/hook';
       import { activityComponent, createActivityPolymiddleware } from 'botframework-webchat/middleware';
       import { createElement } from 'react';
       import { createRoot } from 'react-dom/client';
 
-      const { useStyleOptions } = hooks;
       const {
         testHelpers: { createDirectLineEmulator }
       } = window;
