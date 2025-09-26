@@ -139,6 +139,8 @@ import { createDirectLine, renderWebChat } from 'botframework-webchat';
 
 ## Constructing chat adapter
 
+> Notes: Web Chat is a UI component, do not contains any network code, and is not responsible for communicating with the chat service. Web Chat render the data provided by the chat adapter. It contains messages (a.k.a. activities.)
+
 Chat adapter is an intermediate component which bridge between the chat service and Web Chat.
 
 By using different chat adapter, Web Chat can connect to any type of chat service.
