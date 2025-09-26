@@ -5,6 +5,7 @@
 !/packages/bundle/static
 !/packages/debug-theme/dist
 !/packages/fluent-theme/dist
+!/packages/fluent-theme/static
 !/packages/playground/build
 !/packages/test/fluent-bundle/dist
 !/packages/test/harness/dist
