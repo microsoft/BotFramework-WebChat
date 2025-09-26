@@ -216,7 +216,7 @@ const IGNORED_OWN_PACKAGES = [
       if (key.startsWith('botframework-webchat')) {
         const ourConfig = { ...config, ...BASE_CONFIG };
 
-        ourConfig.plugins = [createWatcherPlugin(key)];
+        ourConfig.plugins = [...(ourConfig.plugins || []), createWatcherPlugin(key)];
 
         ourConfigs.push(ourConfig);
       }
