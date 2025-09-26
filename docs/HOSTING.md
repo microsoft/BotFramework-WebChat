@@ -55,7 +55,7 @@ Serving Web Chat code from your own service is recommended for these environment
 - Airgapped environment
 - Locked down Intranet
 - Environment with specific performance requirement
-- Support strict subresource integrity
+- Strict subresource integrity
 
 #### React versioning
 
@@ -190,4 +190,4 @@ For advanced web developers who already have a React-based web app project setup
 <ReactWebChat directLine={directLine} />
 ```
 
-This approach enables web app to communicate with Web Chat via API, including components, middleware, and hooks.
+This approach enables web app to communicate with Web Chat via API, including [middleware](./MIDDLEWARE.md), and [hooks](./HOOKS.md).
