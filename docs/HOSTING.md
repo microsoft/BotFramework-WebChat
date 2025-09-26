@@ -24,7 +24,7 @@ There are 3 ways to import the code:
 
 [Import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap) is the recommended method to import Web Chat into the JavaScript environment.
 
-Copy and paste the following code snippet into your HTML page.
+Copy and paste the following code snippet into your HTML page. It imports React from [esm.sh](https://esm.sh/).
 
 ```html
 <script type="importmap">
@@ -40,6 +40,26 @@ Copy and paste the following code snippet into your HTML page.
   import { createDirectLine, ReactWebChat, renderWebChat } from 'botframework-webchat';
 </script>
 ```
+
+<details>
+<summary>Alternative: import React from jsDelivr</summary>
+
+```html
+<script type="importmap">
+  {
+    "imports": {
+      "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+      "react": "https://cdn.jsdelivr.net/npm/react@18.3.1/+esm",
+      "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@18.3.1/+esm",
+      "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@18.3.1/client/+esm"
+    }
+  }
+</script>
+<script type="module">
+  import { createDirectLine, ReactWebChat, renderWebChat } from 'botframework-webchat';
+</script>
+```
+</details>
 
 Using an import map alongside a smart CDN service (such as, [esm.sh](https://esm.sh/) or [esm.run](https://esm.run/)) allows leveraging modern JavaScript features like lazy-loading and HTTP pipelining, enhancing performance and efficiency.
 
