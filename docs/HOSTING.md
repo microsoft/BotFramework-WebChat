@@ -1,14 +1,14 @@
 # Hosting
 
-Web Chat is versatile and can be hosted in many web app development scenario.
+Web Chat is versatile and can be hosted in many web app scenario.
 
-The hosting consists of 3 steps:
+There are 3 steps to host Web Chat in a web app:
 
 1. [Importing code into the JavaScript environment](#importing-code)
 1. [Initializing chat adapter](#initializing-chat-adapter)
 1. [Rendering UI onto the page](#rendering-ui)
 
-To support different development scenario and unique needs, each step has variations. All steps can be mix-and-match to suit the scenario.
+Each step provides multiple approaches to suit different development environments and requirements. These approaches can be mix and match to create a tailored solution for the scenario.
 
 ## Importing code
 
@@ -180,8 +180,10 @@ renderWebChat({ directLine }, document.getElementById('webchat'));
 
 ### Using `<ReactWebChat>` component
 
-For advanced web developers who already have a React-based web app project setup, mount Web Chat React component with the code snippet below:
+For advanced web developers who already have a React-based web app project setup, mount Web Chat React component with the code snippet below.
 
 ```tsx
 <ReactWebChat directLine={directLine} />
 ```
+
+The advantage of this approach is enabling web app to communicate with Web Chat via components, middleware, and hooks.
