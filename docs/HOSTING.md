@@ -4,13 +4,13 @@ Web Chat is versatile and can be hosted in many web app scenario.
 
 There are 3 steps to host Web Chat in a web app:
 
-1. [Importing code into the JavaScript environment](#importing-code)
-1. [Constructing chat adapter](#constructing-chat-adapter)
-1. [Rendering UI onto the page](#rendering-ui)
+1. [Importing code into the JavaScript environment](#step-1-importing-code)
+1. [Constructing chat adapter](#step-2-constructing-chat-adapter)
+1. [Rendering UI onto the page](#step-3-rendering-ui)
 
 Each step provides multiple approaches to suit different development environments and requirements. These approaches can be mix and match to create a tailored solution for the scenario.
 
-## Importing code
+## Step 1: Importing code
 
 There are 3 ways to import the code:
 
@@ -158,7 +158,7 @@ Then, import Web Chat into your code:
 import { createDirectLine, ReactWebChat, renderWebChat } from 'botframework-webchat';
 ```
 
-## Constructing chat adapter
+## Step 2: Constructing chat adapter
 
 > Notes: Web Chat is a UI component, does not contains any network code, and is not responsible for communicating with the chat service. Web Chat render the messages (a.k.a. activities) provided by the chat adapter.
 
@@ -176,7 +176,7 @@ The chat adapter for Azure Bot Services (Direct Line) is bundled into Web Chat. 
 const directLine = createDirectLine({ token: '<direct-line-token>' });
 ```
 
-## Rendering UI
+## Step 3: Rendering UI
 
 After Web Chat is loaded and chat adapter instance is constructed, the last step is to render Web Chat on the page.
 
