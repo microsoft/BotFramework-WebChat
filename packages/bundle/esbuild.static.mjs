@@ -155,7 +155,8 @@ const IGNORED_OWN_PACKAGES = [
     'botframework-webchat/hook': './src/boot/exports/hook.ts',
     'botframework-webchat/internal': './src/boot/exports/internal.ts',
     'botframework-webchat/middleware': './src/boot/exports/middleware.ts',
-    ...allOwnExports.keys().reduce((entryPoints, key) => ({ ...entryPoints, [key]: key }), {})
+    // TODO: [P2] We can remove the `Array.from()` after bumping Node.js.
+    ...Array.from(allOwnExports.keys()).reduce((entryPoints, key) => ({ ...entryPoints, [key]: key }), {})
   };
 
   console.log('Exporting the following own entry points:');
