@@ -123,7 +123,7 @@ When deploying to locked down environment, clients may not have access to smart 
 
 ### (Deprecated) IIFE/UMD: Import via `<script>`
 
-> Notes: this hosting method is deprecated and is no longer recommended. Please [import via `<script type="importmap">`](#esm-import-via-script-typeimportmap) instead.
+> Notes: this method is deprecated and is no longer recommended. Please [import via `<script type="importmap">`](#esm-import-via-script-typeimportmap) instead.
 >
 > W3C and browser vendors introduced a modern approach to import JavaScript code into the browser environment. Compare to the traditional IIFE/UMD approach, ES Modules has zero pollution and more guardrails to prevent misuse.
 
@@ -136,12 +136,10 @@ The following code snippet will host Web Chat using an IIFE build.
 <script src="https://cdn.botframework.com/latest/static/botframework-webchat.js"></script>
 <script>
   const { createDirectLine, ReactWebChat, renderWebChat } = window.WebChat;
-
-  // ...
 </script>
 ```
 
-For React versioning, Web Chat will use the React runtime (in UMD flavor) from `window.React` variable. If it is not available, Web Chat will use the React runtime bundled with Web Chat.
+Web Chat will use the React runtime (in UMD flavor) from `window.React` variable if available. Otherwise, Web Chat will use the React runtime bundled in Web Chat.
 </details>
 
 ### NPM: Import via `npm install`
@@ -180,7 +178,7 @@ const directLine = createDirectLine({ token: '<direct-line-token>' });
 
 ## Rendering UI
 
-After Web Chat is loaded into your JavaScript environment and a chat adapter instance is constructed, the last step is to render Web Chat on the page.
+After Web Chat is loaded and chat adapter instance is constructed, the last step is to render Web Chat on the page.
 
 > Notes: code snippets below assumes the chat adapter instance is stored in the `directLine` constant.
 
@@ -211,3 +209,11 @@ For advanced web developers who already have a React-based web app project setup
 ```
 
 This approach enables web app to communicate with Web Chat via API, including [middleware](./MIDDLEWARE.md), and [hooks](./HOOKS.md).
+
+## Further reads
+
+- Test cases
+   - [ESM: Web Chat with React runtime from esm.sh](/__tests__/html2/simple/fatModule/esm.sh/simple.html)
+   - [ESM: Web Chat with React runtime from jsDelivr](/__tests__/html2/simple/fatModule/esm.run/simple.html)
+   - [ESM: Web Chat with repacked React 18 runtime](/__tests__/html2/simple/fatModule/simple.html)
+   - [ESM: Web Chat as React component with custom polymiddleware](/__tests__/html2/simple/fatModule/supportPolymiddleware.reactDOMRender.html)
