@@ -16,9 +16,9 @@ There are 3 ways to import the code:
 
 - Pure HTML (bundler-less)
   - [Import via `<script type="importmap">`](#esm-import-via-script-typeimportmap)
-  - (Deprecated) [Import via `<script src="...">`](#deprecated-iifeumd-import-via-script)
-- Inside a web app project
-  - [Import via `npm install` (with a bundler)](#npm-import-via-npm-install)
+  - [Import via `<script src="...">`](#deprecated-iifeumd-import-via-script) (Deprecated)
+- Inside a web app project (with bundler)
+  - [Import via `npm install`](#npm-import-via-npm-install)
 
 ### ESM: Import via `<script type="importmap">`
 
