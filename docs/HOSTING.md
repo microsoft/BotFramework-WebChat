@@ -30,7 +30,7 @@ Copy and paste the following code snippet into your HTML page. It imports React 
 <script type="importmap">
   {
     "imports": {
-      "botframework-webchat": "https://cdn.botframework.com/latest/static/botframework-webchat.js",
+      "botframework-webchat": "https://cdn.botframework.com/4.19.0/static/botframework-webchat.js",
       "react": "https://esm.sh/react.js@18",
       "react-dom": "https://esm.sh/react-dom.js@18"
     }
@@ -92,10 +92,10 @@ When deploying to locked down environment, clients may not have access to smart 
 <script type="importmap">
   {
     "imports": {
-      "botframework-webchat": "https://cdn.botframework.com/latest/static/botframework-webchat.js",
-      "react": "https://cdn.botframework.com/latest/static/react-18.js",
-      "react-dom": "https://cdn.botframework.com/latest/static/react-dom-18.js",
-      "react-dom/client": "https://cdn.botframework.com/latest/static/react-dom-18/client.js"
+      "botframework-webchat": "https://cdn.botframework.com/4.19.0/static/botframework-webchat.js",
+      "react": "https://cdn.botframework.com/4.19.0/static/react-18.js",
+      "react-dom": "https://cdn.botframework.com/4.19.0/static/react-dom-18.js",
+      "react-dom/client": "https://cdn.botframework.com/4.19.0/static/react-dom-18/client.js"
     }
   }
 </script>
@@ -110,10 +110,10 @@ When deploying to locked down environment, clients may not have access to smart 
 <script type="importmap">
   {
     "imports": {
-      "botframework-webchat": "https://cdn.botframework.com/latest/static/botframework-webchat.js",
-      "react": "https://cdn.botframework.com/latest/static/react.js",
-      "react-dom": "https://cdn.botframework.com/latest/static/react-dom.js",
-      "react-dom/client": "https://cdn.botframework.com/latest/static/react-dom/client.js"
+      "botframework-webchat": "https://cdn.botframework.com/4.19.0/static/botframework-webchat.js",
+      "react": "https://cdn.botframework.com/4.19.0/static/react.js",
+      "react-dom": "https://cdn.botframework.com/4.19.0/static/react-dom.js",
+      "react-dom/client": "https://cdn.botframework.com/4.19.0/static/react-dom/client.js"
     }
   }
 </script>
@@ -133,7 +133,7 @@ The following code snippet will host Web Chat using an IIFE build.
 <summary>Click to show the deprecated code</summary>
 
 ```html
-<script src="https://cdn.botframework.com/latest/static/botframework-webchat.js"></script>
+<script src="https://cdn.botframework.com/4.19.0/static/botframework-webchat.js"></script>
 <script>
   const { createDirectLine, ReactWebChat, renderWebChat } = window.WebChat;
 </script>
