@@ -137,7 +137,7 @@ npm install botframework-webchat
 Then, import Web Chat into your code:
 
 ```tsx
-import { createDirectLine, renderWebChat } from 'botframework-webchat';
+import { createDirectLine, ReactWebChat, renderWebChat } from 'botframework-webchat';
 ```
 
 ## Constructing chat adapter
