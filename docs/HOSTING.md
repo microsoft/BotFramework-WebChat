@@ -5,7 +5,7 @@ Web Chat is versatile and can be hosted in many web app scenario.
 There are 3 steps to host Web Chat in a web app:
 
 1. [Importing code into the JavaScript environment](#importing-code)
-1. [Initializing chat adapter](#initializing-chat-adapter)
+1. [Constructing chat adapter](#constructing-chat-adapter)
 1. [Rendering UI onto the page](#rendering-ui)
 
 Each step provides multiple approaches to suit different development environments and requirements. These approaches can be mix and match to create a tailored solution for the scenario.
@@ -22,7 +22,7 @@ There are 3 ways to import the code:
 
 ### ESM: Import via `<script type="importmap">`
 
-Importing via [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap) is the recommended method to import Web Chat into the JavaScript environment.
+[Import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap) is the recommended method to import Web Chat into the JavaScript environment.
 
 Copy and paste the following code snippet into your HTML page.
 
@@ -41,13 +41,13 @@ Copy and paste the following code snippet into your HTML page.
 </script>
 ```
 
-By using import map and a smart CDN service (such as [esm.sh](https://esm.sh/) and [esm.run](https://esm.run/)), you can host all modern JavaScript features without the need of a bundler.
+Using an import map alongside a smart CDN service (such as, [esm.sh](https://esm.sh/) or [esm.run](https://esm.run/)) allows leveraging modern JavaScript features like lazy-loading and HTTP pipelining, enhancing performance and efficiency.
 
-#### Deploying Web Chat a static web server or CDN
+#### Deploying Web Chat to a static web server or CDN
 
-The ESM build for Web Chat is designed to be deployable to traditional static web server and traditional CDN. Smart CDN service is not required.
+The ESM build is designed to be deployable to traditional static web server and traditional CDN. Smart CDN service is not required.
 
-To deploy to a static web server, download our primary tarball from NPM registry. Then, copy the content of the `/static/` directory to your static web server or CDN. Lastly, modify the import map to point to your web server where the `/static/` directory resides.
+To deploy to a static web server, download the [primary tarball from NPM registry](https://npmjs.com/package/botframework-webchat). Then, copy the content of the `/static/` directory to your static web server or CDN. Lastly, modify the import map to point to your web server where the `/static/` directory resides.
 
 Serving Web Chat code from your own service is recommended for these environments:
 
@@ -137,7 +137,7 @@ Then, import Web Chat into your code:
 import { createDirectLine, renderWebChat } from 'botframework-webchat';
 ```
 
-## Initializing chat adapter
+## Constructing chat adapter
 
 Chat adapter is an intermediate component which bridge between the chat service and Web Chat.
 
@@ -155,16 +155,13 @@ const directLine = createDirectLine({ token: '<direct-line-token>' });
 
 ## Rendering UI
 
-After Web Chat is loaded into your JavaScript environment and a chat adapter instance is initialized, the last step is to render Web Chat on the page.
+After Web Chat is loaded into your JavaScript environment and a chat adapter instance is constructed, the last step is to render Web Chat on the page.
 
-All the code snippet below assumes:
-
-- Web Chat is already loaded into the JavaScript environment
-- Chat adapter instance is initialized and stored in the `directLine` constant
+> Notes: code snippets below assumes the chat adapter instance is stored in the `directLine` constant.
 
 ### Using `renderWebChat` (without React)
 
-This is for rendering Web Chat without React.
+This approach is for rendering Web Chat without React.
 
 First, put a placeholder element into your page. This is where Web Chat will be rendered.
 
@@ -177,6 +174,8 @@ Then, run the following JavaScript code to render Web Chat into the placeholder.
 ```tsx
 renderWebChat({ directLine }, document.getElementById('webchat'));
 ```
+
+> Notes: `renderWebChat()` is a simple wrapper around `render()` function in React DOM.
 
 ### Using `<ReactWebChat>` component
 
