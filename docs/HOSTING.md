@@ -212,6 +212,7 @@ This approach enables web app to communicate with Web Chat via API, including [m
 
 ## Further reads
 
+- [MDN: Import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap)
 - Test cases
    - [ESM: Web Chat with React runtime from esm.sh](/__tests__/html2/simple/fatModule/esm.sh/simple.html)
    - [ESM: Web Chat with React runtime from jsDelivr](/__tests__/html2/simple/fatModule/esm.run/simple.html)
