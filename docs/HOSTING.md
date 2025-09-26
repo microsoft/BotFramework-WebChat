@@ -163,7 +163,7 @@ After Web Chat is loaded into your JavaScript environment and a chat adapter ins
 
 > Notes: code snippets below assumes the chat adapter instance is stored in the `directLine` constant.
 
-### Using `renderWebChat` (without React)
+### Using `renderWebChat()` (no React prior experience)
 
 This approach is for rendering Web Chat without knowing how to use React.
 
@@ -183,10 +183,10 @@ renderWebChat({ directLine }, document.getElementById('webchat'));
 
 ### Using `<ReactWebChat>` component
 
-For advanced web developers who already have a React-based web app project setup, mount Web Chat React component with the code snippet below.
+For advanced web developers who already have a React-based web app project setup, mount the Web Chat component with the code snippet below.
 
 ```tsx
 <ReactWebChat directLine={directLine} />
 ```
 
-The advantage of this approach is enabling web app to communicate with Web Chat via components, middleware, and hooks.
+This approach enables web app to communicate with Web Chat via API, including components, middleware, and hooks.
