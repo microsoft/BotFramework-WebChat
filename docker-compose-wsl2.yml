@@ -47,6 +47,7 @@ services:
       - ./packages/bundle/static/:/var/web/packages/bundle/static/
       - ./packages/debug-theme/dist/:/var/web/packages/debug-theme/dist/
       - ./packages/fluent-theme/dist/:/var/web/packages/fluent-theme/dist/
+      - ./packages/fluent-theme/static/:/var/web/packages/fluent-theme/static/
       - ./packages/test/harness/dist/:/var/web/packages/test/harness/dist/
       - ./packages/test/page-object/dist/:/var/web/packages/test/page-object/dist/
     ports:

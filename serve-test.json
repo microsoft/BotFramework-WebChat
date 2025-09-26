@@ -84,6 +84,18 @@
       "destination": "packages/bundle/static/:filename"
     },
     {
+      "source": "/__dist__/packages/bundle/static/:dirname/:filename",
+      "destination": "packages/bundle/static/:dirname/:filename"
+    },
+    {
+      "source": "/__dist__/packages/fluent-theme/static/:filename",
+      "destination": "packages/fluent-theme/static/:filename"
+    },
+    {
+      "source": "/__dist__/packages/fluent-theme/static/:dirname/:filename",
+      "destination": "packages/fluent-theme/static/:dirname/:filename"
+    },
+    {
       "source": "/test-harness.js",
       "destination": "packages/test/harness/dist/test-harness.js"
     },

@@ -17,21 +17,45 @@
     <script type="importmap">
       {
         "imports": {
-          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme",
+          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18,react-dom@18&exports=FluentProvider,webLightTheme",
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
-          "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat.internal.mjs",
-          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/dist/botframework-webchat-fluent-theme.mjs",
-          "react": "/__dist__/packages/bundle/static/react.js",
-          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+          "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat.decorator.js",
+          "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat.internal.js",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
         }
       }
     </script>
     <script type="module">
-      import { FluentProvider, createDarkTheme, webLightTheme } from '@fluentui/react-components';
+      import { fn, spyOn } from 'jest-mock';
+      import { FluentProvider, webLightTheme } from '@fluentui/react-components';
       import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
       import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
       import { createElement } from 'react';
       import { createRoot } from 'react-dom/client';
+
+      const consoleError = console.error.bind(console);
+
+      spyOn(console, 'error').mockImplementation((...args) => {
+        const [message] = args;
+
+        if (
+          !(
+            typeof message === 'string' &&
+            (message.includes(
+              'Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.'
+            ) ||
+              // TODO: [P0] We should fix the "Cannot update a component while rendering a different component" error.
+              (message.includes('Cannot update a component') &&
+                message.includes('while rendering a different component')))
+          )
+        ) {
+          consoleError(...args);
+        }
+      });
 
       const { useStyleOptions } = hooks;
       const {
@@ -45,27 +69,9 @@
         const { directLine, store } = createDirectLineEmulator();
 
         const fluentTheme = {
-          ...createDarkTheme({
-            10: '#12174c',
-            20: '#1a1f5b',
-            30: '#21276a',
-            40: '#293079',
-            50: '#303788',
-            60: '#384097',
-            70: '#4049a7',
-            80: '#151e80',
-            90: '#4f59c5',
-            100: '#5661d4',
-            110: '#5e69e3',
-            120: '#7982e8',
-            130: '#949bec',
-            140: '#afb5f1',
-            150: '#c9cdf6',
-            160: '#e4e6fa'
-          }),
-          colorNeutralBackground1Disabled: '#101010',
-          colorNeutralBackground1Hover: '#101010',
-          colorNeutralForeground5: '#424242'
+          ...webLightTheme,
+          // Original is #242424 which is too light for fui-FluentProvider to pass our accessibility checks.
+          colorNeutralForeground1: '#1b1b1b'
         };
 
         createRoot(document.getElementsByTagName('main')[0]).render(
