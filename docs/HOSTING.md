@@ -77,7 +77,7 @@ Serving Web Chat code from your own service is recommended for these environment
 - Environment with specific performance requirement
 - Strict subresource integrity
 
-#### React versioning
+#### React runtime version
 
 For React web app, it is critical to have all React components rendered using the same version and instance of React runtime.
 
