@@ -36,6 +36,7 @@ Copy and paste the following code snippet into your HTML page. It imports React 
     }
   }
 </script>
+
 <script type="module">
   import { createDirectLine, ReactWebChat, renderWebChat } from 'botframework-webchat';
 
