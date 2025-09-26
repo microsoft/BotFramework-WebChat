@@ -4,23 +4,25 @@ Web Chat is versatile and can be hosted in many web app development scenario.
 
 The hosting consists of 3 steps:
 
-- [Importing code into the JavaScript environment](#importing-code)
-- [Initializing chat adapter](#initializing-chat-adapter)
-- [Rendering UI onto the page](#rendering-ui)
+1. [Importing code into the JavaScript environment](#importing-code)
+1. [Initializing chat adapter](#initializing-chat-adapter)
+1. [Rendering UI onto the page](#rendering-ui)
+
+To support different development scenario and unique needs, each step has variations. All steps can be mix-and-match to suit the scenario.
 
 ## Importing code
 
 There are 3 ways to import the code:
 
 - Pure HTML (bundler-less)
-   - [Import via `<script type="importmap">`](#import-via-script-typeimportmap)
-   - [(Deprecated) Import via `<script>`](#deprecated-import-via-script)
+  - [Import via `<script type="importmap">`](#esm-import-via-script-typeimportmap)
+  - (Deprecated) [Import via `<script src="...">`](#deprecated-iifeumd-import-via-script)
 - Inside a web app project
-   - [Import via `npm install` (with a bundler)](#import-via-npm-install)
+  - [Import via `npm install` (with a bundler)](#npm-import-via-npm-install)
 
-### Import via `<script type="importmap">`
+### ESM: Import via `<script type="importmap">`
 
-Importing via [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap) is the recommended method to import Web Chat code.
+Importing via [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap) is the recommended method to import Web Chat into the JavaScript environment.
 
 Copy and paste the following code snippet into your HTML page.
 
@@ -45,15 +47,20 @@ By using import map and a smart CDN service (such as [esm.sh](https://esm.sh/) a
 
 The ESM build for Web Chat is designed to be deployable to traditional static web server and traditional CDN. Smart CDN service is not required.
 
-Download our primary tarball from npmjs and copy the `/static/` to your static web server or CDN. Then, modify the import map to point to your own service.
+To deploy to a static web server, download our primary tarball from NPM registry. Then, copy the content of the `/static/` directory to your static web server or CDN. Lastly, modify the import map to point to your web server where the `/static/` directory resides.
 
-Deploy the bits to your own service is recommended for: sovereign cloud, airgapped environment, locked down Intranet, and environment with specific latency requirement.
+Serving Web Chat code from your own service is recommended for these environments:
 
-#### Selecting React version
+- Sovereign cloud
+- Airgapped environment
+- Locked down Intranet
+- Environment with specific latency requirement
 
-To choose between different version of React runtime, modify the import map and reference the version of your choice with your smart CDN service provider.
+#### React versioning
 
-When deploying to locked down environment, the environment may not have access to live CDN services that provide React runtime in ESM flavor. Web Chat repacked React 16.8.6 and React 18 as ESM modules and you can use our repacked build to support these environments.
+To choose between different version of React runtime, modify the import map and reference the version of your choice. React runtime must be loaded as ES Modules (ESM). UMD variant is not supported. You may need to use a smart CDN service to load React runtime as ESM.
+
+When deploying to locked down environment, clients may not have access to smart CDN service for ESM flavor of React runtime. For conveniences, Web Chat repacked React 16.8.6 and React 18 as ESM under the `/static/` directory.
 
 <details>
 <summary>For React 18</summary>
@@ -70,6 +77,7 @@ When deploying to locked down environment, the environment may not have access t
   }
 </script>
 ```
+
 </details>
 
 <details>
@@ -87,16 +95,19 @@ When deploying to locked down environment, the environment may not have access t
   }
 </script>
 ```
+
 </details>
 
-### (Deprecated) Import via `<script>`
+### (Deprecated) IIFE/UMD: Import via `<script>`
 
-> Notes: this hosting method is deprecated. Please use the ["HTML without a bundler"](#hosting-on-html-without-a-bundler) instead.
+> Notes: this hosting method is deprecated and is no longer recommended. Please [import via `<script type="importmap">`](#esm-import-via-script-typeimportmap) instead.
+>
+> W3C and browser vendors introduced a modern approach to import JavaScript code into the browser environment. Compare to the traditional IIFE/UMD approach, ES Modules has zero pollution and more guardrails to prevent misuse.
 
 The following code snippet will host Web Chat using an IIFE build.
 
 <details>
-<summary>Click to show the deprecated code.</summary>
+<summary>Click to show the deprecated code</summary>
 
 ```html
 <script src="https://cdn.botframework.com/latest/static/botframework-webchat.js"></script>
@@ -107,9 +118,10 @@ The following code snippet will host Web Chat using an IIFE build.
 </script>
 ```
 
-This method is no longer recommended. W3C and browser vendors introduced a modern approach to import JavaScript code into the browser environment. Compare to traditional IIFE/UMD, ES Modules has zero pollution and more guardrails to prevent misuse.
+For React versioning, Web Chat will use the React runtime (in UMD flavor) from `window.React` variable. If it is not available, Web Chat will use a React runtime bundled in Web Chat instead.
+</details>
 
-### Import via `npm install`
+### NPM: Import via `npm install`
 
 This method will import Web Chat inside an existing web app project.
 
