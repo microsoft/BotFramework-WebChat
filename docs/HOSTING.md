@@ -45,7 +45,7 @@ Using an import map alongside a smart CDN service (such as, [esm.sh](https://esm
 
 #### Deploying Web Chat to a static web server or CDN
 
-The ESM build is designed to be deployable to traditional static web server and traditional CDN. Smart CDN service is not required.
+The ESM build is designed to be deployable to traditional static web server and CDN. Smart CDN service is not required.
 
 To deploy to a static web server, download the [primary tarball from NPM registry](https://npmjs.com/package/botframework-webchat). Then, copy the content of the `/static/` directory to your static web server or CDN. Lastly, modify the import map to point to your web server where the `/static/` directory resides.
 
@@ -54,7 +54,8 @@ Serving Web Chat code from your own service is recommended for these environment
 - Sovereign cloud
 - Airgapped environment
 - Locked down Intranet
-- Environment with specific latency requirement
+- Environment with specific performance requirement
+- Support strict subresource integrity
 
 #### React versioning
 
