@@ -130,7 +130,7 @@ When deploying to locked down environment, clients may not have access to smart 
 <details>
 <summary>From React UMD (development only)</summary>
 
-React runtime can also be loaded from UMD (`globalThis.React` and `globalThis.ReactDOM`). This method is intended for development use only.
+React runtime can also be loaded from UMD (`globalThis.React` and `globalThis.ReactDOM`) with React runtime version of your choice. This method is intended for development use only.
 
 ```html
 <script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
