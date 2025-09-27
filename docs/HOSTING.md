@@ -133,13 +133,15 @@ When deploying to locked down environment, clients may not have access to smart 
 React runtime can also be loaded from UMD (`globalThis.React` and `globalThis.ReactDOM`). This method is intended for development use only.
 
 ```html
+<script src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+
 <script type="importmap">
   {
     "imports": {
       "botframework-webchat": "https://cdn.botframework.com/4.19.0/static/botframework-webchat.js",
       "react": "https://cdn.botframework.com/4.19.0/static/react.umd-development.js",
-      "react-dom": "https://cdn.botframework.com/4.19.0/static/react-dom.umd-development.js",
-      "react-dom/client": "https://cdn.botframework.com/4.19.0/static/react-dom.umd-development/client.js"
+      "react-dom": "https://cdn.botframework.com/4.19.0/static/react-dom.umd-development.js"
     }
   }
 </script>
