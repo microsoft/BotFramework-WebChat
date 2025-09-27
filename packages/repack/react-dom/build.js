@@ -12,7 +12,8 @@ import * as esbuild from 'esbuild';
       'object-assign': '@msinternal/object-assign'
     },
     bundle: true,
-    entryPoints: ['./src/index.ts'],
+    chunkNames: 'react-dom/[name]-[hash]',
+    entryPoints: { 'react-dom': './src/index.ts' },
     format: 'esm',
     outdir: './dist/',
     platform: 'browser',

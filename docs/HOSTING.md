@@ -127,6 +127,26 @@ When deploying to locked down environment, clients may not have access to smart 
 
 </details>
 
+<details>
+<summary>From React UMD (development only)</summary>
+
+React runtime can also be loaded from UMD (`globalThis.React` and `globalThis.ReactDOM`). This method is intended for development use only.
+
+```html
+<script type="importmap">
+  {
+    "imports": {
+      "botframework-webchat": "https://cdn.botframework.com/4.19.0/static/botframework-webchat.js",
+      "react": "https://cdn.botframework.com/4.19.0/static/react.umd-development.js",
+      "react-dom": "https://cdn.botframework.com/4.19.0/static/react-dom.umd-development.js",
+      "react-dom/client": "https://cdn.botframework.com/4.19.0/static/react-dom.umd-development/client.js"
+    }
+  }
+</script>
+```
+
+</details>
+
 ### (Deprecated) IIFE/UMD: Import via `<script>`
 
 > Notes: this method is deprecated and is no longer recommended. Please [import via `<script type="importmap">`](#esm-import-via-script-typeimportmap) instead.

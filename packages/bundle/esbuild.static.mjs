@@ -54,14 +54,6 @@ function createWatcherPlugin(name) {
 /** @type { Map<string, import('esbuild').BuildOptions> } */
 const configs = new Map();
 
-function getPendingConfig() {
-  for (const value of configs.values()) {
-    if (value.write !== false) {
-      return value;
-    }
-  }
-}
-
 const BASE_CONFIG = {
   alias: {
     adaptivecards: '@msinternal/adaptivecards',
@@ -82,25 +74,8 @@ const BASE_CONFIG = {
   outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
   platform: 'browser',
   sourcemap: true,
-  splitting: true,
-  write: true
+  splitting: true
 };
-
-async function buildNextConfig() {
-  const config = getPendingConfig();
-
-  if (!config) {
-    return;
-  }
-
-  await build({
-    ...config,
-    ...BASE_CONFIG
-  });
-
-  // HACK: We are using the "write" field to signal the config is completed.
-  config.write = false;
-}
 
 function* getKeysRecursive(exports) {
   for (const [key, value] of Object.entries(exports)) {
@@ -204,11 +179,30 @@ const IGNORED_OWN_PACKAGES = [
     }
   });
 
-  // Prevent infinite-loop.
-  for (let i = 0; i < 10000; i++) {
-    // eslint-disable-next-line no-await-in-loop
-    await buildNextConfig();
-  }
+  configs.set('react-umd', {
+    chunkNames: `react.umd/[name]-[hash]`, // Some web servers are not good at handling @.
+    entryNames: `[dir]/[name]`,
+    entryPoints: {
+      'react.umd-development': '@msinternal/react-umd'
+    }
+  });
+
+  configs.set('react-dom-umd', {
+    chunkNames: `react-dom.umd/[name]-[hash]`, // Some web servers are not good at handling @.
+    entryNames: `[dir]/[name]`,
+    entryPoints: {
+      'react-dom.umd-development': '@msinternal/react-dom-umd'
+    }
+  });
+
+  await Promise.all(
+    Array.from(configs.values()).map(config =>
+      build({
+        ...config,
+        ...BASE_CONFIG
+      })
+    )
+  );
 
   if (watch === '--watch') {
     const ourConfigs = [];

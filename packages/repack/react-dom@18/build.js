@@ -10,7 +10,7 @@ import * as esbuild from 'esbuild';
   /** @type { import('esbuild').BuildOptions } */
   const config = {
     bundle: true,
-    chunkNames: 'react-dom.18.[name]-[hash]',
+    chunkNames: 'react-dom/[name]-[hash]',
     entryPoints: { 'react-dom': './src/index.ts', 'react-dom/client': './src/client.ts' },
     format: 'esm',
     outdir: './dist/',

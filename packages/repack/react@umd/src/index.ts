@@ -1,7 +1,13 @@
-import React from 'react';
+// @ts-expect-error
+const { React } = globalThis;
+
+if (typeof React === 'undefined') {
+  throw new Error('React (UMD) must be loaded before this shim');
+}
+
+console.warn('🚨 React UMD-to-ESM shim is for development only.');
 
 export const {
-  // @ts-expect-error @types/react hid this export.
   __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
   Children,
   cloneElement,
@@ -19,9 +25,7 @@ export const {
   PureComponent,
   StrictMode,
   Suspense,
-  // @ts-expect-error @types/react hid this export.
   unstable_ConcurrentMode,
-  // @ts-expect-error @types/react hid this export.
   unstable_Profiler,
   useCallback,
   useContext,
