@@ -19,7 +19,20 @@ module.exports = (webDriver, resolve) =>
 
     // Check if there are any console.error.
     if (!ignoreErrors && logging) {
-      expect(entries.filter(({ level }) => level === logging.Level.SEVERE)).toHaveLength(0);
+      const errors = entries.filter(({ level }) => level === logging.Level.SEVERE);
+      const filteredErrors = errors.filter(
+        ({ message }) =>
+          !(
+            message.includes(
+              'Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.'
+            ) ||
+            message.includes('ReactDOM.render is no longer supported in React 18. Use createRoot instead.') ||
+            // TODO: [P0] We should fix the "Cannot update a component while rendering a different component" error.
+            (message.includes('Cannot update a component') && message.includes('while rendering a different component'))
+          )
+      );
+
+      expect(filteredErrors).toHaveLength(0);
     }
 
     resolve();

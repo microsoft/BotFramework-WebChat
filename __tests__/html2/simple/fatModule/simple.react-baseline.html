@@ -11,14 +11,15 @@
       {
         "imports": {
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
-          "react": "/__dist__/packages/bundle/static/react.js",
-          "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
+          "react": "/__dist__/packages/bundle/static/react.baseline.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.baseline.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom.baseline/client.js"
         }
       }
     </script>
     <script type="module">
       import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
-      import { version } from 'react';
+      import { createElement, version } from 'react';
 
       run(async function () {
         const {
@@ -41,7 +42,7 @@
         await host.snapshot('local');
 
         expect(typeof globalThis.React).toBe('undefined');
-        expect(version).toBe('18.3.1');
+        expect(version).toBe('16.8.6');
       });
     </script>
   </body>

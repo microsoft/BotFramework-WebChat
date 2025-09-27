@@ -7,11 +7,13 @@
 import * as esbuild from 'esbuild';
 
 (async () => {
-  /** @type { import('esbuild').BuildOptions } */
   const config = {
+    alias: {
+      'object-assign': '@msinternal/object-assign'
+    },
     bundle: true,
     chunkNames: 'react-dom/[name]-[hash]',
-    entryPoints: { 'react-dom': './src/index.ts', 'react-dom/client': './src/client.ts' },
+    entryPoints: { 'react-dom': './src/index.ts' },
     format: 'esm',
     outdir: './dist/',
     platform: 'browser',

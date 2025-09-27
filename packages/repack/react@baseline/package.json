@@ -1,17 +1,15 @@
 {
-  "name": "@msinternal/react-18",
-  "description": "Repack of react@18",
+  "name": "@msinternal/react-baseline",
+  "description": "Repack of react@16.8.6",
   "version": "0.0.0-0",
   "author": "Microsoft Corporation",
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./dist/react.js",
-    "./jsx-dev-runtime": "./dist/react/jsx-dev-runtime.js",
-    "./jsx-runtime": "./dist/react/jsx-runtime.js"
+    ".": "./dist/react.js"
   },
   "scripts": {
-    "build": "esbuild --bundle=true --chunk-names=react/[name]-[hash] --entry-names=[dir]/[name] --format=esm --outdir=dist --platform=browser --splitting --sourcemap react=./src/index.js react/jsx-dev-runtime=./src/jsx-dev-runtime.ts react/jsx-runtime=./src/jsx-runtime.ts",
+    "build": "esbuild --alias:object-assign=@msinternal/object-assign --bundle=true --chunk-names=react/[name]-[hash] --entry-names=[dir]/[name] --format=esm --outdir=dist --platform=browser --splitting --sourcemap react=./src/index.js",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -25,20 +23,17 @@
     "@msinternal/object-assign": "development"
   },
   "pinDependencies": {
-    "@types/react": [
-      "~18.3",
-      "Bump React manually"
-    ],
     "react": [
-      "18.3.1",
+      "16.8.6",
       "Bump React manually"
     ]
   },
   "dependencies": {
-    "react": "18.3.1"
+    "react": "16.8.6"
   },
   "devDependencies": {
-    "@types/react": "^18.3.24",
+    "@msinternal/object-assign": "0.0.0-0",
+    "@types/react": "^16.14.65",
     "esbuild": "^0.25.10"
   }
 }

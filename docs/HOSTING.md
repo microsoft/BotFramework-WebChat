@@ -89,28 +89,10 @@ For React web app, it is important to have all React components rendered with th
 
 To choose between different version of React runtime, modify the import map and reference the version of your choice. React runtime must be loaded as ES Modules (ESM) instead of UMD. You may need to use a smart CDN service to load React runtime as ESM.
 
-When deploying to locked down environment, clients may not have access to smart CDN service. For conveniences, Web Chat repacked React 16.8.6 and React 18 as ESM under the `/static/` directory.
+When deploying to locked down environment, clients may not have access to smart CDN service. For conveniences, Web Chat repacked React 16.8.6 (baseline) and React 18 (latest supported) as ESM under the `/static/` directory.
 
 <details>
-<summary>For React 18</summary>
-
-```html
-<script type="importmap">
-  {
-    "imports": {
-      "botframework-webchat": "https://cdn.botframework.com/4.19.0/static/botframework-webchat.js",
-      "react": "https://cdn.botframework.com/4.19.0/static/react-18.js",
-      "react-dom": "https://cdn.botframework.com/4.19.0/static/react-dom-18.js",
-      "react-dom/client": "https://cdn.botframework.com/4.19.0/static/react-dom-18/client.js"
-    }
-  }
-</script>
-```
-
-</details>
-
-<details>
-<summary>For React 16.8.6</summary>
+<summary>For React (latest supported)</summary>
 
 ```html
 <script type="importmap">
@@ -120,6 +102,24 @@ When deploying to locked down environment, clients may not have access to smart 
       "react": "https://cdn.botframework.com/4.19.0/static/react.js",
       "react-dom": "https://cdn.botframework.com/4.19.0/static/react-dom.js",
       "react-dom/client": "https://cdn.botframework.com/4.19.0/static/react-dom/client.js"
+    }
+  }
+</script>
+```
+
+</details>
+
+<details>
+<summary>For React 16.8.6 (baseline)</summary>
+
+```html
+<script type="importmap">
+  {
+    "imports": {
+      "botframework-webchat": "https://cdn.botframework.com/4.19.0/static/botframework-webchat.js",
+      "react": "https://cdn.botframework.com/4.19.0/static/react.baseline.js",
+      "react-dom": "https://cdn.botframework.com/4.19.0/static/react-dom.baseline.js",
+      "react-dom/client": "https://cdn.botframework.com/4.19.0/static/react-dom.baseline/client.js"
     }
   }
 </script>

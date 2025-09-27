@@ -148,7 +148,9 @@ const IGNORED_OWN_PACKAGES = [
     chunkNames: `react/[name]-[hash]`,
     entryNames: `[dir]/[name]`,
     entryPoints: {
-      react: '@msinternal/react'
+      react: '@msinternal/react',
+      'react/jsx-dev-runtime': '@msinternal/react/jsx-dev-runtime',
+      'react/jsx-runtime': '@msinternal/react/jsx-runtime'
     }
   });
 
@@ -156,26 +158,24 @@ const IGNORED_OWN_PACKAGES = [
     chunkNames: `react-dom/[name]-[hash]`,
     entryNames: `[dir]/[name]`,
     entryPoints: {
-      'react-dom': '@msinternal/react-dom'
+      'react-dom': '@msinternal/react-dom',
+      'react-dom/client': '@msinternal/react-dom/client'
     }
   });
 
-  configs.set('react-18', {
-    chunkNames: `react.18/[name]-[hash]`, // Some web servers are not good at handling @.
+  configs.set('react-baseline', {
+    chunkNames: `react.baseline/[name]-[hash]`, // Some web servers are not good at handling @.
     entryNames: `[dir]/[name]`,
     entryPoints: {
-      'react.18': '@msinternal/react-18',
-      'react.18/jsx-dev-runtime': '@msinternal/react-18/jsx-dev-runtime',
-      'react.18/jsx-runtime': '@msinternal/react-18/jsx-runtime'
+      'react.baseline': '@msinternal/react-baseline'
     }
   });
 
-  configs.set('react-dom-18', {
-    chunkNames: `react-dom.18/[name]-[hash]`, // Some web servers are not good at handling @.
+  configs.set('react-dom-baseline', {
+    chunkNames: `react-dom.baseline/[name]-[hash]`, // Some web servers are not good at handling @.
     entryNames: `[dir]/[name]`,
     entryPoints: {
-      'react-dom.18': '@msinternal/react-dom-18',
-      'react-dom.18/client': '@msinternal/react-dom-18/client'
+      'react-dom.baseline': '@msinternal/react-dom-baseline'
     }
   });
 

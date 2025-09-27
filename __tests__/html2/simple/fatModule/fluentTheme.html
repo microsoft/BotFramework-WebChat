@@ -23,7 +23,6 @@
           "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat/decorator.js",
           "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat/internal.js",
           "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
-          "jest-mock": "https://esm.sh/jest-mock",
           "react": "/__dist__/packages/bundle/static/react.18.js",
           "react-dom": "/__dist__/packages/bundle/static/react-dom.18.js",
           "react-dom/client": "/__dist__/packages/bundle/static/react-dom.18/client.js",
@@ -37,29 +36,8 @@
       import { FluentProvider, webLightTheme } from '@fluentui/react-components';
       import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
       import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
-      import { fn, spyOn } from 'jest-mock';
       import { createElement } from 'react';
       import { createRoot } from 'react-dom/client';
-
-      const consoleError = console.error.bind(console);
-
-      spyOn(console, 'error').mockImplementation((...args) => {
-        const [message] = args;
-
-        if (
-          !(
-            typeof message === 'string' &&
-            (message.includes(
-              'Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.'
-            ) ||
-              // TODO: [P0] We should fix the "Cannot update a component while rendering a different component" error.
-              (message.includes('Cannot update a component') &&
-                message.includes('while rendering a different component')))
-          )
-        ) {
-          consoleError(...args);
-        }
-      });
 
       const { useStyleOptions } = hooks;
       const {

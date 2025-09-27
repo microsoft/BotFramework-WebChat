@@ -1,13 +1,12 @@
 {
-  "name": "@msinternal/react-dom-18",
-  "description": "Repack of react-dom@18",
+  "name": "@msinternal/react-dom-baseline",
+  "description": "Repack of react-dom@16.8.6",
   "version": "0.0.0-0",
   "author": "Microsoft Corporation",
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./dist/react-dom.js",
-    "./client": "./dist/react-dom/client.js"
+    ".": "./dist/react-dom.js"
   },
   "scripts": {
     "build": "node ./build.js",
@@ -20,22 +19,21 @@
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "start": "npm run build -- --watch"
   },
-  "localDependencies": {},
+  "localDependencies": {
+    "@msinternal/object-assign": "development"
+  },
   "pinDependencies": {
-    "@types/react-dom": [
-      "~18.3",
-      "Bump React manually"
-    ],
     "react-dom": [
-      "18.3.1",
+      "16.8.6",
       "Bump React manually"
     ]
   },
   "dependencies": {
-    "react-dom": "18.3.1"
+    "react-dom": "16.8.6"
   },
   "devDependencies": {
-    "@types/react-dom": "^18.3.7",
+    "@msinternal/object-assign": "0.0.0-0",
+    "@types/react-dom": "^16.9.25",
     "esbuild": "^0.25.10"
   }
 }
