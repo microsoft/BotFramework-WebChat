@@ -23,7 +23,7 @@ import * as esbuild from 'esbuild';
     /** @type { import('esbuild').Plugin[] } */
     plugins: [
       {
-        name: 'react-resolver',
+        name: 'require-react',
         setup(build) {
           build.onResolve({ filter: /^react$/ }, args =>
             args.kind === 'require-call' ? { path: 'react', namespace: 'stub' } : { external: true, path: args.path }
