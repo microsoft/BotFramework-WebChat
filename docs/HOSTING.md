@@ -16,13 +16,13 @@ There are 3 ways to import the code:
 
 - Pure HTML (bundler-less)
   - [Import via `<script type="importmap">`](#esm-import-via-script-typeimportmap)
-  - [Import via `<script src="...">`](#deprecated-iifeumd-import-via-script) (Deprecated)
+  - [Import via `<script src="...">`](#deprecated-iifeumd-import-via-script) (❌ Deprecated)
 - Inside a web app project (with bundler)
   - [Import via `npm install`](#npm-import-via-npm-install)
 
 ### ESM: Import via `<script type="importmap">`
 
-[Import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap) is the recommended method to import Web Chat into the JavaScript environment.
+Importing via [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap) is the recommended method to import Web Chat into the JavaScript environment. You will need to import both Web Chat and React runtime into the browser environment.
 
 Copy and paste the following code snippet into your HTML page. It imports React from [esm.sh](https://esm.sh/).
 
@@ -81,11 +81,11 @@ Serving Web Chat code from your own service is recommended for these environment
 - Airgapped environment
 - Locked down Intranet
 - Environment with specific performance requirement
-- Strict subresource integrity
+- Strict subresource integrity requirement
 
 #### React runtime version
 
-For React web app, it is critical to have all React components rendered using the same version and instance of React runtime.
+For React web app, it is important to have all React components rendered with the same version and instance of React runtime.
 
 To choose between different version of React runtime, modify the import map and reference the version of your choice. React runtime must be loaded as ES Modules (ESM) instead of UMD. You may need to use a smart CDN service to load React runtime as ESM.
 
