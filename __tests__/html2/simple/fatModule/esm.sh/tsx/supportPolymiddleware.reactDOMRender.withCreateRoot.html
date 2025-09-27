@@ -11,19 +11,22 @@
       {
         "imports": {
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
           "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat/middleware.js",
           "react": "https://esm.sh/react@18",
-          "react-dom": "https://esm.sh/react-dom@18"
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
         }
       }
     </script>
-    <script type="module">
+    <script src="https://esm.sh/tsx" type="module"></script>
+    <script type="text/babel">
       import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
+      import { useStyleOptions } from 'botframework-webchat/hook';
       import { activityComponent, createActivityPolymiddleware } from 'botframework-webchat/middleware';
       import { createElement } from 'react';
-      import { render } from 'react-dom';
+      import { createRoot } from 'react-dom/client';
 
-      const { useStyleOptions } = hooks;
       const {
         testHelpers: { createDirectLineEmulator }
       } = window;
@@ -38,14 +41,12 @@
           // THEN: Web Chat hooks can be called.
           const [{ accent }] = useStyleOptions();
 
-          return createElement(
-            'div',
-            { style: { borderColor: accent, borderStyle: 'solid', borderWidth: 2 } },
-            nextResult?.render({})
+          return (
+            <div style={{ borderColor: accent, borderStyle: 'solid', borderWidth: 2 }}>{nextResult?.render({})}</div>
           );
         }
 
-        render(
+        createRoot(document.getElementsByTagName('main')[0]).render(
           createElement(ReactWebChat, {
             directLine,
             polymiddleware: [
@@ -54,8 +55,7 @@
               )
             ],
             store
-          }),
-          document.getElementsByTagName('main')[0]
+          })
         );
 
         await pageConditions.uiConnected();

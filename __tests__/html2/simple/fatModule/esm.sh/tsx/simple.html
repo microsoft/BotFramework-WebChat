@@ -11,19 +11,20 @@
       {
         "imports": {
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
           "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat/middleware.js",
           "react": "https://esm.sh/react@18",
-          "react-dom": "https://esm.sh/react-dom@18"
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
         }
       }
     </script>
-    <script type="module">
+    <script src="https://esm.sh/tsx" type="module"></script>
+    <script type="text/babel">
       import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
-      import { activityComponent, createActivityPolymiddleware } from 'botframework-webchat/middleware';
       import { createElement } from 'react';
-      import { render } from 'react-dom';
+      import { createRoot } from 'react-dom/client';
 
-      const { useStyleOptions } = hooks;
       const {
         testHelpers: { createDirectLineEmulator }
       } = window;
@@ -34,28 +35,8 @@
       run(async function () {
         const { directLine, store } = createDirectLineEmulator();
 
-        function MyMiddleware({ nextResult }) {
-          // THEN: Web Chat hooks can be called.
-          const [{ accent }] = useStyleOptions();
-
-          return createElement(
-            'div',
-            { style: { borderColor: accent, borderStyle: 'solid', borderWidth: 2 } },
-            nextResult?.render({})
-          );
-        }
-
-        render(
-          createElement(ReactWebChat, {
-            directLine,
-            polymiddleware: [
-              createActivityPolymiddleware(
-                next => request => activityComponent(MyMiddleware, { nextResult: next(request) })
-              )
-            ],
-            store
-          }),
-          document.getElementsByTagName('main')[0]
+        createRoot(document.getElementsByTagName('main')[0]).render(
+          <ReactWebChat directLine={directLine} store={store} />
         );
 
         await pageConditions.uiConnected();
