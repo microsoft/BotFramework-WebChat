@@ -177,7 +177,7 @@ Web Chat will use the React runtime (in UMD flavor) from `window.React` variable
 
 This method will import Web Chat inside an existing web app project.
 
-First, install Web Chat from npmjs:
+First, install Web Chat using `npm`:
 
 ```sh
 npm install botframework-webchat
