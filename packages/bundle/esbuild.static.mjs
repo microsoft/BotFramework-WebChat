@@ -6,10 +6,9 @@
 /* eslint-disable no-restricted-globals */
 
 import { build, context } from 'esbuild';
-import { resolve as importMetaResolve } from 'import-meta-resolve';
-import { dirname, resolve } from 'path';
-import { readPackageUp } from 'read-pkg-up';
-import { fileURLToPath, pathToFileURL } from 'url';
+import { resolve } from 'path';
+import { readPackage } from 'read-pkg';
+import { fileURLToPath } from 'url';
 
 // eslint-disable-next-line no-unused-vars
 const isomorphicReactPlugin = {
@@ -52,99 +51,8 @@ function createWatcherPlugin(name) {
   };
 }
 
-/**
- * Extracts the package name and the named exports path from an entry string.
- *
- * @param {string} entry - The entry string, typically a module path.
- *                         If the entry starts with '@', it is treated as a scoped package.
- * @returns {[string, string]} - A tuple where the first element is the package name
- *                               and the second element is the remaining path (named exports).
- */
-function extractPackageNameAndNamedExports(entry) {
-  const tokens = entry.split('/');
-  const names = tokens.splice(0, entry.startsWith('@') ? 2 : 1);
-
-  return [names.join('/'), tokens.join('/')];
-}
-
 /** @type { Map<string, import('esbuild').BuildOptions> } */
 const configs = new Map();
-
-function flatName(name) {
-  return name.replace(/\//gu, '.').replace(/^@/u, '');
-}
-
-// Some packages has `package.json` inside their /dist for specifying CJS/ESM, they are not the publishing package.json.
-function readPublishingPackageJSONUp(cwd) {
-  const work = async cwd => {
-    const result = await readPackageUp({ cwd });
-
-    return result.packageJson.name ? result : work(dirname(cwd));
-  };
-
-  return work(cwd);
-}
-
-async function addConfig(
-  /** @type { import('esbuild').OnResolveArgs } */
-  { path, resolveDir }
-) {
-  const importPathURL = importMetaResolve(path, pathToFileURL(resolveDir) + '/');
-
-  if (!importPathURL.startsWith('file:')) {
-    return;
-  }
-
-  const {
-    packageJson: { name, version },
-    path: packagePath
-  } = await readPublishingPackageJSONUp(fileURLToPath(importPathURL));
-
-  const fullName = `${name}@${version}`;
-
-  if (!path.startsWith(name)) {
-    throw new Error(`args.path must starts with name, args.path = ${path}, name = ${name}`);
-  }
-
-  const familyName = `${flatName(name)}__${version}`;
-  const entryNames = `${familyName}__[name]`;
-
-  let currentConfig = configs.get(fullName);
-
-  if (!currentConfig) {
-    /** @type { import('esbuild').BuildOptions } */
-    currentConfig = {
-      absWorkingDir: dirname(packagePath),
-      chunkNames: `${familyName}__[name]-[hash]`,
-      entryNames,
-      entryPoints: {}
-    };
-
-    configs.set(fullName, currentConfig);
-  }
-
-  const entries = new Map(Object.entries(currentConfig.entryPoints));
-
-  const [moduleName, namedExports] = extractPackageNameAndNamedExports(path);
-  const entryName = flatName(namedExports || moduleName.split('/').at(-1));
-
-  if (!entries.has(entryName)) {
-    entries.set(entryName, path);
-
-    currentConfig.entryPoints = Object.fromEntries(Array.from(entries.entries()));
-    currentConfig.write = true;
-  }
-
-  return `./${entryNames.replace(/\[name\]/gu, entryName)}.js`;
-}
-
-function getPendingConfig() {
-  for (const value of configs.values()) {
-    if (value.write !== false) {
-      return value;
-    }
-  }
-}
 
 const BASE_CONFIG = {
   alias: {
@@ -157,6 +65,8 @@ const BASE_CONFIG = {
     'react-is': '@msinternal/react-is'
   },
   bundle: true,
+  chunkNames: 'botframework-webchat/[name]-[hash]',
+  entryNames: '[dir]/[name]',
   external: ['react', 'react-dom'],
   format: 'esm',
   loader: { '.js': 'jsx' },
@@ -164,109 +74,135 @@ const BASE_CONFIG = {
   outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
   platform: 'browser',
   sourcemap: true,
-  splitting: true,
-  write: true,
-
-  /** @type { import('esbuild').Plugin[] } */
-  plugins: [
-    {
-      name: 'static-builder',
-      setup(build) {
-        // eslint-disable-next-line require-unicode-regexp
-        build.onResolve({ filter: /^[^.]/ }, async args => {
-          // "external" field only works if the plug-in give up (return undefined.)
-          if (args.path === 'react' || args.path === 'react-dom') {
-            return undefined;
-          }
-
-          // Only ESM can be externalized, CJS cannot be externalized because require() is not guaranteed to be at top-level.
-          if (args.kind === 'import-statement') {
-            const path = await addConfig(args);
-
-            return path ? { external: true, path } : undefined;
-          }
-
-          return undefined;
-        });
-      }
-    }
-  ]
+  splitting: true
 };
 
-async function buildNextConfig() {
-  const config = getPendingConfig();
+function* getKeysRecursive(exports) {
+  for (const [key, value] of Object.entries(exports)) {
+    yield key;
 
-  if (!config) {
-    return;
+    if (typeof value !== 'string') {
+      yield* getKeysRecursive(value);
+    }
   }
-
-  await build({
-    ...config,
-    ...BASE_CONFIG
-  });
-
-  // HACK: We are using the "write" field to signal the config is completed.
-  config.write = false;
 }
+
+const IGNORED_OWN_PACKAGES = [
+  // Not exporting Direct Line Speech.
+  'botframework-directlinespeech-sdk',
+  // We will export bundle from `/src/boot/` folder directly.
+  'botframework-webchat',
+  // `fluent-theme` is higher level than bundle, we will export from the package itself separately.
+  'botframework-webchat-fluent-theme'
+];
 
 (async () => {
   // eslint-disable-next-line prefer-destructuring
   const [_0, _1, watch] = process.argv;
 
-  configs.set('botframework-webchat', {
-    chunkNames: `botframework-webchat.[name]-[hash]`,
-    entryNames: `[name]`,
-    entryPoints: {
-      'botframework-webchat': './src/boot/exports/index.ts',
-      'botframework-webchat.component': './src/boot/exports/component.ts',
-      'botframework-webchat.decorator': './src/boot/exports/decorator.ts',
-      'botframework-webchat.hook': './src/boot/exports/hook.ts',
-      'botframework-webchat.internal': './src/boot/exports/internal.ts',
-      'botframework-webchat.middleware': './src/boot/exports/middleware.ts'
+  const { workspaces } = await readPackage({ cwd: resolve(fileURLToPath(import.meta.url), '../../../') });
+
+  const allOwnExports = new Set();
+
+  for (const path of workspaces) {
+    // eslint-disable-next-line no-await-in-loop
+    const packageJson = await readPackage({ cwd: resolve(fileURLToPath(import.meta.url), '../../..', path) });
+
+    if (packageJson.private || !packageJson.exports || IGNORED_OWN_PACKAGES.includes(packageJson.name)) {
+      continue;
     }
+
+    for (const key of getKeysRecursive(packageJson.exports)) {
+      key.startsWith('.') && allOwnExports.add(`${packageJson.name}${key.slice(1)}`);
+    }
+  }
+
+  // Rules to select what packages to externalize:
+  // - All of our own published packages
+  //    - Web devs can import our stuff just like they are on npm
+  // - Peer dependencies, such as `react` and `react-dom`
+  //    - Web devs can use import map to reconfigure what version of dependencies they want
+
+  const entryPoints = {
+    'botframework-webchat': './src/boot/exports/index.ts',
+    'botframework-webchat/component': './src/boot/exports/component.ts',
+    'botframework-webchat/decorator': './src/boot/exports/decorator.ts',
+    'botframework-webchat/hook': './src/boot/exports/hook.ts',
+    'botframework-webchat/internal': './src/boot/exports/internal.ts',
+    'botframework-webchat/middleware': './src/boot/exports/middleware.ts',
+    // TODO: [P2] We can remove the `Array.from()` after bumping Node.js.
+    ...Array.from(allOwnExports.keys()).reduce((entryPoints, key) => ({ ...entryPoints, [key]: key }), {})
+  };
+
+  console.log('Exporting the following own entry points:');
+  console.log(entryPoints);
+
+  configs.set('botframework-webchat', {
+    chunkNames: `[name]-[hash]`,
+    entryNames: `[dir]/[name]`,
+    entryPoints
   });
 
   // Put `react` and `react-dom` under `/static` for conveniences when using in sovereign cloud or airgapped environment.
   configs.set('react', {
-    chunkNames: `react.[name]-[hash]`,
-    entryNames: `[name]`,
+    chunkNames: `react/[name]-[hash]`,
+    entryNames: `[dir]/[name]`,
     entryPoints: {
-      '': '@msinternal/react'
+      react: '@msinternal/react',
+      'react/jsx-dev-runtime': '@msinternal/react/jsx-dev-runtime',
+      'react/jsx-runtime': '@msinternal/react/jsx-runtime'
     }
   });
 
   configs.set('react-dom', {
-    chunkNames: `react-dom.[name]-[hash]`,
-    entryNames: `[name]`,
-    entryPoints: {
-      '': '@msinternal/react-dom'
-    }
-  });
-
-  configs.set('react-18', {
-    chunkNames: `react.18/[name]-[hash]`, // Some web servers are not good at handling @.
+    chunkNames: `react-dom/[name]-[hash]`,
     entryNames: `[dir]/[name]`,
     entryPoints: {
-      'react.18': '@msinternal/react-18',
-      'react.18/jsx-dev-runtime': '@msinternal/react-18/jsx-dev-runtime',
-      'react.18/jsx-runtime': '@msinternal/react-18/jsx-runtime'
+      'react-dom': '@msinternal/react-dom',
+      'react-dom/client': '@msinternal/react-dom/client'
     }
   });
 
-  configs.set('react-dom-18', {
-    chunkNames: `react-dom.18/[name]-[hash]`, // Some web servers are not good at handling @.
+  configs.set('react-baseline', {
+    chunkNames: `react.baseline/[name]-[hash]`, // Some web servers are not good at handling @.
     entryNames: `[dir]/[name]`,
     entryPoints: {
-      'react-dom.18': '@msinternal/react-dom-18',
-      'react-dom.18/client': '@msinternal/react-dom-18/client'
+      'react.baseline': '@msinternal/react-baseline'
     }
   });
 
-  // Prevent infinite-loop.
-  for (let i = 0; i < 10000; i++) {
-    // eslint-disable-next-line no-await-in-loop
-    await buildNextConfig();
-  }
+  configs.set('react-dom-baseline', {
+    chunkNames: `react-dom.baseline/[name]-[hash]`, // Some web servers are not good at handling @.
+    entryNames: `[dir]/[name]`,
+    entryPoints: {
+      'react-dom.baseline': '@msinternal/react-dom-baseline'
+    }
+  });
+
+  configs.set('react-umd', {
+    chunkNames: `react.umd/[name]-[hash]`, // Some web servers are not good at handling @.
+    entryNames: `[dir]/[name]`,
+    entryPoints: {
+      'react.umd-development': '@msinternal/react-umd'
+    }
+  });
+
+  configs.set('react-dom-umd', {
+    chunkNames: `react-dom.umd/[name]-[hash]`, // Some web servers are not good at handling @.
+    entryNames: `[dir]/[name]`,
+    entryPoints: {
+      'react-dom.umd-development': '@msinternal/react-dom-umd'
+    }
+  });
+
+  await Promise.all(
+    Array.from(configs.values()).map(config =>
+      build({
+        ...config,
+        ...BASE_CONFIG
+      })
+    )
+  );
 
   if (watch === '--watch') {
     const ourConfigs = [];
@@ -275,7 +211,7 @@ async function buildNextConfig() {
       if (key.startsWith('botframework-webchat')) {
         const ourConfig = { ...config, ...BASE_CONFIG };
 
-        ourConfig.plugins.push(createWatcherPlugin(key));
+        ourConfig.plugins = [...(ourConfig.plugins || []), createWatcherPlugin(key)];
 
         ourConfigs.push(ourConfig);
       }

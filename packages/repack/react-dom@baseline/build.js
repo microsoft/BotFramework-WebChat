@@ -7,11 +7,15 @@
 import * as esbuild from 'esbuild';
 
 (async () => {
-  /** @type { import('esbuild').BuildOptions } */
   const config = {
+    alias: {
+      'object-assign': '@msinternal/object-assign'
+    },
     bundle: true,
-    chunkNames: 'react-dom.18.[name]-[hash]',
-    entryPoints: { 'react-dom': './src/index.ts', 'react-dom/client': './src/client.ts' },
+    chunkNames: 'react-dom/[name]-[hash]',
+    entryPoints: {
+      'react-dom': './src/index.ts'
+    },
     format: 'esm',
     outdir: './dist/',
     platform: 'browser',
@@ -21,7 +25,7 @@ import * as esbuild from 'esbuild';
     /** @type { import('esbuild').Plugin[] } */
     plugins: [
       {
-        name: 'react-resolver',
+        name: 'require-react',
         setup(build) {
           build.onResolve({ filter: /^react$/ }, args =>
             args.kind === 'require-call' ? { path: 'react', namespace: 'stub' } : { external: true, path: args.path }

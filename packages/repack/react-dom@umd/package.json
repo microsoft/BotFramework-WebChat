@@ -1,16 +1,15 @@
 {
-  "name": "@msinternal/react-dom-18",
-  "description": "Repack of react-dom@18",
+  "name": "@msinternal/react-dom-umd",
+  "description": "Repack of react-dom@umd",
   "version": "0.0.0-0",
   "author": "Microsoft Corporation",
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./dist/react-dom.js",
-    "./client": "./dist/react-dom/client.js"
+    ".": "./dist/react-dom.js"
   },
   "scripts": {
-    "build": "node ./build.js",
+    "build": "esbuild --bundle=true --chunk-names=react-dom/[name]-[hash] --entry-names=[dir]/[name] --format=esm --outdir=dist --platform=browser --splitting --sourcemap react-dom=./src/index.js",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -20,22 +19,13 @@
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "start": "npm run build -- --watch"
   },
-  "localDependencies": {},
-  "pinDependencies": {
-    "@types/react-dom": [
-      "~18.3",
-      "Bump React manually"
-    ],
-    "react-dom": [
-      "18.3.1",
-      "Bump React manually"
-    ]
+  "localDependencies": {
+    "@msinternal/object-assign": "development"
   },
-  "dependencies": {
-    "react-dom": "18.3.1"
-  },
+  "pinDependencies": {},
   "devDependencies": {
-    "@types/react-dom": "^18.3.7",
     "esbuild": "^0.25.10"
-  }
+  },
+  "main": "index.js",
+  "license": "ISC"
 }

@@ -1,43 +1,38 @@
 import React from 'react';
 
 export const {
-  Children,
-  Component,
-  Fragment,
-  Profiler,
-  PureComponent,
-  StrictMode,
-  Suspense,
   // @ts-expect-error @types/react hid this export.
   __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
-  act,
+  Children,
   cloneElement,
+  Component,
   createContext,
   createElement,
   createFactory,
   createRef,
   forwardRef,
+  Fragment,
   isValidElement,
   lazy,
   memo,
-  startTransition,
+  Profiler,
+  PureComponent,
+  StrictMode,
+  Suspense,
   // @ts-expect-error @types/react hid this export.
-  unstable_act,
+  unstable_ConcurrentMode,
+  // @ts-expect-error @types/react hid this export.
+  unstable_Profiler,
   useCallback,
   useContext,
   useDebugValue,
-  useDeferredValue,
   useEffect,
-  useId,
   useImperativeHandle,
-  useInsertionEffect,
   useLayoutEffect,
   useMemo,
   useReducer,
   useRef,
   useState,
-  useSyncExternalStore,
-  useTransition,
   version
 } = React;
 
