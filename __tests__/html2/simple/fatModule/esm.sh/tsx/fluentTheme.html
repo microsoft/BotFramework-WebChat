@@ -2,8 +2,6 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="/test-harness.js"></script>
-    <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <style type="text/css">
       /* TODO: [P*] Can we eliminate this style? */
       .fui-FluentProvider,
@@ -30,6 +28,9 @@
     </script>
     <script src="https://esm.sh/tsx" type="module"></script>
     <script type="text/babel">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
       import { FluentProvider, webLightTheme } from '@fluentui/react-components';
       import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
       import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
