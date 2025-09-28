@@ -345,10 +345,14 @@ jobs:
   print-commit-stats:
     if: always()
     name: Print commit stats
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+
+      - run: git fetch origin main
 
       - name: Use Node.js ${{ env.node-version }}
         uses: actions/setup-node@v4
