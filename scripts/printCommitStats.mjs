@@ -104,6 +104,12 @@ function toRatioString(
     }
   });
 
+  console.log(
+    '> Disclaimer: *do not use* any results here to quantify how good this commit. Numbers should never be used to judge quality work and passionate people.'
+  );
+
+  console.log();
+
   console.log('| | Files | Lines added | Lines added and removed | Lines ratio |');
   console.log('| - | - | - | - | - |');
 
