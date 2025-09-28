@@ -48,7 +48,7 @@ const useScrollToEndRenderResult = (terminatorRef: MutableRefObject<HTMLDivEleme
 
   // To prevent flashy button, we are not waiting for another render loop to update the `[readActivityKeys, unreadActivityKeys]` state.
   // Instead, we are building the next one in this `useMemo` call.
-  const [nextUnreadActivityKeys, activityKeyToMarkAsUnread] = useMemo<readonly [readonly string[], string | undefined]>(
+  const [nextUnreadActivityKeys, activityKeyToMarkAsRead] = useMemo<readonly [readonly string[], string | undefined]>(
     () =>
       Object.freeze(
         sticky && unreadActivityKeys.length
@@ -62,8 +62,8 @@ const useScrollToEndRenderResult = (terminatorRef: MutableRefObject<HTMLDivEleme
   // After we call `markActivityKeyAsRead`, everything will be read and nothing will be unread.
   // That means, in next render, `unreadActivityKeys` will be emptied and the `markActivityKeyAsRead` will not get called again.
   useEffect(() => {
-    activityKeyToMarkAsUnread && markActivityKeyAsRead(activityKeyToMarkAsUnread);
-  }, [activityKeyToMarkAsUnread, markActivityKeyAsRead]);
+    activityKeyToMarkAsRead && markActivityKeyAsRead(activityKeyToMarkAsRead);
+  }, [activityKeyToMarkAsRead, markActivityKeyAsRead]);
 
   const nextUnreadActivityKeysRef = useRefFrom(nextUnreadActivityKeys);
 
