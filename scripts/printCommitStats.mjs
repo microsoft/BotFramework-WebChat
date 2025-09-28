@@ -71,7 +71,7 @@ function toRatioString(
 }
 
 (async () => {
-  const { stdout: diffContent } = await promisify(exec)('git diff main..HEAD', { encoding: 'utf-8' });
+  const { stdout: diffContent } = await promisify(exec)('git diff main', { encoding: 'utf-8' });
 
   const patches = parsePatch(diffContent);
 
