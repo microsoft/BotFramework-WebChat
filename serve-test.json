@@ -104,12 +104,28 @@
       "destination": "packages/test/harness/dist/test-harness.js.map"
     },
     {
+      "source": "/test-harness.mjs",
+      "destination": "packages/test/harness/dist/test-harness.mjs"
+    },
+    {
+      "source": "/test-harness.mjs.map",
+      "destination": "packages/test/harness/dist/test-harness.mjs.map"
+    },
+    {
       "source": "/test-page-object.js",
       "destination": "packages/test/page-object/dist/test-page-object.js"
     },
     {
       "source": "/test-page-object.js.map",
       "destination": "packages/test/page-object/dist/test-page-object.js.map"
+    },
+    {
+      "source": "/test-page-object.mjs",
+      "destination": "packages/test/page-object/dist/test-page-object.mjs"
+    },
+    {
+      "source": "/test-page-object.mjs.map",
+      "destination": "packages/test/page-object/dist/test-page-object.mjs.map"
     },
     {
       "source": "/:page.css",
