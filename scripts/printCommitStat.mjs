@@ -11,13 +11,15 @@ function getCategory(
   /** @type { string } */
   path
 ) {
-  return path.startsWith('.github') || path.endsWith('.md')
+  return path.includes('/.github/')
     ? 'others'
-    : path.includes('/__tests__/')
-      ? 'test'
-      : path.includes('package-lock.json')
-        ? 'generated'
-        : 'production';
+    : path.endsWith('.md')
+      ? 'doc'
+      : path.includes('/__tests__/')
+        ? 'test'
+        : path.includes('package-lock.json')
+          ? 'generated'
+          : 'production';
 }
 
 function toIntegerOrFixed(
@@ -70,9 +72,10 @@ function toRatioString(
 
   const patches = parsePatch(diffContent);
 
-  /** @type { Map<'generated' | 'others' | 'production' | 'test', { numFile: number; numLineAdded: number; numLineRemoved: number; }> } */
+  /** @type { Map<'doc' | 'generated' | 'others' | 'production' | 'test', { numFile: number; numLineAdded: number; numLineRemoved: number; }> } */
   const stats = new Map();
 
+  stats.set('doc', { numFile: 0, numLineAdded: 0, numLineRemoved: 0 });
   stats.set('generated', { numFile: 0, numLineAdded: 0, numLineRemoved: 0 });
   stats.set('others', { numFile: 0, numLineAdded: 0, numLineRemoved: 0 });
   stats.set('production', { numFile: 0, numLineAdded: 0, numLineRemoved: 0 });
@@ -104,6 +107,7 @@ function toRatioString(
   for (const [name, type] of [
     ['Production code', 'production'],
     ['Test code', 'test'],
+    ['Documentation', 'doc'],
     ['Generated code', 'generated'],
     ['Others', 'others']
   ]) {
