@@ -48,6 +48,7 @@ const config = {
   },
   external: ['botframework-webchat*', 'react', 'react-dom'],
   format: 'esm',
+  keepNames: true,
   loader: { '.js': 'jsx' },
   minify: true,
   outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
