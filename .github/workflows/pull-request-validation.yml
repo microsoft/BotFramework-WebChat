@@ -344,7 +344,7 @@ jobs:
 
   print-commit-stats:
     if: always()
-    name: Commit statistics
+    name: Print commit stats
     runs-on: ubuntu-latest
 
     steps:
