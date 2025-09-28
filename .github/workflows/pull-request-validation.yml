@@ -356,6 +356,7 @@ jobs:
           node-version: ${{ env.node-version }}
           cache: npm
 
+      - run: npm clean-install
+
       - name: Print commit stats
-        run: |
-          node ./scripts/printCommitStats.mjs | tee --append $GITHUB_STEP_SUMMARY
+        run: node ./scripts/printCommitStats.mjs | tee --append $GITHUB_STEP_SUMMARY
