@@ -5,21 +5,24 @@
 import chalk from 'chalk';
 import { exec } from 'child_process';
 import { parsePatch } from 'diff';
+import { minimatch } from 'minimatch';
 import { promisify } from 'util';
 
 function getCategory(
   /** @type { string } */
   path
 ) {
-  return path.includes('/.github/')
-    ? 'others'
-    : path.endsWith('.md')
-      ? 'doc'
-      : path.includes('/__tests__/')
-        ? 'test'
-        : path.includes('package-lock.json')
-          ? 'generated'
-          : 'production';
+  return minimatch(path, '*/packages/test/**')
+    ? 'test'
+    : minimatch(path, '*/packages/**/src/**/*')
+      ? 'production'
+      : minimatch(path, '**/*.md')
+        ? 'doc'
+        : minimatch(path, '*/__tests__/**/*')
+          ? 'test'
+          : minimatch(path, '**/package-lock.json')
+            ? 'generated'
+            : 'others';
 }
 
 function toIntegerOrFixed(
@@ -127,6 +130,6 @@ function toRatioString(
   const [prodRatio, testRatio] = toRatio(stats.get('production').numLineAdded, stats.get('test').numLineAdded);
 
   console.log(
-    `${testRatio > prodRatio ? '😇' : '🚨'} There are ${chalk.magenta(toIntegerOrFixed(testRatio))} lines of test code added for every ${chalk.magenta(toIntegerOrFixed(prodRatio))} lines of production code added.`
+    `${prodRatio === 0 || testRatio > prodRatio ? '😇' : '🚨'} There are ${chalk.magenta(toIntegerOrFixed(testRatio))} lines of test code added for every ${chalk.magenta(toIntegerOrFixed(prodRatio))} lines of production code added.`
   );
 })();

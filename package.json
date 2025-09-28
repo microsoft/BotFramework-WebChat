@@ -243,6 +243,7 @@
     "jest-trx-results-processor": "^3.0.2",
     "lint-staged": "^16.1.2",
     "lolex": "^6.0.0",
+    "minimatch": "^10.0.3",
     "node-dev": "^8.0.0",
     "prettier": "^3.6.2",
     "selenium-webdriver": "^4.34.0",
