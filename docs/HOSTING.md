@@ -1,18 +1,18 @@
 # Hosting
 
-Web Chat is versatile and can be hosted in many web app scenario.
+Web Chat is versatile and can be hosted in many web app scenarios.
 
-There are 3 steps to host Web Chat in a web app:
+There are three steps to host Web Chat in a web app:
 
 1. [Importing code into the JavaScript environment](#step-1-importing-code)
 1. [Constructing chat adapter](#step-2-constructing-chat-adapter)
 1. [Rendering UI onto the page](#step-3-rendering-ui)
 
-Each step provides multiple approaches to suit different development environments and requirements. These approaches can be mix and match to create a tailored solution for the scenario.
+Each step provides multiple approaches to suit different development environments and requirements. These approaches can be mixed and matched to create a tailored solution for the scenario.
 
 ## Step 1: Importing code
 
-There are 3 ways to import the code:
+There are three ways to import the code:
 
 - Pure HTML (bundler-less)
   - [Import via `<script type="importmap">`](#esm-import-via-script-typeimportmap)
@@ -67,7 +67,7 @@ Copy and paste the following code snippet into your HTML page. It imports React 
 ```
 </details>
 
-Using an import map alongside a smart CDN service (such as, [esm.sh](https://esm.sh/) or [esm.run](https://esm.run/)) allows leveraging modern JavaScript features like lazy-loading and HTTP pipelining, enhancing performance and efficiency.
+Using an import map alongside a smart CDN service (such as, [esm.sh](https://esm.sh/) or [esm.run](https://esm.run/)) allows you to leverage modern JavaScript features like lazy-loading and HTTP pipelining, enhancing performance and efficiency.
 
 #### Deploying Web Chat to a static web server or CDN
 
@@ -85,7 +85,7 @@ Serving Web Chat code from your own service is recommended for these environment
 
 #### React runtime version
 
-For React web app, it is important to have all React components rendered with the same version and instance of React runtime.
+For React web apps, it is important to have all React components rendered with the same version and instance of the React runtime.
 
 To choose between different version of React runtime, modify the import map and reference the version of your choice. React runtime must be loaded as ES Modules (ESM) instead of UMD. You may need to use a smart CDN service to load React runtime as ESM.
 
@@ -151,7 +151,8 @@ React runtime can also be loaded from UMD (`globalThis.React` and `globalThis.Re
 
 ### (Deprecated) IIFE/UMD: Import via `<script>`
 
-> Notes: this method is deprecated and is no longer recommended. Please [import via `<script type="importmap">`](#esm-import-via-script-typeimportmap) instead.
+> Note: This method is deprecated and is no longer recommended. Please [import via `<script type="importmap">`](#esm-import-via-script-typeimportmap) instead.
+>
 >
 > W3C and browser vendors introduced a modern approach to import JavaScript code into the browser environment. Compare to the traditional IIFE/UMD approach, ES Modules has zero pollution and more guardrails to prevent misuse.
 
@@ -191,7 +192,7 @@ import { createDirectLine, ReactWebChat, renderWebChat } from 'botframework-webc
 
 ## Step 2: Constructing chat adapter
 
-> Notes: Web Chat is a UI component, does not contains any network code, and is not responsible for communicating with the chat service. Web Chat render the messages (a.k.a. activities) provided by the chat adapter.
+> Note: Web Chat is a UI component, does not contains any network code, and is not responsible for communicating with the chat service. Web Chat render the messages (a.k.a. activities) provided by the chat adapter.
 
 Chat adapter is an intermediate component which bridge between Web Chat and the underlying chat service.
 
@@ -201,7 +202,7 @@ By using different chat adapter, Web Chat can connect to different chat service.
 
 The chat adapter for Azure Bot Services (Direct Line) is bundled into Web Chat. A Direct Line token is required to establish the connection with Azure Bot Services. [This article](https://learn.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-direct-line-3-0-authentication?view=azure-bot-service-4.0#generate-a-direct-line-token) contains instructions on generating and renew a Direct Line token.
 
-> Notes: the Direct Line token is the key to the conversation, which could contains user data. Please protect the token with great care.
+> Note: the Direct Line token is the key to the conversation, which could contains user data. Please protect the token with great care.
 
 ```tsx
 const directLine = createDirectLine({ token: '<direct-line-token>' });
@@ -211,7 +212,7 @@ const directLine = createDirectLine({ token: '<direct-line-token>' });
 
 After Web Chat is loaded and chat adapter instance is constructed, the last step is to render Web Chat on the page.
 
-> Notes: code snippets below assumes the chat adapter instance is stored in the `directLine` constant.
+> Note: Code snippets below assume the chat adapter instance is stored in the `directLine` constant.
 
 ### Using `renderWebChat()` (no React prior experience)
 
@@ -229,7 +230,7 @@ Then, run the following JavaScript code to render Web Chat into the placeholder.
 renderWebChat({ directLine }, document.getElementById('webchat'));
 ```
 
-> Notes: `renderWebChat()` is a simple wrapper around `render()` function in React DOM.
+> Note: The `renderWebChat()` function is a simple wrapper around `render()` function in React DOM.
 
 ### Using `<ReactWebChat>` component
 
