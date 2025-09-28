@@ -13,7 +13,9 @@ import * as esbuild from 'esbuild';
     },
     bundle: true,
     chunkNames: 'react-dom/[name]-[hash]',
-    entryPoints: { 'react-dom': './src/index.ts' },
+    entryPoints: {
+      'react-dom': './src/index.ts'
+    },
     format: 'esm',
     outdir: './dist/',
     platform: 'browser',
