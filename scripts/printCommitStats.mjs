@@ -120,7 +120,7 @@ function toRatioString(
         `${stats.get(type).numFile} files`,
         `${stats.get(type).numLineAdded} lines added`,
         `${stats.get(type).numLineAdded + stats.get(type).numLineRemoved} lines total`,
-        `${toRatioString(stats.get(type).numLineAdded, stats.get(type).numLineRemoved)} lines added vs. removed`
+        `${toRatioString(stats.get(type).numLineAdded, stats.get(type).numLineRemoved)}`
       ].join(' | ')} |`
     );
   }
@@ -128,6 +128,12 @@ function toRatioString(
   console.log();
 
   const [prodRatio, testRatio] = toRatio(stats.get('production').numLineAdded, stats.get('test').numLineAdded);
+
+  console.log(
+    `Test to code ratio = ${toRatioString(stats.get('production').numLineAdded, stats.get('test').numLineAdded)}`
+  );
+
+  console.log();
 
   console.log(
     `${prodRatio === 0 || testRatio > prodRatio ? '😇' : '🚨'} There are ${chalk.magenta(toIntegerOrFixed(testRatio))} lines of test code added for every ${chalk.magenta(toIntegerOrFixed(prodRatio))} lines of production code added.`
