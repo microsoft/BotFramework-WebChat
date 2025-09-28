@@ -1,4 +1,4 @@
-import { useMemo, type DependencyList, type ReactElement } from 'react';
+import { useEffect, type DependencyList, type ReactElement } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
 import useQueueStaticElement from './useQueueStaticElement';
@@ -18,9 +18,12 @@ export default function useLiveRegion(
   const createNodeRef = useRefFrom(createNode);
   const queueStaticElement = useQueueStaticElement();
 
-  useMemo(() => {
+  // Unless "deps" change on every render, this should not cause dead loop.
+  // TODO: [P1] Can we build a `useEffectWithDeadLoopDetection()`?
+  useEffect(() => {
     const node = createNodeRef?.current();
 
+    // "queueStaticElement()" will "setState", check for dead loop.
     node && queueStaticElement(node);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...deps, createNodeRef, queueStaticElement]);

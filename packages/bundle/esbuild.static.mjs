@@ -54,6 +54,7 @@ function createWatcherPlugin(name) {
 /** @type { Map<string, import('esbuild').BuildOptions> } */
 const configs = new Map();
 
+/** @type { import('esbuild').BuildOptions } */
 const BASE_CONFIG = {
   alias: {
     adaptivecards: '@msinternal/adaptivecards',
@@ -69,6 +70,7 @@ const BASE_CONFIG = {
   entryNames: '[dir]/[name]',
   external: ['react', 'react-dom'],
   format: 'esm',
+  keepNames: true,
   loader: { '.js': 'jsx' },
   minify: true,
   outdir: resolve(fileURLToPath(import.meta.url), `../static/`),

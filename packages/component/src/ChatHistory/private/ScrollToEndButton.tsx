@@ -1,5 +1,5 @@
 import { hooks } from 'botframework-webchat-api';
-import React, { Fragment, memo, MutableRefObject, useCallback, useMemo } from 'react';
+import React, { Fragment, memo, MutableRefObject, useCallback, useEffect, useMemo } from 'react';
 import { useAnimatingToEnd, useAtEnd, useScrollToEnd, useSticky } from 'react-scroll-to-bottom';
 import { useRefFrom } from 'use-ref-from';
 
@@ -7,6 +7,8 @@ import useRenderingActivityKeys from '../../providers/RenderingActivities/useRen
 import useFocusByActivityKey from '../../providers/TranscriptFocus/useFocusByActivityKey';
 
 const { useActivityKeysByRead, useCreateScrollToEndButtonRenderer, useMarkActivityKeyAsRead, useStyleOptions } = hooks;
+
+const EMPTY_ARRAY = Object.freeze([]);
 
 const useScrollToEndRenderResult = (terminatorRef: MutableRefObject<HTMLDivElement>) => {
   const [renderingActivityKeys] = useRenderingActivityKeys();
@@ -46,18 +48,22 @@ const useScrollToEndRenderResult = (terminatorRef: MutableRefObject<HTMLDivEleme
 
   // To prevent flashy button, we are not waiting for another render loop to update the `[readActivityKeys, unreadActivityKeys]` state.
   // Instead, we are building the next one in this `useMemo` call.
-  const nextUnreadActivityKeys = useMemo(() => {
-    // This code need to be careful reviewed as it will cause another render. The code should be converging.
-    // After we call `markActivityKeyAsRead`, everything will be read and nothing will be unread.
-    // That means, in next render, `unreadActivityKeys` will be emptied and the `markActivityKeyAsRead` will not get called again.
-    if (sticky && unreadActivityKeys.length) {
-      markActivityKeyAsRead(unreadActivityKeys[unreadActivityKeys.length - 1]);
+  const [nextUnreadActivityKeys, activityKeyToMarkAsUnread] = useMemo<readonly [readonly string[], string | undefined]>(
+    () =>
+      Object.freeze(
+        sticky && unreadActivityKeys.length
+          ? [EMPTY_ARRAY, unreadActivityKeys[unreadActivityKeys.length - 1]]
+          : [unreadActivityKeys, undefined]
+      ),
+    [sticky, unreadActivityKeys]
+  );
 
-      return [];
-    }
-
-    return unreadActivityKeys;
-  }, [markActivityKeyAsRead, sticky, unreadActivityKeys]);
+  // This code need to be careful reviewed as it will cause another render. The code should be converging.
+  // After we call `markActivityKeyAsRead`, everything will be read and nothing will be unread.
+  // That means, in next render, `unreadActivityKeys` will be emptied and the `markActivityKeyAsRead` will not get called again.
+  useEffect(() => {
+    activityKeyToMarkAsUnread && markActivityKeyAsRead(activityKeyToMarkAsUnread);
+  }, [activityKeyToMarkAsUnread, markActivityKeyAsRead]);
 
   const nextUnreadActivityKeysRef = useRefFrom(nextUnreadActivityKeys);
 
@@ -99,6 +105,7 @@ const useScrollToEndRenderResult = (terminatorRef: MutableRefObject<HTMLDivEleme
 
 function ScrollToEndButton({ terminatorRef }: Readonly<{ terminatorRef: MutableRefObject<HTMLDivElement> }>) {
   const children = useScrollToEndRenderResult(terminatorRef);
+
   return <Fragment>{children}</Fragment>;
 }
 
