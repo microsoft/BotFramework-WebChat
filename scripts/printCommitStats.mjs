@@ -136,7 +136,7 @@ function toRatioString(
   const [prodRatio, testRatio] = toRatio(stats.get('production').numLineAdded, stats.get('test').numLineAdded);
 
   console.log(
-    `Test to code ratio = ${toRatioString(stats.get('production').numLineAdded, stats.get('test').numLineAdded)}`
+    `Test to code ratio = ${toRatioString(stats.get('test').numLineAdded, stats.get('production').numLineAdded)}`
   );
 
   console.log();
