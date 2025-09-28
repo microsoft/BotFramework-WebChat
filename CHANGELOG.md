@@ -139,6 +139,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
       - `component`: `botframework-webchat-component/component`, `botframework-webchat-component/hook`
 - (Experimental) Added support for importing via `<script type="module">`, by [@compulim](https://github.com/compulim) in PR [#5592](https://github.com/microsoft/BotFramework-WebChat/pull/5592)
    - Added support for `botframework-webchat-fluent-theme` package, by [@compulim](https://github.com/compulim) in PR [#5593](https://github.com/microsoft/BotFramework-WebChat/pull/5593)
+   - Bundling vendor chunks, by [@compulim](https://github.com/compulim) in PR [#5595](https://github.com/microsoft/BotFramework-WebChat/pull/5595)
 
 ### Changed
 

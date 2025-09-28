@@ -2,8 +2,6 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="/test-harness.js"></script>
-    <script crossorigin="anonymous" src="/test-page-object.js"></script>
   </head>
   <body>
     <main id="webchat"></main>
@@ -17,7 +15,11 @@
       }
     </script>
     <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
       import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+      import { version } from 'react';
 
       run(async function () {
         const {
@@ -40,6 +42,7 @@
         await host.snapshot('local');
 
         expect(typeof globalThis.React).toBe('undefined');
+        expect(version).toBe('18.3.1');
       });
     </script>
   </body>

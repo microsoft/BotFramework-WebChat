@@ -2,8 +2,6 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="/test-harness.js"></script>
-    <script crossorigin="anonymous" src="/test-page-object.js"></script>
   </head>
   <body>
     <main id="webchat"></main>
@@ -11,18 +9,22 @@
       {
         "imports": {
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
-          "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat.middleware.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat/middleware.js",
           "react": "/__dist__/packages/bundle/static/react.js",
           "react-dom": "/__dist__/packages/bundle/static/react-dom.js"
         }
       }
     </script>
     <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
       import { createDirectLine, createStoreWithOptions, hooks, renderWebChat } from 'botframework-webchat';
+      import { useStyleOptions } from 'botframework-webchat/hook';
       import { activityComponent, createActivityPolymiddleware } from 'botframework-webchat/middleware';
       import { createElement } from 'react';
 
-      const { useStyleOptions } = hooks;
       const {
         testHelpers: { createDirectLineEmulator }
       } = window;
