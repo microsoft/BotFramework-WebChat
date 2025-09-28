@@ -313,6 +313,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed [#5581](https://github.com/microsoft/BotFramework-WebChat/issues/5581). Activities should be displayed after upgrading via `npm install`, in PR [#5582](https://github.com/microsoft/BotFramework-WebChat/pull/5582), by [@compulim](https://github.com/compulim)
 - Fixed Composer props types not resolving correctly in React 16 in PR [#5580](https://github.com/microsoft/BotFramework-WebChat/pull/5580),
 by [@lexi-taylor](https://github.com/lexi-taylor)
+- Fixed [#5598](https://github.com/microsoft/BotFramework-WebChat/issues/5598). Console should not display warning related to "Cannot update a component while rendering a different component", in PR [#5597](https://github.com/microsoft/BotFramework-WebChat/pull/5597), by [@compulim](https://github.com/compulim)
 
 ### Removed
 
