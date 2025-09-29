@@ -20,7 +20,7 @@ import * as hooks from '../actual/hook/full';
 
 const deprecatedHooks = deprecateNamespace(
   hooks,
-  "`import { hooks } from 'botframework-webchat-component'` has been deprecated, use `import { %s } from 'botframework-webchat-component/hook'` instead."
+  "`import { hooks } from 'botframework-webchat'` has been deprecated, use `import { %s } from 'botframework-webchat/hook'` instead."
 );
 
 export { deprecatedHooks as hooks };
@@ -29,7 +29,7 @@ import * as Components from '../actual/component/full';
 
 const deprecatedComponents = deprecateNamespace(
   Components,
-  "`import { Components } from 'botframework-webchat-component'` has been deprecated, use `import { %s } from 'botframework-webchat-component/component'` instead."
+  "`import { Components } from 'botframework-webchat'` has been deprecated, use `import { %s } from 'botframework-webchat/component'` instead."
 );
 
 export { deprecatedComponents as Components };

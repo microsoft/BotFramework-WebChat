@@ -35,7 +35,7 @@
 
         expect(console.warn).toHaveBeenCalledTimes(1);
         expect(console.warn).toHaveBeenLastCalledWith(
-          "botframework-webchat: `import { hooks } from 'botframework-webchat-component'` has been deprecated, use `import { %s } from 'botframework-webchat-component/hook'` instead.",
+          "botframework-webchat: `import { hooks } from 'botframework-webchat'` has been deprecated, use `import { %s } from 'botframework-webchat/hook'` instead.",
           'useStyleOptions'
         );
       });
