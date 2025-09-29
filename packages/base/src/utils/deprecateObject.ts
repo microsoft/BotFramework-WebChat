@@ -1,5 +1,20 @@
 import warnOnce from './warnOnce';
 
+const PROPERTY_DENYLIST = new Set<string | symbol>([
+  '__defineGetter__',
+  '__defineSetter__',
+  '__lookupGetter__',
+  '__lookupSetter__',
+  '__proto__',
+  'constructor',
+  'hasOwnProperty',
+  'isPrototypeOf',
+  'propertyIsEnumerable',
+  'prototype',
+  'toString',
+  'valueOf'
+]);
+
 export default function deprecateNamespace<T extends { [key: string | symbol]: any }>(
   namespace: T,
   message: string
@@ -9,9 +24,10 @@ export default function deprecateNamespace<T extends { [key: string | symbol]: a
   return new Proxy<T>(namespace, {
     get(target, p) {
       if (
-        typeof p === 'string'
+        !PROPERTY_DENYLIST.has(p) &&
+        (typeof p === 'string'
           ? Object.getOwnPropertyNames(target).includes(p)
-          : Object.getOwnPropertySymbols(target).includes(p)
+          : Object.getOwnPropertySymbols(target).includes(p))
       ) {
         warnDeprecation(p);
 
