@@ -15,10 +15,7 @@ const PROPERTY_DENYLIST = new Set<string | symbol>([
   'valueOf'
 ]);
 
-export default function deprecateNamespace<T extends { [key: string | symbol]: any }>(
-  namespace: T,
-  message: string
-): T {
+export default function deprecateObject<T extends { [key: string | symbol]: any }>(namespace: T, message: string): T {
   const warnDeprecation = warnOnce(message);
 
   return new Proxy<T>(namespace, {
