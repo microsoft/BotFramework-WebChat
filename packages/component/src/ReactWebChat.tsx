@@ -39,9 +39,7 @@ const {
 
 ReactWebChat.propTypes = {
   className: PropTypes.string,
-  // Ignoring deficiencies with TypeScript/PropTypes inference.
-  // @ts-ignore
-  role: PropTypes.oneOf(ARIA_LANDMARK_ROLES),
+  role: PropTypes.string,
   ...composerPropTypesWithoutChildren
 };
 
