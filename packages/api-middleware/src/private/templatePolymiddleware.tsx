@@ -1,4 +1,4 @@
-import { warnOnce } from 'botframework-webchat-core';
+import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 import { type Enhancer } from 'handler-chain';
 import React, { memo, type ReactNode } from 'react';
 import {

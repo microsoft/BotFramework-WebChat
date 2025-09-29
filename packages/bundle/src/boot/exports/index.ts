@@ -14,7 +14,23 @@ export {
 // #endregion
 
 // #region Overrides for backward compatibility
-// Web devs should move to named exports instead.
-export * as Components from '../actual/component/full';
-export * as hooks from '../actual/hook/full';
+import { deprecateNamespace } from '@msinternal/botframework-webchat-base/utils';
+
+import * as hooks from '../actual/hook/full';
+
+const deprecatedHooks = deprecateNamespace(
+  hooks,
+  "`import { hooks } from 'botframework-webchat-component'` has been deprecated, use `import { %s } from 'botframework-webchat-component/hook'` instead."
+);
+
+export { deprecatedHooks as hooks };
+
+import * as Components from '../actual/component/full';
+
+const deprecatedComponents = deprecateNamespace(
+  Components,
+  "`import { Components } from 'botframework-webchat-component'` has been deprecated, use `import { %s } from 'botframework-webchat-component/component'` instead."
+);
+
+export { deprecatedComponents as Components };
 // #endregion
