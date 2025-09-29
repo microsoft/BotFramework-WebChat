@@ -30,14 +30,21 @@
       run(async function () {
         expect(console.warn).toHaveBeenCalledTimes(0);
 
-        // WHEN: Touching anything about "Components".
+        // WHEN: Touching "Components.BasicWebChat".
         expect(Components.BasicWebChat).not.toBeUndefined();
 
+        // THEN: Should show deprecation note.
         expect(console.warn).toHaveBeenCalledTimes(1);
         expect(console.warn).toHaveBeenLastCalledWith(
           "botframework-webchat: `import { Components } from 'botframework-webchat'` has been deprecated, use `import { %s } from 'botframework-webchat/component'` instead.",
           'BasicWebChat'
         );
+
+        // WHEN: Touching "Components.BasicTranscript".
+        expect(Components.BasicWebChat).not.toBeUndefined();
+
+        // THEN: Should not show deprecation note again.
+        expect(console.warn).toHaveBeenCalledTimes(1);
       });
     </script>
   </body>

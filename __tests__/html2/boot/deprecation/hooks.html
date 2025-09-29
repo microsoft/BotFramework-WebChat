@@ -30,14 +30,21 @@
       run(async function () {
         expect(console.warn).toHaveBeenCalledTimes(0);
 
-        // WHEN: Touching anything about "hooks".
+        // WHEN: Touching "hooks.useStyleOptions".
         expect(hooks.useStyleOptions).not.toBeUndefined();
 
+        // THEN: Should show deprecation note.
         expect(console.warn).toHaveBeenCalledTimes(1);
         expect(console.warn).toHaveBeenLastCalledWith(
           "botframework-webchat: `import { hooks } from 'botframework-webchat'` has been deprecated, use `import { %s } from 'botframework-webchat/hook'` instead.",
           'useStyleOptions'
         );
+
+        // WHEN: Touching "hooks.useStyleSet".
+        expect(hooks.useStyleSet).not.toBeUndefined();
+
+        // THEN: Should not show deprecation note again.
+        expect(console.warn).toHaveBeenCalledTimes(1);
       });
     </script>
   </body>
