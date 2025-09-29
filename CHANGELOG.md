@@ -142,6 +142,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Bundling vendor chunks, by [@compulim](https://github.com/compulim) in PR [#5595](https://github.com/microsoft/BotFramework-WebChat/pull/5595)
    - Added deprecation notes for legacy imports, by [@compulim](https://github.com/compulim) in PR [#5600](https://github.com/microsoft/BotFramework-WebChat/pull/5600)
       - `import { hooks } from 'botframework-webchat'` should be replaced by `import * as hooks from 'botframework-webchat/hook'`
+- Relaxed `role` prop to allow any string instead of ARIA landmark roles, in PR [#5561](https://github.com/microsoft/BotFramework-WebChat/pull/5561), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
