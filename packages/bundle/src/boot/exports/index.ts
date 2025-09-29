@@ -14,11 +14,11 @@ export {
 // #endregion
 
 // #region Overrides for backward compatibility
-import { deprecateNamespace } from '@msinternal/botframework-webchat-base/utils';
+import { deprecateObject } from '@msinternal/botframework-webchat-base/utils';
 
 import * as hooks from '../actual/hook/full';
 
-const deprecatedHooks = deprecateNamespace(
+const deprecatedHooks = deprecateObject(
   hooks,
   "`import { hooks } from 'botframework-webchat'` has been deprecated, use `import { %s } from 'botframework-webchat/hook'` instead."
 );
@@ -27,7 +27,7 @@ export { deprecatedHooks as hooks };
 
 import * as Components from '../actual/component/full';
 
-const deprecatedComponents = deprecateNamespace(
+const deprecatedComponents = deprecateObject(
   Components,
   "`import { Components } from 'botframework-webchat'` has been deprecated, use `import { %s } from 'botframework-webchat/component'` instead."
 );
