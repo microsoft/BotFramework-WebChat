@@ -5,7 +5,7 @@ import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { SendBoxMiddlewareProxy, hooks } from 'botframework-webchat-api';
 import classNames from 'classnames';
 import React, { memo } from 'react';
-import { fallback, literal, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import BasicConnectivityStatus from './BasicConnectivityStatus';
 import BasicToaster from './BasicToaster';
@@ -42,14 +42,7 @@ const TRANSCRIPT_STYLE = {
 const basicWebChatPropsSchema = pipe(
   object({
     className: optional(string()),
-    role: fallback(
-      optional(
-        // Subset of landmark roles: https://w3.org/TR/wai-aria/#landmark_roles
-        union([literal('complementary'), literal('contentinfo'), literal('form'), literal('main'), literal('region')])
-      ),
-      // Fallback to "complementary" if specified is not a valid landmark role.
-      'complementary'
-    )
+    role: optional(string())
   }),
   readonly()
 );
