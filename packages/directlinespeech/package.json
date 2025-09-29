@@ -39,7 +39,7 @@
     "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
     "start:babel": "npm run build:babel -- --skip-initial-build --watch",
     "start:serve": "serve",
-    "start:tsup": "npm run build:tsup -- --watch",
+    "start:tsup": "npm run build:tsup -- --watch 200",
     "start:webpack": "npm run build:webpack:development -- --watch",
     "test": "jest --watch"
   },
