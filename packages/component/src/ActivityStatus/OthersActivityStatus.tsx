@@ -1,10 +1,10 @@
+import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 import { hooks } from 'botframework-webchat-api';
 import {
   getOrgSchemaMessage,
   OrgSchemaProject,
   parseAction,
   parseClaim,
-  warnOnce,
   type WebChatActivity
 } from 'botframework-webchat-core';
 import classNames from 'classnames';

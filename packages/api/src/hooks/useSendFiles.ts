@@ -1,6 +1,6 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1024] }] */
 
-import { warnOnce } from 'botframework-webchat-core';
+import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 import { useCallback } from 'react';
 
 import useWebChatAPIContext from './internal/useWebChatAPIContext';

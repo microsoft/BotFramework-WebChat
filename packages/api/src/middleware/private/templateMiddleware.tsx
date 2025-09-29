@@ -1,4 +1,4 @@
-import { warnOnce } from 'botframework-webchat-core';
+import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 import React, { memo, type ReactNode } from 'react';
 import { createChainOfResponsibility, type ComponentMiddleware } from 'react-chain-of-responsibility';
 import { array, function_, safeParse, type InferOutput } from 'valibot';

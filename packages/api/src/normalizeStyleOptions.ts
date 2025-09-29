@@ -1,4 +1,4 @@
-import { warnOnce } from 'botframework-webchat-core';
+import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 
 import defaultStyleOptions from './defaultStyleOptions';
 import StyleOptions, { StrictStyleOptions } from './StyleOptions';
