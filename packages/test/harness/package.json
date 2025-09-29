@@ -25,8 +25,8 @@
     "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
-    "start:esbuild:esm": "npm run build:esbuild:esm -- --watch",
-    "start:esbuild:iife": "npm run build:esbuild:iife -- --watch",
+    "start:esbuild:esm": "npm run build:esbuild:esm -- --watch 200",
+    "start:esbuild:iife": "npm run build:esbuild:iife -- --watch 200",
     "test": "node node_modules/.bin/jest --maxWorkers=4"
   },
   "localDependencies": {},

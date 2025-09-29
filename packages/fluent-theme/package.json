@@ -43,7 +43,7 @@
     "build": "npm run build:static && npm run build:tsup && npm run build:validate",
     "build:static": "node ./esbuild.static.mjs",
     "build:tsup": "tsup",
-    "build:validate": "grep -L '.webchat-fluent .w' dist/*.css 2>/dev/null || { echo \"Error: dist/*.css is not compiled by Lightning CSS\" >&2; exit 1; }",
+    "build:validate": "grep -q -P '\\.webchat-fluent \\.w([a-zA-Z-]){6}_' dist/*.css 2>/dev/null || { echo \"Error: dist/*.css is not compiled by Lightning CSS\" >&2; exit 1; }",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -55,7 +55,7 @@
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "cross-env NODE_OPTIONS=--no-deprecation concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
     "start:static": "npm run build:static -- --watch",
-    "start:tsup": "npm run build:tsup -- --watch"
+    "start:tsup": "npm run build:tsup -- --watch 200"
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-tsconfig": "development",

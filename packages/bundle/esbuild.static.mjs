@@ -217,6 +217,6 @@ const IGNORED_OWN_PACKAGES = [
       }
     }
 
-    await Promise.all(ourConfigs.map(async config => (await context(config)).watch()));
+    await Promise.all(ourConfigs.map(async config => (await context(config)).watch({ delay: 200 })));
   }
 })();

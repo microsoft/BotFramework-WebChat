@@ -41,7 +41,7 @@ import * as esbuild from 'esbuild';
   if (process.argv[2] === '--watch') {
     const context = await esbuild.context(config);
 
-    await context.watch();
+    await context.watch({ delay: 200 });
   } else {
     await esbuild.build(config);
   }

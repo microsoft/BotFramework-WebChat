@@ -129,6 +129,7 @@ function applyConfig(
           ]
         : [cssPlugin],
     format: 'esm',
+    ignoreWatch: './dist/',
     loader: { '.js': 'jsx' },
     metafile: true,
     minify: env === 'production' || env === 'test',
