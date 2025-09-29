@@ -85,7 +85,7 @@ const config = {
   if (watch === '--watch') {
     config.plugins.push(createWatcherPlugin());
 
-    await (await context(config)).watch();
+    await (await context(config)).watch({ delay: 200 });
   } else {
     await build(config);
   }
