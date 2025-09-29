@@ -1,10 +1,11 @@
+import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 import {
   type AttachmentForScreenReaderMiddleware,
   type AttachmentMiddleware,
   type StyleOptions
 } from 'botframework-webchat-api';
 import { type HTMLContentTransformMiddleware } from 'botframework-webchat-component';
-import { singleToArray, warnOnce, type OneOrMany } from 'botframework-webchat-core';
+import { singleToArray, type OneOrMany } from 'botframework-webchat-core';
 import React, { memo, type ReactNode } from 'react';
 
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
@@ -76,4 +77,4 @@ function AddFullBundle({
 
 export default memo(AddFullBundle);
 
-export type { AddFullBundleProps, AddFullBundleChildren };
+export type { AddFullBundleChildren, AddFullBundleProps };
