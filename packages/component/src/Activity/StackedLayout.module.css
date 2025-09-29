@@ -116,7 +116,7 @@
     }
 
     + :global(.webchat__text-content) {
-      transform: translateY(0.025em);
+      transform: translateY(0.15em);
     }
   }
 
