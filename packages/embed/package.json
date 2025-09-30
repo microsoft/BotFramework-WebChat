@@ -41,7 +41,7 @@
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "concurrently": "^8.2.2",
-    "express": "^4.19.2",
+    "express": "^5.1.0",
     "html-webpack-plugin": "^5.6.0",
     "http-proxy-middleware": "^3.0.0",
     "jest": "^29.7.0",
@@ -52,7 +52,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
-    "@babel/runtime": "7.17.2",
+    "@babel/runtime": "7.26.10",
     "core-js": "3.37.0",
     "url-search-params-polyfill": "8.2.5",
     "whatwg-fetch": "3.6.20"

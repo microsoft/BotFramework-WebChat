@@ -99,7 +99,7 @@
     "typescript": "~5.8.3"
   },
   "dependencies": {
-    "@babel/runtime": "7.28.2",
+    "@babel/runtime": "7.28.4",
     "@redux-devtools/extension": "3.3.0",
     "jwt-decode": "4.0.0",
     "math-random": "2.0.1",
