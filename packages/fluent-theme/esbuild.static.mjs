@@ -10,6 +10,7 @@ import { build, context } from 'esbuild';
 import { mkdir, writeFile } from 'fs/promises';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
+import { cssPlugin } from '../../esbuildPlugins.mjs';
 
 // TODO: [P0] We cannot import TypeScript file here.
 const fluentStyleContentPlaceholder = '@--FLUENT-STYLES-CONTENT--@';
@@ -53,6 +54,7 @@ const config = {
   outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
   platform: 'browser',
   plugins: [
+    cssPlugin,
     injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder }),
     {
       // `write` is set to `false`, we need to emit files ourselves.
@@ -74,6 +76,7 @@ const config = {
   ],
   sourcemap: true,
   splitting: true,
+  target: ['chrome100', 'firefox100', 'safari15'],
   // Set write to false for the `injectCSSPlugin` to work.
   // We will emit the output in another plugin.
   write: false
