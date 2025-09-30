@@ -9,6 +9,7 @@ import { build, context } from 'esbuild';
 import { resolve } from 'path';
 import { readPackage } from 'read-pkg';
 import { fileURLToPath } from 'url';
+import { cssPlugin } from '../../esbuildPlugins.mjs';
 
 // eslint-disable-next-line no-unused-vars
 const isomorphicReactPlugin = {
@@ -73,8 +74,10 @@ const BASE_CONFIG = {
   minify: true,
   outdir: resolve(fileURLToPath(import.meta.url), `../static/`),
   platform: 'browser',
+  plugins: [cssPlugin],
   sourcemap: true,
-  splitting: true
+  splitting: true,
+  target: ['chrome100', 'firefox100', 'safari15']
 };
 
 function* getKeysRecursive(exports) {
