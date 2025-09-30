@@ -98,6 +98,7 @@ export {
 };
 
 export type { StyleOptions, StrictStyleOptions };
+export type { ComposerRef } from './FullComposer';
 
 window['WebChat'] = {
   ...window['WebChat'],

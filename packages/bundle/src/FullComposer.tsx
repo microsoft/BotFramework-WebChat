@@ -1,28 +1,27 @@
 import { Components } from 'botframework-webchat-component';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { forwardRef } from 'react';
 
 import AddFullBundle from './AddFullBundle';
 
 import type { AddFullBundleProps } from './AddFullBundle';
-import type { ComposerProps } from 'botframework-webchat-component';
-import type { FC } from 'react';
+import type { ComposerProps, ComposerRef } from 'botframework-webchat-component';
 
 const { Composer } = Components;
 
 type FullComposerProps = ComposerProps & AddFullBundleProps;
 
-const FullComposer: FC<FullComposerProps> = props => (
+const FullComposer = forwardRef<ComposerRef, FullComposerProps>((props, ref) => (
   <AddFullBundle {...props}>
     {extraProps => (
-      <Composer {...props} {...extraProps}>
-        {/* We need to spread, thus, we cannot we destructuring assignment. */}
-        {/* eslint-disable-next-line react/destructuring-assignment */}
+      <Composer ref={ref} {...props} {...extraProps}>
         {props.children}
       </Composer>
     )}
   </AddFullBundle>
-);
+));
+
+FullComposer.displayName = 'FullComposer';
 
 FullComposer.defaultProps = {
   ...Composer.defaultProps,
@@ -40,4 +39,4 @@ FullComposer.propTypes = {
 
 export default FullComposer;
 
-export type { FullComposerProps };
+export type { FullComposerProps, ComposerRef };

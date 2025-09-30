@@ -4,7 +4,7 @@ import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { memo, useCallback, useMemo, useRef, useState } from 'react';
+import React, { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import { Composer as SayComposer } from 'react-say';
 import createStyleSet from './Styles/createStyleSet';
 
@@ -16,6 +16,7 @@ import {
   SpeechSynthesisUtterance as BypassSpeechSynthesisUtterance
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
 import UITracker from './hooks/internal/UITracker';
+import useFocus from './hooks/useFocus';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 import useStyleSet from './hooks/useStyleSet';
 import createDefaultActivityMiddleware from './Middleware/Activity/createCoreMiddleware';
@@ -39,6 +40,10 @@ import type { FC, ReactNode } from 'react';
 import type { ContextOf } from './types/ContextOf';
 import { type FocusSendBoxInit } from './types/internal/FocusSendBoxInit';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
+
+export type ComposerRef = {
+  focusSendBoxInput: () => Promise<void>;
+};
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions } = hooks;
 
@@ -282,7 +287,7 @@ ComposerCore.propTypes = {
 
 type ComposerProps = APIComposerProps & ComposerCoreProps;
 
-const Composer: FC<ComposerProps> = ({
+const ComposerWithoutRef: FC<ComposerProps> = ({
   activityMiddleware,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
@@ -385,6 +390,22 @@ const Composer: FC<ComposerProps> = ({
     </APIComposer>
   );
 };
+
+const Composer = forwardRef<ComposerRef, ComposerProps>((props, ref) => {
+  const focus = useFocus();
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      focusSendBoxInput: () => focus('sendBox')
+    }),
+    [focus]
+  );
+
+  return <ComposerWithoutRef {...props} />;
+});
+
+Composer.displayName = 'Composer';
 
 Composer.defaultProps = {
   ...APIComposer.defaultProps,
