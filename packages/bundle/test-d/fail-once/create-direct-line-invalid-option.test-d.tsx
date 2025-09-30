@@ -2,7 +2,7 @@ import '../setup';
 
 import { expectNotAssignable } from 'tsd';
 
-import { createDirectLine } from '../../src/boot/exports/full';
+import { createDirectLine } from '../../src/boot/exports/index';
 
 type CreateDirectLineInit = Parameters<typeof createDirectLine>[0];
 

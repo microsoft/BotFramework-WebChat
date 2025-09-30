@@ -15,14 +15,14 @@
         "default": "./dist/botframework-webchat-component.js"
       }
     },
-    "./internal": {
+    "./component": {
       "import": {
-        "types": "./dist/botframework-webchat-component.internal.d.mts",
-        "default": "./dist/botframework-webchat-component.internal.mjs"
+        "types": "./dist/botframework-webchat-component.component.d.mts",
+        "default": "./dist/botframework-webchat-component.component.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-component.internal.d.ts",
-        "default": "./dist/botframework-webchat-component.internal.js"
+        "types": "./dist/botframework-webchat-component.component.d.ts",
+        "default": "./dist/botframework-webchat-component.component.js"
       }
     },
     "./decorator": {
@@ -33,6 +33,26 @@
       "require": {
         "types": "./dist/botframework-webchat-component.decorator.d.ts",
         "default": "./dist/botframework-webchat-component.decorator.js"
+      }
+    },
+    "./hook": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.hook.d.mts",
+        "default": "./dist/botframework-webchat-component.hook.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-component.hook.d.ts",
+        "default": "./dist/botframework-webchat-component.hook.js"
+      }
+    },
+    "./internal": {
+      "import": {
+        "types": "./dist/botframework-webchat-component.internal.d.mts",
+        "default": "./dist/botframework-webchat-component.internal.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-component.internal.d.ts",
+        "default": "./dist/botframework-webchat-component.internal.js"
       }
     }
   },
@@ -49,13 +69,15 @@
     "url": "https://github.com/microsoft/BotFramework-WebChat/issues"
   },
   "files": [
-    "./dist/**/*",
     "./*.js",
+    "./dist/**/*",
     "./src/**/*"
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "scripts": {
-    "build": "tsup",
+    "build": "npm run build:tsup && npm run build:validate",
+    "build:tsup": "tsup",
+    "build:validate": "grep -q -P '\\.webchat \\.w([a-zA-Z-]){6}_' dist/*.css 2>/dev/null || { echo \"Error: dist/*.css is not compiled by Lightning CSS\" >&2; exit 1; }",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -65,7 +87,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "npm run build -- --watch"
+    "start": "npm run build:tsup -- --watch 200"
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
@@ -137,7 +159,7 @@
     "merge-refs": "2.0.0",
     "prop-types": "15.8.1",
     "punycode": "2.3.1",
-    "react-chain-of-responsibility": "^0.4.0-main.2a72139",
+    "react-chain-of-responsibility": "0.4.0-main.c2f17da",
     "react-dictate-button": "4.0.0",
     "react-film": "4.0.0",
     "react-redux": "7.2.9",

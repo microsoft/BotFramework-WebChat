@@ -80,6 +80,22 @@
       "destination": "packages/bundle/dist/webchat-minimal.js.map"
     },
     {
+      "source": "/__dist__/packages/bundle/static/:filename",
+      "destination": "packages/bundle/static/:filename"
+    },
+    {
+      "source": "/__dist__/packages/bundle/static/:dirname/:filename",
+      "destination": "packages/bundle/static/:dirname/:filename"
+    },
+    {
+      "source": "/__dist__/packages/fluent-theme/static/:filename",
+      "destination": "packages/fluent-theme/static/:filename"
+    },
+    {
+      "source": "/__dist__/packages/fluent-theme/static/:dirname/:filename",
+      "destination": "packages/fluent-theme/static/:dirname/:filename"
+    },
+    {
       "source": "/test-harness.js",
       "destination": "packages/test/harness/dist/test-harness.js"
     },
@@ -88,12 +104,28 @@
       "destination": "packages/test/harness/dist/test-harness.js.map"
     },
     {
+      "source": "/test-harness.mjs",
+      "destination": "packages/test/harness/dist/test-harness.mjs"
+    },
+    {
+      "source": "/test-harness.mjs.map",
+      "destination": "packages/test/harness/dist/test-harness.mjs.map"
+    },
+    {
       "source": "/test-page-object.js",
       "destination": "packages/test/page-object/dist/test-page-object.js"
     },
     {
       "source": "/test-page-object.js.map",
       "destination": "packages/test/page-object/dist/test-page-object.js.map"
+    },
+    {
+      "source": "/test-page-object.mjs",
+      "destination": "packages/test/page-object/dist/test-page-object.mjs"
+    },
+    {
+      "source": "/test-page-object.mjs.map",
+      "destination": "packages/test/page-object/dist/test-page-object.mjs.map"
     },
     {
       "source": "/:page.css",

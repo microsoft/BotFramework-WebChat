@@ -42,7 +42,6 @@ import getOrgSchemaMessage from './utils/getOrgSchemaMessage';
 import isForbiddenPropertyName from './utils/isForbiddenPropertyName';
 import onErrorResumeNext from './utils/onErrorResumeNext';
 import singleToArray from './utils/singleToArray';
-import warnOnce from './utils/warnOnce';
 
 export {
   CLEAR_SUGGESTED_ACTIONS,
@@ -126,7 +125,6 @@ export {
   stopDictate,
   stopSpeakingActivity,
   submitSendBox,
-  warnOnce,
   withResolvers
 };
 

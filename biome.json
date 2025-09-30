@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.1.3/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -7,15 +7,13 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["**/dist"]
+    "includes": ["**", "!**/dist"]
   },
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 2
   },
-  "organizeImports": {
-    "enabled": false
-  },
+  "assist": { "actions": { "source": { "organizeImports": "off" } } },
   "javascript": {
     "formatter": {
       "enabled": false
@@ -43,6 +41,13 @@
     },
     "linter": {
       "enabled": true
+    }
+  },
+  "linter": {
+    "rules": {
+      "style": {
+        "noDescendingSpecificity": "off"
+      }
     }
   }
 }

@@ -104,15 +104,17 @@
     var(--webchat-decorator-borderFlair-animated-color2),
     var(--webchat-decorator-borderFlair-animated-color3)
   );
-  --webchat-decorator-borderFlair-borderMask: linear-gradient(hsl(0 0% 100% / 0), hsl(0 0% 100% / 0)) padding-box,
-    linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%)) border-box;
+  --webchat-decorator-borderFlair-borderMask:
+    linear-gradient(hsl(0 0% 100% / 0), hsl(0 0% 100% / 0)) padding-box, linear-gradient(hsl(0 0% 100%), hsl(0 0% 100%))
+    border-box;
 
   animation:
     borderAnimation-angle 2000ms linear 0ms forwards,
     borderAnimation-color1 1200ms linear 0ms forwards,
     borderAnimation-color2 1200ms linear 200ms forwards,
     borderAnimation-color3 1200ms linear 400ms forwards;
-  background: var(--webchat-decorator-borderFlair-borderGradient) center center /
+  background:
+    var(--webchat-decorator-borderFlair-borderGradient) center center /
     var(--webchat-decorator-borderFlair-backgroundSize) var(--webchat-decorator-borderFlair-backgroundSize);
   border: var(--webchat-decorator-borderFlair-borderSize) solid transparent;
   border-radius: inherit;

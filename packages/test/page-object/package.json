@@ -9,9 +9,10 @@
     "node": ">= 14.0.0"
   },
   "scripts": {
-    "build": "npm run build:babel && npm run build:esbuild",
-    "build:babel": "babel --out-dir lib/ src/",
-    "build:esbuild": "esbuild lib/index.js --bundle --define:define=undefined --outfile=dist/test-page-object.js --sourcemap --target=chrome100",
+    "build": "npm run build:esbuild:esm && npm run build:esbuild:iife",
+    "build:esbuild:base": "esbuild test-page-object=./src/index.js --bundle --define:define=undefined --loader:.js=jsx --minify --outdir=dist --sourcemap --target=chrome100",
+    "build:esbuild:esm": "npm run build:esbuild:base -- --format=esm --out-extension:.js=.mjs",
+    "build:esbuild:iife": "npm run build:esbuild:base -- --format=iife",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -21,8 +22,8 @@
     "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
-    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
-    "start:esbuild": "npm run build:esbuild -- --watch"
+    "start:esbuild:esm": "npm run build:esbuild:esm -- --watch 200",
+    "start:esbuild:iife": "npm run build:esbuild:iife -- --watch 200"
   },
   "localDependencies": {},
   "pinDependencies": {},
@@ -35,15 +36,11 @@
     "event-iterator": "2.0.0",
     "event-target-shim": "6.0.2",
     "math-random": "2.0.1",
-    "microsoft-cognitiveservices-speech-sdk": "1.45.0",
+    "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "prop-types": "15.8.1",
     "simple-update-in": "2.2.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.28.0",
-    "@babel/core": "^7.28.0",
-    "@babel/preset-env": "^7.28.0",
-    "@babel/preset-react": "^7.27.1",
     "concurrently": "^9.2.0",
     "esbuild": "^0.25.8"
   }

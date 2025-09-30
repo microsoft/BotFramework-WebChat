@@ -1,4 +1,4 @@
-import { hooks } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat';
 import cx from 'classnames';
 import React, {
   memo,
@@ -6,15 +6,15 @@ import React, {
   useEffect,
   useRef,
   useState,
-  type DragEvent as ReactDragEvent,
-  type DragEventHandler
+  type DragEventHandler,
+  type DragEvent as ReactDragEvent
 } from 'react';
 import { useRefFrom } from 'use-ref-from';
 
-import { FluentIcon } from '../icon';
-import testIds from '../../testIds';
-import styles from './DropZone.module.css';
 import { useStyles } from '../../styles';
+import testIds from '../../testIds';
+import { FluentIcon } from '../icon';
+import styles from './DropZone.module.css';
 
 const { useLocalizer } = hooks;
 

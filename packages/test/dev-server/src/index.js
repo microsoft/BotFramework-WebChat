@@ -100,6 +100,16 @@ const resolveFromRepositoryRoot = resolveFromProjectRoot.bind(undefined, '../../
     )
   );
 
+  app.use(
+    '/__dist__/packages/bundle/static/',
+    express.static(resolve(fileURLToPath(import.meta.url), '../../../bundle/static'))
+  );
+
+  app.use(
+    '/__dist__/packages/fluent-theme/static/',
+    express.static(resolve(fileURLToPath(import.meta.url), '../../../fluent-theme/static'))
+  );
+
   app.use(/^\/__dist__\/webchat.*$/u, express.static(resolve(fileURLToPath(import.meta.url), '../../../bundle/dist')));
 
   // Other requests will be served by `serve-handler` based on `/serve-test.json`.

@@ -98,7 +98,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Added support of [contentless activity in livestream](https://github.com/microsoft/BotFramework-WebChat/blob/main/docs/LIVESTREAMING.md#scenario-3-interim-activities-with-no-content), in PR [#5430](https://github.com/microsoft/BotFramework-WebChat/pull/5430), by [@compulim](https://github.com/compulim)
 - Added sliding dots typing indicator in Fluent theme, in PR [#5447](https://github.com/microsoft/BotFramework-WebChat/pull/5447) and PR [#5448](https://github.com/microsoft/BotFramework-WebChat/pull/5448), by [@compulim](https://github.com/compulim)
 - (Experimental) Add an ability to pass `completion` prop into Fluent send box and expose the component, in PR [#5466](https://github.com/microsoft/BotFramework-WebChat/pull/5466), by [@OEvgeny](https://github.com/OEvgeny)
-- Added feedback form for like/dislike button when `feedbackActionsPlacement` is `"activity-actions"`, in PR [#5460](https://github.com/microsoft/BotFramework-WebChat/pull/5460), PR [#5469](https://github.com/microsoft/BotFramework-WebChat/pull/5469), PR [5470](https://github.com/microsoft/BotFramework-WebChat/pull/5470) and PR [#5501](https://github.com/microsoft/BotFramework-WebChat/pull/5501) by [@lexi-taylor](https://github.com/lexi-taylor) and [@OEvgeny](https://github.com/OEvgeny)
+- Added feedback form for like/dislike button when `feedbackActionsPlacement` is `"activity-actions"`, in PR [#5460](https://github.com/microsoft/BotFramework-WebChat/pull/5460), PR [#5469](https://github.com/microsoft/BotFramework-WebChat/pull/5469), PR [5470](https://github.com/microsoft/BotFramework-WebChat/pull/5470), PR [#5501](https://github.com/microsoft/BotFramework-WebChat/pull/5501) by [@lexi-taylor](https://github.com/lexi-taylor), and [@OEvgeny](https://github.com/OEvgeny)
    - <kbd>ESCAPE</kbd> key should reset the feedback form, in PR [#5480](https://github.com/microsoft/BotFramework-WebChat/pull/5480), by [@compulim](https://github.com/compulim), in PR [#5493](https://github.com/microsoft/BotFramework-WebChat/pull/5493) by [@lexi-taylor](https://github.com/lexi-taylor)
 - Added multi-dimensional grouping, `styleOptions.groupActivitiesBy`, and `useGroupActivitiesByName` hook, in PR [#5471](https://github.com/microsoft/BotFramework-WebChat/pull/5471), by [@compulim](https://github.com/compulim)
    - Existing behavior will be kept and activities will be grouped by `sender` followed by `status`
@@ -112,7 +112,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Deprecated `hideUploadButton` in favor of `disableFileUpload`.
    - Updated `BasicSendBoxToolbar` to rely solely on `disableFileUpload`.
 - Added support for livestreaming via `entities[type="streaminfo"]` in PR [#5517](https://github.com/microsoft/BotFramework-WebChat/pull/5517) by [@kylerohn](https://github.com/kylerohn) and [@compulim](https://github.com/compulim)
-- Added `polymiddleware`, a new [universal middleware for every UIs](./docs/MIDDLEWARE.md), by [@compulim](https://github.com/compulim) in PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
+- Added `polymiddleware`, a new [universal middleware for every UIs](./docs/MIDDLEWARE.md), by [@compulim](https://github.com/compulim) in PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515) and [#5566](https://github.com/microsoft/BotFramework-WebChat/pull/5566)
    - Added `polymiddleware` to `<ThemeProvider>`
    - Currently supports activity middleware and the new error box middleware
 - New internal packages, by [@compulim](https://github.com/compulim) in PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
@@ -121,7 +121,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - `@msinternal/botframework-webchat-react-hooks` for helpers for React hooks
 - Added link sanitization and ESLint rules, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim)
 - Added blob URL sanitization and ESLint rules, in PR [#5568](https://github.com/microsoft/BotFramework-WebChat/pull/5568), by [@compulim](https://github.com/compulim)
-- Added visual message grouping following the `isPartOf` property of the `Message` entity, in PR [#5553](https://github.com/microsoft/BotFramework-WebChat/pull/5553), by [@OEvgeny](https://github.com/OEvgeny)
+- Added visual message grouping following the `isPartOf` property of the `Message` entity, in PR [#5553](https://github.com/microsoft/BotFramework-WebChat/pull/5553), in PR [#5585](https://github.com/microsoft/BotFramework-WebChat/pull/5585), by [@OEvgeny](https://github.com/OEvgeny)
    - The mode is suitable for providing chain-of-thought reasoning
    - Added visual indication of `creativeWorkStatus` property in `Message` entity:
       - `undefined` - no indicator is shown
@@ -130,6 +130,20 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Added a `position` property support for the `Message` entity
       - The `position` property takes precedence over existing sequence ID
 - Unified build info and injection of `<meta>` tag, in PR [#5571](https://github.com/microsoft/BotFramework-WebChat/pull/5571), by [@compulim](https://github.com/compulim)
+- Added documentation for `isPartOf` property, in PR [#5573](https://github.com/microsoft/BotFramework-WebChat/pull/5573), by [@compulim](https://github.com/compulim)
+- `fluent-theme`: Changed dependencies to import solely from the "bundle" package, in PR [#5584](https://github.com/microsoft/BotFramework-WebChat/pull/5584), by [@compulim](https://github.com/compulim)
+- Improved bundling, in PR [#5588](https://github.com/microsoft/BotFramework-WebChat/pull/5588), by [@compulim](https://github.com/compulim)
+   - New named exports
+      - `api`: `botframework-webchat-api/hook`
+      - `bundle`: `botframework-webchat/component`, `botframework-webchat/decorator` (internal-use), `botframework-webchat/hook`
+      - `component`: `botframework-webchat-component/component`, `botframework-webchat-component/hook`
+- (Experimental) Added support for importing via `<script type="module">`, by [@compulim](https://github.com/compulim) in PR [#5592](https://github.com/microsoft/BotFramework-WebChat/pull/5592)
+   - Added support for `botframework-webchat-fluent-theme` package, by [@compulim](https://github.com/compulim) in PR [#5593](https://github.com/microsoft/BotFramework-WebChat/pull/5593)
+   - Bundling vendor chunks, by [@compulim](https://github.com/compulim) in PR [#5595](https://github.com/microsoft/BotFramework-WebChat/pull/5595)
+   - Added deprecation notes for legacy imports, by [@compulim](https://github.com/compulim) in PR [#5600](https://github.com/microsoft/BotFramework-WebChat/pull/5600)
+      - `import { hooks } from 'botframework-webchat'` should be replaced by `import * as hooks from 'botframework-webchat/hook'`
+   - Added target to Chrome 100 and re-enable Lightning CSS for ESM builds, by [@compulim](https://github.com/compulim) in PR [#5602](https://github.com/microsoft/BotFramework-WebChat/pull/5602)
+- Relaxed `role` prop to allow any string instead of ARIA landmark roles, in PR [#5561](https://github.com/microsoft/BotFramework-WebChat/pull/5561), by [@compulim](https://github.com/compulim)
 
 ### Changed
 
@@ -298,6 +312,12 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Updated file-based import with `.js` extension and removed the file extension from build config, by [@compulim](https://github.com/compulim), in PR [#5516](https://github.com/microsoft/BotFramework-WebChat/pull/5516)
 - Fixed [#5518](https://github.com/microsoft/BotFramework-WebChat/issues/5518). Minimal bundled build should work properly, in PR [#5507](https://github.com/microsoft/BotFramework-WebChat/pull/5507), by [@compulim](https://github.com/compulim)
 - Fixed [#5520](https://github.com/microsoft/BotFramework-WebChat/issues/5520). Version information should be injected when installed via npm, in PR [#5521](https://github.com/microsoft/BotFramework-WebChat/pull/5521), by [@compulim](https://github.com/compulim)
+- Fixed aria-label only announcing placeholder in feedback form, in PR [#5567](https://github.com/microsoft/BotFramework-WebChat/pull/5567)
+- Fixed placing focus on the code block content, so it is possible to scroll code via keyboard, in PR [#5575](https://github.com/microsoft/BotFramework-WebChat/pull/5575), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed [#5581](https://github.com/microsoft/BotFramework-WebChat/issues/5581). Activities should be displayed after upgrading via `npm install`, in PR [#5582](https://github.com/microsoft/BotFramework-WebChat/pull/5582), by [@compulim](https://github.com/compulim)
+- Fixed Composer props types not resolving correctly in React 16 in PR [#5580](https://github.com/microsoft/BotFramework-WebChat/pull/5580),
+  by [@lexi-taylor](https://github.com/lexi-taylor)
+- Fixed `npm start` may fail subsequently as builds are not fully flushed to `/dist/`, in PR [#5599](https://github.com/microsoft/BotFramework-WebChat/pull/5599), by [@compulim](https://github.com/compulim)
 
 ### Removed
 

@@ -231,8 +231,8 @@
 :global(.webchat-fluent).theme :global(.text-area.text-area--scroll),
 :global(.webchat-fluent).theme :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable),
 :global(.webchat-fluent).theme :global(.webchat__render-markdown [data-math-type='block']),
-:global(.webchat-fluent).theme :global(.webchat__view-code-dialog__body),
-:global(.webchat-fluent).theme :global(.webchat__view-code-dialog__code-body) {
+:global(.webchat-fluent).theme :global(.view-code-dialog__body),
+:global(.webchat-fluent).theme :global(.view-code-dialog__code-body) {
   /* Edge uses -webkit-scrollbar if scrollbar-* is not set */
   scrollbar-color: unset;
   scrollbar-width: unset;
@@ -277,9 +277,8 @@
   }
 }
 
-:global(.webchat-fluent).theme.variant-copilot
-  :global(.transcript-focus-area) {
-    --webchat__transcript--spacing: var(--webchat-spacingVerticalM);
+:global(.webchat-fluent).theme.variant-copilot :global(.transcript-focus-area) {
+  --webchat__transcript--spacing: var(--webchat-spacingVerticalM);
 }
 
 :global(.webchat-fluent).theme.variant-copilot
@@ -289,7 +288,10 @@
 
 /* Transcript focus indicator color when in focus-visible state */
 :global(.webchat-fluent).theme
-  :global(.transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible) + .transcript-focus-area__transcript-indicator) {
+  :global(
+    .transcript-focus-area__root:has(.transcript-focus-area__terminator:focus-visible)
+    + .transcript-focus-area__transcript-indicator
+  ) {
   border-color: var(--webchat-colorStrokeFocus2);
 }
 
@@ -334,7 +336,8 @@
     }
   }
 
-  &:has(:global(.collapsible-grouping)) > :global(.transcript-focus-area__content-overlay .transcript-focus-area__indicator) {
+  &:has(:global(.collapsible-grouping))
+    > :global(.transcript-focus-area__content-overlay .transcript-focus-area__indicator) {
     display: none;
   }
 
@@ -376,7 +379,8 @@
 }
 
 /* Transcript focused content copilot variant */
-:global(.webchat-fluent).theme.variant-copilot :global(.transcript-focus-area:focus-visible .transcript-focus-area__content--focused) {
+:global(.webchat-fluent).theme.variant-copilot
+  :global(.transcript-focus-area:focus-visible .transcript-focus-area__content--focused) {
   :global(.collapsible-grouping)::after {
     inset: -2px -4px;
   }
@@ -444,7 +448,7 @@
 }
 
 /* Code block */
-:global(.webchat-fluent).theme :global(.webchat__code-block) {
+:global(.webchat-fluent).theme :global(.code-block) {
   border: none;
   font-family: var(--webchat-fontFamilyMonospace);
   font-size: var(--webchat-fontSizeBase300);
@@ -452,7 +456,7 @@
   --webchat__code-block__copy-button--color: var(--webchat-colorNeutralForeground1);
   --webchat__code-block__copy-button--background: var(--webchat-colorNeutralBackground3);
 
-  :global(.webchat__code-block-copy-button) {
+  :global(.code-block-copy-button) {
     background: transparent;
     border: none;
     color: var(--webchat__code-block__copy-button--color);
@@ -462,7 +466,7 @@
     width: 20px;
     transition: background-color var(--webchat-durationNormal) var(--webchat-curveDecelerateMid);
 
-    :global(.webchat__code-block-copy-button__icon) {
+    :global(.code-block-copy-button__icon) {
       --webchat__component-icon--color: currentColor;
     }
 
@@ -482,16 +486,21 @@
     }
   }
 
-  &:global(:has(.webchat__code-block__body:focus-visible)):focus-within {
+  &:global(:has(.code-block__body:focus-visible)):focus-within {
     outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
     outline-offset: calc(var(--webchat-strokeWidthThick) * -1);
 
-    :global(.webchat__code-block__body) {
+    :global(.code-block__body) {
       outline: none;
     }
   }
 
-  &:global(:has(> .webchat__code-block__theme--github-dark-default)) {
+  :global(.code-block__body) {
+    /* TODO: what is the right value? The value below matches "normal" for contents display */
+    line-height: 1.435;
+  }
+
+  &:global(:has(> .code-block__theme--github-dark-default)) {
     --webchat__background--code-block: var(--codeBlockBackground, var(--webchat-colorGrey8));
     --webchat__code-block__copy-button--background: var(
       --codeBlockCopyButtonBackgroundPressed,
@@ -501,7 +510,7 @@
     --webchat__color--code-block: var(--codeBlockForeground, var(--webchat-colorGrey98));
   }
 
-  &:global(:has(> .webchat__code-block__theme--github-light-default)) {
+  &:global(:has(> .code-block__theme--github-light-default)) {
     --webchat__background--code-block: var(--codeBlockBackground, var(--webchat-colorGrey98));
     --webchat__code-block__copy-button--background: var(--codeBlockBackgroundPressed, var(--webchat-colorGrey92));
     --webchat__code-block__copy-button--color: var(--codeBlockCopyButtonForeground, var(--webchat__color--code-block));
@@ -526,7 +535,7 @@
     width: unset;
   }
 
-  :global(.webchat__code-block-copy-button) {
+  :global(.code-block-copy-button) {
     --webchat__code-block__copy-button--color: var(--webchat-colorNeutralForeground1);
     --webchat__code-block__copy-button--background: var(--webchat-colorNeutralBackground3);
 
@@ -545,20 +554,25 @@
     padding: var(--webchat-spacingVerticalS) var(--webchat-spacingHorizontalM);
   }
 
-  :global(.webchat__view-code-dialog__title) {
+  :global(.view-code-dialog__title) {
     font-size: var(--webchat-fontSizeBase300);
     font-weight: var(--webchat-fontWeightSemibold);
     line-height: var(--webchat-lineHeightBase300);
   }
 
-  :global(.webchat__view-code-dialog__body) {
+  :global(.view-code-dialog__body) {
     font-family: var(--webchat-fontFamilyMonospace);
     font-size: var(--webchat-fontSizeBase300);
     margin: 0 calc(var(--webchat-spacingHorizontalM) * -1);
     padding: 0 var(--webchat-spacingHorizontalM);
   }
 
-  :global(.webchat__view-code-dialog__footer) {
+  :global(.code-block__body) {
+    /* TODO: what is the right value? The value below matches "normal" for block display */
+    line-height: normal;
+  }
+
+  :global(.view-code-dialog__footer) {
     color: var(--webchat-colorNeutralForeground4);
     font-size: var(--webchat-fontSizeBase100);
     line-height: var(--webchat-lineHeightBase100);

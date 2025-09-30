@@ -24,6 +24,9 @@ env:
   NODE_ENV: test # Add instrumentation code
   node-version: 18.20 # Need to bump jest@29 to resolve something in https://github.com/facebook/react-native/issues/35701
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build
@@ -57,8 +60,10 @@ jobs:
           ./package.json
           ./__tests__/
           ./packages/bundle/dist/
+          ./packages/bundle/static/
           ./packages/debug-theme/dist/
           ./packages/fluent-theme/dist/
+          ./packages/fluent-theme/static/
           ./packages/test/harness/
           ./packages/test/page-object/dist/
           ./packages/test/web-server/dist/
@@ -339,3 +344,26 @@ jobs:
           delete-merged: true
           name: test-snapshot-diff
           pattern: test-snapshot-diff-*
+
+  print-commit-stats:
+    if: always()
+    name: Print commit stats
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: git fetch origin main
+
+      - name: Use Node.js ${{ env.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.node-version }}
+          cache: npm
+
+      - run: npm clean-install
+
+      - name: Print commit stats
+        run: node ./scripts/printCommitStats.mjs | tee --append $GITHUB_STEP_SUMMARY

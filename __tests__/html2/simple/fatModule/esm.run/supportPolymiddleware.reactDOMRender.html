@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat/middleware.js",
+          "react": "https://cdn.jsdelivr.net/npm/react@18.3.1/+esm",
+          "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@18.3.1/+esm",
+          "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@18.3.1/client/+esm"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
+      import { useStyleOptions } from 'botframework-webchat/hook';
+      import { activityComponent, createActivityPolymiddleware } from 'botframework-webchat/middleware';
+      import { createElement } from 'react';
+      import { render } from 'react-dom';
+
+      const {
+        testHelpers: { createDirectLineEmulator }
+      } = window;
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        function MyMiddleware({ nextResult }) {
+          // THEN: Web Chat hooks can be called.
+          const [{ accent }] = useStyleOptions();
+
+          return createElement(
+            'div',
+            { style: { borderColor: accent, borderStyle: 'solid', borderWidth: 2 } },
+            nextResult?.render({})
+          );
+        }
+
+        render(
+          createElement(ReactWebChat, {
+            directLine,
+            polymiddleware: [
+              createActivityPolymiddleware(
+                next => request => activityComponent(MyMiddleware, { nextResult: next(request) })
+              )
+            ],
+            store
+          }),
+          document.getElementsByTagName('main')[0]
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity('Hello, World!');
+
+        await pageConditions.numActivitiesShown(1);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

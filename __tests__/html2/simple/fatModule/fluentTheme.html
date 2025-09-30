@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      /* TODO: [P*] Can we eliminate this style? */
+      .fui-FluentProvider,
+      .webchat-fluent {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <!-- Redirect packages on esm.sh loaded by `@fluentui/react-components` -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18.3.1,react-dom@18.3.1&exports=FluentProvider,createDarkTheme,webLightTheme",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat/decorator.js",
+          "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat/internal.js",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js",
+          "https://esm.sh/react@18.3.1/es2022/react.mjs": "/__dist__/packages/bundle/static/react.js",
+          "https://esm.sh/react@18.3.1/es2022/react-dom.mjs": "/__dist__/packages/bundle/static/react-dom.18.js",
+          "https://esm.sh/react@18.3.1/es2022/react-dom/client.mjs": "/__dist__/packages/bundle/static/react-dom.18/client.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { FluentProvider, webLightTheme } from '@fluentui/react-components';
+      import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+
+      const { useStyleOptions } = hooks;
+      const {
+        testHelpers: { createDirectLineEmulator }
+      } = window;
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        const fluentTheme = {
+          ...webLightTheme,
+          // Original is #242424 which is too light for fui-FluentProvider to pass our accessibility checks.
+          colorNeutralForeground1: '#1b1b1b'
+        };
+
+        createRoot(document.getElementsByTagName('main')[0]).render(
+          createElement(
+            FluentProvider,
+            { className: 'fui-FluentProvider', theme: fluentTheme },
+            createElement(
+              FluentThemeProvider,
+              { variant: 'fluent' },
+              createElement(ReactWebChat, { directLine, store })
+            )
+          )
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity('Hello, World!');
+
+        await pageConditions.numActivitiesShown(1);
+
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

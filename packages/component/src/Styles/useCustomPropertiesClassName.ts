@@ -12,7 +12,7 @@ const webchatCustomPropertiesClass = 'webchat__css-custom-properties';
 
 export default function useCustomPropertiesClassName() {
   const [styleOptions] = useStyleOptions();
-  const nonce = useNonce();
+  const [nonce] = useNonce();
 
   const [styles, classNameState] = useMemo(() => {
     const {

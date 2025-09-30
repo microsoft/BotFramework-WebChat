@@ -1,10 +1,13 @@
 /* eslint-disable class-methods-use-this */
 import { hooks } from 'botframework-webchat-api';
+import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { ReactNode, useMemo, useRef } from 'react';
 
-import { useStyleSet } from '../../../hooks';
+import { useCodeHighlighter } from '../../../hooks/internal/codeHighlighter';
 import { defaultHighlightCode, HighlightCodeFn } from '../../../hooks/internal/codeHighlighter/index';
-import { parseDocumentFragmentFromString, useCodeHighlighter } from '../../../internal';
+import parseDocumentFragmentFromString from '../../../Utils/parseDocumentFragmentFromString';
+
+import styles from './CodeBlock.module.css';
 
 const { useStyleOptions, useLocalizer } = hooks;
 
@@ -82,11 +85,6 @@ class CodeBlock extends HTMLElement {
     const highlightedCodeFragment =
       result instanceof DocumentFragment ? result : parseDocumentFragmentFromString(result);
 
-    const body = highlightedCodeFragment.querySelector('pre');
-
-    body?.classList.add('webchat__code-block__body');
-    options?.theme && body?.classList.add(`webchat__code-block__theme--${options.theme}`);
-
     highlightedCodeFragment.insertBefore(this.copyButtonElement, highlightedCodeFragment.firstChild);
 
     this.replaceChildren(highlightedCodeFragment);
@@ -109,11 +107,9 @@ export type CodeBlockProps = Readonly<{
 }>;
 
 type CodeBlockReactProps = Readonly<{
-  codeBlockClass: string | undefined;
   codeBlockTheme: 'github-light-default' | 'github-dark-default';
   copyButtonAltCopied: string;
   copyButtonAltCopy: string;
-  copyButtonClassName: string;
   copyButtonTagName: string;
   highlightCode: HighlightCodeFn;
 }>;
@@ -121,7 +117,6 @@ type CodeBlockReactProps = Readonly<{
 const useCodeBlockProps = (copyButtonTagName: string) => {
   const highlightCode = useCodeHighlighter();
   const localize = useLocalizer();
-  const [{ codeBlock: codeBlockClass, codeBlockCopyButton: copyButtonClassName }] = useStyleSet();
   const [{ codeBlockTheme }] = useStyleOptions();
   const copyButtonAltCopied = localize('COPY_BUTTON_COPIED_TEXT');
   const copyButtonAltCopy = localize('COPY_BUTTON_TEXT');
@@ -130,22 +125,18 @@ const useCodeBlockProps = (copyButtonTagName: string) => {
 
   useMemo(() => {
     propsRef.current = Object.freeze({
-      codeBlockClass,
       codeBlockTheme,
       copyButtonAltCopied,
       copyButtonAltCopy,
-      copyButtonClassName,
       copyButtonTagName,
       highlightCode
     });
 
     propsChangedEventTarget.dispatchEvent(new CustomEvent('change'));
   }, [
-    codeBlockClass,
     codeBlockTheme,
     copyButtonAltCopied,
     copyButtonAltCopy,
-    copyButtonClassName,
     copyButtonTagName,
     highlightCode,
     propsChangedEventTarget
@@ -159,6 +150,8 @@ const useCodeBlockProps = (copyButtonTagName: string) => {
 
 export default function useReactCodeBlockClass(copyButtonTagName: string) {
   const [codeBlockTarget, codeBlockPropsRef] = useCodeBlockProps(copyButtonTagName);
+
+  const classNames = useStyles(styles);
 
   return useMemo(
     () =>
@@ -177,11 +170,6 @@ export default function useReactCodeBlockClass(copyButtonTagName: string) {
 
           this.#prevProps = props;
 
-          if (prevProps?.codeBlockClass !== props?.codeBlockClass) {
-            prevProps?.codeBlockClass && this.classList.remove(prevProps.codeBlockClass);
-            props?.codeBlockClass && this.classList.add(props.codeBlockClass);
-          }
-
           this.setAttribute('theme', props.codeBlockTheme);
 
           if (prevProps?.highlightCode !== props.highlightCode) {
@@ -195,18 +183,29 @@ export default function useReactCodeBlockClass(copyButtonTagName: string) {
             this.scheduleUpdate();
           }
 
-          this.copyButtonElement.className = props.copyButtonClassName;
           this.copyButtonElement.dataset.altCopy = props.copyButtonAltCopy;
           this.copyButtonElement.dataset.altCopied = props.copyButtonAltCopied;
         };
 
         connectedCallback(): void {
-          this.classList.add('webchat__code-block');
-
+          this.classList.add(...classNames['code-block'].split(/\s+/gu));
           codeBlockTarget.addEventListener('change', this.#handlePropsChange);
 
           this.#handlePropsChange();
           super.connectedCallback();
+        }
+
+        update(): void {
+          super.update();
+
+          const body = this.querySelector('pre');
+          body?.classList.add(...classNames['code-block__body'].split(/\s+/gu));
+
+          const theme = this.options?.theme;
+          theme &&
+            body?.classList.add(
+              ...(classNames[`code-block__theme--${theme}`] ?? `code-block__theme--${theme}`).split(/\s+/gu)
+            );
         }
 
         disconnectedCallback(): void {
@@ -225,6 +224,6 @@ export default function useReactCodeBlockClass(copyButtonTagName: string) {
           return this.#props.highlightCode(...args);
         }
       },
-    [codeBlockPropsRef, codeBlockTarget]
+    [classNames, codeBlockPropsRef, codeBlockTarget]
   );
 }

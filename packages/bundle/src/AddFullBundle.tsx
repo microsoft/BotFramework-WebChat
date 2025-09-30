@@ -1,10 +1,11 @@
+import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 import {
   type AttachmentForScreenReaderMiddleware,
   type AttachmentMiddleware,
   type StyleOptions
 } from 'botframework-webchat-api';
 import { type HTMLContentTransformMiddleware } from 'botframework-webchat-component';
-import { singleToArray, warnOnce, type OneOrMany } from 'botframework-webchat-core';
+import { singleToArray, type OneOrMany } from 'botframework-webchat-core';
 import React, { memo, type ReactNode } from 'react';
 
 import AdaptiveCardsComposer from './adaptiveCards/AdaptiveCardsComposer';
@@ -14,12 +15,14 @@ import { type AdaptiveCardsPackage } from './types/AdaptiveCardsPackage';
 import { type StrictFullBundleStyleOptions } from './types/FullBundleStyleOptions';
 import useComposerProps from './useComposerProps';
 
+type AddFullBundleChildren = ({ extraStyleSet }: { extraStyleSet: any }) => ReactNode;
+
 type AddFullBundleProps = Readonly<{
   adaptiveCardsHostConfig?: any;
   adaptiveCardsPackage?: AdaptiveCardsPackage;
   attachmentForScreenReaderMiddleware?: OneOrMany<AttachmentForScreenReaderMiddleware>;
   attachmentMiddleware?: OneOrMany<AttachmentMiddleware>;
-  children: ({ extraStyleSet }: { extraStyleSet: any }) => ReactNode;
+  children: AddFullBundleChildren;
   htmlContentTransformMiddleware?: HTMLContentTransformMiddleware[];
   renderMarkdown?: (
     markdown: string,
@@ -74,4 +77,4 @@ function AddFullBundle({
 
 export default memo(AddFullBundle);
 
-export type { AddFullBundleProps };
+export type { AddFullBundleChildren, AddFullBundleProps };

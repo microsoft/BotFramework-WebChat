@@ -1,11 +1,11 @@
 import { hooks } from 'botframework-webchat-api';
-import { useCallback, useState } from 'react';
 import random from 'math-random';
+import { useCallback, useState } from 'react';
 
 import useTimer from './useTimer';
 
-import type { Dispatch, SetStateAction } from 'react';
 import type { GlobalScopePonyfill } from 'botframework-webchat-core';
+import type { Dispatch, SetStateAction } from 'react';
 
 const { usePonyfill } = hooks;
 
@@ -16,8 +16,8 @@ const { usePonyfill } = hooks;
 
 // False positive: we are using `Date` as a type.
 // eslint-disable-next-line no-restricted-globals
-function nextTimer(origin: Date | number | string, interval: number, { Date }: GlobalScopePonyfill): number {
-  const time = new Date(origin).getTime();
+function nextTimer(origin: Date, interval: number, { Date }: GlobalScopePonyfill): number {
+  const time = origin.getTime();
   const now = Date.now();
 
   return time > now ? time : now + interval - ((now - time) % interval);
@@ -26,9 +26,9 @@ function nextTimer(origin: Date | number | string, interval: number, { Date }: G
 export default function useForceRenderAtInterval(
   // False positive: we are using `Date` as a type.
   // eslint-disable-next-line no-restricted-globals
-  origin: Date | number | string,
+  origin: Date,
   interval: number,
-  fn: () => void
+  fn?: (() => void) | undefined
 ): [number, Dispatch<SetStateAction<number>>] {
   const [ponyfill] = usePonyfill();
   const [timer, setTimer] = useState<number>(nextTimer(origin, interval, ponyfill));

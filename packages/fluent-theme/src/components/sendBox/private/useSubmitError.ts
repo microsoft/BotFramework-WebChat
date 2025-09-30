@@ -1,4 +1,4 @@
-import { hooks } from 'botframework-webchat-component';
+import { hooks } from 'botframework-webchat';
 import { useCallback, useMemo, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 

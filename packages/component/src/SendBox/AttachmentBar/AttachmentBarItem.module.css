@@ -7,7 +7,9 @@
 
   &.send-box-attachment-bar-item--as-list-item {
     border-radius: 4px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.14), 0px 0px 2px rgba(0, 0, 0, 0.12);
+    box-shadow:
+      0px 2px 4px rgba(0, 0, 0, 0.14),
+      0px 0px 2px rgba(0, 0, 0, 0.12);
     grid-template-areas: 'body auxiliary';
     grid-template-columns: 1fr auto;
     padding: 2px;

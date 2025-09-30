@@ -70,7 +70,7 @@ const TOAST_ACCORDION_IDS = {
   other: 'TOAST_ACCORDION_OTHER'
 };
 
-const BasicToaster = () => {
+const BasicToaster = ({ className }) => {
   const instanceId = useMemo(randomId, []);
   const [{ toaster: toasterStyleSet }] = useStyleSet();
   const [debouncedNotifications] = useDebouncedNotifications();
@@ -157,7 +157,8 @@ const BasicToaster = () => {
           'webchat__toaster--warn': highestLevel === 'warn'
         },
         rootClassName,
-        toasterStyleSet + ''
+        toasterStyleSet + '',
+        className
       )}
       role="log"
     >

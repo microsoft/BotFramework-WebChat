@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "react": "https://cdn.jsdelivr.net/npm/react@18.3.1/+esm",
+          "react-dom": "https://cdn.jsdelivr.net/npm/react-dom@18.3.1/+esm",
+          "react-dom/client": "https://cdn.jsdelivr.net/npm/react-dom@18.3.1/client/+esm"
+        }
+      }
+    </script>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createDirectLine, createStoreWithOptions, renderWebChat } from 'botframework-webchat';
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions };
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        renderWebChat(
+          {
+            directLine,
+            store
+          },
+          document.getElementById('webchat')
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          attachments: [
+            {
+              content: {
+                type: 'AdaptiveCard',
+                body: [
+                  {
+                    type: 'TextBlock',
+                    text: 'You can choose one of the followings.'
+                  }
+                ],
+                $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+                version: '1.2',
+                actions: [
+                  {
+                    type: 'Action.Submit',
+                    title: 'What time is it?'
+                  },
+                  {
+                    type: 'Action.Submit',
+                    title: 'What is the weather?'
+                  }
+                ]
+              },
+              contentType: 'application/vnd.microsoft.card.adaptive'
+            }
+          ],
+          from: { id: 'bot', role: 'bot' },
+          text: 'What can I do for you?',
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(1);
+
+        await host.snapshot('local');
+
+        expect(typeof globalThis.React).toBe('undefined');
+      });
+    </script>
+  </body>
+</html>

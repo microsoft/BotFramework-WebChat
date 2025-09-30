@@ -1,5 +1,4 @@
 import { PolymiddlewareComposer, type Polymiddleware } from '@msinternal/botframework-webchat-api-middleware';
-import { createActivityPolymiddlewareFromLegacy } from '@msinternal/botframework-webchat-api-middleware/internal';
 import {
   type LegacyActivityMiddleware,
   type LegacyAttachmentMiddleware
@@ -44,7 +43,10 @@ import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
 import StyleOptions from '../StyleOptions';
+import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
+import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import usePonyfill from '../hooks/usePonyfill';
+import createActivityPolymiddlewareFromLegacy from '../legacy/createActivityPolymiddlewareFromLegacy';
 import getAllLocalizedStrings from '../localization/getAllLocalizedStrings';
 import { SendBoxMiddlewareProvider, type SendBoxMiddleware } from '../middleware/SendBoxMiddleware';
 import {
@@ -59,6 +61,7 @@ import ActivityListenerComposer from '../providers/ActivityListener/ActivityList
 import ActivitySendStatusComposer from '../providers/ActivitySendStatus/ActivitySendStatusComposer';
 import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatusTelemetry/ActivitySendStatusTelemetryComposer';
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
+import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
@@ -80,6 +83,7 @@ import Tracker from './internal/Tracker';
 import WebChatAPIContext, { type WebChatAPIContextType } from './internal/WebChatAPIContext';
 import WebChatReduxContext, { useDispatch } from './internal/WebChatReduxContext';
 import defaultSelectVoice from './internal/defaultSelectVoice';
+import activityFallbackPolymiddleware from './middleware/activityFallbackPolymiddleware';
 import applyMiddleware, {
   forLegacyRenderer as applyMiddlewareForLegacyRenderer,
   forRenderer as applyMiddlewareForRenderer
@@ -88,13 +92,6 @@ import createDefaultCardActionMiddleware from './middleware/createDefaultCardAct
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
 import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
-
-// PrecompileGlobalize is a generated file and is not ES module. TypeScript doesn't work with UMD.
-// @ts-ignore
-import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
-import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
-import LegacyActivityBridge from '../legacy/LegacyActivityBridge';
-import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import { parseUIState } from './validation/uiState';
 
 // List of Redux actions factory we are hoisting as Web Chat functions
@@ -512,18 +509,7 @@ const ComposerCore = ({
   );
 
   const polymiddlewareForLegacyActivityMiddleware = useMemo<readonly Polymiddleware[]>(
-    () =>
-      Object.freeze([
-        createActivityPolymiddlewareFromLegacy(
-          LegacyActivityBridge,
-          ({ activity }) => ({
-            render: () => {
-              throw new Error(`No renderer for activity of type "${activity.type}"`);
-            }
-          }),
-          ...singleToArray(activityMiddleware)
-        )
-      ]),
+    () => Object.freeze([createActivityPolymiddlewareFromLegacy(...singleToArray(activityMiddleware))]),
     [activityMiddleware]
   );
 
@@ -534,7 +520,8 @@ const ComposerCore = ({
         // This guarantees telemetry is always emitted for exception and no other polymiddleware can override this behavior.
         errorBoxTelemetryPolymiddleware,
         ...(polymiddlewareFromProps || []),
-        ...polymiddlewareForLegacyActivityMiddleware
+        ...polymiddlewareForLegacyActivityMiddleware,
+        activityFallbackPolymiddleware
       ]),
     [polymiddlewareForLegacyActivityMiddleware, polymiddlewareFromProps]
   );
