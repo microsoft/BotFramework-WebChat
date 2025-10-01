@@ -45,14 +45,9 @@
   visibility: hidden;
 }
 
-:global(.webchat) .collapsible-grouping__content-list {
-  display: flex;
-  flex-direction: column;
-  margin: calc(var(--webchat__padding--regular) / -2);
-  padding: calc(var(--webchat__padding--regular) / 2);
-}
-
 :global(.webchat) .collapsible-grouping__content--open {
   height: auto;
+  margin: calc(var(--webchat__padding--regular) / -2);
+  padding: calc(var(--webchat__padding--regular) / 2);
   visibility: unset;
 }

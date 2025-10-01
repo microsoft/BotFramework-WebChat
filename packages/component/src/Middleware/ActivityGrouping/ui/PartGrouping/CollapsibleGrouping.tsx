@@ -87,7 +87,7 @@ function CollapsibleGrouping(props: CollapsibleGroupingProps) {
         // eslint-disable-next-line react/forbid-dom-props
         id={id}
       >
-        <div className={classNames['collapsible-grouping__content-list']}>{children}</div>
+        {children}
       </div>
     </div>
   );
