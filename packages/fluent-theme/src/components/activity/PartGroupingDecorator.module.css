@@ -275,10 +275,7 @@
     }
 
     /* It seems Copilot does not show per-item sensitivity label, i.e. "General", etc. */
-    :global(.webchat__link-definitions__list-item-badge) {
-      display: none;
-    }
-
+    :global(.webchat__link-definitions__list-item-badge),
     :global(.webchat__link-definitions__open-in-new-window-icon) {
       display: none;
     }
@@ -349,13 +346,13 @@
     line-height: var(--webchat-lineHeightBase300);
   }
 
-  :global(.collapsible-grouping) {
+  :global(.collapsible-grouping),
+  :global(.collapsible-grouping__header) {
     border: none;
-    max-width: 100%;
+  }
 
-    :global(.collapsible-grouping__header) {
-      border: none;
-    }
+  :global(.collapsible-grouping) {
+    max-width: 100%;
 
     :global(.stacked-layout__message-status) {
       color: var(--webchat-colorNeutralForeground2);
@@ -508,18 +505,18 @@
 
     :global(.collapsible-content__content) {
       margin-block: var(--webchat-part-grouping__collapsible-content--space-block-start-end);
-    }
 
-    :global(.collapsible-content__content .stacked-layout__attachment-list) {
-      gap: var(--webchat-spacingVerticalS);
-    }
+      :global(.stacked-layout__attachment-list) {
+        gap: var(--webchat-spacingVerticalS);
+      }
 
-    :global(.collapsible-content__content .stacked-layout__attachment-row) {
-      margin: 0;
-    }
+      :global(.stacked-layout__attachment-row) {
+        margin: 0;
 
-    :global(.collapsible-content__content .stacked-layout__attachment-row .webchat__text-content) {
-      padding-block: 0;
+        :global(.webchat__text-content) {
+          padding-block: 0;
+        }
+      }
     }
   }
   /* #endregion */
@@ -697,12 +694,14 @@
         }
       }
 
-      :global(.webchat__bubble .collapsible-content .collapsible-content__content .stacked-layout__attachment-list) {
-        margin-block-start: var(--webchat-spacingVerticalS);
-      }
+      :global(.webchat__bubble .collapsible-content .collapsible-content__content) {
+        :global(.stacked-layout__attachment-list) {
+          margin-block-start: var(--webchat-spacingVerticalS);
+        }
 
-      :global(.webchat__bubble .collapsible-content .collapsible-content__content .stacked-layout__attachment) {
-        max-width: var(--webchat-part-grouping__bubble--max-width);
+        :global(.stacked-layout__attachment) {
+          max-width: var(--webchat-part-grouping__bubble--max-width);
+        }
       }
 
       :global(.stacked-layout__status) {
