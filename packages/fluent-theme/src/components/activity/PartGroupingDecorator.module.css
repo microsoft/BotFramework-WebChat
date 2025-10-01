@@ -710,12 +710,12 @@
     }
 
     &:not(.part-grouping-decorator--group)
-      :global(.webchat__bubble:not(.webchat-part-grouping__bubble--from-user) .webchat__bubble__content) {
+      :global(.webchat__bubble:not(.webchat__bubble--from-user) .webchat__bubble__content) {
       anchor-name: --webchat-flair;
       max-width: unset;
     }
 
-    :global(.webchat__bubble:not(.webchat-part-grouping__bubble--from-user)::after) {
+    :global(.webchat__bubble:not(.webchat__bubble--from-user)::after) {
       margin-block: var(--webchat-spacingVerticalXS);
       outline-offset: 5px;
       --webchat-part-grouping__bubble--border-radius: calc(var(--webchat-borderRadius2XLarge) - 8px);
