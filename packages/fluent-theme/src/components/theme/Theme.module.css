@@ -328,7 +328,7 @@
     }
 
     &::after {
-      border-radius: var(--webchat__bubble--border-radius);
+      border-radius: var(--webchat-part-grouping__bubble--border-radius);
       content: '';
       grid-area: focused-content;
       outline: var(--webchat-strokeWidthThick) solid var(--webchat-colorStrokeFocus2);
@@ -342,7 +342,7 @@
   }
 
   :global(.collapsible-grouping)::after {
-    border-radius: var(--webchat__bubble--border-radius);
+    border-radius: var(--webchat-part-grouping__bubble--border-radius);
     border: none;
     content: '';
     inset: 0;
@@ -357,7 +357,7 @@
   }
 
   :global(.pre-chat-message-activity)::after {
-    border-radius: var(--webchat__bubble--border-radius);
+    border-radius: var(--webchat-part-grouping__bubble--border-radius);
     content: '';
     inset: 0;
     outline-offset: 0;
