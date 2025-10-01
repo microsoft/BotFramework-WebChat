@@ -1,5 +1,23 @@
 /* eslint-env browser */
 
+// #region TODO: Remove me after we bump Chrome to v117+
+const customElementNames = customElements.getName instanceof Function ? null : new WeakMap();
+
+export function getCustomElementName(customElementConstructor) {
+  if (customElementNames) {
+    return customElementNames.get(customElementConstructor);
+  }
+  return customElements.getName(customElementConstructor);
+}
+
+function setCustomElementName(customElementConstructor, name) {
+  if (customElementNames) {
+    customElementNames.set(customElementConstructor, name);
+  }
+  // No need to set for browsers that support customElements.getName()
+}
+// #endregion
+
 export function customElement(elementKey, createElementClass) {
   const elementRegistration = document.querySelector(`element-registration[element-key="${elementKey}"]`);
   elementRegistration.elementConstructor = createElementClass(elementRegistration);
@@ -55,6 +73,7 @@ function initDocument(elementRegistration, currentDocument) {
       }
 
       customElements.define(elementName, constructor, constructor.options);
+      setCustomElementName(constructor, elementName);
 
       result.resolve(constructor);
     },

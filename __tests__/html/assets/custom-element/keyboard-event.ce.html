@@ -7,6 +7,12 @@
 <body>
   <template>
     <style>
+      /* TODO this is not needed after Chrome v133+, just use var(--event-count) */
+      :host kbd::after {
+        counter-set: event-index var(--event-count);
+        --event-counter: counter(event-index);
+      }
+
       kbd {
         background-color: #f7f7f7;
         border-radius: 6px;
@@ -22,7 +28,7 @@
       }
 
       kbd::after {
-        content: var(--event-count);
+        content: var(--event-counter, var(--event-count));
         font-size: 16px;
         inset: 6px auto auto 6px;
         position: absolute;
@@ -100,7 +106,7 @@
     <kbd></kbd>
   </template>
   <script type="module">
-    import { customElement } from '/assets/custom-element/custom-element.js';
+    import { customElement, getCustomElementName } from '/assets/custom-element/custom-element.js';
 
     customElement('keyboard-event', currentDocument =>
       class KeyboardEventElement extends HTMLElement {
@@ -124,7 +130,8 @@
         }
   
         static listenKeyboardEvents(scope = window) {
-          const myTagName = customElements.getName(this)
+          // const myTagName = customElements.getName(this)
+          const myTagName = getCustomElementName(this);
           const abortController = new AbortController();
           scope.addEventListener('keydown', event => {
             const element = document.createElement(myTagName);

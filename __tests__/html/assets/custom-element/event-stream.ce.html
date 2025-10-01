@@ -19,18 +19,16 @@
         z-index: 1;
         font-size: 3rem;
         counter-reset: event-count;
-
-        > * {
-          counter-increment: event-count;
-          --event-count: counter(event-count);
-        }
-
-        > *:nth-last-child(n + 4) {
-          pointer-events: none;
-          position: absolute;
-          visibility: hidden;
-          inset: 0 100% 100% 0;
-        }
+      }
+      .event-list > * {
+        counter-increment: event-count;
+        --event-count: counter(event-count);
+      }
+      .event-list > *:nth-last-child(n + 4) {
+        pointer-events: none;
+        position: absolute;
+        visibility: hidden;
+        inset: 0 100% 100% 0;
       }
     </style>
     <div class="event-list"></div>
@@ -61,6 +59,10 @@
   
         handleEvent = event => {
           const { content } = event.detail;
+
+          // TODO: Remove when we reach Chrome v133+
+          content.style.setProperty('--event-count', this.eventList.children.length);
+
           this.eventList.append(content);
         };
       }
