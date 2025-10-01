@@ -181,6 +181,19 @@
     margin: var(--webchat-spacingVerticalXS) var(--webchat__bubble--inline-padding);
   }
 
+  :global(.stacked-layout .stacked-layout__main .stacked-layout__message-status) {
+    margin-block: calc(var(--webchat__bubble--block-padding) + 1px);
+
+    + :global(.webchat__text-content) {
+      transform: translateY(-0.05em);
+    }
+  }
+
+  &.variant-copilot :global(.stacked-layout .stacked-layout__main .stacked-layout__message-status) {
+    margin-inline-start: var(--webchat-spacingHorizontalNone);
+    margin-block: var(--webchat-spacingVerticalXXS);
+  }
+
   &.part-grouping-decorator--group :global(.stacked-layout .stacked-layout__main .stacked-layout__message-status) {
     margin-block: var(--webchat-spacingVerticalXS);
   }

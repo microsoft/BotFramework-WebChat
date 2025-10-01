@@ -48,11 +48,13 @@ export default function useCustomPropertiesClassName() {
       transcriptTerminatorFontSize,
       transcriptVisualKeyboardIndicatorColor,
       transcriptVisualKeyboardIndicatorStyle,
-      transcriptVisualKeyboardIndicatorWidth
+      transcriptVisualKeyboardIndicatorWidth,
+      transitionDuration
     } = styleOptions;
 
-    // eslint-disable-next-line no-magic-numbers
-    const randomClass = `wc-${Math.ceil(random() * Number.MAX_SAFE_INTEGER).toString(36)}` as const;
+    const randomClass =
+      // eslint-disable-next-line no-magic-numbers
+      `w${Math.ceil(random() * Number.MAX_SAFE_INTEGER).toString(36)}_${webchatCustomPropertiesClass.replace('webchat__', '')}` as const;
 
     const contents = `
 .${webchatCustomPropertiesClass}.${randomClass} {
@@ -90,11 +92,10 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.MinHeightImageBubble}: ${bubbleImageMinHeight}px;
   ${CustomPropertyNames.PaddingRegular}: ${paddingRegular}px;
   ${CustomPropertyNames.SizeAvatar}: ${avatarSize}px;
+  ${CustomPropertyNames.TransitionDuration}: ${transitionDuration};
 }
 `;
-    const [style] = makeCreateStyles(contents)();
-
-    style.dataset.webchatInjected = 'component';
+    const [style] = makeCreateStyles(contents)('component');
 
     return [Object.freeze([style]), Object.freeze([`${webchatCustomPropertiesClass} ${randomClass}`] as const)];
   }, [styleOptions]);

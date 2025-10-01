@@ -12,6 +12,10 @@
   ],
   "rewrites": [
     {
+      "source": "/assets/custom-element/:name.ce",
+      "destination": "__tests__/html/assets/custom-element/:name.ce.html"
+    },
+    {
       "source": "/assets/:filename",
       "destination": "__tests__/html/assets/:filename"
     },

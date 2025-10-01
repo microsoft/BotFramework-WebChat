@@ -34,13 +34,11 @@
 }
 
 :global(.webchat) .collapsible-grouping__content {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  min-width: 0;
   height: 0;
-  interpolate-size: allow-keywords;
-  margin: calc(var(--webchat__padding--regular) / -2);
   overflow: clip;
-  padding: calc(var(--webchat__padding--regular) / 2);
+  interpolate-size: allow-keywords;
   transition:
     visibility 0s,
     height 0.2s ease;
@@ -49,5 +47,7 @@
 
 :global(.webchat) .collapsible-grouping__content--open {
   height: auto;
+  margin: calc(var(--webchat__padding--regular) / -2);
+  padding: calc(var(--webchat__padding--regular) / 2);
   visibility: unset;
 }
