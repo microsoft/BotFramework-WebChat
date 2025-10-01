@@ -17,6 +17,25 @@ A curated list of major achievements by the Web Chat team. This document celebra
 
 ## 🧱 Architecture & Core Systems
 
+### 🌐 ES Modules Browser Build
+
+**Goal:** Ship first-class `<script type="module">` bundles for modern browsers.  
+**By:** [@compulim](https://github.com/compulim) in [PR #5592](https://github.com/microsoft/BotFramework-WebChat/pull/5592), [#5593](https://github.com/microsoft/BotFramework-WebChat/pull/5593), [#5595](https://github.com/microsoft/BotFramework-WebChat/pull/5595), [#5600](https://github.com/microsoft/BotFramework-WebChat/pull/5600), [#5602](https://github.com/microsoft/BotFramework-WebChat/pull/5602)
+
+- Delivered browser-ready ES module builds with vendor chunking for optimal caching.
+- Introduced new export entries and reworked external API.
+- Added documentation for all available Web Chat inclusion options.
+
+### 🧠 Part Grouping for Chain-of-Thought
+
+**Goal:** Organize multi-part reasoning flows into collapsible groups within the transcript.  
+**By:** [@OEvgeny](https://github.com/OEvgeny) in [PR #5553](https://github.com/microsoft/BotFramework-WebChat/pull/5553), [#5585](https://github.com/microsoft/BotFramework-WebChat/pull/5585), [#5590](https://github.com/microsoft/BotFramework-WebChat/pull/5590), [#5608](https://github.com/microsoft/BotFramework-WebChat/pull/5608)
+
+- Added logical grouping and context so activities can self-organize via `Message` entity metadata.
+- Introduced a way to render grouped activities and group-aware focus management to keep grouped conversations accessible.
+- Reworked fluent-theme approach to decorating activities.
+- Extended activity ordering to honor entity `position` fields when rendering grouped messages.
+
 ### 🛠️ Migration to `micromark`
 
 **Goal:** Replace `markdown-it` with a modern and extensible markdown parser.  
@@ -139,7 +158,6 @@ A curated list of major achievements by the Web Chat team. This document celebra
 
 ## 🚀 Performance & Developer Experience
 
-
 ### 🧩 Introduction of PolyMiddleware
 
 **Goal:** Enable composable, reusable, and unified way for managing middleware.  
@@ -147,7 +165,7 @@ A curated list of major achievements by the Web Chat team. This document celebra
 
 - Allows multiple middleware to be composed and applied from a single place.
 - Simplifies extension, testing, and maintenance of middleware logic.
-- Lays groundwork for Web Chat becomoming an UI orchestration.
+- Lays groundwork for Web Chat becoming a UI orchestration layer.
 
 ### 🧠 Memoization & Hook Optimizations
 
