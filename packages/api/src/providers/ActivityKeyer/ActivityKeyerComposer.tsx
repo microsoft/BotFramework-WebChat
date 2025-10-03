@@ -71,6 +71,7 @@ const ActivityKeyerComposer = ({ children }: Readonly<{ children?: ReactNode | u
         uniqueId();
 
       activityId && nextActivityIdToKeyMap.set(activityId, key);
+      typingActivityId && nextActivityIdToKeyMap.set(typingActivityId, key);
       clientActivityId && nextClientActivityIdToKeyMap.set(clientActivityId, key);
       nextActivityToKeyMap.set(activity, key);
       nextActivityKeys.add(key);
