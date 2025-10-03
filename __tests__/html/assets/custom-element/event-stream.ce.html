@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Stream Custom Element</title>
+</head>
+<body>
+  <template>
+    <style>
+      .event-list {
+        align-items: center;
+        display: flex;
+        gap: 0.5em;
+        left: 0.5em;
+        padding: 0.5em;
+        position: fixed;
+        top: 0.5em;
+        z-index: 1;
+        font-size: 3rem;
+        counter-reset: event-count;
+      }
+      .event-list > * {
+        counter-increment: event-count;
+        --event-count: counter(event-count);
+      }
+      .event-list > *:nth-last-child(n + 4) {
+        pointer-events: none;
+        position: absolute;
+        visibility: hidden;
+        inset: 0 100% 100% 0;
+      }
+    </style>
+    <div class="event-list"></div>
+  </template>
+  <script type="module">
+    import { customElement } from '/assets/custom-element/custom-element.js';
+
+    customElement('event-stream', currentDocument =>
+      class EventStreamElement extends HTMLElement {
+        constructor() {
+          super();
+          const template = currentDocument.querySelector('template');
+          const fragment = template.content.cloneNode(true);
+  
+          const shadowRoot = this.attachShadow({ mode: 'open' });
+          this.eventList = fragment.querySelector('.event-list');
+          shadowRoot.appendChild(fragment);
+        }
+  
+        connectedCallback() {
+          this.controller = new AbortController();
+          document.addEventListener('event-stream:event', this.handleEvent, { signal: this.controller.signal });
+        }
+
+        disconnectedCallback() {
+          this.controller.abort();
+        }
+  
+        handleEvent = event => {
+          const { content } = event.detail;
+
+          // TODO: Remove when we reach Chrome v133+
+          content.style.setProperty('--event-count', this.eventList.children.length);
+
+          this.eventList.append(content);
+        };
+      }
+    );
+  </script>
+</body>
+</html>

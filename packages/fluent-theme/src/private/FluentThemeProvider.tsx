@@ -10,7 +10,6 @@ import {
 import { type ActivityMiddleware, type TypingIndicatorMiddleware } from 'botframework-webchat/internal';
 import React, { memo, type ReactNode } from 'react';
 
-import { ActivityDecorator } from '../components/activity';
 import ActivityLoader from '../components/activity/ActivityLoader';
 import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
 import AssetComposer from '../components/assets/AssetComposer';
@@ -45,11 +44,7 @@ const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
         return () => <LinerMessageActivity activity={activity} />;
       }
 
-      const renderActivity = next(...args);
-
-      return renderActivity
-        ? (...args) => <ActivityDecorator activity={activity}>{renderActivity(...args)}</ActivityDecorator>
-        : renderActivity;
+      return next(...args);
     }
 ]);
 

@@ -114,6 +114,10 @@
     > * {
       grid-area: message-status-icon;
     }
+
+    + :global(.webchat__text-content) {
+      transform: translateY(0.15em);
+    }
   }
 
   .stacked-layout__message-status-unset-icon,
