@@ -233,6 +233,7 @@
     "cross-env": "^10.0.0",
     "diff": "^8.0.2",
     "dotenv": "^17.2.1",
+    "dtsroll": "^1.4.1",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",

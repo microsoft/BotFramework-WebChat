@@ -75,9 +75,12 @@
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "scripts": {
-    "build": "npm run build:tsup && npm run build:validate",
+    "build": "npm run build:tsup && build:dtsroll && npm run build:validate",
     "build:tsup": "tsup",
-    "build:validate": "grep -q -P '\\.webchat \\.w([a-zA-Z-]){6}_' dist/*.css 2>/dev/null || { echo \"Error: dist/*.css is not compiled by Lightning CSS\" >&2; exit 1; }",
+    "build:dtsroll": "dtsroll ./dist/*.d.*",
+    "build:validate": "npm run build:validate:css && npm run build:validate:dts",
+    "build:validate:css": "grep -q -P '\\.webchat \\.w([a-zA-Z-]){6}_' dist/*.css 2>/dev/null || { echo \"Error: dist/*.css is not compiled by Lightning CSS\" >&2; exit 1; }",
+    "build:validate:dts": "if grep -q -P '@msinternal\\/' dist/*.d.* 2>/dev/null; then echo \"Error: dist/*.d.* is not compiled by dtsroll\" >&2; exit 1; fi",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -136,7 +139,6 @@
     "@types/jest": "^30.0.0",
     "@types/mdast": "^4.0.4",
     "@types/node": "^24.1.0",
-    "@types/react": "^16.14.65",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "core-js": "^3.44.0",
@@ -175,6 +177,7 @@
     "valibot": "1.1.0"
   },
   "peerDependencies": {
+    "@types/react": "^16.14.65",
     "react": ">= 16.8.6",
     "react-dom": ">= 16.8.6"
   }
