@@ -92,6 +92,7 @@
       "jsx": "react",
       "noImplicitAny": false,
       "resolveJsonModule": true,
+      "moduleResolution": "Bundler",
       "skipLibCheck": true,
       "strict": false
     }
