@@ -226,7 +226,6 @@
     "@types/dom-speech-recognition": "^0.0.6",
     "@types/mdast": "^4.0.4",
     "@types/node": "^24.1.0",
-    "@types/react": "^16.14.65",
     "@types/uuid": "^10.0.0",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
@@ -239,6 +238,7 @@
     "typescript": "~5.8.3"
   },
   "peerDependencies": {
+    "@types/react": "^16.14.65",
     "react-chain-of-responsibility": "0.4.0-main.c2f17da",
     "react": ">= 16.8.6",
     "react-dom": ">= 16.8.6"

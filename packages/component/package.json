@@ -75,7 +75,7 @@
   ],
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/component#readme",
   "scripts": {
-    "build": "npm run build:tsup && build:dtsroll && npm run build:validate",
+    "build": "npm run build:tsup && npm run build:dtsroll && npm run build:validate",
     "build:tsup": "tsup",
     "build:dtsroll": "dtsroll ./dist/*.d.*",
     "build:validate": "npm run build:validate:css && npm run build:validate:dts",
