@@ -90,9 +90,9 @@
       "allowSyntheticDefaultImports": true,
       "downlevelIteration": true,
       "jsx": "react",
+      "module": "NodeNext",
       "noImplicitAny": false,
       "resolveJsonModule": true,
-      "moduleResolution": "Bundler",
       "skipLibCheck": true,
       "strict": false
     }
