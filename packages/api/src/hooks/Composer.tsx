@@ -53,8 +53,6 @@ import {
   SendBoxToolbarMiddlewareProvider,
   type SendBoxToolbarMiddleware
 } from '../middleware/SendBoxToolbarMiddleware';
-import normalizeStyleOptions from '../normalizeStyleOptions';
-import patchStyleOptionsFromDeprecatedProps from '../patchStyleOptionsFromDeprecatedProps';
 import ActivityAcknowledgementComposer from '../providers/ActivityAcknowledgement/ActivityAcknowledgementComposer';
 import ActivityKeyerComposer from '../providers/ActivityKeyer/ActivityKeyerComposer';
 import ActivityListenerComposer from '../providers/ActivityListener/ActivityListenerComposer';
@@ -63,6 +61,7 @@ import ActivitySendStatusTelemetryComposer from '../providers/ActivitySendStatus
 import ActivityTypingComposer from '../providers/ActivityTyping/ActivityTypingComposer';
 import GroupActivitiesComposer from '../providers/GroupActivities/GroupActivitiesComposer';
 import PonyfillComposer from '../providers/Ponyfill/PonyfillComposer';
+import StyleOptionsComposer from '../providers/StyleOptions/StyleOptionsComposer';
 import { type ActivityStatusMiddleware, type RenderActivityStatus } from '../types/ActivityStatusMiddleware';
 import AttachmentForScreenReaderMiddleware from '../types/AttachmentForScreenReaderMiddleware';
 import AvatarMiddleware from '../types/AvatarMiddleware';
@@ -299,10 +298,6 @@ const ComposerCore = ({
 
   const patchedDir = useMemo(() => (dir === 'ltr' || dir === 'rtl' ? dir : 'auto'), [dir]);
   const patchedGrammars = useMemo(() => grammars || [], [grammars]);
-  const patchedStyleOptions = useMemo(
-    () => normalizeStyleOptions(patchStyleOptionsFromDeprecatedProps(styleOptions)),
-    [styleOptions]
-  );
 
   uiState = parseUIState(uiState, disabled);
 
@@ -557,7 +552,6 @@ const ComposerCore = ({
       scrollToEndButtonRenderer,
       selectVoice: patchedSelectVoice,
       sendTypingIndicator,
-      styleOptions: patchedStyleOptions,
       telemetryDimensionsRef,
       toastRenderer: patchedToastRenderer,
       trackDimension,
@@ -582,7 +576,6 @@ const ComposerCore = ({
       patchedGrammars,
       patchedLocalizedStrings,
       patchedSelectVoice,
-      patchedStyleOptions,
       patchedToastRenderer,
       patchedTypingIndicatorRenderer,
       renderMarkdown,
@@ -776,7 +769,7 @@ ComposerWithStore.propTypes = {
   store: PropTypes.any
 };
 
-const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, ...props }: ComposerProps) => {
+const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, styleOptions, ...props }: ComposerProps) => {
   const [error, setError] = useState();
 
   const handleError = useCallback(
@@ -795,7 +788,9 @@ const Composer = ({ internalRenderErrorBox, onTelemetry, ponyfill, ...props }: C
   ) : (
     <ErrorBoundary onError={handleError}>
       <PonyfillComposer ponyfill={ponyfill}>
-        <ComposerWithStore onTelemetry={onTelemetry} {...props} />
+        <StyleOptionsComposer styleOptions={styleOptions}>
+          <ComposerWithStore onTelemetry={onTelemetry} {...props} />
+        </StyleOptionsComposer>
       </PonyfillComposer>
     </ErrorBoundary>
   );

@@ -1,5 +1,7 @@
 /* eslint-disable prefer-arrow-callback */
-import { Components, type StyleOptions } from 'botframework-webchat';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { type StyleOptions } from 'botframework-webchat';
+import { ThemeProvider } from 'botframework-webchat/component';
 import {
   createActivityBorderMiddleware,
   createActivityGroupingMiddleware,
@@ -8,7 +10,8 @@ import {
   type DecoratorMiddleware
 } from 'botframework-webchat/decorator';
 import { type ActivityMiddleware, type TypingIndicatorMiddleware } from 'botframework-webchat/internal';
-import React, { memo, type ReactNode } from 'react';
+import React, { memo } from 'react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ActivityLoader from '../components/activity/ActivityLoader';
 import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
@@ -20,14 +23,18 @@ import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
 import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
 import { createStyles } from '../styles';
-import VariantComposer, { VariantList } from './VariantComposer';
+import VariantComposer, { variantNameSchema } from './VariantComposer';
 
-const { ThemeProvider } = Components;
+const fluentThemeProviderPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    nonce: optional(string()),
+    variant: optional(variantNameSchema, 'fluent')
+  }),
+  readonly()
+);
 
-type FluentThemeProviderProps = Readonly<{
-  children?: ReactNode | undefined;
-  variant?: VariantList | undefined;
-}>;
+type FluentThemeProviderProps = InferInput<typeof fluentThemeProviderPropsSchema>;
 
 const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
   () =>
@@ -72,27 +79,30 @@ const fluentStyleOptions: StyleOptions = Object.freeze({
   feedbackActionsPlacement: 'activity-actions'
 });
 
-const typingIndicatorMiddleware = Object.freeze([
+const typingIndicatorMiddleware: readonly TypingIndicatorMiddleware[] = Object.freeze([
   () =>
     next =>
     (...args) =>
       args[0].visible ? <SlidingDotsTypingIndicator /> : next(...args)
 ] satisfies TypingIndicatorMiddleware[]);
 
-function FluentThemeProvider({ children, variant = 'fluent' }: FluentThemeProviderProps) {
+function FluentThemeProvider(props: FluentThemeProviderProps) {
+  const { children, nonce, variant } = validateProps(fluentThemeProviderPropsSchema, props);
+
   return (
     <VariantComposer variant={variant}>
       <WebChatTheme>
         <TelephoneKeypadProvider>
           <ThemeProvider
             activityMiddleware={activityMiddleware}
+            nonce={nonce}
             sendBoxMiddleware={sendBoxMiddleware}
             styleOptions={fluentStyleOptions}
             styles={styles}
             typingIndicatorMiddleware={typingIndicatorMiddleware}
           >
             <AssetComposer>
-              <WebChatDecorator>
+              <WebChatDecorator nonce={nonce}>
                 <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
               </WebChatDecorator>
             </AssetComposer>

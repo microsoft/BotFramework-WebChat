@@ -15,14 +15,14 @@
       const {
         testHelpers: { createDirectLineEmulator },
         WebChat: {
-          Components: { Composer },
-          internal: { useInjectStyles }
+          Components: { Composer, ThemeProvider }
         }
       } = window;
 
       function createLinkStyleSheet(href) {
         const linkElement = document.createElement('link');
 
+        linkElement.dataset['testid'] = 'style';
         linkElement.setAttribute('href', href);
         linkElement.setAttribute('rel', 'stylesheet');
         linkElement.setAttribute('type', 'text/css');
@@ -39,41 +39,40 @@
           return false;
         };
 
-        const renderWithFunction = fn =>
+        const render = ({ elements, nonce, stylesRoot }) =>
           new Promise(resolve =>
             ReactDOM.render(
-              <Composer directLine={directLine} store={store}>
-                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
-              </Composer>,
-              document.getElementById('webchat')
+              <ThemeProvider styles={elements} nonce={nonce} styleOptions={stylesRoot ? { stylesRoot } : {}} />,
+              document.getElementById('webchat'),
+              resolve
             )
           );
 
-        const linkStyleSheetElement1 = createLinkStyleSheet('/assets/useInjectStyles/1.css');
-        const linkStyleSheetElement2 = createLinkStyleSheet('/assets/useInjectStyles/2.css');
-        const linkStyleSheetElement3 = createLinkStyleSheet('/assets/useInjectStyles/3.css');
+        const linkStyleSheetElement1 = createLinkStyleSheet('./css/1.css');
+        const linkStyleSheetElement2 = createLinkStyleSheet('./css/2.css');
+        const linkStyleSheetElement3 = createLinkStyleSheet('./css/3.css');
 
-        await renderWithFunction(() => useInjectStyles([linkStyleSheetElement1]));
-        await host.snapshot();
+        await render({ elements: [linkStyleSheetElement1] });
+        await host.snapshot('local');
 
-        const allInjectedStyles1 = document.head.querySelectorAll('link:not([data-default])');
+        const allInjectedStyles1 = document.head.querySelectorAll('link[data-testid="style"]');
 
         expect(allInjectedStyles1).toHaveLength(1);
         expect(allInjectedStyles1[0]).toBe(linkStyleSheetElement1);
 
-        await renderWithFunction(() => useInjectStyles([linkStyleSheetElement1, linkStyleSheetElement2]));
-        await host.snapshot();
+        await render({ elements: [linkStyleSheetElement1, linkStyleSheetElement2] });
+        await host.snapshot('local');
 
-        const allInjectedStyles2 = document.head.querySelectorAll('link:not([data-default])');
+        const allInjectedStyles2 = document.head.querySelectorAll('link[data-testid="style"]');
 
         expect(allInjectedStyles2).toHaveLength(2);
         expect(allInjectedStyles2[0]).toBe(linkStyleSheetElement1);
         expect(allInjectedStyles2[1]).toBe(linkStyleSheetElement2);
 
-        await renderWithFunction(() => useInjectStyles([linkStyleSheetElement1, linkStyleSheetElement2, linkStyleSheetElement3]));
-        await host.snapshot();
+        await render({ elements: [linkStyleSheetElement1, linkStyleSheetElement2, linkStyleSheetElement3] });
+        await host.snapshot('local');
 
-        const allInjectedStyles3 = document.head.querySelectorAll('link:not([data-default])');
+        const allInjectedStyles3 = document.head.querySelectorAll('link[data-testid="style"]');
 
         expect(allInjectedStyles3).toHaveLength(3);
         expect(allInjectedStyles3[0]).toBe(linkStyleSheetElement1);

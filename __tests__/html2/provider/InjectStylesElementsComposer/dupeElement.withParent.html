@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        testHelpers: { createDirectLineEmulator },
+        WebChat: {
+          Components: { Composer, ThemeProvider }
+        }
+      } = window;
+
+      function createStyle(body) {
+        const styleElement = document.createElement('style');
+
+        styleElement.dataset['testid'] = 'style';
+        styleElement.innerHTML = body;
+
+        return styleElement;
+      }
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        const RunFunction = ({ fn }) => {
+          fn();
+
+          return false;
+        };
+
+        const render = ({ elements, nonce, stylesRoot }) =>
+          new Promise(resolve =>
+            ReactDOM.render(
+              <ThemeProvider styles={elements} nonce={nonce} styleOptions={stylesRoot ? { stylesRoot } : {}} />,
+              document.getElementById('webchat'),
+              resolve
+            )
+          );
+
+        const styleElement = createStyle('main { background-color: Red!important; }');
+
+        document.head.append(styleElement);
+
+        await render({ elements: [styleElement, styleElement] });
+        await host.snapshot('local');
+
+        const allInjectedStyles1 = document.head.querySelectorAll('style[data-testid="style"]');
+
+        expect(allInjectedStyles1).toHaveLength(2);
+        expect(allInjectedStyles1[0]).toBe(styleElement);
+        expect(allInjectedStyles1[1]).not.toBe(styleElement);
+        expect(allInjectedStyles1[1]).toHaveProperty('textContent', styleElement.textContent);
+
+        await render({ elements: [styleElement, styleElement] });
+        await host.snapshot('local');
+
+        const allInjectedStyles2 = document.head.querySelectorAll('style[data-testid="style"]');
+
+        expect(allInjectedStyles2).toHaveLength(2);
+        expect(allInjectedStyles2[0]).toBe(styleElement);
+        expect(allInjectedStyles2[1]).not.toBe(styleElement);
+        expect(allInjectedStyles2[1]).toHaveProperty('textContent', styleElement.textContent);
+
+        await render({ elements: [styleElement] });
+        await host.snapshot('local');
+
+        const allInjectedStyles3 = document.head.querySelectorAll('style[data-testid="style"]');
+
+        expect(allInjectedStyles3).toHaveLength(2);
+        expect(allInjectedStyles3[0]).toBe(styleElement);
+        expect(allInjectedStyles3[1]).not.toBe(styleElement);
+        expect(allInjectedStyles3[1]).toHaveProperty('textContent', styleElement.textContent);
+
+        await render({ elements: [] });
+        await host.snapshot('local');
+
+        const allInjectedStyles4 = document.head.querySelectorAll('style[data-testid="style"]');
+
+        expect(allInjectedStyles4).toHaveLength(1);
+        expect(allInjectedStyles4[0]).toBe(styleElement);
+      });
+    </script>
+  </body>
+</html>

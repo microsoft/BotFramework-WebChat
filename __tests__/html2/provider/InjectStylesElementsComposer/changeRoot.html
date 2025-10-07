@@ -15,14 +15,14 @@
       const {
         testHelpers: { createDirectLineEmulator },
         WebChat: {
-          Components: { Composer },
-          internal: { useInjectStyles }
+          Components: { Composer, ThemeProvider }
         }
       } = window;
 
       function createStyle(body) {
         const styleElement = document.createElement('style');
 
+        styleElement.dataset['testid'] = 'style';
         styleElement.innerHTML = body;
 
         return styleElement;
@@ -37,31 +37,28 @@
           return false;
         };
 
-        const renderWithFunction = (fn, props) =>
+        const render = ({ elements, nonce, stylesRoot }) =>
           new Promise(resolve =>
             ReactDOM.render(
-              <Composer directLine={directLine} store={store} {...props}>
-                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
-              </Composer>,
-              document.getElementById('webchat')
+              <ThemeProvider styles={elements} nonce={nonce} styleOptions={stylesRoot ? { stylesRoot } : {}} />,
+              document.getElementById('webchat'),
+              resolve
             )
           );
 
         const styleElement = createStyle('main { background-color: Red!important; }');
 
-        await renderWithFunction(() => useInjectStyles([styleElement]));
-        await host.snapshot();
+        await render({ elements: [styleElement] });
+        await host.snapshot('local');
 
-        expect([...document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])')]).toEqual([styleElement]);
-        expect([...document.body.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])')]).toEqual([]);
+        expect([...document.head.querySelectorAll('style[data-testid="style"]')]).toEqual([styleElement]);
+        expect([...document.body.querySelectorAll('style[data-testid="style"]')]).toEqual([]);
 
-        await renderWithFunction(() => useInjectStyles([styleElement]), {
-          styleOptions: { stylesRoot: document.body }
-        });
-        await host.snapshot();
+        await render({ elements: [styleElement], stylesRoot: document.body });
+        await host.snapshot('local');
 
-        expect([...document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])')]).toEqual([]);
-        expect([...document.body.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])')]).toEqual([styleElement]);
+        expect([...document.head.querySelectorAll('style[data-testid="style"]')]).toEqual([]);
+        expect([...document.body.querySelectorAll('style[data-testid="style"]')]).toEqual([styleElement]);
       });
     </script>
   </body>

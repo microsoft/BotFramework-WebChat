@@ -1,12 +1,29 @@
-import React, { type ReactNode } from 'react';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import cx from 'classnames';
-import styles from './Theme.module.css';
+import React, { memo } from 'react';
+import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 import { useStyles, useVariantClassName } from '../../styles';
+import styles from './Theme.module.css';
 
 export const rootClassName = 'webchat-fluent';
 
-export default function Theme(props: Readonly<{ readonly children: ReactNode | undefined }>) {
+const themePropsSchema = pipe(
+  object({
+    children: optional(reactNode())
+  }),
+  readonly()
+);
+
+type ThemeProps = InferInput<typeof themePropsSchema>;
+
+function Theme(props: ThemeProps) {
+  const { children } = validateProps(themePropsSchema, props);
+
   const classNames = useStyles(styles);
   const variantClassName = useVariantClassName(styles);
-  return <div className={cx(rootClassName, classNames['theme'], variantClassName)}>{props.children}</div>;
+
+  return <div className={cx(rootClassName, classNames['theme'], variantClassName)}>{children}</div>;
 }
+
+export default memo(Theme);
+export { themePropsSchema, type ThemeProps };

@@ -1,12 +1,12 @@
 /* eslint-disable prefer-arrow-callback */
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import {
   createActivityBorderMiddleware,
   DecoratorComposer,
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
-import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo } from 'react';
-import { object, optional, pipe, readonly, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 
 import BorderFlair from './BorderFlair';
 import BorderLoader from './BorderLoader';
@@ -31,7 +31,9 @@ const middleware: readonly DecoratorMiddleware[] = Object.freeze([
 
 const webChatDecoratorPropsSchema = pipe(
   object({
-    children: optional(reactNode())
+    children: optional(reactNode()),
+    // `nonce` is intentionally undefinedable() instead of optional() to remind caller they need to pass nonce if they have one.
+    nonce: undefinedable(string())
   }),
   readonly()
 );
@@ -39,10 +41,10 @@ const webChatDecoratorPropsSchema = pipe(
 type WebChatDecoratorProps = InferInput<typeof webChatDecoratorPropsSchema>;
 
 function WebChatDecorator(props: WebChatDecoratorProps) {
-  const { children } = validateProps(webChatDecoratorPropsSchema, props);
+  const { children, nonce } = validateProps(webChatDecoratorPropsSchema, props);
 
   return (
-    <WebChatTheme>
+    <WebChatTheme nonce={nonce}>
       <DecoratorComposer middleware={middleware}>{children}</DecoratorComposer>
     </WebChatTheme>
   );

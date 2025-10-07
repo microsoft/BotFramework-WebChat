@@ -1,20 +1,33 @@
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
-import { hooks } from 'botframework-webchat-api';
+import { useStyleOptions } from 'botframework-webchat-api/hook';
+import classNames from 'classnames';
 import random from 'math-random';
-import { useMemo } from 'react';
-import useInjectStyles from '../hooks/internal/useInjectStyles';
+import React, { memo, useMemo } from 'react';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 import useNonce from '../hooks/internal/useNonce';
+import InjectStyleElementsComposer from '../providers/InjectStyleElements/InjectStyleElementsComposer';
 import CustomPropertyNames from './CustomPropertyNames';
 
-const { useStyleOptions } = hooks;
+const customPropertiesPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    className: optional(string())
+  }),
+  readonly()
+);
+
+type CustomPropertiesProps = InferInput<typeof customPropertiesPropsSchema>;
 
 const webchatCustomPropertiesClass = 'webchat__css-custom-properties';
 
-export default function useCustomPropertiesClassName() {
+function CustomProperties(props: CustomPropertiesProps) {
+  const { children, className } = validateProps(customPropertiesPropsSchema, props);
+
   const [styleOptions] = useStyleOptions();
   const [nonce] = useNonce();
 
-  const [styles, classNameState] = useMemo(() => {
+  const [entries, classNameState] = useMemo(() => {
     const {
       accent,
       avatarSize,
@@ -95,12 +108,19 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.TransitionDuration}: ${transitionDuration};
 }
 `;
-    const [style] = makeCreateStyles(contents)('component');
+    const [element] = makeCreateStyles(contents)('component/CustomProperties');
 
-    return [Object.freeze([style]), Object.freeze([`${webchatCustomPropertiesClass} ${randomClass}`] as const)];
-  }, [styleOptions]);
+    return Object.freeze([
+      Object.freeze([Object.freeze({ element, nonce })]),
+      Object.freeze([`${webchatCustomPropertiesClass} ${randomClass}`] as const)
+    ]);
+  }, [nonce, styleOptions]);
 
-  useInjectStyles(styles, nonce);
-
-  return classNameState;
+  return (
+    <InjectStyleElementsComposer entries={entries}>
+      <div className={classNames(className, classNameState[0])}>{children}</div>
+    </InjectStyleElementsComposer>
+  );
 }
+
+export default memo(CustomProperties);

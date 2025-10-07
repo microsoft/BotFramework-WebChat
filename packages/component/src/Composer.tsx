@@ -26,7 +26,6 @@ import {
 } from './hooks/internal/BypassSpeechSynthesisPonyfill';
 import { StyleToEmotionObjectComposer, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import UITracker from './hooks/internal/UITracker';
-import useInjectStyles from './hooks/internal/useInjectStyles';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 import { FocusSendBoxScope } from './hooks/sendBoxFocus';
 import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
@@ -50,7 +49,7 @@ import useTheme from './providers/Theme/useTheme';
 import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
 import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
-import useCustomPropertiesClassName from './Styles/useCustomPropertiesClassName';
+import CustomProperties from './Styles/CustomProperties';
 import WebChatTheme from './Styles/WebChatTheme';
 import { type ContextOf } from './types/ContextOf';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
@@ -82,7 +81,6 @@ const ROOT_STYLE = {
 
 const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
-  const [customPropertiesClassName] = useCustomPropertiesClassName();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const trackException = useTrackException();
 
@@ -102,7 +100,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   );
 
   return (
-    <div className={classNames('webchat', 'webchat__css-custom-properties', rootClassName, customPropertiesClassName)}>
+    <CustomProperties className={classNames('webchat', 'webchat__css-custom-properties', rootClassName)}>
       <CustomElementsComposer>
         <FocusSendBoxScope>
           <ScrollRelativeTranscriptScope>
@@ -118,7 +116,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
           </ScrollRelativeTranscriptScope>
         </FocusSendBoxScope>
       </CustomElementsComposer>
-    </div>
+    </CustomProperties>
   );
 });
 
@@ -136,7 +134,6 @@ type ComposerCoreProps = Readonly<{
     linkOptions: { externalLinkAlt: string }
   ) => string;
   styleSet?: any;
-  styles?: readonly HTMLStyleElement[];
   suggestedActionsAccessKey?: boolean | string;
   webSpeechPonyfillFactory?: WebSpeechPonyfillFactory;
 }>;
@@ -146,7 +143,6 @@ const ComposerCore = ({
   extraStyleSet,
   nonce,
   renderMarkdown,
-  styles,
   styleSet,
   suggestedActionsAccessKey,
   webSpeechPonyfillFactory
@@ -243,8 +239,6 @@ const ComposerCore = ({
     },
     [transcriptFocusObserversRef, setNumTranscriptFocusObservers]
   );
-
-  useInjectStyles(styles, nonce);
 
   const context = useMemo<ContextOf<typeof WebChatUIContext>>(
     () => ({
@@ -419,11 +413,6 @@ const InternalComposer = ({
     [defaultScrollToEndButtonMiddleware, scrollToEndButtonMiddleware, theme.scrollToEndButtonMiddleware]
   );
 
-  const patchedStyleOptions = useMemo(
-    () => ({ ...theme.styleOptions, ...styleOptions }),
-    [styleOptions, theme.styleOptions]
-  );
-
   const sendBoxMiddleware = useMemo<readonly SendBoxMiddleware[]>(
     () =>
       Object.freeze([
@@ -458,7 +447,7 @@ const InternalComposer = ({
       scrollToEndButtonMiddleware={patchedScrollToEndButtonMiddleware}
       sendBoxMiddleware={sendBoxMiddleware}
       sendBoxToolbarMiddleware={sendBoxToolbarMiddleware}
-      styleOptions={patchedStyleOptions}
+      styleOptions={styleOptions}
       toastMiddleware={patchedToastMiddleware}
       typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
       {...composerProps}
@@ -473,7 +462,6 @@ const InternalComposer = ({
                   nonce={nonce}
                   renderMarkdown={renderMarkdown}
                   styleSet={styleSet}
-                  styles={theme.styles}
                   suggestedActionsAccessKey={suggestedActionsAccessKey}
                   webSpeechPonyfillFactory={webSpeechPonyfillFactory}
                 >
@@ -490,7 +478,8 @@ const InternalComposer = ({
 };
 
 const Composer = (props: ComposerProps) => (
-  <WebChatTheme>
+  // eslint-disable-next-line react/destructuring-assignment
+  <WebChatTheme nonce={props.nonce}>
     <InternalComposer {...props} />
   </WebChatTheme>
 );

@@ -15,14 +15,14 @@
       const {
         testHelpers: { createDirectLineEmulator },
         WebChat: {
-          Components: { Composer },
-          internal: { useInjectStyles }
+          Components: { Composer, ThemeProvider }
         }
       } = window;
 
       function createStyle(body) {
         const styleElement = document.createElement('style');
 
+        styleElement.dataset['testid'] = 'style';
         styleElement.innerHTML = body;
 
         return styleElement;
@@ -37,33 +37,55 @@
           return false;
         };
 
-        const renderWithFunction = fn =>
+        const render = ({ elements, nonce, stylesRoot }) =>
           new Promise(resolve =>
             ReactDOM.render(
-              <Composer directLine={directLine} store={store}>
-                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
-              </Composer>,
-              document.getElementById('webchat')
+              <ThemeProvider styles={elements} nonce={nonce} styleOptions={stylesRoot ? { stylesRoot } : {}} />,
+              document.getElementById('webchat'),
+              resolve
             )
           );
 
         const styleElement = createStyle('main { background-color: Red!important; }');
 
-        await renderWithFunction(() => useInjectStyles([styleElement, styleElement]));
-        await host.snapshot();
+        await render({ elements: [styleElement, styleElement] });
+        await host.snapshot('local');
 
-        const allInjectedStyles1 = document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])');
+        const allInjectedStyles1 = document.head.querySelectorAll(
+          'style[data-testid="style"]'
+        );
 
         expect(allInjectedStyles1).toHaveLength(1);
         expect(allInjectedStyles1[0]).toBe(styleElement);
 
-        await renderWithFunction(() => useInjectStyles([styleElement, styleElement]));
-        await host.snapshot();
+        await render({ elements: [styleElement, styleElement] });
+        await host.snapshot('local');
 
-        const allInjectedStyles2 = document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])');
+        const allInjectedStyles2 = document.head.querySelectorAll(
+          'style[data-testid="style"]'
+        );
 
         expect(allInjectedStyles2).toHaveLength(1);
         expect(allInjectedStyles2[0]).toBe(styleElement);
+
+        await render({ elements: [styleElement] });
+        await host.snapshot('local');
+
+        const allInjectedStyles3 = document.head.querySelectorAll(
+          'style[data-testid="style"]'
+        );
+
+        expect(allInjectedStyles3).toHaveLength(1);
+        expect(allInjectedStyles3[0]).toBe(styleElement);
+
+        await render({ elements: [] });
+        await host.snapshot('local');
+
+        const allInjectedStyles4 = document.head.querySelectorAll(
+          'style[data-testid="style"]'
+        );
+
+        expect(allInjectedStyles4).toHaveLength(0);
       });
     </script>
   </body>
