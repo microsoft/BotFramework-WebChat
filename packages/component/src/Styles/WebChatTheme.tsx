@@ -1,30 +1,32 @@
-import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
-import React, { memo } from 'react';
-import { object, optional, pipe, readonly, type InferInput } from 'valibot';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import React, { memo, useMemo } from 'react';
+import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 
-import useNonce from '../hooks/internal/useNonce';
 import ThemeProvider from '../providers/Theme/ThemeProvider';
 import createStyles from './createStyles';
 
 const webChatThemePropsSchema = pipe(
   object({
-    children: optional(reactNode())
+    children: optional(reactNode()),
+    nonce: undefinedable(string())
   }),
   readonly()
 );
 
 type WebChatThemeProps = InferInput<typeof webChatThemePropsSchema>;
 
-const styles = createStyles('component');
+function WebChatTheme(props: WebChatThemeProps) {
+  const { children, nonce } = validateProps(webChatThemePropsSchema, props);
 
-function WebChatTheme({ children }: WebChatThemeProps) {
-  const [nonce] = useNonce();
+  const styleElements = useMemo(() => {
+    const styleElements = createStyles('component');
 
-  return (
-    <ThemeProvider nonce={nonce} styles={styles}>
-      {children}
-    </ThemeProvider>
-  );
+    nonce && styleElements.forEach(element => element.setAttribute('nonce', nonce));
+
+    return styleElements;
+  }, [nonce]);
+
+  return <ThemeProvider styles={styleElements}>{children}</ThemeProvider>;
 }
 
 export default memo(WebChatTheme);

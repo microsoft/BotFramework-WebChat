@@ -4,15 +4,16 @@ import { useStyleOptions } from 'botframework-webchat-api/hook';
 import classNames from 'classnames';
 import random from 'math-random';
 import React, { memo, useMemo } from 'react';
-import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
-import useNonce from '../hooks/internal/useNonce';
+import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 import InjectStyleElementsComposer from '../providers/InjectStyleElements/InjectStyleElementsComposer';
 import CustomPropertyNames from './CustomPropertyNames';
 
 const customPropertiesContainerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
-    className: optional(string())
+    className: optional(string()),
+    // Intentionally undefinedable() instead of optional() to remind caller they should pass nonce.
+    nonce: undefinedable(string())
   }),
   readonly()
 );
@@ -22,12 +23,11 @@ type CustomPropertiesContainerProps = InferInput<typeof customPropertiesContaine
 const webchatCustomPropertiesClass = 'webchat__css-custom-properties';
 
 function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
-  const { children, className } = validateProps(customPropertiesContainerPropsSchema, props);
+  const { children, className, nonce } = validateProps(customPropertiesContainerPropsSchema, props);
 
   const [styleOptions] = useStyleOptions();
-  const [nonce] = useNonce();
 
-  const [entries, classNameState] = useMemo(() => {
+  const [styleElements, classNameState] = useMemo(() => {
     const {
       accent,
       avatarSize,
@@ -110,14 +110,16 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
 `;
     const [element] = makeCreateStyles(contents)('component/CustomProperties');
 
+    nonce && element.setAttribute('nonce', nonce);
+
     return Object.freeze([
-      Object.freeze([Object.freeze({ element, nonce })]),
+      Object.freeze([element]),
       Object.freeze([`${webchatCustomPropertiesClass} ${randomClass}`] as const)
     ]);
   }, [nonce, styleOptions]);
 
   return (
-    <InjectStyleElementsComposer entries={entries}>
+    <InjectStyleElementsComposer styleElements={styleElements}>
       <div className={classNames(className, classNameState[0])}>{children}</div>
     </InjectStyleElementsComposer>
   );

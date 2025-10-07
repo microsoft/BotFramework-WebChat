@@ -63,7 +63,11 @@ function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
 }
 
-type ComposerCoreUIProps = Readonly<{ children?: ReactNode | undefined }>;
+type ComposerCoreUIProps = {
+  // eslint-disable-next-line react/require-default-props
+  readonly children?: ReactNode | undefined;
+  readonly nonce: string | undefined;
+};
 
 const ROOT_STYLE = {
   '&.webchat__css-custom-properties': {
@@ -79,7 +83,7 @@ const ROOT_STYLE = {
   }
 };
 
-const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
+const ComposerCoreUI = memo(({ children, nonce }: ComposerCoreUIProps) => {
   const [{ internalLiveRegionFadeAfter }] = useStyleOptions();
   const rootClassName = useStyleToEmotionObject()(ROOT_STYLE) + '';
   const trackException = useTrackException();
@@ -100,7 +104,10 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   );
 
   return (
-    <CustomPropertiesContainer className={classNames('webchat', 'webchat__css-custom-properties', rootClassName)}>
+    <CustomPropertiesContainer
+      className={classNames('webchat', 'webchat__css-custom-properties', rootClassName)}
+      nonce={nonce}
+    >
       <CustomElementsComposer>
         <FocusSendBoxScope>
           <ScrollRelativeTranscriptScope>
@@ -284,7 +291,7 @@ const ComposerCore = ({
   return (
     <SayComposer ponyfill={webSpeechPonyfill}>
       <WebChatUIContext.Provider value={context}>
-        <ComposerCoreUI>{children}</ComposerCoreUI>
+        <ComposerCoreUI nonce={nonce}>{children}</ComposerCoreUI>
       </WebChatUIContext.Provider>
     </SayComposer>
   );
@@ -478,7 +485,8 @@ const InternalComposer = ({
 };
 
 const Composer = (props: ComposerProps) => (
-  <WebChatTheme>
+  // eslint-disable-next-line react/destructuring-assignment
+  <WebChatTheme nonce={props.nonce}>
     <InternalComposer {...props} />
   </WebChatTheme>
 );

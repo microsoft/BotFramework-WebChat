@@ -1,7 +1,7 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyleOptions } from 'botframework-webchat-api/hook';
 import React, { Fragment, memo, useEffect } from 'react';
-import { array, custom, instance, object, optional, pipe, readonly, string, union, type InferOutput } from 'valibot';
+import { array, custom, instance, object, optional, pipe, readonly, union, type InferOutput } from 'valibot';
 
 const injectedStylesElementSchema = union(
   [
@@ -18,18 +18,7 @@ type InjectedStylesElement = InferOutput<typeof injectedStylesElementSchema>;
 const injectStyleElementsComposerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
-    entries: pipe(
-      array(
-        pipe(
-          object({
-            element: injectedStylesElementSchema,
-            nonce: optional(string())
-          }),
-          readonly()
-        )
-      ),
-      readonly()
-    )
+    styleElements: pipe(array(injectedStylesElementSchema), readonly())
   }),
   readonly()
 );
@@ -39,14 +28,13 @@ type InjectStyleElementsComposerProps = InferOutput<typeof injectStyleElementsCo
 type InjectedStylesInstance = {
   readonly element: InjectedStylesElement;
   readonly mountingElement: InjectedStylesElement;
-  readonly nonce: string | undefined;
   readonly root: Node;
 };
 
 const sharedInstances: InjectedStylesInstance[] = [];
 
 function InjectStyleElementsComposer(props: InjectStyleElementsComposerProps) {
-  const { children, entries } = validateProps(injectStyleElementsComposerPropsSchema, props);
+  const { children, styleElements } = validateProps(injectStyleElementsComposerPropsSchema, props);
 
   const [{ stylesRoot: root }] = useStyleOptions();
 
@@ -58,9 +46,9 @@ function InjectStyleElementsComposer(props: InjectStyleElementsComposerProps) {
     const instancesToRemoveOnUnmount: InjectedStylesInstance[] = [];
 
     // TODO: [P2] Move to "toReversed()" once we updated Chrome >= 110 and Safari >= 16.
-    for (const { element, nonce } of [...entries].reverse()) {
+    for (const element of [...styleElements].reverse()) {
       let instance: InjectedStylesInstance | undefined = sharedInstances.find(
-        instance => instance.element === element && instance.nonce === nonce && instance.root === root
+        instance => instance.element === element && instance.root === root
       );
 
       if (!instance) {
@@ -70,11 +58,8 @@ function InjectStyleElementsComposer(props: InjectStyleElementsComposerProps) {
           element,
           // Deep clone is required for <style>body { ... }</style> (text node inside).
           mountingElement,
-          nonce,
           root
         });
-
-        nonce ? mountingElement.setAttribute('nonce', nonce) : mountingElement.removeAttribute('nonce');
 
         mountingElement.hasAttribute('data-webchat-injected') ||
           mountingElement.setAttribute('data-webchat-injected', '');
@@ -106,7 +91,7 @@ function InjectStyleElementsComposer(props: InjectStyleElementsComposerProps) {
         sharedInstances.includes(instance) || instance.mountingElement.remove();
       }
     };
-  }, [entries, root]);
+  }, [root, styleElements]);
 
   return <Fragment>{children}</Fragment>;
 }

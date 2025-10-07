@@ -20,7 +20,7 @@ import {
 import { StyleOptionsComposer } from 'botframework-webchat-api/internal';
 import { type Polymiddleware } from 'botframework-webchat-api/middleware';
 import React, { memo, useContext, useMemo, type ReactNode } from 'react';
-import { array, custom, function_, literal, object, optional, pipe, readonly, safeParse, string, union } from 'valibot';
+import { array, custom, function_, literal, object, optional, pipe, readonly, safeParse, union } from 'valibot';
 
 import InjectStyleElementsComposer from '../InjectStyleElements/InjectStyleElementsComposer';
 import Context, { type ThemeContextType } from './private/Context';
@@ -28,7 +28,6 @@ import Context, { type ThemeContextType } from './private/Context';
 const themeProviderPropsSchema = pipe(
   object({
     children: optional(reactNode()),
-    nonce: optional(string()),
     styleOptions: optional(custom<StyleOptions>(value => safeParse(object({}), value).success)),
     /**
      * <link rel="stylesheet"> and <style> to inject into the DOM on this component mount.
@@ -93,12 +92,9 @@ const themeProviderPropsSchema = pipe(
 // We cannot use InferInput<> here because the array need to be readonly but InferInput omitted the readonly.
 type ThemeProviderProps = {
   readonly children?: ReactNode | undefined;
-  readonly nonce?: string | undefined;
   readonly styleOptions?: object | undefined;
   /**
    * <link rel="stylesheet"> and <style> to inject into the DOM on this component mount.
-   *
-   * Nonce will be automatically added to the element.
    */
   readonly styles?: readonly ((HTMLLinkElement & { rel: 'stylesheet' }) | HTMLStyleElement)[] | undefined;
   /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */
@@ -129,7 +125,6 @@ const ThemeProvider = (props: ThemeProviderProps) => {
     cardActionMiddleware,
     children,
     groupActivitiesMiddleware,
-    nonce,
     polymiddleware,
     scrollToEndButtonMiddleware,
     sendBoxMiddleware,
@@ -213,8 +208,6 @@ const ThemeProvider = (props: ThemeProviderProps) => {
     [typingIndicatorMiddleware, existingContext.typingIndicatorMiddleware]
   );
 
-  const styleEntries = useMemo(() => styles.map(element => Object.freeze({ element, nonce })), [nonce, styles]);
-
   const context = useMemo(
     () => ({
       activityMiddleware: mergedActivityMiddleware,
@@ -250,7 +243,7 @@ const ThemeProvider = (props: ThemeProviderProps) => {
 
   return (
     <StyleOptionsComposer styleOptions={styleOptions}>
-      <InjectStyleElementsComposer entries={styleEntries}>
+      <InjectStyleElementsComposer styleElements={styles}>
         <Context.Provider value={context}>{children}</Context.Provider>
       </InjectStyleElementsComposer>
     </StyleOptionsComposer>
