@@ -9,7 +9,7 @@ import useNonce from '../hooks/internal/useNonce';
 import InjectStyleElementsComposer from '../providers/InjectStyleElements/InjectStyleElementsComposer';
 import CustomPropertyNames from './CustomPropertyNames';
 
-const customPropertiesPropsSchema = pipe(
+const customPropertiesContainerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
     className: optional(string())
@@ -17,12 +17,12 @@ const customPropertiesPropsSchema = pipe(
   readonly()
 );
 
-type CustomPropertiesProps = InferInput<typeof customPropertiesPropsSchema>;
+type CustomPropertiesContainerProps = InferInput<typeof customPropertiesContainerPropsSchema>;
 
 const webchatCustomPropertiesClass = 'webchat__css-custom-properties';
 
-function CustomProperties(props: CustomPropertiesProps) {
-  const { children, className } = validateProps(customPropertiesPropsSchema, props);
+function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
+  const { children, className } = validateProps(customPropertiesContainerPropsSchema, props);
 
   const [styleOptions] = useStyleOptions();
   const [nonce] = useNonce();
@@ -123,4 +123,6 @@ function CustomProperties(props: CustomPropertiesProps) {
   );
 }
 
-export default memo(CustomProperties);
+CustomPropertiesContainer.displayName = 'CustomPropertiesContainer';
+
+export default memo(CustomPropertiesContainer);

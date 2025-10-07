@@ -49,7 +49,7 @@ import useTheme from './providers/Theme/useTheme';
 import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
 import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
-import CustomProperties from './Styles/CustomProperties';
+import CustomPropertiesContainer from './Styles/CustomPropertiesContainer';
 import WebChatTheme from './Styles/WebChatTheme';
 import { type ContextOf } from './types/ContextOf';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
@@ -100,7 +100,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
   );
 
   return (
-    <CustomProperties className={classNames('webchat', 'webchat__css-custom-properties', rootClassName)}>
+    <CustomPropertiesContainer className={classNames('webchat', 'webchat__css-custom-properties', rootClassName)}>
       <CustomElementsComposer>
         <FocusSendBoxScope>
           <ScrollRelativeTranscriptScope>
@@ -116,7 +116,7 @@ const ComposerCoreUI = memo(({ children }: ComposerCoreUIProps) => {
           </ScrollRelativeTranscriptScope>
         </FocusSendBoxScope>
       </CustomElementsComposer>
-    </CustomProperties>
+    </CustomPropertiesContainer>
   );
 });
 
@@ -478,8 +478,7 @@ const InternalComposer = ({
 };
 
 const Composer = (props: ComposerProps) => (
-  // eslint-disable-next-line react/destructuring-assignment
-  <WebChatTheme nonce={props.nonce}>
+  <WebChatTheme>
     <InternalComposer {...props} />
   </WebChatTheme>
 );

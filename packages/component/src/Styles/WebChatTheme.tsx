@@ -1,15 +1,14 @@
 import { reactNode } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo } from 'react';
-import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
+import useNonce from '../hooks/internal/useNonce';
 import ThemeProvider from '../providers/Theme/ThemeProvider';
 import createStyles from './createStyles';
 
 const webChatThemePropsSchema = pipe(
   object({
-    children: optional(reactNode()),
-    // `nonce` is intentionally undefinedable() instead of optional() to remind caller they need to pass nonce if they have one.
-    nonce: undefinedable(string())
+    children: optional(reactNode())
   }),
   readonly()
 );
@@ -18,7 +17,9 @@ type WebChatThemeProps = InferInput<typeof webChatThemePropsSchema>;
 
 const styles = createStyles('component');
 
-function WebChatTheme({ children, nonce }: WebChatThemeProps) {
+function WebChatTheme({ children }: WebChatThemeProps) {
+  const [nonce] = useNonce();
+
   return (
     <ThemeProvider nonce={nonce} styles={styles}>
       {children}
