@@ -41,9 +41,9 @@
   ],
   "scripts": {
     "build": "npm run build:static && npm run build:tsup && npm run build:dtsroll && npm run build:validate",
+    "build:dtsroll": "dtsroll ./dist/*.d.*",
     "build:static": "node ./esbuild.static.mjs",
     "build:tsup": "tsup",
-    "build:dtsroll": "dtsroll ./dist/*.d.*",
     "build:validate": "npm run build:validate:css && npm run build:validate:dts",
     "build:validate:css": "grep -q -P '\\.webchat-fluent \\.w([a-zA-Z-]){6}_' dist/*.css 2>/dev/null || { echo \"Error: dist/*.css is not compiled by Lightning CSS\" >&2; exit 1; }",
     "build:validate:dts": "if grep -q -P '@msinternal\\/' dist/*.d.* 2>/dev/null; then echo \"Error: dist/*.d.* is not compiled by dtsroll\" >&2; exit 1; fi",

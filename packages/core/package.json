@@ -58,8 +58,8 @@
   },
   "scripts": {
     "build": "npm run build:tsup && npm run build:dtsroll && npm run build:validate",
-    "build:tsup": "tsup",
     "build:dtsroll": "dtsroll ./dist/*.d.*",
+    "build:tsup": "tsup",
     "build:validate": "npm run build:validate:dts",
     "build:validate:dts": "if grep -q -P '@msinternal\\/' dist/*.d.* 2>/dev/null; then echo \"Error: dist/*.d.* is not compiled by dtsroll\" >&2; exit 1; fi",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
