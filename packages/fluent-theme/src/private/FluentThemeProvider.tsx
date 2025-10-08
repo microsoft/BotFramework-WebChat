@@ -107,7 +107,7 @@ function FluentThemeProvider(props: FluentThemeProviderProps) {
             typingIndicatorMiddleware={typingIndicatorMiddleware}
           >
             <AssetComposer>
-              <WebChatDecorator nonce={nonce}>
+              <WebChatDecorator>
                 <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
               </WebChatDecorator>
             </AssetComposer>

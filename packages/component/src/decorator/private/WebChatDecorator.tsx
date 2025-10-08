@@ -6,8 +6,9 @@ import {
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
 import React, { memo } from 'react';
-import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
+import useNonce from '../../hooks/internal/useNonce';
 import BorderFlair from './BorderFlair';
 import BorderLoader from './BorderLoader';
 import InjectDecoratorCSS from './InjectDecoratorCSS';
@@ -31,9 +32,7 @@ const middleware: readonly DecoratorMiddleware[] = Object.freeze([
 
 const webChatDecoratorPropsSchema = pipe(
   object({
-    children: optional(reactNode()),
-    // Intentionally undefinedable() instead of optional() to remind caller they should pass nonce.
-    nonce: undefinedable(string())
+    children: optional(reactNode())
   }),
   readonly()
 );
@@ -41,7 +40,9 @@ const webChatDecoratorPropsSchema = pipe(
 type WebChatDecoratorProps = InferInput<typeof webChatDecoratorPropsSchema>;
 
 function WebChatDecorator(props: WebChatDecoratorProps) {
-  const { children, nonce } = validateProps(webChatDecoratorPropsSchema, props);
+  const { children } = validateProps(webChatDecoratorPropsSchema, props);
+
+  const [nonce] = useNonce();
 
   return (
     <InjectDecoratorCSS nonce={nonce}>
