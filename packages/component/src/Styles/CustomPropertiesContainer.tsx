@@ -108,7 +108,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
   ${CustomPropertyNames.TransitionDuration}: ${transitionDuration};
 }
 `;
-    const [element] = makeCreateStyles(contents)('component/CustomProperties');
+    const [element] = makeCreateStyles(contents)('component/CustomPropertiesContainer');
 
     nonce && element.setAttribute('nonce', nonce);
 
