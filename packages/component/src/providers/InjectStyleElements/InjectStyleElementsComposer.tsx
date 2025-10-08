@@ -67,6 +67,23 @@ function InjectStyleElementsComposer(props: InjectStyleElementsComposerProps) {
         // When appending via useEffect(), the order of the useEffect() call will be from descendants to ancestors.
         // That means, the order will be reverse of what is in the React tree.
         // We are doing prepend instead of append, while keeping the first node the last one in the root element.
+
+        // ```html
+        // <InjectStyleElementsComposer styleElements={[stylesA1, stylesA2]}>
+        //   <InjectStyleElementsComposer styleElements={[stylesB]} />
+        // </InjectStyleElementsComposer>
+        // ```
+
+        // Will be injected in the following order to honor CSS cascading:
+
+        // ```html
+        // <head>
+        //   <style>... stylesA1 ...</style>
+        //   <style>... stylesA2 ...</style>
+        //   <style>... stylesB ...</style>
+        // </head>
+        // ```
+
         const insertBeforeNode = Array.from(root.childNodes).find(
           child => child instanceof HTMLElement && child.hasAttribute('data-webchat-injected')
         );
