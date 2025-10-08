@@ -9,11 +9,8 @@ import {
   readonly,
   type BaseIssue,
   type BaseSchema,
-  type ObjectSchema,
   type OptionalSchema,
-  type PicklistSchema,
-  type ReadonlyAction,
-  type SchemaWithPipe
+  type PicklistSchema
 } from 'valibot';
 import React, { type ComponentType } from 'react';
 
@@ -31,10 +28,20 @@ type SafeModifierList<TCSSModuleClasses> = keyof ModifierMap<TCSSModuleClasses> 
   ? string
   : keyof ModifierMap<TCSSModuleClasses>;
 
+type ModifierSchemaEntry = OptionalSchema<PicklistSchema<readonly [string, ...string[]], undefined>, undefined>;
+
+export type IconModifierPropsSchema<TModifiers extends string> = BaseSchema<
+  Partial<Record<TModifiers, string>>,
+  Readonly<Partial<Record<TModifiers, string>>>,
+  BaseIssue<unknown>
+> & {
+  readonly entries: Partial<Record<TModifiers, ModifierSchemaEntry>>;
+};
+
 function createPropsSchema<
   const TCSSModuleClasses extends CSSModuleClasses,
   const TModifiers extends SafeModifierList<TCSSModuleClasses>
->(styles: TCSSModuleClasses, modifiers: TModifiers[]) {
+>(styles: TCSSModuleClasses, modifiers: TModifiers[]): IconModifierPropsSchema<TModifiers> {
   const props = Object.keys(styles).reduce((acc, key) => {
     const [rawBase, modifier] = key.split('--') as [string, string | undefined];
 
@@ -60,16 +67,6 @@ function createPropsSchema<
     return acc;
   }, new Map<TModifiers, Set<string>>());
 
-  type ModifierSchemaEntry = OptionalSchema<PicklistSchema<readonly [string, ...string[]], undefined>, undefined>;
-
-  type ModifierPropsSchema<TModifiers extends string> = SchemaWithPipe<
-    readonly [
-      ObjectSchema<Partial<Record<TModifiers, ModifierSchemaEntry>>, undefined>,
-      ReadonlyAction<Readonly<Partial<Record<TModifiers, string>>>>
-    ]
-  > &
-    BaseSchema<unknown, Readonly<Partial<Record<TModifiers, string>>>, BaseIssue<unknown>>;
-
   const schemaEntries = Array.from(props.entries()).reduce<Partial<Record<TModifiers, ModifierSchemaEntry>>>(
     (acc, [base, modifierSet]) => {
       const values = Array.from(modifierSet);
@@ -86,14 +83,26 @@ function createPropsSchema<
 
   const schema = object(schemaEntries as Partial<Record<TModifiers, ModifierSchemaEntry>>);
 
-  return pipe(schema, readonly()) as ModifierPropsSchema<TModifiers>;
+  return pipe(schema, readonly()) as IconModifierPropsSchema<TModifiers>;
 }
 
 export default function createIconComponent<
   const TProps extends { className?: string | undefined },
   const TModifiers extends SafeModifierList<TCSSModuleClasses>,
   const TCSSModuleClasses extends CSSModuleClasses
->(styles: TCSSModuleClasses, modifiers: TModifiers[], BaseIcon: ComponentType<TProps>) {
+>(
+  styles: TCSSModuleClasses,
+  modifiers: TModifiers[],
+  BaseIcon: ComponentType<TProps>
+): {
+  component: ComponentType<
+    (TModifiers extends Prefixes<keyof TCSSModuleClasses>
+      ? Pick<ModifierMap<TCSSModuleClasses>, TModifiers>
+      : Partial<Record<TModifiers, string>>) &
+      TProps
+  >;
+  modifierPropsSchema: IconModifierPropsSchema<TModifiers>;
+} {
   type CSSModuleModifiers = ModifierMap<TCSSModuleClasses>;
 
   // Do not bail if no CSS modules TypeScript plugin is provided.
