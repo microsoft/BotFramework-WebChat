@@ -1,3 +1,4 @@
+// TODO: [P2] This component can be replaced by `bindProps(InjectCSS)({ cssContent, identifier })`.
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import React, { memo } from 'react';
 import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
