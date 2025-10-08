@@ -10,7 +10,7 @@ import { object, optional, pipe, readonly, string, undefinedable, type InferInpu
 
 import BorderFlair from './BorderFlair';
 import BorderLoader from './BorderLoader';
-import WebChatTheme from './WebChatTheme';
+import InjectDecoratorCSS from './InjectDecoratorCSS';
 
 const middleware: readonly DecoratorMiddleware[] = Object.freeze([
   createActivityBorderMiddleware(function BorderFlairDecorator({ request, Next, ...props }) {
@@ -44,9 +44,9 @@ function WebChatDecorator(props: WebChatDecoratorProps) {
   const { children, nonce } = validateProps(webChatDecoratorPropsSchema, props);
 
   return (
-    <WebChatTheme nonce={nonce}>
+    <InjectDecoratorCSS nonce={nonce}>
       <DecoratorComposer middleware={middleware}>{children}</DecoratorComposer>
-    </WebChatTheme>
+    </InjectDecoratorCSS>
   );
 }
 
