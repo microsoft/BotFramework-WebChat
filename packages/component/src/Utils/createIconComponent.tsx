@@ -7,6 +7,8 @@ import {
   picklist,
   pipe,
   readonly,
+  type BaseIssue,
+  type BaseSchema,
   type ObjectSchema,
   type OptionalSchema,
   type PicklistSchema,
@@ -65,7 +67,8 @@ function createPropsSchema<
       ObjectSchema<Partial<Record<TModifiers, ModifierSchemaEntry>>, undefined>,
       ReadonlyAction<Readonly<Partial<Record<TModifiers, string>>>>
     ]
-  >;
+  > &
+    BaseSchema<unknown, Readonly<Partial<Record<TModifiers, string>>>, BaseIssue<unknown>>;
 
   const schemaEntries = Array.from(props.entries()).reduce<Partial<Record<TModifiers, ModifierSchemaEntry>>>(
     (acc, [base, modifierSet]) => {
