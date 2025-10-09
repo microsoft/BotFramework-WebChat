@@ -319,6 +319,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed Composer props types not resolving correctly in React 16 in PR [#5580](https://github.com/microsoft/BotFramework-WebChat/pull/5580),
   by [@lexi-taylor](https://github.com/lexi-taylor)
 - Fixed `npm start` may fail subsequently as builds are not fully flushed to `/dist/`, in PR [#5599](https://github.com/microsoft/BotFramework-WebChat/pull/5599), by [@compulim](https://github.com/compulim)
+- Fixed published package types containing internal package references, in PR [#5610](https://github.com/microsoft/BotFramework-WebChat/pull/5610), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Removed
 

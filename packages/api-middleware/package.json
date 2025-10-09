@@ -85,11 +85,11 @@
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
+    "react-chain-of-responsibility": "0.4.0-main.c2f17da",
     "react": ">= 16.8.6"
   },
   "dependencies": {
     "handler-chain": "^0.1.0",
-    "react-chain-of-responsibility": "0.4.0-main.c2f17da",
     "react-wrap-with": "0.1.0",
     "valibot": "1.1.0"
   }
