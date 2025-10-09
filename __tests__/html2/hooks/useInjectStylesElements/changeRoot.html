@@ -16,7 +16,7 @@
         testHelpers: { createDirectLineEmulator },
         WebChat: {
           Components: { ThemeProvider },
-          internal: { InjectStyleElementsComposer }
+          internal: { useInjectStyleElements }
         }
       } = window;
 
@@ -42,7 +42,7 @@
           new Promise(resolve =>
             ReactDOM.render(
               <ThemeProvider styleOptions={stylesRoot ? { stylesRoot } : {}}>
-                <InjectStyleElementsComposer nonce={nonce} styleElements={styleElements} />
+                <RunFunction fn={() => resolve(useInjectStyleElements({ nonce, styleElements }))} />
               </ThemeProvider>,
               document.getElementById('webchat'),
               resolve

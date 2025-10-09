@@ -26,7 +26,7 @@
 
       import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
       import { ThemeProvider } from 'botframework-webchat/component';
-      import { InjectStyleElementsComposer } from 'botframework-webchat/internal';
+      import { useInjectStyleElements } from 'botframework-webchat/internal';
       import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
       import { spyOn } from 'jest-mock';
       import { createElement } from 'react';
@@ -61,7 +61,7 @@
               createElement(
                 ThemeProvider,
                 { styleOptions: stylesRoot ? { stylesRoot } : {} },
-                createElement(InjectStyleElementsComposer, { nonce, styleElements })
+                createElement(RunFunction, { fn: () => useInjectStyleElements({ nonce, styleElements }) })
               )
             )
           );
@@ -76,7 +76,7 @@
 
         expect(console.warn).toHaveBeenCalledTimes(1);
         expect(console.warn).toHaveBeenCalledWith(
-          'botframework-webchat: The elements passing to <InjectStyleElementsComposer> should not have "nonce" attribute set'
+          'botframework-webchat: The elements passing to useInjectStyleElements() hook should not have "nonce" attribute set'
         );
 
         const styleElementsInHead = document.head.querySelectorAll('style[data-testid="style"]');

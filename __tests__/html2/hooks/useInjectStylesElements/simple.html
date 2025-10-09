@@ -16,12 +16,14 @@
         testHelpers: { createDirectLineEmulator },
         WebChat: {
           Components: { ThemeProvider },
-          internal: { InjectStyleElementsComposer }
+          internal: { useInjectStyleElements }
         }
       } = window;
 
       function createStyle(body) {
         const styleElement = document.createElement('style');
+
+        const { sheet } = styleElement;
 
         styleElement.dataset['testid'] = 'style';
         styleElement.innerHTML = body;
@@ -42,16 +44,18 @@
           new Promise(resolve =>
             ReactDOM.render(
               <ThemeProvider styleOptions={stylesRoot ? { stylesRoot } : {}}>
-                <InjectStyleElementsComposer nonce={nonce} styleElements={styleElements} />
+                <RunFunction fn={() => resolve(useInjectStyleElements({ nonce, styleElements }))} />
               </ThemeProvider>,
               document.getElementById('webchat'),
               resolve
             )
           );
 
-        const styleElement = createStyle('main { background-color: Red!important; }');
+        const styleElement1 = createStyle('main { background-color: Red!important; }');
+        const styleElement2 = createStyle('main { background-color: Orange!important; }');
+        const styleElement3 = createStyle('main { background-color: Yellow!important; }');
 
-        await render({ styleElements: [styleElement, styleElement] });
+        await render({ styleElements: [styleElement1] });
 
         // THEN: Should render in red.
         await host.snapshot('local');
@@ -59,36 +63,33 @@
         const allInjectedStyles1 = document.head.querySelectorAll('style[data-testid="style"]');
 
         expect(allInjectedStyles1).toHaveLength(1);
-        expect(allInjectedStyles1[0]).toHaveProperty('textContent', styleElement.textContent);
+        expect(allInjectedStyles1[0]).toHaveProperty('textContent', styleElement1.textContent);
 
-        await render({ styleElements: [styleElement, styleElement] });
+        // THEN: <script> should be cloned.
+        expect(allInjectedStyles1[0]).not.toBe(styleElement1);
 
-        // THEN: Should render in red.
+        await render({ styleElements: [styleElement1, styleElement2] });
+
+        // THEN: Should render in orange.
         await host.snapshot('local');
 
         const allInjectedStyles2 = document.head.querySelectorAll('style[data-testid="style"]');
 
-        expect(allInjectedStyles2).toHaveLength(1);
-        expect(allInjectedStyles2[0]).toHaveProperty('textContent', styleElement.textContent);
+        expect(allInjectedStyles2).toHaveLength(2);
+        expect(allInjectedStyles2[0]).toHaveProperty('textContent', styleElement1.textContent);
+        expect(allInjectedStyles2[1]).toHaveProperty('textContent', styleElement2.textContent);
 
-        await render({ styleElements: [styleElement] });
+        await render({ styleElements: [styleElement1, styleElement2, styleElement3] });
 
-        // THEN: Should render in red.
+        // THEN: Should render in yellow.
         await host.snapshot('local');
 
         const allInjectedStyles3 = document.head.querySelectorAll('style[data-testid="style"]');
 
-        expect(allInjectedStyles3).toHaveLength(1);
-        expect(allInjectedStyles3[0]).toHaveProperty('textContent', styleElement.textContent);
-
-        await render({ styleElements: [] });
-
-        // THEN: Should render in white because all stylesheet should have been removed.
-        await host.snapshot('local');
-
-        const allInjectedStyles4 = document.head.querySelectorAll('style[data-testid="style"]');
-
-        expect(allInjectedStyles4).toHaveLength(0);
+        expect(allInjectedStyles3).toHaveLength(3);
+        expect(allInjectedStyles3[0]).toHaveProperty('textContent', styleElement1.textContent);
+        expect(allInjectedStyles3[1]).toHaveProperty('textContent', styleElement2.textContent);
+        expect(allInjectedStyles3[2]).toHaveProperty('textContent', styleElement3.textContent);
       });
     </script>
   </body>
