@@ -29,7 +29,7 @@ const fluentThemeProviderPropsSchema = pipe(
   object({
     children: optional(reactNode()),
     nonce: optional(string()),
-    variant: optional(variantNameSchema, 'fluent')
+    variant: optional(variantNameSchema)
   }),
   readonly()
 );
@@ -85,7 +85,8 @@ const typingIndicatorMiddleware: readonly TypingIndicatorMiddleware[] = Object.f
 ] satisfies TypingIndicatorMiddleware[]);
 
 function FluentThemeProvider(props: FluentThemeProviderProps) {
-  const { children, nonce, variant } = validateProps(fluentThemeProviderPropsSchema, props);
+  // validateProps() does not fill in optional in production mode.
+  const { children, nonce, variant = 'fluent' } = validateProps(fluentThemeProviderPropsSchema, props);
 
   const styleElements = useMemo(() => {
     const styleElements = createStyles('fluent-theme');
