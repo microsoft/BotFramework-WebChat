@@ -6,7 +6,6 @@ import {
   componentCSSContent as componentCSSContentPlaceholder,
   decoratorCSSContent as decoratorCSSContentPlaceholder
 } from './src/cssContent';
-import { launcherExperienceStyleContent as launcherExperienceStyleContentPlaceholder } from './src/experience/launcher/private/createStyles';
 
 // TODO: [P1] Compute this automatically.
 const DEPENDENT_PATHS = ['bundle/src/boot/exports/index.ts'];
@@ -17,7 +16,6 @@ const commonConfig = applyConfig(config => ({
     'botframework-webchat-component': './src/index.ts',
     'botframework-webchat-component.component': './src/boot/component.ts',
     'botframework-webchat-component.decorator': './src/boot/decorator.ts',
-    'botframework-webchat-component.experience.launcher': './src/boot/experience/launcher.ts',
     'botframework-webchat-component.hook': './src/boot/hook.ts',
     'botframework-webchat-component.internal': './src/boot/internal.ts'
   },
@@ -30,8 +28,7 @@ const commonConfig = applyConfig(config => ({
         cssFiles.find(({ path }) => path.endsWith('botframework-webchat-component.component.css'))?.text,
       stylesPlaceholder: componentCSSContentPlaceholder
     }),
-    injectCSSPlugin({ stylesPlaceholder: decoratorCSSContentPlaceholder }),
-    injectCSSPlugin({ stylesPlaceholder: launcherExperienceStyleContentPlaceholder })
+    injectCSSPlugin({ stylesPlaceholder: decoratorCSSContentPlaceholder })
   ],
   onSuccess: `touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`
 }));
