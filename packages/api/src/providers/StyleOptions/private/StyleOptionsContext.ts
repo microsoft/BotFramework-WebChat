@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import { defaultStyleOptions } from '../../..';
+import defaultStyleOptions from '../../../defaultStyleOptions';
 import { type StrictStyleOptions } from '../../../StyleOptions';
 import rectifyStyleOptions from './rectifyStyleOptions';
 
