@@ -16,7 +16,8 @@
       const {
         testHelpers: { createDirectLineEmulator },
         WebChat: {
-          Components: { ThemeProvider }
+          Components: { ThemeProvider },
+          internal: { InjectStyleElementsComposer }
         }
       } = window;
 
@@ -39,10 +40,12 @@
             return false;
           };
 
-          const render = ({ elements, nonce, stylesRoot }) =>
+          const render = ({ nonce, styleElements, stylesRoot }) =>
             new Promise(resolve =>
               ReactDOM.render(
-                <ThemeProvider styles={elements} nonce={nonce} styleOptions={stylesRoot ? { stylesRoot } : {}} />,
+                <ThemeProvider styleOptions={stylesRoot ? { stylesRoot } : {}}>
+                  <InjectStyleElementsComposer nonce={nonce} styleElements={styleElements} />
+                </ThemeProvider>,
                 document.getElementById('webchat'),
                 resolve
               )
@@ -50,23 +53,37 @@
 
           const styleElement = createStyle('main { background-color: Red!important; }');
 
-          await render({ elements: [styleElement], nonce: '1' });
+          // WHEN: Inject with nonce of "1".
+          await render({ nonce: '1', styleElements: [styleElement] });
+
+          // THEN: Should render in red color.
           await host.snapshot('local');
 
+          // THEN: The cloned/injected style should be the last child.
+          expect(document.head.lastChild).toHaveProperty('textContent', styleElement.textContent);
+
+          // THEN: Only one <style> element is added.
           const allInjectedStyles1 = document.head.querySelectorAll('style[data-testid="style"]');
 
           expect(allInjectedStyles1).toHaveLength(1);
-          expect(allInjectedStyles1[0]).toBe(styleElement);
+          expect(allInjectedStyles1[0]).toHaveProperty('textContent', styleElement.textContent);
+          expect(allInjectedStyles1[0].getAttribute('nonce')).toBe('1');
 
-          await render({ elements: [styleElement], nonce: '2' });
+          // WHEN: Inject with nonce of "2".
+          await render({ nonce: '2', styleElements: [styleElement] });
 
-          // No color should be applied as nonce don't match.
+          // THEN: No color should be applied as nonce don't match.
           await host.snapshot('local');
 
+          // THEN: The cloned/injected style should be the last child.
+          expect(document.head.lastChild).toHaveProperty('textContent', styleElement.textContent);
+
+          // THEN: Only one <style> element is added.
           const allInjectedStyles2 = document.head.querySelectorAll('style[data-testid="style"]');
 
           expect(allInjectedStyles2).toHaveLength(1);
-          expect(allInjectedStyles2[0]).toBe(styleElement);
+          expect(allInjectedStyles2[0]).toHaveProperty('textContent', styleElement.textContent);
+          expect(allInjectedStyles2[0].getAttribute('nonce')).toBe('2');
         },
         { ignoreErrors: 'violate the following Content Security Policy directive' }
       );

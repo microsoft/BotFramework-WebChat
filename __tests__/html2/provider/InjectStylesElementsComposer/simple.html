@@ -15,7 +15,8 @@
       const {
         testHelpers: { createDirectLineEmulator },
         WebChat: {
-          Components: { ThemeProvider }
+          Components: { ThemeProvider },
+          internal: { InjectStyleElementsComposer }
         }
       } = window;
 
@@ -39,10 +40,12 @@
           return false;
         };
 
-        const render = ({ elements, nonce, stylesRoot }) =>
+        const render = ({ nonce, styleElements, stylesRoot }) =>
           new Promise(resolve =>
             ReactDOM.render(
-              <ThemeProvider styles={elements} nonce={nonce} styleOptions={stylesRoot ? { stylesRoot } : {}} />,
+              <ThemeProvider styleOptions={stylesRoot ? { stylesRoot } : {}}>
+                <InjectStyleElementsComposer nonce={nonce} styleElements={styleElements} />
+              </ThemeProvider>,
               document.getElementById('webchat'),
               resolve
             )
@@ -52,32 +55,41 @@
         const styleElement2 = createStyle('main { background-color: Orange!important; }');
         const styleElement3 = createStyle('main { background-color: Yellow!important; }');
 
-        await render({ elements: [styleElement1] });
+        await render({ styleElements: [styleElement1] });
+
+        // THEN: Should render in red.
         await host.snapshot('local');
 
         const allInjectedStyles1 = document.head.querySelectorAll('style[data-testid="style"]');
 
         expect(allInjectedStyles1).toHaveLength(1);
-        expect(allInjectedStyles1[0]).toBe(styleElement1);
+        expect(allInjectedStyles1[0]).toHaveProperty('textContent', styleElement1.textContent);
 
-        await render({ elements: [styleElement1, styleElement2] });
+        // THEN: <script> should be cloned.
+        expect(allInjectedStyles1[0]).not.toBe(styleElement1);
+
+        await render({ styleElements: [styleElement1, styleElement2] });
+
+        // THEN: Should render in orange.
         await host.snapshot('local');
 
         const allInjectedStyles2 = document.head.querySelectorAll('style[data-testid="style"]');
 
         expect(allInjectedStyles2).toHaveLength(2);
-        expect(allInjectedStyles2[0]).toBe(styleElement1);
-        expect(allInjectedStyles2[1]).toBe(styleElement2);
+        expect(allInjectedStyles2[0]).toHaveProperty('textContent', styleElement1.textContent);
+        expect(allInjectedStyles2[1]).toHaveProperty('textContent', styleElement2.textContent);
 
-        await render({ elements: [styleElement1, styleElement2, styleElement3] });
+        await render({ styleElements: [styleElement1, styleElement2, styleElement3] });
+
+        // THEN: Should render in yellow.
         await host.snapshot('local');
 
         const allInjectedStyles3 = document.head.querySelectorAll('style[data-testid="style"]');
 
         expect(allInjectedStyles3).toHaveLength(3);
-        expect(allInjectedStyles3[0]).toBe(styleElement1);
-        expect(allInjectedStyles3[1]).toBe(styleElement2);
-        expect(allInjectedStyles3[2]).toBe(styleElement3);
+        expect(allInjectedStyles3[0]).toHaveProperty('textContent', styleElement1.textContent);
+        expect(allInjectedStyles3[1]).toHaveProperty('textContent', styleElement2.textContent);
+        expect(allInjectedStyles3[2]).toHaveProperty('textContent', styleElement3.textContent);
       });
     </script>
   </body>

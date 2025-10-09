@@ -1,7 +1,21 @@
+// TODO: [P*] Move this out to /Styles later because it has no hooks.
+import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyleOptions } from 'botframework-webchat-api/hook';
-import { memo, useEffect, type FunctionComponent } from 'react';
-import { array, custom, instance, object, optional, pipe, readonly, union, type InferOutput } from 'valibot';
+import { memo, useEffect, type FunctionComponent, type ReactNode } from 'react';
+import {
+  array,
+  custom,
+  instance,
+  object,
+  optional,
+  pipe,
+  readonly,
+  string,
+  undefinedable,
+  union,
+  type InferOutput
+} from 'valibot';
 
 const injectedStylesElementSchema = union(
   [
@@ -18,23 +32,42 @@ type InjectedStylesElement = InferOutput<typeof injectedStylesElementSchema>;
 const injectStyleElementsComposerPropsSchema = pipe(
   object({
     children: optional(reactNode()),
+    // Intentionally set this to undefinedable() instead of optional() to remind caller they should pass nonce if they have one.
+    nonce: undefinedable(string()),
     styleElements: pipe(array(injectedStylesElementSchema), readonly())
   }),
   readonly()
 );
 
-type InjectStyleElementsComposerProps = InferOutput<typeof injectStyleElementsComposerPropsSchema>;
+type InjectStyleElementsComposerProps = {
+  readonly children?: ReactNode | undefined;
+  readonly nonce: string | undefined;
+  readonly styleElements: readonly InjectedStylesElement[];
+};
 
 type InjectedStylesInstance = {
   readonly element: InjectedStylesElement;
   readonly mountingElement: InjectedStylesElement;
+  readonly nonce: string;
   readonly root: Node;
 };
 
 const sharedInstances: InjectedStylesInstance[] = [];
 
+const warnNonce = warnOnce(
+  'The elements passing to <InjectStyleElementsComposer> should not have "nonce" attribute set'
+);
+
 function InjectStyleElementsComposer(props: InjectStyleElementsComposerProps) {
-  const { children, styleElements } = validateProps(injectStyleElementsComposerPropsSchema, props);
+  const { children, nonce = '', styleElements } = validateProps(injectStyleElementsComposerPropsSchema, props);
+
+  // The <link rel="stylesheet"> and <style> element should not have nonce.
+  for (const styleElement of styleElements) {
+    if (styleElement.getAttribute('nonce')) {
+      warnNonce();
+      break;
+    }
+  }
 
   const [{ stylesRoot: root }] = useStyleOptions();
 
@@ -48,16 +81,19 @@ function InjectStyleElementsComposer(props: InjectStyleElementsComposerProps) {
     // TODO: [P2] Move to "toReversed()" once we updated Chrome >= 110 and Safari >= 16.
     for (const element of [...styleElements].reverse()) {
       let instance: InjectedStylesInstance | undefined = sharedInstances.find(
-        instance => instance.element === element && instance.root === root
+        instance => instance.element === element && instance.nonce === nonce && instance.root === root
       );
 
       if (!instance) {
-        const mountingElement = element.parentNode ? (element.cloneNode(true) as InjectedStylesElement) : element;
+        const mountingElement = element.cloneNode(true) as InjectedStylesElement;
+
+        nonce ? mountingElement.setAttribute('nonce', nonce) : mountingElement.removeAttribute('nonce');
 
         instance = Object.freeze({
           element,
           // Deep clone is required for <style>body { ... }</style> (text node inside).
           mountingElement,
+          nonce,
           root
         });
 
@@ -108,7 +144,7 @@ function InjectStyleElementsComposer(props: InjectStyleElementsComposerProps) {
         sharedInstances.includes(instance) || instance.mountingElement.remove();
       }
     };
-  }, [root, styleElements]);
+  }, [nonce, root, styleElements]);
 
   return children;
 }

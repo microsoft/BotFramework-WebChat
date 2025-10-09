@@ -9,8 +9,12 @@ import {
   WebChatDecorator,
   type DecoratorMiddleware
 } from 'botframework-webchat/decorator';
-import { type ActivityMiddleware, type TypingIndicatorMiddleware } from 'botframework-webchat/internal';
-import React, { memo, useMemo } from 'react';
+import {
+  InjectStyleElementsComposer,
+  type ActivityMiddleware,
+  type TypingIndicatorMiddleware
+} from 'botframework-webchat/internal';
+import React, { memo } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ActivityLoader from '../components/activity/ActivityLoader';
@@ -84,17 +88,11 @@ const typingIndicatorMiddleware: readonly TypingIndicatorMiddleware[] = Object.f
       args[0].visible ? <SlidingDotsTypingIndicator /> : next(...args)
 ] satisfies TypingIndicatorMiddleware[]);
 
+const styleElements = createStyles('fluent-theme');
+
 function FluentThemeProvider(props: FluentThemeProviderProps) {
   // validateProps() does not fill in optional in production mode.
   const { children, nonce, variant = 'fluent' } = validateProps(fluentThemeProviderPropsSchema, props);
-
-  const styleElements = useMemo(() => {
-    const styleElements = createStyles('fluent-theme');
-
-    nonce && styleElements.forEach(element => element.setAttribute('nonce', nonce));
-
-    return styleElements;
-  }, [nonce]);
 
   return (
     <VariantComposer variant={variant}>
@@ -104,18 +102,19 @@ function FluentThemeProvider(props: FluentThemeProviderProps) {
             activityMiddleware={activityMiddleware}
             sendBoxMiddleware={sendBoxMiddleware}
             styleOptions={fluentStyleOptions}
-            styles={styleElements}
             typingIndicatorMiddleware={typingIndicatorMiddleware}
           >
-            <AssetComposer>
-              {/*
+            <InjectStyleElementsComposer nonce={nonce} styleElements={styleElements}>
+              <AssetComposer>
+                {/*
                 <Composer> is not set up yet, we have no place to send nonce.
                 This is temporal, until we decided to fold <WebChatDecorator> back into <Composer>.
               */}
-              <WebChatDecorator nonce={nonce}>
-                <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
-              </WebChatDecorator>
-            </AssetComposer>
+                <WebChatDecorator nonce={nonce}>
+                  <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
+                </WebChatDecorator>
+              </AssetComposer>
+            </InjectStyleElementsComposer>
           </ThemeProvider>
         </TelephoneKeypadProvider>
       </WebChatTheme>

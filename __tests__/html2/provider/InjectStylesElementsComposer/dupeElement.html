@@ -15,7 +15,8 @@
       const {
         testHelpers: { createDirectLineEmulator },
         WebChat: {
-          Components: { ThemeProvider }
+          Components: { ThemeProvider },
+          internal: { InjectStyleElementsComposer }
         }
       } = window;
 
@@ -37,10 +38,12 @@
           return false;
         };
 
-        const render = ({ elements, nonce, stylesRoot }) =>
+        const render = ({ nonce, styleElements, stylesRoot }) =>
           new Promise(resolve =>
             ReactDOM.render(
-              <ThemeProvider styles={elements} nonce={nonce} styleOptions={stylesRoot ? { stylesRoot } : {}} />,
+              <ThemeProvider styleOptions={stylesRoot ? { stylesRoot } : {}}>
+                <InjectStyleElementsComposer nonce={nonce} styleElements={styleElements} />
+              </ThemeProvider>,
               document.getElementById('webchat'),
               resolve
             )
@@ -48,42 +51,42 @@
 
         const styleElement = createStyle('main { background-color: Red!important; }');
 
-        await render({ elements: [styleElement, styleElement] });
+        await render({ styleElements: [styleElement, styleElement] });
+
+        // THEN: Should render in red.
         await host.snapshot('local');
 
-        const allInjectedStyles1 = document.head.querySelectorAll(
-          'style[data-testid="style"]'
-        );
+        const allInjectedStyles1 = document.head.querySelectorAll('style[data-testid="style"]');
 
         expect(allInjectedStyles1).toHaveLength(1);
-        expect(allInjectedStyles1[0]).toBe(styleElement);
+        expect(allInjectedStyles1[0]).toHaveProperty('textContent', styleElement.textContent);
 
-        await render({ elements: [styleElement, styleElement] });
+        await render({ styleElements: [styleElement, styleElement] });
+
+        // THEN: Should render in red.
         await host.snapshot('local');
 
-        const allInjectedStyles2 = document.head.querySelectorAll(
-          'style[data-testid="style"]'
-        );
+        const allInjectedStyles2 = document.head.querySelectorAll('style[data-testid="style"]');
 
         expect(allInjectedStyles2).toHaveLength(1);
-        expect(allInjectedStyles2[0]).toBe(styleElement);
+        expect(allInjectedStyles2[0]).toHaveProperty('textContent', styleElement.textContent);
 
-        await render({ elements: [styleElement] });
+        await render({ styleElements: [styleElement] });
+
+        // THEN: Should render in red.
         await host.snapshot('local');
 
-        const allInjectedStyles3 = document.head.querySelectorAll(
-          'style[data-testid="style"]'
-        );
+        const allInjectedStyles3 = document.head.querySelectorAll('style[data-testid="style"]');
 
         expect(allInjectedStyles3).toHaveLength(1);
-        expect(allInjectedStyles3[0]).toBe(styleElement);
+        expect(allInjectedStyles3[0]).toHaveProperty('textContent', styleElement.textContent);
 
-        await render({ elements: [] });
+        await render({ styleElements: [] });
+
+        // THEN: Should render in white because all stylesheet should have been removed.
         await host.snapshot('local');
 
-        const allInjectedStyles4 = document.head.querySelectorAll(
-          'style[data-testid="style"]'
-        );
+        const allInjectedStyles4 = document.head.querySelectorAll('style[data-testid="style"]');
 
         expect(allInjectedStyles4).toHaveLength(0);
       });

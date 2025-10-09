@@ -1,11 +1,11 @@
 // TODO: [P2] This component can be replaced by `bindProps(InjectCSS)({ cssContent, identifier })`.
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 
 import { InjectStyleElementsComposer } from '../boot/internal';
-import { componentCSSContent } from '../cssContent';
+import { componentCSSContent } from './componentCSSContent';
 
 const componentCSSPropsSchema = pipe(
   object({
@@ -17,18 +17,16 @@ const componentCSSPropsSchema = pipe(
 
 type ComponentCSSProps = InferInput<typeof componentCSSPropsSchema>;
 
+const styleElements = makeCreateStyles(componentCSSContent)('component');
+
 function ComponentCSS(props: ComponentCSSProps) {
   const { children, nonce } = validateProps(componentCSSPropsSchema, props);
 
-  const styleElements = useMemo(() => {
-    const styleElements = makeCreateStyles(componentCSSContent)('component');
-
-    nonce && styleElements.forEach(element => element.setAttribute('nonce', nonce));
-
-    return styleElements;
-  }, [nonce]);
-
-  return <InjectStyleElementsComposer styleElements={styleElements}>{children}</InjectStyleElementsComposer>;
+  return (
+    <InjectStyleElementsComposer nonce={nonce} styleElements={styleElements}>
+      {children}
+    </InjectStyleElementsComposer>
+  );
 }
 
 ComponentCSS.displayName = 'ComponentCSS';

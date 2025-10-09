@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+          "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat/decorator.js",
+          "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat/internal.js",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
+      import { ThemeProvider } from 'botframework-webchat/component';
+      import { InjectStyleElementsComposer } from 'botframework-webchat/internal';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+      import { spyOn } from 'jest-mock';
+      import { createElement } from 'react';
+      import { flushSync } from 'react-dom';
+      import { createRoot } from 'react-dom/client';
+
+      function createStyle(body) {
+        const styleElement = document.createElement('style');
+
+        const { sheet } = styleElement;
+
+        styleElement.dataset['testid'] = 'style';
+        styleElement.innerHTML = body;
+
+        return styleElement;
+      }
+
+      run(async function () {
+        const RunFunction = ({ fn }) => {
+          fn();
+
+          return false;
+        };
+
+        spyOn(console, 'warn');
+
+        const root = createRoot(document.getElementById('webchat'));
+
+        const render = ({ nonce, styleElements, stylesRoot }) =>
+          flushSync(() =>
+            root.render(
+              createElement(
+                ThemeProvider,
+                { styleOptions: stylesRoot ? { stylesRoot } : {} },
+                createElement(InjectStyleElementsComposer, { nonce, styleElements })
+              )
+            )
+          );
+
+        const styleElement1 = createStyle('main { background-color: Red!important; }');
+        const styleElement2 = createStyle('main { background-color: Orange!important; }');
+
+        styleElement1.setAttribute('nonce', '1');
+        styleElement2.setAttribute('nonce', '1');
+
+        render({ styleElements: [styleElement1, styleElement2] });
+
+        expect(console.warn).toHaveBeenCalledTimes(1);
+        expect(console.warn).toHaveBeenCalledWith(
+          'botframework-webchat: The elements passing to <InjectStyleElementsComposer> should not have "nonce" attribute set'
+        );
+
+        const styleElementsInHead = document.head.querySelectorAll('style[data-testid="style"]');
+
+        // THEN: Should have injected both stylesheet.
+        expect(styleElementsInHead).toHaveLength(2);
+
+        // THEN: Should have removed nonce.
+        expect(styleElementsInHead[0].hasAttribute('nonce')).toBe(false);
+        expect(styleElementsInHead[1].hasAttribute('nonce')).toBe(false);
+      });
+    </script>
+  </body>
+</html>

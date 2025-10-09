@@ -15,7 +15,8 @@
       const {
         testHelpers: { createDirectLineEmulator },
         WebChat: {
-          Components: { ThemeProvider }
+          Components: { ThemeProvider },
+          internal: { InjectStyleElementsComposer }
         }
       } = window;
 
@@ -39,10 +40,12 @@
           return false;
         };
 
-        const render = ({ elements, nonce, stylesRoot }) =>
+        const render = ({ nonce, styleElements, stylesRoot }) =>
           new Promise(resolve =>
             ReactDOM.render(
-              <ThemeProvider styles={elements} nonce={nonce} styleOptions={stylesRoot ? { stylesRoot } : {}} />,
+              <ThemeProvider styleOptions={stylesRoot ? { stylesRoot } : {}}>
+                <InjectStyleElementsComposer nonce={nonce} styleElements={styleElements} />
+              </ThemeProvider>,
               document.getElementById('webchat'),
               resolve
             )
@@ -52,32 +55,38 @@
         const linkStyleSheetElement2 = createLinkStyleSheet('./css/2.css');
         const linkStyleSheetElement3 = createLinkStyleSheet('./css/3.css');
 
-        await render({ elements: [linkStyleSheetElement1] });
+        await render({ styleElements: [linkStyleSheetElement1] });
+
+        // THEN: Should render in red.
         await host.snapshot('local');
 
         const allInjectedStyles1 = document.head.querySelectorAll('link[data-testid="style"]');
 
         expect(allInjectedStyles1).toHaveLength(1);
-        expect(allInjectedStyles1[0]).toBe(linkStyleSheetElement1);
+        expect(allInjectedStyles1[0]).toHaveProperty('href', linkStyleSheetElement1.href);
 
-        await render({ elements: [linkStyleSheetElement1, linkStyleSheetElement2] });
+        await render({ styleElements: [linkStyleSheetElement1, linkStyleSheetElement2] });
+
+        // THEN: Should render in orange (2.css is preferred over others).
         await host.snapshot('local');
 
         const allInjectedStyles2 = document.head.querySelectorAll('link[data-testid="style"]');
 
         expect(allInjectedStyles2).toHaveLength(2);
-        expect(allInjectedStyles2[0]).toBe(linkStyleSheetElement1);
-        expect(allInjectedStyles2[1]).toBe(linkStyleSheetElement2);
+        expect(allInjectedStyles2[0]).toHaveProperty('href', linkStyleSheetElement1.href);
+        expect(allInjectedStyles2[1]).toHaveProperty('href', linkStyleSheetElement2.href);
 
-        await render({ elements: [linkStyleSheetElement1, linkStyleSheetElement2, linkStyleSheetElement3] });
+        await render({ styleElements: [linkStyleSheetElement1, linkStyleSheetElement2, linkStyleSheetElement3] });
+
+        // THEN: Should render in yellow (3.css is preferred over others).
         await host.snapshot('local');
 
         const allInjectedStyles3 = document.head.querySelectorAll('link[data-testid="style"]');
 
         expect(allInjectedStyles3).toHaveLength(3);
-        expect(allInjectedStyles3[0]).toBe(linkStyleSheetElement1);
-        expect(allInjectedStyles3[1]).toBe(linkStyleSheetElement2);
-        expect(allInjectedStyles3[2]).toBe(linkStyleSheetElement3);
+        expect(allInjectedStyles3[0]).toHaveProperty('href', linkStyleSheetElement1.href);
+        expect(allInjectedStyles3[1]).toHaveProperty('href', linkStyleSheetElement2.href);
+        expect(allInjectedStyles3[2]).toHaveProperty('href', linkStyleSheetElement3.href);
       });
     </script>
   </body>

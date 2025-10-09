@@ -20,39 +20,15 @@ import {
 import { StyleOptionsComposer } from 'botframework-webchat-api/internal';
 import { type Polymiddleware } from 'botframework-webchat-api/middleware';
 import React, { memo, useContext, useMemo, type ReactNode } from 'react';
-import { array, custom, function_, literal, object, optional, pipe, readonly, safeParse, union } from 'valibot';
+import { array, custom, function_, object, optional, pipe, readonly, safeParse } from 'valibot';
 
-import InjectStyleElementsComposer from '../InjectStyleElements/InjectStyleElementsComposer';
 import Context, { type ThemeContextType } from './private/Context';
 
 const themeProviderPropsSchema = pipe(
   object({
     children: optional(reactNode()),
     styleOptions: optional(custom<StyleOptions>(value => safeParse(object({}), value).success)),
-    /**
-     * <link rel="stylesheet"> and <style> to inject into the DOM on this component mount.
-     *
-     * Nonce will be automatically added to the element.
-     */
-    styles: optional(
-      pipe(
-        array(
-          union([
-            custom<HTMLLinkElement>(
-              value =>
-                safeParse(
-                  object({
-                    localName: literal('link'),
-                    rel: literal('stylesheet')
-                  }),
-                  value
-                ).success
-            ),
-            custom<HTMLStyleElement>(value => safeParse(object({ localName: literal('style') }), value).success)
-          ])
-        )
-      )
-    ),
+
     /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */
     activityMiddleware: optional(
       pipe(array(custom<ActivityMiddleware>(value => safeParse(function_(), value).success)))
@@ -130,7 +106,6 @@ const ThemeProvider = (props: ThemeProviderProps) => {
     sendBoxMiddleware,
     sendBoxToolbarMiddleware,
     styleOptions,
-    styles,
     toastMiddleware,
     typingIndicatorMiddleware
   } = validateProps(themeProviderPropsSchema, props);
@@ -243,9 +218,7 @@ const ThemeProvider = (props: ThemeProviderProps) => {
 
   return (
     <StyleOptionsComposer styleOptions={styleOptions}>
-      <InjectStyleElementsComposer styleElements={styles}>
-        <Context.Provider value={context}>{children}</Context.Provider>
-      </InjectStyleElementsComposer>
+      <Context.Provider value={context}>{children}</Context.Provider>
     </StyleOptionsComposer>
   );
 };

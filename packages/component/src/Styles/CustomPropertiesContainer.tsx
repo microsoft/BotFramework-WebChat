@@ -22,6 +22,11 @@ type CustomPropertiesContainerProps = InferInput<typeof customPropertiesContaine
 
 const webchatCustomPropertiesClass = 'webchat__css-custom-properties';
 
+function uniqueId() {
+  // eslint-disable-next-line no-magic-numbers
+  return Math.ceil(random() * Number.MAX_SAFE_INTEGER).toString(36);
+}
+
 function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
   const { children, className, nonce } = validateProps(customPropertiesContainerPropsSchema, props);
 
@@ -65,9 +70,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
       transitionDuration
     } = styleOptions;
 
-    const randomClass =
-      // eslint-disable-next-line no-magic-numbers
-      `w${Math.ceil(random() * Number.MAX_SAFE_INTEGER).toString(36)}_${webchatCustomPropertiesClass.replace('webchat__', '')}` as const;
+    const randomClass = `w${uniqueId()}_${webchatCustomPropertiesClass.replace('webchat__', '')}` as const;
 
     const contents = `
 .${webchatCustomPropertiesClass}.${randomClass} {
@@ -108,18 +111,16 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
   ${CustomPropertyNames.TransitionDuration}: ${transitionDuration};
 }
 `;
-    const [element] = makeCreateStyles(contents)('component/CustomPropertiesContainer');
-
-    nonce && element.setAttribute('nonce', nonce);
+    const [element] = makeCreateStyles(contents)(`component/CustomPropertiesContainer-${uniqueId()}`);
 
     return Object.freeze([
       Object.freeze([element]),
       Object.freeze([`${webchatCustomPropertiesClass} ${randomClass}`] as const)
     ]);
-  }, [nonce, styleOptions]);
+  }, [styleOptions]);
 
   return (
-    <InjectStyleElementsComposer styleElements={styleElements}>
+    <InjectStyleElementsComposer nonce={nonce} styleElements={styleElements}>
       <div className={classNames(className, classNameState[0])}>{children}</div>
     </InjectStyleElementsComposer>
   );

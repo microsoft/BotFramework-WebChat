@@ -39,6 +39,7 @@
       import { FluentProvider, webLightTheme } from '@fluentui/react-components';
       import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
       import { ThemeProvider } from 'botframework-webchat/component';
+      import { InjectStyleElementsComposer } from 'botframework-webchat/internal';
       import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
       import { spyOn } from 'jest-mock';
       import { createElement } from 'react';
@@ -95,16 +96,22 @@
               createElement(
                 ThemeProvider,
                 {
-                  styleOptions: stylesRoot ? { stylesRoot } : {},
-                  styles: [styleElement]
+                  styleOptions: stylesRoot ? { stylesRoot } : {}
                 },
                 createElement(
-                  FluentProvider,
-                  { className: 'fui-FluentProvider', theme: fluentTheme },
+                  InjectStyleElementsComposer,
+                  {
+                    nonce: undefined,
+                    styleElements: [styleElement]
+                  },
                   createElement(
-                    FluentThemeProvider,
-                    { variant: 'fluent' },
-                    createElement(ReactWebChat, { className: 'webchat-with-overrides', directLine, store })
+                    FluentProvider,
+                    { className: 'fui-FluentProvider', theme: fluentTheme },
+                    createElement(
+                      FluentThemeProvider,
+                      { variant: 'fluent' },
+                      createElement(ReactWebChat, { className: 'webchat-with-overrides', directLine, store })
+                    )
                   )
                 )
               )
