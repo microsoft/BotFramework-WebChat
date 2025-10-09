@@ -4,9 +4,9 @@ export {
   type HighlightCodeFn
 } from '../hooks/internal/codeHighlighter/index';
 export { default as PartGrouping } from '../Middleware/ActivityGrouping/ui/PartGrouping/PartGrouping';
-export { default as useInjectStyleElements } from '../Styles/useInjectStyleElements';
 export { useLiveRegion } from '../providers/LiveRegionTwin/index';
 export { default as ScreenReaderText } from '../ScreenReaderText';
+export { default as InjectStyleElements } from '../Styles/InjectStyleElements';
 export { default as createIconComponent } from '../Utils/createIconComponent';
 export { default as parseDocumentFragmentFromString } from '../Utils/parseDocumentFragmentFromString';
 export { default as serializeDocumentFragmentIntoString } from '../Utils/serializeDocumentFragmentIntoString';

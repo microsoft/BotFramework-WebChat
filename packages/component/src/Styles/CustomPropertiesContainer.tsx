@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import random from 'math-random';
 import React, { memo, useMemo } from 'react';
 import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
-import useInjectStyleElements from '../Styles/useInjectStyleElements';
+import InjectStyleElements from '../Styles/InjectStyleElements';
 import CustomPropertyNames from './CustomPropertyNames';
 
 const customPropertiesContainerPropsSchema = pipe(
@@ -119,9 +119,12 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
     ]);
   }, [styleOptions]);
 
-  useInjectStyleElements({ nonce, styleElements });
-
-  return <div className={classNames(className, classNameState[0])}>{children}</div>;
+  return (
+    <div className={classNames(className, classNameState[0])}>
+      <InjectStyleElements nonce={nonce} styleElements={styleElements} />
+      {children}
+    </div>
+  );
 }
 
 CustomPropertiesContainer.displayName = 'CustomPropertiesContainer';

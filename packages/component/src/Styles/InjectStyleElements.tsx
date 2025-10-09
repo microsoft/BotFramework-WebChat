@@ -1,5 +1,5 @@
-// TODO: [P*] Move this out to /Styles later because it has no hooks.
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyleOptions } from 'botframework-webchat-api/hook';
 import { useEffect } from 'react';
 import {
@@ -7,7 +7,6 @@ import {
   custom,
   instance,
   object,
-  parse,
   pipe,
   readonly,
   string,
@@ -23,12 +22,12 @@ const injectedStylesElementSchema = union(
     ),
     instance(HTMLStyleElement)
   ],
-  'botframework-webchat: useInjectStyleElements() supports injecting <link rel="stylesheet"> and <style> only'
+  'botframework-webchat: <InjectStyleElements> supports injecting <link rel="stylesheet"> and <style> only'
 );
 
 type InjectedStylesElement = InferOutput<typeof injectedStylesElementSchema>;
 
-const useInjectStyleElementsSchema = pipe(
+const injectStyleElementsPropsSchema = pipe(
   object({
     // Intentionally set this to undefinedable() instead of optional() to remind caller they should pass nonce if they have one.
     nonce: undefinedable(string()),
@@ -37,8 +36,11 @@ const useInjectStyleElementsSchema = pipe(
   readonly()
 );
 
-type UseInjectStyleElementsInit = {
+type InjectStyleElementsProps = {
+  // eslint does not recognize destructuring via validateProps().
+  // eslint-disable-next-line react/no-unused-prop-types
   readonly nonce: string | undefined;
+  // eslint-disable-next-line react/no-unused-prop-types
   readonly styleElements: readonly InjectedStylesElement[];
 };
 
@@ -51,12 +53,10 @@ type InjectedStylesInstance = {
 
 const sharedInstances: InjectedStylesInstance[] = [];
 
-const warnNonce = warnOnce(
-  'The elements passing to useInjectStyleElements() hook should not have "nonce" attribute set'
-);
+const warnNonce = warnOnce('The elements passing to <InjectStyleElements> should not have "nonce" attribute set');
 
-function useInjectStyleElements(init: UseInjectStyleElementsInit) {
-  const { nonce = '', styleElements } = parse(useInjectStyleElementsSchema, init);
+function InjectStyleElements(props: InjectStyleElementsProps) {
+  const { nonce = '', styleElements } = validateProps(injectStyleElementsPropsSchema, props);
 
   // The <link rel="stylesheet"> and <style> element should not have nonce.
   for (const styleElement of styleElements) {
@@ -102,9 +102,10 @@ function useInjectStyleElements(init: UseInjectStyleElementsInit) {
         // We are doing prepend instead of append, while keeping the first node the last one in the root element.
 
         // ```html
-        // <ComponentCallingUseInjectStyleElements styleElements={[stylesA1, stylesA2]}>
-        //   <ComponentCallingUseInjectStyleElements styleElements={[stylesB]} />
-        // </ComponentCallingUseInjectStyleElements>
+        // <>
+        //   <InjectStyleElements styleElements={[stylesA1, stylesA2]} />
+        //   <InjectStyleElements styleElements={[stylesB]} />
+        // </>
         // ```
 
         // Will be injected in the following order to honor CSS cascading:
@@ -142,7 +143,9 @@ function useInjectStyleElements(init: UseInjectStyleElementsInit) {
       }
     };
   }, [nonce, root, styleElements]);
+
+  return null;
 }
 
-export default useInjectStyleElements;
-export { useInjectStyleElementsSchema, type UseInjectStyleElementsInit };
+export default InjectStyleElements;
+export { injectStyleElementsPropsSchema, type InjectStyleElementsProps };

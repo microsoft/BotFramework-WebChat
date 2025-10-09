@@ -10,7 +10,7 @@ import {
   type DecoratorMiddleware
 } from 'botframework-webchat/decorator';
 import {
-  useInjectStyleElements,
+  InjectStyleElements,
   type ActivityMiddleware,
   type TypingIndicatorMiddleware
 } from 'botframework-webchat/internal';
@@ -94,8 +94,6 @@ function FluentThemeProvider(props: FluentThemeProviderProps) {
   // validateProps() does not fill in optional in production mode.
   const { children, nonce, variant = 'fluent' } = validateProps(fluentThemeProviderPropsSchema, props);
 
-  useInjectStyleElements({ nonce, styleElements });
-
   return (
     <VariantComposer variant={variant}>
       <WebChatTheme>
@@ -106,6 +104,7 @@ function FluentThemeProvider(props: FluentThemeProviderProps) {
             styleOptions={fluentStyleOptions}
             typingIndicatorMiddleware={typingIndicatorMiddleware}
           >
+            <InjectStyleElements nonce={nonce} styleElements={styleElements} />
             <AssetComposer>
               {/*
                 <Composer> is not set up yet, we have no place to send nonce.

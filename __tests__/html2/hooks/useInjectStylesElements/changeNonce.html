@@ -17,7 +17,7 @@
         testHelpers: { createDirectLineEmulator },
         WebChat: {
           Components: { ThemeProvider },
-          internal: { useInjectStyleElements }
+          internal: { InjectStyleElements }
         }
       } = window;
 
@@ -34,17 +34,11 @@
         async function () {
           const { directLine, store } = createDirectLineEmulator();
 
-          const RunFunction = ({ fn }) => {
-            fn();
-
-            return false;
-          };
-
           const render = ({ nonce, styleElements, stylesRoot }) =>
             new Promise(resolve =>
               ReactDOM.render(
                 <ThemeProvider styleOptions={stylesRoot ? { stylesRoot } : {}}>
-                  <RunFunction fn={() => resolve(useInjectStyleElements({ nonce, styleElements }))} />
+                  <InjectStyleElements nonce={nonce} styleElements={styleElements} />
                 </ThemeProvider>,
                 document.getElementById('webchat'),
                 resolve

@@ -3,12 +3,12 @@ export { type ActivityMiddleware, type TypingIndicatorMiddleware } from 'botfram
 export {
   CodeHighlighterComposer,
   createIconComponent,
+  InjectStyleElements,
   parseDocumentFragmentFromString,
   PartGrouping,
   ScreenReaderText,
   serializeDocumentFragmentIntoString,
   useCodeHighlighter,
-  useInjectStyleElements,
   useLiveRegion,
   type HighlightCodeFn
 } from 'botframework-webchat-component/internal';
