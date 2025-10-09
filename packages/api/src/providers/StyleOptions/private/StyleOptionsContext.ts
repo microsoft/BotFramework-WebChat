@@ -1,6 +1,7 @@
-import { defaultStyleOptions, type StrictStyleOptions } from 'botframework-webchat-api';
 import { createContext, useContext } from 'react';
 
+import { defaultStyleOptions } from '../../..';
+import { type StrictStyleOptions } from '../../../StyleOptions';
 import rectifyStyleOptions from './rectifyStyleOptions';
 
 type StyleOptionsContextType = {
