@@ -6,12 +6,11 @@ import {
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
 import React, { memo } from 'react';
-import { object, optional, pipe, readonly, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 
-import useNonce from '../../hooks/internal/useNonce';
+import DecoratorCSS from '../../stylesheet/DecoratorCSS';
 import BorderFlair from './BorderFlair';
 import BorderLoader from './BorderLoader';
-import InjectDecoratorCSS from './InjectDecoratorCSS';
 
 const middleware: readonly DecoratorMiddleware[] = Object.freeze([
   createActivityBorderMiddleware(function BorderFlairDecorator({ request, Next, ...props }) {
@@ -32,7 +31,8 @@ const middleware: readonly DecoratorMiddleware[] = Object.freeze([
 
 const webChatDecoratorPropsSchema = pipe(
   object({
-    children: optional(reactNode())
+    children: optional(reactNode()),
+    nonce: undefinedable(string())
   }),
   readonly()
 );
@@ -40,14 +40,12 @@ const webChatDecoratorPropsSchema = pipe(
 type WebChatDecoratorProps = InferInput<typeof webChatDecoratorPropsSchema>;
 
 function WebChatDecorator(props: WebChatDecoratorProps) {
-  const { children } = validateProps(webChatDecoratorPropsSchema, props);
-
-  const [nonce] = useNonce();
+  const { children, nonce } = validateProps(webChatDecoratorPropsSchema, props);
 
   return (
-    <InjectDecoratorCSS nonce={nonce}>
+    <DecoratorCSS nonce={nonce}>
       <DecoratorComposer middleware={middleware}>{children}</DecoratorComposer>
-    </InjectDecoratorCSS>
+    </DecoratorCSS>
   );
 }
 

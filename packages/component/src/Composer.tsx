@@ -50,7 +50,7 @@ import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
 import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import CustomPropertiesContainer from './Styles/CustomPropertiesContainer';
-import InjectComponentCSS from './Styles/InjectComponentCSS';
+import ComponentCSS from './stylesheet/ComponentCSS';
 import { type ContextOf } from './types/ContextOf';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
@@ -486,9 +486,9 @@ const InternalComposer = ({
 
 const Composer = (props: ComposerProps) => (
   // eslint-disable-next-line react/destructuring-assignment
-  <InjectComponentCSS nonce={props.nonce}>
+  <ComponentCSS nonce={props.nonce}>
     <InternalComposer {...props} />
-  </InjectComponentCSS>
+  </ComponentCSS>
 );
 
 Composer.defaultProps = {

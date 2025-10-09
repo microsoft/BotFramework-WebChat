@@ -107,7 +107,11 @@ function FluentThemeProvider(props: FluentThemeProviderProps) {
             typingIndicatorMiddleware={typingIndicatorMiddleware}
           >
             <AssetComposer>
-              <WebChatDecorator>
+              {/*
+                <Composer> is not set up yet, we have no place to send nonce.
+                This is temporal, until we decided to fold <WebChatDecorator> back into <Composer>.
+              */}
+              <WebChatDecorator nonce={nonce}>
                 <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
               </WebChatDecorator>
             </AssetComposer>
