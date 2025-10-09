@@ -1,6 +1,6 @@
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyleOptions } from 'botframework-webchat-api/hook';
-import React, { Fragment, memo, useEffect } from 'react';
+import { memo, useEffect, type FunctionComponent } from 'react';
 import { array, custom, instance, object, optional, pipe, readonly, union, type InferOutput } from 'valibot';
 
 const injectedStylesElementSchema = union(
@@ -110,7 +110,7 @@ function InjectStyleElementsComposer(props: InjectStyleElementsComposerProps) {
     };
   }, [root, styleElements]);
 
-  return <Fragment>{children}</Fragment>;
+  return children;
 }
 
 InjectStyleElementsComposer.displayName = 'InjectStyleElementsComposer';
@@ -120,5 +120,5 @@ InjectStyleElementsComposer.displayName = 'InjectStyleElementsComposer';
  *
  * The container to inject the elements is based on `styleOptions.stylesRoot`.
  */
-export default memo(InjectStyleElementsComposer);
+export default memo(InjectStyleElementsComposer as FunctionComponent<InjectStyleElementsComposerProps>);
 export { injectStyleElementsComposerPropsSchema, type InjectStyleElementsComposerProps };
