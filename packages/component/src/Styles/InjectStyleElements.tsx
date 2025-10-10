@@ -75,8 +75,7 @@ function InjectStyleElements(props: InjectStyleElementsProps) {
 
     const instancesToRemoveOnUnmount: InjectedStylesInstance[] = [];
 
-    // TODO: [P2] Move to "toReversed()" once we updated Chrome >= 110 and Safari >= 16.
-    for (const element of [...styleElements].reverse()) {
+    for (const element of styleElements) {
       let instance: InjectedStylesInstance | undefined = sharedInstances.find(
         instance => instance.element === element && instance.nonce === nonce && instance.root === root
       );
@@ -97,9 +96,7 @@ function InjectStyleElements(props: InjectStyleElementsProps) {
         mountingElement.hasAttribute('data-webchat-injected') ||
           mountingElement.setAttribute('data-webchat-injected', '');
 
-        // When appending via useEffect(), the order of the useEffect() call will be from descendants to ancestors.
-        // That means, the order will be reverse of what is in the React tree.
-        // We are doing prepend instead of append, while keeping the first node the last one in the root element.
+        // When appending via useEffect(), make sure the injection order is correct.
 
         // ```html
         // <>
@@ -118,11 +115,7 @@ function InjectStyleElements(props: InjectStyleElementsProps) {
         // </head>
         // ```
 
-        const insertBeforeNode = Array.from(root.childNodes).find(
-          child => child instanceof HTMLElement && child.hasAttribute('data-webchat-injected')
-        );
-
-        insertBeforeNode ? root.insertBefore(mountingElement, insertBeforeNode) : root.appendChild(mountingElement);
+        root.appendChild(mountingElement);
       }
 
       // Remember instance to remove later.

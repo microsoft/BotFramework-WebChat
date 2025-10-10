@@ -98,20 +98,17 @@
                 {
                   styleOptions: stylesRoot ? { stylesRoot } : {}
                 },
+                createElement(InjectStyleElements, {
+                  nonce: undefined,
+                  styleElements: [styleElement]
+                }),
                 createElement(
-                  InjectStyleElements,
-                  {
-                    nonce: undefined,
-                    styleElements: [styleElement]
-                  },
+                  FluentProvider,
+                  { className: 'fui-FluentProvider', theme: fluentTheme },
                   createElement(
-                    FluentProvider,
-                    { className: 'fui-FluentProvider', theme: fluentTheme },
-                    createElement(
-                      FluentThemeProvider,
-                      { variant: 'fluent' },
-                      createElement(ReactWebChat, { className: 'webchat-with-overrides', directLine, store })
-                    )
+                    FluentThemeProvider,
+                    { variant: 'fluent' },
+                    createElement(ReactWebChat, { className: 'webchat-with-overrides', directLine, store })
                   )
                 )
               )
