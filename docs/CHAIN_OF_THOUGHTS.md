@@ -55,7 +55,8 @@ The definitions of `HowTo` and `HowToStep` capture the metaphor of Chain-of-Thou
     }
   ],
   "id": "a-00001",
-  "text": "The equation \\(x^2 + y^2 = 0\\) has only one solution: \\((0, 0)\\). This means the graph would only plot a single point at the origin."
+  "text": "The equation \\(x^2 + y^2 = 0\\) has only one solution: \\((0, 0)\\). This means the graph would only plot a single point at the origin.",
+  "type": "message"
 }
 ```
 
