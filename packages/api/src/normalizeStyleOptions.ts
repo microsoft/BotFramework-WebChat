@@ -198,25 +198,25 @@ export default function normalizeStyleOptions({
     filledOptions.bubbleImageHeight = undefined;
   }
 
-  if (typeof options.bubbleAttachmentMaxWidth === 'undefined' && options.bubbleMaxWidth) {
+  if (options.bubbleMaxWidth) {
     bubbleMaxWidthDeprecation();
     filledOptions.bubbleAttachmentMaxWidth = options.bubbleMaxWidth;
     filledOptions.bubbleMaxWidth = undefined;
   }
 
-  if (typeof options.bubbleAttachmentMinWidth === 'undefined' && options.bubbleMinWidth) {
+  if (options.bubbleMinWidth) {
     bubbleMinWidthDeprecation();
     filledOptions.bubbleAttachmentMinWidth = options.bubbleMinWidth;
     filledOptions.bubbleMinWidth = undefined;
   }
 
-  if (typeof options.bubbleMessageMaxWidth === 'undefined' && options.bubbleMaxWidth) {
+  if (options.bubbleMaxWidth) {
     bubbleMaxWidthDeprecation();
     filledOptions.bubbleMessageMaxWidth = options.bubbleMaxWidth;
     filledOptions.bubbleMaxWidth = undefined;
   }
 
-  if (typeof options.bubbleMessageMinWidth === 'undefined' && options.bubbleMinWidth) {
+  if (options.bubbleMinWidth) {
     bubbleMinWidthDeprecation();
     filledOptions.bubbleMessageMinWidth = options.bubbleMinWidth;
     filledOptions.bubbleMinWidth = undefined;
