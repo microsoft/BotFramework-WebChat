@@ -1,11 +1,10 @@
 // TODO: [P2] This component can be replaced by `bindProps(InjectCSS)({ cssContent, identifier })`.
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
 import React, { Fragment, memo, type FunctionComponent } from 'react';
 import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 
-import InjectStyleElements from '../Styles/InjectStyleElements';
-import { decoratorCSSContent } from './decoratorCSSContent';
+import InjectStyleElements from '../../Styles/InjectStyleElements';
+import createDecoratorStyleElements from './createDecoratorStyleElements';
 
 const decoratorCSSPropsSchema = pipe(
   object({
@@ -17,7 +16,7 @@ const decoratorCSSPropsSchema = pipe(
 
 type DecoratorCSSProps = InferInput<typeof decoratorCSSPropsSchema>;
 
-const styleElements = makeCreateStyles(decoratorCSSContent)('component/decorator');
+const styleElements = createDecoratorStyleElements('component/decorator');
 
 function DecoratorCSS(props: DecoratorCSSProps) {
   const { children, nonce } = validateProps(decoratorCSSPropsSchema, props);

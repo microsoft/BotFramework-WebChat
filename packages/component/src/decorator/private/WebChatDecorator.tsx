@@ -8,7 +8,7 @@ import {
 import React, { memo } from 'react';
 import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 
-import DecoratorCSS from '../../stylesheet/DecoratorCSS';
+import DecoratorCSS from '../stylesheet/DecoratorCSS';
 import BorderFlair from './BorderFlair';
 import BorderLoader from './BorderLoader';
 
