@@ -42,7 +42,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNod
 import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
-import StyleOptions from '../StyleOptions';
+import type StyleOptions from '../StyleOptions';
 import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
 import usePonyfill from '../hooks/usePonyfill';
@@ -89,6 +89,7 @@ import applyMiddleware, {
 } from './middleware/applyMiddleware';
 import createDefaultCardActionMiddleware from './middleware/createDefaultCardActionMiddleware';
 import useMarkAllAsAcknowledged from './useMarkAllAsAcknowledged';
+import useStyleOptions from './useStyleOptions';
 import ErrorBoundary from './utils/ErrorBoundary';
 import observableToPromise from './utils/observableToPromise';
 import { parseUIState } from './validation/uiState';
@@ -285,7 +286,6 @@ const ComposerCore = ({
   sendBoxMiddleware,
   sendBoxToolbarMiddleware,
   sendTypingIndicator,
-  styleOptions,
   toastMiddleware,
   typingIndicatorMiddleware,
   uiState,
@@ -293,6 +293,7 @@ const ComposerCore = ({
   username
 }: ComposerCoreProps) => {
   const [ponyfill] = usePonyfill();
+  const [styleOptions] = useStyleOptions();
   const dispatch = useDispatch();
   const telemetryDimensionsRef = useRef({});
 
@@ -637,7 +638,6 @@ ComposerCore.defaultProps = {
   scrollToEndButtonMiddleware: undefined,
   selectVoice: undefined,
   sendTypingIndicator: false,
-  styleOptions: {},
   toastMiddleware: undefined,
   typingIndicatorMiddleware: undefined,
   uiState: undefined,
@@ -679,7 +679,6 @@ ComposerCore.propTypes = {
   scrollToEndButtonMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   selectVoice: PropTypes.func,
   sendTypingIndicator: PropTypes.bool,
-  styleOptions: PropTypes.any,
   toastMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   typingIndicatorMiddleware: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.func), PropTypes.func]),
   uiState: PropTypes.oneOf(['blueprint', 'disabled']),
@@ -693,7 +692,7 @@ type ComposerWithStoreProps = ComposerCoreProps &
   }>;
 
 type ComposerProps = ComposerWithStoreProps & {
-  internalRenderErrorBox?: any;
+  readonly internalRenderErrorBox?: any;
 
   /**
    * Ponyfill to overrides specific global scope members. This prop cannot be changed after initial render.
@@ -704,7 +703,8 @@ type ComposerProps = ComposerWithStoreProps & {
    *
    * Please see [#4662](https://github.com/microsoft/BotFramework-WebChat/pull/4662) for details.
    */
-  ponyfill?: Partial<GlobalScopePonyfill>;
+  readonly ponyfill?: Partial<GlobalScopePonyfill> | undefined;
+  readonly styleOptions?: StyleOptions | undefined;
 };
 
 // We will create a Redux store if it was not passed in
