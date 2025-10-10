@@ -6,7 +6,7 @@ import {
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
 import React, { memo } from 'react';
-import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
+import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import DecoratorCSS from '../stylesheet/DecoratorCSS';
 import BorderFlair from './BorderFlair';
@@ -32,7 +32,7 @@ const middleware: readonly DecoratorMiddleware[] = Object.freeze([
 const webChatDecoratorPropsSchema = pipe(
   object({
     children: optional(reactNode()),
-    nonce: undefinedable(string())
+    nonce: optional(string())
   }),
   readonly()
 );
