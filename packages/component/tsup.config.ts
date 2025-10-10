@@ -3,7 +3,7 @@ import { defineConfig } from 'tsup';
 
 import { applyConfig } from '../../tsup.base.config';
 import { componentCSSContent as componentCSSContentPlaceholder } from './src/stylesheet/createComponentStyleElements';
-import { decoratorCSSContent as decoratorCSSContentPlaceholder } from './src/stylesheet/createDecoratorStyleElements';
+import { decoratorCSSContent as decoratorCSSContentPlaceholder } from './src/decorator/stylesheet/createDecoratorStyleElements';
 
 // TODO: [P1] Compute this automatically.
 const DEPENDENT_PATHS = ['bundle/src/boot/exports/index.ts'];
