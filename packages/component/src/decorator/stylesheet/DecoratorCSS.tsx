@@ -1,15 +1,15 @@
 // TODO: [P2] This component can be replaced by `bindProps(InjectCSS)({ cssContent, identifier })`.
-import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { InjectStyleElements } from '@msinternal/botframework-webchat-component-inject-style-elements';
+import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyleOptions } from 'botframework-webchat-api/hook';
-import React, { Fragment, memo, type FunctionComponent } from 'react';
-import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
+import React, { memo, type FunctionComponent } from 'react';
+import { never, object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 
-import InjectStyleElements from '../../Styles/InjectStyleElements';
 import createDecoratorStyleElements from './createDecoratorStyleElements';
 
 const decoratorCSSPropsSchema = pipe(
   object({
-    children: optional(reactNode()),
+    children: optional(never()),
     nonce: undefinedable(string())
   }),
   readonly()
@@ -20,16 +20,11 @@ type DecoratorCSSProps = InferInput<typeof decoratorCSSPropsSchema>;
 const styleElements = createDecoratorStyleElements('component/decorator');
 
 function DecoratorCSS(props: DecoratorCSSProps) {
-  const { children, nonce } = validateProps(decoratorCSSPropsSchema, props);
+  const { nonce } = validateProps(decoratorCSSPropsSchema, props);
 
   const [{ stylesRoot }] = useStyleOptions();
 
-  return (
-    <Fragment>
-      <InjectStyleElements at={stylesRoot} nonce={nonce} styleElements={styleElements} />
-      {children}
-    </Fragment>
-  );
+  return <InjectStyleElements at={stylesRoot} nonce={nonce} styleElements={styleElements} />;
 }
 
 DecoratorCSS.displayName = 'DecoratorCSS';

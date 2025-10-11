@@ -50,15 +50,7 @@
         const root = createRoot(document.getElementById('webchat'));
 
         const render = ({ nonce, styleElements, stylesRoot }) =>
-          flushSync(() =>
-            root.render(
-              createElement(
-                ThemeProvider,
-                { styleOptions: stylesRoot ? { stylesRoot } : {} },
-                createElement(InjectStyleElements, { nonce, styleElements })
-              )
-            )
-          );
+          flushSync(() => root.render(createElement(InjectStyleElements, { at: stylesRoot, nonce, styleElements })));
 
         const styleElement1 = createStyle('main { background-color: Red!important; }');
         const styleElement2 = createStyle('main { background-color: Orange!important; }');

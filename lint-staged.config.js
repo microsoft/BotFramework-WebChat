@@ -16,6 +16,9 @@ module.exports = {
   'packages/base/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:base'],
   'packages/bundle/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:bundle'],
   'packages/component/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:component'],
+  'packages/component-inject-style-elements/src/**/*.{mjs,js,ts,tsx}': [
+    'npm run precommit:eslint:component-inject-style-elements'
+  ],
   'packages/core/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core'],
   'packages/debug-theme/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:debug-theme'],
   'packages/directlinespeech/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:directlinespeech'],

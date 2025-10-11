@@ -459,6 +459,7 @@ const InternalComposer = ({
       typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
       {...composerProps}
     >
+      <ComponentCSS nonce={nonce} />
       <StyleToEmotionObjectComposer nonce={nonce}>
         <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
           <ReducedMotionComposer>
@@ -484,12 +485,7 @@ const InternalComposer = ({
   );
 };
 
-const Composer = (props: ComposerProps) => (
-  // eslint-disable-next-line react/destructuring-assignment
-  <ComponentCSS nonce={props.nonce}>
-    <InternalComposer {...props} />
-  </ComponentCSS>
-);
+const Composer = (props: ComposerProps) => <InternalComposer {...props} />;
 
 Composer.defaultProps = {
   ...APIComposer.defaultProps,

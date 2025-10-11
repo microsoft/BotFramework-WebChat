@@ -1,3 +1,4 @@
+export { InjectStyleElements } from '@msinternal/botframework-webchat-component-inject-style-elements';
 export {
   CodeHighlighterComposer,
   useCodeHighlighter,
@@ -6,7 +7,6 @@ export {
 export { default as PartGrouping } from '../Middleware/ActivityGrouping/ui/PartGrouping/PartGrouping';
 export { useLiveRegion } from '../providers/LiveRegionTwin/index';
 export { default as ScreenReaderText } from '../ScreenReaderText';
-export { default as InjectStyleElements } from '../Styles/InjectStyleElements';
 export { default as createIconComponent } from '../Utils/createIconComponent';
 export { default as parseDocumentFragmentFromString } from '../Utils/parseDocumentFragmentFromString';
 export { default as serializeDocumentFragmentIntoString } from '../Utils/serializeDocumentFragmentIntoString';

@@ -5,7 +5,9 @@ import {
   array,
   custom,
   instance,
+  never,
   object,
+  optional,
   pipe,
   readonly,
   string,
@@ -29,8 +31,9 @@ type InjectedStylesElement = InferOutput<typeof injectedStylesElementSchema>;
 const injectStyleElementsPropsSchema = pipe(
   object({
     // Intentionally set this to undefinedable() instead of optional() to remind caller they should pass styles root if they have one.
-    at: undefinedable(custom<Node>(value => value instanceof Node)),
+    at: undefinedable(custom<Node>(value => value instanceof Node, '"at" must be an instance of Node')),
     // Intentionally set this to undefinedable() instead of optional() to remind caller they should pass nonce if they have one.
+    children: optional(never()),
     nonce: undefinedable(string()),
     styleElements: pipe(array(injectedStylesElementSchema), readonly())
   }),
@@ -38,7 +41,7 @@ const injectStyleElementsPropsSchema = pipe(
 );
 
 type InjectStyleElementsProps = {
-  // eslint-disable-next-line react/no-unused-prop-types, react/require-default-props
+  // eslint-disable-next-line react/no-unused-prop-types
   readonly at?: Node | undefined;
   // eslint does not recognize destructuring via validateProps().
   // eslint-disable-next-line react/no-unused-prop-types

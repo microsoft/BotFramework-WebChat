@@ -5,7 +5,7 @@ import {
   DecoratorComposer,
   type DecoratorMiddleware
 } from 'botframework-webchat-api/decorator';
-import React, { memo } from 'react';
+import React, { Fragment, memo } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import DecoratorCSS from '../stylesheet/DecoratorCSS';
@@ -43,9 +43,10 @@ function WebChatDecorator(props: WebChatDecoratorProps) {
   const { children, nonce } = validateProps(webChatDecoratorPropsSchema, props);
 
   return (
-    <DecoratorCSS nonce={nonce}>
+    <Fragment>
+      <DecoratorCSS nonce={nonce} />
       <DecoratorComposer middleware={middleware}>{children}</DecoratorComposer>
-    </DecoratorCSS>
+    </Fragment>
   );
 }
 

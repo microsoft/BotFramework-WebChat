@@ -1,3 +1,4 @@
+import { InjectStyleElements } from '@msinternal/botframework-webchat-component-inject-style-elements';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
 import { useStyleOptions } from 'botframework-webchat-api/hook';
@@ -5,7 +6,6 @@ import classNames from 'classnames';
 import random from 'math-random';
 import React, { memo, useMemo } from 'react';
 import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
-import InjectStyleElements from '../Styles/InjectStyleElements';
 import CustomPropertyNames from './CustomPropertyNames';
 
 const customPropertiesContainerPropsSchema = pipe(
