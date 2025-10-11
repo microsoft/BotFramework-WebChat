@@ -110,7 +110,8 @@ export default function normalizeStyleOptions({
 
     // Only set if the "scrollToEndButtonBehavior" is not set.
     // If it has been set, the developer should know the older "hideScrollToEndButton" option is deprecated.
-    filledOptions.scrollToEndButtonBehavior = options.scrollToEndButtonBehavior || false;
+    filledOptions.scrollToEndButtonBehavior =
+      typeof options.scrollToEndButtonBehavior === 'undefined' ? false : options.scrollToEndButtonBehavior;
     filledOptions.hideScrollToEndButton = undefined;
   }
 
