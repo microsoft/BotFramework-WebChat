@@ -35,9 +35,7 @@
         const render = ({ nonce, styleElements, stylesRoot }) =>
           new Promise(resolve =>
             ReactDOM.render(
-              <ThemeProvider styleOptions={stylesRoot ? { stylesRoot } : {}}>
-                <InjectStyleElements nonce={nonce} styleElements={styleElements} />
-              </ThemeProvider>,
+              <InjectStyleElements at={stylesRoot} nonce={nonce} styleElements={styleElements} />,
               document.getElementById('webchat'),
               resolve
             )

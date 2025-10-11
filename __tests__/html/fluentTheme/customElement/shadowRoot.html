@@ -9,6 +9,8 @@
     <script crossorigin="anonymous" src="/test-page-object.js"></script>
     <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
     <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
+    <!-- <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/botframework-webchat@main/dist/webchat-es5.js"></script>
+    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/botframework-webchat-fluent-theme@main/dist/botframework-webchat-fluent-theme.production.min.js"></script> -->
     <style>
       webchat-element {
         display: contents;
@@ -56,7 +58,7 @@
           );
 
           render(
-            <FluentThemeProvider>
+            <FluentThemeProvider nonce="test" stylesRoot={this.shadowRoot}>
               <App />
             </FluentThemeProvider>,
             container

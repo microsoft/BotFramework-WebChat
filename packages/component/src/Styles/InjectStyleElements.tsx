@@ -1,6 +1,5 @@
 import { warnOnce } from '@msinternal/botframework-webchat-base/utils';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { useStyleOptions } from 'botframework-webchat-api/hook';
 import { useEffect } from 'react';
 import {
   array,
@@ -29,6 +28,7 @@ type InjectedStylesElement = InferOutput<typeof injectedStylesElementSchema>;
 
 const injectStyleElementsPropsSchema = pipe(
   object({
+    at: custom<Node>(value => value instanceof Node),
     // Intentionally set this to undefinedable() instead of optional() to remind caller they should pass nonce if they have one.
     nonce: undefinedable(string()),
     styleElements: pipe(array(injectedStylesElementSchema), readonly())
@@ -37,6 +37,8 @@ const injectStyleElementsPropsSchema = pipe(
 );
 
 type InjectStyleElementsProps = {
+  // eslint-disable-next-line react/no-unused-prop-types, react/require-default-props
+  readonly at?: Node | undefined;
   // eslint does not recognize destructuring via validateProps().
   // eslint-disable-next-line react/no-unused-prop-types
   readonly nonce: string | undefined;
@@ -56,7 +58,7 @@ const sharedInstances: InjectedStylesInstance[] = [];
 const warnNonce = warnOnce('The elements passing to <InjectStyleElements> should not have "nonce" attribute set');
 
 function InjectStyleElements(props: InjectStyleElementsProps) {
-  const { nonce = '', styleElements } = validateProps(injectStyleElementsPropsSchema, props);
+  const { at = document.head, nonce = '', styleElements } = validateProps(injectStyleElementsPropsSchema, props);
 
   // The <link rel="stylesheet"> and <style> element should not have nonce.
   for (const styleElement of styleElements) {
@@ -66,10 +68,8 @@ function InjectStyleElements(props: InjectStyleElementsProps) {
     }
   }
 
-  const [{ stylesRoot: root }] = useStyleOptions();
-
   useEffect(() => {
-    if (!root) {
+    if (!at) {
       return;
     }
 
@@ -77,7 +77,7 @@ function InjectStyleElements(props: InjectStyleElementsProps) {
 
     for (const element of styleElements) {
       let instance: InjectedStylesInstance | undefined = sharedInstances.find(
-        instance => instance.element === element && instance.nonce === nonce && instance.root === root
+        instance => instance.element === element && instance.nonce === nonce && instance.root === at
       );
 
       if (!instance) {
@@ -90,7 +90,7 @@ function InjectStyleElements(props: InjectStyleElementsProps) {
           // Deep clone is required for <style>body { ... }</style> (text node inside).
           mountingElement,
           nonce,
-          root
+          root: at
         });
 
         mountingElement.hasAttribute('data-webchat-injected') ||
@@ -115,7 +115,7 @@ function InjectStyleElements(props: InjectStyleElementsProps) {
         // </head>
         // ```
 
-        root.appendChild(mountingElement);
+        at.appendChild(mountingElement);
       }
 
       // Remember instance to remove later.
@@ -135,7 +135,7 @@ function InjectStyleElements(props: InjectStyleElementsProps) {
         sharedInstances.includes(instance) || instance.mountingElement.remove();
       }
     };
-  }, [nonce, root, styleElements]);
+  }, [at, nonce, styleElements]);
 
   return null;
 }

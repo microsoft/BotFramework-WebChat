@@ -1,6 +1,5 @@
 /* eslint-disable prefer-arrow-callback */
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import { type StyleOptions } from 'botframework-webchat';
 import { ThemeProvider } from 'botframework-webchat/component';
 import {
   createActivityBorderMiddleware,
@@ -14,8 +13,8 @@ import {
   type ActivityMiddleware,
   type TypingIndicatorMiddleware
 } from 'botframework-webchat/internal';
-import React, { memo } from 'react';
-import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
+import React, { memo, useMemo } from 'react';
+import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ActivityLoader from '../components/activity/ActivityLoader';
 import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
@@ -33,6 +32,7 @@ const fluentThemeProviderPropsSchema = pipe(
   object({
     children: optional(reactNode()),
     nonce: optional(string()),
+    stylesRoot: optional(custom<Node>(value => value instanceof Node)),
     variant: optional(variantNameSchema)
   }),
   readonly()
@@ -77,10 +77,6 @@ const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
   })
 ]);
 
-const fluentStyleOptions: StyleOptions = Object.freeze({
-  feedbackActionsPlacement: 'activity-actions'
-});
-
 const typingIndicatorMiddleware: readonly TypingIndicatorMiddleware[] = Object.freeze([
   () =>
     next =>
@@ -92,7 +88,16 @@ const styleElements = createStyles('fluent-theme');
 
 function FluentThemeProvider(props: FluentThemeProviderProps) {
   // validateProps() does not fill in optional in production mode.
-  const { children, nonce, variant = 'fluent' } = validateProps(fluentThemeProviderPropsSchema, props);
+  const { children, nonce, stylesRoot, variant = 'fluent' } = validateProps(fluentThemeProviderPropsSchema, props);
+
+  const fluentStyleOptions = useMemo(
+    () =>
+      Object.freeze({
+        feedbackActionsPlacement: 'activity-actions',
+        stylesRoot
+      }),
+    [stylesRoot]
+  );
 
   return (
     <VariantComposer variant={variant}>
@@ -104,7 +109,7 @@ function FluentThemeProvider(props: FluentThemeProviderProps) {
             styleOptions={fluentStyleOptions}
             typingIndicatorMiddleware={typingIndicatorMiddleware}
           >
-            <InjectStyleElements nonce={nonce} styleElements={styleElements} />
+            <InjectStyleElements at={stylesRoot} nonce={nonce} styleElements={styleElements} />
             <AssetComposer>
               {/*
                 <Composer> is not set up yet, we have no place to send nonce.

@@ -121,7 +121,7 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
 
   return (
     <div className={classNames(className, classNameState[0])}>
-      <InjectStyleElements nonce={nonce} styleElements={styleElements} />
+      <InjectStyleElements at={styleOptions.stylesRoot} nonce={nonce} styleElements={styleElements} />
       {children}
     </div>
   );
