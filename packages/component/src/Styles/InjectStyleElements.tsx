@@ -28,7 +28,8 @@ type InjectedStylesElement = InferOutput<typeof injectedStylesElementSchema>;
 
 const injectStyleElementsPropsSchema = pipe(
   object({
-    at: custom<Node>(value => value instanceof Node),
+    // Intentionally set this to undefinedable() instead of optional() to remind caller they should pass styles root if they have one.
+    at: undefinedable(custom<Node>(value => value instanceof Node)),
     // Intentionally set this to undefinedable() instead of optional() to remind caller they should pass nonce if they have one.
     nonce: undefinedable(string()),
     styleElements: pipe(array(injectedStylesElementSchema), readonly())
