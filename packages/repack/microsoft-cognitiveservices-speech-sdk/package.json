@@ -24,7 +24,7 @@
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
-    "start": "npm run build -- --watch 200"
+    "start": "npm run build -- --watch --watch-delay=200"
   },
   "localDependencies": {},
   "pinDependencies": {

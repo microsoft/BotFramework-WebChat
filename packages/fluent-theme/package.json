@@ -58,7 +58,7 @@
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "cross-env NODE_OPTIONS=--no-deprecation concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
     "start:static": "npm run build:static -- --watch",
-    "start:tsup": "npm run build:tsup -- --watch 200"
+    "start:tsup": "npm run build:tsup -- --watch"
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-tsconfig": "development",
