@@ -42,7 +42,7 @@
       import { InjectStyleElements } from 'botframework-webchat/internal';
       import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
       import { spyOn } from 'jest-mock';
-      import { createElement } from 'react';
+      import { createElement, Fragment } from 'react';
       import { flushSync } from 'react-dom';
       import { createRoot } from 'react-dom/client';
 
@@ -94,12 +94,10 @@
           flushSync(() =>
             root.render(
               createElement(
-                ThemeProvider,
-                {
-                  styleOptions: stylesRoot ? { stylesRoot } : {}
-                },
+                Fragment,
+                {},
                 createElement(InjectStyleElements, {
-                  at: undefined,
+                  at: stylesRoot,
                   nonce: undefined,
                   styleElements: [styleElement]
                 }),
@@ -108,7 +106,7 @@
                   { className: 'fui-FluentProvider', theme: fluentTheme },
                   createElement(
                     FluentThemeProvider,
-                    { variant: 'fluent' },
+                    { stylesRoot, variant: 'fluent' },
                     createElement(ReactWebChat, { className: 'webchat-with-overrides', directLine, store })
                   )
                 )
