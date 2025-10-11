@@ -118,9 +118,10 @@ function InjectStyleElements(props: InjectStyleElementsProps) {
         //   <style>... stylesB ...</style>
         // </head>
         // ```
-
-        at.appendChild(mountingElement);
       }
+
+      // If the <style> elements is being reinjected, move it to the bottommost/prioritized position.
+      at.appendChild(instance.mountingElement);
 
       // Remember instance to remove later.
       instancesToRemoveOnUnmount.push(instance);
