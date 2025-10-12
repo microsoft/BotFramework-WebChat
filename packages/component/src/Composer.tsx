@@ -49,7 +49,7 @@ import useTheme from './providers/Theme/useTheme';
 import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
 import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
-import CustomPropertiesContainer from './Styles/CustomPropertiesContainer';
+import CSSCustomPropertiesContainer from './Styles/CSSCustomPropertiesContainer';
 import ComponentStylesheet from './stylesheet/ComponentStylesheet';
 import { type ContextOf } from './types/ContextOf';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
@@ -104,7 +104,7 @@ const ComposerCoreUI = memo(({ children, nonce }: ComposerCoreUIProps) => {
   );
 
   return (
-    <CustomPropertiesContainer
+    <CSSCustomPropertiesContainer
       className={classNames('webchat', 'webchat__css-custom-properties', rootClassName)}
       nonce={nonce}
     >
@@ -123,7 +123,7 @@ const ComposerCoreUI = memo(({ children, nonce }: ComposerCoreUIProps) => {
           </ScrollRelativeTranscriptScope>
         </FocusSendBoxScope>
       </CustomElementsComposer>
-    </CustomPropertiesContainer>
+    </CSSCustomPropertiesContainer>
   );
 });
 
