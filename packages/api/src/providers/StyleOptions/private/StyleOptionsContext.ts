@@ -14,7 +14,7 @@ const StyleOptionsContext = createContext<StyleOptionsContextType>({
 
 StyleOptionsContext.displayName = 'StyleOptionsContext';
 
-const useStyleOptionsContext = (): StyleOptionsContextType => useContext(StyleOptionsContext);
+const useStyleOptionsContext = () => useContext(StyleOptionsContext);
 
 export default StyleOptionsContext;
 export { useStyleOptionsContext, type StyleOptionsContextType };

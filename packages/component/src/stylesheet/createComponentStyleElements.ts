@@ -1,8 +1,8 @@
 import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
 
-const componentCSSContent = '@--COMPONENT-STYLES-CONTENT--@';
+const componentStyleContent = '@--COMPONENT-STYLES-CONTENT--@';
 
-const createComponentStyleElements = makeCreateStyles(componentCSSContent);
+const createComponentStyleElements = makeCreateStyles(componentStyleContent);
 
 export default createComponentStyleElements;
-export { componentCSSContent };
+export { componentStyleContent };

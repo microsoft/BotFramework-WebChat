@@ -2,8 +2,8 @@ import { injectCSSPlugin } from '@msinternal/botframework-webchat-styles/build';
 import { defineConfig } from 'tsup';
 
 import { applyConfig } from '../../tsup.base.config';
-import { componentCSSContent as componentCSSContentPlaceholder } from './src/stylesheet/createComponentStyleElements';
-import { decoratorCSSContent as decoratorCSSContentPlaceholder } from './src/decorator/stylesheet/createDecoratorStyleElements';
+import { decoratorStyleContent as decoratorStyleContentPlaceholder } from './src/decorator/stylesheet/createDecoratorStyleElements';
+import { componentStyleContent as componentStyleContentPlaceholder } from './src/stylesheet/createComponentStyleElements';
 
 // TODO: [P1] Compute this automatically.
 const DEPENDENT_PATHS = ['bundle/src/boot/exports/index.ts'];
@@ -24,9 +24,9 @@ const commonConfig = applyConfig(config => ({
       // Related to https://github.com/evanw/esbuild/issues/608.
       getCSSText: (_source, cssFiles) =>
         cssFiles.find(({ path }) => path.endsWith('botframework-webchat-component.component.css'))?.text,
-      stylesPlaceholder: componentCSSContentPlaceholder
+      stylesPlaceholder: componentStyleContentPlaceholder
     }),
-    injectCSSPlugin({ stylesPlaceholder: decoratorCSSContentPlaceholder })
+    injectCSSPlugin({ stylesPlaceholder: decoratorStyleContentPlaceholder })
   ],
   onSuccess: `touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`
 }));

@@ -111,12 +111,9 @@ function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
   ${CustomPropertyNames.TransitionDuration}: ${transitionDuration};
 }
 `;
-    const [element] = makeCreateStyles(contents)(`component/CustomPropertiesContainer-${uniqueId()}`);
+    const [style] = makeCreateStyles(contents)(`component/CustomPropertiesContainer-${uniqueId()}`);
 
-    return Object.freeze([
-      Object.freeze([element]),
-      Object.freeze([`${webchatCustomPropertiesClass} ${randomClass}`] as const)
-    ]);
+    return [Object.freeze([style]), Object.freeze([`${webchatCustomPropertiesClass} ${randomClass}`] as const)];
   }, [styleOptions]);
 
   return (

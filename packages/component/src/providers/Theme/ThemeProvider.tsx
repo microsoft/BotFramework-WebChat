@@ -69,10 +69,6 @@ const themeProviderPropsSchema = pipe(
 type ThemeProviderProps = {
   readonly children?: ReactNode | undefined;
   readonly styleOptions?: object | undefined;
-  /**
-   * <link rel="stylesheet"> and <style> to inject into the DOM on this component mount.
-   */
-  readonly styles?: readonly ((HTMLLinkElement & { rel: 'stylesheet' }) | HTMLStyleElement)[] | undefined;
   /** @deprecated Use `polymiddleware` instead, this will be removed on or after 2027-08-16. */
   readonly activityMiddleware?: readonly ActivityMiddleware[] | undefined;
   readonly activityStatusMiddleware?: readonly ActivityStatusMiddleware[] | undefined;

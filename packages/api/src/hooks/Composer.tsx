@@ -245,7 +245,6 @@ type ComposerCoreProps = Readonly<{
   sendBoxMiddleware?: readonly SendBoxMiddleware[] | undefined;
   sendBoxToolbarMiddleware?: readonly SendBoxToolbarMiddleware[] | undefined;
   sendTypingIndicator?: boolean;
-  styleOptions?: StyleOptions;
   toastMiddleware?: OneOrMany<ToastMiddleware>;
   typingIndicatorMiddleware?: OneOrMany<TypingIndicatorMiddleware>;
   /**

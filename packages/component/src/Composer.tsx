@@ -317,7 +317,7 @@ ComposerCore.propTypes = {
 
 type ComposerProps = APIComposerProps & ComposerCoreProps;
 
-const InternalComposer = ({
+const Composer = ({
   activityMiddleware,
   activityStatusMiddleware,
   attachmentForScreenReaderMiddleware,
@@ -484,8 +484,6 @@ const InternalComposer = ({
     </APIComposer>
   );
 };
-
-const Composer = (props: ComposerProps) => <InternalComposer {...props} />;
 
 Composer.defaultProps = {
   ...APIComposer.defaultProps,

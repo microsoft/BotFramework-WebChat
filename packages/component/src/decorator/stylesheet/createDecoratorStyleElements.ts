@@ -1,8 +1,8 @@
 import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
 
-const decoratorCSSContent = '@--DECORATOR-STYLES-CONTENT--@';
+const decoratorStyleContent = '@--DECORATOR-STYLES-CONTENT--@';
 
-const createDecoratorStyleElements = makeCreateStyles(decoratorCSSContent);
+const createDecoratorStyleElements = makeCreateStyles(decoratorStyleContent);
 
 export default createDecoratorStyleElements;
-export { decoratorCSSContent };
+export { decoratorStyleContent };

@@ -27,8 +27,8 @@ function StyleOptionsComposer(props: StyleOptionsComposerProps) {
     () =>
       Object.freeze({
         styleOptionsState: Object.freeze([
-          rectifyStyleOptions(
-            Object.freeze({
+          Object.freeze(
+            rectifyStyleOptions({
               ...currentStyleOptionsState,
               ...styleOptions
             })

@@ -32,8 +32,8 @@ const injectStyleElementsPropsSchema = pipe(
   object({
     // Intentionally set this to undefinedable() instead of optional() to remind caller they should pass styles root if they have one.
     at: undefinedable(custom<Node>(value => value instanceof Node, '"at" must be an instance of Node')),
-    // Intentionally set this to undefinedable() instead of optional() to remind caller they should pass nonce if they have one.
     children: optional(never()),
+    // Intentionally set this to undefinedable() instead of optional() to remind caller they should pass nonce if they have one.
     nonce: undefinedable(string()),
     styleElements: pipe(array(injectedStylesElementSchema), readonly())
   }),

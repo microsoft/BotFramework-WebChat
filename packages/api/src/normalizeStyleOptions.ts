@@ -200,24 +200,28 @@ export default function normalizeStyleOptions({
 
   if (options.bubbleMaxWidth) {
     bubbleMaxWidthDeprecation();
+
     filledOptions.bubbleAttachmentMaxWidth = options.bubbleMaxWidth;
     filledOptions.bubbleMaxWidth = undefined;
   }
 
   if (options.bubbleMinWidth) {
     bubbleMinWidthDeprecation();
+
     filledOptions.bubbleAttachmentMinWidth = options.bubbleMinWidth;
     filledOptions.bubbleMinWidth = undefined;
   }
 
   if (options.bubbleMaxWidth) {
     bubbleMaxWidthDeprecation();
+
     filledOptions.bubbleMessageMaxWidth = options.bubbleMaxWidth;
     filledOptions.bubbleMaxWidth = undefined;
   }
 
   if (options.bubbleMinWidth) {
     bubbleMinWidthDeprecation();
+
     filledOptions.bubbleMessageMinWidth = options.bubbleMinWidth;
     filledOptions.bubbleMinWidth = undefined;
   }
