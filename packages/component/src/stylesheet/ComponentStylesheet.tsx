@@ -1,4 +1,4 @@
-// TODO: [P2] This component can be replaced by `bindProps(InjectCSS)({ cssContent, identifier })`.
+// TODO: [P2] This component can be replaced by `bindProps`.
 import { InjectStyleElements } from '@msinternal/botframework-webchat-component-inject-style-elements';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyleOptions } from 'botframework-webchat-api/hook';
@@ -7,7 +7,7 @@ import { never, object, optional, pipe, readonly, string, undefinedable, type In
 
 import createComponentStyleElements from './createComponentStyleElements';
 
-const componentCSSPropsSchema = pipe(
+const componentStylesheetPropsSchema = pipe(
   object({
     children: optional(never()),
     nonce: undefinedable(string())
@@ -15,19 +15,19 @@ const componentCSSPropsSchema = pipe(
   readonly()
 );
 
-type ComponentCSSProps = InferInput<typeof componentCSSPropsSchema>;
+type ComponentStylesheetProps = InferInput<typeof componentStylesheetPropsSchema>;
 
 const styleElements = createComponentStyleElements('component');
 
-function ComponentCSS(props: ComponentCSSProps) {
-  const { nonce } = validateProps(componentCSSPropsSchema, props);
+function ComponentStylesheet(props: ComponentStylesheetProps) {
+  const { nonce } = validateProps(componentStylesheetPropsSchema, props);
 
   const [{ stylesRoot }] = useStyleOptions();
 
   return <InjectStyleElements at={stylesRoot} nonce={nonce} styleElements={styleElements} />;
 }
 
-ComponentCSS.displayName = 'ComponentCSS';
+ComponentStylesheet.displayName = 'ComponentStylesheet';
 
-export default memo(ComponentCSS as FunctionComponent<ComponentCSSProps>);
-export { componentCSSPropsSchema, type ComponentCSSProps };
+export default memo(ComponentStylesheet as FunctionComponent<ComponentStylesheetProps>);
+export { componentStylesheetPropsSchema, type ComponentStylesheetProps };

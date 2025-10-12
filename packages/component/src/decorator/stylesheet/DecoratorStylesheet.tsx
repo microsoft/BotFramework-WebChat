@@ -1,4 +1,4 @@
-// TODO: [P2] This component can be replaced by `bindProps(InjectCSS)({ cssContent, identifier })`.
+// TODO: [P2] This component can be replaced by `bindProps`.
 import { InjectStyleElements } from '@msinternal/botframework-webchat-component-inject-style-elements';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyleOptions } from 'botframework-webchat-api/hook';
@@ -7,7 +7,7 @@ import { never, object, optional, pipe, readonly, string, undefinedable, type In
 
 import createDecoratorStyleElements from './createDecoratorStyleElements';
 
-const decoratorCSSPropsSchema = pipe(
+const decoratorStylesheetPropsSchema = pipe(
   object({
     children: optional(never()),
     nonce: undefinedable(string())
@@ -15,19 +15,19 @@ const decoratorCSSPropsSchema = pipe(
   readonly()
 );
 
-type DecoratorCSSProps = InferInput<typeof decoratorCSSPropsSchema>;
+type DecoratorStylesheetProps = InferInput<typeof decoratorStylesheetPropsSchema>;
 
 const styleElements = createDecoratorStyleElements('component/decorator');
 
-function DecoratorCSS(props: DecoratorCSSProps) {
-  const { nonce } = validateProps(decoratorCSSPropsSchema, props);
+function DecoratorStylesheet(props: DecoratorStylesheetProps) {
+  const { nonce } = validateProps(decoratorStylesheetPropsSchema, props);
 
   const [{ stylesRoot }] = useStyleOptions();
 
   return <InjectStyleElements at={stylesRoot} nonce={nonce} styleElements={styleElements} />;
 }
 
-DecoratorCSS.displayName = 'DecoratorCSS';
+DecoratorStylesheet.displayName = 'DecoratorStylesheet';
 
-export default memo(DecoratorCSS as FunctionComponent<DecoratorCSSProps>);
-export { decoratorCSSPropsSchema, type DecoratorCSSProps };
+export default memo(DecoratorStylesheet as FunctionComponent<DecoratorStylesheetProps>);
+export { decoratorStylesheetPropsSchema, type DecoratorStylesheetProps };

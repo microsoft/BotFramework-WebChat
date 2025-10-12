@@ -50,7 +50,7 @@ import createDefaultSendBoxMiddleware from './SendBox/createMiddleware';
 import createDefaultSendBoxToolbarMiddleware from './SendBoxToolbar/createMiddleware';
 import createStyleSet from './Styles/createStyleSet';
 import CustomPropertiesContainer from './Styles/CustomPropertiesContainer';
-import ComponentCSS from './stylesheet/ComponentCSS';
+import ComponentStylesheet from './stylesheet/ComponentStylesheet';
 import { type ContextOf } from './types/ContextOf';
 import { type FocusTranscriptInit } from './types/internal/FocusTranscriptInit';
 import addTargetBlankToHyperlinksMarkdown from './Utils/addTargetBlankToHyperlinksMarkdown';
@@ -459,7 +459,7 @@ const Composer = ({
       typingIndicatorMiddleware={patchedTypingIndicatorMiddleware}
       {...composerProps}
     >
-      <ComponentCSS nonce={nonce} />
+      <ComponentStylesheet nonce={nonce} />
       <StyleToEmotionObjectComposer nonce={nonce}>
         <HTMLContentTransformComposer middleware={htmlContentTransformMiddleware}>
           <ReducedMotionComposer>

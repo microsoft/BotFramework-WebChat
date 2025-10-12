@@ -8,7 +8,7 @@ import {
 import React, { Fragment, memo } from 'react';
 import { object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
-import DecoratorCSS from '../stylesheet/DecoratorCSS';
+import DecoratorStylesheet from '../stylesheet/DecoratorStylesheet';
 import BorderFlair from './BorderFlair';
 import BorderLoader from './BorderLoader';
 
@@ -44,7 +44,7 @@ function WebChatDecorator(props: WebChatDecoratorProps) {
 
   return (
     <Fragment>
-      <DecoratorCSS nonce={nonce} />
+      <DecoratorStylesheet nonce={nonce} />
       <DecoratorComposer middleware={middleware}>{children}</DecoratorComposer>
     </Fragment>
   );
