@@ -8,11 +8,7 @@ import {
   WebChatDecorator,
   type DecoratorMiddleware
 } from 'botframework-webchat/decorator';
-import {
-  InjectStyleElements,
-  type ActivityMiddleware,
-  type TypingIndicatorMiddleware
-} from 'botframework-webchat/internal';
+import { type ActivityMiddleware, type TypingIndicatorMiddleware } from 'botframework-webchat/internal';
 import React, { memo, useMemo } from 'react';
 import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
@@ -25,7 +21,7 @@ import { PrimarySendBox } from '../components/sendBox';
 import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
 import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
-import { createStyles } from '../styles';
+import FluentThemeStylesheet from '../stylesheet/FluentThemeStylesheet';
 import VariantComposer, { variantNameSchema } from './VariantComposer';
 
 const fluentThemeProviderPropsSchema = pipe(
@@ -77,8 +73,6 @@ const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
   })
 ]);
 
-const styles = createStyles('fluent-theme');
-
 const typingIndicatorMiddleware: readonly TypingIndicatorMiddleware[] = Object.freeze([
   () =>
     next =>
@@ -109,7 +103,7 @@ function FluentThemeProvider(props: FluentThemeProviderProps) {
             styleOptions={fluentStyleOptions}
             typingIndicatorMiddleware={typingIndicatorMiddleware}
           >
-            <InjectStyleElements at={stylesRoot} nonce={nonce} styleElements={styles} />
+            <FluentThemeStylesheet nonce={nonce} />
             <AssetComposer>
               {/*
                 <Composer> is not set up yet, we have no place to send nonce.
