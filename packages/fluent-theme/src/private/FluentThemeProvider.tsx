@@ -9,7 +9,7 @@ import {
   type DecoratorMiddleware
 } from 'botframework-webchat/decorator';
 import { type ActivityMiddleware, type TypingIndicatorMiddleware } from 'botframework-webchat/internal';
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ActivityLoader from '../components/activity/ActivityLoader';
@@ -73,10 +73,6 @@ const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
   })
 ]);
 
-const fluentStyleOptions = Object.freeze({
-  feedbackActionsPlacement: 'activity-actions'
-});
-
 const typingIndicatorMiddleware: readonly TypingIndicatorMiddleware[] = Object.freeze([
   () =>
     next =>
@@ -86,7 +82,16 @@ const typingIndicatorMiddleware: readonly TypingIndicatorMiddleware[] = Object.f
 
 function FluentThemeProvider(props: FluentThemeProviderProps) {
   // validateProps() does not fill in optional in production mode.
-  const { children, nonce, variant = 'fluent' } = validateProps(fluentThemeProviderPropsSchema, props);
+  const { children, nonce, stylesRoot, variant = 'fluent' } = validateProps(fluentThemeProviderPropsSchema, props);
+
+  const fluentStyleOptions = useMemo(
+    () =>
+      Object.freeze({
+        feedbackActionsPlacement: 'activity-actions',
+        stylesRoot
+      }),
+    [stylesRoot]
+  );
 
   return (
     <VariantComposer variant={variant}>
