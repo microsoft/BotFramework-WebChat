@@ -320,6 +320,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
   by [@lexi-taylor](https://github.com/lexi-taylor)
 - Fixed `npm start` may fail subsequently as builds are not fully flushed to `/dist/`, in PR [#5599](https://github.com/microsoft/BotFramework-WebChat/pull/5599), by [@compulim](https://github.com/compulim)
 - Fixed published package types containing internal package references, in PR [#5610](https://github.com/microsoft/BotFramework-WebChat/pull/5610), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed citation links are not properly matched against markdown links, in PR [#5614](https://github.com/microsoft/BotFramework-WebChat/pull/5614), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Removed
 
