@@ -90,6 +90,7 @@
       "allowSyntheticDefaultImports": true,
       "downlevelIteration": true,
       "jsx": "react",
+      "module": "NodeNext",
       "noImplicitAny": false,
       "resolveJsonModule": true,
       "skipLibCheck": true,
@@ -97,9 +98,12 @@
     }
   },
   "scripts": {
-    "build": "npm run build:static && npm run build:tsup",
+    "build": "npm run build:static && npm run build:tsup && npm run build:dtsroll && npm run build:validate",
     "build:static": "node ./esbuild.static.mjs",
     "build:tsup": "tsup",
+    "build:dtsroll": "dtsroll ./dist/*.d.*",
+    "build:validate": "npm run build:validate:dts",
+    "build:validate:dts": "if grep -q -P '@msinternal\\/' dist/*.d.* 2>/dev/null; then echo \"Error: dist/*.d.* is not compiled by dtsroll\" >&2; exit 1; fi",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -223,7 +227,6 @@
     "@types/dom-speech-recognition": "^0.0.6",
     "@types/mdast": "^4.0.4",
     "@types/node": "^24.1.0",
-    "@types/react": "^16.14.65",
     "@types/uuid": "^10.0.0",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
@@ -236,6 +239,8 @@
     "typescript": "~5.8.3"
   },
   "peerDependencies": {
+    "@types/react": "^16.14.65",
+    "react-chain-of-responsibility": "0.4.0-main.c2f17da",
     "react": ">= 16.8.6",
     "react-dom": ">= 16.8.6"
   }
