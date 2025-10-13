@@ -14,7 +14,7 @@ import { singleToArray } from 'botframework-webchat-core';
 import classNames from 'classnames';
 import MarkdownIt from 'markdown-it';
 import PropTypes from 'prop-types';
-import React, { memo, useCallback, useMemo, useRef, useState, type ReactNode } from 'react';
+import React, { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Composer as SayComposer } from 'react-say';
 
 import createDefaultAttachmentMiddleware from './Attachment/createMiddleware';
@@ -27,6 +27,7 @@ import {
 import { StyleToEmotionObjectComposer, useStyleToEmotionObject } from './hooks/internal/styleToEmotionObject';
 import UITracker from './hooks/internal/UITracker';
 import useInjectStyles from './hooks/internal/useInjectStyles';
+import useFocus from './hooks/useFocus';
 import WebChatUIContext from './hooks/internal/WebChatUIContext';
 import { FocusSendBoxScope } from './hooks/sendBoxFocus';
 import { ScrollRelativeTranscriptScope } from './hooks/transcriptScrollRelative';
@@ -59,6 +60,10 @@ import downscaleImageToDataURL from './Utils/downscaleImageToDataURL';
 import mapMap from './Utils/mapMap';
 
 const { useGetActivityByKey, useReferenceGrammarID, useStyleOptions, useTrackException } = hooks;
+
+export type ComposerRef = {
+  focusSendBoxInput: () => Promise<void>;
+};
 
 function styleSetToEmotionObjects(styleToEmotionObject, styleSet) {
   return mapMap(styleSet, (style, key) => (key === 'options' ? style : styleToEmotionObject(style)));
@@ -489,11 +494,25 @@ const InternalComposer = ({
   );
 };
 
-const Composer = (props: ComposerProps) => (
-  <WebChatTheme>
-    <InternalComposer {...props} />
-  </WebChatTheme>
-);
+const Composer = forwardRef<ComposerRef, ComposerProps>((props, ref) => {
+  const focus = useFocus();
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      focusSendBoxInput: () => focus('sendBox')
+    }),
+    [focus]
+  );
+
+  return (
+    <WebChatTheme>
+      <InternalComposer {...props} />
+    </WebChatTheme>
+  );
+});
+
+Composer.displayName = 'Composer';
 
 Composer.defaultProps = {
   ...APIComposer.defaultProps,
