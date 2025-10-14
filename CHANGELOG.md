@@ -310,6 +310,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed [#5479](https://github.com/microsoft/BotFramework-WebChat/issues/5479). Fixed feedback form buttons should not squash other buttons, in PR [#5480](https://github.com/microsoft/BotFramework-WebChat/pull/5480), by [@compulim](https://github.com/compulim)
    - Migrated to radio button for like/dislike where form submission is required
 - Fixed long citation identifiers break activity layout, in PR [#5507](https://github.com/microsoft/BotFramework-WebChat/pull/5507), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed `botframework-webchat-core/internal` import in legacy CommonJS environments, in [#5509](https://github.com/microsoft/BotFramework-WebChat/pull/5509), by [@OEvgeny](https://github.com/OEvgeny)
 - Updated file-based import with `.js` extension and removed the file extension from build config, by [@compulim](https://github.com/compulim), in PR [#5516](https://github.com/microsoft/BotFramework-WebChat/pull/5516)
 - Fixed [#5518](https://github.com/microsoft/BotFramework-WebChat/issues/5518). Minimal bundled build should work properly, in PR [#5507](https://github.com/microsoft/BotFramework-WebChat/pull/5507), by [@compulim](https://github.com/compulim)
 - Fixed [#5520](https://github.com/microsoft/BotFramework-WebChat/issues/5520). Version information should be injected when installed via npm, in PR [#5521](https://github.com/microsoft/BotFramework-WebChat/pull/5521), by [@compulim](https://github.com/compulim)
@@ -321,12 +322,12 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed `npm start` may fail subsequently as builds are not fully flushed to `/dist/`, in PR [#5599](https://github.com/microsoft/BotFramework-WebChat/pull/5599), by [@compulim](https://github.com/compulim)
 - Fixed published package types containing internal package references, in PR [#5610](https://github.com/microsoft/BotFramework-WebChat/pull/5610), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed citation links are not properly matched against markdown links, in PR [#5614](https://github.com/microsoft/BotFramework-WebChat/pull/5614), by [@OEvgeny](https://github.com/OEvgeny)
+- Fixed `botframework-webchat/decorator` import in legacy CommonJS environments, in [#5616](https://github.com/microsoft/BotFramework-WebChat/pull/5616), by [@OEvgeny](https://github.com/OEvgeny)
 
 ### Removed
 
 - Deprecating `disabled` props and `useDisabled` hook in favor of new `uiState` props and `useUIState` hook, in PR [#5276](https://github.com/microsoft/BotFramework-WebChat/pull/5276), by [@compulim](https://github.com/compulim)
 - `useSuggestedActions()` hook is being deprecated in favor of the `useSuggestedActionsHooks().useSuggestedActions()` hook, in PR [#5489](https://github.com/microsoft/BotFramework-WebChat/pull/5489), by [@compulim](https://github.com/compulim)
-- Fixed core internal import in legacy CommonJS environments, in [5509](https://github.com/microsoft/BotFramework-WebChat/pull/5509), by [@OEvgeny](https://github.com/OEvgeny)
 - `activityMiddleware` is being deprecated in favor of [`polymiddleware`](./docs/MIDDLEWARE.md). It will be removed on or after 2027-08-16, related to PR [#5515](https://github.com/microsoft/BotFramework-WebChat/pull/5515)
 - Root-level (unconnected) `Claim` entity is being deprecated, in PR [#5564](https://github.com/microsoft/BotFramework-WebChat/pull/5564), by [@compulim](https://github.com/compulim). It will be removed on or after 2027-08-29
    - Use `entities[@id=""][@type="Message"].citation[@type="Claim"]` instead
