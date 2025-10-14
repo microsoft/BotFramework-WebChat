@@ -1,5 +1,5 @@
 // TODO: [P2] This component can be replaced by `bindProps`.
-import { InjectStyleElements } from '@msinternal/botframework-webchat-component-inject-style-elements';
+import { InjectStyleElements } from '@msinternal/botframework-webchat-styles/react';
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyleOptions } from 'botframework-webchat-api/hook';
 import React, { memo, type FunctionComponent } from 'react';

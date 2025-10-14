@@ -131,7 +131,6 @@
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
-    "@msinternal/botframework-webchat-component-inject-style-elements": "0.0.0-0",
     "@msinternal/botframework-webchat-react-hooks": "^0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",
     "@msinternal/botframework-webchat-styles": "0.0.0-0",

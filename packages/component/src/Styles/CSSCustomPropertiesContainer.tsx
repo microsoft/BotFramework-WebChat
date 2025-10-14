@@ -1,4 +1,4 @@
-import { InjectStyleElements } from '@msinternal/botframework-webchat-component-inject-style-elements';
+import { InjectStyleElements } from '@msinternal/botframework-webchat-styles/react';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
 import { useStyleOptions } from 'botframework-webchat-api/hook';

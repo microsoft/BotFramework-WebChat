@@ -1,4 +1,4 @@
-export { InjectStyleElements } from '@msinternal/botframework-webchat-component-inject-style-elements';
+export { InjectStyleElements } from '@msinternal/botframework-webchat-styles/react';
 export {
   CodeHighlighterComposer,
   useCodeHighlighter,
