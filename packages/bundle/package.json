@@ -81,6 +81,7 @@
   },
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/#readme",
   "files": [
+    "./*.js",
     "./dist/**/*",
     "./src/**/*",
     "./static/**/*"
