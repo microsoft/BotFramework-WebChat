@@ -1,0 +1,6 @@
+:global(.webchat-experience-chat-launcher) .chat-launcher-button {
+  background-color: #e00;
+  color: White;
+  height: 40px;
+  width: 40px;
+}

@@ -19,6 +19,7 @@ module.exports = {
   'packages/core/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:core'],
   'packages/debug-theme/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:debug-theme'],
   'packages/directlinespeech/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:directlinespeech'],
+  'packages/experience-chat-launcher/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:experience-chat-launcher'],
   'packages/fluent-theme/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:fluent-theme'],
   'packages/isomorphic-react/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:isomorphic-react'],
   'packages/isomorphic-react-dom/src/**/*.{mjs,js,ts,tsx}': ['npm run precommit:eslint:isomorphic-react-dom'],

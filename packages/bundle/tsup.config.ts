@@ -21,6 +21,7 @@ const commonConfig = applyConfig(config => ({
     'botframework-webchat': './src/boot/exports/index.ts',
     'botframework-webchat.component': './src/boot/exports/component.ts',
     'botframework-webchat.decorator': './src/boot/exports/decorator.ts',
+    'botframework-webchat.experience.chatLauncher': './src/boot/exports/experience/chatLauncher.ts',
     'botframework-webchat.hook': './src/boot/exports/hook.ts',
     'botframework-webchat.internal': './src/boot/exports/internal.ts',
     'botframework-webchat.middleware': './src/boot/exports/middleware.ts'

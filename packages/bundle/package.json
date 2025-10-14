@@ -35,6 +35,12 @@
         "default": "./dist/botframework-webchat.decorator.js"
       }
     },
+    "./experience/chatLauncher": {
+      "import": {
+        "types": "./dist/botframework-webchat.experience.chat-launcher.d.mts",
+        "default": "./dist/botframework-webchat.experience.chat-launcher.mjs"
+      }
+    },
     "./hook": {
       "import": {
         "types": "./dist/botframework-webchat.hook.d.mts",
@@ -82,6 +88,7 @@
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/#readme",
   "files": [
     "./dist/**/*",
+    "./experience/**/*",
     "./src/**/*",
     "./static/**/*"
   ],
@@ -121,8 +128,9 @@
   "localDependencies": {
     "@msinternal/adaptivecards": "development",
     "@msinternal/base64-js": "development",
-    "@msinternal/botframework-webchat-base": "development",
     "@msinternal/botframework-directlinejs": "development",
+    "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-experience-chat-launcher": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "@msinternal/botframework-webchat-tsconfig": "development",
     "@msinternal/isomorphic-react-baseline": "development",
@@ -212,6 +220,7 @@
     "@msinternal/base64-js": "0.0.0-0",
     "@msinternal/botframework-directlinejs": "0.0.0-0",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
+    "@msinternal/botframework-webchat-experience-chat-launcher": "0.0.0-0",
     "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
     "@msinternal/isomorphic-react": "0.0.0-0",

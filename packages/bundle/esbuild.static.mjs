@@ -11,28 +11,6 @@ import { readPackage } from 'read-pkg';
 import { fileURLToPath } from 'url';
 import { cssPlugin } from '../../esbuildPlugins.mjs';
 
-// eslint-disable-next-line no-unused-vars
-const isomorphicReactPlugin = {
-  name: 'isomorphic-react',
-  setup(build) {
-    // eslint-disable-next-line require-unicode-regexp
-    build.onResolve({ filter: /^(react|react-dom)$/, namespace: 'file' }, ({ path }) => ({
-      namespace: 'isomorphic-react',
-      path
-    }));
-
-    // eslint-disable-next-line require-unicode-regexp
-    build.onLoad({ filter: /^react$/, namespace: 'isomorphic-react' }, () => ({
-      contents: "import React from 'react'; module.exports = globalThis.React || React;"
-    }));
-
-    // eslint-disable-next-line require-unicode-regexp
-    build.onLoad({ filter: /^react-dom$/, namespace: 'isomorphic-react' }, () => ({
-      contents: "import ReactDOM from 'react-dom'; module.exports = globalThis.ReactDOM || ReactDOM;"
-    }));
-  }
-};
-
 function createWatcherPlugin(name) {
   /** @type { import('esbuild').Plugin } */
   return {
@@ -130,6 +108,7 @@ const IGNORED_OWN_PACKAGES = [
     'botframework-webchat': './src/boot/exports/index.ts',
     'botframework-webchat/component': './src/boot/exports/component.ts',
     'botframework-webchat/decorator': './src/boot/exports/decorator.ts',
+    'botframework-webchat/experience/chatLauncher': './src/boot/exports/experience/chatLauncher.ts',
     'botframework-webchat/hook': './src/boot/exports/hook.ts',
     'botframework-webchat/internal': './src/boot/exports/internal.ts',
     'botframework-webchat/middleware': './src/boot/exports/middleware.ts',
