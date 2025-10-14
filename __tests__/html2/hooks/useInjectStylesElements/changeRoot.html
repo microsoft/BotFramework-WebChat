@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        testHelpers: { createDirectLineEmulator },
+        WebChat: {
+          internal: { InjectStyleElements }
+        }
+      } = window;
+
+      function createStyle(body) {
+        const styleElement = document.createElement('style');
+
+        styleElement.dataset['testid'] = 'style';
+        styleElement.innerHTML = body;
+
+        return styleElement;
+      }
+
+      run(async function () {
+        const { directLine, store } = createDirectLineEmulator();
+
+        const render = ({ nonce, styleElements, stylesRoot }) =>
+          new Promise(resolve =>
+            ReactDOM.render(
+              <InjectStyleElements at={stylesRoot} nonce={nonce} styleElements={styleElements} />,
+              document.getElementById('webchat'),
+              resolve
+            )
+          );
+
+        const styleElement = createStyle('main { background-color: Red!important; }');
+
+        // WHEN: Inject into default (document.head).
+        await render({ styleElements: [styleElement] });
+
+        // THEN: Should render red.
+        await host.snapshot('local');
+
+        // THEN: Should inject into document.head.
+        const styleElementsInHead = document.head.querySelectorAll('style[data-testid="style"]');
+
+        expect(styleElementsInHead).toHaveLength(1);
+        expect(styleElementsInHead[0]).toHaveProperty('textContent', styleElement.textContent);
+
+        // THEN: Should not inject into document.body.
+        expect(document.body.querySelectorAll('style[data-testid="style"]')).toHaveLength(0);
+
+        // WHEN: Inject into document.body.
+        await render({ styleElements: [styleElement], stylesRoot: document.body });
+
+        // THEN: Should render red.
+        await host.snapshot('local');
+
+        // THEN: Should inject into document.body.
+        const styleElementsInBody = document.body.querySelectorAll('style[data-testid="style"]');
+
+        expect(styleElementsInBody).toHaveLength(1);
+        expect(styleElementsInBody[0]).toHaveProperty('textContent', styleElement.textContent);
+
+        // THEN: Should not inject into document.head.
+        expect(document.head.querySelectorAll('style[data-testid="style"]')).toHaveLength(0);
+      });
+    </script>
+  </body>
+</html>

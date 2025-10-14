@@ -15,8 +15,7 @@
       const {
         testHelpers: { createDirectLineEmulator },
         WebChat: {
-          Components: { Composer },
-          internal: { useInjectStyles }
+          internal: { InjectStyleElements }
         }
       } = window;
 
@@ -25,6 +24,7 @@
 
         const { sheet } = styleElement;
 
+        styleElement.dataset['testid'] = 'style';
         styleElement.innerHTML = body;
 
         return styleElement;
@@ -33,19 +33,12 @@
       run(async function () {
         const { directLine, store } = createDirectLineEmulator();
 
-        const RunFunction = ({ fn }) => {
-          fn();
-
-          return false;
-        };
-
-        const renderWithFunction = fn =>
+        const render = ({ nonce, styleElements, stylesRoot }) =>
           new Promise(resolve =>
             ReactDOM.render(
-              <Composer directLine={directLine} store={store}>
-                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
-              </Composer>,
-              document.getElementById('webchat')
+              <InjectStyleElements at={stylesRoot} nonce={nonce} styleElements={styleElements} />,
+              document.getElementById('webchat'),
+              resolve
             )
           );
 
@@ -53,32 +46,41 @@
         const styleElement2 = createStyle('main { background-color: Orange!important; }');
         const styleElement3 = createStyle('main { background-color: Yellow!important; }');
 
-        await renderWithFunction(() => useInjectStyles([styleElement1]));
-        await host.snapshot();
+        await render({ styleElements: [styleElement1] });
 
-        const allInjectedStyles1 = document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])');
+        // THEN: Should render in red.
+        await host.snapshot('local');
+
+        const allInjectedStyles1 = document.head.querySelectorAll('style[data-testid="style"]');
 
         expect(allInjectedStyles1).toHaveLength(1);
-        expect(allInjectedStyles1[0]).toBe(styleElement1);
+        expect(allInjectedStyles1[0]).toHaveProperty('textContent', styleElement1.textContent);
 
-        await renderWithFunction(() => useInjectStyles([styleElement1, styleElement2]));
-        await host.snapshot();
+        // THEN: <script> should be cloned.
+        expect(allInjectedStyles1[0]).not.toBe(styleElement1);
 
-        const allInjectedStyles2 = document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])');
+        await render({ styleElements: [styleElement1, styleElement2] });
+
+        // THEN: Should render in orange.
+        await host.snapshot('local');
+
+        const allInjectedStyles2 = document.head.querySelectorAll('style[data-testid="style"]');
 
         expect(allInjectedStyles2).toHaveLength(2);
-        expect(allInjectedStyles2[0]).toBe(styleElement1);
-        expect(allInjectedStyles2[1]).toBe(styleElement2);
+        expect(allInjectedStyles2[0]).toHaveProperty('textContent', styleElement1.textContent);
+        expect(allInjectedStyles2[1]).toHaveProperty('textContent', styleElement2.textContent);
 
-        await renderWithFunction(() => useInjectStyles([styleElement1, styleElement2, styleElement3]));
-        await host.snapshot();
+        await render({ styleElements: [styleElement1, styleElement2, styleElement3] });
 
-        const allInjectedStyles3 = document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])');
+        // THEN: Should render in yellow.
+        await host.snapshot('local');
+
+        const allInjectedStyles3 = document.head.querySelectorAll('style[data-testid="style"]');
 
         expect(allInjectedStyles3).toHaveLength(3);
-        expect(allInjectedStyles3[0]).toBe(styleElement1);
-        expect(allInjectedStyles3[1]).toBe(styleElement2);
-        expect(allInjectedStyles3[2]).toBe(styleElement3);
+        expect(allInjectedStyles3[0]).toHaveProperty('textContent', styleElement1.textContent);
+        expect(allInjectedStyles3[1]).toHaveProperty('textContent', styleElement2.textContent);
+        expect(allInjectedStyles3[2]).toHaveProperty('textContent', styleElement3.textContent);
       });
     </script>
   </body>

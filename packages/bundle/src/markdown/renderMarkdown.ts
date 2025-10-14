@@ -7,6 +7,7 @@ import { onErrorResumeNext } from 'botframework-webchat-core';
 import katex from 'katex';
 import { micromark } from 'micromark';
 import { gfm, gfmHtml } from 'micromark-extension-gfm';
+import { sanitizeUri } from 'micromark-util-sanitize-uri';
 
 import { math, mathHtml } from './mathExtension';
 import betterLinkDocumentMod, { BetterLinkDocumentModDecoration } from './private/betterLinkDocumentMod';
@@ -26,7 +27,13 @@ export default function render(
   { markdownRespectCRLF, markdownRenderHTML }: Readonly<{ markdownRespectCRLF: boolean; markdownRenderHTML?: boolean }>,
   { externalLinkAlt }: RenderInit
 ): string {
-  const linkDefinitions = Array.from(iterateLinkDefinitions(markdown));
+  const linkDefinitions = Array.from(iterateLinkDefinitions(markdown)).map(definition =>
+    Object.freeze({
+      ...definition,
+      markupUrl: sanitizeUri(definition.url),
+      parsedUrl: onErrorResumeNext(() => new URL(definition.url))
+    })
+  );
 
   if (markdownRespectCRLF) {
     markdown = respectCRLFPre(markdown);
@@ -41,13 +48,11 @@ export default function render(
 
     const ariaLabelSegments: string[] = [textContent];
     const classes: Set<string> = new Set();
-    const linkDefinition = linkDefinitions.find(({ url }) => url === href);
+    const linkDefinition = linkDefinitions.find(({ url, markupUrl }) => url === href || (href && markupUrl === href));
     const protocol = onErrorResumeNext(() => new URL(href).protocol);
 
     if (linkDefinition) {
-      ariaLabelSegments.push(
-        linkDefinition.title || onErrorResumeNext(() => new URL(linkDefinition.url).host) || linkDefinition.url
-      );
+      ariaLabelSegments.push(linkDefinition.title || linkDefinition?.parsedUrl?.host || linkDefinition.url);
 
       // linkDefinition.identifier is uppercase, while linkDefinition.label is as-is.
       linkDefinition.label === textContent && classes.add('webchat__render-markdown__pure-identifier');

@@ -48,6 +48,7 @@
       // Verify the sent message
       await pageConditions.numActivitiesShown(1);
       await pageConditions.allOutgoingActivitiesSent();
+      await pageConditions.allImagesLoaded();
       await host.snapshot('local');
 
       // Wait for and verify bot response
