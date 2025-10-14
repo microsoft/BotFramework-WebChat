@@ -8,6 +8,8 @@
     <script type="importmap">
       {
         "imports": {
+          "#test-harness": "/test-harness.mjs",
+          "#test-page-object": "/test-page-object.mjs",
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
           "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
           "botframework-webchat/middleware": "/__dist__/packages/bundle/static/botframework-webchat/middleware.js",
@@ -19,8 +21,8 @@
     </script>
     <script src="https://esm.sh/tsx" type="module"></script>
     <script type="text/babel">
-      import '/test-harness.mjs';
-      import '/test-page-object.mjs';
+      import '#test-harness';
+      import '#test-page-object';
 
       import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
       import { useStyleOptions } from 'botframework-webchat/hook';

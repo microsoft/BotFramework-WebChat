@@ -13,16 +13,19 @@
     <main id="webchat"></main>
     <script type="text/babel" data-presets="env,stage-3,react">
       const {
+        React: { Fragment },
         testHelpers: { createDirectLineEmulator },
         WebChat: {
-          Components: { Composer },
-          internal: { useInjectStyles }
+          Components: { Composer, ThemeProvider }
         }
       } = window;
 
       function createStyle(body) {
         const styleElement = document.createElement('style');
 
+        const { sheet } = styleElement;
+
+        styleElement.dataset['testid'] = 'style';
         styleElement.innerHTML = body;
 
         return styleElement;
@@ -37,33 +40,26 @@
           return false;
         };
 
-        const renderWithFunction = fn =>
+        const render = ({ stylesRoot }) =>
           new Promise(resolve =>
             ReactDOM.render(
-              <Composer directLine={directLine} store={store}>
-                <RunFunction fn={() => resolve(fn && fn())} key={Date.now() + ''} />
-              </Composer>,
-              document.getElementById('webchat')
+              <Fragment>
+                <Composer directLine={directLine} store={store} styleOptions={stylesRoot ? { stylesRoot } : {}} />
+                <Composer directLine={directLine} store={store} styleOptions={stylesRoot ? { stylesRoot } : {}} />
+              </Fragment>,
+              document.getElementById('webchat'),
+              resolve
             )
           );
 
-        const styleElement = createStyle('main { background-color: Red!important; }');
+        await render({});
 
-        await renderWithFunction(() => useInjectStyles([styleElement, styleElement]));
-        await host.snapshot();
+        const allInjectedStyles = document.head.querySelectorAll('style[data-webchat-injected]');
 
-        const allInjectedStyles1 = document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])');
+        const identifiers = new Set(Array.from(allInjectedStyles).map(element => element.dataset.webchatInjected));
 
-        expect(allInjectedStyles1).toHaveLength(1);
-        expect(allInjectedStyles1[0]).toBe(styleElement);
-
-        await renderWithFunction(() => useInjectStyles([styleElement, styleElement]));
-        await host.snapshot();
-
-        const allInjectedStyles2 = document.head.querySelectorAll('style:not([data-emotion]):not([data-webchat-injected])');
-
-        expect(allInjectedStyles2).toHaveLength(1);
-        expect(allInjectedStyles2[0]).toBe(styleElement);
+        // THEN: All injected CSS should be unique and have no duplicates.
+        expect(allInjectedStyles).toHaveLength(identifiers.size);
       });
     </script>
   </body>

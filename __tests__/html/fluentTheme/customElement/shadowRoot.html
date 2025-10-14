@@ -56,7 +56,7 @@
           );
 
           render(
-            <FluentThemeProvider>
+            <FluentThemeProvider nonce="test" stylesRoot={this.shadowRoot}>
               <App />
             </FluentThemeProvider>,
             container

@@ -1,20 +1,38 @@
+import { InjectStyleElements } from '@msinternal/botframework-webchat-styles/react';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { makeCreateStyles } from '@msinternal/botframework-webchat-styles';
-import { hooks } from 'botframework-webchat-api';
+import { useStyleOptions } from 'botframework-webchat-api/hook';
+import classNames from 'classnames';
 import random from 'math-random';
-import { useMemo } from 'react';
-import useInjectStyles from '../hooks/internal/useInjectStyles';
-import useNonce from '../hooks/internal/useNonce';
+import React, { memo, useMemo } from 'react';
+import { object, optional, pipe, readonly, string, undefinedable, type InferInput } from 'valibot';
 import CustomPropertyNames from './CustomPropertyNames';
 
-const { useStyleOptions } = hooks;
+const customPropertiesContainerPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    className: optional(string()),
+    // Intentionally undefinedable() instead of optional() to remind caller they should pass nonce.
+    nonce: undefinedable(string())
+  }),
+  readonly()
+);
+
+type CustomPropertiesContainerProps = InferInput<typeof customPropertiesContainerPropsSchema>;
 
 const webchatCustomPropertiesClass = 'webchat__css-custom-properties';
 
-export default function useCustomPropertiesClassName() {
-  const [styleOptions] = useStyleOptions();
-  const [nonce] = useNonce();
+function uniqueId() {
+  // eslint-disable-next-line no-magic-numbers
+  return Math.ceil(random() * Number.MAX_SAFE_INTEGER).toString(36);
+}
 
-  const [styles, classNameState] = useMemo(() => {
+function CustomPropertiesContainer(props: CustomPropertiesContainerProps) {
+  const { children, className, nonce } = validateProps(customPropertiesContainerPropsSchema, props);
+
+  const [styleOptions] = useStyleOptions();
+
+  const [styleElements, classNameState] = useMemo(() => {
     const {
       accent,
       avatarSize,
@@ -52,9 +70,7 @@ export default function useCustomPropertiesClassName() {
       transitionDuration
     } = styleOptions;
 
-    const randomClass =
-      // eslint-disable-next-line no-magic-numbers
-      `w${Math.ceil(random() * Number.MAX_SAFE_INTEGER).toString(36)}_${webchatCustomPropertiesClass.replace('webchat__', '')}` as const;
+    const randomClass = `w${uniqueId()}_${webchatCustomPropertiesClass.replace('webchat__', '')}` as const;
 
     const contents = `
 .${webchatCustomPropertiesClass}.${randomClass} {
@@ -95,12 +111,19 @@ export default function useCustomPropertiesClassName() {
   ${CustomPropertyNames.TransitionDuration}: ${transitionDuration};
 }
 `;
-    const [style] = makeCreateStyles(contents)('component');
+    const [style] = makeCreateStyles(contents)(`component/CustomPropertiesContainer-${uniqueId()}`);
 
     return [Object.freeze([style]), Object.freeze([`${webchatCustomPropertiesClass} ${randomClass}`] as const)];
   }, [styleOptions]);
 
-  useInjectStyles(styles, nonce);
-
-  return classNameState;
+  return (
+    <div className={classNames(className, classNameState[0])}>
+      <InjectStyleElements at={styleOptions.stylesRoot} nonce={nonce} styleElements={styleElements} />
+      {children}
+    </div>
+  );
 }
+
+CustomPropertiesContainer.displayName = 'CustomPropertiesContainer';
+
+export default memo(CustomPropertiesContainer);
