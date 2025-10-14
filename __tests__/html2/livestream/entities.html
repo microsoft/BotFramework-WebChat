@@ -1,4 +1,4 @@
-npm <!doctype html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -70,7 +70,7 @@ npm <!doctype html>
         const firstTypingActivityId = 't-00001';
 
         await directLine.emulateIncomingActivity({
-          entities: [{ streamSequence: 1, streamType: 'streaming', type: 'streaminfo', streamId: 'a-entities' }],
+          entities: [{ streamSequence: 1, streamType: 'streaming', type: 'streaminfo' }],
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: firstTypingActivityId,
           text: 'A quick',
@@ -100,7 +100,7 @@ npm <!doctype html>
 
         // WHEN: Bot continue typing the message.
         await directLine.emulateIncomingActivity({
-          entities: [{ streamId: 'a-entities', streamSequence: 2, type: 'streaminfo', streamType: 'streaming' }],
+          entities: [{ streamId: firstTypingActivityId, streamSequence: 2, type: 'streaminfo', streamType: 'streaming' }],
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 't-00002',
           text: 'A quick brown fox',
@@ -128,7 +128,7 @@ npm <!doctype html>
 
         // WHEN: Bot continue typing the message.
         await directLine.emulateIncomingActivity({
-          entities: [{ streamId: 'a-entities', streamSequence: 3, type: 'streaminfo', streamType: 'streaming' }],
+          entities: [{ streamId: firstTypingActivityId, streamSequence: 3, type: 'streaminfo', streamType: 'streaming' }],
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 't-00003',
           text: 'A quick brown fox jumped over',
@@ -153,7 +153,7 @@ npm <!doctype html>
 
         // WHEN: Bot finished typing the message.
         await directLine.emulateIncomingActivity({
-          entities: [{ streamId: 'a-entities', type: 'streaminfo', streamType: 'final' }],
+          entities: [{ streamId: firstTypingActivityId, type: 'streaminfo', streamType: 'final' }],
           from: { id: 'u-00001', name: 'Bot', role: 'bot' },
           id: 'a-00002',
           text: 'A quick brown fox jumped over the lazy dogs.',
