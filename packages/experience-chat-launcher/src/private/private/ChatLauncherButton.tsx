@@ -4,6 +4,7 @@ import React, { memo } from 'react';
 import { boolean, object, pipe, readonly, type InferInput } from 'valibot';
 
 import styles from './ChatLauncherButton.module.css';
+import ChatLauncherIcon from './ChatLauncherIcon';
 
 const chatLauncherButtonPropsSchema = pipe(
   object({
@@ -14,13 +15,14 @@ const chatLauncherButtonPropsSchema = pipe(
 
 type ChatLauncherButtonProps = InferInput<typeof chatLauncherButtonPropsSchema>;
 
+// TODO: [P0] Should we make an IconButton polymiddleware and ChatLauncherButton is based from that?
 function ChatLauncherButton(props: ChatLauncherButtonProps) {
   const { hasMessage } = validateProps(chatLauncherButtonPropsSchema, props);
   const classNames = useStyles(styles);
 
   return (
     <button className={classNames['chat-launcher-button']} type="button">
-      {hasMessage ? '⭐' : '💬'}
+      {hasMessage ? <ChatLauncherIcon /> : <ChatLauncherIcon />}
     </button>
   );
 }
