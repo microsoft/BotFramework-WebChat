@@ -35,7 +35,7 @@ const commonConfig = applyConfig(config => ({
   entry: {
     'botframework-webchat-experience-chat-launcher': './src/index.ts'
   },
-  external: ['react', 'react-dom'],
+  external: ['botframework-webchat-component', 'react', 'react-dom'],
   esbuildPlugins: [
     ...config.esbuildPlugins,
     isomorphicReactPlugin,
