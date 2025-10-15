@@ -1,40 +1,19 @@
-import * as accessibility from './accessibility/index';
-import * as activityGrouping from './activityGrouping/index';
-import * as speech from './speech/index';
-import * as token from './token/index';
-import * as transcriptNavigation from './transcriptNavigation';
-import arrayBufferToBase64 from './arrayBufferToBase64';
-import createAudioInputStreamFromRiffWavArrayBuffer from './speech/audioConfig/createAudioInputStreamFromRiffWavArrayBuffer';
-import createDirectLineEmulator from './createDirectLineEmulator';
-import createDirectLineWithTranscript from './createDirectLineWithTranscript';
-import createRenderWebChatWithHook from './createRenderWebChatWithHook';
-import createRunHookActivityMiddleware from './createRunHookActivityMiddleware';
-import createStore, { createStoreWithOptions } from './createStore';
-import depthFirstWalk from './depthFirstWalk';
-import getAllTextContents from './getAllTextContents';
-import iterateAsyncIterable from './iterateAsyncIterable';
-import shareObservable from './shareObservable';
-import sleep from './sleep';
-import stringToArrayBuffer from './stringToArrayBuffer';
-
-export {
-  accessibility,
-  activityGrouping,
-  arrayBufferToBase64,
-  createAudioInputStreamFromRiffWavArrayBuffer,
-  createDirectLineEmulator,
-  createDirectLineWithTranscript,
-  createRenderWebChatWithHook,
-  createRunHookActivityMiddleware,
-  createStore,
-  createStoreWithOptions,
-  depthFirstWalk,
-  getAllTextContents,
-  iterateAsyncIterable,
-  shareObservable,
-  sleep,
-  speech,
-  stringToArrayBuffer,
-  token,
-  transcriptNavigation
-};
+export * as accessibility from './accessibility/index';
+export * as activityGrouping from './activityGrouping/index';
+export { default as arrayBufferToBase64 } from './arrayBufferToBase64';
+export { default as createDirectLineEmulator } from './createDirectLineEmulator';
+export { default as createDirectLineWithTranscript } from './createDirectLineWithTranscript';
+export { default as createRenderWebChatWithHook } from './createRenderWebChatWithHook';
+export { default as createRunHookActivityMiddleware } from './createRunHookActivityMiddleware';
+export { default as createStore, createStoreWithOptions } from './createStore';
+export { default as depthFirstWalk } from './depthFirstWalk';
+export { default as getAllTextContents } from './getAllTextContents';
+export { default as ignoreReactDeprecation } from './ignoreReactDeprecation';
+export { default as iterateAsyncIterable } from './iterateAsyncIterable';
+export { default as shareObservable } from './shareObservable';
+export { default as sleep } from './sleep';
+export { default as createAudioInputStreamFromRiffWavArrayBuffer } from './speech/audioConfig/createAudioInputStreamFromRiffWavArrayBuffer';
+export * as speech from './speech/index';
+export { default as stringToArrayBuffer } from './stringToArrayBuffer';
+export * as token from './token/index';
+export * as transcriptNavigation from './transcriptNavigation';

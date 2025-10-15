@@ -26,7 +26,12 @@
     "start:esbuild:iife": "npm run build:esbuild:iife -- --watch --watch-delay=200"
   },
   "localDependencies": {},
-  "pinDependencies": {},
+  "pinDependencies": {
+    "jest-mock": [
+      "28",
+      ">= 29 will pull in Node.js dependencies"
+    ]
+  },
   "dependencies": {
     "base64-arraybuffer": "1.0.2",
     "bent": "7.3.12",
@@ -35,6 +40,7 @@
     "core-js-pure": "3.44.0",
     "event-iterator": "2.0.0",
     "event-target-shim": "6.0.2",
+    "jest-mock": "28.1.3",
     "math-random": "2.0.1",
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "prop-types": "15.8.1",
