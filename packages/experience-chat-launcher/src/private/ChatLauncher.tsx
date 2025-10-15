@@ -1,26 +1,53 @@
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { reduxStoreSchema } from '@msinternal/botframework-webchat-redux-store';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
-import { ThemeProvider } from 'botframework-webchat-component/component';
+import {
+  chatLauncherButtonComponent,
+  ChatLauncherButtonPolymiddlewareProxy,
+  createChatLauncherButtonPolymiddleware,
+  type Polymiddleware
+} from 'botframework-webchat-api/middleware';
+import { Composer } from 'botframework-webchat-component/component';
+import { DirectLineJSBotConnection } from 'botframework-webchat-core';
 import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
-import { custom, object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
+import {
+  custom,
+  function_,
+  instance,
+  object,
+  optional,
+  pipe,
+  readonly,
+  safeParse,
+  string,
+  type InferInput
+} from 'valibot';
 
 import ChatLauncherStylesheet from '../stylesheet/ChatLauncherStylesheet';
 import styles from './ChatLauncher.module.css';
 import ChatLauncherButton from './private/ChatLauncherButton';
 
+// Best-effort to check if it is an Observable.
+const observableSchema = object({ subscribe: function_() });
+
+// TODO: [P0] Move this to botframework-webchat-core.
+const directLineSchema = object<DirectLineJSBotConnection>({
+  activity$: custom(value => safeParse(observableSchema, value).success),
+  connectionStatus$: custom(value => safeParse(observableSchema, value).success),
+  end: optional(function_()),
+  getSessionId: optional(function_()),
+  postActivity: function_(),
+  referenceGrammarId: optional(string()),
+  setUserId: optional(function_())
+});
+
 const chatLauncherPropsSchema = pipe(
   object({
+    directLine: directLineSchema,
     nonce: optional(string()),
-    stylesRoot: optional(
-      union(
-        [
-          custom<HTMLLinkElement>(value => value instanceof HTMLLinkElement && value.rel === 'stylesheet'),
-          custom<HTMLStyleElement>(value => value instanceof HTMLStyleElement)
-        ],
-        '"stylesRoot" must be either <link rel="stylesheet"> or <style>'
-      )
-    )
+    store: reduxStoreSchema,
+    stylesRoot: optional(instance(Node))
   }),
   readonly()
 );
@@ -28,17 +55,25 @@ const chatLauncherPropsSchema = pipe(
 type ChatLauncherProps = InferInput<typeof chatLauncherPropsSchema>;
 
 function ChatLauncher(props: ChatLauncherProps) {
-  const { nonce, stylesRoot } = validateProps(chatLauncherPropsSchema, props);
+  const { directLine, nonce, store, stylesRoot } = validateProps(chatLauncherPropsSchema, props);
 
   const classNames = useStyles(styles);
   const styleOptions = useMemo(() => ({ stylesRoot }), [stylesRoot]);
 
+  const polymiddleware = useMemo<readonly Polymiddleware[]>(
+    () =>
+      Object.freeze([
+        createChatLauncherButtonPolymiddleware(() => () => chatLauncherButtonComponent(ChatLauncherButton))
+      ]),
+    []
+  );
+
   return (
     <div className={cx('webchat', classNames['webchat-experience-chat-launcher'])}>
-      <ThemeProvider styleOptions={styleOptions}>
+      <Composer directLine={directLine} polymiddleware={polymiddleware} store={store} styleOptions={styleOptions}>
         <ChatLauncherStylesheet nonce={nonce} />
-        <ChatLauncherButton />
-      </ThemeProvider>
+        <ChatLauncherButtonPolymiddlewareProxy hasMessage={false} />
+      </Composer>
     </div>
   );
 }

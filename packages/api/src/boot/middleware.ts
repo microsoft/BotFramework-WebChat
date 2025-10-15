@@ -17,6 +17,20 @@ export {
 } from '@msinternal/botframework-webchat-api-middleware';
 
 export {
+  chatLauncherButtonComponent,
+  ChatLauncherButtonPolymiddlewareProxy,
+  createChatLauncherButtonPolymiddleware,
+  useBuildRenderChatLauncherButtonCallback,
+  type ChatLauncherButtonPolymiddleware,
+  type ChatLauncherButtonPolymiddlewareHandler,
+  type ChatLauncherButtonPolymiddlewareHandlerResult,
+  type ChatLauncherButtonPolymiddlewareProps,
+  type ChatLauncherButtonPolymiddlewareProxyProps,
+  type ChatLauncherButtonPolymiddlewareRenderer,
+  type ChatLauncherButtonPolymiddlewareRequest
+} from '@msinternal/botframework-webchat-api-middleware';
+
+export {
   createErrorBoxPolymiddleware,
   errorBoxComponent,
   ErrorBoxPolymiddlewareProxy,

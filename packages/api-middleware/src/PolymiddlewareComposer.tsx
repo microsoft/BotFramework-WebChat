@@ -15,6 +15,10 @@ import {
 } from 'valibot';
 
 import { ActivityPolymiddlewareProvider, extractActivityEnhancer } from './activityPolymiddleware';
+import {
+  ChatLauncherButtonPolymiddlewareProvider,
+  extractChatLauncherButtonEnhancer
+} from './chatLauncherButtonPolymiddleware';
 import { ErrorBoxPolymiddlewareProvider, extractErrorBoxEnhancer } from './errorBoxPolymiddleware';
 import { Polymiddleware } from './types/Polymiddleware';
 
@@ -49,6 +53,26 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   const activityPolymiddleware = useMemo(() => activityEnhancers.map(enhancer => () => enhancer), [activityEnhancers]);
 
+  const chatLauncherButtonEnhancers = useMemoWithPrevious<ReturnType<typeof extractChatLauncherButtonEnhancer>>(
+    (prevChatLauncherButtonEnhancers = []) => {
+      const chatLauncherButtonEnhancers = extractChatLauncherButtonEnhancer(polymiddleware);
+
+      // Checks for array equality, return previous version if nothing has changed.
+      return prevChatLauncherButtonEnhancers.length === chatLauncherButtonEnhancers.length &&
+        chatLauncherButtonEnhancers.every((middleware, index) =>
+          Object.is(middleware, prevChatLauncherButtonEnhancers.at(index))
+        )
+        ? prevChatLauncherButtonEnhancers
+        : chatLauncherButtonEnhancers;
+    },
+    [polymiddleware]
+  );
+
+  const chatLauncherButtonPolymiddleware = useMemo(
+    () => chatLauncherButtonEnhancers.map(enhancer => () => enhancer),
+    [chatLauncherButtonEnhancers]
+  );
+
   const errorBoxEnhancers = useMemoWithPrevious<ReturnType<typeof extractErrorBoxEnhancer>>(
     (prevErrorBoxEnhancers = []) => {
       const errorBoxEnhancers = extractErrorBoxEnhancer(polymiddleware);
@@ -75,7 +99,9 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   return (
     <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>
-      <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>{children}</ErrorBoxPolymiddlewareProvider>
+      <ChatLauncherButtonPolymiddlewareProvider middleware={chatLauncherButtonPolymiddleware}>
+        <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>{children}</ErrorBoxPolymiddlewareProvider>
+      </ChatLauncherButtonPolymiddlewareProvider>
     </ActivityPolymiddlewareProvider>
   );
 }

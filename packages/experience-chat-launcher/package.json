@@ -28,9 +28,10 @@
     "*.js"
   ],
   "localDependencies": {
-    "botframework-webchat-api": "peer",
-    "botframework-webchat-component": "peer",
-    "botframework-webchat-core": "peer",
+    "botframework-webchat-api": "production",
+    "botframework-webchat-component": "production",
+    "botframework-webchat-core": "production",
+    "@msinternal/botframework-webchat-redux-store": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "@msinternal/botframework-webchat-styles": "development"
   },
@@ -51,17 +52,18 @@
   },
   "devDependencies": {
     "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
+    "@msinternal/botframework-webchat-redux-store": "0.0.0-0",
     "@msinternal/botframework-webchat-styles": "0.0.0-0",
     "@types/node": "^22.13.4",
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
-    "botframework-webchat-api": "0.0.0-0",
-    "botframework-webchat-component": "0.0.0-0",
-    "botframework-webchat-core": "0.0.0-0",
     "react": ">= 16.8.6"
   },
   "dependencies": {
+    "botframework-webchat-api": "0.0.0-0",
+    "botframework-webchat-component": "0.0.0-0",
+    "botframework-webchat-core": "0.0.0-0",
     "valibot": "1.1.0"
   }
 }

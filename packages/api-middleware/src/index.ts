@@ -13,6 +13,20 @@ export {
 } from './activityPolymiddleware';
 
 export {
+  chatLauncherButtonComponent,
+  ChatLauncherButtonPolymiddlewareProxy,
+  createChatLauncherButtonPolymiddleware,
+  useBuildRenderChatLauncherButtonCallback,
+  type ChatLauncherButtonPolymiddleware,
+  type ChatLauncherButtonPolymiddlewareHandler,
+  type ChatLauncherButtonPolymiddlewareHandlerResult,
+  type ChatLauncherButtonPolymiddlewareProps,
+  type ChatLauncherButtonPolymiddlewareProxyProps,
+  type ChatLauncherButtonPolymiddlewareRenderer,
+  type ChatLauncherButtonPolymiddlewareRequest
+} from './chatLauncherButtonPolymiddleware';
+
+export {
   createErrorBoxPolymiddleware,
   errorBoxComponent,
   ErrorBoxPolymiddlewareProxy,
