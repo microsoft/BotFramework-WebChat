@@ -1,6 +1,5 @@
 /*.tgz
 /dist/
-/dist.tmp/
 /node_modules/
 /static/
 /tsup.config.bundled_*.mjs
