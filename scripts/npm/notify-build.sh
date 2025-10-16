@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 if [ "$#" -lt 1 ]; then
   echo "Usage: $0 <directory_or_file1> [directory_or_file2 ...]"
   exit 1
@@ -34,7 +36,10 @@ while true; do
     echo "🚥 Build started."
 
     START_TIME=$(date +%s.%N)
-    npm run build:run
+
+    # Ignore error, let it rebuild
+    npm run build:run || true
+
     END_TIME=$(date +%s.%N)
 
     DURATION=$(awk "BEGIN {printf \"%.2f\", $END_TIME - $START_TIME}")
