@@ -5,7 +5,7 @@ import React, { memo } from 'react';
 import { boolean, object, pipe, readonly, type InferInput } from 'valibot';
 
 import styles from './ChatLauncherButton.module.css';
-import ChatLauncherIcon from './ChatLauncherIcon';
+import Icon from './Icon';
 
 const chatLauncherButtonPropsSchema = pipe(
   object({
@@ -23,7 +23,7 @@ function ChatLauncherButton(props: ChatLauncherButtonProps) {
 
   return (
     <IconButtonPolymiddlewareProxy className={classNames['chat-launcher-button']}>
-      {hasMessage ? <ChatLauncherIcon /> : <ChatLauncherIcon />}
+      {hasMessage ? <Icon appearance="hero" icon="chat-sparkle" /> : <Icon appearance="hero" icon="chat-multiple" />}
     </IconButtonPolymiddlewareProxy>
   );
 }

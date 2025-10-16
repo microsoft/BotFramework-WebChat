@@ -76,7 +76,7 @@ function ChatLauncher(props: ChatLauncherProps) {
     <div className={cx('webchat', classNames['webchat-experience-chat-launcher'])}>
       <Composer directLine={directLine} polymiddleware={polymiddleware} store={store} styleOptions={styleOptions}>
         <ChatLauncherStylesheet nonce={nonce} />
-        <ChatLauncherButtonPolymiddlewareProxy hasMessage={false} />
+        <ChatLauncherButtonPolymiddlewareProxy hasMessage={true} />
       </Composer>
     </div>
   );

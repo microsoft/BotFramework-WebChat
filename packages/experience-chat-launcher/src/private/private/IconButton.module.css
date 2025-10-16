@@ -4,6 +4,9 @@
   --webchat-colorNeutralBackground1: var(--colorNeutralBackground1, #ffffff);
   --webchat-colorNeutralForeground1: var(--colorNeutralForeground1, #242424);
   --webchat-colorNeutralStroke1: var(--colorNeutralStroke1, #d1d1d1);
+  --webchat-colorNeutralStroke1Hover: var(--colorNeutralStroke1Hover, #c7c7c7);
+  --webchat-colorNeutralStroke1Pressed: var(--colorNeutralStroke1Pressed, #b3b3b3);
+  --webchat-colorNeutralStrokeDisabled: var(--colorNeutralStrokeDisabled, #e0e0e0);
   --webchat-shadow8: var(--shadow8, 0 0 2px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.14));
 
   /* TODO: [P0] Should we expose some customizable CSS variables? */
@@ -11,6 +14,9 @@
   /* TODO: [P0] Should it be customizable to anchor to bottom/left instead? */
   --webchat-iconButton-background: var(--webchat-colorNeutralBackground1);
   --webchat-iconButton-borderColor: var(--webchat-colorNeutralStroke1);
+  --webchat-iconButton-borderColor--active: var(--webchat-colorNeutralStroke1Pressed);
+  --webchat-iconButton-borderColor--hover: var(--webchat-colorNeutralStroke1Hover);
+  --webchat-iconButton-borderColor--disabled: var(--webchat-colorNeutralStrokeDisabled);
   --webchat-iconButton-borderWidth: 1px;
   --webchat-iconButton-color: var(--webchat-colorNeutralForeground1);
   --webchat-iconButton-shadow: var(--webchat-shadow8);
@@ -18,12 +24,29 @@
 
   appearance: none;
   background: var(--webchat-iconButton-background);
-  border: 0;
+  border-color: var(--webchat-iconButton-borderColor);
   border-radius: var(--webchat-iconButton-size);
+  border-style: solid;
+  border-width: var(--webchat-iconButton-borderWidth);
   box-shadow: var(--webchat-iconButton-shadow);
   color: var(--webchat-iconButton-color);
-  outline: var(--webchat-iconButton-borderWidth) solid var(--webchat-iconButton-borderColor);
+  /* TODO: [P0] Should not use calc() to minus the border width. */
   height: var(--webchat-iconButton-size);
   padding: 0;
   width: var(--webchat-iconButton-size);
+}
+
+:global(.webchat-experience-chat-launcher) .icon-button:hover {
+  border-color: var(--webchat-iconButton-borderColor--hover);
+}
+
+:global(.webchat-experience-chat-launcher) .icon-button:active {
+  border-color: var(--webchat-iconButton-borderColor--active);
+}
+
+/* :global(.webchat-experience-chat-launcher) .icon-button:focus {
+} */
+
+:global(.webchat-experience-chat-launcher) .icon-button:disabled {
+  border-color: var(--webchat-iconButton-borderColor--disabled);
 }
