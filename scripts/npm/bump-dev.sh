@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 PACKAGES_TO_BUMP=$(cat package.json | jq -r '
   (.pinDependencies // {}) as $P
   | (.localDependencies // {} | keys) as $L

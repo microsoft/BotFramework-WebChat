@@ -73,7 +73,8 @@ export default defineConfig([
       ...(config.esbuildPlugins ?? []),
       injectCSSPlugin({ stylesPlaceholder: fluentStyleContentPlaceholder })
     ],
-    format: ['esm']
+    format: ['esm'],
+    onSuccess: 'touch ./package.json'
   })),
   applyConfig(config => ({
     ...config,
