@@ -24,6 +24,16 @@
         "types": "./dist/botframework-webchat-core.internal.d.ts",
         "default": "./dist/botframework-webchat-core.internal.js"
       }
+    },
+    "./schema": {
+      "import": {
+        "types": "./dist/botframework-webchat-core.schema.d.mts",
+        "default": "./dist/botframework-webchat-core.schema.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core.schema.d.ts",
+        "default": "./dist/botframework-webchat-core.schema.js"
+      }
     }
   },
   "publishConfig": {

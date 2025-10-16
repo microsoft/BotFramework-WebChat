@@ -10,44 +10,19 @@ import {
   type Polymiddleware
 } from 'botframework-webchat-api/middleware';
 import { Composer } from 'botframework-webchat-component/component';
-import { DirectLineJSBotConnection } from 'botframework-webchat-core';
+import { directLineJSBotConnection } from 'botframework-webchat-core/schema';
 import cx from 'classnames';
 import React, { memo, useMemo } from 'react';
-import {
-  custom,
-  function_,
-  instance,
-  object,
-  optional,
-  pipe,
-  readonly,
-  safeParse,
-  string,
-  type InferInput
-} from 'valibot';
+import { instance, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ChatLauncherStylesheet from '../stylesheet/ChatLauncherStylesheet';
 import styles from './ChatLauncher.module.css';
 import ChatLauncherButton from './private/ChatLauncherButton';
 import IconButton from './private/IconButton';
 
-// Best-effort to check if it is an Observable.
-const observableSchema = object({ subscribe: function_() });
-
-// TODO: [P0] Move this to botframework-webchat-core.
-const directLineSchema = object<DirectLineJSBotConnection>({
-  activity$: custom(value => safeParse(observableSchema, value).success),
-  connectionStatus$: custom(value => safeParse(observableSchema, value).success),
-  end: optional(function_()),
-  getSessionId: optional(function_()),
-  postActivity: function_(),
-  referenceGrammarId: optional(string()),
-  setUserId: optional(function_())
-});
-
 const chatLauncherPropsSchema = pipe(
   object({
-    directLine: directLineSchema,
+    directLine: directLineJSBotConnection(),
     nonce: optional(string()),
     store: reduxStoreSchema,
     stylesRoot: optional(instance(Node))
