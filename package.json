@@ -260,6 +260,8 @@
     "minimatch": "^10.0.3",
     "node-dev": "^8.0.0",
     "prettier": "^3.6.2",
+    "read-package-up": "^11.0.0",
+    "read-pkg": "^9.0.1",
     "selenium-webdriver": "^4.34.0",
     "serve": "^14.2.4",
     "serve-handler": "^6.1.6",

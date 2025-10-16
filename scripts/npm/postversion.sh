@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -euo pipefail
+
 cat package.json | jq '
   .version as $V
   | (

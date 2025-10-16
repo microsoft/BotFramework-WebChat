@@ -20,13 +20,20 @@
       }
     }
   },
+  "engines": {
+    "node": ">= 10.14.2"
+  },
   "scripts": {
-    "build": "npm run build:tsup && npm run build:babel && npm run build:webpack",
-    "build:babel": "cross-env build_tool=babel module_format=commonjs babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
-    "build:tsup": "tsup",
-    "build:webpack": "npm run build:webpack:development && npm run build:webpack:production",
-    "build:webpack:development": "cross-env node_env=development webpack-cli",
-    "build:webpack:production": "cross-env node_env=production webpack-cli",
+    "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
+    "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
+    "build:pre:local-dependencies": "../../scripts/npm/build-local-dependencies.sh",
+    "build:pre:watch": "../../scripts/npm/build-watch.sh",
+    "build:run": "npm run build:run:tsup && npm run build:run:babel && npm run build:run:webpack",
+    "build:run:babel": "cross-env build_tool=babel module_format=commonjs babel src --ignore **/*.spec.js,**/*.test.js,__tests__/**/*.js --out-dir lib --verbose",
+    "build:run:tsup": "tsup",
+    "build:run:webpack": "npm run build:run:webpack:development && npm run build:run:webpack:production",
+    "build:run:webpack:development": "cross-env node_env=development webpack-cli",
+    "build:run:webpack:production": "cross-env node_env=production webpack-cli",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -36,16 +43,12 @@
     "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0",
     "prettier": "prettier --check src/**/*.{js,ts}",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
-    "start:babel": "npm run build:babel -- --skip-initial-build --watch",
+    "start": "../../scripts/npm/notify-build.sh \"./src/\"",
     "start:serve": "serve",
-    "start:tsup": "npm run build:tsup -- --watch",
-    "start:webpack": "npm run build:webpack:development -- --watch",
     "test": "jest --watch"
   },
   "author": "Microsoft Corporation",
   "license": "MIT",
-  "localDependencies": {},
   "pinDependencies": {
     "@types/jest": [
       "29",
@@ -68,6 +71,7 @@
       "needs to bump manually"
     ]
   },
+  "localDependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.28.0",
     "@babel/core": "^7.28.0",
@@ -79,7 +83,6 @@
     "babel-jest": "^29.7.0",
     "babel-plugin-istanbul": "^7.0.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
-    "concurrently": "^9.2.0",
     "cross-env": "^10.0.0",
     "dotenv": "^17.2.1",
     "eslint": "^8.57.1",
@@ -108,8 +111,5 @@
     "math-random": "2.0.1",
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "web-speech-cognitive-services": "8.1.3"
-  },
-  "engines": {
-    "node": ">= 10.14.2"
   }
 }

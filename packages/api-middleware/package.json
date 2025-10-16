@@ -55,14 +55,13 @@
     "./src/**/*",
     "*.js"
   ],
-  "localDependencies": {
-    "@msinternal/botframework-webchat-base": "development",
-    "@msinternal/botframework-webchat-react-hooks": "development",
-    "@msinternal/botframework-webchat-react-valibot": "development"
-  },
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/api-middleware#readme",
   "scripts": {
-    "build": "tsup --config ./tsup.config.ts",
+    "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
+    "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
+    "build:pre:local-dependencies": "../../scripts/npm/build-local-dependencies.sh",
+    "build:pre:watch": "../../scripts/npm/build-watch.sh",
+    "build:run": "tsup",
     "bump": "npm run bump:prod && npm run bump:dev && npm run bump:peer && (npm audit fix || exit 0)",
     "bump:dev": "../../scripts/npm/bump-dev.sh",
     "bump:peer": "../../scripts/npm/bump-peer.sh",
@@ -73,7 +72,13 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "node ../../scripts/npm/preversion.sh",
-    "start": "npm run build -- --watch"
+    "start": "../../scripts/npm/notify-build.sh \"./src/\" \"../base/package.json\" \"../react-hooks/package.json\" \"../react-valibot/package.json\""
+  },
+  "pinDependencies": {},
+  "localDependencies": {
+    "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-react-hooks": "development",
+    "@msinternal/botframework-webchat-react-valibot": "development"
   },
   "devDependencies": {
     "@jridgewell/sourcemap-codec": "^1.5.0",
@@ -85,13 +90,13 @@
     "type-fest": "^4.41.0",
     "typescript": "^5.7.3"
   },
-  "peerDependencies": {
-    "react": ">= 16.8.6",
-    "react-chain-of-responsibility": "0.4.0-main.c2f17da"
-  },
   "dependencies": {
     "handler-chain": "^0.1.0",
     "react-wrap-with": "0.1.0",
     "valibot": "1.1.0"
+  },
+  "peerDependencies": {
+    "react": ">= 16.8.6",
+    "react-chain-of-responsibility": "0.4.0-main.c2f17da"
   }
 }

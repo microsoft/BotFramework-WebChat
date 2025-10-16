@@ -5,9 +5,6 @@ import { defineConfig } from 'tsup';
 import { applyConfig } from '../../tsup.base.config';
 import { chatLauncherStyleContent as chatLauncherStyleContentPlaceholder } from './src/stylesheet/createChatLauncherStyleElements';
 
-// TODO: [P1] Compute this automatically.
-const DEPENDENT_PATHS = ['api/src/index.ts'];
-
 // eslint-disable-next-line no-unused-vars
 const isomorphicReactPlugin: Plugin = {
   name: 'isomorphic-react',
@@ -40,14 +37,14 @@ const commonConfig = applyConfig(config => ({
     ...config.esbuildPlugins,
     isomorphicReactPlugin,
     injectCSSPlugin({ stylesPlaceholder: chatLauncherStyleContentPlaceholder })
-  ],
-  onSuccess: `touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`
+  ]
 }));
 
 export default defineConfig([
   {
     ...commonConfig,
-    format: 'esm'
+    format: 'esm',
+    onSuccess: 'touch ./package.json'
   },
   {
     ...commonConfig,

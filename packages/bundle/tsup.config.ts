@@ -77,7 +77,8 @@ export default defineConfig([
       ...commonConfig.define,
       'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"'
     },
-    format: 'esm'
+    format: 'esm',
+    onSuccess: 'touch ./package.json'
   },
   {
     ...commonConfig,
