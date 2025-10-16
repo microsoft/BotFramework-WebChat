@@ -40,6 +40,20 @@ export {
   type ErrorBoxPolymiddlewareRequest
 } from './errorBoxPolymiddleware';
 
+export {
+  createIconButtonPolymiddleware,
+  iconButtonComponent,
+  IconButtonPolymiddlewareProxy,
+  useBuildRenderIconButtonCallback,
+  type IconButtonPolymiddleware,
+  type IconButtonPolymiddlewareHandler,
+  type IconButtonPolymiddlewareHandlerResult,
+  type IconButtonPolymiddlewareProps,
+  type IconButtonPolymiddlewareProxyProps,
+  type IconButtonPolymiddlewareRenderer,
+  type IconButtonPolymiddlewareRequest
+} from './iconButtonPolymiddleware';
+
 // TODO: [P0] Add tests for nesting `polymiddleware`.
 export { default as PolymiddlewareComposer } from './PolymiddlewareComposer';
 export { type Polymiddleware } from './types/Polymiddleware';

@@ -44,4 +44,18 @@ export {
   type ErrorBoxPolymiddlewareRequest
 } from '@msinternal/botframework-webchat-api-middleware';
 
+export {
+  createIconButtonPolymiddleware,
+  iconButtonComponent,
+  IconButtonPolymiddlewareProxy,
+  useBuildRenderIconButtonCallback,
+  type IconButtonPolymiddleware,
+  type IconButtonPolymiddlewareHandler,
+  type IconButtonPolymiddlewareHandlerResult,
+  type IconButtonPolymiddlewareProps,
+  type IconButtonPolymiddlewareProxyProps,
+  type IconButtonPolymiddlewareRenderer,
+  type IconButtonPolymiddlewareRequest
+} from '@msinternal/botframework-webchat-api-middleware';
+
 export { default as createActivityPolymiddlewareFromLegacy } from '../legacy/createActivityPolymiddlewareFromLegacy';

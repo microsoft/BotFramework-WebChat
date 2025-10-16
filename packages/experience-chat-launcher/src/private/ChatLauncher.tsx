@@ -5,6 +5,8 @@ import {
   chatLauncherButtonComponent,
   ChatLauncherButtonPolymiddlewareProxy,
   createChatLauncherButtonPolymiddleware,
+  createIconButtonPolymiddleware,
+  iconButtonComponent,
   type Polymiddleware
 } from 'botframework-webchat-api/middleware';
 import { Composer } from 'botframework-webchat-component/component';
@@ -27,6 +29,7 @@ import {
 import ChatLauncherStylesheet from '../stylesheet/ChatLauncherStylesheet';
 import styles from './ChatLauncher.module.css';
 import ChatLauncherButton from './private/ChatLauncherButton';
+import IconButton from './private/IconButton';
 
 // Best-effort to check if it is an Observable.
 const observableSchema = object({ subscribe: function_() });
@@ -63,7 +66,8 @@ function ChatLauncher(props: ChatLauncherProps) {
   const polymiddleware = useMemo<readonly Polymiddleware[]>(
     () =>
       Object.freeze([
-        createChatLauncherButtonPolymiddleware(() => () => chatLauncherButtonComponent(ChatLauncherButton))
+        createChatLauncherButtonPolymiddleware(() => () => chatLauncherButtonComponent(ChatLauncherButton)),
+        createIconButtonPolymiddleware(() => () => iconButtonComponent(IconButton))
       ]),
     []
   );

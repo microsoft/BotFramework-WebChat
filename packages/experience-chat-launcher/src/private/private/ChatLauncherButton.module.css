@@ -1,32 +1,8 @@
 :global(.webchat-experience-chat-launcher) .chat-launcher-button {
-  /* TODO: [P0] Expose some CSS classes to white-label. */
-  --webchat-colorNeutralBackground1: var(--colorNeutralBackground1, #ffffff);
-  --webchat-colorNeutralForeground1: var(--colorNeutralForeground1, #242424);
-  --webchat-colorNeutralStroke1: var(--colorNeutralStroke1, #d1d1d1);
-  --webchat-shadow8: var(--shadow8, 0 0 2px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.14));
-
-  /* TODO: [P0] Should we expose some customizable CSS variables? */
-  /* TODO: [P0] How's the naming system? */
-  /* TODO: [P0] Should it be customizable to anchor to bottom/left instead? */
-  --webchat-chatLauncherButton-background: var(--webchat-colorNeutralBackground1);
-  --webchat-chatLauncherButton-borderColor: var(--webchat-colorNeutralStroke1);
-  --webchat-chatLauncherButton-borderWidth: 1px;
-  --webchat-chatLauncherButton-color: var(--webchat-colorNeutralForeground1);
   --webchat-chatLauncherButton-margin: 40px;
-  --webchat-chatLauncherButton-shadow: var(--webchat-shadow8);
 
-  appearance: none;
-  background: var(--webchat-chatLauncherButton-background);
-  border: 0;
-  border-radius: 30px;
   bottom: 0;
-  box-shadow: var(--webchat-chatLauncherButton-shadow);
-  color: var(--webchat-chatLauncherButton-color);
-  outline: var(--webchat-chatLauncherButton-borderWidth) solid var(--webchat-chatLauncherButton-borderColor);
   position: fixed;
-  height: 60px;
   margin: var(--webchat-chatLauncherButton-margin);
-  padding: 0;
   right: 0;
-  width: 60px;
 }

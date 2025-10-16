@@ -20,6 +20,7 @@ import {
   extractChatLauncherButtonEnhancer
 } from './chatLauncherButtonPolymiddleware';
 import { ErrorBoxPolymiddlewareProvider, extractErrorBoxEnhancer } from './errorBoxPolymiddleware';
+import { IconButtonPolymiddlewareProvider, extractIconButtonEnhancer } from './iconButtonPolymiddleware';
 import { Polymiddleware } from './types/Polymiddleware';
 
 const polymiddlewareComposerPropsSchema = pipe(
@@ -88,6 +89,24 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   const errorBoxPolymiddleware = useMemo(() => errorBoxEnhancers.map(enhancer => () => enhancer), [errorBoxEnhancers]);
 
+  const iconButtonEnhancers = useMemoWithPrevious<ReturnType<typeof extractIconButtonEnhancer>>(
+    (prevIconButtonEnhancers = []) => {
+      const iconButtonEnhancers = extractIconButtonEnhancer(polymiddleware);
+
+      // Checks for array equality, return previous version if nothing has changed.
+      return prevIconButtonEnhancers.length === iconButtonEnhancers.length &&
+        iconButtonEnhancers.every((middleware, index) => Object.is(middleware, prevIconButtonEnhancers.at(index)))
+        ? prevIconButtonEnhancers
+        : iconButtonEnhancers;
+    },
+    [polymiddleware]
+  );
+
+  const iconButtonPolymiddleware = useMemo(
+    () => iconButtonEnhancers.map(enhancer => () => enhancer),
+    [iconButtonEnhancers]
+  );
+
   // Didn't thoroughly think through this part yet, but I am using the first approach for now:
 
   // 1. <XXXProvider> for every type of middleware
@@ -100,7 +119,11 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
   return (
     <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>
       <ChatLauncherButtonPolymiddlewareProvider middleware={chatLauncherButtonPolymiddleware}>
-        <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>{children}</ErrorBoxPolymiddlewareProvider>
+        <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>
+          <IconButtonPolymiddlewareProvider middleware={iconButtonPolymiddleware}>
+            {children}
+          </IconButtonPolymiddlewareProvider>
+        </ErrorBoxPolymiddlewareProvider>
       </ChatLauncherButtonPolymiddlewareProvider>
     </ActivityPolymiddlewareProvider>
   );

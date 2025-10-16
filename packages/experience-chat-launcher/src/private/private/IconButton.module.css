@@ -1,0 +1,29 @@
+/* TODO: [P0] Put this inside botframework-webchat-component as default implementation. */
+:global(.webchat-experience-chat-launcher) .icon-button {
+  /* TODO: [P0] Expose some CSS classes to white-label. */
+  --webchat-colorNeutralBackground1: var(--colorNeutralBackground1, #ffffff);
+  --webchat-colorNeutralForeground1: var(--colorNeutralForeground1, #242424);
+  --webchat-colorNeutralStroke1: var(--colorNeutralStroke1, #d1d1d1);
+  --webchat-shadow8: var(--shadow8, 0 0 2px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.14));
+
+  /* TODO: [P0] Should we expose some customizable CSS variables? */
+  /* TODO: [P0] How's the naming system? */
+  /* TODO: [P0] Should it be customizable to anchor to bottom/left instead? */
+  --webchat-iconButton-background: var(--webchat-colorNeutralBackground1);
+  --webchat-iconButton-borderColor: var(--webchat-colorNeutralStroke1);
+  --webchat-iconButton-borderWidth: 1px;
+  --webchat-iconButton-color: var(--webchat-colorNeutralForeground1);
+  --webchat-iconButton-shadow: var(--webchat-shadow8);
+  --webchat-iconButton-size: 60px;
+
+  appearance: none;
+  background: var(--webchat-iconButton-background);
+  border: 0;
+  border-radius: var(--webchat-iconButton-size);
+  box-shadow: var(--webchat-iconButton-shadow);
+  color: var(--webchat-iconButton-color);
+  outline: var(--webchat-iconButton-borderWidth) solid var(--webchat-iconButton-borderColor);
+  height: var(--webchat-iconButton-size);
+  padding: 0;
+  width: var(--webchat-iconButton-size);
+}

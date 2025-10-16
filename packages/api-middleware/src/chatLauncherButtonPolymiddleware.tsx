@@ -22,7 +22,7 @@ const {
   reactComponent: chatLauncherButtonComponent,
   useBuildRenderCallback: useBuildRenderChatLauncherButtonCallback
 } = templatePolymiddleware<EmptyObject, { readonly children?: never; readonly hasMessage: boolean }>(
-  'chatLauncherButton'
+  'ChatLauncherButton'
 );
 
 type ChatLauncherButtonPolymiddleware = InferMiddleware<typeof Provider>;
