@@ -1,7 +1,7 @@
 /* TODO: [P0] Dupe from packages/fluent-theme/src/components/icon/FluentIcon.tsx, should dedupe. */
 import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
-import { createIconComponent } from 'botframework-webchat/internal';
+import { createIconComponent } from 'botframework-webchat-component/internal';
 import cx from 'classnames';
 import React, { memo, useMemo, type CSSProperties } from 'react';
 import { object, optional, pipe, readonly, string, union, type InferInput } from 'valibot';
