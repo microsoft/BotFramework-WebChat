@@ -23,12 +23,18 @@
     <script type="importmap">
       {
         "imports": {
+          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18,react-dom@18&exports=FluentProvider,webLightTheme",
           "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+          "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat/decorator.js",
           "botframework-webchat/experience/chatLauncher": "/__dist__/packages/bundle/static/botframework-webchat/experience/chatLauncher.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat/internal.js",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
           "jest-mock": "https://esm.sh/jest-mock",
-          "react": "/__dist__/packages/bundle/static/react.js",
-          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
-          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
         }
       }
     </script>
@@ -36,6 +42,9 @@
     <script type="module">
       import '/test-harness.mjs';
       import '/test-page-object.mjs';
+
+      import { FluentProvider, webLightTheme } from '@fluentui/react-components';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
 
       import { createStoreWithOptions } from 'botframework-webchat';
       import { ChatLauncher } from 'botframework-webchat/experience/chatLauncher';
@@ -54,10 +63,26 @@
         // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
         window.WebChat = { createStoreWithOptions };
 
+        const fluentTheme = {
+          ...webLightTheme,
+          // Original is #242424 which is too light for fui-FluentProvider to pass our accessibility checks.
+          colorNeutralForeground1: '#1b1b1b'
+        };
+
         const { directLine, store } = createDirectLineEmulator();
 
         flushSync(() =>
-          createRoot(document.getElementById('webchat')).render(createElement(ChatLauncher, { directLine, store }))
+          createRoot(document.getElementById('webchat')).render(
+            createElement(
+              FluentProvider,
+              { className: 'fui-FluentProvider', theme: fluentTheme },
+              createElement(
+                FluentThemeProvider,
+                { variant: 'fluent' },
+                createElement(ChatLauncher, { directLine, store })
+              )
+            )
+          )
         );
 
         await pageConditions.uiConnected();

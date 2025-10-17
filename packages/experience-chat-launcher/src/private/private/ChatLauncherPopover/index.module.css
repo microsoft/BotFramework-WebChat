@@ -1,0 +1,19 @@
+:global(.webchat-experience-chat-launcher) .chat-launcher-popover {
+  --webchat-spacingHorizontalSNudge: var(--spacingHorizontalSNudge, 6px);
+  --webchat-spacingVerticalMNudge: var(--spacingVerticalMNudge, 10px);
+  --webchat-spacingVerticalSNudge: var(--spacingVerticalSNudge, 6px);
+}
+
+:global(.webchat-experience-chat-launcher) .chat-launcher-popover__box {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+}
+
+:global(.webchat-experience-chat-launcher) .chat-launcher-popover .chat-launcher-popover__webchat {
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0 var(--webchat-spacingHorizontalSNudge) var(--webchat-spacingVerticalMNudge);
+}
