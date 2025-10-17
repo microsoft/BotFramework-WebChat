@@ -19,6 +19,7 @@
   --webchat-colorNeutralBackground1: var(--colorNeutralBackground1, #ffffff);
   --webchat-colorNeutralBackground1Hover: var(--colorNeutralBackground1Hover, #f5f5f5);
   --webchat-colorNeutralBackground1Pressed: var(--colorNeutralBackground1Pressed, #e0e0e0);
+  --webchat-colorNeutralBackground1Selected: var(--colorNeutralBackground1Selected, #ebebeb);
   --webchat-colorNeutralBackground3: var(--colorNeutralBackground3, #f5f5f5);
   --webchat-colorNeutralBackground4: var(--colorNeutralBackground4, #f0f0f0);
   --webchat-colorNeutralBackground5: var(--colorNeutralBackground5, #ebebeb);

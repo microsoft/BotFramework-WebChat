@@ -1,7 +1,11 @@
 /* TODO: [P0] Put this inside botframework-webchat-component as default implementation. */
 :global(.webchat-experience-chat-launcher) .button {
   /* TODO: [P0] Expose some CSS classes to white-label. */
+  --webchat-borderRadiusMedium: var(--borderRadiusMedium, 4px);
   --webchat-colorNeutralBackground1: var(--colorNeutralBackground1, #ffffff);
+  --webchat-colorNeutralBackground1Hover: var(--colorNeutralBackground1Hover, #f5f5f5);
+  --webchat-colorNeutralBackground1Pressed: var(--colorNeutralBackground1Pressed, #e0e0e0);
+  --webchat-colorNeutralBackground1Selected: var(--colorNeutralBackground1Selected, #ebebeb);
   --webchat-colorNeutralForeground1: var(--colorNeutralForeground1, #242424);
   --webchat-colorNeutralStroke1: var(--colorNeutralStroke1, #d1d1d1);
   --webchat-colorNeutralStroke1Hover: var(--colorNeutralStroke1Hover, #c7c7c7);
@@ -12,49 +16,52 @@
   /* TODO: [P*] Is this a good naming system? Sorry I forgot if we should still go CSS BEM-alike or not. */
   /* TODO: [P0] Should we expose some customizable CSS variables? */
   /* TODO: [P0] Should it be customizable to anchor to bottom/left instead? */
-  --webchat-iconButton-background: var(--webchat-colorNeutralBackground1);
-  --webchat-iconButton-borderColor: var(--webchat-colorNeutralStroke1);
-  --webchat-iconButton-borderColor--active: var(--webchat-colorNeutralStroke1Pressed);
-  --webchat-iconButton-borderColor--hover: var(--webchat-colorNeutralStroke1Hover);
-  --webchat-iconButton-borderColor--disabled: var(--webchat-colorNeutralStrokeDisabled);
-  --webchat-iconButton-borderWidth: 0px;
-  --webchat-iconButton-color: var(--webchat-colorNeutralForeground1);
-  --webchat-iconButton-shadow: 0;
-  --webchat-iconButton-size: 1em;
+  --webchat-button-background: var(--webchat-colorNeutralBackground1);
+  --webchat-button-borderColor: var(--webchat-colorNeutralStroke1);
+  --webchat-button-borderColor--active: var(--webchat-colorNeutralStroke1Pressed);
+  --webchat-button-borderColor--hover: var(--webchat-colorNeutralStroke1Hover);
+  --webchat-button-borderColor--disabled: var(--webchat-colorNeutralStrokeDisabled);
+  --webchat-button-borderRadius: var(--webchat-borderRadiusMedium);
+  --webchat-button-borderWidth: 0px;
+  --webchat-button-color: var(--webchat-colorNeutralForeground1);
+  --webchat-button-shadow: 0;
+  --webchat-button-size: 32px;
 
   appearance: none;
-  background: var(--webchat-iconButton-background);
-  border-color: var(--webchat-iconButton-borderColor);
-  border-radius: var(--webchat-iconButton-size);
+  background: var(--webchat-button-background);
+  border-color: var(--webchat-button-borderColor);
+  border-radius: var(--webchat-button-borderRadius);
   border-style: solid;
-  border-width: var(--webchat-iconButton-borderWidth);
-  box-shadow: var(--webchat-iconButton-shadow);
-  color: var(--webchat-iconButton-color);
-  height: var(--webchat-iconButton-size);
+  border-width: var(--webchat-button-borderWidth);
+  box-shadow: var(--webchat-button-shadow);
+  color: var(--webchat-button-color);
+  height: var(--webchat-button-size);
+  min-width: var(--webchat-button-size);
   padding: 0;
-  width: var(--webchat-iconButton-size);
+}
+
+:global(.webchat-experience-chat-launcher) .button:hover {
+  --webchat-button-background: var(--webchat-colorNeutralBackground1Hover);
+  --webchat-button-borderColor: var(--webchat-button-borderColor--hover);
+}
+
+:global(.webchat-experience-chat-launcher) .button:active {
+  --webchat-button-background: var(--webchat-colorNeutralBackground1Pressed);
+  --webchat-button-borderColor: var(--webchat-button-borderColor--active);
+}
+
+:global(.webchat-experience-chat-launcher) .button:disabled {
+  --webchat-button-background: var(--webchat-colorNeutralBackground1Pressed);
+  --webchat-button-borderColor: var(--webchat-button-borderColor--disabled);
 }
 
 :global(.webchat-experience-chat-launcher) .button.button--appearance-elevated {
-  --webchat-iconButton-borderWidth: 1px;
-  --webchat-iconButton-shadow: var(--webchat-shadow8);
+  /* We think elevated button is perfectly round, while others has rounded corners. */
+  --webchat-button-borderRadius: var(--webchat-button-size);
+  --webchat-button-borderWidth: 1px;
+  --webchat-button-shadow: var(--webchat-shadow8);
 }
 
 :global(.webchat-experience-chat-launcher) .button.button--size-hero {
-  --webchat-iconButton-size: 60px;
-}
-
-:global(.webchat-experience-chat-launcher) .icon-button:hover {
-  border-color: var(--webchat-iconButton-borderColor--hover);
-}
-
-:global(.webchat-experience-chat-launcher) .icon-button:active {
-  border-color: var(--webchat-iconButton-borderColor--active);
-}
-
-/* :global(.webchat-experience-chat-launcher) .icon-button:focus {
-} */
-
-:global(.webchat-experience-chat-launcher) .icon-button:disabled {
-  border-color: var(--webchat-iconButton-borderColor--disabled);
+  --webchat-button-size: 60px;
 }

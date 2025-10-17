@@ -53,7 +53,9 @@ function Button(props: ButtonProps) {
         classNames['button'],
         {
           [classNames['button--appearance-elevated']]: appearance === 'elevated',
-          [classNames['button--size-hero']]: size === 'hero'
+          [classNames['button--appearance-flat']]: appearance !== 'elevated', // Instead of negation, should use valibot.optional('flat').
+          [classNames['button--size-hero']]: size === 'hero',
+          [classNames['button--size-normal']]: size !== 'hero' // Instead of negation, should use valibot.optional('normal').
         },
         className
       )}
