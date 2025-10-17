@@ -1,5 +1,5 @@
 /* TODO: [P0] Put this inside botframework-webchat-component as default implementation. */
-:global(.webchat-experience-chat-launcher) .icon-button {
+:global(.webchat-experience-chat-launcher) .button {
   /* TODO: [P0] Expose some CSS classes to white-label. */
   --webchat-colorNeutralBackground1: var(--colorNeutralBackground1, #ffffff);
   --webchat-colorNeutralForeground1: var(--colorNeutralForeground1, #242424);
@@ -17,10 +17,10 @@
   --webchat-iconButton-borderColor--active: var(--webchat-colorNeutralStroke1Pressed);
   --webchat-iconButton-borderColor--hover: var(--webchat-colorNeutralStroke1Hover);
   --webchat-iconButton-borderColor--disabled: var(--webchat-colorNeutralStrokeDisabled);
-  --webchat-iconButton-borderWidth: 1px;
+  --webchat-iconButton-borderWidth: 0px;
   --webchat-iconButton-color: var(--webchat-colorNeutralForeground1);
-  --webchat-iconButton-shadow: var(--webchat-shadow8);
-  --webchat-iconButton-size: 60px;
+  --webchat-iconButton-shadow: 0;
+  --webchat-iconButton-size: 1em;
 
   appearance: none;
   background: var(--webchat-iconButton-background);
@@ -30,10 +30,18 @@
   border-width: var(--webchat-iconButton-borderWidth);
   box-shadow: var(--webchat-iconButton-shadow);
   color: var(--webchat-iconButton-color);
-  /* TODO: [P0] Should not use calc() to minus the border width. */
   height: var(--webchat-iconButton-size);
   padding: 0;
   width: var(--webchat-iconButton-size);
+}
+
+:global(.webchat-experience-chat-launcher) .button.button--size-hero {
+  --webchat-iconButton-size: 60px;
+}
+
+:global(.webchat-experience-chat-launcher) .button.button--appearance-elevated {
+  --webchat-iconButton-borderWidth: 1px;
+  --webchat-iconButton-shadow: var(--webchat-shadow8);
 }
 
 :global(.webchat-experience-chat-launcher) .icon-button:hover {

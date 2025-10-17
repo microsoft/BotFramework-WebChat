@@ -9,8 +9,21 @@ export {
   type ActivityPolymiddlewareProps,
   type ActivityPolymiddlewareProxyProps,
   type ActivityPolymiddlewareRenderer,
-  type ActivityPolymiddlewareRequest,
-  type Polymiddleware
+  type ActivityPolymiddlewareRequest
+} from 'botframework-webchat-api/middleware';
+
+export {
+  buttonComponent,
+  ButtonPolymiddlewareProxy,
+  createButtonPolymiddleware,
+  useBuildRenderButtonCallback,
+  type ButtonPolymiddleware,
+  type ButtonPolymiddlewareHandler,
+  type ButtonPolymiddlewareHandlerResult,
+  type ButtonPolymiddlewareProps,
+  type ButtonPolymiddlewareProxyProps,
+  type ButtonPolymiddlewareRenderer,
+  type ButtonPolymiddlewareRequest
 } from 'botframework-webchat-api/middleware';
 
 export {
@@ -42,20 +55,6 @@ export {
 } from 'botframework-webchat-api/middleware';
 
 export {
-  createIconButtonPolymiddleware,
-  iconButtonComponent,
-  IconButtonPolymiddlewareProxy,
-  useBuildRenderIconButtonCallback,
-  type IconButtonPolymiddleware,
-  type IconButtonPolymiddlewareHandler,
-  type IconButtonPolymiddlewareHandlerResult,
-  type IconButtonPolymiddlewareProps,
-  type IconButtonPolymiddlewareProxyProps,
-  type IconButtonPolymiddlewareRenderer,
-  type IconButtonPolymiddlewareRequest
-} from 'botframework-webchat-api/middleware';
-
-export {
   createPopoverPolymiddleware,
   popoverComponent,
   PopoverPolymiddlewareProxy,
@@ -69,4 +68,4 @@ export {
   type PopoverPolymiddlewareRequest
 } from 'botframework-webchat-api/middleware';
 
-export { createActivityPolymiddlewareFromLegacy } from 'botframework-webchat-api/middleware';
+export { createActivityPolymiddlewareFromLegacy, type Polymiddleware } from 'botframework-webchat-api/middleware';

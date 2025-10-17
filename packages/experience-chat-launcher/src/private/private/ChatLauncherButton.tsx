@@ -1,6 +1,6 @@
 import { refObject, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
-import { IconButtonPolymiddlewareProxy } from 'botframework-webchat-api/middleware';
+import { ButtonPolymiddlewareProxy } from 'botframework-webchat-api/middleware';
 import React, { memo } from 'react';
 import { boolean, object, pipe, readonly, type InferInput } from 'valibot';
 
@@ -24,9 +24,14 @@ function ChatLauncherButton(props: ChatLauncherButtonProps) {
   const classNames = useStyles(styles);
 
   return (
-    <IconButtonPolymiddlewareProxy className={classNames['chat-launcher-button']} popoverTargetRef={popoverTargetRef}>
+    <ButtonPolymiddlewareProxy
+      appearance="elevated"
+      className={classNames['chat-launcher-button']}
+      popoverTargetRef={popoverTargetRef}
+      size="hero"
+    >
       {hasMessage ? <Icon appearance="hero" icon="chat-sparkle" /> : <Icon appearance="hero" icon="chat-multiple" />}
-    </IconButtonPolymiddlewareProxy>
+    </ButtonPolymiddlewareProxy>
   );
 }
 

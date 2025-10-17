@@ -16,7 +16,7 @@ function ChatLauncherPopover(_: ChatLauncherPopoverProps, ref: ForwardedRef<Elem
     // TODO: [P2] Is it correct to force-cast ref to HTMLDivElement?
     <PopoverPolymiddlewareProxy popover="manual" ref={mergeRefs(popoverRef, ref)} type="nonmodal">
       {'Hello, World!'}
-      <ChatLauncherPopoverDismissButton popoverRef={popoverRef}>{'&times;'}</ChatLauncherPopoverDismissButton>
+      <ChatLauncherPopoverDismissButton popoverRef={popoverRef} />
     </PopoverPolymiddlewareProxy>
   );
 }

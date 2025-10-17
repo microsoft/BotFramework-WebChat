@@ -15,12 +15,12 @@ import {
 } from 'valibot';
 
 import { ActivityPolymiddlewareProvider, extractActivityEnhancer } from './activityPolymiddleware';
+import { ButtonPolymiddlewareProvider, extractButtonEnhancer } from './buttonPolymiddleware';
 import {
   ChatLauncherButtonPolymiddlewareProvider,
   extractChatLauncherButtonEnhancer
 } from './chatLauncherButtonPolymiddleware';
 import { ErrorBoxPolymiddlewareProvider, extractErrorBoxEnhancer } from './errorBoxPolymiddleware';
-import { IconButtonPolymiddlewareProvider, extractIconButtonEnhancer } from './iconButtonPolymiddleware';
 import { PopoverPolymiddlewareProvider, extractPopoverEnhancer } from './popoverPolymiddleware';
 import { Polymiddleware } from './types/Polymiddleware';
 
@@ -54,6 +54,21 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
   );
 
   const activityPolymiddleware = useMemo(() => activityEnhancers.map(enhancer => () => enhancer), [activityEnhancers]);
+
+  const buttonEnhancers = useMemoWithPrevious<ReturnType<typeof extractButtonEnhancer>>(
+    (prevButtonEnhancers = []) => {
+      const buttonEnhancers = extractButtonEnhancer(polymiddleware);
+
+      // Checks for array equality, return previous version if nothing has changed.
+      return prevButtonEnhancers.length === buttonEnhancers.length &&
+        buttonEnhancers.every((middleware, index) => Object.is(middleware, prevButtonEnhancers.at(index)))
+        ? prevButtonEnhancers
+        : buttonEnhancers;
+    },
+    [polymiddleware]
+  );
+
+  const buttonPolymiddleware = useMemo(() => buttonEnhancers.map(enhancer => () => enhancer), [buttonEnhancers]);
 
   const chatLauncherButtonEnhancers = useMemoWithPrevious<ReturnType<typeof extractChatLauncherButtonEnhancer>>(
     (prevChatLauncherButtonEnhancers = []) => {
@@ -90,24 +105,6 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   const errorBoxPolymiddleware = useMemo(() => errorBoxEnhancers.map(enhancer => () => enhancer), [errorBoxEnhancers]);
 
-  const iconButtonEnhancers = useMemoWithPrevious<ReturnType<typeof extractIconButtonEnhancer>>(
-    (prevIconButtonEnhancers = []) => {
-      const iconButtonEnhancers = extractIconButtonEnhancer(polymiddleware);
-
-      // Checks for array equality, return previous version if nothing has changed.
-      return prevIconButtonEnhancers.length === iconButtonEnhancers.length &&
-        iconButtonEnhancers.every((middleware, index) => Object.is(middleware, prevIconButtonEnhancers.at(index)))
-        ? prevIconButtonEnhancers
-        : iconButtonEnhancers;
-    },
-    [polymiddleware]
-  );
-
-  const iconButtonPolymiddleware = useMemo(
-    () => iconButtonEnhancers.map(enhancer => () => enhancer),
-    [iconButtonEnhancers]
-  );
-
   const popoverEnhancers = useMemoWithPrevious<ReturnType<typeof extractPopoverEnhancer>>(
     (prevPopoverEnhancers = []) => {
       const popoverEnhancers = extractPopoverEnhancer(polymiddleware);
@@ -134,13 +131,13 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   return (
     <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>
-      <ChatLauncherButtonPolymiddlewareProvider middleware={chatLauncherButtonPolymiddleware}>
-        <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>
-          <IconButtonPolymiddlewareProvider middleware={iconButtonPolymiddleware}>
+      <ButtonPolymiddlewareProvider middleware={buttonPolymiddleware}>
+        <ChatLauncherButtonPolymiddlewareProvider middleware={chatLauncherButtonPolymiddleware}>
+          <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>
             <PopoverPolymiddlewareProvider middleware={popoverPolymiddleware}>{children}</PopoverPolymiddlewareProvider>
-          </IconButtonPolymiddlewareProvider>
-        </ErrorBoxPolymiddlewareProvider>
-      </ChatLauncherButtonPolymiddlewareProvider>
+          </ErrorBoxPolymiddlewareProvider>
+        </ChatLauncherButtonPolymiddlewareProvider>
+      </ButtonPolymiddlewareProvider>
     </ActivityPolymiddlewareProvider>
   );
 }

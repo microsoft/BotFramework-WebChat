@@ -2,12 +2,12 @@ import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { reduxStoreSchema } from '@msinternal/botframework-webchat-redux-store';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import {
+  buttonComponent,
   chatLauncherButtonComponent,
   ChatLauncherButtonPolymiddlewareProxy,
+  createButtonPolymiddleware,
   createChatLauncherButtonPolymiddleware,
-  createIconButtonPolymiddleware,
   createPopoverPolymiddleware,
-  iconButtonComponent,
   popoverComponent,
   type Polymiddleware
 } from 'botframework-webchat-api/middleware';
@@ -19,9 +19,9 @@ import { instance, object, optional, pipe, readonly, string, type InferInput } f
 
 import ChatLauncherStylesheet from '../stylesheet/ChatLauncherStylesheet';
 import styles from './ChatLauncher.module.css';
+import Button from './private/Button';
 import ChatLauncherButton from './private/ChatLauncherButton';
 import ChatLauncherModal from './private/ChatLauncherPopover';
-import IconButton from './private/IconButton';
 import NonModalPopover from './private/NonModalPopover';
 
 const chatLauncherPropsSchema = pipe(
@@ -46,8 +46,10 @@ function ChatLauncher(props: ChatLauncherProps) {
   const polymiddleware = useMemo<readonly Polymiddleware[]>(
     () =>
       Object.freeze([
+        createButtonPolymiddleware(
+          () => request => buttonComponent(Button, { appearance: request.appearance, size: request.size })
+        ),
         createChatLauncherButtonPolymiddleware(() => () => chatLauncherButtonComponent(ChatLauncherButton)),
-        createIconButtonPolymiddleware(() => () => iconButtonComponent(IconButton)),
         createPopoverPolymiddleware(
           next => request => (request.type === 'nonmodal' ? popoverComponent(NonModalPopover) : next(request))
         )
