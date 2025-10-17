@@ -35,13 +35,13 @@
   width: var(--webchat-iconButton-size);
 }
 
-:global(.webchat-experience-chat-launcher) .button.button--size-hero {
-  --webchat-iconButton-size: 60px;
-}
-
 :global(.webchat-experience-chat-launcher) .button.button--appearance-elevated {
   --webchat-iconButton-borderWidth: 1px;
   --webchat-iconButton-shadow: var(--webchat-shadow8);
+}
+
+:global(.webchat-experience-chat-launcher) .button.button--size-hero {
+  --webchat-iconButton-size: 60px;
 }
 
 :global(.webchat-experience-chat-launcher) .icon-button:hover {
