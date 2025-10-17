@@ -66,6 +66,7 @@
     "botframework-webchat-api": "0.0.0-0",
     "botframework-webchat-component": "0.0.0-0",
     "botframework-webchat-core": "0.0.0-0",
+    "merge-refs": "2.0.0",
     "use-ref-from": "0.1.0",
     "valibot": "1.1.0"
   },

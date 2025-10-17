@@ -1,5 +1,5 @@
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import React, { memo, useMemo } from 'react';
+import { refObject, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import React, { memo, useMemo, type RefObject } from 'react';
 import { type EmptyObject } from 'type-fest';
 import { boolean, object, pipe, readonly, type InferInput } from 'valibot';
 
@@ -21,9 +21,14 @@ const {
   Proxy,
   reactComponent: chatLauncherButtonComponent,
   useBuildRenderCallback: useBuildRenderChatLauncherButtonCallback
-} = templatePolymiddleware<EmptyObject, { readonly children?: never; readonly hasMessage: boolean }>(
-  'ChatLauncherButton'
-);
+} = templatePolymiddleware<
+  EmptyObject,
+  {
+    readonly children?: never;
+    readonly hasMessage: boolean;
+    readonly popoverTargetRef: RefObject<Element>;
+  }
+>('ChatLauncherButton');
 
 type ChatLauncherButtonPolymiddleware = InferMiddleware<typeof Provider>;
 type ChatLauncherButtonPolymiddlewareHandler = InferHandler<typeof Provider>;
@@ -35,7 +40,8 @@ type ChatLauncherButtonPolymiddlewareProviderProps = InferProviderProps<typeof P
 
 const chatLauncherButtonPolymiddlewareProxyPropsSchema = pipe(
   object({
-    hasMessage: boolean()
+    hasMessage: boolean(),
+    popoverTargetRef: refObject<Element>()
   }),
   readonly()
 );
@@ -50,9 +56,9 @@ const EMPTY_OBJECT = Object.freeze({});
 const ChatLauncherButtonPolymiddlewareProxy = memo(function ChatLauncherButtonPolymiddlewareProxy(
   props: ChatLauncherButtonPolymiddlewareProxyProps
 ) {
-  const { hasMessage } = validateProps(chatLauncherButtonPolymiddlewareProxyPropsSchema, props);
+  const { hasMessage, popoverTargetRef } = validateProps(chatLauncherButtonPolymiddlewareProxyPropsSchema, props);
 
-  return <Proxy hasMessage={hasMessage} request={EMPTY_OBJECT} />;
+  return <Proxy hasMessage={hasMessage} popoverTargetRef={popoverTargetRef} request={EMPTY_OBJECT} />;
 });
 
 const ChatLauncherButtonPolymiddlewareProvider = memo(function ChatLauncherButtonPolymiddlewareProvider({

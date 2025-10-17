@@ -58,4 +58,18 @@ export {
   type IconButtonPolymiddlewareRequest
 } from '@msinternal/botframework-webchat-api-middleware';
 
+export {
+  createPopoverPolymiddleware,
+  popoverComponent,
+  PopoverPolymiddlewareProxy,
+  useBuildRenderPopoverCallback,
+  type PopoverPolymiddleware,
+  type PopoverPolymiddlewareHandler,
+  type PopoverPolymiddlewareHandlerResult,
+  type PopoverPolymiddlewareProps,
+  type PopoverPolymiddlewareProxyProps,
+  type PopoverPolymiddlewareRenderer,
+  type PopoverPolymiddlewareRequest
+} from '@msinternal/botframework-webchat-api-middleware';
+
 export { default as createActivityPolymiddlewareFromLegacy } from '../legacy/createActivityPolymiddlewareFromLegacy';

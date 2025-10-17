@@ -21,6 +21,7 @@ import {
 } from './chatLauncherButtonPolymiddleware';
 import { ErrorBoxPolymiddlewareProvider, extractErrorBoxEnhancer } from './errorBoxPolymiddleware';
 import { IconButtonPolymiddlewareProvider, extractIconButtonEnhancer } from './iconButtonPolymiddleware';
+import { PopoverPolymiddlewareProvider, extractPopoverEnhancer } from './popoverPolymiddleware';
 import { Polymiddleware } from './types/Polymiddleware';
 
 const polymiddlewareComposerPropsSchema = pipe(
@@ -107,6 +108,21 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
     [iconButtonEnhancers]
   );
 
+  const popoverEnhancers = useMemoWithPrevious<ReturnType<typeof extractPopoverEnhancer>>(
+    (prevPopoverEnhancers = []) => {
+      const popoverEnhancers = extractPopoverEnhancer(polymiddleware);
+
+      // Checks for array equality, return previous version if nothing has changed.
+      return prevPopoverEnhancers.length === popoverEnhancers.length &&
+        popoverEnhancers.every((middleware, index) => Object.is(middleware, prevPopoverEnhancers.at(index)))
+        ? prevPopoverEnhancers
+        : popoverEnhancers;
+    },
+    [polymiddleware]
+  );
+
+  const popoverPolymiddleware = useMemo(() => popoverEnhancers.map(enhancer => () => enhancer), [popoverEnhancers]);
+
   // Didn't thoroughly think through this part yet, but I am using the first approach for now:
 
   // 1. <XXXProvider> for every type of middleware
@@ -121,7 +137,7 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
       <ChatLauncherButtonPolymiddlewareProvider middleware={chatLauncherButtonPolymiddleware}>
         <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>
           <IconButtonPolymiddlewareProvider middleware={iconButtonPolymiddleware}>
-            {children}
+            <PopoverPolymiddlewareProvider middleware={popoverPolymiddleware}>{children}</PopoverPolymiddlewareProvider>
           </IconButtonPolymiddlewareProvider>
         </ErrorBoxPolymiddlewareProvider>
       </ChatLauncherButtonPolymiddlewareProvider>

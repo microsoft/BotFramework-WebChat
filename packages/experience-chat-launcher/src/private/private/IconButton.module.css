@@ -9,8 +9,8 @@
   --webchat-colorNeutralStrokeDisabled: var(--colorNeutralStrokeDisabled, #e0e0e0);
   --webchat-shadow8: var(--shadow8, 0 0 2px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.14));
 
+  /* TODO: [P*] Is this a good naming system? Sorry I forgot if we should still go CSS BEM-alike or not. */
   /* TODO: [P0] Should we expose some customizable CSS variables? */
-  /* TODO: [P0] How's the naming system? */
   /* TODO: [P0] Should it be customizable to anchor to bottom/left instead? */
   --webchat-iconButton-background: var(--webchat-colorNeutralBackground1);
   --webchat-iconButton-borderColor: var(--webchat-colorNeutralStroke1);

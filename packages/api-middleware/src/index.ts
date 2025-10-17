@@ -54,6 +54,20 @@ export {
   type IconButtonPolymiddlewareRequest
 } from './iconButtonPolymiddleware';
 
+export {
+  createPopoverPolymiddleware,
+  popoverComponent,
+  PopoverPolymiddlewareProxy,
+  useBuildRenderPopoverCallback,
+  type PopoverPolymiddleware,
+  type PopoverPolymiddlewareHandler,
+  type PopoverPolymiddlewareHandlerResult,
+  type PopoverPolymiddlewareProps,
+  type PopoverPolymiddlewareProxyProps,
+  type PopoverPolymiddlewareRenderer,
+  type PopoverPolymiddlewareRequest
+} from './popoverPolymiddleware';
+
 // TODO: [P0] Add tests for nesting `polymiddleware`.
 export { default as PolymiddlewareComposer } from './PolymiddlewareComposer';
 export { type Polymiddleware } from './types/Polymiddleware';

@@ -10,6 +10,7 @@ import styles from './Icon.module.css';
 
 const baseIconPropsSchema = pipe(
   object({
+    'aria-label': optional(string()),
     className: optional(string()),
     mask: optional(string())
   }),
@@ -17,7 +18,7 @@ const baseIconPropsSchema = pipe(
 );
 
 function BaseIcon(props: InferInput<typeof baseIconPropsSchema>) {
-  const { className, mask } = validateProps(baseIconPropsSchema, props);
+  const { 'aria-label': ariaLabel, className, mask } = validateProps(baseIconPropsSchema, props);
 
   const classNames = useStyles(styles);
 
@@ -26,7 +27,7 @@ function BaseIcon(props: InferInput<typeof baseIconPropsSchema>) {
     [mask]
   );
 
-  return <div className={cx(classNames['icon'], className)} style={maskStyle} />;
+  return <div aria-label={ariaLabel} className={cx(classNames['icon'], className)} style={maskStyle} />;
 }
 
 const { component: Icon, modifierPropsSchema } = createIconComponent(styles, ['appearance', 'icon'], BaseIcon);

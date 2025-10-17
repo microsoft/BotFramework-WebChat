@@ -11,6 +11,11 @@
         /* Setting it to absolute for testing only. */
         position: absolute !important;
       }
+
+      .webchat .chat-launcher-modal {
+        height: 400px !important;
+        width: 320px !important;
+      }
     </style>
   </head>
   <body>
@@ -27,6 +32,7 @@
         }
       }
     </script>
+    <webchat--chat-launcher-experience token="..." />
     <script type="module">
       import '/test-harness.mjs';
       import '/test-page-object.mjs';

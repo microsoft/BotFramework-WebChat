@@ -1,5 +1,5 @@
-import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
-import React, { memo, useMemo, type ReactNode } from 'react';
+import { reactNode, refObject, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import React, { memo, useMemo, type ReactNode, type RefObject } from 'react';
 import { type EmptyObject } from 'type-fest';
 import { function_, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
@@ -27,6 +27,7 @@ const {
     readonly children?: ReactNode | undefined;
     readonly className?: string | undefined;
     readonly onClick?: (() => void) | undefined;
+    readonly popoverTargetRef?: RefObject<Element> | undefined;
   }
 >('IconButton');
 
@@ -42,7 +43,8 @@ const iconButtonPolymiddlewareProxyPropsSchema = pipe(
   object({
     children: optional(reactNode()),
     className: optional(string()),
-    onClick: optional(function_())
+    onClick: optional(function_()),
+    popoverTargetRef: optional(refObject<Element>())
   }),
   readonly()
 );
@@ -55,10 +57,13 @@ const EMPTY_OBJECT = Object.freeze({});
 const IconButtonPolymiddlewareProxy = memo(function IconButtonPolymiddlewareProxy(
   props: IconButtonPolymiddlewareProxyProps
 ) {
-  const { children, className, onClick } = validateProps(iconButtonPolymiddlewareProxyPropsSchema, props);
+  const { children, className, onClick, popoverTargetRef } = validateProps(
+    iconButtonPolymiddlewareProxyPropsSchema,
+    props
+  );
 
   return (
-    <Proxy className={className} onClick={onClick} request={EMPTY_OBJECT}>
+    <Proxy className={className} onClick={onClick} popoverTargetRef={popoverTargetRef} request={EMPTY_OBJECT}>
       {children}
     </Proxy>
   );

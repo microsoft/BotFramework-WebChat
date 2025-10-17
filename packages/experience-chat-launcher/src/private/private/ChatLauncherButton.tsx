@@ -1,4 +1,4 @@
-import { validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { refObject, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import { IconButtonPolymiddlewareProxy } from 'botframework-webchat-api/middleware';
 import React, { memo } from 'react';
@@ -9,7 +9,8 @@ import Icon from './Icon';
 
 const chatLauncherButtonPropsSchema = pipe(
   object({
-    hasMessage: boolean()
+    hasMessage: boolean(),
+    popoverTargetRef: refObject<HTMLDivElement>()
   }),
   readonly()
 );
@@ -18,11 +19,12 @@ type ChatLauncherButtonProps = InferInput<typeof chatLauncherButtonPropsSchema>;
 
 // TODO: [P0] Should we make an IconButton polymiddleware and ChatLauncherButton is based from that?
 function ChatLauncherButton(props: ChatLauncherButtonProps) {
-  const { hasMessage } = validateProps(chatLauncherButtonPropsSchema, props);
+  const { hasMessage, popoverTargetRef } = validateProps(chatLauncherButtonPropsSchema, props);
+
   const classNames = useStyles(styles);
 
   return (
-    <IconButtonPolymiddlewareProxy className={classNames['chat-launcher-button']}>
+    <IconButtonPolymiddlewareProxy className={classNames['chat-launcher-button']} popoverTargetRef={popoverTargetRef}>
       {hasMessage ? <Icon appearance="hero" icon="chat-sparkle" /> : <Icon appearance="hero" icon="chat-multiple" />}
     </IconButtonPolymiddlewareProxy>
   );
