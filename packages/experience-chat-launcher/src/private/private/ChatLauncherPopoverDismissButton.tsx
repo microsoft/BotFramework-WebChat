@@ -5,25 +5,26 @@ import { object, optional, pipe, readonly, type InferInput } from 'valibot';
 
 import Icon from './Icon';
 
-const chatLauncherModalDismissButtonPropsSchema = pipe(
+const chatLauncherPopoverDismissButtonPropsSchema = pipe(
   object({
     popoverRef: optional(refObject<Element>())
   }),
   readonly()
 );
 
-type ChatLauncherModalDismissButtonProps = InferInput<typeof chatLauncherModalDismissButtonPropsSchema>;
+type ChatLauncherPopoverDismissButtonProps = InferInput<typeof chatLauncherPopoverDismissButtonPropsSchema>;
 
-function ChatLauncherModalDismissButton(props: ChatLauncherModalDismissButtonProps) {
-  const { popoverRef } = validateProps(chatLauncherModalDismissButtonPropsSchema, props);
+function ChatLauncherPopoverDismissButton(props: ChatLauncherPopoverDismissButtonProps) {
+  const { popoverRef } = validateProps(chatLauncherPopoverDismissButtonPropsSchema, props);
 
   return (
     <ButtonPolymiddlewareProxy appearance="flat" popoverTargetAction="hide" popoverTargetRef={popoverRef}>
-      <Icon appearance="text" icon="dismiss" />
+      <Icon appearance="button" icon="dismiss" />
     </ButtonPolymiddlewareProxy>
   );
 }
 
-ChatLauncherModalDismissButton.displayName = 'ChatLauncherModalDismissButton';
+ChatLauncherPopoverDismissButton.displayName = 'ChatLauncherPopoverDismissButton';
 
-export default memo(ChatLauncherModalDismissButton);
+export default memo(ChatLauncherPopoverDismissButton);
+export { chatLauncherPopoverDismissButtonPropsSchema, type ChatLauncherPopoverDismissButtonProps };

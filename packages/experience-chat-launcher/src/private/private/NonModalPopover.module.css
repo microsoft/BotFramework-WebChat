@@ -4,16 +4,17 @@
   --webchat-shadow64: var(--shadow64, 0 0 8px rgba(0, 0, 0, 0.12), 0 32px 64px rgba(0, 0, 0, 0.14));
 
   /* TODO: [P*] Is this a good naming system? Sorry I forgot if we should still go CSS BEM-alike or not. */
-  --webchat-chatLauncherModal-background: var(--webchat-colorNeutralBackground1);
-  --webchat-chatLauncherModal-box-shadow: var(--webchat-shadow64);
-  --webchat-chatLauncherModal-border-radius: 20px;
-  --webchat-chatLauncherModal-height: 610px;
-  --webchat-chatLauncherModal-width: 340px;
+  --webchat-popover-background: var(--webchat-colorNeutralBackground1);
+  --webchat-popover-box-shadow: var(--webchat-shadow64);
+  --webchat-popover-border-radius: 20px;
+  --webchat-popover-height: 610px;
+  --webchat-popover-width: 340px;
 
-  background: var(--webchat-chatLauncherModal-background);
+  background: var(--webchat-popover-background);
   border: 0;
-  border-radius: var(--webchat-chatLauncherModal-border-radius);
-  box-shadow: var(--webchat-chatLauncherModal-box-shadow);
-  height: var(--webchat-chatLauncherModal-height);
-  width: var(--webchat-chatLauncherModal-width);
+  border-radius: var(--webchat-popover-border-radius);
+  box-shadow: var(--webchat-popover-box-shadow);
+  height: var(--webchat-popover-height);
+  padding: 0;
+  width: var(--webchat-popover-width);
 }

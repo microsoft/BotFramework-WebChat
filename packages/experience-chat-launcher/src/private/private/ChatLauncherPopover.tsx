@@ -3,7 +3,7 @@ import mergeRefs from 'merge-refs';
 import React, { forwardRef, memo, useRef, type ForwardedRef } from 'react';
 import { object, pipe, readonly, type InferInput } from 'valibot';
 
-import ChatLauncherPopoverDismissButton from './ChatLauncherPopoverDismissButton';
+import ChatLauncherPopoverTitleBar from './ChatLauncherPopoverTitleBar';
 
 const chatLauncherPopoverPropsSchema = pipe(object({}), readonly());
 
@@ -15,8 +15,7 @@ function ChatLauncherPopover(_: ChatLauncherPopoverProps, ref: ForwardedRef<Elem
   return (
     // TODO: [P2] Is it correct to force-cast ref to HTMLDivElement?
     <PopoverPolymiddlewareProxy popover="manual" ref={mergeRefs(popoverRef, ref)} type="nonmodal">
-      {'Hello, World!'}
-      <ChatLauncherPopoverDismissButton popoverRef={popoverRef} />
+      <ChatLauncherPopoverTitleBar popoverRef={popoverRef} />
     </PopoverPolymiddlewareProxy>
   );
 }
