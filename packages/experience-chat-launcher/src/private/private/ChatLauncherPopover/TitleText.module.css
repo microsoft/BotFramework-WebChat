@@ -1,0 +1,27 @@
+:global(.webchat-experience-chat-launcher) .chat-launcher-popover__title-text {
+  /* TODO: [P0] Refactor variables to global or upper layer. */
+  --webchat-colorNeutralForeground1: var(--colorNeutralForeground1, #242424);
+  --webchat-fontFamilyBase: var(
+    --fontFamilyBase,
+    'Segoe UI',
+    'Segoe UI Web (West European)',
+    -apple-system,
+    BlinkMacSystemFont,
+    Roboto,
+    'Helvetica Neue',
+    sans-serif
+  );
+  --webchat-fontSizeBase400: var(--fontSizeBase400, 16px);
+  --webchat-fontWeightSemibold: var(--fontWeightSemibold, 600);
+
+  /* TODO: [P*] Is this a good naming system? Sorry I forgot if we should still go CSS BEM-alike or not. */
+  --webchat-chatLauncherPopoverTitleText-color: var(--webchat-colorNeutralForeground1);
+  --webchat-chatLauncherPopoverTitleText-fontFamily: var(--webchat-fontFamilyBase);
+  --webchat-chatLauncherPopoverTitleText-fontSize: var(--webchat-fontSizeBase400);
+  --webchat-chatLauncherPopoverTitleText-fontWeight: var(--webchat-fontWeightSemibold);
+
+  color: var(--webchat-chatLauncherPopoverTitleText-color);
+  font-family: var(--webchat-chatLauncherPopoverTitleText-fontFamily);
+  font-size: var(--webchat-chatLauncherPopoverTitleText-fontSize);
+  font-weight: var(--webchat-chatLauncherPopoverTitleText-fontWeight);
+}

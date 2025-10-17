@@ -1,0 +1,20 @@
+:global(.webchat-experience-chat-launcher) .chat-launcher-popover__title-bar {
+  --webchat-spacingHorizontalL: var(--spacingHorizontalL, 16px);
+  --webchat-spacingHorizontalS: var(--spacingHorizontalS, 8px);
+  --webchat-spacingVerticalM: var(--spacingVerticalM, 12px);
+  --webchat-spacingVerticalS: var(--spacingVerticalS, 8px);
+  --webchat-colorNeutralStroke3: var(--colorNeutralStroke3, #f0f0f0);
+  --webchat-strokeWidthThin: var(--strokeWidthThin, 1px);
+
+  --webchat-chatLauncherPopoverTitleBar-border-block-end-width: var(--webchat-strokeWidthThin);
+  --webchat-chatLauncherPopoverTitleBar-border-block-end-color: var(--webchat-colorNeutralStroke3);
+  --webchat-chatLauncherPopoverTitleBar-padding: var(--webchat-spacingVerticalM) var(--webchat-spacingHorizontalL);
+
+  align-items: center;
+  border-block-end-color: var(--webchat-chatLauncherPopoverTitleBar-border-block-end-color);
+  border-block-end-style: solid;
+  border-block-end-width: var(--webchat-chatLauncherPopoverTitleBar-border-block-end-width);
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  padding: var(--webchat-chatLauncherPopoverTitleBar-padding);
+}

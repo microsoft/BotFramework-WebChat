@@ -894,7 +894,7 @@ type StyleOptions = {
    *
    * @default document.head
    */
-  stylesRoot?: Node;
+  stylesRoot?: Node | undefined;
 
   /**
    * Border animation

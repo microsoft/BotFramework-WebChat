@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      main {
+        position: relative;
+      }
+
+      .webchat .chat-launcher-button {
+        /* Setting it to absolute for testing only. */
+        position: absolute !important;
+      }
+
+      .webchat .chat-launcher-modal {
+        height: 400px !important;
+        width: 320px !important;
+      }
+
+      #webchat {
+        background-image: url(./assets/background.jpg);
+        background-position: center;
+        background-size: cover;
+      }
+
+      .popover--non-modal {
+        display: block;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          visibility 0.2s allow-discrete,
+          opacity 0.2s ease;
+      }
+
+      .popover--non-modal:popover-open {
+        visibility: visible;
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18,react-dom@18&exports=FluentProvider,webLightTheme",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+          "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat/decorator.js",
+          "botframework-webchat/experience/chatLauncher": "/__dist__/packages/bundle/static/botframework-webchat/experience/chatLauncher.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat/internal.js",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <webchat--chat-launcher-experience token="..." />
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { FluentProvider, webLightTheme } from '@fluentui/react-components';
+      import { FluentThemeProvider } from 'botframework-webchat-fluent-theme';
+
+      import { createStoreWithOptions } from 'botframework-webchat';
+      import { ChatLauncher } from 'botframework-webchat/experience/chatLauncher';
+      import { fn, spyOn } from 'jest-mock';
+      import { createElement } from 'react';
+      import { flushSync } from 'react-dom';
+      import { createRoot } from 'react-dom/client';
+
+      testHelpers.ignoreReactDeprecation({ defaultProps: true });
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions };
+
+        const fluentTheme = {
+          ...webLightTheme,
+          // Original is #242424 which is too light for fui-FluentProvider to pass our accessibility checks.
+          colorNeutralForeground1: '#1b1b1b'
+        };
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        flushSync(() =>
+          createRoot(document.getElementById('webchat')).render(
+            createElement(
+              FluentProvider,
+              { className: 'fui-FluentProvider', theme: fluentTheme },
+              createElement(
+                FluentThemeProvider,
+                { variant: 'fluent' },
+                createElement(ChatLauncher, { directLine, store })
+              )
+            )
+          )
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: 'Mollit nostrud duis do sunt adipisicing excepteur deserunt anim qui eu. Eu occaecat sit laborum dolore sint ullamco. Enim aliquip culpa duis aute laborum cillum minim dolore dolore nulla voluptate ea. Qui exercitation minim velit adipisicing est eiusmod nisi et sint. Voluptate eiusmod aliqua quis esse sit excepteur culpa enim dolore voluptate irure cillum. Amet consequat ea ipsum laborum cillum non amet labore ad ipsum. Et nisi occaecat quis minim magna ea esse cillum.',
+          timestamp: -120000,
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: 'Velit labore excepteur duis sit adipisicing quis eiusmod elit minim ea enim quis. Cillum ex adipisicing excepteur incididunt consectetur qui eu Lorem in minim ipsum. Commodo mollit aliqua ut sit ex commodo sit irure tempor adipisicing ipsum. Laboris fugiat labore eu est nulla cupidatat. Sit ut est laboris do.',
+          timestamp: -60000,
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: 'Quis elit eiusmod minim anim dolor nostrud. Eu cillum anim reprehenderit ullamco non elit labore eiusmod. Aute esse adipisicing ad enim do aute tempor enim. Laborum anim qui esse sit. Amet elit incididunt reprehenderit enim dolor.',
+          timestamp: 0,
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(3);
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

@@ -24,6 +24,16 @@
         "types": "./dist/botframework-webchat-core.internal.d.ts",
         "default": "./dist/botframework-webchat-core.internal.js"
       }
+    },
+    "./schema": {
+      "import": {
+        "types": "./dist/botframework-webchat-core.schema.d.mts",
+        "default": "./dist/botframework-webchat-core.schema.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core.schema.d.ts",
+        "default": "./dist/botframework-webchat-core.schema.js"
+      }
     }
   },
   "publishConfig": {
@@ -57,11 +67,14 @@
     }
   },
   "scripts": {
-    "build": "npm run build:tsup && npm run build:dtsroll && npm run build:validate",
-    "build:dtsroll": "dtsroll ./dist/*.d.*",
-    "build:tsup": "tsup",
-    "build:validate": "npm run build:validate:dts",
-    "build:validate:dts": "if grep -q -P '@msinternal\\/' dist/*.d.* 2>/dev/null; then echo \"Error: dist/*.d.* is not compiled by dtsroll\" >&2; exit 1; fi",
+    "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
+    "build:post": "npm run build:post:dtsroll && npm run build:post:validate:dts",
+    "build:post:dtsroll": "dtsroll ./dist/*.d.*",
+    "build:post:validate:dts": "if grep -q -P '@msinternal\\/' dist/*.d.* 2>/dev/null; then echo \"Error: dist/*.d.* is not compiled by dtsroll\" >&2; exit 1; fi",
+    "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
+    "build:pre:local-dependencies": "../../scripts/npm/build-local-dependencies.sh",
+    "build:pre:watch": "../../scripts/npm/build-watch.sh",
+    "build:run": "tsup",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -71,21 +84,21 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "npm run build:tsup -- --watch",
+    "start": "../../scripts/npm/notify-build.sh \"./src/\" \"../base/package.json\" \"../tsconfig/package.json\"",
     "test:tsd": "tsd"
   },
   "engines": {
     "node": ">=12.0.0"
-  },
-  "localDependences": {
-    "@msinternal/botframework-webchat-base": "development",
-    "@msinternal/botframework-webchat-tsconfig": "development"
   },
   "pinDependencies": {
     "typescript": [
       "~5.8.3",
       "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ]
+  },
+  "localDependencies": {
+    "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development"
   },
   "devDependencies": {
     "@babel/core": "^7.28.0",

@@ -5,9 +5,6 @@ import { applyConfig } from '../../tsup.base.config';
 import { decoratorStyleContent as decoratorStyleContentPlaceholder } from './src/decorator/stylesheet/createDecoratorStyleElements';
 import { componentStyleContent as componentStyleContentPlaceholder } from './src/stylesheet/createComponentStyleElements';
 
-// TODO: [P1] Compute this automatically.
-const DEPENDENT_PATHS = ['bundle/src/boot/exports/index.ts'];
-
 const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
@@ -27,8 +24,7 @@ const commonConfig = applyConfig(config => ({
       stylesPlaceholder: componentStyleContentPlaceholder
     }),
     injectCSSPlugin({ stylesPlaceholder: decoratorStyleContentPlaceholder })
-  ],
-  onSuccess: `touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`
+  ]
 }));
 
 export default defineConfig([
@@ -38,7 +34,8 @@ export default defineConfig([
       ...commonConfig.define,
       'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"'
     },
-    format: 'esm'
+    format: 'esm',
+    onSuccess: 'touch ./package.json'
   },
   {
     ...commonConfig,

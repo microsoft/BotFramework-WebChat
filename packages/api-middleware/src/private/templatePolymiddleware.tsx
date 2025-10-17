@@ -74,7 +74,7 @@ function templatePolymiddleware<Request, Props extends {}>(name: string) {
 
                 return false;
               } else if (!safeParse(middlewareSchema, result).success) {
-                console.warn(`botframework-webchat: ${name}.middleware must be created using factory function`);
+                console.warn(`botframework-webchat: ${name}.middleware must be created using factory function`, result);
 
                 return false;
               }

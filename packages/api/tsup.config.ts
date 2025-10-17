@@ -2,9 +2,6 @@ import { defineConfig } from 'tsup';
 
 import { applyConfig } from '../../tsup.base.config';
 
-// TODO: [P1] Compute this automatically.
-const DEPENDENT_PATHS = ['component/src/index.ts'];
-
 const commonConfig = applyConfig(config => ({
   ...config,
   entry: {
@@ -13,8 +10,7 @@ const commonConfig = applyConfig(config => ({
     'botframework-webchat-api.hook': './src/boot/hook.ts',
     'botframework-webchat-api.internal': './src/boot/internal.ts',
     'botframework-webchat-api.middleware': './src/boot/middleware.ts'
-  },
-  onSuccess: `touch ${DEPENDENT_PATHS.map(path => `../${path}`).join(' ')}`
+  }
 }));
 
 export default defineConfig([
@@ -25,7 +21,8 @@ export default defineConfig([
       'globalThis.WEB_CHAT_BUILD_INFO_MODULE_FORMAT': '"esmodules"'
     },
     format: 'esm',
-    noExternal: [...(commonConfig.noExternal ?? []), 'globalize']
+    noExternal: [...(commonConfig.noExternal ?? []), 'globalize'],
+    onSuccess: 'touch ./package.json'
   },
   {
     ...commonConfig,

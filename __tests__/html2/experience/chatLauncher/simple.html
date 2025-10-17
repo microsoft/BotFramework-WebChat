@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      main {
+        position: relative;
+      }
+
+      .webchat .chat-launcher-button {
+        /* Setting it to absolute for testing only. */
+        position: absolute !important;
+      }
+
+      .webchat .chat-launcher-modal {
+        height: 400px !important;
+        width: 320px !important;
+      }
+
+      #webchat {
+        background-image: url(./assets/background.jpg);
+        background-position: center;
+        background-size: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/experience/chatLauncher": "/__dist__/packages/bundle/static/botframework-webchat/experience/chatLauncher.js",
+          "jest-mock": "https://esm.sh/jest-mock",
+          "react": "/__dist__/packages/bundle/static/react.js",
+          "react-dom": "/__dist__/packages/bundle/static/react-dom.js",
+          "react-dom/client": "/__dist__/packages/bundle/static/react-dom/client.js"
+        }
+      }
+    </script>
+    <webchat--chat-launcher-experience token="..." />
+    <script type="module">
+      import '/test-harness.mjs';
+      import '/test-page-object.mjs';
+
+      import { createStoreWithOptions } from 'botframework-webchat';
+      import { ChatLauncher } from 'botframework-webchat/experience/chatLauncher';
+      import { fn, spyOn } from 'jest-mock';
+      import { createElement } from 'react';
+      import { flushSync } from 'react-dom';
+      import { createRoot } from 'react-dom/client';
+
+      testHelpers.ignoreReactDeprecation({ defaultProps: true });
+
+      run(async function () {
+        const {
+          testHelpers: { createDirectLineEmulator }
+        } = window;
+
+        // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+        window.WebChat = { createStoreWithOptions };
+
+        const { directLine, store } = createDirectLineEmulator();
+
+        flushSync(() =>
+          createRoot(document.getElementById('webchat')).render(createElement(ChatLauncher, { directLine, store }))
+        );
+
+        await pageConditions.uiConnected();
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: 'Mollit nostrud duis do sunt adipisicing excepteur deserunt anim qui eu. Eu occaecat sit laborum dolore sint ullamco. Enim aliquip culpa duis aute laborum cillum minim dolore dolore nulla voluptate ea. Qui exercitation minim velit adipisicing est eiusmod nisi et sint. Voluptate eiusmod aliqua quis esse sit excepteur culpa enim dolore voluptate irure cillum. Amet consequat ea ipsum laborum cillum non amet labore ad ipsum. Et nisi occaecat quis minim magna ea esse cillum.',
+          timestamp: -120000,
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: 'Velit labore excepteur duis sit adipisicing quis eiusmod elit minim ea enim quis. Cillum ex adipisicing excepteur incididunt consectetur qui eu Lorem in minim ipsum. Commodo mollit aliqua ut sit ex commodo sit irure tempor adipisicing ipsum. Laboris fugiat labore eu est nulla cupidatat. Sit ut est laboris do.',
+          timestamp: -60000,
+          type: 'message'
+        });
+
+        await directLine.emulateIncomingActivity({
+          from: { id: 'bot', role: 'bot' },
+          text: 'Quis elit eiusmod minim anim dolor nostrud. Eu cillum anim reprehenderit ullamco non elit labore eiusmod. Aute esse adipisicing ad enim do aute tempor enim. Laborum anim qui esse sit. Amet elit incididunt reprehenderit enim dolor.',
+          timestamp: 0,
+          type: 'message'
+        });
+
+        await pageConditions.numActivitiesShown(3);
+        await host.snapshot('local');
+      });
+    </script>
+  </body>
+</html>

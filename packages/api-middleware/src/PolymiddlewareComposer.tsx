@@ -15,7 +15,13 @@ import {
 } from 'valibot';
 
 import { ActivityPolymiddlewareProvider, extractActivityEnhancer } from './activityPolymiddleware';
+import { ButtonPolymiddlewareProvider, extractButtonEnhancer } from './buttonPolymiddleware';
+import {
+  ChatLauncherButtonPolymiddlewareProvider,
+  extractChatLauncherButtonEnhancer
+} from './chatLauncherButtonPolymiddleware';
 import { ErrorBoxPolymiddlewareProvider, extractErrorBoxEnhancer } from './errorBoxPolymiddleware';
+import { PopoverPolymiddlewareProvider, extractPopoverEnhancer } from './popoverPolymiddleware';
 import { Polymiddleware } from './types/Polymiddleware';
 
 const polymiddlewareComposerPropsSchema = pipe(
@@ -49,6 +55,41 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   const activityPolymiddleware = useMemo(() => activityEnhancers.map(enhancer => () => enhancer), [activityEnhancers]);
 
+  const buttonEnhancers = useMemoWithPrevious<ReturnType<typeof extractButtonEnhancer>>(
+    (prevButtonEnhancers = []) => {
+      const buttonEnhancers = extractButtonEnhancer(polymiddleware);
+
+      // Checks for array equality, return previous version if nothing has changed.
+      return prevButtonEnhancers.length === buttonEnhancers.length &&
+        buttonEnhancers.every((middleware, index) => Object.is(middleware, prevButtonEnhancers.at(index)))
+        ? prevButtonEnhancers
+        : buttonEnhancers;
+    },
+    [polymiddleware]
+  );
+
+  const buttonPolymiddleware = useMemo(() => buttonEnhancers.map(enhancer => () => enhancer), [buttonEnhancers]);
+
+  const chatLauncherButtonEnhancers = useMemoWithPrevious<ReturnType<typeof extractChatLauncherButtonEnhancer>>(
+    (prevChatLauncherButtonEnhancers = []) => {
+      const chatLauncherButtonEnhancers = extractChatLauncherButtonEnhancer(polymiddleware);
+
+      // Checks for array equality, return previous version if nothing has changed.
+      return prevChatLauncherButtonEnhancers.length === chatLauncherButtonEnhancers.length &&
+        chatLauncherButtonEnhancers.every((middleware, index) =>
+          Object.is(middleware, prevChatLauncherButtonEnhancers.at(index))
+        )
+        ? prevChatLauncherButtonEnhancers
+        : chatLauncherButtonEnhancers;
+    },
+    [polymiddleware]
+  );
+
+  const chatLauncherButtonPolymiddleware = useMemo(
+    () => chatLauncherButtonEnhancers.map(enhancer => () => enhancer),
+    [chatLauncherButtonEnhancers]
+  );
+
   const errorBoxEnhancers = useMemoWithPrevious<ReturnType<typeof extractErrorBoxEnhancer>>(
     (prevErrorBoxEnhancers = []) => {
       const errorBoxEnhancers = extractErrorBoxEnhancer(polymiddleware);
@@ -64,6 +105,21 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   const errorBoxPolymiddleware = useMemo(() => errorBoxEnhancers.map(enhancer => () => enhancer), [errorBoxEnhancers]);
 
+  const popoverEnhancers = useMemoWithPrevious<ReturnType<typeof extractPopoverEnhancer>>(
+    (prevPopoverEnhancers = []) => {
+      const popoverEnhancers = extractPopoverEnhancer(polymiddleware);
+
+      // Checks for array equality, return previous version if nothing has changed.
+      return prevPopoverEnhancers.length === popoverEnhancers.length &&
+        popoverEnhancers.every((middleware, index) => Object.is(middleware, prevPopoverEnhancers.at(index)))
+        ? prevPopoverEnhancers
+        : popoverEnhancers;
+    },
+    [polymiddleware]
+  );
+
+  const popoverPolymiddleware = useMemo(() => popoverEnhancers.map(enhancer => () => enhancer), [popoverEnhancers]);
+
   // Didn't thoroughly think through this part yet, but I am using the first approach for now:
 
   // 1. <XXXProvider> for every type of middleware
@@ -75,7 +131,13 @@ function PolymiddlewareComposer(props: PolymiddlewareComposerProps) {
 
   return (
     <ActivityPolymiddlewareProvider middleware={activityPolymiddleware}>
-      <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>{children}</ErrorBoxPolymiddlewareProvider>
+      <ButtonPolymiddlewareProvider middleware={buttonPolymiddleware}>
+        <ChatLauncherButtonPolymiddlewareProvider middleware={chatLauncherButtonPolymiddleware}>
+          <ErrorBoxPolymiddlewareProvider middleware={errorBoxPolymiddleware}>
+            <PopoverPolymiddlewareProvider middleware={popoverPolymiddleware}>{children}</PopoverPolymiddlewareProvider>
+          </ErrorBoxPolymiddlewareProvider>
+        </ChatLauncherButtonPolymiddlewareProvider>
+      </ButtonPolymiddlewareProvider>
     </ActivityPolymiddlewareProvider>
   );
 }

@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "@msinternal/botframework-webchat-tsconfig/current",
+    "@msinternal/botframework-webchat-tsconfig/features/cssModules"
+  ]
+}

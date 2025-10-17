@@ -1,0 +1,9 @@
+:global(.webchat-experience-chat-launcher) .chat-launcher-button {
+  /* TODO: [P*] Is this a good naming system? Sorry I forgot if we should still go CSS BEM-alike or not. */
+  --webchat-chatLauncherButton-margin: 40px;
+
+  bottom: 0;
+  position: fixed;
+  margin: var(--webchat-chatLauncherButton-margin);
+  right: 0;
+}

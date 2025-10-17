@@ -88,6 +88,10 @@
       "destination": "packages/bundle/static/:filename"
     },
     {
+      "source": "/__dist__/packages/bundle/static/:dirname1/:dirname2/:filename",
+      "destination": "packages/bundle/static/:dirname1/:dirname2/:filename"
+    },
+    {
       "source": "/__dist__/packages/bundle/static/:dirname/:filename",
       "destination": "packages/bundle/static/:dirname/:filename"
     },
