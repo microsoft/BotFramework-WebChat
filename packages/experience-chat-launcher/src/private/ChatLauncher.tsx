@@ -19,10 +19,10 @@ import { instance, object, optional, pipe, readonly, string, type InferInput } f
 
 import ChatLauncherStylesheet from '../stylesheet/ChatLauncherStylesheet';
 import styles from './ChatLauncher.module.css';
-import Button from './private/Button';
 import ChatLauncherButton from './private/ChatLauncherButton';
-import ChatLauncherModal from './private/ChatLauncherPopover';
-import NonModalPopover from './private/NonModalPopover';
+import ChatLauncherPopover from './private/ChatLauncherPopover';
+import Button from './private/polymiddleware/Button';
+import NonModalPopover from './private/polymiddleware/NonModalPopover';
 
 const chatLauncherPropsSchema = pipe(
   object({
@@ -62,7 +62,7 @@ function ChatLauncher(props: ChatLauncherProps) {
       <Composer directLine={directLine} polymiddleware={polymiddleware} store={store} styleOptions={styleOptions}>
         <ChatLauncherStylesheet nonce={nonce} />
         <ChatLauncherButtonPolymiddlewareProxy hasMessage={true} popoverTargetRef={popoverTargetRef} />
-        <ChatLauncherModal ref={popoverTargetRef} />
+        <ChatLauncherPopover ref={popoverTargetRef} />
       </Composer>
     </div>
   );
