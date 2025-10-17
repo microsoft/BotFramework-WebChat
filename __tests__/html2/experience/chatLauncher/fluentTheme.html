@@ -16,6 +16,26 @@
         height: 400px !important;
         width: 320px !important;
       }
+
+      #webchat {
+        background-image: url(./assets/background.jpg);
+        background-position: center;
+        background-size: cover;
+      }
+
+      .popover--non-modal {
+        display: block;
+        opacity: 0;
+        visibility: hidden;
+        transition:
+          visibility 0.2s allow-discrete,
+          opacity 0.2s ease;
+      }
+
+      .popover--non-modal:popover-open {
+        visibility: visible;
+        opacity: 1;
+      }
     </style>
   </head>
   <body>
