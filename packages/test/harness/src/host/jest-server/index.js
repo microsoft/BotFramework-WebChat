@@ -126,7 +126,9 @@ async function prepareSession(sessionId) {
   await sendWebDriverCommand(sessionId, 'url', { url: 'about:blank' });
 
   // It may have set a different window size.
-  await sendWebDriverCommand(sessionId, 'window/rect', { height: 640, width: 360 });
+  // TODO: [P2] We cannot run --headless mode reliably, setting window size will mess things up.
+  //            Look at /packages/test/harness/src/host/jest/allocateWebDriver.js.
+  // await sendWebDriverCommand(sessionId, 'window/rect', { height: 640, width: 360 });
 
   // Last test may have moved the mouse cursor.
   await sendWebDriverCommand(sessionId, 'actions', {

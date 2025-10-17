@@ -4,7 +4,7 @@ services:
   # On Windows, run with COMPOSE_CONVERT_WINDOWS_PATHS=1
 
   chrome:
-    image: selenium/node-chrome:110.0
+    image: selenium/node-chrome:141.0
     depends_on:
       - selenium-hub
       - webchat
@@ -20,7 +20,7 @@ services:
       - ./__tests__/setup/local/:/home/seluser/Downloads
 
   selenium-hub:
-    image: selenium/hub:4.8.1
+    image: selenium/hub:4.36.0
     container_name: selenium-hub
     environment:
       GRID_TIMEOUT: '300'
