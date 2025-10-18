@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -90,8 +90,10 @@
         const { top: activityElementAtTopOfViewOffsetTop } = pageObjects.getActivityBoundingBoxes()[3];
         const scrollable = document.querySelector('.webchat__basic-transcript__scrollable');
 
-        expect(~~scrollable.scrollTop).toBeCloseTo(
-          ~~(activityElementAtTopOfViewOffsetTop - scrollable.offsetHeight * 0.8)
+        // Expected is 664.8, actual is 665. Precision is 0 (no decimal places.)
+        expect(scrollable.scrollTop).toBeCloseTo(
+          activityElementAtTopOfViewOffsetTop - scrollable.offsetHeight * 0.8,
+          0
         );
 
         await host.snapshot('local');
