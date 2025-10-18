@@ -33,6 +33,11 @@ global.setupWebDriver = async options => {
       const driver = builder.build();
 
       try {
+        await driver
+          .manage()
+          .window()
+          .setRect({ height: 640 + 139, width: 360 });
+
         // If the baseURL contains $PORT, it means it requires us to fill-in
         if (/\$PORT/i.test(baseURL)) {
           const { port } = await global.setupWebServer();
