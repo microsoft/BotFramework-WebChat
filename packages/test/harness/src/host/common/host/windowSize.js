@@ -1,3 +1,5 @@
+const { ADJUST_WINDOW_SIZE_HEIGHT } = require('../constants');
+
 module.exports = (/** @type import('selenium-webdriver').WebDriver */ webDriver) =>
   async function windowSize(width, height, element) {
     const rect = await webDriver.manage().window().getRect();
@@ -5,9 +7,10 @@ module.exports = (/** @type import('selenium-webdriver').WebDriver */ webDriver)
     height = +height || rect.height;
     width = +width || rect.width;
 
-    // TODO: [P2] We cannot run --headless mode reliably, setting window size will mess things up.
-    //            Look at /packages/test/harness/src/host/jest/allocateWebDriver.js.
-    // await webDriver.manage().window().setRect({ height, width });
+    await webDriver
+      .manage()
+      .window()
+      .setRect({ height: height + ADJUST_WINDOW_SIZE_HEIGHT, width });
 
     /* istanbul ignore next */
     element &&
