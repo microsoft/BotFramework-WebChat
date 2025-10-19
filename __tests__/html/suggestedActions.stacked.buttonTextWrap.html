@@ -15,7 +15,7 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
-        await host.windowSize(300, undefined, document.getElementById('webchat'));
+        await host.windowSize(300, 640, document.getElementById('webchat'));
 
         const directLine = WebChat.createDirectLine({ token: await testHelpers.token.fetchDirectLineToken() });
         const store = testHelpers.createStore();
