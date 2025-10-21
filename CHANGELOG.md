@@ -278,6 +278,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Removed `abort-controller-es5` package in `botframework-directlinespeech-sdk` package, in PR [#5530](https://github.com/microsoft/BotFramework-WebChat/pull/5530), by [@compulim](https://github.com/compulim)
 - Removed `request` and `request-progress` package in `cldr-data-downloader` package, in PR [#5530](https://github.com/microsoft/BotFramework-WebChat/pull/5530), by [@copilot](https://github.com/copilot) and [@compulim](https://github.com/compulim)
 - Added internal package `@msinternal/botframework-webchat-tsconfig` to centralize TypeScript configuration files, in PR [#5539](https://github.com/microsoft/BotFramework-WebChat/pull/5539), by [@compulim](https://github.com/compulim)
+- Bumped Chrome in Docker to 141 from 110, in PR [#5619](https://github.com/microsoft/BotFramework-WebChat/pull/5619), by [@compulim](https://github.com/compulim)
 
 ### Fixed
 
