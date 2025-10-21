@@ -504,10 +504,11 @@
     }
 
     :global(.collapsible-content__content) {
-      margin-block: var(--webchat-part-grouping__collapsible-content--space-block-start-end);
+      margin-block: var(--webchat-spacingVerticalNone);
 
       :global(.stacked-layout__attachment-list) {
         gap: var(--webchat-spacingVerticalS);
+        margin-block-start: var(--webchat-spacingVerticalS);
       }
 
       :global(.stacked-layout__attachment-row) {
@@ -695,10 +696,6 @@
       }
 
       :global(.webchat__bubble .collapsible-content .collapsible-content__content) {
-        :global(.stacked-layout__attachment-list) {
-          margin-block-start: var(--webchat-spacingVerticalS);
-        }
-
         :global(.stacked-layout__attachment) {
           max-width: var(--webchat-part-grouping__bubble--max-width);
         }
