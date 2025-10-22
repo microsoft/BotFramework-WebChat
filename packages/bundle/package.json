@@ -243,7 +243,7 @@
   "peerDependencies": {
     "@types/react": "^16.14.65",
     "react": ">= 16.8.6",
-    "react-chain-of-responsibility": "0.4.0-main.c2f17da",
+    "react-chain-of-responsibility": "0.4.1",
     "react-dom": ">= 16.8.6"
   }
 }
