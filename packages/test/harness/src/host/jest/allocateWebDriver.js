@@ -10,6 +10,7 @@ module.exports = async function allocateWebDriver({ webDriverURL }) {
 
   const builder = new Builder().forBrowser('chrome').setChromeOptions(
     new ChromeOptions()
+      .addArguments('--disable-lcd-text')
       // TODO: [P1] --headless is not quite working.
       //            Headless is supposed to be chrome-less (no window border).
       //            After we set webDriver.manage().window().size(1024, 768), webDriver.takeScreenshot() is not returning a 1024x768 image.
