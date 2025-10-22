@@ -101,6 +101,7 @@
   <main id="webchat"></main>
   <script type="module">
     import React from 'react';
+    import { flushSync } from 'react-dom';
     import { createRoot } from 'react-dom/client';
     import { FluentProvider, createDarkTheme } from '@fluentui/react-components';
 
@@ -833,9 +834,13 @@ Use the command to install required dependencies:
         );
       }
 
-      root.render(
-        React.createElement(App)
+      flushSync(() =>
+        root.render(
+          React.createElement(App)
+        )
       );
+
+      await pageConditions.scrollStabilized();
 
       await host.snapshot('local');
 
