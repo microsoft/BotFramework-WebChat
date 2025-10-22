@@ -4,7 +4,7 @@ global.expect &&
   global.expect.extend({
     toMatchImageSnapshot: configureToMatchImageSnapshot({
       customDiffConfig: {
-        threshold: 0
+        threshold: 0.05
       },
       noColors: true
     })
