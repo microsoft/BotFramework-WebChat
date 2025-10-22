@@ -50,12 +50,15 @@
         const [firstSuggestedAction] = pageElements.suggestedActions();
 
         let elementBeforeClick;
+        const waitForClick = Promise.withResolvers();
 
         pageElements.sendBoxTextBox().focus = () => {
           elementBeforeClick = document.activeElement;
+          waitForClick.resolve();
         };
 
         await host.click(firstSuggestedAction);
+        await waitForClick.promise;
 
         expect(elementBeforeClick).not.toBe(document.body);
         expect(elementBeforeClick).toBe(firstSuggestedAction);
