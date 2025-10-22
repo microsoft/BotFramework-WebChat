@@ -85,7 +85,7 @@
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
-    "react-chain-of-responsibility": "0.4.0-main.c2f17da",
+    "react-chain-of-responsibility": "0.4.1",
     "react": ">= 16.8.6"
   },
   "dependencies": {
