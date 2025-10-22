@@ -15,7 +15,7 @@ export default function setupTestEnvironment(browserName, builder, { height = 64
         width: width * zoom
       });
 
-      chromeOptions.setLoggingPrefs(preferences);
+      chromeOptions.addArguments('--disable-lcd-text').setLoggingPrefs(preferences);
 
       return {
         baseURL: 'http://localhost:$PORT/index.html',
@@ -25,6 +25,7 @@ export default function setupTestEnvironment(browserName, builder, { height = 64
     case 'chrome-docker':
     default: {
       chromeOptions = (builder.getChromeOptions() || new Options())
+        .addArguments('--disable-lcd-text')
         .addArguments('--headless') // More info at https://github.com/SeleniumHQ/selenium/commit/5a97adf9864a346fdd8914cdb1b601c05dd837ac
         .windowSize({ height: height * zoom, width: width * zoom });
 

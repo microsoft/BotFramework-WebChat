@@ -1,13 +1,13 @@
-import { Builder, logging } from 'selenium-webdriver';
+import getPort from 'get-port';
 import { createServer } from 'http';
 import { join } from 'path';
-import { promisify } from 'util';
-import getPort from 'get-port';
+import { Builder, logging } from 'selenium-webdriver';
 import handler from 'serve-handler';
+import { promisify } from 'util';
 
 import { browserName } from '../constants.json';
-import createPageObjects from './pageObjects/index';
 import marshal from './marshal';
+import createPageObjects from './pageObjects/index';
 import retry from './retry';
 import setupTestEnvironment from './setupTestEnvironment';
 
@@ -17,7 +17,9 @@ let driverPromise;
 let serverPromise;
 
 const DEFAULT_OPTIONS = {
-  pingBotOnLoad: true
+  height: 640 + 139,
+  pingBotOnLoad: true,
+  width: 360
 };
 
 async function getBrowserConsoleLogs(driver) {
@@ -33,6 +35,8 @@ global.setupWebDriver = async options => {
       const driver = builder.build();
 
       try {
+        await driver.manage().window().setRect({ height: options.height, width: options.width });
+
         // If the baseURL contains $PORT, it means it requires us to fill-in
         if (/\$PORT/i.test(baseURL)) {
           const { port } = await global.setupWebServer();

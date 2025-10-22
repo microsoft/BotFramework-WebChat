@@ -3,6 +3,7 @@ import { useStyles } from '@msinternal/botframework-webchat-styles/react';
 import React, { memo } from 'react';
 import { literal, object, pipe, readonly, union, type InferInput } from 'valibot';
 
+import useUniqueId from '../../hooks/internal/useUniqueId';
 import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
 import FeedbackVoteButton from './FeedbackVoteButton';
 
@@ -24,11 +25,12 @@ function FeedbackVoteButtonBar(props: FeedbackVoteButtonBarProps) {
   const { useActions } = useActivityFeedbackHooks();
 
   const [actions] = useActions();
+  const name = useUniqueId('webchat__feedback-form__vote-button-bar');
 
   return (
     <div className={classNames['feedback-form__vote-button-bar']}>
       {actions.map((action, index) => (
-        <FeedbackVoteButton action={action} as={buttonAs} key={action['@id'] || index} />
+        <FeedbackVoteButton action={action} as={buttonAs} key={action['@id'] || index} name={name} />
       ))}
     </div>
   );

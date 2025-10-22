@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
@@ -38,8 +38,10 @@
 
         const clientTopToScrollable = input.getClientRects()[0].y - transcriptScrollable.getClientRects()[0].y;
 
-        transcriptScrollable.scrollTop -=
-          transcriptScrollable.offsetHeight - clientTopToScrollable - input.offsetHeight / 2;
+        transcriptScrollable.scrollTop = ~~(
+          transcriptScrollable.scrollTop -
+          (transcriptScrollable.offsetHeight - clientTopToScrollable - input.offsetHeight / 2)
+        );
 
         const { scrollTop } = transcriptScrollable;
 

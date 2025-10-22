@@ -35,5 +35,12 @@ module.exports = (webDriver, resolve) =>
       expect(filteredErrors).toHaveLength(0);
     }
 
+    // All `toMatchImageSnapshot()` will pass so we can generate multiple diffs on a single run.
+    // But always fail in `done()` when one of the snapshot test failed.
+    // See /packages/test/harness/src/host/common/host/snapshot.js
+    if ('__snapshotfail__' in webDriver) {
+      throw new Error(webDriver.__snapshotfail__ || 'At least one of the snapshot test failed');
+    }
+
     resolve();
   };

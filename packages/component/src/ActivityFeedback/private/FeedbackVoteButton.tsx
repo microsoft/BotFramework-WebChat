@@ -3,7 +3,7 @@ import { hooks } from 'botframework-webchat-api';
 import { onErrorResumeNext, parseVoteAction, type OrgSchemaAction } from 'botframework-webchat-core';
 import React, { memo, useCallback, useMemo, useRef } from 'react';
 import { useRefFrom } from 'use-ref-from';
-import { custom, literal, object, optional, pipe, readonly, safeParse, union, type InferInput } from 'valibot';
+import { custom, literal, object, optional, pipe, readonly, safeParse, string, union, type InferInput } from 'valibot';
 
 import { useListenToActivityFeedbackFocus } from '../providers/private/FocusPropagation';
 import useActivityFeedbackHooks from '../providers/useActivityFeedbackHooks';
@@ -30,7 +30,8 @@ const feedbackVoteButtonPropsSchema = pipe(
           value
         ).success
     ),
-    as: union([literal('button'), literal('radio')])
+    as: union([literal('button'), literal('radio')]),
+    name: string()
   }),
   readonly()
 );
@@ -40,7 +41,7 @@ type FeedbackVoteButtonProps = InferInput<typeof feedbackVoteButtonPropsSchema>;
 function FeedbackVoteButton(props: FeedbackVoteButtonProps) {
   const { useHasSubmitted, useSelectedAction: useSelectedActions } = useActivityFeedbackHooks();
 
-  const { action, as } = validateProps(feedbackVoteButtonPropsSchema, props);
+  const { action, as, name } = validateProps(feedbackVoteButtonPropsSchema, props);
 
   const [{ feedbackActionsPlacement }] = useStyleOptions();
   const [hasSubmitted] = useHasSubmitted();
@@ -77,6 +78,7 @@ function FeedbackVoteButton(props: FeedbackVoteButtonProps) {
       as={as}
       direction={direction}
       disabled={disabled}
+      name={name}
       onClick={handleClick}
       pressed={selectedAction === action}
       ref={buttonRef}

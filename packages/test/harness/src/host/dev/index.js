@@ -23,6 +23,7 @@ async function main() {
 
   const service = await new ChromeServiceBuilder('./chromedriver')
     .addArguments('--allowed-ips', localIP)
+    .addArguments('--disable-lcd-text')
     .setHostname(hostIP)
     .setStdio(['ignore', 'ignore', 'ignore'])
     .build();

@@ -43,9 +43,9 @@
         await pageConditions.uiConnected();
 
         await pageObjects.uploadFile('seaofthieves.jpg');
-        await pageConditions.allOutgoingActivitiesSent();
 
         await pageConditions.minNumActivitiesShown(2);
+        await pageConditions.allOutgoingActivitiesSent();
         await pageConditions.allImagesLoaded();
 
         const sendFileTelemetryMeasurements = telemetryMeasurements.filter(({ name }) =>

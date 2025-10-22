@@ -52,6 +52,8 @@
         await waitFor(() => {
           return summaries.at(-1).getAttribute('aria-expanded') === 'true';
         }, 500);
+
+        await pageConditions.scrollStabilized();
       }
 
       run(async function () {
@@ -122,7 +124,7 @@
         const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
 
         root.render(
-          variant === 'copilot' || variant === 'fluent' ? 
+          variant === 'copilot' || variant === 'fluent' ?
             React.createElement(
               FluentProvider,
               { className: 'fui-FluentProvider', theme: fluentTheme },
@@ -266,7 +268,7 @@ plot_sine_waves()`;
             {
               ...aiMessageEntity,
               keywords: ['Collapsible'],
-              abstract: 'Informative…', 
+              abstract: 'Informative…',
               isBasedOn: {
                 '@type': 'SoftwareSourceCode',
                 programmingLanguage: 'python',

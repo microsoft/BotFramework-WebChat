@@ -30,6 +30,7 @@
   --webchat-colorNeutralShadowAmbient: var(--colorNeutralShadowAmbient, rgba(0, 0, 0, 0.12));
   --webchat-colorNeutralShadowKey: var(--colorNeutralShadowKey, rgba(0, 0, 0, 0.14));
 
+  --webchat-colorBackgroundOverlay: var(--colorBackgroundOverlay, rgba(0, 0, 0, 0.4)); /* rgba(0, 0, 0, 0.5) for dark mode */
   --webchat-colorTransparentBackground: var(--colorTransparentBackground, rgba(0, 0, 0, 0.4));
 
   --webchat-colorNeutralStrokeDisabled: var(--colorNeutralStrokeDisabled, #e0e0e0);
@@ -409,7 +410,7 @@
   place-items: center;
 
   &::backdrop {
-    background-color: var(--webchat-colorTransparentBackground);
+    background-color: var(--webchat-colorBackgroundOverlay);
   }
 
   :global(.webchat__modal-dialog__box) {
