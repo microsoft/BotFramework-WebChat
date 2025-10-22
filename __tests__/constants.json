@@ -2,7 +2,7 @@
   "browserName": "chrome-docker",
   "imageSnapshotOptions": {
     "customDiffConfig": {
-      "threshold": 0.14
+      "threshold": 0
     },
     "noColors": true
   },
