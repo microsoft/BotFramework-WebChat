@@ -19,7 +19,7 @@
     "precommit": "npm run precommit:eslint -- src && npm run precommit:typecheck",
     "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
-    "start": "../../../scripts/npm/notify-build.sh \"src\" \"../../tsconfig/package.json\""
+    "start": "../../../scripts/npm/notify-build.sh \"src\" \"../../..\""
   },
   "pinDependencies": {
     "adaptivecards": [

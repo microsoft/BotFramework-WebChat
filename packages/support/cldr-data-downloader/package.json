@@ -52,7 +52,7 @@
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "node ../../../node_modules/eslint/bin/eslint.js --report-unused-disable-directives --max-warnings 0",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "../../../scripts/npm/notify-build.sh \"src\" \"../../tsconfig/package.json\""
+    "start": "../../../scripts/npm/notify-build.sh \"src\" \"../../..\""
   },
   "pinDependencies": {},
   "localDependencies": {},
