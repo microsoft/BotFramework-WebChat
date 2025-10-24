@@ -35,10 +35,13 @@
     "./src/**/*",
     "*.js"
   ],
-  "localDependencies": {},
   "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/debug-theme#readme",
   "scripts": {
-    "build": "tsup --config ./tsup.config.ts",
+    "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
+    "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
+    "build:pre:local-dependencies": "../../scripts/npm/build-local-dependencies.sh",
+    "build:pre:watch": "../../scripts/npm/build-watch.sh",
+    "build:run": "tsup",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -48,13 +51,17 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "npm run build -- --watch"
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../api/package.json\" \"../component/package.json\""
   },
-  "peerDependencies": {
-    "react": ">= 16.8.6"
+  "localDependencies": {
+    "botframework-webchat-api": "production",
+    "botframework-webchat-component": "production"
   },
   "dependencies": {
     "botframework-webchat-api": "^0.0.0-0",
     "botframework-webchat-component": "^0.0.0-0"
+  },
+  "peerDependencies": {
+    "react": ">= 16.8.6"
   }
 }

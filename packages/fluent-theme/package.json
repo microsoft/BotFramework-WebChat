@@ -40,13 +40,18 @@
     "static/**/*"
   ],
   "scripts": {
-    "build": "npm run build:static && npm run build:tsup && npm run build:dtsroll && npm run build:validate",
-    "build:dtsroll": "dtsroll ./dist/*.d.*",
-    "build:static": "node ./esbuild.static.mjs",
-    "build:tsup": "tsup",
-    "build:validate": "npm run build:validate:css && npm run build:validate:dts",
-    "build:validate:css": "grep -q -P '\\.webchat-fluent \\.w([a-zA-Z-]){6}_' dist/*.css 2>/dev/null || { echo \"Error: dist/*.css is not compiled by Lightning CSS\" >&2; exit 1; }",
-    "build:validate:dts": "if grep -q -P '@msinternal\\/' dist/*.d.* 2>/dev/null; then echo \"Error: dist/*.d.* is not compiled by dtsroll\" >&2; exit 1; fi",
+    "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
+    "build:post": "npm run build:post:dtsroll && npm run build:post:validate",
+    "build:post:dtsroll": "dtsroll ./dist/*.d.*",
+    "build:post:validate": "npm run build:post:validate:css && npm run build:post:validate:dts",
+    "build:post:validate:css": "grep -q -P '\\.webchat-fluent \\.w([a-zA-Z-]){6}_' dist/*.css 2>/dev/null || { echo \"Error: dist/*.css is not compiled by Lightning CSS\" >&2; exit 1; }",
+    "build:post:validate:dts": "if grep -q -P '@msinternal\\/' dist/*.d.* 2>/dev/null; then echo \"Error: dist/*.d.* is not compiled by dtsroll\" >&2; exit 1; fi",
+    "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
+    "build:pre:local-dependencies": "../../scripts/npm/build-local-dependencies.sh",
+    "build:pre:watch": "../../scripts/npm/build-watch.sh",
+    "build:run": "concurrently --prefix-colors \"auto\" \"npm:build:run:*\"",
+    "build:run:static": "node ./esbuild.static.mjs",
+    "build:run:tsup": "tsup",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -56,14 +61,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
-    "start:static": "npm run build:static -- --watch",
-    "start:tsup": "npm run build:tsup -- --watch"
-  },
-  "localDependencies": {
-    "@msinternal/botframework-webchat-styles": "development",
-    "@msinternal/botframework-webchat-tsconfig": "development",
-    "botframework-webchat": "production"
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../styles/package.json\" \"../tsconfig/package.json\" \"../bundle/package.json\""
   },
   "pinDependencies": {
     "@types/react": [
@@ -75,11 +73,17 @@
       "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
     ]
   },
+  "localDependencies": {
+    "@msinternal/botframework-webchat-styles": "development",
+    "@msinternal/botframework-webchat-tsconfig": "development",
+    "botframework-webchat": "production"
+  },
   "devDependencies": {
     "@msinternal/botframework-webchat-styles": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
     "@types/math-random": "^1.0.2",
     "@types/node": "^24.1.0",
+    "concurrently": "^9.2.0",
     "tsup": "^8.5.0",
     "typescript": "~5.8.3"
   },

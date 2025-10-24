@@ -9,10 +9,14 @@
     "node": ">= 14.0.0"
   },
   "scripts": {
-    "build": "npm run build:esbuild:esm && npm run build:esbuild:iife",
-    "build:esbuild:base": "esbuild test-page-object=./src/index.js --bundle --define:define=undefined --loader:.js=jsx --minify --outdir=dist --sourcemap --target=chrome100",
-    "build:esbuild:esm": "npm run build:esbuild:base -- --format=esm --out-extension:.js=.mjs",
-    "build:esbuild:iife": "npm run build:esbuild:base -- --format=iife",
+    "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
+    "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
+    "build:pre:local-dependencies": "../../../scripts/npm/build-local-dependencies.sh",
+    "build:pre:watch": "../../../scripts/npm/build-watch.sh",
+    "build:run": "concurrently --prefix-colors \"auto\" \"npm:build:run:esbuild:esm\" \"npm:build:run:esbuild:iife\" && touch ./package.json",
+    "build:run:esbuild:base": "esbuild test-page-object=./src/index.js --bundle --define:define=undefined --loader:.js=jsx --minify --outdir=dist --sourcemap --target=chrome100",
+    "build:run:esbuild:esm": "npm run build:run:esbuild:base -- --format=esm --out-extension:.js=.mjs",
+    "build:run:esbuild:iife": "npm run build:run:esbuild:base -- --format=iife",
     "bump": "npm run bump:prod && npm run bump:dev && (npm audit fix || exit 0)",
     "bump:dev": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.devDependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install $PACKAGES_TO_BUMP || true",
     "bump:prod": "PACKAGES_TO_BUMP=$(cat package.json | jq -r '(.pinDependencies // {}) as $P | (.localDependencies // {} | keys) as $L | (.dependencies // {}) | to_entries | map(select(.key as $K | $L | contains([$K]) | not)) | map(.key + \"@\" + ($P[.key] // [\"latest\"])[0]) | join(\" \")') && [ ! -z \"$PACKAGES_TO_BUMP\" ] && npm install --save-exact $PACKAGES_TO_BUMP || true",
@@ -21,12 +25,19 @@
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "../../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
-    "start:esbuild:esm": "npm run build:esbuild:esm -- --watch --watch-delay=200",
-    "start:esbuild:iife": "npm run build:esbuild:iife -- --watch --watch-delay=200"
+    "start": "../../../scripts/npm/notify-build.sh \"src\""
+  },
+  "pinDependencies": {
+    "jest-mock": [
+      "28",
+      ">= 29 will pull in Node.js dependencies"
+    ]
   },
   "localDependencies": {},
-  "pinDependencies": {},
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "esbuild": "^0.25.8"
+  },
   "dependencies": {
     "base64-arraybuffer": "1.0.2",
     "bent": "7.3.12",
@@ -39,9 +50,5 @@
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "prop-types": "15.8.1",
     "simple-update-in": "2.2.0"
-  },
-  "devDependencies": {
-    "concurrently": "^9.2.0",
-    "esbuild": "^0.25.8"
   }
 }
