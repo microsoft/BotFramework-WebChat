@@ -12,14 +12,14 @@ const {
 
 const root = resolve(rootPackageJSONPath, '../');
 
-const watchPaths = ['./src/'];
+const watchPaths = ['./src/', resolve(root, './packages/tsconfig/package.json')];
 
 for (const [packageName] of Object.entries(currentPackageJSON.localDependencies || {})) {
   for (const workspace of workspaces) {
     const packageJSON = await readPackage({ cwd: resolve(root, workspace) });
 
     if (packageJSON.name === packageName) {
-      watchPaths.push(relative(cwd, resolve(root, workspace, 'package.json')));
+      watchPaths.push(resolve(root, workspace, 'package.json'));
     }
   }
 }
@@ -40,5 +40,5 @@ for (const [packageName] of Object.entries(currentPackageJSON.localDependencies 
 // );
 
 console.log(
-  `${relative(cwd, resolve(root, './scripts/npm/notify-build.sh'))} ${watchPaths.map(path => `"${path}"`).join(' ')}`
+  `${relative(cwd, resolve(root, './scripts/npm/notify-build.sh'))} ${watchPaths.map(path => `"${relative(cwd, path)}"`).join(' ')}`
 );

@@ -18,7 +18,7 @@ trap 'kill $(jobs -p)' EXIT
 
 # Monitor all directories/files and write events to the queue
 # "close_write" is for touch
-inotifywait --event close_write,create,delete,modify,move --monitor --outfile "$EVENT_QUEUE" --recursive ../tsconfig/package.json "${WATCH_DIRS[@]}" &
+inotifywait --event close_write,create,delete,modify,move --monitor --outfile "$EVENT_QUEUE" --quiet --recursive "${WATCH_DIRS[@]}" &
 
 while true; do
   if [ -s "$EVENT_QUEUE" ]; then

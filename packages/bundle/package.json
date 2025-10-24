@@ -118,7 +118,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
-    "start": "../../scripts/npm/notify-build.sh \"./src/\" \"../repack/adaptivecards/package.json\" \"../repack/base64-js/package.json\" \"../repack/botframework-directlinejs/package.json\" \"../base/package.json\" \"../experience-chat-launcher/package.json\" \"../react-valibot/package.json\" \"../tsconfig/package.json\" \"../isomorphic-react/package.json\" \"../isomorphic-react-dom/package.json\" \"../repack/microsoft-cognitiveservices-speech-sdk/package.json\" \"../repack/object-assign/package.json\" \"../repack/react/package.json\" \"../repack/react@baseline/package.json\" \"../repack/react-dom/package.json\" \"../repack/react-dom@baseline/package.json\" \"../repack/react-dom@umd/package.json\" \"../repack/react-is/package.json\" \"../repack/react@umd/package.json\" \"../directlinespeech/package.json\" \"../api/package.json\" \"../component/package.json\" \"../core/package.json\"",
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../tsconfig/package.json\" \"../repack/adaptivecards/package.json\" \"../repack/base64-js/package.json\" \"../repack/botframework-directlinejs/package.json\" \"../base/package.json\" \"../react-valibot/package.json\" \"../tsconfig/package.json\" \"../isomorphic-react/package.json\" \"../isomorphic-react-dom/package.json\" \"../repack/microsoft-cognitiveservices-speech-sdk/package.json\" \"../repack/object-assign/package.json\" \"../repack/react/package.json\" \"../repack/react@baseline/package.json\" \"../repack/react-dom/package.json\" \"../repack/react-dom@baseline/package.json\" \"../repack/react-dom@umd/package.json\" \"../repack/react-is/package.json\" \"../repack/react@umd/package.json\" \"../directlinespeech/package.json\" \"../api/package.json\" \"../component/package.json\" \"../core/package.json\"",
     "test:tsd": "tsd"
   },
   "pinDependencies": {
@@ -152,7 +152,6 @@
     "@msinternal/base64-js": "development",
     "@msinternal/botframework-directlinejs": "development",
     "@msinternal/botframework-webchat-base": "development",
-    "@msinternal/botframework-webchat-experience-chat-launcher": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "@msinternal/botframework-webchat-tsconfig": "development",
     "@msinternal/isomorphic-react": "development",
