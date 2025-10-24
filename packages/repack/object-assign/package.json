@@ -20,7 +20,7 @@
     "eslint": "npm run precommit",
     "precommit": "npm run precommit:eslint -- src",
     "precommit:eslint": "eslint --report-unused-disable-directives --max-warnings 0",
-    "start": "../../../scripts/npm/notify-build.sh \"src\" \"../../..\""
+    "start": "../../../scripts/npm/notify-build.sh \"src\""
   },
   "pinDependencies": {},
   "localDependencies": {}

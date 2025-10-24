@@ -12,7 +12,7 @@ const {
 
 const root = resolve(rootPackageJSONPath, '../');
 
-const watchPaths = new Set(['./src/', resolve(root)]);
+const watchPaths = new Set(['./src/']);
 
 for (const [packageName] of Object.entries(currentPackageJSON.localDependencies || {})) {
   for (const workspace of workspaces) {
