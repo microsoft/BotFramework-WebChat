@@ -53,6 +53,9 @@
   "pinDependencies": {},
   "localDependencies": {},
   "devDependencies": {
+    "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
+    "@testduet/given-when-then": "^0.1.1-main.28754e6",
+    "type-fest": "^4.41.0",
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
