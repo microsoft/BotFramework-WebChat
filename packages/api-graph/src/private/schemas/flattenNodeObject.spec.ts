@@ -101,7 +101,8 @@ scenario('flattenNodeObject()', bdd => {
     .oneOf([
       ['a string', () => 'abc'], // Literal cannot be flattened, only object is allowed.
       ['an array of string', () => ['abc'] as any], // Array cannot be flattened, only object is allowed.
-      ['a MessageChannel object', () => new MessageChannel()] // Complex object cannot be flattened, only plain object is allowed.
+      ['a MessageChannel object', () => new MessageChannel()], // Complex object cannot be flattened, only plain object is allowed.
+      ['an undefined value', () => undefined] // Undefined cannot be flattened, only null is allowed.
     ])
     .when('catching exception from the call', (value): any => {
       try {
