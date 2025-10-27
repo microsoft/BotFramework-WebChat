@@ -10,6 +10,16 @@ import type { Literal } from './Literal';
 import { nodeObject } from './NodeObject';
 import { nodeReference } from './NodeReference';
 
+beforeEach(() => {
+  jest.spyOn(console, 'error');
+  jest.spyOn(console, 'warn');
+});
+
+afterEach(() => {
+  expect(console.error).not.toHaveBeenCalled();
+  expect(console.warn).not.toHaveBeenCalled();
+});
+
 scenario('flattenNodeObject()', bdd => {
   bdd.given
     .oneOf<readonly [{ value: Literal }, { value: Literal }]>([
