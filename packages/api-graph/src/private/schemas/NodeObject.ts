@@ -1,17 +1,32 @@
-import { array, lazy, objectWithRest, pipe, transform, union, type ErrorMessage, type GenericSchema } from 'valibot';
+import {
+  array,
+  lazy,
+  objectWithRest,
+  optional,
+  pipe,
+  string,
+  transform,
+  union,
+  type ErrorMessage,
+  type GenericSchema
+} from 'valibot';
 
 import identifier, { type Identifier } from './Identifier';
 import { literal, type Literal } from './Literal';
 import freeze from './private/freeze';
 
 type Input = {
-  '@id': Identifier;
+  '@context'?: string | undefined;
+  '@id'?: Identifier | undefined;
+  '@type'?: string | undefined;
 } & {
   [key: string]: Literal | Input | (Literal | Input)[];
 };
 
 type NodeObject = {
-  readonly '@id': Identifier;
+  readonly '@context'?: string | undefined;
+  readonly '@id'?: Identifier | undefined;
+  readonly '@type'?: string | undefined;
 } & {
   readonly [key: string]: readonly (Literal | NodeObject)[];
 };
@@ -29,18 +44,22 @@ function nodeObject<TMessage extends ErrorMessage<any>>(
 ): GenericSchema<Input, NodeObject> {
   return pipe(
     objectWithRest(
-      { '@id': identifier() },
+      {
+        '@context': optional(string()),
+        '@id': optional(identifier()),
+        '@type': optional(string())
+      },
       union([
-        pipe(
-          literal(),
-          transform<Literal, readonly Literal[]>(value => Object.freeze([value]))
-        ),
+        pipe(array(lazy(() => nodeObject())), freeze()),
         pipe(array(literal()), freeze()),
         pipe(
           lazy(() => nodeObject()),
           transform<NodeObject, readonly NodeObject[]>(value => Object.freeze([value]))
         ),
-        pipe(array(lazy(() => nodeObject())), freeze())
+        pipe(
+          literal(),
+          transform<Literal, readonly Literal[]>(value => Object.freeze([value]))
+        )
       ]),
       message
     ),
