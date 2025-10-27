@@ -28,7 +28,7 @@ type ExpandedFlatNodeObject = InferOutput<typeof expandedFlatNodeObjectSchema>;
  * - `@type` is expanded as array of string.
  *
  * @param node
- * @returns
+ * @returns A node object with property values expanded.
  */
 function expandArray(node: FlattenedNodeObject): ExpandedFlatNodeObject {
   const propertyMap = new Map<string, readonly (Literal | NodeReference)[]>();

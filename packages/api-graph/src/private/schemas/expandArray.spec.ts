@@ -88,4 +88,18 @@ scenario('expandArray', bdd => {
         yield: ['1 cocktail']
       });
     });
+
+  bdd
+    .given(
+      'a JSON-LD object with @type of type array',
+      () =>
+        ({
+          '@id': '_:b1',
+          '@type': ['HowTo', 'Message']
+        }) satisfies FlattenedNodeObject
+    )
+    .when('expnaded', value => expandArray(value))
+    .then('should return both types', (_, actual) => {
+      expect(actual['@type']).toEqual(['HowTo', 'Message']);
+    });
 });
