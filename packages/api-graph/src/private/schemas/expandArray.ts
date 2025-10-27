@@ -19,6 +19,17 @@ const expandedFlatNodeObjectSchema = pipe(
 
 type ExpandedFlatNodeObject = InferOutput<typeof expandedFlatNodeObjectSchema>;
 
+/**
+ * Expands `@type` and all property values of a flat node object into array.
+ *
+ * Notes:
+ *
+ * - `@context` and `@id` are not expanded, they will be kept as string.
+ * - `@type` is expanded as array of string.
+ *
+ * @param node
+ * @returns
+ */
 function expandArray(node: FlattenedNodeObject): ExpandedFlatNodeObject {
   const propertyMap = new Map<string, readonly (Literal | NodeReference)[]>();
   let context: string | undefined;

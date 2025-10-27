@@ -116,6 +116,7 @@ type FlattenNodeObjectReturnValue = {
  *
  * Notes:
  *
+ * - All nodes has `@id` and are linked without orphans.
  * - Does not completely strictly follow JSON-LD flattening strategy.
  *    - The result is parseable as JSON-LD, just not "perfectly flattened JSON-LD".
  * - Does not support every syntax in JSON-LD, such as `@value`.
