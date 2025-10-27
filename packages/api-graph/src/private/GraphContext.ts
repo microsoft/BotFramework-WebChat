@@ -5,7 +5,7 @@ import { nodeObject } from './schemas/NodeObject';
 
 const graphContextSchema = pipe(
   object({
-    objects: pipe(map(string(), nodeObject()), readonly())
+    graph: pipe(map(string(), nodeObject()), readonly())
   }),
   readonly()
 );
@@ -13,7 +13,7 @@ const graphContextSchema = pipe(
 type GraphContextType = InferOutput<typeof graphContextSchema>;
 
 const GraphContext = createContext<GraphContextType>({
-  objects: Object.freeze(new Map())
+  graph: Object.freeze(new Map())
 });
 
 function useGraphContext(): GraphContextType {
