@@ -1,32 +1,35 @@
 import { object, optional, parse, safeParse } from 'valibot';
+
 import type { FlattenedNodeObject, FlattenedNodeObjectPropertyValue } from './FlattenedNodeObject';
 import flattenedNodeObject from './FlattenedNodeObject';
 import identifier from './Identifier';
 import { literal, type Literal } from './Literal';
 import { nodeReference, type NodeReference } from './NodeReference';
 
+type FlattenNodeObjectInput = Literal | (object & { '@id'?: string });
+
 function flattenNodeObject_<T extends Literal>(
   input: T,
   graphMap: Map<string, FlattenedNodeObject>,
-  refMap: Map<object, NodeReference>
+  refMap: Map<FlattenNodeObjectInput, NodeReference>
 ): T;
 
 function flattenNodeObject_(
-  input: object,
+  input: FlattenNodeObjectInput,
   graphMap: Map<string, FlattenedNodeObject>,
-  refMap: Map<object, NodeReference>
+  refMap: Map<FlattenNodeObjectInput, NodeReference>
 ): NodeReference;
 
 function flattenNodeObject_(
-  input: Literal | object,
+  input: FlattenNodeObjectInput | Literal,
   graphMap: Map<string, FlattenedNodeObject>,
-  refMap: Map<object, NodeReference>
+  refMap: Map<FlattenNodeObjectInput, NodeReference>
 ): Literal | NodeReference;
 
 function flattenNodeObject_(
-  input: Literal | object,
+  input: FlattenNodeObjectInput | Literal,
   graphMap: Map<string, FlattenedNodeObject>,
-  refMap: Map<object, NodeReference>
+  refMap: Map<FlattenNodeObjectInput, NodeReference>
 ): Literal | NodeReference {
   const parseAsLiteralResult = safeParse(literal(), input);
 
@@ -99,10 +102,29 @@ function flattenNodeObject_(
   return nodeRef;
 }
 
-export default function flattenNodeObject(input: object): {
+type FlattenNodeObjectReturnValue = {
+  /** A graph consists of one or more objects. */
   readonly graph: readonly FlattenedNodeObject[];
+  /** A node reference object of the input. */
   readonly output: NodeReference;
-} {
+};
+
+/**
+ * Flattens a node object into a graph of one or more objects.
+ *
+ * The output graph is JSON-LD compliant, however, it is not strictly flattened.
+ *
+ * Notes:
+ *
+ * - Does not completely strictly follow JSON-LD flattening strategy.
+ *    - The result is parseable as JSON-LD, just not "perfectly flattened JSON-LD".
+ * - Does not support every syntax in JSON-LD, such as `@value`.
+ * - Node references are *not* flattened to string such as `"_:b1"`, instead, it will be kept as `{ "@id": "_:b1" }`
+ *
+ * @param input Boolean, number, null, string, or plain object with or without `@id`.
+ * @returns {FlattenNodeObjectReturnValue} A graph and a node reference.
+ */
+export default function flattenNodeObject(input: object): FlattenNodeObjectReturnValue {
   parse(object({}), input);
 
   const graph = new Map<string, FlattenedNodeObject>();
