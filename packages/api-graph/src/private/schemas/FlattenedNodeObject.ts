@@ -27,9 +27,9 @@ function flattenedNodeObject<TMessage extends ErrorMessage<any>>(message?: TMess
   return pipe(
     objectWithRest(
       {
-        '@context': optional(string()),
+        '@context': optional(string('Complex @context is not supported in our implementation')),
         '@id': identifier(),
-        '@type': optional(string())
+        '@type': optional(union([array(string()), string()]))
       },
       flattenedNodeObjectPropertyValue(),
       message
