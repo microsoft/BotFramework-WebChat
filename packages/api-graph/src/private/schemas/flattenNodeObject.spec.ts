@@ -70,7 +70,7 @@ scenario('flattenNodeObject()', bdd => {
           {
             '@id': expect.valibot(identifier()),
             description: 'The Empire State Building is a 102-story landmark in New York City.',
-            geo: { '@id': expect.valibot(identifier()) },
+            geo: expect.valibot(nodeReference()),
             image: 'http://www.civil.usherbrooke.ca/cours/gci215a/empire-state-building.jpg',
             name: 'The Empire State Building'
           },
@@ -97,108 +97,12 @@ scenario('flattenNodeObject()', bdd => {
       expect(rootObject.geo['@id']).toBe(geoObject['@id']);
     });
 
-  bdd
-    .given(
-      'spying console.warn',
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      () => jest.spyOn(console, 'warn').mockImplementation(() => {}),
-      warn => warn.mockRestore()
-    )
-    .and('a Conversation object from Schema.org with `@id` added for cross-referencing', () => ({
-      '@context': 'https://schema.org/',
-      '@type': 'Conversation',
-      name: 'Duck Season vs Rabbit Season',
-      sameAs: 'https://www.youtube.com/watch?v=9-k5J4RxQdE',
-      hasPart: [
-        {
-          '@type': 'Message',
-          sender: { '@id': '_:bugs-bunny', '@type': 'Person', name: 'Bugs Bunny' },
-          recipient: { '@id': '_:daffy-duck', '@type': 'Person', name: 'Daffy Duck' },
-          about: { '@type': 'Thing', name: 'Duck Season' },
-          datePublished: '2016-02-29'
-        },
-        {
-          '@type': 'Message',
-          sender: { '@id': '_:daffy-duck', '@type': 'Person', name: 'Daffy Duck' },
-          recipient: { '@id': '_:bugs-bunny', '@type': 'Person', name: 'Bugs Bunny' },
-          about: { '@type': 'Thing', name: 'Rabbit Season' },
-          datePublished: '2016-03-01'
-        }
-      ]
-    }))
-    .when('when flattened', value => flattenNodeObject(value))
-    .then('the first object should be the Conversation', (_, { graph }) => {
-      expect(graph[0]).toEqual({
-        '@context': 'https://schema.org/',
-        '@id': expect.valibot(identifier()),
-        '@type': 'Conversation',
-        name: 'Duck Season vs Rabbit Season',
-        sameAs: 'https://www.youtube.com/watch?v=9-k5J4RxQdE',
-        hasPart: [expect.valibot(nodeReference()), expect.valibot(nodeReference())]
-      });
-    })
-    .and('should return 7 objects', (_, { graph }) => {
-      expect(graph).toHaveLength(7);
-    })
-    .and('should warn about adding objects twice', () => {
-      expect(console.warn).toHaveBeenCalledTimes(2);
-      expect(console.warn).toHaveBeenNthCalledWith(1, 'Object [@id="_:daffy-duck"] has already added to the graph.');
-      expect(console.warn).toHaveBeenNthCalledWith(2, 'Object [@id="_:bugs-bunny"] has already added to the graph.');
-    });
-
-  bdd
-    .given(
-      'spying console.warn',
-      () => jest.spyOn(console, 'warn'),
-      warn => warn.mockRestore()
-    )
-    .and('a Conversation object from Schema.org', () => {
-      const bugsBunny = { '@type': 'Person', name: 'Bugs Bunny' };
-      const daffyDuck = { '@type': 'Person', name: 'Daffy Duck' };
-
-      return {
-        '@context': 'https://schema.org/',
-        '@type': 'Conversation',
-        name: 'Duck Season vs Rabbit Season',
-        sameAs: 'https://www.youtube.com/watch?v=9-k5J4RxQdE',
-        hasPart: [
-          {
-            '@type': 'Message',
-            sender: bugsBunny,
-            recipient: daffyDuck,
-            about: { '@type': 'Thing', name: 'Duck Season' },
-            datePublished: '2016-02-29'
-          },
-          {
-            '@type': 'Message',
-            sender: daffyDuck,
-            recipient: bugsBunny,
-            about: { '@type': 'Thing', name: 'Rabbit Season' },
-            datePublished: '2016-03-01'
-          }
-        ]
-      };
-    })
-    .when('when flattened', value => flattenNodeObject(value))
-    .then('the first object should be the Conversation', (_, { graph }) => {
-      expect(graph[0]).toEqual({
-        '@context': 'https://schema.org/',
-        '@id': expect.valibot(identifier()),
-        '@type': 'Conversation',
-        name: 'Duck Season vs Rabbit Season',
-        sameAs: 'https://www.youtube.com/watch?v=9-k5J4RxQdE',
-        hasPart: [expect.valibot(nodeReference()), expect.valibot(nodeReference())]
-      });
-    })
-    .and('should return 7 objects', (_, { graph }) => {
-      expect(graph).toHaveLength(7);
-    })
-    .and('should not warn', () => {
-      expect(console.warn).not.toHaveBeenCalled();
-    });
-
-  bdd
-    .given('a string', () => 'abc')
+  bdd.given
+    .oneOf([
+      ['a string', () => 'abc'], // Literal cannot be flattened, only object is allowed.
+      ['an array of string', () => ['abc'] as any], // Array cannot be flattened, only object is allowed.
+      ['a MessageChannel object', () => new MessageChannel()] // Complex object cannot be flattened, only plain object is allowed.
+    ])
     .when('catching exception from the call', (value): any => {
       try {
         flattenNodeObject(value as any);

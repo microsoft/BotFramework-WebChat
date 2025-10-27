@@ -37,7 +37,8 @@ function flattenNodeObject_(
   // This is for TypeScript only because safeParse().success is not a type predicate.
   input = input as object;
 
-  if (!safeParse(object({}), input).success) {
+  // Array is allowed by valibot.object({}), we need to check for plain object first.
+  if (Object.prototype.toString.call(input) !== '[object Object]' || !safeParse(object({}), input).success) {
     const error = new Error('Only JSON-LD literal and plain object can be flattened');
 
     error.cause = { input };
