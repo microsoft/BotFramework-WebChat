@@ -1,6 +1,6 @@
 import { array, objectWithRest, optional, parse, pipe, readonly, string, union, type InferOutput } from 'valibot';
 
-import type { FlattenedNodeObject } from './FlattenedNodeObject';
+import type { FlatNodeObject } from './FlatNodeObject';
 import identifier from './Identifier';
 import { literal, type Literal } from './Literal';
 import { nodeReference, type NodeReference } from './NodeReference';
@@ -30,7 +30,7 @@ type ExpandedFlatNodeObject = InferOutput<typeof expandedFlatNodeObjectSchema>;
  * @param node
  * @returns A node object with property values expanded.
  */
-function expandArray(node: FlattenedNodeObject): ExpandedFlatNodeObject {
+function expandArray(node: FlatNodeObject): ExpandedFlatNodeObject {
   const propertyMap = new Map<string, readonly (Literal | NodeReference)[]>();
   let context: string | undefined;
   let id: string | undefined;
