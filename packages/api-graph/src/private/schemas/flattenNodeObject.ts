@@ -124,7 +124,7 @@ type FlattenNodeObjectReturnValue = {
  * @param input Boolean, number, null, string, or plain object with or without `@id`.
  * @returns {FlattenNodeObjectReturnValue} A graph and a node reference.
  */
-export default function flattenNodeObject(input: object): FlattenNodeObjectReturnValue {
+function flattenNodeObject(input: FlattenNodeObjectInput): FlattenNodeObjectReturnValue {
   parse(object({}), input);
 
   const graph = new Map<string, FlatNodeObject>();
@@ -133,3 +133,6 @@ export default function flattenNodeObject(input: object): FlattenNodeObjectRetur
 
   return { graph: Object.freeze(Array.from(graph.values())), output };
 }
+
+export default flattenNodeObject;
+export { type FlattenNodeObjectInput, type FlattenNodeObjectReturnValue };
