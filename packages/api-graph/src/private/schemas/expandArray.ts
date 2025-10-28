@@ -9,7 +9,7 @@ const expandedFlatNodeObjectSchema = pipe(
   objectWithRest(
     {
       '@context': optional(string()),
-      '@id': optional(identifier()),
+      '@id': identifier(),
       '@type': optional(array(string()))
     },
     array(union([literal(), nodeReference()]))
