@@ -4,16 +4,14 @@ import { literal } from './Literal';
 import { nodeReference } from './NodeReference';
 import freeze from './private/freeze';
 
-// type FlattenedNodeObjectPropertyValue = Literal | NodeReference | readonly (Literal | NodeReference)[];
-
-function flattenedNodeObjectPropertyValue<TMessage extends ErrorMessage<any>>(message?: TMessage | undefined) {
+function flatNodeObjectPropertyValue<TMessage extends ErrorMessage<any>>(message?: TMessage | undefined) {
   return union(
     [pipe(array(union([literal(), nodeReference()])), freeze()), pipe(literal()), pipe(nodeReference())],
     message
   );
 }
 
-type FlattenedNodeObjectPropertyValue = InferOutput<ReturnType<typeof flattenedNodeObjectPropertyValue>>;
+type FlatNodeObjectPropertyValue = InferOutput<ReturnType<typeof flatNodeObjectPropertyValue>>;
 
 /**
  * Schema of JSON-LD node object.
@@ -23,7 +21,7 @@ type FlattenedNodeObjectPropertyValue = InferOutput<ReturnType<typeof flattenedN
  * @param message
  * @returns
  */
-function flattenedNodeObject<TMessage extends ErrorMessage<any>>(message?: TMessage | undefined) {
+function flatNodeObject<TMessage extends ErrorMessage<any>>(message?: TMessage | undefined) {
   return pipe(
     objectWithRest(
       {
@@ -31,14 +29,14 @@ function flattenedNodeObject<TMessage extends ErrorMessage<any>>(message?: TMess
         '@id': identifier(),
         '@type': optional(union([array(string()), string()]))
       },
-      flattenedNodeObjectPropertyValue(),
+      flatNodeObjectPropertyValue(),
       message
     ),
     freeze()
   );
 }
 
-type FlattenedNodeObject = InferOutput<ReturnType<typeof flattenedNodeObject>>;
+type FlatNodeObject = InferOutput<ReturnType<typeof flatNodeObject>>;
 
-export default flattenedNodeObject;
-export { flattenedNodeObjectPropertyValue, type FlattenedNodeObject, type FlattenedNodeObjectPropertyValue };
+export default flatNodeObject;
+export { flatNodeObjectPropertyValue, type FlatNodeObject, type FlatNodeObjectPropertyValue };

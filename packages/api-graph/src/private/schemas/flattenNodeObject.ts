@@ -1,7 +1,6 @@
 import { object, optional, parse, safeParse } from 'valibot';
 
-import type { FlattenedNodeObject, FlattenedNodeObjectPropertyValue } from './FlattenedNodeObject';
-import flattenedNodeObject from './FlattenedNodeObject';
+import flatNodeObject, { type FlatNodeObject, type FlatNodeObjectPropertyValue } from './FlatNodeObject';
 import identifier from './Identifier';
 import { literal, type Literal } from './Literal';
 import { nodeReference, type NodeReference } from './NodeReference';
@@ -10,25 +9,25 @@ type FlattenNodeObjectInput = Literal | (object & { '@id'?: string });
 
 function flattenNodeObject_<T extends Literal>(
   input: T,
-  graphMap: Map<string, FlattenedNodeObject>,
+  graphMap: Map<string, FlatNodeObject>,
   refMap: Map<FlattenNodeObjectInput, NodeReference>
 ): T;
 
 function flattenNodeObject_(
   input: FlattenNodeObjectInput,
-  graphMap: Map<string, FlattenedNodeObject>,
+  graphMap: Map<string, FlatNodeObject>,
   refMap: Map<FlattenNodeObjectInput, NodeReference>
 ): NodeReference;
 
 function flattenNodeObject_(
   input: FlattenNodeObjectInput | Literal,
-  graphMap: Map<string, FlattenedNodeObject>,
+  graphMap: Map<string, FlatNodeObject>,
   refMap: Map<FlattenNodeObjectInput, NodeReference>
 ): Literal | NodeReference;
 
 function flattenNodeObject_(
   input: FlattenNodeObjectInput | Literal,
-  graphMap: Map<string, FlattenedNodeObject>,
+  graphMap: Map<string, FlatNodeObject>,
   refMap: Map<FlattenNodeObjectInput, NodeReference>
 ): Literal | NodeReference {
   const parseAsLiteralResult = safeParse(literal(), input);
@@ -69,10 +68,10 @@ function flattenNodeObject_(
   // @ts-expect-error
   graphMap.set(id, undefined);
 
-  const targetMap = new Map<string, FlattenedNodeObjectPropertyValue>();
+  const targetMap = new Map<string, FlatNodeObjectPropertyValue>();
 
   for (const [key, value] of Object.entries(input)) {
-    let parsedValue: FlattenedNodeObjectPropertyValue;
+    let parsedValue: FlatNodeObjectPropertyValue;
 
     if (Array.isArray(value)) {
       const resultArray: (Literal | NodeReference)[] = [];
@@ -93,7 +92,7 @@ function flattenNodeObject_(
 
   targetMap.set('@id', id);
 
-  const output: FlattenedNodeObject = parse(flattenedNodeObject(), Object.fromEntries(Array.from(targetMap)));
+  const output: FlatNodeObject = parse(flatNodeObject(), Object.fromEntries(Array.from(targetMap)));
   const nodeRef = parse(nodeReference(), Object.freeze({ '@id': id }));
 
   graphMap.set(id, output);
@@ -104,7 +103,7 @@ function flattenNodeObject_(
 
 type FlattenNodeObjectReturnValue = {
   /** A graph consists of one or more objects. */
-  readonly graph: readonly FlattenedNodeObject[];
+  readonly graph: readonly FlatNodeObject[];
   /** A node reference object of the input. */
   readonly output: NodeReference;
 };
@@ -128,7 +127,7 @@ type FlattenNodeObjectReturnValue = {
 export default function flattenNodeObject(input: object): FlattenNodeObjectReturnValue {
   parse(object({}), input);
 
-  const graph = new Map<string, FlattenedNodeObject>();
+  const graph = new Map<string, FlatNodeObject>();
   const refMap = new Map<object, NodeReference>();
   const output = flattenNodeObject_(input, graph, refMap);
 
