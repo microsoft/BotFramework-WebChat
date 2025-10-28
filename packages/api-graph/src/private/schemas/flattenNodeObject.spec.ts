@@ -4,10 +4,10 @@ import { array, assert, length, object, pipe } from 'valibot';
 
 import blankNodeIdentifier from './BlankNodeIdentifier';
 import './expectExtendValibot';
+import flatNodeObject from './FlatNodeObject';
 import flattenNodeObject from './flattenNodeObject';
 import identifier from './Identifier';
 import type { Literal } from './Literal';
-import { nodeObject } from './NodeObject';
 import { nodeReference } from './NodeReference';
 
 beforeEach(() => {
@@ -46,7 +46,7 @@ scenario('flattenNodeObject()', bdd => {
       assert(blankNodeIdentifier(), output['@id']);
     })
     .and('should return a graph with one node object', (_, { graph }) => {
-      assert(pipe(array(nodeObject()), length(1)), graph);
+      assert(pipe(array(flatNodeObject()), length(1)), graph);
     })
     .and('should return a graph with the node object', ([_, expected], { graph, output }) => {
       expect(graph).toEqual([{ ...expected, '@id': output['@id'] }]);
@@ -102,7 +102,7 @@ scenario('flattenNodeObject()', bdd => {
 
       const geoObject = graph.find(object => object !== rootObject);
 
-      assert(nodeObject(), geoObject);
+      assert(flatNodeObject(), geoObject);
 
       expect(rootObject.geo['@id']).toBe(geoObject['@id']);
     });
