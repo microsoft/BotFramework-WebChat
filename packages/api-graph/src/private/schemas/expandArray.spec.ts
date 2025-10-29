@@ -1,7 +1,7 @@
 import { scenario } from '@testduet/given-when-then';
 
 import expandArray from './expandArray';
-import type { FlattenedNodeObject } from './FlattenedNodeObject';
+import type { FlatNodeObject } from './FlatNodeObject';
 
 scenario('expandArray', bdd => {
   bdd
@@ -16,7 +16,7 @@ scenario('expandArray', bdd => {
           jobTitle: 'Professor',
           telephone: '(425) 123-4567',
           url: 'http://www.janedoe.com'
-        }) satisfies FlattenedNodeObject
+        }) satisfies FlatNodeObject
     )
     .when('expanded', value => expandArray(value))
     .then('should wrap @type and property values in array', (_, actual) => {
@@ -41,7 +41,7 @@ scenario('expandArray', bdd => {
           jobTitle: 'Professor',
           telephone: '(425) 123-4567',
           url: 'http://www.janedoe.com'
-        }) satisfies FlattenedNodeObject
+        }) satisfies FlatNodeObject
     )
     .when('expanded', value => expandArray(value))
     .then('should wrap @type and property values in array', (_, actual) => {
@@ -70,7 +70,7 @@ scenario('expandArray', bdd => {
             '1/2 cup club soda'
           ],
           yield: '1 cocktail'
-        }) satisfies FlattenedNodeObject
+        }) satisfies FlatNodeObject
     )
     .when('expanded', value => expandArray(value))
     .then('should wrap property values in array', (_, actual) => {
@@ -96,7 +96,7 @@ scenario('expandArray', bdd => {
         ({
           '@id': '_:b1',
           '@type': ['HowTo', 'Message']
-        }) satisfies FlattenedNodeObject
+        }) satisfies FlatNodeObject
     )
     .when('expnaded', value => expandArray(value))
     .then('should return both types', (_, actual) => {
