@@ -43,28 +43,6 @@ class Graph extends EventTarget {
     this.#graph.set(safeNode['@id'], safeNode);
   }
 
-  observe(): AsyncIterator<GraphChangeEvent, any, any> {
-    const observerControllerSet = this.#observerControllerSet;
-    let thisController: ReadableStreamDefaultController<GraphChangeEvent>;
-
-    const stream = new ReadableStream<GraphChangeEvent>({
-      cancel() {
-        // Iterator.cancel() will call cancel().
-        observerControllerSet.delete(thisController);
-      },
-      start(controller) {
-        thisController = controller;
-        observerControllerSet.add(controller);
-      }
-    });
-
-    return stream.values();
-  }
-
-  snapshot() {
-    return new Map(this.#graph);
-  }
-
   // eslint-disable-next-line complexity
   #setTriplet(
     subjectId: Identifier,
@@ -157,6 +135,28 @@ class Graph extends EventTarget {
     }
 
     return Object.freeze(affectedIds);
+  }
+
+  observe(): AsyncIterator<GraphChangeEvent, any, any> {
+    const observerControllerSet = this.#observerControllerSet;
+    let thisController: ReadableStreamDefaultController<GraphChangeEvent>;
+
+    const stream = new ReadableStream<GraphChangeEvent>({
+      cancel() {
+        // Iterator.cancel() will call cancel().
+        observerControllerSet.delete(thisController);
+      },
+      start(controller) {
+        thisController = controller;
+        observerControllerSet.add(controller);
+      }
+    });
+
+    return stream.values();
+  }
+
+  snapshot() {
+    return new Map(this.#graph);
   }
 
   /**
