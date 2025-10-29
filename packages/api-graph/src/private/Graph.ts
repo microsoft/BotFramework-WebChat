@@ -158,9 +158,14 @@ class Graph extends EventTarget {
     return Object.freeze(affectedIds);
   }
 
-  // eslint-disable-next-line complexity
+  /**
+   * Upserts a list of nodes in a transaction. Will trigger observers once upsert has completed.
+   *
+   * @param nodes Nodes to upsert.
+   */
   upsert(...nodes: readonly SlantNode[]) {
     const affectedIdSet: Set<Identifier> = new Set();
+    const markIdAsAffected = affectedIdSet.add.bind(affectedIdSet);
 
     for (const node of nodes) {
       const id = node['@id'];
@@ -174,20 +179,22 @@ class Graph extends EventTarget {
       const existingNode = this.#graph.get(id);
 
       if (existingNode) {
-        for (const existingChildId of nodeReferenceListToIdentifierSet(existingNode.hasPart || []).difference(
+        const removedHasPartIdSet = nodeReferenceListToIdentifierSet(existingNode.hasPart || []).difference(
           nodeReferenceListToIdentifierSet(node.hasPart || [])
-        )) {
-          for (const id of this.#setEdge(existingNode['@id'], 'hasPart', existingChildId, 'delete')) {
-            affectedIdSet.add(id);
-          }
+        );
+
+        for (const removedHasPartId of removedHasPartIdSet) {
+          this.#setEdge(existingNode['@id'], 'hasPart', removedHasPartId, 'delete').values().forEach(markIdAsAffected);
         }
 
-        for (const existingParentId of nodeReferenceListToIdentifierSet(existingNode.isPartOf || []).difference(
+        const removedIsPartOfIdSet = nodeReferenceListToIdentifierSet(existingNode.isPartOf || []).difference(
           nodeReferenceListToIdentifierSet(node.isPartOf || [])
-        )) {
-          for (const id of this.#setEdge(existingNode['@id'], 'isPartOf', existingParentId, 'delete')) {
-            affectedIdSet.add(id);
-          }
+        );
+
+        for (const removedIsPartOfId of removedIsPartOfIdSet) {
+          this.#setEdge(existingNode['@id'], 'isPartOf', removedIsPartOfId, 'delete')
+            .values()
+            .forEach(markIdAsAffected);
         }
       }
 
@@ -198,15 +205,11 @@ class Graph extends EventTarget {
       const nodeId = node['@id'];
 
       for (const { '@id': childId } of node.hasPart || []) {
-        for (const id of this.#setEdge(nodeId, 'hasPart', childId, 'add')) {
-          affectedIdSet.add(id);
-        }
+        this.#setEdge(nodeId, 'hasPart', childId, 'add').values().forEach(markIdAsAffected);
       }
 
       for (const { '@id': parentId } of node.isPartOf || []) {
-        for (const id of this.#setEdge(nodeId, 'isPartOf', parentId, 'add')) {
-          affectedIdSet.add(id);
-        }
+        this.#setEdge(nodeId, 'isPartOf', parentId, 'add').values().forEach(markIdAsAffected);
       }
     }
 
