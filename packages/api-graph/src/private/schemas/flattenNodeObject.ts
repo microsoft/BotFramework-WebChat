@@ -1,3 +1,5 @@
+// TODO: [P0] This flattening can probably fold into `colorNode()` as it has slanted view of the system.
+
 import { object, optional, parse, safeParse } from 'valibot';
 
 import flatNodeObject, { type FlatNodeObject, type FlatNodeObjectPropertyValue } from './FlatNodeObject';

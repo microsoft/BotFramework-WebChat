@@ -1,4 +1,14 @@
-import { array, objectWithRest, optional, pipe, string, union, type ErrorMessage, type InferOutput } from 'valibot';
+import {
+  array,
+  null_,
+  objectWithRest,
+  optional,
+  pipe,
+  string,
+  union,
+  type ErrorMessage,
+  type InferOutput
+} from 'valibot';
 
 import identifier from './Identifier';
 import { literal } from './Literal';
@@ -7,7 +17,7 @@ import freeze from './private/freeze';
 
 function flatNodeObjectPropertyValue<TMessage extends ErrorMessage<any>>(message?: TMessage | undefined) {
   return union(
-    [pipe(array(union([literal(), nodeReference()])), freeze()), pipe(literal()), pipe(nodeReference())],
+    [pipe(array(union([literal(), nodeReference()])), freeze()), pipe(literal()), pipe(nodeReference()), null_()],
     message
   );
 }

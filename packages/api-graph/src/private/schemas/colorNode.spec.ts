@@ -137,4 +137,31 @@ scenario('expandArray', bdd => {
         throw error;
       }).toThrow(expectedMessage);
     });
+
+  bdd.given
+    .oneOf<FlatNodeObject>([
+      ['a node with a property value of null', () => ({ '@id': '_:b1', value: null })],
+      ['a node with a property value of empty array', () => ({ '@id': '_:b1', value: [] })]
+    ])
+    .when('colored', node => colorNode(node))
+    .then('the property should be removed', (_, slantNode) => {
+      expect(slantNode).toEqual({ '@id': '_:b1' });
+    });
+
+  bdd
+    .given(
+      'a node with a property value mixed with literal and node reference',
+      () =>
+        ({
+          '@id': '_:b1',
+          value: ['Hello, World!', { '@id': '_:b2' }, 123, true]
+        }) satisfies FlatNodeObject
+    )
+    .when('colored', node => colorNode(node))
+    .then('should convert', (_, slantNode) => {
+      expect(slantNode).toEqual({
+        '@id': '_:b1',
+        value: ['Hello, World!', { '@id': '_:b2' }, 123, true]
+      });
+    });
 });

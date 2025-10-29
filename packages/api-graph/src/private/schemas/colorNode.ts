@@ -1,5 +1,6 @@
 import {
   array,
+  minLength,
   null_,
   objectWithRest,
   optional,
@@ -53,9 +54,9 @@ function slantNode<TMessage extends ErrorMessage<ObjectWithRestIssue> | undefine
           )
         )
       },
-      // The rest property values must be encapsulated in array, except when it's null.
+      // The rest property values must be encapsulated in array.
       // Array of boolean, number, string, and node reference are accepted.
-      union([array(literal()), array(nodeReference()), null_()]),
+      pipe(array(union([literal(), nodeReference()])), minLength(1)),
       message
     ),
     freeze()
@@ -68,7 +69,22 @@ type SlantNode = InferOutput<ObjectSchema<ReturnType<typeof slantNode>['entries'
 };
 
 /**
- * Put our opinions into the node object.
+ * Put our opinions into the node.
+ *
+ * The opinions are targeted around a few principles:
+ *
+ * - Simplifying downstream logics
+ *    - Must have `@id`
+ *    - Uniform getter/setter: every property value is an array, except `@context` and `@id`
+ *    - Uniform typing: node reference must be `{ "@id": string }` to reduce confusion with a plain string
+ *    - Support multiple types: every `@type` must be an array of string
+ *    - Flattened: property values must be non-null literals or node reference, not object
+ *       - Will throw with value of `[null]` as they do not convey any meanings
+ *    - Do not handle full JSON-LD spec: `@context` is an opaque string
+ * - Reduce confusion: empty array and null is removed
+ *    - `[]` and `null` are same as if the property is removed
+ * - Auto-linking for Schema.org (`hasPart` and `isPartOf` are auto-inversed)
+ * - Keep its root: every node is compliant to JSON-LD, understood by standard parsers
  *
  * @param node
  * @returns An opinionated node object which conforms to JSON-LD specification.
@@ -79,7 +95,10 @@ function colorNode(node: FlatNodeObject): SlantNode {
   let id: string | undefined;
 
   for (const [key, value] of Object.entries(node)) {
-    const parsedValue = parse(union([array(nodeReference()), array(literal()), nodeReference(), literal()]), value);
+    const parsedValue = parse(
+      union([array(union([literal(), nodeReference()])), nodeReference(), literal(), null_()]),
+      value
+    );
 
     switch (key) {
       case '@context':
@@ -90,20 +109,22 @@ function colorNode(node: FlatNodeObject): SlantNode {
         id = parse(string(), value);
         break;
 
-      default:
+      default: {
         // TODO: [P*] Test mixed array with literal and node reference.
-        propertyMap.set(key, Array.isArray(parsedValue) ? parsedValue : Object.freeze([parsedValue]));
+        const slantValue = Array.isArray(parsedValue)
+          ? parsedValue
+          : Object.freeze(parsedValue === null ? [] : [parsedValue]);
+
+        slantValue.length && propertyMap.set(key, slantValue);
+
         break;
+      }
     }
   }
 
   return parse(
     slantNode(),
-    Object.fromEntries([
-      ...(context ? [['@context', context]] : []),
-      ...(id ? [['@id', id]] : []),
-      ...Array.from(propertyMap)
-    ])
+    Object.fromEntries([...(context ? [['@context', context]] : []), ['@id', id], ...Array.from(propertyMap)])
   );
 }
 
