@@ -74,5 +74,37 @@ scenario('Graph class', bdd => {
           ids: ['_:m2', '_:m3', '_:c1']
         }
       });
+    })
+    .when('a Message is disconnected from the Conversation', ({ graph }) => {
+      graph.upsert({
+        '@id': '_:m1',
+        '@type': ['Message'],
+        text: ['Hello, World!']
+      });
+    })
+    .then('the Conversation.hasPart should have the Message unreferenced', ({ graph }) => {
+      expect(Array.from(graph.snapshot().entries())).toEqual([
+        [
+          '_:c1',
+          {
+            '@id': '_:c1',
+            '@type': ['Conversation'],
+            hasPart: [{ '@id': '_:m2' }, { '@id': '_:m3' }]
+          }
+        ],
+        ['_:m1', { '@id': '_:m1', '@type': ['Message'], text: ['Hello, World!'] }],
+        ['_:m2', { '@id': '_:m2', '@type': ['Message'], isPartOf: [{ '@id': '_:c1' }], text: ['Aloha!'] }],
+        ['_:m3', { '@id': '_:m3', '@type': ['Message'], isPartOf: [{ '@id': '_:c1' }], text: ['Good morning!'] }]
+      ]);
+    })
+    .and('observer should receive the detached Message node and Conversation node', async ({ iterator }) => {
+      await iterator.next(); // Skip the first change.
+      await iterator.next(); // Skip the second change.
+      await expect(iterator.next()).resolves.toEqual({
+        done: false,
+        value: {
+          ids: ['_:m1', '_:c1']
+        }
+      });
     });
 });
