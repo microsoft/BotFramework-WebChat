@@ -57,9 +57,15 @@ class Graph extends EventTarget {
     const affectedIdSet: Set<Identifier> = new Set();
 
     for (const node of nodes) {
-      this.#setGraphNode(node);
+      const id = node['@id'];
 
-      affectedIdSet.add(node['@id']);
+      if (affectedIdSet.has(id)) {
+        throw new Error('Cannot upsert two or more nodes with same @id');
+      }
+
+      affectedIdSet.add(id);
+
+      this.#setGraphNode(node);
     }
 
     for (const node of nodes) {

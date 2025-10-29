@@ -22,4 +22,21 @@ scenario('Graph class', bdd => {
 
       expect(result).toEqual({ done: false, value: { ids: ['_:b1'] } });
     });
+
+  bdd
+    .given('a graph', () => new Graph())
+    .when('upserting 2 nodes with same @id', graph => {
+      try {
+        graph.upsert({ '@id': '_:b1' } satisfies SlantNode, { '@id': '_:b1' } satisfies SlantNode);
+      } catch (error) {
+        return error;
+      }
+
+      return undefined;
+    })
+    .then('should throw', (_, error) => {
+      expect(() => {
+        throw error;
+      }).toThrow('Cannot upsert two or more nodes with same @id');
+    });
 });
