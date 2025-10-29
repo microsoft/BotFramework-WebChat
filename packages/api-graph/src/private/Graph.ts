@@ -143,7 +143,7 @@ class Graph extends EventTarget {
 
     const stream = new ReadableStream<GraphChangeEvent>({
       cancel() {
-        // Iterator.cancel() will call cancel().
+        // Iterator.return() will call cancel().
         observerControllerSet.delete(thisController);
       },
       start(controller) {
