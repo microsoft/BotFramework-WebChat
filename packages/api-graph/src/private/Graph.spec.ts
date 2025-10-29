@@ -8,14 +8,27 @@ scenario('Graph class', bdd => {
     .given('a graph', () => ({ graph: new Graph() }))
     .and('a node', ({ graph }) => ({
       graph,
-      node: { '@id': '_:b1', value: ['abc'] } satisfies SlantNode
+      node: {
+        '@id': '_:b1',
+        '@type': ['Person'],
+        value: ['abc']
+      } satisfies SlantNode
     }))
     .and('an observer', condition => ({ ...condition, iterator: condition.graph.observe() }))
     .when('upserted', ({ graph, node }) => {
       graph.upsert(node);
     })
     .then('the graph should have the node', ({ graph }) => {
-      expect(Array.from(graph.snapshot().entries())).toEqual([['_:b1', { '@id': '_:b1', value: ['abc'] }]]);
+      expect(Array.from(graph.snapshot().entries())).toEqual([
+        [
+          '_:b1',
+          {
+            '@id': '_:b1',
+            '@type': ['Person'],
+            value: ['abc']
+          }
+        ]
+      ]);
     })
     .and('observer', async ({ iterator }) => {
       const result = await iterator.next();
@@ -27,7 +40,10 @@ scenario('Graph class', bdd => {
     .given('a graph', () => new Graph())
     .when('upserting 2 nodes with same @id', graph => {
       try {
-        graph.upsert({ '@id': '_:b1' } satisfies SlantNode, { '@id': '_:b1' } satisfies SlantNode);
+        graph.upsert(
+          { '@id': '_:b1', '@type': ['Person'] } satisfies SlantNode,
+          { '@id': '_:b1', '@type': ['Person'] } satisfies SlantNode
+        );
       } catch (error) {
         return error;
       }

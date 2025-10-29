@@ -31,12 +31,10 @@ function slantNode<TMessage extends ErrorMessage<ObjectWithRestIssue> | undefine
         '@context': optional(string('@context must be a string')),
         '@id': identifier('@id is required and must be a string'),
         // Multi-membership is enabled by default.
-        '@type': optional(
-          pipe(
-            array(string('element in @type must be a string'), '@type must be array of string'),
-            freeze(),
-            minLength(1, '@type must have at least one element')
-          )
+        '@type': pipe(
+          array(string('element in @type must be a string'), '@type must be array of string'),
+          freeze(),
+          minLength(1, '@type must have at least one element')
         ),
         // We follow Schema.org that "hasPart" denotes children.
         // This relationship is "membership" than "hierarchy".

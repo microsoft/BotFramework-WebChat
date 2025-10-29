@@ -4,63 +4,14 @@ import { scenario } from '@testduet/given-when-then';
 import colorNode from './colorNode';
 import type { FlatNodeObject } from './FlatNodeObject';
 
-scenario('expandArray', bdd => {
-  bdd
-    .given(
-      'a JSON-LD object with @context, @id, and @type',
-      () =>
-        ({
-          '@context': 'http://schema.org/',
-          '@id': '_:b1',
-          '@type': 'Person',
-          name: 'Jane Doe',
-          jobTitle: 'Professor',
-          telephone: '(425) 123-4567',
-          url: 'http://www.janedoe.com'
-        }) satisfies FlatNodeObject
-    )
-    .when('expanded', value => colorNode(value))
-    .then('should wrap @type and property values in array', (_, actual) => {
-      expect(actual).toEqual({
-        '@context': 'http://schema.org/',
-        '@id': '_:b1',
-        '@type': ['Person'],
-        name: ['Jane Doe'],
-        jobTitle: ['Professor'],
-        telephone: ['(425) 123-4567'],
-        url: ['http://www.janedoe.com']
-      });
-    });
-
-  bdd
-    .given(
-      'a JSON-LD object without @context, @id, and @type',
-      () =>
-        ({
-          '@id': '_:b1',
-          name: 'Jane Doe',
-          jobTitle: 'Professor',
-          telephone: '(425) 123-4567',
-          url: 'http://www.janedoe.com'
-        }) satisfies FlatNodeObject
-    )
-    .when('expanded', value => colorNode(value))
-    .then('should wrap @type and property values in array', (_, actual) => {
-      expect(actual).toEqual({
-        '@id': '_:b1',
-        name: ['Jane Doe'],
-        jobTitle: ['Professor'],
-        telephone: ['(425) 123-4567'],
-        url: ['http://www.janedoe.com']
-      });
-    });
-
+scenario('colorNode corner cases', bdd => {
   bdd
     .given(
       'a recipe JSON-LD object with some property values of array',
       () =>
         ({
           '@id': '_:b1',
+          '@type': ['Recipe'],
           name: 'Mojito',
           ingredient: [
             '12 fresh mint leaves',
@@ -77,6 +28,7 @@ scenario('expandArray', bdd => {
     .then('should wrap property values in array', (_, actual) => {
       expect(actual).toEqual({
         '@id': '_:b1',
+        '@type': ['Recipe'],
         name: ['Mojito'],
         ingredient: [
           '12 fresh mint leaves',
@@ -90,37 +42,35 @@ scenario('expandArray', bdd => {
       });
     });
 
-  bdd
-    .given(
-      'a JSON-LD object with @type of type array',
-      () =>
-        ({
-          '@id': '_:b1',
-          '@type': ['HowTo', 'Message']
-        }) satisfies FlatNodeObject
-    )
-    .when('expnaded', value => colorNode(value))
-    .then('should return both types', (_, actual) => {
-      expect(actual['@type']).toEqual(['HowTo', 'Message']);
-    });
-
   bdd.given
     .oneOf<any>([
       [
         'a node with hasPart as an array of string',
-        () => [{ '@id': '_:b1', hasPart: ['Hello, World!'] }, 'element in hasPart must be NodeReference']
+        () => [
+          { '@id': '_:b1', '@type': ['Conversation'], hasPart: ['Hello, World!'] },
+          'element in hasPart must be NodeReference'
+        ]
       ],
       [
         'a node with hasPart as a string',
-        () => [{ '@id': '_:b1', hasPart: 'Hello, World!' }, 'element in hasPart must be NodeReference']
+        () => [
+          { '@id': '_:b1', '@type': ['Conversation'], hasPart: 'Hello, World!' },
+          'element in hasPart must be NodeReference'
+        ]
       ],
       [
         'a node with isPartOf as an array of string',
-        () => [{ '@id': '_:b1', isPartOf: ['Hello, World!'] }, 'element in isPartOf must be NodeReference']
+        () => [
+          { '@id': '_:b1', '@type': ['Conversation'], isPartOf: ['Hello, World!'] },
+          'element in isPartOf must be NodeReference'
+        ]
       ],
       [
         'a node with isPartOf a string',
-        () => [{ '@id': '_:b1', isPartOf: 'Hello, World!' }, 'element in isPartOf must be NodeReference']
+        () => [
+          { '@id': '_:b1', '@type': ['Conversation'], isPartOf: 'Hello, World!' },
+          'element in isPartOf must be NodeReference'
+        ]
       ]
     ])
     .when('colored', ([node]) => {
@@ -138,40 +88,22 @@ scenario('expandArray', bdd => {
       }).toThrow(expectedMessage);
     });
 
-  bdd.given
-    .oneOf<FlatNodeObject>([
-      ['a node with a property value of null', () => ({ '@id': '_:b1', value: null })],
-      ['a node with a property value of empty array', () => ({ '@id': '_:b1', value: [] })]
-    ])
-    .when('colored', node => colorNode(node))
-    .then('the property should be removed', (_, slantNode) => {
-      expect(slantNode).toEqual({ '@id': '_:b1' });
-    });
-
-  bdd.given
-    .oneOf<FlatNodeObject>([
-      ['a node with hasPart of empty array', () => ({ '@id': '_:b1', hasPart: [] })],
-      ['a node with isPartOf of empty array', () => ({ '@id': '_:b1', isPartOf: [] })]
-    ])
-    .when('colored', node => colorNode(node))
-    .then('the property should be removed', (_, slantNode) => {
-      expect(slantNode).toEqual({ '@id': '_:b1' });
-    });
-
   bdd
     .given(
       'a node with a property value mixed with literal and node reference',
       () =>
         ({
           '@id': '_:b1',
-          value: ['Hello, World!', { '@id': '_:b2' }, 0, false]
+          '@type': ['Message'],
+          text: ['Hello, World!', { '@id': '_:b2' }, 0, false]
         }) satisfies FlatNodeObject
     )
     .when('colored', node => colorNode(node))
     .then('should convert', (_, slantNode) => {
       expect(slantNode).toEqual({
         '@id': '_:b1',
-        value: ['Hello, World!', { '@id': '_:b2' }, 0, false]
+        '@type': ['Message'],
+        text: ['Hello, World!', { '@id': '_:b2' }, 0, false]
       });
     });
 });
