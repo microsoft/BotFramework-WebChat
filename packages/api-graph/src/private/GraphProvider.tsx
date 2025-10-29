@@ -46,6 +46,7 @@ function GraphProvider(props: GraphProviderProps) {
     [mergeGraph]
   );
 
+  // Build graph using `useSyncExternalStore()` so we can run graph everywhere.
   const context = useMemo(() => Object.freeze({ graph, mergeNode }), [graph, mergeNode]);
 
   return <GraphContext.Provider value={context}>{children}</GraphContext.Provider>;

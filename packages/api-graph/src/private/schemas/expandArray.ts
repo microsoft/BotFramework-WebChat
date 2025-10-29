@@ -1,9 +1,20 @@
-import { array, objectWithRest, optional, parse, pipe, readonly, string, union, type InferOutput } from 'valibot';
+import {
+  array,
+  objectWithRest,
+  optional,
+  parse,
+  pipe,
+  string,
+  union,
+  type InferOutput,
+  type ObjectSchema
+} from 'valibot';
 
 import type { FlatNodeObject } from './FlatNodeObject';
 import identifier from './Identifier';
 import { literal, type Literal } from './Literal';
 import { nodeReference, type NodeReference } from './NodeReference';
+import freeze from './private/freeze';
 
 const expandedFlatNodeObjectSchema = pipe(
   objectWithRest(
@@ -14,10 +25,15 @@ const expandedFlatNodeObjectSchema = pipe(
     },
     array(union([literal(), nodeReference()]))
   ),
-  readonly()
+  freeze()
 );
 
-type ExpandedFlatNodeObject = InferOutput<typeof expandedFlatNodeObjectSchema>;
+// Due to limitation on TypeScript, we cannot truthfully represent the typing.
+// We believe this is the most faithful we can get.
+// The other option would be use `Symbol` for `@context`/`@id`/`@type`.
+type ExpandedFlatNodeObject =
+  | Readonly<InferOutput<ObjectSchema<typeof expandedFlatNodeObjectSchema.entries, undefined>>>
+  | { readonly [key: string]: InferOutput<typeof expandedFlatNodeObjectSchema.rest> };
 
 /**
  * Expands `@type` and all property values of a flat node object into array.
