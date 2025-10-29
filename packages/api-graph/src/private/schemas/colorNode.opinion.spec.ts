@@ -15,14 +15,14 @@ function executeWhen([node]: [unknown, string | SlantNode]): [unknown] | [undefi
 }
 
 function executeThen([_, errorOrResult]: [unknown, string | SlantNode], result: [unknown] | [undefined, SlantNode]) {
-  if (typeof errorOrResult === 'string') {
+  if (typeof result[0] === 'undefined') {
+    expect(result[1]).toEqual(errorOrResult);
+  } else {
     expect(() => {
       if (result[0]) {
         throw result[0];
       }
     }).toThrow(errorOrResult);
-  } else {
-    expect(result[1]).toEqual(errorOrResult);
   }
 }
 
