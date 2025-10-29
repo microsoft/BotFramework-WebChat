@@ -28,8 +28,8 @@ function slantNode<TMessage extends ErrorMessage<ObjectWithRestIssue> | undefine
     objectWithRest(
       {
         // We treat @context as opaque string than a schema.
-        '@context': optional(string('@context must be a string')),
-        '@id': identifier('@id is required and must be a string'),
+        '@context': optional(string('@context must be an IRI')),
+        '@id': identifier('@id is required and must be an IRI or blank node identifier'),
         // Multi-membership is enabled by default.
         '@type': pipe(
           array(string('element in @type must be a string'), '@type must be array of string'),

@@ -36,8 +36,11 @@ scenario('Must have `@id`: every node in the graph must be identifiable', bdd =>
           { '@id': '_:b1', '@type': ['Person'] }
         ]
       ],
-      ['node with @id of empty string', () => [{ '@id': '' }, '@id is required and must be a string']],
-      ['node without @id', () => [{}, '@id is required and must be a string']]
+      [
+        'node with @id of empty string',
+        () => [{ '@id': '' }, '@id is required and must be an IRI or blank node identifier']
+      ],
+      ['node without @id', () => [{}, '@id is required and must be an IRI or blank node identifier']]
     ])
     .when('colored', executeWhen)
     .then('should match result', executeThen);
