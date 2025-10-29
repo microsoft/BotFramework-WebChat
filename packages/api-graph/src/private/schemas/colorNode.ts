@@ -127,7 +127,7 @@ function slantNodeWithFix() {
  *    - Uniform getter/setter: every property value is an array, except `@context` and `@id`
  *    - Unique typing: node reference must be `{ "@id": string }` to reduce confusion with plain string
  *    - Support multiple types: every `@type` must be an array of string
- *    - Reduce confusion: empty array and `null` is removed
+ *    - Reduce confusion: property value with empty array and `null` is removed
  *       - `[]` and `null` are same as if the property is removed
  *    - Flattened: property values must be non-null literals or node reference, no nested objects
  *       - Any array containing `null` is not supported and will throw, as it is likely a bug in code
