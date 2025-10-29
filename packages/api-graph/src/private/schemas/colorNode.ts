@@ -1,5 +1,6 @@
 import {
   array,
+  looseObject,
   minLength,
   null_,
   objectWithRest,
@@ -7,6 +8,7 @@ import {
   parse,
   pipe,
   string,
+  transform,
   union,
   type ErrorMessage,
   type InferOutput,
@@ -72,6 +74,49 @@ type SlantNode = InferOutput<ObjectSchema<ReturnType<typeof slantNode>['entries'
   [key: string]: unknown;
 };
 
+function slantNodeWithFix() {
+  return pipe(
+    looseObject({}),
+    transform(node => {
+      const propertyMap = new Map<string, readonly (Literal | NodeReference)[]>();
+      let context: string | undefined;
+      let id: string | undefined;
+
+      for (const [key, value] of Object.entries(node)) {
+        const parsedValue = parse(
+          union([array(union([literal(), nodeReference()])), nodeReference(), literal(), null_()]),
+          value
+        );
+
+        switch (key) {
+          case '@context':
+            context = parse(string(), value);
+            break;
+
+          case '@id':
+            id = parse(string(), value);
+            break;
+
+          default: {
+            const slantedValue = Array.isArray(parsedValue)
+              ? parsedValue
+              : Object.freeze(parsedValue === null ? [] : [parsedValue]);
+
+            slantedValue.length && propertyMap.set(key, slantedValue);
+
+            break;
+          }
+        }
+      }
+
+      return parse(
+        slantNode(),
+        Object.fromEntries([...(context ? [['@context', context]] : []), ['@id', id], ...Array.from(propertyMap)])
+      );
+    })
+  );
+}
+
 /**
  * Put our opinions into the node.
  *
@@ -96,42 +141,8 @@ type SlantNode = InferOutput<ObjectSchema<ReturnType<typeof slantNode>['entries'
  * @returns An opinionated node object which conforms to JSON-LD specification.
  */
 function colorNode(node: FlatNodeObject | SlantNode): SlantNode {
-  const propertyMap = new Map<string, readonly (Literal | NodeReference)[]>();
-  let context: string | undefined;
-  let id: string | undefined;
-
-  for (const [key, value] of Object.entries(node)) {
-    const parsedValue = parse(
-      union([array(union([literal(), nodeReference()])), nodeReference(), literal(), null_()]),
-      value
-    );
-
-    switch (key) {
-      case '@context':
-        context = parse(string(), value);
-        break;
-
-      case '@id':
-        id = parse(string(), value);
-        break;
-
-      default: {
-        const slantedValue = Array.isArray(parsedValue)
-          ? parsedValue
-          : Object.freeze(parsedValue === null ? [] : [parsedValue]);
-
-        slantedValue.length && propertyMap.set(key, slantedValue);
-
-        break;
-      }
-    }
-  }
-
-  return parse(
-    slantNode(),
-    Object.fromEntries([...(context ? [['@context', context]] : []), ['@id', id], ...Array.from(propertyMap)])
-  );
+  return parse(slantNodeWithFix(), node);
 }
 
 export default colorNode;
-export { slantNode, type SlantNode };
+export { slantNode, slantNodeWithFix, type SlantNode };
