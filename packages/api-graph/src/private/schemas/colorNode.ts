@@ -125,14 +125,13 @@ function slantNodeWithFix() {
  * - Simplifying downstream logics
  *    - Must have `@id`: every node in the graph must be identifiable
  *    - Uniform getter/setter: every property value is an array, except `@context` and `@id`
- *    - Uniform typing: node reference must be `{ "@id": string }` to reduce confusion with a plain string
+ *    - Uniform typing: node reference must be `{ "@id": string }` to reduce confusion with plain string
  *    - Support multiple types: every `@type` must be an array of string
  *    - Reduce confusion: empty array and `null` is removed
  *       - `[]` and `null` are same as if the property is removed
  *    - Flattened: property values must be non-null literals or node reference, no nested objects
- *       - `null` will be converted to [] and eventually the property will be removed
  *       - Any array containing `null` is not supported and will throw, as it is likely a bug in code
- *    - Do not handle full JSON-LD spec: `@context` is an opaque string and the schema is not honored
+ *    - Do not handle full JSON-LD spec: `@context` is an opaque string and its schema is not honored
  * - Auto-linking for Schema.org: `hasPart` and `isPartOf` are auto-inversed
  * - Keep its root: every node is compliant to JSON-LD, understood by standard parsers
  * - Debuggability: must have at least one `@type`
