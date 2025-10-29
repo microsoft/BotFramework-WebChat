@@ -65,7 +65,8 @@ class Graph extends EventTarget {
     return new Map(this.#graph);
   }
 
-  #setEdge(
+  // eslint-disable-next-line complexity
+  #setTriplet(
     subjectId: Identifier,
     linkType: 'hasPart' | 'isPartOf',
     objectId: Identifier,
@@ -102,9 +103,7 @@ class Graph extends EventTarget {
           objectIsPartOf.add(subjectId);
           nextObject = { ...object, isPartOf: identifierSetToNodeReferenceList(objectIsPartOf) };
         }
-      } else {
-        operation satisfies 'delete';
-
+      } else if (operation === 'delete') {
         if (subjectHasPart.has(objectId)) {
           subjectHasPart.delete(objectId);
           nextSubject = { ...subject, hasPart: identifierSetToNodeReferenceList(subjectHasPart) };
@@ -114,10 +113,10 @@ class Graph extends EventTarget {
           objectIsPartOf.delete(subjectId);
           nextObject = { ...object, isPartOf: identifierSetToNodeReferenceList(objectIsPartOf) };
         }
+      } else {
+        operation satisfies never;
       }
-    } else {
-      linkType satisfies 'isPartOf';
-
+    } else if (linkType === 'isPartOf') {
       if (operation === 'add') {
         if (!subjectIsPartOf.has(objectId)) {
           subjectIsPartOf.add(objectId);
@@ -128,9 +127,7 @@ class Graph extends EventTarget {
           objectHasPart.add(subjectId);
           nextObject = { ...object, hasPart: identifierSetToNodeReferenceList(objectHasPart) };
         }
-      } else {
-        operation satisfies 'delete';
-
+      } else if (operation === 'delete') {
         if (subjectIsPartOf.has(objectId)) {
           subjectIsPartOf.delete(objectId);
           nextSubject = { ...subject, isPartOf: identifierSetToNodeReferenceList(subjectIsPartOf) };
@@ -140,7 +137,11 @@ class Graph extends EventTarget {
           objectHasPart.delete(subjectId);
           nextObject = { ...object, hasPart: identifierSetToNodeReferenceList(objectHasPart) };
         }
+      } else {
+        operation satisfies never;
       }
+    } else {
+      linkType satisfies never;
     }
 
     const affectedIds = new Set<Identifier>();
@@ -178,21 +179,24 @@ class Graph extends EventTarget {
 
       const existingNode = this.#graph.get(id);
 
+      // Remove hasPart/isPartOf if the existing node does not match the upserted node.
       if (existingNode) {
-        const removedHasPartIdSet = nodeReferenceListToIdentifierSet(existingNode.hasPart || []).difference(
-          nodeReferenceListToIdentifierSet(node.hasPart || [])
+        const removedHasPartIdSet = nodeReferenceListToIdentifierSet(existingNode.hasPart ?? []).difference(
+          nodeReferenceListToIdentifierSet(node.hasPart ?? [])
         );
 
         for (const removedHasPartId of removedHasPartIdSet) {
-          this.#setEdge(existingNode['@id'], 'hasPart', removedHasPartId, 'delete').values().forEach(markIdAsAffected);
+          this.#setTriplet(existingNode['@id'], 'hasPart', removedHasPartId, 'delete')
+            .values()
+            .forEach(markIdAsAffected);
         }
 
-        const removedIsPartOfIdSet = nodeReferenceListToIdentifierSet(existingNode.isPartOf || []).difference(
-          nodeReferenceListToIdentifierSet(node.isPartOf || [])
+        const removedIsPartOfIdSet = nodeReferenceListToIdentifierSet(existingNode.isPartOf ?? []).difference(
+          nodeReferenceListToIdentifierSet(node.isPartOf ?? [])
         );
 
         for (const removedIsPartOfId of removedIsPartOfIdSet) {
-          this.#setEdge(existingNode['@id'], 'isPartOf', removedIsPartOfId, 'delete')
+          this.#setTriplet(existingNode['@id'], 'isPartOf', removedIsPartOfId, 'delete')
             .values()
             .forEach(markIdAsAffected);
         }
@@ -201,28 +205,32 @@ class Graph extends EventTarget {
       this.#setGraphNode(node);
     }
 
+    // Add hasPart/isPartOf.
     for (const node of nodes) {
       const nodeId = node['@id'];
 
       for (const { '@id': childId } of node.hasPart || []) {
-        this.#setEdge(nodeId, 'hasPart', childId, 'add').values().forEach(markIdAsAffected);
+        this.#setTriplet(nodeId, 'hasPart', childId, 'add').values().forEach(markIdAsAffected);
       }
 
       for (const { '@id': parentId } of node.isPartOf || []) {
-        this.#setEdge(nodeId, 'isPartOf', parentId, 'add').values().forEach(markIdAsAffected);
+        this.#setTriplet(nodeId, 'isPartOf', parentId, 'add').values().forEach(markIdAsAffected);
       }
     }
 
-    const affectedIds = Object.freeze(Array.from(affectedIdSet.values()));
-
-    for (const id of affectedIds) {
+    // ASSERT: Make sure all affected ids are in the graph.
+    for (const id of affectedIdSet) {
       if (!this.#graph.has(id)) {
         throw new Error(`ASSERTION: Cannot find affected node with @id of "${id}"`);
       }
     }
 
+    const changeEvent = Object.freeze({
+      ids: Object.freeze(Array.from(affectedIdSet.values()))
+    });
+
     for (const controller of this.#observerControllerSet) {
-      controller.enqueue(Object.freeze({ ids: affectedIds }));
+      controller.enqueue(changeEvent);
     }
   }
 }
