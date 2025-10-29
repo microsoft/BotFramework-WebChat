@@ -125,7 +125,7 @@ function slantNodeWithFix() {
  * - Simplifying downstream logics
  *    - Must have `@id`: every node in the graph must be identifiable
  *    - Uniform getter/setter: every property value is an array, except `@context` and `@id`
- *    - Uniform typing: node reference must be `{ "@id": string }` to reduce confusion with plain string
+ *    - Unique typing: node reference must be `{ "@id": string }` to reduce confusion with plain string
  *    - Support multiple types: every `@type` must be an array of string
  *    - Reduce confusion: empty array and `null` is removed
  *       - `[]` and `null` are same as if the property is removed
