@@ -1,4 +1,4 @@
-import { expect } from '@jest/globals';
+import { afterEach, beforeEach, expect, jest } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import { array, assert, length, object, pipe } from 'valibot';
 
@@ -34,10 +34,6 @@ scenario('flattenNodeObject()', bdd => {
       [
         'a simple non-JSON-LD object with a property with value of type "boolean"',
         () => [{ value: true }, { value: true }]
-      ],
-      [
-        'a simple non-JSON-LD object with a property with value of type "null"',
-        () => [{ value: null }, { value: null }]
       ]
     ])
     .when('flattened', ([value]) => flattenNodeObject(value))

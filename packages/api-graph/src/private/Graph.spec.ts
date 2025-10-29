@@ -1,13 +1,14 @@
+import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import Graph from './Graph';
-import type { ExpandedFlatNodeObject } from './schemas/expandArray';
+import type { SlantNode } from './schemas/colorNode';
 
 scenario('Graph class', bdd => {
   bdd
     .given('a graph', () => ({ graph: new Graph() }))
     .and('a node', ({ graph }) => ({
       graph,
-      node: { '@id': '_:b1', value: ['abc'] } satisfies ExpandedFlatNodeObject
+      node: { '@id': '_:b1', value: ['abc'] } satisfies SlantNode
     }))
     .and('an observer', condition => ({ ...condition, iterator: condition.graph.observe() }))
     .when('upserted', ({ graph, node }) => {
@@ -19,6 +20,6 @@ scenario('Graph class', bdd => {
     .and('observer', async ({ iterator }) => {
       const result = await iterator.next();
 
-      expect(result).toEqual({ done: false, value: [{ '@id': '_:b1', value: ['abc'] }] });
+      expect(result).toEqual({ done: false, value: { ids: ['_:b1'] } });
     });
 });

@@ -1,4 +1,4 @@
-import { expect } from '@jest/globals';
+import { expect, jest } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 
 import './expectExtendValibot';
