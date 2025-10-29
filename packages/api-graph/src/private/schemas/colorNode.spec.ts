@@ -1,6 +1,7 @@
+import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 
-import expandArray from './expandArray';
+import colorNode from './colorNode';
 import type { FlatNodeObject } from './FlatNodeObject';
 
 scenario('expandArray', bdd => {
@@ -18,7 +19,7 @@ scenario('expandArray', bdd => {
           url: 'http://www.janedoe.com'
         }) satisfies FlatNodeObject
     )
-    .when('expanded', value => expandArray(value))
+    .when('expanded', value => colorNode(value))
     .then('should wrap @type and property values in array', (_, actual) => {
       expect(actual).toEqual({
         '@context': 'http://schema.org/',
@@ -43,7 +44,7 @@ scenario('expandArray', bdd => {
           url: 'http://www.janedoe.com'
         }) satisfies FlatNodeObject
     )
-    .when('expanded', value => expandArray(value))
+    .when('expanded', value => colorNode(value))
     .then('should wrap @type and property values in array', (_, actual) => {
       expect(actual).toEqual({
         '@id': '_:b1',
@@ -72,7 +73,7 @@ scenario('expandArray', bdd => {
           yield: '1 cocktail'
         }) satisfies FlatNodeObject
     )
-    .when('expanded', value => expandArray(value))
+    .when('expanded', value => colorNode(value))
     .then('should wrap property values in array', (_, actual) => {
       expect(actual).toEqual({
         '@id': '_:b1',
@@ -98,8 +99,42 @@ scenario('expandArray', bdd => {
           '@type': ['HowTo', 'Message']
         }) satisfies FlatNodeObject
     )
-    .when('expnaded', value => expandArray(value))
+    .when('expnaded', value => colorNode(value))
     .then('should return both types', (_, actual) => {
       expect(actual['@type']).toEqual(['HowTo', 'Message']);
+    });
+
+  bdd.given
+    .oneOf<any>([
+      [
+        'a node with hasPart as an array of string',
+        () => [{ '@id': '_:b1', hasPart: ['Hello, World!'] }, 'element in hasPart must be NodeReference']
+      ],
+      [
+        'a node with hasPart as a string',
+        () => [{ '@id': '_:b1', hasPart: 'Hello, World!' }, 'element in hasPart must be NodeReference']
+      ],
+      [
+        'a node with isPartOf as an array of string',
+        () => [{ '@id': '_:b1', isPartOf: ['Hello, World!'] }, 'element in isPartOf must be NodeReference']
+      ],
+      [
+        'a node with isPartOf a string',
+        () => [{ '@id': '_:b1', isPartOf: 'Hello, World!' }, 'element in isPartOf must be NodeReference']
+      ]
+    ])
+    .when('colored', ([node]) => {
+      try {
+        colorNode(node);
+      } catch (error) {
+        return error;
+      }
+
+      return undefined;
+    })
+    .then('should throw', ([_, expectedMessage], error) => {
+      expect(() => {
+        throw error;
+      }).toThrow(expectedMessage);
     });
 });

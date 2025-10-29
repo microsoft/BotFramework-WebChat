@@ -1,4 +1,4 @@
-import { boolean, null_, number, safeParse, string, union, type ErrorMessage, type InferOutput } from 'valibot';
+import { boolean, number, safeParse, string, union, type ErrorMessage, type InferOutput } from 'valibot';
 
 /**
  * Schema of JSON-LD literals.
@@ -7,7 +7,8 @@ import { boolean, null_, number, safeParse, string, union, type ErrorMessage, ty
  * @returns
  */
 function literal<TMessage extends ErrorMessage<any>>(message?: TMessage | undefined) {
-  return union([boolean(), null_(), number(), string()], message);
+  // TODO: [P*] Null should not be literal because it could become null[].
+  return union([boolean(), number(), string()], message);
 }
 
 type Literal = InferOutput<ReturnType<typeof literal>>;
