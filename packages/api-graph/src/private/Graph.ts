@@ -8,10 +8,21 @@
 
 import { parse } from 'valibot';
 
-import { slantNode, type SlantNode } from './schemas/colorNode';
+import colorNode, { type SlantNode } from './schemas/colorNode';
 import type { Identifier } from './schemas/Identifier';
+import { nodeReference, type NodeReference } from './schemas/NodeReference';
 
 type GraphChangeEvent = { readonly ids: readonly Identifier[] };
+
+function nodeReferenceListToIdentifierSet(nodeReferences: readonly NodeReference[]): Set<Identifier> {
+  return new Set(nodeReferences.map(ref => ref['@id']));
+}
+
+function identifierSetToNodeReferenceList(identifierSet: ReadonlySet<Identifier>): readonly NodeReference[] {
+  return Object.freeze(
+    Array.from(identifierSet.values().map(identifier => parse(nodeReference(), { '@id': identifier })))
+  );
+}
 
 class Graph extends EventTarget {
   constructor() {
@@ -25,7 +36,8 @@ class Graph extends EventTarget {
   #observerControllerSet: Set<ReadableStreamDefaultController<GraphChangeEvent>>;
 
   #setGraphNode(node: SlantNode) {
-    const safeNode = parse(slantNode(), node);
+    // We need to recolor the node as it could lose its color over time, e.g. empty array -> remove.
+    const safeNode = colorNode(node);
 
     // eslint-disable-next-line no-restricted-syntax
     this.#graph.set(safeNode['@id'], safeNode);
@@ -53,6 +65,100 @@ class Graph extends EventTarget {
     return new Map(this.#graph);
   }
 
+  #setEdge(
+    subjectId: Identifier,
+    linkType: 'hasPart' | 'isPartOf',
+    objectId: Identifier,
+    operation: 'add' | 'delete'
+  ): ReadonlySet<Identifier> {
+    const subject = this.#graph.get(subjectId);
+
+    if (!subject) {
+      throw new Error(`Cannot find subject with @id of "${subjectId}"`);
+    }
+
+    const object = this.#graph.get(objectId);
+
+    if (!object) {
+      throw new Error(`Cannot find object with @id of "${objectId}"`);
+    }
+
+    let nextObject: SlantNode | undefined;
+    let nextSubject: SlantNode | undefined;
+
+    const objectHasPart = nodeReferenceListToIdentifierSet(object.hasPart || []);
+    const objectIsPartOf = nodeReferenceListToIdentifierSet(object.isPartOf || []);
+    const subjectHasPart = nodeReferenceListToIdentifierSet(subject.hasPart || []);
+    const subjectIsPartOf = nodeReferenceListToIdentifierSet(subject.isPartOf || []);
+
+    if (linkType === 'hasPart') {
+      if (operation === 'add') {
+        if (!subjectHasPart.has(objectId)) {
+          subjectHasPart.add(objectId);
+          nextSubject = { ...subject, hasPart: identifierSetToNodeReferenceList(subjectHasPart) };
+        }
+
+        if (!objectIsPartOf.has(subjectId)) {
+          objectIsPartOf.add(subjectId);
+          nextObject = { ...object, isPartOf: identifierSetToNodeReferenceList(objectIsPartOf) };
+        }
+      } else {
+        operation satisfies 'delete';
+
+        if (subjectHasPart.has(objectId)) {
+          subjectHasPart.delete(objectId);
+          nextSubject = { ...subject, hasPart: identifierSetToNodeReferenceList(subjectHasPart) };
+        }
+
+        if (objectIsPartOf.has(subjectId)) {
+          objectIsPartOf.delete(subjectId);
+          nextObject = { ...object, isPartOf: identifierSetToNodeReferenceList(objectIsPartOf) };
+        }
+      }
+    } else {
+      linkType satisfies 'isPartOf';
+
+      if (operation === 'add') {
+        if (!subjectIsPartOf.has(objectId)) {
+          subjectIsPartOf.add(objectId);
+          nextSubject = { ...subject, isPartOf: identifierSetToNodeReferenceList(subjectIsPartOf) };
+        }
+
+        if (!objectHasPart.has(subjectId)) {
+          objectHasPart.add(subjectId);
+          nextObject = { ...object, hasPart: identifierSetToNodeReferenceList(objectHasPart) };
+        }
+      } else {
+        operation satisfies 'delete';
+
+        if (subjectIsPartOf.has(objectId)) {
+          subjectIsPartOf.delete(objectId);
+          nextSubject = { ...subject, isPartOf: identifierSetToNodeReferenceList(subjectIsPartOf) };
+        }
+
+        if (objectHasPart.has(subjectId)) {
+          objectHasPart.delete(subjectId);
+          nextObject = { ...object, hasPart: identifierSetToNodeReferenceList(objectHasPart) };
+        }
+      }
+    }
+
+    const affectedIds = new Set<Identifier>();
+
+    if (nextObject) {
+      this.#setGraphNode(nextObject);
+      affectedIds.add(nextObject['@id']);
+    }
+
+    if (nextSubject) {
+      this.#setGraphNode(nextSubject);
+      affectedIds.add(nextSubject['@id']);
+    }
+
+    return Object.freeze(affectedIds);
+  }
+
+  // eslint-disable-next-line complexity
   upsert(...nodes: readonly SlantNode[]) {
     const affectedIdSet: Set<Identifier> = new Set();
 
@@ -65,6 +171,26 @@ class Graph extends EventTarget {
 
       affectedIdSet.add(id);
 
+      const existingNode = this.#graph.get(id);
+
+      if (existingNode) {
+        for (const existingChildId of nodeReferenceListToIdentifierSet(existingNode.hasPart || []).difference(
+          nodeReferenceListToIdentifierSet(node.hasPart || [])
+        )) {
+          for (const id of this.#setEdge(existingNode['@id'], 'hasPart', existingChildId, 'delete')) {
+            affectedIdSet.add(id);
+          }
+        }
+
+        for (const existingParentId of nodeReferenceListToIdentifierSet(existingNode.isPartOf || []).difference(
+          nodeReferenceListToIdentifierSet(node.isPartOf || [])
+        )) {
+          for (const id of this.#setEdge(existingNode['@id'], 'isPartOf', existingParentId, 'delete')) {
+            affectedIdSet.add(id);
+          }
+        }
+      }
+
       this.#setGraphNode(node);
     }
 
@@ -72,42 +198,14 @@ class Graph extends EventTarget {
       const nodeId = node['@id'];
 
       for (const { '@id': childId } of node.hasPart || []) {
-        const child = this.#graph.get(childId);
-
-        if (!child) {
-          throw new Error(`Cannot find node denoted by node[@id="${nodeId}"].hasPart[@id="${childId}"]`, {
-            cause: { node }
-          });
-        }
-
-        const parentIds: Set<Identifier> = new Set(child.isPartOf?.map(ref => ref['@id']) || []);
-
-        if (!parentIds.has(nodeId)) {
-          parentIds.add(nodeId);
-
-          this.#setGraphNode({ ...child, isPartOf: Array.from(parentIds.values()).map(id => ({ '@id': id })) });
-
-          affectedIdSet.add(child['@id']);
+        for (const id of this.#setEdge(nodeId, 'hasPart', childId, 'add')) {
+          affectedIdSet.add(id);
         }
       }
 
       for (const { '@id': parentId } of node.isPartOf || []) {
-        const parent = this.#graph.get(parentId);
-
-        if (!parent) {
-          throw new Error(`Cannot find node denoted by node[@id="${nodeId}"].isPartOf[@id="${parentId}"]`, {
-            cause: { node }
-          });
-        }
-
-        const parentIds: Set<Identifier> = new Set(parent.hasPart?.map(ref => ref['@id']) || []);
-
-        if (!parentIds.has(nodeId)) {
-          parentIds.add(nodeId);
-
-          this.#setGraphNode({ ...parent, hasPart: Array.from(parentIds.values()).map(id => ({ '@id': id })) });
-
-          affectedIdSet.add(parent['@id']);
+        for (const id of this.#setEdge(nodeId, 'isPartOf', parentId, 'add')) {
+          affectedIdSet.add(id);
         }
       }
     }
