@@ -155,8 +155,11 @@ class Graph extends EventTarget {
     return stream.values();
   }
 
-  snapshot() {
-    return new Map(this.#graph);
+  /**
+   * Takes a snapshot of the current graph.
+   */
+  snapshot(): ReadonlyMap<Identifier, SlantNode> {
+    return Object.freeze(new Map(this.#graph));
   }
 
   /**
