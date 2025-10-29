@@ -154,14 +154,14 @@ scenario('expandArray', bdd => {
       () =>
         ({
           '@id': '_:b1',
-          value: ['Hello, World!', { '@id': '_:b2' }, 123, true]
+          value: ['Hello, World!', { '@id': '_:b2' }, 0, false]
         }) satisfies FlatNodeObject
     )
     .when('colored', node => colorNode(node))
     .then('should convert', (_, slantNode) => {
       expect(slantNode).toEqual({
         '@id': '_:b1',
-        value: ['Hello, World!', { '@id': '_:b2' }, 123, true]
+        value: ['Hello, World!', { '@id': '_:b2' }, 0, false]
       });
     });
 });

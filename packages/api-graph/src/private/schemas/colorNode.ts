@@ -111,12 +111,11 @@ function colorNode(node: FlatNodeObject): SlantNode {
         break;
 
       default: {
-        // TODO: [P*] Test mixed array with literal and node reference.
-        const slantValue = Array.isArray(parsedValue)
+        const slantedValue = Array.isArray(parsedValue)
           ? parsedValue
           : Object.freeze(parsedValue === null ? [] : [parsedValue]);
 
-        slantValue.length && propertyMap.set(key, slantValue);
+        slantedValue.length && propertyMap.set(key, slantedValue);
 
         break;
       }
