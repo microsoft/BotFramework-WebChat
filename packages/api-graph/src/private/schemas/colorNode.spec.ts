@@ -148,6 +148,16 @@ scenario('expandArray', bdd => {
       expect(slantNode).toEqual({ '@id': '_:b1' });
     });
 
+  bdd.given
+    .oneOf<FlatNodeObject>([
+      ['a node with hasPart of empty array', () => ({ '@id': '_:b1', hasPart: [] })],
+      ['a node with isPartOf of empty array', () => ({ '@id': '_:b1', isPartOf: [] })]
+    ])
+    .when('colored', node => colorNode(node))
+    .then('the property should be removed', (_, slantNode) => {
+      expect(slantNode).toEqual({ '@id': '_:b1' });
+    });
+
   bdd
     .given(
       'a node with a property value mixed with literal and node reference',

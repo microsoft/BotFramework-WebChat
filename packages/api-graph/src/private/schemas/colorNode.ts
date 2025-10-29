@@ -27,19 +27,24 @@ function slantNode<TMessage extends ErrorMessage<ObjectWithRestIssue> | undefine
   return pipe(
     objectWithRest(
       {
-        // We only support limited scope of the JSON-LD specification.
+        // We treat @context as opaque string than a schema.
         '@context': optional(string('@context must be a string')),
-        '@id': identifier('@id must be a string'),
-        // "Multiple inheritance" is enabled by default.
+        '@id': identifier('@id is required and must be a string'),
+        // Multi-membership is enabled by default.
         '@type': optional(
-          pipe(array(string('element in @type must be a string'), '@type must be array of string'), freeze())
+          pipe(
+            array(string('element in @type must be a string'), '@type must be array of string'),
+            freeze(),
+            minLength(1, '@type must have at least one element')
+          )
         ),
         // We follow Schema.org that "hasPart" denotes children.
         // This relationship is "membership" than "hierarchy".
         hasPart: optional(
           pipe(
             array(nodeReference('element in hasPart must be NodeReference'), 'hasPart must be array of NodeReference'),
-            freeze()
+            freeze(),
+            minLength(1, 'hasPart, if present, must have at least one element')
           )
         ),
         // We follow Schema.org that "isPartOf" denotes parent, and multiple parent is possible.
@@ -50,7 +55,8 @@ function slantNode<TMessage extends ErrorMessage<ObjectWithRestIssue> | undefine
               nodeReference('element in isPartOf must be NodeReference'),
               'isPartOf must be array of NodeReference'
             ),
-            freeze()
+            freeze(),
+            minLength(1, 'isPartOf, if present, must have at least one element')
           )
         )
       },
@@ -86,11 +92,12 @@ type SlantNode = InferOutput<ObjectSchema<ReturnType<typeof slantNode>['entries'
  *    - Do not handle full JSON-LD spec: `@context` is an opaque string and the schema is not honored
  * - Auto-linking for Schema.org: `hasPart` and `isPartOf` are auto-inversed
  * - Keep its root: every node is compliant to JSON-LD, understood by standard parsers
+ * - Debuggability: must have at least one `@type`
  *
  * @param node
  * @returns An opinionated node object which conforms to JSON-LD specification.
  */
-function colorNode(node: FlatNodeObject): SlantNode {
+function colorNode(node: FlatNodeObject | SlantNode): SlantNode {
   const propertyMap = new Map<string, readonly (Literal | NodeReference)[]>();
   let context: string | undefined;
   let id: string | undefined;
