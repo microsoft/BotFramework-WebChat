@@ -22,6 +22,21 @@
       import { waitFor } from '@testduet/wait-for';
 
       run(async function () {
+        const url = new URL(window.location.href);
+        const streamingFormat = url.searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+        const makeActivity = (input, stream) => {
+          if (!stream) return input;
+          if (streamingFormat == 'entity') {
+            input.entities = [{
+              ...stream,
+              type: 'streaminfo'
+            }]
+          } else {
+            input.channelData = stream;
+          }
+          return input;
+        }
         const {
           React: { createElement },
           ReactDOM: { render },
@@ -54,14 +69,15 @@
         await pageConditions.uiConnected();
 
         // WHEN: Bot start a livestream.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamSequence: 1, streamType: 'streaming' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 'a-00001',
-          timestamp: 1,
-          text: 'A quick brown fox',
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          makeActivity({
+            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+            id: 'a-00001',
+            timestamp: 1,
+            text: 'A quick brown fox',
+            type: 'typing'
+          }, { streamSequence: 1, streamType: 'streaming' })
+        );
 
         // THEN: Should display the message.
         await waitFor(() => expect(pageElements.activities()).toHaveLength(1));
@@ -76,13 +92,14 @@
         // ---
 
         // WHEN: Bot remove partial text and go back to typing indicator.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId: 'a-00001', streamSequence: 2, streamType: 'streaming' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 'a-00002',
-          timestamp: 2,
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          makeActivity({
+            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+            id: 'a-00002',
+            timestamp: 2,
+            type: 'typing'
+          }, { streamId: 'a-00001', streamSequence: 2, streamType: 'streaming' })
+        );
 
         // THEN: Should remove the message.
         await waitFor(() => expect(pageElements.activities()).toHaveLength(0));

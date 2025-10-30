@@ -47,15 +47,29 @@
 
         await pageConditions.uiConnected();
 
+        // Helper to wrap activities for streaming/entity format
+        const url = new URL(window.location.href);
+        const streamingFormat = url.searchParams.get('streamingFormat') ?? 'channelData';
+        const makeActivity = (input, stream) => {
+          if (!stream) return input;
+          if (streamingFormat == 'entity') {
+            input.entities = [{ ...stream, type: 'streaminfo' }];
+          } else {
+            input.channelData = stream;
+          }
+          return input;
+        };
+
         // WHEN: Bot start a livestream.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamSequence: 1, streamType: 'streaming' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 'a-00001',
-          timestamp: 1,
-          text: 'A quick brown fox',
-          type: 'message'
-        });
+        await directLine.emulateIncomingActivity(
+          makeActivity({
+            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+            id: 'a-00001',
+            timestamp: 1,
+            text: 'A quick brown fox',
+            type: 'message'
+          }, { streamSequence: 1, streamType: 'streaming' })
+        );
 
         // THEN: Should display the message.
         await waitFor(() => expect(pageElements.activities()).toHaveLength(1));
@@ -70,14 +84,15 @@
         // ---
 
         // WHEN: Bot regrets with an empty message.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId: 'a-00001', streamType: 'final' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 'a-00002',
-          timestamp: 2,
-          text: '',
-          type: 'message'
-        });
+        await directLine.emulateIncomingActivity(
+          makeActivity({
+            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+            id: 'a-00002',
+            timestamp: 2,
+            text: '',
+            type: 'message'
+          }, { streamId: 'a-00001', streamType: 'final' })
+        );
 
         // THEN: Should remove the message.
         await waitFor(() => expect(pageElements.activities()).toHaveLength(0));

@@ -13,6 +13,22 @@
     <main id="webchat"></main>
     <script>
       run(async function () {
+        const url = new URL(window.location.href);
+        const streamingFormat = url.searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+        const makeActivity = (input, stream) => {
+          if (!stream) return input;
+          if (streamingFormat == 'entity') {
+            input.entities = [{
+              ...stream,
+              type: 'streaminfo'
+            }]
+          } else {
+            input.channelData = stream;
+          }
+          return input;
+        }
+
         const {
           React: { createElement },
           ReactDOM: { render },
@@ -23,18 +39,13 @@
         } = window; // Imports in UMD fashion.
 
         const streamId = crypto.randomUUID();
-
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         // WHEN: Incoming activities dispatched before Web Chat subscribe to the store.
         store.dispatch({
           type: 'DIRECT_LINE/INCOMING_ACTIVITY',
           payload: {
-            activity: {
-              channelData: {
-                streamSequence: 1,
-                streamType: 'informative'
-              },
+            activity: makeActivity({
               from: {
                 id: 'u-00001',
                 name: 'Bot',
@@ -43,18 +54,14 @@
               id: streamId,
               text: 'Nisi elit quis nisi consectetur.',
               type: 'typing'
-            }
+            }, { streamSequence: 1, streamType: 'informative' })
           }
         });
 
         store.dispatch({
           type: 'DIRECT_LINE/INCOMING_ACTIVITY',
           payload: {
-            activity: {
-              channelData: {
-                streamId,
-                streamType: 'final'
-              },
+            activity: makeActivity({
               from: {
                 id: 'u-00001',
                 name: 'Bot',
@@ -63,7 +70,7 @@
               id: crypto.randomUUID(),
               text: 'Ex nulla pariatur deserunt commodo enim laborum consequat officia proident.',
               type: 'message'
-            }
+            }, { streamId, streamType: 'final' })
           }
         });
 

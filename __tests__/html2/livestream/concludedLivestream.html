@@ -27,6 +27,22 @@
         let currentActivityKeysWithId = [];
         let currentActiveTyping = {};
 
+        const url = new URL(window.location.href);
+        const streamingFormat = url.searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+        const makeActivity = (input, stream) => {
+          if (!stream) return input;
+          if (streamingFormat == 'entity') {
+            input.entities = [{
+              ...stream,
+              type: 'streaminfo'
+            }]
+          } else {
+            input.channelData = stream;
+          }
+          return input;
+        }
+
         const Monitor = () => {
           const [activityKeys] = useActivityKeys();
           const [activeTyping] = useActiveTyping();
@@ -63,14 +79,15 @@
         // WHEN: Bot is typing a message.
         const firstTypingActivityId = 't-00001';
 
-        await directLine.emulateIncomingActivity({
-          channelData: { streamSequence: 1, streamType: 'streaming' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: firstTypingActivityId,
-          text: 'A quick',
-          timestamp: 1,
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          makeActivity({
+            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+            id: firstTypingActivityId,
+            text: 'A quick',
+            timestamp: 1,
+            type: 'typing'
+          }, { streamSequence: 1, streamType: 'streaming' })
+        );
 
         let firstTypingActivityKey = currentActivityKeysWithId[0][0];
 
@@ -97,13 +114,14 @@
         // ---
 
         // WHEN: Bot send final message.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamType: 'final' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 't-00002',
-          text: 'A quick brown fox jumped over the lazy dogs.',
-          type: 'message'
-        });
+        await directLine.emulateIncomingActivity(
+          makeActivity({
+            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+            id: 't-00002',
+            text: 'A quick brown fox jumped over the lazy dogs.',
+            type: 'message'
+          }, { streamId: firstTypingActivityId, streamType: 'final' })
+        );
 
         // THEN: Should display 1 message.
         await pageConditions.numActivitiesShown(1);
@@ -124,13 +142,12 @@
 
         // WHEN: Bot send an interim message and reuse the stream ID.
         await directLine.emulateIncomingActivity(
-          {
-            channelData: { streamId: firstTypingActivityId, streamSequence: 2, streamType: 'streaming' },
+          makeActivity({
             from: { id: 'u-00001', name: 'Bot', role: 'bot' },
             id: 't-00003',
             text: 'Lorem',
             type: 'typing'
-          },
+          }, { streamId: firstTypingActivityId, streamSequence: 2, streamType: 'streaming' }),
           { skipWait: true }
         );
 
@@ -153,13 +170,12 @@
 
         // WHEN: Bot send a final message and reuse the stream ID.
         await directLine.emulateIncomingActivity(
-          {
-            channelData: { streamId: firstTypingActivityId, streamType: 'final' },
+          makeActivity({
             from: { id: 'u-00001', name: 'Bot', role: 'bot' },
             id: 't-00004',
             text: 'Lorem ipsum.',
             type: 'message'
-          },
+          }, { streamId: firstTypingActivityId, streamType: 'final' }),
           { skipWait: true }
         );
 
