@@ -1,6 +1,1 @@
-import { type StrictStyleOptions } from '../StyleOptions';
-import useWebChatAPIContext from './internal/useWebChatAPIContext';
-
-export default function useStyleOptions(): [StrictStyleOptions] {
-  return [useWebChatAPIContext().styleOptions];
-}
+export { default } from '../providers/StyleOptions/useStyleOptions';

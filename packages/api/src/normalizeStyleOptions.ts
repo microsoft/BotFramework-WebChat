@@ -108,9 +108,8 @@ export default function normalizeStyleOptions({
   if (hideScrollToEndButton) {
     hideScrollToEndButtonDeprecation();
 
-    // Only set if the "scrollToEndButtonBehavior" is not set.
-    // If it has been set, the developer should know the older "hideScrollToEndButton" option is deprecated.
-    filledOptions.scrollToEndButtonBehavior = options.scrollToEndButtonBehavior || false;
+    filledOptions.scrollToEndButtonBehavior = false;
+    filledOptions.hideScrollToEndButton = undefined;
   }
 
   let patchedScrollToEndButtonBehavior = filledOptions.scrollToEndButtonBehavior;
@@ -128,7 +127,8 @@ export default function normalizeStyleOptions({
     newMessagesButtonFontSizeDeprecation();
 
     // Only set if the "scrollToEndButtonFontSize" is not set.
-    filledOptions.scrollToEndButtonFontSize = options.scrollToEndButtonFontSize || newMessagesButtonFontSize;
+    filledOptions.scrollToEndButtonFontSize = newMessagesButtonFontSize;
+    filledOptions.newMessagesButtonFontSize = undefined;
   }
 
   options.suggestedActionBackground && suggestedActionBackgroundDeprecation();
@@ -136,57 +136,57 @@ export default function normalizeStyleOptions({
   if (options.suggestedActionActiveBackground) {
     suggestedActionXXXBackgroundDeprecation();
 
-    filledOptions.suggestedActionBackgroundColorOnActive =
-      options.suggestedActionBackgroundColorOnActive || options.suggestedActionActiveBackground;
+    filledOptions.suggestedActionBackgroundColorOnActive = options.suggestedActionActiveBackground;
+    filledOptions.suggestedActionActiveBackground = undefined;
   }
 
   if (options.suggestedActionFocusBackground) {
     suggestedActionXXXBackgroundDeprecation();
 
-    filledOptions.suggestedActionBackgroundColorOnFocus =
-      options.suggestedActionBackgroundColorOnFocus || options.suggestedActionFocusBackground;
+    filledOptions.suggestedActionBackgroundColorOnFocus = options.suggestedActionFocusBackground;
+    filledOptions.suggestedActionFocusBackground = undefined;
   }
 
   if (options.suggestedActionHoverBackground) {
     suggestedActionXXXBackgroundDeprecation();
 
-    filledOptions.suggestedActionBackgroundColorOnHover =
-      options.suggestedActionBackgroundColorOnHover || options.suggestedActionHoverBackground;
+    filledOptions.suggestedActionBackgroundColorOnHover = options.suggestedActionHoverBackground;
+    filledOptions.suggestedActionHoverBackground = undefined;
   }
 
   if (options.suggestedActionDisabledBackground) {
     suggestedActionXXXBackgroundDeprecation();
 
-    filledOptions.suggestedActionBackgroundColorOnDisabled =
-      options.suggestedActionBackgroundColorOnDisabled || options.suggestedActionDisabledBackground;
+    filledOptions.suggestedActionBackgroundColorOnDisabled = options.suggestedActionDisabledBackground;
+    filledOptions.suggestedActionDisabledBackground = undefined;
   }
 
   if (options.suggestedActionDisabledBorderColor) {
     suggestedActionDisabledDeprecation();
 
-    filledOptions.suggestedActionBorderColorOnDisabled =
-      options.suggestedActionBorderColorOnDisabled || options.suggestedActionDisabledBorderColor;
+    filledOptions.suggestedActionBorderColorOnDisabled = options.suggestedActionDisabledBorderColor;
+    filledOptions.suggestedActionDisabledBorderColor = undefined;
   }
 
   if (options.suggestedActionDisabledBorderStyle) {
     suggestedActionDisabledDeprecation();
 
-    filledOptions.suggestedActionBorderStyleOnDisabled =
-      options.suggestedActionBorderStyleOnDisabled || options.suggestedActionDisabledBorderStyle;
+    filledOptions.suggestedActionBorderStyleOnDisabled = options.suggestedActionDisabledBorderStyle;
+    filledOptions.suggestedActionDisabledBorderStyle = undefined;
   }
 
   if (options.suggestedActionDisabledBorderWidth) {
     suggestedActionDisabledDeprecation();
 
-    filledOptions.suggestedActionBorderWidthOnDisabled =
-      options.suggestedActionBorderWidthOnDisabled || options.suggestedActionDisabledBorderWidth;
+    filledOptions.suggestedActionBorderWidthOnDisabled = options.suggestedActionDisabledBorderWidth;
+    filledOptions.suggestedActionDisabledBorderWidth = undefined;
   }
 
   if (options.suggestedActionDisabledTextColor) {
     suggestedActionDisabledDeprecation();
 
-    filledOptions.suggestedActionTextColorOnDisabled =
-      options.suggestedActionTextColorOnDisabled || options.suggestedActionDisabledTextColor;
+    filledOptions.suggestedActionTextColorOnDisabled = options.suggestedActionDisabledTextColor;
+    filledOptions.suggestedActionDisabledTextColor = undefined;
   }
 
   if (options.bubbleImageHeight) {
@@ -198,26 +198,30 @@ export default function normalizeStyleOptions({
     filledOptions.bubbleImageHeight = undefined;
   }
 
-  if (typeof options.bubbleAttachmentMaxWidth === 'undefined' && options.bubbleMaxWidth) {
+  if (options.bubbleMaxWidth) {
     bubbleMaxWidthDeprecation();
+
     filledOptions.bubbleAttachmentMaxWidth = options.bubbleMaxWidth;
     filledOptions.bubbleMaxWidth = undefined;
   }
 
-  if (typeof options.bubbleAttachmentMinWidth === 'undefined' && options.bubbleMinWidth) {
+  if (options.bubbleMinWidth) {
     bubbleMinWidthDeprecation();
+
     filledOptions.bubbleAttachmentMinWidth = options.bubbleMinWidth;
     filledOptions.bubbleMinWidth = undefined;
   }
 
-  if (typeof options.bubbleMessageMaxWidth === 'undefined' && options.bubbleMaxWidth) {
+  if (options.bubbleMaxWidth) {
     bubbleMaxWidthDeprecation();
+
     filledOptions.bubbleMessageMaxWidth = options.bubbleMaxWidth;
     filledOptions.bubbleMaxWidth = undefined;
   }
 
-  if (typeof options.bubbleMessageMinWidth === 'undefined' && options.bubbleMinWidth) {
+  if (options.bubbleMinWidth) {
     bubbleMinWidthDeprecation();
+
     filledOptions.bubbleMessageMinWidth = options.bubbleMinWidth;
     filledOptions.bubbleMinWidth = undefined;
   }

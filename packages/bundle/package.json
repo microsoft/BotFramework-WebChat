@@ -115,7 +115,7 @@
     "preversion": "cat package.json | jq '(.localDependencies // {} | to_entries | map([if .value == \"production\" then \"dependencies\" else \"devDependencies\" end, .key])) as $P | delpaths($P)' > package-temp.json && mv package-temp.json package.json",
     "start": "cross-env NODE_OPTIONS=--no-deprecation concurrently --kill-others --prefix-colors \"auto\" \"npm:start:*\"",
     "start:static": "npm run build:static -- --watch",
-    "start:tsup": "npm run build:tsup -- --watch 200",
+    "start:tsup": "npm run build:tsup -- --watch",
     "test:tsd": "tsd"
   },
   "localDependencies": {
@@ -188,6 +188,7 @@
     "micromark": "4.0.2",
     "micromark-extension-gfm": "3.0.0",
     "micromark-util-character": "2.1.1",
+    "micromark-util-sanitize-uri": "^2.0.1",
     "microsoft-cognitiveservices-speech-sdk": "1.17.0",
     "prop-types": "15.8.1",
     "punycode": "2.3.1",
@@ -240,8 +241,8 @@
   },
   "peerDependencies": {
     "@types/react": "^16.14.65",
-    "react-chain-of-responsibility": "0.4.0-main.c2f17da",
     "react": ">= 16.8.6",
+    "react-chain-of-responsibility": "0.4.0-main.c2f17da",
     "react-dom": ">= 16.8.6"
   }
 }

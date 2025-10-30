@@ -2,8 +2,8 @@ import { injectCSSPlugin } from '@msinternal/botframework-webchat-styles/build';
 import { defineConfig } from 'tsup';
 
 import { applyConfig } from '../../tsup.base.config';
-import { componentStyleContent as componentStyleContentPlaceholder } from './src/Styles/createStyles';
-import { decoratorStyleContent as decoratorStyleContentPlaceholder } from './src/decorator/private/createStyles';
+import { decoratorStyleContent as decoratorStyleContentPlaceholder } from './src/decorator/stylesheet/createDecoratorStyleElements';
+import { componentStyleContent as componentStyleContentPlaceholder } from './src/stylesheet/createComponentStyleElements';
 
 // TODO: [P1] Compute this automatically.
 const DEPENDENT_PATHS = ['bundle/src/boot/exports/index.ts'];

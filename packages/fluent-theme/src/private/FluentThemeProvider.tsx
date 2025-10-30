@@ -1,5 +1,6 @@
 /* eslint-disable prefer-arrow-callback */
-import { Components, type StyleOptions } from 'botframework-webchat';
+import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
+import { ThemeProvider } from 'botframework-webchat/component';
 import {
   createActivityBorderMiddleware,
   createActivityGroupingMiddleware,
@@ -8,7 +9,8 @@ import {
   type DecoratorMiddleware
 } from 'botframework-webchat/decorator';
 import { type ActivityMiddleware, type TypingIndicatorMiddleware } from 'botframework-webchat/internal';
-import React, { memo, type ReactNode } from 'react';
+import React, { memo, useMemo } from 'react';
+import { custom, object, optional, pipe, readonly, string, type InferInput } from 'valibot';
 
 import ActivityLoader from '../components/activity/ActivityLoader';
 import PartGroupDecorator from '../components/activity/PartGroupingDecorator';
@@ -19,15 +21,20 @@ import { PrimarySendBox } from '../components/sendBox';
 import { TelephoneKeypadProvider } from '../components/telephoneKeypad';
 import { WebChatTheme } from '../components/theme';
 import SlidingDotsTypingIndicator from '../components/typingIndicator/SlidingDotsTypingIndicator';
-import { createStyles } from '../styles';
-import VariantComposer, { VariantList } from './VariantComposer';
+import FluentThemeStylesheet from '../stylesheet/FluentThemeStylesheet';
+import VariantComposer, { variantNameSchema } from './VariantComposer';
 
-const { ThemeProvider } = Components;
+const fluentThemeProviderPropsSchema = pipe(
+  object({
+    children: optional(reactNode()),
+    nonce: optional(string()),
+    stylesRoot: optional(custom<Node>(value => value instanceof Node)),
+    variant: optional(variantNameSchema)
+  }),
+  readonly()
+);
 
-type FluentThemeProviderProps = Readonly<{
-  children?: ReactNode | undefined;
-  variant?: VariantList | undefined;
-}>;
+type FluentThemeProviderProps = InferInput<typeof fluentThemeProviderPropsSchema>;
 
 const activityMiddleware: readonly ActivityMiddleware[] = Object.freeze([
   () =>
@@ -66,20 +73,26 @@ const decoratorMiddleware: readonly DecoratorMiddleware[] = Object.freeze([
   })
 ]);
 
-const styles = createStyles('fluent-theme');
-
-const fluentStyleOptions: StyleOptions = Object.freeze({
-  feedbackActionsPlacement: 'activity-actions'
-});
-
-const typingIndicatorMiddleware = Object.freeze([
+const typingIndicatorMiddleware: readonly TypingIndicatorMiddleware[] = Object.freeze([
   () =>
     next =>
     (...args) =>
       args[0].visible ? <SlidingDotsTypingIndicator /> : next(...args)
 ] satisfies TypingIndicatorMiddleware[]);
 
-function FluentThemeProvider({ children, variant = 'fluent' }: FluentThemeProviderProps) {
+function FluentThemeProvider(props: FluentThemeProviderProps) {
+  // validateProps() does not fill in optional in production mode.
+  const { children, nonce, stylesRoot, variant = 'fluent' } = validateProps(fluentThemeProviderPropsSchema, props);
+
+  const fluentStyleOptions = useMemo(
+    () =>
+      Object.freeze({
+        feedbackActionsPlacement: 'activity-actions',
+        stylesRoot
+      }),
+    [stylesRoot]
+  );
+
   return (
     <VariantComposer variant={variant}>
       <WebChatTheme>
@@ -88,11 +101,15 @@ function FluentThemeProvider({ children, variant = 'fluent' }: FluentThemeProvid
             activityMiddleware={activityMiddleware}
             sendBoxMiddleware={sendBoxMiddleware}
             styleOptions={fluentStyleOptions}
-            styles={styles}
             typingIndicatorMiddleware={typingIndicatorMiddleware}
           >
+            <FluentThemeStylesheet nonce={nonce} />
             <AssetComposer>
-              <WebChatDecorator>
+              {/*
+                <Composer> is not set up yet, we have no place to send nonce.
+                This is temporal, until we decided to fold <WebChatDecorator> back into <Composer>.
+              */}
+              <WebChatDecorator nonce={nonce}>
                 <DecoratorComposer middleware={decoratorMiddleware}>{children}</DecoratorComposer>
               </WebChatDecorator>
             </AssetComposer>

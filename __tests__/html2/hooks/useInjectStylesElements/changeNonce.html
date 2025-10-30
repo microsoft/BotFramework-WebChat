@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <link href="/assets/index.css" nonce="1" rel="stylesheet" type="text/css" />
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.development.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js"></script>
+    <script crossorigin="anonymous" src="/test-harness.js"></script>
+    <script crossorigin="anonymous" src="/test-page-object.js"></script>
+    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
+    <meta http-equiv="content-security-policy" content="style-src-elem 'nonce-1'" />
+    <style nonce="1">
+      main {
+        background-color: Yellow!important;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="webchat"></main>
+    <script type="text/babel" data-presets="env,stage-3,react">
+      const {
+        testHelpers: { createDirectLineEmulator },
+        WebChat: {
+          internal: { InjectStyleElements }
+        }
+      } = window;
+
+      function createStyle(body) {
+        const styleElement = document.createElement('style');
+
+        styleElement.dataset['testid'] = 'style';
+        styleElement.innerHTML = body;
+
+        return styleElement;
+      }
+
+      run(
+        async function () {
+          const { directLine, store } = createDirectLineEmulator();
+
+          const render = ({ nonce, styleElements, stylesRoot }) =>
+            new Promise(resolve =>
+              ReactDOM.render(
+                <InjectStyleElements at={stylesRoot} nonce={nonce} styleElements={styleElements} />,
+                document.getElementById('webchat'),
+                resolve
+              )
+            );
+
+          const styleElement = createStyle('main { background-color: Red!important; }');
+
+          // WHEN: Inject with nonce of "1".
+          await render({ nonce: '1', styleElements: [styleElement] });
+
+          // THEN: Should render in red color.
+          await host.snapshot('local');
+
+          // THEN: The cloned/injected style should be the last child.
+          expect(document.head.lastChild).toHaveProperty('textContent', styleElement.textContent);
+
+          // THEN: Only one <style> element is added.
+          const allInjectedStyles1 = document.head.querySelectorAll('style[data-testid="style"]');
+
+          expect(allInjectedStyles1).toHaveLength(1);
+          expect(allInjectedStyles1[0]).toHaveProperty('textContent', styleElement.textContent);
+          expect(allInjectedStyles1[0].getAttribute('nonce')).toBe('1');
+
+          // WHEN: Inject with nonce of "2".
+          await render({ nonce: '2', styleElements: [styleElement] });
+
+          // THEN: No color should be applied as nonce don't match.
+          await host.snapshot('local');
+
+          // THEN: The cloned/injected style should be the last child.
+          expect(document.head.lastChild).toHaveProperty('textContent', styleElement.textContent);
+
+          // THEN: Only one <style> element is added.
+          const allInjectedStyles2 = document.head.querySelectorAll('style[data-testid="style"]');
+
+          expect(allInjectedStyles2).toHaveLength(1);
+          expect(allInjectedStyles2[0]).toHaveProperty('textContent', styleElement.textContent);
+          expect(allInjectedStyles2[0].getAttribute('nonce')).toBe('2');
+        },
+        { ignoreErrors: 'violate the following Content Security Policy directive' }
+      );
+    </script>
+  </body>
+</html>

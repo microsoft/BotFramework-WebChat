@@ -156,6 +156,7 @@
     "start:repack-react@baseline": "cd packages && cd repack && cd react@baseline && npm start",
     "start:repack-react@umd": "cd packages && cd repack && cd react@umd && npm start",
     "start:server": "serve -p 5000",
+    "start:styles": "cd packages && cd styles && npm start",
     "start:test-dev-server": "cd packages && cd test && cd dev-server && npm start",
     "start:test-harness": "cd packages && cd test && cd harness && npm start",
     "start:test-page-object": "cd packages && cd test && cd page-object && npm start",
