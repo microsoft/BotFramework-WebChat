@@ -68,6 +68,12 @@
         width: 100%;
       }
     </style>
+    <script>
+      // Offline MockBot would collide with native ES Observable.
+      // Disabling native ES Observable temporarily.
+      // We should move away from legacy tests.
+      window.Observable = undefined;
+    </script>
     <script crossorigin="anonymous" src="https://corinagum.github.io/BotFramework-Offline-MockBot/index.js"></script>
     <script
       crossorigin="anonymous"

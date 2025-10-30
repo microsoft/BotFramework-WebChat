@@ -2,33 +2,57 @@
 <html lang="en-US">
   <head>
     <link href="/assets/index.css" rel="stylesheet" type="text/css" />
-    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7.8.7/babel.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react@16.8.6/umd/react.production.min.js"></script>
-    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js"></script>
-    <script crossorigin="anonymous" src="/test-harness.js"></script>
-    <script crossorigin="anonymous" src="/test-page-object.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/webchat-es5.js"></script>
-    <script crossorigin="anonymous" src="/__dist__/botframework-webchat-fluent-theme.production.min.js"></script>
   </head>
   <body>
     <main id="webchat"></main>
+    <script type="importmap">
+      {
+        "imports": {
+          "#test-harness": "/test-harness.mjs",
+          "#test-page-object": "/test-page-object.mjs",
+          "@fluentui/react-components": "https://esm.sh/@fluentui/react-components?deps=react@18,react-dom@18&exports=FluentProvider,createDarkTheme,webLightTheme",
+          "@testduet/wait-for": "https://esm.sh/@testduet/wait-for",
+          "botframework-webchat": "/__dist__/packages/bundle/static/botframework-webchat.js",
+          "botframework-webchat/component": "/__dist__/packages/bundle/static/botframework-webchat/component.js",
+          "botframework-webchat/decorator": "/__dist__/packages/bundle/static/botframework-webchat/decorator.js",
+          "botframework-webchat/hook": "/__dist__/packages/bundle/static/botframework-webchat/hook.js",
+          "botframework-webchat/internal": "/__dist__/packages/bundle/static/botframework-webchat/internal.js",
+          "botframework-webchat-fluent-theme": "/__dist__/packages/fluent-theme/static/botframework-webchat-fluent-theme.js",
+          "react": "https://esm.sh/react@18",
+          "react-dom": "https://esm.sh/react-dom@18",
+          "react-dom/": "https://esm.sh/react-dom@18/"
+        }
+      }
+    </script>
+    <script src="https://esm.sh/tsx" type="module"></script>
     <script type="text/babel">
-      run(async function () {
-        const {
-          React,
-          ReactDOM: { render },
-          WebChat: { FluentThemeProvider, ReactWebChat }
-        } = window; // Imports in UMD fashion.
+      import '#test-harness';
+      import '#test-page-object';
 
+      import { FluentProvider, webLightTheme } from '@fluentui/react-components';
+      import { waitFor } from '@testduet/wait-for';
+      import { createDirectLine, createStoreWithOptions, hooks, ReactWebChat } from 'botframework-webchat';
+      import { FluentThemeProvider, testIds } from 'botframework-webchat-fluent-theme';
+      import { createRoot } from 'react-dom/client';
+
+      console.log(testIds);
+
+      const {
+        testHelpers: { createDirectLineEmulator }
+      } = window;
+
+      // TODO: This is for `createDirectLineEmulator` only, should find ways to eliminate this line.
+      window.WebChat = { createStoreWithOptions };
+
+      run(async function () {
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         const App = () => <ReactWebChat directLine={directLine} store={store} />;
 
-        render(
+        createRoot(document.getElementsByTagName('main')[0]).render(
           <FluentThemeProvider>
             <App />
-          </FluentThemeProvider>,
-          document.getElementById('webchat')
+          </FluentThemeProvider>
         );
 
         await pageConditions.uiConnected();
@@ -39,11 +63,22 @@
 
         await pageConditions.numActivitiesShown(1);
 
-        document.querySelector(`[data-testid="${WebChat.testIds.sendBoxTextBox}"]`).focus();
-        await host.sendKeys('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris '.repeat(12));
-        
+        document.querySelector(`[data-testid="${testIds.sendBoxTextBox}"]`).focus();
+        await host.sendKeys(
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris '.repeat(
+            12
+          )
+        );
+
         await host.sendKeys('\n');
-        host.click(document.querySelector(`[data-testid="${WebChat.testIds.sendBoxSendButton}"]`));
+
+        const sendBoxSendButton = document.querySelector(`[data-testid="${testIds.sendBoxSendButton}"]`);
+
+        // WHEN: Click on the send button.
+        host.click(sendBoxSendButton);
+
+        // THEN: Should focus on the send button, so the text box scroll bar should disappear.
+        await waitFor(() => expect(document.activeElement).toBe(sendBoxSendButton));
 
         // THEN: Should not send the activity.
         await host.snapshot();

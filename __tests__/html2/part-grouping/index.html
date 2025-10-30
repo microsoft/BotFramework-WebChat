@@ -59,6 +59,8 @@
       await waitFor(() => {
         return summaries.at(-1).getAttribute('aria-expanded') === 'true';
       }, 500);
+
+      await pageConditions.scrollStabilized();
     }
 
     run(async function () {

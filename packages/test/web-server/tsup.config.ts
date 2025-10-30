@@ -6,5 +6,6 @@ export default defineConfig({
   },
   format: 'cjs',
   platform: 'node',
-  noExternal: ['selfsigned', 'serve-handler']
+  noExternal: ['selfsigned', 'serve-handler'],
+  onSuccess: 'touch ./package.json'
 });
