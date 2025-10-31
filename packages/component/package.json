@@ -164,7 +164,7 @@
     "merge-refs": "2.0.0",
     "prop-types": "15.8.1",
     "punycode": "2.3.1",
-    "react-chain-of-responsibility": "0.4.1",
+    "react-chain-of-responsibility": "0.4.2",
     "react-dictate-button": "4.0.0",
     "react-film": "4.0.0",
     "react-redux": "7.2.9",
