@@ -25,5 +25,7 @@
     "compression": "^1.8.1",
     "express": "^5.1.0",
     "serve-handler": "^6.1.6"
-  }
+  },
+  "dependencies": {},
+  "peerDependencies": {}
 }

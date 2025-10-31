@@ -63,10 +63,12 @@
   "localDependencies": {
     "@msinternal/botframework-webchat-cldr-data-downloader": "production"
   },
+  "devDependencies": {},
   "dependencies": {
     "@msinternal/botframework-webchat-cldr-data-downloader": "0.3.5-0",
     "glob": "8.1.0",
     "read-pkg": "9.0.1",
     "read-pkg-up": "11.0.0"
-  }
+  },
+  "peerDependencies": {}
 }

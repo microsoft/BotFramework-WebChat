@@ -53,8 +53,10 @@
     "preversion": "../../scripts/npm/preversion.sh",
     "start": "../../scripts/npm/notify-build.sh \"src\""
   },
+  "localDependencies": {},
+  "devDependencies": {},
+  "dependencies": {},
   "peerDependencies": {
     "react": ">= 16.8.6"
-  },
-  "localDependencies": {}
+  }
 }

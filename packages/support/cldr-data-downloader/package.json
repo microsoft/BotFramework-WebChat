@@ -56,10 +56,12 @@
   },
   "pinDependencies": {},
   "localDependencies": {},
+  "devDependencies": {},
   "dependencies": {
     "adm-zip": "0.5.16",
     "nopt": "8.1.0",
     "progress": "2.0.3",
     "q": "1.5.1"
-  }
+  },
+  "peerDependencies": {}
 }

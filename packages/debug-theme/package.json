@@ -57,9 +57,10 @@
     "botframework-webchat-api": "production",
     "botframework-webchat-component": "production"
   },
+  "devDependencies": {},
   "dependencies": {
-    "botframework-webchat-api": "^0.0.0-0",
-    "botframework-webchat-component": "^0.0.0-0"
+    "botframework-webchat-api": "0.0.0-0",
+    "botframework-webchat-component": "0.0.0-0"
   },
   "peerDependencies": {
     "react": ">= 16.8.6"

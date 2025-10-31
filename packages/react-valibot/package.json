@@ -61,11 +61,12 @@
     "@msinternal/botframework-webchat-tsconfig": "development"
   },
   "devDependencies": {
-    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
     "@types/jest": "^30.0.0",
     "tsup": "^8.5.0",
     "typescript": "~5.8.3"
   },
+  "dependencies": {},
   "peerDependencies": {
     "@types/react": "^16.14.65",
     "react": ">= 16.8.6",

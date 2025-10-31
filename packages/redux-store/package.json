@@ -62,8 +62,8 @@
     "botframework-webchat-core": "production"
   },
   "devDependencies": {
-    "@msinternal/botframework-webchat-react-valibot": "^0.0.0-0",
-    "@msinternal/botframework-webchat-tsconfig": "^0.0.0-0",
+    "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
+    "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
     "tsup": "^8.5.0",
     "typescript": "~5.8.3"
   },
