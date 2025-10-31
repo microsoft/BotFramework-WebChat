@@ -23,6 +23,20 @@
 
       const attachmentLayout = new URL(location).searchParams.get('layout') === 'carousel' ? 'carousel' : undefined;
 
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -34,22 +48,6 @@
         } = window; // Imports in UMD fashion.
 
         const { directLine, store } = testHelpers.createDirectLineEmulator();
-
-        const url = new URL(window.location.href);
-        const streamingFormat = url.searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
-
-        const makeActivity = (input, stream) => {
-          if (!stream) return input;
-          if (streamingFormat == 'entity') {
-            input.entities = [{
-              ...stream,
-              type: 'streaminfo'
-            }]
-          } else {
-            input.channelData = stream;
-          }
-          return input;
-        }
 
         const styleOptions = {
           // Non-animated typing indicator.
@@ -77,13 +75,16 @@
 
         // WHEN: Bot start a livestream without content.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            attachmentLayout,
-            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-            id: 'a-00001',
-            timestamp: 1,
-            type: 'typing'
-          }, { streamSequence: 1, streamType: 'streaming' })
+          addLivestreamingMetadata(
+            {
+              attachmentLayout,
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: 'a-00001',
+              timestamp: 1,
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
         );
 
         // THEN: Should display no messages.

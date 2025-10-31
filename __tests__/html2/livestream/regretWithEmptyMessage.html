@@ -21,6 +21,20 @@
     <script type="module">
       import { waitFor } from '@testduet/wait-for';
 
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -47,28 +61,18 @@
 
         await pageConditions.uiConnected();
 
-        // Helper to wrap activities for streaming/entity format
-        const url = new URL(window.location.href);
-        const streamingFormat = url.searchParams.get('streamingFormat') ?? 'channelData';
-        const makeActivity = (input, stream) => {
-          if (!stream) return input;
-          if (streamingFormat == 'entity') {
-            input.entities = [{ ...stream, type: 'streaminfo' }];
-          } else {
-            input.channelData = stream;
-          }
-          return input;
-        };
-
         // WHEN: Bot start a livestream.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-            id: 'a-00001',
-            timestamp: 1,
-            text: 'A quick brown fox',
-            type: 'message'
-          }, { streamSequence: 1, streamType: 'streaming' })
+          addLivestreamingMetadata(
+            {
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: 'a-00001',
+              timestamp: 1,
+              text: 'A quick brown fox',
+              type: 'message'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
         );
 
         // THEN: Should display the message.
@@ -85,13 +89,16 @@
 
         // WHEN: Bot regrets with an empty message.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-            id: 'a-00002',
-            timestamp: 2,
-            text: '',
-            type: 'message'
-          }, { streamId: 'a-00001', streamType: 'final' })
+          addLivestreamingMetadata(
+            {
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: 'a-00002',
+              timestamp: 2,
+              text: '',
+              type: 'message'
+            },
+            { streamId: 'a-00001', streamType: 'final' }
+          )
         );
 
         // THEN: Should remove the message.

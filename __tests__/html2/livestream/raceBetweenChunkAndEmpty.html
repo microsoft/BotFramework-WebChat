@@ -21,6 +21,20 @@
     <script type="module">
       import { waitFor } from '@testduet/wait-for';
 
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -55,28 +69,18 @@
 
         await pageConditions.uiConnected();
 
-        // Helper to wrap activities for streaming/entity format
-        const url = new URL(window.location.href);
-        const streamingFormat = url.searchParams.get('streamingFormat') ?? 'channelData';
-        const makeActivity = (input, stream) => {
-          if (!stream) return input;
-          if (streamingFormat == 'entity') {
-            input.entities = [{ ...stream, type: 'streaminfo' }];
-          } else {
-            input.channelData = stream;
-          }
-          return input;
-        };
-
         // ---
 
         // WHEN: Receive an empty livestream.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            from: { id: 'bot', role: 'bot' },
-            id: 'a-00001',
-            type: 'typing'
-          }, { streamSequence: 1, streamType: 'streaming' })
+          addLivestreamingMetadata(
+            {
+              from: { id: 'bot', role: 'bot' },
+              id: 'a-00001',
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
         );
 
         // THEN: Should show typing indicator.
@@ -92,12 +96,15 @@
 
         // WHEN: Receive another chunk livestream.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            from: { id: 'bot', role: 'bot' },
-            id: 'a-00002',
-            text: 'A quick brown fox',
-            type: 'typing'
-          }, { streamSequence: 1, streamType: 'streaming' })
+          addLivestreamingMetadata(
+            {
+              from: { id: 'bot', role: 'bot' },
+              id: 'a-00002',
+              text: 'A quick brown fox',
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
         );
 
         // THEN: Should show message.
@@ -116,12 +123,15 @@
 
         // WHEN: The second livestream is finished.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            from: { id: 'bot', role: 'bot' },
-            id: crypto.randomUUID(),
-            text: 'A quick brown fox jumped over the lazy dogs.',
-            type: 'message'
-          }, { streamId: 'a-00002', streamType: 'final' })
+          addLivestreamingMetadata(
+            {
+              from: { id: 'bot', role: 'bot' },
+              id: crypto.randomUUID(),
+              text: 'A quick brown fox jumped over the lazy dogs.',
+              type: 'message'
+            },
+            { streamId: 'a-00002', streamType: 'final' }
+          )
         );
 
         // THEN: Should show message.
@@ -143,11 +153,14 @@
 
         // WHEN: The contentless livestream is finished.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            from: { id: 'bot', role: 'bot' },
-            id: crypto.randomUUID(),
-            type: 'typing'
-          }, { streamId: 'a-00001', streamType: 'final' })
+          addLivestreamingMetadata(
+            {
+              from: { id: 'bot', role: 'bot' },
+              id: crypto.randomUUID(),
+              type: 'typing'
+            },
+            { streamId: 'a-00001', streamType: 'final' }
+          )
         );
 
         // THEN: Should hide typing indicator.
