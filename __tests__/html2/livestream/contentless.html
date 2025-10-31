@@ -23,6 +23,20 @@
 
       const attachmentLayout = new URL(location).searchParams.get('layout') === 'carousel' ? 'carousel' : undefined;
 
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -60,14 +74,18 @@
         await pageConditions.uiConnected();
 
         // WHEN: Bot start a livestream without content.
-        await directLine.emulateIncomingActivity({
-          attachmentLayout,
-          channelData: { streamSequence: 1, streamType: 'streaming' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 'a-00001',
-          timestamp: 1,
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              attachmentLayout,
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: 'a-00001',
+              timestamp: 1,
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
+        );
 
         // THEN: Should display no messages.
         await waitFor(() => expect(pageElements.activities()).toHaveLength(0));

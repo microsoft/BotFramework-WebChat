@@ -12,6 +12,20 @@
   <body>
     <main id="webchat"></main>
     <script type="module">
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -59,20 +73,21 @@
         const firstTypingActivityId = 't-00001';
 
         // WHEN: An informative message is received.
-        await directLine.emulateIncomingActivity({
-          channelData: {
-            streamSequence: 1,
-            streamType: 'informative'
-          },
-          from: {
-            id: 'u-00001',
-            name: 'Bot',
-            role: 'bot'
-          },
-          id: 't-00001',
-          text: 'Nisi elit quis nisi consectetur.',
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: {
+                id: 'u-00001',
+                name: 'Bot',
+                role: 'bot'
+              },
+              id: 't-00001',
+              text: 'Nisi elit quis nisi consectetur.',
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'informative' }
+          )
+        );
 
         // THEN: Should render the informative message.
         expect(pageElements.activityContents()[0]).toHaveProperty(

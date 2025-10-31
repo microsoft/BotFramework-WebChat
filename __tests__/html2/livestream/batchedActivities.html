@@ -12,6 +12,20 @@
   <body>
     <main id="webchat"></main>
     <script>
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -23,18 +37,13 @@
         } = window; // Imports in UMD fashion.
 
         const streamId = crypto.randomUUID();
-
         const { directLine, store } = testHelpers.createDirectLineEmulator();
 
         // WHEN: Incoming activities dispatched before Web Chat subscribe to the store.
         store.dispatch({
           type: 'DIRECT_LINE/INCOMING_ACTIVITY',
           payload: {
-            activity: {
-              channelData: {
-                streamSequence: 1,
-                streamType: 'informative'
-              },
+            activity: addLivestreamingMetadata({
               from: {
                 id: 'u-00001',
                 name: 'Bot',
@@ -43,18 +52,14 @@
               id: streamId,
               text: 'Nisi elit quis nisi consectetur.',
               type: 'typing'
-            }
+            }, { streamSequence: 1, streamType: 'informative' })
           }
         });
 
         store.dispatch({
           type: 'DIRECT_LINE/INCOMING_ACTIVITY',
           payload: {
-            activity: {
-              channelData: {
-                streamId,
-                streamType: 'final'
-              },
+            activity: addLivestreamingMetadata({
               from: {
                 id: 'u-00001',
                 name: 'Bot',
@@ -63,7 +68,7 @@
               id: crypto.randomUUID(),
               text: 'Ex nulla pariatur deserunt commodo enim laborum consequat officia proident.',
               type: 'message'
-            }
+            }, { streamId, streamType: 'final' })
           }
         });
 

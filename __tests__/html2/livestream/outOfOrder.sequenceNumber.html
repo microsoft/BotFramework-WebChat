@@ -12,6 +12,20 @@
   <body>
     <main id="webchat"></main>
     <script type="module">
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -74,14 +88,18 @@
         // WHEN: Bot is typing a message.
         const firstTypingActivityId = 't-00001';
 
-        await directLine.emulateIncomingActivity({
-          channelData: { streamType: 'streaming', streamSequence: 1 },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: firstTypingActivityId,
-          text: 'A quick',
-          timestamp: 1,
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: firstTypingActivityId,
+              text: 'A quick',
+              timestamp: 1,
+              type: 'typing'
+            },
+            { streamType: 'streaming', streamSequence: 1 }
+          )
+        );
 
         let secondActivityKey = currentActivityKeysWithId[1][0];
 
@@ -116,14 +134,18 @@
 
         // WHEN: Bot send typing message in out-of-order fashion.
         //       This activity has streamSequence of 3 but timestamp of 2. Stream sequence should take prcedence.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamSequence: 3, streamType: 'streaming' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 't-00003',
-          text: 'A quick brown fox jumped over',
-          timestamp: 2,
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: 't-00003',
+              text: 'A quick brown fox jumped over',
+              timestamp: 2,
+              type: 'typing'
+            },
+            { streamId: firstTypingActivityId, streamSequence: 3, streamType: 'streaming' }
+          )
+        );
 
         // THEN: Should display 2 messages.
         await pageConditions.numActivitiesShown(2);
@@ -156,14 +178,18 @@
 
         // WHEN: Bot send the belated typing message.
         //       This activity has streamSequence of 2 but timestamp of 3. Stream sequence should take prcedence.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamSequence: 2, streamType: 'streaming' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 't-00002',
-          text: 'A quick brown fox',
-          timestamp: 3,
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: 't-00002',
+              text: 'A quick brown fox',
+              timestamp: 3,
+              type: 'typing'
+            },
+            { streamId: firstTypingActivityId, streamSequence: 2, streamType: 'streaming' }
+          )
+        );
 
         // THEN: Should display 2 messages without the belated typing message.
         await pageConditions.numActivitiesShown(2);
@@ -195,13 +221,17 @@
         // ---
 
         // WHEN: Bot finished typing the message.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamType: 'final' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 'a-00002',
-          text: 'A quick brown fox jumped over the lazy dogs.',
-          type: 'message'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: 'a-00002',
+              text: 'A quick brown fox jumped over the lazy dogs.',
+              type: 'message'
+            },
+            { streamId: firstTypingActivityId, streamType: 'final' }
+          )
+        );
 
         // THEN: Should display 2 messages.
         await pageConditions.numActivitiesShown(2);

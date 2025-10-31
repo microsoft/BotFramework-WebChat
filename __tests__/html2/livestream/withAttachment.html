@@ -24,6 +24,20 @@
       const attachmentLayout =
         new URLSearchParams(location.search).get('layout') === 'carousel' ? 'carousel' : undefined;
 
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -54,21 +68,25 @@
         // WHEN: Bot start a livestream with an attachment.
         const firstTypingActivityId = crypto.randomUUID();
 
-        await directLine.emulateIncomingActivity({
-          attachmentLayout,
-          attachments: [
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
             {
-              content: 'Card 1',
-              contentType: 'text/plain'
-            }
-          ],
-          channelData: { streamSequence: 1, streamType: 'streaming' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: firstTypingActivityId,
-          text: 'A quick brown',
-          timestamp: 1,
-          type: 'typing'
-        });
+              attachmentLayout,
+              attachments: [
+                {
+                  content: 'Card 1',
+                  contentType: 'text/plain'
+                }
+              ],
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: firstTypingActivityId,
+              text: 'A quick brown',
+              timestamp: 1,
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
+        );
 
         // THEN: Should display the message.
         await pageConditions.numActivitiesShown(1);
@@ -83,25 +101,29 @@
 
         // WHEN: Receive another attachment through livestreaming.
 
-        await directLine.emulateIncomingActivity({
-          attachmentLayout,
-          attachments: [
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
             {
-              content: 'Card 1',
-              contentType: 'text/plain'
+              attachmentLayout,
+              attachments: [
+                {
+                  content: 'Card 1',
+                  contentType: 'text/plain'
+                },
+                {
+                  content: 'Card 2',
+                  contentType: 'text/plain'
+                }
+              ],
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: crypto.randomUUID(),
+              text: 'A quick brown fox jumped over',
+              timestamp: 2,
+              type: 'typing'
             },
-            {
-              content: 'Card 2',
-              contentType: 'text/plain'
-            }
-          ],
-          channelData: { streamId: firstTypingActivityId, streamSequence: 2, streamType: 'streaming' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: crypto.randomUUID(),
-          text: 'A quick brown fox jumped over',
-          timestamp: 2,
-          type: 'typing'
-        });
+            { streamId: firstTypingActivityId, streamSequence: 2, streamType: 'streaming' }
+          )
+        );
 
         // THEN: Should display the message.
         await pageConditions.numActivitiesShown(1);
@@ -116,16 +138,20 @@
 
         // WHEN: Finalized message is received without any attachments.
 
-        await directLine.emulateIncomingActivity({
-          attachmentLayout,
-          attachments: [],
-          channelData: { streamId: firstTypingActivityId, streamType: 'final' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: crypto.randomUUID(),
-          text: 'A quick brown fox jumped over the lazy dogs.',
-          timestamp: 3,
-          type: 'message'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              attachmentLayout,
+              attachments: [],
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: crypto.randomUUID(),
+              text: 'A quick brown fox jumped over the lazy dogs.',
+              timestamp: 3,
+              type: 'message'
+            },
+            { streamId: firstTypingActivityId, streamType: 'final' }
+          )
+        );
 
         // THEN: Should display the message.
         await pageConditions.numActivitiesShown(1);

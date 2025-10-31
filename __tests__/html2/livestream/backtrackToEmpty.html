@@ -12,6 +12,20 @@
   <body>
     <main id="webchat"></main>
     <script type="module">
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -85,13 +99,17 @@
         // WHEN: Bot is sending a typing indicator in a livestream.
         const firstTypingActivityId = 't-00001';
 
-        await directLine.emulateIncomingActivity({
-          channelData: { streamSequence: 1, streamType: 'streaming' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: firstTypingActivityId,
-          timestamp: 2,
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: firstTypingActivityId,
+              timestamp: 2,
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
+        );
 
         let firstTypingActivityKey = currentActivityKeysWithId[1][0];
 
@@ -138,14 +156,18 @@
         // ---
 
         // WHEN: Bot is typing a message.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId: 't-00001', streamSequence: 2, streamType: 'streaming' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 't-00002',
-          text: 'I will delete this line later.',
-          timestamp: 3,
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: 't-00002',
+              text: 'I will delete this line later.',
+              timestamp: 3,
+              type: 'typing'
+            },
+            { streamId: 't-00001', streamSequence: 2, streamType: 'streaming' }
+          )
+        );
 
         // THEN: Should display the livestream activity.
         await pageConditions.numActivitiesShown(2);
@@ -177,13 +199,17 @@
         // ---
 
         // WHEN: Bot send interim message without content.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamSequence: 3, streamType: 'streaming' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 't-00003',
-          timestamp: 4,
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: 't-00003',
+              timestamp: 4,
+              type: 'typing'
+            },
+            { streamId: firstTypingActivityId, streamSequence: 3, streamType: 'streaming' }
+          )
+        );
 
         // THEN: Should not display the livestream activity.
         await pageConditions.numActivitiesShown(1);
@@ -214,13 +240,17 @@
         // ---
 
         // WHEN: Bot send final message as typing, without content.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId: firstTypingActivityId, streamType: 'final' },
-          from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-          id: 't-00004',
-          timestamp: 5,
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: 't-00004',
+              timestamp: 5,
+              type: 'typing'
+            },
+            { streamId: firstTypingActivityId, streamType: 'final' }
+          )
+        );
 
         // THEN: Should display no messages.
         await pageConditions.numActivitiesShown(1);

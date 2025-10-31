@@ -19,6 +19,20 @@
       }
     </script>
     <script type="module">
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -26,7 +40,7 @@
           WebChat: {
             Components: { BasicWebChat, Composer },
             decorator: { WebChatDecorator },
-            hooks: { useActivityKeys, useGetActivitiesByKey },
+            hooks: { useActivityKeys, useGetActivitiesByKey }
           }
         } = window; // Imports in UMD fashion.
 
@@ -73,13 +87,17 @@
         let firstActivityKey = currentActivityKeysWithId[0][0];
 
         // WHEN: Bot is typing a message.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamSequence: 1, streamType: 'streaming' },
-          from: { name: 'Bot', role: 'bot' },
-          id: 't-00001',
-          text: 'A quick',
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { name: 'Bot', role: 'bot' },
+              id: 't-00001',
+              text: 'A quick',
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
+        );
 
         let secondActivityKey = currentActivityKeysWithId[1][0];
 
@@ -102,13 +120,17 @@
         // ---
 
         // WHEN: Bot is typing another message.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamSequence: 1, streamType: 'streaming' },
-          from: { name: 'Bot', role: 'bot' },
-          id: 't-10001',
-          text: 'Falsches Üben',
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { name: 'Bot', role: 'bot' },
+              id: 't-10001',
+              text: 'Falsches Üben',
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
+        );
 
         let thirdActivityKey = currentActivityKeysWithId[2][0];
 
@@ -133,13 +155,17 @@
         // ---
 
         // WHEN: Bot continue typing the message.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamSequence: 2, streamId: 't-00001', streamType: 'streaming' },
-          from: { name: 'Bot', role: 'bot' },
-          id: 't-00002',
-          text: 'A quick brown fox',
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { name: 'Bot', role: 'bot' },
+              id: 't-00002',
+              text: 'A quick brown fox',
+              type: 'typing'
+            },
+            { streamSequence: 2, streamId: 't-00001', streamType: 'streaming' }
+          )
+        );
 
         // THEN: Should display 3 messages, the order should kept the same.
         await pageConditions.numActivitiesShown(3);
@@ -162,13 +188,17 @@
         // ---
 
         // WHEN: Bot continue typing the third message.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamSequence: 2, streamId: 't-10001', streamType: 'streaming' },
-          from: { name: 'Bot', role: 'bot' },
-          id: 't-10002',
-          text: 'Falsches Üben von Xylophonmusik',
-          type: 'typing'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { name: 'Bot', role: 'bot' },
+              id: 't-10002',
+              text: 'Falsches Üben von Xylophonmusik',
+              type: 'typing'
+            },
+            { streamSequence: 2, streamId: 't-10001', streamType: 'streaming' }
+          )
+        );
 
         // THEN: Should display 3 messages, the order should kept the same.
         await pageConditions.numActivitiesShown(3);
@@ -191,13 +221,17 @@
         // ---
 
         // WHEN: Bot finished typing the second message.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId: 't-00001', streamType: 'final' },
-          from: { name: 'Bot', role: 'bot' },
-          id: 'a-00002',
-          text: 'A quick brown fox jumped over the lazy dogs.',
-          type: 'message'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { name: 'Bot', role: 'bot' },
+              id: 'a-00002',
+              text: 'A quick brown fox jumped over the lazy dogs.',
+              type: 'message'
+            },
+            { streamId: 't-00001', streamType: 'final' }
+          )
+        );
 
         // THEN: Should display 3 messages.
         await pageConditions.numActivitiesShown(3);
@@ -223,13 +257,17 @@
         // ---
 
         // WHEN: Bot finished typing the third message.
-        await directLine.emulateIncomingActivity({
-          channelData: { streamId: 't-10001', streamType: 'final' },
-          from: { name: 'Bot', role: 'bot' },
-          id: 'a-00003',
-          text: 'Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.',
-          type: 'message'
-        });
+        await directLine.emulateIncomingActivity(
+          addLivestreamingMetadata(
+            {
+              from: { name: 'Bot', role: 'bot' },
+              id: 'a-00003',
+              text: 'Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.',
+              type: 'message'
+            },
+            { streamId: 't-10001', streamType: 'final' }
+          )
+        );
 
         // THEN: Should display 3 messages.
         await pageConditions.numActivitiesShown(3);
