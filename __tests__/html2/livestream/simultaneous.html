@@ -19,6 +19,20 @@
       }
     </script>
     <script type="module">
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -26,7 +40,7 @@
           WebChat: {
             Components: { BasicWebChat, Composer },
             decorator: { WebChatDecorator },
-            hooks: { useActivityKeys, useGetActivitiesByKey },
+            hooks: { useActivityKeys, useGetActivitiesByKey }
           }
         } = window; // Imports in UMD fashion.
 
@@ -63,38 +77,26 @@
 
         await pageConditions.uiConnected();
 
-        // Helper to wrap activities for streaming/entity format
-        const url = new URL(window.location.href);
-        const streamingFormat = url.searchParams.get('streamingFormat') ?? 'channelData';
-        const makeActivity = (input, stream) => {
-          if (!stream) return input;
-          if (streamingFormat == 'entity') {
-            input.entities = [{ ...stream, type: 'streaminfo' }];
-          } else {
-            input.channelData = stream;
-          }
-          return input;
-        };
-
         // SETUP: Bot sent a message.
-        await directLine.emulateIncomingActivity(
-          makeActivity({
-            id: 'a-00001',
-            text: 'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.',
-            type: 'message'
-          })
-        );
+        await directLine.emulateIncomingActivity({
+          id: 'a-00001',
+          text: 'Adipisicing cupidatat eu Lorem anim ut aute magna occaecat id cillum.',
+          type: 'message'
+        });
 
         let firstActivityKey = currentActivityKeysWithId[0][0];
 
         // WHEN: Bot is typing a message.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            from: { name: 'Bot', role: 'bot' },
-            id: 't-00001',
-            text: 'A quick',
-            type: 'typing'
-          }, { streamSequence: 1, streamType: 'streaming' })
+          addLivestreamingMetadata(
+            {
+              from: { name: 'Bot', role: 'bot' },
+              id: 't-00001',
+              text: 'A quick',
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
         );
 
         let secondActivityKey = currentActivityKeysWithId[1][0];
@@ -119,12 +121,15 @@
 
         // WHEN: Bot is typing another message.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            from: { name: 'Bot', role: 'bot' },
-            id: 't-10001',
-            text: 'Falsches Üben',
-            type: 'typing'
-          }, { streamSequence: 1, streamType: 'streaming' })
+          addLivestreamingMetadata(
+            {
+              from: { name: 'Bot', role: 'bot' },
+              id: 't-10001',
+              text: 'Falsches Üben',
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
         );
 
         let thirdActivityKey = currentActivityKeysWithId[2][0];
@@ -151,12 +156,15 @@
 
         // WHEN: Bot continue typing the message.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            from: { name: 'Bot', role: 'bot' },
-            id: 't-00002',
-            text: 'A quick brown fox',
-            type: 'typing'
-          }, { streamSequence: 2, streamId: 't-00001', streamType: 'streaming' })
+          addLivestreamingMetadata(
+            {
+              from: { name: 'Bot', role: 'bot' },
+              id: 't-00002',
+              text: 'A quick brown fox',
+              type: 'typing'
+            },
+            { streamSequence: 2, streamId: 't-00001', streamType: 'streaming' }
+          )
         );
 
         // THEN: Should display 3 messages, the order should kept the same.
@@ -181,12 +189,15 @@
 
         // WHEN: Bot continue typing the third message.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            from: { name: 'Bot', role: 'bot' },
-            id: 't-10002',
-            text: 'Falsches Üben von Xylophonmusik',
-            type: 'typing'
-          }, { streamSequence: 2, streamId: 't-10001', streamType: 'streaming' })
+          addLivestreamingMetadata(
+            {
+              from: { name: 'Bot', role: 'bot' },
+              id: 't-10002',
+              text: 'Falsches Üben von Xylophonmusik',
+              type: 'typing'
+            },
+            { streamSequence: 2, streamId: 't-10001', streamType: 'streaming' }
+          )
         );
 
         // THEN: Should display 3 messages, the order should kept the same.
@@ -211,12 +222,15 @@
 
         // WHEN: Bot finished typing the second message.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            from: { name: 'Bot', role: 'bot' },
-            id: 'a-00002',
-            text: 'A quick brown fox jumped over the lazy dogs.',
-            type: 'message'
-          }, { streamId: 't-00001', streamType: 'final' })
+          addLivestreamingMetadata(
+            {
+              from: { name: 'Bot', role: 'bot' },
+              id: 'a-00002',
+              text: 'A quick brown fox jumped over the lazy dogs.',
+              type: 'message'
+            },
+            { streamId: 't-00001', streamType: 'final' }
+          )
         );
 
         // THEN: Should display 3 messages.
@@ -244,12 +258,15 @@
 
         // WHEN: Bot finished typing the third message.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            from: { name: 'Bot', role: 'bot' },
-            id: 'a-00003',
-            text: 'Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.',
-            type: 'message'
-          }, { streamId: 't-10001', streamType: 'final' })
+          addLivestreamingMetadata(
+            {
+              from: { name: 'Bot', role: 'bot' },
+              id: 'a-00003',
+              text: 'Falsches Üben von Xylophonmusik quält jeden größeren Zwerg.',
+              type: 'message'
+            },
+            { streamId: 't-10001', streamType: 'final' }
+          )
         );
 
         // THEN: Should display 3 messages.

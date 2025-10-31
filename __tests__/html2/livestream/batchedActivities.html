@@ -12,23 +12,21 @@
   <body>
     <main id="webchat"></main>
     <script>
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
-        const url = new URL(window.location.href);
-        const streamingFormat = url.searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
-
-        const makeActivity = (input, stream) => {
-          if (!stream) return input;
-          if (streamingFormat == 'entity') {
-            input.entities = [{
-              ...stream,
-              type: 'streaminfo'
-            }]
-          } else {
-            input.channelData = stream;
-          }
-          return input;
-        }
-
         const {
           React: { createElement },
           ReactDOM: { render },
@@ -45,7 +43,7 @@
         store.dispatch({
           type: 'DIRECT_LINE/INCOMING_ACTIVITY',
           payload: {
-            activity: makeActivity({
+            activity: addLivestreamingMetadata({
               from: {
                 id: 'u-00001',
                 name: 'Bot',
@@ -61,7 +59,7 @@
         store.dispatch({
           type: 'DIRECT_LINE/INCOMING_ACTIVITY',
           payload: {
-            activity: makeActivity({
+            activity: addLivestreamingMetadata({
               from: {
                 id: 'u-00001',
                 name: 'Bot',

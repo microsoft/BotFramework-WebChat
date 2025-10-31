@@ -24,22 +24,20 @@
       const attachmentLayout =
         new URLSearchParams(location.search).get('layout') === 'carousel' ? 'carousel' : undefined;
 
-        const url = new URL(window.location.href);
-        const streamingFormat = url.searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
+      const streamingFormat = new URL(window.location.href).searchParams.get('streamingFormat') ?? 'channelData'; // can be entity or channelData
 
-        const makeActivity = (input, stream) => {
-          if (!stream) return input;
-          if (streamingFormat == 'entity') {
-            input.entities = [{
-              ...stream,
-              type: 'streaminfo'
-            }]
-          } else {
-            input.channelData = stream;
-          }
-          return input;
-        }
-        
+      function addLivestreamingMetadata(activity, livestreamingMetadata) {
+        return streamingFormat === 'entity'
+          ? {
+              ...activity,
+              entities: [...(activity.entities ?? []), { ...livestreamingMetadata, type: 'streaminfo' }]
+            }
+          : {
+              ...activity,
+              channelData: { ...activity.channelData, ...livestreamingMetadata }
+            };
+      }
+
       run(async function () {
         const {
           React: { createElement },
@@ -71,19 +69,22 @@
         const firstTypingActivityId = crypto.randomUUID();
 
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            attachmentLayout,
-            attachments: [
-              {
-                content: 'Card 1',
-                contentType: 'text/plain'
-              }
-            ],
-            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-            id: firstTypingActivityId,
-            timestamp: 1,
-            type: 'typing'
-          }, { streamSequence: 1, streamType: 'streaming' })
+          addLivestreamingMetadata(
+            {
+              attachmentLayout,
+              attachments: [
+                {
+                  content: 'Card 1',
+                  contentType: 'text/plain'
+                }
+              ],
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: firstTypingActivityId,
+              timestamp: 1,
+              type: 'typing'
+            },
+            { streamSequence: 1, streamType: 'streaming' }
+          )
         );
 
         // THEN: Should display the activity.
@@ -100,23 +101,26 @@
 
         // WHEN: Receive another attachment through livestreaming.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            attachmentLayout,
-            attachments: [
-              {
-                content: 'Card 1',
-                contentType: 'text/plain'
-              },
-              {
-                content: 'Card 2',
-                contentType: 'text/plain'
-              }
-            ],
-            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-            id: crypto.randomUUID(),
-            timestamp: 2,
-            type: 'typing'
-          }, { streamId: firstTypingActivityId, streamSequence: 2, streamType: 'streaming' })
+          addLivestreamingMetadata(
+            {
+              attachmentLayout,
+              attachments: [
+                {
+                  content: 'Card 1',
+                  contentType: 'text/plain'
+                },
+                {
+                  content: 'Card 2',
+                  contentType: 'text/plain'
+                }
+              ],
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: crypto.randomUUID(),
+              timestamp: 2,
+              type: 'typing'
+            },
+            { streamId: firstTypingActivityId, streamSequence: 2, streamType: 'streaming' }
+          )
         );
 
         // THEN: Should display the activity.
@@ -134,23 +138,26 @@
 
         // WHEN: Finalized message is received.
         await directLine.emulateIncomingActivity(
-          makeActivity({
-            attachmentLayout,
-            attachments: [
-              {
-                content: 'Card A',
-                contentType: 'text/plain'
-              },
-              {
-                content: 'Card B',
-                contentType: 'text/plain'
-              }
-            ],
-            from: { id: 'u-00001', name: 'Bot', role: 'bot' },
-            id: crypto.randomUUID(),
-            timestamp: 3,
-            type: 'message'
-          }, { streamId: firstTypingActivityId, streamType: 'final' })
+          addLivestreamingMetadata(
+            {
+              attachmentLayout,
+              attachments: [
+                {
+                  content: 'Card A',
+                  contentType: 'text/plain'
+                },
+                {
+                  content: 'Card B',
+                  contentType: 'text/plain'
+                }
+              ],
+              from: { id: 'u-00001', name: 'Bot', role: 'bot' },
+              id: crypto.randomUUID(),
+              timestamp: 3,
+              type: 'message'
+            },
+            { streamId: firstTypingActivityId, streamType: 'final' }
+          )
         );
 
         // THEN: Should display the activity.
