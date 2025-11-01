@@ -1,6 +1,6 @@
 {
   "name": "@msinternal/botframework-webchat-root",
-  "version": "9.9.9",
+  "version": "4.18.1-0",
   "private": true,
   "author": "Microsoft Corporation",
   "license": "MIT",
