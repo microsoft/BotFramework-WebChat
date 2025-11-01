@@ -1,6 +1,7 @@
 {
   "name": "@msinternal/botframework-webchat-cldr-data",
-  "version": "36.0.0-0",
+  "version": "0.0.0-0",
+  "adoptedVersion": "36.0.0",
   "engines": {
     "node": ">= 12"
   },
@@ -65,7 +66,7 @@
   },
   "devDependencies": {},
   "dependencies": {
-    "@msinternal/botframework-webchat-cldr-data-downloader": "0.3.5-0",
+    "@msinternal/botframework-webchat-cldr-data-downloader": "0.0.0-0",
     "glob": "8.1.0",
     "read-pkg": "9.0.1",
     "read-pkg-up": "11.0.0"
