@@ -12,16 +12,30 @@ const {
 
 const root = resolve(rootPackageJSONPath, '../');
 
-const watchPaths = new Set(['./src/']);
+const dependingLocalPackages = new Set(Object.keys(currentPackageJSON.localDependencies || {}));
+/** @type Map<string, string> */
+const localPackageJSONPath = new Map();
 
-for (const [packageName] of Object.entries(currentPackageJSON.localDependencies || {})) {
+for (const packageName of Array.from(dependingLocalPackages)) {
   for (const workspace of workspaces) {
     const packageJSON = await readPackage({ cwd: resolve(root, workspace) });
 
     if (packageJSON.name === packageName) {
-      watchPaths.add(resolve(root, workspace, 'package.json'));
+      for (const transientLocalPackageName of Object.keys(packageJSON.localDependencies)) {
+        dependingLocalPackages.delete(transientLocalPackageName);
+      }
+
+      localPackageJSONPath.set(packageName, resolve(root, workspace, 'package.json'));
     }
   }
+}
+
+const watchPaths = new Set(['./src/']);
+
+// Only includes packages that are absolutely needed to watch.
+// For example, "api -> api-graph -> core" and "api -> core". Then we only need to watch "api-graph" but not "core".
+for (const packageName of dependingLocalPackages) {
+  localPackageJSONPath.has(packageName) && watchPaths.add(localPackageJSONPath.get(packageName));
 }
 
 // "nodemon" will pick up every file change, trigger build too many times.
