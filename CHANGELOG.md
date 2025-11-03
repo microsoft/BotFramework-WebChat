@@ -325,7 +325,7 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
 - Fixed published package types containing internal package references, in PR [#5610](https://github.com/microsoft/BotFramework-WebChat/pull/5610), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed citation links are not properly matched against markdown links, in PR [#5614](https://github.com/microsoft/BotFramework-WebChat/pull/5614), by [@OEvgeny](https://github.com/OEvgeny)
 - Fixed `botframework-webchat/decorator` import in legacy CommonJS environments, in [#5616](https://github.com/microsoft/BotFramework-WebChat/pull/5616), by [@OEvgeny](https://github.com/OEvgeny)
-- Fixed `npm start` for efficiency and reliability, in PR [#5621](https://github.com/microsoft/BotFramework-WebChat/pull/5621), by [@compulim](https://github.com/compulim)
+- Fixed `npm start` for efficiency and reliability, in PR [#5621](https://github.com/microsoft/BotFramework-WebChat/pull/5621) and [#5629](https://github.com/microsoft/BotFramework-WebChat/pull/5629), by [@compulim](https://github.com/compulim)
 
 ### Removed
 
