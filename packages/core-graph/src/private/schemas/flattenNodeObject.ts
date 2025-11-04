@@ -47,6 +47,8 @@ function flattenNodeObject_(
 
     error.cause = { input };
 
+    console.log({ input });
+
     throw error;
   }
 
@@ -83,11 +85,13 @@ function flattenNodeObject_(
       }
 
       parsedValue = Object.freeze(resultArray);
-    } else {
-      parsedValue = flattenNodeObject_(value, graphMap, refMap);
-    }
 
-    targetMap.set(key, parsedValue);
+      targetMap.set(key, parsedValue);
+    } else if (typeof value !== 'undefined') {
+      parsedValue = flattenNodeObject_(value, graphMap, refMap);
+
+      targetMap.set(key, parsedValue);
+    }
   }
 
   // const id = parse(optional(identifier()), targetMap.get('@id')) ?? `_:${crypto.randomUUID()}`;

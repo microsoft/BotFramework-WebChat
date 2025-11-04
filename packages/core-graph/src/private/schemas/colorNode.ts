@@ -100,7 +100,7 @@ function slantNodeWithFix() {
           default: {
             const slantedValue = Array.isArray(parsedValue)
               ? parsedValue
-              : Object.freeze(parsedValue === null ? [] : [parsedValue]);
+              : Object.freeze(parsedValue === null || typeof parsedValue === 'undefined' ? [] : [parsedValue]);
 
             slantedValue.length && propertyMap.set(key, slantedValue);
 

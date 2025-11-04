@@ -9,7 +9,10 @@
 import { parse } from 'valibot';
 
 import colorNode, { type SlantNode } from './schemas/colorNode';
+import flattenNodeObject from './schemas/flattenNodeObject';
 import type { Identifier } from './schemas/Identifier';
+import isOfType from './schemas/isOfType';
+import messageNode from './schemas/messageNode';
 import { nodeReference, type NodeReference } from './schemas/NodeReference';
 
 type GraphChangeEvent = { readonly ids: readonly Identifier[] };
@@ -38,6 +41,8 @@ class Graph extends EventTarget {
   #setGraphNode(node: SlantNode) {
     // We need to recolor the node as it could lose its color over time, e.g. empty array -> remove.
     const safeNode = colorNode(node);
+
+    // TODO: Add a indexer for both @id and identifier.
 
     // eslint-disable-next-line no-restricted-syntax
     this.#graph.set(safeNode['@id'], safeNode);
@@ -137,7 +142,7 @@ class Graph extends EventTarget {
     return Object.freeze(affectedIds);
   }
 
-  observe(): AsyncIterator<GraphChangeEvent, any, any> {
+  observe(): AsyncIterableIterator<GraphChangeEvent, any, any> {
     const observerControllerSet = this.#observerControllerSet;
     let thisController: ReadableStreamDefaultController<GraphChangeEvent>;
 
@@ -160,6 +165,13 @@ class Graph extends EventTarget {
    */
   snapshot(): ReadonlyMap<Identifier, SlantNode> {
     return Object.freeze(new Map(this.#graph));
+  }
+
+  /**
+   * Gets a node from the current graph.
+   */
+  get(id: Identifier): SlantNode | undefined {
+    return this.#graph.get(id);
   }
 
   /**
@@ -235,6 +247,32 @@ class Graph extends EventTarget {
     for (const controller of this.#observerControllerSet) {
       controller.enqueue(changeEvent);
     }
+
+    const event = new CustomEvent('change', { detail: changeEvent });
+
+    this.dispatchEvent(event);
+  }
+
+  upsertRaw(...nodes: readonly object[]) {
+    const slantNodes = [];
+
+    // console.log('🐛🐛🐛 upsertRaw', { nodes });
+
+    for (const node of nodes) {
+      for (const flatNode of flattenNodeObject(node).graph) {
+        const slantNode = colorNode(flatNode);
+
+        if (isOfType(slantNode, 'Message')) {
+          // console.log('🐛🐛🐛 upsertRaw/messageNode', { flatNode, slantNode });
+
+          parse(messageNode(), slantNode);
+        }
+
+        slantNodes.push(slantNode);
+      }
+    }
+
+    this.upsert(...slantNodes);
   }
 }
 

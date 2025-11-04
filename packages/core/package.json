@@ -15,6 +15,16 @@
         "default": "./dist/botframework-webchat-core.js"
       }
     },
+    "./graph": {
+      "import": {
+        "types": "./dist/botframework-webchat-core.graph.d.mts",
+        "default": "./dist/botframework-webchat-core.graph.mjs"
+      },
+      "require": {
+        "types": "./dist/botframework-webchat-core.graph.d.ts",
+        "default": "./dist/botframework-webchat-core.graph.js"
+      }
+    },
     "./internal": {
       "import": {
         "types": "./dist/botframework-webchat-core.internal.d.mts",
@@ -88,6 +98,7 @@
   },
   "localDependencies": {
     "@msinternal/botframework-webchat-base": "development",
+    "@msinternal/botframework-webchat-core-graph": "development",
     "@msinternal/botframework-webchat-tsconfig": "development"
   },
   "devDependencies": {
@@ -96,6 +107,7 @@
     "@babel/plugin-transform-typescript": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "@msinternal/botframework-webchat-base": "0.0.0-0",
+    "@msinternal/botframework-webchat-core-graph": "0.0.0-0",
     "@msinternal/botframework-webchat-tsconfig": "0.0.0-0",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.1.0",

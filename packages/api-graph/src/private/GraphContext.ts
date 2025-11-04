@@ -1,18 +1,24 @@
+import type { WebChatActivity } from 'botframework-webchat-core';
+import { identifier, slantNode, type Identifier, type SlantNode } from 'botframework-webchat-core/graph';
 import { createContext, useContext } from 'react';
-import { custom, function_, map, object, pipe, readonly, safeParse, string, type InferOutput } from 'valibot';
-
-import { expandedFlatNodeObjectSchema } from './schemas/expandArray';
-import type { FlattenNodeObjectInput } from './schemas/flattenNodeObject';
+import { array, custom, map, object, pipe, readonly, tuple } from 'valibot';
 
 const graphContextSchema = pipe(
   object({
-    graph: pipe(map(string(), expandedFlatNodeObjectSchema), readonly()),
-    mergeNode: custom<(node: FlattenNodeObjectInput) => void>(value => safeParse(function_(), value).success)
+    // TODO: Maybe should use `freeze()` instead.
+    nodeMap: pipe(map(identifier(), slantNode()), readonly()),
+    // TODO: Maybe should use `freeze()` instead.
+    orderedActivitiesState: pipe(tuple([pipe(array(custom<WebChatActivity>(() => true)), readonly())]), readonly())
   }),
   readonly()
 );
 
-type GraphContextType = InferOutput<typeof graphContextSchema>;
+// type GraphContextType = InferOutput<typeof graphContextSchema>;
+
+type GraphContextType = {
+  readonly nodeMap: ReadonlyMap<Identifier, SlantNode>;
+  readonly orderedActivitiesState: readonly [readonly WebChatActivity[]];
+};
 
 const GraphContext = createContext<GraphContextType>(
   new Proxy({} as GraphContextType, {

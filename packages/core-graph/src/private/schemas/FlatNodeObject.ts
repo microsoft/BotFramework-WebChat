@@ -38,7 +38,7 @@ function flatNodeObject<TMessage extends ErrorMessage<any>>(message?: TMessage |
       {
         '@context': optional(string('Complex @context is not supported in our implementation')),
         '@id': identifier(),
-        '@type': optional(union([array(string()), string()]))
+        '@type': optional(union([pipe(array(string()), freeze()), string()]))
       },
       flatNodeObjectPropertyValue(),
       message

@@ -1,1 +1,1 @@
-export { useNodeObject } from '@msinternal/botframework-webchat-api-graph';
+export { useOrderedActivities } from '@msinternal/botframework-webchat-api-graph';

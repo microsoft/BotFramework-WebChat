@@ -42,6 +42,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type ReactNod
 import { Provider } from 'react-redux';
 import updateIn from 'simple-update-in';
 
+import { GraphProvider } from '@msinternal/botframework-webchat-api-graph';
 import type StyleOptions from '../StyleOptions';
 import errorBoxTelemetryPolymiddleware from '../errorBox/errorBoxTelemetryPolymiddleware';
 import PrecompiledGlobalize from '../external/PrecompiledGlobalize';
@@ -748,11 +749,13 @@ const ComposerWithStore = ({ onTelemetry, store, ...props }: ComposerWithStorePr
   return (
     <Provider context={WebChatReduxContext} store={memoizedStore}>
       <ReduxStoreComposer store={memoizedStore}>
-        <ActivityKeyerComposer>
-          <ActivityAcknowledgementComposer>
-            <ComposerCore onTelemetry={onTelemetry} {...props} />
-          </ActivityAcknowledgementComposer>
-        </ActivityKeyerComposer>
+        <GraphProvider store={memoizedStore}>
+          <ActivityKeyerComposer>
+            <ActivityAcknowledgementComposer>
+              <ComposerCore onTelemetry={onTelemetry} {...props} />
+            </ActivityAcknowledgementComposer>
+          </ActivityKeyerComposer>
+        </GraphProvider>
       </ReduxStoreComposer>
     </Provider>
   );

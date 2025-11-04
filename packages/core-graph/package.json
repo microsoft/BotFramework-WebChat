@@ -1,18 +1,18 @@
 {
-  "name": "@msinternal/botframework-webchat-api-graph",
+  "name": "@msinternal/botframework-webchat-core-graph",
   "version": "0.0.0-0",
-  "description": "botframework-webchat-api/graph package",
-  "main": "./dist/botframework-webchat-api-graph.js",
-  "types": "./dist/botframework-webchat-api-graph.d.ts",
+  "description": "botframework-webchat-core/graph package",
+  "main": "./dist/botframework-webchat-core-graph.js",
+  "types": "./dist/botframework-webchat-core-graph.d.ts",
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/botframework-webchat-api-graph.d.mts",
-        "default": "./dist/botframework-webchat-api-graph.mjs"
+        "types": "./dist/botframework-webchat-core-graph.d.mts",
+        "default": "./dist/botframework-webchat-core-graph.mjs"
       },
       "require": {
-        "types": "./dist/botframework-webchat-api-graph.d.ts",
-        "default": "./dist/botframework-webchat-api-graph.js"
+        "types": "./dist/botframework-webchat-core-graph.d.ts",
+        "default": "./dist/botframework-webchat-core-graph.js"
       }
     }
   },
@@ -31,7 +31,7 @@
     "./src/**/*",
     "*.js"
   ],
-  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/api-graph#readme",
+  "homepage": "https://github.com/microsoft/BotFramework-WebChat/tree/main/packages/core-graph#readme",
   "scripts": {
     "build": "npm run --if-present build:pre && npm run build:run && npm run --if-present build:post",
     "build:pre": "npm run build:pre:local-dependencies && npm run build:pre:watch",
@@ -51,23 +51,13 @@
     "start": "../../scripts/npm/notify-build.sh \"src\""
   },
   "pinDependencies": {},
-  "localDependencies": {
-    "@msinternal/botframework-webchat-react-valibot": "development",
-    "botframework-webchat-core": "development"
-  },
+  "localDependencies": {},
   "devDependencies": {
-    "@msinternal/botframework-webchat-react-hooks": "0.0.0-0",
-    "@msinternal/botframework-webchat-react-valibot": "0.0.0-0",
     "@testduet/given-when-then": "^0.1.1-main.28754e6",
-    "@types/use-sync-external-store": "^1.5.0",
-    "botframework-webchat-core": "0.0.0-0",
     "type-fest": "^4.41.0",
     "typescript": "^5.7.3"
   },
-  "peerDependencies": {
-    "react": ">= 16.8.6",
-    "use-ref-from": "0.1.0"
-  },
+  "peerDependencies": {},
   "dependencies": {
     "valibot": "1.1.0"
   }
