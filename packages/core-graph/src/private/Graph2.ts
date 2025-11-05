@@ -29,34 +29,23 @@ type WritableGraph<TInput extends GraphNode, TOutput extends GraphNode> = {
   readonly upsert: (...nodes: readonly TInput[]) => void;
 };
 
-function wrapMiddlewareWithValidator<TInput extends GraphNode, TOutput extends GraphNode>(
-  middleware: GraphMiddleware<TInput, TOutput>
-): GraphMiddleware<TInput, TOutput> {
-  return init => {
-    const enhancer = middleware(init);
+const requestSchema = pipe(
+  map(IdentifierSchema, object({ '@id': IdentifierSchema })),
+  check(
+    value => value.entries().every(([key, node]) => key === node['@id']),
+    'Key returned in Map must match `@id` in value'
+  )
+);
 
-    return next => {
-      const handler = enhancer(next);
+const middlewareValidator: GraphMiddleware<any, any> = () => next => request => {
+  assert(requestSchema, request);
 
-      return request => {
-        const result = handler(request);
+  const result = next(Object.freeze(request));
 
-        assert(
-          pipe(
-            map(IdentifierSchema, object({ '@id': IdentifierSchema })),
-            check(
-              value => value.entries().every(([key, node]) => key === node['@id']),
-              'Key returned in Map must match `@id` in value'
-            )
-          ),
-          result
-        );
+  assert(requestSchema, result);
 
-        return result;
-      };
-    };
-  };
-}
+  return Object.freeze(result);
+};
 
 class Graph2<TInput extends GraphNode, TOutput extends GraphNode = TInput> implements ReadableGraph<TInput, TOutput> {
   #busy = false;
@@ -68,13 +57,12 @@ class Graph2<TInput extends GraphNode, TOutput extends GraphNode = TInput> imple
     firstMiddleware: GraphMiddleware<TInput, TOutput>,
     ...restMiddleware: readonly GraphMiddleware<TInput, TOutput>[]
   ) {
-    // Interleaves every middleware with a Object.freeze(request) to protect request.
+    // Interleaves every middleware with a validator to protect request.
     this.#middleware = applyMiddleware(
-      wrapMiddlewareWithValidator(firstMiddleware),
-      ...restMiddleware.flatMap<GraphMiddleware<TInput, TOutput>>(middleware => [
-        // TODO: [P*] Verify the key of the map must match "@id".
-        () => next => request => next(Object.freeze(request)),
-        wrapMiddlewareWithValidator(middleware)
+      middlewareValidator,
+      ...[firstMiddleware, ...restMiddleware].flatMap<GraphMiddleware<TInput, TOutput>>(middleware => [
+        middleware,
+        middlewareValidator
       ])
     );
   }

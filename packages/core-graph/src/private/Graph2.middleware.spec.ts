@@ -167,7 +167,11 @@ scenario('Graph.middleware', bdd => {
             // VERIFY: Make sure request is not mutable.
             expect(upsertingNodeMap).toEqual(expect.isFrozen());
 
-            return next(new Map(upsertingNodeMap));
+            const result = next(new Map(upsertingNodeMap));
+
+            expect(result).toEqual(expect.isFrozen());
+
+            return result;
           },
           () => () => nodes => {
             // VERIFY: Make sure request is not mutable.
