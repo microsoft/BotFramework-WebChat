@@ -5,8 +5,7 @@ import { BlankNodeIdentifierSchema } from './BlankNodeIdentifier';
 /**
  * Schema of JSON-LD identifier (`@id`). Must be either IRI or blank node identifier (prefixed with `_:`).
  *
- * @param message
- * @returns
+ * @see {@link https://www.w3.org/TR/json-ld11/#node-identifiers JSON-LD 1.1: Node Identifiers}
  */
 const IdentifierSchema = union(
   [

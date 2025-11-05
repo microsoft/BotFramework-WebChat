@@ -2,6 +2,8 @@ import { is, pipe, startsWith, string, type GenericSchema, type InferOutput } fr
 
 /**
  * Schema of JSON-LD blank node identifier. Must be prefixed with `_:`.
+ *
+ * @see {@link https://www.w3.org/TR/rdf11-concepts/#dfn-blank-node-identifier RDF 1.1 Concepts and Abstract Syntax: Blank node identifier}
  */
 const BlankNodeIdentifierSchema = pipe(
   string('Blank node identifier must be a string'),

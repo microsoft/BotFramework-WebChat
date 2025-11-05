@@ -4,7 +4,7 @@ import { JSONValueSchema } from './JSONValue';
 /**
  * Schema of JSON-LD literals.
  *
- * @see {@link https://www.w3.org/TR/json-ld11/#dfn-json-literal JSON-LD 1.1: JSON Literal}
+ * @see {@link https://www.w3.org/TR/json-ld11/#dfn-json-literal JSON-LD 1.1: JSON Literals}
  */
 const JSONLiteralSchema = strictObject(
   {

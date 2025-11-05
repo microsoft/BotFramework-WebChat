@@ -3,8 +3,7 @@ import { boolean, is, number, string, union, type InferOutput } from 'valibot';
 /**
  * Schema of JSON-LD literals.
  *
- * @param message
- * @returns
+ * @see {@link https://www.w3.org/TR/rdf11-concepts/#dfn-literal RDF 1.1 Concepts and Abstract Syntax: Literals}
  */
 const LiteralSchema = union(
   [boolean(), number(), string()],
