@@ -1,3 +1,4 @@
+import type { JSONLiteral } from '@msinternal/botframework-webchat-core-graph';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { createStore, WebChatActivity } from 'botframework-webchat-core';
 import {
@@ -8,9 +9,9 @@ import {
   type SlantNode
 } from 'botframework-webchat-core/graph';
 import React, { memo, useEffect, useMemo, useState } from 'react';
+import { useRefFrom } from 'use-ref-from';
 import { custom, function_, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
-import { useRefFrom } from 'use-ref-from';
 import GraphContext, { GraphContextType } from './GraphContext';
 
 const graphProviderPropsSchema = pipe(
@@ -78,7 +79,9 @@ function GraphProvider(props: GraphProviderProps) {
           nextOrderedActivities ||= Array.from(orderedActivitiesRef.current);
 
           nextOrderedActivities.push(
-            JSON.parse(message['urn:microsoft:webchat:direct-line-activity:raw-json'][0]) as WebChatActivity
+            (message['urn:microsoft:webchat:direct-line-activity:raw-json'][0] as JSONLiteral)[
+              '@value'
+            ] as WebChatActivity
           );
 
           nextOrderedActivities.sort(
@@ -90,9 +93,9 @@ function GraphProvider(props: GraphProviderProps) {
       nextOrderedActivities && setOrderedActivities(Object.freeze(nextOrderedActivities));
     };
 
-    graph.addEventListener('change', handleChange);
+    graph.addEventListener('change', handleChange as any);
 
-    return () => graph.removeEventListener('change', handleChange);
+    return () => graph.removeEventListener('change', handleChange as any);
   }, [graph, orderedActivitiesRef, setNodeMap, setOrderedActivities]);
 
   // useEffect(() => {

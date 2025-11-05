@@ -15,6 +15,7 @@ import {
 } from 'valibot';
 import { slantNode } from './colorNode';
 import identifier from './Identifier';
+import { jsonLiteral } from './jsonLiteral';
 import { nodeReference } from './NodeReference';
 import freeze from './private/freeze';
 
@@ -35,7 +36,7 @@ function messageNode() {
         position: tuple([number()]),
         sender: tuple([nodeReference()]),
         text: optional(tuple([string()])),
-        'urn:microsoft:webchat:direct-line-activity:raw-json': tuple([string()])
+        'urn:microsoft:webchat:direct-line-activity:raw-json': tuple([jsonLiteral()])
       })
     ]),
     freeze()

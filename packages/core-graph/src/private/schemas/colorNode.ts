@@ -62,7 +62,7 @@ function slantNode<TMessage extends ErrorMessage<ObjectWithRestIssue> | undefine
         )
       },
       // The rest property values must be encapsulated in array.
-      // Array of boolean, number, string, and node reference are accepted.
+      // Array of boolean, number, string, JSON literal, and node reference are accepted.
       pipe(array(union([jsonLiteral(), literal(), nodeReference()])), minLength(1)),
       message
     ),

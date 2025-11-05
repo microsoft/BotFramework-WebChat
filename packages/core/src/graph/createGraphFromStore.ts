@@ -89,15 +89,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): Graph {
         //       : channelAudience,
         text: ('text' in activity && typeof activity.text === 'string' && activity.text) || undefined,
 
-        // TODO: [P*] Can we save some memory here?
-        // 'urn:microsoft:webchat:direct-line-activity:raw-json': JSON.stringify(activity)
-        'urn:microsoft:webchat:direct-line-activity:raw-json': JSON.stringify({
-          channelData: activity.channelData,
-          entities: activity.entities,
-          from: activity.from,
-          text: 'text' in activity ? activity.text : undefined,
-          type: activity.type
-        })
+        'urn:microsoft:webchat:direct-line-activity:raw-json': [{ '@type': '@json', '@value': activity }]
       });
     }
 
