@@ -58,6 +58,12 @@ function flattenNodeObject_(
     return parseAsJSONLiteralResult.output;
   }
 
+  const parseAsNodeReferenceResult = safeParse(nodeReference(), input);
+
+  if (parseAsNodeReferenceResult.success) {
+    return parseAsNodeReferenceResult.output;
+  }
+
   // This is for TypeScript only because safeParse().success is not a type predicate.
   input = input as object;
 
@@ -70,10 +76,10 @@ function flattenNodeObject_(
     throw error;
   }
 
-  const existingNodeReference = refMap.get(input);
+  const existingObjectReference = refMap.get(input);
 
-  if (existingNodeReference) {
-    return existingNodeReference;
+  if (existingObjectReference) {
+    return existingObjectReference;
   }
 
   const id =
@@ -96,7 +102,7 @@ function flattenNodeObject_(
     let parsedValue: FlatNodeObjectPropertyValue;
 
     if (Array.isArray(value)) {
-      const resultArray: (Literal | NodeReference)[] = [];
+      const resultArray: (JSONLiteral | Literal | NodeReference)[] = [];
 
       for (const element of value) {
         resultArray.push(flattenNodeObject_(element, graphMap, refMap));

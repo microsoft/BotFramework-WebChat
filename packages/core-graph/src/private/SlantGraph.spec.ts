@@ -36,7 +36,7 @@ scenario('SlantGraph handling JSON literals', bdd => {
       graph.act(graph =>
         graph.upsert({
           '@id': '_:b1',
-          '@type': 'Building',
+          '@type': 'LandmarksOrHistoricalBuildings',
           description: 'The Empire State Building is a 102-story landmark in New York City.',
           geo: {
             '@type': '@json',
@@ -56,7 +56,7 @@ scenario('SlantGraph handling JSON literals', bdd => {
           Object.entries({
             '_:b1': {
               '@id': '_:b1',
-              '@type': ['Building'],
+              '@type': ['LandmarksOrHistoricalBuildings'],
               description: ['The Empire State Building is a 102-story landmark in New York City.'],
               geo: [
                 {
@@ -74,4 +74,73 @@ scenario('SlantGraph handling JSON literals', bdd => {
         )
       )
     );
+});
+
+scenario('SlantGraph handling blank node', bdd => {
+  bdd
+    .given('a SlantGraph', () => new SlantGraph())
+    .when('upserting a node of address', graph =>
+      graph.act(graph =>
+        graph.upsert({
+          '@id': '_:a1',
+          '@type': 'PostalAddress',
+          addressLocality: 'New York',
+          addressRegion: 'NY',
+          postalCode: '10118',
+          streetAddress: '350 Fifth Avenue'
+        })
+      )
+    )
+    .then('should have the address in the graph', graph =>
+      expect(graph.getState()).toEqual(
+        new Map(
+          Object.entries({
+            '_:a1': {
+              '@id': '_:a1',
+              '@type': ['PostalAddress'],
+              addressLocality: ['New York'],
+              addressRegion: ['NY'],
+              postalCode: ['10118'],
+              streetAddress: ['350 Fifth Avenue']
+            }
+          })
+        )
+      )
+    )
+    .when('upserting a building linked to the address', graph => {
+      graph.act(graph =>
+        graph.upsert({
+          '@id': '_:b1',
+          '@type': 'LandmarksOrHistoricalBuildings',
+          address: { '@id': '_:a1' },
+          description: 'The Empire State Building is a 102-story landmark in New York City.',
+          image: 'http://www.civil.usherbrooke.ca/cours/gci215a/empire-state-building.jpg',
+          name: 'The Empire State Building'
+        })
+      );
+    })
+    .then('should have linked in the graph', graph => {
+      expect(graph.getState()).toEqual(
+        new Map(
+          Object.entries({
+            '_:a1': {
+              '@id': '_:a1',
+              '@type': ['PostalAddress'],
+              addressLocality: ['New York'],
+              addressRegion: ['NY'],
+              postalCode: ['10118'],
+              streetAddress: ['350 Fifth Avenue']
+            },
+            '_:b1': {
+              '@id': '_:b1',
+              '@type': ['LandmarksOrHistoricalBuildings'],
+              address: [{ '@id': '_:a1' }],
+              description: ['The Empire State Building is a 102-story landmark in New York City.'],
+              image: ['http://www.civil.usherbrooke.ca/cours/gci215a/empire-state-building.jpg'],
+              name: ['The Empire State Building']
+            }
+          })
+        )
+      );
+    });
 });
