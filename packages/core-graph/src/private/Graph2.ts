@@ -56,8 +56,6 @@ class Graph2<T extends GraphNode> implements ReadableGraph<T> {
 
     try {
       const getState = this.getState.bind(this);
-      const upsertedNodeIdentifiers = new Set<Identifier>();
-      const nextState = new Map<Identifier, T>(this.#state);
       const upsertedNodes = new Map<Identifier, T>();
 
       fn(
@@ -76,6 +74,9 @@ class Graph2<T extends GraphNode> implements ReadableGraph<T> {
           }
         })
       );
+
+      const nextState = new Map<Identifier, T>(this.#state);
+      const upsertedNodeIdentifiers = new Set<Identifier>();
 
       for (const enhancedNode of this.#middleware({ getState })(PASSTHRU_FUNCTION)(
         Object.freeze(upsertedNodes)
