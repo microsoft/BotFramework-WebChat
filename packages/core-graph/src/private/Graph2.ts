@@ -1,32 +1,39 @@
-import { applyMiddleware, type Enhancer, type Middleware } from 'handler-chain';
+import { applyMiddleware, type Middleware } from 'handler-chain';
 import type { Identifier } from './schemas/Identifier';
 
-type Subscriber = (changed: ReadonlySet<Identifier>) => void;
-
-type ReadableGraph<T extends GraphNode> = {
-  readonly act: (fn: (graph: WritableGraph<T>) => void) => void;
-  readonly getState: () => ReadonlyMap<Identifier, T>;
-  readonly subscribe: (subscriber: Subscriber) => void;
+type SubscriberRecord = {
+  readonly upsertedNodeIdentifiers: ReadonlySet<Identifier>;
 };
 
-type State<T extends GraphNode = GraphNode> = ReadonlyMap<Identifier, T>;
-
-type WritableGraph<T extends GraphNode> = {
-  readonly getState: () => ReadonlyMap<Identifier, T>;
-  readonly upsert: (node: T) => void;
-};
+type Subscriber = (event: SubscriberRecord) => void;
 
 type GraphNode = { '@id': Identifier };
 
-type GraphEnhancer<T> = Enhancer<readonly T[], readonly T[]>;
-type GraphMiddleware<T extends GraphNode> = Middleware<readonly T[], readonly T[], void>;
+type GraphMiddleware<T extends GraphNode> = Middleware<
+  ReadonlyMap<Identifier, T>,
+  ReadonlyMap<Identifier, T>,
+  { readonly getState: () => GraphState<T> }
+>;
+
+type GraphState<T extends GraphNode = GraphNode> = ReadonlyMap<Identifier, T>;
+
+type ReadableGraph<T extends GraphNode> = {
+  readonly act: (fn: (graph: WritableGraph<T>) => void) => void;
+  readonly getState: () => GraphState<T>;
+  readonly subscribe: (subscriber: Subscriber) => void;
+};
+
+type WritableGraph<T extends GraphNode> = {
+  readonly getState: () => GraphState<T>;
+  readonly upsert: (...nodes: readonly T[]) => void;
+};
 
 const PASSTHRU_FUNCTION = <T>(nodes: T): T => nodes;
 
 class Graph2<T extends GraphNode> implements ReadableGraph<T> {
   #busy = false;
   #middleware: GraphMiddleware<T>;
-  #state: State<T> = Object.freeze(new Map());
+  #state: GraphState<T> = Object.freeze(new Map());
   #subscribers: Set<Subscriber> = new Set();
 
   constructor(...middleware: readonly GraphMiddleware<T>[]) {
@@ -47,40 +54,52 @@ class Graph2<T extends GraphNode> implements ReadableGraph<T> {
 
     this.#busy = true;
 
-    const changedIds = new Set<Identifier>();
-    const nextState = new Map<Identifier, T>(this.#state);
-
     try {
-      const enhancer: GraphEnhancer<T> = this.#middleware();
-      const writableGraph: WritableGraph<T> = Object.freeze({
-        getState: () => Object.freeze(new Map(nextState)),
-        upsert(node: T) {
-          const enhancedNodes = enhancer!(PASSTHRU_FUNCTION)(Object.freeze([node]));
+      const getState = this.getState.bind(this);
+      const upsertedNodeIdentifiers = new Set<Identifier>();
+      const nextState = new Map<Identifier, T>(this.#state);
+      const upsertedNodes = new Map<Identifier, T>();
 
-          for (const enhancedNode of enhancedNodes) {
-            nextState.set(enhancedNode['@id'], Object.freeze({ ...enhancedNode }));
-            changedIds.add(enhancedNode['@id']);
+      fn(
+        Object.freeze({
+          getState,
+          upsert(...nodes: readonly T[]) {
+            for (const node of nodes) {
+              const id = node['@id'];
+
+              if (upsertedNodes.has(id)) {
+                throw new Error(`Cannot upsert a node multiple times in a single transaction (@id = "${id}")`);
+              }
+
+              upsertedNodes.set(id, node);
+            }
           }
-        }
-      } satisfies WritableGraph<T>);
+        })
+      );
 
-      fn(writableGraph);
-    } finally {
-      if (changedIds.size) {
-        Object.freeze(changedIds);
-
-        this.#state = Object.freeze(nextState);
-
-        for (const subscriber of this.#subscribers) {
-          subscriber(changedIds);
-        }
+      for (const enhancedNode of this.#middleware({ getState })(PASSTHRU_FUNCTION)(
+        Object.freeze(upsertedNodes)
+      ).values()) {
+        nextState.set(enhancedNode['@id'], Object.freeze({ ...enhancedNode }));
+        upsertedNodeIdentifiers.add(enhancedNode['@id']);
       }
 
+      if (upsertedNodeIdentifiers.size) {
+        this.#state = Object.freeze(nextState);
+
+        // After this line, there must be no more write operations on this object instance.
+        const record = Object.freeze({ upsertedNodeIdentifiers: Object.freeze(upsertedNodeIdentifiers) });
+
+        for (const subscriber of this.#subscribers) {
+          subscriber(record);
+        }
+      }
+    } finally {
       this.#busy = false;
     }
   }
 
-  getState(): State<T> {
+  getState(): GraphState<T> {
     return this.#state;
   }
 
@@ -94,4 +113,12 @@ class Graph2<T extends GraphNode> implements ReadableGraph<T> {
 }
 
 export default Graph2;
-export { type State };
+export {
+  type GraphMiddleware,
+  type GraphNode,
+  type GraphState,
+  type ReadableGraph,
+  type Subscriber,
+  type SubscriberRecord,
+  type WritableGraph
+};

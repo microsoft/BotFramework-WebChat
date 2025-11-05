@@ -2,7 +2,7 @@ import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import { fn } from 'jest-mock';
 import { assert, map, string, unknown } from 'valibot';
-import Graph, { type State } from './Graph2';
+import Graph, { type GraphState } from './Graph2';
 import './schemas/expectExtendValibot';
 import './schemas/expectIsFrozen';
 
@@ -41,7 +41,7 @@ scenario('Graph.subscribe()', bdd => {
       return { graph, subscriber, unsubscribe };
     })
     .when('act().upsert() is called', ({ graph }) => {
-      let returnValue: State | undefined;
+      let returnValue: GraphState | undefined;
 
       graph.act(({ getState, upsert }) => {
         upsert({ '@id': '_:b1' });
@@ -55,11 +55,12 @@ scenario('Graph.subscribe()', bdd => {
     })
     .then('subscriber should have been called once', ({ subscriber }) => expect(subscriber).toHaveBeenCalledTimes(1))
     .and('subscriber should have been called with changed node identifiers', ({ subscriber }) =>
-      expect(subscriber).toHaveBeenNthCalledWith(1, new Set(['_:b1']))
+      expect(subscriber).toHaveBeenNthCalledWith(1, { upsertedNodeIdentifiers: new Set(['_:b1']) })
     )
-    .and('subscriber should have been called with frozen node identifiers', ({ subscriber }) =>
-      expect(subscriber).toHaveBeenNthCalledWith(1, expect.isFrozen())
-    )
+    .and('subscriber should have been called with frozen', ({ subscriber }) => {
+      expect(subscriber).toHaveBeenNthCalledWith(1, expect.isFrozen());
+      expect(subscriber).toHaveBeenNthCalledWith(1, { upsertedNodeIdentifiers: expect.isFrozen() });
+    })
     .and('getState() should have the newly added node', ({ graph }) =>
       expect(graph.getState()).toEqual(
         new Map(
@@ -72,17 +73,8 @@ scenario('Graph.subscribe()', bdd => {
       )
     )
     .and('getState() should be frozen', ({ graph }) => expect(graph.getState()).toEqual(expect.isFrozen()))
-    .and('should support dirty read', (_, dirtyGraph) => {
-      expect(dirtyGraph).toEqual(
-        new Map(
-          Object.entries({
-            '_:b1': {
-              '@id': '_:b1'
-            }
-          })
-        )
-      );
-
+    .and('getState() alled during act() should not do dirty read', (_, dirtyGraph) => {
+      expect(dirtyGraph).toEqual(new Map());
       expect(dirtyGraph).toEqual(expect.isFrozen());
     })
     .when('unsubscribe() is called', ({ unsubscribe }) => unsubscribe())
@@ -92,5 +84,38 @@ scenario('Graph.subscribe()', bdd => {
       graph.act(graph => graph.upsert({ '@id': '_:b1' }));
 
       expect(subscriber).toHaveBeenCalledTimes(1);
+    });
+
+  bdd
+    .given('a Graph object and a subscriber which will call act() when triggered', () => {
+      const graph = new Graph();
+      const subscriber = fn(() => {
+        // Should throw.
+        graph.act(() => {
+          // Intentionally left blank.
+        });
+      });
+
+      graph.subscribe(subscriber);
+
+      return { graph, subscriber };
+    })
+    .when('act().upsert() is called', ({ graph }) => {
+      try {
+        graph.act(({ upsert }) => {
+          upsert({ '@id': '_:b1' });
+        });
+      } catch (error) {
+        return error;
+      }
+
+      return undefined;
+    })
+    .then('should throw', (_, error) => {
+      expect(() => {
+        if (error) {
+          throw error;
+        }
+      }).toThrow('Another transaction is ongoing');
     });
 });

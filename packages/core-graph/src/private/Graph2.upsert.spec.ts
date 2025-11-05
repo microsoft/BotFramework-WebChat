@@ -31,4 +31,23 @@ scenario('Graph.upsert()', bdd => {
         )
       )
     );
+
+  bdd
+    .given('a Graph object', () => new Graph<{ readonly '@id': Identifier; readonly name: string }>())
+    .when('act().upsert() is called twice with node of same @id', graph => {
+      try {
+        graph.act(graph => graph.upsert({ '@id': '_:b1', name: 'John Doe' }, { '@id': '_:b1', name: 'Mary Doe' }));
+      } catch (error) {
+        return error;
+      }
+
+      return undefined;
+    })
+    .then('should throw', (_, error) => {
+      expect(() => {
+        if (error) {
+          throw error;
+        }
+      }).toThrow('Cannot upsert a node multiple times in a single transaction (@id = "_:b1")');
+    });
 });
