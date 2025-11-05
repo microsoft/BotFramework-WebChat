@@ -2,9 +2,9 @@ import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import { fn } from 'jest-mock';
 import Graph from './Graph2';
+import type { Identifier } from './schemas/Identifier';
 import './schemas/private/expectExtendValibot';
 import './schemas/private/expectIsFrozen';
-import type { Identifier } from './schemas/Identifier';
 
 type Node = {
   readonly '@id': Identifier;
@@ -292,5 +292,30 @@ scenario('Graph.middleware', bdd => {
           throw error;
         }
       }).toThrow('At least one middleware must not fallthrough');
+    });
+
+  bdd
+    .given(
+      'a Graph with a middleware that messed up keys',
+      () =>
+        new Graph<Node>(
+          () => () => request => Object.freeze(new Map<Identifier, Node>([['_:x1', request.get('_:b1')!]]))
+        )
+    )
+    .when('upserting a node', graph => {
+      try {
+        graph.act(graph => graph.upsert({ '@id': '_:b1', name: 'John Doe' }));
+      } catch (error) {
+        return error;
+      }
+
+      return undefined;
+    })
+    .then('should throw', (_, error) => {
+      expect(() => {
+        if (error) {
+          throw error;
+        }
+      }).toThrow('Key returned in Map must match `@id` in value');
     });
 });

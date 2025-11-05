@@ -1,5 +1,6 @@
 import { applyMiddleware, type Middleware } from 'handler-chain';
-import type { Identifier } from './schemas/Identifier';
+import { assert, check, map, object, pipe } from 'valibot';
+import { IdentifierSchema, type Identifier } from './schemas/Identifier';
 
 type GraphSubscriberRecord = {
   readonly upsertedNodeIdentifiers: ReadonlySet<Identifier>;
@@ -28,6 +29,35 @@ type WritableGraph<TInput extends GraphNode, TOutput extends GraphNode> = {
   readonly upsert: (...nodes: readonly TInput[]) => void;
 };
 
+function wrapMiddlewareWithValidator<TInput extends GraphNode, TOutput extends GraphNode>(
+  middleware: GraphMiddleware<TInput, TOutput>
+): GraphMiddleware<TInput, TOutput> {
+  return init => {
+    const enhancer = middleware(init);
+
+    return next => {
+      const handler = enhancer(next);
+
+      return request => {
+        const result = handler(request);
+
+        assert(
+          pipe(
+            map(IdentifierSchema, object({ '@id': IdentifierSchema })),
+            check(
+              value => value.entries().every(([key, node]) => key === node['@id']),
+              'Key returned in Map must match `@id` in value'
+            )
+          ),
+          result
+        );
+
+        return result;
+      };
+    };
+  };
+}
+
 class Graph2<TInput extends GraphNode, TOutput extends GraphNode = TInput> implements ReadableGraph<TInput, TOutput> {
   #busy = false;
   #middleware: GraphMiddleware<TInput, TOutput>;
@@ -40,10 +70,11 @@ class Graph2<TInput extends GraphNode, TOutput extends GraphNode = TInput> imple
   ) {
     // Interleaves every middleware with a Object.freeze(request) to protect request.
     this.#middleware = applyMiddleware(
-      firstMiddleware,
+      wrapMiddlewareWithValidator(firstMiddleware),
       ...restMiddleware.flatMap<GraphMiddleware<TInput, TOutput>>(middleware => [
+        // TODO: [P*] Verify the key of the map must match "@id".
         () => next => request => next(Object.freeze(request)),
-        middleware
+        wrapMiddlewareWithValidator(middleware)
       ])
     );
   }
