@@ -66,6 +66,7 @@
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
+    "handler-chain": "0.1.0",
     "react": ">= 16.8.6",
     "use-ref-from": "0.1.0"
   },

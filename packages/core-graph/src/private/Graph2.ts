@@ -1,31 +1,46 @@
-import { map, pipe, readonly } from 'valibot';
-import { slantNode, type SlantNode } from './schemas/colorNode';
+import { applyMiddleware, type Enhancer, type Middleware } from 'handler-chain';
 import type { Identifier } from './schemas/Identifier';
-import identifier from './schemas/Identifier';
 
 type Subscriber = (changed: ReadonlySet<Identifier>) => void;
 
-type ReadableGraph = {
-  readonly act: (fn: (graph: WritableGraph) => void) => void;
-  readonly getState: () => ReadonlyMap<Identifier, SlantNode>;
+type ReadableGraph<T extends GraphNode> = {
+  readonly act: (fn: (graph: WritableGraph<T>) => void) => void;
+  readonly getState: () => ReadonlyMap<Identifier, T>;
   readonly subscribe: (subscriber: Subscriber) => void;
 };
 
-const stateSchema = pipe(map(identifier(), slantNode()), readonly());
+type State<T extends GraphNode = GraphNode> = ReadonlyMap<Identifier, T>;
 
-type State = ReadonlyMap<Identifier, SlantNode>;
-
-type WritableGraph = {
-  readonly getState: () => ReadonlyMap<Identifier, SlantNode>;
-  readonly upsert: (node: object) => void;
+type WritableGraph<T extends GraphNode> = {
+  readonly getState: () => ReadonlyMap<Identifier, T>;
+  readonly upsert: (node: T) => void;
 };
 
-class Graph2 implements ReadableGraph {
+type GraphNode = { '@id': Identifier };
+
+type GraphEnhancer<T> = Enhancer<readonly T[], readonly T[]>;
+type GraphMiddleware<T extends GraphNode> = Middleware<readonly T[], readonly T[], void>;
+
+const PASSTHRU_FUNCTION = <T>(nodes: T): T => nodes;
+
+class Graph2<T extends GraphNode> implements ReadableGraph<T> {
   #busy = false;
-  #state: ReadonlyMap<Identifier, SlantNode> = Object.freeze(new Map());
+  #middleware: GraphMiddleware<T>;
+  #state: State<T> = Object.freeze(new Map());
   #subscribers: Set<Subscriber> = new Set();
 
-  act(fn: (graph: WritableGraph) => void) {
+  constructor(...middleware: readonly GraphMiddleware<T>[]) {
+    // Interleaves every middleware with a Object.freeze(request) to protect request.
+    this.#middleware = applyMiddleware(
+      ...middleware
+        .flatMap<GraphMiddleware<T>>(middleware => [middleware, () => next => request => next(Object.freeze(request))])
+        // Drop the very last protection, we just need to interleave middleware, no need for the very last one.
+        // eslint-disable-next-line no-magic-numbers
+        .slice(0, -1)
+    );
+  }
+
+  act(fn: (graph: WritableGraph<T>) => void) {
     if (this.#busy) {
       throw new Error('Another transaction is ongoing');
     }
@@ -33,26 +48,28 @@ class Graph2 implements ReadableGraph {
     this.#busy = true;
 
     const changedIds = new Set<Identifier>();
-    const nextState = new Map<Identifier, SlantNode>(this.#state);
+    const nextState = new Map<Identifier, T>(this.#state);
 
     try {
-      fn({
-        getState() {
-          return Object.freeze(nextState);
-        },
-        upsert(node) {
-          // TODO: Convert to SlantNode[].
-          const slantNode: SlantNode = Object.freeze({ ...node } as SlantNode);
+      const enhancer: GraphEnhancer<T> = this.#middleware();
+      const writableGraph: WritableGraph<T> = Object.freeze({
+        getState: () => Object.freeze(new Map(nextState)),
+        upsert(node: T) {
+          const enhancedNodes = enhancer!(PASSTHRU_FUNCTION)(Object.freeze([node]));
 
-          nextState.set(slantNode['@id'], slantNode);
-          changedIds.add(slantNode['@id']);
+          for (const enhancedNode of enhancedNodes) {
+            nextState.set(enhancedNode['@id'], Object.freeze({ ...enhancedNode }));
+            changedIds.add(enhancedNode['@id']);
+          }
         }
-      } satisfies WritableGraph);
+      } satisfies WritableGraph<T>);
+
+      fn(writableGraph);
     } finally {
       if (changedIds.size) {
         Object.freeze(changedIds);
 
-        this.#state = nextState;
+        this.#state = Object.freeze(nextState);
 
         for (const subscriber of this.#subscribers) {
           subscriber(changedIds);
@@ -63,7 +80,7 @@ class Graph2 implements ReadableGraph {
     }
   }
 
-  getState(): ReadonlyMap<Identifier, SlantNode> {
+  getState(): State<T> {
     return this.#state;
   }
 
@@ -77,4 +94,4 @@ class Graph2 implements ReadableGraph {
 }
 
 export default Graph2;
-export { stateSchema, type State };
+export { type State };
