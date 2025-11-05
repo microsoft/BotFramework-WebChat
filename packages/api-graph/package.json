@@ -48,7 +48,7 @@
     "precommit:eslint": "../../node_modules/.bin/eslint --report-unused-disable-directives --max-warnings 0",
     "precommit:typecheck": "tsc --project ./src --emitDeclarationOnly false --esModuleInterop true --noEmit --pretty false",
     "preversion": "node ../../scripts/npm/preversion.sh",
-    "start": "../../scripts/npm/notify-build.sh \"src\""
+    "start": "../../scripts/npm/notify-build.sh \"src\" \"../react-hooks/package.json\" \"../react-valibot/package.json\" \"../core/package.json\""
   },
   "pinDependencies": {},
   "localDependencies": {
