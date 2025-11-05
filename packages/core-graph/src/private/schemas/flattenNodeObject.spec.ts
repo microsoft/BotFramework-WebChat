@@ -195,3 +195,31 @@ scenario('flattenNodeObject()', bdd => {
       }).toThrow('Only literals, JSON literals, and plain object can be flattened');
     });
 });
+
+scenario('Reduce confusion: node reference must not appear at the root of the flattened graph', bdd => {
+  bdd
+    .given(
+      'a node with @id and @type only',
+      () =>
+        ({
+          '@id': '_:c1',
+          '@type': 'Conversation'
+        }) as const
+    )
+    .when('colored', node => {
+      try {
+        flattenNodeObject(node);
+      } catch (error) {
+        return error;
+      }
+
+      return undefined;
+    })
+    .then('should throw', (_, error) => {
+      expect(() => {
+        if (error) {
+          throw error;
+        }
+      }).toThrow('Node reference cannot be flattened');
+    });
+});

@@ -159,7 +159,7 @@ scenario('SlantGraph auto-inversing', bdd => {
           },
           {
             '@id': '_:m1',
-            '@type': 'Message',
+            '@type': 'MessageLike',
             text: 'Hello, World!'
           }
         )
@@ -177,7 +177,7 @@ scenario('SlantGraph auto-inversing', bdd => {
             },
             '_:m1': {
               '@id': '_:m1',
-              '@type': ['Message'],
+              '@type': ['MessageLike'],
               isPartOf: [{ '@id': '_:c1' }],
               text: ['Hello, World!']
             }
@@ -198,7 +198,7 @@ scenario('SlantGraph auto-inversing', bdd => {
           },
           {
             '@id': '_:m1',
-            '@type': 'Message',
+            '@type': 'MessageLike',
             isPartOf: [{ '@id': '_:c1' }],
             text: 'Hello, World!'
           }
@@ -217,34 +217,9 @@ scenario('SlantGraph auto-inversing', bdd => {
             },
             '_:m1': {
               '@id': '_:m1',
-              '@type': ['Message'],
+              '@type': ['MessageLike'],
               isPartOf: [{ '@id': '_:c1' }],
               text: ['Hello, World!']
-            }
-          })
-        )
-      )
-    );
-});
-
-scenario('SlantGraph empty node', bdd => {
-  bdd
-    .given('a SlantGraph', () => new SlantGraph())
-    .when('upserting a node with @id and @type only', graph =>
-      graph.act(graph =>
-        graph.upsert({
-          '@id': '_:c1',
-          '@type': 'Conversation'
-        })
-      )
-    )
-    .then('should be upserted', graph =>
-      expect(graph.getState()).toEqual(
-        new Map(
-          Object.entries({
-            '_:c1': {
-              '@id': '_:c1',
-              '@type': ['Conversation']
             }
           })
         )

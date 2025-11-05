@@ -141,6 +141,7 @@ const SlantNodeWithFixSchema = pipe(
  *       - `@value` could be null, if unwrapped, will be confusing as we removed nulls
  *    - Do not handle full JSON-LD spec: `@context` is an opaque string and its schema is not honored
  *    - Node reference only has `@id` and it should not contain `@type`
+ *    - Reduce confusion: node reference must not appear at the root of the flattened graph
  * - Auto-linking for Schema.org: `hasPart` and `isPartOf` are auto-inversed
  * - Keep its root: every node is compliant to JSON-LD, understood by standard parsers
  * - Debuggability: must have at least one `@type`

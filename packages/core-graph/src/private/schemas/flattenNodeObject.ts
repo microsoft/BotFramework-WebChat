@@ -1,12 +1,12 @@
 // TODO: [P0] This flattening can probably fold into `colorNode()` as it has slanted view of the system.
 
-import { check, object, optional, parse, pipe, safeParse } from 'valibot';
+import { assert, check, looseObject, object, optional, parse, pipe, safeParse } from 'valibot';
 
 import { FlatNodeObjectSchema, type FlatNodeObject, type FlatNodeObjectPropertyValue } from './FlatNodeObject';
-import { IdentifierSchema } from './Identifier';
+import { IdentifierSchema, type Identifier } from './Identifier';
 import { JSONLiteralSchema, type JSONLiteral } from './JSONLiteral';
 import { LiteralSchema, type Literal } from './Literal';
-import { NodeReferenceSchema, type NodeReference } from './NodeReference';
+import { isNodeReference, NodeReferenceSchema, type NodeReference } from './NodeReference';
 import isPlainObject from './private/isPlainObject';
 
 type FlattenNodeObjectInput = Literal | (object & { '@id'?: string });
@@ -155,9 +155,15 @@ type FlattenNodeObjectReturnValue = {
  * @returns {FlattenNodeObjectReturnValue} A graph and a node reference.
  */
 function flattenNodeObject(input: FlattenNodeObjectInput): FlattenNodeObjectReturnValue {
-  parse(object({}), input);
+  assert(
+    pipe(
+      looseObject({}),
+      check(value => !isNodeReference(value), 'Node reference cannot be flattened')
+    ),
+    input
+  );
 
-  const graph = new Map<string, FlatNodeObject>();
+  const graph = new Map<Identifier, FlatNodeObject>();
   const refMap = new Map<object, NodeReference>();
   const output = flattenNodeObject_(input, graph, refMap);
 

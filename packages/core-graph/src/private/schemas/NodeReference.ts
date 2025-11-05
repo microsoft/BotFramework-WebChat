@@ -1,4 +1,4 @@
-import { array, minLength, optional, pipe, safeParse, strictObject, string, union, type InferOutput } from 'valibot';
+import { array, is, minLength, optional, pipe, strictObject, string, union, type InferOutput } from 'valibot';
 
 import { IdentifierSchema } from './Identifier';
 import freeze from './private/freeze';
@@ -26,8 +26,6 @@ const NodeReferenceSchema = pipe(
 
 type NodeReference = InferOutput<typeof NodeReferenceSchema>;
 
-function isNodeReference(nodeObject: NodeReference): nodeObject is NodeReference {
-  return safeParse(NodeReferenceSchema, nodeObject).success;
-}
+const isNodeReference = is.bind(undefined, NodeReferenceSchema);
 
 export { isNodeReference, NodeReferenceSchema, type NodeReference };
