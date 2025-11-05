@@ -6,6 +6,8 @@
   "message": "Map.set() is restricted, use this.#setGraphNode instead"
 }] */
 
+// TODO: [P*] This file is deprecated.
+
 import { parse } from 'valibot';
 
 import colorNode, { type SlantNode } from './schemas/colorNode';

@@ -1,5 +1,4 @@
 export {
-  Graph,
   IdentifierSchema,
   isOfType,
   MessageNodeSchema,
