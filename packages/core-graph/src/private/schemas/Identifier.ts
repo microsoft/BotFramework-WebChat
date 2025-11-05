@@ -1,6 +1,6 @@
-import { pipe, string, union, url, type ErrorMessage, type GenericSchema, type InferOutput } from 'valibot';
+import { is, pipe, string, union, url, type GenericSchema, type InferOutput } from 'valibot';
 
-import blankNodeIdentifier from './BlankNodeIdentifier';
+import { BlankNodeIdentifierSchema } from './BlankNodeIdentifier';
 
 /**
  * Schema of JSON-LD identifier (`@id`). Must be either IRI or blank node identifier (prefixed with `_:`).
@@ -8,11 +8,16 @@ import blankNodeIdentifier from './BlankNodeIdentifier';
  * @param message
  * @returns
  */
-function identifier<TMessage extends ErrorMessage<any>>(message?: TMessage | undefined) {
-  return union([blankNodeIdentifier(), pipe(string(), url()) as GenericSchema<`https://${string}`>], message);
-}
+const IdentifierSchema = union(
+  [
+    BlankNodeIdentifierSchema,
+    pipe(string('Identifier must be a string'), url('Identifier must be an IRI')) as GenericSchema<`https://${string}`>
+  ],
+  '@id is required and must be an IRI or blank node identifier'
+);
 
-type Identifier = InferOutput<ReturnType<typeof identifier>>;
+type Identifier = InferOutput<typeof IdentifierSchema>;
 
-export default identifier;
-export { type Identifier };
+const isIdentifier = is.bind(IdentifierSchema);
+
+export { IdentifierSchema, isIdentifier, type Identifier };

@@ -2,13 +2,13 @@ import { afterEach, beforeEach, expect, jest } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import { array, assert, length, object, pipe } from 'valibot';
 
-import blankNodeIdentifier from './BlankNodeIdentifier';
-import './expectExtendValibot';
-import flatNodeObject from './FlatNodeObject';
+import { BlankNodeIdentifierSchema } from './BlankNodeIdentifier';
+import { FlatNodeObjectSchema } from './FlatNodeObject';
 import flattenNodeObject from './flattenNodeObject';
-import identifier from './Identifier';
+import { IdentifierSchema } from './Identifier';
 import type { Literal } from './Literal';
-import { nodeReference } from './NodeReference';
+import { NodeReferenceSchema } from './NodeReference';
+import './private/expectExtendValibot';
 
 beforeEach(() => {
   jest.spyOn(console, 'error');
@@ -38,11 +38,11 @@ scenario('flattenNodeObject()', bdd => {
     ])
     .when('flattened', ([value]) => flattenNodeObject(value))
     .then('should return a node reference', (_, { output }) => {
-      assert(nodeReference(), output);
-      assert(blankNodeIdentifier(), output['@id']);
+      assert(NodeReferenceSchema, output);
+      assert(BlankNodeIdentifierSchema, output['@id']);
     })
     .and('should return a graph with one node object', (_, { graph }) => {
-      assert(pipe(array(flatNodeObject()), length(1)), graph);
+      assert(pipe(array(FlatNodeObjectSchema), length(1)), graph);
     })
     .and('should return a graph with the node object', ([_, expected], { graph, output }) => {
       expect(graph).toEqual([{ ...expected, '@id': output['@id'] }]);
@@ -74,14 +74,14 @@ scenario('flattenNodeObject()', bdd => {
       (_, { graph }) => {
         expect(graph).toEqual([
           {
-            '@id': expect.valibot(identifier()),
+            '@id': expect.valibot(IdentifierSchema),
             description: 'The Empire State Building is a 102-story landmark in New York City.',
-            geo: expect.valibot(nodeReference()),
+            geo: expect.valibot(NodeReferenceSchema),
             image: 'http://www.civil.usherbrooke.ca/cours/gci215a/empire-state-building.jpg',
             name: 'The Empire State Building'
           },
           {
-            '@id': expect.valibot(identifier()),
+            '@id': expect.valibot(IdentifierSchema),
             latitude: '40.75',
             longitude: '73.98'
           }
@@ -94,11 +94,11 @@ scenario('flattenNodeObject()', bdd => {
     .and('the root object should reference the geo object', (_, { output, graph }) => {
       const rootObject = graph.find(object => object['@id'] === output['@id']);
 
-      assert(object({ geo: nodeReference() }), rootObject);
+      assert(object({ geo: NodeReferenceSchema }), rootObject);
 
       const geoObject = graph.find(object => object !== rootObject);
 
-      assert(flatNodeObject(), geoObject);
+      assert(FlatNodeObjectSchema, geoObject);
 
       expect(rootObject.geo['@id']).toBe(geoObject['@id']);
     });
@@ -144,7 +144,7 @@ scenario('flattenNodeObject()', bdd => {
     .then('should return a graph with 1 node object', (_, { graph }) => {
       expect(graph).toEqual([
         {
-          '@id': expect.valibot(identifier()),
+          '@id': expect.valibot(IdentifierSchema),
           description: 'The Empire State Building is a 102-story landmark in New York City.',
           // "geo" property should kept as-is.
           geo: [
@@ -155,13 +155,13 @@ scenario('flattenNodeObject()', bdd => {
                 longitude: '73.98'
               }
             },
-            expect.valibot(nodeReference())
+            expect.valibot(NodeReferenceSchema)
           ],
           image: 'http://www.civil.usherbrooke.ca/cours/gci215a/empire-state-building.jpg',
           name: 'The Empire State Building'
         },
         {
-          '@id': expect.valibot(identifier()),
+          '@id': expect.valibot(IdentifierSchema),
           city: 'New York',
           state: 'NY',
           street: '20 West 34th Street',

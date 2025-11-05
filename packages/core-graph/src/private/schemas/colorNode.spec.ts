@@ -48,28 +48,28 @@ scenario('colorNode corner cases', bdd => {
         'a node with hasPart as an array of string',
         () => [
           { '@id': '_:b1', '@type': ['Conversation'], hasPart: ['Hello, World!'] },
-          'element in hasPart must be NodeReference'
+          'NodeReference must only have @id and optional @type'
         ]
       ],
       [
         'a node with hasPart as a string',
         () => [
           { '@id': '_:b1', '@type': ['Conversation'], hasPart: 'Hello, World!' },
-          'element in hasPart must be NodeReference'
+          'NodeReference must only have @id and optional @type'
         ]
       ],
       [
         'a node with isPartOf as an array of string',
         () => [
           { '@id': '_:b1', '@type': ['Conversation'], isPartOf: ['Hello, World!'] },
-          'element in isPartOf must be NodeReference'
+          'NodeReference must only have @id and optional @type'
         ]
       ],
       [
         'a node with isPartOf a string',
         () => [
           { '@id': '_:b1', '@type': ['Conversation'], isPartOf: 'Hello, World!' },
-          'element in isPartOf must be NodeReference'
+          'NodeReference must only have @id and optional @type'
         ]
       ]
     ])
@@ -105,5 +105,22 @@ scenario('colorNode corner cases', bdd => {
         '@type': ['Message'],
         text: ['Hello, World!', { '@id': '_:b2' }, 0, false]
       });
+    });
+
+  bdd
+    .given('a node with @id of non-IRIs', () => ({ '@id': 'abc' }))
+    .when('colored', node => {
+      try {
+        colorNode(node as any);
+      } catch (error) {
+        return error;
+      }
+
+      return undefined;
+    })
+    .then('should throw', (_, error) => {
+      expect(() => {
+        throw error;
+      }).toThrow('@id is required and must be an IRI or blank node identifier');
     });
 });

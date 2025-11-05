@@ -1,10 +1,10 @@
 import { expect, jest } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 
-import './expectExtendValibot';
 import flattenNodeObject from './flattenNodeObject';
-import identifier from './Identifier';
-import { nodeReference } from './NodeReference';
+import { IdentifierSchema } from './Identifier';
+import { NodeReferenceSchema } from './NodeReference';
+import './private/expectExtendValibot';
 
 scenario('flattenNodeObject()', bdd => {
   bdd
@@ -40,48 +40,48 @@ scenario('flattenNodeObject()', bdd => {
     .then('the first object should be the Conversation', (_, { graph }) => {
       expect(graph[0]).toEqual({
         '@context': 'https://schema.org/',
-        '@id': expect.valibot(identifier()),
+        '@id': expect.valibot(IdentifierSchema),
         '@type': 'Conversation',
         name: 'Duck Season vs Rabbit Season',
         sameAs: 'https://www.youtube.com/watch?v=9-k5J4RxQdE',
-        hasPart: [expect.valibot(nodeReference()), expect.valibot(nodeReference())]
+        hasPart: [expect.valibot(NodeReferenceSchema), expect.valibot(NodeReferenceSchema)]
       });
     })
     .and('should return 7 objects', (_, { graph }) => {
       expect(graph).toEqual([
         {
           '@context': 'https://schema.org/',
-          '@id': expect.valibot(identifier()),
+          '@id': expect.valibot(IdentifierSchema),
           '@type': 'Conversation',
           name: 'Duck Season vs Rabbit Season',
           sameAs: 'https://www.youtube.com/watch?v=9-k5J4RxQdE',
-          hasPart: [expect.valibot(nodeReference()), expect.valibot(nodeReference())]
+          hasPart: [expect.valibot(NodeReferenceSchema), expect.valibot(NodeReferenceSchema)]
         },
         {
-          '@id': expect.valibot(identifier()),
+          '@id': expect.valibot(IdentifierSchema),
           '@type': 'Message',
           sender: { '@id': '_:bugs-bunny' },
           recipient: { '@id': '_:daffy-duck' },
-          about: expect.valibot(nodeReference()),
+          about: expect.valibot(NodeReferenceSchema),
           datePublished: '2016-02-29'
         },
         { '@id': '_:bugs-bunny', '@type': 'Person', name: 'Bugs Bunny' },
         { '@id': '_:daffy-duck', '@type': 'Person', name: 'Daffy Duck' },
         {
-          '@id': expect.valibot(identifier()),
+          '@id': expect.valibot(IdentifierSchema),
           '@type': 'Thing',
           name: 'Duck Season'
         },
         {
-          '@id': expect.valibot(identifier()),
+          '@id': expect.valibot(IdentifierSchema),
           '@type': 'Message',
           sender: { '@id': '_:daffy-duck' },
           recipient: { '@id': '_:bugs-bunny' },
-          about: expect.valibot(nodeReference()),
+          about: expect.valibot(NodeReferenceSchema),
           datePublished: '2016-03-01'
         },
         {
-          '@id': expect.valibot(identifier()),
+          '@id': expect.valibot(IdentifierSchema),
           '@type': 'Thing',
           name: 'Rabbit Season'
         }
@@ -130,48 +130,48 @@ scenario('flattenNodeObject()', bdd => {
     .then('the first object should be the Conversation', (_, { graph }) => {
       expect(graph[0]).toEqual({
         '@context': 'https://schema.org/',
-        '@id': expect.valibot(identifier()),
+        '@id': expect.valibot(IdentifierSchema),
         '@type': 'Conversation',
         name: 'Duck Season vs Rabbit Season',
         sameAs: 'https://www.youtube.com/watch?v=9-k5J4RxQdE',
-        hasPart: [expect.valibot(nodeReference()), expect.valibot(nodeReference())]
+        hasPart: [expect.valibot(NodeReferenceSchema), expect.valibot(NodeReferenceSchema)]
       });
     })
     .and('should return 7 objects', (_, { graph }) => {
       expect(graph).toEqual([
         {
           '@context': 'https://schema.org/',
-          '@id': expect.valibot(identifier()),
+          '@id': expect.valibot(IdentifierSchema),
           '@type': 'Conversation',
           name: 'Duck Season vs Rabbit Season',
           sameAs: 'https://www.youtube.com/watch?v=9-k5J4RxQdE',
-          hasPart: [expect.valibot(nodeReference()), expect.valibot(nodeReference())]
+          hasPart: [expect.valibot(NodeReferenceSchema), expect.valibot(NodeReferenceSchema)]
         },
         {
-          '@id': expect.valibot(identifier()),
+          '@id': expect.valibot(IdentifierSchema),
           '@type': 'Message',
-          sender: expect.valibot(nodeReference()),
-          recipient: expect.valibot(nodeReference()),
-          about: { '@id': expect.valibot(identifier()) },
+          sender: expect.valibot(NodeReferenceSchema),
+          recipient: expect.valibot(NodeReferenceSchema),
+          about: { '@id': expect.valibot(IdentifierSchema) },
           datePublished: '2016-02-29'
         },
-        { '@id': expect.valibot(identifier()), '@type': 'Person', name: 'Bugs Bunny' },
-        { '@id': expect.valibot(identifier()), '@type': 'Person', name: 'Daffy Duck' },
+        { '@id': expect.valibot(IdentifierSchema), '@type': 'Person', name: 'Bugs Bunny' },
+        { '@id': expect.valibot(IdentifierSchema), '@type': 'Person', name: 'Daffy Duck' },
         {
-          '@id': expect.valibot(identifier()),
+          '@id': expect.valibot(IdentifierSchema),
           '@type': 'Thing',
           name: 'Duck Season'
         },
         {
-          '@id': expect.valibot(identifier()),
+          '@id': expect.valibot(IdentifierSchema),
           '@type': 'Message',
-          sender: expect.valibot(nodeReference()),
-          recipient: expect.valibot(nodeReference()),
-          about: expect.valibot(nodeReference()),
+          sender: expect.valibot(NodeReferenceSchema),
+          recipient: expect.valibot(NodeReferenceSchema),
+          about: expect.valibot(NodeReferenceSchema),
           datePublished: '2016-03-01'
         },
         {
-          '@id': expect.valibot(identifier()),
+          '@id': expect.valibot(IdentifierSchema),
           '@type': 'Thing',
           name: 'Rabbit Season'
         }

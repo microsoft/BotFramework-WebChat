@@ -2,12 +2,12 @@
 
 import { check, object, optional, parse, pipe, safeParse } from 'valibot';
 
-import flatNodeObject, { type FlatNodeObject, type FlatNodeObjectPropertyValue } from './FlatNodeObject';
-import identifier from './Identifier';
-import isPlainObject from './isPlainObject';
-import { jsonLiteral, type JSONLiteral } from './jsonLiteral';
-import { literal, type Literal } from './Literal';
-import { nodeReference, type NodeReference } from './NodeReference';
+import { FlatNodeObjectSchema, type FlatNodeObject, type FlatNodeObjectPropertyValue } from './FlatNodeObject';
+import { IdentifierSchema } from './Identifier';
+import { JSONLiteralSchema, type JSONLiteral } from './JSONLiteral';
+import { LiteralSchema, type Literal } from './Literal';
+import { NodeReferenceSchema, type NodeReference } from './NodeReference';
+import isPlainObject from './private/isPlainObject';
 
 type FlattenNodeObjectInput = Literal | (object & { '@id'?: string });
 
@@ -40,7 +40,7 @@ function flattenNodeObject_(
   graphMap: Map<string, FlatNodeObject>,
   refMap: Map<FlattenNodeObjectInput, NodeReference>
 ): JSONLiteral | Literal | NodeReference {
-  const parseAsLiteralResult = safeParse(literal(), input);
+  const parseAsLiteralResult = safeParse(LiteralSchema, input);
 
   if (parseAsLiteralResult.success) {
     return parseAsLiteralResult.output;
@@ -48,7 +48,7 @@ function flattenNodeObject_(
 
   const parseAsJSONLiteralResult = safeParse(
     pipe(
-      jsonLiteral(),
+      JSONLiteralSchema,
       check(value => isPlainObject(value))
     ),
     input
@@ -58,7 +58,7 @@ function flattenNodeObject_(
     return parseAsJSONLiteralResult.output;
   }
 
-  const parseAsNodeReferenceResult = safeParse(nodeReference(), input);
+  const parseAsNodeReferenceResult = safeParse(NodeReferenceSchema, input);
 
   if (parseAsNodeReferenceResult.success) {
     return parseAsNodeReferenceResult.output;
@@ -84,7 +84,7 @@ function flattenNodeObject_(
 
   const id =
     parse(
-      optional(identifier()),
+      optional(IdentifierSchema),
       (input && typeof input === 'object' && '@id' in input && input['@id']) || undefined
     ) ?? `_:${crypto.randomUUID()}`;
 
@@ -118,12 +118,12 @@ function flattenNodeObject_(
     }
   }
 
-  // const id = parse(optional(identifier()), targetMap.get('@id')) ?? `_:${crypto.randomUUID()}`;
+  // const id = parse(optional(IdentifierSchema), targetMap.get('@id')) ?? `_:${crypto.randomUUID()}`;
 
   targetMap.set('@id', id);
 
-  const output: FlatNodeObject = parse(flatNodeObject(), Object.fromEntries(Array.from(targetMap)));
-  const nodeRef = parse(nodeReference(), Object.freeze({ '@id': id }));
+  const output: FlatNodeObject = parse(FlatNodeObjectSchema, Object.fromEntries(Array.from(targetMap)));
+  const nodeRef = parse(NodeReferenceSchema, Object.freeze({ '@id': id }));
 
   graphMap.set(id, output);
   refMap.set(input, nodeRef);

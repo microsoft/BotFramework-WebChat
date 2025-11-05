@@ -1,6 +1,6 @@
 import { assert } from 'valibot';
 import Graph, { type GraphMiddleware } from './Graph2';
-import colorNode, { slantNode, type SlantNode } from './schemas/colorNode';
+import colorNode, { SlantNodeSchema, type SlantNode } from './schemas/colorNode';
 import flattenNodeObject from './schemas/flattenNodeObject';
 import type { Identifier } from './schemas/Identifier';
 
@@ -23,7 +23,7 @@ const color: GraphMiddleware<AnyNode, SlantNode> = () => () => upsertingNodeMap 
 
 const validateSlantNode: GraphMiddleware<AnyNode, SlantNode> = () => () => upsertingNodeMap => {
   for (const node of upsertingNodeMap.values()) {
-    assert(slantNode(), node);
+    assert(SlantNodeSchema, node);
   }
 
   return upsertingNodeMap as ReadonlyMap<Identifier, SlantNode>;

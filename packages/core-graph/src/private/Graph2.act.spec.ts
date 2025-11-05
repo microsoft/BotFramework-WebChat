@@ -2,8 +2,8 @@ import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import { assert, object } from 'valibot';
 import Graph from './Graph2';
-import './schemas/expectExtendValibot';
-import './schemas/expectIsFrozen';
+import './schemas/private/expectExtendValibot';
+import './schemas/private/expectIsFrozen';
 
 scenario('Graph.act()', bdd => {
   bdd

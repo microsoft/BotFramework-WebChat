@@ -3,8 +3,8 @@ import { scenario } from '@testduet/given-when-then';
 import { fn } from 'jest-mock';
 import { assert, map, string, unknown } from 'valibot';
 import Graph, { type GraphState } from './Graph2';
-import './schemas/expectExtendValibot';
-import './schemas/expectIsFrozen';
+import './schemas/private/expectExtendValibot';
+import './schemas/private/expectIsFrozen';
 
 scenario('Graph.subscribe()', bdd => {
   bdd

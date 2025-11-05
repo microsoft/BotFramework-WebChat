@@ -1,60 +1,57 @@
-import {
-  array,
-  null_,
-  objectWithRest,
-  optional,
-  pipe,
-  string,
-  union,
-  type ErrorMessage,
-  type InferOutput
-} from 'valibot';
+import { array, minLength, null_, objectWithRest, optional, pipe, string, union, type InferOutput } from 'valibot';
 
-import identifier from './Identifier';
-import jsonValueSchema from './jsonValueSchema';
-import { literal } from './Literal';
-import { nodeReference } from './NodeReference';
+import { IdentifierSchema } from './Identifier';
+import { JSONLiteralSchema } from './JSONLiteral';
+import { LiteralSchema } from './Literal';
+import { NodeReferenceSchema } from './NodeReference';
 import freeze from './private/freeze';
 
-function flatNodeObjectPropertyValue<TMessage extends ErrorMessage<any>>(message?: TMessage | undefined) {
-  return union(
-    [
-      pipe(array(union([literal(), jsonValueSchema, nodeReference()])), freeze()),
-      jsonValueSchema,
-      literal(),
-      nodeReference(),
-      null_()
-    ],
-    message
-  );
-}
+const FlatNodeObjectPropertyValueSchema = union(
+  [
+    pipe(
+      array(
+        union(
+          [LiteralSchema, JSONLiteralSchema, NodeReferenceSchema],
+          'Array in flat node must be literal, JSON value, or node reference'
+        )
+      ),
+      freeze()
+    ),
+    JSONLiteralSchema,
+    LiteralSchema,
+    NodeReferenceSchema,
+    null_()
+  ],
+  'Non-array value in flat node must be literal, JSON value, node reference, or null'
+);
 
-type FlatNodeObjectPropertyValue = InferOutput<ReturnType<typeof flatNodeObjectPropertyValue>>;
+type FlatNodeObjectPropertyValue = InferOutput<typeof FlatNodeObjectPropertyValueSchema>;
 
 /**
  * Schema of JSON-LD node object.
- *
- * When parsed, all property value will be wrapped in an array.
- *
- * @param message
- * @returns
  */
-function flatNodeObject<TMessage extends ErrorMessage<any>>(message?: TMessage | undefined) {
-  return pipe(
-    objectWithRest(
-      {
-        '@context': optional(string('Complex @context is not supported in our implementation')),
-        '@id': identifier(),
-        '@type': optional(union([pipe(array(string()), freeze()), string()]))
-      },
-      flatNodeObjectPropertyValue(),
-      message
-    ),
-    freeze()
-  );
-}
+const FlatNodeObjectSchema = pipe(
+  objectWithRest(
+    {
+      '@context': optional(string('Complex @context is not supported in our implementation')),
+      '@id': IdentifierSchema,
+      '@type': optional(
+        union(
+          [pipe(array(string()), minLength(1), freeze()), string()],
+          '@type must be string or array of string with at least 1 element'
+        )
+      )
+    },
+    FlatNodeObjectPropertyValueSchema
+  ),
+  freeze()
+);
 
-type FlatNodeObject = InferOutput<ReturnType<typeof flatNodeObject>>;
+type FlatNodeObject = InferOutput<typeof FlatNodeObjectSchema>;
 
-export default flatNodeObject;
-export { flatNodeObjectPropertyValue, type FlatNodeObject, type FlatNodeObjectPropertyValue };
+export {
+  FlatNodeObjectPropertyValueSchema,
+  FlatNodeObjectSchema,
+  type FlatNodeObject,
+  type FlatNodeObjectPropertyValue
+};

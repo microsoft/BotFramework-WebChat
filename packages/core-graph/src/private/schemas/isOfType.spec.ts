@@ -1,3 +1,4 @@
+import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
 import type { FlatNodeObject } from './FlatNodeObject';
 import isOfType from './isOfType';
@@ -26,7 +27,7 @@ scenario('isOfType', bdd => {
 
   bdd
     .given('object without @type', () => ({ '@id': '_:b1' }) satisfies FlatNodeObject)
-    .when('isOfType() is called with "Message"', value => [isOfType(value, 'Message'), false])
+    .when('isOfType() is called with "Message"', value => [isOfType(value as any, 'Message'), false])
     .then('should return expected false', (_, [actual, expected]) => {
       expect(actual).toBe(expected);
     });

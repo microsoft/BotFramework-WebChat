@@ -126,7 +126,7 @@ scenario('Reduce confusion: empty array and `null` is removed', bdd => {
         'node with array of null',
         () => [
           { '@id': '_:b1', '@type': ['Person'], value: [null] },
-          'Invalid type: Expected (Array | Object | (boolean | number | string) | null) but received Array'
+          'Only JSON literal, literal, node reference or null can be parsed into slant node'
         ]
       ],
       [
@@ -185,7 +185,7 @@ scenario('Flattened: property values must be non-null literals, node reference, 
         if (error) {
           throw error;
         }
-      }).toThrow('Invalid type: Expected (Array | Object | (boolean | number | string) | null) but received Array');
+      }).toThrow('Only JSON literal, literal, node reference or null can be parsed into slant node');
     });
 });
 
@@ -196,8 +196,7 @@ scenario("JSON literals will be kept as-is: `{ '@type': '@json', '@value': JSONV
       '@type': 'Message',
       attachments: {
         '@type': '@json',
-        '@value': { one: 1 },
-        ignoredValue: 1
+        '@value': { one: 1 }
       }
     }))
     .when('colored', node => colorNode(node as any))
@@ -220,8 +219,7 @@ scenario("JSON literals will be kept as-is: `{ '@type': '@json', '@value': JSONV
       '@type': 'Message',
       attachments: {
         '@type': '@json',
-        '@value': [123],
-        ignoredValue: 1
+        '@value': [123]
       }
     }))
     .when('colored', node => colorNode(node as any))
@@ -260,6 +258,33 @@ scenario("JSON literals will be kept as-is: `{ '@type': '@json', '@value': JSONV
         ]
       });
     });
+
+  bdd
+    .given('a JSON literal with extraneous properties', () => ({
+      '@id': '_:b1',
+      '@type': 'Message',
+      attachments: {
+        '@type': '@json',
+        '@value': {},
+        extraneous: 123
+      }
+    }))
+    .when('colored', node => {
+      try {
+        colorNode(node as any);
+      } catch (error) {
+        return error;
+      }
+
+      return undefined;
+    })
+    .then('should throw', (_, error) => {
+      expect(() => {
+        if (error) {
+          throw error;
+        }
+      }).toThrow('Only JSON literal, literal, node reference or null can be parsed into slant node');
+    });
 });
 
 scenario('Do not handle full JSON-LD spec: `@context` is an opaque string and the schema is not honored', bdd => {
@@ -276,7 +301,7 @@ scenario('Do not handle full JSON-LD spec: `@context` is an opaque string and th
         'node with @context of object',
         () => [
           { '@context': {}, '@id': '_:b1', '@type': ['Person'] },
-          'Invalid type: Expected (Array | Object | (boolean | number | string) | null) but received Object'
+          'Only JSON literal, literal, node reference or null can be parsed into slant node'
         ]
       ]
     ])

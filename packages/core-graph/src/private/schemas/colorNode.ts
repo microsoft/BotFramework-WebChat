@@ -10,119 +10,118 @@ import {
   string,
   transform,
   union,
-  type ErrorMessage,
   type InferOutput,
-  type ObjectSchema,
-  type ObjectWithRestIssue
+  type ObjectSchema
 } from 'valibot';
 
 import type { FlatNodeObject } from './FlatNodeObject';
-import identifier from './Identifier';
-import { jsonLiteral, type JSONLiteral } from './jsonLiteral';
-import { literal, type Literal } from './Literal';
-import { nodeReference, type NodeReference } from './NodeReference';
+import { IdentifierSchema } from './Identifier';
+import { JSONLiteralSchema, type JSONLiteral } from './JSONLiteral';
+import { LiteralSchema, type Literal } from './Literal';
+import { NodeReferenceSchema, type NodeReference } from './NodeReference';
 import freeze from './private/freeze';
 
 // Our opinions.
-function slantNode<TMessage extends ErrorMessage<ObjectWithRestIssue> | undefined = undefined>(
-  message?: TMessage | undefined
-) {
-  return pipe(
-    objectWithRest(
-      {
-        // We treat @context as opaque string than a schema.
-        '@context': optional(string('@context must be an IRI')),
-        '@id': identifier('@id is required and must be an IRI or blank node identifier'),
-        // Multi-membership is enabled by default.
-        '@type': pipe(
-          array(string('element in @type must be a string'), '@type must be array of string'),
+const SlantNodeSchema = pipe(
+  objectWithRest(
+    {
+      // We treat @context as opaque string than a schema.
+      '@context': optional(string('@context must be an IRI')),
+      '@id': IdentifierSchema,
+      // Multi-membership is enabled by default.
+      '@type': pipe(
+        array(string('element in @type must be a string'), '@type must be array of string'),
+        freeze(),
+        minLength(1, '@type must have at least one element')
+      ),
+      // We follow Schema.org that "hasPart" denotes children.
+      // This relationship is "membership" than "hierarchy".
+      hasPart: optional(
+        pipe(
+          array(NodeReferenceSchema, 'hasPart must be array of NodeReference'),
           freeze(),
-          minLength(1, '@type must have at least one element')
-        ),
-        // We follow Schema.org that "hasPart" denotes children.
-        // This relationship is "membership" than "hierarchy".
-        hasPart: optional(
-          pipe(
-            array(nodeReference('element in hasPart must be NodeReference'), 'hasPart must be array of NodeReference'),
-            freeze(),
-            minLength(1, 'hasPart, if present, must have at least one element')
-          )
-        ),
-        // We follow Schema.org that "isPartOf" denotes parent, and multiple parent is possible.
-        // This relationship is "membership" than "hierarchy".
-        isPartOf: optional(
-          pipe(
-            array(
-              nodeReference('element in isPartOf must be NodeReference'),
-              'isPartOf must be array of NodeReference'
-            ),
-            freeze(),
-            minLength(1, 'isPartOf, if present, must have at least one element')
-          )
+          minLength(1, 'hasPart, if present, must have at least one element')
         )
-      },
-      // The rest property values must be encapsulated in array.
-      // Array of boolean, number, string, JSON literal, and node reference are accepted.
-      pipe(array(union([jsonLiteral(), literal(), nodeReference()])), minLength(1)),
-      message
-    ),
-    freeze()
-  );
-}
+      ),
+      // We follow Schema.org that "isPartOf" denotes parent, and multiple parent is possible.
+      // This relationship is "membership" than "hierarchy".
+      isPartOf: optional(
+        pipe(
+          array(NodeReferenceSchema, 'isPartOf must be array of NodeReference'),
+          freeze(),
+          minLength(1, 'isPartOf, if present, must have at least one element')
+        )
+      )
+    },
+    // The rest property values must be encapsulated in array.
+    // Array of boolean, number, string, JSON literal, and node reference are accepted.
+    pipe(
+      array(
+        union(
+          [JSONLiteralSchema, LiteralSchema, NodeReferenceSchema],
+          'Properties of slant node must be array of JSON literal, literal or node reference'
+        )
+      ),
+      minLength(1, 'Properties of slant node must be an array with at least 1 element')
+    )
+  ),
+  freeze()
+);
 
 // Due to limitation on TypeScript, we cannot truthfully represent the typing.
-type SlantNode = InferOutput<ObjectSchema<ReturnType<typeof slantNode>['entries'], undefined>> & {
+type SlantNode = InferOutput<ObjectSchema<(typeof SlantNodeSchema)['entries'], undefined>> & {
   [key: string]: unknown;
 };
 
-function slantNodeWithFix() {
-  return pipe(
-    looseObject({}),
-    transform(node => {
-      const propertyMap = new Map<string, readonly (JSONLiteral | Literal | NodeReference)[]>();
-      let context: string | undefined;
-      let id: string | undefined;
+const SlantNodeWithFixSchema = pipe(
+  looseObject({}),
+  transform(node => {
+    const propertyMap = new Map<string, readonly (JSONLiteral | Literal | NodeReference)[]>();
+    let context: string | undefined;
+    let id: string | undefined;
 
-      for (const [key, value] of Object.entries(node)) {
-        const parsedValue = parse(
-          union([
-            array(union([jsonLiteral(), literal(), nodeReference()])),
-            jsonLiteral(),
-            literal(),
-            nodeReference(),
+    for (const [key, value] of Object.entries(node)) {
+      const parsedValue = parse(
+        union(
+          [
+            array(union([JSONLiteralSchema, LiteralSchema, NodeReferenceSchema])),
+            JSONLiteralSchema,
+            LiteralSchema,
+            NodeReferenceSchema,
             null_()
-          ]),
-          value
-        );
+          ],
+          'Only JSON literal, literal, node reference or null can be parsed into slant node'
+        ),
+        value
+      );
 
-        switch (key) {
-          case '@context':
-            context = parse(string(), value);
-            break;
+      switch (key) {
+        case '@context':
+          context = parse(string('@context must be an IRI'), value);
+          break;
 
-          case '@id':
-            id = parse(string(), value);
-            break;
+        case '@id':
+          id = parse(IdentifierSchema, value);
+          break;
 
-          default: {
-            const slantedValue = Array.isArray(parsedValue)
-              ? parsedValue
-              : Object.freeze(parsedValue === null || typeof parsedValue === 'undefined' ? [] : [parsedValue]);
+        default: {
+          const slantedValue = Array.isArray(parsedValue)
+            ? parsedValue
+            : Object.freeze(parsedValue === null || typeof parsedValue === 'undefined' ? [] : [parsedValue]);
 
-            slantedValue.length && propertyMap.set(key, slantedValue);
+          slantedValue.length && propertyMap.set(key, slantedValue);
 
-            break;
-          }
+          break;
         }
       }
+    }
 
-      return parse(
-        slantNode(),
-        Object.fromEntries([...(context ? [['@context', context]] : []), ['@id', id], ...Array.from(propertyMap)])
-      );
-    })
-  );
-}
+    return parse(
+      SlantNodeSchema,
+      Object.fromEntries([...(context ? [['@context', context]] : []), ['@id', id], ...Array.from(propertyMap)])
+    );
+  })
+);
 
 /**
  * Put our opinions into the node.
@@ -150,8 +149,8 @@ function slantNodeWithFix() {
  * @returns An opinionated node object which conforms to JSON-LD specification.
  */
 function colorNode(node: FlatNodeObject | SlantNode): SlantNode {
-  return parse(slantNodeWithFix(), node);
+  return parse(SlantNodeWithFixSchema, node);
 }
 
 export default colorNode;
-export { slantNode, slantNodeWithFix, type SlantNode };
+export { SlantNodeSchema, SlantNodeWithFixSchema, type SlantNode };

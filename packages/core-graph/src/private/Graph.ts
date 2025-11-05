@@ -10,10 +10,10 @@ import { parse } from 'valibot';
 
 import colorNode, { type SlantNode } from './schemas/colorNode';
 import flattenNodeObject from './schemas/flattenNodeObject';
-import type { Identifier } from './schemas/Identifier';
+import { type Identifier } from './schemas/Identifier';
 import isOfType from './schemas/isOfType';
-import messageNode from './schemas/messageNode';
-import { nodeReference, type NodeReference } from './schemas/NodeReference';
+import { MessageNodeSchema } from './schemas/MessageNode';
+import { NodeReferenceSchema, type NodeReference } from './schemas/NodeReference';
 
 type GraphChangeEvent = { readonly ids: readonly Identifier[] };
 
@@ -23,7 +23,7 @@ function nodeReferenceListToIdentifierSet(nodeReferences: readonly NodeReference
 
 function identifierSetToNodeReferenceList(identifierSet: ReadonlySet<Identifier>): readonly NodeReference[] {
   return Object.freeze(
-    Array.from(identifierSet.values().map(identifier => parse(nodeReference(), { '@id': identifier })))
+    Array.from(identifierSet.values().map(identifier => parse(NodeReferenceSchema, { '@id': identifier })))
   );
 }
 
@@ -265,7 +265,7 @@ class Graph extends EventTarget {
         if (isOfType(slantNode, 'Message')) {
           // console.log('🐛🐛🐛 upsertRaw/messageNode', { flatNode, slantNode });
 
-          parse(messageNode(), slantNode);
+          parse(MessageNodeSchema, slantNode);
         }
 
         slantNodes.push(slantNode);

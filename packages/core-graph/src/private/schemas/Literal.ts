@@ -1,4 +1,4 @@
-import { boolean, number, safeParse, string, union, type ErrorMessage, type InferOutput } from 'valibot';
+import { boolean, is, number, string, union, type InferOutput } from 'valibot';
 
 /**
  * Schema of JSON-LD literals.
@@ -6,15 +6,13 @@ import { boolean, number, safeParse, string, union, type ErrorMessage, type Infe
  * @param message
  * @returns
  */
-function literal<TMessage extends ErrorMessage<any>>(message?: TMessage | undefined) {
-  // TODO: [P*] Null should not be literal because it could become null[].
-  return union([boolean(), number(), string()], message);
-}
+const LiteralSchema = union(
+  [boolean(), number(), string()],
+  'Only boolean, number, and string are allowed for JSON-LD literal'
+);
 
-type Literal = InferOutput<ReturnType<typeof literal>>;
+type Literal = InferOutput<typeof LiteralSchema>;
 
-function isLiteral(value: unknown): value is Literal {
-  return safeParse(literal(), value).success;
-}
+const isLiteral = is.bind(LiteralSchema);
 
-export { isLiteral, literal, type Literal };
+export { isLiteral, LiteralSchema, type Literal };
