@@ -52,6 +52,7 @@
   },
   "pinDependencies": {},
   "localDependencies": {
+    "@msinternal/botframework-webchat-react-hooks": "development",
     "@msinternal/botframework-webchat-react-valibot": "development",
     "botframework-webchat-core": "development"
   },
