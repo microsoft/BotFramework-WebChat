@@ -1,11 +1,11 @@
 import { applyMiddleware, type Middleware } from 'handler-chain';
 import type { Identifier } from './schemas/Identifier';
 
-type SubscriberRecord = {
+type GraphSubscriberRecord = {
   readonly upsertedNodeIdentifiers: ReadonlySet<Identifier>;
 };
 
-type Subscriber = (event: SubscriberRecord) => void;
+type GraphSubscriber = (event: GraphSubscriberRecord) => void;
 
 type GraphNode = { '@id': Identifier };
 
@@ -20,7 +20,7 @@ type GraphState<T extends GraphNode = GraphNode> = ReadonlyMap<Identifier, T>;
 type ReadableGraph<TInput extends GraphNode, TOutput extends GraphNode> = {
   readonly act: (fn: (graph: WritableGraph<TInput, TOutput>) => void) => void;
   readonly getState: () => GraphState<TOutput>;
-  readonly subscribe: (subscriber: Subscriber) => void;
+  readonly subscribe: (subscriber: GraphSubscriber) => void;
 };
 
 type WritableGraph<TInput extends GraphNode, TOutput extends GraphNode> = {
@@ -32,7 +32,7 @@ class Graph2<TInput extends GraphNode, TOutput extends GraphNode = TInput> imple
   #busy = false;
   #middleware: GraphMiddleware<TInput, TOutput>;
   #state: GraphState<TOutput> = Object.freeze(new Map());
-  #subscribers: Set<Subscriber> = new Set();
+  #subscribers: Set<GraphSubscriber> = new Set();
 
   constructor(
     firstMiddleware: GraphMiddleware<TInput, TOutput>,
@@ -105,7 +105,7 @@ class Graph2<TInput extends GraphNode, TOutput extends GraphNode = TInput> imple
     return this.#state;
   }
 
-  subscribe(subscriber: Subscriber): () => void {
+  subscribe(subscriber: GraphSubscriber): () => void {
     this.#subscribers.add(subscriber);
 
     return () => {
@@ -119,8 +119,8 @@ export {
   type GraphMiddleware,
   type GraphNode,
   type GraphState,
+  type GraphSubscriber,
+  type GraphSubscriberRecord,
   type ReadableGraph,
-  type Subscriber,
-  type SubscriberRecord,
   type WritableGraph
 };

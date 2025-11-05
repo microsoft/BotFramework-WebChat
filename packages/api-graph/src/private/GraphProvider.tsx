@@ -3,6 +3,7 @@ import { createStore, WebChatActivity } from 'botframework-webchat-core';
 import {
   createGraphFromStore,
   isOfType,
+  type GraphSubscriber,
   type Identifier,
   type MessageNode,
   type SlantNode
@@ -63,14 +64,15 @@ function GraphProvider(props: GraphProviderProps) {
   const orderedMessagesRef = useRefFrom(orderedMessages);
 
   useEffect(() => {
-    const handleChange = (event: CustomEvent & { readonly detail: { readonly ids: readonly Identifier[] } }) => {
+    const handleChange: GraphSubscriber = record => {
       // eslint-disable-next-line no-console
-      console.log('🔔🔔🔔🔔🔔 graph updated via CHANGE', event);
+      console.log('🔔🔔🔔🔔🔔 GRAPH2 updated via CHANGE', record);
 
       let nextOrderedMessages: MessageNode[] | undefined;
+      const state = graph.getState();
 
-      for (const id of event.detail.ids) {
-        const node = graph.get(id);
+      for (const id of record.upsertedNodeIdentifiers) {
+        const node = state.get(id);
 
         if (node && isOfType(node, 'Message')) {
           const message = node as MessageNode;
@@ -87,9 +89,7 @@ function GraphProvider(props: GraphProviderProps) {
       }
     };
 
-    graph.addEventListener('change', handleChange as any);
-
-    return () => graph.removeEventListener('change', handleChange as any);
+    return graph.subscribe(handleChange);
   }, [graph, orderedMessagesRef, setNodeMap, setOrderedMessages]);
 
   const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(

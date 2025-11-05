@@ -8,7 +8,7 @@ import { MessageNodeSchema } from './schemas/MessageNode';
 
 type AnyNode = Record<string, unknown> & {
   readonly '@id': Identifier;
-  readonly '@type': string | string[];
+  readonly '@type': string | readonly string[];
 };
 
 const VALIDATION_SCHEMAS_BY_TYPE = new Map([['Message', MessageNodeSchema]]);

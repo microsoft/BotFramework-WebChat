@@ -144,3 +144,110 @@ scenario('SlantGraph handling blank node', bdd => {
       );
     });
 });
+
+scenario('SlantGraph auto-inversing', bdd => {
+  bdd
+    .given('a SlantGraph', () => new SlantGraph())
+    .when('upserting 2 nodes with hasPart only', graph =>
+      graph.act(graph =>
+        graph.upsert(
+          {
+            '@id': '_:c1',
+            '@type': 'Conversation',
+            abstract: 'Adipisicing voluptate aute mollit culpa nostrud labore ea deserunt nulla culpa nisi ea.',
+            hasPart: [{ '@id': '_:m1' }]
+          },
+          {
+            '@id': '_:m1',
+            '@type': 'Message',
+            text: 'Hello, World!'
+          }
+        )
+      )
+    )
+    .then('should perform auto-inversing', graph =>
+      expect(graph.getState()).toEqual(
+        new Map(
+          Object.entries({
+            '_:c1': {
+              '@id': '_:c1',
+              '@type': ['Conversation'],
+              abstract: ['Adipisicing voluptate aute mollit culpa nostrud labore ea deserunt nulla culpa nisi ea.'],
+              hasPart: [{ '@id': '_:m1' }]
+            },
+            '_:m1': {
+              '@id': '_:m1',
+              '@type': ['Message'],
+              isPartOf: [{ '@id': '_:c1' }],
+              text: ['Hello, World!']
+            }
+          })
+        )
+      )
+    );
+
+  bdd
+    .given('a SlantGraph', () => new SlantGraph())
+    .when('upserting 2 nodes with isPartOf only', graph =>
+      graph.act(graph =>
+        graph.upsert(
+          {
+            '@id': '_:c1',
+            '@type': 'Conversation',
+            abstract: 'Adipisicing voluptate aute mollit culpa nostrud labore ea deserunt nulla culpa nisi ea.'
+          },
+          {
+            '@id': '_:m1',
+            '@type': 'Message',
+            isPartOf: [{ '@id': '_:c1' }],
+            text: 'Hello, World!'
+          }
+        )
+      )
+    )
+    .then('should perform auto-inversing', graph =>
+      expect(graph.getState()).toEqual(
+        new Map(
+          Object.entries({
+            '_:c1': {
+              '@id': '_:c1',
+              '@type': ['Conversation'],
+              abstract: ['Adipisicing voluptate aute mollit culpa nostrud labore ea deserunt nulla culpa nisi ea.'],
+              hasPart: [{ '@id': '_:m1' }]
+            },
+            '_:m1': {
+              '@id': '_:m1',
+              '@type': ['Message'],
+              isPartOf: [{ '@id': '_:c1' }],
+              text: ['Hello, World!']
+            }
+          })
+        )
+      )
+    );
+});
+
+scenario('SlantGraph empty node', bdd => {
+  bdd
+    .given('a SlantGraph', () => new SlantGraph())
+    .when('upserting a node with @id and @type only', graph =>
+      graph.act(graph =>
+        graph.upsert({
+          '@id': '_:c1',
+          '@type': 'Conversation'
+        })
+      )
+    )
+    .then('should be upserted', graph =>
+      expect(graph.getState()).toEqual(
+        new Map(
+          Object.entries({
+            '_:c1': {
+              '@id': '_:c1',
+              '@type': ['Conversation']
+            }
+          })
+        )
+      )
+    );
+});
