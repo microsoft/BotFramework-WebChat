@@ -1,9 +1,11 @@
 // TODO: [P0] This flattening can probably fold into `colorNode()` as it has slanted view of the system.
 
-import { object, optional, parse, safeParse } from 'valibot';
+import { check, object, optional, parse, pipe, safeParse } from 'valibot';
 
 import flatNodeObject, { type FlatNodeObject, type FlatNodeObjectPropertyValue } from './FlatNodeObject';
 import identifier from './Identifier';
+import isPlainObject from './isPlainObject';
+import { jsonLiteral, type JSONLiteral } from './jsonLiteral';
 import { literal, type Literal } from './Literal';
 import { nodeReference, type NodeReference } from './NodeReference';
 
@@ -22,32 +24,48 @@ function flattenNodeObject_(
 ): NodeReference;
 
 function flattenNodeObject_(
-  input: FlattenNodeObjectInput | Literal,
+  input: JSONLiteral,
   graphMap: Map<string, FlatNodeObject>,
   refMap: Map<FlattenNodeObjectInput, NodeReference>
-): Literal | NodeReference;
+): JSONLiteral;
 
 function flattenNodeObject_(
   input: FlattenNodeObjectInput | Literal,
   graphMap: Map<string, FlatNodeObject>,
   refMap: Map<FlattenNodeObjectInput, NodeReference>
-): Literal | NodeReference {
+): JSONLiteral | Literal | NodeReference;
+
+function flattenNodeObject_(
+  input: FlattenNodeObjectInput | Literal,
+  graphMap: Map<string, FlatNodeObject>,
+  refMap: Map<FlattenNodeObjectInput, NodeReference>
+): JSONLiteral | Literal | NodeReference {
   const parseAsLiteralResult = safeParse(literal(), input);
 
   if (parseAsLiteralResult.success) {
     return parseAsLiteralResult.output;
   }
 
+  const parseAsJSONLiteralResult = safeParse(
+    pipe(
+      jsonLiteral(),
+      check(value => isPlainObject(value))
+    ),
+    input
+  );
+
+  if (parseAsJSONLiteralResult.success) {
+    return parseAsJSONLiteralResult.output;
+  }
+
   // This is for TypeScript only because safeParse().success is not a type predicate.
   input = input as object;
 
   // Array is allowed by valibot.object({}), we need to check for plain object first.
-  if (Object.prototype.toString.call(input) !== '[object Object]' || !safeParse(object({}), input).success) {
-    const error = new Error('Only JSON-LD literal and plain object can be flattened');
+  if (!isPlainObject(input) || !safeParse(object({}), input).success) {
+    const error = new Error('Only literals, JSON literals, and plain object can be flattened');
 
     error.cause = { input };
-
-    console.log({ input });
 
     throw error;
   }

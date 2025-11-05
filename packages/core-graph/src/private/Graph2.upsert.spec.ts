@@ -7,7 +7,10 @@ import type { Identifier } from './schemas/Identifier';
 
 scenario('Graph.upsert()', bdd => {
   bdd
-    .given('a Graph object', () => new Graph<{ readonly '@id': Identifier; readonly name: string }>())
+    .given(
+      'a Graph object',
+      () => new Graph<{ readonly '@id': Identifier; readonly name: string }>(() => () => request => request)
+    )
     .when('act().upsert() is called', graph => graph.act(graph => graph.upsert({ '@id': '_:b1', name: 'John Doe' })))
     .then('getState() should return the new node', graph =>
       expect(graph.getState()).toEqual(
@@ -33,7 +36,10 @@ scenario('Graph.upsert()', bdd => {
     );
 
   bdd
-    .given('a Graph object', () => new Graph<{ readonly '@id': Identifier; readonly name: string }>())
+    .given(
+      'a Graph object',
+      () => new Graph<{ readonly '@id': Identifier; readonly name: string }>(() => () => request => request)
+    )
     .when('act().upsert() is called twice with node of same @id', graph => {
       try {
         graph.act(graph => graph.upsert({ '@id': '_:b1', name: 'John Doe' }, { '@id': '_:b1', name: 'Mary Doe' }));

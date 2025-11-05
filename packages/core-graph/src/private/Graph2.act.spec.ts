@@ -7,7 +7,7 @@ import './schemas/expectIsFrozen';
 
 scenario('Graph.act()', bdd => {
   bdd
-    .given('a Graph object', () => new Graph())
+    .given('a Graph object', () => new Graph(() => () => request => request))
     .when('act() is called twice nested', graph => {
       try {
         graph.act(() => {
@@ -31,7 +31,7 @@ scenario('Graph.act()', bdd => {
     });
 
   bdd
-    .given('a Graph object', () => new Graph())
+    .given('a Graph object', () => new Graph(() => () => request => request))
     .when('act() is called', graph => {
       let writableGraph;
 

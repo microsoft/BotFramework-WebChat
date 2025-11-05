@@ -15,7 +15,7 @@ scenario('Graph.middleware', bdd => {
   bdd
     .given('a Graph object with a middleware which transform "name" property to uppercase', () => {
       const enhancer = fn<(nodes: ReadonlyMap<Identifier, Node>) => ReadonlyMap<Identifier, Node>>();
-      const graph = new Graph<Node>(() => next => nodes => {
+      const graph = new Graph<Node>(() => () => nodes => {
         enhancer(nodes);
 
         const nextNodes = new Map();
@@ -24,7 +24,7 @@ scenario('Graph.middleware', bdd => {
           nextNodes.set(node['@id'], { '@id': node['@id'], name: node.name.toUpperCase() });
         }
 
-        return next(Object.freeze(nextNodes));
+        return Object.freeze(nextNodes);
       });
 
       return Object.freeze({ enhancer, graph });
@@ -78,7 +78,7 @@ scenario('Graph.middleware', bdd => {
     .given(
       'a Graph object with a middleware which split one node into two nodes',
       () =>
-        new Graph<Node>(() => next => upsertingNodeMap => {
+        new Graph<Node>(() => () => upsertingNodeMap => {
           const nextNodes = new Map<Identifier, Node>();
 
           for (const node of upsertingNodeMap.values()) {
@@ -89,7 +89,7 @@ scenario('Graph.middleware', bdd => {
             }
           }
 
-          return next(nextNodes);
+          return nextNodes;
         })
     )
     .when('upsert() is called', graph =>
@@ -129,13 +129,11 @@ scenario('Graph.middleware', bdd => {
                 .map(([id, node]) => [id, { '@id': node['@id'], name: `My name is ${node.name}.` }])
             );
           },
-          () => next => upsertingNodeMap =>
-            next(
-              new Map(
-                upsertingNodeMap
-                  .entries()
-                  .map(([id, node]) => [id, { '@id': node['@id'], name: node.name.toUpperCase() }])
-              )
+          () => () => upsertingNodeMap =>
+            new Map(
+              upsertingNodeMap
+                .entries()
+                .map(([id, node]) => [id, { '@id': node['@id'], name: node.name.toUpperCase() }])
             )
         )
     )
@@ -171,11 +169,11 @@ scenario('Graph.middleware', bdd => {
 
             return next(new Map(upsertingNodeMap));
           },
-          () => next => nodes => {
+          () => () => nodes => {
             // VERIFY: Make sure request is not mutable.
             expect(nodes).toEqual(expect.isFrozen());
 
-            return next(new Map(nodes));
+            return new Map(nodes);
           }
         )
     )
@@ -207,7 +205,7 @@ scenario('Graph.middleware', bdd => {
     .given(
       'a Graph object with middleware which link Message node to Conversation node',
       () =>
-        new Graph<ConversationNode | MessageNode>(({ getState }) => next => upsertingNodeMap => {
+        new Graph<ConversationNode | MessageNode>(({ getState }) => () => upsertingNodeMap => {
           const conversationNode = getState().get('_:c1');
           const nextUpsertingNodeMap = new Map(upsertingNodeMap);
 
@@ -231,7 +229,7 @@ scenario('Graph.middleware', bdd => {
             });
           }
 
-          return next(nextUpsertingNodeMap);
+          return nextUpsertingNodeMap;
         })
     )
     .when('upsert(ConversationNode) is called', graph => {
@@ -275,5 +273,24 @@ scenario('Graph.middleware', bdd => {
           })
         )
       );
+    });
+
+  bdd
+    .given('a Graph with a passthrough middleware', () => new Graph(() => next => request => next(request)))
+    .when('upserting a node', graph => {
+      try {
+        graph.act(graph => graph.upsert({ '@id': '_:b1' }));
+      } catch (error) {
+        return error;
+      }
+
+      return undefined;
+    })
+    .then('should throw', (_, error) => {
+      expect(() => {
+        if (error) {
+          throw error;
+        }
+      }).toThrow('At least one middleware must not fallthrough');
     });
 });

@@ -18,6 +18,7 @@ import {
 
 import type { FlatNodeObject } from './FlatNodeObject';
 import identifier from './Identifier';
+import { jsonLiteral, type JSONLiteral } from './jsonLiteral';
 import { literal, type Literal } from './Literal';
 import { nodeReference, type NodeReference } from './NodeReference';
 import freeze from './private/freeze';
@@ -62,7 +63,7 @@ function slantNode<TMessage extends ErrorMessage<ObjectWithRestIssue> | undefine
       },
       // The rest property values must be encapsulated in array.
       // Array of boolean, number, string, and node reference are accepted.
-      pipe(array(union([literal(), nodeReference()])), minLength(1)),
+      pipe(array(union([jsonLiteral(), literal(), nodeReference()])), minLength(1)),
       message
     ),
     freeze()
@@ -78,13 +79,19 @@ function slantNodeWithFix() {
   return pipe(
     looseObject({}),
     transform(node => {
-      const propertyMap = new Map<string, readonly (Literal | NodeReference)[]>();
+      const propertyMap = new Map<string, readonly (JSONLiteral | Literal | NodeReference)[]>();
       let context: string | undefined;
       let id: string | undefined;
 
       for (const [key, value] of Object.entries(node)) {
         const parsedValue = parse(
-          union([array(union([literal(), nodeReference()])), nodeReference(), literal(), null_()]),
+          union([
+            array(union([jsonLiteral(), literal(), nodeReference()])),
+            jsonLiteral(),
+            literal(),
+            nodeReference(),
+            null_()
+          ]),
           value
         );
 
@@ -129,8 +136,10 @@ function slantNodeWithFix() {
  *    - Support multiple types: every `@type` must be an array of string
  *    - Reduce confusion: property value with empty array and `null` is removed
  *       - `[]` and `null` are same as if the property is removed
- *    - Flattened: property values must be non-null literals or node reference, no nested objects
- *       - Any array containing `null` is not supported and will throw, as it is likely a bug in code
+ *    - Flattened: property values must be non-null literals, node reference, or JSON literals
+ *       - Any array containing `null` is not supported and will throw unless it is JSON literal, as it is likely a bug in code
+ *    - JSON literals will have boxing kept: `{ '@type': '@json', '@value': JSONValue }`
+ *       - `@value` could be null, if unwrapped, will be confusing as we removed nulls
  *    - Do not handle full JSON-LD spec: `@context` is an opaque string and its schema is not honored
  * - Auto-linking for Schema.org: `hasPart` and `isPartOf` are auto-inversed
  * - Keep its root: every node is compliant to JSON-LD, understood by standard parsers

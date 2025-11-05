@@ -11,13 +11,20 @@ import {
 } from 'valibot';
 
 import identifier from './Identifier';
+import jsonValueSchema from './jsonValueSchema';
 import { literal } from './Literal';
 import { nodeReference } from './NodeReference';
 import freeze from './private/freeze';
 
 function flatNodeObjectPropertyValue<TMessage extends ErrorMessage<any>>(message?: TMessage | undefined) {
   return union(
-    [pipe(array(union([literal(), nodeReference()])), freeze()), pipe(literal()), pipe(nodeReference()), null_()],
+    [
+      pipe(array(union([literal(), jsonValueSchema, nodeReference()])), freeze()),
+      jsonValueSchema,
+      literal(),
+      nodeReference(),
+      null_()
+    ],
     message
   );
 }

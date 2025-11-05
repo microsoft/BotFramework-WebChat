@@ -9,7 +9,7 @@ import './schemas/expectIsFrozen';
 scenario('Graph.subscribe()', bdd => {
   bdd
     .given('a Graph object and a subscriber', () => {
-      const graph = new Graph();
+      const graph = new Graph(() => () => request => request);
       const subscriber = fn();
 
       graph.subscribe(subscriber);
@@ -34,7 +34,7 @@ scenario('Graph.subscribe()', bdd => {
 
   bdd
     .given('a Graph object and a subscriber', () => {
-      const graph = new Graph();
+      const graph = new Graph(() => () => request => request);
       const subscriber = fn();
       const unsubscribe = graph.subscribe(subscriber);
 
@@ -88,7 +88,7 @@ scenario('Graph.subscribe()', bdd => {
 
   bdd
     .given('a Graph object and a subscriber which will call act() when triggered', () => {
-      const graph = new Graph();
+      const graph = new Graph(() => () => request => request);
       const subscriber = fn(() => {
         // Should throw.
         graph.act(() => {

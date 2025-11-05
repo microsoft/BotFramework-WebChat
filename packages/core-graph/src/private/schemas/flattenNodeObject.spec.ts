@@ -118,4 +118,80 @@ scenario('flattenNodeObject()', bdd => {
       }
     })
     .then('should throw', (_, error) => expect(error).toBeTruthy());
+
+  bdd
+    .given(`an object with an array mixed of JSON literal and plain object`, () => ({
+      description: 'The Empire State Building is a 102-story landmark in New York City.',
+      geo: [
+        {
+          '@type': '@json',
+          '@value': {
+            latitude: '40.75',
+            longitude: '73.98'
+          }
+        },
+        {
+          city: 'New York',
+          state: 'NY',
+          street: '20 West 34th Street',
+          zipCode: '10118'
+        }
+      ],
+      image: 'http://www.civil.usherbrooke.ca/cours/gci215a/empire-state-building.jpg',
+      name: 'The Empire State Building'
+    }))
+    .when('flattened', value => flattenNodeObject(value))
+    .then('should return a graph with 1 node object', (_, { graph }) => {
+      expect(graph).toEqual([
+        {
+          '@id': expect.valibot(identifier()),
+          description: 'The Empire State Building is a 102-story landmark in New York City.',
+          // "geo" property should kept as-is.
+          geo: [
+            {
+              '@type': '@json',
+              '@value': {
+                latitude: '40.75',
+                longitude: '73.98'
+              }
+            },
+            expect.valibot(nodeReference())
+          ],
+          image: 'http://www.civil.usherbrooke.ca/cours/gci215a/empire-state-building.jpg',
+          name: 'The Empire State Building'
+        },
+        {
+          '@id': expect.valibot(identifier()),
+          city: 'New York',
+          state: 'NY',
+          street: '20 West 34th Street',
+          zipCode: '10118'
+        }
+      ]);
+    });
+
+  bdd
+    .given(`a class object with @type of '@json'`, () => ({
+      '@id': '_:b1',
+      value: {
+        '@type': '@json',
+        '@value': Symbol()
+      }
+    }))
+    .when('flattened', value => {
+      try {
+        flattenNodeObject(value);
+      } catch (error) {
+        return error;
+      }
+
+      return undefined;
+    })
+    .then('should throw', (_, error) => {
+      expect(() => {
+        if (error) {
+          throw error;
+        }
+      }).toThrow('Only literals, JSON literals, and plain object can be flattened');
+    });
 });
