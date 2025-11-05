@@ -1,4 +1,3 @@
-import type { JSONLiteral } from '@msinternal/botframework-webchat-core-graph';
 import { reactNode, validateProps } from '@msinternal/botframework-webchat-react-valibot';
 import { createStore, WebChatActivity } from 'botframework-webchat-core';
 import {
@@ -59,16 +58,16 @@ function GraphProvider(props: GraphProviderProps) {
 
   // const nodeMap: ReadonlyMap<Identifier, SlantNode> = useSyncExternalStore(subscribe, getSnapshot);
   const [nodeMap, setNodeMap] = useState<ReadonlyMap<Identifier, SlantNode>>(() => Object.freeze(new Map()));
-  const [orderedActivities, setOrderedActivities] = useState<readonly WebChatActivity[]>(Object.freeze([]));
+  const [orderedMessages, setOrderedMessages] = useState<readonly MessageNode[]>(Object.freeze([]));
 
-  const orderedActivitiesRef = useRefFrom(orderedActivities);
+  const orderedMessagesRef = useRefFrom(orderedMessages);
 
   useEffect(() => {
     const handleChange = (event: CustomEvent & { readonly detail: { readonly ids: readonly Identifier[] } }) => {
       // eslint-disable-next-line no-console
       console.log('🔔🔔🔔🔔🔔 graph updated via CHANGE', event);
 
-      let nextOrderedActivities: WebChatActivity[] | undefined;
+      let nextOrderedMessages: MessageNode[] | undefined;
 
       for (const id of event.detail.ids) {
         const node = graph.get(id);
@@ -76,27 +75,34 @@ function GraphProvider(props: GraphProviderProps) {
         if (node && isOfType(node, 'Message')) {
           const message = node as MessageNode;
 
-          nextOrderedActivities ||= Array.from(orderedActivitiesRef.current);
-
-          nextOrderedActivities.push(
-            (message['urn:microsoft:webchat:direct-line-activity:raw-json'][0] as JSONLiteral)[
-              '@value'
-            ] as WebChatActivity
-          );
-
-          nextOrderedActivities.sort(
-            (x, y) => x.channelData['webchat:sequence-id'] - y.channelData['webchat:sequence-id']
-          );
+          nextOrderedMessages ||= Array.from(orderedMessagesRef.current);
+          nextOrderedMessages.push(message);
         }
       }
 
-      nextOrderedActivities && setOrderedActivities(Object.freeze(nextOrderedActivities));
+      if (nextOrderedMessages) {
+        // TODO: [P0] Insertion sort is cheaper by 20x.
+        nextOrderedMessages.sort((x, y) => x.position[0] - y.position[0]);
+        setOrderedMessages(Object.freeze(nextOrderedMessages));
+      }
     };
 
     graph.addEventListener('change', handleChange as any);
 
     return () => graph.removeEventListener('change', handleChange as any);
-  }, [graph, orderedActivitiesRef, setNodeMap, setOrderedActivities]);
+  }, [graph, orderedMessagesRef, setNodeMap, setOrderedMessages]);
+
+  const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
+    () =>
+      Object.freeze([
+        Object.freeze(
+          orderedMessages.map(
+            node => node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity
+          )
+        )
+      ] as const),
+    [orderedMessages]
+  );
 
   // useEffect(() => {
   //   (async () => {
@@ -210,11 +216,6 @@ function GraphProvider(props: GraphProviderProps) {
   //   },
   //   [activityJSONMap, nodeMap]
   // );
-
-  const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
-    () => Object.freeze([orderedActivities] as const),
-    [orderedActivities]
-  );
 
   // useEffect(() => {
   //   // eslint-disable-next-line no-console
