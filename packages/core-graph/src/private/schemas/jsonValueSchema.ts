@@ -24,10 +24,10 @@ type JSONValue =
 
 const jsonValueSchema: GenericSchema<JSONValue> = lazy(() =>
   union([
-    string(),
-    number(),
     boolean(),
     null_(),
+    number(),
+    string(),
     array(
       union([
         jsonValueSchema,
