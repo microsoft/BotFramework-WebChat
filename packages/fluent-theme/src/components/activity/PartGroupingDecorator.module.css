@@ -721,7 +721,7 @@
       margin-inline-end: var(--webchat-spacingHorizontalXXL);
     }
 
-    :global(.webchat__bubble__content) {
+     &.part-grouping-decorator--from-bot :global(.webchat__bubble__content) {
       box-sizing: content-box;
       margin-block: calc(var(--webchat-spacingVerticalS) * -1);
       margin-inline: calc(var(--webchat-spacingHorizontalS) * -1);
