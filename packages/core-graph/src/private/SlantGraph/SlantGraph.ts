@@ -12,6 +12,7 @@ type AnyNode = Record<string, unknown> & {
 
 class SlantGraph extends Graph<AnyNode, SlantNode> {
   constructor() {
+    // `autoInversion` must run after `assertSlantNode`.
     super(color, assertSlantNode, autoInversion);
   }
 }

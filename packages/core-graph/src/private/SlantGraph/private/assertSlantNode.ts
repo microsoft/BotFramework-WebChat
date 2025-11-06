@@ -1,7 +1,6 @@
 import { assert } from 'valibot';
 import { type GraphMiddleware } from '../../Graph2';
 import { SlantNodeSchema, type SlantNode } from '../../schemas/colorNode';
-import type { Identifier } from '../../schemas/Identifier';
 import isOfType from '../../schemas/isOfType';
 import { MessageNodeSchema } from '../../schemas/MessageNode';
 import type { AnyNode } from '../SlantGraph';
@@ -17,7 +16,7 @@ const assertSlantNode: GraphMiddleware<AnyNode, SlantNode> = () => next => upser
     }
   }
 
-  return next(upsertingNodeMap as ReadonlyMap<Identifier, SlantNode>);
+  return next(upsertingNodeMap);
 };
 
 export default assertSlantNode;

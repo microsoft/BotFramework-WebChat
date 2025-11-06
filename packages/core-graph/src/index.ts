@@ -1,4 +1,3 @@
-// export { default as Graph } from './private/Graph';
 export {
   type GraphMiddleware,
   type GraphNode,

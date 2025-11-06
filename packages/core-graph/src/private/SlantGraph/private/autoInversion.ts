@@ -1,4 +1,4 @@
-import { array, fallback, parse } from 'valibot';
+import { parse } from 'valibot';
 import { type GraphMiddleware } from '../../Graph2';
 import { type SlantNode } from '../../schemas/colorNode';
 import type { Identifier } from '../../schemas/Identifier';
@@ -14,8 +14,6 @@ function identifierSetToNodeReferenceList(identifierSet: ReadonlySet<Identifier>
     Array.from(identifierSet.values().map(identifier => parse(NodeReferenceSchema, { '@id': identifier })))
   );
 }
-
-const NodeReferenceListSchema = fallback(array(NodeReferenceSchema), []);
 
 // eslint-disable-next-line complexity
 function setTriplet(
@@ -94,10 +92,11 @@ function setTriplet(
 const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
   ({ getState }) =>
   () =>
-  upsertingNodeMap => {
+  // "autoInversion" receives SlantNode instead of AnyNode because prior middleware already did the transformation.
+  // @ts-expect-error
+  (upsertingNodeMap: Map<Identifier, SlantNode>) => {
     const state = getState();
-    // "autoInversion" receives SlantNode instead of AnyNode because prior middleware already did the transformation.
-    const nextUpsertingNodeMap = new Map<Identifier, SlantNode>(upsertingNodeMap as any);
+    const nextUpsertingNodeMap = new Map(upsertingNodeMap as any);
 
     function markAsChanged(...nodes: readonly SlantNode[]) {
       for (const node of nodes) {
@@ -105,7 +104,7 @@ const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
       }
     }
 
-    function getDirty(id: Identifier) {
+    function getDirtyNode(id: Identifier) {
       const node = (nextUpsertingNodeMap.get(id) as SlantNode | undefined) ?? state.get(id);
 
       if (!node) {
@@ -118,36 +117,36 @@ const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
     for (const [_key, node] of upsertingNodeMap) {
       const id = node['@id'];
 
-      const existingNode = getDirty(id);
+      const existingNode = getDirtyNode(id);
 
       // Remove hasPart/isPartOf if the existing node does not match the upserted node.
       if (existingNode) {
         const removedHasPartIdSet = nodeReferenceListToIdentifierSet(existingNode.hasPart ?? []).difference(
-          nodeReferenceListToIdentifierSet(parse(NodeReferenceListSchema, node['hasPart']))
+          nodeReferenceListToIdentifierSet(node['hasPart'] ?? [])
         );
 
         for (const removedHasPartId of removedHasPartIdSet) {
-          markAsChanged(...setTriplet(existingNode, 'hasPart', getDirty(removedHasPartId)!, 'delete'));
+          markAsChanged(...setTriplet(existingNode, 'hasPart', getDirtyNode(removedHasPartId)!, 'delete'));
         }
 
         const removedIsPartOfIdSet = nodeReferenceListToIdentifierSet(existingNode.isPartOf ?? []).difference(
-          nodeReferenceListToIdentifierSet(parse(NodeReferenceListSchema, node['isPartOf']))
+          nodeReferenceListToIdentifierSet(node['isPartOf'] ?? [])
         );
 
         for (const removedIsPartOfId of removedIsPartOfIdSet) {
-          markAsChanged(...setTriplet(existingNode, 'isPartOf', getDirty(removedIsPartOfId)!, 'delete'));
+          markAsChanged(...setTriplet(existingNode, 'isPartOf', getDirtyNode(removedIsPartOfId)!, 'delete'));
         }
       }
     }
 
     // Add hasPart/isPartOf.
     for (const [_, node] of upsertingNodeMap) {
-      for (const { '@id': childId } of parse(NodeReferenceListSchema, node['hasPart'])) {
-        markAsChanged(...setTriplet(node as SlantNode, 'hasPart', getDirty(childId), 'add'));
+      for (const { '@id': childId } of node['hasPart'] ?? []) {
+        markAsChanged(...setTriplet(node as SlantNode, 'hasPart', getDirtyNode(childId), 'add'));
       }
 
-      for (const { '@id': parentId } of parse(NodeReferenceListSchema, node['isPartOf'])) {
-        markAsChanged(...setTriplet(node as SlantNode, 'isPartOf', getDirty(parentId), 'add'));
+      for (const { '@id': parentId } of node['isPartOf'] ?? []) {
+        markAsChanged(...setTriplet(node as SlantNode, 'isPartOf', getDirtyNode(parentId), 'add'));
       }
     }
 
