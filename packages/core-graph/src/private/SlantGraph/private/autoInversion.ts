@@ -1,42 +1,9 @@
-import { array, assert, fallback, parse } from 'valibot';
-import Graph, { type GraphMiddleware } from './Graph2';
-import colorNode, { SlantNodeSchema, type SlantNode } from './schemas/colorNode';
-import flattenNodeObject from './schemas/flattenNodeObject';
-import type { Identifier } from './schemas/Identifier';
-import isOfType from './schemas/isOfType';
-import { MessageNodeSchema } from './schemas/MessageNode';
-import { NodeReferenceSchema, type NodeReference } from './schemas/NodeReference';
-
-type AnyNode = Record<string, unknown> & {
-  readonly '@id': Identifier;
-  readonly '@type': string | readonly string[];
-};
-
-const VALIDATION_SCHEMAS_BY_TYPE = new Map([['Message', MessageNodeSchema]]);
-
-const color: GraphMiddleware<AnyNode, SlantNode> = () => next => upsertingNodeMap => {
-  const nextUpsertingNodeMap = new Map<Identifier, SlantNode>();
-
-  for (const node of upsertingNodeMap.values()) {
-    for (const flattenedNode of flattenNodeObject(node).graph) {
-      nextUpsertingNodeMap.set(flattenedNode['@id'], colorNode(flattenedNode));
-    }
-  }
-
-  return next(nextUpsertingNodeMap);
-};
-
-const validateSlantNode: GraphMiddleware<AnyNode, SlantNode> = () => next => upsertingNodeMap => {
-  for (const node of upsertingNodeMap.values()) {
-    assert(SlantNodeSchema, node);
-
-    for (const [type, schema] of VALIDATION_SCHEMAS_BY_TYPE) {
-      isOfType(node, type) && assert(schema, node);
-    }
-  }
-
-  return next(upsertingNodeMap as ReadonlyMap<Identifier, SlantNode>);
-};
+import { array, fallback, parse } from 'valibot';
+import { type GraphMiddleware } from '../../Graph2';
+import { type SlantNode } from '../../schemas/colorNode';
+import type { Identifier } from '../../schemas/Identifier';
+import { NodeReferenceSchema, type NodeReference } from '../../schemas/NodeReference';
+import type { AnyNode } from '../SlantGraph';
 
 function nodeReferenceListToIdentifierSet(nodeReferences: readonly NodeReference[]): Set<Identifier> {
   return new Set(nodeReferences.map(ref => ref['@id']));
@@ -129,9 +96,10 @@ const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
   () =>
   upsertingNodeMap => {
     const state = getState();
+    // "autoInversion" receives SlantNode instead of AnyNode because prior middleware already did the transformation.
     const nextUpsertingNodeMap = new Map<Identifier, SlantNode>(upsertingNodeMap as any);
 
-    function addToResult(...nodes: readonly SlantNode[]) {
+    function markAsChanged(...nodes: readonly SlantNode[]) {
       for (const node of nodes) {
         nextUpsertingNodeMap.set(node['@id'], node);
       }
@@ -159,7 +127,7 @@ const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
         );
 
         for (const removedHasPartId of removedHasPartIdSet) {
-          addToResult(...setTriplet(existingNode, 'hasPart', getDirty(removedHasPartId)!, 'delete'));
+          markAsChanged(...setTriplet(existingNode, 'hasPart', getDirty(removedHasPartId)!, 'delete'));
         }
 
         const removedIsPartOfIdSet = nodeReferenceListToIdentifierSet(existingNode.isPartOf ?? []).difference(
@@ -167,7 +135,7 @@ const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
         );
 
         for (const removedIsPartOfId of removedIsPartOfIdSet) {
-          addToResult(...setTriplet(existingNode, 'isPartOf', getDirty(removedIsPartOfId)!, 'delete'));
+          markAsChanged(...setTriplet(existingNode, 'isPartOf', getDirty(removedIsPartOfId)!, 'delete'));
         }
       }
     }
@@ -175,23 +143,15 @@ const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
     // Add hasPart/isPartOf.
     for (const [_, node] of upsertingNodeMap) {
       for (const { '@id': childId } of parse(NodeReferenceListSchema, node['hasPart'])) {
-        addToResult(...setTriplet(node as SlantNode, 'hasPart', getDirty(childId), 'add'));
+        markAsChanged(...setTriplet(node as SlantNode, 'hasPart', getDirty(childId), 'add'));
       }
 
       for (const { '@id': parentId } of parse(NodeReferenceListSchema, node['isPartOf'])) {
-        addToResult(...setTriplet(node as SlantNode, 'isPartOf', getDirty(parentId), 'add'));
+        markAsChanged(...setTriplet(node as SlantNode, 'isPartOf', getDirty(parentId), 'add'));
       }
     }
 
     return nextUpsertingNodeMap;
   };
 
-class SlantGraph extends Graph<AnyNode, SlantNode> {
-  constructor() {
-    super(color, validateSlantNode, autoInversion);
-  }
-}
-
-export default SlantGraph;
-
-export { type AnyNode as InputNode };
+export default autoInversion;

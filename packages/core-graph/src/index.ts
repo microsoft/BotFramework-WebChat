@@ -14,4 +14,4 @@ export { IdentifierSchema, isIdentifier, type Identifier } from './private/schem
 export { default as isOfType } from './private/schemas/isOfType';
 export { isJSONLiteral, JSONLiteralSchema, type JSONLiteral } from './private/schemas/JSONLiteral';
 export { MessageNodeSchema, type MessageNode } from './private/schemas/MessageNode';
-export { default as SlantGraph } from './private/SlantGraph';
+export { default as SlantGraph } from './private/SlantGraph/SlantGraph';
