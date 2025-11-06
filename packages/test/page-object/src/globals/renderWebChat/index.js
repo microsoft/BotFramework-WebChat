@@ -9,7 +9,8 @@ export default function renderWebChat(props, container) {
 
   const { searchParams } = new URL(window.location.href);
   const isFluentTheme = searchParams.get('theme') === 'fluent';
-  const isCopilotVariant = searchParams.get('variant') === 'copilot';
+  const isCopilotVariant =
+    searchParams.get('variant') === 'copilot' || searchParams.get('variant') === 'copilot-deprecated';
 
   if (isFluentTheme) {
     if (!window.React || !window.ReactDOM) {
