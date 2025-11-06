@@ -434,6 +434,7 @@
   :global(.stacked-layout .webchat__bubble):has(:global(.activity-loader)) :global(.webchat__bubble__content) {
     background: unset;
     box-shadow: unset;
+    border-color: transparent;
   }
 
   :global(.stacked-layout .webchat__bubble .webchat__bubble__content) {
@@ -721,7 +722,7 @@
       margin-inline-end: var(--webchat-spacingHorizontalXXL);
     }
 
-     &.part-grouping-decorator--from-bot :global(.webchat__bubble__content) {
+    &.part-grouping-decorator--from-bot :global(.webchat__bubble__content) {
       box-sizing: content-box;
       margin-block: calc(var(--webchat-spacingVerticalS) * -1);
       margin-inline: calc(var(--webchat-spacingHorizontalS) * -1);
