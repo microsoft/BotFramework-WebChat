@@ -124,7 +124,7 @@
       const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
 
       root.render(
-        variant === 'copilot' || variant === 'fluent' ?
+        variant ?
           createElement(
             FluentProvider,
             { className: 'fui-FluentProvider', theme: fluentTheme },

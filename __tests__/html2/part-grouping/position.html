@@ -116,7 +116,7 @@
       const webChatProps = { directLine, store, styleOptions: { codeBlockTheme } };
 
       root.render(
-        variant === 'copilot' || variant === 'fluent' ?
+        variant ?
           React.createElement(
             FluentProvider,
             { className: 'fui-FluentProvider', theme: fluentTheme },
