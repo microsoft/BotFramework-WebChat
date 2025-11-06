@@ -395,6 +395,13 @@
     inset: -2px -4px;
   }
 }
+/* Transcript focused content copilot variant */
+:global(.webchat-fluent).theme.variant-copilot
+  :global(.transcript-focus-area:focus-visible .transcript-focus-area__content--focused) {
+  :global(.collapsible-grouping)::after {
+    inset: -4px;
+  }
+}
 
 /* Transcript filer in copilot, copilot-deprecated variants */
 :global(.webchat-fluent).theme.variant-copilot :global(.webchat__basic-transcript .webchat__basic-transcript__filler),
