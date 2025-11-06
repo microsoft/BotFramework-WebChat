@@ -122,7 +122,7 @@
       const searchParams = new URLSearchParams(location.search);
 
       const [leftTranscriptIndex = 0, rightTranscriptIndex = 1] = searchParams.getAll('transcript');
-      const [leftVariant = 'fluent', rightVariant = 'copilot'] = searchParams.getAll('variant');
+      const [leftVariant = 'fluent', rightVariant = 'copilot-deprecated'] = searchParams.getAll('variant');
 
       const sendBoxIndexes = searchParams.getAll('focus');
       const activeFocusPresets = searchParams.getAll('focus-preset');
