@@ -705,12 +705,6 @@
       anchor-name: --webchat-flair;
       max-width: unset;
     }
-
-    :global(.webchat__bubble:not(.webchat__bubble--from-user)::after) {
-      margin-block: var(--webchat-spacingVerticalXS);
-      outline-offset: 5px;
-      --webchat-part-grouping__bubble--border-radius: calc(var(--webchat-borderRadius2XLarge) - 8px);
-    }
   }
   /* #endregion */
 
@@ -728,6 +722,12 @@
       margin-inline: calc(var(--webchat-spacingHorizontalS) * -1);
       padding-block: var(--webchat-spacingVerticalS);
       padding-inline: var(--webchat-spacingHorizontalS);
+    }
+
+    :global(.webchat__bubble:not(.webchat__bubble--from-user)::after) {
+      margin-block: var(--webchat-spacingVerticalXS);
+      outline-offset: 5px;
+      --webchat-part-grouping__bubble--border-radius: calc(var(--webchat-borderRadius2XLarge) - 8px);
     }
   }
   /* #endregion */
