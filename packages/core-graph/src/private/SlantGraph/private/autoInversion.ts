@@ -1,8 +1,15 @@
+// @ts-expect-error No @types/core-js-pure.
+import difference from 'core-js-pure/features/set/difference';
 import { type GraphMiddleware } from '../../Graph2';
 import { type SlantNode } from '../../schemas/colorNode';
 import type { Identifier } from '../../schemas/Identifier';
 import { type NodeReference } from '../../schemas/NodeReference';
 import type { AnyNode } from '../SlantGraph';
+
+// TODO: [P1] Set.difference is supported since Chrome 122 and iOS 17. However, not Node.js 18 as used by CI pipeline.
+function setDifference<T>(set1: ReadonlySet<T>, set2: ReadonlySet<T>): Set<T> {
+  return difference(set1, set2);
+}
 
 function nodeReferenceListToIdentifierSet(nodeReferences: readonly NodeReference[] | undefined): Set<Identifier> {
   return new Set(nodeReferences?.map(ref => ref['@id']));
@@ -55,7 +62,8 @@ const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
 
       // Remove hasPart/isPartOf if the existing node does not match the upserted node.
       if (preCommitNode) {
-        const removedHasPartIdSet = nodeReferenceListToIdentifierSet(preCommitNode.hasPart).difference(
+        const removedHasPartIdSet = setDifference(
+          nodeReferenceListToIdentifierSet(preCommitNode.hasPart),
           nodeReferenceListToIdentifierSet(node.hasPart)
         );
 
@@ -78,7 +86,8 @@ const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
           });
         }
 
-        const removedIsPartOfIdSet = nodeReferenceListToIdentifierSet(preCommitNode.isPartOf).difference(
+        const removedIsPartOfIdSet = setDifference(
+          nodeReferenceListToIdentifierSet(preCommitNode.isPartOf),
           nodeReferenceListToIdentifierSet(node.isPartOf)
         );
 
@@ -102,7 +111,8 @@ const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
         }
       }
 
-      const addedHasPartIdSet = nodeReferenceListToIdentifierSet(node.hasPart).difference(
+      const addedHasPartIdSet = setDifference(
+        nodeReferenceListToIdentifierSet(node.hasPart),
         nodeReferenceListToIdentifierSet(preCommitNode?.hasPart ?? [])
       );
 
@@ -119,7 +129,8 @@ const autoInversion: GraphMiddleware<AnyNode, SlantNode> =
         });
       }
 
-      const addedIsPartOfIdSet = nodeReferenceListToIdentifierSet(node.isPartOf).difference(
+      const addedIsPartOfIdSet = setDifference(
+        nodeReferenceListToIdentifierSet(node.isPartOf),
         nodeReferenceListToIdentifierSet(preCommitNode?.isPartOf ?? [])
       );
 

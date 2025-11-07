@@ -57,7 +57,10 @@
     "type-fest": "^4.41.0",
     "typescript": "^5.7.3"
   },
-  "peerDependencies": {},
+  "peerDependencies": {
+    "core-js-pure": "3.44.0",
+    "iter-fest": "0.3.0"
+  },
   "dependencies": {
     "valibot": "1.1.0"
   }

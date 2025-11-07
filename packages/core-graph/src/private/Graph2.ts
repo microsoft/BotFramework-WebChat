@@ -1,4 +1,5 @@
 import { applyMiddleware, type Middleware } from 'handler-chain';
+import { iteratorEvery } from 'iter-fest';
 import { assert, check, map, object, pipe } from 'valibot';
 import { IdentifierSchema, type Identifier } from './schemas/Identifier';
 
@@ -32,7 +33,8 @@ type WritableGraph<TInput extends GraphNode, TOutput extends GraphNode> = {
 const requestSchema = pipe(
   map(IdentifierSchema, object({ '@id': IdentifierSchema })),
   check(
-    value => value.entries().every(([key, node]) => key === node['@id']),
+    // TODO: Iterator.every is since iOS 18.4, we still need to use ponyfill for now.
+    value => iteratorEvery(value.entries(), ([key, node]) => key === node['@id']),
     'Key returned in Map must match `@id` in value'
   )
 );

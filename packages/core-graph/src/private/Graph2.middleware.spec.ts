@@ -1,5 +1,6 @@
 import { expect } from '@jest/globals';
 import { scenario } from '@testduet/given-when-then';
+import { iteratorFilter, iteratorMap } from 'iter-fest';
 import { fn } from 'jest-mock';
 import Graph from './Graph2';
 import type { Identifier } from './schemas/Identifier';
@@ -119,21 +120,26 @@ scenario('Graph.middleware', bdd => {
           () => next => upsertingNodeMap => {
             const nextUpsertingNodeMap = next(
               new Map(
-                upsertingNodeMap.entries().map(([id, node]) => [id, { '@id': node['@id'], name: `"${node.name}"` }])
+                iteratorMap(upsertingNodeMap.entries(), ([id, node]) => [
+                  id,
+                  { '@id': node['@id'], name: `"${node.name}"` }
+                ])
               )
             );
 
             return new Map(
-              nextUpsertingNodeMap
-                .entries()
-                .map(([id, node]) => [id, { '@id': node['@id'], name: `My name is ${node.name}.` }])
+              iteratorMap(nextUpsertingNodeMap.entries(), ([id, node]) => [
+                id,
+                { '@id': node['@id'], name: `My name is ${node.name}.` }
+              ])
             );
           },
           () => () => upsertingNodeMap =>
             new Map(
-              upsertingNodeMap
-                .entries()
-                .map(([id, node]) => [id, { '@id': node['@id'], name: node.name.toUpperCase() }])
+              iteratorMap(upsertingNodeMap.entries(), ([id, node]) => [
+                id,
+                { '@id': node['@id'], name: node.name.toUpperCase() }
+              ])
             )
         )
     )
@@ -216,9 +222,10 @@ scenario('Graph.middleware', bdd => {
           if (conversationNode?.['@type'] === 'Conversation') {
             const hasPartIdentifiers = new Set(conversationNode.hasPart.map(node => node['@id']));
 
-            for (const messageNode of upsertingNodeMap
-              .values()
-              .filter((node): node is MessageNode => node['@type'] === 'Message')) {
+            for (const messageNode of iteratorFilter(
+              upsertingNodeMap.values(),
+              (node): node is MessageNode => node['@type'] === 'Message'
+            )) {
               hasPartIdentifiers.add(messageNode['@id']);
 
               nextUpsertingNodeMap.set(messageNode['@id'], {
@@ -229,7 +236,7 @@ scenario('Graph.middleware', bdd => {
 
             nextUpsertingNodeMap.set(conversationNode['@id'], {
               ...conversationNode,
-              hasPart: Array.from(hasPartIdentifiers.values().map(identifier => ({ '@id': identifier })))
+              hasPart: Array.from(iteratorMap(hasPartIdentifiers.values(), identifier => ({ '@id': identifier })))
             });
           }
 
