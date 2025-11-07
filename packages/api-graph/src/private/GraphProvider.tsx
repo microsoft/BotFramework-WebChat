@@ -66,7 +66,7 @@ function GraphProvider(props: GraphProviderProps) {
   useEffect(() => {
     const handleChange: GraphSubscriber = record => {
       // eslint-disable-next-line no-console
-      console.log('🔔🔔🔔🔔🔔 GRAPH2 updated via CHANGE', record);
+      // console.log('🔔🔔🔔🔔🔔 GRAPH2 updated via CHANGE', record);
 
       let nextOrderedMessages: MessageNode[] | undefined;
       const state = graph.getState();
