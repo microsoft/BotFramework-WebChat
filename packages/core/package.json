@@ -94,6 +94,10 @@
     "typescript": [
       "~5.8.3",
       "@typescript-eslint/parser@8.38.0 does not support typescript@5.9.2 yet"
+    ],
+    "uuid": [
+      "8",
+      "uuid@9 emit non-ES5 build because of default parameters"
     ]
   },
   "localDependencies": {
@@ -130,6 +134,7 @@
     "redux": "5.0.1",
     "redux-saga": "1.3.0",
     "simple-update-in": "2.2.0",
+    "uuid": "8.3.2",
     "valibot": "1.1.0"
   }
 }

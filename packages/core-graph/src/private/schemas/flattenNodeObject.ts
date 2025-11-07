@@ -1,5 +1,6 @@
 // TODO: [P0] This flattening can probably fold into `colorNode()` as it has slanted view of the system.
 
+import { v4 } from 'uuid';
 import { assert, check, looseObject, object, optional, parse, pipe, safeParse } from 'valibot';
 
 import { FlatNodeObjectSchema, type FlatNodeObject, type FlatNodeObjectPropertyValue } from './FlatNodeObject';
@@ -8,6 +9,12 @@ import { JSONLiteralSchema, type JSONLiteral } from './JSONLiteral';
 import { LiteralSchema, type Literal } from './Literal';
 import { isNodeReference, NodeReferenceSchema, type NodeReference } from './NodeReference';
 import isPlainObject from './private/isPlainObject';
+
+function randomUUID(): string {
+  // crypto.randomUUID() requires HTTPS context.
+  // However, our legacy Jest tests are not running over HTTPS.
+  return v4();
+}
 
 type FlattenNodeObjectInput = Literal | (object & { '@id'?: string });
 
@@ -86,7 +93,7 @@ function flattenNodeObject_(
     parse(
       optional(IdentifierSchema),
       (input && typeof input === 'object' && '@id' in input && input['@id']) || undefined
-    ) ?? `_:${crypto.randomUUID()}`;
+    ) ?? `_:${randomUUID()}`;
 
   if (graphMap.get(id)) {
     console.warn(`Object [@id="${id}"] has already added to the graph.`);
@@ -118,7 +125,7 @@ function flattenNodeObject_(
     }
   }
 
-  // const id = parse(optional(IdentifierSchema), targetMap.get('@id')) ?? `_:${crypto.randomUUID()}`;
+  // const id = parse(optional(IdentifierSchema), targetMap.get('@id')) ?? `_:${randomUUID()}`;
 
   targetMap.set('@id', id);
 
