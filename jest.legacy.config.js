@@ -63,6 +63,7 @@ module.exports = {
     '<rootDir>/__tests__/setup/setupGlobalAgent.js',
     '<rootDir>/__tests__/setup/preSetupTestFramework.js',
     '<rootDir>/__tests__/setup/setupCryptoGetRandomValues.js',
+    '<rootDir>/__tests__/setup/setupCryptoRandomUUID.js',
     '<rootDir>/__tests__/setup/setupImageSnapshot.js',
     '<rootDir>/__tests__/setup/setupTestNightly.js',
     '<rootDir>/__tests__/setup/setupTimeout.js'
