@@ -258,15 +258,11 @@ class Graph extends EventTarget {
   upsertRaw(...nodes: readonly object[]) {
     const slantNodes = [];
 
-    // console.log('🐛🐛🐛 upsertRaw', { nodes });
-
     for (const node of nodes) {
       for (const flatNode of flattenNodeObject(node).graph) {
         const slantNode = colorNode(flatNode);
 
         if (isOfType(slantNode, 'Message')) {
-          // console.log('🐛🐛🐛 upsertRaw/messageNode', { flatNode, slantNode });
-
           parse(MessageNodeSchema, slantNode);
         }
 

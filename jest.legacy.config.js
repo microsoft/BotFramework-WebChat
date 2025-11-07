@@ -69,8 +69,10 @@ module.exports = {
   ],
   testMatch: ['**/__tests__/**/*.?([mc])[jt]s?(x)', '**/?(*.)+(spec|test).?([mc])[jt]s?(x)'],
   testPathIgnorePatterns: [
+    '/dist/',
     '/lib/',
     '/node_modules/',
+    '/static/',
     '<rootDir>/__tests__/html/.*?(\\.html)',
     '<rootDir>/__tests__/html/__dist__',
     '<rootDir>/__tests__/html/__jest__',
