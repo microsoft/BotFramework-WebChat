@@ -211,9 +211,14 @@
   --webchat__border-animation--color-3: #b47cf8;
 }
 
-:global(.webchat-fluent).theme.variant-copilot :global(.webchat__css-custom-properties) {
+:global(.webchat-fluent).theme.variant-copilot-deprecated :global(.webchat__css-custom-properties) {
   --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalXL)
     var(--webchat-spacingVerticalMNudge) var(--webchat-spacingHorizontalMNudge);
+}
+
+:global(.webchat-fluent).theme.variant-copilot :global(.webchat__css-custom-properties) {
+  --webchat__padding--sendbox: var(--webchat-spacingVerticalNone) var(--webchat-spacingHorizontalL)
+    var(--webchat-spacingVerticalL) var(--webchat-spacingHorizontalSNudge);
 }
 
 /* Transcript surface */
@@ -221,7 +226,8 @@
   background-color: var(--webchat__color--surface);
 }
 
-:global(.webchat-fluent).theme.variant-copilot :global(.webchat__surface) {
+:global(.webchat-fluent).theme.variant-copilot :global(.webchat__surface),
+:global(.webchat-fluent).theme.variant-copilot-deprecated :global(.webchat__surface) {
   box-sizing: border-box;
   padding-inline-start: var(--webchat-spacingHorizontalMNudge);
 }
@@ -278,11 +284,14 @@
   }
 }
 
-:global(.webchat-fluent).theme.variant-copilot :global(.transcript-focus-area) {
+:global(.webchat-fluent).theme.variant-copilot :global(.transcript-focus-area),
+:global(.webchat-fluent).theme.variant-copilot-deprecated :global(.transcript-focus-area) {
   --webchat__transcript--spacing: var(--webchat-spacingVerticalM);
 }
 
 :global(.webchat-fluent).theme.variant-copilot
+  :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable),
+:global(.webchat-fluent).theme.variant-copilot-deprecated
   :global(.webchat__basic-transcript .webchat__basic-transcript__scrollable) {
   scrollbar-gutter: stable;
 }
@@ -379,16 +388,25 @@
   }
 }
 
-/* Transcript focused content copilot variant */
-:global(.webchat-fluent).theme.variant-copilot
+/* Transcript focused content copilot-deprecated variant */
+:global(.webchat-fluent).theme.variant-copilot-deprecated
   :global(.transcript-focus-area:focus-visible .transcript-focus-area__content--focused) {
   :global(.collapsible-grouping)::after {
     inset: -2px -4px;
   }
 }
+/* Transcript focused content copilot variant */
+:global(.webchat-fluent).theme.variant-copilot
+  :global(.transcript-focus-area:focus-visible .transcript-focus-area__content--focused) {
+  :global(.collapsible-grouping)::after {
+    inset: -4px;
+  }
+}
 
-/* Transcript filer in copilot variant */
-:global(.webchat-fluent).theme.variant-copilot :global(.webchat__basic-transcript .webchat__basic-transcript__filler) {
+/* Transcript filer in copilot, copilot-deprecated variants */
+:global(.webchat-fluent).theme.variant-copilot :global(.webchat__basic-transcript .webchat__basic-transcript__filler),
+:global(.webchat-fluent).theme.variant-copilot-deprecated
+  :global(.webchat__basic-transcript .webchat__basic-transcript__filler) {
   /* No filler unless pre-chat activity, see next rule */
   flex-grow: 0;
 }

@@ -145,6 +145,8 @@ Notes: web developers are advised to use [`~` (tilde range)](https://github.com/
    - Added target to Chrome 100 and re-enable Lightning CSS for ESM builds, by [@compulim](https://github.com/compulim) in PR [#5602](https://github.com/microsoft/BotFramework-WebChat/pull/5602)
 - Relaxed `role` prop to allow any string instead of ARIA landmark roles, in PR [#5561](https://github.com/microsoft/BotFramework-WebChat/pull/5561), by [@compulim](https://github.com/compulim)
 - Cleaned up `<ThemeProvider>` and various CSS related code, in PR [#5611](https://github.com/microsoft/BotFramework-WebChat/pull/5611), by [@compulim](https://github.com/compulim)
+- (Experimental) Reworked the copilot variant to align with the modern Copilot UX, in PR [#5630](https://github.com/microsoft/BotFramework-WebChat/pull/5630), by [@OEvgeny](https://github.com/OEvgeny)
+   - The legacy design is temporarily available as `copilot-deprecated` for migration
 
 ### Changed
 

@@ -10,7 +10,8 @@
       var(--webchat-spacingHorizontalSNudge);
   }
 
-  &.variant-copilot {
+  &.variant-copilot,
+  &.variant-copilot-deprecated {
     margin: var(--webchat-spacingVerticalXS) 0 var(--webchat-spacingVerticalXS) -10px;
   }
 }
