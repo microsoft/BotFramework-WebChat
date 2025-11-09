@@ -76,7 +76,11 @@ function flattenNodeObject_(
 
   // Array is allowed by valibot.object({}), we need to check for plain object first.
   if (!isPlainObject(input) || !safeParse(object({}), input).success) {
-    const error = new Error('Only literals, JSON literals, and plain object can be flattened');
+    // TODO: [P0] For "undefined", maybe we just want to remove it or just set it to null.
+    //       Or we should consolidate `colorNode` here as `colorNode` will handle that.
+    const error = new Error(
+      `Only literals, JSON literals, and plain object can be flattened: ${JSON.stringify(input)}`
+    );
 
     error.cause = { input };
 

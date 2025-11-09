@@ -5,13 +5,13 @@ import {
   isOfType,
   type GraphSubscriber,
   type Identifier,
-  type MessageNode,
   type SlantNode
 } from 'botframework-webchat-core/graph';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { useRefFrom } from 'use-ref-from';
 import { custom, function_, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
+import type { DirectLineActivityNode } from '@msinternal/botframework-webchat-core-graph';
 import GraphContext, { GraphContextType } from './GraphContext';
 
 const graphProviderPropsSchema = pipe(
@@ -32,23 +32,23 @@ function GraphProvider(props: GraphProviderProps) {
   const graph = useMemo(() => createGraphFromStore(store), [store]);
 
   const [nodeMap, setNodeMap] = useState<ReadonlyMap<Identifier, SlantNode>>(() => Object.freeze(new Map()));
-  const [orderedMessages, setOrderedMessages] = useState<readonly MessageNode[]>(Object.freeze([]));
+  const [orderedMessages, setOrderedMessages] = useState<readonly DirectLineActivityNode[]>(Object.freeze([]));
 
   const orderedMessagesRef = useRefFrom(orderedMessages);
 
   useEffect(() => {
     const handleChange: GraphSubscriber = record => {
-      let nextOrderedMessages: MessageNode[] | undefined;
+      let nextOrderedMessages: DirectLineActivityNode[] | undefined;
       const state = graph.getState();
 
       for (const id of record.upsertedNodeIdentifiers) {
         const node = state.get(id);
 
-        if (node && isOfType(node, 'Message')) {
-          const message = node as MessageNode;
+        if (node && isOfType(node, 'urn:microsoft:webchat:direct-line-activity')) {
+          const activity = node as DirectLineActivityNode;
 
           nextOrderedMessages ||= Array.from(orderedMessagesRef.current);
-          nextOrderedMessages.push(message);
+          nextOrderedMessages.push(activity);
         }
       }
 

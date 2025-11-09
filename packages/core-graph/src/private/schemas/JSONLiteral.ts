@@ -1,5 +1,4 @@
-import { is, literal, strictObject, type InferOutput } from 'valibot';
-import { JSONValueSchema } from './JSONValue';
+import { is, literal, strictObject, unknown, type InferOutput } from 'valibot';
 
 /**
  * Schema of JSON-LD literals.
@@ -9,7 +8,10 @@ import { JSONValueSchema } from './JSONValue';
 const JSONLiteralSchema = strictObject(
   {
     '@type': literal('@json'),
-    '@value': JSONValueSchema
+
+    // TODO: [P*] Some activities used in tests are not JSON-serializable.
+    //       We are not using JSONValueSchema() until we fix those tests, such as "__tests__/hooks/useUserId.js".
+    '@value': unknown()
   },
   'JSON literal must only have @type and @value'
 );

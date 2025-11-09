@@ -48,53 +48,72 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
     // const deleted = prevActivitySet.difference(activitySet);
     const addedActivities = activitySet.difference(prevActivitySet);
 
-    // console.log('🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️', { addedActivities });
+    // console.log('🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️', { activities, prevActivities });
+    // throw new Error(`🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️🏃🏻‍♂️ ${JSON.stringify(Array.from(addedActivities.values()), null, 2)}`);
 
-    for (const activity of addedActivities) {
-      graph.act(graph =>
-        graph.upsert({
-          '@context': 'https://schema.org',
+    graph.act(graph => {
+      for (const activity of addedActivities) {
+        const {
+          from: { role }
+        } = activity;
 
-          // TODO: [P0] Maybe we should do keyer here, maybe UUID here.
-          '@id': `_:${activity.id}`,
+        const position = activity.channelData['webchat:sequence-id'];
 
-          // TODO: [P0] We should allowlist types.
-          '@type': ['Message', `urn:microsoft:webchat:direct-line-activity:type:${activity.type}`],
+        // TODO: Should use Person and more specific than just "Others".
+        const sender =
+          role === 'bot'
+            ? { '@id': othersAudience['@id'] }
+            : role === 'user'
+              ? { '@id': selfAudience['@id'] }
+              : role === 'channel'
+                ? { '@id': channelAudience['@id'] }
+                : undefined;
 
-          encodingFormat:
-            'textFormat' in activity && activity.textFormat !== 'markdown' ? 'text/plain' : 'text/markdown',
+        // TODO: [P*] "activity.id" could be null here, we should do the keyer here.
+        if (activity.type === 'event') {
+          graph.upsert({
+            '@context': 'https://schema.org',
+            '@id': `_:${activity.id}`,
+            '@type': Object.freeze(['urn:microsoft:webchat:direct-line-activity']),
+            identifier: `urn:microsoft:webchat:direct-line-activity:id:${activity.id}`,
+            position,
+            sender,
+            'urn:microsoft:webchat:direct-line-activity:raw-json': { '@type': '@json', '@value': activity },
+            'urn:microsoft:webchat:direct-line-activity:type': activity.type
+          });
+        } else if (activity.type === 'message') {
+          graph.upsert({
+            '@context': 'https://schema.org',
 
-          // TODO: [P0] Will activity.id be null here?
-          identifier: [
-            ...(activity.id ? [`urn:microsoft:webchat:direct-line-activity:id:${activity.id}`] : []),
-            ...(typeof activity.channelData.clientActivityID === 'string'
-              ? [`urn:microsoft:webchat:client-activity-id:${activity.channelData.clientActivityID}`]
-              : [])
-          ],
+            // TODO: [P0] Maybe we should do keyer here, maybe UUID here.
+            '@id': `_:${activity.id}`,
 
-          position: activity.channelData['webchat:sequence-id'],
+            // TODO: [P0] We should allowlist types.
+            '@type': ['Message', `urn:microsoft:webchat:direct-line-activity`],
 
-          sender: {
-            '@id':
-              activity.from.role === 'bot'
-                ? othersAudience['@id']
-                : activity.from.role === 'user'
-                  ? selfAudience['@id']
-                  : channelAudience['@id']
-          },
+            encodingFormat:
+              'textFormat' in activity && activity.textFormat !== 'markdown' ? 'text/plain' : 'text/markdown',
 
-          // sender:
-          //   activity.from.role === 'bot'
-          //     ? othersAudience
-          //     : activity.from.role === 'user'
-          //       ? selfAudience
-          //       : channelAudience,
-          text: ('text' in activity && typeof activity.text === 'string' && activity.text) || undefined,
+            // TODO: [P0] activity.id could be null here
+            identifier: [
+              ...(activity.id ? [`urn:microsoft:webchat:direct-line-activity:id:${activity.id}`] : []),
+              ...(typeof activity.channelData.clientActivityID === 'string'
+                ? [`urn:microsoft:webchat:client-activity-id:${activity.channelData.clientActivityID}`]
+                : [])
+            ],
 
-          'urn:microsoft:webchat:direct-line-activity:raw-json': [{ '@type': '@json', '@value': activity }]
-        })
-      );
-    }
+            position,
+            sender,
+            text: ('text' in activity && typeof activity.text === 'string' && activity.text) || undefined,
+
+            'urn:microsoft:webchat:direct-line-activity:raw-json': { '@type': '@json', '@value': activity },
+            'urn:microsoft:webchat:direct-line-activity:type': activity.type
+          });
+        } else {
+          console.warn(`Unknown activity of type "${activity.type}", skipping.`, { activity });
+        }
+      }
+    });
 
     prevActivities = activities;
   });
