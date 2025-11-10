@@ -31,13 +31,18 @@ function GraphProvider(props: GraphProviderProps) {
   const graph = useMemo(() => createGraphFromStore(store), [store]);
 
   const [nodeMap, setNodeMap] = useState<ReadonlyMap<Identifier, SlantNode>>(() => Object.freeze(new Map()));
-  const [orderedMessages, setOrderedMessages] = useState<readonly DirectLineActivityNode[]>(Object.freeze([]));
+  const [orderedActivities, setOrderedActivities] = useState<readonly DirectLineActivityNode[]>(Object.freeze([]));
+  const [orderedActivities, setOrderedActivities] = useState<readonly DirectLineActivityNode[]>(Object.freeze([]));
 
   useEffect(() => {
+    // console.log('📰📰📰 GraphProvider.subscribe');
+
     const handleChange: GraphSubscriber = record => {
+      // console.log('📰📰📰 GraphProvider.handleChange', { record });
+
       const state = graph.getState();
 
-      setOrderedMessages(prevOrderedMessages => {
+      setOrderedActivities(prevOrderedMessages => {
         let nextOrderedMessages: DirectLineActivityNode[] | undefined;
 
         for (const id of record.upsertedNodeIdentifiers) {
@@ -62,20 +67,30 @@ function GraphProvider(props: GraphProviderProps) {
       });
     };
 
-    return graph.subscribe(handleChange);
-  }, [graph, setNodeMap, setOrderedMessages]);
+    const unsubscribe = graph.subscribe(handleChange);
+
+    // TODO: [P*] Should include everything in the graph.
+    handleChange({ upsertedNodeIdentifiers: new Set(graph.getState().keys()) });
+
+    return unsubscribe;
+  }, [graph, setNodeMap, setOrderedActivities]);
 
   const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
     () =>
       Object.freeze([
         Object.freeze(
-          orderedMessages.map(
+          orderedActivities.map(
             node => node['urn:microsoft:webchat:direct-line-activity:raw-json'][0]['@value'] as WebChatActivity
           )
         )
       ] as const),
-    [orderedMessages]
+    [orderedActivities]
   );
+
+  // useMemo(() => {
+  //   // eslint-disable-next-line no-console
+  //   console.log('🐛🐛🐛 GraphProvider', { orderedActivities });
+  // }, [orderedActivities]);
 
   const context = useMemo<GraphContextType>(
     () =>
