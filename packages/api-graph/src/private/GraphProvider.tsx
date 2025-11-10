@@ -8,7 +8,6 @@ import {
   type SlantNode
 } from 'botframework-webchat-core/graph';
 import React, { memo, useEffect, useMemo, useState } from 'react';
-import { useRefFrom } from 'use-ref-from';
 import { custom, function_, object, optional, pipe, readonly, safeParse, type InferInput } from 'valibot';
 
 import type { DirectLineActivityNode } from '@msinternal/botframework-webchat-core-graph';
@@ -34,33 +33,37 @@ function GraphProvider(props: GraphProviderProps) {
   const [nodeMap, setNodeMap] = useState<ReadonlyMap<Identifier, SlantNode>>(() => Object.freeze(new Map()));
   const [orderedMessages, setOrderedMessages] = useState<readonly DirectLineActivityNode[]>(Object.freeze([]));
 
-  const orderedMessagesRef = useRefFrom(orderedMessages);
-
   useEffect(() => {
     const handleChange: GraphSubscriber = record => {
-      let nextOrderedMessages: DirectLineActivityNode[] | undefined;
       const state = graph.getState();
 
-      for (const id of record.upsertedNodeIdentifiers) {
-        const node = state.get(id);
+      setOrderedMessages(prevOrderedMessages => {
+        let nextOrderedMessages: DirectLineActivityNode[] | undefined;
 
-        if (node && isOfType(node, 'urn:microsoft:webchat:direct-line-activity')) {
-          const activity = node as DirectLineActivityNode;
+        for (const id of record.upsertedNodeIdentifiers) {
+          const node = state.get(id);
 
-          nextOrderedMessages ||= Array.from(orderedMessagesRef.current);
-          nextOrderedMessages.push(activity);
+          if (node && isOfType(node, 'urn:microsoft:webchat:direct-line-activity')) {
+            const activity = node as DirectLineActivityNode;
+
+            nextOrderedMessages ||= Array.from(prevOrderedMessages);
+            nextOrderedMessages.push(activity);
+          }
         }
-      }
 
-      if (nextOrderedMessages) {
-        // TODO: [P0] Insertion sort is cheaper by 20x.
-        nextOrderedMessages.sort((x, y) => x.position[0] - y.position[0]);
-        setOrderedMessages(Object.freeze(nextOrderedMessages));
-      }
+        if (nextOrderedMessages) {
+          // TODO: [P0] Insertion sort is cheaper by 20x.
+          nextOrderedMessages.sort((x, y) => x.position[0] - y.position[0]);
+
+          return Object.freeze(nextOrderedMessages);
+        }
+
+        return prevOrderedMessages;
+      });
     };
 
     return graph.subscribe(handleChange);
-  }, [graph, orderedMessagesRef, setNodeMap, setOrderedMessages]);
+  }, [graph, setNodeMap, setOrderedMessages]);
 
   const orderedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(
     () =>
