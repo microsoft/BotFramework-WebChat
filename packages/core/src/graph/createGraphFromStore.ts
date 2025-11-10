@@ -81,7 +81,8 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
             'urn:microsoft:webchat:direct-line-activity:raw-json': { '@type': '@json', '@value': activity },
             'urn:microsoft:webchat:direct-line-activity:type': activity.type
           });
-        } else if (activity.type === 'message') {
+        } else if (activity.type === 'message' || activity.type === 'typing') {
+          // TODO: [P*] If this is livestreaming, add isPartOf to indicate the livestream head.
           graph.upsert({
             '@context': 'https://schema.org',
 

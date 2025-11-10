@@ -26,7 +26,7 @@ const DirectLineActivityNodeSchema = pipe(
     // TODO: [P*] Remove optional(), every activity should have sender.
     sender: optional(tuple([NodeReferenceSchema])),
     'urn:microsoft:webchat:direct-line-activity:raw-json': tuple([JSONLiteralSchema]),
-    'urn:microsoft:webchat:direct-line-activity:type': tuple([picklist(['event', 'message'])])
+    'urn:microsoft:webchat:direct-line-activity:type': tuple([picklist(['event', 'message', 'typing'])])
   }),
   readonly()
 );
