@@ -8,7 +8,7 @@ type Props = Readonly<{ children?: ReactNode | undefined }>;
 
 const ActivityListenerComposer = memo(({ children }: Props) => {
   const [activities] = useActivities();
-  const prevActivities = usePrevious<WebChatActivity[]>(activities, []);
+  const prevActivities = usePrevious<readonly WebChatActivity[]>(activities, []);
 
   const upsertedActivitiesState = useMemo<readonly [readonly WebChatActivity[]]>(() => {
     const upserts: WebChatActivity[] = [];
