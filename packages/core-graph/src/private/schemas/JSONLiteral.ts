@@ -11,6 +11,7 @@ const JSONLiteralSchema = strictObject(
 
     // TODO: [P*] Some activities used in tests are not JSON-serializable.
     //       We are not using JSONValueSchema() until we fix those tests, such as "__tests__/hooks/useUserId.js".
+    //       When fixed, re-enable test in `flattenNodeObject`.
     '@value': unknown()
   },
   'JSON literal must only have @type and @value'

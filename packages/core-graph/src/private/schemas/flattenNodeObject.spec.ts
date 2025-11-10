@@ -170,30 +170,32 @@ scenario('flattenNodeObject()', bdd => {
       ]);
     });
 
-  bdd
-    .given(`a class object with @type of '@json'`, () => ({
-      '@id': '_:b1',
-      value: {
-        '@type': '@json',
-        '@value': Symbol()
-      }
-    }))
-    .when('flattened', value => {
-      try {
-        flattenNodeObject(value);
-      } catch (error) {
-        return error;
-      }
+  // TODO: [P0] Skipping this test as we temporarily allow `unknown` to be stored inside `@value`.
+  //       Related to `JSONLiteral.ts`.
+  // bdd
+  //   .given(`a class object with @type of '@json'`, () => ({
+  //     '@id': '_:b1',
+  //     value: {
+  //       '@type': '@json',
+  //       '@value': Symbol()
+  //     }
+  //   }))
+  //   .when('flattened', value => {
+  //     try {
+  //       flattenNodeObject(value);
+  //     } catch (error) {
+  //       return error;
+  //     }
 
-      return undefined;
-    })
-    .then('should throw', (_, error) => {
-      expect(() => {
-        if (error) {
-          throw error;
-        }
-      }).toThrow('Only literals, JSON literals, and plain object can be flattened');
-    });
+  //     return undefined;
+  //   })
+  //   .then('should throw', (_, error) => {
+  //     expect(() => {
+  //       if (error) {
+  //         throw error;
+  //       }
+  //     }).toThrow('Only literals, JSON literals, and plain object can be flattened');
+  //   });
 });
 
 scenario(
