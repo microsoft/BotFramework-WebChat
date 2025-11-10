@@ -32,7 +32,6 @@ function GraphProvider(props: GraphProviderProps) {
 
   const [nodeMap, setNodeMap] = useState<ReadonlyMap<Identifier, SlantNode>>(() => Object.freeze(new Map()));
   const [orderedActivities, setOrderedActivities] = useState<readonly DirectLineActivityNode[]>(Object.freeze([]));
-  const [orderedActivities, setOrderedActivities] = useState<readonly DirectLineActivityNode[]>(Object.freeze([]));
 
   useEffect(() => {
     // console.log('📰📰📰 GraphProvider.subscribe');
