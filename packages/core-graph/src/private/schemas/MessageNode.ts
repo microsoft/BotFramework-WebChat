@@ -2,7 +2,8 @@ import {
   array,
   includes,
   intersect,
-  minLength, object,
+  minLength,
+  object,
   optional,
   picklist,
   pipe,
@@ -10,14 +11,15 @@ import {
   tuple,
   type InferOutput
 } from 'valibot';
-import { SlantNodeSchema } from './colorNode';
 import { DirectLineActivityNodeSchema } from './DirectLineActivityNode';
 import freeze from './private/freeze';
 
 // TODO: [P*] When nodes are added to graph, check against this schema if it has @type of "Message".
 const MessageNodeSchema = pipe(
   intersect([
-    SlantNodeSchema,
+    // TODO: [P*] Not sure why if SlantNode is intersected, the object become frozen and cannot assign @id.
+    //       Related to /html/fluentTheme/maxMessageLength.html.
+    // SlantNodeSchema,
     DirectLineActivityNodeSchema,
     object({
       '@type': pipe(array(string()), minLength(1), includes('Message')),

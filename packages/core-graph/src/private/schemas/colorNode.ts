@@ -105,9 +105,13 @@ const SlantNodeWithFixSchema = pipe(
           break;
 
         default: {
-          const slantedValue = Array.isArray(parsedValue)
-            ? parsedValue
-            : Object.freeze(parsedValue === null || typeof parsedValue === 'undefined' ? [] : [parsedValue]);
+          const slantedValue = Object.freeze(
+            Array.isArray(parsedValue)
+              ? parsedValue.slice(0)
+              : parsedValue === null || typeof parsedValue === 'undefined'
+                ? []
+                : [parsedValue]
+          );
 
           slantedValue.length && propertyMap.set(key, slantedValue);
 
