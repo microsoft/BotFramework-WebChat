@@ -115,8 +115,8 @@ scenario('Graph.subscribe()', bdd => {
       expect(graph.getState()).toEqual(
         new Map(
           Object.entries({
-            '_:b1': { '@id': '_:b1', name: 'John Doe' },
-            '_:b2': { '@id': '_:b2', name: 'Mary Doe' }
+            '_:b1': { '@id': '_:b1' },
+            '_:b2': { '@id': '_:b2' }
           })
         )
       )
