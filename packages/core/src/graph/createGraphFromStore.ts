@@ -57,7 +57,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
           from: { role }
         } = activity;
 
-        const position = activity.channelData['webchat:sequence-id'];
+        const position = activity.channelData['webchat:internal:position'];
 
         // TODO: Should use Person and more specific than just "Others".
         const sender =
