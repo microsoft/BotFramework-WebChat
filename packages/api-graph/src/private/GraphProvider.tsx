@@ -76,7 +76,7 @@ function GraphProvider(props: GraphProviderProps) {
               removeInline(nextOrderedMessages, existingActivityNodeWithSameActivityId);
 
             const existingActivityNodeWithSameClientActivityId =
-              activityId &&
+              clientActivityId &&
               nextOrderedMessages.find(
                 node => node['urn:microsoft:webchat:direct-line-activity:client-activity-id']?.[0] === clientActivityId
               );
