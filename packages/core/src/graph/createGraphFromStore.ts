@@ -78,6 +78,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
             identifier: `urn:microsoft:webchat:direct-line-activity:id:${activity.id}`,
             position,
             sender,
+            'urn:microsoft:webchat:direct-line-activity:id': activity.id,
             'urn:microsoft:webchat:direct-line-activity:raw-json': { '@type': '@json', '@value': activity },
             'urn:microsoft:webchat:direct-line-activity:type': activity.type
           });
@@ -107,6 +108,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
             sender,
             text: ('text' in activity && typeof activity.text === 'string' && activity.text) || undefined,
 
+            'urn:microsoft:webchat:direct-line-activity:id': activity.id,
             'urn:microsoft:webchat:direct-line-activity:raw-json': { '@type': '@json', '@value': activity },
             'urn:microsoft:webchat:direct-line-activity:type': activity.type
           });

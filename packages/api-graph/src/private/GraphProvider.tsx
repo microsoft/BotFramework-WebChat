@@ -25,6 +25,16 @@ const graphProviderPropsSchema = pipe(
 
 type GraphProviderProps = InferInput<typeof graphProviderPropsSchema>;
 
+function removeInline<T>(array: T[], ...items: T[]) {
+  items.forEach(item => {
+    let index;
+
+    while (~(index = array.indexOf(item))) {
+      array.splice(index, 1);
+    }
+  });
+}
+
 function GraphProvider(props: GraphProviderProps) {
   const { children, store } = validateProps(graphProviderPropsSchema, props);
 
@@ -48,10 +58,22 @@ function GraphProvider(props: GraphProviderProps) {
           const node = state.get(id);
 
           if (node && isOfType(node, 'urn:microsoft:webchat:direct-line-activity')) {
-            const activity = node as DirectLineActivityNode;
+            const activityNode = node as DirectLineActivityNode;
 
             nextOrderedMessages ||= Array.from(prevOrderedMessages);
-            nextOrderedMessages.push(activity);
+
+            // Replace activity node with same activity ID.
+            // TODO: [P*] When working on activity keyer, the new activity should reuse same @id.
+            const existingActivityNodeWithSameActivityId = nextOrderedMessages.find(
+              node =>
+                node['urn:microsoft:webchat:direct-line-activity:id'][0] ===
+                activityNode['urn:microsoft:webchat:direct-line-activity:id'][0]
+            );
+
+            existingActivityNodeWithSameActivityId &&
+              removeInline(nextOrderedMessages, existingActivityNodeWithSameActivityId);
+
+            nextOrderedMessages.push(activityNode);
           }
         }
 
