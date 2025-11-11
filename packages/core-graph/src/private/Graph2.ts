@@ -76,6 +76,8 @@ class Graph2<TInput extends GraphNode, TOutput extends GraphNode = TInput> imple
 
     this.#busy = true;
 
+    let record: GraphSubscriberRecord | undefined;
+
     try {
       const getState = this.getState.bind(this);
       const upsertedNodes = new Map<Identifier, TInput>();
@@ -111,14 +113,16 @@ class Graph2<TInput extends GraphNode, TOutput extends GraphNode = TInput> imple
         this.#state = Object.freeze(nextState);
 
         // After this line, there must be no more write operations on this object instance.
-        const record = Object.freeze({ upsertedNodeIdentifiers: Object.freeze(upsertedNodeIdentifiers) });
-
-        for (const subscriber of this.#subscribers) {
-          subscriber(record);
-        }
+        record = Object.freeze({ upsertedNodeIdentifiers: Object.freeze(upsertedNodeIdentifiers) });
       }
     } finally {
       this.#busy = false;
+    }
+
+    if (record) {
+      for (const subscriber of this.#subscribers) {
+        subscriber(record);
+      }
     }
   }
 
