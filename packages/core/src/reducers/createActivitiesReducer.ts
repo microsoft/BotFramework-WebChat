@@ -65,7 +65,19 @@ function getSequenceIdOrDeriveFromTimestamp(
   activity: WebChatActivity,
   ponyfill: GlobalScopePonyfill
 ): number | undefined {
-  return activity.channelData?.['webchat:sequence-id'] ?? (+new ponyfill.Date(activity.timestamp) || undefined);
+  const sequenceId = activity.channelData?.['webchat:sequence-id'];
+
+  if (typeof sequenceId === 'number') {
+    return sequenceId;
+  }
+
+  const { timestamp } = activity;
+
+  if (typeof timestamp === 'string') {
+    return +new ponyfill.Date(timestamp);
+  }
+
+  return undefined;
 }
 
 function patchActivity(activity: WebChatActivity, { Date }: GlobalScopePonyfill): WebChatActivity {
