@@ -141,18 +141,20 @@ function upsertActivityWithSort(
   const incomingPartOf = incomingActivity.channelData?.['webchat:entity-part-of'];
   const incomingSequenceId = getSequenceIdOrDeriveFromTimestamp(incomingActivity, ponyfill);
 
-  // TODO: [P0] Turn (activity) => boolean into comparer (x, y) => number.
+  // TODO: [P2] Turn (activity) => boolean into comparer (x, y) => number.
   //       It is not trivial to write in current form.
   //       We can use comparer for insertion sort too, so let's rewrite in comparer form.
+
+  // TODO: [P1] #3953 We should move this patching logic to a DLJS wrapper for simplicity.
+  // If the message does not have sequence ID, use these fallback values:
+  // 1. `entities.position` where `entities.isPartOf[@type === 'HowTo']`
+  //    - If they are not of same set, ignore `entities.position`
+  // 2. `channelData.streamSequence` field for same session IDk
+  // 3. `channelData['webchat:sequence-id']`
+  //    - If not available, it will fallback to `+new Date(timestamp)`
+  //    - Outgoing activity will not have `timestamp` field
+
   let indexToInsert = nextActivities.findIndex(activity => {
-    // TODO: [P1] #3953 We should move this patching logic to a DLJS wrapper for simplicity.
-    // If the message does not have sequence ID, use these fallback values:
-    // 1. `entities.position` where `entities.isPartOf[@type === 'HowTo']`
-    //    - If they are not of same set, ignore `entities.position`
-    // 2. `channelData.streamSequence` field for same session IDk
-    // 3. `channelData['webchat:sequence-id']`
-    //    - If not available, it will fallback to `+new Date(timestamp)`
-    //    - Outgoing activity will not have `timestamp` field
     const { channelData = {} } = activity;
     const currentEntityPosition = channelData['webchat:entity-position'];
     const currentEntityPartOf = channelData['webchat:entity-part-of'];
@@ -165,33 +167,45 @@ function upsertActivityWithSort(
       return currentEntityPosition > incomingEntityPosition;
     }
 
-    const currentLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
-
-    if (
-      incomingLivestreamingMetadata &&
-      currentLivestreamingMetadata &&
-      incomingLivestreamingMetadata.sessionId === currentLivestreamingMetadata.sessionId
-    ) {
-      return currentLivestreamingMetadata.sequenceNumber > incomingLivestreamingMetadata.sequenceNumber;
-    }
-
-    const currentSequenceId = getSequenceIdOrDeriveFromTimestamp(activity, ponyfill);
-
-    if (typeof incomingSequenceId === 'number') {
-      if (typeof currentSequenceId === 'number') {
-        return currentSequenceId > incomingSequenceId;
-      }
-
-      // Always insert activity whose has sequence ID before those whose doesn't have sequence ID.
-      return true;
-    } else if (typeof currentSequenceId === 'number') {
-      return false;
-    }
-
-    // No more properties can be used to find a good insertion spot.
-    // Return `false` so the activity will append to the end.
     return false;
   });
+
+  if (!~indexToInsert) {
+    indexToInsert = nextActivities.findIndex(activity => {
+      const currentLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
+
+      if (
+        incomingLivestreamingMetadata &&
+        currentLivestreamingMetadata &&
+        incomingLivestreamingMetadata.sessionId === currentLivestreamingMetadata.sessionId
+      ) {
+        return currentLivestreamingMetadata.sequenceNumber > incomingLivestreamingMetadata.sequenceNumber;
+      }
+
+      return false;
+    });
+  }
+
+  if (!~indexToInsert) {
+    indexToInsert = nextActivities.findIndex(activity => {
+      const currentSequenceId = getSequenceIdOrDeriveFromTimestamp(activity, ponyfill);
+
+      if (typeof incomingSequenceId === 'number') {
+        if (typeof currentSequenceId === 'number') {
+          return currentSequenceId > incomingSequenceId;
+        }
+
+        // Always insert activity whose has sequence ID before those whose doesn't have sequence ID.
+        return true;
+      } else if (typeof currentSequenceId === 'number') {
+        return false;
+      }
+
+      // No more properties can be used to find a good insertion spot.
+      // Return `false` so the activity will append to the end.
+      return false;
+    });
+  }
 
   if (!~indexToInsert) {
     // If no right place can be found, append it.
