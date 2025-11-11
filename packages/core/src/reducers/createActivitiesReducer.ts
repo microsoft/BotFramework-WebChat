@@ -108,6 +108,7 @@ function upsertActivityWithSort(
 ): WebChatActivity[] {
   const incomingLivestreamingMetadata = getActivityLivestreamingMetadata(incomingActivity);
 
+  // TODO: [P1] To support time-travelling, we should not drop obsoleted livestreaming activities.
   if (incomingLivestreamingMetadata) {
     const { sessionId } = incomingLivestreamingMetadata;
 
