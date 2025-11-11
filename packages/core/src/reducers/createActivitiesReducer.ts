@@ -401,6 +401,20 @@ export default function createActivitiesReducer(
               activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
             }
           } else {
+            if (!activity.id) {
+              const newActivityId = v4();
+
+              console.warn(
+                'botframework-webchat: Incoming activity must have "id" field set, assigning a random value as ID',
+                {
+                  activity,
+                  newActivityId
+                }
+              );
+
+              activity = updateIn(activity, ['id'], () => newActivityId);
+            }
+
             const existingActivity = state.find(({ id }) => id === activity.id);
 
             if (existingActivity) {
