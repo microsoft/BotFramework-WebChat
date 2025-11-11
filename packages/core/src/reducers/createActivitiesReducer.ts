@@ -75,6 +75,10 @@ function getSequenceIdOrDeriveFromTimestamp(
 
   if (typeof timestamp === 'string') {
     return +new ponyfill.Date(timestamp);
+  } else if ((timestamp as any) instanceof ponyfill.Date) {
+    console.warn('botframework-webchat: "timestamp" must be of type string, instead of Date.');
+
+    return +timestamp;
   }
 
   return undefined;
