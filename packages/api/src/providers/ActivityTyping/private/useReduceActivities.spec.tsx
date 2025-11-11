@@ -12,6 +12,7 @@ type UseReduceActivitiesFn = Parameters<typeof UseReduceActivitiesType>[0];
 
 const ACTIVITY_TEMPLATE = {
   channelData: {
+    'webchat:internal:id': 'a-00001',
     'webchat:internal:position': 0,
     'webchat:sequence-id': 0,
     'webchat:send-status': undefined
