@@ -129,6 +129,8 @@ function upsertActivityWithSort(
 
   const { channelData: { clientActivityID: incomingClientActivityID } = {} } = incomingActivity;
 
+  let incomingPosition: number | undefined = incomingActivity.channelData['webchat:internal:position'];
+
   const nextActivities = activities.filter(
     ({ channelData: { clientActivityID } = {}, id }) =>
       // We will remove all "sending messages" activities and activities with same ID
@@ -137,96 +139,99 @@ function upsertActivityWithSort(
       !(id && id === incomingActivity.id)
   );
 
-  const incomingEntityPosition = incomingActivity.channelData?.['webchat:entity-position'];
-  const incomingPartOf = incomingActivity.channelData?.['webchat:entity-part-of'];
-  const incomingSequenceId = getSequenceIdOrDeriveFromTimestamp(incomingActivity, ponyfill);
+  // If `channelData['webchat:internal:position']` is already set, use that to find where to insert the activity.
+  // For example, when receiving the echoback, we will want to keep the existing position.
+  if (typeof incomingPosition !== 'number') {
+    const incomingEntityPosition = incomingActivity.channelData?.['webchat:entity-position'];
+    const incomingPartOf = incomingActivity.channelData?.['webchat:entity-part-of'];
+    const incomingSequenceId = getSequenceIdOrDeriveFromTimestamp(incomingActivity, ponyfill);
 
-  // TODO: [P0] Turn (activity) => boolean into comparer (x, y) => number.
-  //       It is not trivial to write in current form.
-  //       We can use comparer for insertion sort too, so let's rewrite in comparer form.
-  let indexToInsert = nextActivities.findIndex(activity => {
-    // TODO: [P1] #3953 We should move this patching logic to a DLJS wrapper for simplicity.
-    // If the message does not have sequence ID, use these fallback values:
-    // 1. `entities.position` where `entities.isPartOf[@type === 'HowTo']`
-    //    - If they are not of same set, ignore `entities.position`
-    // 2. `channelData.streamSequence` field for same session IDk
-    // 3. `channelData['webchat:sequence-id']`
-    //    - If not available, it will fallback to `+new Date(timestamp)`
-    //    - Outgoing activity will not have `timestamp` field
-    const { channelData = {} } = activity;
-    const currentPosition = channelData['webchat:entity-position'];
-    const currentPartOf = channelData['webchat:entity-part-of'];
+    // TODO: [P0] Turn (activity) => boolean into comparer (x, y) => number.
+    //       It is not trivial to write in current form.
+    //       We can use comparer for insertion sort too, so let's rewrite in comparer form.
+    let indexToInsert = nextActivities.findIndex(activity => {
+      // TODO: [P1] #3953 We should move this patching logic to a DLJS wrapper for simplicity.
+      // If the message does not have sequence ID, use these fallback values:
+      // 1. `entities.position` where `entities.isPartOf[@type === 'HowTo']`
+      //    - If they are not of same set, ignore `entities.position`
+      // 2. `channelData.streamSequence` field for same session IDk
+      // 3. `channelData['webchat:sequence-id']`
+      //    - If not available, it will fallback to `+new Date(timestamp)`
+      //    - Outgoing activity will not have `timestamp` field
+      const { channelData = {} } = activity;
+      const currentPosition = channelData['webchat:entity-position'];
+      const currentPartOf = channelData['webchat:entity-part-of'];
 
-    const bothHavePosition = typeof currentPosition === 'number' && typeof incomingEntityPosition === 'number';
-    const bothArePartOf = typeof currentPartOf === 'string' && currentPartOf === incomingPartOf;
+      const bothHavePosition = typeof currentPosition === 'number' && typeof incomingEntityPosition === 'number';
+      const bothArePartOf = typeof currentPartOf === 'string' && currentPartOf === incomingPartOf;
 
-    // For activities in the same creative work part, position is primary sort key
-    if (bothHavePosition && bothArePartOf) {
-      return currentPosition > incomingEntityPosition;
-    }
-
-    const currentLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
-
-    if (
-      incomingLivestreamingMetadata &&
-      currentLivestreamingMetadata &&
-      incomingLivestreamingMetadata.sessionId === currentLivestreamingMetadata.sessionId
-    ) {
-      return currentLivestreamingMetadata.sequenceNumber > incomingLivestreamingMetadata.sequenceNumber;
-    }
-
-    // TODO: [P*] Add test:
-    //       1. Send outgoing activity "one", no echoback, no timestamp, no sequence ID
-    //       2. Send another activity "two", no echoback, no timestamp, no sequence ID
-    //       EXPECT: It shows up as "one" followed by "two".
-    const currentSequenceId = getSequenceIdOrDeriveFromTimestamp(activity, ponyfill);
-
-    if (typeof incomingSequenceId === 'number') {
-      if (typeof currentSequenceId === 'number') {
-        return currentSequenceId > incomingSequenceId;
+      // For activities in the same creative work part, position is primary sort key
+      if (bothHavePosition && bothArePartOf) {
+        return currentPosition > incomingEntityPosition;
       }
 
-      // Always insert activity whose has sequence ID before those whose doesn't have sequence ID.
-      return true;
-    } else if (typeof currentSequenceId === 'number') {
+      const currentLivestreamingMetadata = getActivityLivestreamingMetadata(activity);
+
+      if (
+        incomingLivestreamingMetadata &&
+        currentLivestreamingMetadata &&
+        incomingLivestreamingMetadata.sessionId === currentLivestreamingMetadata.sessionId
+      ) {
+        return currentLivestreamingMetadata.sequenceNumber > incomingLivestreamingMetadata.sequenceNumber;
+      }
+
+      const currentSequenceId = getSequenceIdOrDeriveFromTimestamp(activity, ponyfill);
+
+      if (typeof incomingSequenceId === 'number') {
+        if (typeof currentSequenceId === 'number') {
+          return currentSequenceId > incomingSequenceId;
+        }
+
+        // Always insert activity whose has sequence ID before those whose doesn't have sequence ID.
+        return true;
+      } else if (typeof currentSequenceId === 'number') {
+        return false;
+      }
+
+      // No more properties can be used to find a good insertion spot.
+      // Return `false` so the activity will append to the end.
       return false;
+    });
+
+    if (!~indexToInsert) {
+      // If no right place can be found, append it.
+      indexToInsert = nextActivities.length;
     }
 
-    // No more properties can be used to find a good insertion spot.
-    // Return `false` so the activity will append to the end.
-    return false;
-  });
+    const prevActivity: WebChatActivity = nextActivities.at(indexToInsert - 1);
+    const nextActivity: WebChatActivity = nextActivities.at(indexToInsert);
 
-  if (!~indexToInsert) {
-    // If no right place can be found, append it.
-    indexToInsert = nextActivities.length;
-  }
+    if (prevActivity) {
+      const prevPosition = prevActivity.channelData['webchat:internal:position'];
 
-  const prevActivity: WebChatActivity = nextActivities.at(indexToInsert - 1);
-  const nextActivity: WebChatActivity = nextActivities.at(indexToInsert);
-  let incomingPosition: number;
+      if (nextActivity) {
+        const nextSequenceId = nextActivity.channelData['webchat:internal:position'];
 
-  if (prevActivity) {
-    const prevPosition = prevActivity.channelData['webchat:internal:position'];
-
-    if (nextActivity) {
+        // eslint-disable-next-line no-magic-numbers
+        incomingPosition = (prevPosition + nextSequenceId) / 2;
+      } else {
+        incomingPosition = prevPosition + 1;
+      }
+    } else if (nextActivity) {
       const nextSequenceId = nextActivity.channelData['webchat:internal:position'];
 
-      // eslint-disable-next-line no-magic-numbers
-      incomingPosition = (prevPosition + nextSequenceId) / 2;
+      incomingPosition = nextSequenceId - 1;
     } else {
-      incomingPosition = prevPosition + 1;
+      incomingPosition = 0;
     }
-  } else if (nextActivity) {
-    const nextSequenceId = nextActivity.channelData['webchat:internal:position'];
-
-    incomingPosition = nextSequenceId - 1;
-  } else {
-    incomingPosition = 0;
   }
 
+  const indexToInsert = nextActivities.findIndex(
+    activity => activity.channelData['webchat:internal:position'] > incomingPosition
+  );
+
   nextActivities.splice(
-    indexToInsert,
+    ~indexToInsert ? indexToInsert : nextActivities.length,
     0,
     updateIn(incomingActivity, ['channelData', 'webchat:internal:position'], () => incomingPosition)
   );
@@ -322,6 +327,7 @@ export default function createActivitiesReducer(
               () => existingActivity.channelData['webchat:internal:id']
             );
 
+          // Keep existing position.
           const updatePosition: ComposeFn<WebChatActivity> = activity =>
             updateIn(
               activity,
@@ -388,6 +394,11 @@ export default function createActivitiesReducer(
               } = existingActivity;
 
               activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => permanentId);
+              activity = updateIn(
+                activity,
+                ['channelData', 'webchat:internal:position'],
+                () => existingActivity.channelData['webchat:internal:position']
+              );
 
               if (sendStatus === SENDING || sendStatus === SEND_FAILED || sendStatus === SENT) {
                 activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => sendStatus);
