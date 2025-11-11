@@ -86,14 +86,14 @@
         // THEN: The second outgoing message should be the third.
         expect(activities[2].text).toBe('User activity has timestamp of 0.');
 
-        // THEN: The first outgoing message should have a smaller sequence ID than the bot's message.
+        // THEN: The first outgoing message should have a smaller position than the bot's message.
         expect(
-          activities[0].channelData['webchat:sequence-id'] < activities[1].channelData['webchat:sequence-id']
+          activities[0].channelData['webchat:internal:position'] < activities[1].channelData['webchat:internal:position']
         ).toBe(true);
 
-        // THEN: The first outgoing message should have a smaller sequence ID than the second outgoing message.
+        // THEN: The first outgoing message should have a smaller position than the second outgoing message.
         expect(
-          activities[1].channelData['webchat:sequence-id'] < activities[2].channelData['webchat:sequence-id']
+          activities[1].channelData['webchat:internal:position'] < activities[2].channelData['webchat:internal:position']
         ).toBe(true);
 
         // THEN: Both outgoing messages should not send "webchat:sequence-id" and "state".
