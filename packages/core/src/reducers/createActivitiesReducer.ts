@@ -27,6 +27,7 @@ import type {
 } from '../actions/postActivity';
 import type { GlobalScopePonyfill } from '../types/GlobalScopePonyfill';
 import type { WebChatActivity } from '../types/WebChatActivity';
+import compose, { type ComposeFn } from './private/compose';
 
 type ActivitiesAction =
   | DeleteActivityAction
@@ -259,6 +260,7 @@ export default function createActivitiesReducer(
             payload: { activity }
           } = action;
 
+          activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => crypto.randomUUID());
           // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
           // Please refer to #4362 for details. Remove on or after 2024-07-31.
           activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
@@ -291,18 +293,47 @@ export default function createActivitiesReducer(
 
       case POST_ACTIVITY_FULFILLED:
         {
-          // We will replace the activity with the version from the server
-          const activity = updateIn(
+          const existingActivity = state.find(findByClientActivityID(action.meta.clientActivityID));
+
+          if (!existingActivity) {
+            throw new Error(
+              'botframework-webchat-internal: On POST_ACTIVITY_FULFILLED, there is no activities with same client activity ID'
+            );
+          }
+
+          const updateOldSendStatusToSent: ComposeFn<WebChatActivity> = activity =>
             updateIn(
-              patchActivity(action.payload.activity, ponyfill),
+              activity,
               // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
               // Please refer to #4362 for details. Remove on or after 2024-07-31.
               ['channelData', 'state'],
               () => SENT
-            ),
-            ['channelData', 'webchat:send-status'],
-            () => SENT
-          );
+            );
+
+          const updateNewSendStatusToSent: ComposeFn<WebChatActivity> = activity =>
+            updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
+
+          const updatePermanentId: ComposeFn<WebChatActivity> = activity =>
+            updateIn(
+              activity,
+              ['channelData', 'webchat:internal:id'],
+              () => existingActivity.channelData['webchat:internal:id']
+            );
+
+          const updatePosition: ComposeFn<WebChatActivity> = activity =>
+            updateIn(
+              activity,
+              ['channelData', 'webchat:internal:position'],
+              () => existingActivity.channelData['webchat:internal:position']
+            );
+
+          // We will replace the activity with the version from the server
+          const activity = compose<WebChatActivity>(
+            updateOldSendStatusToSent,
+            updateNewSendStatusToSent,
+            updatePermanentId,
+            updatePosition
+          )(patchActivity(action.payload.activity, ponyfill));
 
           state = updateIn(state, [findByClientActivityID(action.meta.clientActivityID)], () => activity);
         }
@@ -351,17 +382,33 @@ export default function createActivitiesReducer(
 
             if (existingActivity) {
               const {
-                channelData: { 'webchat:send-status': sendStatus }
+                channelData: { 'webchat:internal:id': permanentId, 'webchat:send-status': sendStatus }
               } = existingActivity;
+
+              activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => permanentId);
 
               if (sendStatus === SENDING || sendStatus === SEND_FAILED || sendStatus === SENT) {
                 activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => sendStatus);
               }
             } else {
+              activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => crypto.randomUUID());
+
               // If there are no existing activity, probably this activity is restored from chat history.
               // All outgoing activities restored from service means they arrived at the service successfully.
               // Thus, we are marking them as "sent".
               activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => SENT);
+            }
+          } else {
+            const existingActivity = state.find(({ id }) => id === activity.id);
+
+            if (existingActivity) {
+              activity = updateIn(
+                activity,
+                ['channelData', 'webchat:internal:id'],
+                () => existingActivity.channelData['webchat:internal:id']
+              );
+            } else {
+              activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => crypto.randomUUID());
             }
           }
 

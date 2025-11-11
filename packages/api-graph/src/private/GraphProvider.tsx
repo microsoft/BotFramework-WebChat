@@ -52,47 +52,30 @@ function GraphProvider(props: GraphProviderProps) {
       const state = graph.getState();
 
       setOrderedActivities(prevOrderedMessages => {
-        let nextOrderedMessages: DirectLineActivityNode[] | undefined;
+        let nextOrderedMessageMap: Map<Identifier, DirectLineActivityNode> | undefined;
 
         for (const id of record.upsertedNodeIdentifiers) {
           const node = state.get(id);
 
           if (node && isOfType(node, 'urn:microsoft:webchat:direct-line-activity')) {
             const activityNode = node as DirectLineActivityNode;
-            const activityId = activityNode['urn:microsoft:webchat:direct-line-activity:id']?.[0];
-            const clientActivityId = activityNode['urn:microsoft:webchat:direct-line-activity:client-activity-id']?.[0];
 
-            nextOrderedMessages ||= Array.from(prevOrderedMessages);
+            if (!nextOrderedMessageMap) {
+              nextOrderedMessageMap = new Map(prevOrderedMessages.map(node => [node['@id'], node]));
+            }
 
-            // Replace activity node with same activity ID and client activity ID.
-            // TODO: [P*] When working on activity keyer, the new activity should reuse same @id.
-            const existingActivityNodeWithSameActivityId =
-              activityId &&
-              nextOrderedMessages.find(
-                node => node['urn:microsoft:webchat:direct-line-activity:id']?.[0] === activityId
-              );
+            const permanentId = activityNode['@id'];
 
-            existingActivityNodeWithSameActivityId &&
-              removeInline(nextOrderedMessages, existingActivityNodeWithSameActivityId);
-
-            const existingActivityNodeWithSameClientActivityId =
-              clientActivityId &&
-              nextOrderedMessages.find(
-                node => node['urn:microsoft:webchat:direct-line-activity:client-activity-id']?.[0] === clientActivityId
-              );
-
-            existingActivityNodeWithSameClientActivityId &&
-              removeInline(nextOrderedMessages, existingActivityNodeWithSameClientActivityId);
-
-            nextOrderedMessages.push(activityNode);
+            nextOrderedMessageMap.delete(permanentId);
+            nextOrderedMessageMap.set(permanentId, activityNode);
           }
         }
 
-        if (nextOrderedMessages) {
-          // TODO: [P0] Insertion sort is cheaper by 20x.
-          nextOrderedMessages.sort((x, y) => x.position[0] - y.position[0]);
-
-          return Object.freeze(nextOrderedMessages);
+        if (nextOrderedMessageMap) {
+          // TODO: [P0] Insertion sort is cheaper by 20x if inserting 1 activity into a list of 1,000 activities.
+          return Object.freeze(
+            Array.from(nextOrderedMessageMap.values()).sort((x, y) => x.position[0] - y.position[0])
+          );
         }
 
         return prevOrderedMessages;

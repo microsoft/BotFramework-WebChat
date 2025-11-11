@@ -57,6 +57,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
           from: { role }
         } = activity;
 
+        const permanentId = activity.channelData['webchat:internal:id'];
         const position = activity.channelData['webchat:internal:position'];
 
         // TODO: Should use Person and more specific than just "Others".
@@ -73,12 +74,11 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
         if (activity.type === 'event') {
           graph.upsert({
             '@context': 'https://schema.org',
-            '@id': `_:${activity.id}`,
+            '@id': `_:${permanentId}`,
             '@type': Object.freeze(['urn:microsoft:webchat:direct-line-activity']),
             identifier: `urn:microsoft:webchat:direct-line-activity:id:${activity.id}`,
             position,
             sender,
-            'urn:microsoft:webchat:direct-line-activity:id': activity.id,
             'urn:microsoft:webchat:direct-line-activity:raw-json': { '@type': '@json', '@value': activity },
             'urn:microsoft:webchat:direct-line-activity:type': activity.type
           });
@@ -88,7 +88,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
             '@context': 'https://schema.org',
 
             // TODO: [P0] Maybe we should do keyer here, maybe UUID here.
-            '@id': `_:${activity.id}`,
+            '@id': `_:${permanentId}`,
 
             // TODO: [P0] We should allowlist types.
             '@type': ['Message', `urn:microsoft:webchat:direct-line-activity`],
@@ -108,7 +108,6 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
             sender,
             text: ('text' in activity && typeof activity.text === 'string' && activity.text) || undefined,
 
-            'urn:microsoft:webchat:direct-line-activity:id': activity.id,
             'urn:microsoft:webchat:direct-line-activity:raw-json': { '@type': '@json', '@value': activity },
             'urn:microsoft:webchat:direct-line-activity:type': activity.type
           });
