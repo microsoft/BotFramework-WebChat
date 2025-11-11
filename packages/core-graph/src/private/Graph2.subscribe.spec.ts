@@ -91,8 +91,8 @@ scenario('Graph.subscribe()', bdd => {
       const graph = new Graph(() => () => request => request);
       const subscriber = fn(() => {
         // Should throw.
-        graph.act(() => {
-          // Intentionally left blank.
+        graph.act(({ upsert }) => {
+          upsert({ '@id': '_:b2' });
         });
       });
 
@@ -111,11 +111,14 @@ scenario('Graph.subscribe()', bdd => {
 
       return undefined;
     })
-    .then('should throw', (_, error) => {
-      expect(() => {
-        if (error) {
-          throw error;
-        }
-      }).toThrow('Another transaction is ongoing');
-    });
+    .then('getState() should return both nodes', ({ graph }) =>
+      expect(graph.getState()).toEqual(
+        new Map(
+          Object.entries({
+            '_:b1': { '@id': '_:b1', name: 'John Doe' },
+            '_:b2': { '@id': '_:b2', name: 'Mary Doe' }
+          })
+        )
+      )
+    );
 });
