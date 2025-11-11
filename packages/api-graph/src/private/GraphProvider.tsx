@@ -25,16 +25,6 @@ const graphProviderPropsSchema = pipe(
 
 type GraphProviderProps = InferInput<typeof graphProviderPropsSchema>;
 
-function removeInline<T>(array: T[], ...items: T[]) {
-  items.forEach(item => {
-    let index;
-
-    while (~(index = array.indexOf(item))) {
-      array.splice(index, 1);
-    }
-  });
-}
-
 function GraphProvider(props: GraphProviderProps) {
   const { children, store } = validateProps(graphProviderPropsSchema, props);
 
