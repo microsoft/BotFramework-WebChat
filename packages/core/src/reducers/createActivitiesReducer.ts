@@ -264,12 +264,26 @@ export default function createActivitiesReducer(
 
           // Assume the message was sent immediately after the very last message.
           // This helps to maintain the order of the outgoing message before the server respond.
-          activity = updateIn(activity, ['timestamp'], () => {
-            const lastTimestamp = state.at(-1)?.timestamp;
+          activity = updateIn(activity, ['channelData', 'webchat:sequence-id'], () => {
+            const lastActivity = state.at(-1);
 
-            return (
-              lastTimestamp ? new ponyfill.Date(+new ponyfill.Date(lastTimestamp) + 1) : new ponyfill.Date(1)
-            ).toISOString();
+            if (!lastActivity) {
+              return 1;
+            }
+
+            const lastSequenceId = lastActivity.channelData['webchat:sequence-id'];
+
+            if (typeof lastSequenceId === 'number') {
+              return lastSequenceId + 1;
+            }
+
+            const lastTimestampInNumber = +new ponyfill.Date(lastActivity.timestamp);
+
+            if (!isNaN(lastTimestampInNumber)) {
+              return lastTimestampInNumber + 1;
+            }
+
+            return +new ponyfill.Date();
           });
 
           state = upsertActivityWithSort(state, activity, ponyfill);
