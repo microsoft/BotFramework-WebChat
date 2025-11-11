@@ -71,18 +71,7 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
                 : undefined;
 
         // TODO: [P*] "activity.id" could be null here, we should do the keyer here.
-        if (activity.type === 'event') {
-          graph.upsert({
-            '@context': 'https://schema.org',
-            '@id': `_:${permanentId}`,
-            '@type': Object.freeze(['urn:microsoft:webchat:direct-line-activity']),
-            identifier: `urn:microsoft:webchat:direct-line-activity:id:${activity.id}`,
-            position,
-            sender,
-            'urn:microsoft:webchat:direct-line-activity:raw-json': { '@type': '@json', '@value': activity },
-            'urn:microsoft:webchat:direct-line-activity:type': activity.type
-          });
-        } else if (activity.type === 'message' || activity.type === 'typing') {
+        if (activity.type === 'message' || activity.type === 'typing') {
           // TODO: [P*] If this is livestreaming, add isPartOf to indicate the livestream head.
           graph.upsert({
             '@context': 'https://schema.org',
@@ -96,7 +85,8 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
             encodingFormat:
               'textFormat' in activity && activity.textFormat !== 'markdown' ? 'text/plain' : 'text/markdown',
 
-            // TODO: [P0] activity.id could be null here
+            // TODO: [P0] activity.id could be null here.
+            // TODO: [P0] Not sure if we need client activity ID here as we already have permanent ID.
             identifier: [
               ...(activity.id ? [`urn:microsoft:webchat:direct-line-activity:id:${activity.id}`] : []),
               ...(typeof activity.channelData.clientActivityID === 'string'
@@ -111,8 +101,22 @@ function createGraphFromStore(store: ReturnType<typeof createStore>): SlantGraph
             'urn:microsoft:webchat:direct-line-activity:raw-json': { '@type': '@json', '@value': activity },
             'urn:microsoft:webchat:direct-line-activity:type': activity.type
           });
+        } else if (typeof activity.type === 'string') {
+          graph.upsert({
+            '@context': 'https://schema.org',
+            '@id': `_:${permanentId}`,
+            '@type': Object.freeze(['urn:microsoft:webchat:direct-line-activity']),
+            identifier: activity.id && `urn:microsoft:webchat:direct-line-activity:id:${activity.id}`,
+            position,
+            sender,
+            'urn:microsoft:webchat:direct-line-activity:raw-json': { '@type': '@json', '@value': activity },
+            'urn:microsoft:webchat:direct-line-activity:type': activity.type
+          });
         } else {
-          console.warn(`Unknown activity of type "${activity.type}", skipping.`, { activity });
+          console.warn(
+            `botframework-webchat: Activity must have "type" with value of string, ignoring activity without proper "type" field.`,
+            { activity }
+          );
         }
       }
     });
