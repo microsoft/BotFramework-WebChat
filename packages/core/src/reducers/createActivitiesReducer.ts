@@ -1,6 +1,7 @@
 /* eslint no-magic-numbers: ["error", { "ignore": [0, 1, -1] }] */
 
 import updateIn from 'simple-update-in';
+import { v4 } from 'uuid';
 
 import { DELETE_ACTIVITY } from '../actions/deleteActivity';
 import { INCOMING_ACTIVITY } from '../actions/incomingActivity';
@@ -261,7 +262,7 @@ export default function createActivitiesReducer(
             payload: { activity }
           } = action;
 
-          activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => crypto.randomUUID());
+          activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => v4());
           // `channelData.state` is being deprecated in favor of `channelData['webchat:send-status']`.
           // Please refer to #4362 for details. Remove on or after 2024-07-31.
           activity = updateIn(activity, ['channelData', 'state'], () => SENDING);
@@ -392,7 +393,7 @@ export default function createActivitiesReducer(
                 activity = updateIn(activity, ['channelData', 'webchat:send-status'], () => sendStatus);
               }
             } else {
-              activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => crypto.randomUUID());
+              activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => v4());
 
               // If there are no existing activity, probably this activity is restored from chat history.
               // All outgoing activities restored from service means they arrived at the service successfully.
@@ -409,7 +410,7 @@ export default function createActivitiesReducer(
                 () => existingActivity.channelData['webchat:internal:id']
               );
             } else {
-              activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => crypto.randomUUID());
+              activity = updateIn(activity, ['channelData', 'webchat:internal:id'], () => v4());
             }
           }
 
