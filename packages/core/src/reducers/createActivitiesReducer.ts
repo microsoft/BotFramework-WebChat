@@ -198,24 +198,18 @@ function upsertActivityWithSort(
     });
   }
 
-  if (!~indexToInsert) {
+  // If the incoming activity does not have sequence ID or timestamp, always append it.
+  if (!~indexToInsert && typeof incomingSequenceId === 'number') {
     indexToInsert = nextActivities.findIndex(activity => {
       const currentSequenceId = getSequenceIdOrDeriveFromTimestamp(activity, ponyfill);
 
-      if (typeof incomingSequenceId === 'number') {
-        if (typeof currentSequenceId === 'number') {
-          return currentSequenceId > incomingSequenceId;
-        }
-
-        // Always insert activity whose has sequence ID before those whose doesn't have sequence ID.
-        return true;
-      } else if (typeof currentSequenceId === 'number') {
+      if (typeof currentSequenceId === 'undefined') {
+        // Treat messages without sequence ID and timestamp as hidden/opaque. Don't use them to influence ordering.
+        // Related to /__tests__/html2/activityOrdering/mixingMessagesWithAndWithoutTimestamp.html.
         return false;
       }
 
-      // No more properties can be used to find a good insertion spot.
-      // Return `false` so the activity will append to the end.
-      return false;
+      return currentSequenceId > incomingSequenceId;
     });
   }
 
